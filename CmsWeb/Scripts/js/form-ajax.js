@@ -38,6 +38,20 @@
         });
         return false;
     });
+    $("ul.nav-tabs a.ajax").live("click", function(event) {
+        var d = $($(this).attr("href"));
+        if(!d.hasClass("loaded"))
+            $.ajax({
+                type: 'POST',
+                url: d.data("link"),
+                data: {},
+                success: function (data, status) {
+                    d.html(data);
+                    d.addClass("loaded");
+                }
+            });
+        return false;
+    });
     $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();
         var $this = $(this);

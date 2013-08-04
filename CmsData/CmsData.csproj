@@ -710,6 +710,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ImageData\ImageData.csproj">
+      <Project>{512da381-e81b-4121-b978-fc850ec88353}</Project>
+      <Name>ImageData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{c504e3d2-5498-451b-bf82-309623706f11}</Project>
       <Name>UtilityExtensions</Name>

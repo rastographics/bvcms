@@ -7,13 +7,6 @@
         </a>
         <div class="dropdown-menu has-tip">
             <ul>
-                <li><a href='/Email/Index/@ViewBag.queryid'> Individuals</a></li>
-                <li><a href='/Email/Index/@ViewBag.queryid?parents=true'> Parents</a></li>
-@if ((bool?)ViewBag.ParentOrgContext == true)
-{
-                <li><a href='/Email/Index/@ViewBag.leadersqid'> Leaders under this org</a></li>
-                <li><a href='/Email/Index/@ViewBag.membersqid'> Members under this org</a></li>
-}
             </ul>
         </div>
     </li>

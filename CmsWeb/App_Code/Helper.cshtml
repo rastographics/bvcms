@@ -62,12 +62,12 @@
         if (newlook)
         {
     @Fingerprint.Css("/content/styles/newcss.css")
-    <link rel="stylesheet" href="@Fingerprint.Tag("/content/css/font-awesome.css")" />
+    <link rel="stylesheet" href="@Fingerprint.Tag("/Content/font-awesome/css/font-awesome.css")" />
         }
         else
         {
     @Fingerprint.Css("/content/styles/css.css")
-    <link rel="stylesheet" href="@Fingerprint.Tag("/content/css/font-awesome.css")" />
+    <link rel="stylesheet" href="@Fingerprint.Tag("/Content/font-awesome/css/font-awesome.css")" />
         }
     }
     else // not debug
@@ -75,12 +75,13 @@
         if (newlook)
         {
     <link rel="stylesheet" href="@Fingerprint.Tag("/content/styles/newcss.css")" />
-    <link rel="stylesheet" href="@Fingerprint.Tag("/content/css/font-awesome.css")" />
+    <link rel="stylesheet" href="@Fingerprint.Tag("/Content/font-awesome/css/font-awesome.css")" />
         }
         else
         {
-    <link rel="stylesheet" href="@Fingerprint.Tag("/content/styles/css.css")" />
-    <link rel="stylesheet" href="@Fingerprint.Tag("/content/css/font-awesome.css")" />
+            <link rel="stylesheet" href="@Fingerprint.Tag("/content/styles/css.css")" />
+    @*<link rel="stylesheet" href="@Fingerprint.Tag("/content/css/font-awesome.css")" />*@
+    <link rel="stylesheet" href="@Fingerprint.Tag("/Content/font-awesome/css/font-awesome.css")" />
         }
     }
 }

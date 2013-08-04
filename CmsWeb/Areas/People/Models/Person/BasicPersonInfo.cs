@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.People.Models.Person
         public string LastName { get; set; }
 
         [UIHint("Text")]
-        [DisplayName("Alternate Name")]
+        [DisplayName("Alt Name")]
         public string AltName { get; set; }
 
         [UIHint("Text")]
@@ -140,7 +140,7 @@ namespace CmsWeb.Areas.People.Models.Person
         [DisplayName("Primary Email")]
         public EmailInfo PrimaryEmail { get; set; }
         [UIHint("Email")]
-        [DisplayName("Alternate Email")]
+        [DisplayName("Alt Email")]
         public EmailInfo AltEmail { get; set; }
 
         [UIHint("Text")]

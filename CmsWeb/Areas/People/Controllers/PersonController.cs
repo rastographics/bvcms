@@ -1,4 +1,7 @@
 using System;
+using System.Drawing.Imaging;
+using System.Web.UI.WebControls;
+using Drawing = System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -31,6 +34,8 @@ namespace CmsWeb.Areas.People.Controllers
             base.Initialize(requestContext);
         }
 
+
+        [GET("Person2/Current")]
         public ActionResult Current()
         {
             return Redirect("/Person/Index/" + Util2.CurrentPeopleId);
@@ -49,37 +54,14 @@ namespace CmsWeb.Areas.People.Controllers
                 var url = Regex.Replace(Request.RawUrl, @"(.*)/(Person2(/Index)*)/(\d*)", "$1/Person/Index/$4", RegexOptions.IgnoreCase);
                 return Redirect(url);
             }
-            var m = new PersonModel(id.Value);
-            if (m.Person == null)
-                return Content("person not found");
-			if (!User.IsInRole("Access"))
-				if (m.Person == null || !m.Person.CanUserSee)
-					return Content("no access");
 
-            if (Util2.OrgMembersOnly)
-            {
-                var omotag = DbUtil.Db.OrgMembersOnlyTag2();
-                if (!DbUtil.Db.TagPeople.Any(pt => pt.PeopleId == id && pt.Id == omotag.Id))
-                {
-                    DbUtil.LogActivity("Trying to view person: {0}".Fmt(m.Person.Name));
-                    return Content("<h3 style='color:red'>{0}</h3>\n<a href='{1}'>{2}</a>"
-                        .Fmt("You must be a member one of this person's organizations to have access to this page",
-                        "javascript: history.go(-1)", "Go Back"));
-                }
-            }
-            else if (Util2.OrgLeadersOnly)
-            {
-                var olotag = DbUtil.Db.OrgLeadersOnlyTag2();
-                if (!DbUtil.Db.TagPeople.Any(pt => pt.PeopleId == id && pt.Id == olotag.Id))
-                {
-                    DbUtil.LogActivity("Trying to view person: {0}".Fmt(m.Person.Name));
-                    return Content("<h3 style='color:red'>{0}</h3>\n<a href='{1}'>{2}</a>"
-                        .Fmt("You must be a leader of one of this person's organizations to have access to this page",
-                        "javascript: history.go(-1)", "Go Back"));
-                }
-            }
-            ViewData["Comments"] = Util.SafeFormat(m.Person.Comments);
-            ViewData["PeopleId"] = id.Value;
+            var m = new PersonModel(id.Value);
+            var noview = m.CheckView();
+            if (noview.HasValue())
+                return Content(noview);
+
+            ViewBag.Comments = Util.SafeFormat(m.Person.Comments);
+            ViewBag.PeopleId = id.Value;
             Util2.CurrentPeopleId = id.Value;
             Session["ActivePerson"] = m.Person.Name;
             DbUtil.LogActivity("Viewing Person: {0}".Fmt(m.Person.Name));
@@ -87,6 +69,343 @@ namespace CmsWeb.Areas.People.Controllers
             return View(m);
         }
 
+        [POST("Person2/Snapshot/{id}")]
+        public ActionResult Snapshot(int id)
+        {
+            var m = new PersonModel(id);
+            return View("ProfileHeader/Snapshot", m);
+        }
+
+        [POST("Person2/PersonalDisplay/{id}")]
+        public ActionResult PersonalDisplay(int id)
+        {
+            InitExportToolbar(id);
+            var m = BasicPersonInfo.GetBasicPersonInfo(id);
+            return View("Main/PersonalDisplay", m);
+        }
+        [POST("Person2/PersonalEdit/{id}")]
+        public ActionResult PersonalEdit(int id)
+        {
+            var m = BasicPersonInfo.GetBasicPersonInfo(id);
+            return View("Main/PersonalEdit", m);
+        }
+        [POST("Person2/PersonalUpdate/{id}")]
+        public ActionResult Personalpdate(int id)
+        {
+            var m = BasicPersonInfo.GetBasicPersonInfo(id);
+            UpdateModel(m);
+            m.UpdatePerson();
+            m = BasicPersonInfo.GetBasicPersonInfo(id);
+            DbUtil.LogActivity("Update Basic Info for: {0}".Fmt(m.person.Name));
+            InitExportToolbar(id);
+            return View("Main/PersonalDisplay", m);
+        }
+
+        [POST("Person2/EnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult EnrollGrid(int id, int? page, int? size, string sort, string dir)
+        {
+            var m = new CurrentEnrollments(id);
+            m.Pager.Set("/Person2/EnrollGrid/" + id, page, size, sort, dir);
+            DbUtil.LogActivity("Viewing Enrollments for: {0}".Fmt(m.person.Name));
+            return View("Enrollment/Current", m);
+        }
+        [POST("Person2/PrevEnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult PrevEnrollGrid(int id, int? page, int? size, string sort, string dir)
+        {
+            var m = new PreviousEnrollments(id);
+            m.Pager.Set("/Person2/PrevEnrollGrid/" + id, page, size, sort, dir);
+            DbUtil.LogActivity("Viewing Prev Enrollments for: {0}".Fmt(m.person.Name));
+            return View("Enrollment/Previous", m);
+        }
+        [POST("Person2/PendingEnrollGrid/{id}")]
+        public ActionResult PendingEnrollGrid(int id)
+        {
+            var m = new PendingEnrollments(id);
+            DbUtil.LogActivity("Viewing Pending Enrollments for: {0}".Fmt(m.person.Name));
+            return View("Enrollment/Pending", m);
+        }
+        [POST("Person2/Attendance/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult Attendance(int id, int? page, int? size, string sort, string dir)
+        {
+            var m = new PersonAttendHistoryModel(id, future: false);
+            m.Pager.Set("/Person2/Attendance/" + id, page, size, sort, dir);
+            DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
+            UpdateModel(m.Pager);
+            return View("Enrollment/Attendance", m);
+        }
+        [POST("Person2/AttendanceFuture/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult AttendanceFuture(int id, int? page, int? size, string sort, string dir)
+        {
+            var m = new PersonAttendHistoryModel(id, future: true);
+            m.Pager.Set("/Person2/AttendanceFuture/" + id, page, size, sort, dir);
+            DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
+            UpdateModel(m.Pager);
+            return View("Enrollment/Attendance", m);
+        }
+
+        [POST("Person2/MembershipDisplay/{id}")]
+        public ActionResult MembershipDisplay(int id)
+        {
+            var m = new PersonModel(id);
+            return View("Membership/Display", m);
+        }
+        [POST("Person2/MembershipNotes/{id}")]
+        public ActionResult MembershipNotes(int id)
+        {
+            var m = new PersonModel(id);
+            return View("Membership/Notes", m);
+        }
+        [POST("Person2/ExtraValues/{id}")]
+        public ActionResult ExtraValues1(int id)
+        {
+            var m = new PersonModel(id);
+            return View("Membership/ExtraValues", m);
+        }
+
+        [POST("Person2/Giving/{id}")]
+        public ActionResult Giving(int id)
+        {
+            var m = new PersonModel(id);
+            return View("Main/Giving", m);
+        }
+
+        [POST("Person2/Comments/{id}")]
+        public ActionResult Comments(int id)
+        {
+            var m = new PersonModel(id);
+            return View("Main/Comments", m);
+        }
+
+        [POST("Person2/Account/{id}")]
+        public ActionResult Account(int id)
+        {
+            var m = new PersonModel(id);
+            return View("Main/Account", m);
+        }
+
+        [POST("Person2/FamilyMembers/{id}")]
+        public ActionResult FamilyMembers(int id)
+        {
+            var m = new PersonModel(id);
+            //UpdateModel(m.Pager);
+            return View("Sidebar/FamilyMembers", m);
+        }
+        [POST("Person2/RelatedFamilies/{id}")]
+        public ActionResult RelatedFamilies(int id)
+        {
+            var m = new PersonModel(id);
+            return View("Sidebar/RelatedFamilies", m);
+        }
+        [POST("Person2/UpdateRelation/{id}/{id1}/{id2}")]
+        public ActionResult UpdateRelation(int id, int id1, int id2, string value)
+        {
+            var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(rr => rr.FamilyId == id1 && rr.RelatedFamilyId == id2);
+            r.FamilyRelationshipDesc = value;
+            DbUtil.Db.SubmitChanges();
+            var m = new PersonModel(id);
+            return View("Sidebar/RelatedFamilies", m);
+        }
+        [POST("Person2/DeleteRelation/{id}/{id1}/{id2}")]
+        public ActionResult DeleteRelation(int id, int id1, int id2)
+        {
+            var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(rf => rf.FamilyId == id1 && rf.RelatedFamilyId == id2);
+            DbUtil.Db.RelatedFamilies.DeleteOnSubmit(r);
+            DbUtil.Db.SubmitChanges();
+            var m = new PersonModel(id);
+            return View("Sidebar/RelatedFamilies", m);
+        }
+        [POST("Person2/RelatedFamilyEdit/{id}/{id1}/{id2}")]
+        public ActionResult RelatedFamilyEdit(int id, int id1, int id2)
+        {
+            var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(rf => rf.FamilyId == id1 && rf.RelatedFamilyId == id2);
+            ViewBag.Id = id;
+            return View("Sidebar/RelatedFamilyEdit", r);
+        }
+
+        [POST("Person2/UploadPicture/{id:int}/{picture}")]
+        public ActionResult UploadPicture(int id, HttpPostedFileBase picture)
+        {
+            var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
+            DbUtil.LogActivity("Uploading Picture for {0}".Fmt(person.Name));
+            person.UploadPicture(DbUtil.Db, picture.InputStream);
+            return Redirect("/Person2/" + id);
+        }
+        [GET("Person2/Image/{s}/{id}/{v}")]
+        public ActionResult Image(int id, int s, string v)
+        {
+            return new PictureResult(id, s);
+        }
+        [POST("Person2/PostData")]
+        public ActionResult PostData(int pk, string name, string value)
+        {
+            var p = DbUtil.Db.LoadPersonById(pk);
+            switch (name)
+            {
+                case "position":
+                    p.UpdatePosition(DbUtil.Db, value.ToInt());
+                    break;
+                case "campus":
+                    p.UpdateCampus(DbUtil.Db, value.ToInt());
+                    break;
+            }
+            return new EmptyResult();
+        }
+
+        [POST("Person2/UserEdit/{id}")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult UserEdit(int? id)
+        {
+            User u = null;
+            if (id.HasValue)
+                u = DbUtil.Db.Users.Single(us => us.UserId == id);
+            else
+            {
+                u = CmsWeb.Models.AccountModel.AddUser(Util2.CurrentPeopleId);
+                DbUtil.LogActivity("New User for: {0}".Fmt(Session["ActivePerson"]));
+            }
+            ViewBag.sendwelcome = false;
+            return View(u);
+        }
+        [POST("Person2/UserUpdate/{id}")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult UserUpdate(int id, string username, string password, bool islockedout, bool sendwelcome, string[] role)
+        {
+            var u = DbUtil.Db.Users.Single(us => us.UserId == id);
+            if (u.Username != username)
+            {
+                var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
+                if (uu != null)
+                    return Content("error: username already exists");
+            }
+            u.Username = username;
+            u.IsLockedOut = islockedout;
+            u.SetRoles(DbUtil.Db, role, User.IsInRole("Finance"));
+            if (password.HasValue())
+                u.ChangePassword(password);
+            DbUtil.Db.SubmitChanges();
+            if(sendwelcome)
+                CmsWeb.Models.AccountModel.SendNewUserEmail(username);
+            DbUtil.LogActivity("Update User for: {0}".Fmt(Session["ActivePerson"]));
+            var m = new PersonModel(u.PeopleId.Value);
+            return View("ProfileHeader/Toolbar", m);
+        }
+        [POST("Person2/UserDelete/{id}")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult UserDelete(int id)
+        {
+            var u = DbUtil.Db.Users.Single(us => us.UserId == id);
+            DbUtil.Db.PurgeUser(id);
+            var m = new PersonModel(u.PeopleId.Value);
+            return View("ProfileHeader/Toolbar", m);
+        }
+        [GET("Person2/Impersonate/{id}")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult Impersonate(int id)
+        {
+            var user = DbUtil.Db.Users.SingleOrDefault(uu => uu.UserId == id);
+            if (user == null)
+                return Content("no user");
+            if (user.Roles.Contains("Finance") && !User.IsInRole("Finance"))
+                return Content("cannot impersonate finance");
+            Session.Remove("CurrentTag");
+            FormsAuthentication.SetAuthCookie(user.Username, false);
+            CmsWeb.Models.AccountModel.SetUserInfo(user.Username, Session);
+            Util.FormsBasedAuthentication = true;
+            Util.UserPeopleId = user.PeopleId;
+            Util.UserPreferredName = user.Username;
+            return Redirect("/");
+        }
+
+        [HttpPost]
+        public ActionResult UserInfoGrid(int id)
+        {
+            var p = DbUtil.Db.LoadPersonById(id);
+            return View(p);
+        }
+
+        [POST("Person2/Split/{id}")]
+        [Authorize(Roles = "Edit")]
+        public ActionResult Split(int id)
+        {
+            var p = DbUtil.Db.LoadPersonById(id);
+            DbUtil.LogActivity("Splitting Family for {0}".Fmt(p.Name));
+            p.SplitFamily(DbUtil.Db);
+            return Content("/Person2/" + id);
+        }
+        [Authorize(Roles = "Admin")]
+        [POST("Person2/Delete/{id}")]
+        public ActionResult Delete(int id)
+        {
+            Util.Auditing = false;
+            var person = DbUtil.Db.LoadPersonById(id);
+            if (person == null)
+                return Content("error, bad peopleid");
+
+            var p = person.Family.People.FirstOrDefault(m => m.PeopleId != id);
+            if (p != null)
+            {
+                Util2.CurrentPeopleId = p.PeopleId;
+                Session["ActivePerson"] = p.Name;
+            }
+            else
+            {
+                Util2.CurrentPeopleId = 0;
+                Session.Remove("ActivePerson");
+            }
+            DbUtil.Db.PurgePerson(id);
+            DbUtil.LogActivity("Deleted Record {0}".Fmt(person.PeopleId));
+            return Content("/Person2/DeletedPerson");
+        }
+        [GET("Person2/DeletedPerson")]
+        public ActionResult DeletedPerson()
+        {
+            return View();
+        }
+
+        [GET("Person2/Campuses")]
+        public JsonResult Campuses()
+        {
+            var q = from c in DbUtil.Db.Campus
+                    select new { value = c.Id, text = c.Description };
+            return Json(q.ToArray(), JsonRequestBehavior.AllowGet);
+        }
+        [POST("Person2/Schools")]
+        public JsonResult Schools(string query)
+        {
+            var qu = from p in DbUtil.Db.People
+                     where p.SchoolOther.Contains(query)
+                     group p by p.SchoolOther into g
+                     select g.Key;
+            return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
+        }
+        [POST("Person2/Employers")]
+        public JsonResult Employers(string query)
+        {
+            var qu = from p in DbUtil.Db.People
+                     where p.EmployerOther.Contains(query)
+                     group p by p.EmployerOther into g
+                     select g.Key;
+            return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
+        }
+        [POST("Person2/Occupations")]
+        public JsonResult Occupations(string query)
+        {
+            var qu = from p in DbUtil.Db.People
+                     where p.OccupationOther.Contains(query)
+                     group p by p.OccupationOther into g
+                     select g.Key;
+            return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
+        }
+        [POST("Person2/Churches")]
+        public JsonResult Churches(string query)
+        {
+            var qu = from r in DbUtil.Db.ViewChurches
+                     where r.C.Contains(query)
+                     select r.C;
+            return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
+        }
+
+        #region ToDo
         [Authorize(Roles = "Admin")]
         public ActionResult Move(int id, int to)
         {
@@ -101,23 +420,6 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content(ex.Message);
             }
             return Content("ok");
-        }
-
-        [Authorize(Roles = "Admin")]
-        public ActionResult Impersonate(string id)
-        {
-            var user = DbUtil.Db.Users.SingleOrDefault(uu => uu.Username == id);
-            if (user == null)
-                return Content("no user");
-            if (user.Roles.Contains("Finance") && !User.IsInRole("Finance"))
-                return Content("cannot impersonate finance");
-            Session.Remove("CurrentTag");
-            FormsAuthentication.SetAuthCookie(id, false);
-            CmsWeb.Models.AccountModel.SetUserInfo(id, Session);
-            Util.FormsBasedAuthentication = true;
-            Util.UserPeopleId = user.PeopleId;
-            Util.UserPreferredName = user.Username;
-            return Redirect("/");
         }
 
         [HttpPost]
@@ -136,64 +438,12 @@ namespace CmsWeb.Areas.People.Controllers
             return new EmptyResult();
         }
 
-        [POST("Person2/FamilyGrid/{id}")]
-        public ActionResult FamilyGrid(int id)
+        [HttpPost]
+        public ActionResult Reverse(int id, string field, string value, string pf)
         {
             var m = new PersonModel(id);
-            //UpdateModel(m.Pager);
-            return View(m);
-        }
-
-        [POST("Person2/EnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult EnrollGrid(int id, int? page, int? size, string sort, string dir)
-        {
-            var m = new CurrentEnrollments(id);
-            m.Pager.Set("/Person2/EnrollGrid/" + id, page, size, sort, dir);
-            DbUtil.LogActivity("Viewing Enrollments for: {0}".Fmt(m.person.Name));
-            return View("CurrentEnrollments", m);
-        }
-
-        [POST("Person2/PrevEnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult PrevEnrollGrid(int id, int? page, int? size, string sort, string dir)
-        {
-            var m = new PreviousEnrollments(id);
-            m.Pager.Set("/Person2/PrevEnrollGrid/" + id, page, size, sort, dir);
-            DbUtil.LogActivity("Viewing Prev Enrollments for: {0}".Fmt(m.person.Name));
-            return View("PreviousEnrollments", m);
-        }
-
-        [POST("Person2/PendingEnrollGrid/{id}")]
-        public ActionResult PendingEnrollGrid(int id)
-        {
-            var m = new PendingEnrollments(id);
-            DbUtil.LogActivity("Viewing Pending Enrollments for: {0}".Fmt(m.person.Name));
-            return View("PendingEnrollments", m);
-        }
-
-        [POST("Person2/AttendanceGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult AttendanceGrid(int id, int? page, int? size, string sort, string dir)
-        {
-            var m = new PersonAttendHistoryModel(id, future:false);
-            m.Pager.Set("/Person2/AttendanceGrid/" + id, page, size, sort, dir);
-            DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
-            UpdateModel(m.Pager);
-            return View(m);
-        }
-        [POST("Person2/AttendanceGridFuture/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult AttendanceGridFuture(int id, int? page, int? size, string sort, string dir)
-        {
-            var m = new PersonAttendHistoryModel(id, future:true);
-            m.Pager.Set("/Person2/AttendanceGridFuture/" + id, page, size, sort, dir);
-            DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
-            UpdateModel(m.Pager);
-            return View("AttendanceGrid", m);
-        }
-
-        [POST("Person2/Addresses/{id}")]
-        public ActionResult Addresses(int id)
-        {
-            var m = new PersonModel(id);
-            return View(m);
+            m.Reverse(field, value, pf);
+            return View("ChangesGrid", m);
         }
 
         //		[HttpPost]
@@ -293,125 +543,6 @@ namespace CmsWeb.Areas.People.Controllers
             var t = p.AddTaskAbout(DbUtil.Db, Util.UserPeopleId.Value, "Please Contact");
             DbUtil.Db.SubmitChanges();
             return Content("/Task/List/{0}".Fmt(t.Id));
-        }
-
-        [POST("Person2/Snapshot/{id}")]
-        public ActionResult Snapshot(int id)
-        {
-            var m = new PersonModel(id);
-            return View(m);
-        }
-
-        [POST("Person2/RelatedFamilies/{id}")]
-        public ActionResult RelatedFamilies(int id)
-        {
-            var m = new PersonModel(id);
-            return View(m);
-        }
-
-        [POST("Person2/PostData")]
-        public ActionResult PostData(int pk, string name, string value)
-        {
-            var p = DbUtil.Db.LoadPersonById(pk);
-            var psb = new StringBuilder();
-            switch (name)
-            {
-                case "position":
-                    p.UpdateValue(psb, "PositionInFamilyId", value.ToInt());
-                    p.LogChanges(DbUtil.Db, psb, Util.UserPeopleId.Value);
-                    break;
-                case "campus":
-                    var campusid = p.CampusId = value.ToInt();
-                    if (campusid == 0)
-                        campusid = null;
-                    p.UpdateValue(psb, "CampusId", campusid);
-                    p.LogChanges(DbUtil.Db, psb, Util.UserPeopleId.Value);
-                    break;
-            }
-            DbUtil.Db.SubmitChanges();
-            return new EmptyResult();
-        }
-
-        [GET("Person2/Campuses")]
-        public JsonResult Campuses()
-        {
-            var q = from c in DbUtil.Db.Campus
-                    select new { value = c.Id, text = c.Description };
-            return Json(q.ToArray(), JsonRequestBehavior.AllowGet);
-        }
-
-        [POST("Person2/Schools")]
-        public JsonResult Schools(string query)
-        {
-            var qu = from p in DbUtil.Db.People
-                     where p.SchoolOther.Contains(query)
-                     group p by p.SchoolOther into g
-                     select g.Key;
-            return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
-        }
-
-        [POST("Person2/Employers")]
-        public JsonResult Employers(string query)
-        {
-            var qu = from p in DbUtil.Db.People
-                     where p.EmployerOther.Contains(query)
-                     group p by p.EmployerOther into g
-                     select g.Key;
-            return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
-        }
-
-        [POST("Person2/Occupations")]
-        public JsonResult Occupations(string query)
-        {
-            var qu = from p in DbUtil.Db.People
-                     where p.OccupationOther.Contains(query)
-                     group p by p.OccupationOther into g
-                     select g.Key;
-            return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
-        }
-
-        [POST("Person2/Churches")]
-        public JsonResult Churches(string query)
-        {
-            var qu = from r in DbUtil.Db.ViewChurches
-                     where r.C.Contains(query)
-                     select r.C;
-            return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
-        }
-
-        [POST("Person2/BasicDisplay/{id}")]
-        public ActionResult BasicDisplay(int id)
-        {
-            InitExportToolbar(id);
-            var m = BasicPersonInfo.GetBasicPersonInfo(id);
-            return View("BasicPersonInfoDisplay", m);
-        }
-
-        [POST("Person2/BasicEdit/{id}")]
-        public ActionResult BasicEdit(int id)
-        {
-            var m = BasicPersonInfo.GetBasicPersonInfo(id);
-            return View("BasicPersonInfoEdit", m);
-        }
-
-        [POST("Person2/BasicUpdate/{id}")]
-        public ActionResult BasicUpdate(int id)
-        {
-            var m = BasicPersonInfo.GetBasicPersonInfo(id);
-            UpdateModel(m);
-            m.UpdatePerson();
-            m = BasicPersonInfo.GetBasicPersonInfo(id);
-            DbUtil.LogActivity("Update Basic Info for: {0}".Fmt(m.person.Name));
-            InitExportToolbar(id);
-            return View("BasicPersonInfoDisplay", m);
-        }
-
-        [HttpPost]
-        public ActionResult Reverse(int id, string field, string value, string pf)
-        {
-            var m = new PersonModel(id);
-            m.Reverse(field, value, pf);
-            return View("ChangesGrid", m);
         }
 
         //		[HttpPost]
@@ -546,79 +677,6 @@ namespace CmsWeb.Areas.People.Controllers
             return c;
         }
 
-        [Authorize(Roles = "Admin")]
-        public ActionResult UserDialog(int? id)
-        {
-            User u = null;
-            if (id.HasValue)
-                u = DbUtil.Db.Users.Single(us => us.UserId == id);
-            else
-            {
-                u = CmsWeb.Models.AccountModel.AddUser(Util2.CurrentPeopleId);
-                DbUtil.LogActivity("New User for: {0}".Fmt(Session["ActivePerson"]));
-            }
-            return View(u);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public ActionResult UserUpdate(int id, string username, string password2, bool islockedout, string[] role)
-        {
-            var u = DbUtil.Db.Users.Single(us => us.UserId == id);
-            if (u.Username != username)
-            {
-                var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
-                if (uu != null)
-                    return Content("error: username already exists");
-            }
-            u.Username = username;
-            u.IsLockedOut = islockedout;
-            u.SetRoles(DbUtil.Db, role, User.IsInRole("Finance"));
-            if (password2.HasValue())
-                u.ChangePassword(password2);
-            DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Update User for: {0}".Fmt(Session["ActivePerson"]));
-            return Content("ok");
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public ActionResult UserWelcome(int id, string username, string password2, bool islockedout, string[] role)
-        {
-            var u = DbUtil.Db.Users.Single(us => us.UserId == id);
-            if (u.Username != username)
-            {
-                var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
-                if (uu != null)
-                    return Content("error: username already exists");
-            }
-            u.Username = username;
-            u.IsLockedOut = islockedout;
-            u.SetRoles(DbUtil.Db, role, User.IsInRole("Finance"));
-            if (password2.HasValue())
-                u.ChangePassword(password2);
-            DbUtil.Db.SubmitChanges();
-            CmsWeb.Models.AccountModel.SendNewUserEmail(username);
-            DbUtil.LogActivity("Welcome Email for: {0}".Fmt(Session["ActivePerson"]));
-            return Content("ok");
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public ActionResult UserDelete(int id)
-        {
-            var Db = DbUtil.Db;
-            Db.PurgeUser(id);
-            return Content("ok");
-        }
-
-        [HttpPost]
-        public ActionResult UserInfoGrid(int id)
-        {
-            var p = DbUtil.Db.LoadPersonById(id);
-            return View(p);
-        }
-
         [HttpPost]
         public ActionResult OptoutsGrid(int id)
         {
@@ -716,15 +774,6 @@ namespace CmsWeb.Areas.People.Controllers
             return Content(value);
         }
 
-        [HttpPost]
-        public JsonResult ExtraValues(string id)
-        {
-            var a = id.SplitStr("-", 2);
-            var b = a[1].SplitStr(".", 2);
-            var c = Code.StandardExtraValues.Codes(b[0]);
-            var j = Json(c);
-            return j;
-        }
         //		[HttpPost]
         //		public ContentResult EditExtra2()
         //		{
@@ -739,6 +788,15 @@ namespace CmsWeb.Areas.People.Controllers
         //			return Content(values);
         //		}
 
+        [HttpPost]
+        public JsonResult ExtraValues(string id)
+        {
+            var a = id.SplitStr("-", 2);
+            var b = a[1].SplitStr(".", 2);
+            var c = Code.StandardExtraValues.Codes(b[0]);
+            var j = Json(c);
+            return j;
+        }
         [HttpPost]
         public JsonResult ExtraValues2(string id)
         {
@@ -820,7 +878,6 @@ namespace CmsWeb.Areas.People.Controllers
             ViewData["AddContact"] = "/Person/AddContactReceived/" + id;
             ViewData["AddTasks"] = "/Person/AddAboutTask/" + id;
         }
-
         public class CurrentRegistration
         {
             public int OrgId { get; set; }
@@ -884,87 +941,7 @@ namespace CmsWeb.Areas.People.Controllers
                 useMinAmt = false,
             };
         }
+#endregion
 
-        [GET("Person2/Image/{s}/{id}/{v}")]
-        public ActionResult Image(int id, int s, string v)
-        {
-            return new PictureResult(id, s);
-        }
-
-        [POST("Person2/EditRelation/{id1}/{id2}")]
-        public ContentResult EditRelation(int id1, int id2, string value)
-        {
-            var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(m => m.FamilyId == id1 && m.RelatedFamilyId == id2);
-            r.FamilyRelationshipDesc = value;
-            DbUtil.Db.SubmitChanges();
-            return Content(value);
-        }
-
-        [POST("Person2/DeleteRelation/{id}/{id1}/{id2}")]
-        public ActionResult DeleteRelation(int id, int id1, int id2)
-        {
-            var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(rf => rf.FamilyId == id1 && rf.RelatedFamilyId == id2);
-            DbUtil.Db.RelatedFamilies.DeleteOnSubmit(r);
-            DbUtil.Db.SubmitChanges();
-            var m = new PersonModel(id);
-            return View("RelatedFamilies", m);
-        }
-
-        [POST("Person2/Split/{id}")]
-        [Authorize(Roles = "Edit")]
-        public ActionResult Split(int id)
-        {
-            var p = DbUtil.Db.LoadPersonById(id);
-            var f = new Family
-            {
-                CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
-                AddressLineOne = p.PrimaryAddress,
-                AddressLineTwo = p.PrimaryAddress2,
-                CityName = p.PrimaryCity,
-                StateCode = p.PrimaryState,
-                ZipCode = p.PrimaryZip,
-                HomePhone = p.Family.HomePhone
-            };
-            f.People.Add(p);
-            DbUtil.Db.Families.InsertOnSubmit(f);
-            DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Splitting Family for {0}".Fmt(p.Name));
-            var m = new PersonModel(id);
-            return Content("/Person2/" + id);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [POST("Person2/Delete/{id}")]
-        public ActionResult Delete(int id)
-        {
-            Util.Auditing = false;
-            var person = DbUtil.Db.LoadPersonById(id);
-            if (person == null)
-                return Content("error, bad peopleid");
-
-            var p = person.Family.People.FirstOrDefault(m => m.PeopleId != id);
-            if (p != null)
-            {
-                Util2.CurrentPeopleId = p.PeopleId;
-                Session["ActivePerson"] = p.Name;
-            }
-            else
-            {
-                Util2.CurrentPeopleId = 0;
-                Session.Remove("ActivePerson");
-            }
-
-            DbUtil.Db.PurgePerson(id);
-
-            DbUtil.LogActivity("Deleted Record {0}".Fmt(person.PeopleId));
-            return Content("/Person2/DeletedPerson");
-        }
-
-        [GET("Person2/DeletedPerson")]
-        public ActionResult DeletedPerson()
-        {
-            return View();
-        }
     }
 }

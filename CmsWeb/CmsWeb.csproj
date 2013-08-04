@@ -538,6 +538,11 @@
     <Content Include="Content\css\person.css" />
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\responsive.css" />
+    <Content Include="Content\font-awesome\css\font-awesome-ie7.css" />
+    <Content Include="Content\font-awesome\css\font-awesome-ie7.min.css" />
+    <Content Include="Content\font-awesome\css\font-awesome.css" />
+    <Content Include="Content\font-awesome\css\font-awesome.min.css" />
+    <Content Include="Content\font-awesome\font\fontawesome-webfont.svg" />
     <Content Include="Content\img\ajax-loader.gif" />
     <Content Include="Content\css\new2css.css">
       <DependentUpon>new2css.css.bundle</DependentUpon>
@@ -582,12 +587,9 @@
       <DependentUpon>person.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\Support.css" />
+    <Content Include="Content\css\yamm.css" />
     <Content Include="images\chosen-sprite.png" />
     <Content Include="Content\css\chosen.css" />
-    <Content Include="Content\css\font-awesome-ie7.min.css" />
-    <Content Include="Content\css\font-awesome.css" />
-    <Content Include="Content\css\font-awesome.min.css" />
-    <Content Include="Content\css\font\fontawesome-webfont.svg" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
     <Content Include="Content\images\glyphicons-halflings.png" />
     <Content Include="Content\moment-datepicker\datepicker.css" />
@@ -748,7 +750,6 @@
     <Content Include="ckeditor2\skins\kama\images\sprites_ie6.png" />
     <Content Include="ckeditor2\skins\kama\images\toolbar_start.gif" />
     <Content Include="ckeditor2\styles.js" />
-    <Content Include="Content\autocomplete\jquery-ui-1.10.2.custom.css" />
     <Content Include="images\saf-bg.png" />
     <Content Include="images\saf.png" />
     <Content Include="Scripts\Admin\Divisions.min.js">
@@ -845,7 +846,7 @@
     <Content Include="Scripts\jQuery\jquery.transpose.min.js.map">
       <DependentUpon>jquery.transpose.js</DependentUpon>
     </Content>
-    <Content Include="Areas\People\Views\Person\PreviousEnrollments.cshtml" />
+    <Content Include="Areas\People\Views\Person\Enrollment\Previous.cshtml" />
     <Content Include="Areas\Org\Views\OrgMembersDialog\Index.cshtml" />
     <Content Include="Areas\Org\Views\OrgMembersDialog\Rows.cshtml" />
     <Content Include="Areas\Org\Views\OrgMembersDialog\Update.cshtml" />
@@ -956,23 +957,57 @@
     <Content Include="Areas\Search\Views\SearchAdd\SearchFamily.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\NewAddress.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenAddress.cshtml" />
-    <Content Include="Areas\People\Views\Person\DeletedPerson.cshtml" />
+    <Content Include="Areas\People\Views\Person\ProfileHeader\DeletedPerson.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <Content Include="Areas\Main\Views\Organization\DialogAddMES.cshtml" />
-    <Content Include="Areas\People\Views\Person\Addresses.cshtml" />
     <Content Include="Areas\Main\Views\Reports\WeeklyDecisions.cshtml" />
     <Content Include="Areas\Main\Views\Reports\Decisions.cshtml" />
-    <Content Include="Areas\People\Views\Person\PendingEnrollments.cshtml" />
+    <Content Include="Areas\People\Views\Person\Enrollment\Pending.cshtml" />
     <Content Include="Areas\Manage\Views\CheckinLabels\Index.cshtml" />
     <Content Include="Areas\Main\Views\Reports\ExtraValuesGrid2.cshtml" />
-    <Content Include="Areas\People\Views\Person\AttendanceGrid.cshtml" />
+    <Content Include="Areas\People\Views\Person\Enrollment\Attendance.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\DoNotContact.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DoNotContact.cshtml" />
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
     <Content Include="Areas\Main\Views\OrgGroups\Management.cshtml" />
-    <Content Include="Areas\People\Views\Person\PictureUpload.cshtml" />
+    <Content Include="Areas\People\Views\Person\ProfileHeader\PictureUpload.cshtml" />
+    <Content Include="Areas\People\Views\Person\Sidebar\RelatedFamilyEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\TabsEnrollment.cshtml" />
+    <Content Include="Areas\People\Views\Person\Sidebar.cshtml" />
+    <Content Include="Areas\People\Views\Person\TabsMain.cshtml" />
+    <Content Include="Areas\People\Views\Person\Main\Account.cshtml" />
+    <Content Include="Areas\People\Views\Person\Main\Comments.cshtml" />
+    <Content Include="Areas\People\Views\Person\Main\Giving.cshtml" />
+    <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
+    <Content Include="Areas\People\Views\Person\TabsMembership.cshtml" />
+    <Content Include="Areas\People\Views\Person\Membership\Edit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Membership\Notes.cshtml" />
+    <Content Include="Areas\People\Views\Person\Membership\ExtraValues.cshtml" />
+    <Content Include="Areas\People\Views\Person\UserEdit.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
+    <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
+    <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
+    <Content Include="Content\font-awesome\font\fontawesome-webfont.woff" />
+    <Content Include="Content\font-awesome\font\FontAwesome.otf" />
+    <Content Include="Content\font-awesome\less\bootstrap.less" />
+    <Content Include="Content\font-awesome\less\core.less" />
+    <Content Include="Content\font-awesome\less\extras.less" />
+    <Content Include="Content\font-awesome\less\font-awesome-ie7.less" />
+    <Content Include="Content\font-awesome\less\font-awesome.less" />
+    <Content Include="Content\font-awesome\less\icons.less" />
+    <Content Include="Content\font-awesome\less\mixins.less" />
+    <Content Include="Content\font-awesome\less\path.less" />
+    <Content Include="Content\font-awesome\less\variables.less" />
+    <Content Include="Content\font-awesome\scss\font-awesome-ie7.scss" />
+    <Content Include="Content\font-awesome\scss\font-awesome.scss" />
+    <Content Include="Content\font-awesome\scss\_bootstrap.scss" />
+    <Content Include="Content\font-awesome\scss\_core.scss" />
+    <Content Include="Content\font-awesome\scss\_extras.scss" />
+    <Content Include="Content\font-awesome\scss\_icons.scss" />
+    <Content Include="Content\font-awesome\scss\_mixins.scss" />
+    <Content Include="Content\font-awesome\scss\_path.scss" />
+    <Content Include="Content\font-awesome\scss\_variables.scss" />
     <None Include="Content\styles\css.css.bundle" />
     <None Include="Content\styles\newcss.css.bundle" />
     <Content Include="Scripts\Admin\Divisions.min.js.map">
@@ -1473,10 +1508,6 @@
       <DependentUpon>Calendar.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Volunteer\Calendar2.js" />
-    <Content Include="Content\css\font\fontawesome-webfont.woff" />
-    <Content Include="Content\css\font\fontawesome-webfont.ttf" />
-    <Content Include="Content\css\font\fontawesome-webfont.eot" />
-    <Content Include="Content\css\font\FontAwesome.otf" />
     <Content Include="Areas\Manage\Views\Users\LastActivity.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
     <None Include="Scripts\jQuery\jquery-1.9.1.intellisense.js" />
@@ -1810,6 +1841,14 @@
     <Content Include="Views\Shared\EditorTemplates\Typeahead.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\datepicker.cshtml" />
     <Content Include="Views\Shared\Support.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Password.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\DateTime.cshtml" />
+    <Content Include="Views\Shared\Menu\Toolbar.cshtml" />
+    <Content Include="Views\Shared\Menu\People.cshtml" />
+    <Content Include="Views\Shared\Menu\Organization.cshtml" />
+    <Content Include="Views\Shared\Menu\Reports.cshtml" />
+    <Content Include="Views\Shared\Menu\Admin.cshtml" />
+    <Content Include="Views\Shared\Menu\Help.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2025,10 +2064,10 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRangeResults.cshtml" />
     <Content Include="Areas\People\Views\Web.config" />
     <Content Include="Areas\People\Views\Address\Edit.cshtml" />
-    <Content Include="Areas\People\Views\Person\BasicPersonInfoDisplay.cshtml" />
-    <Content Include="Areas\People\Views\Person\BasicPersonInfoEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Main\PersonalDisplay.cshtml" />
+    <Content Include="Areas\People\Views\Person\Main\PersonalEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\ExtraValue.cshtml" />
-    <Content Include="Areas\People\Views\Person\FamilyGrid.cshtml" />
+    <Content Include="Areas\People\Views\Person\Sidebar\FamilyMembers.cshtml" />
     <Content Include="Areas\People\Views\Person\Index.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\Index.cshtml" />
     <Content Include="Areas\Search\Views\Web.config" />
@@ -2072,13 +2111,13 @@
     <Content Include="Areas\Setup\Views\Twilio\NumberDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\RemoveDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />
-    <Content Include="Areas\People\Views\Person\RelatedFamilies.cshtml" />
+    <Content Include="Areas\People\Views\Person\Sidebar\RelatedFamilies.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\Email.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Email.cshtml" />
-    <Content Include="Areas\People\Views\Person\Snapshot.cshtml" />
-    <Content Include="Areas\People\Views\Person\Toolbar.cshtml" />
-    <Content Include="Areas\People\Views\Person\CurrentEnrollments.cshtml" />
-    <Content Include="Areas\People\Views\Person\MemberProfile.cshtml" />
+    <Content Include="Areas\People\Views\Person\ProfileHeader\Snapshot.cshtml" />
+    <Content Include="Areas\People\Views\Person\ProfileHeader\Toolbar.cshtml" />
+    <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
+    <Content Include="Areas\People\Views\Person\Membership\Display.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />
     <Content Include="Areas\Main\Views\OrgSearch\OrganizationStructure.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />

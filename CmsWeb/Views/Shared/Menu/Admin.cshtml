@@ -1,0 +1,106 @@
+﻿@{
+    var admin = User.IsInRole("Admin");
+    var manageemails = User.IsInRole("ManageEmails");
+    var managetrans = User.IsInRole("ManageTransactions");
+    var edit = User.IsInRole("Edit");
+    var design = User.IsInRole("Design");
+    var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
+}
+@if (admin || manageemails || managetrans || edit || design || finance)
+{
+    <li class="dropdown">
+        @if (finance)
+        {
+            <a id="AdminMenuToggle" class="dropdown-toggle" href="#">Admin <span class="caret"></span></a>
+            <ul id="AdminMenu" class="dropdown-menu" style="margin-left: -150px;display:none">
+                <li>
+                    <div class="row-fluid yamm-content">
+                        <ul class="unstyled pull-left" style="margin-right: 2em">
+                            <li>
+                                <p><strong>Contributions</strong></p>
+                            </li>
+                            <li>@Html.ActionLink("Bundles", "Index", "Bundles", new { Area = "Finance" }, null)</li>
+                            <li>@Html.ActionLink("All", "Index", "Contributions", new { Area = "Finance" }, null)</li>
+                            <li>
+                                <br />
+                                <p><strong>Reports</strong></p>
+                            </li>
+                            <li>@Html.ActionLink("Statements (All)", "Index", "Statements", new { Area = "Finance" }, new { target = "_blank" })</li>
+                            <li>@Helper.AnchorLink("GL Extract", "/Contributions/GLExtract.aspx")</li>
+                            <li>@Html.ActionLink("Totals by Fund", "TotalsByFund", "FinanceReports", new { Area = "Finance" }, null)</li>
+                            <li>@Html.ActionLink("Donor Totals by Range", "DonorTotalsByRange", "FinanceReports", new { Area = "Finance" }, null)</li>
+                            <li>@Helper.AnchorLink("Totals by Fund Age Range", "/Contributions/Reports/TotalsByFundAgeRange.aspx", "_blank")</li>
+                            <li>@Helper.AnchorLink("Totals by Fund Age Range (pledges included)", "/Contributions/Reports/TotalsByFundAgeRange.aspx?pledged=both", "_blank")</li>
+                            <li>@Helper.AnchorLink("Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx", "_blank") </li>
+                            <li>@Helper.AnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", "_blank")</li>
+                            <li>@Html.ActionLink("Pledge Report", "PledgeReport", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
+                            <li>@Html.ActionLink("Managed Giving", "ManagedGiving", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
+                            @if (DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true")
+                            {
+                                <li>@Html.ActionLink("QuickBooks", "Index", "QuickBooks", new { Area = "Finance" }, null)</li>
+                            }
+                        </ul>
+                        <ul class="unstyled pull-left">
+                            <li>
+                                <p><strong>Administrative</strong></p>
+                            </li>
+                            @AdminList(admin, design, managetrans, edit, manageemails, true)
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        }
+        else
+        {
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                @AdminList(admin, design, managetrans, edit, manageemails, false)
+            </ul>
+        }
+    </li>
+}
+@helper AdminList(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance)
+{
+    if (admin)
+    {
+    <li>@Html.ActionLink("Users", "Index", "Users", new { Area = "Manage" }, null)</li>
+    <li>@Html.ActionLink("Programs", "Index", "Program", new { Area = "Setup" }, null)</li>
+    <li>@Html.ActionLink("Divisions", "Index", "Division", new { Area = "Setup" }, null)</li>
+    <li>@Html.ActionLink("Settings", "Index", "Setting", new { Area = "Setup" }, null)</li>
+    <li>@Html.ActionLink("Metro Zips", "Index", "MetroZip", new { Area = "Setup" }, null)</li>
+    <li>@Html.ActionLink("Twilio Management", "Index", "Twilio", new { Area = "Setup" }, new { @class = "hideAlt" })</li>
+    }
+    if (admin || design)
+    {
+    <li>@Html.ActionLink("Special Content", "Index", "Display", new { Area = "Manage" }, null)</li>
+    }
+    if (admin || managetrans)
+    {
+    <li>@Html.ActionLink("Transactions", "Index", "Transactions", new { Area = "Manage" }, null)</li>
+    }
+    if (admin || edit)
+    {
+    <li>@Html.ActionLink("Check-in Activity", "Index", "CheckinTime", new { Area = "Manage" }, null)</li>
+    }
+    if (admin || manageemails)
+    {
+    <li>@Html.ActionLink("Emails", "Index", "Emails", new { Area = "Manage" }, null)</li>
+    }
+    if (admin)
+    {
+    <li>@Html.ActionLink("SMS Messages", "Index", "SMS", new { Area = "Manage" }, null)</li>
+    }
+    if (admin || finance)
+    {
+    <li>@Html.ActionLink("Lookups", "Index", "Lookup", new { Area = "Setup" }, null)</li>
+    }
+    if (admin)
+    {
+    <li>@Html.ActionLink("Check-in Labels", "Index", "CheckinLabels", new { Area = "Manage" }, null)</li>
+    <li>@Html.ActionLink("Update for a Tag", "UpdateFields", "Batch", new { Area = "Manage" }, null)</li>
+    <li>@Helper.AnchorLink(Util2.OrgMembersOnly ? "OrgMembersOnly is on" : "OrgMembersOnly is off", "/Admin/ToggleOrgMembersOnly.ashx")</li>
+    <li>@Helper.AnchorLink(Util2.OrgLeadersOnly ? "OrgLeadersOnly is on" : "OrgLeadersOnly is off", "/Admin/ToggleOrgLeadersOnly.ashx")</li>
+    <li>@Html.ActionLink("Update Status Flags", "UpdateStatusFlags", "Batch", new { Area = "Manage" }, null) </li>
+    <li>@Html.ActionLink("Tag PeopleIds", "TagPeopleIds", "Batch", new { Area = "Manage" }, null)</li>
+    }
+}

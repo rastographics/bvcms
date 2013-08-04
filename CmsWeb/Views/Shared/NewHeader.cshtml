@@ -13,7 +13,7 @@
     {
         var admin = User.IsInRole("Admin");
         var manageemails = User.IsInRole("ManageEmails");
-        var innewlook = User.IsInRole("Newlook") || User.IsInRole("Developer");
+        var innewlook = User.IsInRole("Newlook");
         var managetrans = User.IsInRole("ManageTransactions");
         var edit = User.IsInRole("Edit");
         var design = User.IsInRole("Design");
@@ -172,26 +172,25 @@
                         <div class="dropdown-menu anchor-right">
                             <ul>
                                 <li>@Helper.AnchorLink("Help Documentation", @Util.HelpLink(Util.Helpfile), "_blank")</li>
-                                <li>@Helper.AnchorLink("Email Support", "mailto:support@bvcms.com?Subject=Support request from {0} at {1}".Fmt(Util.UserFullName, @Util.CmsHost2), "_blank")</li>
+                                <li>@Helper.JQueryIdLink("Email Support", "emailsupport")</li>
                                 @if (innewlook)
                                 {
-                                    <li>@Html.ActionLink("Toggle New Support", "ToggleSupport", "Home", new { Area = "" }, null)</li>
-                                    <li>@Html.ActionLink("Use Old Look", "UseOldLook", "Home", new { Area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Use Old Look", "UseOldLook", "APITest", new { Area = "" }, null)</li>
                                     if (DbUtil.Db.UserPreference("advancedsearch", "false").ToBool())
                                     {
-                                        <li>@Html.ActionLink("Use Search Builder", "UseSearchBuilder", "Home", new { Area = "" }, null)</li>
+                                        <li>@Html.ActionLink("Use Search Builder", "UseSearchBuilder", "APITest", new { Area = "" }, null)</li>
                                     }
                                     else
                                     {
-                                        <li>@Html.ActionLink("Use Advanced Search", "UseAdvancedSearch", "Home", new { Area = "" }, null)</li>
+                                        <li>@Html.ActionLink("Use Advanced Search", "UseAdvancedSearch", "APITest", new { Area = "" }, null)</li>
                                     }
                                     if (DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
                                     {
-                                        <li>@Html.ActionLink("Use Old Person Page", "UseOldPersonPage", "Home", new { Area = "" }, null)</li>
+                                        <li>@Html.ActionLink("Use Old Person Page", "UseOldPersonPage", "APITest", new { Area = "" }, null)</li>
                                     }
                                     else
                                     {
-                                        <li>@Html.ActionLink("Use New People Page", "UseNewPeoplePage", "Home", new { Area = "" }, null)</li>
+                                        <li>@Html.ActionLink("Use New People Page", "UseNewPeoplePage", "APITest", new { Area = "" }, null)</li>
                                     }
                                 }
                                 <li>@Html.ActionLink("About", "About", "Home", new { Area = "" }, null)</li>

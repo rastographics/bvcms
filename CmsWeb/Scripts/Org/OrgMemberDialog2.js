@@ -1,11 +1,11 @@
 ﻿$(function () {
-    $(".ckbox").live("click", function (ev) {
+    $("#membergroups .ckbox").live("click", function (ev) {
         $.post($(this).attr("href"), {
             ck: $(this).is(":checked")
         });
         return true;
     });
-    $("a.delete").live("click", function (ev) {
+    $("#dropmember").live("click", function (ev) {
         if (confirm("are you sure?"))
             $.post($(this).attr("href"), null, function (ret) {
                 self.parent.RebindMemberGrids($("#from").val());
@@ -18,7 +18,7 @@
             $("#orgsearchbtn").click();
         }
     });
-    $("a.move").live('click', function (ev) {
+    $("a.movemember").live('click', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
         if (confirm("are you sure?"))

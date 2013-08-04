@@ -1,0 +1,50 @@
+﻿@model CmsWeb.Areas.People.Models.Person.BasicPersonInfo
+<form class="form form-horizontal form-columns ajax" method="post">
+    @FormAction()
+    <div class="row-fluid">
+        <div class="span6 display">
+            @Html.DisplayFor(m => m.Title)
+            @Html.DisplayFor(m => m.FirstName)
+            @Html.DisplayFor(m => m.GoesBy)
+            @Html.DisplayFor(m => m.MiddleName)
+            @Html.DisplayFor(m => m.LastName)
+            @Html.DisplayFor(m => m.AltName)
+            @Html.DisplayFor(m => m.FormerName)
+            @Html.DisplayFor(m => m.Suffix)
+        </div>
+        <div class="span6 display">
+            @Html.DisplayFor(m => m.Gender)
+            @Html.DisplayFor(m => m.Birthday)
+            @Html.DisplayFor(m => m.Marital)
+            @Html.DisplayFor(m => m.WeddingDate)
+            @Html.DisplayFor(m => m.Occupation)
+            @Html.DisplayFor(m => m.Employer)
+            @Html.DisplayFor(m => m.School)
+            @Html.DisplayFor(m => m.Grade)
+        </div>
+    </div>
+    <hr/>
+    <div class="row-fluid">
+        <div class="span6 display">
+            @Html.DisplayFor(m => m.PrimaryEmail)
+            @Html.DisplayFor(m => m.AltEmail)
+            @Html.DisplayFor(m => m, "DoNotContact")
+        </div>
+        <div class="span6 display">
+            @Html.DisplayFor(m => m.Mobile)
+            @Html.DisplayFor(m => m.Work)
+            @Html.DisplayFor(m => m.HomePhone)
+        </div>
+    </div>
+    @FormAction()
+</form>
+
+@helper FormAction()
+{
+    if (Model.person.CanUserEditBasic)
+    {
+    <div class="form-actions">
+        <a href="/Person2/BasicEdit/@Model.PeopleId" class="edit-basic btn pull-right ajax">Edit</a>
+    </div>
+    }
+}

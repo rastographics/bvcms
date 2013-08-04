@@ -3,6 +3,6 @@
 <div class="control-group">
     @Html.LabelFor(m=> m, new { @class = "control-label nwrap"})
     <div class="controls">
-        <p>@Model.Number.FmtFone() @(Model.ReceiveText ? " +SMS" : "")</p>
+        <p><b>@Model.Number.FmtFone() @(Model.ReceiveText ? " +SMS" : "")</b></p>
     </div>
 </div>

@@ -1,4 +1,5 @@
 ﻿@{
+    //bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance)
     var access = User.IsInRole("Access");
     var onqb = (string)ViewData["OnQueryBuilder"] == "true";
     var headimage = DbUtil.HeaderImage("");
@@ -10,226 +11,52 @@
 }
 @if (access)
 {
-    var admin = User.IsInRole("Admin");
-    var manageemails = User.IsInRole("ManageEmails");
-    var innewlook = User.IsInRole("Newlook") || User.IsInRole("Developer");
-    var managetrans = User.IsInRole("ManageTransactions");
-    var edit = User.IsInRole("Edit");
-    var design = User.IsInRole("Design");
-    var finance = User.IsInRole("Finance");
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top yamm">
         <div class="navbar-inner">
-        <div class="container-fluid container">
-            <ul class="nav">
-                <li id="top_nav_home"><a href="#" class="hide-text">Dashboard</a></li>
-                <li><a href="/"><i class="icon-home"></i></a></li>
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">People <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>@Html.ActionLink("Search", "Index", "PeopleSearch", new { Area = "Main" }, null)</li>
-                        @if (DbUtil.Db.Setting("MenuAddPeople", "true") == "true" || Util.IsDebug())
-                        {
-                            if (Request.Url.PathAndQuery.Contains("Person2", ignoreCase: true))
-                            {
-                                <li><a href="/SearchAdd2/Dialog/Menu" class="searchadd">Add People</a></li>
-                            }
-                            else
-                            {
-                                <li>@Helper.JQueryIdLink("Add People", "addpeople")</li>
-                            }
-                        }
-                        else
-                        {
-                            <li>@Helper.AnchorLink("Add People", "http://www.bvcms.com/doc/AddPeopleContext", "_blank")</li>
-                        }
-                        <li>@Html.ActionLink("Manage Tags", "Index", "Tags", new { Area = "Main" }, null)</li>
-                        <li>@Html.ActionLink("Tasks", "List", "Task", new { Area = "Main" }, null)</li>
-                        <li>@Html.ActionLink("Contacts", "Index", "ContactSearch", new { Area = "Main" }, null)</li>
-
-                        <li class="divider"></li>
-                        @foreach (var p in Util2.MostRecentPeople)
-                        {
-                            <li>@Html.ActionLink(p.Name, "Index", "Person", new { Id = p.Id, Area = "Main" }, null)</li>
-                        }
-                        <li class="divider"></li>
-                        <li>@Html.ActionLink(Util.UserFullName, "Index", "Person", new { Id = Util.UserPeopleId, Area = "Main" }, null)</li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Organization <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>@Html.ActionLink("Search", "Index", "OrgSearch", new { Area = "Main" }, null)</li>
-                        @if (User.IsInRole("Edit"))
-                        {
-                            <li>@Helper.JQueryIdLink("Add Organization", "addorg")</li>
-                            <li>@Html.ActionLink("Org Members Management", "Index", "OrgMembers", new { Area = "Manage" }, null)</li>
-                        }
-                        @if (User.IsInRole("Coupon"))
-                        {
-                            <li>@Html.ActionLink("Coupons", "Index", "Coupon", new { Area = "Main" }, null)</li>
-                        }
-                        <li><a href="/EnrollmentControlReport.aspx"> Enrollment Control Report </a></li>
-                        <li class="divider"></li>
-                        @foreach (var o in Util2.MostRecentOrgs)
-                        {
-                            <li>@Html.ActionLink(o.Name, "Index", "Organization", new { Id = o.Id, Area = "Main" }, null)</li>
-                        }
-                    </ul>
-
-                </li>
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>@Html.ActionLink("Vital Stats", "VitalStats", "Reports", new { Area = "Main" }, null)</li>
-                        <li>@Html.ActionLink("Week at a Glance", "ChurchAttendance", "Reports", new { Area = "Main" }, null)</li>
-                        <li>@Html.ActionLink("Average Week at a Glance", "ChurchAttendance2", "Reports", new { Area = "Main" }, null)</li>
-                        @if (DbUtil.Db.Setting("Bellevue", "false") == "true")
-                        {
-                            <li>@Helper.AnchorLink("Church Attendance Summary", "/Report/ChurchAttendanceSummaryRpt.aspx", "_blank")</li>
-                        }
-                        <li>@Helper.AnchorLink("Weekly Decisions", "/Report/ChurchAttendanceRpt.aspx", "_blank")</li>
-                        <li>@Helper.AnchorLink("Decision Summary", "/Report/DecisionSummary.aspx", "_blank")</li>
-                        <li>@Html.ActionLink("First Time Attenders", "NthTimeAttenders", "Home", new { Area="", Id=1 }, null)</li>
-                        <li>@Html.ActionLink("Second Time Attenders", "NthTimeAttenders", "Home", new { Area="", Id=2 }, null)</li>
-                        <li>@Html.ActionLink("Third Time Attenders", "NthTimeAttenders", "Home", new { Area="", Id=3 }, null)</li>
-                        <li>@Html.ActionLink("Extra Values", "ExtraValues", "Reports", new { Area = "Main" }, null)</li>
-                        <li>@Html.ActionLink("Extra Value Data", "ExtraValueData", "Reports", new { Area = "Main" }, null)</li>
-                    </ul>
-                </li>
-                @if (User.IsInRole("Finance"))
-                {
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Contributions <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>@Html.ActionLink("Bundles", "Index", "Bundles", new { Area = "Finance" }, null)</li>
-                        <li>@Html.ActionLink("All", "Index", "Contributions", new { Area = "Finance" }, null)</li>
-                        <li class="header">Reports</li>
-                        <li class="divider"></li>
-                        <li>@Html.ActionLink("Statements (All)", "Index", "Statements", new { Area = "Finance" }, new { target="_blank" })</li>
-                        <li>@Helper.AnchorLink("GL Extract", "/Contributions/GLExtract.aspx")</li>
-                        <li>@Html.ActionLink("Totals by Fund", "TotalsByFund", "FinanceReports", new { Area = "Finance" }, null)</li>
-                        <li>@Html.ActionLink("Donor Totals by Range", "DonorTotalsByRange", "FinanceReports", new { Area = "Finance" }, null)</li>
-                        <li>@Helper.AnchorLink("Totals by Fund Age Range", "/Contributions/Reports/TotalsByFundAgeRange.aspx", "_blank")</li>
-                        <li>@Helper.AnchorLink("Totals by Fund Age Range (pledges included)", "/Contributions/Reports/TotalsByFundAgeRange.aspx?pledged=both", "_blank")</li>
-                        <li>@Helper.AnchorLink("Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx", "_blank")</li>
-                        <li>@Helper.AnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", "_blank")</li>
-                        <li>@Html.ActionLink("Pledge Report", "PledgeReport", "FinanceReports", new { Area = "Finance" }, new { target="_blank" })</li>
-                        <li>@Html.ActionLink("Managed Giving", "ManagedGiving", "FinanceReports", new { Area = "Finance" }, new { target="_blank" })</li>
-                        @if (DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true")
-                        {
-                            <li>@Html.ActionLink("QuickBooks", "Index", "QuickBooks", new { Area = "Finance" }, null)</li>
-                        }	
-                    </ul>
-                </li>
-                }
-                @if (admin || manageemails || managetrans || edit || design || finance)
-                {
-                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                        @if (admin)
-                        {
-                            <li>@Html.ActionLink("Users", "Index", "Users", new { Area = "Manage" }, null)</li>
-                            <li>@Html.ActionLink("Programs", "Index", "Program", new { Area = "Setup" }, null)</li>
-                            <li>@Html.ActionLink("Divisions", "Index", "Division", new { Area = "Setup" }, null)</li>
-                            <li>@Html.ActionLink("Settings", "Index", "Setting", new { Area = "Setup" }, null)</li>
-                            <li>@Html.ActionLink("Metro Zips", "Index", "MetroZip", new { Area = "Setup" }, null)</li>
-                            <li>@Html.ActionLink("Twilio Management", "Index", "Twilio", new { Area = "Setup" }, new { @class = "hideAlt" })</li>
-                        }
-                        @if (admin || design)
-                        {
-                            <li>@Html.ActionLink("Special Content", "Index", "Display", new { Area = "Manage" }, null)</li>
-                        }
-                        @if (admin || managetrans)
-                        {
-                            <li>@Html.ActionLink("Transactions", "Index", "Transactions", new { Area = "Manage" }, null)</li>
-                        }
-                        @if (admin || edit)
-                        {
-                            <li>@Html.ActionLink("Check-in Activity", "Index", "CheckinTime", new { Area = "Manage" }, null)</li>
-                        }			
-                        @if (admin || manageemails)
-                        {
-                            <li>@Html.ActionLink("Emails", "Index", "Emails", new { Area = "Manage" }, null)</li>
-                        }
-                        @if (admin)
-                        {
-                            <li>@Html.ActionLink("SMS Messages", "Index", "SMS", new { Area = "Manage" }, null)</li>
-                        }
-                        @if (admin || finance)
-                        {
-                            <li>@Html.ActionLink("Lookups", "Index", "Lookup", new { Area = "Setup" }, null)</li>
-                        }
-                        @if (admin)
-                        {
-                            <li>@Html.ActionLink("Check-in Labels", "Index", "CheckinLabels", new { Area = "Manage" }, null)</li>
-                            <li>@Html.ActionLink("Update for a Tag", "UpdateFields", "Batch", new { Area = "Manage" }, null)</li>
-                            <li>@Helper.AnchorLink(Util2.OrgMembersOnly ? "OrgMembersOnly is on" : "OrgMembersOnly is off", "/Admin/ToggleOrgMembersOnly.ashx")</li>
-                            <li>@Helper.AnchorLink(Util2.OrgLeadersOnly ? "OrgLeadersOnly is on" : "OrgLeadersOnly is off", "/Admin/ToggleOrgLeadersOnly.ashx")</li>
-                            <li>@Html.ActionLink("Update Status Flags", "UpdateStatusFlags", "Batch", new { Area = "Manage" }, null)</li>
-                            <li>@Html.ActionLink("Tag PeopleIds", "TagPeopleIds", "Batch", new { Area = "Manage" }, null)</li>
-                        }
-                        </ul>
-                    </li>
-                }
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <span class="caret"></span></a>
-                    <ul class="dropdown-menu anchor-right">
-                        <li>@Helper.AnchorLink("Help Documentation", @Util.HelpLink(Util.Helpfile), "_blank")</li>
-                        <li>@Helper.AnchorLink("Email Support", "mailto:support@bvcms.com?Subject=Support request from {0} at {1}".Fmt(Util.UserFullName, @Util.CmsHost2), "_blank")</li>
-                        @if (innewlook)
-                        {
-                            <li>@Html.ActionLink("Use Old Look", "UseOldLook", "Home", new { Area = "" }, null)</li>
-                            if (DbUtil.Db.UserPreference("advancedsearch", "false").ToBool())
-                            {
-                                <li>@Html.ActionLink("Use Search Builder", "UseSearchBuilder", "Home", new { Area = "" }, null)</li>
-                            }
-                            else
-                            {
-                                <li>@Html.ActionLink("Use Advanced Search", "UseAdvancedSearch", "Home", new { Area = "" }, null)</li>
-                            }
-                            if (DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
-                            {
-                                <li>@Html.ActionLink("Use Old Person Page", "UseOldPersonPage", "Home", new { Area = "" }, null)</li>
-                            }
-                            else
-                            {
-                                <li>@Html.ActionLink("Use New People Page", "UseNewPeoplePage", "Home", new { Area = "" }, null)</li>
-                            }
-                        }
-                        <li>@Html.ActionLink("About", "About", "Home", new { Area = "" }, null)</li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+            <div class="container-fluid container">
+                <ul class="nav">
+                    <li id="top_nav_home"><a href="#" class="hide-text">Dashboard</a></li>
+                    <li><a href="/"><i class="icon-home"></i></a></li>
+                    @Html.Partial("Menu/People")
+                    @Html.Partial("Menu/Organization")
+                    @Html.Partial("Menu/Reports")
+                    @Html.Partial("Menu/Admin")
+                    @Html.Partial("Menu/Help")
+                </ul>
+            </div>
         </div>
     </div>
 }
-    <header class="subhead">
-        <div class="container">
-            <div class="row-fluid">
-                <div id="brand" class="span6">
-                    @Html.Raw(headimage)
+<header class="subhead">
+    <div class="container">
+        <div class="row-fluid">
+            <div id="brand" class="span6">
+                @Html.Raw(headimage)
+            </div>
+            <form id="nav-search" class="form-search span3">
+                <div class="input-append">
+                    <input id="SearchText" type="text" class="input-large" value="Search" default="Search" name="search" autocomplete="off" />
+                    <div id="nav-search-results"></div>
                 </div>
-                <form id="nav-search" class="form-search span3">
-                    <div class="input-append">
-                        <input id="SearchText" type="text" class="input-large" value="Search" default="Search" name="search" autocomplete="off"/>
-                        <div id="nav-search-results"></div>
-                    </div>
-                </form>
-                <div class="span3" id="nav-account">
-                    <div class="btn-group">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">@Util.UserPreferredName<span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a id="cleartag" href="#">Empty Active Tag</a></li>
-                            <li><a href="/Tags">Manage Active Tag</a></li>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <li><a href="/Manage/Users/LastActivity">Activity Log</a></li>
-                            }
-                            <li><a href="/Account/ChangePassword">Change Password</a></li>
-                            <li><a href="/Home/TargetPerson/@targetperson.ToString()">Target Person Tab is @(targetperson ? "ON" : "OFF")</a></li>
-                            <li class="divider"></li>
-                            <li><a href="/Account/LogOff/">Logout as @Util.UserName</a></li>
-                        </ul>
-                    </div>
+            </form>
+            <div class="span3" id="nav-account">
+                <div class="btn-group">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">@Util.UserPreferredName<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a id="cleartag" href="#">Empty Active Tag</a></li>
+                        <li><a href="/Tags">Manage Active Tag</a></li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li><a href="/Manage/Users/LastActivity">Activity Log</a></li>
+                        }
+                        <li><a href="/Account/ChangePassword">Change Password</a></li>
+                        <li><a href="/Home/TargetPerson/@targetperson.ToString()">Target Person Tab is @(targetperson ? "ON" : "OFF")</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/Account/LogOff/">Logout as @Util.UserName</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </header>
+    </div>
+</header>

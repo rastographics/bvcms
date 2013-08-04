@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
+using Picture = CmsData.Picture;
 
 namespace CmsWeb.Areas.People.Models.Person
 {
@@ -25,6 +28,7 @@ namespace CmsWeb.Areas.People.Models.Person
 
         public bool Deceased { get; set; }
         public string Name { get; set; }
+
         public Picture Picture
         {
             get { return picture ?? new Picture(); }
@@ -49,6 +53,7 @@ namespace CmsWeb.Areas.People.Models.Person
                 return _PrimaryAddr;
             }
         }
+
         public AddressInfo OtherAddr
         {
             get
@@ -61,6 +66,7 @@ namespace CmsWeb.Areas.People.Models.Person
                 return _OtherAddr;
             }
         }
+
         public AddressInfo FamilyAddr { get; set; }
         public AddressInfo PersonalAddr { get; set; }
 
@@ -69,26 +75,26 @@ namespace CmsWeb.Areas.People.Models.Person
             get
             {
                 if (Person.EmailAddress.HasValue())
-                    return Person.EmailAddress;
-                return "no email"; 
+                    return string.Format("<a href='mailto:{0}' target='_blank'>{0}</a>", Person.EmailAddress);
+                return null;
             }
         }
         public string Cell
         {
-            get 
-            { 
+            get
+            {
                 if (Person.CellPhone.HasValue())
-                    return Person.CellPhone.FmtFone("C ");
-                return "no cell phone"; 
+                    return Person.CellPhone.FmtFone("C").Replace(" ", "&nbsp;");
+                return null;
             }
         }
         public string HomePhone
         {
-            get 
-            { 
+            get
+            {
                 if (Person.HomePhone.HasValue())
-                    return Person.HomePhone.FmtFone("H ");
-                return "no home phone"; 
+                    return Person.HomePhone.FmtFone("H").Replace(" ", "&nbsp;");
+                return null;
             }
         }
 
@@ -239,6 +245,39 @@ namespace CmsWeb.Areas.People.Models.Person
                 Preferred = p.AddressTypeId == 30,
             };
         }
+        public string CheckView()
+        {
+            if (Person == null)
+                return "person not found";
+            if (!HttpContext.Current.User.IsInRole("Access"))
+                if (Person == null || !Person.CanUserSee)
+                    return "no access";
+
+            if (Util2.OrgMembersOnly)
+            {
+                var omotag = DbUtil.Db.OrgMembersOnlyTag2();
+                if (!DbUtil.Db.TagPeople.Any(pt => pt.PeopleId == PeopleId && pt.Id == omotag.Id))
+                {
+                    DbUtil.LogActivity("Trying to view person: {0}".Fmt(Person.Name));
+                    return "<h3 style='color:red'>{0}</h3>\n<a href='{1}'>{2}</a>"
+                            .Fmt("You must be a member one of this person's organizations to have access to this page",
+                                "javascript: history.go(-1)", "Go Back");
+                }
+            }
+            else if (Util2.OrgLeadersOnly)
+            {
+                var olotag = DbUtil.Db.OrgLeadersOnlyTag2();
+                if (!DbUtil.Db.TagPeople.Any(pt => pt.PeopleId == PeopleId && pt.Id == olotag.Id))
+                {
+                    DbUtil.LogActivity("Trying to view person: {0}".Fmt(Person.Name));
+                    return "<h3 style='color:red'>{0}</h3>\n<a href='{1}'>{2}</a>"
+                            .Fmt("You must be a leader of one of this person's organizations to have access to this page",
+                                "javascript: history.go(-1)", "Go Back");
+                }
+            }
+            return null;
+        }
+
         public void Reverse(string field, string value, string pf)
         {
             var sb = new StringBuilder();

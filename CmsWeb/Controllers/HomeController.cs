@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using CmsData;
 using System.Diagnostics;
 using CmsData.API;
@@ -114,54 +115,6 @@ namespace CmsWeb.Controllers
             TempData["ActiveRecords"] = DbUtil.Db.ActiveRecords();
             return View("About");
 		}
-        public ActionResult UseOldLook()
-        {
-            DbUtil.Db.SetUserPreference("newlook3", "false");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
-        public ActionResult UseNewLook()
-        {
-            DbUtil.Db.SetUserPreference("newlook3", "true");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
-        public ActionResult UseAdvancedSearch()
-        {
-            DbUtil.Db.SetUserPreference("advancedsearch", "true");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
-        public ActionResult UseSearchBuilder()
-        {
-            DbUtil.Db.SetUserPreference("advancedsearch", "false");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
-        public ActionResult UseNewPeoplePage()
-        {
-            DbUtil.Db.SetUserPreference("newpeoplepage", "true");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
-        public ActionResult UseOldPersonPage()
-        {
-            DbUtil.Db.SetUserPreference("newpeoplepage", "false");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
         public ActionResult TargetPerson(bool id)
         {
             DbUtil.Db.SetUserPreference("TargetLinkPeople", id ? "false" : "true");
@@ -171,15 +124,6 @@ namespace CmsWeb.Controllers
             return Redirect("/");
         }
 
-        public ActionResult ToggleSupport()
-        {
-            var usesupport = DbUtil.Db.UserPreference("UseNewSupport", "false").ToBool();
-            DbUtil.Db.SetUserPreference("UseNewSupport", usesupport ? "false" : "true");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
         public ActionResult Names(string term)
         {
             var q = HomeModel.Names(term).ToList();

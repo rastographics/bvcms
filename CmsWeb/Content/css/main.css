@@ -63,7 +63,6 @@ table.expanding a[rel="reveal"] {
 
 table.expanding tr.details td {
     border-top: none;
-    padding: 0;
 }
 
 table.enrollments tr.details td:first-child {
@@ -112,4 +111,62 @@ table.expanding tr.oddrow > td {
 .typeahead a {
     color: white;
     text-decoration: none;
+}
+.icon-fixedwidth {
+  width: 1.3em;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-group.group-dropdown {
+  margin: 0px;
+  padding: 0px;
+  margin-left: -1px;
+}
+.btn-group.group-dropdown .dropdown-toggle {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.btn-group.group-dropdown:first-child {
+  margin: 0px;
+  padding: 0px;
+  margin-right: -1px;
+}
+.btn-group.group-dropdown:first-child .dropdown-toggle {
+  -webkit-border-top-left-radius: 4px;
+  -moz-border-radius-topleft: 4px;
+  border-top-left-radius: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  -moz-border-radius-bottomleft: 4px;
+  border-bottom-left-radius: 4px;
+}
+.btn-group.group-dropdown:first-child .dropdown-toggle.btn-large {
+  -webkit-border-top-left-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  border-top-left-radius: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  border-bottom-left-radius: 6px;
+}
+.btn-group.group-dropdown:last-child {
+  margin: 0px;
+  padding: 0px;
+  margin-left: -1px;
+}
+.btn-group.group-dropdown:last-child .dropdown-toggle {
+  -webkit-border-top-right-radius: 4px;
+  -moz-border-radius-topright: 4px;
+  border-top-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  -moz-border-radius-bottomright: 4px;
+  border-bottom-right-radius: 4px;
+}
+.btn-group.group-dropdown:last-child .dropdown-toggle.btn-large {
+  -webkit-border-top-right-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  border-top-right-radius: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
+  border-bottom-right-radius: 6px;
 }

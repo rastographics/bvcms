@@ -107,6 +107,20 @@
             }
         });
     });
+    $("#AdminMenuToggle").click(function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        var menu = $("#AdminMenu");
+        if (menu.is(":visible"))
+            menu.hide();
+        else
+            menu.show();
+    });
+    $("body").on("click", function(ev) {
+        if($(ev.target).not("#AdminMenuToggle"))
+            $("#AdminMenu").hide();
+    });
+
     $("a.tutorial").click(function (ev) {
         ev.preventDefault();
         startTutorial($(this).attr("href"));

@@ -1,51 +1,43 @@
 ﻿///#source 1 1 /Scripts/js/Pager3.js
 $(function () {
-    $.gotoPage = function (e, pg) {
-        var f = $(e).closest('form');
-        $("#Page", f).val(pg);
-        return $.getTable(f);
-    };
-    $.setPageSize = function (ev, size) {
-        var f = $(ev).closest('form');
-        $('#Page', f).val(1);
-        $("#PageSize", f).val(size);
-        return $.getTable(f);
-    };
-
-    $.getTable = function (f) {
-        $.ajax({
-            type: 'POST',
-            url: f.attr("action"),
-            data: f.serialize(),
-            success: function (data, status) {
-                f.html(data);
-            }
-        });
-        return false;
-    };
-    $('table.grid > thead a.sortable').live("click", function () {
-        var f = $(this).closest("form");
-        var newsort = $(this).text();
-        var sort = $("#Sort", f);
-        var dir = $("#Direction", f);
-        if ($(sort).val() == newsort && $(dir).val() == 'asc')
-            $(dir).val('desc');
-        else
-            $(dir).val('asc');
-        $(sort).val(newsort);
-        $.getTable(f);
-        return false;
-    });
-    $.showTable = function (f) {
-        if ($('table.table', f).size() == 0)
-            $.getTable(f);
-        return false;
-    };
-    $.updateTable = function (f) {
-        if ($('table.table', f).size() > 0)
-            $.getTable(f);
-        return false;
-    };
+    //$.getTable = function (d) {
+    //    var q = {};
+    //    if (d.hasClass("loaded"))
+    //        q = d.find("form").serialize();
+    //    $.ajax({
+    //        type: 'POST',
+    //        url: d.data("action"),
+    //        data: q,
+    //        success: function (data, status) {
+    //            d.html(data);
+    //            d.addClass("loaded");
+    //        }
+    //    });
+    //    return false;
+    //};
+    //$('table.grid > thead a.sortable').live("click", function () {
+    //    var d = $(this).closest("div.loaded");
+    //    var newsort = $(this).text();
+    //    var sort = $("#Sort", d);
+    //    var dir = $("#Direction", d);
+    //    if ($(sort).val() == newsort && $(dir).val() == 'asc')
+    //        $(dir).val('desc');
+    //    else
+    //        $(dir).val('asc');
+    //    $(sort).val(newsort);
+    //    $.getTable(d);
+    //    return false;
+    //});
+    //$.showTable = function (d) {
+    //    if (!d.hasClass("loaded"))
+    //        $.getTable(d);
+    //    return false;
+    //};
+    //$.updateTable = function (d) {
+    //    if (!d.hasClass("loaded"))
+    //        $.getTable(f);
+    //    return false;
+    //};
     $("body").on("click", "input[name='toggletarget']", function (ev) {
         if ($('a.target[target="people"]').length == 0) {
             $("a.target").attr("target", "people");
@@ -167,6 +159,20 @@ $(function () {
             }
         });
     });
+    $("#AdminMenuToggle").click(function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        var menu = $("#AdminMenu");
+        if (menu.is(":visible"))
+            menu.hide();
+        else
+            menu.show();
+    });
+    $("body").on("click", function(ev) {
+        if($(ev.target).not("#AdminMenuToggle"))
+            $("#AdminMenu").hide();
+    });
+
     $("a.tutorial").click(function (ev) {
         ev.preventDefault();
         startTutorial($(this).attr("href"));
@@ -347,6 +353,20 @@ $(function () {
         });
         return false;
     });
+    $("ul.nav-tabs a.ajax").live("click", function(event) {
+        var d = $($(this).attr("href"));
+        if(!d.hasClass("loaded"))
+            $.ajax({
+                type: 'POST',
+                url: d.data("link"),
+                data: {},
+                success: function (data, status) {
+                    d.html(data);
+                    d.addClass("loaded");
+                }
+            });
+        return false;
+    });
     $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();
         var $this = $(this);
@@ -428,32 +448,42 @@ $(function () {
                 return true;
         return false;
     };
-    $("form.ajax tr.section.notshown").live("click", function (ev) {
+    $("form.ajax tr.section").live("click", function (ev) {
         if ($.NotReveal(ev)) return;
         ev.preventDefault();
-        ev.stopPropagation();
-        $(this).removeClass("notshown").addClass("shown");
-        $(this).nextUntil("tr.section").find("div.collapse")
-            .off("hidden")
-            .on("hidden", function (e) { e.stopPropagation(); })
-            .collapse('show');
-    });
-    $("form.ajax tr.section.shown").live("click", function (ev) {
-        if ($.NotReveal(ev)) return;
-        ev.preventDefault();
-        $(this).nextUntil("tr.section").find("div.collapse")
-            .off("hidden")
-            .on("hidden", function (e) { e.stopPropagation(); })
-            .collapse('hide');
-        $(this).removeClass("shown").addClass("notshown");
+        $ToggleShown($(this));
     });
     $('form.ajax a[rel="reveal"]').live("click", function (ev) {
         ev.preventDefault();
-        $(this).parents("tr").next("tr").find("div.collapse")
+        $ToggleShown($(this).parents("tr"));
+    });
+    var $ToggleShown = function(tr) {
+        if (tr.hasClass("notshown"))
+            $ShowAll(tr);
+        else if (tr.hasClass("shown"))
+            $CollapseAll(tr);
+        else 
+            tr.next("tr").find("div.collapse")
+                .off('hidden')
+                .on("hidden", function (e) { e.stopPropagation(); })
+                .collapse("toggle");
+    };
+    var $ShowAll = function (tr) {
+        tr.nextUntil("tr.section").find("div.collapse")
             .off('hidden')
             .on("hidden", function (e) { e.stopPropagation(); })
-            .collapse("toggle");
-    });
+            .collapse("show");
+        tr.removeClass("notshown").addClass("shown");
+        tr.find("i").removeClass("icon-caret-right").addClass("icon-caret-down");
+    };
+    var $CollapseAll = function (tr) {
+        tr.nextUntil("tr.section").find("div.collapse")
+            .off("hidden")
+            .on("hidden", function (e) { e.stopPropagation(); })
+            .collapse('hide');
+        tr.removeClass("shown").addClass("notshown");
+        tr.find("i").removeClass("icon-caret-down").addClass("icon-caret-right");
+    };
     $("form.ajax tr.master").live("click", function (ev) {
         if ($.NotReveal(ev)) return;
         ev.preventDefault();
