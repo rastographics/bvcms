@@ -22,6 +22,7 @@ namespace CmsWeb.Models
                     {
                         PeopleId = p.PeopleId,
                         FirstName = p.PreferredName,
+                        GoesBy = p.NickName,
                         LastName = p.LastName,
                         Address = p.PrimaryAddress,
                         City = p.PrimaryCity,

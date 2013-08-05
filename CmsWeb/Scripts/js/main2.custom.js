@@ -165,12 +165,17 @@ $(function () {
         var menu = $("#AdminMenu");
         if (menu.is(":visible"))
             menu.hide();
-        else
+        else {
+            $('[data-toggle="dropdown"]').parent().removeClass('open');
+            ev.stopPropagation();
             menu.show();
+        }
     });
     $("body").on("click", function(ev) {
-        if($(ev.target).not("#AdminMenuToggle"))
-            $("#AdminMenu").hide();
+        var am = $("#AdminMenu");
+        if(am.is(":visible"))
+            if($(ev.target).not("#AdminMenuToggle"))
+                $("#AdminMenu").hide();
     });
 
     $("a.tutorial").click(function (ev) {

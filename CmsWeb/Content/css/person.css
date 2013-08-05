@@ -796,7 +796,7 @@ table.enrollments tr.oddrow > td {
 }
 
 #profile-actions .yamm.navbar {
-    width: 190px;
+    /*width: 190px;*/
 }
 
     #profile-actions .yamm.navbar a.dropdown-toggle {
@@ -817,13 +817,32 @@ div.yamm-content {
         line-height: 1.2;
     }
 
-        div.yamm-content li:hover {
+        div.yamm-content li:not(.header):hover {
             background-color: #08C;
             color: #FFF;
             cursor: pointer;
+        }
+        div.yamm-content li.header {
+            font-weight: bold;
+            color: #888;
+            padding: 0;
         }
 
 .yamm-content li > a {
     display: block;
     text-decoration: none;
 }
+.toolbar-reports ul.dropdown-menu {
+    left: -400px;
+}
+.toolbar-reports .yamm-content {
+    width: 600px;
+}
+.toolbar-gear ul.dropdown-menu {
+    left: -225px;
+}
+.toolbar-gear .yamm-content {
+    width: 350px;
+}
+
+

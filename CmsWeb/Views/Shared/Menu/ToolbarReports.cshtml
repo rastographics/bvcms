@@ -1,28 +1,13 @@
-﻿@using CmsData.Classes.Twilio
-<div class="toolbar">
-    <ul horizontal-offset="-70">
+﻿<li class="dropdown toolbar-reports">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="icon-cloud-download"></i></a>
+    <ul class="dropdown-menu">
         <li>
-            <a href='#' class="trigger-dropdown">Email
-                <img src="/images/dnarrow.png" />
-            </a>
-            <div class="dropdown-menu has-tip">
-                <ul>
-                </ul>
-            </div>
-        </li>
-        @if (TwilioHelper.userSendSMS(Util.UserId))
-        {
-            <li>
-                <a href='/SMS/Options/@ViewBag.queryid'>SMS
-                </a>
-            </li>
-        }
-        <li>
-            <a href='#' class="trigger-dropdown">Export
-                <img src="/images/dnarrow.png" />
-            </a>
-            <div class="dropdown-menu has-tip">
-                <ul>
+            <div class="row-fluid yamm-content">
+                <ul class="span4 unstyled pull-left">
+                    <li class="header">
+                        <p><strong>Export</strong></p>
+                    </li>
                     <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid' class="ChooseLabelType" title="For mail merge">Excel</a></li>
                     <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=AllFamily' title="For mail merge">Excel Family</a></li>
                     <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=IndividualPicture' title="For picture directory word merge">Excel Pictures</a></li>
@@ -36,19 +21,15 @@
                         <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Organization' title="Includes Org Member info">Member Export</a></li>
                         if ((bool?)ViewBag.OrgMemberContext == true)
                         { 
-                        <li><a href='/ExportExcel.aspx?format=Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
+                            <li><a href='/ExportExcel.aspx?format=Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
                         } 
                         <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Promotion' title="Just for Promotion Mail Merge">Promotion Export</a></li>
                     }
                 </ul>
-            </div>
-        </li>
-        <li>
-            <a href='#' class="trigger-dropdown">Reports
-                <img src="/images/dnarrow.png" />
-            </a>
-            <div class="dropdown-menu has-tip">
-                <ul>
+                <ul class="span4 unstyled pull-left">
+                    <li class="header">
+                        <p><strong>Reports</strong></p>
+                    </li>
                     <li><a href='/Reports/Prospect/@ViewBag.queryid' target="_blank">Inreach/Outreach</a></li>
                     <li><a href='/Reports/Prospect/@ViewBag.queryid?Form=true' target="_blank">Inreach/Outreach with Form</a></li>
                     @if ((bool?)ViewBag.OrganizationContext == true)
@@ -82,14 +63,10 @@
                     <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Children' target="_blank" title="Contains emergency contact, who brought child info">Children</a></li>
                     <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Church' target="_blank" title="Contains other Church Info">Other Churches</a></li>
                 </ul>
-            </div>
-        </li>
-        <li>
-            <a href='#' class="trigger-dropdown">Labels
-                <img src="/images/dnarrow.png" />
-            </a>
-            <div class="dropdown-menu has-tip">
-                <ul>
+                <ul class="span4 unstyled pull-left">
+                    <li class="header">
+                        <p><strong>Labels</strong></p>
+                    </li>
                     <li><a href='/Reports/RollLabels/@ViewBag.queryid' class="ChooseLabelType" title="Labels (pdf for Datamax label printer)" target="_blank">Roll Labels</a></li>
                     <li><a href='/Reports/BarCodeLabels/@ViewBag.queryid' target="_blank" title="Labels for Choir Attendance">Barcode Labels</a></li>
                     <li><a href='/Reports/Avery/@ViewBag.queryid' title="Avery Name Labels" target="_blank">Name Labels (with phones)</a></li>
@@ -100,39 +77,5 @@
                 </ul>
             </div>
         </li>
-        <li>
-            <a href='#' class="trigger-dropdown">Tag
-                <img src="/images/dnarrow.png" />
-            </a>
-            <div class="dropdown-menu has-tip">
-                <ul>
-                    <li><a id="TagAll" href='@ViewBag.TagAction'>Add All</a></li>
-                    <li><a id="UnTagAll" href='@ViewBag.UnTagAction'>Remove All</a></li>
-                </ul>
-            </div>
-        </li>
-        <li>
-            <a href='#' class="trigger-dropdown">Other
-                <img src="/images/dnarrow.png" />
-            </a>
-            <div class="dropdown-menu has-tip">
-                <ul>
-                    <li><a id="AddContact" href='@ViewBag.AddContact'>Add Contact</a></li>
-                    <li><a id="AddTasks" href='@ViewBag.AddTasks'>Add Tasks</a></li>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li><a href='/Manage/ExtraValues/Add/@ViewBag.queryid' class="ChooseExtraValues">Add Extra Values</a></li>
-                        <li><a href='/Manage/ExtraValues/Delete/@ViewBag.queryid' class="ChooseExtraValues">Delete Extra Values</a></li>
-                        <li><a href="/Reports/ExtraValuesGrid/@ViewBag.queryid">Extra Values Grid</a></li>
-                    }
-                    @if (User.IsInRole("Developer"))
-                    {
-                        <li><a href="/Reports/ExtraValuesGrid2/@ViewBag.queryid" class="hideAlt">Extra Values Grid2</a></li>
-                    }
-                    <li><a href='/Task/NotesExcel/@ViewBag.queryid'>Export Task Notes</a></li>
-                </ul>
-            </div>
-        </li>
     </ul>
-</div>
-
+</li>

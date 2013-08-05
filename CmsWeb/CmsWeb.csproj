@@ -985,6 +985,7 @@
     <Content Include="Areas\People\Views\Person\Membership\Notes.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\ExtraValues.cshtml" />
     <Content Include="Areas\People\Views\Person\UserEdit.cshtml" />
+    <Content Include="Views\Shared\Menu\Toolbar.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1843,12 +1844,14 @@
     <Content Include="Views\Shared\Support.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Password.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\DateTime.cshtml" />
-    <Content Include="Views\Shared\Menu\Toolbar.cshtml" />
+    <Content Include="Views\Shared\Menu\ToolbarReports.cshtml" />
     <Content Include="Views\Shared\Menu\People.cshtml" />
     <Content Include="Views\Shared\Menu\Organization.cshtml" />
     <Content Include="Views\Shared\Menu\Reports.cshtml" />
     <Content Include="Views\Shared\Menu\Admin.cshtml" />
     <Content Include="Views\Shared\Menu\Help.cshtml" />
+    <Content Include="Views\Shared\Menu\ToolbarGear.cshtml" />
+    <Content Include="Views\Shared\Menu\ToolbarEmail.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2115,7 +2118,6 @@
     <Content Include="Areas\People\Views\Person\EditorTemplates\Email.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Email.cshtml" />
     <Content Include="Areas\People\Views\Person\ProfileHeader\Snapshot.cshtml" />
-    <Content Include="Areas\People\Views\Person\ProfileHeader\Toolbar.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\Display.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />

@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.People.Models.Person.PersonModel
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.Person.PersonModel
 @{
     Layout = "/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Person";
@@ -21,7 +22,8 @@
                         @Html.Partial("ProfileHeader/Snapshot", Model)
                     </div>
                     <div class="span4" id="profile-actions">
-                        @Html.Partial("ProfileHeader/Toolbar", Model)
+                        @Html.Partial("Menu/Toolbar", Model)
+                        <p class="record_added muted"><small>Record added @Model.basic.Created.FormatDate()</small></p>
                     </div>
                 </div>
             </div>
