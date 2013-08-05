@@ -19,7 +19,7 @@
     <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Finance/Contributions.js")"></script>
 }
 
-<form action="" id="form">
+<form action="" id="form" method="POST">
     @Html.Hidden("PeopleId")
     <div class="roundbox floatleft">
         <table cellspacing="5">
@@ -86,6 +86,7 @@
                 <tr>
                     <td colspan="2" class="right">
                         <a id="NewSearch" class="bt">Clear</a>
+                        <a id="export" class="bt">Export</a>
                         <a id="search" class="bt blue">Search</a>
                     </td>
                 </tr>
