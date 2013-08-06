@@ -238,7 +238,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
 			foreach (var ci in APIContribution.quarterlySummary(Db, c, fd, td))
 			{
-				Total += ci.ContributionAmount.Value;
+				Total += ci.ContributionAmount;
 				if (recPledges != null && recPledges.Count > 0 && countRec < recPledges.Count)
 					recPledges[countRec] += "{0,-20}{1,14:N2} ".Fmt(ci.Fund, ci.ContributionAmount);
 				else

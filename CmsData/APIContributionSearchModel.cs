@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -97,8 +98,8 @@ namespace CmsData.API
                      select new ContributionInfo
                          {
                              BundleId = bd == null ? 0 : bd.BundleHeaderId,
-                             ContributionAmount = c.ContributionAmount,
-                             ContributionDate = c.ContributionDate,
+                             ContributionAmount = c.ContributionAmount ?? 0,
+                             ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
                              ContributionId = c.ContributionId,
                              ContributionType = c.ContributionType.Description,
                              ContributionTypeId = c.ContributionTypeId,
@@ -106,7 +107,7 @@ namespace CmsData.API
                              NonTaxDed =
                                  c.ContributionTypeId == ContributionTypeCode.NonTaxDed ||
                                  (c.ContributionFund.NonTaxDeductible ?? false),
-                             StatusId = c.ContributionStatusId,
+                             StatusId = c.ContributionStatusId ?? -1,
                              Status = c.ContributionStatus.Description,
                              Name = c.Person.Name,
                              PeopleId = c.PeopleId ?? 0,

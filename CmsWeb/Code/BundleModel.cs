@@ -6,6 +6,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using CmsData;
@@ -247,8 +248,8 @@ namespace CmsWeb.Models
                     orderby d.BundleDetailId
                     select new ContributionInfo
                     {
-                        ContributionAmount = d.Contribution.ContributionAmount,
-                        ContributionDate = d.Contribution.ContributionDate,
+                        ContributionAmount = d.Contribution.ContributionAmount ?? 0,
+                        ContributionDate = d.Contribution.ContributionDate ?? SqlDateTime.MinValue.Value,
                         ContributionId = d.ContributionId,
                         ContributionType = d.Contribution.ContributionType.Description,
                         ContributionTypeId = d.Contribution.ContributionTypeId,
@@ -299,13 +300,13 @@ namespace CmsWeb.Models
                      select new ContributionInfo
                      {
                          BundleId = bd == null ? 0 : bd.BundleHeaderId,
-                         ContributionAmount = c.ContributionAmount,
-                         ContributionDate = c.ContributionDate,
+                         ContributionAmount = c.ContributionAmount ?? 0,
+                         ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
                          ContributionId = c.ContributionId,
                          ContributionType = c.ContributionType.Description,
                          ContributionTypeId = c.ContributionTypeId,
                          Fund = c.ContributionFund.FundName,
-                         StatusId = c.ContributionStatusId,
+                         StatusId = c.ContributionStatusId ?? -1,
                          Status = c.ContributionStatus.Description,
                          Name = c.Person.Name,
                          PeopleId = c.PeopleId ?? 0,

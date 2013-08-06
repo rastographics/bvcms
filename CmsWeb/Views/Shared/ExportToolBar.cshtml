@@ -2,24 +2,32 @@
 <div class="toolbar">
     <ul horizontal-offset="-70">
         <li>
-            <a href='#' class="trigger-dropdown">Email
-                <img src="/images/dnarrow.png" />
+        <a href='#' class="trigger-dropdown">
+            Email <img src="/images/dnarrow.png" />
             </a>
             <div class="dropdown-menu has-tip">
                 <ul>
+                <li><a href='/Email/Index/@ViewBag.queryid'> Individuals</a></li>
+                <li><a href='/Email/Index/@ViewBag.queryid?parents=true'> Parents</a></li>
+@if ((bool?)ViewBag.ParentOrgContext == true)
+{
+                <li><a href='/Email/Index/@ViewBag.leadersqid'> Leaders under this org</a></li>
+                <li><a href='/Email/Index/@ViewBag.membersqid'> Members under this org</a></li>
+}
                 </ul>
             </div>
         </li>
         @if (TwilioHelper.userSendSMS(Util.UserId))
         {
             <li>
-                <a href='/SMS/Options/@ViewBag.queryid'>SMS
+        <a href='/SMS/Options/@ViewBag.queryid'>
+            SMS
                 </a>
             </li>
         }
         <li>
-            <a href='#' class="trigger-dropdown">Export
-                <img src="/images/dnarrow.png" />
+        <a href='#' class="trigger-dropdown">
+            Export <img src="/images/dnarrow.png" />
             </a>
             <div class="dropdown-menu has-tip">
                 <ul>
@@ -44,8 +52,8 @@
             </div>
         </li>
         <li>
-            <a href='#' class="trigger-dropdown">Reports
-                <img src="/images/dnarrow.png" />
+        <a href='#' class="trigger-dropdown">
+            Reports <img src="/images/dnarrow.png" />
             </a>
             <div class="dropdown-menu has-tip">
                 <ul>
@@ -85,8 +93,8 @@
             </div>
         </li>
         <li>
-            <a href='#' class="trigger-dropdown">Labels
-                <img src="/images/dnarrow.png" />
+        <a href='#' class="trigger-dropdown">
+            Labels <img src="/images/dnarrow.png" />
             </a>
             <div class="dropdown-menu has-tip">
                 <ul>
@@ -101,8 +109,8 @@
             </div>
         </li>
         <li>
-            <a href='#' class="trigger-dropdown">Tag
-                <img src="/images/dnarrow.png" />
+        <a href='#' class="trigger-dropdown">
+            Tag <img src="/images/dnarrow.png" />
             </a>
             <div class="dropdown-menu has-tip">
                 <ul>
@@ -112,8 +120,8 @@
             </div>
         </li>
         <li>
-            <a href='#' class="trigger-dropdown">Other
-                <img src="/images/dnarrow.png" />
+        <a href='#' class="trigger-dropdown">
+            Other <img src="/images/dnarrow.png" />
             </a>
             <div class="dropdown-menu has-tip">
                 <ul>
