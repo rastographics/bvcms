@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Areas.People.Models.Person.BasicPersonInfo
-<form class="form form-horizontal form-columns ajax" method="post">
+<form class="form form-horizontal ajax span12" method="post">
     @FormAction()
     <div class="row-fluid">
         <div class="span6 display">
@@ -12,7 +12,7 @@
             @Html.EditorFor(m => m.FormerName)
             @Html.EditorFor(m => m.Suffix)
         </div>
-        <div class="span6 display">
+        <div class="span6 display column2">
             @Html.EditorFor(m => m.Gender)
             @Html.EditorFor(m => m.Birthday)
             @Html.EditorFor(m => m.Marital)
@@ -30,7 +30,7 @@
             @Html.EditorFor(m => m.AltEmail)
             @Html.EditorFor(m => m, "DoNotContact")
         </div>
-        <div class="span6 display">
+        <div class="span6 display column2">
             @Html.EditorFor(m => m.Mobile)
             @Html.EditorFor(m => m.Work)
             @Html.EditorFor(m => m.HomePhone)
@@ -43,8 +43,8 @@
 {
     <div class="form-actions">
         <span class="pull-right">
-            <a href="/Person2/BasicDisplay/@Model.PeopleId" class="btn ajax">Cancel</a>
-            <a href="/Person2/BasicUpdate/@Model.PeopleId" class="btn btn-primary ajax">Save Changes</a>
+            <a href="/Person2/PersonalDisplay/@Model.PeopleId" class="btn ajax">Cancel</a>
+            <a href="/Person2/PersonalUpdate/@Model.PeopleId" class="btn btn-primary ajax">Save Changes</a>
         </span>
     </div>
 }

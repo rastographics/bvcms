@@ -8,12 +8,13 @@
 {
     <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/People/person1.js")"></script>
     <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Org/OrgMemberDialog2.js")"></script>
+    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/jquery.textfill.js")"></script>
 }
 @section head
 {
-    <link href="@Fingerprint.Tag("/Content/css/person.css")" rel="stylesheet" />
+    <link href="@Fingerprint.Tag("/Content/css/person-main.css")" rel="stylesheet" />
 }
-<div class="container" style="margin-top:-1em;">
+<div class="container" style="margin-top: -1em;">
     <div class="row-fluid">
         <div class="span9">
             <div class="row-fluid">
@@ -22,8 +23,11 @@
                         @Html.Partial("ProfileHeader/Snapshot", Model)
                     </div>
                     <div class="span4" id="profile-actions">
-                        @Html.Partial("Menu/Toolbar", Model)
-                        <p class="record_added muted"><small>Record added @Model.basic.Created.FormatDate()</small></p>
+                        @if (User.IsInRole("Access"))
+                        {
+                            @Html.Partial("Toolbar/Toolbar", Model)
+                            <p class="record_added muted"><small>Record added @Model.basic.Created.FormatDate()</small></p>
+                        }
                     </div>
                 </div>
             </div>

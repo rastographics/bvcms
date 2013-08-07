@@ -3,7 +3,6 @@
     @Html.LabelFor(m=> m, new { @class = "control-label nwrap"})
     <div class="controls">
         <p>
-            <b>
             @if (Model.Send)
             {
                 <span class="email_display">@Model.Address</span>
@@ -12,7 +11,6 @@
             {
                 <del class="email_display">@Model.Address</del>
             }
-            </b>
         </p>
     </div>
 </div>

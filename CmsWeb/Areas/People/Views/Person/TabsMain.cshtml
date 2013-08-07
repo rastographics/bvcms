@@ -8,8 +8,8 @@
         {
             <li><a href="#giving" data-toggle="tab" class="ajax">Giving</a></li>
         }
-        <li><a href="#account" data-toggle="tab" class="ajax">Account</a></li>
-        <li><a href="#comments" data-toggle="tab" class="ajax">Comments</a></li>
+        @*<li><a href="#account" data-toggle="tab" class="ajax">Account</a></li>*@
+        <li><a href="#contacts" data-toggle="tab" class="ajax">Contacts</a></li>
     </ul>
 
     <div class="tab-content">
@@ -26,7 +26,10 @@
         {
             <div class="tab-pane" id="giving" data-link="/Person2/Giving/@Model.PeopleId"></div>
         }
-        <div class="tab-pane" id="account" data-link="/Person2/Account/@Model.PeopleId"></div>
-        <div class="tab-pane" id="comments" data-link="/Person2/Comments/@Model.PeopleId"></div>
+        @*        <div class="tab-pane" id="account" data-link="/Person2/Account/@Model.PeopleId"></div>*@
+        @if (User.IsInRole("Access"))
+        {
+            <div class="tab-pane" id="contacts" data-link="/Person2/Contacts/@Model.PeopleId"></div>
+        }
     </div>
 </div>

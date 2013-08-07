@@ -1,0 +1,80 @@
+﻿@{
+    var access = User.IsInRole("Access");
+    var onqb = (string)ViewData["OnQueryBuilder"] == "true";
+    var targetperson = DbUtil.Db.UserPreference("TargetLinkPeople", "false").ToBool();
+    var innewlook = User.IsInRole("Newlook");
+    var advancedsearch = DbUtil.Db.UserPreference("advancedsearch", "false").ToBool();
+    var newpeoplepage = DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool();
+    var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
+    //var headimage = DbUtil.HeaderImage("");
+    //if (!headimage.HasValue())
+    //{
+    //    headimage = DbUtil.Header();
+    //}
+}
+@if (access)
+{
+    <div class="navbar navbar-fixed-top yamm">
+        <div class="navbar-inner" id="navGlobal">
+            <div class="container-fluid container">
+                <div id="brand">
+                    <!-- class="with-image" -->
+                    <!-- <div class="logo" style="background-image: url()"></div> -->
+                    <h1 class="textfill"><span style="font-size: 13px;">Bellevue Baptist Church</span></h1>
+                </div>
+                <ul class="nav">
+                    @Html.Partial("Menu/People")
+                    @Html.Partial("Menu/Organization")
+                    @Html.Partial("Menu/Reports")
+                    @Html.Partial("Menu/Admin")
+                </ul>
+                <form class="form-search" id="nav-search">
+                    <div class="input-append">
+                        <input id="SearchText" type="text" class="input" placeholder="Search" name="search" autocomplete="off">
+                        <div id="nav-search-results"></div>
+                    </div>
+                </form>
+                <div id="nav-account" class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="icon-user"></i>
+                        <span class="username">@Util.UserName</span> <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu pull-right">
+                        @Helper.LiAnchorLink("Logout as " + Util.UserName, "/Account/LogOff/")
+                        @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
+                        <li class="space"></li>
+                        @Helper.LiAnchorLink("Target Person Tab is " + (targetperson ? "ON" : "OFF"), "/Home/TargetPerson/" + targetperson)
+                        @if (innewlook)
+                        {
+                            @Helper.LiAnchorLink("Use Old Look", "/APITest/UseOldLook/")
+                            @Helper.LiAnchorLink("Use Search Builder", "/APITest/UseSearchBuilder", advancedsearch)
+                            @Helper.LiAnchorLink("Use Advanced Search", "/APITest/UseAdvancedSearch", !advancedsearch)
+                            @Helper.LiAnchorLink("Use Old Person Page", "/APITest/UseOldPersonPage", newpeoplepage)
+                            @Helper.LiAnchorLink("Use New People Page", "/APITest/UseNewPeoplePage", !newpeoplepage)
+                            @Helper.LiAnchorLink("Turn finance off", "/APITest/TurnFinanceOff", testnofinance)
+                            @Helper.LiAnchorLink("Turn finance on", "/APITest/TurnFinanceOn", !testnofinance)
+                        }
+                    </ul>
+                </div>
+                <div class="nav-drop btn-group">
+                    <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-tag"></i>
+                        <span> @Util2.CurrentTagName</span> <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu pull-right">
+                        <li><a href="#">Greeting Team</a></li>
+                        <li><a href="#">Leadership</a></li>
+                        <li><a href="#">My Home Group</a></li>
+                        <li><a href="#">Parking Team</a></li>
+                        <li><a href="#">Prayer Warriors</a></li>
+                        <li><a href="#">Special Donors</a></li>
+                    </ul>
+                </div>
+                <div class="nav-drop btn-group">
+                    @Html.Partial("Menu/Help")
+                </div>
+            </div>
+        </div>
+        @Html.Partial("Menu/AdminBar")
+    </div>
+}

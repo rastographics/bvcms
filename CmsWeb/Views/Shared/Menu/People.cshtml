@@ -1,11 +1,15 @@
-﻿<li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">People <span class="caret"></span></a>
+﻿@{
+    var menuaddpeople = DbUtil.Db.Setting("MenuAddPeople", "true") == "true" || Util.IsDebug();
+    var isperson2 = HttpContext.Current.Request.Url.PathAndQuery.Contains("Person2", ignoreCase: true);
+}
+
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">People</a>
     <ul class="dropdown-menu">
         <li>@Html.ActionLink("Search", "Index", "PeopleSearch", new { Area = "Main" }, null)</li>
-
-        @if (DbUtil.Db.Setting("MenuAddPeople", "true") == "true" || Util.IsDebug())
+        @if (menuaddpeople)
         {
-            if (Request.Url.PathAndQuery.Contains("Person2", ignoreCase: true))
+            if (isperson2)
             {
             <li><a href="/SearchAdd2/Dialog/Menu" class="searchadd">Add People</a></li>
             }
@@ -14,22 +18,16 @@
             <li>@Helper.JQueryIdLink("Add People", "addpeople")</li>
             }
         }
-        else
-        {
-            <li>@Helper.AnchorLink("Add People", "http://www.bvcms.com/doc/AddPeopleContext", "_blank")</li>
-        }
-        <li>@Html.ActionLink("Manage Tags", "Index", "Tags", new { Area = "Main" }, null)</li>
-        <li>@Html.ActionLink("Tasks", "List", "Task", new { Area = "Main" }, null)</li>
-        <li>@Html.ActionLink("Contacts", "Index", "ContactSearch", new { Area = "Main" }, null)</li>
-
-        <li class="divider"></li>
-
+        @Helper.LiAnchorLink("Add People", "http://www.bvcms.com/doc/AddPeopleContext", !menuaddpeople, "_blank")
+        @Helper.LiAnchorLink("Manage Tags", "/Tags/")
+        @Helper.LiAnchorLink("Tasks", "/Task/List/")
+        @Helper.LiAnchorLink("Contacts", "/ContactSearch/")
+        <li class="space"></li>
         @foreach (var p in Util2.MostRecentPeople)
         {
-            <li>@Html.ActionLink(p.Name, "Index", "Person", new { Id = p.Id, Area = "Main" }, null)</li>
+            @Helper.LiAnchorLink(p.Name, "/Person/Index/" + p.Id)
         }
-        <li class="divider"></li>
-        <li>@Html.ActionLink(Util.UserFullName, "Index", "Person", new { Id = Util.UserPeopleId, Area = "Main" }, null)
-        </li>
+        <li class="space"></li>
+        @Helper.LiAnchorLink(Util.UserFullName, "/Person/Index/" + Util.UserPeopleId)
     </ul>
 </li>

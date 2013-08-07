@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="@Fingerprint.Tag("/Content/font-awesome/css/font-awesome.css")" />
     @*    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">*@
-    @Fingerprint.Css("/content/css/main.css")
+    @Fingerprint.Css("/content/css/Fixups.css")
     @RenderSection("head", required: false)
     <style type="text/css">
         @{ var bkcolor = DbUtil.Db.Setting("HeaderBackground", ""); }
@@ -24,7 +24,7 @@
     <body>
         <div class="page-container">
             @Html.Partial("Notices")
-            @Html.Partial("NewHeader2")
+            @Html.Partial("NewHeader3")
             @RenderBody()
             @Html.Partial("Footer")
             @Html.Partial("Dialogs")

@@ -1,4 +1,5 @@
-﻿@using CmsWeb
+﻿@using System.Web.Mvc.Html
+@using CmsWeb
 @using CmsData
 @using UtilityExtensions
 @helper SearchBuilderDropdown(bool onqb, bool newlook)
@@ -35,6 +36,27 @@
     <a href="@href">@text</a>
     }
 }
+@helper LiAnchorLink(string text, string url, bool display = true, string target = null)
+{
+    if (display)
+    {
+    <li>@Helper.AnchorLink(text, url)</li>
+    }
+}
+@helper LiHeader(string text, bool display = true)
+{
+    if (display)
+    {
+        if (text.HasValue())
+        {
+            <li class="header">@text</li>
+        }
+        else
+        {
+            <li class="lispace">&nbsp;</li>
+        }
+    }
+}
 @helper JQueryIdLink(string text, string id)
 {
     <a id="@id" href="#">@text</a>
@@ -42,6 +64,13 @@
 @helper JQueryIdLink(string text, string id, string data)
 {
     <a id="@id" data-item="@data">@text</a>
+}
+@helper LiJQueryIdLink(string text, string id, bool display = true)
+{
+    if (display)
+    {
+    <li><a id="@id" href="#">@text</a></li>
+    }
 }
 @helper ButtonLink(string text, string href, string target = null)
 {

@@ -4,4 +4,8 @@
         <span class="phone">@DbUtil.Db.Setting("ChurchPhone", "phone")</span>
         <span class="email">@DbUtil.AdminMail</span>
     </p>
+    @if (!User.IsInRole("Access"))
+    {
+        <div class="pull-right">@Helper.AnchorLink("Logout as " + Util.UserName, "/Account/LogOff/")</div>
+    }
 </footer>

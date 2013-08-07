@@ -525,6 +525,7 @@
     <Content Include="Content\css\bootstrap-responsive.min.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\Fixups.css" />
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\demo_page.css" />
     <Content Include="Content\css\demo_table.css" />
@@ -535,7 +536,7 @@
     <Content Include="Content\css\main.min.css">
       <DependentUpon>main.css</DependentUpon>
     </Content>
-    <Content Include="Content\css\person.css" />
+    <Content Include="Content\css\person-main.css" />
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\responsive.css" />
     <Content Include="Content\font-awesome\css\font-awesome-ie7.css" />
@@ -840,6 +841,8 @@
       <DependentUpon>jquery-ui-1.10.0.custom.js</DependentUpon>
     </Content>
     <Content Include="Scripts\jQuery\jquery.dataTables.js" />
+    <Content Include="Scripts\jQuery\jquery.hiddenposition.1.1.js" />
+    <Content Include="Scripts\jQuery\jquery.textfill.js" />
     <Content Include="Scripts\jQuery\jquery.tooltip.min.js.map">
       <DependentUpon>jquery.tooltip.js</DependentUpon>
     </Content>
@@ -877,6 +880,7 @@
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenPeople.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\CellPhone.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\CellPhone.cshtml" />
+    <Content Include="Scripts\jQuery\jquery.ui.position.js" />
     <Content Include="Scripts\jQuery\main.js">
       <DependentUpon>main.js.bundle</DependentUpon>
     </Content>
@@ -906,6 +910,7 @@
     </Content>
     <Content Include="Scripts\js\ExtraValuesGrid2.js" />
     <Content Include="Scripts\js\form-ajax.js" />
+    <Content Include="Scripts\js\give.js" />
     <Content Include="Scripts\js\HomeTest.min.js">
       <DependentUpon>HomeTest.js</DependentUpon>
     </Content>
@@ -985,7 +990,6 @@
     <Content Include="Areas\People\Views\Person\Membership\Notes.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\ExtraValues.cshtml" />
     <Content Include="Areas\People\Views\Person\UserEdit.cshtml" />
-    <Content Include="Views\Shared\Menu\Toolbar.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1844,14 +1848,17 @@
     <Content Include="Views\Shared\Support.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Password.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\DateTime.cshtml" />
-    <Content Include="Views\Shared\Menu\ToolbarReports.cshtml" />
     <Content Include="Views\Shared\Menu\People.cshtml" />
     <Content Include="Views\Shared\Menu\Organization.cshtml" />
     <Content Include="Views\Shared\Menu\Reports.cshtml" />
     <Content Include="Views\Shared\Menu\Admin.cshtml" />
     <Content Include="Views\Shared\Menu\Help.cshtml" />
-    <Content Include="Views\Shared\Menu\ToolbarGear.cshtml" />
-    <Content Include="Views\Shared\Menu\ToolbarEmail.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Toolbar.cshtml" />
+    <Content Include="Views\Shared\Toolbar\ToolbarEmail.cshtml" />
+    <Content Include="Views\Shared\Toolbar\ToolbarGear.cshtml" />
+    <Content Include="Views\Shared\Toolbar\ToolbarReports.cshtml" />
+    <Content Include="Views\Shared\NewHeader3.cshtml" />
+    <Content Include="Views\Shared\Menu\AdminBar.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

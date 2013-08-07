@@ -6,7 +6,7 @@
             items: 15,
             highlighter: function (item) {
                 var o = imap[item];
-                var content = "<a><b>" + (o.isOrg ? "Org: " : "") + o.line1 + "</b>";
+                var content = "<a>" + (o.isOrg ? "Org: " : "") + o.line1;
                 if (o.id > 0)
                     content += "<br>" + (o.isOrg ? "Div: " : "") + o.line2;
                 content += "</a>";
@@ -61,6 +61,21 @@
             }
         });
         var ta = $(this).data("typeahead");
+        ta.show = function() {
+            var pos = $.extend({}, this.$element.position(), {
+                height: this.$element[0].offsetHeight,
+                width: this.$element[0].offsetWidth
+            });
+            this.$menu
+                .insertAfter(this.$element)
+                .css({
+                    width: 300,
+                    top: pos.top + pos.height + 11,
+                    left: pos.left - 200 + pos.width
+                }).show();
+            this.shown = true;
+            return this;
+        };
         ta.render = function (items) {
             var that = this;
             items = $(items).map(function (i, item) {
@@ -96,35 +111,60 @@
             prev.addClass('active');
         };
         $(this).focus(function () {
-            if (this.value === '' || this.value === $(this).attr('default')) {
+            if (this.value === '' || this.value === $(this).attr('placeholder')) {
                 this.value = '';
                 ta.source('---', $.proxy(ta.process, ta));
             }
         });
         $(this).blur(function () {
-            if (this.value === '' && $(this).attr('default')) {
-                this.value = $(this).attr('default');
+            if ($(this).attr('placeholder')) {
+                this.value = $(this).attr('placeholder');
             }
         });
     });
-    $("#AdminMenuToggle").click(function(ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        var menu = $("#AdminMenu");
-        if (menu.is(":visible"))
-            menu.hide();
-        else {
-            $('[data-toggle="dropdown"]').parent().removeClass('open');
-            ev.stopPropagation();
-            menu.show();
-        }
-    });
-    $("body").on("click", function(ev) {
-        var am = $("#AdminMenu");
-        if(am.is(":visible"))
-            if($(ev.target).not("#AdminMenuToggle"))
-                $("#AdminMenu").hide();
-    });
+//    $("#AdminMenuToggle").click(function (ev) {
+//        ev.preventDefault();
+//        ev.stopPropagation();
+//        var menu = $("#AdminMenu");
+//        if (menu.is(":visible"))
+//            menu.hide();
+//        else {
+//            $('[data-toggle="dropdown"]').parent().removeClass('open');
+//            ev.stopPropagation();
+//            menu.show();
+//        }
+//    });
+//    $("body").on("click", function (ev) {
+//        var am = $("#AdminMenu");
+//        if (am.is(":visible"))
+//            if ($(ev.target).not("#AdminMenuToggle"))
+//                $("#AdminMenu").hide();
+//    });
+
+//    $("a.toolbar-menu").live("click", function (ev) {
+//        var trigger = $(this);
+//        var menu = $(trigger.data("menu"));
+//        ev.preventDefault();
+//        ev.stopPropagation();
+//        if (menu.is(":visible"))
+//            menu.hide();
+//        else {
+//            ev.stopPropagation();
+//            menu.position({
+//                "my": "right top",
+//                "at": "right bottom",
+//                "of": trigger
+//            });
+//            menu.show();
+//        }
+//    });
+//    $("body").on("click", function (ev) {
+//        var am = $("div.toolbar-menu");
+//        var bt = am.prev();
+//        if (am.is(":visible"))
+//            if ($(ev.target).not(bt))
+//                am.hide();
+//    });
 
     $("a.tutorial").click(function (ev) {
         ev.preventDefault();

@@ -1,24 +1,18 @@
 ﻿<li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Organization <span class="caret"></span></a>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Organization</a>
     <ul class="dropdown-menu">
-        <li>@Html.ActionLink("Search", "Index", "OrgSearch", new { Area = "Main" }, null)</li>
-
+        @Helper.LiAnchorLink("Manage Organizations", "/OrgSearch/")
         @if (User.IsInRole("Edit"))
         {
-            <li>@Helper.JQueryIdLink("Add Organization", "addorg")</li>
-            <li>@Html.ActionLink("Org Members Management", "Index", "OrgMembers", new { Area = "Manage" }, null)</li>
+            <li>@Helper.JQueryIdLink("Add New Organization", "addorg")</li>
+            @Helper.LiAnchorLink("Manage Org Members", "/Manage/OrgMembers/")
         }
-
-        @if (User.IsInRole("Coupon"))
-        {
-            <li>@Html.ActionLink("Coupons", "Index", "Coupon", new { Area = "Main" }, null)</li>
-        }
-        <li><a href="/EnrollmentControlReport.aspx">Enrollment Control Report </a></li>
-        <li class="divider"></li>
-
+        @Helper.LiAnchorLink("Coupons", "/Coupon/", User.IsInRole("Coupon"))
+        @Helper.LiAnchorLink("Enrollment Control Report", "/EnrollmentControlReport.aspx")
+        <li class="space"></li>
         @foreach (var o in Util2.MostRecentOrgs)
         {
-            <li>@Html.ActionLink(o.Name, "Index", "Organization", new { Id = o.Id, Area = "Main" }, null)</li>
+            @Helper.LiAnchorLink(o.Name, "/Organization/Index/" + o.Id)
         }
     </ul>
 </li>

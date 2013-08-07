@@ -1,0 +1,84 @@
+﻿<ul class="dropdown-menu toolbar-reports">
+    <li>
+        <div class="toolbar-menu">
+            <ul class="span4 unstyled pull-left">
+                <li class="header">Export Excel</li>
+                <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid' class="ChooseLabelType">Standard</a></li>
+                <li><a href='/bulkmail.aspx?id=@ViewBag.queryid' class="ChooseLabelType">Mailing / Bulk (csv)</a></li>
+                <li class="space"></li>
+                <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=AllFamily'>Family</a></li>
+                <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=IndividualPicture'>Pictures</a></li>
+                @* <li><a href='/Export/UpdatePeople/@ViewBag.queryid' title="For Doing a Mass Update">Excel Update</a></li> *@
+                @if ((bool?)ViewBag.OrganizationContext == true)
+                { 
+                    <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Organization' title="Includes Org Member info">Member Export</a></li>
+                    if ((bool?)ViewBag.OrgMemberContext == true)
+                    { 
+                    <li><a href='/ExportExcel.aspx?format=Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
+                    } 
+                    <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Promotion' title="Just for Promotion Mail Merge">Promotion Export</a></li>
+                }
+                <li><a href='/Export/ExtraValues/@ViewBag.queryid'>Extra Values</a></li>
+                <li><a href='/Export/StatusFlags/@ViewBag.queryid'>Status Flags</a></li>
+
+                <li class="header"><br />Other</li>
+                <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Attend' target="_blank">Attendance (Main Fellowship)</a></li>
+                <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Children' target="_blank">Children</a></li>
+                <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Involvement' target="_blank">Involvement</a></li>
+                <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Library'>Library</a></li>
+                <li><a href='/ExportExcel.aspx?id=@ViewBag.queryid&format=Church' target="_blank">Other Churches</a></li>
+            </ul>
+            <ul class="span4 unstyled pull-left">
+                <li class="header">Reports</li>
+                @if ((bool?)ViewBag.OrganizationContext == true)
+                {
+                    <li><a href='/Reports/Contacts/@ViewBag.queryid?orgname=@ViewBag.orgname' target="_blank" title="Report for Robo-calling Contacts">Contact Report</a></li>
+                    <li class="hideAlt"><a href='/Reports/Contacts/@ViewBag.queryid?sortAddress=true&orgname=@ViewBag.orgname' target="_blank">Contact Report (by addr)</a></li>
+                }
+                else
+                {
+                    <li><a href='/Reports/Contacts/@ViewBag.queryid' target="_blank" title="Report for Robo-calling Contacts">Contact Report</a></li>
+                    <li class="hideAlt"><a href='/Reports/Contacts/@ViewBag.queryid' target="_blank">Contact Report (Sorted by Address)</a></li>
+                }
+                <li><a href='/Reports/Family/@ViewBag.queryid' target="_blank">Family Report</a></li>
+                <li><a href='/Reports/Prospect/@ViewBag.queryid' target="_blank">Inreach/Outreach</a></li>
+                <li><a href='/Reports/Prospect/@ViewBag.queryid?Form=true' target="_blank">Inreach/Outreach with Form</a></li>
+                @if ((bool?) ViewBag.OrganizationContext == true)
+                {
+                    <li><a href='/Reports/Roster1/@ViewBag.queryid?oid=@Util2.CurrentOrgId' target="_blank">Roster Report</a></li>
+                    <li><a href='/Reports/Registration/@ViewBag.queryid?oid=@Util2.CurrentOrgId' target="_blank">Registration Report</a></li>
+                }
+                else
+                {
+                    <li><a href='/Reports/Registration/@ViewBag.queryid' target="_blank">Registration Rpt</a></li>
+                }
+                <li><a href='/Reports/WeeklyAttendance/@ViewBag.queryid' target="_blank" title="General Attendance Stats">Weekly Attend</a></li>
+                
+
+                <li class="header"><br />Directories</li>
+                <li><a href="/Reports/FamilyDirectoryCompact/@ViewBag.queryid" target="_blank">Compact Directory</a></li>
+                <li><a href="/Reports/FamilyDirectory/@ViewBag.queryid" target="_blank">Family Directory</a></li>
+                <li><a href="/Reports/PictureDirectory/@ViewBag.queryid" target="_blank">Picture Directory</a></li>
+
+                @if ((bool?)ViewBag.OrganizationContext == true)
+                { 
+                    <li class="header"><br />Rollsheets</li>
+                    <li><a id="RollsheetLink" href='#' title="Rollsheet Report">Rollsheet Report</a></li>
+                    <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report">Rally Rollsheet</a></li>
+                }
+            </ul>
+            <ul class="span4 unstyled pull-left">
+                <li class="header"> Address Labels </li>
+                <li><a href='/Reports/AveryAddress/@ViewBag.queryid' class="ChooseLabelType">Address</a></li>
+                <li><a href="/Reports/EmployerAddress/@ViewBag.queryid" target="_blank">Employer</a></li>
+                <li><a href='/Reports/RollLabels/@ViewBag.queryid' class="ChooseLabelType" target="_blank">Continous Roll Labels</a></li>
+
+                <li class="header"><br />Other Labels </li>
+                <li><a href='/Reports/BarCodeLabels/@ViewBag.queryid' target="_blank">Barcode / Name</a></li>
+                <li><a href='/Reports/NameLabels/@ViewBag.queryid' target="_blank">Name</a></li>
+                <li><a href='/Reports/Avery/@ViewBag.queryid' target="_blank">Name (with Phone Number)</a></li>
+                <li>@*<a href='/Reports/Avery3/@ViewBag.queryid' title="Avery 3 Across Labels (person per row)" target="_blank">Avery Labels 3</a>*@</li>
+            </ul>
+        </div>
+    </li>
+</ul>
