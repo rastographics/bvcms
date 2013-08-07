@@ -14,288 +14,262 @@ using DevDefined.OAuth.Framework;
 
 namespace CmsData.Classes.QuickBooks
 {
-    public class QuickBooksHelper
-    {
-        // ---------------------- Start unified routines ----------------------
+	public class QuickBooksHelper
+	{
+		// ---------------------- Start unified routines ----------------------
 
-        public List<QBAccount> getAllAccounts() // Max per page is 100
-        {
-            var acctList = new List<QBAccount>();
+		public List<QBAccount> getAllAccounts() // Max per page is 100
+		{
+			var acctList = new List<QBAccount>();
 
-            switch(getActiveConnection().DataSource)
-            {
-                case "QBO":
-                {
-                    QBOHelper qbo = new QBOHelper();
-                    var accts = qbo.ListAllAccounts();
+			switch (getActiveConnection().DataSource)
+			{
+				case "QBO":
+					{
+						QBOHelper qbo = new QBOHelper();
+						var accts = qbo.ListAllAccounts();
 
-                    foreach (var item in accts)
-                    {
-                        var newAcct = new QBAccount();
-                        newAcct.ID = item.Id.Value;
-                        newAcct.Name = item.Name;
-                        acctList.Add(newAcct);
-                    }
-                    break;
-                }
+						foreach (var item in accts)
+						{
+							var newAcct = new QBAccount();
+							newAcct.ID = item.Id.Value;
+							newAcct.Name = item.Name;
+							acctList.Add(newAcct);
+						}
+						break;
+					}
 
-                case "QBD":
-                {
-                    QBDHelper qbd = new QBDHelper();
-                    var accts = qbd.ListAllAccounts();
+				case "QBD":
+					{
+						QBDHelper qbd = new QBDHelper();
+						var accts = qbd.ListAllAccounts();
 
-                    foreach (var item in accts)
-                    {
-                        var newAcct = new QBAccount();
-                        newAcct.ID = item.Id.Value;
-                        newAcct.Name = item.Name;
-                        acctList.Add(newAcct);
-                    }
-                    break;
-                }
+						foreach (var item in accts)
+						{
+							var newAcct = new QBAccount();
+							newAcct.ID = item.Id.Value;
+							newAcct.Name = item.Name;
+							acctList.Add(newAcct);
+						}
+						break;
+					}
 
-                default: break;
-            }
+				default: break;
+			}
 
-            return acctList;
-        }
+			return acctList;
+		}
 
-        public int CommitJournalEntries( string sDescription, List<QBJournalEntryLine> jelEntries ) // Max per page is 100
-        {
-            int iReturn = 0;
+		public int CommitJournalEntries(string sDescription, List<QBJournalEntryLine> jelEntries) // Max per page is 100
+		{
+			int iReturn = 0;
 
-            switch (getActiveConnection().DataSource)
-            {
-                case "QBO":
-                    {
-                        QBOHelper qbo = new QBOHelper();
-                        iReturn = qbo.CommitJournalEntries(sDescription, jelEntries);
-                        break;
-                    }
+			switch (getActiveConnection().DataSource)
+			{
+				case "QBO":
+					{
+						QBOHelper qbo = new QBOHelper();
+						iReturn = qbo.CommitJournalEntries(sDescription, jelEntries);
+						break;
+					}
 
-                case "QBD":
-                    {
-                        QBDHelper qbd = new QBDHelper();
-                        iReturn = qbd.CommitJournalEntries(sDescription, jelEntries);
-                        break;
-                    }
+				case "QBD":
+					{
+						QBDHelper qbd = new QBDHelper();
+						iReturn = qbd.CommitJournalEntries(sDescription, jelEntries);
+						break;
+					}
 
-                default: break;
-            }
+				default: break;
+			}
 
-            return iReturn;
-        }
+			return iReturn;
+		}
 
-        // ---------------------- Start common connection and access routines ----------------------
-        protected IToken itToken;
-        protected String sBaseURL;
+		// ---------------------- Start common connection and access routines ----------------------
+		protected IToken itToken;
+		protected String sBaseURL;
 
-        // Begin Common QuickBooks Routines
-        public const string QB_EV_ID = "QBID";
-        public const string QB_EV_SYNC_TOKEN = "QBSyncToken";
-        public const string QB_EV_AMOUNT = "Amount";
+		// Begin Common QuickBooks Routines
+		public const string QB_EV_ID = "QBID";
+		public const string QB_EV_SYNC_TOKEN = "QBSyncToken";
+		public const string QB_EV_AMOUNT = "Amount";
 
-        public const string QB_REQUEST_TOKEN = "https://oauth.intuit.com/oauth/v1/get_request_token";
-        public const string QB_AUTHORIZE = "https://appcenter.intuit.com/Connect/Begin";
-        public const string QB_ACCESS_TOKEN = "https://oauth.intuit.com/oauth/v1/get_access_token";
-        public const string QB_DISCONNECT = "https://appcenter.intuit.com/api/v1/Connection/Disconnect";
+		public const string QB_REQUEST_TOKEN = "https://oauth.intuit.com/oauth/v1/get_request_token";
+		public const string QB_AUTHORIZE = "https://appcenter.intuit.com/Connect/Begin";
+		public const string QB_ACCESS_TOKEN = "https://oauth.intuit.com/oauth/v1/get_access_token";
+		public const string QB_DISCONNECT = "https://appcenter.intuit.com/api/v1/Connection/Disconnect";
 
-        public const string QB_CALLBACK = "/Quickbooks/RequestAccessToken";
+		public const string QB_CALLBACK = "/Quickbooks/RequestAccessToken";
 
-        // Account Creation Codes
-        public const int QB_ACCOUNT_NONPROFITINCOME = 1;
+		// Account Creation Codes
+		public const int QB_ACCOUNT_NONPROFITINCOME = 1;
 
-        // QuickBooks Objects
-        private static DataServices qbds;
-        private static ServiceContext qbsc;
-        private static OAuthConsumerContext qboacc;
-        private static OAuthSession qboas;
+		public QuickBooksHelper() { }
 
-        public QuickBooksHelper() { }
+		// Request constructor is needed for connection and disconnection
+		public QuickBooksHelper(HttpRequestBase request)
+		{
+			sBaseURL = request.Url.Scheme + "://" + request.Url.Authority;
+		}
 
-        // Request constructor is needed for connection and disconnection
-        public QuickBooksHelper(HttpRequestBase request)
-        {
-            sBaseURL = request.Url.Scheme + "://" + request.Url.Authority;
-        }
+		public IToken GetCurrentToken()
+		{
+			return itToken;
+		}
 
-        public IToken GetCurrentToken()
-        {
-            return itToken;
-        }
+		public void SetCurrentToken(IToken itNew)
+		{
+			itToken = itNew;
+		}
 
-        public void SetCurrentToken(IToken itNew)
-        {
-            itToken = itNew;
-        }
+		public string RequestOAuthToken()
+		{
+			itToken = getOAuthSession().GetRequestToken();
 
-        public string RequestOAuthToken()
-        {
-            itToken = getOAuthSession().GetRequestToken();
+			DbUtil.Db.ExecuteCommand("UPDATE dbo.QBConnections SET Active = 0");
 
-            DbUtil.Db.ExecuteCommand("UPDATE dbo.QBConnections SET Active = 0");
+			QBConnection qbc = new QBConnection();
+			qbc.Creation = DateTime.Now;
+			qbc.DataSource = "";
+			qbc.Token = itToken.Token;
+			qbc.UserID = Util.UserId;
+			qbc.Active = 1;
+			qbc.Secret = "";
+			qbc.RealmID = "";
 
-            QBConnection qbc = new QBConnection();
-            qbc.Creation = DateTime.Now;
-            qbc.DataSource = "";
-            qbc.Token = itToken.Token;
-            qbc.UserID = Util.UserId;
-            qbc.Active = 1;
-            qbc.Secret = "";
-            qbc.RealmID = "";
+			DbUtil.Db.QBConnections.InsertOnSubmit(qbc);
+			DbUtil.Db.SubmitChanges();
 
-            DbUtil.Db.QBConnections.InsertOnSubmit(qbc);
-            DbUtil.Db.SubmitChanges();
+			// generate a user authorize url for this token (which you can use in a redirect from the current site)
+			string authorizationLink = getOAuthSession().GetUserAuthorizationUrlForToken(itToken, getCallback());
 
-            // generate a user authorize url for this token (which you can use in a redirect from the current site)
-            string authorizationLink = getOAuthSession().GetUserAuthorizationUrlForToken(itToken, getCallback());
+			return authorizationLink;
+		}
 
-            return authorizationLink;
-        }
+		public bool RequestAccessToken(string sRealmID, string sVerifier, string sDataSource)
+		{
+			IToken accessToken = getOAuthSession().ExchangeRequestTokenForAccessToken(itToken, sVerifier);
 
-        public bool RequestAccessToken(string sRealmID, string sVerifier, string sDataSource)
-        {
-            IToken accessToken = getOAuthSession().ExchangeRequestTokenForAccessToken(itToken, sVerifier);
+			QBConnection qbc = (from i in DbUtil.Db.QBConnections
+									  where i.Active == 1
+									  select i).FirstOrDefault();
 
-            QBConnection qbc = (from i in DbUtil.Db.QBConnections
-                                where i.Active == 1
-                                select i).FirstOrDefault();
+			qbc.Token = accessToken.Token;
+			qbc.Secret = accessToken.TokenSecret;
+			qbc.RealmID = sRealmID;
+			qbc.DataSource = sDataSource;
+			DbUtil.Db.SubmitChanges();
 
-            qbc.Token = accessToken.Token;
-            qbc.Secret = accessToken.TokenSecret;
-            qbc.RealmID = sRealmID;
-            qbc.DataSource = sDataSource;
-            DbUtil.Db.SubmitChanges();
+			return true;
+		}
 
-            return true;
-        }
+		public QBConnection getActiveConnection()
+		{
+			return (from i in DbUtil.Db.QBConnections
+					  where i.Active == 1
+					  select i).FirstOrDefault();
+		}
 
-        public QBConnection getActiveConnection()
-        {
-            return (from i in DbUtil.Db.QBConnections
-                    where i.Active == 1
-                    select i).FirstOrDefault();
-        }
+		public bool Disconnect()
+		{
+			bool complete = doDisconnect();
 
-        public bool Disconnect()
-        {
-            bool complete = doDisconnect();
+			if (complete) DbUtil.Db.ExecuteCommand("UPDATE dbo.QBConnections SET Active = 0 WHERE Active = 1");
 
-            if (complete) DbUtil.Db.ExecuteCommand("UPDATE dbo.QBConnections SET Active = 0 WHERE Active = 1");
+			return complete;
+		}
 
-            return complete;
-        }
+		public string getToken()
+		{
+			return System.Configuration.ConfigurationManager.AppSettings["QuickBooksToken"] ?? "";
+		}
 
-        public string getToken()
-        {
-            return System.Configuration.ConfigurationManager.AppSettings["QuickBooksToken"] ?? "";
-        }
+		public string getKey()
+		{
+			return System.Configuration.ConfigurationManager.AppSettings["QuickBooksKey"] ?? "";
+		}
 
-        public string getKey()
-        {
-            return System.Configuration.ConfigurationManager.AppSettings["QuickBooksKey"] ?? "";
-        }
+		public string getSecret()
+		{
+			return System.Configuration.ConfigurationManager.AppSettings["QuickBooksSecret"] ?? "";
+		}
 
-        public string getSecret()
-        {
-            return System.Configuration.ConfigurationManager.AppSettings["QuickBooksSecret"] ?? "";
-        }
+		public string getCallback()
+		{
+			return sBaseURL + QB_CALLBACK;
+		}
 
-        public string getCallback()
-        {
-            return sBaseURL + QB_CALLBACK;
-        }
+		public string getBaseURL()
+		{
+			return sBaseURL;
+		}
 
-        public string getBaseURL()
-        {
-            return sBaseURL;
-        }
+		public OAuthConsumerContext getOAuthConsumerContext()
+		{
+			return new OAuthConsumerContext
+			{
+				ConsumerKey = getKey(),
+				SignatureMethod = SignatureMethod.HmacSha1,
+				ConsumerSecret = getSecret()
+			};
+		}
 
-        public OAuthConsumerContext getOAuthConsumerContext()
-        {
-            if (qboacc == null)
-            {
-                qboacc = new OAuthConsumerContext
-                {
-                    ConsumerKey = getKey(),
-                    SignatureMethod = SignatureMethod.HmacSha1,
-                    ConsumerSecret = getSecret()
-                };
-            }
+		public OAuthSession getOAuthSession()
+		{
+			return new OAuthSession(getOAuthConsumerContext(), QB_REQUEST_TOKEN, QB_AUTHORIZE, QB_ACCESS_TOKEN, getCallback());
+		}
 
-            return qboacc;
-        }
+		public ServiceContext getServiceContext()
+		{
+			var qbc = (from i in DbUtil.Db.QBConnections
+						  where i.Active == 1
+						  select i).SingleOrDefault();
 
-        public OAuthSession getOAuthSession()
-        {
-            if (qboas == null)
-            {
-                qboas = new OAuthSession(getOAuthConsumerContext(), QB_REQUEST_TOKEN, QB_AUTHORIZE, QB_ACCESS_TOKEN, getCallback());
-            }
+			var orv = new OAuthRequestValidator(qbc.Token, qbc.Secret, getKey(), getSecret());
 
-            return qboas;
-        }
+			if (qbc.DataSource == "QBO")
+				return new ServiceContext(orv, getToken(), qbc.RealmID, IntuitServicesType.QBO);
+			else
+				return new ServiceContext(orv, getToken(), qbc.RealmID, IntuitServicesType.QBD);
+		}
 
-        public ServiceContext getServiceContext()
-        {
-            if (qbsc == null)
-            {
-                var qbc = (from i in DbUtil.Db.QBConnections
-                           where i.Active == 1
-                           select i).SingleOrDefault();
+		public DataServices getDataService()
+		{
+			return new DataServices(getServiceContext());
+		}
 
-                var orv = new OAuthRequestValidator(qbc.Token, qbc.Secret, getKey(), getSecret());
+		public TokenBase getAccessToken()
+		{
+			var qbc = (from i in DbUtil.Db.QBConnections
+						  where i.Active == 1
+						  select i).SingleOrDefault();
 
-                if (qbc.DataSource == "QBO")
-                    qbsc = new ServiceContext(orv, getToken(), qbc.RealmID, IntuitServicesType.QBO);
-                else
-                    qbsc = new ServiceContext(orv, getToken(), qbc.RealmID, IntuitServicesType.QBD);
-            }
+			return new TokenBase { Token = qbc.Token, ConsumerKey = getKey(), TokenSecret = qbc.Secret };
+		}
 
-            return qbsc;
-        }
+		public bool doDisconnect()
+		{
+			OAuthSession oas = getOAuthSession();
+			oas.ConsumerContext.UseHeaderForOAuthParameters = true;
+			oas.AccessToken = getAccessToken();
 
-        public DataServices getDataService()
-        {
-            if (qbds == null)
-            {
-                qbds = new DataServices(getServiceContext());
-            }
+			IConsumerRequest icr = oas.Request();
 
-            return qbds;
-        }
+			icr = icr.Get();
+			icr = icr.ForUrl(QB_DISCONNECT);
+			icr = icr.SignWithToken();
+			var ret = icr.ToWebResponse();
 
-        public TokenBase getAccessToken()
-        {
-            var qbc = (from i in DbUtil.Db.QBConnections
-                       where i.Active == 1
-                       select i).SingleOrDefault();
+			if (ret.StatusCode.ToInt() == 200) return true;
+			else return false;
+		}
 
-            return new TokenBase { Token = qbc.Token, ConsumerKey = getKey(), TokenSecret = qbc.Secret };
-        }
-
-        public bool doDisconnect()
-        {
-            OAuthSession oas = getOAuthSession();
-            oas.ConsumerContext.UseHeaderForOAuthParameters = true;
-            oas.AccessToken = getAccessToken();
-
-            IConsumerRequest icr = oas.Request();
-
-            icr = icr.Get();
-            icr = icr.ForUrl(QB_DISCONNECT);
-            icr = icr.SignWithToken();
-            var ret = icr.ToWebResponse();
-
-            if (ret.StatusCode.ToInt() == 200) return true;
-            else return false;
-        }
-
-        public bool hasActiveConnection()
-        {
-            return (from i in DbUtil.Db.QBConnections
-                    where i.Active == 1
-                    select i).Count() > 0;
-        }
-    }
+		public bool hasActiveConnection()
+		{
+			return (from i in DbUtil.Db.QBConnections
+					  where i.Active == 1
+					  select i).Count() > 0;
+		}
+	}
 }
