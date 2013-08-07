@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
 		public ActionResult Export(ContributionSearchModel m)
         {
-            return new ExcelResult { Data = m.ContributionsList(), FileName = "contributions.xls" };
+            return new ExcelResult { Data = m.ContributionsListAll(), FileName = "contributions.xls" };
         }
     }
 }

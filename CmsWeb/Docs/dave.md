@@ -10,6 +10,7 @@
     - Non Finance user
     - MyData user
 - How Address edit works
+- Giving Page
 - Two columns (span6) on Personal Tab
 - Manage User dialog
 - Edit Relationship dialog
