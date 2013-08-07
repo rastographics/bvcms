@@ -529,6 +529,9 @@
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\demo_page.css" />
     <Content Include="Content\css\demo_table.css" />
+    <Content Include="Content\css\Fixups.min.css">
+      <DependentUpon>Fixups.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\images\ajax-loader.gif" />
     <Content Include="Content\css\img\ajax-loader.gif" />
     <Content Include="Content\css\jquery.dataTables.css" />
@@ -537,6 +540,9 @@
       <DependentUpon>main.css</DependentUpon>
     </Content>
     <Content Include="Content\css\person-main.css" />
+    <Content Include="Content\css\person-main.min.css">
+      <DependentUpon>person-main.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\responsive.css" />
     <Content Include="Content\font-awesome\css\font-awesome-ie7.css" />
