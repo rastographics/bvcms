@@ -27,32 +27,42 @@
                 return true;
         return false;
     };
-    $("form.ajax tr.section.notshown").live("click", function (ev) {
+    $("form.ajax tr.section").live("click", function (ev) {
         if ($.NotReveal(ev)) return;
         ev.preventDefault();
-        ev.stopPropagation();
-        $(this).removeClass("notshown").addClass("shown");
-        $(this).nextUntil("tr.section").find("div.collapse")
-            .off("hidden")
-            .on("hidden", function (e) { e.stopPropagation(); })
-            .collapse('show');
-    });
-    $("form.ajax tr.section.shown").live("click", function (ev) {
-        if ($.NotReveal(ev)) return;
-        ev.preventDefault();
-        $(this).nextUntil("tr.section").find("div.collapse")
-            .off("hidden")
-            .on("hidden", function (e) { e.stopPropagation(); })
-            .collapse('hide');
-        $(this).removeClass("shown").addClass("notshown");
+        $ToggleShown($(this));
     });
     $('form.ajax a[rel="reveal"]').live("click", function (ev) {
         ev.preventDefault();
-        $(this).parents("tr").next("tr").find("div.collapse")
+        $ToggleShown($(this).parents("tr"));
+    });
+    var $ToggleShown = function(tr) {
+        if (tr.hasClass("notshown"))
+            $ShowAll(tr);
+        else if (tr.hasClass("shown"))
+            $CollapseAll(tr);
+        else 
+            tr.next("tr").find("div.collapse")
+                .off('hidden')
+                .on("hidden", function (e) { e.stopPropagation(); })
+                .collapse("toggle");
+    };
+    var $ShowAll = function (tr) {
+        tr.nextUntil("tr.section").find("div.collapse")
             .off('hidden')
             .on("hidden", function (e) { e.stopPropagation(); })
-            .collapse("toggle");
-    });
+            .collapse("show");
+        tr.removeClass("notshown").addClass("shown");
+        tr.find("i").removeClass("icon-caret-right").addClass("icon-caret-down");
+    };
+    var $CollapseAll = function (tr) {
+        tr.nextUntil("tr.section").find("div.collapse")
+            .off("hidden")
+            .on("hidden", function (e) { e.stopPropagation(); })
+            .collapse('hide');
+        tr.removeClass("shown").addClass("notshown");
+        tr.find("i").removeClass("icon-caret-down").addClass("icon-caret-right");
+    };
     $("form.ajax tr.master").live("click", function (ev) {
         if ($.NotReveal(ev)) return;
         ev.preventDefault();

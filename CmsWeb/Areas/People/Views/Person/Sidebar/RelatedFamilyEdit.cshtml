@@ -1,0 +1,21 @@
+﻿@model CmsData.RelatedFamily
+<div class="modal-header">
+    <button class="close" data-dismiss="modal" type="button" aria-hidden="true"><i class="icon-remove-sign"></i></button>
+    <h3>Related Family</h3>
+</div>
+<div class="modal-body">
+    <fieldset>
+        <div class="control-group">
+            <label>Family Relationship Description</label>
+            <div class="controls">
+                @Html.TextAreaFor(m => m.FamilyRelationshipDesc, new { rows = 5, @class="input-xlarge" })
+                <span class="help-inline">refer to both sides of the relationship</span>
+            </div>
+        </div>
+    </fieldset>
+</div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+    <a href="/Person2/DeleteRelation/@ViewBag.Id/@Model.FamilyId/@Model.RelatedFamilyId" class="btn btn-danger delete">Delete</a>
+    <a href="/Person2/UpdateRelation/@ViewBag.Id/@Model.FamilyId/@Model.RelatedFamilyId" class="btn btn-primary save">Save Changes</a>
+</div>

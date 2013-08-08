@@ -1,115 +1,53 @@
-﻿td.right, th.right {
-    text-align: right;
+﻿
+.btn-group.group-dropdown {
+  margin: 0px;
+  padding: 0px;
+  margin-left: -1px;
 }
-
-td.noborder, th.noborder {
-    border: none!important;
+.btn-group.group-dropdown .dropdown-toggle {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
 }
-
-td.left, th.left {
-    text-align: left;
+.btn-group.group-dropdown:first-child {
+  margin: 0px;
+  padding: 0px;
+  margin-right: -1px;
 }
-
-td.center, th.center {
-    text-align: center;
+.btn-group.group-dropdown:first-child .dropdown-toggle {
+  -webkit-border-top-left-radius: 4px;
+  -moz-border-radius-topleft: 4px;
+  border-top-left-radius: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  -moz-border-radius-bottomleft: 4px;
+  border-bottom-left-radius: 4px;
 }
-
-/* Dave: I am overriding this to make it look like bootstrap's divider */
-.dropdown-menu .divider {
-    /*margin: -0.25em 1px;*/
-    margin: auto;
+.btn-group.group-dropdown:first-child .dropdown-toggle.btn-large {
+  -webkit-border-top-left-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  border-top-left-radius: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  border-bottom-left-radius: 6px;
 }
-
-.datepicker {
-    z-index: 2000;
+.btn-group.group-dropdown:last-child {
+  margin: 0px;
+  padding: 0px;
+  margin-left: -1px;
 }
-
-/* Dave: I am adding these so that the controls are not spaced so far apart 
-   todo: test remove this */
-.control-group {
-    margin-bottom: auto;
+.btn-group.group-dropdown:last-child .dropdown-toggle {
+  -webkit-border-top-right-radius: 4px;
+  -moz-border-radius-topright: 4px;
+  border-top-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  -moz-border-radius-bottomright: 4px;
+  border-bottom-right-radius: 4px;
 }
-
-.form-horizontal .control-group {
-    margin-bottom: auto;
-}
-
-.editable-click,
-a.editable-click,
-a.editable-click:hover {
-    text-decoration: none;
-    border-bottom: none;
-}
-
-form.form-horizontal.onecol .control-group {
-    float: none;
-    width: auto;
-    *width: auto;
-    margin-bottom: 1em;
-}
-
-.section span {
-    font-style: italic;
-    font-size: 110%;
-}
-
-table.expanding div.indent {
-    padding-left: 2em;
-}
-
-table.expanding a[rel="reveal"] {
-    text-decoration: none;
-}
-
-table.expanding tr.details td {
-    border-top: none;
-    padding: 0;
-}
-
-table.enrollments tr.details td:first-child {
-    padding-left: 1em;
-}
-
-/* Dave: I am using this to do my own table striping in this special case 
-    todo: test remove this*/
-table.expanding tr.oddrow > td {
-    background-color: #f9f9f9;
-}
-
-.edit-inline-label {
-    cursor: pointer;
-}
-
-    .edit-inline-label:after {
-        font-family: FontAwesome;
-        content: "\f040";
-        display: inline-block;
-        color: #CCC;
-        margin-left: 5px;
-    }
-
-#profile-header div.portrait {
-    position: absolute;
-    left: 0;
-    top: 10px;
-    width: 90px;
-    height: 120px;
-    overflow: hidden;
-    background-repeat: no-repeat;
-    background-position: center top;
-}
-
-#sidebar #family_members li a div.headshot {
-    width: 38px;
-    border-width: 1px;
-    height: 50px;
-    float: left;
-    margin-right: 10px;
-    overflow: hidden;
-    background-repeat: no-repeat;
-    background-position: center top;
-}
-.typeahead a {
-    color: white;
-    text-decoration: none;
+.btn-group.group-dropdown:last-child .dropdown-toggle.btn-large {
+  -webkit-border-top-right-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  border-top-right-radius: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
+  border-bottom-right-radius: 6px;
 }

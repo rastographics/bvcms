@@ -1,0 +1,35 @@
+﻿@model CmsWeb.Areas.People.Models.Person.PersonModel
+<div class="tabbable primary-tabs">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#personal" data-toggle="tab">Personal</a></li>
+        <li><a id="enrollmentLink" href="#enrollment" data-toggle="tab">Involvement</a></li>
+        <li><a id="membershipLink" href="#membership" data-toggle="tab">Membership</a></li>
+        @if (Model.Person.CanUserSeeGiving)
+        {
+            <li><a href="#giving" data-toggle="tab" class="ajax">Giving</a></li>
+        }
+        @*<li><a href="#account" data-toggle="tab" class="ajax">Account</a></li>*@
+        <li><a href="#contacts" data-toggle="tab" class="ajax">Contacts</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="personal">
+            @Html.Partial("Main/PersonalDisplay", Model.basic)
+        </div>
+        <div class="tab-pane" id="enrollment">
+            @Html.Partial("TabsEnrollment", Model)
+        </div>
+        <div class="tab-pane" id="membership">
+            @Html.Partial("TabsMembership", Model)
+        </div>
+        @if (Model.Person.CanUserSeeGiving)
+        {
+            <div class="tab-pane" id="giving" data-link="/Person2/Giving/@Model.PeopleId"></div>
+        }
+        @*        <div class="tab-pane" id="account" data-link="/Person2/Account/@Model.PeopleId"></div>*@
+        @if (User.IsInRole("Access"))
+        {
+            <div class="tab-pane" id="contacts" data-link="/Person2/Contacts/@Model.PeopleId"></div>
+        }
+    </div>
+</div>

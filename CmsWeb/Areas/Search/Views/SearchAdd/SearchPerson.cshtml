@@ -1,9 +1,8 @@
 ﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
-@* Dave: note the onecol class, I had to put that in because basic forms from bootstrap seem to have been globally changed *@
-<form class="form-horizontal onecol ajax" action="/SearchAdd2/Results" method="POST">
+<form class="form-horizontal ajax" action="/SearchAdd2/Results" method="POST">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
-        <h3>Search for Person</h3>
+        <h3>Search for Person to @Model.Title</h3>
     </div>
     <div class="modal-body">
         <fieldset class="display">

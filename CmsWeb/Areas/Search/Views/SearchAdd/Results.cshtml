@@ -22,6 +22,7 @@
             <table id="people" class="table expanding table-condensed table-hover">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Name</th>
                         <th>Address</th>
                         <th>Age</th>
@@ -29,7 +30,8 @@
                 </thead>
                 <tbody>
                     <tr class="section notshown">
-                        <td colspan="3"><a rel="reveal" href="#" class="reveal"><i class="icon-info-sign"></i></a><span>Toggle Details Display</span></td>
+                        <td><a rel="reveal" href="#" class="reveal"><i class="icon-caret-right"></i></a></td>
+                        <td colspan="3"><span>Toggle Details Display</span></td>
                     </tr>
                     @foreach (var c in Model.PeopleList())
                     {
@@ -38,18 +40,21 @@
                         <tr class="master @oddrow">
                             @if (Model.OnlyOne)
                             {
-                                <td><a rel="reveal" href="#" class="reveal"><i class="icon-info-sign"></i></a><a href="/SearchAdd2/Select/@c.PeopleId" class="commit">@c.Name</a></td>
+                                <td><a rel="reveal" href="#" class="reveal"><i class="icon-info-sign"></i></a></td>
+                                <td><a href="/SearchAdd2/Select/@c.PeopleId" class="commit">@c.Name</a></td>
                             }
                             else
                             {
-                                <td><a rel="reveal" href="#" class="reveal"><i class="icon-info-sign"></i></a><a href="/SearchAdd2/Select/@c.PeopleId" class="ajax">@c.Name</a></td>
+                                <td><a rel="reveal" href="#" class="reveal"><i class="icon-info-sign"></i></a></td>
+                                <td><a href="/SearchAdd2/Select/@c.PeopleId" class="ajax">@c.Name</a></td>
                             }
                             <td class="addrcol" title="click for more info">@c.Address</td>
                             <td>@c.Age</td>
                         </tr>
                         <tr class="details @oddrow">
+                            <td></td>
                             <td colspan="3">
-                                <div class="collapse indent">
+                                <div class="collapse">
                                     @c.ToolTip
                                 </div>
                             </td>
@@ -58,7 +63,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="3">
+                        <td colspan="4">
                             <div class="pagination pagination-mini">
                                 @Html.Partial("Pager3", Model.Pager)
                             </div>

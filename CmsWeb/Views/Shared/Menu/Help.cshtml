@@ -1,0 +1,10 @@
+﻿<a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
+    <i class="icon-question-sign"></i>
+    <span>Help</span>
+    <span class="caret"></span>
+</a>
+<ul class="dropdown-menu pull-right">
+    @Helper.LiAnchorLink("Help Documentation", @Util.HelpLink(Util.Helpfile), true, "_blank")
+    @Helper.LiJQueryIdLink("Email Support", "emailsupport")
+    @Helper.LiAnchorLink("About BVCMS", "/Home/About")
+</ul>

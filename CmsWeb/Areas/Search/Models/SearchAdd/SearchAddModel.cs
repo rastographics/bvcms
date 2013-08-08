@@ -33,6 +33,41 @@ namespace CmsWeb.Areas.Search.Models
         }
         public PagerModel2 Pager { get; set; }
         public string type { get; set; }
+
+        public string Title
+        {
+            get
+            {
+                switch (type.ToLower())
+                {
+                    case "addpeople":
+                    case "menu":
+                        return "Add to Database";
+                    case "addtotag":
+                        return "Add to Tag";
+                    case "family":
+                        return "Add to Family";
+                    case "relatedfamily":
+                        return "Add as Related Family";
+                    case "org":
+                        return "Add as Member of Organization";
+                    case "pending":
+                        return "Add as Pending Member of Organization";
+                    case "visitor":
+                        return "Add as Visitor to Meeting";
+                    case "registered":
+                        return "Add as Registered for Future Meeting";
+                    case "contactee":
+                        return "Add as Contactee for Ministry Contact";
+                    case "contactor":
+                        return "Add as Contactor for Ministry Contact";
+                    case "contributor":
+                        return "Add for a Gift";
+                }
+                return "";
+            }
+        }
+
         private string[] noaddtypes = { "relatedfamily", "mergeto", "contactor", "taskdelegate", "taskowner", "taskdelegate2" };
         private string[] usersonlytypes = { "taskdelegate", "taskowner", "taskdelegate2" };
         private string[] onlyonetypes = { "taskdelegate", "taskowner", "taskdelegate2", "mergeto", "relatedfamily" };
@@ -110,7 +145,7 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<PeopleInfo> PeopleList()
         {
             var q = FetchPeople().Skip(Pager.StartRow).Take(Pager.PageSize);
-            return PeopleList(q);            
+            return PeopleList(q);
         }
 
         private IQueryable<CmsData.Person> FetchPeople()
@@ -134,12 +169,12 @@ namespace CmsWeb.Areas.Search.Models
                 return query;
 
             var db = DbUtil.Db;
-			if (Util2.OrgMembersOnly)
-				query = db.OrgMembersOnlyTag2().People(db);
-			else if (Util2.OrgLeadersOnly)
-				query = db.OrgLeadersOnlyTag2().People(db);
+            if (Util2.OrgMembersOnly)
+                query = db.OrgMembersOnlyTag2().People(db);
+            else if (Util2.OrgLeadersOnly)
+                query = db.OrgLeadersOnlyTag2().People(db);
             else
-    			query = db.People.AsQueryable();
+                query = db.People.AsQueryable();
 
             if (UsersOnly)
                 query = query.Where(p => p.Users.Any(uu => uu.UserRoles.Any(ur => ur.Role.RoleName == "Access")));

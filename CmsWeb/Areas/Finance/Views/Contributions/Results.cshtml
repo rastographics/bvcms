@@ -28,8 +28,8 @@
     <tr>
         <td title="@c.ContributionId">@c.Status</td>
         <td><a href="/FinanceReports/ContributionYears/@c.PeopleId">@c.Name</a></td>
-        <td>@c.ContributionDate.FormatDate()</td>
-        <td class="right"><a href="/Bundle/Index/@c.BundleId">@c.ContributionAmount.ToString2("N2")</a></td>
+        <td>@c.ContributionDate.ToShortDateString()</td>
+        <td class="right"><a href="/Bundle/Index/@c.BundleId">@c.ContributionAmount.ToString("N2")</a></td>
         <td>@c.ContributionType</td>
         <td>@c.Fund</td>
         <td>@c.CheckNo</td>

@@ -225,7 +225,7 @@ namespace CmsData
             foreach (var u in this.Users)
                 u.PeopleId = targetid;
             TrySubmit(db, "Users");
-            
+
             if (this.Volunteers.Any() && !toperson.Volunteers.Any())
                 foreach (var v in this.Volunteers)
                 {
@@ -338,7 +338,7 @@ namespace CmsData
             if (mg == null)
             {
                 var v = this.ManagedGivings.FirstOrDefault();
-                if (v!=null)
+                if (v != null)
                 {
                     db.ManagedGivings.InsertOnSubmit(new ManagedGiving()
                                 {
@@ -562,7 +562,7 @@ namespace CmsData
                 if (Util.UserPeopleId.HasValue
                         && Util.UserPeopleId.Value != Db.NewPeopleManagerId
                         && HttpContext.Current.User.IsInRole("Access")
-                        && !HttpContext.Current.User.IsInRole("OrgMembersOnly") 
+                        && !HttpContext.Current.User.IsInRole("OrgMembersOnly")
                         && !HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
                     Task.AddNewPerson(p.PeopleId);
                 else
@@ -929,6 +929,20 @@ namespace CmsData
                 return _CanUserSee.Value;
             }
         }
+        private bool? _CanUserSeeGiving;
+        public bool CanUserSeeGiving
+        {
+            get
+            {
+                if (!_CanUserSeeGiving.HasValue)
+                    _CanUserSeeGiving = Util.UserPeopleId == PeopleId
+                                        || HttpContext.Current.User.IsInRole("Finance")
+                                        || (PositionInFamilyId == PositionInFamily.PrimaryAdult 
+                                            && Family.People.Any(m => m.PeopleId == Util.UserPeopleId)
+                                            && ContributionOptionsId == EnvelopeOptionCode.Joint);
+                return _CanUserSeeGiving.Value;
+            }
+        }
 
         //partial void OnZipCodeChanged()
         //{
@@ -1282,6 +1296,55 @@ namespace CmsData
             };
             TasksAboutPerson.Add(t);
             return t;
+        }
+        public void UpdatePosition(CMSDataContext db, int value)
+        {
+            var psb = new StringBuilder();
+            UpdateValue(psb, "PositionInFamilyId", value);
+            LogChanges(db, psb, Util.UserPeopleId.Value);
+            db.SubmitChanges();
+        }
+        public void UpdateCampus(CMSDataContext db, int value)
+        {
+            var psb = new StringBuilder();
+            var campusid = CampusId = value.ToInt();
+            if (campusid == 0)
+                campusid = null;
+            UpdateValue(psb, "CampusId", campusid);
+            LogChanges(db, psb, Util.UserPeopleId.Value);
+            db.SubmitChanges();
+        }
+        public void UploadPicture(CMSDataContext db, System.IO.Stream stream)
+        {
+            if (Picture == null)
+                Picture = new Picture();
+            var bits = new byte[stream.Length];
+            stream.Read(bits, 0, bits.Length);
+            var p = Picture;
+            p.CreatedDate = Util.Now;
+            p.CreatedBy = Util.UserName;
+            p.SmallId = ImageData.Image.NewImageFromBits(bits, 120, 120).Id;
+            p.MediumId = ImageData.Image.NewImageFromBits(bits, 320, 400).Id;
+            p.LargeId = ImageData.Image.NewImageFromBits(bits, 570, 800).Id;
+            LogPictureUpload(db, Util.UserPeopleId ?? 1);
+            db.SubmitChanges();
+        }
+        public void SplitFamily(CMSDataContext db)
+        {
+            var f = new Family
+            {
+                CreatedDate = Util.Now,
+                CreatedBy = Util.UserId1,
+                AddressLineOne = PrimaryAddress,
+                AddressLineTwo = PrimaryAddress2,
+                CityName = PrimaryCity,
+                StateCode = PrimaryState,
+                ZipCode = PrimaryZip,
+                HomePhone = Family.HomePhone
+            };
+            f.People.Add(this);
+            db.Families.InsertOnSubmit(f);
+            db.SubmitChanges();
         }
     }
 }

@@ -2,10 +2,13 @@
 <html>
 <head>
     <title>@ViewBag.Title</title>
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />        
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700' rel='stylesheet' type='text/css'>
     @Fingerprint.Css("/content/css/new2css.css")
-    @Fingerprint.Css("/content/css/main.css")
+    <link rel="stylesheet" href="@Fingerprint.Tag("/Content/font-awesome/css/font-awesome.css")" />
+    @*    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">*@
+    @Fingerprint.Css("/content/css/Fixups.css")
     @RenderSection("head", required: false)
     <style type="text/css">
         @{ var bkcolor = DbUtil.Db.Setting("HeaderBackground", ""); }
@@ -21,16 +24,12 @@
     <body>
         <div class="page-container">
             @Html.Partial("Notices")
-            @Html.Partial("NewHeader2")
-            <section id="main" class="container">
-                <section class="sixteen columns">
-                    @RenderBody()
-                </section>
-            </section>
+            @Html.Partial("NewHeader3")
+            @RenderBody()
             @Html.Partial("Footer")
             @Html.Partial("Dialogs")
             @RenderSection("PopupsPlaceholder", required: false)
-            <img src="/images/ajax-loader.gif" id="loading-indicator" style="display:none" />
+            <img src="/images/ajax-loader.gif" id="loading-indicator" style="display: none" />
         </div>
     </body>
 </html>

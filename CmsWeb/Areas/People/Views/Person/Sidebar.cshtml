@@ -1,0 +1,9 @@
+﻿@model CmsWeb.Areas.People.Models.Person.PersonModel
+<div id="sidebar">
+    <div id="family-div">
+        @Html.Partial("Sidebar/FamilyMembers", Model)
+    </div>
+    <div id="related-families-div">
+        @Html.Partial("Sidebar/RelatedFamilies", Model)
+    </div>
+</div>

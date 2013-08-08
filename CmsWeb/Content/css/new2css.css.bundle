@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bundle minify="true" runOnBuild="true" output="new2css.css">
+<bundle minify="true" runOnBuild="false" output="new2css.css">
   <!--The order of the <file> elements determines the order of them when bundled.-->
   <file>/Content/css/normalize.css</file>
   <file>/Content/css/bvcms.css</file>
   <file>/Content/bootstrap-modal/css/bootstrap-modal.css</file>
-  <file>/Content/css/font-awesome.css</file>
+  <file>/Content/css/yamm.css</file>
   <file>/Content/css/chosen.css</file>
   <file>/Content/moment-datepicker/datepicker.css</file>
   <file>/Content/css/bootstrap-editable.css</file>

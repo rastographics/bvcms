@@ -1,0 +1,73 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.Person.PreviousEnrollments
+@{
+    var pOrgType = "Other";
+    var rownum = 0;
+}
+<form class="non-modal ajax">
+    <div class="pagination pagination-mini">
+        @Html.Partial("Pager3", Model.Pager)
+    </div>
+    <table class="enrollments table table-condensed table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th>@Model.Pager.SortLink("Organization")</th>
+                <th>@Model.Pager.SortLink("Enroll Date")</th>
+                <th>@Model.Pager.SortLink("Drop Date")</th>
+                <th>MemberType</th>
+                <th>AttendPct</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var om in Model.Enrollments())
+            {
+                rownum++;
+                var oddrow = rownum % 2 == 0 ? "oddrow" : "";
+                if (om.OrgType != pOrgType)
+                {
+                    pOrgType = om.OrgType;
+                <tr class="section notshown">
+                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="icon-caret-right"></i></a></td>
+                    <td colspan="5"><span>@om.OrgType</span></td>
+                </tr>
+                }
+                if (User.IsInRole("Access"))
+                {
+                <tr class="organization @oddrow">
+                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="icon-info-sign"></i></a></td>
+                    <td><a href="/Organization/Index/@om.OrgId" class="reveal">@om.Name</a></td>
+                    <td>@om.EnrollDate.FormatDate()</td>
+                    <td>@om.DropDate.FormatDate()</td>
+                    <td><a target="_blank" href="/TransactionHistory/Index/@om.PeopleId?oid=@om.OrgId">@om.MemberType</a></td>
+                    <td>@(om.AttendPct > 0 ? om.AttendPct.Value.ToString("N1") : "")</td>
+                </tr>
+                <tr class="details @oddrow">
+                    <td colspan="6">
+                        <div class="collapse indent">
+                            <strong>Program:</strong> <span>@om.ProgramName,</span>
+                            <strong>Division:</strong> <span>@om.DivisionName</span>
+                        </div>
+                    </td>
+                </tr>
+                }
+                else
+                {
+                <tr>
+                    <td></td>
+                    <td class="indent"><span title="@om.DivisionName">@om.Name</span></td>
+                    <td>@om.EnrollDate.FormatDate()</td>
+                    <td>@om.DropDate.FormatDate()</td>
+                    <td>@om.MemberType</td>
+                    <td>@(om.AttendPct.HasValue ? om.AttendPct.Value.ToString("N1") : "")</td>
+                </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <div class="pagination pagination-mini">
+        @Html.Partial("Pager3", Model.Pager)
+    </div>
+</form>
+
+

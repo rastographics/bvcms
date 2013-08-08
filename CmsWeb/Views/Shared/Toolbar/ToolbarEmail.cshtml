@@ -1,0 +1,16 @@
+﻿@using CmsData.Classes.Twilio
+@{ var twilio = TwilioHelper.userSendSMS(Util.UserId); }
+<ul class="dropdown-menu toolbar-email pull-left">
+    <li class="header">Email</li>
+    <li><a href='/Email/Index/@ViewBag.queryid'>Individuals</a></li>
+    <li><a href='/Email/Index/@ViewBag.queryid?parents=true'>Parents</a></li>
+    @if ((bool?)ViewBag.ParentOrgContext == true)
+    {
+        <li><a href='/Email/Index/@ViewBag.leadersqid'>Leaders under this org</a></li>
+        <li><a href='/Email/Index/@ViewBag.membersqid'>Members under this org</a></li>
+    }
+    <li class="header">SMS</li>
+    <li>
+        <a href="@(twilio ? "/SMS/Options/@ViewBag.queryid" : "http://www.bvcms.com/Doc/TextingTwilio")">Send Text</a>
+    </li>
+</ul>

@@ -1,0 +1,46 @@
+﻿@using CmsWeb.Areas.People.Models.Person
+@model PersonModel
+@{
+    var fm = new FamilyModel(Model.PeopleId);
+}
+<div class="sidebar_title group">
+    <h2>Related Families</h2>
+    @if (Model.Person.CanUserEditAll)
+    {
+        <div class="dropdown">
+            <a href="/SearchAdd2/Dialog/RelatedFamily/@Model.PeopleId" class="searchadd dropdown-toggle"><i class="icon-plus-sign"></i></a>
+           @* <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-plus-sign"></i></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="/SearchAdd2/Dialog/RelatedFamily/@Model.PeopleId" class="searchadd">Add Related Family</a></li>
+            </ul>*@
+        </div>
+    }
+</div>
+<div class="sidebar_content">
+    <ul id="family_related" class="unstyled">
+        @foreach (var f in fm.RelatedFamilies())
+        {
+            if (Model.Person.CanUserEditAll)
+            {
+            <li class="with-edit relation-item">
+                <a id="rf-@f.Id1-@f.Id2" href="/Person2/RelatedFamilyEdit/@Model.PeopleId/@f.Id1/@f.Id2" class="edit editable-click"><i class="icon-pencil"></i></a>
+                <p>
+                    <a href="/Person2/@f.PeopleId">@f.Name</a>
+                    <span class="summary relation-description">
+                        @f.Description
+                    </span>
+                </p>
+            </li>
+            }
+            else
+            {
+            <li>
+                <p>
+                    <a href="/Person2/@f.PeopleId">@f.Name</a>
+                    <span class="summary" title="Description of Relationship">@f.Description </span>
+                </p>
+            </li>
+            }
+        }
+    </ul>
+</div>

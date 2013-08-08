@@ -233,12 +233,12 @@ p { font-size: 11px; }
                 var total = 0m;
                 foreach (var c in APIContribution.contributions(Db, ci, FromDate, toDate))
                 {
-                    t.AddCell(new Phrase(c.ContributionDate.FormatDate(), font));
+                    t.AddCell(new Phrase(c.ContributionDate.ToShortDateString(), font));
                     t.AddCell(new Phrase(c.Fund, font));
 
                     cell = new PdfPCell(t.DefaultCell);
                     cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                    cell.Phrase = new Phrase(c.ContributionAmount.ToString2("N2"), font);
+                    cell.Phrase = new Phrase(c.ContributionAmount.ToString("N2"), font);
                     t.AddCell(cell);
 
                     cell = new PdfPCell(t.DefaultCell);
@@ -256,7 +256,7 @@ p { font-size: 11px; }
                     else
                         t.AddCell(new Phrase("", font));
 
-                    total += (c.ContributionAmount ?? 0);
+                    total += (c.ContributionAmount);
                 }
                 t.DefaultCell.Border = Rectangle.TOP_BORDER;
                 cell = new PdfPCell(t.DefaultCell);
@@ -351,7 +351,7 @@ p { font-size: 11px; }
 
                     foreach (var c in giftsinkind)
                     {
-                        t.AddCell(new Phrase(c.ContributionDate.FormatDate(), font));
+                        t.AddCell(new Phrase(c.ContributionDate.ToShortDateString(), font));
                         cell = new PdfPCell(t.DefaultCell);
 
                         cell.Phrase = new Phrase(c.Fund, font);
@@ -391,7 +391,7 @@ p { font-size: 11px; }
                     t.AddCell(new Phrase(c.Fund, font));
                     cell = new PdfPCell(t.DefaultCell);
                     cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                    cell.Phrase = new Phrase(c.ContributionAmount.ToString2("N2"), font);
+                    cell.Phrase = new Phrase(c.ContributionAmount.ToString("N2"), font);
                     t.AddCell(cell);
                     t.AddCell(new Phrase("", boldfont));
                 }

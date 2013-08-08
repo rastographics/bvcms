@@ -1,0 +1,17 @@
+﻿@model CmsWeb.Areas.People.Models.Person.PersonModel
+@Html.Hidden("FutureLink", "/Person2/AttendanceFuture/" + Model.PeopleId)
+<ul class="nav nav-tabs subnav">
+    <li class="active"><a id="currentLink" href="#current" data-toggle="tab" class="ajax">Current</a></li>
+    <li><a href="#previous" data-toggle="tab" class="ajax">Previous</a></li>
+    <li><a href="#pending" data-toggle="tab" class="ajax">Pending</a></li>
+    <li><a  href="#attends" data-toggle="tab" class="ajax">Attendance</a></li>
+    <li><a href="#registrations" data-toggle="tab" class="ajax">Registrations</a></li>
+</ul> 
+<div class="tab-content">
+    <div class="tab-pane active" id="current" data-link="/Person2/EnrollGrid/@Model.PeopleId"></div>
+    <div class="tab-pane" id="previous" data-link="/Person2/PrevEnrollGrid/@Model.PeopleId"></div>
+    <div class="tab-pane" id="pending" data-link="/Person2/PendingEnrollGrid/@Model.PeopleId"></div>
+    <div class="tab-pane" id="attends" data-link="/Person2/Attendance/@Model.PeopleId"></div>
+    <div class="tab-pane" id="registrations" data-link="/Person2/Registrations/@Model.PeopleId"></div>
+</div>
+

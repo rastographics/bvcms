@@ -1,0 +1,50 @@
+﻿@model CmsWeb.Areas.People.Models.Person.BasicPersonInfo
+<form class="form form-horizontal ajax span12" method="post">
+    @FormAction()
+    <div class="row-fluid">
+        <div class="span6 display">
+            @Html.EditorFor(m => m.Title)
+            @Html.EditorFor(m => m.FirstName)
+            @Html.EditorFor(m => m.GoesBy)
+            @Html.EditorFor(m => m.MiddleName)
+            @Html.EditorFor(m => m.LastName)
+            @Html.EditorFor(m => m.AltName)
+            @Html.EditorFor(m => m.FormerName)
+            @Html.EditorFor(m => m.Suffix)
+        </div>
+        <div class="span6 display column2">
+            @Html.EditorFor(m => m.Gender)
+            @Html.EditorFor(m => m.Birthday)
+            @Html.EditorFor(m => m.Marital)
+            @Html.EditorFor(m => m.WeddingDate)
+            @Html.EditorFor(m => m.Occupation, "Typeahead", new { link = "/Person2/Occupations" })
+            @Html.EditorFor(m => m.Employer, "Typeahead", new { link = "/Person2/Employers" })
+            @Html.EditorFor(m => m.School, "Typeahead", new { link = "/Person2/Schools" })
+            @Html.EditorFor(m => m.Grade)
+        </div>
+    </div>
+    <hr/>
+    <div class="row-fluid">
+        <div class="span6 display">
+            @Html.EditorFor(m => m.PrimaryEmail)
+            @Html.EditorFor(m => m.AltEmail)
+            @Html.EditorFor(m => m, "DoNotContact")
+        </div>
+        <div class="span6 display column2">
+            @Html.EditorFor(m => m.Mobile)
+            @Html.EditorFor(m => m.Work)
+            @Html.EditorFor(m => m.HomePhone)
+        </div>
+    </div>
+    @FormAction()
+</form>
+
+@helper FormAction()
+{
+    <div class="form-actions">
+        <span class="pull-right">
+            <a href="/Person2/PersonalDisplay/@Model.PeopleId" class="btn ajax">Cancel</a>
+            <a href="/Person2/PersonalUpdate/@Model.PeopleId" class="btn btn-primary ajax">Save Changes</a>
+        </span>
+    </div>
+}

@@ -32,5 +32,10 @@
     $("#NewSearch").click(function () {
         form.reset();
     });
+    $("#export").click(function(ev) {
+        var f = $(this).closest('form');
+        f.attr("action", "/Finance/Contributions/Export");
+        f.submit();
+    });
     $('.tip').tooltip({ showBody: "|" });
 });

@@ -22,7 +22,7 @@
         </p>
         @foreach (var o in Model.OrgMoveList())
         {
-            <div><a class="move" title="@o.Tip" href="/OrgMemberDialog2/MoveSelect/@o.FromOrgId/@o.PeopleId/@o.ToOrgId">@o.OrgName</a></div>
+            <div><a class="movemember" title="@o.Tip" href="/OrgMemberDialog2/MoveSelect/@o.FromOrgId/@o.PeopleId/@o.ToOrgId">@o.OrgName</a></div>
             <div class="indent"><i>@Html.Raw(o.Tip)</i></div>
         }
         <div class="pagination pagination-mini">

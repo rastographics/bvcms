@@ -21,7 +21,8 @@ namespace CmsWeb.Models
                     select new
                     {
                         PeopleId = p.PeopleId,
-                        FirstName = p.PreferredName,
+                        FirstName = p.FirstName,
+                        GoesBy = p.NickName,
                         LastName = p.LastName,
                         Address = p.PrimaryAddress,
                         City = p.PrimaryCity,

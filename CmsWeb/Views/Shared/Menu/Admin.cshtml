@@ -1,0 +1,79 @@
+﻿@{
+    var admin = User.IsInRole("Admin");
+    var manageemails = User.IsInRole("ManageEmails");
+    var managetrans = User.IsInRole("ManageTransactions");
+    var edit = User.IsInRole("Edit");
+    var design = User.IsInRole("Design");
+    var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
+    var quickbooks = DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true";
+}
+@if (admin || manageemails || managetrans || edit || design || finance)
+{
+    <li class="dropdown">
+        @if (finance)
+        {
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin</a>
+            <ul class="dropdown-menu" style="margin-left: -200px">
+                <li>
+                    <div class="toolbar-menu row-fluid">
+                        <ul class="span6 unstyled pull-left">
+                            <li class="header">Contributions</li>
+                            @Helper.LiAnchorLink("Bundles", "/Bundles/")
+                            @Helper.LiAnchorLink("Search All", "/Finance/Contributions/")
+
+                            <li class="header">Reports</li>
+                            @Helper.LiAnchorLink("Statements (All)", "/Statements/", true, "_blank")
+                            @Helper.LiAnchorLink("GL Extract", "/Contributions/GLExtract.aspx")
+                            @Helper.LiAnchorLink("Totals by Fund", "/FinanceReports/TotalsByFund/")
+                            @Helper.LiAnchorLink("Donor Totals by Range", "/FinanceReports/DonorTotalsByRange/")
+                            @Helper.LiAnchorLink("Totals by Fund Age Range", "/Contributions/Reports/TotalsByFundAgeRange.aspx", true, "_blank")
+                            @Helper.LiAnchorLink("Totals by Fund Age Range (pledges included)", "/Contributions/Reports/TotalsByFundAgeRange.aspx?pledged=both", true, "_blank")
+                            @Helper.LiAnchorLink("Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx", true, "_blank")
+                            @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", true, "_blank")
+                            @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
+                            @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManageGiving/")
+                            @Helper.LiAnchorLink("QuickBooks", "/QuickBooks/", quickbooks)
+                        </ul>
+                        <ul class="span6 unstyled pull-left">
+                            @AdminList(admin, design, managetrans, edit, manageemails, true)
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        }
+        else
+        {
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin</a>
+            <ul class="dropdown-menu">
+                @AdminList(admin, design, managetrans, edit, manageemails, false)
+            </ul>
+        }
+    </li>
+}
+@helper AdminList(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance)
+{
+    @Helper.LiHeader("Settings", admin || finance || design)
+    @Helper.LiAnchorLink("Lookups", "/Setup/Lookup/", admin || finance)
+    @Helper.LiAnchorLink("Metro Zips", "/Setup/MetroZip/", admin)
+    @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
+    @Helper.LiAnchorLink("System", "/Setup/Setting/", admin)
+    @Helper.LiAnchorLink("Twilio Setup", "/Setup/Twilio/", admin)
+    @Helper.LiAnchorLink(Util2.OrgLeadersOnly ?
+        "OrgLeadersOnly is on" : "OrgLeadersOnly is off",
+        "/Admin/ToggleOrgLeadersOnly.ashx", admin)
+
+    @Helper.LiHeader("Manage", admin || manageemails || edit || managetrans)
+    @Helper.LiAnchorLink("Activity Log", "/Manage/Users/LastActivity/", admin)
+    @Helper.LiAnchorLink("Check-in Activity", "/Manage/CheckinTime/", admin || edit)
+    @Helper.LiAnchorLink("Divisions", "/Setup/Division/", admin)
+    @Helper.LiAnchorLink("Emails", "/Manage/Emails/", admin || manageemails)
+    @Helper.LiAnchorLink("Programs", "/Setup/Program/", admin)
+    @Helper.LiAnchorLink("SMS Messages", "/Manage/SMS/", admin)
+    @Helper.LiAnchorLink("Transactions", "/Manage/Transactions/", admin || managetrans)
+    @Helper.LiAnchorLink("Users", "/Manage/Users/", admin)
+
+    @Helper.LiHeader("Batch Actions", admin)
+    @Helper.LiAnchorLink("Update for a Tag", "/Batch/UpdateFields", admin)
+    @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags", admin)
+    @Helper.LiAnchorLink("Tag PeopleIds", "/Batch/TagPeopleIds", admin)
+}

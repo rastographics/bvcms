@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Move(int fromid, int toid)
         {
             DbUtil.Db.ExecuteCommand("UPDATE dbo.OrganizationMembers SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
-            DbUtil.Db.ExecuteCommand("UPDATE dbo.EnrollmentTransactions SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
+            DbUtil.Db.ExecuteCommand("UPDATE dbo.EnrollmentTransaction SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
             return Redirect("/Setup/MemberType/");
         }
 

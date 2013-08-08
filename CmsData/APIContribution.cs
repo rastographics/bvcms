@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SqlTypes;
 using System.IO;
 using System.Xml;
 using System.Text;
 using System.Linq;
 using System.Xml.Serialization;
 using CmsData.Codes;
+using IronPython.Modules;
 using UtilityExtensions;
 using System.Data.Linq;
 
@@ -78,8 +80,8 @@ namespace CmsData.API
 				                    Contributions = (from c in contributions(Db, ci, frdt, todt)
 				                                     select new Contribution
 				                                     {
-					                                     Amount = c.ContributionAmount.Value,
-					                                     Date = c.ContributionDate.FormatDate(),
+					                                     Amount = c.ContributionAmount,
+					                                     Date = c.ContributionDate.ToShortDateString(),
 					                                     Description = c.Description,
 														 CheckNo = c.CheckNo,
 					                                     Fund = c.Fund,
@@ -176,8 +178,8 @@ namespace CmsData.API
                     select new ContributionInfo
                     {
                         ContributionId = c.ContributionId,
-                        ContributionAmount = c.ContributionAmount,
-                        ContributionDate = c.ContributionDate,
+                        ContributionAmount = c.ContributionAmount ?? 0,
+                        ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
                         Fund = c.ContributionFund.FundName,
 						CheckNo = c.CheckNo,
 						Name = c.Person.Name,
@@ -266,7 +268,7 @@ namespace CmsData.API
                     select new ContributionInfo
                     {
                         ContributionId = c.ContributionId,
-                        ContributionDate = c.ContributionDate,
+                        ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
                         Fund = c.ContributionFund.FundName,
                         Description = c.ContributionDesc
                     };
@@ -335,8 +337,8 @@ namespace CmsData.API
     {
         public int PeopleId { get; set; }
         public string Name { get; set; }
-        public DateTime? ContributionDate { get; set; }
-        public decimal? ContributionAmount { get; set; }
+        public DateTime ContributionDate { get; set; }
+        public decimal ContributionAmount { get; set; }
         public string Fund { get; set; }
         public string Description { get; set; }
         public string CheckNo { get; set; }
@@ -344,18 +346,18 @@ namespace CmsData.API
         public int BundleId { get; set; }
         public int ContributionId { get; set; }
         public string ContributionType { get; set; }
-        public int? ContributionTypeId { get; set; }
+        public int ContributionTypeId { get; set; }
         public string Status { get; set; }
-        public int? StatusId { get; set; }
+        public int StatusId { get; set; }
         public bool Pledge { get; set; }
         public bool NotIncluded
         {
             get
             {
-                if (!StatusId.HasValue)
+                if (StatusId < 0)
                     return true;
-                return StatusId.Value != (int)ContributionStatusCode.Recorded
-                    || ContributionTypeCode.ReturnedReversedTypes.Contains(ContributionTypeId.Value);
+                return StatusId != (int)ContributionStatusCode.Recorded
+                    || ContributionTypeCode.ReturnedReversedTypes.Contains(ContributionTypeId);
             }
         }
         public bool NonTaxDed { get; set; }

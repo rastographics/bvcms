@@ -573,6 +573,12 @@ function supportClose(e) {
 }
 
 function supportSend(e) {
+    if( $("#supportUrgency")[0].selectedIndex == 0 )
+    {
+        alert( "Please select an urgency before submitting your support request" );
+        return;
+    }
+
     $("#supportLastSearch").val($("#gsc-i-id1").val());
 
     var theURL = "/Home/SendSupportRequest";

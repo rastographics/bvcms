@@ -26,9 +26,9 @@
         var f = $(this).closest("form");
         var q = f.serialize();
         var loc = $(this).attr("href");
-        var tar = f.closest("div.modal");
+        var modal = f.closest("div.modal");
         $.post(loc, q, function (ret) {
-            tar.modal("hide");
+            modal.modal("hide");
             if (ret.message) {
                 alert(ret.message);
             }
@@ -36,8 +36,7 @@
                 switch (ret.from) {
                     case 'RelatedFamily':
                         $("#related-families-div").load('/Person2/RelatedFamilies/' + ret.pid, {}, function () {
-                            $.SetRelationEditable();
-                            $(ret.key).editable("toggle");
+                            $(ret.key).click();
                         });
                         break;
                     case 'Family':
@@ -47,17 +46,6 @@
                         window.location = '/Person2/' + ret.pid;
                         break;
                 }
-        });
-        return false;
-    });
-    $("#deleterelation").live("click", function (ev) {
-        ev.preventDefault();
-        var p = $(this).closest("p");
-        var href = p.data("delete");
-        bootbox.confirm("Are you sure you want to remove this relationship?", function (result) {
-            if (result === true) {
-                $("#related-families-div").load(href, {});
-            }
         });
         return false;
     });
@@ -76,44 +64,68 @@
             });
         });
     });
-    $("#family_related a.edit").live("click", function (ev) {
-        ev.stopPropagation();
+    $("#profile-actions a.manageUser").live("click", function(ev) {
         ev.preventDefault();
-        $(this).closest('div.open').removeClass('open');
-        $(this).closest("li.relation-item").find("span.relation-description").editable("toggle");
-    });
-    $.fn.editableform.buttons =
-        '<button type="submit" class="btn btn-success editable-submit"><i class="icon-ok icon-white"></i></button>' +
-        '<button type="button" class="btn editable-cancel"><i class="icon-remove"></i></button>';
-    $.SetRelationEditable = function () {
-        $('span.relation-description').editable({
-            type: "textarea",
-            toggle: "manual",
-            name: "description",
-            url: function (params) {
-                var d = new $.Deferred;
-                $.post('/Person2/EditRelation/' + params.pk, { value: params.value }, function (data) {
-                    d.resolve();
+        $("<div class='modal fade hide' data-width='760' />").load($(this).attr("href"), {}, function () {
+            var modal = $(this);
+            modal.modal("show");
+            modal.on('hidden', function () {
+                $(this).remove();
+            });
+            modal.on("click", "a.save", function (e) {
+                e.preventDefault();
+                var q = modal.find("form").serialize();
+                $.post($(this).attr("href"), q, function (ret) {
+                    $("#profile-actions").html(ret);
+                    modal.modal("hide");
                 });
-                return d.promise();
-            }
-
+            });
+            modal.on("click", "a.delete", function (e) {
+                e.preventDefault();
+                var a = $(this);
+                bootbox.confirm(a.data("prompt"), function (result) {
+                    if (result === true)
+                        $.post(a.attr("href"), {}, function (ret) {
+                            $("#profile-actions").html(ret);
+                            modal.modal("hide");
+                        });
+                });
+                return false;
+            });
         });
-        $('span.relation-description').on('hidden', function (e, reason) {
-            if (reason === 'save' || reason === 'cancel') {
-                $.fn.editableform.buttons =
-                    '<button type="submit" class="btn btn-success editable-submit"><i class="icon-ok icon-white"></i></button>' +
-                    '<button type="button" class="btn editable-cancel"><i class="icon-remove"></i></button>';
-            }
+    });
+    $("#family_related a.edit").live("click", function (ev) {
+        ev.preventDefault();
+        $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
+            var modal = $(this);
+            modal.modal("show");
+            modal.on('shown', function() {
+                modal.find("textarea").focus();
+            });
+            modal.on('hidden', function () {
+                $(this).remove();
+            });
+            modal.on("click", "a.save", function (e) {
+                e.preventDefault();
+                $.post($(this).attr("href"), { value: modal.find("textarea").val() }, function (ret) {
+                    $("#related-families-div").html(ret);
+                    modal.modal("hide");
+                });
+            });
+            modal.on("click", "a.delete", function (e) {
+                e.preventDefault();
+                var a = $(this);
+                bootbox.confirm("Are you sure you want to remove this relationship?", function (result) {
+                    if (result === true)
+                        $.post(a.attr("href"), {}, function (ret) {
+                            $("#related-families-div").html(ret);
+                            modal.modal("hide");
+                        });
+                });
+                return false;
+            });
         });
-        $('span.relation-description').on('shown', function (e, reason) {
-            $.fn.editableform.buttons =
-                 '<button type="submit" class="btn btn-success editable-submit"><i class="icon-ok icon-white"></i></button>' +
-                 '<button type="button" class="btn editable-cancel"><i class="icon-remove"></i></button>' +
-                 '<br><br><button id="deleterelation" type="button" class="btn btn-danger pull-right">delete</button>';
-        });
-    };
-    $.SetRelationEditable();
+    });
 
     $('a.deloptout').live("click", function (ev) {
         ev.preventDefault();
@@ -153,20 +165,14 @@
         });
     });
 
-    $("#currentLink").click(function () {
-        $.showTable($('#current form'));
+    $("#enrollmentLink").click(function () {
+        $('#currentLink').click();
     });
-    $("#previousLink").click(function () {
-        $.showTable($('#previous form'));
-    });
-    $("#pendingLink").click(function () {
-        $.showTable($('#pending form'));
-    });
-    $("#attendsLink").click(function () {
-        $.showTable($('#attends form'));
+    $("#membershipLink").click(function () {
+        $('#membershipDisplayLink').click();
     });
     $("#contacts-link").click(function () {
-        $("#contacts-tab form").each(function () {
+        $("#contacts-tab").each(function () {
             $.showTable($(this));
         });
     });
@@ -183,23 +189,23 @@
         }
     });
     $("#system-link").click(function () {
-        $.showTable($("#user-tab form"));
+        $.showTable($("#user-tab"));
     });
     $("#changes-link").click(function () {
-        $.showTable($("#changes-tab form"));
+        $.showTable($("#changes-tab"));
     });
     $("#volunteer-link").click(function () {
-        $.showTable($("#volunteer-tab form"));
+        $.showTable($("#volunteer-tab"));
     });
     $("#duplicates-link").click(function () {
-        $.showTable($("#duplicates-tab form"));
+        $.showTable($("#duplicates-tab"));
     });
     $("#optouts-link").click(function () {
-        $.showTable($("#optouts-tab form"));
+        $.showTable($("#optouts-tab"));
     });
     $("#recreg-link").click(function (ev) {
         ev.preventDefault();
-        var f = $('#recreg-tab form');
+        var f = $('#recreg-tab');
         if ($('table', f).size() > 0)
             return false;
         var q = f.serialize();
@@ -212,10 +218,10 @@
 
     $('#future').live("click", function (ev) {
         ev.preventDefault();
-        var f = $(this).closest('form');
-        var q = f.serialize();
+        var d = $(this).closest('div.loaded');
+        var q = d.find("form").serialize();
         $.post($("#FutureLink").val(), q, function (ret) {
-            $(f).html(ret);
+            d.html(ret);
         });
     });
     $.validator.addMethod("date2", function (value, element, params) {
@@ -318,7 +324,7 @@
         $('#vtab>div').hide().eq(index).show();
     });
     var getMap = function (opts) {
-        var src = "http://maps.googleapis.com/maps/api/staticmap?",
+        var src = "https://maps.googleapis.com/maps/api/staticmap?",
             params = $.extend({
                 center: 'New York, NY',
                 size: '128x128',

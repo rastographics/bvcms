@@ -1702,6 +1702,12 @@ namespace UtilityExtensions
             else
                 Last = a[0];
         }
+        public static void AppendNext(this StringBuilder sb, string sep, string s)
+        {
+            if (sb.Length > 1 && s.HasValue())
+                sb.Append(sep);
+            sb.Append(s);
+        }
     }
     public class EventArg<T> : EventArgs
     {

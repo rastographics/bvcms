@@ -1,0 +1,33 @@
+﻿@{
+    var menuaddpeople = DbUtil.Db.Setting("MenuAddPeople", "true") == "true" || Util.IsDebug();
+    var isperson2 = HttpContext.Current.Request.Url.PathAndQuery.Contains("Person2", ignoreCase: true);
+}
+
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">People</a>
+    <ul class="dropdown-menu">
+        <li>@Html.ActionLink("Search", "Index", "PeopleSearch", new { Area = "Main" }, null)</li>
+        @if (menuaddpeople)
+        {
+            if (isperson2)
+            {
+            <li><a href="/SearchAdd2/Dialog/Menu" class="searchadd">Add People</a></li>
+            }
+            else
+            {
+            <li>@Helper.JQueryIdLink("Add People", "addpeople")</li>
+            }
+        }
+        @Helper.LiAnchorLink("Add People", "http://www.bvcms.com/doc/AddPeopleContext", !menuaddpeople, "_blank")
+        @Helper.LiAnchorLink("Manage Tags", "/Tags/")
+        @Helper.LiAnchorLink("Tasks", "/Task/List/")
+        @Helper.LiAnchorLink("Contacts", "/ContactSearch/")
+        <li class="space"></li>
+        @foreach (var p in Util2.MostRecentPeople)
+        {
+            @Helper.LiAnchorLink(p.Name, "/Person/Index/" + p.Id)
+        }
+        <li class="space"></li>
+        @Helper.LiAnchorLink(Util.UserFullName, "/Person/Index/" + Util.UserPeopleId)
+    </ul>
+</li>
