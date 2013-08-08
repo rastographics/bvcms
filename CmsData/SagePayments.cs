@@ -154,8 +154,6 @@ namespace CmsData
 			coll["M_ID"] = login; // 779966396962
 			coll["M_KEY"] = key; // T7N8I1M1F7L9
 
-			XElement resp = null;
-
 			if (pi.SageCardGuid.HasValue)
 			{
 				coll["GUID"] = pi.SageCardGuid.ToString().Replace("-", "");

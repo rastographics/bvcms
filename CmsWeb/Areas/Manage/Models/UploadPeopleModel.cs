@@ -368,9 +368,8 @@ namespace CmsWeb.Models
                                 p.MemberStatusId = m.Id;
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
-
                             throw;
                         }
                     }
@@ -410,9 +409,8 @@ namespace CmsWeb.Models
                             Person.Tag(Db, p.PeopleId, "InsertPeopleAdded", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-
                         throw;
                     }
                 }

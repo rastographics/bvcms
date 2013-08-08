@@ -71,7 +71,6 @@ CKEditorFuncNum, baseurl + fn, error));
 
         public ActionResult ForceError()
         {
-            var y = 2;
             var z = 0;
             var x = 2 / z;
             return Content("error");

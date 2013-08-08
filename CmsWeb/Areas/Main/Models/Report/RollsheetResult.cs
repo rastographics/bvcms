@@ -257,8 +257,6 @@ namespace CmsWeb.Areas.Main.Models.Report
         private PageEvent pageEvents = new PageEvent();
         private Document doc;
         private PdfContentByte dc;
-        private Rectangle leftcol;
-        private Rectangle rightcol;
 
 
         private void StartPageSet(OrgInfo o)

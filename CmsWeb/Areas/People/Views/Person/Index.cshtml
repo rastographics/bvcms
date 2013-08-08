@@ -1,7 +1,7 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.Person.PersonModel
 @{
-    Layout = "/Views/Shared/SiteLayout2.cshtml";
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Person";
 }
 @section scripts
@@ -26,7 +26,6 @@
                         @if (User.IsInRole("Access"))
                         {
                             @Html.Partial("Toolbar/Toolbar", Model)
-                            <p class="record_added muted"><small>Record added @Model.basic.Created.FormatDate()</small></p>
                         }
                     </div>
                 </div>

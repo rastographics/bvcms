@@ -4,7 +4,7 @@
 @model CmsWeb.Models.CheckinTimeModel
 @{
 	ViewBag.Title = "Check-in Activity";
-	Layout = "/Views/Shared/SiteLayout.cshtml";
+	Layout = "~/Views/Shared/SiteLayout.cshtml";
 
     var at = Model.AccessTypes();
     var atd = Model.AccessTypes(true);

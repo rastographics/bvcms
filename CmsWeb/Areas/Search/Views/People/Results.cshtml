@@ -1,6 +1,6 @@
 ﻿@using CmsData
 @using CmsWeb.Models
-@model PeopleSearchModel
+@model CmsWeb.Areas.Search.Models.PeopleModel
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
@@ -25,7 +25,7 @@
 @foreach (var p in Model.PeopleList())
 { 
 	<tr>
-		<td><img src="/images/individual.gif" width="10px" height="12px" />
+		<td><img src="/images/individual.gif" width="10" height="12" />
 			<a href='/Person/Index/@p.PeopleId' class="target" @target>@p.Name</a>
 		</td>
 		<td>

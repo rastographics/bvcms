@@ -409,7 +409,7 @@ namespace CmsCheckin
 				var resp = wc.UploadValues(url, "POST", coll);
 				return Encoding.ASCII.GetString(resp).ToInt();
 			}
-			catch (Exception ex) {}
+			catch (Exception) {}
 
 			return 0;
 		}
@@ -432,7 +432,7 @@ namespace CmsCheckin
 				int ret = Encoding.ASCII.GetString(resp).ToInt();
 				return (ret == 0);
 			}
-			catch (Exception ex) { }
+			catch (Exception) { }
 
 			return false;
 		}
@@ -455,7 +455,7 @@ namespace CmsCheckin
 				var ret = wc.UploadData(url, "POST", bits);
 				return Encoding.ASCII.GetString(ret).ToInt();
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 			}
 			return 0;

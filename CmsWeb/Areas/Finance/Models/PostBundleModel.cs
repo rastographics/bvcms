@@ -15,7 +15,6 @@ using CmsData;
 using CmsData.Codes;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Collections;
 using System.IO;
 using LumenWorks.Framework.IO.Csv;
 
@@ -681,7 +680,7 @@ namespace CmsWeb.Models
                     ContributionStatusId = 0,
                     ContributionTypeId = ContributionTypeCode.CheckCash,
                 };
-                string ac = null, rt = null, ck = null, sn = null;
+                string ac = null, rt = null, ck = null;
                 for (var c = 1; c < fieldCount; c++)
                 {
                     switch (cols[c])

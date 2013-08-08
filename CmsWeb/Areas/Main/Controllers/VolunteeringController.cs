@@ -35,12 +35,13 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult Upload(int id, HttpPostedFileBase file)
         {
-            Volunteer vol = DbUtil.Db.Volunteers.SingleOrDefault(e => e.PeopleId == id);
+            //Volunteer vol = DbUtil.Db.Volunteers.SingleOrDefault(e => e.PeopleId == id);
+            var vol = new VolunteerModel(id);
 
             var f = new VolunteerForm
                         {
                             UploaderId = Util.UserId1, 
-                            PeopleId = vol.PeopleId, 
+                            PeopleId = vol.V.PeopleId, 
                             Name = System.IO.Path.GetFileName(file.FileName).Truncate(100),
                             AppDate = Util.Now,
                         };
@@ -67,7 +68,6 @@ namespace CmsWeb.Areas.Main.Controllers
                         }
                         catch
                         {
-                            // TODO: Breaks, fix
                             return View("Index", vol);
                         }
 
@@ -86,15 +86,14 @@ namespace CmsWeb.Areas.Main.Controllers
                         break;
                     }
 
-                // TODO: Breaks, fix
                 default: return View("Index", vol);
             }
 
             DbUtil.Db.VolunteerForms.InsertOnSubmit(f);
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Uploading VolunteerApp for {0}".Fmt(vol.Person.Name));
+            DbUtil.LogActivity("Uploading VolunteerApp for {0}".Fmt(vol.V.Person.Name));
 
-            return Redirect("/Volunteering/Index/" + vol.PeopleId);
+            return Redirect("/Volunteering/Index/" + vol.V.PeopleId);
         }
 
         public ActionResult Delete(int id, int PeopleID)

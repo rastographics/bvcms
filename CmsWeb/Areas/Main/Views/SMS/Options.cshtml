@@ -4,7 +4,7 @@
 @using UtilityExtensions;
 @{
     ViewBag.Title = "Options";
-    Layout = "/Views/Shared/SiteLayout.cshtml";
+    Layout = "~/Views/Shared/SiteLayout.cshtml";
 
     var groups = TwilioHelper.getAvailableLists(Util.UserId);
     var count = TwilioHelper.getSendCount(ViewBag.QBID);

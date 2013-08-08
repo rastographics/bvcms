@@ -132,7 +132,7 @@
         var href = $(this).attr("href");
         if (confirm('Are you sure you want to delete?')) {
             $.post(href, {}, function (ret) {
-                if (ret != "ok")
+                if (ret !== "ok")
                     $.growlUI("failed", ret);
                 else {
                     $.updateTable($('#user-tab form'));
@@ -178,7 +178,7 @@
     });
     $("#member-link").click(function () {
         var f = $("#memberdisplay");
-        if ($("table", f).size() == 0) {
+        if ($("table", f).size() === 0) {
             $.post(f.attr('action'), null, function (ret) {
                 $(f).html(ret).ready(function () {
                     $.UpdateForSection(f);
@@ -337,8 +337,8 @@
         });
 
         src += query.join('&');
-        return '<img src="' + src + '" /><br><a href="https://www.google.com/maps/?q=' + opts['center'] + '" rel="external" target="_blank">View in Google Maps</a>\
-      <br><a href="http://www.bing.com/maps/?q=' + opts['center'] + '" rel="external" target="_blank">View in Bing Maps</a>';
+        return '<img src="' + src + '" /><br><a href="https://www.google.com/maps/?q=' + opts.center + '" rel="external" target="_blank">View in Google Maps</a>\
+      <br><a href="http://www.bing.com/maps/?q=' + opts.center + '" rel="external" target="_blank">View in Bing Maps</a>';
     };
     var $SetSnapshotEditable = function () {
         $('[class="popover-map"]').each(function () {

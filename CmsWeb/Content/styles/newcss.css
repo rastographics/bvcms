@@ -2236,7 +2236,6 @@ a img {
         -webkit-transition: background-position 0.1s linear;
         -moz-transition: background-position 0.1s linear;
         -o-transition: background-position 0.1s linear;
-        -ms-transition: background-position 0.1s linear;
         transition: background-position 0.1s linear;
     }
 
@@ -3648,6 +3647,7 @@ form.search {
 #main {
     font-size: 12px;
 }
+
 #nav-tabs {
     border: none;
 }
@@ -3756,6 +3756,7 @@ a, a:visited, a:focus {
 .floatleft {
     float: left;
 }
+
 .floatright {
     float: right;
 }
@@ -3907,7 +3908,7 @@ div.drow {
 
     #QueryConditionSelect div.moreinfo {
         margin-left: 3em;
-        font-color: #999;
+        color: #999;
         font-size: 110%;
         font-style: italic;
     }
@@ -4092,6 +4093,7 @@ a.sz1.bt {
     background-image: -o-linear-gradient(top, #049cdb, #0064cd);
     background-image: linear-gradient(top, #049cdb, #0064cd);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#049cdb', endColorstr='#0064cd', GradientType=0);
+    -webkit-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     border-color: #0064cd #0064cd #003f81;
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
@@ -4115,6 +4117,8 @@ a.sz1.bt {
     background-image: -o-linear-gradient(top, #96bd3e, #7c9c33);
     background-image: linear-gradient(top, #96bd3e, #7c9c33);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7c9c33', endColorstr='#96bd3e', GradientType=0);
+    -ms-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    -webkit-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     border-color: #7c9c33 #7c9c33 #96bd3e;
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
@@ -4152,6 +4156,8 @@ div.toolbar > ul {
             background-image: -ms-linear-gradient(top, #4ab13e 0%, #3e9533 100%);
             background-image: linear-gradient(top, #4ab13e 0%, #3e9533 100%);
             border-color: #3c9232;
+            -ms-text-shadow: none;
+            -webkit-text-shadow: none;
             text-shadow: none;
             margin-right: 0;
             font-size: 14px;
@@ -4193,9 +4199,11 @@ input {
 select {
     border: 1px solid #CCCCCC;
 }
+
 .hide {
-  display: none;
+    display: none;
 }
+
 #nametable td {
     padding-right: 4px;
 }
@@ -4203,6 +4211,7 @@ select {
 td.right, th.right {
     text-align: right;
 }
+
 td.noborder, th.noborder {
     border: none!important;
 }
@@ -4263,15 +4272,14 @@ div.formerror {
 
 .modalBackground {
     background-color: Gray;
-    -ms-filter: alpha(opacity=70);
     -ms-opacity: 0.7;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
 }
 
 .modalPopup {
     background-color: #eff3fb;
-    border-width: 3px;
-    border-style: solid;
-    border-color: Gray;
+    border: 3px solid gray;
     padding: 10px;
 }
 
@@ -4290,11 +4298,6 @@ table.Design2 th {
     padding: 5px;
 }
 
-.modalBackground {
-    background-color: Gray;
-    filter: alpha(opacity=70);
-    opacity: 0.7;
-}
 
 .modalDiv {
     font-family: lucida grande,arial,helvetica,sans-serif;
@@ -4417,10 +4420,7 @@ body.template table.listview, table.gridview, table.detailstable {
 
     body.template table.listview th, table.gridview th, table.detailstable th,
     body.template table.listview td, table.gridview td, table.detailstable td {
-        padding-top: 6px;
-        padding-bottom: 6px;
-        padding-left: 10px;
-        padding-right: 10px;
+        padding: 6px 10px;
         line-height: 1.1em;
     }
 
@@ -4561,7 +4561,6 @@ div.results {
     padding: 0px;
     padding-left: 6px;
     padding-right: 6px;
-    margin-top: -1.75em;
     float: right;
 }
 /* Set's the appearance of the drop down control*/

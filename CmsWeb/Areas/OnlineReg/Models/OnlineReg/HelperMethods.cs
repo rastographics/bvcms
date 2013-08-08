@@ -215,7 +215,7 @@ namespace CmsWeb.Models
                         }
                         return masterorg.OrganizationName;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         if (masterorgid == null)
                             throw new Exception("masterorgid was null");

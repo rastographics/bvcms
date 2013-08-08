@@ -795,7 +795,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 var rdr = cmd.ExecuteReader();
                 return View(rdr);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Content("cannot find view guest." + id);
             }

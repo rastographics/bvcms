@@ -332,7 +332,7 @@ namespace CmsWeb.Areas.Search.Controllers
             {
                 DbUtil.Db.SubmitChanges();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

@@ -156,7 +156,7 @@
   border-radius: 0;
   background-clip: padding-box;
   line-height: 1.2;
-  overflow: display;
+    overflow: visible;
   padding-left: 10px;
   padding-right: 10px;
   min-height: 50px;
@@ -252,7 +252,7 @@
 #sidebar #family_home li.address img,
 #sidebar #family_home li.phone img {
   position: absolute;
-  top: 15;
+  top: 15px;
   right: 0;
 }
 #sidebar #family_home li.phone p {

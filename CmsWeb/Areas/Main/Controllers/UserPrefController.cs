@@ -13,10 +13,10 @@ namespace CmsWeb.Areas.Main.Controllers
         //
         // GET: /Main/UserPref/
 
-        public ActionResult Index()
-        {
-            return View();
-        }
+//        public ActionResult Index()
+//        {
+//            return View();
+//        }
         public ActionResult Set(string id, string value)
         {
             DbUtil.Db.SetUserPreference(id, value);

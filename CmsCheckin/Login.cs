@@ -101,7 +101,7 @@ namespace CmsCheckin
                     Program.AdminPINTimeout = int.Parse(AdminPINTimeout.Text);
                     Settings1.Default.AdminPINTimeout = AdminPINTimeout.Text;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Program.AdminPINTimeout = 0;
                     Settings1.Default.AdminPINTimeout = "0";
@@ -143,7 +143,7 @@ namespace CmsCheckin
 						return;
 					}
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					MessageBox.Show("cannot find " + Program.URL);
 					CancelClose = true;
@@ -162,7 +162,7 @@ namespace CmsCheckin
 				}
 				campuses = XDocument.Parse(str);
 			}
-			catch (WebException ex)
+			catch (WebException)
 			{
 				MessageBox.Show("cannot find " + Program.URL);
 				CancelClose = true;
@@ -544,7 +544,7 @@ namespace CmsCheckin
                 tb.Text = rx.Replace(tb.Text, "");
                 tb.Select(tb.Text.Length, 0);
             }
-            catch (ArgumentException ex) { }
+            catch (ArgumentException) { }
         }
 	}
 }

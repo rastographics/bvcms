@@ -173,7 +173,6 @@ namespace CmsWeb.Areas.Main.Models.Report
 		private Font font = FontFactory.GetFont(FontFactory.HELVETICA);
 		private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
 		private Font medfont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-		private Font china = null;
 		private PageEvent pageEvents = new PageEvent();
 		private PdfPTable t;
 		private Document doc;

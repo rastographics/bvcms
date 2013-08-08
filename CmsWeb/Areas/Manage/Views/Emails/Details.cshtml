@@ -55,7 +55,7 @@
 </table>
 @if (Model.queue.PublicX ?? false)
 {
-@Html.ActionLink("View Email", "View", new { id = Model.id })
+    <p>@Helper.AnchorLink("View Email", "/Manage/Emails/View/" + Model.id)</p>
 }
 else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
 {

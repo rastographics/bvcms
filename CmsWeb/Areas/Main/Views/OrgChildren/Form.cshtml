@@ -1,8 +1,8 @@
 ﻿@model CmsWeb.Models.OrgChildrenModel
 @Html.Hidden("orgid")
 <div class="roundbox floatleft">
-<h2><a href="/Organization/Index/@Model.org.OrganizationId">Manage Child Organizations</h2>
-<h3>for @Model.org.OrganizationName</a></h3>
+<h2>Manage Child Organizations</h2>
+<h3>for <a href="/Organization/Index/@Model.org.OrganizationId">@Model.org.OrganizationName</a></h3>
 @if(Model.parentorg != null)
 {
 @:Parent Org: <a href="/OrgChildren/Index/@Model.parentorg.OrganizationId">@Model.parentorg.OrganizationName</a>

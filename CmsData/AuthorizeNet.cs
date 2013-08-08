@@ -17,7 +17,6 @@ namespace CmsData
 		XNamespace ns = "AnetApi/xml/v1/schema/AnetApiSchema.xsd";
 		const string produrl = "https://api.authorize.net/xml/v1/request.api";
 		const string testurl = "https://apitest.authorize.net/xml/v1/request.api";
-		string testMode = "";
 		string url;
 		string login;
 		string key;
@@ -33,14 +32,12 @@ namespace CmsData
 				login = "9t8Pqzs4CW3S";
 				key = "9j33v58nuZB865WR";
 				url = testurl;
-				testMode = "testMode";
 			}
 			else
 			{
 				login = Db.Setting("x_login", "");
 				key = Db.Setting("x_tran_key", "");
 				url = produrl;
-				testMode = "liveMode";
 			}
 		}
 		private XDocument getResponse(string request)

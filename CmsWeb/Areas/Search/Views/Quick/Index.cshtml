@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @using CmsWeb.Models
 @using CmsWeb
-@model QuickSearchModel
+@model CmsWeb.Areas.Search.Models.QuickSearchModel
 @{
 	ViewBag.Title = "Quick Search";
 	Layout = "~/Views/Shared/SiteLayout.cshtml";
@@ -37,7 +37,7 @@ else
 @foreach (var p in Model.people)
 { 
 	<tr>
-		<td><img src="/images/individual.gif" width="10px" height="12px" />
+		<td><img src="/images/individual.gif" width="10" height="12" />
 			<a href='/Person/Index/@p.PeopleId' class="target" @target>@p.Name</a>
 		</td>
 		<td>

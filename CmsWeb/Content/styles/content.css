@@ -92,10 +92,6 @@ hr
     line-height: 140%;
     color: #333;
 }
-.comment submit
-{
-    font-weight: bold;
-}
 .commenter
 {
     margin-left: 20px;
@@ -117,7 +113,7 @@ a.title-link
 }
 blockquote
 {
-    background: #f5f5f5 none repeat
+    background: #f5f5f5 none repeat;
     color: #333;
     padding: 5px;
 }
