@@ -359,7 +359,7 @@ namespace CmsWeb.Models
                     {
                         //_Person = SearchPeopleModel.FindPerson(first, last, birthday, email, phone, out count);
 
-                        var list = DbUtil.Db.FindPerson(first, last, birthday, email, phone).ToList();
+                        var list = DbUtil.Db.FindPerson(first, last, birthday, email, phone.GetDigits()).ToList();
                         count = list.Count;
                         if (count == 1)
                             _Person = DbUtil.Db.LoadPersonById(list[0].PeopleId.Value);
