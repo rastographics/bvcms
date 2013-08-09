@@ -42,12 +42,24 @@
         $.enteredname = $(this).val();
     });
     $("#name").autocomplete({
+        appendTo: "#SearchResults2",
         autoFocus: true,
         minLength: 3,
         source: function (request, response) {
-            $.post("/PostBundle/Names", request, function (ret) {
-                response(ret.slice(0, 10));
-            }, "json");
+            if ($("#moreresults").is(":checked")) {
+                $.post("/PostBundle/Names2", request, function (ret) {
+                    response(ret.slice(0, 30));
+                }, "json");
+                $("#SearchResults2 > ul").css({
+                    'max-height': 400,
+                    'overflow-y': 'auto'
+                });
+            }
+            else {
+                $.post("/PostBundle/Names", request, function (ret) {
+                    response(ret.slice(0, 10));
+                }, "json");
+            }
         },
         select: function (event, ui) {
             $("#name").val(ui.item.Name);
@@ -56,7 +68,7 @@
         }
     }).data("uiAutocomplete")._renderItem = function (ul, item) {
         return $("<li>")
-            .append("<a>" + item.Name + "<br>" + item.Addr + "</a>")
+            .append("<a><b>" + item.Name + "</b><br>" + item.Addr + item.RecentGifts + "</a>")
             .appendTo(ul);
     };
     $("#name").blur(function () {
@@ -317,14 +329,14 @@
     $("#totalitems").text($("#titems").val());
     $("#totalcount").text($("#tcount").val());
 
-    
-    $("#showmove").click(function(ev) {
+
+    $("#showmove").click(function (ev) {
         ev.preventDefault();
         $.blockUI({ message: $('#movebundle') });
     });
-    $("#moveit").click(function(ev) {
+    $("#moveit").click(function (ev) {
         ev.preventDefault();
-        $.post("/PostBundle/Move/" + $("#editid").val(), { moveto: $("#moveto").val() }, function(ret) {
+        $.post("/PostBundle/Move/" + $("#editid").val(), { moveto: $("#moveto").val() }, function (ret) {
             $.unblockUI();
             if (ret.status === "ok") {
                 $('#editid').val('');
@@ -340,17 +352,17 @@
             }
         });
     });
-    $("#movecancel").click(function(ev) {
+    $("#movecancel").click(function (ev) {
         ev.preventDefault();
         $.unblockUI();
     });
-    
-    $("#showdate").click(function(ev) {
+
+    $("#showdate").click(function (ev) {
         ev.preventDefault();
         $("#contributiondate").datepicker();
-        $.blockUI({ message: $('#editdate')});
+        $.blockUI({ message: $('#editdate') });
     });
-    $("#editdatedone").click(function(ev) {
+    $("#editdatedone").click(function (ev) {
         ev.preventDefault();
         $.unblockUI();
     });

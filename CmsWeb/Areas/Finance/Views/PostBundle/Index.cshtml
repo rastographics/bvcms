@@ -82,9 +82,9 @@
                         <tr>
                             <td colspan="2" class="right">
                                 @Html.RadioButton("PLNT", "CN")Tax Deductible 
-                    @Html.RadioButton("PLNT", "PL")Pledge 
-                    @Html.RadioButton("PLNT", "NT")Non Tax Ded 
-                    @Html.RadioButton("PLNT", "GK")Gift In Kind
+                                @Html.RadioButton("PLNT", "PL")Pledge 
+                                @Html.RadioButton("PLNT", "NT")Non Tax Ded 
+                                @Html.RadioButton("PLNT", "GK")Gift In Kind
                             </td>
                         </tr>
                     </tbody>
@@ -100,6 +100,9 @@
                         <li>You can search for a 7 digit phone number OR a peopleid.</li>
                         <li>GoesBy and Maiden are included in the search too.</li>
                     </ul>
+                    <p>
+                        @Html.CheckBox("moreresults") <span>Deliver more information in results</span>
+                    </p>
                 </div>
             </td>
         </tr>
@@ -145,7 +148,7 @@
                     <div id="movebundle" style="display:none">
                         <p><label>BundleId:</label><input type="text" id="moveto"/></p>
                         <p><a href="#" id="movecancel" class="bt">Cancel</a>
-                           <a href="#" id="moveit" class="bt blue">Move</a></p>
+                            <a href="#" id="moveit" class="bt blue">Move</a></p>
                     </div>
                     <div id="editdate" style="display:none; cursor: default">
                         <p><label>Date:</label><input type="text" id="contributiondate" name="contributiondate" /></p>
@@ -162,6 +165,7 @@
         </tbody>
     </table>
 </form>
+<div id="SearchResults2"></div>
 <div id="searchDialog">
     <iframe style="width: 100%; height: 99%; border-width: 0px;"></iframe>
 </div>

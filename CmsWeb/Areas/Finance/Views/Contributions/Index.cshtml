@@ -20,7 +20,7 @@
 }
 
 <form action="" id="form" method="POST">
-    @Html.Hidden("PeopleId")
+    @Html.HiddenFor(vv => vv.SearchInfo.PeopleId)
     <div class="roundbox floatleft">
         <table cellspacing="5">
             <tbody>

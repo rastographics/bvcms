@@ -7,6 +7,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Finance.Controllers;
@@ -178,19 +180,87 @@ namespace CmsWeb.Models
                 return new { error = "not found" };
             return o;
         }
+        public static IEnumerable<NamesInfo> Names(string q, int limit)
+        {
+            var qp = FindNames(q);
+
+            var rp = from p in qp
+                     let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
+                     orderby p.Name2
+                     select new NamesInfo()
+                                {
+                                    Pid = p.PeopleId,
+                                    Name = p.Name2 + age,
+                                    Addr = p.PrimaryAddress ?? "",
+                                };
+            return rp.Take(limit);
+        }
+
+        public class RecentContribution
+        {
+            internal decimal? Amount;
+            internal DateTime? DateGiven;
+            internal string CheckNo;
+            public override string ToString()
+            {
+                return "<tr><td class='right'>{0}</td><td class='center nowrap'>&nbsp;{1}</td><td>&nbsp;{2}</td></tr>".Fmt(Amount.ToString2("N2"), DateGiven.ToSortableDate(), CheckNo);
+            }
+        }
+
         public class NamesInfo
         {
             public string Name { get; set; }
             public string Addr { get; set; }
             public int Pid { get; set; }
+            internal List<RecentContribution> recent { get; set; }
+
+            public string RecentGifts
+            {
+                get
+                {
+                    if (recent != null)
+                    {
+                        var s = string.Join("\n", recent);
+                        if (s.HasValue())
+                            return "<table style='margin-left:2em'>{0}</table>".Fmt(s);
+                    }
+                    return "";
+                }
+            }
         }
-        public static IEnumerable<NamesInfo> Names(string q, int limit)
+
+        public static IEnumerable<NamesInfo> Names2(string q, int limit)
+        {
+            var qp = FindNames(q);
+
+            var rp = from p in qp
+                     let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
+                     orderby p.Name2
+                     select new NamesInfo()
+                                {
+                                    Pid = p.PeopleId,
+                                    Name = p.Name2 + age,
+                                    Addr = p.PrimaryAddress ?? "",
+                                    recent = (from c in p.Contributions
+                                              where c.ContributionStatusId == 0
+                                              orderby c.ContributionDate descending 
+                                              select new RecentContribution()
+                                              { 
+                                                  Amount    = c.ContributionAmount, 
+                                                  DateGiven = c.ContributionDate, 
+                                                  CheckNo = c.CheckNo 
+                                              }).Take(4).ToList()
+                                };
+            return rp.Take(limit);
+        }
+
+        private static IQueryable<Person> FindNames(string q)
         {
             string First, Last;
             var qp = DbUtil.Db.People.AsQueryable();
             qp = from p in qp
-                 where p.DeceasedDate == null
-                 select p;
+                where p.DeceasedDate == null
+                select p;
 
             Util.NameSplit(q, out First, out Last);
             var hasfirst = First.HasValue();
@@ -204,46 +274,36 @@ namespace CmsWeb.Models
                 {
                     var id = Last.ToInt();
                     qp = from p in qp
-                         where
-                             p.PeopleId == id
-                             || p.CellPhone.Contains(phone)
-                             || p.Family.HomePhone.Contains(phone)
-                             || p.WorkPhone.Contains(phone)
-                         select p;
+                        where
+                            p.PeopleId == id
+                            || p.CellPhone.Contains(phone)
+                            || p.Family.HomePhone.Contains(phone)
+                            || p.WorkPhone.Contains(phone)
+                        select p;
                 }
                 else
                 {
                     var id = Last.ToInt();
                     qp = from p in qp
-                         where p.PeopleId == id
-                         select p;
+                        where p.PeopleId == id
+                        select p;
                 }
             }
             else
             {
                 qp = from p in qp
-                     where
-                         (
-                             (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                              || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
-                             &&
-                             (!hasfirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
-                              p.MiddleName.StartsWith(First)
-                              || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
-                         )
-                     select p;
+                    where
+                        (
+                            (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                             || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                            &&
+                            (!hasfirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
+                             p.MiddleName.StartsWith(First)
+                             || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                            )
+                    select p;
             }
-
-            var rp = from p in qp
-                     let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
-                     orderby p.Name2
-                     select new NamesInfo()
-                                {
-                                    Pid = p.PeopleId,
-                                    Name = p.Name2 + age,
-                                    Addr = p.PrimaryAddress ?? "",
-                                };
-            return rp.Take(limit);
+            return qp;
         }
 
         public object ContributionRowData(PostBundleController ctl, int cid, decimal? othersplitamt = null)
