@@ -4,73 +4,78 @@
     var useemployer = DbUtil.Db.Setting("UseEmployerNotTeacher", "false") == "true";
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
-<h4>Total Count: @Model.Count.ToString("N0")</h4>
-@Html.Partial("Pager", Model.pagerModel())
-<table id="people" class="grid">
-<thead>
-    <tr>
-        <th> <a href="#" class="sortable">Name</a> </th>
-        <th> <a href="#" class="sortable">Status</a>/Age - <a href="#" class="sortable">DOB</a> </th>
-        <th> <a href="#" class="sortable">Address</a> </th>
-        <th> <a href="#" class="sortable">Communication</a> </th>
-        <th> 
-        @if(useemployer)
-        {
-            <a href="#" class="sortable">Employer</a>
+<form  class="non-modal ajax">
+<h4>Total Count: @Model.Count().ToString("N0")</h4>
+<div class="pagination pagination-mini">
+    @Html.Partial("Pager3", Model.Pager)
+</div>
+<table id="people" class="table table-striped table-bordered table-condensed">
+    <thead>
+        <tr>
+            <th><a href="#" class="sortable">Name</a> </th>
+            <th><a href="#" class="sortable">Status</a>/Age - <a href="#" class="sortable">DOB</a> </th>
+            <th><a href="#" class="sortable">Address</a> </th>
+            <th><a href="#" class="sortable">Communication</a> </th>
+            <th>
+                @if (useemployer)
+                {
+                    <a href="#" class="sortable">Employer</a>
+                }
+                else
+                {
+                    <a href="#" class="sortable">Fellowship Leader</a> 
+                }
+            </th>
+            <th>Tag </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() == 0)
+        { 
+            <tr>
+                <td colspan="5">No matching records.</td>
+            </tr>
         }
-        else
-        {
-            <a href="#" class="sortable">Fellowship Leader</a> 
+        @foreach (var p in Model.Results)
+        { 
+            <tr>
+                <td>
+                    <a href='/Person/Index/@p.PeopleId' class="target" @target>@p.Name</a>
+                </td>
+                <td>
+                    @p.MemberStatus<br />
+                    @p.Age - @p.BirthDate
+                </td>
+                <td>
+                    <a href='http://www.google.com/maps?q=@p.Address,+@p.CityStateZip'>@p.Address</a>
+                    <br />
+                    @p.CityStateZip
+                </td>
+                <td>
+                    @foreach (var ph in p.Phones)
+                    { 
+                        @ph<br />
+                    }
+                    <a href='mailto:@p.Email'>@p.Email</a>
+                </td>
+                <td>
+                    @if (useemployer)
+                    {
+                        @p.Employer
+                    }
+                    else
+                    {
+                        <a href='/Person/Index/@p.BFTeacherId'>@p.BFTeacher</a>
+                    }
+                </td>
+                <td>
+                    <a href="#" class="taguntag" title="Add to/Remove from Active Tag" value='@p.PeopleId'>@(p.HasTag ? "Remove" : "Add")</a>
+                </td>
+            </tr>
         }
-        </th>
-        <th> Tag </th>
-    </tr>
-</thead>
-<tbody>
-@if(Model.Count == 0)
-{ 
-    <tr><td colspan="5">No matching records.</td></tr>
-} 
-@foreach (var p in Model.Results)
-{ 
-    <tr>
-        <td><img src="/images/individual.gif" width="10px" height="12px" />
-            <a href='/Person/Index/@p.PeopleId' class="target" @target>@p.Name</a>
-        </td>
-        <td>
-            @p.MemberStatus<br />
-            @p.Age - @p.BirthDate
-        </td>
-        <td>
-            <a href='http://www.google.com/maps?q=@p.Address,+@p.CityStateZip'>@p.Address</a>
-            <br />
-            @p.CityStateZip
-        </td>
-        <td>
-    @foreach (var ph in p.Phones)
-    { 
-            @ph<br />
-    } 
-            <a href='mailto:@p.Email'>@p.Email</a>
-        </td>
-        <td>
-        @if(useemployer)
-        {
-            @p.Employer
-        }
-        else
-        {
-            <a href='/Person/Index/@p.BFTeacherId'>@p.BFTeacher</a>
-        }
-        </td>
-        <td>
-            <a href="#" class="taguntag" title="Add to/Remove from Active Tag" value='@p.PeopleId'>@(p.HasTag? "Remove" : "Add")</a>
-        </td>
-    </tr>
-}
-</tbody>
+    </tbody>
 </table>
-@Html.Hidden("Count", Model.Count)
-@Html.Hidden("Sort", Model.Sort)
-@Html.Hidden("Direction", Model.Direction)
-@Html.Partial("Pager", Model.pagerModel()) 
+<div class="pagination pagination-mini">
+    @Html.Partial("Pager3", Model.Pager)
+</div>
+</form>

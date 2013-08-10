@@ -5,15 +5,14 @@
 
     #conditionlist td {
         padding: 4px 0;
-    }
-
-    #conditionlist td {
         width: 2em;
         text-align: center;
     }
+/*
     #conditionlist ul li {
         text-align: left;
     }
+*/
 
 td.clausetext {
     padding-left: 2px;
@@ -21,28 +20,38 @@ td.clausetext {
 }
 
 div.clausetext {
+    -ms-word-wrap: break-word;
     word-wrap: break-word;
-    width: 200px;
     text-align: left;
 }
+
 
 #editcondition {
     display: none;
 }
 
+
+/*
 #Results table {
     margin-top: 1em;
 }
+*/
 
+/*
 #Results h4 {
     margin-top: .5em;
     margin-bottom: .5em;
 }
+*/
+/*
 #editcondition table td {
     padding: 3px;
 }
+*/
+/*
 #editcondition table tr td:nth-child(1) {
     text-align: right; 
 }
+*/
 
 

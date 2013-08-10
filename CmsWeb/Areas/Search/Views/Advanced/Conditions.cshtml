@@ -5,7 +5,7 @@
 @{
     var editing = false;
 }
-<div id="conditions" style="width: 300px">
+<div id="conditions">
     <input type="hidden" id="SelectedId" name="SelectedId" value="@Model.SelectedId"/>
     <table id="conditionlist" class="table-striped">
         @foreach (var c in Model.ConditionList())
@@ -36,11 +36,11 @@
                 </td>
                 <td>
                     <a href='#' class="editconditionlink tip" title="Click to edit condition">
-                        <i class="icon-edit icon-large"></i>
+                        <i class="icon-pencil"></i>
                     </a>
                 </td>
                 <td>
-                    <a href="#" class="tip trigger-dropdown" title="Menu to Add a Condition"><i class="icon-plus icon-large"></i></a>
+                    <a href="#" class="tip trigger-dropdown" title="Menu to Add a Condition"><i class="icon-plus"></i></a>
                     <div class="dropdown-menu">
                         <ul>
                             @if (c.Clause.IsGroup)
@@ -58,28 +58,16 @@
                         </ul>
                     </div>
                 </td>
-                @*                <td>
-                    @if (c.Clause.CanRemove)
-                    {
-                        <a href="#" class="tip trigger-dropdown" title="Delete Condition"><i class="icon-trash icon-large"></i></a>
-                        <div class="dropdown-menu">
-                            <ul>
-                                <li><a qid="@c.Clause.QueryId" href="#" class="removeclause">Delete this @(c.Clause.IsGroup ? "Entire Group" : "Condition")</a></li>
-                            </ul>
-                        </div>
-                    }
-                </td>*@
             </tr>
         }
     </table>
-    <div style="margin-top: 5px">
-        <div style="float: left">
-            <a href="/Search/Advanced/NewQuery" class="bt green">New Search</a>
+    <div class="row-fluid">
+        <div class="span6">
+            <a href="/Search/Advanced/NewQuery" class="btn btn-success pull-right">New Search</a>
         </div>
-        <div style="float: right;">
-            <a id="Run@(editing ? "1" : "")"class="bt blue">Run Search <i class="icon-play"></i></a>
+        <div class="span6">
+            <a id="Run@(editing ? "1" : "")"class="btn btn-primary pull-right"><i class="icon-play"></i></a>
         </div>
-        <br style="clear: both" />
     </div>
     @if (editing)
     {

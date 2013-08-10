@@ -4,19 +4,20 @@
 }
 @if (Model.SelectMultiple)
 {
-    <select id="CodeValues" name="CodeValues" multiple="multiple">
-    @foreach (var o in codeData)
-    {
-        <option value="@o.Value" @(o.Selected? "selected='selected'" : "")>@o.Text</option>
-    }
+    <select id="CodeValues" name="CodeValues" multiple="multiple" style="display: none;">
+        <option value="multiselect-all">Select all</option>
+        @foreach (var o in codeData)
+        {
+            <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
+        }
     </select>
 }
 else
 {
     <select id="CodeValue" name="CodeValue">
-    @foreach (var o in codeData)
-    {
-        <option value="@o.Value" @(o.Selected? "selected='selected'" : "")>@o.Text</option>
-    }
+        @foreach (var o in codeData)
+        {
+            <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
+        }
     </select>
 }

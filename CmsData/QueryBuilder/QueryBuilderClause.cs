@@ -216,7 +216,7 @@ namespace CmsData
             {
                 if (IsCode)
                     if (HasMultipleCodes)
-                        return string.Join(",", (from s in CodeIdValue.SplitStr(";")
+                        return string.Join(", ", (from s in CodeIdValue.SplitStr(";")
                                                  select GetCodeIdValuePart(s, Part.Code)).ToArray());
                     else
                         return GetCodeIdValuePart(CodeIdValue, Part.Code);

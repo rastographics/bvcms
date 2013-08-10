@@ -523,21 +523,18 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Content\css\bootstrap-editable.css" />
+    <Content Include="Content\css\bootstrap-multiselect.css" />
+    <Content Include="Content\css\bootstrap-multiselect.min.css">
+      <DependentUpon>bootstrap-multiselect.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\bootstrap-responsive.css" />
     <Content Include="Content\css\bootstrap-responsive.min.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\Fixups2.css" />
-    <Content Include="Content\css\Copy of Fixups.min.css">
-      <DependentUpon>Fixups2.css</DependentUpon>
-    </Content>
-    <Content Include="Content\css\Fixups.css" />
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\demo_page.css" />
     <Content Include="Content\css\demo_table.css" />
-    <Content Include="Content\css\Fixups.min.css">
-      <DependentUpon>Fixups.css</DependentUpon>
-    </Content>
     <Content Include="Content\css\give.css" />
     <Content Include="Content\css\images\ajax-loader.gif" />
     <Content Include="Content\css\img\ajax-loader.gif" />
@@ -788,6 +785,10 @@
     </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-editable.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-editable.min.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js">
+      <DependentUpon>bootstrap-multiselect.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap.min.js.map">
       <DependentUpon>bootstrap.js</DependentUpon>
     </Content>
@@ -854,6 +855,9 @@
     </Content>
     <Content Include="Scripts\jQuery\jquery.dataTables.js" />
     <Content Include="Scripts\jQuery\jquery.hiddenposition.1.1.js" />
+    <Content Include="Scripts\jQuery\jquery.multiSelect.min.js">
+      <DependentUpon>jquery.multiSelect.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\jQuery\jquery.textfill.js" />
     <Content Include="Scripts\jQuery\jquery.tooltip.min.js.map">
       <DependentUpon>jquery.tooltip.js</DependentUpon>
@@ -1143,6 +1147,12 @@
     <Content Include="Scripts\Bootstrap\bootstrap-bundle.min.js.map">
       <DependentUpon>bootstrap-bundle.js.bundle</DependentUpon>
     </Content>
+    <Content Include="Scripts\jQuery\jquery.multiSelect.min.js.map">
+      <DependentUpon>jquery.multiSelect.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js.map">
+      <DependentUpon>bootstrap-multiselect.js</DependentUpon>
+    </Content>
     <None Include="Scripts\jQuery\main.js.bundle" />
     <Content Include="Scripts\jQuery\main.min.js.map">
       <DependentUpon>main.js.bundle</DependentUpon>
@@ -1387,7 +1397,7 @@
     <Content Include="Content\styles\images\forward_enabled.png" />
     <Content Include="Content\styles\images\forward_enabled_hover.png" />
     <Content Include="Areas\Main\Views\MemberDirectory\NoAccess.cshtml" />
-    <Content Include="Content\styles\search.css" />
+    <Content Include="Content\css\search.css" />
     <Content Include="Errors\AppOffline.htm" />
     <Content Include="healthcheck.txt" />
     <Content Include="images\28pix.gif" />
@@ -2098,7 +2108,7 @@
     <Content Include="Areas\Search\Views\People\Results.cshtml" />
     <Content Include="Areas\Search\Views\Advanced\Conditions.cshtml" />
     <Content Include="Areas\Search\Views\Advanced\Import.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Main.cshtml" />
+    <Content Include="Areas\Search\Views\Advanced\Index.cshtml" />
     <Content Include="Areas\Search\Views\Advanced\Results.cshtml" />
     <Content Include="Areas\Search\Views\Quick\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Index.cshtml" />

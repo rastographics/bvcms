@@ -26,14 +26,20 @@ namespace CmsWeb.Areas.Search.Models
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
 
+        public CmsWeb.Models.PagerModel2 Pager { get; set; }
+
         public AdvancedModel()
         {
             Db = DbUtil.Db;
             ConditionName = "Group";
-            Direction = "asc";
             TagTypeId = DbUtil.TagTypeId_Personal;
             TagName = Util2.CurrentTagName;
             TagOwner = Util2.CurrentTagOwnerId;
+            Pager = new PagerModel2(Count) {Direction = "asc"};
+        }
+        public int Count()
+        {
+            return FetchCount();
         }
         public string Description { get; set; }
         public int? QueryId { get; set; }
@@ -709,6 +715,7 @@ namespace CmsWeb.Areas.Search.Models
         }
 
         private IQueryable<Person> query;
+        private int? count;
         public int FetchCount()
         {
             Db.SetNoLock();
@@ -722,13 +729,13 @@ namespace CmsWeb.Areas.Search.Models
             query = PersonQuery();
             count = query.Count();
             query = ApplySort(query);
-            query = query.Skip(StartRow).Take(PageSize.Value);
+            query = query.Skip(Pager.StartRow).Take(Pager.PageSize);
             Results = FetchPeopleList(query).ToList();
         }
         public IEnumerable<PeopleInfo> FetchPeopleList()
         {
             query = ApplySort(query);
-            query = query.Skip(StartRow).Take(PageSize.Value);
+            query = query.Skip(Pager.StartRow).Take(Pager.PageSize);
             return FetchPeopleList(query);
         }
         public class MyClass
@@ -809,10 +816,10 @@ namespace CmsWeb.Areas.Search.Models
         }
         private IQueryable<Person> ApplySort(IQueryable<Person> q)
         {
-            if (Sort == null)
-                Sort = "Name";
-            if (Direction != "desc")
-                switch (Sort)
+            if (Pager.Sort == null)
+                Pager.Sort = "Name";
+            if (Pager.Direction != "desc")
+                switch (Pager.Sort)
                 {
                     case "Name":
                         q = from p in q
@@ -869,7 +876,7 @@ namespace CmsWeb.Areas.Search.Models
                         break;
                 }
             else
-                switch (Sort)
+                switch (Pager.Sort)
                 {
                     case "Status":
                         q = from p in q
@@ -969,52 +976,42 @@ namespace CmsWeb.Areas.Search.Models
         }
 
 
-        #region Paging
         public bool ShowResults { get; set; }
-        public string Sort { get; set; }
-        public string Direction { get; set; }
-
-        private int? _Page;
-        public int? Page
-        {
-            get { return _Page ?? 1; }
-            set { _Page = value; }
-        }
-        private int StartRow
-        {
-            get { return (Page.Value - 1) * PageSize.Value; }
-        }
-        public int? PageSize
-        {
-            get { return DbUtil.Db.UserPreference("PageSize", "10").ToInt(); }
-            set
-            {
-                if (value.HasValue)
-                    DbUtil.Db.SetUserPreference("PageSize", value);
-            }
-        }
-        private int? count;
-
-        public int Count
-        {
-            get
-            {
-                return count ?? 0;
-            }
-        }
-        public CmsWeb.Models.PagerModel pagerModel()
-        {
-            return new CmsWeb.Models.PagerModel
-            {
-                Page = Page.Value,
-                PageSize = PageSize.Value,
-                Action = "List",
-                Controller = "Task",
-                Count = Count,
-                ToggleTarget = true
-            };
-        }
-        #endregion
+//        public string Sort { get; set; }
+//        public string Direction { get; set; }
+//
+//        private int? _Page;
+//        public int? Page
+//        {
+//            get { return _Page ?? 1; }
+//            set { _Page = value; }
+//        }
+//        private int StartRow{
+//            get { return (Page.Value - 1) * PageSize.Value; }
+//        }
+//        public int? PageSize
+//        {
+//            get { return DbUtil.Db.UserPreference("PageSize", "10").ToInt(); }
+//            set
+//            {
+//                if (value.HasValue)
+//                    DbUtil.Db.SetUserPreference("PageSize", value);
+//            }
+//        }
+//        private int? count;
+//
+//        public CmsWeb.Models.PagerModel2 pagerModel()
+//        {
+//            return new CmsWeb.Models.PagerModel2
+//            {
+//                Page = Page.Value,
+//                PageSize = PageSize.Value,
+//                Action = "List",
+//                Controller = "Task",
+//                Count = Count,
+//                ToggleTarget = true
+//            };
+//        }
 
         public bool CanSave { get; set; }
     }

@@ -9,6 +9,8 @@ using System;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Web.Mvc;
+using AttributeRouting;
+using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
 using UtilityExtensions;
 using CmsData;
@@ -16,13 +18,13 @@ using CmsData;
 namespace CmsWeb.Areas.Search.Controllers
 {
 	[SessionExpire]
+    [RouteArea("Search", AreaUrl = "Query")]
     public class AdvancedController : CmsStaffAsyncController
     {
-        public ActionResult Main(int? id, int? run)
+        [GET("Query/Index/{id:int?}")]
+        [GET("Query/{id:int?}")]
+        public ActionResult Index(int? id, int? run)
         {
-            if (!DbUtil.Db.UserPreference("newlook3", "false").ToBool()
-                || !DbUtil.Db.UserPreference("advancedsearch", "false").ToBool())
-                return Redirect(Request.RawUrl.ToLower().Replace("search/advanced", "querybuilder"));
             ViewData["Title"] = "QueryBuilder";
             ViewData["OnQueryBuilder"] = "true";
             ViewData["TagAction"] = "/Search/Advanced/TagAll/";
@@ -44,13 +46,13 @@ namespace CmsWeb.Areas.Search.Controllers
             }
             return View(m);
         }
-        [HttpPost]
+        [POST("Query/CodesDropdown/")]
         public ActionResult CodesDropdown(AdvancedModel m)
         {
             m.SetCodes();
             return View(m);
         }
-        [HttpPost]
+        [POST("Query/SelectCondition/{id:int}")]
         public ActionResult SelectCondition(int id, string conditionName)
         {
             var m = new AdvancedModel { SelectedId = id };
@@ -73,7 +75,7 @@ namespace CmsWeb.Areas.Search.Controllers
             m.SelectedId = id;
             return View("Conditions", m);
         }
-        [HttpPost]
+        [POST("Query/EditCondition/{id:int}")]
         public ActionResult EditCondition(int id)
         {
             var m = new AdvancedModel { SelectedId = id };
@@ -82,7 +84,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return View("Conditions", m);
         }
 
-        [HttpPost]
+        [POST("Query/AddNewCondition/{id:int}")]
         public ActionResult AddNewCondition(int id)
         {
             var m = new AdvancedModel { SelectedId = id };
@@ -94,7 +96,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.AddNewConditionAfterCurrent(id);
             return View("Conditions", m);
         }
-        [HttpPost]
+        [POST("Query/DuplicateCondition/{id:int}")]
         public ActionResult DuplicateCondition(int id)
         {
             var m = new AdvancedModel();
@@ -103,7 +105,7 @@ namespace CmsWeb.Areas.Search.Controllers
             m.CopyCurrentCondition(id);
             return View("Conditions", m);
         }
-        [HttpPost]
+        [POST("Query/SaveCondition")]
         public ActionResult SaveCondition(AdvancedModel m)
         {
             m.LoadScratchPad();
@@ -114,14 +116,14 @@ namespace CmsWeb.Areas.Search.Controllers
             }
             return View("Conditions", m);
         }
-        [HttpPost]
+        [POST("Query/Reload/")]
         public ActionResult Reload()
         {
             var m = new AdvancedModel();
             m.LoadScratchPad();
             return View("Conditions", m);
         }
-        [HttpPost]
+        [POST("Query/RemoveCondition/{id:int}")]
         public ActionResult RemoveCondition(int id)
         {
             var m = new AdvancedModel { SelectedId = id };
@@ -130,7 +132,7 @@ namespace CmsWeb.Areas.Search.Controllers
             m.SelectedId = null;
             return View("Conditions", m);
         }
-        [HttpPost]
+        [POST("Query/InsGroupAbove/{id:int}")]
         public ActionResult InsGroupAbove(int id)
         {
             var m = new AdvancedModel { SelectedId = id };
@@ -140,7 +142,7 @@ namespace CmsWeb.Areas.Search.Controllers
             c.Content = m.QueryId.ToString();
             return c;
         }
-        [HttpPost]
+        [POST("Query/CopyAsNew/{id:int}")]
         public ActionResult CopyAsNew(int id)
         {
             var m = new AdvancedModel { SelectedId = id };
@@ -150,28 +152,30 @@ namespace CmsWeb.Areas.Search.Controllers
             c.Content = m.QueryId.ToString();
             return c;
         }
+        [POST("Query/Conditions")]
         public ActionResult Conditions()
         {
             var m = new AdvancedModel();
             return View(m);
         }
-        [HttpPost]
+        [POST("Query/Divisions/{id:int}")]
         public ActionResult Divisions(int id)
         {
             return View(id);
         }
         [HttpPost]
+        [POST("Query/Organizations/{id:int}")]
         public ActionResult Organizations(int id)
         {
             return View(id);
         }
-        [HttpPost]
+        [POST("Query/SavedQueries")]
         public JsonResult SavedQueries()
         {
             var m = new AdvancedModel();
             return Json(m.SavedQueries()); ;
         }
-        [HttpPost]
+        [POST("Query/SaveQuery")]
         public ActionResult SaveQuery()
         {
             var m = new AdvancedModel();
@@ -204,13 +208,14 @@ namespace CmsWeb.Areas.Search.Controllers
 			return null;
 		}
 
-    	[HttpPost]
-        public ActionResult Results()
+        [POST("Query/Results/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult Results(int? page, int? size, string sort, string dir)
         {
 			var cb = new SqlConnectionStringBuilder(Util.ConnectionString);
         	cb.ApplicationName = "qb";
 			DbUtil.Db = new CMSDataContext(cb.ConnectionString);
             var m = new AdvancedModel();
+            m.Pager.Set("/Query/Results", page, size, sort, dir);
 			try
 			{
 	            UpdateModel(m);
@@ -226,6 +231,7 @@ namespace CmsWeb.Areas.Search.Controllers
 			DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.QueryId));
             return View(m);
         }
+        [POST("Query/NewQuery")]
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.QueryBuilderScratchPad();
@@ -233,7 +239,7 @@ namespace CmsWeb.Areas.Search.Controllers
             TempData["newsearch"] = ncid;
             return RedirectToAction("Main");
         }
-        [HttpPost]
+        [POST("Query/ToggleTag/{id:int}")]
         public JsonResult ToggleTag(int id)
         {
 			try
@@ -247,7 +253,7 @@ namespace CmsWeb.Areas.Search.Controllers
 				return Json(new { error = ex.Message + ". Please report this to support@bvcms.com" });
 			}
         }
-        [HttpPost]
+        [POST("Query/TagAll/{tagname}/{cleartagfirst:bool?}")]
         public ContentResult TagAll(string tagname, bool? cleartagfirst)
         {
             if (!tagname.HasValue())
