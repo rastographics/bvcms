@@ -159,7 +159,7 @@
         <input type="button" class="bt" id="draftNone" value="Clear All" /><text> &nbsp; </text>
         <input type="button" class="bt" id="draftDelete" value="Delete Selected" />
         }
-        <form id="savedDrafts" action="/Email/ContentDeleteDrafts">
+        <form id="savedDrafts" action="/Email/ContentDeleteDrafts" method="post">
         @Html.Hidden("parents", @Model.wantparents)
         @Html.Hidden("queryid", @Model.queryid)
 		<table width="100%">

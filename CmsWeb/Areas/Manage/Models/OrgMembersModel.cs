@@ -166,7 +166,7 @@ namespace CmsWeb.Models
                 var q = from om in DbUtil.Db.OrganizationMembers
                         where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
                         where SourceId == 0 || om.OrganizationId == SourceId
-                        where glist.Length == 0 || glist.Contains(om.Grade.Value)
+                        where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
                         where !SmallGroup.HasValue() || om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == SmallGroup)
                         where !MembersOnly || om.MemberTypeId == MemberTypeCode.Member
                         select om;
