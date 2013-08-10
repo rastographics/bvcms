@@ -194,7 +194,7 @@ namespace CmsWeb.Models
             {
                 if (masterorgid.HasValue)
                     return masterorg.OrganizationName;
-                if (settings != null && org != null && settings[org.OrganizationId] != null)
+                if (settings != null && org != null && settings.ContainsKey(org.OrganizationId))
                     return Util.PickFirst(settings[org.OrganizationId].Title, org.OrganizationName);
                 return org.OrganizationName;
             }
@@ -207,7 +207,7 @@ namespace CmsWeb.Models
                 {
                     try
                     {
-                        if (settings != null && org != null && settings[masterorgid.Value] != null)
+                        if (settings != null && org != null && settings.ContainsKey(masterorgid.Value))
                         {
                             var accountcode = settings[masterorgid.Value].AccountingCode;
                             if (accountcode.HasValue())
@@ -226,7 +226,7 @@ namespace CmsWeb.Models
                         throw;
                     }
                 }
-                if (settings != null && org != null && settings[org.OrganizationId] != null)
+                if (settings != null && org != null && settings.ContainsKey(org.OrganizationId))
                 {
                     var name = Util.PickFirst(settings[org.OrganizationId].Title, org.OrganizationName);
                     var accountcode = settings[org.OrganizationId].AccountingCode;
