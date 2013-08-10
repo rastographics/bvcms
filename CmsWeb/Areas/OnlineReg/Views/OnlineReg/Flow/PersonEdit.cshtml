@@ -59,7 +59,10 @@
             Birthdate:</label>
     </td>
     <td>@Html.TextBox3("dob", Html.NameFor2(m => m.dob), Model.dob, new { @class = "dob" })
-         (<span id="age">@Model.age</span>)
+        @if (Model.LoggedIn)
+        {
+            @:(<span id="age">@Model.age</span>)
+        }
         <div>
             @Html.ValidationMessageFor(m => m.dob)</div>
     </td>

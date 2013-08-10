@@ -4,9 +4,9 @@
     var edit = User.IsInRole("Edit");
     var developer = User.IsInRole("Developer");
 }
-<ul class="dropdown-menu toolbar-gear @(!admin ? "onecolumn": "")">
+<ul class="dropdown-menu dropdown-div-gear @(!admin ? "onecolumn": "")">
     <li>
-        <div class="toolbar-menu">
+        <div>
             @if (admin)
             {
                 <ul id="ultoolbar" class="span6 unstyled pull-left">

@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.People.Models.Person.BasicPersonInfo
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.Person.BasicPersonInfo
 <form class="form form-horizontal ajax span12" method="post">
     @FormAction()
     <div class="row-fluid">
@@ -48,3 +49,4 @@
     </div>
     }
 }
+ <p class="record_added muted"><small>Record added @Model.Created.FormatDate()</small></p>

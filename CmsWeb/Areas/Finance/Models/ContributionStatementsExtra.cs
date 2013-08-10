@@ -450,7 +450,6 @@ p { font-size: 11px; }
             private Document document;
             private PdfContentByte dc;
             private BaseFont font;
-            private int recentpage;
             public int set { get; set; }
 
             public Dictionary<int, int> FamilySet { get; set; }

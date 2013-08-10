@@ -1,0 +1,394 @@
+﻿td.right, th.right {
+    text-align: right;
+}
+
+td.noborder, th.noborder {
+    border: none;
+}
+
+td.left, th.left {
+    text-align: left;
+}
+
+td.center, th.center {
+    text-align: center;
+}
+
+.dropdown-menu::before,
+.dropdown-menu::after {
+    border: none;
+    content: none!important;
+}
+
+ul.dropdown-div-admin {
+    margin-left: -250px;
+    width: 600px;
+}
+
+
+.dropdown-menu .divider {
+    margin: auto;
+}
+
+
+
+.datepicker {
+    z-index: 2000;
+}
+
+
+/*
+.control-group {
+    margin-bottom: auto;
+}
+*/
+
+/*
+.form-horizontal .control-group {
+    margin-bottom: auto;
+}
+*/
+
+
+.editable-click,
+a.editable-click,
+a.editable-click:hover {
+    border-bottom: none;
+    text-decoration: none;
+}
+
+/*#navGlobal .form-search {
+    text-align: left;
+}*/
+
+/*
+form.form-horizontal.onecol .control-group {
+    float: none;
+    width: auto;
+    *width: auto;
+    margin-bottom: 1em;
+}
+*/
+
+tbody td a {
+    color: #08c;
+}
+
+
+table.expanding div.indent {
+    padding-left: 3em;
+}
+
+
+
+table.expanding a[rel="reveal"] {
+    text-decoration: none;
+}
+
+
+tr.section td,
+tr.section:hover td,
+tr.section:focus td,
+.table-hover tbody tr.section:hover td {
+    color: #fff;
+}
+/*
+table.expanding tr.details td {
+    border-top: none;
+}
+*/
+
+/*
+table.enrollments tr.details td:first-child {
+    padding-left: 1em;
+}
+*/
+
+
+table.expanding tr.oddrow > td {
+    background-color: #f9f9f9;
+}
+
+
+
+a.edit {
+    color: #CCC;
+}
+
+    a.edit:hover {
+        text-decoration: none;
+    }
+
+.edit-inline-label {
+    cursor: pointer;
+}
+
+
+
+    .edit-inline-label:after {
+        display: inline-block;
+        margin-left: 5px;
+        color: #DDD;
+        content: "\f040";
+        font-family: FontAwesome;
+    }
+
+
+
+#sidebar #family_members li a div.headshot {
+    float: left;
+    overflow: hidden;
+    margin-right: 10px;
+    width: 38px;
+    height: 50px;
+    border-width: 1px;
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+
+
+
+.typeahead a {
+    color: white;
+    text-decoration: none;
+}
+
+
+
+.icon-fixedwidth {
+    display: inline-block;
+    width: 1.3em;
+    text-align: center;
+}
+
+
+ul[class^="dropdown-div-"] li > a,
+ul[class*=" dropdown-div-"] li > a {
+    white-space: normal;
+}
+
+ul.typeahead a {
+    display: block;
+    clear: both;
+    color: #0088cc;
+    white-space: normal;
+    line-height: 1.5em;
+}
+
+
+ul.typeahead li.active a,
+.typeahead a:hover {
+    color: #fff;
+}
+
+
+#profile-header {
+    /*border-top: 5px solid #3482C6;*/
+    height: auto;
+}
+
+
+    #profile-header div.portrait {
+        position: absolute;
+        top: 10px;
+        left: 0;
+        overflow: hidden;
+        width: 90px;
+        height: 120px;
+        background-position: center top;
+        background-repeat: no-repeat;
+    }
+
+
+
+    #profile-header ul.dropdown-div-reports {
+        margin-left: -300px;
+        width: 600px;
+    }
+
+
+
+    #profile-header ul.dropdown-div-gear {
+        margin-left: -200px;
+        width: 400px;
+    }
+
+
+
+    #profile-header ul.dropdown-menu.toolbar-gear.onecolumn {
+        margin-left: -100px;
+        width: 200px;
+    }
+
+
+
+    #profile-header ul.dropdown-menu.toolbar-email {
+        margin-left: 0;
+    }
+
+
+
+li.space,
+li.header {
+    margin-top: .5em;
+}
+
+
+.primary-tabs .nav-tabs {
+    margin-bottom: 0;
+}
+
+
+
+#personal form.form.form-horizontal.ajax div.form-actions {
+    margin-top: .5em;
+    margin-bottom: 1em;
+    padding: 35px 0 0 0;
+}
+
+
+#navGlobal {
+    height: 54px;
+    background: #323334;
+    background: rgba(50, 51, 52, 0.7);
+    color: #fff;
+}
+
+    #navGlobal .form-search {
+        text-align: left;
+    }
+
+    #navGlobal ul.typeahead {
+        float: left;
+    }
+
+
+
+    #navGlobal #brand {
+        width: 240px;
+    }
+
+
+
+        #navGlobal #brand h1 {
+            width: auto;
+        }
+
+
+
+        #navGlobal #brand .logo {
+            width: 240px;
+        }
+
+
+
+
+    #navGlobal .btn {
+        color: #fff;
+        -webkit-text-shadow: none;
+        text-shadow: none;
+    }
+
+
+
+    #navGlobal .nav a.dropdown-toggle {
+        color: #fff;
+    }
+
+
+
+    #navGlobal .nav-drop {
+        float: right;
+        margin-top: 4px;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+
+
+        #navGlobal .nav-drop .btn {
+            margin-top: 3px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            border: none;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            font-size: 13px;
+            line-height: 24px;
+        }
+
+
+
+            #navGlobal .nav-drop .btn:link,
+            #navGlobal .nav-drop .btn:visited {
+                background: none;
+            }
+
+
+
+            #navGlobal #nav-account .btn:hover,
+            #navGlobal #nav-account .btn:active,
+            #navGlobal #nav-account .btn:focus,
+            #navGlobal .nav-drop .btn:hover,
+            #navGlobal .nav-drop .btn:active,
+            #navGlobal .nav-drop .btn:focus {
+                outline: none;
+                background-color: #FFF;
+                color: #777;
+            }
+
+
+
+        #navGlobal .nav-drop .caret {
+            margin-top: 12px;
+            margin-left: 4px;
+        }
+
+
+
+        #navGlobal .nav-drop .dropdown-menu {
+            background: #FFF;
+        }
+
+.dropdown-menu li > a.current {
+    background: #555;
+    color: white;
+}
+
+
+
+span.currentTag {
+    display: inline-block;
+    overflow: hidden;
+    max-width: 80px;
+    -moz-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+
+
+#sidebar .sidebar_title.inactive a {
+    color: #bbb;
+}
+
+@media (max-width: 1200px) {
+    .display div.controls {
+        padding: 6px;
+        padding-bottom: 7px;
+        border: 1px solid #dfdfdf;
+    }
+
+    div.controls.code-dropdown {
+        min-height: 31px;
+    }
+
+    .display .control-group .controls p {
+        padding-top: 0;
+    }
+
+    .form-horizontal .controls p {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}

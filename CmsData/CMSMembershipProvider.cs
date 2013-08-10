@@ -546,7 +546,7 @@ namespace CmsData
                 UpdateFailureCount(Db, user, "password");
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

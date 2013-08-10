@@ -118,7 +118,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 				return Redirect("/");
 			email.PublicX = true;
 			DbUtil.Db.SubmitChanges();
-			return RedirectToAction("View", new { id = id });
+            return Redirect("/Manage/Emails/View/" + id);
 		}
 		[HttpPost]
 		public ActionResult Recipients(int id, string filter)
@@ -227,7 +227,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
 	public class EmailsViewController : CmsControllerNoHttps
 	{
-		public ActionResult View(string id)
+		public new ActionResult View(string id)
 		{
 		    var iid = id.ToInt();
 			var email = DbUtil.Db.EmailQueues.SingleOrDefault(ee => ee.Id == iid);

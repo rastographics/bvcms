@@ -125,9 +125,7 @@ ul#menu
 ul#menu li
 {
     display: inline;
-    list-style-image: none;
-    list-style-position: outside;
-    list-style-type: none;
+    list-style: none outside none;
 }
 ul#menu li#greeting
 {
@@ -226,7 +224,7 @@ legend
 #login fieldset
 {
     margin: 12px 24px;
-    border 1px solid #808183;
+    border: 1px solid #808183;
     background: #e6e7e9;
     padding: 0;
 }
@@ -247,7 +245,8 @@ textarea
 }
 table#slots
 {
-    border: 1px solid #E8EEF4;
+    /*border: 1px solid #E8EEF4;*/
+    border: 2px solid black;
 }
 table#slots td
 {
@@ -315,10 +314,6 @@ div#title
 {
     color: #FF0000;
     font-weight: bold;
-}
-table#slots
-{
-    border: 2px solid black;
 }
 th.slot, td.slot
 {
@@ -411,13 +406,12 @@ div.wraparound
   text-decoration:none;
 }*/
 a.bt {
-  border-radius:            3px;
-  -moz-border-radius:       3px;
-  -webkit-border-radius:    3px; 
-  
-  display:                  inline-block;
+    -moz-border-radius:       3px;
+  -webkit-border-radius:    3px;
+    border-radius:            3px;
+    display:                  inline-block;
   padding:                  4px 6px 2px;
-  .padding-bottom:          4px; 
+  padding-bottom:          4px; 
   
   text-decoration:          none;
   text-align:               center;
@@ -426,13 +420,10 @@ a.bt {
   color:                    black;
   
   border:                   1px solid;
-    border-top-color:       #ccc;
-    border-left-color:      #ccc;
-    border-right-color:     #bbb;
-    border-bottom-color:    #bbb;
+    border-color: #ccc #bbb #bbb #ccc;
 }
-  
-  a.bt:hover { 
+
+a.bt:hover { 
     border-color:           #99ccff;  
   }
 td.alt0

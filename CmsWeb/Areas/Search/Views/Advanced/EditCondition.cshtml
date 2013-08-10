@@ -219,10 +219,10 @@
                 <div style="text-align: right; margin: 1em;">
                     @if (Model.RemoveEnabled)
                     {
-                        <a href="#" class="bt red removeclause">Delete @(Model.ConditionName == "Group" ? "Entire Group" : "Condition")</a>
+                        <a href="#" class="btn btn-danger removeclause">Delete @(Model.ConditionName == "Group" ? "Entire Group" : "Condition")</a>
                     }
-                    <a id="CancelChange" class="conditionButton bt">Cancel</a>
-                    <a id="SaveCondition" class="conditionButton bt blue">Save</a>
+                    <a id="CancelChange" class="conditionButton btn">Cancel</a>
+                    <a id="SaveCondition" class="conditionButton btn btn-primary">Save</a>
                 </div>
             </td>
         </tr>

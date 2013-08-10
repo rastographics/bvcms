@@ -83,7 +83,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 w.End();
                 return Content(w.ToString(), "text/xml");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Content("<SQLView error=\"cannot find view guest.{0}\" />".Fmt(id));
             }

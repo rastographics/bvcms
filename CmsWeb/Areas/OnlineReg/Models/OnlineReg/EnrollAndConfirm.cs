@@ -318,7 +318,7 @@ AmountDue: {4:C}<br/>
                         EmailSubject = Util.PickFirst(os.Subject, "no subject");
                         message = Util.PickFirst(os.Body, "no body");
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         if (masterorgid == null)
                             throw new Exception("masterorgid was null");

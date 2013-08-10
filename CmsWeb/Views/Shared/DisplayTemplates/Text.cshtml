@@ -3,6 +3,6 @@
 <div class="control-group">
     @Html.LabelFor(m => m, new { @class="control-label"})
     <div class="controls">
-        <p>@Model</p>
+        <p>@Html.Raw(Model.HasValue() ? Model : "&nbsp;")</p>
     </div>
 </div>

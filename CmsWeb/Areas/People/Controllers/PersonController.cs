@@ -69,11 +69,11 @@ namespace CmsWeb.Areas.People.Controllers
             return View(m);
         }
 
-        [POST("Person2/Snapshot/{id}")]
-        public ActionResult Snapshot(int id)
+        [POST("Person2/ProfileHeader/{id}")]
+        public ActionResult ProfileHeader(int id)
         {
             var m = new PersonModel(id);
-            return View("ProfileHeader/Snapshot", m);
+            return View(m);
         }
 
         [POST("Person2/PersonalDisplay/{id}")]
@@ -81,13 +81,13 @@ namespace CmsWeb.Areas.People.Controllers
         {
             InitExportToolbar(id);
             var m = BasicPersonInfo.GetBasicPersonInfo(id);
-            return View("Main/PersonalDisplay", m);
+            return View("MainTabs/PersonalDisplay", m);
         }
         [POST("Person2/PersonalEdit/{id}")]
         public ActionResult PersonalEdit(int id)
         {
             var m = BasicPersonInfo.GetBasicPersonInfo(id);
-            return View("Main/PersonalEdit", m);
+            return View("MainTabs/PersonalEdit", m);
         }
         [POST("Person2/PersonalUpdate/{id}")]
         public ActionResult Personalpdate(int id)
@@ -98,7 +98,7 @@ namespace CmsWeb.Areas.People.Controllers
             m = BasicPersonInfo.GetBasicPersonInfo(id);
             DbUtil.LogActivity("Update Basic Info for: {0}".Fmt(m.person.Name));
             InitExportToolbar(id);
-            return View("Main/PersonalDisplay", m);
+            return View("MainTabs/PersonalDisplay", m);
         }
 
         [POST("Person2/EnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
@@ -188,13 +188,13 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new PersonModel(id);
             //UpdateModel(m.Pager);
-            return View("Sidebar/FamilyMembers", m);
+            return View("FamilySidebar/Members", m);
         }
         [POST("Person2/RelatedFamilies/{id}")]
         public ActionResult RelatedFamilies(int id)
         {
             var m = new PersonModel(id);
-            return View("Sidebar/RelatedFamilies", m);
+            return View("FamilySidebar/Related", m);
         }
         [POST("Person2/UpdateRelation/{id}/{id1}/{id2}")]
         public ActionResult UpdateRelation(int id, int id1, int id2, string value)
@@ -203,7 +203,7 @@ namespace CmsWeb.Areas.People.Controllers
             r.FamilyRelationshipDesc = value;
             DbUtil.Db.SubmitChanges();
             var m = new PersonModel(id);
-            return View("Sidebar/RelatedFamilies", m);
+            return View("FamilySidebar/Related", m);
         }
         [POST("Person2/DeleteRelation/{id}/{id1}/{id2}")]
         public ActionResult DeleteRelation(int id, int id1, int id2)
@@ -212,14 +212,14 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.RelatedFamilies.DeleteOnSubmit(r);
             DbUtil.Db.SubmitChanges();
             var m = new PersonModel(id);
-            return View("Sidebar/RelatedFamilies", m);
+            return View("FamilySidebar/Related", m);
         }
         [POST("Person2/RelatedFamilyEdit/{id}/{id1}/{id2}")]
         public ActionResult RelatedFamilyEdit(int id, int id1, int id2)
         {
             var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(rf => rf.FamilyId == id1 && rf.RelatedFamilyId == id2);
             ViewBag.Id = id;
-            return View("Sidebar/RelatedFamilyEdit", r);
+            return View("FamilySidebar/RelatedEdit", r);
         }
 
         [POST("Person2/UploadPicture/{id:int}/{picture}")]
@@ -287,7 +287,7 @@ namespace CmsWeb.Areas.People.Controllers
                 CmsWeb.Models.AccountModel.SendNewUserEmail(username);
             DbUtil.LogActivity("Update User for: {0}".Fmt(Session["ActivePerson"]));
             var m = new PersonModel(u.PeopleId.Value);
-            return View("ProfileHeader/Toolbar", m);
+            return View("Toolbar/Toolbar", m);
         }
         [POST("Person2/UserDelete/{id}")]
         [Authorize(Roles = "Admin")]
@@ -296,7 +296,7 @@ namespace CmsWeb.Areas.People.Controllers
             var u = DbUtil.Db.Users.Single(us => us.UserId == id);
             DbUtil.Db.PurgeUser(id);
             var m = new PersonModel(u.PeopleId.Value);
-            return View("ProfileHeader/Toolbar", m);
+            return View("Toolbar/Toolbar", m);
         }
         [GET("Person2/Impersonate/{id}")]
         [Authorize(Roles = "Admin")]
@@ -316,12 +316,12 @@ namespace CmsWeb.Areas.People.Controllers
             return Redirect("/");
         }
 
-        [HttpPost]
-        public ActionResult UserInfoGrid(int id)
-        {
-            var p = DbUtil.Db.LoadPersonById(id);
-            return View(p);
-        }
+//        [HttpPost]
+//        public ActionResult UserInfoGrid(int id)
+//        {
+//            var p = DbUtil.Db.LoadPersonById(id);
+//            return View(p);
+//        }
 
         [POST("Person2/Split/{id}")]
         [Authorize(Roles = "Edit")]
@@ -438,13 +438,13 @@ namespace CmsWeb.Areas.People.Controllers
             return new EmptyResult();
         }
 
-        [HttpPost]
-        public ActionResult Reverse(int id, string field, string value, string pf)
-        {
-            var m = new PersonModel(id);
-            m.Reverse(field, value, pf);
-            return View("ChangesGrid", m);
-        }
+        //[HttpPost]
+        //public ActionResult Reverse(int id, string field, string value, string pf)
+        //{
+        //    var m = new PersonModel(id);
+        //    m.Reverse(field, value, pf);
+        //    return View("ChangesGrid", m);
+        //}
 
         //		[HttpPost]
         //		public ActionResult ContactsMadeGrid(int id)
@@ -462,19 +462,19 @@ namespace CmsWeb.Areas.People.Controllers
         //			return View(m);
         //		}
 
-        [HttpPost]
-        public ActionResult IncompleteTasksGrid(int id)
-        {
-            var m = new CmsWeb.Models.TaskModel();
-            return View(m.IncompleteTasksList(id));
-        }
+        //[HttpPost]
+        //public ActionResult IncompleteTasksGrid(int id)
+        //{
+        //    var m = new CmsWeb.Models.TaskModel();
+        //    return View(m.IncompleteTasksList(id));
+        //}
 
-        [HttpPost]
-        public ActionResult PendingTasksGrid(int id)
-        {
-            var m = new CmsWeb.Models.TaskModel();
-            return View(m.TasksAboutList(id));
-        }
+        //[HttpPost]
+        //public ActionResult PendingTasksGrid(int id)
+        //{
+        //    var m = new CmsWeb.Models.TaskModel();
+        //    return View(m.TasksAboutList(id));
+        //}
 
         [HttpPost]
         public ActionResult AddContactMade(int id)
@@ -677,12 +677,12 @@ namespace CmsWeb.Areas.People.Controllers
             return c;
         }
 
-        [HttpPost]
-        public ActionResult OptoutsGrid(int id)
-        {
-            var p = DbUtil.Db.LoadPersonById(id);
-            return View(p);
-        }
+        //[HttpPost]
+        //public ActionResult OptoutsGrid(int id)
+        //{
+        //    var p = DbUtil.Db.LoadPersonById(id);
+        //    return View(p);
+        //}
 
         [HttpPost]
         public ActionResult DeleteOptout(int id, string email)
@@ -695,12 +695,12 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("ok");
         }
 
-        [HttpPost]
-        public ActionResult VolunteerDisplay(int id)
-        {
-            var m = new Main.Models.Other.VolunteerModel(id);
-            return View(m);
-        }
+//        [HttpPost]
+//        public ActionResult VolunteerDisplay(int id)
+//        {
+//            var m = new Main.Models.Other.VolunteerModel(id);
+//            return View(m);
+//        }
 
         [HttpPost]
         public ContentResult DeleteExtra(int id, string field)
@@ -840,19 +840,19 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("ok");
         }
 
-        [HttpPost]
-        public ActionResult ExtrasGrid(int id)
-        {
-            var p = DbUtil.Db.LoadPersonById(id);
-            return View(p);
-        }
+//        [HttpPost]
+//        public ActionResult ExtrasGrid(int id)
+//        {
+//            var p = DbUtil.Db.LoadPersonById(id);
+//            return View(p);
+//        }
 
-        [HttpPost]
-        public ActionResult ChangesGrid(int id)
-        {
-            var m = new PersonModel(id);
-            return View(m);
-        }
+//        [HttpPost]
+//        public ActionResult ChangesGrid(int id)
+//        {
+//            var m = new PersonModel(id);
+//            return View(m);
+//        }
         //		[HttpPost]
         //		public ActionResult DuplicatesGrid(int id)
         //		{
@@ -872,11 +872,11 @@ namespace CmsWeb.Areas.People.Controllers
         private void InitExportToolbar(int? id)
         {
             var qb = DbUtil.Db.QueryBuilderIsCurrentPerson();
-            ViewData["queryid"] = qb.QueryId;
-            ViewData["TagAction"] = "/Person/Tag/" + id;
-            ViewData["UnTagAction"] = "/Person/UnTag/" + id;
-            ViewData["AddContact"] = "/Person/AddContactReceived/" + id;
-            ViewData["AddTasks"] = "/Person/AddAboutTask/" + id;
+            ViewBag.queryid = qb.QueryId;
+            ViewBag.TagAction = "/Person/Tag/" + id;
+            ViewBag.UnTagAction = "/Person/UnTag/" + id;
+            ViewBag.AddContact = "/Person/AddContactReceived/" + id;
+            ViewBag.AddTasks = "/Person/AddAboutTask/" + id;
         }
         public class CurrentRegistration
         {
@@ -885,37 +885,37 @@ namespace CmsWeb.Areas.People.Controllers
             public string Description { get; set; }
         }
 
-        public ActionResult CurrentRegistrations(bool? html)
-        {
-            var types = new[] 
-			{
-				CmsData.Codes.RegistrationTypeCode.JoinOrganization,
-				CmsData.Codes.RegistrationTypeCode.ComputeOrganizationByAge2,
-				CmsData.Codes.RegistrationTypeCode.UserSelectsOrganization2,
-				CmsData.Codes.RegistrationTypeCode.ChooseVolunteerTimes,
-			};
-            var picklistorgs = DbUtil.Db.ViewPickListOrgs.Select(pp => pp.OrgId).ToArray();
-            var dt = DateTime.Today;
-            var q = from o in DbUtil.Db.Organizations
-                    where !picklistorgs.Contains(o.OrganizationId)
-                    where types.Contains(o.RegistrationTypeId ?? 0)
-                    where (o.RegistrationClosed ?? false) == false
-                    where (o.ClassFilled ?? false) == false
-                    where o.RegEnd > dt || o.RegEnd == null
-                    where o.RegStart <= dt || o.RegStart == null
-                    where o.OrganizationStatusId == OrgStatusCode.Active
-                    orderby o.OrganizationName
-                    select new CurrentRegistration()
-                    {
-                        OrgId = o.OrganizationId,
-                        Name = o.OrganizationName,
-                        Description = o.Description
-                    };
-            if ((html ?? false) == true)
-                return View("CurrentRegistrationsHtml", q);
-            return View(q);
-        }
-
+//        public ActionResult CurrentRegistrations(bool? html)
+//        {
+//            var types = new[] 
+//			{
+//				CmsData.Codes.RegistrationTypeCode.JoinOrganization,
+//				CmsData.Codes.RegistrationTypeCode.ComputeOrganizationByAge2,
+//				CmsData.Codes.RegistrationTypeCode.UserSelectsOrganization2,
+//				CmsData.Codes.RegistrationTypeCode.ChooseVolunteerTimes,
+//			};
+//            var picklistorgs = DbUtil.Db.ViewPickListOrgs.Select(pp => pp.OrgId).ToArray();
+//            var dt = DateTime.Today;
+//            var q = from o in DbUtil.Db.Organizations
+//                    where !picklistorgs.Contains(o.OrganizationId)
+//                    where types.Contains(o.RegistrationTypeId ?? 0)
+//                    where (o.RegistrationClosed ?? false) == false
+//                    where (o.ClassFilled ?? false) == false
+//                    where o.RegEnd > dt || o.RegEnd == null
+//                    where o.RegStart <= dt || o.RegStart == null
+//                    where o.OrganizationStatusId == OrgStatusCode.Active
+//                    orderby o.OrganizationName
+//                    select new CurrentRegistration()
+//                    {
+//                        OrgId = o.OrganizationId,
+//                        Name = o.OrganizationName,
+//                        Description = o.Description
+//                    };
+//            if ((html ?? false) == true)
+//                return View("CurrentRegistrationsHtml", q);
+//            return View(q);
+//        }
+//
         public ActionResult ContributionStatement(int id, string fr, string to)
         {
             if (Util.UserPeopleId != id && !User.IsInRole("Finance"))

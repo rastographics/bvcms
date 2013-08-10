@@ -45,7 +45,7 @@ $(function () {
     $('body').on("click", '#AddToGroup[href]', function () {
         qs = $('#conditionForm').serialize();
         $.post('/QueryBuilder/AddToGroup/', qs, function (ret) {
-            var a = ret.split("<---------->");
+            var a = ret.split("<!---------->");
             if (!ShowErrors(a[1]))
                 FillConditionGrid(a[0]);
         });
@@ -54,7 +54,7 @@ $(function () {
     $('body').on("click", '#Add[href]', function () {
         qs = $('#conditionForm').serialize();
         $.post('/QueryBuilder/Add/', qs, function (ret) {
-            var a = ret.split("<---------->");
+            var a = ret.split("<!---------->");
             if (!ShowErrors(a[1]))
                 FillConditionGrid(a[0]);
         });
@@ -63,7 +63,7 @@ $(function () {
     $('body').on("click", '#Update[href]', function () {
         qs = $('#conditionForm').serialize();
         $.post('/QueryBuilder/Update/', qs, function (ret) {
-            var a = ret.split("<---------->");
+            var a = ret.split("<!---------->");
             if (!ShowErrors(a[1]))
                 FillConditionGrid(a[0]);
         });

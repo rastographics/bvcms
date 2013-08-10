@@ -60,22 +60,22 @@
         return false;
     });
 
-    $.gotoPage = function(e, pg) {
+    $.gotoPage = function (e, pg) {
         $("#Page").val(pg);
         $.getTable();
         return false;
     };
-    $.setPageSize = function(e) {
+    $.setPageSize = function (e) {
         $('#Page').val(1);
         $("#PageSize").val($(e).val());
         return $.getTable();
     };
-    $.getTable = function() {
+    $.getTable = function () {
         var f = $('#results').closest('form');
         var q = f.serialize();
         $.blockUI();
-        $.post($('#refresh').attr('href'), q, function(ret) {
-            $('#results').replaceWith(ret).ready(function() {
+        $.post($('#refresh').attr('href'), q, function (ret) {
+            $('#results').replaceWith(ret).ready(function () {
                 $('#results > tbody > tr:even').addClass('alt');
                 $("#activetag").text($("#actag").val());
                 $("#tagalltagname").val($("#actag").val());
@@ -115,10 +115,10 @@
         });
         return false;
     });
-    
+
     $("#ShareLink").SearchUsers({
-        UpdateShared: function() {
-            $.post("/Tags/UpdateShared", null, function(ret) {
+        UpdateShared: function () {
+            $.post("/Tags/UpdateShared", null, function (ret) {
                 $("#sharecount").text(ret);
             });
         }
@@ -129,11 +129,11 @@
         $('iframe', d).attr("src", this.href);
         d.dialog("open");
     });
-//    $("#tagname").keypress(function (ev) {
-//        if (ev.which != 58) //no : character
-//            return true;
-//        return false;
-//    });
+    //    $("#tagname").keypress(function (ev) {
+    //        if (ev.which != 58) //no : character
+    //            return true;
+    //        return false;
+    //    });
 });
 function UpdateSelectedUsers(r) {
     $.post("/Tags/UpdateShared", null, function (ret) {

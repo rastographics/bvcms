@@ -1,7 +1,7 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.Person.PersonModel
 @{
-    Layout = "/Views/Shared/SiteLayout2.cshtml";
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Person";
 }
 @section scripts
@@ -14,31 +14,27 @@
 {
     <link href="@Fingerprint.Tag("/Content/css/person-main.css")" rel="stylesheet" />
 }
-<div class="container" style="margin-top: -1em;">
+<div class="container">
     <div class="row-fluid">
         <div class="span9">
             <div class="row-fluid">
                 <div class="span12" id="profile-header">
-                    <div id="snapshot" class="span8">
-                        @Html.Partial("ProfileHeader/Snapshot", Model)
-                    </div>
-                    <div class="span4" id="profile-actions">
-                        @if (User.IsInRole("Access"))
-                        {
-                            @Html.Partial("Toolbar/Toolbar", Model)
-                            <p class="record_added muted"><small>Record added @Model.basic.Created.FormatDate()</small></p>
-                        }
-                    </div>
+                    @Html.Partial("ProfileHeader", Model)
                 </div>
             </div>
             <div class="row-fluid">
                 <div class="span12">
-                    @Html.Partial("TabsMain", Model)
+                    @Html.Partial("MainTabs", Model)
                 </div>
             </div>
         </div>
         <div class="span3">
-            @Html.Partial("Sidebar", Model)
+            <div id="sidebar">
+                @Html.Partial("FamilySidebar/Members", Model)
+                @Html.Partial("FamilySidebar/Related", Model)
+                @Html.Partial("FamilySidebar/Photo", Model)
+                @Html.Partial("FamilySidebar/ExtraValues", Model)
+            </div>
         </div>
     </div>
     @Html.Hidden("newlook", "true")

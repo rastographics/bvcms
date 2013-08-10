@@ -110,6 +110,7 @@ namespace CmsData.API
                              StatusId = c.ContributionStatusId ?? -1,
                              Status = c.ContributionStatus.Description,
                              Name = c.Person.Name,
+                             Pledge = c.PledgeFlag ?? false,
                              PeopleId = c.PeopleId ?? 0,
                              Description = c.ContributionDesc,
                              CheckNo = c.CheckNo

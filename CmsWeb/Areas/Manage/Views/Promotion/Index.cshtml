@@ -1,7 +1,7 @@
 ﻿@model CmsWeb.Models.PromotionModel
 @using CmsWeb
 @{
-    Layout = "/Views/Shared/SiteLayout.cshtml";
+    Layout = "~/Views/Shared/SiteLayout.cshtml";
     ViewBag.Title = "Promotion";
 }
 @section scripts
@@ -91,7 +91,6 @@
     </script>
 }
 @section head {
-<title>Promotion</title>
    <style type="text/css">
       #float_box { 
        position: absolute; 
@@ -112,7 +111,7 @@
 <div id="float_box">
     <img id="close_float" src="/images/12-em-cross.png" />
     <table>
-    <tr><td></td><th colspan="2">Checked</td><th colspan="2">Total</td></tr>
+    <tr><td></td><th colspan="2">Checked</th><th colspan="2">Total</th></tr>
     <tr><td>Girls</td><td id="girls"></td><td id="pgirls"></td><td id="tgirls"></td><td id="tpgirls"></td></tr>
     <tr><td>Boys</td><td id="boys"></td><td id="pboys"></td><td id="tboys"></td><td id="tpboys"></td></tr>
     <tr><td colspan="5"><hr /></td></tr>

@@ -17,12 +17,8 @@ namespace CmsWeb
 		    {
     			routes.MapAttributeRoutes();
 		    }
-		    catch (NullReferenceException ex)
+		    catch (NullReferenceException)
 		    {
-		    }
-		    catch (Exception ex)
-		    {
-		        throw;
 		    }
 		}
 

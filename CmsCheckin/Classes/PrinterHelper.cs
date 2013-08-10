@@ -204,7 +204,6 @@ namespace CmsCheckin.Classes
 			if( sPrinter == null ) return;
 			if (sPrinter.Length == 0 || lsLabels.getCount() == 0) return;
 
-			sPrinter = sPrinter;
 			lPageList = lsLabels.lPages;
 
 			PrintDocument pd = new PrintDocument();
@@ -220,8 +219,6 @@ namespace CmsCheckin.Classes
 
 		public static void printTestLabel(string sPrinter, string sLabelFormat)
 		{
-			sPrinter = sPrinter;
-
 			LabelSet lsLabels = new LabelSet();
 			lsLabels.addPages(sLabelFormat, null);
 
@@ -429,7 +426,7 @@ namespace CmsCheckin.Classes
 
 					return ret;
 				}
-				catch (Exception ex) { }
+				catch (Exception) { }
 			}
 
 			return "";
@@ -459,7 +456,7 @@ namespace CmsCheckin.Classes
 
 				return ret;
 			}
-			catch (Exception ex) { }
+			catch (Exception) { }
 
 			return 1;
 		}
@@ -478,7 +475,7 @@ namespace CmsCheckin.Classes
 
                 return ret.Split(new char[] { ',' });
 			}
-			catch (Exception ex) { }
+			catch (Exception) { }
 
 			return null;
 		}

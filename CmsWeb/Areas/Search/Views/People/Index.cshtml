@@ -1,6 +1,6 @@
 ﻿@using CmsWeb.Models
 @using CmsWeb
-@model PeopleSearchModel
+@model CmsWeb.Areas.Search.Models.PeopleModel
 @{
 	ViewBag.Title = "People Search";
 	Layout = "~/Views/Shared/SiteLayout.cshtml";
@@ -42,7 +42,7 @@
 	</tr>
 	<tr>
 	  <td colspan="2" class="bottom"><b>Total Count: <span id="totalcount">@Model.Count().ToString("N0")</span></b></td>
-	  <td nowrap colspan="2"><br>
+	  <td nowrap="nowrap" colspan="2"><br>
 		  <a id="convert" href="/PeopleSearch/ConvertToQuery">Convert to Search Builder</a>
 		  <a id="clear" href="#" class="bt">Clear</a>
 		  <a href="/PeopleSearch/Results" id="search" class="bt blue default formlink">Search</a>

@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 DbUtil.Db.ExecuteCommand("delete lookup." + type + " where id = {0}", iid);
                 return new EmptyResult();
             }
-            catch (SqlException ex)
+            catch (SqlException)
             {
                 return Json(new { error = "Cannot delete {0} because it is in use".Fmt(type)});
             }

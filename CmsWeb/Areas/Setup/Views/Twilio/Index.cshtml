@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @{
     ViewBag.Title = "Twilio Management";
-    Layout = "/Views/Shared/SiteLayout.cshtml";
+    Layout = "~/Views/Shared/SiteLayout.cshtml";
     
     var gl = from e in DbUtil.Db.SMSGroups
              select e;

@@ -665,7 +665,6 @@ a img {
         -webkit-transition: background-position 0.1s linear;
         -moz-transition: background-position 0.1s linear;
         -o-transition: background-position 0.1s linear;
-        -ms-transition: background-position 0.1s linear;
         transition: background-position 0.1s linear;
     }
 

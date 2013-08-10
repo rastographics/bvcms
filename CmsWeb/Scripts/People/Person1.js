@@ -59,7 +59,7 @@
             });
             modal.on("click", "a.close-saved-address", function () {
                 $.post($(this).attr("href"), {}, function (ret) {
-                    $("#snapshot").html(ret).ready($SetSnapshotEditable);
+                    $("#profile-header").html(ret).ready(SetProfileEditable);
                 });
             });
         });
@@ -132,7 +132,7 @@
         var href = $(this).attr("href");
         if (confirm('Are you sure you want to delete?')) {
             $.post(href, {}, function (ret) {
-                if (ret != "ok")
+                if (ret !== "ok")
                     $.growlUI("failed", ret);
                 else {
                     $.updateTable($('#user-tab form'));
@@ -178,7 +178,7 @@
     });
     $("#member-link").click(function () {
         var f = $("#memberdisplay");
-        if ($("table", f).size() == 0) {
+        if ($("table", f).size() === 0) {
             $.post(f.attr('action'), null, function (ret) {
                 $(f).html(ret).ready(function () {
                     $.UpdateForSection(f);
@@ -337,10 +337,10 @@
         });
 
         src += query.join('&');
-        return '<img src="' + src + '" /><br><a href="https://www.google.com/maps/?q=' + opts['center'] + '" rel="external" target="_blank">View in Google Maps</a>\
-      <br><a href="http://www.bing.com/maps/?q=' + opts['center'] + '" rel="external" target="_blank">View in Bing Maps</a>';
+        return '<img src="' + src + '" /><br><a href="https://www.google.com/maps/?q=' + opts.center + '" rel="external" target="_blank">View in Google Maps</a>\
+      <br><a href="http://www.bing.com/maps/?q=' + opts.center + '" rel="external" target="_blank">View in Bing Maps</a>';
     };
-    var $SetSnapshotEditable = function () {
+    var SetProfileEditable = function () {
         $('[class="popover-map"]').each(function () {
             var $this = $(this);
             $this.data('html', true).data('content', getMap({ center: $this.text() }));
@@ -371,7 +371,7 @@
             name: "campus"
         });
     };
-    $SetSnapshotEditable();
+    SetProfileEditable();
     $('body').on('click', function (e) {
         $('[rel=popover]').each(function () {
             //the 'is' for buttons that trigger popups

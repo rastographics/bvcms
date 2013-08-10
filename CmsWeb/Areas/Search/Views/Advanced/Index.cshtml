@@ -1,38 +1,43 @@
 ﻿@using CmsWeb
 @model CmsWeb.Areas.Search.Models.AdvancedModel
 @{
-    Layout = "/Views/Shared/SiteLayout.cshtml";
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Advanced Search";
 }
 @section scripts
 {
     <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Search/AdvancedSearch.js")"></script>
+    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Bootstrap/bootstrap-multiselect.js")"></script>
 }
 @section head 
 {
-    <link href="/Content/styles/jquery.multiSelect.css" rel="stylesheet" type="text/css" />
-    <link href="/Content/styles/search.css" rel="stylesheet" type="text/css" />
+    <link href="@Fingerprint.Tag("/Content/css/bootstrap-multiselect.css")" rel="stylesheet" type="text/css" />
+    <link href="/Content/css/search.css" rel="stylesheet" type="text/css" />
 }
 
 @Html.Hidden("AutoRun")
-<form id="conditionForm">
-    <div id="Description"><b>@Model.Description</b></div>
-    <div class="roundbox floatleft" style="display:table;margin-right:1em">
-        <h2>Advanced Search </h2>
-        @Html.Partial("Conditions", Model)
-    </div>
-    <div class="floatleft" style="margin-top:1em">
-        <div id="toolbar" style='@(Model.ShowResults ? "" : "display:none")'>
-            @Html.Partial("ExportToolBar")
+
+<div class="container">
+    <div class="row-fluid">
+        <div class="span4">
+            <div id="Description"><b>@Model.Description</b></div>
+            <div>
+                <h2>Advanced Search </h2>
+                <form id="conditionForm">
+                    @Html.Partial("Conditions", Model)
+                </form>
+            </div>
         </div>
-        <div id="Results" style="clear: both; margin-top: 6px; max-width: 870px">
+        <div id="Results" class="span8">
             @if (Model.ShowResults)
             {
+                @Html.Partial("Toolbar/Toolbar")
                 @Html.Partial("Results", Model) 
             }
         </div>
     </div>
-</form>
+</div>
+
 @section PopupsPlaceholder
 {
     <div id="QueryConditionSelect" class="modalPopup" title="Select a Condition" style="display: none">

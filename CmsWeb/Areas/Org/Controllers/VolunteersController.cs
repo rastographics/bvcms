@@ -107,7 +107,7 @@ namespace CmsWeb.Areas.Org.Controllers
 				.Fmt(qb.QueryId, Server.UrlEncode(subject)));
 		}
 		[HttpGet]
-		public ActionResult Request(int mid, int limit)
+		public new ActionResult Request(int mid, int limit)
 		{
 			var vs = new VolunteerRequestModel(mid, Util.UserPeopleId.Value) {limit = limit };
 			vs.ComposeMessage();
@@ -124,7 +124,7 @@ namespace CmsWeb.Areas.Org.Controllers
 		}
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Request(int mid, long ticks, int[] pids, string subject, string message, int limit, int? additional)
+		public new ActionResult Request(int mid, long ticks, int[] pids, string subject, string message, int limit, int? additional)
 		{
 			var m = new VolunteerRequestModel(mid, Util.UserPeopleId.Value, ticks)
 				{subject = subject, message = message, pids = pids, limit = limit };

@@ -8,7 +8,7 @@
             @Helper.LiAnchorLink("Manage Org Members", "/Manage/OrgMembers/")
         }
         @Helper.LiAnchorLink("Coupons", "/Coupon/", User.IsInRole("Coupon"))
-        @Helper.LiAnchorLink("Enrollment Control Report", "/EnrollmentControlReport.aspx")
+        @Helper.LiAnchorLink("Manage Promotion", "/Promotion/", User.IsInRole("Edit"))
         <li class="space"></li>
         @foreach (var o in Util2.MostRecentOrgs)
         {

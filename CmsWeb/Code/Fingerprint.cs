@@ -38,7 +38,6 @@ public class Fingerprint
             string absolute = HostingEnvironment.MapPath("~" + path);
             var result = new StringBuilder();
 #if DEBUG
-            const string min = "";
             var bundle = absolute + ".bundle";
             if (File.Exists(bundle))
             {
@@ -78,7 +77,6 @@ public class Fingerprint
             string absolute = HostingEnvironment.MapPath("~" + path);
             var result = new StringBuilder();
 #if DEBUG
-            const string min = "";
             var bundle = absolute + ".bundle";
             if (File.Exists(bundle))
             {

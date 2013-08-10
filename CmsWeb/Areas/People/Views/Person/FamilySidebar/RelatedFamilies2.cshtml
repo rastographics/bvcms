@@ -23,10 +23,9 @@
             if (Model.Person.CanUserEditAll)
             {
             <li class="with-edit relation-item">
-                <a id="rf-@f.Id1-@f.Id2" href="/Person2/RelatedFamilyEdit/@Model.PeopleId/@f.Id1/@f.Id2" class="edit editable-click"><i class="icon-pencil"></i></a>
-                <p>
-                    <a href="/Person2/@f.PeopleId">@f.Name</a>
+                <p><a href="/Person2/@f.PeopleId">@f.Name</a>
                     <span class="summary relation-description">
+                        <a id="rf-@f.Id1-@f.Id2" href="/Person2/RelatedFamilyEdit/@Model.PeopleId/@f.Id1/@f.Id2" class="edit editable-click"><i class="icon-pencil"></i></a>
                         @f.Description
                     </span>
                 </p>

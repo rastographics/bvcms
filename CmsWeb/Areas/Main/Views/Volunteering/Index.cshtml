@@ -4,7 +4,7 @@
 @model CmsWeb.Areas.Main.Models.Other.VolunteerModel
 @{
     ViewBag.Title = "Volunteer";
-    Layout = "/Views/Shared/SiteLayout.cshtml";
+    Layout = "~/Views/Shared/SiteLayout.cshtml";
 
     IQueryable<BackgroundCheck> bg = null;
     IQueryable<BackgroundCheck> credit = null;
@@ -80,7 +80,7 @@
 <br />
 @if (DbUtil.Db.Setting("EnableBackgroundChecks", "false") == "true" && User.IsInRole("BackgroundCheck"))
 {
-    <b>Volunteer Background Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND" />Create New</a>)<br />
+    <b>Volunteer Background Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">Create New</a>)<br />
     <table width="100%" style="border: thin solid #777777;">
         @if (bg != null && !bg.Any())
         {
@@ -96,12 +96,12 @@
                 {
                     <th width="22%" style="background-color: #EFF3FB;"><b>Label</b></th>
                 }
-                <th width="16%" style="background-color: #EFF3FB;"><b>Service</b></th>
-                <th width="10%" style="background-color: #EFF3FB;"><b>Status</b></th>
-                <th width="6%" style="background-color: #EFF3FB;"><b>Report ID</b></th>
-                <th width="4%" style="background-color: #EFF3FB;"><b>Issues</b></th>
-                <th style="background-color: #EFF3FB; white-space: nowrap;"><b>Report Link/Error</b></th>
-                <th width="8%" style="background-color: #EFF3FB;"><b>Action</b></th>
+                <th style="background-color: #EFF3FB;width:16%"><b>Service</b></th>
+                <th style="background-color: #EFF3FB;width:10%"><b>Status</b></th>
+                <th style="background-color: #EFF3FB;width:6%"><b>Report ID</b></th>
+                <th style="background-color: #EFF3FB;width:4%"><b>Issues</b></th>
+                <th style="background-color: #EFF3FB;white-space: nowrap;"><b>Report Link/Error</b></th>
+                <th style="background-color: #EFF3FB;width:8%"><b>Action</b></th>
             </tr>
         }
         @foreach (var check in bg)
@@ -177,7 +177,7 @@
 }
 @if (DbUtil.Db.Setting("EnableBackgroundChecks", "false") == "true" && User.IsInRole("CreditCheck"))
 {
-    <b>Volunteer Credit Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_CREDIT" />Create New</a>)<br />
+    <b>Volunteer Credit Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">Create New</a>)<br />
     <table width="100%" style="border: thin solid #777777;">
         @if (credit != null && credit.Count() == 0)
         {

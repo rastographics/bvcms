@@ -12,7 +12,6 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -520,18 +519,23 @@
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Content Include="Areas\People\Views\Person\FamilySidebar\Related.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="Content\css\bootstrap-editable.css" />
+    <Content Include="Content\css\bootstrap-multiselect.css" />
+    <Content Include="Content\css\bootstrap-multiselect.min.css">
+      <DependentUpon>bootstrap-multiselect.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\bootstrap-responsive.css" />
     <Content Include="Content\css\bootstrap-responsive.min.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
-    <Content Include="Content\css\Fixups.css" />
+    <Content Include="Content\css\Fixups2.css" />
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\demo_page.css" />
     <Content Include="Content\css\demo_table.css" />
-    <Content Include="Content\css\Fixups.min.css">
-      <DependentUpon>Fixups.css</DependentUpon>
-    </Content>
+    <Content Include="Content\css\give.css" />
     <Content Include="Content\css\images\ajax-loader.gif" />
     <Content Include="Content\css\img\ajax-loader.gif" />
     <Content Include="Content\css\jquery.dataTables.css" />
@@ -594,7 +598,6 @@
       <DependentUpon>person.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\Support.css" />
-    <Content Include="Content\css\yamm.css" />
     <Content Include="images\chosen-sprite.png" />
     <Content Include="Content\css\chosen.css" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
@@ -782,6 +785,10 @@
     </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-editable.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-editable.min.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js">
+      <DependentUpon>bootstrap-multiselect.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap.min.js.map">
       <DependentUpon>bootstrap.js</DependentUpon>
     </Content>
@@ -848,6 +855,9 @@
     </Content>
     <Content Include="Scripts\jQuery\jquery.dataTables.js" />
     <Content Include="Scripts\jQuery\jquery.hiddenposition.1.1.js" />
+    <Content Include="Scripts\jQuery\jquery.multiSelect.min.js">
+      <DependentUpon>jquery.multiSelect.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\jQuery\jquery.textfill.js" />
     <Content Include="Scripts\jQuery\jquery.tooltip.min.js.map">
       <DependentUpon>jquery.tooltip.js</DependentUpon>
@@ -936,10 +946,9 @@
       <DependentUpon>RegSettings.js</DependentUpon>
     </Content>
     <Content Include="Scripts\js\Support.js" />
-    <Content Include="..\..\..\BellevueProject\Deploy\test\Files\Scripts\js\Tags.min.js" />
+    <Content Include="Scripts\js\Tags.js" />
     <Content Include="Scripts\js\Tags.min.js">
       <DependentUpon>Tags.js</DependentUpon>
-      <Link>Scripts\js\Tags.min.js</Link>
     </Content>
     <Content Include="Scripts\js\TestAPI.min.js">
       <DependentUpon>TestAPI.js</DependentUpon>
@@ -968,7 +977,7 @@
     <Content Include="Areas\Search\Views\SearchAdd\SearchFamily.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\NewAddress.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenAddress.cshtml" />
-    <Content Include="Areas\People\Views\Person\ProfileHeader\DeletedPerson.cshtml" />
+    <Content Include="Areas\People\Views\Person\DeletedPerson.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <Content Include="Areas\Main\Views\Organization\DialogAddMES.cshtml" />
     <Content Include="Areas\Main\Views\Reports\WeeklyDecisions.cshtml" />
@@ -982,20 +991,21 @@
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
     <Content Include="Areas\Main\Views\OrgGroups\Management.cshtml" />
-    <Content Include="Areas\People\Views\Person\ProfileHeader\PictureUpload.cshtml" />
-    <Content Include="Areas\People\Views\Person\Sidebar\RelatedFamilyEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\TabsEnrollment.cshtml" />
-    <Content Include="Areas\People\Views\Person\Sidebar.cshtml" />
-    <Content Include="Areas\People\Views\Person\TabsMain.cshtml" />
-    <Content Include="Areas\People\Views\Person\Main\Account.cshtml" />
-    <Content Include="Areas\People\Views\Person\Main\Comments.cshtml" />
-    <Content Include="Areas\People\Views\Person\Main\Giving.cshtml" />
+    <Content Include="Areas\People\Views\Person\PictureUpload.cshtml" />
+    <Content Include="Areas\People\Views\Person\FamilySidebar\RelatedEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\MainTabs\Enrollment.cshtml" />
+    <Content Include="Areas\People\Views\Person\MainTabs.cshtml" />
+    <Content Include="Areas\People\Views\Person\MainTabs\Account.cshtml" />
+    <Content Include="Areas\People\Views\Person\MainTabs\Comments.cshtml" />
+    <Content Include="Areas\People\Views\Person\MainTabs\Giving.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
-    <Content Include="Areas\People\Views\Person\TabsMembership.cshtml" />
+    <Content Include="Areas\People\Views\Person\MainTabs\Membership.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\Notes.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\ExtraValues.cshtml" />
     <Content Include="Areas\People\Views\Person\UserEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\FamilySidebar\Photo.cshtml" />
+    <Content Include="Areas\People\Views\Person\FamilySidebar\ExtraValues.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1096,10 +1106,6 @@
     <Content Include="Scripts\js\RegSettings.min.js.map">
       <DependentUpon>RegSettings.js</DependentUpon>
     </Content>
-    <Content Include="..\..\..\BellevueProject\Deploy\test\Files\Scripts\js\Tags.min.js.map">
-      <DependentUpon>Tags.js</DependentUpon>
-      <Link>Scripts\js\Tags.min.js.map</Link>
-    </Content>
     <Content Include="Scripts\js\TestAPI.min.js.map">
       <DependentUpon>TestAPI.js</DependentUpon>
     </Content>
@@ -1141,6 +1147,12 @@
     <Content Include="Scripts\Bootstrap\bootstrap-bundle.min.js.map">
       <DependentUpon>bootstrap-bundle.js.bundle</DependentUpon>
     </Content>
+    <Content Include="Scripts\jQuery\jquery.multiSelect.min.js.map">
+      <DependentUpon>jquery.multiSelect.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js.map">
+      <DependentUpon>bootstrap-multiselect.js</DependentUpon>
+    </Content>
     <None Include="Scripts\jQuery\main.js.bundle" />
     <Content Include="Scripts\jQuery\main.min.js.map">
       <DependentUpon>main.js.bundle</DependentUpon>
@@ -1165,6 +1177,9 @@
     </None>
     <Content Include="Scripts\js\main2.custom.min.js.map">
       <DependentUpon>main2.custom.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\Tags.min.js.map">
+      <DependentUpon>Tags.js</DependentUpon>
     </Content>
     <None Include="Scripts\Moment\moment-bundle.js.bundle" />
     <Content Include="Scripts\Moment\moment-bundle.min.js.map">
@@ -1382,7 +1397,7 @@
     <Content Include="Content\styles\images\forward_enabled.png" />
     <Content Include="Content\styles\images\forward_enabled_hover.png" />
     <Content Include="Areas\Main\Views\MemberDirectory\NoAccess.cshtml" />
-    <Content Include="Content\styles\search.css" />
+    <Content Include="Content\css\search.css" />
     <Content Include="Errors\AppOffline.htm" />
     <Content Include="healthcheck.txt" />
     <Content Include="images\28pix.gif" />
@@ -1932,9 +1947,6 @@
     <Content Include="Scripts\js\RegSettings.js" />
     <Content Include="Scripts\Search\SavedQuery.js" />
     <Content Include="Scripts\Dialog\SearchUsers.js" />
-    <Content Include="..\..\..\BellevueProject\Deploy\test\Files\Scripts\js\Tags.js">
-      <Link>Scripts\js\Tags.js</Link>
-    </Content>
     <Content Include="Scripts\OnlineReg\OnlineRegPayment.js" />
     <Content Include="Errors\AccessDenied.htm" />
     <Content Include="Global.asax" />
@@ -2080,10 +2092,10 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRangeResults.cshtml" />
     <Content Include="Areas\People\Views\Web.config" />
     <Content Include="Areas\People\Views\Address\Edit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Main\PersonalDisplay.cshtml" />
-    <Content Include="Areas\People\Views\Person\Main\PersonalEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\MainTabs\PersonalDisplay.cshtml" />
+    <Content Include="Areas\People\Views\Person\MainTabs\PersonalEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\ExtraValue.cshtml" />
-    <Content Include="Areas\People\Views\Person\Sidebar\FamilyMembers.cshtml" />
+    <Content Include="Areas\People\Views\Person\FamilySidebar\Members.cshtml" />
     <Content Include="Areas\People\Views\Person\Index.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\Index.cshtml" />
     <Content Include="Areas\Search\Views\Web.config" />
@@ -2096,7 +2108,7 @@
     <Content Include="Areas\Search\Views\People\Results.cshtml" />
     <Content Include="Areas\Search\Views\Advanced\Conditions.cshtml" />
     <Content Include="Areas\Search\Views\Advanced\Import.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Main.cshtml" />
+    <Content Include="Areas\Search\Views\Advanced\Index.cshtml" />
     <Content Include="Areas\Search\Views\Advanced\Results.cshtml" />
     <Content Include="Areas\Search\Views\Quick\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Index.cshtml" />
@@ -2127,10 +2139,9 @@
     <Content Include="Areas\Setup\Views\Twilio\NumberDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\RemoveDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />
-    <Content Include="Areas\People\Views\Person\Sidebar\RelatedFamilies.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\Email.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Email.cshtml" />
-    <Content Include="Areas\People\Views\Person\ProfileHeader\Snapshot.cshtml" />
+    <Content Include="Areas\People\Views\Person\ProfileHeader.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\Display.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />

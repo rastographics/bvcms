@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -35,7 +32,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var a = m.List.ToArray();
             var sgname = DbUtil.Db.MemberTags.Single(mt => mt.Id == m.groupid).Name;
             var q2 = from om in m.OrgMembers()
-                     where !om.OrgMemMemTags.Any(mt => mt.MemberTag.Name == sgname)
+                     where om.OrgMemMemTags.All(mt => mt.MemberTag.Name != sgname)
                      where a.Contains(om.PeopleId)
                      select om;
             foreach (var om in q2)
@@ -85,7 +82,8 @@ namespace CmsWeb.Areas.Main.Controllers
             if (!m.GroupName.HasValue() || m.groupid == 0)
                 return Content("error: no group name");
             var group = DbUtil.Db.MemberTags.SingleOrDefault(d => d.Id == m.groupid);
-            group.Name = m.GroupName;
+            if (group != null) 
+                group.Name = m.GroupName;
             DbUtil.Db.SubmitChanges();
             m.GroupName = null;
             return View("Form", m);
@@ -133,7 +131,8 @@ namespace CmsWeb.Areas.Main.Controllers
                           where e.PeopleId == peopleID
                           select e).SingleOrDefault();
 
-            member.Score = value;
+            if (member != null) 
+                member.Score = value;
             DbUtil.Db.SubmitChanges();
 
             return Content(value.ToString());
@@ -143,18 +142,18 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var csv = new CsvReader(new StringReader(data), false, '\t');
             var list = csv.ToList();
-            var peopleID = 0;
 
             foreach (var score in list)
             {
-                peopleID = score[0].ToInt();
+                var peopleID = score[0].ToInt();
 
                 var player = (from e in DbUtil.Db.OrganizationMembers
                               where e.OrganizationId == orgID
                               where e.PeopleId == peopleID
                               select e).SingleOrDefault();
 
-                player.Score = score[1].ToInt();
+                if (player != null) 
+                    player.Score = score[1].ToInt();
                 DbUtil.Db.SubmitChanges();
             }
 
@@ -182,31 +181,41 @@ namespace CmsWeb.Areas.Main.Controllers
                              select e).SingleOrDefault();
 
 
-            var pOneTag = playerOne.OrgMemMemTags.Where(t1 => t1.MemberTag.Name.StartsWith("TM:")).FirstOrDefault();
-            var pTwoTag = playerTwo.OrgMemMemTags.Where(t2 => t2.MemberTag.Name.StartsWith("TM:")).FirstOrDefault();
-
-            if (pTwoTag != null)
+            if (playerOne != null)
             {
-                var pOneNew = new OrgMemMemTag();
-                pOneNew.PeopleId = peopleIDOne;
-                pOneNew.OrgId = pTwoTag.OrgId;
-                pOneNew.MemberTagId = pTwoTag.MemberTagId;
+                var pOneTag = playerOne.OrgMemMemTags.FirstOrDefault(t1 => t1.MemberTag.Name.StartsWith("TM:"));
+                if (playerTwo != null)
+                {
+                    var pTwoTag = playerTwo.OrgMemMemTags.FirstOrDefault(t2 => t2.MemberTag.Name.StartsWith("TM:"));
 
-                DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(pTwoTag);
-                DbUtil.Db.OrgMemMemTags.InsertOnSubmit(pOneNew);
+                    if (pTwoTag != null)
+                    {
+                        var pOneNew = new OrgMemMemTag
+                        {
+                            PeopleId = peopleIDOne,
+                            OrgId = pTwoTag.OrgId,
+                            MemberTagId = pTwoTag.MemberTagId
+                        };
+
+                        DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(pTwoTag);
+                        DbUtil.Db.OrgMemMemTags.InsertOnSubmit(pOneNew);
+                    }
+                }
+
+                if (pOneTag != null)
+                {
+                    var pTwoNew = new OrgMemMemTag
+                    {
+                        PeopleId = peopleIDTwo,
+                        OrgId = pOneTag.OrgId,
+                        MemberTagId = pOneTag.MemberTagId
+                    };
+
+                    DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(pOneTag);
+                    DbUtil.Db.OrgMemMemTags.InsertOnSubmit(pTwoNew);
+                }
             }
 
-            if (pOneTag != null)
-            {
-                var pTwoNew = new OrgMemMemTag();
-                pTwoNew.PeopleId = peopleIDTwo;
-                pTwoNew.OrgId = pOneTag.OrgId;
-                pTwoNew.MemberTagId = pOneTag.MemberTagId;
-
-                DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(pOneTag);
-                DbUtil.Db.OrgMemMemTags.InsertOnSubmit(pTwoNew);
-            }
-            
             DbUtil.Db.SubmitChanges();
             return Content("Complete");
         }

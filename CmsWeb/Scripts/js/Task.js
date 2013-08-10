@@ -74,7 +74,7 @@
     };
     var deleteList = function(qs) {
         $.post('/Task/Action/', qs, function(ret) {
-            var a = ret.split("<---------->");
+            var a = ret.split("<!---------->");
             $('#tabs').html(a[0]);
             $("#actions").html(a[1]);
             $('#tasks > tbody').html(a[2]).ready(stripeList);
@@ -136,7 +136,7 @@
             ev.preventDefault();
         var qs = "ListName=" + $("#ListName").val();
         $.post('/Task/AddList/', qs, function(ret) {
-            var a = ret.split("<---------->");
+            var a = ret.split("<!---------->");
             $('#tabs').html(a[0]);
             $("#actions").html(a[1]);
             $('#ListName').val('');
@@ -181,7 +181,7 @@
         var drid = $("#TaskId").val();
         if (drid) {
             $.post("/Task/Detail/" + id + "/Row/" + drid, function(ret) {
-                var a = ret.split("<---------->");
+                var a = ret.split("<!---------->");
                 $('#r' + drid).html(a[0]);
                 $('#r' + drid).removeClass("detailrow");
                 $('#r' + id).addClass("detailrow").html(a[1]);

@@ -82,7 +82,7 @@ namespace CmsData
 					HttpRuntime.Cache.Insert(Host + "Setting", list, null,
 						DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return string.Empty;
                 }

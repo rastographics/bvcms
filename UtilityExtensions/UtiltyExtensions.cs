@@ -263,6 +263,10 @@ namespace UtilityExtensions
         {
             return dt.ToString("yyyy-MM-dd");
         }
+        public static string ToSortableDate(this DateTime? dt)
+        {
+            return dt.ToString2("yyyy-MM-dd");
+        }
 
         public static string FormatDate(this DateTime? dt, string def = "")
         {
