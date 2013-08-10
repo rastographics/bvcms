@@ -519,6 +519,9 @@
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Content Include="Areas\People\Views\Person\Sidebar\RelatedFamilies.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="Content\css\bootstrap-editable.css" />
     <Content Include="Content\css\bootstrap-responsive.css" />
     <Content Include="Content\css\bootstrap-responsive.min.css" />
@@ -935,8 +938,10 @@
       <DependentUpon>RegSettings.js</DependentUpon>
     </Content>
     <Content Include="Scripts\js\Support.js" />
-    <Content Include="..\..\..\BellevueProject\Deploy\test\Files\Scripts\js\Tags.min.js" />
     <Content Include="Scripts\js\Tags.js" />
+    <Content Include="Scripts\js\Tags.min.js">
+      <DependentUpon>Tags.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\js\TestAPI.min.js">
       <DependentUpon>TestAPI.js</DependentUpon>
     </Content>
@@ -1157,6 +1162,9 @@
     </None>
     <Content Include="Scripts\js\main2.custom.min.js.map">
       <DependentUpon>main2.custom.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\Tags.min.js.map">
+      <DependentUpon>Tags.js</DependentUpon>
     </Content>
     <None Include="Scripts\Moment\moment-bundle.js.bundle" />
     <Content Include="Scripts\Moment\moment-bundle.min.js.map">
@@ -2116,7 +2124,6 @@
     <Content Include="Areas\Setup\Views\Twilio\NumberDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\RemoveDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />
-    <Content Include="Areas\People\Views\Person\Sidebar\RelatedFamilies.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\Email.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Email.cshtml" />
     <Content Include="Areas\People\Views\Person\ProfileHeader\Snapshot.cshtml" />

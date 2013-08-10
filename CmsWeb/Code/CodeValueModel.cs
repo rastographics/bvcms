@@ -402,6 +402,13 @@ namespace CmsWeb.Code
             list.Insert(0, new CodeValueItem { Id = 99, Code = "99", Value = "(not specified)" });
             return list;
         }
+
+        public static List<CodeValueItem> UserTags()
+        {
+            var tid = DbUtil.Db.TagCurrent().Id;
+            return new CodeValueModel().UserTags(Util.UserPeopleId).Where(tt => tt.Id != tid).ToList();
+        }
+
         public List<CodeValueItem> UserTags(int? UserPeopleId)
         {
             var ownerstring = "";

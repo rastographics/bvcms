@@ -1,4 +1,5 @@
-﻿@{
+﻿@using CmsWeb.Code
+@{
     var access = User.IsInRole("Access");
     var onqb = (string)ViewData["OnQueryBuilder"] == "true";
     var targetperson = DbUtil.Db.UserPreference("TargetLinkPeople", "false").ToBool();
@@ -19,8 +20,8 @@
             <div class="container-fluid container">
                 <div id="brand">
                     <!-- class="with-image" -->
-                    <!-- <div class="logo" style="background-image: url()"></div> -->
-                    <h1 class="textfill"><span style="font-size: 13px;">Bellevue Baptist Church</span></h1>
+                    <a href="/"><div class="logo" style="background-image: url(https://c4265878.ssl.cf2.rackcdn.com/bellevue.1308091433.logo.png)"></div></a>
+                    @*<h1 class="textfill"><span style="font-size: 13px;">Bellevue Baptist Church</span></h1>*@
                 </div>
                 <ul class="nav">
                     @Html.Partial("Menu/People")
@@ -34,7 +35,10 @@
                         <div id="nav-search-results"></div>
                     </div>
                 </form>
-                <div id="nav-account" class="btn-group">
+                <div class="nav-drop btn-group">
+                    @Html.Partial("Menu/Help")
+                </div>
+                <div id="nav-account" class="nav-drop btn-group">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="icon-user"></i>
                         <span class="username">@Util.UserName</span> <span class="caret"></span>
@@ -59,23 +63,18 @@
                 <div class="nav-drop btn-group">
                     <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
                         <i class="icon-tag"></i>
-                        <span class="currentTag"> @Util2.CurrentTagName</span> <span class="caret"></span>
+                        <span class="currentTag username"> @Util2.CurrentTagName</span> <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu pull-right">
-                        <li><a href="#">Greeting Team</a></li>
-                        <li><a href="#">Greeting Team</a></li>
-                        <li><a href="#">Leadership</a></li>
-                        <li><a href="#">My Home Group</a></li>
-                        <li><a href="#">Parking Team</a></li>
-                        <li><a href="#">Prayer Warriors</a></li>
-                        <li><a href="#">Special Donors</a></li>
+                        <li><a class="current"><b>@Util2.CurrentTagName</b></a></li>
+                        @foreach (var t in CodeValueModel.UserTags())
+                        {
+                            <li><a class="switchtag" href="/">@t.Value</a></li>
+                        }
                     </ul>
-                </div>
-                <div class="nav-drop btn-group">
-                    @Html.Partial("Menu/Help")
                 </div>
             </div>
         </div>
-        @Html.Partial("Menu/AdminBar")
+@*        @Html.Partial("Menu/AdminBar")*@
     </div>
 }

@@ -32,6 +32,7 @@
                             @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", true, "_blank")
                             @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
                             @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManageGiving/")
+                            @Helper.LiAnchorLink("Batch Upload Contributions", "/PostBundle/Batch/")
                             @Helper.LiAnchorLink("QuickBooks", "/QuickBooks/", quickbooks)
                         </ul>
                         <ul class="span6 unstyled pull-left">
@@ -55,6 +56,7 @@
     @Helper.LiHeader("Settings", admin || finance || design)
     @Helper.LiAnchorLink("Lookups", "/Setup/Lookup/", admin || finance)
     @Helper.LiAnchorLink("Metro Zips", "/Setup/MetroZip/", admin)
+    @Helper.LiAnchorLink("Promotion Setup", "/Setup/Promotion/", admin)
     @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
     @Helper.LiAnchorLink("System", "/Setup/Setting/", admin)
     @Helper.LiAnchorLink("Twilio Setup", "/Setup/Twilio/", admin)
@@ -73,6 +75,7 @@
     @Helper.LiAnchorLink("Users", "/Manage/Users/", admin)
 
     @Helper.LiHeader("Batch Actions", admin)
+    @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg", admin)
     @Helper.LiAnchorLink("Update for a Tag", "/Batch/UpdateFields", admin)
     @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags", admin)
     @Helper.LiAnchorLink("Tag PeopleIds", "/Batch/TagPeopleIds", admin)

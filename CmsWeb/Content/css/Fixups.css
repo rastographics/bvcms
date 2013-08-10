@@ -3,7 +3,7 @@
 }
 
 td.noborder, th.noborder {
-    border: none!important;
+    border: none;
 }
 
 td.left, th.left {
@@ -14,71 +14,92 @@ td.center, th.center {
     text-align: center;
 }
 
-/* Dave: I am overriding this to make it look like bootstrap's divider */
+/*
 .dropdown-menu .divider {
-    /*margin: -0.25em 1px;*/
     margin: auto;
 }
+*/
 
+/*
 .datepicker {
     z-index: 2000;
 }
+*/
 
-/* Dave: I am adding these so that the controls are not spaced so far apart 
-   todo: test remove this */
+/*
 .control-group {
     margin-bottom: auto;
 }
+*/
 
+/*
 .form-horizontal .control-group {
     margin-bottom: auto;
 }
+*/
 
+/*
 .editable-click,
 a.editable-click,
 a.editable-click:hover {
     text-decoration: none;
     border-bottom: none;
 }
+*/
 
+/*
 form.form-horizontal.onecol .control-group {
     float: none;
     width: auto;
     *width: auto;
     margin-bottom: 1em;
 }
+*/
 
+/*
 .section span {
     font-style: italic;
     font-size: 110%;
 }
+*/
 
+/*
 table.expanding div.indent {
     padding-left: 2em;
 }
+*/
 
+/*
 table.expanding a[rel="reveal"] {
     text-decoration: none;
 }
+*/
 
+/*
 table.expanding tr.details td {
     border-top: none;
 }
+*/
 
+/*
 table.enrollments tr.details td:first-child {
     padding-left: 1em;
 }
+*/
 
-/* Dave: I am using this to do my own table striping in this special case 
-    todo: test remove this*/
+/*
 table.expanding tr.oddrow > td {
     background-color: #f9f9f9;
 }
+*/
 
+/*
 .edit-inline-label {
     cursor: pointer;
 }
+*/
 
+/*
     .edit-inline-label:after {
         font-family: FontAwesome;
         content: "\f040";
@@ -86,18 +107,9 @@ table.expanding tr.oddrow > td {
         color: #CCC;
         margin-left: 5px;
     }
+*/
 
-#profile-header div.portrait {
-    position: absolute;
-    left: 0;
-    top: 10px;
-    width: 90px;
-    height: 120px;
-    overflow: hidden;
-    background-repeat: no-repeat;
-    background-position: center top;
-}
-
+/*
 #sidebar #family_members li a div.headshot {
     width: 38px;
     border-width: 1px;
@@ -108,6 +120,7 @@ table.expanding tr.oddrow > td {
     background-repeat: no-repeat;
     background-position: center top;
 }
+*/
 
 .typeahead a {
     color: white;
@@ -133,6 +146,7 @@ div.toolbar-menu li > a {
         color: white;
         background: #0088cc;
         text-decoration: none;
+        -webkit-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
     }
 
@@ -183,9 +197,6 @@ div.toolbar-menu li.header {
     -moz-border-radius-topright: 4px;
 }
 
-#navGlobal ul.typeahead {
-    float: left;
-}
 
 ul.typeahead a {
     color: #0088cc;
@@ -200,28 +211,40 @@ ul.typeahead li.active a,
     color: #fff;
 }
 
-/*ul.typeahead {
-        display: block !important;
-    }*/
-
-ul.dropdown-menu.toolbar-reports {
-    width: 600px;
-    margin-left: -300px !important;
+#profile-header {
+    border-top: 5px solid #3482C6;
+    height: auto;
 }
 
-ul.dropdown-menu.toolbar-gear {
-    width: 400px;
-    margin-left: -200px !important;
-}
-
-    ul.dropdown-menu.toolbar-gear.onecolumn {
-        width: 200px;
-        margin-left: -100px !important;
+    #profile-header div.portrait {
+        position: absolute;
+        left: 0;
+        top: 10px;
+        width: 90px;
+        height: 120px;
+        overflow: hidden;
+        background-repeat: no-repeat;
+        background-position: center top;
     }
 
-ul.dropdown-menu.toolbar-email {
-    margin-left: 0 !important;
-}
+    #profile-header ul.dropdown-menu.toolbar-reports {
+        width: 600px;
+        margin-left: -300px;
+    }
+
+    #profile-header ul.dropdown-menu.toolbar-gear {
+        width: 400px;
+        margin-left: -200px;
+    }
+
+        #profile-header ul.dropdown-menu.toolbar-gear.onecolumn {
+            width: 200px;
+            margin-left: -100px;
+        }
+
+    #profile-header ul.dropdown-menu.toolbar-email {
+        margin-left: 0;
+    }
 
 li.space,
 li.header {
@@ -229,7 +252,7 @@ li.header {
 }
 
 body {
-    padding-top: 115px;
+    padding-top: 75px;
 }
 
 .nav {
@@ -237,7 +260,7 @@ body {
 }
 
 .primary-tabs .nav-tabs {
-    margin-bottom: 0!important;
+    margin-bottom: 0;
 }
 
 #personal form.form.form-horizontal.ajax div.form-actions {
@@ -246,61 +269,112 @@ body {
     margin-top: .5em;
 }
 
-#navGlobal .form-search {
-    margin-right: 10px;
+.navbar .nav > li > a {
+    color: #fff;
+    -webkit-text-shadow: none;
+    text-shadow: none;
 }
 
-#navGlobal #brand {
-    width: auto;
+#navGlobal {
+    height: 54px;
+    background: #323334;
+    background: rgba(50, 51, 52, 0.7);
+    color: #fff;
 }
 
-    #navGlobal #brand h1 {
-        width: auto;
+    #navGlobal .form-search {
+        margin-right: 10px;
     }
 
-#navGlobal .nav-drop {
-    float: right;
-    margin-top: 4px;
-    box-shadow: none;
-}
+    #navGlobal ul.typeahead {
+        float: left;
+    }
 
-    #navGlobal .nav-drop .btn {
-        margin-top: 3px;
-        border: none;
+    #navGlobal #brand {
+        width: 240px;
+    }
+
+        #navGlobal #brand h1 {
+            width: auto;
+        }
+
+        #navGlobal #brand .logo {
+            width: 240px;
+        }
+
+
+    #navGlobal .btn {
+        color: #fff;
+        -webkit-text-shadow: none;
+        text-shadow: none;
+    }
+
+    #navGlobal .nav a.dropdown-toggle {
+        color: #fff;
+    }
+
+    #navGlobal .nav-drop {
+        float: right;
+        margin-top: 4px;
+        -webkit-box-shadow: none;
         box-shadow: none;
-        font-size: 13px;
-        line-height: 24px;
-        padding-top: 8px;
-        padding-bottom: 8px;
     }
 
-        #navGlobal .nav-drop .btn:link,
-        #navGlobal .nav-drop .btn:visited {
-            background: none;
+        #navGlobal .nav-drop .btn {
+            margin-top: 3px;
+            border: none;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            font-size: 13px;
+            line-height: 24px;
+            padding-top: 8px;
+            padding-bottom: 8px;
         }
 
-        #navGlobal .nav-drop .btn:hover,
-        #navGlobal .nav-drop .btn:active,
-        #navGlobal .nav-drop .btn:focus {
-            background-color: #FFF;
-            outline: none;
+            #navGlobal .nav-drop .btn:link,
+            #navGlobal .nav-drop .btn:visited {
+                background: none;
+            }
+
+            #navGlobal #nav-account .btn:hover,
+            #navGlobal #nav-account .btn:active,
+            #navGlobal #nav-account .btn:focus,
+            #navGlobal .nav-drop .btn:hover,
+            #navGlobal .nav-drop .btn:active,
+            #navGlobal .nav-drop .btn:focus {
+                background-color: #FFF;
+                color: #777;
+                outline: none;
+            }
+
+        #navGlobal .nav-drop .caret {
+            margin-top: 12px;
+            margin-left: 4px;
         }
 
-    #navGlobal .nav-drop .caret {
-        margin-top: 12px;
-        margin-left: 4px;
-    }
-
-    #navGlobal .nav-drop .dropdown-menu {
-        background: #FFF;
-    }
+        #navGlobal .nav-drop .dropdown-menu {
+            background: #FFF;
+        }
+.dropdown-menu li > a.current {
+    color: white;
+    background: #555;
+}
 
 span.currentTag {
     display: inline-block;
-    max-width: 60px;
+    max-width: 80px;
     overflow: hidden;
     -moz-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
+}
+
+.navbar-fixed-top {
+    height: auto;
+}
+@media (max-width: 979px) {
+    body {
+        padding-top: 75px !important;
+    }
 }
