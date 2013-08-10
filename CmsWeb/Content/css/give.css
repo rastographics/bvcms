@@ -1,0 +1,19 @@
+#give_form h3 {
+  clear: both;
+  font-size: 14px;
+  padding: 0 10px;
+  line-height: 2em;
+  background: #EDEDED;
+}
+#give_form .form-actions {
+  clear: both;
+  padding-top: 3em;
+  border: none;
+}
+header h1 {
+  font-size: 24px;
+}
+header h1 i {
+  color: #999;
+  font-size: 80%;
+}

@@ -14,13 +14,13 @@
 
     <div class="tab-content">
         <div class="tab-pane active" id="personal">
-            @Html.Partial("Main/PersonalDisplay", Model.basic)
+            @Html.Partial("MainTabs/PersonalDisplay", Model.basic)
         </div>
         <div class="tab-pane" id="enrollment">
-            @Html.Partial("TabsEnrollment", Model)
+            @Html.Partial("MainTabs/Enrollment", Model)
         </div>
         <div class="tab-pane" id="membership">
-            @Html.Partial("TabsMembership", Model)
+            @Html.Partial("MainTabs/Membership", Model)
         </div>
         @if (Model.Person.CanUserSeeGiving)
         {

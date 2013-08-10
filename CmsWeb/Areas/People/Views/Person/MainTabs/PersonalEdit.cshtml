@@ -2,7 +2,7 @@
 <form class="form form-horizontal ajax span12" method="post">
     @FormAction()
     <div class="row-fluid">
-        <div class="span6 display">
+        <div class="span6">
             @Html.EditorFor(m => m.Title)
             @Html.EditorFor(m => m.FirstName)
             @Html.EditorFor(m => m.GoesBy)
@@ -12,7 +12,7 @@
             @Html.EditorFor(m => m.FormerName)
             @Html.EditorFor(m => m.Suffix)
         </div>
-        <div class="span6 display column2">
+        <div class="span6 column2">
             @Html.EditorFor(m => m.Gender)
             @Html.EditorFor(m => m.Birthday)
             @Html.EditorFor(m => m.Marital)
@@ -25,12 +25,12 @@
     </div>
     <hr/>
     <div class="row-fluid">
-        <div class="span6 display">
+        <div class="span6">
             @Html.EditorFor(m => m.PrimaryEmail)
             @Html.EditorFor(m => m.AltEmail)
             @Html.EditorFor(m => m, "DoNotContact")
         </div>
-        <div class="span6 display column2">
+        <div class="span6 column2">
             @Html.EditorFor(m => m.Mobile)
             @Html.EditorFor(m => m.Work)
             @Html.EditorFor(m => m.HomePhone)

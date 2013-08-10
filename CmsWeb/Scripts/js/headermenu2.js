@@ -122,49 +122,6 @@
             }
         });
     });
-//    $("#AdminMenuToggle").click(function (ev) {
-//        ev.preventDefault();
-//        ev.stopPropagation();
-//        var menu = $("#AdminMenu");
-//        if (menu.is(":visible"))
-//            menu.hide();
-//        else {
-//            $('[data-toggle="dropdown"]').parent().removeClass('open');
-//            ev.stopPropagation();
-//            menu.show();
-//        }
-//    });
-//    $("body").on("click", function (ev) {
-//        var am = $("#AdminMenu");
-//        if (am.is(":visible"))
-//            if ($(ev.target).not("#AdminMenuToggle"))
-//                $("#AdminMenu").hide();
-//    });
-
-//    $("a.toolbar-menu").live("click", function (ev) {
-//        var trigger = $(this);
-//        var menu = $(trigger.data("menu"));
-//        ev.preventDefault();
-//        ev.stopPropagation();
-//        if (menu.is(":visible"))
-//            menu.hide();
-//        else {
-//            ev.stopPropagation();
-//            menu.position({
-//                "my": "right top",
-//                "at": "right bottom",
-//                "of": trigger
-//            });
-//            menu.show();
-//        }
-//    });
-//    $("body").on("click", function (ev) {
-//        var am = $("div.toolbar-menu");
-//        var bt = am.prev();
-//        if (am.is(":visible"))
-//            if ($(ev.target).not(bt))
-//                am.hide();
-//    });
 
     $("a.tutorial").click(function (ev) {
         ev.preventDefault();

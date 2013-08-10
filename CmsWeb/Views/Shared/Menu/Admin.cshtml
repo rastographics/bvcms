@@ -13,15 +13,15 @@
         @if (finance)
         {
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin</a>
-            <ul class="dropdown-menu" style="margin-left: -200px">
+            <ul class="dropdown-menu dropdown-div-admin">
                 <li>
-                    <div class="toolbar-menu row-fluid">
-                        <ul class="span6 unstyled pull-left">
+                    <div class="row-fluid">
+                        <ul class="span5 unstyled pull-left">
                             <li class="header">Contributions</li>
                             @Helper.LiAnchorLink("Bundles", "/Bundles/")
                             @Helper.LiAnchorLink("Search All", "/Finance/Contributions/")
 
-                            <li class="header">Reports</li>
+                            <li class="header"></li>
                             @Helper.LiAnchorLink("Statements (All)", "/Statements/", true, "_blank")
                             @Helper.LiAnchorLink("GL Extract", "/Contributions/GLExtract.aspx")
                             @Helper.LiAnchorLink("Totals by Fund", "/FinanceReports/TotalsByFund/")
@@ -32,11 +32,15 @@
                             @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", true, "_blank")
                             @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
                             @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManageGiving/")
+                            <li class="header"></li>
                             @Helper.LiAnchorLink("Batch Upload Contributions", "/PostBundle/Batch/")
                             @Helper.LiAnchorLink("QuickBooks", "/QuickBooks/", quickbooks)
                         </ul>
-                        <ul class="span6 unstyled pull-left">
-                            @AdminList(admin, design, managetrans, edit, manageemails, true)
+                        <ul class="span4 unstyled pull-left">
+                            @AdminList2(admin, design, managetrans, edit, manageemails, true)
+                        </ul>
+                        <ul class="span3 unstyled pull-left">
+                            @AdminList1(admin, design, managetrans, edit, manageemails, true)
                         </ul>
                     </div>
                 </li>
@@ -46,12 +50,13 @@
         {
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin</a>
             <ul class="dropdown-menu">
-                @AdminList(admin, design, managetrans, edit, manageemails, false)
+                @AdminList1(admin, design, managetrans, edit, manageemails, false)
+                @AdminList2(admin, design, managetrans, edit, manageemails, false)
             </ul>
         }
     </li>
 }
-@helper AdminList(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance)
+@helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance)
 {
     @Helper.LiHeader("Settings", admin || finance || design)
     @Helper.LiAnchorLink("Lookups", "/Setup/Lookup/", admin || finance)
@@ -63,7 +68,9 @@
     @Helper.LiAnchorLink(Util2.OrgLeadersOnly ?
         "OrgLeadersOnly is on" : "OrgLeadersOnly is off",
         "/Admin/ToggleOrgLeadersOnly.ashx", admin)
-
+}
+@helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance)
+{
     @Helper.LiHeader("Manage", admin || manageemails || edit || managetrans)
     @Helper.LiAnchorLink("Activity Log", "/Manage/Users/LastActivity/", admin)
     @Helper.LiAnchorLink("Check-in Activity", "/Manage/CheckinTime/", admin || edit)

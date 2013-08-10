@@ -69,11 +69,11 @@ namespace CmsWeb.Areas.People.Controllers
             return View(m);
         }
 
-        [POST("Person2/Snapshot/{id}")]
-        public ActionResult Snapshot(int id)
+        [POST("Person2/ProfileHeader/{id}")]
+        public ActionResult ProfileHeader(int id)
         {
             var m = new PersonModel(id);
-            return View("ProfileHeader/Snapshot", m);
+            return View(m);
         }
 
         [POST("Person2/PersonalDisplay/{id}")]
@@ -81,13 +81,13 @@ namespace CmsWeb.Areas.People.Controllers
         {
             InitExportToolbar(id);
             var m = BasicPersonInfo.GetBasicPersonInfo(id);
-            return View("Main/PersonalDisplay", m);
+            return View("MainTabs/PersonalDisplay", m);
         }
         [POST("Person2/PersonalEdit/{id}")]
         public ActionResult PersonalEdit(int id)
         {
             var m = BasicPersonInfo.GetBasicPersonInfo(id);
-            return View("Main/PersonalEdit", m);
+            return View("MainTabs/PersonalEdit", m);
         }
         [POST("Person2/PersonalUpdate/{id}")]
         public ActionResult Personalpdate(int id)
@@ -98,7 +98,7 @@ namespace CmsWeb.Areas.People.Controllers
             m = BasicPersonInfo.GetBasicPersonInfo(id);
             DbUtil.LogActivity("Update Basic Info for: {0}".Fmt(m.person.Name));
             InitExportToolbar(id);
-            return View("Main/PersonalDisplay", m);
+            return View("MainTabs/PersonalDisplay", m);
         }
 
         [POST("Person2/EnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
@@ -188,13 +188,13 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new PersonModel(id);
             //UpdateModel(m.Pager);
-            return View("Sidebar/FamilyMembers", m);
+            return View("FamilySidebar/Members", m);
         }
         [POST("Person2/RelatedFamilies/{id}")]
         public ActionResult RelatedFamilies(int id)
         {
             var m = new PersonModel(id);
-            return View("Sidebar/RelatedFamilies", m);
+            return View("FamilySidebar/Related", m);
         }
         [POST("Person2/UpdateRelation/{id}/{id1}/{id2}")]
         public ActionResult UpdateRelation(int id, int id1, int id2, string value)
@@ -203,7 +203,7 @@ namespace CmsWeb.Areas.People.Controllers
             r.FamilyRelationshipDesc = value;
             DbUtil.Db.SubmitChanges();
             var m = new PersonModel(id);
-            return View("Sidebar/RelatedFamilies", m);
+            return View("FamilySidebar/Related", m);
         }
         [POST("Person2/DeleteRelation/{id}/{id1}/{id2}")]
         public ActionResult DeleteRelation(int id, int id1, int id2)
@@ -212,14 +212,14 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.RelatedFamilies.DeleteOnSubmit(r);
             DbUtil.Db.SubmitChanges();
             var m = new PersonModel(id);
-            return View("Sidebar/RelatedFamilies", m);
+            return View("FamilySidebar/Related", m);
         }
         [POST("Person2/RelatedFamilyEdit/{id}/{id1}/{id2}")]
         public ActionResult RelatedFamilyEdit(int id, int id1, int id2)
         {
             var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(rf => rf.FamilyId == id1 && rf.RelatedFamilyId == id2);
             ViewBag.Id = id;
-            return View("Sidebar/RelatedFamilyEdit", r);
+            return View("FamilySidebar/RelatedEdit", r);
         }
 
         [POST("Person2/UploadPicture/{id:int}/{picture}")]

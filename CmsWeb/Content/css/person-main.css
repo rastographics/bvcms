@@ -46,7 +46,8 @@
   padding: 4px 0;
   border-bottom: 2px solid #DDD;
 }
-#sidebar .sidebar_title h2 {
+#sidebar .sidebar_title h2,
+#sidebar .sidebar_title.inactive a {
   display: inline-block;
   max-width: 180px;
   color: #404040;
@@ -64,6 +65,13 @@
   font-size: 18px;
   color: #555555;
   text-decoration: none;
+}
+#sidebar .sidebar_title.inactive {
+  border-bottom-width: 1px;
+  padding: 10px 0;
+}
+#sidebar .sidebar_title.inactive a {
+  color: #999999;
 }
 #sidebar .sidebar_content {
   background: #ededed;
@@ -156,7 +164,7 @@
   border-radius: 0;
   background-clip: padding-box;
   line-height: 1.2;
-    overflow: visible;
+  overflow: display;
   padding-left: 10px;
   padding-right: 10px;
   min-height: 50px;
@@ -252,7 +260,7 @@
 #sidebar #family_home li.address img,
 #sidebar #family_home li.phone img {
   position: absolute;
-  top: 15px;
+  top: 15;
   right: 0;
 }
 #sidebar #family_home li.phone p {
@@ -322,6 +330,12 @@
   text-transform: uppercase;
   line-height: 24px;
 }
+.form-horizontal .control-label {
+  width: 120px;
+}
+.form-horizontal .controls {
+  margin-left: 130px;
+}
 .form-horizontal .controls p {
   margin: 0;
   line-height: 34px;
@@ -386,6 +400,7 @@ fieldset .control-group .textcombo {
   margin-bottom: 8px;
   font-weight: 300;
   border-bottom: 1px solid #DDD;
+  min-height: 1em;
 }
 #profile-header .portrait {
   position: absolute;
@@ -408,13 +423,8 @@ fieldset .control-group .textcombo {
   padding-left: 8px;
   padding-right: 8px;
 }
-#profile-header .muted {
-  margin: 0;
-}
-#profile-header .record_added {
-  position: absolute;
-  right: 5px;
-  bottom: 10px;
+#profile-header .meta {
+  clear: left;
 }
 #contact-phone-primary {
   font-size: 12px;
@@ -428,7 +438,7 @@ fieldset .control-group .textcombo {
   text-decoration: none;
 }
 #profile-actions .btn-group {
-  margin-top: -10px;
+  margin-top: -5px;
 }
 #profile-actions .btn-group button:first-child {
   border-top-left-radius: 0;
@@ -443,8 +453,39 @@ fieldset .control-group .textcombo {
   font-size: 18px;
 }
 #profile-actions .btn-group .dropdown-menu {
-  margin-left: -105px;
   text-align: left;
+}
+#profile-actions .btn-group button {
+  -webkit-border-radius: 0;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 0;
+  -moz-background-clip: padding;
+  border-radius: 0;
+  background-clip: padding-box;
+  border-width: 1px 0 0 0;
+  border-color: #25639A;
+  outline: none;
+}
+#profile-actions .btn-group.alpha button {
+  -webkit-border-radius: 0 0 0 4px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 0 0 0 4px;
+  -moz-background-clip: padding;
+  border-radius: 0 0 0 4px;
+  background-clip: padding-box;
+  border-right-width: 1px;
+}
+#profile-actions .btn-group.omega button {
+  -webkit-border-radius: 0 0 4px 0;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 0 0 4px 0;
+  -moz-background-clip: padding;
+  border-radius: 0 0 4px 0;
+  background-clip: padding-box;
+  border-left-width: 1px;
+}
+#profile-actions .btn-group + .btn-group {
+  margin-left: 0;
 }
 #profile-actions .btn-person-action {
   background-image: -moz-linear-gradient(#3482C6 0%,#25639A 100%);
@@ -457,6 +498,10 @@ fieldset .control-group .textcombo {
 #profile-actions .btn-person-action:focus,
 #profile-actions .btn-person-action:active {
   background-color: #25639A;
+}
+#profile-actions .muted {
+  margin-top: 10px;
+  padding-left: 15px;
 }
 #profile_tabs {
   background-color: #e5e5e5;
@@ -546,9 +591,6 @@ tbody td a {
 tbody td [class*=icon-] {
   color: #999;
 }
-tbody tr:hover td {
-  background-color: #ECE;
-}
 .table-filters {
   clear: both;
 }
@@ -608,6 +650,42 @@ table.enrollments tr.details td:first-child {
 table.enrollments tr.oddrow > td {
   background-color: #f9f9f9;
 }
+/* ACCORDION
+----------------------------------*/
+.accordion-group {
+  border-width: 0;
+  border-bottom: 2px solid #DDD;
+  -webkit-border-radius: 0;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 0;
+  -moz-background-clip: padding;
+  border-radius: 0;
+  background-clip: padding-box;
+}
+.accordion-group .accordion-heading a {
+  color: #666;
+  text-decoration: none;
+}
+.accordion-group .accordion-heading a i {
+  padding-right: 10px;
+  color: #999;
+}
+.accordion-group .accordion-inner {
+  border-top: 3px solid #EEE;
+}
+.accordion-group .accordion-inner table {
+  width: 100%;
+}
+.accordion-group .accordion-inner thead {
+  border-bottom: 0;
+}
+.accordion-group .accordion-inner thead th {
+  border: 0;
+  text-transform: uppercase;
+  color: #999;
+  font-size: 80%;
+  text-align: left;
+}
 /* NAV
 ----------------------------------*/
 .primary-tabs .nav-tabs {
@@ -665,4 +743,19 @@ table.enrollments tr.oddrow > td {
 .controls2 label {
   display: inline-block;
   width: 100px;
+}
+@media (max-width: 1200px) {
+  .form-horizontal .control-label {
+    float: none;
+    text-align: left;
+    width: auto;
+    margin-bottom: 0;
+  }
+  .form-horizontal .controls {
+    margin-left: 0;
+  }
+  .form-horizontal .controls p {
+    padding-top: 0;
+    padding-bottom: 9px;
+  }
 }

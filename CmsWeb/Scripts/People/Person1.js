@@ -59,7 +59,7 @@
             });
             modal.on("click", "a.close-saved-address", function () {
                 $.post($(this).attr("href"), {}, function (ret) {
-                    $("#snapshot").html(ret).ready($SetSnapshotEditable);
+                    $("#profile-header").html(ret).ready(SetProfileEditable);
                 });
             });
         });
@@ -340,7 +340,7 @@
         return '<img src="' + src + '" /><br><a href="https://www.google.com/maps/?q=' + opts.center + '" rel="external" target="_blank">View in Google Maps</a>\
       <br><a href="http://www.bing.com/maps/?q=' + opts.center + '" rel="external" target="_blank">View in Bing Maps</a>';
     };
-    var $SetSnapshotEditable = function () {
+    var SetProfileEditable = function () {
         $('[class="popover-map"]').each(function () {
             var $this = $(this);
             $this.data('html', true).data('content', getMap({ center: $this.text() }));
@@ -371,7 +371,7 @@
             name: "campus"
         });
     };
-    $SetSnapshotEditable();
+    SetProfileEditable();
     $('body').on('click', function (e) {
         $('[rel=popover]').each(function () {
             //the 'is' for buttons that trigger popups
