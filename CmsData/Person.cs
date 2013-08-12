@@ -692,7 +692,7 @@ namespace CmsData
                         let s4 = firstmatch && addrmatch
                         let s5 = firstmatch && emailmatch
                         let s6 = lastmatch && bdmatch
-                        where p.FamilyId != FamilyId && (s1 || s2 || s3 || s4 || s5 || s6)
+                        where s1 || s2 || s3 || s4 || s5 || s6
                         select new Duplicate
                         {
                             s1 = s1,
