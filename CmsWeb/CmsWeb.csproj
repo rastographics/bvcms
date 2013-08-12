@@ -206,7 +206,7 @@
     </Reference>
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -486,7 +486,7 @@
     <Compile Include="Areas\Public\Models\SmallGroupFinderModel.cs" />
     <Compile Include="Areas\Search\Controllers\OrganizationController.cs" />
     <Compile Include="Areas\Search\Controllers\PeopleController.cs" />
-    <Compile Include="Areas\Search\Controllers\AdvancedController.cs" />
+    <Compile Include="Areas\Search\Controllers\QueryController.cs" />
     <Compile Include="Areas\Search\Controllers\QuickController.cs" />
     <Compile Include="Areas\Search\Controllers\SavedQueryController.cs" />
     <Compile Include="Areas\Search\Models\OrganizationModel.cs" />
@@ -549,6 +549,9 @@
     </Content>
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\responsive.css" />
+    <Content Include="Content\css\search.min.css">
+      <DependentUpon>search.css</DependentUpon>
+    </Content>
     <Content Include="Content\font-awesome\css\font-awesome-ie7.css" />
     <Content Include="Content\font-awesome\css\font-awesome-ie7.min.css" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
@@ -598,6 +601,9 @@
       <DependentUpon>person.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\Support.css" />
+    <Content Include="FieldMap3.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="images\chosen-sprite.png" />
     <Content Include="Content\css\chosen.css" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
@@ -1006,6 +1012,8 @@
     <Content Include="Areas\People\Views\Person\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\FamilySidebar\Photo.cshtml" />
     <Content Include="Areas\People\Views\Person\FamilySidebar\ExtraValues.cshtml" />
+    <Content Include="Areas\Search\Views\Query\SelectCondition.cshtml" />
+    <Content Include="Areas\People\Views\Person\Toolbar\Gear.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1258,12 +1266,6 @@
     <Content Include="Scripts\querybuilder.min.js">
       <DependentUpon>querybuilder.js.bundle</DependentUpon>
     </Content>
-    <Content Include="Scripts\Search\AdvancedSearch.min.js">
-      <DependentUpon>AdvancedSearch.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\AdvancedSearch.min.js.map">
-      <DependentUpon>AdvancedSearch.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\ContactSearch.min.js">
       <DependentUpon>ContactSearch.js</DependentUpon>
     </Content>
@@ -1275,6 +1277,9 @@
     </Content>
     <Content Include="Scripts\Search\PeopleSearch.min.js.map">
       <DependentUpon>PeopleSearch.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\Query.min.js">
+      <DependentUpon>Query.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\QuickSearch.min.js">
       <DependentUpon>QuickSearch.js</DependentUpon>
@@ -1297,6 +1302,9 @@
     </Content>
     <Content Include="Scripts\querybuilder.min.js.map">
       <DependentUpon>querybuilder.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\Query.min.js.map">
+      <DependentUpon>Query.js</DependentUpon>
     </Content>
     <None Include="Scripts\task.js.bundle" />
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
@@ -1523,7 +1531,7 @@
     <Content Include="Scripts\Finance\Bundle.js" />
     <Content Include="Scripts\Org\enroll-control-ipad.js" />
     <Content Include="Scripts\Org\OrgMemberDialog2.js" />
-    <Content Include="Scripts\Search\AdvancedSearch.js" />
+    <Content Include="Scripts\Search\Query.js" />
     <Content Include="Scripts\task.js">
       <DependentUpon>task.js.bundle</DependentUpon>
     </Content>
@@ -1875,11 +1883,12 @@
     <Content Include="Views\Shared\Menu\Admin.cshtml" />
     <Content Include="Views\Shared\Menu\Help.cshtml" />
     <Content Include="Views\Shared\Toolbar\Toolbar.cshtml" />
-    <Content Include="Views\Shared\Toolbar\ToolbarEmail.cshtml" />
-    <Content Include="Views\Shared\Toolbar\ToolbarGear.cshtml" />
-    <Content Include="Views\Shared\Toolbar\ToolbarReports.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Email.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Gear.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Reports.cshtml" />
     <Content Include="Views\Shared\NewHeader3.cshtml" />
     <Content Include="Views\Shared\Menu\AdminBar.cshtml" />
+    <Content Include="Views\Shared\Toolbar\GearStandard.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2096,7 +2105,7 @@
     <Content Include="Areas\People\Views\Person\MainTabs\PersonalEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\ExtraValue.cshtml" />
     <Content Include="Areas\People\Views\Person\FamilySidebar\Members.cshtml" />
-    <Content Include="Areas\People\Views\Person\Index.cshtml" />
+    <Content Include="Areas\People\Views\Person\Person.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\Index.cshtml" />
     <Content Include="Areas\Search\Views\Web.config" />
     <Content Include="Areas\Search\Views\Organization\DivisionIds.cshtml" />
@@ -2106,20 +2115,20 @@
     <Content Include="Areas\Search\Views\Organization\Row.cshtml" />
     <Content Include="Areas\Search\Views\People\Index.cshtml" />
     <Content Include="Areas\Search\Views\People\Results.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Conditions.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Import.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Index.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Results.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Conditions.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Import.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Query.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Results.cshtml" />
     <Content Include="Areas\Search\Views\Quick\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Results.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Row.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Rows.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\CodesDropdown.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Divisions.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Organizations.cshtml" />
+    <Content Include="Areas\Search\Views\Query\CodesDropdown.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
     <Content Include="Areas\Manage\Views\Display\ContentView.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\EditCondition.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditCondition.cshtml" />
     <Content Include="ckeditor2\CHANGES.md" />
     <Content Include="ckeditor2\LICENSE.md" />
     <Content Include="ckeditor2\plugins\scayt\LICENSE.md" />
@@ -2836,14 +2845,12 @@
     <Content Include="Views\Shared\DatePickerDefaults.cshtml" />
     <Content Include="Views\Shared\MainMenu.cshtml" />
     <Content Include="App_Code\Helper.cshtml" />
-    <Content Include="Views\Shared\NewHeader.cshtml" />
     <Content Include="Views\Shared\OldHeader.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults2.cshtml" />
     <Content Include="Views\Shared\SiteLayout2.cshtml" />
     <Content Include="Views\Shared\Dialogs.cshtml" />
     <Content Include="Views\Shared\Footer.cshtml" />
     <Content Include="Views\Shared\Notices.cshtml" />
-    <Content Include="Views\Shared\NewHeader2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Contact.aspx" />

@@ -3,6 +3,8 @@
 @{
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Person";
+    var admin = User.IsInRole("Admin");
+    var edit = User.IsInRole("Edit");
 }
 @section scripts
 {

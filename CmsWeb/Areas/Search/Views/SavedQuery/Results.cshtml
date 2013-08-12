@@ -1,26 +1,29 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryModel
-@{
-    var pager = Html.Partial("Pager2", Model.Pager);
-}
 Only Mine: @Html.CheckBoxFor(m => m.onlyMine)
 Search: @Html.TextBoxFor(m => m.search)
-<button id="filter" class="bt" value="Filter">Filter</button>
-<table cellpadding="4" class="grid">
-<thead>
-<tr><td>@pager</td></tr>
-<tr>
-<td><a href="#" class="sortable">Description</a></td>
-<td><a href="#" class="sortable">Owner</a></td>
-<td><a href="#" class="sortable">Public</a></td>
-<td></td>
-<td></td>
-</tr>
-</thead>
-<tbody>
-@foreach (var r in Model.FetchQueries())
-{
-    Html.RenderPartial("Row", r);
-}
-</tbody>
-<tfoot><tr><td>@pager</td></tr></tfoot>
-</table>
+<button id="filter" class="btn" value="Filter">Filter</button>
+<form class="non-modal ajax">
+    <div class="pagination pagination-mini">
+        @Html.Partial("Pager3", Model.Pager)
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>@Model.Pager.SortLink("Description")</td>
+                <td>@Model.Pager.SortLink("Owner")</td>
+                <td>@Model.Pager.SortLink("Public")</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.FetchQueries())
+            {
+                Html.RenderPartial("Row", r);
+            }
+        </tbody>
+    </table>
+    <div class="pagination pagination-mini">
+        @Html.Partial("Pager3", Model.Pager)
+    </div>
+</form>

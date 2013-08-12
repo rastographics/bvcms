@@ -1,5 +1,4 @@
 ﻿@{
-    var newlook = DbUtil.Db.UserPreference("newlook3", "false") == "true";
     var bkcolor = DbUtil.Db.Setting("HeaderBackground", "#e4e2d5");
 }
 <!DOCTYPE html>
@@ -11,7 +10,7 @@
     @RenderSection("head", required: false)
     @if (bkcolor.HasValue())
     {
-    <style type="text/css">
+        <style type="text/css">
         #header { background-color: @bkcolor; }
     </style>
     }
@@ -21,25 +20,12 @@
 </head>
 <body>
     @Html.Partial("Notices")
-    @if (newlook)
-    {
-        Html.RenderPartial("NewHeader");
-        <section id="main" class="container">
-            <section class="sixteen columns">
-                @RenderBody()
-            </section>
-        </section>
-        @Html.Partial("Footer")
-    }
-    else
-    {
-        <div id="container">
-            @Html.Partial("OldHeader")
-            <div id="main">
-                @RenderBody()
-            </div>
+    <div id="container">
+        @Html.Partial("OldHeader")
+        <div id="main">
+            @RenderBody()
         </div>
-    }
+    </div>
     @Html.Partial("Dialogs")
     @RenderSection("PopupsPlaceholder", required: false)
     @Html.Partial("Support")

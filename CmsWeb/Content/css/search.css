@@ -3,34 +3,76 @@
     width: 100%;
 }
 
-    #conditionlist td {
-        padding: 4px 0;
-        width: 2em;
-        text-align: center;
-    }
-/*
+    /*
     #conditionlist ul li {
         text-align: left;
     }
 */
+    #conditionlist a {
+        text-decoration: none;
+        color: #444;
+    }
+    #conditionlist .icon-pencil {
+        color: #ccc;
+    }
+    #conditionlist td.add-condition {
+        width: 30px;
+        height: 100%;
+        text-align: center;
+    }
 
-td.clausetext {
-    padding-left: 2px;
-    white-space: normal;
-}
+        #conditionlist td.add-condition > div > a {
+            display: block;
+            padding: 5px;
+        }
 
-div.clausetext {
-    -ms-word-wrap: break-word;
-    word-wrap: break-word;
-    text-align: left;
-}
+    #conditionlist td.clausetext {
+        text-align: left;
+        white-space: normal;
+    }
+
+        #conditionlist td.clausetext a.editconditionlink {
+            display: block;
+            text-align: left;
+        }
+
+    #conditionlist a:hover {
+        color: white;
+        background: #0088cc;
+        -webkit-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+    }
+
+    #conditionlist div.clausetext {
+        -ms-word-wrap: break-word;
+        word-wrap: break-word;
+        text-align: left;
+    }
 
 
 #editcondition {
     display: none;
 }
 
+td.select-button {
+    padding-bottom: 12px;
+}
 
+#QueryConditionSelect div.FieldLink {
+    margin-top: .2em;
+}
+
+    #QueryConditionSelect div.FieldLink a {
+        color: #336699;
+        font-size: 180%;
+    }
+
+#QueryConditionSelect div.moreinfo {
+    margin-left: 3em;
+    color: #999;
+    font-size: 110%;
+    font-style: italic;
+}
 /*
 #Results table {
     margin-top: 1em;

@@ -19,18 +19,18 @@ namespace CmsWeb.Areas.Search.Controllers
 {
 	[SessionExpire]
     [RouteArea("Search", AreaUrl = "Query")]
-    public class AdvancedController : CmsStaffAsyncController
+    public class QueryController : CmsStaffAsyncController
     {
-        [GET("Query/Index/{id:int?}")]
         [GET("Query/{id:int?}")]
-        public ActionResult Index(int? id, int? run)
+        public ActionResult Query(int? id, int? run)
         {
-            ViewData["Title"] = "QueryBuilder";
-            ViewData["OnQueryBuilder"] = "true";
-            ViewData["TagAction"] = "/Search/Advanced/TagAll/";
-            ViewData["UnTagAction"] = "/Search/Advanced/UnTagAll/";
-            ViewData["AddContact"] = "/Search/Advanced/AddContact/";
-            ViewData["AddTasks"] = "/Search/Advanced/AddTasks/";
+            ViewBag.Title = "QueryBuilder";
+            ViewBag.OnQueryBuilder = "true";
+            ViewBag.TagAction = "/Query/TagAll/";
+            ViewBag.TagAction = "/Query/UnTagAll/";
+            ViewBag.Contact = "/Query/AddContact/";
+            ViewBag.Tasks = "/Query/AddTasks/";
+            ViewBag.GearSpan = "span12";
             var m = new AdvancedModel { QueryId = id };
             DbUtil.LogActivity("QueryBuilder");
             if (run.HasValue)
@@ -138,9 +138,15 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new AdvancedModel { SelectedId = id };
             m.LoadScratchPad();
             m.InsertGroupAbove();
-            var c = new ContentResult();
-            c.Content = m.QueryId.ToString();
-            return c;
+            return View("Conditions", m);
+        }
+        [POST("Query/MoveToPreviousGroup/{id:int}")]
+        public ActionResult MoveToPreviousGroup(int id)
+        {
+            var m = new AdvancedModel { SelectedId = id };
+            m.LoadScratchPad();
+            m.MoveToPreviousGroup();
+            return View("Conditions", m);
         }
         [POST("Query/CopyAsNew/{id:int}")]
         public ActionResult CopyAsNew(int id)
@@ -231,13 +237,13 @@ namespace CmsWeb.Areas.Search.Controllers
 			DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.QueryId));
             return View(m);
         }
-        [POST("Query/NewQuery")]
+        [GET("Query/NewQuery")]
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             var ncid = qb.CleanSlate2(DbUtil.Db);
             TempData["newsearch"] = ncid;
-            return RedirectToAction("Main");
+            return Redirect("/Query");
         }
         [POST("Query/ToggleTag/{id:int}")]
         public JsonResult ToggleTag(int id)
@@ -317,7 +323,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Import(string text, string name)
 		{
 			int id = QueryFunctions.Import(DbUtil.Db, text, name);
-			return Redirect("/Search/Advanced/Main/" + id);
+			return Redirect("/Query/" + id);
 		}
     }
 }

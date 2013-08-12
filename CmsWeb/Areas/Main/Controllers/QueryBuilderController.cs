@@ -29,9 +29,9 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult Main(int? id, int? run)
         {
-            if (DbUtil.Db.UserPreference("newlook3", "false").ToBool()
-                && DbUtil.Db.UserPreference("advancedsearch", "false").ToBool())
-                return Redirect(Request.RawUrl.ToLower().Replace("querybuilder", "search/advanced"));
+//            if (DbUtil.Db.UserPreference("newlook3", "false").ToBool()
+//                && DbUtil.Db.UserPreference("advancedsearch", "false").ToBool())
+//                return Redirect(Request.RawUrl.ToLower().Replace("querybuilder", "search/advanced"));
             ViewData["Title"] = "QueryBuilder";
             ViewData["OnQueryBuilder"] = "true";
             ViewData["TagAction"] = "/QueryBuilder/TagAll/";

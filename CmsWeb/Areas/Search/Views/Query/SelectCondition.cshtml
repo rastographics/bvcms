@@ -1,0 +1,36 @@
+﻿@model CmsWeb.Areas.Search.Models.AdvancedModel
+@{
+    var cats = Model.FieldCategories().ToList();
+}
+<div id="QueryConditionSelect" class='modal fade hide' data-width='760'>
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h4>Select Condition</h4>
+    </div>
+    <div class="modal-body">
+        <div class="tabbable tabs-left">
+            <ul class="nav nav-tabs">
+            @for(var i = 0; i< cats.Count; i++)
+            {
+                var c = cats[i];
+                <li @(i==0? "class=active" : "")><a href='#@c.Name' data-toggle="tab">@c.Title</a></li>
+            }
+            </ul>
+            <div class="tab-content">
+            @for(var i = 0; i< cats.Count; i++)
+            { 
+                var c = cats[i];
+                <div class="tab-pane @(i==0? "active" : "")" id="@c.Name">
+                    @foreach (var p in c.Fields)
+                    { 
+                        <div class="FieldLink"><a id='@p.Name' href="#">@p.Title</a></div>
+                        <div class="moreinfo">
+                            <a class="help" href="https://www.bvcms.com/DocDialog/QB-@p.Name">@p.Description</a>
+                        </div>
+                    }
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+</div>

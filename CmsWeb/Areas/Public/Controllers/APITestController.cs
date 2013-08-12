@@ -63,58 +63,24 @@ namespace CmsWeb.Areas.Public.Controllers
 			return Content(APIFunctions.TestAPI(init, script, args));
 		}
         [Authorize(Roles = "Newlook")]
-        public ActionResult UseOldLook()
-        {
-            DbUtil.Db.SetUserPreference("newlook3", "false");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
-        [Authorize(Roles = "Newlook")]
-        public ActionResult UseNewLook()
-        {
-            DbUtil.Db.SetUserPreference("newlook3", "true");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
-        [Authorize(Roles = "Newlook")]
         public ActionResult UseAdvancedSearch()
         {
-            DbUtil.Db.SetUserPreference("advancedsearch", "true");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
+            return Redirect("/Query/");
         }
         [Authorize(Roles = "Newlook")]
         public ActionResult UseSearchBuilder()
         {
-            DbUtil.Db.SetUserPreference("advancedsearch", "false");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
+            return Redirect("/QueryBuilder/");
         }
         [Authorize(Roles = "Newlook")]
-        public ActionResult UseNewPeoplePage()
+        public ActionResult UseNewPersonPage()
         {
-            DbUtil.Db.SetUserPreference("newpeoplepage", "true");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
+            return Redirect("/Person2/Current");
         }
         [Authorize(Roles = "Newlook")]
         public ActionResult UseOldPersonPage()
         {
-            DbUtil.Db.SetUserPreference("newpeoplepage", "false");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
+            return Redirect("/Person/Current");
         }
         [Authorize(Roles = "Finance")]
         public ActionResult TurnFinanceOn()

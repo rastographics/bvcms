@@ -6,13 +6,12 @@
     var editing = false;
 }
 <div id="conditions">
-    <input type="hidden" id="SelectedId" name="SelectedId" value="@Model.SelectedId"/>
     <table id="conditionlist" class="table-striped">
         @foreach (var c in Model.ConditionList())
         {
             <tr qid="@c.Clause.QueryId" class="condition">
-                <td class="clausetext" style="padding-left: @(4 + c.Level * 13)px">
-                    <a href='#' class="editconditionlink tip" title="Click to edit">
+                <td class="clausetext" >
+                    <a href='#' class="editconditionlink" style="padding-left: @(4 + c.Level * 13)px">
                         @if (Model.SelectedId == c.Clause.QueryId)
                         {
                             editing = true;
@@ -30,19 +29,15 @@
                                 {
                                     @c.Clause
                                 }
+                                &nbsp;<i class="icon-pencil"></i>
                             </div>
                         }
                     </a>
                 </td>
-                <td>
-                    <a href='#' class="editconditionlink tip" title="Click to edit condition">
-                        <i class="icon-pencil"></i>
-                    </a>
-                </td>
-                <td>
-                    <a href="#" class="tip trigger-dropdown" title="Menu to Add a Condition"><i class="icon-plus"></i></a>
-                    <div class="dropdown-menu">
-                        <ul>
+                <td class="add-condition">
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-plus"></i></a>
+                        <ul class="dropdown-menu" role="menu">
                             @if (c.Clause.IsGroup)
                             {
                                 <li><a href="#" class="addnewclause">Add a new Group and Starting Condition to this Group</a></li>
@@ -55,15 +50,19 @@
                             {
                                 <li><a href="#" class="duplicateclause">@(c.Clause.IsGroup ? "Add a Group at the same level as this group" : "Duplicate This Condition")</a></li>
                             }
+                            <li><a href="#" class="insgroupabove">Insert a new Group above this</a></li>
+                            @if (c.Clause.Parent != null && c.Clause.Parent.Parent != null)
+                            {
+                                <li><a href="#" class="movetoprevgroup">Move to Higher Level Group</a></li>
+                            }
                         </ul>
                     </div>
-                </td>
             </tr>
         }
     </table>
     <div class="row-fluid">
         <div class="span6">
-            <a href="/Search/Advanced/NewQuery" class="btn btn-success pull-right">New Search</a>
+            <a href="/Query/NewQuery" class="btn btn-success pull-right">New Search</a>
         </div>
         <div class="span6">
             <a id="Run@(editing ? "1" : "")"class="btn btn-primary pull-right"><i class="icon-play"></i></a>

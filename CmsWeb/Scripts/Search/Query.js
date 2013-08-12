@@ -1,24 +1,19 @@
 ﻿$(function () {
     var $editplaceholderheight = 0;
+    var $backdrop = $('<div class="modal-backdrop hide" />').appendTo('body');
     $('#conditions a.editconditionlink').live("click", function () {
         var qid = $(this).closest("tr").attr("qid");
         $editplaceholderheight = $(this).parent().height();
         if ($("#editcondition").is(":visible")) {
             var h = $("#editcondition").attr("orginalheight");
             $("#editconditionplaceholder").animate({ height: h }, 150);
-            $("#editcondition").slideUp(150, function () {
-                $.post('/Query/EditCondition/' + qid, null, function (ret) {
-                    $("#conditions").html(ret).ready($.AdjustEditCondition);
-                });
-            });
+            $.HideEditCondition();
         }
-        else
-            $.post('/Query/EditCondition/' + qid, null, function (ret) {
-                $("#conditions").html(ret).ready($.AdjustEditCondition);
-            });
+        $.post('/Query/EditCondition/' + qid, null, function (ret) {
+            $("#conditions").html(ret).ready($.AdjustEditCondition);
+        });
         return false;
     });
-    $("a.tip").tooltip({ showBody: "|", showURL: false });
     $.AdjustEditCondition = function () {
         $('#CodeValues').multiselect({
             includeSelectAllOption: true,
@@ -28,19 +23,31 @@
         var h = $("#editcondition").outerHeight();
         $("#editcondition").attr("orginalheight", $("#editconditionplaceholder").height());
         $("#editconditionplaceholder").animate({ height: h }, 200);
-        var pos = $("#editconditionplaceholder").position();
-        $("#editcondition").css("left", pos.left).css("top", pos.top - 2);
+        var pos = $("#editconditionplaceholder").closest("td").position();
+        var wid = $("#editconditionplaceholder").closest("td").width();
+
+        $("#editcondition").css({
+            "left": pos.left,
+            "top": pos.top + 2,
+            "min-width": wid,
+            "z-index": 1050
+        });
+        $backdrop.removeClass("hide");
         $("#editcondition").slideDown(200);
-        $("a.tip").tooltip({ showBody: "|", showURL: false });
     };
-    //    $('#conditions a.addnewclause').live("click", function () {
-    //        var qid = $(this).closest("tr").attr("qid");
-    //        $.post('/Query/AddNewCondition/' + qid, {}, function (ret) {
-    //            $("#conditions").html(ret).ready($.AdjustEditCondition);
-    //            $('#QueryConditionSelect').dialog("open");
-    //        });
-    //        return false;
-    //    });
+    $.HideEditCondition = function () {
+        $backdrop.addClass("hide");
+        var oh = $("#editcondition").attr("orginalheight");
+        $("#editconditionplaceholder").animate({ height: oh }, 500);
+    };
+    $('#conditions a.addnewclause').live("click", function () {
+        var qid = $(this).closest("tr").attr("qid");
+        $.post('/Query/AddNewCondition/' + qid, {}, function (ret) {
+            $("#conditions").html(ret).ready($.AdjustEditCondition);
+            $('#QueryConditionSelect').modal("show");
+        });
+        return false;
+    });
     $('#conditions a.duplicateclause').live("click", function () {
         var qid = $(this).closest("tr").attr("qid");
         $.post('/Query/DuplicateCondition/' + qid, {}, function (ret) {
@@ -48,43 +55,44 @@
         });
         return false;
     });
-    $('#SaveCondition').live("click", function () {
-        var qs = $('#conditionForm').serialize();
-        $("#editconditionplaceholder").animate({ height: $editplaceholderheight }, 200);
-        $("#editcondition").hide("fade", function () {
-            $.post('/Query/SaveCondition/', qs, function (ret) {
-                $("#conditions").html(ret).ready(function () {
-                    $(".bt").button();
-                    $("#conditions a.trigger-dropdown").dropdown();
-                    $.block();
-                    $("#Run").click();
-                });
-            });
-            return false;
+    $('#conditions a.insgroupabove').live("click", function () {
+        var qid = $(this).closest("tr").attr("qid");
+        $.post('/Query/InsGroupAbove/' + qid, {}, function (ret) {
+            $("#conditions").html(ret).ready($.AdjustEditCondition);
         });
+        return false;
     });
-    $('#CancelChange').live("click", function () {
-        $("#editconditionplaceholder").animate({ height: $editplaceholderheight }, 200);
-        $("#editcondition").hide(function () {
-            $.post('/Query/Reload/', null, function (ret) {
-                $("#conditions").html(ret).ready(function () {
-                    $(".bt").button();
-                    $("#conditions a.trigger-dropdown").dropdown();
-                });
+    $('#conditions a.movetoprevgroup').live("click", function () {
+        var qid = $(this).closest("tr").attr("qid");
+        $.post('/Query/MoveToPreviousGroup/' + qid, {}, function (ret) {
+            $("#conditions").html(ret).ready($.AdjustEditCondition);
+        });
+        return false;
+    });
+    $('#SaveCondition').live("click", function () {
+        var q = $('#editForm').serialize();
+        $.post('/Query/SaveCondition/', q, function (ret) {
+            $("#conditions").html(ret).ready(function () {
+                $.HideEditCondition();
+                $("#Run").click();
             });
         });
         return false;
     });
-    $('#conditions a.removeclause').live("click", function () {
-        $.Confirm('Confirm Delete?', 'Confirmation Dialog', function (del) {
-            if (del) {
+    $('#CancelChange').live("click", function () {
+        $.HideEditCondition();
+        $.post('/Query/Reload/', null, function (ret) {
+            $("#conditions").html(ret);
+        });
+        return false;
+    });
+    $('#DeleteCondition').live("click", function () {
+        bootbox.confirm("Are you sure you want to delete?", function (result) {
+            if (result === true) {
                 var qid = $("#SelectedId").val();
                 $.post('/Query/RemoveCondition/' + qid, null, function (ret) {
-                    $("#conditions").html(ret).ready(function () {
-                        $(".bt").button();
-                        $("#conditions a.trigger-dropdown").dropdown();
-                        $("#Run").click();
-                    });
+                    $.HideEditCondition();
+                    $("#conditions").html(ret);
                 });
             }
         });
@@ -92,7 +100,7 @@
     });
     $('#Comparison').live("change", function (ev) {
         if ($("#CodesDiv").length > 0) {
-            var q = $('#conditionForm').serialize();
+            var q = $('#editForm').serialize();
             $.post('/Query/CodesDropdown', q, function (ret) {
                 $("#CodesDiv").replaceWith(ret).ready(function () {
                     $('#CodeValues').multiselect();
@@ -191,19 +199,21 @@
     //    }
     //    $("#tabber").tabs();
     //
-    //    $("#SelectCondition").live("click", function (ev) {
-    //        $('#QueryConditionSelect').dialog("open");
-    //        return false;
-    //    });
-    //    $('div.FieldLink a').click(function (ev) {
-    //        ev.preventDefault();
-    //        var qid = $("#SelectedId").val();
-    //        $.post('/Query/SelectCondition/' + qid, { conditionName: ev.target.id }, function (ret) {
-    //            $('#QueryConditionSelect').dialog("close");
-    //            $("#conditions").html(ret).ready($.AdjustEditCondition);
-    //        });
-    //        return false;
-    //    });
+    $("#SelectCondition").live("click", function (ev) {
+        ev.preventDefault();
+        //$.unblockUI();
+        $('#QueryConditionSelect').modal("show");
+        return false;
+    });
+    $('div.FieldLink a').click(function (ev) {
+        ev.preventDefault();
+        var qid = $("#SelectedId").val();
+        $.post('/Query/SelectCondition/' + qid, { conditionName: ev.target.id }, function (ret) {
+            $('#QueryConditionSelect').modal("hide");
+            $("#conditions").html(ret).ready($.AdjustEditCondition);
+        });
+        return false;
+    });
     $("a.closeit").click(function (ev) {
         $.unblock();
     });
@@ -222,8 +232,8 @@
 });
 
 function RefreshList(qs) {
-    if (!qs)
-        qs = $("#conditionForm").serialize();
+    //    if (!qs)
+    //        qs = $("#editForm").serialize();
 
     $.block();
     $.ajax({
@@ -263,16 +273,6 @@ function RefreshList(qs) {
             alert(err);
         }
     });
-}
-function GotoPage(pg) {
-    var qs = $('#conditionForm').serialize() + "&Page=" + pg;
-    RefreshList(qs);
-    return false;
-}
-function SetPageSize(sz) {
-    var qs = $('#conditionForm').serialize() + "&PageSize=" + sz;
-    RefreshList(qs);
-    return false;
 }
 
 function ShowErrors(j) {

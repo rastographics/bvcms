@@ -361,6 +361,7 @@
     <Compile Include="Classes\QuickBooks\QBDHelper.cs" />
     <Compile Include="Classes\QuickBooks\QBOHelper.cs" />
     <Compile Include="Picture.cs" />
+    <Compile Include="QueryBuilder\CategoryClass2.cs" />
     <Compile Include="QueryBuilder\Serialize.cs" />
     <Compile Include="Volunteer.cs" />
     <Compile Include="FamilyExtra.cs" />
@@ -672,6 +673,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MigrationScripts\Migrate-10-20-2012.sql" />
+    <Content Include="QueryBuilder\FieldMap3.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="QueryBuilder\FieldMap2.xml">
       <SubType>Designer</SubType>
     </Content>

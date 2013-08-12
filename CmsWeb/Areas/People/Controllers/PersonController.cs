@@ -34,26 +34,24 @@ namespace CmsWeb.Areas.People.Controllers
             base.Initialize(requestContext);
         }
 
-
         [GET("Person2/Current")]
         public ActionResult Current()
         {
-            return Redirect("/Person/Index/" + Util2.CurrentPeopleId);
+            return Redirect("/Person2/" + Util2.CurrentPeopleId);
         }
 
-        [GET("Person2/Index/{id:int}")]
         [GET("Person2/{id:int}")]
         [GET("{id:int}")]
-        public ActionResult Index(int? id)
+        public ActionResult Person(int? id)
         {
             if (!id.HasValue)
                 return Content("no id");
-            if (!DbUtil.Db.UserPreference("newlook3", "false").ToBool()
-                || !DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
-            {
-                var url = Regex.Replace(Request.RawUrl, @"(.*)/(Person2(/Index)*)/(\d*)", "$1/Person/Index/$4", RegexOptions.IgnoreCase);
-                return Redirect(url);
-            }
+//            if (!DbUtil.Db.UserPreference("newlook3", "false").ToBool()
+//                || !DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
+//            {
+//                var url = Regex.Replace(Request.RawUrl, @"(.*)/(Person2(/Index)*)/(\d*)", "$1/Person/Index/$4", RegexOptions.IgnoreCase);
+//                return Redirect(url);
+//            }
 
             var m = new PersonModel(id.Value);
             var noview = m.CheckView();
@@ -425,7 +423,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult Tag(int id)
         {
-            Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            CmsData.Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
@@ -433,7 +431,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult UnTag(int id)
         {
-            Person.UnTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            CmsData.Person.UnTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }

@@ -20,6 +20,10 @@ td.center, th.center {
     content: none!important;
 }
 
+ul.dropdown-menu {
+    text-align: left;
+}
+
 ul.dropdown-div-admin {
     margin-left: -250px;
     width: 600px;
@@ -212,20 +216,10 @@ ul.typeahead li.active a,
         margin-left: -200px;
         width: 400px;
     }
-
-
-
-    #profile-header ul.dropdown-menu.toolbar-gear.onecolumn {
-        margin-left: -100px;
-        width: 200px;
+    #profile-header ul.dropdown-div-gear.onecolumn {
+        margin-left: auto;
+        width: auto;
     }
-
-
-
-    #profile-header ul.dropdown-menu.toolbar-email {
-        margin-left: 0;
-    }
-
 
 
 li.space,

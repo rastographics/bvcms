@@ -1,48 +1,47 @@
 using System.Linq;
 using System.Web.Mvc;
+using AttributeRouting;
+using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
 using UtilityExtensions;
 using CmsData;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
+    [RouteArea("Search", AreaUrl = "SavedQuery")]
     public class SavedQueryController : CmsStaffController
     {
+        [GET("SavedQuery/")]
         public ActionResult Index()
         {
             var m = new SavedQueryModel();
             return View(m);
         }
-        [HttpPost]
-        public ActionResult Edit(string id, string value)
+        [POST("SavedQuery/PostData/{pk:int}/{name}/{value}")]
+        public ActionResult PostData(int pk, string name, string value)
         {
-            var a = id.Split('.');
-            var iid = a[1].ToInt();
-            var c = DbUtil.Db.QueryBuilderClauses.SingleOrDefault(cc => cc.QueryId == iid);
-            switch (a[0])
+            var c = DbUtil.Db.QueryBuilderClauses.SingleOrDefault(cc => cc.QueryId == pk);
+            switch (name.ToLower())
             {
-                case "d":
+                case "description":
                     c.Description = value;
                     break;
-                case "o":
+                case "owner":
                     c.SavedBy = value;
                     break;
-                case "p":
+                case "public":
                     c.IsPublic = value == "yes";
                     break;
-                case "x":
+                case "delete":
                     DbUtil.Db.DeleteQueryBuilderClauseOnSubmit(c);
                     break;
             }
             DbUtil.Db.SubmitChanges();
             return Content(value);
         }
-        [HttpPost]
-        public ActionResult Results()
+        [POST("SavedQuery/Results")]
+        public ActionResult Results(SavedQueryModel m)
         {
-            var m = new SavedQueryModel();
-            UpdateModel(m.Pager);
-            UpdateModel(m);
             return View(m);
         }
     }

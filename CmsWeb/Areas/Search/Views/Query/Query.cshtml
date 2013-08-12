@@ -6,13 +6,13 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Search/AdvancedSearch.js")"></script>
+    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Search/Query.js")"></script>
     <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Bootstrap/bootstrap-multiselect.js")"></script>
 }
 @section head 
 {
     <link href="@Fingerprint.Tag("/Content/css/bootstrap-multiselect.css")" rel="stylesheet" type="text/css" />
-    <link href="/Content/css/search.css" rel="stylesheet" type="text/css" />
+    <link href="@Fingerprint.Tag("/Content/css/search.css")" rel="stylesheet" type="text/css" />
 }
 
 @Html.Hidden("AutoRun")
@@ -23,15 +23,12 @@
             <div id="Description"><b>@Model.Description</b></div>
             <div>
                 <h2>Advanced Search </h2>
-                <form id="conditionForm">
                     @Html.Partial("Conditions", Model)
-                </form>
             </div>
         </div>
         <div id="Results" class="span8">
             @if (Model.ShowResults)
             {
-                @Html.Partial("Toolbar/Toolbar")
                 @Html.Partial("Results", Model) 
             }
         </div>
@@ -40,29 +37,7 @@
 
 @section PopupsPlaceholder
 {
-    <div id="QueryConditionSelect" class="modalPopup" title="Select a Condition" style="display: none">
-        <div id="tabber" class="ui-tabs">
-            <ul class="ui-tabs-nav">
-                @foreach (var c in Model.FieldCategories())
-                { 
-                    <li><a href='#@c.Name'><span>@c.Title</span></a></li>
-                }
-            </ul>
-            @foreach (var c in Model.FieldCategories())
-            { 
-                <div id="@c.Name" style="margin:4px;height:450px;overflow:auto" class="ui-tabs-panel ui-tabs-hide">
-                    @foreach (var p in c.Fields)
-                    { 
-                        <div class="FieldLink"><a id='@p.Name' href="#">@p.Title</a></div>
-                        <div class="moreinfo">
-                            <a class="help" href="https://www.bvcms.com/DocDialog/QB-@p.Name"
-                title="Get SearchBuilder Help|Click this link to get help on this condition.">@p.Description</a>
-                        </div>
-                    }
-                </div>
-            }
-        </div>
-    </div>
+    @Html.Partial("SelectCondition", Model)
     <div id="QueryConditionHelp" class="modalPopup" title="Condition Help" style="display: none">
         <iframe style="width: 100%; height: 99%; border-width: 0px;"></iframe>
     </div>
