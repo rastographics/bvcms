@@ -26,15 +26,15 @@ namespace CmsWeb.Areas.Main.Controllers
 			if (!body.HasValue())
 				body = TempData["body"] as string;
 
-			if(!subj.HasValue() && templateID != 0 && DbUtil.Db.Setting("UseEmailTemplates", "false") == "true" )
+			if (!subj.HasValue() && templateID != 0 && DbUtil.Db.Setting("UseEmailTemplates", "false") == "true")
 			{
 				if (templateID == null)
-					return View("SelectTemplate", new EmailTemplatesModel() { wantparents = parents ?? false, queryid = id.Value});
+					return View("SelectTemplate", new EmailTemplatesModel() { wantparents = parents ?? false, queryid = id.Value });
 				else
 				{
 					DbUtil.LogActivity("Emailing people");
 
-        			var m = new MassEmailer(id.Value, parents);
+					var m = new MassEmailer(id.Value, parents);
 					m.CmsHost = DbUtil.Db.CmsHost;
 					m.Host = Util.Host;
 
@@ -73,45 +73,50 @@ namespace CmsWeb.Areas.Main.Controllers
 		{
 			Content content;
 
-		    if (saveid > 0)
-		        content = DbUtil.ContentFromID(saveid);
-		    else
-		        content = new Content {Name = name, TypeID = ContentTypeCode.TypeSavedDraft, RoleID = roleid};
+			if (saveid > 0)
+			{
+				content = DbUtil.ContentFromID(saveid);
+			}
+			else
+			{
+				content = new Content { Name = name, TypeID = ContentTypeCode.TypeSavedDraft, RoleID = roleid };
+				content.OwnerID = Util.UserId;
+			}
 
-		    content.Title = subject;
+			content.Title = subject;
 			content.Body = body;
-			content.OwnerID = Util.UserId;
-            content.DateCreated = DateTime.Now;
 
-			if( saveid == 0 ) DbUtil.Db.Contents.InsertOnSubmit(content);
+			content.DateCreated = DateTime.Now;
+
+			if (saveid == 0) DbUtil.Db.Contents.InsertOnSubmit(content);
 			DbUtil.Db.SubmitChanges();
 
 			var m = new MassEmailer
-			            {
-			                TagId = tagId,
-			                wantParents = wantParents,
-			                CmsHost = DbUtil.Db.CmsHost,
-			                Host = Util.Host,
-			                Subject = subject,
-			            };
+							{
+								TagId = tagId,
+								wantParents = wantParents,
+								CmsHost = DbUtil.Db.CmsHost,
+								Host = Util.Host,
+								Subject = subject,
+							};
 
-		    System.Diagnostics.Debug.Print("Template ID: " + content.Id);
+			System.Diagnostics.Debug.Print("Template ID: " + content.Id);
 
 			ViewBag.parents = wantParents;
 			ViewBag.templateID = content.Id;
 			return View("Compose", m);
 		}
 
-        [HttpPost]
-        public ActionResult ContentDeleteDrafts( int queryid, bool parents, int[] draftId)
-        {
-            using (var cn = new SqlConnection(Util.ConnectionString))
-            {
-                cn.Open();
-                cn.Execute("delete from dbo.Content where id in @ids", new {ids = draftId});
-            }
-            return RedirectToAction("Index", new { id = queryid, parents });
-        }
+		[HttpPost]
+		public ActionResult ContentDeleteDrafts(int queryid, bool parents, int[] draftId)
+		{
+			using (var cn = new SqlConnection(Util.ConnectionString))
+			{
+				cn.Open();
+				cn.Execute("delete from dbo.Content where id in @ids", new { ids = draftId });
+			}
+			return RedirectToAction("Index", new { id = queryid, parents });
+		}
 
 		[HttpPost]
 		[ValidateInput(false)]
@@ -138,8 +143,8 @@ namespace CmsWeb.Areas.Main.Controllers
 			try
 			{
 				id = m.CreateQueue();
-			    if (id == 0)
-			        throw new Exception("No Emails to send (tag does not exist)");
+				if (id == 0)
+					throw new Exception("No Emails to send (tag does not exist)");
 				if (m.Schedule.HasValue)
 					return Json(new { id = 0, content = "<h2>Emails Queued</h2>" });
 			}
@@ -161,9 +166,9 @@ namespace CmsWeb.Areas.Main.Controllers
 				{
 					var Db = new CMSDataContext(Util.GetConnectionString(host));
 					Db.Host = host;
-    			    var cul = Db.Setting("Culture", "en-US");
-                    Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
-                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
+					var cul = Db.Setting("Culture", "en-US");
+					Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
+					Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 					// set these again inside thread local storage
 					Util.UserEmail = useremail;
 					Util.IsInRoleEmailTest = isinroleemailtest;
