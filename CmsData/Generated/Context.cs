@@ -406,6 +406,10 @@ namespace CmsData
         partial void UpdatePerson(Person instance);
         partial void DeletePerson(Person instance);
         
+        partial void InsertPeopleCanEmailFor(PeopleCanEmailFor instance);
+        partial void UpdatePeopleCanEmailFor(PeopleCanEmailFor instance);
+        partial void DeletePeopleCanEmailFor(PeopleCanEmailFor instance);
+        
         partial void InsertPeopleExtra(PeopleExtra instance);
         partial void UpdatePeopleExtra(PeopleExtra instance);
         partial void DeletePeopleExtra(PeopleExtra instance);
@@ -566,9 +570,9 @@ namespace CmsData
         partial void UpdateUploadPeopleRun(UploadPeopleRun instance);
         partial void DeleteUploadPeopleRun(UploadPeopleRun instance);
         
-        partial void InsertUserCanEmailFor(UserCanEmailFor instance);
-        partial void UpdateUserCanEmailFor(UserCanEmailFor instance);
-        partial void DeleteUserCanEmailFor(UserCanEmailFor instance);
+//        partial void InsertUserCanEmailFor(UserCanEmailFor instance);
+//        partial void UpdateUserCanEmailFor(UserCanEmailFor instance);
+//        partial void DeleteUserCanEmailFor(UserCanEmailFor instance);
         
         partial void InsertUserRole(UserRole instance);
         partial void UpdateUserRole(UserRole instance);
@@ -1242,6 +1246,12 @@ namespace CmsData
 
 		}
 
+		public Table< PeopleCanEmailFor> PeopleCanEmailFors
+		{
+			get	{ return this.GetTable< PeopleCanEmailFor>(); }
+
+		}
+
 		public Table< PeopleExtra> PeopleExtras
 		{
 			get	{ return this.GetTable< PeopleExtra>(); }
@@ -1482,11 +1492,11 @@ namespace CmsData
 
 		}
 
-		public Table< UserCanEmailFor> UserCanEmailFors
-		{
-			get	{ return this.GetTable< UserCanEmailFor>(); }
-
-		}
+//		public Table< UserCanEmailFor> UserCanEmailFors
+//		{
+//			get	{ return this.GetTable< UserCanEmailFor>(); }
+//
+//		}
 
 		public Table< UserRole> UserRoles
 		{

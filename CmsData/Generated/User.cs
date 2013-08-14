@@ -86,10 +86,6 @@ namespace CmsData
 		
    		private EntitySet< UserRole> _UserRoles;
 		
-   		private EntitySet< UserCanEmailFor> _UsersICanEmailFor;
-		
-   		private EntitySet< UserCanEmailFor> _UsersWhoCanEmailForMe;
-		
    		private EntitySet< VolunteerForm> _VolunteerFormsUploaded;
 		
     	
@@ -202,10 +198,6 @@ namespace CmsData
 			this._Preferences = new EntitySet< Preference>(new Action< Preference>(this.attach_Preferences), new Action< Preference>(this.detach_Preferences)); 
 			
 			this._UserRoles = new EntitySet< UserRole>(new Action< UserRole>(this.attach_UserRoles), new Action< UserRole>(this.detach_UserRoles)); 
-			
-			this._UsersICanEmailFor = new EntitySet< UserCanEmailFor>(new Action< UserCanEmailFor>(this.attach_UsersICanEmailFor), new Action< UserCanEmailFor>(this.detach_UsersICanEmailFor)); 
-			
-			this._UsersWhoCanEmailForMe = new EntitySet< UserCanEmailFor>(new Action< UserCanEmailFor>(this.attach_UsersWhoCanEmailForMe), new Action< UserCanEmailFor>(this.detach_UsersWhoCanEmailForMe)); 
 			
 			this._VolunteerFormsUploaded = new EntitySet< VolunteerForm>(new Action< VolunteerForm>(this.attach_VolunteerFormsUploaded), new Action< VolunteerForm>(this.detach_VolunteerFormsUploaded)); 
 			
@@ -913,26 +905,6 @@ namespace CmsData
    		}
 
 		
-   		[Association(Name="UsersICanEmailFor__Assistant", Storage="_UsersICanEmailFor", OtherKey="UserId")]
-   		public EntitySet< UserCanEmailFor> UsersICanEmailFor
-   		{
-   		    get { return this._UsersICanEmailFor; }
-
-			set	{ this._UsersICanEmailFor.Assign(value); }
-
-   		}
-
-		
-   		[Association(Name="UsersWhoCanEmailForMe__Boss", Storage="_UsersWhoCanEmailForMe", OtherKey="CanEmailFor")]
-   		public EntitySet< UserCanEmailFor> UsersWhoCanEmailForMe
-   		{
-   		    get { return this._UsersWhoCanEmailForMe; }
-
-			set	{ this._UsersWhoCanEmailForMe.Assign(value); }
-
-   		}
-
-		
    		[Association(Name="VolunteerFormsUploaded__Uploader", Storage="_VolunteerFormsUploaded", OtherKey="UploaderId")]
    		public EntitySet< VolunteerForm> VolunteerFormsUploaded
    		{
@@ -1068,32 +1040,6 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.User = null;
-		}
-
-		
-		private void attach_UsersICanEmailFor(UserCanEmailFor entity)
-		{
-			this.SendPropertyChanging();
-			entity.Assistant = this;
-		}
-
-		private void detach_UsersICanEmailFor(UserCanEmailFor entity)
-		{
-			this.SendPropertyChanging();
-			entity.Assistant = null;
-		}
-
-		
-		private void attach_UsersWhoCanEmailForMe(UserCanEmailFor entity)
-		{
-			this.SendPropertyChanging();
-			entity.Boss = this;
-		}
-
-		private void detach_UsersWhoCanEmailForMe(UserCanEmailFor entity)
-		{
-			this.SendPropertyChanging();
-			entity.Boss = null;
 		}
 
 		

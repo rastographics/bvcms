@@ -353,6 +353,7 @@
     <Compile Include="Generated\Functions\Pledges0.cs" />
     <Compile Include="Generated\Functions\RecentAbsents2.cs" />
     <Compile Include="Generated\Functions\StatusFlag.cs" />
+    <Compile Include="Generated\PeopleCanEmailFor.cs" />
     <Compile Include="Generated\Views\BundleList.cs" />
     <Compile Include="Generated\Views\OrganizationLeader.cs" />
     <Compile Include="Generated\Views\OrganizationStructure.cs" />
@@ -594,7 +595,6 @@
     <Compile Include="QueryBuilder\CategoryClass.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Generated\Role.cs" />
-    <Compile Include="Generated\UserCanEmailFor.cs" />
     <Compile Include="Generated\UserRole.cs" />
     <Compile Include="Generated\Audit.cs" />
     <Compile Include="Generated\AuditValue.cs" />

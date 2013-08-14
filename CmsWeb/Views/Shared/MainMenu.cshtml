@@ -93,7 +93,7 @@
             <a href="#" class="trigger-dropdown">SearchBuilder
                 <img src="/images/dnarrowt.png" />
             </a>
-            @Helper.SearchBuilderDropdown(onqb, newlook: false)
+            @Helper.SearchBuilderDropdown(onqb)
         </li>
         @if (User.IsInRole("Finance"))
         {
@@ -160,6 +160,7 @@
                         @if (admin || manageemails)
                         {
                             <li>@Html.ActionLink("Emails", "Index", "Emails", new { Area = "Manage" }, null)</li>
+                            <li>@Html.ActionLink("UsersCanEmailFor", "Index", "UsersCanEmailFor", new { Area = "Setup" }, null)</li>
                         }
                         @if (admin)
                         {

@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.Main.Models
 
         public IEnumerable<SelectListItem> EmailFroms()
         {
-            return new SelectList(new CodeValueModel().UsersToEmailFrom(), "Code", "Value");
+            return new SelectList(new CodeValueModel().PeopleToEmailFor(), "Code", "Value");
         }
     }
 }

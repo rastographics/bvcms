@@ -1,48 +1,35 @@
-﻿@model IEnumerable<CmsData.UserCanEmailFor>
+﻿@model IEnumerable<CmsData.PeopleCanEmailFor>
 @{
     Layout = "~/Views/Shared/SiteLayout.cshtml";
     ViewBag.Title = "UsersEmailFor";
 }
+@section scripts
+{
+    <script src="@Fingerprint.Tag("/Scripts/Dialog/SearchUsers.js")"></script>
+    <script src="@Fingerprint.Tag("/Scripts/js/UsersEmailFor.js")"></script>
+}
 <h2>Index</h2>
 
-<table>
+<table class="grid">
     <tr>
-        <th></th>
-        <th> UserId </th>
-        <th> CanEmailFor </th>
+        <th>Person who can Email</th>
+        <th>On Behalf of Person</th>
     </tr>
 
-@foreach (var item in Model)
-{ 
-    <tr>
-        <td>
-            @Html.ActionLink("Delete", "Delete", new { id = item.UserId, CanEmailFor = item.CanEmailFor })
-        </td>
-        <td>
-            @item.UserId
-        </td>
-        <td>
-            @item.CanEmailFor
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    { 
+        <tr>
+            <td>
+                <a class="editcanemail" href="/Setup/UsersCanEmailFor/PersonCanEmailForList/@item.CanEmail">@item.PersonCanEmail.Name</a>
+            </td>
+            <td>
+                @item.OnBehalfOfPerson.Name
+            </td>
+        </tr>
+    }
 </table>
-@using (Html.BeginForm("Create", "UsersCanEmailFor"))
-{
-    <fieldset>
-        <legend>Fields</legend>
-        <p>
-            <label for="UserId">UserId:</label>
-            @Html.TextBox("UserId")
-            @Html.ValidationMessage("UserId", "*")
-        </p>
-        <p>
-            <label for="CanEmailFor">CanEmailFor:</label>
-            @Html.TextBox("CanEmailFor")
-            @Html.ValidationMessage("CanEmailFor", "*")
-        </p>
-        <p>
-            <input type="submit" class="bt" value="Create" />
-        </p>
-    </fieldset>
- } 
+    <p>
+        <label for="UserId">Add New Person who can Email for others:</label>
+        <a href="/Setup/UsersCanEmailFor/PersonCanEmailForList/0" class="bt editcanemail">Select People</a>
+    </p>
+    <div><i>Note, top person in list is the person who emails on behalf of others in the list</i></div>

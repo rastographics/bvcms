@@ -23,10 +23,6 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< User> _Assistant;
-		
-		private EntityRef< User> _Boss;
-		
 	#endregion
 	
     #region Extensibility Method Definitions
@@ -45,10 +41,6 @@ namespace CmsData
 		{
 			
 			
-			this._Assistant = default(EntityRef< User>); 
-			
-			this._Boss = default(EntityRef< User>); 
-			
 			OnCreated();
 		}
 
@@ -64,9 +56,6 @@ namespace CmsData
 			{
 				if (this._UserId != value)
 				{
-				
-					if (this._Assistant.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
                     this.OnUserIdChanging(value);
 					this.SendPropertyChanging();
@@ -90,9 +79,6 @@ namespace CmsData
 				if (this._CanEmailFor != value)
 				{
 				
-					if (this._Boss.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
                     this.OnCanEmailForChanging(value);
 					this.SendPropertyChanging();
 					this._CanEmailFor = value;
@@ -113,90 +99,6 @@ namespace CmsData
 	
 	#region Foreign Keys
     	
-		[Association(Name="UsersICanEmailFor__Assistant", Storage="_Assistant", ThisKey="UserId", IsForeignKey=true)]
-		public User Assistant
-		{
-			get { return this._Assistant.Entity; }
-
-			set
-			{
-				User previousValue = this._Assistant.Entity;
-				if (((previousValue != value) 
-							|| (this._Assistant.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Assistant.Entity = null;
-						previousValue.UsersICanEmailFor.Remove(this);
-					}
-
-					this._Assistant.Entity = value;
-					if (value != null)
-					{
-						value.UsersICanEmailFor.Add(this);
-						
-						this._UserId = value.UserId;
-						
-					}
-
-					else
-					{
-						
-						this._UserId = default(int);
-						
-					}
-
-					this.SendPropertyChanged("Assistant");
-				}
-
-			}
-
-		}
-
-		
-		[Association(Name="UsersWhoCanEmailForMe__Boss", Storage="_Boss", ThisKey="CanEmailFor", IsForeignKey=true)]
-		public User Boss
-		{
-			get { return this._Boss.Entity; }
-
-			set
-			{
-				User previousValue = this._Boss.Entity;
-				if (((previousValue != value) 
-							|| (this._Boss.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Boss.Entity = null;
-						previousValue.UsersWhoCanEmailForMe.Remove(this);
-					}
-
-					this._Boss.Entity = value;
-					if (value != null)
-					{
-						value.UsersWhoCanEmailForMe.Add(this);
-						
-						this._CanEmailFor = value.UserId;
-						
-					}
-
-					else
-					{
-						
-						this._CanEmailFor = default(int);
-						
-					}
-
-					this.SendPropertyChanged("Boss");
-				}
-
-			}
-
-		}
-
-		
 	#endregion
 	
 		public event PropertyChangingEventHandler PropertyChanging;

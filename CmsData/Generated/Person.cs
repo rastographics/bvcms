@@ -318,9 +318,13 @@ namespace CmsData
 		
    		private EntitySet< VoluteerApprovalId> _VoluteerApprovalIds;
 		
+   		private EntitySet< PeopleCanEmailFor> _OnBehalfOfPeople;
+		
    		private EntitySet< OrganizationMember> _OrganizationMembers;
 		
    		private EntitySet< BackgroundCheck> _People;
+		
+   		private EntitySet< PeopleCanEmailFor> _PersonsCanEmail;
 		
    		private EntitySet< SubRequest> _SubRequests;
 		
@@ -811,9 +815,13 @@ namespace CmsData
 			
 			this._VoluteerApprovalIds = new EntitySet< VoluteerApprovalId>(new Action< VoluteerApprovalId>(this.attach_VoluteerApprovalIds), new Action< VoluteerApprovalId>(this.detach_VoluteerApprovalIds)); 
 			
+			this._OnBehalfOfPeople = new EntitySet< PeopleCanEmailFor>(new Action< PeopleCanEmailFor>(this.attach_OnBehalfOfPeople), new Action< PeopleCanEmailFor>(this.detach_OnBehalfOfPeople)); 
+			
 			this._OrganizationMembers = new EntitySet< OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
 			
 			this._People = new EntitySet< BackgroundCheck>(new Action< BackgroundCheck>(this.attach_People), new Action< BackgroundCheck>(this.detach_People)); 
+			
+			this._PersonsCanEmail = new EntitySet< PeopleCanEmailFor>(new Action< PeopleCanEmailFor>(this.attach_PersonsCanEmail), new Action< PeopleCanEmailFor>(this.detach_PersonsCanEmail)); 
 			
 			this._SubRequests = new EntitySet< SubRequest>(new Action< SubRequest>(this.attach_SubRequests), new Action< SubRequest>(this.detach_SubRequests)); 
 			
@@ -3853,6 +3861,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="OnBehalfOfPeople__PersonCanEmail", Storage="_OnBehalfOfPeople", OtherKey="CanEmail")]
+   		public EntitySet< PeopleCanEmailFor> OnBehalfOfPeople
+   		{
+   		    get { return this._OnBehalfOfPeople; }
+
+			set	{ this._OnBehalfOfPeople.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="ORGANIZATION_MEMBERS_PPL_FK", Storage="_OrganizationMembers", OtherKey="PeopleId")]
    		public EntitySet< OrganizationMember> OrganizationMembers
    		{
@@ -3869,6 +3887,16 @@ namespace CmsData
    		    get { return this._People; }
 
 			set	{ this._People.Assign(value); }
+
+   		}
+
+		
+   		[Association(Name="PersonsCanEmail__OnBehalfOfPerson", Storage="_PersonsCanEmail", OtherKey="OnBehalfOf")]
+   		public EntitySet< PeopleCanEmailFor> PersonsCanEmail
+   		{
+   		    get { return this._PersonsCanEmail; }
+
+			set	{ this._PersonsCanEmail.Assign(value); }
 
    		}
 
@@ -5295,6 +5323,19 @@ namespace CmsData
 		}
 
 		
+		private void attach_OnBehalfOfPeople(PeopleCanEmailFor entity)
+		{
+			this.SendPropertyChanging();
+			entity.PersonCanEmail = this;
+		}
+
+		private void detach_OnBehalfOfPeople(PeopleCanEmailFor entity)
+		{
+			this.SendPropertyChanging();
+			entity.PersonCanEmail = null;
+		}
+
+		
 		private void attach_OrganizationMembers(OrganizationMember entity)
 		{
 			this.SendPropertyChanging();
@@ -5318,6 +5359,19 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.User = null;
+		}
+
+		
+		private void attach_PersonsCanEmail(PeopleCanEmailFor entity)
+		{
+			this.SendPropertyChanging();
+			entity.OnBehalfOfPerson = this;
+		}
+
+		private void detach_PersonsCanEmail(PeopleCanEmailFor entity)
+		{
+			this.SendPropertyChanging();
+			entity.OnBehalfOfPerson = null;
 		}
 
 		

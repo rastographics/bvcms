@@ -10,8 +10,7 @@
                 $("<div class='dialog' style='margin: 5px'>Loading...</div>").dialog({
                     closeOnEscape: true,
                     title: opts.title || "Select Users",
-                    width: 'auto',
-                    autoSize: true
+                    width: '550px'
                 }).bind("dialogclose", function () {
                     $(this).dialog("destroy");
                 }).load(url, function () {
@@ -23,8 +22,9 @@
                     $(".UpdateSelected", $(this)).click(function(ev2) {
                         ev2.preventDefault();
                         var topid = $("table.results tbody tr:first ", d).find("input[type=checkbox]").attr("value");
+                        var topid0 = $("#topid").val();
                         if (opts.UpdateShared)
-                            opts.UpdateShared(topid);
+                            opts.UpdateShared(topid, topid0);
                         d.dialog("close");
                         return false;
                     });
