@@ -169,6 +169,7 @@ a.edit {
 ul[class^="dropdown-div-"] li > a,
 ul[class*=" dropdown-div-"] li > a {
     white-space: normal;
+    cursor: pointer;
 }
 
 ul.typeahead a {
@@ -205,21 +206,22 @@ ul.typeahead li.active a,
 
 
 
-    #profile-header ul.dropdown-div-reports {
-        margin-left: -300px;
-        width: 600px;
-    }
+ul.dropdown-div-reports {
+    margin-left: -300px;
+    width: 600px;
+}
 
 
 
-    #profile-header ul.dropdown-div-gear {
-        margin-left: -200px;
-        width: 400px;
-    }
-    #profile-header ul.dropdown-div-gear.onecolumn {
-        margin-left: auto;
-        width: auto;
-    }
+ul.dropdown-div-gear {
+    margin-left: -200px;
+    width: 400px;
+}
+
+.dropdown-div-gear.onecolumn {
+    margin-left: auto;
+    width: auto;
+}
 
 
 li.space,
@@ -318,31 +320,34 @@ li.header {
                 background: none;
             }
 
+.navbar .nav > li > a {
+    -ms-text-shadow: none;
+    text-shadow: none;
+}
 
-
-            #navGlobal #nav-account .btn:hover,
-            #navGlobal #nav-account .btn:active,
-            #navGlobal #nav-account .btn:focus,
-            #navGlobal .nav-drop .btn:hover,
-            #navGlobal .nav-drop .btn:active,
-            #navGlobal .nav-drop .btn:focus {
-                outline: none;
-                background-color: #FFF;
-                color: #777;
-            }
-
-
-
-        #navGlobal .nav-drop .caret {
-            margin-top: 12px;
-            margin-left: 4px;
-        }
+#navGlobal #nav-account .btn:hover,
+#navGlobal #nav-account .btn:active,
+#navGlobal #nav-account .btn:focus,
+#navGlobal .nav-drop .btn:hover,
+#navGlobal .nav-drop .btn:active,
+#navGlobal .nav-drop .btn:focus {
+    outline: none;
+    background-color: #FFF;
+    color: #777;
+}
 
 
 
-        #navGlobal .nav-drop .dropdown-menu {
-            background: #FFF;
-        }
+#navGlobal .nav-drop .caret {
+    margin-top: 12px;
+    margin-left: 4px;
+}
+
+
+
+#navGlobal .nav-drop .dropdown-menu {
+    background: #FFF;
+}
 
 .dropdown-menu li > a.current {
     background: #555;

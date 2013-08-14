@@ -8,16 +8,16 @@ using CmsData;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
-    [RouteArea("Search", AreaUrl = "SavedQuery")]
+    [RouteArea("Search", AreaUrl = "SavedQuery2")]
     public class SavedQueryController : CmsStaffController
     {
-        [GET("SavedQuery/")]
+        [GET("SavedQuery2/")]
         public ActionResult Index()
         {
             var m = new SavedQueryModel();
             return View(m);
         }
-        [POST("SavedQuery/PostData/{pk:int}/{name}/{value}")]
+        [POST("SavedQuery2/PostData/{pk:int}/{name}/{value}")]
         public ActionResult PostData(int pk, string name, string value)
         {
             var c = DbUtil.Db.QueryBuilderClauses.SingleOrDefault(cc => cc.QueryId == pk);
@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Search.Controllers
             DbUtil.Db.SubmitChanges();
             return Content(value);
         }
-        [POST("SavedQuery/Results")]
+        [POST("SavedQuery2/Results")]
         public ActionResult Results(SavedQueryModel m)
         {
             return View(m);

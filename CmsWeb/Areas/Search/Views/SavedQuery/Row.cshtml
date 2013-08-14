@@ -1,15 +1,15 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryInfo
 @using UtilityExtensions
 <tr><td>
-        <a href="#" class="editable" data-type="text" data-pk="@Model.QueryId" data-name="description" data-url="SavedQuery/PostData" data-original-title="Enter Description">@Model.Description</a>
+        <a href="#" class="editable" data-type="text" data-pk="@Model.QueryId" data-name="description" data-url="SavedQuery2/PostData" data-original-title="Enter Description">@Model.Description</a>
     </td>
     <td>
-        <a href="#" class="editable" data-type="text" data-pk="@Model.QueryId" data-name="user" data-url="SavedQuery/PostData" data-original-title="Enter Username">@Model.User</a>
+        <a href="#" class="editable" data-type="text" data-pk="@Model.QueryId" data-name="user" data-url="SavedQuery2/PostData" data-original-title="Enter Username">@Model.User</a>
     </td>
 @if (User.IsInRole("Admin") || string.Compare(Util.UserName,Model.User, ignoreCase: true) == 0)
 {
     <td>
-        <a href="#" class="editable" data-type="checklist" data-pk="@Model.QueryId" data-name="public" data-url="SavedQuery/PostData" data-original-title="ttt">
+        <a href="#" class="editable" data-type="checklist" data-pk="@Model.QueryId" data-name="public" data-url="SavedQuery2/PostData" data-original-title="ttt">
             <span>@(Model.IsPublic ? "yes" : "no")</span>
 @*        <span data-pk='@Model.QueryId' class='yesno'>@(Model.IsPublic ? "yes" : "no")</span>*@
         </a>

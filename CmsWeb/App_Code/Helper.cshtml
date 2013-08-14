@@ -2,21 +2,12 @@
 @using CmsWeb
 @using CmsData
 @using UtilityExtensions
-@helper SearchBuilderDropdown(bool onqb, bool newlook)
+@helper SearchBuilderDropdown(bool onqb)
 {
     <div class="dropdown-menu">
         <ul>
-            @if (newlook && DbUtil.Db.UserPreference("advancedsearch", "false").ToBool())
-            {
-                <li>@AnchorLink("Last Search", "/Query/")</li>
-                <li>@AnchorLink("New Search", "/Query/NewQuery")</li>
-            }
-            else
-            {
-                <li>@AnchorLink("Last Search", "/QueryBuilder/Main")</li>
-                <li>@AnchorLink("New Search", "/QueryBuilder/NewQuery")</li>
-                
-            }
+            <li>@AnchorLink("Last Search", "/QueryBuilder/Main")</li>
+            <li>@AnchorLink("New Search", "/QueryBuilder/NewQuery")</li>
             <li><a href="/SavedQuery">Saved Searches</a></li>
             @if (onqb)
             {

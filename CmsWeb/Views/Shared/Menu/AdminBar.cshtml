@@ -8,8 +8,6 @@
     var quickbooks = DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true";
     var targetperson = DbUtil.Db.UserPreference("TargetLinkPeople", "false").ToBool();
     var innewlook = User.IsInRole("Newlook");
-    var advancedsearch = DbUtil.Db.UserPreference("advancedsearch", "false").ToBool();
-    var newpeoplepage = DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool();
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
 }
 @if (admin || manageemails || managetrans || edit || design || finance)
