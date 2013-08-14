@@ -8,7 +8,6 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.Drawing.Design;
 using Alias = System.Windows.Forms;
-using System.Linq;
 using System.ComponentModel.Design;
 
 namespace CustomControls

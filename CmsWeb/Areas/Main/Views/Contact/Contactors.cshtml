@@ -1,0 +1,17 @@
+﻿@model CmsWeb.Models.ContactPage.ContactorsModel
+<table class="grid">
+<thead>
+    <tr>
+        <th colspan="2">Name</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var c in Model.Contactors())
+    { 
+    <tr>
+        <td><a class="goto" href="/Person/Index/@c.PeopleId">@c.Name</a></td>
+        <td><a class="remove" href="/Contact/RemoveContactor/@c.ContactId/@c.PeopleId">Remove</a></td>
+    </tr>
+    }
+</tbody>
+</table>

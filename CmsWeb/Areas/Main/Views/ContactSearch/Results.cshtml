@@ -20,7 +20,7 @@
 @foreach (var c in Model.ContactList())
 {
     <tr>
-        <td><a href="/Contact.aspx?id=@c.ContactId">@c.ContactDate.ToString("d")</a></td>
+        <td><a href="/Contact/@c.ContactId">@c.ContactDate.ToString("d")</a></td>
         <td>@c.ContactReason</td>
         <td>@c.TypeOfContact</td>
         <td>@c.ContactorList</td>

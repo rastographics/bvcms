@@ -1,0 +1,29 @@
+﻿@using CmsWeb
+@model CmsWeb.Models.ContactPage.ContacteesModel
+<table class="grid">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>POF</th>
+            <th>Prayed</th>
+            <th></th>
+            <th>Add Task</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model.Contactees())
+        { 
+            <tr>
+                <td><a class="goto" href="/Person/Index/@c.PeopleId">@c.Name</a></td>
+                <td>@Html.CheckBoxReadonly(c.ProfessionOfFaith)</td>
+                <td>@Html.CheckBoxReadonly(c.PrayedForPerson)</td>
+                <td><a class="remove" href="/Contact/RemoveContactee/@c.ContactId/@c.PeopleId">Remove</a></td>
+                <td><a class="goto" href="/Contact/AddTask/@c.ContactId/@c.PeopleId">Add Task</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (Model.Count() > Model.Pager.PageSize)
+{
+    @Html.Partial("Pager2", Model.Pager)
+}

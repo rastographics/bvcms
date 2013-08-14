@@ -1,0 +1,43 @@
+﻿@model CmsWeb.Models.ContactPage.ContactModel
+<h2>Contact</h2>
+<table class="grid">
+    <tbody>
+        <tr>
+            <th class="right">Contact Date:</th>
+            <td>@Html.EditorFor(m => m.contact.ContactDate, "datepicker")</td>
+        </tr>
+        <tr>
+            <th class="right">Ministry:</th>
+            <td><span>@Html.DropDownListFor(m => m.contact.MinistryId, Model.Ministries())</span></td>
+        </tr>
+        <tr>
+            <th class="right">Type:</th>
+            <td><span>@Html.DropDownListFor(m => m.contact.ContactTypeId, Model.ContactTypes())</span></td>
+        </tr>
+        <tr>
+            <th class="right">Reason:</th>
+            <td><span>@Html.DropDownListFor(m => m.contact.ContactReasonId, Model.ContactReasons())</span></td>
+        </tr>
+    </tbody>
+</table>
+<div>
+    <div class="column">
+        <div>@Html.EditorFor(m => m.contact.NotAtHome, "Bool") <span>Attempted/Not Available</span></div>
+        <div>@Html.EditorFor(m => m.contact.LeftDoorHanger, "Bool") <span>Left Note Card</span></div>
+        <div>@Html.EditorFor(m => m.contact.LeftMessage, "Bool") <span>Left Message</span></div>
+        <div>@Html.EditorFor(m => m.contact.ContactMade, "Bool") <span>Contact Made</span></div>
+    </div>
+    <div class="column">
+        <div>@Html.EditorFor(m => m.contact.GospelShared, "Bool") <span>GospelShared</span></div>
+        <div>@Html.EditorFor(m => m.contact.PrayerRequest, "Bool") <span>Prayer Request Received</span></div>
+        <div>@Html.EditorFor(m => m.contact.GiftBagGiven, "Bool") <span>Gift Bag Given</span></div>
+    </div>
+</div>
+<div class="text">
+    <div><strong>Comments:</strong></div>
+    <div>@Html.TextAreaFor(m => m.contact.Comments)</div>
+    <div class="right">
+        <a id="cancel" class="bt" href="/Contact/ContactDisplay/@Model.contact.ContactId">Cancel</a>
+        <a id="update" class="bt blue" href="/Contact/ContactUpdate/@Model.contact.ContactId">Update</a>
+    </div>
+</div>
