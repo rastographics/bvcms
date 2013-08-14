@@ -7,7 +7,7 @@ $(function () {
             $("#contact").html(ret).ready(function () {
                 $(".bt").button();
                 $(".datepicker").datepicker();
-                $("a.addperson.bt").hide();
+                $("#newteamcontact,a.addperson.bt").hide();
                 $('a.goto').bind('click', false);
                 $('a.remove').bind('click', false);
             });
@@ -20,7 +20,7 @@ $(function () {
         $.post($(this)[0].href, q, function (ret) {
             $("#contact").html(ret).ready(function () {
                 $(".bt").button();
-                $("a.addperson.bt").show();
+                $("#newteamcontact,a.addperson.bt").show();
                 $('a.remove').unbind('click', false);
                 $('a.goto').unbind('click', false);
             });
@@ -32,7 +32,7 @@ $(function () {
         $.post($(this)[0].href, {}, function (ret) {
             $("#contact").html(ret).ready(function () {
                 $(".bt").button();
-                $("a.addperson.bt").show();
+                $("#newteamcontact,a.addperson.bt").show();
                 $('a.goto').unbind('click', false);
                 $('a.remove').unbind('click', false);
             });
@@ -55,6 +55,25 @@ $(function () {
         }
         return false;
     });
+    $("#newteamcontact").live("click", function (ev) {
+        ev.preventDefault();
+        if (confirm("Add new contact for team?")) {
+            var f = $("#contact");
+            f.attr("action", $(this)[0].href);
+            f.submit();
+        }
+        return false;
+    });
+    $(".addtask").live("click", function (ev) {
+        ev.preventDefault();
+        if (confirm("Add new task for person?")) {
+            var f = $("#contact");
+            f.attr("action", $(this)[0].href);
+            f.submit();
+        }
+        return false;
+    });
+
     $('#AddDialog').dialog({
         title: 'Add Dialog',
         bgiframe: true,

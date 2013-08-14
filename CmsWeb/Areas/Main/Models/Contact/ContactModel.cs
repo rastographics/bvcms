@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Code;
 using CmsWeb.Models.ContactPage;
 using Dapper;
@@ -29,6 +30,8 @@ namespace CmsWeb.Models.ContactPage
             Reason = ContactReasons().Single(ss => ss.Value == contact.ContactReasonId.ToString()).Text;
             Contactees = new ContacteesModel(id);
             Contactors = new ContactorsModel(id);
+            Contactees.CanViewComments = CanViewComments;
+            Contactors.CanViewComments = CanViewComments;
         }
 
         public string ContactType { get; set; }
@@ -84,6 +87,55 @@ delete contactees where ContactId = @cid;
 delete contactors where ContactId = @cid;
 delete contact where ContactId = @cid;
 ",          new {cid = contact.ContactId });
+        }
+
+        public int AddNewTeamContact()
+        {
+            var c = new Contact 
+			{ 
+				ContactDate = DateTime.Now.Date, 
+                MinistryId = contact.MinistryId,
+				CreatedBy = Util.UserId1,
+	            CreatedDate = DateTime.Now,
+	            ContactTypeId = contact.ContactTypeId,
+	            ContactReasonId = contact.ContactReasonId,
+			};
+            var q = from cor in DbUtil.Db.Contactors
+                where cor.ContactId == contact.ContactId
+                select cor;
+            foreach (var p in q)
+                c.contactsMakers.Add(new Contactor { PeopleId = p.PeopleId });
+            DbUtil.Db.Contacts.InsertOnSubmit(c);
+            DbUtil.Db.SubmitChanges();
+            return c.ContactId;
+        }
+
+        private bool? canViewComments;
+        public bool CanViewComments
+        {
+            get
+            {
+                if (canViewComments.HasValue)
+                    return canViewComments.Value;
+
+                if (!Util2.OrgLeadersOnly)
+                {
+                    canViewComments = true;
+                    return true;
+                }
+
+                var q = from c in DbUtil.Db.Contactees
+                    where c.ContactId == contact.ContactId
+                    select c.PeopleId;
+                var q2 = from c in DbUtil.Db.Contactors
+                    where c.ContactId == contact.ContactId
+                    select c.PeopleId;
+                var a = q.Union(q2).ToArray();
+
+                Tag tag = DbUtil.Db.OrgLeadersOnlyTag2();
+                canViewComments = tag.People(DbUtil.Db).Any(p => a.Contains(p.PeopleId));
+                return canViewComments.Value;
+            }
         }
     }
 }

@@ -75,5 +75,19 @@ namespace CmsWeb.Areas.Main.Controllers
             m.DeleteContact();
             return Redirect("/ContactSearch");
         }
+        [POST("Contact/NewTeamContact/{cid:int}")]
+        public ActionResult NewTeamContact(int cid)
+        {
+            var m = new ContactModel(cid);
+            var nid = m.AddNewTeamContact();
+            return Redirect("/Contact/" + nid);
+        }
+        [POST("Contact/AddTask/{cid:int}/{pid:int}")]
+        public ActionResult AddTask(int cid, int pid)
+        {
+            var m = new ContacteesModel(cid);
+            var tid = m.AddTask(pid);
+            return Redirect("/Task/List/" + tid);
+        }
     }
 }

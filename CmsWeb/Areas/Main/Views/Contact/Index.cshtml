@@ -60,20 +60,30 @@
             <form id="contactors" action="/Contacts/Contactors/@Model.contact.ContactId">
                 @Html.Partial("Contactors", Model.Contactors)
             </form>
-            <div class="right">
-                <br />
-                <a href="/SearchAdd/Index/@Model.contact.ContactId?type=contactor" class="bt addperson">Add Contactor</a>
-            </div>
+            @if (Model.CanViewComments)
+            {
+                <div class="right">
+                    <br />
+                    <a href="/SearchAdd/Index/@Model.contact.ContactId?type=contactor" class="bt addperson">Add Team Member</a>
+                </div>
+                <div>
+                    <br/>
+                    <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.contact.ContactId" class="bt green">Add New Contact for Team</a>
+                </div>
+            }
         </td>
         <td class="top spaceover">
-            <h4>Those Visited</h4>
+            <h4>Those Contacted</h4>
             <form id="contactees" action="/Contacts/Contactees/@Model.contact.ContactId">
                 @Html.Partial("Contactees", Model.Contactees)
             </form>
-            <div class="right">
-                <br />
-                <a href="/SearchAdd/Index/@Model.contact.ContactId?type=contactee" class="bt addperson">Add Contactee</a>
-            </div>
+            @if (Model.CanViewComments)
+            {
+                <div class="right">
+                    <br />
+                    <a href="/SearchAdd/Index/@Model.contact.ContactId?type=contactee" class="bt addperson">Add Contactee</a>
+                </div>
+            }
         </td>
     </tr>
 </table>

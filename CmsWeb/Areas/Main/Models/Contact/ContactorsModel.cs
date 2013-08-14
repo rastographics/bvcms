@@ -15,6 +15,7 @@ namespace CmsWeb.Models.ContactPage
         {
             Contact = DbUtil.Db.Contacts.Single(cc => cc.ContactId == id);
         }
+        public bool CanViewComments { get; set; }
         private IQueryable<Contactor> _contactors;
         private IQueryable<Contactor> FetchContactors()
         {

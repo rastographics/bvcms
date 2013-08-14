@@ -34,11 +34,14 @@
         <div>@Html.CheckBoxReadonly(Model.contact.GiftBagGiven ?? false) <span>Gift Bag Given</span></div>
     </div>
 </div>
-<div class="text">
-    <div><strong>Comments:</strong></div>
-    <div>@Model.contact.Comments</div>
-    <div class="right">
-        <a id="delete" class="bt red" href="/Contact/ContactDelete/@Model.contact.ContactId">Delete</a>
-        <a id="edit" class="bt blue" href="/Contact/ContactEdit/@Model.contact.ContactId">Edit</a>
+@if (Model.CanViewComments)
+{
+    <div class="text">
+        <div><strong>Comments:</strong></div>
+        <div>@Model.contact.Comments</div>
+        <div class="right">
+            <a id="delete" class="bt red" href="/Contact/ContactDelete/@Model.contact.ContactId">Delete</a>
+            <a id="edit" class="bt blue" href="/Contact/ContactEdit/@Model.contact.ContactId">Edit</a>
+        </div>
     </div>
-</div>
+}

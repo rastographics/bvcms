@@ -6,18 +6,21 @@ using System.Web;
 using CmsData;
 using Dapper;
 using UtilityExtensions;
+using CmsData.Codes;
 
 namespace CmsWeb.Models.ContactPage
 {
     public class ContacteesModel
     {
         public CmsData.Contact Contact;
-        public PagerModel2 Pager { get; set; }
+        //public PagerModel2 Pager { get; set; }
         public ContacteesModel(int id)
         {
             Contact = DbUtil.Db.Contacts.Single(cc => cc.ContactId == id);
-            Pager = new PagerModel2(Count);
+            //Pager = new PagerModel2(Count);
         }
+
+        public bool CanViewComments { get; set; }
         private IQueryable<Contactee> _contactees;
         private IQueryable<Contactee> FetchContactees()
         {
@@ -50,7 +53,7 @@ namespace CmsWeb.Models.ContactPage
                          ProfessionOfFaith = c.ProfessionOfFaith ?? false,
                          Name = c.person.Name
                      };
-            return q2.Skip(Pager.StartRow).Take(Pager.PageSize);
+            return q2; //.Skip(Pager.StartRow).Take(Pager.PageSize);
         }
 
         public void RemoveContactee(int PeopleId)
@@ -59,6 +62,25 @@ namespace CmsWeb.Models.ContactPage
             cn.Open();
             cn.Execute("delete Contactees where ContactId = @cid and PeopleId = @pid",
                 new {cid = Contact.ContactId, pid = PeopleId});
+        }
+
+        public int AddTask(int PeopleId)
+        {
+            var uid = Util.UserPeopleId.Value;
+            var task = new Task
+            {
+                OwnerId = uid,
+                WhoId = PeopleId,
+                SourceContactId = Contact.ContactId,
+                Description = "Follow up",
+                Notes = Contact.Comments,
+                ListId = TaskModel.InBoxId(uid),
+                StatusId = TaskStatusCode.Active,
+                Project = Contact.MinistryId == null ? null : Contact.Ministry.MinistryName,
+            };
+            DbUtil.Db.Tasks.InsertOnSubmit(task);
+            DbUtil.Db.SubmitChanges();
+            return task.Id;
         }
 
         public class ContactInfo
