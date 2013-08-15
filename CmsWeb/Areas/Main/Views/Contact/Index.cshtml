@@ -40,6 +40,13 @@
         td.spaceover {
             padding-left: 3em;
         }
+
+        .bt.out {
+            display: none;
+        }
+        .out {
+            color: #bbb;
+        }
     </style>
 }
 @section scripts
@@ -64,11 +71,11 @@
             {
                 <div class="right">
                     <br />
-                    <a href="/SearchAdd/Index/@Model.contact.ContactId?type=contactor" class="bt addperson">Add Team Member</a>
+                    <a href="/SearchAdd/Index/@Model.contact.ContactId?type=contactor" class="bt addperson in">Add Team Member</a>
                 </div>
                 <div>
-                    <br/>
-                    <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.contact.ContactId" class="bt green">Add New Contact for Team</a>
+                    <br />
+                    <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.contact.ContactId" class="bt green in">Add New Contact for Team</a>
                 </div>
             }
         </td>
@@ -81,7 +88,7 @@
             {
                 <div class="right">
                     <br />
-                    <a href="/SearchAdd/Index/@Model.contact.ContactId?type=contactee" class="bt addperson">Add Contactee</a>
+                    <a href="/SearchAdd/Index/@Model.contact.ContactId?type=contactee" class="bt addperson in">Add Contactee</a>
                 </div>
             }
         </td>

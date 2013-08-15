@@ -1,15 +1,12 @@
 $(function () {
     $(".bt").button();
-    //$('table.grid > tbody > tr:even').addClass('alt');
     $("#edit").live("click", function (ev) {
         ev.preventDefault();
         $.post($(this)[0].href, {}, function (ret) {
             $("#contact").html(ret).ready(function () {
                 $(".bt").button();
                 $(".datepicker").datepicker();
-                $("#newteamcontact,a.addperson.bt").hide();
-                $('a.goto').bind('click', false);
-                $('a.remove').bind('click', false);
+                $(".in").addClass("out");
             });
         });
         return false;
@@ -20,9 +17,7 @@ $(function () {
         $.post($(this)[0].href, q, function (ret) {
             $("#contact").html(ret).ready(function () {
                 $(".bt").button();
-                $("#newteamcontact,a.addperson.bt").show();
-                $('a.remove').unbind('click', false);
-                $('a.goto').unbind('click', false);
+                $(".out").removeClass("out");
             });
         });
         return false;
@@ -32,18 +27,38 @@ $(function () {
         $.post($(this)[0].href, {}, function (ret) {
             $("#contact").html(ret).ready(function () {
                 $(".bt").button();
-                $("#newteamcontact,a.addperson.bt").show();
-                $('a.goto').unbind('click', false);
-                $('a.remove').unbind('click', false);
+                $(".out").removeClass("out");
             });
         });
         return false;
     });
     $("a.remove").click(function (ev) {
         ev.preventDefault();
-        $.post($(this)[0].href, {}, function (ret) {
-            window.location.reload(true);
-        });
+        if ($(this).hasClass("out"))
+            return false;
+        if (confirm("Remove this person?")) {
+            $.post($(this)[0].href, {}, function(ret) {
+                window.location.reload(true);
+            });
+        }
+        return false;
+    });
+    $(".addtask").live("click", function (ev) {
+        ev.preventDefault();
+        if ($(this).hasClass("out"))
+            return false;
+        if (confirm("Add new task for person?")) {
+            var f = $("#contact");
+            f.attr("action", $(this)[0].href);
+            f.submit();
+        }
+        return false;
+    });
+    $("a.link").live("click", function(ev) {
+        ev.preventDefault();
+        if ($(this).hasClass("out"))
+            return false;
+        window.location = $(this)[0].href;
         return false;
     });
     $("#delete").live("click", function (ev) {
@@ -58,15 +73,6 @@ $(function () {
     $("#newteamcontact").live("click", function (ev) {
         ev.preventDefault();
         if (confirm("Add new contact for team?")) {
-            var f = $("#contact");
-            f.attr("action", $(this)[0].href);
-            f.submit();
-        }
-        return false;
-    });
-    $(".addtask").live("click", function (ev) {
-        ev.preventDefault();
-        if (confirm("Add new task for person?")) {
             var f = $("#contact");
             f.attr("action", $(this)[0].href);
             f.submit();

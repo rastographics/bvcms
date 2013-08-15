@@ -15,11 +15,11 @@
         @foreach (var c in Model.Contactees())
         { 
             <tr>
-                <td><a class="goto" href="/Person/Index/@c.PeopleId">@c.Name</a></td>
+                <td><a class="link in" href="/Person/Index/@c.PeopleId">@c.Name</a></td>
                 @if (Model.CanViewComments)
                 {
-                    <td><a class="remove" href="/Contact/RemoveContactee/@c.ContactId/@c.PeopleId">Remove</a></td>
-                    <td><a class="addtask goto" href="/Contact/AddTask/@c.ContactId/@c.PeopleId">Add Followup Task</a></td>
+                    <td><a class="remove in" href="/Contact/RemoveContactee/@c.ContactId/@c.PeopleId">Remove</a></td>
+                    <td><a class="addtask in" href="/Contact/AddTask/@c.ContactId/@c.PeopleId">Add Followup Task</a></td>
                 }
             </tr>
         }

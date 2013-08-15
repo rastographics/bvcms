@@ -13,10 +13,10 @@
         @foreach (var c in Model.Contactors())
         { 
             <tr>
-                <td><a class="goto" href="/Person/Index/@c.PeopleId">@c.Name</a></td>
+                <td><a class="link in" href="/Person/Index/@c.PeopleId">@c.Name</a></td>
                 @if (Model.CanViewComments)
                 {
-                    <td><a class="remove" href="/Contact/RemoveContactor/@c.ContactId/@c.PeopleId">Remove</a></td>
+                    <td><a class="remove in" href="/Contact/RemoveContactor/@c.ContactId/@c.PeopleId">Remove</a></td>
                 }
             </tr>
         }
