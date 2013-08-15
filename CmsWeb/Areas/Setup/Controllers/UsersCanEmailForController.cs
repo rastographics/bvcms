@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             if (topid0 == id)
             {
-                var cn = new SqlConnection(DbUtil.Db.Connection.ConnectionString);
+                var cn = new SqlConnection(Util.ConnectionString);
                 cn.Open();
                 cn.Execute("delete PeopleCanEmailFor where CanEmail = @id", new {id});
             }
