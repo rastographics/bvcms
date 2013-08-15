@@ -53,7 +53,7 @@
                 </tr>
                 <tr>
                     <th class="right">Notes:</th>
-                    <td>@Html.TextBoxFor(vv => vv.SearchInfo.Comments) <em>Check # or phrase</em></td>
+                    <td>@Html.TextBoxFor(vv => vv.SearchInfo.Comments) <em>Check # or phrase or ContributionId</em></td>
                 </tr>
                 <tr>
                     <th class="right">Bundle Type:</th>
@@ -96,7 +96,3 @@
     <div class="floatclear"></div>
     @Html.Partial("Results", Model)
 </form>
-@if (Model.SearchInfo.PeopleId.HasValue)
-{
-    <a href="/Contributions/Individual.aspx?id=@Model.SearchInfo.PeopleId">returns/reversals</a>
-}

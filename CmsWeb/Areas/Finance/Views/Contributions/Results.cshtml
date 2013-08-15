@@ -1,46 +1,80 @@
 ﻿@model CmsWeb.Models.ContributionSearchModel
 @using UtilityExtensions
 <table id="results" class="grid">
-<thead>
-	<tr><td>Total:</td>
-        <td class="right">@Model.Total().ToString("c")</td>
-        <td colspan="6"><em>Total always excludes reversals/returns</em></td></tr>
-	<tr><td>Count:</td>
-        <td class="right">@Model.Count().ToString("n0")</td>
-        <td colspan="6"></td></tr>
-	<tr><td colspan="8">
-        @Html.Partial("Pager2", Model)</td>
-	</tr>
-    <tr>
-		<th> <a class="sortable" href="#">Status</a> </th>
-		<th> <a class="sortable" href="#">Name</a> </th>
-		<th> <a class="sortable" href="#">Date</a> </th>
-		<th> <a class="sortable" href="#">Amount</a> </th>
-		<th> <a class="sortable" href="#">Type</a> </th>
-		<th> <a class="sortable" href="#">Fund</a> </th>
-        <th>CheckNo</th>
-        <th>Notes</th>
-	</tr>
-</thead>
-<tbody>
-@foreach(var c in Model.ContributionsList())
-{
-    <tr>
-        <td title="@c.ContributionId">@c.Status</td>
-        <td><a href="/FinanceReports/ContributionYears/@c.PeopleId">@c.Name</a></td>
-        <td>@c.ContributionDate.ToShortDateString()</td>
-        <td class="right"><a href="/Bundle/Index/@c.BundleId">@c.ContributionAmount.ToString("N2")</a></td>
-        <td>@c.ContributionType</td>
-        <td>@c.Fund</td>
-        <td>@c.CheckNo</td>
-        <td>@c.Description</td>
-    </tr>
-}        
-</tbody>	
-<tfoot>
-    <tr><td colspan="8">
-            <div>Count: @Model.Count().ToString("n0")</div>
-            @Html.Partial("Pager2", Model)</td>
-    </tr>
-</tfoot>
+    <thead>
+        <tr>
+            <td>Total:</td>
+            <td class="right">@Model.Total().ToString("c")</td>
+            <td colspan="6"><em>Total always excludes reversals/returns</em></td>
+        </tr>
+        <tr>
+            <td>Count:</td>
+            <td class="right">@Model.Count().ToString("n0")</td>
+            <td colspan="6"></td>
+        </tr>
+        <tr>
+            <td colspan="8">
+                @Html.Partial("Pager2", Model)</td>
+        </tr>
+        <tr>
+            <th><a class="sortable" href="#">Status</a> </th>
+            <th><a class="sortable" href="#">Name</a> </th>
+            <th><a class="sortable" href="#">Date</a> </th>
+            <th><a class="sortable" href="#">Amount</a> </th>
+            <th><a class="sortable" href="#">Type</a> </th>
+            <th><a class="sortable" href="#">Fund</a> </th>
+            <th>CheckNo</th>
+            <th>Notes</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model.ContributionsList())
+        {
+            var retrev = CmsData.Codes.ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId);
+            var recorded = c.StatusId == CmsData.Codes.ContributionStatusCode.Recorded;
+            <tr>
+                <td title="@c.ContributionId">
+                    @if (!recorded)
+                    {
+                        <span class="red">@c.Status</span>
+                    }
+                    else
+                    {
+                        @c.Status
+                    }
+                </td>
+                <td><a href="/Finance/Contributions?id=@c.PeopleId">@c.Name</a></td>
+                <td>@c.ContributionDate.ToShortDateString()</td>
+                <td class="right"><a href="/Bundle/Index/@c.BundleId">@c.ContributionAmount.ToString("N2")</a></td>
+                <td>
+                    @if (retrev)
+                    {
+                        <span class="red">@c.ContributionType</span>
+                    }
+                    else
+                    {
+                        @c.ContributionType
+                    }
+                </td>
+                <td>@c.Fund</td>
+                <td>@c.CheckNo</td>
+                <td>@c.Description</td>
+                <td>
+                @if (Model.SearchInfo.PeopleId.HasValue && !retrev && recorded)
+                {
+                    <a class="submitit" href="/Finance/Contributions/Return/@c.ContributionId">return</a>
+                    <a class="submitit" href="/Finance/Contributions/Reverse/@c.ContributionId">reverse</a>
+                }
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="8">
+                <div>Count: @Model.Count().ToString("n0")</div>
+                @Html.Partial("Pager2", Model)</td>
+        </tr>
+    </tfoot>
 </table>

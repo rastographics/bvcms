@@ -1651,13 +1651,6 @@
     <Compile Include="Contributions\GLExtract.aspx.designer.cs">
       <DependentUpon>GLExtract.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Contributions\Individual.aspx.cs">
-      <DependentUpon>Individual.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Contributions\Individual.aspx.designer.cs">
-      <DependentUpon>Individual.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Contributions\Reports\JournalDetails.aspx.cs">
       <DependentUpon>JournalDetails.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2816,7 +2809,6 @@
     <Content Include="images\navigation-shadow.png" />
     <Content Include="Contributions\Deposit.aspx" />
     <Content Include="Contributions\GLExtract.aspx" />
-    <Content Include="Contributions\Individual.aspx" />
     <Content Include="Contributions\Reports\JournalDetails.aspx" />
     <Content Include="Contributions\Reports\TotalsByFundRange.aspx" />
     <Content Include="images\1pix.gif" />
@@ -2857,10 +2849,6 @@
     <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>
       <Name>UtilityExtensions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebControls\CustomControls.csproj">
-      <Project>{e6957022-e83c-4fe9-94fc-6e9f8adeb68c}</Project>
-      <Name>CustomControls</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
