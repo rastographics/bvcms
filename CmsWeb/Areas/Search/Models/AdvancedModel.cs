@@ -831,8 +831,8 @@ namespace CmsWeb.Areas.Search.Models
         }
         private IQueryable<Person> ApplySort(IQueryable<Person> q)
         {
-            if (Pager.Sort == null)
-                Pager.Sort = "Name";
+//            if (Pager.Sort == null)
+//                Pager.Sort = "Name";
             if (Pager.Direction != "desc")
                 switch (Pager.Sort)
                 {

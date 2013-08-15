@@ -37,12 +37,11 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.ShowResults = true;
             m.LoadScratchPad();
             ViewData["queryid"] = m.QueryId;
-            ViewBag.AutoRun = (bool?)(TempData["AutoRun"]) == true;
+            ViewBag.AutoRun = "true";
             var newsearchid = (int?)TempData["newsearch"];
             if (newsearchid.HasValue)
             {
-                ViewBag.NewSearch = true;
-                m.SelectedId = newsearchid.Value;
+                ViewBag.NewSearchId = newsearchid.Value;
             }
             return View(m);
         }

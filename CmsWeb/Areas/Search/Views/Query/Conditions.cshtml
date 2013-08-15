@@ -6,11 +6,16 @@
     var editing = false;
 }
 <div id="conditions">
+    @Html.Hidden("AutoRun")
+    @Html.Hidden("NewSearchId")
+
     <table id="conditionlist" class="table-striped">
-        @foreach (var c in Model.ConditionList())
+        @if (ViewBag.NewSearch == null)
         {
+            foreach (var c in Model.ConditionList())
+            {
             <tr qid="@c.Clause.QueryId" class="condition">
-                <td class="clausetext" >
+                <td class="clausetext">
                     <a href='#' class="editconditionlink" style="padding-left: @(4 + c.Level * 13)px">
                         @if (Model.SelectedId == c.Clause.QueryId)
                         {
@@ -58,6 +63,7 @@
                         </ul>
                     </div>
             </tr>
+            }
         }
     </table>
     <div class="row-fluid">

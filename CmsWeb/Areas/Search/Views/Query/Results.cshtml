@@ -4,8 +4,8 @@
     var useemployer = DbUtil.Db.Setting("UseEmployerNotTeacher", "false") == "true";
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
-@Html.Partial("Toolbar/Toolbar")
 <form  class="non-modal ajax">
+@Html.Partial("Toolbar/Toolbar")
 <h4>Total Count: @Model.Count().ToString("N0")</h4>
 <div class="pagination pagination-mini">
     @Html.Partial("Pager3", Model.Pager)

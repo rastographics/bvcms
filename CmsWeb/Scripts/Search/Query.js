@@ -3,6 +3,10 @@
     var $backdrop = $('<div class="modal-backdrop hide" />').appendTo('body');
     $('#conditions a.editconditionlink').live("click", function () {
         var qid = $(this).closest("tr").attr("qid");
+        $EditCondition(qid);
+        return false;
+    });
+    var $EditCondition = function (qid) {
         $editplaceholderheight = $(this).parent().height();
         if ($("#editcondition").is(":visible")) {
             var h = $("#editcondition").attr("orginalheight");
@@ -12,8 +16,7 @@
         $.post('/Query/EditCondition/' + qid, null, function (ret) {
             $("#conditions").html(ret).ready($.AdjustEditCondition);
         });
-        return false;
-    });
+    };
     $.AdjustEditCondition = function () {
         $('#CodeValues').multiselect({
             includeSelectAllOption: true,
@@ -180,8 +183,13 @@
     //        });
     //        return false;
     //    });
-    if ($("#AutoRun").val() == "True")
+    if ($("#NewSearchId").val()) {
+        $EditCondition($("#NewSearchId").val());
+        $('#QueryConditionSelect').modal("show");
+    }
+    else if ($("#AutoRun").val() === "true")
         $("#Run").click();
+
 
     //    $('#QueryConditionSelect').dialog({
     //        overlay: { background: "#000", opacity: 0.3 },
