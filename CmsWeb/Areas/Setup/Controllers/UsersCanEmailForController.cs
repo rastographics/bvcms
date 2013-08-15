@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdatePersonCanEmailForList(int id, int topid0)
+        public ActionResult UpdatePersonCanEmailForList(int id, int? topid0)
         {
             var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             var selected_pids = (from p in t.People(DbUtil.Db)

@@ -10,10 +10,17 @@
 }
 <h2>Index</h2>
 
+    <p>
+        <label for="UserId">Add New Person who can Email for others:</label>
+        <a href="/Setup/UsersCanEmailFor/PersonCanEmailForList/0" class="bt editcanemail">Select People</a>
+    </p>
+<p><i>Note, on the users screen, the top person in list is the person who will be able to email on behalf of others in the list</i></p>
+<br/>
+<hr/>
 <table class="grid">
     <tr>
-        <th>Person who can Email</th>
-        <th>On Behalf of Person</th>
+        <td><b>Person who can Email</b></td>
+        <td><b>On Behalf of Person</b></td>
     </tr>
 
     @foreach (var item in Model)
@@ -28,8 +35,3 @@
         </tr>
     }
 </table>
-    <p>
-        <label for="UserId">Add New Person who can Email for others:</label>
-        <a href="/Setup/UsersCanEmailFor/PersonCanEmailForList/0" class="bt editcanemail">Select People</a>
-    </p>
-    <div><i>Note, top person in list is the person who emails on behalf of others in the list</i></div>

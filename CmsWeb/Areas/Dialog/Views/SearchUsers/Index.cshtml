@@ -1,6 +1,7 @@
 ﻿@using CmsWeb.Models
 @using CmsWeb
 @model SearchUsersModel
+@Html.Hidden("topid0", Model.topid)
 <form>
     @Html.Hidden("topid", Model.topid)
     @Html.Hidden("ordered", Model.ordered)
@@ -8,8 +9,9 @@
     <div>
         <div>
             <div>
-                <input name="name" type="text" title="Starting letters of First&lt;space>Last or just Last" class="span2 search-query">
+                <input id="searchname" name="name" type="text" title="Starting letters of First&lt;space>Last or just Last" class="span2 search-query">
                 <a href="/SearchUsers/Results" type="submit" class="search bt">Search</a>
+                <a href="/SearchUsers/Results" type="submit" class="newsearch bt">Clear</a>
             </div>
         </div>
     </div>
