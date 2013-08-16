@@ -1,5 +1,5 @@
 ﻿@using CmsWeb
-@model CmsWeb.Areas.Main.Models.Report.WeeklyDecisionsModel
+@model CmsWeb.Areas.Main.Models.Report.DecisionSummaryModel
 @{
     Layout = "~/Views/Shared/SiteLayout.cshtml";
     ViewBag.Title = "Decision Summary Report";
@@ -10,7 +10,7 @@
             font-size: 110%;
         }
 
-        .totalrow td {
+        .TotalLine td {
             border-top: 2px solid black;
             font-weight: bold;
             text-align: right;
@@ -30,254 +30,161 @@
 @section scripts
 {
     <script type="text/javascript">
-        $(function () {
+        $(function() {
             $(".datepicker").datepicker();
             $("a.run").button();
-            $("a.run").click(function (ev) {
+            $("a.run").click(function(ev) {
                 ev.preventDefault();
-                if (!$.DateValid($("#Sunday").val(), true))
-                    return;
-                window.location = "/Reports/Decisions/" + $.SortableDate($("#Sunday").val());
+                ev.preventDefault();
+                var f = $("#form");
+                f.attr("action", $(this)[0].href);
+                f.submit();
+            });
+            $("a.query").click(function(ev) {
+                ev.preventDefault();
+                var f = $("#form");
+                f.attr("action", $(this)[0].href);
+                f.submit();
             });
         });
     </script>
 }
 <div style="text-align: center">
     <h1>Decision Summary Report</h1>
-</div>
-@*
-<div style="text-align: center">
-    <h1>Decision Summary Report</h1>
-    <table style="font-size: 110%; text-align: left; margin-left: auto; margin-right: auto;">
-        <tr>
-            <td style="text-align: right">From Date:
-            </td>
-            <td>
-                <asp:textbox id="FromDate" cssclass="datepicker" runat="server" autopostback="false" style="font-size: 110%"
-                    width="100"></asp:textbox>
-            </td>
-            <td>&nbsp;
-            </td>
-        </tr>
-        <tr>
-            <td style="text-align: right">To Date:
-            </td>
-            <td>
-                <asp:textbox id="ToDate" cssclass="datepicker" runat="server" autopostback="false" style="font-size: 110%"
-                    width="100"></asp:textbox>
-            </td>
-            <td>
-                <asp:button id="btnSubmit" tooltip="Press to run report" causesvalidation="true"
-                    runat="server" text="Run" cssclass="noPrint" validationgroup="vgDates" onclick="btnSubmit_Click" />
-            </td>
-        </tr>
-    </table>
-    <asp:comparevalidator id="ToDateValidator" runat="server" errormessage="CompareValidator"
-        controltovalidate="ToDate" controltocompare="FromDate" operator="GreaterThanEqual"
-        setfocusonerror="True" validationgroup="vgDates" type="Date" text="To Date must be after From Date."
-        cssclass="noPrint"></asp:comparevalidator>
+    <form id="form" method="POST">
+        <table class="center">
+            <tr>
+                <td class="right">From Date:
+                </td>
+                <td>
+                    @Html.DatePicker("dt1")
+                </td>
+                <td>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="right">To Date:
+                </td>
+                <td>
+                    @Html.DatePicker("dt2")
+                </td>
+                <td>
+                    &nbsp;<a class="noPrint run bt">Run</a>
+                </td>
+            </tr>
+        </table>
+    </form>
     <hr />
-    <table cellspacing="18" class="center">
-        <tr>
-            <td colspan="2" class="center">
-                <asp:listview id="DecisionsView" runat="server" datasourceid="ODSDecisions"
-                    onitemcommand="ItemCommand">
-                        <LayoutTemplate>
-                            <table id="itemPlaceholderContainer" runat="server" border="0" class="center">
-                                <tr id="Tr7" runat="server" style="">
-                                    <th class="HeaderLine" id="Th13" runat="server" colspan="2">
-                                        Decisions
-                                    </th>
-                                </tr>
-                                <tr id="itemPlaceholder" runat="server">
-                                </tr>
-                            </table>
-                        </LayoutTemplate>
-                        <ItemTemplate>
-                            <tr>
-                                <td class='left <%# Eval("CssClass") %>'>
-                                    <asp:LinkButton ID="DetailButton" CommandName="ForDecisionType" CommandArgument='<%# Eval("Id") %>' Text='<%# Eval("Desc") %>' runat="server"></asp:LinkButton>
-                                </td>
-                                <td class='right <%# Eval("CssClass") %>'>
-                                    <asp:Label ID="CountLabel" runat="server" Text='<%# Eval("Count", "{0:n0}") %>' />
-                                </td>
+    <table class="center">
+        <tbody>
+            <tr>
+                <td colspan="2" class="top">
+
+                    <table class="grid center">
+                        <tbody>
+                            <tr class="headerrow">
+                                <th colspan="2">Decisions</th>
                             </tr>
-                        </ItemTemplate>
-                        <EmptyDataTemplate>
-                            <table id="Table1" runat="server" style="" class="center">
-                                <tr>
-                                    <th>
-                                        No Decisions
-                                    </th>
+                            @foreach (var r in Model.DecisionsByType())
+                            {
+                                <tr class="@r.CssClass">
+                                    <td class="left"><a class="query" href="/Reports/DecisionsToQuery/ForDecisionType/@r.Id">@r.Desc</a></td>
+                                    <td class="right"><a class="query" href="/Reports/DecisionsToQuery/ForDecisionType/@r.Id">@r.Count</a></td>
                                 </tr>
-                            </table>
-                        </EmptyDataTemplate>
-                    </asp:listview>
-            </td>
-        </tr>
-        <tr>
-            <td class="top center">
-                <asp:listview id="BaptismsByAgeView" runat="server"
-                    datasourceid="ODSBaptismsByAge" onitemcommand="ItemCommand">
-                        <LayoutTemplate>
-                            <table id="itemPlaceholderContainer" runat="server" border="0" style="">
-                                <tr id="Tr9" runat="server" style="">
-                                    <th class="HeaderLine" id="Th15" runat="server" colspan="2">
-                                        Baptisms by Age
-                                    </th>
-                                </tr>
-                                <tr id="itemPlaceholder" runat="server">
-                                </tr>
-                            </table>
-                        </LayoutTemplate>
-                        <ItemTemplate>
-                            <tr>
-                                <td class='left <%# Eval("CssClass") %>'>
-                                    <asp:LinkButton ID="DetailButton" CommandName="ForBaptismAge" CommandArgument='<%# Eval("Id") %>' Text='<%# Eval("Desc") %>' runat="server"></asp:LinkButton>
-                                </td>
-                                <td class='right <%# Eval("CssClass") %>'>
-                                    <asp:Label ID="CountLabel" runat="server" Text='<%# Eval("Count", "{0:n0}") %>' />
-                                </td>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr><td colspan="2"><hr/></td></tr>
+            <tr>
+                <td class="top">
+                    <table class="grid center">
+                        <tbody>
+                            <tr class="headerrow">
+                                <th colspan="2">Baptisms By Age</th>
                             </tr>
-                        </ItemTemplate>
-                        <EmptyDataTemplate>
-                            <table id="Table3" runat="server" style="">
-                                <tr>
-                                    <th>
-                                        No Baptisms
-                                    </th>
+                            @foreach (var r in Model.BaptismsByAge())
+                            {
+                                <tr class="@r.CssClass">
+                                    <td class="left"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismAge/@r.Id">@r.Desc</a></td>
+                                    <td class="right"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismAge/@r.Id">@r.Count</a></td>
                                 </tr>
-                            </table>
-                        </EmptyDataTemplate>
-                    </asp:listview>
-            </td>
-            <td class="top center">
-                <asp:listview id="BaptismsByTypeView" runat="server"
-                    datasourceid="ODSBaptismsByType" onitemcommand="ItemCommand">
-                        <LayoutTemplate>
-                            <table id="itemPlaceholderContainer" runat="server" border="0"  class="center">
-                                <tr id="Tr10" runat="server" style="">
-                                    <th class="HeaderLine" id="Th16" runat="server" colspan="2">
-                                        Baptisms by Type
-                                    </th>
-                                </tr>
-                                <tr id="itemPlaceholder" runat="server">
-                                </tr>
-                            </table>
-                        </LayoutTemplate>
-                        <ItemTemplate>
-                            <tr>
-                                <td class='left <%# Eval("CssClass") %>'>
-                                    <asp:LinkButton ID="DetailButton" CommandName="ForBaptismType" CommandArgument='<%# Eval("Id") %>' Text='<%# Eval("Desc") %>' runat="server"></asp:LinkButton>
-                                </td>
-                                <td class='right <%# Eval("CssClass") %>'>
-                                    <asp:Label ID="CountLabel" runat="server" Text='<%# Eval("Count", "{0:n0}") %>' />
-                                </td>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+                <td class="top">
+                    <table class="grid center">
+                        <tbody>
+                            <tr class="headerrow">
+                                <th colspan="2">Baptisms By Type</th>
                             </tr>
-                        </ItemTemplate>
-                    </asp:listview>
-            </td>
-        </tr>
-        <tr>
-            <td class="top center">
-                <asp:listview id="NewMemberView" runat="server"
-                    datasourceid="ODSNewMemberByType" onitemcommand="ItemCommand">
-                        <LayoutTemplate>
-                            <table id="itemPlaceholderContainer" runat="server" border="0" class="center">
-                                <tr id="Tr11" runat="server" style="">
-                                    <th class="HeaderLine" id="Th17" runat="server" colspan="2">
-                                        New Members by Type
-                                    </th>
+                            @foreach (var r in Model.BaptismsByType())
+                            {
+                                <tr class="@r.CssClass">
+                                    <td class="left"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismType/@r.Id">@r.Desc</a></td>
+                                    <td class="right"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismType/@r.Id">@r.Count</a></td>
                                 </tr>
-                                <tr id="itemPlaceholder" runat="server">
-                                </tr>
-                            </table>
-                        </LayoutTemplate>
-                        <ItemTemplate>
-                            <tr>
-                                <td class='left <%# Eval("CssClass") %>'>
-                                    <asp:LinkButton ID="DetailButton" CommandName="ForNewMemberType" CommandArgument='<%# Eval("Id") %>' Text='<%# Eval("Desc") %>' runat="server"></asp:LinkButton>
-                                </td>
-                                <td class='right <%# Eval("CssClass") %>'>
-                                    <asp:Label ID="CountLabel" runat="server" Text='<%# Eval("Count", "{0:n0}") %>' />
-                                </td>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr><td colspan="2"><hr/></td></tr>
+            <tr>
+                <td class="top">
+                    <table class="grid center">
+                        <tbody>
+                            <tr class="headerrow">
+                                <th colspan="2">New Member by Type</th>
                             </tr>
-                        </ItemTemplate>
-                        <EmptyDataTemplate>
-                            <table id="Table4" runat="server" style="">
-                                <tr>
-                                    <th>
-                                        No New Members
-                                    </th>
+                            @foreach (var r in Model.NewMemberByType())
+                            {
+                                <tr class="@r.CssClass">
+                                    <td class="left"><a class="query" href="/Reports/DecisionsToQuery/ForNewMemberType/@r.Id">@r.Desc</a></td>
+                                    <td class="right"><a class="query" href="/Reports/DecisionsToQuery/ForNewMemberType/@r.Id">@r.Count</a></td>
                                 </tr>
-                            </table>
-                        </EmptyDataTemplate>
-                    </asp:listview>
-            </td>
-            <td class="top center">
-                <asp:listview id="DroppedMemberView" runat="server"
-                    datasourceid="ODSDroppedMemberByType" onitemcommand="ItemCommand">
-                        <LayoutTemplate>
-                            <table id="itemPlaceholderContainer" runat="server" border="0" class="center">
-                                <tr id="Tr12" runat="server" style="">
-                                    <th class="HeaderLine" id="Th18" runat="server" colspan="2">
-                                        Dropped Members by Type
-                                    </th>
-                                </tr>
-                                <tr id="itemPlaceholder" runat="server">
-                                </tr>
-                            </table>
-                        </LayoutTemplate>
-                        <ItemTemplate>
-                            <tr>
-                                <td class='left <%# Eval("CssClass") %>'>
-                                    <asp:LinkButton ID="DetailButton" CommandName="ForDropType" CommandArgument='<%# Eval("Id") %>' Text='<%# Eval("Desc") %>' runat="server"></asp:LinkButton>
-                                </td>
-                                <td class='right <%# Eval("CssClass") %>'>
-                                    <asp:Label ID="CountLabel" runat="server" Text='<%# Eval("Count", "{0:n0}") %>' />
-                                </td>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+                <td class="top">
+                    <table class="grid center">
+                        <tbody>
+                            <tr class="headerrow">
+                                <th colspan="2">Dropped Members by Type</th>
                             </tr>
-                        </ItemTemplate>
-                        <EmptyDataTemplate>
-                            <table id="Table5" runat="server" style="">
-                                <tr>
-                                    <th>
-                                        No Dropped Members
-                                    </th>
+                            @foreach (var r in Model.DroppedMemberByType())
+                            {
+                                <tr class="@r.CssClass">
+                                    <td class="left"><a class="query" href="/Reports/DecisionsToQuery/ForDropType/@r.Id">@r.Desc</a></td>
+                                    <td class="right"><a class="query" href="/Reports/DecisionsToQuery/ForDropType/@r.Id">@r.Count</a></td>
                                 </tr>
-                            </table>
-                        </EmptyDataTemplate>
-                    </asp:listview>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" class="center">
-                <asp:listview id="DroppedMemberChurchView" runat="server"
-                    datasourceid="ODSDroppedMembersByChurch" onitemcommand="ItemCommand">
-                        <LayoutTemplate>
-                            <table id="itemPlaceholderContainer" runat="server" border="0" class="center">
-                                <tr id="Tr13" runat="server" style="">
-                                    <th class="HeaderLine" id="Th19" runat="server" colspan="2">
-                                        Dropped Members by Church
-                                    </th>
-                                </tr>
-                                <tr id="itemPlaceholder" runat="server">
-                                </tr>
-                            </table>
-                        </LayoutTemplate>
-                        <ItemTemplate>
-                            <tr>
-                                <td class='left <%# Eval("CssClass") %>'>
-                                    <asp:LinkButton ID="DetailButton" CommandName="DroppedForChurch" CommandArgument='<%# Eval("Desc") %>' Text='<%# Eval("Desc") %>' runat="server"></asp:LinkButton>
-                                </td>
-                                <td class='right <%# Eval("CssClass") %>'>
-                                    <asp:Label ID="CountLabel" runat="server" Text='<%# Eval("Count", "{0:n0}") %>' />
-                                </td>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr><td colspan="2"><hr/></td></tr>
+            <tr>
+                <td colspan="2">
+                    <table class="grid center">
+                        <tbody>
+                            <tr class="headerrow">
+                                <th colspan="2">Dropped Members by Church</th>
                             </tr>
-                        </ItemTemplate>
-                    </asp:listview>
-            </td>
-        </tr>
+                            @foreach (var r in Model.DroppedMemberByChurch())
+                            {
+                                <tr class="@r.CssClass">
+                                    <td class="left"><a class="query" href="/Reports/DecisionsToQuery/DroppedForChurch/@r.Desc">@r.Desc</a></td>
+                                    <td class="right"><a class="query" href="/Reports/DecisionsToQuery/DroppedForChurch/@r.Desc">@r.Count</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
     </table>
 </div>
-*@

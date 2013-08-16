@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
+using AttributeRouting;
+using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Main.Models.Report;
@@ -15,6 +17,7 @@ using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using Dapper;
+using DocumentFormat.OpenXml.Drawing;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using UtilityExtensions;
@@ -24,6 +27,7 @@ using System.Data.SqlClient;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaUrl = "Reports")]
     public class ReportsController : CmsStaffController
     {
         public ActionResult Attendance(int id)
@@ -98,7 +102,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult OrgLeaders(string org, OrgSearchModel m)
         {
-            return new OrgLeadersResult(m) {orgid = org == "curr" ? (int?) Util2.CurrentOrgId : null};
+            return new OrgLeadersResult(m) { orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null };
         }
         public ActionResult ClassList(string org, OrgSearchModel m)
         {
@@ -232,12 +236,41 @@ namespace CmsWeb.Areas.Main.Controllers
             var m = new ChurchAttendanceModel(dt2.Value);
             return View(m);
         }
-        public ActionResult WeeklyDecisions (string id)
+        public ActionResult WeeklyDecisions(string id)
         {
             var dt = id.ToDate();
             var m = new WeeklyDecisionsModel(dt);
             return View(m);
         }
+        [GET("Reports/Decisions")]
+        public ActionResult Decisions()
+        {
+            DbUtil.LogActivity("Viewing Decision Summary Rpt");
+            var today = Util.Now.Date;
+            var dt1 = new DateTime(today.Year, 1, 1);
+            var dt2 = today;
+            var m = new DecisionSummaryModel(dt1, dt2);
+            return View(m);
+        }
+        [POST("Reports/Decisions")]
+        public ActionResult Decisions(DateTime? dt1, DateTime? dt2)
+        {
+            var today = Util.Now.Date;
+            if (!dt1.HasValue)
+                dt1 = new DateTime(today.Year, 1, 1);
+            if (!dt2.HasValue)
+                dt2 = today;
+            var m = new DecisionSummaryModel(dt1, dt2);
+            return View(m);
+        }
+
+        [POST("Reports/DecisionsToQuery/{command}/{key}")]
+        public ActionResult DecisionsToQuery(string command, string key, DateTime? dt1, DateTime? dt2)
+        {
+            var r = new DecisionSummaryModel(dt1, dt2).QueryBuider(command, key);
+            return Redirect(r);
+        }
+
         public ActionResult ChurchAttendance2(string Dt1, string Dt2, string skipweeks)
         {
             var dt1 = Dt1.ToDate();
@@ -267,7 +300,7 @@ namespace CmsWeb.Areas.Main.Controllers
             cn.Open();
             var q = cn.Query("RecentAbsentsSP", new { orgid = id, divid = divid, days = 36 },
                             commandType: CommandType.StoredProcedure, commandTimeout: 600);
-            return View("RecentAbsents", q); 
+            return View("RecentAbsents", q);
         }
 
         [HttpPost]
@@ -275,7 +308,8 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
-            var q = cn.Query("RecentAbsentsSP2", new {
+            var q = cn.Query("RecentAbsentsSP2", new
+            {
                 name = m.Name,
                 prog = m.ProgramId,
                 div = m.DivisionId,
@@ -286,7 +320,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 onlinereg = m.OnlineReg,
                 mainfellowship = m.MainFellowship,
                 parentorg = m.ParentOrg
-             }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
+            }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
             return View(q);
         }
 
@@ -294,7 +328,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (m.FromOrgSearch)
                 m.Dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
-            if(!m.Dt2.HasValue)
+            if (!m.Dt2.HasValue)
                 m.Dt2 = m.Dt1.Value.AddDays(1);
             return View(m);
         }
@@ -329,7 +363,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     {
                         Field = g.Key.Field,
                         Value = g.Key.val,
-                        type =  g.Key.TypeValue,
+                        type = g.Key.TypeValue,
                         Count = g.Count(),
                     };
 
@@ -480,7 +514,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult EnrollmentControl(bool? excel, EnrollmentControlModel m)
         {
             if (excel != true)
-                return new EnrollmentControlResult {model = m};
+                return new EnrollmentControlResult { model = m };
 
             var d = from p in m.list()
                     orderby p.Name
@@ -513,8 +547,8 @@ namespace CmsWeb.Areas.Main.Controllers
             sheet.AutoSizeColumn(3);
             sheet.AutoSizeColumn(4);
             string saveAsFileName = string.Format("EnrollmentControl-{0:d}.xls", DateTime.Now);
-            var ms = new MemoryStream(); 
-            workbook.Write(ms); 
+            var ms = new MemoryStream();
+            workbook.Write(ms);
             return File(ms.ToArray(), "application/vnd.ms-excel", "attachment;filename=" + saveAsFileName);
         }
         public ActionResult EnrollmentControl2(EnrollmentControlModel m)
