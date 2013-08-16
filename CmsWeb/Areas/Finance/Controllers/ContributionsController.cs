@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using CmsData;
 using CmsData.API;
 using CmsWeb.Areas.Manage.Controllers;
@@ -29,6 +30,18 @@ namespace CmsWeb.Areas.Finance.Controllers
 		public ActionResult Export(ContributionSearchModel m)
         {
             return new ExcelResult { Data = m.ContributionsListAll(), FileName = "contributions.xls" };
+        }
+        [HttpPost]
+		public ActionResult Return(int id, ContributionSearchModel m)
+        {
+            m.Return(id);
+            return RedirectToAction("Index", new {id = m.SearchInfo.PeopleId, m.SearchInfo.Year});
+        }
+        [HttpPost]
+		public ActionResult Reverse(int id, ContributionSearchModel m)
+        {
+            m.Reverse(id);
+            return RedirectToAction("Index", new {id = m.SearchInfo.PeopleId, m.SearchInfo.Year});
         }
     }
 }

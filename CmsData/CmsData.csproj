@@ -353,6 +353,7 @@
     <Compile Include="Generated\Functions\Pledges0.cs" />
     <Compile Include="Generated\Functions\RecentAbsents2.cs" />
     <Compile Include="Generated\Functions\StatusFlag.cs" />
+    <Compile Include="Generated\PeopleCanEmailFor.cs" />
     <Compile Include="Generated\Views\BundleList.cs" />
     <Compile Include="Generated\Views\OrganizationLeader.cs" />
     <Compile Include="Generated\Views\OrganizationStructure.cs" />
@@ -361,6 +362,7 @@
     <Compile Include="Classes\QuickBooks\QBDHelper.cs" />
     <Compile Include="Classes\QuickBooks\QBOHelper.cs" />
     <Compile Include="Picture.cs" />
+    <Compile Include="QueryBuilder\CategoryClass2.cs" />
     <Compile Include="QueryBuilder\Serialize.cs" />
     <Compile Include="Volunteer.cs" />
     <Compile Include="FamilyExtra.cs" />
@@ -593,7 +595,6 @@
     <Compile Include="QueryBuilder\CategoryClass.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Generated\Role.cs" />
-    <Compile Include="Generated\UserCanEmailFor.cs" />
     <Compile Include="Generated\UserRole.cs" />
     <Compile Include="Generated\Audit.cs" />
     <Compile Include="Generated\AuditValue.cs" />
@@ -672,6 +673,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MigrationScripts\Migrate-10-20-2012.sql" />
+    <Content Include="QueryBuilder\FieldMap3.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="QueryBuilder\FieldMap2.xml">
       <SubType>Designer</SubType>
     </Content>

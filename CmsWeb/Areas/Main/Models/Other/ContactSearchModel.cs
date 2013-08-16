@@ -35,7 +35,8 @@ namespace CmsWeb.Models
 
 		public ContactSearchModel()
 		{
-			GetCount = Count;
+			GetCount = Count;           
+            Sort = "ID";
 		}
 
 
@@ -211,6 +212,7 @@ namespace CmsWeb.Models
 		}
 		public IQueryable<CmsData.Contact> ApplySort(IQueryable<CmsData.Contact> query)
 		{
+
 			if ((Direction ?? "desc") == "asc")
 				switch (Sort)
 				{

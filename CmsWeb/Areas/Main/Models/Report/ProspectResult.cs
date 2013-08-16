@@ -10,6 +10,7 @@ using System.Linq;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using CmsData;
+using CmsData.Codes;
 using UtilityExtensions;
 using System.Text;
 using System.Web.Mvc;
@@ -17,115 +18,117 @@ using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Main.Models.Report
 {
-    public class ProspectResult : ActionResult
-    {
-        private PageEvent pageEvents = new PageEvent();
-        private Document doc;
-        private DateTime dt;
-        private PdfContentByte dc;
-        private ColumnText ct;
-        private Font bfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8);
-        private bool ShowForm;
-        private bool AlphaSort;
+	public class ProspectResult : ActionResult
+	{
+		private PageEvent pageEvents = new PageEvent();
+		private Document doc;
+		private DateTime dt;
+		private PdfContentByte dc;
+		private ColumnText ct;
+		private Font bfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+		private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+		private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8);
+		private bool ShowForm;
+		private bool AlphaSort;
 
-        private int? qid;
-        public ProspectResult(int? id, bool ShowForm, bool Alpha)
-        {
-            qid = id;
-            this.ShowForm = ShowForm;
-            this.AlphaSort = Alpha;
-        }
+		private int? qid;
+		public ProspectResult(int? id, bool ShowForm, bool Alpha)
+		{
+			qid = id;
+			this.ShowForm = ShowForm;
+			this.AlphaSort = Alpha;
+		}
 
-        public class ProspectInfo
-        {
-            public int PeopleId { get; set; }
-            public string Name { get; set; }
-            public string Address { get; set; }
-            public string Address2 { get; set; }
-            public string CityStateZip { get; set; }
-            public string Age { get; set; }
-            public string CellPhone { get; set; }
-            public string HomePhone { get; set; }
-            public string WorkPhone { get; set; }
-            public string EMail { get; set; }
+		public class ProspectInfo
+		{
+			public int PeopleId { get; set; }
+			public string Name { get; set; }
+			public string Address { get; set; }
+			public string Address2 { get; set; }
+			public string CityStateZip { get; set; }
+			public string Age { get; set; }
+			public string CellPhone { get; set; }
+			public string HomePhone { get; set; }
+			public string WorkPhone { get; set; }
+			public string EMail { get; set; }
+			public DateTime? Joined { get; set; }
 
-            public string MemberStatus { get; set; }
-            public string Gender { get; set; }
-            public string MaritalStatus { get; set; }
-            public string PositionInFamily { get; set; }
-            public string Origin { get; set; }
-            public string Comment { get; set; }
-            public string ChristAsSavior { get; set; }
-            public string InterestedInJoining { get; set; }
-            public string InfoBecomeAChristian { get; set; }
-            public string PleaseVisit { get; set; }
-            public IEnumerable<FamilyMember> Family { get; set; }
-            public IEnumerable<OrganizationView> Memberships { get; set; }
-            public IEnumerable<ContactInfo> Contacts { get; set; }
-            public IEnumerable<CommentInfo> Comments { get; set; }
-            public IEnumerable<CommentInfo> FamilyComments { get; set; }
-            public IEnumerable<AttendInfo> Attends { get; set; }
-        }
-        public class FamilyMember
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public int? Age { get; set; }
-            public bool Deceased { get; set; }
-            public string PositionInFamily { get; set; }
-            public int PositionInFamilyId { get; set; }
-            public string MemberStatus { get; set; }
-            public int PeopleId { get; set; }
-            public string CellPhone { get; set; }
-        }
-        public class OrganizationView
-        {
-            public string Name { get; set; }
-            public int Id { get; set; }
-            public string Location { get; set; }
-            public string LeaderName { get; set; }
-            public DateTime? MeetingTime { get; set; }
-            public string Schedule { get { return "{0:dddd h:mm tt}".Fmt(MeetingTime); } }
-            public int? LeaderId { get; set; }
-            public string MemberType { get; set; }
-            public DateTime? EnrollDate { get; set; }
-            public DateTime? DropDate { get; set; }
-            public string DivisionName { get; set; }
-            public decimal? AttendPct { get; set; }
-        }
-        public class ContactInfo
-        {
-            public int ContactId { get; set; }
-            public string Comments { get; set; }
-            public DateTime ContactDate { get; set; }
-            public string TypeOfContact { get; set; }
-            public string ContactReason { get; set; }
-            public string Team { get; set; }
-        }
-        public class CommentInfo
-        {
-            public string Comments { get; set; }
-            public string CommentField { get; set; }
-        }
-        public class AttendInfo
-        {
-            public int MeetingId { get; set; }
-            public DateTime? MeetingDate { get; set; }
-            public string OrganizationName { get; set; }
-            public string MeetingName { get; set; }
-            public int PeopleId { get; set; }
-            public string Name { get; set; }
-            public string MemberType { get; set; }
-            public string AttendType { get; set; }
-            public bool AttendFlag { get; set; }
-            public bool RegisteredFlag { get; set; }
-            public int RollSheetSectionId { get; set; }
-            public string Teacher { get; set; }
-        }
+			public string MemberStatus { get; set; }
+			public int MemberStatusID { get; set; }
+			public string Gender { get; set; }
+			public string MaritalStatus { get; set; }
+			public string PositionInFamily { get; set; }
+			public string Origin { get; set; }
+			public string Comment { get; set; }
+			public string ChristAsSavior { get; set; }
+			public string InterestedInJoining { get; set; }
+			public string InfoBecomeAChristian { get; set; }
+			public string PleaseVisit { get; set; }
+			public IEnumerable<FamilyMember> Family { get; set; }
+			public IEnumerable<OrganizationView> Memberships { get; set; }
+			public IEnumerable<ContactInfo> Contacts { get; set; }
+			public IEnumerable<CommentInfo> Comments { get; set; }
+			public IEnumerable<CommentInfo> FamilyComments { get; set; }
+			public IEnumerable<AttendInfo> Attends { get; set; }
+		}
+		public class FamilyMember
+		{
+			public int Id { get; set; }
+			public string Name { get; set; }
+			public int? Age { get; set; }
+			public bool Deceased { get; set; }
+			public string PositionInFamily { get; set; }
+			public int PositionInFamilyId { get; set; }
+			public string MemberStatus { get; set; }
+			public int PeopleId { get; set; }
+			public string CellPhone { get; set; }
+		}
+		public class OrganizationView
+		{
+			public string Name { get; set; }
+			public int Id { get; set; }
+			public string Location { get; set; }
+			public string LeaderName { get; set; }
+			public DateTime? MeetingTime { get; set; }
+			public string Schedule { get { return "{0:dddd h:mm tt}".Fmt(MeetingTime); } }
+			public int? LeaderId { get; set; }
+			public string MemberType { get; set; }
+			public DateTime? EnrollDate { get; set; }
+			public DateTime? DropDate { get; set; }
+			public string DivisionName { get; set; }
+			public decimal? AttendPct { get; set; }
+		}
+		public class ContactInfo
+		{
+			public int ContactId { get; set; }
+			public string Comments { get; set; }
+			public DateTime ContactDate { get; set; }
+			public string TypeOfContact { get; set; }
+			public string ContactReason { get; set; }
+			public string Team { get; set; }
+		}
+		public class CommentInfo
+		{
+			public string Comments { get; set; }
+			public string CommentField { get; set; }
+		}
+		public class AttendInfo
+		{
+			public int MeetingId { get; set; }
+			public DateTime? MeetingDate { get; set; }
+			public string OrganizationName { get; set; }
+			public string MeetingName { get; set; }
+			public int PeopleId { get; set; }
+			public string Name { get; set; }
+			public string MemberType { get; set; }
+			public string AttendType { get; set; }
+			public bool AttendFlag { get; set; }
+			public bool RegisteredFlag { get; set; }
+			public int RollSheetSectionId { get; set; }
+			public string Teacher { get; set; }
+		}
 
-        public override void ExecuteResult(ControllerContext context)
+		public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
             Response.ContentType = "application/pdf";
@@ -198,7 +201,12 @@ namespace CmsWeb.Areas.Main.Models.Report
 						t.AddCell(t2);
 
 						t3.Add("Member Status:", font);
-						t3.Add(p.MemberStatus, font);
+
+						if( p.MemberStatusID == MemberStatusCode.Member )
+							t3.Add(p.MemberStatus + " (" + (p.Joined != null ? p.Joined.Value.ToString("d") : "Unknown") + ")", font);
+						else
+							t3.Add(p.MemberStatus, font);
+
 						t3.Add("Origin:", font);
 						t3.Add(p.Origin, font);
 						t3.Add("Age:", font);
@@ -318,132 +326,134 @@ namespace CmsWeb.Areas.Main.Models.Report
             doc.Close();
         }
 
-        private IQueryable<ProspectInfo> GetProspectInfo(bool Alpha = false)
-        {
-            var Db = DbUtil.Db;
-            var q = Db.PeopleQuery(qid.Value);
+		private IQueryable<ProspectInfo> GetProspectInfo(bool Alpha = false)
+		{
+			var Db = DbUtil.Db;
+			var q = Db.PeopleQuery(qid.Value);
 			if (Alpha)
 				q = q.OrderBy(pp => pp.Name2);
 			else
 				q = q.OrderBy(pp => pp.PrimaryZip).ThenBy(pp => pp.Name2);
 
 			var EvCommentFields = Db.Setting("EvCommentFields", "").Split(',');
-            var q2 = from p in q
-                     select new ProspectInfo
-                     {
-                         PeopleId = p.PeopleId,
-                         Name = p.Name,
-                         Address = p.PrimaryAddress,
-                         Address2 = p.PrimaryAddress2,
-                         Age = p.Age != null ? p.Age.ToString() : "",
-                         MemberStatus = p.MemberStatus.Description,
-                         CityStateZip = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
-                         Gender = p.GenderId == 1 ? "Male" : p.GenderId == 2 ? "Female" : "",
-                         MaritalStatus = p.MaritalStatus.Description,
-                         PositionInFamily = p.FamilyPosition.Description,
-                         Origin = p.Origin.Description,
-                         Comment = p.Comments,
-                         ChristAsSavior = p.ChristAsSavior ? "Prayed to receive Christ as Savior" : "",
-                         InterestedInJoining = p.InterestedInJoining ? "Interested in joining Church" : "",
-                         PleaseVisit = p.PleaseVisit ? "Requests a visit" : "",
-                         InfoBecomeAChristian = p.InfoBecomeAChristian ? "Interested in becoming a Christian" : "",
-                         CellPhone = p.CellPhone,
-                         HomePhone = p.HomePhone,
-                         WorkPhone = p.WorkPhone,
-                         EMail = p.EmailAddress,
+			var q2 = from p in q
+						select new ProspectInfo
+						{
+							PeopleId = p.PeopleId,
+							Name = p.Name,
+							Address = p.PrimaryAddress,
+							Address2 = p.PrimaryAddress2,
+							Age = p.Age != null ? p.Age.ToString() : "",
+							MemberStatusID = p.MemberStatusId,
+							MemberStatus = p.MemberStatus.Description,
+							CityStateZip = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
+							Gender = p.GenderId == 1 ? "Male" : p.GenderId == 2 ? "Female" : "",
+							MaritalStatus = p.MaritalStatus.Description,
+							PositionInFamily = p.FamilyPosition.Description,
+							Origin = p.Origin.Description,
+							Comment = p.Comments,
+							ChristAsSavior = p.ChristAsSavior ? "Prayed to receive Christ as Savior" : "",
+							InterestedInJoining = p.InterestedInJoining ? "Interested in joining Church" : "",
+							PleaseVisit = p.PleaseVisit ? "Requests a visit" : "",
+							InfoBecomeAChristian = p.InfoBecomeAChristian ? "Interested in becoming a Christian" : "",
+							CellPhone = p.CellPhone,
+							HomePhone = p.HomePhone,
+							WorkPhone = p.WorkPhone,
+							EMail = p.EmailAddress,
+							Joined = p.JoinDate,
 
-                         Family = from m in p.Family.People
-                                  where m.DeceasedDate == null
-                                  where m.PeopleId != p.PeopleId
-                                  orderby m.PositionInFamilyId, m.Age descending
-                                  select new FamilyMember
-                                  {
-                                      Id = m.PeopleId,
-                                      Name = m.Name,
-                                      Age = m.Age,
-                                      Deceased = m.DeceasedDate != null,
-                                      PositionInFamily = m.FamilyPosition.Description,
-                                      MemberStatus = m.MemberStatus.Description,
-                                      CellPhone = m.CellPhone
-                                  },
-                         Memberships = from om in p.OrganizationMembers
-                                       where dt > om.EnrollmentDate
-                                       let o = om.Organization
-                                       let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                                       let l = Db.People.SingleOrDefault(l => l.PeopleId == o.LeaderId)
-                                       orderby om.Organization.OrganizationName
-                                       select new OrganizationView
-                                       {
-                                           Id = o.OrganizationId,
-                                           Name = o.OrganizationName,
-                                           Location = o.Location,
-                                           LeaderName = l.Name,
-                                           MeetingTime = sc.MeetingTime,
-                                           MemberType = om.MemberType.Description,
-                                           EnrollDate = om.EnrollmentDate,
-                                           DivisionName = o.Division.Name
-                                       },
-                         Contacts = from ch in p.contactsHad
-                                    let c = ch.contact
-                                    orderby c.ContactDate descending
-                                    select new ContactInfo
-                                    {
-                                        ContactId = c.ContactId,
-                                        Comments = c.Comments,
-                                        ContactDate = c.ContactDate,
-                                        ContactReason = c.ContactReason.Description,
-                                        TypeOfContact = c.ContactType.Description,
-                                        Team = string.Join(",", c.contactsMakers.Select(cm => cm.person.Name).ToArray())
-                                    },
-						 Comments = from ex in p.PeopleExtras
-									where EvCommentFields.Contains(ex.Field)
-									select new CommentInfo
-									{
-										 CommentField = ex.Field,
-										 Comments = ex.Data,
-									},
-						 FamilyComments = from ex in p.Family.FamilyExtras
-									where EvCommentFields.Contains(ex.Field)
-									select new CommentInfo
-									{
-										 CommentField = ex.Field,
-										 Comments = ex.Data,
-									},
-                         Attends = (from a in p.Attends
-                                    where a.AttendanceFlag == true
-                                    let o = a.Meeting.Organization
-                                    orderby a.MeetingDate descending, o.OrganizationName
-                                    select new AttendInfo
-                                    {
-                                        MeetingId = a.MeetingId,
-                                        OrganizationName = o.OrganizationName,
-                                        Teacher = o.LeaderName,
-                                        AttendType = a.AttendType.Description,
-                                        MeetingName = o.Division.Name + ": " + o.OrganizationName,
-                                        MeetingDate = a.MeetingDate,
-                                        MemberType = a.MemberType.Description,
-                                    }).Take(10)
-                     };
-            return q2;
-        }
+							Family = from m in p.Family.People
+										where m.DeceasedDate == null
+										where m.PeopleId != p.PeopleId
+										orderby m.PositionInFamilyId, m.Age descending
+										select new FamilyMember
+										{
+											Id = m.PeopleId,
+											Name = m.Name,
+											Age = m.Age,
+											Deceased = m.DeceasedDate != null,
+											PositionInFamily = m.FamilyPosition.Description,
+											MemberStatus = m.MemberStatus.Description,
+											CellPhone = m.CellPhone
+										},
+							Memberships = from om in p.OrganizationMembers
+											  where dt > om.EnrollmentDate
+											  let o = om.Organization
+											  let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+											  let l = Db.People.SingleOrDefault(l => l.PeopleId == o.LeaderId)
+											  orderby om.Organization.OrganizationName
+											  select new OrganizationView
+											  {
+												  Id = o.OrganizationId,
+												  Name = o.OrganizationName,
+												  Location = o.Location,
+												  LeaderName = l.Name,
+												  MeetingTime = sc.MeetingTime,
+												  MemberType = om.MemberType.Description,
+												  EnrollDate = om.EnrollmentDate,
+												  DivisionName = o.Division.Name
+											  },
+							Contacts = from ch in p.contactsHad
+										  let c = ch.contact
+										  orderby c.ContactDate descending
+										  select new ContactInfo
+										  {
+											  ContactId = c.ContactId,
+											  Comments = c.Comments,
+											  ContactDate = c.ContactDate,
+											  ContactReason = c.ContactReason.Description,
+											  TypeOfContact = c.ContactType.Description,
+											  Team = string.Join(",", c.contactsMakers.Select(cm => cm.person.Name).ToArray())
+										  },
+							Comments = from ex in p.PeopleExtras
+										  where EvCommentFields.Contains(ex.Field)
+										  select new CommentInfo
+										  {
+											  CommentField = ex.Field,
+											  Comments = ex.Data,
+										  },
+							FamilyComments = from ex in p.Family.FamilyExtras
+												  where EvCommentFields.Contains(ex.Field)
+												  select new CommentInfo
+												  {
+													  CommentField = ex.Field,
+													  Comments = ex.Data,
+												  },
+							Attends = (from a in p.Attends
+										  where a.AttendanceFlag == true
+										  let o = a.Meeting.Organization
+										  orderby a.MeetingDate descending, o.OrganizationName
+										  select new AttendInfo
+										  {
+											  MeetingId = a.MeetingId,
+											  OrganizationName = o.OrganizationName,
+											  Teacher = o.LeaderName,
+											  AttendType = a.AttendType.Description,
+											  MeetingName = o.Division.Name + ": " + o.OrganizationName,
+											  MeetingDate = a.MeetingDate,
+											  MemberType = a.MemberType.Description,
+										  }).Take(10)
+						};
+			return q2;
+		}
 
-        private const float cm2pts = 28.34f;
-        private Font h1font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14);
-        private Font h2font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+		private const float cm2pts = 28.34f;
+		private Font h1font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14);
+		private Font h2font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
 
-        public void ContactForm()
-        {
-            doc.NewPage();
+		public void ContactForm()
+		{
+			doc.NewPage();
 
-            var t = new PdfPTable(1);
-            t.SetNoBorder();
-            t.AddCentered("InReach/Outreach Card", 1, h1font);
-            t.AddCentered("Contact Summary", 1, h2font);
-            t.AddRight("Contact Date: _______________", bfont);
+			var t = new PdfPTable(1);
+			t.SetNoBorder();
+			t.AddCentered("InReach/Outreach Card", 1, h1font);
+			t.AddCentered("Contact Summary", 1, h2font);
+			t.AddRight("Contact Date: _______________", bfont);
 
-            doc.Add(t);
+			doc.Add(t);
 
-            DisplayTable("Contact Reason", 5.7f, 1.2f, 24f, new List<string> 
+			DisplayTable("Contact Reason", 5.7f, 1.2f, 24f, new List<string> 
             { 
                 "Out-Reach (not a church member)",
                 "In-Reach (church/group member)",
@@ -454,14 +464,14 @@ namespace CmsWeb.Areas.Main.Models.Report
                 "Other"
             });
 
-            DisplayTable("Type of Contact", 5.7f, 8f, 24f, new List<string> 
+			DisplayTable("Type of Contact", 5.7f, 8f, 24f, new List<string> 
             { 
                 "Personal Visit",
                 "Phone Call",
                 "Card Sent",
                 "Email Sent",
             });
-            DisplayTable("Results", 5.7f, 14.5f, 24f, new List<string> 
+			DisplayTable("Results", 5.7f, 14.5f, 24f, new List<string> 
             { 
                 "Not at Home",
                 "Left Door Hanger",
@@ -473,133 +483,133 @@ namespace CmsWeb.Areas.Main.Models.Report
                 "Prayed for Person",
                 "Already Saved",
             });
-            DisplayNotes("Team Members", 4, 7.5f, 6f, 18.5f);
-            DisplayNotes("Specific Comments on Contact", 5, 18.5f, 1.2f, 13f);
+			DisplayNotes("Team Members", 4, 7.5f, 6f, 18.5f);
+			DisplayNotes("Specific Comments on Contact", 5, 18.5f, 1.2f, 13f);
 
-            DisplayTable("Actions to be taken", 12f, 1f, 6.5f, new List<string> 
+			DisplayTable("Actions to be taken", 12f, 1f, 6.5f, new List<string> 
             { 
                 "Recycle to me on ____/____/____",
                 "Random Recycle",
                 "Follow-up Completed",
             });
 
-            var t2 = new PdfPTable(1);
-            t2.TotalWidth = 7.5f * 72f;
-            t2.SetNoBorder();
-            t2.LockedWidth = true;
-            t2.AddCentered("Internal Use Only", 1, smallfont);
-            t2.WriteSelectedRows(0, -1, 36f, 56f, dc);
-        }
-        private void DisplayTable(string title, float width, float x, float y, List<string> reasons)
-        {
-            var t = new PdfPTable(new float[] { 1.3f, width-1.3f });
-            t.TotalWidth = width * cm2pts;
-            t.SetNoBorder();
-            t.LockedWidth = true;
-            t.DefaultCell.MinimumHeight = 1f * cm2pts;
-            t.DefaultCell.VerticalAlignment = PdfPCell.ALIGN_MIDDLE;
+			var t2 = new PdfPTable(1);
+			t2.TotalWidth = 7.5f * 72f;
+			t2.SetNoBorder();
+			t2.LockedWidth = true;
+			t2.AddCentered("Internal Use Only", 1, smallfont);
+			t2.WriteSelectedRows(0, -1, 36f, 56f, dc);
+		}
+		private void DisplayTable(string title, float width, float x, float y, List<string> reasons)
+		{
+			var t = new PdfPTable(new float[] { 1.3f, width - 1.3f });
+			t.TotalWidth = width * cm2pts;
+			t.SetNoBorder();
+			t.LockedWidth = true;
+			t.DefaultCell.MinimumHeight = 1f * cm2pts;
+			t.DefaultCell.VerticalAlignment = PdfPCell.ALIGN_MIDDLE;
 
-            t.AddPlainRow(title, bfont);
-            foreach (var r in reasons)
-            {
-                t.AddRight("_____", font);
-                t.Add(r, font);
-            }
-            t.WriteSelectedRows(0, -1, x * cm2pts, y * cm2pts, dc);
-        }
-        private void DisplayNotes(string title, int nrows, float width, float x, float y)
-        {
-            var t = new PdfPTable(1);
-            t.TotalWidth = width * cm2pts;
-            t.LockedWidth = true;
-            t.DefaultCell.MinimumHeight = 1f * cm2pts;
-            t.DefaultCell.VerticalAlignment = PdfPCell.ALIGN_MIDDLE;
+			t.AddPlainRow(title, bfont);
+			foreach (var r in reasons)
+			{
+				t.AddRight("_____", font);
+				t.Add(r, font);
+			}
+			t.WriteSelectedRows(0, -1, x * cm2pts, y * cm2pts, dc);
+		}
+		private void DisplayNotes(string title, int nrows, float width, float x, float y)
+		{
+			var t = new PdfPTable(1);
+			t.TotalWidth = width * cm2pts;
+			t.LockedWidth = true;
+			t.DefaultCell.MinimumHeight = 1f * cm2pts;
+			t.DefaultCell.VerticalAlignment = PdfPCell.ALIGN_MIDDLE;
 
-            t.AddPlainRow(title, bfont);
-            for (int r = 0; r < nrows; r++ )
-                t.AddCell("");
-            t.WriteSelectedRows(0, -1, x * cm2pts, y * cm2pts, dc);
-        }
+			t.AddPlainRow(title, bfont);
+			for (int r = 0; r < nrows; r++)
+				t.AddCell("");
+			t.WriteSelectedRows(0, -1, x * cm2pts, y * cm2pts, dc);
+		}
 
-        class PageEvent : PdfPageEventHelper
-        {
-            private PdfTemplate npages;
-            private PdfWriter writer;
-            private Document document;
-            private PdfContentByte dc;
-            private BaseFont font;
-            private string HeadText;
+		class PageEvent : PdfPageEventHelper
+		{
+			private PdfTemplate npages;
+			private PdfWriter writer;
+			private Document document;
+			private PdfContentByte dc;
+			private BaseFont font;
+			private string HeadText;
 
-            public override void OnOpenDocument(PdfWriter writer, Document document)
-            {
-                this.writer = writer;
-                this.document = document;
-                base.OnOpenDocument(writer, document);
-                font = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-                dc = writer.DirectContent;
-            }
-            public void EndPageSet()
-            {
-                if (npages == null)
-                    return;
-                npages.BeginText();
-                npages.SetFontAndSize(font, 8);
-                npages.ShowText((writer.PageNumber + 1).ToString());
-                npages.EndText();
-            }
-            public void StartPageSet(string header1)
-            {
-                EndPageSet();
-                document.NewPage();
-                document.ResetPageCount();
-                this.HeadText = header1;
-                npages = dc.CreateTemplate(50, 50);
-            }
-            public override void OnEndPage(PdfWriter writer, Document document)
-            {
-                base.OnEndPage(writer, document);
+			public override void OnOpenDocument(PdfWriter writer, Document document)
+			{
+				this.writer = writer;
+				this.document = document;
+				base.OnOpenDocument(writer, document);
+				font = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+				dc = writer.DirectContent;
+			}
+			public void EndPageSet()
+			{
+				if (npages == null)
+					return;
+				npages.BeginText();
+				npages.SetFontAndSize(font, 8);
+				npages.ShowText((writer.PageNumber + 1).ToString());
+				npages.EndText();
+			}
+			public void StartPageSet(string header1)
+			{
+				EndPageSet();
+				document.NewPage();
+				document.ResetPageCount();
+				this.HeadText = header1;
+				npages = dc.CreateTemplate(50, 50);
+			}
+			public override void OnEndPage(PdfWriter writer, Document document)
+			{
+				base.OnEndPage(writer, document);
 
-                string text;
-                float len;
+				string text;
+				float len;
 
-                //---Header left
-                text = HeadText;
-                const float HeadFontSize = 11f;
-                len = font.GetWidthPoint(text, HeadFontSize);
-                dc.BeginText();
-                dc.SetFontAndSize(font, HeadFontSize);
-                dc.SetTextMatrix(30, document.PageSize.Height - 30);
-                dc.ShowText(text);
-                dc.EndText();
+				//---Header left
+				text = HeadText;
+				const float HeadFontSize = 11f;
+				len = font.GetWidthPoint(text, HeadFontSize);
+				dc.BeginText();
+				dc.SetFontAndSize(font, HeadFontSize);
+				dc.SetTextMatrix(30, document.PageSize.Height - 30);
+				dc.ShowText(text);
+				dc.EndText();
 
-                //---Column 1
-                text = String.Format("Page {0} of ", writer.PageNumber + 1);
-                len = font.GetWidthPoint(text, 8);
-                dc.BeginText();
-                dc.SetFontAndSize(font, 8);
-                dc.SetTextMatrix(30, 30);
-                dc.ShowText(text);
-                dc.EndText();
-                dc.AddTemplate(npages, 30 + len, 30);
+				//---Column 1
+				text = String.Format("Page {0} of ", writer.PageNumber + 1);
+				len = font.GetWidthPoint(text, 8);
+				dc.BeginText();
+				dc.SetFontAndSize(font, 8);
+				dc.SetTextMatrix(30, 30);
+				dc.ShowText(text);
+				dc.EndText();
+				dc.AddTemplate(npages, 30 + len, 30);
 
-                //---Column 2
-                text = HeadText;
-                len = font.GetWidthPoint(text, 8);
-                dc.BeginText();
-                dc.SetFontAndSize(font, 8);
-                dc.SetTextMatrix(document.PageSize.Width / 2 - len / 2, 30);
-                dc.ShowText(text);
-                dc.EndText();
+				//---Column 2
+				text = HeadText;
+				len = font.GetWidthPoint(text, 8);
+				dc.BeginText();
+				dc.SetFontAndSize(font, 8);
+				dc.SetTextMatrix(document.PageSize.Width / 2 - len / 2, 30);
+				dc.ShowText(text);
+				dc.EndText();
 
-                //---Column 3
-                text = Util.Now.ToShortDateString();
-                len = font.GetWidthPoint(text, 8);
-                dc.BeginText();
-                dc.SetFontAndSize(font, 8);
-                dc.SetTextMatrix(document.PageSize.Width - 30 - len, 30);
-                dc.ShowText(text);
-                dc.EndText();
-            }
-        }
-    }
+				//---Column 3
+				text = Util.Now.ToShortDateString();
+				len = font.GetWidthPoint(text, 8);
+				dc.BeginText();
+				dc.SetFontAndSize(font, 8);
+				dc.SetTextMatrix(document.PageSize.Width - 30 - len, 30);
+				dc.ShowText(text);
+				dc.EndText();
+			}
+		}
+	}
 }

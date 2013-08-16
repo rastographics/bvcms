@@ -1,26 +1,31 @@
 ﻿@{
     var newlook = DbUtil.Db.UserPreference("newlook3", "false") == "true";
-    var bkcolor = DbUtil.Db.Setting("HeaderBackground", "#e4e2d5");
+	var bkcolor = DbUtil.Db.Setting("HeaderBackground", "#e4e2d5");
 }
 <!DOCTYPE html>
 <html>
 <head>
-    <title>@ViewBag.Title</title>
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    @Helper.IncludeCss()
-    @RenderSection("head", required: false)
-    @if (bkcolor.HasValue())
-    {
-    <style type="text/css">
-        #header { background-color: @bkcolor; }
-    </style>
-    }
-    @Helper.IncludeJs()
-    @Html.Partial("DatePickerDefaults")
-    @RenderSection("scripts", required: false)
+	<title>@ViewBag.Title</title>
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	@Helper.IncludeCss()
+	@RenderSection("head", required: false)
+	@if (bkcolor.HasValue())
+	{
+        <style type="text/css">
+			#header { background-color: @bkcolor; }
+		</style>
+		<style type="text/css" media="print">
+			#supportfeedback {
+				display: none;
+			}
+		</style>
+	}
+	@Helper.IncludeJs()
+	@Html.Partial("DatePickerDefaults")
+	@RenderSection("scripts", required: false)
 </head>
 <body>
-    @Html.Partial("Notices")
+	@Html.Partial("Notices")
     @if (newlook)
     {
         Html.RenderPartial("NewHeader");
@@ -33,15 +38,15 @@
     }
     else
     {
-        <div id="container">
-            @Html.Partial("OldHeader")
-            <div id="main">
-                @RenderBody()
-            </div>
+    <div id="container">
+        @Html.Partial("OldHeader")
+        <div id="main">
+            @RenderBody()
         </div>
+    </div>
     }
-    @Html.Partial("Dialogs")
-    @RenderSection("PopupsPlaceholder", required: false)
-    @Html.Partial("Support")
+	@Html.Partial("Dialogs")
+	@RenderSection("PopupsPlaceholder", required: false)
+	@Html.Partial("Support")
 </body>
 </html>

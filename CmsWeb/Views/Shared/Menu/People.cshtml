@@ -25,9 +25,9 @@
         <li class="space"></li>
         @foreach (var p in Util2.MostRecentPeople)
         {
-            @Helper.LiAnchorLink(p.Name, "/Person/Index/" + p.Id)
+            @Helper.LiAnchorLink(p.Name, "/Person2/" + p.Id)
         }
         <li class="space"></li>
-        @Helper.LiAnchorLink(Util.UserFullName, "/Person/Index/" + Util.UserPeopleId)
+        @Helper.LiAnchorLink(Util.UserFullName, "/Person2/" + Util.UserPeopleId)
     </ul>
 </li>

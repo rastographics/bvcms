@@ -1,0 +1,24 @@
+﻿@model CmsWeb.Models.ContactPage.ContactorsModel
+<table class="grid">
+    <thead>
+        <tr>
+            <th>Name</th>
+            @if (Model.CanViewComments)
+            {
+                <th></th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model.Contactors())
+        { 
+            <tr>
+                <td><a class="link in" href="/Person/Index/@c.PeopleId">@c.Name</a></td>
+                @if (Model.CanViewComments)
+                {
+                    <td><a class="remove in" href="/Contact/RemoveContactor/@c.ContactId/@c.PeopleId">Remove</a></td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

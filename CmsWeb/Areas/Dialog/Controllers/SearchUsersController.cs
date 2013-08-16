@@ -34,20 +34,25 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return View("Results", m);
         }
         [HttpPost]
-        public ActionResult TagUntag(int id, bool ischecked)
+        public ActionResult TagUntag(int id, bool ischecked, bool isordered)
         {
             var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var count = t.PersonTags.Count();
+            var topid = "";
             var tp = DbUtil.Db.TagPeople.SingleOrDefault(tt => tt.PeopleId == id && tt.Id == t.Id);
             if (ischecked)
             {
 				if (tp != null)
 					DbUtil.Db.TagPeople.DeleteOnSubmit(tp);
             }
-            else
-                if (tp == null)
-                    t.PersonTags.Add(new TagPerson { PeopleId = id });
+            else if (tp == null)
+            {
+                if (count == 0 && isordered)
+                    topid = id.ToString();
+                t.PersonTags.Add(new TagPerson {PeopleId = id});
+            }
             DbUtil.Db.SubmitChanges();
-            return new EmptyResult();
+            return Content(topid);
         }
     }
 }

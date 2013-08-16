@@ -692,7 +692,7 @@ namespace CmsData
                         let s4 = firstmatch && addrmatch
                         let s5 = firstmatch && emailmatch
                         let s6 = lastmatch && bdmatch
-                        where p.FamilyId != FamilyId && (s1 || s2 || s3 || s4 || s5 || s6)
+                        where s1 || s2 || s3 || s4 || s5 || s6
                         select new Duplicate
                         {
                             s1 = s1,
@@ -1323,6 +1323,7 @@ namespace CmsData
             var p = Picture;
             p.CreatedDate = Util.Now;
             p.CreatedBy = Util.UserName;
+            p.ThumbId = ImageData.Image.NewImageFromBits(bits, 50, 50).Id;
             p.SmallId = ImageData.Image.NewImageFromBits(bits, 120, 120).Id;
             p.MediumId = ImageData.Image.NewImageFromBits(bits, 320, 400).Id;
             p.LargeId = ImageData.Image.NewImageFromBits(bits, 570, 800).Id;

@@ -15,20 +15,7 @@ else
     @if (User.IsInRole("Access"))
     {
         <div class="span4 pull-right" id="profile-actions">
-            <div class="btn-group">
-                <div class="btn-group alpha">
-                    <button class="btn dropdown-toggle btn-person-action" data-toggle="dropdown"><i class="icon-envelope-alt"></i></button>
-                    @Html.Partial("Toolbar/ToolbarEmail")
-                </div>
-                <div class="btn-group">
-                    <button class="btn dropdown-toggle btn-person-action" data-toggle="dropdown"><i class="icon-cloud-download"></i></button>
-                    @Html.Partial("Toolbar/ToolbarReports")
-                </div>
-                <div class="btn-group omega">
-                    <button class="btn dropdown-toggle btn-person-action" data-toggle="dropdown"><i class="icon-cog"></i></button>
-                    @Html.Partial("Toolbar/ToolbarGear")
-                </div>
-            </div>
+            @Html.Partial("Toolbar/Toolbar")
         </div>
     }
     <ul class="meta unstyled">

@@ -32,10 +32,19 @@
     $("#NewSearch").click(function () {
         form.reset();
     });
-    $("#export").click(function(ev) {
+    $("#export").click(function (ev) {
         var f = $(this).closest('form');
         f.attr("action", "/Finance/Contributions/Export");
         f.submit();
     });
     $('.tip').tooltip({ showBody: "|" });
+    $("a.submitit").live("click", function (ev) {
+        ev.preventDefault();
+        if (confirm("Are you sure you want to return/reverse?")) {
+            var f = $("#form");
+            f.attr("action", $(this)[0].href);
+            f.submit();
+        }
+        return false;
+    });
 });

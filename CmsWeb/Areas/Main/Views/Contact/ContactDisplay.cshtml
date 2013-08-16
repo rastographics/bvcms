@@ -1,0 +1,48 @@
+﻿@using CmsWeb
+@model CmsWeb.Models.ContactPage.ContactModel
+<h2>Contact
+<a href="/ContactSearch/">Contact Search</a></h2>
+<table class="grid">
+    <tbody>
+        <tr>
+            <th class="right">Contact Date:</th>
+            <td>@Model.ContactDate</td>
+        </tr>
+        <tr>
+            <th class="right">Ministry:</th>
+            <td><span>@Model.Ministry</span></td>
+        </tr>
+        <tr>
+            <th class="right">Type:</th>
+            <td><span>@Model.ContactType</span></td>
+        </tr>
+        <tr>
+            <th class="right">Reason:</th>
+            <td><span>@Model.Reason</span></td>
+        </tr>
+    </tbody>
+</table>
+<div>
+    <div class="column">
+        <div>@Html.CheckBoxReadonly(Model.NotAtHome) <span>Attempted/Not Available</span></div>
+        <div>@Html.CheckBoxReadonly(Model.LeftDoorHanger) <span>Left Note Card</span></div>
+        <div>@Html.CheckBoxReadonly(Model.LeftMessage) <span>Left Message</span></div>
+        <div>@Html.CheckBoxReadonly(Model.ContactMade) <span>Contact Made</span></div>
+    </div>
+    <div class="column">
+        <div>@Html.CheckBoxReadonly(Model.GospelShared) <span>GospelShared</span></div>
+        <div>@Html.CheckBoxReadonly(Model.PrayerRequest) <span>Prayer Request Received</span></div>
+        <div>@Html.CheckBoxReadonly(Model.GiftBagGiven) <span>Gift Bag Given</span></div>
+    </div>
+</div>
+@if (Model.CanViewComments)
+{
+    <div class="text">
+        <div><strong>Comments:</strong></div>
+        <div>@Model.Comments</div>
+        <div class="right">
+            <a id="delete" class="bt red" href="/Contact/ContactDelete/@Model.Id">Delete</a>
+            <a id="edit" class="bt blue" href="/Contact/ContactEdit/@Model.Id">Edit</a>
+        </div>
+    </div>
+}

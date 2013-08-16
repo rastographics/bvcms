@@ -184,6 +184,7 @@ namespace CmsData.API
                 contributions = from c in contributions
                                 where c.ContributionDesc.Contains(model.Comments)
                                       || c.CheckNo == model.Comments
+                                      || c.ContributionId == model.Comments.ToInt()
                                 select c;
 
             if ((model.Type ?? 0) != 0)

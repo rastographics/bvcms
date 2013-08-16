@@ -449,28 +449,24 @@ namespace CmsWeb.Code
             list.Insert(0, top[0]);
             return list;
         }
-        public List<CodeValueItem> UsersToEmailFrom()
+        public List<CodeValueItem> PeopleToEmailFor()
         {
-            var user = DbUtil.Db.CurrentUser;
-            int id = 0;
+            var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
 
-            if (user != null)
-                id = user.UserId;
-            var q = from u in DbUtil.Db.UserCanEmailFors
-                    where u.UserId == id
+            var q = from cf in DbUtil.Db.PeopleCanEmailFors
+                    where cf.CanEmail == p.PeopleId
                     select new CodeValueItem
                     {
-                        Id = u.Boss.UserId,
-                        Code = u.Boss.EmailAddress,
-                        Value = u.Boss.Name
+                        Id = cf.OnBehalfOf,
+                        Code = cf.OnBehalfOfPerson.EmailAddress,
+                        Value = cf.OnBehalfOfPerson.Name
                     };
             var list = q.ToList();
-            if (user != null)
                 list.Insert(0, new CodeValueItem
                 {
-                    Id = user.UserId,
-                    Code = user.EmailAddress,
-                    Value = user.Name
+                    Id = p.PeopleId,
+                    Code = p.EmailAddress,
+                    Value = p.Name
                 });
             return list;
         }

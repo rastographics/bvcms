@@ -2,15 +2,16 @@
 @using CmsWeb
 @{
     ViewBag.Title = "SavedQuery";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Search/savedQuery.js")"></script>
+    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Search/savedQuery2.js")"></script>
 }
-<div class="roundbox" style="display: table">
-<h2>Saved Search Builder Queries</h2>
-@using (Html.BeginForm("Results", "SavedQuery")) {
-    Html.RenderPartial("Results", Model);
-}
+<div class="container">
+    <h2>Saved Search Builder Queries</h2>
+    @using (Html.BeginForm("Results", "SavedQuery"))
+    {
+        Html.RenderPartial("Results", Model);
+    }
 </div>

@@ -1,47 +1,69 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Ajax;
 using CmsData;
+using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
+using Dapper;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,manageemails")]
     public class UsersCanEmailForController : CmsStaffController
     {
         public ActionResult Index()
         {
-            return View(DbUtil.Db.UserCanEmailFors.Select(u => u));
+            var q = from cf in DbUtil.Db.PeopleCanEmailFors
+                    orderby cf.PersonCanEmail.Name2, cf.OnBehalfOfPerson.Name2
+                    select cf;
+            return View(q);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult Create(int? UserId, int? CanEmailFor)
+        public ActionResult PersonCanEmailForList(int id)
         {
-			if (!UserId.HasValue || !CanEmailFor.HasValue)
-				return RedirectShowError("missing id");
-            var user1 = DbUtil.Db.Users.SingleOrDefault(uu => uu.UserId == UserId);
-            if (user1 == null)
-                return RedirectShowError("no such user " + UserId);
-            var user2 = DbUtil.Db.Users.SingleOrDefault(uu => uu.UserId == CanEmailFor);
-            if (user2 == null)
-                return RedirectShowError("no such user " + CanEmailFor);
-            var u = DbUtil.Db.UserCanEmailFors.SingleOrDefault(uu => uu.UserId == UserId && uu.CanEmailFor == CanEmailFor);
-            if (u != null)
-                return RedirectShowError("already exists");
+            Response.NoCache();
+            var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
+            DbUtil.Db.SubmitChanges();
+            if (id > 0)
+            {
+                var q = from cf in DbUtil.Db.PeopleCanEmailFors
+                        where cf.CanEmail == id
+                        select cf.OnBehalfOf;
+                t.PersonTags.Add(new TagPerson { PeopleId = id });
+                foreach (var pid in q)
+                    t.PersonTags.Add(new TagPerson { PeopleId = pid });
+                DbUtil.Db.SubmitChanges();
+                return Redirect("/SearchUsers?ordered=true&topid=" + id);
+            }
+            return Redirect("/SearchUsers?ordered=true");
+        }
 
-            u = new UserCanEmailFor { UserId = UserId.Value, CanEmailFor = CanEmailFor.Value };
-            DbUtil.Db.UserCanEmailFors.InsertOnSubmit(u);
-            DbUtil.Db.SubmitChanges();
-            return RedirectToAction("Index");
-        }
-        public ActionResult Delete(int id, int CanEmailFor)
+        [HttpPost]
+        public ActionResult UpdatePersonCanEmailForList(int id, int? topid0)
         {
-            var um = DbUtil.Db.UserCanEmailFors.Single(u => u.UserId == id && u.CanEmailFor == CanEmailFor);
-            DbUtil.Db.UserCanEmailFors.DeleteOnSubmit(um);
+            var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var selected_pids = (from p in t.People(DbUtil.Db)
+                                 where p.PeopleId != id
+                                 select p.PeopleId).ToArray();
+            DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
+            DbUtil.Db.Tags.DeleteOnSubmit(t);
             DbUtil.Db.SubmitChanges();
-            return RedirectToAction("Index");
+            if (topid0 == id)
+            {
+                var cn = new SqlConnection(Util.ConnectionString);
+                cn.Open();
+                cn.Execute("delete PeopleCanEmailFor where CanEmail = @id", new {id});
+            }
+            foreach(var pid in selected_pids)
+                DbUtil.Db.PeopleCanEmailFors.InsertOnSubmit(new PeopleCanEmailFor{ CanEmail = id, OnBehalfOf = pid});
+            DbUtil.Db.SubmitChanges();
+            return Content("ok");
         }
     }
 }

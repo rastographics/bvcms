@@ -4,29 +4,29 @@
     var innewlook = User.IsInRole("Newlook");
     var manageemails = User.IsInRole("ManageEmails");
     var managetrans = User.IsInRole("ManageTransactions");
-	var edit = User.IsInRole("Edit"); 
-	var design = User.IsInRole("Design"); 
-	var finance = User.IsInRole("Finance");
-    var onqb = (string) ViewData["OnQueryBuilder"] == "true";
+    var edit = User.IsInRole("Edit");
+    var design = User.IsInRole("Design");
+    var finance = User.IsInRole("Finance");
+    var onqb = (string)ViewData["OnQueryBuilder"] == "true";
 }
 
 <div class="navbar">
     <ul>
-        <li> <a href="/"> Home </a> </li>
+        <li><a href="/">Home </a></li>
         <li>
-            <a href="#" class="trigger-dropdown">
-                People <img src="/images/dnarrowt.png" />
+            <a href="#" class="trigger-dropdown">People
+                <img src="/images/dnarrowt.png" />
             </a>
             <div class="dropdown-menu">
                 <ul>
                     <li>@Html.ActionLink("Search", "Index", "PeopleSearch", new { Area = "Main" }, null)</li>
                     @if (DbUtil.Db.Setting("MenuAddPeople", "true") == "true")
                     {
-                    <li>@Helper.JQueryIdLink("Add People", "addpeople")</li>
+                        <li>@Helper.JQueryIdLink("Add People", "addpeople")</li>
                     }
                     else
                     {
-                    <li>@Helper.AnchorLink("Add People", "http://www.bvcms.com/doc/AddPeopleContext", "_blank")</li>
+                        <li>@Helper.AnchorLink("Add People", "http://www.bvcms.com/doc/AddPeopleContext", "_blank")</li>
                     }
                     <li>@Html.ActionLink("Manage Tags", "Index", "Tags", new { Area = "Main" }, null)</li>
                     <li>@Html.ActionLink("Tasks", "List", "Task", new { Area = "Main" }, null)</li>
@@ -42,8 +42,8 @@
             </div>
         </li>
         <li>
-            <a href="#" class="trigger-dropdown">
-                Organization <img src="/images/dnarrowt.png" />
+            <a href="#" class="trigger-dropdown">Organization
+                <img src="/images/dnarrowt.png" />
             </a>
             <div class="dropdown-menu">
                 <ul>
@@ -57,7 +57,7 @@
                     {
                         <li>@Html.ActionLink("Coupons", "Index", "Coupon", new { Area = "Main" }, null)</li>
                     }
-                    <li><a href="/OrgSearch"> Enrollment Control Report (moved to OrgSearch) </a></li>
+                    <li><a href="/OrgSearch">Enrollment Control Report (moved to OrgSearch) </a></li>
                     <li class="header"><span>Most Recent Orgs</span></li>
                     @foreach (var o in Util2.MostRecentOrgs)
                     {
@@ -67,8 +67,8 @@
             </div>
         </li>
         <li>
-            <a href="#" class="trigger-dropdown">
-                Reports <img src="/images/dnarrowt.png" />
+            <a href="#" class="trigger-dropdown">Reports
+                <img src="/images/dnarrowt.png" />
             </a>
             <div class="dropdown-menu">
                 <ul>
@@ -80,33 +80,33 @@
                         <li>@Helper.AnchorLink("Church Attendance Summary", "/Report/ChurchAttendanceSummaryRpt.aspx", "_blank")</li>
                     }
                     <li>@Html.ActionLink("Weekly Decisions", "WeeklyDecisions", "Reports", new { Area = "Main" }, new { target = "_blank" })</li>
-                    <li>@Helper.AnchorLink("Decision Summary", "/Report/DecisionSummary.aspx", "_blank")</li>
-                    <li>@Html.ActionLink("First Time Attenders", "NthTimeAttenders", "Home", new { Area="", Id=1 }, null)</li>
-                    <li>@Html.ActionLink("Second Time Attenders", "NthTimeAttenders", "Home", new { Area="", Id=2 }, null)</li>
-                    <li>@Html.ActionLink("Third Time Attenders", "NthTimeAttenders", "Home", new { Area="", Id=3 }, null)</li>
+                    <li>@Helper.AnchorLink("Decision Summary", "/Reports/Decisions", "_blank")</li>
+                    <li>@Html.ActionLink("First Time Attenders", "NthTimeAttenders", "Home", new { Area = "", Id = 1 }, null)</li>
+                    <li>@Html.ActionLink("Second Time Attenders", "NthTimeAttenders", "Home", new { Area = "", Id = 2 }, null)</li>
+                    <li>@Html.ActionLink("Third Time Attenders", "NthTimeAttenders", "Home", new { Area = "", Id = 3 }, null)</li>
                     <li>@Html.ActionLink("Extra Value Codes", "ExtraValues", "Reports", new { Area = "Main" }, null)</li>
                     <li>@Html.ActionLink("Extra Value Data", "ExtraValueData", "Reports", new { Area = "Main" }, null)</li>
                 </ul>
             </div>
         </li>
-            <li>
-                <a href="#" class="trigger-dropdown">
-                    SearchBuilder <img src="/images/dnarrowt.png" />
-                </a>
-            @Helper.SearchBuilderDropdown(onqb, newlook: false)
-            </li>
+        <li>
+            <a href="#" class="trigger-dropdown">SearchBuilder
+                <img src="/images/dnarrowt.png" />
+            </a>
+            @Helper.SearchBuilderDropdown(onqb)
+        </li>
         @if (User.IsInRole("Finance"))
         {
             <li>
-                <a href="#" class="trigger-dropdown">
-                    Contributions <img src="/images/dnarrowt.png" />
+                <a href="#" class="trigger-dropdown">Contributions
+                    <img src="/images/dnarrowt.png" />
                 </a>
                 <div class="dropdown-menu">
                     <ul>
                         <li>@Html.ActionLink("Bundles", "Index", "Bundles", new { Area = "Finance" }, null)</li>
-                        <li>@Html.ActionLink("All", "Index", "Contributions", new { Area = "Finance" }, null)</li>
+                        <li>@Html.ActionLink("All Contributions (Search)", "Index", "Contributions", new { Area = "Finance" }, null)</li>
                         <li class="header"><span>Reports</span></li>
-                        <li>@Html.ActionLink("Statements (All)", "Index", "Statements", new { Area = "Finance" }, new { target="_blank" })</li>
+                        <li>@Html.ActionLink("Statements (All)", "Index", "Statements", new { Area = "Finance" }, new { target = "_blank" })</li>
                         <li>@Helper.AnchorLink("GL Extract", "/Contributions/GLExtract.aspx")</li>
                         <li>@Html.ActionLink("Totals by Fund", "TotalsByFund", "FinanceReports", new { Area = "Finance" }, null)</li>
                         <li>@Html.ActionLink("Donor Totals by Range", "DonorTotalsByRange", "FinanceReports", new { Area = "Finance" }, null)</li>
@@ -114,12 +114,12 @@
                         <li>@Helper.AnchorLink("Totals by Fund Age Range (pledges included)", "/Contributions/Reports/TotalsByFundAgeRange.aspx?pledged=both", "_blank")</li>
                         <li>@Helper.AnchorLink("Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx", "_blank")</li>
                         <li>@Helper.AnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", "_blank")</li>
-                        <li>@Html.ActionLink("Pledge Report", "PledgeReport", "FinanceReports", new { Area = "Finance" }, new { target="_blank" })</li>
-                        <li>@Html.ActionLink("Managed Giving", "ManagedGiving", "FinanceReports", new { Area = "Finance" }, new { target="_blank" })</li>
+                        <li>@Html.ActionLink("Pledge Report", "PledgeReport", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
+                        <li>@Html.ActionLink("Managed Giving", "ManagedGiving", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
                         @if (DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true")
                         {
                             <li>@Html.ActionLink("QuickBooks", "Index", "QuickBooks", new { Area = "Finance" }, null)</li>
-                        }	
+                        }
                     </ul>
                 </div>
             </li>
@@ -127,8 +127,8 @@
         @if (admin || manageemails || managetrans || edit || design || finance)
         {
             <li>
-                <a href="#" class="trigger-dropdown">
-                    Admin <img src="/images/dnarrowt.png" />
+                <a href="#" class="trigger-dropdown">Admin
+                    <img src="/images/dnarrowt.png" />
                 </a>
                 <div class="dropdown-menu">
                     <ul>
@@ -140,11 +140,10 @@
                             <li>@Html.ActionLink("Settings", "Index", "Setting", new { Area = "Setup" }, null)</li>
                             <li>@Html.ActionLink("Metro Zips", "Index", "MetroZip", new { Area = "Setup" }, null)</li>
                         }
-                        @if (admin && TwilioHelper.getSID().Length > 0 && TwilioHelper.getToken().Length > 0 )
+                        @if (admin && TwilioHelper.getSID().Length > 0 && TwilioHelper.getToken().Length > 0)
                         {
-                            <li><a href="/Setup/Twilio/">
-                                    Twilio Management
-                                </a> </li>
+                            <li><a href="/Setup/Twilio/">Twilio Management
+                            </a></li>
                         }
                         @if (admin || design)
                         {
@@ -157,10 +156,11 @@
                         @if (admin || edit)
                         {
                             <li>@Html.ActionLink("Check-in Activity", "Index", "CheckinTime", new { Area = "Manage" }, null)</li>
-                        }			
+                        }
                         @if (admin || manageemails)
                         {
                             <li>@Html.ActionLink("Emails", "Index", "Emails", new { Area = "Manage" }, null)</li>
+                            <li>@Html.ActionLink("UsersCanEmailFor", "Index", "UsersCanEmailFor", new { Area = "Setup" }, null)</li>
                         }
                         @if (admin)
                         {
@@ -184,8 +184,8 @@
             </li>
         }
         <li>
-            <a href="#" class="trigger-dropdown">
-                Help <img src="/images/dnarrowt.png" />
+            <a href="#" class="trigger-dropdown">Help
+                <img src="/images/dnarrowt.png" />
             </a>
             <div class="dropdown-menu anchor-right">
                 <ul>
@@ -193,18 +193,13 @@
                     <li>@Helper.JQueryIdLink("Email Support", "emailsupport")</li>
                     @if (innewlook)
                     {
-                        <li>@Html.ActionLink("Use New Look (under construction)", "UseNewLook", "APITest", new { Area = "" }, null)</li>
-                        if (DbUtil.Db.UserPreference("advancedsearch", "false").ToBool())
-                         {
-                            <li>@Html.ActionLink("Use Search Builder", "UseSearchBuilder", "APITest", new { Area = "" }, null)</li>
-                         }
-                         else
-                         {
-                            <li>@Html.ActionLink("Use Advanced Search", "UseAdvancedSearch", "APITest", new { Area = "" }, null)</li>
-                         }
+                        <li>@Html.ActionLink("Use SearchBuilder", "UseSearchBuilder", "APITest", new { Area = "" }, null)</li>
+                        <li>@Html.ActionLink("Use Advanced Search", "UseAdvancedSearch", "APITest", new { Area = "" }, null)</li>
+                        <li>@Html.ActionLink("Use Old Person Page", "UseOldPersonPage", "APITest", new { Area = "" }, null)</li>
+                        <li>@Html.ActionLink("Use New Person Page", "UseNewPersonPage", "APITest", new { Area = "" }, null)</li>
                     }
                     <li>@Html.ActionLink("About", "About", "Home", new { Area = "" }, null)</li>
-@*                    <li class="header">
+                    @*                    <li class="header">
                         <span>Tutorials</span>
                     </li>
                     @{

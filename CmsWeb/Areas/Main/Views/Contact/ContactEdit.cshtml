@@ -1,0 +1,56 @@
+﻿@model CmsWeb.Models.ContactPage.ContactModel
+<h2>Contact</h2>
+@Html.Hidden("editing", "true")
+<table class="grid">
+    <tbody>
+        <tr>
+            <th class="right">Contact Date:</th>
+            <td>@Html.TextBoxFor(m => m.ContactDate, new { @class = "datepicker" })
+                <div>@Html.ValidationMessage("ContactDate")</div>
+            </td>
+        </tr>
+        <tr>
+            <th class="right">Ministry:</th>
+            <td>@Html.DropDownListFor(m => m.MinistryId, Model.Ministries())
+                @Html.ValidationMessage("MinistryId")
+            </td>
+        </tr>
+        <tr>
+            <th class="right">Type:</th>
+            <td>@Html.DropDownListFor(m => m.ContactTypeId, Model.ContactTypes())
+                @Html.ValidationMessage("ContactTypeId")
+            </td>
+        </tr>
+        <tr>
+            <th class="right">Reason:</th>
+            <td>@Html.DropDownListFor(m => m.ContactReasonId, Model.ContactReasons())
+                @Html.ValidationMessage("ContactReasonId")
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div>
+    <div class="column">
+        <div>@Html.EditorFor(m => m.NotAtHome, "Bool") <span>Attempted/Not Available</span></div>
+        <div>@Html.EditorFor(m => m.LeftDoorHanger, "Bool") <span>Left Note Card</span></div>
+        <div>@Html.EditorFor(m => m.LeftMessage, "Bool") <span>Left Message</span></div>
+        <div>@Html.EditorFor(m => m.ContactMade, "Bool") <span>Contact Made</span></div>
+    </div>
+    <div class="column">
+        <div>@Html.EditorFor(m => m.GospelShared, "Bool") <span>GospelShared</span></div>
+        <div>@Html.EditorFor(m => m.PrayerRequest, "Bool") <span>Prayer Request Received</span></div>
+        <div>@Html.EditorFor(m => m.GiftBagGiven, "Bool") <span>Gift Bag Given</span></div>
+    </div>
+</div>
+<div class="text">
+    <div><strong>Comments:</strong></div>
+    <div>@Html.TextAreaFor(m => m.Comments)
+         @Html.ValidationMessage("Comments")
+    </div>
+    <div class="right">
+        <a id="cancel" class="bt" href="/Contact/ContactDisplay/@Model.Id">Cancel</a>
+        <a id="update" class="bt blue" href="/Contact/ContactUpdate/@Model.Id">Update</a>
+    </div>
+</div>
+@Html.ValidationMessage("contactors")
+@Html.ValidationMessage("contactees")

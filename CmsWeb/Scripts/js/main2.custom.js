@@ -75,11 +75,11 @@ $(function () {
                 if (i.id === -1)
                     window.location = "/PeopleSearch?name=" + this.query;
                 else if (i.id === -2)
-                    window.location = "/QueryBuilder/Main";
+                    window.location = "/Query/";
                 else if (i.id === -3)
                     window.location = "/OrgSearch";
                 else
-                    window.location = (i.isOrg ? "/Organization/Index/" : "/Person/Index/") + i.id;
+                    window.location = (i.isOrg ? "/Organization/Index/" : "/Person2/") + i.id;
                 return "";
             },
             source: function (query, process) {

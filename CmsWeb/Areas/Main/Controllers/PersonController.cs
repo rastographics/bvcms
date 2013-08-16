@@ -35,12 +35,12 @@ namespace CmsWeb.Areas.Main.Controllers
 		{
 			if (!id.HasValue)
 				return Content("no id");
-            if (DbUtil.Db.UserPreference("newlook3", "false").ToBool()
-                && DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
-            {
-                var url = Regex.Replace(Request.RawUrl, @"(.*)/(Person/Index)/(\d*)", "$1/Person2/$3", RegexOptions.IgnoreCase);
-                return Redirect(url);
-            }
+//            if (DbUtil.Db.UserPreference("newlook3", "false").ToBool()
+//                && DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
+//            {
+//                var url = Regex.Replace(Request.RawUrl, @"(.*)/(Person/Index)/(\d*)", "$1/Person2/$3", RegexOptions.IgnoreCase);
+//                return Redirect(url);
+//            }
             var m = new PersonModel(id);
 			if (User.IsInRole("Access"))
 			{
@@ -74,8 +74,9 @@ namespace CmsWeb.Areas.Main.Controllers
 						"javascript: history.go(-1)", "Go Back"));
 				}
 			}
-			ViewData["Comments"] = Util.SafeFormat(m.Person.Comments);
-			ViewData["PeopleId"] = id.Value;
+		    ViewBag.GearSpan = User.IsInRole("Admin") ? "span6" : "span12";
+			ViewBag.Comments = Util.SafeFormat(m.Person.Comments);
+			ViewBag.PeopleId = id.Value;
 			Util2.CurrentPeopleId = id.Value;
 			Session["ActivePerson"] = m.displayperson.Name;
 			DbUtil.LogActivity("Viewing Person: {0}".Fmt(m.displayperson.Name), m.displayperson.Name, pid: id);
@@ -255,7 +256,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			DbUtil.Db.Contactors.InsertOnSubmit(cp);
 			DbUtil.Db.SubmitChanges();
 
-			return Content("/Contact.aspx?id=" + c.ContactId);
+			return Content("/Contact/{0}?edit=true".Fmt(c.ContactId));
 		}
 		[HttpPost]
 		public ActionResult AddContactReceived(int id)
@@ -274,18 +275,20 @@ namespace CmsWeb.Areas.Main.Controllers
 			DbUtil.Db.Contacts.InsertOnSubmit(c);
 			DbUtil.Db.SubmitChanges();
 
-			var pc = new Contactee
-			{
-				PeopleId = p.PeopleId,
-				ContactId = c.ContactId
-			};
-
-			DbUtil.Db.Contactees.InsertOnSubmit(pc);
+            c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
+            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
 			DbUtil.Db.SubmitChanges();
 
-			return Content("/Contact.aspx?id=" + c.ContactId);
+			return Content("/Contact/{0}?edit=true".Fmt(c.ContactId));
 		}
-		[HttpPost]
+
+	    [HttpPost]
+	    public ActionResult AddContact(int id)
+	    {
+	        return Content(CmsData.Contact.AddContact(id, Util.UserPeopleId).ToString());
+	    }
+
+	    [HttpPost]
 		public ActionResult AddAboutTask(int id)
 		{
 			var p = DbUtil.Db.LoadPersonById(id);
@@ -436,15 +439,15 @@ namespace CmsWeb.Areas.Main.Controllers
 		[HttpPost]
 		public ActionResult CommentsDisplay(int id)
 		{
-			ViewData["Comments"] = Util.SafeFormat(DbUtil.Db.People.Single(p => p.PeopleId == id).Comments);
-			ViewData["PeopleId"] = id;
+			ViewBag.Comments = Util.SafeFormat(DbUtil.Db.People.Single(p => p.PeopleId == id).Comments);
+			ViewBag.PeopleId = id;
 			return View();
 		}
 		[HttpPost]
 		public ActionResult CommentsEdit(int id)
 		{
-			ViewData["Comments"] = DbUtil.Db.People.Single(p => p.PeopleId == id).Comments;
-			ViewData["PeopleId"] = id;
+			ViewBag.Comments = DbUtil.Db.People.Single(p => p.PeopleId == id).Comments;
+			ViewBag.PeopleId = id;
 			return View();
 		}
 		[HttpPost]
@@ -453,8 +456,8 @@ namespace CmsWeb.Areas.Main.Controllers
 			var p = DbUtil.Db.LoadPersonById(id);
 			p.Comments = Comments;
 			DbUtil.Db.SubmitChanges();
-			ViewData["Comments"] = Util.SafeFormat(Comments);
-			ViewData["PeopleId"] = id;
+			ViewBag.Comments = Util.SafeFormat(Comments);
+			ViewBag.PeopleId = id;
 			DbUtil.LogActivity("Update Comments for: {0}".Fmt(Session["ActivePerson"]));
 			return View("CommentsDisplay");
 		}
@@ -500,14 +503,8 @@ namespace CmsWeb.Areas.Main.Controllers
 			DbUtil.LogActivity("Update Registration Tab for: {0}".Fmt(Session["ActivePerson"]));
 			return View("RecRegDisplay", m);
 		}
-		[HttpPost]
-		public ActionResult AddContact(int id)
-		{
-			var c = new ContentResult();
-			c.Content = CmsData.Contact.AddContact(id).ToString();
-			return c;
-		}
-		[HttpPost]
+
+	    [HttpPost]
 		public ActionResult AddTasks(int id)
 		{
 			var c = new ContentResult();
@@ -779,11 +776,11 @@ namespace CmsWeb.Areas.Main.Controllers
 		private void InitExportToolbar(int? id)
 		{
 			var qb = DbUtil.Db.QueryBuilderIsCurrentPerson();
-			ViewData["queryid"] = qb.QueryId;
-			ViewData["TagAction"] = "/Person/Tag/" + id;
-			ViewData["UnTagAction"] = "/Person/UnTag/" + id;
-			ViewData["AddContact"] = "/Person/AddContactReceived/" + id;
-			ViewData["AddTasks"] = "/Person/AddAboutTask/" + id;
+			ViewBag.queryid = qb.QueryId;
+			ViewBag.TagAction = "/Person/Tag/" + id;
+			ViewBag.UnTagAction = "/Person/UnTag/" + id;
+			ViewBag.AddContact = "/Person/AddContactReceived/" + id;
+			ViewBag.AddTasks = "/Person/AddAboutTask/" + id;
 		}
 		public class CurrentRegistration
 		{

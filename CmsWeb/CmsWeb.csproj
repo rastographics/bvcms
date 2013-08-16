@@ -73,9 +73,6 @@
     <OutputPath>bin\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin">
-      <HintPath>..\packages\AjaxMin.4.60.4609.17023\lib\net20\AjaxMin.dll</HintPath>
-    </Reference>
     <Reference Include="AttributeRouting">
       <HintPath>..\packages\AttributeRouting.Core.3.5.6\lib\net40\AttributeRouting.dll</HintPath>
     </Reference>
@@ -95,56 +92,9 @@
     <Reference Include="DocumentFormat.OpenXml">
       <HintPath>..\packages\DocumentFormat.OpenXml.1.0\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth, Version=3.4.7.11121, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\IPPDotNetDevKit.2.1.12.0\lib\DotNetOpenAuth.dll</HintPath>
-    </Reference>
     <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="Intuit.Ipp.AsyncServices, Version=2.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\IPPDotNetDevKit.2.1.12.0\lib\Intuit.Ipp.AsyncServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Intuit.Ipp.Core, Version=2.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\IPPDotNetDevKit.2.1.12.0\lib\Intuit.Ipp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Intuit.Ipp.Data, Version=2.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\IPPDotNetDevKit.2.1.12.0\lib\Intuit.Ipp.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Intuit.Ipp.Diagnostics, Version=2.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\IPPDotNetDevKit.2.1.12.0\lib\Intuit.Ipp.Diagnostics.dll</HintPath>
-    </Reference>
-    <Reference Include="Intuit.Ipp.Exception, Version=2.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\IPPDotNetDevKit.2.1.12.0\lib\Intuit.Ipp.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="Intuit.Ipp.Retry, Version=2.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\IPPDotNetDevKit.2.1.12.0\lib\Intuit.Ipp.Retry.dll</HintPath>
-    </Reference>
-    <Reference Include="Intuit.Ipp.Security, Version=2.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\IPPDotNetDevKit.2.1.12.0\lib\Intuit.Ipp.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="Intuit.Ipp.Services, Version=2.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\IPPDotNetDevKit.2.1.12.0\lib\Intuit.Ipp.Services.dll</HintPath>
-    </Reference>
-    <Reference Include="Intuit.Ipp.Utility, Version=2.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\IPPDotNetDevKit.2.1.12.0\lib\Intuit.Ipp.Utility.dll</HintPath>
-    </Reference>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\packages\NPOI.1.2.5\lib\net40\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp, Version=5.3.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -162,16 +112,17 @@
       <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NPOI">
       <HintPath>..\packages\NPOI.1.2.5\lib\net40\NPOI.dll</HintPath>
     </Reference>
-    <Reference Include="openstacknet">
-      <HintPath>..\packages\openstack.net.1.1.0.2\lib\net40\openstacknet.dll</HintPath>
+    <Reference Include="openstacknet, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\openstack.net.1.1.3.0\lib\net40\openstacknet.dll</HintPath>
     </Reference>
     <Reference Include="SimpleRESTServices">
-      <HintPath>..\packages\SimpleRESTServices.1.0.6.3\lib\net40\SimpleRESTServices.dll</HintPath>
+      <HintPath>..\packages\SimpleRESTServices.1.1.1.0\lib\net40\SimpleRESTServices.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -182,35 +133,20 @@
     <Reference Include="System.Data.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Runtime.Serialization">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Activation" />
     <Reference Include="System.ServiceModel.Web">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions">
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.20715.0\lib\net40\System.Web.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Routing">
       <Private>False</Private>
@@ -218,10 +154,6 @@
     <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -231,8 +163,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WebActivator">
       <HintPath>..\packages\WebActivator.1.0.0.0\lib\WebActivator.dll</HintPath>
@@ -247,6 +177,8 @@
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Models\SearchModel.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />
+    <Compile Include="Areas\Main\Models\Contact\ContacteesModel.cs" />
+    <Compile Include="Areas\Main\Models\Contact\ContactorsModel.cs" />
     <Compile Include="Areas\Main\Models\Export\OrgsMembersExcelResult.cs" />
     <Compile Include="Areas\Main\Models\Report\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Main\Models\Report\DecisionsModel.cs" />
@@ -410,7 +342,7 @@
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Main\Models\Organization\ScheduleInfo.cs" />
     <Compile Include="Areas\Main\Models\Other\QBExportResult.cs" />
-    <Compile Include="Areas\Main\Models\Other\ContactModel.cs" />
+    <Compile Include="Areas\Main\Models\Contact\ContactModel.cs" />
     <Compile Include="Areas\Main\Models\Other\ContactSearchModel.cs" />
     <Compile Include="Areas\Main\Models\Other\MeetingModel.cs" />
     <Compile Include="Areas\Main\Models\Other\SavedQueryModel.cs" />
@@ -486,7 +418,7 @@
     <Compile Include="Areas\Public\Models\SmallGroupFinderModel.cs" />
     <Compile Include="Areas\Search\Controllers\OrganizationController.cs" />
     <Compile Include="Areas\Search\Controllers\PeopleController.cs" />
-    <Compile Include="Areas\Search\Controllers\AdvancedController.cs" />
+    <Compile Include="Areas\Search\Controllers\QueryController.cs" />
     <Compile Include="Areas\Search\Controllers\QuickController.cs" />
     <Compile Include="Areas\Search\Controllers\SavedQueryController.cs" />
     <Compile Include="Areas\Search\Models\OrganizationModel.cs" />
@@ -535,6 +467,9 @@
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\demo_page.css" />
     <Content Include="Content\css\demo_table.css" />
+    <Content Include="Content\css\Fixups2.min.css">
+      <DependentUpon>Fixups2.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\give.css" />
     <Content Include="Content\css\images\ajax-loader.gif" />
     <Content Include="Content\css\img\ajax-loader.gif" />
@@ -549,6 +484,9 @@
     </Content>
     <Content Include="Content\css\reset.css" />
     <Content Include="Content\css\responsive.css" />
+    <Content Include="Content\css\search.min.css">
+      <DependentUpon>search.css</DependentUpon>
+    </Content>
     <Content Include="Content\font-awesome\css\font-awesome-ie7.css" />
     <Content Include="Content\font-awesome\css\font-awesome-ie7.min.css" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
@@ -598,6 +536,9 @@
       <DependentUpon>person.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\Support.css" />
+    <Content Include="FieldMap3.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="images\chosen-sprite.png" />
     <Content Include="Content\css\chosen.css" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
@@ -915,6 +856,12 @@
     <Content Include="Scripts\jQuery\onlineregister.min.js">
       <DependentUpon>onlineregister.js.bundle</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\TaskPage.js">
+      <DependentUpon>TaskPage.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\TaskPage.min.js">
+      <DependentUpon>TaskPage.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\js\CheckIn.min.js">
       <DependentUpon>CheckIn.js</DependentUpon>
     </Content>
@@ -924,6 +871,14 @@
     <Content Include="Scripts\js\ChurchAttendance.min.js">
       <DependentUpon>ChurchAttendance.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\contact.js" />
+    <Content Include="Scripts\js\contact.min.js">
+      <DependentUpon>contact.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\Task.min.js">
+      <DependentUpon>Task.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\UsersEmailFor.js" />
     <Content Include="Scripts\js\ExtraValuesGrid2.js" />
     <Content Include="Scripts\js\form-ajax.js" />
     <Content Include="Scripts\js\give.js" />
@@ -952,6 +907,9 @@
     </Content>
     <Content Include="Scripts\js\TestAPI.min.js">
       <DependentUpon>TestAPI.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\UsersEmailFor.min.js">
+      <DependentUpon>UsersEmailFor.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Meeting\meeting-ipad.min.js">
       <DependentUpon>meeting-ipad.js</DependentUpon>
@@ -1006,6 +964,13 @@
     <Content Include="Areas\People\Views\Person\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\FamilySidebar\Photo.cshtml" />
     <Content Include="Areas\People\Views\Person\FamilySidebar\ExtraValues.cshtml" />
+    <Content Include="Areas\Search\Views\Query\SelectCondition.cshtml" />
+    <Content Include="Areas\People\Views\Person\Toolbar\Gear.cshtml" />
+    <Content Include="Areas\Main\Views\Contact\Contactors.cshtml" />
+    <Content Include="Areas\Main\Views\Contact\Contactees.cshtml" />
+    <Content Include="Areas\Main\Views\Contact\ContactDisplay.cshtml" />
+    <Content Include="Areas\Main\Views\Contact\ContactEdit.cshtml" />
+    <Content Include="Areas\Main\Views\Contact\EditorTemplates\Bool.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1165,6 +1130,13 @@
     <Content Include="Scripts\jQuery\onlineregister.min.js.map">
       <DependentUpon>onlineregister.js.bundle</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\contact.min.js.map">
+      <DependentUpon>contact.js</DependentUpon>
+    </Content>
+    <None Include="Scripts\js\TaskPage.js.bundle" />
+    <Content Include="Scripts\js\TaskPage.min.js.map">
+      <DependentUpon>TaskPage.js.bundle</DependentUpon>
+    </Content>
     <None Include="Scripts\js\main.custom.js.bundle">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -1180,6 +1152,12 @@
     </Content>
     <Content Include="Scripts\js\Tags.min.js.map">
       <DependentUpon>Tags.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\UsersEmailFor.min.js.map">
+      <DependentUpon>UsersEmailFor.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\Task.min.js.map">
+      <DependentUpon>Task.js</DependentUpon>
     </Content>
     <None Include="Scripts\Moment\moment-bundle.js.bundle" />
     <Content Include="Scripts\Moment\moment-bundle.min.js.map">
@@ -1258,12 +1236,6 @@
     <Content Include="Scripts\querybuilder.min.js">
       <DependentUpon>querybuilder.js.bundle</DependentUpon>
     </Content>
-    <Content Include="Scripts\Search\AdvancedSearch.min.js">
-      <DependentUpon>AdvancedSearch.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\AdvancedSearch.min.js.map">
-      <DependentUpon>AdvancedSearch.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\ContactSearch.min.js">
       <DependentUpon>ContactSearch.js</DependentUpon>
     </Content>
@@ -1275,6 +1247,9 @@
     </Content>
     <Content Include="Scripts\Search\PeopleSearch.min.js.map">
       <DependentUpon>PeopleSearch.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\Query.min.js">
+      <DependentUpon>Query.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\QuickSearch.min.js">
       <DependentUpon>QuickSearch.js</DependentUpon>
@@ -1288,6 +1263,10 @@
     <Content Include="Scripts\Search\SavedQuery.min.js.map">
       <DependentUpon>SavedQuery.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Search\SavedQuery2.js" />
+    <Content Include="Scripts\Search\SavedQuery2.min.js">
+      <DependentUpon>SavedQuery2.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Search\SearchAdd.js" />
     <Content Include="Scripts\Search\SearchOrgs.min.js">
       <DependentUpon>SearchOrgs.js</DependentUpon>
@@ -1298,7 +1277,12 @@
     <Content Include="Scripts\querybuilder.min.js.map">
       <DependentUpon>querybuilder.js.bundle</DependentUpon>
     </Content>
-    <None Include="Scripts\task.js.bundle" />
+    <Content Include="Scripts\Search\Query.min.js.map">
+      <DependentUpon>Query.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\SavedQuery2.min.js.map">
+      <DependentUpon>SavedQuery2.js</DependentUpon>
+    </Content>
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Main\Views\Reports\EnrollmentControl2.cshtml" />
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
@@ -1523,13 +1507,7 @@
     <Content Include="Scripts\Finance\Bundle.js" />
     <Content Include="Scripts\Org\enroll-control-ipad.js" />
     <Content Include="Scripts\Org\OrgMemberDialog2.js" />
-    <Content Include="Scripts\Search\AdvancedSearch.js" />
-    <Content Include="Scripts\task.js">
-      <DependentUpon>task.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\task.min.js">
-      <DependentUpon>task.js.bundle</DependentUpon>
-    </Content>
+    <Content Include="Scripts\Search\Query.js" />
     <Content Include="Scripts\Volunteer\Calendar.min.js">
       <DependentUpon>Calendar.js</DependentUpon>
     </Content>
@@ -1675,13 +1653,6 @@
       <DependentUpon>ToggleOrgMembersOnly.ashx</DependentUpon>
     </Compile>
     <Compile Include="Code\ViewExtensions.cs" />
-    <Compile Include="Contact.aspx.cs">
-      <DependentUpon>Contact.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Contact.aspx.designer.cs">
-      <DependentUpon>Contact.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Contributions\Deposit.aspx.cs">
       <DependentUpon>Deposit.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1695,13 +1666,6 @@
     </Compile>
     <Compile Include="Contributions\GLExtract.aspx.designer.cs">
       <DependentUpon>GLExtract.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Contributions\Individual.aspx.cs">
-      <DependentUpon>Individual.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Contributions\Individual.aspx.designer.cs">
-      <DependentUpon>Individual.aspx</DependentUpon>
     </Compile>
     <Compile Include="Contributions\Reports\JournalDetails.aspx.cs">
       <DependentUpon>JournalDetails.aspx</DependentUpon>
@@ -1854,9 +1818,6 @@
     <Content Include="Scripts\Volunteer\volunteering.min.js.map">
       <DependentUpon>volunteering.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\task.min.js.map">
-      <DependentUpon>task.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Views\Shared\EditorTemplates\Decimal.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Decimal.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Int.cshtml" />
@@ -1875,11 +1836,12 @@
     <Content Include="Views\Shared\Menu\Admin.cshtml" />
     <Content Include="Views\Shared\Menu\Help.cshtml" />
     <Content Include="Views\Shared\Toolbar\Toolbar.cshtml" />
-    <Content Include="Views\Shared\Toolbar\ToolbarEmail.cshtml" />
-    <Content Include="Views\Shared\Toolbar\ToolbarGear.cshtml" />
-    <Content Include="Views\Shared\Toolbar\ToolbarReports.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Email.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Gear.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Reports.cshtml" />
     <Content Include="Views\Shared\NewHeader3.cshtml" />
     <Content Include="Views\Shared\Menu\AdminBar.cshtml" />
+    <Content Include="Views\Shared\Toolbar\GearStandard.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2096,7 +2058,7 @@
     <Content Include="Areas\People\Views\Person\MainTabs\PersonalEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\ExtraValue.cshtml" />
     <Content Include="Areas\People\Views\Person\FamilySidebar\Members.cshtml" />
-    <Content Include="Areas\People\Views\Person\Index.cshtml" />
+    <Content Include="Areas\People\Views\Person\Person.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\Index.cshtml" />
     <Content Include="Areas\Search\Views\Web.config" />
     <Content Include="Areas\Search\Views\Organization\DivisionIds.cshtml" />
@@ -2106,20 +2068,20 @@
     <Content Include="Areas\Search\Views\Organization\Row.cshtml" />
     <Content Include="Areas\Search\Views\People\Index.cshtml" />
     <Content Include="Areas\Search\Views\People\Results.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Conditions.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Import.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Index.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Results.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Conditions.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Import.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Query.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Results.cshtml" />
     <Content Include="Areas\Search\Views\Quick\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Results.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Row.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Rows.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\CodesDropdown.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Divisions.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\Organizations.cshtml" />
+    <Content Include="Areas\Search\Views\Query\CodesDropdown.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
     <Content Include="Areas\Manage\Views\Display\ContentView.cshtml" />
-    <Content Include="Areas\Search\Views\Advanced\EditCondition.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditCondition.cshtml" />
     <Content Include="ckeditor2\CHANGES.md" />
     <Content Include="ckeditor2\LICENSE.md" />
     <Content Include="ckeditor2\plugins\scayt\LICENSE.md" />
@@ -2776,7 +2738,9 @@
     <Content Include="Areas\Main\Views\Reports\ExtraValues.cshtml">
     </Content>
     <Content Include="images\UpdatePeople.xls" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="images\MucketyTemplate.xls" />
     <Content Include="Areas\Main\Views\Tags\ConvertTagToExtraValue.cshtml">
     </Content>
@@ -2836,17 +2800,14 @@
     <Content Include="Views\Shared\DatePickerDefaults.cshtml" />
     <Content Include="Views\Shared\MainMenu.cshtml" />
     <Content Include="App_Code\Helper.cshtml" />
-    <Content Include="Views\Shared\NewHeader.cshtml" />
     <Content Include="Views\Shared\OldHeader.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults2.cshtml" />
     <Content Include="Views\Shared\SiteLayout2.cshtml" />
     <Content Include="Views\Shared\Dialogs.cshtml" />
     <Content Include="Views\Shared\Footer.cshtml" />
     <Content Include="Views\Shared\Notices.cshtml" />
-    <Content Include="Views\Shared\NewHeader2.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Contact.aspx" />
     <Content Include="Errors\Error.aspx" />
   </ItemGroup>
   <ItemGroup>
@@ -2863,7 +2824,6 @@
     <Content Include="images\navigation-shadow.png" />
     <Content Include="Contributions\Deposit.aspx" />
     <Content Include="Contributions\GLExtract.aspx" />
-    <Content Include="Contributions\Individual.aspx" />
     <Content Include="Contributions\Reports\JournalDetails.aspx" />
     <Content Include="Contributions\Reports\TotalsByFundRange.aspx" />
     <Content Include="images\1pix.gif" />
@@ -2897,10 +2857,6 @@
       <Project>{98AEE43C-4226-49E7-BD46-C1A85467ECED}</Project>
       <Name>CmsData</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CmsPresenter\CmsPresenter.csproj">
-      <Project>{947cfef7-2731-493a-8876-c81facbcf1f4}</Project>
-      <Name>CmsPresenter</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ImageData\ImageData.csproj">
       <Project>{512DA381-E81B-4121-B978-FC850EC88353}</Project>
       <Name>ImageData</Name>
@@ -2908,10 +2864,6 @@
     <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>
       <Name>UtilityExtensions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebControls\CustomControls.csproj">
-      <Project>{e6957022-e83c-4fe9-94fc-6e9f8adeb68c}</Project>
-      <Name>CustomControls</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

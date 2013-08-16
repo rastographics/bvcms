@@ -17,7 +17,7 @@
             $(input).val(value);
         }
     });
-    $.onready = function() {
+    $.onready = function () {
         $(".clickEdit").editable("/SavedQuery/Edit/", {
             indicator: "<img src='/images/loading.gif'>",
             tooltip: "Click to edit...",
@@ -33,12 +33,12 @@
         });
     };
     $('table.grid > tbody > tr:even').addClass('alt');
-    $.getTable = function(f) {
+    $.getTable = function (f) {
         var q;
         if (f)
             q = f.serialize();
-        $.post(f.attr('action'), q, function(ret) {
-            $(f).html(ret).ready(function() {
+        $.post(f.attr('action'), q, function (ret) {
+            $(f).html(ret).ready(function () {
                 $('table.grid > tbody > tr:even', f).addClass('alt');
                 //$('.dropdown', f).hoverIntent(dropdownshow, dropdownhide);
                 $('.bt').button();
@@ -58,7 +58,7 @@
     $("a.delete").live("click", function (ev) {
         ev.preventDefault();
         var a = $(this);
-        if(confirm("Delete this saved search?"))
+        if (confirm("Delete this saved search?"))
             $.post("/SavedQuery/Edit", { id: a.attr("id") }, function (ret) {
                 a.closest("tr").fadeOut().remove();
             });

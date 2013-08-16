@@ -14,7 +14,6 @@ using CmsData;
 using UtilityExtensions;
 using System.Data.Linq.SqlClient;
 using System.Web.UI.WebControls;
-using System.Transactions;
 using System.Text.RegularExpressions;
 
 namespace CmsWeb.Models
@@ -109,8 +108,7 @@ namespace CmsWeb.Models
                     {
                         PeopleId = p.PeopleId,
                         Name = p.Name,
-                        Address = p.PrimaryAddress,
-                        CSZ = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
+                        EmailAddress = p.EmailAddress,
                         HasTag = ck
                     };
             return q;
@@ -120,8 +118,7 @@ namespace CmsWeb.Models
             public int PeopleId { get; set; }
             public string Name { get; set; }
             public bool HasTag { get; set; }
-            public string Address { get; set; }
-            public string CSZ { get; set; }
+            public string EmailAddress { get; set; }
         }
     }
 }

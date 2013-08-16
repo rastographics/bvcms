@@ -5,7 +5,7 @@
 @{
     var list = Model.PeopleList();
 }
-<table class="results table table-striped table-bordered table-condensed">
+<table class="results grid">
 <thead>
     <tr><td colspan="3">
         <b>showing top @Model.maxitems of @Model.count.ToString("N0")</b>
@@ -36,10 +36,10 @@
     }
         </td>
         <td>@p.Name</td>
-        <td>@p.Address, @p.CSZ</td>
+        <td>@p.EmailAddress</td>
     @if (Model.ordered)
     {
-        <th id="a@(p.PeopleId)">
+        <th id="a@(p.PeopleId)" class="nowrap">
         <span class="move">
         @if (@p.PeopleId != Model.topid && p.HasTag)
         {

@@ -238,7 +238,7 @@
         ev.preventDefault();
         var taskid = $('#TaskId').val();
         $.post('/Task/CompleteWithContact/' + taskid, null, function(ret) {
-            window.location = "/Contact.aspx?edit=1&id=" + ret.ContactId;
+            window.location = "/Contact/" + ret.ContactId + "?edit=true";
         });
         return false;
     });

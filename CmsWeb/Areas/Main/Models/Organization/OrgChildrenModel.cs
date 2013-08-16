@@ -19,7 +19,7 @@ namespace CmsWeb.Models
         public Organization parentorg { get; set; }
         public bool canedit
         {
-            get { return HttpContext.Current.User.IsInRole("Admin"); }
+            get { return HttpContext.Current.User.IsInRole("Edit"); }
         }
 
         private IList<int> list = new List<int>();

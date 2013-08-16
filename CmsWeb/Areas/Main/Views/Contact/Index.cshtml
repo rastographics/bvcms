@@ -1,144 +1,108 @@
-﻿@model CmsWeb.Models.ContactModel
+﻿@model CmsWeb.Models.ContactPage.ContactModel
+@using IronPython.Modules
 @using UtilityExtensions
 @using CmsWeb
 @{
     ViewBag.Title = "Contact";
     Layout = "~/Views/Shared/SiteLayout.cshtml";
 }
+@section head
+{
+    <style>
+
+            #contact h2 a {
+                font-size: 70%;
+                font-weight: normal;
+                margin-left: 3em;
+            }
+
+        div.column {
+            display: inline-block;
+            vertical-align: text-top;
+            padding: 5px 1em;
+        }
+
+        td.top {
+            vertical-align: text-top;
+        }
+
+        div.right {
+            text-align: right;
+        }
+
+        div.text {
+            width: 500px;
+        }
+
+            div.text div {
+                margin: 1em;
+            }
+
+
+        textarea {
+            width: 475px;
+            height: 100px;
+        }
+
+        td.spaceover {
+            padding-left: 3em;
+        }
+
+        .bt.out {
+            display: none;
+        }
+
+        .out {
+            color: #bbb;
+        }
+    </style>
+}
+@section scripts
+{
+    <script src="@Fingerprint.Tag("/Scripts/js/contact.js")"></script>
+}
 @Html.Hidden("Id")
-<div class="roundbox floatleft">
-<h2>Contact</h2>
-<table cellpadding="5">
-  <tbody>
-    <tr>
-      <th class="right">Contact Date:</th>
-      <td>@Model.contact.ContactDate.ToShortDateString()</td>
-    </tr>
-    <tr>
-      <th class="right">Ministry:</th>
-      <td><span>@Model.Ministry</span></td>
-    </tr>
-    <tr>
-      <th class="right">Type:</th>
-      <td><span>@Model.ContactType</span></td>
-    </tr>
-    <tr>
-      <th class="right">Reason:</th>
-      <td><span>@Model.Reason</span></td>
-    </tr>
-  </tbody>
-</table>
-<table cellpadding="5">
-  <tbody>
-    <tr>
-      <td><div class="wrapper">
-<div class="item" >
-    @Html.CheckBox("NotAtHome", Model.contact.NotAtHome ?? false)
-   <span>Attempted/Not Available</span></div>
-<div class="item" >
-    @Html.CheckBox("LeftDoorHanger", Model.contact.LeftDoorHanger ?? false)
-   <span>Left Note Card</span></div>
-<div class="item" >
-    @Html.CheckBox("LeftMessage", Model.contact.LeftMessage ?? false)
-   <span>Left Message</span></div>
-<div class="item" >
-    @Html.CheckBox("ContactMade", Model.contact.ContactMade ?? false)
-   <span>Contact Made</span></div>
-<div class="item" >
-    @Html.CheckBox("GospelShared", Model.contact.GospelShared ?? false)
-   <span>GospelShared</span></div>
-<div class="item" >
-    @Html.CheckBox("PrayerRequest", Model.contact.PrayerRequest ?? false)
-   <span>Prayer Request Received</span></div>
-<div class="item" >
-    @Html.CheckBox("GiftBagGiven", Model.contact.GiftBagGiven ?? false)
-   <span>Gift Bag Given</span></div>
-   </div>
-      </td>
-    </tr>
-    <tr>
-      <td><table>
-        <tbody>
-          <tr>
-            <td height="100%" width="100%"><span><strong>Comments:</strong> <br />
-              attempted hospital visit. discharged.</span></td>
-          </tr>
-        </tbody>
-      </table></td>
-    </tr>
-    <tr>
-      <td><br />
-        </td>
-      <td><a id="DeleteButton" href="#">Delete</a></td>
-    </tr>
-  </tbody>
-</table>
-</div>
+<form id="contact" class="roundbox floatleft" method="post">
+    @if (ViewBag.edit == true) {
+        @Html.Partial("ContactEdit", Model)
+    } else {
+        @Html.Partial("ContactDisplay", Model)
+    }
+</form>
 <div class="floatclear"></div>
 <br />
+
 <table>
-  <tbody>
     <tr>
-      <td class="top"><strong>Ministry Team:</strong>
-        <table>
-          <tbody>
-            <tr>
-              <td><div>
-                <table cellspacing="0" cellpadding="3" border="0" id="ctl00_ContentPlaceHolder1_ContactorGrid">
-                  <tbody>
-                    <tr>
-                      <th class="left middle" scope="col">Name</th>
-                      <th scope="col"> </th>
-                    </tr>
-                    <tr>
-                      <td class="left middle"><a id="ctl00_ContentPlaceHolder1_ContactorGrid_ctl03_namelink" href="http://localhost:58724/Person/Index/33631">Joe Jernigan</a></td>
-                      <td><a onclick="javascript:return confirm('Are you sure you want to remove contactor from the list?')" id="ctl00_ContentPlaceHolder1_ContactorGrid_ctl03_btnRemoveContactor" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$ContactorGrid$ctl03$btnRemoveContactor','')">Remove</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div></td>
-            </tr>
-            <tr>
-              <td><a id="AddContactorLink" href="http://localhost:58724/SearchAdd/Index/221321?type=contactor" title="AddContactor">Add Contactor</a>
-                <p><a id="ctl00_ContentPlaceHolder1_AddTeamContact" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$AddTeamContact','')">Add another Contact for this team</a></p></td>
-            </tr>
-          </tbody>
-        </table></td>
-      <td>&nbsp;</td>
-      <td class="top"><strong>Persons ministered to:</strong>
-        <table>
-          <tbody>
-            <tr>
-              <td><div>
-                <table cellspacing="0" cellpadding="3" border="0">
-                  <tbody>
-                    <tr>
-                      <td>Name</td>
-                      <td><a class="sortable" href="#">Profession Of Faith</a></td>
-                      <td><a class="sortable" href="#">Prayed For Person</a></td>
-                      <td> </td>
-                      <td>AddTask</td>
-                    </tr>
-                    <tr>
-                      <td><a href="/Person/Index/16690">Marge Lenow</a></td>
-                      <td class="center"><span disabled="disabled">
-                        <input id="ctl00_ContentPlaceHolder1_ContacteeGrid_ctl03_ctl00" type="checkbox" name="ctl00$ContentPlaceHolder1$ContacteeGrid$ctl03$ctl00" disabled="disabled" />
-                      </span></td>
-                      <td class="center"><span disabled="disabled">
-                        <input id="ctl00_ContentPlaceHolder1_ContacteeGrid_ctl03_ctl01" type="checkbox" name="ctl00$ContentPlaceHolder1$ContacteeGrid$ctl03$ctl01" disabled="disabled" />
-                      </span></td>
-                      <td><a onclick="javascript:return confirm('Are you sure you want to remove contactee from the list?')" id="ctl00_ContentPlaceHolder1_ContacteeGrid_ctl03_btnRemoveContactee" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$ContacteeGrid$ctl03$btnRemoveContactee','')">Remove</a></td>
-                      <td><a id="ctl00_ContentPlaceHolder1_ContacteeGrid_ctl03_AddTask" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$ContacteeGrid$ctl03$AddTask','')">Add task</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div></td>
-            </tr>
-            <tr>
-              <td><a id="AddContacteeLink" href="http://localhost:58724/SearchAdd/Index/221321?type=contactee" title="Add Contactee">Add Contactee</a></td>
-            </tr>
-          </tbody>
-        </table></td>
+        <td class="top">
+            <h4>Ministry Team</h4>
+            <form id="contactors" action="/Contacts/Contactors/@Model.Id">
+                @Html.Partial("Contactors", Model.Ministers)
+            </form>
+            @if (Model.CanViewComments)
+            {
+                <div class="right">
+                    <br />
+                    <a href="/SearchAdd/Index/@Model.Id?type=contactor" class="bt addperson in">Add Team Member</a>
+                </div>
+                <div>
+                    <br />
+                    <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.Id" class="bt green in">Add New Contact for Team</a>
+                </div>
+            }
+        </td>
+        <td class="top spaceover">
+            <h4>Those Contacted</h4>
+            <form id="contactees" action="/Contacts/Contactees/@Model.Id">
+                @Html.Partial("Contactees", Model.MinisteredTo)
+            </form>
+            @if (Model.CanViewComments)
+            {
+                <div class="right">
+                    <br />
+                    <a href="/SearchAdd/Index/@Model.Id?type=contactee" class="bt addperson in">Add Contactee</a>
+                </div>
+            }
+        </td>
     </tr>
-  </tbody>
 </table>

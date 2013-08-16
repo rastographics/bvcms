@@ -1,0 +1,62 @@
+﻿@using CmsWeb
+@model CmsWeb.Areas.Search.Models.AdvancedModel
+@{
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.Title = "Advanced Search";
+}
+@section scripts
+{
+    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Search/Query.js")"></script>
+    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Bootstrap/bootstrap-multiselect.js")"></script>
+}
+@section head 
+{
+    <link href="@Fingerprint.Tag("/Content/css/bootstrap-multiselect.css")" rel="stylesheet" type="text/css" />
+    <link href="@Fingerprint.Tag("/Content/css/search.css")" rel="stylesheet" type="text/css" />
+}
+
+<div class="container">
+    <div class="row-fluid">
+        <div class="span4">
+            <div id="Description"><b>@Model.Description</b></div>
+            <div>
+                <h2>Advanced Search </h2>
+                    @Html.Partial("Conditions", Model)
+            </div>
+        </div>
+        <div id="Results" class="span8">
+            @if (Model.ShowResults)
+            {
+                @Html.Partial("Results", Model) 
+            }
+        </div>
+    </div>
+</div>
+
+@section PopupsPlaceholder
+{
+    @Html.Partial("SelectCondition", Model)
+    <div id="QueryConditionHelp" class="modalPopup" title="Condition Help" style="display: none">
+        <iframe style="width: 100%; height: 99%; border-width: 0px;"></iframe>
+    </div>
+    <div id="OpenQueryDiv" title="Open Query" class="modalDiv" style="display: none">
+        <select id="ExistingQueries"></select>
+        <div style="text-align: right; vertical-align: bottom">
+            <input id="OpenQuery" type="button" value="Open" />
+        </div>
+    </div>
+    <div id="SaveQueryDiv" class="modalDiv" style="display: none">
+        <div style="text-align: left">
+            Search Description:
+        @Html.TextBox("SaveQueryDesc")
+            &nbsp;
+        <input id="IsPublic" type="checkbox" />
+            Is Public
+        <span class="footer">
+            <a id="SaveQuery" href="#">Save</a>
+        </span>
+            <br />
+        </div>
+    </div>
+}
+

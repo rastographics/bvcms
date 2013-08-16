@@ -8,7 +8,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
+using System.Web.Caching;
 using System.Web.Mvc;
+using System.Xml.Linq;
 using CmsData;
 using CmsWeb.Code;
 using CmsWeb.Models;
@@ -534,6 +537,16 @@ namespace CmsWeb.Areas.Search.Models
             Db.SubmitChanges();
             QueryId = Qb.QueryId;
         }
+        public void MoveToPreviousGroup()
+        {
+            var cc = Db.LoadQueryById(SelectedId);
+            var fp = cc.Parent;
+            var g = cc.Parent.Parent;
+            cc.Parent = g;
+            if (fp.Clauses.Count == 0)
+                Db.DeleteQueryBuilderClauseOnSubmit(fp);
+            Db.SubmitChanges();
+        }
         public void InsertGroupAbove()
         {
             var cc = Db.LoadQueryById(SelectedId);
@@ -542,17 +555,19 @@ namespace CmsWeb.Areas.Search.Models
             g.SetComparisonType(CompareType.AllTrue);
             g.ClauseOrder = cc.ClauseOrder;
             if (cc.IsFirst)
+            {
                 cc.Parent = g;
+            }
             else
             {
                 var currParent = cc.Parent;
                 // find all clauses from cc down at same level
                 var q = from c in cc.Parent.Clauses
-                        orderby c.ClauseOrder
-                        where c.ClauseOrder >= cc.ClauseOrder
-                        select c;
+                    orderby c.ClauseOrder
+                    where c.ClauseOrder >= cc.ClauseOrder
+                    select c;
                 foreach (var c in q)
-                    c.Parent = g;   // change to new parent
+                    c.Parent = g; // change to new parent
                 g.Parent = currParent;
             }
             if (cc.SavedBy.HasValue())
@@ -690,7 +705,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<CategoryClass> FieldCategories()
         {
-            var q = from c in CategoryClass.Categories
+            var q = from c in CategoryClass2.Categories
                     where c.Title != "Grouping"
                     select c;
             return q;
@@ -816,8 +831,8 @@ namespace CmsWeb.Areas.Search.Models
         }
         private IQueryable<Person> ApplySort(IQueryable<Person> q)
         {
-            if (Pager.Sort == null)
-                Pager.Sort = "Name";
+//            if (Pager.Sort == null)
+//                Pager.Sort = "Name";
             if (Pager.Direction != "desc")
                 switch (Pager.Sort)
                 {
@@ -975,43 +990,7 @@ namespace CmsWeb.Areas.Search.Models
             return m.IsValid;
         }
 
-
         public bool ShowResults { get; set; }
-//        public string Sort { get; set; }
-//        public string Direction { get; set; }
-//
-//        private int? _Page;
-//        public int? Page
-//        {
-//            get { return _Page ?? 1; }
-//            set { _Page = value; }
-//        }
-//        private int StartRow{
-//            get { return (Page.Value - 1) * PageSize.Value; }
-//        }
-//        public int? PageSize
-//        {
-//            get { return DbUtil.Db.UserPreference("PageSize", "10").ToInt(); }
-//            set
-//            {
-//                if (value.HasValue)
-//                    DbUtil.Db.SetUserPreference("PageSize", value);
-//            }
-//        }
-//        private int? count;
-//
-//        public CmsWeb.Models.PagerModel2 pagerModel()
-//        {
-//            return new CmsWeb.Models.PagerModel2
-//            {
-//                Page = Page.Value,
-//                PageSize = PageSize.Value,
-//                Action = "List",
-//                Controller = "Task",
-//                Count = Count,
-//                ToggleTarget = true
-//            };
-//        }
 
         public bool CanSave { get; set; }
     }
