@@ -1,11 +1,12 @@
 ﻿@using CmsWeb
 @model CmsWeb.Models.ContactPage.ContactModel
-<h2>Contact</h2>
+<h2>Contact
+<a href="/ContactSearch/">goto search</a></h2>
 <table class="grid">
     <tbody>
         <tr>
             <th class="right">Contact Date:</th>
-            <td>@Model.contact.ContactDate.ToShortDateString()</td>
+            <td>@Model.ContactDate</td>
         </tr>
         <tr>
             <th class="right">Ministry:</th>
@@ -23,25 +24,25 @@
 </table>
 <div>
     <div class="column">
-        <div>@Html.CheckBoxReadonly(Model.contact.NotAtHome ?? false) <span>Attempted/Not Available</span></div>
-        <div>@Html.CheckBoxReadonly(Model.contact.LeftDoorHanger ?? false) <span>Left Note Card</span></div>
-        <div>@Html.CheckBoxReadonly(Model.contact.LeftMessage ?? false) <span>Left Message</span></div>
-        <div>@Html.CheckBoxReadonly(Model.contact.ContactMade ?? false) <span>Contact Made</span></div>
+        <div>@Html.CheckBoxReadonly(Model.NotAtHome) <span>Attempted/Not Available</span></div>
+        <div>@Html.CheckBoxReadonly(Model.LeftDoorHanger) <span>Left Note Card</span></div>
+        <div>@Html.CheckBoxReadonly(Model.LeftMessage) <span>Left Message</span></div>
+        <div>@Html.CheckBoxReadonly(Model.ContactMade) <span>Contact Made</span></div>
     </div>
     <div class="column">
-        <div>@Html.CheckBoxReadonly(Model.contact.GospelShared ?? false) <span>GospelShared</span></div>
-        <div>@Html.CheckBoxReadonly(Model.contact.PrayerRequest ?? false) <span>Prayer Request Received</span></div>
-        <div>@Html.CheckBoxReadonly(Model.contact.GiftBagGiven ?? false) <span>Gift Bag Given</span></div>
+        <div>@Html.CheckBoxReadonly(Model.GospelShared) <span>GospelShared</span></div>
+        <div>@Html.CheckBoxReadonly(Model.PrayerRequest) <span>Prayer Request Received</span></div>
+        <div>@Html.CheckBoxReadonly(Model.GiftBagGiven) <span>Gift Bag Given</span></div>
     </div>
 </div>
 @if (Model.CanViewComments)
 {
     <div class="text">
         <div><strong>Comments:</strong></div>
-        <div>@Model.contact.Comments</div>
+        <div>@Model.Comments</div>
         <div class="right">
-            <a id="delete" class="bt red" href="/Contact/ContactDelete/@Model.contact.ContactId">Delete</a>
-            <a id="edit" class="bt blue" href="/Contact/ContactEdit/@Model.contact.ContactId">Edit</a>
+            <a id="delete" class="bt red" href="/Contact/ContactDelete/@Model.Id">Delete</a>
+            <a id="edit" class="bt blue" href="/Contact/ContactEdit/@Model.Id">Edit</a>
         </div>
     </div>
 }

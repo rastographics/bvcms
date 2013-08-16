@@ -294,7 +294,7 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new AdvancedModel();
             m.LoadScratchPad();
             var cid = CmsData.Contact.AddContact(m.QueryId.Value);
-            return Content("/Contact.aspx?id=" + cid);
+            return Content("/Contact/" + cid);
         }
         [HttpPost]
         public ActionResult AddTasks()

@@ -113,7 +113,7 @@
         <tr>
             <th>Completed Contact:</th>
             <td>
-                <a href="/Contact.aspx?id=@Model.CompletedContactId">@Model.CompletedContact.FormatDate()</a>
+                <a href="/Contact/@Model.CompletedContactId">@Model.CompletedContact.FormatDate()</a>
 @if(Model.CanCompleteWithContact) 
 { 
                 <a href="#" class="completewcontact">(complete)</a>

@@ -1,4 +1,4 @@
-﻿///#source 1 1 /Scripts/jquery/jquery.form.js
+﻿///#source 1 1 /Scripts/jQuery/jquery.form.js
 /*!
  * jQuery Form Plugin
  * version: 3.32.0-2013.04.09
@@ -1173,7 +1173,7 @@
     }
 
 })(jQuery);
-///#source 1 1 /Scripts/jquery/jquery.form2.js
+///#source 1 1 /Scripts/jQuery/jquery.form2.js
 (function($) {
 
 $.fn.getCheckboxVal = function() {
@@ -1501,7 +1501,7 @@ $(function () {
         ev.preventDefault();
         var taskid = $('#TaskId').val();
         $.post('/Task/CompleteWithContact/' + taskid, null, function(ret) {
-            window.location = "/Contact.aspx?edit=1&id=" + ret.ContactId;
+            window.location = "/Contact/" + ret.ContactId + "?edit=true";
         });
         return false;
     });

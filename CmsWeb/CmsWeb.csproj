@@ -111,11 +111,18 @@
     <Reference Include="MoreLinq">
       <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NPOI">
       <HintPath>..\packages\NPOI.1.2.5\lib\net40\NPOI.dll</HintPath>
     </Reference>
-    <Reference Include="openstacknet">
-      <HintPath>..\packages\openstack.net.1.1.0.2\lib\net40\openstacknet.dll</HintPath>
+    <Reference Include="openstacknet, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\openstack.net.1.1.3.0\lib\net40\openstacknet.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleRESTServices">
+      <HintPath>..\packages\SimpleRESTServices.1.1.1.0\lib\net40\SimpleRESTServices.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -849,6 +856,12 @@
     <Content Include="Scripts\jQuery\onlineregister.min.js">
       <DependentUpon>onlineregister.js.bundle</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\TaskPage.js">
+      <DependentUpon>TaskPage.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\TaskPage.min.js">
+      <DependentUpon>TaskPage.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\js\CheckIn.min.js">
       <DependentUpon>CheckIn.js</DependentUpon>
     </Content>
@@ -861,6 +874,9 @@
     <Content Include="Scripts\js\contact.js" />
     <Content Include="Scripts\js\contact.min.js">
       <DependentUpon>contact.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\Task.min.js">
+      <DependentUpon>Task.js</DependentUpon>
     </Content>
     <Content Include="Scripts\js\UsersEmailFor.js" />
     <Content Include="Scripts\js\ExtraValuesGrid2.js" />
@@ -1117,6 +1133,10 @@
     <Content Include="Scripts\js\contact.min.js.map">
       <DependentUpon>contact.js</DependentUpon>
     </Content>
+    <None Include="Scripts\js\TaskPage.js.bundle" />
+    <Content Include="Scripts\js\TaskPage.min.js.map">
+      <DependentUpon>TaskPage.js.bundle</DependentUpon>
+    </Content>
     <None Include="Scripts\js\main.custom.js.bundle">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -1135,6 +1155,9 @@
     </Content>
     <Content Include="Scripts\js\UsersEmailFor.min.js.map">
       <DependentUpon>UsersEmailFor.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\Task.min.js.map">
+      <DependentUpon>Task.js</DependentUpon>
     </Content>
     <None Include="Scripts\Moment\moment-bundle.js.bundle" />
     <Content Include="Scripts\Moment\moment-bundle.min.js.map">
@@ -1260,7 +1283,6 @@
     <Content Include="Scripts\Search\SavedQuery2.min.js.map">
       <DependentUpon>SavedQuery2.js</DependentUpon>
     </Content>
-    <None Include="Scripts\task.js.bundle" />
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Main\Views\Reports\EnrollmentControl2.cshtml" />
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
@@ -1486,12 +1508,6 @@
     <Content Include="Scripts\Org\enroll-control-ipad.js" />
     <Content Include="Scripts\Org\OrgMemberDialog2.js" />
     <Content Include="Scripts\Search\Query.js" />
-    <Content Include="Scripts\task.js">
-      <DependentUpon>task.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\task.min.js">
-      <DependentUpon>task.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\Volunteer\Calendar.min.js">
       <DependentUpon>Calendar.js</DependentUpon>
     </Content>
@@ -1801,9 +1817,6 @@
     </Content>
     <Content Include="Scripts\Volunteer\volunteering.min.js.map">
       <DependentUpon>volunteering.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\task.min.js.map">
-      <DependentUpon>task.js.bundle</DependentUpon>
     </Content>
     <Content Include="Views\Shared\EditorTemplates\Decimal.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Decimal.cshtml" />
@@ -2725,7 +2738,9 @@
     <Content Include="Areas\Main\Views\Reports\ExtraValues.cshtml">
     </Content>
     <Content Include="images\UpdatePeople.xls" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="images\MucketyTemplate.xls" />
     <Content Include="Areas\Main\Views\Tags\ConvertTagToExtraValue.cshtml">
     </Content>

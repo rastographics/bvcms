@@ -9,7 +9,7 @@ namespace CmsData
 {
     public partial class Contact
     {
-        public static int AddContact(int qid)
+        public static int AddContact(int qid, int? MakerId = null)
         {
             var q = DbUtil.Db.PeopleQuery(qid);
             if (q.Count() > 100)
@@ -26,6 +26,8 @@ namespace CmsData
 			};
             foreach (var p in q)
                 c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
+            if (MakerId.HasValue)
+                c.contactsMakers.Add(new Contactor {PeopleId = MakerId.Value});
             DbUtil.Db.Contacts.InsertOnSubmit(c);
             DbUtil.Db.SubmitChanges();
             return c.ContactId;

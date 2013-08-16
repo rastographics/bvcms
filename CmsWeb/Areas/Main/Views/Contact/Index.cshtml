@@ -9,6 +9,13 @@
 @section head
 {
     <style>
+
+            #contact h2 a {
+                font-size: 70%;
+                font-weight: normal;
+                margin-left: 3em;
+            }
+
         div.column {
             display: inline-block;
             vertical-align: text-top;
@@ -44,6 +51,7 @@
         .bt.out {
             display: none;
         }
+
         .out {
             color: #bbb;
         }
@@ -55,7 +63,11 @@
 }
 @Html.Hidden("Id")
 <form id="contact" class="roundbox floatleft" method="post">
-    @Html.Partial("ContactDisplay", Model)
+    @if (ViewBag.edit == true) {
+        @Html.Partial("ContactEdit", Model)
+    } else {
+        @Html.Partial("ContactDisplay", Model)
+    }
 </form>
 <div class="floatclear"></div>
 <br />
@@ -64,31 +76,31 @@
     <tr>
         <td class="top">
             <h4>Ministry Team</h4>
-            <form id="contactors" action="/Contacts/Contactors/@Model.contact.ContactId">
-                @Html.Partial("Contactors", Model.Contactors)
+            <form id="contactors" action="/Contacts/Contactors/@Model.Id">
+                @Html.Partial("Contactors", Model.Ministers)
             </form>
             @if (Model.CanViewComments)
             {
                 <div class="right">
                     <br />
-                    <a href="/SearchAdd/Index/@Model.contact.ContactId?type=contactor" class="bt addperson in">Add Team Member</a>
+                    <a href="/SearchAdd/Index/@Model.Id?type=contactor" class="bt addperson in">Add Team Member</a>
                 </div>
                 <div>
                     <br />
-                    <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.contact.ContactId" class="bt green in">Add New Contact for Team</a>
+                    <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.Id" class="bt green in">Add New Contact for Team</a>
                 </div>
             }
         </td>
         <td class="top spaceover">
             <h4>Those Contacted</h4>
-            <form id="contactees" action="/Contacts/Contactees/@Model.contact.ContactId">
-                @Html.Partial("Contactees", Model.Contactees)
+            <form id="contactees" action="/Contacts/Contactees/@Model.Id">
+                @Html.Partial("Contactees", Model.MinisteredTo)
             </form>
             @if (Model.CanViewComments)
             {
                 <div class="right">
                     <br />
-                    <a href="/SearchAdd/Index/@Model.contact.ContactId?type=contactee" class="bt addperson in">Add Contactee</a>
+                    <a href="/SearchAdd/Index/@Model.Id?type=contactee" class="bt addperson in">Add Contactee</a>
                 </div>
             }
         </td>

@@ -287,7 +287,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var m = new QueryModel();
             m.LoadScratchPad();
             var cid = CmsData.Contact.AddContact(m.QueryId.Value);
-            return Content("/Contact.aspx?id=" + cid);
+            return Content("/Contact/" + cid);
         }
         [HttpPost]
         public ActionResult AddTasks()

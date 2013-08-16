@@ -17,7 +17,10 @@ $(function () {
         $.post($(this)[0].href, q, function (ret) {
             $("#contact").html(ret).ready(function () {
                 $(".bt").button();
-                $(".out").removeClass("out");
+                if($("#editing").val() === "true")
+                    $(".datepicker").datepicker();
+                else
+                    $(".out").removeClass("out");
             });
         });
         return false;

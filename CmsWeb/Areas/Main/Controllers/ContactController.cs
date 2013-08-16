@@ -15,9 +15,10 @@ namespace CmsWeb.Areas.Main.Controllers
     public class ContactController : CmsStaffController
     {
         [GET("Contact/{id}")]
-        public ActionResult Index(int id)
+        public ActionResult Index(int id, bool? edit)
         {
             var m = new ContactModel(id);
+            ViewBag.edit = edit ?? false;
             return View(m);
         }
 
@@ -64,9 +65,11 @@ namespace CmsWeb.Areas.Main.Controllers
         [POST("Contact/ContactUpdate/{cid:int}")]
         public ActionResult ContactUpdate(int cid, ContactModel c)
         {
-            var m = new ContactModel(cid);
-            m.UpdateContact(c.contact);
-            return View("ContactDisplay", m);
+            c.Id = cid;
+            if (!ModelState.IsValid) 
+                return View("ContactEdit", c);
+            c.UpdateContact();
+            return View("ContactDisplay", c);
         }
         [POST("Contact/ContactDelete/{cid:int}")]
         public ActionResult ContactDelete(int cid)

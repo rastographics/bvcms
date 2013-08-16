@@ -500,7 +500,7 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.Contactors.InsertOnSubmit(cp);
             DbUtil.Db.SubmitChanges();
 
-            return Content("/Contact.aspx?id=" + c.ContactId);
+            return Content("/Contact/" + c.ContactId);
         }
 
         [HttpPost]
@@ -529,7 +529,7 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.Contactees.InsertOnSubmit(pc);
             DbUtil.Db.SubmitChanges();
 
-            return Content("/Contact.aspx?id=" + c.ContactId);
+            return Content("/Contact/" + c.ContactId);
         }
 
         [HttpPost]
@@ -662,9 +662,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult AddContact(int id)
         {
-            var c = new ContentResult();
-            c.Content = CmsData.Contact.AddContact(id).ToString();
-            return c;
+            return Content(Contact.AddContact(id).ToString());
         }
 
         [HttpPost]

@@ -256,7 +256,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			DbUtil.Db.Contactors.InsertOnSubmit(cp);
 			DbUtil.Db.SubmitChanges();
 
-			return Content("/Contact.aspx?id=" + c.ContactId);
+			return Content("/Contact/{0}?edit=true".Fmt(c.ContactId));
 		}
 		[HttpPost]
 		public ActionResult AddContactReceived(int id)
@@ -275,18 +275,20 @@ namespace CmsWeb.Areas.Main.Controllers
 			DbUtil.Db.Contacts.InsertOnSubmit(c);
 			DbUtil.Db.SubmitChanges();
 
-			var pc = new Contactee
-			{
-				PeopleId = p.PeopleId,
-				ContactId = c.ContactId
-			};
-
-			DbUtil.Db.Contactees.InsertOnSubmit(pc);
+            c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
+            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
 			DbUtil.Db.SubmitChanges();
 
-			return Content("/Contact.aspx?id=" + c.ContactId);
+			return Content("/Contact/{0}?edit=true".Fmt(c.ContactId));
 		}
-		[HttpPost]
+
+	    [HttpPost]
+	    public ActionResult AddContact(int id)
+	    {
+	        return Content(CmsData.Contact.AddContact(id, Util.UserPeopleId).ToString());
+	    }
+
+	    [HttpPost]
 		public ActionResult AddAboutTask(int id)
 		{
 			var p = DbUtil.Db.LoadPersonById(id);
@@ -501,14 +503,8 @@ namespace CmsWeb.Areas.Main.Controllers
 			DbUtil.LogActivity("Update Registration Tab for: {0}".Fmt(Session["ActivePerson"]));
 			return View("RecRegDisplay", m);
 		}
-		[HttpPost]
-		public ActionResult AddContact(int id)
-		{
-			var c = new ContentResult();
-			c.Content = CmsData.Contact.AddContact(id).ToString();
-			return c;
-		}
-		[HttpPost]
+
+	    [HttpPost]
 		public ActionResult AddTasks(int id)
 		{
 			var c = new ContentResult();

@@ -1,83 +1,122 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Codes;
 using CmsWeb.Code;
-using CmsWeb.Models.ContactPage;
 using Dapper;
-using DocumentFormat.OpenXml.Spreadsheet;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ContactPage
 {
-    public class ContactModel
+    public class ContactModel : IValidatableObject
     {
-        public Contact contact { get; set; }
+        private Contact contact;
+        private readonly CodeValueModel cv;
+
+        public int Id
+        {
+            get { return _id; }
+            set
+            {
+                _id = value;
+                if (_id == 0)
+                    return;
+                contact = DbUtil.Db.Contacts.Single(cc => cc.ContactId == value);
+            }
+        }
 
         public ContactModel()
         {
+            cv = new CodeValueModel();
         }
 
+        public string ContactDate { get; set; }
+        public int MinistryId { get; set; }
+        public int ContactTypeId { get; set; }
+        public int ContactReasonId { get; set; }
+        public bool NotAtHome { get; set; }
+        public bool LeftDoorHanger { get; set; }
+        public bool LeftMessage { get; set; }
+        public bool ContactMade { get; set; }
+        public bool GospelShared { get; set; }
+        public bool PrayerRequest { get; set; }
+        public bool GiftBagGiven { get; set; }
+        public string Comments { get; set; }
+
         public ContactModel(int id)
+            : this()
         {
-            contact = DbUtil.Db.Contacts.Single(cc => cc.ContactId == id);
-            Ministry = Ministries().Single(ss => ss.Value == contact.MinistryId.ToString()).Text;
-            ContactType = ContactTypes().Single(ss => ss.Value == contact.ContactTypeId.ToString()).Text;
-            Reason = ContactReasons().Single(ss => ss.Value == contact.ContactReasonId.ToString()).Text;
-            Contactees = new ContacteesModel(id);
-            Contactors = new ContactorsModel(id);
-            Contactees.CanViewComments = CanViewComments;
-            Contactors.CanViewComments = CanViewComments;
+            Id = id;
+
+            ContactDate = contact.ContactDate.ToShortDateString();
+
+            MinistryId = contact.MinistryId ?? 0;
+            ContactTypeId = contact.ContactTypeId;
+            ContactReasonId = contact.ContactReasonId;
+
+            Ministry = cv.Ministries0().ItemValue(MinistryId);
+            ContactType = cv.ContactTypeCodes0().ItemValue(ContactTypeId);
+            Reason = cv.ContactReasonCodes0().ItemValue(ContactReasonId);
+
+            LeftDoorHanger = contact.LeftDoorHanger ?? false;
+            LeftMessage = contact.LeftMessage ?? false;
+            ContactMade = contact.ContactMade ?? false;
+            GospelShared = contact.GospelShared ?? false;
+            PrayerRequest = contact.PrayerRequest ?? false;
+            GiftBagGiven = contact.GiftBagGiven ?? false;
+            Comments = contact.Comments;
+
+            MinisteredTo = new ContacteesModel(id);
+            Ministers = new ContactorsModel(id);
+            MinisteredTo.CanViewComments = CanViewComments;
+            Ministers.CanViewComments = CanViewComments;
         }
 
         public string ContactType { get; set; }
         public string Reason { get; set; }
         public string Ministry { get; set; }
-        public ContacteesModel Contactees { get; set; }
-        public ContactorsModel Contactors { get; set; }
+        public ContacteesModel MinisteredTo { get; set; }
+        public ContactorsModel Ministers { get; set; }
 
         public SelectList ContactTypes()
         {
-            return new SelectList(new CodeValueModel().ContactTypeCodes0(),
-                "Id", "Value", contact.ContactTypeId);
+            return new SelectList(new CodeValueModel().ContactTypeCodes0(), "Id", "Value");
         }
+
         public SelectList ContactReasons()
         {
-            return new SelectList(new CodeValueModel().ContactReasonCodes0(),
-                "Id", "Value", contact.ContactReasonId);
+            return new SelectList(new CodeValueModel().ContactReasonCodes0(), "Id", "Value");
         }
+
         public SelectList Ministries()
         {
-            return new SelectList(new CodeValueModel().Ministries0(),
-                "Id", "Value", contact.MinistryId);
+            return new SelectList(new CodeValueModel().Ministries0(), "Id", "Value");
         }
 
-        public void UpdateContact(Contact c)
+        public void UpdateContact()
         {
-            contact.ContactTypeId = c.ContactTypeId;
-            contact.ContactDate = c.ContactDate;
-            contact.ContactReasonId = c.ContactReasonId;
-            contact.MinistryId = c.MinistryId;
-            contact.NotAtHome = c.NotAtHome;
-            contact.LeftDoorHanger = c.LeftDoorHanger;
-            contact.LeftMessage = c.LeftMessage;
-            contact.GospelShared = c.GospelShared;
-            contact.PrayerRequest = c.PrayerRequest;
-            contact.ContactMade = c.ContactMade;
-            contact.GiftBagGiven = c.GiftBagGiven;
-            contact.Comments = c.Comments;
-            contact.ModifiedBy = c.ModifiedBy;
-            contact.ModifiedDate = c.ModifiedDate;
-            DbUtil.Db.SubmitChanges();
-            Ministry = Ministries().Single(ss => ss.Value == contact.MinistryId.ToString()).Text;
-            ContactType = ContactTypes().Single(ss => ss.Value == contact.ContactTypeId.ToString()).Text;
-            Reason = ContactReasons().Single(ss => ss.Value == contact.ContactReasonId.ToString()).Text;
-        }
+            contact.ContactDate = DateTime.Parse(ContactDate);
+            contact.MinistryId = MinistryId;
+            contact.ContactReasonId = ContactReasonId;
+            contact.ContactTypeId = ContactTypeId;
 
+            contact.LeftDoorHanger = LeftDoorHanger;
+            contact.LeftMessage = LeftMessage;
+            contact.ContactMade = ContactMade;
+            contact.GospelShared = GospelShared;
+            contact.PrayerRequest = PrayerRequest;
+            contact.GiftBagGiven = GiftBagGiven;
+            contact.Comments = Comments;
+
+            DbUtil.Db.SubmitChanges();
+
+            Ministry = cv.Ministries0().ItemValue(MinistryId);
+            ContactType = cv.ContactTypeCodes0().ItemValue(ContactTypeId);
+            Reason = cv.ContactReasonCodes0().ItemValue(ContactReasonId);
+        }
         internal void DeleteContact()
         {
             var cn = new SqlConnection(Util.ConnectionString);
@@ -86,23 +125,23 @@ namespace CmsWeb.Models.ContactPage
 delete contactees where ContactId = @cid;
 delete contactors where ContactId = @cid;
 delete contact where ContactId = @cid;
-",          new {cid = contact.ContactId });
+", new { cid = contact.ContactId });
         }
 
         public int AddNewTeamContact()
         {
-            var c = new Contact 
-			{ 
-				ContactDate = DateTime.Now.Date, 
+            var c = new Contact
+            {
+                ContactDate = DateTime.Now.Date,
                 MinistryId = contact.MinistryId,
-				CreatedBy = Util.UserId1,
-	            CreatedDate = DateTime.Now,
-	            ContactTypeId = contact.ContactTypeId,
-	            ContactReasonId = contact.ContactReasonId,
-			};
+                CreatedBy = Util.UserId1,
+                CreatedDate = DateTime.Now,
+                ContactTypeId = contact.ContactTypeId,
+                ContactReasonId = contact.ContactReasonId,
+            };
             var q = from cor in DbUtil.Db.Contactors
-                where cor.ContactId == contact.ContactId
-                select cor;
+                    where cor.ContactId == contact.ContactId
+                    select cor;
             foreach (var p in q)
                 c.contactsMakers.Add(new Contactor { PeopleId = p.PeopleId });
             DbUtil.Db.Contacts.InsertOnSubmit(c);
@@ -111,6 +150,8 @@ delete contact where ContactId = @cid;
         }
 
         private bool? canViewComments;
+        private int _id;
+
         public bool CanViewComments
         {
             get
@@ -125,17 +166,37 @@ delete contact where ContactId = @cid;
                 }
 
                 var q = from c in DbUtil.Db.Contactees
-                    where c.ContactId == contact.ContactId
-                    select c.PeopleId;
+                        where c.ContactId == contact.ContactId
+                        select c.PeopleId;
                 var q2 = from c in DbUtil.Db.Contactors
-                    where c.ContactId == contact.ContactId
-                    select c.PeopleId;
+                         where c.ContactId == contact.ContactId
+                         select c.PeopleId;
                 var a = q.Union(q2).ToArray();
 
                 Tag tag = DbUtil.Db.OrgLeadersOnlyTag2();
                 canViewComments = tag.People(DbUtil.Db).Any(p => a.Contains(p.PeopleId));
                 return canViewComments.Value;
             }
+        }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var results = new List<ValidationResult>();
+
+            if (!Util.DateValid(ContactDate))
+                results.Add(ModelError("Contact Date is required", "ContactDate"));
+            if (MinistryId == 0)
+                results.Add(ModelError("Ministry is required", "MinistryId"));
+            if (ContactTypeId == 0)
+                results.Add(ModelError("ContactType is required", "ContactTypeId"));
+            if (ContactReasonId == 0)
+                results.Add(ModelError("ContactReason is required", "ContactReasonId"));
+
+            return results;
+        }
+        private ValidationResult ModelError(string message, string field)
+        {
+            return new ValidationResult(message, new[] { field });
         }
     }
 }

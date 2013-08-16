@@ -13,7 +13,7 @@
     @foreach (var c in Model.Contacts())
     { 
     <tr>
-        <td><a href="/Contact.aspx?id=@c.ContactId">@c.ContactDate.ToShortDateString()</a></td>
+        <td><a href="/Contact/@c.ContactId">@c.ContactDate.ToShortDateString()</a></td>
         <td>@c.TypeOfContact</td>
         <td>@c.ContactReason</td>
     </tr>
