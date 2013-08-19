@@ -1,15 +1,15 @@
 ﻿@model CmsWeb.Areas.People.Models.Person.PersonModel
 <div class="tabbable primary-tabs">
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#personal" data-toggle="tab">Personal</a></li>
-        <li><a id="enrollmentLink" href="#enrollment" data-toggle="tab">Involvement</a></li>
-        <li><a id="membershipLink" href="#membership" data-toggle="tab">Membership</a></li>
+        <li><a href="#personal" data-toggle="tab" class="active">Personal</a></li>
+        <li><a href="#enrollment" data-toggle="tab">Involvement</a></li>
+        <li><a href="#membership" data-toggle="tab">Membership</a></li>
         @if (Model.Person.CanUserSeeGiving)
         {
             <li><a href="#giving" data-toggle="tab" class="ajax">Giving</a></li>
         }
         @*<li><a href="#account" data-toggle="tab" class="ajax">Account</a></li>*@
-        <li><a href="#contacts" data-toggle="tab" class="ajax">Contacts</a></li>
+        <li><a id="contactsTab" href="#contacts" data-toggle="tab" class="ajax">Contacts</a></li>
     </ul>
 
     <div class="tab-content">

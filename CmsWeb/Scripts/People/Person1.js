@@ -64,7 +64,7 @@
             });
         });
     });
-    $("#profile-actions a.manageUser").live("click", function(ev) {
+    $("#profile-actions a.manageUser").live("click", function (ev) {
         ev.preventDefault();
         $("<div class='modal fade hide' data-width='760' />").load($(this).attr("href"), {}, function () {
             var modal = $(this);
@@ -99,7 +99,7 @@
         $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
             var modal = $(this);
             modal.modal("show");
-            modal.on('shown', function() {
+            modal.on('shown', function () {
                 modal.find("textarea").focus();
             });
             modal.on('hidden', function () {
@@ -157,64 +157,75 @@
             $(this).on('hidden', function () {
                 $(this).remove();
             });
-            //            $(this).on("click", "a.close-saved-address", function () {
-            //                $("#primaryaddress").html($("#primaryaddressnew").html());
-            //                var target = $("#addressnew").data("target");
-            //                $("#" + target).html($("#addressnew").html());
-            //            });
         });
     });
 
-    $("#enrollmentLink").click(function () {
-        $('#currentLink').click();
+    $('a[data-toggle="tab"]').on('shown', function (e) {
+        $.cookie('lasttab', $(e.target).attr('href'));
     });
-    $("#membershipLink").click(function () {
-        $('#membershipDisplayLink').click();
-    });
-    $("#contacts-link").click(function () {
-        $("#contacts-tab").each(function () {
-            $.showTable($(this));
-        });
-    });
-    $("#member-link").click(function () {
-        var f = $("#memberdisplay");
-        if ($("table", f).size() === 0) {
-            $.post(f.attr('action'), null, function (ret) {
-                $(f).html(ret).ready(function () {
-                    $.UpdateForSection(f);
-                });
-            });
-            $.showTable($("#extras-tab form"));
-            $.extraEditable('#extravalues');
+    var lastTab = $.cookie('lasttab');
+    if (lastTab) {
+        var tlink = $("a[href='" + lastTab + "']");
+        var tabparent = tlink.closest("ul").data("tabparent");
+        if (tabparent) {
+            $("a[href='#" + tabparent + "']").click().tab("show");
+        }
+        tlink.click().tab("show");
+    }
+    $("a[href='#enrollment']").on('shown', function (e) {
+        if ($("#current").length < 2) {
+            $("a[href='#current']").click().tab("show");
         }
     });
-    $("#system-link").click(function () {
-        $.showTable($("#user-tab"));
+    $("a[href='#membership']").on('shown', function (e) {
+        if ($("#status").length < 2) {
+            $("a[href='#status']").click().tab("show");
+        }
     });
-    $("#changes-link").click(function () {
-        $.showTable($("#changes-tab"));
-    });
-    $("#volunteer-link").click(function () {
-        $.showTable($("#volunteer-tab"));
-    });
-    $("#duplicates-link").click(function () {
-        $.showTable($("#duplicates-tab"));
-    });
-    $("#optouts-link").click(function () {
-        $.showTable($("#optouts-tab"));
-    });
-    $("#recreg-link").click(function (ev) {
-        ev.preventDefault();
-        var f = $('#recreg-tab');
-        if ($('table', f).size() > 0)
-            return false;
-        var q = f.serialize();
-        $.post(f.attr('action'), q, function (ret) {
-            $(f).html(ret);
-            $(".bt", f).button();
-        });
-        return false;
-    });
+    //$("#contacts-link").click(function () {
+    //        $("#contacts-tab").each(function () {
+    //            $.showTable($(this));
+    //        });
+    //    });
+    //    $("#member-link").click(function () {
+    //        var f = $("#memberdisplay");
+    //        if ($("table", f).size() === 0) {
+    //            $.post(f.attr('action'), null, function (ret) {
+    //                $(f).html(ret).ready(function () {
+    //                    $.UpdateForSection(f);
+    //                });
+    //            });
+    //            $.showTable($("#extras-tab form"));
+    //            $.extraEditable('#extravalues');
+    //        }
+    //    });
+    //    $("#system-link").click(function () {
+    //        $.showTable($("#user-tab"));
+    //    });
+    //    $("#changes-link").click(function () {
+    //        $.showTable($("#changes-tab"));
+    //    });
+    //    $("#volunteer-link").click(function () {
+    //        $.showTable($("#volunteer-tab"));
+    //    });
+    //    $("#duplicates-link").click(function () {
+    //        $.showTable($("#duplicates-tab"));
+    //    });
+    //    $("#optouts-link").click(function () {
+    //        $.showTable($("#optouts-tab"));
+    //    });
+    //    $("#recreg-link").click(function (ev) {
+    //        ev.preventDefault();
+    //        var f = $('#recreg-tab');
+    //        if ($('table', f).size() > 0)
+    //            return false;
+    //        var q = f.serialize();
+    //        $.post(f.attr('action'), q, function (ret) {
+    //            $(f).html(ret);
+    //            $(".bt", f).button();
+    //        });
+    //        return false;
+    //    });
 
     $('#future').live("click", function (ev) {
         ev.preventDefault();
@@ -224,6 +235,7 @@
             d.html(ret);
         });
     });
+
     $.validator.addMethod("date2", function (value, element, params) {
         var v = $.DateValid(value);
         return this.optional(element) || v;
@@ -381,6 +393,7 @@
             }
         });
     });
+
 });
 
 

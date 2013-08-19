@@ -39,7 +39,8 @@
         return false;
     });
     $("ul.nav-tabs a.ajax").live("click", function(event) {
-        var d = $($(this).attr("href"));
+        var state = $(this).attr("href");
+        var d = $(state);
         if(!d.hasClass("loaded"))
             $.ajax({
                 type: 'POST',
@@ -50,7 +51,7 @@
                     d.addClass("loaded");
                 }
             });
-        return false;
+        return true;
     });
     $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();

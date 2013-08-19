@@ -1,6 +1,5 @@
 ﻿@{
-    var newlook = DbUtil.Db.UserPreference("newlook3", "false") == "true";
-	var bkcolor = DbUtil.Db.Setting("HeaderBackground", "#e4e2d5");
+    var bkcolor = DbUtil.Db.Setting("HeaderBackground", "#e4e2d5");
 }
 <!DOCTYPE html>
 <html>
@@ -25,28 +24,15 @@
 	@RenderSection("scripts", required: false)
 </head>
 <body>
-	@Html.Partial("Notices")
-    @if (newlook)
-    {
-        Html.RenderPartial("NewHeader");
-        <section id="main" class="container">
-            <section class="sixteen columns">
-                @RenderBody()
-            </section>
-        </section>
-        @Html.Partial("Footer")
-    }
-    else
-    {
+    @Html.Partial("Notices")
     <div id="container">
         @Html.Partial("OldHeader")
         <div id="main">
             @RenderBody()
         </div>
     </div>
-    }
-	@Html.Partial("Dialogs")
-	@RenderSection("PopupsPlaceholder", required: false)
-	@Html.Partial("Support")
+    @Html.Partial("Dialogs")
+    @RenderSection("PopupsPlaceholder", required: false)
+    @Html.Partial("Support")
 </body>
 </html>
