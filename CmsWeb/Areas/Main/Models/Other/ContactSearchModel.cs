@@ -37,7 +37,7 @@ namespace CmsWeb.Models
 	    public ContactSearchModel()
 		{
 			GetCount = Count;           
-            Sort = "ID";
+            Sort = "Date";
 		}
 
 

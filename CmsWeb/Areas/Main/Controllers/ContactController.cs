@@ -54,6 +54,8 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult ContactEdit(int cid)
         {
             var m = new ContactModel(cid);
+            if (!m.CanViewComments)
+                return View("ContactDisplay", m);
             return View(m);
         }
         [POST("Contact/ContactDisplay/{cid:int}")]

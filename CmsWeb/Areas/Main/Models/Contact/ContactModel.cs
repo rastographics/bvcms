@@ -27,6 +27,12 @@ namespace CmsWeb.Models.ContactPage
                 if (_id == 0)
                     return;
                 contact = DbUtil.Db.Contacts.SingleOrDefault(cc => cc.ContactId == value);
+                if (contact == null)
+                    return;
+                MinisteredTo = new ContacteesModel(value);
+                Ministers = new ContactorsModel(value);
+                MinisteredTo.CanViewComments = CanViewComments;
+                Ministers.CanViewComments = CanViewComments;
             }
         }
 
@@ -61,11 +67,6 @@ namespace CmsWeb.Models.ContactPage
             Ministry = cv.Ministries0().ItemValue(MinistryId);
             ContactType = cv.ContactTypeCodes0().ItemValue(ContactTypeId);
             Reason = cv.ContactReasonCodes0().ItemValue(ContactReasonId);
-
-            MinisteredTo = new ContacteesModel(id);
-            Ministers = new ContactorsModel(id);
-            MinisteredTo.CanViewComments = CanViewComments;
-            Ministers.CanViewComments = CanViewComments;
         }
 
         public string ContactType { get; set; }
@@ -191,7 +192,7 @@ namespace CmsWeb.Models.ContactPage
             {
                 if (_incomplete == null)
                     _incomplete = GetIncomplete();
-                return _incomplete; 
+                return _incomplete;
             }
         }
 
