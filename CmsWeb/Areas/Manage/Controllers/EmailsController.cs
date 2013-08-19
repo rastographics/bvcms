@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Models;
+using Dapper;
 using UtilityExtensions;
 using System.Net.Mail;
 
@@ -70,30 +72,32 @@ namespace CmsWeb.Areas.Manage.Controllers
 		}
 		public ActionResult DeleteQueued(int id)
 		{
-			var email = (from e in DbUtil.Db.EmailQueues
-						 where e.Id == id
-						 select e).Single();
 			var m = new EmailModel { id = id };
             if (m.queue.Sent.HasValue || !m.queue.SendWhen.HasValue || !m.CanDelete())
 				return Redirect("/");
-			DbUtil.Db.EmailQueueTos.DeleteAllOnSubmit(email.EmailQueueTos);
-			DbUtil.Db.EmailQueues.DeleteOnSubmit(email);
-			DbUtil.Db.SubmitChanges();
-			return Redirect("/Manage/Emails");
+		    DeleteEmail(id);
+		    return Redirect("/Manage/Emails");
 		}
-		[Authorize(Roles = "Admin")]
+
+	    private static void DeleteEmail(int id)
+	    {
+	        var cn = new SqlConnection(Util.ConnectionString);
+	        cn.Open();
+	        cn.Execute(@"
+                DELETE dbo.EmailLinks WHERE EmailID = @id;
+                DELETE dbo.EmailResponses WHERE Id = @id;
+                DELETE dbo.EmailQueueTo WHERE Id = @id;
+                DELETE dbo.EmailQueue WHERE Id = @id;
+                ", new {id});
+	    }
+
+	    [Authorize(Roles = "Admin")]
 		public ActionResult Delete(int id)
 		{
-			var email = (from e in DbUtil.Db.EmailQueues
-						 where e.Id == id
-						 select e).Single();
 			var m = new EmailModel { id = id };
             if (!m.CanDelete())
 				return Redirect("/");
-            DbUtil.Db.EmailResponses.DeleteAllOnSubmit(email.EmailResponses);
-			DbUtil.Db.EmailQueueTos.DeleteAllOnSubmit(email.EmailQueueTos);
-			DbUtil.Db.EmailQueues.DeleteOnSubmit(email);
-			DbUtil.Db.SubmitChanges();
+		    DeleteEmail(id);
 			return Redirect("/Manage/Emails");
 		}
 		public ActionResult Resend(int id)
@@ -106,7 +110,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			DbUtil.Db.Email(email.FromAddr, p, email.Subject, email.Body);
 
 		    TempData["message"] = "Mail Resent";
-			return RedirectToAction("Details", new { id = id });
+			return RedirectToAction("Details", new { id });
 		}
 		public ActionResult MakePublic(int id)
 		{
