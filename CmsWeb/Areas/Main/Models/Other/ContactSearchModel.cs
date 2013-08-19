@@ -32,8 +32,9 @@ namespace CmsWeb.Models
 		public int? Ministry { get; set; }
 		public string Result { get; set; }
 		public string CreatedBy { get; set; }
+	    public bool Incomplete { get; set; }
 
-		public ContactSearchModel()
+	    public ContactSearchModel()
 		{
 			GetCount = Count;           
             Sort = "ID";
@@ -127,8 +128,18 @@ namespace CmsWeb.Models
 							   where DbUtil.Db.Users.Any(uu => c.CreatedBy == uu.UserId && uu.Username == CreatedBy)
 							   select c;
 			}
+		    if (Incomplete)
+		    {
+		        contacts = from c in contacts
+		            where c.MinistryId == null 
+                        || c.ContactReasonId == null 
+                        || c.ContactTypeId == null 
+                        || !c.contactees.Any() 
+                        || !c.contactsMakers.Any()
+		            select c;
+		    }
 
-			DateTime startDateRange;
+		    DateTime startDateRange;
 			DateTime endDateRange;
 			if (StartDate.HasValue)
 			{

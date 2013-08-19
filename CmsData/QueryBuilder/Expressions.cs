@@ -414,7 +414,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p => (
                 from c in p.contactsMade
                 where c.contact.MinistryId == ministryid || ministryid == 0
-                where ids.Contains(c.contact.ContactTypeId) || ids.Length == 0 || ids[0] == 0
+                where ids.Contains(c.contact.ContactTypeId ?? 0) || ids.Length == 0 || ids[0] == 0
                 where @from <= c.contact.ContactDate // where it ends
                 where c.contact.ContactDate <= to // where it begins
                 select c
@@ -433,7 +433,7 @@ namespace CmsData
             var mindt = Util.Now.AddDays(-days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 p.contactsHad.Any(a => a.contact.ContactDate >= mindt
-                    && ids.Contains(a.contact.ContactTypeId));
+                    && ids.Contains(a.contact.ContactTypeId ?? 0));
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
@@ -448,7 +448,7 @@ namespace CmsData
             var mindt = Util.Now.AddDays(-days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 p.contactsHad.Any(a => a.contact.ContactDate >= mindt
-                    && ids.Contains(a.contact.ContactReasonId));
+                    && ids.Contains(a.contact.ContactReasonId ?? 0));
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);

@@ -23,11 +23,11 @@ namespace CmsData
 		
 		private DateTime _CreatedDate;
 		
-		private int _ContactTypeId;
+		private int? _ContactTypeId;
 		
 		private DateTime _ContactDate;
 		
-		private int _ContactReasonId;
+		private int? _ContactReasonId;
 		
 		private int? _MinistryId;
 		
@@ -83,13 +83,13 @@ namespace CmsData
 		partial void OnCreatedDateChanging(DateTime value);
 		partial void OnCreatedDateChanged();
 		
-		partial void OnContactTypeIdChanging(int value);
+		partial void OnContactTypeIdChanging(int? value);
 		partial void OnContactTypeIdChanged();
 		
 		partial void OnContactDateChanging(DateTime value);
 		partial void OnContactDateChanged();
 		
-		partial void OnContactReasonIdChanging(int value);
+		partial void OnContactReasonIdChanging(int? value);
 		partial void OnContactReasonIdChanged();
 		
 		partial void OnMinistryIdChanging(int? value);
@@ -216,8 +216,8 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="ContactTypeId", UpdateCheck=UpdateCheck.Never, Storage="_ContactTypeId", DbType="int NOT NULL")]
-		public int ContactTypeId
+		[Column(Name="ContactTypeId", UpdateCheck=UpdateCheck.Never, Storage="_ContactTypeId", DbType="int")]
+		public int? ContactTypeId
 		{
 			get { return this._ContactTypeId; }
 
@@ -263,8 +263,8 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="ContactReasonId", UpdateCheck=UpdateCheck.Never, Storage="_ContactReasonId", DbType="int NOT NULL")]
-		public int ContactReasonId
+		[Column(Name="ContactReasonId", UpdateCheck=UpdateCheck.Never, Storage="_ContactReasonId", DbType="int")]
+		public int? ContactReasonId
 		{
 			get { return this._ContactReasonId; }
 
@@ -611,7 +611,7 @@ namespace CmsData
 					else
 					{
 						
-						this._ContactTypeId = default(int);
+						this._ContactTypeId = default(int?);
 						
 					}
 
@@ -695,7 +695,7 @@ namespace CmsData
 					else
 					{
 						
-						this._ContactReasonId = default(int);
+						this._ContactReasonId = default(int?);
 						
 					}
 
