@@ -556,10 +556,8 @@ namespace CmsWeb.Models
         public int AddCompletedContact(int id)
         {
             var task = DbUtil.Db.Tasks.SingleOrDefault(t => t.Id == id);
-            var c = new CmsData.Contact { ContactDate = Util.Now.Date };
+            var c = new Contact { ContactDate = Util.Now.Date };
             c.CreatedDate = c.ContactDate;
-            c.ContactTypeId = 7;
-            c.ContactReasonId = 160;
             var min = DbUtil.Db.Ministries.SingleOrDefault(m => m.MinistryName == task.Project);
             if (min != null)
                 c.MinistryId = min.MinistryId;

@@ -21,8 +21,6 @@ namespace CmsData
 				ContactDate = DateTime.Now.Date, 
 				CreatedBy = Util.UserId1,
 	            CreatedDate = DateTime.Now,
-	            ContactTypeId = ContactTypeCode.Other,
-	            ContactReasonId = ContactReasonCode.Other,
 			};
             foreach (var p in q)
                 c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
@@ -39,8 +37,6 @@ namespace CmsData
 				ContactDate = date ?? DateTime.Parse("1/1/1900"), 
 				CreatedBy = Util.UserPeopleId ?? Util.UserId1,
 	            CreatedDate = DateTime.Now,
-	            ContactTypeId = ContactTypeCode.Other,
-	            ContactReasonId = ContactReasonCode.Other,
 				Comments = comments
 			};
             c.contactees.Add(new Contactee { PeopleId = pid });

@@ -1314,7 +1314,6 @@
     <Content Include="Content\img\samples\sidebar_john.png" />
     <Content Include="Content\styles\datepicker.css" />
     <Content Include="Scripts\jQuery\jquery-ui-timepicker-addon.js" />
-    <Content Include="Scripts\jQuery\jquery.address-1.5.js" />
     <Content Include="Content\styles\jquery.alerts.css" />
     <Content Include="Content\styles\person.css" />
     <Content Include="Content\styles\jquery.contextMenu.css" />

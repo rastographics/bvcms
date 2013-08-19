@@ -479,13 +479,11 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var p = DbUtil.Db.LoadPersonById(id);
             DbUtil.LogActivity("Adding contact from: {0}".Fmt(p.Name));
-            var c = new CmsData.Contact
+            var c = new Contact
             {
                 CreatedDate = Util.Now,
                 CreatedBy = Util.UserId1,
                 ContactDate = Util.Now.Date,
-                ContactTypeId = 99,
-                ContactReasonId = 99,
             };
 
             DbUtil.Db.Contacts.InsertOnSubmit(c);
@@ -508,13 +506,11 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var p = DbUtil.Db.LoadPersonById(id);
             DbUtil.LogActivity("Adding contact to: {0}".Fmt(p.Name));
-            var c = new CmsData.Contact
+            var c = new Contact
             {
                 CreatedDate = Util.Now,
                 CreatedBy = Util.UserId1,
                 ContactDate = Util.Now.Date,
-                ContactTypeId = 99,
-                ContactReasonId = 99,
             };
 
             DbUtil.Db.Contacts.InsertOnSubmit(c);

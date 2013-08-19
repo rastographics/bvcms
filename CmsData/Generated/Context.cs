@@ -570,10 +570,6 @@ namespace CmsData
         partial void UpdateUploadPeopleRun(UploadPeopleRun instance);
         partial void DeleteUploadPeopleRun(UploadPeopleRun instance);
         
-//        partial void InsertUserCanEmailFor(UserCanEmailFor instance);
-//        partial void UpdateUserCanEmailFor(UserCanEmailFor instance);
-//        partial void DeleteUserCanEmailFor(UserCanEmailFor instance);
-        
         partial void InsertUserRole(UserRole instance);
         partial void UpdateUserRole(UserRole instance);
         partial void DeleteUserRole(UserRole instance);
@@ -1491,12 +1487,6 @@ namespace CmsData
 			get	{ return this.GetTable< UploadPeopleRun>(); }
 
 		}
-
-//		public Table< UserCanEmailFor> UserCanEmailFors
-//		{
-//			get	{ return this.GetTable< UserCanEmailFor>(); }
-//
-//		}
 
 		public Table< UserRole> UserRoles
 		{

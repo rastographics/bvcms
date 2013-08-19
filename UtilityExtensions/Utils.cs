@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Net.Mime;
 using System.Reflection;
 using System.Collections;
 using System.Web.UI;
@@ -18,7 +20,7 @@ namespace UtilityExtensions
             Object o = Activator.CreateInstance(type);
             PropertyInfo[] props = type.GetProperties();
             for (int i = 0; i < props.Length; i++)
-                Util.SetPropertyFromText(o, props[i].Name, reader[props[i].Name].ToString().Trim());
+                props[i].SetPropertyFromText(o, reader[props[i].Name].ToString().Trim());
             return o;
         }
         public static Object GetAs(string line, Type type)
@@ -27,7 +29,7 @@ namespace UtilityExtensions
             PropertyInfo[] props = type.GetProperties();
             var a = line.Split('\t');
             for (int i = 0; i < props.Length; i++)
-                Util.SetPropertyFromText(o, props[i].Name, a[i].Trim());
+                props[i].SetPropertyFromText(o, a[i].Trim());
             return o;
         }
         public static object GetProperty(object Object, string Property)
@@ -197,10 +199,10 @@ namespace UtilityExtensions
             SetPropertyEx(Sub, Subs, Value);
         }
 
-        public static void SetPropertyFromText(object obj, string member, string textvalue)
+       public static void SetPropertyFromText(object obj, string member, string textvalue)
         {
             Type typBindingSource = null;
-            object minfo = obj.GetType().GetMember(member, Util.bindingFlags)[0];
+            object minfo = obj.GetType().GetMember(member, bindingFlags)[0];
             MemberTypes mt;
             if (minfo is FieldInfo)
                 mt = ((FieldInfo)minfo).MemberType;
@@ -213,82 +215,49 @@ namespace UtilityExtensions
                 typBindingSource = ((PropertyInfo)minfo).PropertyType;
 
             object value = null;
+            if (!GetValue(textvalue, typBindingSource, ref value)) 
+                return;
 
-            if (typBindingSource == typeof(string))
+            Util.SetPropertyEx(obj, member, value);
+        }
+
+        private static bool GetValue(string textvalue, Type typBindingSource, ref object value)
+        {
+            if (typBindingSource == typeof (string))
                 value = textvalue;
-            else if (typBindingSource == typeof(int))
-            {
-                int v;
-                if (!int.TryParse(textvalue, out v))
-                    throw new Exception("Invalid numeric input");
-                else
-                    value = v;
-            }
-            else if (typBindingSource == typeof(int?))
-            {
-                int v;
-                if (!int.TryParse(textvalue, out v))
-                    value = null;
-                else
-                    value = v;
-            }
-            else if (typBindingSource == typeof(long?))
-            {
-                long v;
-                if (!long.TryParse(textvalue, out v))
-                    value = null;
-                else
-                    value = v;
-            }
-            else if (typBindingSource == typeof(decimal))
-                value = decimal.Parse(textvalue);
-            else if (typBindingSource == typeof(decimal?))
-            {
-                decimal d;
-                if (decimal.TryParse(textvalue, out d))
-                    value = d;
-            }
-            else if (typBindingSource == typeof(double))
+            else if (typBindingSource == typeof (int))
+                value = textvalue.ToInt();
+            else if (typBindingSource == typeof (int?))
+                value = textvalue.ToInt2();
+            else if (typBindingSource == typeof (bool))
+                value = textvalue.ToBool();
+            else if (typBindingSource == typeof (bool?))
+                value = textvalue.ToBool2();
+            else if (typBindingSource == typeof (DateTime))
+                value = textvalue.ToDate() ?? DateTime.MinValue;
+            else if (typBindingSource == typeof (DateTime?))
+                value = textvalue.ToDate();
+            else if (typBindingSource == typeof (long?))
+                value = textvalue.ToLong2();
+            else if (typBindingSource == typeof (decimal))
+                value = textvalue.ToDecimal() ?? 0;
+            else if (typBindingSource == typeof (decimal?))
+                value = textvalue.ToDecimal();
+            else if (typBindingSource == typeof (double))
                 value = double.Parse(textvalue);
-            else if (typBindingSource == typeof(bool))
-            {
-                bool b;
-                if (bool.TryParse(textvalue, out b))
-                    value = b;
-                else
-                    value = int.Parse(textvalue) != 0;
-            }
-            else if (typBindingSource == typeof(bool?))
-            {
-                int i;
-                bool b;
-                if (bool.TryParse(textvalue, out b))
-                    value = b;
-                else if (int.TryParse(textvalue, out i))
-                    value = i != 0;
-            }
-            else if (typBindingSource == typeof(DateTime))
-            {
-                DateTime dt = DateTime.MinValue;
-                if (!DateTime.TryParse(textvalue, out dt))
-                    throw new Exception("Invalid date input");
-                else
-                    value = dt;
-            }
-            else if (typBindingSource == typeof(DateTime?))
-            {
-                DateTime dt;
-                if (!DateTime.TryParse(textvalue, out dt))
-                    value = null;
-                else
-                    value = dt;
-            }
             else if (typBindingSource.IsEnum)
                 value = Enum.Parse(typBindingSource, textvalue);
             else
-                throw new Exception("Field Type not Handled by Data unbinding");
+                return false;
+            return true;
+        }
 
-            Util.SetPropertyEx(obj, member, value);
+        public static void SetPropertyFromText(this PropertyInfo p, object obj, string textvalue)
+        {
+            object value = null;
+            if (!GetValue(textvalue, p.PropertyType, ref value))
+                return;
+            p.SetValue(obj, value, null);
         }
 
         public static object CallMethod(object Object, string Method, params object[] Params)
@@ -306,6 +275,30 @@ namespace UtilityExtensions
             string Subs = Method.Substring(DotAt + 1);
             object Sub = GetPropertyInternal(Parent, Main);
             return CallMethodEx(Sub, Subs, Params);
+        }
+        public static void CopyPropertiesFrom(this object target, object source)
+        {
+            PropertyInfo[] sourceProps = source.GetType().GetProperties();
+            PropertyInfo[] targetProps = target.GetType().GetProperties();
+            foreach (var s in sourceProps)
+            {
+                var t = targetProps.FirstOrDefault(tt => tt.Name == s.Name);
+                if (t == null)
+                    continue;
+                var so = s.GetValue(source, null);
+
+                if (s.PropertyType == t.PropertyType)
+                    t.SetValue(target, so, null);
+                    
+                else if (so is string)
+                    t.SetPropertyFromText(target, (string)so);
+
+                else if (so is DateTime && (DateTime)so == ((DateTime)so).Date)
+                    t.SetPropertyFromText(target, ((DateTime)so).ToShortDateString());
+
+                else
+                    t.SetPropertyFromText(target, (so ?? "").ToString());
+            }
         }
 
         public static Control FindControlRecursive(Control Root, string Id)

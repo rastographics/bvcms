@@ -69,6 +69,13 @@ namespace UtilityExtensions
             long.TryParse(s, out i);
             return i;
         }
+        public static long? ToLong2(this string s)
+        {
+            long ii;
+            if(long.TryParse(s, out ii))
+                return ii;
+            return null;
+        }
         public static DateTime? ToDate(this string s)
         {
             if (s != null && s.AllDigits() && s.Length == 8)

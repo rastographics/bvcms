@@ -969,23 +969,6 @@ namespace CmsData
             }
             return rr;
         }
-        public Contact AddContactReceived(CMSDataContext Db, DateTime dt, int type, int reason, string notes)
-        {
-            var c = new Contact
-            {
-                CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
-                ContactDate = dt,
-                ContactTypeId = type,
-                ContactReasonId = reason,
-                Comments = notes
-            };
-            Db.Contacts.InsertOnSubmit(c);
-            c.contactees.Add(new Contactee { PeopleId = PeopleId });
-            Db.SubmitChanges();
-            return c;
-        }
-
         private StringBuilder psbDefault;
         public void UpdateValue(string field, object value)
         {

@@ -9,12 +9,11 @@
 @section head
 {
     <style>
-
-            #contact h2 a {
-                font-size: 70%;
-                font-weight: normal;
-                margin-left: 3em;
-            }
+        #contact h2 a {
+            font-size: 70%;
+            font-weight: normal;
+            margin-left: 3em;
+        }
 
         div.column {
             display: inline-block;
@@ -55,6 +54,9 @@
         .out {
             color: #bbb;
         }
+        td.error {
+            width: 390px;
+        }
     </style>
 }
 @section scripts
@@ -63,9 +65,12 @@
 }
 @Html.Hidden("Id")
 <form id="contact" class="roundbox floatleft" method="post">
-    @if (ViewBag.edit == true) {
+    @if (ViewBag.edit == true)
+    {
         @Html.Partial("ContactEdit", Model)
-    } else {
+    }
+    else
+    {
         @Html.Partial("ContactDisplay", Model)
     }
 </form>

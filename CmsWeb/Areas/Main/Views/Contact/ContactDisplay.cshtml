@@ -1,4 +1,5 @@
 ﻿@using CmsWeb
+@using RestSharp.Extensions
 @model CmsWeb.Models.ContactPage.ContactModel
 <h2>Contact
 <a href="/ContactSearch/">Contact Search</a></h2>
@@ -8,6 +9,15 @@
             <th class="right">Contact Date:</th>
             <td>@Model.ContactDate</td>
         </tr>
+        @if (Model.Incomplete.HasValue())
+        {
+            <tr>
+                <th class="right">Incomplete:</th>
+                <td class="input-validation-error error">
+                    @Model.Incomplete
+                </td>
+            </tr>
+        }
         <tr>
             <th class="right">Ministry:</th>
             <td><span>@Model.Ministry</span></td>

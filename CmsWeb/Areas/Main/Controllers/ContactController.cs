@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Text;
 using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
-using CmsData;
 using CmsWeb.Models.ContactPage;
-using iTextSharp.text.pdf.fonts.cmaps;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
@@ -18,9 +13,14 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult Index(int id, bool? edit)
         {
             var m = new ContactModel(id);
+            if (m.contact == null)
+                return Content("contact does not exist");
+
             ViewBag.edit = edit ?? false;
             return View(m);
         }
+
+
 
         [POST("Contact/RemoveContactee/{cid:int}/{pid:int}")]
         public ActionResult RemoveContactee(int cid, int pid)
@@ -54,6 +54,8 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult ContactEdit(int cid)
         {
             var m = new ContactModel(cid);
+            if (!m.CanViewComments)
+                return View("ContactDisplay", m);
             return View(m);
         }
         [POST("Contact/ContactDisplay/{cid:int}")]
@@ -66,7 +68,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult ContactUpdate(int cid, ContactModel c)
         {
             c.Id = cid;
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return View("ContactEdit", c);
             c.UpdateContact();
             return View("ContactDisplay", c);

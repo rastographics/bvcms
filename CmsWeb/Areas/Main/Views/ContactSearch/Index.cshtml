@@ -50,12 +50,13 @@
             <th class="right">Created By:</th>
             <td>@Html.TextBoxFor(vv => vv.CreatedBy, new { title="UserName or PeopleId" })</td>
         </tr>
-        <tr>
-            <td colspan="2" class="right">
-                <a id="NewSearch" class="bt">Clear</a>
-                <a id="search" class="blue bt">Search</a>
-            </td>
-        </tr>
+            <tr>
+                <td>Incomplete: @Html.CheckBoxFor(vv => vv.Incomplete)</td>
+                <td class="right">
+                    <a id="NewSearch" class="bt">Clear</a>
+                    <a id="search" class="blue bt">Search</a>
+                </td>
+            </tr>
     </tbody>
 </table>
 </div>
