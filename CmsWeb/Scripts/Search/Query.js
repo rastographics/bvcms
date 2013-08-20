@@ -111,21 +111,6 @@
             });
         }
     });
-
-    //    $('#QueryConditionHelp').dialog({
-    //        title: 'Help on Condition',
-    //        bgiframe: true,
-    //        autoOpen: false,
-    //        width: 750,
-    //        height: 700,
-    //        modal: true,
-    //        overlay: {
-    //            opacity: 0.5,
-    //            background: "black"
-    //        }, close: function () {
-    //            $('iframe', this).attr("src", "");
-    //        }
-    //    });
     $('a.help').live("click", function (event) {
         event.preventDefault();
         var d = $('#QueryConditionHelp');
@@ -159,30 +144,6 @@
     $('#Export').click(function (ev) {
         window.location = "/Query/Export/" + $("#QueryId").val();
     });
-    var dialogOptions = {
-        overlay: { background: "#000", opacity: 0.3 },
-        modal: true,
-        autoOpen: false,
-        closeOnEscape: true,
-        width: 500
-    };
-    //    $('#SaveQueryDiv').dialog(dialogOptions);
-    //    $('#OpenQueryDiv').dialog(dialogOptions);
-    //
-    //    $('#ShowSaveQuery').live("click", function (ev) {
-    //        $('#SaveQueryDesc').val($('#Description').text());
-    //        $('#SaveQueryDiv').dialog("open");
-    //    });
-    //    $('#SaveQuery').click(function (ev) {
-    //        $('#SaveQueryDiv').dialog("close");
-    //        $.post("/Query/SaveQuery/", {
-    //            SavedQueryDesc: $('#SaveQueryDesc').val(),
-    //            IsPublic: $('#IsPublic').is(':checked')
-    //        }, function (ret) {
-    //            $("#Description").text(ret);
-    //        });
-    //        return false;
-    //    });
     if ($("#NewSearchId").val()) {
         $EditCondition($("#NewSearchId").val());
         $('#QueryConditionSelect').modal("show");
@@ -190,26 +151,8 @@
     else if ($("#AutoRun").val() === "true")
         $("#Run").click();
 
-
-    //    $('#QueryConditionSelect').dialog({
-    //        overlay: { background: "#000", opacity: 0.3 },
-    //        bgiframe: true,
-    //        modal: true,
-    //        autoOpen: false,
-    //        closeOnEscape: true,
-    //        width: 750,
-    //        height: 575,
-    //        position: 'top'
-    //    });
-    //    if ($("#SelectedId").val() > 0) {
-    //        $.AdjustEditCondition();
-    //        $('#QueryConditionSelect').dialog("open");
-    //    }
-    //    $("#tabber").tabs();
-    //
     $("#SelectCondition").live("click", function (ev) {
         ev.preventDefault();
-        //$.unblockUI();
         $('#QueryConditionSelect').modal("show");
         return false;
     });

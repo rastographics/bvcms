@@ -1,99 +1,200 @@
-﻿#conditionlist {
-    font-size: 13px;
-    width: 100%;
+#search-body h2 {
+  font-size: 20px;
 }
-
-    /*
-    #conditionlist ul li {
-        text-align: left;
-    }
-*/
-    #conditionlist a {
-        text-decoration: none;
-        color: #444;
-    }
-    #conditionlist .icon-pencil {
-        color: #ccc;
-    }
-    #conditionlist td.add-condition {
-        width: 30px;
-        height: 100%;
-        text-align: center;
-    }
-
-        #conditionlist td.add-condition > div > a {
-            display: block;
-            padding: 5px;
-        }
-
-    #conditionlist td.clausetext {
-        text-align: left;
-        white-space: normal;
-    }
-
-        #conditionlist td.clausetext a.editconditionlink {
-            display: block;
-            text-align: left;
-        }
-
-    #conditionlist a:hover {
-        color: white;
-        background: #0088cc;
-        -webkit-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
-    }
-
-    #conditionlist div.clausetext {
-        -ms-word-wrap: break-word;
-        word-wrap: break-word;
-        text-align: left;
-    }
-
-
-#editcondition {
-    display: none;
+#conditions > a {
+  display: inline-block;
+  margin-bottom: 3px;
+  padding: 4px 8px;
+  color: #666;
+  border: 1px solid #999;
+  font-size: 12px;
+  -webkit-border-radius: 4px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 4px;
+  -moz-background-clip: padding;
+  border-radius: 4px;
+  background-clip: padding-box;
 }
-
-td.select-button {
-    padding-bottom: 12px;
+#conditions > a:hover,
+#conditions > a:focus {
+  background-color: #999;
+  color: #FFF;
+  text-decoration: none;
 }
-
-#QueryConditionSelect div.FieldLink {
-    margin-top: .2em;
+#conditionsList {
+  list-style: none;
+  margin-left: 0;
 }
-
-    #QueryConditionSelect div.FieldLink a {
-        color: #336699;
-        font-size: 180%;
-    }
-
-#QueryConditionSelect div.moreinfo {
-    margin-left: 3em;
-    color: #999;
-    font-size: 110%;
-    font-style: italic;
+#conditionsList select {
+  width: 75px;
 }
-/*
-#Results table {
-    margin-top: 1em;
+#conditionsList header {
+  background: #DDD;
+  padding: 3px 10px;
+  line-height: 24px;
 }
-*/
-
-/*
-#Results h4 {
-    margin-top: .5em;
-    margin-bottom: .5em;
+#conditionsList header label {
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 90%;
 }
-*/
-/*
-#editcondition table td {
-    padding: 3px;
+#conditionsList header label:after {
+  content: "\f0da";
+  font-family: FontAwesome;
+  padding: 0 4px;
+  color: #666;
 }
-*/
-/*
-#editcondition table tr td:nth-child(1) {
-    text-align: right; 
+#conditionsList header a {
+  display: inline-block;
+  float: right;
+  color: #666;
+  text-decoration: none;
+  line-height: 24px;
+  height: 24px;
 }
-*/
-
-
+#conditionsList header a i {
+  line-height: 24px;
+}
+#conditionsList header > a {
+  margin-top: 3px;
+}
+#conditionsList header .dropdown {
+  display: inline-block;
+  float: right;
+  margin-left: 6px;
+  margin-top: 3px;
+}
+#conditionsList header select {
+  background: #DDD;
+  text-transform: uppercase;
+  border-color: transparent;
+  margin-top: 2px;
+  margin-bottom: 4px;
+  line-height: 24px;
+  font-size: 90%;
+  height: auto;
+  padding: 0 6px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-border-radius: 0;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 0;
+  -moz-background-clip: padding;
+  border-radius: 0;
+  background-clip: padding-box;
+}
+#conditionsList header select:after {
+  content: ">";
+  color: #666;
+}
+#conditionsList header select:hover,
+#conditionsList header select:focus,
+#conditionsList header select:active {
+  border-bottom-color: #999;
+  outline: none;
+  cursor: pointer;
+}
+#conditionsList .conditions {
+  list-style: none;
+  font-size: 90%;
+  margin-left: 0;
+  padding: 2px;
+}
+#conditionsList .conditions .condition {
+  text-transform: uppercase;
+  display: block;
+  font-size: 90%;
+  font-weight: bold;
+}
+#conditionsList .conditions > li {
+  padding: 3px 20px 5px 3px;
+  position: relative;
+  border-bottom: 1px solid #EEE;
+}
+#conditionsList .conditions > li .edit {
+  display: block;
+}
+#conditionsList .conditions > li .dropdown {
+  position: absolute;
+  right: 5px;
+  top: 12px;
+}
+#conditionsList .conditions > li .dropdown > a {
+  color: #CCC;
+  text-decoration: none;
+  font-size: 120%;
+}
+#conditionsList .group-actions {
+  background: #EEE;
+  padding: 4px 8px;
+  font-size: 11px;
+}
+#conditionsList .group-actions a {
+  padding: 4px 6px;
+  color: #555;
+}
+#conditionsList .group-actions a:hover,
+#conditionsList .group-actions a:focus,
+#conditionsList .group-actions a:active {
+  background-color: #888;
+  color: #FFF;
+  -webkit-border-radius: 4px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 4px;
+  -moz-background-clip: padding;
+  border-radius: 4px;
+  background-clip: padding-box;
+  text-decoration: none;
+}
+#conditionsList .subgroups {
+  list-style: none;
+}
+#generated {
+  margin-top: 35px;
+  font-size: 90%;
+}
+#generated a {
+  display: inline-block;
+  margin-left: 10px;
+  padding-left: 14px;
+  border-left: 1px solid #999;
+}
+#generated a:hover,
+#generated a:focus,
+#generated a:active {
+  cursor: pointer;
+}
+#results header {
+  border-top: 5px solid #3481C5;
+}
+#results header #results-count {
+  float: left;
+  padding: 8px 0;
+}
+#results header .btn-page-actions {
+  text-align: right;
+  float: right;
+  margin-top: 0px;
+}
+#results .pagination {
+  clear: both;
+}
+.fieldLink {
+  line-height: 2em;
+}
+.fieldLink .help {
+  left: 0;
+  color: #999;
+  padding-left: 10px;
+  font-size: 110%;
+}
+.popover .form-actions {
+  text-align: right;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.deleteCondition {
+  float: left;
+  color: #900;
+}

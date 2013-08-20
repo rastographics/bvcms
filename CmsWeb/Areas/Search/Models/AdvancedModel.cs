@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Search.Models
     public class AdvancedModel
     {
         private CMSDataContext Db;
-        private QueryBuilderClause Qb;
+        public QueryBuilderClause TopClause;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
@@ -49,20 +49,20 @@ namespace CmsWeb.Areas.Search.Models
 
         public void LoadScratchPad()
         {
-            Qb = Db.QueryBuilderScratchPad();
-            if (QueryId.HasValue && QueryId.Value != Qb.QueryId)
+            TopClause = Db.QueryBuilderScratchPad();
+            if (QueryId.HasValue && QueryId.Value != TopClause.QueryId)
             {
                 var existing = Db.LoadQueryById(QueryId.Value);
                 if (existing != null)
                 {
-                    Qb.CopyFromAll(existing, DbUtil.Db);
-                    Description = Qb.Description;
-                    SavedQueryDesc = Qb.Description;
-                    Qb.Description = Util.ScratchPad;
+                    TopClause.CopyFromAll(existing, DbUtil.Db);
+                    Description = TopClause.Description;
+                    SavedQueryDesc = TopClause.Description;
+                    TopClause.Description = Util.ScratchPad;
                     Db.SubmitChanges();
                 }
             }
-            QueryId = Qb.QueryId;
+            QueryId = TopClause.QueryId;
         }
 
         public int? SelectedId { get; set; }
@@ -439,7 +439,7 @@ namespace CmsWeb.Areas.Search.Models
                 saveto = new QueryBuilderClause();
                 Db.QueryBuilderClauses.InsertOnSubmit(saveto);
             }
-            saveto.CopyFromAll(Qb, DbUtil.Db); // save Qb on top of existing
+            saveto.CopyFromAll(TopClause, DbUtil.Db); // save Qb on top of existing
             if (saveto.SavedBy != "public")
                 saveto.SavedBy = Util.UserName;
             saveto.Description = SavedQueryDesc;
@@ -582,7 +582,7 @@ namespace CmsWeb.Areas.Search.Models
             Db.SubmitChanges();
             if (g.IsFirst)
             {
-                Qb = g;
+                TopClause = g;
                 QueryId = g.QueryId;
             }
         }
@@ -688,10 +688,10 @@ namespace CmsWeb.Areas.Search.Models
         private int level;
         public List<QueryClauseDisplay> ConditionList()
         {
-            if (Qb == null)
+            if (TopClause == null)
                 LoadScratchPad();
             level = 0;
-            return ClauseAndSubs(new List<QueryClauseDisplay>(), Qb);
+            return ClauseAndSubs(new List<QueryClauseDisplay>(), TopClause);
         }
         private List<QueryClauseDisplay> ClauseAndSubs(List<QueryClauseDisplay> list, QueryBuilderClause qc)
         {
@@ -767,21 +767,21 @@ namespace CmsWeb.Areas.Search.Models
         }
         private IQueryable<Person> PersonQuery()
         {
-            if (Qb == null)
+            if (TopClause == null)
                 LoadScratchPad();
             Db.SetNoLock();
-            var q = Db.People.Where(Qb.Predicate(Db));
-            if (Qb.ParentsOf)
+            var q = Db.People.Where(TopClause.Predicate(Db));
+            if (TopClause.ParentsOf)
                 return Db.PersonQueryParents(q);
             return q;
         }
         public void TagAll(Tag tag = null)
         {
-            if (Qb == null)
+            if (TopClause == null)
                 LoadScratchPad();
             Db.SetNoLock();
-            var q = Db.People.Where(Qb.Predicate(Db));
-            if (Qb.ParentsOf)
+            var q = Db.People.Where(TopClause.Predicate(Db));
+            if (TopClause.ParentsOf)
                 q = Db.PersonQueryParents(q);
             if (tag != null)
                 Db.TagAll(q, tag);
@@ -790,11 +790,11 @@ namespace CmsWeb.Areas.Search.Models
         }
         public void UnTagAll()
         {
-            if (Qb == null)
+            if (TopClause == null)
                 LoadScratchPad();
             Db.SetNoLock();
-            var q = Db.People.Where(Qb.Predicate(Db));
-            if (Qb.ParentsOf)
+            var q = Db.People.Where(TopClause.Predicate(Db));
+            if (TopClause.ParentsOf)
                 q = Db.PersonQueryParents(q);
             Db.UnTagAll(q);
         }
