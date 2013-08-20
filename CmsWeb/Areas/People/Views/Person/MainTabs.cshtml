@@ -24,9 +24,11 @@
         </div>
         @if (Model.Person.CanUserSeeGiving)
         {
-            <div class="tab-pane" id="giving" data-link="/Person2/Giving/@Model.PeopleId"></div>
+        <div class="tab-pane" id="giving">
+            @Html.Partial("MainTabs/Giving", Model)
+        </div>
         }
-        @*        <div class="tab-pane" id="account" data-link="/Person2/Account/@Model.PeopleId"></div>*@
+        @* <div class="tab-pane" id="account" data-link="/Person2/Account/@Model.PeopleId"></div> *@
         @if (User.IsInRole("Access"))
         {
             <div class="tab-pane" id="contacts" data-link="/Person2/Contacts/@Model.PeopleId"></div>

@@ -273,6 +273,7 @@
     <Compile Include="Areas\Dialog\Controllers\SearchAddController.cs" />
     <Compile Include="Areas\People\Models\Person\AttendHistoryModel.cs" />
     <Compile Include="Areas\People\Models\Person\AttendInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\MemberInfo.cs" />
     <Compile Include="Areas\People\Models\Person\PendingEnrollments.cs" />
     <Compile Include="Areas\People\Models\Person\OrgMemberInfo.cs" />
     <Compile Include="Areas\People\Models\Person\PreviousEnrollments.cs" />
@@ -295,7 +296,7 @@
     <Compile Include="Areas\People\Models\Person\GrowthInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\MemberInfo.cs">
+    <Compile Include="Areas\People\Models\Person\MemberInfo2.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\People\Models\Person\MemberNotesInfo.cs">
@@ -440,6 +441,7 @@
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\Fingerprint.cs" />
     <Compile Include="Code\LabelMetaData.cs" />
+    <Compile Include="Code\ModelViewModel.cs" />
     <Compile Include="Code\Payments.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />

@@ -15,9 +15,32 @@ namespace CmsWeb.Models.ContactPage
     public class ContactModel : IValidatableObject
     {
         internal Contact contact;
-        private readonly CodeValueModel cv;
+        public readonly CodeValueModel cv;
         private readonly CMSDataContext Db;
+        private bool? canViewComments;
+        private int _id;
+        private string _incomplete;
 
+        public string ContactDate { get; set; }
+        public int MinistryId { get; set; }
+        public int ContactTypeId { get; set; }
+        public int ContactReasonId { get; set; }
+        public bool NotAtHome { get; set; }
+        public bool LeftDoorHanger { get; set; }
+        public bool LeftMessage { get; set; }
+        public bool ContactMade { get; set; }
+        public bool GospelShared { get; set; }
+        public bool PrayerRequest { get; set; }
+        public bool GiftBagGiven { get; set; }
+        public string Comments { get; set; }
+
+        [CodeValue]
+        public string ContactType { get; set; }
+        [CodeValue]
+        public string ContactReason{ get; set; }
+        [CodeValue]
+        public string Ministry{ get; set; }
+        
         public int Id
         {
             get { return _id; }
@@ -41,62 +64,23 @@ namespace CmsWeb.Models.ContactPage
             Db = DbUtil.Db;
             cv = new CodeValueModel();
         }
-
-        public string ContactDate { get; set; }
-        public int MinistryId { get; set; }
-        public int ContactTypeId { get; set; }
-        public int ContactReasonId { get; set; }
-        public bool NotAtHome { get; set; }
-        public bool LeftDoorHanger { get; set; }
-        public bool LeftMessage { get; set; }
-        public bool ContactMade { get; set; }
-        public bool GospelShared { get; set; }
-        public bool PrayerRequest { get; set; }
-        public bool GiftBagGiven { get; set; }
-        public string Comments { get; set; }
-
         public ContactModel(int id)
             : this()
         {
             Id = id;
             if (contact == null)
                 return;
-
             this.CopyPropertiesFrom(contact);
-
-            Ministry = cv.Ministries0().ItemValue(MinistryId);
-            ContactType = cv.ContactTypeCodes0().ItemValue(ContactTypeId);
-            Reason = cv.ContactReasonCodes0().ItemValue(ContactReasonId);
         }
 
-        public string ContactType { get; set; }
-        public string Reason { get; set; }
-        public string Ministry { get; set; }
         public ContacteesModel MinisteredTo { get; set; }
         public ContactorsModel Ministers { get; set; }
-
-        public SelectList ContactTypes()
-        {
-            return new SelectList(new CodeValueModel().ContactTypeCodes0(), "Id", "Value");
-        }
-
-        public SelectList ContactReasons()
-        {
-            return new SelectList(new CodeValueModel().ContactReasonCodes0(), "Id", "Value");
-        }
-
-        public SelectList Ministries()
-        {
-            return new SelectList(new CodeValueModel().Ministries0(), "Id", "Value");
-        }
 
         public void UpdateContact()
         {
             contact.CopyPropertiesFrom(this);
+            this.CopyPropertiesFrom(contact, CodeValuesOnly: true);
             Db.SubmitChanges();
-            Ministry = cv.Ministries0().ItemValue(MinistryId);
-            ContactType = cv.ContactTypeCodes0().ItemValue(ContactTypeId);
-            Reason = cv.ContactReasonCodes0().ItemValue(ContactReasonId);
         }
         internal void DeleteContact()
         {
@@ -131,10 +115,6 @@ namespace CmsWeb.Models.ContactPage
             Db.SubmitChanges();
             return c.ContactId;
         }
-
-        private bool? canViewComments;
-        private int _id;
-        private string _incomplete;
 
         public bool CanViewComments
         {

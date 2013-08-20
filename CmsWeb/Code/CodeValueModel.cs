@@ -80,7 +80,7 @@ namespace CmsWeb.Code
                    };
         }
 
-        public IEnumerable<CodeValueItem> EnvelopeOptions()
+        public IEnumerable<CodeValueItem> EnvelopeOptionList()
         {
             return from ms in DbUtil.Db.EnvelopeOptions
                    orderby ms.Description
@@ -92,7 +92,13 @@ namespace CmsWeb.Code
                    };
         }
 
-        public IEnumerable<CodeValueItem> JoinTypes()
+        public IEnumerable<CodeValueItem> StatementOptionList()
+        {
+            return EnvelopeOptionList();
+        }
+
+
+        public IEnumerable<CodeValueItem> JoinTypeList()
         {
             return from ms in DbUtil.Db.JoinTypes
                    orderby ms.Description
@@ -129,7 +135,7 @@ namespace CmsWeb.Code
             return q.AddNotSpecified();
         }
 
-        public IEnumerable<CodeValueItem> DropTypes()
+        public IEnumerable<CodeValueItem> DropTypeList()
         {
             return from ms in DbUtil.Db.DropTypes
                    orderby ms.Description
@@ -227,7 +233,7 @@ namespace CmsWeb.Code
             return list;
         }
 
-        public IEnumerable<CodeValueItem> NewMemberClassStatusCodes()
+        public IEnumerable<CodeValueItem> NewMemberClassStatusList()
         {
             return from c in DbUtil.Db.NewMemberClassStatuses
                    select new CodeValueItem
@@ -286,7 +292,7 @@ namespace CmsWeb.Code
                    };
         }
 
-        public IEnumerable<CodeValueItem> BaptismTypes()
+        public IEnumerable<CodeValueItem> BaptismTypeList()
         {
             return from ms in DbUtil.Db.BaptismTypes
                    select new CodeValueItem
@@ -297,7 +303,7 @@ namespace CmsWeb.Code
                    };
         }
 
-        public IEnumerable<CodeValueItem> BaptismStatuses()
+        public IEnumerable<CodeValueItem> BaptismStatusList()
         {
             return from ms in DbUtil.Db.BaptismStatuses
                    select new CodeValueItem
@@ -308,7 +314,7 @@ namespace CmsWeb.Code
                    };
         }
 
-        public IEnumerable<CodeValueItem> DecisionCodes()
+        public IEnumerable<CodeValueItem> DecisionTypeList()
         {
             return from ms in DbUtil.Db.DecisionTypes
                    select new CodeValueItem
@@ -341,11 +347,6 @@ namespace CmsWeb.Code
                        Value = m.MinistryName
                    };
         }
-        public IEnumerable<CodeValueItem> Ministries0()
-        {
-            return Ministries().AddNotSpecified();
-        }
-
         public IEnumerable<CodeValueItem> ContactReasonCodes()
         {
             return from c in DbUtil.Db.ContactReasons
@@ -356,10 +357,6 @@ namespace CmsWeb.Code
                        Code = c.Code,
                        Value = c.Description
                    };
-        }
-        public IEnumerable<CodeValueItem> ContactReasonCodes0()
-        {
-            return ContactReasonCodes().AddNotSpecified();
         }
         public IEnumerable<CodeValueItem> ContactTypeCodes()
         {
@@ -372,10 +369,22 @@ namespace CmsWeb.Code
                        Value = c.Description
                    };
         }
-        public IEnumerable<CodeValueItem> ContactTypeCodes0()
-        {
-            return ContactTypeCodes().AddNotSpecified();
-        }
+        public IEnumerable<CodeValueItem> MinistryList() { return Ministries().AddNotSpecified(); }
+        public IEnumerable<CodeValueItem> ContactReasonList() { return ContactReasonCodes().AddNotSpecified(); }
+        public IEnumerable<CodeValueItem> ContactTypeList() { return ContactTypeCodes().AddNotSpecified(); }
+        public SelectList MinistrySelectList() { return MinistryList().ToSelect(); }
+        public SelectList ContactReasonSelectList() { return ContactReasonCodes().ToSelect(); }
+        public SelectList ContactTypeSelectList() { return ContactTypeCodes().ToSelect(); }
+
+        public SelectList StatementOptionSelectList() { return StatementOptionList().ToSelect(); }
+        public SelectList EnvelopeOptionSelectList() { return EnvelopeOptionList().ToSelect(); }
+        public SelectList DecisionTypeSelectList() { return DecisionTypeList().ToSelect(); }
+        public SelectList DropTypeSelectList() { return DropTypeList().ToSelect(); }
+        public SelectList BaptismStatusSelectList() { return BaptismStatusList().ToSelect(); }
+        public SelectList BaptismTypeSelectList() { return BaptismTypeList().ToSelect(); }
+        public SelectList MemberStatusSelectList() { return MemberStatusList().ToSelect(); }
+        public SelectList JoinTypeSelectList() { return JoinTypeList().ToSelect(); }
+
 
         public List<CodeValueItem> PmmLabels()
         {
@@ -670,7 +679,7 @@ namespace CmsWeb.Code
                        Value = ms.Description
                    };
         }
-        public IEnumerable<CodeValueItem> MemberStatusCodes0()
+        public IEnumerable<CodeValueItem> MemberStatusList()
         {
             return MemberStatusCodes().AddNotSpecified();
         }
@@ -966,19 +975,6 @@ namespace CmsWeb.Code
             if (list2.Count > 0)
                 list2[0].Selected = true;
             return list2;
-        }
-    }
-    public static class CodeValue
-    {
-        public static IEnumerable<CodeValueItem> AddNotSpecified(this IEnumerable<CodeValueItem> q)
-        {
-            return q.AddNotSpecified(0);
-        }
-        public static IEnumerable<CodeValueItem> AddNotSpecified(this IEnumerable<CodeValueItem> q, int value)
-        {
-            var list = q.ToList();
-            list.Insert(0, new CodeValueItem { Id = value, Code = value.ToString(), Value = "(not specified)" });
-            return list;
         }
     }
 }

@@ -51,7 +51,7 @@ namespace CmsWeb.Code
                         Items = new SelectList(cv.AllCampuses0(), "Id", "Value", Value);
                         break;
                     case "MemberStatus":
-                        Items = new SelectList(cv.MemberStatusCodes0(), "Id", "Value", Value);
+                        Items = new SelectList(cv.MemberStatusList(), "Id", "Value", Value);
                         break;
                     case "MemberType":
                         Items = new SelectList(CodeValueModel.MemberTypeCodes0(), "Id", "Value", Value);

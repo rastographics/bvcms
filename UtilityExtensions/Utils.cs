@@ -276,30 +276,6 @@ namespace UtilityExtensions
             object Sub = GetPropertyInternal(Parent, Main);
             return CallMethodEx(Sub, Subs, Params);
         }
-        public static void CopyPropertiesFrom(this object target, object source)
-        {
-            PropertyInfo[] sourceProps = source.GetType().GetProperties();
-            PropertyInfo[] targetProps = target.GetType().GetProperties();
-            foreach (var s in sourceProps)
-            {
-                var t = targetProps.FirstOrDefault(tt => tt.Name == s.Name);
-                if (t == null)
-                    continue;
-                var so = s.GetValue(source, null);
-
-                if (s.PropertyType == t.PropertyType)
-                    t.SetValue(target, so, null);
-                    
-                else if (so is string)
-                    t.SetPropertyFromText(target, (string)so);
-
-                else if (so is DateTime && (DateTime)so == ((DateTime)so).Date)
-                    t.SetPropertyFromText(target, ((DateTime)so).ToShortDateString());
-
-                else
-                    t.SetPropertyFromText(target, (so ?? "").ToString());
-            }
-        }
 
         public static Control FindControlRecursive(Control Root, string Id)
         {

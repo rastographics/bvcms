@@ -76,17 +76,17 @@ namespace CmsWeb.Models
             return new List<TitleItems>
             {
                 new TitleItems { title = "Member Status Codes", items = Model.MemberStatusCodes() },
-                new TitleItems { title = "Drop Type Codes", items = Model.DropTypes() },
-                new TitleItems { title = "Baptism Status Codes", items = Model.BaptismStatuses() },
-                new TitleItems { title = "Baptism Type Codes", items = Model.BaptismTypes() },
+                new TitleItems { title = "Drop Type Codes", items = Model.DropTypeList() },
+                new TitleItems { title = "Baptism Status Codes", items = Model.BaptismStatusList() },
+                new TitleItems { title = "Baptism Type Codes", items = Model.BaptismTypeList() },
                 new TitleItems { title = "Campus Codes", items = Model.AllCampuses() },
                 new TitleItems { title = "Marital Status Codes", items = Model.MaritalStatusCodes() },
                 new TitleItems { title = "Gender Codes", items = Model.GenderCodes() },
                 new TitleItems { title = "Family Position Codes", items = Model.FamilyPositionCodes() },
-                new TitleItems { title = "Contribution Statement Options", items = Model.EnvelopeOptions() },
-                new TitleItems { title = "Envelope Options", items = Model.EnvelopeOptions() },
+                new TitleItems { title = "Contribution Statement Options", items = Model.EnvelopeOptionList() },
+                new TitleItems { title = "Envelope Options", items = Model.EnvelopeOptionList() },
                 new TitleItems { title = "Entry Point Codes", items = Model.EntryPoints() },
-                new TitleItems { title = "New Member Class", items = Model.NewMemberClassStatusCodes() },
+                new TitleItems { title = "New Member Class", items = Model.NewMemberClassStatusList() },
                 new TitleItems { title = "Approval Codes (negative to remove, 0 to remove all)", items = Model.VolunteerCodes() },
             };
         }
