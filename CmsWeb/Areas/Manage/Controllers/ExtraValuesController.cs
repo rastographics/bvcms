@@ -108,6 +108,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
         private static PeopleExtra GetExtraValue(int id, string field)
         {
+		    field = field.Replace('/', '-');
             var q = from v in DbUtil.Db.PeopleExtras
                     where v.Field == field
                     where v.PeopleId == id

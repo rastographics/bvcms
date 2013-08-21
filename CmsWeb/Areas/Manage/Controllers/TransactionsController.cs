@@ -185,6 +185,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     Last = t.Last,
                     Suffix = t.Suffix,
 					Amt = amt,
+                    Emails = t.Emails,
 					Amtdue = t.Amtdue - amt,
 					Approved = true,
 					AuthCode = "",

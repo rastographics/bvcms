@@ -714,6 +714,7 @@ namespace CmsWeb.Areas.Main.Controllers
 		[HttpPost]
 		public ActionResult NewExtraValue(int id, string field, string type, string value)
 		{
+		    field = field.Replace('/', '-');
 			var v = new PeopleExtra { PeopleId = id, Field = field };
 			DbUtil.Db.PeopleExtras.InsertOnSubmit(v);
 			switch (type)
