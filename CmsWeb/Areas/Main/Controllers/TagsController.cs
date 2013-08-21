@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var m = new TagsModel();
             if (tag.HasValue())
-                Util2.CurrentTag = tag;
+                m.tag = tag;
             m.SetCurrentTag();
             InitExportToolbar();
             return View(m);
