@@ -350,6 +350,16 @@ namespace CmsWeb.Models
                 Found = true,
                 IsValidForExisting = true,
             };
+            if (p.LoggedIn && org != null)
+            {
+                var setting = settings[org.OrganizationId];
+                if (setting.AllowReRegister)
+                {
+                    var om = org.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == id);
+                    if (om != null)
+                        p.PopulateRegistrationFromDb(om);
+                }
+            }
             return p;
         }
         //		public void SavePaymentInfo()
