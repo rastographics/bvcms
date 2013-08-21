@@ -122,6 +122,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				}
 				if (!ModelState.IsValid)
 					return View(m);
+
 				if (m.masterorg != null && m.masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2)
 				{
 					TempData["ms"] = m.UserPeopleId;
