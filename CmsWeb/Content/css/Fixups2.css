@@ -208,19 +208,17 @@ ul.typeahead li.active a,
 
 
 ul.dropdown-div-reports {
-    margin-left: -300px;
+    margin-left: -470px;
     width: 600px;
 }
 
-
-
 ul.dropdown-div-gear {
-    margin-left: -200px;
+    margin-left: -320px;
     width: 400px;
 }
 
 .dropdown-div-gear.onecolumn {
-    margin-left: auto;
+    margin-left: -100px;
     width: auto;
 }
 

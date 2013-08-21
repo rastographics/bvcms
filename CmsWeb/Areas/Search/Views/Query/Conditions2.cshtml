@@ -71,16 +71,13 @@
     <select name="match-1" id="match-1" class="simple changegroup">
         @OptionItem(clause, CompareType.AllTrue)
         @OptionItem(clause, CompareType.AnyTrue)
-        @OptionItem(clause, CompareType.AnyFalse)
+        @OptionItem(clause, CompareType.AllFalse)
     </select>
 }
 @helper OptionItem(QueryBuilderClause clause, CompareType type)
 {
     <option value="@type.ToString()" @(clause.ComparisonType == type ? "selected" : "")>type.ToString()</option>
 }
-
-
-
 <div id="conditions">
     @Html.Hidden("AutoRun")
     @Html.Hidden("NewSearchId")

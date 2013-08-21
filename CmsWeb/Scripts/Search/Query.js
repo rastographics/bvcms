@@ -194,7 +194,7 @@ function RefreshList(qs) {
         timeout: 1200000, // in milliseconds
         success: function (ret) {
             $('#toolbar').show();
-            $('#Results').html(ret);
+            $('#results').html(ret);
             $('#people tbody tr:even').addClass('alt');
             $('a.taguntag').click(function (ev) {
                 $.post('/Query/ToggleTag/' + $(this).attr('value'), null, function (ret) {
