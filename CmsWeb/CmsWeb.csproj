@@ -728,6 +728,10 @@
     </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-editable.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-editable.min.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-modal-popover.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-modal-popover.min.js">
+      <DependentUpon>bootstrap-modal-popover.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-multiselect.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js">
       <DependentUpon>bootstrap-multiselect.js</DependentUpon>
@@ -973,6 +977,8 @@
     <Content Include="Areas\Main\Views\Contact\ContactDisplay.cshtml" />
     <Content Include="Areas\Main\Views\Contact\ContactEdit.cshtml" />
     <Content Include="Areas\Main\Views\Contact\EditorTemplates\Bool.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditCondition2.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Conditions2.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1119,6 +1125,9 @@
     </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js.map">
       <DependentUpon>bootstrap-multiselect.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bootstrap\bootstrap-modal-popover.min.js.map">
+      <DependentUpon>bootstrap-modal-popover.js</DependentUpon>
     </Content>
     <None Include="Scripts\jQuery\main.js.bundle" />
     <Content Include="Scripts\jQuery\main.min.js.map">

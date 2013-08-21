@@ -8,6 +8,7 @@
 {
     <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Search/Query.js")"></script>
     <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Bootstrap/bootstrap-multiselect.js")"></script>
+    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Bootstrap/bootstrap-modal-popover.js")"></script>
 }
 @section head 
 {
@@ -21,10 +22,10 @@
             <div id="Description"><b>@Model.Description</b></div>
             <div>
                 <h2>Advanced Search </h2>
-                    @Html.Partial("Conditions", Model)
+                    @Html.Partial("Conditions2", Model)
             </div>
         </div>
-        <div id="Results" class="span8">
+        <div id="results" class="span8">
             @if (Model.ShowResults)
             {
                 @Html.Partial("Results", Model) 
