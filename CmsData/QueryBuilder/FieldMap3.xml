@@ -34,9 +34,9 @@
     <NumberOfFamilyMembers Title="Number of Family Members" Type="Integer">Number of Family Members</NumberOfFamilyMembers>
     <HasParents Title="Has Parents" Type="Bit" DataValueField="IdCode">A member of the family is a Primary Adult and this person is a Child</HasParents>
     <FamilyHasChildren Title="Family Has Children" Type="Bit" DataValueField="IdCode">A member of the family is 12 or under</FamilyHasChildren>
-    <FamilyHasChildrenAged Title="Family Has Children Aged" DisplayAs="ChildrenAged&lt;={0}" Type="Bit" Params="Age" DataValueField="IdCode">A member of the family is specified age or under</FamilyHasChildrenAged>
-    <FamilyHasChildrenAged2 Title="Family Has Children Aged Range" DisplayAs="ChildrenAged2={0}" Type="Bit" QuartersLabel="Age Range" Params="Quarters" DataValueField="IdCode">A member of the family is specified age range inclusive (like 10-16 )</FamilyHasChildrenAged2>
-    <FamilyHasChildrenAged3 Title="Family Has M/F Children Aged Range" DisplayAs="ChildrenAged3={0}" Type="Code" QuartersLabel="Age Range" Params="Quarters" DataSource="GenderCodes" DataValueField="IdCode">A member of the family of specified age range inclusive (like 10-16 ) is Male or Female</FamilyHasChildrenAged3>
+    <FamilyHasChildrenAged Title="Family Has Children Aged" DisplayAs="ChildrenAgedLessOrEqual({0})" Type="Bit" Params="Age" DataValueField="IdCode">A member of the family is specified age or under</FamilyHasChildrenAged>
+    <FamilyHasChildrenAged2 Title="Family Has Children Aged Range" DisplayAs="ChildrenAgedRange({0})" Type="Bit" QuartersLabel="Age Range" Params="Quarters" DataValueField="IdCode">A member of the family is specified age range inclusive (like 10-16 )</FamilyHasChildrenAged2>
+    <FamilyHasChildrenAged3 Title="Family Has M/F Children Aged Range" DisplayAs="ChildrenAged({0})" Type="Code" QuartersLabel="Age Range" Params="Quarters" DataSource="GenderCodes" DataValueField="IdCode">A member of the family of specified age range inclusive (like 10-16 ) is Male or Female</FamilyHasChildrenAged3>
     <IsHeadOfHousehold Title="Is Head of Household" Type="Bit" DataValueField="IdCode">This person is the head of the family household</IsHeadOfHousehold>
     <HasRelatedFamily Title="Has Related Family" Type="Bit" DataValueField="IdCode">Indication of whether this person's family is related to another family</HasRelatedFamily>
     <FamilyId Title="Family" Type="Integer">Search for entire family</FamilyId>

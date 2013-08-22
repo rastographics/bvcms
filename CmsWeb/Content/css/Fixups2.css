@@ -396,11 +396,12 @@ span.currentTag {
 }
 
 #conditionsList .conditions > li {
-    padding: 3px 20px 5px 18px;
+    padding: 3px 0px 5px 18px;
 }
+
 #conditionsList ul.subgroups {
-  padding: 0;
-  margin: 0 0 0.75em 18px;
+    padding: 0;
+    margin: 0 0 0.75em 18px;
 }
 
 #conditionsList .dropdown-menu a {
@@ -418,7 +419,81 @@ span.currentTag {
 #conditionsList header .dropdown {
     right: -2px;
 }
+
 #conditionsList a.edit [class^="icon-"],
 #conditionsList a.edit [class*=" icon-"] {
     color: inherit;
+}
+
+.popover2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    padding: 1px;
+    text-align: left;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 6px;
+    -webkit-background-clip: padding-box;
+    -moz-border-radius: 6px;
+    -moz-background-clip: padding;
+    border-radius: 6px;
+    background-clip: padding-box;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    white-space: normal;
+}
+
+.popover-title {
+    margin: 0;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 18px;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #ebebeb;
+    -webkit-border-radius: 5px 5px 0 0;
+    -webkit-background-clip: padding-box;
+    -moz-border-radius: 5px 5px 0 0;
+    -moz-background-clip: padding;
+    border-radius: 5px 5px 0 0;
+    background-clip: padding-box;
+}
+
+    .popover-title:empty {
+        display: none;
+    }
+
+.popover-content {
+    padding: 9px 14px;
+}
+
+#conditionsList .conditions .condition {
+    text-transform: none;
+}
+
+#conditionsList .clause-actions {
+    padding: 4px 8px;
+    font-size: 11px;
+    text-align: right;
+}
+#conditionsList .clause-actions a {
+  padding: 4px 6px;
+  color: #555;
+}
+#conditionsList .clause-actions a:hover,
+#conditionsList .clause-actions a:focus,
+#conditionsList .clause-actions a:active {
+  background-color: #888;
+  color: #FFF;
+  -webkit-border-radius: 4px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 4px;
+  -moz-background-clip: padding;
+  border-radius: 4px;
+  background-clip: padding-box;
+  text-decoration: none;
 }

@@ -22,20 +22,25 @@
             <div id="Description"><b>@Model.Description</b></div>
             <div>
                 <h2>Advanced Search </h2>
-                    @Html.Partial("Conditions2", Model)
+                <div>
+                    <a href="/Query/NewQuery" class="btn btn-success">New</a>
+                    <a href="/SavedQuery2" class="btn">Saved</a>
+                </div>
+                @Html.Partial("Conditions2", Model)
             </div>
         </div>
         <div id="results" class="span8">
-            @if (Model.ShowResults)
-            {
-                @Html.Partial("Results", Model) 
-            }
         </div>
     </div>
 </div>
 
 @section PopupsPlaceholder
 {
+    <div id="editcondition" class="popover2">
+        <h3 class="popover-title">Edit Condition</h3>
+        <div class="popover-content">
+        </div>
+    </div>
     @Html.Partial("SelectCondition", Model)
     <div id="QueryConditionHelp" class="modalPopup" title="Condition Help" style="display: none">
         <iframe style="width: 100%; height: 99%; border-width: 0px;"></iframe>

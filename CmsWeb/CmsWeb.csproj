@@ -1253,6 +1253,10 @@
     <Content Include="Scripts\Search\ContactSearch.min.js.map">
       <DependentUpon>ContactSearch.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Search\Query0.js" />
+    <Content Include="Scripts\Search\Copy of Query.min.js">
+      <DependentUpon>Query0.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Search\PeopleSearch.min.js">
       <DependentUpon>PeopleSearch.js</DependentUpon>
     </Content>
@@ -1852,6 +1856,9 @@
     <Content Include="Views\Shared\NewHeader3.cshtml" />
     <Content Include="Views\Shared\Menu\AdminBar.cshtml" />
     <Content Include="Views\Shared\Toolbar\GearStandard.cshtml" />
+    <Content Include="Scripts\Search\Copy of Query.min.js.map">
+      <DependentUpon>Query0.js</DependentUpon>
+    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -34,6 +34,7 @@ namespace CmsWeb.Areas.Search.Models
         public AdvancedModel()
         {
             Db = DbUtil.Db;
+            Db.SetUserPreference("NewCategories", "true");
             ConditionName = "Group";
             TagTypeId = DbUtil.TagTypeId_Personal;
             TagName = Util2.CurrentTagName;
@@ -447,13 +448,12 @@ namespace CmsWeb.Areas.Search.Models
             Db.SubmitChanges();
             Description = SavedQueryDesc;
         }
-        public void AddConditionToGroup()
+        public int AddConditionToGroup()
         {
             var c = Db.LoadQueryById(SelectedId);
-            var nc = NewCondition(c, c.MaxClauseOrder() + 1);
+            var nc = c.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
             Db.SubmitChanges();
-            if (nc.IsGroup)
-                AddMatchAnyThingToGroup(nc);
+            return nc.QueryId;
         }
         public void AddNewConditionAfterCurrent(int id)
         {
@@ -463,7 +463,7 @@ namespace CmsWeb.Areas.Search.Models
             SelectedId = nc.QueryId;
             EditCondition();
         }
-        public void CopyCurrentCondition(int id)
+        public int CopyCurrentCondition(int id)
         {
             var c = Db.LoadQueryById(id);
             SelectedId = id;
@@ -474,6 +474,7 @@ namespace CmsWeb.Areas.Search.Models
             if (nc.IsGroup)
                 AddMatchAnyThingToGroup(nc);
             EditCondition();
+            return nc.QueryId;
         }
 
         private void AddMatchAnyThingToGroup(QueryBuilderClause nc)
@@ -585,6 +586,19 @@ namespace CmsWeb.Areas.Search.Models
                 TopClause = g;
                 QueryId = g.QueryId;
             }
+        }
+        public IEnumerable<SelectListItem> GroupComparisons()
+        {
+            return from c in CompareClass.Comparisons
+                   where c.FieldType == FieldType.Group
+                   select new SelectListItem 
+                   { 
+                       Text = c.CompType == CompareType.AllTrue ? "All" 
+                            : c.CompType == CompareType.AnyTrue ? "Any" 
+                            : c.CompType == CompareType.AllFalse ? "None" 
+                            : "unknown", 
+                       Value = c.CompType.ToString() 
+                   };
         }
         public IEnumerable<SelectListItem> Comparisons()
         {
@@ -705,7 +719,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<CategoryClass> FieldCategories()
         {
-            var q = from c in CategoryClass2.Categories
+            var q = from c in CategoryClass.Categories
                     where c.Title != "Grouping"
                     select c;
             return q;

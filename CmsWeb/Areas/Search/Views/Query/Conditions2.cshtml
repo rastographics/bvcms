@@ -4,44 +4,41 @@
 @using CmsWeb.Areas.Search.Models
 @using IronPython.Modules
 @model CmsWeb.Areas.Search.Models.AdvancedModel
-
-@{
-    var editing = false;
-}
-@helper ClauseItem(QueryBuilderClause clause)
-{
-    <li>
-        <a href="#editCondition" data-toggle="modal-popover" data-placement="bottom" class="edit edit-popover">
-            <span class="condition">@clause</span>
-        </a>
-        <div class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="icon-cog"></i>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a href="#editCondition" data-toggle="modal-popover" class="edit edit-popover"><i class="icon-pencil icon-fixedwidth"></i> Edit</a></li>
-                <li><a href="#" class="duplicateclause"><i class="icon-copy icon-fixedwidth"></i> Duplicate</a></li>
-                @CogItems(clause) 
-            </ul>
-        </div>
-    </li>
-}
+<div id="conditions">
+    @Html.Hidden("AutoRun")
+    @Html.Hidden("NewSearchId")
+    @Html.Hidden("NewId")
+    @GroupItem(Model.TopClause)
+</div>
 @helper GroupItem(QueryBuilderClause clause)
 {
     <ul @(clause.IsFirst ? "id=conditionsList" : "class=subgroups")>
-        <li class="group">
+        <li class="group condition" data-qid="@clause.QueryId">
             <header>
-                @GroupComparisonList(clause) 
-                <div class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <i class="icon-cog"></i>
-                </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" class="addnewgroup"><i class="icon-plus icon-fixedwidth"></i> Add Group</a></li>
-                        @CogItems(clause) 
-                    </ul>
-                </div>
+                <label for="match-1">Match</label>
+                @Html.DropDownList4("Comparison", "Comparison", Model.GroupComparisons(), clause.Comparison, "simple changegroup")
+@*                <div class="dropdown">*@
+@*                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">*@
+@*                        <i class="icon-cog"></i>*@
+@*                    </a>*@
+@*                    <ul class="dropdown-menu">*@
+@*                        @CogItems(clause)*@
+@*                    </ul>*@
+@*                </div>*@
             </header>
+            <div class="group-actions">
+                <a href="#" class="addnewclause"><i class="icon-plus"></i> Condition</a>
+                <a href="#" class="addnewgroup"><i class="icon-plus"></i> Group</a>
+                <a href="#" class="insgroupabove"><i class="icon-signout"></i> Ins Grp</a>
+                @if (clause.Parent != null && clause.Parent.Parent != null)
+                {
+                <a href="#" class="movetoprevgroup"><i class="icon-level-up"></i> Prev Grp</a>
+                }
+                @if (clause.CanRemove)
+                {
+                <a class="delete" href="#"><i class="icon-trash"></i> Del</a>
+                }
+            </div>
             <ul class="conditions">
                 @foreach (var c in clause.Clauses.Where(cc => !cc.IsGroup))
                 {
@@ -55,47 +52,47 @@
         </li>
     </ul>
 }
+@helper ClauseItem(QueryBuilderClause clause)
+{
+    <li class="condition" data-qid="@clause.QueryId">
+        <a href="#editcondition" class="edit edit-popover">
+            <span class="value">@clause</span>
+        </a>
+@*        <div class="dropdown">*@
+@*            <a href="#" class="dropdown-toggle" data-toggle="dropdown">*@
+@*                <i class="icon-cog"></i>*@
+@*            </a>*@
+@*            <ul class="dropdown-menu">*@
+@*                <li><a href="#editCondition" data-toggle="modal-popover" class="edit edit-popover"><i class="icon-pencil icon-fixedwidth"></i>Edit</a></li>*@
+@*                <li><a href="#" class="duplicateclause"><i class="icon-copy icon-fixedwidth"></i>Duplicate</a></li>*@
+@*                @CogItems(clause)*@
+@*            </ul>*@
+@*        </div>*@
+        <div class="clause-actions">
+            <a href="#editCondition" class="edit-popover"><i class="icon-pencil"></i> Edit</a>
+            <a href="#" class="duplicateclause"><i class="icon-copy"></i> Dup</a>
+            <a href="#" class="insgroupabove"><i class="icon-signout"></i> Ins Grp</a>
+            @if (clause.Parent != null && clause.Parent.Parent != null)
+            {
+            <a href="#" class="movetoprevgroup"><i class="icon-level-up"></i> Prev Grp</a>
+            }
+            @if (clause.CanRemove)
+            {
+            <a class="delete" href="#"><i class="icon-trash"></i> Del</a>
+            }
+        </div>
+    </li>
+}
 @helper CogItems(QueryBuilderClause clause)
 {
-    <li><a href="#" class="insgroupabove"><i class="icon-signout icon-fixedwidth"></i> Insert Group</a></li>
+    <li><a href="#" class="insgroupabove"><i class="icon-signout icon-fixedwidth"></i>Insert Group</a></li>
 
     if (clause.Parent != null && clause.Parent.Parent != null)
     {
-        <li><a href="#" class="movetoprevgroup"><i class="icon-arrow-up icon-fixedwidth"></i> Move up a Group</a></li>
+    <li><a href="#" class="movetoprevgroup"><i class="icon-arrow-up icon-fixedwidth"></i>Move up a Group</a></li>
     }
-    <li><a href="#" class="deletegroup"><i class="icon-trash icon-fixedwidth"></i> Delete</a></li>
-}
-@helper GroupComparisonList(QueryBuilderClause clause)
-{
-    <label for="match-1">Match</label>
-    <select name="match-1" id="match-1" class="simple changegroup">
-        @OptionItem(clause, CompareType.AllTrue)
-        @OptionItem(clause, CompareType.AnyTrue)
-        @OptionItem(clause, CompareType.AllFalse)
-    </select>
-}
-@helper OptionItem(QueryBuilderClause clause, CompareType type)
-{
-    <option value="@type.ToString()" @(clause.ComparisonType == type ? "selected" : "")>type.ToString()</option>
-}
-<div id="conditions">
-    @Html.Hidden("AutoRun")
-    @Html.Hidden("NewSearchId")
-    @if (ViewBag.NewSearch == null)
+    if (clause.CanRemove)
     {
-        @GroupItem(Model.TopClause)
+    <li><a class="delete" href="#"><i class="icon-trash icon-fixedwidth"></i><span class="text-warning">Delete</span></a></li>
     }
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <a href="/Query/NewQuery" class="btn btn-success pull-right">New</a>
-        <a href="/SavedQuery2" class="btn pull-right">Saved</a>
-    </div>
-    <div class="span6">
-        <a id="Run" class="btn btn-primary pull-right"><i class="icon-play"></i></a>
-    </div>
-</div>
-@if (editing)
-{
-    @Html.Partial("EditCondition", Model)
 }
