@@ -52,6 +52,13 @@ namespace CmsWeb.Areas.Public.Controllers
 				return Content("supports cookies<br>" + s);
 			return Content("does not support cookies<br>" + s);
 		}
+		public ActionResult TestCors()
+		{
+            var ret = AuthenticateDeveloper();
+//            if (ret.StartsWith("!"))
+//                return Content(ret.Substring(1));
+			return Content("This is from a CORS request " + DateTime.Now);
+		}
         [HttpGet]
 		public ActionResult SQLView(string id)
         {

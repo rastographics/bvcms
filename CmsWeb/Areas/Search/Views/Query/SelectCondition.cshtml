@@ -2,7 +2,7 @@
 @{
     var cats = Model.FieldCategories().ToList();
 }
-<div id="QueryConditionSelect" class='modal fade hide' data-width='760'>
+<div id="QueryConditionSelect" class='modal fade hide' data-width='900'>
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
         <h4>Select Condition</h4>
@@ -21,13 +21,16 @@
             { 
                 var c = cats[i];
                 <div class="tab-pane @(i==0? "active" : "")" id="@c.Name">
-                    @foreach (var p in c.Fields)
-                    { 
-                        <div class="FieldLink"><a id='@p.Name' href="#">@p.Title</a></div>
-@*                        <div class="moreinfo">*@
-@*                            <a class="help" href="https://www.bvcms.com/DocDialog/QB-@p.Name">@p.Description</a>*@
-@*                        </div>*@
-                    }
+                    <p>Click on the name of the condition to select it, click on the description to the right for help about the condition.</p>
+                    <dl class="dl-horizontal">
+                        @foreach (var p in c.Fields)
+                        { 
+                            <dt class="FieldLink"><a id='@p.Name' href="#">@p.Title</a></dt>
+                            <dd>
+                                <a class="help" href="https://www.bvcms.com/DocDialog/QB-@p.Name">@p.Description</a>
+                            </dd>
+                        }
+                    </dl>
                 </div>
             }
             </div>

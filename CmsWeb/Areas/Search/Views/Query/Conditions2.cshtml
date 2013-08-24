@@ -12,32 +12,16 @@
 </div>
 @helper GroupItem(QueryBuilderClause clause)
 {
-    <ul @(clause.IsFirst ? "id=conditionsList" : "class=subgroups")>
+    <ul @(clause.IsFirst ? "id=conditionsList" : "") class="subgroups">
         <li class="group condition" data-qid="@clause.QueryId">
-            <header>
+            <header title="@clause.QueryId">
                 <label for="match-1">Match</label>
-                @Html.DropDownList4("Comparison", "Comparison", Model.GroupComparisons(), clause.Comparison, "simple changegroup")
-@*                <div class="dropdown">*@
-@*                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">*@
-@*                        <i class="icon-cog"></i>*@
-@*                    </a>*@
-@*                    <ul class="dropdown-menu">*@
-@*                        @CogItems(clause)*@
-@*                    </ul>*@
-@*                </div>*@
+                @Html.DropDownList4("", "", Model.GroupComparisons(), clause.Comparison, "simple changegroup")
+                @CogItems(clause)
             </header>
             <div class="group-actions">
-                <a href="#" class="addnewclause"><i class="icon-plus"></i> Condition</a>
-                <a href="#" class="addnewgroup"><i class="icon-plus"></i> Group</a>
-                <a href="#" class="insgroupabove"><i class="icon-signout"></i> Ins Grp</a>
-                @if (clause.Parent != null && clause.Parent.Parent != null)
-                {
-                <a href="#" class="movetoprevgroup"><i class="icon-level-up"></i> Prev Grp</a>
-                }
-                @if (clause.CanRemove)
-                {
-                <a class="delete" href="#"><i class="icon-trash"></i> Del</a>
-                }
+                <a href="#" class="addnewclause"><i class="icon-plus"> Condition</i></a>
+                <a href="#" class="addnewgroup"><i class="icon-plus"> Group</i></a>
             </div>
             <ul class="conditions">
                 @foreach (var c in clause.Clauses.Where(cc => !cc.IsGroup))
@@ -58,41 +42,34 @@
         <a href="#editcondition" class="edit edit-popover">
             <span class="value">@clause</span>
         </a>
-@*        <div class="dropdown">*@
-@*            <a href="#" class="dropdown-toggle" data-toggle="dropdown">*@
-@*                <i class="icon-cog"></i>*@
-@*            </a>*@
-@*            <ul class="dropdown-menu">*@
-@*                <li><a href="#editCondition" data-toggle="modal-popover" class="edit edit-popover"><i class="icon-pencil icon-fixedwidth"></i>Edit</a></li>*@
-@*                <li><a href="#" class="duplicateclause"><i class="icon-copy icon-fixedwidth"></i>Duplicate</a></li>*@
-@*                @CogItems(clause)*@
-@*            </ul>*@
-@*        </div>*@
-        <div class="clause-actions">
-            <a href="#editCondition" class="edit-popover"><i class="icon-pencil"></i> Edit</a>
-            <a href="#" class="duplicateclause"><i class="icon-copy"></i> Dup</a>
-            <a href="#" class="insgroupabove"><i class="icon-signout"></i> Ins Grp</a>
-            @if (clause.Parent != null && clause.Parent.Parent != null)
-            {
-            <a href="#" class="movetoprevgroup"><i class="icon-level-up"></i> Prev Grp</a>
-            }
-            @if (clause.CanRemove)
-            {
-            <a class="delete" href="#"><i class="icon-trash"></i> Del</a>
-            }
-        </div>
+        @CogItems(clause)
     </li>
 }
 @helper CogItems(QueryBuilderClause clause)
 {
-    <li><a href="#" class="insgroupabove"><i class="icon-signout icon-fixedwidth"></i>Insert Group</a></li>
-
-    if (clause.Parent != null && clause.Parent.Parent != null)
-    {
-    <li><a href="#" class="movetoprevgroup"><i class="icon-arrow-up icon-fixedwidth"></i>Move up a Group</a></li>
-    }
-    if (clause.CanRemove)
-    {
-    <li><a class="delete" href="#"><i class="icon-trash icon-fixedwidth"></i><span class="text-warning">Delete</span></a></li>
-    }
+    <div class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="icon-cog"></i>
+        </a>
+        <ul class="dropdown-menu">
+            @if (!clause.IsGroup)
+            {
+                <li><a href="#editCondition" class="edit-popover"><i class="icon-pencil icon-fixedwidth"></i> Edit</a></li>
+                <li><a href="#" class="duplicateclause"><i class="icon-copy icon-fixedwidth"></i> Duplicate</a></li>
+            }
+            @if ((clause.Parent != null && clause.Parent.Parent != null) || (clause.IsGroup && !clause.IsFirst))
+            {
+                <li><a href="#" class="movetoprevgroup"><i class="icon-arrow-up icon-fixedwidth"></i> Move up a Group</a></li>
+            }
+            <li><a href="#" class="insgroupabove"><i class="icon-share-alt icon-fixedwidth"></i> Insert Group Above this</a></li>
+            @if (clause.HasGroupBelow)
+            {
+                <li><a href="#" class="movetogroupbelow"><i class="icon-download-alt icon-fixedwidth"></i> Move down a Group</a></li>
+            }
+            @if (clause.CanRemove)
+            {
+                <li><a class="delete" href="#"><i class="icon-trash icon-fixedwidth icon-fixedwidth"></i> <span class="text-warning">Delete</span></a></li>
+            }
+        </ul>
+    </div>
 }

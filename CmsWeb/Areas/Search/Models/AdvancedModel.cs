@@ -455,6 +455,18 @@ namespace CmsWeb.Areas.Search.Models
             Db.SubmitChanges();
             return nc.QueryId;
         }
+        public int AddGroupToGroup()
+        {
+            var c = Db.LoadQueryById(SelectedId);
+            var g = new QueryBuilderClause();
+            g.SetQueryType(QueryType.Group);
+            g.SetComparisonType(CompareType.AllTrue);
+            var currParent = c.Parent;
+            g.Parent = c;
+            var nc = g.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
+            Db.SubmitChanges();
+            return nc.QueryId;
+        }
         public void AddNewConditionAfterCurrent(int id)
         {
             var c = Db.LoadQueryById(id);
@@ -524,6 +536,12 @@ namespace CmsWeb.Areas.Search.Models
                 return;
             UpdateCondition(c);
         }
+        public void ChangeGroup(string comp)
+        {
+            var c = Db.LoadQueryById(SelectedId);
+            c.Comparison = comp;
+            Db.SubmitChanges();
+        }
         public void CopyAsNew()
         {
             var Qb = Db.LoadQueryById(SelectedId).Clone(DbUtil.Db);
@@ -543,9 +561,29 @@ namespace CmsWeb.Areas.Search.Models
             var cc = Db.LoadQueryById(SelectedId);
             var fp = cc.Parent;
             var g = cc.Parent.Parent;
-            cc.Parent = g;
-            if (fp.Clauses.Count == 0)
+            if (g != null)
+            {
+                cc.Parent = g;
+                if (fp.Clauses.Count == 0)
+                    Db.DeleteQueryBuilderClauseOnSubmit(fp);
+            }
+            else if (cc.IsGroup && fp.Clauses.Count == 1)
+            {
+                TopClause = cc;
+                cc.Parent = null;
                 Db.DeleteQueryBuilderClauseOnSubmit(fp);
+                QueryId = cc.QueryId;
+    			Util.QueryBuilderScratchPadId = TopClause.QueryId;
+                TopClause.Description = Util.ScratchPad;
+                TopClause.SavedBy = Util.UserName;
+            }
+            Db.SubmitChanges();
+        }
+        public void MoveToGroupBelow()
+        {
+            var cc = Db.LoadQueryById(SelectedId);
+            var g = cc.Parent.Clauses.First(gg => gg.IsGroup);
+            cc.Parent = g;
             Db.SubmitChanges();
         }
         public void InsertGroupAbove()
@@ -585,6 +623,7 @@ namespace CmsWeb.Areas.Search.Models
             {
                 TopClause = g;
                 QueryId = g.QueryId;
+    			Util.QueryBuilderScratchPadId = TopClause.QueryId;
             }
         }
         public IEnumerable<SelectListItem> GroupComparisons()

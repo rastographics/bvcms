@@ -21,6 +21,7 @@ using CmsWeb.Areas.Manage.Controllers;
 using System.Web.Caching;
 using Elmah;
 using System.Web.Security;
+using Thinktecture.IdentityModel.Http.Cors.Mvc;
 
 namespace CmsWeb
 {
@@ -29,6 +30,16 @@ namespace CmsWeb
 
     public class MvcApplication : System.Web.HttpApplication
     {
+
+//        private void RegisterCors(MvcCorsConfiguration corsConfig)
+//        {
+//            corsConfig
+//                .ForResources("APIMeta")
+//                .AllowAllOrigins()
+//                .AllowAllMethods()
+//                .AllowCookies()
+//                .AllowRequestHeaders("Content-Type", "Authorization");
+//        }
         protected void Application_Start()
         {
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
@@ -37,6 +48,7 @@ namespace CmsWeb
             RegisterRoutes(RouteTable.Routes);
             RouteTable.Routes.RouteExistingFiles = true;
             HttpRuntime.Cache.Remove("BuildDate");
+//            RegisterCors(MvcCorsConfiguration.Configuration);
 #if DEBUG
             //HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlProfiler.Initialize();
 #endif

@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
+using DocumentFormat.OpenXml.EMMA;
 using UtilityExtensions;
 using CmsData;
 
@@ -94,6 +95,15 @@ namespace CmsWeb.Areas.Search.Controllers
             ViewBag.NewId = m.AddConditionToGroup();
             return View("Conditions2", m);
         }
+        [POST("Query/AddNewGroup/{id:int}")]
+        public ActionResult AddNewGroup(int id)
+        {
+            var m = new AdvancedModel { SelectedId = id };
+            m.LoadScratchPad();
+            m.EditCondition();
+            ViewBag.NewId = m.AddGroupToGroup();
+            return View("Conditions2", m);
+        }
         [POST("Query/DuplicateCondition/{id:int}")]
         public ActionResult DuplicateCondition(int id)
         {
@@ -102,6 +112,14 @@ namespace CmsWeb.Areas.Search.Controllers
             m.EditCondition();
             ViewBag.NewId = m.CopyCurrentCondition(id);
             return View("Conditions2", m);
+        }
+        [POST("Query/SaveCondition/{id:int}")]
+        public ActionResult ChangeGroup(int id, string comparison)
+        {
+            var m = new AdvancedModel { SelectedId = id };
+            m.LoadScratchPad();
+            m.ChangeGroup(comparison);
+            return Content("ok");
         }
         [POST("Query/SaveCondition")]
         public ActionResult SaveCondition(AdvancedModel m)
@@ -112,7 +130,9 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.UpdateCondition();
                 DbUtil.Db.SubmitChanges();
             }
-            return View("Conditions2", m);
+            if(ModelState.IsValid)
+                return View("Conditions2", m);
+            return View("EditCondition", m);
         }
         [POST("Query/Reload/")]
         public ActionResult Reload()
@@ -144,6 +164,14 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new AdvancedModel { SelectedId = id };
             m.LoadScratchPad();
             m.MoveToPreviousGroup();
+            return View("Conditions2", m);
+        }
+        [POST("Query/MoveToGroupBelow/{id:int}")]
+        public ActionResult MoveToGroupBelow(int id)
+        {
+            var m = new AdvancedModel { SelectedId = id };
+            m.LoadScratchPad();
+            m.MoveToGroupBelow();
             return View("Conditions2", m);
         }
         [POST("Query/CopyAsNew/{id:int}")]

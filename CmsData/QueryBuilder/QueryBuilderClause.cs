@@ -433,6 +433,12 @@ namespace CmsData
         {
             get { return !IsFirst && !IsLastNode; }
         }
+
+        public bool HasGroupBelow
+        {
+            get { return Parent != null && Parent.Clauses.Any(gg => gg.IsGroup); }
+        }
+
         public class FlagItem
         {
             public string Text { get; set; }
