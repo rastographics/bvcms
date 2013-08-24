@@ -422,7 +422,7 @@ namespace CmsWeb.Models
                         if (setting.TargetExtraValues)
                         {
                             foreach (var ck in ((AskCheckboxes)ask).list)
-                                if (person.GetExtra(ck.SmallGroup) == "true")
+                                if (person.GetExtra(ck.SmallGroup).ToBool())
                                     Checkbox.Add(ck.SmallGroup);
                         }
                         else

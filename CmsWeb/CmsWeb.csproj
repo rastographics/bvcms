@@ -991,6 +991,7 @@
     <Content Include="Areas\Main\Views\Contact\EditorTemplates\Bool.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditCondition2.cshtml" />
     <Content Include="Areas\Search\Views\Query\Conditions2.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmReregister.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />

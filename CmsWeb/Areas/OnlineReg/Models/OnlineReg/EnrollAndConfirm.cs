@@ -386,6 +386,17 @@ Total Fee paid for this registration session: {4:C}<br/>
                 }
             }
         }
+        public void ConfirmReregister()
+        {
+            var p = List[0];
+            var message = DbUtil.Db.ContentHtml("ReregisterLinkEmail", @"Hi {name},
+<p>Here is your <a href=""{url}"">MANAGE REGISTRATION</a> link to manage {orgname}. This link will work only once. Creating an account will allow you to do this again without having to email the link.</p>");
+            message = message.Replace("{orgname}", Header);
+
+            var Staff = DbUtil.Db.StaffPeopleForOrg(orgid.Value);
+            p.SendOneTimeLink(Staff.First().FromEmail,
+                Util.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
+        }
         public void ConfirmManageSubscriptions()
         {
             var p = List[0];
