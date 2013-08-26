@@ -228,7 +228,7 @@
     </Field>
   </Category>
   <Category Title="Church Status">
-    <Field Name="MemberStatusId" Title="Church Member Status" Type="Code" DisplayAs="ChurchMemberStatus" DataSource="MemberStatusCodes" DataValueField="IdCode">
+    <Field Name="MemberStatusId" Title="Church Member Status" Type="Code" DisplayAs="ChurchMemberStatus" DataSource="MemberStatusList" DataValueField="IdCode">
       Codes for church membership status: Previous, Pending, Member, Non-member
     </Field>
     <Field Name="StatusFlag" Title="Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">
@@ -241,10 +241,10 @@
       Date indivdual made a decision to join the church.
       Todo: explain how unknown dates work
     </Field>
-    <Field Name="DecisionTypeId" Title="Decision Type" Type="NullCode" DataSource="DecisionCodes" DataValueField="IdCode">
+    <Field Name="DecisionTypeId" Title="Decision Type" Type="NullCode" DataSource="DecisionTypeList" DataValueField="IdCode">
       Type of decision during counseling: POF/Baptism, POF not for Membership, Letter, Statement, Statement Requiring Baptism
     </Field>
-    <Field Name="RecentDecisionType" Title="Recent Decision Type" Type="Code" DisplayAs="RecentDecisionType({0})" Params="Days" DataSource="DecisionCodes" DataValueField="IdCode">
+    <Field Name="RecentDecisionType" Title="Recent Decision Type" Type="Code" DisplayAs="RecentDecisionType({0})" Params="Days" DataSource="DecisionTypeList" DataValueField="IdCode">
       A decision of type was made in last # days
     </Field>
     <Field Name="RecentJoinChurch" Title="Recent Join Church" Type="Bit" DisplayAs="RecentJoinedChurch({0})" Params="Days" DataValueField="IdCode">
@@ -254,7 +254,7 @@
       Date membership steps were completed.
       Todo: explain how unknown dates work
     </Field>
-    <Field Name="JoinCodeId" Title="Join Type" Type="Code" DataSource="JoinTypes" DataValueField="IdCode">
+    <Field Name="JoinCodeId" Title="Join Type" Type="Code" DataSource="JoinTypeList" DataValueField="IdCode">
       Codes to indicate method of joining
     </Field>
     <Field Name="OtherPreviousChurch" Title="Former Church" Type="String">
@@ -264,7 +264,7 @@
       Date individual is dropped from church membership role.
       Todo: explain how unknown dates work
     </Field>
-    <Field Name="DropCodeId" Title="Drop Type" Type="Code" DataSource="DropTypes" DataValueField="IdCode">
+    <Field Name="DropCodeId" Title="Drop Type" Type="Code" DataSource="DropTypeList" DataValueField="IdCode">
       Codes to indicate reason for dropping record from church membership: Duplicate, Administrative, Deceased, Another SB Church, Request, Another Denomination
     </Field>
     <Field Name="OtherNewChurch" Title="New Church" Type="String">
@@ -273,19 +273,19 @@
     <Field Name="NewMemberClassDate" Title="New Member Class Date" Type="Date" DisplayAs="NewMemberClassDate">
       Todo: explain how unknown dates work
     </Field>
-    <Field Name="NewMemberClassStatusId" Title="New Member Class Status" DisplayAs="NewMemberClassStatusId" Type="NullCode" DataSource="NewMemberClassStatusCodes" DataValueField="IdCode">
+    <Field Name="NewMemberClassStatusId" Title="New Member Class Status" DisplayAs="NewMemberClassStatusId" Type="NullCode" DataSource="NewMemberClassStatusList" DataValueField="IdCode">
       New Member Class Status: Pending, Attended, Exempted Child, Admin Approval, Grandfathered
     </Field>
     <Field Name="BaptismDate" Title="Baptism Date" Type="Date">
       Baptism Date
     </Field>
-    <Field Name="BaptismTypeId" Title="Baptism Type" Type="NullCode" DataSource="BaptismTypes" DataValueField="IdCode">
+    <Field Name="BaptismTypeId" Title="Baptism Type" Type="NullCode" DataSource="BaptismTypeList" DataValueField="IdCode">
       Baptism Type: Original, Subsequent, Biological, Non-Member, Required
     </Field>
     <Field Name="BaptismSchedDate" Title="Baptism Scheduled Date" Type="Date">
       Baptism Scheduled Date
     </Field>
-    <Field Name="BaptismStatusId" Title="Baptism Status" Type="NullCode" DataSource="BaptismStatuses" DataValueField="IdCode">
+    <Field Name="BaptismStatusId" Title="Baptism Status" Type="NullCode" DataSource="BaptismStatusList" DataValueField="IdCode">
       Baptism Status: Scheduled, Not Scheduled, Completed, Canceled
     </Field>
     <Field Name="LetterDateRequested" Title="Letter Requested Date" Type="Date">
@@ -297,10 +297,10 @@
     <Field Name="FamHasPrimAdultChurchMemb" Title="Family Has Primary Adult Church Member" Type="Bit" DataValueField="IdCode">
       Indicator that individual has another primary adult family member who is a member of the church.
     </Field>
-		<Field Name="EnvelopeOptionsId" Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptions" DataValueField="IdCode">
+		<Field Name="EnvelopeOptionsId" Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptionsList" DataValueField="IdCode">
       Envelope Options
     </Field>
-    <Field Name="ContributionOptionsId" Title="Contribution Options" Type="NullCode" DataSource="EnvelopeOptions" DataValueField="IdCode">
+    <Field Name="ContributionOptionsId" Title="Contribution Options" Type="NullCode" DataSource="EnvelopeOptionsList" DataValueField="IdCode">
       Contribution Options
     </Field>
     <Field Name="HasMemberDocs" Title="Has Membership Documents" Type="Bit" DataValueField="IdCode">

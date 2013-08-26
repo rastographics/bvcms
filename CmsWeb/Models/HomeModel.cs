@@ -412,7 +412,7 @@ namespace CmsWeb.Models
             list.AddRange(new List<SearchInfo>() 
             { 
                 new SearchInfo() { id = -1, line1 = "People Search"  }, 
-                new SearchInfo() { id = -2, line1 = "Advanced Search" }, 
+                new SearchInfo() { id = -2, line1 = "Search Builder" }, 
                 new SearchInfo() { id = -3, line1 = "Organization Search" }, 
             });
             return list;
@@ -514,7 +514,7 @@ namespace CmsWeb.Models
             list.AddRange(new List<SearchInfo2>() 
             { 
                 new SearchInfo2() { id = -1, line1 = "People Search"  }, 
-                new SearchInfo2() { id = -2, line1 = "Advanced Search" }, 
+                new SearchInfo2() { id = -2, line1 = "Search Builder" }, 
                 new SearchInfo2() { id = -3, line1 = "Organization Search" }, 
             });
             var n = 1;

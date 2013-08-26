@@ -546,9 +546,6 @@
       <DependentUpon>person.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\Support.css" />
-    <Content Include="FieldMap3.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="images\chosen-sprite.png" />
     <Content Include="Content\css\chosen.css" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />

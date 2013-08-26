@@ -1193,5 +1193,20 @@ namespace CmsData
 
 
         internal bool FromActiveRecords { get; set; }
+
+        public bool ClipboardHasCondition()
+        {
+            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
+            if(clip == null)
+                return false;
+            var a = clip.Split(',');
+            if (a.Length == 1)
+                return false;
+            if (a[0] != "Copy" && a[0] != "Cut")
+                return false;
+            var clipid = a[1].ToInt();
+            var c = LoadQueryById(clipid);
+            return c != null;
+        }
     }
 }

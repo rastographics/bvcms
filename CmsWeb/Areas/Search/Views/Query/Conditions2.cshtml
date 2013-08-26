@@ -55,17 +55,14 @@
             @if (!clause.IsGroup)
             {
                 <li><a href="#editCondition" class="edit-popover"><i class="icon-pencil icon-fixedwidth"></i> Edit</a></li>
-                <li><a href="#" class="duplicateclause"><i class="icon-copy icon-fixedwidth"></i> Duplicate</a></li>
             }
-            @if ((clause.Parent != null && clause.Parent.Parent != null) || (clause.IsGroup && !clause.IsFirst))
+            @if (clause.CanRemove)
             {
-                <li><a href="#" class="movetoprevgroup"><i class="icon-arrow-up icon-fixedwidth"></i> Move up a Group</a></li>
+                <li><a href="#" class="cutcondition"><i class="icon-cut icon-fixedwidth"></i> Cut</a></li>
             }
+            <li><a href="#" class="copycondition"><i class="icon-copy icon-fixedwidth"></i> Copy</a></li>
+            <li class="pastecondition" style="display:none"><a href="#" class="pastecondition"><i class="icon-paste icon-fixedwidth"></i> Paste</a></li>
             <li><a href="#" class="insgroupabove"><i class="icon-share-alt icon-fixedwidth"></i> Insert Group Above this</a></li>
-            @if (clause.HasGroupBelow)
-            {
-                <li><a href="#" class="movetogroupbelow"><i class="icon-download-alt icon-fixedwidth"></i> Move down a Group</a></li>
-            }
             @if (clause.CanRemove)
             {
                 <li><a class="delete" href="#"><i class="icon-trash icon-fixedwidth icon-fixedwidth"></i> <span class="text-warning">Delete</span></a></li>

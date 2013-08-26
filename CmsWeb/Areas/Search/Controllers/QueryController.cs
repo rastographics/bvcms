@@ -47,6 +47,26 @@ namespace CmsWeb.Areas.Search.Controllers
 #endif
             return View(m);
         }
+        [POST("Query/Cut/{id:int}")]
+        public ActionResult Cut(int id)
+        {
+            Session["QueryClipboard"] = "Cut," + id;
+            return Content("ok");
+        }
+        [POST("Query/Copy/{id:int}")]
+        public ActionResult Copy(int id)
+        {
+            Session["QueryClipboard"] = "Copy," + id;
+            return Content("ok");
+        }
+        [POST("Query/Paste/{id:int}")]
+        public ActionResult Paste(int id)
+        {
+            var m = new AdvancedModel();
+            m.LoadScratchPad();
+            m.Paste(id);
+            return View("Conditions2", m);
+        }
         [POST("Query/CodesDropdown/")]
         public ActionResult CodesDropdown(AdvancedModel m)
         {

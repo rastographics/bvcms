@@ -2,7 +2,7 @@
 @model CmsWeb.Areas.Search.Models.AdvancedModel
 @{
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
-    ViewBag.Title = "Advanced Search";
+    ViewBag.Title = "Search Builder";
 }
 @section scripts
 {
@@ -22,10 +22,9 @@
         <div class="span4">
             <div id="Description"><b>@Model.Description</b></div>
             <div>
-                <h2>Advanced Search </h2>
+                <h2>Search Builder </h2>
                 <div>
                     <a href="/Query/NewQuery" class="btn btn-success">New</a>
-                    <a href="/SavedQuery2" class="btn">Saved</a>
                 </div>
                 @Html.Partial("Conditions2", Model)
             </div>

@@ -579,6 +579,32 @@ namespace CmsWeb.Areas.Search.Models
             }
             Db.SubmitChanges();
         }
+        public void Paste(int id)
+        {
+            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
+            if (clip == null)
+                return;
+            var a = clip.Split(',');
+            var clipop = a[0];
+            var clipid = a[1].ToInt();
+            var clipclause = Db.LoadQueryById(clipid);
+            var targetclause = Db.LoadQueryById(id);
+            if (clipop == "Copy")
+                clipclause = clipclause.Clone(Db);
+            if (targetclause.IsGroup)
+            {
+                clipclause.GroupId = targetclause.QueryId;
+                clipclause.ClauseOrder = 0;
+            }
+            else
+            {
+                targetclause.Parent.Clauses.Add(clipclause);
+                clipclause.ClauseOrder = targetclause.ClauseOrder + 1;
+                targetclause.Parent.ReorderClauses();
+            }
+            HttpContext.Current.Session["QueryClipboard"] = "Copy," + clipid;
+            DbUtil.Db.SubmitChanges();
+        }
         public void MoveToGroupBelow()
         {
             var cc = Db.LoadQueryById(SelectedId);

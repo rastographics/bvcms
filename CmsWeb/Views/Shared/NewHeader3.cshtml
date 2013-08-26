@@ -48,10 +48,10 @@
                         @Helper.LiAnchorLink("Target Person Tab is " + (targetperson ? "ON" : "OFF"), "/Home/TargetPerson/" + targetperson)
                         @if (innewlook)
                         {
-                            @Helper.LiAnchorLink("Use Search Builder", "/APITest/UseSearchBuilder")
-                            @Helper.LiAnchorLink("Use Advanced Search", "/APITest/UseAdvancedSearch")
                             @Helper.LiAnchorLink("Use Old Person Page", "/APITest/UseOldPersonPage")
                             @Helper.LiAnchorLink("Use New People Page", "/APITest/UseNewPersonPage")
+                            @Helper.LiAnchorLink("Use Old Search Builder", "/APITest/UseSearchBuilder")
+                            @Helper.LiAnchorLink("Use New Search Builder", "/APITest/UseAdvancedSearch")
                             @Helper.LiAnchorLink("Turn finance off", "/APITest/TurnFinanceOff", !testnofinance)
                             @Helper.LiAnchorLink("Turn finance on", "/APITest/TurnFinanceOn", testnofinance)
                         }

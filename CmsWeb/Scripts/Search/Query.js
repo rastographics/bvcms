@@ -112,14 +112,31 @@
         });
         return false;
     });
-    $('#conditions').on("click", 'a.duplicateclause', function () {
+    if($.ClipboardHasCondition) {
+        $("li.pastecondition").show();
+    }
+    $('#conditions').on("click", 'a.cutcondition', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
-        $.post('/Query/DuplicateCondition/' + qid, {}, function (ret) {
-            $("#conditions").html(ret).ready(function () {
-                liedit = $("li[data-qid='" + $("#NewId").val() + "']");
-                $EditCondition();
-            });
+        $(this).parent().parent().prev().dropdown("toggle");
+        $.post('/Query/Cut/' + qid);
+        $("li.pastecondition").show();
+        return false;
+    });
+    $('#conditions').on("click", 'a.copycondition', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.post('/Query/Copy/' + qid);
+        $(this).parent().parent().prev().dropdown("toggle");
+        $("li.pastecondition").show();
+        return false;
+    });
+    $('#conditions').on("click", 'a.pastecondition', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.post('/Query/Paste/' + qid, {}, function (ret) {
+            $("#conditions").html(ret);
+            RefreshList();
         });
         return false;
     });
