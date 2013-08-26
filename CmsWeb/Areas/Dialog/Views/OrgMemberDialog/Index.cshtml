@@ -1,6 +1,12 @@
 ﻿@using UtilityExtensions
 @using CmsWeb
 @model CmsData.OrganizationMember
+@{
+    var sglist = (from mt in Model.Organization.MemberTags
+        let cnt = mt.OrgMemMemTags.Count()
+        orderby mt.Name
+        select new {mt, cnt}).ToList();
+}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
@@ -39,10 +45,10 @@ body { margin: 1px; }
                     <div style="border: solid 1px #555; padding:1em">
                         <strong>Groups:</strong><br />
                         <table>
-                            @foreach (var mt in Model.Organization.MemberTags.OrderBy(t => t.Name))
+                            @foreach (var mti in sglist)
                             { 
-                                <tr><td><input id="smallgroup@(comboid)-@mt.Id" class="ckbox" type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mt.Id) ? "checked='checked'" : "") /></td>
-                                    <td>@mt.Name</td></tr>
+                                <tr><td><input id="smallgroup@(comboid)-@mti.mt.Id" class="ckbox" type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mti.mt.Id) ? "checked='checked'" : "") /></td>
+                                    <td>@mti.mt.Name (@mti.cnt)</td></tr>
                             }
                         </table>
                     </div>
