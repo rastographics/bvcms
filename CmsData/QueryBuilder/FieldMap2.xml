@@ -297,10 +297,10 @@
     <Field Name="FamHasPrimAdultChurchMemb" Title="Family Has Primary Adult Church Member" Type="Bit" DataValueField="IdCode">
       Indicator that individual has another primary adult family member who is a member of the church.
     </Field>
-		<Field Name="EnvelopeOptionsId" Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptionsList" DataValueField="IdCode">
+		<Field Name="EnvelopeOptionsId" Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">
       Envelope Options
     </Field>
-    <Field Name="ContributionOptionsId" Title="Contribution Options" Type="NullCode" DataSource="EnvelopeOptionsList" DataValueField="IdCode">
+    <Field Name="ContributionOptionsId" Title="Contribution Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">
       Contribution Options
     </Field>
     <Field Name="HasMemberDocs" Title="Has Membership Documents" Type="Bit" DataValueField="IdCode">
