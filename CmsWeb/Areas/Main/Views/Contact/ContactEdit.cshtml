@@ -1,4 +1,8 @@
-﻿@model CmsWeb.Models.ContactPage.ContactModel
+﻿@using CmsWeb.Code
+@model CmsWeb.Models.ContactPage.ContactModel
+@{
+    var cv = new CodeValueModel();
+}
 <h2>Contact</h2>
 @Html.Hidden("editing", "true")
 <table class="grid">
@@ -11,19 +15,19 @@
         </tr>
         <tr>
             <th class="right">Ministry:</th>
-            <td>@Html.DropDownListFor(m => m.MinistryId, Model.Ministries())
+            <td>@Html.DropDownListFor(m => m.MinistryId, cv.MinistrySelectList())
                 @Html.ValidationMessage("MinistryId")
             </td>
         </tr>
         <tr>
             <th class="right">Type:</th>
-            <td>@Html.DropDownListFor(m => m.ContactTypeId, Model.ContactTypes())
+            <td>@Html.DropDownListFor(m => m.ContactTypeId, cv.ContactTypeSelectList())
                 @Html.ValidationMessage("ContactTypeId")
             </td>
         </tr>
         <tr>
             <th class="right">Reason:</th>
-            <td>@Html.DropDownListFor(m => m.ContactReasonId, Model.ContactReasons())
+            <td>@Html.DropDownListFor(m => m.ContactReasonId, cv.ContactReasonSelectList())
                 @Html.ValidationMessage("ContactReasonId")
             </td>
         </tr>

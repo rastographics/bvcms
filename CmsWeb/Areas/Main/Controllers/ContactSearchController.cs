@@ -102,7 +102,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			clause.StartDate = m.StartDate ?? DateTime.Parse("1/1/2000");
 			clause.EndDate = m.EndDate ?? DateTime.Today;
 			var cvc = new CodeValueModel();
-			var q = from v in cvc.ContactTypeCodes0()
+			var q = from v in cvc.ContactTypeList()
 					where v.Id == m.ContactType
 					select v.IdCode;
 			var idvalue = q.Single();

@@ -21,21 +21,21 @@ namespace CmsWeb.Models.PersonPage
 
 		public string StatementOption
 		{
-			get { return cv.EnvelopeOptions().ItemValue(StatementOptionId ?? 0); }
+			get { return cv.EnvelopeOptionList().ItemValue(StatementOptionId ?? 0); }
 		}
 
 		public int? EnvelopeOptionId { get; set; }
 
 		public string EnvelopeOption
 		{
-			get { return cv.EnvelopeOptions().ItemValue(EnvelopeOptionId ?? 0); }
+			get { return cv.EnvelopeOptionList().ItemValue(EnvelopeOptionId ?? 0); }
 		}
 
 		public int? DecisionTypeId { get; set; }
 
 		public string DecisionType
 		{
-			get { return cv.DecisionCodes().ItemValue(DecisionTypeId ?? 0); }
+			get { return cv.DecisionTypeList().ItemValue(DecisionTypeId ?? 0); }
 		}
 
 		public DateTime? DecisionDate { get; set; }
@@ -43,7 +43,7 @@ namespace CmsWeb.Models.PersonPage
 
 		public string JoinType
 		{
-			get { return cv.JoinTypes().ItemValue(JoinTypeId); }
+			get { return cv.JoinTypeList().ItemValue(JoinTypeId); }
 		}
 
 		public DateTime? JoinDate { get; set; }
@@ -51,14 +51,14 @@ namespace CmsWeb.Models.PersonPage
 
 		public string BaptismType
 		{
-			get { return cv.BaptismTypes().ItemValue(BaptismTypeId ?? 0); }
+			get { return cv.BaptismTypeList().ItemValue(BaptismTypeId ?? 0); }
 		}
 
 		public int? BaptismStatusId { get; set; }
 
 		public string BaptismStatus
 		{
-			get { return cv.BaptismStatuses().ItemValue(BaptismStatusId ?? 0); }
+			get { return cv.BaptismStatusList().ItemValue(BaptismStatusId ?? 0); }
 		}
 
 		public DateTime? BaptismDate { get; set; }
@@ -67,7 +67,7 @@ namespace CmsWeb.Models.PersonPage
 
 		public string DropType
 		{
-			get { return cv.DropTypes().ItemValue(DropTypeId); }
+			get { return cv.DropTypeList().ItemValue(DropTypeId); }
 		}
 
 		public DateTime? DropDate { get; set; }
@@ -77,7 +77,7 @@ namespace CmsWeb.Models.PersonPage
 
 		public string NewMemberClassStatus
 		{
-			get { return cv.NewMemberClassStatusCodes().ItemValue(NewMemberClassStatusId ?? 0); }
+			get { return cv.NewMemberClassStatusList().ItemValue(NewMemberClassStatusId ?? 0); }
 		}
 
 		public DateTime? NewMemberClassDate { get; set; }
@@ -177,37 +177,37 @@ namespace CmsWeb.Models.PersonPage
 
 		public static IEnumerable<SelectListItem> BaptismStatuses()
 		{
-			return CodeValueModel.ConvertToSelect(cv.BaptismStatuses(), "Id");
+			return CodeValueModel.ConvertToSelect(cv.BaptismStatusList(), "Id");
 		}
 
 		public static IEnumerable<SelectListItem> DecisionCodes()
 		{
-			return CodeValueModel.ConvertToSelect(cv.DecisionCodes(), "Id");
+			return CodeValueModel.ConvertToSelect(cv.DecisionTypeList(), "Id");
 		}
 
 		public static IEnumerable<SelectListItem> EnvelopeOptions()
 		{
-			return CodeValueModel.ConvertToSelect(cv.EnvelopeOptions(), "Id");
+			return CodeValueModel.ConvertToSelect(cv.EnvelopeOptionList(), "Id");
 		}
 
 		public static IEnumerable<SelectListItem> JoinTypes()
 		{
-			return CodeValueModel.ConvertToSelect(cv.JoinTypes(), "Id");
+			return CodeValueModel.ConvertToSelect(cv.JoinTypeList(), "Id");
 		}
 
 		public static IEnumerable<SelectListItem> BaptismTypes()
 		{
-			return CodeValueModel.ConvertToSelect(cv.BaptismTypes(), "Id");
+			return CodeValueModel.ConvertToSelect(cv.BaptismTypeList(), "Id");
 		}
 
 		public static IEnumerable<SelectListItem> DropTypes()
 		{
-			return CodeValueModel.ConvertToSelect(cv.DropTypes(), "Id");
+			return CodeValueModel.ConvertToSelect(cv.DropTypeList(), "Id");
 		}
 
 		public static IEnumerable<SelectListItem> NewMemberClassStatuses()
 		{
-			return CodeValueModel.ConvertToSelect(cv.NewMemberClassStatusCodes(), "Id");
+			return CodeValueModel.ConvertToSelect(cv.NewMemberClassStatusList(), "Id");
 		}
 
 		public List<string[]> StatusFlags()

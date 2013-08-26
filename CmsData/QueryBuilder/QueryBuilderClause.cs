@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
+using Community.CsharpSqlite;
 using UtilityExtensions;
 using System.Text;
 using System.Xml.Linq;
@@ -177,6 +178,7 @@ namespace CmsData
                 n += 2;
             }
         }
+
         public bool HasMultipleCodes
         {
             get
@@ -433,6 +435,12 @@ namespace CmsData
         {
             get { return !IsFirst && !IsLastNode; }
         }
+
+        public bool HasGroupBelow
+        {
+            get { return Parent != null && Parent.Clauses.Any(gg => gg.IsGroup); }
+        }
+
         public class FlagItem
         {
             public string Text { get; set; }

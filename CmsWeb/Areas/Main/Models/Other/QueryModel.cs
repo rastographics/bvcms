@@ -64,6 +64,7 @@ namespace CmsWeb.Models
         public QueryModel()
         {
             Db = DbUtil.Db;
+            Db.SetUserPreference("NewCategories", "false");
             ConditionName = "Group";
             Direction = "asc";
             TagTypeId = DbUtil.TagTypeId_Personal;

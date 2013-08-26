@@ -43,7 +43,7 @@ namespace CmsWeb.Models
         public string dob
         {
             get
-            { return Util.FormatBirthday(byear, bmon, bday, "not given"); }
+            { return Util.FormatBirthday(byear, bmon, bday); }
             set
             {
                 bday = null;

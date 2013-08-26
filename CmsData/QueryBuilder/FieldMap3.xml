@@ -34,9 +34,9 @@
     <NumberOfFamilyMembers Title="Number of Family Members" Type="Integer">Number of Family Members</NumberOfFamilyMembers>
     <HasParents Title="Has Parents" Type="Bit" DataValueField="IdCode">A member of the family is a Primary Adult and this person is a Child</HasParents>
     <FamilyHasChildren Title="Family Has Children" Type="Bit" DataValueField="IdCode">A member of the family is 12 or under</FamilyHasChildren>
-    <FamilyHasChildrenAged Title="Family Has Children Aged" DisplayAs="ChildrenAged&lt;={0}" Type="Bit" Params="Age" DataValueField="IdCode">A member of the family is specified age or under</FamilyHasChildrenAged>
-    <FamilyHasChildrenAged2 Title="Family Has Children Aged Range" DisplayAs="ChildrenAged2={0}" Type="Bit" QuartersLabel="Age Range" Params="Quarters" DataValueField="IdCode">A member of the family is specified age range inclusive (like 10-16 )</FamilyHasChildrenAged2>
-    <FamilyHasChildrenAged3 Title="Family Has M/F Children Aged Range" DisplayAs="ChildrenAged3={0}" Type="Code" QuartersLabel="Age Range" Params="Quarters" DataSource="GenderCodes" DataValueField="IdCode">A member of the family of specified age range inclusive (like 10-16 ) is Male or Female</FamilyHasChildrenAged3>
+    <FamilyHasChildrenAged Title="Family Has Children Aged" DisplayAs="ChildrenAgedLessOrEqual({0})" Type="Bit" Params="Age" DataValueField="IdCode">A member of the family is specified age or under</FamilyHasChildrenAged>
+    <FamilyHasChildrenAged2 Title="Family Has Children Aged Range" DisplayAs="ChildrenAgedRange({0})" Type="Bit" QuartersLabel="Age Range" Params="Quarters" DataValueField="IdCode">A member of the family is specified age range inclusive (like 10-16 )</FamilyHasChildrenAged2>
+    <FamilyHasChildrenAged3 Title="Family Has M/F Children Aged Range" DisplayAs="ChildrenAged({0})" Type="Code" QuartersLabel="Age Range" Params="Quarters" DataSource="GenderCodes" DataValueField="IdCode">A member of the family of specified age range inclusive (like 10-16 ) is Male or Female</FamilyHasChildrenAged3>
     <IsHeadOfHousehold Title="Is Head of Household" Type="Bit" DataValueField="IdCode">This person is the head of the family household</IsHeadOfHousehold>
     <HasRelatedFamily Title="Has Related Family" Type="Bit" DataValueField="IdCode">Indication of whether this person's family is related to another family</HasRelatedFamily>
     <FamilyId Title="Family" Type="Integer">Search for entire family</FamilyId>
@@ -88,26 +88,26 @@
     <StatusFlag Title="Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">Search for Status Flags (computed in nightly batch from saved searches)</StatusFlag>
     <CampusId Title="Campus" Type="NullCode" DataSource="AllCampuses0" DataValueField="IdCode">Codes Main Campus</CampusId>
     <DecisionDate Title="Decision Date" Type="Date"> Date indivdual made a decision to join the church. Todo: explain how unknown dates work </DecisionDate>
-    <DecisionTypeId Title="Decision Type" Type="NullCode" DataSource="DecisionCodes" DataValueField="IdCode">Type of decision during counseling: POF/Baptism, POF not for Membership, Letter, Statement, Statement Requiring Baptism</DecisionTypeId>
-    <RecentDecisionType Title="Recent Decision Type" Type="Code" DisplayAs="RecentDecisionType({0})" Params="Days" DataSource="DecisionCodes" DataValueField="IdCode">A decision of type was made in last # days</RecentDecisionType>
+    <DecisionTypeId Title="Decision Type" Type="NullCode" DataSource="DecisionTypeList" DataValueField="IdCode">Type of decision during counseling: POF/Baptism, POF not for Membership, Letter, Statement, Statement Requiring Baptism</DecisionTypeId>
+    <RecentDecisionType Title="Recent Decision Type" Type="Code" DisplayAs="RecentDecisionType({0})" Params="Days" DataSource="DecisionTypeList" DataValueField="IdCode">A decision of type was made in last # days</RecentDecisionType>
     <RecentJoinChurch Title="Recent Join Church" Type="Bit" DisplayAs="RecentJoinedChurch({0})" Params="Days" DataValueField="IdCode">Recently Joined Church # days ago</RecentJoinChurch>
     <JoinDate Title="Join Date" Type="Date"> Date membership steps were completed. Todo: explain how unknown dates work </JoinDate>
-    <JoinCodeId Title="Join Type" Type="Code" DataSource="JoinTypes" DataValueField="IdCode">Codes to indicate method of joining</JoinCodeId>
+    <JoinCodeId Title="Join Type" Type="Code" DataSource="JoinTypeList" DataValueField="IdCode">Codes to indicate method of joining</JoinCodeId>
     <OtherPreviousChurch Title="Former Church" Type="String">Church before joining Us</OtherPreviousChurch>
     <DropDate Title="Drop Date" Type="Date"> Date individual is dropped from church membership role. Todo: explain how unknown dates work </DropDate>
-    <DropCodeId Title="Drop Type" Type="Code" DataSource="DropTypes" DataValueField="IdCode">Codes to indicate reason for dropping record from church membership: Duplicate, Administrative, Deceased, Another SB Church, Request, Another Denomination</DropCodeId>
+    <DropCodeId Title="Drop Type" Type="Code" DataSource="DropTypeList" DataValueField="IdCode">Codes to indicate reason for dropping record from church membership: Duplicate, Administrative, Deceased, Another SB Church, Request, Another Denomination</DropCodeId>
     <OtherNewChurch Title="New Church" Type="String">Destination Church after leaving Us</OtherNewChurch>
     <NewMemberClassDate Title="New Member Class Date" Type="Date" DisplayAs="NewMemberClassDate">Todo: explain how unknown dates work</NewMemberClassDate>
-    <NewMemberClassStatusId Title="New Member Class Status" DisplayAs="NewMemberClassStatusId" Type="NullCode" DataSource="NewMemberClassStatusCodes" DataValueField="IdCode">New Member Class Status: Pending, Attended, Exempted Child, Admin Approval, Grandfathered</NewMemberClassStatusId>
+    <NewMemberClassStatusId Title="New Member Class Status" DisplayAs="NewMemberClassStatusId" Type="NullCode" DataSource="NewMemberClassStatusList" DataValueField="IdCode">New Member Class Status: Pending, Attended, Exempted Child, Admin Approval, Grandfathered</NewMemberClassStatusId>
     <BaptismDate Title="Baptism Date" Type="Date">Baptism Date</BaptismDate>
-    <BaptismTypeId Title="Baptism Type" Type="NullCode" DataSource="BaptismTypes" DataValueField="IdCode">Baptism Type: Original, Subsequent, Biological, Non-Member, Required</BaptismTypeId>
+    <BaptismTypeId Title="Baptism Type" Type="NullCode" DataSource="BaptismTypeList" DataValueField="IdCode">Baptism Type: Original, Subsequent, Biological, Non-Member, Required</BaptismTypeId>
     <BaptismSchedDate Title="Baptism Scheduled Date" Type="Date">Baptism Scheduled Date</BaptismSchedDate>
-    <BaptismStatusId Title="Baptism Status" Type="NullCode" DataSource="BaptismStatuses" DataValueField="IdCode">Baptism Status: Scheduled, Not Scheduled, Completed, Canceled</BaptismStatusId>
+    <BaptismStatusId Title="Baptism Status" Type="NullCode" DataSource="BaptismStatusList" DataValueField="IdCode">Baptism Status: Scheduled, Not Scheduled, Completed, Canceled</BaptismStatusId>
     <LetterDateRequested Title="Letter Requested Date" Type="Date">Letter Requested Date</LetterDateRequested>
     <LetterStatusId Title="Letter Status" Type="NullCode" DataSource="LetterStatusCodes" DataValueField="IdCode">Membership Letter Status: First Request, Second Request, Non-Responsive, Complete</LetterStatusId>
     <FamHasPrimAdultChurchMemb Title="Family Has Primary Adult Church Member" Type="Bit" DataValueField="IdCode">Indicator that individual has another primary adult family member who is a member of the church.</FamHasPrimAdultChurchMemb>
-    <EnvelopeOptionsId Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptions" DataValueField="IdCode">Envelope Options</EnvelopeOptionsId>
-    <ContributionOptionsId Title="Contribution Options" Type="NullCode" DataSource="EnvelopeOptions" DataValueField="IdCode">Contribution Options</ContributionOptionsId>
+    <EnvelopeOptionsId Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">Envelope Options</EnvelopeOptionsId>
+    <ContributionOptionsId Title="Contribution Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">Contribution Options</ContributionOptionsId>
     <HasMemberDocs Title="Has Membership Documents" Type="Bit" DataValueField="IdCode">Indicates Membership Documents have been uploaded</HasMemberDocs>
   </ChurchStatus>
   <Enrollments>

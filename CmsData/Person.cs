@@ -1246,6 +1246,18 @@ namespace CmsData
             }
             return ms.Id;
         }
+        public static int FetchOrCreateJoinType(CMSDataContext Db, string status)
+        {
+            var ms = Db.JoinTypes.SingleOrDefault(m => m.Description == status);
+            if (ms == null)
+            {
+                var max = Db.JoinTypes.Max(mm => mm.Id) + 1;
+                ms = new JoinType() { Id = max, Code = "J" + max, Description = status };
+                Db.JoinTypes.InsertOnSubmit(ms);
+                Db.SubmitChanges();
+            }
+            return ms.Id;
+        }
         public static Campu FetchOrCreateCampus(CMSDataContext Db, string campus)
         {
             if (!campus.HasValue())

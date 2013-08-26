@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Data.Linq;
@@ -81,9 +82,9 @@ namespace CmsData
                     where divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid)
                     where progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid))
                     select m;
-			if (!q.Any())
-				return 0;
-			return q.Sum(mm => mm.NumPresent);
+            if (!q.Any())
+                return 0;
+            return q.Sum(mm => mm.NumPresent);
         }
 
         public int RegistrationCount(int days, int progid, int divid, int orgid)
@@ -195,74 +196,69 @@ namespace CmsData
             return q.Count();
         }
         public static int Import(CMSDataContext Db, string text, string name)
-		{
-			var x = XDocument.Parse(text);
-			QueryBuilderClause c = null;
-			foreach (var xc in x.Root.Elements())
-			{
-				if (name.HasValue())
-					c = InsertClause(Db, xc, null, name);
-				else
-					c = InsertClause(Db, xc, null, null);
-			}
-			return c.QueryId;
-		}
+        {
+            var x = XDocument.Parse(text);
+            QueryBuilderClause c = null;
+            foreach (var xc in x.Root.Elements())
+            {
+                if (name.HasValue())
+                    c = InsertClause(Db, xc, null, name);
+                else
+                    c = InsertClause(Db, xc, null, null);
+            }
+            return c.QueryId;
+        }
         public string Export(int id, string name)
         {
             var clause = Db.LoadQueryById(id);
-            var w = new APIWriter();
-            w.Start("Search");
-			w.Attr("Description", name);
-
-            //var settings = new XmlWriterSettings();
-            //settings.Encoding = new System.Text.UTF8Encoding(false);
-            //using (w = XmlWriter.Create(context.HttpContext.Response.OutputStream, settings))
-            //{
-            //    w.WriteStartElement("Search");
-            //    WriteClause(clause);
-            //    w.WriteEndElement();
-            //}
-			return "";
+            var settings = new XmlWriterSettings();
+            settings.Encoding = new UTF8Encoding(false);
+            using (var sw = new StringWriter())
+            {
+                using (var w = XmlWriter.Create(sw, settings))
+                    WriteClause(clause, w);
+                return sw.ToString();
+            }
         }
-        private void WriteClause(QueryBuilderClause clause, API.APIWriter w)
+        private void WriteClause(QueryBuilderClause clause, XmlWriter w)
         {
-            //w.WriteStartElement("Condition");
-            //w.WriteAttributeString("ClauseOrder", clause.ClauseOrder.ToString());
-            //w.WriteAttributeString("Field", clause.Field);
-            //if (clause.Description.HasValue())
-            //    w.WriteAttributeString("Description", clause.Description);
-            //w.WriteAttributeString("Comparison", clause.Comparison);
-            //if (clause.TextValue.HasValue())
-            //    w.WriteAttributeString("TextValue", clause.TextValue);
-            //if (clause.DateValue.HasValue)
-            //    w.WriteAttributeString("DateValue", clause.DateValue.ToString());
-            //if (clause.CodeIdValue.HasValue())
-            //    w.WriteAttributeString("CodeIdValue", clause.CodeIdValue);
-            //if (clause.StartDate.HasValue)
-            //    w.WriteAttributeString("StartDate", clause.StartDate.ToString());
-            //if (clause.EndDate.HasValue)
-            //    w.WriteAttributeString("EndDate", clause.EndDate.ToString());
-            //if (clause.Program > 0)
-            //    w.WriteAttributeString("Program", clause.Program.ToString());
-            //if (clause.Division > 0)
-            //    w.WriteAttributeString("Division", clause.Division.ToString());
-            //if (clause.Organization > 0)
-            //    w.WriteAttributeString("Organization", clause.Organization.ToString());
-            //if (clause.Days > 0)
-            //    w.WriteAttributeString("Days", clause.Days.ToString());
-            //if (clause.Quarters.HasValue())
-            //    w.WriteAttributeString("Quarters", clause.Quarters);
-            //if (clause.Tags.HasValue())
-            //    w.WriteAttributeString("Tags", clause.Tags);
-            //if (clause.Schedule > 0)
-            //    w.WriteAttributeString("Schedule", clause.Schedule.ToString());
-            //if (clause.Age.HasValue)
-            //    w.WriteAttributeString("Age", clause.Age.ToString());
-            //foreach (var qc in clause.Clauses)
-            //    WriteClause(qc);
-            //w.WriteEndElement();
+            w.WriteStartElement("Condition");
+            w.WriteAttributeString("ClauseOrder", clause.ClauseOrder.ToString());
+            w.WriteAttributeString("Field", clause.Field);
+            if (clause.Description.HasValue())
+                w.WriteAttributeString("Description", clause.Description);
+            w.WriteAttributeString("Comparison", clause.Comparison);
+            if (clause.TextValue.HasValue())
+                w.WriteAttributeString("TextValue", clause.TextValue);
+            if (clause.DateValue.HasValue)
+                w.WriteAttributeString("DateValue", clause.DateValue.ToString());
+            if (clause.CodeIdValue.HasValue())
+                w.WriteAttributeString("CodeIdValue", clause.CodeIdValue);
+            if (clause.StartDate.HasValue)
+                w.WriteAttributeString("StartDate", clause.StartDate.ToString());
+            if (clause.EndDate.HasValue)
+                w.WriteAttributeString("EndDate", clause.EndDate.ToString());
+            if (clause.Program > 0)
+                w.WriteAttributeString("Program", clause.Program.ToString());
+            if (clause.Division > 0)
+                w.WriteAttributeString("Division", clause.Division.ToString());
+            if (clause.Organization > 0)
+                w.WriteAttributeString("Organization", clause.Organization.ToString());
+            if (clause.Days > 0)
+                w.WriteAttributeString("Days", clause.Days.ToString());
+            if (clause.Quarters.HasValue())
+                w.WriteAttributeString("Quarters", clause.Quarters);
+            if (clause.Tags.HasValue())
+                w.WriteAttributeString("Tags", clause.Tags);
+            if (clause.Schedule > 0)
+                w.WriteAttributeString("Schedule", clause.Schedule.ToString());
+            if (clause.Age.HasValue)
+                w.WriteAttributeString("Age", clause.Age.ToString());
+            foreach (var qc in clause.Clauses)
+                WriteClause(qc, w);
+            w.WriteEndElement();
         }
-        private static QueryBuilderClause InsertClause(CMSDataContext Db, XElement r, int? parent, string name=null)
+        private static QueryBuilderClause InsertClause(CMSDataContext Db, XElement r, int? parent, string name = null)
         {
             var c = new QueryBuilderClause
             {
@@ -288,7 +284,7 @@ namespace CmsData
             };
             Db.QueryBuilderClauses.InsertOnSubmit(c);
             Db.SubmitChanges();
-            if(c.Field == "Group")
+            if (c.Field == "Group")
                 foreach (var rr in r.Elements())
                     InsertClause(Db, rr, c.QueryId);
             return c;

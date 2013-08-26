@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Search.Models
     public class AdvancedModel
     {
         private CMSDataContext Db;
-        private QueryBuilderClause Qb;
+        public QueryBuilderClause TopClause;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
@@ -34,6 +34,7 @@ namespace CmsWeb.Areas.Search.Models
         public AdvancedModel()
         {
             Db = DbUtil.Db;
+            Db.SetUserPreference("NewCategories", "true");
             ConditionName = "Group";
             TagTypeId = DbUtil.TagTypeId_Personal;
             TagName = Util2.CurrentTagName;
@@ -49,20 +50,20 @@ namespace CmsWeb.Areas.Search.Models
 
         public void LoadScratchPad()
         {
-            Qb = Db.QueryBuilderScratchPad();
-            if (QueryId.HasValue && QueryId.Value != Qb.QueryId)
+            TopClause = Db.QueryBuilderScratchPad();
+            if (QueryId.HasValue && QueryId.Value != TopClause.QueryId)
             {
                 var existing = Db.LoadQueryById(QueryId.Value);
                 if (existing != null)
                 {
-                    Qb.CopyFromAll(existing, DbUtil.Db);
-                    Description = Qb.Description;
-                    SavedQueryDesc = Qb.Description;
-                    Qb.Description = Util.ScratchPad;
+                    TopClause.CopyFromAll(existing, DbUtil.Db);
+                    Description = TopClause.Description;
+                    SavedQueryDesc = TopClause.Description;
+                    TopClause.Description = Util.ScratchPad;
                     Db.SubmitChanges();
                 }
             }
-            QueryId = Qb.QueryId;
+            QueryId = TopClause.QueryId;
         }
 
         public int? SelectedId { get; set; }
@@ -439,7 +440,7 @@ namespace CmsWeb.Areas.Search.Models
                 saveto = new QueryBuilderClause();
                 Db.QueryBuilderClauses.InsertOnSubmit(saveto);
             }
-            saveto.CopyFromAll(Qb, DbUtil.Db); // save Qb on top of existing
+            saveto.CopyFromAll(TopClause, DbUtil.Db); // save Qb on top of existing
             if (saveto.SavedBy != "public")
                 saveto.SavedBy = Util.UserName;
             saveto.Description = SavedQueryDesc;
@@ -447,13 +448,24 @@ namespace CmsWeb.Areas.Search.Models
             Db.SubmitChanges();
             Description = SavedQueryDesc;
         }
-        public void AddConditionToGroup()
+        public int AddConditionToGroup()
         {
             var c = Db.LoadQueryById(SelectedId);
-            var nc = NewCondition(c, c.MaxClauseOrder() + 1);
+            var nc = c.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
             Db.SubmitChanges();
-            if (nc.IsGroup)
-                AddMatchAnyThingToGroup(nc);
+            return nc.QueryId;
+        }
+        public int AddGroupToGroup()
+        {
+            var c = Db.LoadQueryById(SelectedId);
+            var g = new QueryBuilderClause();
+            g.SetQueryType(QueryType.Group);
+            g.SetComparisonType(CompareType.AllTrue);
+            var currParent = c.Parent;
+            g.Parent = c;
+            var nc = g.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
+            Db.SubmitChanges();
+            return nc.QueryId;
         }
         public void AddNewConditionAfterCurrent(int id)
         {
@@ -463,7 +475,7 @@ namespace CmsWeb.Areas.Search.Models
             SelectedId = nc.QueryId;
             EditCondition();
         }
-        public void CopyCurrentCondition(int id)
+        public int CopyCurrentCondition(int id)
         {
             var c = Db.LoadQueryById(id);
             SelectedId = id;
@@ -474,6 +486,7 @@ namespace CmsWeb.Areas.Search.Models
             if (nc.IsGroup)
                 AddMatchAnyThingToGroup(nc);
             EditCondition();
+            return nc.QueryId;
         }
 
         private void AddMatchAnyThingToGroup(QueryBuilderClause nc)
@@ -523,6 +536,12 @@ namespace CmsWeb.Areas.Search.Models
                 return;
             UpdateCondition(c);
         }
+        public void ChangeGroup(string comp)
+        {
+            var c = Db.LoadQueryById(SelectedId);
+            c.Comparison = comp;
+            Db.SubmitChanges();
+        }
         public void CopyAsNew()
         {
             var Qb = Db.LoadQueryById(SelectedId).Clone(DbUtil.Db);
@@ -542,9 +561,55 @@ namespace CmsWeb.Areas.Search.Models
             var cc = Db.LoadQueryById(SelectedId);
             var fp = cc.Parent;
             var g = cc.Parent.Parent;
-            cc.Parent = g;
-            if (fp.Clauses.Count == 0)
+            if (g != null)
+            {
+                cc.Parent = g;
+                if (fp.Clauses.Count == 0)
+                    Db.DeleteQueryBuilderClauseOnSubmit(fp);
+            }
+            else if (cc.IsGroup && fp.Clauses.Count == 1)
+            {
+                TopClause = cc;
+                cc.Parent = null;
                 Db.DeleteQueryBuilderClauseOnSubmit(fp);
+                QueryId = cc.QueryId;
+    			Util.QueryBuilderScratchPadId = TopClause.QueryId;
+                TopClause.Description = Util.ScratchPad;
+                TopClause.SavedBy = Util.UserName;
+            }
+            Db.SubmitChanges();
+        }
+        public void Paste(int id)
+        {
+            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
+            if (clip == null)
+                return;
+            var a = clip.Split(',');
+            var clipop = a[0];
+            var clipid = a[1].ToInt();
+            var clipclause = Db.LoadQueryById(clipid);
+            var targetclause = Db.LoadQueryById(id);
+            if (clipop == "Copy")
+                clipclause = clipclause.Clone(Db);
+            if (targetclause.IsGroup)
+            {
+                clipclause.GroupId = targetclause.QueryId;
+                clipclause.ClauseOrder = 0;
+            }
+            else
+            {
+                targetclause.Parent.Clauses.Add(clipclause);
+                clipclause.ClauseOrder = targetclause.ClauseOrder + 1;
+                targetclause.Parent.ReorderClauses();
+            }
+            HttpContext.Current.Session["QueryClipboard"] = "Copy," + clipid;
+            DbUtil.Db.SubmitChanges();
+        }
+        public void MoveToGroupBelow()
+        {
+            var cc = Db.LoadQueryById(SelectedId);
+            var g = cc.Parent.Clauses.First(gg => gg.IsGroup);
+            cc.Parent = g;
             Db.SubmitChanges();
         }
         public void InsertGroupAbove()
@@ -582,9 +647,23 @@ namespace CmsWeb.Areas.Search.Models
             Db.SubmitChanges();
             if (g.IsFirst)
             {
-                Qb = g;
+                TopClause = g;
                 QueryId = g.QueryId;
+    			Util.QueryBuilderScratchPadId = TopClause.QueryId;
             }
+        }
+        public IEnumerable<SelectListItem> GroupComparisons()
+        {
+            return from c in CompareClass.Comparisons
+                   where c.FieldType == FieldType.Group
+                   select new SelectListItem 
+                   { 
+                       Text = c.CompType == CompareType.AllTrue ? "All" 
+                            : c.CompType == CompareType.AnyTrue ? "Any" 
+                            : c.CompType == CompareType.AllFalse ? "None" 
+                            : "unknown", 
+                       Value = c.CompType.ToString() 
+                   };
         }
         public IEnumerable<SelectListItem> Comparisons()
         {
@@ -688,10 +767,10 @@ namespace CmsWeb.Areas.Search.Models
         private int level;
         public List<QueryClauseDisplay> ConditionList()
         {
-            if (Qb == null)
+            if (TopClause == null)
                 LoadScratchPad();
             level = 0;
-            return ClauseAndSubs(new List<QueryClauseDisplay>(), Qb);
+            return ClauseAndSubs(new List<QueryClauseDisplay>(), TopClause);
         }
         private List<QueryClauseDisplay> ClauseAndSubs(List<QueryClauseDisplay> list, QueryBuilderClause qc)
         {
@@ -705,7 +784,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<CategoryClass> FieldCategories()
         {
-            var q = from c in CategoryClass2.Categories
+            var q = from c in CategoryClass.Categories
                     where c.Title != "Grouping"
                     select c;
             return q;
@@ -767,21 +846,21 @@ namespace CmsWeb.Areas.Search.Models
         }
         private IQueryable<Person> PersonQuery()
         {
-            if (Qb == null)
+            if (TopClause == null)
                 LoadScratchPad();
             Db.SetNoLock();
-            var q = Db.People.Where(Qb.Predicate(Db));
-            if (Qb.ParentsOf)
+            var q = Db.People.Where(TopClause.Predicate(Db));
+            if (TopClause.ParentsOf)
                 return Db.PersonQueryParents(q);
             return q;
         }
         public void TagAll(Tag tag = null)
         {
-            if (Qb == null)
+            if (TopClause == null)
                 LoadScratchPad();
             Db.SetNoLock();
-            var q = Db.People.Where(Qb.Predicate(Db));
-            if (Qb.ParentsOf)
+            var q = Db.People.Where(TopClause.Predicate(Db));
+            if (TopClause.ParentsOf)
                 q = Db.PersonQueryParents(q);
             if (tag != null)
                 Db.TagAll(q, tag);
@@ -790,11 +869,11 @@ namespace CmsWeb.Areas.Search.Models
         }
         public void UnTagAll()
         {
-            if (Qb == null)
+            if (TopClause == null)
                 LoadScratchPad();
             Db.SetNoLock();
-            var q = Db.People.Where(Qb.Predicate(Db));
-            if (Qb.ParentsOf)
+            var q = Db.People.Where(TopClause.Predicate(Db));
+            if (TopClause.ParentsOf)
                 q = Db.PersonQueryParents(q);
             Db.UnTagAll(q);
         }

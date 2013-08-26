@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.People.Models.Person
     public class PersonModel
     {
         public BasicPersonInfo basic { get; set; }
-        public MemberInfo member { get; set; }
+        public MemberInfo2 member { get; set; }
         public GrowthInfo growth { get; set; }
         public MemberNotesInfo membernotes { get; set; }
 
@@ -129,27 +129,7 @@ namespace CmsWeb.Areas.People.Models.Person
             SpouseId = p.SpouseId;
             StatusFlags = (i.statusflags ?? "").Split(',');
 
-            member = new MemberInfo
-            {
-                PeopleId = p.PeopleId,
-                BaptismSchedDate = p.BaptismSchedDate,
-                BaptismTypeId = p.BaptismTypeId ?? 0,
-                BaptismStatusId = p.BaptismStatusId ?? 0,
-                BaptismDate = p.BaptismDate,
-                DecisionDate = p.DecisionDate,
-                DecisionTypeId = p.DecisionTypeId ?? 0,
-                DropDate = p.DropDate,
-                DropTypeId = p.DropCodeId,
-                EnvelopeOptionId = p.EnvelopeOptionsId ?? 0,
-                StatementOptionId = p.ContributionOptionsId ?? 0,
-                JoinTypeId = p.JoinCodeId,
-                NewChurch = p.OtherNewChurch,
-                PrevChurch = p.OtherPreviousChurch,
-                NewMemberClassDate = p.NewMemberClassDate,
-                NewMemberClassStatusId = p.NewMemberClassStatusId ?? 0,
-                MemberStatusId = p.MemberStatusId,
-                JoinDate = p.JoinDate,
-            };
+            member = new MemberInfo2(p.PeopleId);
             basic = new BasicPersonInfo
             {
                 PeopleId = p.PeopleId,

@@ -1,107 +1,186 @@
 ﻿$(function () {
-    var $editplaceholderheight = 0;
+    var liedit;
     var $backdrop = $('<div class="modal-backdrop hide" />').appendTo('body');
-    $('#conditions a.editconditionlink').live("click", function () {
-        var qid = $(this).closest("tr").attr("qid");
-        $EditCondition(qid);
+    $('#conditions').on("click", 'a.edit-popover', function () {
+        liedit = $(this).closest("li.condition");
+        $EditCondition();
         return false;
     });
-    var $EditCondition = function (qid) {
-        $editplaceholderheight = $(this).parent().height();
+    var $EditCondition = function (option) {
+        var qid = liedit.data("qid");
+        $("#editcondition").attr("originalheight", liedit.height());
         if ($("#editcondition").is(":visible")) {
-            var h = $("#editcondition").attr("orginalheight");
-            $("#editconditionplaceholder").animate({ height: h }, 150);
             $.HideEditCondition();
         }
         $.post('/Query/EditCondition/' + qid, null, function (ret) {
-            $("#conditions").html(ret).ready($.AdjustEditCondition);
+            $("#editcondition .popover-content").html(ret).ready(function () {
+                $.AdjustEditCondition(option);
+            });
         });
     };
-    $.AdjustEditCondition = function () {
+    $.InitCodeValues = function () {
         $('#CodeValues').multiselect({
             includeSelectAllOption: true,
             enableFiltering: true,
             enableCaseInsensitiveFiltering: true
         });
+    };
+    $.AdjustEditCondition = function (option) {
+        $.InitCodeValues();
         var h = $("#editcondition").outerHeight();
-        $("#editcondition").attr("orginalheight", $("#editconditionplaceholder").height());
-        $("#editconditionplaceholder").animate({ height: h }, 200);
-        var pos = $("#editconditionplaceholder").closest("td").position();
-        var wid = $("#editconditionplaceholder").closest("td").width();
+        var pos = liedit.position();
+        var wid = liedit.width();
 
         $("#editcondition").css({
             "left": pos.left,
             "top": pos.top + 2,
             "min-width": wid,
-            "z-index": 1050
+            "z-index": 1041
         });
         $backdrop.removeClass("hide");
-        $("#editcondition").slideDown(200);
+        liedit.animate({ height: h }, 350);
+        setTimeout(function () {
+            $("#editcondition").slideDown(500, function () {
+                $(this).scrollintoview();
+                if (option && option.isnew)
+                    $("#SelectCondition").click();
+            });
+        }, 10);
     };
     $.HideEditCondition = function () {
         $backdrop.addClass("hide");
-        var oh = $("#editcondition").attr("orginalheight");
-        $("#editconditionplaceholder").animate({ height: oh }, 500);
+        var oh = $("#editcondition").attr("originalheight");
+        $("#editcondition").slideUp(150);
+        var pliedit = $("li[data-qid='" + $("#SelectedId").val() + "']");
+        pliedit.animate({ height: oh }, 400);
     };
-    $('#conditions a.addnewclause').live("click", function () {
-        var qid = $(this).closest("tr").attr("qid");
-        $.post('/Query/AddNewCondition/' + qid, {}, function (ret) {
-            $("#conditions").html(ret).ready($.AdjustEditCondition);
-            $('#QueryConditionSelect').modal("show");
-        });
+    $(document).on("click", '#CancelChange', function () {
+        $.HideEditCondition();
         return false;
     });
-    $('#conditions a.duplicateclause').live("click", function () {
-        var qid = $(this).closest("tr").attr("qid");
-        $.post('/Query/DuplicateCondition/' + qid, {}, function (ret) {
-            $("#conditions").html(ret).ready($.AdjustEditCondition);
-        });
-        return false;
+    $("#conditions").on("mouseenter", "header", function() {
+        var li = $(this).closest("li");
+        li.addClass("borderleftred");
+    }).on("mouseleave", "header", function () {
+        var li = $(this).closest("li");
+        li.removeClass("borderleftred");
     });
-    $('#conditions a.insgroupabove').live("click", function () {
-        var qid = $(this).closest("tr").attr("qid");
-        $.post('/Query/InsGroupAbove/' + qid, {}, function (ret) {
-            $("#conditions").html(ret).ready($.AdjustEditCondition);
-        });
-        return false;
-    });
-    $('#conditions a.movetoprevgroup').live("click", function () {
-        var qid = $(this).closest("tr").attr("qid");
-        $.post('/Query/MoveToPreviousGroup/' + qid, {}, function (ret) {
-            $("#conditions").html(ret).ready($.AdjustEditCondition);
-        });
-        return false;
-    });
-    $('#SaveCondition').live("click", function () {
+    $(document).on("click", '#SaveCondition', function () {
         var q = $('#editForm').serialize();
         $.post('/Query/SaveCondition/', q, function (ret) {
-            $("#conditions").html(ret).ready(function () {
+            if (ret.startsWith("<form"))
+                $("#editcondition .popover-content").html(ret).ready(function () {
+                    $.InitCodeValues();
+                });
+            else {
                 $.HideEditCondition();
-                $("#Run").click();
-            });
-        });
-        return false;
-    });
-    $('#CancelChange').live("click", function () {
-        $.HideEditCondition();
-        $.post('/Query/Reload/', null, function (ret) {
-            $("#conditions").html(ret);
-        });
-        return false;
-    });
-    $('#DeleteCondition').live("click", function () {
-        bootbox.confirm("Are you sure you want to delete?", function (result) {
-            if (result === true) {
-                var qid = $("#SelectedId").val();
-                $.post('/Query/RemoveCondition/' + qid, null, function (ret) {
-                    $.HideEditCondition();
-                    $("#conditions").html(ret);
+                $("#conditions").html(ret).ready(function () {
+                    RefreshList();
                 });
             }
         });
         return false;
     });
-    $('#Comparison').live("change", function (ev) {
+    $('#conditions').on("change", "select.changegroup", function () {
+        var v = $(this).val();
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.post('/Query/ChangeGroup/' + qid, { comparison: v }, function () {
+            RefreshList();
+        });
+        return false;
+    });
+    $('#conditions').on("click", 'a.addnewclause', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.post('/Query/AddNewCondition/' + qid, {}, function (ret) {
+            $("#conditions").html(ret).ready(function () {
+                liedit = $("li[data-qid='" + $("#NewId").val() + "']");
+                $EditCondition({ isnew: true });
+            });
+        });
+        return false;
+    });
+    $('#conditions').on("click", 'a.addnewgroup', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.post('/Query/AddNewGroup/' + qid, {}, function (ret) {
+            $("#conditions").html(ret).ready(function () {
+                liedit = $("li[data-qid='" + $("#NewId").val() + "']");
+                $EditCondition({ isnew: true });
+            });
+        });
+        return false;
+    });
+    if($.ClipboardHasCondition) {
+        $("li.pastecondition").show();
+    }
+    $('#conditions').on("click", 'a.cutcondition', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $(this).parent().parent().prev().dropdown("toggle");
+        $.post('/Query/Cut/' + qid);
+        $("li.pastecondition").show();
+        return false;
+    });
+    $('#conditions').on("click", 'a.copycondition', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.post('/Query/Copy/' + qid);
+        $(this).parent().parent().prev().dropdown("toggle");
+        $("li.pastecondition").show();
+        return false;
+    });
+    $('#conditions').on("click", 'a.pastecondition', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.post('/Query/Paste/' + qid, {}, function (ret) {
+            $("#conditions").html(ret);
+            RefreshList();
+        });
+        return false;
+    });
+    $('#conditions').on("click", 'a.insgroupabove', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.post('/Query/InsGroupAbove/' + qid, {}, function (ret) {
+            $("#conditions").html(ret);
+            RefreshList();
+        });
+        return false;
+    });
+    $('#conditions').on("click", 'a.movetoprevgroup', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.post('/Query/MoveToPreviousGroup/' + qid, {}, function (ret) {
+            $("#conditions").html(ret);
+            RefreshList();
+        });
+        return false;
+    });
+    $('#conditions').on("click", 'a.movetogroupbelow', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.post('/Query/MoveToGroupBelow/' + qid, {}, function (ret) {
+            $("#conditions").html(ret);
+            RefreshList();
+        });
+        return false;
+    });
+    $('#conditions').on("click", 'a.delete', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        bootbox.confirm("Are you sure you want to delete?", function (result) {
+            if (result === true) {
+                $.post('/Query/RemoveCondition/' + qid, null, function (ret) {
+                    $("#conditions").html(ret);
+                    RefreshList();
+                });
+            }
+        });
+        return false;
+    });
+    $(document).on("change", '#Comparison', function (ev) {
         if ($("#CodesDiv").length > 0) {
             var q = $('#editForm').serialize();
             $.post('/Query/CodesDropdown', q, function (ret) {
@@ -111,21 +190,53 @@
             });
         }
     });
+    $('#Tags').click(function (ev) {
+        $('#TagsPopup').show();
+    });
+    $(".datepicker").datepicker();
 
-    //    $('#QueryConditionHelp').dialog({
-    //        title: 'Help on Condition',
-    //        bgiframe: true,
-    //        autoOpen: false,
-    //        width: 750,
-    //        height: 700,
-    //        modal: true,
-    //        overlay: {
-    //            opacity: 0.5,
-    //            background: "black"
-    //        }, close: function () {
-    //            $('iframe', this).attr("src", "");
-    //        }
-    //    });
+    $(document).on("change", '#Program', function (ev) {
+        $.post('/Query/Divisions/' + $(this).val(), null, function (ret) {
+            $("#Division").replaceWith(ret);
+            $("#Organization").replaceWith("<select id='Organization' name='Organization'><option value='0'>(not specified)</option></select>");
+        });
+    });
+    $(document).on("change", '#Division', function () {
+        $.post('/Query/Organizations/' + $(this).val(), null, function (ret2) {
+            $("#Organization").replaceWith(ret2);
+        });
+    });
+    $(document).on("click", '#Run', function (ev) {
+        RefreshList();
+        return false;
+    });
+    $('#Export').click(function (ev) {
+        window.location = "/Query/Export/" + $("#QueryId").val();
+    });
+
+    $(document).on("click", "#SelectCondition", function (ev) {
+        ev.preventDefault();
+        $backdrop.css({ "z-index": 1042 });
+        $('#QueryConditionSelect').modal("show");
+        return false;
+    });
+    $(document).on("hidden", "#QueryConditionSelect", function (ev) {
+        $backdrop.css({ "z-index": 1040 });
+    });
+
+    $('.FieldLink a').click(function (ev) {
+        ev.preventDefault();
+        var qid = liedit.data("qid");
+        $.post('/Query/SelectCondition/' + qid, { conditionName: ev.target.id }, function (ret) {
+            $('#QueryConditionSelect').modal("hide");
+            $("#editcondition .popover-content").html(ret).ready($.AdjustEditCondition);
+        });
+        return false;
+    });
+    $.navigate = function (url, data) {
+        url += (url.match(/\?/) ? "&" : "?") + data;
+        window.location = url;
+    };
     $('a.help').live("click", function (event) {
         event.preventDefault();
         var d = $('#QueryConditionHelp');
@@ -135,108 +246,14 @@
             $('iframe', d).attr("src", this.href);
         d.dialog("open");
     });
-    $('#Tags').click(function (ev) {
-        $('#TagsPopup').show();
-    });
-    $(".datepicker").datepicker();
-    $(".bt").button();
-
-    $('#Program').live("change", function (ev) {
-        $.post('/Query/Divisions/' + $(this).val(), null, function (ret) {
-            $("#Division").replaceWith(ret);
-            $("#Organization").replaceWith("<select id='Organization' name='Organization'><option value='0'>(not specified)</option></select>");
-        });
-    });
-    $("#Division").live("change", function () {
-        $.post('/Query/Organizations/' + $(this).val(), null, function (ret2) {
-            $("#Organization").replaceWith(ret2);
-        });
-    });
-    $('#Run').live("click", function (ev) {
-        RefreshList();
-        return false;
-    });
-    $('#Export').click(function (ev) {
-        window.location = "/Query/Export/" + $("#QueryId").val();
-    });
-    var dialogOptions = {
-        overlay: { background: "#000", opacity: 0.3 },
-        modal: true,
-        autoOpen: false,
-        closeOnEscape: true,
-        width: 500
-    };
-    //    $('#SaveQueryDiv').dialog(dialogOptions);
-    //    $('#OpenQueryDiv').dialog(dialogOptions);
-    //
-    //    $('#ShowSaveQuery').live("click", function (ev) {
-    //        $('#SaveQueryDesc').val($('#Description').text());
-    //        $('#SaveQueryDiv').dialog("open");
-    //    });
-    //    $('#SaveQuery').click(function (ev) {
-    //        $('#SaveQueryDiv').dialog("close");
-    //        $.post("/Query/SaveQuery/", {
-    //            SavedQueryDesc: $('#SaveQueryDesc').val(),
-    //            IsPublic: $('#IsPublic').is(':checked')
-    //        }, function (ret) {
-    //            $("#Description").text(ret);
-    //        });
-    //        return false;
-    //    });
     if ($("#NewSearchId").val()) {
-        $EditCondition($("#NewSearchId").val());
-        $('#QueryConditionSelect').modal("show");
+        liedit = $("li[data-qid='" + $("#NewSearchId").val() + "']");
+        RefreshList();
+        $EditCondition({ isnew: true });
     }
-    else if ($("#AutoRun").val() === "true")
-        $("#Run").click();
-
-
-    //    $('#QueryConditionSelect').dialog({
-    //        overlay: { background: "#000", opacity: 0.3 },
-    //        bgiframe: true,
-    //        modal: true,
-    //        autoOpen: false,
-    //        closeOnEscape: true,
-    //        width: 750,
-    //        height: 575,
-    //        position: 'top'
-    //    });
-    //    if ($("#SelectedId").val() > 0) {
-    //        $.AdjustEditCondition();
-    //        $('#QueryConditionSelect').dialog("open");
-    //    }
-    //    $("#tabber").tabs();
-    //
-    $("#SelectCondition").live("click", function (ev) {
-        ev.preventDefault();
-        //$.unblockUI();
-        $('#QueryConditionSelect').modal("show");
-        return false;
-    });
-    $('div.FieldLink a').click(function (ev) {
-        ev.preventDefault();
-        var qid = $("#SelectedId").val();
-        $.post('/Query/SelectCondition/' + qid, { conditionName: ev.target.id }, function (ret) {
-            $('#QueryConditionSelect').modal("hide");
-            $("#conditions").html(ret).ready($.AdjustEditCondition);
-        });
-        return false;
-    });
-    $("a.closeit").click(function (ev) {
-        $.unblock();
-    });
-    $.navigate = function (url, data) {
-        url += (url.match(/\?/) ? "&" : "?") + data;
-        window.location = url;
-    };
-    $.fn.enabled = function (bool) {
-        if (bool)
-            $(this).attr("href", "#").removeClass("disabled");
-        else
-            $(this).removeAttr("href").addClass("disabled");
-        return this;
-    };
-    $("#Run").click();
+    else if ($("#AutoRun").val() === "True")
+        RefreshList();
+    //RefreshList();
 });
 
 function RefreshList(qs) {
@@ -251,7 +268,7 @@ function RefreshList(qs) {
         timeout: 1200000, // in milliseconds
         success: function (ret) {
             $('#toolbar').show();
-            $('#Results').html(ret);
+            $('#results').html(ret);
             $('#people tbody tr:even').addClass('alt');
             $('a.taguntag').click(function (ev) {
                 $.post('/Query/ToggleTag/' + $(this).attr('value'), null, function (ret) {

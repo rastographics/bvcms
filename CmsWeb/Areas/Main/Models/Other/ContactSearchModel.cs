@@ -276,17 +276,17 @@ namespace CmsWeb.Models
 		}
 		public SelectList ContactTypes()
 		{
-			return new SelectList(new CodeValueModel().ContactTypeCodes0(),
+			return new SelectList(new CodeValueModel().ContactTypeList(),
 				"Id", "Value", ContactType.ToString());
 		}
 		public SelectList ContactReasons()
 		{
-			return new SelectList(new CodeValueModel().ContactReasonCodes0(),
+			return new SelectList(new CodeValueModel().ContactReasonList(),
 				"Id", "Value", ContactReason.ToString());
 		}
 		public SelectList Ministries()
 		{
-			return new SelectList(new CodeValueModel().Ministries0(),
+			return new SelectList(new CodeValueModel().MinistryList(),
 				"Id", "Value", Ministry.ToString());
 		}
 		public IEnumerable<SelectListItem> Results()

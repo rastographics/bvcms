@@ -108,6 +108,9 @@
       <HintPath>..\packages\LumenWorks.Framework.IO.3.8.0\lib\net20\LumenWorks.Framework.IO.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IdentityModel">
+      <HintPath>..\packages\Microsoft.IdentityModel.6.1.7600.16394\lib\net35\Microsoft.IdentityModel.dll</HintPath>
+    </Reference>
     <Reference Include="MoreLinq">
       <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
@@ -133,6 +136,7 @@
     <Reference Include="System.Data.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.IdentityModel" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -164,6 +168,10 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Thinktecture.IdentityModel, Version=3.4.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Thinktecture.IdentityModel.3.4.5\lib\net40\Thinktecture.IdentityModel.dll</HintPath>
+    </Reference>
     <Reference Include="WebActivator">
       <HintPath>..\packages\WebActivator.1.0.0.0\lib\WebActivator.dll</HintPath>
     </Reference>
@@ -273,6 +281,7 @@
     <Compile Include="Areas\Dialog\Controllers\SearchAddController.cs" />
     <Compile Include="Areas\People\Models\Person\AttendHistoryModel.cs" />
     <Compile Include="Areas\People\Models\Person\AttendInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\MemberInfo.cs" />
     <Compile Include="Areas\People\Models\Person\PendingEnrollments.cs" />
     <Compile Include="Areas\People\Models\Person\OrgMemberInfo.cs" />
     <Compile Include="Areas\People\Models\Person\PreviousEnrollments.cs" />
@@ -295,7 +304,7 @@
     <Compile Include="Areas\People\Models\Person\GrowthInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\MemberInfo.cs">
+    <Compile Include="Areas\People\Models\Person\MemberInfo2.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\People\Models\Person\MemberNotesInfo.cs">
@@ -440,6 +449,7 @@
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\Fingerprint.cs" />
     <Compile Include="Code\LabelMetaData.cs" />
+    <Compile Include="Code\ModelViewModel.cs" />
     <Compile Include="Code\Payments.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
@@ -536,9 +546,6 @@
       <DependentUpon>person.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\Support.css" />
-    <Content Include="FieldMap3.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="images\chosen-sprite.png" />
     <Content Include="Content\css\chosen.css" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
@@ -726,6 +733,10 @@
     </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-editable.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-editable.min.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-modal-popover.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-modal-popover.min.js">
+      <DependentUpon>bootstrap-modal-popover.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-multiselect.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js">
       <DependentUpon>bootstrap-multiselect.js</DependentUpon>
@@ -798,6 +809,10 @@
     <Content Include="Scripts\jQuery\jquery.hiddenposition.1.1.js" />
     <Content Include="Scripts\jQuery\jquery.multiSelect.min.js">
       <DependentUpon>jquery.multiSelect.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jQuery\jquery.scrollintoview.js" />
+    <Content Include="Scripts\jQuery\jquery.scrollintoview.min.js">
+      <DependentUpon>jquery.scrollintoview.js</DependentUpon>
     </Content>
     <Content Include="Scripts\jQuery\jquery.textfill.js" />
     <Content Include="Scripts\jQuery\jquery.tooltip.min.js.map">
@@ -971,6 +986,9 @@
     <Content Include="Areas\Main\Views\Contact\ContactDisplay.cshtml" />
     <Content Include="Areas\Main\Views\Contact\ContactEdit.cshtml" />
     <Content Include="Areas\Main\Views\Contact\EditorTemplates\Bool.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditCondition2.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Conditions2.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmReregister.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1118,6 +1136,12 @@
     <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js.map">
       <DependentUpon>bootstrap-multiselect.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Bootstrap\bootstrap-modal-popover.min.js.map">
+      <DependentUpon>bootstrap-modal-popover.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jQuery\jquery.scrollintoview.min.js.map">
+      <DependentUpon>jquery.scrollintoview.js</DependentUpon>
+    </Content>
     <None Include="Scripts\jQuery\main.js.bundle" />
     <Content Include="Scripts\jQuery\main.min.js.map">
       <DependentUpon>main.js.bundle</DependentUpon>
@@ -1241,6 +1265,10 @@
     </Content>
     <Content Include="Scripts\Search\ContactSearch.min.js.map">
       <DependentUpon>ContactSearch.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\Query0.js" />
+    <Content Include="Scripts\Search\Copy of Query.min.js">
+      <DependentUpon>Query0.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\PeopleSearch.min.js">
       <DependentUpon>PeopleSearch.js</DependentUpon>
@@ -1841,6 +1869,9 @@
     <Content Include="Views\Shared\NewHeader3.cshtml" />
     <Content Include="Views\Shared\Menu\AdminBar.cshtml" />
     <Content Include="Views\Shared\Toolbar\GearStandard.cshtml" />
+    <Content Include="Scripts\Search\Copy of Query.min.js.map">
+      <DependentUpon>Query0.js</DependentUpon>
+    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

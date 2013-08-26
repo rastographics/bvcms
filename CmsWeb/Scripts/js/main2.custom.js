@@ -77,6 +77,8 @@ $(function () {
                 else if (i.id === -2)
                     window.location = "/Query/";
                 else if (i.id === -3)
+                    window.location = "/SavedQuery2";
+                else if (i.id === -4)
                     window.location = "/OrgSearch";
                 else
                     window.location = (i.isOrg ? "/Organization/Index/" : "/Person2/") + i.id;
@@ -86,8 +88,9 @@ $(function () {
                 if (query === '---') {
                     data = [
                         { order: "001", id: -1, line1: "People Search" },
-                        { order: "002", id: -2, line1: "Advanced Search" },
-                        { order: "003", id: -3, line1: "Organization Search" }
+                        { order: "002", id: -2, line1: "Search Builder" },
+                        { order: "003", id: -3, line1: "Saved Searches" },
+                        { order: "004", id: -4, line1: "Organization Search" }
                     ];
                     imap = {};
                     var strings = data.map(function (item) {

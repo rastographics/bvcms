@@ -72,7 +72,7 @@ namespace UtilityExtensions
         public static long? ToLong2(this string s)
         {
             long ii;
-            if(long.TryParse(s, out ii))
+            if (long.TryParse(s, out ii))
                 return ii;
             return null;
         }
@@ -1719,6 +1719,8 @@ namespace UtilityExtensions
                 sb.Append(sep);
             sb.Append(s);
         }
+        public static bool IsNullable<T>(T t) { return false; }
+        public static bool IsNullable<T>(T? t) where T : struct { return true; }
     }
     public class EventArg<T> : EventArgs
     {

@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
+using DocumentFormat.OpenXml.EMMA;
 using UtilityExtensions;
 using CmsData;
 
@@ -22,7 +23,7 @@ namespace CmsWeb.Areas.Search.Controllers
     public class QueryController : CmsStaffAsyncController
     {
         [GET("Query/{id:int?}")]
-        public ActionResult Query(int? id, int? run)
+        public ActionResult Query(int? id)
         {
             ViewBag.Title = "QueryBuilder";
             ViewBag.OnQueryBuilder = "true";
@@ -33,17 +34,38 @@ namespace CmsWeb.Areas.Search.Controllers
             ViewBag.GearSpan = "span12";
             var m = new AdvancedModel { QueryId = id };
             DbUtil.LogActivity("QueryBuilder");
-            if (run.HasValue)
-                m.ShowResults = true;
             m.LoadScratchPad();
             ViewData["queryid"] = m.QueryId;
-            ViewBag.AutoRun = "true";
             var newsearchid = (int?)TempData["newsearch"];
             if (newsearchid.HasValue)
-            {
                 ViewBag.NewSearchId = newsearchid.Value;
+#if DEBUG
+            else
+            {
+                ViewBag.AutoRun = true;
             }
+#endif
             return View(m);
+        }
+        [POST("Query/Cut/{id:int}")]
+        public ActionResult Cut(int id)
+        {
+            Session["QueryClipboard"] = "Cut," + id;
+            return Content("ok");
+        }
+        [POST("Query/Copy/{id:int}")]
+        public ActionResult Copy(int id)
+        {
+            Session["QueryClipboard"] = "Copy," + id;
+            return Content("ok");
+        }
+        [POST("Query/Paste/{id:int}")]
+        public ActionResult Paste(int id)
+        {
+            var m = new AdvancedModel();
+            m.LoadScratchPad();
+            m.Paste(id);
+            return View("Conditions2", m);
         }
         [POST("Query/CodesDropdown/")]
         public ActionResult CodesDropdown(AdvancedModel m)
@@ -72,15 +94,16 @@ namespace CmsWeb.Areas.Search.Controllers
             m.Comparison = "Equal";
             m.UpdateCondition();
             m.SelectedId = id;
-            return View("Conditions", m);
+            return View("EditCondition", m);
         }
         [POST("Query/EditCondition/{id:int}")]
         public ActionResult EditCondition(int id)
         {
+            Response.NoCache();
             var m = new AdvancedModel { SelectedId = id };
             m.LoadScratchPad();
             m.EditCondition();
-            return View("Conditions", m);
+            return View(m);
         }
 
         [POST("Query/AddNewCondition/{id:int}")]
@@ -89,11 +112,17 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new AdvancedModel { SelectedId = id };
             m.LoadScratchPad();
             m.EditCondition();
-            if (m.ConditionName == "Group")
-                m.AddConditionToGroup();
-            else
-                m.AddNewConditionAfterCurrent(id);
-            return View("Conditions", m);
+            ViewBag.NewId = m.AddConditionToGroup();
+            return View("Conditions2", m);
+        }
+        [POST("Query/AddNewGroup/{id:int}")]
+        public ActionResult AddNewGroup(int id)
+        {
+            var m = new AdvancedModel { SelectedId = id };
+            m.LoadScratchPad();
+            m.EditCondition();
+            ViewBag.NewId = m.AddGroupToGroup();
+            return View("Conditions2", m);
         }
         [POST("Query/DuplicateCondition/{id:int}")]
         public ActionResult DuplicateCondition(int id)
@@ -101,8 +130,16 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new AdvancedModel();
             m.LoadScratchPad();
             m.EditCondition();
-            m.CopyCurrentCondition(id);
-            return View("Conditions", m);
+            ViewBag.NewId = m.CopyCurrentCondition(id);
+            return View("Conditions2", m);
+        }
+        [POST("Query/SaveCondition/{id:int}")]
+        public ActionResult ChangeGroup(int id, string comparison)
+        {
+            var m = new AdvancedModel { SelectedId = id };
+            m.LoadScratchPad();
+            m.ChangeGroup(comparison);
+            return Content("ok");
         }
         [POST("Query/SaveCondition")]
         public ActionResult SaveCondition(AdvancedModel m)
@@ -113,14 +150,16 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.UpdateCondition();
                 DbUtil.Db.SubmitChanges();
             }
-            return View("Conditions", m);
+            if(ModelState.IsValid)
+                return View("Conditions2", m);
+            return View("EditCondition", m);
         }
         [POST("Query/Reload/")]
         public ActionResult Reload()
         {
             var m = new AdvancedModel();
             m.LoadScratchPad();
-            return View("Conditions", m);
+            return View("Conditions2", m);
         }
         [POST("Query/RemoveCondition/{id:int}")]
         public ActionResult RemoveCondition(int id)
@@ -129,7 +168,7 @@ namespace CmsWeb.Areas.Search.Controllers
             m.LoadScratchPad();
             m.DeleteCondition();
             m.SelectedId = null;
-            return View("Conditions", m);
+            return View("Conditions2", m);
         }
         [POST("Query/InsGroupAbove/{id:int}")]
         public ActionResult InsGroupAbove(int id)
@@ -137,7 +176,7 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new AdvancedModel { SelectedId = id };
             m.LoadScratchPad();
             m.InsertGroupAbove();
-            return View("Conditions", m);
+            return View("Conditions2", m);
         }
         [POST("Query/MoveToPreviousGroup/{id:int}")]
         public ActionResult MoveToPreviousGroup(int id)
@@ -145,7 +184,15 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new AdvancedModel { SelectedId = id };
             m.LoadScratchPad();
             m.MoveToPreviousGroup();
-            return View("Conditions", m);
+            return View("Conditions2", m);
+        }
+        [POST("Query/MoveToGroupBelow/{id:int}")]
+        public ActionResult MoveToGroupBelow(int id)
+        {
+            var m = new AdvancedModel { SelectedId = id };
+            m.LoadScratchPad();
+            m.MoveToGroupBelow();
+            return View("Conditions2", m);
         }
         [POST("Query/CopyAsNew/{id:int}")]
         public ActionResult CopyAsNew(int id)
@@ -161,7 +208,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Conditions()
         {
             var m = new AdvancedModel();
-            return View(m);
+            return View("Conditions2", m);
         }
         [POST("Query/Divisions/{id:int}")]
         public ActionResult Divisions(int id)
