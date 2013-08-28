@@ -22,9 +22,11 @@ namespace CmsWeb.Models.ContactPage
         private string _incomplete;
 
         public string ContactDate { get; set; }
+
         public int MinistryId { get; set; }
         public int ContactTypeId { get; set; }
         public int ContactReasonId { get; set; }
+
         public bool NotAtHome { get; set; }
         public bool LeftDoorHanger { get; set; }
         public bool LeftMessage { get; set; }
@@ -78,8 +80,8 @@ namespace CmsWeb.Models.ContactPage
 
         public void UpdateContact()
         {
-            contact.CopyPropertiesFrom(this);
-            this.CopyPropertiesFrom(contact, CodeValuesOnly: true);
+            this.CopyPropertiesTo(contact);
+            this.CopyPropertiesFrom(contact, onlyfields:"ContactType,ContactReason,Ministry");
             Db.SubmitChanges();
         }
         internal void DeleteContact()

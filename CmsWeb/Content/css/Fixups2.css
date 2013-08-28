@@ -235,7 +235,13 @@ li.header {
 
 
 
-#personal form.form.form-horizontal.ajax div.form-actions {
+.tab-content {
+  overflow: hidden;
+}
+#personal, #status {
+    margin-top: -2.4em;
+}
+form.form.form-horizontal.ajax div.form-actions {
     margin-top: .5em;
     margin-bottom: 1em;
     padding: 35px 0 0 0;

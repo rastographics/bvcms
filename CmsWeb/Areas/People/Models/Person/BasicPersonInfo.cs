@@ -7,6 +7,7 @@ using System.Web.Routing;
 using System.Linq;
 using CmsData;
 using System.Web.Mvc;
+using CmsWeb.Areas.Dialog.Controllers;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using UtilityExtensions;
@@ -37,6 +38,18 @@ namespace CmsWeb.Areas.People.Models.Person
 
     public class BasicPersonInfo
     {
+        private int _id;
+        public int Id
+        {
+            get { return _id; }
+            set
+            {
+                _id = value;
+                if (_id == 0)
+                    return;
+                person = DbUtil.Db.LoadPersonById(value);
+            }
+        }
         private RouteValueDictionary routeVals;
         public RouteValueDictionary RouteVals
         {
@@ -59,65 +72,101 @@ namespace CmsWeb.Areas.People.Models.Person
         public int PeopleId { get; set; }
         public CmsData.Person person { get; set; }
 
-        public CodeInfo Title { get; set; }
+        [UIHint("Text"), DisplayName("Title"), TrackChanges]
+        public string TitleCode { get; set; }
 
-        [UIHint("Text")]
-        [DisplayName("First Name")]
+        [UIHint("Text"), TrackChanges]
         public string FirstName { get; set; }
 
-        [UIHint("Text")]
-        [DisplayName("Goes By")]
+        [UIHint("Text"), DisplayName("Goes By"), TrackChanges]
         public string GoesBy { get; set; }
 
-        [UIHint("Text")]
-        [DisplayName("Middle Name")]
+        [UIHint("Text"), TrackChanges]
         public string MiddleName { get; set; }
 
-        [UIHint("Text")]
-        [DisplayName("Last Name")]
+        [UIHint("Text"), TrackChanges]
         public string LastName { get; set; }
 
-        [UIHint("Text")]
-        [DisplayName("Alt Name")]
+        [UIHint("Text"), TrackChanges]
         public string AltName { get; set; }
 
-        [UIHint("Text")]
-        [DisplayName("Former Name")]
-        public string FormerName { get; set; }
+        [UIHint("Text"), DisplayName("Former Name"), TrackChanges]
+        public string MaidenName { get; set; }
 
-        [UIHint("Text")]
-        public string Suffix { get; set; }
+        [UIHint("Text"), DisplayName("Suffix"), TrackChanges]
+        public string SuffixCode { get; set; }
 
+        [TrackChanges]
         public CodeInfo Gender { get; set; }
 
-        [UIHint("InlineCode")]
-        [DisplayName("Family Position")]
-        public CodeInfo FamilyPosition { get; set; }
+        [UIHint("InlineCode"), TrackChanges]
+        public CodeInfo PositionInFamily { get; set; }
 
-        [UIHint("InlineCode")]
-        [DisplayName("Campus")]
+        [UIHint("InlineCode"), TrackChanges]
         public CodeInfo Campus { get; set; }
 
-        [UIHint("Date")]
-        public string Birthday { get; set; }
+        [UIHint("Date"), DisplayName("Birthday"), TrackChanges]
+        public string DOB { get; set; }
 
-        public CodeInfo Marital { get; set; }
+        [TrackChanges]
+        public CodeInfo MaritalStatus { get; set; }
 
-        [UIHint("Date")]
-        [DisplayName("Wedding Date")]
+        [UIHint("Date"), TrackChanges]
         public string WeddingDate { get; set; }
 
-        [UIHint("Text")]
-        public string Occupation { get; set; }
+        [UIHint("Text"), DisplayName("Occupation")]
+        public string OccupationOther { get; set; }
 
-        [UIHint("Text")]
-        public string Employer { get; set; }
+        [UIHint("Text"), DisplayName("Employer")]
+        public string EmployerOther { get; set; }
 
-        [UIHint("Text")]
-        public string School { get; set; }
+        [UIHint("Text"), DisplayName("School")]
+        public string SchoolOther { get; set; }
 
-        [UIHint("Text")]
+        [UIHint("Text"), TrackChanges]
         public string Grade { get; set; }
+
+        [UIHint("Email"), DisplayName("Primary Email"), TrackChanges,
+            FieldInfo(CheckboxField = "SendEmailAddress1")]
+        public EmailInfo EmailAddress { get; set; }
+
+        [UIHint("Email"), DisplayName("Alt Email"), TrackChanges,
+            FieldInfo(CheckboxField = "SendEmailAddress2")]
+        public EmailInfo EmailAddress2 { get; set; }
+
+        [UIHint("Text"), TrackChanges, Phone]
+        public string HomePhone { get; set; }
+
+        [UIHint("CellPhone"), TrackChanges, Phone,
+            FieldInfo(CheckboxField = "ReceiveSMS")]
+        public CellPhoneInfo CellPhone { get; set; }
+
+        [UIHint("Text"), TrackChanges, Phone]
+        public string WorkPhone { get; set; }
+
+        [UIHint("Date"), TrackChanges]
+        public DateTime? DeceasedDate { get; set; }
+
+        [TrackChanges]
+        public bool DoNotCallFlag { get; set; }
+
+        [TrackChanges]
+        public bool DoNotVisitFlag { get; set; }
+
+        [TrackChanges]
+        public bool DoNotMailFlag { get; set; }
+
+        [TrackChanges]
+        public bool DoNotPublishPhones { get; set; }
+
+        public DateTime? Created { get; set; }
+//        public int MemberStatusId { get; set; }
+        public DateTime? JoinDate { get; set; }
+        public string Spouse { get; set; }
+
+        public string Age { get; set; }
+
+        public CodeInfo MemberStatus { get; set; }
 
         public string DoNotContact
         {
@@ -136,47 +185,6 @@ namespace CmsWeb.Areas.People.Models.Person
                 return s;
             }
         }
-        [UIHint("Email")]
-        [DisplayName("Primary Email")]
-        public EmailInfo PrimaryEmail { get; set; }
-        [UIHint("Email")]
-        [DisplayName("Alt Email")]
-        public EmailInfo AltEmail { get; set; }
-
-        [UIHint("Text")]
-        [DisplayName("Home Phone")]
-        public string HomePhone { get; set; }
-
-        [UIHint("CellPhone")]
-        [DisplayName("Cell Phone")]
-        public CellPhoneInfo Mobile { get; set; }
-
-        [UIHint("Text")]
-        public string Work { get; set; }
-
-        public bool DoNotCallFlag { get; set; }
-        public bool DoNotVisitFlag { get; set; }
-        public bool DoNotMailFlag { get; set; }
-
-        public DateTime? Created { get; set; }
-
-        public bool ReceiveSMS { get; set; }
-        public int MemberStatusId { get; set; }
-        public DateTime? JoinDate { get; set; }
-        public string Spouse { get; set; }
-        public DateTime? DeceasedDate { get; set; }
-        public string Age { get; set; }
-
-        public bool DoNotPublishPhones { get; set; }
-
-
-
-//        public string Campus
-//        {
-//            get { return cv.AllCampuses0().ItemValue(CampusId ?? 0); }
-//        }
-
-        public CodeInfo MemberStatus { get; set; }
         public string DoNotCall
         {
             get { return DoNotCallFlag ? "Do Not Call" : ""; }
@@ -194,90 +202,109 @@ namespace CmsWeb.Areas.People.Models.Person
             get { return DoNotCallFlag || DoNotCallFlag || DoNotVisitFlag; }
         }
 
-        public static BasicPersonInfo GetBasicPersonInfo(int? id)
+        public BasicPersonInfo()
         {
-            var cv = new CodeValueModel();
-            var p = DbUtil.Db.LoadPersonById(id.Value);
-            var pi = new BasicPersonInfo
-            {
-                Age = p.Age.ToString(),
-                Birthday = p.DOB,
-                Campus = new CodeInfo(p.CampusId, "Campus"),
-                Mobile = new CellPhoneInfo(p.CellPhone.FmtFone(), p.ReceiveSMS),
-                DeceasedDate = p.DeceasedDate,
-                DoNotCallFlag = p.DoNotCallFlag,
-                DoNotMailFlag = p.DoNotMailFlag,
-                DoNotVisitFlag = p.DoNotVisitFlag,
-                DoNotPublishPhones = p.DoNotPublishPhones ?? false,
-                PrimaryEmail = new EmailInfo(p.EmailAddress, p.SendEmailAddress1 ?? true),
-                AltEmail = new EmailInfo(p.EmailAddress2, p.SendEmailAddress2 ?? false),
-                Employer = p.EmployerOther,
-                FirstName = p.FirstName,
-                Created = p.CreatedDate,
-                Grade = p.Grade.ToString(),
-                HomePhone = p.Family.HomePhone.FmtFone(),
-                JoinDate = p.JoinDate,
-                LastName = p.LastName,
-                AltName = p.AltName,
-                FormerName = p.MaidenName,
-                Gender = new CodeInfo(p.GenderId, "Gender"),
-                Marital = new CodeInfo(p.MaritalStatusId, "Marital"),
-                MemberStatus = new CodeInfo(p.MemberStatusId, "MemberStatus"),
-                FamilyPosition = new CodeInfo(p.PositionInFamilyId, "FamilyPosition"),
-                MiddleName = p.MiddleName,
-                GoesBy = p.NickName,
-                Occupation = p.OccupationOther,
-                PeopleId = p.PeopleId,
-                School = p.SchoolOther,
-                Spouse = p.SpouseName(DbUtil.Db),
-                Suffix = p.SuffixCode,
-                Title = new CodeInfo(p.TitleCode, "Title"),
-                WeddingDate = p.WeddingDate.FormatDate(),
-                Work = p.WorkPhone.FmtFone(),
-                ReceiveSMS = p.ReceiveSMS,
-            };
-            pi.person = p;
-            return pi;
+            
         }
 
+        public BasicPersonInfo(int id)
+            : this()
+	    {
+	        Id = id;
+            if (person == null)
+                return;
+            this.CopyPropertiesFrom(person);
+	    }
+//        public static BasicPersonInfo GetBasicPersonInfo(int? id)
+//        {
+//            var p = DbUtil.Db.LoadPersonById(id.Value);
+//
+//            var pi = new BasicPersonInfo();
+//            pi.CopyPropertiesFrom(p);
+//            pi.Mobile = new CellPhoneInfo(p.CellPhone.FmtFone(), p.ReceiveSMS);
+//            pi.person = p;
+//            return pi;
+//
+//            //            var pi = new BasicPersonInfo
+//            //            {
+//            //                Age = p.Age.ToString(),
+//            //                Birthday = p.DOB,
+//            //                Campus = new CodeInfo(p.CampusId, "Campus"),
+//            //                DeceasedDate = p.DeceasedDate,
+//            //                DoNotCallFlag = p.DoNotCallFlag,
+//            //                DoNotMailFlag = p.DoNotMailFlag,
+//            //                DoNotVisitFlag = p.DoNotVisitFlag,
+//            //                DoNotPublishPhones = p.DoNotPublishPhones ?? false,
+//            //                PrimaryEmail = new EmailInfo(p.EmailAddress, p.SendEmailAddress1 ?? true),
+//            //                AltEmail = new EmailInfo(p.EmailAddress2, p.SendEmailAddress2 ?? false),
+//            //                Employer = p.EmployerOther,
+//            //                FirstName = p.FirstName,
+//            //                Created = p.CreatedDate,
+//            //                Grade = p.Grade.ToString(),
+//            //                JoinDate = p.JoinDate,
+//            //                LastName = p.LastName,
+//            //                AltName = p.AltName,
+//            //                FormerName = p.MaidenName,
+//            //                Gender = new CodeInfo(p.GenderId, "Gender"),
+//            //                Marital = new CodeInfo(p.MaritalStatusId, "Marital"),
+//            //                MemberStatus = new CodeInfo(p.MemberStatusId, "MemberStatus"),
+//            //                FamilyPosition = new CodeInfo(p.PositionInFamilyId, "FamilyPosition"),
+//            //                MiddleName = p.MiddleName,
+//            //                GoesBy = p.NickName,
+//            //                Occupation = p.OccupationOther,
+//            //                PeopleId = p.PeopleId,
+//            //                School = p.SchoolOther,
+//            //                Spouse = p.SpouseName(DbUtil.Db),
+//            //                Suffix = p.SuffixCode,
+//            //                Title = new CodeInfo(p.TitleCode, "Title"),
+//            //                WeddingDate = p.WeddingDate.FormatDate(),
+//            //                Work = p.WorkPhone.FmtFone(),
+//            //                ReceiveSMS = p.ReceiveSMS,
+//            //            };
+//        }
+
+//            //                HomePhone = p.Family.HomePhone.FmtFone(),
+
+            //            var psb = new StringBuilder();
+            //            var fsb = new StringBuilder();
+            //            p.UpdateValue(psb, "DOB", Birthday);
+            //            p.UpdateValue(psb, "DeceasedDate", DeceasedDate);
+            //            p.UpdateValue(psb, "DoNotCallFlag", DoNotCallFlag);
+            //            p.UpdateValue(psb, "DoNotMailFlag", DoNotMailFlag);
+            //            p.UpdateValue(psb, "DoNotVisitFlag", DoNotVisitFlag);
+            //            p.UpdateValue(psb, "DoNotPublishPhones", DoNotPublishPhones);
+            //            p.UpdateValue(psb, "EmailAddress", PrimaryEmail.Address);
+            //            p.UpdateValue(psb, "EmailAddress2", AltEmail.Address);
+            //            p.UpdateValue(psb, "SendEmailAddress1", PrimaryEmail.Send);
+            //            p.UpdateValue(psb, "SendEmailAddress2", AltEmail.Send);
+            //            p.UpdateValue(psb, "FirstName", FirstName);
+            //            p.UpdateValue(psb, "LastName", LastName);
+            //            p.UpdateValue(psb, "AltName", AltName);
+            //            p.UpdateValue(psb, "GenderId", Gender.Value.ToInt2());
+            //            p.UpdateValue(psb, "Grade", Grade.ToInt2());
+            //            p.UpdateValue(psb, "CellPhone", Mobile.Number.GetDigits());
+            //            p.UpdateValue(psb, "ReceiveSMS", Mobile.ReceiveText);
+            //            p.UpdateValue(psb, "MaidenName", FormerName);
+            //            p.UpdateValue(psb, "MaritalStatusId", Marital.Value.ToInt2());
+            //            p.UpdateValue(psb, "MiddleName", MiddleName);
+            //            p.UpdateValue(psb, "NickName", GoesBy);
+            //            p.UpdateValue(psb, "OccupationOther", Occupation);
+            //            p.UpdateValue(psb, "SchoolOther", School);
+            //            p.UpdateValue(psb, "SuffixCode", Suffix);
+            //            p.UpdateValue(psb, "EmployerOther", Employer);
+            //            p.UpdateValue(psb, "TitleCode", Title.Value);
+            //            p.UpdateValue(psb, "CampusId", campusid);
+            //            p.UpdateValue(psb, "WeddingDate", WeddingDate.ToDate());
+            //            p.UpdateValue(psb, "WorkPhone", Work.GetDigits());
+
+            //            p.Family.UpdateValue(fsb, "HomePhone", HomePhone.GetDigits());
         public void UpdatePerson()
         {
             var campusid = Campus.Value.ToInt2();
             if (campusid == 0)
                 campusid = null;
             var p = DbUtil.Db.LoadPersonById(PeopleId);
-            var psb = new StringBuilder();
-            var fsb = new StringBuilder();
-            p.UpdateValue(psb, "DOB", Birthday);
-            p.UpdateValue(psb, "DeceasedDate", DeceasedDate);
-            p.UpdateValue(psb, "DoNotCallFlag", DoNotCallFlag);
-            p.UpdateValue(psb, "DoNotMailFlag", DoNotMailFlag);
-            p.UpdateValue(psb, "DoNotVisitFlag", DoNotVisitFlag);
-            p.UpdateValue(psb, "DoNotPublishPhones", DoNotPublishPhones);
-            p.UpdateValue(psb, "EmailAddress", PrimaryEmail.Address);
-            p.UpdateValue(psb, "EmailAddress2", AltEmail.Address);
-            p.UpdateValue(psb, "SendEmailAddress1", PrimaryEmail.Send);
-            p.UpdateValue(psb, "SendEmailAddress2", AltEmail.Send);
-            p.UpdateValue(psb, "FirstName", FirstName);
-            p.UpdateValue(psb, "LastName", LastName);
-            p.UpdateValue(psb, "AltName", AltName);
-            p.UpdateValue(psb, "GenderId", Gender.Value.ToInt2());
-            p.UpdateValue(psb, "Grade", Grade.ToInt2());
-            p.UpdateValue(psb, "CellPhone", Mobile.Number.GetDigits());
-            p.UpdateValue(psb, "ReceiveSMS", Mobile.ReceiveText);
-            p.Family.UpdateValue(fsb, "HomePhone", HomePhone.GetDigits());
-            p.UpdateValue(psb, "MaidenName", FormerName);
-            p.UpdateValue(psb, "MaritalStatusId", Marital.Value.ToInt2());
-            p.UpdateValue(psb, "MiddleName", MiddleName);
-            p.UpdateValue(psb, "NickName", GoesBy);
-            p.UpdateValue(psb, "OccupationOther", Occupation);
-            p.UpdateValue(psb, "SchoolOther", School);
-            p.UpdateValue(psb, "SuffixCode", Suffix);
-            p.UpdateValue(psb, "EmployerOther", Employer);
-            p.UpdateValue(psb, "TitleCode", Title.Value);
-            p.UpdateValue(psb, "CampusId", campusid);
-            p.UpdateValue(psb, "WeddingDate", WeddingDate.ToDate());
-            p.UpdateValue(psb, "WorkPhone", Work.GetDigits());
+            var changes = this.CopyPropertiesTo(p);
             if (p.DeceasedDateChanged)
             {
                 var ret = p.MemberProfileAutomation(DbUtil.Db);
@@ -286,19 +313,15 @@ namespace CmsWeb.Areas.People.Models.Person
                         new Exception(ret + " for PeopleId:" + p.PeopleId));
             }
 
-
-            p.LogChanges(DbUtil.Db, psb, Util.UserPeopleId.Value);
-            p.Family.LogChanges(DbUtil.Db, fsb, p.PeopleId, Util.UserPeopleId.Value);
-
             DbUtil.Db.SubmitChanges();
 
             if (!HttpContext.Current.User.IsInRole("Access"))
-                if (psb.Length > 0 || fsb.Length > 0)
+                if (!string.IsNullOrEmpty(changes))
                 {
                     DbUtil.Db.EmailRedacted(p.FromEmail, DbUtil.Db.GetNewPeopleManagers(),
                         "Basic Person Info Changed on " + Util.Host,
-                        "{0} changed the following information for {1} ({2}):<br />\n<table>{3}{4}</table>"
-                        .Fmt(Util.UserName, FirstName + " " + LastName, PeopleId, psb.ToString(), fsb.ToString()));
+                        "{0} changed the following information for {1} ({2}):<br />\n<table>{3}</table>"
+                        .Fmt(Util.UserName, FirstName + " " + LastName, PeopleId, changes));
                 }
         }
         public static IEnumerable<SelectListItem> GenderCodes()

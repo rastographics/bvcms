@@ -232,5 +232,27 @@ namespace CmsData
 		public const int TagTypeId_Query = 7;
 		public const int TagTypeId_Emailer = 8;
 		public const int TagTypeId_StatusFlags = 9;
+
+        public static void UpdateValue(this object obj, StringBuilder psb, string field, object value)
+        {
+            if (value is string)
+                value = ((string)value).TrimEnd();
+            var o = Util.GetProperty(obj, field);
+            if (o is string)
+                o = ((string)o).TrimEnd();
+            if (o == null && value == null)
+                return;
+            if (o != null && o.Equals(value))
+                return;
+            if (o == null && value is string && !((string)value).HasValue())
+                return;
+            if (value == null && o is string && !((string)o).HasValue())
+                return;
+            psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
+            if(value is string)
+                Util.SetPropertyFromText(obj, field, (string)value);
+                else
+                    Util.SetProperty(obj, field, value);
+            }
 	}
 }

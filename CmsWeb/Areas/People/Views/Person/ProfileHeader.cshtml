@@ -26,11 +26,11 @@ else
         </li>
         <li class="badges">
             @Html.DisplayFor(m => m.basic.Campus, "InlineCode")
-            @Html.DisplayFor(m => m.basic.FamilyPosition, "InlineCode")
-            @Badge(true, @Model.member.MemberStatus, "label-success")
+            @Html.DisplayFor(m => m.basic.PositionInFamily, "InlineCode")
+            @Badge(true, @Model.member.MemberStatus.ToString() , "label-success")
             @foreach (var status in Model.StatusFlags)
             {
-                @Badge(Model.member.MemberStatus != status, status, "label-success")
+                @Badge(Model.member.MemberStatus.ToString() != status, status, "label-success")
             }
             @Badge(Model.basic.DoNotVisitFlag, "Do Not Visit", "label-important")
             @Badge(Model.basic.DoNotCallFlag, "Do Not Call", "label-important")

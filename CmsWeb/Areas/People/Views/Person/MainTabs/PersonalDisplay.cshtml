@@ -4,36 +4,36 @@
     @FormAction()
     <div class="row-fluid">
         <div class="span6 display">
-            @Html.DisplayFor(m => m.Title)
+            @Html.DisplayFor(m => m.TitleCode)
             @Html.DisplayFor(m => m.FirstName)
             @Html.DisplayFor(m => m.GoesBy)
             @Html.DisplayFor(m => m.MiddleName)
             @Html.DisplayFor(m => m.LastName)
             @Html.DisplayFor(m => m.AltName)
-            @Html.DisplayFor(m => m.FormerName)
-            @Html.DisplayFor(m => m.Suffix)
+            @Html.DisplayFor(m => m.MaidenName)
+            @Html.DisplayFor(m => m.SuffixCode)
         </div>
         <div class="span6 display column2">
             @Html.DisplayFor(m => m.Gender)
-            @Html.DisplayFor(m => m.Birthday)
-            @Html.DisplayFor(m => m.Marital)
+            @Html.DisplayFor(m => m.DOB)
+            @Html.DisplayFor(m => m.MaritalStatus)
             @Html.DisplayFor(m => m.WeddingDate)
-            @Html.DisplayFor(m => m.Occupation)
-            @Html.DisplayFor(m => m.Employer)
-            @Html.DisplayFor(m => m.School)
+            @Html.DisplayFor(m => m.OccupationOther)
+            @Html.DisplayFor(m => m.EmployerOther)
+            @Html.DisplayFor(m => m.SchoolOther)
             @Html.DisplayFor(m => m.Grade)
         </div>
     </div>
     <hr/>
     <div class="row-fluid">
         <div class="span6 display">
-            @Html.DisplayFor(m => m.PrimaryEmail)
-            @Html.DisplayFor(m => m.AltEmail)
+            @Html.DisplayFor(m => m.EmailAddress)
+            @Html.DisplayFor(m => m.EmailAddress2)
             @Html.DisplayFor(m => m, "DoNotContact")
         </div>
         <div class="span6 display column2">
-            @Html.DisplayFor(m => m.Mobile)
-            @Html.DisplayFor(m => m.Work)
+            @Html.DisplayFor(m => m.CellPhone)
+            @Html.DisplayFor(m => m.WorkPhone)
             @Html.DisplayFor(m => m.HomePhone)
         </div>
     </div>

@@ -132,7 +132,6 @@ namespace CmsWeb.Models.PersonPage
 				BaptismTypeId = null;
 			var p = DbUtil.Db.LoadPersonById(PeopleId);
 			var psb = new StringBuilder();
-			p.UpdateValue(psb, "MemberStatusId", MemberStatusId);
 			p.BaptismSchedDate = BaptismSchedDate;
 			p.BaptismTypeId = BaptismTypeId;
 			p.BaptismStatusId = BaptismStatusId;
@@ -149,7 +148,8 @@ namespace CmsWeb.Models.PersonPage
 			p.OtherPreviousChurch = PrevChurch;
 			p.NewMemberClassDate = NewMemberClassDate;
 			p.NewMemberClassStatusId = NewMemberClassStatusId;
-			p.LogChanges(DbUtil.Db, psb, Util.UserPeopleId.Value);
+			p.UpdateValue("MemberStatusId", MemberStatusId);
+			p.LogChanges(DbUtil.Db, Util.UserPeopleId.Value);
 			var ret = p.MemberProfileAutomation(DbUtil.Db);
 			if (ret == "ok")
 			{

@@ -974,26 +974,15 @@ namespace CmsData
         {
             if (psbDefault == null)
                 psbDefault = new StringBuilder();
-            UpdateValue(psbDefault, field, value);
+            this.UpdateValue(psbDefault, field, value);
         }
-        public void UpdateValue(StringBuilder psb, string field, object value)
+        public void UpdateValueFromText(string field, string value)
         {
-            if (value is string)
-                value = ((string)value).TrimEnd();
-            var o = Util.GetProperty(this, field);
-            if (o is string)
-                o = ((string)o).TrimEnd();
-            if (o == null && value == null)
-                return;
-            if (o != null && o.Equals(value))
-                return;
-            if (o == null && value is string && !((string)value).HasValue())
-                return;
-            if (value == null && o is string && !((string)o).HasValue())
-                return;
-            psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
-            Util.SetProperty(this, field, value);
+            if (psbDefault == null)
+                psbDefault = new StringBuilder();
+            this.UpdateValueFromText(psbDefault, field, value);
         }
+
         public void UpdateValueFromText(StringBuilder psb, string field, string value)
         {
             value = value.TrimEnd();
@@ -1014,18 +1003,18 @@ namespace CmsData
         public void LogChanges(CMSDataContext Db, int UserPeopleId)
         {
             if (psbDefault != null)
-                LogChanges(Db, psbDefault, UserPeopleId);
+                LogChanges(Db, psbDefault.ToString(), UserPeopleId);
         }
-        public void LogChanges(CMSDataContext Db, StringBuilder psb, int UserPeopleId)
+        public void LogChanges(CMSDataContext Db, string changes, int UserPeopleId)
         {
-            if (psb.Length > 0)
+            if (changes.HasValue())
             {
                 var c = new ChangeLog
                 {
                     UserPeopleId = UserPeopleId,
                     PeopleId = PeopleId,
                     Field = "Basic Info",
-                    Data = "<table>\n" + psb.ToString() + "</table>",
+                    Data = "<table>\n" + changes + "</table>",
                     Created = Util.Now
                 };
                 Db.ChangeLogs.InsertOnSubmit(c);
@@ -1294,19 +1283,17 @@ namespace CmsData
         }
         public void UpdatePosition(CMSDataContext db, int value)
         {
-            var psb = new StringBuilder();
-            UpdateValue(psb, "PositionInFamilyId", value);
-            LogChanges(db, psb, Util.UserPeopleId.Value);
+            this.UpdateValue("PositionInFamilyId", value);
+            LogChanges(db, Util.UserPeopleId.Value);
             db.SubmitChanges();
         }
         public void UpdateCampus(CMSDataContext db, int value)
         {
-            var psb = new StringBuilder();
             var campusid = CampusId = value.ToInt();
             if (campusid == 0)
                 campusid = null;
-            UpdateValue(psb, "CampusId", campusid);
-            LogChanges(db, psb, Util.UserPeopleId.Value);
+            this.UpdateValue("CampusId", campusid);
+            LogChanges(db, Util.UserPeopleId.Value);
             db.SubmitChanges();
         }
         public void UploadPicture(CMSDataContext db, System.IO.Stream stream)

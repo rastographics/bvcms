@@ -46,12 +46,12 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (!id.HasValue)
                 return Content("no id");
-//            if (!DbUtil.Db.UserPreference("newlook3", "false").ToBool()
-//                || !DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
-//            {
-//                var url = Regex.Replace(Request.RawUrl, @"(.*)/(Person2(/Index)*)/(\d*)", "$1/Person/Index/$4", RegexOptions.IgnoreCase);
-//                return Redirect(url);
-//            }
+            //            if (!DbUtil.Db.UserPreference("newlook3", "false").ToBool()
+            //                || !DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
+            //            {
+            //                var url = Regex.Replace(Request.RawUrl, @"(.*)/(Person2(/Index)*)/(\d*)", "$1/Person/Index/$4", RegexOptions.IgnoreCase);
+            //                return Redirect(url);
+            //            }
 
             var m = new PersonModel(id.Value);
             var noview = m.CheckView();
@@ -78,22 +78,22 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult PersonalDisplay(int id)
         {
             InitExportToolbar(id);
-            var m = BasicPersonInfo.GetBasicPersonInfo(id);
+            var m = new BasicPersonInfo(id);
             return View("MainTabs/PersonalDisplay", m);
         }
         [POST("Person2/PersonalEdit/{id}")]
         public ActionResult PersonalEdit(int id)
         {
-            var m = BasicPersonInfo.GetBasicPersonInfo(id);
+            var m = new BasicPersonInfo(id);
             return View("MainTabs/PersonalEdit", m);
         }
         [POST("Person2/PersonalUpdate/{id}")]
         public ActionResult Personalpdate(int id)
         {
-            var m = BasicPersonInfo.GetBasicPersonInfo(id);
+            var m = new BasicPersonInfo(id);
             UpdateModel(m);
             m.UpdatePerson();
-            m = BasicPersonInfo.GetBasicPersonInfo(id);
+            //m = new BasicPersonInfo(id);
             DbUtil.LogActivity("Update Basic Info for: {0}".Fmt(m.person.Name));
             InitExportToolbar(id);
             return View("MainTabs/PersonalDisplay", m);
@@ -144,7 +144,20 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/MembershipDisplay/{id}")]
         public ActionResult MembershipDisplay(int id)
         {
-            var m = new PersonModel(id);
+            var m = new MemberInfo(id);
+            return View("Membership/Display", m);
+        }
+        [POST("Person2/MembershipEdit/{id}")]
+        public ActionResult MembershipEdit(int id)
+        {
+            var m = new MemberInfo(id);
+            return View("Membership/Edit", m);
+        }
+        [POST("Person2/MembershipUpdate/")]
+        public ActionResult MembershipUpdate(MemberInfo m)
+        {
+            m.UpdateMember();
+            DbUtil.LogActivity("Update Membership Info for: {0}".Fmt(m.person.Name));
             return View("Membership/Display", m);
         }
         [POST("Person2/MembershipNotes/{id}")]
@@ -281,7 +294,7 @@ namespace CmsWeb.Areas.People.Controllers
             if (password.HasValue())
                 u.ChangePassword(password);
             DbUtil.Db.SubmitChanges();
-            if(sendwelcome)
+            if (sendwelcome)
                 CmsWeb.Models.AccountModel.SendNewUserEmail(username);
             DbUtil.LogActivity("Update User for: {0}".Fmt(Session["ActivePerson"]));
             var m = new PersonModel(u.PeopleId.Value);
@@ -314,12 +327,12 @@ namespace CmsWeb.Areas.People.Controllers
             return Redirect("/");
         }
 
-//        [HttpPost]
-//        public ActionResult UserInfoGrid(int id)
-//        {
-//            var p = DbUtil.Db.LoadPersonById(id);
-//            return View(p);
-//        }
+        //        [HttpPost]
+        //        public ActionResult UserInfoGrid(int id)
+        //        {
+        //            var p = DbUtil.Db.LoadPersonById(id);
+        //            return View(p);
+        //        }
 
         [POST("Person2/Split/{id}")]
         [Authorize(Roles = "Edit")]
@@ -402,8 +415,21 @@ namespace CmsWeb.Areas.People.Controllers
                      select r.C;
             return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
         }
+        [POST("Person2/Changes/{id:int}")]
+        public ActionResult Changes(int id)
+        {
+            var m = new PersonModel(id);
+            return View("System/Changes", m);
+        }
+        [POST("Person2/Duplicates/{id:int}")]
+        public ActionResult Duplicates(int id)
+        {
+            var m = new DuplicatesModel(id);
+            return View(m);
+        }
 
         #region ToDo
+
         [Authorize(Roles = "Admin")]
         public ActionResult Move(int id, int to)
         {
@@ -687,12 +713,12 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("ok");
         }
 
-//        [HttpPost]
-//        public ActionResult VolunteerDisplay(int id)
-//        {
-//            var m = new Main.Models.Other.VolunteerModel(id);
-//            return View(m);
-//        }
+        //        [HttpPost]
+        //        public ActionResult VolunteerDisplay(int id)
+        //        {
+        //            var m = new Main.Models.Other.VolunteerModel(id);
+        //            return View(m);
+        //        }
 
         [HttpPost]
         public ContentResult DeleteExtra(int id, string field)
@@ -802,7 +828,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult NewExtraValue(int id, string field, string type, string value)
         {
-		    field = field.Replace('/', '-');
+            field = field.Replace('/', '-');
             var v = new PeopleExtra { PeopleId = id, Field = field };
             DbUtil.Db.PeopleExtras.InsertOnSubmit(v);
             switch (type)
@@ -833,25 +859,13 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("ok");
         }
 
-//        [HttpPost]
-//        public ActionResult ExtrasGrid(int id)
-//        {
-//            var p = DbUtil.Db.LoadPersonById(id);
-//            return View(p);
-//        }
+        //        [HttpPost]
+        //        public ActionResult ExtrasGrid(int id)
+        //        {
+        //            var p = DbUtil.Db.LoadPersonById(id);
+        //            return View(p);
+        //        }
 
-//        [HttpPost]
-//        public ActionResult ChangesGrid(int id)
-//        {
-//            var m = new PersonModel(id);
-//            return View(m);
-//        }
-        //		[HttpPost]
-        //		public ActionResult DuplicatesGrid(int id)
-        //		{
-        //			var m = new DuplicatesModel(id);
-        //			return View(m);
-        //		}
 
         public ActionResult ShowMeetings(int id, bool all)
         {
@@ -878,37 +892,37 @@ namespace CmsWeb.Areas.People.Controllers
             public string Description { get; set; }
         }
 
-//        public ActionResult CurrentRegistrations(bool? html)
-//        {
-//            var types = new[] 
-//			{
-//				CmsData.Codes.RegistrationTypeCode.JoinOrganization,
-//				CmsData.Codes.RegistrationTypeCode.ComputeOrganizationByAge2,
-//				CmsData.Codes.RegistrationTypeCode.UserSelectsOrganization2,
-//				CmsData.Codes.RegistrationTypeCode.ChooseVolunteerTimes,
-//			};
-//            var picklistorgs = DbUtil.Db.ViewPickListOrgs.Select(pp => pp.OrgId).ToArray();
-//            var dt = DateTime.Today;
-//            var q = from o in DbUtil.Db.Organizations
-//                    where !picklistorgs.Contains(o.OrganizationId)
-//                    where types.Contains(o.RegistrationTypeId ?? 0)
-//                    where (o.RegistrationClosed ?? false) == false
-//                    where (o.ClassFilled ?? false) == false
-//                    where o.RegEnd > dt || o.RegEnd == null
-//                    where o.RegStart <= dt || o.RegStart == null
-//                    where o.OrganizationStatusId == OrgStatusCode.Active
-//                    orderby o.OrganizationName
-//                    select new CurrentRegistration()
-//                    {
-//                        OrgId = o.OrganizationId,
-//                        Name = o.OrganizationName,
-//                        Description = o.Description
-//                    };
-//            if ((html ?? false) == true)
-//                return View("CurrentRegistrationsHtml", q);
-//            return View(q);
-//        }
-//
+        //        public ActionResult CurrentRegistrations(bool? html)
+        //        {
+        //            var types = new[] 
+        //			{
+        //				CmsData.Codes.RegistrationTypeCode.JoinOrganization,
+        //				CmsData.Codes.RegistrationTypeCode.ComputeOrganizationByAge2,
+        //				CmsData.Codes.RegistrationTypeCode.UserSelectsOrganization2,
+        //				CmsData.Codes.RegistrationTypeCode.ChooseVolunteerTimes,
+        //			};
+        //            var picklistorgs = DbUtil.Db.ViewPickListOrgs.Select(pp => pp.OrgId).ToArray();
+        //            var dt = DateTime.Today;
+        //            var q = from o in DbUtil.Db.Organizations
+        //                    where !picklistorgs.Contains(o.OrganizationId)
+        //                    where types.Contains(o.RegistrationTypeId ?? 0)
+        //                    where (o.RegistrationClosed ?? false) == false
+        //                    where (o.ClassFilled ?? false) == false
+        //                    where o.RegEnd > dt || o.RegEnd == null
+        //                    where o.RegStart <= dt || o.RegStart == null
+        //                    where o.OrganizationStatusId == OrgStatusCode.Active
+        //                    orderby o.OrganizationName
+        //                    select new CurrentRegistration()
+        //                    {
+        //                        OrgId = o.OrganizationId,
+        //                        Name = o.OrganizationName,
+        //                        Description = o.Description
+        //                    };
+        //            if ((html ?? false) == true)
+        //                return View("CurrentRegistrationsHtml", q);
+        //            return View(q);
+        //        }
+        //
         public ActionResult ContributionStatement(int id, string fr, string to)
         {
             if (Util.UserPeopleId != id && !User.IsInRole("Finance"))
@@ -934,7 +948,7 @@ namespace CmsWeb.Areas.People.Controllers
                 useMinAmt = false,
             };
         }
-#endregion
+        #endregion
 
     }
 }

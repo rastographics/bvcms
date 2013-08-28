@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
-using System.Web.Mvc;
-using CmsWeb.Models;
 using UtilityExtensions;
 using System.Data.Linq;
 using System.Text;
@@ -11,217 +10,140 @@ using CmsWeb.Code;
 
 namespace CmsWeb.Areas.People.Models.Person
 {
-	public class MemberInfo
-	{
-		private static CodeValueModel cv = new CodeValueModel();
-		public int PeopleId { get; set; }
+    public class MemberInfo
+    {
+        public CmsData.Person person;
+        private readonly CMSDataContext Db;
 
-		public int? StatementOptionId { get; set; }
+        public int PeopleId { get; set; }
 
-		public string StatementOption
-		{
-			get { return cv.EnvelopeOptionList().ItemValue(StatementOptionId ?? 0); }
-		}
+        // Contributions --------------------------------------------------
 
-		public int? EnvelopeOptionId { get; set; }
+        [DisplayName("Contribution Statement")]
+        public CodeInfo ContributionOptions { get; set; }
 
-		public string EnvelopeOption
-		{
-			get { return cv.EnvelopeOptionList().ItemValue(EnvelopeOptionId ?? 0); }
-		}
+        [DisplayName("Envelope Option")]
+        public CodeInfo EnvelopeOptions { get; set; }
 
-		public int? DecisionTypeId { get; set; }
+        // Decision --------------------------------------------------
 
-		public string DecisionType
-		{
-			get { return cv.DecisionTypeList().ItemValue(DecisionTypeId ?? 0); }
-		}
+        [DisplayName("Type"), ZeroToNull]
+        public CodeInfo DecisionType { get; set; }
 
-		public DateTime? DecisionDate { get; set; }
-		public int JoinTypeId { get; set; }
+        [UIHint("Date"), DisplayName("Date"), ZeroToNull]
+        public string DecisionDate { get; set; }
 
-		public string JoinType
-		{
-			get { return cv.JoinTypeList().ItemValue(JoinTypeId); }
-		}
+        // Baptism --------------------------------------------------
 
-		public DateTime? JoinDate { get; set; }
-		public int? BaptismTypeId { get; set; }
+        [DisplayName("Status"), ZeroToNull]
+        public CodeInfo BaptismStatus { get; set; }
 
-		public string BaptismType
-		{
-			get { return cv.BaptismTypeList().ItemValue(BaptismTypeId ?? 0); }
-		}
+        [DisplayName("Type"), ZeroToNull]
+        public CodeInfo BaptismType { get; set; }
 
-		public int? BaptismStatusId { get; set; }
+        [UIHint("Date"), DisplayName("Date")]
+        public string BaptismDate { get; set; }
 
-		public string BaptismStatus
-		{
-			get { return cv.BaptismStatusList().ItemValue(BaptismStatusId ?? 0); }
-		}
+        [UIHint("Date"), DisplayName("Scheduled")]
+        public string BaptismSchedDate { get; set; }
 
-		public DateTime? BaptismDate { get; set; }
-		public DateTime? BaptismSchedDate { get; set; }
-		public int DropTypeId { get; set; }
+        // Drop --------------------------------------------------
 
-		public string DropType
-		{
-			get { return cv.DropTypeList().ItemValue(DropTypeId); }
-		}
+        [DisplayName("Type"), FieldInfo(IdField = "DropCodeId"), ZeroToNull]
+        public CodeInfo DropType { get; set; }
 
-		public DateTime? DropDate { get; set; }
-		public string NewChurch { get; set; }
-		public string PrevChurch { get; set; }
-		public int? NewMemberClassStatusId { get; set; }
+        [UIHint("Date"), DisplayName("Date")]
+        public string DropDate { get; set; }
 
-		public string NewMemberClassStatus
-		{
-			get { return cv.NewMemberClassStatusList().ItemValue(NewMemberClassStatusId ?? 0); }
-		}
+        [UIHint("Text")]
+        public string NewChurch { get; set; }
 
-		public DateTime? NewMemberClassDate { get; set; }
-		public int MemberStatusId { get; set; }
+        // New Member Class --------------------------------------------------
 
-		public string MemberStatus
-		{
-			get { return cv.MemberStatusCodes().ItemValue(MemberStatusId); }
-		}
+        [DisplayName("Status"), ZeroToNull]
+        public CodeInfo NewMemberClassStatus { get; set; }
 
-		public static MemberInfo GetMemberInfo(int? id)
-		{
-			var q = from p in DbUtil.Db.People
-			        where p.PeopleId == id
-			        select new MemberInfo
-			               {
-			               	PeopleId = p.PeopleId,
-			               	BaptismSchedDate = p.BaptismSchedDate,
-			               	BaptismDate = p.BaptismDate,
-			               	DecisionDate = p.DecisionDate,
-			               	DropDate = p.DropDate,
-			               	DropTypeId = p.DropCodeId,
-			               	JoinTypeId = p.JoinCodeId,
-			               	NewChurch = p.OtherNewChurch,
-			               	PrevChurch = p.OtherPreviousChurch,
-			               	NewMemberClassDate = p.NewMemberClassDate,
-			               	MemberStatusId = p.MemberStatusId,
-			               	JoinDate = p.JoinDate,
-			               	BaptismTypeId = p.BaptismTypeId ?? 0,
-			               	BaptismStatusId = p.BaptismStatusId ?? 0,
-			               	DecisionTypeId = p.DecisionTypeId ?? 0,
-			               	EnvelopeOptionId = p.EnvelopeOptionsId ?? 0,
-			               	StatementOptionId = p.ContributionOptionsId ?? 0,
-			               	NewMemberClassStatusId = p.NewMemberClassStatusId ?? 0,
-			               };
-			return q.Single();
-		}
+        [UIHint("Date"), DisplayName("Date")]
+        public string NewMemberClassDate { get; set; }
 
-		public string UpdateMember()
-		{
-			if (NewMemberClassStatusId == 0)
-				NewMemberClassStatusId = null;
-			if (StatementOptionId == 0)
-				StatementOptionId = null;
-			if (DecisionTypeId == 0)
-				DecisionTypeId = null;
-			if (BaptismStatusId == 0)
-				BaptismStatusId = null;
-			if (EnvelopeOptionId == 0)
-				EnvelopeOptionId = null;
-			if (BaptismTypeId == 0)
-				BaptismTypeId = null;
-			var p = DbUtil.Db.LoadPersonById(PeopleId);
-			var psb = new StringBuilder();
-			p.UpdateValue(psb, "MemberStatusId", MemberStatusId);
-			p.BaptismSchedDate = BaptismSchedDate;
-			p.BaptismTypeId = BaptismTypeId;
-			p.BaptismStatusId = BaptismStatusId;
-			p.BaptismDate = BaptismDate;
-			p.DecisionDate = DecisionDate;
-			p.DecisionTypeId = DecisionTypeId;
-			p.DropDate = DropDate;
-			p.DropCodeId = DropTypeId;
-			p.EnvelopeOptionsId = EnvelopeOptionId;
-			p.ContributionOptionsId = StatementOptionId;
-			p.JoinCodeId = JoinTypeId;
-			p.JoinDate = JoinDate;
-			p.OtherNewChurch = NewChurch;
-			p.OtherPreviousChurch = PrevChurch;
-			p.NewMemberClassDate = NewMemberClassDate;
-			p.NewMemberClassStatusId = NewMemberClassStatusId;
-			p.LogChanges(DbUtil.Db, psb, Util.UserPeopleId.Value);
-			var ret = p.MemberProfileAutomation(DbUtil.Db);
-			if (ret == "ok")
-			{
-				DbUtil.Db.SubmitChanges();
-				DbUtil.LogActivity("Updated Person: {0}".Fmt(p.Name));
-			}
-			//else
-			//   Elmah.ErrorSignal.FromCurrentContext().Raise(
-			//        new Exception(ret + " for PeopleId:" + p.PeopleId));
-			DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, p);
-			return ret;
-		}
+        // Membership --------------------------------------------------
 
-		private static int? CviOrNull(CodeValueItem cvi)
-		{
-			if (cvi == null)
-				return null;
-			return cvi.Id;
-		}
+        [TrackChanges]
+        public CodeInfo MemberStatus { get; set; }
 
-		public static IEnumerable<SelectListItem> MemberStatuses()
-		{
-			return CodeValueModel.ConvertToSelect(cv.MemberStatusCodes(), "Id");
-		}
+        [DisplayName("How Joined"), FieldInfo(IdField = "JoinCodeId")]
+        public CodeInfo JoinType { get; set; }
 
-		public static IEnumerable<SelectListItem> BaptismStatuses()
-		{
-			return CodeValueModel.ConvertToSelect(cv.BaptismStatusList(), "Id");
-		}
+        [UIHint("Date")]
+        public string JoinDate { get; set; }
 
-		public static IEnumerable<SelectListItem> DecisionCodes()
-		{
-			return CodeValueModel.ConvertToSelect(cv.DecisionTypeList(), "Id");
-		}
+        [UIHint("Text")]
+        public string PrevChurch { get; set; }
 
-		public static IEnumerable<SelectListItem> EnvelopeOptions()
-		{
-			return CodeValueModel.ConvertToSelect(cv.EnvelopeOptionList(), "Id");
-		}
+        private int _id;
+        public int Id
+        {
+            get { return _id; }
+            set
+            {
+                _id = value;
+                if (_id == 0)
+                    return;
+                person = Db.LoadPersonById(value);
+            }
+        }
+        public MemberInfo()
+        {
+            Db = DbUtil.Db;
+        }
+        public MemberInfo(int id)
+            : this()
+        {
+            Id = id;
+            if (person == null)
+                return;
+            this.CopyPropertiesFrom(person);
+        }
 
-		public static IEnumerable<SelectListItem> JoinTypes()
-		{
-			return CodeValueModel.ConvertToSelect(cv.JoinTypeList(), "Id");
-		}
+        public string UpdateMember()
+        {
+            var i = (from p in DbUtil.Db.People
+                     where p.PeopleId == PeopleId
+                     select new
+                     {
+                         p,
+                         p.Family
+                     }).Single();
 
-		public static IEnumerable<SelectListItem> BaptismTypes()
-		{
-			return CodeValueModel.ConvertToSelect(cv.BaptismTypeList(), "Id");
-		}
+            var changes = this.CopyPropertiesTo(i.p, excludefields: "HomePhone");
+            i.p.LogChanges(DbUtil.Db, changes, Util.UserPeopleId.Value);
 
-		public static IEnumerable<SelectListItem> DropTypes()
-		{
-			return CodeValueModel.ConvertToSelect(cv.DropTypeList(), "Id");
-		}
+            changes = this.CopyPropertiesTo(i.Family, onlyfields: "HomePhone");
+            i.Family.LogChanges(DbUtil.Db, changes, i.p.PeopleId, Util.UserPeopleId.Value);
 
-		public static IEnumerable<SelectListItem> NewMemberClassStatuses()
-		{
-			return CodeValueModel.ConvertToSelect(cv.NewMemberClassStatusList(), "Id");
-		}
+            var ret = i.p.MemberProfileAutomation(DbUtil.Db);
+            if (ret == "ok")
+            {
+                DbUtil.Db.SubmitChanges();
+                DbUtil.LogActivity("Updated Person: {0}".Fmt(i.p.Name));
+            }
+            DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, i.p);
+            return ret;
+        }
 
-		public List<string[]> StatusFlags()
-		{
-			var q1 = (from f in DbUtil.Db.StatusFlags()
-			          select f).ToList();
-			var q2 = (from t in DbUtil.Db.TagPeople
-			          where t.PeopleId == PeopleId
-			          where t.Tag.TypeId == 100
-			          select t.Tag.Name).ToList();
-			var q = from t in q2
-			        join f in q1 on t equals f[0]
-			        select f;
-			var list = q.ToList();
-			return list;
-		}
-	}
+        public List<string[]> StatusFlags()
+        {
+            var q1 = (from f in DbUtil.Db.StatusFlags()
+                      select f).ToList();
+            var q2 = (from t in DbUtil.Db.TagPeople
+                      where t.PeopleId == PeopleId
+                      where t.Tag.TypeId == 100
+                      select t.Tag.Name).ToList();
+            var q = from t in q2
+                    join f in q1 on t equals f[0]
+                    select f;
+            var list = q.ToList();
+            return list;
+        }
+    }
 }

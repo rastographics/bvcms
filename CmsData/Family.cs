@@ -62,23 +62,18 @@ namespace CmsData
             get { return People.Count; }
         }
 
-        public void UpdateValue(StringBuilder fsb, string field, object value)
+        private StringBuilder fsbDefault;
+        public void UpdateValue(string field, object value)
         {
-            if (value is string)
-                value = ((string)value).TrimEnd();
-            var o = Util.GetProperty(this, field);
-            if (o is string)
-                o = ((string)o).TrimEnd();
-            if (o == null && value == null)
-                return;
-            if (o != null && o.Equals(value))
-                return;
-            if (o == null && value is string && !((string)value).HasValue())
-                return;
-            if (value == null && o is string && !((string)o).HasValue())
-                return;
-            fsb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
-            Util.SetProperty(this, field, value);
+            if (fsbDefault == null)
+                fsbDefault = new StringBuilder();
+            this.UpdateValue(fsbDefault, field, value);
+        }
+        public void UpdateValueFromText(string field, string value)
+        {
+            if (fsbDefault == null)
+                fsbDefault = new StringBuilder();
+            this.UpdateValueFromText(fsbDefault, field, value);
         }
         public void UpdateValueFromText(StringBuilder fsb, string field, string value)
         {
@@ -97,9 +92,14 @@ namespace CmsData
             fsb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
             Util.SetPropertyFromText(this, field, value);
         }
-        public void LogChanges(CMSDataContext Db, StringBuilder fsb, int PeopleId, int UserPeopleId)
+        public void LogChanges(CMSDataContext Db, int PeopleId, int UserPeopleId)
         {
-            if (fsb.Length > 0)
+            if (fsbDefault != null)
+                LogChanges(Db, fsbDefault.ToString(), PeopleId, UserPeopleId);
+        }
+        public void LogChanges(CMSDataContext Db, string changes, int PeopleId, int UserPeopleId)
+        {
+            if (changes.HasValue())
             {
                 var c = new ChangeLog
                 {
@@ -107,7 +107,7 @@ namespace CmsData
                     UserPeopleId = UserPeopleId,
                     PeopleId = PeopleId,
                     Field = "Family",
-                    Data = "<table>\n" + fsb.ToString() + "</table>",
+                    Data = "<table>\n{0}</table>".Fmt(changes),
                     Created = Util.Now
                 };
                 Db.ChangeLogs.InsertOnSubmit(c);

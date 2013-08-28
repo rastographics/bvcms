@@ -180,6 +180,7 @@
     $("a[href='#membership']").on('shown', function (e) {
         if ($("#status").length < 2) {
             $("a[href='#status']").click().tab("show");
+            $.cookie('lasttab', "#status");
         }
     });
     //$("#contacts-link").click(function () {
