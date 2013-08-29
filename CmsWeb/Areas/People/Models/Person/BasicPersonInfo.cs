@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.People.Models.Person
         public string FirstName { get; set; }
 
         [UIHint("Text"), DisplayName("Goes By"), TrackChanges]
-        public string GoesBy { get; set; }
+        public string NickName { get; set; }
 
         [UIHint("Text"), TrackChanges]
         public string MiddleName { get; set; }
@@ -284,6 +284,7 @@ namespace CmsWeb.Areas.People.Models.Person
         {
             var p = DbUtil.Db.LoadPersonById(PeopleId);
             var changes = this.CopyPropertiesTo(p);
+            p.LogChanges(DbUtil.Db, changes);
             if (p.DeceasedDateChanged)
             {
                 var ret = p.MemberProfileAutomation(DbUtil.Db);

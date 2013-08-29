@@ -332,7 +332,7 @@ namespace CmsData.API
 						u.UpdatePerson(e);
 						break;
 				}
-			p.LogChanges(DbUtil.Db, u.sb.ToString(), Util.UserPeopleId.Value);
+			p.LogChanges(DbUtil.Db, u.sb.ToString());
 			p.Family.LogChanges(DbUtil.Db, u.fsb.ToString(), p.PeopleId, Util.UserPeopleId.Value);
 			Db.SubmitChanges();
 			return "<Success />";

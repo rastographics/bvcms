@@ -543,3 +543,7 @@ span.currentTag {
     margin-left: 270px;
     line-height: 1.3em;
 }
+.well {
+    padding: 8px;
+    margin-bottom: 12px;
+}

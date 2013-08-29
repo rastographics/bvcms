@@ -38,10 +38,10 @@
         });
         return false;
     });
-    $("ul.nav-tabs a.ajax").live("click", function(event) {
+    $("ul.nav-tabs a.ajax").live("click", function (event) {
         var state = $(this).attr("href");
         var d = $(state);
-        if(!d.hasClass("loaded"))
+        if (!d.hasClass("loaded"))
             $.ajax({
                 type: 'POST',
                 url: d.data("link"),
@@ -52,6 +52,19 @@
                 }
             });
         return true;
+    });
+    $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {
+        var d = $(this).closest("div.tab-pane");
+        $.ajax({
+            type: 'POST',
+            url: d.data("link"),
+            data: {},
+            success: function (data, status) {
+                d.html(data);
+                d.addClass("loaded");
+            }
+        });
+        return false;
     });
     $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();

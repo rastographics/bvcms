@@ -1,8 +1,8 @@
 ﻿@model CmsWeb.Areas.People.Models.Person.PersonModel
 <ul class="nav nav-tabs subnav" data-tabparent="system">
-    <li><a href="#changes"><span>Changes</span></a></li>
-    <li><a href="#duplicates"><span>Duplicates</span></a></li>
-    <li><a href="#optouts"><span>Email Optouts</span></a></li>
+    <li class="active"><a href="#changes" data-toggle="tab" class="ajax"><span>Changes</span></a></li>
+    <li><a href="#duplicates" data-toggle="tab" class="ajax"><span>Duplicates</span></a></li>
+    <li><a href="#optouts" data-toggle="tab" class="ajax"><span>Email Optouts</span></a></li>
 </ul>
 <div class="tab-content">
     <div class="tab-pane active" id="changes" data-link="/Person2/Changes/@Model.PeopleId"></div>

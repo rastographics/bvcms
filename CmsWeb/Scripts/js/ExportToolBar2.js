@@ -1,4 +1,16 @@
 ﻿$(document).ready(function () {
+    $('body').on("click", "a.ChooseLabelType", function (ev) {
+        ev.preventDefault();
+        $("#ChooseLabelTypeOK").attr("href", $(this).attr("href"))
+        .unbind("click").click(function (ev2) {
+            ev2.preventDefault();
+            var f = $(this).closest("form");
+            var q = f.serialize();
+            $.post($(this).attr("href"), q, function (ret) {
+            });
+        });
+        $("#ChooseLabelType").modal("show");
+    });
     $('body').on("click", '#AddContact', function (ev) {
         ev.preventDefault();
         if (!confirm("Are you sure you want to add a contact for all these people?"))

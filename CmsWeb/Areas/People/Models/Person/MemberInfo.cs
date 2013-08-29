@@ -117,10 +117,10 @@ namespace CmsWeb.Areas.People.Models.Person
                      }).Single();
 
             var changes = this.CopyPropertiesTo(i.p, excludefields: "HomePhone");
-            i.p.LogChanges(DbUtil.Db, changes, Util.UserPeopleId.Value);
+            i.p.LogChanges(DbUtil.Db, changes);
 
             changes = this.CopyPropertiesTo(i.Family, onlyfields: "HomePhone");
-            i.Family.LogChanges(DbUtil.Db, changes, i.p.PeopleId, Util.UserPeopleId.Value);
+            i.Family.LogChanges(DbUtil.Db, changes, i.p.PeopleId);
 
             var ret = i.p.MemberProfileAutomation(DbUtil.Db);
             if (ret == "ok")

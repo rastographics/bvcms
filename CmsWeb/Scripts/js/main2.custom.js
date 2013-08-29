@@ -51,6 +51,18 @@ $(function () {
 
 ///#source 1 1 /Scripts/js/ExportToolBar2.js
 $(document).ready(function () {
+    $('body').on("click", "a.ChooseLabelType", function (ev) {
+        ev.preventDefault();
+        $("#ChooseLabelTypeOK").attr("href", $(this).attr("href"))
+        .unbind("click").click(function (ev2) {
+            ev2.preventDefault();
+            var f = $(this).closest("form");
+            var q = f.serialize();
+            $.post($(this).attr("href"), q, function (ret) {
+            });
+        });
+        $("#ChooseLabelType").modal("show");
+    });
     $('body').on("click", '#AddContact', function (ev) {
         ev.preventDefault();
         if (!confirm("Are you sure you want to add a contact for all these people?"))
@@ -493,10 +505,10 @@ $(function () {
         });
         return false;
     });
-    $("ul.nav-tabs a.ajax").live("click", function(event) {
+    $("ul.nav-tabs a.ajax").live("click", function (event) {
         var state = $(this).attr("href");
         var d = $(state);
-        if(!d.hasClass("loaded"))
+        if (!d.hasClass("loaded"))
             $.ajax({
                 type: 'POST',
                 url: d.data("link"),
@@ -507,6 +519,19 @@ $(function () {
                 }
             });
         return true;
+    });
+    $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {
+        var d = $(this).closest("div.tab-pane");
+        $.ajax({
+            type: 'POST',
+            url: d.data("link"),
+            data: {},
+            success: function (data, status) {
+                d.html(data);
+                d.addClass("loaded");
+            }
+        });
+        return false;
     });
     $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();

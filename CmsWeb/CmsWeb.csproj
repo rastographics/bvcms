@@ -1878,6 +1878,7 @@
     <Content Include="Scripts\Search\Copy of Query.min.js.map">
       <DependentUpon>Query0.js</DependentUpon>
     </Content>
+    <Content Include="Views\Shared\Dialogs2.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

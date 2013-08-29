@@ -937,7 +937,7 @@ namespace CmsData
                 if (!_CanUserSeeGiving.HasValue)
                     _CanUserSeeGiving = Util.UserPeopleId == PeopleId
                                         || HttpContext.Current.User.IsInRole("Finance")
-                                        || (PositionInFamilyId == PositionInFamily.PrimaryAdult 
+                                        || (PositionInFamilyId == PositionInFamily.PrimaryAdult
                                             && Family.People.Any(m => m.PeopleId == Util.UserPeopleId)
                                             && ContributionOptionsId == EnvelopeOptionCode.Joint);
                 return _CanUserSeeGiving.Value;
@@ -991,11 +991,11 @@ namespace CmsData
                 o = ((string)o).TrimEnd();
             if (o == null && value == null)
                 return;
-            if(o is int)
+            if (o is int)
                 if ((int)o == value.ToInt())
                     return;
             var i = o as int?;
-            if(i != null)
+            if (i != null)
                 if (i == value.ToInt2())
                     return;
             if (o != null && o.Equals(value))
@@ -1012,6 +1012,12 @@ namespace CmsData
             if (psbDefault != null)
                 LogChanges(Db, psbDefault.ToString(), UserPeopleId);
         }
+
+        public void LogChanges(CMSDataContext Db, string changes)
+        {
+            LogChanges(Db, changes, Util.UserPeopleId ?? 0);
+        }
+
         public void LogChanges(CMSDataContext Db, string changes, int UserPeopleId)
         {
             if (changes.HasValue())

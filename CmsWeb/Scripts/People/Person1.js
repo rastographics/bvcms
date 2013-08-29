@@ -170,6 +170,7 @@
         if (tabparent) {
             $("a[href='#" + tabparent + "']").click().tab("show");
         }
+        $.cookie('lasttab', tlink.attr("href"));
         tlink.click().tab("show");
     }
     $("a[href='#enrollment']").on('shown', function (e) {

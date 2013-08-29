@@ -97,6 +97,12 @@ namespace CmsData
             if (fsbDefault != null)
                 LogChanges(Db, fsbDefault.ToString(), PeopleId, UserPeopleId);
         }
+
+        public void LogChanges(CMSDataContext Db, string changes, int PeopleId)
+        {
+            LogChanges(Db, changes, PeopleId, Util.UserPeopleId ?? 0);
+        }
+
         public void LogChanges(CMSDataContext Db, string changes, int PeopleId, int UserPeopleId)
         {
             if (changes.HasValue())

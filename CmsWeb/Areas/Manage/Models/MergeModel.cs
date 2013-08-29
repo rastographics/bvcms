@@ -211,7 +211,7 @@ namespace CmsWeb.Models
             target.Family.UpdateValue(fsb, "ZipCode", pi[UseZipCode].ZipCode);
             target.Family.UpdateValue(fsb, "CountryName", pi[UseCountry].Country);
 
-            target.LogChanges(DbUtil.Db, psb.ToString(), Util.UserPeopleId.Value);
+            target.LogChanges(DbUtil.Db, psb.ToString());
             target.Family.LogChanges(DbUtil.Db, fsb.ToString(), target.PeopleId, Util.UserPeopleId.Value);
             DbUtil.Db.SubmitChanges();
         }

@@ -1,0 +1,136 @@
+﻿@{
+    var tutorialFile = Server.MapPath(".") + "/Content/Tutorials/" + Util.Helpfile + ".cshtml";
+}
+@if (DbUtil.Db.Setting("ShowTutorialFileNames", "false") == "true")
+{
+    <br />
+    <b>Menus:</b>
+    @(Util.Helpfile)@:_Menu.cshtml<br />
+    <b>Tutorials:</b>
+    @(Util.Helpfile)@:.cshtml
+}
+@if (File.Exists(tutorialFile))
+{
+    Html.RenderPartial("/Content/Tutorials/" + Util.Helpfile + ".cshtml");
+}
+<form id="ChooseLabelType" class="modal fade hide">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Choose Options</h3>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" />
+        <div class="row">
+            <div class="span6 well">
+                <p><b>Addressed To</b></p>
+                <div>
+                    <input value="Individual" title="Addressed to individuals" type="radio" name="addressedto" checked="checked" />
+                    Individual
+                </div>
+                <div>
+                    <input value="Family" title="Addressed as a family when there are children" type="radio" name="addressedto" />
+                    Family
+                </div>
+                <div>
+                    <input value="FamilyMembers" title="Includes entire Family as individuals" type="radio" name="addressedto" />
+                    Family Members
+                </div>
+                <div>
+                    <input value="CouplesBoth" title="Addressed to a couple, if both are in selection" type="radio" name="addressedto" />
+                    Couples (both)
+                </div>
+                <div>
+                    <input value="CouplesEither" title="Addressed to a couple, if one or both are in selection" type="radio" name="addressedto" />
+                    Couples (either)
+                </div>
+                <div>
+                    <input value="ParentsOf" title="Addressed to parents or parent" type="radio" name="addressedto" />
+                    Parents Of
+                </div>
+                <div>
+                    <input value="GroupAddress" title="Addressed to names at address" type="radio" name="addressedto" />
+                    Group By Address
+                </div>
+            </div>
+            <div class="span6">
+                <p><b>Label Options</b></p>
+                <div>
+                    <input type="checkbox" id="UseTitle" name="UseTitle" />
+                    Use Titles<br />
+                </div>
+                <div>
+                    <input type="checkbox" id="SortZip" name="SortZip" />
+                    Sort by Zip<br />
+                </div>
+                <div>
+                    <input type="checkbox" id="UsePhone" name="UsePhone" />
+                    Include Phone<br />
+                </div>
+                <p>
+                    Skip:
+                    <input id="SkipNum" name="SkipNum" size="3" value="0" />
+                </p>
+            </div>
+        </div>
+        <div class="row pull-right">
+    </div>
+    <div class="modal-footer">
+        <a class="btn btn-success close-saved-address" data-dismiss="modal">Close</a>
+        <a id="ChooseLabelTypeOK" href="#" class="btn btn-primary"/>OK</div>
+    </div>
+</form>
+<div id="ExportStartEnd" class="modalDiv dialog" style="display: none">
+    <table>
+        <tr>
+            <th colspan="2">Select a date range</th>
+        </tr>
+        <tr>
+            <th>Start Date</th>
+            <td>
+                <input id="startdt" type="text" class='datepicker' /></td>
+        </tr>
+        <tr>
+            <th>End Date</th>
+            <td>
+                <input id="enddt" type="text" class='datepicker' /></td>
+        </tr>
+        <tr>
+            <td class="right" colspan="2">
+                <a class="bt" id="ExportStartEndRun" href="#">run </a></td>
+        </tr>
+    </table>
+</div>
+<div id="SetExtraValues" class="modalDiv dialog" style="display: none">
+    <table>
+        <tr>
+            <th>Field</th>
+            <td>
+                <input id="field" type="text" /></td>
+        </tr>
+        <tr>
+            <th>Value</th>
+            <td>
+                <input id="value" type="text" /></td>
+        </tr>
+        <tr>
+            <td class="right" colspan="2">
+                <a class="bt" id="SetExtraValuesRun" href="#">OK </a></td>
+        </tr>
+    </table>
+</div>
+<div id="TagAllDialog" class="modalDiv dialog" style="display: none;">
+    <form>
+        <table style="white-space: nowrap">
+            <tr>
+                <td>TagName:
+                    <input id="tagalltagname" name="tagname" type="text" value="@Util2.CurrentTagName" /><br />
+                    Clear Tag First: @Html.CheckBox("cleartagfirst", false)
+                </td>
+            </tr>
+            <tr>
+                <td class="right"><a class="bt" id="TagAllRun" href="#" style="text-align: right">OK </a></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="darkLayer" class="darkClass" style="display: none"></div>
