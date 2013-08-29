@@ -54,7 +54,7 @@ Database Creation and Population
 	+ Navigate to the repository directory
 	+ Open the **BuildCmsImageDb_SQLSchema.sql** file
 		+ Note: If your file extensions are hidden, you will not see the ".sql"
-1. Verify that **CMS\_bellevue\_img** is listed next to the **Execute** button as the active database and then click **Execute**
+1. Verify that **CMSi\_bellevue** is listed next to the **Execute** button as the active database and then click **Execute**
 
 Open the Project
 ---
