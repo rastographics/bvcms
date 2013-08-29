@@ -269,7 +269,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                      orderby ce.contact.ContactDate descending
                      select new
                      {
-                         contact = ce.contact,
+                         ce.contact,
                          madeby = ce.contact.contactsMakers.FirstOrDefault().person,
                      };
             var list = new iTextSharp.text.List(false, 10);
@@ -283,7 +283,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                 var cname = "unknown";
                 if (pc.madeby != null)
                     cname = pc.madeby.Name;
-                string ctype = cts.Single(ct => ct.Id == pc.contact.ContactTypeId).Value;
+                string ctype = cts.ItemValue(pc.contact.ContactTypeId);
                 string comments = null;
                 if (pc.contact.Comments.HasValue())
                 {
