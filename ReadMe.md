@@ -47,8 +47,8 @@ Database Creation and Population
 1. Verify that **CMS_bellevue** is listed next to the **Execute** button as the active database and then click **Execute**
 	+ Note: Computers with 2Gb of memory or less may have trouble creating the database because of not enough memory
 1. Right-click on **Databases** and select **New Database**
-1. Enter **CMS\_bellevue\_img** in the database name and click **OK**
-1. Select **CMS\_bellevue\_img** in the database list
+1. Enter **CMSi\_bellevue** in the database name and click **OK**
+1. Select **CMSi\_bellevue** in the database list
 1. Open the image database schema file: **BuildCmsImageDb_SQLSchema.sql**
 	+ File > Open > File
 	+ Navigate to the repository directory
