@@ -1,10 +1,8 @@
 ﻿@model CmsWeb.Models.HomeModel
-@using System.Drawing
-@using CmsData;
+@using System.Diagnostics
 @{
     ViewBag.Title = "Home";
     Layout = "~/Views/Shared/SiteLayout.cshtml";
-    var newlook = DbUtil.Db.UserPreference("newlook3", "false").ToBool();
 }
 @section scripts
 {
@@ -59,10 +57,7 @@
         </div>
     </div>
 </div>
-@if (!newlook)
-{
-    <div style="margin-left: 1%; float: left;">&nbsp;</div>
-}
+<div style="margin-left: 1%; float: left;">&nbsp;</div>
 <div class="homebox roundbox five columns">
     <div style="height: 50%">
         <h2><a href="@DbUtil.Db.Setting("BlogAppUrl", "#")">BVCMS News</a></h2>
@@ -89,10 +84,7 @@
         </div>
     </div>
 </div>
-@if (!newlook)
-{
-    <div style="margin-left: 1%; float: left;">&nbsp;</div>
-}
+<div style="margin-left: 1%; float: left;">&nbsp;</div>
 <div class="homebox roundbox five columns omega">
     <div style="height: 50%">
         <h2 id="tags"><a href="/Tags">My Tags</a></h2>

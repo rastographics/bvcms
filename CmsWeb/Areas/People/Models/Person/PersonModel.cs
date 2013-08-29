@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.People.Models.Person
     public class PersonModel
     {
         public BasicPersonInfo basic { get; set; }
-        public MemberInfo2 member { get; set; }
+        public MemberInfo member { get; set; }
         public GrowthInfo growth { get; set; }
         public MemberNotesInfo membernotes { get; set; }
 
@@ -129,46 +129,8 @@ namespace CmsWeb.Areas.People.Models.Person
             SpouseId = p.SpouseId;
             StatusFlags = (i.statusflags ?? "").Split(',');
 
-            member = new MemberInfo2(p.PeopleId);
-            basic = new BasicPersonInfo
-            {
-                PeopleId = p.PeopleId,
-                person = p,
-                Age = p.Age.ToString(),
-                Birthday = p.DOB,
-                Mobile = new CellPhoneInfo(p.CellPhone.FmtFone(), p.ReceiveSMS),
-                DeceasedDate = p.DeceasedDate,
-                DoNotCallFlag = p.DoNotCallFlag,
-                DoNotMailFlag = p.DoNotMailFlag,
-                DoNotVisitFlag = p.DoNotVisitFlag,
-                PrimaryEmail = new EmailInfo(p.EmailAddress, p.SendEmailAddress1 ?? true),
-                AltEmail = new EmailInfo(p.EmailAddress2, p.SendEmailAddress2 ?? false),
-                Campus = new CodeInfo(p.CampusId, "Campus"),
-                Gender = new CodeInfo(p.GenderId, "Gender"),
-                Marital = new CodeInfo(p.MaritalStatusId, "Marital"),
-                MemberStatus = new CodeInfo(p.MemberStatusId, "MemberStatus"),
-                FamilyPosition = new CodeInfo(p.PositionInFamilyId, "FamilyPosition"),
-                Employer = p.EmployerOther,
-                FirstName = p.FirstName,
-                Created = p.CreatedDate,
-                Grade = p.Grade.ToString(),
-                HomePhone = p.Family.HomePhone,
-                JoinDate = p.JoinDate,
-                LastName = p.LastName,
-                AltName = p.AltName,
-                FormerName = p.MaidenName,
-                MemberStatusId = p.MemberStatusId,
-                MiddleName = p.MiddleName,
-                GoesBy = p.NickName,
-                Occupation = p.OccupationOther,
-                School = p.SchoolOther,
-                Spouse = i.spouse,
-                Suffix = p.SuffixCode,
-                Title = new CodeInfo(p.TitleCode, "Title"),
-                WeddingDate = p.WeddingDate.FormatDate(),
-                Work = p.WorkPhone.FmtFone(),
-                ReceiveSMS = p.ReceiveSMS,
-            };
+            member = new MemberInfo(p.PeopleId);
+            basic = new BasicPersonInfo(p.PeopleId);
             growth = new GrowthInfo
             {
                 PeopleId = p.PeopleId,
@@ -264,12 +226,12 @@ namespace CmsWeb.Areas.People.Models.Person
             switch(pf)
             {
                 case "p":
-                    Person.UpdateValueFromText(sb, field, value);
-                    Person.LogChanges(DbUtil.Db, sb, Util.UserPeopleId.Value);
+                    Person.UpdateValueFromText(field, value);
+                    Person.LogChanges(DbUtil.Db, Util.UserPeopleId.Value);
                     break;
                 case "f":
-                    Person.Family.UpdateValueFromText(sb, field, value);
-                    Person.Family.LogChanges(DbUtil.Db, sb, Person.PeopleId, Util.UserPeopleId.Value);
+                    Person.Family.UpdateValueFromText(field, value);
+                    Person.Family.LogChanges(DbUtil.Db, Person.PeopleId, Util.UserPeopleId.Value);
                     break;
             }
             DbUtil.Db.SubmitChanges();
@@ -380,18 +342,19 @@ namespace CmsWeb.Areas.People.Models.Person
             }
             return list;
         }
-//        public IEnumerable<ChangeLogInfo> GetChangeLogs()
-//        {
-//            var list = (from c in DbUtil.Db.ChangeLogs
-//                        let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
-//                        where c.PeopleId == Person.PeopleId || c.FamilyId == Person.FamilyId
-//                        where userp != null
-//                        select new { userp, c }).ToList();
-//            var q = from i in list
-//                    orderby i.c.Created descending
-//                    from d in details(i.c, i.userp.Name)
-//                    select d;
-//            return q;
-//        }
+
+        public IEnumerable<ChangeLogInfo> GetChangeLogs()
+        {
+            var list = (from c in DbUtil.Db.ChangeLogs
+                        let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
+                        where c.PeopleId == Person.PeopleId || c.FamilyId == Person.FamilyId
+                        where userp != null
+                        select new { userp, c }).ToList();
+            var q = from i in list
+                    orderby i.c.Created descending
+                    from d in details(i.c, i.userp.Name)
+                    select d;
+            return q;
+        }
     }
 }

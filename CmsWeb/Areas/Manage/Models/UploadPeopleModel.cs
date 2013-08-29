@@ -296,8 +296,8 @@ namespace CmsWeb.Models
 
                         if (!testing)
                         {
-                            p.LogChanges(Db, psb, PeopleId);
-                            p.Family.LogChanges(Db, fsb, p.PeopleId, PeopleId);
+                            p.LogChanges(Db, psb.ToString(), PeopleId);
+                            p.Family.LogChanges(Db, fsb.ToString(), p.PeopleId, PeopleId);
                             Db.SubmitChanges();
                             Person.Tag(Db, p.PeopleId, "InsertPeopleUpdated", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
                         }

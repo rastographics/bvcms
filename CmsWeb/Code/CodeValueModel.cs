@@ -92,7 +92,11 @@ namespace CmsWeb.Code
                    };
         }
 
-        public IEnumerable<CodeValueItem> StatementOptionList()
+        public IEnumerable<CodeValueItem> ContributionOptionsList()
+        {
+            return EnvelopeOptionList();
+        }
+        public IEnumerable<CodeValueItem> EnvelopeOptionsList()
         {
             return EnvelopeOptionList();
         }
@@ -369,21 +373,25 @@ namespace CmsWeb.Code
                        Value = c.Description
                    };
         }
-        public IEnumerable<CodeValueItem> MinistryList() { return Ministries().AddNotSpecified(); }
+        public IEnumerable<CodeValueItem> CampusList() { return AllCampuses0(); }
         public IEnumerable<CodeValueItem> ContactReasonList() { return ContactReasonCodes().AddNotSpecified(); }
         public IEnumerable<CodeValueItem> ContactTypeList() { return ContactTypeCodes().AddNotSpecified(); }
+        public IEnumerable<CodeValueItem> CountryList() { return GetCountryList(); }
+        public IEnumerable<CodeValueItem> EntryPointList() { return EntryPoints(); }
+        public IEnumerable<CodeValueItem> GenderList() { return GenderCodesWithUnspecified(); }
+        public IEnumerable<CodeValueItem> MaritalStatusList() { return MaritalStatusCodes99(); }
+        public IEnumerable<CodeValueItem> MemberTypeList() { return MemberTypeCodes0(); }
+        public IEnumerable<CodeValueItem> MinistryList() { return Ministries().AddNotSpecified(); }
+        public IEnumerable<CodeValueItem> PositionInFamilyList() { return FamilyPositionCodes(); }
+        public IEnumerable<CodeValueItem> ResCodeList() { return ResidentCodesWithZero(); }
+        public IEnumerable<CodeValueItem> StateList() { return GetStateList(); }
+        public IEnumerable<CodeValueItem> TitleList() { return TitleCodes(); }
+
         public SelectList MinistrySelectList() { return MinistryList().ToSelect(); }
         public SelectList ContactReasonSelectList() { return ContactReasonCodes().ToSelect(); }
         public SelectList ContactTypeSelectList() { return ContactTypeCodes().ToSelect(); }
 
-        public SelectList StatementOptionSelectList() { return StatementOptionList().ToSelect(); }
-        public SelectList EnvelopeOptionSelectList() { return EnvelopeOptionList().ToSelect(); }
-        public SelectList DecisionTypeSelectList() { return DecisionTypeList().ToSelect(); }
-        public SelectList DropTypeSelectList() { return DropTypeList().ToSelect(); }
-        public SelectList BaptismStatusSelectList() { return BaptismStatusList().ToSelect(); }
-        public SelectList BaptismTypeSelectList() { return BaptismTypeList().ToSelect(); }
-        public SelectList MemberStatusSelectList() { return MemberStatusList().ToSelect(); }
-        public SelectList JoinTypeSelectList() { return JoinTypeList().ToSelect(); }
+        public SelectList PositionInFamilySelectList() { return PositionInFamilyList().ToSelect(); }
 
 
         public List<CodeValueItem> PmmLabels()

@@ -3,22 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using CmsData;
-using System.Web.Mvc;
 using CmsData.Registration;
 using CmsWeb.Code;
-using CmsWeb.Models.OrganizationPage;
 using UtilityExtensions;
-using System.Text.RegularExpressions;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Models
 {
     public class OrgMemberModel
     {
-        public CmsData.OrganizationMember om;
+        private OrganizationMember om;
         public CmsData.Organization Organization;
         public List<OrgMemMemTag> OrgMemMemTags;
         private int? _orgId;
@@ -40,12 +34,11 @@ namespace CmsWeb.Areas.Org.Models
             if (i == null)
                 throw new Exception("missing OrgMember at oid={0}, pid={0}".Fmt(_orgId, _peopleId));
             om = i.mm;
+            this.CopyPropertiesFrom(om);
             Name = i.Name;
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
-            MemberType = new CodeInfo(om.MemberTypeId, "MemberType");
-            AttendStr = om.AttendStr;
             Setting = new Settings(i.RegSetting, DbUtil.Db, _orgId.Value);
         }
 
@@ -61,6 +54,7 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
+        [SkipField]
         public int? PeopleId
         {
             get { return _peopleId; }
@@ -74,98 +68,53 @@ namespace CmsWeb.Areas.Org.Models
 
         public string Name { get; set; }
         public string OrgName { get; set; }
+
         public string AttendStr { get; set; }
+
         public Settings Setting { get; set; }
 
-        [DisplayName("Member Type")]
         public CodeInfo MemberType { get; set; }
 
         [UIHint("Date")]
-        [DisplayName("Inactive Date")]
-        public string InactiveDate
-        {
-            get { return om.InactiveDate.FormatDate(); }
-            set { om.InactiveDate = value.ToDate(); }
-        }
+        public string InactiveDate { get; set; }
 
-        [UIHint("Date")]
-        [DisplayName("Enrollment Date")]
-        public string Enrollment
-        {
-            get { return om.EnrollmentDate.FormatDate(); }
-            set { om.EnrollmentDate = value.ToDate(); }
-        }
+        [UIHint("Date"), DisplayName("Enrollment Date")]
+        public string Enrollment { get; set; }
 
         [UIHint("Bool")]
-        public bool? Pending
-        {
-            get { return om.Pending; }
-            set { om.Pending = value; }
-        }
+        public bool? Pending { get; set; }
 
         [UIHint("Text")]
-        [DisplayName("Register Email")]
-        public string RegisterEmail
-        {
-            get { return om.RegisterEmail; }
-            set { om.RegisterEmail = value; }
-        }
+        public string RegisterEmail { get; set; }
 
         [UIHint("Text")]
-        public string Request
-        {
-            get { return om.Request; }
-            set { om.Request = value; }
-        }
+        public string Request  { get; set; }
 
         [UIHint("Int")]
-        public int? Grade
-        {
-            get { return om.Grade; }
-            set { om.Grade = value; }
-        }
+        public int? Grade { get; set; }
 
         [UIHint("Int")]
-        public int? Tickets
-        {
-            get { return om.Tickets; }
-            set { om.Tickets = value; }
-        }
+        public int? Tickets { get; set; }
 
         [UIHint("Decimal")]
-        public decimal? Amount
-        {
-            get { return om.Amount; }
-            set { om.Amount = value; }
-        }
+        public decimal? Amount { get; set; }
 
         [UIHint("Decimal")]
-        [DisplayName("Amount Due")]
-        public decimal? AmountDue
-        {
-            get { return om.AmountDue(DbUtil.Db); }
-        }
+        public decimal? AmountDue { get { return om.AmountDue(DbUtil.Db); } }
 
         [UIHint("Text")]
-        public string PayLink
-        {
-            get { return om.PayLink; }
-            set { om.PayLink = value; }
-        }
+        public string PayLink { get; set; }
 
         [UIHint("Text")]
-        public string ShirtSize
-        {
-            get { return om.ShirtSize; }
-            set { om.ShirtSize = value; }
-        }
+        public string ShirtSize { get; set; }
 
-        [UIHint("TextArea")]
-        [DisplayName("Extra Member Info")]
-        public string UserData
+        [UIHint("TextArea"), DisplayName("Extra Member Info")]
+        public string UserData { get; set; }
+
+        public void UpdateModel()
         {
-            get { return om.UserData; }
-            set { om.UserData = value; }
+            this.CopyPropertiesTo(om);
+            DbUtil.Db.SubmitChanges();
         }
     }
 }

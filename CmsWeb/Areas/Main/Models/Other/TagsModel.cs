@@ -39,7 +39,13 @@ namespace CmsWeb.Models
         public void SetCurrentTag()
         {
             if (tag.HasValue())
-                Util2.CurrentTag = tag.SplitStr(",", 2)[1];
+            {
+                var a = tag.SplitStr(",", 2);
+                if(a.Length > 1)
+                    Util2.CurrentTag = a[1];
+                else
+                    Util2.CurrentTag = tag;
+            }
             TagTypeId = DbUtil.TagTypeId_Personal;
             TagName = Util2.CurrentTagName;
             TagOwner = Util2.CurrentTagOwnerId;

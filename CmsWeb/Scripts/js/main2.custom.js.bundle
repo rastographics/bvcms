@@ -2,6 +2,7 @@
 <bundle minify="true" runOnBuild="false" output="main2.custom.js">
   <!--The order of the <file> elements determines the order of them when bundled.-->
   <file>/Scripts/js/Pager3.js</file>
+  <file>/Scripts/js/ExportToolBar2.js</file>
   <file>/Scripts/js/headermenu2.js</file>
   <file>/Scripts/js/form-ajax.js</file>
   <file>/Scripts/Search/SearchAdd.js</file>

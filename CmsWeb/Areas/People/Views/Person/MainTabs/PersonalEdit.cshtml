@@ -3,36 +3,37 @@
     @FormAction()
     <div class="row-fluid">
         <div class="span6">
-            @Html.EditorFor(m => m.Title)
+            @Html.HiddenFor(m => m.PeopleId)
+            @Html.EditorFor(m => m.TitleCode)
             @Html.EditorFor(m => m.FirstName)
             @Html.EditorFor(m => m.GoesBy)
             @Html.EditorFor(m => m.MiddleName)
             @Html.EditorFor(m => m.LastName)
             @Html.EditorFor(m => m.AltName)
-            @Html.EditorFor(m => m.FormerName)
-            @Html.EditorFor(m => m.Suffix)
+            @Html.EditorFor(m => m.MaidenName)
+            @Html.EditorFor(m => m.SuffixCode)
         </div>
         <div class="span6 column2">
             @Html.EditorFor(m => m.Gender)
-            @Html.EditorFor(m => m.Birthday)
-            @Html.EditorFor(m => m.Marital)
+            @Html.EditorFor(m => m.DOB)
+            @Html.EditorFor(m => m.MaritalStatus)
             @Html.EditorFor(m => m.WeddingDate)
-            @Html.EditorFor(m => m.Occupation, "Typeahead", new { link = "/Person2/Occupations" })
-            @Html.EditorFor(m => m.Employer, "Typeahead", new { link = "/Person2/Employers" })
-            @Html.EditorFor(m => m.School, "Typeahead", new { link = "/Person2/Schools" })
+            @Html.EditorFor(m => m.OccupationOther, "Typeahead", new { link = "/Person2/Occupations" })
+            @Html.EditorFor(m => m.EmployerOther, "Typeahead", new { link = "/Person2/Employers" })
+            @Html.EditorFor(m => m.SchoolOther, "Typeahead", new { link = "/Person2/Schools" })
             @Html.EditorFor(m => m.Grade)
         </div>
     </div>
     <hr/>
     <div class="row-fluid">
         <div class="span6">
-            @Html.EditorFor(m => m.PrimaryEmail)
-            @Html.EditorFor(m => m.AltEmail)
+            @Html.EditorFor(m => m.EmailAddress)
+            @Html.EditorFor(m => m.EmailAddress2)
             @Html.EditorFor(m => m, "DoNotContact")
         </div>
         <div class="span6 column2">
-            @Html.EditorFor(m => m.Mobile)
-            @Html.EditorFor(m => m.Work)
+            @Html.EditorFor(m => m.CellPhone)
+            @Html.EditorFor(m => m.WorkPhone)
             @Html.EditorFor(m => m.HomePhone)
         </div>
     </div>

@@ -21,72 +21,80 @@
     </tr>
     <tr>
         <th class='right'>Pending:</th>
-        <td><input type="checkbox" disabled="disabled" @((Model.Pending ?? false) == true ? "checked='checked'" : "") /></td>
+        <td>
+            <input type="checkbox" disabled="disabled" @((Model.Pending ?? false) == true ? "checked='checked'" : "") /></td>
     </tr>
-@if (Model.RegisterEmail.HasValue())
-{     
-    <tr>
-        <th class='right'>RegisterEmail:</th>
-        <td>@Model.RegisterEmail</td>
-    </tr>
- }
- @if (setting.AskVisible("AskRequest"))
- {     
-    <tr>
-        <th class='right'>Request:</th>
-        <td>@Model.Request</td>
-    </tr>
- }
- @if(Model.Grade.HasValue)
- {     
-    <tr>
-        <th class='right'>Grade:</th>
-        <td>@Model.Grade</td>
-    </tr>
- }    
- @if(setting.AskVisible("AskTickets"))
- {     
-    <tr>
-        <th class='right'>No. Items:</th>
-        <td>@Model.Tickets</td>
-    </tr>
- }    
- @if (Model.Amount.HasValue)
- {
-     var amtdue = @Model.AmountDue(DbUtil.Db);
-    <tr>
-        <th class='right'>Amount:</th>
-        <td>@Model.Amount.ToString2("N") (total fee for this registrant)</td>
-    </tr>
-    <tr>
-        <th class="right top">AmountDue:</th>
-        <td>@amtdue.ToString2("N") (total for transaction, all registrants)
-        @if (amtdue > 0)
-        { 
-            <div><a href="@Model.PayLink" target="_blank">PayLink</a></div>
-        } 
-        </td>
-    </tr>
- }
- @if(setting.AskVisible("AskSize"))
- {     
-    <tr>
-        <th class='right'>ShirtSize:</th>
-        <td>@Model.ShirtSize</td>
-    </tr>
- }    
+    @if (Model.RegisterEmail.HasValue())
+    {     
+        <tr>
+            <th class='right'>RegisterEmail:</th>
+            <td>@Model.RegisterEmail</td>
+        </tr>
+    }
+    @if (setting.AskVisible("AskRequest"))
+    {     
+        <tr>
+            <th class='right'>Request:</th>
+            <td>@Model.Request</td>
+        </tr>
+    }
+    @if (Model.Grade.HasValue)
+    {     
+        <tr>
+            <th class='right'>Grade:</th>
+            <td>@Model.Grade</td>
+        </tr>
+    }
+    @if (setting.AskVisible("AskTickets"))
+    {     
+        <tr>
+            <th class='right'>No. Items:</th>
+            <td>@Model.Tickets</td>
+        </tr>
+    }
+    @if (Model.Organization.RegistrationTypeId > 0)
+    {
+        var amtdue = @Model.AmountDue(DbUtil.Db);
+        <tr>
+            <th class='right'>Amount:</th>
+            <td>@Model.Amount.ToString2("N") (total fee for this registrant)</td>
+        </tr>
+        <tr>
+            <th class='right'>Amount Paid:</th>
+            <td>@Model.AmountPaid.ToString2("N")</td>
+        </tr>
+        if (amtdue.HasValue)
+        {
+        <tr>
+            <th class="right top">AmountDue:</th>
+            <td>@amtdue.ToString2("N") (total for transaction, all registrants)
+                 @if (amtdue > 0)
+                 {
+                     <div><a href="@Model.PayLink" target="_blank">PayLink</a></div>
+                 }
+            </td>
+        </tr>
+        }
+    }
+    @if (setting.AskVisible("AskSize"))
+    {     
+        <tr>
+            <th class='right'>ShirtSize:</th>
+            <td>@Model.ShirtSize</td>
+        </tr>
+    }
     <tr>
         <th class="right top">Extra Member Info:</th>
         <td>@Html.Raw(Util.SafeFormat(Model.UserData))</td>
     </tr>
     @if (User.IsInRole("Edit"))
     {
-    <tr>
-        <td colspan="2" class="right">
-            <a class="bt display" href="/OrgMemberDialog/Edit/@Model.OrganizationId?pid=@Model.PeopleId">Edit</a>
-            <a class="bt display" href="/OrgMemberDialog/Move/@Model.OrganizationId?pid=@Model.PeopleId">Move</a>
-            <a class="bt delete" href="/OrgMemberDialog/Drop/d@(comboid)">Drop</a></td>
-    </tr>
+        <tr>
+            <td colspan="2" class="right">
+                <a class="bt display" href="/OrgMemberDialog/Edit/@Model.OrganizationId?pid=@Model.PeopleId">Edit</a>
+                <a class="bt display" href="/OrgMemberDialog/Move/@Model.OrganizationId?pid=@Model.PeopleId">Move</a>
+                <a class="bt delete" href="/OrgMemberDialog/Drop/d@(comboid)">Drop</a></td>
+        </tr>
     }
 </table>
 

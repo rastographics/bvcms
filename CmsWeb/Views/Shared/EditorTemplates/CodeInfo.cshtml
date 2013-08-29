@@ -9,6 +9,6 @@
     @Html.LabelFor(m => m, new { @class="control-label"})
     <div class="controls code-dropdown">
         @Html.DropDownListFor(m => m.Value, Model.Items)
-        @Html.HiddenFor(m => m.ListName)
+        @Html.HiddenFor(m => m.Name)
     </div>
 </div>

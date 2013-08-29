@@ -281,7 +281,7 @@
     <Compile Include="Areas\Dialog\Controllers\SearchAddController.cs" />
     <Compile Include="Areas\People\Models\Person\AttendHistoryModel.cs" />
     <Compile Include="Areas\People\Models\Person\AttendInfo.cs" />
-    <Compile Include="Areas\People\Models\Person\MemberInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\DuplicatesModel.cs" />
     <Compile Include="Areas\People\Models\Person\PendingEnrollments.cs" />
     <Compile Include="Areas\People\Models\Person\OrgMemberInfo.cs" />
     <Compile Include="Areas\People\Models\Person\PreviousEnrollments.cs" />
@@ -304,7 +304,7 @@
     <Compile Include="Areas\People\Models\Person\GrowthInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\MemberInfo2.cs">
+    <Compile Include="Areas\People\Models\Person\MemberInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\People\Models\Person\MemberNotesInfo.cs">
@@ -449,6 +449,7 @@
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\Fingerprint.cs" />
     <Compile Include="Code\LabelMetaData.cs" />
+    <Compile Include="Code\ModelViewMetadataProvider.cs" />
     <Compile Include="Code\ModelViewModel.cs" />
     <Compile Include="Code\Payments.cs" />
     <Compile Include="Code\SmartBinder.cs" />
@@ -871,6 +872,7 @@
     <Content Include="Scripts\jQuery\onlineregister.min.js">
       <DependentUpon>onlineregister.js.bundle</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\ExportToolBar2.js" />
     <Content Include="Scripts\js\TaskPage.js">
       <DependentUpon>TaskPage.js.bundle</DependentUpon>
     </Content>
@@ -989,6 +991,10 @@
     <Content Include="Areas\Search\Views\Query\EditCondition2.cshtml" />
     <Content Include="Areas\Search\Views\Query\Conditions2.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmReregister.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\Changes.cshtml" />
+    <Content Include="Areas\People\Views\Person\MainTabs\System.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\Duplicates.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\DuplicateRow.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />

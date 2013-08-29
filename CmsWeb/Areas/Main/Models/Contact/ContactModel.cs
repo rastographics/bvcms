@@ -8,23 +8,20 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using Dapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ContactPage
 {
     public class ContactModel : IValidatableObject
     {
-        internal Contact contact;
-        public readonly CodeValueModel cv;
-        private readonly CMSDataContext Db;
         private bool? canViewComments;
-        private int _id;
         private string _incomplete;
 
+        [NoUpdate]
+        public int ContactId { get; set; }
         public string ContactDate { get; set; }
-        public int MinistryId { get; set; }
-        public int ContactTypeId { get; set; }
-        public int ContactReasonId { get; set; }
+
         public bool NotAtHome { get; set; }
         public bool LeftDoorHanger { get; set; }
         public bool LeftMessage { get; set; }
@@ -34,42 +31,27 @@ namespace CmsWeb.Models.ContactPage
         public bool GiftBagGiven { get; set; }
         public string Comments { get; set; }
 
-        [CodeValue]
-        public string ContactType { get; set; }
-        [CodeValue]
-        public string ContactReason{ get; set; }
-        [CodeValue]
-        public string Ministry{ get; set; }
-        
-        public int Id
+        public CodeInfo ContactType { get; set; }
+        public CodeInfo ContactReason { get; set; }
+        public CodeInfo Ministry { get; set; }
+
+        internal Contact contact;
+        private void LoadContact(int id)
         {
-            get { return _id; }
-            set
-            {
-                _id = value;
-                if (_id == 0)
-                    return;
-                contact = DbUtil.Db.Contacts.SingleOrDefault(cc => cc.ContactId == value);
-                if (contact == null)
-                    return;
-                MinisteredTo = new ContacteesModel(value);
-                Ministers = new ContactorsModel(value);
-                MinisteredTo.CanViewComments = CanViewComments;
-                Ministers.CanViewComments = CanViewComments;
-            }
+            contact = DbUtil.Db.Contacts.SingleOrDefault(cc => cc.ContactId == id);
+            MinisteredTo = new ContacteesModel(id);
+            Ministers = new ContactorsModel(id);
+            MinisteredTo.CanViewComments = CanViewComments;
+            Ministers.CanViewComments = CanViewComments;
         }
 
         public ContactModel()
         {
-            Db = DbUtil.Db;
-            cv = new CodeValueModel();
         }
         public ContactModel(int id)
             : this()
         {
-            Id = id;
-            if (contact == null)
-                return;
+            LoadContact(id);
             this.CopyPropertiesFrom(contact);
         }
 
@@ -78,11 +60,11 @@ namespace CmsWeb.Models.ContactPage
 
         public void UpdateContact()
         {
-            contact.CopyPropertiesFrom(this);
-            this.CopyPropertiesFrom(contact, CodeValuesOnly: true);
-            Db.SubmitChanges();
+            LoadContact(ContactId);
+            this.CopyPropertiesTo(contact);
+            DbUtil.Db.SubmitChanges();
         }
-        internal void DeleteContact()
+        public static void DeleteContact(int cid)
         {
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
@@ -92,7 +74,7 @@ namespace CmsWeb.Models.ContactPage
                 update task set CompletedContactId = NULL WHERE CompletedContactId = @cid;
                 update task set SourceContactId = NULL WHERE CompletedContactId = @cid;
                 delete contact where ContactId = @cid;
-                ", new { cid = Id });
+                ", new { cid });
         }
 
         public int AddNewTeamContact()
@@ -106,13 +88,13 @@ namespace CmsWeb.Models.ContactPage
                 ContactTypeId = contact.ContactTypeId,
                 ContactReasonId = contact.ContactReasonId,
             };
-            var q = from cor in Db.Contactors
+            var q = from cor in DbUtil.Db.Contactors
                     where cor.ContactId == contact.ContactId
                     select cor;
             foreach (var p in q)
                 c.contactsMakers.Add(new Contactor { PeopleId = p.PeopleId });
-            Db.Contacts.InsertOnSubmit(c);
-            Db.SubmitChanges();
+            DbUtil.Db.Contacts.InsertOnSubmit(c);
+            DbUtil.Db.SubmitChanges();
             return c.ContactId;
         }
 
@@ -129,16 +111,16 @@ namespace CmsWeb.Models.ContactPage
                     return true;
                 }
 
-                var q = from c in Db.Contactees
-                        where c.ContactId == Id
+                var q = from c in DbUtil.Db.Contactees
+                        where c.ContactId == ContactId
                         select c.PeopleId;
-                var q2 = from c in Db.Contactors
-                         where c.ContactId == Id
+                var q2 = from c in DbUtil.Db.Contactors
+                         where c.ContactId == ContactId
                          select c.PeopleId;
                 var a = q.Union(q2).ToArray();
 
-                Tag tag = Db.OrgLeadersOnlyTag2();
-                canViewComments = tag.People(Db).Any(p => a.Contains(p.PeopleId));
+                Tag tag = DbUtil.Db.OrgLeadersOnlyTag2();
+                canViewComments = tag.People(DbUtil.Db).Any(p => a.Contains(p.PeopleId));
                 return canViewComments.Value;
             }
         }
@@ -150,13 +132,13 @@ namespace CmsWeb.Models.ContactPage
             if (!Util.DateValid(ContactDate))
                 results.Add(ModelError("Contact Date is required", "ContactDate"));
 
-            if (MinistryId == 0)
+            if (Ministry.Value == "0")
                 results.Add(ModelError("Ministry is required", "MinistryId"));
 
-            if (ContactTypeId == 0)
+            if (ContactType.Value == "0")
                 results.Add(ModelError("ContactType is required", "ContactTypeId"));
 
-            if (ContactReasonId == 0)
+            if (ContactReason.Value == "0")
                 results.Add(ModelError("ContactReason is required", "ContactReasonId"));
 
             return results;
@@ -179,9 +161,9 @@ namespace CmsWeb.Models.ContactPage
         private string GetIncomplete()
         {
             var sb = new StringBuilder();
-            Append(MinistryId == 0, sb, "no ministry");
-            Append(ContactTypeId == 0, sb, "no type");
-            Append(ContactReasonId == 0, sb, "no reason");
+            Append(Ministry.Value == "0", sb, "no ministry");
+            Append(ContactType.Value == "0", sb, "no type");
+            Append(ContactReason.Value == "0", sb, "no reason");
             Append(Ministers.Count() == 0, sb, "no contactors");
             Append(MinisteredTo.Count() == 0, sb, "no contactees");
             if (sb.Length > 0)

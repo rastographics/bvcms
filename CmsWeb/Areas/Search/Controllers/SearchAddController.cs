@@ -130,7 +130,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 First = p.FirstName,
                 GoesBy = p.NickName,
                 Last = p.LastName,
-                Marital = new CodeInfo(p.MaritalStatusId, "Marital"),
+                Marital = new CodeInfo(p.MaritalStatusId, "MaritalStatus"),
                 Email = p.EmailAddress,
                 Suffix = p.SuffixCode,
                 Title = new CodeInfo(p.TitleCode, "Title"),

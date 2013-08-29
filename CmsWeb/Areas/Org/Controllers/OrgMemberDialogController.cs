@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             try
             {
-                DbUtil.Db.SubmitChanges();
+                m.UpdateModel();
             }
             catch (Exception)
             {

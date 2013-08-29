@@ -322,6 +322,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public SearchPersonModel NewPerson(int familyid)
         {
+            
             var p = new SearchPersonModel
             {
                 FamilyId = familyid,

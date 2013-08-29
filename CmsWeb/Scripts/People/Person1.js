@@ -180,6 +180,13 @@
     $("a[href='#membership']").on('shown', function (e) {
         if ($("#status").length < 2) {
             $("a[href='#status']").click().tab("show");
+            $.cookie('lasttab', "#status");
+        }
+    });
+    $("a[href='#system']").on('shown', function (e) {
+        if ($("#changes").length < 2) {
+            $("a[href='#changes']").click().tab("show");
+            $.cookie('lasttab', "#changes");
         }
     });
     //$("#contacts-link").click(function () {
@@ -358,7 +365,7 @@
             $this.data('html', true).data('content', getMap({ center: $this.text() }));
             $this.popover();
         });
-        $('#FamilyPosition').editable({
+        $('#PositionInFamily').editable({
             source: [{
                 value: 10,
                 text: "Primary Adult"

@@ -10,6 +10,10 @@
         }
         @*<li><a href="#account" data-toggle="tab" class="ajax">Account</a></li>*@
         <li><a id="contactsTab" href="#contacts" data-toggle="tab" class="ajax">Contacts</a></li>
+        @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
+        {
+            <li><a id="systemTab" href="#system" data-toggle="tab" class="ajax">System</a></li>
+        }
     </ul>
 
     <div class="tab-content">
@@ -32,6 +36,12 @@
         @if (User.IsInRole("Access"))
         {
             <div class="tab-pane" id="contacts" data-link="/Person2/Contacts/@Model.PeopleId"></div>
+        }
+        @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
+        {
+        <div class="tab-pane" id="system">
+            @Html.Partial("MainTabs/System", Model)
+        </div>
         }
     </div>
 </div>

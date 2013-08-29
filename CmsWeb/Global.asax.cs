@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using CmsData;
 using CmsData.Registration;
+using CmsWeb.Code;
 using UtilityExtensions;
 using CmsWeb;
 using System.Net.Mail;
@@ -43,7 +44,7 @@ namespace CmsWeb
         protected void Application_Start()
         {
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
-            ModelMetadataProviders.Current = new DataAnnotationsModelMetadataProvider();
+            ModelMetadataProviders.Current = new ModelViewMetadataProvider();
             AreaRegistration.RegisterAllAreas();
             RegisterRoutes(RouteTable.Routes);
             RouteTable.Routes.RouteExistingFiles = true;

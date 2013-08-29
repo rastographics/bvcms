@@ -165,16 +165,15 @@ namespace CmsWeb.Models.PersonPage
         }
         public void Reverse(string field, string value, string pf)
         {
-            var sb = new StringBuilder();
             switch(pf)
             {
                 case "p":
-                    Person.UpdateValueFromText(sb, field, value);
-                    Person.LogChanges(DbUtil.Db, sb, Util.UserPeopleId.Value);
+                    Person.UpdateValueFromText(field, value);
+                    Person.LogChanges(DbUtil.Db, Util.UserPeopleId.Value);
                     break;
                 case "f":
-                    Person.Family.UpdateValueFromText(sb, field, value);
-                    Person.Family.LogChanges(DbUtil.Db, sb, Person.PeopleId, Util.UserPeopleId.Value);
+                    Person.Family.UpdateValueFromText(field, value);
+                    Person.Family.LogChanges(DbUtil.Db, Person.PeopleId, Util.UserPeopleId.Value);
                     break;
             }
             DbUtil.Db.SubmitChanges();

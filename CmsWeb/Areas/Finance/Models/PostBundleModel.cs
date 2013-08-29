@@ -474,6 +474,10 @@ namespace CmsWeb.Models
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessFbcFayetteville(csv, date, fundid);
 
+            if (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower() == "ebcfamily")
+                using (var csv = new CsvReader(new StringReader(text), false))
+                    return BatchProcessEbcfamily(csv, date, fundid);
+
             if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Vanco")
                 using (var csv = new CsvReader(new StringReader(text), false, '\t'))
                     return BatchProcessVanco(csv, date, fundid);
@@ -525,6 +529,30 @@ namespace CmsWeb.Models
                 var account = csv[5];
                 var checkno = csv[6];
                 var amount = csv[7];
+
+                if (bh == null)
+                    bh = GetBundleHeader(date, DateTime.Now);
+
+                var bd = AddContributionDetail(date, fund, amount, checkno, routing, account);
+                bh.BundleDetails.Add(bd);
+            }
+            if (bh == null)
+                return null;
+            FinishBundle(bh);
+            return bh.BundleHeaderId;
+        }
+        private static int? BatchProcessEbcfamily(CsvReader csv, DateTime date, int? fundid)
+        {
+            BundleHeader bh = null;
+            var firstfund = FirstFundId();
+            var fund = fundid ?? firstfund;
+
+            while (csv.ReadNextRecord())
+            {
+                var routing = csv[0];
+                var account = csv[1];
+                var checkno = csv[2];
+                var amount = csv[3];
 
                 if (bh == null)
                     bh = GetBundleHeader(date, DateTime.Now);
