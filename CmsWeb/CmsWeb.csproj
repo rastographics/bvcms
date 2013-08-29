@@ -872,6 +872,7 @@
     <Content Include="Scripts\jQuery\onlineregister.min.js">
       <DependentUpon>onlineregister.js.bundle</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\ExportToolBar2.js" />
     <Content Include="Scripts\js\TaskPage.js">
       <DependentUpon>TaskPage.js.bundle</DependentUpon>
     </Content>

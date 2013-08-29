@@ -15,6 +15,7 @@ namespace CmsWeb.Areas.People.Models.Person
         public CmsData.Person person;
         private readonly CMSDataContext Db;
 
+        [NoUpdate]
         public int PeopleId { get; set; }
 
         // Contributions --------------------------------------------------
@@ -27,18 +28,18 @@ namespace CmsWeb.Areas.People.Models.Person
 
         // Decision --------------------------------------------------
 
-        [DisplayName("Type"), ZeroToNull]
+        [DisplayName("Type")]
         public CodeInfo DecisionType { get; set; }
 
-        [UIHint("Date"), DisplayName("Date"), ZeroToNull]
+        [UIHint("Date"), DisplayName("Date")]
         public string DecisionDate { get; set; }
 
         // Baptism --------------------------------------------------
 
-        [DisplayName("Status"), ZeroToNull]
+        [DisplayName("Status")]
         public CodeInfo BaptismStatus { get; set; }
 
-        [DisplayName("Type"), ZeroToNull]
+        [DisplayName("Type")]
         public CodeInfo BaptismType { get; set; }
 
         [UIHint("Date"), DisplayName("Date")]
@@ -49,7 +50,7 @@ namespace CmsWeb.Areas.People.Models.Person
 
         // Drop --------------------------------------------------
 
-        [DisplayName("Type"), FieldInfo(IdField = "DropCodeId"), ZeroToNull]
+        [DisplayName("Type"), FieldInfo(IdField = "DropCodeId")]
         public CodeInfo DropType { get; set; }
 
         [UIHint("Date"), DisplayName("Date")]
@@ -60,7 +61,7 @@ namespace CmsWeb.Areas.People.Models.Person
 
         // New Member Class --------------------------------------------------
 
-        [DisplayName("Status"), ZeroToNull]
+        [DisplayName("Status")]
         public CodeInfo NewMemberClassStatus { get; set; }
 
         [UIHint("Date"), DisplayName("Date")]

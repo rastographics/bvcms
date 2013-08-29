@@ -54,6 +54,7 @@
         .out {
             color: #bbb;
         }
+
         td.error {
             width: 390px;
         }
@@ -62,6 +63,10 @@
 @section scripts
 {
     <script src="@Fingerprint.Tag("/Scripts/js/contact.js")"></script>
+    @if (ViewBag.edit == true)
+    {
+        <script> $(function() { $(".in").addClass("out"); }); </script>
+    }
 }
 @Html.Hidden("Id")
 <form id="contact" class="roundbox floatleft" method="post">
@@ -81,31 +86,31 @@
     <tr>
         <td class="top">
             <h4>Ministry Team</h4>
-            <form id="contactors" action="/Contacts/Contactors/@Model.Id">
+            <form id="contactors" action="/Contacts/Contactors/@Model.ContactId">
                 @Html.Partial("Contactors", Model.Ministers)
             </form>
             @if (Model.CanViewComments)
             {
                 <div class="right">
                     <br />
-                    <a href="/SearchAdd/Index/@Model.Id?type=contactor" class="bt addperson in">Add Team Member</a>
+                    <a href="/SearchAdd/Index/@Model.ContactId?type=contactor" class="bt addperson in">Add Team Member</a>
                 </div>
                 <div>
                     <br />
-                    <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.Id" class="bt green in">Add New Contact for Team</a>
+                    <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.ContactId" class="bt green in">Add New Contact for Team</a>
                 </div>
             }
         </td>
         <td class="top spaceover">
             <h4>Those Contacted</h4>
-            <form id="contactees" action="/Contacts/Contactees/@Model.Id">
+            <form id="contactees" action="/Contacts/Contactees/@Model.ContactId">
                 @Html.Partial("Contactees", Model.MinisteredTo)
             </form>
             @if (Model.CanViewComments)
             {
                 <div class="right">
                     <br />
-                    <a href="/SearchAdd/Index/@Model.Id?type=contactee" class="bt addperson in">Add Contactee</a>
+                    <a href="/SearchAdd/Index/@Model.ContactId?type=contactee" class="bt addperson in">Add Contactee</a>
                 </div>
             }
         </td>

@@ -275,7 +275,8 @@ namespace CmsWeb.Areas.Main.Controllers
             c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
 			DbUtil.Db.SubmitChanges();
 
-			return Content("/Contact/{0}?edit=true".Fmt(c.ContactId));
+		    TempData["ContactEdit"] = true;
+			return Content("/Contact/{0}".Fmt(c.ContactId));
 		}
 
 	    [HttpPost]

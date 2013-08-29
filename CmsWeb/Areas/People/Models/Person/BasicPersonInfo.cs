@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Reflection;
 using System.Web;
 using System.Web.Routing;
 using System.Linq;
@@ -15,25 +17,88 @@ using System.Text;
 
 namespace CmsWeb.Areas.People.Models.Person
 {
-    public class EmailInfo
+    public class EmailInfo : IModelViewModelObject
     {
-        public EmailInfo(string address, bool send)
-        {
-            Address = address;
-            Send = send;
-        }
+//        public EmailInfo()
+//        {
+//            
+//        }
+//        public EmailInfo(string address, bool send)
+//        {
+//            Address = address;
+//            Send = send;
+//        }
         public string Address { get; set; }
         public bool Send { get; set; }
-    }
-    public class CellPhoneInfo
-    {
-        public CellPhoneInfo(string number, bool active)
+
+        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
         {
-            Number = number;
-            ReceiveText = active;
+            var ckf = vm.GetAttribute<FieldInfoAttribute>().CheckboxField;
+            var ckpi = modelProps.Single(mm => mm.Name == ckf);
+            var track = Attribute.IsDefined(vm, typeof(TrackChangesAttribute));
+            if (track)
+            {
+                var changes = new StringBuilder();
+                model.UpdateValue(changes, vm.Name, Address);
+                model.UpdateValue(changes, ckf, Send);
+                return changes.ToString();
+            }
+            var ci = modelProps.FirstOrDefault(ss => ss.Name == vm.Name);
+            Debug.Assert(ci != null, "ci != null");
+            ci.SetValue(model, Address, null);
+            ckpi.SetValue(model, Send, null);
+            return string.Empty;
         }
+
+        public void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
+        {
+            var ckf = vm.GetAttribute<FieldInfoAttribute>().CheckboxField;
+            var ckpi = modelProps.Single(ss => ss.Name == ckf);
+            var ck = ckpi.GetValue(model, null) as bool?;
+            var m = modelProps.FirstOrDefault(mm => mm.Name == vm.Name);
+            Debug.Assert(m != null, "m != null");
+            Address = ((string)m.GetValue(model, null));
+            Send = ck ?? false;
+        }
+    }
+    public class CellPhoneInfo : IModelViewModelObject
+    {
+//        public CellPhoneInfo(string number, bool active)
+//        {
+//            Number = number;
+//            ReceiveText = active;
+//        }
         public string Number { get; set; }
         public bool ReceiveText { get; set; }
+
+        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
+        {
+            var ckf = vm.GetAttribute<FieldInfoAttribute>().CheckboxField;
+            var ckpi = modelProps.Single(mm => mm.Name == ckf);
+            var track = Attribute.IsDefined(vm, typeof(TrackChangesAttribute));
+            if (track)
+            {
+                var changes = new StringBuilder();
+                model.UpdateValue(changes, vm.Name, Number.GetDigits());
+                model.UpdateValue(changes, ckf, ReceiveText);
+                return changes.ToString();
+            }
+            var ci = modelProps.FirstOrDefault(ss => ss.Name == vm.Name);
+            Debug.Assert(ci != null, "ci != null");
+            ci.SetValue(model, Number.GetDigits(), null);
+            ckpi.SetValue(model, ReceiveText, null);
+            return string.Empty;
+        }
+
+        public void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
+        {
+            var ckf = vm.GetAttribute<FieldInfoAttribute>().CheckboxField;
+            var ckpi = modelProps.Single(ss => ss.Name == ckf);
+            var ck = ckpi.GetValue(model, null) as bool?;
+            var m = modelProps.FirstOrDefault(mm => mm.Name == vm.Name);
+            Number = ((string)m.GetValue(model, null)).FmtFone();
+            ReceiveText = ck ?? false;
+        }
     }
 
     public class BasicPersonInfo
@@ -68,7 +133,7 @@ namespace CmsWeb.Areas.People.Models.Person
             return d;
         }
 
-        private CodeValueModel cv = new CodeValueModel();
+        [NoUpdate]
         public int PeopleId { get; set; }
         public CmsData.Person person { get; set; }
 
@@ -160,10 +225,10 @@ namespace CmsWeb.Areas.People.Models.Person
         public bool DoNotPublishPhones { get; set; }
 
         public DateTime? Created { get; set; }
-//        public int MemberStatusId { get; set; }
         public DateTime? JoinDate { get; set; }
         public string Spouse { get; set; }
 
+        [NoUpdate]
         public string Age { get; set; }
 
         public CodeInfo MemberStatus { get; set; }
@@ -204,105 +269,19 @@ namespace CmsWeb.Areas.People.Models.Person
 
         public BasicPersonInfo()
         {
-            
+
         }
 
         public BasicPersonInfo(int id)
             : this()
-	    {
-	        Id = id;
+        {
+            Id = id;
             if (person == null)
                 return;
             this.CopyPropertiesFrom(person);
-	    }
-//        public static BasicPersonInfo GetBasicPersonInfo(int? id)
-//        {
-//            var p = DbUtil.Db.LoadPersonById(id.Value);
-//
-//            var pi = new BasicPersonInfo();
-//            pi.CopyPropertiesFrom(p);
-//            pi.Mobile = new CellPhoneInfo(p.CellPhone.FmtFone(), p.ReceiveSMS);
-//            pi.person = p;
-//            return pi;
-//
-//            //            var pi = new BasicPersonInfo
-//            //            {
-//            //                Age = p.Age.ToString(),
-//            //                Birthday = p.DOB,
-//            //                Campus = new CodeInfo(p.CampusId, "Campus"),
-//            //                DeceasedDate = p.DeceasedDate,
-//            //                DoNotCallFlag = p.DoNotCallFlag,
-//            //                DoNotMailFlag = p.DoNotMailFlag,
-//            //                DoNotVisitFlag = p.DoNotVisitFlag,
-//            //                DoNotPublishPhones = p.DoNotPublishPhones ?? false,
-//            //                PrimaryEmail = new EmailInfo(p.EmailAddress, p.SendEmailAddress1 ?? true),
-//            //                AltEmail = new EmailInfo(p.EmailAddress2, p.SendEmailAddress2 ?? false),
-//            //                Employer = p.EmployerOther,
-//            //                FirstName = p.FirstName,
-//            //                Created = p.CreatedDate,
-//            //                Grade = p.Grade.ToString(),
-//            //                JoinDate = p.JoinDate,
-//            //                LastName = p.LastName,
-//            //                AltName = p.AltName,
-//            //                FormerName = p.MaidenName,
-//            //                Gender = new CodeInfo(p.GenderId, "Gender"),
-//            //                Marital = new CodeInfo(p.MaritalStatusId, "Marital"),
-//            //                MemberStatus = new CodeInfo(p.MemberStatusId, "MemberStatus"),
-//            //                FamilyPosition = new CodeInfo(p.PositionInFamilyId, "FamilyPosition"),
-//            //                MiddleName = p.MiddleName,
-//            //                GoesBy = p.NickName,
-//            //                Occupation = p.OccupationOther,
-//            //                PeopleId = p.PeopleId,
-//            //                School = p.SchoolOther,
-//            //                Spouse = p.SpouseName(DbUtil.Db),
-//            //                Suffix = p.SuffixCode,
-//            //                Title = new CodeInfo(p.TitleCode, "Title"),
-//            //                WeddingDate = p.WeddingDate.FormatDate(),
-//            //                Work = p.WorkPhone.FmtFone(),
-//            //                ReceiveSMS = p.ReceiveSMS,
-//            //            };
-//        }
-
-//            //                HomePhone = p.Family.HomePhone.FmtFone(),
-
-            //            var psb = new StringBuilder();
-            //            var fsb = new StringBuilder();
-            //            p.UpdateValue(psb, "DOB", Birthday);
-            //            p.UpdateValue(psb, "DeceasedDate", DeceasedDate);
-            //            p.UpdateValue(psb, "DoNotCallFlag", DoNotCallFlag);
-            //            p.UpdateValue(psb, "DoNotMailFlag", DoNotMailFlag);
-            //            p.UpdateValue(psb, "DoNotVisitFlag", DoNotVisitFlag);
-            //            p.UpdateValue(psb, "DoNotPublishPhones", DoNotPublishPhones);
-            //            p.UpdateValue(psb, "EmailAddress", PrimaryEmail.Address);
-            //            p.UpdateValue(psb, "EmailAddress2", AltEmail.Address);
-            //            p.UpdateValue(psb, "SendEmailAddress1", PrimaryEmail.Send);
-            //            p.UpdateValue(psb, "SendEmailAddress2", AltEmail.Send);
-            //            p.UpdateValue(psb, "FirstName", FirstName);
-            //            p.UpdateValue(psb, "LastName", LastName);
-            //            p.UpdateValue(psb, "AltName", AltName);
-            //            p.UpdateValue(psb, "GenderId", Gender.Value.ToInt2());
-            //            p.UpdateValue(psb, "Grade", Grade.ToInt2());
-            //            p.UpdateValue(psb, "CellPhone", Mobile.Number.GetDigits());
-            //            p.UpdateValue(psb, "ReceiveSMS", Mobile.ReceiveText);
-            //            p.UpdateValue(psb, "MaidenName", FormerName);
-            //            p.UpdateValue(psb, "MaritalStatusId", Marital.Value.ToInt2());
-            //            p.UpdateValue(psb, "MiddleName", MiddleName);
-            //            p.UpdateValue(psb, "NickName", GoesBy);
-            //            p.UpdateValue(psb, "OccupationOther", Occupation);
-            //            p.UpdateValue(psb, "SchoolOther", School);
-            //            p.UpdateValue(psb, "SuffixCode", Suffix);
-            //            p.UpdateValue(psb, "EmployerOther", Employer);
-            //            p.UpdateValue(psb, "TitleCode", Title.Value);
-            //            p.UpdateValue(psb, "CampusId", campusid);
-            //            p.UpdateValue(psb, "WeddingDate", WeddingDate.ToDate());
-            //            p.UpdateValue(psb, "WorkPhone", Work.GetDigits());
-
-            //            p.Family.UpdateValue(fsb, "HomePhone", HomePhone.GetDigits());
+        }
         public void UpdatePerson()
         {
-            var campusid = Campus.Value.ToInt2();
-            if (campusid == 0)
-                campusid = null;
             var p = DbUtil.Db.LoadPersonById(PeopleId);
             var changes = this.CopyPropertiesTo(p);
             if (p.DeceasedDateChanged)

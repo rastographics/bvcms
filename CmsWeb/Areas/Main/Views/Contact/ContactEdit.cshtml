@@ -1,10 +1,8 @@
 ﻿@using CmsWeb.Code
 @model CmsWeb.Models.ContactPage.ContactModel
-@{
-    var cv = new CodeValueModel();
-}
 <h2>Contact</h2>
 @Html.Hidden("editing", "true")
+@Html.HiddenFor(m => m.ContactId)
 <table class="grid">
     <tbody>
         <tr>
@@ -15,19 +13,22 @@
         </tr>
         <tr>
             <th class="right">Ministry:</th>
-            <td>@Html.DropDownListFor(m => m.MinistryId, cv.MinistrySelectList())
+            <td>@Html.HiddenFor(m => m.Ministry.Name)
+                @Html.DropDownListFor(m => m.Ministry.Value, Model.Ministry.Items)
                 @Html.ValidationMessage("MinistryId")
             </td>
         </tr>
         <tr>
             <th class="right">Type:</th>
-            <td>@Html.DropDownListFor(m => m.ContactTypeId, cv.ContactTypeSelectList())
+            <td>@Html.HiddenFor(m => m.ContactType.Name)
+                @Html.DropDownListFor(m => m.ContactType.Value, Model.ContactType.Items)
                 @Html.ValidationMessage("ContactTypeId")
             </td>
         </tr>
         <tr>
             <th class="right">Reason:</th>
-            <td>@Html.DropDownListFor(m => m.ContactReasonId, cv.ContactReasonSelectList())
+            <td>@Html.HiddenFor(m => m.ContactReason.Name)
+                @Html.DropDownListFor(m => m.ContactReason.Value, Model.ContactReason.Items)
                 @Html.ValidationMessage("ContactReasonId")
             </td>
         </tr>
@@ -52,8 +53,8 @@
          @Html.ValidationMessage("Comments")
     </div>
     <div class="right">
-        <a id="cancel" class="bt" href="/Contact/ContactDisplay/@Model.Id">Cancel</a>
-        <a id="update" class="bt blue" href="/Contact/ContactUpdate/@Model.Id">Update</a>
+        <a id="cancel" class="bt" href="/Contact/ContactDisplay/@Model.ContactId">Cancel</a>
+        <a id="update" class="bt blue" href="/Contact/ContactUpdate/@Model.ContactId">Update</a>
     </div>
 </div>
 @Html.ValidationMessage("contactors")

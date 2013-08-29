@@ -991,6 +991,13 @@ namespace CmsData
                 o = ((string)o).TrimEnd();
             if (o == null && value == null)
                 return;
+            if(o is int)
+                if ((int)o == value.ToInt())
+                    return;
+            var i = o as int?;
+            if(i != null)
+                if (i == value.ToInt2())
+                    return;
             if (o != null && o.Equals(value))
                 return;
             if (o == null && value is string && !((string)value).HasValue())

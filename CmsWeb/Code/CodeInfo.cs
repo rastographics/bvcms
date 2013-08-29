@@ -12,18 +12,18 @@ namespace CmsWeb.Code
 {
     public class CodeInfo : IModelViewModelObject
     {
-        private string _listName;
+        private string _name;
         private string _value;
 
         public CodeInfo()
         {
 
         }
-        public CodeInfo(object value, string listname)
+        public CodeInfo(object value, string name)
         {
             if (value != null)
                 Value = value.ToString();
-            ListName = listname;
+            Name = name;
         }
         public CodeInfo(object value, IEnumerable<CodeValueItem> items)
         {
@@ -38,14 +38,14 @@ namespace CmsWeb.Code
         }
         public IEnumerable<SelectListItem> Items { get; set; }
 
-        public string ListName
+        public string Name
         {
-            get { return _listName; }
+            get { return _name; }
             set
             {
                 if (!value.HasValue())
                     return;
-                _listName = value;
+                _name = value;
                 var cv = new CodeValueModel();
                 switch (value)
                 {
@@ -73,7 +73,7 @@ namespace CmsWeb.Code
             return i.Text;
         }
 
-        public void CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, StringBuilder changes)
+        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
         {
             string altname = vm.Name + "Id";
             var attr = vm.GetAttribute<FieldInfoAttribute>();
@@ -81,19 +81,24 @@ namespace CmsWeb.Code
                 altname = attr.IdField;
             var mid = modelProps.FirstOrDefault(ss => ss.Name == altname);
             if (mid == null)
-                return;
+                return string.Empty;
             var track = Attribute.IsDefined(vm, typeof(TrackChangesAttribute));
             if (track)
-                model.UpdateValue(changes, altname, Value);
-            else
-                mid.SetPropertyFromText(model, Value);
+            {
+                var changes = new StringBuilder();
+                if(mid.PropertyType == typeof(int?))
+                    if(Value == "0")
+                        model.UpdateValue(changes, altname, null);
+                    else
+                        model.UpdateValue(changes, altname, Value.ToInt());
+                return changes.ToString();
+            }
+            mid.SetPropertyFromText(model, Value);
+            return string.Empty;
         }
 
         public void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
         {
-            var cv = new CodeValueModel();
-            var getlist = cv.GetType().GetMethod(vm.Name + "List");
-            var list = (IEnumerable<CodeValueItem>)getlist.Invoke(cv, null);
             string altname = vm.Name + "Id";
             var attr = vm.GetAttribute<FieldInfoAttribute>();
             if (attr != null && attr.IdField.HasValue())
@@ -101,7 +106,8 @@ namespace CmsWeb.Code
             var mid = modelProps.FirstOrDefault(mm => mm.Name == altname);
             Debug.Assert(mid != null, "mid != null");
             var midvalue = mid.GetValue(model, null);
-            Value = list.ItemValue((int)(midvalue ?? 0));
+            Value = midvalue.ToInt().ToString();
+            Name = vm.Name;
         }
     }
 }

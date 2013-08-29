@@ -183,6 +183,12 @@
             $.cookie('lasttab', "#status");
         }
     });
+    $("a[href='#system']").on('shown', function (e) {
+        if ($("#changes").length < 2) {
+            $("a[href='#changes']").click().tab("show");
+            $.cookie('lasttab', "#changes");
+        }
+    });
     //$("#contacts-link").click(function () {
     //        $("#contacts-tab").each(function () {
     //            $.showTable($(this));
@@ -359,7 +365,7 @@
             $this.data('html', true).data('content', getMap({ center: $this.text() }));
             $this.popover();
         });
-        $('#FamilyPosition').editable({
+        $('#PositionInFamily').editable({
             source: [{
                 value: 10,
                 text: "Primary Adult"

@@ -164,7 +164,7 @@ namespace CmsWeb.Models
                          FirstName = p.PreferredName,
                          LastName = p.LastName,
                          Gender = p.Gender.Code,
-                         Grade = om.Grade.ToString(),
+                         Grade = p.Grade.ToString(),
                          ShirtSize = om.ShirtSize,
                          Request = om.Request,
                          Amount = om.Amount ?? 0,

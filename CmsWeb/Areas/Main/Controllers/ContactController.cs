@@ -10,17 +10,16 @@ namespace CmsWeb.Areas.Main.Controllers
     public class ContactController : CmsStaffController
     {
         [GET("Contact/{id}")]
-        public ActionResult Index(int id, bool? edit)
+        public ActionResult Index(int id)
         {
             var m = new ContactModel(id);
             if (m.contact == null)
                 return Content("contact does not exist");
 
-            ViewBag.edit = edit ?? false;
+            var edit = (bool?)TempData["ContactEdit"] == true;
+            ViewBag.edit = edit;
             return View(m);
         }
-
-
 
         [POST("Contact/RemoveContactee/{cid:int}/{pid:int}")]
         public ActionResult RemoveContactee(int cid, int pid)
@@ -67,7 +66,6 @@ namespace CmsWeb.Areas.Main.Controllers
         [POST("Contact/ContactUpdate/{cid:int}")]
         public ActionResult ContactUpdate(int cid, ContactModel c)
         {
-            c.Id = cid;
             if (!ModelState.IsValid)
                 return View("ContactEdit", c);
             c.UpdateContact();
@@ -76,8 +74,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [POST("Contact/ContactDelete/{cid:int}")]
         public ActionResult ContactDelete(int cid)
         {
-            var m = new ContactModel(cid);
-            m.DeleteContact();
+            ContactModel.DeleteContact(cid);
             return Redirect("/ContactSearch");
         }
         [POST("Contact/NewTeamContact/{cid:int}")]

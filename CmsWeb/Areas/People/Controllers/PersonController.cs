@@ -88,10 +88,8 @@ namespace CmsWeb.Areas.People.Controllers
             return View("MainTabs/PersonalEdit", m);
         }
         [POST("Person2/PersonalUpdate/{id}")]
-        public ActionResult Personalpdate(int id)
+        public ActionResult Personalpdate(int id, BasicPersonInfo m)
         {
-            var m = new BasicPersonInfo(id);
-            UpdateModel(m);
             m.UpdatePerson();
             //m = new BasicPersonInfo(id);
             DbUtil.LogActivity("Update Basic Info for: {0}".Fmt(m.person.Name));
@@ -527,7 +525,7 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("/Contact/" + c.ContactId);
         }
 
-        [HttpPost]
+        [POST("Person2/AddContactReceived/{id:int}")]
         public ActionResult AddContactReceived(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
@@ -542,16 +540,12 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.Contacts.InsertOnSubmit(c);
             DbUtil.Db.SubmitChanges();
 
-            var pc = new Contactee
-            {
-                PeopleId = p.PeopleId,
-                ContactId = c.ContactId
-            };
-
-            DbUtil.Db.Contactees.InsertOnSubmit(pc);
+            c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
+            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
             DbUtil.Db.SubmitChanges();
 
-            return Content("/Contact/" + c.ContactId);
+            TempData["ContactEdit"] = true;
+            return Content("/Contact/{0}".Fmt(c.ContactId));
         }
 
         [HttpPost]
@@ -881,9 +875,9 @@ namespace CmsWeb.Areas.People.Controllers
             var qb = DbUtil.Db.QueryBuilderIsCurrentPerson();
             ViewBag.queryid = qb.QueryId;
             ViewBag.TagAction = "/Person/Tag/" + id;
-            ViewBag.UnTagAction = "/Person/UnTag/" + id;
-            ViewBag.AddContact = "/Person/AddContactReceived/" + id;
-            ViewBag.AddTasks = "/Person/AddAboutTask/" + id;
+            ViewBag.UnTagAction = "/Person2/UnTag/" + id;
+            ViewBag.AddContact = "/Person2/AddContactReceived/" + id;
+            ViewBag.AddTasks = "/Person2/AddAboutTask/" + id;
         }
         public class CurrentRegistration
         {
