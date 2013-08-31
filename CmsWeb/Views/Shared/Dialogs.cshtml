@@ -13,17 +13,17 @@
 {
     Html.RenderPartial("/Content/Tutorials/" + Util.Helpfile + ".cshtml");
 }
-<div id="ChooseLabelType" class="modalPopup" style="display: none; width: 400px; padding: 10px">
+<div id="ChooseFormat" class="modalPopup" style="display: none; width: 400px; padding: 10px">
     <table>
         <tr>
             <td style="margin: 3px; border: solid thin black" nowrap="nowrap">
-                <input type="radio" id="addressedto1" name="addressedto" value="Individual" checked="checked" title="Addressed to individuals" /> Individual<br />
-                <input type="radio" id="addressedto2" name="addressedto" value="Family" title="Addressed as a family when there are children" /> Family<br />
-                <input type="radio" id="addressedto6" name="addressedto" value="FamilyMembers" title="Includes entire Family as individuals" /> Family Members<br />
-                <input type="radio" id="addressedto3" name="addressedto" value="CouplesBoth" title="Addressed to a couple, if both are in selection" /> Couples (both)<br />
-                <input type="radio" id="addressedto4" name="addressedto" value="CouplesEither" title="Addressed to a couple, if one or both are in selection" /> Couples (either)<br />
-                <input type="radio" id="addressedto5" name="addressedto" value="ParentsOf" title="Addressed to parents or parent" /> Parents Of<br />
-                <input type="radio" id="addressedto6" name="addressedto" value="GroupAddress" title="Addressed to names at address" /> Group By Address<br />
+                <input type="radio" name="format" value="Individual" checked="checked" title="Addressed to individuals" /> Individual<br />
+                <input type="radio" name="format" value="Family" title="Addressed as a family when there are children" /> Family<br />
+                <input type="radio" name="format" value="FamilyMembers" title="Includes entire Family as individuals" /> Family Members<br />
+                <input type="radio" name="format" value="CouplesBoth" title="Addressed to a couple, if both are in selection" /> Couples (both)<br />
+                <input type="radio" name="format" value="CouplesEither" title="Addressed to a couple, if one or both are in selection" /> Couples (either)<br />
+                <input type="radio" name="format" value="ParentsOf" title="Addressed to parents or parent" /> Parents Of<br />
+                <input type="radio" name="format" value="GroupAddress" title="Addressed to names at address" /> Group By Address<br />
             </td>
             <td>
                 <input type="checkbox" id="UseTitle" name="UseTitle" /> Use Titles<br />

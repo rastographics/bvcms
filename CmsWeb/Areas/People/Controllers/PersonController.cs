@@ -239,11 +239,6 @@ namespace CmsWeb.Areas.People.Controllers
             person.UploadPicture(DbUtil.Db, picture.InputStream);
             return Redirect("/Person2/" + id);
         }
-        [GET("Person2/Image/{s}/{id}/{v}")]
-        public ActionResult Image(int id, int s, string v)
-        {
-            return new PictureResult(id, s);
-        }
         [POST("Person2/PostData")]
         public ActionResult PostData(int pk, string name, string value)
         {

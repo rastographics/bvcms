@@ -75,7 +75,7 @@
                     <td class="center">
 				        @empty.Name<br />
 				        <div bvtemplate class="templateItem" template="@empty.Id">
-					        <img alt="portrait" border="0" width="100" height="150" src="/Image.aspx?id=@empty.ThumbID" />
+					        <img alt="portrait" border="0" width="100" height="150" src="/Image/@empty.ThumbID" />
 				        </div>
 			        </td>
                 </tr>
@@ -85,7 +85,7 @@
 			<td class="center">
 				Blank<br />
 				<div bvtemplate class="templateItem" template="0">
-                    <img alt="portrait" border="0" width="100" height="150" src="/Image.aspx?id=0" />
+                    <img alt="portrait" border="0" width="100" height="150" src="/Image/0" />
 				</div>
 				<br />
 				<font color="blue"><b>Use this option to compose an email in the old way.</b></font>
@@ -112,7 +112,7 @@
 			<td width="@( 100 / WRAP_COUNT)%" class="center">
 				@t.Name<br />
 				<div bvtemplate class="templateItem" template="@t.Id">
-					<img alt="portrait" border="0" width="100" height="150" src="/Image.aspx?id=@t.ThumbID" />
+					<img alt="portrait" border="0" width="100" height="150" src="/Image/@t.ThumbID" />
 				</div>
 			</td>
       wrapAt--;

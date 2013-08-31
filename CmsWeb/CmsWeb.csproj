@@ -187,11 +187,15 @@
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContacteesModel.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContactorsModel.cs" />
+    <Compile Include="Areas\Main\Models\Export\CsvResult.cs" />
+    <Compile Include="Areas\Main\Models\Export\ExcelFamilyMember.cs" />
+    <Compile Include="Areas\Main\Models\Export\ExcelPic.cs" />
     <Compile Include="Areas\Main\Models\Export\OrgsMembersExcelResult.cs" />
     <Compile Include="Areas\Main\Models\Report\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Main\Models\Report\DecisionsModel.cs" />
     <Compile Include="Areas\Main\Models\Report\EnrollmentControlModel.cs" />
     <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
+    <Compile Include="Areas\Main\Models\Export\ExcelResult.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMembersDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -458,6 +462,8 @@
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />
+    <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
+    <None Include="Areas\Main\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditTemplate.cshtml" />
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
@@ -1666,13 +1672,6 @@
     <Compile Include="Areas\Setup\Controllers\SettingController.cs" />
     <Compile Include="Areas\Setup\Controllers\UsersCanEmailForController.cs" />
     <Compile Include="Areas\Setup\Models\PromotionModel.cs" />
-    <Compile Include="BulkMail.aspx.cs">
-      <DependentUpon>BulkMail.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="BulkMail.aspx.designer.cs">
-      <DependentUpon>BulkMail.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Contributions\Reports\TotalsByFundAgeRange.aspx.cs">
       <DependentUpon>TotalsByFundAgeRange.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1728,22 +1727,8 @@
     <Compile Include="Areas\Main\Controllers\QueryBuilderController.cs" />
     <Compile Include="Areas\Main\Controllers\TaskController.cs" />
     <Compile Include="Areas\Manage\Controllers\VolunteersController.cs" />
-    <Compile Include="ExportExcel.aspx.cs">
-      <DependentUpon>ExportExcel.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ExportExcel.aspx.designer.cs">
-      <DependentUpon>ExportExcel.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
-    <Compile Include="Image.aspx.cs">
-      <DependentUpon>Image.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Image.aspx.designer.cs">
-      <DependentUpon>Image.aspx</DependentUpon>
     </Compile>
     <Compile Include="Areas\Public\Models\CheckIn\CheckInModel.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\CheckInRecModel.cs" />
@@ -2906,7 +2891,6 @@
   <ItemGroup>
     <Content Include="Admin\ToggleOrgMembersOnly.ashx" />
     <Content Include="Admin\Web.config" />
-    <Content Include="BulkMail.aspx" />
     <Content Include="images\attention48.png" />
     <Content Include="images\blackredgradient.png" />
     <Content Include="images\check48.png" />
@@ -2932,8 +2916,6 @@
     <Content Include="Scripts\Dialog\SearchAdd.js" />
     <Content Include="Scripts\Dialog\OrgMemberDialog.js" />
     <Content Include="Errors\PageNotFound.aspx" />
-    <Content Include="ExportExcel.aspx" />
-    <Content Include="Image.aspx" />
     <Content Include="Scripts\js\CheckIn.js" />
     <Content Include="Scripts\js\Event.js" />
     <Content Include="Scripts\js\Pager.js" />
@@ -2958,7 +2940,6 @@
   <ItemGroup>
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Finance\Views\Shared\" />
-    <Folder Include="Areas\Main\Views\Export\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Models\Reports\" />
     <Folder Include="Areas\OnlineReg\Models\Payments\" />

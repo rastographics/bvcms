@@ -1,15 +1,15 @@
 ﻿$(document).ready(function () {
-    $('body').on("click", "a.ChooseLabelType", function (ev) {
+    $('body').on("click", "a.ChooseFormat", function (ev) {
         ev.preventDefault();
-        $("#ChooseLabelTypeOK").attr("href", $(this).attr("href"))
-        .unbind("click").click(function (ev2) {
+        var f = $("#ChooseFormat");
+        f.attr("action", $(this).attr("href"));
+        f.modal("show");
+        $("#ChooseFormatOK").unbind("click").click(function (ev2) {
             ev2.preventDefault();
-            var f = $(this).closest("form");
-            var q = f.serialize();
-            $.post($(this).attr("href"), q, function (ret) {
-            });
+            $("#ChooseFormat").modal("hide");
+            f.submit();
         });
-        $("#ChooseLabelType").modal("show");
+        return false;
     });
     $('body').on("click", '#AddContact', function (ev) {
         ev.preventDefault();

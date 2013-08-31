@@ -5,10 +5,12 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using AttributeRouting.Web.Mvc;
 using CmsData;
 using System.Diagnostics;
 using CmsData.API;
 using CmsData.Registration;
+using CmsWeb.Areas.People.Models.Person;
 using UtilityExtensions;
 using System.Threading;
 using System.Text.RegularExpressions;
@@ -38,6 +40,19 @@ namespace CmsWeb.Controllers
 			var m = new HomeModel();
 			return View(m);
 		}
+        [GET("Person/TinyImage/{id}")]
+        [GET("Person2/TinyImage/{id}")]
+        public ActionResult TinyImage(int id)
+        {
+            return new PictureResult(id, tiny: true);
+        }
+        [GET("Person/Image/{id:int}/{w:int?}/{h:int?}")]
+        [GET("Person2/Image/{id:int}/{w:int?}/{h:int?}")]
+        [GET("Image/{id:int}/{w:int?}/{h:int?}")]
+        public ActionResult Image(int id, int? w, int? h)
+        {
+            return new PictureResult(id);
+        }
 		public ActionResult About()
 		{
 			return View();

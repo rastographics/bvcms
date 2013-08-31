@@ -13,7 +13,7 @@
 {
     Html.RenderPartial("/Content/Tutorials/" + Util.Helpfile + ".cshtml");
 }
-<form id="ChooseLabelType" class="modal fade hide">
+<form id="ChooseFormat" class="modal fade hide" method="GET">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
         <h3>Choose Options</h3>
@@ -24,46 +24,46 @@
             <div class="span6 well">
                 <p><b>Addressed To</b></p>
                 <div>
-                    <input value="Individual" title="Addressed to individuals" type="radio" name="addressedto" checked="checked" />
+                    <input type="radio" name="format" value="Individual" title="Addressed to individuals" checked="checked" />
                     Individual
                 </div>
                 <div>
-                    <input value="Family" title="Addressed as a family when there are children" type="radio" name="addressedto" />
+                    <input type="radio" name="format" value="Family" title="Addressed as a family when there are children" />
                     Family
                 </div>
                 <div>
-                    <input value="FamilyMembers" title="Includes entire Family as individuals" type="radio" name="addressedto" />
+                    <input type="radio" name="format" value="FamilyMembers" title="Includes entire Family as individuals" />
                     Family Members
                 </div>
                 <div>
-                    <input value="CouplesBoth" title="Addressed to a couple, if both are in selection" type="radio" name="addressedto" />
+                    <input type="radio" name="format" value="CouplesBoth" title="Addressed to a couple, if both are in selection" />
                     Couples (both)
                 </div>
                 <div>
-                    <input value="CouplesEither" title="Addressed to a couple, if one or both are in selection" type="radio" name="addressedto" />
+                    <input type="radio" name="format" value="CouplesEither" title="Addressed to a couple, if one or both are in selection" />
                     Couples (either)
                 </div>
                 <div>
-                    <input value="ParentsOf" title="Addressed to parents or parent" type="radio" name="addressedto" />
+                    <input type="radio" name="format" value="ParentsOf" title="Addressed to parents or parent" />
                     Parents Of
                 </div>
                 <div>
-                    <input value="GroupAddress" title="Addressed to names at address" type="radio" name="addressedto" />
+                    <input type="radio" name="format" value="GroupAddress" title="Addressed to names at address" />
                     Group By Address
                 </div>
             </div>
             <div class="span6">
                 <p><b>Label Options</b></p>
                 <div>
-                    <input type="checkbox" id="UseTitle" name="UseTitle" />
+                    <input type="checkbox" name="titles" />
                     Use Titles<br />
                 </div>
                 <div>
-                    <input type="checkbox" id="SortZip" name="SortZip" />
+                    <input type="checkbox" name="SortZip" />
                     Sort by Zip<br />
                 </div>
                 <div>
-                    <input type="checkbox" id="UsePhone" name="UsePhone" />
+                    <input type="checkbox" name="UsePhone" />
                     Include Phone<br />
                 </div>
                 <p>
@@ -72,11 +72,10 @@
                 </p>
             </div>
         </div>
-        <div class="row pull-right">
-    </div>
-    <div class="modal-footer">
-        <a class="btn btn-success close-saved-address" data-dismiss="modal">Close</a>
-        <a id="ChooseLabelTypeOK" href="#" class="btn btn-primary"/>OK</div>
+        <div class="modal-footer">
+            <a class="btn btn-success close-saved-address" data-dismiss="modal">Close</a>
+            <a id="ChooseFormatOK" href="#" class="btn btn-primary" >OK</a>
+        </div>
     </div>
 </form>
 <div id="ExportStartEnd" class="modalDiv dialog" style="display: none">

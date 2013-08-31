@@ -132,7 +132,7 @@ $(document).ready(function () {
 
 ///#source 1 1 /Scripts/js/ExportToolBar.js
 $(document).ready(function () {
-    $("#ChooseLabelType").dialog({
+    $("#ChooseFormat").dialog({
         overlay: { background: "#000", opacity: 0.3 },
         bgiframe: true,
         modal: true,
@@ -147,10 +147,10 @@ $(document).ready(function () {
         autoOpen: false,
         closeOnEscape: true
     });
-    $(".ChooseLabelType").live("click", function (ev) {
+    $(".ChooseFormat").live("click", function (ev) {
         ev.preventDefault();
         $('div.dropdown-menu').hide();
-        var d = $("#ChooseLabelType");
+        var d = $("#ChooseFormat");
         d.dialog("open");
 
         var sep = ev.target.href.search(/\?/) == -1 ? "?" : "&";
@@ -158,11 +158,11 @@ $(document).ready(function () {
             ev2.preventDefault();
             var url = ev.target.href
                 + sep + "titles=" + $('#UseTitle')[0].checked
-                + "&format=" + $('input[name=addressedto]:checked').val()
+                + "&format=" + $('input[name=format]:checked').val()
                 + "&usephone=" + $('#UsePhone')[0].checked
                 + "&sortzip=" + $('#SortZip')[0].checked
 				+ "&skipNum=" + $('#SkipNum').val();
-            $("#ChooseLabelType").dialog("close");
+            $("#ChooseFormat").dialog("close");
             window.open(url);
             return false;
         });
