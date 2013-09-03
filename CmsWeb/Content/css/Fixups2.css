@@ -236,11 +236,13 @@ li.header {
 
 
 .tab-content {
-  overflow: hidden;
+    overflow: hidden;
 }
+
 #personal, #status {
     margin-top: -2.4em;
 }
+
 form.form.form-horizontal.ajax div.form-actions {
     margin-top: .5em;
     margin-bottom: 1em;
@@ -543,7 +545,23 @@ span.currentTag {
     margin-left: 270px;
     line-height: 1.3em;
 }
+
 .well {
     padding: 8px;
     margin-bottom: 12px;
+}
+
+label.error {
+    color: #b94a48;
+}
+
+    label.error input {
+        border-color: #b94a48;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    }
+.modal textarea {
+width: 370px;
+height: 150px;
 }

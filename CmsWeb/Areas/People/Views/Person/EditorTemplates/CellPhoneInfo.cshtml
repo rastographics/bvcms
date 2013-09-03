@@ -1,10 +1,12 @@
-﻿@model CmsWeb.Areas.People.Models.Person.CellPhoneInfo
+﻿@using CmsWeb
+@model CmsWeb.Areas.People.Models.Person.CellPhoneInfo
 <div class="control-group">
     @Html.LabelFor(m => m, new { @class="control-label"})
     <div class="controls">
         <div class="textcombo">
-            @Html.TextBoxFor(m => m.Number, new { @class = "text phone" })<br/>
+            @Html.TextBoxFor2(m => m.Number, true, format: null, htmlAttributes: new { @class = "text phone" })<br/>
             <label class="addon">@Html.CheckBoxFor(m => m.ReceiveText, new { @class="checkbox" }) <span>SMS Opt-in</span></label>
         </div>
+        @Html.ValidationMessageFor(m => m)
     </div>
 </div>

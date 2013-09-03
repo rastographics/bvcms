@@ -1,18 +1,19 @@
 ﻿@model CmsWeb.Areas.Search.Models.SearchPersonModel
 @{
     var noShowCampusDropdown = (new string[] { "org", "pending", "visitor", "registered" }).Contains(Model.context);
+    var plainselect = new {PlainSelect = true};
 }
 @Html.EditorFor(m => m.GoesBy)
 @Html.EditorFor(m => m.First)
 @Html.EditorFor(m => m.Middle)
 @Html.EditorFor(m => m.Last)
 @Html.EditorFor(m => m.Suffix)
-@Html.EditorFor(m => m.Title)
-@Html.EditorFor(m => m.dob)
+@Html.EditorFor(m => m.Title, plainselect)
+@Html.EditorFor(m => m.dob, "Birthday", new { help = "Please enter a birthday if possible" })
+@Html.EditorFor(m => m.Email, new { help = "Please enter an email address if possible" })
 @Html.EditorFor(m => m.Phone)
-@Html.EditorFor(m => m.Email)
-@Html.EditorFor(m => m.Gender)
-@Html.EditorFor(m => m.Marital)
+@Html.EditorFor(m => m.Gender, plainselect)
+@Html.EditorFor(m => m.MaritalStatus, plainselect)
 @if (noShowCampusDropdown)
 {
     @Html.DisplayFor(m => m.Campus)
@@ -20,6 +21,6 @@
 }
 else
 {
-    @Html.EditorFor(m => m.Campus)
-    @Html.EditorFor(m => m.EntryPoint)
+    @Html.EditorFor(m => m.Campus, plainselect)
+    @Html.EditorFor(m => m.EntryPoint, plainselect)
 }

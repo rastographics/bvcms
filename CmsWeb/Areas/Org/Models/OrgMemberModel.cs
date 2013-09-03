@@ -75,40 +75,30 @@ namespace CmsWeb.Areas.Org.Models
 
         public CodeInfo MemberType { get; set; }
 
-        [UIHint("Date")]
-        public string InactiveDate { get; set; }
+        public DateTime? InactiveDate { get; set; }
 
-        [UIHint("Date"), DisplayName("Enrollment Date")]
-        public string Enrollment { get; set; }
+        [DisplayName("Enrollment Date")]
+        public DateTime? Enrollment { get; set; }
 
-        [UIHint("Bool")]
         public bool? Pending { get; set; }
 
-        [UIHint("Text")]
         public string RegisterEmail { get; set; }
 
-        [UIHint("Text")]
         public string Request  { get; set; }
 
-        [UIHint("Int")]
         public int? Grade { get; set; }
 
-        [UIHint("Int")]
         public int? Tickets { get; set; }
 
-        [UIHint("Decimal")]
         public decimal? Amount { get; set; }
 
-        [UIHint("Decimal")]
         public decimal? AmountDue { get { return om.AmountDue(DbUtil.Db); } }
 
-        [UIHint("Text")]
         public string PayLink { get; set; }
 
-        [UIHint("Text")]
         public string ShirtSize { get; set; }
 
-        [UIHint("TextArea"), DisplayName("Extra Member Info")]
+        [DisplayName("Extra Member Info")]
         public string UserData { get; set; }
 
         public void UpdateModel()

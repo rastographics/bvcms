@@ -1,21 +1,25 @@
 using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models.Person
 {
     public class PictureResult : ActionResult
     {
         private readonly int id;
+        private readonly bool portrait;
         private readonly bool tiny;
         private int? w, h;
-        public PictureResult(int id, int? w = null, int? h = null, bool tiny = false)
+        public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false)
         {
             this.id = id;
+            this.portrait = portrait;
             this.tiny = tiny;
             this.w = w;
             this.h = h;
@@ -40,8 +44,13 @@ namespace CmsWeb.Areas.People.Models.Person
                 var i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
                 if (i == null || i.Secure == true)
                 {
-                    context.HttpContext.Response.ContentType = "image/jpeg";
-                    context.HttpContext.Response.BinaryWrite(tiny ? NoPic1() : NoPic2());
+                    if (portrait)
+                    {
+                        context.HttpContext.Response.ContentType = "image/jpeg";
+                        context.HttpContext.Response.BinaryWrite(tiny ? NoPic1() : NoPic2());
+                    }
+                    else
+                        NoPic(context.HttpContext);
                 }
                 else
                 {
@@ -98,6 +107,15 @@ namespace CmsWeb.Areas.People.Models.Person
             istream.Close();
             ostream.Close();
             return Bits;
+        }
+        void NoPic(HttpContextBase context)
+        {
+            var bmp = new Bitmap(200, 200, PixelFormat.Format24bppRgb);
+            var g = Graphics.FromImage(bmp);
+            g.Clear(Color.Bisque);
+            g.DrawString("No Image", new Font("Verdana", 22, FontStyle.Bold), SystemBrushes.WindowText, new PointF(2, 2));
+            context.Response.ContentType = "image/gif";
+            bmp.Save(context.Response.OutputStream, ImageFormat.Gif);
         }
     }
 }

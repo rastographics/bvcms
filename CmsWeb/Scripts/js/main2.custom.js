@@ -51,47 +51,78 @@ $(function () {
 
 ///#source 1 1 /Scripts/js/ExportToolBar2.js
 $(document).ready(function () {
-    $('body').on("click", "a.ChooseFormat", function (ev) {
+    $(document).on("click", "a.dialog-options", function (ev) {
         ev.preventDefault();
-        var f = $("#ChooseFormat");
+        var f = $($(this).data("target"));
         f.attr("action", $(this).attr("href"));
         f.modal("show");
-        $("#ChooseFormatOK").unbind("click").click(function (ev2) {
-            ev2.preventDefault();
-            $("#ChooseFormat").modal("hide");
-            f.submit();
+        $(f).validate({
+            submitHandler: function (form) {
+                $(form).modal("hide");
+                if (form.method == 'GET')
+                    form.submit();
+                else {
+                    var q = $(form).serialize();
+                    $.post(form.action, q, function (ret) {
+                    });
+                }
+            },
+            highlight: function (element) {
+                $(element).closest(".control-group").addClass("error");
+            },
+            unhighlight: function (element) {
+                $(element).closest(".control-group").removeClass("error");
+            }
         });
         return false;
     });
-    $('body').on("click", '#AddContact', function (ev) {
+
+    $('#UnTagAll').live("click", function (ev) {
         ev.preventDefault();
-        if (!confirm("Are you sure you want to add a contact for all these people?"))
-            return false;
+        $('div.dropdown-menu').hide();
         $.block();
         $.post(this.href, null, function (ret) {
+            $(".taguntag:visible").text(ret);
             $.unblock();
-            if (ret < 0)
-                $.growlUI("error", "too many people to add to a contact (max 100)");
-            else if (ret == 0)
-                $.growlUI("error", "no results");
-            else
-                window.location = ret;
         });
         return false;
     });
-    $('body').on("click", '#AddTasks', function (ev) {
+    $(document).on("click", '#AddContact', function (ev) {
         ev.preventDefault();
-        if (!confirm("Are you sure you want to add a task for each of these people?"))
-            return false;
-        $.block();
-        $.post(this.href, null, function (ret) {
-            $.unblock();
-            if (ret < 0)
-                $.growlUI("error", "too many people to add tasks for (max 100)");
-            else if (ret == 0)
-                $.growlUI("error", "no results");
-            else
-                window.location = "/Task";
+        bootbox.confirm("Are you sure you want to add a contact for all these people?", function (result) {
+            if (result === true) {
+                $.block();
+                $.post(this.href, null, function (ret) {
+                    $.unblock();
+                    if (ret < 0)
+                        $.growlUI("error", "too many people to add to a contact (max 100)");
+                    else if (ret == 0)
+                        $.growlUI("error", "no results");
+                    else
+                        window.location = ret;
+                });
+            }
+        });
+        return false;
+    });
+    $(document).on("click", '#AddTasks', function (ev) {
+        ev.preventDefault();
+        var message = "Are you sure you want to add a task for all these people?";
+        if (window.location.pathname.contains("/Person"))
+            message = "Are you sure you want to add a task for this person?";
+        bootbox.confirm(message, function (result) {
+            if (result === true) {
+                $.block();
+                $.post(this.href, null, function (ret) {
+                    $.unblock();
+                    if (ret < 0)
+                        $.growlUI("error", "too many people to add tasks for (max 100)");
+                    else if (ret == 0)
+                        $.growlUI("error", "no results");
+                    else
+                        window.location = "/Task";
+                });
+            }
         });
         return false;
     });
@@ -164,38 +195,6 @@ $(document).ready(function () {
         return this;
     };
 });
-if (typeof String.prototype.startsWith != 'function') {
-    String.prototype.startsWith = function (str) {
-        return this.slice(0, str.length) == str;
-    };
-}
-String.prototype.appendQuery = function (q) {
-    if (this && this.length > 0)
-        if (this.contains("&") || this.contains("?"))
-            return this + '&' + q;
-        else
-            return this + '?' + q;
-    return q;
-};
-String.prototype.contains = function (it) {
-    return this.indexOf(it) != -1;
-};
-String.prototype.endsWith = function (t, i) {
-    return (t == this.substring(this.length - t.length));
-};
-String.prototype.addCommas = function () {
-    var x = this.split('.');
-    var x1 = x[0];
-    var x2 = x.length > 1 ? '.' + x[1] : '';
-    var rgx = /(\d+)(\d{3})/;
-    while (rgx.test(x1)) {
-        x1 = x1.replace(rgx, '$1' + ',' + '$2');
-    }
-    return x1 + x2;
-};
-
-
-
 ///#source 1 1 /Scripts/js/headermenu2.js
 $(function () {
     $('#SearchText').each(function () {
@@ -481,30 +480,54 @@ $(function () {
                 });
             }
         });
-        $("form.ajax .date").datepicker();
-        $("form.ajax select").chosen();
-    };
-    $("div.modal form.ajax").live("submit", function (event) {
-        event.preventDefault();
-        var $form = $(this);
-        var $target = $form.closest("div.modal");
-        $.ajax({
-            type: 'POST',
-            url: $form.attr('action'),
-            data: $form.serialize(),
-            success: function (data, status) {
-                //$target.removeClass("fade");
-                $target.html(data).ready(function () {
-                    var top = ($(window).height() - $target.height()) / 2;
-                    if (top < 10)
-                        top = 10;
-                    $target.css({ 'margin-top': top, 'top': '0' });
-                    $.AttachFormElements();
-                });
-            }
+        $("form.ajax .date:not(.noparse)").datepicker({
+            autoclose: true,
+            orientation: "auto"
         });
-        return false;
-    });
+        $("form.ajax .date.noparse").datepicker({
+            autoclose: true,
+            orientation: "auto",
+            forceParse: false
+        });
+        $('form.ajax select:not([plain])').chosen();
+    };
+    //$("div.modal form.ajax").live("submit", function (event) {
+    //    event.preventDefault();
+    //    var $form = $(this);
+    //        f.validate({
+    //            submitHandler: function (form) {
+    //                var ff = $(form);
+    //                var action = f.attr('action');
+    //                var q = ff.serialize();
+    //                var $target = ff.closest("div.modal");
+    //                $.ajax({
+    //                    type: 'POST',
+    //                    url: action,
+    //                    data: q,
+    //                    success: function (ret, status) {
+    //                        $target.html(ret).ready(function () {
+    //                            var top = ($(window).height() - $target.height()) / 2;
+    //                            if (top < 10)
+    //                                top = 10;
+    //                            $target.css({ 'margin-top': top, 'top': '0' });
+    //                            ff = $target.find("form");
+    //                            $.AttachFormElements(ff);
+    //                        });
+    //                    },
+    //                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+    //                        alert("Status: " + textStatus); alert("Error: " + errorThrown);
+    //                    }
+    //                });
+    //                return false;
+    //            },
+    //            highlight: function (element) {
+    //                $(element).closest(".control-group").addClass("error");
+    //            },
+    //            unhighlight: function (element) {
+    //                $(element).closest(".control-group").removeClass("error");
+    //            }
+    //        });
+    //});
     $("ul.nav-tabs a.ajax").live("click", function (event) {
         var state = $(this).attr("href");
         var d = $(state);
@@ -537,38 +560,45 @@ $(function () {
         event.preventDefault();
         var $this = $(this);
         var $form = $this.closest("form.ajax");
-        var $modal = $form.closest("div.modal");
         var url = $this.data("link");
         if (typeof url === 'undefined')
             url = $this[0].href;
         var data = $form.serialize();
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: data,
-            success: function (data, status) {
-                if ($modal.length > 0) {
-                    //$modal.removeClass("fade");
-                    $modal.html(data).ready(function () {
-                        var top = ($(window).height() - $modal.height()) / 2;
-                        if (top < 10)
-                            top = 10;
-                        $modal.css({ 'margin-top': top, 'top': '0' });
-                        $.AttachFormElements();
-                    });
-                } else {
-                    $form.html(data).ready(function () {
-                        $.AttachFormElements();
-                    });
+        if (!$this.hasClass("validate") || $form.valid()) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                success: function (ret, status) {
+                    if ($form.hasClass("modal")) {
+                        $form.addClass("hide");
+                        $form.html(ret).ready(function () {
+                            $form.removeClass("hide");
+                            var top = ($(window).height() - $form.height()) / 2;
+                            if (top < 10)
+                                top = 10;
+                            $form.css({ 'margin-top': top, 'top': '0' });
+                            $.AttachFormElements();
+                        });
+                    } else {
+                        $form.html(ret).ready(function () {
+                            $.AttachFormElements();
+                        });
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
                 }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
+            });
+        }
         return false;
     });
+
+    $.validator.addMethod("unallowedcode", function (value, element, params) {
+        return value !== params.code;
+    }, "required, select item");
+
     $.ajaxSetup({
         beforeSend: function () {
             $("#loading-indicator").css({
@@ -588,13 +618,21 @@ $(function () {
 $(function () {
     $("a.searchadd").live("click", function (ev) {
         ev.preventDefault();
-        $("<div id='search-add' class='modal fade hide' data-width='600' data-keyboard='false' data-backdrop='static' />")
-            .load($(this).attr("href"), {}, function () {
-                $(this).modal("show");
-                $(this).on('hidden', function () {
-                    $(this).remove();
-                });
+        $("#search-add").load($(this).attr("href"), {}, function () {
+            $(this).modal("show");
+            $(this).on('hidden', function () {
+                $(this).empty();
             });
+            $.AttachFormElements();
+            $(this).validate({
+                highlight: function (element) {
+                    $(element).closest(".control-group").addClass("error");
+                },
+                unhighlight: function (element) {
+                    $(element).closest(".control-group").removeClass("error");
+                }
+            });
+        });
     });
     $("#search-add a.clear").live('click', function (ev) {
         ev.preventDefault();
@@ -623,12 +661,12 @@ $(function () {
         ev.preventDefault();
         $ToggleShown($(this).parents("tr"));
     });
-    var $ToggleShown = function(tr) {
+    var $ToggleShown = function (tr) {
         if (tr.hasClass("notshown"))
             $ShowAll(tr);
         else if (tr.hasClass("shown"))
             $CollapseAll(tr);
-        else 
+        else
             tr.next("tr").find("div.collapse")
                 .off('hidden')
                 .on("hidden", function (e) { e.stopPropagation(); })

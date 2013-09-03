@@ -51,11 +51,12 @@
     });
     $("a.editaddr").live("click", function (ev) {
         ev.preventDefault();
-        $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
+        $("#edit-address").css({"margin-top":"", "top": ""});
+        $("#edit-address").load($(this).attr("href"), {}, function () {
             var modal = $(this);
             modal.modal("show");
             modal.on('hidden', function () {
-                $(this).remove();
+                $(this).empty();
             });
             modal.on("click", "a.close-saved-address", function () {
                 $.post($(this).attr("href"), {}, function (ret) {
@@ -190,6 +191,11 @@
             $.cookie('lasttab', "#changes");
         }
     });
+    $.validator.addMethod("ValidDate", function (value, element, params) {
+        var v = $.DateValid(value);
+        return this.optional(element) || v;
+    }, "Please enter valid date");
+
     //$("#contacts-link").click(function () {
     //        $("#contacts-tab").each(function () {
     //            $.showTable($(this));

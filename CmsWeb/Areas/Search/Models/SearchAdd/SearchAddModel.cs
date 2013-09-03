@@ -97,18 +97,14 @@ namespace CmsWeb.Areas.Search.Models
             set { list = value; }
         }
 
-        [UIHint("Text")]
         public string Name { get; set; }
 
-        [UIHint("Text")]
         [DisplayName("Communication")]
         public string Phone { get; set; }
 
-        [UIHint("Text")]
         public string Address { get; set; }
 
         [DisplayName("Date of Birth")]
-        [UIHint("Text")]
         public string dob { get; set; }
 
         public string HelpLink(string page)
@@ -328,7 +324,7 @@ namespace CmsWeb.Areas.Search.Models
                 FamilyId = familyid,
                 index = List.Count,
                 Gender = new CodeInfo(99, "Gender"),
-                Marital = new CodeInfo(99, "Marital"),
+                MaritalStatus = new CodeInfo(99, "MaritalStatus"),
                 Campus = new CodeInfo(CampusId, "Campus"),
                 EntryPoint = new CodeInfo(EntryPointId, "EntryPoint"),
                 context = type,
@@ -342,11 +338,6 @@ namespace CmsWeb.Areas.Search.Models
 #if DEBUG
             p.First = "David";
             p.Last = "Carr." + DateTime.Now.Millisecond;
-            p.Gender = new CodeInfo(0, "Gender");
-            p.Marital = new CodeInfo(0, "Marital");
-            p.dob = "na";
-            p.Email = "na";
-            p.Phone = "na";
 #endif
             List.Add(p);
             return p;

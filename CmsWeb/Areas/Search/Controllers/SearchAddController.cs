@@ -121,7 +121,6 @@ namespace CmsWeb.Areas.Search.Controllers
             if (m.List.AsEnumerable().Any(li => li.PeopleId == id))
                 return View("List", m);
 
-            var cv = new CodeValueModel();
             var p = DbUtil.Db.LoadPersonById(id);
             var s = new SearchPersonModel
             {
@@ -130,7 +129,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 First = p.FirstName,
                 GoesBy = p.NickName,
                 Last = p.LastName,
-                Marital = new CodeInfo(p.MaritalStatusId, "MaritalStatus"),
+                MaritalStatus = new CodeInfo(p.MaritalStatusId, "MaritalStatus"),
                 Email = p.EmailAddress,
                 Suffix = p.SuffixCode,
                 Title = new CodeInfo(p.TitleCode, "Title"),

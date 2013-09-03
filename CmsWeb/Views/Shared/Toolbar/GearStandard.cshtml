@@ -3,7 +3,7 @@
     var developer = User.IsInRole("Developer");
 }
 <li class="header">Tags</li>
-<li><a id="TagAll" href='@ViewBag.TagAction'>Add All</a></li>
+<li><a href='@ViewBag.TagAction' class="dialog-options" data-target="#TagAllDialog">Add All</a></li>
 <li><a id="UnTagAll" href='@ViewBag.UnTagAction'>Remove All</a></li>
 
 <li class="header">Contacts / Tasks</li>
@@ -14,8 +14,8 @@
 @if (admin)
 {
     <li class="header">Extra Values</li>
-    <li><a href='/Manage/ExtraValues/Add/@ViewBag.queryid' class="ChooseExtraValues">Add Extra Values</a></li>
-    <li><a href='/Manage/ExtraValues/Delete/@ViewBag.queryid' class="ChooseExtraValues">Delete Extra Values</a></li>
+    <li><a href='/Manage/ExtraValues/Add/@ViewBag.queryid' data-target="#ChooseExtraValues">Add Extra Values</a></li>
+    <li><a href='/Manage/ExtraValues/Delete/@ViewBag.queryid' data-target="#ChooseExtraValues">Delete Extra Values</a></li>
     <li><a href="/Reports/ExtraValuesGrid/@ViewBag.queryid">Extra Values Grid</a></li>
     if (developer)
     {

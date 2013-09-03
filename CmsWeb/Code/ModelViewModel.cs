@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,8 +11,9 @@ using UtilityExtensions;
 
 namespace CmsWeb.Code
 {
+    public class NoTrackAttribute : Attribute { }
+    public class PhoneNumberAttribute : Attribute { }
     public class TrackChangesAttribute : Attribute { }
-    public class PhoneAttribute : Attribute { }
     public class NoUpdate : Attribute { }
     public class SkipField : Attribute { }
 
@@ -22,7 +25,7 @@ namespace CmsWeb.Code
 
     public interface IModelViewModelObject
     {
-        string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps);
+        string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track);
         void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps);
     }
 
@@ -45,7 +48,7 @@ namespace CmsWeb.Code
                 if (vm.HasAttribute<SkipField>())
                     continue;
 
-                if(typeof(IModelViewModelObject).IsAssignableFrom(vm.PropertyType))
+                if (typeof(IModelViewModelObject).IsAssignableFrom(vm.PropertyType))
                 {
                     var ivm = Activator.CreateInstance(vm.PropertyType);
                     ((IModelViewModelObject)ivm).CopyFromModel(vm, model, modelProps);
@@ -61,8 +64,8 @@ namespace CmsWeb.Code
                 // get the model value we are going to copy
                 var modelvalue = m.GetValue(model, null);
 
-                if (vm.HasAttribute<PhoneAttribute>())
-                    vm.SetPropertyFromText(viewmodel, ((string) modelvalue).FmtFone());
+                if (vm.HasAttribute<PhoneNumberAttribute>())
+                    vm.SetPropertyFromText(viewmodel, ((string)modelvalue).FmtFone());
 
                     // if they are the same type, then straight copy
 
@@ -70,10 +73,10 @@ namespace CmsWeb.Code
                     vm.SetValue(viewmodel, modelvalue, null);
 
                 else if (modelvalue is string)
-                    vm.SetPropertyFromText(viewmodel, (string) modelvalue);
+                    vm.SetPropertyFromText(viewmodel, (string)modelvalue);
 
-                else if (modelvalue is DateTime && (DateTime) modelvalue == ((DateTime) modelvalue).Date)
-                    vm.SetPropertyFromText(viewmodel, ((DateTime) modelvalue).ToShortDateString());
+                else if (modelvalue is DateTime && (DateTime)modelvalue == ((DateTime)modelvalue).Date)
+                    vm.SetPropertyFromText(viewmodel, ((DateTime)modelvalue).ToShortDateString());
 
                 else // Handle any other type mismatches like int = Nullable<int> or vice-versa
                     vm.SetPropertyFromText(viewmodel, (modelvalue ?? "").ToString());
@@ -99,14 +102,16 @@ namespace CmsWeb.Code
                 // get the viewmodel value we are going to copy
                 var viewmodelvalue = vm.GetValue(viewmodel, null);
 
+                var track = (Attribute.IsDefined(vm, typeof (TrackChangesAttribute))
+                            || viewmodel.GetType().IsDefined(typeof (TrackChangesAttribute), false))
+                            && !Attribute.IsDefined(vm, typeof(NoTrackAttribute));
+
                 if (viewmodelvalue is IModelViewModelObject)
                 {
                     var ivm = viewmodelvalue as IModelViewModelObject;
-                    changes.Append(ivm.CopyToModel(vm, model, modelProps));
+                    changes.Append(ivm.CopyToModel(vm, model, modelProps, track));
                     continue;
                 }
-
-                var track = Attribute.IsDefined(vm, typeof(TrackChangesAttribute));
 
                 // find a target property of the same name as source
                 var m = modelProps.FirstOrDefault(mm => mm.Name == vm.Name);

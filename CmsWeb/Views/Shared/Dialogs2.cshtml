@@ -13,123 +13,140 @@
 {
     Html.RenderPartial("/Content/Tutorials/" + Util.Helpfile + ".cshtml");
 }
-<form id="ChooseFormat" class="modal fade hide" method="GET">
+<form id="choose-format" class="dialog-options modal fade hide validate" method="GET">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
         <h3>Choose Options</h3>
     </div>
     <div class="modal-body">
         <input type="hidden" />
-        <div class="row">
-            <div class="span6 well">
+        <div class="row-fluid">
+            <div class="span6">
                 <p><b>Addressed To</b></p>
-                <div>
+                <label class="radio">
                     <input type="radio" name="format" value="Individual" title="Addressed to individuals" checked="checked" />
                     Individual
-                </div>
-                <div>
+                </label>
+                <label class="radio">
                     <input type="radio" name="format" value="Family" title="Addressed as a family when there are children" />
                     Family
-                </div>
-                <div>
+                </label>
+                <label class="radio">
                     <input type="radio" name="format" value="FamilyMembers" title="Includes entire Family as individuals" />
                     Family Members
-                </div>
-                <div>
+                </label>
+                <label class="radio">
                     <input type="radio" name="format" value="CouplesBoth" title="Addressed to a couple, if both are in selection" />
                     Couples (both)
-                </div>
-                <div>
+                </label>
+                <label class="radio">
                     <input type="radio" name="format" value="CouplesEither" title="Addressed to a couple, if one or both are in selection" />
                     Couples (either)
-                </div>
-                <div>
+                </label>
+                <label class="radio">
                     <input type="radio" name="format" value="ParentsOf" title="Addressed to parents or parent" />
                     Parents Of
-                </div>
-                <div>
+                </label>
+                <label class="radio">
                     <input type="radio" name="format" value="GroupAddress" title="Addressed to names at address" />
                     Group By Address
-                </div>
+                </label>
             </div>
             <div class="span6">
                 <p><b>Label Options</b></p>
-                <div>
+                <label class="checkbox">
                     <input type="checkbox" name="titles" />
-                    Use Titles<br />
-                </div>
-                <div>
+                    Use Titles
+                </label>
+                <label class="checkbox">
                     <input type="checkbox" name="SortZip" />
-                    Sort by Zip<br />
-                </div>
-                <div>
+                    Sort by Zip
+                </label>
+                <label class="checkbox">
                     <input type="checkbox" name="UsePhone" />
-                    Include Phone<br />
+                    Include Phone
+                </label>
+                <div class="control-group">
+                    <label>Skip # of labels (0 to use whole page):</label>
+                    <input name="SkipNum" data-rule-number="true" />
                 </div>
-                <p>
-                    Skip:
-                    <input id="SkipNum" name="SkipNum" size="3" value="0" />
-                </p>
             </div>
         </div>
         <div class="modal-footer">
-            <a class="btn btn-success close-saved-address" data-dismiss="modal">Close</a>
-            <a id="ChooseFormatOK" href="#" class="btn btn-primary" >OK</a>
+            <a class="btn" data-dismiss="modal">Close</a>
+            <input type="submit" class="btn btn-primary" value="OK" />
         </div>
     </div>
 </form>
-<div id="ExportStartEnd" class="modalDiv dialog" style="display: none">
-    <table>
-        <tr>
-            <th colspan="2">Select a date range</th>
-        </tr>
-        <tr>
-            <th>Start Date</th>
-            <td>
-                <input id="startdt" type="text" class='datepicker' /></td>
-        </tr>
-        <tr>
-            <th>End Date</th>
-            <td>
-                <input id="enddt" type="text" class='datepicker' /></td>
-        </tr>
-        <tr>
-            <td class="right" colspan="2">
-                <a class="bt" id="ExportStartEndRun" href="#">run </a></td>
-        </tr>
-    </table>
-</div>
-<div id="SetExtraValues" class="modalDiv dialog" style="display: none">
-    <table>
-        <tr>
-            <th>Field</th>
-            <td>
-                <input id="field" type="text" /></td>
-        </tr>
-        <tr>
-            <th>Value</th>
-            <td>
-                <input id="value" type="text" /></td>
-        </tr>
-        <tr>
-            <td class="right" colspan="2">
-                <a class="bt" id="SetExtraValuesRun" href="#">OK </a></td>
-        </tr>
-    </table>
-</div>
-<div id="TagAllDialog" class="modalDiv dialog" style="display: none;">
-    <form>
-        <table style="white-space: nowrap">
-            <tr>
-                <td>TagName:
-                    <input id="tagalltagname" name="tagname" type="text" value="@Util2.CurrentTagName" /><br />
-                    Clear Tag First: @Html.CheckBox("cleartagfirst", false)
-                </td>
-            </tr>
-            <tr>
-                <td class="right"><a class="bt" id="TagAllRun" href="#" style="text-align: right">OK </a></td>
-            </tr>
-        </table>
-    </form>
-</div>
+
+<form id="ExportStartEnd" class="modal fade form-horizontal hide">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Select a date range</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label">Start Date </label>
+            <input id="startdt" type="text" class='datepicker' />
+        </div>
+        <div class="control-group">
+            <label class="control-label">End Date </label>
+            <input id="enddt" type="text" class='datepicker' />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a class="btn" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary ok">OK</a>
+    </div>
+</form>
+
+<form id="set-extra-values" class="modal fade hide dialog-options validate">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Set Extra Value</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label">Field</label>
+            <input id="field" type="text" data-rule-required="true" />
+        </div>
+        <div class="control-group">
+            <label class="control-label">Value</label>
+            <input id="value" type="text" data-rule-required="true" />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a class="btn btn-success" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary ok">OK</a>
+    </div>
+</form>
+
+<form id="TagAllDialog" class="modal dialog-options form-horizontal validate fade hide" method="POST">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Tag All</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label">TagName:</label>
+            <div class="controls">
+                <input name="tagname" type="text" value="@Util2.CurrentTagName" data-rule-required="true" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">Clear Tag First:</label>
+            <div class="controls">
+                @Html.CheckBox("cleartagfirst", false)
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a class="btn btn-success" data-dismiss="modal">Close</a>
+        <input type="submit" class="btn btn-primary" value="OK" />
+    </div>
+</form>
+
+<form id='search-add' class='modal fade hide validate ajax form-horizontal' method='POST' data-width='700' data-keyboard='false' data-backdrop='static'>
+</form>
+
 <div id="darkLayer" class="darkClass" style="display: none"></div>

@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using AttributeRouting.Web.Mvc;
 using CmsData;
 using System.Diagnostics;
@@ -42,9 +43,10 @@ namespace CmsWeb.Controllers
 		}
         [GET("Person/TinyImage/{id}")]
         [GET("Person2/TinyImage/{id}")]
+        [GET("TinyImage/{id}")]
         public ActionResult TinyImage(int id)
         {
-            return new PictureResult(id, tiny: true);
+            return new PictureResult(id, portrait: true, tiny: true);
         }
         [GET("Person/Image/{id:int}/{w:int?}/{h:int?}")]
         [GET("Person2/Image/{id:int}/{w:int?}/{h:int?}")]
@@ -52,6 +54,11 @@ namespace CmsWeb.Controllers
         public ActionResult Image(int id, int? w, int? h)
         {
             return new PictureResult(id);
+        }
+        [GET("Portrait/{id:int}/{w:int?}/{h:int?}")]
+        public ActionResult Portrait(int id, int? w, int? h)
+        {
+            return new PictureResult(id, portrait: true);
         }
 		public ActionResult About()
 		{

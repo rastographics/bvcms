@@ -11,6 +11,7 @@
     <OutputPath>bin\</OutputPath>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -23,7 +24,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CmsWeb</RootNamespace>
     <AssemblyName>CmsWeb</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
@@ -45,6 +46,7 @@
     <PackageAsSingleFile>false</PackageAsSingleFile>
     <FilesToIncludeForPublish>OnlyFilesToRunTheApp</FilesToIncludeForPublish>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -57,9 +59,11 @@
     <PublishDatabases>false</PublishDatabases>
     <PackageAsSingleFile>false</PackageAsSingleFile>
     <ExcludeGeneratedDebugSymbol>false</ExcludeGeneratedDebugSymbol>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bvcms|AnyCPU'">
     <OutputPath>bin\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bvcms2|AnyCPU'">
     <OutputPath>bin\</OutputPath>
@@ -68,9 +72,11 @@
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
     <DefineConstants>TRACE</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test|AnyCPU'">
     <OutputPath>bin\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AttributeRouting">
@@ -103,6 +109,10 @@
     <Reference Include="itextsharp.xmlworker, Version=1.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\itextsharp.xmlworker.1.2.0\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="jQuery.Validation.Unobtrusive.Native, Version=0.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\jQuery.Validation.Unobtrusive.Native.MVC4.0.4.1.0\lib\net40\jQuery.Validation.Unobtrusive.Native.dll</HintPath>
     </Reference>
     <Reference Include="LumenWorks.Framework.IO">
       <HintPath>..\packages\LumenWorks.Framework.IO.3.8.0\lib\net20\LumenWorks.Framework.IO.dll</HintPath>
@@ -142,12 +152,14 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
@@ -463,7 +475,7 @@
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />
     <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
-    <None Include="Areas\Main\Views\Export\Picture.cshtml" />
+    <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditTemplate.cshtml" />
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
@@ -738,6 +750,10 @@
     <Content Include="Scripts\Bootstrap\bootstrap-bundle.min.js">
       <DependentUpon>bootstrap-bundle.js.bundle</DependentUpon>
     </Content>
+    <Content Include="Scripts\Bootstrap\bootstrap-datepicker.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-datepicker.min.js">
+      <DependentUpon>bootstrap-datepicker.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-editable.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-editable.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-modal-popover.js" />
@@ -804,6 +820,7 @@
     <Content Include="Scripts\Finance\Transactions.min.js">
       <DependentUpon>Transactions.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\jQuery\jquery.validate.js" />
     <Content Include="Scripts\jQuery\FixedColumns.js" />
     <Content Include="Scripts\jQuery\FixedHeader.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.min.js.map">
@@ -857,9 +874,12 @@
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenMeta.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenSearch.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenPeople.cshtml" />
-    <Content Include="Areas\People\Views\Person\EditorTemplates\CellPhone.cshtml" />
-    <Content Include="Areas\People\Views\Person\DisplayTemplates\CellPhone.cshtml" />
+    <Content Include="Areas\People\Views\Person\EditorTemplates\CellPhoneInfo.cshtml" />
+    <Content Include="Areas\People\Views\Person\DisplayTemplates\CellPhoneInfo.cshtml" />
     <Content Include="Scripts\jQuery\jquery.ui.position.js" />
+    <Content Include="Scripts\jQuery\jquery.validate.min.js">
+      <DependentUpon>jquery.validate.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\jQuery\main.js">
       <DependentUpon>main.js.bundle</DependentUpon>
     </Content>
@@ -1153,6 +1173,12 @@
     </Content>
     <Content Include="Scripts\jQuery\jquery.scrollintoview.min.js.map">
       <DependentUpon>jquery.scrollintoview.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bootstrap\bootstrap-datepicker.min.js.map">
+      <DependentUpon>bootstrap-datepicker.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jQuery\jquery.validate.min.js.map">
+      <DependentUpon>jquery.validate.js</DependentUpon>
     </Content>
     <None Include="Scripts\jQuery\main.js.bundle" />
     <Content Include="Scripts\jQuery\main.min.js.map">
@@ -1576,6 +1602,7 @@
     <Content Include="Scripts\js\dropdown.js" />
     <Content Include="Scripts\jQuery\jquery.joyride-1.0.5.js" />
     <Content Include="Scripts\js\tutorial.js" />
+    <Compile Include="Code\UnallowedCodeAttribute.cs" />
     <Compile Include="Code\Word2Pdf.cs" />
     <Compile Include="Areas\Finance\Controllers\QuickBooksController.cs" />
     <None Include="Docs\dave.md" />
@@ -1813,14 +1840,12 @@
     </Content>
     <Content Include="Views\Shared\Pager3.cshtml" />
     <Content Include="Views\Shared\NotFound.cshtml" />
-    <Content Include="Views\Shared\DisplayTemplates\Bool.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\CodeInfo.cshtml" />
-    <Content Include="Views\Shared\DisplayTemplates\Date.cshtml" />
-    <Content Include="Views\Shared\DisplayTemplates\Text.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\Bool.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Date2.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Boolean.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\CodeInfo.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\Date.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\Text.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Date2.cshtml" />
     <Content Include="Scripts\Volunteer\ManageVolunteer.min.js.map">
       <DependentUpon>ManageVolunteer.js</DependentUpon>
     </Content>
@@ -1838,8 +1863,8 @@
     </Content>
     <Content Include="Views\Shared\EditorTemplates\Decimal.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Decimal.cshtml" />
-    <Content Include="Views\Shared\DisplayTemplates\Int.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\Int.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Int32.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Int32.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\TextArea.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\TextArea.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\HiddenCodeInfo.cshtml" />
@@ -1864,6 +1889,13 @@
       <DependentUpon>Query0.js</DependentUpon>
     </Content>
     <Content Include="Views\Shared\Dialogs2.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Birthday.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Birthday.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\String.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\String.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\EmailAddress.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Phone.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2123,8 +2155,8 @@
     <Content Include="Areas\Setup\Views\Twilio\NumberDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\RemoveDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />
-    <Content Include="Areas\People\Views\Person\EditorTemplates\Email.cshtml" />
-    <Content Include="Areas\People\Views\Person\DisplayTemplates\Email.cshtml" />
+    <Content Include="Areas\People\Views\Person\EditorTemplates\EmailInfo.cshtml" />
+    <Content Include="Areas\People\Views\Person\DisplayTemplates\EmailInfo.cshtml" />
     <Content Include="Areas\People\Views\Person\ProfileHeader.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\Display.cshtml" />
@@ -2841,7 +2873,6 @@
     <Content Include="Scripts\jQuery\jquery.jeditable.js" />
     <Content Include="Scripts\jQuery\jquery.tooltip.js" />
     <Content Include="Scripts\jQuery\jquery.tooltip.min.js" />
-    <Content Include="Scripts\jQuery\jquery.validate.js" />
     <Content Include="images\loading.gif" />
     <Content Include="images\navigation-shadow.png" />
     <Content Include="Contributions\Deposit.aspx" />

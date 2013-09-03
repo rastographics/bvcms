@@ -1,14 +1,10 @@
-﻿@model string
-@{
-    var help = Html.HelpMessageFor(m => m, "help-block");
-}
-<div class="control-group @help.errorClass">
+﻿@model DateTime?
+<div class="control-group">
     @Html.LabelFor(m => m, new { @class="control-label"})
     <div class="controls">
         <div class="input-append date" data-date="@Model" data-datepicker-format="@Util.jQueryDateFormat2">
-            @Html.TextBoxFor(m => m, new { size="16" })
+            @Html.TextBoxFor2(m => m, true, @Model.FormatDate())
             <span class="add-on"><i class="icon-calendar"></i></span>
         </div>
-        @Html.Raw(help.message)
     </div>
 </div>

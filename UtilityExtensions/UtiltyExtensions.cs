@@ -99,6 +99,8 @@ namespace UtilityExtensions
         }
         public static DateTime? ToDate(this object o)
         {
+            if (o == null)
+                return null;
             return o.ToString().ToDate();
         }
         public static int? ToInt2(this string s)
@@ -592,8 +594,8 @@ namespace UtilityExtensions
                 var dt = new DateTime(2002, 1, 30);
                 var s = dt.ToShortDateString();
                 if (s.StartsWith("30"))
-                    return "d/m/yy";
-                return "m/d/yy";
+                    return "d/m/yyyy";
+                return "m/d/yyyy";
             }
         }
         public static string jQueryDateValidation

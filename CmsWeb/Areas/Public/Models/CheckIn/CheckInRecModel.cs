@@ -60,7 +60,7 @@ namespace CmsWeb.Models
             public string CheckInNotes { get; set; }
             public string ImageUrl
             {
-                get { return "/Image/{0}".Fmt(ImageId); }
+                get { return "/Portrait/{0}".Fmt(ImageId); }
             }
         }
         public int OrgId { get; set; }

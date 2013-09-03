@@ -36,8 +36,12 @@ namespace CmsWeb.Areas.Main.Controllers
             return m;
         }
 
-        [GET("Export/Excel/{id:int}")]
-        [GET("Export/Excel/Groups/{id=0}")]
+        [GET("Export/Excel/Groups")]
+        public ActionResult ExcelGroups(bool? titles)
+        {
+            return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
+        }
+
         [GET("Export/Excel/{format}/{id:int}")]
         public ActionResult Excel(int id, string format, bool? titles)
         {
@@ -69,8 +73,6 @@ namespace CmsWeb.Areas.Main.Controllers
                     return new ExcelResult(ExportInvolvements.AttendList(id, maxExcelRows));
                 case "Organization":
                     return new ExcelResult(ExportInvolvements.OrgMemberList(id));
-                case "Groups":
-                    return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
                 case "Promotion":
                     return new ExcelResult(ExportInvolvements.PromoList(id, maxExcelRows));
                 case "IndividualPicture":

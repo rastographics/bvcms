@@ -19,23 +19,14 @@ namespace CmsWeb.Areas.People.Models.Person
 {
     public class EmailInfo : IModelViewModelObject
     {
-//        public EmailInfo()
-//        {
-//            
-//        }
-//        public EmailInfo(string address, bool send)
-//        {
-//            Address = address;
-//            Send = send;
-//        }
+        [StringLength(20)]
         public string Address { get; set; }
         public bool Send { get; set; }
 
-        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
+        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track)
         {
             var ckf = vm.GetAttribute<FieldInfoAttribute>().CheckboxField;
             var ckpi = modelProps.Single(mm => mm.Name == ckf);
-            var track = Attribute.IsDefined(vm, typeof(TrackChangesAttribute));
             if (track)
             {
                 var changes = new StringBuilder();
@@ -63,19 +54,14 @@ namespace CmsWeb.Areas.People.Models.Person
     }
     public class CellPhoneInfo : IModelViewModelObject
     {
-//        public CellPhoneInfo(string number, bool active)
-//        {
-//            Number = number;
-//            ReceiveText = active;
-//        }
+        [StringLength(20)]
         public string Number { get; set; }
         public bool ReceiveText { get; set; }
 
-        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
+        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track)
         {
             var ckf = vm.GetAttribute<FieldInfoAttribute>().CheckboxField;
             var ckpi = modelProps.Single(mm => mm.Name == ckf);
-            var track = Attribute.IsDefined(vm, typeof(TrackChangesAttribute));
             if (track)
             {
                 var changes = new StringBuilder();
@@ -101,6 +87,7 @@ namespace CmsWeb.Areas.People.Models.Person
         }
     }
 
+    [TrackChanges]
     public class BasicPersonInfo
     {
         private int _id;
@@ -115,124 +102,98 @@ namespace CmsWeb.Areas.People.Models.Person
                 person = DbUtil.Db.LoadPersonById(value);
             }
         }
-        private RouteValueDictionary routeVals;
-        public RouteValueDictionary RouteVals
-        {
-            get
-            {
-                if (routeVals == null)
-                    routeVals = new RouteValueDictionary { { "Id", PeopleId }, { "Area", "People" } };
-                return routeVals;
-            }
-        }
-
-        public Dictionary<string, object> Classes(string classes)
-        {
-            var d = new Dictionary<string, object>();
-            d.Add("class", classes);
-            return d;
-        }
 
         [NoUpdate]
         public int PeopleId { get; set; }
         public CmsData.Person person { get; set; }
 
-        [UIHint("Text"), DisplayName("Title"), TrackChanges]
+        [DisplayName("Title"), StringLength(10)]
         public string TitleCode { get; set; }
 
-        [UIHint("Text"), TrackChanges]
+        [TrackChanges, StringLength(25)]
         public string FirstName { get; set; }
 
-        [UIHint("Text"), DisplayName("Goes By"), TrackChanges]
+        [DisplayName("Goes By"), StringLength(15)]
         public string NickName { get; set; }
 
-        [UIHint("Text"), TrackChanges]
+        [StringLength(15)]
         public string MiddleName { get; set; }
 
-        [UIHint("Text"), TrackChanges]
+        [StringLength(100), Required]
         public string LastName { get; set; }
 
-        [UIHint("Text"), TrackChanges]
+        [StringLength(100)]
         public string AltName { get; set; }
 
-        [UIHint("Text"), DisplayName("Former Name"), TrackChanges]
+        [DisplayName("Former Name"), StringLength(20)]
         public string MaidenName { get; set; }
 
-        [UIHint("Text"), DisplayName("Suffix"), TrackChanges]
+        [DisplayName("Suffix"), StringLength(10)]
         public string SuffixCode { get; set; }
 
-        [TrackChanges]
         public CodeInfo Gender { get; set; }
 
-        [UIHint("InlineCode"), TrackChanges]
         public CodeInfo PositionInFamily { get; set; }
 
-        [UIHint("InlineCode"), TrackChanges]
         public CodeInfo Campus { get; set; }
 
-        [UIHint("Date"), DisplayName("Birthday"), TrackChanges]
+        [DisplayName("Birthday")]
         public string DOB { get; set; }
 
-        [TrackChanges]
         public CodeInfo MaritalStatus { get; set; }
 
-        [UIHint("Date"), TrackChanges]
-        public string WeddingDate { get; set; }
+        public DateTime? WeddingDate { get; set; }
 
-        [UIHint("Text"), DisplayName("Occupation")]
+        [DisplayName("Occupation"), NoTrack, StringLength(60)]
         public string OccupationOther { get; set; }
 
-        [UIHint("Text"), DisplayName("Employer")]
+        [DisplayName("Employer"), NoTrack, StringLength(60)]
         public string EmployerOther { get; set; }
 
-        [UIHint("Text"), DisplayName("School")]
+        [DisplayName("School"), NoTrack, StringLength(100)]
         public string SchoolOther { get; set; }
 
-        [UIHint("Text"), TrackChanges]
-        public string Grade { get; set; }
+        public int? Grade { get; set; }
 
-        [UIHint("Email"), DisplayName("Primary Email"), TrackChanges,
-            FieldInfo(CheckboxField = "SendEmailAddress1")]
+        [DisplayName("Primary Email"), FieldInfo(CheckboxField = "SendEmailAddress1")]
         public EmailInfo EmailAddress { get; set; }
 
-        [UIHint("Email"), DisplayName("Alt Email"), TrackChanges,
-            FieldInfo(CheckboxField = "SendEmailAddress2")]
+        [DisplayName("Alt Email"), FieldInfo(CheckboxField = "SendEmailAddress2")]
         public EmailInfo EmailAddress2 { get; set; }
 
-        [UIHint("Text"), TrackChanges, Phone]
+        [PhoneNumber, StringLength(20)]
         public string HomePhone { get; set; }
 
-        [UIHint("CellPhone"), TrackChanges, Phone,
-            FieldInfo(CheckboxField = "ReceiveSMS")]
+        [PhoneNumber, FieldInfo(CheckboxField = "ReceiveSMS")]
         public CellPhoneInfo CellPhone { get; set; }
 
-        [UIHint("Text"), TrackChanges, Phone]
+        [PhoneNumber, StringLength(20)]
         public string WorkPhone { get; set; }
 
-        [UIHint("Date"), TrackChanges]
         public DateTime? DeceasedDate { get; set; }
 
-        [TrackChanges]
         public bool DoNotCallFlag { get; set; }
 
-        [TrackChanges]
         public bool DoNotVisitFlag { get; set; }
 
-        [TrackChanges]
         public bool DoNotMailFlag { get; set; }
 
-        [TrackChanges]
         public bool DoNotPublishPhones { get; set; }
 
+        [NoUpdate]
         public DateTime? Created { get; set; }
+        [NoUpdate]
         public DateTime? JoinDate { get; set; }
+        [NoUpdate]
         public string Spouse { get; set; }
 
         [NoUpdate]
         public string Age { get; set; }
 
+        [NoUpdate]
         public CodeInfo MemberStatus { get; set; }
 
+        [NoTrack]
         public string DoNotContact
         {
             get
@@ -269,11 +230,9 @@ namespace CmsWeb.Areas.People.Models.Person
 
         public BasicPersonInfo()
         {
-
+            
         }
-
         public BasicPersonInfo(int id)
-            : this()
         {
             Id = id;
             if (person == null)
@@ -303,26 +262,6 @@ namespace CmsWeb.Areas.People.Models.Person
                         "{0} changed the following information for {1} ({2}):<br />\n<table>{3}</table>"
                         .Fmt(Util.UserName, FirstName + " " + LastName, PeopleId, changes));
                 }
-        }
-        public static IEnumerable<SelectListItem> GenderCodes()
-        {
-            var cv = new CodeValueModel();
-            return CodeValueModel.ConvertToSelect(cv.GenderCodes(), "Id");
-        }
-        public static IEnumerable<SelectListItem> Campuses()
-        {
-            var cv = new CodeValueModel();
-            return CodeValueModel.ConvertToSelect(cv.AllCampuses0(), "Id");
-        }
-        public static IEnumerable<SelectListItem> MemberStatuses()
-        {
-            var cv = new CodeValueModel();
-            return CodeValueModel.ConvertToSelect(cv.MemberStatusCodes(), "Id");
-        }
-        public static IEnumerable<SelectListItem> MaritalStatuses()
-        {
-            var cv = new CodeValueModel();
-            return CodeValueModel.ConvertToSelect(cv.MaritalStatusCodes(), "Id");
         }
     }
 }

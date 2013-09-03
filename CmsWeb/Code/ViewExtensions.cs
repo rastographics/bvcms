@@ -8,11 +8,13 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Text;
 using System.Collections;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using AttributeRouting.Helpers;
 using CmsData;
 using CmsWeb.Code;
 using UtilityExtensions;
@@ -21,6 +23,7 @@ using System.Web.Routing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
+using ExpressionHelper = System.Web.Mvc.ExpressionHelper;
 
 namespace CmsWeb
 {
@@ -110,7 +113,7 @@ namespace CmsWeb
         {
             var tb = new TagBuilder("select");
             tb.MergeAttribute("id", id);
-            if (onchange.HasValue())
+            if (Util.HasValue(onchange))
                 tb.MergeAttribute("onchange", onchange);
             var sb = new StringBuilder();
             foreach (var o in PageSizes(null))
@@ -174,7 +177,7 @@ namespace CmsWeb
                 var ot = new TagBuilder("option");
                 ot.MergeAttribute("value", o.Value);
                 bool selected = false;
-                if (s.HasValue())
+                if (Util.HasValue(s))
                     selected = s == o.Value;
                 else if (o.Selected)
                     selected = true;
@@ -189,7 +192,7 @@ namespace CmsWeb
         public static HtmlString DropDownList3(this HtmlHelper helper, string id, string name, IEnumerable<SelectListItem> list, string value)
         {
             var tb = new TagBuilder("select");
-            if (id.HasValue())
+            if (Util.HasValue(id))
                 tb.MergeAttribute("id", id);
             tb.MergeAttribute("name", name);
             var sb = new StringBuilder();
@@ -208,10 +211,10 @@ namespace CmsWeb
         public static HtmlString DropDownList4(this HtmlHelper helper, string id, string name, IEnumerable<SelectListItem> list, string value, string cssClass = "")
         {
             var tb = new TagBuilder("select");
-            if (id.HasValue())
+            if (Util.HasValue(id))
                 tb.MergeAttribute("id", id);
             tb.MergeAttribute("name", name);
-            if (cssClass.HasValue())
+            if (Util.HasValue(cssClass))
                 tb.MergeAttribute("class", cssClass);
             var sb = new StringBuilder();
             foreach (var o in list)
@@ -229,10 +232,10 @@ namespace CmsWeb
         public static HtmlString DropDownList4(this HtmlHelper helper, string id, string name, IEnumerable<CmsWeb.Models.OnlineRegPersonModel.SelectListItemFilled> list, string value, string cssClass = "")
         {
             var tb = new TagBuilder("select");
-            if (id.HasValue())
+            if (Util.HasValue(id))
                 tb.MergeAttribute("id", id);
             tb.MergeAttribute("name", name);
-            if (cssClass.HasValue())
+            if (Util.HasValue(cssClass))
                 tb.MergeAttribute("class", cssClass);
             var sb = new StringBuilder();
             foreach (var o in list)
@@ -304,7 +307,7 @@ namespace CmsWeb
             var name = ExpressionHelper.GetExpressionText(expression);
             var v = htmlHelper.ViewData.Eval(name);
             var prefix = htmlHelper.ViewData.TemplateInfo.HtmlFieldPrefix;
-            if (prefix.HasValue())
+            if (Util.HasValue(prefix))
                 name = prefix + "." + name;
             tb.MergeAttribute("name", name);
             if (v != null)
@@ -350,7 +353,7 @@ namespace CmsWeb
         public static HtmlString Hidden3(this HtmlHelper helper, string id, string name, object value)
         {
             var tb = new TagBuilder("input");
-            if (id.HasValue())
+            if (Util.HasValue(id))
                 tb.MergeAttribute("id", id);
             tb.MergeAttribute("type", "hidden");
             tb.MergeAttribute("name", name);
@@ -450,26 +453,39 @@ namespace CmsWeb
             public string errorClass;
         }
 
-        public static HelpMessage HelpMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string classname)
+//        public static HelpMessage HelpMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string classname)
+//        {
+//            var name = helper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(ExpressionHelper.GetExpressionText(expression));
+//            var help = helper.ViewContext.ViewData["help"] as string;
+//            var m = helper.ViewData.ModelState[name];
+//            if (m == null && help == null)
+//                return new HelpMessage();
+//            var b = new TagBuilder("span");
+//            b.AddCssClass(classname);
+//            var hasError = false;
+//            if (m != null && m.Errors.Count > 0)
+//            {
+//                b.SetInnerText(m.Errors[0].ErrorMessage);
+//                hasError = true;
+//            }
+//            else if (help != null)
+//                b.InnerHtml = help;
+//            else
+//                return new HelpMessage();
+//            return new HelpMessage { message = new HtmlString(b.ToString()), errorClass = hasError ? "error" : "" };
+//        }
+        public static MvcHtmlString ValidationMessageLabelFor<TModel, TProperty>(this HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression, string errorClass = "error")
         {
-            var name = helper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(ExpressionHelper.GetExpressionText(expression));
-            var help = helper.ViewContext.ViewData["help"] as string;
-            var m = helper.ViewData.ModelState[name];
-            if (m == null && help == null)
-                return new HelpMessage();
-            var b = new TagBuilder("span");
-            b.AddCssClass(classname);
-            var hasError = false;
-            if (m != null && m.Errors.Count > 0)
+            string elementName = ExpressionHelper.GetExpressionText(expression);
+            MvcHtmlString normal = html.ValidationMessageFor(expression);
+            if (normal != null)
             {
-                b.SetInnerText(m.Errors[0].ErrorMessage);
-                hasError = true;
+                string newValidator = Regex.Replace(normal.ToHtmlString(), @"<span([^>]*)>([^<]*)</span>", string.Format("<label for=\"{0}\" $1>$2</label>", elementName), RegexOptions.IgnoreCase);
+                if (!string.IsNullOrWhiteSpace(errorClass))
+                    newValidator = newValidator.Replace("field-validation-error", errorClass);
+                return MvcHtmlString.Create(newValidator);
             }
-            else if (help != null)
-                b.InnerHtml = help;
-            else
-                return new HelpMessage();
-            return new HelpMessage { message = new HtmlString(b.ToString()), errorClass = hasError ? "error" : "" };
+            return null;
         }
 
         public static string RenderPartialViewToString(Controller controller, string viewName, object model)
@@ -500,6 +516,98 @@ namespace CmsWeb
                 viewResult.View.Render(viewContext, sw);
                 return sw.GetStringBuilder().ToString();
             }
+        }
+        public static IHtmlString TextBoxFor2<TModel, TProperty>(
+          this HtmlHelper<TModel> htmlHelper,
+          Expression<Func<TModel, TProperty>> expression,
+          bool useNativeUnobtrusiveAttributes,
+          string format = null,
+          object htmlAttributes = null)
+        {
+            // Return to native if true not passed
+            if (!useNativeUnobtrusiveAttributes)
+                return htmlHelper.TextBoxFor(expression, format, htmlAttributes);
+
+            var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+            var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
+
+            var textBox = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
+                htmlHelper.TextBoxFor(expression, format, attributes));
+
+            return textBox;
+        }
+        public static IHtmlString CheckBoxFor2<TModel>(this HtmlHelper<TModel> htmlHelper,
+          Expression<Func<TModel, bool>> expression,
+          bool useNativeUnobtrusiveAttributes,
+          object htmlAttributes = null)
+        {
+            // Return to native if true not passed
+            if (!useNativeUnobtrusiveAttributes)
+                return htmlHelper.CheckBoxFor(expression, htmlAttributes);
+            
+            var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+            var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
+            var value = (bool)ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
+
+            var checkBox = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
+                htmlHelper.CheckBoxFor(expression, value, attributes));
+
+            return checkBox;
+        }
+        public static IHtmlString RadioButtonFor2<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> expression,
+            bool useNativeUnobtrusiveAttributes,
+            object value,
+            object htmlAttributes = null)
+        {
+            // Return to native if true not passed
+            if (!useNativeUnobtrusiveAttributes)
+                return htmlHelper.RadioButtonFor(expression, value, htmlAttributes);
+
+            var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+            var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
+
+            var radioButton = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
+                htmlHelper.RadioButtonFor(expression, value, attributes));
+
+            return radioButton;
+        }
+        public static IHtmlString DropDownListFor2<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> expression,
+            bool useNativeUnobtrusiveAttributes,
+            IEnumerable<SelectListItem> selectList,
+            string optionLabel = null,
+            object htmlAttributes = null)
+        {
+            // Return to native if true not passed
+            if (!useNativeUnobtrusiveAttributes)
+                return htmlHelper.DropDownListFor(expression, selectList, optionLabel, htmlAttributes);
+
+            var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+            var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
+
+            IHtmlString dropDown = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
+                htmlHelper.DropDownListFor(expression, selectList, optionLabel, attributes));
+
+            return dropDown;
+        }
+        public static IHtmlString DropDownListForCodeInfo<TProperty>(this HtmlHelper<CodeInfo> htmlHelper,
+            Expression<Func<CodeInfo, TProperty>> expression,
+            bool useNativeUnobtrusiveAttributes,
+            IEnumerable<SelectListItem> selectList,
+            string optionLabel = null,
+            object htmlAttributes = null)
+        {
+            if (!useNativeUnobtrusiveAttributes)
+                return htmlHelper.DropDownListFor(m => m.Value, selectList, optionLabel, htmlAttributes);
+
+            var metadata = ModelMetadata.FromLambdaExpression(m => m, htmlHelper.ViewData);
+            var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, m => m, htmlAttributes, metadata);
+
+            var dropDown = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
+                htmlHelper.DropDownListFor(m => m.Value, selectList, optionLabel, attributes));
+
+            return dropDown;
         }
 
         public static CollectionItemNamePrefixScope BeginCollectionItem<TModel>(this HtmlHelper<TModel> html, string collectionName)

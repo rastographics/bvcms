@@ -297,7 +297,7 @@ namespace CmsWeb.Models
                         Married = p.MaritalStatus.Description,
                         FamilyId = p.FamilyId,
                         Image = p.PictureId == null ? Util.ServerLink("/images/unknown.jpg") :
-                            Util.ServerLink("/Image/{0}/160/200".Fmt(p.Picture.LargeId))
+                            Util.ServerLink("/Portrait/{0}/160/200".Fmt(p.Picture.LargeId))
                     };
             return q.Take(maximumRows);
         }

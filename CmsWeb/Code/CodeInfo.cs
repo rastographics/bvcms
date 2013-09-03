@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -57,7 +59,10 @@ namespace CmsWeb.Code
                         break;
                     default:
                         var getlist = cv.GetType().GetMethod(value + "List");
-                        Items = ((IEnumerable<CodeValueItem>)getlist.Invoke(cv, null)).ToSelect();
+                        if (getlist != null)
+                            Items = ((IEnumerable<CodeValueItem>)getlist.Invoke(cv, null)).ToSelect();
+                        else
+                            Items = new List<CodeValueItem>().ToSelect();
                         break;
                 }
             }
@@ -73,7 +78,7 @@ namespace CmsWeb.Code
             return i.Text;
         }
 
-        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
+        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track)
         {
             string altname = vm.Name + "Id";
             var attr = vm.GetAttribute<FieldInfoAttribute>();
@@ -82,12 +87,11 @@ namespace CmsWeb.Code
             var mid = modelProps.FirstOrDefault(ss => ss.Name == altname);
             if (mid == null)
                 return string.Empty;
-            var track = Attribute.IsDefined(vm, typeof(TrackChangesAttribute));
             if (track)
             {
                 var changes = new StringBuilder();
-                if(mid.PropertyType == typeof(int?))
-                    if(Value == "0")
+                if (mid.PropertyType == typeof(int?))
+                    if (Value == "0")
                         model.UpdateValue(changes, altname, null);
                     else
                         model.UpdateValue(changes, altname, Value.ToInt());
