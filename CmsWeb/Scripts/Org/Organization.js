@@ -71,6 +71,7 @@ $(function () {
         return false;
     });
     $(".bt").button();
+    $(".datepicker").datepicker();
 
     $('form table.grid > tbody > tr:even').addClass('alt');
 
@@ -508,8 +509,8 @@ $(function () {
                     args += "&bygroup=1";
                 if ($("#highlightsg").val())
                     args += "&highlight=" + $("#highlightsg").val();
-                if ($("#sgprefix").val())
-                    args += "&sgprefix=" + $("#sgprefix").val();
+                if ($("#sgprefixrs").val())
+                    args += "&sgprefix=" + $("#sgprefixrs").val();
                 window.open("/Reports/Rollsheet/" + args);
                 $(this).dialog("close");
             }
