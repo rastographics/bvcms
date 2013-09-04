@@ -12,6 +12,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Finance.Controllers;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
@@ -243,12 +244,12 @@ namespace CmsWeb.Models
                                     Addr = p.PrimaryAddress ?? "",
                                     recent = (from c in p.Contributions
                                               where c.ContributionStatusId == 0
-                                              orderby c.ContributionDate descending 
+                                              orderby c.ContributionDate descending
                                               select new RecentContribution()
-                                              { 
-                                                  Amount    = c.ContributionAmount, 
-                                                  DateGiven = c.ContributionDate, 
-                                                  CheckNo = c.CheckNo 
+                                              {
+                                                  Amount = c.ContributionAmount,
+                                                  DateGiven = c.ContributionDate,
+                                                  CheckNo = c.CheckNo
                                               }).Take(4).ToList()
                                 };
             return rp.Take(limit);
@@ -259,8 +260,8 @@ namespace CmsWeb.Models
             string First, Last;
             var qp = DbUtil.Db.People.AsQueryable();
             qp = from p in qp
-                where p.DeceasedDate == null
-                select p;
+                 where p.DeceasedDate == null
+                 select p;
 
             Util.NameSplit(q, out First, out Last);
             var hasfirst = First.HasValue();
@@ -274,34 +275,34 @@ namespace CmsWeb.Models
                 {
                     var id = Last.ToInt();
                     qp = from p in qp
-                        where
-                            p.PeopleId == id
-                            || p.CellPhone.Contains(phone)
-                            || p.Family.HomePhone.Contains(phone)
-                            || p.WorkPhone.Contains(phone)
-                        select p;
+                         where
+                             p.PeopleId == id
+                             || p.CellPhone.Contains(phone)
+                             || p.Family.HomePhone.Contains(phone)
+                             || p.WorkPhone.Contains(phone)
+                         select p;
                 }
                 else
                 {
                     var id = Last.ToInt();
                     qp = from p in qp
-                        where p.PeopleId == id
-                        select p;
+                         where p.PeopleId == id
+                         select p;
                 }
             }
             else
             {
                 qp = from p in qp
-                    where
-                        (
-                            (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                             || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
-                            &&
-                            (!hasfirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
-                             p.MiddleName.StartsWith(First)
-                             || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
-                            )
-                    select p;
+                     where
+                         (
+                             (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                              || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                             &&
+                             (!hasfirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
+                              p.MiddleName.StartsWith(First)
+                              || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                             )
+                     select p;
             }
             return qp;
         }
@@ -541,23 +542,48 @@ namespace CmsWeb.Models
             FinishBundle(bh);
             return bh.BundleHeaderId;
         }
+
+        private class ebcrecord
+        {
+            public string batch { get; set; }
+            public string routing { get; set; }
+            public string account { get; set; }
+            public string checkno { get; set; }
+            public string amount { get; set; }
+
+        }
+
         private static int? BatchProcessEbcfamily(CsvReader csv, DateTime date, int? fundid)
         {
             BundleHeader bh = null;
             var firstfund = FirstFundId();
             var fund = fundid ?? firstfund;
 
+            var list = new List<ebcrecord>();
             while (csv.ReadNextRecord())
+                list.Add(new ebcrecord()
+                {
+                    batch = csv[0],
+                    routing = csv[1],
+                    account = csv[2],
+                    checkno = csv[3],
+                    amount = csv[4],
+                });
+            var q = from r in list
+                    where r.batch.Contains("contribution")
+                    orderby r.batch
+                    select r;
+            var prevbatch = "";
+            foreach (var r in q)
             {
-                var routing = csv[0];
-                var account = csv[1];
-                var checkno = csv[2];
-                var amount = csv[3];
-
-                if (bh == null)
+                if (r.batch != prevbatch)
+                {
+                    if (bh != null)
+                        FinishBundle(bh);
                     bh = GetBundleHeader(date, DateTime.Now);
-
-                var bd = AddContributionDetail(date, fund, amount, checkno, routing, account);
+                    prevbatch = r.batch;
+                }
+                var bd = AddContributionDetail(date, fund, r.amount, r.checkno, r.routing, r.account);
                 bh.BundleDetails.Add(bd);
             }
             if (bh == null)
@@ -932,7 +958,7 @@ namespace CmsWeb.Models
                     bh = GetBundleHeader(date, DateTime.Now);
                     continue;
                 }
-                if(bh == null)
+                if (bh == null)
                     bh = GetBundleHeader(date, DateTime.Now);
 
                 var bd = AddContributionDetail(date, fund, amount, checkno, routing, account);
@@ -1025,7 +1051,7 @@ namespace CmsWeb.Models
                     bh = GetBundleHeader(date, DateTime.Now);
                     continue;
                 }
-                if(bh == null)
+                if (bh == null)
                     bh = GetBundleHeader(date, DateTime.Now);
 
                 var bd = new BundleDetail
