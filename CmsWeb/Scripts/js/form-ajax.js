@@ -105,7 +105,6 @@
                 data: data,
                 success: function (ret, status) {
                     if ($form.hasClass("modal")) {
-                        $form.addClass("hide");
                         $form.html(ret).ready(function () {
                             $form.removeClass("hide");
                             var top = ($(window).height() - $form.height()) / 2;

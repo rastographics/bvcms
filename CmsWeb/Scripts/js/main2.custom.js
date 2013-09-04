@@ -59,7 +59,7 @@ $(document).ready(function () {
         $(f).validate({
             submitHandler: function (form) {
                 $(form).modal("hide");
-                if (form.method == 'GET')
+                if (form.method.toUpperCase() === 'GET')
                     form.submit();
                 else {
                     var q = $(form).serialize();
@@ -233,8 +233,8 @@ $(function () {
             source: function (query, process) {
                 if (query === '---') {
                     data = [
-                        { order: "001", id: -1, line1: "People Search" },
-                        { order: "002", id: -2, line1: "Search Builder" },
+                        { order: "001", id: -1, line1: "Find Person" },
+                        { order: "002", id: -2, line1: "Advanced Search Builder" },
                         { order: "003", id: -3, line1: "Saved Searches" },
                         { order: "004", id: -4, line1: "Organization Search" }
                     ];
@@ -571,7 +571,6 @@ $(function () {
                 data: data,
                 success: function (ret, status) {
                     if ($form.hasClass("modal")) {
-                        $form.addClass("hide");
                         $form.html(ret).ready(function () {
                             $form.removeClass("hide");
                             var top = ($(window).height() - $form.height()) / 2;

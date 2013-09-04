@@ -42,6 +42,7 @@ namespace CmsWeb.Areas.Main.Controllers
             return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
         }
 
+        [GET("Export/Excel/{id:int}")]
         [GET("Export/Excel/{format}/{id:int}")]
         public ActionResult Excel(int id, string format, bool? titles)
         {

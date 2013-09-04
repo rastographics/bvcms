@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.Org.Models
         [DisplayName("Enrollment Date")]
         public DateTime? Enrollment { get; set; }
 
-        public bool? Pending { get; set; }
+        public bool Pending { get; set; }
 
         public string RegisterEmail { get; set; }
 

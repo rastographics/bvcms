@@ -35,8 +35,8 @@
             source: function (query, process) {
                 if (query === '---') {
                     data = [
-                        { order: "001", id: -1, line1: "People Search" },
-                        { order: "002", id: -2, line1: "Search Builder" },
+                        { order: "001", id: -1, line1: "Find Person" },
+                        { order: "002", id: -2, line1: "Advanced Search Builder" },
                         { order: "003", id: -3, line1: "Saved Searches" },
                         { order: "004", id: -4, line1: "Organization Search" }
                     ];

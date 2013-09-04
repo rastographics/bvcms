@@ -55,11 +55,6 @@ namespace CmsWeb.Controllers
         {
             return new PictureResult(id);
         }
-        [GET("Portrait/{id:int}/{w:int?}/{h:int?}")]
-        public ActionResult Portrait(int id, int? w, int? h)
-        {
-            return new PictureResult(id, portrait: true);
-        }
 		public ActionResult About()
 		{
 			return View();

@@ -51,8 +51,8 @@
     });
     $("a.editaddr").live("click", function (ev) {
         ev.preventDefault();
-        $("#edit-address").css({"margin-top":"", "top": ""});
-        $("#edit-address").load($(this).attr("href"), {}, function () {
+        $("#edit-address").css({"margin-top":"", "top": ""})
+        .load($(this).attr("href"), {}, function () {
             var modal = $(this);
             modal.modal("show");
             modal.on('hidden', function () {
@@ -153,10 +153,11 @@
 
     $("form.ajax a.membertype").live("click", function (ev) {
         ev.preventDefault();
-        $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
+        $("#member-dialog").css({ 'margin-top': '', 'top': '' })
+            .load($(this).attr("href"), {}, function () {
             $(this).modal("show");
             $(this).on('hidden', function () {
-                $(this).remove();
+                $(this).empty();
             });
         });
     });

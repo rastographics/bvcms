@@ -7,7 +7,7 @@
         $(f).validate({
             submitHandler: function (form) {
                 $(form).modal("hide");
-                if (form.method == 'GET')
+                if (form.method.toUpperCase() === 'GET')
                     form.submit();
                 else {
                     var q = $(form).serialize();

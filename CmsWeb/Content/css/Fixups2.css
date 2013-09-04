@@ -561,7 +561,25 @@ label.error {
         -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
         box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
     }
+
 .modal textarea {
-width: 370px;
-height: 150px;
+    width: 370px;
+    height: 150px;
+}
+
+#conditionsList header select {
+    background: #ccc;
+    font-size: inherit;
+    -webkit-appearance: menulist;
+    -moz-appearance: menulist;
+}
+
+#conditionsList header label:after {
+    content: none;
+}
+#conditionsList select {
+width: 80px;
+}
+#conditionsList header label {
+text-transform: inherit;
 }

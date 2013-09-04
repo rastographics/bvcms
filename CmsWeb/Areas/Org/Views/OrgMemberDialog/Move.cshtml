@@ -1,35 +1,33 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.OrgMemberMoveModel
-<form class="form-horizontal ajax" method="POST">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">x</a>
-        <h4>@Model.OrgName</h4>
-        <h5>Moving @Model.Name</h5>
-    </div>
-    <div class="modal-body">
-        @Html.HiddenFor(m => m.OrgId)
-        @Html.HiddenFor(m => m.PeopleId)
-        @Html.TextBox("orgsearch") 
-        <a id="orgsearchbtn" href="/OrgMemberDialog2/MoveResults" class="btn ajax">Search for Organization</a>
-        <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("MoveOrgMember")'>help</a>
-        @{ var count = Model.Count(); }
-        <p>
-            @if (count > 10)
-            {
-                @Model.Pager
-            }
-            Click a Name below to Select an Organization to Move to
-        </p>
-        @foreach (var o in Model.OrgMoveList())
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h4>@Model.OrgName</h4>
+    <h5>Moving @Model.Name</h5>
+</div>
+<div class="modal-body">
+    @Html.HiddenFor(m => m.OrgId)
+    @Html.HiddenFor(m => m.PeopleId)
+    @Html.TextBox("orgsearch")
+    <a id="orgsearchbtn" href="/OrgMemberDialog2/MoveResults" class="btn ajax">Search for Organization</a>
+    <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("MoveOrgMember")'>help</a>
+    @{ var count = Model.Count(); }
+    <p>
+        @if (count > 10)
         {
-            <div><a class="movemember" title="@o.Tip" href="/OrgMemberDialog2/MoveSelect/@o.FromOrgId/@o.PeopleId/@o.ToOrgId">@o.OrgName</a></div>
-            <div class="indent"><i>@Html.Raw(o.Tip)</i></div>
+            @Model.Pager
         }
-        <div class="pagination pagination-mini">
-            @Html.Partial("Pager3", Model.Pager)
-        </div>
+        Click a Name below to Select an Organization to Move to
+    </p>
+    @foreach (var o in Model.OrgMoveList())
+    {
+        <div><a class="movemember" title="@o.Tip" href="/OrgMemberDialog2/MoveSelect/@o.FromOrgId/@o.PeopleId/@o.ToOrgId">@o.OrgName</a></div>
+        <div class="indent"><i>@Html.Raw(o.Tip)</i></div>
+    }
+    <div class="pagination pagination-mini">
+        @Html.Partial("Pager3", Model.Pager)
     </div>
-    <div class="modal-footer">
-        <a href="/OrgMemberDialog2/Display/@Model.OrgId/@Model.PeopleId" class="btn ajax">Cancel Move</a>
-    </div>
-</form>
+</div>
+<div class="modal-footer">
+    <a href="/OrgMemberDialog2/Display/@Model.OrgId/@Model.PeopleId" class="btn ajax">Cancel Move</a>
+</div>

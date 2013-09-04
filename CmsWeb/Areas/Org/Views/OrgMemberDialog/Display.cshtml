@@ -1,78 +1,76 @@
 ﻿@using CmsData
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.OrgMemberModel
-<form class="form-horizontal ajax" method="POST">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">x</a>
-        <h4>@Model.OrgName</h4>
-        <h5>@Model.Name</h5>
-    </div>
-    <div class="modal-body">
-        <div class="tabbable group">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#memberdata" data-toggle="tab">Member Data</a></li>
-                <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane active" id="memberdata">
-                    <a href="/TransactionHistory/Index/@Model.PeopleId?oid=@Model.OrgId" target="_blank" 
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h4>@Model.OrgName</h4>
+    <h5>@Model.Name</h5>
+</div>
+<div class="modal-body">
+    <div class="tabbable group">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#memberdata" data-toggle="tab">Member Data</a></li>
+            <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="memberdata">
+                <a href="/TransactionHistory/Index/@Model.PeopleId?oid=@Model.OrgId" target="_blank" 
                        style="font-family: Courier New">Attendance</a>: @Model.AttendStr
-                    <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("UpdateOrgMember")'>help</a>
-                    <fieldset class="display">
-                        @* These need to be the first two *@
-                        @Html.HiddenFor(m => m.OrgId)
-                        @Html.HiddenFor(m => m.PeopleId)
+                <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("UpdateOrgMember")'>help</a>
+                <fieldset class="display">
+                    @* These need to be the first two *@
+                    @Html.HiddenFor(m => m.OrgId)
+                    @Html.HiddenFor(m => m.PeopleId)
 
-                        @Html.DisplayFor(m => m.MemberType)
-                        @Html.DisplayFor(m => m.InactiveDate)
-                        @Html.DisplayFor(m => m.Enrollment)
-                        @Html.DisplayFor(m => m.Pending)
-                        @if (Model.RegisterEmail.HasValue())
+                    @Html.DisplayFor(m => m.MemberType)
+                    @Html.DisplayFor(m => m.InactiveDate)
+                    @Html.DisplayFor(m => m.Enrollment)
+                    @Html.DisplayFor(m => m.Pending)
+                    @if (Model.RegisterEmail.HasValue())
+                    {
+                        @Html.DisplayFor(m => m.RegisterEmail)
+                    }
+                    @if (Model.Setting.AskVisible("AskRequest"))
+                    {
+                        @Html.DisplayFor(m => m.Request)
+                    }
+                    @if (Model.Grade.HasValue)
+                    {
+                        @Html.DisplayFor(m => m.Grade)
+                    }
+                    @if (Model.Setting.AskVisible("AskTickets"))
+                    {
+                        @Html.DisplayFor(m => m.Tickets)
+                    }
+                    @if (Model.Amount.HasValue)
+                    {
+                        @Html.DisplayFor(m => m.Amount)
+                        @Html.DisplayFor(m => m.AmountDue)
+                        if (Model.AmountDue > 0)
                         {
-                            @Html.DisplayFor(m => m.RegisterEmail)
+                        @Html.DisplayFor(m => m.PayLink)
                         }
-                        @if (Model.Setting.AskVisible("AskRequest"))
-                        {
-                            @Html.DisplayFor(m => m.Request)
-                        }
-                        @if (Model.Grade.HasValue)
-                        {
-                            @Html.DisplayFor(m => m.Grade)
-                        }
-                        @if (Model.Setting.AskVisible("AskTickets"))
-                        {
-                            @Html.DisplayFor(m => m.Tickets)
-                        }
-                        @if (Model.Amount.HasValue)
-                        {
-                            @Html.DisplayFor(m => m.Amount)
-                            @Html.DisplayFor(m => m.AmountDue)
-                            if (Model.AmountDue > 0)
-                            {
-                            @Html.DisplayFor(m => m.PayLink)
-                            }
-                        }
-                        @if (Model.Setting.AskVisible("AskSize"))
-                        {
-                            @Html.DisplayFor(m => m.ShirtSize)
-                        }
-                        @Html.DisplayFor(m => m.UserData, "TextArea")
-                    </fieldset>
-                </div>
-                <div class="tab-pane" id="membergroups">
-                        @foreach (var mt in Model.Organization.MemberTags.OrderBy(t => t.Name))
-                        { 
-                            <input href="/OrgMemberDialog2/SmallGroupChecked/@Model.OrgId/@Model.PeopleId/@mt.Id" class="ckbox" type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mt.Id) ? "checked='checked'" : "") />
-                            <span>@mt.Name</span><br/>
-                        }
-                </div>
+                    }
+                    @if (Model.Setting.AskVisible("AskSize"))
+                    {
+                        @Html.DisplayFor(m => m.ShirtSize)
+                    }
+                    @Html.DisplayFor(m => m.UserData, "TextArea")
+                </fieldset>
+            </div>
+            <div class="tab-pane" id="membergroups">
+                @foreach (var mt in Model.Organization.MemberTags.OrderBy(t => t.Name))
+                { 
+                    <input href="/OrgMemberDialog2/SmallGroupChecked/@Model.OrgId/@Model.PeopleId/@mt.Id" class="ckbox" type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mt.Id) ? "checked='checked'" : "") />
+                    <span>@mt.Name</span><br />
+                }
             </div>
         </div>
     </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
-        <a id="dropmember" href="/OrgMemberDialog2/Drop" class="btn btn-danger">Drop</a>
-        <a href="/OrgMemberDialog2/Move/@Model.OrgId/@Model.PeopleId" class="btn btn-warning ajax">Move</a>
-        <a href="/OrgMemberDialog2/Edit" class="btn btn-primary ajax">Edit</a>
-    </div>
-</form>
+</div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+    <a id="dropmember" href="/OrgMemberDialog2/Drop" class="btn btn-danger">Drop</a>
+    <a href="/OrgMemberDialog2/Move/@Model.OrgId/@Model.PeopleId" class="btn btn-warning ajax">Move</a>
+    <a href="/OrgMemberDialog2/Edit" class="btn btn-primary ajax">Edit</a>
+</div>

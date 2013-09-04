@@ -5,34 +5,35 @@
 <div id="QueryConditionSelect" class='modal fade hide' data-width='900'>
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
-        <h4>Select Condition</h4>
     </div>
     <div class="modal-body">
         <div class="tabbable tabs-left">
             <ul class="nav nav-tabs">
-            @for(var i = 0; i< cats.Count; i++)
-            {
-                var c = cats[i];
-                <li @(i==0? "class=active" : "")><a href='#@c.Name' data-toggle="tab">@c.Title</a></li>
-            }
+                <li><b><a style="color:black">Category</a></b></li>
+                @for(var i = 0; i< cats.Count; i++)
+                {
+                    var c = cats[i];
+                    <li @(i==0? "class=active" : "")><a href='#@c.Name' data-toggle="tab">@c.Title</a></li>
+                }
             </ul>
             <div class="tab-content">
-            @for(var i = 0; i< cats.Count; i++)
-            { 
-                var c = cats[i];
-                <div class="tab-pane @(i==0? "active" : "")" id="@c.Name">
-                    <p>Click on the name of the condition to select it, click on the description to the right for help about the condition.</p>
-                    <dl class="dl-horizontal">
-                        @foreach (var p in c.Fields)
-                        { 
-                            <dt class="FieldLink"><a id='@p.Name' href="#">@p.Title</a></dt>
-                            <dd>
-                                <a class="help" href="https://www.bvcms.com/DocDialog/QB-@p.Name">@p.Description</a>
-                            </dd>
-                        }
-                    </dl>
-                </div>
-            }
+                @for(var i = 0; i< cats.Count; i++)
+                { 
+                    var c = cats[i];
+                    <div class="tab-pane @(i==0? "active" : "")" id="@c.Name">
+                        <dl class="dl-horizontal">
+                            <dt class="FieldLink">Choose a Condition</dt>
+                            <dd><b>Click these for more help on a condition</b></dd>
+                            @foreach (var p in c.Fields)
+                            { 
+                                <dt class="FieldLink"><a id='@p.Name' href="#">@p.Title</a></dt>
+                                <dd>
+                                    <a class="help" href="https://www.bvcms.com/DocDialog/QB-@p.Name">@p.Description</a>
+                                </dd>
+                            }
+                        </dl>
+                    </div>
+                }
             </div>
         </div>
     </div>
