@@ -11,23 +11,22 @@
     <BDate Title="Birthdate" Type="Date">Searchs by Date, can do greater less etc.</BDate>
     <DaysTillBirthday Title="Days Till Birthday" Type="Integer">Number of days until next birthday (if known.) Always less than 365.</DaysTillBirthday>
     <DaysTillAnniversary Title="Days Till Anniversary" Type="Integer">Number of days until next annivesary (if known.) Always less than 365.</DaysTillAnniversary>
+    <WeddingDate Title="Wedding Date" Type="StringEqual">Searchs by exact date (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)</WeddingDate>
     <Grade Type="NullInteger">Grade in school</Grade>
-    <SchoolOther Title="School" Type="CodeStr" DataSource="Schools">Name of Elementary, Middle or High School Attended, if applicable</SchoolOther>
-    <EmployerOther Title="Employer" Type="CodeStr" DataSource="Employers">Name of Employer, if applicable</EmployerOther>
-    <OccupationOther Title="Occupation" Type="CodeStr" DataSource="Occupations">Occupation, if applicable</OccupationOther>
-    <HasPicture Title="Has Picture" Type="Bit" DataValueField="IdCode">Indication of whether picture has been uploaded for this person</HasPicture>
-    <DeceasedDate Title="Deceased Date" Type="Date">Todo: explain how unknown dates work</DeceasedDate>
-    <WidowedDate Title="Widowed Date" Type="Date">Todo: explain how unknown dates work</WidowedDate>
     <FirstName Title="First Name" Type="String">Searchs all or part of First Name</FirstName>
     <LastName Title="Last Name" Type="String">Searchs all or part of Lastname</LastName>
     <NickName Title="Nick Name" Type="String">Searchs all or part of "goes by" Name</NickName>
     <MaidenName Title="Maiden Name" Type="String">Searchs all or part of Maiden Name</MaidenName>
     <MiddleName Title="Middle Name" Type="String">Searchs all or part of Middle Name</MiddleName>
+    <SchoolOther Title="School" Type="CodeStr" DataSource="Schools">Name of Elementary, Middle or High School Attended, if applicable</SchoolOther>
+    <EmployerOther Title="Employer" Type="CodeStr" DataSource="Employers">Name of Employer, if applicable</EmployerOther>
+    <OccupationOther Title="Occupation" Type="CodeStr" DataSource="Occupations">Occupation, if applicable</OccupationOther>
+    <HasPicture Title="Has Picture" Type="Bit" DataValueField="IdCode">Indication of whether picture has been uploaded for this person</HasPicture>
+    <DeceasedDate Title="Deceased Date" Type="Date">Use empty string to find not deceased</DeceasedDate>
+    <WidowedDate Title="Widowed Date" Type="Date">Use empty string to find not widowed</WidowedDate>
     <TitleCode Title="Title" Type="CodeStr" DataSource="TitleCodes" DataValueField="Code">Codes for Mr. Dr. Mrs. Ms. etc.</TitleCode>
-    <WeddingDate Title="Wedding Date" Type="StringEqual">Searchs by exact date (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)</WeddingDate>
     <EmailAddress Title="Email" Type="String">Email address</EmailAddress>
     <EmailAddress2 Title="Email2" Type="String">Email address 2</EmailAddress2>
-    <PeopleId Type="Integer">Advanced use</PeopleId>
   </Personal>
   <Family>
     <PositionInFamilyId Title="Position in Family" Type="Code" DataSource="FamilyPositionCodes" DataValueField="IdCode">Search by codes for Primary Adult, Secondary Adult or Child</PositionInFamilyId>
@@ -39,9 +38,10 @@
     <FamilyHasChildrenAged3 Title="Family Has M/F Children Aged Range" DisplayAs="ChildrenAged({0})" Type="Code" QuartersLabel="Age Range" Params="Quarters" DataSource="GenderCodes" DataValueField="IdCode">A member of the family of specified age range inclusive (like 10-16 ) is Male or Female</FamilyHasChildrenAged3>
     <IsHeadOfHousehold Title="Is Head of Household" Type="Bit" DataValueField="IdCode">This person is the head of the family household</IsHeadOfHousehold>
     <HasRelatedFamily Title="Has Related Family" Type="Bit" DataValueField="IdCode">Indication of whether this person's family is related to another family</HasRelatedFamily>
+    <FamHasPrimAdultChurchMemb Title="Family Has Primary Adult Church Member" Type="Bit" DataValueField="IdCode">Indicator that individual has another primary adult family member who is a member of the church.</FamHasPrimAdultChurchMemb>
     <FamilyId Title="Family" Type="Integer">Search for entire family</FamilyId>
   </Family>
-  <ContactInfo Title="Contact Info">
+  <Address Title="Address">
     <PrimaryResCode Title="Resident Code" Type="Code" DataSource="ResidentCodes" DataValueField="IdCode">Codes for address: Metro, Marginal, Non-resident, Unable to locate</PrimaryResCode>
     <PrimaryZip Title="Zip" Type="String">Primary Zip Code</PrimaryZip>
     <PrimaryCity Title="City" Type="String">Primary City</PrimaryCity>
@@ -49,6 +49,9 @@
     <PrimaryAddress Title="Address" Type="String">Searches by first line of primary address.</PrimaryAddress>
     <PrimaryAddress2 Title="Address line two" Type="String">Searches by second line of primary address</PrimaryAddress2>
     <PrimaryCountry Title="Country" Type="String">Primary Country</PrimaryCountry>
+    <PrimaryBadAddrFlag Title="Bad Address Flag" Type="Bit" DataValueField="IdCode">Address is flagged as invalid</PrimaryBadAddrFlag>
+  </Address>
+  <ContactInfo Title="Contact Info">
     <HomePhone Type="String">Searches by home phone.</HomePhone>
     <CellPhone Type="String">Searches by cell phone.</CellPhone>
     <WorkPhone Type="String">Searches by work phone.</WorkPhone>
@@ -56,17 +59,12 @@
     <DoNotVisitFlag Title="Do Not Visit" Type="Bit" DataValueField="IdCode">Person has asked not to be visited.</DoNotVisitFlag>
     <DoNotMailFlag Title="Do Not Mail" Type="Bit" DataValueField="IdCode">Person has asked to be removed from mailing list or we do not have a correct address for them.</DoNotMailFlag>
     <DoNotPublishPhones Title="Do Not Publish Phones" Type="NullBit" DataValueField="IdCode">Person has asked to not display phones on directories</DoNotPublishPhones>
-    <PrimaryBadAddrFlag Title="Bad Address Flag" Type="Bit" DataValueField="IdCode">Address is flagged as invalid</PrimaryBadAddrFlag>
     <HasInvalidEmailAddress Title="Has InvalidEmailAddress" Type="Bit" DisplayAs="HasInvalidEmailAddress" DataValueField="IdCode">Indicates has a valid email address</HasInvalidEmailAddress>
     <SendEmailAddress1 Title="Send EmailAddress1" Type="NullBit" DataValueField="IdCode"/>
     <SendEmailAddress2 Title="Send EmailAddress2" Type="NullBit" DataValueField="IdCode"/>
     <ReceiveSms Title="Receive SMS" Type="Bit" DataValueField="IdCode">Indicates Opt-in status</ReceiveSms>
   </ContactInfo>
   <Ministry>
-    <EntryPointId Title="Entry Point" Type="NullCode" DataSource="EntryPoints" DataValueField="IdCode">Initial Contact Point with Church</EntryPointId>
-    <OriginId Title="Record Origin" Type="NullCode" DataSource="Origins" DataValueField="IdCode">Record Originated from what source?</OriginId>
-    <InterestPointId Title="Interest Point" Type="NullCode" DataSource="InterestPoints" DataValueField="IdCode">How did you hear about us?</InterestPointId>
-    <MemberAnyChurch Title="Member of Any Church" Type="NullBit" DataValueField="IdCode"> From decision card indicating membership in another church. May be unknown (null) </MemberAnyChurch>
     <HasTaskWithName Title="Has Task about person" Type="StringEqual">Selects people who have an incomplete task about them where the task description contains the string.</HasTaskWithName>
     <HasIncompleteTask Title="Has Incomplete Task" Type="StringEqual">Selects people who have not completed a delegated task where the description contains the string.</HasIncompleteTask>
     <DaysSinceContact Title="Days Since Last Contact" Type="Integer"> Selects people based on number of days since last contacted. Only selects those with any contact </DaysSinceContact>
@@ -81,35 +79,27 @@
     <InfoBecomeAChristian Title="Info on Becoming a Christian" Type="Bit" DataValueField="IdCode">From checkbox on decision card, desires more information on how to become a Christian.</InfoBecomeAChristian>
     <InterestedInJoining Title="Interested In Joining" Type="Bit" DataValueField="IdCode">From a checkbox on a decision card, interested in joining the church.</InterestedInJoining>
     <PleaseVisit Title="Please Visit" Type="Bit" DataValueField="IdCode">From a checkbox on a decision card, desires a visit from a minister.</PleaseVisit>
-    <PmmBackgroundCheckStatus Title="PMM Background Check" Type="CodeStr" DisplayAs="PmmBackgroundCheckStatus({0}, {1})" QuartersLabel="Username or PeopleId" Params="Quarters,PmmLabels" DataValueField="IdCode" DataSource="BackgroundStatuses">Find people with a Background Check</PmmBackgroundCheckStatus>
   </Ministry>
-  <ChurchStatus Title="Church Status">
+  <Membership>
     <MemberStatusId Title="Church Member Status" Type="Code" DisplayAs="ChurchMemberStatus" DataSource="MemberStatusCodes" DataValueField="IdCode">Codes for church membership status: Previous, Pending, Member, Non-member</MemberStatusId>
-    <StatusFlag Title="Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">Search for Status Flags (computed in nightly batch from saved searches)</StatusFlag>
     <CampusId Title="Campus" Type="NullCode" DataSource="AllCampuses0" DataValueField="IdCode">Codes Main Campus</CampusId>
-    <DecisionDate Title="Decision Date" Type="Date"> Date indivdual made a decision to join the church. Todo: explain how unknown dates work </DecisionDate>
+    <DecisionDate Title="Decision Date" Type="Date"> Date indivdual made a decision to join the church.</DecisionDate>
     <DecisionTypeId Title="Decision Type" Type="NullCode" DataSource="DecisionTypeList" DataValueField="IdCode">Type of decision during counseling: POF/Baptism, POF not for Membership, Letter, Statement, Statement Requiring Baptism</DecisionTypeId>
     <RecentDecisionType Title="Recent Decision Type" Type="Code" DisplayAs="RecentDecisionType({0})" Params="Days" DataSource="DecisionTypeList" DataValueField="IdCode">A decision of type was made in last # days</RecentDecisionType>
     <RecentJoinChurch Title="Recent Join Church" Type="Bit" DisplayAs="RecentJoinedChurch({0})" Params="Days" DataValueField="IdCode">Recently Joined Church # days ago</RecentJoinChurch>
-    <JoinDate Title="Join Date" Type="Date"> Date membership steps were completed. Todo: explain how unknown dates work </JoinDate>
+    <JoinDate Title="Join Date" Type="Date"> Date membership steps were completed.</JoinDate>
     <JoinCodeId Title="Join Type" Type="Code" DataSource="JoinTypeList" DataValueField="IdCode">Codes to indicate method of joining</JoinCodeId>
-    <OtherPreviousChurch Title="Former Church" Type="String">Church before joining Us</OtherPreviousChurch>
-    <DropDate Title="Drop Date" Type="Date"> Date individual is dropped from church membership role. Todo: explain how unknown dates work </DropDate>
+    <DropDate Title="Drop Date" Type="Date"> Date individual is dropped from church membership role.</DropDate>
     <DropCodeId Title="Drop Type" Type="Code" DataSource="DropTypeList" DataValueField="IdCode">Codes to indicate reason for dropping record from church membership: Duplicate, Administrative, Deceased, Another SB Church, Request, Another Denomination</DropCodeId>
-    <OtherNewChurch Title="New Church" Type="String">Destination Church after leaving Us</OtherNewChurch>
-    <NewMemberClassDate Title="New Member Class Date" Type="Date" DisplayAs="NewMemberClassDate">Todo: explain how unknown dates work</NewMemberClassDate>
-    <NewMemberClassStatusId Title="New Member Class Status" DisplayAs="NewMemberClassStatusId" Type="NullCode" DataSource="NewMemberClassStatusList" DataValueField="IdCode">New Member Class Status: Pending, Attended, Exempted Child, Admin Approval, Grandfathered</NewMemberClassStatusId>
     <BaptismDate Title="Baptism Date" Type="Date">Baptism Date</BaptismDate>
     <BaptismTypeId Title="Baptism Type" Type="NullCode" DataSource="BaptismTypeList" DataValueField="IdCode">Baptism Type: Original, Subsequent, Biological, Non-Member, Required</BaptismTypeId>
     <BaptismSchedDate Title="Baptism Scheduled Date" Type="Date">Baptism Scheduled Date</BaptismSchedDate>
     <BaptismStatusId Title="Baptism Status" Type="NullCode" DataSource="BaptismStatusList" DataValueField="IdCode">Baptism Status: Scheduled, Not Scheduled, Completed, Canceled</BaptismStatusId>
+    <NewMemberClassDate Title="New Member Class Date" Type="Date" DisplayAs="NewMemberClassDate">New Member Class completed date</NewMemberClassDate>
+    <NewMemberClassStatusId Title="New Member Class Status" DisplayAs="NewMemberClassStatusId" Type="NullCode" DataSource="NewMemberClassStatusList" DataValueField="IdCode">New Member Class Status: Pending, Attended, Exempted Child, Admin Approval, Grandfathered</NewMemberClassStatusId>
     <LetterDateRequested Title="Letter Requested Date" Type="Date">Letter Requested Date</LetterDateRequested>
     <LetterStatusId Title="Letter Status" Type="NullCode" DataSource="LetterStatusCodes" DataValueField="IdCode">Membership Letter Status: First Request, Second Request, Non-Responsive, Complete</LetterStatusId>
-    <FamHasPrimAdultChurchMemb Title="Family Has Primary Adult Church Member" Type="Bit" DataValueField="IdCode">Indicator that individual has another primary adult family member who is a member of the church.</FamHasPrimAdultChurchMemb>
-    <EnvelopeOptionsId Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">Envelope Options</EnvelopeOptionsId>
-    <ContributionOptionsId Title="Contribution Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">Contribution Options</ContributionOptionsId>
-    <HasMemberDocs Title="Has Membership Documents" Type="Bit" DataValueField="IdCode">Indicates Membership Documents have been uploaded</HasMemberDocs>
-  </ChurchStatus>
+  </Membership>
   <Enrollments>
     <InBFClass Title="In Bible Fellowship" Type="Bit" DataValueField="IdCode">Currently enrolled in a Bible Fellowship Class</InBFClass>
     <IsMemberOf Type="Bit" DisplayAs="IsMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">Selects members of organization(s). Specify the Program or Program/Division or Program/Division/Organization</IsMemberOf>
@@ -126,11 +116,10 @@
     <RecentRegistrationType Title="Recent Registration Type" Type="Code" DisplayAs="RecentOrgJoinDate({0}, {1}, {2}, {3}, {4})" Params="Days,Program,Division,Organization,OrgType" DataSource="RegistrationTypes99" DataValueField="IdCode">Selects members of an organization with the RegistrationType who joined it before or after so many days ago. Specify the Program or Program/Division or Program/Division/Organization.</RecentRegistrationType>
     <OrgJoinDateCompare Title="Org Join Date Compared to Field" Type="DateField" DisplayAs="OrgJoinDateCompared({0}, {1}, {2})" Params="Program,Division,Organization" DataSource="DateFields" DataValueField="Code">Selects members of an organization where the date they joined the organization is compared with another system date such as Church Join Date (less than, greater than etc..)</OrgJoinDateCompare>
     <SmallGroup Title="In Small Group" Type="StringEqualOrStartsWith" DisplayAs="SmallGroup({0}, {1}, {2})" Params="Program,Division,Organization">Person is in a small group named such</SmallGroup>
-    <HaveVolunteerApplications Title="Has Volunteer Applications" Type="Bit" DataValueField="IdCode">Indicates Volunteer Applications are in the church system</HaveVolunteerApplications>
-    <VolunteerApprovalCode Title="Volunteer Approval Code" Type="Code" DataSource="VolunteerCodes" DataValueField="IdCode">Indication of Volunteer Approval: None, Standard or Leader</VolunteerApprovalCode>
-    <VolAppStatusCode Title="Volunteer App Status Code" Type="Code" DataSource="VolApplicationStatusCodes" DataValueField="IdCode">Indication of Volunteer Application Status</VolAppStatusCode>
-    <VolunteerProcessedDateMonthsAgo Title="Volunteer Approved months ago" Type="NullInteger">Indicate number of months ago volunteer application was approved</VolunteerProcessedDateMonthsAgo>
     <NumberOfMemberships Title="Number of Memberships" Type="NullInteger" DisplayAs="NumMemberships({0}, {1}, {2}, {3})" Params="Program,Division,Organization,Schedule">Has a number of memberships in a prog, div, org, sched</NumberOfMemberships>
+    <MedicalLength Title="Length of Medical / Allergies Info" Type="Integer">Medical / Allergies Info Greater than or less than number of characters</MedicalLength>
+  </Enrollments>
+  <CurrentOrg>
     <HasBalanceInCurrentOrg Title="In Current Organization, Has Balance" Type="Bit" DataValueField="IdCode">Selects everyone who is enrolled in the last organization you worked with, where AmountPaid &gt; 0 and &lt; Amount</HasBalanceInCurrentOrg>
     <InCurrentOrg Title="In Current Organization" Type="Bit" DataValueField="IdCode">Selects everyone who is enrolled in the last organization you worked with. (used internally, but you can too if it will help you)</InCurrentOrg>
     <InactiveCurrentOrg Title="Inactive in Current Organization" Type="Bit" DataValueField="IdCode">Selects everyone who is enrolled but inactive in the last organization you worked with. (used internally, but you can too if it will help you)</InactiveCurrentOrg>
@@ -138,8 +127,14 @@
     <PreviousCurrentOrg Title="Previous Member in Current Organization" Type="Bit" DataValueField="IdCode">Selects everyone who was a previous member (but not currently a member) of the last organization you worked with. (used internally, but you can too if it will help you)</PreviousCurrentOrg>
     <LeadersUnderCurrentOrg Title="Leaders under current org" Type="Bit" DataValueField="IdCode">People that are a leader of an organization  in this org or in a child org of the current organization</LeadersUnderCurrentOrg>
     <MembersUnderCurrentOrg Title="Members under current org" Type="Bit" DataValueField="IdCode">People that are a Member of an organization  in this org or in a child org of the current organization</MembersUnderCurrentOrg>
-    <MedicalLength Title="Length of Medical / Allergies Info" Type="Integer">Medical / Allergies Info Greater than or less than number of characters</MedicalLength>
-  </Enrollments>
+  </CurrentOrg>
+  <Volunteer>
+    <HaveVolunteerApplications Title="Has Volunteer Applications" Type="Bit" DataValueField="IdCode">Indicates Volunteer Applications are in the church system</HaveVolunteerApplications>
+    <VolunteerApprovalCode Title="Volunteer Approval Code" Type="Code" DataSource="VolunteerCodes" DataValueField="IdCode">Indication of Volunteer Approval: None, Standard or Leader</VolunteerApprovalCode>
+    <VolAppStatusCode Title="Volunteer App Status Code" Type="Code" DataSource="VolApplicationStatusCodes" DataValueField="IdCode">Indication of Volunteer Application Status</VolAppStatusCode>
+    <VolunteerProcessedDateMonthsAgo Title="Volunteer Approved months ago" Type="NullInteger">Indicate number of months ago volunteer application was approved</VolunteerProcessedDateMonthsAgo>
+    <PmmBackgroundCheckStatus Title="PMM Background Check" Type="CodeStr" DisplayAs="PmmBackgroundCheckStatus({0}, {1})" QuartersLabel="Username or PeopleId" Params="Quarters,PmmLabels" DataValueField="IdCode" DataSource="BackgroundStatuses">Find people with a Background Check</PmmBackgroundCheckStatus>
+  </Volunteer>
   <Attendance>
     <AttendMemberTypeAsOf Title="Member Type Attended As Of" Type="Code" DisplayAs="AttendanceTypeAsOf({0:d}, {1:d}, {2}, {3}, {4})" Params="StartDate,EndDate,Program,Division,Organization" DataSource="MemberTypeCodes" DataValueField="IdCode">Selects members of a Program, Program/Division or Program/Division/Organization by their member type and by a date range in which they attended</AttendMemberTypeAsOf>
     <RecentAttendMemberType Title="Recent Attended Member Type" Type="Code" DisplayAs="RecentAttendMemberType({0}, {1}, {2}, {3})" Params="Program,Division,Organization,Days" DataSource="MemberTypeCodes" DataValueField="IdCode">Selects members based on member type who have attended a Program, Program/Division or Program/Division/Organization looking back a specified number of days.</RecentAttendMemberType>
@@ -157,10 +152,10 @@
     <KidsRecentAttendCount Title="Kids Recent Attendance Count" Type="Integer" DisplayAs="KidsRecentAttendCount({0})" Params="Days">Selects people based on their kids attendance count for anything looking back a specified number of days.</KidsRecentAttendCount>
     <DaysBetween12Attendance Title="Days Between First/Second Attend" Type="Integer" DisplayAs="DaysBetween12Attendance({0}, {1}, {2}, {3})" Params="Days,Program,Division,Organization">Selects attendees based on # days between their first and second attendance. The first attendance is assumed to be the entry point in the church, probably worship. The second attendance can be specified to be within a Program, Program/Division or Program/Division/Organization for a specified date range.</DaysBetween12Attendance>
     <DaysAfterNthVisitDateRange Title="Attend Days After Nth Visit" Type="NullInteger" DisplayAs="DaysAfterNthVisitDateRange({0}, {1}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Quarters,Program,Division,Organization" QuartersLabel="Nth Visit Number">Selects attendees based on # days between their Nth Attendance during a specified date range and the next attendance in the specified prog/div/org. The nth attendance is not limited to the specified prog/div/org.</DaysAfterNthVisitDateRange>
-    <MeetingId Type="Integer">Advanced use</MeetingId>
-    <RegisteredForMeetingId Type="Integer">Advanced use</RegisteredForMeetingId>
   </Attendance>
   <Contributions>
+    <EnvelopeOptionsId Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">Envelope Options</EnvelopeOptionsId>
+    <ContributionOptionsId Title="Contribution Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">Contribution Options</ContributionOptionsId>
     <RecentContributionCount Title="Recent Contribution Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentContributionCount({0},{1})" Params="Days,Quarters">Must have Finance role for this to work.</RecentContributionCount>
     <RecentContributionAmount Title="Recent Contribution Amount" Type="Number" DisplayAs="RecentContributionAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">Must have Finance role for this to work.</RecentContributionAmount>
     <RecentPledgeCount Title="Recent Pledge Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentPledgeCount({0},{1})" Params="Days,Quarters">Must have Finance role for this to work.</RecentPledgeCount>
@@ -174,20 +169,30 @@
     <IsTopPledger Title="Recent Top Pledger" Type="Bit" DisplayAs="RecentTopPledger({0},{1})" Params="Days,Quarters" QuartersLabel="Top number" DataValueField="IdCode">Must have Finance role for this to work.</IsTopPledger>
     <HasManagedGiving Title="Has Managed Giving" Type="Bit" DisplayAs="Has Managed Giving" DataValueField="IdCode">People who have Managed Giving</HasManagedGiving>
   </Contributions>
-  <Miscellaneous>
-    <IncludeDeceased Title="Included Deceased" Type="Bit" DataValueField="IdCode">Allows you to specify whether to include deceased people in your query.</IncludeDeceased>
-    <ParentsOf Title="Parents Only" Type="Bit" DataValueField="IdCode">Include only the heads of household in the family of the people in the selection</ParentsOf>
-    <HasCurrentTag Title="Active Tag" Type="Bit" DataValueField="IdCode">Selects those who are in your 'Active Tag' at the time you run the query.</HasCurrentTag>
-    <HasMyTag Title="Tagged with" Type="Bit" DisplayAs="HasMyTag({0})" DataValueField="IdCode" Params="Tags">Selects everyone in the tag you specify.</HasMyTag>
-    <SavedQuery Title="Saved Searches" Type="Bit" DisplayAs="Searches({0})" Params="SavedQueryIdDesc" DataValueField="IdCode">Selects everyone within a specified Saved Search.</SavedQuery>
-    <RecActiveOtherChurch Title="Reg Other Church" Type="Bit" DataValueField="IdCode">Selects only those Registered children and indicated active in another church or not.</RecActiveOtherChurch>
-    <RecInterestedCoaching Title="Reg Interested Coaching" Type="Bit" DataValueField="IdCode">Selects only those Registered children and indicated interest in coaching.</RecInterestedCoaching>
-    <InOneOfMyOrgs Title="In one of my organizations" Type="Bit" DataValueField="IdCode">People that are a member of an organization that you are also a member of</InOneOfMyOrgs>
+  <ExtraValues>
     <PeopleExtra Title="ExtraValue Code" Type="CodeStr" DataSource="ExtraValues">ExtraValue field = dropdown list of values</PeopleExtra>
     <PeopleExtraData Title="ExtraValueText" Type="String" DisplayAs="ExtraValueText({0})" QuartersLabel=" Name" Params="Quarters">ExtraValue field = (field:value) where value is some value contained in the Data</PeopleExtraData>
     <PeopleExtraDate Title="ExtraValueDate" Type="Date" DisplayAs="ExtraValueDate({0})" QuartersLabel=" Name" Params="Quarters">ExtraValue field = (value)</PeopleExtraDate>
     <PeopleExtraInt Title="ExtraValueInt" Type="Integer" DisplayAs="ExtraValueInt({0})" QuartersLabel=" Name" Params="Quarters">ExtraValue field = (field:value)</PeopleExtraInt>
     <HasPeopleExtraField Title="HasExtraValueField" Type="StringEqual">Has an extra value field with this name</HasPeopleExtraField>
+  </ExtraValues>
+  <Miscellaneous>
+    <IncludeDeceased Title="Included Deceased" Type="Bit" DataValueField="IdCode">Allows you to specify whether to include deceased people in your query.</IncludeDeceased>
+    <ParentsOf Title="Parents Only" Type="Bit" DataValueField="IdCode">Include only the heads of household in the family of the people in the selection</ParentsOf>
+    <StatusFlag Title="Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">Search for Status Flags (computed in nightly batch from saved searches)</StatusFlag>
+    <HasCurrentTag Title="Active Tag" Type="Bit" DataValueField="IdCode">Selects those who are in your 'Active Tag' at the time you run the query.</HasCurrentTag>
+    <HasMyTag Title="Tagged with" Type="Bit" DisplayAs="HasMyTag({0})" DataValueField="IdCode" Params="Tags">Selects everyone in the tag you specify.</HasMyTag>
+    <OtherPreviousChurch Title="Former Church" Type="String">Church before joining Us</OtherPreviousChurch>
+    <OtherNewChurch Title="New Church" Type="String">Destination Church after leaving Us</OtherNewChurch>
+    <HasMemberDocs Title="Has Membership Documents" Type="Bit" DataValueField="IdCode">Indicates Membership Documents have been uploaded</HasMemberDocs>
+    <EntryPointId Title="Entry Point" Type="NullCode" DataSource="EntryPoints" DataValueField="IdCode">Initial Contact Point with Church</EntryPointId>
+    <OriginId Title="Record Origin" Type="NullCode" DataSource="Origins" DataValueField="IdCode">Record Originated from what source?</OriginId>
+    <InterestPointId Title="Interest Point" Type="NullCode" DataSource="InterestPoints" DataValueField="IdCode">How did you hear about us?</InterestPointId>
+    <MemberAnyChurch Title="Member of Any Church" Type="NullBit" DataValueField="IdCode"> From decision card indicating membership in another church. May be unknown (null) </MemberAnyChurch>
+    <SavedQuery Title="Saved Searches" Type="Bit" DisplayAs="Searches({0})" Params="SavedQueryIdDesc" DataValueField="IdCode">Selects everyone within a specified Saved Search.</SavedQuery>
+    <RecActiveOtherChurch Title="Reg Other Church" Type="Bit" DataValueField="IdCode">Selects only those Registered children and indicated active in another church or not.</RecActiveOtherChurch>
+    <RecInterestedCoaching Title="Reg Interested Coaching" Type="Bit" DataValueField="IdCode">Selects only those Registered children and indicated interest in coaching.</RecInterestedCoaching>
+    <InOneOfMyOrgs Title="In one of my organizations" Type="Bit" DataValueField="IdCode">People that are a member of an organization that you are also a member of</InOneOfMyOrgs>
     <CheckInVisits Title="Number of visits" Type="Integer" DisplayAs="Number of visits" DataValueField="IdCode">People who have a given number of building check-in visits</CheckInVisits>
   </Miscellaneous>
   <Admin>
@@ -203,5 +208,8 @@
     <PeopleIds Title="HasOneOfPeopleIds" Type="StringEqual">People with one of these PeopleIds</PeopleIds>
     <MatchAnything Title="Select Condition" Type="Bit" DisplayAs="Select Condition" DataValueField="IdCode">This condition is always true</MatchAnything>
     <HasOptoutsForEmail Title="Has Email Optouts for address" Type="StringEqual" DisplayAs="HasOptoutsForEmail({0:d})" Params="EndDate">Leave value blank for any optout, show only optouts since the end date, end date optional</HasOptoutsForEmail>
+    <MeetingId Type="Integer">Advanced use</MeetingId>
+    <RegisteredForMeetingId Type="Integer">Advanced use</RegisteredForMeetingId>
+    <PeopleId Type="Integer">Advanced use</PeopleId>
   </Admin>
 </fields>

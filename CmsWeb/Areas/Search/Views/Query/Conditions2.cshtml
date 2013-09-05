@@ -3,7 +3,7 @@
 @using CmsData
 @using CmsWeb.Areas.Search.Models
 @using IronPython.Modules
-@model CmsWeb.Areas.Search.Models.AdvancedModel
+@model CmsWeb.Areas.Search.Models.QueryModel
 <div id="conditions">
     @Html.Hidden("AutoRun")
     @Html.Hidden("NewSearchId")
@@ -57,7 +57,7 @@
             {
                 <li><a href="#editCondition" class="edit-popover"><i class="icon-pencil icon-fixedwidth"></i> Edit</a></li>
             }
-            @if (clause.CanRemove)
+            @if (clause.CanCut)
             {
                 <li><a href="#" class="cutcondition"><i class="icon-cut icon-fixedwidth"></i> Cut</a></li>
             }

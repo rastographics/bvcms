@@ -1,5 +1,5 @@
 ﻿@using CmsWeb.Areas.Search.Models
-@model CmsWeb.Areas.Search.Models.AdvancedModel
+@model CmsWeb.Areas.Search.Models.QueryModel
 <div id="editcondition" style="border: 3px solid #999; position: absolute; background-color: #f2f2f2">
     <form id="editForm" action="/Query" method="post">
         <input type="hidden" id="SelectedId" name="SelectedId" value="@Model.SelectedId"/>
@@ -172,7 +172,7 @@
                 <tr>
                     <td>Division:</td>
                     <td>
-                        @Html.DropDownList("Division", AdvancedModel.Divisions(Model.Program))
+                        @Html.DropDownList("Division", QueryModel.Divisions(Model.Program))
                     </td>
                 </tr>
             }
@@ -182,7 +182,7 @@
                 <tr>
                     <td>Organization:</td>
                     <td>
-                        @Html.DropDownList("Organization", AdvancedModel.Organizations(Model.Division))
+                        @Html.DropDownList("Organization", QueryModel.Organizations(Model.Division))
                     </td>
                 </tr>
             }

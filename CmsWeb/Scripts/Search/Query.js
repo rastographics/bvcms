@@ -158,15 +158,6 @@
         });
         return false;
     });
-    $('#conditions').on("click", 'a.movetogroupbelow', function () {
-        liedit = $(this).closest("li.condition");
-        var qid = liedit.data("qid");
-        $.post('/Query/MoveToGroupBelow/' + qid, {}, function (ret) {
-            $("#conditions").html(ret);
-            RefreshList();
-        });
-        return false;
-    });
     $('#conditions').on("click", 'a.delete', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
@@ -253,7 +244,7 @@
     }
     else if ($("#AutoRun").val() === "True")
         RefreshList();
-    //RefreshList();
+    RefreshList();
 });
 
 function RefreshList(qs) {

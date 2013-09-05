@@ -21,7 +21,7 @@ using System.Web.UI.WebControls;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class AdvancedModel
+    public class QueryModel
     {
         private CMSDataContext Db;
         public QueryBuilderClause TopClause;
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public CmsWeb.Models.PagerModel2 Pager { get; set; }
 
-        public AdvancedModel()
+        public QueryModel()
         {
             Db = DbUtil.Db;
             Db.SetUserPreference("NewCategories", "true");
@@ -542,20 +542,20 @@ namespace CmsWeb.Areas.Search.Models
             c.Comparison = comp;
             Db.SubmitChanges();
         }
-        public void CopyAsNew()
-        {
-            var Qb = Db.LoadQueryById(SelectedId).Clone(DbUtil.Db);
-            if (!Qb.IsGroup)
-            {
-                var g = new QueryBuilderClause();
-                g.SetQueryType(QueryType.Group);
-                g.SetComparisonType(CompareType.AllTrue);
-                Qb.Parent = g;
-                Qb = g;
-            }
-            Db.SubmitChanges();
-            QueryId = Qb.QueryId;
-        }
+//        public void CopyAsNew()
+//        {
+//            var Qb = Db.LoadQueryById(SelectedId).Clone(DbUtil.Db);
+//            if (!Qb.IsGroup)
+//            {
+//                var g = new QueryBuilderClause();
+//                g.SetQueryType(QueryType.Group);
+//                g.SetComparisonType(CompareType.AllTrue);
+//                Qb.Parent = g;
+//                Qb = g;
+//            }
+//            Db.SubmitChanges();
+//            QueryId = Qb.QueryId;
+//        }
         public void MoveToPreviousGroup()
         {
             var cc = Db.LoadQueryById(SelectedId);
@@ -589,11 +589,15 @@ namespace CmsWeb.Areas.Search.Models
             var clipid = a[1].ToInt();
             var clipclause = Db.LoadQueryById(clipid);
             var targetclause = Db.LoadQueryById(id);
+            var originalParent = clipclause.Parent;
             if (clipop == "Copy")
+            {
                 clipclause = clipclause.Clone(Db);
+                originalParent = null;
+            }
             if (targetclause.IsGroup)
             {
-                clipclause.GroupId = targetclause.QueryId;
+                targetclause.Clauses.Add(clipclause);
                 clipclause.ClauseOrder = 0;
             }
             else
@@ -602,6 +606,8 @@ namespace CmsWeb.Areas.Search.Models
                 clipclause.ClauseOrder = targetclause.ClauseOrder + 1;
                 targetclause.Parent.ReorderClauses();
             }
+            if(originalParent != null && originalParent.Clauses.Count == 0)
+                DbUtil.Db.QueryBuilderClauses.DeleteOnSubmit(originalParent);
             HttpContext.Current.Session["QueryClipboard"] = "Copy," + clipid;
             DbUtil.Db.SubmitChanges();
         }
