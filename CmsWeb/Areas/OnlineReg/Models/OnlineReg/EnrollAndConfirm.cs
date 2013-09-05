@@ -314,6 +314,8 @@ AmountDue: {4:C}<br/>
                 {
                     try
                     {
+                        if (masterorgid.HasValue && !settings.ContainsKey(masterorgid.Value))
+                            ParseSettings();
                         var os = settings[masterorgid.Value];
                         EmailSubject = Util.PickFirst(os.Subject, "no subject");
                         message = Util.PickFirst(os.Body, "no body");
@@ -324,7 +326,7 @@ AmountDue: {4:C}<br/>
                             throw new Exception("masterorgid was null");
                         if (settings == null)
                             throw new Exception("settings was null");
-                        if (settings[masterorgid.Value] == null)
+                        if (!settings.ContainsKey(masterorgid.Value))
                             throw new Exception("setting not found for masterorgid " + masterorgid.Value);
                         throw;
                     }

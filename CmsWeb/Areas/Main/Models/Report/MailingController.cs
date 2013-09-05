@@ -18,7 +18,6 @@ using System.Web;
 
 namespace CmsWeb.Models
 {
-    [DataObject]
     public class MailingController
     {
         public bool UseTitles { get; set; }
@@ -82,7 +81,6 @@ namespace CmsWeb.Models
             return _FamilyCount;
         }
 
-        [DataObjectMethod(DataObjectMethodType.Select, false)]
         public IEnumerable<MailingInfo> FetchFamilyList(int startRowIndex, int maximumRows, string sortExpression, int QueryId)
         {
             var q1 = DbUtil.Db.PeopleQuery(QueryId);
@@ -149,7 +147,6 @@ namespace CmsWeb.Models
             q2 = ApplySort(q2, sortExpression);
 			return q2;
         }
-        [DataObjectMethod(DataObjectMethodType.Select, false)]
         public IEnumerable<MailingInfo> FetchFamilyList(string sortExpression, int QueryId)
         {
             int startRowIndex = 0;

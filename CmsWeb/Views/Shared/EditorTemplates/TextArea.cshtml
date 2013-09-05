@@ -2,6 +2,6 @@
 <div class="control-group">
     @Html.LabelFor(m => m, new { @class = "control-label"})
     <div class="controls">
-        @Html.TextAreaFor(m => m, new { rows = 5 })<span class="help-block">@Html.Raw(ViewData["help"])</span>
+        @Html.TextAreaFor(m => m, true, 5)<span class="help-block">@Html.Raw(ViewData["help"])</span>
     </div>
 </div>

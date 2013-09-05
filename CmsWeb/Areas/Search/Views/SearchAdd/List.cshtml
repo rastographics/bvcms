@@ -1,36 +1,40 @@
 ﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
-<form class="ajax">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
-        <h3>Pending List to @Model.Title</h3>
-    </div>
-    <div class="modal-body">
-        <a class="helplink" target="_blank" href='@Model.HelpLink("List")'>help</a>
-        @Html.EditorFor(m => m, "HiddenSearch")
-        @Html.EditorFor(m => m, "HiddenMeta")
-        @Html.EditorFor(m => m, "HiddenPeople")
-        <table id="people" class="table table-condensed">
-            <thead>
-                <tr> <th>Name</th> <th>Address</th> <th>CityStateZip</th> <th>Age</th> <th></th> </tr>
-            </thead>
-            <tbody>
-                @for (var n = 0; n < Model.List.Count; n++)
-                {
-                    @Html.DisplayFor(m => m.List[n], "Person", new { index = n })
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="modal-footer">
-        <a class="btn" data-dismiss="modal">Cancel</a>
-        @if (!Model.OnlyOne)
-        {
-            <a href="/SearchAdd2/SearchPerson" class="btn ajax">Another Search</a> @:or 
-            if (Model.CanAdd)
-            { 
-            <a href="/SearchAdd2/NewPerson/@Model.List[Model.List.Count - 1].FamilyId" class="btn ajax">Add to Last Family</a> @:or 
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Pending List to @Model.Title</h3>
+</div>
+<div class="modal-body">
+    <a class="helplink" target="_blank" href='@Model.HelpLink("List")'>help</a>
+    @Html.EditorFor(m => m, "HiddenSearch")
+    @Html.EditorFor(m => m, "HiddenMeta")
+    @Html.EditorFor(m => m, "HiddenPeople")
+    <table id="people" class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>CityStateZip</th>
+                <th>Age</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var n = 0; n < Model.List.Count; n++)
+            {
+                @Html.DisplayFor(m => m.List[n], "Person", new { index = n })
             }
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <a class="btn" data-dismiss="modal">Cancel</a>
+    @if (!Model.OnlyOne)
+    {
+        <a href="/SearchAdd2/SearchPerson" class="btn ajax">Another Search</a> @:or 
+        if (Model.CanAdd)
+        { 
+        <a href="/SearchAdd2/NewPerson/@Model.List[Model.List.Count - 1].FamilyId" class="btn ajax">Add to Last Family</a> @:or 
         }
-        <a href="/SearchAdd2/CommitAdd" class="btn btn-primary commit">Commit and Add</a>
-    </div>
-</form>
+    }
+    <a href="/SearchAdd2/CommitAdd" class="btn btn-primary commit">Commit and Add</a>
+</div>

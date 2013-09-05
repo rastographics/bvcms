@@ -52,18 +52,18 @@ namespace CmsWeb
         }
         protected override void OnPreRender(EventArgs e)
         {
-            const string getimage = "~/Image.aspx?portrait=1&id=";
+            const string getimage = "/Image/{0}";
             base.OnPreRender(e);
             switch (HiddenField1.Value)
             {
                 case "small":
-                    ImageButton1.ImageUrl = getimage + person.Picture.SmallId;
+                    ImageButton1.ImageUrl = getimage.Fmt(person.Picture.SmallId);
                     break;
                 case "medium":
-                    ImageButton1.ImageUrl = getimage + person.Picture.MediumId;
+                    ImageButton1.ImageUrl = getimage.Fmt(person.Picture.MediumId);
                     break;
                 case "large":
-                    ImageButton1.ImageUrl = getimage + person.Picture.LargeId;
+                    ImageButton1.ImageUrl = getimage.Fmt(person.Picture.LargeId);
                     break;
             }
         }

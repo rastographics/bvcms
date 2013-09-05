@@ -146,7 +146,8 @@ namespace CmsWeb.Models
                      };
             return q2;
         }
-        public static IEnumerable FetchExcelListFamilyMembers(int? qid)
+
+        public static IEnumerable<ExcelFamilyMember> FetchExcelListFamilyMembers(int? qid)
         {
             var q = DbUtil.Db.PeopleQuery(qid.Value);
             var q2 = from pp in q
@@ -157,12 +158,12 @@ namespace CmsWeb.Models
                      let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
                      let famname = g.First().Family.People.Single(hh => hh.PeopleId == hh.Family.HeadOfHouseholdId).Name2
                      orderby famname, p.FamilyId, pos
-                     select new
+                     select new ExcelFamilyMember
                      {
-                         p.PeopleId,
+                         PeopleId = p.PeopleId,
                          Title = p.TitleCode,
                          FirstName = p.PreferredName,
-                         p.LastName,
+                         LastName = p.LastName,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
@@ -180,13 +181,13 @@ namespace CmsWeb.Models
                          School = p.SchoolOther,
                          Married = p.MaritalStatus.Description,
                          FamilyName = famname,
-                         p.FamilyId,
-                         FamilyPosition = pos,
+                         FamilyId = p.FamilyId,
+                         FamilyPosition = pos.ToString(),
                          Grade = p.Grade.ToString(),
                          FellowshipLeader = p.BFClass.LeaderName,
                          AttendPctBF = (om == null ? 0 : om.AttendPct == null ? 0 : om.AttendPct.Value),
                          FellowshipClass = (om == null ? "" : om.Organization.OrganizationName),
-                         p.AltName,
+                         AltName = p.AltName,
                      };
             return q2;
         }
@@ -258,14 +259,15 @@ namespace CmsWeb.Models
                     };
             return q;
         }
-        public static IEnumerable FetchExcelListPics(int queryid, int maximumRows)
+
+        public static IEnumerable<ExcelPic> FetchExcelListPics(int queryid, int maximumRows)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
             var q = from p in query
                     let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
                     let spouse = Db.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
-                    select new
+                    select new ExcelPic
                     {
                         PeopleId = p.PeopleId,
                         Title = p.TitleCode,
@@ -295,7 +297,7 @@ namespace CmsWeb.Models
                         Married = p.MaritalStatus.Description,
                         FamilyId = p.FamilyId,
                         Image = p.PictureId == null ? Util.ServerLink("/images/unknown.jpg") :
-                            Util.ServerLink("/Image.aspx?portrait=1&w=160&h=200&id=" + p.Picture.LargeId)
+                            Util.ServerLink("/Portrait/{0}/160/200".Fmt(p.Picture.LargeId))
                     };
             return q.Take(maximumRows);
         }

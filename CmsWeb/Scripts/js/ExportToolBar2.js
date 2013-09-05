@@ -1,33 +1,79 @@
 ﻿$(document).ready(function () {
-    $('body').on("click", '#AddContact', function (ev) {
+    $(document).on("click", "a.dialog-options", function (ev) {
         ev.preventDefault();
-        if (!confirm("Are you sure you want to add a contact for all these people?"))
-            return false;
-        $.block();
-        $.post(this.href, null, function (ret) {
-            $.unblock();
-            if (ret < 0)
-                $.growlUI("error", "too many people to add to a contact (max 100)");
-            else if (ret == 0)
-                $.growlUI("error", "no results");
-            else
-                window.location = ret;
+        var f = $($(this).data("target"));
+        f.attr("action", $(this).attr("href"));
+        f.modal("show");
+        $(f).validate({
+            submitHandler: function (form) {
+                $(form).modal("hide");
+                if (form.method.toUpperCase() === 'GET') {
+                    $(form).attr("target", "_blank");
+                    form.submit();
+                    $(form).removeAttr("target");
+                }
+                else {
+                    var q = $(form).serialize();
+                    $.post(form.action, q, function (ret) {
+                    });
+                }
+            },
+            highlight: function (element) {
+                $(element).closest(".control-group").addClass("error");
+            },
+            unhighlight: function (element) {
+                $(element).closest(".control-group").removeClass("error");
+            }
         });
         return false;
     });
-    $('body').on("click", '#AddTasks', function (ev) {
+
+    $('#UnTagAll').live("click", function (ev) {
         ev.preventDefault();
-        if (!confirm("Are you sure you want to add a task for each of these people?"))
-            return false;
+        $('div.dropdown-menu').hide();
         $.block();
         $.post(this.href, null, function (ret) {
+            $(".taguntag:visible").text(ret);
             $.unblock();
-            if (ret < 0)
-                $.growlUI("error", "too many people to add tasks for (max 100)");
-            else if (ret == 0)
-                $.growlUI("error", "no results");
-            else
-                window.location = "/Task";
+        });
+        return false;
+    });
+    $(document).on("click", '#AddContact', function (ev) {
+        ev.preventDefault();
+        bootbox.confirm("Are you sure you want to add a contact for all these people?", function (result) {
+            if (result === true) {
+                $.block();
+                $.post(this.href, null, function (ret) {
+                    $.unblock();
+                    if (ret < 0)
+                        $.growlUI("error", "too many people to add to a contact (max 100)");
+                    else if (ret == 0)
+                        $.growlUI("error", "no results");
+                    else
+                        window.location = ret;
+                });
+            }
+        });
+        return false;
+    });
+    $(document).on("click", '#AddTasks', function (ev) {
+        ev.preventDefault();
+        var message = "Are you sure you want to add a task for all these people?";
+        if (window.location.pathname.contains("/Person"))
+            message = "Are you sure you want to add a task for this person?";
+        bootbox.confirm(message, function (result) {
+            if (result === true) {
+                $.block();
+                $.post(this.href, null, function (ret) {
+                    $.unblock();
+                    if (ret < 0)
+                        $.growlUI("error", "too many people to add tasks for (max 100)");
+                    else if (ret == 0)
+                        $.growlUI("error", "no results");
+                    else
+                        window.location = "/Task";
+                });
+            }
         });
         return false;
     });
@@ -100,34 +146,3 @@
         return this;
     };
 });
-if (typeof String.prototype.startsWith != 'function') {
-    String.prototype.startsWith = function (str) {
-        return this.slice(0, str.length) == str;
-    };
-}
-String.prototype.appendQuery = function (q) {
-    if (this && this.length > 0)
-        if (this.contains("&") || this.contains("?"))
-            return this + '&' + q;
-        else
-            return this + '?' + q;
-    return q;
-};
-String.prototype.contains = function (it) {
-    return this.indexOf(it) != -1;
-};
-String.prototype.endsWith = function (t, i) {
-    return (t == this.substring(this.length - t.length));
-};
-String.prototype.addCommas = function () {
-    var x = this.split('.');
-    var x1 = x[0];
-    var x2 = x.length > 1 ? '.' + x[1] : '';
-    var rgx = /(\d+)(\d{3})/;
-    while (rgx.test(x1)) {
-        x1 = x1.replace(rgx, '$1' + ',' + '$2');
-    }
-    return x1 + x2;
-};
-
-

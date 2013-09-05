@@ -181,7 +181,7 @@ namespace CmsWeb.Models.PersonPage
             }
                     
 
-            p.LogChanges(DbUtil.Db, psb.ToString(), Util.UserPeopleId.Value);
+            p.LogChanges(DbUtil.Db, psb.ToString());
             p.Family.LogChanges(DbUtil.Db, fsb.ToString(), p.PeopleId, Util.UserPeopleId.Value);
 
             DbUtil.Db.SubmitChanges();

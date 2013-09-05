@@ -99,6 +99,8 @@ namespace UtilityExtensions
         }
         public static DateTime? ToDate(this object o)
         {
+            if (o == null)
+                return null;
             return o.ToString().ToDate();
         }
         public static int? ToInt2(this string s)
@@ -426,23 +428,13 @@ namespace UtilityExtensions
             var ph = phone.GetDigits();
             if (!ph.HasValue())
                 return "";
-            var s = "";
             if (ph.Length == 7)
-                return string.Format("{0:###-####}", ph.ToLong());
-            else if (ph.Length == 10)
-                return string.Format("{0:###-###-####}", ph.ToLong());
-            else if (ph.Length > 10)
-            {
-                var f = "###-###-#### #################".Substring(0, 13 + ph.Length - 10);
-                var i = ph.ToLong();
-                if (i == 0)
-                    s = phone;
-                else
-                    s = string.Format("{0:" + f + "}", i);
-            }
-            else
-                s = phone;
-            return s;
+                return Regex.Replace(ph, @"(\d{3})(\d{4})", "$1-$2").Trim();
+            if (ph.Length == 10)
+                return Regex.Replace(ph, @"(\d{3})(\d{3})(\d{4})", "$1-$2-$3").Trim();
+            if (ph.Length > 10)
+                return Regex.Replace(ph, @"(\d{3})(\d{3})(\d{4})(\d*)", "$1-$2-$3 $4").Trim();
+                return phone;
         }
         public static string GetDigits(this string zip, int maxlen = 99)
         {

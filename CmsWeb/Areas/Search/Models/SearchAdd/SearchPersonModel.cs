@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Code;
+using NPOI.SS.Formula;
 using UtilityExtensions;
 using CmsData;
 using System.Text;
@@ -15,51 +16,49 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class SearchPersonModel : IValidatableObject
+    public class SearchPersonModel
     {
-        private static CodeValueModel cv = new CodeValueModel();
-
         public int index { get; set; }
         public string context { get; set; }
 
-        [UIHint("Text")]
+        [StringLength(25), Required(ErrorMessage = "required, or put 'na' if not known")]
         public string First { get; set; }
 
-        [UIHint("Text")]
-        [DisplayName("Goes By")]
+        [StringLength(15)]
         public string GoesBy { get; set; }
 
-        [UIHint("Text")]
+        [StringLength(15)]
         public string Middle { get; set; }
 
-        [UIHint("Text")]
+        [StringLength(100), Required(ErrorMessage = "required")]
         public string Last { get; set; }
 
         public CodeInfo Title { get; set; }
 
-        [UIHint("Text")]
+        [StringLength(10)]
         public string Suffix { get; set; }
 
-        [UIHint("Date")]
         [DisplayName("Birthday")]
         public string dob { get; set; }
 
-        [UIHint("Text")]
+        [StringLength(20)]
         public string Phone { get; set; }
 
-        [UIHint("Text")]
+        [StringLength(20), EmailAddress]
         public string Email { get; set; }
 
+        [UnallowedCode("99", ErrorMessage = "specify gender (or unknown)")]
         public CodeInfo Gender { get; set; }
 
-        public CodeInfo Marital { get; set; }
+        [UnallowedCode("99", ErrorMessage = "specify marital status (or unknown)")]
+        public CodeInfo MaritalStatus { get; set; }
 
         public CodeInfo Campus { get; set; }
 
-        [DisplayName("Entry Point")]
+        [UnallowedCode("0", ErrorMessage = "specify an Entry Point")]
         public CodeInfo EntryPoint { get; set; }
 
-        [UIHint("Text")]
+        [StringLength(20)]
         public string HomePhone { get; set; }
 
         private DateTime? _Birthday;
@@ -175,7 +174,7 @@ namespace CmsWeb.Areas.Search.Models
             if (Title.Value.HasValue())
                 person.TitleCode = Title.Value;
             person.EmailAddress = Email.Disallow(na);
-            person.MaritalStatusId = Marital.Value.ToInt();
+            person.MaritalStatusId = MaritalStatus.Value.ToInt();
             person.SuffixCode = Suffix;
             person.MiddleName = Middle;
             if (campusid == 0)
@@ -231,38 +230,26 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool BeenValidated { get; set; }
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            var results = new List<ValidationResult>();
-
-            if (BeenValidated)
-                return results;
-
-            if(Marital.Value == "99")
-                results.Add(ModelError("specify marital status (or unknown)", "Marital"));
-
-            if(Gender.Value == "99")
-                results.Add(ModelError("specify gender (or unknown)", "Gender"));
-
-            if (Email == null || (Email != "na" && !Util.ValidEmail(Email)))
-                results.Add(ModelError("valid email address (or na)", "Email"));
-
-            var d = Phone.GetDigits().Length;
-            if(Phone == null || (Phone != "na" && d != 7 && d < 10))
-                results.Add(ModelError("Phone requires 7 or 10+ digits (or na)", "Phone"));
-
-            DateTime dt;
-            if(dob == null || dob != "na" && DateTime.TryParse(dob, out dt))
-                results.Add(ModelError("enter a valid date or na", "dob"));
-
-            if(!First.HasValue())
-                results.Add(ModelError("enter a valid date or na", "First"));
-
-            if(!Last.HasValue())
-                results.Add(ModelError("enter a valid date or na", "Last"));
-
-            return results;
-        }
+//        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+//        {
+//            var results = new List<ValidationResult>();
+//
+//            if (BeenValidated)
+//                return results;
+//
+//            if (Email == null || (Email != "na" && !Util.ValidEmail(Email)))
+//                results.Add(ModelError("valid email address (or na)", "Email"));
+//
+//            var d = Phone.GetDigits().Length;
+//            if(Phone == null || (Phone != "na" && d != 7 && d < 10))
+//                results.Add(ModelError("Phone requires 7 or 10+ digits (or na)", "Phone"));
+//
+//            DateTime dt;
+//            if(dob == null || dob != "na" && DateTime.TryParse(dob, out dt))
+//                results.Add(ModelError("enter a valid date or na", "dob"));
+//
+//            return results;
+//        }
 
         private ValidationResult ModelError(string message, string field)
         {

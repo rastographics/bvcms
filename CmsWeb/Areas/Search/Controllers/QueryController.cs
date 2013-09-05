@@ -26,16 +26,10 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Query(int? id)
         {
             ViewBag.Title = "QueryBuilder";
-            ViewBag.OnQueryBuilder = "true";
-            ViewBag.TagAction = "/Query/TagAll/";
-            ViewBag.TagAction = "/Query/UnTagAll/";
-            ViewBag.Contact = "/Query/AddContact/";
-            ViewBag.Tasks = "/Query/AddTasks/";
-            ViewBag.GearSpan = "span12";
             var m = new AdvancedModel { QueryId = id };
             DbUtil.LogActivity("QueryBuilder");
             m.LoadScratchPad();
-            ViewData["queryid"] = m.QueryId;
+            InitToolbar(m);
             var newsearchid = (int?)TempData["newsearch"];
             if (newsearchid.HasValue)
                 ViewBag.NewSearchId = newsearchid.Value;
@@ -47,7 +41,19 @@ namespace CmsWeb.Areas.Search.Controllers
 #endif
             return View(m);
         }
-        [POST("Query/Cut/{id:int}")]
+
+	    private void InitToolbar(AdvancedModel m)
+	    {
+	        ViewBag.OnQueryBuilder = "true";
+	        ViewBag.TagAction = "/Query/TagAll/";
+	        ViewBag.TagAction = "/Query/UnTagAll/";
+	        ViewBag.Contact = "/Query/AddContact/";
+	        ViewBag.Tasks = "/Query/AddTasks/";
+	        ViewBag.GearSpan = "span12";
+	        ViewBag.queryid = m.QueryId;
+	    }
+
+	    [POST("Query/Cut/{id:int}")]
         public ActionResult Cut(int id)
         {
             Session["QueryClipboard"] = "Cut," + id;
@@ -281,6 +287,7 @@ namespace CmsWeb.Areas.Search.Controllers
 			var starttime = DateTime.Now;
 			m.PopulateResults();
 			DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.QueryId));
+            InitToolbar(m);
             return View(m);
         }
         [GET("Query/NewQuery")]

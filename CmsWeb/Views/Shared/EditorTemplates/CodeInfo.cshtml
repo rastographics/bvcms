@@ -1,14 +1,14 @@
-﻿@model CmsWeb.Code.CodeInfo
+﻿@using CmsWeb.Code
+@model CodeInfo
 @{
-    if (Model == null)
-    {
-        throw new Exception("model is null in CodeInfo for " + ViewData.TemplateInfo.HtmlFieldPrefix);
-    }
+    var attributes = ViewData["PlainSelect"] != null ? new { plain = "true" } : null;
+        
 }
 <div class="control-group">
-    @Html.LabelFor(m => m, new { @class="control-label"})
+    @Html.LabelFor(m => m, new { @class = "control-label" })
     <div class="controls code-dropdown">
-        @Html.DropDownListFor(m => m.Value, Model.Items)
+        @Html.DropDownListForCodeInfo(m => m, true, Model.Items, htmlAttributes: attributes) 
+        @Html.ValidationMessageLabelFor(m => m)
         @Html.HiddenFor(m => m.Name)
     </div>
 </div>

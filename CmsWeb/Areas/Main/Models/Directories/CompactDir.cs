@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Main.Models.Directories
 				group p by p.FamilyId into g
 				let family = g.First().Family
 				let hhname = family.HeadOfHousehold.LastName
-				orderby hhname
+				orderby hhname, family.HeadOfHousehold.PreferredName
 				select new CompactFamilyInfo()
 				 {
 					 FamilyName = hhname,

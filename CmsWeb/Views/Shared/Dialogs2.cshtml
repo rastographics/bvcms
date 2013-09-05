@@ -1,0 +1,152 @@
+﻿@{
+    var tutorialFile = Server.MapPath(".") + "/Content/Tutorials/" + Util.Helpfile + ".cshtml";
+}
+@if (DbUtil.Db.Setting("ShowTutorialFileNames", "false") == "true")
+{
+    <br />
+    <b>Menus:</b>
+    @(Util.Helpfile)@:_Menu.cshtml<br />
+    <b>Tutorials:</b>
+    @(Util.Helpfile)@:.cshtml
+}
+@if (File.Exists(tutorialFile))
+{
+    Html.RenderPartial("/Content/Tutorials/" + Util.Helpfile + ".cshtml");
+}
+<form id="choose-format" class="dialog-options modal fade hide validate" method="GET">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Choose Options</h3>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" />
+        <div class="row-fluid">
+            <div class="span6">
+                <p><b>Addressed To</b></p>
+                <label class="radio">
+                    <input type="radio" name="format" value="Individual" title="Addressed to individuals" checked="checked" />
+                    Individual
+                </label>
+                <label class="radio">
+                    <input type="radio" name="format" value="Family" title="Addressed as a family when there are children" />
+                    Family
+                </label>
+                <label class="radio">
+                    <input type="radio" name="format" value="FamilyMembers" title="Includes entire Family as individuals" />
+                    Family Members
+                </label>
+                <label class="radio">
+                    <input type="radio" name="format" value="CouplesBoth" title="Addressed to a couple, if both are in selection" />
+                    Couples (both)
+                </label>
+                <label class="radio">
+                    <input type="radio" name="format" value="CouplesEither" title="Addressed to a couple, if one or both are in selection" />
+                    Couples (either)
+                </label>
+                <label class="radio">
+                    <input type="radio" name="format" value="ParentsOf" title="Addressed to parents or parent" />
+                    Parents Of
+                </label>
+                <label class="radio">
+                    <input type="radio" name="format" value="GroupAddress" title="Addressed to names at address" />
+                    Group By Address
+                </label>
+            </div>
+            <div class="span6">
+                <p><b>Label Options</b></p>
+                <label class="checkbox">
+                    <input type="checkbox" name="titles" />
+                    Use Titles
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" name="SortZip" />
+                    Sort by Zip
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" name="UsePhone" />
+                    Include Phone
+                </label>
+                <div class="control-group">
+                    <label>Skip # of labels (0 to use whole page):</label>
+                    <input name="SkipNum" data-rule-number="true" />
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a class="btn" data-dismiss="modal">Close</a>
+            <input type="submit" class="btn btn-primary" value="OK" />
+        </div>
+    </div>
+</form>
+
+<form id="ExportStartEnd" class="modal fade form-horizontal hide">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Select a date range</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label">Start Date </label>
+            <input id="startdt" type="text" class='datepicker' />
+        </div>
+        <div class="control-group">
+            <label class="control-label">End Date </label>
+            <input id="enddt" type="text" class='datepicker' />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a class="btn" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary ok">OK</a>
+    </div>
+</form>
+
+<form id="set-extra-values" class="modal fade hide dialog-options validate">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Set Extra Value</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label">Field</label>
+            <input id="field" type="text" data-rule-required="true" />
+        </div>
+        <div class="control-group">
+            <label class="control-label">Value</label>
+            <input id="value" type="text" data-rule-required="true" />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a class="btn btn-success" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary ok">OK</a>
+    </div>
+</form>
+
+<form id="TagAllDialog" class="modal dialog-options form-horizontal validate fade hide" method="POST">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Tag All</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label">TagName:</label>
+            <div class="controls">
+                <input name="tagname" type="text" value="@Util2.CurrentTagName" data-rule-required="true" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">Clear Tag First:</label>
+            <div class="controls">
+                @Html.CheckBox("cleartagfirst", false)
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a class="btn btn-success" data-dismiss="modal">Close</a>
+        <input type="submit" class="btn btn-primary" value="OK" />
+    </div>
+</form>
+
+<form id='search-add' class='modal fade hide validate ajax form-horizontal' method='POST' data-width='700' data-keyboard='false' data-backdrop='static'>
+</form>
+
+<div id="darkLayer" class="darkClass" style="display: none"></div>

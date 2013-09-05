@@ -47,13 +47,13 @@
             string img = null;
             if (i.IsDocument == true)
             {
-                url = "/Image.aspx?id=" + i.Docid;
+                url = "/Image/" + i.Docid;
                 img = "/images/adobe.png";
             }
             else
             {
                 url = "/MemberDocs/Image/" + i.Id;
-                img = "/Image.aspx?id=" + i.ThumbId;
+                img = "/Image/" + i.ThumbId;
             }
             <span style="display: inline-block; margin: 1em;">
 

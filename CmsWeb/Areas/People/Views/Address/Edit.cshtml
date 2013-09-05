@@ -1,35 +1,33 @@
 ﻿@model CmsWeb.Areas.People.Models.AddressInfo
-<form id="addressForm" class="form-horizontal onecol ajax" action="/Address/Update" method="POST">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">x</a>
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#" data-toggle="tab"><b>@Model.Display Address</b></a></li>
-            <li><a id="otheraddress" href="#" class="ajax" data-toggle="tab" data-link="/Address/Edit/@Model.OtherName/@Model.PeopleId">Edit @Model.OtherDisplay Address</a></li>
-        </ul>
-    </div>
-    <div class="modal-body">
-        <fieldset class="display">
-            @Html.HiddenFor(m => m.PeopleId)
-            @Html.HiddenFor(m => m.Name)
-            @Html.EditorFor(m => m.Address1)
-            @Html.EditorFor(m => m.Address2)
-            @Html.EditorFor(m => m.City)
-            @Html.EditorFor(m => m.State)
-            @Html.EditorFor(m => m.Country)
-            @Html.EditorFor(m => m.Zip)
-            @Html.EditorFor(m => m.ResCode)
-            @Html.EditorFor(m => m.FromDt)
-            @Html.EditorFor(m => m.ToDt)
-            @(Model.Preferred ? Html.DisplayFor(m => m.Preferred) : Html.EditorFor(m => m.Preferred))
-        </fieldset>
-        @Html.Raw(Model.Error)
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        @if (!Model.IsValid && Model.ResultNotFound)
-        {
-            <a href="/Address/ForceSave" class="btn btn-danger ajax">Use this Address Anyway</a>
-        }
-        <input type="submit" class="btn btn-primary" value="Submit" />
-    </div>
-</form>
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#" data-toggle="tab"><b>@Model.Display Address</b></a></li>
+        <li><a id="otheraddress" href="#" class="ajax" data-toggle="tab" data-link="/Address/Edit/@Model.OtherName/@Model.PeopleId">Edit @Model.OtherDisplay Address</a></li>
+    </ul>
+</div>
+<div class="modal-body">
+    <fieldset class="display">
+        @Html.HiddenFor(m => m.PeopleId)
+        @Html.HiddenFor(m => m.Name)
+        @Html.EditorFor(m => m.Address1)
+        @Html.EditorFor(m => m.Address2)
+        @Html.EditorFor(m => m.City)
+        @Html.EditorFor(m => m.State)
+        @Html.EditorFor(m => m.Country)
+        @Html.EditorFor(m => m.Zip)
+        @Html.EditorFor(m => m.ResCode)
+        @Html.EditorFor(m => m.FromDt)
+        @Html.EditorFor(m => m.ToDt)
+        @(Model.Preferred ? Html.DisplayFor(m => m.Preferred) : Html.EditorFor(m => m.Preferred))
+    </fieldset>
+    @Html.Raw(Model.Error)
+</div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+    @if (!Model.IsValid && Model.ResultNotFound)
+    {
+        <a href="/Address/ForceSave" class="btn btn-danger ajax">Use this Address Anyway</a>
+    }
+    <a href="/Address/Update" class="btn btn-primary ajax">Submit</a>
+</div>

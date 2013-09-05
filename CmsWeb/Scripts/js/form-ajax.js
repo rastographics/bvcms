@@ -14,34 +14,58 @@
                 });
             }
         });
-        $("form.ajax .date").datepicker();
-        $("form.ajax select").chosen();
-    };
-    $("div.modal form.ajax").live("submit", function (event) {
-        event.preventDefault();
-        var $form = $(this);
-        var $target = $form.closest("div.modal");
-        $.ajax({
-            type: 'POST',
-            url: $form.attr('action'),
-            data: $form.serialize(),
-            success: function (data, status) {
-                //$target.removeClass("fade");
-                $target.html(data).ready(function () {
-                    var top = ($(window).height() - $target.height()) / 2;
-                    if (top < 10)
-                        top = 10;
-                    $target.css({ 'margin-top': top, 'top': '0' });
-                    $.AttachFormElements();
-                });
-            }
+        $("form.ajax .date:not(.noparse)").datepicker({
+            autoclose: true,
+            orientation: "auto"
         });
-        return false;
-    });
-    $("ul.nav-tabs a.ajax").live("click", function(event) {
+        $("form.ajax .date.noparse").datepicker({
+            autoclose: true,
+            orientation: "auto",
+            forceParse: false
+        });
+        $('form.ajax select:not([plain])').chosen();
+    };
+    //$("div.modal form.ajax").live("submit", function (event) {
+    //    event.preventDefault();
+    //    var $form = $(this);
+    //        f.validate({
+    //            submitHandler: function (form) {
+    //                var ff = $(form);
+    //                var action = f.attr('action');
+    //                var q = ff.serialize();
+    //                var $target = ff.closest("div.modal");
+    //                $.ajax({
+    //                    type: 'POST',
+    //                    url: action,
+    //                    data: q,
+    //                    success: function (ret, status) {
+    //                        $target.html(ret).ready(function () {
+    //                            var top = ($(window).height() - $target.height()) / 2;
+    //                            if (top < 10)
+    //                                top = 10;
+    //                            $target.css({ 'margin-top': top, 'top': '0' });
+    //                            ff = $target.find("form");
+    //                            $.AttachFormElements(ff);
+    //                        });
+    //                    },
+    //                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+    //                        alert("Status: " + textStatus); alert("Error: " + errorThrown);
+    //                    }
+    //                });
+    //                return false;
+    //            },
+    //            highlight: function (element) {
+    //                $(element).closest(".control-group").addClass("error");
+    //            },
+    //            unhighlight: function (element) {
+    //                $(element).closest(".control-group").removeClass("error");
+    //            }
+    //        });
+    //});
+    $("ul.nav-tabs a.ajax").live("click", function (event) {
         var state = $(this).attr("href");
         var d = $(state);
-        if(!d.hasClass("loaded"))
+        if (!d.hasClass("loaded"))
             $.ajax({
                 type: 'POST',
                 url: d.data("link"),
@@ -53,42 +77,61 @@
             });
         return true;
     });
-    $("form.ajax a.ajax").live("click", function (event) {
-        event.preventDefault();
-        var $this = $(this);
-        var $form = $this.closest("form.ajax");
-        var $modal = $form.closest("div.modal");
-        var url = $this.data("link");
-        if (typeof url === 'undefined')
-            url = $this[0].href;
-        var data = $form.serialize();
+    $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {
+        var d = $(this).closest("div.tab-pane");
         $.ajax({
             type: 'POST',
-            url: url,
-            data: data,
+            url: d.data("link"),
+            data: {},
             success: function (data, status) {
-                if ($modal.length > 0) {
-                    //$modal.removeClass("fade");
-                    $modal.html(data).ready(function () {
-                        var top = ($(window).height() - $modal.height()) / 2;
-                        if (top < 10)
-                            top = 10;
-                        $modal.css({ 'margin-top': top, 'top': '0' });
-                        $.AttachFormElements();
-                    });
-                } else {
-                    $form.html(data).ready(function () {
-                        $.AttachFormElements();
-                    });
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
+                d.html(data);
+                d.addClass("loaded");
             }
         });
         return false;
     });
+    $("form.ajax a.ajax").live("click", function (event) {
+        event.preventDefault();
+        var $this = $(this);
+        var $form = $this.closest("form.ajax");
+        var url = $this.data("link");
+        if (typeof url === 'undefined')
+            url = $this[0].href;
+        var data = $form.serialize();
+        if (!$this.hasClass("validate") || $form.valid()) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                success: function (ret, status) {
+                    if ($form.hasClass("modal")) {
+                        $form.html(ret).ready(function () {
+                            $form.removeClass("hide");
+                            var top = ($(window).height() - $form.height()) / 2;
+                            if (top < 10)
+                                top = 10;
+                            $form.css({ 'margin-top': top, 'top': '0' });
+                            $.AttachFormElements();
+                        });
+                    } else {
+                        $form.html(ret).ready(function () {
+                            $.AttachFormElements();
+                        });
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        }
+        return false;
+    });
+
+    $.validator.addMethod("unallowedcode", function (value, element, params) {
+        return value !== params.code;
+    }, "required, select item");
+
     $.ajaxSetup({
         beforeSend: function () {
             $("#loading-indicator").css({

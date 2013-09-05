@@ -154,7 +154,12 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/MembershipUpdate/")]
         public ActionResult MembershipUpdate(MemberInfo m)
         {
-            m.UpdateMember();
+            var ret = m.UpdateMember();
+            if (ret != "ok")
+                ViewBag.AutomationError = "<div class='alert'>{0}</div>".Fmt(ret);
+            if (!ModelState.IsValid || ret != "ok")
+                return View("Membership/Edit", m);
+
             DbUtil.LogActivity("Update Membership Info for: {0}".Fmt(m.person.Name));
             return View("Membership/Display", m);
         }
@@ -238,11 +243,6 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.LogActivity("Uploading Picture for {0}".Fmt(person.Name));
             person.UploadPicture(DbUtil.Db, picture.InputStream);
             return Redirect("/Person2/" + id);
-        }
-        [GET("Person2/Image/{s}/{id}/{v}")]
-        public ActionResult Image(int id, int s, string v)
-        {
-            return new PictureResult(id, s);
         }
         [POST("Person2/PostData")]
         public ActionResult PostData(int pk, string name, string value)
@@ -426,6 +426,24 @@ namespace CmsWeb.Areas.People.Controllers
             return View(m);
         }
 
+        [POST("Person2/Tag/{id:int}")]
+        public ActionResult Tag(int id, string tagname, bool? cleartagfirst)
+        {
+            if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
+            {
+                CmsData.Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+                return Content("OK");
+            }
+            var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            if (cleartagfirst ?? false)
+                DbUtil.Db.ClearTag(tag);
+            CmsData.Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            DbUtil.Db.SubmitChanges();
+            Util2.CurrentTag = tagname;
+            DbUtil.Db.TagCurrent();
+            return Content("OK");
+        }
+
         #region ToDo
 
         [Authorize(Roles = "Admin")]
@@ -442,14 +460,6 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content(ex.Message);
             }
             return Content("ok");
-        }
-
-        [HttpPost]
-        public ActionResult Tag(int id)
-        {
-            CmsData.Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
-            DbUtil.Db.SubmitChanges();
-            return new EmptyResult();
         }
 
         [HttpPost]
@@ -874,7 +884,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var qb = DbUtil.Db.QueryBuilderIsCurrentPerson();
             ViewBag.queryid = qb.QueryId;
-            ViewBag.TagAction = "/Person/Tag/" + id;
+            ViewBag.TagAction = "/Person2/Tag/" + id;
             ViewBag.UnTagAction = "/Person2/UnTag/" + id;
             ViewBag.AddContact = "/Person2/AddContactReceived/" + id;
             ViewBag.AddTasks = "/Person2/AddAboutTask/" + id;

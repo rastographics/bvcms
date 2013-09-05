@@ -260,7 +260,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				if (keys.Contains("churchname"))
 					UpdateField(psb, p, "OtherPreviousChurch", Trim(m.churchname));
 
-			p.LogChanges(DbUtil.Db, psb.ToString(), Util.UserPeopleId ?? 0);
+			p.LogChanges(DbUtil.Db, psb.ToString());
 			p.Family.LogChanges(DbUtil.Db, fsb.ToString(), p.PeopleId, Util.UserPeopleId ?? 0);
 			DbUtil.Db.SubmitChanges();
             if (DbUtil.Db.Setting("NotifyCheckinChanges", "true").ToBool() && (psb.Length > 0 || fsb.Length > 0))

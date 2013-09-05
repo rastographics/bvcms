@@ -1,20 +1,28 @@
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models.Person
 {
     public class PictureResult : ActionResult
     {
-        private int id;
-        private int size;
-        public PictureResult(int id, int s)
+        private readonly int id;
+        private readonly bool portrait;
+        private readonly bool tiny;
+        private int? w, h;
+        public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false)
         {
             this.id = id;
-            size = s;
+            this.portrait = portrait;
+            this.tiny = tiny;
+            this.w = w;
+            this.h = h;
         }
         public override void ExecuteResult(ControllerContext context)
         {
@@ -34,15 +42,28 @@ namespace CmsWeb.Areas.People.Models.Person
             else
             {
                 var i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
-                if (i == null)
+                if (i == null || i.Secure == true)
                 {
-                    context.HttpContext.Response.ContentType = "image/jpeg";
-                    context.HttpContext.Response.BinaryWrite(size == 1 ? NoPic1() : NoPic2());
+                    if (portrait)
+                    {
+                        context.HttpContext.Response.ContentType = "image/jpeg";
+                        context.HttpContext.Response.BinaryWrite(tiny ? NoPic1() : NoPic2());
+                    }
+                    else
+                        NoPic(context.HttpContext);
                 }
                 else
                 {
-                    context.HttpContext.Response.ContentType = i.Mimetype ?? "image/jpeg";
-                    context.HttpContext.Response.BinaryWrite(i.Bits);
+                    if (w.HasValue && h.HasValue)
+                    {
+                        context.HttpContext.Response.ContentType = "image/jpeg";
+                        context.HttpContext.Response.BinaryWrite(FetchResizedImage(i, w.Value, h.Value));
+                    }
+                    else
+                    {
+                        context.HttpContext.Response.ContentType = i.Mimetype ?? "image/jpeg";
+                        context.HttpContext.Response.BinaryWrite(i.Bits);
+                    }
                 }
             }
         }
@@ -66,6 +87,35 @@ namespace CmsWeb.Areas.People.Models.Person
                 HttpRuntime.Cache.Insert("unknownimagesm", u, null, DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
             }
             return u;
+        }
+        public byte[] FetchResizedImage(ImageData.Image img, int w, int h)
+        {
+            var istream = new MemoryStream(img.Bits);
+            var img1 = System.Drawing.Image.FromStream(istream);
+            var ratio = Math.Min(w / (double)img1.Width, h / (double)img1.Height);
+            if (ratio >= 1) // image is smaller than requested
+                ratio = 1; // same size
+            w = Convert.ToInt32(ratio * img1.Width);
+            h = Convert.ToInt32(ratio * img1.Height);
+            var img2 = new System.Drawing.Bitmap(img1, w, h);
+            var ostream = new MemoryStream();
+            img2.Save(ostream, ImageFormat.Jpeg);
+            var Bits = ostream.GetBuffer();
+            var Length = Bits.Length;
+            img1.Dispose();
+            img2.Dispose();
+            istream.Close();
+            ostream.Close();
+            return Bits;
+        }
+        void NoPic(HttpContextBase context)
+        {
+            var bmp = new Bitmap(200, 200, PixelFormat.Format24bppRgb);
+            var g = Graphics.FromImage(bmp);
+            g.Clear(Color.Bisque);
+            g.DrawString("No Image", new Font("Verdana", 22, FontStyle.Bold), SystemBrushes.WindowText, new PointF(2, 2));
+            context.Response.ContentType = "image/gif";
+            bmp.Save(context.Response.OutputStream, ImageFormat.Gif);
         }
     }
 }

@@ -27,7 +27,7 @@
 @foreach (var item in Model)
 { 
     <tr id="r@(item.Id)">
-        <td> <a href="/Image.aspx?id=@item.Id" target="image">@item.Id</a> </td>
+        <td> <a href="/Image/@item.Id" target="image">@item.Id</a> </td>
         <td> @item.Length </td>
         <td><a href="#" class="delete" id="d@item.Id">delete</a></td>
         <td> @item.Mimetype </td>

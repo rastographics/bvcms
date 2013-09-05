@@ -88,18 +88,16 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
-        [UIHint("Text"), DisplayName("Addr Line 1")]
+        [DisplayName("Addr Line 1")]
         public string Address1 { get; set; }
 
-        [UIHint("Text"), DisplayName("Addr Line 2")]
+        [DisplayName("Addr Line 2")]
         public string Address2 { get; set; }
 
-        [UIHint("Text")]
         public string City { get; set; }
 
         public CodeInfo State { get; set; }
 
-        [UIHint("Text")]
         public string Zip { get; set; }
 
         public CodeInfo Country { get; set; }
@@ -134,19 +132,19 @@ namespace CmsWeb.Areas.People.Models
 
         public AddressVerify.AddressResult Result { get; set; }
 
-        [UIHint("Bool"), DisplayName("Bad Address Flag")]
+        [DisplayName("Bad Address Flag")]
         public bool? BadAddress { get; set; }
 
         [DisplayName("Resident Code")]
         public CodeInfo ResCode { get; set; }
 
-        [UIHint("Bool"), DisplayName("Primary Address")]
+        [DisplayName("Primar Address")]
         public bool Preferred { get; set; }
 
-        [UIHint("Date"), DisplayName("From Date")]
+        [DisplayName("From Date")]
         public DateTime? FromDt { get; set; }
 
-        [UIHint("Date"), DisplayName("To Date")]
+        [DisplayName("To Date")]
         public DateTime? ToDt { get; set; }
 
         public static IEnumerable<SelectListItem> ResCodes()

@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                     };
             // non member decisions
             var q2 = from p in DbUtil.Db.People
-                     where p.DecisionDate >= dt1 && p.DecisionDate < (dt2 ?? dt1).Value.AddDays(1)
+                     where p.DecisionDate >= dt1 && p.DecisionDate <= (dt2 ?? dt1).Value.AddDays(1)
                      where p.DecisionTypeId == null ||
                          decisionTypes.Contains(p.DecisionTypeId.Value)
                      group p by p.DecisionTypeId + "," + p.DecisionType.Code into g
@@ -156,7 +156,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                 return null;
             var q = from p in DbUtil.Db.People
                     let agerange = DbUtil.Db.BaptismAgeRange(p.Age ?? 0)
-                    where p.BaptismDate >= dt1 && p.BaptismDate < (dt2 ?? dt1).Value.AddDays(1)
+                    where p.BaptismDate >= dt1 && p.BaptismDate <= (dt2 ?? dt1).Value.AddDays(1)
                     group p by agerange into g
                     orderby g.Key
                     select new TypeCountInfo
@@ -172,7 +172,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             if (!dt1.HasValue)
                 return null;
             var q = from p in DbUtil.Db.People
-                    where p.BaptismDate >= dt1 && p.BaptismDate < (dt2 ?? dt1).Value.AddDays(1)
+                    where p.BaptismDate >= dt1 && p.BaptismDate <= (dt2 ?? dt1).Value.AddDays(1)
                     group p by p.BaptismTypeId + "," + p.BaptismType.Code into g
                     orderby g.Key
                     select new TypeCountInfo
@@ -189,7 +189,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             if (!dt1.HasValue)
                 return null;
             var q = from p in DbUtil.Db.People
-                    where p.JoinDate >= dt1 && p.JoinDate < (dt2 ?? dt1).Value.AddDays(1)
+                    where p.JoinDate >= dt1 && p.JoinDate <= (dt2 ?? dt1).Value.AddDays(1)
                     group p by p.JoinCodeId + "," + p.JoinType.Code into g
                     orderby g.Key
                     select new TypeCountInfo
@@ -206,7 +206,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             if (!dt1.HasValue)
                 return null;
             var q = from p in DbUtil.Db.People
-                    where p.DropDate >= dt1 && p.DropDate < (dt2 ?? dt1).Value.AddDays(1)
+                    where p.DropDate >= dt1 && p.DropDate <= (dt2 ?? dt1).Value
                     group p by p.DropCodeId + "," + p.DropType.Code into g
                     orderby g.Key
                     select new TypeCountInfo
@@ -223,7 +223,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             if (!dt1.HasValue)
                 return null;
             var q0 = from p in DbUtil.Db.People
-                     where p.DropDate >= dt1 && p.DropDate < (dt2 ?? dt1).Value.AddDays(1)
+                     where p.DropDate >= dt1 && p.DropDate <= (dt2 ?? dt1).Value
                      select p;
             var count = (float)q0.Count();
             var q1 = from p in q0
@@ -250,19 +250,18 @@ namespace CmsWeb.Areas.Main.Models.Report
             qb.CleanSlate(DbUtil.Db);
 
             bool NotAll = key != "All";
-            var dt21 = dt2.Value.AddDays(1);
 
             switch (command)
             {
                 case "ForDecisionType":
                     qb.AddNewClause(QueryType.DecisionDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.DecisionDate, CompareType.Less, dt2);
+                    qb.AddNewClause(QueryType.DecisionDate, CompareType.LessEqual, dt2);
                     if (NotAll)
                         qb.AddNewClause(QueryType.DecisionTypeId, CompareType.Equal, key);
                     break;
                 case "ForBaptismAge":
                     qb.AddNewClause(QueryType.BaptismDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.BaptismDate, CompareType.Less, dt2);
+                    qb.AddNewClause(QueryType.BaptismDate, CompareType.LessEqual, dt2);
                     if (NotAll)
                     {
                         var a = key.Split('-');
@@ -278,26 +277,26 @@ namespace CmsWeb.Areas.Main.Models.Report
                     break;
                 case "ForBaptismType":
                     qb.AddNewClause(QueryType.BaptismDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.BaptismDate, CompareType.Less, dt2);
+                    qb.AddNewClause(QueryType.BaptismDate, CompareType.LessEqual, dt2);
                     if (NotAll)
                         qb.AddNewClause(QueryType.BaptismTypeId, CompareType.Equal, key);
                     break;
                 case "ForNewMemberType":
                     qb.AddNewClause(QueryType.JoinDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.JoinDate, CompareType.Less, dt2);
+                    qb.AddNewClause(QueryType.JoinDate, CompareType.LessEqual, dt2);
                     if (NotAll)
                         qb.AddNewClause(QueryType.JoinCodeId, CompareType.Equal, key);
                     break;
                 case "ForDropType":
                     qb.AddNewClause(QueryType.DropDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.DropDate, CompareType.Less, dt2);
+                    qb.AddNewClause(QueryType.DropDate, CompareType.LessEqual, dt2);
                     if (NotAll)
                         qb.AddNewClause(QueryType.DropCodeId, CompareType.Equal, key);
                     qb.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
                     break;
                 case "DroppedForChurch":
                     qb.AddNewClause(QueryType.DropDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.DropDate, CompareType.Less, dt2);
+                    qb.AddNewClause(QueryType.DropDate, CompareType.LessEqual, dt2);
                     switch (key)
                     {
                         case "Unknown":

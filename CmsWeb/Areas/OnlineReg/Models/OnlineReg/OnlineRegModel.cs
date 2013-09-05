@@ -162,8 +162,8 @@ namespace CmsWeb.Models
 
         public void ParseSettings()
         {
-            if (HttpContext.Current.Items.Contains("RegSettings"))
-                return;
+//            if (HttpContext.Current.Items.Contains("RegSettings"))
+//                return;
             var list = new Dictionary<int, Settings>();
             if (masterorgid.HasValue)
             {
@@ -177,9 +177,9 @@ namespace CmsWeb.Models
                 return;
             else
                 list[_Orgid.Value] = new Settings(org.RegSetting, DbUtil.Db, _Orgid.Value);
-            if (HttpContext.Current.Items.Contains("RegSettings"))
-                return;
-            HttpContext.Current.Items.Add("RegSettings", list);
+//            if (HttpContext.Current.Items.Contains("RegSettings"))
+//                return;
+            HttpContext.Current.Items["RegSettings"] = list;
 
             if (org != null && org.AddToSmallGroupScript.HasValue())
             {

@@ -24,7 +24,6 @@ namespace CmsWeb.Areas.Main
             AddRoute(context, "SMS");
             AddRoute(context, "RegSetting");
             AddRoute(context, "Meeting");
-            AddRoute(context, "Export");
             AddRoute(context, "OrgSearch");
             AddRoute(context, "MemberDirectory");
             AddRoute(context, "ContactSearch");

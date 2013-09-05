@@ -5,11 +5,11 @@
 </div>
 *@
 @{ 
-    string img = "/Image.aspx?id=" + Model.MediumId;
+    string img = "/Image/" + Model.MediumId;
     string nextsize = "/MemberDocs/Image/" + Model.Id + "?size=large";
     if (Request.QueryString["size"] == "large") 
     {
-        img = "/Image.aspx?id=" + Model.LargeId;
+        img = "/Image/" + Model.LargeId;
         nextsize = "/MemberDocs/Image/" + Model.Id + "?size=medium";
     }
 }

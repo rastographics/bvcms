@@ -248,11 +248,15 @@ namespace CmsData
                 return;
             if (value == null && o is string && !((string)o).HasValue())
                 return;
+            if (o is int && value.ToInt().Equals(o))
+                return;
+            if (o is DateTime && o.Equals(value.ToDate()))
+                return;
             psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
             if(value is string)
                 Util.SetPropertyFromText(obj, field, (string)value);
-                else
-                    Util.SetProperty(obj, field, value);
+            else
+                Util.SetProperty(obj, field, value);
             }
 	}
 }

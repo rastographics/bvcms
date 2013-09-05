@@ -1,0 +1,73 @@
+﻿@model IEnumerable<CmsWeb.Models.ExcelFamilyMember>
+<html xmlns:x="urn:schemas-microsoft-com:office:excel">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    <table style="font-family: Arial; border-collapse: collapse;">
+        <tr>
+            <th>PeopleId</th>
+            <th>Title</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>Address</th>
+            <th>Address2</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip</th>
+            <th>Email</th>
+            <th>BirthDate</th>
+            <th>BirthDay</th>
+            <th>JoinDate</th>
+            <th>HomePhone</th>
+            <th>CellPhone</th>
+            <th>WorkPhone</th>
+            <th>Church</th>
+            <th>Age</th>
+            <th>School</th>
+            <th>Marital</th>
+            <th>FamilyName</th>
+            <th>FamilyId</th>
+            <th>FamilyPositionId</th>
+            <th>Grade</th>
+            <th>Teacher</th>
+            <th>AttendPct</th>
+            <th>FellowshipClass</th>
+            <th>AltName</th>
+        </tr>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.PeopleId</td>
+                <td>@r.Title</td>
+                <td>@r.FirstName</td>
+                <td>@r.LastName</td>
+                <td>@r.Address</td>
+                <td>@r.Address2</td>
+                <td>@r.City</td>
+                <td>@r.State</td>
+                <td class="Text">@r.Zip</td>
+                <td>@r.Email</td>
+                <td>@r.BirthDate</td>
+                <td>@r.BirthDay</td>
+                <td>@r.JoinDate</td>
+                <td>@r.HomePhone</td>
+                <td>@r.CellPhone</td>
+                <td>@r.WorkPhone</td>
+                <td>@r.MemberStatus</td>
+                <td>@r.Age</td>
+                <td>@r.School</td>
+                <td>@r.Married</td>
+                <td>@r.FamilyName</td>
+                <td>@r.FamilyId</td>
+                <td>@r.FamilyPosition</td>
+                <td>@r.Grade</td>
+                <td>@r.FellowshipLeader</td>
+                <td>@r.AttendPctBF</td>
+                <td>@r.FellowshipClass</td>
+                <td>@r.AltName</td>
+            </tr>
+        }
+    </table>
+</body>
+</html>

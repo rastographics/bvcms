@@ -1,40 +1,38 @@
-﻿@using CmsWeb
+﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
+@using CmsWeb
 @using UtilityExtensions
-@model CmsWeb.Areas.Search.Models.SearchAddModel
-<form class="form-horizontal onecol ajax" action="/SearchAdd2/AddNewAddress" method="POST">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
-        <h3>Add Address for New Family</h3>
-    </div>
-    <div class="modal-body">
-        <a class="helplink pull-right" target="_blank" href='@Model.HelpLink("NewFamily")'>help</a>
-        <fieldset class="display">
-            @Html.EditorFor(m => m, "HiddenSearch")
-            @Html.EditorFor(m => m, "HiddenMeta")
-            @{  var n = 0;
-                for (n = 0; n < Model.List.Count - 1; n++)
-                {
-                @Html.EditorFor(m => m.List[n], "HiddenPerson")
-                @Html.EditorFor(m => m.List[n], "HiddenAddress")
-                }
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Add Address for New Family</h3>
+</div>
+<div class="modal-body">
+    <a class="helplink pull-right" target="_blank" href='@Model.HelpLink("NewFamily")'>help</a>
+    <fieldset class="display">
+        @Html.EditorFor(m => m, "HiddenSearch")
+        @Html.EditorFor(m => m, "HiddenMeta")
+        @{  var n = 0;
+            for (n = 0; n < Model.List.Count - 1; n++)
+            {
+            @Html.EditorFor(m => m.List[n], "HiddenPerson")
+            @Html.EditorFor(m => m.List[n], "HiddenAddress")
             }
-            @Html.EditorFor(m => Model.List[n], "HiddenPerson")
-            @Html.EditorFor(m => Model.List[n], "Address")
-        </fieldset>
-        @{ var p = Model.List[n]; }
-        @Html.Raw(p.AddressInfo.Error)
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Cancel All</a>
-        <a href="/SearchAdd2/CancelPerson/@n" class="btn ajax">Cancel Person</a>
-        @if (p.AddressInfo.Error.HasValue())
-        {
-            <a href="/SearchAdd2/AddNewAddress/NoCheck" class="btn btn-danger ajax">Skip Address Check</a>
-            <input type="submit" name="submit" class="btn btn-primary" value="Submit Again" />
         }
-        else
-        {
-            <input type="submit" name="submit" class="btn btn-primary" value="Submit" />
-        }
-    </div>
-</form>
+        @Html.EditorFor(m => Model.List[n], "HiddenPerson")
+        @Html.EditorFor(m => Model.List[n], "Address")
+    </fieldset>
+    @{ var p = Model.List[n]; }
+    @Html.Raw(p.AddressInfo.Error)
+</div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel All</a>
+    <a href="/SearchAdd2/CancelPerson/@n" class="btn ajax">Cancel Person</a>
+    @if (p.AddressInfo.Error.HasValue())
+    {
+        <a href="/SearchAdd2/AddNewAddress/NoCheck" class="btn btn-danger ajax">Skip Address Check</a>
+        <a href="/SearchAdd2/AddNewAddress" class="btn btn-primary ajax validate">Submit Again</a>
+    }
+    else
+    {
+        <a href="/SearchAdd2/AddNewAddress" class="btn btn-primary ajax validate">Submit</a>
+    }
+</div>

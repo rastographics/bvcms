@@ -51,11 +51,12 @@
     });
     $("a.editaddr").live("click", function (ev) {
         ev.preventDefault();
-        $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
+        $("#edit-address").css({"margin-top":"", "top": ""})
+        .load($(this).attr("href"), {}, function () {
             var modal = $(this);
             modal.modal("show");
             modal.on('hidden', function () {
-                $(this).remove();
+                $(this).empty();
             });
             modal.on("click", "a.close-saved-address", function () {
                 $.post($(this).attr("href"), {}, function (ret) {
@@ -152,10 +153,11 @@
 
     $("form.ajax a.membertype").live("click", function (ev) {
         ev.preventDefault();
-        $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
+        $("#member-dialog").css({ 'margin-top': '', 'top': '' })
+            .load($(this).attr("href"), {}, function () {
             $(this).modal("show");
             $(this).on('hidden', function () {
-                $(this).remove();
+                $(this).empty();
             });
         });
     });
@@ -170,6 +172,7 @@
         if (tabparent) {
             $("a[href='#" + tabparent + "']").click().tab("show");
         }
+        $.cookie('lasttab', tlink.attr("href"));
         tlink.click().tab("show");
     }
     $("a[href='#enrollment']").on('shown', function (e) {
@@ -189,6 +192,11 @@
             $.cookie('lasttab', "#changes");
         }
     });
+    $.validator.addMethod("ValidDate", function (value, element, params) {
+        var v = $.DateValid(value);
+        return this.optional(element) || v;
+    }, "Please enter valid date");
+
     //$("#contacts-link").click(function () {
     //        $("#contacts-tab").each(function () {
     //            $.showTable($(this));

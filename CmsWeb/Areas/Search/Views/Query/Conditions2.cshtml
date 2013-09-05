@@ -17,6 +17,7 @@
             <header title="@clause.QueryId">
                 <label for="match-1">Match</label>
                 @Html.DropDownList4("", "", Model.GroupComparisons(), clause.Comparison, "simple changegroup")
+                <label>of these conditions</label>
                 @CogItems(clause)
             </header>
             <div class="group-actions">

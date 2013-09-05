@@ -42,4 +42,8 @@
     @Html.Hidden("newlook", "true")
     @Html.Hidden("PeopleId", Model.PeopleId)
 </div>
-
+@section PopupsPlaceholder
+{
+<form id='edit-address' class='modal fade hide validate ajax form-horizontal' method='POST' data-backdrop='static'></form>
+<form id='member-dialog' class='modal fade hide validate ajax form-horizontal' method='POST' data-backdrop='static'></form>
+}

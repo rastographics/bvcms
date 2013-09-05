@@ -6,7 +6,7 @@
         <div class="span6 display">
             @Html.DisplayFor(m => m.TitleCode)
             @Html.DisplayFor(m => m.FirstName)
-            @Html.DisplayFor(m => m.GoesBy)
+            @Html.DisplayFor(m => m.NickName)
             @Html.DisplayFor(m => m.MiddleName)
             @Html.DisplayFor(m => m.LastName)
             @Html.DisplayFor(m => m.AltName)
@@ -15,7 +15,7 @@
         </div>
         <div class="span6 display column2">
             @Html.DisplayFor(m => m.Gender)
-            @Html.DisplayFor(m => m.DOB)
+            @Html.DisplayFor(m => m.DOB, "Birthday")
             @Html.DisplayFor(m => m.MaritalStatus)
             @Html.DisplayFor(m => m.WeddingDate)
             @Html.DisplayFor(m => m.OccupationOther)

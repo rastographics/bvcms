@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Main.Models.Report
         {
             var Response = context.HttpContext.Response;
             Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            Response.AddHeader("content-disposition", "attachment;filename=foo.pdf");
 
             doc = new Document(PageSize.LETTER, 36, 36, 64, 64);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);

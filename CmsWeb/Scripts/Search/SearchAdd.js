@@ -1,13 +1,21 @@
 ﻿$(function () {
     $("a.searchadd").live("click", function (ev) {
         ev.preventDefault();
-        $("<div id='search-add' class='modal fade hide' data-width='600' data-keyboard='false' data-backdrop='static' />")
-            .load($(this).attr("href"), {}, function () {
-                $(this).modal("show");
-                $(this).on('hidden', function () {
-                    $(this).remove();
-                });
+        $("#search-add").load($(this).attr("href"), {}, function () {
+            $(this).modal("show");
+            $(this).on('hidden', function () {
+                $(this).empty();
             });
+            $.AttachFormElements();
+            $(this).validate({
+                highlight: function (element) {
+                    $(element).closest(".control-group").addClass("error");
+                },
+                unhighlight: function (element) {
+                    $(element).closest(".control-group").removeClass("error");
+                }
+            });
+        });
     });
     $("#search-add a.clear").live('click', function (ev) {
         ev.preventDefault();
@@ -36,12 +44,12 @@
         ev.preventDefault();
         $ToggleShown($(this).parents("tr"));
     });
-    var $ToggleShown = function(tr) {
+    var $ToggleShown = function (tr) {
         if (tr.hasClass("notshown"))
             $ShowAll(tr);
         else if (tr.hasClass("shown"))
             $CollapseAll(tr);
-        else 
+        else
             tr.next("tr").find("div.collapse")
                 .off('hidden')
                 .on("hidden", function (e) { e.stopPropagation(); })

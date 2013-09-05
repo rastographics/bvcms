@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
+using Thinktecture.IdentityModel.Extensions;
 using UtilityExtensions;
 using System.Data.Linq;
 using System.Text;
@@ -31,8 +33,8 @@ namespace CmsWeb.Areas.People.Models.Person
         [DisplayName("Type")]
         public CodeInfo DecisionType { get; set; }
 
-        [UIHint("Date"), DisplayName("Date")]
-        public string DecisionDate { get; set; }
+        [DisplayName("Date")]
+        public DateTime? DecisionDate { get; set; }
 
         // Baptism --------------------------------------------------
 
@@ -42,30 +44,30 @@ namespace CmsWeb.Areas.People.Models.Person
         [DisplayName("Type")]
         public CodeInfo BaptismType { get; set; }
 
-        [UIHint("Date"), DisplayName("Date")]
-        public string BaptismDate { get; set; }
+        [DisplayName("Date")]
+        public DateTime? BaptismDate { get; set; }
 
-        [UIHint("Date"), DisplayName("Scheduled")]
-        public string BaptismSchedDate { get; set; }
+        [DisplayName("Scheduled")]
+        public DateTime? BaptismSchedDate { get; set; }
 
         // Drop --------------------------------------------------
 
         [DisplayName("Type"), FieldInfo(IdField = "DropCodeId")]
         public CodeInfo DropType { get; set; }
 
-        [UIHint("Date"), DisplayName("Date")]
-        public string DropDate { get; set; }
+        [DisplayName("Date")]
+        public DateTime? DropDate { get; set; }
 
-        [UIHint("Text")]
-        public string NewChurch { get; set; }
+        [DisplayName("New Church"), StringLength(60)]
+        public string OtherNewChurch { get; set; }
 
         // New Member Class --------------------------------------------------
 
         [DisplayName("Status")]
         public CodeInfo NewMemberClassStatus { get; set; }
 
-        [UIHint("Date"), DisplayName("Date")]
-        public string NewMemberClassDate { get; set; }
+        [DisplayName("Date")]
+        public DateTime? NewMemberClassDate { get; set; }
 
         // Membership --------------------------------------------------
 
@@ -75,11 +77,10 @@ namespace CmsWeb.Areas.People.Models.Person
         [DisplayName("How Joined"), FieldInfo(IdField = "JoinCodeId")]
         public CodeInfo JoinType { get; set; }
 
-        [UIHint("Date")]
-        public string JoinDate { get; set; }
+        public DateTime? JoinDate { get; set; }
 
-        [UIHint("Text")]
-        public string PrevChurch { get; set; }
+        [DisplayName("Prev Church"), StringLength(60)]
+        public string OtherPreviousChurch { get; set; }
 
         private int _id;
         public int Id
@@ -117,18 +118,18 @@ namespace CmsWeb.Areas.People.Models.Person
                      }).Single();
 
             var changes = this.CopyPropertiesTo(i.p, excludefields: "HomePhone");
-            i.p.LogChanges(DbUtil.Db, changes, Util.UserPeopleId.Value);
+            i.p.LogChanges(DbUtil.Db, changes);
 
-            changes = this.CopyPropertiesTo(i.Family, onlyfields: "HomePhone");
-            i.Family.LogChanges(DbUtil.Db, changes, i.p.PeopleId, Util.UserPeopleId.Value);
 
             var ret = i.p.MemberProfileAutomation(DbUtil.Db);
             if (ret == "ok")
             {
                 DbUtil.Db.SubmitChanges();
-                DbUtil.LogActivity("Updated Person: {0}".Fmt(i.p.Name));
+                changes = this.CopyPropertiesTo(i.Family, onlyfields: "HomePhone");
+                i.Family.LogChanges(DbUtil.Db, changes, i.p.PeopleId);
+                person = i.p;
+                DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
             }
-            DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, i.p);
             return ret;
         }
 

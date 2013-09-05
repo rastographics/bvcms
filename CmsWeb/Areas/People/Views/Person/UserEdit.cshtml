@@ -60,7 +60,7 @@
         <a href="#" class="btn" data-dismiss="modal">Close</a>
         <a href="/Person2/Impersonate/@Model.UserId" class="btn btn-warning">Impersonate User</a>
         <a href="/Person2/UserDelete/@Model.UserId" class="btn btn-danger delete" data-prompt="Are you sure you want to remove User @Model.Username?">Delete User</a>
-        <a href="/Person2/UserUpdate/@Model.UserId" class="btn btn-primary save">Save</a>
+        <a href="/Person2/UserUpdate/@Model.UserId" class="btn btn-primary save validate">Save</a>
     </div>
 </form>
 @helper Role(string role)
@@ -72,13 +72,3 @@
         </div>
     </div>
 }
-
-@*
-        <hr />
-        <hr />
-        <a href="/Person/UserUpdate/@Model.UserId" class="submitbutton save bt blue">Save Changes</a>
-        <a href="/Person/UserWelcome/@Model.UserId" class="submitbutton save bt blue">Save Changes, Send Welcome Email</a>
-    </form>
-</body>
-</html>
-*@

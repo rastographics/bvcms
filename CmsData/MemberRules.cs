@@ -41,7 +41,7 @@ namespace CmsData
             if (script == null)
                 return "ok";
             var path = HttpContext.Current.Server.MapPath("/");
-#if DEBUG
+#if DEBUG2
             var options = new Dictionary<string, object>();
             options["Debug"] = true;
             var engine = Python.CreateEngine(options);
@@ -57,8 +57,8 @@ namespace CmsData
             var sc = engine.CreateScriptSourceFromString(script.Body);
 #endif
 
-//            try
-//            {
+            try
+            {
                 var code = sc.Compile();
                 var scope = engine.CreateScope();
                 code.Execute(scope);
@@ -71,11 +71,11 @@ namespace CmsData
                 //dynamic instance = engine.Operations.CreateInstance(m);
                 //var value = instance.Run(Db, this);
                 return errorReturn;
-//            }
-//            catch (Exception ex)
-//            {
-//                return "MemberProfileAutomation script error: " + ex.StackTrace;
-//            }
+            }
+            catch (Exception ex)
+            {
+                return "MemberProfileAutomation script error: " + ex.Message;
+            }
         }
         //public void MemberProfileAutomation0(CMSDataContext Db)
         //{
