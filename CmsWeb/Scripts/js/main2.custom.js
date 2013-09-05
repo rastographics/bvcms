@@ -59,8 +59,11 @@ $(document).ready(function () {
         $(f).validate({
             submitHandler: function (form) {
                 $(form).modal("hide");
-                if (form.method.toUpperCase() === 'GET')
+                if (form.method.toUpperCase() === 'GET') {
+                    $(form).attr("target", "_blank");
                     form.submit();
+                    $(form).removeAttr("target");
+                }
                 else {
                     var q = $(form).serialize();
                     $.post(form.action, q, function (ret) {

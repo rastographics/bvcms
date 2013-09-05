@@ -231,7 +231,9 @@
             $("#orgsearchform").attr("action", "/Reports/RallyRollsheet" + args);
         else
             $("#orgsearchform").attr("action", "/Reports/Rollsheet" + args);
+        $("#orgsearchform").attr("target", "_blank");
         $("#orgsearchform").submit();
+        $("#orgsearchform").removeAttr("target");
         return false;
     });
     $('#ExportExcel').click(function (ev) {
@@ -282,7 +284,9 @@
         ev.preventDefault();
         hideDropdowns();
         $("#orgsearchform").attr("action", "/Reports/Roster");
+        $("#orgsearchform").attr("target", "_blank");
         $("#orgsearchform").submit();
+        $("#orgsearchform").removeAttr("target");
         return false;
     });
     $('#PasteSettings').click(function (ev) {
@@ -319,7 +323,9 @@
 //        }
         var href = $(this).attr("href");
         $("#orgsearchform").attr("action", href);
+        $("#orgsearchform").attr("target", "_blank");
         $("#orgsearchform").submit();
+        $("#orgsearchform").removeAttr("target");
         return false;
     });
     $('body').on('click', 'a.taguntag', function (ev) {

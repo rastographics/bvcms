@@ -212,10 +212,10 @@ namespace CmsWeb.Areas.Public.Controllers
 			DbUtil.LogActivity("APIPerson Update");
             return Content(new APIPerson(DbUtil.Db).UpdatePersonXml(xml), "text/xml");
         }
-        [GET("Portrait/{id:int}/{w:int?}/{h:int?}")]
-        public ActionResult Portrait(int id, int? w, int? h)
+        [GET("Portrait/{id:int?}/{w:int?}/{h:int?}")]
+        public ActionResult Portrait(int? id, int? w, int? h)
         {
-            return new PictureResult(id, w, h, portrait: true);
+            return new PictureResult(id ?? 0, w, h, portrait: true);
         }
     }
 }
