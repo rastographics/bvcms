@@ -1,5 +1,4 @@
-﻿///#source 1 1 /Scripts/js/Pager3.js
-$(function () {
+﻿$(function () {
     //$.getTable = function (d) {
     //    var q = {};
     //    if (d.hasClass("loaded"))
@@ -49,7 +48,6 @@ $(function () {
     });
 });
 
-///#source 1 1 /Scripts/js/ExportToolBar2.js
 $(document).ready(function () {
     $(document).on("click", "a.dialog-options", function (ev) {
         ev.preventDefault();
@@ -198,7 +196,6 @@ $(document).ready(function () {
         return this;
     };
 });
-///#source 1 1 /Scripts/js/headermenu2.js
 $(function () {
     $('#SearchText').each(function () {
         var imap;
@@ -466,7 +463,6 @@ String.prototype.addCommas = function () {
     return x1 + x2;
 };
 
-///#source 1 1 /Scripts/js/form-ajax.js
 $(function () {
     $.AttachFormElements = function () {
         $("form.ajax input.ajax-typeahead").typeahead({
@@ -616,7 +612,6 @@ $(function () {
     });
 });
 
-///#source 1 1 /Scripts/Search/SearchAdd.js
 $(function () {
     $("a.searchadd").live("click", function (ev) {
         ev.preventDefault();
@@ -708,7 +703,6 @@ $(function () {
             .collapse('hide');
     });
 });
-///#source 1 1 /Scripts/jquery/jquery.hiddenposition.1.1.js
 /*	jQuery HiddenPosition Plugin - easily position any DOM element, even if it's hidden
  *  Examples and documentation at: http://www.garralab.com/hiddenposition.php
  *  Copyright (C) 2012  garralab@gmail.com

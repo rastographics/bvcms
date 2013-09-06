@@ -1,5 +1,4 @@
-﻿///#source 1 1 /Scripts/jquery/jquery.contextmenu.r2.js
-/*
+﻿/*
  * ContextMenu - jQuery plugin for right-click context menus
  *
  * Author: Chris Domigan
@@ -143,7 +142,6 @@
 $(function() {
   $('div.contextMenu').hide();
 });
-///#source 1 1 /Scripts/Search/QueryBuilder.js
 var qs = "";
 $(function () {
     $("#SelectCondition").SelectCondition();

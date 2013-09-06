@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Search.Controllers
 	    {
 	        ViewBag.OnQueryBuilder = "true";
 	        ViewBag.TagAction = "/Query/TagAll/";
-	        ViewBag.TagAction = "/Query/UnTagAll/";
+	        ViewBag.UnTagAction = "/Query/UnTagAll/";
 	        ViewBag.Contact = "/Query/AddContact/";
 	        ViewBag.Tasks = "/Query/AddTasks/";
 	        ViewBag.GearSpan = "span12";

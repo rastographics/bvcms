@@ -1,5 +1,4 @@
-﻿///#source 1 1 /Scripts/Bootstrap/bootstrap.js
-/* ===================================================
+﻿/* ===================================================
  * bootstrap-transition.js v2.3.1
  * http://twitter.github.com/bootstrap/javascript.html#transitions
  * ===================================================
@@ -2275,7 +2274,6 @@
 
 
 }(window.jQuery);
-///#source 1 1 /Scripts/Bootstrap/bootstrap-modalmanager.js
 /* ===========================================================
  * bootstrap-modalmanager.js v2.1
  * ===========================================================
@@ -2689,7 +2687,6 @@
 
 }(jQuery);
 
-///#source 1 1 /Scripts/Bootstrap/bootstrap-modal.js
 /* ===========================================================
  * bootstrap-modal.js v2.1
  * ===========================================================
@@ -3064,7 +3061,6 @@
 
 }(window.jQuery);
 
-///#source 1 1 /Scripts/Bootstrap/bootstrap-editable.js
 /*! X-editable - v1.4.4 
 * In-place editing with Twitter Bootstrap, jQuery UI or pure jQuery
 * http://github.com/vitalets/x-editable
@@ -9257,7 +9253,6 @@ $(function(){
     $.fn.editabletypes.typeahead = Constructor;      
     
 }(window.jQuery));
-///#source 1 1 /Scripts/Bootstrap/bootbox.js
 /**
  * bootbox.js v3.2.0
  *

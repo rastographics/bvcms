@@ -471,7 +471,6 @@
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
     <Compile Include="Code\StandardExtraValues.cs" />
-    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />
     <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
@@ -569,7 +568,6 @@
     <Content Include="Content\css\chosen.css" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
     <Content Include="Content\images\glyphicons-halflings.png" />
-    <Content Include="Content\moment-datepicker\datepicker.css" />
     <Content Include="Content\css\normalize.css" />
     <Content Include="ckeditor2\build-config.js" />
     <Content Include="ckeditor2\ckeditor.js" />
@@ -741,15 +739,15 @@
     <Content Include="Scripts\Admin\Users.min.js">
       <DependentUpon>Users.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\bootstrap-bundle.js">
+      <DependentUpon>bootstrap-bundle.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\bootstrap-bundle.min.js">
+      <DependentUpon>bootstrap-bundle.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bootstrap\bootbox.js" />
     <Content Include="Scripts\Bootstrap\bootbox.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-ajax.js" />
-    <Content Include="Scripts\Bootstrap\bootstrap-bundle.js">
-      <DependentUpon>bootstrap-bundle.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bootstrap\bootstrap-bundle.min.js">
-      <DependentUpon>bootstrap-bundle.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-datepicker.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-datepicker.min.js">
       <DependentUpon>bootstrap-datepicker.js</DependentUpon>
@@ -771,6 +769,12 @@
     <Content Include="Scripts\Bootstrap\spin.min.js" />
     <Content Include="Scripts\Chosen\chosen.jquery.min.js.map">
       <DependentUpon>chosen.jquery.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Main-bundle.js">
+      <DependentUpon>Main-bundle.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Main-bundle.min.js">
+      <DependentUpon>Main-bundle.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Dialog\OrgMemberDialog.min.js">
       <DependentUpon>OrgMemberDialog.js</DependentUpon>
@@ -880,31 +884,7 @@
     <Content Include="Scripts\jQuery\jquery.validate.min.js">
       <DependentUpon>jquery.validate.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\jQuery\main.js">
-      <DependentUpon>main.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\jQuery\main.min.js">
-      <DependentUpon>main.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\jQuery\main2.js">
-      <DependentUpon>main2.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\jQuery\main2.min.js">
-      <DependentUpon>main2.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\jQuery\onlineregister.js">
-      <DependentUpon>onlineregister.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\jQuery\onlineregister.min.js">
-      <DependentUpon>onlineregister.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\ExportToolBar2.js" />
-    <Content Include="Scripts\js\TaskPage.js">
-      <DependentUpon>TaskPage.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\js\TaskPage.min.js">
-      <DependentUpon>TaskPage.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\CheckIn.min.js">
       <DependentUpon>CheckIn.js</DependentUpon>
     </Content>
@@ -928,18 +908,6 @@
     <Content Include="Scripts\js\HomeTest.min.js">
       <DependentUpon>HomeTest.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\js\main.custom.js">
-      <DependentUpon>main.custom.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\js\main.custom.min.js">
-      <DependentUpon>main.custom.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\js\main2.custom.js">
-      <DependentUpon>main2.custom.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\js\main2.custom.min.js">
-      <DependentUpon>main2.custom.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\RegSettings.min.js">
       <DependentUpon>RegSettings.js</DependentUpon>
     </Content>
@@ -954,6 +922,24 @@
     <Content Include="Scripts\js\UsersEmailFor.min.js">
       <DependentUpon>UsersEmailFor.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\main.js">
+      <DependentUpon>main.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\main.min.js">
+      <DependentUpon>main.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\main2.custom.js">
+      <DependentUpon>main2.custom.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\main2.custom.min.js">
+      <DependentUpon>main2.custom.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\main2.js">
+      <DependentUpon>main2.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\main2.min.js">
+      <DependentUpon>main2.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\Meeting\meeting-ipad.min.js">
       <DependentUpon>meeting-ipad.js</DependentUpon>
     </Content>
@@ -965,12 +951,6 @@
     </Content>
     <Content Include="Scripts\Meeting\Meetings.min.js">
       <DependentUpon>Meetings.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Moment\moment-bundle.js">
-      <DependentUpon>moment-bundle.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Moment\moment-bundle.min.js">
-      <DependentUpon>moment-bundle.js.bundle</DependentUpon>
     </Content>
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\Address.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\Person.cshtml" />
@@ -1136,6 +1116,12 @@
     <Content Include="Scripts\Meeting\Meetings.min.js.map">
       <DependentUpon>Meetings.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\onlineregister.js">
+      <DependentUpon>onlineregister.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\onlineregister.min.js">
+      <DependentUpon>onlineregister.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\OnlineReg\OnlineReg.min.js">
       <DependentUpon>OnlineReg.js</DependentUpon>
     </Content>
@@ -1158,10 +1144,7 @@
     <Content Include="Docs\test.md" />
     <Content Include="Docs\ideas.md" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
-    <None Include="Scripts\Bootstrap\bootstrap-bundle.js.bundle" />
-    <Content Include="Scripts\Bootstrap\bootstrap-bundle.min.js.map">
-      <DependentUpon>bootstrap-bundle.js.bundle</DependentUpon>
-    </Content>
+    <None Include="Scripts\bootstrap-bundle.js.bundle" />
     <Content Include="Scripts\jQuery\jquery.multiSelect.min.js.map">
       <DependentUpon>jquery.multiSelect.js</DependentUpon>
     </Content>
@@ -1180,38 +1163,17 @@
     <Content Include="Scripts\jQuery\jquery.validate.min.js.map">
       <DependentUpon>jquery.validate.js</DependentUpon>
     </Content>
-    <None Include="Scripts\jQuery\main.js.bundle" />
-    <Content Include="Scripts\jQuery\main.min.js.map">
-      <DependentUpon>main.js.bundle</DependentUpon>
-    </Content>
-    <None Include="Scripts\jQuery\main2.js.bundle" />
-    <Content Include="Scripts\jQuery\main2.min.js.map">
-      <DependentUpon>main2.js.bundle</DependentUpon>
-    </Content>
-    <None Include="Scripts\jQuery\onlineregister.js.bundle" />
-    <Content Include="Scripts\jQuery\onlineregister.min.js.map">
-      <DependentUpon>onlineregister.js.bundle</DependentUpon>
-    </Content>
+    <None Include="Scripts\Main-bundle.js.bundle" />
+    <None Include="Scripts\main.js.bundle" />
+    <None Include="Scripts\main2.js.bundle" />
+    <None Include="Scripts\onlineregister.js.bundle" />
     <Content Include="Scripts\js\contact.min.js.map">
       <DependentUpon>contact.js</DependentUpon>
     </Content>
-    <None Include="Scripts\js\TaskPage.js.bundle" />
-    <Content Include="Scripts\js\TaskPage.min.js.map">
-      <DependentUpon>TaskPage.js.bundle</DependentUpon>
-    </Content>
-    <None Include="Scripts\js\main.custom.js.bundle">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Include="Scripts\TaskPage.js.bundle" />
+    <None Include="Scripts\main2.custom.js.bundle">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Scripts\js\main.custom.min.js.map">
-      <DependentUpon>main.custom.js.bundle</DependentUpon>
-    </Content>
-    <None Include="Scripts\js\main2.custom.js.bundle">
-      <SubType>Designer</SubType>
-    </None>
-    <Content Include="Scripts\js\main2.custom.min.js.map">
-      <DependentUpon>main2.custom.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\Tags.min.js.map">
       <DependentUpon>Tags.js</DependentUpon>
     </Content>
@@ -1220,10 +1182,6 @@
     </Content>
     <Content Include="Scripts\js\Task.min.js.map">
       <DependentUpon>Task.js</DependentUpon>
-    </Content>
-    <None Include="Scripts\Moment\moment-bundle.js.bundle" />
-    <Content Include="Scripts\Moment\moment-bundle.min.js.map">
-      <DependentUpon>moment-bundle.js.bundle</DependentUpon>
     </Content>
     <None Include="Scripts\org.js.bundle" />
     <Content Include="Scripts\org.js">
@@ -1279,9 +1237,6 @@
     </Content>
     <Content Include="Scripts\People\Person2.min.js.map">
       <DependentUpon>Person2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\org.min.js.map">
-      <DependentUpon>org.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\People\Person1.min.js.map">
       <DependentUpon>Person1.js</DependentUpon>
@@ -1339,9 +1294,6 @@
     </Content>
     <Content Include="Scripts\Search\SearchOrgs.min.js.map">
       <DependentUpon>SearchOrgs.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\querybuilder.min.js.map">
-      <DependentUpon>querybuilder.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\Query.min.js.map">
       <DependentUpon>Query.js</DependentUpon>
@@ -1573,6 +1525,12 @@
     <Content Include="Scripts\Org\enroll-control-ipad.js" />
     <Content Include="Scripts\Org\OrgMemberDialog2.js" />
     <Content Include="Scripts\Search\Query.js" />
+    <Content Include="Scripts\TaskPage.js">
+      <DependentUpon>TaskPage.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\TaskPage.min.js">
+      <DependentUpon>TaskPage.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\Volunteer\Calendar.min.js">
       <DependentUpon>Calendar.js</DependentUpon>
     </Content>
@@ -1708,9 +1666,6 @@
     </Compile>
     <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Public\Controllers\TrackController.cs" />
-    <Compile Include="Admin\ToggleOrgMembersOnly.ashx.cs">
-      <DependentUpon>ToggleOrgMembersOnly.ashx</DependentUpon>
-    </Compile>
     <Compile Include="Code\ViewExtensions.cs" />
     <Compile Include="Contributions\Deposit.aspx.cs">
       <DependentUpon>Deposit.aspx</DependentUpon>
@@ -1993,9 +1948,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Person\VolunteerDisplay.cshtml">
-    </Content>
-    <Content Include="App_Browsers\WebOs.browser">
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Finance\Views\Statements\Index.cshtml">
     </Content>
@@ -2907,7 +2859,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CmsData\CmsData.csproj">
-      <Project>{98AEE43C-4226-49E7-BD46-C1A85467ECED}</Project>
+      <Project>{98aee43c-4226-49e7-bd46-c1a85467eced}</Project>
       <Name>CmsData</Name>
     </ProjectReference>
     <ProjectReference Include="..\ImageData\ImageData.csproj">
@@ -2920,7 +2872,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Admin\ToggleOrgMembersOnly.ashx" />
     <Content Include="Admin\Web.config" />
     <Content Include="images\attention48.png" />
     <Content Include="images\blackredgradient.png" />

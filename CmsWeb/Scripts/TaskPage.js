@@ -1,5 +1,4 @@
-﻿///#source 1 1 /Scripts/jQuery/jquery.form.js
-/*!
+﻿/*!
  * jQuery Form Plugin
  * version: 3.32.0-2013.04.09
  * @requires jQuery v1.5 or later
@@ -1173,7 +1172,6 @@
     }
 
 })(jQuery);
-///#source 1 1 /Scripts/jQuery/jquery.form2.js
 (function($) {
 
 $.fn.getCheckboxVal = function() {
@@ -1260,7 +1258,6 @@ $.navigate = function(url, data) {
 })(jQuery);
 
 
-///#source 1 1 /Scripts/js/Task.js
 $(function () {
     $('#tabs').tabs();
     $("#tabs > ul > li > a").click(function() {

@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 m.Move();
 				if (Delete == true)
 				{
-					DbUtil.LogActivity("Deleting Record during Merge {0}".Fmt(m.pi[0].PeopleId));
+					DbUtil.LogActivity("Deleting Record during Merge {0} to {1}".Fmt(m.pi[0].PeopleId, m.pi[1].PeopleId));
 					m.Delete();
 				}
             }

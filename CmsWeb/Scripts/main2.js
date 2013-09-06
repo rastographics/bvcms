@@ -1,5 +1,4 @@
-﻿///#source 1 1 /Scripts/jQuery/jquery-1.9.1.js
-/*!
+﻿/*!
  * jQuery JavaScript Library v1.9.1
  * http://jquery.com/
  *
@@ -9597,7 +9596,6 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
 })( window );
 
-///#source 1 1 /Scripts/jQuery/jquery-migrate-1.1.1.js
 /*!
  * jQuery Migrate - v1.1.1 - 2013-02-16
  * https://github.com/jquery/jquery-migrate
@@ -10110,7 +10108,6 @@ jQuery.each( ajaxEvents.split("|"),
 
 })( jQuery, window );
 
-///#source 1 1 /Scripts/jQuery/jquery.cookie.js
 // +++++++++++++++++++++++++++++
 //   jQuery Cookie plugin
 // +++++++++++++++++++++++++++++
@@ -10152,7 +10149,6 @@ jQuery.cookie = function (key, value, options) {
   return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null;
 };
 
-///#source 1 1 /Scripts/jQuery/jquery.blockUI.js
 /*!
  * jQuery blockUI plugin
  * Version 2.56.0-2013.01.31
@@ -10728,7 +10724,6 @@ jQuery.cookie = function (key, value, options) {
     }
 
 })();
-///#source 1 1 /Scripts/jQuery/jquery.mousewheel.js
 /*! Copyright (c) 2010 Brandon Aaron (http://brandonaaron.net)
  * Licensed under the MIT License (LICENSE.txt).
  *
@@ -10807,7 +10802,6 @@ function handler(event) {
 }
 
 })(jQuery);
-///#source 1 1 /Scripts/jQuery/jquery.validate.js
 /*!
  * jQuery Validation Plugin 1.11.1
  *
@@ -12040,7 +12034,6 @@ $.format = $.validator.format;
 	});
 }(jQuery));
 
-///#source 1 1 /Scripts/jQuery/jquery.sortElements.js
 /**
  * jQuery.fn.sortElements
  * --------------
@@ -12110,7 +12103,6 @@ jQuery.fn.sortElements = (function(){
     };
     
 })();
-///#source 1 1 /Scripts/jQuery/jquery.textarea.js
 /*
  *	Tabby jQuery plugin version 0.12
  *
@@ -12379,7 +12371,6 @@ jQuery.fn.sortElements = (function(){
 // end of closure
 })(jQuery);
 
-///#source 1 1 /Scripts/jQuery/jquery.tooltip.js
 /*
  * jQuery Tooltip plugin 1.3
  *

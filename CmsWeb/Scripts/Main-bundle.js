@@ -1,5 +1,4 @@
-﻿///#source 1 1 /Scripts/js/dropdown.js
-$(function() {
+﻿$(function() {
     $.fn.dropdown = function() {
         return this.each(function() {
             $(this).click(function(ev) {
@@ -69,7 +68,6 @@ $(function() {
 		$('.trigger-dropdown').removeClass('dropdown-open');
         $("li.hideAlt").hide();
 	};
-///#source 1 1 /Scripts/js/Pager.js
 $(document).ready(function () {
     $.gotoPage = function (e, pg) {
         var f = $(e).closest('form');
@@ -130,7 +128,6 @@ $(document).ready(function () {
     });
 });
 
-///#source 1 1 /Scripts/js/ExportToolBar.js
 $(document).ready(function () {
     $("#ChooseFormat").dialog({
         overlay: { background: "#000", opacity: 0.3 },
@@ -388,7 +385,6 @@ String.prototype.addCommas = function () {
 
 
 
-///#source 1 1 /Scripts/js/headermenu.js
 $(document).ready(function () {
     $("a.trigger-dropdown").dropdown();
 
@@ -522,7 +518,6 @@ function CloseAddOrgDialog(id) {
     $("#AddDialog").dialog("close");
     window.location = "/Organization/Index/" + id;
 }
-///#source 1 1 /Scripts/js/Support.js
 var mustSearch = 1;
 
 $(function () {

@@ -157,7 +157,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             AddLine(sb, p.Address2);
             AddLine(sb, p.CityStateZip);
             AddPhone(sb, p.HomePhone, "h ");
-            if ((p.Age ?? 0) <= 18)
+            if ((p.Age ?? 0) <= 18 && p.Parents != null)
             {
                 var a = p.Parents.Replace(", c ", "|c ").Split('|');
                 foreach(var li in a)
