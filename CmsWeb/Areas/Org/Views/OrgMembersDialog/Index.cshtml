@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
     <title>Index</title>
-    @Helper.IncludeCss()
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Dialog/OrgMembersDialog.js")"></script>
+    @Fingerprint.Css("/content/styles/bundle-css.css")
+    @Fingerprint.Script("/Scripts/Dialog/OrgMembersDialog.js")
     @Html.Partial("DatePickerDefaults")
 </head>
 <body>

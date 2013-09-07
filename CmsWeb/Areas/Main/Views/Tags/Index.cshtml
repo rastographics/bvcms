@@ -7,8 +7,8 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Dialog/SearchUsers.js")"></script>
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/js/Tags.js")"></script>
+    @Fingerprint.Script("/Scripts/Dialog/SearchUsers.js")
+    @Fingerprint.Script("/Scripts/js/Tags.js")
 }
 <form id="managetags" method="post" action="/Tags/Index">
     <div class="roundbox floatleft">

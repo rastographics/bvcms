@@ -3,9 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
     <title>Index</title>
-    @Helper.IncludeCss()
-    @Helper.IncludeJs()
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Dialog/OrgMembersDialog.js")"></script>
+    @Fingerprint.Css("/content/styles/bundle-css.css")
+    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/Dialog/OrgMembersDialog.js")
 @if (Model.Running == 1)
 {
     <script type="text/javascript">

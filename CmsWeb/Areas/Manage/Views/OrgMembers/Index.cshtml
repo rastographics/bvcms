@@ -6,7 +6,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Org/OrgMembers.js")"></script>
+    @Fingerprint.Script("/Scripts/Org/OrgMembers.js")
 }
 <form id="form" method="post" action="/OrgMembers/Move">
     @Html.Partial("List", Model)

@@ -7,7 +7,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Meeting/meetings.js")"></script>
+    @Fingerprint.Script("/Scripts/Meeting/meetings.js")
 }
 <h2>Meetings</h2>
 <form id="meetingsform" action="/Reports/Meetings" method="POST">

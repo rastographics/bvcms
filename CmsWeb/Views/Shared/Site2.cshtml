@@ -5,8 +5,8 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link href="/Content/styles/Site2.css?v=3" rel="stylesheet" type="text/css" />
     @RenderSection("head", required: false)
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/jquery/onlineregister.js")"></script>
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/onlinereg/onlinereg.js")"></script>
+    @Fingerprint.Script("/Scripts/jquery/onlineregister.js")
+    @Fingerprint.Script("/Scripts/onlinereg/onlinereg.js")
     @RenderSection("scripts", required: false)
 </head>
 <body>

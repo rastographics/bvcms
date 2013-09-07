@@ -2,16 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title></title>
-    @Helper.IncludeCss()
+    @Fingerprint.Css("/content/styles/bundle-css.css")
     <style>
         table.form > tbody > tr > td:nth-child(1) {
             text-align: right;
             white-space: nowrap;
         }
     </style>
-    @Helper.IncludeJs()
+    @Fingerprint.Script("/Scripts/Bundle/main.js")
     @Html.Partial("DatePickerDefaults")
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Dialog/SearchAdd.js")"></script>
+    @Fingerprint.Script("/Scripts/Dialog/SearchAdd.js")
 </head>
 
 <body>

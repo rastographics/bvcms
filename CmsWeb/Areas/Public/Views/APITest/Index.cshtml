@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <title>API Tester</title>
-    @Helper.IncludeCss()
+    @Fingerprint.Css("/content/styles/bundle-css.css")
 	<link rel="stylesheet" href="/Content/styles/faary.css?v=1" type="text/css" />
 	<style>
 	    div.section
@@ -13,8 +13,8 @@
             color:#eee;
 	    }
 	</style>
-    @Helper.IncludeJs()
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/js/TestAPI.js")"></script>
+    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/js/TestAPI.js")
 </head>
 <body>
 

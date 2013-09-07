@@ -8,9 +8,9 @@
         window.location.reload();
     }
 </script>
-    @Helper.IncludeCss()
-    @Helper.IncludeJs()
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Dialog/SearchDivisions.js")"></script>
+    @Fingerprint.Css("/content/styles/bundle-css.css")
+    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/Dialog/SearchDivisions.js")
 </head>
 <body>
 <form name="form1">

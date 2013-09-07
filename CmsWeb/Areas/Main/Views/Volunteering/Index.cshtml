@@ -46,7 +46,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Volunteer/volunteering.js")"></script>
+    @Fingerprint.Script("/Scripts/Volunteer/volunteering.js")
 }
 <a href="/Person/Index/@Model.V.PeopleId">@Model.V.Person.Name</a><br />
 <br />

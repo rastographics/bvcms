@@ -7,7 +7,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/OnlineReg/OnlineReg.js")"></script>
+    @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js")
     <script type="text/javascript">
         $.dateFormat = '@Util.jQueryDateFormat';
         $(function() {

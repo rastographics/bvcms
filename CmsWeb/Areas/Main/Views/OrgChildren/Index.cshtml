@@ -15,7 +15,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Org/orgChildren.js")"></script>
+    @Fingerprint.Script("/Scripts/Org/orgChildren.js")
 }
 @if (Model.canedit)
 {

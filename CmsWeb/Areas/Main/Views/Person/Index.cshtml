@@ -36,7 +36,7 @@ pre {
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/People/person.js")"></script>
+    @Fingerprint.Script("/Scripts/People/person.js")
     @if(memberedit)
     {
         <script type="text/javascript"> 

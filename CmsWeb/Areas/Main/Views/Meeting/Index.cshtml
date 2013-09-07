@@ -22,7 +22,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/meeting/meeting.js")"></script>
+    @Fingerprint.Script("/Scripts/meeting/meeting.js")
     @if (!Model.meeting.GroupMeetingFlag)
     {
         <script type="text/javascript">

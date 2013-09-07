@@ -1,6 +1,6 @@
 ﻿@using CmsWeb
 <html>
-    @Helper.IncludeJs()
+    @Fingerprint.Script("/Scripts/Bundle/main.js")
     <script type="text/javascript">
         $(function () {
             self.parent.RebindMemberGrids();

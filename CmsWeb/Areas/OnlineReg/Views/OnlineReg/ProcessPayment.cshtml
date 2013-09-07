@@ -6,7 +6,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/onlinereg/onlineregpayment.js")"></script>
+    @Fingerprint.Script("/Scripts/onlinereg/onlineregpayment.js")
     <script type="text/javascript">
         $(function() {
             $(document).bind("idle.idleTimer", function() {

@@ -7,9 +7,9 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Volunteer/ManageVolunteer.js")"></script>
+    @Fingerprint.Script("/Scripts/Volunteer/ManageVolunteer.js")
     <script src="/ckeditor2/ckeditor.js" type="text/javascript"></script>
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Email/Email.js")"></script>
+    @Fingerprint.Script("/Scripts/Email/Email.js")
     <script type="text/javascript">
         $(function() {
             CKEDITOR.replace('message', {
