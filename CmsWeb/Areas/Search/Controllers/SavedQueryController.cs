@@ -15,34 +15,34 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index()
         {
             var m = new SavedQueryModel();
+            m.Pager.Set("/SavedQuery2/Results", 1, null, "Description", "asc");
             return View(m);
         }
-        [POST("SavedQuery2/PostData/{pk:int}/{name}/{value}")]
-        public ActionResult PostData(int pk, string name, string value)
+        [POST("SavedQuery2/Results/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult Results(int? page, int? size, string sort, string dir, SavedQueryModel m)
         {
-            var c = DbUtil.Db.QueryBuilderClauses.SingleOrDefault(cc => cc.QueryId == pk);
-            switch (name.ToLower())
-            {
-                case "description":
-                    c.Description = value;
-                    break;
-                case "owner":
-                    c.SavedBy = value;
-                    break;
-                case "public":
-                    c.IsPublic = value == "yes";
-                    break;
-                case "delete":
-                    DbUtil.Db.DeleteQueryBuilderClauseOnSubmit(c);
-                    break;
-            }
-            DbUtil.Db.SubmitChanges();
-            return Content(value);
-        }
-        [POST("SavedQuery2/Results")]
-        public ActionResult Results(SavedQueryModel m)
-        {
+            m.Pager.Set("/SavedQuery2/Results", page, size, sort, dir);
             return View(m);
         }
+        [POST("SavedQuery2/Edit/{id:int}")]
+        public ActionResult Edit(int id)
+        {
+            var m = new SavedQueryInfo(id);
+            return View(m);
+        }
+        [POST("SavedQuery2/Update")]
+        public ActionResult Update(SavedQueryInfo m)
+        {
+            m.UpdateModel();
+            return View("Row", m);
+        }
+//        [POST("SavedQuery2/PostPublic")]
+//        public ActionResult PostPublic(int pk, string value)
+//        {
+//            var c = DbUtil.Db.QueryBuilderClauses.SingleOrDefault(cc => cc.QueryId == pk);
+//            c.IsPublic = value == "1";
+//            DbUtil.Db.SubmitChanges();
+//            return Content(value);
+//        }
     }
 }

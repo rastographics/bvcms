@@ -331,6 +331,7 @@
     </Compile>
     <Compile Include="Areas\Org\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Org\Models\VolunteerRequestModel.cs" />
+    <Compile Include="Areas\Search\Models\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\SearchPersonModel.cs" />
     <Compile Include="Areas\People\PeopleAreaRegistration.cs" />
     <Compile Include="Areas\Public\Controllers\APIContributionController.cs" />
@@ -1001,6 +1002,7 @@
     <Content Include="Areas\People\Views\Person\MainTabs\System.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Duplicates.cshtml" />
     <Content Include="Areas\People\Views\Person\System\DuplicateRow.cshtml" />
+    <Content Include="Areas\Search\Views\SavedQuery\Edit.cshtml" />
     <None Include="Content\css\new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1256,13 +1258,7 @@
     <Content Include="Scripts\Search\ContactSearch.min.js">
       <DependentUpon>ContactSearch.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\Search\ContactSearch.min.js.map">
-      <DependentUpon>ContactSearch.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\PeopleSearch.min.js">
-      <DependentUpon>PeopleSearch.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\PeopleSearch.min.js.map">
       <DependentUpon>PeopleSearch.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\Query.min.js">
@@ -1271,13 +1267,7 @@
     <Content Include="Scripts\Search\QuickSearch.min.js">
       <DependentUpon>QuickSearch.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\Search\QuickSearch.min.js.map">
-      <DependentUpon>QuickSearch.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\SavedQuery.min.js">
-      <DependentUpon>SavedQuery.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SavedQuery.min.js.map">
       <DependentUpon>SavedQuery.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\SavedQuery2.js" />
@@ -1287,15 +1277,6 @@
     <Content Include="Scripts\Search\SearchAdd.js" />
     <Content Include="Scripts\Search\SearchOrgs.min.js">
       <DependentUpon>SearchOrgs.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SearchOrgs.min.js.map">
-      <DependentUpon>SearchOrgs.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\Query.min.js.map">
-      <DependentUpon>Query.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SavedQuery2.min.js.map">
-      <DependentUpon>SavedQuery2.js</DependentUpon>
     </Content>
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Main\Views\Reports\EnrollmentControl2.cshtml" />
@@ -2074,7 +2055,6 @@
     <Content Include="Areas\Search\Views\SavedQuery\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Results.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Row.cshtml" />
-    <Content Include="Areas\Search\Views\SavedQuery\Rows.cshtml" />
     <Content Include="Areas\Search\Views\Query\CodesDropdown.cshtml" />
     <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
     <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />

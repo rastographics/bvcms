@@ -583,3 +583,14 @@ width: 80px;
 #conditionsList header label {
 text-transform: inherit;
 }
+.editable-empty {
+    color: #005580;
+    font-style: normal;
+}
+.editable-empty:hover {
+    color: #005580;
+    font-style: normal;
+}
+#saved-query.table {
+    width: inherit;
+}

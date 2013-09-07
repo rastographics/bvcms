@@ -1,18 +1,18 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryModel
-Only Mine: @Html.CheckBoxFor(m => m.onlyMine)
-Search: @Html.TextBoxFor(m => m.search)
-<button id="filter" class="btn" value="Filter">Filter</button>
 <form class="non-modal ajax">
+    Only Mine: @Html.CheckBoxFor(m => m.onlyMine)
+    Search: @Html.TextBoxFor(m => m.search)
+    <a href="/SavedQuery2/Results" class="btn btn-primary ajax">Filter</a>
     <div class="pagination pagination-mini">
         @Html.Partial("Pager3", Model.Pager)
     </div>
-    <table class="table table-bordered">
+    <table id="saved-query" class="table table-bordered table-condensed">
         <thead>
             <tr>
                 <td>@Model.Pager.SortLink("Description")</td>
                 <td>@Model.Pager.SortLink("Owner")</td>
                 <td>@Model.Pager.SortLink("Public")</td>
-                <td></td>
+                <td>@Model.Pager.SortLink("Last Updated")</td>
                 <td></td>
             </tr>
         </thead>

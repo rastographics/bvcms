@@ -1,0 +1,19 @@
+﻿@model CmsWeb.Areas.Search.Models.SavedQueryInfo
+@using CmsData
+@using UtilityExtensions
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h4>Editing Saved Query</h4>
+</div>
+<div class="modal-body">
+    <fieldset class="display">
+        @Html.HiddenFor(m => m.QueryId)
+        @Html.EditorFor(m => m.Description)
+        @Html.EditorFor(m => m.SavedBy)
+        @Html.EditorFor(m => m.IsPublic)
+    </fieldset>
+</div>
+<div class="modal-footer">
+    <a class="btn" data-dismiss="modal">Cancel Edit</a>
+    <a id="SaveQueryInfo" class="btn btn-primary">Save</a>
+</div>

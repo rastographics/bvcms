@@ -1,5 +1,4 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryModel
-@using CmsWeb
 @{
     ViewBag.Title = "SavedQuery";
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
@@ -10,8 +9,11 @@
 }
 <div class="container">
     <h2>Saved Search Builder Queries</h2>
-    @using (Html.BeginForm("Results", "SavedQuery"))
-    {
-        Html.RenderPartial("Results", Model);
-    }
+    <form class="ajax">
+        @Html.Partial("Results", Model)
+    </form>
 </div>
+@section PopupsPlaceholder
+{
+<form id='edit-saved-query-dialog' class='modal fade hide validate ajax form-horizontal' method='POST' data-backdrop='static'></form>
+}

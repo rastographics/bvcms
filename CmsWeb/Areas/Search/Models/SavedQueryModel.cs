@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Security;
@@ -54,7 +53,7 @@ namespace CmsWeb.Areas.Search.Models
                          Description = c.Description,
                          IsPublic = c.IsPublic,
                          LastUpdated = c.CreatedOn,
-                         User = c.SavedBy
+                         SavedBy = c.SavedBy
                      };
             return q3;
         }
@@ -115,13 +114,5 @@ namespace CmsWeb.Areas.Search.Models
             }
             return q;
         }
-    }
-    public class SavedQueryInfo
-    {
-        public int QueryId { get; set; }
-        public bool IsPublic { get; set; }
-        public string User { get; set; }
-        public string Description { get; set; }
-        public DateTime LastUpdated { get; set; }
     }
 }

@@ -1,27 +1,15 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryInfo
 @using UtilityExtensions
-<tr><td>
-        <a href="#" class="editable" data-type="text" data-pk="@Model.QueryId" data-name="description" data-url="SavedQuery2/PostData" data-original-title="Enter Description">@Model.Description</a>
-    </td>
+<tr id="row-@Model.QueryId">
     <td>
-        <a href="#" class="editable" data-type="text" data-pk="@Model.QueryId" data-name="user" data-url="SavedQuery2/PostData" data-original-title="Enter Username">@Model.User</a>
+        <a href="/Query/@Model.QueryId">@Model.Description</a>
     </td>
-@if (User.IsInRole("Admin") || string.Compare(Util.UserName,Model.User, ignoreCase: true) == 0)
-{
-    <td>
-        <a href="#" class="editable" data-type="checklist" data-pk="@Model.QueryId" data-name="public" data-url="SavedQuery2/PostData" data-original-title="ttt">
-            <span>@(Model.IsPublic ? "yes" : "no")</span>
-@*        <span data-pk='@Model.QueryId' class='yesno'>@(Model.IsPublic ? "yes" : "no")</span>*@
-        </a>
-    </td>
-    <td>
-        <a data-pk='@Model.QueryId' href="#" class="delete"><img border="0" src="/images/delete.gif" /></a>
-    </td>
-}
-else
-{
-    <td>@(Model.IsPublic ? "yes" : "no")</td>
-    <td></td>
-}
-    <td><a href="/Query/@Model.QueryId">View</a></td>
+    <td>@Model.SavedBy</td>
+    <td>@(Model.IsPublic ? "public" : "private") </td>
+    <td>@Model.LastUpdated.FormatDateTm()</td>
+    @if (User.IsInRole("Admin") || string.Compare(Util.UserName, Model.SavedBy, ignoreCase: true) == 0)
+    {
+        <td><a class="edit-saved-query" href="/SavedQuery2/Edit/@Model.QueryId"><i class="icon-pencil"></i></a></td>
+    }
+
 </tr>
