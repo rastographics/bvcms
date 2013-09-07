@@ -1,5 +1,6 @@
 ﻿$(function () {
     $(".bt").button();
+    $('#name').focus();
     $("#searchvalues select").not("#statusflags").css("width", "100%");
     $("#clear").click(function (ev) {
         ev.preventDefault();
@@ -8,7 +9,6 @@
         $("#gender,#marital").val(99); //.sb("refresh");
         return false;
     });
-    $('#Name').focus();
     $("#search").click(function (ev) {
         ev.preventDefault();
         $.getTable();

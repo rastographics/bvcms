@@ -617,8 +617,8 @@ namespace UtilityExtensions
                 var dt = new DateTime(2002, 1, 30);
                 var s = dt.ToShortDateString();
                 if (s.StartsWith("30"))
-                    return "D/M/YYYY";
-                return "M/D/YYYY";
+                    return "d/m/yyyy";
+                return "m/d/yyyy";
             }
         }
         public static string jQueryNumberValidation

@@ -35,14 +35,17 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult Upload(int id, HttpPostedFileBase file)
         {
-            //Volunteer vol = DbUtil.Db.Volunteers.SingleOrDefault(e => e.PeopleId == id);
+            if (file == null)
+                return Content("no file");
+
             var vol = new VolunteerModel(id);
+            var Name = System.IO.Path.GetFileName(file.FileName);
 
             var f = new VolunteerForm
                         {
                             UploaderId = Util.UserId1, 
                             PeopleId = vol.V.PeopleId, 
-                            Name = System.IO.Path.GetFileName(file.FileName).Truncate(100),
+                            Name = Name.Truncate(100),
                             AppDate = Util.Now,
                         };
 

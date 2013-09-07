@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -195,117 +196,6 @@ namespace CmsData
                     select c;
             return q.Count();
         }
-        public static int Import(CMSDataContext Db, string text, string name)
-        {
-            var x = XDocument.Parse(text);
-            QueryBuilderClause c = null;
-            foreach (var xc in x.Root.Elements())
-            {
-                if (name.HasValue())
-                    c = InsertClause(Db, xc, null, name);
-                else
-                    c = InsertClause(Db, xc, null, null);
-            }
-            return c.QueryId;
-        }
-        public string Export(int id, string name)
-        {
-            var clause = Db.LoadQueryById(id);
-            var settings = new XmlWriterSettings();
-            settings.Encoding = new UTF8Encoding(false);
-            using (var sw = new StringWriter())
-            {
-                using (var w = XmlWriter.Create(sw, settings))
-                    WriteClause(clause, w);
-                return sw.ToString();
-            }
-        }
-        private void WriteClause(QueryBuilderClause clause, XmlWriter w)
-        {
-            w.WriteStartElement("Condition");
-            w.WriteAttributeString("ClauseOrder", clause.ClauseOrder.ToString());
-            w.WriteAttributeString("Field", clause.Field);
-            if (clause.Description.HasValue())
-                w.WriteAttributeString("Description", clause.Description);
-            w.WriteAttributeString("Comparison", clause.Comparison);
-            if (clause.TextValue.HasValue())
-                w.WriteAttributeString("TextValue", clause.TextValue);
-            if (clause.DateValue.HasValue)
-                w.WriteAttributeString("DateValue", clause.DateValue.ToString());
-            if (clause.CodeIdValue.HasValue())
-                w.WriteAttributeString("CodeIdValue", clause.CodeIdValue);
-            if (clause.StartDate.HasValue)
-                w.WriteAttributeString("StartDate", clause.StartDate.ToString());
-            if (clause.EndDate.HasValue)
-                w.WriteAttributeString("EndDate", clause.EndDate.ToString());
-            if (clause.Program > 0)
-                w.WriteAttributeString("Program", clause.Program.ToString());
-            if (clause.Division > 0)
-                w.WriteAttributeString("Division", clause.Division.ToString());
-            if (clause.Organization > 0)
-                w.WriteAttributeString("Organization", clause.Organization.ToString());
-            if (clause.Days > 0)
-                w.WriteAttributeString("Days", clause.Days.ToString());
-            if (clause.Quarters.HasValue())
-                w.WriteAttributeString("Quarters", clause.Quarters);
-            if (clause.Tags.HasValue())
-                w.WriteAttributeString("Tags", clause.Tags);
-            if (clause.Schedule > 0)
-                w.WriteAttributeString("Schedule", clause.Schedule.ToString());
-            if (clause.Age.HasValue)
-                w.WriteAttributeString("Age", clause.Age.ToString());
-            foreach (var qc in clause.Clauses)
-                WriteClause(qc, w);
-            w.WriteEndElement();
-        }
-        private static QueryBuilderClause InsertClause(CMSDataContext Db, XElement r, int? parent, string name = null)
-        {
-            var c = new QueryBuilderClause
-            {
-                Field = Attribute(r, "Field"),
-                GroupId = parent,
-                ClauseOrder = Attribute(r, "ClauseOrder").ToInt(),
-                Comparison = Attribute(r, "Comparison"),
-                TextValue = Attribute(r, "TextValue"),
-                DateValue = AttributeDate(r, "DateValue"),
-                CodeIdValue = Attribute(r, "CodeIdValue"),
-                StartDate = AttributeDate(r, "StartDate"),
-                EndDate = AttributeDate(r, "EndDate"),
-                Program = Attribute(r, "Program").ToInt(),
-                Division = Attribute(r, "Division").ToInt(),
-                Organization = Attribute(r, "Organization").ToInt(),
-                Days = Attribute(r, "Days").ToInt(),
-                Quarters = Attribute(r, "Quarters"),
-                Tags = Attribute(r, "Tags"),
-                Schedule = Attribute(r, "Schedule").ToInt(),
-                Age = Attribute(r, "Age").ToInt(),
-                Description = name,
-                SavedBy = Util.UserName
-            };
-            Db.QueryBuilderClauses.InsertOnSubmit(c);
-            Db.SubmitChanges();
-            if (c.Field == "Group")
-                foreach (var rr in r.Elements())
-                    InsertClause(Db, rr, c.QueryId);
-            return c;
-        }
-        private static string Attribute(XElement r, string attr)
-        {
-            return Attribute(r, attr, null);
-        }
-        private static string Attribute(XElement r, string attr, string def)
-        {
-            var a = r.Attributes(attr).FirstOrDefault();
-            if (a == null)
-                return def;
-            return a.Value;
-        }
-        private static DateTime? AttributeDate(XElement r, string attr)
-        {
-            var a = r.Attributes(attr).FirstOrDefault();
-            if (a == null)
-                return null;
-            return a.Value.ToDate();
-        }
+
     }
 }

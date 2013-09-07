@@ -475,28 +475,6 @@ namespace CmsWeb.Areas.Search.Models
             SelectedId = nc.QueryId;
             EditCondition();
         }
-        public int CopyCurrentCondition(int id)
-        {
-            var c = Db.LoadQueryById(id);
-            SelectedId = id;
-            EditCondition();
-            var nc = NewCondition(c.Parent, c.ClauseOrder + 1);
-            Db.SubmitChanges();
-            SelectedId = nc.QueryId;
-            if (nc.IsGroup)
-                AddMatchAnyThingToGroup(nc);
-            EditCondition();
-            return nc.QueryId;
-        }
-
-        private void AddMatchAnyThingToGroup(QueryBuilderClause nc)
-        {
-            nc = nc.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
-            Db.SubmitChanges();
-            SelectedId = nc.QueryId;
-            EditCondition();
-        }
-
         public void AddConditionAfterCurrent()
         {
             var c = Db.LoadQueryById(SelectedId);
@@ -542,74 +520,35 @@ namespace CmsWeb.Areas.Search.Models
             c.Comparison = comp;
             Db.SubmitChanges();
         }
-//        public void CopyAsNew()
-//        {
-//            var Qb = Db.LoadQueryById(SelectedId).Clone(DbUtil.Db);
-//            if (!Qb.IsGroup)
-//            {
-//                var g = new QueryBuilderClause();
-//                g.SetQueryType(QueryType.Group);
-//                g.SetComparisonType(CompareType.AllTrue);
-//                Qb.Parent = g;
-//                Qb = g;
-//            }
-//            Db.SubmitChanges();
-//            QueryId = Qb.QueryId;
-//        }
-        public void MoveToPreviousGroup()
-        {
-            var cc = Db.LoadQueryById(SelectedId);
-            var fp = cc.Parent;
-            var g = cc.Parent.Parent;
-            if (g != null)
-            {
-                cc.Parent = g;
-                if (fp.Clauses.Count == 0)
-                    Db.DeleteQueryBuilderClauseOnSubmit(fp);
-            }
-            else if (cc.IsGroup && fp.Clauses.Count == 1)
-            {
-                TopClause = cc;
-                cc.Parent = null;
-                Db.DeleteQueryBuilderClauseOnSubmit(fp);
-                QueryId = cc.QueryId;
-    			Util.QueryBuilderScratchPadId = TopClause.QueryId;
-                TopClause.Description = Util.ScratchPad;
-                TopClause.SavedBy = Util.UserName;
-            }
-            Db.SubmitChanges();
-        }
         public void Paste(int id)
         {
             var clip = HttpContext.Current.Session["QueryClipboard"] as string;
             if (clip == null)
                 return;
-            var a = clip.Split(',');
-            var clipop = a[0];
-            var clipid = a[1].ToInt();
-            var clipclause = Db.LoadQueryById(clipid);
+            var ret = QueryBuilderClause.Import(Db, clip);
+            var originalclause = Db.LoadQueryById(ret.fromid);
+            var newclause = Db.LoadQueryById(ret.newid);
             var targetclause = Db.LoadQueryById(id);
-            var originalParent = clipclause.Parent;
-            if (clipop == "Copy")
-            {
-                clipclause = clipclause.Clone(Db);
-                originalParent = null;
-            }
+
             if (targetclause.IsGroup)
             {
-                targetclause.Clauses.Add(clipclause);
-                clipclause.ClauseOrder = 0;
+                targetclause.Clauses.Add(newclause);
+                newclause.ClauseOrder = 0;
             }
             else
             {
-                targetclause.Parent.Clauses.Add(clipclause);
-                clipclause.ClauseOrder = targetclause.ClauseOrder + 1;
+                targetclause.Parent.Clauses.Add(newclause);
+                newclause.ClauseOrder = targetclause.ClauseOrder + 1;
                 targetclause.Parent.ReorderClauses();
             }
-            if(originalParent != null && originalParent.Clauses.Count == 0)
-                DbUtil.Db.QueryBuilderClauses.DeleteOnSubmit(originalParent);
-            HttpContext.Current.Session["QueryClipboard"] = "Copy," + clipid;
-            DbUtil.Db.SubmitChanges();
+            if (ret.from == "cut" && originalclause != null && ret.dbname == Util.Host)
+            {
+                var parent = originalclause.Parent;
+                parent.Clauses.Remove(originalclause);
+                if (parent.Clauses.Count == 0)
+                    Db.QueryBuilderClauses.DeleteOnSubmit(parent);
+            }
+            Db.SubmitChanges();
         }
         public void MoveToGroupBelow()
         {

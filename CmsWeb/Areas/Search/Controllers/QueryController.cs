@@ -56,13 +56,15 @@ namespace CmsWeb.Areas.Search.Controllers
 	    [POST("Query/Cut/{id:int}")]
         public ActionResult Cut(int id)
         {
-            Session["QueryClipboard"] = "Cut," + id;
+            var c = DbUtil.Db.LoadQueryById(id);
+            Session["QueryClipboard"] = c.ToXml("cut", id);
             return Content("ok");
         }
         [POST("Query/Copy/{id:int}")]
         public ActionResult Copy(int id)
         {
-            Session["QueryClipboard"] = "Copy," + id;
+            var c = DbUtil.Db.LoadQueryById(id);
+            Session["QueryClipboard"] = c.ToXml("copy", id);
             return Content("ok");
         }
         [POST("Query/Paste/{id:int}")]
@@ -130,15 +132,6 @@ namespace CmsWeb.Areas.Search.Controllers
             ViewBag.NewId = m.AddGroupToGroup();
             return View("Conditions2", m);
         }
-        [POST("Query/DuplicateCondition/{id:int}")]
-        public ActionResult DuplicateCondition(int id)
-        {
-            var m = new QueryModel();
-            m.LoadScratchPad();
-            m.EditCondition();
-            ViewBag.NewId = m.CopyCurrentCondition(id);
-            return View("Conditions2", m);
-        }
         [POST("Query/SaveCondition/{id:int}")]
         public ActionResult ChangeGroup(int id, string comparison)
         {
@@ -182,14 +175,6 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new QueryModel { SelectedId = id };
             m.LoadScratchPad();
             m.InsertGroupAbove();
-            return View("Conditions2", m);
-        }
-        [POST("Query/MoveToPreviousGroup/{id:int}")]
-        public ActionResult MoveToPreviousGroup(int id)
-        {
-            var m = new QueryModel { SelectedId = id };
-            m.LoadScratchPad();
-            m.MoveToPreviousGroup();
             return View("Conditions2", m);
         }
         [POST("Query/Conditions")]
@@ -346,7 +331,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             var m = new QueryModel();
             m.LoadScratchPad();
-            return new QBExportResult(m.QueryId.Value);
+            return new CmsWeb.Models.QBExportResult(m.QueryId.Value);
         }
         [HttpGet]
         public ActionResult Import()
@@ -357,8 +342,8 @@ namespace CmsWeb.Areas.Search.Controllers
         [ValidateInput(false)]
         public ActionResult Import(string text, string name)
 		{
-			int id = QueryFunctions.Import(DbUtil.Db, text, name);
-			return Redirect("/Query/" + id);
+			var ret = QueryBuilderClause.Import(DbUtil.Db, text, name);
+			return Redirect("/Query/" + ret.newid);
 		}
     }
 }

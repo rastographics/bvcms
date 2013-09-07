@@ -149,15 +149,6 @@
         });
         return false;
     });
-    $('#conditions').on("click", 'a.movetoprevgroup', function () {
-        liedit = $(this).closest("li.condition");
-        var qid = liedit.data("qid");
-        $.post('/Query/MoveToPreviousGroup/' + qid, {}, function (ret) {
-            $("#conditions").html(ret);
-            RefreshList();
-        });
-        return false;
-    });
     $('#conditions').on("click", 'a.delete', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
