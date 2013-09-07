@@ -229,7 +229,7 @@ namespace CmsWeb.Areas.Main.Controllers
             }
             catch (Exception ex)
             {
-                var ex2 = new Exception("SearchBuilder error:\n" + m.GetTopClause().ToXml(), ex);
+                var ex2 = new Exception("SearchBuilder error:\n" + m.GetTopClause().ToXml("exception", m.QueryId.Value), ex);
                 ErrorLog errorLog = ErrorLog.GetDefault(null);
                 errorLog.Log(new Error(ex2));
                 return Content("Something went wrong<br><p>" + ex.Message + "</p>");
@@ -359,8 +359,8 @@ namespace CmsWeb.Areas.Main.Controllers
         [ValidateInput(false)]
         public ActionResult Import(string text, string name)
         {
-            int id = QueryFunctions.Import(DbUtil.Db, text, name);
-            return Redirect("/QueryBuilder/Main/" + id);
+            var ret = QueryBuilderClause.Import(DbUtil.Db, text, name);
+            return Redirect("/QueryBuilder/Main/" + ret.newid);
         }
     }
 }

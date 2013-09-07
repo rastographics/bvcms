@@ -10,9 +10,9 @@
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 
-    <script src="/Scripts/jquery/main.js" type="text/javascript"></script>
+    <script src="/Scripts/main.js" type="text/javascript"></script>
     <script src="/Scripts/chosen/chosen.jquery.js" type=""></script>
-    <script src="/Scripts/js/main.custom.js" type=""></script>
+    <script src="/Scripts/main-bundle.js" type=""></script>
     <script type="text/javascript">
         $.dateFormat = '<%=Util.jQueryDateFormat%>';
         $(document).ready(function () {

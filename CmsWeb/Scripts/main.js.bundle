@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bundle minify="true" runOnBuild="true" output="main.js">
+  <!--The order of the <file> elements determines the order of them when bundled.-->
+  <file>/Scripts/jQuery/jquery-1.9.1.js</file>
+  <file>/Scripts/jQuery/jquery-migrate-1.1.1.js</file>
+  <file>/Scripts/jQuery/jquery-ui-1.10.0.custom.js</file>
+  <file>/Scripts/jQuery/jquery.cookie.js</file>
+  <file>/Scripts/jQuery/jquery.blockUI.js</file>
+  <file>/Scripts/jQuery/jquery.mousewheel.js</file>
+  <file>/Scripts/jQuery/jquery.jscrollpane.js</file>
+  <file>/Scripts/jQuery/jquery.jeditable.js</file>
+  <file>/Scripts/jQuery/jquery.validate.js</file>
+  <file>/Scripts/jQuery/jquery.multiSelect.js</file>
+  <file>/Scripts/jQuery/jquery.sortElements.js</file>
+  <file>/Scripts/jQuery/jquery.textarea.js</file>
+  <file>/Scripts/jQuery/jquery.tooltip.js</file>
+  <file>/Scripts/jQuery/jquery.transpose.js</file>
+</bundle>

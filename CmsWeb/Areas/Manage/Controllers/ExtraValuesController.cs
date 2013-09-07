@@ -41,27 +41,27 @@ namespace CmsWeb.Areas.Manage.Controllers
             return Content("done");
         }
 		[Authorize(Roles="Admin")]
-        [POST("DeleteAll/{field}/{type}/{val}")]
-        public ActionResult DeleteAll(string field, string type, string val)
+        [POST("DeleteAll")]
+        public ActionResult DeleteAll(string field, string type, string value)
         {
 			var ev = DbUtil.Db.PeopleExtras.Where(ee => ee.Field == field).FirstOrDefault();
 		    if (ev == null)
 		        return Content("error: no field");
-		    switch (type)
+		    switch (type.ToLower())
 		    {
-                case "Code":
-	                DbUtil.Db.ExecuteCommand("delete PeopleExtra where field = {0} and StrValue = {1}", field, val);
+                case "code":
+	                DbUtil.Db.ExecuteCommand("delete PeopleExtra where field = {0} and StrValue = {1}", field, value);
 		            break;
-                case "Bit":
-	                DbUtil.Db.ExecuteCommand("delete PeopleExtra where field = {0} and BitValue = {1}", field, val);
+                case "bit":
+	                DbUtil.Db.ExecuteCommand("delete PeopleExtra where field = {0} and BitValue = {1}", field, value);
 		            break;
-                case "Int":
+                case "int":
 	                DbUtil.Db.ExecuteCommand("delete PeopleExtra where field = {0} and IntValue is not null", field);
 		            break;
-                case "Date":
+                case "date":
 	                DbUtil.Db.ExecuteCommand("delete PeopleExtra where field = {0} and DateValue is not null", field);
 		            break;
-                case "Text":
+                case "text":
 	                DbUtil.Db.ExecuteCommand("delete PeopleExtra where field = {0} and Data is not null", field);
 		            break;
                 case "?":
@@ -70,32 +70,32 @@ namespace CmsWeb.Areas.Manage.Controllers
 		    }
 		    return Content("done");
         }
-        [GET("Query/{field}/{val}")]
-        public ActionResult Query(string field, string val)
+        [GET("QueryCodes")]
+        public ActionResult QueryCodes(string field, string value)
         {
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             qb.CleanSlate(DbUtil.Db);
-            qb.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, "{0}:{1}".Fmt(field, val));
+            qb.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
             DbUtil.Db.SubmitChanges();
             return Redirect("/QueryBuilder/Main/" + qb.QueryId);
         }
-        [GET("QueryDataFields/{field}/{type}")]
+        [GET("QueryDataFields")]
         public ActionResult QueryDataFields(string field, string type)
         {
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             QueryBuilderClause c = null;
             qb.CleanSlate(DbUtil.Db);
-            switch (type)
+            switch (type.ToLower())
             {
-                case "Text":
+                case "text":
                     c = qb.AddNewClause(QueryType.PeopleExtraData, CompareType.NotEqual, "");
                     c.Quarters = field;
                     break;
-                case "Date":
+                case "date":
                     c = qb.AddNewClause(QueryType.PeopleExtraDate, CompareType.NotEqual, null);
                     c.Quarters = field;
                     break;
-                case "Int":
+                case "int":
                     c = qb.AddNewClause(QueryType.PeopleExtraInt, CompareType.NotEqual, "");
                     c.Quarters = field;
                     break;

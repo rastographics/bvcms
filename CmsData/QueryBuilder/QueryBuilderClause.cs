@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
 using Community.CsharpSqlite;
+using IronPython.Modules;
 using UtilityExtensions;
 using System.Text;
 using System.Xml.Linq;
@@ -431,6 +432,10 @@ namespace CmsData
             return saveto;
         }
 
+        public bool CanCut
+        {
+            get { return !IsFirst && (!IsLastNode || Parent.Parent != null); }
+        }
         public bool CanRemove
         {
             get { return !IsFirst && !IsLastNode; }

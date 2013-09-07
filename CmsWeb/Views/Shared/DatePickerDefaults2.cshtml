@@ -1,3 +1,5 @@
+@using CmsData
 <script type="text/javascript">
-    $.dtoptions = { format: '@Util.jQueryDateFormat' };
+    $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+    $.ClipboardHasCondition = '1'==='@(DbUtil.Db.ClipboardHasCondition() ? "1" : "0")';
 </script>

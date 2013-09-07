@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bundle minify="true" runOnBuild="false" output="newcss.css">
+<bundle minify="true" runOnBuild="true" output="newcss.css">
   <!--The order of the <file> elements determines the order of them when bundled.-->
   <file>/Content/styles/jquery-ui-1.10.0.custom.css</file>
   <file>/Content/styles/jquery.jscrollpane.css</file>

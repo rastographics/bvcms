@@ -23,7 +23,7 @@ namespace CmsWeb.Models
             var settings = new XmlWriterSettings();
             settings.Encoding = new System.Text.UTF8Encoding(false);
             using (w = XmlWriter.Create(context.HttpContext.Response.OutputStream, settings))
-                clause.ToXml(w);
+                clause.SendToWriter(w, "export", clause.QueryId);
         }
     }
 }

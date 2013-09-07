@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<bundle minify="true" runOnBuild="false" output="main.custom.js">
-  <!--The order of the <file> elements determines the order of them when bundled.-->
-  <file>/Scripts/js/dropdown.js</file>
-  <file>/Scripts/js/Pager.js</file>
-  <file>/Scripts/js/ExportToolBar.js</file>
-  <file>/Scripts/js/headermenu.js</file>
-  <file>/Scripts/js/Support.js</file>
-</bundle>

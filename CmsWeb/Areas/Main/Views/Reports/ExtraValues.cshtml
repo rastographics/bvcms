@@ -27,12 +27,12 @@
 <table class="grid">
 @foreach (var e in Model)
 {
-    <tr><td><a href="/Manage/ExtraValues/Query/@e.Field/@e.Value">@e.Field</a></td>
+    <tr><td><a href="/Manage/ExtraValues/QueryCodes?field=@Server.UrlEncode(e.Field)&value=@Server.UrlEncode(e.Value)">@e.Field</a></td>
         <td>@e.Value</td>
 		<td>@e.Count</td>
         @if(User.IsInRole("Admin"))
 		{
-            <td><a class="delete" href="/Manage/ExtraValues/DeleteAll/@e.Field/@e.type/@e.Value"><img src="/images/delete.gif" /></a></td>
+            <td><a class="delete" href="/Manage/ExtraValues/DeleteAll?field=@Server.UrlEncode(e.Field)&value=@e.type&value=@Server.UrlEncode(e.Value)"><img src="/images/delete.gif" /></a></td>
 		}
     </tr>
 }
