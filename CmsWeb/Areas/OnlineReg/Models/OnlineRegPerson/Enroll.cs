@@ -435,7 +435,7 @@ namespace CmsWeb.Models
                             ExtraQuestion = new List<Dictionary<string, string>>();
                         var eq = new Dictionary<string, string>();
                         ExtraQuestion.Add(eq);
-                        var lines = om.UserData.Split('\n');
+                        var lines = (om.UserData ?? "").Split('\n');
                         foreach (var q in ((AskExtraQuestions) ask).list)
                         {
                             if (setting.TargetExtraValues)
