@@ -33,6 +33,8 @@ namespace CmsData
 		
 		private int? _PeopleId;
 		
+		private int? _QueryId;
+		
    		
     	
 		private EntityRef< Organization> _Organization;
@@ -71,6 +73,9 @@ namespace CmsData
 		
 		partial void OnPeopleIdChanging(int? value);
 		partial void OnPeopleIdChanged();
+		
+		partial void OnQueryIdChanging(int? value);
+		partial void OnQueryIdChanged();
 		
     #endregion
 		public ActivityLog()
@@ -267,6 +272,28 @@ namespace CmsData
 					this._PeopleId = value;
 					this.SendPropertyChanged("PeopleId");
 					this.OnPeopleIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="QueryId", UpdateCheck=UpdateCheck.Never, Storage="_QueryId", DbType="int")]
+		public int? QueryId
+		{
+			get { return this._QueryId; }
+
+			set
+			{
+				if (this._QueryId != value)
+				{
+				
+                    this.OnQueryIdChanging(value);
+					this.SendPropertyChanging();
+					this._QueryId = value;
+					this.SendPropertyChanged("QueryId");
+					this.OnQueryIdChanged();
 				}
 
 			}

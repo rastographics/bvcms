@@ -67,7 +67,7 @@ namespace CmsData
 				InternalDb = value;
 			}
 		}
-		public static void LogActivity(string activity, string name = null, int? orgid = null, int? pid = null)
+		public static void LogActivity(string activity, string name = null, int? orgid = null, int? pid = null, int? qid = null)
 		{
 			var db = new CMSDataContext(Util.ConnectionString);
 			int? uid = Util.UserId;
@@ -80,7 +80,8 @@ namespace CmsData
 				Activity = activity,
 				Machine = System.Environment.MachineName,
                 OrgId = orgid,
-                PeopleId = pid
+                PeopleId = pid,
+                QueryId = qid,
 			};
 			db.ActivityLogs.InsertOnSubmit(a);
 			db.SubmitChanges();
@@ -98,6 +99,16 @@ namespace CmsData
 		    else if (pid.HasValue && pid != Util.UserPeopleId)
 		    {
 		        var mru = Util2.MostRecentPeople;
+		        var i = mru.SingleOrDefault(vv => vv.Id == pid);
+		        if (i != null)
+		            mru.Remove(i);
+		        mru.Insert(0, new Util2.MostRecentItem() { Id = pid.Value, Name = name });
+                if (mru.Count > 5)
+    	            mru.RemoveAt(mru.Count-1);
+		    }
+		    else if (qid.HasValue && pid != Util.UserPeopleId)
+		    {
+		        var mru = Util2.MostRecentQueries;
 		        var i = mru.SingleOrDefault(vv => vv.Id == pid);
 		        if (i != null)
 		            mru.Remove(i);

@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.People.Models.Person
                 context.HttpContext.Response.ContentType = "image/jpeg";
                 context.HttpContext.Response.BinaryWrite(NoPic2());
             }
-            else if (id == -2)
+            else if (id == -1)
             {
                 context.HttpContext.Response.ContentType = "image/jpeg";
                 context.HttpContext.Response.BinaryWrite(NoPic1());
@@ -57,7 +57,8 @@ namespace CmsWeb.Areas.People.Models.Person
                     if (w.HasValue && h.HasValue)
                     {
                         context.HttpContext.Response.ContentType = "image/jpeg";
-                        context.HttpContext.Response.BinaryWrite(FetchResizedImage(i, w.Value, h.Value));
+                        var ri = FetchResizedImage(i, w.Value, h.Value);
+                        context.HttpContext.Response.BinaryWrite(ri);
                     }
                     else
                     {

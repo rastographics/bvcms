@@ -215,6 +215,22 @@ namespace CmsData
                 return mru;
             }
         }
+//        public const string STR_MostRecentQueries = "MostRecentQueries";
+//        public static List<MostRecentItem> MostRecentQueries
+//        {
+//            get
+//            {
+//                var mru = (List<MostRecentItem>)GetSessionObj(STR_MostRecentQueries, null);
+//                if (mru == null)
+//                {
+//                    mru = (from i in DbUtil.Db.MostRecentItems(Util.UserId)
+//                           where i.Type == "query"
+//                           select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
+//                    HttpContext.Current.Session[STR_MostRecentQueries] = mru;
+//                }
+//                return mru;
+//            }
+//        }
         public static bool TargetLinkPeople
         {
             get

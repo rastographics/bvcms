@@ -446,6 +446,10 @@ namespace CmsData
         partial void UpdateQBConnection(QBConnection instance);
         partial void DeleteQBConnection(QBConnection instance);
         
+        partial void InsertQuery(Query instance);
+        partial void UpdateQuery(Query instance);
+        partial void DeleteQuery(Query instance);
+        
         partial void InsertQueryBuilderClause(QueryBuilderClause instance);
         partial void UpdateQueryBuilderClause(QueryBuilderClause instance);
         partial void DeleteQueryBuilderClause(QueryBuilderClause instance);
@@ -1299,6 +1303,12 @@ namespace CmsData
 		public Table< QBConnection> QBConnections
 		{
 			get	{ return this.GetTable< QBConnection>(); }
+
+		}
+
+		public Table< Query> Queries
+		{
+			get	{ return this.GetTable< Query>(); }
 
 		}
 

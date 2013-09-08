@@ -64,6 +64,7 @@ namespace CmsWeb.Areas.Search.Models
                 }
             }
             QueryId = TopClause.QueryId;
+            DbUtil.LogActivity("Viewing Query ({0})".Fmt(QueryId), qid: QueryId);
         }
 
         public int? SelectedId { get; set; }
