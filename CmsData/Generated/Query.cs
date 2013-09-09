@@ -17,7 +17,7 @@ namespace CmsData
 		
 	#region Private Fields
 		
-		private int _Id;
+		private Guid _QueryId;
 		
 		private string _Text;
 		
@@ -40,8 +40,8 @@ namespace CmsData
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
 		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
+		partial void OnQueryIdChanging(Guid value);
+		partial void OnQueryIdChanged();
 		
 		partial void OnTextChanging(string value);
 		partial void OnTextChanged();
@@ -72,21 +72,21 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
+		[Column(Name="QueryId", UpdateCheck=UpdateCheck.Never, Storage="_QueryId", DbType="uniqueidentifier NOT NULL", IsPrimaryKey=true)]
+		public Guid QueryId
 		{
-			get { return this._Id; }
+			get { return this._QueryId; }
 
 			set
 			{
-				if (this._Id != value)
+				if (this._QueryId != value)
 				{
 				
-                    this.OnIdChanging(value);
+                    this.OnQueryIdChanging(value);
 					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
+					this._QueryId = value;
+					this.SendPropertyChanged("QueryId");
+					this.OnQueryIdChanged();
 				}
 
 			}

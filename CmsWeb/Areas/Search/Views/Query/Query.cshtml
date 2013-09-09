@@ -1,5 +1,5 @@
 ﻿@using CmsWeb
-@model CmsWeb.Areas.Search.Models.QueryModel
+@model CmsWeb.Areas.Search.Models.QueryModel2
 @{
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Search Builder";
@@ -25,7 +25,7 @@
                 <div>
                     <a href="/Query/NewQuery" class="btn btn-success">New</a>
                 </div>
-                @Html.Partial("Conditions2", Model)
+                @Html.Partial("Conditions", Model)
             </div>
         </div>
         <div id="results" class="span8">

@@ -22,27 +22,25 @@ namespace CmsWeb.Areas.Search.Controllers
     [RouteArea("Search", AreaUrl = "Query")]
     public class QueryController : CmsStaffAsyncController
     {
-        [GET("Query/{id:int?}")]
-        public ActionResult Query(int? id)
+        [GET("Query/{id:guid?}")]
+        public ActionResult Query(Guid id)
         {
             ViewBag.Title = "QueryBuilder";
-            var m = new QueryModel { QueryId = id };
-            DbUtil.LogActivity("QueryBuilder");
-            m.LoadScratchPad();
+            //var c = DbUtil.Db.QueryBuilderScratchPad2();
+
+            var m = new QueryModel2();
             InitToolbar(m);
             var newsearchid = (int?)TempData["newsearch"];
             if (newsearchid.HasValue)
                 ViewBag.NewSearchId = newsearchid.Value;
 #if DEBUG
             else
-            {
                 ViewBag.AutoRun = true;
-            }
 #endif
             return View(m);
         }
 
-	    private void InitToolbar(QueryModel m)
+	    private void InitToolbar(QueryModel2 m)
 	    {
 	        ViewBag.OnQueryBuilder = "true";
 	        ViewBag.TagAction = "/Query/TagAll/";
@@ -50,33 +48,33 @@ namespace CmsWeb.Areas.Search.Controllers
 	        ViewBag.Contact = "/Query/AddContact/";
 	        ViewBag.Tasks = "/Query/AddTasks/";
 	        ViewBag.GearSpan = "span12";
-	        ViewBag.queryid = m.QueryId;
+	        ViewBag.queryid = m.TopClause.Id;
 	    }
 
-	    [POST("Query/Cut/{id:int}")]
-        public ActionResult Cut(int id)
+	    [POST("Query/Cut/{id}")]
+        public ActionResult Cut(Guid id)
         {
-            var c = DbUtil.Db.LoadQueryById(id);
+            var c = DbUtil.Db.LoadQueryById2(id);
             Session["QueryClipboard"] = c.ToXml("cut", id);
             return Content("ok");
         }
-        [POST("Query/Copy/{id:int}")]
-        public ActionResult Copy(int id)
+        [POST("Query/Copy/{id}")]
+        public ActionResult Copy(Guid id)
         {
-            var c = DbUtil.Db.LoadQueryById(id);
+            var c = DbUtil.Db.LoadQueryById2(id);
             Session["QueryClipboard"] = c.ToXml("copy", id);
             return Content("ok");
         }
-        [POST("Query/Paste/{id:int}")]
-        public ActionResult Paste(int id)
+        [POST("Query/Paste/{id}")]
+        public ActionResult Paste(Guid id)
         {
-            var m = new QueryModel();
+            var m = new QueryModel2();
             m.LoadScratchPad();
             m.Paste(id);
             return View("Conditions2", m);
         }
         [POST("Query/CodesDropdown/")]
-        public ActionResult CodesDropdown(QueryModel m)
+        public ActionResult CodesDropdown(QueryModel2 m)
         {
             m.SetCodes();
             return View(m);

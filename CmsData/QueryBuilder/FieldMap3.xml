@@ -269,7 +269,7 @@
     </LetterStatusId>
   </Membership>
   <Enrollments>
-    <InBFClass Title="In Bible Fellowship" Type="Bit" DataValueField="IdCode">
+    <InBFClass Title="In Main Fellowship" DisplayAs="InMainFellowship" Type="Bit" DataValueField="IdCode">
       Currently enrolled in a Bible Fellowship Class
     </InBFClass>
     <IsMemberOf Type="Bit" DisplayAs="IsMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
@@ -314,14 +314,14 @@
     <SmallGroup Title="In Small Group" Type="StringEqualOrStartsWith" DisplayAs="SmallGroup({0}, {1}, {2})" Params="Program,Division,Organization">
       Person is in a small group named such
     </SmallGroup>
-    <NumberOfMemberships Title="Number of Memberships" Type="NullInteger" DisplayAs="NumMemberships({0}, {1}, {2}, {3})" Params="Program,Division,Organization,Schedule">
+    <NumberOfMemberships Title="Number of Enrollments" Type="NullInteger" DisplayAs="NumEnrollments({0}, {1}, {2}, {3})" Params="Program,Division,Organization,Schedule">
       Has a number of memberships in a prog, div, org, sched
     </NumberOfMemberships>
     <MedicalLength Title="Length of Medical / Allergies Info" Type="Integer">
       Medical / Allergies Info Greater than or less than number of characters
     </MedicalLength>
   </Enrollments>
-  <CurrentOrg>
+  <CurrentOrg Title="Current Org">
     <HasBalanceInCurrentOrg Title="In Current Organization, Has Balance" Type="Bit" DataValueField="IdCode">
       Selects everyone who is enrolled in the last organization you worked with, where AmountPaid &gt; 0 and &lt; Amount
     </HasBalanceInCurrentOrg>
@@ -455,7 +455,7 @@
       People who have Managed Giving
     </HasManagedGiving>
   </Contributions>
-  <ExtraValues>
+  <ExtraValues Title="Extra Values">
     <PeopleExtra Title="ExtraValue Code" Type="CodeStr" DataSource="ExtraValues">
       ExtraValue field = dropdown list of values
     </PeopleExtra>

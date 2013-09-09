@@ -331,6 +331,7 @@
     </Compile>
     <Compile Include="Areas\Org\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Org\Models\VolunteerRequestModel.cs" />
+    <Compile Include="Areas\Search\Models\QueryModel2.cs" />
     <Compile Include="Areas\Search\Models\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\SearchPersonModel.cs" />
     <Compile Include="Areas\People\PeopleAreaRegistration.cs" />
@@ -978,13 +979,13 @@
     <Content Include="Areas\Main\Views\Contact\ContactEdit.cshtml" />
     <Content Include="Areas\Main\Views\Contact\EditorTemplates\Bool.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditCondition2.cshtml" />
-    <Content Include="Areas\Search\Views\Query\Conditions2.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmReregister.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Changes.cshtml" />
     <Content Include="Areas\People\Views\Person\MainTabs\System.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Duplicates.cshtml" />
     <Content Include="Areas\People\Views\Person\System\DuplicateRow.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Edit.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Conditions.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1236,6 +1237,10 @@
     </Content>
     <Content Include="Scripts\Search\ContactSearch.min.js">
       <DependentUpon>ContactSearch.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\Query2.js" />
+    <Content Include="Scripts\Search\Copy of Query.min.js">
+      <DependentUpon>Query2.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\PeopleSearch.min.js">
       <DependentUpon>PeopleSearch.js</DependentUpon>

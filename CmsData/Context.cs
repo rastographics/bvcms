@@ -158,6 +158,15 @@ namespace CmsData
 			var qb = QueryBuilderClauses.SingleOrDefault(c => c.QueryId == queryid);
 			return CheckBadQuery(qb);
 		}
+		public QueryBuilderClause2 LoadQueryById2(Guid id)
+		{
+			var qb = Queries.SingleOrDefault(cc => cc.QueryId == id);
+		    if (qb == null)
+		        return null;
+		    var c = QueryBuilderClause2.Import(qb.Text);
+		    c.Id = id;
+		    return c;
+		}
 		public IQueryable<Person> PeopleQuery(int qid)
 		{
 			var qB = this.LoadQueryById(qid);
@@ -216,6 +225,28 @@ namespace CmsData
 			}
 			Util.QueryBuilderScratchPadId = qb.QueryId;
 			return qb;
+		}
+		public QueryBuilderClause2 QueryBuilderScratchPad2()
+		{
+			var c = LoadQueryById2(Util.QueryBuilderScratchPadId2);
+		    if (c != null) 
+                return c;
+		    var qb = Queries.SingleOrDefault(cc => cc.Owner == Util.UserName && cc.Name == Util.ScratchPad);
+		    if (qb == null)
+		    {
+		        qb = new Query 
+		        {
+		            Owner = Util.UserName,
+		            Created = DateTime.Now, 
+		            Modified = DateTime.Now, 
+		            Name = Util.ScratchPad
+		        };
+		        Queries.InsertOnSubmit(qb);
+		        SubmitChanges();
+		    }
+		    Util.QueryBuilderScratchPadId2 = qb.QueryId;
+		    c = QueryBuilderClause2.Import(qb.Text);
+		    return c;
 		}
 		public QueryBuilderClause QueryBuilderHasCurrentTag()
 		{

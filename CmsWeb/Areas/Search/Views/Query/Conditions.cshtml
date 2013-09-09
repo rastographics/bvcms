@@ -1,16 +1,14 @@
-﻿@using System.Web.UI.WebControls
-@using CmsWeb;
+﻿@using CmsWeb;
 @using CmsData
 @using CmsWeb.Areas.Search.Models
-@using IronPython.Modules
-@model CmsWeb.Areas.Search.Models.QueryModel
+@model QueryModel2
 <div id="conditions">
     @Html.Hidden("AutoRun")
     @Html.Hidden("NewSearchId")
     @Html.Hidden("NewId")
     @GroupItem(Model.TopClause)
 </div>
-@helper GroupItem(QueryBuilderClause clause)
+@helper GroupItem(QueryBuilderClause2 clause)
 {
     <ul @(clause.IsFirst ? "id=conditionsList" : "") class="subgroups">
         <li class="group condition" data-qid="@clause.QueryId">
@@ -37,7 +35,7 @@
         </li>
     </ul>
 }
-@helper ClauseItem(QueryBuilderClause clause)
+@helper ClauseItem(QueryBuilderClause2 clause)
 {
     <li class="condition" data-qid="@clause.QueryId">
         <a href="#editcondition" class="edit edit-popover">
@@ -46,7 +44,7 @@
         @CogItems(clause)
     </li>
 }
-@helper CogItems(QueryBuilderClause clause)
+@helper CogItems(QueryBuilderClause2 clause)
 {
     <div class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
