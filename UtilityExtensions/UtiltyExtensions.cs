@@ -655,11 +655,6 @@ namespace UtilityExtensions
         {
             get
             {
-#if DEBUG
-                var dcs = ConfigurationManager.ConnectionStrings["CMSImage"];
-                if (dcs != null)
-                    return dcs.ConnectionString;
-#endif
                 var cs = ConfigurationManager.ConnectionStrings["CMSHosted"];
                 if (cs == null)
                     cs = ConfigurationManager.ConnectionStrings["CMS"];

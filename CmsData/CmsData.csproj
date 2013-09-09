@@ -367,6 +367,7 @@
     <Compile Include="QueryBuilder2\FieldClass2.cs" />
     <Compile Include="QueryBuilder2\QueryBuilderClause2.cs" />
     <Compile Include="QueryBuilder2\Serialize2.cs" />
+    <Compile Include="Content.cs" />
     <Compile Include="DoReplacements.cs" />
     <Compile Include="Generated\ActivityOld.cs" />
     <Compile Include="Generated\BuildingAccessType.cs" />
