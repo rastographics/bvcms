@@ -16,7 +16,7 @@ using System.Web.Caching;
 
 namespace CmsData
 {
-    public class CompareClass
+    public class CompareClass2
     {
         public FieldType FieldType { get; set; }
         public CompareType CompType { get; set; }
@@ -25,7 +25,7 @@ namespace CmsData
             get { return CompType == CompareType.OneOf || CompType == CompareType.NotOneOf; }
         }
         public string Display { get; set; }
-        internal string ToString(QueryBuilderClause c)
+        internal string ToString(QueryBuilderClause2 c)
         {
             string fld = c.FieldInfo.Display(c);
             if (c.Field == "MatchAnything")
@@ -58,7 +58,7 @@ namespace CmsData
                     throw new ArgumentException();
             }
         }
-        internal Expression Expression(QueryBuilderClause c, ParameterExpression parm, CMSDataContext Db)
+        internal Expression Expression(QueryBuilderClause2 c, ParameterExpression parm, CMSDataContext Db)
         {
             switch (c.FieldInfo.QueryType)
             {
@@ -785,17 +785,17 @@ namespace CmsData
                 return CompareType.Equal;
             return (CompareType)Enum.Parse(typeof(CompareType), type);
         }
-        public static List<CompareClass> Comparisons
+        public static List<CompareClass2> Comparisons
         {
             get
             {
-                var _Comparisons = (List<CompareClass>)HttpRuntime.Cache["comparisons"];
+                var _Comparisons = (List<CompareClass2>)HttpRuntime.Cache["comparisons"];
                 if (_Comparisons == null)
                 {
                     var xdoc = XDocument.Parse(Properties.Resources.CompareMap);
                     var q = from f in xdoc.Descendants("FieldType")
                             from c in f.Elements("Comparison")
-                            select new CompareClass
+                            select new CompareClass2
                             {
                                 FieldType = FieldClass2.Convert((string)f.Attribute("Name")),
                                 CompType = Convert((string)c.Attribute("Type")),

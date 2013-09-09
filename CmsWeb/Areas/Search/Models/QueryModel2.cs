@@ -1,37 +1,29 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
- */
-
 using System;
 using System.Collections.Generic;
+using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Web;
-using System.Web.Caching;
 using System.Web.Mvc;
-using System.Xml.Linq;
 using CmsData;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using MoreLinq;
+using NPOI.POIFS.Properties;
 using UtilityExtensions;
-using System.Data.Linq.SqlClient;
-using System.Web.UI.WebControls;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class QueryModel
+    public class QueryModel2
     {
         private CMSDataContext Db;
-        public QueryBuilderClause TopClause;
+        public QueryBuilderClause2 TopClause;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
 
         public CmsWeb.Models.PagerModel2 Pager { get; set; }
 
-        public QueryModel()
+        public QueryModel2()
         {
             Db = DbUtil.Db;
             Db.SetUserPreference("NewCategories", "true");
@@ -39,33 +31,33 @@ namespace CmsWeb.Areas.Search.Models
             TagTypeId = DbUtil.TagTypeId_Personal;
             TagName = Util2.CurrentTagName;
             TagOwner = Util2.CurrentTagOwnerId;
-            Pager = new PagerModel2(Count) {Direction = "asc"};
+//            Pager = new PagerModel2(Count) {Direction = "asc"};
         }
-        public int Count()
-        {
-            return FetchCount();
-        }
+//        public int Count()
+//        {
+//            return FetchCount();
+//        }
         public string Description { get; set; }
         public int? QueryId { get; set; }
 
-        public void LoadScratchPad()
-        {
-            TopClause = Db.QueryBuilderScratchPad();
-            if (QueryId.HasValue && QueryId.Value != TopClause.QueryId)
-            {
-                var existing = Db.LoadQueryById(QueryId.Value);
-                if (existing != null)
-                {
-                    TopClause.CopyFromAll(existing, DbUtil.Db);
-                    Description = TopClause.Description;
-                    SavedQueryDesc = TopClause.Description;
-                    TopClause.Description = Util.ScratchPad;
-                    Db.SubmitChanges();
-                }
-            }
-            QueryId = TopClause.QueryId;
-            DbUtil.LogActivity("Running Query ({0})".Fmt(QueryId));
-        }
+//        public void LoadScratchPad()
+//        {
+//            TopClause = Db.QueryBuilderScratchPad2();
+//            if (QueryId.HasValue && QueryId.Value != TopClause.QueryId)
+//            {
+//                var existing = Db.LoadQueryById(QueryId.Value);
+//                if (existing != null)
+//                {
+//                    TopClause.CopyFromAll(existing, DbUtil.Db);
+//                    Description = TopClause.Description;
+//                    SavedQueryDesc = TopClause.Description;
+//                    TopClause.Description = Util.ScratchPad;
+//                    Db.SubmitChanges();
+//                }
+//            }
+//            QueryId = TopClause.QueryId;
+//            DbUtil.LogActivity("Running Query ({0})".Fmt(QueryId));
+//        }
 
         public int? SelectedId { get; set; }
 
@@ -300,7 +292,7 @@ namespace CmsWeb.Areas.Search.Models
                 return dt.Value.ToShortDateString();
             return "";
         }
-        private void UpdateCondition(QueryBuilderClause c)
+        private void UpdateCondition(QueryBuilderClause2 c)
         {
             c.Field = ConditionName;
             c.Comparison = Comparison;
@@ -432,23 +424,23 @@ namespace CmsWeb.Areas.Search.Models
             SetVisibility();
             SelectMultiple = Comparison.EndsWith("OneOf");
         }
-        public void SaveQuery()
-        {
-            var saveto = Db.QueryBuilderClauses.FirstOrDefault(c =>
-                (c.SavedBy == Util.UserName || c.SavedBy == "public") && c.Description == SavedQueryDesc);
-            if (saveto == null)
-            {
-                saveto = new QueryBuilderClause();
-                Db.QueryBuilderClauses.InsertOnSubmit(saveto);
-            }
-            saveto.CopyFromAll(TopClause, DbUtil.Db); // save Qb on top of existing
-            if (saveto.SavedBy != "public")
-                saveto.SavedBy = Util.UserName;
-            saveto.Description = SavedQueryDesc;
-            saveto.IsPublic = IsPublic;
-            Db.SubmitChanges();
-            Description = SavedQueryDesc;
-        }
+//        public void SaveQuery()
+//        {
+//            var saveto = Db.Queries.FirstOrDefault(c =>
+//                (c.Owner == Util.UserName || c.Owner == "public") && c.Name == SavedQueryDesc);
+//            if (saveto == null)
+//            {
+//                saveto = new Query();
+//                Db.Queries.InsertOnSubmit(saveto);
+//            }
+//            saveto.CopyFromAll(TopClause, DbUtil.Db); // save Qb on top of existing
+//            if (saveto.SavedBy != "public")
+//                saveto.SavedBy = Util.UserName;
+//            saveto.Description = SavedQueryDesc;
+//            saveto.IsPublic = IsPublic;
+//            Db.SubmitChanges();
+//            Description = SavedQueryDesc;
+//        }
         public int AddConditionToGroup()
         {
             var c = Db.LoadQueryById(SelectedId);
@@ -456,18 +448,18 @@ namespace CmsWeb.Areas.Search.Models
             Db.SubmitChanges();
             return nc.QueryId;
         }
-        public int AddGroupToGroup()
-        {
-            var c = Db.LoadQueryById(SelectedId);
-            var g = new QueryBuilderClause();
-            g.SetQueryType(QueryType.Group);
-            g.SetComparisonType(CompareType.AllTrue);
-            var currParent = c.Parent;
-            g.Parent = c;
-            var nc = g.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
-            Db.SubmitChanges();
-            return nc.QueryId;
-        }
+//        public int AddGroupToGroup()
+//        {
+//            var c = Db.LoadQueryById2(SelectedId);
+//            var g = new QueryBuilderClause2();
+//            g.SetQueryType(QueryType.Group);
+//            g.SetComparisonType(CompareType.AllTrue);
+//            var currParent = c.Parent;
+//            g.Parent = c;
+//            var nc = g.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
+//            Db.SubmitChanges();
+//            return nc.QueryId;
+//        }
         public void AddNewConditionAfterCurrent(int id)
         {
             var c = Db.LoadQueryById(id);
@@ -476,24 +468,22 @@ namespace CmsWeb.Areas.Search.Models
             SelectedId = nc.QueryId;
             EditCondition();
         }
-        public void AddConditionAfterCurrent()
+//        public void AddConditionAfterCurrent()
+//        {
+//            var c = Db.LoadQueryById(SelectedId);
+//            var nc = NewCondition(c.Parent, c.ClauseOrder + 1);
+//            Db.SubmitChanges();
+//            if (nc.IsGroup)
+//            {
+//                nc = nc.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
+//                Db.SubmitChanges();
+//                SelectedId = nc.QueryId;
+//            }
+//        }
+        private QueryBuilderClause2 NewCondition(QueryBuilderClause2 gc, int order)
         {
-            var c = Db.LoadQueryById(SelectedId);
-            var nc = NewCondition(c.Parent, c.ClauseOrder + 1);
-            Db.SubmitChanges();
-            if (nc.IsGroup)
-            {
-                nc = nc.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
-                Db.SubmitChanges();
-                SelectedId = nc.QueryId;
-            }
-        }
-        private QueryBuilderClause NewCondition(QueryBuilderClause gc, int order)
-        {
-            var c = new QueryBuilderClause();
-            c.ClauseOrder = order;
+            var c = new QueryBuilderClause2();
             gc.Clauses.Add(c);
-            gc.ReorderClauses();
             UpdateCondition(c);
             return c;
         }
@@ -510,47 +500,47 @@ namespace CmsWeb.Areas.Search.Models
         }
         public void UpdateCondition()
         {
-            var c = Db.LoadQueryById(SelectedId);
+            var c = Db.LoadQueryById2(SelectedId);
             if (c == null)
                 return;
             UpdateCondition(c);
         }
         public void ChangeGroup(string comp)
         {
-            var c = Db.LoadQueryById(SelectedId);
+            var c = Db.LoadQueryById2(SelectedId);
             c.Comparison = comp;
             Db.SubmitChanges();
         }
-        public void Paste(int id)
-        {
-            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
-            if (clip == null)
-                return;
-            var ret = QueryBuilderClause.Import(Db, clip);
-            var originalclause = Db.LoadQueryById(ret.fromid);
-            var newclause = Db.LoadQueryById(ret.newid);
-            var targetclause = Db.LoadQueryById(id);
-
-            if (targetclause.IsGroup)
-            {
-                targetclause.Clauses.Add(newclause);
-                newclause.ClauseOrder = 0;
-            }
-            else
-            {
-                targetclause.Parent.Clauses.Add(newclause);
-                newclause.ClauseOrder = targetclause.ClauseOrder + 1;
-                targetclause.Parent.ReorderClauses();
-            }
-            if (ret.from == "cut" && originalclause != null && ret.dbname == Util.Host)
-            {
-                var parent = originalclause.Parent;
-                parent.Clauses.Remove(originalclause);
-                if (parent.Clauses.Count == 0)
-                    Db.QueryBuilderClauses.DeleteOnSubmit(parent);
-            }
-            Db.SubmitChanges();
-        }
+//        public void Paste(int id)
+//        {
+//            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
+//            if (clip == null)
+//                return;
+//            var ret = QueryBuilderClause2.Import(Db, clip);
+//            var originalclause = Db.LoadQueryById(ret.fromid);
+//            var newclause = Db.LoadQueryById(ret.newid);
+//            var targetclause = Db.LoadQueryById(id);
+//
+//            if (targetclause.IsGroup)
+//            {
+//                targetclause.Clauses.Add(newclause);
+//                newclause.ClauseOrder = 0;
+//            }
+//            else
+//            {
+//                targetclause.Parent.Clauses.Add(newclause);
+//                newclause.ClauseOrder = targetclause.ClauseOrder + 1;
+//                targetclause.Parent.ReorderClauses();
+//            }
+//            if (ret.from == "cut" && originalclause != null && ret.dbname == Util.Host)
+//            {
+//                var parent = originalclause.Parent;
+//                parent.Clauses.Remove(originalclause);
+//                if (parent.Clauses.Count == 0)
+//                    Db.QueryBuilderClauses.DeleteOnSubmit(parent);
+//            }
+//            Db.SubmitChanges();
+//        }
         public void MoveToGroupBelow()
         {
             var cc = Db.LoadQueryById(SelectedId);
@@ -558,77 +548,79 @@ namespace CmsWeb.Areas.Search.Models
             cc.Parent = g;
             Db.SubmitChanges();
         }
-        public void InsertGroupAbove()
-        {
-            var cc = Db.LoadQueryById(SelectedId);
-            var g = new QueryBuilderClause();
-            g.SetQueryType(QueryType.Group);
-            g.SetComparisonType(CompareType.AllTrue);
-            g.ClauseOrder = cc.ClauseOrder;
-            if (cc.IsFirst)
-            {
-                cc.Parent = g;
-            }
-            else
-            {
-                var currParent = cc.Parent;
-                // find all clauses from cc down at same level
-                var q = from c in cc.Parent.Clauses
-                    orderby c.ClauseOrder
-                    where c.ClauseOrder >= cc.ClauseOrder
-                    select c;
-                foreach (var c in q)
-                    c.Parent = g; // change to new parent
-                g.Parent = currParent;
-            }
-            if (cc.SavedBy.HasValue())
-            {
-                g.SavedBy = Util.UserName;
-                g.Description = cc.Description;
-                g.CreatedOn = cc.CreatedOn;
-                cc.IsPublic = false;
-                cc.Description = null;
-                cc.SavedBy = null;
-            }
-            Db.SubmitChanges();
-            if (g.IsFirst)
-            {
-                TopClause = g;
-                QueryId = g.QueryId;
-    			Util.QueryBuilderScratchPadId = TopClause.QueryId;
-            }
-        }
+//        public void InsertGroupAbove()
+//        {
+//            var cc = Db.LoadQueryById2(SelectedId);
+//            var g = new QueryBuilderClause2();
+//            g.SetQueryType(QueryType.Group);
+//            g.SetComparisonType(CompareType.AllTrue);
+//            if (cc.IsFirst)
+//            {
+//                cc.Parent = g;
+//            }
+//            else
+//            {
+//                var currParent = cc.Parent;
+//                // find all clauses from cc down at same level
+//                var i = currParent.Clauses.IndexOf(cc);
+//                g.Parent = currParent;
+//                for (; i < currParent.Clauses.Count; i++)
+//                {
+//                    var ci = currParent.Clauses[i];
+//                    g.Clauses.Add(ci);
+//                    ci.Parent = g;
+//                }
+//                foreach (var ci in currParent.Clauses.Where(ccc => ccc.Parent == g))
+//                    currParent.Clauses.Remove(ci);
+//            }
+//            if (cc.SavedBy.HasValue())
+//            {
+//                g.SavedBy = Util.UserName;
+//                g.Description = cc.Description;
+//                g.CreatedOn = cc.CreatedOn;
+//                cc.IsPublic = false;
+//                cc.Description = null;
+//                cc.SavedBy = null;
+//            }
+//            Db.SubmitChanges();
+//            if (g.IsFirst)
+//            {
+//                TopClause = g;
+//                QueryId = g.QueryId;
+//                Util.QueryBuilderScratchPadId = TopClause.QueryId;
+//            }
+//        }
         public IEnumerable<SelectListItem> GroupComparisons()
         {
             return from c in CompareClass.Comparisons
-                   where c.FieldType == FieldType.Group
-                   select new SelectListItem 
-                   { 
-                       Text = c.CompType == CompareType.AllTrue ? "All" 
-                            : c.CompType == CompareType.AnyTrue ? "Any" 
+                where c.FieldType == FieldType.Group
+                select new SelectListItem 
+                { 
+                    Text = c.CompType == CompareType.AllTrue ? "All" 
+                        : c.CompType == CompareType.AnyTrue ? "Any" 
                             : c.CompType == CompareType.AllFalse ? "None" 
-                            : "unknown", 
-                       Value = c.CompType.ToString() 
-                   };
+                                : "unknown", 
+                    Value = c.CompType.ToString() 
+                };
         }
         public IEnumerable<SelectListItem> Comparisons()
         {
             return from c in CompareClass.Comparisons
-                   where c.FieldType == fieldMap.Type
-                   select new SelectListItem { Text = c.CompType.ToString(), Value = c.CompType.ToString() };
+                where c.FieldType == fieldMap.Type
+                select new SelectListItem { Text = c.CompType.ToString(), Value = c.CompType.ToString() };
         }
         public IEnumerable<SelectListItem> Schedules()
         {
             var q = from o in DbUtil.Db.Organizations
-                    let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                    where sc != null
-                    group o by new { ScheduleId = sc.ScheduleId ?? 10800, sc.MeetingTime } into g
-                    orderby g.Key.ScheduleId
-                    select new SelectListItem
-                    {
-                        Value = g.Key.ScheduleId.ToString(),
-                        Text = DbUtil.Db.GetScheduleDesc(g.Key.MeetingTime)
-                    };
+                let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+                where sc != null
+                group o by new { ScheduleId = sc.ScheduleId ?? 10800, sc.MeetingTime } into g
+                orderby g.Key.ScheduleId
+                select new SelectListItem
+                {
+                    Value = g.Key.ScheduleId.ToString(),
+                    Text = DbUtil.Db.GetScheduleDesc(g.Key.MeetingTime)
+                };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(None)", Value = "-1" });
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
@@ -637,14 +629,14 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<SelectListItem> Campuses()
         {
             var q = from o in DbUtil.Db.Organizations
-                    where o.CampusId != null
-                    group o by o.CampusId into g
-                    orderby g.Key
-                    select new SelectListItem
-                    {
-                        Value = g.Key.ToString(),
-                        Text = g.First().Campu.Description
-                    };
+                where o.CampusId != null
+                group o by o.CampusId into g
+                orderby g.Key
+                select new SelectListItem
+                {
+                    Value = g.Key.ToString(),
+                    Text = g.First().Campu.Description
+                };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(None)", Value = "-1" });
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
@@ -653,12 +645,12 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<SelectListItem> OrgTypes()
         {
             var q = from t in Db.OrganizationTypes
-                    orderby t.Code
-                    select new SelectListItem
-                    {
-                        Value = t.Id.ToString(),
-                        Text = t.Description
-                    };
+                orderby t.Code
+                select new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.Description
+                };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
@@ -666,12 +658,12 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<SelectListItem> Programs()
         {
             var q = from t in Db.Programs
-                    orderby t.Name
-                    select new SelectListItem
-                    {
-                        Value = t.Id.ToString(),
-                        Text = t.Name
-                    };
+                orderby t.Name
+                select new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.Name
+                };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
@@ -679,13 +671,13 @@ namespace CmsWeb.Areas.Search.Models
         public static IEnumerable<SelectListItem> Divisions(int? progid)
         {
             var q = from div in DbUtil.Db.Divisions
-                    where div.ProgDivs.Any(d => d.ProgId == progid)
-                    orderby div.Name
-                    select new SelectListItem
-                    {
-                        Value = div.Id.ToString(),
-                        Text = div.Name
-                    };
+                where div.ProgDivs.Any(d => d.ProgId == progid)
+                orderby div.Name
+                select new SelectListItem
+                {
+                    Value = div.Id.ToString(),
+                    Text = div.Name
+                };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
@@ -694,45 +686,44 @@ namespace CmsWeb.Areas.Search.Models
         {
             var roles = DbUtil.Db.CurrentRoles();
             var q = from ot in DbUtil.Db.DivOrgs
-                    where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
-                    where ot.DivId == divid
-                    && (SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14
-                        || ot.Organization.OrganizationStatusId == 30)
-                    where (Util2.OrgMembersOnly == false && Util2.OrgLeadersOnly == false) || (ot.Organization.SecurityTypeId != 3)
-                    orderby ot.Organization.OrganizationStatusId, ot.Organization.OrganizationName
-                    select new SelectListItem
-                    {
-                        Value = ot.OrgId.ToString(),
-                        Text = CmsData.Organization.FormatOrgName(ot.Organization.OrganizationName,
-                           ot.Organization.LeaderName, ot.Organization.Location)
-                    };
+                where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
+                where ot.DivId == divid
+                      && (SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14
+                          || ot.Organization.OrganizationStatusId == 30)
+                where (Util2.OrgMembersOnly == false && Util2.OrgLeadersOnly == false) || (ot.Organization.SecurityTypeId != 3)
+                orderby ot.Organization.OrganizationStatusId, ot.Organization.OrganizationName
+                select new SelectListItem
+                {
+                    Value = ot.OrgId.ToString(),
+                    Text = CmsData.Organization.FormatOrgName(ot.Organization.OrganizationName,
+                        ot.Organization.LeaderName, ot.Organization.Location)
+                };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        private int level;
-        public List<QueryClauseDisplay> ConditionList()
-        {
-            if (TopClause == null)
-                LoadScratchPad();
-            level = 0;
-            return ClauseAndSubs(new List<QueryClauseDisplay>(), TopClause);
-        }
-        private List<QueryClauseDisplay> ClauseAndSubs(List<QueryClauseDisplay> list, QueryBuilderClause qc)
-        {
-            list.Add(new QueryClauseDisplay { Level = level, Clause = qc });
-            level++;
-            var q = qc.Clauses.OrderBy(c => c.ClauseOrder);
-            foreach (var c in q)
-                list = ClauseAndSubs(list, c);
-            level--;
-            return list;
-        }
+//        private int level;
+//        public List<QueryClauseDisplay> ConditionList()
+//        {
+//            if (TopClause == null)
+//                LoadScratchPad();
+//            level = 0;
+//            return ClauseAndSubs(new List<QueryClauseDisplay>(), TopClause);
+//        }
+//        private List<QueryClauseDisplay> ClauseAndSubs(List<QueryClauseDisplay> list, QueryBuilderClause2 qc)
+//        {
+//            list.Add(new QueryClauseDisplay { Level = level, Clause = qc });
+//            level++;
+//            foreach (var c in qc.Clauses)
+//                list = ClauseAndSubs(list, c);
+//            level--;
+//            return list;
+//        }
         public IEnumerable<CategoryClass> FieldCategories()
         {
             var q = from c in CategoryClass.Categories
-                    where c.Title != "Grouping"
-                    select c;
+                where c.Title != "Grouping"
+                select c;
             return q;
         }
         public List<SelectListItem> SavedQueries()
@@ -743,117 +734,112 @@ namespace CmsWeb.Areas.Search.Models
         public List<SelectListItem> Ministries()
         {
             var q = from t in Db.Ministries
-                    orderby t.MinistryDescription
-                    select new SelectListItem
-                    {
-                        Value = t.MinistryId.ToString(),
-                        Text = t.MinistryName
-                    };
+                orderby t.MinistryDescription
+                select new SelectListItem
+                {
+                    Value = t.MinistryId.ToString(),
+                    Text = t.MinistryName
+                };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
 
-        private IQueryable<Person> query;
-        private int? count;
-        public int FetchCount()
-        {
-            Db.SetNoLock();
-            query = PersonQuery();
-            count = query.Count();
-            return count ?? 0;
-        }
-        public List<PeopleInfo> Results;
-        public void PopulateResults()
-        {
-            query = PersonQuery();
-            count = query.Count();
-            query = ApplySort(query);
-            query = query.Skip(Pager.StartRow).Take(Pager.PageSize);
-            Results = FetchPeopleList(query).ToList();
-        }
-        public IEnumerable<PeopleInfo> FetchPeopleList()
-        {
-            query = ApplySort(query);
-            query = query.Skip(Pager.StartRow).Take(Pager.PageSize);
-            return FetchPeopleList(query);
-        }
-        public class MyClass
-        {
-            public int Id { get; set; }
-            public int PeopleId { get; set; }
-        }
-        public Tag TagAllIds()
-        {
-            query = PersonQuery();
-            var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
-            Db.TagAll(query, tag);
-            return tag;
-        }
-        private IQueryable<Person> PersonQuery()
-        {
-            if (TopClause == null)
-                LoadScratchPad();
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
-            if (TopClause.ParentsOf)
-                return Db.PersonQueryParents(q);
-            return q;
-        }
-        public void TagAll(Tag tag = null)
-        {
-            if (TopClause == null)
-                LoadScratchPad();
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
-            if (TopClause.ParentsOf)
-                q = Db.PersonQueryParents(q);
-            if (tag != null)
-                Db.TagAll(q, tag);
-            else
-                Db.TagAll(q);
-        }
-        public void UnTagAll()
-        {
-            if (TopClause == null)
-                LoadScratchPad();
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
-            if (TopClause.ParentsOf)
-                q = Db.PersonQueryParents(q);
-            Db.UnTagAll(q);
-        }
-        private IEnumerable<PeopleInfo> FetchPeopleList(IQueryable<Person> query)
-        {
-            if (query == null)
-            {
-                Db.SetNoLock();
-                query = PersonQuery();
-                count = query.Count();
-            }
-            var q = from p in query
-                    select new PeopleInfo
-                    {
-                        PeopleId = p.PeopleId,
-                        Name = p.Name,
-                        BirthDate = Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay),
-                        Address = p.PrimaryAddress,
-                        Address2 = p.PrimaryAddress2,
-                        CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
-                        HomePhone = p.HomePhone,
-                        CellPhone = p.CellPhone,
-                        WorkPhone = p.WorkPhone,
-                        PhonePref = p.PhonePrefId,
-                        MemberStatus = p.MemberStatus.Description,
-                        Email = p.EmailAddress,
-                        BFTeacher = p.BFClass.LeaderName,
-                        BFTeacherId = p.BFClass.LeaderId,
-                        Employer = p.EmployerOther,
-                        Age = p.Age.ToString(),
-                        HasTag = p.Tags.Any(t => t.Tag.Name == TagName && t.Tag.PeopleId == TagOwner && t.Tag.TypeId == TagTypeId),
-                    };
-            return q;
-        }
+//        private IQueryable<Person> query;
+//        private int? count;
+//        public int FetchCount()
+//        {
+//            Db.SetNoLock();
+//            query = PersonQuery();
+//            count = query.Count();
+//            return count ?? 0;
+//        }
+//        public List<PeopleInfo> Results;
+//        public void PopulateResults()
+//        {
+//            query = PersonQuery();
+//            count = query.Count();
+//            query = ApplySort(query);
+//            query = query.Skip(Pager.StartRow).Take(Pager.PageSize);
+//            Results = FetchPeopleList(query).ToList();
+//        }
+//        public IEnumerable<PeopleInfo> FetchPeopleList()
+//        {
+//            query = ApplySort(query);
+//            query = query.Skip(Pager.StartRow).Take(Pager.PageSize);
+//            return FetchPeopleList(query);
+//        }
+//        public Tag TagAllIds()
+//        {
+//            query = PersonQuery();
+//            var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
+//            Db.TagAll(query, tag);
+//            return tag;
+//        }
+//        private IQueryable<Person> PersonQuery()
+//        {
+//            if (TopClause == null)
+//                LoadScratchPad();
+//            Db.SetNoLock();
+//            var q = Db.People.Where(TopClause.Predicate(Db));
+//            if (TopClause.ParentsOf)
+//                return Db.PersonQueryParents(q);
+//            return q;
+//        }
+//        public void TagAll(Tag tag = null)
+//        {
+//            if (TopClause == null)
+//                LoadScratchPad();
+//            Db.SetNoLock();
+//            var q = Db.People.Where(TopClause.Predicate(Db));
+//            if (TopClause.ParentsOf)
+//                q = Db.PersonQueryParents(q);
+//            if (tag != null)
+//                Db.TagAll(q, tag);
+//            else
+//                Db.TagAll(q);
+//        }
+//        public void UnTagAll()
+//        {
+//            if (TopClause == null)
+//                LoadScratchPad();
+//            Db.SetNoLock();
+//            var q = Db.People.Where(TopClause.Predicate(Db));
+//            if (TopClause.ParentsOf)
+//                q = Db.PersonQueryParents(q);
+//            Db.UnTagAll(q);
+//        }
+//        private IEnumerable<PeopleInfo> FetchPeopleList(IQueryable<Person> query)
+//        {
+//            if (query == null)
+//            {
+//                Db.SetNoLock();
+//                query = PersonQuery();
+//                count = query.Count();
+//            }
+//            var q = from p in query
+//                select new PeopleInfo
+//                {
+//                    PeopleId = p.PeopleId,
+//                    Name = p.Name,
+//                    BirthDate = Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay),
+//                    Address = p.PrimaryAddress,
+//                    Address2 = p.PrimaryAddress2,
+//                    CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
+//                    HomePhone = p.HomePhone,
+//                    CellPhone = p.CellPhone,
+//                    WorkPhone = p.WorkPhone,
+//                    PhonePref = p.PhonePrefId,
+//                    MemberStatus = p.MemberStatus.Description,
+//                    Email = p.EmailAddress,
+//                    BFTeacher = p.BFClass.LeaderName,
+//                    BFTeacherId = p.BFClass.LeaderId,
+//                    Employer = p.EmployerOther,
+//                    Age = p.Age.ToString(),
+//                    HasTag = p.Tags.Any(t => t.Tag.Name == TagName && t.Tag.PeopleId == TagOwner && t.Tag.TypeId == TagTypeId),
+//                };
+//            return q;
+//        }
         private IQueryable<Person> ApplySort(IQueryable<Person> q)
         {
 //            if (Pager.Sort == null)
@@ -864,54 +850,54 @@ namespace CmsWeb.Areas.Search.Models
                     case "Name":
                         q = from p in q
                             orderby p.LastName,
-                            p.FirstName,
-                            p.PeopleId
+                                p.FirstName,
+                                p.PeopleId
                             select p;
                         break;
                     case "Status":
                         q = from p in q
                             orderby p.MemberStatus.Code,
-                            p.LastName,
-                            p.FirstName,
-                            p.PeopleId
+                                p.LastName,
+                                p.FirstName,
+                                p.PeopleId
                             select p;
                         break;
                     case "Address":
                         q = from p in q
                             orderby p.PrimaryState,
-                            p.PrimaryCity,
-                            p.PrimaryAddress,
-                            p.PeopleId
+                                p.PrimaryCity,
+                                p.PrimaryAddress,
+                                p.PeopleId
                             select p;
                         break;
                     case "Fellowship Leader":
                         q = from p in q
                             orderby p.BFClass.LeaderName,
-                            p.LastName,
-                            p.FirstName,
-                            p.PeopleId
+                                p.LastName,
+                                p.FirstName,
+                                p.PeopleId
                             select p;
                         break;
                     case "Employer":
                         q = from p in q
                             orderby p.EmployerOther,
-                            p.LastName,
-                            p.FirstName,
-                            p.PeopleId
+                                p.LastName,
+                                p.FirstName,
+                                p.PeopleId
                             select p;
                         break;
                     case "Communication":
                         q = from p in q
                             orderby p.EmailAddress,
-                            p.LastName,
-                            p.FirstName,
-                            p.PeopleId
+                                p.LastName,
+                                p.FirstName,
+                                p.PeopleId
                             select p;
                         break;
                     case "DOB":
                         q = from p in q
                             orderby p.BirthMonth, p.BirthDay,
-                            p.LastName, p.FirstName
+                                p.LastName, p.FirstName
                             select p;
                         break;
                 }
@@ -921,54 +907,54 @@ namespace CmsWeb.Areas.Search.Models
                     case "Status":
                         q = from p in q
                             orderby p.MemberStatus.Code descending,
-                            p.LastName descending,
-                            p.FirstName descending,
-                            p.PeopleId descending
+                                p.LastName descending,
+                                p.FirstName descending,
+                                p.PeopleId descending
                             select p;
                         break;
                     case "Address":
                         q = from p in q
                             orderby p.PrimaryState descending,
-                            p.PrimaryCity descending,
-                            p.PrimaryAddress descending,
-                            p.PeopleId descending
+                                p.PrimaryCity descending,
+                                p.PrimaryAddress descending,
+                                p.PeopleId descending
                             select p;
                         break;
                     case "Name":
                         q = from p in q
                             orderby p.LastName descending,
-                            p.LastName descending,
-                            p.PeopleId descending
+                                p.LastName descending,
+                                p.PeopleId descending
                             select p;
                         break;
                     case "Fellowship Leader":
                         q = from p in q
                             orderby p.BFClass.LeaderName descending,
-                            p.LastName descending,
-                            p.FirstName descending,
-                            p.PeopleId descending
+                                p.LastName descending,
+                                p.FirstName descending,
+                                p.PeopleId descending
                             select p;
                         break;
                     case "Employer":
                         q = from p in q
                             orderby p.EmployerOther descending,
-                            p.LastName descending,
-                            p.FirstName descending,
-                            p.PeopleId descending
+                                p.LastName descending,
+                                p.FirstName descending,
+                                p.PeopleId descending
                             select p;
                         break;
                     case "Communication":
                         q = from p in q
                             orderby p.EmailAddress descending,
-                            p.LastName descending,
-                            p.FirstName descending,
-                            p.PeopleId descending
+                                p.LastName descending,
+                                p.FirstName descending,
+                                p.PeopleId descending
                             select p;
                         break;
                     case "DOB":
                         q = from p in q
                             orderby p.BirthMonth descending, p.BirthDay descending,
-                            p.LastName descending, p.FirstName descending
+                                p.LastName descending, p.FirstName descending
                             select p;
                         break;
                 }
@@ -1018,10 +1004,5 @@ namespace CmsWeb.Areas.Search.Models
         public bool ShowResults { get; set; }
 
         public bool CanSave { get; set; }
-    }
-    public class QueryClauseDisplay
-    {
-        public int Level { get; set; }
-        public QueryBuilderClause Clause;
     }
 }

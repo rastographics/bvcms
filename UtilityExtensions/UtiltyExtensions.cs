@@ -797,6 +797,24 @@ namespace UtilityExtensions
                     HttpContext.Current.Session[STR_QBScratchPad] = value;
             }
         }
+        const string STR_QBScratchPad2 = "QBScratchPad2";
+        public static int QueryBuilderScratchPadId2
+        {
+            get
+            {
+                int id = 0;
+                if (HttpContext.Current != null)
+                    if (HttpContext.Current.Session != null)
+                        if (HttpContext.Current.Session[STR_QBScratchPad] != null)
+                            id = HttpContext.Current.Session[STR_QBScratchPad].ToInt();
+                return id;
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                    HttpContext.Current.Session[STR_QBScratchPad] = value;
+            }
+        }
         public static int CreateAccountCode = -1952;
         public static string SessionId
         {

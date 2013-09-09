@@ -26,8 +26,9 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Query(int? id)
         {
             ViewBag.Title = "QueryBuilder";
+            //var c = DbUtil.Db.QueryBuilderScratchPad2();
+
             var m = new QueryModel { QueryId = id };
-            DbUtil.LogActivity("QueryBuilder");
             m.LoadScratchPad();
             InitToolbar(m);
             var newsearchid = (int?)TempData["newsearch"];
@@ -35,9 +36,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 ViewBag.NewSearchId = newsearchid.Value;
 #if DEBUG
             else
-            {
                 ViewBag.AutoRun = true;
-            }
 #endif
             return View(m);
         }

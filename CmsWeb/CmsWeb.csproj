@@ -331,6 +331,7 @@
     </Compile>
     <Compile Include="Areas\Org\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Org\Models\VolunteerRequestModel.cs" />
+    <Compile Include="Areas\Search\Models\QueryModel2.cs" />
     <Compile Include="Areas\Search\Models\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\SearchPersonModel.cs" />
     <Compile Include="Areas\People\PeopleAreaRegistration.cs" />

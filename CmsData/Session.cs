@@ -215,6 +215,7 @@ namespace CmsData
                 return mru;
             }
         }
+
 //        public const string STR_MostRecentQueries = "MostRecentQueries";
 //        public static List<MostRecentItem> MostRecentQueries
 //        {
