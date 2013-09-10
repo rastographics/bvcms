@@ -797,7 +797,7 @@ namespace CmsData
                             from c in f.Elements("Comparison")
                             select new CompareClass
                             {
-                                FieldType = FieldClass2.Convert((string)f.Attribute("Name")),
+                                FieldType = FieldClass.Convert((string)f.Attribute("Name")),
                                 CompType = Convert((string)c.Attribute("Type")),
                                 Display = (string)c.Attribute("Display")
                             };

@@ -344,7 +344,8 @@ Please search with a different email, phone, or birthday.";
 					case "AskDropdown":
 						string desc;
 				        string namedd = Parent.GetNameFor(mm => mm.List[i].option[ask.UniqueId]);
-				        if (((AskDropdown)ask).SmallGroupChoice(option) == null)
+				        var sgi = ((AskDropdown) ask).SmallGroupChoice(option);
+				        if (sgi == null || !sgi.SmallGroup.HasValue())
 							modelState.AddModelError(namedd, "please select an option");
 						else if (((AskDropdown)ask).IsSmallGroupFilled(GroupTags, option, out desc))
 							modelState.AddModelError(namedd, "limit reached for " + desc);

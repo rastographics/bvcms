@@ -31,14 +31,14 @@ namespace CmsWeb.Areas.Search.Models
             TagTypeId = DbUtil.TagTypeId_Personal;
             TagName = Util2.CurrentTagName;
             TagOwner = Util2.CurrentTagOwnerId;
-//            Pager = new PagerModel2(Count) {Direction = "asc"};
+            Pager = new PagerModel2(Count) {Direction = "asc"};
         }
-//        public int Count()
-//        {
-//            return FetchCount();
-//        }
+        public int Count()
+        {
+            return FetchCount();
+        }
 
-        public void LoadScratchPad(Guid? id)
+        public void LoadScratchPad(Guid? id = null)
         {
             TopClause = Db.QueryBuilderScratchPad2();
             if (id.HasValue && id.Value != TopClause.Id)
@@ -435,6 +435,48 @@ namespace CmsWeb.Areas.Search.Models
 //            Db.SubmitChanges();
 //            Description = SavedQueryDesc;
 //        }
+        public class ClipboardItem
+        {
+            public string from { get; set; }
+            public Guid guid { get; set; }
+            public string xml { get; set; }
+
+            public ClipboardItem(string @from, Guid guid, string xml)
+            {
+                this.@from = @from;
+                this.guid = guid;
+                this.xml = xml;
+            }
+        }
+
+        public void Paste(Guid id)
+        {
+            var clip = HttpContext.Current.Session["QueryClipboard"] as ClipboardItem;
+            if (clip == null)
+                return;
+            var newclause = QueryBuilderClause2.Import(clip.xml, newGuids: clip.from == "copy");
+
+            Current.AllClauses.Add(newclause.Id, newclause);
+
+            if (Current.IsGroup)
+            {
+                newclause.Order = Current.MaxClauseOrder() + 2;
+                newclause.ParentId = Current.Id;
+            }
+            else
+            {
+                newclause.Order = Current.Order + 1;
+                newclause.ParentId = Current.Parent.Id;
+                Current.Parent.ReorderClauses();
+            }
+            if (clip.from == "cut")
+            {
+                var originalclause = Db.LoadQueryById2(clip.guid);
+                originalclause.AllClauses.Remove(newclause.Id);
+                if (!originalclause.Parent.Clauses.Any())
+                    originalclause.AllClauses.Remove(originalclause.Parent.Id);
+            }
+        }
         public Guid AddConditionToGroup()
         {
             var nc = Current.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
@@ -479,7 +521,6 @@ namespace CmsWeb.Areas.Search.Models
                 return TopClause.AllClauses[gid];
             }
         }
-
         public void DeleteCondition()
         {
             Current.DeleteClause();
@@ -489,36 +530,41 @@ namespace CmsWeb.Areas.Search.Models
         {
             UpdateCondition(Current);
         }
-//        public void Paste(int id)
+//        public void InsertGroupAbove()
 //        {
-//            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
-//            if (clip == null)
-//                return;
-//            var ret = QueryBuilderClause2.Import(Db, clip);
-//            var originalclause = Db.LoadQueryById(ret.fromid);
-//            var newclause = Db.LoadQueryById(ret.newid);
-//            var targetclause = Db.LoadQueryById(id);
-//
-//            if (targetclause.IsGroup)
+//            var cc = Db.LoadQueryById2(SelectedId);
+//            var g = new QueryBuilderClause2();
+//            g.SetQueryType(QueryType.Group);
+//            g.SetComparisonType(CompareType.AllTrue);
+//            if (cc.IsFirst)
 //            {
-//                targetclause.Clauses.Add(newclause);
-//                newclause.ClauseOrder = 0;
+//                cc.Parent = g;
 //            }
 //            else
 //            {
-//                targetclause.Parent.Clauses.Add(newclause);
-//                newclause.ClauseOrder = targetclause.ClauseOrder + 1;
-//                targetclause.Parent.ReorderClauses();
+//                var currParent = cc.Parent;
+//                // find all clauses from cc down at same level
+//                var i = currParent.Clauses.IndexOf(cc);
+//                g.Parent = currParent;
+//                for (; i < currParent.Clauses.Count; i++)
+//                {
+//                    var ci = currParent.Clauses[i];
+//                    g.Clauses.Add(ci);
+//                    ci.Parent = g;
+//                }
+//                foreach (var ci in currParent.Clauses.Where(ccc => ccc.Parent == g))
+//                    currParent.Clauses.Remove(ci);
 //            }
-//            if (ret.from == "cut" && originalclause != null && ret.dbname == Util.Host)
+//            if (cc.SavedBy.HasValue())
 //            {
-//                var parent = originalclause.Parent;
-//                parent.Clauses.Remove(originalclause);
-//                if (parent.Clauses.Count == 0)
-//                    Db.QueryBuilderClauses.DeleteOnSubmit(parent);
+//                g.SavedBy = Util.UserName;
+//                g.Description = cc.Description;
+//                g.CreatedOn = cc.CreatedOn;
+//                cc.IsPublic = false;
+//                cc.Description = null;
+//                cc.SavedBy = null;
 //            }
 //            Db.SubmitChanges();
-//        }
         public void InsertGroupAbove()
         {
             var g = TopClause.CreateNewGroupClause();
@@ -696,7 +742,6 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-
         private IQueryable<Person> query;
         private int? count;
         public int FetchCount()
@@ -794,8 +839,8 @@ namespace CmsWeb.Areas.Search.Models
         }
         private IQueryable<Person> ApplySort(IQueryable<Person> q)
         {
-//            if (Pager.Sort == null)
-//                Pager.Sort = "Name";
+//            if (TopClause == null)
+//                LoadScratchPad();
             if (Pager.Direction != "desc")
                 switch (Pager.Sort)
                 {
@@ -912,7 +957,6 @@ namespace CmsWeb.Areas.Search.Models
                 }
             return q;
         }
-
         public bool Validate(ModelStateDictionary m)
         {
             SetVisibility();
@@ -930,31 +974,22 @@ namespace CmsWeb.Areas.Search.Models
                 m.AddModelError("Days", "days > 10000");
             if (AgeVisible && !int.TryParse(Age, out i))
                 m.AddModelError("Age", "must be integer");
-
-
             if (IntegerVisible && !Comparison.EndsWith("Null") && !int.TryParse(IntegerValue, out i))
                 m.AddModelError("IntegerValue", "need integer");
-
             if (TagsVisible && string.Join(",", Tags).Length > 500)
                 m.AddModelError("tagvalues", "too many tags selected");
-
             decimal d;
             if (NumberVisible && !Comparison.EndsWith("Null") && !decimal.TryParse(NumberValue, out d))
                 m.AddModelError("NumberValue", "need number");
-
             if (DateVisible && !Comparison.EndsWith("Null"))
                 if (!DateTime.TryParse(DateValue, out dt) || dt.Year <= 1900 || dt.Year >= 2200)
                     m.AddModelError("DateValue", "need valid date");
-
             if (Comparison == "Contains")
                 if (!TextValue.HasValue())
                     m.AddModelError("TextValue", "cannot be empty");
-
             return m.IsValid;
         }
-
         public bool ShowResults { get; set; }
-
         public bool CanSave { get; set; }
     }
 }

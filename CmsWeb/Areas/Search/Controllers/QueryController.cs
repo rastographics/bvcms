@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Web.Mvc;
@@ -13,12 +14,13 @@ using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
 using DocumentFormat.OpenXml.EMMA;
+using iTextSharp.text;
 using UtilityExtensions;
 using CmsData;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
-	[SessionExpire]
+    [SessionExpire]
     [RouteArea("Search", AreaUrl = "Query")]
     public class QueryController : CmsStaffAsyncController
     {
@@ -26,8 +28,6 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Query(Guid id)
         {
             ViewBag.Title = "QueryBuilder";
-            //var c = DbUtil.Db.QueryBuilderScratchPad2();
-
             var m = new QueryModel2();
             InitToolbar(m);
             var newsearchid = (int?)TempData["newsearch"];
@@ -40,38 +40,43 @@ namespace CmsWeb.Areas.Search.Controllers
             return View(m);
         }
 
-	    private void InitToolbar(QueryModel2 m)
-	    {
-	        ViewBag.OnQueryBuilder = "true";
-	        ViewBag.TagAction = "/Query/TagAll/";
-	        ViewBag.UnTagAction = "/Query/UnTagAll/";
-	        ViewBag.Contact = "/Query/AddContact/";
-	        ViewBag.Tasks = "/Query/AddTasks/";
-	        ViewBag.GearSpan = "span12";
-	        ViewBag.queryid = m.TopClause.Id;
-	    }
+        private void InitToolbar(QueryModel2 m)
+        {
+            ViewBag.OnQueryBuilder = "true";
+            ViewBag.TagAction = "/Query/TagAll/";
+            ViewBag.UnTagAction = "/Query/UnTagAll/";
+            ViewBag.Contact = "/Query/AddContact/";
+            ViewBag.Tasks = "/Query/AddTasks/";
+            ViewBag.GearSpan = "span12";
+            ViewBag.queryid = m.TopClause.Id;
+        }
 
-	    [POST("Query/Cut/{id}")]
+        [POST("Query/Cut/{id}")]
         public ActionResult Cut(Guid id)
         {
-            var c = DbUtil.Db.LoadQueryById2(id);
-            Session["QueryClipboard"] = c.ToXml("cut", id);
+            var m = new QueryModel2();
+            m.LoadScratchPad();
+            m.SelectedId = id;
+            Session["QueryClipboard"] = 
+                new QueryModel2.ClipboardItem( "cut", m.TopClause.Id, m.Current.ToXml() );
             return Content("ok");
         }
         [POST("Query/Copy/{id}")]
         public ActionResult Copy(Guid id)
         {
-            var c = DbUtil.Db.LoadQueryById2(id);
-            Session["QueryClipboard"] = c.ToXml("copy", id);
+            var m = new QueryModel2();
+            m.LoadScratchPad();
+            m.SelectedId = id;
+            Session["QueryClipboard"] = 
+                new QueryModel2.ClipboardItem( "copy", m.TopClause.Id, m.Current.ToXml() );
             return Content("ok");
         }
         [POST("Query/Paste/{id}")]
         public ActionResult Paste(Guid id)
         {
-            var m = new QueryModel2();
-            m.LoadScratchPad();
+            var m = new QueryModel2() { SelectedId = id };
             m.Paste(id);
-            return View("Conditions2", m);
+            return View("Conditions", m);
         }
         [POST("Query/CodesDropdown/")]
         public ActionResult CodesDropdown(QueryModel2 m)
@@ -147,7 +152,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.UpdateCondition();
                 DbUtil.Db.SubmitChanges();
             }
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
                 return View("Conditions2", m);
             return View("EditCondition", m);
         }
@@ -209,49 +214,49 @@ namespace CmsWeb.Areas.Search.Controllers
             c.Content = m.Description;
             return c;
         }
-		public void Results2Async()
-		{
-			AsyncManager.OutstandingOperations.Increment();
-			string host = Util.Host;
-			ThreadPool.QueueUserWorkItem((e) =>
-			{
-				var Db = new CMSDataContext(Util.GetConnectionString(host));
-				Db.DeleteQueryBitTags();
-				foreach (var a in Db.StatusFlags())
-				{
-					var t = Db.FetchOrCreateSystemTag(a[0]);
-					Db.TagAll(Db.PeopleQuery(a[0] + ":" + a[1]), t);
-					Db.SubmitChanges();
-				}
-				AsyncManager.OutstandingOperations.Decrement();
-			});
-		}
-		public ActionResult Results2Completed()
-		{
-			return null;
-		}
+        public void Results2Async()
+        {
+            AsyncManager.OutstandingOperations.Increment();
+            string host = Util.Host;
+            ThreadPool.QueueUserWorkItem((e) =>
+            {
+                var Db = new CMSDataContext(Util.GetConnectionString(host));
+                Db.DeleteQueryBitTags();
+                foreach (var a in Db.StatusFlags())
+                {
+                    var t = Db.FetchOrCreateSystemTag(a[0]);
+                    Db.TagAll(Db.PeopleQuery(a[0] + ":" + a[1]), t);
+                    Db.SubmitChanges();
+                }
+                AsyncManager.OutstandingOperations.Decrement();
+            });
+        }
+        public ActionResult Results2Completed()
+        {
+            return null;
+        }
 
         [POST("Query/Results/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult Results(int? page, int? size, string sort, string dir)
         {
-			var cb = new SqlConnectionStringBuilder(Util.ConnectionString);
-        	cb.ApplicationName = "qb";
-			DbUtil.Db = new CMSDataContext(cb.ConnectionString);
-            var m = new QueryModel();
+            var cb = new SqlConnectionStringBuilder(Util.ConnectionString);
+            cb.ApplicationName = "qb";
+            DbUtil.Db = new CMSDataContext(cb.ConnectionString);
+            var m = new QueryModel2();
             m.Pager.Set("/Query/Results", page, size, sort, dir);
-			try
-			{
-	            UpdateModel(m);
-			}
-			catch (Exception ex)
-			{
-				return Content("Something went wrong<br><p>" + ex.Message + "</p>");
-			}
+            try
+            {
+                UpdateModel(m);
+            }
+            catch (Exception ex)
+            {
+                return Content("Something went wrong<br><p>" + ex.Message + "</p>");
+            }
             m.LoadScratchPad();
 
-			var starttime = DateTime.Now;
-			m.PopulateResults();
-			DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.QueryId));
+            var starttime = DateTime.Now;
+            m.PopulateResults();
+            DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.TopClause.Id));
             InitToolbar(m);
             return View(m);
         }
@@ -266,16 +271,16 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/ToggleTag/{id:int}")]
         public JsonResult ToggleTag(int id)
         {
-			try
-			{
-	            var r = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
-	            DbUtil.Db.SubmitChanges();
-	            return Json(new { HasTag = r });
-			}
-			catch (Exception ex)
-			{
-				return Json(new { error = ex.Message + ". Please report this to support@bvcms.com" });
-			}
+            try
+            {
+                var r = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+                DbUtil.Db.SubmitChanges();
+                return Json(new { HasTag = r });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message + ". Please report this to support@bvcms.com" });
+            }
         }
         [POST("Query/TagAll/{tagname}/{cleartagfirst:bool?}")]
         public ContentResult TagAll(string tagname, bool? cleartagfirst)
@@ -339,9 +344,9 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         [ValidateInput(false)]
         public ActionResult Import(string text, string name)
-		{
-			var ret = QueryBuilderClause.Import(DbUtil.Db, text, name);
-			return Redirect("/Query/" + ret.newid);
-		}
+        {
+            var ret = QueryBuilderClause.Import(DbUtil.Db, text, name);
+            return Redirect("/Query/" + ret.newid);
+        }
     }
 }

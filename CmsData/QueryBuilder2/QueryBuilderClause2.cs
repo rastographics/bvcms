@@ -1,22 +1,15 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
- */
 using System;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
-using IronPython.Modules;
 using UtilityExtensions;
 using System.Linq.Expressions;
-
 namespace CmsData
 {
     public partial class QueryBuilderClause2
     {
         public Dictionary<Guid, QueryBuilderClause2> AllClauses { get; set; }
+
         public Guid Id { get; set; }
         public Guid? ParentId { get; set; }
         public int Order { get; set; }
@@ -42,7 +35,7 @@ namespace CmsData
         public int? Age { get; set; }
         public int? Campus { get; set; }
         public int? OrgType { get; set; }
-
+        public string From { get; set; }
         public IEnumerable<QueryBuilderClause2> Clauses
         {
             get
@@ -63,7 +56,6 @@ namespace CmsData
                 return null;
             }
         }
-
         private FieldClass2 _FieldInfo;
         public FieldClass2 FieldInfo
         {
@@ -200,7 +192,6 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-
         public bool HasMultipleCodes
         {
             get
@@ -346,11 +337,7 @@ namespace CmsData
             TextValue = from.TextValue;
         }
 //        public void CopyFromAll(QueryBuilderClause2 from)
-//        {
-//            foreach (var c in Clauses)
 //                c.DeleteClause();
-//            CopyFrom(from);
-//        }
         public void DeleteClause()
         {
             var allClauses = AllClauses;
@@ -396,7 +383,6 @@ namespace CmsData
             c.SetComparisonType(CompareType.AllTrue);
             return c;
         }
-
         public int MaxClauseOrder()
         {
             return Clauses.Max(qc => qc.Order);
@@ -413,8 +399,6 @@ namespace CmsData
                 n += 2;
             }
         }
-
-
         public QueryBuilderClause2 AddNewClause(QueryType type, CompareType op, object value)
         {
             var c = new QueryBuilderClause2();
@@ -472,7 +456,6 @@ namespace CmsData
         //            db.SubmitChanges();
         //            return saveto;
         //        }
-
         public bool CanCut
         {
             get { return !IsFirst && (!IsLastNode || Parent.Parent != null); }
@@ -481,12 +464,10 @@ namespace CmsData
         {
             get { return !IsFirst && !IsLastNode; }
         }
-
         public bool HasGroupBelow
         {
             get { return Parent != null && Parent.Clauses.Any(gg => gg.IsGroup); }
         }
-
         public class FlagItem
         {
             public string Text { get; set; }

@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -9,35 +8,19 @@ using Community.CsharpSqlite;
 using UtilityExtensions;
 using System.Linq;
 using CmsData;
-
 namespace CmsData
 {
     public partial class QueryBuilderClause2
     {
-        public string ToXml(string from, int id)
+        public string ToXml()
         {
-            XmlWriter w;
             var settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.Encoding = new UTF8Encoding(false);
             var sb = new StringBuilder();
-            using (w = XmlWriter.Create(sb, settings))
-                SendToWriter(w, from, id);
+            using (var w = XmlWriter.Create(sb, settings))
+                SendToWriter(w);
             return sb.ToString();
-        }
-        public void SendToWriter(XmlWriter w, string from, int id)
-        {
-            using (w)
-            {
-                w.WriteStartElement("Condition");
-                w.WriteAttributeString("from", from);
-                w.WriteAttributeString("fromid", id.ToString());
-                w.WriteAttributeString("dbname", Util.Host);
-                WriteAttributes(w);
-                foreach (var qc in Clauses)
-                    qc.SendToWriter(w);
-                w.WriteEndElement();
-            }
         }
         public void SendToWriter(XmlWriter w)
         {
@@ -47,7 +30,6 @@ namespace CmsData
                 qc.SendToWriter(w);
             w.WriteEndElement();
         }
-
         private void WriteAttributes(XmlWriter w)
         {
             w.WriteAttributeString("Field", Field);
@@ -81,17 +63,16 @@ namespace CmsData
             if (Age.HasValue)
                 w.WriteAttributeString("Age", Age.ToString());
         }
-
-        public static QueryBuilderClause2 Import(string text, string name = null)
+        public static QueryBuilderClause2 Import(string text, string name = null, bool newGuids = false)
         {
             if (!text.HasValue())
                 return CreateNewClause(QueryType.Group, CompareType.AllTrue);
             var x = XDocument.Parse(text);
             Debug.Assert(x.Root != null, "x.Root != null");
-            var c = ImportClause(x.Root, null);
+            var c = ImportClause(x.Root, null, newGuids);
             return c;
         }
-        private static QueryBuilderClause2 ImportClause(XElement r, QueryBuilderClause2 p)
+        private static QueryBuilderClause2 ImportClause(XElement r, QueryBuilderClause2 p, bool newGuids)
         {
             var allClauses = p == null ? new Dictionary<Guid, QueryBuilderClause2>() : p.AllClauses;
             Guid? parentGuid = null;
@@ -118,19 +99,21 @@ namespace CmsData
                 Schedule = Attribute(r, "Schedule").ToInt(),
                 Age = Attribute(r, "Age").ToInt(),
                 Owner = Attribute(r, "Owner"),
+                From = Attribute(r, "From"),
                 AllClauses = allClauses
             };
+            if (newGuids)
+                c.Id = Guid.NewGuid();
             if (c.Field == "Group")
             {
                 foreach (var rr in r.Elements())
                 {
-                    var cc = ImportClause(rr, c);
+                    var cc = ImportClause(rr, c, newGuids);
                     allClauses.Add(cc.Id, cc);
                 }
             }
             return c;
         }
-
         private static string Attribute(XElement r, string attr, string def = null)
         {
             var a = r.Attributes(attr).FirstOrDefault();
@@ -154,7 +137,9 @@ namespace CmsData
         }
         private static Guid AttributeGuid(XElement r, string attr)
         {
-            var a = r.Attributes(attr).Single();
+            var a = r.Attributes(attr).FirstOrDefault();
+            if (a == null)
+                return Guid.NewGuid();
             return new Guid(a.Value);
         }
     }
