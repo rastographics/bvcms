@@ -32,68 +32,34 @@ namespace CmsData
         {
             get
             {
-                if (DbUtil.Db.UserPreference("NewCategories", "false") == "false")
+                var categories = (List<CategoryClass2>)HttpRuntime.Cache["CategoryClass2List"];
+                if (categories == null)
                 {
-                    var categories = (List<CategoryClass2>)HttpRuntime.Cache["FieldCategories"];
-                    if (categories == null)
-                    {
-                        var xdoc = XDocument.Parse(Properties.Resources.FieldMap2);
-                        var q = from c in xdoc.Descendants("Category")
-                                select new CategoryClass2
-                                {
-                                    Title = c.Attribute("Title").Value,
-                                    Fields = from f in c.Descendants("Field")
-                                             select new FieldClass2
-                                             {
-                                                 CategoryTitle = (string)c.Attribute("Title").Value,
-                                                 Name = (string)f.Attribute("Name"),
-                                                 Title = (string)f.Attribute("Title"),
-                                                 QuartersTitle = (string)f.Attribute("QuartersLabel"),
-                                                 DisplayAs = (string)f.Attribute("DisplayAs"),
-                                                 Type = FieldClass.Convert((string)f.Attribute("Type")),
-                                                 Params = (string)f.Attribute("Params"),
-                                                 DataSource = (string)f.Attribute("DataSource"),
-                                                 DataValueField = (string)f.Attribute("DataValueField"),
-                                                 Description = f.Value,
-                                             }
-                                };
-                        categories = q.ToList();
-                        HttpRuntime.Cache.Insert("FieldCategories", categories, null,
-                            DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
-                    }
-                    return categories;
+                    var xdoc = XDocument.Parse(Properties.Resources.FieldMap3);
+                    var q = from c in xdoc.Root.Elements()
+                            select new CategoryClass2
+                            {
+                                Title = c.Attribute("Title") != null ? c.Attribute("Title").Value : c.Name.LocalName,
+                                Fields = (from f in c.Elements()
+                                          select new FieldClass2
+                                          {
+                                              CategoryTitle = Attr(c, "Title"),
+                                              Name = f.Name.LocalName,
+                                              Title = Attr(f, "Title"),
+                                              QuartersTitle = Attr(f, "QuartersLabel"),
+                                              DisplayAs = Attr(f, "DisplayAs"),
+                                              Type = FieldClass2.Convert(Attr(f, "Type")),
+                                              Params = Attr(f, "Params"),
+                                              DataSource = Attr(f, "DataSource"),
+                                              DataValueField = Attr(f, "DataValueField"),
+                                              Description = f.Value,
+                                          }).ToList()
+                            };
+                    categories = q.ToList();
+                    HttpRuntime.Cache.Insert("CategoryClass2List", categories, null,
+                        DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
                 }
-                else
-                {
-                    var categories = (List<CategoryClass2>)HttpRuntime.Cache["FieldCategories2"];
-                    if (categories == null)
-                    {
-                        var xdoc = XDocument.Parse(Properties.Resources.FieldMap3);
-                        var q = from c in xdoc.Root.Elements()
-                                select new CategoryClass2
-                                {
-                                    Title = c.Attribute("Title") != null ? c.Attribute("Title").Value : c.Name.LocalName,
-                                    Fields = (from f in c.Elements()
-                                              select new FieldClass2
-                                              {
-                                                  CategoryTitle = Attr(c, "Title"),
-                                                  Name = f.Name.LocalName,
-                                                  Title = Attr(f, "Title"),
-                                                  QuartersTitle = Attr(f, "QuartersLabel"),
-                                                  DisplayAs = Attr(f, "DisplayAs"),
-                                                  Type = FieldClass2.Convert(Attr(f, "Type")),
-                                                  Params = Attr(f, "Params"),
-                                                  DataSource = Attr(f, "DataSource"),
-                                                  DataValueField = Attr(f, "DataValueField"),
-                                                  Description = f.Value,
-                                              }).ToList()
-                                };
-                        categories = q.ToList();
-                        HttpRuntime.Cache.Insert("FieldCategories2", categories, null,
-                            DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
-                    }
-                    return categories;
-                }
+                return categories;
             }
         }
         private static string Attr(XElement e, string name)

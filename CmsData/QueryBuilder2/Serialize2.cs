@@ -12,6 +12,25 @@ namespace CmsData
 {
     public partial class QueryBuilderClause2
     {
+        public void Save(CMSDataContext Db)
+        {
+            var c = Db.LoadQueryById2(Id);
+            if (c == null)
+            {
+                c = new Query 
+                {
+                    QueryId = Id,
+                    Owner = Util.UserName,
+                    Created = DateTime.Now, 
+                    Name = Util.ScratchPad,
+                };
+                Db.Queries.InsertOnSubmit(c);
+            }
+            c.Modified = DateTime.Now; 
+            c.Text = ToXml();
+	        Db.SubmitChanges();
+        }
+
         public string ToXml()
         {
             var settings = new XmlWriterSettings();
@@ -32,6 +51,7 @@ namespace CmsData
         }
         private void WriteAttributes(XmlWriter w)
         {
+            w.WriteAttributeString("Id", Id.ToString());
             w.WriteAttributeString("Field", Field);
             if (Description.HasValue())
                 w.WriteAttributeString("Description", Description);
@@ -66,7 +86,7 @@ namespace CmsData
         public static QueryBuilderClause2 Import(string text, string name = null, bool newGuids = false)
         {
             if (!text.HasValue())
-                return CreateNewClause(QueryType.Group, CompareType.AllTrue);
+                return CreateNewGroupClause();
             var x = XDocument.Parse(text);
             Debug.Assert(x.Root != null, "x.Root != null");
             var c = ImportClause(x.Root, null, newGuids);
@@ -99,19 +119,14 @@ namespace CmsData
                 Schedule = Attribute(r, "Schedule").ToInt(),
                 Age = Attribute(r, "Age").ToInt(),
                 Owner = Attribute(r, "Owner"),
-                From = Attribute(r, "From"),
                 AllClauses = allClauses
             };
+            c.AllClauses.Add(c.Id, c);
             if (newGuids)
                 c.Id = Guid.NewGuid();
             if (c.Field == "Group")
-            {
                 foreach (var rr in r.Elements())
-                {
-                    var cc = ImportClause(rr, c, newGuids);
-                    allClauses.Add(cc.Id, cc);
-                }
-            }
+                    ImportClause(rr, c, newGuids);
             return c;
         }
         private static string Attribute(XElement r, string attr, string def = null)

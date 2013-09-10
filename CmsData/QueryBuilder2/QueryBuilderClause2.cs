@@ -35,13 +35,13 @@ namespace CmsData
         public int? Age { get; set; }
         public int? Campus { get; set; }
         public int? OrgType { get; set; }
-        public string From { get; set; }
+        public Guid? NewMatchAnyId;
         public IEnumerable<QueryBuilderClause2> Clauses
         {
             get
             {
                 var q = from c in AllClauses.Values
-                        where c.Id == ParentId
+                        where c.ParentId == Id
                         orderby c.Order
                         select c;
                 return q;
@@ -336,8 +336,8 @@ namespace CmsData
             Tags = from.Tags;
             TextValue = from.TextValue;
         }
-//        public void CopyFromAll(QueryBuilderClause2 from)
-//                c.DeleteClause();
+        //        public void CopyFromAll(QueryBuilderClause2 from)
+        //                c.DeleteClause();
         public void DeleteClause()
         {
             var allClauses = AllClauses;
@@ -353,38 +353,47 @@ namespace CmsData
         //            SetComparisonType(CompareType.AllTrue);
         //            Db.SubmitChanges();
         //        }
-        //        public int CleanSlate2(CMSDataContext Db)
-        //        {
-        //            foreach (var c in Clauses)
-        //                DeleteClause(c, Db);
-        //            SetQueryType(QueryType.Group);
-        //            SetComparisonType(CompareType.AllTrue);
-        //            var nc = AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
-        //            Db.SubmitChanges();
-        //            return nc.QueryId;
-        //        }
-
-        public static QueryBuilderClause2 CreateNewClause(QueryType type, CompareType compare, QueryBuilderClause2 parent = null)
+        public Guid CleanSlate2(CMSDataContext Db)
         {
-            var c = new QueryBuilderClause2 { Id = Guid.NewGuid(), };
-            c.SetQueryType(type);
-            c.SetComparisonType(compare);
-            if (parent != null)
+            foreach (var c in Clauses)
+                c.DeleteClause();
+            SetQueryType(QueryType.Group);
+            SetComparisonType(CompareType.AllTrue);
+            var nc = AddNewClause();
+            Save(Db);
+            return nc.Id;
+        }
+
+        public static QueryBuilderClause2 CreateNewGroupClause()
+        {
+            var c = new QueryBuilderClause2
             {
-                c.ParentId = parent.Id;
-                c.Order = parent.MaxClauseOrder() + 2;
-            }
+                Id = Guid.NewGuid(),
+                AllClauses = new Dictionary<Guid, QueryBuilderClause2>(),
+                Field = QueryType.Group.ToString(),
+                Comparison = CompareType.AllTrue.ToString()
+            };
+            c.AllClauses.Add(c.Id, c);
             return c;
         }
-        public QueryBuilderClause2 CreateNewGroupClause()
+        public QueryBuilderClause2 AddNewGroupClause()
         {
-            var c = new QueryBuilderClause2 { Id = Guid.NewGuid() };
-            c.SetQueryType(QueryType.Group);
-            c.SetComparisonType(CompareType.AllTrue);
+            var c = new QueryBuilderClause2
+            {
+                ParentId = Id,
+                Id = Guid.NewGuid(),
+                AllClauses = AllClauses,
+                Field = QueryType.Group.ToString(),
+                Comparison = CompareType.AllTrue.ToString(),
+                Order = MaxClauseOrder() + 2
+            };
+            AllClauses.Add(c.Id, c);
             return c;
         }
         public int MaxClauseOrder()
         {
+            if (!Clauses.Any())
+                return 0;
             return Clauses.Max(qc => qc.Order);
         }
         public void ReorderClauses()
@@ -399,6 +408,23 @@ namespace CmsData
                 n += 2;
             }
         }
+
+        public QueryBuilderClause2 AddNewClause()
+        {
+            var c = new QueryBuilderClause2
+            {
+                ParentId = Id,
+                Id = Guid.NewGuid(),
+                AllClauses = AllClauses,
+                Field = QueryType.MatchAnything.ToString(),
+                Comparison = CompareType.Equal.ToString(),
+                Order = MaxClauseOrder() + 2
+            };
+            NewMatchAnyId = c.Id;
+            AllClauses.Add(c.Id, c);
+            return c;
+        }
+
         public QueryBuilderClause2 AddNewClause(QueryType type, CompareType op, object value)
         {
             var c = new QueryBuilderClause2();

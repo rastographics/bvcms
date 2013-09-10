@@ -158,18 +158,22 @@ namespace CmsData
 			var qb = QueryBuilderClauses.SingleOrDefault(c => c.QueryId == queryid);
 			return CheckBadQuery(qb);
 		}
-		public QueryBuilderClause2 LoadQueryById2(Guid id)
+		public Query LoadQueryById2(Guid id)
 		{
-			var qb = Queries.SingleOrDefault(cc => cc.QueryId == id);
-		    if (qb == null)
-		        return null;
-		    var c = QueryBuilderClause2.Import(qb.Text);
-		    c.Id = id;
-		    return c;
+			var q = Queries.SingleOrDefault(cc => cc.QueryId == id);
+		    return q;
 		}
 		public IQueryable<Person> PeopleQuery(int qid)
 		{
 			var qB = this.LoadQueryById(qid);
+			var q = People.Where(qB.Predicate(this));
+			if (qB.ParentsOf)
+				q = PersonQueryParents(q);
+			return q;
+		}
+		public IQueryable<Person> PeopleQuery(Guid qid)
+		{
+			var qB = this.LoadQueryById2(qid).ToClause();
 			var q = People.Where(qB.Predicate(this));
 			if (qB.ParentsOf)
 				q = PersonQueryParents(q);
@@ -228,24 +232,29 @@ namespace CmsData
 		}
 		public QueryBuilderClause2 QueryBuilderScratchPad2()
 		{
-			var c = LoadQueryById2(Util.QueryBuilderScratchPadId2);
-		    if (c != null) 
-                return c;
-		    var qb = Queries.SingleOrDefault(cc => cc.Owner == Util.UserName && cc.Name == Util.ScratchPad);
-		    if (qb == null)
+			var q = LoadQueryById2(Util.QueryBuilderScratchPadId2);
+		    if (q != null) 
+    		    q = Queries.SingleOrDefault(cc => cc.Owner == Util.UserName && cc.Name == Util.ScratchPad);
+	        QueryBuilderClause2 c;
+		    if (q == null)
 		    {
-		        qb = new Query 
+		        c = QueryBuilderClause2.CreateNewGroupClause();
+		        c.AddNewClause();
+		        q = new Query 
 		        {
+                    QueryId = c.Id,
 		            Owner = Util.UserName,
 		            Created = DateTime.Now, 
 		            Modified = DateTime.Now, 
-		            Name = Util.ScratchPad
+		            Name = Util.ScratchPad,
+                    Text = c.ToXml()
 		        };
-		        Queries.InsertOnSubmit(qb);
+		        Queries.InsertOnSubmit(q);
 		        SubmitChanges();
 		    }
-		    Util.QueryBuilderScratchPadId2 = qb.QueryId;
-		    c = QueryBuilderClause2.Import(qb.Text);
+            else
+    		    c = QueryBuilderClause2.Import(q.Text);
+		    Util.QueryBuilderScratchPadId2 = q.QueryId;
 		    return c;
 		}
 		public QueryBuilderClause QueryBuilderHasCurrentTag()

@@ -4,16 +4,16 @@
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Search Builder";
 }
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/Bundle/Query.js")
-    @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-multiselect.js")
-    @Fingerprint.Script("/Scripts/jQuery/jquery.scrollintoview.js")
-}
 @section head 
 {
     <link href="@Fingerprint.Tag("/Content/css/bootstrap-multiselect.css")" rel="stylesheet" type="text/css" />
     <link href="@Fingerprint.Tag("/Content/css/search.css")" rel="stylesheet" type="text/css" />
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Bundle/Query2.js")
+    @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-multiselect.js")
+    @Fingerprint.Script("/Scripts/jQuery/jquery.scrollintoview.js")
 }
 
 <div class="container">

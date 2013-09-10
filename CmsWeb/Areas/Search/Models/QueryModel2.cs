@@ -46,10 +46,11 @@ namespace CmsWeb.Areas.Search.Models
                 var existing = Db.LoadQueryById2(id.Value);
                 if (existing != null)
                 {
-                    TopClause = existing.Clone(useGuid: TopClause.Id);
+                    TopClause = existing.ToClause().Clone(useGuid: TopClause.Id);
                     Description = TopClause.Description;
                     SavedQueryDesc = TopClause.Description;
                     TopClause.Description = Util.ScratchPad;
+                    TopClause.Save(Db);
                 }
             }
             DbUtil.LogActivity("Running Query ({0})".Fmt(TopClause.Id));
@@ -224,20 +225,17 @@ namespace CmsWeb.Areas.Search.Models
                     DateVisible = true;
                     break;
             }
-            var cc = Db.LoadQueryById2(SelectedId.Value);
-            if (cc == null)
-                return;
 
-            UpdateEnabled = !cc.IsGroup && !cc.IsFirst;
-            AddToGroupEnabled = cc.IsGroup;
-            AddEnabled = !cc.IsFirst;
-            RemoveEnabled = cc.CanRemove;
+            UpdateEnabled = !Current.IsGroup && !Current.IsFirst;
+            AddToGroupEnabled = Current.IsGroup;
+            AddEnabled = !Current.IsFirst;
+            RemoveEnabled = Current.CanRemove;
 
             if (fieldMap.Type == FieldType.Group)
             {
                 CompareData = Comparisons().ToList();
                 RightPanelVisible = false;
-                UpdateEnabled = cc.IsGroup;
+                UpdateEnabled = Current.IsGroup;
                 return;
             }
         }
@@ -418,23 +416,23 @@ namespace CmsWeb.Areas.Search.Models
             SetVisibility();
             SelectMultiple = Comparison.EndsWith("OneOf");
         }
-//        public void SaveQuery()
-//        {
-//            var saveto = Db.Queries.FirstOrDefault(c =>
-//                (c.Owner == Util.UserName || c.Owner == "public") && c.Name == SavedQueryDesc);
-//            if (saveto == null)
-//            {
-//                saveto = new Query();
-//                Db.Queries.InsertOnSubmit(saveto);
-//            }
-//            saveto.CopyFromAll(TopClause, DbUtil.Db); // save Qb on top of existing
-//            if (saveto.SavedBy != "public")
-//                saveto.SavedBy = Util.UserName;
-//            saveto.Description = SavedQueryDesc;
-//            saveto.IsPublic = IsPublic;
-//            Db.SubmitChanges();
-//            Description = SavedQueryDesc;
-//        }
+        public void SaveQuery()
+        {
+            var saveto = Db.Queries.FirstOrDefault(c =>
+                (c.Owner == Util.UserName || c.Owner == "public") && c.Name == SavedQueryDesc);
+            if (saveto == null)
+            {
+                saveto = new Query();
+                Db.Queries.InsertOnSubmit(saveto);
+            }
+            saveto.Text = TopClause.ToXml();
+            if (saveto.Owner != "public")
+                saveto.Owner = Util.UserName;
+            saveto.Name = SavedQueryDesc;
+            saveto.Ispublic = IsPublic;
+            Db.SubmitChanges();
+            Description = SavedQueryDesc;
+        }
         public class ClipboardItem
         {
             public string from { get; set; }
@@ -456,6 +454,7 @@ namespace CmsWeb.Areas.Search.Models
                 return;
             var newclause = QueryBuilderClause2.Import(clip.xml, newGuids: clip.from == "copy");
 
+            newclause.AllClauses = Current.AllClauses;
             Current.AllClauses.Add(newclause.Id, newclause);
 
             if (Current.IsGroup)
@@ -471,29 +470,26 @@ namespace CmsWeb.Areas.Search.Models
             }
             if (clip.from == "cut")
             {
-                var originalclause = Db.LoadQueryById2(clip.guid);
+                var originalclause = Db.LoadQueryById2(clip.guid).ToClause();
                 originalclause.AllClauses.Remove(newclause.Id);
                 if (!originalclause.Parent.Clauses.Any())
                     originalclause.AllClauses.Remove(originalclause.Parent.Id);
             }
+            TopClause.Save(Db);
         }
         public Guid AddConditionToGroup()
         {
-            var nc = Current.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
+            var nc = Current.AddNewClause();
+            TopClause.Save(Db);
             return nc.Id;
         }
-//        public int AddGroupToGroup()
-//        {
-//            var c = Db.LoadQueryById2(SelectedId);
-//            var g = new QueryBuilderClause2();
-//            g.SetQueryType(QueryType.Group);
-//            g.SetComparisonType(CompareType.AllTrue);
-//            var currParent = c.Parent;
-//            g.Parent = c;
-//            var nc = g.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
-//            Db.SubmitChanges();
-//            return nc.QueryId;
-//        }
+        public Guid AddGroupToGroup()
+        {
+            var g = Current.AddNewGroupClause();
+            var nc = g.AddNewClause();
+            TopClause.Save(Db);
+            return nc.Id;
+        }
 //        public void AddNewConditionAfterCurrent(int id)
 //        {
 //            var nc = Current.Parent.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
@@ -525,55 +521,24 @@ namespace CmsWeb.Areas.Search.Models
         {
             Current.DeleteClause();
             EditCondition();
+            TopClause.Save(Db);
         }
         public void UpdateCondition()
         {
             UpdateCondition(Current);
         }
-//        public void InsertGroupAbove()
-//        {
-//            var cc = Db.LoadQueryById2(SelectedId);
-//            var g = new QueryBuilderClause2();
-//            g.SetQueryType(QueryType.Group);
-//            g.SetComparisonType(CompareType.AllTrue);
-//            if (cc.IsFirst)
-//            {
-//                cc.Parent = g;
-//            }
-//            else
-//            {
-//                var currParent = cc.Parent;
-//                // find all clauses from cc down at same level
-//                var i = currParent.Clauses.IndexOf(cc);
-//                g.Parent = currParent;
-//                for (; i < currParent.Clauses.Count; i++)
-//                {
-//                    var ci = currParent.Clauses[i];
-//                    g.Clauses.Add(ci);
-//                    ci.Parent = g;
-//                }
-//                foreach (var ci in currParent.Clauses.Where(ccc => ccc.Parent == g))
-//                    currParent.Clauses.Remove(ci);
-//            }
-//            if (cc.SavedBy.HasValue())
-//            {
-//                g.SavedBy = Util.UserName;
-//                g.Description = cc.Description;
-//                g.CreatedOn = cc.CreatedOn;
-//                cc.IsPublic = false;
-//                cc.Description = null;
-//                cc.SavedBy = null;
-//            }
-//            Db.SubmitChanges();
         public void InsertGroupAbove()
         {
-            var g = TopClause.CreateNewGroupClause();
+            var g = Current.AddNewGroupClause();
             if (Current.IsFirst)
+            {
                 Current.ParentId = g.Id;
+                g.ParentId = null;
+            }
             else
             {
                 var list = Current.Parent.Clauses.Where(cc => cc.Order >= Current.Order).ToList();
-                foreach(var c in list)
+                foreach (var c in list)
                     c.ParentId = g.Id;
                 g.ParentId = Current.Id;
                 g.Order = Current.MaxClauseOrder();
@@ -584,10 +549,11 @@ namespace CmsWeb.Areas.Search.Models
                 SelectedId = g.Id;
                 Util.QueryBuilderScratchPadId2 = TopClause.Id;
             }
+            TopClause.Save(Db);
         }
         public IEnumerable<SelectListItem> GroupComparisons()
         {
-            return from c in CompareClass.Comparisons
+            return from c in CompareClass2.Comparisons
                 where c.FieldType == FieldType.Group
                 select new SelectListItem 
                 { 
@@ -600,13 +566,13 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> Comparisons()
         {
-            return from c in CompareClass.Comparisons
+            return from c in CompareClass2.Comparisons
                 where c.FieldType == fieldMap.Type
                 select new SelectListItem { Text = c.CompType.ToString(), Value = c.CompType.ToString() };
         }
         public IEnumerable<SelectListItem> Schedules()
         {
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in Db.Organizations
                 let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                 where sc != null
                 group o by new { ScheduleId = sc.ScheduleId ?? 10800, sc.MeetingTime } into g
@@ -614,7 +580,7 @@ namespace CmsWeb.Areas.Search.Models
                 select new SelectListItem
                 {
                     Value = g.Key.ScheduleId.ToString(),
-                    Text = DbUtil.Db.GetScheduleDesc(g.Key.MeetingTime)
+                    Text = Db.GetScheduleDesc(g.Key.MeetingTime)
                 };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(None)", Value = "-1" });
@@ -623,7 +589,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> Campuses()
         {
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in Db.Organizations
                 where o.CampusId != null
                 group o by o.CampusId into g
                 orderby g.Key
@@ -663,9 +629,9 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        public static IEnumerable<SelectListItem> Divisions(int? progid)
+        public IEnumerable<SelectListItem> Divisions(int? progid)
         {
-            var q = from div in DbUtil.Db.Divisions
+            var q = from div in Db.Divisions
                 where div.ProgDivs.Any(d => d.ProgId == progid)
                 orderby div.Name
                 select new SelectListItem
@@ -677,10 +643,10 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        public static IEnumerable<SelectListItem> Organizations(int? divid)
+        public IEnumerable<SelectListItem> Organizations(int? divid)
         {
-            var roles = DbUtil.Db.CurrentRoles();
-            var q = from ot in DbUtil.Db.DivOrgs
+            var roles = Db.CurrentRoles();
+            var q = from ot in Db.DivOrgs
                 where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
                 where ot.DivId == divid
                       && (SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14

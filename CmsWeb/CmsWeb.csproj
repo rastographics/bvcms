@@ -763,6 +763,12 @@
     <Content Include="Scripts\Bundle\query.min.js">
       <DependentUpon>query.js.bundle</DependentUpon>
     </Content>
+    <Content Include="Scripts\Bundle\query2.js">
+      <DependentUpon>query2.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\query2.min.js">
+      <DependentUpon>query2.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\Chosen\chosen.jquery.min.js.map">
       <DependentUpon>chosen.jquery.js</DependentUpon>
     </Content>
@@ -1147,6 +1153,9 @@
       <DependentUpon>jquery.validate.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Bundle\query.js.bundle">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Scripts\Bundle\query2.js.bundle">
       <SubType>Designer</SubType>
     </Content>
     <None Include="Scripts\Bundle\main.js.bundle" />

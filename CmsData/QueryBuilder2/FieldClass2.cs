@@ -114,14 +114,14 @@ namespace CmsData
         {
             get
             {
-                var fields = HttpRuntime.Cache["fields"] as Dictionary<string, FieldClass2>;
+                var fields = HttpRuntime.Cache["fields2"] as Dictionary<string, FieldClass2>;
                 if (fields == null)
                 {
                     var q = from c in CategoryClass2.Categories
                             from f in c.Fields
                             select f;
                     fields = q.ToDictionary(f => f.Name);
-					HttpRuntime.Cache.Insert("fields", fields, null,
+					HttpRuntime.Cache.Insert("fields2", fields, null,
 						DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
                 }
                 return fields;

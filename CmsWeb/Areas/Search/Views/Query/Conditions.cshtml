@@ -11,8 +11,8 @@
 @helper GroupItem(QueryBuilderClause2 clause)
 {
     <ul @(clause.IsFirst ? "id=conditionsList" : "") class="subgroups">
-        <li class="group condition" data-qid="@clause.QueryId">
-            <header title="@clause.QueryId">
+        <li class="group condition" data-qid="@clause.Id">
+            <header>
                 <label for="match-1">Match</label>
                 @Html.DropDownList4("", "", Model.GroupComparisons(), clause.Comparison, "simple changegroup")
                 <label>of these conditions</label>
@@ -37,7 +37,7 @@
 }
 @helper ClauseItem(QueryBuilderClause2 clause)
 {
-    <li class="condition" data-qid="@clause.QueryId">
+    <li class="condition" data-qid="@clause.Id">
         <a href="#editcondition" class="edit edit-popover">
             <span class="value">@clause</span>
         </a>
