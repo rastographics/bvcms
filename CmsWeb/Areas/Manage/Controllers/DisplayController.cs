@@ -58,6 +58,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.TypeID = newType;
             content.RoleID = newRole ?? 0;
             content.Title = content.Body = "";
+            content.DateCreated = DateTime.Now;
 
             DbUtil.Db.Contents.InsertOnSubmit(content);
             DbUtil.Db.SubmitChanges();
@@ -77,13 +78,14 @@ namespace CmsWeb.Areas.Manage.Controllers
             string sRenderType = DbUtil.Db.Setting("RenderEmailTemplate", "none");
 
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
+            {
                 switch (sRenderType)
                 {
-                    case "Local":// Uses local server resources 
+                    case "Local": // Uses local server resources 
                     case "true":
                         var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
                         var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
-                        if(ii == null)
+                        if (ii == null)
                             content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
                         break;
 
@@ -92,15 +94,18 @@ namespace CmsWeb.Areas.Manage.Controllers
                         coll.Add("sHTML", body.Replace("\r", "").Replace("\n", "").Replace("\t", ""));
 
                         var wc = new WebClient();
-                        var resp = wc.UploadValues(ConfigurationManager.AppSettings["CreateThumbnailService"], "POST", coll);
+                        var resp = wc.UploadValues(ConfigurationManager.AppSettings["CreateThumbnailService"], "POST",
+                            coll);
 
                         ii = ImageData.DbUtil.Db.Images.FirstOrDefault(i => i.Id == content.ThumbID);
-                        if (ii != null) 
+                        if (ii != null)
                             ImageData.Image.UpdateImageFromBits(content.ThumbID, resp);
-                        else 
+                        else
                             content.ThumbID = ImageData.Image.NewImageFromBits(resp).Id;
                         break;
                 }
+                content.DateCreated = DateTime.Now;
+            }
             DbUtil.Db.SubmitChanges();
 
             if (string.Compare(content.Name, "StandardExtraValues.xml", ignoreCase: true) == 0)

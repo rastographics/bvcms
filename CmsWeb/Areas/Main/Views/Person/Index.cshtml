@@ -56,11 +56,11 @@ pre {
 
 @Html.Hidden("PeopleId", p.PeopleId)
     <table cellspacing="5" class="roundbox floatleft">
-        <tr><td colspan="5"> <h2>@Model.Name</h2> </td></tr>
+        <tr><td colspan="5"> <h2>@(p.Name)</h2> </td></tr>
         <tr>
             <td class="top">
                 <a id="Picture" href="/UploadPicture.aspx?id=@p.PeopleId" title="Click to see larger version or upload new">
-                <img alt="portrait" border="0" src="@Model.Person.Picture.SmallUrl" />
+                <img alt="portrait" border="0" src="@(Model.Person.Picture == null ? "/Portrait/0" : Model.Person.Picture.SmallUrl)" />
                 </a>
             </td>
             <td>&nbsp;</td>
