@@ -72,13 +72,9 @@ namespace CmsData
 				return new AddressResult { Line1 = "error" };
 			}
 		}
-	}
 	class MyWebClient : WebClient
 	{
-		public MyWebClient()
-		{
 
-		}
 
 		protected override WebRequest GetWebRequest(Uri uri)
 		{
@@ -87,4 +83,5 @@ namespace CmsData
 			return w;
 		}
 	}
+}
 }

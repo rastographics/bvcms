@@ -58,6 +58,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.TypeID = newType;
             content.RoleID = newRole ?? 0;
             content.Title = content.Body = "";
+            content.DateCreated = DateTime.Now;
 
             DbUtil.Db.Contents.InsertOnSubmit(content);
             DbUtil.Db.SubmitChanges();
@@ -77,6 +78,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             string sRenderType = DbUtil.Db.Setting("RenderEmailTemplate", "none");
 
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
+            {
                 switch (sRenderType)
                 {
                     case "Local":// Uses local server resources 
@@ -92,7 +94,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                         coll.Add("sHTML", body.Replace("\r", "").Replace("\n", "").Replace("\t", ""));
 
                         var wc = new WebClient();
-                        var resp = wc.UploadValues(ConfigurationManager.AppSettings["CreateThumbnailService"], "POST", coll);
+                        var resp = wc.UploadValues(ConfigurationManager.AppSettings["CreateThumbnailService"], "POST",
+                            coll);
 
                         ii = ImageData.DbUtil.Db.Images.FirstOrDefault(i => i.Id == content.ThumbID);
                         if (ii != null) 
@@ -100,6 +103,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                         else 
                             content.ThumbID = ImageData.Image.NewImageFromBits(resp).Id;
                         break;
+                }
+                content.DateCreated = DateTime.Now;
                 }
             DbUtil.Db.SubmitChanges();
 

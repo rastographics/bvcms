@@ -338,9 +338,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddressVerify.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="AddressVerify.cs" />
     <Compile Include="Attend.cs" />
     <Compile Include="AuthorizeNet.cs" />
     <Compile Include="Batch\ExpressionVisitor.cs" />

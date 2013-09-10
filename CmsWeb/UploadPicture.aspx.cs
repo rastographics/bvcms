@@ -57,13 +57,13 @@ namespace CmsWeb
             switch (HiddenField1.Value)
             {
                 case "small":
-                    ImageButton1.ImageUrl = getimage.Fmt(person.Picture.SmallId);
+                    ImageButton1.ImageUrl = person.Picture.SmallUrl;
                     break;
                 case "medium":
-                    ImageButton1.ImageUrl = getimage.Fmt(person.Picture.MediumId);
+                    ImageButton1.ImageUrl = person.Picture.MediumUrl;
                     break;
                 case "large":
-                    ImageButton1.ImageUrl = getimage.Fmt(person.Picture.LargeId);
+                    ImageButton1.ImageUrl = person.Picture.LargeUrl;
                     break;
             }
         }
