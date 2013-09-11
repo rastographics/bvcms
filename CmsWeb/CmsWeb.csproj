@@ -984,7 +984,7 @@
     <Content Include="Areas\Main\Views\Contact\ContactDisplay.cshtml" />
     <Content Include="Areas\Main\Views\Contact\ContactEdit.cshtml" />
     <Content Include="Areas\Main\Views\Contact\EditorTemplates\Bool.cshtml" />
-    <Content Include="Areas\Search\Views\Query\EditCondition2.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditCondition.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmReregister.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Changes.cshtml" />
     <Content Include="Areas\People\Views\Person\MainTabs\System.cshtml" />
@@ -2042,7 +2042,7 @@
     <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
     <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
     <Content Include="Areas\Manage\Views\Display\ContentView.cshtml" />
-    <Content Include="Areas\Search\Views\Query\EditCondition.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditCondition0.cshtml" />
     <Content Include="ckeditor2\CHANGES.md" />
     <Content Include="ckeditor2\LICENSE.md" />
     <Content Include="ckeditor2\plugins\scayt\LICENSE.md" />

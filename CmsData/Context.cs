@@ -230,15 +230,15 @@ namespace CmsData
 			Util.QueryBuilderScratchPadId = qb.QueryId;
 			return qb;
 		}
-		public QueryBuilderClause2 QueryBuilderScratchPad2()
+		public Condition QueryBuilderScratchPad2()
 		{
 			var q = LoadQueryById2(Util.QueryBuilderScratchPadId2);
 		    if (q != null) 
-    		    q = Queries.SingleOrDefault(cc => cc.Owner == Util.UserName && cc.Name == Util.ScratchPad);
-	        QueryBuilderClause2 c;
+    		    q = Queries.FirstOrDefault(cc => cc.Owner == Util.UserName && cc.Name == Util.ScratchPad);
+	        Condition c;
 		    if (q == null)
 		    {
-		        c = QueryBuilderClause2.CreateNewGroupClause();
+		        c = Condition.CreateNewGroupClause();
 		        c.AddNewClause();
 		        q = new Query 
 		        {
@@ -253,7 +253,7 @@ namespace CmsData
 		        SubmitChanges();
 		    }
             else
-    		    c = QueryBuilderClause2.Import(q.Text);
+    		    c = Condition.Import(q.Text);
 		    Util.QueryBuilderScratchPadId2 = q.QueryId;
 		    return c;
 		}

@@ -69,7 +69,7 @@ namespace CmsData
         public List<string> ParamList { get; set; }
         public string DataSource { get; set; }
         public string DataValueField { get; set; }
-        private string formatArgs(string fmt, QueryBuilderClause2 c)
+        private string formatArgs(string fmt, Condition c)
         {
             var p = new List<object>();
             foreach (var s in ParamList)
@@ -92,7 +92,7 @@ namespace CmsData
             }
             return fmt.Fmt(p.ToArray());
         }
-        internal string Display(QueryBuilderClause2 c)
+        internal string Display(Condition c)
         {
             if (DisplayAs.HasValue() && Params.HasValue())
                 return formatArgs(DisplayAs, c);

@@ -10,7 +10,7 @@ using System.Linq;
 using CmsData;
 namespace CmsData
 {
-    public partial class QueryBuilderClause2
+    public partial class Condition
     {
         public void Save(CMSDataContext Db)
         {
@@ -45,7 +45,7 @@ namespace CmsData
         {
             w.WriteStartElement("Condition");
             WriteAttributes(w);
-            foreach (var qc in Clauses)
+            foreach (var qc in Conditions)
                 qc.SendToWriter(w);
             w.WriteEndElement();
         }
@@ -74,8 +74,8 @@ namespace CmsData
                 w.WriteAttributeString("Organization", Organization.ToString());
             if (Days > 0)
                 w.WriteAttributeString("Days", Days.ToString());
-            if (Quarters.HasValue())
-                w.WriteAttributeString("Quarters", Quarters);
+            if (ExtraData.HasValue())
+                w.WriteAttributeString("Quarters", ExtraData);
             if (Tags.HasValue())
                 w.WriteAttributeString("Tags", Tags);
             if (Schedule > 0)
@@ -83,7 +83,7 @@ namespace CmsData
             if (Age.HasValue)
                 w.WriteAttributeString("Age", Age.ToString());
         }
-        public static QueryBuilderClause2 Import(string text, string name = null, bool newGuids = false)
+        public static Condition Import(string text, string name = null, bool newGuids = false)
         {
             if (!text.HasValue())
                 return CreateNewGroupClause();
@@ -92,13 +92,13 @@ namespace CmsData
             var c = ImportClause(x.Root, null, newGuids);
             return c;
         }
-        private static QueryBuilderClause2 ImportClause(XElement r, QueryBuilderClause2 p, bool newGuids)
+        private static Condition ImportClause(XElement r, Condition p, bool newGuids)
         {
-            var allClauses = p == null ? new Dictionary<Guid, QueryBuilderClause2>() : p.AllClauses;
+            var allClauses = p == null ? new Dictionary<Guid, Condition>() : p.AllConditions;
             Guid? parentGuid = null;
             if (p != null)
                 parentGuid = p.Id;
-            var c = new QueryBuilderClause2
+            var c = new Condition
             {
                 ParentId = parentGuid,
                 Id = AttributeGuid(r, "Id"),
@@ -114,14 +114,14 @@ namespace CmsData
                 Division = Attribute(r, "Division").ToInt(),
                 Organization = Attribute(r, "Organization").ToInt(),
                 Days = Attribute(r, "Days").ToInt(),
-                Quarters = Attribute(r, "Quarters"),
+                ExtraData = Attribute(r, "Quarters"),
                 Tags = Attribute(r, "Tags"),
                 Schedule = Attribute(r, "Schedule").ToInt(),
                 Age = Attribute(r, "Age").ToInt(),
                 Owner = Attribute(r, "Owner"),
-                AllClauses = allClauses
+                AllConditions = allClauses
             };
-            c.AllClauses.Add(c.Id, c);
+            c.AllConditions.Add(c.Id, c);
             if (newGuids)
                 c.Id = Guid.NewGuid();
             if (c.Field == "Group")

@@ -8,7 +8,7 @@
     @Html.Hidden("NewId")
     @GroupItem(Model.TopClause)
 </div>
-@helper GroupItem(QueryBuilderClause2 clause)
+@helper GroupItem(Condition clause)
 {
     <ul @(clause.IsFirst ? "id=conditionsList" : "") class="subgroups">
         <li class="group condition" data-qid="@clause.Id">
@@ -23,19 +23,19 @@
                 <a href="#" class="addnewgroup"><i class="icon-plus"> Group</i></a>
             </div>
             <ul class="conditions">
-                @foreach (var c in clause.Clauses.Where(cc => !cc.IsGroup))
+                @foreach (var c in clause.Conditions.Where(cc => !cc.IsGroup))
                 {
                     @ClauseItem(c)
                 }
             </ul>
-            @foreach (var c in clause.Clauses.Where(cc => cc.IsGroup))
+            @foreach (var c in clause.Conditions.Where(cc => cc.IsGroup))
             {
                 @GroupItem(c)
             }
         </li>
     </ul>
 }
-@helper ClauseItem(QueryBuilderClause2 clause)
+@helper ClauseItem(Condition clause)
 {
     <li class="condition" data-qid="@clause.Id">
         <a href="#editcondition" class="edit edit-popover">
@@ -44,7 +44,7 @@
         @CogItems(clause)
     </li>
 }
-@helper CogItems(QueryBuilderClause2 clause)
+@helper CogItems(Condition clause)
 {
     <div class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">

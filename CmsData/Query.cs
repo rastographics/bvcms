@@ -8,9 +8,9 @@ namespace CmsData
 {
     public partial class Query
     {
-        public QueryBuilderClause2 ToClause()
+        public Condition ToClause()
         {
-            var c = QueryBuilderClause2.Import(Text);
+            var c = Condition.Import(Text);
             return c;
         }
     }

@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using MoreLinq;
 using NPOI.POIFS.Properties;
 using UtilityExtensions;
@@ -16,7 +17,7 @@ namespace CmsWeb.Areas.Search.Models
     public class QueryModel2
     {
         private CMSDataContext Db;
-        public QueryBuilderClause2 TopClause;
+        public Condition TopClause;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
@@ -287,7 +288,7 @@ namespace CmsWeb.Areas.Search.Models
                 return dt.Value.ToShortDateString();
             return "";
         }
-        private void UpdateCondition(QueryBuilderClause2 c)
+        private void UpdateCondition(Condition c)
         {
             c.Field = ConditionName;
             c.Comparison = Comparison;
@@ -336,11 +337,12 @@ namespace CmsWeb.Areas.Search.Models
             c.EndDate = DateParse(EndDate);
             c.Days = Days.ToInt();
             c.Age = Age.ToInt();
-            c.Quarters = Quarters;
+            c.ExtraData = Quarters;
             if (Tags != null)
                 c.Tags = string.Join(";", Tags);
-            c.SavedQueryIdDesc = SavedQueryDesc;
+            c.SavedQuery = SavedQueryDesc;
             SelectedId = null;
+            TopClause.Save(Db);
         }
         public void EditCondition()
         {
@@ -397,7 +399,7 @@ namespace CmsWeb.Areas.Search.Models
             SelectMultiple = c.HasMultipleCodes;
             Days = c.Days.ToString();
             Age = c.Age.ToString();
-            Quarters = c.Quarters;
+            Quarters = c.ExtraData;
             if (TagsVisible)
             {
                 if (c.Tags != null)
@@ -409,7 +411,7 @@ namespace CmsWeb.Areas.Search.Models
             }
             if (MinistryVisible)
                 Ministry = c.Program;
-            SavedQueryDesc = c.SavedQueryIdDesc;
+            SavedQueryDesc = c.SavedQuery;
         }
         public void SetCodes()
         {
@@ -452,10 +454,10 @@ namespace CmsWeb.Areas.Search.Models
             var clip = HttpContext.Current.Session["QueryClipboard"] as ClipboardItem;
             if (clip == null)
                 return;
-            var newclause = QueryBuilderClause2.Import(clip.xml, newGuids: clip.from == "copy");
+            var newclause = Condition.Import(clip.xml, newGuids: clip.from == "copy");
 
-            newclause.AllClauses = Current.AllClauses;
-            Current.AllClauses.Add(newclause.Id, newclause);
+            newclause.AllConditions = Current.AllConditions;
+            Current.AllConditions.Add(newclause.Id, newclause);
 
             if (Current.IsGroup)
             {
@@ -471,9 +473,9 @@ namespace CmsWeb.Areas.Search.Models
             if (clip.from == "cut")
             {
                 var originalclause = Db.LoadQueryById2(clip.guid).ToClause();
-                originalclause.AllClauses.Remove(newclause.Id);
-                if (!originalclause.Parent.Clauses.Any())
-                    originalclause.AllClauses.Remove(originalclause.Parent.Id);
+                originalclause.AllConditions.Remove(newclause.Id);
+                if (!originalclause.Parent.Conditions.Any())
+                    originalclause.AllConditions.Remove(originalclause.Parent.Id);
             }
             TopClause.Save(Db);
         }
@@ -509,12 +511,12 @@ namespace CmsWeb.Areas.Search.Models
 //            }
 //        }
 
-        public QueryBuilderClause2 Current
+        public Condition Current
         {
             get
             {
                 var gid = SelectedId ?? Guid.Empty;
-                return TopClause.AllClauses[gid];
+                return TopClause.AllConditions[gid];
             }
         }
         public void DeleteCondition()
@@ -537,7 +539,7 @@ namespace CmsWeb.Areas.Search.Models
             }
             else
             {
-                var list = Current.Parent.Clauses.Where(cc => cc.Order >= Current.Order).ToList();
+                var list = Current.Parent.Conditions.Where(cc => cc.Order >= Current.Order).ToList();
                 foreach (var c in list)
                     c.ParentId = g.Id;
                 g.ParentId = Current.Id;
@@ -666,7 +668,7 @@ namespace CmsWeb.Areas.Search.Models
         public class QueryClauseDisplay
         {
             public int Level { get; set; }
-            public QueryBuilderClause2 Clause;
+            public Condition Clause;
         }
         private int level;
         public List<QueryClauseDisplay> ConditionList()
@@ -674,11 +676,11 @@ namespace CmsWeb.Areas.Search.Models
             level = 0;
             return ClauseAndSubs(new List<QueryClauseDisplay>(), TopClause);
         }
-        private List<QueryClauseDisplay> ClauseAndSubs(List<QueryClauseDisplay> list, QueryBuilderClause2 qc)
+        private List<QueryClauseDisplay> ClauseAndSubs(List<QueryClauseDisplay> list, Condition qc)
         {
             list.Add(new QueryClauseDisplay { Level = level, Clause = qc });
             level++;
-            foreach (var c in qc.Clauses)
+            foreach (var c in qc.Conditions)
                 list = ClauseAndSubs(list, c);
             level--;
             return list;

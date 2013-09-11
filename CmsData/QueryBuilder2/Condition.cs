@@ -6,9 +6,9 @@ using UtilityExtensions;
 using System.Linq.Expressions;
 namespace CmsData
 {
-    public partial class QueryBuilderClause2
+    public partial class Condition
     {
-        public Dictionary<Guid, QueryBuilderClause2> AllClauses { get; set; }
+        public Dictionary<Guid, Condition> AllConditions { get; set; }
 
         public Guid Id { get; set; }
         public Guid? ParentId { get; set; }
@@ -28,31 +28,31 @@ namespace CmsData
         public string Description { get; set; }
         public bool IsPublic { get; set; }
         public DateTime CreatedOn { get; set; }
-        public string Quarters { get; set; }
-        public string SavedQueryIdDesc { get; set; }
+        public string ExtraData { get; set; }
+        public string SavedQuery { get; set; }
         public string Tags { get; set; }
         public int Schedule { get; set; }
         public int? Age { get; set; }
         public int? Campus { get; set; }
         public int? OrgType { get; set; }
         public Guid? NewMatchAnyId;
-        public IEnumerable<QueryBuilderClause2> Clauses
+        public IEnumerable<Condition> Conditions
         {
             get
             {
-                var q = from c in AllClauses.Values
+                var q = from c in AllConditions.Values
                         where c.ParentId == Id
                         orderby c.Order
                         select c;
                 return q;
             }
         }
-        public QueryBuilderClause2 Parent
+        public Condition Parent
         {
             get
             {
                 if (ParentId.HasValue)
-                    return AllClauses[ParentId.Value];
+                    return AllConditions[ParentId.Value];
                 return null;
             }
         }
@@ -173,7 +173,7 @@ namespace CmsData
             Expression expr = null;
             if (IsGroup)
             {
-                foreach (var clause in Clauses)
+                foreach (var clause in Conditions)
                     if (expr == null)
                         expr = clause.ExpressionTree(parm, Db);
                     else
@@ -296,25 +296,25 @@ namespace CmsData
         }
         public bool IsLastNode
         {
-            get { return Parent == null || Parent.Clauses.Count() == 1; }
+            get { return Parent == null || Parent.Conditions.Count() == 1; }
         }
-        public QueryBuilderClause2 Clone(QueryBuilderClause2 parent = null, Guid? useGuid = null)
+        public Condition Clone(Condition parent = null, Guid? useGuid = null)
         {
-            var newclause = new QueryBuilderClause2();
+            var newclause = new Condition();
             if (useGuid.HasValue)
                 newclause.Id = useGuid.Value;
             else
                 newclause.Id = Guid.NewGuid();
             newclause.CopyFrom(this);
-            foreach (var c in Clauses)
+            foreach (var c in Conditions)
             {
                 var nc = c.Clone(newclause);
                 nc.ParentId = newclause.Id;
-                newclause.AllClauses.Add(nc.Id, nc);
+                newclause.AllConditions.Add(nc.Id, nc);
             }
             return newclause;
         }
-        private void CopyFrom(QueryBuilderClause2 from)
+        private void CopyFrom(Condition from)
         {
             Id = Guid.NewGuid();
             Age = from.Age;
@@ -329,8 +329,8 @@ namespace CmsData
             Field = from.Field;
             Organization = from.Organization;
             Program = from.Program;
-            Quarters = from.Quarters;
-            SavedQueryIdDesc = from.SavedQueryIdDesc;
+            ExtraData = from.ExtraData;
+            SavedQuery = from.SavedQuery;
             Schedule = from.Schedule;
             StartDate = from.StartDate;
             Tags = from.Tags;
@@ -340,8 +340,8 @@ namespace CmsData
         //                c.DeleteClause();
         public void DeleteClause()
         {
-            var allClauses = AllClauses;
-            foreach (var c in Clauses)
+            var allClauses = AllConditions;
+            foreach (var c in Conditions)
                 c.DeleteClause();
             allClauses.Remove(Id);
         }
@@ -355,7 +355,7 @@ namespace CmsData
         //        }
         public Guid CleanSlate2(CMSDataContext Db)
         {
-            foreach (var c in Clauses)
+            foreach (var c in Conditions)
                 c.DeleteClause();
             SetQueryType(QueryType.Group);
             SetComparisonType(CompareType.AllTrue);
@@ -364,41 +364,41 @@ namespace CmsData
             return nc.Id;
         }
 
-        public static QueryBuilderClause2 CreateNewGroupClause()
+        public static Condition CreateNewGroupClause()
         {
-            var c = new QueryBuilderClause2
+            var c = new Condition
             {
                 Id = Guid.NewGuid(),
-                AllClauses = new Dictionary<Guid, QueryBuilderClause2>(),
+                AllConditions = new Dictionary<Guid, Condition>(),
                 Field = QueryType.Group.ToString(),
                 Comparison = CompareType.AllTrue.ToString()
             };
-            c.AllClauses.Add(c.Id, c);
+            c.AllConditions.Add(c.Id, c);
             return c;
         }
-        public QueryBuilderClause2 AddNewGroupClause()
+        public Condition AddNewGroupClause()
         {
-            var c = new QueryBuilderClause2
+            var c = new Condition
             {
                 ParentId = Id,
                 Id = Guid.NewGuid(),
-                AllClauses = AllClauses,
+                AllConditions = AllConditions,
                 Field = QueryType.Group.ToString(),
                 Comparison = CompareType.AllTrue.ToString(),
                 Order = MaxClauseOrder() + 2
             };
-            AllClauses.Add(c.Id, c);
+            AllConditions.Add(c.Id, c);
             return c;
         }
         public int MaxClauseOrder()
         {
-            if (!Clauses.Any())
+            if (!Conditions.Any())
                 return 0;
-            return Clauses.Max(qc => qc.Order);
+            return Conditions.Max(qc => qc.Order);
         }
         public void ReorderClauses()
         {
-            var q = from c in Clauses
+            var q = from c in Conditions
                     orderby c.Order
                     select c;
             int n = 1;
@@ -409,27 +409,27 @@ namespace CmsData
             }
         }
 
-        public QueryBuilderClause2 AddNewClause()
+        public Condition AddNewClause()
         {
-            var c = new QueryBuilderClause2
+            var c = new Condition
             {
                 ParentId = Id,
                 Id = Guid.NewGuid(),
-                AllClauses = AllClauses,
+                AllConditions = AllConditions,
                 Field = QueryType.MatchAnything.ToString(),
                 Comparison = CompareType.Equal.ToString(),
                 Order = MaxClauseOrder() + 2
             };
             NewMatchAnyId = c.Id;
-            AllClauses.Add(c.Id, c);
+            AllConditions.Add(c.Id, c);
             return c;
         }
 
-        public QueryBuilderClause2 AddNewClause(QueryType type, CompareType op, object value)
+        public Condition AddNewClause(QueryType type, CompareType op, object value)
         {
-            var c = new QueryBuilderClause2();
+            var c = new Condition();
             c.SetQueryType(type);
-            AllClauses.Add(c.Id, c);
+            AllConditions.Add(c.Id, c);
             c.ParentId = Id;
             c.SetComparisonType(op);
             if (type == QueryType.MatchAnything)
@@ -492,7 +492,7 @@ namespace CmsData
         }
         public bool HasGroupBelow
         {
-            get { return Parent != null && Parent.Clauses.Any(gg => gg.IsGroup); }
+            get { return Parent != null && Parent.Conditions.Any(gg => gg.IsGroup); }
         }
         public class FlagItem
         {

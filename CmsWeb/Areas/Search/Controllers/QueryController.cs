@@ -154,10 +154,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             m.LoadScratchPad();
             if (m.Validate(ModelState))
-            {
                 m.UpdateCondition();
-                DbUtil.Db.SubmitChanges();
-            }
             if (ModelState.IsValid)
                 return View("Conditions", m);
             return View("EditCondition", m);
@@ -342,6 +339,7 @@ namespace CmsWeb.Areas.Search.Controllers
             var settings = new XmlWriterSettings {Indent = true, Encoding = new System.Text.UTF8Encoding(false)};
             using (var w = XmlWriter.Create(Response.OutputStream, settings))
                 m.TopClause.SendToWriter(w);
+            return new EmptyResult();
         }
         [HttpGet]
         public ActionResult Import()
@@ -352,7 +350,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [ValidateInput(false)]
         public ActionResult Import(string text, string name)
         {
-            var ret = QueryBuilderClause2.Import(text, name, newGuids: true);
+            var ret = Condition.Import(text, name, newGuids: true);
             return Redirect("/Query/" + ret.Id);
         }
     }
