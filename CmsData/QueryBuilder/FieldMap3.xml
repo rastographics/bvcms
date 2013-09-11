@@ -7,569 +7,573 @@
   </Grouping>
   <Personal>
     <Age Type="NullInteger">
-      Selects on age if birthdate is available
+      Enter an age. Leave blank to find those without a DOB.
     </Age>
     <GenderId Title="Gender" Type="Code" DataSource="GenderCodes" DataValueField="IdCode">
-      Search by gender type
+      Select Gender from the list.
     </GenderId>
     <MaritalStatusId Title="Marital Status" Type="Code" DataSource="MaritalStatusCodes" DataValueField="IdCode">
-      Search by Single, Married, Separated, Divorced, Widowed,Unknown
+      Select Marital Status from the list.
     </MaritalStatusId>
     <Birthday Title="Birthday" Type="StringEqual" ToolTip="MM/DD/YYYY or MM/DD or MM or YYYY">
-      Searchs by exact date (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
+      Enter an exact date – Equal or Not Equal. (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
     </Birthday>
     <BDate Title="Birthdate" Type="Date">
-      Searchs by Date, can do greater less etc.
+      Pick a date with a comparison.
     </BDate>
     <DaysTillBirthday Title="Days Till Birthday" Type="Integer">
-      Number of days until next birthday (if known.) Always less than 365.
+      Enter a number of days less than 365.
     </DaysTillBirthday>
     <DaysTillAnniversary Title="Days Till Anniversary" Type="Integer">
-      Number of days until next annivesary (if known.) Always less than 365.
+      Enter a number of days less than 365.
     </DaysTillAnniversary>
     <WeddingDate Title="Wedding Date" Type="StringEqual">
-      Searchs by exact date (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
+      Enter an exact date – Equal or Not Equal. (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
     </WeddingDate>
     <Grade Type="NullInteger">
-      Grade in school
+      Enter a number – grade or graduation year.
     </Grade>
     <FirstName Title="First Name" Type="String">
-      Searchs all or part of First Name
+      Enter all or part of a First Name.
     </FirstName>
     <LastName Title="Last Name" Type="String">
-      Searchs all or part of Lastname
+      Enter all or part of a Last Name.
     </LastName>
     <NickName Title="Nick Name" Type="String">
-      Searchs all or part of "goes by" Name
+      Enter all or part of Goes By Name.
     </NickName>
     <MaidenName Title="Maiden Name" Type="String">
-      Searchs all or part of Maiden Name
+      Enter all or part of Maiden (Former) Name.
     </MaidenName>
     <MiddleName Title="Middle Name" Type="String">
-      Searchs all or part of Middle Name
+      Enter all or part of Middle Name.
     </MiddleName>
     <SchoolOther Title="School" Type="CodeStr" DataSource="Schools">
-      Name of Elementary, Middle or High School Attended, if applicable
+      Select School from list.
     </SchoolOther>
     <EmployerOther Title="Employer" Type="CodeStr" DataSource="Employers">
-      Name of Employer, if applicable
+      Select Employer from list.
     </EmployerOther>
     <OccupationOther Title="Occupation" Type="CodeStr" DataSource="Occupations">
-      Occupation, if applicable
+      Select Occupation from list.
     </OccupationOther>
     <HasPicture Title="Has Picture" Type="Bit" DataValueField="IdCode">
-      Indication of whether picture has been uploaded for this person
+      Select True or False.
     </HasPicture>
     <DeceasedDate Title="Deceased Date" Type="Date">
-      Use empty string to find not deceased
+      Pick a date with a comparison.
     </DeceasedDate>
     <WidowedDate Title="Widowed Date" Type="Date">
-      Use empty string to find not widowed
+      Pick a date with a comparison.
     </WidowedDate>
     <TitleCode Title="Title" Type="CodeStr" DataSource="TitleCodes" DataValueField="Code">
-      Codes for Mr. Dr. Mrs. Ms. etc.
+      Select Title from list.
     </TitleCode>
     <EmailAddress Title="Email" Type="String">
-      Email address
+      Enter any part of an email address. Searches on 1st email, both active and inactive.
     </EmailAddress>
     <EmailAddress2 Title="Email2" Type="String">
-      Email address 2
+      Enter any part of an email address. Searches on 2nd email, both active and inactive.
     </EmailAddress2>
   </Personal>
   <Family>
     <PositionInFamilyId Title="Position in Family" Type="Code" DataSource="FamilyPositionCodes" DataValueField="IdCode">
-      Search by codes for Primary Adult, Secondary Adult or Child
+      Select Position from the list.
     </PositionInFamilyId>
     <NumberOfFamilyMembers Title="Number of Family Members" Type="Integer">
-      Number of Family Members
+      Enter a number with a comparison.
     </NumberOfFamilyMembers>
     <HasParents Title="Has Parents" Type="Bit" DataValueField="IdCode">
-      A member of the family is a Primary Adult and this person is a Child
+      Select True or False for children with a Primary Adult in the family.
     </HasParents>
     <FamilyHasChildren Title="Family Has Children" Type="Bit" DataValueField="IdCode">
-      A member of the family is 12 or under
+      Select True or False for families with members aged 12 or under.
     </FamilyHasChildren>
     <FamilyHasChildrenAged Title="Family Has Children Aged" DisplayAs="ChildrenAgedLessOrEqual({0})" Type="Bit" Params="Age" DataValueField="IdCode">
-      A member of the family is specified age or under
+      Enter an age for families with children that age or under.
     </FamilyHasChildrenAged>
     <FamilyHasChildrenAged2 Title="Family Has Children Aged Range" DisplayAs="ChildrenAgedRange({0})" Type="Bit" QuartersLabel="Age Range" Params="Quarters" DataValueField="IdCode">
-      A member of the family is specified age range inclusive (like 10-16 )
+      Enter an age range (ex. 5-8).
     </FamilyHasChildrenAged2>
     <FamilyHasChildrenAged3 Title="Family Has M/F Children Aged Range" DisplayAs="ChildrenAged({0})" Type="Code" QuartersLabel="Age Range" Params="Quarters" DataSource="GenderCodes" DataValueField="IdCode">
-      A member of the family of specified age range inclusive (like 10-16 ) is Male or Female
+      Enter an age range (ex. 12-13) and select a gender.
     </FamilyHasChildrenAged3>
     <IsHeadOfHousehold Title="Is Head of Household" Type="Bit" DataValueField="IdCode">
-      This person is the head of the family household
+      Select True or False for those calculated as Head of Household.
     </IsHeadOfHousehold>
     <HasRelatedFamily Title="Has Related Family" Type="Bit" DataValueField="IdCode">
-      Indication of whether this person's family is related to another family
+      Select True or False for families with Family Relations.
     </HasRelatedFamily>
     <FamHasPrimAdultChurchMemb Title="Family Has Primary Adult Church Member" Type="Bit" DataValueField="IdCode">
-      Indicator that individual has another primary adult family member who is a member of the church.
+      Select True or False for families with a Primary Adult who is a member of the church.
     </FamHasPrimAdultChurchMemb>
     <FamilyId Title="Family" Type="Integer">
-      Search for entire family
+      Enter a Family ID number and select a comparison.
     </FamilyId>
   </Family>
   <Address Title="Address">
     <PrimaryResCode Title="Resident Code" Type="Code" DataSource="ResidentCodes" DataValueField="IdCode">
-      Codes for address: Metro, Marginal, Non-resident, Unable to locate
+      Select Resident Code from the list.
     </PrimaryResCode>
     <PrimaryZip Title="Zip" Type="String">
-      Primary Zip Code
+      Enter all or part of a Zip for the Preferred Address and select a Comparison.
     </PrimaryZip>
     <PrimaryCity Title="City" Type="String">
-      Primary City
+      Enter all or part of a City for a Preferred Address and select a Comparison.
     </PrimaryCity>
     <PrimaryState Title="State" Type="CodeStr" DataSource="GetStateList" DataValueField="Code">
-      Primary State Code
+      Select State from the list.
     </PrimaryState>
     <PrimaryAddress Title="Address" Type="String">
-      Searches by first line of primary address.
+      Enter all or part of the 1st line of a Preferred Address.
     </PrimaryAddress>
     <PrimaryAddress2 Title="Address line two" Type="String">
-      Searches by second line of primary address
+      Enter all or part of the 2nd line of a Preferred Address.
     </PrimaryAddress2>
     <PrimaryCountry Title="Country" Type="String">
-      Primary Country
+      Select Country from the list.
     </PrimaryCountry>
     <PrimaryBadAddrFlag Title="Bad Address Flag" Type="Bit" DataValueField="IdCode">
-      Address is flagged as invalid
+      Select True or False.
     </PrimaryBadAddrFlag>
   </Address>
   <ContactInfo Title="Contact Info">
     <HomePhone Type="String">
-      Searches by home phone.
+      Enter all or part of Home Phone number. (no dashes)
     </HomePhone>
     <CellPhone Type="String">
-      Searches by cell phone.
+      Enter all or part of Cell Phone number.
     </CellPhone>
     <WorkPhone Type="String">
-      Searches by work phone.
+      Enter all or part of Work Phone number.
     </WorkPhone>
     <DoNotCallFlag Title="Do Not Call" Type="Bit" DataValueField="IdCode">
-      Person has asked not be contacted by telephone.
+      Select True or False.
     </DoNotCallFlag>
     <DoNotVisitFlag Title="Do Not Visit" Type="Bit" DataValueField="IdCode">
-      Person has asked not to be visited.
+      Select True or False.
     </DoNotVisitFlag>
     <DoNotMailFlag Title="Do Not Mail" Type="Bit" DataValueField="IdCode">
-      Person has asked to be removed from mailing list or we do not have a correct address for them.
+      Select True or False.
     </DoNotMailFlag>
     <DoNotPublishPhones Title="Do Not Publish Phones" Type="NullBit" DataValueField="IdCode">
       Person has asked to not display phones on directories
     </DoNotPublishPhones>
     <HasInvalidEmailAddress Title="Has InvalidEmailAddress" Type="Bit" DisplayAs="HasInvalidEmailAddress" DataValueField="IdCode">
-      Indicates has a valid email address
+      Select True or False. Looks at both 1st and 2nd email addresses, whether active or not.
     </HasInvalidEmailAddress>
-    <SendEmailAddress1 Title="Send EmailAddress1" Type="NullBit" DataValueField="IdCode"/>
-    <SendEmailAddress2 Title="Send EmailAddress2" Type="NullBit" DataValueField="IdCode"/>
+    <SendEmailAddress1 Title="Send EmailAddress1" Type="NullBit" DataValueField="IdCode">
+      True or False, First Email Address is active or not
+    </SendEmailAddress1>
+    <SendEmailAddress2 Title="Send EmailAddress2" Type="NullBit" DataValueField="IdCode">
+      True or False, Second Email Address is active or not
+    </SendEmailAddress2>
     <ReceiveSms Title="Receive SMS" Type="Bit" DataValueField="IdCode">
-      Indicates Opt-in status
+      Select True or False for those who have opted in for texting (SMS).
     </ReceiveSms>
   </ContactInfo>
   <Ministry>
     <HasTaskWithName Title="Has Task about person" Type="StringEqual">
-      Selects people who have an incomplete task about them where the task description contains the string.
+      Enter all or part of the Task Name (leave blank for all) to find those whom the incomplete task is regarding.
     </HasTaskWithName>
     <HasIncompleteTask Title="Has Incomplete Task" Type="StringEqual">
-      Selects people who have not completed a delegated task where the description contains the string.
+      Enter all or part of the Task Name (leave blank for all) to find those who have not completed a delegated task.
     </HasIncompleteTask>
     <DaysSinceContact Title="Days Since Last Contact" Type="Integer">
-      Selects people based on number of days since last contacted. Only selects those with any contact
+      Enter a number of days with a comparison to find those without a Contact during those days. Must have a previous Contact.
     </DaysSinceContact>
     <RecentContactMinistry Title="Recent Contact Ministry" Type="Code" DisplayAs="RecentContactMinistry({0})" Params="Days" DataSource="Ministries" DataValueField="IdCode">
-      Selects people based on an contact Ministry type looking back a specified number of days.
+      Enter a number of days and select Ministry from the list.
     </RecentContactMinistry>
     <RecentContactType Title="Recent Contact Type" Type="Code" DisplayAs="RecentContactType({0})" Params="Days" DataSource="ContactTypeCodes" DataValueField="IdCode">
-      Selects people based on an contact type looking back a specified number of days.
+      Enter a number of days and select Contact Type from the list.
     </RecentContactType>
     <RecentContactReason Title="Recent Contact Reason" Type="Code" DisplayAs="RecentContactReason({0})" Params="Days" DataSource="ContactReasonCodes" DataValueField="IdCode">
-      Selects people based on an contact reason looking back a specified number of days.
+      Enter a number of days and select Contact Reason from the list.
     </RecentContactReason>
     <RecentEmailCount Title="Recent Email Count" Type="Integer" DisplayAs="RecentEmailCount({0})" Params="Days">
-      Selects people based on # emails received looking back a specified number of days.
+      Enter a number of days and number of emails along with a Comparison.
     </RecentEmailCount>
     <EmailRecipient Title="Email Recipients" Type="IntegerEqual" DisplayAs="EmailRecipientForId">
-      Selects people who were recipients of an Email Id #
+      Enter Email ID number.
     </EmailRecipient>
     <MadeContactTypeAsOf Title="Made Contact Type As Of" Type="Code" DisplayAs="MadeContactTypeAsOf({0:d}, {1:d}, {2})" Params="StartDate,EndDate,Ministry" DataSource="ContactTypeCodes0" DataValueField="IdCode">
-      Selects people based on having made a contact type during the dates specified.
+      Select Contact Type from the list and pick the date range.
     </MadeContactTypeAsOf>
     <HasContacts Title="Has Contacts" Type="Bit" DataValueField="IdCode">
-      Selects people who have had any contacts or not
+      Select True or False to find anyone who has received a Contact.
     </HasContacts>
     <ChristAsSavior Title="Professed Christ as Savior" Type="Bit" DataValueField="IdCode">
-      From checkbox on decision card, indicates a decision was made at an event.
+      Select True or False for those with this checkbox flagged on their Growth tab.
     </ChristAsSavior>
     <InfoBecomeAChristian Title="Info on Becoming a Christian" Type="Bit" DataValueField="IdCode">
-      From checkbox on decision card, desires more information on how to become a Christian.
+      Select True or False for those with this checkbox flagged on their Growth tab.
     </InfoBecomeAChristian>
     <InterestedInJoining Title="Interested In Joining" Type="Bit" DataValueField="IdCode">
-      From a checkbox on a decision card, interested in joining the church.
+      Select True or False for those with this checkbox flagged on their Growth tab.
     </InterestedInJoining>
     <PleaseVisit Title="Please Visit" Type="Bit" DataValueField="IdCode">
-      From a checkbox on a decision card, desires a visit from a minister.
+      Select True or False for those with this checkbox flagged on their Growth tab.
     </PleaseVisit>
   </Ministry>
   <Membership>
     <MemberStatusId Title="Church Member Status" Type="Code" DisplayAs="ChurchMemberStatus" DataSource="MemberStatusCodes" DataValueField="IdCode">
-      Codes for church membership status: Previous, Pending, Member, Non-member
+      Select Member Status from the list.
     </MemberStatusId>
     <CampusId Title="Campus" Type="NullCode" DataSource="AllCampuses0" DataValueField="IdCode">
-      Codes Main Campus
+      Select Campus from the list.
     </CampusId>
     <DecisionDate Title="Decision Date" Type="Date">
-      Date indivdual made a decision to join the church.
+      Select Comparison and pick the date.
     </DecisionDate>
     <DecisionTypeId Title="Decision Type" Type="NullCode" DataSource="DecisionTypeList" DataValueField="IdCode">
-      Type of decision during counseling: POF/Baptism, POF not for Membership, Letter, Statement, Statement Requiring Baptism
+      Select Decision Type from the list.
     </DecisionTypeId>
     <RecentDecisionType Title="Recent Decision Type" Type="Code" DisplayAs="RecentDecisionType({0})" Params="Days" DataSource="DecisionTypeList" DataValueField="IdCode">
-      A decision of type was made in last # days
+      Select Decision Type from the list and enter the number of days to look back.
     </RecentDecisionType>
     <RecentJoinChurch Title="Recent Join Church" Type="Bit" DisplayAs="RecentJoinedChurch({0})" Params="Days" DataValueField="IdCode">
-      Recently Joined Church # days ago
+      Select True or False and enter the number of days to look back.
     </RecentJoinChurch>
     <JoinDate Title="Join Date" Type="Date">
-      Date membership steps were completed.
+      Pick the date and the Comparison. Leave date blank for those without a Join Date.
     </JoinDate>
     <JoinCodeId Title="Join Type" Type="Code" DataSource="JoinTypeList" DataValueField="IdCode">
-      Codes to indicate method of joining
+      Select Join Type from the list.
     </JoinCodeId>
     <DropDate Title="Drop Date" Type="Date">
-      Date individual is dropped from church membership role.
+      Pick the date and the Comparison. Leave date blank for those without a Drop Date.
     </DropDate>
     <DropCodeId Title="Drop Type" Type="Code" DataSource="DropTypeList" DataValueField="IdCode">
-      Codes to indicate reason for dropping record from church membership: Duplicate, Administrative, Deceased, Another SB Church, Request, Another Denomination
+      Select Drop Type from the list.
     </DropCodeId>
     <BaptismDate Title="Baptism Date" Type="Date">
-      Baptism Date
+      Pick the date and the Comparison. Leave date blank for those without a Baptism Date.
     </BaptismDate>
     <BaptismTypeId Title="Baptism Type" Type="NullCode" DataSource="BaptismTypeList" DataValueField="IdCode">
-      Baptism Type: Original, Subsequent, Biological, Non-Member, Required
+      Select Baptism Type from the list.
     </BaptismTypeId>
     <BaptismSchedDate Title="Baptism Scheduled Date" Type="Date">
-      Baptism Scheduled Date
+      Pick the date and the Comparison. Leave date blank for those without a Scheduled Date for Baptism.
     </BaptismSchedDate>
     <BaptismStatusId Title="Baptism Status" Type="NullCode" DataSource="BaptismStatusList" DataValueField="IdCode">
-      Baptism Status: Scheduled, Not Scheduled, Completed, Canceled
+      Select Baptism Status from the list.
     </BaptismStatusId>
     <NewMemberClassDate Title="New Member Class Date" Type="Date" DisplayAs="NewMemberClassDate">
-      New Member Class completed date
+      Pick the date and the Comparison. Leave date blank for those without a New Member Class Date.
     </NewMemberClassDate>
     <NewMemberClassStatusId Title="New Member Class Status" DisplayAs="NewMemberClassStatusId" Type="NullCode" DataSource="NewMemberClassStatusList" DataValueField="IdCode">
-      New Member Class Status: Pending, Attended, Exempted Child, Admin Approval, Grandfathered
+      Select New Member Class Status from the list.
     </NewMemberClassStatusId>
     <LetterDateRequested Title="Letter Requested Date" Type="Date">
-      Letter Requested Date
+      Pick the date and the Comparison. Leave date blank for those without a Letter Requested Date.
     </LetterDateRequested>
     <LetterStatusId Title="Letter Status" Type="NullCode" DataSource="LetterStatusCodes" DataValueField="IdCode">
-      Membership Letter Status: First Request, Second Request, Non-Responsive, Complete
+      Select Letter Status from the list.
     </LetterStatusId>
   </Membership>
   <Enrollments>
     <InBFClass Title="In Main Fellowship" DisplayAs="InMainFellowship" Type="Bit" DataValueField="IdCode">
-      Currently enrolled in a Bible Fellowship Class
+      Select True or False for those currently enrolled in a Main Fellowship class.
     </InBFClass>
     <IsMemberOf Type="Bit" DisplayAs="IsMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
-      Selects members of organization(s). Specify the Program or Program/Division or Program/Division/Organization
+      Select Program/Division/Organization from the list for current members.
     </IsMemberOf>
     <MemberTypeCodes Title="Member Type Codes" Type="Code" DisplayAs="MemberTypeCodes({0}, {1}, {2}, {3}, {4}, {5})" Params="Program,Division,Organization,OrgType,Schedule,Campus" DataSource="MemberTypeCodes" DataValueField="IdCode">
-      Select members of an organization by their member type within a specified Program, Program/Division, or Program/Division/Organization.
+      Select Member Type from the list and select other options: Program/Division/Organization, Org Type, Schedule, Campus.
     </MemberTypeCodes>
     <MemberTypeAsOf Title="Member Type As Of" Type="Code" DisplayAs="MemberTypeAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="MemberTypeCodes" DataValueField="IdCode">
-      Selects specified member types of organization(s) as of a date range. Specify a date range, or just a starting date (through current). Then specify the Program or Program/Division or Program/Division/Organization, then specify one or more member types.
+      Select Member Type from the list, pick a date range and select other options: Program/Division/Organization, Org Type.
     </MemberTypeAsOf>
     <MembOfOrgWithCampus Title="Member Of Org With Campus" Type="Code" DisplayAs="MembOfOrgWithCampus({0}, {1}, {2}, {3})" Params="Program,Division,Organization,OrgType" DataSource="Campuses" DataValueField="IdCode">
-      Selects members of organizations with specified campus.
+      Select Campus from the list and select Program/Division/Organization.
     </MembOfOrgWithCampus>
     <MembOfOrgWithSched Title="Member Of Org With Schedule" Type="Code" DisplayAs="MembOfOrgWithSched({0}, {1}, {2})" Params="Program,Division,Organization" DataSource="Schedules" DataValueField="IdCode">
-      Selects members of organizations which meet according to one or more specified schedules.
+      Select Schedule from the list and select Program/Division/Organization.
     </MembOfOrgWithSched>
     <IsPendingMemberOf Type="Bit" DisplayAs="IsPendingMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
-      Selects pending members of organization(s). Specify the Program or Program/Division or Program/Division/Organization
+      Select Program/Division/Organization from the list and specify True or False.
     </IsPendingMemberOf>
     <IsInactiveMemberOf Type="Bit" DisplayAs="IsInactiveMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
-      Selects inactive members of organization(s). Specify the Program or Program/Division or Program/Division/Organization
+      Select Program/Division/Organization from the list and specify True or False.
     </IsInactiveMemberOf>
     <WasMemberAsOf Type="Bit" DisplayAs="WasMemberAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataValueField="IdCode">
-      Select members based on a date range that they were enrolled in that Program; Program/Division; or Program/Division/ Organization
+      Pick the date range and select Program/Division/ Organization, Org Type.
     </WasMemberAsOf>
     <OrgJoinDate Title="Org Enrollment Date" Type="Date" DisplayAs="OrgJoinDate({0}, {1}, {2})" Params="Program,Division,Organization">
-      Selects members of an organization by the date they joined the organization
+      Pick the Date and Comparison and select Program/Division/Organization.
     </OrgJoinDate>
     <OrgJoinDateDaysAgo Title="Recent Org Join Date" Type="Integer" DisplayAs="RecentOrgJoinDate({0}, {1}, {2})" Params="Program,Division,Organization">
-      Selects members of an organization who joined it before or after so many days ago. Specify the Program or Program/Division or Program/Division/Organization. Enter the number of days to compare with on the right side.
+      Enter the number of days to look back and select the Comparison and select Program/Division/Organization.
     </OrgJoinDateDaysAgo>
     <OrgInactiveDate Title="Org Inactive Date" Type="Date" DisplayAs="OrgInactiveDate({0}, {1}, {2})" Params="Program,Division,Organization">
-      Selects members of an organization by date they become inactive.
+      Pick the Inactive Date (in the Member Dialog) and Comparison and select Program/Division/Organization.
     </OrgInactiveDate>
     <RecentRegistrationType Title="Recent Registration Type" Type="Code" DisplayAs="RecentOrgJoinDate({0}, {1}, {2}, {3}, {4})" Params="Days,Program,Division,Organization,OrgType" DataSource="RegistrationTypes99" DataValueField="IdCode">
-      Selects members of an organization with the RegistrationType who joined it before or after so many days ago. Specify the Program or Program/Division or Program/Division/Organization.
+      Select Registration Type from the list, enter the number of days to look back and select options: Program/Division/Organization, Org Type.
     </RecentRegistrationType>
     <OrgJoinDateCompare Title="Org Join Date Compared to Field" Type="DateField" DisplayAs="OrgJoinDateCompared({0}, {1}, {2})" Params="Program,Division,Organization" DataSource="DateFields" DataValueField="Code">
-      Selects members of an organization where the date they joined the organization is compared with another system date such as Church Join Date (less than, greater than etc..)
+      Select the Compared to Field from the list along with a Comparison and select Program/Division/Organization.
     </OrgJoinDateCompare>
     <SmallGroup Title="In Small Group" Type="StringEqualOrStartsWith" DisplayAs="SmallGroup({0}, {1}, {2})" Params="Program,Division,Organization">
-      Person is in a small group named such
+      Enter all of part of a Small Group name, select a Comparison and select Program/Division/Organization.
     </SmallGroup>
     <NumberOfMemberships Title="Number of Enrollments" Type="NullInteger" DisplayAs="NumEnrollments({0}, {1}, {2}, {3})" Params="Program,Division,Organization,Schedule">
-      Has a number of memberships in a prog, div, org, sched
+      Enter a number of Enrollments, select a Comparison and select Program/Division/Organization.
     </NumberOfMemberships>
     <MedicalLength Title="Length of Medical / Allergies Info" Type="Integer">
-      Medical / Allergies Info Greater than or less than number of characters
+      Enter a number of characters and select a Comparison.
     </MedicalLength>
   </Enrollments>
   <CurrentOrg Title="Current Org">
     <HasBalanceInCurrentOrg Title="In Current Organization, Has Balance" Type="Bit" DataValueField="IdCode">
-      Selects everyone who is enrolled in the last organization you worked with, where AmountPaid &gt; 0 and &lt; Amount
+      Select True or False for Members with a Balance in the last organization you viewed.
     </HasBalanceInCurrentOrg>
     <InCurrentOrg Title="In Current Organization" Type="Bit" DataValueField="IdCode">
-      Selects everyone who is enrolled in the last organization you worked with. (used internally, but you can too if it will help you)
+      Select True or False for Members of the last organization you viewed.
     </InCurrentOrg>
     <InactiveCurrentOrg Title="Inactive in Current Organization" Type="Bit" DataValueField="IdCode">
-      Selects everyone who is enrolled but inactive in the last organization you worked with. (used internally, but you can too if it will help you)
+      Select True or False for Inactive Members of the last organization you viewed.
     </InactiveCurrentOrg>
     <PendingCurrentOrg Title="Pending in Current Organization" Type="Bit" DataValueField="IdCode">
-      Selects everyone who is enrolled but pending in the last organization you worked with. (used internally, but you can too if it will help you)
+      Select True or False for Pending Members of the last organization you viewed.
     </PendingCurrentOrg>
     <PreviousCurrentOrg Title="Previous Member in Current Organization" Type="Bit" DataValueField="IdCode">
-      Selects everyone who was a previous member (but not currently a member) of the last organization you worked with. (used internally, but you can too if it will help you)
+      Select True or False for Previous Members of the last organization you viewed.
     </PreviousCurrentOrg>
     <LeadersUnderCurrentOrg Title="Leaders under current org" Type="Bit" DataValueField="IdCode">
-      People that are a leader of an organization  in this org or in a child org of the current organization
+      Select True or False for Leaders of the last organization you viewed and any Leaders in any Child Organization under that org.
     </LeadersUnderCurrentOrg>
     <MembersUnderCurrentOrg Title="Members under current org" Type="Bit" DataValueField="IdCode">
-      People that are a Member of an organization  in this org or in a child org of the current organization
+      Select True or False for Members of the last organization you viewed and any Members in any Child Organization under that org.
     </MembersUnderCurrentOrg>
   </CurrentOrg>
   <Volunteer>
     <HaveVolunteerApplications Title="Has Volunteer Applications" Type="Bit" DataValueField="IdCode">
-      Indicates Volunteer Applications are in the church system
+      Select True or False.
     </HaveVolunteerApplications>
     <VolunteerApprovalCode Title="Volunteer Approval Code" Type="Code" DataSource="VolunteerCodes" DataValueField="IdCode">
-      Indication of Volunteer Approval: None, Standard or Leader
+      Select Approval Code from the list.
     </VolunteerApprovalCode>
     <VolAppStatusCode Title="Volunteer App Status Code" Type="Code" DataSource="VolApplicationStatusCodes" DataValueField="IdCode">
-      Indication of Volunteer Application Status
+      Select Volunteer Application Status from the list.
     </VolAppStatusCode>
     <VolunteerProcessedDateMonthsAgo Title="Volunteer Approved months ago" Type="NullInteger">
-      Indicate number of months ago volunteer application was approved
+      Enter the number of months to look back for approval.
     </VolunteerProcessedDateMonthsAgo>
     <PmmBackgroundCheckStatus Title="PMM Background Check" Type="CodeStr" DisplayAs="PmmBackgroundCheckStatus({0}, {1})" QuartersLabel="Username or PeopleId" Params="Quarters,PmmLabels" DataValueField="IdCode" DataSource="BackgroundStatuses">
-      Find people with a Background Check
+      Select the Protect My Ministry status from the list, select the Label from the list, if you use Labels and enter the username or People ID number of the person making the background check.
     </PmmBackgroundCheckStatus>
   </Volunteer>
   <Attendance>
     <AttendMemberTypeAsOf Title="Member Type Attended As Of" Type="Code" DisplayAs="AttendanceTypeAsOf({0:d}, {1:d}, {2}, {3}, {4})" Params="StartDate,EndDate,Program,Division,Organization" DataSource="MemberTypeCodes" DataValueField="IdCode">
-      Selects members of a Program, Program/Division or Program/Division/Organization by their member type and by a date range in which they attended
+      Select Member Type from the list, pick a date range and select Program/Division/Organization.
     </AttendMemberTypeAsOf>
     <RecentAttendMemberType Title="Recent Attended Member Type" Type="Code" DisplayAs="RecentAttendMemberType({0}, {1}, {2}, {3})" Params="Program,Division,Organization,Days" DataSource="MemberTypeCodes" DataValueField="IdCode">
-      Selects members based on member type who have attended a Program, Program/Division or Program/Division/Organization looking back a specified number of days.
+      Select Member Type from the list, enter a number of days to look back and select Program/Division/Organization.
     </RecentAttendMemberType>
     <AttendTypeAsOf Title="Attendance Type As Of" Type="Code" DisplayAs="AttendanceTypeAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="AttendanceTypeCodes" DataValueField="IdCode">
-      Selects attendees based on an attendance type within a Program, Program/Division or Program/Division/Organization for a specified date range.
+      Select Attendance Type from the list, pick a date range and select Program/Division/Organization.
     </AttendTypeAsOf>
     <VisitNumber Title="Visit date Nth time" Type="Date" DisplayAs="VisitNumber({0})" Params="Quarters" QuartersLabel="Visit number">
-      Selects attendees based on whether they have visted once, twice or three times
+      Pick a date and Comparison and enter the number of visits.
     </VisitNumber>
     <RecentVisitNumber Title="Recent Visit date Nth time" Type="Bit" DataValueField="IdCode" DisplayAs="RecentVisitNumber({0},{1})" Params="Quarters,Days" QuartersLabel="Visit number">
-      Selects attendees based on whether they have visted once, twice or three times in the past # days
+      Specify True or False, enter the number of days to look back and enter the number of visits.
     </RecentVisitNumber>
     <RecentAttendType Title="Recent Attendance Type" Type="Code" DisplayAs="RecentAttendType({0}, {1}, {2}, {3}, {4})" Params="Days,Program,Division,Organization,OrgType" DataSource="AttendanceTypeCodes" DataValueField="IdCode">
-      Selects attendees based on an attendance type who have attended a Program, Program/Division or Program/Division/Organization looking back a specified number of days.
+      Select Attendance Type from the list, enter the number of days to look back and select other options: Program/Division/Organization, Org Type.
     </RecentAttendType>
     <AttendPct Title="Attendance %" Type="Number" DisplayAs="AttendPct({0}, {1}, {2})" Params="Program,Division,Organization">
-      Selects attendees based on an attendance % within a Program, Program/Division or Program/Division/Organization.
+      Enter a number for the Attendance Percentage and select Program/Division/Organization.
     </AttendPct>
     <AttendPctHistory Title="Attendance % History" Type="NumberLG" DisplayAs="AttendPctHistory({0}, {1}, {2}, {3:d}, {4:d})" Params="Program,Division,Organization,StartDate,EndDate">
-      Selects attendees based on an attendance % within a Program, Program/Division or Program/Division/Organization for a specified date range. This does not have to be a current enrollment. This query runs very slow.
+      Enter the number for the percentage and select a Comparison, pick a date range and select Program/Division/Organization.
     </AttendPctHistory>
     <AttendCntHistory Title="Attendance Count History" Type="Integer" DisplayAs="AttendCntHistory({0}, {1}, {2}, {3}, {4:d}, {5:d})" Params="Program,Division,Organization,Schedule,StartDate,EndDate">
-      Selects attendees based on an attendance count within a Program, Program/Division or Program/Division/Organization for a specified date range. This does not have to be a current enrollment. This condition runs faster than the Attendance % History condition
+      Enter a number and select Comparison for the Attendance Count, pick a date range and select other options: Program/Division/Organization, Schedule.
     </AttendCntHistory>
     <RecentAttendCount Title="Recent Attendance Count" Type="Integer" DisplayAs="RecentAttendCount({0}, {1}, {2}, {3}, {4})" Params="Days,Program,Division,Organization,OrgType">
-      Selects people based on an attendance count within a Program, Program/Division or Program/Division/Organization looking back a specified number of days.
+      Enter a number and select Comparison for the Attendance Count, enter a number for the days to look back and select other options: Program/Division/Organization, Org Type.
     </RecentAttendCount>
     <RecentAttendCountAttCred Title="Recent Attendance Count for Schedule/AttendCredit" Type="Integer" DisplayAs="RecentAttendCountSchedule({0}, {1}, {2}, {3}, {4}, {5})" QuartersLabel="Attend Credit Id" Params="Program,Division,Organization,Days,Quarters,Schedule">
-      Selects people based on an Attendance Credit or Schedule within a Program/Division/Organization looking back a specified number of days.
+      Enter a number and select Comparison for the Attendance Count, enter a number for the days to look back, enter the Attend Credit ID number, select other options: Program/Division/Organization, Schedule.
     </RecentAttendCountAttCred>
     <RecentNewVisitCount Title="Recent New Visit Count" Type="Integer" DisplayAs="RecentNewVisitCount({0}, {1}, {2}, {3}, {4}, {5})" QuartersLabel="Number of days for no attendance" Params="Days,Quarters,Program,Division,Organization,OrgType">
-      Find all who have hn # attends in the past # [Days] where they had no attends prior to that looking back so many days
+      Enter a number and select Comparison for the Visit Count, enter a number for the days to look back, enter the number of days with no attendance, select other options: Program/Division/Organization, Org Type.
     </RecentNewVisitCount>
     <VisitedCurrentOrg Title="Has Visited Current Organization" Type="Bit" DataValueField="IdCode">
-      Selects everyone who has visited the last organization you worked with. (used internally, but you can too if it will help you)
+      Specify True or False for Guests in Current Organization.
     </VisitedCurrentOrg>
     <KidsRecentAttendCount Title="Kids Recent Attendance Count" Type="Integer" DisplayAs="KidsRecentAttendCount({0})" Params="Days">
-      Selects people based on their kids attendance count for anything looking back a specified number of days.
+      Enter a number and select a Comparison for the Attendance Count for children 12 and under and enter a number of days to look back.
     </KidsRecentAttendCount>
     <DaysBetween12Attendance Title="Days Between First/Second Attend" Type="Integer" DisplayAs="DaysBetween12Attendance({0}, {1}, {2}, {3})" Params="Days,Program,Division,Organization">
-      Selects attendees based on # days between their first and second attendance. The first attendance is assumed to be the entry point in the church, probably worship. The second attendance can be specified to be within a Program, Program/Division or Program/Division/Organization for a specified date range.
+      Enter a number and select the Comparison for the number of Days between 1st and 2nd Attendance, enter a number of days to look back, select Program/Division/Organization.
     </DaysBetween12Attendance>
     <DaysAfterNthVisitDateRange Title="Attend Days After Nth Visit" Type="NullInteger" DisplayAs="DaysAfterNthVisitDateRange({0}, {1}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Quarters,Program,Division,Organization" QuartersLabel="Nth Visit Number">
-      Selects attendees based on # days between their Nth Attendance during a specified date range and the next attendance in the specified prog/div/org. The nth attendance is not limited to the specified prog/div/org.
+      Enter a number and select the Comparison for the number of days after the Nth Attendance, enter a number for the Nth Attendance, pick a date range and select Program/Division/Organization.
     </DaysAfterNthVisitDateRange>
   </Attendance>
-  <Contributions>
+  <Contributions TopMessage="Must have Finance role in order to get results for searches relating to actual contributions.">
     <EnvelopeOptionsId Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">
-      Envelope Options
+      Select an Envelope Option from the list.
     </EnvelopeOptionsId>
     <ContributionOptionsId Title="Contribution Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">
-      Contribution Options
+      Select a Contribution Option from the list.
     </ContributionOptionsId>
     <RecentContributionCount Title="Recent Contribution Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentContributionCount({0},{1})" Params="Days,Quarters">
-      Must have Finance role for this to work.
+      Enter a number and select Comparison for the number of Contributions, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentContributionCount>
     <RecentContributionAmount Title="Recent Contribution Amount" Type="Number" DisplayAs="RecentContributionAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">
-      Must have Finance role for this to work.
+      Enter a number and select Comparison for the Contribution Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentContributionAmount>
     <RecentPledgeCount Title="Recent Pledge Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentPledgeCount({0},{1})" Params="Days,Quarters">
-      Must have Finance role for this to work.
+      Enter a number and select Comparison for the number of Pledges, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentPledgeCount>
     <RecentPledgeAmount Title="Recent Pledge Amount" Type="Number" DisplayAs="RecentPledgeAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">
-      Must have Finance role for this to work.
+      Enter a number and select Comparison for the Pledge Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentPledgeAmount>
     <ContributionAmount2 Title="Contribution Amount History" Type="Number" DisplayAs="ContributionAmount2({0},{1},{2})" QuartersLabel="Fund Id (or null for all)" Params="StartDate,EndDate,Quarters">
-      Must have Finance role for this to work.
+      Enter a number and select Comparison for the Contribution Amount, enter a Fund ID (or leave blank for all funds), pick a date range.
     </ContributionAmount2>
     <ContributionChange Title="Contribution Change Pct" Type="Number" DisplayAs="ContributionChange({0},{1})" Params="StartDate,EndDate">
-      startdt = 2 years ago, enddt = 1 year ago, pct = current period as % of previous period, divided on the enddt (Must have Finance role for this to work.
+      Enter a number for the percentage (without the % sign) and select a Comparison (ex. 120), pick a date range.
     </ContributionChange>
     <RecentGivingAsPctOfPrevious Title="Recent Giving % of Previous" Type="Number" DisplayAs="RecentGivingAsPctOfPrevious({0})" QuartersLabel="Midway Lookback Days Ago" Params="Quarters">
-      Days ago divides previous and recent, pct = recent period as % of previous period (Must have Finance role for this to work.
+      Enter a number for the percentage (without the % sign) and select a Comparison (ex. 120), enter a number of days for the midpoint to look back.
     </RecentGivingAsPctOfPrevious>
     <RecentHasIndContributions Title="Recent Has Individual Contributions" Type="Bit" DataValueField="IdCode" DisplayAs="RecentHasIndContributions({0})" Params="Days">
-      Must have Finance role for this to work.
+      Enter a number of days to look back and specify True or False.
     </RecentHasIndContributions>
     <RecentFirstTimeGiver Title="Recent First Time Giver" Type="Bit" DisplayAs="RecentFirstTimeGiver({0},{1})" Params="Days,Quarters" QuartersLabel="Fund Id (or blank for all)" DataValueField="IdCode">
-      Must have Finance role for this to work.
+      Enter a number of days to look back, enter a Fund ID (or leave blank for all funds) and specify True or False.
     </RecentFirstTimeGiver>
     <IsTopGiver Title="Recent Top Giver" Type="Bit" DisplayAs="RecentTopGiver({0},{1})" Params="Days,Quarters" QuartersLabel="Top number" DataValueField="IdCode">
-      Must have Finance role for this to work.
+      Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False.
     </IsTopGiver>
     <IsTopPledger Title="Recent Top Pledger" Type="Bit" DisplayAs="RecentTopPledger({0},{1})" Params="Days,Quarters" QuartersLabel="Top number" DataValueField="IdCode">
-      Must have Finance role for this to work.
+      Enter a number of days to look back (must include the date the pledge was made), enter the top number (ex. 100 for the top 100 pledgers) and specify True or False.
     </IsTopPledger>
     <HasManagedGiving Title="Has Managed Giving" Type="Bit" DisplayAs="Has Managed Giving" DataValueField="IdCode">
-      People who have Managed Giving
+      Specify True or False for those with Managed Giving.
     </HasManagedGiving>
   </Contributions>
   <ExtraValues Title="Extra Values">
-    <PeopleExtra Title="ExtraValue Code" Type="CodeStr" DataSource="ExtraValues">
-      ExtraValue field = dropdown list of values
+    <PeopleExtra Title="Extra Value Code" Type="CodeStr" DataSource="ExtraValues">
+      Select the Extra Value Code from the list
     </PeopleExtra>
-    <PeopleExtraData Title="ExtraValueText" Type="String" DisplayAs="ExtraValueText({0})" QuartersLabel=" Name" Params="Quarters">
-      ExtraValue field = (field:value) where value is some value contained in the Data
+    <PeopleExtraData Title="Extra Value Text" Type="String" DisplayAs="ExtraValueText({0})" QuartersLabel=" Name" Params="Quarters">
+      Enter the Field Name and enter all or part of the value along with a Comparison.
     </PeopleExtraData>
-    <PeopleExtraDate Title="ExtraValueDate" Type="Date" DisplayAs="ExtraValueDate({0})" QuartersLabel=" Name" Params="Quarters">
-      ExtraValue field = (value)
+    <PeopleExtraDate Title="Extra Value Date" Type="Date" DisplayAs="ExtraValueDate({0})" QuartersLabel=" Name" Params="Quarters">
+      Enter the Field Name and pick a date and a Comparison.
     </PeopleExtraDate>
-    <PeopleExtraInt Title="ExtraValueInt" Type="Integer" DisplayAs="ExtraValueInt({0})" QuartersLabel=" Name" Params="Quarters">
-      ExtraValue field = (field:value)
+    <PeopleExtraInt Title="Extra Value Int" Type="Integer" DisplayAs="ExtraValueInt({0})" QuartersLabel=" Name" Params="Quarters">
+      Enter the Field Name and enter all or part of the value (must be an integer) along with a Comparison.
     </PeopleExtraInt>
-    <HasPeopleExtraField Title="HasExtraValueField" Type="StringEqual">
-      Has an extra value field with this name
+    <HasPeopleExtraField Title="Has Extra Value Field" Type="StringEqual">
+      Enter the Field Name and a Comparison.
     </HasPeopleExtraField>
   </ExtraValues>
   <Miscellaneous>
     <IncludeDeceased Title="Included Deceased" Type="Bit" DataValueField="IdCode">
-      Allows you to specify whether to include deceased people in your query.
+      Specify True or False to include deceased people in your query. (By default, deceased are not included.)
     </IncludeDeceased>
     <ParentsOf Title="Parents Only" Type="Bit" DataValueField="IdCode">
-      Include only the heads of household in the family of the people in the selection
+      Specify True or False to include only Primary Adults.
     </ParentsOf>
     <StatusFlag Title="Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">
-      Search for Status Flags (computed in nightly batch from saved searches)
+      Select Status Flags from the list (computed in nightly batch from saved searches).
     </StatusFlag>
     <HasCurrentTag Title="Active Tag" Type="Bit" DataValueField="IdCode">
-      Selects those who are in your 'Active Tag' at the time you run the query.
+      Specify True or False for those who are in your Active Tag.
     </HasCurrentTag>
     <HasMyTag Title="Tagged with" Type="Bit" DisplayAs="HasMyTag({0})" DataValueField="IdCode" Params="Tags">
-      Selects everyone in the tag you specify.
+      Select Tag from the list.
     </HasMyTag>
     <OtherPreviousChurch Title="Former Church" Type="String">
-      Church before joining Us
+      Select a Comparison and enter all or part of a Previous Church name.
     </OtherPreviousChurch>
     <OtherNewChurch Title="New Church" Type="String">
-      Destination Church after leaving Us
+      Select a Comparison and enter all or part of a New Church name.
     </OtherNewChurch>
     <HasMemberDocs Title="Has Membership Documents" Type="Bit" DataValueField="IdCode">
-      Indicates Membership Documents have been uploaded
+      Specify True or False for those with uploaded Membership Documents.
     </HasMemberDocs>
     <EntryPointId Title="Entry Point" Type="NullCode" DataSource="EntryPoints" DataValueField="IdCode">
-      Initial Contact Point with Church
+      Select Entry Point from the list.
     </EntryPointId>
     <OriginId Title="Record Origin" Type="NullCode" DataSource="Origins" DataValueField="IdCode">
-      Record Originated from what source?
+      Select Record Origin from the list.
     </OriginId>
     <InterestPointId Title="Interest Point" Type="NullCode" DataSource="InterestPoints" DataValueField="IdCode">
-      How did you hear about us?
+      Select Interest Point from the list.
     </InterestPointId>
     <MemberAnyChurch Title="Member of Any Church" Type="NullBit" DataValueField="IdCode">
-      From decision card indicating membership in another church. May be unknown (null)
+      Specify True or False for those with this box checked on their Growth tab.
     </MemberAnyChurch>
     <SavedQuery Title="Saved Searches" Type="Bit" DisplayAs="Searches({0})" Params="SavedQueryIdDesc" DataValueField="IdCode">
-      Selects everyone within a specified Saved Search.
+      Select a Saved Search from the list and specify True or False.
     </SavedQuery>
     <RecActiveOtherChurch Title="Reg Other Church" Type="Bit" DataValueField="IdCode">
-      Selects only those Registered children and indicated active in another church or not.
+      Specify True or False for those who indicated during an online registration that they attend another church.
     </RecActiveOtherChurch>
     <RecInterestedCoaching Title="Reg Interested Coaching" Type="Bit" DataValueField="IdCode">
-      Selects only those Registered children and indicated interest in coaching.
+      Specify True or False for those who indicated during an online registration that they (or their parents) are interested in coaching.
     </RecInterestedCoaching>
     <InOneOfMyOrgs Title="In one of my organizations" Type="Bit" DataValueField="IdCode">
-      People that are a member of an organization that you are also a member of
+      Specify True or False for those enrolled in organizations in which you are enrolled.
     </InOneOfMyOrgs>
     <CheckInVisits Title="Number of visits" Type="Integer" DisplayAs="Number of visits" DataValueField="IdCode">
-      People who have a given number of building check-in visits
+      Enter a number of visits along with a Comparison for guests who used Building Checkin.
     </CheckInVisits>
   </Miscellaneous>
   <Admin>
     <UserRole Title="User In Role" Type="Code" DisplayAs="UserRole" DataSource="UserRoles" DataValueField="IdCode">
-      Selects everyone with a specified User Role in the CMS.
+      Select User Role from the list.
     </UserRole>
     <IsUser Title="Is System User" Type="Bit" DataValueField="IdCode">
-      Selects everyone who is a user in the CMS.
+      Specify True or False for those with user accounts.
     </IsUser>
     <CreatedBy Title="Record Created By User" Type="String">
-      Record Created By User, you do not use an id #, rather use "LastName, FirstName" or StartsWith Last Name, etc.
+      Enter a Comparison and all or part of a Last Name (or Last Name, a comma and a First Name).
     </CreatedBy>
     <CreatedDate Title="Record Created On Date" Type="Date">
-      Record Created On Date
+      Select a Comparison and pick a date.
     </CreatedDate>
     <RecentCreated Title="Recent Created Record" Type="Bit" DataValueField="IdCode" DisplayAs="RecentCreated({0})" Params="Days">
-      Selects people based on how many days ago their record was created
+      Enter a number of days to look back and Specify True or False.
     </RecentCreated>
     <IsCurrentPerson Title="Is Current Person" Type="Bit" DataValueField="IdCode">
-      Selects the last person that was displayed on the Person screen. (used internally, but you can too if you find a need for it)
+      Specify True or False for person last viewed (used internally, but you can use it if you find a need for it)
     </IsCurrentPerson>
     <DuplicateEmails Title="Duplicate Emails" Type="Bit" DataValueField="IdCode">
-      Record Has Duplicate Emails on other records
+      Specify True or False for records with the same email.
     </DuplicateEmails>
     <DuplicateNames Title="Duplicate Names" Type="Bit" DataValueField="IdCode">
-      Record Has Duplicate Names on other records
+      Specify True or False for records with the same First and Last Name.
     </DuplicateNames>
     <HasLowerName Title="Has Lowercase Name" Type="Bit" DataValueField="IdCode">
-      First or Last name starts with a lowercase character
+      Specify True or False for records with First or Last name starting with a lowercase letter.
     </HasLowerName>
     <PeopleIds Title="HasOneOfPeopleIds" Type="StringEqual">
-      People with one of these PeopleIds
+      Enter People ID numbers separated by a comma.
     </PeopleIds>
     <MatchAnything Title="Select Condition" Type="Bit" DisplayAs="Select Condition" DataValueField="IdCode">
-      This condition is always true
+      This condition is always true (used internally).
     </MatchAnything>
     <HasOptoutsForEmail Title="Has Email Optouts for address" Type="StringEqual" DisplayAs="HasOptoutsForEmail({0:d})" Params="EndDate">
-      Leave value blank for any optout, show only optouts since the end date, end date optional
+      Enter email address (leave value blank for any optout address) and pick an end date for those who opted out before that date (or leave date blank).
     </HasOptoutsForEmail>
     <MeetingId Type="Integer">
-      Advanced use
+      For internal use, but you can enter a Meeting ID number for those who attended.
     </MeetingId>
     <RegisteredForMeetingId Type="Integer">
-      Advanced use
+      For internal use, but you can enter a Meeting ID number for those who are registered to attend.
     </RegisteredForMeetingId>
     <PeopleId Type="Integer">
-      Advanced use
+      For internal use, but you can enter a People ID number.
     </PeopleId>
   </Admin>
 </fields>
