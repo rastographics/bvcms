@@ -82,7 +82,7 @@ namespace CmsWeb.Models
                     where o.DivOrgs.Any(dd => org.DivOrgs.Select(oo => oo.DivId).Contains(dd.DivId)) || o.ParentOrgId == orgid
                     where namesearch == null || o.OrganizationName.Contains(namesearch) || ck
                     where o.OrganizationId != org.OrganizationId
-                    where o.OrganizationStatusId == OrgStatusCode.Active
+                    where o.OrganizationStatusId == OrgStatusCode.Active || o.ParentOrgId == orgid
                     orderby !ck, ot, pa, o.OrganizationName
                     select new OrgInfo
                     {
