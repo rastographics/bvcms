@@ -18,7 +18,6 @@ namespace CmsWeb.Areas.Main.Models.Report
 
         public MeetingsModel()
         {
-            StatusId = CmsData.Codes.OrgStatusCode.Active;
             Direction = "asc";
             Sort = "Time";
         }
@@ -30,6 +29,8 @@ namespace CmsWeb.Areas.Main.Models.Report
 
         public IEnumerable<MeetingInfo> MeetingsForDate()
         {
+            if (FromWeekAtAGlance)
+                StatusId = null;
             var q = FetchOrgs();
             var q2 = from o in q
                      join m in DbUtil.Db.Meetings on o.OrganizationId equals m.OrganizationId into mr
