@@ -647,9 +647,9 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        public IEnumerable<SelectListItem> Divisions(int? progid)
+        public static IEnumerable<SelectListItem> Divisions(int? progid)
         {
-            var q = from div in Db.Divisions
+            var q = from div in DbUtil.Db.Divisions
                     where div.ProgDivs.Any(d => d.ProgId == progid)
                     orderby div.Name
                     select new SelectListItem
@@ -661,10 +661,10 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        public IEnumerable<SelectListItem> Organizations(int? divid)
+        public static IEnumerable<SelectListItem> Organizations(int? divid)
         {
-            var roles = Db.CurrentRoles();
-            var q = from ot in Db.DivOrgs
+            var roles = DbUtil.Db.CurrentRoles();
+            var q = from ot in DbUtil.Db.DivOrgs
                     where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
                     where ot.DivId == divid
                           && (SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14

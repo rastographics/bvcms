@@ -85,13 +85,18 @@ namespace CmsWeb.Models
 
                 foreach (var c in q)
                 {
-                    double leadtime = 0;
+                    double hoursBeforeClassStarts = 0;
                     if (c.Hour.HasValue)
                     {
                         var midnight = c.Hour.Value.Date;
                         var now = midnight.Add(Util.Now.TimeOfDay);
-                        leadtime = c.Hour.Value.Subtract(now).TotalHours;
-                        leadtime -= DbUtil.Db.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
+                        hoursBeforeClassStarts = c.Hour.Value.Subtract(now).TotalHours;
+                        // TZOffset will be positive to the east, negative to the west
+                        // but we are trying to get to central time so we subtract
+                        // if tzoffset is +1 then we need to -1 to go to CentralTime.
+                        hoursBeforeClassStarts -= DbUtil.Db.Setting("TZOffset", "0").ToInt();
+                        // now we need to make sure we are within 24 hours (ignore the date change)
+                        hoursBeforeClassStarts %= 24;
                     }
                     x.Start("attendee");
                     x.Attr("id", c.Id.ToString());
@@ -106,7 +111,7 @@ namespace CmsWeb.Models
                     x.Attr("orgid", c.OrgId.ToString());
                     x.Attr("loc", c.Location);
                     x.Attr("gender", c.Genderid);
-                    x.Attr("leadtime", leadtime.ToString());
+                    x.Attr("leadtime", hoursBeforeClassStarts.ToString());
                     x.Attr("age", c.Age.ToString());
                     x.Attr("numlabels", c.NumLabels.ToString());
                     x.Attr("checkedin", c.CheckedIn.ToString());

@@ -1247,8 +1247,7 @@
     <Content Include="Scripts\Search\ContactSearch.min.js">
       <DependentUpon>ContactSearch.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\Search\Query2.js" />
-    <Content Include="Scripts\Search\Copy of Query.min.js">
+    <Content Include="Scripts\Search\Query2.js">
       <DependentUpon>Query2.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\PeopleSearch.min.js">
