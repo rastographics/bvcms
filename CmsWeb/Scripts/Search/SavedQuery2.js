@@ -28,13 +28,22 @@
         return false;
     });
 
-    $("#SearchQuery").keydown(function (event) {
+    $("#SearchQuery").live("keydown", function (event) {
         if (event.keyCode == 13) {
             event.preventDefault();
             $("#filter-link").click();
             return false;
         }
+        return true;
     });
+    $.ajaxSetup({
+        complete: function () {
+            $("#loading-indicator").hide();
+            $("#SearchQuery").focus().select();
+        }
+    });
+    $("#SearchQuery").focus();
+
     /* This is a good example of how to use the single checkbox edit with a checklist
     $('.public-editable').editable({
         type: 'checklist',

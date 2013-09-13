@@ -10,15 +10,15 @@ namespace CmsWeb.Areas.Search.Models
         [NoUpdate]
         public Guid QueryId { get; set; }
 
-        public bool IsPublic { get; set; }
+        public bool Ispublic { get; set; }
 
         [DisplayName("Owner")]
         public string SavedBy { get; set; }
 
-        public string Description { get; set; }
+        public string Name { get; set; }
 
         [SkipField]
-        public DateTime? LastUpdated { get; set; }
+        public DateTime? Modified { get; set; }
 
         private Query clause;
 

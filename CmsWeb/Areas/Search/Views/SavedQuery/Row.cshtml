@@ -2,11 +2,11 @@
 @using UtilityExtensions
 <tr id="row-@Model.QueryId">
     <td>
-        <a href="/Query/@Model.QueryId">@Model.Description</a>
+        <a href="/Query/@Model.QueryId">@Model.Name</a>
     </td>
     <td>@Model.SavedBy</td>
-    <td>@(Model.IsPublic ? "public" : "private") </td>
-    <td>@Model.LastUpdated.FormatDateTm()</td>
+    <td>@(Model.Ispublic ? "public" : "private") </td>
+    <td>@Model.Modified.FormatDateTm()</td>
     @if (Model.CanDelete)
     {
         <td><a class="edit-saved-query" href="/SavedQuery2/Edit/@Model.QueryId"><i class="icon-pencil"></i></a></td>

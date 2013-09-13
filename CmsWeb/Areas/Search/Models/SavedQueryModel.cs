@@ -5,7 +5,9 @@ using System.Web;
 using System.Web.Security;
 using CmsData;
 using CmsWeb.Models;
+using DocumentFormat.OpenXml.Wordprocessing;
 using UtilityExtensions;
+using Query = CmsData.Query;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -36,11 +38,19 @@ namespace CmsWeb.Areas.Search.Models
                 return _queries;
             isdev = Roles.IsUserInRole("Developer");
             _queries = from c in DbUtil.Db.Queries
-                       where c.Owner == Util.UserName || ((c.Ispublic.Value || isdev) && !OnlyMine)
+                       where !PublicOnly || c.Ispublic == true
                        where (!ScratchPadsOnly && !c.Name.Contains("scratchpad"))
                             || (ScratchPadsOnly && c.Name.Contains("scratchpad"))
                        where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
                        select c;
+            if(OnlyMine)
+                _queries = from c in _queries
+                           where c.Owner == Util.UserName
+                           select c;
+            else if (!isdev)
+                _queries = from c in _queries
+                           where c.Owner == Util.UserName || c.Ispublic == true
+                           select c;
             return _queries;
         }
         public IEnumerable<SavedQueryInfo> FetchQueries()
@@ -53,9 +63,9 @@ namespace CmsWeb.Areas.Search.Models
                      select new SavedQueryInfo
                      {
                          QueryId = c.QueryId,
-                         Description = c.Name,
-                         IsPublic = c.Ispublic == true,
-                         LastUpdated = c.Modified ?? c.Created,
+                         Name = c.Name,
+                         Ispublic = c.Ispublic == true,
+                         Modified = c.Modified ?? c.Created,
                          SavedBy = c.Owner,
                          CanDelete = admin || c.Owner == user
                      };
