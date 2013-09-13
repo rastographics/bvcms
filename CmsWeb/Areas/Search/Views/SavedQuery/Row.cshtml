@@ -4,7 +4,7 @@
     <td>
         <a href="/Query/@Model.QueryId">@Model.Name</a>
     </td>
-    <td>@Model.SavedBy</td>
+    <td>@Model.Owner</td>
     <td>@(Model.Ispublic ? "public" : "private") </td>
     <td>@Model.Modified.FormatDateTm()</td>
     @if (Model.CanDelete)

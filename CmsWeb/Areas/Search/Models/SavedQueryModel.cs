@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.Search.Models
                          Name = c.Name,
                          Ispublic = c.Ispublic == true,
                          Modified = c.Modified ?? c.Created,
-                         SavedBy = c.Owner,
+                         Owner = c.Owner,
                          CanDelete = admin || c.Owner == user
                      };
             return q3;

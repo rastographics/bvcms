@@ -12,8 +12,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool Ispublic { get; set; }
 
-        [DisplayName("Owner")]
-        public string SavedBy { get; set; }
+        public string Owner { get; set; }
 
         public string Name { get; set; }
 
