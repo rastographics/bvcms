@@ -50,6 +50,7 @@ namespace CmsWeb.Models
             public string Program { get; set; }
             public string Divisions { get; set; }
             public string Location { get; set; }
+            public string ParentName { get; set; }
             public bool isChecked { get; set; }
             public bool isOther { get; set; }
             public bool isParent { get; set; }
@@ -78,7 +79,7 @@ namespace CmsWeb.Models
                     let ot = o.ParentOrgId != null && o.ParentOrgId != org.OrganizationId
                     let pa = o.ChildOrgs.Count() > 0
 					//where o.DivisionId == org.DivisionId
-                    where o.DivOrgs.Any(dd => org.DivOrgs.Select(oo => oo.DivId).Contains(dd.DivId))
+                    where o.DivOrgs.Any(dd => org.DivOrgs.Select(oo => oo.DivId).Contains(dd.DivId)) || o.ParentOrgId == orgid
                     where namesearch == null || o.OrganizationName.Contains(namesearch) || ck
                     where o.OrganizationId != org.OrganizationId
                     where o.OrganizationStatusId == OrgStatusCode.Active
@@ -97,6 +98,7 @@ namespace CmsWeb.Models
                         isChecked = ck == true,
                         isOther = ot == true,
                         isParent = pa == true,
+                        ParentName = o.ParentOrg.OrganizationName
                     };
             return q;
         }
