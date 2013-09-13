@@ -46,7 +46,7 @@ namespace CmsData
                 FromName = From.DisplayName,
                 Subject = subject,
                 Body = body,
-                QueuedBy = Util.UserPeopleId,
+                QueuedBy = Util.UserPeopleId ?? Util.UserId1,
                 Redacted = redacted,
                 Transactional = true
             };

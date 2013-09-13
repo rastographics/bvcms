@@ -752,7 +752,7 @@ namespace UtilityExtensions
                     if (HttpContext.Current.Session != null)
                         if (HttpContext.Current.Session[STR_UserPeopleId] != null)
                             id = HttpContext.Current.Session[STR_UserPeopleId].ToInt();
-                return id ?? UserId1;
+                return id;
             }
             set
             {

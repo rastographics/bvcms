@@ -466,14 +466,14 @@ namespace CmsData
 		}
 		public Tag PopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
 		{
-			var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, TagTypeId);
+			var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
 			ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
 			TagAll(q, tag);
 			return tag;
 		}
 		public Tag PopulateTemporaryTag(IQueryable<int> q)
 		{
-			var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, NextTagId);
+			var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
 			ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
 			var cmd = GetCommand(q);
 			var s = cmd.CommandText;
@@ -492,7 +492,7 @@ namespace CmsData
 		}
 		public Tag PopulateTemporaryTag(IEnumerable<int> a)
 		{
-			var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, NextTagId);
+			var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
 			ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
 			TagAll(a, tag);
 			return tag;
@@ -503,14 +503,14 @@ namespace CmsData
 	    }
 	    public void PopulateSpecialTag(IQueryable<Person> q, string tagname)
 		{
-			var tag = FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+			var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_Personal);
 			TagPeople.DeleteAllOnSubmit(tag.PersonTags);
 			SubmitChanges();
 			TagAll(q, tag);
 		}
 		public void DePopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
 		{
-			var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, TagTypeId);
+			var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
 			TagPeople.DeleteAllOnSubmit(tag.PersonTags);
 			SubmitChanges();
 		}
@@ -614,11 +614,11 @@ namespace CmsData
 		}
 		public Tag OrgMembersOnlyTag2()
 		{
-			return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembersOnly);
+			return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_OrgMembersOnly);
 		}
 		public Tag OrgLeadersOnlyTag2()
 		{
-			return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
+			return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_OrgLeadersOnly);
 		}
 
 		public Tag FetchOrCreateTag(string tagname, int? OwnerId, int tagtypeid)
