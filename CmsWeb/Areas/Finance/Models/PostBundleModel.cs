@@ -471,6 +471,10 @@ namespace CmsWeb.Models
         }
         public static int? BatchProcess(string text, DateTime date, int? fundid)
         {
+            if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Redeemer")
+                using (var csv = new CsvReader(new StringReader(text), true))
+                    return BatchProcessRedeemer(csv, date, fundid);
+
             if (DbUtil.Db.Setting("BankDepositFormat", "none") == "FbcFayetteville")
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessFbcFayetteville(csv, date, fundid);
@@ -515,6 +519,43 @@ namespace CmsWeb.Models
             }
         }
 
+        private static int? BatchProcessRedeemer(CsvReader csv, DateTime date, int? fundid)
+        {
+            var cols = csv.GetFieldHeaders();
+            BundleHeader bh = null;
+            var firstfund = FirstFundId();
+            var fund = fundid ?? firstfund;
+
+            var list = new List<depositRecord>();
+            while (csv.ReadNextRecord())
+                list.Add(new depositRecord()
+                {
+                    batch = csv[0],
+                    account = csv[1],
+                    checkno = csv[2],
+                    amount = csv[3],
+                    routing = csv[4],
+                });
+            var q = from r in list
+                    select r;
+            var prevbatch = "";
+            foreach (var r in q)
+            {
+                if (r.batch != prevbatch)
+                {
+                    if (bh != null)
+                        FinishBundle(bh);
+                    bh = GetBundleHeader(r.batch.ToDate().Value, DateTime.Now);
+                    prevbatch = r.batch;
+                }
+                var bd = AddContributionDetail(date, fund, r.amount, r.checkno, r.routing, r.account);
+                bh.BundleDetails.Add(bd);
+            }
+            if (bh == null)
+                return null;
+            FinishBundle(bh);
+            return bh.BundleHeaderId;
+        }
         private static int? BatchProcessFbcFayetteville(CsvReader csv, DateTime date, int? fundid)
         {
             var cols = csv.GetFieldHeaders();
@@ -543,7 +584,7 @@ namespace CmsWeb.Models
             return bh.BundleHeaderId;
         }
 
-        private class ebcrecord
+        private class depositRecord
         {
             public string batch { get; set; }
             public string routing { get; set; }
@@ -559,9 +600,9 @@ namespace CmsWeb.Models
             var firstfund = FirstFundId();
             var fund = fundid ?? firstfund;
 
-            var list = new List<ebcrecord>();
+            var list = new List<depositRecord>();
             while (csv.ReadNextRecord())
-                list.Add(new ebcrecord()
+                list.Add(new depositRecord()
                 {
                     batch = csv[0],
                     routing = csv[1],
