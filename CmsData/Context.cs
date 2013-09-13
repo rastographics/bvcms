@@ -233,7 +233,7 @@ namespace CmsData
 		public Condition QueryBuilderScratchPad2()
 		{
 			var q = LoadQueryById2(Util.QueryBuilderScratchPadId2);
-		    if (q != null) 
+		    if (q == null) 
     		    q = Queries.FirstOrDefault(cc => cc.Owner == Util.UserName && cc.Name == Util.ScratchPad);
 	        Condition c;
 		    if (q == null)
@@ -254,6 +254,7 @@ namespace CmsData
 		    }
             else
     		    c = Condition.Import(q.Text);
+		    c.Id = q.QueryId; // force these to match
 		    Util.QueryBuilderScratchPadId2 = q.QueryId;
 		    return c;
 		}

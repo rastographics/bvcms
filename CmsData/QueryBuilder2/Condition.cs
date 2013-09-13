@@ -98,21 +98,26 @@ namespace CmsData
         }
         public override string ToString()
         {
+            string ret = "null";
             if (Field == "MatchAnything")
-                return "Match Anything";
-            if (!IsGroup)
-                if (Compare != null)
-                    return Compare.ToString(this);
+                ret = "Match Anything";
             switch (ComparisonType)
             {
                 case CompareType.AllTrue:
-                    return "Match ALL of the conditions below";
+                    ret = "Match ALL of the conditions below";
+                    break;
                 case CompareType.AnyTrue:
-                    return "Match ANY of the conditions below";
+                    ret = "Match ANY of the conditions below";
+                    break;
                 case CompareType.AllFalse:
-                    return "Match NONE of the conditions below";
+                    ret = "Match NONE of the conditions below";
+                    break;
+                default:
+                    if (Compare != null)
+                        ret = Compare.ToString(this);
+                    break;
             }
-            return "null";
+            return ret;
         }
         internal void SetIncludeDeceased()
         {
@@ -288,7 +293,7 @@ namespace CmsData
         }
         public bool IsFirst
         {
-            get { return IsGroup && Parent == null; }
+            get { return IsGroup && !ParentId.HasValue; }
         }
         public bool IsGroup
         {
@@ -296,21 +301,23 @@ namespace CmsData
         }
         public bool IsLastNode
         {
-            get { return Parent == null || Parent.Conditions.Count() == 1; }
+            get { return !ParentId.HasValue || Parent.Conditions.Count() == 1; }
         }
         public Condition Clone(Condition parent = null, Guid? useGuid = null)
         {
             var newclause = new Condition();
+            if(parent == null)
+                newclause.AllConditions = new Dictionary<Guid, Condition>();
+            else
+                newclause.AllConditions = parent.AllConditions;
+            newclause.CopyFrom(this);
             if (useGuid.HasValue)
                 newclause.Id = useGuid.Value;
-            else
-                newclause.Id = Guid.NewGuid();
-            newclause.CopyFrom(this);
+            newclause.AllConditions.Add(newclause.Id, newclause);
             foreach (var c in Conditions)
             {
                 var nc = c.Clone(newclause);
                 nc.ParentId = newclause.Id;
-                newclause.AllConditions.Add(nc.Id, nc);
             }
             return newclause;
         }
@@ -425,7 +432,7 @@ namespace CmsData
             return c;
         }
 
-        public Condition AddNewClause(QueryType type, CompareType op, object value)
+        public Condition AddNewClause(QueryType type, CompareType op, object value = null)
         {
             var c = new Condition();
             c.SetQueryType(type);
@@ -484,7 +491,7 @@ namespace CmsData
         //        }
         public bool CanCut
         {
-            get { return !IsFirst && (!IsLastNode || Parent.Parent != null); }
+            get { return !IsFirst && (!IsLastNode || Parent.ParentId.HasValue); }
         }
         public bool CanRemove
         {
@@ -492,7 +499,7 @@ namespace CmsData
         }
         public bool HasGroupBelow
         {
-            get { return Parent != null && Parent.Conditions.Any(gg => gg.IsGroup); }
+            get { return ParentId.HasValue &&  Parent.Conditions.Any(gg => gg.IsGroup); }
         }
         public class FlagItem
         {

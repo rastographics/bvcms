@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Threading;
+using Dapper;
 using UtilityExtensions;
 using System.Text;
 using CmsData;
@@ -816,5 +817,42 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return Content("done");
         }
+        [HttpGet]
+        [Authorize(Roles = "Developer")]
+        public ActionResult ConvertQueries()
+        {
+            List<int> list;
+            var cs = DbUtil.Db.Connection.ConnectionString;
+            using (var cn2 = new SqlConnection(cs))
+            {
+                cn2.Open();
+                cn2.Execute("Truncate table dbo.Query");
+                var q = cn2.Query<int>("select QueryId from QueryBuilderClauses where GroupId is null");
+                list = q.ToList();
+            }
+            var n = 0;
+            foreach (var qid in list)
+            {
+                var db = new CMSDataContext(cs);
+                var c = db.LoadQueryById(qid);
+                var xml = c.ToXml("conv", qid);
+                var nc = Condition.Import(xml, c.Description);
+                xml = nc.ToXml();
+                db.Queries.InsertOnSubmit(new Query()
+                    {
+                        QueryId = nc.Id,
+                        Name = c.Description.Truncate(50),
+                        Text = xml,
+                        Owner = c.SavedBy,
+                        Created = c.CreatedOn,
+                        Modified = c.CreatedOn,
+                        Ispublic = c.IsPublic
+                    });
+                db.SubmitChanges();
+                db.Dispose();
+            }
+            return Content("done");
+        }
+
     }
 }

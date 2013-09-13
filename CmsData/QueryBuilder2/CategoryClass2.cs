@@ -19,13 +19,8 @@ namespace CmsData
     public class CategoryClass2
     {
         public string Title { get; set; }
-        public string Name
-        {
-            get
-            {
-                return Title.Replace(" ", "");
-            }
-        }
+        public string TopMessage { get; set; }
+        public string Name { get; set; }
         public IEnumerable<FieldClass2> Fields { get; set; }
 
         public static List<CategoryClass2> Categories
@@ -39,7 +34,9 @@ namespace CmsData
                     var q = from c in xdoc.Root.Elements()
                             select new CategoryClass2
                             {
+                                Name = c.Name.LocalName,
                                 Title = c.Attribute("Title") != null ? c.Attribute("Title").Value : c.Name.LocalName,
+                                TopMessage = c.Attribute("TopMessage") != null ? c.Attribute("TopMessage").Value : "",
                                 Fields = (from f in c.Elements()
                                           select new FieldClass2
                                           {

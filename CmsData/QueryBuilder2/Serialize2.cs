@@ -52,10 +52,11 @@ namespace CmsData
         private void WriteAttributes(XmlWriter w)
         {
             w.WriteAttributeString("Id", Id.ToString());
+            w.WriteAttributeString("Order", Order.ToString());
             w.WriteAttributeString("Field", Field);
+            w.WriteAttributeString("Comparison", Comparison);
             if (Description.HasValue())
                 w.WriteAttributeString("Description", Description);
-            w.WriteAttributeString("Comparison", Comparison);
             if (TextValue.HasValue())
                 w.WriteAttributeString("TextValue", TextValue);
             if (DateValue.HasValue)

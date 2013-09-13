@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Net;
 using System.Threading;
 using System.Web.Mvc;
 using System.Xml;
@@ -30,7 +31,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             ViewBag.Title = "QueryBuilder";
             var m = new QueryModel2();
-            m.LoadScratchPad();
+            m.LoadScratchPad(id);
 
             InitToolbar(m);
             var newsearchid = (Guid?)TempData["newsearch"];
@@ -79,8 +80,18 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/Paste/{id}")]
         public ActionResult Paste(Guid id)
         {
-            var m = new QueryModel2() { SelectedId = id };
+            var m = new QueryModel2();
+            m.LoadScratchPad();
+            m.SelectedId = id;
             m.Paste(id);
+            return View("Conditions", m);
+        }
+        [POST("Query/InsGroupAbove/{id:guid}")]
+        public ActionResult InsGroupAbove(Guid id)
+        {
+            var m = new QueryModel2 { SelectedId = id };
+            m.LoadScratchPad();
+            m.InsertGroupAbove();
             return View("Conditions", m);
         }
         [POST("Query/CodesDropdown/")]
@@ -175,14 +186,6 @@ namespace CmsWeb.Areas.Search.Controllers
             m.SelectedId = null;
             return View("Conditions", m);
         }
-        [POST("Query/InsGroupAbove/{id:guid}")]
-        public ActionResult InsGroupAbove(Guid id)
-        {
-            var m = new QueryModel2 { SelectedId = id };
-            m.LoadScratchPad();
-            m.InsertGroupAbove();
-            return View("Conditions", m);
-        }
         [POST("Query/Conditions")]
         public ActionResult Conditions()
         {
@@ -270,6 +273,13 @@ namespace CmsWeb.Areas.Search.Controllers
             var ncid = qb.CleanSlate2(DbUtil.Db);
             TempData["newsearch"] = ncid;
             return Redirect("/Query");
+        }
+        [GET("Query/Help/{name}")]
+        public ActionResult Help(string name)
+        {
+            var wc = new WebClient();
+            var s = wc.DownloadString("https://www.bvcms.com/DocDialog2/" + name);
+            return Content(s);
         }
         [POST("Query/ToggleTag/{id:int}")]
         public JsonResult ToggleTag(int id)

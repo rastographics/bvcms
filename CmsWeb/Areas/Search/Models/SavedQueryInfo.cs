@@ -8,25 +8,36 @@ namespace CmsWeb.Areas.Search.Models
     public class SavedQueryInfo
     {
         [NoUpdate]
-        public int QueryId { get; set; }
+        public Guid QueryId { get; set; }
+
         public bool IsPublic { get; set; }
+
         [DisplayName("Owner")]
         public string SavedBy { get; set; }
-        public string Description { get; set; }
-        [SkipField]
-        public DateTime LastUpdated { get; set; }
 
-        private QueryBuilderClause clause;
-        public SavedQueryInfo() { }
-        public SavedQueryInfo(int id)
+        public string Description { get; set; }
+
+        [SkipField]
+        public DateTime? LastUpdated { get; set; }
+
+        private Query clause;
+
+        public SavedQueryInfo()
         {
-            clause = DbUtil.Db.LoadQueryById(id);
+        }
+        [NoUpdate]
+        public bool CanDelete { get; set; }
+
+        public SavedQueryInfo(Guid id)
+        {
+            clause = DbUtil.Db.LoadQueryById2(id);
             this.CopyPropertiesFrom(clause);
         }
+
         public void UpdateModel()
         {
             if (clause == null)
-                clause = DbUtil.Db.LoadQueryById(QueryId);
+                clause = DbUtil.Db.LoadQueryById2(QueryId);
             this.CopyPropertiesTo(clause);
             DbUtil.Db.SubmitChanges();
         }

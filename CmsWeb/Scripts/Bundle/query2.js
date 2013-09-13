@@ -822,7 +822,7 @@ $(function () {
         $.HideEditCondition();
         return false;
     });
-    $("#conditions").on("mouseenter", "header", function() {
+    $("#conditions").on("mouseenter", "header", function () {
         var li = $(this).closest("li");
         li.addClass("borderleftred");
     }).on("mouseleave", "header", function () {
@@ -876,7 +876,7 @@ $(function () {
         });
         return false;
     });
-    if($.ClipboardHasCondition) {
+    if ($.ClipboardHasCondition) {
         $("li.pastecondition").show();
     }
     $('#conditions').on("click", 'a.cutcondition', function () {
@@ -979,19 +979,22 @@ $(function () {
         });
         return false;
     });
+    $('#QueryConditionSelect').on("click", "a.help", function (event) {
+        event.preventDefault();
+        var url;
+        var name = $(this).data("name");
+        if (name.endsWith('-'))
+            name += $("#ConditionName").val();
+        $.get("/Query/Help/" + name, function(ret) {
+            $("#QueryConditionHelp .modal-body").html(ret).ready(function() {
+                $('#QueryConditionHelp').modal("show");
+            });
+        });
+    });
     $.navigate = function (url, data) {
         url += (url.match(/\?/) ? "&" : "?") + data;
         window.location = url;
     };
-    $('a.help').live("click", function (event) {
-        event.preventDefault();
-        var d = $('#QueryConditionHelp');
-        if (this.href.endsWith('-'))
-            $('iframe', d).attr("src", this.href + $("#ConditionName").val());
-        else
-            $('iframe', d).attr("src", this.href);
-        d.dialog("open");
-    });
     if ($("#NewSearchId").val()) {
         liedit = $("li[data-qid='" + $("#NewSearchId").val() + "']");
         RefreshList();
@@ -1001,6 +1004,17 @@ $(function () {
         RefreshList();
     RefreshList();
 });
+function autoResize(id){
+    var newheight;
+    var newwidth;
+
+    if(document.getElementById){
+        newheight=document.getElementById(id).contentWindow.document .body.scrollHeight;
+        newwidth=document.getElementById(id).contentWindow.document .body.scrollWidth;
+        document.getElementById(id).height= (newheight) + "px";
+        document.getElementById(id).width= (newwidth) + "px";
+    }
+}
 
 function RefreshList(qs) {
     //    if (!qs)

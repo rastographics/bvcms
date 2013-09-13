@@ -1,22 +1,39 @@
 ﻿$(function () {
-    $("a.edit-saved-query").live("click", function(ev) {
+    $("a.edit-saved-query").live("click", function (ev) {
         ev.preventDefault();
         var a = $(this);
         var modal = $("#edit-saved-query-dialog");
         var rowid = "#" + a.closest("tr").attr("id");
         modal.css({ 'margin-top': '', 'top': '' })
-            .load(a.attr("href"), {}, function() {
+            .load(a.attr("href"), {}, function () {
                 modal.modal("show");
-                $("#SaveQueryInfo").click(function(ev) {
+                $("#SaveQueryInfo").click(function (ev) {
                     ev.preventDefault();
                     var q = modal.serialize();
-                    $.post("/SavedQuery2/Update", q, function(ret) {
+                    $.post("/SavedQuery2/Update", q, function (ret) {
                         $(rowid).replaceWith(ret);
                         modal.modal("hide");
                         modal.empty();
                     });
                 });
             });
+    });
+    $("a.delete-saved-query").live("click", function (ev) {
+        ev.preventDefault();
+        var a = $(this);
+        if (confirm("Delete this saved search?"))
+            $.post(a.attr("href"), {}, function (ret) {
+                a.closest("tr").fadeOut().remove();
+            });
+        return false;
+    });
+
+    $("#SearchQuery").keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            $("#filter-link").click();
+            return false;
+        }
     });
     /* This is a good example of how to use the single checkbox edit with a checklist
     $('.public-editable').editable({

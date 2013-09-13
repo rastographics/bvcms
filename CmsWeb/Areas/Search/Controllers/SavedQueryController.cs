@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Web.Mvc;
 using AttributeRouting;
@@ -15,7 +16,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index()
         {
             var m = new SavedQueryModel();
-            m.Pager.Set("/SavedQuery2/Results", 1, null, "Description", "asc");
+            m.Pager.Set("/SavedQuery2/Results", 1, null, "Last Updated", "desc");
             return View(m);
         }
         [POST("SavedQuery2/Results/{page?}/{size?}/{sort?}/{dir?}")]
@@ -24,8 +25,8 @@ namespace CmsWeb.Areas.Search.Controllers
             m.Pager.Set("/SavedQuery2/Results", page, size, sort, dir);
             return View(m);
         }
-        [POST("SavedQuery2/Edit/{id:int}")]
-        public ActionResult Edit(int id)
+        [POST("SavedQuery2/Edit/{id:guid}")]
+        public ActionResult Edit(Guid id)
         {
             var m = new SavedQueryInfo(id);
             return View(m);
@@ -35,6 +36,14 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             m.UpdateModel();
             return View("Row", m);
+        }
+        [POST("SavedQuery2/Delete/{id:guid}")]
+        public ActionResult Delete(Guid id)
+        {
+            var q = DbUtil.Db.LoadQueryById2(id);
+            DbUtil.Db.Queries.DeleteOnSubmit(q);
+            DbUtil.Db.SubmitChanges();
+            return Content("ok");
         }
 //        [POST("SavedQuery2/PostPublic")]
 //        public ActionResult PostPublic(int pk, string value)
