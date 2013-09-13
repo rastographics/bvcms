@@ -1,7 +1,9 @@
 ﻿@model CmsWeb.Models.OrgChildrenModel
+@using AttributeRouting.Helpers
 @using UtilityExtensions
 @foreach(var o in Model.FetchOrgList())
 { 
+    // Parent is purple, isOther is pink
 	<tr @(o.isOther? "style=background-color:#fcc" : o.isParent? "style=background-color:#ccf" : "")>
 		<td>
 @if (o.isChecked)
@@ -11,6 +13,10 @@
 else if (o.isOther)
 {
             <input type="checkbox" oid="@o.Id" checked="checked" disabled="disabled" />
+}
+else if (o.isParent && Model.org.ParentOrgId == o.Id)
+{
+            <input type="checkbox" oid="@o.Id" disabled="disabled" />
 }
 else
 {
@@ -29,5 +35,6 @@ else
         </td>
         <td>@o.Leader</td>
         <td>@o.Location</td>
+        <td><a href="/OrgChildren/Index/@o.ParentId">@o.ParentName</a></td>
 	</tr>
 }
