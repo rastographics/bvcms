@@ -100,8 +100,8 @@ namespace CmsCheckin
                     hour = hr
                 };
                 var leadtime = double.Parse(e.Attribute("leadtime").Value);
-                double howlate = -(Program.EarlyCheckin / 60d);
-                if (ci.oid != 0 && leadtime <= Program.LeadTime && leadtime >= howlate)
+                double howlate = -(Program.LateCheckinMinutes / 60d);
+                if (ci.oid != 0 && leadtime <= Program.EarlyCheckinHours && leadtime >= howlate)
                     list.Add(new ClassInfo
                     {
                         display = e.Attribute("display").Value,

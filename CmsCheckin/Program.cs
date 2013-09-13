@@ -72,8 +72,8 @@ namespace CmsCheckin
             HideCursor = f.HideCursor.Checked;
             AskGrade = f.AskGrade.Checked;
 			AskLabels = false;
-            LeadTime = int.Parse(f.LeadHours.Text);
-            EarlyCheckin = int.Parse(f.LateMinutes.Text);
+            EarlyCheckinHours = int.Parse(f.LeadHours.Text);
+            LateCheckinMinutes = int.Parse(f.LateMinutes.Text);
             AskEmFriend = f.AskEmFriend.Checked;
             KioskName = f.KioskName.Text;
             AskChurch = f.AskChurch.Checked;
@@ -161,8 +161,8 @@ namespace CmsCheckin
         public static int CampusId { get; set; }
         public static string SecurityCode { get; set; }
         public static int ThisDay { get; set; }
-        public static int LeadTime { get; set; }
-        public static int EarlyCheckin { get; set; }
+        public static int EarlyCheckinHours { get; set; }
+        public static int LateCheckinMinutes { get; set; }
         public static int? Grade { get; set; }
         public static bool HideCursor { get; set; }
         public static bool editing { get; set; }

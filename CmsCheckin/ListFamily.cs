@@ -150,7 +150,7 @@ namespace CmsCheckin
                 a.CheckedIn = bool.Parse(e.Attribute("checkedin").Value);
                 a.HasPicture = bool.Parse(e.Attribute("haspicture").Value);
                 a.RequiresSecurityLabel = bool.Parse(e.Attribute("requiressecuritylabel").Value);
-                a.leadtime = double.Parse(e.Attribute("leadtime").Value);
+                a.hoursBeforeClassStarts = double.Parse(e.Attribute("leadtime").Value);
 
                 DateTime dt;
                 if (DateTime.TryParse(e.Attribute("hour").Value, out dt))
@@ -291,10 +291,11 @@ namespace CmsCheckin
                 ab.BackColor = Color.CornflowerBlue;
                 ab.FlatAppearance.BorderColor = Color.Black;
 
-                double howlate = -(Program.EarlyCheckin / 60d);
+                double LateCheckinHours = Program.LateCheckinMinutes / 60d;
+                double hoursAfterClassHasStarted = -c.hoursBeforeClassStarts;
                 if (c.cinfo.oid == 0
-                    || c.leadtime > Program.LeadTime
-                    || c.leadtime < howlate)
+                    || c.hoursBeforeClassStarts > Program.EarlyCheckinHours
+                    || hoursAfterClassHasStarted > LateCheckinHours)
                 {
                     ab.Enabled = false;
                     ab.BackColor = SystemColors.Control;
@@ -891,7 +892,7 @@ namespace CmsCheckin
         public bool WasChecked { get; set; }
         public bool HasPicture { get; set; }
         public bool RequiresSecurityLabel { get; set; }
-        public double leadtime { get; set; }
+        public double hoursBeforeClassStarts { get; set; }
     }
 
     // all of these come from the attribtues on the attendee element
