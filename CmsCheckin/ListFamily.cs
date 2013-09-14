@@ -291,10 +291,7 @@ namespace CmsCheckin
                 ab.BackColor = Color.CornflowerBlue;
                 ab.FlatAppearance.BorderColor = Color.Black;
 
-                double howlate = -(Program.EarlyCheckin / 60d);
-                if (c.cinfo.oid == 0
-                    || c.leadtime > Program.LeadTime
-                    || c.leadtime < howlate)
+                if (c.cinfo.oid == 0 || Program.TooEarlyOrLate(c.leadtime))
                 {
                     ab.Enabled = false;
                     ab.BackColor = SystemColors.Control;

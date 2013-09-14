@@ -10,7 +10,7 @@ namespace CmsCheckin
 {
     static class Program
     {
-		public static bool UseNewLabels = true;
+        public static bool UseNewLabels = true;
 
         [STAThread]
         static void Main(string[] args)
@@ -22,8 +22,8 @@ namespace CmsCheckin
 
             var login = new Login();
 
-			if (!Util.IsDebug())
-				login.FullScreen.Checked = true;
+            if (!Util.IsDebug())
+                login.FullScreen.Checked = true;
 
             login.password.Focus();
             var r = login.ShowDialog();
@@ -33,30 +33,30 @@ namespace CmsCheckin
             PrintKiosks = login.PrintKiosks.Text;
             Printer = login.Printer.Text;
             DisableLocationLabels = login.DisableLocationLabels.Checked;
-			BuildingMode = login.BuildingAccessMode.Checked;
-			FullScreen = login.FullScreen.Checked;
+            BuildingMode = login.BuildingAccessMode.Checked;
+            FullScreen = login.FullScreen.Checked;
 
-			BaseForm b;
+            BaseForm b;
             if (BuildingMode)
             {
-				attendant = new Attendant();
-				attendant.Location = new Point(Settings1.Default.AttendantLocX, Settings1.Default.AttendantLocY);
-				home2 = new Home2();
-				b = new BaseForm(home2);
-				b.StartPosition = FormStartPosition.Manual;
-				b.Location = new Point(Settings1.Default.BaseFormLocX, Settings1.Default.BaseFormLocY);
-				baseform = b;
-				if (FullScreen)
-				{
-					b.WindowState = FormWindowState.Maximized;
-					b.FormBorderStyle = FormBorderStyle.None;
-				}
-				else
-				{
-					b.FormBorderStyle = FormBorderStyle.FixedSingle;
-					b.ControlBox = false;
-				}
-            	attendant.StartPosition = FormStartPosition.Manual;
+                attendant = new Attendant();
+                attendant.Location = new Point(Settings1.Default.AttendantLocX, Settings1.Default.AttendantLocY);
+                home2 = new Home2();
+                b = new BaseForm(home2);
+                b.StartPosition = FormStartPosition.Manual;
+                b.Location = new Point(Settings1.Default.BaseFormLocX, Settings1.Default.BaseFormLocY);
+                baseform = b;
+                if (FullScreen)
+                {
+                    b.WindowState = FormWindowState.Maximized;
+                    b.FormBorderStyle = FormBorderStyle.None;
+                }
+                else
+                {
+                    b.FormBorderStyle = FormBorderStyle.FixedSingle;
+                    b.ControlBox = false;
+                }
+                attendant.StartPosition = FormStartPosition.Manual;
                 Application.Run(attendant);
                 return;
             }
@@ -71,16 +71,16 @@ namespace CmsCheckin
             ThisDay = f.DayOfWeek;
             HideCursor = f.HideCursor.Checked;
             AskGrade = f.AskGrade.Checked;
-			AskLabels = false;
-            LeadTime = int.Parse(f.LeadHours.Text);
-            EarlyCheckin = int.Parse(f.LateMinutes.Text);
+            AskLabels = false;
+            EarlyCheckinHours = int.Parse(f.LeadHours.Text);
+            LateCheckinMinutes = int.Parse(f.LateMinutes.Text);
             AskEmFriend = f.AskEmFriend.Checked;
             KioskName = f.KioskName.Text;
             AskChurch = f.AskChurch.Checked;
             AskChurchName = f.AskChurchName.Checked;
             EnableTimer = f.EnableTimer.Checked;
             DisableJoin = f.DisableJoin.Checked;
-        	SecurityLabelPerChild = f.SecurityLabelPerChild.Checked;
+            SecurityLabelPerChild = f.SecurityLabelPerChild.Checked;
 
             f.Dispose();
 
@@ -91,11 +91,11 @@ namespace CmsCheckin
                 return;
             }
 
-			home = new Home();
-			b = new BaseForm(home);
+            home = new Home();
+            b = new BaseForm(home);
             baseform = b;
-			b.StartPosition = FormStartPosition.Manual;
-			b.Location = new Point(Settings1.Default.BaseFormLocX, Settings1.Default.BaseFormLocY);
+            b.StartPosition = FormStartPosition.Manual;
+            b.Location = new Point(Settings1.Default.BaseFormLocX, Settings1.Default.BaseFormLocY);
 
             if (FullScreen)
             {
@@ -103,6 +103,13 @@ namespace CmsCheckin
                 b.FormBorderStyle = FormBorderStyle.None;
             }
             Application.Run(b);
+        }
+
+        public static bool TooEarlyOrLate(double earlyhours)
+        {
+            // Convert from earlyhours to lateminutes
+            var lateminutes = -earlyhours * 60;
+            return earlyhours > EarlyCheckinHours || lateminutes > LateCheckinMinutes;
         }
 
         public static bool CheckAdminPIN()
@@ -152,8 +159,8 @@ namespace CmsCheckin
         public static string Password { get; set; }
         public static string URL { get; set; }
         public static string Printer { get; set; }
-		public static string PrinterWidth { get; set; }
-		public static string PrinterHeight { get; set; }
+        public static string PrinterWidth { get; set; }
+        public static string PrinterHeight { get; set; }
         public static string PrintKiosks { get; set; }
         public static string AdminPassword { get; set; }
         public static int FamilyId { get; set; }
@@ -161,8 +168,8 @@ namespace CmsCheckin
         public static int CampusId { get; set; }
         public static string SecurityCode { get; set; }
         public static int ThisDay { get; set; }
-        public static int LeadTime { get; set; }
-        public static int EarlyCheckin { get; set; }
+        public static int EarlyCheckinHours { get; set; }
+        public static int LateCheckinMinutes { get; set; }
         public static int? Grade { get; set; }
         public static bool HideCursor { get; set; }
         public static bool editing { get; set; }
@@ -180,22 +187,22 @@ namespace CmsCheckin
         public static string PrintMode { get; set; }
         public static bool BuildingMode { get; set; }
         public static string Building { get; set; }
-    	public static BaseBuildingInfo BuildingInfo { get; set; }
-		public static AddGuests addguests;
+        public static BaseBuildingInfo BuildingInfo { get; set; }
+        public static AddGuests addguests;
 
-		public static PersonInfo GuestOf()
-		{
-			if (addguests != null)
-			{
-				var rb = addguests.groupBox1.Controls.OfType<RadioButton>()
-					.FirstOrDefault(r => r.Checked);
-				if (rb != null)
-					return rb.Tag as PersonInfo;
-			}
-			return null;
-		}
+        public static PersonInfo GuestOf()
+        {
+            if (addguests != null)
+            {
+                var rb = addguests.groupBox1.Controls.OfType<RadioButton>()
+                    .FirstOrDefault(r => r.Checked);
+                if (rb != null)
+                    return rb.Tag as PersonInfo;
+            }
+            return null;
+        }
 
-    	public static string QueryString
+        public static string QueryString
         {
             get { return string.Format("?campus={0}&thisday={1}&kioskmode={2}&kiosk={3}", CampusId, ThisDay, false, KioskName); }
         }
@@ -287,34 +294,34 @@ namespace CmsCheckin
             Cursor.Hide();
             showing = false;
         }
-		public static void ClearFields()
-		{
-			if (baseform.textbox.Parent is Home)
-				home.ClearFields();
-			else if (baseform.textbox.Parent is Home2)
-				home2.ClearFields();
-		}
-		private delegate void SetPropertyThreadSafeDelegate<TResult>(Control @this, Expression<Func<TResult>> property, TResult value);
+        public static void ClearFields()
+        {
+            if (baseform.textbox.Parent is Home)
+                home.ClearFields();
+            else if (baseform.textbox.Parent is Home2)
+                home2.ClearFields();
+        }
+        private delegate void SetPropertyThreadSafeDelegate<TResult>(Control @this, Expression<Func<TResult>> property, TResult value);
 
-		public static void SetPropertyThreadSafe<TResult>(this Control @this, Expression<Func<TResult>> property, TResult value)
-		{
-			var propertyInfo = (property.Body as MemberExpression).Member as PropertyInfo;
+        public static void SetPropertyThreadSafe<TResult>(this Control @this, Expression<Func<TResult>> property, TResult value)
+        {
+            var propertyInfo = (property.Body as MemberExpression).Member as PropertyInfo;
 
-			if (propertyInfo == null ||
-				//!@this.GetType().IsSubclassOf(propertyInfo.ReflectedType) ||
-				@this.GetType().GetProperty(propertyInfo.Name, propertyInfo.PropertyType) == null)
-			{
-				throw new ArgumentException("The lambda expression 'property' must reference a valid property on this Control.");
-			}
+            if (propertyInfo == null ||
+                //!@this.GetType().IsSubclassOf(propertyInfo.ReflectedType) ||
+                @this.GetType().GetProperty(propertyInfo.Name, propertyInfo.PropertyType) == null)
+            {
+                throw new ArgumentException("The lambda expression 'property' must reference a valid property on this Control.");
+            }
 
-			if (@this.InvokeRequired)
-			{
-				@this.Invoke(new SetPropertyThreadSafeDelegate<TResult>(SetPropertyThreadSafe), new object[] { @this, property, value });
-			}
-			else
-			{
-				@this.GetType().InvokeMember(propertyInfo.Name, BindingFlags.SetProperty, null, @this, new object[] { value });
-			}
-		}
+            if (@this.InvokeRequired)
+            {
+                @this.Invoke(new SetPropertyThreadSafeDelegate<TResult>(SetPropertyThreadSafe), new object[] { @this, property, value });
+            }
+            else
+            {
+                @this.GetType().InvokeMember(propertyInfo.Name, BindingFlags.SetProperty, null, @this, new object[] { value });
+            }
+        }
     }
 }
