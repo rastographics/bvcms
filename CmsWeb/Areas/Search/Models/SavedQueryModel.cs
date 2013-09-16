@@ -44,7 +44,11 @@ namespace CmsWeb.Areas.Search.Models
                        select c;
             if (ScratchPadsOnly)
                 _queries = from c in _queries
-                           where c.Name == null || c.Name.Length == 0
+                           where c.Name == Util.ScratchPad2
+                           select c;
+            else
+                _queries = from c in _queries
+                           where c.Name != Util.ScratchPad2
                            select c;
             if (OnlyMine)
                 _queries = from c in _queries
@@ -52,7 +56,7 @@ namespace CmsWeb.Areas.Search.Models
                            select c;
             else if (!isdev)
                 _queries = from c in _queries
-                           where c.Owner == Util.UserName || c.Ispublic == true
+                           where c.Owner == Util.UserName || c.Ispublic
                            select c;
             return _queries;
         }
@@ -63,17 +67,15 @@ namespace CmsWeb.Areas.Search.Models
             var admin = HttpContext.Current.User.IsInRole("Admin");
             var user = Util.UserName;
             var q3 = from c in q2
-                     let name = c.Name ?? c.TempName
                      select new SavedQueryInfo
                      {
                          QueryId = c.QueryId,
                          Name = c.Name,
-                         Ispublic = c.Ispublic == true,
+                         Ispublic = c.Ispublic,
                          LastRun = c.LastRun ?? c.Created,
                          Owner = c.Owner,
                          CanDelete = admin || c.Owner == user,
                          RunCount = c.RunCount,
-                         Display = name
                      };
             return q3;
         }

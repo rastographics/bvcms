@@ -36,9 +36,15 @@ namespace CmsData
         {
             Email(from, p, null, subject, body, true);
         }
+
         public void Email(string from, Person p, List<MailAddress> addmail, string subject, string body, bool redacted)
         {
             var From = Util.FirstAddress(from);
+            Email(From, p, addmail, subject, body, redacted);
+        }
+
+        public void Email(MailAddress From, Person p, List<MailAddress> addmail, string subject, string body, bool redacted)
+        {
             var emailqueue = new EmailQueue
             {
                 Queued = DateTime.Now,

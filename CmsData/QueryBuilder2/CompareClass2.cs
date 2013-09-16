@@ -634,7 +634,7 @@ namespace CmsData
                 // S -------------------------
                 case QueryType.SavedQuery:
                     return Expressions.SavedQuery(parm, Db,
-                               c.SavedQuery,
+                               c.SavedQueryIdDesc,
                                CompType,
                                c.CodeIds == "1");
                 case QueryType.SmallGroup:

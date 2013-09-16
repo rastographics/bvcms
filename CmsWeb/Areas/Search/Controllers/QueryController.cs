@@ -30,9 +30,9 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Query(Guid? id)
         {
             ViewBag.Title = "QueryBuilder";
-            var last5 = DbUtil.Db.FetchLastFiveQueries();
+            //var last5 = DbUtil.Db.FetchLastFiveQueries();
             var m = new QueryModel2();
-            m.LoadQuery(id, last5);
+            m.LoadQuery(id);
 
             InitToolbar(m);
             var newsearchid = (Guid?)TempData["newsearch"];
@@ -269,7 +269,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [GET("Query/NewQuery")]
         public ActionResult NewQuery()
         {
-            var qb = DbUtil.Db.FetchLastQuery();
+            var qb = DbUtil.Db.ScratchPadCondition();
             var ncid = qb.CleanSlate2(DbUtil.Db);
             TempData["newsearch"] = ncid;
             return Redirect("/Query");

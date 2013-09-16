@@ -30,7 +30,6 @@ namespace CmsData
 
             if (CopiedFrom.HasValue)
                 q.CopiedFrom = CopiedFrom;
-            q.TempName = ToString2();
             q.Name = Description;
             q.LastRun = DateTime.Now;
             if(increment)

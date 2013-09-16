@@ -33,8 +33,6 @@ namespace CmsData
 		
 		private int _RunCount;
 		
-		private string _TempName;
-		
 		private Guid? _CopiedFrom;
 		
    		
@@ -69,9 +67,6 @@ namespace CmsData
 		
 		partial void OnRunCountChanging(int value);
 		partial void OnRunCountChanged();
-		
-		partial void OnTempNameChanging(string value);
-		partial void OnTempNameChanged();
 		
 		partial void OnCopiedFromChanging(Guid? value);
 		partial void OnCopiedFromChanged();
@@ -256,28 +251,6 @@ namespace CmsData
 					this._RunCount = value;
 					this.SendPropertyChanged("RunCount");
 					this.OnRunCountChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="tempName", UpdateCheck=UpdateCheck.Never, Storage="_TempName", DbType="varchar(50)")]
-		public string TempName
-		{
-			get { return this._TempName; }
-
-			set
-			{
-				if (this._TempName != value)
-				{
-				
-                    this.OnTempNameChanging(value);
-					this.SendPropertyChanging();
-					this._TempName = value;
-					this.SendPropertyChanged("TempName");
-					this.OnTempNameChanged();
 				}
 
 			}

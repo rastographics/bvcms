@@ -35,7 +35,7 @@ namespace CmsData
         public bool IsPublic { get; set; }
         public DateTime CreatedOn { get; set; }
         public string ExtraData { get; set; }
-        public string SavedQuery { get; set; }
+        public string SavedQueryIdDesc { get; set; }
         public string Tags { get; set; }
         public int Schedule { get; set; }
         public int? Age { get; set; }
@@ -127,18 +127,6 @@ namespace CmsData
                     break;
             }
             return ret;
-        }
-
-        public string ToString2()
-        {
-            var sb = new StringBuilder();
-            foreach (var c in Conditions)
-                sb.AppendFormat(", {0}", c.Field);
-            if (sb.Length == 0)
-                sb.Append("no conditions");
-            else
-                sb.Remove(0, 2);
-            return sb.ToString().Truncate(50);
         }
 
         internal void SetIncludeDeceased()
@@ -359,7 +347,7 @@ namespace CmsData
             Organization = from.Organization;
             Program = from.Program;
             ExtraData = from.ExtraData;
-            SavedQuery = from.SavedQuery;
+            SavedQueryIdDesc = from.SavedQueryIdDesc;
             Schedule = from.Schedule;
             StartDate = from.StartDate;
             Tags = from.Tags;
@@ -379,7 +367,7 @@ namespace CmsData
             SetQueryType(QueryType.Group);
             SetComparisonType(CompareType.AllTrue);
             var nc = AddNewClause();
-            Description = null;
+            Description = Util.ScratchPad2;
             Save(Db);
             return nc.Id;
         }

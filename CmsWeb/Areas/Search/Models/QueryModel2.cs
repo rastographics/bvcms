@@ -98,38 +98,10 @@ namespace CmsWeb.Areas.Search.Models
             return FetchCount();
         }
 
-        public void LoadQuery(Guid? id = null, List<Query> last5 = null)
+        public void LoadQuery(Guid? id = null)
         {
-            if (!id.HasValue)
-                TopClause = last5 != null ? last5[0].ToClause() : Db.FetchLastQuery();
-            else
-            {
-                var existing = Db.LoadQueryById2(id.Value);
-                if (existing != null)
-                {
-                    if (existing.Ispublic != true && existing.Owner == Util.UserName)
-                    {
-                        TopClause = existing.ToClause();
-                        TopClause.Id = existing.QueryId;
-                    }
-                    else
-                    {
-                        existing.RunCount = existing.RunCount + 1;
-                        Query recentCopy = null;
-                        if (last5 != null)
-                            recentCopy = last5.FirstOrDefault(cc => cc.CopiedFrom == existing.QueryId);
-                        if (recentCopy != null)
-                            TopClause = existing.ToClause().Clone(useGuid: recentCopy.QueryId);
-                        else
-                            TopClause = existing.ToClause().Clone();
-                        TopClause.CopiedFrom = existing.QueryId;
-                        SavedQueryDesc = TopClause.Description;
-                        if (TopClause.Description.HasValue())
-                            TopClause.Description = "Copy of " + TopClause.Description;
-                    }
-                }
-            }
-            Description = TopClause.Description ?? TopClause.ToString2();
+            TopClause = id.HasValue ? Db.LoadCopyOfExistingQuery(id.Value) : Db.FetchLastQuery();
+            SavedQueryDesc = Description = TopClause.Description;
             DbUtil.LogActivity("Running Query ({0})".Fmt(TopClause.Id));
         }
 
@@ -336,7 +308,7 @@ namespace CmsWeb.Areas.Search.Models
             c.ExtraData = Quarters;
             if (Tags != null)
                 c.Tags = string.Join(";", Tags);
-            c.SavedQuery = SavedQueryDesc;
+            c.SavedQueryIdDesc = SavedQueryDesc;
             SelectedId = null;
             TopClause.Save(Db, increment: true);
         }
@@ -405,7 +377,7 @@ namespace CmsWeb.Areas.Search.Models
             }
             if (MinistryVisible)
                 Ministry = c.Program;
-            SavedQueryDesc = c.SavedQuery;
+            SavedQueryDesc = c.SavedQueryIdDesc;
         }
         public void SetCodes()
         {

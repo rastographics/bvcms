@@ -633,6 +633,9 @@ div.inline {
 div.table {
     display: table;
 }
+div.cell {
+    display: table-cell;
+}
 
 div.left-gutter {
     margin-left: 2em;
@@ -649,6 +652,9 @@ div.pad-top {
 div.align-top {
     vertical-align: top;
 }
+div.align-bottom {
+    vertical-align: bottom;
+}
 
 legend {
     line-height: 1.2em;
@@ -658,4 +664,7 @@ legend {
 
 fieldset {
     margin-bottom: 1em;
+}
+.nowrap {
+    white-space: nowrap;
 }

@@ -18,6 +18,11 @@
             });
         });
     };
+    $("#SavedQueryDesc").editable();
+    $('#SavedQueryDescEdit').click(function(e){    
+           e.stopPropagation();
+           $('#SavedQueryDesc').editable('toggle');
+    });
     $.InitCodeValues = function () {
         $('#CodeValues').multiselect({
             includeSelectAllOption: true,

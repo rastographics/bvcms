@@ -846,8 +846,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 var q = new Query()
                 {
                     QueryId = nc.Id,
-                    Name = name,
-                    TempName = nc.ToString2(),
+                    Name = name ?? Util.ScratchPad2,
                     Text = xml,
                     Owner = c.SavedBy,
                     Created = c.CreatedOn,

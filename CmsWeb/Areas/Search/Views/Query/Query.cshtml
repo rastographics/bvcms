@@ -20,10 +20,15 @@
     <div class="row-fluid">
         <div class="span4">
             <fieldset>
-                <legend>SearchBuilder: @Model.Description</legend>
-                <div class="pull-right">
-                    <a href="/Query/NewQuery" class="btn btn-success">New Search</a>
-                    <a href="/Query/Save" class="btn btn-primary">Save Search As</a>
+                <legend>Advanced Search Builder</legend>
+                <div class="table">
+                    <div class="cell">
+                        <a id="SavedQueryDesc" data-mode="inline" data-value="@Model.SavedQueryDesc" title="Enter Query Description">@Model.SavedQueryDesc</a>
+                        <a id="SavedQueryDescEdit" href="#"><i class="icon-pencil"></i></a>
+                    </div>
+                    <div class="cell right">
+                        <a href="/Query/NewQuery" class="btn btn-success align-bottom right nowrap">New Search</a>
+                    </div>
                 </div>
             </fieldset>
             @Html.Partial("Conditions", Model)

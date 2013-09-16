@@ -16,8 +16,6 @@ namespace CmsWeb.Areas.Search.Models
 
         public string Name { get; set; }
 
-        public string Display;
-
         [SkipField]
         public DateTime? LastRun { get; set; }
         [SkipField]
