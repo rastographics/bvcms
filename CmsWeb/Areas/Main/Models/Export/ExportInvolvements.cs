@@ -75,6 +75,7 @@ namespace CmsWeb.Models
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
+                     let rr = p.RecRegs.FirstOrDefault()
                      select new
                      {
                          PeopleId = p.PeopleId,
@@ -97,6 +98,9 @@ namespace CmsWeb.Models
                          Age = p.Age.ToString(),
                          School = p.SchoolOther,
                          Grade = p.Grade.ToString(),
+                         EmContact = rr.Emcontact,
+                         EmPhone = rr.Emphone,
+                         Medical = rr.MedicalDescription
                      };
             return q2.Take(maximumRows);
         }
@@ -139,7 +143,10 @@ namespace CmsWeb.Models
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
-                     let bfm = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId && om.PeopleId == p.PeopleId)
+                     let bfm = DbUtil.Db.OrganizationMembers.FirstOrDefault(om => 
+                         om.Organization.IsBibleFellowshipOrg == true
+                         && om.PeopleId == p.PeopleId
+                         && om.AttendPct > 0)
                      select new
                      {
                          PeopleId = p.PeopleId,

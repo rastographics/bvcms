@@ -79,7 +79,7 @@
                     <li><a href="/Reports/FamilyDirectory/@qid">Family Directory</a></li>
                     <li><a href="/Reports/FamilyDirectoryCompact/@qid">Compact Directory</a></li>
                     @if ((bool?)ViewBag.OrganizationContext == true)
-                    { 
+                    {
                         <li><a id="RollsheetLink" href='#' title="Rollsheet Report">Rollsheet Report</a></li>
                         <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report">Rally Rollsheet</a></li>
                         <li><a href='/Reports/Roster1/@qid?oid=@Util2.CurrentOrgId'>Roster Report</a></li>
@@ -89,7 +89,7 @@
                     { 
                         <li><a href='/Reports/Registration/@qid'>Registration Rpt</a></li>
                     }
-                    <li><a href='/Export/Excel/Attend/@qid' title="Contains attendance information for their class">BF Attendance</a></li>
+                    <li><a href='/Export/Excel/Attend/@qid' title="Contains attendance information for their class">Main Fellowship Att</a></li>
                     <li><a href='/Export/Excel/Children/@qid' title="Contains emergency contact, who brought child info">Children</a></li>
                     <li><a href='/Export/Excel/Church/@qid' title="Contains other Church Info">Other Churches</a></li>
                 </ul>
