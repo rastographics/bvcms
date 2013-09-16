@@ -17,49 +17,16 @@ namespace CmsWeb.Areas.Search.Models
     public class QueryModel2
     {
         private CMSDataContext Db;
-        public Condition TopClause;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
 
-        public PagerModel2 Pager { get; set; }
-
-        public QueryModel2()
-        {
-            Db = DbUtil.Db;
-            Db.SetUserPreference("NewCategories", "true");
-            ConditionName = "Group";
-            TagTypeId = DbUtil.TagTypeId_Personal;
-            TagName = Util2.CurrentTagName;
-            TagOwner = Util2.CurrentTagOwnerId;
-            Pager = new PagerModel2(Count) { Direction = "asc" };
-        }
-        public int Count()
-        {
-            return FetchCount();
-        }
-
-        public void LoadScratchPad(Guid? id = null)
-        {
-            TopClause = Db.QueryBuilderScratchPad2();
-            if (id.HasValue && id.Value != TopClause.Id)
-            {
-                var existing = Db.LoadQueryById2(id.Value);
-                if (existing != null)
-                {
-                    TopClause = existing.ToClause().Clone(useGuid: TopClause.Id);
-                    Description = TopClause.Description;
-                    SavedQueryDesc = TopClause.Description;
-                    TopClause.Description = Util.ScratchPad;
-                    TopClause.Save(Db);
-                }
-            }
-            DbUtil.LogActivity("Running Query ({0})".Fmt(TopClause.Id));
-        }
-
+        public Condition TopClause;
         public Guid? SelectedId { get; set; }
-
         public string Description { get; set; }
+
+        #region Visibility
+
         public bool RightPanelVisible { get; set; }
         public bool ComparePanelVisible { get; set; }
         public bool TextVisible { get; set; }
@@ -81,6 +48,90 @@ namespace CmsWeb.Areas.Search.Models
         public bool MinistryVisible { get; set; }
         public bool QuartersVisible { get; set; }
         public bool TagsVisible { get; set; }
+
+        #endregion
+
+        public int? Program { get; set; }
+        public int? Division { get; set; }
+        public int? Organization { get; set; }
+        public int? Schedule { get; set; }
+        public int? Campus { get; set; }
+        public int? OrgType { get; set; }
+        public string Days { get; set; }
+        public string Age { get; set; }
+        public string Quarters { get; set; }
+        public string QuartersLabel { get; set; }
+        public string View { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string Comparison { get; set; }
+        public string[] Tags { get; set; }
+        public int? Ministry { get; set; }
+        public string SavedQueryDesc { get; set; }
+        public bool IsPublic { get; set; }
+
+        public string CodeValue { get; set; }
+        public string[] CodeValues { get; set; }
+
+        public string TextValue { get; set; }
+        public string DateValue { get; set; }
+        public string NumberValue { get; set; }
+        public string IntegerValue { get; set; }
+
+        public bool SelectMultiple { get; set; }
+
+        public PagerModel2 Pager { get; set; }
+
+        public QueryModel2()
+        {
+            Db = DbUtil.Db;
+            Db.SetUserPreference("NewCategories", "true");
+            ConditionName = "Group";
+            TagTypeId = DbUtil.TagTypeId_Personal;
+            TagName = Util2.CurrentTagName;
+            TagOwner = Util2.CurrentTagOwnerId;
+            Pager = new PagerModel2(Count) { Direction = "asc" };
+        }
+
+        public int Count()
+        {
+            return FetchCount();
+        }
+
+        public void LoadQuery(Guid? id = null, List<Query> last5 = null)
+        {
+            if (!id.HasValue)
+                TopClause = last5 != null ? last5[0].ToClause() : Db.FetchLastQuery();
+            else
+            {
+                var existing = Db.LoadQueryById2(id.Value);
+                if (existing != null)
+                {
+                    if (existing.Ispublic != true && existing.Owner == Util.UserName)
+                    {
+                        TopClause = existing.ToClause();
+                        TopClause.Id = existing.QueryId;
+                    }
+                    else
+                    {
+                        existing.RunCount = existing.RunCount + 1;
+                        Query recentCopy = null;
+                        if (last5 != null)
+                            recentCopy = last5.FirstOrDefault(cc => cc.CopiedFrom == existing.QueryId);
+                        if (recentCopy != null)
+                            TopClause = existing.ToClause().Clone(useGuid: recentCopy.QueryId);
+                        else
+                            TopClause = existing.ToClause().Clone();
+                        TopClause.CopiedFrom = existing.QueryId;
+                        SavedQueryDesc = TopClause.Description;
+                        if (TopClause.Description.HasValue())
+                            TopClause.Description = "Copy of " + TopClause.Description;
+                    }
+                }
+            }
+            Description = TopClause.Description ?? TopClause.ToString2();
+            DbUtil.LogActivity("Running Query ({0})".Fmt(TopClause.Id));
+        }
 
         public List<SelectListItem> TagData { get; set; }
 
@@ -112,44 +163,6 @@ namespace CmsWeb.Areas.Search.Models
             return null;
         }
 
-        public List<SelectListItem> CompareData { get; set; }
-        public List<SelectListItem> ProgramData { get; set; }
-        public List<SelectListItem> DivisionData { get; set; }
-        public List<SelectListItem> OrganizationData { get; set; }
-        public List<SelectListItem> ViewData { get; set; }
-        public int? Program { get; set; }
-        public int? Division { get; set; }
-        public int? Organization { get; set; }
-        public int? Schedule { get; set; }
-        public int? Campus { get; set; }
-        public int? OrgType { get; set; }
-        public string Days { get; set; }
-        public string Age { get; set; }
-        public string Quarters { get; set; }
-        public string QuartersLabel { get; set; }
-        public string View { get; set; }
-        public string StartDate { get; set; }
-        public string EndDate { get; set; }
-        public string Comparison { get; set; }
-        public string[] Tags { get; set; }
-        public int? Ministry { get; set; }
-        public string SavedQueryDesc { get; set; }
-        public bool IsPublic { get; set; }
-
-        public string CodeValue { get; set; }
-
-        public string[] CodeValues { get; set; }
-
-        public string TextValue { get; set; }
-        public string DateValue { get; set; }
-        public string NumberValue { get; set; }
-        public string IntegerValue { get; set; }
-
-        public bool UpdateEnabled { get; set; }
-        public bool AddToGroupEnabled { get; set; }
-        public bool AddEnabled { get; set; }
-        public bool RemoveEnabled { get; set; }
-        public bool SelectMultiple { get; set; }
 
         private FieldClass fieldMap;
         private string _ConditionName;
@@ -168,12 +181,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             ComparePanelVisible = fieldMap.Name != "MatchAnything";
             RightPanelVisible = ComparePanelVisible;
-            TextVisible = false;
-            NumberVisible = false;
-            CodeVisible = false;
-            DateVisible = false;
             ConditionName = ConditionName;
-            CompareData = Comparisons().ToList();
             DivisionVisible = fieldMap.HasParam("Division");
             ProgramVisible = fieldMap.HasParam("Program");
             OrganizationVisible = fieldMap.HasParam("Organization");
@@ -196,6 +204,7 @@ namespace CmsWeb.Areas.Search.Models
             StartDateVisible = fieldMap.HasParam("StartDate");
             EndDateVisible = fieldMap.HasParam("EndDate");
 
+            TextVisible = NumberVisible = CodeVisible = DateVisible = false;
             switch (fieldMap.Type)
             {
                 case FieldType.Bit:
@@ -225,19 +234,6 @@ namespace CmsWeb.Areas.Search.Models
                 case FieldType.DateSimple:
                     DateVisible = true;
                     break;
-            }
-
-            UpdateEnabled = !Current.IsGroup && !Current.IsFirst;
-            AddToGroupEnabled = Current.IsGroup;
-            AddEnabled = !Current.IsFirst;
-            RemoveEnabled = Current.CanRemove;
-
-            if (fieldMap.Type == FieldType.Group)
-            {
-                CompareData = Comparisons().ToList();
-                RightPanelVisible = false;
-                UpdateEnabled = Current.IsGroup;
-                return;
             }
         }
         public List<SelectListItem> ConvertToSelect(object items, string valuefield)
@@ -342,7 +338,7 @@ namespace CmsWeb.Areas.Search.Models
                 c.Tags = string.Join(";", Tags);
             c.SavedQuery = SavedQueryDesc;
             SelectedId = null;
-            TopClause.Save(Db);
+            TopClause.Save(Db, increment: true);
         }
         public void EditCondition()
         {
@@ -387,9 +383,7 @@ namespace CmsWeb.Areas.Search.Models
                     break;
             }
             Program = c.Program;
-            DivisionData = Divisions(Program).ToList();
             Division = c.Division;
-            OrganizationData = Organizations(Division).ToList();
             Organization = c.Organization;
             Schedule = c.Schedule;
             Campus = c.Campus;
@@ -486,7 +480,7 @@ namespace CmsWeb.Areas.Search.Models
             }
             if (prevParent != null && !prevParent.Conditions.Any())
                 TopClause.AllConditions.Remove(prevParent.Id);
-            TopClause.Save(Db);
+            TopClause.Save(Db, increment: true);
         }
         public Guid AddConditionToGroup()
         {
@@ -532,7 +526,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             Current.DeleteClause();
             EditCondition();
-            TopClause.Save(Db);
+            TopClause.Save(Db, increment: true);
         }
         public void UpdateCondition()
         {
@@ -565,9 +559,8 @@ namespace CmsWeb.Areas.Search.Models
             {
                 TopClause = g;
                 SelectedId = g.Id;
-                Util.QueryBuilderScratchPadId2 = TopClause.Id;
             }
-            TopClause.Save(Db);
+            TopClause.Save(Db, increment: true);
         }
         public IEnumerable<SelectListItem> GroupComparisons()
         {
@@ -760,7 +753,7 @@ namespace CmsWeb.Areas.Search.Models
         private IQueryable<Person> PersonQuery()
         {
             if (TopClause == null)
-                LoadScratchPad();
+                LoadQuery();
             Db.SetNoLock();
             var q = Db.People.Where(TopClause.Predicate(Db));
             if (TopClause.ParentsOf)
@@ -770,7 +763,7 @@ namespace CmsWeb.Areas.Search.Models
         public void TagAll(Tag tag = null)
         {
             if (TopClause == null)
-                LoadScratchPad();
+                LoadQuery();
             Db.SetNoLock();
             var q = Db.People.Where(TopClause.Predicate(Db));
             if (TopClause.ParentsOf)
@@ -783,7 +776,7 @@ namespace CmsWeb.Areas.Search.Models
         public void UnTagAll()
         {
             if (TopClause == null)
-                LoadScratchPad();
+                LoadQuery();
             Db.SetNoLock();
             var q = Db.People.Where(TopClause.Predicate(Db));
             if (TopClause.ParentsOf)
@@ -823,8 +816,6 @@ namespace CmsWeb.Areas.Search.Models
         }
         private IQueryable<Person> ApplySort(IQueryable<Person> q)
         {
-            //            if (TopClause == null)
-            //                LoadScratchPad();
             if (Pager.Direction != "desc")
                 switch (Pager.Sort)
                 {

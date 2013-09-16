@@ -452,7 +452,6 @@
     <Compile Include="Areas\Search\Models\PeopleInfo.cs" />
     <Compile Include="Areas\Search\Models\PeopleModel.cs" />
     <Compile Include="Areas\Search\Models\QBExportResult.cs" />
-    <Compile Include="Areas\Search\Models\QueryModel.cs" />
     <Compile Include="Areas\Search\Models\QuickSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQueryModel.cs" />
     <Compile Include="Areas\Search\SearchAreaRegistration.cs" />

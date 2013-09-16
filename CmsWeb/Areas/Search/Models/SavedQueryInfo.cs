@@ -16,10 +16,14 @@ namespace CmsWeb.Areas.Search.Models
 
         public string Name { get; set; }
 
-        [SkipField]
-        public DateTime? Modified { get; set; }
+        public string Display;
 
-        private Query clause;
+        [SkipField]
+        public DateTime? LastRun { get; set; }
+        [SkipField]
+        public int RunCount { get; set; }
+
+        private Query query;
 
         public SavedQueryInfo()
         {
@@ -29,15 +33,15 @@ namespace CmsWeb.Areas.Search.Models
 
         public SavedQueryInfo(Guid id)
         {
-            clause = DbUtil.Db.LoadQueryById2(id);
-            this.CopyPropertiesFrom(clause);
+            query = DbUtil.Db.LoadQueryById2(id);
+            this.CopyPropertiesFrom(query);
         }
 
         public void UpdateModel()
         {
-            if (clause == null)
-                clause = DbUtil.Db.LoadQueryById2(QueryId);
-            this.CopyPropertiesTo(clause);
+            if (query == null)
+                query = DbUtil.Db.LoadQueryById2(QueryId);
+            this.CopyPropertiesTo(query);
             DbUtil.Db.SubmitChanges();
         }
     }

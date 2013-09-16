@@ -6,6 +6,7 @@ using System.Web.Security;
 using CmsData;
 using CmsWeb.Models;
 using DocumentFormat.OpenXml.Wordprocessing;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 using Query = CmsData.Query;
 
@@ -39,11 +40,13 @@ namespace CmsWeb.Areas.Search.Models
             isdev = Roles.IsUserInRole("Developer");
             _queries = from c in DbUtil.Db.Queries
                        where !PublicOnly || c.Ispublic == true
-                       where (!ScratchPadsOnly && !c.Name.Contains("scratchpad"))
-                            || (ScratchPadsOnly && c.Name.Contains("scratchpad"))
                        where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
                        select c;
-            if(OnlyMine)
+            if (ScratchPadsOnly)
+                _queries = from c in _queries
+                           where c.Name == null || c.Name.Length == 0
+                           select c;
+            if (OnlyMine)
                 _queries = from c in _queries
                            where c.Owner == Util.UserName
                            select c;
@@ -60,14 +63,17 @@ namespace CmsWeb.Areas.Search.Models
             var admin = HttpContext.Current.User.IsInRole("Admin");
             var user = Util.UserName;
             var q3 = from c in q2
+                     let name = c.Name ?? c.TempName
                      select new SavedQueryInfo
                      {
                          QueryId = c.QueryId,
                          Name = c.Name,
                          Ispublic = c.Ispublic == true,
-                         Modified = c.Modified ?? c.Created,
+                         LastRun = c.LastRun ?? c.Created,
                          Owner = c.Owner,
-                         CanDelete = admin || c.Owner == user
+                         CanDelete = admin || c.Owner == user,
+                         RunCount = c.RunCount,
+                         Display = name
                      };
             return q3;
         }
@@ -88,14 +94,19 @@ namespace CmsWeb.Areas.Search.Models
                                 orderby c.Name
                                 select c;
                             break;
-                        case "Last Updated":
+                        case "Last Run":
                             q = from c in q
-                                orderby c.Modified ?? c.Created
+                                orderby c.LastRun ?? c.Created
                                 select c;
                             break;
                         case "Owner":
                             q = from c in q
                                 orderby c.Owner, c.Name
+                                select c;
+                            break;
+                        case "Count":
+                            q = from c in q
+                                orderby c.RunCount, c.Name
                                 select c;
                             break;
                     }
@@ -113,15 +124,20 @@ namespace CmsWeb.Areas.Search.Models
                                 orderby c.Name descending
                                 select c;
                             break;
-                        case "Last Updated":
+                        case "Last Run":
                             q = from c in q
-                                let dt = c.Modified ?? c.Created
+                                let dt = c.LastRun ?? c.Created
                                 orderby dt descending
                                 select c;
                             break;
                         case "Owner":
                             q = from c in q
                                 orderby c.Owner descending, c.Name
+                                select c;
+                            break;
+                        case "Count":
+                            q = from c in q
+                                orderby c.RunCount descending, c.Name
                                 select c;
                             break;
                     }

@@ -5,6 +5,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using Community.CsharpSqlite;
+using IronPython.Modules;
+using Microsoft.Scripting.Debugging;
 using UtilityExtensions;
 using System.Linq;
 using CmsData;
@@ -12,22 +14,28 @@ namespace CmsData
 {
     public partial class Condition
     {
-        public void Save(CMSDataContext Db)
+        public void Save(CMSDataContext Db, bool increment = false)
         {
-            var c = Db.LoadQueryById2(Id);
-            if (c == null)
+            var q = Db.LoadQueryById2(Id);
+            if (q == null)
             {
-                c = new Query 
+                q = new Query 
                 {
                     QueryId = Id,
                     Owner = Util.UserName,
                     Created = DateTime.Now, 
-                    Name = Util.ScratchPad,
                 };
-                Db.Queries.InsertOnSubmit(c);
+                Db.Queries.InsertOnSubmit(q);
             }
-            c.Modified = DateTime.Now; 
-            c.Text = ToXml();
+
+            if (CopiedFrom.HasValue)
+                q.CopiedFrom = CopiedFrom;
+            q.TempName = ToString2();
+            q.Name = Description;
+            q.LastRun = DateTime.Now;
+            if(increment)
+                q.RunCount = q.RunCount + 1;
+            q.Text = ToXml();
 	        Db.SubmitChanges();
         }
 
@@ -87,7 +95,7 @@ namespace CmsData
         public static Condition Import(string text, string name = null, bool newGuids = false)
         {
             if (!text.HasValue())
-                return CreateNewGroupClause();
+                return CreateNewGroupClause(name);
             var x = XDocument.Parse(text);
             Debug.Assert(x.Root != null, "x.Root != null");
             var c = ImportClause(x.Root, null, newGuids);
@@ -122,6 +130,8 @@ namespace CmsData
                 Owner = Attribute(r, "Owner"),
                 AllConditions = allClauses
             };
+            if(p == null)
+                c.Description = Attribute(r, "Description");
             c.AllConditions.Add(c.Id, c);
             if (newGuids)
                 c.Id = Guid.NewGuid();

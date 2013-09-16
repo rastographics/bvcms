@@ -2,11 +2,12 @@
 @using UtilityExtensions
 <tr id="row-@Model.QueryId">
     <td>
-        <a href="/Query/@Model.QueryId">@Model.Name</a>
+        <a href="/Query/@Model.QueryId">@Model.Display</a>
     </td>
     <td>@Model.Owner</td>
-    <td>@(Model.Ispublic ? "public" : "private") </td>
-    <td>@Model.Modified.FormatDateTm()</td>
+    <td>@(Model.Ispublic ? "public" : Model.Name.HasValue() ? "private" : "scratchpad") </td>
+    <td>@Model.LastRun.FormatDateTm()</td>
+    <td class="right">@Model.RunCount.ToString("N0")</td>
     @if (Model.CanDelete)
     {
         <td><a class="edit-saved-query" href="/SavedQuery2/Edit/@Model.QueryId"><i class="icon-pencil"></i></a></td>

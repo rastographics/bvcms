@@ -2712,6 +2712,8 @@ namespace CmsData
             CompareType op,
             bool tf)
         {
+            if (!QueryIdDesc.HasValue())
+                return AlwaysFalse(parm);
             var a = QueryIdDesc.SplitStr(":", 2);
             var qid = a[0].ToInt();
             var savedquery = Db.QueryBuilderClauses.SingleOrDefault(q =>

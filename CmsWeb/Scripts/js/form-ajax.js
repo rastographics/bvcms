@@ -25,43 +25,6 @@
         });
         $('form.ajax select:not([plain])').chosen();
     };
-    //$("div.modal form.ajax").live("submit", function (event) {
-    //    event.preventDefault();
-    //    var $form = $(this);
-    //        f.validate({
-    //            submitHandler: function (form) {
-    //                var ff = $(form);
-    //                var action = f.attr('action');
-    //                var q = ff.serialize();
-    //                var $target = ff.closest("div.modal");
-    //                $.ajax({
-    //                    type: 'POST',
-    //                    url: action,
-    //                    data: q,
-    //                    success: function (ret, status) {
-    //                        $target.html(ret).ready(function () {
-    //                            var top = ($(window).height() - $target.height()) / 2;
-    //                            if (top < 10)
-    //                                top = 10;
-    //                            $target.css({ 'margin-top': top, 'top': '0' });
-    //                            ff = $target.find("form");
-    //                            $.AttachFormElements(ff);
-    //                        });
-    //                    },
-    //                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-    //                        alert("Status: " + textStatus); alert("Error: " + errorThrown);
-    //                    }
-    //                });
-    //                return false;
-    //            },
-    //            highlight: function (element) {
-    //                $(element).closest(".control-group").addClass("error");
-    //            },
-    //            unhighlight: function (element) {
-    //                $(element).closest(".control-group").removeClass("error");
-    //            }
-    //        });
-    //});
     $("ul.nav-tabs a.ajax").live("click", function (event) {
         var state = $(this).attr("href");
         var d = $(state);
@@ -114,7 +77,8 @@
                             $.AttachFormElements();
                         });
                     } else {
-                        $form.html(ret).ready(function () {
+                        var results = $($form.data("results") || $form);
+                        results.html(ret).ready(function () {
                             $.AttachFormElements();
                         });
                     }

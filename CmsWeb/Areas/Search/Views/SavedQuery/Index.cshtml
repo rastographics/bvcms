@@ -8,11 +8,31 @@
     @Fingerprint.Script("/Scripts/Search/savedQuery2.js")
 }
 <div class="container">
-    <form id="form-saved-query" class="ajax form-horizontal">
-        @Html.Partial("Results", Model)
+    <form id="form-saved-query" class="ajax form-horizontal" data-results="#results">
+        <div id="saved-query-search" class="container table">
+            <fieldset>
+                <legend>Saved Search Queries</legend>
+                <div class="inline">
+                    <div>
+                        Search for part of the description<br />
+                        or the owner's username
+                    </div>
+                    @Html.TextBoxFor(m => m.SearchQuery)
+                </div>
+                <div class="inline left-gutter align-top">
+                    <div>@Html.CheckBoxFor(m => m.OnlyMine) Only Mine</div>
+                    <div>@Html.CheckBoxFor(m => m.PublicOnly) Public Only</div>
+                    <div>@Html.CheckBoxFor(m => m.ScratchPadsOnly) Scratch Pads Only</div>
+                </div>
+                <div class="inline left-gutter"><a id="filter-link" href="/SavedQuery2/Results" class="btn btn-primary ajax">Filter</a> </div>
+            </fieldset>
+        </div>
+        <div id="results">
+            @Html.Partial("Results", Model)
+        </div>
     </form>
 </div>
 @section PopupsPlaceholder
 {
-<form id='edit-saved-query-dialog' class='modal fade hide validate ajax form-horizontal' method='POST' data-backdrop='static'></form>
+    <form id='edit-saved-query-dialog' class='modal fade hide validate ajax form-horizontal' method='POST' data-backdrop='static'></form>
 }

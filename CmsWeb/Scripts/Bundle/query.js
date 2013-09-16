@@ -994,12 +994,10 @@ $(function () {
     });
     if ($("#NewSearchId").val()) {
         liedit = $("li[data-qid='" + $("#NewSearchId").val() + "']");
-        RefreshList();
         $EditCondition({ isnew: true });
     }
     else if ($("#AutoRun").val() === "True")
         RefreshList();
-    RefreshList();
 });
 
 function RefreshList(qs) {

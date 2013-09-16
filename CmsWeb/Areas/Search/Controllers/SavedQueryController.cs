@@ -16,10 +16,10 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index()
         {
             var m = new SavedQueryModel();
-            m.Pager.Set("/SavedQuery2/Results", 1, null, "Last Updated", "desc");
+            m.Pager.Set("/SavedQuery2/Results", 1, null, "Last Run", "desc");
             return View(m);
         }
-        [POST("SavedQuery2/Results/{page?}/{size?}/{sort?}/{dir?}")]
+        [POST("SavedQuery2/Results/{page?}/{size?}/{sort=Last Run}/{dir=desc}")]
         public ActionResult Results(int? page, int? size, string sort, string dir, SavedQueryModel m)
         {
             m.Pager.Set("/SavedQuery2/Results", page, size, sort, dir);

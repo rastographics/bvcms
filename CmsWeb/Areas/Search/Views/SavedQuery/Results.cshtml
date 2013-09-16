@@ -1,32 +1,17 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryModel
-<div id="saved-query-search" class="container table">
-    <fieldset>
-        <legend>Saved Search Queries</legend>
-        <div class="inline">
-            <div>Search for part of the description<br/>
-                or the owner's username
-            </div>
-            @Html.TextBoxFor(m => m.SearchQuery)
-        </div>
-        <div class="inline left-gutter align-top">
-            <div>@Html.CheckBoxFor(m => m.OnlyMine) Only Mine</div>
-            <div>@Html.CheckBoxFor(m => m.PublicOnly) Public Only</div>
-            <div>@Html.CheckBoxFor(m => m.ScratchPadsOnly) Scratch Pads Only</div>
-        </div>
-        <div class="inline left-gutter"><a id="filter-link" href="/SavedQuery2/Results" class="btn btn-primary ajax">Filter</a> </div>
-    </fieldset>
-</div>
 <div class="pagination pagination-mini">
     @Html.Partial("Pager3", Model.Pager)
 </div>
 <table id="saved-query" class="table table-bordered table-condensed">
     <thead>
         <tr>
-            <td>@Model.Pager.SortLink("Description")</td>
-            <td>@Model.Pager.SortLink("Owner")</td>
-            <td>@Model.Pager.SortLink("Public")</td>
-            <td>@Model.Pager.SortLink("Last Updated")</td>
-            <td></td>
+            <th>@Model.Pager.SortLink("Description")</th>
+            <th>@Model.Pager.SortLink("Owner")</th>
+            <th>@Model.Pager.SortLink("Public")</th>
+            <th>@Model.Pager.SortLink("Last Run")</th>
+            <th>@Model.Pager.SortLink("Count")</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>

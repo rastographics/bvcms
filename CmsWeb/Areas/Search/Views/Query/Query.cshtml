@@ -19,14 +19,14 @@
 <div class="container">
     <div class="row-fluid">
         <div class="span4">
-            <div id="Description"><b>@Model.Description</b></div>
-            <div>
-                <h2>Search Builder </h2>
-                <div>
-                    <a href="/Query/NewQuery" class="btn btn-success">New</a>
+            <fieldset>
+                <legend>SearchBuilder: @Model.Description</legend>
+                <div class="pull-right">
+                    <a href="/Query/NewQuery" class="btn btn-success">New Search</a>
+                    <a href="/Query/Save" class="btn btn-primary">Save Search As</a>
                 </div>
-                @Html.Partial("Conditions", Model)
-            </div>
+            </fieldset>
+            @Html.Partial("Conditions", Model)
         </div>
         <div id="results" class="span8">
         </div>

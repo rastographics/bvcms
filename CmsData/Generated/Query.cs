@@ -25,11 +25,17 @@ namespace CmsData
 		
 		private DateTime? _Created;
 		
-		private DateTime? _Modified;
+		private DateTime? _LastRun;
 		
 		private string _Name;
 		
-		private bool? _Ispublic;
+		private bool _Ispublic;
+		
+		private int _RunCount;
+		
+		private string _TempName;
+		
+		private Guid? _CopiedFrom;
 		
    		
     	
@@ -52,14 +58,23 @@ namespace CmsData
 		partial void OnCreatedChanging(DateTime? value);
 		partial void OnCreatedChanged();
 		
-		partial void OnModifiedChanging(DateTime? value);
-		partial void OnModifiedChanged();
+		partial void OnLastRunChanging(DateTime? value);
+		partial void OnLastRunChanged();
 		
 		partial void OnNameChanging(string value);
 		partial void OnNameChanged();
 		
-		partial void OnIspublicChanging(bool? value);
+		partial void OnIspublicChanging(bool value);
 		partial void OnIspublicChanged();
+		
+		partial void OnRunCountChanging(int value);
+		partial void OnRunCountChanged();
+		
+		partial void OnTempNameChanging(string value);
+		partial void OnTempNameChanged();
+		
+		partial void OnCopiedFromChanging(Guid? value);
+		partial void OnCopiedFromChanged();
 		
     #endregion
 		public Query()
@@ -160,21 +175,21 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="modified", UpdateCheck=UpdateCheck.Never, Storage="_Modified", DbType="datetime")]
-		public DateTime? Modified
+		[Column(Name="lastRun", UpdateCheck=UpdateCheck.Never, Storage="_LastRun", DbType="datetime")]
+		public DateTime? LastRun
 		{
-			get { return this._Modified; }
+			get { return this._LastRun; }
 
 			set
 			{
-				if (this._Modified != value)
+				if (this._LastRun != value)
 				{
 				
-                    this.OnModifiedChanging(value);
+                    this.OnLastRunChanging(value);
 					this.SendPropertyChanging();
-					this._Modified = value;
-					this.SendPropertyChanged("Modified");
-					this.OnModifiedChanged();
+					this._LastRun = value;
+					this.SendPropertyChanged("LastRun");
+					this.OnLastRunChanged();
 				}
 
 			}
@@ -204,8 +219,8 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="ispublic", UpdateCheck=UpdateCheck.Never, Storage="_Ispublic", DbType="bit")]
-		public bool? Ispublic
+		[Column(Name="ispublic", UpdateCheck=UpdateCheck.Never, Storage="_Ispublic", DbType="bit NOT NULL")]
+		public bool Ispublic
 		{
 			get { return this._Ispublic; }
 
@@ -219,6 +234,72 @@ namespace CmsData
 					this._Ispublic = value;
 					this.SendPropertyChanged("Ispublic");
 					this.OnIspublicChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="runCount", UpdateCheck=UpdateCheck.Never, Storage="_RunCount", DbType="int NOT NULL")]
+		public int RunCount
+		{
+			get { return this._RunCount; }
+
+			set
+			{
+				if (this._RunCount != value)
+				{
+				
+                    this.OnRunCountChanging(value);
+					this.SendPropertyChanging();
+					this._RunCount = value;
+					this.SendPropertyChanged("RunCount");
+					this.OnRunCountChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="tempName", UpdateCheck=UpdateCheck.Never, Storage="_TempName", DbType="varchar(50)")]
+		public string TempName
+		{
+			get { return this._TempName; }
+
+			set
+			{
+				if (this._TempName != value)
+				{
+				
+                    this.OnTempNameChanging(value);
+					this.SendPropertyChanging();
+					this._TempName = value;
+					this.SendPropertyChanged("TempName");
+					this.OnTempNameChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="CopiedFrom", UpdateCheck=UpdateCheck.Never, Storage="_CopiedFrom", DbType="uniqueidentifier")]
+		public Guid? CopiedFrom
+		{
+			get { return this._CopiedFrom; }
+
+			set
+			{
+				if (this._CopiedFrom != value)
+				{
+				
+                    this.OnCopiedFromChanging(value);
+					this.SendPropertyChanging();
+					this._CopiedFrom = value;
+					this.SendPropertyChanged("CopiedFrom");
+					this.OnCopiedFromChanged();
 				}
 
 			}

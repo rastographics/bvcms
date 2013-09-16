@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Threading;
 using Dapper;
+using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
 using System.Text;
 using CmsData;
@@ -827,31 +828,38 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 cn2.Open();
                 cn2.Execute("Truncate table dbo.Query");
-                var q = cn2.Query<int>("select QueryId from QueryBuilderClauses where GroupId is null");
+                var q = cn2.Query<int>("select QueryId from QueryBuilderClauses where GroupId is null and Description is not null and savedby is not null");
                 list = q.ToList();
             }
-            var n = 0;
             foreach (var qid in list)
             {
                 var db = new CMSDataContext(cs);
                 var c = db.LoadQueryById(qid);
                 var xml = c.ToXml("conv", qid);
-                var nc = Condition.Import(xml, c.Description);
+                string name = null;
+                if (c.Description != Util.ScratchPad)
+                    name = c.Description.Truncate(50);
+                var nc = Condition.Import(xml, name);
                 xml = nc.ToXml();
-                db.Queries.InsertOnSubmit(new Query()
-                    {
-                        QueryId = nc.Id,
-                        Name = c.Description.Truncate(50),
-                        Text = xml,
-                        Owner = c.SavedBy,
-                        Created = c.CreatedOn,
-                        Modified = c.CreatedOn,
-                        Ispublic = c.IsPublic
-                    });
+                if (!nc.Conditions.Any())
+                    continue;
+                var q = new Query()
+                {
+                    QueryId = nc.Id,
+                    Name = name,
+                    TempName = nc.ToString2(),
+                    Text = xml,
+                    Owner = c.SavedBy,
+                    Created = c.CreatedOn,
+                    LastRun = c.CreatedOn,
+                    Ispublic = c.IsPublic,
+                    RunCount = 0
+                };
+                db.Queries.InsertOnSubmit(q);
                 db.SubmitChanges();
                 db.Dispose();
             }
-            return Content("done");
+            return Redirect("/SavedQuery2");
         }
 
     }

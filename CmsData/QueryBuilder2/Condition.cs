@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Linq.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using UtilityExtensions;
 using System.Linq.Expressions;
 namespace CmsData
@@ -10,7 +13,10 @@ namespace CmsData
     {
         public Dictionary<Guid, Condition> AllConditions { get; set; }
 
+        #region Fields
+
         public Guid Id { get; set; }
+        public Guid? CopiedFrom { get; set; }
         public Guid? ParentId { get; set; }
         public int Order { get; set; }
         public string Field { get; set; }
@@ -36,6 +42,9 @@ namespace CmsData
         public int? Campus { get; set; }
         public int? OrgType { get; set; }
         public Guid? NewMatchAnyId;
+
+        #endregion
+
         public IEnumerable<Condition> Conditions
         {
             get
@@ -85,15 +94,15 @@ namespace CmsData
         {
             get { return CompareClass2.Convert(Comparison); }
         }
-        private CompareClass2 _Compare;
+        private CompareClass2 compare;
         public CompareClass2 Compare
         {
             get
             {
-                if (_Compare == null)
-                    _Compare = CompareClass2.Comparisons.SingleOrDefault(cm =>
+                if (compare == null)
+                    compare = CompareClass2.Comparisons.SingleOrDefault(cm =>
                         cm.FieldType == FieldInfo.Type && cm.CompType == ComparisonType);
-                return _Compare;
+                return compare;
             }
         }
         public override string ToString()
@@ -119,6 +128,19 @@ namespace CmsData
             }
             return ret;
         }
+
+        public string ToString2()
+        {
+            var sb = new StringBuilder();
+            foreach (var c in Conditions)
+                sb.AppendFormat(", {0}", c.Field);
+            if (sb.Length == 0)
+                sb.Append("no conditions");
+            else
+                sb.Remove(0, 2);
+            return sb.ToString().Truncate(50);
+        }
+
         internal void SetIncludeDeceased()
         {
             var c = this;
@@ -343,8 +365,6 @@ namespace CmsData
             Tags = from.Tags;
             TextValue = from.TextValue;
         }
-        //        public void CopyFromAll(QueryBuilderClause2 from)
-        //                c.DeleteClause();
         public void DeleteClause()
         {
             var allClauses = AllConditions;
@@ -352,14 +372,6 @@ namespace CmsData
                 c.DeleteClause();
             allClauses.Remove(Id);
         }
-        //        public void CleanSlate(CMSDataContext Db)
-        //        {
-        //            foreach (var c in Clauses)
-        //                DeleteClause(c, Db);
-        //            SetQueryType(QueryType.Group);
-        //            SetComparisonType(CompareType.AllTrue);
-        //            Db.SubmitChanges();
-        //        }
         public Guid CleanSlate2(CMSDataContext Db)
         {
             foreach (var c in Conditions)
@@ -367,14 +379,15 @@ namespace CmsData
             SetQueryType(QueryType.Group);
             SetComparisonType(CompareType.AllTrue);
             var nc = AddNewClause();
+            Description = null;
             Save(Db);
             return nc.Id;
         }
-
-        public static Condition CreateNewGroupClause()
+        public static Condition CreateNewGroupClause(string name = null)
         {
             var c = new Condition
             {
+                Description = name,
                 Id = Guid.NewGuid(),
                 AllConditions = new Dictionary<Guid, Condition>(),
                 Field = QueryType.Group.ToString(),
@@ -415,7 +428,6 @@ namespace CmsData
                 n += 2;
             }
         }
-
         public Condition AddNewClause()
         {
             var c = new Condition
@@ -431,7 +443,6 @@ namespace CmsData
             AllConditions.Add(c.Id, c);
             return c;
         }
-
         public Condition AddNewClause(QueryType type, CompareType op, object value = null)
         {
             var c = new Condition();
@@ -478,17 +489,6 @@ namespace CmsData
             }
             return c;
         }
-        //        public QueryBuilderClause2 SaveTo(CMSDataContext db, string name, string user, bool ispublic)
-        //        {
-        //            var saveto = new QueryBuilderClause2();
-        //            db.QueryBuilderClauses.InsertOnSubmit(saveto);
-        //            saveto.CopyFromAll(this, db);
-        //            saveto.SavedBy = user;
-        //            saveto.Description = name;
-        //            saveto.IsPublic = ispublic;
-        //            db.SubmitChanges();
-        //            return saveto;
-        //        }
         public bool CanCut
         {
             get { return !IsFirst && (!IsLastNode || Parent.ParentId.HasValue); }

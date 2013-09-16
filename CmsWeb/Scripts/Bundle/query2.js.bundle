@@ -2,5 +2,5 @@
 <bundle minify="true" runOnBuild="true" output="query2.js">
     <file>/Scripts/Bootstrap/bootstrap-multiselect.js</file>
     <file>/Scripts/jQuery/jquery.scrollintoview.js</file>
-    <file>/Scripts/Search/Query2.js</file>
+    <file>/Scripts/Search/Query.js</file>
 </bundle>
