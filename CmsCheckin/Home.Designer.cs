@@ -79,7 +79,7 @@
 			this.buttonbs.BackColor = System.Drawing.SystemColors.ControlLight;
 			this.buttonbs.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
 			this.buttonbs.Font = new System.Drawing.Font("Wingdings", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-			this.buttonbs.Location = new System.Drawing.Point(590, 545);
+			this.buttonbs.Location = new System.Drawing.Point(590, 544);
 			this.buttonbs.Margin = new System.Windows.Forms.Padding(4);
 			this.buttonbs.Name = "buttonbs";
 			this.buttonbs.Size = new System.Drawing.Size(132, 84);
@@ -250,7 +250,7 @@
 			this.button12.BackColor = System.Drawing.SystemColors.ControlLight;
 			this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
 			this.button12.Font = new System.Drawing.Font("Verdana", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button12.Location = new System.Drawing.Point(310, 545);
+			this.button12.Location = new System.Drawing.Point(310, 544);
 			this.button12.Margin = new System.Windows.Forms.Padding(4);
 			this.button12.Name = "button12";
 			this.button12.Size = new System.Drawing.Size(132, 84);
@@ -261,12 +261,12 @@
 			// 
 			this.label1.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label1.ForeColor = System.Drawing.Color.Blue;
-			this.label1.Location = new System.Drawing.Point(305, 642);
+			this.label1.Location = new System.Drawing.Point(365, 636);
 			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(410, 125);
+			this.label1.Size = new System.Drawing.Size(302, 125);
 			this.label1.TabIndex = 33;
-			this.label1.Text = "Enter your phone number (no area code needed) and press GO";
+			this.label1.Text = "Enter your phone number and press GO";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// label2

@@ -87,7 +87,7 @@ namespace CmsCheckin.Classes
 
 				var locs = from c in q
 						   where c.mv != "M"
-                           where c.age < 18
+                           where c.age < 13
                            where c.n > 0
 						   orderby c.first ascending, c.hour ascending
 						   group c by c.securitycode into g
@@ -98,7 +98,7 @@ namespace CmsCheckin.Classes
 				{
                     int iPersonSecurityCount = PrinterHelper.getSecurityCount(li);
 
-                    if (iPersonSecurityCount > 0 || li.First().age < 18)
+                    if (iPersonSecurityCount > 0 || li.First().age < 13)
                     {
                         string[] sFormats = PrinterHelper.MAIN;
                         foreach (string sItem in sFormats)
