@@ -24,14 +24,34 @@ namespace CmsData
                     QueryId = Id,
                     Owner = Util.UserName,
                     Created = DateTime.Now, 
+                    Ispublic = IsPublic,
+                    Name = Description
                 };
                 Db.Queries.InsertOnSubmit(q);
             }
+            q.LastRun = DateTime.Now;
 
             if (CopiedFrom.HasValue)
                 q.CopiedFrom = CopiedFrom;
+            if (Description != q.Name)
+            {
+                var pq = Db.Queries.SingleOrDefault(cc => !cc.Ispublic && cc.Owner == Util.UserName && cc.Name == Description);
+                if (pq != null)
+                    pq.Text = ToXml();
+                else
+                {
+                    var c = Clone();
+                    if (c.Description.StartsWith("Copy of "))
+                        c.Description = c.Description.Remove(0, 8);
+                    else
+                        Description = "Copy of " + Description;
+                    IsPublic = false;
+                    c.IsPublic = true;
+                    c.Save(Db);
+                    return;
+                }
+            }
             q.Name = Description;
-            q.LastRun = DateTime.Now;
             if(increment)
                 q.RunCount = q.RunCount + 1;
             q.Text = ToXml();

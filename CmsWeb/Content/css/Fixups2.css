@@ -648,6 +648,9 @@ div.right {
 div.pad-top {
     margin-top: 1em;
 }
+div.pad-left {
+    padding-left: 1em;
+}
 
 div.align-top {
     vertical-align: top;
@@ -668,3 +671,4 @@ fieldset {
 .nowrap {
     white-space: nowrap;
 }
+

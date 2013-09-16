@@ -18,10 +18,19 @@
             });
         });
     };
-    $("#SavedQueryDesc").editable();
-    $('#SavedQueryDescEdit').click(function(e){    
-           e.stopPropagation();
-           $('#SavedQueryDesc').editable('toggle');
+    $("#SavedQueryDesc").editable({
+        placement: "right",
+        showbuttons: "bottom",
+        pk: 1,
+        url: "/Query/SaveQuery",
+        mode: "popup"
+    });
+    $('#SavedQueryDescEdit').click(function (e) {
+        e.stopPropagation();
+        $('#SavedQueryDesc').editable('toggle');
+    });
+    $('#IsPublic').click(function (e) {
+        $.post("/Query/SaveQuery", { name: "IsPublic", value: $(this).is(":checked") });
     });
     $.InitCodeValues = function () {
         $('#CodeValues').multiselect({
@@ -63,7 +72,7 @@
         $.HideEditCondition();
         return false;
     });
-    $("#conditions").on("mouseenter", "header", function() {
+    $("#conditions").on("mouseenter", "header", function () {
         var li = $(this).closest("li");
         li.addClass("borderleftred");
     }).on("mouseleave", "header", function () {
@@ -117,7 +126,7 @@
         });
         return false;
     });
-    if($.ClipboardHasCondition) {
+    if ($.ClipboardHasCondition) {
         $("li.pastecondition").show();
     }
     $('#conditions').on("click", 'a.cutcondition', function () {
