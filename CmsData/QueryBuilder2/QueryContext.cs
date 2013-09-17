@@ -119,16 +119,12 @@ namespace CmsData
         }
         public void CheckLoadQueries(bool reload = false)
         {
-            if (Queries.Any())
+            if (Queries.Any() && !reload)
                 return;
             List<int> list;
-            var cs = DbUtil.Db.Connection.ConnectionString;
-            using (var cn2 = new SqlConnection(cs))
             {
-                cn2.Open();
-                if(reload)
-                    cn2.Execute("Truncate table dbo.Query");
-                var q = cn2.Query<int>("select QueryId from QueryBuilderClauses where GroupId is null and Description is not null and savedby is not null");
+                ExecuteCommand("Truncate table dbo.Query");
+                var q = ExecuteQuery<int>("select QueryId from QueryBuilderClauses where GroupId is null and Description is not null and savedby is not null");
                 list = q.ToList();
             }
             foreach (var qid in list)
