@@ -260,7 +260,7 @@ namespace CmsData
                     MiddleInitial = ti.MiddleInitial,
                     Last = ti.Last,
                     Suffix = ti.Suffix,
-					TransactionId = "{0} ({1})".Fmt(reason, Util.UserPeopleId),
+					TransactionId = "{0} ({1})".Fmt(reason, Util.UserPeopleId ?? Util.UserId1),
 					Address = ti.Address,
 					City = ti.City,
 					State = ti.State,

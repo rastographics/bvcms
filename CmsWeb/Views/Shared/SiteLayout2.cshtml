@@ -4,7 +4,7 @@
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700' rel='stylesheet' type='text/css'>
-    @Fingerprint.Css("/content/css/new2css.css")
+    @Fingerprint.Css("/content/css/bundle-new2css.css")
     @Fingerprint.Css("/content/font-awesome/css/font-awesome.css")
     @RenderSection("head", required: false)
     @Fingerprint.Css("/content/css/Fixups2.css")
@@ -15,9 +15,9 @@
             @:#header { background-color: @bkcolor; }
         }
     </style>
-    @Helper.IncludeJs2()
-    @RenderSection("scripts", required: false)
+    @Fingerprint.Script("/Scripts/Bundle/main2.js")
     @Html.Partial("DatePickerDefaults2")
+    @RenderSection("scripts", required: false)
 </head>
     <body>
         <div class="page-container">

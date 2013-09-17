@@ -1,10 +1,14 @@
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Web;
 using System.Web.Security;
 using CmsData;
 using CmsWeb.Models;
+using DocumentFormat.OpenXml.Wordprocessing;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
+using Query = CmsData.Query;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -12,15 +16,14 @@ namespace CmsWeb.Areas.Search.Models
     {
         public PagerModel2 Pager { get; set; }
         public bool isdev { get; set; }
-        public bool onlyMine { get; set; }
-        public string search { get; set; }
-        public bool showscratchpads { get; set; }
+        public bool OnlyMine { get; set; }
+        public bool PublicOnly { get; set; }
+        public string SearchQuery { get; set; }
+        public bool ScratchPadsOnly { get; set; }
 
         public SavedQueryModel()
         {
             Pager = new PagerModel2(Count);
-            Pager.Direction = "asc";
-            Pager.Sort = "Name";
         }
         private int? _count;
         public int Count()
@@ -29,36 +32,55 @@ namespace CmsWeb.Areas.Search.Models
                 _count = fetchqueries().Count();
             return _count.Value;
         }
-        private IQueryable<QueryBuilderClause> _queries;
-        private IQueryable<QueryBuilderClause> fetchqueries()
+        private IQueryable<Query> _queries;
+        private IQueryable<Query> fetchqueries()
         {
             if (_queries != null)
                 return _queries;
             isdev = Roles.IsUserInRole("Developer");
-            _queries = from c in DbUtil.Db.QueryBuilderClauses
-                       where c.SavedBy == Util.UserName || ((c.IsPublic || isdev) && !onlyMine)
-                       where c.SavedBy != null || (c.GroupId == null && c.Field == "Group" && isdev && c.Clauses.Count() > 0)
-                       where !c.Description.Contains("scratchpad") || showscratchpads
-                       where c.Description.Contains(search) || c.SavedBy == search || !search.HasValue()
+            _queries = from c in DbUtil.Db.Queries
+                       where !PublicOnly || c.Ispublic
+                       where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
                        select c;
+            if (ScratchPadsOnly)
+                _queries = from c in _queries
+                           where c.Name == Util.ScratchPad2
+                           select c;
+            else
+                _queries = from c in _queries
+                           where c.Name != Util.ScratchPad2
+                           select c;
+            DbUtil.Db.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
+            if (OnlyMine)
+                _queries = from c in _queries
+                           where c.Owner == Util.UserName
+                           select c;
+            else if (!isdev)
+                _queries = from c in _queries
+                           where c.Owner == Util.UserName || c.Ispublic
+                           select c;
             return _queries;
         }
         public IEnumerable<SavedQueryInfo> FetchQueries()
         {
             var q = fetchqueries();
             var q2 = ApplySort(q).Skip(Pager.StartRow).Take(Pager.PageSize);
+            var admin = HttpContext.Current.User.IsInRole("Admin");
+            var user = Util.UserName;
             var q3 = from c in q2
                      select new SavedQueryInfo
                      {
                          QueryId = c.QueryId,
-                         Description = c.Description,
-                         IsPublic = c.IsPublic,
-                         LastUpdated = c.CreatedOn,
-                         User = c.SavedBy
+                         Name = c.Name,
+                         Ispublic = c.Ispublic,
+                         LastRun = c.LastRun ?? c.Created,
+                         Owner = c.Owner,
+                         CanDelete = admin || c.Owner == user,
+                         RunCount = c.RunCount,
                      };
             return q3;
         }
-        private IEnumerable<QueryBuilderClause> ApplySort(IQueryable<QueryBuilderClause> q)
+        private IEnumerable<Query> ApplySort(IQueryable<Query> q)
         {
             switch (Pager.Direction)
             {
@@ -67,22 +89,27 @@ namespace CmsWeb.Areas.Search.Models
                     {
                         case "Public":
                             q = from c in q
-                                orderby c.IsPublic, c.SavedBy, c.Description
+                                orderby c.Ispublic, c.Owner, c.Name
                                 select c;
                             break;
                         case "Description":
                             q = from c in q
-                                orderby c.Description
+                                orderby c.Name
                                 select c;
                             break;
-                        case "LastUpdated":
+                        case "Last Run":
                             q = from c in q
-                                orderby c.CreatedOn
+                                orderby c.LastRun ?? c.Created
                                 select c;
                             break;
                         case "Owner":
                             q = from c in q
-                                orderby c.SavedBy, c.Description
+                                orderby c.Owner, c.Name
+                                select c;
+                            break;
+                        case "Count":
+                            q = from c in q
+                                orderby c.RunCount, c.Name
                                 select c;
                             break;
                     }
@@ -92,22 +119,28 @@ namespace CmsWeb.Areas.Search.Models
                     {
                         case "Public":
                             q = from c in q
-                                orderby c.IsPublic descending, c.SavedBy, c.Description
+                                orderby c.Ispublic descending, c.Owner, c.Name
                                 select c;
                             break;
                         case "Description":
                             q = from c in q
-                                orderby c.Description descending
+                                orderby c.Name descending
                                 select c;
                             break;
-                        case "LastUpdated":
+                        case "Last Run":
                             q = from c in q
-                                orderby c.CreatedOn descending
+                                let dt = c.LastRun ?? c.Created
+                                orderby dt descending
                                 select c;
                             break;
                         case "Owner":
                             q = from c in q
-                                orderby c.SavedBy descending, c.Description
+                                orderby c.Owner descending, c.Name
+                                select c;
+                            break;
+                        case "Count":
+                            q = from c in q
+                                orderby c.RunCount descending, c.Name
                                 select c;
                             break;
                     }
@@ -115,13 +148,5 @@ namespace CmsWeb.Areas.Search.Models
             }
             return q;
         }
-    }
-    public class SavedQueryInfo
-    {
-        public int QueryId { get; set; }
-        public bool IsPublic { get; set; }
-        public string User { get; set; }
-        public string Description { get; set; }
-        public DateTime LastUpdated { get; set; }
     }
 }

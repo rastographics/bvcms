@@ -5,11 +5,11 @@
 <html>
 <head>
     <title>History</title>
-    @Helper.IncludeCss()
+    @Fingerprint.Css("/content/styles/bundle-css.css")
     <link href="/Content/styles/style2.css" rel="stylesheet" type="text/css" />
-    @Helper.IncludeJs()
+    @Fingerprint.Script("/Scripts/Bundle/main.js")
     @Html.Partial("DatePickerDefaults")
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Admin/TransactionHistory.js")"></script>
+    @Fingerprint.Script("/Scripts/Admin/TransactionHistory.js")
 </head>
 <body>
     <div>

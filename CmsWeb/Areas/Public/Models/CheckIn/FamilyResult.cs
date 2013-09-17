@@ -7,7 +7,6 @@ using System.Web.Mvc;
 using System.Xml.Linq;
 using CmsData.API;
 using CmsData.View;
-using Thinktecture.IdentityModel.Extensions;
 using UtilityExtensions;
 using System.Linq;
 using CmsData;
@@ -16,14 +15,8 @@ namespace CmsWeb.Models
 {
     public class FamilyResult : ActionResult
     {
-        readonly int fid;
-        readonly int campus;
-        readonly int thisday;
-        readonly int page;
-        readonly bool waslocked;
-        private int timeZoneOffset;
-        private DateTime dateTimeNow;
-        private bool useOldLeadtimeMethod;
+        int fid, campus, thisday, page;
+        bool waslocked;
 
         public FamilyResult(int fid, int campus, int thisday, int page, bool waslocked)
         {
@@ -32,9 +25,6 @@ namespace CmsWeb.Models
             this.thisday = thisday;
             this.page = page;
             this.waslocked = waslocked;
-            timeZoneOffset = DbUtil.Db.Setting("TZOffset", "0").ToInt();
-            dateTimeNow = DateTime.Now;
-            useOldLeadtimeMethod = DbUtil.Db.Setting("UseOldLeadtimeMethod", "false").ToBool(); 
             if (fid > 0)
             {
                 var db = new CMSDataContext(Util.ConnectionString);
@@ -51,19 +41,21 @@ namespace CmsWeb.Models
             }
         }
 
+
         public override void ExecuteResult(ControllerContext context)
         {
             context.HttpContext.Response.ContentType = "text/xml";
             var settings = new XmlWriterSettings() { Encoding = new System.Text.UTF8Encoding(false), Indent = true };
             using (var w = XmlWriter.Create(context.HttpContext.Response.OutputStream, settings))
-            {
-                var x = new APIWriter(w) {NoDefaults = true};
+            { 
+                var x = new APIWriter(w);
+                x.NoDefaults = true;
                 x.Start("Attendees");
                 var m = new CheckInModel();
                 List<CheckinFamilyMember> q;
-                if (CheckInModel.UseOldCheckin())
+                if (CheckInModel.UseOldCheckin()) 
                     q = m.FamilyMembersOld(fid, campus, thisday);
-                else
+                else 
                     q = m.FamilyMembers(fid, campus, thisday);
 
                 x.Attr("familyid", fid);
@@ -89,24 +81,23 @@ namespace CmsWeb.Models
                 var code = DbUtil.Db.NextSecurityCode(DateTime.Today).Select(c => c.Code).Single();
                 x.Attr("securitycode", code);
 
-                var accommodateCheckInBug = DbUtil.Db.Setting("AccommodateCheckinBug", "false").ToBool();
+				var accommodateCheckInBug = DbUtil.Db.Setting("AccommodateCheckinBug", "false").ToBool();
 
                 foreach (var c in q)
                 {
-                    var leadtime = LeadTime(c.Hour);
-
-                    //---------------------------------------------------------------
-                    //Remove this code once satisfied the new way works
-                    if (useOldLeadtimeMethod)
-                        if (c.Hour.HasValue)
-                        {
-                            var midnight = c.Hour.Value.Date;
-                            var now = midnight.Add(Util.Now.TimeOfDay);
-                            leadtime = c.Hour.Value.Subtract(now).TotalHours;
-                            leadtime -= DbUtil.Db.Setting("TZOffset", "0").ToInt();
-                        }
-                    //---------------------------------------------------------------
-
+                    double hoursBeforeClassStarts = 0;
+                    if (c.Hour.HasValue)
+                    {
+                        var midnight = c.Hour.Value.Date;
+                        var now = midnight.Add(Util.Now.TimeOfDay);
+                        hoursBeforeClassStarts = c.Hour.Value.Subtract(now).TotalHours;
+                        // TZOffset will be positive to the east, negative to the west
+                        // but we are trying to get to central time so we subtract
+                        // if tzoffset is +1 then we need to -1 to go to CentralTime.
+                        hoursBeforeClassStarts -= DbUtil.Db.Setting("TZOffset", "0").ToInt();
+                        // now we need to make sure we are within 24 hours (ignore the date change)
+                        hoursBeforeClassStarts %= 24;
+                    }
                     x.Start("attendee");
                     x.Attr("id", c.Id.ToString());
                     x.Attr("mv", c.MemberVisitor);
@@ -120,7 +111,7 @@ namespace CmsWeb.Models
                     x.Attr("orgid", c.OrgId.ToString());
                     x.Attr("loc", c.Location);
                     x.Attr("gender", c.Genderid);
-                    x.Attr("leadtime", leadtime.ToString());
+                    x.Attr("leadtime", hoursBeforeClassStarts.ToString());
                     x.Attr("age", c.Age.ToString());
                     x.Attr("numlabels", c.NumLabels.ToString());
                     x.Attr("checkedin", c.CheckedIn.ToString());
@@ -150,16 +141,6 @@ namespace CmsWeb.Models
                 }
                 x.End();
             }
-        }
-        public double LeadTime(DateTime? MeetingTime)
-        {
-            if (!MeetingTime.HasValue)
-                return 0;
-            var MeetingTimeOnServer = MeetingTime.Value.Date.AddHours(-timeZoneOffset).Add(MeetingTime.Value.TimeOfDay);
-            var CurrentTimeOnServer = MeetingTimeOnServer.Date.Add(dateTimeNow.TimeOfDay);
-            var leadtime = MeetingTimeOnServer.Subtract(CurrentTimeOnServer).TotalHours;
-            //new { timeZoneOffset, dateTimeNow, MeetingTime, MeetingTimeOnServer, CurrentTimeOnServer, leadtime }.Dump();
-            return leadtime;
         }
     }
 }

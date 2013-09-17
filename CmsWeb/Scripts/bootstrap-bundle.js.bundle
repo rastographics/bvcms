@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<bundle minify="true" runOnBuild="true" output="bootstrap-bundle.js">
-  <!--The order of the <file> elements determines the order of them when bundled.-->
-  <file>/Scripts/Bootstrap/bootstrap.js</file>
-  <file>/Scripts/Bootstrap/bootstrap-modalmanager.js</file>
-  <file>/Scripts/Bootstrap/bootstrap-modal.js</file>
-  <file>/Scripts/Bootstrap/bootstrap-editable.js</file>
-  <file>/Scripts/Bootstrap/bootbox.js</file>
-</bundle>

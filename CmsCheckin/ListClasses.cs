@@ -99,17 +99,19 @@ namespace CmsCheckin
                     nlabels = e.Attribute("nlabels").Value.ToInt(),
                     hour = hr
                 };
-                var leadtime = double.Parse(e.Attribute("leadtime").Value);
-                double howlate = -(Program.LateCheckinMinutes / 60d);
-                if (ci.oid != 0 && leadtime <= Program.EarlyCheckinHours && leadtime >= howlate)
-                    list.Add(new ClassInfo
-                    {
-                        display = e.Attribute("display").Value,
-                        oid = e.Attribute("orgid").Value.ToInt(),
-                        pid = PeopleId,
-                        nlabels = e.Attribute("nlabels").Value.ToInt(),
-                        hour = hr
-                    });
+
+                var leadhours = double.Parse(e.Attribute("leadtime").Value); 
+                if (ci.oid == 0 || Program.TooEarlyOrLate(leadhours))
+                    continue;
+
+                list.Add(new ClassInfo
+                {
+                    display = e.Attribute("display").Value,
+                    oid = e.Attribute("orgid").Value.ToInt(),
+                    pid = PeopleId,
+                    nlabels = e.Attribute("nlabels").Value.ToInt(),
+                    hour = hr
+                });
             }
             ShowPage(1);
         }
@@ -184,38 +186,38 @@ namespace CmsCheckin
                 Util.AttendUnAttend(new Util.ClassCheckedInfo { c = c, ischecked = true });
             ShowAllClasses = false;
             JoiningNotAttending = false;
-			if (Program.baseform.textbox.Parent is Home)
-			{
-				this.Swap(Program.home.family);
-				Program.home.family.classlist.Add(c);
-				Program.home.family.ShowFamily(FamilyId);
-			}
-			else if (Program.baseform.textbox.Parent is Home2)
-			{
-				this.Swap(Program.home2.family);
-				Program.home2.family.classlist.Add(c);
-				Program.home2.family.ShowFamily(FamilyId);
-			}
+            if (Program.baseform.textbox.Parent is Home)
+            {
+                this.Swap(Program.home.family);
+                Program.home.family.classlist.Add(c);
+                Program.home.family.ShowFamily(FamilyId);
+            }
+            else if (Program.baseform.textbox.Parent is Home2)
+            {
+                this.Swap(Program.home2.family);
+                Program.home2.family.classlist.Add(c);
+                Program.home2.family.ShowFamily(FamilyId);
+            }
         }
 
         private void GoBack_Click(object sender, EventArgs e)
         {
-			JoiningNotAttending = false;
-			if (Program.baseform.textbox.Parent is Home)
-			{
-				this.Swap(Program.home.family);
-				Program.home.family.ShowFamily(FamilyId);
-			}
-			else if (Program.baseform.textbox.Parent is Home2)
-			{
-				this.Swap(Program.home2.family);
-				Program.home2.family.ShowFamily(FamilyId);
-			}
+            JoiningNotAttending = false;
+            if (Program.baseform.textbox.Parent is Home)
+            {
+                this.Swap(Program.home.family);
+                Program.home.family.ShowFamily(FamilyId);
+            }
+            else if (Program.baseform.textbox.Parent is Home2)
+            {
+                this.Swap(Program.home2.family);
+                Program.home2.family.ShowFamily(FamilyId);
+            }
             ShowAllClasses = false;
         }
         private void ClearControls()
         {
-			JoiningNotAttending = false;
+            JoiningNotAttending = false;
             foreach (var c in controls)
             {
                 this.Controls.Remove(c);

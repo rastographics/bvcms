@@ -331,6 +331,8 @@
     </Compile>
     <Compile Include="Areas\Org\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Org\Models\VolunteerRequestModel.cs" />
+    <Compile Include="Areas\Search\Models\QueryModel2.cs" />
+    <Compile Include="Areas\Search\Models\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\SearchPersonModel.cs" />
     <Compile Include="Areas\People\PeopleAreaRegistration.cs" />
     <Compile Include="Areas\Public\Controllers\APIContributionController.cs" />
@@ -450,7 +452,6 @@
     <Compile Include="Areas\Search\Models\PeopleInfo.cs" />
     <Compile Include="Areas\Search\Models\PeopleModel.cs" />
     <Compile Include="Areas\Search\Models\QBExportResult.cs" />
-    <Compile Include="Areas\Search\Models\QueryModel.cs" />
     <Compile Include="Areas\Search\Models\QuickSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQueryModel.cs" />
     <Compile Include="Areas\Search\SearchAreaRegistration.cs" />
@@ -491,6 +492,12 @@
     <Content Include="Content\css\bootstrap-responsive.min.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\bundle-new2css.css">
+      <DependentUpon>bundle-new2css.css.bundle</DependentUpon>
+    </Content>
+    <Content Include="Content\css\bundle-new2css.min.css">
+      <DependentUpon>bundle-new2css.css.bundle</DependentUpon>
+    </Content>
     <Content Include="Content\css\Fixups2.css" />
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\demo_page.css" />
@@ -521,12 +528,6 @@
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.svg" />
     <Content Include="Content\img\ajax-loader.gif" />
-    <Content Include="Content\css\new2css.css">
-      <DependentUpon>new2css.css.bundle</DependentUpon>
-    </Content>
-    <Content Include="Content\css\new2css.min.css">
-      <DependentUpon>new2css.css.bundle</DependentUpon>
-    </Content>
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\icons-18-black.png" />
     <Content Include="Content\images\icons-18-white.png" />
@@ -542,20 +543,14 @@
     <Content Include="Content\img\clear.png" />
     <Content Include="Content\img\loading.gif" />
     <Content Include="Content\css\jquery.dialog2.css" />
-    <Content Include="Content\styles\css.css">
-      <DependentUpon>css.css.bundle</DependentUpon>
+    <Content Include="Content\styles\bundle-css.css">
+      <DependentUpon>bundle-css.css.bundle</DependentUpon>
     </Content>
-    <Content Include="Content\styles\css.min.css">
-      <DependentUpon>css.css.bundle</DependentUpon>
+    <Content Include="Content\styles\bundle-css.min.css">
+      <DependentUpon>bundle-css.css.bundle</DependentUpon>
     </Content>
     <Content Include="Content\styles\Dialog.min.css">
       <DependentUpon>Dialog.css</DependentUpon>
-    </Content>
-    <Content Include="Content\styles\newcss.css">
-      <DependentUpon>newcss.css.bundle</DependentUpon>
-    </Content>
-    <Content Include="Content\styles\newcss.min.css">
-      <DependentUpon>newcss.css.bundle</DependentUpon>
     </Content>
     <Content Include="Content\styles\organization.min.css">
       <DependentUpon>organization.css</DependentUpon>
@@ -739,12 +734,6 @@
     <Content Include="Scripts\Admin\Users.min.js">
       <DependentUpon>Users.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\bootstrap-bundle.js">
-      <DependentUpon>bootstrap-bundle.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\bootstrap-bundle.min.js">
-      <DependentUpon>bootstrap-bundle.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\Bootstrap\bootbox.js" />
     <Content Include="Scripts\Bootstrap\bootbox.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-ajax.js" />
@@ -767,14 +756,20 @@
     </Content>
     <Content Include="Scripts\Bootstrap\bootstrapx-clickover.js" />
     <Content Include="Scripts\Bootstrap\spin.min.js" />
+    <Content Include="Scripts\Bundle\query.js">
+      <DependentUpon>query.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\query.min.js">
+      <DependentUpon>query.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\query2.js">
+      <DependentUpon>query2.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\query2.min.js">
+      <DependentUpon>query2.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\Chosen\chosen.jquery.min.js.map">
       <DependentUpon>chosen.jquery.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Main-bundle.js">
-      <DependentUpon>Main-bundle.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Main-bundle.min.js">
-      <DependentUpon>Main-bundle.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Dialog\OrgMemberDialog.min.js">
       <DependentUpon>OrgMemberDialog.js</DependentUpon>
@@ -922,22 +917,16 @@
     <Content Include="Scripts\js\UsersEmailFor.min.js">
       <DependentUpon>UsersEmailFor.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\main.js">
+    <Content Include="Scripts\Bundle\main.js">
       <DependentUpon>main.js.bundle</DependentUpon>
     </Content>
-    <Content Include="Scripts\main.min.js">
+    <Content Include="Scripts\Bundle\main.min.js">
       <DependentUpon>main.js.bundle</DependentUpon>
     </Content>
-    <Content Include="Scripts\main2.custom.js">
-      <DependentUpon>main2.custom.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\main2.custom.min.js">
-      <DependentUpon>main2.custom.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\main2.js">
+    <Content Include="Scripts\Bundle\main2.js">
       <DependentUpon>main2.js.bundle</DependentUpon>
     </Content>
-    <Content Include="Scripts\main2.min.js">
+    <Content Include="Scripts\Bundle\main2.min.js">
       <DependentUpon>main2.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Meeting\meeting-ipad.min.js">
@@ -994,14 +983,15 @@
     <Content Include="Areas\Main\Views\Contact\ContactDisplay.cshtml" />
     <Content Include="Areas\Main\Views\Contact\ContactEdit.cshtml" />
     <Content Include="Areas\Main\Views\Contact\EditorTemplates\Bool.cshtml" />
-    <Content Include="Areas\Search\Views\Query\EditCondition2.cshtml" />
-    <Content Include="Areas\Search\Views\Query\Conditions2.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditCondition.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmReregister.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Changes.cshtml" />
     <Content Include="Areas\People\Views\Person\MainTabs\System.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Duplicates.cshtml" />
     <Content Include="Areas\People\Views\Person\System\DuplicateRow.cshtml" />
-    <None Include="Content\css\new2css.css.bundle" />
+    <Content Include="Areas\Search\Views\SavedQuery\Edit.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Conditions.cshtml" />
+    <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.woff" />
@@ -1024,8 +1014,7 @@
     <Content Include="Content\font-awesome\scss\_mixins.scss" />
     <Content Include="Content\font-awesome\scss\_path.scss" />
     <Content Include="Content\font-awesome\scss\_variables.scss" />
-    <None Include="Content\styles\css.css.bundle" />
-    <None Include="Content\styles\newcss.css.bundle" />
+    <None Include="Content\styles\bundle-css.css.bundle" />
     <Content Include="Scripts\Admin\Divisions.min.js.map">
       <DependentUpon>Divisions.js</DependentUpon>
     </Content>
@@ -1116,10 +1105,10 @@
     <Content Include="Scripts\Meeting\Meetings.min.js.map">
       <DependentUpon>Meetings.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\onlineregister.js">
+    <Content Include="Scripts\Bundle\onlineregister.js">
       <DependentUpon>onlineregister.js.bundle</DependentUpon>
     </Content>
-    <Content Include="Scripts\onlineregister.min.js">
+    <Content Include="Scripts\Bundle\onlineregister.min.js">
       <DependentUpon>onlineregister.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\OnlineReg\OnlineReg.min.js">
@@ -1144,7 +1133,6 @@
     <Content Include="Docs\test.md" />
     <Content Include="Docs\ideas.md" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
-    <None Include="Scripts\bootstrap-bundle.js.bundle" />
     <Content Include="Scripts\jQuery\jquery.multiSelect.min.js.map">
       <DependentUpon>jquery.multiSelect.js</DependentUpon>
     </Content>
@@ -1163,17 +1151,19 @@
     <Content Include="Scripts\jQuery\jquery.validate.min.js.map">
       <DependentUpon>jquery.validate.js</DependentUpon>
     </Content>
-    <None Include="Scripts\Main-bundle.js.bundle" />
-    <None Include="Scripts\main.js.bundle" />
-    <None Include="Scripts\main2.js.bundle" />
-    <None Include="Scripts\onlineregister.js.bundle" />
+    <Content Include="Scripts\Bundle\query.js.bundle">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Scripts\Bundle\query2.js.bundle">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Scripts\Bundle\main.js.bundle" />
+    <None Include="Scripts\Bundle\main2.js.bundle" />
+    <None Include="Scripts\Bundle\onlineregister.js.bundle" />
     <Content Include="Scripts\js\contact.min.js.map">
       <DependentUpon>contact.js</DependentUpon>
     </Content>
-    <None Include="Scripts\TaskPage.js.bundle" />
-    <None Include="Scripts\main2.custom.js.bundle">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Scripts\Bundle\TaskPage.js.bundle" />
     <Content Include="Scripts\js\Tags.min.js.map">
       <DependentUpon>Tags.js</DependentUpon>
     </Content>
@@ -1183,11 +1173,11 @@
     <Content Include="Scripts\js\Task.min.js.map">
       <DependentUpon>Task.js</DependentUpon>
     </Content>
-    <None Include="Scripts\org.js.bundle" />
-    <Content Include="Scripts\org.js">
+    <None Include="Scripts\Bundle\org.js.bundle" />
+    <Content Include="Scripts\Bundle\org.js">
       <DependentUpon>org.js.bundle</DependentUpon>
     </Content>
-    <Content Include="Scripts\org.min.js">
+    <Content Include="Scripts\Bundle\org.min.js">
       <DependentUpon>org.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Org\OrgChildren.min.js">
@@ -1244,25 +1234,22 @@
     <Content Include="Scripts\Org\OrgSearch.min.js.map">
       <DependentUpon>OrgSearch.js</DependentUpon>
     </Content>
-    <None Include="Scripts\querybuilder.js.bundle">
+    <None Include="Scripts\Bundle\querybuilder.js.bundle">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Scripts\querybuilder.js">
+    <Content Include="Scripts\Bundle\querybuilder.js">
       <DependentUpon>querybuilder.js.bundle</DependentUpon>
     </Content>
-    <Content Include="Scripts\querybuilder.min.js">
+    <Content Include="Scripts\Bundle\querybuilder.min.js">
       <DependentUpon>querybuilder.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\ContactSearch.min.js">
       <DependentUpon>ContactSearch.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\Search\ContactSearch.min.js.map">
-      <DependentUpon>ContactSearch.js</DependentUpon>
+    <Content Include="Scripts\Search\Query2.js">
+      <DependentUpon>Query2.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\PeopleSearch.min.js">
-      <DependentUpon>PeopleSearch.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\PeopleSearch.min.js.map">
       <DependentUpon>PeopleSearch.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\Query.min.js">
@@ -1271,13 +1258,7 @@
     <Content Include="Scripts\Search\QuickSearch.min.js">
       <DependentUpon>QuickSearch.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\Search\QuickSearch.min.js.map">
-      <DependentUpon>QuickSearch.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\SavedQuery.min.js">
-      <DependentUpon>SavedQuery.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SavedQuery.min.js.map">
       <DependentUpon>SavedQuery.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\SavedQuery2.js" />
@@ -1287,15 +1268,6 @@
     <Content Include="Scripts\Search\SearchAdd.js" />
     <Content Include="Scripts\Search\SearchOrgs.min.js">
       <DependentUpon>SearchOrgs.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SearchOrgs.min.js.map">
-      <DependentUpon>SearchOrgs.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\Query.min.js.map">
-      <DependentUpon>Query.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SavedQuery2.min.js.map">
-      <DependentUpon>SavedQuery2.js</DependentUpon>
     </Content>
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Main\Views\Reports\EnrollmentControl2.cshtml" />
@@ -1521,10 +1493,10 @@
     <Content Include="Scripts\Org\enroll-control-ipad.js" />
     <Content Include="Scripts\Org\OrgMemberDialog2.js" />
     <Content Include="Scripts\Search\Query.js" />
-    <Content Include="Scripts\TaskPage.js">
+    <Content Include="Scripts\Bundle\TaskPage.js">
       <DependentUpon>TaskPage.js.bundle</DependentUpon>
     </Content>
-    <Content Include="Scripts\TaskPage.min.js">
+    <Content Include="Scripts\Bundle\TaskPage.min.js">
       <DependentUpon>TaskPage.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Volunteer\Calendar.min.js">
@@ -1546,10 +1518,6 @@
     <Content Include="Scripts\Volunteer\ManageVolunteer2.js" />
     <Content Include="Scripts\js\headermenu2.js" />
     <Content Include="Scripts\js\modernizr-2.6.2.js" />
-    <Content Include="Scripts\Moment\moment-datepicker.js" />
-    <Content Include="Scripts\Moment\moment-datepicker.min.js" />
-    <Content Include="Scripts\Moment\moment.js" />
-    <Content Include="Scripts\Moment\moment.min.js" />
     <Content Include="Scripts\People\Person1.js" />
     <Content Include="Scripts\People\Person2.js" />
     <Content Include="Scripts\Finance\TotalsByRange.js" />
@@ -1776,12 +1744,6 @@
     </Content>
     <Content Include="Scripts\Mobile\jquery.mobile-1.3.0.min.js.map">
       <DependentUpon>jquery.mobile-1.3.0.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Moment\moment-datepicker.min.js.map">
-      <DependentUpon>moment-datepicker.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Moment\moment.min.js.map">
-      <DependentUpon>moment.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Volunteer\ManageVolunteer2.min.js">
       <DependentUpon>ManageVolunteer2.js</DependentUpon>
@@ -2074,12 +2036,11 @@
     <Content Include="Areas\Search\Views\SavedQuery\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Results.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Row.cshtml" />
-    <Content Include="Areas\Search\Views\SavedQuery\Rows.cshtml" />
     <Content Include="Areas\Search\Views\Query\CodesDropdown.cshtml" />
     <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
     <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
     <Content Include="Areas\Manage\Views\Display\ContentView.cshtml" />
-    <Content Include="Areas\Search\Views\Query\EditCondition.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditCondition0.cshtml" />
     <Content Include="ckeditor2\CHANGES.md" />
     <Content Include="ckeditor2\LICENSE.md" />
     <Content Include="ckeditor2\plugins\scayt\LICENSE.md" />

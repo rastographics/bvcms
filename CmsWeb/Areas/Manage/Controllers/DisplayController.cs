@@ -81,11 +81,11 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 switch (sRenderType)
                 {
-                    case "Local": // Uses local server resources 
+                    case "Local":// Uses local server resources 
                     case "true":
                         var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
                         var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
-                        if (ii == null)
+                        if(ii == null)
                             content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
                         break;
 
@@ -98,14 +98,14 @@ namespace CmsWeb.Areas.Manage.Controllers
                             coll);
 
                         ii = ImageData.DbUtil.Db.Images.FirstOrDefault(i => i.Id == content.ThumbID);
-                        if (ii != null)
+                        if (ii != null) 
                             ImageData.Image.UpdateImageFromBits(content.ThumbID, resp);
-                        else
+                        else 
                             content.ThumbID = ImageData.Image.NewImageFromBits(resp).Id;
                         break;
                 }
                 content.DateCreated = DateTime.Now;
-            }
+                }
             DbUtil.Db.SubmitChanges();
 
             if (string.Compare(content.Name, "StandardExtraValues.xml", ignoreCase: true) == 0)

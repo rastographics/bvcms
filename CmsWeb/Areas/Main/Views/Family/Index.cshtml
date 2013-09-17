@@ -19,7 +19,7 @@ pre {
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/people/family.js")"></script>
+    @Fingerprint.Script("/Scripts/people/family.js")
 }
 @Html.Hidden("FamilyId", Model.familyid)
 <table class="roundbox" cellspacing="5">

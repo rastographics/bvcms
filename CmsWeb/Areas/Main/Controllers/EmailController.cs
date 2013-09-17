@@ -210,7 +210,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
 			try
 			{
-				DbUtil.Db.Email(From.ToString(), p, m.Subject, m.Body);
+				DbUtil.Db.Email(From, p, null, m.Subject, m.Body, false);
 			}
 			catch (Exception ex)
 			{

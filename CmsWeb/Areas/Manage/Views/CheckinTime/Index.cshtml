@@ -22,7 +22,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/js/checkinactivity.js")"></script>
+    @Fingerprint.Script("/Scripts/js/checkinactivity.js")
 }
 <form id="form" method="post" action="/Manage/CheckinTime/Index">
 @Html.Hidden("peopleid")

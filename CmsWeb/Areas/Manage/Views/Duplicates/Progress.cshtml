@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Duplicates Finder</title>
-    @Helper.IncludeJs()
+    @Fingerprint.Script("/Scripts/Bundle/main.js")
     @if (Model.Running == 1)
     {
         <script type="text/javascript">

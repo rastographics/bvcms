@@ -221,6 +221,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\packages\Dapper.1.13\lib\net45\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="DDay.iCal">
       <HintPath>..\packages\DDay.iCal.1.0.2.575\lib\DDay.iCal.dll</HintPath>
     </Reference>
@@ -360,6 +363,13 @@
     <Compile Include="BundleHeader.cs" />
     <Compile Include="CheckinFamilyMember.cs" />
     <Compile Include="APIContributionSearchModel.cs" />
+    <Compile Include="Query.cs" />
+    <Compile Include="QueryBuilder2\CategoryClass2.cs" />
+    <Compile Include="QueryBuilder2\CompareClass2.cs" />
+    <Compile Include="QueryBuilder2\FieldClass2.cs" />
+    <Compile Include="QueryBuilder2\Condition.cs" />
+    <Compile Include="QueryBuilder2\QueryContext.cs" />
+    <Compile Include="QueryBuilder2\Serialize2.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="DoReplacements.cs" />
     <Compile Include="Generated\ActivityOld.cs" />
@@ -381,6 +391,7 @@
     <Compile Include="Generated\Functions\RecentAbsents2.cs" />
     <Compile Include="Generated\Functions\StatusFlag.cs" />
     <Compile Include="Generated\PeopleCanEmailFor.cs" />
+    <Compile Include="Generated\Query.cs" />
     <Compile Include="Generated\Views\BundleList.cs" />
     <Compile Include="Generated\Views\OrganizationLeader.cs" />
     <Compile Include="Generated\Views\OrganizationStructure.cs" />

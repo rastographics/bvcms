@@ -30,6 +30,27 @@ namespace CmsData
             DbUtil.Db.SubmitChanges();
             return c.ContactId;
         }
+        public static int AddContact(Guid qid, int? MakerId = null)
+        {
+            var q = DbUtil.Db.PeopleQuery(qid);
+            if (q.Count() > 100)
+                return -1;
+            if (q.Count() == 0)
+                return 0;
+            var c = new Contact 
+			{ 
+				ContactDate = DateTime.Now.Date, 
+				CreatedBy = Util.UserId1,
+	            CreatedDate = DateTime.Now,
+			};
+            foreach (var p in q)
+                c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
+            if (MakerId.HasValue)
+                c.contactsMakers.Add(new Contactor {PeopleId = MakerId.Value});
+            DbUtil.Db.Contacts.InsertOnSubmit(c);
+            DbUtil.Db.SubmitChanges();
+            return c.ContactId;
+        }
         public static Contact AddContact(CMSDataContext Db, int pid, DateTime? date, string comments)
         {
             var c = new Contact 

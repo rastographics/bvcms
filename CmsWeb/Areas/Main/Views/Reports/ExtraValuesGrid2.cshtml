@@ -10,7 +10,7 @@
 <html>
 <head>
     <title>@ViewBag.Title</title>
-    @Fingerprint.Css("/content/css/new2css.css")
+    @Fingerprint.Css("/content/css/bundle-new2css.css")
     @Fingerprint.Css("/content/css/main.css")
     <link href="/Content/css/jquery.dataTables.css" rel="stylesheet" />
     <link href="~/Content/css/demo_page.css" rel="stylesheet" />
@@ -67,7 +67,7 @@
             padding: 20px;
         }
     </style>
-    @Helper.IncludeJs2()
+    @Fingerprint.Script("/Scripts/Bundle/main2.js")
     @Html.Partial("DatePickerDefaults2")
     <script src="/Scripts/jQuery/jquery.dataTables.js"></script>
     <script src="/Scripts/jQuery/FixedHeader.js"></script>

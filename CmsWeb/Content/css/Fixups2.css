@@ -577,9 +577,98 @@ label.error {
 #conditionsList header label:after {
     content: none;
 }
+
 #conditionsList select {
-width: 80px;
+    width: 80px;
 }
+
 #conditionsList header label {
-text-transform: inherit;
+    text-transform: inherit;
 }
+
+.editable-empty {
+    color: #005580;
+    font-style: normal;
+}
+
+    .editable-empty:hover {
+        color: #005580;
+        font-style: normal;
+    }
+
+#saved-query.table {
+    width: inherit;
+}
+
+.tabs-left > .nav-tabs > li.active > a {
+    border-right: white;
+}
+
+#QueryConditionHelp h1 {
+    font-size: 30px;
+    line-height: 36px;
+}
+
+#QueryConditionHelp h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-family: inherit;
+    font-weight: bold;
+    color: inherit;
+    text-rendering: optimizelegibility;
+}
+
+#QueryConditionHelp h2 {
+    font-size: 24px;
+    line-height: 36px;
+}
+
+#form-saved-query .control-group {
+    margin-bottom: 0;
+}
+
+div.inline {
+    display: inline-block;
+}
+
+div.table {
+    display: table;
+}
+div.cell {
+    display: table-cell;
+}
+
+div.left-gutter {
+    margin-left: 2em;
+}
+
+div.right {
+    text-align: right;
+}
+
+div.pad-top {
+    margin-top: 1em;
+}
+div.pad-left {
+    padding-left: 1em;
+}
+
+div.align-top {
+    vertical-align: top;
+}
+div.align-bottom {
+    vertical-align: bottom;
+}
+
+legend {
+    line-height: 1.2em;
+    padding-bottom: 10px;
+    margin-bottom: .5em;
+}
+
+fieldset {
+    margin-bottom: 1em;
+}
+.nowrap {
+    white-space: nowrap;
+}
+

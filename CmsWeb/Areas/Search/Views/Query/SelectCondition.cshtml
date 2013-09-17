@@ -1,19 +1,18 @@
-﻿@model CmsWeb.Areas.Search.Models.QueryModel
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Search.Models.QueryModel2
 @{
     var cats = Model.FieldCategories().ToList();
 }
 <div id="QueryConditionSelect" class='modal fade hide' data-width='900'>
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
-    </div>
-    <div class="modal-body">
+        <p>Category</p>
         <div class="tabbable tabs-left">
             <ul class="nav nav-tabs">
-                <li><b><a style="color:black">Category</a></b></li>
                 @for(var i = 0; i< cats.Count; i++)
                 {
                     var c = cats[i];
-                    <li @(i==0? "class=active" : "")><a href='#@c.Name' data-toggle="tab">@c.Title</a></li>
+                    <li @(i==0? "class=active" : "")><a href='#@c.Name' data-toggle="tab">@Html.Raw(c.Title.Replace("|", "<br/>"))</a></li>
                 }
             </ul>
             <div class="tab-content">
@@ -21,6 +20,10 @@
                 { 
                     var c = cats[i];
                     <div class="tab-pane @(i==0? "active" : "")" id="@c.Name">
+                        @if (c.TopMessage.HasValue())
+                        {
+                            <p>@c.TopMessage</p>
+                        }
                         <dl class="dl-horizontal">
                             <dt class="FieldLink">Choose a Condition</dt>
                             <dd><b>Click these for more help on a condition</b></dd>
@@ -28,7 +31,7 @@
                             { 
                                 <dt class="FieldLink"><a id='@p.Name' href="#">@p.Title</a></dt>
                                 <dd>
-                                    <a class="help" href="https://www.bvcms.com/DocDialog/QB-@p.Name">@p.Description</a>
+                                    <a class="help" href="#" data-name="QB-@p.Name">@p.Description</a>
                                 </dd>
                             }
                         </dl>

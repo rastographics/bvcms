@@ -91,8 +91,6 @@ namespace CmsData
 		
 		private DateTime? _BirthDayEnd;
 		
-		private DateTime? _VisitorDate;
-		
 		private DateTime? _LastDayBeforeExtra;
 		
 		private int? _RegistrationTypeId;
@@ -150,6 +148,8 @@ namespace CmsData
 		private int? _ConsecutiveAbsentsThreshold;
 		
 		private bool _IsRecreationTeam;
+		
+		private DateTime? _VisitorDate;
 		
    		
    		private EntitySet< Person> _BFMembers;
@@ -309,9 +309,6 @@ namespace CmsData
 		partial void OnBirthDayEndChanging(DateTime? value);
 		partial void OnBirthDayEndChanged();
 		
-		partial void OnVisitorDateChanging(DateTime? value);
-		partial void OnVisitorDateChanged();
-		
 		partial void OnLastDayBeforeExtraChanging(DateTime? value);
 		partial void OnLastDayBeforeExtraChanged();
 		
@@ -398,6 +395,9 @@ namespace CmsData
 		
 		partial void OnIsRecreationTeamChanging(bool value);
 		partial void OnIsRecreationTeamChanged();
+		
+		partial void OnVisitorDateChanging(DateTime? value);
+		partial void OnVisitorDateChanged();
 		
     #endregion
 		public Organization()
@@ -1280,28 +1280,6 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="VisitorDate", UpdateCheck=UpdateCheck.Never, Storage="_VisitorDate", DbType="datetime", IsDbGenerated=true)]
-		public DateTime? VisitorDate
-		{
-			get { return this._VisitorDate; }
-
-			set
-			{
-				if (this._VisitorDate != value)
-				{
-				
-                    this.OnVisitorDateChanging(value);
-					this.SendPropertyChanging();
-					this._VisitorDate = value;
-					this.SendPropertyChanged("VisitorDate");
-					this.OnVisitorDateChanged();
-				}
-
-			}
-
-		}
-
-		
 		[Column(Name="LastDayBeforeExtra", UpdateCheck=UpdateCheck.Never, Storage="_LastDayBeforeExtra", DbType="datetime")]
 		public DateTime? LastDayBeforeExtra
 		{
@@ -1936,6 +1914,28 @@ namespace CmsData
 					this._IsRecreationTeam = value;
 					this.SendPropertyChanged("IsRecreationTeam");
 					this.OnIsRecreationTeamChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="VisitorDate", UpdateCheck=UpdateCheck.Never, Storage="_VisitorDate", DbType="datetime", IsDbGenerated=true)]
+		public DateTime? VisitorDate
+		{
+			get { return this._VisitorDate; }
+
+			set
+			{
+				if (this._VisitorDate != value)
+				{
+				
+                    this.OnVisitorDateChanging(value);
+					this.SendPropertyChanging();
+					this._VisitorDate = value;
+					this.SendPropertyChanged("VisitorDate");
+					this.OnVisitorDateChanged();
 				}
 
 			}

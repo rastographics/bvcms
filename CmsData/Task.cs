@@ -67,6 +67,27 @@ namespace CmsData
             DbUtil.Db.SubmitChanges();
             return qCount;
         }
+        public static int AddTasks(Guid qid)
+        {
+            var q = DbUtil.Db.PeopleQuery(qid);
+            int qCount = q.Count();
+            if (qCount > 100)
+                return qCount;
+            foreach (var p in q)
+            {
+                var t = new Task
+                {
+                    ListId = Task.GetRequiredTaskList("InBox", Util.UserPeopleId.Value).Id,
+                    OwnerId = Util.UserPeopleId.Value,
+                    Description = "Please Contact",
+                    ForceCompleteWContact = true,
+                    StatusId = TaskStatusCode.Active,
+                };
+                p.TasksAboutPerson.Add(t);
+            }
+            DbUtil.Db.SubmitChanges();
+            return qCount;
+        }
         private static string TaskLink0(int id)
         {
             return "/Task/List/{0}#detail".Fmt(id);

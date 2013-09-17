@@ -6,7 +6,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/js/Checkin.js")"></script>
+    @Fingerprint.Script("/Scripts/js/Checkin.js")
 }
     @Html.Hidden("OrgId")
     @Html.Hidden("PeopleId", Model.person.PeopleId)

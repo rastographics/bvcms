@@ -18,7 +18,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Search/PeopleSearch.js")"></script>
+    @Fingerprint.Script("/Scripts/Search/PeopleSearch.js")
 }
 <form id="peoplesearch" method="post" action="/PeopleSearch/Index">
 <table id="searchvalues" cellspacing="5" class="roundbox">

@@ -1,5 +1,6 @@
 ﻿@{
     var admin = User.IsInRole("Admin");
+    var developer = User.IsInRole("Developer");
     var manageemails = User.IsInRole("ManageEmails");
     var managetrans = User.IsInRole("ManageTransactions");
     var edit = User.IsInRole("Edit");
@@ -37,7 +38,7 @@
                             @Helper.LiAnchorLink("QuickBooks", "/QuickBooks/", quickbooks)
                         </ul>
                         <ul class="span4 unstyled pull-left">
-                            @AdminList2(admin, design, managetrans, edit, manageemails, true)
+                            @AdminList2(admin, design, managetrans, edit, manageemails, true, developer)
                         </ul>
                         <ul class="span3 unstyled pull-left">
                             @AdminList1(admin, design, managetrans, edit, manageemails, true)
@@ -51,7 +52,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin</a>
             <ul class="dropdown-menu">
                 @AdminList1(admin, design, managetrans, edit, manageemails, false)
-                @AdminList2(admin, design, managetrans, edit, manageemails, false)
+                @AdminList2(admin, design, managetrans, edit, manageemails, false, developer)
             </ul>
         }
     </li>
@@ -69,7 +70,7 @@
         "OrgLeadersOnly is on" : "OrgLeadersOnly is off",
         "/Admin/ToggleOrgLeadersOnly.ashx", admin)
 }
-@helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance)
+@helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
 {
     @Helper.LiHeader("Manage", admin || manageemails || edit || managetrans)
     @Helper.LiAnchorLink("Activity Log", "/Manage/Users/LastActivity/", admin)
@@ -87,4 +88,5 @@
     @Helper.LiAnchorLink("Update for a Tag", "/Batch/UpdateFields", admin)
     @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags", admin)
     @Helper.LiAnchorLink("Tag PeopleIds", "/Batch/TagPeopleIds", admin)
+    @Helper.LiAnchorLink("Convert Queries", "/Batch/ConvertQueries", developer)
 }

@@ -177,7 +177,7 @@ namespace CmsWeb.Models
 				where a.Meeting.Organization.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                 where a.AttendanceFlag && 
 					(a.MeetingDate >= a.Meeting.Organization.FirstMeetingDate.Value.Date || a.Meeting.Organization.FirstMeetingDate == null)
-				where a.AttendanceFlag && (a.MeetingDate >= a.Meeting.Organization.VisitorDate.Value.Date)
+				where a.AttendanceFlag && (a.MeetingDate >= a.Meeting.Organization.VisitorDate.Value)
 				where Attend.VisitAttendTypes.Contains(a.AttendanceTypeId.Value)
                 where !a.Meeting.Organization.OrganizationMembers.Any(om => om.PeopleId == a.PeopleId)
                 group a by new { a.PeopleId, a.Meeting.OrganizationId } into g

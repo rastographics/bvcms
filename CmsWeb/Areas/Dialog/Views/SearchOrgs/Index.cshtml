@@ -3,10 +3,10 @@
 <html>
 <head>
 <title>Index</title>
-    @Helper.IncludeCss()
+    @Fingerprint.Css("/content/styles/bundle-css.css")
     <link href="/Content/styles/style2.css" rel="stylesheet" type="text/css" />
-    @Helper.IncludeJs()
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Search/SearchOrgs.js")"></script>
+    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/Search/SearchOrgs.js")
 </head>
 <body>
     <form name="form1">

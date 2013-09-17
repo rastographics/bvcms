@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>Index</title>
-        @Helper.IncludeCss()
+        @Fingerprint.Css("/content/styles/bundle-css.css")
         <link rel="stylesheet" href="@Fingerprint.Tag("/Content/styles/dialog.css")"/>
         <style type="text/css">
             .wrap {
@@ -17,8 +17,8 @@
                 padding: 0 0 5px 0;
             }
         </style>
-        @Helper.IncludeJs()
-        <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Dialog/UserDialog.js")"></script>
+        @Fingerprint.Script("/Scripts/Bundle/main.js")
+        @Fingerprint.Script("/Scripts/Dialog/UserDialog.js")
     </head>
 <body>
     <a class="helplink" target="_blank" href='@Util.HelpLink("UserUpdate")'>help</a>

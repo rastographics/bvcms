@@ -6,7 +6,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/OnlineReg/OnlineReg.js")"></script>
+    @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js")
 }
 <h2>@Model.Description()</h2>
 <div>@Html.Raw(Model.Instructions)</div>

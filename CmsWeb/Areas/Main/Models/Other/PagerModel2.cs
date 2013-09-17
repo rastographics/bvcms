@@ -153,6 +153,7 @@ namespace CmsWeb.Models
         // All
         internal void Set(string url, int? page, int? size, string sort, string dir)
         {
+            AllowSort = true;
             URL = url;
             if(page.HasValue)
                 Page = page.Value;
@@ -180,13 +181,13 @@ namespace CmsWeb.Models
         {
             if(ShowPageSize && AllowSort)
                 return new HtmlString("<a href='{0}/{2}/{3}/{4}/{5}' class='ajax'>{1}</a>"
-                    .Fmt(URL, label, page ?? 1, size ?? PageSize, Sort ?? "na", Direction == "asc" ? "desc" : "asc"));
+                    .Fmt(URL, label, page ?? 1, size ?? PageSize, Sort ?? "na", Direction));
             if (ShowPageSize)
                 return new HtmlString("<a href='{0}/{2}/{3}' class='ajax'>{1}</a>"
                     .Fmt(URL, label, page ?? 1, size ?? PageSize));
             if (AllowSort)
                 return new HtmlString("<a href='{0}/{2}/{3}/{4}' class='ajax'>{1}</a>"
-                    .Fmt(URL, label, page ?? 1, Sort ?? "na", Direction == "asc" ? "desc" : "asc"));
+                    .Fmt(URL, label, page ?? 1, Sort ?? "na", Direction));
             return new HtmlString("<a href='{0}/{2}' class='ajax'>{1}</a>"
                 .Fmt(URL, label, page ?? 1));
         }
@@ -195,8 +196,11 @@ namespace CmsWeb.Models
             var disabled = "";
             if (disable == true)
                 disabled = " class='disabled'";
-            return new HtmlString("<li{6}><a href='{0}/{1}/{2}/{3}/{4}' class='ajax'>{5}</a></li>"
-                .Fmt(URL, page ?? 1, size ?? PageSize, Sort ?? "na", Direction == "asc" ? "desc" : "asc", label, disabled));
+            if(AllowSort)
+                return new HtmlString("<li{6}><a href='{0}/{1}/{2}/{3}/{4}' class='ajax'>{5}</a></li>"
+                    .Fmt(URL, page ?? 1, size ?? PageSize, Sort ?? "na", Direction, label, disabled));
+            return new HtmlString("<li{4}><a href='{0}/{1}/{2}' class='ajax'>{3}</a></li>"
+                .Fmt(URL, page ?? 1, size ?? PageSize, label, disabled));
         }
         public string ShowCount()
         {

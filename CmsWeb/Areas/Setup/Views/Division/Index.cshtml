@@ -5,7 +5,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Admin/Divisions.js")"></script>
+    @Fingerprint.Script("/Scripts/Admin/Divisions.js")
 }
 <form id="progform">
 Filter for Program: @Html.DropDownList("ProgramId", Model.ProgramIds())

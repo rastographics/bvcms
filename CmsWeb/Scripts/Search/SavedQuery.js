@@ -59,7 +59,7 @@
         ev.preventDefault();
         var a = $(this);
         if (confirm("Delete this saved search?"))
-            $.post("/SavedQuery/Edit", { id: a.attr("id") }, function (ret) {
+            $.post("/SavedQuery/Delete", { id: a.attr("id") }, function (ret) {
                 a.closest("tr").fadeOut().remove();
             });
         return false;

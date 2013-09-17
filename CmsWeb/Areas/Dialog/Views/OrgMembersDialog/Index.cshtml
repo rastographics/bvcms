@@ -3,10 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
     <title>Index</title>
-    @Helper.IncludeCss()
-    @Helper.IncludeJs()
+    @Fingerprint.Css("/content/styles/bundle-css.css")
+    @Fingerprint.Script("/Scripts/Bundle/main.js")
     @Html.Partial("DatePickerDefaults")
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Dialog/OrgMembersDialog.js")"></script>
+    @Fingerprint.Script("/Scripts/Dialog/OrgMembersDialog.js")
 </head>
 <body>
 <form action="/OrgMembersDialog/Update" method="post">

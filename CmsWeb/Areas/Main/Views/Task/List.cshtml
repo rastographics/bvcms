@@ -6,7 +6,7 @@
 }
 @section scripts
 {
-    @Helper.IncludeTaskJs()
+    @Fingerprint.Script("/Scripts/Bundle/TaskPage.js")
 }
     <form id="form" action="/Task/List" method="get">
     @Html.Hidden("SortTask")

@@ -9,7 +9,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="@Fingerprint.Tag("/Scripts/Search/QuickSearch.js")"></script>
+    @Fingerprint.Script("/Scripts/Search/QuickSearch.js")
 }
 <form id="quicksearch" method="post" action="/QuickSearch/Index">
 <input id='q' name='q' value="@Model.text"/>

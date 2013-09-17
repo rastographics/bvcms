@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Web.Mvc;
 using AttributeRouting;
@@ -14,35 +15,43 @@ namespace CmsWeb.Areas.Search.Controllers
         [GET("SavedQuery2/")]
         public ActionResult Index()
         {
-            var m = new SavedQueryModel();
+            var m = new SavedQueryModel { OnlyMine = DbUtil.Db.UserPreference("SavedQueryOnlyMine", "false").ToBool() };
+            m.Pager.Set("/SavedQuery2/Results", 1, null, "Last Run", "desc");
             return View(m);
         }
-        [POST("SavedQuery2/PostData/{pk:int}/{name}/{value}")]
-        public ActionResult PostData(int pk, string name, string value)
+        [POST("SavedQuery2/Results/{page?}/{size?}/{sort=Last Run}/{dir=desc}")]
+        public ActionResult Results(int? page, int? size, string sort, string dir, SavedQueryModel m)
         {
-            var c = DbUtil.Db.QueryBuilderClauses.SingleOrDefault(cc => cc.QueryId == pk);
-            switch (name.ToLower())
-            {
-                case "description":
-                    c.Description = value;
-                    break;
-                case "owner":
-                    c.SavedBy = value;
-                    break;
-                case "public":
-                    c.IsPublic = value == "yes";
-                    break;
-                case "delete":
-                    DbUtil.Db.DeleteQueryBuilderClauseOnSubmit(c);
-                    break;
-            }
+            m.Pager.Set("/SavedQuery2/Results", page, size, sort, dir);
+            return View(m);
+        }
+        [POST("SavedQuery2/Edit/{id:guid}")]
+        public ActionResult Edit(Guid id)
+        {
+            var m = new SavedQueryInfo(id);
+            return View(m);
+        }
+        [POST("SavedQuery2/Update")]
+        public ActionResult Update(SavedQueryInfo m)
+        {
+            m.UpdateModel();
+            return View("Row", m);
+        }
+        [POST("SavedQuery2/Delete/{id:guid}")]
+        public ActionResult Delete(Guid id)
+        {
+            var q = DbUtil.Db.LoadQueryById2(id);
+            DbUtil.Db.Queries.DeleteOnSubmit(q);
             DbUtil.Db.SubmitChanges();
-            return Content(value);
+            return Content("ok");
         }
-        [POST("SavedQuery2/Results")]
-        public ActionResult Results(SavedQueryModel m)
-        {
-            return View(m);
-        }
+//        [POST("SavedQuery2/PostPublic")]
+//        public ActionResult PostPublic(int pk, string value)
+//        {
+//            var c = DbUtil.Db.QueryBuilderClauses.SingleOrDefault(cc => cc.QueryId == pk);
+//            c.IsPublic = value == "1";
+//            DbUtil.Db.SubmitChanges();
+//            return Content(value);
+//        }
     }
 }

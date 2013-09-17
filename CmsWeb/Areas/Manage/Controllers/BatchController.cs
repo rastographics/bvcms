@@ -6,6 +6,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Threading;
+using Dapper;
+using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
 using System.Text;
 using CmsData;
@@ -815,6 +817,13 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Content(e.Message);
             }
             return Content("done");
+        }
+        [HttpGet]
+        [Authorize(Roles = "Developer")]
+        public ActionResult ConvertQueries()
+        {
+            DbUtil.Db.CheckLoadQueries(reload: true);
+            return Redirect("/SavedQuery2");
         }
     }
 }

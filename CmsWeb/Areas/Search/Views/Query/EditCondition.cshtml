@@ -1,5 +1,5 @@
 ﻿@using CmsWeb.Areas.Search.Models
-@model CmsWeb.Areas.Search.Models.QueryModel
+@model QueryModel2
 <form id="editForm" action="/Query" method="post">
     @Html.Hidden("ConditionName")
     @Html.Hidden("SelectedId")
@@ -9,9 +9,9 @@
                 <table>
                     <tr>
                         <td class="select-button">
-                            <a id="SelectCondition" class="btn btn-success">
-                                <span id="ConditionText">@Model.ConditionText</span>
-                            </a>
+                                <a id="SelectCondition" class="btn btn-success">
+                                    <span id="ConditionText">@Model.ConditionText</span>
+                                </a>
                         </td>
                         <td>
                             @if (Model.ComparePanelVisible)
@@ -87,7 +87,7 @@
         @if (Model.QuartersVisible)
         {
             <tr>
-                <td id="QuartersLabel">Quarters</td>
+                <td id="QuartersLabel">@Model.QuartersLabel</td>
                 <td>
                     @Html.TextBox("Quarters")
                 </td>
@@ -162,7 +162,7 @@
             <tr>
                 <td>Division:</td>
                 <td>
-                    @Html.DropDownList("Division", QueryModel.Divisions(Model.Program))
+                    @Html.DropDownList("Division", QueryModel2.Divisions(Model.Program))
                 </td>
             </tr>
         }
@@ -172,7 +172,7 @@
             <tr>
                 <td>Organization:</td>
                 <td>
-                    @Html.DropDownList("Organization", QueryModel.Organizations(Model.Division))
+                    @Html.DropDownList("Organization", QueryModel2.Organizations(Model.Division))
                 </td>
             </tr>
         }

@@ -752,7 +752,7 @@ namespace UtilityExtensions
                     if (HttpContext.Current.Session != null)
                         if (HttpContext.Current.Session[STR_UserPeopleId] != null)
                             id = HttpContext.Current.Session[STR_UserPeopleId].ToInt();
-                return id ?? UserId1;
+                return id;
             }
             set
             {
@@ -773,6 +773,10 @@ namespace UtilityExtensions
         public static string ScratchPad
         {
             get { return "<--ScratchPad-->"; }
+        }
+        public static string ScratchPad2
+        {
+            get { return "New Query"; }
         }
         const string STR_QBScratchPad = "QBScratchPad";
         public static int QueryBuilderScratchPadId
