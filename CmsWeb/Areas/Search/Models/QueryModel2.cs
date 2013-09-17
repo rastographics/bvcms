@@ -387,6 +387,7 @@ namespace CmsWeb.Areas.Search.Models
             SetVisibility();
             SelectMultiple = Comparison.EndsWith("OneOf");
         }
+        [Serializable]
         public class ClipboardItem
         {
             public string from { get; set; }
