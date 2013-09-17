@@ -45,6 +45,13 @@ namespace CmsWeb.Areas.Search.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("ok");
         }
+        [GET("SavedQuery2/ExportToOld/{id:guid}")]
+        public ActionResult ExportToOld(Guid id)
+        {
+            var q = DbUtil.Db.LoadQueryById2(id);
+            var ret = QueryBuilderClause.Import(DbUtil.Db, q.ToClause().ToXml(), q.Name);
+            return Redirect("/QueryBuilder/Main/" + ret.newid);
+        }
 //        [POST("SavedQuery2/PostPublic")]
 //        public ActionResult PostPublic(int pk, string value)
 //        {
