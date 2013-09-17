@@ -789,7 +789,7 @@ namespace CmsData
         {
             get
             {
-                var _Comparisons = (List<CompareClass2>)HttpRuntime.Cache["comparisons"];
+                var _Comparisons = (List<CompareClass2>)HttpRuntime.Cache["comparisons2"];
                 if (_Comparisons == null)
                 {
                     var xdoc = XDocument.Parse(Properties.Resources.CompareMap);
@@ -802,7 +802,7 @@ namespace CmsData
                                 Display = (string)c.Attribute("Display")
                             };
                     _Comparisons = q.ToList();
-					HttpRuntime.Cache.Insert("comparisons", _Comparisons, null,
+					HttpRuntime.Cache.Insert("comparisons2", _Comparisons, null,
 						DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
                 }
                 return _Comparisons;
