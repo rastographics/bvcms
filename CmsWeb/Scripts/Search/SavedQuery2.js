@@ -16,6 +16,10 @@
                         modal.empty();
                     });
                 });
+                $("#ExportToOld").click(function (ev) {
+                    ev.preventDefault();
+                    window.location = "/SavedQuery2/ExportToOld/" + $("#QueryId").val();
+                });
             });
     });
     $("a.delete-saved-query").live("click", function (ev) {

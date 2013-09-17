@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using AttributeRouting.Web.Mvc;
 using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
@@ -33,12 +34,19 @@ namespace CmsWeb.Areas.Main.Controllers
                 case "p":
                     c.IsPublic = value == "yes";
                     break;
-                case "x":
-                    DbUtil.Db.DeleteQueryBuilderClauseOnSubmit(c);
-                    break;
             }
             DbUtil.Db.SubmitChanges();
             return Content(value);
+        }
+        [HttpPost]
+        public ActionResult Delete(string id)
+        {
+            var a = id.Split('.');
+            var iid = a[1].ToInt();
+            var c = DbUtil.Db.QueryBuilderClauses.SingleOrDefault(cc => cc.QueryId == iid);
+            DbUtil.Db.DeleteQueryBuilderClauseOnSubmit(c);
+            DbUtil.Db.SubmitChanges();
+            return new EmptyResult();
         }
         [HttpPost]
         public ActionResult Results()

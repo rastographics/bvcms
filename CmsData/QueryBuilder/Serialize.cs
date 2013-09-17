@@ -100,10 +100,7 @@ namespace CmsData
             Db.SubmitChanges();
             var ret = new QueryImportInfo()
             {
-                dbname = x.Root.Attribute("dbname").Value,
                 newid = c.QueryId,
-                from = x.Root.Attribute("from").Value,
-                fromid = x.Root.Attribute("fromid").Value.ToInt(),
             };
             return ret;
         }
