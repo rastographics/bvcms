@@ -221,6 +221,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\packages\Dapper.1.13\lib\net45\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="DDay.iCal">
       <HintPath>..\packages\DDay.iCal.1.0.2.575\lib\DDay.iCal.dll</HintPath>
     </Reference>
@@ -365,6 +368,7 @@
     <Compile Include="QueryBuilder2\CompareClass2.cs" />
     <Compile Include="QueryBuilder2\FieldClass2.cs" />
     <Compile Include="QueryBuilder2\Condition.cs" />
+    <Compile Include="QueryBuilder2\QueryContext.cs" />
     <Compile Include="QueryBuilder2\Serialize2.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="DoReplacements.cs" />

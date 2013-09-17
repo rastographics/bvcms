@@ -822,44 +822,8 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult ConvertQueries()
         {
-            List<int> list;
-            var cs = DbUtil.Db.Connection.ConnectionString;
-            using (var cn2 = new SqlConnection(cs))
-            {
-                cn2.Open();
-                cn2.Execute("Truncate table dbo.Query");
-                var q = cn2.Query<int>("select QueryId from QueryBuilderClauses where GroupId is null and Description is not null and savedby is not null");
-                list = q.ToList();
-            }
-            foreach (var qid in list)
-            {
-                var db = new CMSDataContext(cs);
-                var c = db.LoadQueryById(qid);
-                var xml = c.ToXml("conv", qid);
-                string name = null;
-                if (c.Description != Util.ScratchPad)
-                    name = c.Description.Truncate(50);
-                var nc = Condition.Import(xml, name);
-                xml = nc.ToXml();
-                if (!nc.Conditions.Any())
-                    continue;
-                var q = new Query()
-                {
-                    QueryId = nc.Id,
-                    Name = name ?? Util.ScratchPad2,
-                    Text = xml,
-                    Owner = c.SavedBy,
-                    Created = c.CreatedOn,
-                    LastRun = c.CreatedOn,
-                    Ispublic = c.IsPublic,
-                    RunCount = 0
-                };
-                db.Queries.InsertOnSubmit(q);
-                db.SubmitChanges();
-                db.Dispose();
-            }
+            DbUtil.Db.CheckLoadQueries(reload: true);
             return Redirect("/SavedQuery2");
         }
-
     }
 }

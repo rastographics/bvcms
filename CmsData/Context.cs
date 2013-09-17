@@ -159,43 +159,6 @@ namespace CmsData
             var qb = QueryBuilderClauses.SingleOrDefault(c => c.QueryId == queryid);
             return CheckBadQuery(qb);
         }
-        public Query LoadQueryById2(Guid? id)
-        {
-            var q = Queries.SingleOrDefault(cc => cc.QueryId == id);
-            return q;
-        }
-        public Condition LoadCopyOfExistingQuery(Guid existingId)
-        {
-            var list = (from cc in Queries
-                        where (cc.Owner == Util.UserName && cc.CopiedFrom == existingId) 
-                            || (cc.Owner == Util.UserName && cc.Name == Util.ScratchPad2) 
-                            || cc.QueryId == existingId
-                        select cc).ToList();
-            var existing = list.Single(cc => cc.QueryId == existingId);
-            if (existing.Owner == Util.UserName && !existing.Ispublic)
-                return existing.ToClause();
-
-            // we are going to copy the existing but we still want to record that it was run.
-            existing.RunCount = existing.RunCount + 1;
-            var copy = (from cc in list
-                        where cc.CopiedFrom == existingId
-                        orderby cc.LastRun descending
-                        select cc).FirstOrDefault();
-            if (copy != null)
-                return copy.ToClause();
-
-            if (existing.Name == Util.ScratchPad2)
-            {
-                var scratchpad = list.FirstOrDefault(cc => cc.Name == Util.ScratchPad2 && cc.Owner == Util.UserName);
-                if (scratchpad != null)
-                    return existing.ToClause().Clone(useGuid: scratchpad.QueryId);
-            }
-            var c = existing.ToClause().Clone(useGuid: Guid.NewGuid());
-            c.CopiedFrom = existingId;
-            c.Description = "Copy of " + existing.Name;
-            c.Save(this);
-            return c;
-        }
         public IQueryable<Person> PeopleQuery(int qid)
         {
             var qB = this.LoadQueryById(qid);
@@ -262,87 +225,6 @@ namespace CmsData
             }
             Util.QueryBuilderScratchPadId = qb.QueryId;
             return qb;
-        }
-        public Condition ScratchPadCondition()
-        {
-            var q = (from cc in Queries
-                     where cc.Owner == Util.UserName
-                     where cc.Name == Util.ScratchPad2
-                     orderby cc.LastRun descending
-                     select cc).FirstOrDefault();
-            if (q == null)
-            {
-                var c = Condition.CreateNewGroupClause();
-                c.AddNewClause();
-                q = new Query
-                {
-                    QueryId = c.Id,
-                    Owner = Util.UserName,
-                    Created = DateTime.Now,
-                    LastRun = DateTime.Now,
-                    Name = Util.ScratchPad2,
-                    Text = c.ToXml()
-                };
-                Queries.InsertOnSubmit(q);
-                SubmitChanges();
-            }
-            return q.ToClause();
-        }
-        public List<Query> FetchLastFiveQueries()
-        {
-            var q = from cc in Queries
-                    where cc.Owner == Util.UserName
-                    where !cc.Ispublic
-                    where cc.Name != Util.ScratchPad2
-                    orderby cc.LastRun descending
-                    select cc;
-            var list = q.Take(5).ToList();
-            if (!list.Any())
-            {
-                var c = Condition.CreateNewGroupClause();
-                c.AddNewClause();
-                var query = new Query
-                {
-                    QueryId = c.Id,
-                    Owner = Util.UserName,
-                    Created = DateTime.Now,
-                    LastRun = DateTime.Now,
-                    Text = c.ToXml()
-                };
-                Queries.InsertOnSubmit(query);
-                SubmitChanges();
-                list.Add(query);
-            }
-            return list;
-        }
-        public Condition FetchLastQuery()
-        {
-            var q = (from cc in Queries
-                     where cc.Owner == Util.UserName
-                     where !cc.Ispublic
-                     orderby cc.LastRun descending
-                     select cc).FirstOrDefault();
-            Condition c;
-            if (q == null)
-            {
-                c = Condition.CreateNewGroupClause();
-                c.AddNewClause();
-                q = new Query
-                {
-                    QueryId = c.Id,
-                    Owner = Util.UserName,
-                    Created = DateTime.Now,
-                    LastRun = DateTime.Now,
-                    Name = Util.ScratchPad2,
-                    Text = c.ToXml()
-                };
-                Queries.InsertOnSubmit(q);
-                SubmitChanges();
-            }
-            else
-                c = q.ToClause();
-            c.Id = q.QueryId; // force these to match
-            return c;
         }
         public QueryBuilderClause QueryBuilderHasCurrentTag()
         {

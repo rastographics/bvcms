@@ -42,7 +42,8 @@ namespace CmsWeb.Areas.Search.Controllers
                 ViewBag.NewSearchId = newsearchid.Value;
             else
                 ViewBag.AutoRun = true;
-            m.TopClause.Save(DbUtil.Db, increment: true);
+            m.TopClause.IncrementLastRun();
+            DbUtil.Db.SubmitChanges();
             return View(m);
         }
 

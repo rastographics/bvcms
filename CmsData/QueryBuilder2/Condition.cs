@@ -42,6 +42,7 @@ namespace CmsData
         public int? Campus { get; set; }
         public int? OrgType { get; set; }
         public Guid? NewMatchAnyId;
+        internal Query justloadedquery;
 
         #endregion
 
@@ -384,6 +385,14 @@ namespace CmsData
             c.AllConditions.Add(c.Id, c);
             return c;
         }
+        public void IncrementLastRun()
+        {
+            if (justloadedquery == null) 
+                return;
+            justloadedquery.RunCount++;
+            justloadedquery.LastRun = DateTime.Now;
+        }
+
         public Condition AddNewGroupClause()
         {
             var c = new Condition

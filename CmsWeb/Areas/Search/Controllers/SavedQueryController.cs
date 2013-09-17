@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [GET("SavedQuery2/")]
         public ActionResult Index()
         {
-            var m = new SavedQueryModel();
+            var m = new SavedQueryModel { OnlyMine = DbUtil.Db.UserPreference("SavedQueryOnlyMine", "false").ToBool() };
             m.Pager.Set("/SavedQuery2/Results", 1, null, "Last Run", "desc");
             return View(m);
         }

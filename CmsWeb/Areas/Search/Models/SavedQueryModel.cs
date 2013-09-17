@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Search.Models
                 return _queries;
             isdev = Roles.IsUserInRole("Developer");
             _queries = from c in DbUtil.Db.Queries
-                       where !PublicOnly || c.Ispublic == true
+                       where !PublicOnly || c.Ispublic
                        where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
                        select c;
             if (ScratchPadsOnly)
@@ -50,6 +50,7 @@ namespace CmsWeb.Areas.Search.Models
                 _queries = from c in _queries
                            where c.Name != Util.ScratchPad2
                            select c;
+            DbUtil.Db.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
             if (OnlyMine)
                 _queries = from c in _queries
                            where c.Owner == Util.UserName

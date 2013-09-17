@@ -776,7 +776,7 @@ namespace UtilityExtensions
         }
         public static string ScratchPad2
         {
-            get { return "--ScratchPad--"; }
+            get { return "New Query"; }
         }
         const string STR_QBScratchPad = "QBScratchPad";
         public static int QueryBuilderScratchPadId

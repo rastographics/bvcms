@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -16,7 +17,19 @@ namespace CmsData
     {
         public void Save(CMSDataContext Db, bool increment = false)
         {
-            var q = Db.LoadQueryById2(Id);
+            var i = (from e in Db.Queries
+                     let same = (from v in Db.Queries
+                                 where !v.Ispublic
+                                 where v.Owner == Util.UserName
+                                 where v.Name == Description
+                                 orderby v.LastRun descending
+                                 select v).FirstOrDefault()
+                     let existing = (from v in Db.Queries
+                                     where v.QueryId == Id
+                                     select v).SingleOrDefault()
+                     select new { same, existing }).First();
+            var q = i.existing;
+
             if (q == null)
             {
                 q = new Query 
@@ -31,26 +44,33 @@ namespace CmsData
             }
             q.LastRun = DateTime.Now;
 
-            if (CopiedFrom.HasValue)
-                q.CopiedFrom = CopiedFrom;
+
             if (Description != q.Name)
             {
-                var pq = Db.Queries.SingleOrDefault(cc => !cc.Ispublic && cc.Owner == Util.UserName && cc.Name == Description);
-                if (pq != null)
-                    pq.Text = ToXml();
+                if (i.same != null)
+                    i.same.Text = ToXml();
                 else
                 {
                     var c = Clone();
-                    if (c.Description.StartsWith("Copy of "))
-                        c.Description = c.Description.Remove(0, 8);
-                    else
-                        Description = "Copy of " + Description;
-                    IsPublic = false;
-                    c.IsPublic = true;
-                    c.Save(Db);
-                    return;
+                    var cq = new Query 
+                    {
+                        QueryId = c.Id,
+                        Owner = Util.UserName,
+                        Created = q.Created, 
+                        Ispublic = q.Ispublic,
+                        Name = q.Name,
+                        Text = c.ToXml(),
+                        RunCount = q.RunCount,
+                        CopiedFrom = q.CopiedFrom,
+                        LastRun = q.LastRun
+                    };
+                    Db.Queries.InsertOnSubmit(cq);
+                    CopiedFrom = cq.QueryId;
+                    q.LastRun = DateTime.Now;
                 }
             }
+            if (CopiedFrom.HasValue)
+                q.CopiedFrom = CopiedFrom;
             q.Name = Description;
             if(increment)
                 q.RunCount = q.RunCount + 1;

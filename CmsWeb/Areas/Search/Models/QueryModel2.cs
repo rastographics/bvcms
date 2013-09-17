@@ -23,7 +23,6 @@ namespace CmsWeb.Areas.Search.Models
 
         public Condition TopClause;
         public Guid? SelectedId { get; set; }
-        public string Description { get; set; }
 
         #region Visibility
 
@@ -100,8 +99,12 @@ namespace CmsWeb.Areas.Search.Models
 
         public void LoadQuery(Guid? id = null)
         {
-            TopClause = id.HasValue ? Db.LoadCopyOfExistingQuery(id.Value) : Db.FetchLastQuery();
-            SavedQueryDesc = Description = TopClause.Description;
+            if (id.HasValue) 
+                TopClause = Db.LoadCopyOfExistingQuery(id.Value);
+            else 
+                TopClause = Db.FetchLastQuery();
+
+            SavedQueryDesc = TopClause.Description;
             DbUtil.LogActivity("Running Query ({0})".Fmt(TopClause.Id));
         }
 
@@ -383,23 +386,6 @@ namespace CmsWeb.Areas.Search.Models
         {
             SetVisibility();
             SelectMultiple = Comparison.EndsWith("OneOf");
-        }
-        public void SaveQuery()
-        {
-            var saveto = Db.Queries.FirstOrDefault(c =>
-                (c.Owner == Util.UserName || c.Owner == "public") && c.Name == SavedQueryDesc);
-            if (saveto == null)
-            {
-                saveto = new Query();
-                Db.Queries.InsertOnSubmit(saveto);
-            }
-            saveto.Text = TopClause.ToXml();
-            if (saveto.Owner != "public")
-                saveto.Owner = Util.UserName;
-            saveto.Name = SavedQueryDesc;
-            saveto.Ispublic = IsPublic;
-            Db.SubmitChanges();
-            Description = SavedQueryDesc;
         }
         public class ClipboardItem
         {
