@@ -1246,9 +1246,6 @@
     <Content Include="Scripts\Search\ContactSearch.min.js">
       <DependentUpon>ContactSearch.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\Search\Query2.js">
-      <DependentUpon>Query2.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\PeopleSearch.min.js">
       <DependentUpon>PeopleSearch.js</DependentUpon>
     </Content>
@@ -2040,7 +2037,6 @@
     <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
     <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
     <Content Include="Areas\Manage\Views\Display\ContentView.cshtml" />
-    <Content Include="Areas\Search\Views\Query\EditCondition0.cshtml" />
     <Content Include="ckeditor2\CHANGES.md" />
     <Content Include="ckeditor2\LICENSE.md" />
     <Content Include="ckeditor2\plugins\scayt\LICENSE.md" />
