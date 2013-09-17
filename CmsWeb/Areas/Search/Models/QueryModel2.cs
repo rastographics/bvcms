@@ -387,6 +387,7 @@ namespace CmsWeb.Areas.Search.Models
             SetVisibility();
             SelectMultiple = Comparison.EndsWith("OneOf");
         }
+        [Serializable]
         public class ClipboardItem
         {
             public string from { get; set; }
@@ -453,25 +454,6 @@ namespace CmsWeb.Areas.Search.Models
             TopClause.Save(Db);
             return nc.Id;
         }
-        //        public void AddNewConditionAfterCurrent(int id)
-        //        {
-        //            var nc = Current.Parent.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
-        //            SelectedId = nc.Id;
-        //            EditCondition();
-        //        }
-        //        public void AddConditionAfterCurrent()
-        //        {
-        //            var c = Db.LoadQueryById(SelectedId);
-        //            var nc = NewCondition(c.Parent, c.ClauseOrder + 1);
-        //            Db.SubmitChanges();
-        //            if (nc.IsGroup)
-        //            {
-        //                nc = nc.AddNewClause(QueryType.MatchAnything, CompareType.Equal, null);
-        //                Db.SubmitChanges();
-        //                SelectedId = nc.QueryId;
-        //            }
-        //        }
-
         public Condition Current
         {
             get
@@ -483,7 +465,6 @@ namespace CmsWeb.Areas.Search.Models
         public void DeleteCondition()
         {
             Current.DeleteClause();
-            EditCondition();
             TopClause.Save(Db, increment: true);
         }
         public void UpdateCondition()
@@ -630,26 +611,6 @@ namespace CmsWeb.Areas.Search.Models
                     };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
-            return list;
-        }
-        public class QueryClauseDisplay
-        {
-            public int Level { get; set; }
-            public Condition Clause;
-        }
-        private int level;
-        public List<QueryClauseDisplay> ConditionList()
-        {
-            level = 0;
-            return ClauseAndSubs(new List<QueryClauseDisplay>(), TopClause);
-        }
-        private List<QueryClauseDisplay> ClauseAndSubs(List<QueryClauseDisplay> list, Condition qc)
-        {
-            list.Add(new QueryClauseDisplay { Level = level, Clause = qc });
-            level++;
-            foreach (var c in qc.Conditions)
-                list = ClauseAndSubs(list, c);
-            level--;
             return list;
         }
         public IEnumerable<CategoryClass2> FieldCategories()
@@ -922,7 +883,5 @@ namespace CmsWeb.Areas.Search.Models
                     m.AddModelError("TextValue", "cannot be empty");
             return m.IsValid;
         }
-        public bool ShowResults { get; set; }
-        public bool CanSave { get; set; }
     }
 }

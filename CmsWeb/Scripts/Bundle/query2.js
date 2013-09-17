@@ -786,15 +786,12 @@ $(function () {
         placement: "right",
         showbuttons: "bottom",
         pk: 1,
-        url: "/Query/SaveQuery",
+        url: "/Query/SaveQueryDescription",
         mode: "popup"
     });
     $('#SavedQueryDescEdit').click(function (e) {
         e.stopPropagation();
         $('#SavedQueryDesc').editable('toggle');
-    });
-    $('#IsPublic').click(function (e) {
-        $.post("/Query/SaveQuery", { name: "IsPublic", value: $(this).is(":checked") });
     });
     $.InitCodeValues = function () {
         $('#CodeValues').multiselect({
@@ -858,6 +855,13 @@ $(function () {
             }
         });
         return false;
+    });
+    $(document).on("keydown", '#editForm input', function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            $('#SaveCondition').click();
+            return false;
+        }
     });
     $('#conditions').on("change", "select.changegroup", function () {
         var v = $(this).val();

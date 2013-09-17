@@ -210,8 +210,8 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new QueryModel2();
             return Json(m.SavedQueries());
         }
-        [POST("Query/SaveQuery")]
-        public ActionResult SaveQuery(string name, string value)
+        [POST("Query/SaveQueryDescription")]
+        public ActionResult SaveQueryDescription(string name, string value)
         {
             var m = new QueryModel2();
             m.LoadQuery();
@@ -220,9 +220,6 @@ namespace CmsWeb.Areas.Search.Controllers
                 case "SavedQueryDesc":
                     m.SavedQueryDesc = value;
                     m.TopClause.Description = value;
-                    break;
-                case "IsPublic":
-                    m.TopClause.IsPublic = value == "true";
                     break;
             }
             m.TopClause.Save(DbUtil.Db);
