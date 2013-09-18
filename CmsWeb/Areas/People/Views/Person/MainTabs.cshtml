@@ -35,7 +35,9 @@
         @* <div class="tab-pane" id="account" data-link="/Person2/Account/@Model.PeopleId"></div> *@
         @if (User.IsInRole("Access"))
         {
-            <div class="tab-pane" id="contacts" data-link="/Person2/Contacts/@Model.PeopleId"></div>
+            <div class="tab-pane" id="contacts">
+                @Html.Partial("MainTabs/Contacts", Model)
+            </div>
         }
         @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
         {

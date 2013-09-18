@@ -65,13 +65,9 @@ namespace CmsWeb.Areas.Search.Models
         public string EndDate { get; set; }
         public string Comparison { get; set; }
         public string[] Tags { get; set; }
-        public int? Ministry { get; set; }
-        public string SavedQueryDesc { get; set; }
-        public bool IsPublic { get; set; }
 
         public string CodeValue { get; set; }
         public string[] CodeValues { get; set; }
-        public string[] Tags { get; set; }
 
         public string TextValue { get; set; }
         public string DateValue { get; set; }
@@ -87,9 +83,6 @@ namespace CmsWeb.Areas.Search.Models
             Db = DbUtil.Db;
             Db.SetUserPreference("NewCategories", "true");
             ConditionName = "Group";
-//            TagTypeId = DbUtil.TagTypeId_Personal;
-//            TagName = Util2.CurrentTagName;
-//            TagOwner = Util2.CurrentTagOwnerId;
             Pager = new PagerModel2(Count) { Direction = "asc" };
         }
 
