@@ -59,5 +59,6 @@ namespace CmsWeb.Areas.Main.Controllers
                 DbUtil.Db.SetUserPreference("savedSearchOnlyMine", m.onlyMine);
             return View(m);
         }
+
     }
 }
