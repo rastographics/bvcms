@@ -34,7 +34,7 @@ namespace CmsData
         public string Description { get; set; }
         public bool IsPublic { get; set; }
         public DateTime CreatedOn { get; set; }
-        public string ExtraData { get; set; }
+        public string Quarters { get; set; }
         public string SavedQueryIdDesc { get; set; }
         public string Tags { get; set; }
         public int Schedule { get; set; }
@@ -347,7 +347,7 @@ namespace CmsData
             Field = from.Field;
             Organization = from.Organization;
             Program = from.Program;
-            ExtraData = from.ExtraData;
+            Quarters = from.Quarters;
             SavedQueryIdDesc = from.SavedQueryIdDesc;
             Schedule = from.Schedule;
             StartDate = from.StartDate;

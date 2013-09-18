@@ -122,8 +122,8 @@ namespace CmsData
                 w.WriteAttributeString("Organization", Organization.ToString());
             if (Days > 0)
                 w.WriteAttributeString("Days", Days.ToString());
-            if (ExtraData.HasValue())
-                w.WriteAttributeString("Quarters", ExtraData);
+            if (Quarters.HasValue())
+                w.WriteAttributeString("Quarters", Quarters);
             if (Tags.HasValue())
                 w.WriteAttributeString("Tags", Tags);
             if (Schedule > 0)
@@ -162,7 +162,7 @@ namespace CmsData
                 Division = Attribute(r, "Division").ToInt(),
                 Organization = Attribute(r, "Organization").ToInt(),
                 Days = Attribute(r, "Days").ToInt(),
-                ExtraData = Attribute(r, "Quarters"),
+                Quarters = Attribute(r, "Quarters"),
                 Tags = Attribute(r, "Tags"),
                 Schedule = Attribute(r, "Schedule").ToInt(),
                 Age = Attribute(r, "Age").ToInt(),

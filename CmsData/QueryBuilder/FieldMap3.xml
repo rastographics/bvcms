@@ -340,6 +340,9 @@
     <PreviousCurrentOrg Title="Previous Member in Current Organization" Type="Bit" DataValueField="IdCode">
       Select True or False for Previous Members of the last organization you viewed.
     </PreviousCurrentOrg>
+    <VisitedCurrentOrg Title="Has Visited Current Organization" Type="Bit" DataValueField="IdCode">
+      Specify True or False for Guests in Current Organization.
+    </VisitedCurrentOrg>
     <LeadersUnderCurrentOrg Title="Leaders under current org" Type="Bit" DataValueField="IdCode">
       Select True or False for Leaders of the last organization you viewed and any Leaders in any Child Organization under that org.
     </LeadersUnderCurrentOrg>
@@ -389,9 +392,6 @@
     <RecentNewVisitCount Title="Recent New Visit Count" Type="Integer" DisplayAs="RecentNewVisitCount({0}, {1}, {2}, {3}, {4}, {5})" QuartersLabel="Number of days for no attendance" Params="Days,Quarters,Program,Division,Organization,OrgType">
       Enter a number and select Comparison for the Visit Count, enter a number for the days to look back, enter the number of days with no attendance, select other options: Program/Division/Organization, Org Type.
     </RecentNewVisitCount>
-    <VisitedCurrentOrg Title="Has Visited Current Organization" Type="Bit" DataValueField="IdCode">
-      Specify True or False for Guests in Current Organization.
-    </VisitedCurrentOrg>
     <KidsRecentAttendCount Title="Kids Recent Attendance Count" Type="Integer" DisplayAs="KidsRecentAttendCount({0})" Params="Days">
       Enter a number and select a Comparison for the Attendance Count for children 12 and under and enter a number of days to look back.
     </KidsRecentAttendCount>
