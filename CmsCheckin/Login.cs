@@ -69,11 +69,11 @@ namespace CmsCheckin
 			username.Enter += textbox_Enter;
 			password.Enter += textbox_Enter;
 			URL.Enter += textbox_Enter;
-            building.Enter += textbox_Enter;
-            PrintKiosks.Enter += textbox_Enter;
-            PrinterWidth.Enter += textbox_Enter;
-            PrinterHeight.Enter += textbox_Enter;
-			
+			building.Enter += textbox_Enter;
+			PrintKiosks.Enter += textbox_Enter;
+			PrinterWidth.Enter += textbox_Enter;
+			PrinterHeight.Enter += textbox_Enter;
+
 			password.Focus();
 		}
 
@@ -91,46 +91,43 @@ namespace CmsCheckin
 			Settings1.Default.PrinterWidth = PrinterWidth.Text;
 			Settings1.Default.PrinterHeight = PrinterHeight.Text;
 			Settings1.Default.AdvancedPageSize = AdvancedPageSize.Checked;
-            Settings1.Default.UseSSL = UseSSL.Checked;
-            Settings1.Default.AdminPIN = AdminPIN.Text;
+			Settings1.Default.UseSSL = UseSSL.Checked;
+			Settings1.Default.AdminPIN = AdminPIN.Text;
 
-            if (AdminPINTimeout.Text.Length > 0)
-            {
-                try
-                {
-                    Program.AdminPINTimeout = int.Parse(AdminPINTimeout.Text);
-                    Settings1.Default.AdminPINTimeout = AdminPINTimeout.Text;
-                }
-                catch (Exception)
-                {
-                    Program.AdminPINTimeout = 0;
-                    Settings1.Default.AdminPINTimeout = "0";
-                }
-            }
-            else
-            {
-                Program.AdminPINTimeout = 0;
-            }
+			if (AdminPINTimeout.Text.Length > 0)
+			{
+				try
+				{
+					Program.AdminPINTimeout = int.Parse(AdminPINTimeout.Text);
+					Settings1.Default.AdminPINTimeout = AdminPINTimeout.Text;
+				}
+				catch (Exception ex)
+				{
+					Program.AdminPINTimeout = 0;
+					Settings1.Default.AdminPINTimeout = "0";
+				}
+			}
+			else
+			{
+				Program.AdminPINTimeout = 0;
+			}
 
 			Settings1.Default.Save();
 
-			if(URL.Text.StartsWith("localhost") || !UseSSL.Checked)
-                Program.URL = "http://" + URL.Text;
-            else if (Settings1.Default.UseSSL)
-                Program.URL = "https://" + URL.Text;
-            else
-                Program.URL = "http://" + URL.Text;
+			if (URL.Text.StartsWith("localhost") || !UseSSL.Checked)
+				Program.URL = "http://" + URL.Text;
+			else if (Settings1.Default.UseSSL)
+				Program.URL = "https://" + URL.Text;
+			else
+				Program.URL = "http://" + URL.Text;
 
 			Program.Username = username.Text;
 			Program.Password = password.Text;
 			Program.PrinterWidth = PrinterWidth.Text;
 			Program.PrinterHeight = PrinterHeight.Text;
-            Program.DisableLocationLabels = DisableLocationLabels.Checked;
-
-            Program.AdminPIN = AdminPIN.Text;
-
-            
-
+			Program.DisableLocationLabels = DisableLocationLabels.Checked;
+			Program.AdminPIN = AdminPIN.Text;
+			
 			if (BuildingAccessMode.Checked == true)
 			{
 				try
@@ -143,7 +140,7 @@ namespace CmsCheckin
 						return;
 					}
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
 					MessageBox.Show("cannot find " + Program.URL);
 					CancelClose = true;
@@ -162,46 +159,46 @@ namespace CmsCheckin
 				}
 				campuses = XDocument.Parse(str);
 			}
-			catch (WebException)
+			catch (WebException ex)
 			{
 				MessageBox.Show("cannot find " + Program.URL);
 				CancelClose = true;
 			}
 
-            if (CancelClose == false && !BuildingAccessMode.Checked)
-            {
-                bool bHorizontalCheck = false;
-                bool bVerticalCheck = false;
+			if (CancelClose == false && !BuildingAccessMode.Checked)
+			{
+				bool bHorizontalCheck = false;
+				bool bVerticalCheck = false;
 
-                if (AdvancedPageSize.Checked)
-                {
-                    if (PrinterWidth.Text.Length == 0) PrinterWidth.Text = "0";
-                    if (PrinterHeight.Text.Length == 0) PrinterHeight.Text = "0";
+				if (AdvancedPageSize.Checked)
+				{
+					if (PrinterWidth.Text.Length == 0) PrinterWidth.Text = "0";
+					if (PrinterHeight.Text.Length == 0) PrinterHeight.Text = "0";
 
-                    bHorizontalCheck = int.Parse( PrinterWidth.Text ) >= 290;
-                    bVerticalCheck = (int.Parse(PrinterHeight.Text) > 70 && int.Parse(PrinterHeight.Text) < 130) ||
-                                            (int.Parse(PrinterHeight.Text) > 170 && int.Parse(PrinterHeight.Text) < 230);
-                }
-                else
-                {
-                    bHorizontalCheck = PrinterHelper.getPrinterWidth(Printer.Text) > 290;
-                    bVerticalCheck = (PrinterHelper.getPrinterHeight(Printer.Text) > 70 && PrinterHelper.getPrinterHeight(Printer.Text) < 130) ||
-                                            (PrinterHelper.getPrinterHeight(Printer.Text) > 170 && PrinterHelper.getPrinterHeight(Printer.Text) < 230);
-                }
+					bHorizontalCheck = int.Parse(PrinterWidth.Text) >= 290;
+					bVerticalCheck = (int.Parse(PrinterHeight.Text) > 70 && int.Parse(PrinterHeight.Text) < 130) ||
+													(int.Parse(PrinterHeight.Text) > 170 && int.Parse(PrinterHeight.Text) < 230);
+				}
+				else
+				{
+					bHorizontalCheck = PrinterHelper.getPrinterWidth(Printer.Text) > 290;
+					bVerticalCheck = (PrinterHelper.getPrinterHeight(Printer.Text) > 70 && PrinterHelper.getPrinterHeight(Printer.Text) < 130) ||
+													(PrinterHelper.getPrinterHeight(Printer.Text) > 170 && PrinterHelper.getPrinterHeight(Printer.Text) < 230);
+				}
 
-                if (!bHorizontalCheck || !bVerticalCheck)
-                {
-                    if (MessageBox.Show("The selected printer does not have a valid page size.  Do you want to continue?", "Printer Configuration Error", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    {
-                        CancelClose = true;
-                    }
-                }
-            }
+				if (!bHorizontalCheck || !bVerticalCheck)
+				{
+					if (MessageBox.Show("The selected printer does not have a valid page size.  Do you want to continue?", "Printer Configuration Error", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+					{
+						CancelClose = true;
+					}
+				}
+			}
 
-            if (CancelClose == false)
-            {
-                this.Hide();
-            }
+			if (CancelClose == false)
+			{
+				this.Hide();
+			}
 		}
 
 		TextBox current = null;
@@ -226,46 +223,46 @@ namespace CmsCheckin
 			AdvancedPageSize.Checked = Settings1.Default.AdvancedPageSize;
 			PrinterWidth.Text = Settings1.Default.PrinterWidth;
 			PrinterHeight.Text = Settings1.Default.PrinterHeight;
-            UseSSL.Checked = Settings1.Default.UseSSL;
-            AdminPIN.Text = Settings1.Default.AdminPIN;
-            AdminPINTimeout.Text = Settings1.Default.AdminPINTimeout;
+			UseSSL.Checked = Settings1.Default.UseSSL;
+			AdminPIN.Text = Settings1.Default.AdminPIN;
+			AdminPINTimeout.Text = Settings1.Default.AdminPINTimeout;
 
-            if (!Util.IsDebug())
-            {
-                this.Height = 570;
+			if (!Util.IsDebug())
+			{
+				this.Height = 570;
 
-                PrintTest.Enabled = false;
-                label5.Enabled = false;
-                LabelFormat.Enabled = false;
-                LabelList.Enabled = false;
-                label10.Enabled = false;
-                LoadLabelList.Enabled = false;
-                SaveLabel.Enabled = false;
-                UseSSL.Enabled = false;
+				PrintTest.Enabled = false;
+				label5.Enabled = false;
+				LabelFormat.Enabled = false;
+				LabelList.Enabled = false;
+				label10.Enabled = false;
+				LoadLabelList.Enabled = false;
+				SaveLabel.Enabled = false;
+				UseSSL.Enabled = false;
 
-                PrintTest.Visible = false;
-                label5.Visible = false;
-                LabelFormat.Visible = false;
-                LabelList.Visible = false;
-                label10.Visible = false;
-                LoadLabelList.Visible = false;
-                SaveLabel.Visible = false;
-                UseSSL.Visible = false;
+				PrintTest.Visible = false;
+				label5.Visible = false;
+				LabelFormat.Visible = false;
+				LabelList.Visible = false;
+				label10.Visible = false;
+				LoadLabelList.Visible = false;
+				SaveLabel.Visible = false;
+				UseSSL.Visible = false;
 
-            }
+			}
 
-            if (PrintMode.Text == "Print From Server")
-            {
-                PrintKiosks.Enabled = true;
-                label12.Enabled = true;
-                label1.Enabled = true;
-            }
-            else
-            {
-                PrintKiosks.Enabled = false;
-                label12.Enabled = false;
-                label1.Enabled = false;
-            }
+			if (PrintMode.Text == "Print From Server")
+			{
+				PrintKiosks.Enabled = true;
+				label12.Enabled = true;
+				label1.Enabled = true;
+			}
+			else
+			{
+				PrintKiosks.Enabled = false;
+				label12.Enabled = false;
+				label1.Enabled = false;
+			}
 		}
 
 		void buttonclick(object sender, EventArgs e)
@@ -438,16 +435,16 @@ namespace CmsCheckin
 
 			string[] sLabelPieces = LabelList.Text.Split(new char[] { '~' });
 
-			if( sLabelPieces.Length >= 2 ) PrinterHelper.printTestLabel(Printer.Text, LabelFormat.Text);
-			else PrinterHelper.printTestLabel(Printer.Text, LabelFormat.Text.Replace( "\r\n", "" ));
+			if (sLabelPieces.Length >= 2) PrinterHelper.printTestLabel(Printer.Text, LabelFormat.Text);
+			else PrinterHelper.printTestLabel(Printer.Text, LabelFormat.Text.Replace("\r\n", ""));
 		}
 
 		private void LoadLabelList_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Debug.Print( "Loading Label List..." );
+			System.Diagnostics.Debug.Print("Loading Label List...");
 
-            if( URL.Text.Contains("localhost") ) Program.URL = "http://" + URL.Text;
-            else Program.URL = "https://" + URL.Text;
+			if (URL.Text.Contains("localhost")) Program.URL = "http://" + URL.Text;
+			else Program.URL = "https://" + URL.Text;
 
 			Program.Username = username.Text;
 			Program.Password = password.Text;
@@ -468,8 +465,8 @@ namespace CmsCheckin
 
 		private void LabelList_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			string[] sLabelPieces = LabelList.Text.Split( new char[] { '~' } );
-			LabelFormat.Text = PrinterHelper.fetchLabelFormat( sLabelPieces[0], int.Parse( sLabelPieces[1] ) ).Replace("~", "~\r\n");
+			string[] sLabelPieces = LabelList.Text.Split(new char[] { '~' });
+			LabelFormat.Text = PrinterHelper.fetchLabelFormat(sLabelPieces[0], int.Parse(sLabelPieces[1])).Replace("~", "~\r\n");
 		}
 
 		private void SaveLabel_Click(object sender, EventArgs e)
@@ -516,35 +513,35 @@ namespace CmsCheckin
 			}
 		}
 
-        private void PrintMode_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (PrintMode.SelectedIndex == 2)
-            {
-                PrintKiosks.Enabled = true;
-                label12.Enabled = true;
-                label1.Enabled = true;
-            }
-            else
-            {
-                PrintKiosks.Enabled = false;
-                label12.Enabled = false;
-                label1.Enabled = false;
-                PrintKiosks.Text = "";
-            }
-        }
+		private void PrintMode_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (PrintMode.SelectedIndex == 2)
+			{
+				PrintKiosks.Enabled = true;
+				label12.Enabled = true;
+				label1.Enabled = true;
+			}
+			else
+			{
+				PrintKiosks.Enabled = false;
+				label12.Enabled = false;
+				label1.Enabled = false;
+				PrintKiosks.Text = "";
+			}
+		}
 
-        private Regex rx = new Regex("\\D");
+		private Regex rx = new Regex("\\D");
 
-        private void NumbersOnly(object sender, EventArgs e)
-        {
-            TextBox tb = sender as TextBox;
+		private void NumbersOnly(object sender, EventArgs e)
+		{
+			TextBox tb = sender as TextBox;
 
-            try
-            {
-                tb.Text = rx.Replace(tb.Text, "");
-                tb.Select(tb.Text.Length, 0);
-            }
-            catch (ArgumentException) { }
-        }
+			try
+			{
+				tb.Text = rx.Replace(tb.Text, "");
+				tb.Select(tb.Text.Length, 0);
+			}
+			catch (ArgumentException ex) { }
+		}
 	}
 }

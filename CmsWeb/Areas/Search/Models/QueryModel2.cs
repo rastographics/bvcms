@@ -17,9 +17,6 @@ namespace CmsWeb.Areas.Search.Models
     public class QueryModel2
     {
         private CMSDataContext Db;
-        private int TagTypeId { get; set; }
-        private string TagName { get; set; }
-        private int? TagOwner { get; set; }
 
         public Condition TopClause;
         public Guid? SelectedId { get; set; }
@@ -56,18 +53,18 @@ namespace CmsWeb.Areas.Search.Models
         public int? Schedule { get; set; }
         public int? Campus { get; set; }
         public int? OrgType { get; set; }
+        public int? Ministry { get; set; }
+        public bool IsPublic { get; set; }
         public string Days { get; set; }
         public string Age { get; set; }
         public string Quarters { get; set; }
         public string QuartersLabel { get; set; }
+        public string SavedQueryDesc { get; set; }
         public string View { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public string Comparison { get; set; }
         public string[] Tags { get; set; }
-        public int? Ministry { get; set; }
-        public string SavedQueryDesc { get; set; }
-        public bool IsPublic { get; set; }
 
         public string CodeValue { get; set; }
         public string[] CodeValues { get; set; }
@@ -86,9 +83,6 @@ namespace CmsWeb.Areas.Search.Models
             Db = DbUtil.Db;
             Db.SetUserPreference("NewCategories", "true");
             ConditionName = "Group";
-            TagTypeId = DbUtil.TagTypeId_Personal;
-            TagName = Util2.CurrentTagName;
-            TagOwner = Util2.CurrentTagOwnerId;
             Pager = new PagerModel2(Count) { Direction = "asc" };
         }
 
@@ -729,7 +723,9 @@ namespace CmsWeb.Areas.Search.Models
                         BFTeacherId = p.BFClass.LeaderId,
                         Employer = p.EmployerOther,
                         Age = p.Age.ToString(),
-                        HasTag = p.Tags.Any(t => t.Tag.Name == TagName && t.Tag.PeopleId == TagOwner && t.Tag.TypeId == TagTypeId),
+                        HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName 
+                            && t.Tag.PeopleId == Util2.CurrentTagOwnerId 
+                            && t.Tag.TypeId == DbUtil.TagTypeId_Personal),
                     };
             return q;
         }

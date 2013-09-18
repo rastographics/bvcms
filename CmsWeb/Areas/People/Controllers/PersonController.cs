@@ -190,11 +190,34 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Main/Comments", m);
         }
 
-        [POST("Person2/Account/{id}")]
-        public ActionResult Account(int id)
+        [POST("Person2/ContactsMade/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult ContactsMade(int id, int? page, int? size, string sort, string dir)
         {
-            var m = new PersonModel(id);
-            return View("Main/Account", m);
+            var m = new ContactsMadeModel(id);
+            m.Pager.Set("/Person2/ContactsMade/" + id, page, size, sort, dir);
+            return View("Contacts", m);
+        }
+        [POST("Person2/ContactsReceived/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult ContactsReceived(int id, int? page, int? size, string sort, string dir)
+        {
+            var m = new ContactsReceivedModel(id);
+            m.Pager.Set("/Person2/ContactsReceived/" + id, page, size, sort, dir);
+            return View("Contacts", m);
+        }
+
+        [POST("Person2/TasksAbout/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult TasksAbout(int id, int? page, int? size, string sort, string dir)
+        {
+            var m = new TasksAboutModel(id);
+            m.Pager.Set("/Person2/TasksAbout/" + id, page, size, sort, dir);
+            return View("Tasks", m);
+        }
+        [POST("Person2/TasksAssigned/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult TasksAssigned(int id, int? page, int? size, string sort, string dir)
+        {
+            var m = new TasksAssignedModel(id);
+            m.Pager.Set("/Person2/TasksAssigned/" + id, page, size, sort, dir);
+            return View("Tasks", m);
         }
 
         [POST("Person2/FamilyMembers/{id}")]
@@ -324,13 +347,6 @@ namespace CmsWeb.Areas.People.Controllers
             Util.UserPreferredName = user.Username;
             return Redirect("/");
         }
-
-        //        [HttpPost]
-        //        public ActionResult UserInfoGrid(int id)
-        //        {
-        //            var p = DbUtil.Db.LoadPersonById(id);
-        //            return View(p);
-        //        }
 
         [POST("Person2/Split/{id}")]
         [Authorize(Roles = "Edit")]
@@ -508,7 +524,7 @@ namespace CmsWeb.Areas.People.Controllers
         //    return View(m.TasksAboutList(id));
         //}
 
-        [HttpPost]
+        [POST("Person2/AddContactMade/{id:int}")]
         public ActionResult AddContactMade(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
@@ -532,6 +548,7 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.Contactors.InsertOnSubmit(cp);
             DbUtil.Db.SubmitChanges();
 
+		    TempData["ContactEdit"] = true;
             return Content("/Contact/" + c.ContactId);
         }
 
@@ -558,8 +575,8 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("/Contact/{0}".Fmt(c.ContactId));
         }
 
-        [HttpPost]
-        public ActionResult AddAboutTask(int id)
+        [POST("Person2/AddTaskAbout/{id:int}")]
+        public ActionResult AddTaskAbout(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
             if (p == null || !Util.UserPeopleId.HasValue)
