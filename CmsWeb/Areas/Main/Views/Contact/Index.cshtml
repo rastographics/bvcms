@@ -62,7 +62,7 @@
 }
 @section scripts
 {
-    <script src="@Fingerprint.Tag("/Scripts/js/contact.js")"></script>
+    @Fingerprint.Script("/Scripts/js/contact.js")
     @if (ViewBag.edit == true)
     {
         <script> $(function() { $(".in").addClass("out"); }); </script>
