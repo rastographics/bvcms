@@ -46,12 +46,6 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (!id.HasValue)
                 return Content("no id");
-            //            if (!DbUtil.Db.UserPreference("newlook3", "false").ToBool()
-            //                || !DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
-            //            {
-            //                var url = Regex.Replace(Request.RawUrl, @"(.*)/(Person2(/Index)*)/(\d*)", "$1/Person/Index/$4", RegexOptions.IgnoreCase);
-            //                return Redirect(url);
-            //            }
 
             var m = new PersonModel(id.Value);
             var noview = m.CheckView();
@@ -460,7 +454,65 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("OK");
         }
 
-        #region ToDo
+        [POST("Person2/AddContactMade/{id:int}")]
+        public ActionResult AddContactMade(int id)
+        {
+            var p = DbUtil.Db.LoadPersonById(id);
+            DbUtil.LogActivity("Adding contact from: {0}".Fmt(p.Name));
+            var c = new Contact
+            {
+                CreatedDate = Util.Now,
+                CreatedBy = Util.UserId1,
+                ContactDate = Util.Now.Date,
+            };
+
+            DbUtil.Db.Contacts.InsertOnSubmit(c);
+            DbUtil.Db.SubmitChanges();
+
+            var cp = new Contactor
+            {
+                PeopleId = p.PeopleId,
+                ContactId = c.ContactId
+            };
+
+            DbUtil.Db.Contactors.InsertOnSubmit(cp);
+            DbUtil.Db.SubmitChanges();
+
+            TempData["ContactEdit"] = true;
+            return Content("/Contact/" + c.ContactId);
+        }
+        [POST("Person2/AddContactReceived/{id:int}")]
+        public ActionResult AddContactReceived(int id)
+        {
+            var p = DbUtil.Db.LoadPersonById(id);
+            DbUtil.LogActivity("Adding contact to: {0}".Fmt(p.Name));
+            var c = new Contact
+            {
+                CreatedDate = Util.Now,
+                CreatedBy = Util.UserId1,
+                ContactDate = Util.Now.Date,
+            };
+
+            DbUtil.Db.Contacts.InsertOnSubmit(c);
+            DbUtil.Db.SubmitChanges();
+
+            c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
+            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
+            DbUtil.Db.SubmitChanges();
+
+            TempData["ContactEdit"] = true;
+            return Content("/Contact/{0}".Fmt(c.ContactId));
+        }
+        [POST("Person2/AddTaskAbout/{id:int}")]
+        public ActionResult AddTaskAbout(int id)
+        {
+            var p = DbUtil.Db.LoadPersonById(id);
+            if (p == null || !Util.UserPeopleId.HasValue)
+                return Content("no id");
+            var t = p.AddTaskAbout(DbUtil.Db, Util.UserPeopleId.Value, "Please Contact");
+            DbUtil.Db.SubmitChanges();
+            return Content("/Task/List/{0}".Fmt(t.Id));
+        }
 
         [Authorize(Roles = "Admin")]
         public ActionResult Move(int id, int to)
@@ -486,29 +538,202 @@ namespace CmsWeb.Areas.People.Controllers
             return new EmptyResult();
         }
 
-        //[HttpPost]
-        //public ActionResult Reverse(int id, string field, string value, string pf)
-        //{
-        //    var m = new PersonModel(id);
-        //    m.Reverse(field, value, pf);
-        //    return View("ChangesGrid", m);
-        //}
+        [HttpPost]
+        public ActionResult Reverse(int id, string field, string value, string pf)
+        {
+            var m = new PersonModel(id);
+            m.Reverse(field, value, pf);
+            return View("ChangesGrid", m);
+        }
 
-        //		[HttpPost]
-        //		public ActionResult ContactsMadeGrid(int id)
-        //		{
-        //			var m = new PersonContactsMadeModel(id);
-        //			DbUtil.LogActivity("Viewing Contacts Tab for: {0}".Fmt(Session["ActivePerson"]));
-        //			UpdateModel(m.Pager);
-        //			return View(m);
-        //		}
-        //		[HttpPost]
-        //		public ActionResult ContactsReceivedGrid(int id)
-        //		{
-        //			var m = new PersonContactsReceivedModel(id);
-        //			UpdateModel(m.Pager);
-        //			return View(m);
-        //		}
+        [HttpPost]
+        public ActionResult DeleteOptout(int id, string email)
+        {
+            var oo = DbUtil.Db.EmailOptOuts.SingleOrDefault(o => o.FromEmail == email && o.ToPeopleId == id);
+            if (oo == null)
+                return Content("not found");
+            DbUtil.Db.EmailOptOuts.DeleteOnSubmit(oo);
+            DbUtil.Db.SubmitChanges();
+            return Content("ok");
+        }
+
+        [HttpPost]
+        public ContentResult DeleteExtra(int id, string field)
+        {
+            var e = DbUtil.Db.PeopleExtras.First(ee => ee.PeopleId == id && ee.Field == field);
+            DbUtil.Db.PeopleExtras.DeleteOnSubmit(e);
+            DbUtil.Db.SubmitChanges();
+            return Content("done");
+        }
+
+        [HttpPost]
+        public ContentResult EditExtra(string id, string value)
+        {
+            var a = id.SplitStr("-", 2);
+            var b = a[1].SplitStr(".", 2);
+            var p = DbUtil.Db.LoadPersonById(b[1].ToInt());
+            switch (a[0])
+            {
+                case "s":
+                    p.AddEditExtraValue(b[0], value);
+                    break;
+                case "t":
+                    p.AddEditExtraData(b[0], value);
+                    break;
+                case "d":
+                    {
+                        DateTime dt;
+                        if (DateTime.TryParse(value, out dt))
+                        {
+                            p.AddEditExtraDate(b[0], dt);
+                            value = dt.ToShortDateString();
+                        }
+                        else
+                        {
+                            p.RemoveExtraValue(DbUtil.Db, b[0]);
+                            value = "";
+                        }
+                    }
+                    break;
+                case "i":
+                    p.AddEditExtraInt(b[0], value.ToInt());
+                    break;
+                case "b":
+                    if (value == "True")
+                        p.AddEditExtraBool(b[0], true);
+                    else
+                        p.RemoveExtraValue(DbUtil.Db, b[0]);
+                    break;
+                case "m":
+                    {
+                        if (value == null)
+                            value = Request.Form["value[]"];
+                        var cc = Code.StandardExtraValues.ExtraValueBits(b[0], b[1].ToInt());
+                        var aa = value.Split(',');
+                        foreach (var c in cc)
+                        {
+                            if (aa.Contains(c.Key)) // checked now
+                                if (!c.Value) // was not checked before
+                                    p.AddEditExtraBool(c.Key, true);
+                            if (!aa.Contains(c.Key)) // not checked now
+                                if (c.Value) // was checked before
+                                    p.RemoveExtraValue(DbUtil.Db, c.Key);
+                        }
+                        DbUtil.Db.SubmitChanges();
+                        break;
+                    }
+            }
+            DbUtil.Db.SubmitChanges();
+            if (value == "null")
+                return Content(null);
+            return Content(value);
+        }
+
+        [HttpPost]
+        public JsonResult ExtraValues(string id)
+        {
+            var a = id.SplitStr("-", 2);
+            var b = a[1].SplitStr(".", 2);
+            var c = Code.StandardExtraValues.Codes(b[0]);
+            var j = Json(c);
+            return j;
+        }
+        [HttpPost]
+        public JsonResult ExtraValues2(string id)
+        {
+            var a = id.SplitStr("-", 2);
+            var b = a[1].SplitStr(".", 2);
+            var c = Code.StandardExtraValues.ExtraValueBits(b[0], b[1].ToInt());
+            var j = Json(c);
+            return j;
+        }
+
+        [HttpPost]
+        public ActionResult NewExtraValue(int id, string field, string type, string value)
+        {
+            field = field.Replace('/', '-');
+            var v = new PeopleExtra { PeopleId = id, Field = field };
+            DbUtil.Db.PeopleExtras.InsertOnSubmit(v);
+            switch (type)
+            {
+                case "string":
+                    v.StrValue = value;
+                    break;
+                case "text":
+                    v.Data = value;
+                    break;
+                case "date":
+                    var dt = DateTime.MinValue;
+                    DateTime.TryParse(value, out dt);
+                    v.DateValue = dt;
+                    break;
+                case "int":
+                    v.IntValue = value.ToInt();
+                    break;
+            }
+            try
+            {
+                DbUtil.Db.SubmitChanges();
+            }
+            catch (Exception ex)
+            {
+                return Content("error: " + ex.Message);
+            }
+            return Content("ok");
+        }
+        public ActionResult ShowMeetings(int id, bool all)
+        {
+            if (all == true)
+                Session["showallmeetings"] = true;
+            else
+                Session.Remove("showallmeetings");
+            return Redirect("/Person/Index/" + id);
+        }
+
+        private void InitExportToolbar(int? id)
+        {
+            var qb = DbUtil.Db.QueryBuilderIsCurrentPerson();
+            ViewBag.queryid = qb.QueryId;
+            ViewBag.TagAction = "/Person2/Tag/" + id;
+            ViewBag.UnTagAction = "/Person2/UnTag/" + id;
+            ViewBag.AddContact = "/Person2/AddContactReceived/" + id;
+            ViewBag.AddTasks = "/Person2/AddAboutTask/" + id;
+        }
+
+        public class CurrentRegistration
+        {
+            public int OrgId { get; set; }
+            public string Name { get; set; }
+            public string Description { get; set; }
+        }
+
+        public ActionResult ContributionStatement(int id, string fr, string to)
+        {
+            if (Util.UserPeopleId != id && !User.IsInRole("Finance"))
+                return Content("No permission to view statement");
+            var p = DbUtil.Db.LoadPersonById(id);
+            if (p == null)
+                return Content("Invalid Id");
+
+            var frdt = Util.ParseMMddyy(fr);
+            var todt = Util.ParseMMddyy(to);
+            if (!(frdt.HasValue && todt.HasValue))
+                return Content("date formats invalid");
+
+            DbUtil.LogActivity("Contribution Statement for ({0})".Fmt(id));
+
+            return new Finance.Models.Report.ContributionStatementResult
+            {
+                PeopleId = id,
+                FromDate = frdt.Value,
+                ToDate = todt.Value,
+                typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult ? 2 : 1,
+                noaddressok = true,
+                useMinAmt = false,
+            };
+        }
+
+        #region ToDo
 
         //[HttpPost]
         //public ActionResult IncompleteTasksGrid(int id)
@@ -524,67 +749,6 @@ namespace CmsWeb.Areas.People.Controllers
         //    return View(m.TasksAboutList(id));
         //}
 
-        [POST("Person2/AddContactMade/{id:int}")]
-        public ActionResult AddContactMade(int id)
-        {
-            var p = DbUtil.Db.LoadPersonById(id);
-            DbUtil.LogActivity("Adding contact from: {0}".Fmt(p.Name));
-            var c = new Contact
-            {
-                CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
-                ContactDate = Util.Now.Date,
-            };
-
-            DbUtil.Db.Contacts.InsertOnSubmit(c);
-            DbUtil.Db.SubmitChanges();
-
-            var cp = new Contactor
-            {
-                PeopleId = p.PeopleId,
-                ContactId = c.ContactId
-            };
-
-            DbUtil.Db.Contactors.InsertOnSubmit(cp);
-            DbUtil.Db.SubmitChanges();
-
-		    TempData["ContactEdit"] = true;
-            return Content("/Contact/" + c.ContactId);
-        }
-
-        [POST("Person2/AddContactReceived/{id:int}")]
-        public ActionResult AddContactReceived(int id)
-        {
-            var p = DbUtil.Db.LoadPersonById(id);
-            DbUtil.LogActivity("Adding contact to: {0}".Fmt(p.Name));
-            var c = new Contact
-            {
-                CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
-                ContactDate = Util.Now.Date,
-            };
-
-            DbUtil.Db.Contacts.InsertOnSubmit(c);
-            DbUtil.Db.SubmitChanges();
-
-            c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
-            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
-            DbUtil.Db.SubmitChanges();
-
-            TempData["ContactEdit"] = true;
-            return Content("/Contact/{0}".Fmt(c.ContactId));
-        }
-
-        [POST("Person2/AddTaskAbout/{id:int}")]
-        public ActionResult AddTaskAbout(int id)
-        {
-            var p = DbUtil.Db.LoadPersonById(id);
-            if (p == null || !Util.UserPeopleId.HasValue)
-                return Content("no id");
-            var t = p.AddTaskAbout(DbUtil.Db, Util.UserPeopleId.Value, "Please Contact");
-            DbUtil.Db.SubmitChanges();
-            return Content("/Task/List/{0}".Fmt(t.Id));
-        }
 
         //		[HttpPost]
         //		public ActionResult MemberDisplay(int id)
@@ -702,20 +866,6 @@ namespace CmsWeb.Areas.People.Controllers
         //			return View("RecRegDisplay", m);
         //		}
 
-        [HttpPost]
-        public ActionResult AddContact(int id)
-        {
-            return Content(Contact.AddContact(id).ToString());
-        }
-
-        [HttpPost]
-        public ActionResult AddTasks(int id)
-        {
-            var c = new ContentResult();
-            c.Content = Task.AddTasks(id).ToString();
-            return c;
-        }
-
         //[HttpPost]
         //public ActionResult OptoutsGrid(int id)
         //{
@@ -723,95 +873,12 @@ namespace CmsWeb.Areas.People.Controllers
         //    return View(p);
         //}
 
-        [HttpPost]
-        public ActionResult DeleteOptout(int id, string email)
-        {
-            var oo = DbUtil.Db.EmailOptOuts.SingleOrDefault(o => o.FromEmail == email && o.ToPeopleId == id);
-            if (oo == null)
-                return Content("not found");
-            DbUtil.Db.EmailOptOuts.DeleteOnSubmit(oo);
-            DbUtil.Db.SubmitChanges();
-            return Content("ok");
-        }
-
         //        [HttpPost]
         //        public ActionResult VolunteerDisplay(int id)
         //        {
         //            var m = new Main.Models.Other.VolunteerModel(id);
         //            return View(m);
         //        }
-
-        [HttpPost]
-        public ContentResult DeleteExtra(int id, string field)
-        {
-            var e = DbUtil.Db.PeopleExtras.First(ee => ee.PeopleId == id && ee.Field == field);
-            DbUtil.Db.PeopleExtras.DeleteOnSubmit(e);
-            DbUtil.Db.SubmitChanges();
-            return Content("done");
-        }
-
-        [HttpPost]
-        public ContentResult EditExtra(string id, string value)
-        {
-            var a = id.SplitStr("-", 2);
-            var b = a[1].SplitStr(".", 2);
-            var p = DbUtil.Db.LoadPersonById(b[1].ToInt());
-            switch (a[0])
-            {
-                case "s":
-                    p.AddEditExtraValue(b[0], value);
-                    break;
-                case "t":
-                    p.AddEditExtraData(b[0], value);
-                    break;
-                case "d":
-                    {
-                        DateTime dt;
-                        if (DateTime.TryParse(value, out dt))
-                        {
-                            p.AddEditExtraDate(b[0], dt);
-                            value = dt.ToShortDateString();
-                        }
-                        else
-                        {
-                            p.RemoveExtraValue(DbUtil.Db, b[0]);
-                            value = "";
-                        }
-                    }
-                    break;
-                case "i":
-                    p.AddEditExtraInt(b[0], value.ToInt());
-                    break;
-                case "b":
-                    if (value == "True")
-                        p.AddEditExtraBool(b[0], true);
-                    else
-                        p.RemoveExtraValue(DbUtil.Db, b[0]);
-                    break;
-                case "m":
-                    {
-                        if (value == null)
-                            value = Request.Form["value[]"];
-                        var cc = Code.StandardExtraValues.ExtraValueBits(b[0], b[1].ToInt());
-                        var aa = value.Split(',');
-                        foreach (var c in cc)
-                        {
-                            if (aa.Contains(c.Key)) // checked now
-                                if (!c.Value) // was not checked before
-                                    p.AddEditExtraBool(c.Key, true);
-                            if (!aa.Contains(c.Key)) // not checked now
-                                if (c.Value) // was checked before
-                                    p.RemoveExtraValue(DbUtil.Db, c.Key);
-                        }
-                        DbUtil.Db.SubmitChanges();
-                        break;
-                    }
-            }
-            DbUtil.Db.SubmitChanges();
-            if (value == "null")
-                return Content(null);
-            return Content(value);
-        }
 
         //		[HttpPost]
         //		public ContentResult EditExtra2()
@@ -827,58 +894,6 @@ namespace CmsWeb.Areas.People.Controllers
         //			return Content(values);
         //		}
 
-        [HttpPost]
-        public JsonResult ExtraValues(string id)
-        {
-            var a = id.SplitStr("-", 2);
-            var b = a[1].SplitStr(".", 2);
-            var c = Code.StandardExtraValues.Codes(b[0]);
-            var j = Json(c);
-            return j;
-        }
-        [HttpPost]
-        public JsonResult ExtraValues2(string id)
-        {
-            var a = id.SplitStr("-", 2);
-            var b = a[1].SplitStr(".", 2);
-            var c = Code.StandardExtraValues.ExtraValueBits(b[0], b[1].ToInt());
-            var j = Json(c);
-            return j;
-        }
-
-        [HttpPost]
-        public ActionResult NewExtraValue(int id, string field, string type, string value)
-        {
-            field = field.Replace('/', '-');
-            var v = new PeopleExtra { PeopleId = id, Field = field };
-            DbUtil.Db.PeopleExtras.InsertOnSubmit(v);
-            switch (type)
-            {
-                case "string":
-                    v.StrValue = value;
-                    break;
-                case "text":
-                    v.Data = value;
-                    break;
-                case "date":
-                    var dt = DateTime.MinValue;
-                    DateTime.TryParse(value, out dt);
-                    v.DateValue = dt;
-                    break;
-                case "int":
-                    v.IntValue = value.ToInt();
-                    break;
-            }
-            try
-            {
-                DbUtil.Db.SubmitChanges();
-            }
-            catch (Exception ex)
-            {
-                return Content("error: " + ex.Message);
-            }
-            return Content("ok");
-        }
 
         //        [HttpPost]
         //        public ActionResult ExtrasGrid(int id)
@@ -887,31 +902,6 @@ namespace CmsWeb.Areas.People.Controllers
         //            return View(p);
         //        }
 
-
-        public ActionResult ShowMeetings(int id, bool all)
-        {
-            if (all == true)
-                Session["showallmeetings"] = true;
-            else
-                Session.Remove("showallmeetings");
-            return Redirect("/Person/Index/" + id);
-        }
-
-        private void InitExportToolbar(int? id)
-        {
-            var qb = DbUtil.Db.QueryBuilderIsCurrentPerson();
-            ViewBag.queryid = qb.QueryId;
-            ViewBag.TagAction = "/Person2/Tag/" + id;
-            ViewBag.UnTagAction = "/Person2/UnTag/" + id;
-            ViewBag.AddContact = "/Person2/AddContactReceived/" + id;
-            ViewBag.AddTasks = "/Person2/AddAboutTask/" + id;
-        }
-        public class CurrentRegistration
-        {
-            public int OrgId { get; set; }
-            public string Name { get; set; }
-            public string Description { get; set; }
-        }
 
         //        public ActionResult CurrentRegistrations(bool? html)
         //        {
@@ -944,31 +934,6 @@ namespace CmsWeb.Areas.People.Controllers
         //            return View(q);
         //        }
         //
-        public ActionResult ContributionStatement(int id, string fr, string to)
-        {
-            if (Util.UserPeopleId != id && !User.IsInRole("Finance"))
-                return Content("No permission to view statement");
-            var p = DbUtil.Db.LoadPersonById(id);
-            if (p == null)
-                return Content("Invalid Id");
-
-            var frdt = Util.ParseMMddyy(fr);
-            var todt = Util.ParseMMddyy(to);
-            if (!(frdt.HasValue && todt.HasValue))
-                return Content("date formats invalid");
-
-            DbUtil.LogActivity("Contribution Statement for ({0})".Fmt(id));
-
-            return new CmsWeb.Areas.Finance.Models.Report.ContributionStatementResult
-            {
-                PeopleId = id,
-                FromDate = frdt.Value,
-                ToDate = todt.Value,
-                typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult ? 2 : 1,
-                noaddressok = true,
-                useMinAmt = false,
-            };
-        }
         #endregion
 
     }

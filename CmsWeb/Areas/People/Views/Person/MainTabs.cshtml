@@ -9,10 +9,10 @@
             <li><a href="#giving" data-toggle="tab" class="ajax">Giving</a></li>
         }
         @*<li><a href="#account" data-toggle="tab" class="ajax">Account</a></li>*@
-        <li><a id="contactsTab" href="#contacts" data-toggle="tab" class="ajax">Contacts</a></li>
+        <li><a id="contactsTab" href="#contacts" data-toggle="tab">Contacts</a></li>
         @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
         {
-            <li><a id="systemTab" href="#system" data-toggle="tab" class="ajax">System</a></li>
+            <li><a id="systemTab" href="#system" data-toggle="tab">System</a></li>
         }
     </ul>
 

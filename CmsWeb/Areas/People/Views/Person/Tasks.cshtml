@@ -1,10 +1,10 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.Person.ITasks
-@if (Model.AddTask.HasValue())
-{
-    <p class="pull-right"><a class="btn btn-primary add-task-contact" href="@Model.AddTask">Add Task About</a></p>
-}
 <form class="non-modal ajax">
+    @if (Model.AddTask.HasValue())
+    {
+        <p class="pull-right"><a class="btn btn-primary add-task-contact" href="@Model.AddTask">Add Task About</a></p>
+    }
     <div class="pagination pagination-mini">
         @Html.Partial("Pager3", Model.Pager)
     </div>

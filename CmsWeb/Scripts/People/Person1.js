@@ -178,15 +178,17 @@
         }
     });
     $("a[href='#membership']").on('shown', function (e) {
-        if ($("#status").length < 2) {
-            $("a[href='#status']").click().tab("show");
-            $.cookie('lasttab', "#status");
+        var id = "#status";
+        if ($(id).length < 2) {
+            $("a[href='" + id + "']").click().tab("show");
+            $.cookie('lasttab', id);
         }
     });
     $("a[href='#contacts']").on('shown', function (e) {
-        if ($("#contactsmade").length < 2) {
-            $("a[href='#contactsmade']").click().tab("show");
-            $.cookie('lasttab', "#contactsmade");
+        var id = "#contactsreceived";
+        if ($(id).length < 2) {
+            $("a[href='" + id + "']").click().tab("show");
+            $.cookie('lasttab', id);
         }
     });
     $("a[href='#system']").on('shown', function (e) {

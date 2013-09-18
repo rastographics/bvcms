@@ -3,17 +3,15 @@
 @{
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Person";
-    var admin = User.IsInRole("Admin");
-    var edit = User.IsInRole("Edit");
-}
-@section scripts
-{
-    <script src="@Fingerprint.Tag("/Scripts/People/person1.js")"></script>
-    <script src="@Fingerprint.Tag("/Scripts/Org/OrgMemberDialog2.js")"></script>
 }
 @section head
 {
-    <link href="@Fingerprint.Tag("/Content/css/person-main.css")" rel="stylesheet" />
+    @Fingerprint.Css("/Content/css/person-main.css")
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/People/person1.js")
+    @Fingerprint.Script("/Scripts/Org/OrgMemberDialog2.js")
 }
 <div class="container">
     <div class="row-fluid">
