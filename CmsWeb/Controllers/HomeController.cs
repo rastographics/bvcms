@@ -41,20 +41,20 @@ namespace CmsWeb.Controllers
 			}
 			var m = new HomeModel();
 			return View(m);
-        }
-        [GET("Person/TinyImage/{id}")]
-        [GET("Person2/TinyImage/{id}")]
-        [GET("TinyImage/{id}")]
-        public ActionResult TinyImage(int id)
-        {
-            return new PictureResult(id, portrait: true, tiny: true);
-        }
-        [GET("Person/Image/{id:int}/{w:int?}/{h:int?}")]
-        [GET("Person2/Image/{id:int}/{w:int?}/{h:int?}")]
-        [GET("Image/{id:int}/{w:int?}/{h:int?}")]
-        public ActionResult Image(int id, int? w, int? h)
-        {
-            return new PictureResult(id);
+		}
+		[GET("Person/TinyImage/{id}")]
+		[GET("Person2/TinyImage/{id}")]
+		[GET("TinyImage/{id}")]
+		public ActionResult TinyImage(int id)
+		{
+			return new PictureResult(id, portrait: true, tiny: true);
+		}
+		[GET("Person/Image/{id:int}/{w:int?}/{h:int?}")]
+		[GET("Person2/Image/{id:int}/{w:int?}/{h:int?}")]
+		[GET("Image/{id:int}/{w:int?}/{h:int?}")]
+		public ActionResult Image(int id, int? w, int? h)
+		{
+			return new PictureResult(id);
 		}
 		public ActionResult About()
 		{
@@ -76,8 +76,8 @@ namespace CmsWeb.Controllers
 		public ActionResult Test()
 		{
 			string test = null;
-            var x = test.Replace('3', '4');
-            return Content("done");
+			var x = test.Replace('3', '4');
+			return Content("done");
 		}
 		public ActionResult RecordTest(int id, string v)
 		{
@@ -88,42 +88,42 @@ namespace CmsWeb.Controllers
 		}
 		public ActionResult NthTimeAttenders(int id)
 		{
-            var name = "VisitNumber-" + id;
-            var qb = DbUtil.Db.QueryBuilderClauses.FirstOrDefault(c => c.IsPublic && c.Description == name && c.SavedBy == "public");
-            if (qb == null)
-            {
-                qb = DbUtil.Db.QueryBuilderScratchPad();
+			var name = "VisitNumber-" + id;
+			var qb = DbUtil.Db.QueryBuilderClauses.FirstOrDefault(c => c.IsPublic && c.Description == name && c.SavedBy == "public");
+			if (qb == null)
+			{
+				qb = DbUtil.Db.QueryBuilderScratchPad();
 				qb.CleanSlate(DbUtil.Db);
 
-                var comp = CompareType.Equal;
-                QueryBuilderClause clause = null;
-                switch (id)
-                {
-                    case 1:
-                        clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
-                        clause.Quarters = "1";
-                        clause.Days = 7;
-                        break;
-                    case 2:
-                        clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
-                        clause.Quarters = "2";
-                        clause.Days = 7;
-                        clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
-                        clause.Quarters = "1";
-                        clause.Days = 7;
-                        break;
-                    case 3:
-                        clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
-                        clause.Quarters = "3";
-                        clause.Days = 7;
-                        clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
-                        clause.Quarters = "2";
-                        clause.Days = 7;
-                        break;
-                }
-                qb = qb.SaveTo(DbUtil.Db, name, "public", true);
-            }
-            TempData["autorun"] = true;
+				var comp = CompareType.Equal;
+				QueryBuilderClause clause = null;
+				switch (id)
+				{
+					case 1:
+						clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+						clause.Quarters = "1";
+						clause.Days = 7;
+						break;
+					case 2:
+						clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+						clause.Quarters = "2";
+						clause.Days = 7;
+						clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+						clause.Quarters = "1";
+						clause.Days = 7;
+						break;
+					case 3:
+						clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+						clause.Quarters = "3";
+						clause.Days = 7;
+						clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+						clause.Quarters = "2";
+						clause.Days = 7;
+						break;
+				}
+				qb = qb.SaveTo(DbUtil.Db, name, "public", true);
+			}
+			TempData["autorun"] = true;
 			return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
 		}
 		[Authorize(Roles = "Admin")]
@@ -141,15 +141,15 @@ namespace CmsWeb.Controllers
 			return Redirect("/");
 		}
 
-        public ActionResult ToggleSupport()
-        {
-            var usesupport = DbUtil.Db.UserPreference("UseNewSupport", "false").ToBool();
-            DbUtil.Db.SetUserPreference("UseNewSupport", usesupport ? "false" : "true");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
+		public ActionResult ToggleSupport()
+		{
+			var usesupport = DbUtil.Db.UserPreference("UseNewSupport", "false").ToBool();
+			DbUtil.Db.SetUserPreference("UseNewSupport", usesupport ? "false" : "true");
+			DbUtil.Db.SubmitChanges();
+			if (Request.UrlReferrer != null)
+				return Redirect(Request.UrlReferrer.OriginalString);
+			return Redirect("/");
+		}
 		public ActionResult Names(string term)
 		{
 			var q = HomeModel.Names(term).ToList();
@@ -177,4 +177,3 @@ namespace CmsWeb.Controllers
 		}
 	}
 }
-

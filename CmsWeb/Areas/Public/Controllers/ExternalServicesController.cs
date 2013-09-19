@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var who = "";
             var claimedby = "";
             var claimedID = 0;
-            var supportPerson = HomeController.SupportPeople[supportPersonID];
+            var supportPerson = SupportController.SupportPeople[supportPersonID];
 
             var cn = new SqlConnection(cs.ConnectionString);
             cn.Open();

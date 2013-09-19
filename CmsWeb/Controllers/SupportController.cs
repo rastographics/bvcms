@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Net.Mail;
 using System.Configuration;
 
@@ -11,7 +12,7 @@ namespace CmsWeb.Controllers
 {
 	public class SupportController : CmsController
 	{
-	    public static string[] SupportPeople = { "Unclaimed", "Bethany", "David", "Karen", "Kyle", "Steven" };
+		public static string[] SupportPeople = { "Unclaimed", "Bethany", "David", "Karen", "Kyle", "Steven" };
 		public static string SQLSupportInsert = "INSERT INTO [dbo].[SupportRequests] ( Created, Who, Host, Urgency, Request, Subject ) OUTPUT INSERTED.ID VALUES ( @c, @w, @h, @u, @r, @s )";
 
 		public ActionResult SendSupportRequest(string urgency, string request, string search, string cc)
@@ -20,34 +21,43 @@ namespace CmsWeb.Controllers
 			if (cs == null) return Content("Database not available!");
 
 			List<String> ccAddrs = new List<string>();
+			var p = (from e in DbUtil.Db.Users
+						where e.UserId == Util.UserId
+						select new
+						{
+							roles = string.Join(", ", e.Roles)
+						}).SingleOrDefault();
+
 			var who = Util.UserFullName + " <" + Util.UserEmail + ">";
 			var from = "support-system@bvcms.com";
 			var to = "support@bvcms.com";
 			var subject = "Support Request: " + Util.UserFullName + " @ " + Util.Host + ".bvcms.com - " + DateTime.Now.ToString("g");
+			var roles = ( p != null ? p.roles : "" );
 			var ccto = cc != null && cc.Length > 0 ? "<b>CC:</b> " + cc + "<br>" : "";
 			
 			var cn = new SqlConnection(cs.ConnectionString);
 			cn.Open();
 			var cmd = new SqlCommand(SQLSupportInsert, cn);
 
-            cmd.Parameters.AddWithValue("@c", DateTime.Now);
-            cmd.Parameters.AddWithValue("@w", who);
-            cmd.Parameters.AddWithValue("@h", Util.Host);
-            cmd.Parameters.AddWithValue("@u", urgency);
-            cmd.Parameters.AddWithValue("@r", request);
-            cmd.Parameters.AddWithValue("@s", subject);
+			cmd.Parameters.AddWithValue("@c", DateTime.Now);
+			cmd.Parameters.AddWithValue("@w", who);
+			cmd.Parameters.AddWithValue("@h", Util.Host);
+			cmd.Parameters.AddWithValue("@u", urgency);
+			cmd.Parameters.AddWithValue("@r", request);
+			cmd.Parameters.AddWithValue("@s", subject);
 
 			int lastID = (int)cmd.ExecuteScalar();
 			cn.Close();
 
 			var body = "<b>Request ID:</b> " + lastID + "<br>" +
-                 "<b>Request By:</b> " + Util.UserFullName + " (" + Util.UserEmail + ")<br>" +
+				 "<b>Request By:</b> " + Util.UserFullName + " (" + Util.UserEmail + ")<br>" +
+				 "<b>Roles:</b> " + roles + "<br>" +
 				 ccto +
-                 "<b>Host:</b> https://" + Util.Host + ".bvcms.com<br>" +
-                 "<b>Urgency:</b> " + urgency + "<br>" +
-                 "<b>Last Search:</b> " + search + "<br>" +
-                 "<b>Claim:</b> " + CreateDibs(lastID) + "<br><br>" +
-                 request;
+				 "<b>Host:</b> https://" + Util.Host + ".bvcms.com<br>" +
+				 "<b>Urgency:</b> " + urgency + "<br>" +
+				 "<b>Last Search:</b> " + search + "<br>" +
+				 "<b>Claim:</b> " + CreateDibs(lastID) + "<br><br>" +
+				 request;
 
 			var smtp = Util.Smtp();
 			var email = new MailMessage(from, to, subject, body);
@@ -100,10 +110,10 @@ namespace CmsWeb.Controllers
 #if DEBUG
 		private static string DibClick = "<a href='http://test.bvcms.com/ExternalServices/BVCMSSupportLink?requestID={0}&supportPersonID={1}'>{2}</a>";
 #else
-        private static string DibClick = "<a href='https://bellevue.bvcms.com/ExternalServices/BVCMSSupportLink?requestID={0}&supportPersonID={1}'>{2}</a>";
+		private static string DibClick = "<a href='https://bellevue.bvcms.com/ExternalServices/BVCMSSupportLink?requestID={0}&supportPersonID={1}'>{2}</a>";
 #endif
 
-        private string CreateDibs(int requestID)
+		private string CreateDibs(int requestID)
 		{
 			List<string> dibLinks = new List<string>();
 
@@ -116,4 +126,3 @@ namespace CmsWeb.Controllers
 		}
 	}
 }
-
