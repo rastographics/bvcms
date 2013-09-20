@@ -1,5 +1,5 @@
 ﻿@using UtilityExtensions
-@model CmsWeb.Areas.People.Models.Person.ITasks
+@model CmsWeb.Areas.People.Models.Person.TasksModel
 <form class="non-modal ajax">
     @if (Model.AddTask.HasValue())
     {
@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var t in Model.Tasks())
+            @foreach (var t in Model.ViewList())
             {
                 <tr>
                     <td>@t.CreatedDate.ToShortDateString()</td>

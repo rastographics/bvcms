@@ -1,7 +1,7 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.Person.PendingEnrollments
 @{
-    var list = Model.Fetch().ToList();
+    var list = Model.ViewList().ToList();
 }
 <form class="non-modal ajax">
     <table class="expanding table table-condensed table-hover">

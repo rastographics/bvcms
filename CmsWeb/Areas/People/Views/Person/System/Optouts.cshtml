@@ -1,0 +1,32 @@
+﻿@model CmsData.Person
+@using UtilityExtensions
+<a href="/Manage/Emails/Failed/@Model.PeopleId">Failed Sent Emails</a>
+<fieldset>
+    <legend>Email Optouts</legend>
+    OptOut of Email Address: <input type="text" id="optoutemail" style="width: 20em" />
+    <a href="/Person2/AddOptout/@Model.PeopleId" id="addoptoutemail" class="btn btn-warning">Add Optout</a>
+</fieldset>
+@if (Model.EmailOptOuts.Count > 0)
+{
+    <table class="table not-wide">
+        <thead>
+            <tr>
+                <td><b>From Email</b></td>
+                <td>Date</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var oo in Model.EmailOptOuts)
+            { 
+                <tr>
+                    <td>@oo.FromEmail</td>
+                    <td>@oo.DateX.FormatDate()</td>
+                    <td><a class="deloptout" href="/Person2/DeleteOptout/@oo.ToPeopleId?email=@oo.FromEmail">
+                        <i class="icon-remove"></i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

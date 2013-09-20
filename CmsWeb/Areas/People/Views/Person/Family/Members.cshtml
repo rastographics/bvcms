@@ -1,27 +1,20 @@
 ﻿@using CmsWeb.Areas.People.Models.Person
-@model PersonModel
-@{
-    var fm = new FamilyModel(Model.PeopleId);
-}
+@model FamilyModel
 <div id="family-div">
     <div class="sidebar_title group">
         <h2>Family Members</h2>
         @if (Model.Person.CanUserEditAll)
         {
             <div class="dropdown">
-                <a href="/SearchAdd2/Dialog/Family/@Model.PeopleId" class="searchadd dropdown-toggle"><i class="icon-plus"></i></a>
-                @*<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-plus-sign"></i></a>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="/SearchAdd2/Dialog/RelatedFamily/@Model.PeopleId" class="searchadd">Add Related Family</a></li>
-            </ul>*@
+                <a href="/SearchAdd2/Dialog/Family/@Model.Person.PeopleId" class="searchadd dropdown-toggle"><i class="icon-plus"></i></a>
             </div>
         }
     </div>
     <div class="sidebar_content">
         <ul id="family_members" class="nav nav-stacked nav-tabs">
-            @foreach (var m in fm.Members())
+            @foreach (var m in Model.ViewList())
             {
-                var active = m.Id == Model.PeopleId ? "class=active" : "";
+                var active = m.Id == Model.Person.PeopleId ? "class=active" : "";
                 <li @active>
                     <a href="/Person2/@m.Id">
                         <div class="headshot" style="background-image:url(@m.Pictures.ThumbUrl);"></div>

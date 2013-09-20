@@ -1,5 +1,5 @@
 ﻿@using UtilityExtensions
-@model CmsWeb.Areas.People.Models.Person.IContacts
+@model CmsWeb.Areas.People.Models.Person.ContactsModel
 <form class="non-modal ajax">
     <p class="pull-right"><a class="btn btn-success add-task-contact" href="@Model.AddContact">Add Contact</a></p>
     <div class="pagination pagination-mini">
@@ -16,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var c in Model.Contacts())
+            @foreach (var c in Model.ViewList())
             {
                 <tr>
                     <td class="indent"><a href="/Contact/Index/@c.ContactId">@c.ContactDate.ToShortDateString()</a></td>

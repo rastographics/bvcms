@@ -15,7 +15,7 @@ else
     @if (User.IsInRole("Access"))
     {
         <div class="span4 pull-right" id="profile-actions">
-            @Html.Partial("Toolbar/Toolbar")
+            @Html.Partial("Toolbar/Toolbar", Model.Users)
         </div>
     }
     <ul class="meta unstyled">
@@ -27,10 +27,10 @@ else
         <li class="badges">
             @Html.DisplayFor(m => m.basic.Campus, "InlineCode")
             @Html.DisplayFor(m => m.basic.PositionInFamily, "InlineCode")
-            @Badge(true, @Model.member.MemberStatus.ToString() , "label-success")
+            @Badge(true, @Model.MemberStatus, "label-success")
             @foreach (var status in Model.StatusFlags)
             {
-                @Badge(Model.member.MemberStatus.ToString() != status, status, "label-success")
+                @Badge(Model.MemberStatus != status, status, "label-success")
             }
             @Badge(Model.basic.DoNotVisitFlag, "Do Not Visit", "label-important")
             @Badge(Model.basic.DoNotCallFlag, "Do Not Call", "label-important")
@@ -38,11 +38,11 @@ else
         </li>
     </ul>
 </div>
-@Html.Partial("PictureUpload", Model)
+@Html.Partial("Personal/PictureUpload", Model)
 
 @helper Address(AddressInfo a)
 {
-    if (Util.HasValue(a.Address1) || a.Preferred)
+    if (a.Address1.HasValue() || a.Preferred)
     {
         var icon = a.Name == "FamilyAddr" ? "icon-home" : "icon-male";
     <i class="@icon icon-fixedwidth"></i>
