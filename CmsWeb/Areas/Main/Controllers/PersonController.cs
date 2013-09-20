@@ -254,6 +254,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			DbUtil.Db.Contactors.InsertOnSubmit(cp);
 			DbUtil.Db.SubmitChanges();
 
+		    TempData["ContactEdit"] = true;
 			return Content("/Contact/{0}?edit=true".Fmt(c.ContactId));
 		}
 		[HttpPost]

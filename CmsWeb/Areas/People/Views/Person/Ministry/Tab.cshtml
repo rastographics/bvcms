@@ -1,0 +1,13 @@
+﻿@model CmsWeb.Areas.People.Models.Person.PersonModel
+<ul class="nav nav-tabs subnav" data-tabparent="ministry">
+    <li><a href="#contactsreceived" data-toggle="tab" class="ajax">Contacts Received</a></li>
+    <li><a href="#contactsmade" data-toggle="tab" class="ajax">Contacts Made</a></li>
+    <li><a href="#tasksabout" data-toggle="tab" class="ajax">Tasks About</a></li>
+    <li><a href="#tasksassigned" data-toggle="tab" class="ajax">Tasks Assigned</a></li>
+</ul> 
+<div class="tab-content">
+    <div class="tab-pane" id="contactsreceived" data-link="/Person2/ContactsReceived/@Model.PeopleId"></div>
+    <div class="tab-pane" id="contactsmade" data-link="/Person2/ContactsMade/@Model.PeopleId"></div>
+    <div class="tab-pane" id="tasksabout" data-link="/Person2/TasksAbout/@Model.PeopleId"></div>
+    <div class="tab-pane" id="tasksassigned" data-link="/Person2/TasksAssigned/@Model.PeopleId"></div>
+</div>

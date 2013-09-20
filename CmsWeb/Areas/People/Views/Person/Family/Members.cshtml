@@ -1,0 +1,33 @@
+﻿@using CmsWeb.Areas.People.Models.Person
+@model FamilyModel
+<div id="family-div">
+    <div class="sidebar_title group">
+        <h2>Family Members</h2>
+        @if (Model.Person.CanUserEditAll)
+        {
+            <div class="dropdown">
+                <a href="/SearchAdd2/Dialog/Family/@Model.Person.PeopleId" class="searchadd dropdown-toggle"><i class="icon-plus"></i></a>
+            </div>
+        }
+    </div>
+    <div class="sidebar_content">
+        <ul id="family_members" class="nav nav-stacked nav-tabs">
+            @foreach (var m in Model.ViewList())
+            {
+                var active = m.Id == Model.Person.PeopleId ? "class=active" : "";
+                <li @active>
+                    <a href="/Person2/@m.Id">
+                        <div class="headshot" style="background-image:url(@m.Pictures.ThumbUrl);"></div>
+                        <span class="name">@m.Name @Html.Raw(m.SpouseIndicator)</span>
+                        <div class="meta">
+                            <span class="age">@m.Age</span>
+                            &bull; <span class="status">@m.MemberStatus</span>
+                            &bull; <span class="role">@m.PositionInFamily</span>
+                        </div>
+                        <span class="email email_display">@m.Email</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

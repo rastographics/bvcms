@@ -1,23 +1,23 @@
 ﻿@using UtilityExtensions
-@model CmsWeb.Areas.People.Models.Person.PersonModel
-<table class="table table-striped table-condensed">
-    <thead>
-        <tr>
-            <td colspan="6" class="right">
-                <a href="#" class="ajax-refresh"><i class="icon-refresh"></i></a>
-            </td>
-        </tr>
-        <tr>
-            <th>Time</th>
-            <th>User</th>
-            <th>Field</th>
-            <th>Before</th>
-            <th>After</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var c in Model.GetChangeLogs())
+@model CmsWeb.Areas.People.Models.Person.ChangesModel
+<form class="non-modal ajax">
+    <a href="#" class="ajax-refresh pull-right"><i class="icon-refresh"></i></a>
+    <div class="pagination pagination-mini">
+        @Html.Partial("Pager3", Model.Pager)
+    </div>
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th>@Model.Pager.SortLink("Time")</th>
+                <th>User</th>
+                <th>Field</th>
+                <th>Before</th>
+                <th>After</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in Model.ViewList())
         { 
             <tr>
                 <td title="@c.FieldSet">@c.Time.ToString2("g")</td>
@@ -27,7 +27,7 @@
                 <td>@c.After</td>
                 @if (c.Reversable)
                 {
-                    <td><a class="reverse" href="/Person2/Reverse/@Model.Person.PeopleId" field="@c.Field" value="@c.Before" pf="@c.pf">reverse</a></td>
+                    <td><a class="reverse" href="/Person2/Reverse/@Model.person.PeopleId" data-field="@c.Field" data-value="@c.Before" data-pf="@c.pf">reverse</a></td>
                 }
                 else
                 {
@@ -35,6 +35,9 @@
                 }
             </tr>
         }
-    </tbody>
-</table>
-
+        </tbody>
+    </table>
+    <div class="pagination pagination-mini">
+        @Html.Partial("Pager3", Model.Pager)
+    </div>
+</form>

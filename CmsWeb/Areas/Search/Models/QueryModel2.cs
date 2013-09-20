@@ -44,6 +44,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool MinistryVisible { get; set; }
         public bool QuartersVisible { get; set; }
         public bool TagsVisible { get; set; }
+        public bool PmmLabelsVisible { get; set; }
 
         #endregion
 
@@ -64,10 +65,11 @@ namespace CmsWeb.Areas.Search.Models
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public string Comparison { get; set; }
+        public string[] Tags { get; set; }
+        public string[] PmmLabels { get; set; }
+
         public string CodeValue { get; set; }
         public string[] CodeValues { get; set; }
-        public string[] Tags { get; set; }
-
 
         public string TextValue { get; set; }
         public string DateValue { get; set; }
@@ -83,9 +85,6 @@ namespace CmsWeb.Areas.Search.Models
             Db = DbUtil.Db;
             Db.SetUserPreference("NewCategories", "true");
             ConditionName = "Group";
-//            TagTypeId = DbUtil.TagTypeId_Personal;
-//            TagName = Util2.CurrentTagName;
-//            TagOwner = Util2.CurrentTagOwnerId;
             Pager = new PagerModel2(Count) { Direction = "asc" };
         }
 
@@ -96,9 +95,9 @@ namespace CmsWeb.Areas.Search.Models
 
         public void LoadQuery(Guid? id = null)
         {
-            if (id.HasValue) 
+            if (id.HasValue)
                 TopClause = Db.LoadCopyOfExistingQuery(id.Value);
-            else 
+            else
                 TopClause = Db.FetchLastQuery();
 
             SavedQueryDesc = TopClause.Description;
@@ -106,6 +105,7 @@ namespace CmsWeb.Areas.Search.Models
         }
 
         public List<SelectListItem> TagData { get; set; }
+        public List<SelectListItem> PmmLabelData { get; set; }
 
         private static List<CodeValueItem> BitCodes =
             new List<CodeValueItem> 
@@ -167,6 +167,7 @@ namespace CmsWeb.Areas.Search.Models
             QuartersVisible = fieldMap.HasParam("Quarters");
             if (QuartersVisible)
                 QuartersLabel = fieldMap.QuartersTitle;
+            PmmLabelsVisible = fieldMap.HasParam("PmmLabels");
             TagsVisible = fieldMap.HasParam("Tags");
             if (TagsVisible)
             {
@@ -305,9 +306,11 @@ namespace CmsWeb.Areas.Search.Models
             c.EndDate = DateParse(EndDate);
             c.Days = Days.ToInt();
             c.Age = Age.ToInt();
-            c.ExtraData = Quarters;
+            c.Quarters = Quarters;
             if (Tags != null)
                 c.Tags = string.Join(";", Tags);
+            else if (PmmLabels != null)
+                c.Tags = string.Join(",", PmmLabels);
             c.SavedQueryIdDesc = SavedQueryDesc;
             SelectedId = null;
             TopClause.Save(Db, increment: true);
@@ -365,7 +368,7 @@ namespace CmsWeb.Areas.Search.Models
             SelectMultiple = c.HasMultipleCodes;
             Days = c.Days.ToString();
             Age = c.Age.ToString();
-            Quarters = c.ExtraData;
+            Quarters = c.Quarters;
             if (TagsVisible)
             {
                 if (c.Tags != null)
@@ -374,6 +377,16 @@ namespace CmsWeb.Areas.Search.Models
                 TagData = ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Code");
                 foreach (var i in TagData)
                     i.Selected = Tags.Contains(i.Value);
+            }
+            if (PmmLabelsVisible)
+            {
+                if (c.Tags != null)
+                    PmmLabels = c.Tags.Split(',').Select(vv => vv).ToArray();
+                var cv = new CodeValueModel();
+                PmmLabelData = CodeValueModel.ConvertToSelect(cv.PmmLabels(), "Id");
+                if (PmmLabels != null)
+                    foreach (var i in PmmLabelData)
+                        i.Selected = PmmLabels.Contains(i.Value);
             }
             if (MinistryVisible)
                 Ministry = c.Program;
@@ -726,8 +739,8 @@ namespace CmsWeb.Areas.Search.Models
                         BFTeacherId = p.BFClass.LeaderId,
                         Employer = p.EmployerOther,
                         Age = p.Age.ToString(),
-                        HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName 
-                            && t.Tag.PeopleId == Util2.CurrentTagOwnerId 
+                        HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName
+                            && t.Tag.PeopleId == Util2.CurrentTagOwnerId
                             && t.Tag.TypeId == DbUtil.TagTypeId_Personal),
                     };
             return q;

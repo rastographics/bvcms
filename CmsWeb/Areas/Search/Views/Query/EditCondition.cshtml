@@ -104,6 +104,16 @@
                 </td>
             </tr>
         }
+        @if (Model.PmmLabelsVisible)
+        {
+            <tr>
+                <td>Tags:</td>
+                <td>
+                    <span id="labelvalues" style="display: none"></span>
+                    <div>@Html.ValidationMessage("labelvalues")</div>
+                </td>
+            </tr>
+        }
 
         @if (Model.SavedQueryVisible)
         {

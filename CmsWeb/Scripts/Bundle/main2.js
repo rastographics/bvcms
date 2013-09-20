@@ -25876,10 +25876,11 @@ $(function () {
     $("ul.nav-tabs a.ajax").live("click", function (event) {
         var state = $(this).attr("href");
         var d = $(state);
+        var url = d.data("link");
         if (!d.hasClass("loaded"))
             $.ajax({
                 type: 'POST',
-                url: d.data("link"),
+                url: url,
                 data: {},
                 success: function (data, status) {
                     d.html(data);
@@ -25944,6 +25945,7 @@ $(function () {
         return value !== params.code;
     }, "required, select item");
 
+    var $loadingcount = 0;
     $.ajaxSetup({
         beforeSend: function () {
             $("#loading-indicator").css({
@@ -25952,9 +25954,12 @@ $(function () {
                 'top': $(window).height() / 2,
                 'z-index': 2000
             }).show();
+            $loadingcount++;
         },
         complete: function () {
-            $("#loading-indicator").hide();
+            $loadingcount--;
+            if($loadingcount === 0)
+                $("#loading-indicator").hide();
         }
     });
 });

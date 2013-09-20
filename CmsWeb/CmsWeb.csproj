@@ -292,15 +292,39 @@
     <Compile Include="Areas\Org\Models\OrgMembersDialogModel.cs" />
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
-    <Compile Include="Areas\People\Controllers\PersonController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\PersonController.cs" />
     <Compile Include="Areas\Org\Controllers\VolunteersController.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchAddController.cs" />
-    <Compile Include="Areas\People\Models\Person\AttendHistoryModel.cs" />
-    <Compile Include="Areas\People\Models\Person\AttendInfo.cs" />
+    <Compile Include="Areas\People\Controllers\Person\Admin.cs" />
+    <Compile Include="Areas\People\Controllers\Person\Personal.cs" />
+    <Compile Include="Areas\People\Controllers\Person\ExtraValues.cs" />
+    <Compile Include="Areas\People\Controllers\Person\Lookups.cs" />
+    <Compile Include="Areas\People\Controllers\Person\User.cs" />
+    <Compile Include="Areas\People\Controllers\Person\Membership.cs" />
+    <Compile Include="Areas\People\Controllers\Person\Ministry.cs" />
+    <Compile Include="Areas\People\Controllers\Person\System.cs" />
+    <Compile Include="Areas\People\Controllers\Person\Giving.cs" />
+    <Compile Include="Areas\People\Controllers\Person\Family.cs" />
+    <Compile Include="Areas\People\Controllers\Person\Enrollment.cs" />
+    <Compile Include="Areas\People\Models\Person\Attendance\AttendHistoryModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Attendance\AttendInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\Changes\ChangeLogInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\Contacts\ContactInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\Contacts\ContactsMadeModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Contacts\ContactsReceivedModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Contacts\ContactsModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Changes\ChangesModel.cs" />
+    <Compile Include="Areas\People\Models\Person\FailedMail\FailedMailModel.cs" />
+    <Compile Include="Areas\People\Models\Person\FailedMail\FailedMailInfo.cs" />
+    <Compile Include="Code\PagedTableModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Tasks\TasksModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Tasks\TasksAssignedModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Tasks\TasksAboutModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Tasks\TaskInfo.cs" />
     <Compile Include="Areas\People\Models\Person\DuplicatesModel.cs" />
-    <Compile Include="Areas\People\Models\Person\PendingEnrollments.cs" />
-    <Compile Include="Areas\People\Models\Person\OrgMemberInfo.cs" />
-    <Compile Include="Areas\People\Models\Person\PreviousEnrollments.cs" />
+    <Compile Include="Areas\People\Models\Person\Enrollments\PendingEnrollments.cs" />
+    <Compile Include="Areas\People\Models\Person\Enrollments\OrgMemberInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\Enrollments\PreviousEnrollments.cs" />
     <Compile Include="Areas\People\Models\Person\PictureResult.cs" />
     <Compile Include="Areas\People\Models\AddressInfo.cs">
       <SubType>Code</SubType>
@@ -308,13 +332,13 @@
     <Compile Include="Areas\People\Models\Person\BasicPersonInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\CurrentEnrollments.cs">
+    <Compile Include="Areas\People\Models\Person\Enrollments\CurrentEnrollments.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\FamilyMemberInfo.cs">
+    <Compile Include="Areas\People\Models\Person\Family\FamilyMemberInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\FamilyModel.cs">
+    <Compile Include="Areas\People\Models\Person\Family\FamilyModel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\People\Models\Person\GrowthInfo.cs">
@@ -480,7 +504,7 @@
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Content Include="Areas\People\Views\Person\FamilySidebar\Related.cshtml">
+    <Content Include="Areas\People\Views\Person\Family\Related.cshtml">
       <SubType>Code</SubType>
     </Content>
     <Content Include="Content\css\bootstrap-editable.css" />
@@ -947,7 +971,7 @@
     <Content Include="Areas\Search\Views\SearchAdd\SearchFamily.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\NewAddress.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenAddress.cshtml" />
-    <Content Include="Areas\People\Views\Person\DeletedPerson.cshtml" />
+    <Content Include="Areas\People\Views\Person\Personal\DeletedPerson.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <Content Include="Areas\Main\Views\Organization\DialogAddMES.cshtml" />
     <Content Include="Areas\Main\Views\Reports\WeeklyDecisions.cshtml" />
@@ -961,21 +985,17 @@
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
     <Content Include="Areas\Main\Views\OrgGroups\Management.cshtml" />
-    <Content Include="Areas\People\Views\Person\PictureUpload.cshtml" />
-    <Content Include="Areas\People\Views\Person\FamilySidebar\RelatedEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\MainTabs\Enrollment.cshtml" />
-    <Content Include="Areas\People\Views\Person\MainTabs.cshtml" />
-    <Content Include="Areas\People\Views\Person\MainTabs\Account.cshtml" />
-    <Content Include="Areas\People\Views\Person\MainTabs\Comments.cshtml" />
-    <Content Include="Areas\People\Views\Person\MainTabs\Giving.cshtml" />
+    <Content Include="Areas\People\Views\Person\Personal\PictureUpload.cshtml" />
+    <Content Include="Areas\People\Views\Person\Family\RelatedEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Enrollment\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
-    <Content Include="Areas\People\Views\Person\MainTabs\Membership.cshtml" />
+    <Content Include="Areas\People\Views\Person\Membership\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\Notes.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\ExtraValues.cshtml" />
-    <Content Include="Areas\People\Views\Person\UserEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\FamilySidebar\Photo.cshtml" />
-    <Content Include="Areas\People\Views\Person\FamilySidebar\ExtraValues.cshtml" />
+    <Content Include="Areas\People\Views\Person\EditorTemplates\UserEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
+    <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
     <Content Include="Areas\Search\Views\Query\SelectCondition.cshtml" />
     <Content Include="Areas\People\Views\Person\Toolbar\Gear.cshtml" />
     <Content Include="Areas\Main\Views\Contact\Contactors.cshtml" />
@@ -986,11 +1006,19 @@
     <Content Include="Areas\Search\Views\Query\EditCondition.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmReregister.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Changes.cshtml" />
-    <Content Include="Areas\People\Views\Person\MainTabs\System.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Duplicates.cshtml" />
     <Content Include="Areas\People\Views\Person\System\DuplicateRow.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Edit.cshtml" />
     <Content Include="Areas\Search\Views\Query\Conditions.cshtml" />
+    <Content Include="Areas\People\Views\Person\Ministry\Tab.cshtml" />
+    <Content Include="Areas\People\Views\Person\Ministry\Contacts.cshtml" />
+    <Content Include="Areas\People\Views\Person\Ministry\Tasks.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\Optouts.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\FailedEmails.cshtml" />
+    <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
+    <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
+    <Content Include="Areas\People\Views\Person\Membership\Documents.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -2012,11 +2040,11 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRangeResults.cshtml" />
     <Content Include="Areas\People\Views\Web.config" />
     <Content Include="Areas\People\Views\Address\Edit.cshtml" />
-    <Content Include="Areas\People\Views\Person\MainTabs\PersonalDisplay.cshtml" />
-    <Content Include="Areas\People\Views\Person\MainTabs\PersonalEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Personal\Display.cshtml" />
+    <Content Include="Areas\People\Views\Person\Personal\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\ExtraValue.cshtml" />
-    <Content Include="Areas\People\Views\Person\FamilySidebar\Members.cshtml" />
-    <Content Include="Areas\People\Views\Person\Person.cshtml" />
+    <Content Include="Areas\People\Views\Person\Family\Members.cshtml" />
+    <Content Include="Areas\People\Views\Person\Index.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\Index.cshtml" />
     <Content Include="Areas\Search\Views\Web.config" />
     <Content Include="Areas\Search\Views\Organization\DivisionIds.cshtml" />
@@ -2027,7 +2055,7 @@
     <Content Include="Areas\Search\Views\People\Index.cshtml" />
     <Content Include="Areas\Search\Views\People\Results.cshtml" />
     <Content Include="Areas\Search\Views\Query\Import.cshtml" />
-    <Content Include="Areas\Search\Views\Query\Query.cshtml" />
+    <Content Include="Areas\Search\Views\Query\Index.cshtml" />
     <Content Include="Areas\Search\Views\Query\Results.cshtml" />
     <Content Include="Areas\Search\Views\Quick\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Index.cshtml" />
@@ -2058,7 +2086,7 @@
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\EmailInfo.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\EmailInfo.cshtml" />
-    <Content Include="Areas\People\Views\Person\ProfileHeader.cshtml" />
+    <Content Include="Areas\People\Views\Person\Personal\ProfileHeader.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\Display.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />

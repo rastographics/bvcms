@@ -2,7 +2,6 @@
 @using CmsData
 @using CmsData.Codes
 @using CmsWeb
-@using CmsWeb.Areas.Manage.Controllers
 @model CmsWeb.Areas.Main.Models.MassEmailer
 @{
 	ViewBag.Title = "Compose";
@@ -25,7 +24,7 @@
 @section scripts
 {
     <script src="/ckeditor2/ckeditor.js" type="text/javascript"></script>
-    <script src="@Fingerprint.Tag("/Scripts/Email/compose.js")" type="text/javascript"></script>
+    @Fingerprint.Script("/Scripts/Email/compose.js")
 }
 
 <h2 style="margin-bottom:5px;">Compose Email for @Model.Count @( Model.Count != 1 ? "People" : "Person") @(Model.wantParents ? " including Parents" : "")</h2>
