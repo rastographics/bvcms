@@ -29,7 +29,7 @@
             </tr>
             @if (User.IsInRole("Access"))
             {
-                foreach (var a in Model.Attendances())
+                foreach (var a in Model.ViewList())
                 { 
                 <tr>
                     <td>
@@ -44,7 +44,7 @@
             }
             else
             {
-                foreach (var a in Model.Attendances())
+                foreach (var a in Model.ViewList())
                 { 
                 <tr>
                     <td>
