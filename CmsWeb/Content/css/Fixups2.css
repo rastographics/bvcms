@@ -651,17 +651,17 @@ div.right {
     text-align: right;
 }
 
-div.pad-top {
+.pad-top {
     margin-top: 1em;
 }
-div.pad-left {
+.pad-left {
     padding-left: 1em;
 }
 
-div.align-top {
+.align-top {
     vertical-align: top;
 }
-div.align-bottom {
+.align-bottom {
     vertical-align: bottom;
 }
 
@@ -679,4 +679,7 @@ fieldset {
 }
 .pagination {
     margin: 1.2em 0 0 0;
+}
+html, body {
+height: 100%;
 }

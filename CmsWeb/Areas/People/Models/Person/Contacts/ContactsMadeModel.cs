@@ -14,19 +14,15 @@ namespace CmsWeb.Areas.People.Models.Person
         {
             AddContact = "/Person2/AddContactMade/" + id;
         }
-        private IQueryable<Contact> contacts;
-        override public IQueryable<Contact> ModelList()
+        override public IQueryable<Contact> DefineModelList()
         {
-            if (contacts != null)
-                return contacts;
-            contacts = from c in DbUtil.Db.Contacts
-                       where c.contactsMakers.Any(p => p.PeopleId == person.PeopleId)
-                       select c;
-            return contacts;
+            return from c in DbUtil.Db.Contacts
+                   where c.contactsMakers.Any(p => p.PeopleId == person.PeopleId)
+                   select c;
         }
-        override public IEnumerable<ContactInfo> ViewList()
+
+        public override IEnumerable<ContactInfo> DefineViewList(IQueryable<Contact> q)
         {
-            var q = ApplySort().Skip(Pager.StartRow).Take(Pager.PageSize);
             return from c in q
                    let contactor = person.PreferredName
                    let contactee = c.contactees.FirstOrDefault().person.Name

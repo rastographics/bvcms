@@ -7,19 +7,17 @@ namespace CmsWeb.Areas.People.Models.Person
     public class TasksAssignedModel : TasksModel
     {
         public TasksAssignedModel(int id) : base(id) { }
-        private IQueryable<Task> tasks;
-        override public IQueryable<Task> ModelList()
+
+        override public IQueryable<Task> DefineModelList()
         {
-            if (tasks == null)
-                tasks = from t in DbUtil.Db.Tasks
-                        where t.WhoId != null
-                        where (t.CoOwnerId ?? t.OwnerId) == person.PeopleId
-                        select t;
-            return tasks;
+            return from t in DbUtil.Db.Tasks
+                   where t.WhoId != null
+                   where (t.CoOwnerId ?? t.OwnerId) == person.PeopleId
+                   select t;
         }
-        override public IEnumerable<TaskInfo> ViewList()
+
+        public override IEnumerable<TaskInfo> DefineViewList(IQueryable<Task> q)
         {
-            var q = ApplySort().Skip(Pager.StartRow).Take(Pager.PageSize);
             return from t in q
                    select new TaskInfo
                    {

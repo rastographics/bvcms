@@ -11,21 +11,15 @@ namespace CmsWeb.Areas.People.Models.Person
         {
             AddTask = "/Person2/AddTaskAbout/" + id;
         }
-        private IQueryable<Task> tasks;
-
-        public override IQueryable<Task> ModelList()
+        public override IQueryable<Task> DefineModelList()
         {
-            if (tasks != null)
-                return tasks;
-            tasks = from t in DbUtil.Db.Tasks
-                    where t.WhoId == person.PeopleId
-                    select t;
-            return tasks;
+            return from t in DbUtil.Db.Tasks
+                   where t.WhoId == person.PeopleId
+                   select t;
         }
 
-        public override IEnumerable<TaskInfo> ViewList()
+        public override IEnumerable<TaskInfo> DefineViewList(IQueryable<Task> q)
         {
-            var q = ApplySort().Skip(Pager.StartRow).Take(Pager.PageSize);
             return from t in q
                    select new TaskInfo
                    {

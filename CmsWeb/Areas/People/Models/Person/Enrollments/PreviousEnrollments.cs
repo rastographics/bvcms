@@ -17,26 +17,22 @@ namespace CmsWeb.Areas.People.Models.Person
             PeopleId = id;
             person = DbUtil.Db.LoadPersonById(id);
         }
-        private IQueryable<EnrollmentTransaction> enrollments;
-        override public IQueryable<EnrollmentTransaction> ModelList()
+        override public IQueryable<EnrollmentTransaction> DefineModelList()
         {
-            if (enrollments != null)
-                return enrollments;
             var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly
                                   || !HttpContext.Current.User.IsInRole("Access");
             var roles = DbUtil.Db.CurrentRoles();
-            return enrollments = from etd in DbUtil.Db.EnrollmentTransactions
-                                 let org = etd.Organization
-                                 where etd.TransactionStatus == false
-                                 where etd.PeopleId == PeopleId
-                                 where etd.TransactionTypeId >= 4
-                                 where !(limitvisibility && etd.Organization.SecurityTypeId == 3)
-                                 where org.LimitToRole == null || roles.Contains(org.LimitToRole)
-                                 select etd;
+            return from etd in DbUtil.Db.EnrollmentTransactions
+                   let org = etd.Organization
+                   where etd.TransactionStatus == false
+                   where etd.PeopleId == PeopleId
+                   where etd.TransactionTypeId >= 4
+                   where !(limitvisibility && etd.Organization.SecurityTypeId == 3)
+                   where org.LimitToRole == null || roles.Contains(org.LimitToRole)
+                   select etd;
         }
-        override public IEnumerable<OrgMemberInfo> ViewList()
+        public override IEnumerable<OrgMemberInfo> DefineViewList(IQueryable<EnrollmentTransaction> q)
         {
-            var q = ApplySort().Skip(Pager.StartRow).Take(Pager.PageSize);
             var q2 = from om in q
                      select new OrgMemberInfo
                      {
@@ -52,23 +48,20 @@ namespace CmsWeb.Areas.People.Models.Person
                      };
             return q2;
         }
-        override public IQueryable<EnrollmentTransaction> ApplySort()
+        override public IQueryable<EnrollmentTransaction> DefineModelSort(IQueryable<EnrollmentTransaction> q)
         {
-            var q = ModelList();
             switch (Pager.SortExpression)
             {
                 case "Enroll Date":
                 case "Enroll Date desc":
-                    q = from om in q
-                        orderby om.Organization.OrganizationType.Code ?? "z", om.EnrollmentDate
-                        select om;
-                    break;
+                    return from om in q
+                           orderby om.Organization.OrganizationType.Code ?? "z", om.EnrollmentDate
+                           select om;
                 case "Org Name":
                 case "Org Name desc":
-                    q = from om in q
-                        orderby om.Organization.OrganizationType.Code ?? "z", om.Organization.OrganizationName
-                        select om;
-                    break;
+                    return from om in q
+                           orderby om.Organization.OrganizationType.Code ?? "z", om.Organization.OrganizationName
+                           select om;
             }
             return q;
         }

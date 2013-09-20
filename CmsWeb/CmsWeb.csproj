@@ -316,6 +316,8 @@
     <Compile Include="Areas\People\Models\Person\Changes\ChangesModel.cs" />
     <Compile Include="Areas\People\Models\Person\FailedMail\FailedMailModel.cs" />
     <Compile Include="Areas\People\Models\Person\FailedMail\FailedMailInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\Giving\ContributionInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\Giving\ContributionsModel.cs" />
     <Compile Include="Code\PagedTableModel.cs" />
     <Compile Include="Areas\People\Models\Person\Tasks\TasksModel.cs" />
     <Compile Include="Areas\People\Models\Person\Tasks\TasksAssignedModel.cs" />

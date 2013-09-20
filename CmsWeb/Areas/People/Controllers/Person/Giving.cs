@@ -2,6 +2,7 @@ using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.People.Models.Person.Giving;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -11,7 +12,9 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/Contributions/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult Contributions(int id, int? page, int? size, string sort, string dir)
         {
-            return View("Giving/Contributions");
+            var m = new ContributionsModel(id);
+            m.Pager.Set("/Person2/Contributions/" + id, page, size, sort, dir);
+            return View("Giving/Contributions", m);
         }
         public ActionResult ContributionStatement(int id, string fr, string to)
         {

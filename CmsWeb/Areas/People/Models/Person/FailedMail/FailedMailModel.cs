@@ -21,24 +21,17 @@ namespace CmsWeb.Areas.People.Models.Person
             email = i.EmailAddress;
             email2 = i.EmailAddress2;
         }
-        private IQueryable<EmailQueueToFail> failed;
-
-        public override IQueryable<EmailQueueToFail> ModelList()
+        public override IQueryable<EmailQueueToFail> DefineModelList()
         {
-            if (failed != null)
-                return failed;
-            return failed = from e in DbUtil.Db.EmailQueueToFails
-                            where PeopleId == e.PeopleId
-                            select e;
+            return from e in DbUtil.Db.EmailQueueToFails
+                   where PeopleId == e.PeopleId
+                   select e;
         }
 
-        public override IEnumerable<FailedMailInfo> ViewList()
+        public override IEnumerable<FailedMailInfo> DefineViewList(IQueryable<EmailQueueToFail> q)
         {
-            var q = ApplySort().Skip(Pager.StartRow).Take(Pager.PageSize);
-
             var isadmin = HttpContext.Current.User.IsInRole("Admin");
             var isdevel = HttpContext.Current.User.IsInRole("Developer");
-
             return from e in q
                    let et = DbUtil.Db.EmailQueueTos.SingleOrDefault(ef => ef.Id == e.Id && ef.PeopleId == e.PeopleId)
                    let eq = DbUtil.Db.EmailQueues.SingleOrDefault(ew => ew.Id == et.Id)
@@ -59,18 +52,14 @@ namespace CmsWeb.Areas.People.Models.Person
                           };
         }
 
-        public override IQueryable<EmailQueueToFail> ApplySort()
+        public override IQueryable<EmailQueueToFail> DefineModelSort(IQueryable<EmailQueueToFail> q)
         {
-            var q = ModelList();
             switch (Pager.SortExpression)
             {
                 case "Time desc":
                 default:
-                    q = q.OrderByDescending(m => m.Time);
-                    break;
+                    return q.OrderByDescending(m => m.Time);
             }
-            return q;
         }
-
     }
 }

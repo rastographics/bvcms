@@ -27,30 +27,26 @@ namespace CmsWeb.Areas.People.Models.Person
                 return family;
             }
         }
-        private IQueryable<CmsData.Person> members;
-        override public IQueryable<CmsData.Person> ModelList()
+        override public IQueryable<CmsData.Person> DefineModelList()
         {
-            if (members != null)
-                return members;
             var mindt = DateTime.Parse("1/1/1900");
-            return members = from m in DbUtil.Db.People
-                             where m.FamilyId == Person.FamilyId
-                             orderby
-                                 m.DeceasedDate ?? mindt,
-                                 m.PositionInFamilyId,
-                                 m.PositionInFamilyId == 10 ? m.GenderId : 0,
-                                 m.Age descending, m.Name2
-                             select m;
+            return from m in DbUtil.Db.People
+                   where m.FamilyId == Person.FamilyId
+                   orderby
+                       m.DeceasedDate ?? mindt,
+                       m.PositionInFamilyId,
+                       m.PositionInFamilyId == 10 ? m.GenderId : 0,
+                       m.Age descending, m.Name2
+                   select m;
         }
 
-        public override IQueryable<CmsData.Person> ApplySort()
+        public override IQueryable<CmsData.Person> DefineModelSort(IQueryable<CmsData.Person> q)
         {
-            return ModelList();
+            return q;
         }
 
-        override public IEnumerable<FamilyMemberInfo> ViewList()
+        public override IEnumerable<FamilyMemberInfo> DefineViewList(IQueryable<CmsData.Person> q)
         {
-            var q = ApplySort();
             var q2 = from m in q
                      select new FamilyMemberInfo
                      {
@@ -66,8 +62,8 @@ namespace CmsWeb.Areas.People.Models.Person
                          Email = m.EmailAddress,
                          MemberStatus = m.MemberStatus.Description
                      };
-            var list = q2.ToList();
-            foreach (var m in list)
+            var q3 = q2.ToList();
+            foreach (var m in q3)
             {
                 if (m.Pictures == null)
                     m.Pictures = new Picture();
@@ -82,7 +78,7 @@ namespace CmsWeb.Areas.People.Models.Person
                 }
             }
             DbUtil.Db.SubmitChanges();
-            return list.Skip(Pager.StartRow).Take(Pager.PageSize);
+            return q3;
         }
         public class RelatedFamilyInfo
         {

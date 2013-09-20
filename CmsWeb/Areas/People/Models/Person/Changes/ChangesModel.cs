@@ -16,17 +16,6 @@ namespace CmsWeb.Areas.People.Models.Person
         {
             person = DbUtil.Db.LoadPersonById(id);
         }
-        override public IEnumerable<ChangeLogInfo> ViewList()
-        {
-            var q = ApplySort();
-            var q2 = from c in q
-                     let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
-                     select new { c, userp.Name };
-            var q3 = from i in q2.Skip(Pager.StartRow).Take(Pager.PageSize).ToList()
-                     from d in Details(i.c, i.Name)
-                     select d;
-            return q3;
-        }
         public void Reverse(string field, string value, string pf)
         {
             switch (pf)
@@ -43,15 +32,11 @@ namespace CmsWeb.Areas.People.Models.Person
             DbUtil.Db.SubmitChanges();
         }
 
-        private IQueryable<ChangeLog> changes;
-        override public IQueryable<ChangeLog> ModelList()
+        override public IQueryable<ChangeLog> DefineModelList()
         {
-            if (changes != null)
-                return changes;
-            changes = from c in DbUtil.Db.ChangeLogs
+            return from c in DbUtil.Db.ChangeLogs
                    where c.PeopleId == person.PeopleId || c.FamilyId == person.FamilyId
                    select c;
-            return changes;
         }
         private IEnumerable<ChangeLogInfo> Details(ChangeLog log, string name)
         {
@@ -84,19 +69,24 @@ namespace CmsWeb.Areas.People.Models.Person
             }
             return list;
         }
-        override public IQueryable<ChangeLog> ApplySort()
+        override public IQueryable<ChangeLog> DefineModelSort(IQueryable<ChangeLog> q)
         {
-            var q = ModelList();
             switch (Pager.SortExpression)
             {
                 case "Time":
-                    q = q.OrderBy(a => a.Created);
-                    break;
+                    return q.OrderBy(a => a.Created);
                 case "Time desc":
-                    q = q.OrderByDescending(a => a.Created);
-                    break;
+                    return q.OrderByDescending(a => a.Created);
             }
-            return q;
+            return null;
+        }
+
+        public override IEnumerable<ChangeLogInfo> DefineViewList(IQueryable<ChangeLog> q)
+        {
+            return from c in q
+                   let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
+                   from d in Details(c, userp.Name)
+                   select d;
         }
 
         private bool FieldEqual(CmsData.Person p, string field, string value)
