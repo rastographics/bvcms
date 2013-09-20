@@ -6,7 +6,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Net;
 using System.Threading;
@@ -15,8 +14,6 @@ using System.Xml;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
-using DocumentFormat.OpenXml.EMMA;
-using iTextSharp.text;
 using UtilityExtensions;
 using CmsData;
 
@@ -27,7 +24,7 @@ namespace CmsWeb.Areas.Search.Controllers
     public class QueryController : CmsStaffAsyncController
     {
         [GET("Query/{id:guid?}")]
-        public ActionResult Query(Guid? id)
+        public ActionResult Index(Guid? id)
         {
             ViewBag.Title = "QueryBuilder";
             //var last5 = DbUtil.Db.FetchLastFiveQueries();

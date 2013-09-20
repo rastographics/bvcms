@@ -885,62 +885,62 @@ namespace CmsData
         //    }
         //    return 30;
         //}
-        private bool? _CanUserEditAll;
+        private bool? canUserEditAll;
         public bool CanUserEditAll
         {
             get
             {
-                if (!_CanUserEditAll.HasValue)
-                    _CanUserEditAll = HttpContext.Current.User.IsInRole("Edit");
-                return _CanUserEditAll.Value;
+                if (!canUserEditAll.HasValue)
+                    canUserEditAll = HttpContext.Current.User.IsInRole("Edit");
+                return canUserEditAll.Value;
             }
         }
-        private bool? _CanUserEditFamilyAddress;
+        private bool? canUserEditFamilyAddress;
         public bool CanUserEditFamilyAddress
         {
             get
             {
-                if (!_CanUserEditFamilyAddress.HasValue)
-                    _CanUserEditFamilyAddress = CanUserEditAll
+                if (!canUserEditFamilyAddress.HasValue)
+                    canUserEditFamilyAddress = CanUserEditAll
                         || Util.UserPeopleId == Family.HeadOfHouseholdId
                         || Util.UserPeopleId == Family.HeadOfHouseholdSpouseId;
-                return _CanUserEditFamilyAddress.Value;
+                return canUserEditFamilyAddress.Value;
             }
         }
-        private bool? _CanUserEditBasic;
+        private bool? canUserEditBasic;
         public bool CanUserEditBasic
         {
             get
             {
-                if (!_CanUserEditBasic.HasValue)
-                    _CanUserEditBasic = CanUserEditFamilyAddress
+                if (!canUserEditBasic.HasValue)
+                    canUserEditBasic = CanUserEditFamilyAddress
                         || Util.UserPeopleId == PeopleId;
-                return _CanUserEditBasic.Value;
+                return canUserEditBasic.Value;
             }
         }
-        private bool? _CanUserSee;
+        private bool? canUserSee;
         public bool CanUserSee
         {
             get
             {
-                if (!_CanUserSee.HasValue)
-                    _CanUserSee = CanUserEditBasic
+                if (!canUserSee.HasValue)
+                    canUserSee = CanUserEditBasic
                         || Family.People.Any(m => m.PeopleId == Util.UserPeopleId);
-                return _CanUserSee.Value;
+                return canUserSee.Value;
             }
         }
-        private bool? _CanUserSeeGiving;
+        private bool? canUserSeeGiving;
         public bool CanUserSeeGiving
         {
             get
             {
-                if (!_CanUserSeeGiving.HasValue)
-                    _CanUserSeeGiving = Util.UserPeopleId == PeopleId
+                if (!canUserSeeGiving.HasValue)
+                    canUserSeeGiving = Util.UserPeopleId == PeopleId
                                         || HttpContext.Current.User.IsInRole("Finance")
                                         || (PositionInFamilyId == PositionInFamily.PrimaryAdult
                                             && Family.People.Any(m => m.PeopleId == Util.UserPeopleId)
                                             && ContributionOptionsId == EnvelopeOptionCode.Joint);
-                return _CanUserSeeGiving.Value;
+                return canUserSeeGiving.Value;
             }
         }
 

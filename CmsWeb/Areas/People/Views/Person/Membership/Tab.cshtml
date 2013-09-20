@@ -2,11 +2,13 @@
 <ul class="nav nav-tabs subnav" data-tabparent="membership">
     <li class="active"><a href="#status" data-toggle="tab" class="ajax">Status</a></li>
     <li><a href="#notes" data-toggle="tab" class="ajax">Notes</a></li>
+    <li><a href="#memberdocs" data-toggle="tab" class="ajax">Member Documents</a></li>
     <li><a href="#extravalues" data-toggle="tab" class="ajax">Extra Values</a></li>
 </ul> 
 <div class="tab-content">
     <div class="tab-pane active" id="status" data-link="/Person2/MembershipDisplay/@Model.PeopleId"></div>
     <div class="tab-pane" id="notes" data-link="/Person2/MembershipNotes/@Model.PeopleId"></div>
+    <div class="tab-pane" id="memberdocs" data-link="/Person2/MembershipDocuments/@Model.PeopleId"></div>
     <div class="tab-pane" id="extravalues" data-link="/Person2/ExtraValues/@Model.PeopleId"></div>
 </div>
 

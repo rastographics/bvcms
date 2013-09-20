@@ -31,8 +31,7 @@
             modal.modal("hide");
             if (ret.message) {
                 alert(ret.message);
-            }
-            else
+            } else
                 switch (ret.from) {
                     case 'RelatedFamily':
                         $("#related-families-div").load('/Person2/RelatedFamilies/' + ret.pid, {}, function () {
@@ -51,19 +50,19 @@
     });
     $("a.editaddr").live("click", function (ev) {
         ev.preventDefault();
-        $("#edit-address").css({"margin-top":"", "top": ""})
-        .load($(this).attr("href"), {}, function () {
-            var modal = $(this);
-            modal.modal("show");
-            modal.on('hidden', function () {
-                $(this).empty();
-            });
-            modal.on("click", "a.close-saved-address", function () {
-                $.post($(this).attr("href"), {}, function (ret) {
-                    $("#profile-header").html(ret).ready(SetProfileEditable);
+        $("#edit-address").css({ "margin-top": "", "top": "" })
+            .load($(this).attr("href"), {}, function () {
+                var modal = $(this);
+                modal.modal("show");
+                modal.on('hidden', function () {
+                    $(this).empty();
+                });
+                modal.on("click", "a.close-saved-address", function () {
+                    $.post($(this).attr("href"), {}, function (ret) {
+                        $("#profile-header").html(ret).ready(SetProfileEditable);
+                    });
                 });
             });
-        });
     });
     $("#profile-actions a.manageUser").live("click", function (ev) {
         ev.preventDefault();
@@ -127,20 +126,6 @@
             });
         });
     });
-    $('a.deloptout').live("click", function (ev) {
-        ev.preventDefault();
-        var href = $(this).attr("href");
-        if (confirm('Are you sure you want to delete?')) {
-            $.post(href, {}, function (ret) {
-                if (ret !== "ok")
-                    $.growlUI("failed", ret);
-                else {
-                    $.updateTable($('#user-tab form'));
-                    $.growlUI("Success", "OptOut deleted");
-                }
-            });
-        }
-    });
     $('#moveperson').click(function (ev) {
         ev.preventDefault();
         var d = $('#dialogbox');
@@ -153,25 +138,15 @@
         ev.preventDefault();
         $("#member-dialog").css({ 'margin-top': '', 'top': '' })
             .load($(this).attr("href"), {}, function () {
-            $(this).modal("show");
-            $(this).on('hidden', function () {
-                $(this).empty();
+                $(this).modal("show");
+                $(this).on('hidden', function () {
+                    $(this).empty();
+                });
             });
-        });
     });
     $('a[data-toggle="tab"]').on('shown', function (e) {
         $.cookie('lasttab', $(e.target).attr('href'));
     });
-    var lastTab = $.cookie('lasttab');
-    if (lastTab) {
-        var tlink = $("a[href='" + lastTab + "']");
-        var tabparent = tlink.closest("ul").data("tabparent");
-        if (tabparent) {
-            $("a[href='#" + tabparent + "']").click().tab("show");
-        }
-        $.cookie('lasttab', tlink.attr("href"));
-        tlink.click().tab("show");
-    }
     $("a[href='#enrollment']").on('shown', function (e) {
         if ($("#current").length < 2) {
             $("a[href='#current']").click().tab("show");
@@ -184,17 +159,25 @@
             $.cookie('lasttab', id);
         }
     });
-    $("a[href='#contacts']").on('shown', function (e) {
+    $("a[href='#ministry']").on('shown', function (e) {
         var id = "#contactsreceived";
         if ($(id).length < 2) {
             $("a[href='" + id + "']").click().tab("show");
             $.cookie('lasttab', id);
         }
     });
+    $("a[href='#giving']").on('shown', function (e) {
+        var id = "#contributions";
+        if ($(id).length < 2) {
+            $("a[href='" + id + "']").click().tab("show");
+            $.cookie('lasttab', id);
+        }
+    });
     $("a[href='#system']").on('shown', function (e) {
-        if ($("#changes").length < 2) {
-            $("a[href='#changes']").click().tab("show");
-            $.cookie('lasttab', "#changes");
+        var id = "#changes";
+        if ($(id).length < 2) {
+            $("a[href='" + id + "']").click().tab("show");
+            $.cookie('lasttab', id);
         }
     });
     $.validator.addMethod("ValidDate", function (value, element, params) {
@@ -222,8 +205,7 @@
             if (ret.error) {
                 ck.attr("checked", !ck.is(':checked'));
                 alert(ret.error);
-            }
-            else {
+            } else {
                 var f = ck.closest('form');
                 var q = f.serialize();
                 $.post($(f).attr("action"), q, function (ret) {
@@ -234,28 +216,34 @@
     });
     $("body").on("click", 'a.deleteextra', function (ev) {
         ev.preventDefault();
-        if (confirm("are you sure?"))
-            $.post("/Person/DeleteExtra/" + $("#PeopleId").val(), { field: $(this).attr("field") }, function (ret) {
-                if (ret.startsWith("error"))
-                    alert(ret);
-                else {
-                    $.getTable($("#extras-tab form"));
-                    $.extraEditable('#extravalues');
-                }
-            });
-        return false;
-    });
-    $("form").on('click', 'a.reverse', function (ev) {
-        ev.preventDefault();
-        var f = $(this).closest('form');
-        $.post("/Person/Reverse", {
-            id: $("#PeopleId").val(),
-            field: $(this).attr("field"),
-            value: $(this).attr("value"),
-            pf: $(this).attr("pf")
-        }, function (ret) {
-            $(f).html(ret);
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result === true)
+                $.post("/Person/DeleteExtra/" + $("#PeopleId").val(), { field: $(this).attr("field") }, function (ret) {
+                    if (ret.startsWith("error"))
+                        alert(ret);
+                    else {
+                        $.getTable($("#extras-tab form"));
+                        $.extraEditable('#extravalues');
+                    }
+                });
+            return false;
         });
+    });
+    $("#changes").on('click', 'a.reverse', function (ev) {
+        ev.preventDefault();
+        var a = $(this);
+        bootbox.confirm("Are you sure?", function (result) {
+            if (result === true) {
+                $.post(a.attr("href"), {
+                    field: a.data("field"),
+                    value: a.data("value"),
+                    pf: a.data("pf")
+                }, function (ret) {
+                    $("#changes").html(ret);
+                });
+            }
+        });
+        return false;
     });
     $("#tasks,#contacts").on("click", 'a.add-task-contact', function (ev) {
         ev.preventDefault();
@@ -269,11 +257,54 @@
         });
         return false;
     });
+    $("#addoptoutemail").live('click', function (ev) {
+        ev.preventDefault();
+        $.post($(this).attr("href"), { email: $("#optoutemail").val() }, function (ret) {
+            $("#optouts").html(ret);
+        });
+        return false;
+    });
+    $('#optouts').on("click", 'a.deloptout', function (ev) {
+        ev.preventDefault();
+        var href = $(this).attr("href");
+        bootbox.confirm('Are you sure you want to delete optout?', function (result) {
+            if (result === true)
+                $.post(href, {}, function (ret) {
+                    if (ret.startsWith("ok"))
+                        $.growlUI("failed", ret);
+                    else {
+                        $("#optouts").html(ret);
+                        $.growlUI("Success", "OptOut deleted");
+                    }
+                });
+        });
+    });
+    //    $("#failedemails").on("click", "a.unblock").click(function (ev) {
+    //        if (confirm('Are you sure you want unblock this email?')) {
+    //            $.post("/Person2/EmailUnblock", { email: $(this).attr("email") }, function (ret) {
+    //                $.growlUI("email unblocked", ret);
+    //            });
+    //    });
+    //    $("#failedemails").on("click", "a.unspam").click(function (ev) {
+    //        if (confirm("are you sure?"))
+    //            $.post("/Person2/EmailUnspam", { email: $(this).attr("email") }, function (ret) {
+    //                $.growlUI("email unspamed", ret);
+    //            });
+    //    });
     $('#vtab>ul>li').click(function () {
         $('#vtab>ul>li').removeClass('selected');
         $(this).addClass('selected');
         var index = $('#vtab>ul>li').index($(this));
         $('#vtab>div').hide().eq(index).show();
+    });
+    $('body').on('click', function (e) {
+        $('[rel=popover]').each(function () {
+            //the 'is' for buttons that trigger popups
+            //the 'has' for icons within a button that triggers a popup
+            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                $(this).popover('hide');
+            }
+        });
     });
     var getMap = function (opts) {
         var src = "https://maps.googleapis.com/maps/api/staticmap?",
@@ -324,15 +355,16 @@
         });
     };
     SetProfileEditable();
-    $('body').on('click', function (e) {
-        $('[rel=popover]').each(function () {
-            //the 'is' for buttons that trigger popups
-            //the 'has' for icons within a button that triggers a popup
-            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-                $(this).popover('hide');
-            }
-        });
-    });
+    var lastTab = $.cookie('lasttab');
+    if (lastTab) {
+        var tlink = $("a[href='" + lastTab + "']");
+        var tabparent = tlink.closest("ul").data("tabparent");
+        if (tabparent) {
+            $("a[href='#" + tabparent + "']").click().tab("show");
+        }
+        $.cookie('lasttab', tlink.attr("href"));
+        tlink.click().tab("show");
+    }
 });
 
 

@@ -25945,6 +25945,7 @@ $(function () {
         return value !== params.code;
     }, "required, select item");
 
+    var $loadingcount = 0;
     $.ajaxSetup({
         beforeSend: function () {
             $("#loading-indicator").css({
@@ -25953,9 +25954,12 @@ $(function () {
                 'top': $(window).height() / 2,
                 'z-index': 2000
             }).show();
+            $loadingcount++;
         },
         complete: function () {
-            $("#loading-indicator").hide();
+            $loadingcount--;
+            if($loadingcount === 0)
+                $("#loading-indicator").hide();
         }
     });
 });

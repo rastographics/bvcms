@@ -1,0 +1,40 @@
+﻿@model CmsWeb.Areas.People.Models.Person.FailedMailModel
+@using UtilityExtensions
+<table class="table not-wide">
+    <thead>
+        <tr>
+            <th>@Model.Pager.SortLink("Time")</th>
+            <th>From/To</th>
+            <th>Subject</th>
+            <th>Event/Type</th>
+            <th>Reason</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model.ViewList())
+        { 
+        <tr><td>@e.time.FormatDateTm()</td>
+            <td><a href="/Person/Index/@e.peopleid">@e.name</a><br/>
+                <a href="/Manage/Emails/Failed/@e.peopleid">@e.email</a>
+            </td>
+            <td><a href="/Manage/Emails/Details/@e.emailid">@e.subject</a></td>
+            <td>@e.eventx
+            @if(e.type.HasValue())
+			{
+			    <br/>@e.type
+            }
+            @if(e.canunblock)
+			{
+			    <br /><a href="#" class="unblock" email="@e.email">unblock</a>
+			}
+            @if(e.canunspam)
+			{
+			    <br /><a href="#" class="unspam" email="@e.email">unspam</a>
+			}
+            </td>
+            <td>@e.reason</td>
+        </tr>
+        }
+    </tbody>
+</table>
+

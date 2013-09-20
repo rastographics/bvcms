@@ -255,10 +255,6 @@
 });
 
 function RefreshList(qs) {
-    //    if (!qs)
-    //        qs = $("#editForm").serialize();
-
-    $.block();
     $.ajax({
         type: "POST",
         url: "/Query/Results/",
@@ -289,10 +285,8 @@ function RefreshList(qs) {
                 RefreshList();
                 return false;
             });
-            $.unblock();
         },
         error: function (request, status, err) {
-            $.unblock();
             alert(err);
         }
     });

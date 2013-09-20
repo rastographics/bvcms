@@ -39,7 +39,13 @@ ul.dropdown-div-admin {
 .datepicker {
     z-index: 2000;
 }
-
+thead th a {
+    color: #0088cc;
+}
+.table th {
+    font-size: 110%;
+    font-weight: 600;
+}
 
 /*
 .control-group {
@@ -596,7 +602,7 @@ label.error {
         font-style: normal;
     }
 
-#saved-query.table {
+.table.not-wide {
     width: inherit;
 }
 
@@ -671,4 +677,6 @@ fieldset {
 .nowrap {
     white-space: nowrap;
 }
-
+.pagination {
+    margin: 1.2em 0 0 0;
+}

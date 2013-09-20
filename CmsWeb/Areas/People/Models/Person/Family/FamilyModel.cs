@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
-using CmsWeb.Code;
 using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models.Person
 {
-    public class FamilyModel
+    public class FamilyModel : PagedTableModel<CmsData.Person, FamilyMemberInfo>
     {
         public CmsData.Person Person;
-        public PagerModel2 Pager { get; set; }
         public FamilyModel(int id)
+            : base("", "")
         {
             Person = DbUtil.Db.LoadPersonById(id);
             Pager = new PagerModel2(Count);
@@ -29,32 +28,29 @@ namespace CmsWeb.Areas.People.Models.Person
             }
         }
         private IQueryable<CmsData.Person> members;
-        private IQueryable<CmsData.Person> FetchMembers()
+        override public IQueryable<CmsData.Person> ModelList()
         {
-            if (members == null)
-            {
-                var mindt = DateTime.Parse("1/1/1900");
-                members = from m in DbUtil.Db.People
-                          where m.FamilyId == Person.FamilyId
-                          orderby
-                               m.DeceasedDate ?? mindt,
-                               m.PositionInFamilyId,
-                               m.PositionInFamilyId == 10 ? m.GenderId : 0,
-                               m.Age descending, m.Name2
-                          select m;
-            }
-            return members;
+            if (members != null)
+                return members;
+            var mindt = DateTime.Parse("1/1/1900");
+            return members = from m in DbUtil.Db.People
+                             where m.FamilyId == Person.FamilyId
+                             orderby
+                                 m.DeceasedDate ?? mindt,
+                                 m.PositionInFamilyId,
+                                 m.PositionInFamilyId == 10 ? m.GenderId : 0,
+                                 m.Age descending, m.Name2
+                             select m;
         }
-        int? _count;
-        public int Count()
+
+        public override IQueryable<CmsData.Person> ApplySort()
         {
-            if (!_count.HasValue)
-                _count = FetchMembers().Count();
-            return _count.Value;
+            return ModelList();
         }
-        public IEnumerable<FamilyMemberInfo> Members()
+
+        override public IEnumerable<FamilyMemberInfo> ViewList()
         {
-            var q = FetchMembers();
+            var q = ApplySort();
             var q2 = from m in q
                      select new FamilyMemberInfo
                      {
@@ -63,7 +59,7 @@ namespace CmsWeb.Areas.People.Models.Person
                          Name = m.Name,
                          Age = m.Age,
                          Color = m.DeceasedDate != null ? "red" : "auto",
-                         PositionInFamily = m.PositionInFamilyId == CmsData.Codes.PositionInFamily.PrimaryAdult ? 
+                         PositionInFamily = m.PositionInFamilyId == CmsData.Codes.PositionInFamily.PrimaryAdult ?
                             (m.FamiliesHeaded.Any() ? "Head" : (m.PeopleId == m.Family.HeadOfHouseholdSpouseId ? "Spouse" : "Head2")) :
                             m.FamilyPosition.Description,
                          SpouseIndicator = m.PeopleId == Person.SpouseId ? "*" : "&nbsp;",
