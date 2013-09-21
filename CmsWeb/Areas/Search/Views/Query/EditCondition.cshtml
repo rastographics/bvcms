@@ -1,5 +1,5 @@
 ﻿@using CmsWeb.Areas.Search.Models
-@model QueryModel2
+@model QueryModel
 <form id="editForm" action="/Query" method="post">
     @Html.Hidden("ConditionName")
     @Html.Hidden("SelectedId")
@@ -104,6 +104,16 @@
                 </td>
             </tr>
         }
+        @if (Model.PmmLabelsVisible)
+        {
+            <tr>
+                <td>Tags:</td>
+                <td>
+                    <span id="labelvalues" style="display: none"></span>
+                    <div>@Html.ValidationMessage("labelvalues")</div>
+                </td>
+            </tr>
+        }
 
         @if (Model.SavedQueryVisible)
         {
@@ -162,7 +172,7 @@
             <tr>
                 <td>Division:</td>
                 <td>
-                    @Html.DropDownList("Division", QueryModel2.Divisions(Model.Program))
+                    @Html.DropDownList("Division", QueryModel.Divisions(Model.Program))
                 </td>
             </tr>
         }
@@ -172,7 +182,7 @@
             <tr>
                 <td>Organization:</td>
                 <td>
-                    @Html.DropDownList("Organization", QueryModel2.Organizations(Model.Division))
+                    @Html.DropDownList("Organization", QueryModel.Organizations(Model.Division))
                 </td>
             </tr>
         }

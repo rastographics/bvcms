@@ -79,7 +79,7 @@
             {
                 var a = ((AskYesNoQuestions)ask).list[n];
     			<input type="hidden" name="@(prefix).YesNoQuestion[@n].Key" value="@a.SmallGroup" />
-    			<input type="hidden" name="@(prefix).YesNoQuestion[@n].Value" value="@(Model.YesNoQuestion[a.SmallGroup] == true ? "true" : "false")" />
+    			<input type="hidden" name="@(prefix).YesNoQuestion[@n].Value" value="@(Model.YesNoChecked(a.SmallGroup, true) ? "true" : "false")" />
             }
             break;
         case "AskCheckboxes":

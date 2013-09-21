@@ -1,14 +1,9 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
-using CmsWeb.Models;
-using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
 using Picture = CmsData.Picture;
 
@@ -17,17 +12,25 @@ namespace CmsWeb.Areas.People.Models.Person
     public class PersonModel
     {
         public BasicPersonInfo basic { get; set; }
-        public MemberInfo member { get; set; }
-        public GrowthInfo growth { get; set; }
-        public MemberNotesInfo membernotes { get; set; }
 
         public int PeopleId { get; set; }
         public int FamilyId { get; set; }
-        public int? SpouseId { get; set; }
         public string[] StatusFlags { get; set; }
 
-        public bool Deceased { get; set; }
         public string Name { get; set; }
+        public string MemberStatus { get; set; }
+
+        private FamilyModel familyModel;
+        public FamilyModel FamilyModel
+        {
+            get { return familyModel ?? (familyModel = new FamilyModel(PeopleId)); }
+        }
+
+        private IEnumerable<User> users;
+        public IEnumerable<User> Users
+        {
+            get { return users ?? (users = Person.Users); }
+        }
 
         public Picture Picture
         {
@@ -112,6 +115,7 @@ namespace CmsWeb.Areas.People.Models.Person
                          spouse,
                          pp.Picture,
                          statusflags,
+                         memberStatus = pp.MemberStatus.Description,
                      }).FirstOrDefault();
             if (i == null)
                 return;
@@ -120,49 +124,27 @@ namespace CmsWeb.Areas.People.Models.Person
             var p = Person;
             var fam = i.f;
 
+            MemberStatus = i.memberStatus;
             PeopleId = p.PeopleId;
             AddressTypeId = p.AddressTypeId;
-            Deceased = p.IsDeceased ?? false;
             FamilyId = p.FamilyId;
             Name = p.Name;
             Picture = i.Picture;
-            SpouseId = p.SpouseId;
             StatusFlags = (i.statusflags ?? "").Split(',');
 
-            member = new MemberInfo(p.PeopleId);
             basic = new BasicPersonInfo(p.PeopleId);
-            growth = new GrowthInfo
-            {
-                PeopleId = p.PeopleId,
-                InterestPointId = p.InterestPointId ?? 0,
-                OriginId = p.OriginId ?? 0,
-                EntryPointId = p.EntryPointId ?? 0,
-                ChristAsSavior = p.ChristAsSavior,
-                Comments = p.Comments,
-                InterestedInJoining = p.InterestedInJoining,
-                MemberAnyChurch = p.MemberAnyChurch,
-                PleaseVisit = p.PleaseVisit,
-                SendInfo = p.InfoBecomeAChristian,
-            };
-            membernotes = new MemberNotesInfo
-            {
-                PeopleId = p.PeopleId,
-                LetterStatusId = p.LetterStatusId ?? 0,
-                LetterReceived = p.LetterDateReceived,
-                LetterRequested = p.LetterDateRequested,
-                LetterNotes = p.LetterStatusNotes,
-            };
+
             FamilyAddr = new AddressInfo
             {
                 Name = "FamilyAddr",
                 PeopleId = p.PeopleId,
                 person = p,
-                Address1 = fam.AddressLineOne,
-                Address2 = fam.AddressLineTwo,
-                City = fam.CityName,
-                Zip = fam.ZipCode,
+                AddressLineOne = fam.AddressLineOne,
+                AddressLineTwo = fam.AddressLineTwo,
+                CityName = fam.CityName,
+                ZipCode = fam.ZipCode,
                 BadAddress = fam.BadAddressFlag,
-                State = new CodeInfo(fam.StateCode, "State"),
+                StateCode = new CodeInfo(fam.StateCode, "State"),
                 Country = new CodeInfo(fam.CountryName, "Country"),
                 ResCode = new CodeInfo(fam.ResCodeId, "ResCode"),
                 FromDt = fam.AddressFromDate,
@@ -174,13 +156,13 @@ namespace CmsWeb.Areas.People.Models.Person
                 Name = "PersonalAddr",
                 PeopleId = p.PeopleId,
                 person = p,
-                Address1 = p.AddressLineOne,
-                Address2 = p.AddressLineTwo,
-                City = p.CityName,
-                State = new CodeInfo(p.StateCode, "State"),
+                AddressLineOne = p.AddressLineOne,
+                AddressLineTwo = p.AddressLineTwo,
+                CityName = p.CityName,
+                StateCode = new CodeInfo(p.StateCode, "State"),
                 Country = new CodeInfo(p.CountryName, "Country"),
                 ResCode = new CodeInfo(p.ResCodeId, "ResCode"),
-                Zip = p.ZipCode,
+                ZipCode = p.ZipCode,
                 BadAddress = p.BadAddressFlag,
                 FromDt = p.AddressFromDate,
                 ToDt = p.AddressToDate,
@@ -218,143 +200,6 @@ namespace CmsWeb.Areas.People.Models.Person
                 }
             }
             return null;
-        }
-
-        public void Reverse(string field, string value, string pf)
-        {
-            var sb = new StringBuilder();
-            switch(pf)
-            {
-                case "p":
-                    Person.UpdateValueFromText(field, value);
-                    Person.LogChanges(DbUtil.Db, Util.UserPeopleId.Value);
-                    break;
-                case "f":
-                    Person.Family.UpdateValueFromText(field, value);
-                    Person.Family.LogChanges(DbUtil.Db, Person.PeopleId, Util.UserPeopleId.Value);
-                    break;
-            }
-            DbUtil.Db.SubmitChanges();
-        }
-        public bool FieldEqual(CmsData.Person p, string field, string value)
-        {
-            if (value is string)
-                value = ((string)value).TrimEnd();
-            if (!Util.HasProperty(p, field))
-                return false;
-            var o = Util.GetProperty(p, field);
-            if (o is string)
-                o = ((string)o).TrimEnd();
-            var p2 = new CmsData.Person();
-	        Util.SetPropertyFromText(p2, field, value);
-            var o2 = Util.GetProperty(p2, field);
-            if (o == o2)
-                return true;
-            if (o.IsNull() && o2.IsNotNull())
-                return false;
-            return o.Equals(o2);
-        }
-        public bool FieldEqual(Family f, string field, string value)
-        {
-            if (value is string)
-                value = ((string)value).TrimEnd();
-            if (!Util.HasProperty(f, field))
-                return false;
-            var o = Util.GetProperty(f, field);
-            if (o is string)
-                o = ((string)o).TrimEnd();
-            var f2 = new Family();
-            Util.SetPropertyFromText(f2, field, value);
-            var o2 = Util.GetProperty(f2, field);
-            if (o == o2)
-                return true;
-            if (o.IsNull() && o2.IsNotNull())
-                return false;
-            return o.Equals(o2);
-        }
-        public bool FieldEqual(string pf, string field, string value)
-        {
-            switch (pf)
-            {
-                case "p":
-					if (field == "Picture")
-						return false;
-                    return FieldEqual(this.Person, field, value);
-                case "f":
-                    return FieldEqual(this.Person.Family, field, value);
-            }
-            return false;
-        }
-
-        public class ChangeLogInfo
-        {
-            public string User { get; set; }
-            public string FieldSet { get; set; }
-            public DateTime? Time { get; set; }
-            public string Field { get; set; }
-            public string Before { get; set; }
-            public string After { get; set; }
-            public string pf { get; set; }
-            public bool Reversable { get; set; }
-        }
-        private string PersonOrFamily(string FieldSet)
-        {
-            switch (FieldSet)
-            {
-                case "HomePhone":
-                case "Basic Info":
-                case "PersonalAddr":
-                    return "p";
-                case "Family":
-                case "FamilyAddr":
-                    return "f";
-            }
-            return "n";
-        }
-        public List<ChangeLogInfo> details(ChangeLog log, string name)
-        {
-            var list = new List<ChangeLogInfo>();
-            var re = new Regex("<tr><td>(?<field>[^<]+)</td><td>(?<before>[^<]*)</td><td>(?<after>[^<]*)</td></tr>", RegexOptions.Singleline);
-            Match matchResult = re.Match(log.Data);
-            var FieldSet = log.Field;
-            var pf = PersonOrFamily(FieldSet);
-            DateTime? Time = log.Created;
-            while (matchResult.Success)
-            {
-                var After = matchResult.Groups["after"].Value;
-                var Field = matchResult.Groups["field"].Value;
-                var c = new ChangeLogInfo
-                {
-                    User = name,
-                    FieldSet = FieldSet,
-                    Time = Time,
-                    Field = Field,
-                    Before = matchResult.Groups["before"].Value,
-                    After = After,
-                    pf = pf,
-                    Reversable = FieldEqual(pf, Field, After)
-                };
-                list.Add(c);
-                FieldSet = "";
-                name = "";
-                Time = null;
-                matchResult = matchResult.NextMatch();
-            }
-            return list;
-        }
-
-        public IEnumerable<ChangeLogInfo> GetChangeLogs()
-        {
-            var list = (from c in DbUtil.Db.ChangeLogs
-                        let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
-                        where c.PeopleId == Person.PeopleId || c.FamilyId == Person.FamilyId
-                        where userp != null
-                        select new { userp, c }).ToList();
-            var q = from i in list
-                    orderby i.c.Created descending
-                    from d in details(i.c, i.userp.Name)
-                    select d;
-            return q;
         }
     }
 }

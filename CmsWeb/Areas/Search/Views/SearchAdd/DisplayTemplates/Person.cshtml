@@ -1,9 +1,9 @@
-﻿@model CmsWeb.Areas.Search.Models.SearchPersonModel
+﻿@model CmsWeb.Areas.Search.Models.PendingPersonModel
 <tr>
-    <td>@Model.First @Model.Last</td>
-    <td class="addrcol">@Model.AddressInfo.Address1</td>
+    <td>@Model.FirstName @Model.LastName</td>
+    <td class="addrcol">@Model.AddressInfo.AddressLineOne</td>
     <td>@Model.CityStateZip</td>
-    <td>@Model.age</td>
+    <td>@Model.Age</td>
     <td class="right"><a href="/SearchAdd2/CancelPerson/@ViewBag.index" class="ajax" title="remove this person from the list"><i class="icon-remove"></i></a></td>
 </tr>
 

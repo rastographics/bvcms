@@ -88,37 +88,39 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
-        [DisplayName("Addr Line 1")]
-        public string Address1 { get; set; }
+        [DisplayName("Addr Line 1"), RemoveNA]
+        public string AddressLineOne { get; set; }
 
-        [DisplayName("Addr Line 2")]
-        public string Address2 { get; set; }
+        [DisplayName("Addr Line 2"), RemoveNA]
+        public string AddressLineTwo { get; set; }
 
-        public string City { get; set; }
+        [RemoveNA]
+        public string CityName { get; set; }
 
-        public CodeInfo State { get; set; }
+        public CodeInfo StateCode { get; set; }
 
-        public string Zip { get; set; }
+        [RemoveNA]
+        public string ZipCode { get; set; }
 
         public CodeInfo Country { get; set; }
 
         public string AddrCityStateZip()
         {
             var sb = new StringBuilder();
-            sb.AppendLine(Address1);
-            if (Address2.HasValue())
-                sb.AppendLine(Address2);
-            sb.AppendLine(Util.FormatCSZ(City, State.Value, Zip));
+            sb.AppendLine(AddressLineOne);
+            if (AddressLineTwo.HasValue())
+                sb.AppendLine(AddressLineTwo);
+            sb.AppendLine(Util.FormatCSZ(CityName, StateCode.Value, ZipCode));
             return sb.ToString();
         }
         public string AddrCityStateZipLine()
         {
             var sb = new StringBuilder();
-            sb.Append(Address1);
-            if (Address2.HasValue())
-                sb.Append(", " + Address2);
+            sb.Append(AddressLineOne);
+            if (AddressLineTwo.HasValue())
+                sb.Append(", " + AddressLineTwo);
             if(sb.Length > 0)
-                sb.Append(", " + Util.FormatCSZ5(City, State.Value, Zip));
+                sb.Append(", " + Util.FormatCSZ5(CityName, StateCode.Value, ZipCode));
             return sb.ToString();
         }
         public string MapAddrCityStateZip()
@@ -127,7 +129,7 @@ namespace CmsWeb.Areas.People.Models
         }
         public string CityStateZip()
         {
-            return Util.FormatCSZ(City, State.Value, Zip);
+            return Util.FormatCSZ(CityName, StateCode.Value, ZipCode);
         }
 
         public AddressVerify.AddressResult Result { get; set; }
@@ -165,17 +167,17 @@ namespace CmsWeb.Areas.People.Models
         public AddressInfo()
         {
             Result = new AddressVerify.AddressResult();
-            State = new CodeInfo("", "State");
+            StateCode = new CodeInfo("", "State");
             Country = new CodeInfo("", "Country");
         }
         public AddressInfo(string address1, string address2, string city, string state, string zip, string country)
         {
             Result = new AddressVerify.AddressResult();
-            Address1 = address1;
-            Address2 = address2;
-            City = city;
-            State = new CodeInfo(state, "State");
-            Zip = zip;
+            AddressLineOne = address1;
+            AddressLineTwo = address2;
+            CityName = city;
+            StateCode = new CodeInfo(state, "State");
+            ZipCode = zip;
             Country = new CodeInfo(country, "Country");
         }
 
@@ -189,25 +191,25 @@ namespace CmsWeb.Areas.People.Models
                 case "PrimaryAddr":
                     a.Name = typeid;
                     a.PeopleId = p.PeopleId;
-                    a.Address1 = p.PrimaryAddress;
-                    a.Address2 = p.PrimaryAddress2;
+                    a.AddressLineOne = p.PrimaryAddress;
+                    a.AddressLineTwo = p.PrimaryAddress2;
                     a.BadAddress = p.PrimaryBadAddrFlag == 1;
-                    a.City = p.PrimaryCity;
-                    a.Zip = p.PrimaryZip;
-                    a.State = new CodeInfo(p.PrimaryState, "State");
+                    a.CityName = p.PrimaryCity;
+                    a.ZipCode = p.PrimaryZip;
+                    a.StateCode = new CodeInfo(p.PrimaryState, "State");
                     a.Country = new CodeInfo(p.PrimaryCountry, "Country");
                     a.ResCode = new CodeInfo(p.PrimaryResCode, "ResCode");
                     break;
                 case "FamilyAddr":
                     a.Name = typeid;
                     a.PeopleId = p.PeopleId;
-                    a.Address1 = p.Family.AddressLineOne;
-                    a.Address2 = p.Family.AddressLineTwo;
+                    a.AddressLineOne = p.Family.AddressLineOne;
+                    a.AddressLineTwo = p.Family.AddressLineTwo;
                     a.ToDt = p.Family.AddressToDate;
                     a.BadAddress = p.Family.BadAddressFlag;
-                    a.City = p.Family.CityName;
-                    a.Zip = p.Family.ZipCode;
-                    a.State = new CodeInfo(p.Family.StateCode, "State");
+                    a.CityName = p.Family.CityName;
+                    a.ZipCode = p.Family.ZipCode;
+                    a.StateCode = new CodeInfo(p.Family.StateCode, "State");
                     a.Country = new CodeInfo(p.Family.CountryName, "Country");
                     a.ResCode = new CodeInfo(p.Family.ResCodeId, "ResCode");
                     a.Preferred = p.AddressTypeId == 10;
@@ -215,13 +217,13 @@ namespace CmsWeb.Areas.People.Models
                 case "PersonalAddr":
                     a.Name = typeid;
                     a.PeopleId = p.PeopleId;
-                    a.Address1 = p.AddressLineOne;
-                    a.Address2 = p.AddressLineTwo;
+                    a.AddressLineOne = p.AddressLineOne;
+                    a.AddressLineTwo = p.AddressLineTwo;
                     a.ToDt = p.AddressToDate;
                     a.BadAddress = p.BadAddressFlag;
-                    a.City = p.CityName;
-                    a.Zip = p.ZipCode;
-                    a.State = new CodeInfo(p.StateCode, "State");
+                    a.CityName = p.CityName;
+                    a.ZipCode = p.ZipCode;
+                    a.StateCode = new CodeInfo(p.StateCode, "State");
                     a.Country = new CodeInfo(p.CountryName, "Country");
                     a.ResCode = new CodeInfo(p.ResCodeId, "ResCode");
                     a.Preferred = p.AddressTypeId == 30;
@@ -231,11 +233,11 @@ namespace CmsWeb.Areas.People.Models
         }
         public void SetAddressInfo()
         {
-            Address1 = Result.Line1;
-            Address2 = Result.Line2;
-            City = Result.City;
-            Zip = Result.Zip;
-            State = new CodeInfo(Result.State, "State");
+            AddressLineOne = Result.Line1;
+            AddressLineTwo = Result.Line2;
+            CityName = Result.City;
+            ZipCode = Result.Zip;
+            StateCode = new CodeInfo(Result.State, "State");
         }
 
         public bool? Addrok { get; set; }
@@ -269,13 +271,13 @@ namespace CmsWeb.Areas.People.Models
             switch (Name)
             {
                 case "FamilyAddr":
-                    UpdateValue(f, "AddressLineOne", Address1);
-                    UpdateValue(f, "AddressLineTwo", Address2);
+                    UpdateValue(f, "AddressLineOne", AddressLineOne);
+                    UpdateValue(f, "AddressLineTwo", AddressLineTwo);
                     UpdateValue(f, "AddressToDate", ToDt);
-                    UpdateValue(f, "CityName", City);
-                    UpdateValue(f, "StateCode", State.Value);
+                    UpdateValue(f, "CityName", CityName);
+                    UpdateValue(f, "StateCode", StateCode.Value);
                     UpdateValue(f, "ResCodeId", ResCodeId);
-                    UpdateValue(f, "ZipCode", Zip ?? "");
+                    UpdateValue(f, "ZipCode", ZipCode ?? "");
                     UpdateValue(f, "CountryName", Country.Value);
                     if (Preferred)
                         UpdateValue(p, "AddressTypeId", 10);
@@ -284,13 +286,13 @@ namespace CmsWeb.Areas.People.Models
                     UpdateValue(f, "BadAddressFlag", BadAddress);
                     break;
                 case "PersonalAddr":
-                    UpdateValue(p, "AddressLineOne", Address1);
-                    UpdateValue(p, "AddressLineTwo", Address2);
+                    UpdateValue(p, "AddressLineOne", AddressLineOne);
+                    UpdateValue(p, "AddressLineTwo", AddressLineTwo);
                     UpdateValue(p, "AddressToDate", ToDt);
-                    UpdateValue(p, "CityName", City);
-                    UpdateValue(p, "StateCode", State.Value);
+                    UpdateValue(p, "CityName", CityName);
+                    UpdateValue(p, "StateCode", StateCode.Value);
                     UpdateValue(p, "ResCodeId", ResCodeId);
-                    UpdateValue(p, "ZipCode", Zip ?? "");
+                    UpdateValue(p, "ZipCode", ZipCode ?? "");
                     UpdateValue(p, "CountryName", Country.Value);
                     if (Preferred)
                         UpdateValue(p, "AddressTypeId", 30);
@@ -363,13 +365,13 @@ namespace CmsWeb.Areas.People.Models
 
             if ((Country.Value == "United States" || !Country.Value.HasValue()))
             {
-                Result = AddressVerify.LookupAddress(Address1, Address2, City, State.Value, Zip);
+                Result = AddressVerify.LookupAddress(AddressLineOne, AddressLineTwo, CityName, StateCode.Value, ZipCode);
                 const string alertdiv = @" <div class=""alert"">{0}</div>";
                 if (Result.Line1 == "error")
                     Error = alertdiv.Fmt("<h4>Network Error</h4>");
                 else if (ResultNotFound)
                     Error = alertdiv.Fmt("<h4>Address Not Validated</h4><h6>{0}</h6>".Fmt(Result.error));
-                else if (Result.Changed(Address1, Address2, City, State.Value, Zip))
+                else if (Result.Changed(AddressLineOne, AddressLineTwo, CityName, StateCode.Value, ZipCode))
                 {
                     var msg = @"<h4>Address Found and Adjusted by USPS</h4><h6>What you entered</h6>"
                               + AddrCityStateZip().Replace("\n", "<br/>\n");

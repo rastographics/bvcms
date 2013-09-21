@@ -1,0 +1,10 @@
+﻿@model CmsWeb.Areas.People.Models.Person.PersonModel
+<ul class="nav nav-tabs subnav" data-tabparent="system">
+    <li class="active"><a href="#changes" data-toggle="tab" class="ajax"><span>Changes</span></a></li>
+    <li><a href="#duplicates" data-toggle="tab" class="ajax"><span>Duplicates</span></a></li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane active" id="changes" data-link="/Person2/Changes/@Model.PeopleId"></div>
+    <div class="tab-pane" id="duplicates" data-link="/Person2/Duplicates/@Model.PeopleId"></div>
+</div>
+

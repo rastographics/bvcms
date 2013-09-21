@@ -17,20 +17,20 @@
     <p style="min-height: 5em;">
         @if (Model.CanUserEditAddress)
         {
-            <a href="/Address/Edit/@Model.Name/@Model.PeopleId" class="editaddr editable-click">@Model.Address1 <i class="icon-pencil pull-right"></i>
+            <a href="/Address/Edit/@Model.Name/@Model.PeopleId" class="editaddr editable-click">@Model.AddressLineOne <i class="icon-pencil pull-right"></i>
                 <br />
-                @if (Model.Address2.HasValue())
+                @if (Model.AddressLineTwo.HasValue())
                 {
-                    @Model.Address2<br />
+                    @Model.AddressLineTwo<br />
                 }
                 @Model.CityStateZip()</a>
         }
         else
         {
-            @Model.Address1<br />
-            if (Model.Address2.HasValue())
+            @Model.AddressLineOne<br />
+            if (Model.AddressLineTwo.HasValue())
             {
-                @Model.Address2<br />
+                @Model.AddressLineTwo<br />
             }
             @Model.CityStateZip()
         }

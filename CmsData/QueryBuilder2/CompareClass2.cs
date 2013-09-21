@@ -66,7 +66,7 @@ namespace CmsData
                     return Expressions.DaysAfterNthVisitDateRange(parm, Db,
                                c.StartDate,
                                c.EndDate,
-                               c.ExtraData.ToInt(),
+                               c.Quarters.ToInt(),
                                c.Program,
                                c.Division,
                                c.Organization,
@@ -122,7 +122,7 @@ namespace CmsData
                 case QueryType.PmmBackgroundCheckStatus:
                     return Expressions.BackgroundCheckStatus(parm,
                                c.Tags,
-                               c.ExtraData,
+                               c.Quarters,
                                CompType,
                                c.CodeIntIds);
                 case QueryType.Birthday:
@@ -141,7 +141,7 @@ namespace CmsData
                 case QueryType.ContributionAmount2:
                     return Expressions.ContributionAmount2(parm, Db,
                                c.StartDate,
-                               c.EndDate, c.ExtraData.ToInt(),
+                               c.EndDate, c.Quarters.ToInt(),
                                CompType,
                                Decimal.Parse(c.TextValue));
                 case QueryType.ContributionChange:
@@ -194,9 +194,9 @@ namespace CmsData
                 case QueryType.FamilyHasChildrenAged:
                     return Expressions.FamilyHasChildrenAged(parm, c.Age.ToInt(), CompType, c.CodeIds == "1");
                 case QueryType.FamilyHasChildrenAged2:
-                    return Expressions.FamilyHasChildrenAged2(parm, c.ExtraData, CompType, c.CodeIds == "1");
+                    return Expressions.FamilyHasChildrenAged2(parm, c.Quarters, CompType, c.CodeIds == "1");
                 case QueryType.FamilyHasChildrenAged3:
-                    return Expressions.FamilyHasChildrenAged3(parm, c.ExtraData, CompType, c.CodeIntIds);
+                    return Expressions.FamilyHasChildrenAged3(parm, c.Quarters, CompType, c.CodeIntIds);
                 // H --------------------
                 case QueryType.HasBalanceInCurrentOrg:
                     return Expressions.HasBalanceInCurrentOrg(Db, parm,
@@ -306,13 +306,13 @@ namespace CmsData
                 case QueryType.IsTopGiver:
                     return Expressions.IsTopGiver(parm, Db,
                                 c.Days,
-                                c.ExtraData,
+                                c.Quarters,
                                 CompType,
                                 c.CodeIds == "1");
                 case QueryType.IsTopPledger:
                     return Expressions.IsTopPledger(parm, Db,
                                 c.Days,
-                                c.ExtraData,
+                                c.Quarters,
                                 CompType,
                                 c.CodeIds == "1");
                 case QueryType.InBFClass:
@@ -465,17 +465,17 @@ namespace CmsData
                                 c.CodeStrIds);
                 case QueryType.PeopleExtraData:
                     return Expressions.PeopleExtraData(parm,
-                                c.ExtraData,
+                                c.Quarters,
                                 CompType,
                                 c.TextValue);
                 case QueryType.PeopleExtraDate:
                     return Expressions.PeopleExtraDate(parm,
-                                c.ExtraData,
+                                c.Quarters,
                                 CompType,
                                 c.DateValue);
                 case QueryType.PeopleExtraInt:
                     return Expressions.PeopleExtraInt(parm,
-                                c.ExtraData,
+                                c.Quarters,
                                 CompType,
                                 c.TextValue.ToInt2());
                 case QueryType.PeopleIds:
@@ -539,32 +539,32 @@ namespace CmsData
 							   c.CodeIds == "1");
                 case QueryType.RecentContributionCount:
                     return Expressions.RecentContributionCount(parm, Db,
-                               c.Days, c.ExtraData.ToInt(),
+                               c.Days, c.Quarters.ToInt(),
                                CompType,
                                c.TextValue.ToInt());
                 case QueryType.RecentFirstTimeGiver:
                     return Expressions.RecentFirstTimeGiver(parm, Db,
-                               c.Days, c.ExtraData.ToInt(),
+                               c.Days, c.Quarters.ToInt(),
                                CompType,
 							   c.CodeIds == "1");
                 case QueryType.RecentContributionAmount:
                     return Expressions.RecentContributionAmount(parm, Db,
-                               c.Days, c.ExtraData.ToInt(),
+                               c.Days, c.Quarters.ToInt(),
                                CompType,
                                Decimal.Parse(c.TextValue));
                 case QueryType.RecentGivingAsPctOfPrevious:
                     return Expressions.RecentGivingAsPctOfPrevious(parm, Db,
-                               c.ExtraData.ToInt2() ?? 365,
+                               c.Quarters.ToInt2() ?? 365,
                                CompType,
                                Double.Parse(c.TextValue));
                 case QueryType.RecentPledgeCount:
                     return Expressions.RecentPledgeCount(parm, Db,
-                               c.Days, c.ExtraData.ToInt(),
+                               c.Days, c.Quarters.ToInt(),
                                CompType,
                                c.TextValue.ToInt());
                 case QueryType.RecentPledgeAmount:
                     return Expressions.RecentPledgeAmount(parm, Db,
-                               c.Days, c.ExtraData.ToInt(),
+                               c.Days, c.Quarters.ToInt(),
                                CompType,
                                Decimal.Parse(c.TextValue));
                 case QueryType.RecentAttendCount:
@@ -581,7 +581,7 @@ namespace CmsData
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.ExtraData.ToInt(),
+							   c.Quarters.ToInt(),
                                c.Schedule,
                                c.Days,
                                CompType,
@@ -592,7 +592,7 @@ namespace CmsData
                                c.Division,
                                c.Organization,
 							   c.OrgType ?? 0,
-                               c.ExtraData,
+                               c.Quarters,
                                c.Days,
                                CompType,
                                c.TextValue.ToInt());
@@ -615,7 +615,7 @@ namespace CmsData
                                c.CodeIntIds);
 				case QueryType.RecentVisitNumber:
                     return Expressions.RecentVisitNumber(parm, Db,
-								c.ExtraData,
+								c.Quarters,
                                c.Days,
                                CompType,
                                c.CodeIds == "1");
@@ -656,7 +656,7 @@ namespace CmsData
                 // V -------------------
                 case QueryType.VisitNumber:
                     return Expressions.VisitNumber(parm, Db,
-                               c.ExtraData,
+                               c.Quarters,
                                CompType,
                                c.DateValue);
                 case QueryType.VisitedCurrentOrg:

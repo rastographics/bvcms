@@ -2,19 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
-using CmsWeb.Code;
 using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models.Person
 {
-    public class FamilyModel
+    public class FamilyModel : PagedTableModel<CmsData.Person, FamilyMemberInfo>
     {
         public CmsData.Person Person;
-        public PagerModel2 Pager { get; set; }
         public FamilyModel(int id)
+            : base("", "")
         {
             Person = DbUtil.Db.LoadPersonById(id);
-            Pager = new PagerModel2(Count);
             Pager.pagesize = 10;
             Pager.ShowPageSize = false;
         }
@@ -28,33 +26,26 @@ namespace CmsWeb.Areas.People.Models.Person
                 return family;
             }
         }
-        private IQueryable<CmsData.Person> members;
-        private IQueryable<CmsData.Person> FetchMembers()
+        override public IQueryable<CmsData.Person> DefineModelList()
         {
-            if (members == null)
-            {
-                var mindt = DateTime.Parse("1/1/1900");
-                members = from m in DbUtil.Db.People
-                          where m.FamilyId == Person.FamilyId
-                          orderby
-                               m.DeceasedDate ?? mindt,
-                               m.PositionInFamilyId,
-                               m.PositionInFamilyId == 10 ? m.GenderId : 0,
-                               m.Age descending, m.Name2
-                          select m;
-            }
-            return members;
+            var mindt = DateTime.Parse("1/1/1900");
+            return from m in DbUtil.Db.People
+                   where m.FamilyId == Person.FamilyId
+                   orderby
+                       m.DeceasedDate ?? mindt,
+                       m.PositionInFamilyId,
+                       m.PositionInFamilyId == 10 ? m.GenderId : 0,
+                       m.Age descending, m.Name2
+                   select m;
         }
-        int? _count;
-        public int Count()
+
+        public override IQueryable<CmsData.Person> DefineModelSort(IQueryable<CmsData.Person> q)
         {
-            if (!_count.HasValue)
-                _count = FetchMembers().Count();
-            return _count.Value;
+            return q;
         }
-        public IEnumerable<FamilyMemberInfo> Members()
+
+        public override IEnumerable<FamilyMemberInfo> DefineViewList(IQueryable<CmsData.Person> q)
         {
-            var q = FetchMembers();
             var q2 = from m in q
                      select new FamilyMemberInfo
                      {
@@ -63,15 +54,15 @@ namespace CmsWeb.Areas.People.Models.Person
                          Name = m.Name,
                          Age = m.Age,
                          Color = m.DeceasedDate != null ? "red" : "auto",
-                         PositionInFamily = m.PositionInFamilyId == CmsData.Codes.PositionInFamily.PrimaryAdult ? 
+                         PositionInFamily = m.PositionInFamilyId == CmsData.Codes.PositionInFamily.PrimaryAdult ?
                             (m.FamiliesHeaded.Any() ? "Head" : (m.PeopleId == m.Family.HeadOfHouseholdSpouseId ? "Spouse" : "Head2")) :
                             m.FamilyPosition.Description,
                          SpouseIndicator = m.PeopleId == Person.SpouseId ? "*" : "&nbsp;",
                          Email = m.EmailAddress,
                          MemberStatus = m.MemberStatus.Description
                      };
-            var list = q2.ToList();
-            foreach (var m in list)
+            var q3 = q2.ToList();
+            foreach (var m in q3)
             {
                 if (m.Pictures == null)
                     m.Pictures = new Picture();
@@ -86,7 +77,7 @@ namespace CmsWeb.Areas.People.Models.Person
                 }
             }
             DbUtil.Db.SubmitChanges();
-            return list.Skip(Pager.StartRow).Take(Pager.PageSize);
+            return q3;
         }
         public class RelatedFamilyInfo
         {

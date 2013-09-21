@@ -128,7 +128,7 @@
             {
 		<tr>
 			<td><div class="wraparound">@a.Question</div></td>
-			<td> @(Model.YesNoQuestion[a.SmallGroup] == true ? "Yes" : "No") </td>
+			<td> @(Model.YesNoChecked(a.SmallGroup, true) ? "Yes" : "No") </td>
 		</tr>
         	}
             break;

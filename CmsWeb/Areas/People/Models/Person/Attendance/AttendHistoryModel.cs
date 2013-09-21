@@ -1,112 +1,81 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsWeb.Models;
 using UtilityExtensions;
-using System.Globalization;
 
 namespace CmsWeb.Areas.People.Models.Person
 {
-    public class PersonAttendHistoryModel
+    public class PersonAttendHistoryModel : PagedTableModel<Attend, AttendInfo>
     {
         public readonly int PeopleId;
-        public CmsWeb.Models.PagerModel2 Pager { get; set; }
         public PersonAttendHistoryModel(int id, bool future)
+            : base("Meeting", future ? "asc" : "desc")
         {
             PeopleId = id;
             Future = future;
-            Pager = new CmsWeb.Models.PagerModel2(Count);
         }
         public bool Future { get; set; }
-        private IQueryable<Attend> _attends;
-        private IQueryable<Attend> FetchAttends()
+        override public IQueryable<Attend> DefineModelList()
         {
-            if (_attends == null)
-            {
-                var midnight = Util.Now.Date.AddDays(1);
-            	var roles = DbUtil.Db.CurrentRoles();
-                _attends = from a in DbUtil.Db.Attends
-						   let org = a.Meeting.Organization
-                           where a.PeopleId == PeopleId
-                           where !(org.SecurityTypeId == 3 && (Util2.OrgMembersOnly || Util2.OrgLeadersOnly))
-						   where org.LimitToRole == null || roles.Contains(org.LimitToRole)
-                           select a;
-                if (!HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.Session["showallmeetings"] == null)
-                    _attends = _attends.Where(a => a.EffAttendFlag == null || a.EffAttendFlag == true);
-                if (Future)
-                    _attends = _attends.Where(aa => aa.MeetingDate >= midnight);
-                else
-                    _attends = _attends.Where(aa => aa.MeetingDate < midnight);
-            }
-            return _attends;
+            var midnight = Util.Now.Date.AddDays(1);
+            var roles = DbUtil.Db.CurrentRoles();
+            var q = from a in DbUtil.Db.Attends
+                      let org = a.Meeting.Organization
+                      where a.PeopleId == PeopleId
+                      where !(org.SecurityTypeId == 3 && (Util2.OrgMembersOnly || Util2.OrgLeadersOnly))
+                      where org.LimitToRole == null || roles.Contains(org.LimitToRole)
+                      select a;
+            if (!HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.Session["showallmeetings"] == null)
+                q = q.Where(a => a.EffAttendFlag == null || a.EffAttendFlag == true);
+            if (Future)
+                q = q.Where(aa => aa.MeetingDate >= midnight);
+            else
+                q = q.Where(aa => aa.MeetingDate < midnight);
+            return q;
         }
-        int? _count;
-        public int Count()
+        override public IEnumerable<AttendInfo> DefineViewList(IQueryable<Attend> q)
         {
-            if (!_count.HasValue)
-                _count = FetchAttends().Count();
-            return _count.Value;
+            return from a in q
+                   let o = a.Meeting.Organization
+                   select new AttendInfo
+                   {
+                       PeopleId = a.PeopleId,
+                       MeetingId = a.MeetingId,
+                       OrganizationId = a.Meeting.OrganizationId,
+                       OrganizationName = CmsData.Organization
+                          .FormatOrgName(o.OrganizationName, o.LeaderName, null),
+                       AttendType = a.AttendType.Description ?? "(null)",
+                       MeetingName = o.Division.Name + ": " + o.OrganizationName,
+                       MeetingDate = a.MeetingDate,
+                       MemberType = a.MemberType.Description ?? "(null)",
+                       AttendFlag = a.AttendanceFlag,
+                       OtherAttends = a.OtherAttends,
+                   };
         }
-        public IEnumerable<AttendInfo> Attendances()
+        override public IQueryable<Attend> DefineModelSort(IQueryable<Attend> q)
         {
-            var q = ApplySort();
-            q = q.Skip(Pager.StartRow).Take(Pager.PageSize);
-            var q2 = from a in q
-                     let o = a.Meeting.Organization
-                     select new AttendInfo
-                     {
-                         PeopleId = a.PeopleId,
-                         MeetingId = a.MeetingId,
-                         OrganizationId = a.Meeting.OrganizationId,
-                         OrganizationName = CmsData.Organization
-                            .FormatOrgName(o.OrganizationName, o.LeaderName, null),
-                         AttendType = a.AttendType.Description ?? "(null)",
-                         MeetingName = o.Division.Name + ": " + o.OrganizationName,
-                         MeetingDate = a.MeetingDate,
-                         MemberType = a.MemberType.Description ?? "(null)",
-                         AttendFlag = a.AttendanceFlag,
-                         OtherAttends = a.OtherAttends,
-                     };
-            return q2;
-        }
-        private IQueryable<Attend> ApplySort()
-        {
-            var q = FetchAttends();
             switch (Pager.SortExpression)
             {
                 case "Organization":
-                    q = q.OrderBy(a => a.Meeting.Organization.OrganizationName).ThenByDescending(a => a.MeetingDate);
-                    break;
+                    return q.OrderBy(a => a.Meeting.Organization.OrganizationName).ThenByDescending(a => a.MeetingDate);
                 case "Organization desc":
-                    q = q.OrderByDescending(a => a.Meeting.Organization.OrganizationName).ThenByDescending(a => a.MeetingDate);
-                    break;
+                    return q.OrderByDescending(a => a.Meeting.Organization.OrganizationName).ThenByDescending(a => a.MeetingDate);
                 case "MemberType":
-                    q = q.OrderBy(a => a.MemberTypeId).ThenByDescending(a => a.MeetingDate);
-                    break;
+                    return q.OrderBy(a => a.MemberTypeId).ThenByDescending(a => a.MeetingDate);
                 case "MemberType desc":
-                    q = q.OrderByDescending(a => a.MemberTypeId).ThenByDescending(a => a.MeetingDate);
-                    break;
+                    return q.OrderByDescending(a => a.MemberTypeId).ThenByDescending(a => a.MeetingDate);
                 case "AttendType":
-                    q = q.OrderBy(a => a.AttendanceTypeId).ThenByDescending(a => a.MeetingDate);
-                    break;
+                    return q.OrderBy(a => a.AttendanceTypeId).ThenByDescending(a => a.MeetingDate);
                 case "AttendType desc":
-                    q = q.OrderByDescending(a => a.AttendanceTypeId).ThenByDescending(a => a.MeetingDate);
-                    break;
+                    return q.OrderByDescending(a => a.AttendanceTypeId).ThenByDescending(a => a.MeetingDate);
                 case "Meeting":
-                    q = q.OrderBy(a => a.MeetingDate);
-                    break;
-                case "Meeting desc":
-                    q = q.OrderByDescending(a => a.MeetingDate);
-                    break;
                 default:
-                    if (Future)
-                        q = q.OrderBy(a => a.MeetingDate);
-                    else
-                        q = q.OrderByDescending(a => a.MeetingDate);
-                    break;
+                    return Pager.Direction == "asc"
+                        ? (Future ? q.OrderBy(a => a.MeetingDate) : q.OrderByDescending(a => a.MeetingDate))
+                        : (!Future ? q.OrderBy(a => a.MeetingDate) : q.OrderByDescending(a => a.MeetingDate));
             }
-            return q;
         }
     }
 }

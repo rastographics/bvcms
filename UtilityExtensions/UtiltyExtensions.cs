@@ -1187,7 +1187,7 @@ namespace UtilityExtensions
         {
             var v = value ?? "";
             value = v.Trim();
-            if (value.Equal(dissallow))
+            if (String.Compare(value, dissallow, StringComparison.OrdinalIgnoreCase) == 0)
                 return "";
             return value;
         }

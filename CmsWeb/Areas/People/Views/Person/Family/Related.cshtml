@@ -1,0 +1,54 @@
+﻿@using CmsWeb.Areas.People.Models.Person
+@model FamilyModel
+@{
+    var dialog = "/SearchAdd2/Dialog/RelatedFamily/" + Model.Person.PeopleId;
+}
+<div id="related-families-div">
+    @if (!Model.RelatedFamilies().Any())
+    {
+        <div class="sidebar_title group inactive">
+            <a href="@dialog" class="searchadd"><i class="icon-plus"></i> Add Related Family</a>
+        </div>
+    }
+    else
+    {
+        <div class="sidebar_title group">
+            <h2>Related Families</h2>
+            @if (Model.Person.CanUserEditAll)
+            {
+                <div class="dropdown">
+                    <a href="@dialog" class="searchadd dropdown-toggle"><i class="icon-plus"></i></a>
+                </div>
+            }
+        </div>
+        <div class="sidebar_content">
+            <ul id="family_related" class="unstyled">
+                @foreach (var f in Model.RelatedFamilies())
+                {
+                    if (Model.Person.CanUserEditAll)
+                    {
+                    <li class="with-edit relation-item">
+                        <p>
+                            <a href="/Person2/@f.PeopleId">@f.Name</a>
+                            <span class="summary relation-description">
+                                <a id="rf-@f.Id1-@f.Id2" href="/Person2/RelatedFamilyEdit/@Model.Person.PeopleId/@f.Id1/@f.Id2" class="edit editable-click"><i class="icon-pencil"></i></a>
+                                @f.Description
+                            </span>
+                        </p>
+                    </li>
+                    }
+                    else
+                    {
+                    <li>
+                        <p>
+                            <a href="/Person2/@f.PeopleId">@f.Name</a>
+                            <span class="summary" title="Description of Relationship">@f.Description </span>
+                        </p>
+                    </li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+</div>
+

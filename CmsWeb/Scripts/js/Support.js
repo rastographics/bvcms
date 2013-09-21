@@ -56,7 +56,7 @@ function supportSend(e) {
 
     $("#supportLastSearch").val($("#gsc-i-id1").val());
 
-    var theURL = "/Home/SendSupportRequest";
+    var theURL = "/Support/SendSupportRequest";
     var thePost = $(this).closest("form").serialize();
     $.ajax(theURL, { data: thePost, type: "POST", success: supportSentComplete });
 }
