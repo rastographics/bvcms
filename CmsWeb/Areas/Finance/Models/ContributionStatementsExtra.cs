@@ -262,12 +262,11 @@ p { font-size: 11px; }
 				t.DefaultCell.Border = Rectangle.TOP_BORDER;
 
 				cell = new PdfPCell(t.DefaultCell);
-				cell.Colspan = 5;
+				cell.Colspan = 2;
 				cell.Phrase = new Phrase("Total Contributions for period", boldfont);
 				t.AddCell(cell);
 
 				cell = new PdfPCell(t.DefaultCell);
-				cell.Colspan = 3;
 				cell.HorizontalAlignment = Element.ALIGN_RIGHT;
 				cell.Phrase = new Phrase(total.ToString("N2"), font);
 				t.AddCell(cell);
@@ -412,20 +411,19 @@ p { font-size: 11px; }
 
 				cell = new PdfPCell(t.DefaultCell);
 				cell.Border = Rectangle.TOP_BORDER;
-				cell.Colspan = 2;
+				cell.Colspan = 1;
 				cell.Phrase = new Phrase("Total Contributions for period", boldfont);
 				t.AddCell(cell);
 
-				t.AddCell(new Phrase("", boldfont));
-
 				cell = new PdfPCell(t.DefaultCell);
 				cell.Border = Rectangle.TOP_BORDER;
-				cell.Colspan = 2;
 				cell.HorizontalAlignment = Element.ALIGN_RIGHT;
 				cell.Phrase = new Phrase(total.ToString("N2"), font);
 				t.AddCell(cell);
 
-				t.AddCell(new Phrase("", boldfont));
+				cell = new PdfPCell(t.DefaultCell);
+				cell.Phrase = new Phrase("");
+				t.AddCell(cell);
 
 				ct.AddElement(t);
 
