@@ -13,7 +13,6 @@ namespace CmsWeb.Areas.People.Models.Person
             : base("", "")
         {
             Person = DbUtil.Db.LoadPersonById(id);
-            Pager = new PagerModel2(Count);
             Pager.pagesize = 10;
             Pager.ShowPageSize = false;
         }

@@ -11,18 +11,17 @@
     @Html.TextBox("orgsearch")
     <a id="orgsearchbtn" href="/OrgMemberDialog2/MoveResults" class="btn ajax">Search for Organization</a>
     <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("MoveOrgMember")'>help</a>
-    @{ var count = Model.Count(); }
-    <p>
-        @if (count > 10)
-        {
-            @Model.Pager
-        }
-        Click a Name below to Select an Organization to Move to
-    </p>
-    @foreach (var o in Model.OrgMoveList())
+    <div class="alert alert-info margin-top">Click a Name below to Select an Organization to Move to</div>
+    @if (Model.Count() > 10)
+    {
+        <div class="pagination pagination-mini">
+            @Html.Partial("Pager3", Model.Pager)
+        </div>
+    }
+    @foreach (var o in Model.ViewList())
     {
         <div><a class="movemember" title="@o.Tip" href="/OrgMemberDialog2/MoveSelect/@o.FromOrgId/@o.PeopleId/@o.ToOrgId">@o.OrgName</a></div>
-        <div class="indent"><i>@Html.Raw(o.Tip)</i></div>
+        <div class="pad-left"><i>@Html.Raw(o.Tip)</i></div>
     }
     <div class="pagination pagination-mini">
         @Html.Partial("Pager3", Model.Pager)

@@ -651,8 +651,11 @@ div.right {
     text-align: right;
 }
 
-.pad-top {
+.margin-top {
     margin-top: 1em;
+}
+.pad-top {
+    padding-top: 1em;
 }
 .pad-left {
     padding-left: 1em;
@@ -679,9 +682,6 @@ fieldset {
 }
 .pagination {
     margin: 1.2em 0 0 0;
-}
-html, body {
-height: 100%;
 }
 .primary-tabs .nav-tabs > li > a {
     padding: 8px 18px;

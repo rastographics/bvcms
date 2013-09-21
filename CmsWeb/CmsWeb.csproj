@@ -290,6 +290,7 @@
     <Compile Include="Areas\Org\Models\OrgMemberMoveModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMemberModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMembersDialogModel.cs" />
+    <Compile Include="Areas\Org\Models\OrgMoveInfo.cs" />
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\Person\Emails.cs" />
