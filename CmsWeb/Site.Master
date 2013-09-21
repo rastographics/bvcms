@@ -280,12 +280,6 @@
                                     </a></li>
                                     <li><a href="/Batch/UpdateFields/">Update for a Tag
                                     </a></li>
-                                    <li><a href="/Admin/ToggleOrgMembersOnly.ashx">
-                                        <%= Util2.OrgMembersOnly ? "OrgMembersOnly is on" : "OrgMembersOnly is off" %>
-                                    </a></li>
-                                    <li><a href="/Admin/ToggleOrgLeadersOnly.ashx">
-                                        <%= Util2.OrgLeadersOnly ? "OrgLeadersOnly is on" : "OrgLeadersOnly is off" %>
-                                    </a></li>
                                     <li><a href="/Batch/UpdateStatusFlags">Update Status Flags
                                     </a></li>
                                     <li><a href="/Batch/TagPeopleIds">Tag PeopleIds

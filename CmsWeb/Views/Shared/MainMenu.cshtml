@@ -174,8 +174,6 @@
                         {
                             <li>@Html.ActionLink("Check-in Labels", "Index", "CheckinLabels", new { Area = "Manage" }, null)</li>
                             <li>@Html.ActionLink("Update for a Tag", "UpdateFields", "Batch", new { Area = "Manage" }, null)</li>
-                            <li>@Helper.AnchorLink(Util2.OrgMembersOnly ? "OrgMembersOnly is on" : "OrgMembersOnly is off", "/Admin/ToggleOrgMembersOnly.ashx")</li>
-                            <li>@Helper.AnchorLink(Util2.OrgLeadersOnly ? "OrgLeadersOnly is on" : "OrgLeadersOnly is off", "/Admin/ToggleOrgMembersOnly.ashx")</li>
                             <li>@Html.ActionLink("Update Status Flags", "UpdateStatusFlags", "Batch", new { Area = "Manage" }, null)</li>
                             <li>@Html.ActionLink("Tag PeopleIds", "TagPeopleIds", "Batch", new { Area = "Manage" }, null)</li>
                         }
