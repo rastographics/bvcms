@@ -1,5 +1,4 @@
 ﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
-@using UtilityExtensions
 @{ var rownum = 0; }
 <div class="modal-header">
     <a class="close" data-dismiss="modal">×</a>
@@ -30,7 +29,7 @@
                 <tr class="section notshown">
                     <td colspan="3"><a rel="reveal" href="#" class="reveal"><i class="icon-info-sign"></i></a><span>Toggle Details Display</span></td>
                 </tr>
-                @foreach (var c in Model.PeopleList())
+                @foreach (var c in Model.ViewList())
                 {
                     rownum++;
                     var oddrow = rownum % 2 == 0 ? "oddrow" : "";

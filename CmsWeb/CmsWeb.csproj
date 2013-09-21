@@ -292,6 +292,7 @@
     <Compile Include="Areas\Org\Models\OrgMembersDialogModel.cs" />
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\Emails.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonController.cs" />
     <Compile Include="Areas\Org\Controllers\VolunteersController.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchAddController.cs" />
@@ -318,6 +319,9 @@
     <Compile Include="Areas\People\Models\Person\FailedMail\FailedMailInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\ContributionInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\ContributionsModel.cs" />
+    <Compile Include="Areas\Search\Models\Query\QueryResults.cs" />
+    <Compile Include="Areas\Search\Models\SearchAdd\SearchResultsModel.cs" />
+    <Compile Include="Areas\Search\Models\SearchAdd\SearchResultInfo.cs" />
     <Compile Include="Code\PagedTableModel.cs" />
     <Compile Include="Areas\People\Models\Person\Tasks\TasksModel.cs" />
     <Compile Include="Areas\People\Models\Person\Tasks\TasksAssignedModel.cs" />
@@ -357,9 +361,9 @@
     </Compile>
     <Compile Include="Areas\Org\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Org\Models\VolunteerRequestModel.cs" />
-    <Compile Include="Areas\Search\Models\QueryModel2.cs" />
-    <Compile Include="Areas\Search\Models\SavedQueryInfo.cs" />
-    <Compile Include="Areas\Search\Models\SearchAdd\SearchPersonModel.cs" />
+    <Compile Include="Areas\Search\Models\Query\QueryModel.cs" />
+    <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
+    <Compile Include="Areas\Search\Models\SearchAdd\PendingPersonModel.cs" />
     <Compile Include="Areas\People\PeopleAreaRegistration.cs" />
     <Compile Include="Areas\Public\Controllers\APIContributionController.cs" />
     <Compile Include="Areas\Public\Controllers\APIMetaController.cs" />
@@ -475,11 +479,11 @@
     <Compile Include="Areas\Search\Controllers\QuickController.cs" />
     <Compile Include="Areas\Search\Controllers\SavedQueryController.cs" />
     <Compile Include="Areas\Search\Models\OrganizationModel.cs" />
-    <Compile Include="Areas\Search\Models\PeopleInfo.cs" />
+    <Compile Include="Areas\Search\Models\Query\PeopleInfo.cs" />
     <Compile Include="Areas\Search\Models\PeopleModel.cs" />
-    <Compile Include="Areas\Search\Models\QBExportResult.cs" />
+    <Compile Include="Areas\Search\Models\Query\QBExportResult.cs" />
     <Compile Include="Areas\Search\Models\QuickSearchModel.cs" />
-    <Compile Include="Areas\Search\Models\SavedQueryModel.cs" />
+    <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
     <Compile Include="Areas\Search\SearchAreaRegistration.cs" />
     <Compile Include="Areas\Setup\Controllers\RolesController.cs" />
     <Compile Include="Areas\Setup\Controllers\TwilioController.cs" />
@@ -1016,11 +1020,16 @@
     <Content Include="Areas\People\Views\Person\Ministry\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Contacts.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Tasks.cshtml" />
-    <Content Include="Areas\People\Views\Person\System\Optouts.cshtml" />
-    <Content Include="Areas\People\Views\Person\System\FailedEmails.cshtml" />
+    <Content Include="Areas\People\Views\Person\Emails\Optouts.cshtml" />
+    <Content Include="Areas\People\Views\Person\Emails\Failed.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
     <Content Include="Areas\People\Views\Person\Membership\Documents.cshtml" />
+    <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
+    <Content Include="Areas\People\Views\Person\Membership\Entry.cshtml" />
+    <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
+    <Content Include="Areas\People\Views\Person\Emails\Received.cshtml" />
+    <Content Include="Areas\People\Views\Person\Emails\Sent.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -2940,6 +2949,10 @@
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>-->
+  <Target Name="AfterClean">
+    <RemoveDir Directories="obj\bvcms2\" />
+    <RemoveDir Directories="obj\Debug\" />
+  </Target>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">

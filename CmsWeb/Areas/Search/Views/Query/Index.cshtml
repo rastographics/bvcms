@@ -1,5 +1,5 @@
 ﻿@using CmsWeb
-@model CmsWeb.Areas.Search.Models.QueryModel2
+@model CmsWeb.Areas.Search.Models.QueryModel
 @{
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Search Builder";
@@ -23,8 +23,8 @@
                 <legend>Advanced Search Builder</legend>
                 <div id="QueryMeta" class="table">
                     <div class="cell">
-                        <a id="SavedQueryDesc" title="Enter Query Description">@Model.SavedQueryDesc</a>
-                        <a id="SavedQueryDescEdit" href="#"><i class="icon-pencil"></i></a>
+                        <a id="Description" title="Enter Query Description">@Model.TopClause.Description</a>
+                        <a id="DescriptionEdit" href="#"><i class="icon-pencil"></i></a>
                     </div>
                     <div class="cell pad-left right">
                         <div><a href="/SavedQuery2" class="nowrap">Saved Queries</a></div>

@@ -93,7 +93,7 @@
             { 
                 @Html.Partial("Flow/PersonHidden", Model)
                 // need to store the other info too because it is complete and passes validation
-                if (Model.OtherOK && !Model.ManageSubscriptions())
+                if (Model.OtherOK && !Model.ManageSubscriptions() && !Model.ChooseVolunteerTimes())
                 {
                 @Html.Partial("Flow/OtherHidden", Model)
                 }

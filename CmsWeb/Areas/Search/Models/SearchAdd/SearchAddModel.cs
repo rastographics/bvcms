@@ -6,39 +6,28 @@
  */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Web;
-using CmsWeb.Areas.People.Models;
+using CmsData.Codes;
 using CmsWeb.Code;
-using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
-using System.Web.Mvc;
-using System.Web.Routing;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Data.Linq;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class SearchAddModel
+    public class SearchAddModel : SearchResultsModel
     {
-        public SearchAddModel()
-        {
-            Pager = new PagerModel2(Count);
-            Pager.ShowPageSize = false;
-        }
-        public PagerModel2 Pager { get; set; }
-        public string type { get; set; }
+        private readonly string[] noaddtypes = { "relatedfamily", "mergeto", "contactor", "taskdelegate", "taskowner", "taskdelegate2" };
+        private readonly string[] onlyonetypes = { "taskdelegate", "taskowner", "taskdelegate2", "mergeto", "relatedfamily" };
 
-        public string Title
+        public List<PendingPersonModel> PendingList { get; set; }
+
+        public string DialogTitle
         {
             get
             {
-                switch (type.ToLower())
+                switch (AddContext.ToLower())
                 {
                     case "addpeople":
                     case "menu":
@@ -68,19 +57,63 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
-        private string[] noaddtypes = { "relatedfamily", "mergeto", "contactor", "taskdelegate", "taskowner", "taskdelegate2" };
-        private string[] usersonlytypes = { "taskdelegate", "taskowner", "taskdelegate2" };
-        private string[] onlyonetypes = { "taskdelegate", "taskowner", "taskdelegate2", "mergeto", "relatedfamily" };
-        public bool CanAdd { get { return !noaddtypes.Contains(type.ToLower()); } }
-        public string typeid { get; set; }
-        public bool UsersOnly { get { return usersonlytypes.Contains(type.ToLower()); } }
-        public bool OnlyOne { get { return onlyonetypes.Contains(type.ToLower()); } }
-        public string submit { get; set; }
-
+        public string PrimaryKeyForContextType { get; set; }
+        public bool CanAdd { get { return !noaddtypes.Contains(AddContext.ToLower()); } }
+        public bool OnlyOne { get { return onlyonetypes.Contains(AddContext.ToLower()); } }
         public int NewFamilyId { get; set; }
         public int? EntryPointId { get; set; }
         public int? CampusId { get; set; }
         public int Index { get; set; }
+
+        public SearchAddModel()
+        {
+            PendingList = new List<PendingPersonModel>();
+        }
+        public SearchAddModel(string context, string contextid) 
+            : this()
+        {
+            AddContext = context;
+            PrimaryKeyForContextType = contextid;
+            Organization org = null;
+            CampusId = null;
+            switch (AddContext.ToLower())
+            {
+                case "addpeople":
+                case "menu":
+                    EntryPointId = 0;
+                    break;
+                case "addtotag":
+                    EntryPointId = null;
+                    break;
+                case "family":
+                case "relatedfamily":
+                    EntryPointId = 0;
+                    break;
+                case "org":
+                case "pending":
+                    org = DbUtil.Db.LoadOrganizationById(contextid.ToInt());
+                    CampusId = org.CampusId;
+                    EntryPointId = org.EntryPointId ?? 0;
+                    break;
+                case "visitor":
+                case "registered":
+                    org = (from meeting in DbUtil.Db.Meetings
+                           where meeting.MeetingId == contextid.ToInt()
+                           select meeting.Organization).Single();
+                    EntryPointId = org.EntryPointId ?? 0;
+                    CampusId = org.CampusId;
+                    break;
+                case "contactee":
+                    EntryPointId = 0;
+                    break;
+                case "contactor":
+                    EntryPointId = 0;
+                    break;
+                case "contributor":
+                    EntryPointId = 0;
+                    break;
+            }
+        }
 
         public int NextNewFamilyId()
         {
@@ -88,209 +121,30 @@ namespace CmsWeb.Areas.Search.Models
             return NewFamilyId;
         }
 
-        public AddressInfo AddressInfo { get; set; }
-
-        private IList<SearchPersonModel> list = new List<SearchPersonModel>();
-        public IList<SearchPersonModel> List
+        public PendingPersonModel NewPerson(int familyid)
         {
-            get { return list; }
-            set { list = value; }
-        }
-
-        public string Name { get; set; }
-
-        [DisplayName("Communication")]
-        public string Phone { get; set; }
-
-        public string Address { get; set; }
-
-        [DisplayName("Date of Birth")]
-        public string dob { get; set; }
-
-        public string HelpLink(string page)
-        {
-            return Util.HelpLink("_SearchAdd_{0}".Fmt(page));
-        }
-        private IEnumerable<PeopleInfo> PeopleList(IQueryable<CmsData.Person> query)
-        {
-            var q = from p in query
-                    orderby p.Name2
-                    select new PeopleInfo
-                    {
-                        PeopleId = p.PeopleId,
-                        FamilyId = p.FamilyId,
-                        Name = p.Name,
-                        Middle = p.MiddleName,
-                        GoesBy = p.NickName,
-                        First = p.FirstName,
-                        Maiden = p.MaidenName,
-                        Address = p.PrimaryAddress,
-                        CityStateZip = p.PrimaryCity + ", " + p.PrimaryState + " " + p.PrimaryZip.Substring(0, 5),
-                        Age = p.Age,
-                        JoinDate = p.JoinDate,
-                        BirthDate = p.BirthMonth + "/" + p.BirthDay + "/" + p.BirthYear,
-                        HomePhone = p.HomePhone,
-                        CellPhone = p.CellPhone,
-                        WorkPhone = p.WorkPhone,
-                        MemberStatus = p.MemberStatus.Description,
-                        Email = p.EmailAddress
-                    };
-            return q;
-        }
-
-        public IEnumerable<PeopleInfo> PeopleList()
-        {
-            var q = FetchPeople().Skip(Pager.StartRow).Take(Pager.PageSize);
-            return PeopleList(q);
-        }
-
-        private IQueryable<CmsData.Person> FetchPeople()
-        {
-            if (query == null)
-                query = ApplySearch();
-            return query;
-        }
-        private int? _count;
-        public int Count()
-        {
-            if (!_count.HasValue)
-                _count = FetchPeople().Count();
-            return _count.Value;
-        }
-
-        private IQueryable<CmsData.Person> query = null;
-        private IQueryable<CmsData.Person> ApplySearch()
-        {
-            if (query.IsNotNull())
-                return query;
-
-            var db = DbUtil.Db;
-            if (Util2.OrgMembersOnly)
-                query = db.OrgMembersOnlyTag2().People(db);
-            else if (Util2.OrgLeadersOnly)
-                query = db.OrgLeadersOnlyTag2().People(db);
-            else
-                query = db.People.AsQueryable();
-
-            if (UsersOnly)
-                query = query.Where(p => p.Users.Any(uu => uu.UserRoles.Any(ur => ur.Role.RoleName == "Access")));
-
-            if (Name.HasValue())
+            var p = new PendingPersonModel
             {
-                string First, Last;
-                Util.NameSplit(Name, out First, out Last);
-                if (First.HasValue())
-                    query = from p in query
-                            where (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last))
-                            && (p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First))
-                            select p;
-                else
-                    if (Last.AllDigits())
-                        query = from p in query
-                                where p.PeopleId == Last.ToInt()
-                                select p;
-                    else
-                        query = from p in query
-                                where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                                select p;
-            }
-            if (Address.IsNotNull())
+                FamilyId = familyid,
+                index = PendingList.Count,
+                Gender = new CodeInfo(99, "Gender"),
+                MaritalStatus = new CodeInfo(99, "MaritalStatus"),
+                Campus = new CodeInfo(CampusId, "Campus"),
+                EntryPoint = new CodeInfo(EntryPointId, "EntryPoint"),
+                context = AddContext,
+                Title = new CodeInfo("", "Title"),
+            };
+            if (familyid == 0)
             {
-                Address = Address.Trim();
-                if (Address.HasValue())
-                    query = from p in query
-                            where p.Family.AddressLineOne.Contains(Address)
-                               || p.Family.AddressLineTwo.Contains(Address)
-                               || p.Family.CityName.Contains(Address)
-                               || p.Family.ZipCode.Contains(Address)
-                            select p;
+                p.FamilyId = NextNewFamilyId();
+                p.IsNewFamily = true;
             }
-            if (Phone.IsNotNull())
-            {
-                Phone = Phone.Trim();
-                if (Phone.HasValue())
-                    query = from p in query
-                            where p.CellPhone.Contains(Phone) || p.EmailAddress.Contains(Phone)
-                            || p.Family.HomePhone.Contains(Phone)
-                            || p.WorkPhone.Contains(Phone)
-                            select p;
-            }
-            if (dob.HasValue())
-            {
-                DateTime dt;
-                if (DateTime.TryParse(dob, out dt))
-                    if (Regex.IsMatch(dob, @"\d+/\d+/\d+"))
-                        query = query.Where(p => p.BirthDay == dt.Day && p.BirthMonth == dt.Month && p.BirthYear == dt.Year);
-                    else
-                        query = query.Where(p => p.BirthDay == dt.Day && p.BirthMonth == dt.Month);
-                else
-                {
-                    int n;
-                    if (int.TryParse(dob, out n))
-                        if (n >= 1 && n <= 12)
-                            query = query.Where(p => p.BirthMonth == n);
-                        else
-                            query = query.Where(p => p.BirthYear == n);
-                }
-            }
-            return query;
-        }
-        public class PeopleInfo
-        {
-            public int PeopleId { get; set; }
-            public int FamilyId { get; set; }
-            public string Name { get; set; }
-            public string Middle { get; set; }
-            public string Maiden { get; set; }
-            public string GoesBy { get; set; }
-            public string First { get; set; }
-            public string Address { get; set; }
-            public string CityStateZip { get; set; }
-            public int? Age { get; set; }
-            public string HomePhone { get; set; }
-            public string CellPhone { get; set; }
-            public string WorkPhone { get; set; }
-            public string MemberStatus { get; set; }
-            public DateTime? JoinDate { get; set; }
-            public string BirthDate { get; set; }
-            public string Email { get; set; }
-
-            public HtmlString ToolTip
-            {
-                get
-                {
-                    var ret = new StringBuilder();
-                    if (CellPhone.HasValue())
-                        ret.AppendFormat("{0}&nbsp;&nbsp;", CellPhone.FmtFone("C "));
-                    if (HomePhone.HasValue())
-                        ret.AppendFormat("{0}&nbsp;&nbsp;", HomePhone.FmtFone("H "));
-                    if (WorkPhone.HasValue())
-                        ret.AppendFormat("{0}&nbsp;&nbsp;", WorkPhone.FmtFone("W "));
-                    if (ret.Length > 0)
-                        ret.Append("<br>\n");
-
-                    var names = new StringBuilder();
-                    if (GoesBy.HasValue() && First != GoesBy)
-                        names.AppendFormat("{0}first: {1}", names.Length > 0 ? ", " : "", First);
-                    if (Middle.HasValue())
-                        names.AppendFormat("{0}middle: {1}", names.Length > 0 ? ", " : "", Middle);
-                    if (Maiden.HasValue())
-                        names.AppendFormat("{0}maiden: {1}", names.Length > 0 ? ", " : "", Maiden);
-                    if (names.Length > 0)
-                        ret.AppendFormat("{0}<br>\n", names);
-
-                    if (BirthDate.HasValue())
-                        ret.AppendFormat("Birthday: {0}&nbsp;&nbsp;", BirthDate);
-                    ret.AppendFormat("[<i>{0}</i>]&nbsp;&nbsp;", MemberStatus);
-                    if (JoinDate.HasValue)
-                        ret.Append("Joined: " + JoinDate.ToDate().FormatDate());
-
-                    if (CityStateZip.HasValue())
-                        ret.AppendFormat("<br>\n{0}", CityStateZip);
-
-                    return new HtmlString(ret.ToString());
-                }
-            }
+#if DEBUG
+            p.FirstName = "David";
+            p.LastName = "Carr." + DateTime.Now.Millisecond;
+#endif
+            PendingList.Add(p);
+            return p;
         }
         public static string AddRelatedFamily(int peopleid, int relatedPersonId)
         {
@@ -316,31 +170,327 @@ namespace CmsWeb.Areas.Search.Models
             return "#rf-{0}-{1}".Fmt(rf.FamilyId, rf.RelatedFamilyId);
         }
 
-        public SearchPersonModel NewPerson(int familyid)
+
+        internal void AddExisting(int id)
         {
-            
-            var p = new SearchPersonModel
+            var p = DbUtil.Db.LoadPersonById(id);
+            var pp = new PendingPersonModel();
+            pp.CopyPropertiesFrom(p);
+            if (AddContext == "family")
+                NewFamilyId = PrimaryKeyForContextType.ToInt();
+            pp.LoadAddress();
+            PendingList.Add(pp);
+        }
+
+        internal ReturnResult CommitAdd()
+        {
+            var id = PrimaryKeyForContextType;
+			var iid = PrimaryKeyForContextType.ToInt();
+            switch (AddContext.ToLower())
             {
-                FamilyId = familyid,
-                index = List.Count,
-                Gender = new CodeInfo(99, "Gender"),
-                MaritalStatus = new CodeInfo(99, "MaritalStatus"),
-                Campus = new CodeInfo(CampusId, "Campus"),
-                EntryPoint = new CodeInfo(EntryPointId, "EntryPoint"),
-                context = type,
-                Title = new CodeInfo("", "Title"),
-            };
-            if (familyid == 0)
-            {
-                p.FamilyId = NextNewFamilyId();
-                p.isNewFamily = true;
+                case "menu":
+                case "addpeople":
+                    return AddPeople(OriginCode.MainMenu);
+                case "addtotag":
+                    return AddPeopleToTag(id, 0);
+                case "family":
+                    return AddFamilyMembers(iid, OriginCode.NewFamilyMember);
+                case "relatedfamily":
+                    return AddRelatedFamilys(iid, OriginCode.NewFamilyMember);
+                case "org":
+                    return AddOrgMembers(iid, false, OriginCode.Enrollment);
+                case "pending":
+                    return AddOrgMembers(iid, true, OriginCode.Enrollment);
+                case "visitor":
+                    return AddVisitors(iid, OriginCode.Visit);
+                case "registered":
+                    return AddRegistered(iid, OriginCode.Visit);
+                case "contactee":
+                    return AddContactees(iid, OriginCode.Visit);
+                case "contactor":
+                    return AddContactors(iid, 0);
+                case "contributor":
+                    return AddContributor(iid, OriginCode.Contribution);
+                case "taskdelegate":
+                    if (PendingList.Count > 0)
+                        return new ReturnResult { close = true, how = "addselected", url = "/Task/Delegate/", pid = PendingList[0].PeopleId, from = AddContext };
+                    break;
+                case "taskdelegate2":
+                    if (PendingList.Count > 0)
+                        return new ReturnResult { close = true, how = "addselected2", url = "/Task/Action/", pid = PendingList[0].PeopleId, from = AddContext };
+                    break;
+                case "taskabout":
+                    if (PendingList.Count > 0)
+                        return new ReturnResult { close = true, how = "addselected", url = "/Task/ChangeAbout/", pid = PendingList[0].PeopleId, from = AddContext };
+                    break;
+                case "mergeto":
+                    if (PendingList.Count > 0)
+                        return new ReturnResult { close = true, how = "addselected", pid = PendingList[0].PeopleId, from = AddContext };
+                    break;
+                case "taskowner":
+                    if (PendingList.Count > 0)
+                        return new ReturnResult{ close = true, how = "addselected", url = "/Task/ChangeOwner/", pid = PendingList[0].PeopleId, from = AddContext };
+                    break;
             }
-#if DEBUG
-            p.First = "David";
-            p.Last = "Carr." + DateTime.Now.Millisecond;
-#endif
-            List.Add(p);
-            return p;
+            return new ReturnResult { close = true, from = AddContext };
+        }
+
+        public class ReturnResult
+        {
+            public bool close { get; set; }
+            public string how { get; set; }
+            public string url { get; set; }
+            public int? pid { get; set; }
+            public string from { get; set; }
+            public string name { get; set; }
+            public int? cid { get; set; }
+            public string message { get; set; }
+            public string error { get; set; }
+            public string key { get; set; }
+        }
+
+        private ReturnResult AddContactees(int id, int origin)
+        {
+            if (id > 0)
+            {
+                var c = DbUtil.Db.Contacts.Single(ct => ct.ContactId == id);
+                foreach (var p in PendingList)
+                {
+                    AddPerson(p, PendingList, OriginCode.Visit, EntryPointId);
+                    var ctee = c.contactees.SingleOrDefault(ct =>
+                        ct.ContactId == id && ct.PeopleId == p.Person.PeopleId);
+                    if (ctee == null)
+                    {
+                        ctee = new Contactee
+                        {
+                            ContactId = id,
+                            PeopleId = p.Person.PeopleId,
+                        };
+                        c.contactees.Add(ctee);
+                    }
+                }
+                DbUtil.Db.SubmitChanges();
+            }
+            return new ReturnResult{ close = true, how = "addselected", from = AddContext };
+        }
+        private ReturnResult AddContactors(int id, int origin)
+        {
+            if (id > 0)
+            {
+                var c = DbUtil.Db.Contacts.SingleOrDefault(ct => ct.ContactId == id);
+                if (c == null)
+                    return new ReturnResult { close = true, how = "CloseAddDialog", from = AddContext };
+                foreach (var p in PendingList)
+                {
+                    AddPerson(p, PendingList, origin, EntryPointId);
+                    var ctor = c.contactsMakers.SingleOrDefault(ct =>
+                        ct.ContactId == id && ct.PeopleId == p.Person.PeopleId);
+                    if (ctor == null)
+                    {
+                        ctor = new Contactor
+                        {
+                            ContactId = id,
+                            PeopleId = p.Person.PeopleId,
+                        };
+                        c.contactsMakers.Add(ctor);
+                    }
+                }
+                DbUtil.Db.SubmitChanges();
+            }
+            return new ReturnResult { close = true, how = "addselected", from = AddContext };
+        }
+        private ReturnResult AddFamilyMembers(int id, int origin)
+        {
+            if (id > 0)
+            {
+                var p = DbUtil.Db.LoadPersonById(id);
+
+                foreach (var i in PendingList)
+                {
+                    var isnew = i.IsNew;
+                    AddPerson(i, PendingList, origin, EntryPointId);
+                    if (!isnew)
+                    {
+                        var fm = p.Family.People.SingleOrDefault(fa => fa.PeopleId == i.Person.PeopleId);
+                        if (fm != null)
+                            continue; // already a member of this family
+
+                        if (i.Person.Age < 18)
+                            i.Person.PositionInFamilyId = PositionInFamily.Child;
+                        else if (p.Family.People.Count(per =>
+                                    per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
+                            i.Person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
+                        else
+                            i.Person.PositionInFamilyId = PositionInFamily.SecondaryAdult;
+                        p.Family.People.Add(i.Person);
+                    }
+                }
+                DbUtil.Db.SubmitChanges();
+            }
+            return new ReturnResult { pid = id, from = AddContext };
+        }
+        private ReturnResult AddRelatedFamilys(int id, int origin)
+        {
+            var p = PendingList[0];
+            AddPerson(p, PendingList, origin, EntryPointId);
+            var key = AddRelatedFamily(id, p.PeopleId.Value);
+            try
+            {
+                DbUtil.Db.SubmitChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return new ReturnResult { from = AddContext, pid = id, key = key };
+        }
+        private ReturnResult AddPeople(int origin)
+        {
+            foreach (var p in PendingList)
+                AddPerson(p, PendingList, origin, EntryPointId);
+            DbUtil.Db.SubmitChanges();
+            return new ReturnResult { pid = PendingList[0].PeopleId, from = AddContext };
+        }
+        private ReturnResult  AddOrgMembers(int id, bool pending, int origin)
+        {
+            string message = null;
+            if (id > 0)
+            {
+                var org = DbUtil.Db.LoadOrganizationById(id);
+                if (pending == false && PendingList.Count == 1 && org.AllowAttendOverlap != true)
+                {
+                    var om = DbUtil.Db.OrganizationMembers.FirstOrDefault(mm => 
+                        mm.OrganizationId != id
+                        && mm.MemberTypeId != 230 // inactive
+                        && mm.MemberTypeId != 500 // inservice
+                        && mm.Organization.AllowAttendOverlap != true
+                        && mm.PeopleId == PendingList[0].PeopleId
+                        && mm.Organization.OrgSchedules.Any(ss => 
+                            DbUtil.Db.OrgSchedules.Any(os => 
+                                os.OrganizationId == id 
+                                && os.ScheduleId == ss.ScheduleId)));
+                    if (om != null)
+                    {
+                        message = "Already a member of {0} (orgid) with same schedule".Fmt(om.OrganizationId);
+                        return new ReturnResult { close = true, how = "CloseAddDialog", message = message, from = AddContext };
+                    }
+                }
+                foreach (var p in PendingList)
+                {
+                    AddPerson(p, PendingList, origin, EntryPointId);
+                    OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                        id, p.PeopleId.Value, 220, Util.Now, null, pending);
+                }
+                DbUtil.Db.SubmitChanges();
+				DbUtil.Db.UpdateMainFellowship(id);
+            }
+            return new ReturnResult { close = true, how = "rebindgrids", message = message, from = AddContext };
+        }
+        private ReturnResult AddContributor(int id, int origin)
+        {
+            if (id > 0)
+            {
+                var p = PendingList[0];
+                var c = DbUtil.Db.Contributions.Single(cc => cc.ContributionId == id);
+                AddPerson(p, PendingList, origin, EntryPointId);
+                c.PeopleId = p.PeopleId;
+
+                if (c.BankAccount.HasValue())
+                {
+                    var ci = DbUtil.Db.CardIdentifiers.SingleOrDefault(k => k.Id == c.BankAccount);
+                    if (ci == null)
+                    {
+                        ci = new CardIdentifier
+                        {
+                            Id = c.BankAccount,
+                            CreatedOn = Util.Now,
+                        };
+                        DbUtil.Db.CardIdentifiers.InsertOnSubmit(ci);
+                    }
+                    ci.PeopleId = p.PeopleId;
+                }
+                DbUtil.Db.SubmitChanges();
+                return new  ReturnResult{ close = true, how = "addselected", cid = id, pid = p.PeopleId, name = p.Person.Name2, from = AddContext };
+            }
+            return new ReturnResult { close = true, how = "addselected", from = AddContext };
+        }
+        private ReturnResult AddPeopleToTag(string id, int origin)
+        {
+            if (id.HasValue())
+            {
+                foreach (var p in PendingList)
+                {
+                    AddPerson(p, PendingList, origin, EntryPointId);
+					Person.Tag(DbUtil.Db, p.Person.PeopleId, id, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+                }
+                DbUtil.Db.SubmitChanges();
+            }
+            return new ReturnResult { close = true, how = "addselected", from = AddContext };
+        }
+        private ReturnResult AddVisitors(int id, int origin)
+        {
+            var sb = new StringBuilder();
+            if (id > 0)
+            {
+                var meeting = DbUtil.Db.Meetings.SingleOrDefault(me => me.MeetingId == id);
+                foreach (var p in PendingList)
+                {
+                    var isnew = p.IsNew;
+                    AddPerson(p, PendingList, origin, EntryPointId);
+					if (isnew)
+						p.Person.UpdateValue("CampusId", meeting.Organization.CampusId);
+                    var err = Attend.RecordAttendance(p.PeopleId.Value, id, true);
+                    if (err != "ok")
+                        sb.AppendLine(err);
+                }
+                DbUtil.Db.SubmitChanges();
+                DbUtil.Db.UpdateMeetingCounters(meeting.MeetingId);
+            }
+            return new ReturnResult { close = true, how = "addselected", error = sb.ToString(), from = AddContext };
+        }
+        private ReturnResult AddRegistered(int id, int origin)
+        {
+            if (id > 0)
+            {
+                var meeting = DbUtil.Db.Meetings.SingleOrDefault(me => me.MeetingId == id);
+                foreach (var p in PendingList)
+                {
+                    var isnew = p.IsNew;
+                    AddPerson(p, PendingList, origin, EntryPointId);
+                    if (isnew)
+                        p.Person.CampusId = meeting.Organization.CampusId;
+                    Attend.MarkRegistered(DbUtil.Db, p.PeopleId.Value, id, 1);
+                }
+                DbUtil.Db.SubmitChanges();
+                DbUtil.Db.UpdateMeetingCounters(meeting.MeetingId);
+            }
+            return new ReturnResult { close = true, how = "addselected", from = AddContext };
+        }
+        private void AddPerson(PendingPersonModel p, List<PendingPersonModel> list, int originid, int? entrypointid)
+        {
+            if (p.IsNew)
+                p.AddPerson(originid, p.EntryPoint.Value.ToInt(), p.Campus.Value.ToInt());
+            else 
+            {
+                if (entrypointid != 0 && 
+                        (!p.Person.EntryPointId.HasValue || p.Person.EntryPointId == 0))
+                    p.Person.EntryPointId = entrypointid;
+                if (originid != 0 &&
+                        (!p.Person.OriginId.HasValue || p.Person.OriginId == 0))
+                    p.Person.OriginId = originid;
+                DbUtil.Db.SubmitChanges();
+            }
+            if (p.FamilyId < 0) // fix up new family pointers
+            {
+                var q = from m in list
+                        where m.FamilyId == p.FamilyId
+                        select m;
+                var list2 = q.ToList();
+                foreach (var m in list2)
+                    m.FamilyId = p.Person.FamilyId;
+            }
+            Util2.CurrentPeopleId = p.Person.PeopleId;
+            HttpContext.Current.Session["ActivePerson"] = p.Person.Name;
         }
     }
 }

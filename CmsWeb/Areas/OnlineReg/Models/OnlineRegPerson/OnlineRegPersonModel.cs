@@ -40,10 +40,13 @@ namespace CmsWeb.Models
         public string suffix { get; set; }
         //public string dob { get; set; }
         internal int? bmon, byear, bday;
+
         public string dob
         {
             get
-            { return Util.FormatBirthday(byear, bmon, bday); }
+            {
+                return Util.FormatBirthday(byear, bmon, bday);
+            }
             set
             {
                 bday = null;
@@ -109,8 +112,10 @@ namespace CmsWeb.Models
         public int? whatfamily { get; set; }
         public string gradeoption { get; set; }
         public bool IsFamily { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         public decimal? Suggestedfee { get; set; }
+
         public Dictionary<int, decimal?> FundItem { get; set; }
         public List<Dictionary<string, string>> ExtraQuestion { get; set; }
         public Dictionary<string, bool?> YesNoQuestion { get; set; }

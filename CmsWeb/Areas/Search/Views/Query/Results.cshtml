@@ -1,4 +1,4 @@
-﻿@model CmsWeb.Areas.Search.Models.QueryModel2
+﻿@model CmsWeb.Areas.Search.Models.QueryModel
 @using CmsData
 @using UtilityExtensions
 @{
@@ -43,7 +43,7 @@
                     <td colspan="5">No matching records.</td>
                 </tr>
             }
-            @foreach (var p in Model.Results)
+            @foreach (var p in Model.ViewList())
             { 
                 <tr>
                     <td>

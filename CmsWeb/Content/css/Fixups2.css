@@ -683,3 +683,6 @@ fieldset {
 html, body {
 height: 100%;
 }
+.primary-tabs .nav-tabs > li > a {
+    padding: 8px 18px;
+}

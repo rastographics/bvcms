@@ -1,0 +1,14 @@
+﻿@model CmsWeb.Areas.People.Models.Person.PersonModel
+<ul class="nav nav-tabs subnav" data-tabparent="system">
+    <li><a href="#receivedemails" data-toggle="tab" class="ajax"><span>Received</span></a></li>
+    <li><a href="#sentemails" data-toggle="tab" class="ajax"><span>Sent</span></a></li>
+    <li><a href="#optouts" data-toggle="tab" class="ajax"><span>Optouts</span></a></li>
+    <li><a href="#failedemails" data-toggle="tab" class="ajax"><span>Failed</span></a></li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane" id="receivedemails" data-link="/Person2/ReceivedEmails/@Model.PeopleId"></div>
+    <div class="tab-pane" id="sentemails" data-link="/Person2/SentEmails/@Model.PeopleId"></div>
+    <div class="tab-pane" id="optouts" data-link="/Person2/Optouts/@Model.PeopleId"></div>
+    <div class="tab-pane" id="failedemails" data-link="/Person2/FailedEmails/@Model.PeopleId"></div>
+</div>
+

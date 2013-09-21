@@ -7,6 +7,7 @@
 
 using System;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using System.Web.Mvc;
@@ -21,14 +22,13 @@ namespace CmsWeb.Areas.Search.Controllers
 {
     [SessionExpire]
     [RouteArea("Search", AreaUrl = "Query")]
-    public class QueryController : CmsStaffAsyncController
+    public class QueryController : CmsStaffController
     {
         [GET("Query/{id:guid?}")]
         public ActionResult Index(Guid? id)
         {
             ViewBag.Title = "QueryBuilder";
-            //var last5 = DbUtil.Db.FetchLastFiveQueries();
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery(id);
 
             InitToolbar(m);
@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return View(m);
         }
 
-        private void InitToolbar(QueryModel2 m)
+        private void InitToolbar(QueryModel m)
         {
             ViewBag.OnQueryBuilder = "true";
             ViewBag.TagAction = "/Query/TagAll/";
@@ -58,27 +58,27 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/Cut/{id}")]
         public ActionResult Cut(Guid id)
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery();
             m.SelectedId = id;
-            Session["QueryClipboard"] = 
-                new QueryModel2.ClipboardItem( "cut", m.TopClause.Id, m.Current.ToXml() );
+            Session["QueryClipboard"] =
+                new QueryModel.ClipboardItem("cut", m.TopClause.Id, m.Current.ToXml());
             return Content("ok");
         }
         [POST("Query/Copy/{id}")]
         public ActionResult Copy(Guid id)
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery();
             m.SelectedId = id;
-            Session["QueryClipboard"] = 
-                new QueryModel2.ClipboardItem( "copy", m.TopClause.Id, m.Current.ToXml() );
+            Session["QueryClipboard"] =
+                new QueryModel.ClipboardItem("copy", m.TopClause.Id, m.Current.ToXml());
             return Content("ok");
         }
         [POST("Query/Paste/{id}")]
         public ActionResult Paste(Guid id)
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery();
             m.SelectedId = id;
             m.Paste(id);
@@ -87,13 +87,13 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/InsGroupAbove/{id:guid}")]
         public ActionResult InsGroupAbove(Guid id)
         {
-            var m = new QueryModel2 { SelectedId = id };
+            var m = new QueryModel { SelectedId = id };
             m.LoadQuery();
             m.InsertGroupAbove();
             return View("Conditions", m);
         }
         [POST("Query/CodesDropdown/")]
-        public ActionResult CodesDropdown(QueryModel2 m)
+        public ActionResult CodesDropdown(QueryModel m)
         {
             m.SetCodes();
             return View(m);
@@ -101,31 +101,19 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/SelectCondition/{id:guid}")]
         public ActionResult SelectCondition(Guid id, string conditionName)
         {
-            var m = new QueryModel2 { SelectedId = id };
+            var m = new QueryModel { SelectedId = id };
             m.LoadQuery();
             m.ConditionName = conditionName;
             m.SetVisibility();
-            m.TextValue = "";
-            m.IntegerValue = "";
-            m.DateValue = "";
-            m.CodeValue = "";
-            m.CodeValues = new string[0];
-            m.Days = "";
-            m.Age = "";
-            m.Program = 0;
-            m.Quarters = "";
-            m.StartDate = "";
-            m.EndDate = "";
             m.Comparison = "Equal";
             m.UpdateCondition();
-            m.SelectedId = id;
             return View("EditCondition", m);
         }
         [POST("Query/EditCondition/{id:guid}")]
         public ActionResult EditCondition(Guid id)
         {
             Response.NoCache();
-            var m = new QueryModel2 { SelectedId = id };
+            var m = new QueryModel { SelectedId = id };
             m.LoadQuery();
             m.EditCondition();
             return View(m);
@@ -134,7 +122,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/AddNewCondition/{id:guid}")]
         public ActionResult AddNewCondition(Guid id)
         {
-            var m = new QueryModel2 { SelectedId = id };
+            var m = new QueryModel { SelectedId = id };
             m.LoadQuery();
             m.EditCondition();
             ViewBag.NewId = m.AddConditionToGroup();
@@ -143,7 +131,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/AddNewGroup/{id:guid}")]
         public ActionResult AddNewGroup(Guid id)
         {
-            var m = new QueryModel2 { SelectedId = id };
+            var m = new QueryModel { SelectedId = id };
             m.LoadQuery();
             m.EditCondition();
             ViewBag.NewId = m.AddGroupToGroup();
@@ -152,14 +140,14 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/SaveCondition/{id:guid}")]
         public ActionResult ChangeGroup(Guid id, string comparison)
         {
-            var m = new QueryModel2 { SelectedId = id };
+            var m = new QueryModel { SelectedId = id };
             m.LoadQuery();
             m.Current.Comparison = comparison;
             m.TopClause.Save(DbUtil.Db);
             return Content("ok");
         }
         [POST("Query/SaveCondition")]
-        public ActionResult SaveCondition(QueryModel2 m)
+        public ActionResult SaveCondition(QueryModel m)
         {
             m.LoadQuery();
             if (m.Validate(ModelState))
@@ -171,14 +159,14 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/Reload/")]
         public ActionResult Reload()
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery();
             return View("Conditions", m);
         }
         [POST("Query/RemoveCondition/{id:guid}")]
         public ActionResult RemoveCondition(Guid id)
         {
-            var m = new QueryModel2 { SelectedId = id };
+            var m = new QueryModel { SelectedId = id };
             m.LoadQuery();
             m.DeleteCondition();
             m.SelectedId = null;
@@ -187,7 +175,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/Conditions")]
         public ActionResult Conditions()
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             return View("Conditions", m);
         }
         [POST("Query/Divisions/{id:int}")]
@@ -204,66 +192,26 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/SavedQueries")]
         public JsonResult SavedQueries()
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             return Json(m.SavedQueries());
         }
-        [POST("Query/SaveQueryDescription")]
-        public ActionResult SaveQueryDescription(string name, string value)
+        [POST("Query/DescriptionUpdate")]
+        public ActionResult DescriptionUpdate(string name, string value)
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery();
-            switch (name)
-            {
-                case "SavedQueryDesc":
-                    m.SavedQueryDesc = value;
-                    m.TopClause.Description = value;
-                    break;
-            }
+            Debug.Assert(name == "Description");
+            m.TopClause.Description = value;
             m.TopClause.Save(DbUtil.Db);
             return new EmptyResult();
         }
-        public void Results2Async()
-        {
-            AsyncManager.OutstandingOperations.Increment();
-            string host = Util.Host;
-            ThreadPool.QueueUserWorkItem((e) =>
-            {
-                var Db = new CMSDataContext(Util.GetConnectionString(host));
-                Db.DeleteQueryBitTags();
-                foreach (var a in Db.StatusFlags())
-                {
-                    var t = Db.FetchOrCreateSystemTag(a[0]);
-                    Db.TagAll(Db.PeopleQuery(a[0] + ":" + a[1]), t);
-                    Db.SubmitChanges();
-                }
-                AsyncManager.OutstandingOperations.Decrement();
-            });
-        }
-        public ActionResult Results2Completed()
-        {
-            return null;
-        }
 
         [POST("Query/Results/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult Results(int? page, int? size, string sort, string dir)
+        public ActionResult Results(int? page, int? size, string sort, string dir, QueryModel m)
         {
-            var cb = new SqlConnectionStringBuilder(Util.ConnectionString);
-            cb.ApplicationName = "qb";
-            DbUtil.Db = new CMSDataContext(cb.ConnectionString);
-            var m = new QueryModel2();
             m.Pager.Set("/Query/Results", page, size, sort, dir);
-            try
-            {
-                UpdateModel(m);
-            }
-            catch (Exception ex)
-            {
-                return Content("Something went wrong<br><p>" + ex.Message + "</p>");
-            }
             m.LoadQuery();
-
             var starttime = DateTime.Now;
-            m.PopulateResults();
             DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.TopClause.Id));
             InitToolbar(m);
             return View(m);
@@ -302,7 +250,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             if (!tagname.HasValue())
                 return Content("error: no tag name");
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery();
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
             {
@@ -320,7 +268,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ContentResult UnTagAll()
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery();
             m.UnTagAll();
             return Content("Add");
@@ -328,7 +276,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ContentResult AddContact()
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery();
             var cid = Contact.AddContact(m.TopClause.Id);
             return Content("/Contact/" + cid);
@@ -336,7 +284,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult AddTasks()
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery();
             var c = new ContentResult();
             c.Content = Task.AddTasks(m.TopClause.Id).ToString();
@@ -345,10 +293,10 @@ namespace CmsWeb.Areas.Search.Controllers
 
         public ActionResult Export()
         {
-            var m = new QueryModel2();
+            var m = new QueryModel();
             m.LoadQuery();
             Response.ContentType = "text/xml";
-            var settings = new XmlWriterSettings {Indent = true, Encoding = new System.Text.UTF8Encoding(false)};
+            var settings = new XmlWriterSettings { Indent = true, Encoding = new System.Text.UTF8Encoding(false) };
             using (var w = XmlWriter.Create(Response.OutputStream, settings))
                 m.TopClause.SendToWriter(w);
             return new EmptyResult();

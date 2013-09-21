@@ -99,6 +99,10 @@ namespace CmsWeb.Models
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2;
         }
+        public bool ChooseVolunteerTimes()
+        {
+            return RegistrationType(RegistrationTypeCode.ChooseVolunteerTimes);
+        }
         public bool ManageGiving()
         {
             return RegistrationType(RegistrationTypeCode.ManageGiving);

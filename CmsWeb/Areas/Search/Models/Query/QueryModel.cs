@@ -14,11 +14,8 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class QueryModel2
+    public class QueryModel : QueryResults
     {
-        private CMSDataContext Db;
-
-        public Condition TopClause;
         public Guid? SelectedId { get; set; }
 
         #region Visibility
@@ -60,7 +57,6 @@ namespace CmsWeb.Areas.Search.Models
         public string Age { get; set; }
         public string Quarters { get; set; }
         public string QuartersLabel { get; set; }
-        public string SavedQueryDesc { get; set; }
         public string View { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
@@ -78,30 +74,10 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool SelectMultiple { get; set; }
 
-        public PagerModel2 Pager { get; set; }
-
-        public QueryModel2()
+        public QueryModel()
         {
-            Db = DbUtil.Db;
             Db.SetUserPreference("NewCategories", "true");
             ConditionName = "Group";
-            Pager = new PagerModel2(Count) { Direction = "asc" };
-        }
-
-        public int Count()
-        {
-            return FetchCount();
-        }
-
-        public void LoadQuery(Guid? id = null)
-        {
-            if (id.HasValue)
-                TopClause = Db.LoadCopyOfExistingQuery(id.Value);
-            else
-                TopClause = Db.FetchLastQuery();
-
-            SavedQueryDesc = TopClause.Description;
-            DbUtil.LogActivity("Running Query ({0})".Fmt(TopClause.Id));
         }
 
         public List<SelectListItem> TagData { get; set; }
@@ -134,7 +110,6 @@ namespace CmsWeb.Areas.Search.Models
             }
             return null;
         }
-
 
         private FieldClass fieldMap;
         private string _ConditionName;
@@ -244,21 +219,15 @@ namespace CmsWeb.Areas.Search.Models
                 return dt;
             return null;
         }
-        int? IntParse(string s)
-        {
-            int i;
-            if (int.TryParse(s, out i))
-                return i;
-            return null;
-        }
         string DateString(DateTime? dt)
         {
             if (dt.HasValue)
                 return dt.Value.ToShortDateString();
             return "";
         }
-        private void UpdateCondition(Condition c)
+        public void UpdateCondition()
         {
+            var c = Current;
             c.Field = ConditionName;
             c.Comparison = Comparison;
             switch (c.FieldInfo.Type)
@@ -311,7 +280,6 @@ namespace CmsWeb.Areas.Search.Models
                 c.Tags = string.Join(";", Tags);
             else if (PmmLabels != null)
                 c.Tags = string.Join(",", PmmLabels);
-            c.SavedQueryIdDesc = SavedQueryDesc;
             SelectedId = null;
             TopClause.Save(Db, increment: true);
         }
@@ -390,7 +358,6 @@ namespace CmsWeb.Areas.Search.Models
             }
             if (MinistryVisible)
                 Ministry = c.Program;
-            SavedQueryDesc = c.SavedQueryIdDesc;
         }
         public void SetCodes()
         {
@@ -476,10 +443,6 @@ namespace CmsWeb.Areas.Search.Models
         {
             Current.DeleteClause();
             TopClause.Save(Db, increment: true);
-        }
-        public void UpdateCondition()
-        {
-            UpdateCondition(Current);
         }
         public void InsertGroupAbove()
         {
@@ -648,46 +611,12 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        private IQueryable<Person> query;
-        private int? count;
-        public int FetchCount()
-        {
-            Db.SetNoLock();
-            query = PersonQuery();
-            count = query.Count();
-            return count ?? 0;
-        }
-        public List<PeopleInfo> Results;
-        public void PopulateResults()
-        {
-            query = PersonQuery();
-            count = query.Count();
-            query = ApplySort(query);
-            query = query.Skip(Pager.StartRow).Take(Pager.PageSize);
-            Results = FetchPeopleList(query).ToList();
-        }
-        public IEnumerable<PeopleInfo> FetchPeopleList()
-        {
-            query = ApplySort(query);
-            query = query.Skip(Pager.StartRow).Take(Pager.PageSize);
-            return FetchPeopleList(query);
-        }
         public Tag TagAllIds()
         {
-            query = PersonQuery();
+            var q = DefineModelList();
             var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
-            Db.TagAll(query, tag);
+            Db.TagAll(q, tag);
             return tag;
-        }
-        private IQueryable<Person> PersonQuery()
-        {
-            if (TopClause == null)
-                LoadQuery();
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
-            if (TopClause.ParentsOf)
-                return Db.PersonQueryParents(q);
-            return q;
         }
         public void TagAll(Tag tag = null)
         {
@@ -711,157 +640,6 @@ namespace CmsWeb.Areas.Search.Models
             if (TopClause.ParentsOf)
                 q = Db.PersonQueryParents(q);
             Db.UnTagAll(q);
-        }
-        private IEnumerable<PeopleInfo> FetchPeopleList(IQueryable<Person> query)
-        {
-            if (query == null)
-            {
-                Db.SetNoLock();
-                query = PersonQuery();
-                count = query.Count();
-            }
-            var q = from p in query
-                    select new PeopleInfo
-                    {
-                        PeopleId = p.PeopleId,
-                        Name = p.Name,
-                        BirthDate = Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay),
-                        Address = p.PrimaryAddress,
-                        Address2 = p.PrimaryAddress2,
-                        CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
-                        HomePhone = p.HomePhone,
-                        CellPhone = p.CellPhone,
-                        WorkPhone = p.WorkPhone,
-                        PhonePref = p.PhonePrefId,
-                        MemberStatus = p.MemberStatus.Description,
-                        Email = p.EmailAddress,
-                        BFTeacher = p.BFClass.LeaderName,
-                        BFTeacherId = p.BFClass.LeaderId,
-                        Employer = p.EmployerOther,
-                        Age = p.Age.ToString(),
-                        HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName
-                            && t.Tag.PeopleId == Util2.CurrentTagOwnerId
-                            && t.Tag.TypeId == DbUtil.TagTypeId_Personal),
-                    };
-            return q;
-        }
-        private IQueryable<Person> ApplySort(IQueryable<Person> q)
-        {
-            if (Pager.Direction != "desc")
-                switch (Pager.Sort)
-                {
-                    case "Name":
-                        q = from p in q
-                            orderby p.LastName,
-                                p.FirstName,
-                                p.PeopleId
-                            select p;
-                        break;
-                    case "Status":
-                        q = from p in q
-                            orderby p.MemberStatus.Code,
-                                p.LastName,
-                                p.FirstName,
-                                p.PeopleId
-                            select p;
-                        break;
-                    case "Address":
-                        q = from p in q
-                            orderby p.PrimaryState,
-                                p.PrimaryCity,
-                                p.PrimaryAddress,
-                                p.PeopleId
-                            select p;
-                        break;
-                    case "Fellowship Leader":
-                        q = from p in q
-                            orderby p.BFClass.LeaderName,
-                                p.LastName,
-                                p.FirstName,
-                                p.PeopleId
-                            select p;
-                        break;
-                    case "Employer":
-                        q = from p in q
-                            orderby p.EmployerOther,
-                                p.LastName,
-                                p.FirstName,
-                                p.PeopleId
-                            select p;
-                        break;
-                    case "Communication":
-                        q = from p in q
-                            orderby p.EmailAddress,
-                                p.LastName,
-                                p.FirstName,
-                                p.PeopleId
-                            select p;
-                        break;
-                    case "DOB":
-                        q = from p in q
-                            orderby p.BirthMonth, p.BirthDay,
-                                p.LastName, p.FirstName
-                            select p;
-                        break;
-                }
-            else
-                switch (Pager.Sort)
-                {
-                    case "Status":
-                        q = from p in q
-                            orderby p.MemberStatus.Code descending,
-                                p.LastName descending,
-                                p.FirstName descending,
-                                p.PeopleId descending
-                            select p;
-                        break;
-                    case "Address":
-                        q = from p in q
-                            orderby p.PrimaryState descending,
-                                p.PrimaryCity descending,
-                                p.PrimaryAddress descending,
-                                p.PeopleId descending
-                            select p;
-                        break;
-                    case "Name":
-                        q = from p in q
-                            orderby p.LastName descending,
-                                p.LastName descending,
-                                p.PeopleId descending
-                            select p;
-                        break;
-                    case "Fellowship Leader":
-                        q = from p in q
-                            orderby p.BFClass.LeaderName descending,
-                                p.LastName descending,
-                                p.FirstName descending,
-                                p.PeopleId descending
-                            select p;
-                        break;
-                    case "Employer":
-                        q = from p in q
-                            orderby p.EmployerOther descending,
-                                p.LastName descending,
-                                p.FirstName descending,
-                                p.PeopleId descending
-                            select p;
-                        break;
-                    case "Communication":
-                        q = from p in q
-                            orderby p.EmailAddress descending,
-                                p.LastName descending,
-                                p.FirstName descending,
-                                p.PeopleId descending
-                            select p;
-                        break;
-                    case "DOB":
-                        q = from p in q
-                            orderby p.BirthMonth descending, p.BirthDay descending,
-                                p.LastName descending, p.FirstName descending
-                            select p;
-                        break;
-                }
-            return q;
         }
         public bool Validate(ModelStateDictionary m)
         {

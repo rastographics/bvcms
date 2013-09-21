@@ -42,7 +42,7 @@ else
 
 @helper Address(AddressInfo a)
 {
-    if (a.Address1.HasValue() || a.Preferred)
+    if (a.AddressLineOne.HasValue() || a.Preferred)
     {
         var icon = a.Name == "FamilyAddr" ? "icon-home" : "icon-male";
     <i class="@icon icon-fixedwidth"></i>

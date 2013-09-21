@@ -16,6 +16,7 @@ namespace CmsWeb.Code
     public class TrackChangesAttribute : Attribute { }
     public class NoUpdate : Attribute { }
     public class SkipField : Attribute { }
+    public class RemoveNA : Attribute { }
 
     public class FieldInfoAttribute : Attribute
     {
@@ -65,7 +66,13 @@ namespace CmsWeb.Code
                 var modelvalue = m.GetValue(model, null);
 
                 if (vm.HasAttribute<PhoneNumberAttribute>())
-                    vm.SetPropertyFromText(viewmodel, ((string)modelvalue).FmtFone());
+                    if(vm.HasAttribute<RemoveNA>())
+                        vm.SetPropertyFromText(viewmodel, ((string)modelvalue).Disallow("na").FmtFone());
+                    else
+                        vm.SetPropertyFromText(viewmodel, ((string)modelvalue).FmtFone());
+
+                else if (vm.HasAttribute<RemoveNA>())
+                    vm.SetPropertyFromText(viewmodel, ((string)modelvalue).Disallow("na"));
 
                     // if they are the same type, then straight copy
 
@@ -84,8 +91,8 @@ namespace CmsWeb.Code
         }
         public static string CopyPropertiesTo(this object viewmodel, object model, string onlyfields = "", string excludefields = "")
         {
-            var modelProps = model.GetType().GetProperties();
-            var viewmodelProps = viewmodel.GetType().GetProperties();
+            var modelProps = model.GetType().GetProperties().Where(pp => pp.CanWrite).ToArray();
+            var viewmodelProps = viewmodel.GetType().GetProperties().Where(pp => pp.CanWrite).ToArray();
             var changes = new StringBuilder();
             var only = onlyfields.Split(',');
             var exclude = excludefields.Split(',');

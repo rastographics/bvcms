@@ -1,10 +1,10 @@
 ﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
 <div class="modal-header">
     <a class="close" data-dismiss="modal">×</a>
-    <h3>Pending List to @Model.Title</h3>
+    <h3>Pending List to @Model.DialogTitle</h3>
 </div>
 <div class="modal-body">
-    <a class="helplink" target="_blank" href='@Model.HelpLink("List")'>help</a>
+    <a class="helplink" target="_blank" href='@Model.HelpLink("PendingList")'>help</a>
     @Html.EditorFor(m => m, "HiddenSearch")
     @Html.EditorFor(m => m, "HiddenMeta")
     @Html.EditorFor(m => m, "HiddenPeople")
@@ -19,9 +19,9 @@
             </tr>
         </thead>
         <tbody>
-            @for (var n = 0; n < Model.List.Count; n++)
+            @for (var n = 0; n < Model.PendingList.Count; n++)
             {
-                @Html.DisplayFor(m => m.List[n], "Person", new { index = n })
+                @Html.DisplayFor(m => m.PendingList[n], "Person", new { index = n })
             }
         </tbody>
     </table>
@@ -33,7 +33,7 @@
         <a href="/SearchAdd2/SearchPerson" class="btn ajax">Another Search</a> @:or 
         if (Model.CanAdd)
         { 
-        <a href="/SearchAdd2/NewPerson/@Model.List[Model.List.Count - 1].FamilyId" class="btn ajax">Add to Last Family</a> @:or 
+        <a href="/SearchAdd2/NewPerson/@Model.PendingList[Model.PendingList.Count - 1].FamilyId" class="btn ajax">Add to Last Family</a> @:or 
         }
     }
     <a href="/SearchAdd2/CommitAdd" class="btn btn-primary commit">Commit and Add</a>

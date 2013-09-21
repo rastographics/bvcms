@@ -1,7 +1,5 @@
-﻿@using CmsData
-@using CmsWeb.Areas.People.Models.Person
-@using UtilityExtensions
-@model CmsWeb.Areas.People.Models.Person.PersonModel
+﻿@using CmsWeb.Areas.People.Models.Person
+@model PersonModel
 @{
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Person";
@@ -30,43 +28,36 @@
                             <li><a href="#personal" data-toggle="tab" class="active">Personal</a></li>
                             <li><a href="#enrollment" data-toggle="tab">Involvement</a></li>
                             <li><a href="#membership" data-toggle="tab">Membership</a></li>
-                            <li><a href="#ministry" data-toggle="tab">Ministry</a></li>
-                            @if (Model.Person.CanUserSeeGiving)
+                            @if (User.IsInRole("Access")) 
                             {
-                                <li><a href="#giving" data-toggle="tab">Giving</a></li>
+                                <li><a href="#ministry" data-toggle="tab">Ministry</a></li> 
                             }
-                            @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
+                            @if (Model.Person.CanUserSeeGiving) 
                             {
-                                <li><a id="systemTab" href="#system" data-toggle="tab">System</a></li>
+                                <li><a href="#giving" data-toggle="tab">Giving</a></li> 
+                            }
+                            <li><a href="#emails" data-toggle="tab">Emails</a></li>
+                            @if (User.IsInRole("Edit") || User.IsInRole("Admin")) 
+                            {
+                                <li><a id="systemTab" href="#system" data-toggle="tab">Admin</a></li> 
                             }
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="personal">
-                                @Html.Partial("Personal/Display", Model.basic)
-                            </div>
-                            <div class="tab-pane" id="enrollment">
-                                @Html.Partial("Enrollment/Tab", Model)
-                            </div>
-                            <div class="tab-pane" id="membership">
-                                @Html.Partial("Membership/Tab", Model)
-                            </div>
-                            @if (User.IsInRole("Access"))
+                            <div class="tab-pane active" id="personal">@Html.Partial("Personal/Display", Model.basic)</div>
+                            <div class="tab-pane" id="enrollment">@Html.Partial("Enrollment/Tab", Model)</div>
+                            <div class="tab-pane" id="membership">@Html.Partial("Membership/Tab", Model)</div>
+                            @if (User.IsInRole("Access")) 
                             {
-                                <div class="tab-pane" id="ministry">
-                                    @Html.Partial("Ministry/Tab", Model)
-                                </div>
+                                <div class="tab-pane" id="ministry">@Html.Partial("Ministry/Tab", Model)</div> 
                             }
-                            @if (Model.Person.CanUserSeeGiving)
+                            @if (Model.Person.CanUserSeeGiving) 
                             {
-                                <div class="tab-pane" id="giving">
-                                    @Html.Partial("Giving/Tab", Model)
-                                </div>
+                                <div class="tab-pane" id="giving">@Html.Partial("Giving/Tab", Model)</div> 
                             }
-                            @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
+                            <div class="tab-pane" id="emails">@Html.Partial("Emails/Tab", Model)</div>
+                            @if (User.IsInRole("Edit") || User.IsInRole("Admin")) 
                             {
-                                <div class="tab-pane" id="system">
-                                    @Html.Partial("System/Tab", Model)
-                                </div>
+                                <div class="tab-pane" id="system">@Html.Partial("System/Tab", Model)</div> 
                             }
                         </div>
                     </div>
