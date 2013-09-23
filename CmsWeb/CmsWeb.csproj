@@ -293,6 +293,13 @@
     <Compile Include="Areas\Org\Models\OrgMoveInfo.cs" />
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
+    <Compile Include="Areas\People\Controllers\ContactController.cs" />
+    <Compile Include="Areas\People\Models\Person\Emails\EmailTransactionalModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Emails\EmailRow.cs" />
+    <Compile Include="Areas\People\Models\Person\Emails\EmailReceivedModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Emails\EmailSentModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Emails\EmailModel.cs" />
+    <Compile Include="Areas\Search\Controllers\ContactSearchController.cs" />
     <Compile Include="Areas\People\Controllers\Person\Emails.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonController.cs" />
     <Compile Include="Areas\Org\Controllers\VolunteersController.cs" />
@@ -301,13 +308,18 @@
     <Compile Include="Areas\People\Controllers\Person\Personal.cs" />
     <Compile Include="Areas\People\Controllers\Person\ExtraValues.cs" />
     <Compile Include="Areas\People\Controllers\Person\Lookups.cs" />
-    <Compile Include="Areas\People\Controllers\Person\User.cs" />
-    <Compile Include="Areas\People\Controllers\Person\Membership.cs" />
+    <Compile Include="Areas\People\Controllers\Person\Profile.cs" />
     <Compile Include="Areas\People\Controllers\Person\Ministry.cs" />
     <Compile Include="Areas\People\Controllers\Person\System.cs" />
     <Compile Include="Areas\People\Controllers\Person\Giving.cs" />
     <Compile Include="Areas\People\Controllers\Person\Family.cs" />
     <Compile Include="Areas\People\Controllers\Person\Enrollment.cs" />
+    <Compile Include="Areas\Search\Models\ContactSearch\ContactSearchInfo.cs" />
+    <Compile Include="Areas\Search\Models\ContactSearch\ContactInfo.cs" />
+    <Compile Include="Areas\Search\Models\ContactSearch\ContactSearchModel.cs" />
+    <Compile Include="Areas\People\Models\Contact\ContacteesModel.cs" />
+    <Compile Include="Areas\People\Models\Contact\ContactModel.cs" />
+    <Compile Include="Areas\People\Models\Contact\ContactorsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Attendance\AttendHistoryModel.cs" />
     <Compile Include="Areas\People\Models\Person\Attendance\AttendInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Changes\ChangeLogInfo.cs" />
@@ -316,8 +328,8 @@
     <Compile Include="Areas\People\Models\Person\Contacts\ContactsReceivedModel.cs" />
     <Compile Include="Areas\People\Models\Person\Contacts\ContactsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Changes\ChangesModel.cs" />
-    <Compile Include="Areas\People\Models\Person\FailedMail\FailedMailModel.cs" />
-    <Compile Include="Areas\People\Models\Person\FailedMail\FailedMailInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\Emails\FailedMailModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Emails\FailedMailInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\ContributionInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\ContributionsModel.cs" />
     <Compile Include="Areas\Search\Models\Query\QueryResults.cs" />
@@ -786,6 +798,10 @@
       <DependentUpon>bootstrap.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Bootstrap\bootstrapx-clickover.js" />
+    <Content Include="Scripts\Bootstrap\jquery.bootstrap-growl.js" />
+    <Content Include="Scripts\Bootstrap\jquery.bootstrap-growl.min.js">
+      <DependentUpon>jquery.bootstrap-growl.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bootstrap\spin.min.js" />
     <Content Include="Scripts\Bundle\query.js">
       <DependentUpon>query.js.bundle</DependentUpon>
@@ -910,6 +926,10 @@
     <Content Include="Scripts\jQuery\jquery.validate.min.js">
       <DependentUpon>jquery.validate.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\People\contact2.js" />
+    <Content Include="Scripts\People\contact2.min.js">
+      <DependentUpon>contact2.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\js\ExportToolBar2.js" />
     <Content Include="Scripts\js\CheckIn.min.js">
       <DependentUpon>CheckIn.js</DependentUpon>
@@ -996,11 +1016,11 @@
     <Content Include="Areas\People\Views\Person\Family\RelatedEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
-    <Content Include="Areas\People\Views\Person\Membership\Tab.cshtml" />
-    <Content Include="Areas\People\Views\Person\Membership\Edit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Membership\Notes.cshtml" />
-    <Content Include="Areas\People\Views\Person\Membership\ExtraValues.cshtml" />
-    <Content Include="Areas\People\Views\Person\EditorTemplates\UserEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MembershipEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Notes.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\ExtraValuesAdHoc.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
     <Content Include="Areas\Search\Views\Query\SelectCondition.cshtml" />
@@ -1025,12 +1045,22 @@
     <Content Include="Areas\People\Views\Person\Emails\Failed.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
-    <Content Include="Areas\People\Views\Person\Membership\Documents.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Documents.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
-    <Content Include="Areas\People\Views\Person\Membership\Entry.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Entry.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
-    <Content Include="Areas\People\Views\Person\Emails\Received.cshtml" />
-    <Content Include="Areas\People\Views\Person\Emails\Sent.cshtml" />
+    <Content Include="Areas\People\Views\Person\Emails\Emails.cshtml" />
+    <Content Include="Areas\Search\Views\ContactSearch\ContactTypeTotals.cshtml" />
+    <Content Include="Areas\Search\Views\ContactSearch\Index.cshtml" />
+    <Content Include="Areas\Search\Views\ContactSearch\Results.cshtml" />
+    <Content Include="Areas\People\Views\Contact\ContactDisplay.cshtml" />
+    <Content Include="Areas\People\Views\Contact\ContactEdit.cshtml" />
+    <Content Include="Areas\People\Views\Contact\Contactees.cshtml" />
+    <Content Include="Areas\People\Views\Contact\Contactors.cshtml" />
+    <Content Include="Areas\People\Views\Contact\Index.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\Users.cshtml" />
+    <Content Include="Areas\Manage\Views\EmailsView\View.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\ExtraValuesStandard.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1200,9 +1230,6 @@
     <None Include="Scripts\Bundle\main.js.bundle" />
     <None Include="Scripts\Bundle\main2.js.bundle" />
     <None Include="Scripts\Bundle\onlineregister.js.bundle" />
-    <Content Include="Scripts\js\contact.min.js.map">
-      <DependentUpon>contact.js</DependentUpon>
-    </Content>
     <None Include="Scripts\Bundle\TaskPage.js.bundle" />
     <Content Include="Scripts\js\Tags.min.js.map">
       <DependentUpon>Tags.js</DependentUpon>
@@ -1285,6 +1312,10 @@
     </Content>
     <Content Include="Scripts\Search\ContactSearch.min.js">
       <DependentUpon>ContactSearch.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\ContactSearch2.js" />
+    <Content Include="Scripts\Search\ContactSearch2.min.js">
+      <DependentUpon>ContactSearch2.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\PeopleSearch.min.js">
       <DependentUpon>PeopleSearch.js</DependentUpon>
@@ -2101,7 +2132,7 @@
     <Content Include="Areas\People\Views\Person\DisplayTemplates\EmailInfo.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\ProfileHeader.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
-    <Content Include="Areas\People\Views\Person\Membership\Display.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MembershipDisplay.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />
     <Content Include="Areas\Main\Views\OrgSearch\OrganizationStructure.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />
@@ -2182,7 +2213,7 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\LookupDataPage.cshtml">
     </Content>
-    <Content Include="Areas\Manage\Views\EmailsView\View.cshtml">
+    <Content Include="Areas\People\Views\Person\Emails\View.cshtml">
     </Content>
     <Content Include="Views\Home\Index.cshtml">
     </Content>

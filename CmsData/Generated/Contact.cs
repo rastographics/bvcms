@@ -51,6 +51,8 @@ namespace CmsData
 		
 		private DateTime? _ModifiedDate;
 		
+		private string _LimitToRole;
+		
    		
    		private EntitySet< Contactee> _contactees;
 		
@@ -124,6 +126,9 @@ namespace CmsData
 		
 		partial void OnModifiedDateChanging(DateTime? value);
 		partial void OnModifiedDateChanged();
+		
+		partial void OnLimitToRoleChanging(string value);
+		partial void OnLimitToRoleChanged();
 		
     #endregion
 		public Contact()
@@ -526,6 +531,28 @@ namespace CmsData
 					this._ModifiedDate = value;
 					this.SendPropertyChanged("ModifiedDate");
 					this.OnModifiedDateChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="LimitToRole", UpdateCheck=UpdateCheck.Never, Storage="_LimitToRole", DbType="nvarchar(50)")]
+		public string LimitToRole
+		{
+			get { return this._LimitToRole; }
+
+			set
+			{
+				if (this._LimitToRole != value)
+				{
+				
+                    this.OnLimitToRoleChanging(value);
+					this.SendPropertyChanging();
+					this._LimitToRole = value;
+					this.SendPropertyChanged("LimitToRole");
+					this.OnLimitToRoleChanged();
 				}
 
 			}

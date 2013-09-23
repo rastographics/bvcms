@@ -1,0 +1,13 @@
+﻿@model CmsWeb.Areas.People.Models.ContactorsModel
+<table class="table table-condensed not-wide no-border table-striped">
+    @foreach (var c in Model.Contactors())
+    { 
+        <tr>
+            <td><a class="link in" href="/Person2/@c.PeopleId">@c.Name</a></td>
+            @if (Model.CanViewComments)
+            {
+                <td><a class="remove in" href="/Contact2/RemoveContactor/@c.ContactId/@c.PeopleId">Remove</a></td>
+            }
+        </tr>
+    }
+</table>

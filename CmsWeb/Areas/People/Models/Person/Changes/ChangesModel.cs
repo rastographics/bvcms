@@ -6,11 +6,11 @@ using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.People.Models.Person
+namespace CmsWeb.Areas.People.Models
 {
     public class ChangesModel : PagedTableModel<ChangeLog, ChangeLogInfo>
     {
-        public readonly CmsData.Person person;
+        public readonly Person person;
         public ChangesModel(int id)
             : base("Time", "desc")
         {
@@ -78,14 +78,16 @@ namespace CmsWeb.Areas.People.Models.Person
                 case "Time desc":
                     return q.OrderByDescending(a => a.Created);
             }
-            return null;
+            return q;
         }
 
         public override IEnumerable<ChangeLogInfo> DefineViewList(IQueryable<ChangeLog> q)
         {
-            return from c in q
-                   let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
-                   from d in Details(c, userp.Name)
+            var q2 = from c in q
+                     let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
+                     select new { c, userp.Name };
+            return from i in q2.AsEnumerable()
+                   from d in Details(i.c, i.Name)
                    select d;
         }
 

@@ -29,6 +29,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             ViewBag.Title = "QueryBuilder";
             var m = new QueryModel();
+            m.Pager.Set("/Query/Results/");
             m.LoadQuery(id);
 
             InitToolbar(m);
@@ -149,7 +150,9 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/SaveCondition")]
         public ActionResult SaveCondition(QueryModel m)
         {
+            var sid = m.SelectedId;
             m.LoadQuery();
+            m.SelectedId = sid;
             if (m.Validate(ModelState))
                 m.UpdateCondition();
             if (ModelState.IsValid)

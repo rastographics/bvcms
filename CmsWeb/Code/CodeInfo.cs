@@ -12,6 +12,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Code
 {
+    [Serializable]
     public class CodeInfo : IModelViewModelObject
     {
         private string _name;
@@ -21,6 +22,7 @@ namespace CmsWeb.Code
         {
 
         }
+        public CodeInfo(string name) : this(null, name) { }
         public CodeInfo(object value, string name)
         {
             if (value != null)

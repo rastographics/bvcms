@@ -1,19 +1,22 @@
-﻿$(function () {
-    $.AttachFormElements = function () {
+﻿$(function() {
+    $.AttachFormElements = function() {
         $("form.ajax input.ajax-typeahead").typeahead({
             minLength: 3,
-            source: function (query, process) {
+            source: function(query, process) {
                 return $.ajax({
                     url: $(this.$element[0]).data("link"),
                     type: 'post',
                     data: { query: query },
                     dataType: 'json',
-                    success: function (jsonResult) {
+                    success: function(jsonResult) {
                         return typeof jsonResult == 'undefined' ? false : process(jsonResult);
                     }
                 });
             }
         });
+        $.DatePickersAndChosen();
+    };
+    $.DatePickersAndChosen = function() {
         $("form.ajax .date:not(.noparse)").datepicker({
             autoclose: true,
             orientation: "auto"
@@ -54,6 +57,13 @@
         });
         return false;
     });
+    $("form.ajax a.submit").live("click", function(event) {
+        event.preventDefault();
+        var $form = $(this).closest("form.ajax");
+        $form.attr("action", this.href);
+        $form.submit();
+        return false;
+    });
     $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();
         var $this = $(this);
@@ -62,6 +72,8 @@
         if (typeof url === 'undefined')
             url = $this[0].href;
         var data = $form.serialize();
+        if (data.length === 0)
+            data = {};
         if (!$this.hasClass("validate") || $form.valid()) {
             $.ajax({
                 type: 'POST',

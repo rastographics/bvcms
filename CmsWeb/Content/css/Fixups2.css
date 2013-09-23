@@ -39,9 +39,11 @@ ul.dropdown-div-admin {
 .datepicker {
     z-index: 2000;
 }
+
 thead th a {
     color: #0088cc;
 }
+
 .table th {
     font-size: 110%;
     font-weight: 600;
@@ -245,9 +247,6 @@ li.header {
     overflow: hidden;
 }
 
-#personal, #status {
-    margin-top: -2.4em;
-}
 
 form.form.form-horizontal.ajax div.form-actions {
     margin-top: .5em;
@@ -393,15 +392,6 @@ span.currentTag {
 
     div.controls.code-dropdown {
         min-height: 31px;
-    }
-
-    .display .control-group .controls p {
-        padding-top: 0;
-    }
-
-    .form-horizontal .controls p {
-        padding-top: 0;
-        padding-bottom: 0;
     }
 }
 
@@ -603,7 +593,8 @@ label.error {
     }
 
 .table.not-wide {
-    width: inherit;
+    width: auto;
+    display: table;
 }
 
 .tabs-left > .nav-tabs > li.active > a {
@@ -632,17 +623,20 @@ label.error {
     margin-bottom: 0;
 }
 
-div.inline {
+fieldset.inline, div.inline {
     display: inline-block;
 }
 
-div.table {
+fieldset.table, div.table {
     display: table;
 }
-div.cell {
+
+fieldset.cell, div.cell {
     display: table-cell;
 }
 
+form.left-gutter, 
+fieldset.left-gutter, 
 div.left-gutter {
     margin-left: 2em;
 }
@@ -654,16 +648,30 @@ div.right {
 .margin-top {
     margin-top: 1em;
 }
+.margin-bottom {
+    margin-bottom: 1em;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #ccc;
+}
+
 .pad-top {
     padding-top: 1em;
 }
+
 .pad-left {
     padding-left: 1em;
+}
+
+.margin-left {
+    margin-left: 1em;
 }
 
 .align-top {
     vertical-align: top;
 }
+
 .align-bottom {
     vertical-align: bottom;
 }
@@ -676,13 +684,128 @@ legend {
 
 fieldset {
     margin-bottom: 1em;
+    padding: 0;
 }
+
 .nowrap {
     white-space: nowrap;
 }
+
 .pagination {
     margin: 1.2em 0 0 0;
 }
+
 .primary-tabs .nav-tabs > li > a {
     padding: 8px 18px;
 }
+
+.form-horizontal .control-group {
+    margin-bottom: auto;
+}
+
+.control-group {
+    margin-bottom: auto;
+}
+
+.form-horizontal .controls p {
+    line-height: inherit;
+}
+
+a.helplink {
+    font-size: 14px;
+}
+
+.form-horizontal .w100 .control-label {
+    width: 100px;
+}
+
+.form-horizontal .w100 .controls {
+    margin-left: 120px;
+}
+
+.form-horizontal .w120 .control-label {
+    width: 120px;
+}
+
+.form-horizontal .w120 .controls {
+    margin-left: 140px;
+}
+
+.form-horizontal .w140 .control-label {
+    width: 140px;
+}
+
+.form-horizontal .w140 .controls {
+    margin-left: 160px;
+}
+
+.form-horizontal .w160 .control-label {
+    width: 160px;
+}
+
+.form-horizontal .w160 .controls {
+    margin-left: 180px;
+}
+
+.form-horizontal .w180 .control-label {
+    width: 180px;
+}
+
+.form-horizontal .w180 .controls {
+    margin-left: 200px;
+}
+
+table.table.no-border td,
+table.table.no-border th {
+    border-top: none;
+}
+
+div.input-append.date input {
+    width: 12em;
+}
+
+div.controls p {
+    margin-bottom: .5em;
+    padding-top: 5px;
+}
+
+div.controls span.help-inline {
+    padding-top: 5px;
+}
+
+div.controls input[type=checkbox] {
+    margin-bottom: 0;
+    margin-top: 9px;
+}
+
+div.height33 div.control-group {
+    height: 33px;
+}
+
+.center-table {
+    margin: 0 auto !important;
+    float: none !important;
+}
+
+.width140 div.controls {
+    width: 140px;
+}
+.width180 div.controls {
+    width: 180px;
+}
+.width220 div.controls {
+    width: 220px;
+}
+.width240 div.controls {
+    width: 240px;
+}
+.width280 div.controls {
+    width: 280px;
+}
+
+a.go-back {
+    font-size: 14px;
+}
+/*#personal, #status {
+    margin-top: -2.4em;
+}*/

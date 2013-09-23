@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using CmsData;
 using CmsWeb.Models;
 
-namespace CmsWeb.Areas.People.Models.Person
+namespace CmsWeb.Areas.People.Models
 {
-    public abstract class ContactsModel : PagedTableModel<Contact, ContactInfo>
+    public abstract class ContactsModel : PagedTableModel<CmsData.Contact, ContactInfo>
     {
         public CmsData.Person person;
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.People.Models.Person
+namespace CmsWeb.Areas.People.Models
 {
     public class FailedMailInfo
     {

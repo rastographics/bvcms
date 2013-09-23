@@ -5,7 +5,7 @@ using System.Web;
 using CmsData;
 using CmsWeb.Models;
 
-namespace CmsWeb.Areas.People.Models.Person
+namespace CmsWeb.Areas.People.Models
 {
     public class PreviousEnrollments : PagedTableModel<EnrollmentTransaction, OrgMemberInfo>
     {

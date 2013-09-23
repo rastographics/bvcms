@@ -151,7 +151,7 @@ namespace CmsWeb.Models
                 Page = page.Value;
         }
         // All
-        internal void Set(string url, int? page, int? size, string sort, string dir)
+        internal void Set(string url, int? page = 1, int? size = null, string sort = null, string dir = null)
         {
             AllowSort = true;
             URL = url;
@@ -180,14 +180,22 @@ namespace CmsWeb.Models
         public HtmlString PageLink(string label, int? page, int? size = null)
         {
             if(ShowPageSize && AllowSort)
-                return new HtmlString("<a href='{0}/{2}/{3}/{4}/{5}' class='ajax'>{1}</a>"
-                    .Fmt(URL, label, page ?? 1, size ?? PageSize, Sort ?? "na", Direction));
+                if(Sort.HasValue())
+                    return new HtmlString("<a href='{0}/{2}/{3}/{4}/{5}' class='ajax'>{1}</a>"
+                        .Fmt(URL, label, page ?? 1, size ?? PageSize, Sort ?? "na", Direction));
+                else
+                    return new HtmlString("<a href='{0}/{2}/{3}' class='ajax'>{1}</a>"
+                        .Fmt(URL, label, page ?? 1, size ?? PageSize));
             if (ShowPageSize)
                 return new HtmlString("<a href='{0}/{2}/{3}' class='ajax'>{1}</a>"
                     .Fmt(URL, label, page ?? 1, size ?? PageSize));
             if (AllowSort)
-                return new HtmlString("<a href='{0}/{2}/{3}/{4}' class='ajax'>{1}</a>"
-                    .Fmt(URL, label, page ?? 1, Sort ?? "na", Direction));
+                if(Sort.HasValue())
+                    return new HtmlString("<a href='{0}/{2}/{3}/{4}' class='ajax'>{1}</a>"
+                        .Fmt(URL, label, page ?? 1, Sort ?? "na", Direction));
+                else
+                    return new HtmlString("<a href='{0}/{2}' class='ajax'>{1}</a>"
+                        .Fmt(URL, label, page ?? 1));
             return new HtmlString("<a href='{0}/{2}' class='ajax'>{1}</a>"
                 .Fmt(URL, label, page ?? 1));
         }

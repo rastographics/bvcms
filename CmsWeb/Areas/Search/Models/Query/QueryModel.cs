@@ -280,12 +280,12 @@ namespace CmsWeb.Areas.Search.Models
                 c.Tags = string.Join(";", Tags);
             else if (PmmLabels != null)
                 c.Tags = string.Join(",", PmmLabels);
-            SelectedId = null;
             TopClause.Save(Db, increment: true);
         }
         public void EditCondition()
         {
             var c = Current;
+            SelectedId = c.Id;
             ConditionName = c.FieldInfo.Name;
             SetVisibility();
             Comparison = c.Comparison;

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.People.Models.Person;
+using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers

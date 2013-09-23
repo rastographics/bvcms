@@ -1,6 +1,6 @@
 using System;
 
-namespace CmsWeb.Areas.People.Models.Person
+namespace CmsWeb.Areas.People.Models
 {
     public class ChangeLogInfo
     {

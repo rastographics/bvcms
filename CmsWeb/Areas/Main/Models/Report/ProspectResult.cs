@@ -395,6 +395,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 											  },
 							Contacts = from ch in p.contactsHad
 										  let c = ch.contact
+                                          where c.LimitToRole.Length == 0
 										  orderby c.ContactDate descending
 										  select new ContactInfo
 										  {

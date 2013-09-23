@@ -14,6 +14,8 @@ namespace CmsWeb.Areas.Main.Controllers
     {
         public ActionResult Index()
         {
+            if (DbUtil.Db.UserPreference("UseNewLook", "false").ToBool())
+                return Redirect("/SavedQuery2");
             var m = new SavedQueryModel();
             return View(m);
         }

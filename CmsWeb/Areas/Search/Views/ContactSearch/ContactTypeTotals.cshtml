@@ -1,0 +1,53 @@
+﻿@using CmsWeb
+@model IEnumerable<CmsData.View.ContactTypeTotal>
+@{
+    ViewBag.Title = "ContactTypeTotals";
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+}
+@section scripts
+{
+    <script>
+        $(function () {
+            $("a.delete").click(function (ev) {
+                ev.preventDefault();
+                if (confirm("are you sure?"))
+                    window.location = $(this).attr("href");
+                return false;
+            });
+        });
+    </script>
+}
+<form class="ajax left-gutter" method="POST">
+    <fieldset>
+        <legend>Contact Type Totals</legend>
+        <table class="table table-striped not-wide">
+            <thead>
+                <tr>
+                    <td>Description</td>
+                    <td>#Contacts</td>
+                    <td>#People</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in Model)
+                {
+                    <tr>
+                        <td>
+                            <a class="submit" href="/ContactSearch2/ContactTypeQuery/@i.Id">@i.Description</a>
+                        </td>
+                        <td class="right">@i.Count</td>
+                        <td class="right">@i.CountPeople</td>
+                        <td>
+                            @if (ViewBag.candelete == true)
+                            {
+                                <a class="submit" href="/ContactSearch2/DeleteContactsForType/@i.Id">
+                                    <img src="~/images/delete.gif" /></a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </fieldset>
+</form>

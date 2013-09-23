@@ -191,21 +191,10 @@
                     <li>@Helper.JQueryIdLink("Email Support", "emailsupport")</li>
                     @if (innewlook)
                     {
-                        <li>@Html.ActionLink("Use Old SearchBuilder", "UseSearchBuilder", "APITest", new { Area = "" }, null)</li>
-                        <li>@Html.ActionLink("Use New SearchBuilder", "UseAdvancedSearch", "APITest", new { Area = "" }, null)</li>
-                        <li>@Html.ActionLink("Use Old Person Page", "UseOldPersonPage", "APITest", new { Area = "" }, null)</li>
-                        <li>@Html.ActionLink("Use New Person Page", "UseNewPersonPage", "APITest", new { Area = "" }, null)</li>
+                        <li>@Html.ActionLink("Use Old Look", "UseOldLook", "APITest", new { Area = "" }, null)</li>
+                        <li>@Html.ActionLink("Use New Look", "UseNewLook", "APITest", new { Area = "" }, null)</li>
                     }
                     <li>@Html.ActionLink("About", "About", "Home", new { Area = "" }, null)</li>
-                    @*                    <li class="header">
-                        <span>Tutorials</span>
-                    </li>
-                    @{
-                        var tutorialMenu = Server.MapPath(".") + "/Content/Tutorials/" + Util.Helpfile + "_Menu.cshtml";
-                        if (File.Exists(tutorialMenu)) {
-                            Html.RenderPartial("/Content/Tutorials/" + Util.Helpfile + "_Menu.cshtml");
-                        }
-                    }			  *@
                 </ul>
             </div>
         </li>

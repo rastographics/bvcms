@@ -372,6 +372,13 @@ namespace CmsData
             Save(Db);
             return nc.Id;
         }
+        public void Reset(CMSDataContext Db)
+        {
+            foreach (var c in Conditions)
+                c.DeleteClause();
+            SetQueryType(QueryType.Group);
+            SetComparisonType(CompareType.AllTrue);
+        }
         public static Condition CreateNewGroupClause(string name = null)
         {
             var c = new Condition
@@ -442,10 +449,8 @@ namespace CmsData
         }
         public Condition AddNewClause(QueryType type, CompareType op, object value = null)
         {
-            var c = new Condition();
+            var c = AddNewClause();
             c.SetQueryType(type);
-            AllConditions.Add(c.Id, c);
-            c.ParentId = Id;
             c.SetComparisonType(op);
             if (type == QueryType.MatchAnything)
             {

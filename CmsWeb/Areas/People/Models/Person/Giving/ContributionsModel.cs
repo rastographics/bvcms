@@ -4,7 +4,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsWeb.Models;
 
-namespace CmsWeb.Areas.People.Models.Person.Giving
+namespace CmsWeb.Areas.People.Models
 {
     public class ContributionsModel : PagedTableModel<Contribution, ContributionInfo>
     {

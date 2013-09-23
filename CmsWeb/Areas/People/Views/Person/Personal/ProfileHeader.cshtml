@@ -1,7 +1,7 @@
 ﻿@using System.Text
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
-@model CmsWeb.Areas.People.Models.Person.PersonModel
+@model CmsWeb.Areas.People.Models.PersonModel
 @if (Model.Person.CanUserEditBasic)
 {
     <a id="profile-picture" href="#picture-modal" title="Click to see larger version or upload new" data-toggle="modal">@Picture()</a>
