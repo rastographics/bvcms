@@ -71,8 +71,6 @@
 </head>
 <body>
     <!--
-    Name: @Model.getDivision().Name<br />
-    Division ID: @Model.getDivision().Id<br />
     Setting Count: @Model.getCount( SmallGroupFinderModel.TYPE_SETTING )<br />
     Filter Count: @Model.getCount( SmallGroupFinderModel.TYPE_FILTER )<br />
     <br />
@@ -114,7 +112,7 @@
                         </form>
                     </div>
                     <div>
-                        @Html.Raw(Model.GetGutter())
+                        @Html.Raw(Model.getGutter())
                     </div>
                 </td>
                 <td width="99%" class="top">
@@ -126,7 +124,7 @@
                     {
                         GroupLookup gl = new GroupLookup();
                         gl.populateFromOrg(group);
-                        @Html.Raw(Model.ReplaceAndWrite(gl));
+                        @Html.Raw(Model.replaceAndWrite(gl));
                     }
                 </td>
             </tr>

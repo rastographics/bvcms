@@ -21,9 +21,11 @@ namespace CmsWeb.Areas.Public.Models
 
 		SmallGroupFinder sgf;
 		Dictionary<string, string> search;
+		List<int> divList = new List<int>();
 
 		string sTemplate;
 		string sGutter;
+		string sShell;
 
 		public void load(string sName)
 		{
@@ -33,8 +35,32 @@ namespace CmsWeb.Areas.Public.Models
 			var sr = new StringReader(xml);
 			sgf = (SmallGroupFinder)xs.Deserialize(sr);
 
+			string[] divs = sgf.divisionid.Split(',');
+			foreach (var div in divs)
+			{
+				divList.Add(Convert.ToInt32(div));
+			}
+
+			sShell = DbUtil.Content(sgf.shell, "");
 			sTemplate = DbUtil.Content(sgf.layout, "");
 			sGutter = DbUtil.Content(sgf.gutter, "");
+		}
+
+		public Boolean hasShell()
+		{
+			if (sShell != null && sShell.Length > 0)
+				return true;
+			else
+				return false;
+		}
+
+		public String createFromShell()
+		{
+			sShell = sShell.Replace("[SGF:Gutter]", getGutter());
+			sShell = sShell.Replace("[SGF:Form]", getForm());
+			sShell = sShell.Replace("[SGF:Groups]", getGroupList());
+
+			return sShell;
 		}
 
 		public void setSearch(Dictionary<string, string> newserach)
@@ -66,13 +92,11 @@ namespace CmsWeb.Areas.Public.Models
 				return false;
 		}
 
-		public Division getDivision()
+		public List<Division> getDivisions()
 		{
-			var d = (from e in DbUtil.Db.Divisions
-						where e.Id == sgf.divisionid
-						select e).SingleOrDefault();
-
-			return d;
+			return (from e in DbUtil.Db.Divisions
+					  where divList.Contains(e.Id)
+					  select e).ToList();
 		}
 
 		public int getCount(int type)
@@ -132,7 +156,7 @@ namespace CmsWeb.Areas.Public.Models
 			else
 			{
 				i = (from e in DbUtil.Db.OrganizationExtras
-					  where e.Organization.DivOrgs.Any(ee => ee.DivId == sgf.divisionid)
+					  where e.Organization.DivOrgs.Any(ee => divList.Contains(ee.DivId))
 					  where e.Field == f.name
 					  select new FilterItem
 					  {
@@ -148,7 +172,7 @@ namespace CmsWeb.Areas.Public.Models
 		public List<Organization> getGroups()
 		{
 			var orgs = from o in DbUtil.Db.Organizations
-						  where o.DivOrgs.Any(ee => ee.DivId == sgf.divisionid)
+						  where o.DivOrgs.Any(ee => divList.Contains(ee.DivId))
 						  select o;
 
 			foreach (var filter in search)
@@ -163,7 +187,7 @@ namespace CmsWeb.Areas.Public.Models
 			return orgs.ToList<Organization>();
 		}
 
-		public string ReplaceAndWrite(GroupLookup gl)
+		public string replaceAndWrite(GroupLookup gl)
 		{
 			string temp = HttpUtility.HtmlDecode(string.Copy(sTemplate));
 
@@ -177,9 +201,53 @@ namespace CmsWeb.Areas.Public.Models
 			return temp;
 		}
 
-		public string GetGutter()
+		public string getGutter()
 		{
 			return sGutter;
+		}
+
+		public string getForm()
+		{
+			string sForm = "<form method=\"post\"><table class=\"sgfform\">";
+
+			for (var iX = 0; iX < getCount(SmallGroupFinderModel.TYPE_FILTER); iX++)
+			{
+				var f = getFilter(iX);
+				var fi = getFilterItems(iX);
+
+				sForm += "<tr class=\"sgftr\">";
+				sForm += "<td class=\"sgftdlabel\">" + f.title + ":</td>";
+				sForm += "<td class=\"sgftdfield\">";
+				sForm += "<select name=" + f.name + ">";
+
+				foreach (var item in fi)
+				{
+					sForm += "<option " + (IsSelectedValue(f.name, item.value) ? "selected" : "") + ">" + item.value + "</option>";
+				}
+
+				sForm += "</select></td></tr>";
+			}
+
+			var submitText = getSetting("SubmitText");
+
+			sForm += "<tr><td colspan=\"2\" class=\"sgfsubmitholder\"><input class=\"sgfsubmitbutton\" type=\"submit\" value=\"" + (submitText != null ? submitText.value : "Find Groups") + "\" /></td></tr>";
+			sForm += "</table></form>";
+
+			return sForm;
+		}
+
+		public string getGroupList()
+		{
+			string sList = "";
+
+			foreach (var group in getGroups())
+			{
+				GroupLookup gl = new GroupLookup();
+				gl.populateFromOrg(group);
+				sList += replaceAndWrite(gl);
+			}
+
+			return sList;
 		}
 	}
 
