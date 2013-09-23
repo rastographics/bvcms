@@ -266,6 +266,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 
             var cq = from ce in DbUtil.Db.Contactees
                      where ce.PeopleId == p.PeopleId
+                     where ce.contact.LimitToRole.Length == 0
                      orderby ce.contact.ContactDate descending
                      select new
                      {

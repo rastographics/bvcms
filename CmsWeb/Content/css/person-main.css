@@ -745,17 +745,17 @@ table.enrollments tr.oddrow > td {
   width: 100px;
 }
 @media (max-width: 1200px) {
-  .form-horizontal .control-label {
+  .form-horizontal:not(.table) .control-label {
     float: none;
     text-align: left;
     width: auto;
     margin-bottom: 0;
   }
-  .form-horizontal .controls {
+  .form-horizontal:not(.table) .controls {
     margin-left: 0;
   }
-  .form-horizontal .controls p {
+  .form-horizontal:not(.table) .controls p {
     padding-top: 0;
-    padding-bottom: 9px;
+    /*padding-bottom: 9px;*/
   }
 }

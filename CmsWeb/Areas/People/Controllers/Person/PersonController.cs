@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.People.Models.Person;
+using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 using System.Web.Routing;
 

@@ -35,12 +35,8 @@ namespace CmsWeb.Areas.Main.Controllers
 		{
 			if (!id.HasValue)
 				return Content("no id");
-//            if (DbUtil.Db.UserPreference("newlook3", "false").ToBool()
-//                && DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
-//            {
-//                var url = Regex.Replace(Request.RawUrl, @"(.*)/(Person/Index)/(\d*)", "$1/Person2/$3", RegexOptions.IgnoreCase);
-//                return Redirect(url);
-//            }
+            if (DbUtil.Db.UserPreference("UseNewLook", "false").ToBool())
+                return Redirect("/Person2/" + id);
             var m = new PersonModel(id);
 			if (User.IsInRole("Access"))
 			{

@@ -152,8 +152,8 @@
             $("a[href='#current']").click().tab("show");
         }
     });
-    $("a[href='#membership']").on('shown', function (e) {
-        var id = "#status";
+    $("a[href='#profile']").on('shown', function (e) {
+        var id = "#memberstatus";
         if ($(id).length < 2) {
             $("a[href='" + id + "']").click().tab("show");
             $.cookie('lasttab', id);
@@ -173,8 +173,15 @@
             $.cookie('lasttab', id);
         }
     });
+    $("a[href='#emails']").on('shown', function (e) {
+        var id = "#receivedemails";
+        if ($(id).length < 2) {
+            $("a[href='" + id + "']").click().tab("show");
+            $.cookie('lasttab', id);
+        }
+    });
     $("a[href='#system']").on('shown', function (e) {
-        var id = "#changes";
+        var id = "#user";
         if ($(id).length < 2) {
             $("a[href='" + id + "']").click().tab("show");
             $.cookie('lasttab', id);

@@ -2,7 +2,7 @@
 @model QueryModel
 <form id="editForm" action="/Query" method="post">
     @Html.Hidden("ConditionName")
-    @Html.Hidden("SelectedId")
+    @Html.Hidden("SelectedId", Model.SelectedId)
     <table style="margin: 1em; padding: 3px;">
         <tr id="CategoryDiv2">
             <td colspan="2">

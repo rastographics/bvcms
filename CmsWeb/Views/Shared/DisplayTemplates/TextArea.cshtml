@@ -1,8 +1,7 @@
-﻿@using UtilityExtensions
-@model string
+﻿@model string
 <div class="control-group">
     @Html.LabelFor(m => m, new { @class="control-label"})
-    <div class="controls">
-        @Html.TextAreaFor(m => m, new { rows = 5, disabled="disabled" })<span class="help-block">@Html.Raw(ViewData["help"])</span>
+    <div class="controls display">
+        @Html.TextAreaFor(m => m, new { disabled="disabled" })<span class="help-block">@Html.Raw(ViewData["help"])</span>
     </div>
 </div>

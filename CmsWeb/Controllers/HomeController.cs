@@ -11,7 +11,7 @@ using CmsData;
 using System.Diagnostics;
 using CmsData.API;
 using CmsData.Registration;
-using CmsWeb.Areas.People.Models.Person;
+using CmsWeb.Areas.People.Models;
 using Dapper;
 using UtilityExtensions;
 using System.Threading;

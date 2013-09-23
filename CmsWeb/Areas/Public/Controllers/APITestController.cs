@@ -63,6 +63,18 @@ namespace CmsWeb.Areas.Public.Controllers
 			return Content(APIFunctions.TestAPI(init, script, args));
 		}
         [Authorize(Roles = "Newlook")]
+        public ActionResult UseNewLook()
+        {
+            DbUtil.Db.SetUserPreference("UseNewLook", true);
+            return Redirect("/Person2/Current");
+        }
+        [Authorize(Roles = "Newlook")]
+        public ActionResult UseOldLook()
+        {
+            DbUtil.Db.SetUserPreference("UseNewLook", false);
+            return Redirect("/");
+        }
+        [Authorize(Roles = "Newlook")]
         public ActionResult UseAdvancedSearch()
         {
             return Redirect("/Query/");

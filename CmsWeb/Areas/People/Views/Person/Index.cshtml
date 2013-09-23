@@ -1,4 +1,4 @@
-﻿@using CmsWeb.Areas.People.Models.Person
+﻿@using CmsWeb.Areas.People.Models
 @model PersonModel
 @{
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
@@ -27,7 +27,7 @@
                         <ul class="nav nav-tabs">
                             <li><a href="#personal" data-toggle="tab" class="active">Personal</a></li>
                             <li><a href="#enrollment" data-toggle="tab">Involvement</a></li>
-                            <li><a href="#membership" data-toggle="tab">Membership</a></li>
+                            <li><a href="#profile" data-toggle="tab">Profile</a></li>
                             @if (User.IsInRole("Access")) 
                             {
                                 <li><a href="#ministry" data-toggle="tab">Ministry</a></li> 
@@ -39,13 +39,13 @@
                             <li><a href="#emails" data-toggle="tab">Emails</a></li>
                             @if (User.IsInRole("Edit") || User.IsInRole("Admin")) 
                             {
-                                <li><a id="systemTab" href="#system" data-toggle="tab">Admin</a></li> 
+                                <li><a id="systemTab" href="#system" data-toggle="tab">System</a></li> 
                             }
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="personal">@Html.Partial("Personal/Display", Model.basic)</div>
                             <div class="tab-pane" id="enrollment">@Html.Partial("Enrollment/Tab", Model)</div>
-                            <div class="tab-pane" id="membership">@Html.Partial("Membership/Tab", Model)</div>
+                            <div class="tab-pane" id="profile">@Html.Partial("Profile/Tab", Model)</div>
                             @if (User.IsInRole("Access")) 
                             {
                                 <div class="tab-pane" id="ministry">@Html.Partial("Ministry/Tab", Model)</div> 

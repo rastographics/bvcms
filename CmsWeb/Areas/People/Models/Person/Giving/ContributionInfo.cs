@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CmsWeb.Areas.People.Models.Person.Giving
+namespace CmsWeb.Areas.People.Models
 {
     public class ContributionInfo
     {

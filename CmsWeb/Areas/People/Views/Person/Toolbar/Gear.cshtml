@@ -1,5 +1,4 @@
-﻿@model IEnumerable<CmsData.User>
-@{
+﻿@{
     var admin = User.IsInRole("Admin");
     var edit = User.IsInRole("Edit");
 }
@@ -13,13 +12,6 @@
                     <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId">Put in New Family</a></li>
                     <li><a id="merge" href="/Person2/Merge/@ViewBag.PeopleId">Merge this duplicate</a></li>
                     <li><a id="deletePerson" href="/Person2/Delete/@ViewBag.PeopleId">Delete this record</a></li>
-
-                    <li class="header">Manage Users</li>
-                    @foreach (var u in Model)
-                    {
-                        <li><a class="manageUser" href="/Person2/UserEdit/@u.UserId">@u.Username</a></li>
-                    }
-                    <li><a class="manageUser" href="/Person2/UserEdit">Add New User</a></li>
                 </ul>
                 <ul class="unstyled pull-left span6">
                     @Html.Partial("Toolbar/GearStandard")

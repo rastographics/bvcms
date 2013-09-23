@@ -1,4 +1,4 @@
-﻿@model CmsWeb.Areas.People.Models.Person.PersonModel
+﻿@model CmsWeb.Areas.People.Models.PersonModel
 @using (Html.BeginForm("UploadPicture", "Person", new { id = Model.PeopleId }, FormMethod.Post, 
     new {enctype = "multipart/form-data", @class = "modal hide fade", id = "picture-modal"}))
 {

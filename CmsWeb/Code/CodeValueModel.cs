@@ -11,6 +11,7 @@ using System.Data.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using iTextSharp.text;
 using UtilityExtensions;
 using System.Web;
 using System.Configuration;
@@ -390,6 +391,21 @@ namespace CmsWeb.Code
         public SelectList MinistrySelectList() { return MinistryList().ToSelect(); }
         public SelectList ContactReasonSelectList() { return ContactReasonCodes().ToSelect(); }
         public SelectList ContactTypeSelectList() { return ContactTypeCodes().ToSelect(); }
+        
+        public IEnumerable<CodeValueItem> ContactResultList()
+        {
+            return new List<CodeValueItem> 
+			{
+				new CodeValueItem { Value = "(not selected)" },
+				new CodeValueItem { Value = "Attempted/Not Available" },
+				new CodeValueItem { Value = "Left Note Card" },
+				new CodeValueItem { Value = "Left Message" },
+				new CodeValueItem { Value = "Contact Made" },
+				new CodeValueItem { Value = "Gospel Shared" },
+				new CodeValueItem { Value = "Prayer Request Received" },
+				new CodeValueItem { Value = "Gift Bag Given" },
+			};
+        }
 
         public SelectList PositionInFamilySelectList() { return PositionInFamilyList().ToSelect(); }
 

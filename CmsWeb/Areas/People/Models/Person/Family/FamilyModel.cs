@@ -4,7 +4,7 @@ using System.Linq;
 using CmsData;
 using CmsWeb.Models;
 
-namespace CmsWeb.Areas.People.Models.Person
+namespace CmsWeb.Areas.People.Models
 {
     public class FamilyModel : PagedTableModel<CmsData.Person, FamilyMemberInfo>
     {

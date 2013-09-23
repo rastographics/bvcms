@@ -1,0 +1,71 @@
+﻿@model CmsWeb.Areas.People.Models.ContactModel
+@{
+    ViewBag.Title = "Contact";
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+}
+@section head
+{
+    <style>
+        textarea {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            width: 100%;
+            height: 120px;
+        }
+
+        div.display textarea {
+            border: none;
+            cursor: text;
+            height: auto;
+        }
+    </style>
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/People/contact2.js")
+    @Fingerprint.Script("/Scripts/Bootstrap/jquery.bootstrap-growl.js")
+    @if (ViewBag.edit == true)
+    {
+        <script> $(function () { $(".in").addClass("out"); }); </script>
+    }
+}
+@Html.Hidden("Id")
+<div class="container">
+    <div class="table not-wide">
+        <fieldset class="border-bottom">
+            <legend>Contact <a href="/ContactSearch2" class="pull-right go-back">Search Contacts</a></legend>
+            <form id="form-contact" class="ajax form-horizontal w120" method="post">
+                @Html.Partial("ContactDisplay", Model)
+            </form>
+        </fieldset>
+        <div class="table not-wide">
+            <fieldset class="inline align-top">
+                <legend>Ministry Team</legend>
+                <form id="contactors" action="/Contacts/Contactors/@Model.ContactId">
+                    @Html.Partial("Contactors", Model.Ministers)
+                </form>
+                @if (Model.CanViewComments)
+                {
+                    <div class="right">
+                        <a href="/SearchAdd/Index/@Model.ContactId?type=contactor" class="btn addperson in">Add Team Member</a>
+                        <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.ContactId" class="btn btn-success in">Add New Contact for Team</a>
+                    </div>
+                }
+            </fieldset>
+            <fieldset class="inline align-top left-gutter">
+                <legend>Those Contacted</legend>
+                <form id="contactees" action="/Contacts/Contactees/@Model.ContactId">
+                    @Html.Partial("Contactees", Model.MinisteredTo)
+                </form>
+                @if (Model.CanViewComments)
+                {
+                    <div class="right">
+                        <br />
+                        <a href="/SearchAdd/Index/@Model.ContactId?type=contactee" class="btn addperson in">Add Contactee</a>
+                    </div>
+                }
+            </fieldset>
+        </div>
+    </div>
+</div>

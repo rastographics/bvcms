@@ -15,7 +15,7 @@ using CmsWeb.Models;
 using UtilityExtensions;
 using System.Text;
 
-namespace CmsWeb.Areas.People.Models.Person
+namespace CmsWeb.Areas.People.Models
 {
     public class EmailInfo : IModelViewModelObject
     {
@@ -105,7 +105,7 @@ namespace CmsWeb.Areas.People.Models.Person
 
         [NoUpdate]
         public int PeopleId { get; set; }
-        public CmsData.Person person { get; set; }
+        public Person person { get; set; }
 
         [DisplayName("Title"), StringLength(10)]
         public string TitleCode { get; set; }

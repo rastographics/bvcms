@@ -10,7 +10,7 @@ using System.Data.Linq;
 using System.Text;
 using CmsWeb.Code;
 
-namespace CmsWeb.Areas.People.Models.Person
+namespace CmsWeb.Areas.People.Models
 {
     public class MemberInfo
     {

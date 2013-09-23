@@ -197,7 +197,7 @@
     <EmailRecipient Title="Email Recipients" Type="IntegerEqual" DisplayAs="EmailRecipientForId">
       Enter Email ID number.
     </EmailRecipient>
-    <MadeContactTypeAsOf Title="Made Contact Type As Of" Type="Code" DisplayAs="MadeContactTypeAsOf({0:d}, {1:d}, {2})" Params="StartDate,EndDate,Ministry" DataSource="ContactTypeCodes0" DataValueField="IdCode">
+    <MadeContactTypeAsOf Title="Made Contact Type As Of" Type="Code" DisplayAs="MadeContactTypeAsOf({0:d}, {1:d}, {2})" Params="StartDate,EndDate,Ministry" DataSource="ContactTypeList" DataValueField="IdCode">
       Select Contact Type from the list and pick the date range.
     </MadeContactTypeAsOf>
     <HasContacts Title="Has Contacts" Type="Bit" DataValueField="IdCode">

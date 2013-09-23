@@ -2,7 +2,9 @@ using System.Text;
 using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
+using CmsData;
 using CmsWeb.Models.ContactPage;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
@@ -12,6 +14,8 @@ namespace CmsWeb.Areas.Main.Controllers
         [GET("Contact/{id}")]
         public ActionResult Index(int id)
         {
+            if (DbUtil.Db.UserPreference("UseNewLook", "false").ToBool())
+                return Redirect("/Contact2/" + id);
             var m = new ContactModel(id);
             if (m.contact == null)
                 return Content("contact does not exist");

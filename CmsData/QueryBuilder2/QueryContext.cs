@@ -18,20 +18,33 @@ namespace CmsData
         }
         public Condition ScratchPadCondition()
         {
-            var c = Condition.CreateNewGroupClause();
-            c.AddNewClause();
-            var q = new Query
+            Condition c;
+            var q = (from cc in Queries
+                     where cc.Owner == Util.UserName
+                     where !cc.Ispublic
+                     where cc.Name == Util.ScratchPad2
+                     orderby cc.LastRun // get the oldest one
+                     select cc).FirstOrDefault();
+            if (q == null)
             {
-                QueryId = c.Id,
-                Owner = Util.UserName,
-                Created = DateTime.Now,
-                LastRun = DateTime.Now,
-                Name = Util.ScratchPad2,
-                Text = c.ToXml()
-            };
-            Queries.InsertOnSubmit(q);
-            SubmitChanges();
-            return q.ToClause();
+                c = Condition.CreateNewGroupClause();
+                q = new Query
+                {
+                    QueryId = c.Id,
+                    Owner = Util.UserName,
+                    Created = DateTime.Now,
+                    LastRun = DateTime.Now,
+                    Name = Util.ScratchPad2,
+                    Text = c.ToXml()
+                };
+                Queries.InsertOnSubmit(q);
+            }
+            else
+                c = q.ToClause();
+
+            c.Id = q.QueryId; // force these to match
+            c.justloadedquery = q;
+            return c;
         }
         public List<Query> FetchLastFiveQueries()
         {

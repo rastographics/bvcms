@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace CmsWeb.Areas.People.Models.Person
+namespace CmsWeb.Areas.People.Models
 {
     public class ContactInfo
     {

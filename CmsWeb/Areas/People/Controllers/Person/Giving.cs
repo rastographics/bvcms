@@ -2,7 +2,7 @@ using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
-using CmsWeb.Areas.People.Models.Person.Giving;
+using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
