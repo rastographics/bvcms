@@ -806,6 +806,17 @@ div.height33 div.control-group {
 a.go-back {
     font-size: 14px;
 }
+.table.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /*#personal, #status {
     margin-top: -2.4em;
 }*/
+.min-width15em {
+    min-width: 15em;
+}
+.min-width20em {
+    min-width: 20em;
+}

@@ -26,20 +26,19 @@
         var f = $(this).closest("form");
         var q = f.serialize();
         var loc = $(this).attr("href");
-        var modal = f.closest("div.modal");
         $.post(loc, q, function (ret) {
-            modal.modal("hide");
+            f.modal("hide");
             if (ret.message) {
                 alert(ret.message);
             } else
                 switch (ret.from) {
                     case 'RelatedFamily':
-                        $("#related-families-div").load('/Person2/RelatedFamilies/' + ret.pid, {}, function () {
+                        $("#related-families-div").loadWith('/Person2/RelatedFamilies/' + ret.pid, function () {
                             $(ret.key).click();
                         });
                         break;
                     case 'Family':
-                        $("#family-div").load('/Person2/FamilyGrid/' + ret.pid, {});
+                        $("#family-div").loadWith('/Person2/FamilyMembers/' + ret.pid);
                         break;
                     case 'Menu':
                         window.location = '/Person2/' + ret.pid;

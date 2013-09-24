@@ -40,14 +40,14 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Contact2/Contactees/{cid:int}")]
         public ActionResult Contactees(int cid)
         {
-            var m = new ContacteesModel(cid);
-            return View(m);
+            var m = new ContactModel(cid);
+            return View(m.MinisteredTo);
         }
         [POST("Contact2/Contactors/{cid:int}")]
         public ActionResult Contactors(int cid)
         {
-            var m = new ContactorsModel(cid);
-            return View(m);
+            var m = new ContactModel(cid);
+            return View(m.Ministers);
         }
         [POST("Contact2/ContactEdit/{cid:int}")]
         public ActionResult ContactEdit(int cid)

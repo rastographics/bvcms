@@ -25979,22 +25979,29 @@ $(function() {
 $(function () {
     $("a.searchadd").live("click", function (ev) {
         ev.preventDefault();
-        $("#search-add").load($(this).attr("href"), {}, function () {
-            $(this).modal("show");
-            $(this).on('hidden', function () {
-                $(this).empty();
+        $("<form id='search-add' class='modal fade hide validate ajax form-horizontal' data-width='700' data-keyboard='false' data-backdrop='static' />")
+            .load($(this).attr("href"), {}, function () {
+                $(this).modal("show");
+                $.AttachFormElements();
+                $(this).validate({
+                    highlight: function (element) {
+                        $(element).closest(".control-group").addClass("error");
+                    },
+                    unhighlight: function (element) {
+                        $(element).closest(".control-group").removeClass("error");
+                    }
+                });
+                $(this).on('hidden', function () {
+                    $(this).remove();
+                });
             });
-            $.AttachFormElements();
-            $(this).validate({
-                highlight: function (element) {
-                    $(element).closest(".control-group").addClass("error");
-                },
-                unhighlight: function (element) {
-                    $(element).closest(".control-group").removeClass("error");
-                }
-            });
-        });
     });
+    $.fn.loadWith = function(u, f){
+        var c=$(this);
+        $.post(u, function(d){
+            c.replaceWith(d).ready(f);
+        });
+    };
     $("#search-add a.clear").live('click', function (ev) {
         ev.preventDefault();
         $("#name").val('');

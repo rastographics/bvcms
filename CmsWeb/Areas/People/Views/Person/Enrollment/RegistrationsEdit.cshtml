@@ -1,0 +1,49 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.RegistrationsModel
+<form class="form form-horizontal margin-top left-gutter ajax span12" method="post">
+    <fieldset>
+        <legend>Registration History
+            @FormActions()
+        </legend>
+        <div class="row-fluid">
+            <div class="inline align-top width140">
+                @Html.EditorFor(m => m.ShirtSize)
+                @Html.EditorFor(m => m.CustodyIssue)
+                @Html.EditorFor(m => m.OkTransport)
+                @Html.EditorFor(m => m.Emcontact)
+                @Html.EditorFor(m => m.Emphone)
+            </div>
+            <div class="inline align-top">
+                @Html.EditorFor(m => m.Insurance)
+                @Html.EditorFor(m => m.Policy)
+                @Html.EditorFor(m => m.Doctor)
+                @Html.EditorFor(m => m.Docphone)
+                @Html.EditorFor(m => m.Mname)
+                @Html.EditorFor(m => m.Fname)
+                @Html.EditorFor(m => m.Coaching)
+                @Html.EditorFor(m => m.Member)
+                @Html.EditorFor(m => m.ActiveInOtherChurch)
+            </div>
+        </div>
+        <div class="well">
+            <div class="inline align-top">
+                @Html.EditorFor(m => m.Tylenol)
+                @Html.EditorFor(m => m.Advil)
+                @Html.EditorFor(m => m.Robitussin)
+                @Html.EditorFor(m => m.Maalox)
+            </div>
+        </div>
+        @Html.EditorFor(m => m.MedicalDescription)
+        <div>
+        @Html.EditorFor(m => m.Comments)</div>
+        <div>@FormActions() </div>
+    </fieldset>
+</form>
+@helper FormActions()
+{
+    if (User.IsInRole("Edit"))
+    {
+        <a href="/Person2/Registrations/@Model.person.PeopleId" class="pull-right btn btn-primary ajax">Cancel</a>
+        <a href="/Person2/RegistrationsUpdate/@Model.person.PeopleId" class="pull-right btn btn-primary ajax">Edit</a>
+    }
+}

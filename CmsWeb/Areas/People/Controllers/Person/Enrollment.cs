@@ -49,5 +49,26 @@ namespace CmsWeb.Areas.People.Controllers
             UpdateModel(m.Pager);
             return View("Enrollment/Attendance", m);
         }
+        [POST("Person2/Registrations/{id}")]
+        public ActionResult Registrations(int id)
+        {
+            var m = new RegistrationsModel(id);
+            DbUtil.LogActivity("Viewing Registrations for: {0}".Fmt(m.person.Name));
+            return View("Enrollment/Registrations", m);
+        }
+        [POST("Person2/RegistrationsEdit/{id}")]
+        public ActionResult RegistrationsEdit(int id)
+        {
+            var m = new RegistrationsModel(id);
+            return View("Enrollment/RegistrationsEdit", m);
+        }
+        [POST("Person2/RegistrationsUpdate/{id}")]
+        public ActionResult RegistrationsUpdate(int id)
+        {
+            var m = new RegistrationsModel(id);
+            m.UpdateModel();
+            DbUtil.LogActivity("Updating Registrations for: {0}".Fmt(m.person.Name));
+            return View("Enrollment/Registrations", m);
+        }
     }
 }

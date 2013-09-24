@@ -39,33 +39,33 @@
                 @Html.Partial("ContactDisplay", Model)
             </form>
         </fieldset>
-        <div class="table not-wide">
+        <div class="table center not-wide">
             <fieldset class="inline align-top">
-                <legend>Ministry Team</legend>
-                <form id="contactors" action="/Contacts/Contactors/@Model.ContactId">
+                <legend>Ministry Team @Add("Contactor")</legend>
+                <form id="contactors" action="/Contacts/Contactors/@Model.ContactId" class="min-width15em">
                     @Html.Partial("Contactors", Model.Ministers)
                 </form>
                 @if (Model.CanViewComments)
                 {
                     <div class="right">
-                        <a href="/SearchAdd/Index/@Model.ContactId?type=contactor" class="btn addperson in">Add Team Member</a>
                         <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.ContactId" class="btn btn-success in">Add New Contact for Team</a>
                     </div>
                 }
             </fieldset>
             <fieldset class="inline align-top left-gutter">
-                <legend>Those Contacted</legend>
-                <form id="contactees" action="/Contacts/Contactees/@Model.ContactId">
+                <legend>Those Contacted @Add("Contactee")</legend>
+                <form id="contactees" action="/Contacts/Contactees/@Model.ContactId" class="min-width15em">
                     @Html.Partial("Contactees", Model.MinisteredTo)
                 </form>
-                @if (Model.CanViewComments)
-                {
-                    <div class="right">
-                        <br />
-                        <a href="/SearchAdd/Index/@Model.ContactId?type=contactee" class="btn addperson in">Add Contactee</a>
-                    </div>
-                }
             </fieldset>
         </div>
     </div>
 </div>
+
+@helper Add(string type)
+{
+    if (Model.CanViewComments)
+    {
+        <a href="/SearchAdd2/Dialog/@type/@Model.ContactId" class="searchadd pull-right"><i class="icon-plus"></i></a>
+    }
+}

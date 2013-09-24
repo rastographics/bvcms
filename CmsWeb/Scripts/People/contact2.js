@@ -74,4 +74,25 @@ $(function () {
         });
         return false;
     });
+    $("#search-add a.commit").live("click", function (ev) {
+        ev.preventDefault();
+        var f = $(this).closest("form");
+        var q = f.serialize();
+        var loc = $(this).attr("href");
+        $.post(loc, q, function (ret) {
+            f.modal("hide");
+            if (ret.message) {
+                alert(ret.message);
+            } else
+                switch (ret.from) {
+                    case 'Contactor':
+                        $("#contactors").load('/Contact2/Contactors/' + ret.cid, {});
+                        break;
+                    case 'Contactee':
+                        $("#contactees").load('/Contact2/Contactees/' + ret.cid, {});
+                        break;
+                }
+        });
+        return false;
+    });
 });

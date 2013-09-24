@@ -273,11 +273,11 @@ namespace CmsWeb.Areas.Main.Models.Report
 
             var cq = from ce in DbUtil.Db.Contactees
                      where ce.PeopleId == pid
-                     where ce.contact.LimitToRole.Length == 0
+                     where (ce.contact.LimitToRole ?? "") == ""
                      orderby ce.contact.ContactDate descending
                      select new
                      {
-                         contact = ce.contact,
+                         ce.contact,
                          madeby = ce.contact.contactsMakers.FirstOrDefault().person,
                      };
             var list = new iTextSharp.text.List(false, 10);
