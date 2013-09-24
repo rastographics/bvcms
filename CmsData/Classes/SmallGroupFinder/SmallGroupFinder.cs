@@ -7,53 +7,56 @@ using System.Xml.Serialization;
 
 namespace CmsData.Classes.SmallGroupFinder
 {
-    [XmlRoot("SGF")]
-    public class SmallGroupFinder
-    {
-        [XmlAttribute]
-        public int divisionid { get; set; }
+	[XmlRoot("SGF")]
+	public class SmallGroupFinder
+	{
+		[XmlAttribute]
+		public string divisionid { get; set; }
 
-        [XmlAttribute]
-        public string layout { get; set; }
+		[XmlAttribute]
+		public string shell { get; set; }
 
-        [XmlAttribute]
-        public string gutter { get; set; }
+		[XmlAttribute]
+		public string layout { get; set; }
 
-        [XmlArray]
-        public List<SGFSetting> SGFSettings { get; set; }
+		[XmlAttribute]
+		public string gutter { get; set; }
 
-        [XmlArray]
-        public List<SGFFilter> SGFFilters { get; set; }
-    }
+		[XmlArray]
+		public List<SGFSetting> SGFSettings { get; set; }
 
-    [Serializable]
-    public class SGFSetting
-    {
-        [XmlAttribute]
-        public string name { get; set; }
+		[XmlArray]
+		public List<SGFFilter> SGFFilters { get; set; }
+	}
 
-        [XmlAttribute]
-        public string value { get; set; }
+	[Serializable]
+	public class SGFSetting
+	{
+		[XmlAttribute]
+		public string name { get; set; }
 
-        public override string ToString()
-        {
-            return value;
-        }
-    }
+		[XmlAttribute]
+		public string value { get; set; }
 
-    [Serializable]
-    public class SGFFilter
-    {
-        [XmlAttribute]
-        public string name { get; set; }
+		public override string ToString()
+		{
+			return value;
+		}
+	}
 
-        [XmlAttribute]
-        public string title { get; set; }
+	[Serializable]
+	public class SGFFilter
+	{
+		[XmlAttribute]
+		public string name { get; set; }
 
-        [XmlAttribute]
-        public bool locked { get; set; }
+		[XmlAttribute]
+		public string title { get; set; }
 
-        [XmlAttribute]
-        public string lockedvalue { get; set; }
-    }
+		[XmlAttribute]
+		public bool locked { get; set; }
+
+		[XmlAttribute]
+		public string lockedvalue { get; set; }
+	}
 }
