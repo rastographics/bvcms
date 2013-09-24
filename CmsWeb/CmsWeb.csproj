@@ -2969,7 +2969,7 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target> -->
+  </Target>-->
   <!--<UsingTask TaskName="Microsoft.Web.Mvc.Build.CreateAreaManifest" AssemblyName="Microsoft.Web.Mvc.Build, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
   <UsingTask TaskName="Microsoft.Web.Mvc.Build.CopyAreaManifests" AssemblyName="Microsoft.Web.Mvc.Build, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
   <Target Name="AfterBuild" DependsOnTargets="AfterBuildCompiler">
@@ -2987,8 +2987,8 @@
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>-->
   <Target Name="AfterClean">
-    <RemoveDir Directories="obj\bvcms2\" />
-    <RemoveDir Directories="obj\Debug\" />
+    <RemoveDir Directories="obj\bvcms2" />
+    <RemoveDir Directories="obj\Debug" />
   </Target>
   <ProjectExtensions>
     <VisualStudio>

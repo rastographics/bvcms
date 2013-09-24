@@ -1,13 +1,14 @@
 $(function () {
     $("a.remove").live("click", function (ev) {
         ev.preventDefault();
+        var url = this.href;
         if ($("#edit-contact").length > 0) {
             $.bootstrapGrowl("update first");
             return false;
         }
         bootbox.confirm("Remove this person?", function(confirmed) {
             if (!confirmed) return;
-            $.post($(this)[0].href, {}, function(ret) {
+            $.post(url, {}, function(ret) {
                 window.location.reload(true);
             });
         });
