@@ -7,6 +7,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
+using CmsData.View;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using UtilityExtensions;
@@ -40,7 +42,7 @@ namespace CmsWeb.Areas.Search.Models
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var isAdminFinance = roles.Contains("admin") && roles.Contains("finance") && SearchParameters.Private;
             var q = from c in DbUtil.Db.Contacts
-                    where c.LimitToRole == null || roles.Contains(c.LimitToRole) || isAdminFinance
+                    where (c.LimitToRole ?? "") == ""  || roles.Contains(c.LimitToRole) || isAdminFinance
                     select c;
 
             if (ppl != null && Util.UserPeopleId != null)
@@ -75,7 +77,7 @@ namespace CmsWeb.Areas.Search.Models
             if (SearchParameters.Private)
             {
                 q = from c in q
-                    where c.LimitToRole.Length > 0
+                    where (c.LimitToRole ?? "") != ""
                     select c;
             }
             if (SearchParameters.Incomplete)
@@ -237,6 +239,124 @@ namespace CmsWeb.Areas.Search.Models
                                                           select c.person.Name).Take(3))
 
                    };
+        }
+
+        public IEnumerable<ContactorSummaryInfo> ContactorSummary()
+        {
+            int ministryid = SearchParameters.Ministry.Value.ToInt();
+            return from c in DbUtil.Db.Contactors
+                   where c.contact.ContactDate >= SearchParameters.StartDate
+                   where c.contact.ContactDate <= SearchParameters.EndDate
+                   where ministryid == 0 || ministryid == c.contact.MinistryId
+                   group c by new
+                   {
+                       c.PeopleId,
+                       c.person.Name,
+                       c.contact.ContactType.Description,
+                       c.contact.MinistryId,
+                       c.contact.Ministry.MinistryName
+                   } into g
+                   where g.Key.MinistryId != null
+                   orderby g.Key.MinistryId
+                   select new ContactorSummaryInfo
+                   {
+                       PeopleId = g.Key.PeopleId,
+                       ContactType = g.Key.Description,
+                       Ministry = g.Key.MinistryName,
+                       Count = g.Count()
+                   };
+        }
+
+        public IEnumerable<ContactSummaryInfo> ContactSummary()
+        {
+            return from i in DbUtil.Db.ContactSummary(
+                SearchParameters.StartDate,
+                SearchParameters.EndDate,
+                SearchParameters.Ministry.Value.ToInt(),
+                SearchParameters.ContactType.Value.ToInt(),
+                SearchParameters.ContactReason.Value.ToInt())
+                   select new ContactSummaryInfo()
+                       {
+                           Count = i.Count ?? 0,
+                           ContactType = i.ContactType,
+                           ReasonType = i.ReasonType,
+                           Ministry = i.Ministry,
+                           HasComments = i.Comments,
+                           HasDate = i.ContactDate,
+                           HasContactor = i.Contactor,
+                       };
+        }
+
+        public IEnumerable<ContactTypeTotal> ContactTypeTotals()
+        {
+            return from c in DbUtil.Db.ContactTypeTotals(SearchParameters.StartDate, SearchParameters.EndDate, SearchParameters.Ministry.Value.ToInt())
+                    orderby c.Count descending
+                    select c;
+        }
+
+        public bool CanDeleteTotal()
+        {
+            return HttpContext.Current.User.IsInRole("Developer") 
+                && !SearchParameters.StartDate.HasValue 
+                && !SearchParameters.EndDate.HasValue 
+                && SearchParameters.Ministry.Value.ToInt() == 0;
+        }
+        public static void DeleteContactsForType(int id)
+        {
+            DbUtil.Db.ExecuteCommand("DELETE dbo.Contactees FROM dbo.Contactees ce JOIN dbo.Contact c ON ce.ContactId = c.ContactId WHERE c.ContactTypeId = {0}", id);
+            DbUtil.Db.ExecuteCommand("DELETE dbo.Contactors FROM dbo.Contactors co JOIN dbo.Contact c ON co.ContactId = c.ContactId WHERE c.ContactTypeId = {0}", id);
+            DbUtil.Db.ExecuteCommand("DELETE dbo.Contact WHERE ContactTypeId = {0}", id);
+        }
+        public Guid ConvertToQuery()
+        {
+            var c = DbUtil.Db.ScratchPadCondition();
+            c.Reset(DbUtil.Db);
+            var clause = c.AddNewClause(QueryType.MadeContactTypeAsOf, CompareType.Equal, "1,T");
+            clause.Program = SearchParameters.Ministry.Value.ToInt();
+            clause.StartDate = SearchParameters.StartDate ?? DateTime.Parse("1/1/2000");
+            clause.EndDate = SearchParameters.EndDate ?? DateTime.Today;
+            var cvc = new CodeValueModel();
+            var q = from v in cvc.ContactTypeList()
+                    where v.Id == SearchParameters.ContactType.Value.ToInt()
+                    select v.IdCode;
+            var idvalue = q.Single();
+            clause.CodeIdValue = idvalue;
+            c.Save(DbUtil.Db);
+            return c.Id;
+        }
+        public static Guid ContactTypeQuery(int id)
+        {
+            var c = DbUtil.Db.ScratchPadCondition();
+            c.Reset(DbUtil.Db);
+            var comp = CompareType.Equal;
+            var clause = c.AddNewClause(QueryType.RecentContactType, comp, "1,T");
+            clause.Days = 10000;
+            var cvc = new CodeValueModel();
+            var q = from v in cvc.ContactTypeList()
+                    where v.Id == id
+                    select v.IdCode;
+            clause.CodeIdValue = q.Single();
+            c.Save(DbUtil.Db);
+            return c.Id;
+        }
+
+        private const string STR_ContactSearch = "ContactSearch2";
+        internal void GetFromSession()
+        {
+            var os = HttpContext.Current.Session[STR_ContactSearch] as ContactSearchInfo;
+            if (os != null)
+                this.CopyPropertiesFrom(os);
+        }
+        internal void SaveToSession()
+        {
+            var os = new ContactSearchInfo();
+            this.CopyPropertiesTo(os);
+            HttpContext.Current.Session[STR_ContactSearch] = os;
+        }
+
+        internal void ClearSession()
+        {
+            HttpContext.Current.Session.Remove(STR_ContactSearch);
         }
     }
 }

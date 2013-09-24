@@ -132,7 +132,6 @@ namespace CmsWeb.Areas.Search.Models
                 Campus = new CodeInfo(CampusId, "Campus"),
                 EntryPoint = new CodeInfo(EntryPointId, "EntryPoint"),
                 context = AddContext,
-                Title = new CodeInfo("", "Title"),
             };
             if (familyid == 0)
             {
@@ -271,7 +270,7 @@ namespace CmsWeb.Areas.Search.Models
                 }
                 DbUtil.Db.SubmitChanges();
             }
-            return new ReturnResult{ close = true, how = "addselected", from = AddContext };
+            return new ReturnResult{ close = true, from = AddContext, cid = id };
         }
         private ReturnResult AddContactors(int id, int origin)
         {
@@ -297,7 +296,7 @@ namespace CmsWeb.Areas.Search.Models
                 }
                 DbUtil.Db.SubmitChanges();
             }
-            return new ReturnResult { close = true, how = "addselected", from = AddContext };
+            return new ReturnResult { close = true, cid = id, from = AddContext };
         }
         private ReturnResult AddFamilyMembers(int id, int origin)
         {

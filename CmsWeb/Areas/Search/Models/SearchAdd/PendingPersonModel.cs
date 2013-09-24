@@ -33,7 +33,8 @@ namespace CmsWeb.Areas.Search.Models
         [StringLength(100), Required(ErrorMessage = "required")]
         public string LastName { get; set; }
 
-        public CodeInfo Title { get; set; }
+        [StringLength(10)]
+        public string TitleCode { get; set; }
 
         [StringLength(10)]
         public string SuffixCode { get; set; }

@@ -15,8 +15,11 @@ namespace CmsWeb.Code
     [Serializable]
     public class CodeInfo : IModelViewModelObject
     {
-        private string _name;
-        private string _value;
+        private string name;
+        private string value;
+
+        [NonSerialized]
+        private IEnumerable<SelectListItem> items;
 
         public CodeInfo()
         {
@@ -37,19 +40,24 @@ namespace CmsWeb.Code
         }
         public string Value
         {
-            get { return _value; }
-            set { _value = value; }
+            get { return value; }
+            set { this.value = value; }
         }
-        public IEnumerable<SelectListItem> Items { get; set; }
+
+        public IEnumerable<SelectListItem> Items
+        {
+            get { return items; }
+            set { items = value; }
+        }
 
         public string Name
         {
-            get { return _name; }
+            get { return name; }
             set
             {
                 if (!value.HasValue())
                     return;
-                _name = value;
+                name = value;
                 var cv = new CodeValueModel();
                 switch (value)
                 {
@@ -110,7 +118,6 @@ namespace CmsWeb.Code
             if (attr != null && attr.IdField.HasValue())
                 altname = attr.IdField;
             var mid = modelProps.FirstOrDefault(mm => mm.Name == altname);
-            Debug.Assert(mid != null, "mid != null");
             var midvalue = mid.GetValue(model, null);
             Value = midvalue.ToInt().ToString();
             Name = vm.Name;

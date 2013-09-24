@@ -102,7 +102,7 @@ namespace CmsWeb.Models
             var u = DbUtil.Db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
             contacts = from c in DbUtil.Db.Contacts
-                       where c.LimitToRole == null || roles.Contains(c.LimitToRole)
+                       where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole)
                        select c;
 
             if (ppl != null && Util.UserPeopleId != null)

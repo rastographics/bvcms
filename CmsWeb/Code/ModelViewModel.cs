@@ -34,9 +34,8 @@ namespace CmsWeb.Code
     {
         public static void CopyPropertiesFrom(this object viewmodel, object model, string onlyfields = "", string excludefields = "")
         {
-            var cv = new CodeValueModel();
             var modelProps = model.GetType().GetProperties();
-            var viewmodelProps = viewmodel.GetType().GetProperties();
+            var viewmodelProps = viewmodel.GetType().GetProperties().Where(mm => mm.CanWrite);
             var only = onlyfields.Split(',');
             var exclude = excludefields.Split(',');
 

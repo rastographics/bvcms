@@ -1,1 +1,48 @@
-﻿<h1>Registrations</h1>
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.RegistrationsModel
+<form class="form form-horizontal margin-top left-gutter ajax span12" method="post">
+    <fieldset>
+        <legend>Registration History
+            @FormActions()
+        </legend>
+        <div class="row-fluid">
+            <div class="inline align-top width140">
+                @Html.DisplayFor(m => m.ShirtSize)
+                @Html.DisplayFor(m => m.CustodyIssue)
+                @Html.DisplayFor(m => m.OkTransport)
+                @Html.DisplayFor(m => m.Emcontact)
+                @Html.DisplayFor(m => m.Emphone)
+            </div>
+            <div class="inline align-top">
+                @Html.DisplayFor(m => m.Insurance)
+                @Html.DisplayFor(m => m.Policy)
+                @Html.DisplayFor(m => m.Doctor)
+                @Html.DisplayFor(m => m.Docphone)
+                @Html.DisplayFor(m => m.Mname)
+                @Html.DisplayFor(m => m.Fname)
+                @Html.DisplayFor(m => m.Coaching)
+                @Html.DisplayFor(m => m.Member)
+                @Html.DisplayFor(m => m.ActiveInOtherChurch)
+            </div>
+        </div>
+        <div class="well">
+            <div class="inline align-top">
+                @Html.DisplayFor(m => m.Tylenol)
+                @Html.DisplayFor(m => m.Advil)
+                @Html.DisplayFor(m => m.Robitussin)
+                @Html.DisplayFor(m => m.Maalox)
+            </div>
+        </div>
+        @Html.DisplayFor(m => m.MedicalDescription)
+        <div>
+        @Html.DisplayFor(m => m.Comments)</div>
+        <div>@FormActions() </div>
+    </fieldset>
+</form>
+@helper FormActions()
+{
+    if (User.IsInRole("Edit"))
+    {
+        <a href="/Person2/RegistrationsEdit/@Model.person.PeopleId" class="pull-right btn btn-primary ajax">Edit</a>
+    }
+}
