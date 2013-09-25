@@ -19,9 +19,9 @@ namespace CmsWeb.Areas.Main.Models.Avery
 	{
 		IEnumerable<Person> q;
 	    private bool addEmployer;
-		public EmployerAddress(int? qid, bool addEmployer)
+		public EmployerAddress(object qid, bool addEmployer)
 		{
-            q =  from p in DbUtil.Db.PeopleQuery(qid.Value)
+            q =  from p in DbUtil.Db.PeopleQuery(qid)
 				 orderby p.Name2
 				 select p;
 		    this.addEmployer = addEmployer;

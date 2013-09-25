@@ -26,8 +26,8 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class ContactsResult : ActionResult
     {
-        private int? qid;
-        public ContactsResult(int? id, bool? sortAddress, string orgname)
+        private object qid;
+        public ContactsResult(object id, bool? sortAddress, string orgname)
         {
             qid = id;
             this.sortAddress = sortAddress ?? false;
@@ -61,9 +61,9 @@ namespace CmsWeb.Areas.Main.Models.Report
             dc = w.DirectContent;
 
             StartPageSet();
-            if (qid.HasValue) // print using a query
+            if (qid != null) // print using a query
             {
-                var q = DbUtil.Db.PeopleQuery(qid.Value);
+                var q = DbUtil.Db.PeopleQuery(qid);
                 
                 if (sortAddress)
                     q = from p in q

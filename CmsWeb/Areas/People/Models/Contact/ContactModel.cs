@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Web;
 using CmsData;
 using CmsWeb.Code;
 using Dapper;
@@ -43,7 +44,17 @@ namespace CmsWeb.Areas.People.Models
         internal Contact contact;
         private void LoadContact(int id)
         {
-            contact = DbUtil.Db.Contacts.SingleOrDefault(cc => cc.ContactId == id);
+            var u = DbUtil.Db.CurrentUser;
+            var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
+            var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
+            var q = from c in DbUtil.Db.Contacts
+                   where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
+                   where c.ContactId == id
+                   select c;
+            contact = q.SingleOrDefault();
+            if (contact == null)
+                return;
+
             MinisteredTo = new ContacteesModel(id);
             Ministers = new ContactorsModel(id);
             MinisteredTo.CanViewComments = CanViewComments;
@@ -57,9 +68,11 @@ namespace CmsWeb.Areas.People.Models
             : this()
         {
             LoadContact(id);
-            this.CopyPropertiesFrom(contact);
+            if(contact != null)
+                this.CopyPropertiesFrom(contact);
         }
 
+        public bool CanView;
         public ContacteesModel MinisteredTo { get; set; }
         public ContactorsModel Ministers { get; set; }
 

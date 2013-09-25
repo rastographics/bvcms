@@ -159,22 +159,28 @@ namespace CmsData
             var qb = QueryBuilderClauses.SingleOrDefault(c => c.QueryId == queryid);
             return CheckBadQuery(qb);
         }
-        public IQueryable<Person> PeopleQuery(int qid)
+        public IQueryable<Person> PeopleQuery(object id)
         {
-            var qB = this.LoadQueryById(qid);
-            var q = People.Where(qB.Predicate(this));
-            if (qB.ParentsOf)
-                q = PersonQueryParents(q);
+            IQueryable<Person> q = null;
+            if (id is Guid)
+            {
+                var qid = (Guid)id;
+                var qB = this.LoadQueryById2(qid).ToClause();
+                q = People.Where(qB.Predicate(this));
+                if (qB.ParentsOf)
+                    q = PersonQueryParents(q);
+            }
+            else
+            {
+                var qid = (int)id;
+                var qB = LoadQueryById(qid);
+                q = People.Where(qB.Predicate(this));
+                if (qB.ParentsOf)
+                    q = PersonQueryParents(q);
+            }
             return q;
         }
-        public IQueryable<Person> PeopleQuery(Guid qid)
-        {
-            var qB = this.LoadQueryById2(qid).ToClause();
-            var q = People.Where(qB.Predicate(this));
-            if (qB.ParentsOf)
-                q = PersonQueryParents(q);
-            return q;
-        }
+
         public IQueryable<Person> PeopleQuery(string name)
         {
             var qB = this.QueryBuilderClauses.FirstOrDefault(c => c.Description == name);
@@ -201,7 +207,7 @@ namespace CmsData
                      where !q2.Any(pp => pp == ev.IntValue)
                      select ev.IntValue;
 
-            foreach (var i in q3)
+            foreach (var i in q3.Distinct())
                 tag.PersonTags.Add(new TagPerson { PeopleId = i.Value });
             SubmitChanges();
             return tag.People(this);
@@ -427,9 +433,13 @@ namespace CmsData
                 TagPeople.DeleteOnSubmit(t);
             SubmitChanges();
         }
-        public Tag PopulateSpecialTag(int QueryId, int TagTypeId)
+        public Tag PopulateSpecialTag(object QueryId, int TagTypeId)
         {
-            var q = PeopleQuery(QueryId);
+            IQueryable<Person> q;
+            if(QueryId is Guid)
+                q = PeopleQuery((Guid)QueryId);
+            else
+                q = PeopleQuery((int)QueryId);
             return PopulateSpecialTag(q, TagTypeId);
         }
         public Tag PopulateSpecialTag(IQueryable<Person> q, int TagTypeId)

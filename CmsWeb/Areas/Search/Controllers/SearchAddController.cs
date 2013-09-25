@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Web.Mvc;
 using AttributeRouting;
@@ -21,7 +22,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("SearchAdd2/Results/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult Results(int? page, int? size, string sort, string dir, SearchAddModel m)
         {
-            DbUtil.Db.SetNoLock();            
+            DbUtil.Db.SetNoLock();
             m.Pager.Set("/SearchAdd2/Results", page ?? 1, size ?? 15, "na", "na");
             ModelState.Clear();
             return View(m);
@@ -70,8 +71,8 @@ namespace CmsWeb.Areas.Search.Controllers
                 return View("List", m);
 
             m.AddExisting(id);
-			if (m.OnlyOne)
-				return CommitAdd(m);
+            if (m.OnlyOne)
+                return CommitAdd(m);
             ModelState.Clear();
             return View("List", m);
         }
@@ -79,6 +80,10 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("SearchAdd2/NewPerson/{familyid}")]
         public ActionResult NewPerson(int familyid, SearchAddModel m)
         {
+            if (familyid == 0 && string.Compare(m.AddContext, "family", StringComparison.OrdinalIgnoreCase) == 0)
+                familyid = (from pp in DbUtil.Db.People
+                            where pp.PeopleId == m.PrimaryKeyForContextType.ToInt()
+                            select pp.FamilyId).Single();
             m.NewPerson(familyid);
             ModelState.Clear();
             return View(m);
@@ -88,12 +93,12 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult AddNewPerson(SearchAddModel m, string noCheckDuplicate)
         {
             var p = m.PendingList[m.PendingList.Count - 1];
-            if(!noCheckDuplicate.HasValue())
+            if (!noCheckDuplicate.HasValue())
                 p.CheckDuplicate();
             if (!ModelState.IsValid || p.PotentialDuplicate.HasValue())
                 return View("NewPerson", m);
             p.LoadAddress();
-            if(p.IsNewFamily)
+            if (p.IsNewFamily)
                 return View("NewAddress", m);
             return View("List", m);
         }
@@ -102,7 +107,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult AddNewAddress(SearchAddModel m, string noCheck)
         {
             var p = m.PendingList[m.PendingList.Count - 1];
-            if(noCheck.HasValue() == false)
+            if (noCheck.HasValue() == false)
                 p.AddressInfo.ValidateAddress(ModelState);
             if (!ModelState.IsValid)
                 return View("NewAddress", m);

@@ -45,9 +45,9 @@ namespace CmsWeb.Areas.Main.Models.Report
         private DateTime dt;
 
         private int? orgid;
-        public PastAttendeeResult(int? id)
+        public PastAttendeeResult(int? orgid)
         {
-            orgid = id;
+            this.orgid = orgid;
         }
 
         public override void ExecuteResult(ControllerContext context)

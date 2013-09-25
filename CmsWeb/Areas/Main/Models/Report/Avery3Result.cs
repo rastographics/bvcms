@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class Avery3Result : ActionResult
     {
-        public int? id;
+        public object id;
         const float W = 197f;
 
         protected PdfContentByte dc;
@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             t.LockedWidth = true;
             t.DefaultCell.Border = PdfPCell.NO_BORDER;
 
-            var q = DbUtil.Db.PeopleQuery(id.Value);
+            var q = DbUtil.Db.PeopleQuery(id);
             var q2 = from p in q
                     orderby p.Name2
                     select new

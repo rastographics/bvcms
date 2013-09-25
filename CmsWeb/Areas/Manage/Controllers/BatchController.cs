@@ -497,7 +497,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                         if (m.NewValue == "+1")
                             p.Grade = p.Grade + 1;
                         else
-                            p.Grade = m.NewValue.ToInt();
+                            p.Grade = m.NewValue.ToInt2();
                         break;
                     case "Statement Options":
                         p.ContributionOptionsId = m.NewValue.ToInt();

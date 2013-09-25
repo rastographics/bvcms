@@ -66,6 +66,53 @@ namespace CmsWeb.Areas.Main.Controllers
 
 			return View(me);
 		}
+		[ValidateInput(false)]
+		public ActionResult Index2(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml)
+		{
+			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
+			if (!body.HasValue())
+				body = TempData["body"] as string;
+
+			if (!subj.HasValue() && templateID != 0 && DbUtil.Db.Setting("UseEmailTemplates", "false") == "true")
+			{
+				if (templateID == null)
+					return View("SelectTemplate", new EmailTemplatesModel() { wantparents = parents ?? false, queryid = id });
+				else
+				{
+					DbUtil.LogActivity("Emailing people");
+
+					var m = new MassEmailer(id, parents);
+					m.CmsHost = DbUtil.Db.CmsHost;
+					m.Host = Util.Host;
+
+					ViewBag.templateID = templateID;
+					return View("Compose", m);
+				}
+			}
+
+			// using no templates
+
+			DbUtil.LogActivity("Emailing people");
+
+			var me = new MassEmailer(id, parents);
+			me.CmsHost = DbUtil.Db.CmsHost;
+			me.Host = Util.Host;
+
+			if (body.HasValue())
+				me.Body = Server.UrlDecode(body);
+
+			if (subj.HasValue())
+				me.Subject = Server.UrlDecode(subj);
+
+			ViewData["oldemailer"] = "/EmailPeople.aspx?id=" + id
+				 + "&subj=" + subj + "&body=" + body + "&ishtml=" + ishtml
+				 + (parents == true ? "&parents=true" : "");
+
+			if (parents == true)
+				ViewData["parentsof"] = "with ParentsOf option";
+
+			return View("Index", me);
+		}
 
 		[HttpPost]
 		[ValidateInput(false)]

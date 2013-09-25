@@ -17,26 +17,17 @@ namespace CmsData
     {
         public void Save(CMSDataContext Db, bool increment = false)
         {
-            var i = (from e in Db.Queries
-                     let same = (from v in Db.Queries
-                                 where !v.Ispublic
-                                 where v.Owner == Util.UserName
-                                 where v.Name == Description
-                                 orderby v.LastRun descending
-                                 select v).FirstOrDefault()
-                     let existing = (from v in Db.Queries
-                                     where v.QueryId == Id
-                                     select v).SingleOrDefault()
-                     select new { same, existing }).First();
-            var q = i.existing;
+            var q = (from e in Db.Queries
+                     where e.QueryId == Id
+                     select e).FirstOrDefault();
 
             if (q == null)
             {
-                q = new Query 
+                q = new Query
                 {
                     QueryId = Id,
                     Owner = Util.UserName,
-                    Created = DateTime.Now, 
+                    Created = DateTime.Now,
                     Ispublic = IsPublic,
                     Name = Description
                 };
@@ -44,19 +35,24 @@ namespace CmsData
             }
             q.LastRun = DateTime.Now;
 
-
             if (Description != q.Name)
             {
-                if (i.same != null)
-                    i.same.Text = ToXml();
+                var same = (from v in Db.Queries
+                            where !v.Ispublic
+                            where v.Owner == Util.UserName
+                            where v.Name == Description
+                            orderby v.LastRun descending
+                            select v).FirstOrDefault();
+                if (same != null)
+                    same.Text = ToXml();
                 else
                 {
                     var c = Clone();
-                    var cq = new Query 
+                    var cq = new Query
                     {
                         QueryId = c.Id,
                         Owner = Util.UserName,
-                        Created = q.Created, 
+                        Created = q.Created,
                         Ispublic = q.Ispublic,
                         Name = q.Name,
                         Text = c.ToXml(),
@@ -72,10 +68,10 @@ namespace CmsData
             if (CopiedFrom.HasValue)
                 q.CopiedFrom = CopiedFrom;
             q.Name = Description;
-            if(increment)
+            if (increment)
                 q.RunCount = q.RunCount + 1;
             q.Text = ToXml();
-	        Db.SubmitChanges();
+            Db.SubmitChanges();
         }
 
         public string ToXml()
@@ -169,7 +165,7 @@ namespace CmsData
                 Owner = Attribute(r, "Owner"),
                 AllConditions = allClauses
             };
-            if(p == null)
+            if (p == null)
                 c.Description = Attribute(r, "Description");
             c.AllConditions.Add(c.Id, c);
             if (newGuids)

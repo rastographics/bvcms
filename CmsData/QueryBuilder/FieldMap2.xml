@@ -226,6 +226,9 @@
     <Field Name="ReceiveSms" Title="Receive SMS" Type="Bit" DataValueField="IdCode">
       Indicates Opt-in status
     </Field>
+    <Field Name="SpouseHasEmail" Title="Spouse has Email" Type="Bit" DataValueField="IdCode">
+      Indicates Spouse Has Email Address
+    </Field>
   </Category>
   <Category Title="Church Status">
     <Field Name="MemberStatusId" Title="Church Member Status" Type="Code" DisplayAs="ChurchMemberStatus" DataSource="MemberStatusList" DataValueField="IdCode">

@@ -38,7 +38,8 @@ namespace CmsWeb.Areas.Main.Models.Report
         }
 
         public OrgSearchModel Model;
-        public int? qid, meetingid, orgid;
+        public object qid;
+        public int? meetingid, orgid;
         public int[] groups;
         public bool? bygroup;
         public bool? altnames;

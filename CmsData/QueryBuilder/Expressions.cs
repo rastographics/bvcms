@@ -1297,7 +1297,6 @@ namespace CmsData
                 case CompareType.Equal:
                     q = from c in Db.Contributions2(start, end, 0, false, false, true)
                         where fund == 0 || c.FundId == fund
-                        where c.Amount > 0
                         group c by c.CreditGiverId into g
                         where g.Sum(cc => cc.Amount) == amt
                         select g.Key ?? 0;
@@ -1401,6 +1400,18 @@ namespace CmsData
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
             return Compare(left, op, right);
+        }
+        internal static Expression SpouseHasEmail(CMSDataContext Db,
+            ParameterExpression parm,
+            CompareType op,
+            bool tf)
+        {
+            Expression<Func<Person, bool>> pred = p =>
+                p.Family.People.Any(pp => pp.PeopleId == p.SpouseId && pp.EmailAddress.Contains("@"));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
         }
         internal static Expression NumberOfMemberships(
             ParameterExpression parm,

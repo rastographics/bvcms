@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class RollLabelsResult : ActionResult
     {
-        public int? qid { get; set; }
+        public object qid { get; set; }
         public string format { get; set; }
         public bool titles { get; set; }
         public bool usephone { get; set; }
@@ -64,20 +64,20 @@ namespace CmsWeb.Areas.Main.Models.Report
             {
                 case "Individual":
                 case "GroupAddress":
-                    q = ctl.FetchIndividualList(sort, qid.Value);
+                    q = ctl.FetchIndividualList(sort, qid);
                     break;
                 case "FamilyMembers":
                 case "Family":
-                    q = ctl.FetchFamilyList(sort, qid.Value);
+                    q = ctl.FetchFamilyList(sort, qid);
                     break;
                 case "ParentsOf":
-                    q = ctl.FetchParentsOfList(sort, qid.Value);
+                    q = ctl.FetchParentsOfList(sort, qid);
                     break;
                 case "CouplesEither":
-                    q = ctl.FetchCouplesEitherList(sort, qid.Value);
+                    q = ctl.FetchCouplesEitherList(sort, qid);
                     break;
                 case "CouplesBoth":
-                    q = ctl.FetchCouplesBothList(sort, qid.Value);
+                    q = ctl.FetchCouplesBothList(sort, qid);
                     break;
             }
             AddLabel(document, "=========", Util.UserName, "{0} labels printed".Fmt(q.Count()), "{0:g}".Fmt(DateTime.Now), String.Empty);

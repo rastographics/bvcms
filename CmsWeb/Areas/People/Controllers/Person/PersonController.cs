@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.People.Controllers
 
         private void InitExportToolbar(int? id)
         {
-            var qb = DbUtil.Db.QueryBuilderIsCurrentPerson();
+            var qb = DbUtil.Db.QueryIsCurrentPerson();
             ViewBag.queryid = qb.QueryId;
             ViewBag.PeopleId = Util2.CurrentPeopleId;
             ViewBag.TagAction = "/Person2/Tag/" + id;

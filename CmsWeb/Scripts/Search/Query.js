@@ -18,16 +18,16 @@
             });
         });
     };
-    $("#SavedQueryDesc").editable({
+    $("#Description").editable({
         placement: "right",
         showbuttons: "bottom",
         pk: 1,
-        url: "/Query/SaveQueryDescription",
+        url: "/Query/DescriptionUpdate",
         mode: "popup"
     });
-    $('#SavedQueryDescEdit').click(function (e) {
+    $('#DescriptionEdit').click(function (e) {
         e.stopPropagation();
-        $('#SavedQueryDesc').editable('toggle');
+        $('#Description').editable('toggle');
     });
     $.InitCodeValues = function () {
         $('#CodeValues').multiselect({

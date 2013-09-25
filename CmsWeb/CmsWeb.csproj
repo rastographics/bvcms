@@ -67,6 +67,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bvcms2|AnyCPU'">
     <OutputPath>bin\</OutputPath>
+    <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -76,6 +77,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test|AnyCPU'">
     <OutputPath>bin\</OutputPath>
+    <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
@@ -203,6 +205,8 @@
     <Compile Include="Areas\Main\Models\Export\ExcelFamilyMember.cs" />
     <Compile Include="Areas\Main\Models\Export\ExcelPic.cs" />
     <Compile Include="Areas\Main\Models\Export\OrgsMembersExcelResult.cs" />
+    <Compile Include="Areas\Main\Models\Report\CheckinControlModel.cs" />
+    <Compile Include="Areas\Main\Models\Report\CheckinControlResult.cs" />
     <Compile Include="Areas\Main\Models\Report\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Main\Models\Report\DecisionsModel.cs" />
     <Compile Include="Areas\Main\Models\Report\EnrollmentControlModel.cs" />
@@ -300,6 +304,7 @@
     <Compile Include="Areas\People\Models\Person\Emails\EmailReceivedModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailSentModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailModel.cs" />
+    <Compile Include="Areas\Reports\Controllers\ReportsController.cs" />
     <Compile Include="Areas\Search\Controllers\ContactSearchController.cs" />
     <Compile Include="Areas\People\Controllers\Person\Emails.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonController.cs" />
@@ -315,6 +320,7 @@
     <Compile Include="Areas\People\Controllers\Person\Giving.cs" />
     <Compile Include="Areas\People\Controllers\Person\Family.cs" />
     <Compile Include="Areas\People\Controllers\Person\Enrollment.cs" />
+    <Compile Include="Areas\Reports\Controllers\ExportController.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactorSummaryInfo.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactSearchInfo.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactInfo.cs" />
@@ -335,7 +341,18 @@
     <Compile Include="Areas\People\Models\Person\Giving\ContributionInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\ContributionsModel.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactSummaryInfo.cs" />
-    <Compile Include="Areas\Search\Models\Query\QueryResults.cs" />
+    <Compile Include="Areas\Search\Models\Query\PeopleInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Areas\Search\Models\Query\QBExportResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Areas\Search\Models\Query\QueryModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Areas\Search\Models\Query\QueryResults.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Areas\Search\Models\SearchAdd\SearchResultsModel.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\SearchResultInfo.cs" />
     <Compile Include="Code\PagedTableModel.cs" />
@@ -377,7 +394,6 @@
     </Compile>
     <Compile Include="Areas\Org\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Org\Models\VolunteerRequestModel.cs" />
-    <Compile Include="Areas\Search\Models\Query\QueryModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\PendingPersonModel.cs" />
     <Compile Include="Areas\People\PeopleAreaRegistration.cs" />
@@ -495,9 +511,7 @@
     <Compile Include="Areas\Search\Controllers\QuickController.cs" />
     <Compile Include="Areas\Search\Controllers\SavedQueryController.cs" />
     <Compile Include="Areas\Search\Models\OrganizationModel.cs" />
-    <Compile Include="Areas\Search\Models\Query\PeopleInfo.cs" />
     <Compile Include="Areas\Search\Models\PeopleModel.cs" />
-    <Compile Include="Areas\Search\Models\Query\QBExportResult.cs" />
     <Compile Include="Areas\Search\Models\QuickSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
     <Compile Include="Areas\Search\SearchAreaRegistration.cs" />
@@ -520,8 +534,6 @@
     <Compile Include="Code\StandardExtraValues.cs" />
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />
-    <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
-    <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditTemplate.cshtml" />
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
@@ -869,12 +881,17 @@
     <Content Include="Scripts\Finance\Transactions.min.js">
       <DependentUpon>Transactions.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\sgmap.js" />
+    <Content Include="Scripts\jQuery\jquery-1.9.1.min.js">
+      <DependentUpon>jquery-1.9.1.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.js" />
+    <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.min.js">
+      <DependentUpon>jquery.gmap-1.1.0.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\jQuery\jquery.validate.js" />
     <Content Include="Scripts\jQuery\FixedColumns.js" />
     <Content Include="Scripts\jQuery\FixedHeader.js" />
-    <Content Include="Scripts\jQuery\jquery-1.9.1.min.js.map">
-      <DependentUpon>jquery-1.9.1.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jQuery\jquery-ui-1.10.0.custom.min.js.map">
       <DependentUpon>jquery-ui-1.10.0.custom.js</DependentUpon>
     </Content>
@@ -1065,6 +1082,24 @@
     <Content Include="Areas\Manage\Views\EmailsView\View.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\ExtraValuesStandard.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\Attendance.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\AttendanceDetail.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ChurchAttendance.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ChurchAttendance2.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ExtraValueData.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ExtraValues.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid2.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\Meetings.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ShirtSizes.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\VitalStats.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\WeeklyDecisions.cshtml" />
+    <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
+    <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
+    <Content Include="Areas\Reports\Web.config" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1579,7 +1614,6 @@
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
     <None Include="Scripts\jQuery\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.js" />
-    <Content Include="Scripts\jQuery\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jQuery\jquery-migrate-1.1.1.js" />
     <Content Include="Scripts\Volunteer\Calendar2.min.js">
       <DependentUpon>Calendar2.js</DependentUpon>
@@ -2954,6 +2988,7 @@
     <Folder Include="Areas\Org\Views\Shared\" />
     <Folder Include="Areas\People\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
+    <Folder Include="Areas\Reports\Models\" />
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />
     <Folder Include="Models\PersonPage\" />

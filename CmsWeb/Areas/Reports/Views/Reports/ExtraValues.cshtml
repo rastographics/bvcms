@@ -1,0 +1,39 @@
+﻿@using CmsWeb
+@model IEnumerable<CmsWeb.Areas.Main.Controllers.ReportsController.ExtraInfo>
+@{
+    ViewBag.Title = "ExtraValues";
+    Layout = "~/Views/Shared/SiteLayout.cshtml";
+}
+@section scripts
+{
+<script type="text/javascript">
+        $(function () {
+            $('table.grid tbody tr:even').addClass('alt');
+            $("a.delete").click(function (ev) {
+                ev.preventDefault();
+                var d = $(this);
+                if(confirm("are you sure?"))
+                    $.post(d.attr("href"), null, function () {
+                        d.closest("tr").remove();
+                        $('table.grid tbody tr').removeClass('alt');
+                        $('table.grid tbody tr:even').addClass('alt');
+                    });
+            });
+        });
+    </script>
+}
+
+<h2>ExtraValues</h2>
+<table class="grid">
+@foreach (var e in Model)
+{
+    <tr><td><a href="/Manage/ExtraValues/QueryCodes?field=@Server.UrlEncode(e.Field)&value=@Server.UrlEncode(e.Value)">@e.Field</a></td>
+        <td>@e.Value</td>
+		<td>@e.Count</td>
+        @if(User.IsInRole("Admin"))
+		{
+            <td><a class="delete" href="/Manage/ExtraValues/DeleteAll?field=@Server.UrlEncode(e.Field)&value=@e.type&value=@Server.UrlEncode(e.Value)"><img src="/images/delete.gif" /></a></td>
+		}
+    </tr>
+}
+</table>

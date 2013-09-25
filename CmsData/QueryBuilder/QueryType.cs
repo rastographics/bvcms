@@ -179,6 +179,7 @@ namespace CmsData
         SendEmailAddress2,
         SchoolOther,
         SmallGroup,
+        SpouseHasEmail,
         StatusFlag,
         TitleCode,
         UserRole,

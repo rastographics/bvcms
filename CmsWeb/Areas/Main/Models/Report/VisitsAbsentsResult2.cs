@@ -51,9 +51,9 @@ namespace CmsWeb.Areas.Main.Models.Report
         private DateTime dt;
 
         private int? mtgid;
-        public VisitsAbsentsResult2(int? id)
+        public VisitsAbsentsResult2(int? meetingid)
         {
-            mtgid = id;
+            mtgid = meetingid;
         }
 
         public override void ExecuteResult(ControllerContext context)

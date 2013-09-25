@@ -643,6 +643,10 @@ namespace CmsData
                                c.Division,
                                c.Organization,
                                CompType, c.TextValue);
+                case QueryType.SpouseHasEmail:
+                    return Expressions.SpouseHasEmail(Db, parm,
+                        CompType,
+                        c.CodeIds == "1");
                 case QueryType.StatusFlag:
                     return Expressions.StatusFlag(parm,
                                CompType,

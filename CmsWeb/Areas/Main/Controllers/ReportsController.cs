@@ -511,6 +511,10 @@ namespace CmsWeb.Areas.Main.Controllers
                 Response.Write("</table>");
             }
         }
+        public ActionResult CheckinControl(CheckinControlModel m)
+        {
+            return new CheckinControlResult { model = m };
+        }
         public ActionResult EnrollmentControl(bool? excel, EnrollmentControlModel m)
         {
             if (excel != true)

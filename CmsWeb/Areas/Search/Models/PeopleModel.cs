@@ -168,7 +168,7 @@ namespace CmsWeb.Areas.Search.Models
             return people;
         }
         
-        public IEnumerable<MailingController.TaggedPersonInfo> PeopleList()
+        public IEnumerable<CmsWeb.Models.MailingController.TaggedPersonInfo> PeopleList()
         {
             var people = FetchPeople();
             if (!_count.HasValue)
@@ -177,10 +177,10 @@ namespace CmsWeb.Areas.Search.Models
                 .Skip(StartRow).Take(PageSize);
             return PeopleList(people);
         }
-        private IEnumerable<MailingController.TaggedPersonInfo> PeopleList(IQueryable<Person> query)
+        private IEnumerable<CmsWeb.Models.MailingController.TaggedPersonInfo> PeopleList(IQueryable<Person> query)
         {
             var q = from p in query
-                    select new MailingController.TaggedPersonInfo
+                    select new CmsWeb.Models.MailingController.TaggedPersonInfo
                     {
                         PeopleId = p.PeopleId,
                         Name = p.Name,

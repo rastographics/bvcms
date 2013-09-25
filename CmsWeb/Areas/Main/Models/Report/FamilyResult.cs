@@ -37,8 +37,8 @@ namespace CmsWeb.Areas.Main.Models.Report
         private DateTime dt;
         private PdfContentByte dc;
 
-        private int? qid;
-        public FamilyResult(int? id)
+        private object qid;
+        public FamilyResult(object id)
         {
             qid = id;
         }
@@ -69,9 +69,9 @@ namespace CmsWeb.Areas.Main.Models.Report
             t.DefaultCell.BorderColorTop = BaseColor.BLACK;
             t.DefaultCell.BorderWidthTop = 2.0f;
 
-            if (qid.HasValue) // print using a query
+            if (qid != null) // print using a query
             {
-                var q = DbUtil.Db.PeopleQuery(qid.Value);
+                var q = DbUtil.Db.PeopleQuery(qid);
                 var q2 = from p in q
                          let person = p
                          group p by p.FamilyId into g

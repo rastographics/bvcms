@@ -38,6 +38,7 @@ namespace CmsData
                     Text = c.ToXml()
                 };
                 Queries.InsertOnSubmit(q);
+                SubmitChanges();
             }
             else
                 c = q.ToClause();
@@ -45,6 +46,29 @@ namespace CmsData
             c.Id = q.QueryId; // force these to match
             c.justloadedquery = q;
             return c;
+        }
+        public Query QueryIsCurrentPerson()
+        {
+            const string STR_IsCurrentPerson = "IsCurrentPerson2";
+            var qb = Queries.FirstOrDefault(c => c.Owner == STR_System
+                && c.Name == STR_IsCurrentPerson);
+            if (qb == null)
+            {
+                var c = Condition.CreateNewGroupClause();
+                c.AddNewClause(QueryType.IsCurrentPerson, CompareType.Equal, "1,T");
+                qb = new Query
+                {
+                    QueryId = c.Id,
+                    Owner = STR_System,
+                    Created = DateTime.Now,
+                    LastRun = DateTime.Now,
+                    Name = STR_IsCurrentPerson,
+                    Text = c.ToXml()
+                };
+                Queries.InsertOnSubmit(qb);
+                SubmitChanges();
+            }
+            return qb;
         }
         public List<Query> FetchLastFiveQueries()
         {

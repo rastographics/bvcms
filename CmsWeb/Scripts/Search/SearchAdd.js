@@ -18,6 +18,18 @@
                 });
             });
     });
+    $(document).on("shown", "#search-add", function() {
+        $("#search-add #Name").focus();
+        $("#search-add #Name").keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                $("#searchperson").click();
+                return false;
+            }
+            else
+                return true;
+        });
+    });
     $.fn.loadWith = function(u, f){
         var c=$(this);
         $.post(u, function(d){

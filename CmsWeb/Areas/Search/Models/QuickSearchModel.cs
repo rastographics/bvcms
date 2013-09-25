@@ -8,7 +8,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -19,7 +18,7 @@ namespace CmsWeb.Areas.Search.Models
 		public string text { get; set; }
 		private CMSDataContext Db;
 
-		public List<MailingController.PersonInfo> people;
+		public List<CmsWeb.Models.MailingController.PersonInfo> people;
 		public List<CmsWeb.Models.OrgSearchModel.OrganizationInfo> orgs;
 		string First, Last;
 
@@ -32,7 +31,7 @@ namespace CmsWeb.Areas.Search.Models
 			orgs = Orglist().ToList();
 		}
 
-		private IEnumerable<MailingController.PersonInfo> PeopleList()
+		private IEnumerable<CmsWeb.Models.MailingController.PersonInfo> PeopleList()
 		{
 			var qp = DbUtil.Db.People.AsQueryable();
 			if (Util2.OrgMembersOnly)
@@ -121,10 +120,10 @@ namespace CmsWeb.Areas.Search.Models
 			else
 				Last = a[0];
 		}
-        private IEnumerable<MailingController.PersonInfo> PeopleList(IQueryable<Person> query)
+        private IEnumerable<CmsWeb.Models.MailingController.PersonInfo> PeopleList(IQueryable<Person> query)
         {
             var q = from p in query
-                    select new MailingController.PersonInfo
+                    select new CmsWeb.Models.MailingController.PersonInfo
                     {
                         PeopleId = p.PeopleId,
                         Name = p.Name,

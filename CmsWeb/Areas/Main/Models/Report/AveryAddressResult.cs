@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class AveryAddressResult : ActionResult
     {
-        public int? id;
+        public object id;
         public string format;
         public bool? titles; 
         public bool usephone { get; set; }
@@ -46,23 +46,23 @@ namespace CmsWeb.Areas.Main.Models.Report
             switch (format)
             {
                 case "Individual":
-                    q = ctl.FetchIndividualList(sort, id.Value);
+                    q = ctl.FetchIndividualList(sort, id);
                     break;
                 case "GroupAddress":
-                    q = ctl.GroupByAddress(id.Value);
+                    q = ctl.GroupByAddress(id);
                     break;
                 case "Family":
                 case "FamilyMembers":
-                    q = ctl.FetchFamilyList(sort, id.Value);
+                    q = ctl.FetchFamilyList(sort, id);
                     break;
                 case "ParentsOf":
-                    q = ctl.FetchParentsOfList(sort, id.Value);
+                    q = ctl.FetchParentsOfList(sort, id);
                     break;
                 case "CouplesEither":
-                    q = ctl.FetchCouplesEitherList(sort, id.Value);
+                    q = ctl.FetchCouplesEitherList(sort, id);
                     break;
                 case "CouplesBoth":
-                    q = ctl.FetchCouplesBothList(sort, id.Value);
+                    q = ctl.FetchCouplesBothList(sort, id);
                     break;
                 default:
                     Response.Write("unknown format");

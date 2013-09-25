@@ -162,6 +162,9 @@
     <HasInvalidEmailAddress Title="Has Invalid Email Address" Type="Bit" DisplayAs="HasInvalidEmailAddress" DataValueField="IdCode">
       Select True or False. Looks at both 1st and 2nd email addresses, whether active or not.
     </HasInvalidEmailAddress>
+    <SpouseHasEmail Title="Spouse has Email" Type="Bit" DataValueField="IdCode">
+      Select True or False. Indicates Spouse Has an Email Address
+    </SpouseHasEmail>
     <SendEmailAddress1 Title="Send to Email Address 1" Type="NullBit" DataValueField="IdCode">
       True or False, First Email Address is active or not
     </SendEmailAddress1>
