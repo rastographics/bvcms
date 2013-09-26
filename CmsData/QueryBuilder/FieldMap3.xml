@@ -285,6 +285,9 @@
     <MemberTypeCodes Title="Member Type Codes" Type="Code" DisplayAs="MemberTypeCodes({0}, {1}, {2}, {3}, {4}, {5})" Params="Program,Division,Organization,OrgType,Schedule,Campus" DataSource="MemberTypeCodes" DataValueField="IdCode">
       Select Member Type from the list and select other options: Program/Division/Organization, Org Type, Schedule, Campus.
     </MemberTypeCodes>
+    <AttendTypeCodes Title="Attend Type Codes" Type="Code" DisplayAs="AttendTypeCodes({0}, {1}, {2}, {3}, {4}, {5})" Params="Program,Division,Organization,OrgType,Schedule,Campus" DataSource="AttendanceTypeCodes" DataValueField="IdCode">
+      Select Attend Type from the list and select other options: Program/Division/Organization, Org Type, Schedule, Campus.
+    </AttendTypeCodes>
     <MembOfOrgWithCampus Title="Member Of Org With Campus" Type="Code" DisplayAs="MembOfOrgWithCampus({0}, {1}, {2}, {3})" Params="Program,Division,Organization,OrgType" DataSource="Campuses" DataValueField="IdCode">
       Select Campus from the list and select Program/Division/Organization.
     </MembOfOrgWithCampus>

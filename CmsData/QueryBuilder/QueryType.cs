@@ -8,7 +8,7 @@ namespace CmsData
     public enum QueryType
     {
         Age,
-        DaysAfterNthVisitDateRange,
+        AttendTypeCodes,
         AttendMemberTypeAsOf,
         AttendPct,
         AttendPctHistory,
@@ -30,6 +30,7 @@ namespace CmsData
         ContributionChange,
         CreatedBy,
         CreatedDate,
+        DaysAfterNthVisitDateRange,
         DaysBetween12Attendance,
         DaysSinceContact,
         DaysTillAnniversary,
