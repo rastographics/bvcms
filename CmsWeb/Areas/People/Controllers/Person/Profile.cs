@@ -36,7 +36,13 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult MembershipNotes(int id)
         {
             var m = new PersonModel(id);
-            return View("Profile/Notes", m);
+            return View("Profile/MembershipNotes", m);
+        }
+        [POST("Person2/MembershipDocuments/{id}")]
+        public ActionResult MembershipDocuments(int id)
+        {
+            var m = new PersonModel(id);
+            return View("Profile/MembershipDocuments", m);
         }
         [POST("Person2/ExtraValuesStandard/{id}")]
         public ActionResult ExtraValuesStandard(int id)
@@ -54,7 +60,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult Comments(int id)
         {
             var m = new PersonModel(id);
-            return View("Profile/Notes", m);
+            return View("Profile/MembershipNotes", m);
         }
     }
 }

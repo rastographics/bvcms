@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [POST("SearchAdd2/AddNewPerson/{noCheckDuplicate?}")]
-        public ActionResult AddNewPerson(SearchAddModel m, string noCheckDuplicate)
+        public ActionResult AddNewPerson(string noCheckDuplicate, SearchAddModel m)
         {
             var p = m.PendingList[m.PendingList.Count - 1];
             if (!noCheckDuplicate.HasValue())
@@ -125,6 +125,5 @@ namespace CmsWeb.Areas.Search.Controllers
             var ret = m.CommitAdd();
             return Json(ret);
         }
-
     }
 }

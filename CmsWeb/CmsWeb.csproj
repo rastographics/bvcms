@@ -1038,7 +1038,7 @@
     <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MembershipEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\Notes.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MembershipNotes.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\ExtraValuesAdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
@@ -1065,7 +1065,7 @@
     <Content Include="Areas\People\Views\Person\Emails\Failed.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\Documents.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MembershipDocuments.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Entry.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
