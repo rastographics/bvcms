@@ -10,11 +10,11 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-    [RouteArea("Manage", AreaUrl = "Manage/ExtraValues")]
-    public class ExtraValuesController : CmsStaffController
+    [RouteArea("Manage", AreaUrl = "Manage/ExtraValues2")]
+    public class ExtraValues2Controller : CmsStaffController
     {
-        [POST("Add/{id}")]
-        public ActionResult Add(int id, string field, string value)
+        [POST("Manage/ExtraValues2/Add/{id}")]
+        public ActionResult Add(Guid id, string field, string value)
         {
             var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
             foreach (var pid in list)
@@ -25,8 +25,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return Content("done");
         }
-        [POST("Delete/{id}")]
-        public ActionResult Delete(int id, string field, string value)
+        [POST("Manage/ExtraValues2/Delete/{id}")]
+        public ActionResult Delete(Guid id, string field, string value)
         {
             var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
             foreach (var pid in list)
@@ -40,11 +40,19 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return Content("done");
         }
-		[Authorize(Roles="Admin")]
+        [GET("QueryCodes")]
+        public ActionResult QueryCodes(string field, string value)
+        {
+            var c = DbUtil.Db.ScratchPadCondition();
+            c.Reset(DbUtil.Db);
+            c.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
+            c.Save(DbUtil.Db);
+            return Redirect("/Query/" + c.Id);
+        }
         [POST("DeleteAll")]
         public ActionResult DeleteAll(string field, string type, string value)
         {
-			var ev = DbUtil.Db.PeopleExtras.Where(ee => ee.Field == field).FirstOrDefault();
+			var ev = DbUtil.Db.PeopleExtras.FirstOrDefault(ee => ee.Field == field);
 		    if (ev == null)
 		        return Content("error: no field");
 		    switch (type.ToLower())
@@ -69,42 +77,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 		            break;
 		    }
 		    return Content("done");
-        }
-        [GET("QueryCodes")]
-        public ActionResult QueryCodes(string field, string value)
-        {
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
-            qb.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/QueryBuilder/Main/" + qb.QueryId);
-        }
-        [GET("QueryDataFields")]
-        public ActionResult QueryDataFields(string field, string type)
-        {
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            QueryBuilderClause c = null;
-            qb.CleanSlate(DbUtil.Db);
-            switch (type.ToLower())
-            {
-                case "text":
-                    c = qb.AddNewClause(QueryType.PeopleExtraData, CompareType.NotEqual, "");
-                    c.Quarters = field;
-                    break;
-                case "date":
-                    c = qb.AddNewClause(QueryType.PeopleExtraDate, CompareType.NotEqual, null);
-                    c.Quarters = field;
-                    break;
-                case "int":
-                    c = qb.AddNewClause(QueryType.PeopleExtraInt, CompareType.NotEqual, "");
-                    c.Quarters = field;
-                    break;
-                case "?":
-                    qb.AddNewClause(QueryType.HasPeopleExtraField, CompareType.Equal, field);
-                    break;
-            }
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/QueryBuilder/Main/" + qb.QueryId);
         }
     }
 }

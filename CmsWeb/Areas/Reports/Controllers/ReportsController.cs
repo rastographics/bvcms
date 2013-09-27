@@ -241,7 +241,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [GET("Reports2/Registration/{id}")]
         public ActionResult Registration(Guid? id, int? oid)
         {
-            if (id.HasValue)
+            if (!id.HasValue)
                 return Content("no query");
             return new RegistrationResult(id, oid);
         }
@@ -418,8 +418,8 @@ namespace CmsWeb.Areas.Reports.Controllers
                        select e;
             return View(list);
         }
-        [GET("Reports2/ExtraValueGrid/{id}")]
-        [GET("Reports2/ExtraValueGrid/{id}/{sort}")]
+        [GET("Reports2/ExtraValuesGrid/{id}")]
+        [GET("Reports2/ExtraValuesGrid/{id}/{sort}")]
         public ActionResult ExtraValuesGrid(Guid id, string sort)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
@@ -441,8 +441,8 @@ namespace CmsWeb.Areas.Reports.Controllers
             ViewBag.queryid = id;
             return View(rdr);
         }
-        [GET("Reports2/ExtraValueGrid2/{id}")]
-        [GET("Reports2/ExtraValueGrid2/{id}/{sort}")]
+        [GET("Reports2/ExtraValuesGrid2/{id}")]
+        [GET("Reports2/ExtraValuesGrid2/{id}/{sort}")]
         public ActionResult ExtraValuesGrid2(Guid id, string sort)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);

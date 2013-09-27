@@ -11,17 +11,17 @@ namespace CmsWeb.Areas.Reports.Controllers
     [RouteArea("Reports", AreaUrl = "Export2")]
     public class ExportController : CmsStaffController
     {
-//        [GET("Export2/StatusFlags/{id:guid}")]
-//        public ActionResult StatusFlags(Guid id)
-//        {
-//            return new StatusFlagsExcelResult(id);
-//        }
+        [GET("Export2/StatusFlags/{id:guid}")]
+        public ActionResult StatusFlags(Guid id)
+        {
+            return new StatusFlagsExcelResult(id);
+        }
 
-//        [GET("Export2/ExtraValues/{id:guid}")]
-//        public ActionResult ExtraValues(Guid id)
-//        {
-//            return new ExtraValueExcelResult(id);
-//        }
+        [GET("Export2/ExtraValues/{id:guid}")]
+        public ActionResult ExtraValues(Guid id)
+        {
+            return new ExtraValueExcelResult(id);
+        }
 
         [GET("Export2/Excel/{id:guid}")]
         [GET("Export2/Excel/{format}/{id:guid}")]
@@ -58,9 +58,13 @@ namespace CmsWeb.Areas.Reports.Controllers
                 case "Promotion":
                     return new ExcelResult(ExportInvolvements.PromoList(id, maxExcelRows));
                 case "IndividualPicture":
-                    return Redirect("/Export/Excel/IndividualPicture/" + id);
+                    Response.ContentType = "application/vnd.ms-excel";
+                    Response.AddHeader("content-disposition", "attachment;filename=pictures.xls");
+                    return View("Picture", ExportPeople.FetchExcelListPics(id, maxExcelRows));
                 case "FamilyMembers":
-                    return Redirect("/Export/Excel/FamilyMembers/" + id);
+                    Response.ContentType = "application/vnd.ms-excel";
+                    Response.AddHeader("content-disposition", "attachment;filename=familymembers.xls");
+                    return View("FamilyMembers", ExportPeople.FetchExcelListFamilyMembers(id));
             }
             return Content("no format");
         }

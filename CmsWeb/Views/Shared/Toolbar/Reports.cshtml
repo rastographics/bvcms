@@ -35,27 +35,27 @@
                 <li class="header">Reports</li>
                 @if ((bool?)ViewBag.OrganizationContext == true)
                 {
-                    <li><a href='/Reports2/Contacts/@qid' target="report" title="Report for Robo-calling Contacts">Contact Report</a></li>
-                    <li class="hideAlt"><a href='/Reports2/Contacts/@qid' target="report">Contact Report (by addr)</a></li>
+                    <li><a href='/Reports2/Contacts/@qid?orgname=@ViewBag.orgname' target="_blank" title="Report for Robo-calling Contacts">Contact Report</a></li>
+                    <li class="hideAlt"><a href='/Reports2/Contacts/@qid?sortAddress=true&orgname=@ViewBag.orgname' target="_blank">Contact Report (by addr)</a></li>
                 }
                 else
                 {
-                    <li><a href='/Reports2/Contacts/@qid' target="report" title="Report for Robo-calling Contacts">Contact Report</a></li>
-                    <li class="hideAlt"><a href='/Reports2/Contacts/@qid' target="report">Contact Report (Sorted by Address)</a></li>
+                    <li><a href='/Reports2/Contacts/@qid' target="_blank" title="Report for Robo-calling Contacts">Contact Report</a></li>
+                    <li class="hideAlt"><a href='/Reports2/Contacts/@qid?sortAddress=true' target="_blank">Contact Report (Sorted by Address)</a></li>
                 }
-                <li><a href='/Reports2/Family/@qid' target="report">Family Report</a></li>
-                <li><a href='/Reports2/Prospect/@qid' target="report">Inreach/Outreach</a></li>
-                <li><a href='/Reports2/Prospect/@qid' target="report">Inreach/Outreach with Form</a></li>
+                <li><a href='/Reports2/Family/@qid' target="_blank">Family Report</a></li>
+                <li><a href='/Reports2/Prospect/@qid' target="_blank">Inreach/Outreach</a></li>
+                <li><a href='/Reports2/Prospect/@qid?Form=true' target="_blank">Inreach/Outreach with Form</a></li>
                 @if ((bool?) ViewBag.OrganizationContext == true)
                 {
                     <li><a href='/Reports2/Roster1/@qid' target="report">Roster Report</a></li>
-                    <li><a href='/Reports2/Registration/@qid' target="report">Registration Report</a></li>
+                    <li><a href='/Reports2/Registration/@qid' target="_blank">Registration Report</a></li>
                 }
                 else
                 {
-                    <li><a href='/Reports2/Registration/@qid' target="report">Registration Rpt</a></li>
+                    <li><a href='/Reports2/Registration/@qid' target="_blank">Registration Rpt</a></li>
                 }
-                <li><a href='/Reports2/WeeklyAttendance/@qid' target="report">title="General Attendance Stats">Weekly Attend</a></li>
+                <li><a href='/Reports2/WeeklyAttendance/@qid' target="_blank" title="General Attendance Stats">Weekly Attend</a></li>
                 
 
                 <li class="header"><br />Directories</li>
@@ -73,13 +73,13 @@
             <ul class="span4 unstyled pull-left">
                 <li class="header"> Address Labels </li>
                 <li><a href='/Reports2/AveryAddress/@qid' class="dialog-options" data-target="#choose-format">Address</a></li>
-                <li><a href="/Reports2/EmployerAddress/@qid">Employer</a></li>
+                <li><a target="_blank" href="/Reports2/EmployerAddress/@qid">Employer</a></li>
                 <li><a href='/Reports2/RollLabels/@qid' class="dialog-options" data-target="#choose-format">Continous Roll Labels</a></li>
 
                 <li class="header"><br />Other Labels </li>
-                <li><a href='/Reports2/BarCodeLabels/@qid'>Barcode / Name</a></li>
-                <li><a href='/Reports2/NameLabels/@qid'>Name</a></li>
-                <li><a href='/Reports2/Avery/@qid'>Name (with Phone Number)</a></li>
+                <li><a target="_blank" href='/Reports2/BarCodeLabels/@qid'>Barcode / Name</a></li>
+                <li><a target="_blank" href='/Reports2/NameLabels/@qid'>Name</a></li>
+                <li><a target="_blank" href='/Reports2/Avery/@qid'>Name (with Phone Number)</a></li>
                 <li>@*<a href='/Reports/Avery3/@qid' title="Avery 3 Across Labels (person per row)">Avery Labels 3</a>*@</li>
             </ul>
         </div>

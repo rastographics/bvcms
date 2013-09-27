@@ -25435,20 +25435,19 @@ $(document).ready(function () {
     $(document).on("click", "a.dialog-options", function (ev) {
         ev.preventDefault();
         var f = $($(this).data("target"));
-        f.attr("action", $(this).attr("href"));
+        f.attr("action", this.href);
+        if (this.title)
+            f.find("h3.title").text(this.title);
         f.modal("show");
         $(f).validate({
             submitHandler: function (form) {
                 $(form).modal("hide");
                 if (form.method.toUpperCase() === 'GET') {
-                    $(form).attr("target", "_blank");
                     form.submit();
-                    $(form).removeAttr("target");
                 }
                 else {
                     var q = $(form).serialize();
-                    $.post(form.action, q, function (ret) {
-                    });
+                    $.post(form.action, q);
                 }
             },
             highlight: function (element) {

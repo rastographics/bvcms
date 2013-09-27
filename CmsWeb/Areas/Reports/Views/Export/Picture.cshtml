@@ -1,0 +1,79 @@
+﻿@model IEnumerable<CmsWeb.Models.ExcelPic>
+<html xmlns:x="urn:schemas-microsoft-com:office:excel">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    <div>
+        <table style="font-family: Arial; border-collapse: collapse;">
+            <tr>
+                <th>Picture</th>
+                <th>PeopleId</th>
+                <th>Title</th>
+                <th>First</th>
+                <th>Last</th>
+                <th>Address1</th>
+                <th>Address2</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Zip</th>
+                <th>Email</th>
+                <th>BirthDate</th>
+                <th>BirthDay</th>
+                <th>Anniversary</th>
+                <th>JoinDate</th>
+                <th>JoinType</th>
+                <th>HomePhone</th>
+                <th>CellPhone</th>
+                <th>WorkPhone</th>
+                <th>Church</th>
+                <th>Teacher</th>
+                <th>Spouse</th>
+                <th>Age</th>
+                <th>School</th>
+                <th>Grade</th>
+                <th>AttPct</th>
+                <th>Marital</th>
+                <th>FamilyId</th>
+                <th>ImageUrl</th>
+            </tr>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td style="height: 203px; width: 160px;">
+                        <img src="@r.Image" width="160" height="200" />
+                    </td>
+                    <td>@r.PeopleId</td>
+                    <td>@r.Title</td>
+                    <td>@r.FirstName</td>
+                    <td>@r.LastName</td>
+                    <td>@r.Address</td>
+                    <td>@r.Address2</td>
+                    <td>@r.City</td>
+                    <td>@r.State</td>
+                    <td class="Text">@r.Zip</td>
+                    <td>@r.Email</td>
+                    <td>@r.BirthDate</td>
+                    <td>@r.BirthDay</td>
+                    <td>@r.Anniversary</td>
+                    <td>@r.JoinDate</td>
+                    <td>@r.JoinType</td>
+                    <td>@r.HomePhone</td>
+                    <td>@r.CellPhone</td>
+                    <td>@r.WorkPhone</td>
+                    <td>@r.MemberStatus</td>
+                    <td>@r.FellowshipLeader</td>
+                    <td>@r.Spouse</td>
+                    <td>@r.Age</td>
+                    <td>@r.School</td>
+                    <td>@r.Grade</td>
+                    <td>@r.AttendPctBF</td>
+                    <td>@r.Married</td>
+                    <td>@r.FamilyId</td>
+                    <td>@r.Image</td>
+                </tr>
+            }
+        </table>
+    </div>
+</body>
+</html>

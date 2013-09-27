@@ -1148,6 +1148,44 @@ namespace CmsData
             ev.IntValue = value;
             ev.IntValue2 = value2;
         }
+        public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field)
+        {
+		    field = field.Replace('/', '-');
+            var q = from v in db.PeopleExtras
+                    where v.Field == field
+                    where v.PeopleId == id
+                    select v;
+            var ev = q.SingleOrDefault();
+            if (ev == null)
+            {
+                ev = new PeopleExtra
+                {
+                    PeopleId = id,
+                    Field = field,
+                    TransactionTime = DateTime.Now
+                };
+                db.PeopleExtras.InsertOnSubmit(ev);
+            }
+            return ev;
+        }
+        public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field, string value)
+        {
+            var novalue = !value.HasValue();
+            var q = from v in db.PeopleExtras
+                    where v.PeopleId == id
+                    where v.Field == field
+                    where novalue || v.StrValue == value 
+                    select v;
+            var ev = q.SingleOrDefault();
+            return ev;
+        }
+        public static void AddEditExtraValue(CMSDataContext db, int id, string field, string value)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.StrValue = value;
+        }
         public ManagedGiving ManagedGiving()
         {
             var mg = ManagedGivings.SingleOrDefault();

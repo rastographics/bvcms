@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Xml;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using UtilityExtensions;
@@ -8,18 +6,14 @@ using System.Linq;
 using CmsData;
 using System.Web.UI.WebControls;
 using System.Web.UI;
-using System.Linq.Dynamic;
-using CmsWeb.Areas.Main.Controllers;
-using CmsWeb.Areas.Manage.Controllers;
-using System.Text;
 using System.Data.SqlClient;
 
 namespace CmsWeb.Models
 {
     public class ExtraValueExcelResult : ActionResult
     {
-        private int qid;
-        public ExtraValueExcelResult(int qid)
+        private object qid;
+        public ExtraValueExcelResult(object qid)
         {
             this.qid = qid;
         }
