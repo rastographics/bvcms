@@ -1,23 +1,29 @@
-﻿@model CmsWeb.Areas.Search.Models.QueryModel
+﻿@using CmsWeb
+@model CmsWeb.Areas.Search.Models.QueryModel
 @{
     var codeData = Model.GetCodeData();
 }
-@if (Model.SelectMultiple)
-{
-    <select id="CodeValues" name="CodeValues" multiple="multiple" style="display: none;">
-        <option value="multiselect-all">Select all</option>
-        @foreach (var o in codeData)
+<div class="control-group">
+    <label class="control-label">Codes</label>
+    <div class="controls code-dropdown">
+        @if (Model.HasMultipleCodes)
         {
-            <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
+            <select id="CodeValues" name="CodeValues" multiple="multiple" style="display: none;">
+                <option value="multiselect-all">Select all</option>
+                @foreach (var o in codeData)
+                {
+                    <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
+                }
+            </select>
         }
-    </select>
-}
-else
-{
-    <select id="CodeValue" name="CodeValue">
-        @foreach (var o in codeData)
+        else
         {
-            <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
+            <select id="CodeValue" name="CodeValue">
+                @foreach (var o in codeData)
+                {
+                    <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
+                }
+            </select>
         }
-    </select>
-}
+    </div>
+</div>

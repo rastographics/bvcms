@@ -28,7 +28,7 @@ namespace CmsData
         internal string ToString(Condition c)
         {
             string fld = c.FieldInfo.Display(c);
-            if (c.Field == "MatchAnything")
+            if (c.ConditionName == "MatchAnything")
                 return fld;
             switch (FieldType)
             {
@@ -644,7 +644,7 @@ namespace CmsData
                 // S -------------------------
                 case QueryType.SavedQuery:
                     return Expressions.SavedQuery(parm, Db,
-                               c.SavedQueryIdDesc,
+                               c.SavedQuery,
                                CompType,
                                c.CodeIds == "1");
                 case QueryType.SmallGroup:
@@ -713,8 +713,8 @@ namespace CmsData
 				case QueryType.DropCodeId:
 				case QueryType.JoinCodeId:
                     if (CompType == CompareType.IsNull || CompType == CompareType.IsNotNull)
-						return Expressions.CompareConstant(parm, c.Field, CompType, -1);
-            		return Expressions.CompareConstant(parm, c.Field, CompType,
+						return Expressions.CompareConstant(parm, c.ConditionName, CompType, -1);
+            		return Expressions.CompareConstant(parm, c.ConditionName, CompType,
             			IsMultiple ? (object)c.CodeIntIds : (object)c.CodeIds.ToInt());
 				case QueryType.PrimaryAddress:
 				case QueryType.PrimaryAddress2:
@@ -731,12 +731,12 @@ namespace CmsData
 				case QueryType.EmailAddress:
 				case QueryType.EmailAddress2:
                     if (CompType == CompareType.IsNull || CompType == CompareType.IsNotNull)
-						return Expressions.CompareConstant(parm, c.Field, CompType, null);
-					return Expressions.CompareStringConstant(parm, c.Field, CompType, c.TextValue ?? "");
+						return Expressions.CompareConstant(parm, c.ConditionName, CompType, null);
+					return Expressions.CompareStringConstant(parm, c.ConditionName, CompType, c.TextValue ?? "");
             	default:
                     if (CompType == CompareType.IsNull || CompType == CompareType.IsNotNull)
                         return Expressions.CompareConstant(parm,
-                                   c.Field,
+                                   c.ConditionName,
                                    CompType,
                                    null);
                     switch (FieldType)
@@ -744,48 +744,48 @@ namespace CmsData
                         case FieldType.NullBit:
                         case FieldType.Bit:
                             return Expressions.CompareConstant(parm,
-                                       c.Field,
+                                       c.ConditionName,
                                        CompType,
                                        c.CodeIds == "1");
                         case FieldType.Code:
                             return Expressions.CompareConstant(parm,
-                                       c.Field,
+                                       c.ConditionName,
                                        CompType,
                                        IsMultiple ? (object)c.CodeIntIds : (object)c.CodeIds.ToInt());
                         case FieldType.NullCode:
                             return Expressions.CompareCodeConstant(parm,
-                                       c.Field,
+                                       c.ConditionName,
                                        CompType,
                                        IsMultiple ? (object)c.CodeIntIds : (object)c.CodeIds.ToInt());
                         case FieldType.CodeStr:
                             return Expressions.CompareConstant(parm,
-                                       c.Field,
+                                       c.ConditionName,
                                        CompType,
                                        IsMultiple ? (object)c.CodeStrIds : (object)c.CodeIdValue);
                         case FieldType.String:
                             return Expressions.CompareConstant(parm,
-                                       c.Field,
+                                       c.ConditionName,
                                        CompType,
                                        c.TextValue);
                         case FieldType.Number:
                         case FieldType.NullNumber:
                             return Expressions.CompareConstant(parm,
-                                       c.Field,
+                                       c.ConditionName,
                                        CompType,
                                        decimal.Parse(c.TextValue));
                         case FieldType.Integer:
                         case FieldType.IntegerSimple:
                         case FieldType.NullInteger:
                             return Expressions.CompareIntConstant(parm,
-                                       c.Field,
+                                       c.ConditionName,
                                        CompType,
                                        c.TextValue);
                         case FieldType.Date:
                         case FieldType.DateSimple:
-                            if (c.Field == "DeceasedDate")
+                            if (c.ConditionName == "DeceasedDate")
                                 c.SetIncludeDeceased();
                             return Expressions.CompareDateConstant(parm,
-                                       c.Field,
+                                       c.ConditionName,
                                        CompType,
                                        c.DateValue);
                         default:

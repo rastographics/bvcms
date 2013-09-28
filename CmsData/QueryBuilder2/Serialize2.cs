@@ -96,7 +96,7 @@ namespace CmsData
         {
             w.WriteAttributeString("Id", Id.ToString());
             w.WriteAttributeString("Order", Order.ToString());
-            w.WriteAttributeString("Field", Field);
+            w.WriteAttributeString("Field", ConditionName);
             w.WriteAttributeString("Comparison", Comparison);
             if (Description.HasValue())
                 w.WriteAttributeString("Description", Description);
@@ -126,6 +126,8 @@ namespace CmsData
                 w.WriteAttributeString("Schedule", Schedule.ToString());
             if (Age.HasValue)
                 w.WriteAttributeString("Age", Age.ToString());
+            if (SavedQuery.HasValue())
+                w.WriteAttributeString("SavedQueryIdDesc", SavedQuery);
         }
         public static Condition Import(string text, string name = null, bool newGuids = false)
         {
@@ -147,7 +149,7 @@ namespace CmsData
                 ParentId = parentGuid,
                 Id = AttributeGuid(r, "Id"),
                 Order = AttributeInt(r, "Order"),
-                Field = Attribute(r, "Field"),
+                ConditionName = Attribute(r, "Field"),
                 Comparison = Attribute(r, "Comparison"),
                 TextValue = Attribute(r, "TextValue"),
                 DateValue = AttributeDate(r, "DateValue"),
@@ -163,6 +165,7 @@ namespace CmsData
                 Schedule = Attribute(r, "Schedule").ToInt(),
                 Age = Attribute(r, "Age").ToInt(),
                 Owner = Attribute(r, "Owner"),
+                SavedQuery = Attribute(r, "SavedQueryIdDesc"),
                 AllConditions = allClauses
             };
             if (p == null)
@@ -170,7 +173,7 @@ namespace CmsData
             c.AllConditions.Add(c.Id, c);
             if (newGuids)
                 c.Id = Guid.NewGuid();
-            if (c.Field == "Group")
+            if (c.ConditionName == "Group")
                 foreach (var rr in r.Elements())
                     ImportClause(rr, c, newGuids);
             return c;

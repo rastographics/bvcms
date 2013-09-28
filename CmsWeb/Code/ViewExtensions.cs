@@ -609,6 +609,14 @@ namespace CmsWeb
 
             return dropDown;
         }
+        public static IHtmlString EditorForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, 
+            Expression<Func<TModel, TProperty>> expression, 
+            bool show, object viewdata = null)
+        {
+            if (!show)
+                return null;
+            return htmlHelper.EditorFor(expression, viewdata);
+        }
 
         public static CollectionItemNamePrefixScope BeginCollectionItem<TModel>(this HtmlHelper<TModel> html, string collectionName)
         {

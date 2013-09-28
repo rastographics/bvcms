@@ -342,16 +342,20 @@
     <Compile Include="Areas\People\Models\Person\Giving\ContributionInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\ContributionsModel.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactSummaryInfo.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\UpdateEditCondition.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\CopyPasteNew.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\SelectLists.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\Visibility.cs" />
     <Compile Include="Areas\Search\Models\Query\PeopleInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Search\Models\Query\QBExportResult.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Search\Models\Query\QueryModel.cs">
+    <Compile Include="Areas\Search\Models\Query\Model\QueryModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Search\Models\Query\QueryResults.cs">
+    <Compile Include="Areas\Search\Models\Query\Model\QueryResults.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Search\Models\SearchAdd\SearchResultsModel.cs" />
@@ -1916,6 +1920,7 @@
     <Content Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\EmailAddress.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Phone.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditorTemplates\DropDown.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
