@@ -68,7 +68,7 @@ namespace CmsData
             CompareType op,
             bool tf)
         {
-            var a = tag.Split(';').Select(s => s.Split(',')[0].ToInt()).ToArray();
+            var a = (tag ?? "").Split(';').Select(s => s.Split(',')[0].ToInt()).ToArray();
             Expression<Func<Person, bool>> pred = p =>
                 p.Tags.Any(t => a.Contains(t.Id));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));

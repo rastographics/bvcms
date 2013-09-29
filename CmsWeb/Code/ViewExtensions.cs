@@ -17,6 +17,7 @@ using System.Web.Mvc.Html;
 using AttributeRouting.Helpers;
 using CmsData;
 using CmsWeb.Code;
+using iTextSharp.tool.xml.html;
 using UtilityExtensions;
 using System.Configuration;
 using System.Web.Routing;
@@ -453,27 +454,27 @@ namespace CmsWeb
             public string errorClass;
         }
 
-//        public static HelpMessage HelpMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string classname)
-//        {
-//            var name = helper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(ExpressionHelper.GetExpressionText(expression));
-//            var help = helper.ViewContext.ViewData["help"] as string;
-//            var m = helper.ViewData.ModelState[name];
-//            if (m == null && help == null)
-//                return new HelpMessage();
-//            var b = new TagBuilder("span");
-//            b.AddCssClass(classname);
-//            var hasError = false;
-//            if (m != null && m.Errors.Count > 0)
-//            {
-//                b.SetInnerText(m.Errors[0].ErrorMessage);
-//                hasError = true;
-//            }
-//            else if (help != null)
-//                b.InnerHtml = help;
-//            else
-//                return new HelpMessage();
-//            return new HelpMessage { message = new HtmlString(b.ToString()), errorClass = hasError ? "error" : "" };
-//        }
+        //        public static HelpMessage HelpMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string classname)
+        //        {
+        //            var name = helper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(ExpressionHelper.GetExpressionText(expression));
+        //            var help = helper.ViewContext.ViewData["help"] as string;
+        //            var m = helper.ViewData.ModelState[name];
+        //            if (m == null && help == null)
+        //                return new HelpMessage();
+        //            var b = new TagBuilder("span");
+        //            b.AddCssClass(classname);
+        //            var hasError = false;
+        //            if (m != null && m.Errors.Count > 0)
+        //            {
+        //                b.SetInnerText(m.Errors[0].ErrorMessage);
+        //                hasError = true;
+        //            }
+        //            else if (help != null)
+        //                b.InnerHtml = help;
+        //            else
+        //                return new HelpMessage();
+        //            return new HelpMessage { message = new HtmlString(b.ToString()), errorClass = hasError ? "error" : "" };
+        //        }
         public static MvcHtmlString ValidationMessageLabelFor<TModel, TProperty>(this HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression, string errorClass = "error")
         {
             string elementName = ExpressionHelper.GetExpressionText(expression);
@@ -544,7 +545,7 @@ namespace CmsWeb
             // Return to native if true not passed
             if (!useNativeUnobtrusiveAttributes)
                 return htmlHelper.CheckBoxFor(expression, htmlAttributes);
-            
+
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
             var value = (bool)ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
@@ -609,13 +610,21 @@ namespace CmsWeb
 
             return dropDown;
         }
-        public static IHtmlString EditorForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, 
-            Expression<Func<TModel, TProperty>> expression, 
-            bool show, object viewdata = null)
+        public static IHtmlString EditorForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> expression,
+            bool show, string templateName, object viewdata = null, object htmlAttributes = null)
         {
             if (!show)
                 return null;
-            return htmlHelper.EditorFor(expression, viewdata);
+            if (templateName == null)
+                return htmlHelper.EditorFor(expression, viewdata);
+            return htmlHelper.EditorFor(expression, templateName, viewdata);
+        }
+        public static IHtmlString EditorForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> expression,
+            bool show, object viewdata = null)
+        {
+            return htmlHelper.EditorForIf(expression, show, null, viewdata);
         }
 
         public static CollectionItemNamePrefixScope BeginCollectionItem<TModel>(this HtmlHelper<TModel> html, string collectionName)

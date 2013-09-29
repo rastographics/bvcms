@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-        [SkipField]
+        [SkipFieldOnCopyProperties]
         public int? PeopleId
         {
             get { return _peopleId; }

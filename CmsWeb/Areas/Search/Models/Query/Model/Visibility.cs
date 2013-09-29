@@ -1,103 +1,65 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data.Linq.SqlClient;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Code;
-using CmsWeb.Models;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using MoreLinq;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
     public partial class QueryModel
     {
-        public bool RightPanelVisible { get; set; }
-        public bool ComparePanelVisible { get; set; }
-        public bool TextVisible { get; set; }
-        public bool NumberVisible { get; set; }
-        public bool IntegerVisible { get; set; }
-        public bool CodeVisible { get; set; }
-        public bool DateVisible { get; set; }
-        public bool ProgramVisible { get; set; }
-        public bool DivisionVisible { get; set; }
-        public bool EndDateVisible { get; set; }
-        public bool StartDateVisible { get; set; }
-        public bool OrganizationVisible { get; set; }
-        public bool ScheduleVisible { get; set; }
-        public bool CampusVisible { get; set; }
-        public bool OrgTypeVisible { get; set; }
-        public bool DaysVisible { get; set; }
-        public bool AgeVisible { get; set; }
-        public bool SavedQueryVisible { get; set; }
-        public bool MinistryVisible { get; set; }
-        public bool QuartersVisible { get; set; }
-        public bool TagsVisible { get; set; }
-        public bool PmmLabelsVisible { get; set; }
+        public bool RightPanelVisible { get { return ComparePanelVisible; } }
+        public bool ComparePanelVisible { get { return fieldMap.Name != "MatchAnything"; } }
 
-        public void SetVisibility()
-        {
-            ComparePanelVisible = fieldMap.Name != "MatchAnything";
-            RightPanelVisible = ComparePanelVisible;
-            ConditionName = ConditionName;
-            DivisionVisible = fieldMap.HasParam("Division");
-            ProgramVisible = fieldMap.HasParam("Program");
-            OrganizationVisible = fieldMap.HasParam("Organization");
-            ScheduleVisible = fieldMap.HasParam("Schedule");
-            CampusVisible = fieldMap.HasParam("Campus");
-            OrgTypeVisible = fieldMap.HasParam("OrgType");
-            DaysVisible = fieldMap.HasParam("Days");
-            AgeVisible = fieldMap.HasParam("Age");
-            SavedQueryVisible = fieldMap.HasParam("SavedQueryIdDesc");
-            MinistryVisible = fieldMap.HasParam("Ministry");
-            QuartersVisible = fieldMap.HasParam("Quarters");
-            if (QuartersVisible)
-                QuartersLabel = fieldMap.QuartersTitle;
-            PmmLabelsVisible = fieldMap.HasParam("PmmLabels");
-            TagsVisible = fieldMap.HasParam("Tags");
-            if (TagsVisible)
-            {
-                var cv = new CodeValueModel();
-                TagData = ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Code");
-            }
-            StartDateVisible = fieldMap.HasParam("StartDate");
-            EndDateVisible = fieldMap.HasParam("EndDate");
+        public bool TextVisible { get { return texttypes.Contains(fieldMap.Type); } }
+        public bool NumberVisible { get { return numbertypes.Contains(fieldMap.Type); } }
+        public bool IntegerVisible { get { return integertypes.Contains(fieldMap.Type); } }
+        public bool CodeVisible { get { return codetypes.Contains(fieldMap.Type); } }
+        public bool DateVisible { get { return datetypes.Contains(fieldMap.Type); } }
 
-            TextVisible = NumberVisible = CodeVisible = DateVisible = false;
-            switch (fieldMap.Type)
-            {
-                case FieldType.Bit:
-                case FieldType.NullBit:
-                case FieldType.Code:
-                case FieldType.NullCode:
-                case FieldType.CodeStr:
-                case FieldType.DateField:
-                    CodeVisible = true;
-                    break;
-                case FieldType.String:
-                case FieldType.StringEqual:
-                case FieldType.StringEqualOrStartsWith:
-                    TextVisible = true;
-                    break;
-                case FieldType.NullNumber:
-                case FieldType.Number:
-                    NumberVisible = true;
-                    break;
-                case FieldType.NullInteger:
-                case FieldType.Integer:
-                case FieldType.IntegerSimple:
-                case FieldType.IntegerEqual:
-                    IntegerVisible = true;
-                    break;
-                case FieldType.Date:
-                case FieldType.DateSimple:
-                    DateVisible = true;
-                    break;
-            }
-        }
+        public bool ProgramVisible { get { return fieldMap.HasParam("Program"); } }
+        public bool DivisionVisible { get { return fieldMap.HasParam("Division"); } }
+        public bool EndDateVisible { get { return fieldMap.HasParam("EndDate"); } }
+        public bool StartDateVisible { get { return fieldMap.HasParam("StartDate"); } }
+        public bool OrganizationVisible { get { return fieldMap.HasParam("Organization"); } }
+        public bool ScheduleVisible { get { return fieldMap.HasParam("Schedule"); } }
+        public bool CampusVisible { get { return fieldMap.HasParam("Campus"); } }
+        public bool OrgTypeVisible { get { return fieldMap.HasParam("OrgType"); } }
+        public bool DaysVisible { get { return fieldMap.HasParam("Days"); } }
+        public bool AgeVisible { get { return fieldMap.HasParam("Age"); } }
+        public bool SavedQueryVisible { get { return fieldMap.HasParam("SavedQueryIdDesc"); } }
+        public bool MinistryVisible { get { return fieldMap.HasParam("Ministry"); } }
+        public bool QuartersVisible { get { return fieldMap.HasParam("Quarters"); } }
+        public bool TagsVisible { get { return fieldMap.HasParam("Tags"); } }
+        public bool PmmLabelsVisible { get { return fieldMap.HasParam("PmmLabels"); } }
+
+        private List<FieldType> texttypes = new List<FieldType>() 
+        { 
+            FieldType.String, 
+            FieldType.StringEqual, 
+            FieldType.StringEqualOrStartsWith 
+        };
+        private List<FieldType> codetypes = new List<FieldType>() 
+        { 
+            FieldType.Bit,
+            FieldType.NullBit,
+            FieldType.Code,
+            FieldType.NullCode,
+            FieldType.CodeStr
+        };
+        private List<FieldType> integertypes = new List<FieldType>() 
+        { 
+            FieldType.Integer,
+            FieldType.IntegerEqual,
+            FieldType.IntegerSimple,
+            FieldType.NullInteger,
+        };
+        private List<FieldType> numbertypes = new List<FieldType>() 
+        { 
+            FieldType.NullNumber,
+            FieldType.Number,
+        };
+        private List<FieldType> datetypes = new List<FieldType>() 
+        { 
+            FieldType.Date,
+            FieldType.DateSimple,
+        };
     }
 }

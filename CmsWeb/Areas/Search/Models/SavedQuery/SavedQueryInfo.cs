@@ -15,9 +15,9 @@ namespace CmsWeb.Areas.Search.Models
 
         public string Name { get; set; }
 
-        [SkipField]
+        [SkipFieldOnCopyProperties]
         public DateTime? LastRun { get; set; }
-        [SkipField]
+        [SkipFieldOnCopyProperties]
         public int RunCount { get; set; }
 
         private Query query;

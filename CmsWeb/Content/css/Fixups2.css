@@ -826,3 +826,6 @@ a.go-back {
 #condition-edit .controls p {
     padding-top: 2px;
 }
+.width100 {
+    width: 100%;
+}

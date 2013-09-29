@@ -22,8 +22,8 @@ namespace CmsData
         public string ConditionName { get; set; }
         public string Comparison { get; set; }
         public string TextValue { get; set; }
-        public int? IntegerValue { get; set; }
-        public decimal? NumberValue { get; set; }
+//        public int? IntegerValue { get; set; }
+//        public decimal? NumberValue { get; set; }
         public DateTime? DateValue { get; set; }
         public string CodeIdValue { get; set; }
         public DateTime? StartDate { get; set; }

@@ -561,6 +561,9 @@
     <Content Include="Content\css\bundle-new2css.min.css">
       <DependentUpon>bundle-new2css.css.bundle</DependentUpon>
     </Content>
+    <Content Include="Content\css\chosen-sprite%402x.png" />
+    <Content Include="Content\css\chosen-sprite.png" />
+    <Content Include="Content\css\chosen.min.css" />
     <Content Include="Content\css\Fixups2.css" />
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\demo_page.css" />
@@ -1107,6 +1110,8 @@
     <Content Include="Areas\Reports\Web.config" />
     <Content Include="Areas\Reports\Views\Export\FamilyMembers.cshtml" />
     <Content Include="Areas\Reports\Views\Export\Picture.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditorTemplates\MultiSelect.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditorTemplates\CodeSelect.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -2151,7 +2156,7 @@
     <Content Include="Areas\Search\Views\SavedQuery\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Results.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Row.cshtml" />
-    <Content Include="Areas\Search\Views\Query\CodesDropdown.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditorTemplates\CodesDropdown.cshtml" />
     <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
     <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
     <Content Include="Areas\Manage\Views\Display\ContentView.cshtml" />

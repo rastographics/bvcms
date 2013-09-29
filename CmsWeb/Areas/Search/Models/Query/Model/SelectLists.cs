@@ -18,6 +18,8 @@ namespace CmsWeb.Areas.Search.Models
     {
         public IEnumerable<SelectListItem> GetCodeData()
         {
+            if (!CodeVisible)
+                return null;
             var cvctl = new CodeValueModel();
             switch (fieldMap.Type)
             {
@@ -37,17 +39,17 @@ namespace CmsWeb.Areas.Search.Models
             }
             return null;
         }
-        public List<SelectListItem> ConvertToSelect(object items, string valuefield)
+        private List<SelectListItem> ConvertToSelect(object items, string valuefield, List<string> values = null )
         {
             var list = items as IEnumerable<CodeValueItem>;
             List<SelectListItem> list2;
-            List<string> values;
-            if (CodeValues != null)
-                values = CodeValues.ToList();
-            else if (CodeValue != null)
-                values = new List<string> { CodeValue };
-            else
-                values = new List<string>();
+            if (values == null)
+            {
+                if (CodeValues != null)
+                    values = CodeValues.ToList();
+                else
+                    values = new List<string>();
+            }
             switch (valuefield)
             {
                 case "IdCode":
@@ -86,6 +88,8 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> Schedules()
         {
+            if (!ScheduleVisible)
+                return null;
             var q = from o in Db.Organizations
                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                     where sc != null
@@ -103,6 +107,8 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> Campuses()
         {
+            if (!CampusVisible)
+                return null;
             var q = from o in Db.Organizations
                     where o.CampusId != null
                     group o by o.CampusId into g
@@ -119,6 +125,8 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> OrgTypes()
         {
+            if (!OrgTypeVisible)
+                return null;
             var q = from t in Db.OrganizationTypes
                     orderby t.Code
                     select new SelectListItem
@@ -132,6 +140,8 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> Programs()
         {
+            if (!ProgramVisible)
+                return null;
             var q = from t in Db.Programs
                     orderby t.Name
                     select new SelectListItem
@@ -143,10 +153,12 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        public static IEnumerable<SelectListItem> Divisions(int? progid)
+        public IEnumerable<SelectListItem> Divisions()
         {
+            if (!DivisionVisible)
+                return null;
             var q = from div in DbUtil.Db.Divisions
-                    where div.ProgDivs.Any(d => d.ProgId == progid)
+                    where div.ProgDivs.Any(d => d.ProgId == Program.ToInt2())
                     orderby div.Name
                     select new SelectListItem
                     {
@@ -157,12 +169,14 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        public static IEnumerable<SelectListItem> Organizations(int? divid)
+        public IEnumerable<SelectListItem> Organizations()
         {
+            if (!OrganizationVisible)
+                return null;
             var roles = DbUtil.Db.CurrentRoles();
             var q = from ot in DbUtil.Db.DivOrgs
                     where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
-                    where ot.DivId == divid
+                    where ot.DivId == Division.ToInt2()
                           && (SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14
                               || ot.Organization.OrganizationStatusId == 30)
                     where (Util2.OrgMembersOnly == false && Util2.OrgLeadersOnly == false) || (ot.Organization.SecurityTypeId != 3)
@@ -179,11 +193,15 @@ namespace CmsWeb.Areas.Search.Models
         }
         public List<SelectListItem> SavedQueries()
         {
+            if (!SavedQueryVisible)
+                return null;
             var cv = new CodeValueModel();
             return ConvertToSelect(cv.UserQueries(), "Code");
         }
         public List<SelectListItem> Ministries()
         {
+            if (!MinistryVisible)
+                return null;
             var q = from t in Db.Ministries
                     orderby t.MinistryDescription
                     select new SelectListItem

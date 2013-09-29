@@ -28796,7 +28796,7 @@ $.format = $.validator.format;
 
 /* jshint forin:true, noarg:true, noempty:true, eqeqeq:true, boss:true, undef:true, curly:true, browser:true, jquery:true */
 /*
- * jQuery MultiSelect UI Widget 1.13
+ * jQuery MultiSelect UI Widget 1.14pre
  * Copyright (c) 2012 Eric Hynds
  *
  * http://www.erichynds.com/jquery/jquery-ui-multiselect-widget/
@@ -28813,692 +28813,723 @@ $.format = $.validator.format;
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  *
-*/
-(function ($, undefined) {
+ */
+(function($, undefined) {
 
-    var multiselectID = 0;
+  var multiselectID = 0;
+  var $doc = $(document);
 
-    $.widget("ech.multiselect", {
+  $.widget("ech.multiselect", {
 
-        // default options
-        options: {
-            header: true,
-            height: 175,
-            minWidth: 225,
-            classes: '',
-            checkAllText: 'Check all',
-            uncheckAllText: 'Uncheck all',
-            noneSelectedText: 'Select options',
-            selectedText: '# selected',
-            selectedList: 0,
-            show: null,
-            hide: null,
-            autoOpen: false,
-            multiple: true,
-            position: {}
-        },
+    // default options
+    options: {
+      header: true,
+      height: 175,
+      minWidth: 225,
+      classes: '',
+      checkAllText: 'Check all',
+      uncheckAllText: 'Uncheck all',
+      noneSelectedText: 'Select options',
+      selectedText: '# selected',
+      selectedList: 0,
+      show: null,
+      hide: null,
+      autoOpen: false,
+      multiple: true,
+      position: {},
+      appendTo: "body"
+    },
 
-        _create: function () {
-            var el = this.element.hide(),
-                o = this.options;
+    _create: function() {
+      var el = this.element.hide();
+      var o = this.options;
 
-            this.speed = $.fx.speeds._default; // default speed for effects
-            this._isOpen = false; // assume no
+      this.speed = $.fx.speeds._default; // default speed for effects
+      this._isOpen = false; // assume no
 
-            var
-                button = (this.button = $('<button type="button"><span class="ui-icon ui-icon-triangle-2-n-s"></span></button>'))
-                    .addClass('ui-multiselect ui-widget ui-state-default ui-corner-all')
-                    .addClass(o.classes)
-                    .attr({ 'title': el.attr('title'), 'aria-haspopup': true, 'tabIndex': el.attr('tabIndex') })
-                    .insertAfter(el),
+      // create a unique namespace for events that the widget
+      // factory cannot unbind automatically. Use eventNamespace if on
+      // jQuery UI 1.9+, and otherwise fallback to a custom string.
+      this._namespaceID = this.eventNamespace || ('multiselect' + multiselectID);
 
-                buttonlabel = (this.buttonlabel = $('<span />'))
-                    .html(o.noneSelectedText)
-                    .appendTo(button),
+      var button = (this.button = $('<button type="button"><span class="ui-icon ui-icon-triangle-1-s"></span></button>'))
+        .addClass('ui-multiselect ui-widget ui-state-default ui-corner-all')
+        .addClass(o.classes)
+        .attr({ 'title':el.attr('title'), 'aria-haspopup':true, 'tabIndex':el.attr('tabIndex') })
+        .insertAfter(el),
 
-                menu = (this.menu = $('<div />'))
-                    .addClass('ui-multiselect-menu ui-widget ui-widget-content ui-corner-all')
-                    .addClass(o.classes)
-                    .appendTo(document.body),
+        buttonlabel = (this.buttonlabel = $('<span />'))
+          .html(o.noneSelectedText)
+          .appendTo(button),
 
-                header = (this.header = $('<div />'))
-                    .addClass('ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix')
-                    .appendTo(menu),
+        menu = (this.menu = $('<div />'))
+          .addClass('ui-multiselect-menu ui-widget ui-widget-content ui-corner-all')
+          .addClass(o.classes)
+          .appendTo($(o.appendTo)),
 
-                headerLinkContainer = (this.headerLinkContainer = $('<ul />'))
-                    .addClass('ui-helper-reset')
-                    .html(function () {
-                        if (o.header === true) {
-                            return '<li><a class="ui-multiselect-all" href="#"><span class="ui-icon ui-icon-check"></span><span>' + o.checkAllText + '</span></a></li><li><a class="ui-multiselect-none" href="#"><span class="ui-icon ui-icon-closethick"></span><span>' + o.uncheckAllText + '</span></a></li>';
-                        } else if (typeof o.header === "string") {
-                            return '<li>' + o.header + '</li>';
-                        } else {
-                            return '';
-                        }
-                    })
-                    .append('<li class="ui-multiselect-close"><a href="#" class="ui-multiselect-close"><span class="ui-icon ui-icon-circle-close"></span></a></li>')
-                    .appendTo(header),
+        header = (this.header = $('<div />'))
+          .addClass('ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix')
+          .appendTo(menu),
 
-                checkboxContainer = (this.checkboxContainer = $('<ul />'))
-                    .addClass('ui-multiselect-checkboxes ui-helper-reset')
-                    .appendTo(menu);
-
-            // perform event bindings
-            this._bindEvents();
-
-            // build menu
-            this.refresh(true);
-
-            // some addl. logic for single selects
-            if (!o.multiple) {
-                menu.addClass('ui-multiselect-single');
-            }
-        },
-
-        _init: function () {
-            if (this.options.header === false) {
-                this.header.hide();
-            }
-            if (!this.options.multiple) {
-                this.headerLinkContainer.find('.ui-multiselect-all, .ui-multiselect-none').hide();
-            }
-            if (this.options.autoOpen) {
-                this.open();
-            }
-            if (this.element.is(':disabled')) {
-                this.disable();
-            }
-        },
-
-        refresh: function (init) {
-            var el = this.element,
-                o = this.options,
-                menu = this.menu,
-                checkboxContainer = this.checkboxContainer,
-                optgroups = [],
-                html = "",
-                id = el.attr('id') || multiselectID++; // unique ID for the label & option tags
-
-            // build items
-            el.find('option').each(function (i) {
-                var $this = $(this),
-                    parent = this.parentNode,
-                    title = this.innerHTML,
-                    description = this.title,
-                    value = this.value,
-                    inputID = 'ui-multiselect-' + (this.id || id + '-option-' + i),
-                    isDisabled = this.disabled,
-                    isSelected = this.selected,
-                    labelClasses = ['ui-corner-all'],
-                    liClasses = (isDisabled ? 'ui-multiselect-disabled ' : ' ') + this.className,
-                    optLabel;
-
-                // is this an optgroup?
-                if (parent.tagName === 'OPTGROUP') {
-                    optLabel = parent.getAttribute('label');
-
-                    // has this optgroup been added already?
-                    if ($.inArray(optLabel, optgroups) === -1) {
-                        html += '<li class="ui-multiselect-optgroup-label ' + parent.className + '"><a href="#">' + optLabel + '</a></li>';
-                        optgroups.push(optLabel);
-                    }
-                }
-
-                if (isDisabled) {
-                    labelClasses.push('ui-state-disabled');
-                }
-
-                // browsers automatically select the first option
-                // by default with single selects
-                if (isSelected && !o.multiple) {
-                    labelClasses.push('ui-state-active');
-                }
-
-                html += '<li class="' + liClasses + '">';
-
-                // create the label
-                html += '<label for="' + inputID + '" title="' + description + '" class="' + labelClasses.join(' ') + '">';
-                html += '<input id="' + inputID + '" name="multiselect_' + id + '" type="' + (o.multiple ? "checkbox" : "radio") + '" value="' + value + '" title="' + title + '"';
-
-                // pre-selected?
-                if (isSelected) {
-                    html += ' checked="checked"';
-                    html += ' aria-selected="true"';
-                }
-
-                // disabled?
-                if (isDisabled) {
-                    html += ' disabled="disabled"';
-                    html += ' aria-disabled="true"';
-                }
-
-                // add the title and close everything off
-                html += ' /><span>' + title + '</span></label></li>';
-            });
-
-            // insert into the DOM
-            checkboxContainer.html(html);
-
-            // cache some moar useful elements
-            this.labels = menu.find('label');
-            this.inputs = this.labels.children('input');
-
-            // set widths
-            this._setButtonWidth();
-            this._setMenuWidth();
-
-            // remember default value
-            this.button[0].defaultValue = this.update();
-
-            // broadcast refresh event; useful for widgets
-            if (!init) {
-                this._trigger('refresh');
-            }
-        },
-
-        // updates the button text. call refresh() to rebuild
-        update: function () {
-            var o = this.options,
-                $inputs = this.inputs,
-                $checked = $inputs.filter(':checked'),
-                numChecked = $checked.length,
-                value;
-
-            if (numChecked === 0) {
-                value = o.noneSelectedText;
+        headerLinkContainer = (this.headerLinkContainer = $('<ul />'))
+          .addClass('ui-helper-reset')
+          .html(function() {
+            if(o.header === true) {
+              return '<li><a class="ui-multiselect-all" href="#"><span class="ui-icon ui-icon-check"></span><span>' + o.checkAllText + '</span></a></li><li><a class="ui-multiselect-none" href="#"><span class="ui-icon ui-icon-closethick"></span><span>' + o.uncheckAllText + '</span></a></li>';
+            } else if(typeof o.header === "string") {
+              return '<li>' + o.header + '</li>';
             } else {
-                if ($.isFunction(o.selectedText)) {
-                    value = o.selectedText.call(this, numChecked, $inputs.length, $checked.get());
-                } else if (/\d/.test(o.selectedList) && o.selectedList > 0 && numChecked <= o.selectedList) {
-                    value = $checked.map(function () { return $(this).next().html(); }).get().join(', ');
-                } else {
-                    value = o.selectedText.replace('#', numChecked).replace('#', $inputs.length);
-                }
+              return '';
             }
-
-            this.buttonlabel.html(value);
-            return value;
-        },
-
-        // binds events
-        _bindEvents: function () {
-            var self = this, button = this.button;
-
-            function clickHandler() {
-                self[self._isOpen ? 'close' : 'open']();
-                return false;
-            }
-
-            // webkit doesn't like it when you click on the span :(
-            button
-                .find('span')
-                .bind('click.multiselect', clickHandler);
-
-            // button events
-            button.bind({
-                click: clickHandler,
-                keypress: function (e) {
-                    switch (e.which) {
-                        case 27: // esc
-                        case 38: // up
-                        case 37: // left
-                            self.close();
-                            break;
-                        case 39: // right
-                        case 40: // down
-                            self.open();
-                            break;
-                    }
-                },
-                mouseenter: function () {
-                    if (!button.hasClass('ui-state-disabled')) {
-                        $(this).addClass('ui-state-hover');
-                    }
-                },
-                mouseleave: function () {
-                    $(this).removeClass('ui-state-hover');
-                },
-                focus: function () {
-                    if (!button.hasClass('ui-state-disabled')) {
-                        $(this).addClass('ui-state-focus');
-                    }
-                },
-                blur: function () {
-                    $(this).removeClass('ui-state-focus');
-                }
-            });
-
-            // header links
-            this.header
-                .delegate('a', 'click.multiselect', function (e) {
-                    // close link
-                    if ($(this).hasClass('ui-multiselect-close')) {
-                        self.close();
-
-                        // check all / uncheck all
-                    } else {
-                        self[$(this).hasClass('ui-multiselect-all') ? 'checkAll' : 'uncheckAll']();
-                    }
-
-                    e.preventDefault();
-                });
-
-            // optgroup label toggle support
-            this.menu
-                .delegate('li.ui-multiselect-optgroup-label a', 'click.multiselect', function (e) {
-                    e.preventDefault();
-
-                    var $this = $(this),
-                        $inputs = $this.parent().nextUntil('li.ui-multiselect-optgroup-label').find('input:visible:not(:disabled)'),
-                        nodes = $inputs.get(),
-                        label = $this.parent().text();
-
-                    // trigger event and bail if the return is false
-                    if (self._trigger('beforeoptgrouptoggle', e, { inputs: nodes, label: label }) === false) {
-                        return;
-                    }
-
-                    // toggle inputs
-                    self._toggleChecked(
-                        $inputs.filter(':checked').length !== $inputs.length,
-                        $inputs
-                    );
-
-                    self._trigger('optgrouptoggle', e, {
-                        inputs: nodes,
-                        label: label,
-                        checked: nodes[0].checked
-                    });
-                })
-                .delegate('label', 'mouseenter.multiselect', function () {
-                    if (!$(this).hasClass('ui-state-disabled')) {
-                        self.labels.removeClass('ui-state-hover');
-                        $(this).addClass('ui-state-hover').find('input').focus();
-                    }
-                })
-                .delegate('label', 'keydown.multiselect', function (e) {
-                    e.preventDefault();
-
-                    switch (e.which) {
-                        case 9: // tab
-                        case 27: // esc
-                            self.close();
-                            break;
-                        case 38: // up
-                        case 40: // down
-                        case 37: // left
-                        case 39: // right
-                            self._traverse(e.which, this);
-                            break;
-                        case 13: // enter
-                            $(this).find('input')[0].click();
-                            break;
-                    }
-                })
-                .delegate('input[type="checkbox"], input[type="radio"]', 'click.multiselect', function (e) {
-                    var $this = $(this),
-                        val = this.value,
-                        checked = this.checked,
-                        tags = self.element.find('option');
-
-                    // bail if this input is disabled or the event is cancelled
-                    if (this.disabled || self._trigger('click', e, { value: val, text: this.title, checked: checked }) === false) {
-                        e.preventDefault();
-                        return;
-                    }
-
-                    // make sure the input has focus. otherwise, the esc key
-                    // won't close the menu after clicking an item.
-                    $this.focus();
-
-                    // toggle aria state
-                    $this.attr('aria-selected', checked);
-
-                    // change state on the original option tags
-                    tags.each(function () {
-                        if (this.value === val) {
-                            this.selected = checked;
-                        } else if (!self.options.multiple) {
-                            this.selected = false;
-                        }
-                    });
-
-                    // some additional single select-specific logic
-                    if (!self.options.multiple) {
-                        self.labels.removeClass('ui-state-active');
-                        $this.closest('label').toggleClass('ui-state-active', checked);
-
-                        // close menu
-                        self.close();
-                    }
-
-                    // fire change on the select box
-                    self.element.trigger("change");
-
-                    // setTimeout is to fix multiselect issue #14 and #47. caused by jQuery issue #3827
-                    // http://bugs.jquery.com/ticket/3827
-                    setTimeout($.proxy(self.update, self), 10);
-                });
-
-            // close each widget when clicking on any other element/anywhere else on the page
-            $(document).bind('mousedown.multiselect', function (e) {
-                if (self._isOpen && !$.contains(self.menu[0], e.target) && !$.contains(self.button[0], e.target) && e.target !== self.button[0]) {
-                    self.close();
-                }
-            });
-
-            // deal with form resets.  the problem here is that buttons aren't
-            // restored to their defaultValue prop on form reset, and the reset
-            // handler fires before the form is actually reset.  delaying it a bit
-            // gives the form inputs time to clear.
-            $(this.element[0].form).bind('reset.multiselect', function () {
-                setTimeout($.proxy(self.refresh, self), 10);
-            });
-        },
-
-        // set button width
-        _setButtonWidth: function () {
-            var width = this.element.outerWidth(),
-                o = this.options;
-
-            if (/\d/.test(o.minWidth) && width < o.minWidth) {
-                width = o.minWidth;
-            }
-
-            // set widths
-            this.button.width(width);
-        },
-
-        // set menu width
-        _setMenuWidth: function () {
-            var m = this.menu,
-                width = this.button.outerWidth() -
-                    parseInt(m.css('padding-left'), 10) -
-                    parseInt(m.css('padding-right'), 10) -
-                    parseInt(m.css('border-right-width'), 10) -
-                    parseInt(m.css('border-left-width'), 10);
-
-            m.width(width || this.button.outerWidth());
-        },
-
-        // move up or down within the menu
-        _traverse: function (which, start) {
-            var $start = $(start),
-                moveToLast = which === 38 || which === 37,
-
-                // select the first li that isn't an optgroup label / disabled
-                $next = $start.parent()[moveToLast ? 'prevAll' : 'nextAll']('li:not(.ui-multiselect-disabled, .ui-multiselect-optgroup-label)')[moveToLast ? 'last' : 'first']();
-
-            // if at the first/last element
-            if (!$next.length) {
-                var $container = this.menu.find('ul').last();
-
-                // move to the first/last
-                this.menu.find('label')[moveToLast ? 'last' : 'first']().trigger('mouseover');
-
-                // set scroll position
-                $container.scrollTop(moveToLast ? $container.height() : 0);
-
-            } else {
-                $next.find('label').trigger('mouseover');
-            }
-        },
-
-        // This is an internal function to toggle the checked property and
-        // other related attributes of a checkbox.
-        //
-        // The context of this function should be a checkbox; do not proxy it.
-        _toggleState: function (prop, flag) {
-            return function () {
-                if (!this.disabled) {
-                    this[prop] = flag;
-                }
-
-                if (flag) {
-                    this.setAttribute('aria-selected', true);
-                } else {
-                    this.removeAttribute('aria-selected');
-                }
-            };
-        },
-
-        _toggleChecked: function (flag, group) {
-            var $inputs = (group && group.length) ? group : this.inputs,
-                self = this;
-
-            // toggle state on inputs
-            $inputs.each(this._toggleState('checked', flag));
-
-            // give the first input focus
-            $inputs.eq(0).focus();
-
-            // update button text
-            this.update();
-
-            // gather an array of the values that actually changed
-            var values = $inputs.map(function () {
-                return this.value;
-            }).get();
-
-            // toggle state on original option tags
-            this.element
-                .find('option')
-                .each(function () {
-                    if (!this.disabled && $.inArray(this.value, values) > -1) {
-                        self._toggleState('selected', flag).call(this);
-                    }
-                });
-
-            // trigger the change event on the select
-            if ($inputs.length) {
-                this.element.trigger("change");
-            }
-        },
-
-        _toggleDisabled: function (flag) {
-            this.button
-                .attr({ 'disabled': flag, 'aria-disabled': flag })[flag ? 'addClass' : 'removeClass']('ui-state-disabled');
-
-            var inputs = this.menu.find('input');
-            var key = "ech-multiselect-disabled";
-
-            if (flag) {
-                // remember which elements this widget disabled (not pre-disabled)
-                // elements, so that they can be restored if the widget is re-enabled.
-                inputs = inputs.filter(':enabled')
-                    .data(key, true)
-            } else {
-                inputs = inputs.filter(function () {
-                    return $.data(this, key) === true;
-                }).removeData(key);
-            }
-
-            inputs
-                .attr({ 'disabled': flag, 'arial-disabled': flag })
-                .parent()[flag ? 'addClass' : 'removeClass']('ui-state-disabled');
-
-            this.element
-                .attr({ 'disabled': flag, 'aria-disabled': flag });
-        },
-
-        // open the menu
-        open: function (e) {
-            var self = this,
-                button = this.button,
-                menu = this.menu,
-                speed = this.speed,
-                o = this.options,
-                args = [];
-
-            // bail if the multiselectopen event returns false, this widget is disabled, or is already open
-            if (this._trigger('beforeopen') === false || button.hasClass('ui-state-disabled') || this._isOpen) {
-                return;
-            }
-
-            var $container = menu.find('ul').last(),
-                effect = o.show,
-                pos = button.offset();
-
-            // figure out opening effects/speeds
-            if ($.isArray(o.show)) {
-                effect = o.show[0];
-                speed = o.show[1] || self.speed;
-            }
-
-            // if there's an effect, assume jQuery UI is in use
-            // build the arguments to pass to show()
-            if (effect) {
-                args = [effect, speed];
-            }
-
-            // set the scroll of the checkbox container
-            $container.scrollTop(0).height(o.height);
-
-            // position and show menu
-            if ($.ui.position && !$.isEmptyObject(o.position)) {
-                o.position.of = o.position.of || button;
-
-                menu
-                    .show()
-                    .position(o.position)
-                    .hide();
-
-                // if position utility is not available...
-            } else {
-                menu.css({
-                    top: pos.top + button.outerHeight(),
-                    left: pos.left
-                });
-            }
-
-            // show the menu, maybe with a speed/effect combo
-            $.fn.show.apply(menu, args);
-
-            // select the first option
-            // triggering both mouseover and mouseover because 1.4.2+ has a bug where triggering mouseover
-            // will actually trigger mouseenter.  the mouseenter trigger is there for when it's eventually fixed
-            this.labels.eq(0).trigger('mouseover').trigger('mouseenter').find('input').trigger('focus');
-
-            button.addClass('ui-state-active');
-            this._isOpen = true;
-            this._trigger('open');
-        },
-
-        // close the menu
-        close: function () {
-            if (this._trigger('beforeclose') === false) {
-                return;
-            }
-
-            var o = this.options,
-                effect = o.hide,
-                speed = this.speed,
-                args = [];
-
-            // figure out opening effects/speeds
-            if ($.isArray(o.hide)) {
-                effect = o.hide[0];
-                speed = o.hide[1] || this.speed;
-            }
-
-            if (effect) {
-                args = [effect, speed];
-            }
-
-            $.fn.hide.apply(this.menu, args);
-            this.button.removeClass('ui-state-active').trigger('blur').trigger('mouseleave');
-            this._isOpen = false;
-            this._trigger('close');
-        },
-
-        enable: function () {
-            this._toggleDisabled(false);
-        },
-
-        disable: function () {
-            this._toggleDisabled(true);
-        },
-
-        checkAll: function (e) {
-            this._toggleChecked(true);
-            this._trigger('checkAll');
-        },
-
-        uncheckAll: function () {
-            this._toggleChecked(false);
-            this._trigger('uncheckAll');
-        },
-
-        getChecked: function () {
-            return this.menu.find('input').filter(':checked');
-        },
-
-        destroy: function () {
-            // remove classes + data
-            $.Widget.prototype.destroy.call(this);
-
-            this.button.remove();
-            this.menu.remove();
-            this.element.show();
-
-            return this;
-        },
-
-        isOpen: function () {
-            return this._isOpen;
-        },
-
-        widget: function () {
-            return this.menu;
-        },
-
-        getButton: function () {
-            return this.button;
-        },
-
-        // react to option changes after initialization
-        _setOption: function (key, value) {
-            var menu = this.menu;
-
-            switch (key) {
-                case 'header':
-                    menu.find('div.ui-multiselect-header')[value ? 'show' : 'hide']();
-                    break;
-                case 'checkAllText':
-                    menu.find('a.ui-multiselect-all span').eq(-1).text(value);
-                    break;
-                case 'uncheckAllText':
-                    menu.find('a.ui-multiselect-none span').eq(-1).text(value);
-                    break;
-                case 'height':
-                    menu.find('ul').last().height(parseInt(value, 10));
-                    break;
-                case 'minWidth':
-                    this.options[key] = parseInt(value, 10);
-                    this._setButtonWidth();
-                    this._setMenuWidth();
-                    break;
-                case 'selectedText':
-                case 'selectedList':
-                case 'noneSelectedText':
-                    this.options[key] = value; // these all needs to update immediately for the update() call
-                    this.update();
-                    break;
-                case 'classes':
-                    menu.add(this.button).removeClass(this.options.classes).addClass(value);
-                    break;
-                case 'multiple':
-                    menu.toggleClass('ui-multiselect-single', !value);
-                    this.options.multiple = value;
-                    this.element[0].multiple = value;
-                    this.refresh();
-            }
-
-            $.Widget.prototype._setOption.apply(this, arguments);
+          })
+          .append('<li class="ui-multiselect-close"><a href="#" class="ui-multiselect-close"><span class="ui-icon ui-icon-circle-close"></span></a></li>')
+          .appendTo(header),
+
+        checkboxContainer = (this.checkboxContainer = $('<ul />'))
+          .addClass('ui-multiselect-checkboxes ui-helper-reset')
+          .appendTo(menu);
+
+        // perform event bindings
+        this._bindEvents();
+
+        // build menu
+        this.refresh(true);
+
+        // some addl. logic for single selects
+        if(!o.multiple) {
+          menu.addClass('ui-multiselect-single');
         }
-    });
+
+        // bump unique ID
+        multiselectID++;
+    },
+
+    _init: function() {
+      if(this.options.header === false) {
+        this.header.hide();
+      }
+      if(!this.options.multiple) {
+        this.headerLinkContainer.find('.ui-multiselect-all, .ui-multiselect-none').hide();
+      }
+      if(this.options.autoOpen) {
+        this.open();
+      }
+      if(this.element.is(':disabled')) {
+        this.disable();
+      }
+    },
+
+    refresh: function(init) {
+      var el = this.element;
+      var o = this.options;
+      var menu = this.menu;
+      var checkboxContainer = this.checkboxContainer;
+      var optgroups = [];
+      var html = "";
+      var id = el.attr('id') || multiselectID++; // unique ID for the label & option tags
+
+      // build items
+      el.find('option').each(function(i) {
+        var $this = $(this);
+        var parent = this.parentNode;
+        var description = this.innerHTML;
+        var title = this.title;
+        var value = this.value;
+        var inputID = 'ui-multiselect-' + (this.id || id + '-option-' + i);
+        var isDisabled = this.disabled;
+        var isSelected = this.selected;
+        var labelClasses = [ 'ui-corner-all' ];
+        var liClasses = (isDisabled ? 'ui-multiselect-disabled ' : ' ') + this.className;
+        var optLabel;
+
+        // is this an optgroup?
+        if(parent.tagName === 'OPTGROUP') {
+          optLabel = parent.getAttribute('label');
+
+          // has this optgroup been added already?
+          if($.inArray(optLabel, optgroups) === -1) {
+            html += '<li class="ui-multiselect-optgroup-label ' + parent.className + '"><a href="#">' + optLabel + '</a></li>';
+            optgroups.push(optLabel);
+          }
+        }
+
+        if(isDisabled) {
+          labelClasses.push('ui-state-disabled');
+        }
+
+        // browsers automatically select the first option
+        // by default with single selects
+        if(isSelected && !o.multiple) {
+          labelClasses.push('ui-state-active');
+        }
+
+        html += '<li class="' + liClasses + '">';
+
+        // create the label
+        html += '<label for="' + inputID + '" title="' + title + '" class="' + labelClasses.join(' ') + '">';
+        html += '<input id="' + inputID + '" name="multiselect_' + id + '" type="' + (o.multiple ? "checkbox" : "radio") + '" value="' + value + '" title="' + title + '"';
+
+        // pre-selected?
+        if(isSelected) {
+          html += ' checked="checked"';
+          html += ' aria-selected="true"';
+        }
+
+        // disabled?
+        if(isDisabled) {
+          html += ' disabled="disabled"';
+          html += ' aria-disabled="true"';
+        }
+
+        // add the title and close everything off
+        html += ' /><span>' + description + '</span></label></li>';
+      });
+
+      // insert into the DOM
+      checkboxContainer.html(html);
+
+      // cache some moar useful elements
+      this.labels = menu.find('label');
+      this.inputs = this.labels.children('input');
+
+      // set widths
+      this._setButtonWidth();
+      this._setMenuWidth();
+
+      // remember default value
+      this.button[0].defaultValue = this.update();
+
+      // broadcast refresh event; useful for widgets
+      if(!init) {
+        this._trigger('refresh');
+      }
+    },
+
+    // updates the button text. call refresh() to rebuild
+    update: function() {
+      var o = this.options;
+      var $inputs = this.inputs;
+      var $checked = $inputs.filter(':checked');
+      var numChecked = $checked.length;
+      var value;
+
+      if(numChecked === 0) {
+        value = o.noneSelectedText;
+      } else {
+        if($.isFunction(o.selectedText)) {
+          value = o.selectedText.call(this, numChecked, $inputs.length, $checked.get());
+        } else if(/\d/.test(o.selectedList) && o.selectedList > 0 && numChecked <= o.selectedList) {
+          value = $checked.map(function() { return $(this).next().html(); }).get().join(', ');
+        } else {
+          value = o.selectedText.replace('#', numChecked).replace('#', $inputs.length);
+        }
+      }
+
+      this._setButtonValue(value);
+
+      return value;
+    },
+
+    // this exists as a separate method so that the developer 
+    // can easily override it.
+    _setButtonValue: function(value) {
+      this.buttonlabel.text(value);
+    },
+
+    // binds events
+    _bindEvents: function() {
+      var self = this;
+      var button = this.button;
+
+      function clickHandler() {
+        self[ self._isOpen ? 'close' : 'open' ]();
+        return false;
+      }
+
+      // webkit doesn't like it when you click on the span :(
+      button
+        .find('span')
+        .bind('click.multiselect', clickHandler);
+
+      // button events
+      button.bind({
+        click: clickHandler,
+        keypress: function(e) {
+          switch(e.which) {
+            case 27: // esc
+              case 38: // up
+              case 37: // left
+              self.close();
+            break;
+            case 39: // right
+              case 40: // down
+              self.open();
+            break;
+          }
+        },
+        mouseenter: function() {
+          if(!button.hasClass('ui-state-disabled')) {
+            $(this).addClass('ui-state-hover');
+          }
+        },
+        mouseleave: function() {
+          $(this).removeClass('ui-state-hover');
+        },
+        focus: function() {
+          if(!button.hasClass('ui-state-disabled')) {
+            $(this).addClass('ui-state-focus');
+          }
+        },
+        blur: function() {
+          $(this).removeClass('ui-state-focus');
+        }
+      });
+
+      // header links
+      this.header.delegate('a', 'click.multiselect', function(e) {
+        // close link
+        if($(this).hasClass('ui-multiselect-close')) {
+          self.close();
+
+          // check all / uncheck all
+        } else {
+          self[$(this).hasClass('ui-multiselect-all') ? 'checkAll' : 'uncheckAll']();
+        }
+
+        e.preventDefault();
+      });
+
+      // optgroup label toggle support
+      this.menu.delegate('li.ui-multiselect-optgroup-label a', 'click.multiselect', function(e) {
+        e.preventDefault();
+
+        var $this = $(this);
+        var $inputs = $this.parent().nextUntil('li.ui-multiselect-optgroup-label').find('input:visible:not(:disabled)');
+        var nodes = $inputs.get();
+        var label = $this.parent().text();
+
+        // trigger event and bail if the return is false
+        if(self._trigger('beforeoptgrouptoggle', e, { inputs:nodes, label:label }) === false) {
+          return;
+        }
+
+        // toggle inputs
+        self._toggleChecked(
+          $inputs.filter(':checked').length !== $inputs.length,
+          $inputs
+        );
+
+        self._trigger('optgrouptoggle', e, {
+          inputs: nodes,
+          label: label,
+          checked: nodes[0].checked
+        });
+      })
+      .delegate('label', 'mouseenter.multiselect', function() {
+        if(!$(this).hasClass('ui-state-disabled')) {
+          self.labels.removeClass('ui-state-hover');
+          $(this).addClass('ui-state-hover').find('input').focus();
+        }
+      })
+      .delegate('label', 'keydown.multiselect', function(e) {
+        e.preventDefault();
+
+        switch(e.which) {
+          case 9: // tab
+            case 27: // esc
+            self.close();
+          break;
+          case 38: // up
+            case 40: // down
+            case 37: // left
+            case 39: // right
+            self._traverse(e.which, this);
+          break;
+          case 13: // enter
+            $(this).find('input')[0].click();
+          break;
+        }
+      })
+      .delegate('input[type="checkbox"], input[type="radio"]', 'click.multiselect', function(e) {
+        var $this = $(this);
+        var val = this.value;
+        var checked = this.checked;
+        var tags = self.element.find('option');
+
+        // bail if this input is disabled or the event is cancelled
+        if(this.disabled || self._trigger('click', e, { value: val, text: this.title, checked: checked }) === false) {
+          e.preventDefault();
+          return;
+        }
+
+        // make sure the input has focus. otherwise, the esc key
+        // won't close the menu after clicking an item.
+        $this.focus();
+
+        // toggle aria state
+        $this.attr('aria-selected', checked);
+
+        // change state on the original option tags
+        tags.each(function() {
+          if(this.value === val) {
+            this.selected = checked;
+          } else if(!self.options.multiple) {
+            this.selected = false;
+          }
+        });
+
+        // some additional single select-specific logic
+        if(!self.options.multiple) {
+          self.labels.removeClass('ui-state-active');
+          $this.closest('label').toggleClass('ui-state-active', checked);
+
+          // close menu
+          self.close();
+        }
+
+        // fire change on the select box
+        self.element.trigger("change");
+
+        // setTimeout is to fix multiselect issue #14 and #47. caused by jQuery issue #3827
+        // http://bugs.jquery.com/ticket/3827
+        setTimeout($.proxy(self.update, self), 10);
+      });
+
+      // close each widget when clicking on any other element/anywhere else on the page
+      $doc.bind('mousedown.' + this._namespaceID, function(event) {
+        var target = event.target;
+
+        if(self._isOpen
+            && target !== self.button[0]
+            && target !== self.menu[0]
+            && !$.contains(self.menu[0], target)
+            && !$.contains(self.button[0], target)
+          ) {
+          self.close();
+        }
+      });
+
+      // deal with form resets.  the problem here is that buttons aren't
+      // restored to their defaultValue prop on form reset, and the reset
+      // handler fires before the form is actually reset.  delaying it a bit
+      // gives the form inputs time to clear.
+      $(this.element[0].form).bind('reset.multiselect', function() {
+        setTimeout($.proxy(self.refresh, self), 10);
+      });
+    },
+
+    // set button width
+    _setButtonWidth: function() {
+      var width = this.element.outerWidth();
+      var o = this.options;
+
+      if(/\d/.test(o.minWidth) && width < o.minWidth) {
+        width = o.minWidth;
+      }
+
+      // set widths
+      this.button.outerWidth(width);
+    },
+
+    // set menu width
+    _setMenuWidth: function() {
+      var m = this.menu;
+      m.outerWidth(this.button.outerWidth());
+    },
+
+    // move up or down within the menu
+    _traverse: function(which, start) {
+      var $start = $(start);
+      var moveToLast = which === 38 || which === 37;
+
+      // select the first li that isn't an optgroup label / disabled
+      var $next = $start.parent()[moveToLast ? 'prevAll' : 'nextAll']('li:not(.ui-multiselect-disabled, .ui-multiselect-optgroup-label)').first();
+
+      // if at the first/last element
+      if(!$next.length) {
+        var $container = this.menu.find('ul').last();
+
+        // move to the first/last
+        this.menu.find('label')[ moveToLast ? 'last' : 'first' ]().trigger('mouseover');
+
+        // set scroll position
+        $container.scrollTop(moveToLast ? $container.height() : 0);
+
+      } else {
+        $next.find('label').trigger('mouseover');
+      }
+    },
+
+    // This is an internal function to toggle the checked property and
+    // other related attributes of a checkbox.
+    //
+    // The context of this function should be a checkbox; do not proxy it.
+    _toggleState: function(prop, flag) {
+      return function() {
+        if(!this.disabled) {
+          this[ prop ] = flag;
+        }
+
+        if(flag) {
+          this.setAttribute('aria-selected', true);
+        } else {
+          this.removeAttribute('aria-selected');
+        }
+      };
+    },
+
+    _toggleChecked: function(flag, group) {
+      var $inputs = (group && group.length) ?  group : this.inputs;
+      var self = this;
+
+      // toggle state on inputs
+      $inputs.each(this._toggleState('checked', flag));
+
+      // give the first input focus
+      $inputs.eq(0).focus();
+
+      // update button text
+      this.update();
+
+      // gather an array of the values that actually changed
+      var values = $inputs.map(function() {
+        return this.value;
+      }).get();
+
+      // toggle state on original option tags
+      this.element
+        .find('option')
+        .each(function() {
+          if(!this.disabled && $.inArray(this.value, values) > -1) {
+            self._toggleState('selected', flag).call(this);
+          }
+        });
+
+      // trigger the change event on the select
+      if($inputs.length) {
+        this.element.trigger("change");
+      }
+    },
+
+    _toggleDisabled: function(flag) {
+      this.button.attr({ 'disabled':flag, 'aria-disabled':flag })[ flag ? 'addClass' : 'removeClass' ]('ui-state-disabled');
+
+      var inputs = this.menu.find('input');
+      var key = "ech-multiselect-disabled";
+
+      if(flag) {
+        // remember which elements this widget disabled (not pre-disabled)
+        // elements, so that they can be restored if the widget is re-enabled.
+        inputs = inputs.filter(':enabled').data(key, true)
+      } else {
+        inputs = inputs.filter(function() {
+          return $.data(this, key) === true;
+        }).removeData(key);
+      }
+
+      inputs
+        .attr({ 'disabled':flag, 'arial-disabled':flag })
+        .parent()[ flag ? 'addClass' : 'removeClass' ]('ui-state-disabled');
+
+      this.element.attr({
+        'disabled':flag,
+        'aria-disabled':flag
+      });
+    },
+
+    // open the menu
+    open: function(e) {
+      var self = this;
+      var button = this.button;
+      var menu = this.menu;
+      var speed = this.speed;
+      var o = this.options;
+      var args = [];
+
+      // bail if the multiselectopen event returns false, this widget is disabled, or is already open
+      if(this._trigger('beforeopen') === false || button.hasClass('ui-state-disabled') || this._isOpen) {
+        return;
+      }
+
+      var $container = menu.find('ul').last();
+      var effect = o.show;
+
+      // figure out opening effects/speeds
+      if($.isArray(o.show)) {
+        effect = o.show[0];
+        speed = o.show[1] || self.speed;
+      }
+
+      // if there's an effect, assume jQuery UI is in use
+      // build the arguments to pass to show()
+      if(effect) {
+        args = [ effect, speed ];
+      }
+
+      // set the scroll of the checkbox container
+      $container.scrollTop(0).height(o.height);
+
+      // positon
+      this.position();
+
+      // show the menu, maybe with a speed/effect combo
+      $.fn.show.apply(menu, args);
+
+      // select the first not disabled option
+      // triggering both mouseover and mouseover because 1.4.2+ has a bug where triggering mouseover
+      // will actually trigger mouseenter.  the mouseenter trigger is there for when it's eventually fixed
+      this.labels.filter(':not(.ui-state-disabled)').eq(0).trigger('mouseover').trigger('mouseenter').find('input').trigger('focus');
+
+      button.addClass('ui-state-active');
+      this._isOpen = true;
+      this._trigger('open');
+    },
+
+    // close the menu
+    close: function() {
+      if(this._trigger('beforeclose') === false) {
+        return;
+      }
+
+      var o = this.options;
+      var effect = o.hide;
+      var speed = this.speed;
+      var args = [];
+
+      // figure out opening effects/speeds
+      if($.isArray(o.hide)) {
+        effect = o.hide[0];
+        speed = o.hide[1] || this.speed;
+      }
+
+      if(effect) {
+        args = [ effect, speed ];
+      }
+
+      $.fn.hide.apply(this.menu, args);
+      this.button.removeClass('ui-state-active').trigger('blur').trigger('mouseleave');
+      this._isOpen = false;
+      this._trigger('close');
+    },
+
+    enable: function() {
+      this._toggleDisabled(false);
+    },
+
+    disable: function() {
+      this._toggleDisabled(true);
+    },
+
+    checkAll: function(e) {
+      this._toggleChecked(true);
+      this._trigger('checkAll');
+    },
+
+    uncheckAll: function() {
+      this._toggleChecked(false);
+      this._trigger('uncheckAll');
+    },
+
+    getChecked: function() {
+      return this.menu.find('input').filter(':checked');
+    },
+
+    destroy: function() {
+      // remove classes + data
+      $.Widget.prototype.destroy.call(this);
+
+      // unbind events
+      $doc.unbind(this._namespaceID);
+
+      this.button.remove();
+      this.menu.remove();
+      this.element.show();
+
+      return this;
+    },
+
+    isOpen: function() {
+      return this._isOpen;
+    },
+
+    widget: function() {
+      return this.menu;
+    },
+
+    getButton: function() {
+      return this.button;
+    },
+
+    position: function() {
+      var o = this.options;
+
+      // use the position utility if it exists and options are specifified
+      if($.ui.position && !$.isEmptyObject(o.position)) {
+        o.position.of = o.position.of || this.button;
+
+        this.menu
+          .show()
+          .position(o.position)
+          .hide();
+
+        // otherwise fallback to custom positioning
+      } else {
+        var pos = this.button.offset();
+
+        this.menu.css({
+          top: pos.top + this.button.outerHeight(),
+          left: pos.left
+        });
+      }
+    },
+
+    // react to option changes after initialization
+    _setOption: function(key, value) {
+      var menu = this.menu;
+
+      switch(key) {
+        case 'header':
+          menu.find('div.ui-multiselect-header')[value ? 'show' : 'hide']();
+          break;
+        case 'checkAllText':
+          menu.find('a.ui-multiselect-all span').eq(-1).text(value);
+          break;
+        case 'uncheckAllText':
+          menu.find('a.ui-multiselect-none span').eq(-1).text(value);
+          break;
+        case 'height':
+          menu.find('ul').last().height(parseInt(value, 10));
+          break;
+        case 'minWidth':
+          this.options[key] = parseInt(value, 10);
+          this._setButtonWidth();
+          this._setMenuWidth();
+          break;
+        case 'selectedText':
+        case 'selectedList':
+        case 'noneSelectedText':
+          this.options[key] = value; // these all needs to update immediately for the update() call
+          this.update();
+          break;
+        case 'classes':
+          menu.add(this.button).removeClass(this.options.classes).addClass(value);
+          break;
+        case 'multiple':
+          menu.toggleClass('ui-multiselect-single', !value);
+          this.options.multiple = value;
+          this.element[0].multiple = value;
+          this.refresh();
+          break;
+        case 'position':
+          this.position();
+      }
+
+      $.Widget.prototype._setOption.apply(this, arguments);
+    }
+  });
 
 })(jQuery);
+
 /**
  * jQuery.fn.sortElements
  * --------------
@@ -30222,20 +30253,21 @@ jQuery.fn.sortElements = (function(){
 	});
 })(jQuery);
 
-// Chosen, a Select Box Enhancer for jQuery and Protoype
+// Chosen, a Select Box Enhancer for jQuery and Prototype
 // by Patrick Filler for Harvest, http://getharvest.com
 //
-// Version 0.9.12
+// Version 1.0.0
 // Full source at https://github.com/harvesthq/chosen
 // Copyright (c) 2011 Harvest http://getharvest.com
 
 // MIT License, https://github.com/harvesthq/chosen/blob/master/LICENSE.md
-// This file is generated by `cake build`, do not edit it by hand.
+// This file is generated by `grunt build`, do not edit it by hand.
 (function() {
-  var SelectParser;
+  var $, AbstractChosen, Chosen, SelectParser, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   SelectParser = (function() {
-
     function SelectParser() {
       this.options_index = 0;
       this.parsed = [];
@@ -30251,11 +30283,12 @@ jQuery.fn.sortElements = (function(){
 
     SelectParser.prototype.add_group = function(group) {
       var group_position, option, _i, _len, _ref, _results;
+
       group_position = this.parsed.length;
       this.parsed.push({
         array_index: group_position,
         group: true,
-        label: group.label,
+        label: this.escapeExpression(group.label),
         children: 0,
         disabled: group.disabled
       });
@@ -30297,12 +30330,35 @@ jQuery.fn.sortElements = (function(){
       }
     };
 
+    SelectParser.prototype.escapeExpression = function(text) {
+      var map, unsafe_chars;
+
+      if ((text == null) || text === false) {
+        return "";
+      }
+      if (!/[\&\<\>\"\'\`]/.test(text)) {
+        return text;
+      }
+      map = {
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#x27;",
+        "`": "&#x60;"
+      };
+      unsafe_chars = /&(?!\w+;)|[\<\>\"\'\`]/g;
+      return text.replace(unsafe_chars, function(chr) {
+        return map[chr] || "&amp;";
+      });
+    };
+
     return SelectParser;
 
   })();
 
   SelectParser.select_to_array = function(select) {
     var child, parser, _i, _len, _ref;
+
     parser = new SelectParser();
     _ref = select.childNodes;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -30312,37 +30368,24 @@ jQuery.fn.sortElements = (function(){
     return parser.parsed;
   };
 
-  this.SelectParser = SelectParser;
-
-}).call(this);
-
-/*
-Chosen source: generate output using 'cake build'
-Copyright (c) 2011 by Harvest
-*/
-
-
-(function() {
-  var AbstractChosen, root;
-
-  root = this;
-
   AbstractChosen = (function() {
-
     function AbstractChosen(form_field, options) {
       this.form_field = form_field;
       this.options = options != null ? options : {};
+      if (!AbstractChosen.browser_is_supported()) {
+        return;
+      }
       this.is_multiple = this.form_field.multiple;
       this.set_default_text();
       this.set_default_values();
       this.setup();
       this.set_up_html();
       this.register_observers();
-      this.finish_setup();
     }
 
     AbstractChosen.prototype.set_default_values = function() {
       var _this = this;
+
       this.click_test_action = function(evt) {
         return _this.test_active_click(evt);
       };
@@ -30358,22 +30401,24 @@ Copyright (c) 2011 by Harvest
       this.disable_search_threshold = this.options.disable_search_threshold || 0;
       this.disable_search = this.options.disable_search || false;
       this.enable_split_word_search = this.options.enable_split_word_search != null ? this.options.enable_split_word_search : true;
+      this.group_search = this.options.group_search != null ? this.options.group_search : true;
       this.search_contains = this.options.search_contains || false;
-      this.choices = 0;
-      this.single_backstroke_delete = this.options.single_backstroke_delete || false;
+      this.single_backstroke_delete = this.options.single_backstroke_delete != null ? this.options.single_backstroke_delete : true;
       this.max_selected_options = this.options.max_selected_options || Infinity;
-      return this.inherit_select_classes = this.options.inherit_select_classes || false;
+      this.inherit_select_classes = this.options.inherit_select_classes || false;
+      this.display_selected_options = this.options.display_selected_options != null ? this.options.display_selected_options : true;
+      return this.display_disabled_options = this.options.display_disabled_options != null ? this.options.display_disabled_options : true;
     };
 
     AbstractChosen.prototype.set_default_text = function() {
       if (this.form_field.getAttribute("data-placeholder")) {
         this.default_text = this.form_field.getAttribute("data-placeholder");
       } else if (this.is_multiple) {
-        this.default_text = this.options.placeholder_text_multiple || this.options.placeholder_text || "Select Some Options";
+        this.default_text = this.options.placeholder_text_multiple || this.options.placeholder_text || AbstractChosen.default_multiple_text;
       } else {
-        this.default_text = this.options.placeholder_text_single || this.options.placeholder_text || "Select an Option";
+        this.default_text = this.options.placeholder_text_single || this.options.placeholder_text || AbstractChosen.default_single_text;
       }
-      return this.results_none_found = this.form_field.getAttribute("data-no_results_text") || this.options.no_results_text || "No results match";
+      return this.results_none_found = this.form_field.getAttribute("data-no_results_text") || this.options.no_results_text || AbstractChosen.default_no_result_text;
     };
 
     AbstractChosen.prototype.mouse_enter = function() {
@@ -30386,6 +30431,7 @@ Copyright (c) 2011 by Harvest
 
     AbstractChosen.prototype.input_focus = function(evt) {
       var _this = this;
+
       if (this.is_multiple) {
         if (!this.active_field) {
           return setTimeout((function() {
@@ -30401,6 +30447,7 @@ Copyright (c) 2011 by Harvest
 
     AbstractChosen.prototype.input_blur = function(evt) {
       var _this = this;
+
       if (!this.mouse_on_container) {
         this.active_field = false;
         return setTimeout((function() {
@@ -30409,34 +30456,79 @@ Copyright (c) 2011 by Harvest
       }
     };
 
+    AbstractChosen.prototype.results_option_build = function(options) {
+      var content, data, _i, _len, _ref;
+
+      content = '';
+      _ref = this.results_data;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        data = _ref[_i];
+        if (data.group) {
+          content += this.result_add_group(data);
+        } else {
+          content += this.result_add_option(data);
+        }
+        if (options != null ? options.first : void 0) {
+          if (data.selected && this.is_multiple) {
+            this.choice_build(data);
+          } else if (data.selected && !this.is_multiple) {
+            this.single_set_selected_text(data.text);
+          }
+        }
+      }
+      return content;
+    };
+
     AbstractChosen.prototype.result_add_option = function(option) {
       var classes, style;
-      if (!option.disabled) {
-        option.dom_id = this.container_id + "_o_" + option.array_index;
-        classes = option.selected && this.is_multiple ? [] : ["active-result"];
-        if (option.selected) {
-          classes.push("result-selected");
-        }
-        if (option.group_array_index != null) {
-          classes.push("group-option");
-        }
-        if (option.classes !== "") {
-          classes.push(option.classes);
-        }
-        style = option.style.cssText !== "" ? " style=\"" + option.style + "\"" : "";
-        return '<li id="' + option.dom_id + '" class="' + classes.join(' ') + '"' + style + '>' + option.html + '</li>';
-      } else {
-        return "";
+
+      if (!option.search_match) {
+        return '';
       }
+      if (!this.include_option_in_results(option)) {
+        return '';
+      }
+      classes = [];
+      if (!option.disabled && !(option.selected && this.is_multiple)) {
+        classes.push("active-result");
+      }
+      if (option.disabled && !(option.selected && this.is_multiple)) {
+        classes.push("disabled-result");
+      }
+      if (option.selected) {
+        classes.push("result-selected");
+      }
+      if (option.group_array_index != null) {
+        classes.push("group-option");
+      }
+      if (option.classes !== "") {
+        classes.push(option.classes);
+      }
+      style = option.style.cssText !== "" ? " style=\"" + option.style + "\"" : "";
+      return "<li class=\"" + (classes.join(' ')) + "\"" + style + " data-option-array-index=\"" + option.array_index + "\">" + option.search_text + "</li>";
+    };
+
+    AbstractChosen.prototype.result_add_group = function(group) {
+      if (!(group.search_match || group.group_match)) {
+        return '';
+      }
+      if (!(group.active_options > 0)) {
+        return '';
+      }
+      return "<li class=\"group-result\">" + group.search_text + "</li>";
     };
 
     AbstractChosen.prototype.results_update_field = function() {
+      this.set_default_text();
       if (!this.is_multiple) {
         this.results_reset_cleanup();
       }
       this.result_clear_highlight();
       this.result_single_selected = null;
-      return this.results_build();
+      this.results_build();
+      if (this.results_showing) {
+        return this.winnow_results();
+      }
     };
 
     AbstractChosen.prototype.results_toggle = function() {
@@ -30455,13 +30547,114 @@ Copyright (c) 2011 by Harvest
       }
     };
 
+    AbstractChosen.prototype.winnow_results = function() {
+      var escapedSearchText, option, regex, regexAnchor, results, results_group, searchText, startpos, text, zregex, _i, _len, _ref;
+
+      this.no_results_clear();
+      results = 0;
+      searchText = this.get_search_text();
+      escapedSearchText = searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+      regexAnchor = this.search_contains ? "" : "^";
+      regex = new RegExp(regexAnchor + escapedSearchText, 'i');
+      zregex = new RegExp(escapedSearchText, 'i');
+      _ref = this.results_data;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        option = _ref[_i];
+        option.search_match = false;
+        results_group = null;
+        if (this.include_option_in_results(option)) {
+          if (option.group) {
+            option.group_match = false;
+            option.active_options = 0;
+          }
+          if ((option.group_array_index != null) && this.results_data[option.group_array_index]) {
+            results_group = this.results_data[option.group_array_index];
+            if (results_group.active_options === 0 && results_group.search_match) {
+              results += 1;
+            }
+            results_group.active_options += 1;
+          }
+          if (!(option.group && !this.group_search)) {
+            option.search_text = option.group ? option.label : option.html;
+            option.search_match = this.search_string_match(option.search_text, regex);
+            if (option.search_match && !option.group) {
+              results += 1;
+            }
+            if (option.search_match) {
+              if (searchText.length) {
+                startpos = option.search_text.search(zregex);
+                text = option.search_text.substr(0, startpos + searchText.length) + '</em>' + option.search_text.substr(startpos + searchText.length);
+                option.search_text = text.substr(0, startpos) + '<em>' + text.substr(startpos);
+              }
+              if (results_group != null) {
+                results_group.group_match = true;
+              }
+            } else if ((option.group_array_index != null) && this.results_data[option.group_array_index].search_match) {
+              option.search_match = true;
+            }
+          }
+        }
+      }
+      this.result_clear_highlight();
+      if (results < 1 && searchText.length) {
+        this.update_results_content("");
+        return this.no_results(searchText);
+      } else {
+        this.update_results_content(this.results_option_build());
+        return this.winnow_results_set_highlight();
+      }
+    };
+
+    AbstractChosen.prototype.search_string_match = function(search_string, regex) {
+      var part, parts, _i, _len;
+
+      if (regex.test(search_string)) {
+        return true;
+      } else if (this.enable_split_word_search && (search_string.indexOf(" ") >= 0 || search_string.indexOf("[") === 0)) {
+        parts = search_string.replace(/\[|\]/g, "").split(" ");
+        if (parts.length) {
+          for (_i = 0, _len = parts.length; _i < _len; _i++) {
+            part = parts[_i];
+            if (regex.test(part)) {
+              return true;
+            }
+          }
+        }
+      }
+    };
+
+    AbstractChosen.prototype.choices_count = function() {
+      var option, _i, _len, _ref;
+
+      if (this.selected_option_count != null) {
+        return this.selected_option_count;
+      }
+      this.selected_option_count = 0;
+      _ref = this.form_field.options;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        option = _ref[_i];
+        if (option.selected) {
+          this.selected_option_count += 1;
+        }
+      }
+      return this.selected_option_count;
+    };
+
+    AbstractChosen.prototype.choices_click = function(evt) {
+      evt.preventDefault();
+      if (!(this.results_showing || this.is_disabled)) {
+        return this.results_show();
+      }
+    };
+
     AbstractChosen.prototype.keyup_checker = function(evt) {
       var stroke, _ref;
+
       stroke = (_ref = evt.which) != null ? _ref : evt.keyCode;
       this.search_field_scale();
       switch (stroke) {
         case 8:
-          if (this.is_multiple && this.backstroke_length < 1 && this.choices > 0) {
+          if (this.is_multiple && this.backstroke_length < 1 && this.choices_count() > 0) {
             return this.keydown_backstroke();
           } else if (!this.pending_backstroke) {
             this.result_clear_highlight();
@@ -30491,233 +30684,237 @@ Copyright (c) 2011 by Harvest
       }
     };
 
-    AbstractChosen.prototype.generate_field_id = function() {
-      var new_id;
-      new_id = this.generate_random_id();
-      this.form_field.id = new_id;
-      return new_id;
+    AbstractChosen.prototype.container_width = function() {
+      if (this.options.width != null) {
+        return this.options.width;
+      } else {
+        return "" + this.form_field.offsetWidth + "px";
+      }
     };
 
-    AbstractChosen.prototype.generate_random_char = function() {
-      var chars, newchar, rand;
-      chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      rand = Math.floor(Math.random() * chars.length);
-      return newchar = chars.substring(rand, rand + 1);
+    AbstractChosen.prototype.include_option_in_results = function(option) {
+      if (this.is_multiple && (!this.display_selected_options && option.selected)) {
+        return false;
+      }
+      if (!this.display_disabled_options && option.disabled) {
+        return false;
+      }
+      if (option.empty) {
+        return false;
+      }
+      return true;
     };
+
+    AbstractChosen.browser_is_supported = function() {
+      if (window.navigator.appName === "Microsoft Internet Explorer") {
+        return document.documentMode >= 8;
+      }
+      if (/iP(od|hone)/i.test(window.navigator.userAgent)) {
+        return false;
+      }
+      if (/Android/i.test(window.navigator.userAgent)) {
+        if (/Mobile/i.test(window.navigator.userAgent)) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    AbstractChosen.default_multiple_text = "Select Some Options";
+
+    AbstractChosen.default_single_text = "Select an Option";
+
+    AbstractChosen.default_no_result_text = "No results match";
 
     return AbstractChosen;
 
   })();
 
-  root.AbstractChosen = AbstractChosen;
-
-}).call(this);
-
-/*
-Chosen source: generate output using 'cake build'
-Copyright (c) 2011 by Harvest
-*/
-
-
-(function() {
-  var $, Chosen, get_side_border_padding, root,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  root = this;
-
   $ = jQuery;
 
   $.fn.extend({
     chosen: function(options) {
-      var browser, match, ua;
-      ua = navigator.userAgent.toLowerCase();
-      match = /(msie) ([\w.]+)/.exec(ua) || [];
-      browser = {
-        name: match[1] || "",
-        version: match[2] || "0"
-      };
-      if (browser.name === "msie" && (browser.version === "6.0" || (browser.version === "7.0" && document.documentMode === 7))) {
+      if (!AbstractChosen.browser_is_supported()) {
         return this;
       }
       return this.each(function(input_field) {
-        var $this;
+        var $this, chosen;
+
         $this = $(this);
-        if (!$this.hasClass("chzn-done")) {
-          return $this.data('chosen', new Chosen(this, options));
+        chosen = $this.data('chosen');
+        if (options === 'destroy' && chosen) {
+          chosen.destroy();
+        } else if (!chosen) {
+          $this.data('chosen', new Chosen(this, options));
         }
       });
     }
   });
 
   Chosen = (function(_super) {
-
     __extends(Chosen, _super);
 
     function Chosen() {
-      Chosen.__super__.constructor.apply(this, arguments);
+      _ref = Chosen.__super__.constructor.apply(this, arguments);
+      return _ref;
     }
 
     Chosen.prototype.setup = function() {
       this.form_field_jq = $(this.form_field);
-      this.current_value = this.form_field_jq.val();
-      return this.is_rtl = this.form_field_jq.hasClass("chzn-rtl");
-    };
-
-    Chosen.prototype.finish_setup = function() {
-      return this.form_field_jq.addClass("chzn-done");
+      this.current_selectedIndex = this.form_field.selectedIndex;
+      return this.is_rtl = this.form_field_jq.hasClass("chosen-rtl");
     };
 
     Chosen.prototype.set_up_html = function() {
-      var container_classes, container_div, container_props, dd_top, dd_width, sf_width;
-      this.container_id = this.form_field.id.length ? this.form_field.id.replace(/[^\w]/g, '_') : this.generate_field_id();
-      this.container_id += "_chzn";
-      container_classes = ["chzn-container"];
-      container_classes.push("chzn-container-" + (this.is_multiple ? "multi" : "single"));
+      var container_classes, container_props;
+
+      container_classes = ["chosen-container"];
+      container_classes.push("chosen-container-" + (this.is_multiple ? "multi" : "single"));
       if (this.inherit_select_classes && this.form_field.className) {
         container_classes.push(this.form_field.className);
       }
       if (this.is_rtl) {
-        container_classes.push("chzn-rtl");
+        container_classes.push("chosen-rtl");
       }
-      this.f_width = this.form_field_jq.outerWidth();
       container_props = {
-        id: this.container_id,
-        "class": container_classes.join(' '),
-        style: 'width: ' + this.f_width + 'px;',
-        title: this.form_field.title
+        'class': container_classes.join(' '),
+        'style': "width: " + (this.container_width()) + ";",
+        'title': this.form_field.title
       };
-      container_div = $("<div />", container_props);
-      if (this.is_multiple) {
-        container_div.html('<ul class="chzn-choices"><li class="search-field"><input type="text" value="' + this.default_text + '" class="default" autocomplete="off" style="width:25px;" /></li></ul><div class="chzn-drop" style="left:-9000px;"><ul class="chzn-results"></ul></div>');
-      } else {
-        container_div.html('<a href="javascript:void(0)" class="chzn-single chzn-default" tabindex="-1"><span>' + this.default_text + '</span><div><b></b></div></a><div class="chzn-drop" style="left:-9000px;"><div class="chzn-search"><input type="text" autocomplete="off" /></div><ul class="chzn-results"></ul></div>');
+      if (this.form_field.id.length) {
+        container_props.id = this.form_field.id.replace(/[^\w]/g, '_') + "_chosen";
       }
-      this.form_field_jq.hide().after(container_div);
-      this.container = $('#' + this.container_id);
-      this.dropdown = this.container.find('div.chzn-drop').first();
-      dd_top = this.container.height();
-      dd_width = this.f_width - get_side_border_padding(this.dropdown);
-      this.dropdown.css({
-        "width": dd_width + "px",
-        "top": dd_top + "px"
-      });
+      this.container = $("<div />", container_props);
+      if (this.is_multiple) {
+        this.container.html('<ul class="chosen-choices"><li class="search-field"><input type="text" value="' + this.default_text + '" class="default" autocomplete="off" style="width:25px;" /></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div>');
+      } else {
+        this.container.html('<a class="chosen-single chosen-default" tabindex="-1"><span>' + this.default_text + '</span><div><b></b></div></a><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off" /></div><ul class="chosen-results"></ul></div>');
+      }
+      this.form_field_jq.hide().after(this.container);
+      this.dropdown = this.container.find('div.chosen-drop').first();
       this.search_field = this.container.find('input').first();
-      this.search_results = this.container.find('ul.chzn-results').first();
+      this.search_results = this.container.find('ul.chosen-results').first();
       this.search_field_scale();
       this.search_no_results = this.container.find('li.no-results').first();
       if (this.is_multiple) {
-        this.search_choices = this.container.find('ul.chzn-choices').first();
+        this.search_choices = this.container.find('ul.chosen-choices').first();
         this.search_container = this.container.find('li.search-field').first();
       } else {
-        this.search_container = this.container.find('div.chzn-search').first();
-        this.selected_item = this.container.find('.chzn-single').first();
-        sf_width = dd_width - get_side_border_padding(this.search_container) - get_side_border_padding(this.search_field);
-        this.search_field.css({
-          "width": sf_width + "px"
-        });
+        this.search_container = this.container.find('div.chosen-search').first();
+        this.selected_item = this.container.find('.chosen-single').first();
       }
       this.results_build();
       this.set_tab_index();
-      return this.form_field_jq.trigger("liszt:ready", {
+      this.set_label_behavior();
+      return this.form_field_jq.trigger("chosen:ready", {
         chosen: this
       });
     };
 
     Chosen.prototype.register_observers = function() {
       var _this = this;
-      this.container.mousedown(function(evt) {
+
+      this.container.bind('mousedown.chosen', function(evt) {
         _this.container_mousedown(evt);
       });
-      this.container.mouseup(function(evt) {
+      this.container.bind('mouseup.chosen', function(evt) {
         _this.container_mouseup(evt);
       });
-      this.container.mouseenter(function(evt) {
+      this.container.bind('mouseenter.chosen', function(evt) {
         _this.mouse_enter(evt);
       });
-      this.container.mouseleave(function(evt) {
+      this.container.bind('mouseleave.chosen', function(evt) {
         _this.mouse_leave(evt);
       });
-      this.search_results.mouseup(function(evt) {
+      this.search_results.bind('mouseup.chosen', function(evt) {
         _this.search_results_mouseup(evt);
       });
-      this.search_results.mouseover(function(evt) {
+      this.search_results.bind('mouseover.chosen', function(evt) {
         _this.search_results_mouseover(evt);
       });
-      this.search_results.mouseout(function(evt) {
+      this.search_results.bind('mouseout.chosen', function(evt) {
         _this.search_results_mouseout(evt);
       });
-      this.form_field_jq.bind("liszt:updated", function(evt) {
+      this.search_results.bind('mousewheel.chosen DOMMouseScroll.chosen', function(evt) {
+        _this.search_results_mousewheel(evt);
+      });
+      this.form_field_jq.bind("chosen:updated.chosen", function(evt) {
         _this.results_update_field(evt);
       });
-      this.form_field_jq.bind("liszt:activate", function(evt) {
+      this.form_field_jq.bind("chosen:activate.chosen", function(evt) {
         _this.activate_field(evt);
       });
-      this.form_field_jq.bind("liszt:open", function(evt) {
+      this.form_field_jq.bind("chosen:open.chosen", function(evt) {
         _this.container_mousedown(evt);
       });
-      this.search_field.blur(function(evt) {
+      this.search_field.bind('blur.chosen', function(evt) {
         _this.input_blur(evt);
       });
-      this.search_field.keyup(function(evt) {
+      this.search_field.bind('keyup.chosen', function(evt) {
         _this.keyup_checker(evt);
       });
-      this.search_field.keydown(function(evt) {
+      this.search_field.bind('keydown.chosen', function(evt) {
         _this.keydown_checker(evt);
       });
-      this.search_field.focus(function(evt) {
+      this.search_field.bind('focus.chosen', function(evt) {
         _this.input_focus(evt);
       });
       if (this.is_multiple) {
-        return this.search_choices.click(function(evt) {
+        return this.search_choices.bind('click.chosen', function(evt) {
           _this.choices_click(evt);
         });
       } else {
-        return this.container.click(function(evt) {
+        return this.container.bind('click.chosen', function(evt) {
           evt.preventDefault();
         });
       }
+    };
+
+    Chosen.prototype.destroy = function() {
+      $(document).unbind("click.chosen", this.click_test_action);
+      if (this.search_field[0].tabIndex) {
+        this.form_field_jq[0].tabIndex = this.search_field[0].tabIndex;
+      }
+      this.container.remove();
+      this.form_field_jq.removeData('chosen');
+      return this.form_field_jq.show();
     };
 
     Chosen.prototype.search_field_disabled = function() {
       this.is_disabled = this.form_field_jq[0].disabled;
       if (this.is_disabled) {
-        this.container.addClass('chzn-disabled');
+        this.container.addClass('chosen-disabled');
         this.search_field[0].disabled = true;
         if (!this.is_multiple) {
-          this.selected_item.unbind("focus", this.activate_action);
+          this.selected_item.unbind("focus.chosen", this.activate_action);
         }
         return this.close_field();
       } else {
-        this.container.removeClass('chzn-disabled');
+        this.container.removeClass('chosen-disabled');
         this.search_field[0].disabled = false;
         if (!this.is_multiple) {
-          return this.selected_item.bind("focus", this.activate_action);
+          return this.selected_item.bind("focus.chosen", this.activate_action);
         }
       }
     };
 
     Chosen.prototype.container_mousedown = function(evt) {
-      var target_closelink;
       if (!this.is_disabled) {
-        target_closelink = evt != null ? ($(evt.target)).hasClass("search-choice-close") : false;
         if (evt && evt.type === "mousedown" && !this.results_showing) {
           evt.preventDefault();
         }
-        if (!this.pending_destroy_click && !target_closelink) {
+        if (!((evt != null) && ($(evt.target)).hasClass("search-choice-close"))) {
           if (!this.active_field) {
             if (this.is_multiple) {
               this.search_field.val("");
             }
-            $(document).click(this.click_test_action);
+            $(document).bind('click.chosen', this.click_test_action);
             this.results_show();
-          } else if (!this.is_multiple && evt && (($(evt.target)[0] === this.selected_item[0]) || $(evt.target).parents("a.chzn-single").length)) {
+          } else if (!this.is_multiple && evt && (($(evt.target)[0] === this.selected_item[0]) || $(evt.target).parents("a.chosen-single").length)) {
             evt.preventDefault();
             this.results_toggle();
           }
           return this.activate_field();
-        } else {
-          return this.pending_destroy_click = false;
         }
       }
     };
@@ -30728,32 +30925,44 @@ Copyright (c) 2011 by Harvest
       }
     };
 
+    Chosen.prototype.search_results_mousewheel = function(evt) {
+      var delta, _ref1, _ref2;
+
+      delta = -((_ref1 = evt.originalEvent) != null ? _ref1.wheelDelta : void 0) || ((_ref2 = evt.originialEvent) != null ? _ref2.detail : void 0);
+      if (delta != null) {
+        evt.preventDefault();
+        if (evt.type === 'DOMMouseScroll') {
+          delta = delta * 40;
+        }
+        return this.search_results.scrollTop(delta + this.search_results.scrollTop());
+      }
+    };
+
     Chosen.prototype.blur_test = function(evt) {
-      if (!this.active_field && this.container.hasClass("chzn-container-active")) {
+      if (!this.active_field && this.container.hasClass("chosen-container-active")) {
         return this.close_field();
       }
     };
 
     Chosen.prototype.close_field = function() {
-      $(document).unbind("click", this.click_test_action);
+      $(document).unbind("click.chosen", this.click_test_action);
       this.active_field = false;
       this.results_hide();
-      this.container.removeClass("chzn-container-active");
-      this.winnow_results_clear();
+      this.container.removeClass("chosen-container-active");
       this.clear_backstroke();
       this.show_search_field_default();
       return this.search_field_scale();
     };
 
     Chosen.prototype.activate_field = function() {
-      this.container.addClass("chzn-container-active");
+      this.container.addClass("chosen-container-active");
       this.active_field = true;
       this.search_field.val(this.search_field.val());
       return this.search_field.focus();
     };
 
     Chosen.prototype.test_active_click = function(evt) {
-      if ($(evt.target).parents('#' + this.container_id).length) {
+      if (this.container.is($(evt.target).closest('.chosen-container'))) {
         return this.active_field = true;
       } else {
         return this.close_field();
@@ -30761,56 +30970,33 @@ Copyright (c) 2011 by Harvest
     };
 
     Chosen.prototype.results_build = function() {
-      var content, data, _i, _len, _ref;
       this.parsing = true;
-      this.results_data = root.SelectParser.select_to_array(this.form_field);
-      if (this.is_multiple && this.choices > 0) {
+      this.selected_option_count = null;
+      this.results_data = SelectParser.select_to_array(this.form_field);
+      if (this.is_multiple) {
         this.search_choices.find("li.search-choice").remove();
-        this.choices = 0;
       } else if (!this.is_multiple) {
-        this.selected_item.addClass("chzn-default").find("span").text(this.default_text);
+        this.single_set_selected_text();
         if (this.disable_search || this.form_field.options.length <= this.disable_search_threshold) {
-          this.container.addClass("chzn-container-single-nosearch");
+          this.search_field[0].readOnly = true;
+          this.container.addClass("chosen-container-single-nosearch");
         } else {
-          this.container.removeClass("chzn-container-single-nosearch");
+          this.search_field[0].readOnly = false;
+          this.container.removeClass("chosen-container-single-nosearch");
         }
       }
-      content = '';
-      _ref = this.results_data;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        data = _ref[_i];
-        if (data.group) {
-          content += this.result_add_group(data);
-        } else if (!data.empty) {
-          content += this.result_add_option(data);
-          if (data.selected && this.is_multiple) {
-            this.choice_build(data);
-          } else if (data.selected && !this.is_multiple) {
-            this.selected_item.removeClass("chzn-default").find("span").text(data.text);
-            if (this.allow_single_deselect) {
-              this.single_deselect_control_build();
-            }
-          }
-        }
-      }
+      this.update_results_content(this.results_option_build({
+        first: true
+      }));
       this.search_field_disabled();
       this.show_search_field_default();
       this.search_field_scale();
-      this.search_results.html(content);
       return this.parsing = false;
-    };
-
-    Chosen.prototype.result_add_group = function(group) {
-      if (!group.disabled) {
-        group.dom_id = this.container_id + "_g_" + group.array_index;
-        return '<li id="' + group.dom_id + '" class="group-result">' + $("<div />").text(group.label).html() + '</li>';
-      } else {
-        return "";
-      }
     };
 
     Chosen.prototype.result_do_highlight = function(el) {
       var high_bottom, high_top, maxHeight, visible_bottom, visible_top;
+
       if (el.length) {
         this.result_clear_highlight();
         this.result_highlight = el;
@@ -30836,25 +31022,15 @@ Copyright (c) 2011 by Harvest
     };
 
     Chosen.prototype.results_show = function() {
-      var dd_top;
-      if (!this.is_multiple) {
-        this.selected_item.addClass("chzn-single-with-drop");
-        if (this.result_single_selected) {
-          this.result_do_highlight(this.result_single_selected);
-        }
-      } else if (this.max_selected_options <= this.choices) {
-        this.form_field_jq.trigger("liszt:maxselected", {
+      if (this.is_multiple && this.max_selected_options <= this.choices_count()) {
+        this.form_field_jq.trigger("chosen:maxselected", {
           chosen: this
         });
         return false;
       }
-      dd_top = this.is_multiple ? this.container.height() : this.container.height() - 1;
-      this.form_field_jq.trigger("liszt:showing_dropdown", {
+      this.container.addClass("chosen-with-drop");
+      this.form_field_jq.trigger("chosen:showing_dropdown", {
         chosen: this
-      });
-      this.dropdown.css({
-        "top": dd_top + "px",
-        "left": 0
       });
       this.results_showing = true;
       this.search_field.focus();
@@ -30862,31 +31038,51 @@ Copyright (c) 2011 by Harvest
       return this.winnow_results();
     };
 
+    Chosen.prototype.update_results_content = function(content) {
+      return this.search_results.html(content);
+    };
+
     Chosen.prototype.results_hide = function() {
-      if (!this.is_multiple) {
-        this.selected_item.removeClass("chzn-single-with-drop");
+      if (this.results_showing) {
+        this.result_clear_highlight();
+        this.container.removeClass("chosen-with-drop");
+        this.form_field_jq.trigger("chosen:hiding_dropdown", {
+          chosen: this
+        });
       }
-      this.result_clear_highlight();
-      this.form_field_jq.trigger("liszt:hiding_dropdown", {
-        chosen: this
-      });
-      this.dropdown.css({
-        "left": "-9000px"
-      });
       return this.results_showing = false;
     };
 
     Chosen.prototype.set_tab_index = function(el) {
       var ti;
-      if (this.form_field_jq.attr("tabindex")) {
-        ti = this.form_field_jq.attr("tabindex");
-        this.form_field_jq.attr("tabindex", -1);
-        return this.search_field.attr("tabindex", ti);
+
+      if (this.form_field.tabIndex) {
+        ti = this.form_field.tabIndex;
+        this.form_field.tabIndex = -1;
+        return this.search_field[0].tabIndex = ti;
+      }
+    };
+
+    Chosen.prototype.set_label_behavior = function() {
+      var _this = this;
+
+      this.form_field_label = this.form_field_jq.parents("label");
+      if (!this.form_field_label.length && this.form_field.id.length) {
+        this.form_field_label = $("label[for='" + this.form_field.id + "']");
+      }
+      if (this.form_field_label.length > 0) {
+        return this.form_field_label.bind('click.chosen', function(evt) {
+          if (_this.is_multiple) {
+            return _this.container_mousedown(evt);
+          } else {
+            return _this.activate_field();
+          }
+        });
       }
     };
 
     Chosen.prototype.show_search_field_default = function() {
-      if (this.is_multiple && this.choices < 1 && !this.active_field) {
+      if (this.is_multiple && this.choices_count() < 1 && !this.active_field) {
         this.search_field.val(this.default_text);
         return this.search_field.addClass("default");
       } else {
@@ -30897,6 +31093,7 @@ Copyright (c) 2011 by Harvest
 
     Chosen.prototype.search_results_mouseup = function(evt) {
       var target;
+
       target = $(evt.target).hasClass("active-result") ? $(evt.target) : $(evt.target).parents(".active-result").first();
       if (target.length) {
         this.result_highlight = target;
@@ -30907,6 +31104,7 @@ Copyright (c) 2011 by Harvest
 
     Chosen.prototype.search_results_mouseover = function(evt) {
       var target;
+
       target = $(evt.target).hasClass("active-result") ? $(evt.target) : $(evt.target).parents(".active-result").first();
       if (target) {
         return this.result_do_highlight(target);
@@ -30919,51 +31117,40 @@ Copyright (c) 2011 by Harvest
       }
     };
 
-    Chosen.prototype.choices_click = function(evt) {
-      evt.preventDefault();
-      if (this.active_field && !($(evt.target).hasClass("search-choice" || $(evt.target).parents('.search-choice').first)) && !this.results_showing) {
-        return this.results_show();
-      }
-    };
-
     Chosen.prototype.choice_build = function(item) {
-      var choice_id, html, link,
+      var choice, close_link,
         _this = this;
-      if (this.is_multiple && this.max_selected_options <= this.choices) {
-        this.form_field_jq.trigger("liszt:maxselected", {
-          chosen: this
-        });
-        return false;
-      }
-      choice_id = this.container_id + "_c_" + item.array_index;
-      this.choices += 1;
+
+      choice = $('<li />', {
+        "class": "search-choice"
+      }).html("<span>" + item.html + "</span>");
       if (item.disabled) {
-        html = '<li class="search-choice search-choice-disabled" id="' + choice_id + '"><span>' + item.html + '</span></li>';
+        choice.addClass('search-choice-disabled');
       } else {
-        html = '<li class="search-choice" id="' + choice_id + '"><span>' + item.html + '</span><a href="javascript:void(0)" class="search-choice-close" rel="' + item.array_index + '"></a></li>';
+        close_link = $('<a />', {
+          "class": 'search-choice-close',
+          'data-option-array-index': item.array_index
+        });
+        close_link.bind('click.chosen', function(evt) {
+          return _this.choice_destroy_link_click(evt);
+        });
+        choice.append(close_link);
       }
-      this.search_container.before(html);
-      link = $('#' + choice_id).find("a").first();
-      return link.click(function(evt) {
-        return _this.choice_destroy_link_click(evt);
-      });
+      return this.search_container.before(choice);
     };
 
     Chosen.prototype.choice_destroy_link_click = function(evt) {
       evt.preventDefault();
+      evt.stopPropagation();
       if (!this.is_disabled) {
-        this.pending_destroy_click = true;
         return this.choice_destroy($(evt.target));
-      } else {
-        return evt.stopPropagation;
       }
     };
 
     Chosen.prototype.choice_destroy = function(link) {
-      if (this.result_deselect(link.attr("rel"))) {
-        this.choices -= 1;
+      if (this.result_deselect(link[0].getAttribute("data-option-array-index"))) {
         this.show_search_field_default();
-        if (this.is_multiple && this.choices > 0 && this.search_field.val().length < 1) {
+        if (this.is_multiple && this.choices_count() > 0 && this.search_field.val().length < 1) {
           this.results_hide();
         }
         link.parents('li').first().remove();
@@ -30973,10 +31160,8 @@ Copyright (c) 2011 by Harvest
 
     Chosen.prototype.results_reset = function() {
       this.form_field.options[0].selected = true;
-      this.selected_item.find("span").text(this.default_text);
-      if (!this.is_multiple) {
-        this.selected_item.addClass("chzn-default");
-      }
+      this.selected_option_count = null;
+      this.single_set_selected_text();
       this.show_search_field_default();
       this.results_reset_cleanup();
       this.form_field_jq.trigger("change");
@@ -30986,68 +31171,81 @@ Copyright (c) 2011 by Harvest
     };
 
     Chosen.prototype.results_reset_cleanup = function() {
-      this.current_value = this.form_field_jq.val();
+      this.current_selectedIndex = this.form_field.selectedIndex;
       return this.selected_item.find("abbr").remove();
     };
 
     Chosen.prototype.result_select = function(evt) {
-      var high, high_id, item, position;
+      var high, item, selected_index;
+
       if (this.result_highlight) {
         high = this.result_highlight;
-        high_id = high.attr("id");
         this.result_clear_highlight();
+        if (this.is_multiple && this.max_selected_options <= this.choices_count()) {
+          this.form_field_jq.trigger("chosen:maxselected", {
+            chosen: this
+          });
+          return false;
+        }
         if (this.is_multiple) {
-          this.result_deactivate(high);
+          high.removeClass("active-result");
         } else {
-          this.search_results.find(".result-selected").removeClass("result-selected");
+          if (this.result_single_selected) {
+            this.result_single_selected.removeClass("result-selected");
+            selected_index = this.result_single_selected[0].getAttribute('data-option-array-index');
+            this.results_data[selected_index].selected = false;
+          }
           this.result_single_selected = high;
-          this.selected_item.removeClass("chzn-default");
         }
         high.addClass("result-selected");
-        position = high_id.substr(high_id.lastIndexOf("_") + 1);
-        item = this.results_data[position];
+        item = this.results_data[high[0].getAttribute("data-option-array-index")];
         item.selected = true;
         this.form_field.options[item.options_index].selected = true;
+        this.selected_option_count = null;
         if (this.is_multiple) {
           this.choice_build(item);
         } else {
-          this.selected_item.find("span").first().text(item.text);
-          if (this.allow_single_deselect) {
-            this.single_deselect_control_build();
-          }
+          this.single_set_selected_text(item.text);
         }
         if (!((evt.metaKey || evt.ctrlKey) && this.is_multiple)) {
           this.results_hide();
         }
         this.search_field.val("");
-        if (this.is_multiple || this.form_field_jq.val() !== this.current_value) {
+        if (this.is_multiple || this.form_field.selectedIndex !== this.current_selectedIndex) {
           this.form_field_jq.trigger("change", {
             'selected': this.form_field.options[item.options_index].value
           });
         }
-        this.current_value = this.form_field_jq.val();
+        this.current_selectedIndex = this.form_field.selectedIndex;
         return this.search_field_scale();
       }
     };
 
-    Chosen.prototype.result_activate = function(el) {
-      return el.addClass("active-result");
-    };
-
-    Chosen.prototype.result_deactivate = function(el) {
-      return el.removeClass("active-result");
+    Chosen.prototype.single_set_selected_text = function(text) {
+      if (text == null) {
+        text = this.default_text;
+      }
+      if (text === this.default_text) {
+        this.selected_item.addClass("chosen-default");
+      } else {
+        this.single_deselect_control_build();
+        this.selected_item.removeClass("chosen-default");
+      }
+      return this.selected_item.find("span").text(text);
     };
 
     Chosen.prototype.result_deselect = function(pos) {
-      var result, result_data;
+      var result_data;
+
       result_data = this.results_data[pos];
       if (!this.form_field.options[result_data.options_index].disabled) {
         result_data.selected = false;
         this.form_field.options[result_data.options_index].selected = false;
-        result = $("#" + this.container_id + "_o_" + pos);
-        result.removeClass("result-selected").addClass("active-result").show();
+        this.selected_option_count = null;
         this.result_clear_highlight();
-        this.winnow_results();
+        if (this.results_showing) {
+          this.winnow_results();
+        }
         this.form_field_jq.trigger("change", {
           deselected: this.form_field.options[result_data.options_index].value
         });
@@ -31059,105 +31257,36 @@ Copyright (c) 2011 by Harvest
     };
 
     Chosen.prototype.single_deselect_control_build = function() {
-      if (this.allow_single_deselect && this.selected_item.find("abbr").length < 1) {
-        return this.selected_item.find("span").first().after("<abbr class=\"search-choice-close\"></abbr>");
+      if (!this.allow_single_deselect) {
+        return;
       }
+      if (!this.selected_item.find("abbr").length) {
+        this.selected_item.find("span").first().after("<abbr class=\"search-choice-close\"></abbr>");
+      }
+      return this.selected_item.addClass("chosen-single-with-deselect");
     };
 
-    Chosen.prototype.winnow_results = function() {
-      var found, option, part, parts, regex, regexAnchor, result, result_id, results, searchText, startpos, text, zregex, _i, _j, _len, _len1, _ref;
-      this.no_results_clear();
-      results = 0;
-      searchText = this.search_field.val() === this.default_text ? "" : $('<div/>').text($.trim(this.search_field.val())).html();
-      regexAnchor = this.search_contains ? "" : "^";
-      regex = new RegExp(regexAnchor + searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), 'i');
-      zregex = new RegExp(searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), 'i');
-      _ref = this.results_data;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        option = _ref[_i];
-        if (!option.disabled && !option.empty) {
-          if (option.group) {
-            $('#' + option.dom_id).css('display', 'none');
-          } else if (!(this.is_multiple && option.selected)) {
-            found = false;
-            result_id = option.dom_id;
-            result = $("#" + result_id);
-            if (regex.test(option.html)) {
-              found = true;
-              results += 1;
-            } else if (this.enable_split_word_search && (option.html.indexOf(" ") >= 0 || option.html.indexOf("[") === 0)) {
-              parts = option.html.replace(/\[|\]/g, "").split(" ");
-              if (parts.length) {
-                for (_j = 0, _len1 = parts.length; _j < _len1; _j++) {
-                  part = parts[_j];
-                  if (regex.test(part)) {
-                    found = true;
-                    results += 1;
-                  }
-                }
-              }
-            }
-            if (found) {
-              if (searchText.length) {
-                startpos = option.html.search(zregex);
-                text = option.html.substr(0, startpos + searchText.length) + '</em>' + option.html.substr(startpos + searchText.length);
-                text = text.substr(0, startpos) + '<em>' + text.substr(startpos);
-              } else {
-                text = option.html;
-              }
-              result.html(text);
-              this.result_activate(result);
-              if (option.group_array_index != null) {
-                $("#" + this.results_data[option.group_array_index].dom_id).css('display', 'list-item');
-              }
-            } else {
-              if (this.result_highlight && result_id === this.result_highlight.attr('id')) {
-                this.result_clear_highlight();
-              }
-              this.result_deactivate(result);
-            }
-          }
-        }
-      }
-      if (results < 1 && searchText.length) {
-        return this.no_results(searchText);
+    Chosen.prototype.get_search_text = function() {
+      if (this.search_field.val() === this.default_text) {
+        return "";
       } else {
-        return this.winnow_results_set_highlight();
+        return $('<div/>').text($.trim(this.search_field.val())).html();
       }
-    };
-
-    Chosen.prototype.winnow_results_clear = function() {
-      var li, lis, _i, _len, _results;
-      this.search_field.val("");
-      lis = this.search_results.find("li");
-      _results = [];
-      for (_i = 0, _len = lis.length; _i < _len; _i++) {
-        li = lis[_i];
-        li = $(li);
-        if (li.hasClass("group-result")) {
-          _results.push(li.css('display', 'auto'));
-        } else if (!this.is_multiple || !li.hasClass("result-selected")) {
-          _results.push(this.result_activate(li));
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
     };
 
     Chosen.prototype.winnow_results_set_highlight = function() {
       var do_high, selected_results;
-      if (!this.result_highlight) {
-        selected_results = !this.is_multiple ? this.search_results.find(".result-selected.active-result") : [];
-        do_high = selected_results.length ? selected_results.first() : this.search_results.find(".active-result").first();
-        if (do_high != null) {
-          return this.result_do_highlight(do_high);
-        }
+
+      selected_results = !this.is_multiple ? this.search_results.find(".result-selected.active-result") : [];
+      do_high = selected_results.length ? selected_results.first() : this.search_results.find(".active-result").first();
+      if (do_high != null) {
+        return this.result_do_highlight(do_high);
       }
     };
 
     Chosen.prototype.no_results = function(terms) {
       var no_results_html;
+
       no_results_html = $('<li class="no-results">' + this.results_none_found + ' "<span></span>"</li>');
       no_results_html.find("span").first().html(terms);
       return this.search_results.append(no_results_html);
@@ -31168,25 +31297,21 @@ Copyright (c) 2011 by Harvest
     };
 
     Chosen.prototype.keydown_arrow = function() {
-      var first_active, next_sib;
-      if (!this.result_highlight) {
-        first_active = this.search_results.find("li.active-result").first();
-        if (first_active) {
-          this.result_do_highlight($(first_active));
-        }
-      } else if (this.results_showing) {
+      var next_sib;
+
+      if (this.results_showing && this.result_highlight) {
         next_sib = this.result_highlight.nextAll("li.active-result").first();
         if (next_sib) {
-          this.result_do_highlight(next_sib);
+          return this.result_do_highlight(next_sib);
         }
-      }
-      if (!this.results_showing) {
+      } else {
         return this.results_show();
       }
     };
 
     Chosen.prototype.keyup_arrow = function() {
       var prev_sibs;
+
       if (!this.results_showing && !this.is_multiple) {
         return this.results_show();
       } else if (this.result_highlight) {
@@ -31194,7 +31319,7 @@ Copyright (c) 2011 by Harvest
         if (prev_sibs.length) {
           return this.result_do_highlight(prev_sibs.first());
         } else {
-          if (this.choices > 0) {
+          if (this.choices_count() > 0) {
             this.results_hide();
           }
           return this.result_clear_highlight();
@@ -31204,6 +31329,7 @@ Copyright (c) 2011 by Harvest
 
     Chosen.prototype.keydown_backstroke = function() {
       var next_available_destroy;
+
       if (this.pending_backstroke) {
         this.choice_destroy(this.pending_backstroke.find("a").first());
         return this.clear_backstroke();
@@ -31228,8 +31354,9 @@ Copyright (c) 2011 by Harvest
     };
 
     Chosen.prototype.keydown_checker = function(evt) {
-      var stroke, _ref;
-      stroke = (_ref = evt.which) != null ? _ref : evt.keyCode;
+      var stroke, _ref1;
+
+      stroke = (_ref1 = evt.which) != null ? _ref1 : evt.keyCode;
       this.search_field_scale();
       if (stroke !== 8 && this.pending_backstroke) {
         this.clear_backstroke();
@@ -31252,13 +31379,15 @@ Copyright (c) 2011 by Harvest
           this.keyup_arrow();
           break;
         case 40:
+          evt.preventDefault();
           this.keydown_arrow();
           break;
       }
     };
 
     Chosen.prototype.search_field_scale = function() {
-      var dd_top, div, h, style, style_block, styles, w, _i, _len;
+      var div, f_width, h, style, style_block, styles, w, _i, _len;
+
       if (this.is_multiple) {
         h = 0;
         w = 0;
@@ -31275,40 +31404,19 @@ Copyright (c) 2011 by Harvest
         $('body').append(div);
         w = div.width() + 25;
         div.remove();
-        if (w > this.f_width - 10) {
-          w = this.f_width - 10;
+        f_width = this.container.outerWidth();
+        if (w > f_width - 10) {
+          w = f_width - 10;
         }
-        this.search_field.css({
+        return this.search_field.css({
           'width': w + 'px'
         });
-        dd_top = this.container.height();
-        return this.dropdown.css({
-          "top": dd_top + "px"
-        });
       }
-    };
-
-    Chosen.prototype.generate_random_id = function() {
-      var string;
-      string = "sel" + this.generate_random_char() + this.generate_random_char() + this.generate_random_char();
-      while ($("#" + string).length > 0) {
-        string += this.generate_random_char();
-      }
-      return string;
     };
 
     return Chosen;
 
   })(AbstractChosen);
-
-  root.Chosen = Chosen;
-
-  get_side_border_padding = function(elmt) {
-    var side_border_padding;
-    return side_border_padding = elmt.outerWidth() - elmt.width();
-  };
-
-  root.get_side_border_padding = get_side_border_padding;
 
 }).call(this);
 

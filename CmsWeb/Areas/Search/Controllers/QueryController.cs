@@ -93,11 +93,10 @@ namespace CmsWeb.Areas.Search.Controllers
             m.InsertGroupAbove();
             return View("Conditions", m);
         }
-        [POST("Query/CodesDropdown/")]
-        public ActionResult CodesDropdown(QueryModel m)
+        [POST("Query/CodeSelect/")]
+        public ActionResult CodeSelect(QueryModel m)
         {
-            m.SetCodes();
-            return View(m);
+            return View("EditorTemplates/CodeSelect", m);
         }
         [POST("Query/SelectCondition/{id:guid}")]
         public ActionResult SelectCondition(Guid id, string conditionName)
@@ -105,7 +104,6 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new QueryModel { SelectedId = id };
             m.LoadQuery();
             m.ConditionName = conditionName;
-            m.SetVisibility();
             m.Comparison = "Equal";
             m.UpdateCondition();
             return View("EditCondition", m);
@@ -184,13 +182,15 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/Divisions/{id:int}")]
         public ActionResult Divisions(int id)
         {
-            return View(id);
+            var m = new QueryModel() {Program = id};
+            return View(m);
         }
         [HttpPost]
         [POST("Query/Organizations/{id:int}")]
         public ActionResult Organizations(int id)
         {
-            return View(id);
+            var m = new QueryModel() {Division = id};
+            return View(m);
         }
         [POST("Query/SavedQueries")]
         public JsonResult SavedQueries()
