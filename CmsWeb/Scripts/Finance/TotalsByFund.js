@@ -32,6 +32,17 @@
 		f.attr("action", "/Export/Contributions/donortotals");
 	    f.submit();
 	});
+	$("#glextract").click(function (ev) {
+		ev.preventDefault();
+		var f = $(this).closest('form');
+		f.attr("action", "/Export/GLExport");
+	    f.submit();
+	});
+    $(document).keydown(function(e) {
+        if (e.keyCode == 17) {
+            $("#extractlist li.hideAlt").toggle();
+        }
+    });
 	$("#toquickbooks").click(function (ev) {
 		ev.preventDefault();
 

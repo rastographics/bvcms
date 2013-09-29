@@ -80,12 +80,16 @@ namespace CmsData
                     s2 = "Quarters";
                 else if (s2 == "PmmLabels")
                     s2 = "Tags";
+                else if (s2 == "SavedQueryIdDesc")
+                    s2 = "SavedQuery";
+
                 object prop = Util.GetProperty(c, s2) ?? "";
+
                 if (prop is DateTime?)
                     prop = ((DateTime?) prop).FormatDate();
-                if (s == "SavedQueryValue")
-                    prop = ((string)prop).Split(',')[1];
-                if (s2 == "Tags")
+                else if (s2 == "SavedQuery" && ((string) prop).Contains(":"))
+                    prop = ((string) prop).Split(":".ToCharArray(), 2)[1];
+                else if (s2 == "Tags")
                     if (((string) prop).Contains(","))
                         if (((string) prop).Contains(";"))
                             prop = string.Join("; ", ((string) prop).Split(';').Select(t => t.Split(',')[1]));

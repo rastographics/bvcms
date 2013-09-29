@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data.Linq.SqlClient;
 using System.Linq;
-using System.Web;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
-using CmsWeb.Models;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -153,12 +149,12 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        public IEnumerable<SelectListItem> Divisions()
+        public static IEnumerable<SelectListItem> Divisions(int? id)
         {
-            if (!DivisionVisible)
+            if(!id.HasValue)
                 return null;
             var q = from div in DbUtil.Db.Divisions
-                    where div.ProgDivs.Any(d => d.ProgId == Program.ToInt2())
+                    where div.ProgDivs.Any(d => d.ProgId == id)
                     orderby div.Name
                     select new SelectListItem
                     {
@@ -169,14 +165,14 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        public IEnumerable<SelectListItem> Organizations()
+        public static IEnumerable<SelectListItem> Organizations(int? id)
         {
-            if (!OrganizationVisible)
+            if (!id.HasValue)
                 return null;
             var roles = DbUtil.Db.CurrentRoles();
             var q = from ot in DbUtil.Db.DivOrgs
                     where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
-                    where ot.DivId == Division.ToInt2()
+                    where ot.DivId == id
                           && (SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14
                               || ot.Organization.OrganizationStatusId == 30)
                     where (Util2.OrgMembersOnly == false && Util2.OrgLeadersOnly == false) || (ot.Organization.SecurityTypeId != 3)
@@ -191,12 +187,37 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
-        public List<SelectListItem> SavedQueries()
+        public IEnumerable<SelectListItem> SavedQueries()
         {
             if (!SavedQueryVisible)
                 return null;
-            var cv = new CodeValueModel();
-            return ConvertToSelect(cv.UserQueries(), "Code");
+            string uname = Util.UserName;
+            var g = new Guid();
+            if (SavedQuery.HasValue() && SavedQuery.Contains(":"))
+            {
+                var lines = SavedQuery.Split(":".ToCharArray(), 2);
+                Guid.TryParse(lines[0], out g);
+            }
+            var q1 = from qb in Db.Queries
+                     where qb.Owner == uname
+                     orderby qb.Name
+                     select new SelectListItem
+                     {
+                         Value = qb.QueryId + ":" + qb.Name,
+                         Selected = qb.QueryId == g,
+                         Text = qb.Name
+                     };
+            var q2 = from qb in Db.Queries
+                     where qb.Owner != uname && qb.Ispublic
+                     orderby qb.Owner, qb.Name
+                     select new SelectListItem
+                     {
+                         Value = qb.QueryId + ":" + qb.Name,
+                         Selected = qb.QueryId == g,
+                         Text = qb.Owner + ":" + qb.Name,
+                     };
+
+            return q1.Union(q2);
         }
         public List<SelectListItem> Ministries()
         {

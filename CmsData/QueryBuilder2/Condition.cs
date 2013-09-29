@@ -22,8 +22,6 @@ namespace CmsData
         public string ConditionName { get; set; }
         public string Comparison { get; set; }
         public string TextValue { get; set; }
-//        public int? IntegerValue { get; set; }
-//        public decimal? NumberValue { get; set; }
         public DateTime? DateValue { get; set; }
         public string CodeIdValue { get; set; }
         public DateTime? StartDate { get; set; }
@@ -206,7 +204,10 @@ namespace CmsData
                     }
                 return expr;
             }
-            expr = Compare.Expression(this, parm, Db);
+            if(Compare == null)
+                expr = Expressions.AlwaysFalse(parm);
+            else
+                expr = Compare.Expression(this, parm, Db);
             if (InAllAnyFalse)
                 expr = Expression.Not(expr);
             return expr;

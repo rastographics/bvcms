@@ -16,17 +16,5 @@ namespace CmsWeb.Areas.Search.Models
 {
     public partial class QueryModel
     {
-        public void UpdateCondition()
-        {
-            var c = Current;
-            this.CopyPropertiesTo(c);
-            TopClause.Save(Db, increment: true);
-        }
-        public void EditCondition()
-        {
-            var c = Current;
-            SelectedId = c.Id;
-            this.CopyPropertiesFrom(c);
-        }
     }
 }

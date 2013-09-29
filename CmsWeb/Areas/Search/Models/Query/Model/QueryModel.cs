@@ -173,5 +173,17 @@ namespace CmsWeb.Areas.Search.Models
                     m.AddModelError("TextValue", "cannot be empty");
             return m.IsValid;
         }
+        public void UpdateCondition()
+        {
+            var c = Current;
+            this.CopyPropertiesTo(c);
+            TopClause.Save(Db, increment: true);
+        }
+        public void EditCondition()
+        {
+            var c = Current;
+            SelectedId = c.Id;
+            this.CopyPropertiesFrom(c);
+        }
     }
 }

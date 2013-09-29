@@ -1001,7 +1001,6 @@ $(function () {
     $('#Tags').click(function (ev) {
         $('#TagsPopup').show();
     });
-    $(".datepicker").datepicker();
 
     $(document).on("change", '#Program', function (ev) {
         $.post('/Query/Divisions/' + $(this).val(), null, function (ret) {

@@ -25549,10 +25549,11 @@ $(document).ready(function () {
     });
     $(document).on("click", '#AddContact', function (ev) {
         ev.preventDefault();
+        var url = this.href;
         bootbox.confirm("Are you sure you want to add a contact for all these people?", function (result) {
             if (result === true) {
                 $.block();
-                $.post(this.href, null, function (ret) {
+                $.post(url, null, function (ret) {
                     $.unblock();
                     if (ret < 0)
                         $.growlUI("error", "too many people to add to a contact (max 100)");
@@ -25570,12 +25571,13 @@ $(document).ready(function () {
         var message = "Are you sure you want to add a task for all these people?";
         if (window.location.pathname.contains("/Person"))
             message = "Are you sure you want to add a task for this person?";
+        var url = this.href;
         bootbox.confirm(message, function (result) {
             if (result === true) {
                 $.block();
-                $.post(this.href, null, function (ret) {
+                $.post(url, null, function (ret) {
                     $.unblock();
-                    if (ret < 0)
+                    if (ret > 100)
                         $.growlUI("error", "too many people to add tasks for (max 100)");
                     else if (ret == 0)
                         $.growlUI("error", "no results");

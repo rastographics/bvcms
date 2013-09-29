@@ -1,3 +1,4 @@
+using System;
 using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
@@ -33,6 +34,12 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult Contributions(string id, ContributionsExcelResult m)
         {
             m.type = id;
+            return m;
+        }
+        [Authorize(Roles = "Finance")]
+        [POST("Export/GLExport")]
+        public ActionResult GLExport(GLExportResult m)
+        {
             return m;
         }
 

@@ -93,17 +93,30 @@ namespace CmsData
             CompareType op,
             bool tf)
         {
-            if (!QueryIdDesc.HasValue())
+            var a = QueryIdDesc.Split(":".ToCharArray(), 2);
+            var QueryId = a[0].ToInt();
+            var q2 = Db.PeopleQuery(QueryId);
+            if (q2 == null)
                 return AlwaysFalse(parm);
-            var a = QueryIdDesc.SplitStr(":", 2);
-            var qid = a[0].ToInt();
-            var savedquery = Db.QueryBuilderClauses.SingleOrDefault(q =>
-                q.QueryId == qid);
-            if (savedquery == null)
-                return AlwaysFalse(parm);
+            var tag = Db.PopulateTemporaryTag(q2.Select(pp => pp.PeopleId));
 
-            var q2 = Db.PeopleQuery(qid).Select(pp => pp.PeopleId);
-            var tag = Db.PopulateTemporaryTag(q2);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
+        internal static Expression SavedQuery2(ParameterExpression parm,
+            CMSDataContext Db,
+            string QueryIdDesc,
+            CompareType op,
+            bool tf)
+        {
+            var a = QueryIdDesc.Split(":".ToCharArray(), 2);
+            Guid QueryId;
+            Guid.TryParse(a[0], out QueryId);
+            var q2 = Db.PeopleQuery(QueryId);
+            if (q2 == null)
+                return AlwaysFalse(parm);
+            var tag = Db.PopulateTemporaryTag(q2.Select(pp => pp.PeopleId));
 
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);

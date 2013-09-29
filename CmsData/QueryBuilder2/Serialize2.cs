@@ -1,16 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using Community.CsharpSqlite;
-using IronPython.Modules;
-using Microsoft.Scripting.Debugging;
 using UtilityExtensions;
 using System.Linq;
-using CmsData;
 namespace CmsData
 {
     public partial class Condition
@@ -204,7 +199,8 @@ namespace CmsData
             var a = r.Attributes(attr).FirstOrDefault();
             if (a == null)
                 return Guid.NewGuid();
-            return new Guid(a.Value);
+            Guid g;
+            return Guid.TryParse(a.Value, out g) ? g : Guid.NewGuid();
         }
     }
 }

@@ -138,14 +138,14 @@ namespace CmsData
             CompareType op,
             params int[] ids)
         {
-            to = to.HasValue ? to.Value.AddDays(1) : from.Value.AddDays(1);
+            to =  (to ?? from ?? DateTime.Now).AddDays(1) ;
 
             Expression<Func<Person, bool>> pred = p => (
                 from c in p.contactsMade
                 where c.contact.MinistryId == ministryid || ministryid == 0
                 where ids.Contains(c.contact.ContactTypeId ?? 0) || ids.Length == 0 || ids[0] == 0
-                where @from <= c.contact.ContactDate // where it ends
-                where c.contact.ContactDate <= to // where it begins
+                where @from == null || @from <= c.contact.ContactDate
+                where c.contact.ContactDate <= to
                 select c
                 ).Any();
             Expression expr = Expression.Invoke(pred, parm);

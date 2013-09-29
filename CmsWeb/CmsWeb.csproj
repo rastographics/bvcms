@@ -192,13 +192,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin\ToggleOrgLeadersOnly.ashx.cs">
-      <DependentUpon>ToggleOrgLeadersOnly.ashx</DependentUpon>
-    </Compile>
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Models\SearchModel.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />
+    <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContacteesModel.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContactorsModel.cs" />
     <Compile Include="Areas\Main\Models\Export\CsvResult.cs" />
@@ -1250,9 +1248,6 @@
     <Content Include="Scripts\Bootstrap\bootstrap-editable.min.js.map">
       <DependentUpon>bootstrap-editable.js</DependentUpon>
     </Content>
-    <Content Include="Docs\vvv.md" />
-    <Content Include="Docs\test.md" />
-    <Content Include="Docs\ideas.md" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\jQuery\jquery.multiSelect.min.js.map">
       <DependentUpon>jquery.multiSelect.js</DependentUpon>
@@ -1594,7 +1589,7 @@
     <Content Include="images\Home.png" />
     <Content Include="images\RapidSSL_SEAL-90x50.gif" />
     <Content Include="images\unknownsm.jpg" />
-    <Content Include="MembershipAutomation2.py" />
+    <Content Include="Content\MembershipAutomation2.py" />
     <Content Include="Scripts\Bootstrap\bootstrap.js" />
     <Content Include="Scripts\Bootstrap\bootstrap.min.js" />
     <Content Include="Scripts\Chosen\chosen.jquery.js" />
@@ -1645,7 +1640,6 @@
     <Compile Include="Code\UnallowedCodeAttribute.cs" />
     <Compile Include="Code\Word2Pdf.cs" />
     <Compile Include="Areas\Finance\Controllers\QuickBooksController.cs" />
-    <None Include="Docs\dave.md" />
     <Compile Include="Controllers\SupportController.cs" />
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />
@@ -1757,13 +1751,6 @@
     <Compile Include="Contributions\Deposit.aspx.designer.cs">
       <DependentUpon>Deposit.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Contributions\GLExtract.aspx.cs">
-      <DependentUpon>GLExtract.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Contributions\GLExtract.aspx.designer.cs">
-      <DependentUpon>GLExtract.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Contributions\Reports\JournalDetails.aspx.cs">
       <DependentUpon>JournalDetails.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1813,31 +1800,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Report\DecisionSummary.aspx.cs">
-      <DependentUpon>DecisionSummary.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Report\DecisionSummary.aspx.designer.cs">
-      <DependentUpon>DecisionSummary.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Report\Reports.Master.cs">
-      <DependentUpon>Reports.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Report\Reports.Master.designer.cs">
-      <DependentUpon>Reports.Master</DependentUpon>
-    </Compile>
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Site.Master.cs">
-      <DependentUpon>Site.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Site.Master.designer.cs">
-      <DependentUpon>Site.Master</DependentUpon>
     </Compile>
     <Compile Include="UploadPicture.aspx.cs">
       <DependentUpon>UploadPicture.aspx</DependentUpon>
@@ -1845,13 +1811,6 @@
     </Compile>
     <Compile Include="UploadPicture.aspx.designer.cs">
       <DependentUpon>UploadPicture.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\GridPager.ascx.cs">
-      <DependentUpon>GridPager.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UserControls\GridPager.ascx.designer.cs">
-      <DependentUpon>GridPager.ascx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Resource1.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -1938,12 +1897,9 @@
     <Content Include="Scripts\jQuery\jquery.textarea.js" />
     <Content Include="Scripts\jQuery\jquery.transpose.js" />
     <Content Include="Scripts\jQuery\jquery.transpose.min.js" />
-    <Content Include="constants.py" />
-    <Content Include="Tutorials\_Home_Index_Menu.cshtml" />
-    <Content Include="Tutorials\_Home_Index.cshtml" />
-    <Content Include="EmailTemplates\BasicNewsletter.htm" />
-    <Content Include="EmailTemplates\BasicWithHeader.htm" />
-    <Content Include="EmailTemplates\Plain.htm" />
+    <Content Include="Content\constants.py" />
+    <Content Include="Content\Tutorials\_Home_Index_Menu.cshtml" />
+    <Content Include="Content\Tutorials\_Home_Index.cshtml" />
     <Content Include="Errors\DatabaseNotFound.aspx" />
     <Content Include="Errors\SiteDisabled.htm" />
     <Content Include="images\arrowdnup.png" />
@@ -2236,7 +2192,7 @@
     <Content Include="Content\less\variables.less" />
     <Content Include="Content\less\wells.less" />
     <None Include="images\LibraryTemplate.xls" />
-    <Content Include="Tutorials\_SearchAdd_Index.cshtml" />
+    <Content Include="Content\Tutorials\_SearchAdd_Index.cshtml" />
     <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <Content Include="Scripts\Volunteer\volunteering.js" />
     <Content Include="UploadPicture.aspx" />
@@ -2790,7 +2746,6 @@
     </Content>
     <Content Include="Areas\Main\Views\OrgChildren\Rows.cshtml">
     </Content>
-    <Content Include="Admin\ToggleOrgLeadersOnly.ashx" />
     <Content Include="Areas\Main\Views\Person\ChangesGrid.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\ContactSearch\Index.cshtml">
@@ -2900,7 +2855,6 @@
     <Content Include="images\loading.gif" />
     <Content Include="images\navigation-shadow.png" />
     <Content Include="Contributions\Deposit.aspx" />
-    <Content Include="Contributions\GLExtract.aspx" />
     <Content Include="Contributions\Reports\JournalDetails.aspx" />
     <Content Include="Contributions\Reports\TotalsByFundRange.aspx" />
     <Content Include="images\1pix.gif" />
@@ -2925,9 +2879,6 @@
     <Content Include="images\tags.png" />
     <Content Include="images\unknown.jpg" />
     <Content Include="images\work.gif" />
-    <Content Include="Report\DecisionSummary.aspx" />
-    <Content Include="Site.Master" />
-    <Content Include="UserControls\GridPager.ascx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CmsData\CmsData.csproj">
@@ -2944,7 +2895,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Admin\Web.config" />
     <Content Include="images\attention48.png" />
     <Content Include="images\blackredgradient.png" />
     <Content Include="images\check48.png" />
@@ -2976,11 +2926,9 @@
     <Content Include="Scripts\People\Person.js" />
     <Content Include="Views\Shared\bvorg.Master" />
     <Content Include="Views\Shared\Site3b.Master" />
-    <Content Include="Report\Reports.Master" />
     <Content Include="Scripts\js\ExportToolBar.js" />
     <Content Include="Scripts\Search\QueryBuilder.js" />
     <Content Include="Scripts\js\Task.js" />
-    <Content Include="StaffOnly\Web.config" />
     <Content Include="Views\Shared\LogOnUserControl.ascx" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -3007,9 +2955,6 @@
     <Folder Include="Models\PersonPage\" />
     <Folder Include="Scripts\Other\" />
     <Folder Include="Upload\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

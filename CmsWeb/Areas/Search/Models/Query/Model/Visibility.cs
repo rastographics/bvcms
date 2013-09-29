@@ -55,6 +55,7 @@ namespace CmsWeb.Areas.Search.Models
         { 
             FieldType.NullNumber,
             FieldType.Number,
+            FieldType.NumberLG
         };
         private List<FieldType> datetypes = new List<FieldType>() 
         { 

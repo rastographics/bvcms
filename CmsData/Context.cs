@@ -161,19 +161,26 @@ namespace CmsData
         }
         public IQueryable<Person> PeopleQuery(object id)
         {
+            if (id == null)
+                return null;
             IQueryable<Person> q = null;
             if (id is Guid)
             {
                 var qid = (Guid)id;
-                var qB = this.LoadQueryById2(qid).ToClause();
-                q = People.Where(qB.Predicate(this));
-                if (qB.ParentsOf)
+                var query = LoadQueryById2(qid);
+                if (query == null)
+                    return null;
+                var c = query.ToClause();
+                q = People.Where(c.Predicate(this));
+                if (c.ParentsOf)
                     q = PersonQueryParents(q);
             }
             else
             {
                 var qid = (int)id;
                 var qB = LoadQueryById(qid);
+                if (qB == null)
+                    return null;
                 q = People.Where(qB.Predicate(this));
                 if (qB.ParentsOf)
                     q = PersonQueryParents(q);

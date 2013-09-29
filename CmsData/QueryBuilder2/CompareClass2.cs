@@ -643,7 +643,7 @@ namespace CmsData
                                c.TextValue.ToInt());
                 // S -------------------------
                 case QueryType.SavedQuery:
-                    return Expressions.SavedQuery(parm, Db,
+                    return Expressions.SavedQuery2(parm, Db,
                                c.SavedQuery,
                                CompType,
                                c.CodeIds == "1");
