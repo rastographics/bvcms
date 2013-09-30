@@ -562,6 +562,7 @@
     <Content Include="Content\css\chosen-sprite%402x.png" />
     <Content Include="Content\css\chosen-sprite.png" />
     <Content Include="Content\css\chosen.min.css" />
+    <Content Include="Content\css\datepicker.css" />
     <Content Include="Content\css\Fixups2.css" />
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\demo_page.css" />
