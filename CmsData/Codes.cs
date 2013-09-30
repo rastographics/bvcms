@@ -153,6 +153,7 @@ namespace CmsData.Codes
         public const int ComputeOrganizationByAge2 = 11;
         public const int ManageGiving = 14;
         public const int ManageSubscriptions2 = 15;
+        public const int SpecialJavascript = 16;
         //public const int ChoosePrayerTime = 17;
         public static IEnumerable<KeyValuePair<int, string>> GetCodePairs()
         {
@@ -165,6 +166,7 @@ namespace CmsData.Codes
             yield return new KeyValuePair<int, string>(OnlineGiving, "Online Giving");
             yield return new KeyValuePair<int, string>(OnlinePledge, "Online Pledge");
             yield return new KeyValuePair<int, string>(ChooseVolunteerTimes, "Choose Volunteer Times");
+            yield return new KeyValuePair<int, string>(SpecialJavascript, "Special Script");
             //yield return new KeyValuePair<int, string>(ChoosePrayerTime, "Choose Prayer Times");
 //            yield return new KeyValuePair<int, string>(UserSelectsOrganization, "--old user selects org");
 //            yield return new KeyValuePair<int, string>(ComputeOrganizationByAge, "--old compute org by bday");

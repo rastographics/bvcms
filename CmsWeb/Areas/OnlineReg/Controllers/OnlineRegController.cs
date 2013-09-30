@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content("no organization");
             var m = new OnlineRegModel { orgid = id };
             if (m.org == null && m.masterorg == null)
-                return Content("invalid registration");
+                return content("invalid registration");
 
             if (m.masterorg != null)
             {
@@ -140,6 +140,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     TempData["ps"] = m.UserPeopleId;
                     return Redirect("/OnlineReg/ManageVolunteer/{0}".Fmt(m.orgid));
+                }
+                if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
+                {
+                    TempData["ps"] = m.UserPeopleId;
+                    return Redirect("/OnlineReg/SpecialRegistration/{0}".Fmt(m.orgid));
                 }
                 if (showfamily != true && p.org != null && p.Found == true)
                 {
@@ -365,7 +370,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (p.ManageSubscriptions()
                 || p.OnlinePledge()
                 || p.ManageGiving()
-                || m.ChoosingSlots())
+                || m.ChoosingSlots()
+                || m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
             {
                 p.OtherOK = true;
             }

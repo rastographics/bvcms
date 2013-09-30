@@ -211,6 +211,7 @@
     <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
     <Compile Include="Areas\Main\Models\Export\ExcelResult.cs" />
     <Compile Include="Areas\Manage\Controllers\ExtraValues2Controller.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\SpecialJavascriptRegModel.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMembersDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -1111,6 +1112,7 @@
     <Content Include="Areas\Reports\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\MultiSelect.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\CodeSelect.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\SpecialRegistration.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />

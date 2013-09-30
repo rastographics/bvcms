@@ -323,6 +323,7 @@ namespace CmsData.Registration
 			Display,
 			Instructions,
 			Select,
+			SpecialScript,
 			Find,
 			Login,
 			Submit,

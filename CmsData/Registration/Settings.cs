@@ -40,6 +40,7 @@ namespace CmsData.Registration
 
 		public bool MemberOnly { get; set; }
 		public bool AskDonation { get; set; }
+		public string SpecialScript { get; set; }
 		public string DonationLabel { get; set; }
 		public string ExtraValueFeeName { get; set; }
 		public bool NotReqDOB { get; set; }
@@ -169,6 +170,9 @@ namespace CmsData.Registration
 				case Parser.RegKeywords.AskTylenolEtc:
 				case Parser.RegKeywords.AskCoaching:
 					AskItems.Add(Ask.ParseAsk(parser));
+					break;
+				case Parser.RegKeywords.SpecialScript:
+					SpecialScript = parser.GetString();
 					break;
 				case Parser.RegKeywords.AskSuggestedFee:
 					AskItems.Add(AskSuggestedFee.Parse(parser));
@@ -565,6 +569,7 @@ namespace CmsData.Registration
 
 			AddValueCk(0, sb, "ValidateOrgs", ValidateOrgs);
 			AddValueCk(0, sb, "Shell", Shell);
+			AddValueCk(0, sb, "SpecialScript", SpecialScript);
 			AddValueCk(0, sb, "AllowOnlyOne", AllowOnlyOne);
 			AddValueCk(0, sb, "TargetExtraValues", TargetExtraValues);
 			AddValueCk(0, sb, "AllowReRegister", AllowReRegister);

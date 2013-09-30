@@ -74,6 +74,43 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content(ex.Message);
             }
         }
+        public ActionResult SpecialRegistration(string id, int? pid)
+        {
+            if (!id.HasValue())
+                return Content("bad link");
+            SpecialJavascriptRegModel m = null;
+
+            var td = TempData["ps"];
+            if (td != null)
+            {
+                m = new SpecialJavascriptRegModel(orgId: id.ToInt(), peopleId: td.ToInt());
+            }
+            if (m == null)
+            {
+                var guid = id.ToGuid();
+                if (guid == null)
+                    return Content("invalid link");
+                var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+                if (ot == null)
+                    return Content("invalid link");
+#if DEBUG2
+#else
+                if (ot.Used)
+                    return Content("link used");
+#endif
+                if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
+                    return Content("link expired");
+                var a = ot.Querystring.Split(',');
+                m = new SpecialJavascriptRegModel(orgId: a[0].ToInt(), peopleId: a[1].ToInt());
+                id = a[0];
+                ot.Used = true;
+                DbUtil.Db.SubmitChanges();
+            }
+
+            SetHeaders(id.ToInt());
+            DbUtil.LogActivity("Special Javascript Reg: {0} ({1})".Fmt(m.Org.OrganizationName, m.Person.Name));
+            return View(m);
+        }
         public ActionResult ManageVolunteer(string id, int? pid)
         {
             if (!id.HasValue())

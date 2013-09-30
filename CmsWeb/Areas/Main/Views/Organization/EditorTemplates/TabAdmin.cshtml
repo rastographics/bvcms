@@ -111,6 +111,12 @@
         |(stored in Special Content)">
         Shell<text>:</text></span> @Html.TextBox("Shell", Model.Shell)
     </li>
+<li><span class="keyword big tip" title="Special Script
+        |Enter the name of the HTML/Script file for this registration 
+        |Only works with the Special Script type of registration
+        |(stored in Special Content)">
+        Special Script<text>:</text></span> @Html.TextBox("SpecialScript", Model.SpecialScript)
+    </li>
     <li> <span class="keyword big tip" title="MemberOnly
         |You must be a member of the church to register">
         MemberOnly:</span> @Html.CheckBox("MemberOnly", Model.MemberOnly)
