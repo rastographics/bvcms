@@ -1,0 +1,20 @@
+﻿@using CmsWeb
+@model object 
+@{
+    var items = (ViewData["items"] as IEnumerable<SelectListItem> ?? new List<SelectListItem>()).ToList();
+    if (Model != null)
+    {
+        var selected = items.SingleOrDefault(ii => ii.Value == Model.ToString());
+        if (selected != null)
+        {
+            selected.Selected = true;
+        }
+    }
+}
+<div class="control-group">
+    @Html.LabelFor(m => m, new { @class = "control-label" })
+    <div class="controls code-dropdown">
+        @Html.DropDownListFor(m => m, items) 
+        @Html.ValidationMessageLabelFor(m => m)
+    </div>
+</div>

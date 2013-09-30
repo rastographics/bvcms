@@ -19,13 +19,14 @@ namespace CmsData
         public Guid? CopiedFrom { get; set; }
         public Guid? ParentId { get; set; }
         public int Order { get; set; }
-        public string Field { get; set; }
+        public string ConditionName { get; set; }
         public string Comparison { get; set; }
         public string TextValue { get; set; }
         public DateTime? DateValue { get; set; }
         public string CodeIdValue { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public int Ministry { get; set; }
         public int Program { get; set; }
         public int Division { get; set; }
         public int Organization { get; set; }
@@ -35,7 +36,7 @@ namespace CmsData
         public bool IsPublic { get; set; }
         public DateTime CreatedOn { get; set; }
         public string Quarters { get; set; }
-        public string SavedQueryIdDesc { get; set; }
+        public string SavedQuery { get; set; }
         public string Tags { get; set; }
         public int Schedule { get; set; }
         public int? Age { get; set; }
@@ -73,13 +74,13 @@ namespace CmsData
             {
                 try
                 {
-                    if ((_FieldInfo == null || _FieldInfo.Name != Field))
-                        _FieldInfo = FieldClass2.Fields[Field];
+                    if ((_FieldInfo == null || _FieldInfo.Name != ConditionName))
+                        _FieldInfo = FieldClass2.Fields[ConditionName];
                     return _FieldInfo;
                 }
                 catch (Exception)
                 {
-                    throw new Exception("QB Field not found: " + Field);
+                    throw new Exception("QB Field not found: " + ConditionName);
                 }
             }
         }
@@ -89,7 +90,7 @@ namespace CmsData
         }
         public void SetQueryType(QueryType value)
         {
-            Field = value.ToString();
+            ConditionName = value.ToString();
         }
         public CompareType ComparisonType
         {
@@ -109,7 +110,7 @@ namespace CmsData
         public override string ToString()
         {
             string ret = "null";
-            if (Field == "MatchAnything")
+            if (ConditionName == "MatchAnything")
                 ret = "Match Anything";
             switch (ComparisonType)
             {
@@ -203,7 +204,10 @@ namespace CmsData
                     }
                 return expr;
             }
-            expr = Compare.Expression(this, parm, Db);
+            if(Compare == null)
+                expr = Expressions.AlwaysFalse(parm);
+            else
+                expr = Compare.Expression(this, parm, Db);
             if (InAllAnyFalse)
                 expr = Expression.Not(expr);
             return expr;
@@ -212,7 +216,7 @@ namespace CmsData
         {
             get
             {
-                if (Field == "MatchAnything")
+                if (ConditionName == "MatchAnything")
                     return false;
                 var e = Compare;
                 if (e == null)
@@ -344,11 +348,11 @@ namespace CmsData
             Description = from.Description;
             Division = from.Division;
             EndDate = from.EndDate;
-            Field = from.Field;
+            ConditionName = from.ConditionName;
             Organization = from.Organization;
             Program = from.Program;
             Quarters = from.Quarters;
-            SavedQueryIdDesc = from.SavedQueryIdDesc;
+            SavedQuery = from.SavedQuery;
             Schedule = from.Schedule;
             StartDate = from.StartDate;
             Tags = from.Tags;
@@ -386,7 +390,7 @@ namespace CmsData
                 Description = name,
                 Id = Guid.NewGuid(),
                 AllConditions = new Dictionary<Guid, Condition>(),
-                Field = QueryType.Group.ToString(),
+                ConditionName = QueryType.Group.ToString(),
                 Comparison = CompareType.AllTrue.ToString()
             };
             c.AllConditions.Add(c.Id, c);
@@ -407,7 +411,7 @@ namespace CmsData
                 ParentId = Id,
                 Id = Guid.NewGuid(),
                 AllConditions = AllConditions,
-                Field = QueryType.Group.ToString(),
+                ConditionName = QueryType.Group.ToString(),
                 Comparison = CompareType.AllTrue.ToString(),
                 Order = MaxClauseOrder() + 2
             };
@@ -439,7 +443,7 @@ namespace CmsData
                 ParentId = Id,
                 Id = Guid.NewGuid(),
                 AllConditions = AllConditions,
-                Field = QueryType.MatchAnything.ToString(),
+                ConditionName = QueryType.MatchAnything.ToString(),
                 Comparison = CompareType.Equal.ToString(),
                 Order = MaxClauseOrder() + 2
             };

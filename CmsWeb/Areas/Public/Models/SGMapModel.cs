@@ -39,23 +39,28 @@ namespace CmsWeb.Models
         public IEnumerable<MarkerInfo> Locations()
         {
             var q = from o in DbUtil.Db.Organizations
-                    where o.Location != null && o.Location != ""
+                    let host = o.OrganizationMembers.FirstOrDefault(mm => mm.OrgMemMemTags.Any(mt => mt.MemberTag.Name == "HostHome") || mm.PeopleId == o.LeaderId).Person
+                    let schedule = o.OrgSchedules.First().MeetingTime
+                    where host != null && (host.PrimaryAddress ?? "") != ""
                     where o.DivOrgs.Any(dd => dd.DivId == divid) || o.DivisionId == divid
-                    join gc in DbUtil.Db.GeoCodes on o.Location equals gc.Address into g
-                    from geocode in g.DefaultIfEmpty()
-                    select new SGInfo
-                    {
-                        desc = o.OrganizationName, //o.Description,
-                        addr = o.Location,
-                        name = o.OrganizationName,
-                        schedule = o.OrgSchedules.First().MeetingTime,
-                        cmshost = DbUtil.Db.CmsHost,
-                        id = o.OrganizationId,
-                        gc = geocode,
-                    };
-            var qlist = q.ToList();
+                    select new { host, o, schedule };
+
+            var q2 = from i in q.ToList()
+                     let addr = i.host.AddrCityStateZip
+                     join gc in DbUtil.Db.GeoCodes on addr equals gc.Address into g
+                     from geocode in g.DefaultIfEmpty()
+                     select new SGInfo
+                     {
+                         desc = i.o.Description ?? i.o.OrganizationName, //o.Description,
+                         addr = addr,
+                         name = i.o.OrganizationName,
+                         schedule = i.schedule,
+                         cmshost = DbUtil.Db.CmsHost,
+                         id = i.o.OrganizationId,
+                         gc = geocode,
+                     };
+            var qlist = q2.ToList();
             var addlist = new List<GeoCode>();
-            var ret = new List<MarkerInfo>();
 
             foreach (var i in qlist.Where(ii => ii.gc == null))
             {
@@ -74,7 +79,7 @@ namespace CmsWeb.Models
 <div>
 {0}<br />
 {1:ddd h:mm tt}<br />
-<a href='{2}OnlineReg/Index/{3}' target='_top'>Signup</a>
+<a target='smallgroup' href='{2}OnlineReg/Index/{3}'>More Information</a>
 </div>";
             return from i in qlist
                    where i.gc.Latitude != 0

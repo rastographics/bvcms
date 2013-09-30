@@ -218,7 +218,7 @@ namespace CmsWeb.Models
             if (PmmLabelsVisible)
             {
                 var cv = new CodeValueModel();
-                PmmLabelData = CodeValueModel.ConvertToSelect(cv.PmmLabels(), "Code");
+                PmmLabelData = CodeValueModel.ConvertToSelect(CodeValueModel.PmmLabels(), "Code");
             }
             StartDateVisible = fieldMap.HasParam("StartDate");
             EndDateVisible = fieldMap.HasParam("EndDate");
@@ -447,7 +447,7 @@ namespace CmsWeb.Models
                 if (c.Tags != null)
                     PmmLabels = c.Tags.Split(',').Select(vv => vv).ToArray();
                 var cv = new CodeValueModel();
-                PmmLabelData = CodeValueModel.ConvertToSelect(cv.PmmLabels(), "Id");
+                PmmLabelData = CodeValueModel.ConvertToSelect(CodeValueModel.PmmLabels(), "Id");
                 if(PmmLabels != null)
                     foreach (var i in PmmLabelData)
                         i.Selected = PmmLabels.Contains(i.Value);

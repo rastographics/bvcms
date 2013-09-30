@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new ContactModel(id);
             if (m.contact == null)
-                return Content("contact does not exist");
+                return Content("contact is private or does not exist");
 
             var edit = (bool?)TempData["ContactEdit"] == true;
             ViewBag.edit = edit;

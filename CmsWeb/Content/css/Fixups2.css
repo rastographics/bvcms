@@ -820,3 +820,12 @@ a.go-back {
 .min-width20em {
     min-width: 20em;
 }
+#condition-edit select {
+    width: auto;
+}
+#condition-edit .controls p {
+    padding-top: 2px;
+}
+.width100 {
+    width: 100%;
+}

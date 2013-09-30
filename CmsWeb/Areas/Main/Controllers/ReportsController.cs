@@ -104,6 +104,10 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             return new OrgLeadersResult(m) { orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null };
         }
+        public ActionResult SGMap(OrgSearchModel m)
+        {
+            return Redirect("/Sgmap/Index/" + m.DivisionId);
+        }
         public ActionResult ClassList(string org, OrgSearchModel m)
         {
             return new ClassListResult(m) { orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null };
@@ -510,6 +514,10 @@ namespace CmsWeb.Areas.Main.Controllers
                 }
                 Response.Write("</table>");
             }
+        }
+        public ActionResult CheckinControl(CheckinControlModel m)
+        {
+            return new CheckinControlResult { model = m };
         }
         public ActionResult EnrollmentControl(bool? excel, EnrollmentControlModel m)
         {

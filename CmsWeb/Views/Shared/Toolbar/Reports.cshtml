@@ -6,62 +6,62 @@
         <div>
             <ul class="span4 unstyled pull-left">
                 <li class="header">Export Excel</li>
-                <li><a href='/Export/Excel/@qid' class="dialog-options" data-target="#choose-format">Standard</a></li>
-                <li><a href='/Export/Csv/@qid' class="dialog-options" data-target="#choose-format">Mailing / Bulk (csv)</a></li>
+                <li><a href='/Export2/Excel/@qid' class="dialog-options" data-target="#choose-format">Standard</a></li>
+                <li><a href='/Export2/Csv/@qid' class="dialog-options" data-target="#choose-format">Mailing / Bulk (csv)</a></li>
                 <li class="space"></li>
-                <li><a href='/Export/Excel/AllFamily/@qid'>Family</a></li>
-                <li><a href='/Export/Excel/IndividualPicture/@qid'>Pictures</a></li>
+                <li><a href='/Export2/Excel/AllFamily/@qid'>Family</a></li>
+                <li><a href='/Export2/Excel/IndividualPicture/@qid'>Pictures</a></li>
                 @* <li><a href='/Export/UpdatePeople/@qid' title="For Doing a Mass Update">Excel Update</a></li> *@
                 @if ((bool?)ViewBag.OrganizationContext == true)
                 { 
-                    <li><a href='/Export/Excel/Organization/@qid' title="Includes Org Member info">Member Export</a></li>
+                    <li><a href='/Export2/Excel/Organization/@qid' title="Includes Org Member info">Member Export</a></li>
                     if ((bool?)ViewBag.OrgMemberContext == true)
                     { 
-                    <li><a href='/Export/Excel/Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
+                    <li><a href='/Export2/Excel/Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
                     } 
-                    <li><a href='/Export/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
+                    <li><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
                 }
-                <li><a href='/Export/ExtraValues/@qid'>Extra Values</a></li>
-                <li><a href='/Export/StatusFlags/@qid'>Status Flags</a></li>
+                <li><a href='/Export2/ExtraValues/@qid'>Extra Values</a></li>
+                <li><a href='/Export2/StatusFlags/@qid'>Status Flags</a></li>
 
                 <li class="header"><br />Other</li>
-                <li><a href='/Export/Excel/Attend/@qid'>Attendance (Main Fellowship)</a></li>
-                <li><a href='/Export/Excel/Children/@qid'>Children</a></li>
-                <li><a href='/Export/Excel/Involvement/@qid'>Involvement</a></li>
-                <li><a href='/Export/Excel/Library/@qid'>Library</a></li>
-                <li><a href='/Export/Excel/Church/@qid'>Other Churches</a></li>
+                <li><a href='/Export2/Excel/Attend/@qid'>Attendance (Main Fellowship)</a></li>
+                <li><a href='/Export2/Excel/Children/@qid'>Children</a></li>
+                <li><a href='/Export2/Excel/Involvement/@qid'>Involvement</a></li>
+                <li><a href='/Export2/Excel/Library/@qid'>Library</a></li>
+                <li><a href='/Export2/Excel/Church/@qid'>Other Churches</a></li>
             </ul>
             <ul class="span4 unstyled pull-left">
                 <li class="header">Reports</li>
                 @if ((bool?)ViewBag.OrganizationContext == true)
                 {
-                    <li><a href='/Reports/Contacts/@qid' title="Report for Robo-calling Contacts">Contact Report</a></li>
-                    <li class="hideAlt"><a href='/Reports/Contacts/@qid'>Contact Report (by addr)</a></li>
+                    <li><a href='/Reports2/Contacts/@qid?orgname=@ViewBag.orgname' target="_blank" title="Report for Robo-calling Contacts">Contact Report</a></li>
+                    <li class="hideAlt"><a href='/Reports2/Contacts/@qid?sortAddress=true&orgname=@ViewBag.orgname' target="_blank">Contact Report (by addr)</a></li>
                 }
                 else
                 {
-                    <li><a href='/Reports/Contacts/@qid' title="Report for Robo-calling Contacts">Contact Report</a></li>
-                    <li class="hideAlt"><a href='/Reports/Contacts/@qid'>Contact Report (Sorted by Address)</a></li>
+                    <li><a href='/Reports2/Contacts/@qid' target="_blank" title="Report for Robo-calling Contacts">Contact Report</a></li>
+                    <li class="hideAlt"><a href='/Reports2/Contacts/@qid?sortAddress=true' target="_blank">Contact Report (Sorted by Address)</a></li>
                 }
-                <li><a href='/Reports/Family/@qid'>Family Report</a></li>
-                <li><a href='/Reports/Prospect/@qid'>Inreach/Outreach</a></li>
-                <li><a href='/Reports/Prospect/@qid'>Inreach/Outreach with Form</a></li>
+                <li><a href='/Reports2/Family/@qid' target="_blank">Family Report</a></li>
+                <li><a href='/Reports2/Prospect/@qid' target="_blank">Inreach/Outreach</a></li>
+                <li><a href='/Reports2/Prospect/@qid?Form=true' target="_blank">Inreach/Outreach with Form</a></li>
                 @if ((bool?) ViewBag.OrganizationContext == true)
                 {
-                    <li><a href='/Reports/Roster1/@qid'>Roster Report</a></li>
-                    <li><a href='/Reports/Registration/@qid'>Registration Report</a></li>
+                    <li><a href='/Reports2/Roster1/@qid' target="report">Roster Report</a></li>
+                    <li><a href='/Reports2/Registration/@qid' target="_blank">Registration Report</a></li>
                 }
                 else
                 {
-                    <li><a href='/Reports/Registration/@qid'>Registration Rpt</a></li>
+                    <li><a href='/Reports2/Registration/@qid' target="_blank">Registration Rpt</a></li>
                 }
-                <li><a href='/Reports/WeeklyAttendance/@qid' title="General Attendance Stats">Weekly Attend</a></li>
+                <li><a href='/Reports2/WeeklyAttendance/@qid' target="_blank" title="General Attendance Stats">Weekly Attend</a></li>
                 
 
                 <li class="header"><br />Directories</li>
-                <li><a href="/Reports/FamilyDirectoryCompact/@qid">Compact Directory</a></li>
-                <li><a href="/Reports/FamilyDirectory/@qid">Family Directory</a></li>
-                <li><a href="/Reports/PictureDirectory/@qid">Picture Directory</a></li>
+                <li><a href="/Reports2/FamilyDirectoryCompact/@qid">Compact Directory</a></li>
+                <li><a href="/Reports2/FamilyDirectory/@qid">Family Directory</a></li>
+                <li><a href="/Reports2/PictureDirectory/@qid">Picture Directory</a></li>
 
                 @if ((bool?)ViewBag.OrganizationContext == true)
                 { 
@@ -72,14 +72,14 @@
             </ul>
             <ul class="span4 unstyled pull-left">
                 <li class="header"> Address Labels </li>
-                <li><a href='/Reports/AveryAddress/@qid' class="dialog-options" data-target="#choose-format">Address</a></li>
-                <li><a href="/Reports/EmployerAddress/@qid">Employer</a></li>
-                <li><a href='/Reports/RollLabels/@qid' class="dialog-options" data-target="#choose-format">Continous Roll Labels</a></li>
+                <li><a href='/Reports2/AveryAddress/@qid' class="dialog-options" data-target="#choose-format">Address</a></li>
+                <li><a target="_blank" href="/Reports2/EmployerAddress/@qid">Employer</a></li>
+                <li><a href='/Reports2/RollLabels/@qid' class="dialog-options" data-target="#choose-format">Continous Roll Labels</a></li>
 
                 <li class="header"><br />Other Labels </li>
-                <li><a href='/Reports/BarCodeLabels/@qid'>Barcode / Name</a></li>
-                <li><a href='/Reports/NameLabels/@qid'>Name</a></li>
-                <li><a href='/Reports/Avery/@qid'>Name (with Phone Number)</a></li>
+                <li><a target="_blank" href='/Reports2/BarCodeLabels/@qid'>Barcode / Name</a></li>
+                <li><a target="_blank" href='/Reports2/NameLabels/@qid'>Name</a></li>
+                <li><a target="_blank" href='/Reports2/Avery/@qid'>Name (with Phone Number)</a></li>
                 <li>@*<a href='/Reports/Avery3/@qid' title="Avery 3 Across Labels (person per row)">Avery Labels 3</a>*@</li>
             </ul>
         </div>

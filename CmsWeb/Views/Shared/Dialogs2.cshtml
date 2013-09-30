@@ -13,7 +13,7 @@
 {
     Html.RenderPartial("/Content/Tutorials/" + Util.Helpfile + ".cshtml");
 }
-<form id="choose-format" class="dialog-options modal fade hide validate" method="GET">
+<form id="choose-format" class="dialog-options modal fade hide validate" target="_blank" method="GET">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
         <h3>Choose Options</h3>
@@ -55,15 +55,15 @@
             <div class="span6">
                 <p><b>Label Options</b></p>
                 <label class="checkbox">
-                    <input type="checkbox" name="titles" />
+                    <input type="checkbox" name="titles" value="true" />
                     Use Titles
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="SortZip" />
+                    <input type="checkbox" name="SortZip" value="true" />
                     Sort by Zip
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="UsePhone" />
+                    <input type="checkbox" name="UsePhone" value="true" />
                     Include Phone
                 </label>
                 <div class="control-group">
@@ -100,24 +100,24 @@
     </div>
 </form>
 
-<form id="set-extra-values" class="modal fade hide dialog-options validate">
+<form id="get-extra-value" class="modal fade hide dialog-options validate" method="POST">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
-        <h3>Set Extra Value</h3>
+        <h3 class="title">Extra Value</h3>
     </div>
     <div class="modal-body">
         <div class="control-group">
             <label class="control-label">Field</label>
-            <input id="field" type="text" data-rule-required="true" />
+            <input name="field" type="text" data-rule-required="true" />
         </div>
         <div class="control-group">
             <label class="control-label">Value</label>
-            <input id="value" type="text" data-rule-required="true" />
+            <input name="value" type="text" data-rule-required="true" />
         </div>
     </div>
     <div class="modal-footer">
         <a class="btn btn-success" data-dismiss="modal">Close</a>
-        <a href="#" class="btn btn-primary ok">OK</a>
+        <input type="submit" class="btn btn-primary" value="OK" />
     </div>
 </form>
 

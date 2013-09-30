@@ -35,13 +35,23 @@ namespace CmsWeb.Areas.Main.Models
         public MassEmailer()
         {
         }
-        public MassEmailer(int QBId, bool? parents)
+        public MassEmailer(object id, bool? parents)
         {
-            this.wantParents = parents ?? false;
-            var Qb = DbUtil.Db.LoadQueryById(QBId);
-            var q = DbUtil.Db.PeopleQuery(QBId);
-            if (Qb.ParentsOf || wantParents)
-				q = DbUtil.Db.PersonQueryParents(q);
+            wantParents = parents ?? false;
+            var q = DbUtil.Db.PeopleQuery(id);
+            if (id is int)
+            {
+                var Qb = DbUtil.Db.LoadQueryById((int)id);
+                if (!Qb.ParentsOf && wantParents)
+                    q = DbUtil.Db.PersonQueryParents(q);
+            }
+            else
+            {
+                var c = DbUtil.Db.LoadQueryById2((Guid) id);
+                var cc = c.ToClause();
+                if (!cc.ParentsOf && wantParents)
+                    q = DbUtil.Db.PersonQueryParents(q);
+            }
 
             q = from p in q
                 where p.EmailAddress != null

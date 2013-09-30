@@ -1,13 +1,14 @@
 $(function () {
     $("a.remove").live("click", function (ev) {
         ev.preventDefault();
+        var url = this.href;
         if ($("#edit-contact").length > 0) {
             $.bootstrapGrowl("update first");
             return false;
         }
         bootbox.confirm("Remove this person?", function(confirmed) {
             if (!confirmed) return;
-            $.post($(this)[0].href, {}, function(ret) {
+            $.post(url, {}, function(ret) {
                 window.location.reload(true);
             });
         });
@@ -19,10 +20,11 @@ $(function () {
             $.bootstrapGrowl("update first");
             return false;
         }
+        var url = this.href;
+        var f = $(this).closest("form");
         bootbox.confirm("Add new task for person?", function(confirmed) {
             if (!confirmed) return;
-            var f = $("#contact");
-            f.attr("action", $(this)[0].href);
+            f.attr("action", url);
             f.submit();
         });
         return false;
@@ -33,15 +35,16 @@ $(function () {
             $.bootstrapGrowl("update first");
             return false;
         }
-        window.location = $(this)[0].href;
+        window.location = this.href;
         return false;
     });
     $("#delete").live("click", function (ev) {
         ev.preventDefault();
+        var url = this.href;
+        var f = $(this).closest("form");
         bootbox.confirm("Delete this contact?", function(confirmed) {
             if (!confirmed) return;
-            var f = $("#contact");
-            f.attr("action", $(this)[0].href);
+            f.attr("action", url);
             f.submit();
         });
         return false;
@@ -52,10 +55,11 @@ $(function () {
             $.bootstrapGrowl("update first");
             return false;
         }
+        var url = this.href;
+        var f = $(this).closest("form");
         bootbox.confirm("Add new contact for team?", function(confirmed) {
             if (!confirmed) return;
-            var f = $("#contact");
-            f.attr("action", $(this)[0].href);
+            f.attr("action", url);
             f.submit();
         });
         return false;
@@ -66,10 +70,11 @@ $(function () {
             $.bootstrapGrowl("update first");
             return false;
         }
+        var url = this.href;
+        var f = $(this).closest("form");
         bootbox.confirm("Add new task for person?", function(confirmed) {
             if (!confirmed) return;
-            var f = $("#contact");
-            f.attr("action", $(this)[0].href);
+            f.attr("action", url);
             f.submit();
         });
         return false;
@@ -78,8 +83,8 @@ $(function () {
         ev.preventDefault();
         var f = $(this).closest("form");
         var q = f.serialize();
-        var loc = $(this).attr("href");
-        $.post(loc, q, function (ret) {
+        var url = this.href;
+        $.post(url, q, function (ret) {
             f.modal("hide");
             if (ret.message) {
                 alert(ret.message);

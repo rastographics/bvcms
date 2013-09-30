@@ -226,6 +226,9 @@
     <Field Name="ReceiveSms" Title="Receive SMS" Type="Bit" DataValueField="IdCode">
       Indicates Opt-in status
     </Field>
+    <Field Name="SpouseHasEmail" Title="Spouse has Email" Type="Bit" DataValueField="IdCode">
+      Indicates Spouse Has Email Address
+    </Field>
   </Category>
   <Category Title="Church Status">
     <Field Name="MemberStatusId" Title="Church Member Status" Type="Code" DisplayAs="ChurchMemberStatus" DataSource="MemberStatusList" DataValueField="IdCode">
@@ -316,6 +319,9 @@
     </Field>
     <Field Name="MemberTypeCodes" Title="Member Type Codes" Type="Code" DisplayAs="MemberTypeCodes({0}, {1}, {2}, {3}, {4}, {5})" Params="Program,Division,Organization,OrgType,Schedule,Campus" DataSource="MemberTypeCodes" DataValueField="IdCode">
       Select members of an organization by their member type within a specified Program, Program/Division, or Program/Division/Organization. 
+    </Field>
+    <Field Name="AttendTypeCodes" Title="Attend Type Codes" Type="Code" DisplayAs="AttendTypeCodes({0}, {1}, {2}, {3}, {4}, {5})" Params="Program,Division,Organization,OrgType,Schedule,Campus" DataSource="AttendanceTypeCodes" DataValueField="IdCode">
+      Select Attend Type from the list and select other options: Program/Division/Organization, Org Type, Schedule, Campus.
     </Field>
     <Field Name="MemberTypeAsOf" Title="Member Type As Of" Type="Code" DisplayAs="MemberTypeAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="MemberTypeCodes" DataValueField="IdCode">
       Selects specified member types of organization(s) as of a date range. Specify a date range, or just a starting date (through current). Then specify the Program or Program/Division or Program/Division/Organization, then specify one or more member types.

@@ -18,26 +18,26 @@
             });
         });
     };
-    $("#SavedQueryDesc").editable({
+    $("#Description").editable({
         placement: "right",
         showbuttons: "bottom",
         pk: 1,
-        url: "/Query/SaveQueryDescription",
+        url: "/Query/DescriptionUpdate",
         mode: "popup"
     });
-    $('#SavedQueryDescEdit').click(function (e) {
+    $('#DescriptionEdit').click(function (e) {
         e.stopPropagation();
-        $('#SavedQueryDesc').editable('toggle');
+        $('#Description').editable('toggle');
     });
-    $.InitCodeValues = function () {
-        $('#CodeValues').multiselect({
+    $.AdjustEditCondition = function (option) {
+
+        $("#editcondition .date").datepicker({ autoclose: true, orientation: "auto" });
+        $("#editcondition select").multiselect({
             includeSelectAllOption: true,
             enableFiltering: true,
             enableCaseInsensitiveFiltering: true
         });
-    };
-    $.AdjustEditCondition = function (option) {
-        $.InitCodeValues();
+
         var h = $("#editcondition").outerHeight();
         var pos = liedit.position();
         var wid = liedit.width();
@@ -181,11 +181,17 @@
         return false;
     });
     $(document).on("change", '#Comparison', function (ev) {
-        if ($("#CodesDiv").length > 0) {
+        var sel = "#CodeValues";
+        if ($(sel).length > 0) {
             var q = $('#editForm').serialize();
-            $.post('/Query/CodesDropdown', q, function (ret) {
-                $("#CodesDiv").replaceWith(ret).ready(function () {
-                    $('#CodeValues').multiselect();
+            $.post('/Query/CodeSelect', q, function (ret) {
+                $(sel).multiselect("destroy").ready(function() {
+                    $(sel).replaceWith(ret).ready(function () {
+                        $(sel).multiselect({
+                            enableFiltering: true,
+                            enableCaseInsensitiveFiltering: true
+                        });
+                    });
                 });
             });
         }
@@ -193,17 +199,28 @@
     $('#Tags').click(function (ev) {
         $('#TagsPopup').show();
     });
-    $(".datepicker").datepicker();
 
     $(document).on("change", '#Program', function (ev) {
         $.post('/Query/Divisions/' + $(this).val(), null, function (ret) {
-            $("#Division").replaceWith(ret);
-            $("#Organization").replaceWith("<select id='Organization' name='Organization'><option value='0'>(not specified)</option></select>");
+            $("#Division").replaceWith(ret)
+                .multiselect({
+                    enableFiltering: true,
+                    enableCaseInsensitiveFiltering: true
+                });
+            $("#Organization").replaceWith("<select id='Organization' name='Organization' style='display:none'><option value='0'>(not specified)</option></select>")
+                .multiselect({
+                    enableFiltering: true,
+                    enableCaseInsensitiveFiltering: true
+                });
         });
     });
     $(document).on("change", '#Division', function () {
-        $.post('/Query/Organizations/' + $(this).val(), null, function (ret2) {
-            $("#Organization").replaceWith(ret2);
+        $.post('/Query/Organizations/' + $(this).val(), null, function (ret) {
+            $("#Organization").replaceWith(ret)
+                .multiselect({
+                    enableFiltering: true,
+                    enableCaseInsensitiveFiltering: true
+                });
         });
     });
     $(document).on("click", '#Run', function (ev) {

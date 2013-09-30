@@ -175,8 +175,6 @@ namespace CmsWeb.Areas.Search.Models
             var p = DbUtil.Db.LoadPersonById(id);
             var pp = new PendingPersonModel();
             pp.CopyPropertiesFrom(p);
-            if (AddContext == "family")
-                NewFamilyId = PrimaryKeyForContextType.ToInt();
             pp.LoadAddress();
             PendingList.Add(pp);
         }

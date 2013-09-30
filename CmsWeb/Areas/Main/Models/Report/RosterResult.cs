@@ -25,7 +25,8 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class RosterResult : ActionResult
     {
-        public int? qid, org;
+        public object qid;
+        public int? org;
 
         public override void ExecuteResult(ControllerContext context)
         {
@@ -40,11 +41,11 @@ namespace CmsWeb.Areas.Main.Models.Report
 
             dc = w.DirectContent;
 
-            if (qid.HasValue)
+            if (qid != null)
             {
                 var o = list(org).First();
                 StartPageSet(o);
-                var q = DbUtil.Db.PeopleQuery(qid.Value);
+                var q = DbUtil.Db.PeopleQuery(qid);
                 var q2 = from p in q
                          let rr = p.GetRecReg()
                          join m in RollsheetModel.FetchOrgMembers(o.OrgId, null) on p.PeopleId equals m.PeopleId into j

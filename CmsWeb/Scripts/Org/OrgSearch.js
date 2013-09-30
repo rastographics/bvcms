@@ -357,6 +357,13 @@
         });
         return false;
     });
+    $('#checkincontrol').click(function (ev) {
+        ev.preventDefault();
+        hideDropdowns();
+        var d = $('#PanelCheckinControl');
+        d.dialog('open');
+        return false;
+    });
     $('#enrollmentcontrol1').click(function (ev) {
         ev.preventDefault();
         hideDropdowns();
@@ -379,6 +386,16 @@
             url = url.appendQuery("usecurrenttag=true");
         if ($('#enrcontrolexcel').is(":checked"))
             url = url.appendQuery("excel=true");
+        $("#orgsearchform").attr("action", url);
+        $("#orgsearchform").submit();
+        return false;
+    });
+    $('#checkincontrol2').click(function (ev) {
+        ev.preventDefault();
+        hideDropdowns();
+        $('div.dialog').dialog('close');
+        var url = "/Reports/CheckinControl/";
+        $("#CheckinDate").val($("#checkindate").val());
         $("#orgsearchform").attr("action", url);
         $("#orgsearchform").submit();
         return false;

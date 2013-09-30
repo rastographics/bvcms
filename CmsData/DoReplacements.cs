@@ -16,9 +16,11 @@ namespace CmsData
         { 
             "http://votelink", 
             "http://registerlink", 
+            "http://registerlink2", 
             "http://rsvplink", 
             "http://volsublink", 
-            "http://volreqlink" 
+            "http://volreqlink", 
+            "{emailhref}" 
         };
 
         public static bool IsSpecialLink(string link)

@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.People.Models
         }
         override public IQueryable<Contact> DefineModelList()
         {
-            return from c in DbUtil.Db.Contacts
+            return from c in FilteredModelList()
                    where c.contactsMakers.Any(p => p.PeopleId == person.PeopleId)
                    select c;
         }

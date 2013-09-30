@@ -1,42 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using Community.CsharpSqlite;
-using IronPython.Modules;
-using Microsoft.Scripting.Debugging;
 using UtilityExtensions;
 using System.Linq;
-using CmsData;
 namespace CmsData
 {
     public partial class Condition
     {
         public void Save(CMSDataContext Db, bool increment = false)
         {
-            var i = (from e in Db.Queries
-                     let same = (from v in Db.Queries
-                                 where !v.Ispublic
-                                 where v.Owner == Util.UserName
-                                 where v.Name == Description
-                                 orderby v.LastRun descending
-                                 select v).FirstOrDefault()
-                     let existing = (from v in Db.Queries
-                                     where v.QueryId == Id
-                                     select v).SingleOrDefault()
-                     select new { same, existing }).First();
-            var q = i.existing;
+            var q = (from e in Db.Queries
+                     where e.QueryId == Id
+                     select e).FirstOrDefault();
 
             if (q == null)
             {
-                q = new Query 
+                q = new Query
                 {
                     QueryId = Id,
                     Owner = Util.UserName,
-                    Created = DateTime.Now, 
+                    Created = DateTime.Now,
                     Ispublic = IsPublic,
                     Name = Description
                 };
@@ -44,19 +30,24 @@ namespace CmsData
             }
             q.LastRun = DateTime.Now;
 
-
             if (Description != q.Name)
             {
-                if (i.same != null)
-                    i.same.Text = ToXml();
+                var same = (from v in Db.Queries
+                            where !v.Ispublic
+                            where v.Owner == Util.UserName
+                            where v.Name == Description
+                            orderby v.LastRun descending
+                            select v).FirstOrDefault();
+                if (same != null)
+                    same.Text = ToXml();
                 else
                 {
                     var c = Clone();
-                    var cq = new Query 
+                    var cq = new Query
                     {
                         QueryId = c.Id,
                         Owner = Util.UserName,
-                        Created = q.Created, 
+                        Created = q.Created,
                         Ispublic = q.Ispublic,
                         Name = q.Name,
                         Text = c.ToXml(),
@@ -72,10 +63,10 @@ namespace CmsData
             if (CopiedFrom.HasValue)
                 q.CopiedFrom = CopiedFrom;
             q.Name = Description;
-            if(increment)
+            if (increment)
                 q.RunCount = q.RunCount + 1;
             q.Text = ToXml();
-	        Db.SubmitChanges();
+            Db.SubmitChanges();
         }
 
         public string ToXml()
@@ -100,7 +91,7 @@ namespace CmsData
         {
             w.WriteAttributeString("Id", Id.ToString());
             w.WriteAttributeString("Order", Order.ToString());
-            w.WriteAttributeString("Field", Field);
+            w.WriteAttributeString("Field", ConditionName);
             w.WriteAttributeString("Comparison", Comparison);
             if (Description.HasValue())
                 w.WriteAttributeString("Description", Description);
@@ -130,6 +121,8 @@ namespace CmsData
                 w.WriteAttributeString("Schedule", Schedule.ToString());
             if (Age.HasValue)
                 w.WriteAttributeString("Age", Age.ToString());
+            if (SavedQuery.HasValue())
+                w.WriteAttributeString("SavedQueryIdDesc", SavedQuery);
         }
         public static Condition Import(string text, string name = null, bool newGuids = false)
         {
@@ -151,7 +144,7 @@ namespace CmsData
                 ParentId = parentGuid,
                 Id = AttributeGuid(r, "Id"),
                 Order = AttributeInt(r, "Order"),
-                Field = Attribute(r, "Field"),
+                ConditionName = Attribute(r, "Field"),
                 Comparison = Attribute(r, "Comparison"),
                 TextValue = Attribute(r, "TextValue"),
                 DateValue = AttributeDate(r, "DateValue"),
@@ -167,14 +160,15 @@ namespace CmsData
                 Schedule = Attribute(r, "Schedule").ToInt(),
                 Age = Attribute(r, "Age").ToInt(),
                 Owner = Attribute(r, "Owner"),
+                SavedQuery = Attribute(r, "SavedQueryIdDesc"),
                 AllConditions = allClauses
             };
-            if(p == null)
+            if (p == null)
                 c.Description = Attribute(r, "Description");
             c.AllConditions.Add(c.Id, c);
             if (newGuids)
                 c.Id = Guid.NewGuid();
-            if (c.Field == "Group")
+            if (c.ConditionName == "Group")
                 foreach (var rr in r.Elements())
                     ImportClause(rr, c, newGuids);
             return c;
@@ -205,7 +199,8 @@ namespace CmsData
             var a = r.Attributes(attr).FirstOrDefault();
             if (a == null)
                 return Guid.NewGuid();
-            return new Guid(a.Value);
+            Guid g;
+            return Guid.TryParse(a.Value, out g) ? g : Guid.NewGuid();
         }
     }
 }

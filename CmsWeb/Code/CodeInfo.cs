@@ -94,7 +94,7 @@ namespace CmsWeb.Code
             var attr = vm.GetAttribute<FieldInfoAttribute>();
             if (attr != null && attr.IdField.HasValue())
                 altname = attr.IdField;
-            var mid = modelProps.FirstOrDefault(ss => ss.Name == altname);
+            var mid = modelProps.FirstOrDefault(mm => mm.Name == altname || mm.Name == vm.Name);
             if (mid == null)
                 return string.Empty;
             if (track)
@@ -114,12 +114,17 @@ namespace CmsWeb.Code
         public void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
         {
             string altname = vm.Name + "Id";
-            var attr = vm.GetAttribute<FieldInfoAttribute>();
-            if (attr != null && attr.IdField.HasValue())
-                altname = attr.IdField;
-            var mid = modelProps.FirstOrDefault(mm => mm.Name == altname);
+            var fiattr = vm.GetAttribute<FieldInfoAttribute>();
+            if (fiattr != null && fiattr.IdField.HasValue())
+                altname = fiattr.IdField;
+            var mid = modelProps.FirstOrDefault(mm => mm.Name == altname || mm.Name == vm.Name);
             var midvalue = mid.GetValue(model, null);
-            Value = midvalue.ToInt().ToString();
+            if (mid.PropertyType == typeof(int?) || mid.PropertyType == typeof(int))
+                Value = midvalue.ToInt().ToString();
+            else if (midvalue == null)
+                Value = null;
+            else
+                Value = midvalue.ToString();
             Name = vm.Name;
         }
     }

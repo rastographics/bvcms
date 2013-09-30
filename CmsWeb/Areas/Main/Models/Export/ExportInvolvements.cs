@@ -22,7 +22,7 @@ namespace CmsWeb.Models
             public decimal? Pct { get; set; }
             public string Leader { get; set; }
         }
-        public static IEnumerable<InvovementInfo> InvolvementList(int queryid)
+        public static IEnumerable<InvovementInfo> InvolvementList(object queryid)
         {
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);
@@ -71,7 +71,7 @@ namespace CmsWeb.Models
                      };
             return q2;
         }
-        public static IEnumerable ChildrenList(int queryid, int maximumRows)
+        public static IEnumerable ChildrenList(object queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
@@ -104,7 +104,7 @@ namespace CmsWeb.Models
                      };
             return q2.Take(maximumRows);
         }
-        public static IEnumerable ChurchList(int queryid, int maximumRows)
+        public static IEnumerable ChurchList(object queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
@@ -139,7 +139,7 @@ namespace CmsWeb.Models
                      };
             return q2.Take(maximumRows);
         }
-        public static IEnumerable AttendList(int queryid, int maximumRows)
+        public static IEnumerable AttendList(object queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
@@ -268,7 +268,7 @@ namespace CmsWeb.Models
             public string Tickets { get; set; }
         }
 
-        public static IEnumerable<MemberInfoClass> OrgMemberList(int queryid)
+        public static IEnumerable<MemberInfoClass> OrgMemberList(object queryid)
         {
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);
@@ -314,7 +314,7 @@ namespace CmsWeb.Models
                      };
             return q2;
         }
-        public static IEnumerable PromoList(int queryid, int maximumRows)
+        public static IEnumerable PromoList(object queryid, int maximumRows)
         {
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);

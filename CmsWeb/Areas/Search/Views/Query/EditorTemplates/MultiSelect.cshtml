@@ -1,0 +1,18 @@
+﻿@using CmsWeb
+@model object
+@{
+    var items = (ViewData["items"] as IEnumerable<SelectListItem> ?? new List<SelectListItem>()).ToList();
+}
+<div class="control-group">
+    @Html.LabelFor(m => m, new { @class = "control-label" })
+    <div class="controls code-dropdown">
+        <select name="@ViewData.TemplateInfo.HtmlFieldPrefix" multiple="multiple" style="display:none">
+            <option value="multiselect-all">Select all</option>
+            @foreach (var o in items)
+                {
+                <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
+                }
+        </select>
+        @Html.ValidationMessageLabelFor(m => m)
+    </div>
+</div>

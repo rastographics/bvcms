@@ -14,6 +14,14 @@
         input.noPrint { display: none; }
         span.noPrint { display: none; }
     </style>
+    <style>
+        #extractlist li
+        {
+        display: inline;
+        list-style-type: none;
+        padding-right: 20px;
+        }
+    </style>
 }
 @section scripts
 {
@@ -37,14 +45,17 @@
             <option value="0">Not Online</option>
         </select>
         <p>
-            <input id="run" type="submit" value="Run Report" class="bt" />
-            <input id="exportdonordetails" type="submit" value="Export Donor Details" class="bt" />
-            <input id="exportdonorfundtotals" type="submit" value="Export Donor Fund Totals" class="bt" />
-            <input id="exportdonortotals" type="submit" value="Export Donor Totals" class="bt" />
+            <ul id="extractlist">
+               <li><input id="run" type="submit" value="Run Report" class="bt" /></li> 
+               <li><input id="exportdonordetails" type="submit" value="Export Donor Details" class="bt" /></li> 
+               <li><input id="exportdonorfundtotals" type="submit" value="Export Donor Fund Totals" class="bt" /></li> 
+               <li><input id="exportdonortotals" type="submit" value="Export Donor Totals" class="bt" /></li> 
             @if (qbh.hasActiveConnection())
             {
-                <input id="toquickbooks" type="submit" value="To QuickBooks" class="bt" />
+               <li><input id="toquickbooks" type="submit" value="To QuickBooks" class="bt" /></li> 
             }
+               <li class="hideAlt"><input id="glextract" type="submit" value="GLExtract" class="bt" /></li> 
+            </ul>
         </p>
         <hr />
     </form>

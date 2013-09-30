@@ -9,16 +9,16 @@
 <li class="header">Contacts / Tasks</li>
 <li><a id="AddContact" href='@ViewBag.AddContact'>Add Contact</a></li>
 <li><a id="AddTasks" href='@ViewBag.AddTasks'>Add Tasks</a></li>
-<li><a href='/Task/NotesExcel/@ViewBag.queryid'>Export Task Notes</a></li>
+<li><a href='/Task/NotesExcel2/@ViewBag.queryid'>Export Task Notes</a></li>
 
 @if (admin)
 {
     <li class="header">Extra Values</li>
-    <li><a href='/Manage/ExtraValues/Add/@ViewBag.queryid' data-target="#ChooseExtraValues">Add Extra Values</a></li>
-    <li><a href='/Manage/ExtraValues/Delete/@ViewBag.queryid' data-target="#ChooseExtraValues">Delete Extra Values</a></li>
-    <li><a href="/Reports/ExtraValuesGrid/@ViewBag.queryid">Extra Values Grid</a></li>
+    <li><a href='/Manage/ExtraValues2/Add/@ViewBag.queryid' class="dialog-options" data-target="#get-extra-value" title="Add Extra Value">Add Extra Values</a></li>
+    <li><a href='/Manage/ExtraValues2/Delete/@ViewBag.queryid' class="dialog-options" data-target="#get-extra-value" title="Delete Extra Values">Delete Extra Values</a></li>
+    <li><a href="/Reports2/ExtraValuesGrid/@ViewBag.queryid">Extra Values Grid</a></li>
     if (developer)
     {
-    <li><a href="/Reports/ExtraValuesGrid2/@ViewBag.queryid" class="hideAlt">Extra Values Grid2</a></li>
+    <li><a href="/Reports2/ExtraValuesGrid2/@ViewBag.queryid" class="hideAlt">Extra Values Grid2</a></li>
     }
 }

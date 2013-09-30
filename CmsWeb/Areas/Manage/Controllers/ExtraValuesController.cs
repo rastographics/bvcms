@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
             foreach (var pid in list)
             {
-                AddEditExtraValue(pid, field, value);
+                Person.AddEditExtraValue(DbUtil.Db, pid, field, value);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.DbDispose();
             }
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
             foreach (var pid in list)
             {
-                var ev = GetExtraValue(pid, field, value);
+                var ev = Person.GetExtraValue(DbUtil.Db, pid, field, value);
                 if (ev == null)
                     continue;
                 DbUtil.Db.PeopleExtras.DeleteOnSubmit(ev);
@@ -105,44 +105,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             DbUtil.Db.SubmitChanges();
             return Redirect("/QueryBuilder/Main/" + qb.QueryId);
-        }
-        private static PeopleExtra GetExtraValue(int id, string field)
-        {
-		    field = field.Replace('/', '-');
-            var q = from v in DbUtil.Db.PeopleExtras
-                    where v.Field == field
-                    where v.PeopleId == id
-                    select v;
-            var ev = q.SingleOrDefault();
-            if (ev == null)
-            {
-                ev = new PeopleExtra
-                {
-                    PeopleId = id,
-                    Field = field,
-                    TransactionTime = DateTime.Now
-                };
-                DbUtil.Db.PeopleExtras.InsertOnSubmit(ev);
-            }
-            return ev;
-        }
-        private static PeopleExtra GetExtraValue(int id, string field, string value)
-        {
-            var novalue = !value.HasValue();
-            var q = from v in DbUtil.Db.PeopleExtras
-                    where v.PeopleId == id
-                    where v.Field == field
-                    where novalue || v.StrValue == value 
-                    select v;
-            var ev = q.SingleOrDefault();
-            return ev;
-        }
-        private static void AddEditExtraValue(int id, string field, string value)
-        {
-            if (!value.HasValue())
-                return;
-            var ev = GetExtraValue(id, field);
-            ev.StrValue = value;
         }
     }
 }

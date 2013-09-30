@@ -67,6 +67,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bvcms2|AnyCPU'">
     <OutputPath>bin\</OutputPath>
+    <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -76,6 +77,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test|AnyCPU'">
     <OutputPath>bin\</OutputPath>
+    <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
@@ -190,24 +192,25 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin\ToggleOrgLeadersOnly.ashx.cs">
-      <DependentUpon>ToggleOrgLeadersOnly.ashx</DependentUpon>
-    </Compile>
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Models\SearchModel.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />
+    <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContacteesModel.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContactorsModel.cs" />
     <Compile Include="Areas\Main\Models\Export\CsvResult.cs" />
     <Compile Include="Areas\Main\Models\Export\ExcelFamilyMember.cs" />
     <Compile Include="Areas\Main\Models\Export\ExcelPic.cs" />
     <Compile Include="Areas\Main\Models\Export\OrgsMembersExcelResult.cs" />
+    <Compile Include="Areas\Main\Models\Report\CheckinControlModel.cs" />
+    <Compile Include="Areas\Main\Models\Report\CheckinControlResult.cs" />
     <Compile Include="Areas\Main\Models\Report\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Main\Models\Report\DecisionsModel.cs" />
     <Compile Include="Areas\Main\Models\Report\EnrollmentControlModel.cs" />
     <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
     <Compile Include="Areas\Main\Models\Export\ExcelResult.cs" />
+    <Compile Include="Areas\Manage\Controllers\ExtraValues2Controller.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMembersDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -300,6 +303,7 @@
     <Compile Include="Areas\People\Models\Person\Emails\EmailReceivedModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailSentModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailModel.cs" />
+    <Compile Include="Areas\Reports\Controllers\ReportsController.cs" />
     <Compile Include="Areas\Search\Controllers\ContactSearchController.cs" />
     <Compile Include="Areas\People\Controllers\Person\Emails.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonController.cs" />
@@ -315,6 +319,7 @@
     <Compile Include="Areas\People\Controllers\Person\Giving.cs" />
     <Compile Include="Areas\People\Controllers\Person\Family.cs" />
     <Compile Include="Areas\People\Controllers\Person\Enrollment.cs" />
+    <Compile Include="Areas\Reports\Controllers\ExportController.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactorSummaryInfo.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactSearchInfo.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactInfo.cs" />
@@ -335,7 +340,22 @@
     <Compile Include="Areas\People\Models\Person\Giving\ContributionInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\ContributionsModel.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactSummaryInfo.cs" />
-    <Compile Include="Areas\Search\Models\Query\QueryResults.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\UpdateEditCondition.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\CopyPasteNew.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\SelectLists.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\Visibility.cs" />
+    <Compile Include="Areas\Search\Models\Query\PeopleInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Areas\Search\Models\Query\QBExportResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Areas\Search\Models\Query\Model\QueryModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Areas\Search\Models\Query\Model\QueryResults.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Areas\Search\Models\SearchAdd\SearchResultsModel.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\SearchResultInfo.cs" />
     <Compile Include="Code\PagedTableModel.cs" />
@@ -377,7 +397,6 @@
     </Compile>
     <Compile Include="Areas\Org\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Org\Models\VolunteerRequestModel.cs" />
-    <Compile Include="Areas\Search\Models\Query\QueryModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\PendingPersonModel.cs" />
     <Compile Include="Areas\People\PeopleAreaRegistration.cs" />
@@ -495,9 +514,7 @@
     <Compile Include="Areas\Search\Controllers\QuickController.cs" />
     <Compile Include="Areas\Search\Controllers\SavedQueryController.cs" />
     <Compile Include="Areas\Search\Models\OrganizationModel.cs" />
-    <Compile Include="Areas\Search\Models\Query\PeopleInfo.cs" />
     <Compile Include="Areas\Search\Models\PeopleModel.cs" />
-    <Compile Include="Areas\Search\Models\Query\QBExportResult.cs" />
     <Compile Include="Areas\Search\Models\QuickSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
     <Compile Include="Areas\Search\SearchAreaRegistration.cs" />
@@ -520,8 +537,6 @@
     <Compile Include="Code\StandardExtraValues.cs" />
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />
-    <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
-    <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditTemplate.cshtml" />
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
@@ -544,6 +559,9 @@
     <Content Include="Content\css\bundle-new2css.min.css">
       <DependentUpon>bundle-new2css.css.bundle</DependentUpon>
     </Content>
+    <Content Include="Content\css\chosen-sprite%402x.png" />
+    <Content Include="Content\css\chosen-sprite.png" />
+    <Content Include="Content\css\chosen.min.css" />
     <Content Include="Content\css\Fixups2.css" />
     <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\demo_page.css" />
@@ -869,12 +887,17 @@
     <Content Include="Scripts\Finance\Transactions.min.js">
       <DependentUpon>Transactions.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\sgmap.js" />
+    <Content Include="Scripts\jQuery\jquery-1.9.1.min.js">
+      <DependentUpon>jquery-1.9.1.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.js" />
+    <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.min.js">
+      <DependentUpon>jquery.gmap-1.1.0.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\jQuery\jquery.validate.js" />
     <Content Include="Scripts\jQuery\FixedColumns.js" />
     <Content Include="Scripts\jQuery\FixedHeader.js" />
-    <Content Include="Scripts\jQuery\jquery-1.9.1.min.js.map">
-      <DependentUpon>jquery-1.9.1.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jQuery\jquery-ui-1.10.0.custom.min.js.map">
       <DependentUpon>jquery-ui-1.10.0.custom.js</DependentUpon>
     </Content>
@@ -1021,7 +1044,7 @@
     <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MembershipEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\Notes.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MembershipNotes.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\ExtraValuesAdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
@@ -1048,7 +1071,7 @@
     <Content Include="Areas\People\Views\Person\Emails\Failed.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\Documents.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MembershipDocuments.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Entry.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
@@ -1065,6 +1088,28 @@
     <Content Include="Areas\Manage\Views\EmailsView\View.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\ExtraValuesStandard.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\Attendance.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\AttendanceDetail.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ChurchAttendance.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ChurchAttendance2.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ExtraValueData.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ExtraValues.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid2.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\Meetings.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ShirtSizes.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\VitalStats.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\WeeklyDecisions.cshtml" />
+    <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
+    <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
+    <Content Include="Areas\Reports\Web.config" />
+    <Content Include="Areas\Reports\Views\Export\FamilyMembers.cshtml" />
+    <Content Include="Areas\Reports\Views\Export\Picture.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditorTemplates\MultiSelect.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditorTemplates\CodeSelect.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1203,9 +1248,6 @@
     <Content Include="Scripts\Bootstrap\bootstrap-editable.min.js.map">
       <DependentUpon>bootstrap-editable.js</DependentUpon>
     </Content>
-    <Content Include="Docs\vvv.md" />
-    <Content Include="Docs\test.md" />
-    <Content Include="Docs\ideas.md" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\jQuery\jquery.multiSelect.min.js.map">
       <DependentUpon>jquery.multiSelect.js</DependentUpon>
@@ -1547,7 +1589,7 @@
     <Content Include="images\Home.png" />
     <Content Include="images\RapidSSL_SEAL-90x50.gif" />
     <Content Include="images\unknownsm.jpg" />
-    <Content Include="MembershipAutomation2.py" />
+    <Content Include="Content\MembershipAutomation2.py" />
     <Content Include="Scripts\Bootstrap\bootstrap.js" />
     <Content Include="Scripts\Bootstrap\bootstrap.min.js" />
     <Content Include="Scripts\Chosen\chosen.jquery.js" />
@@ -1579,7 +1621,6 @@
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
     <None Include="Scripts\jQuery\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.js" />
-    <Content Include="Scripts\jQuery\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jQuery\jquery-migrate-1.1.1.js" />
     <Content Include="Scripts\Volunteer\Calendar2.min.js">
       <DependentUpon>Calendar2.js</DependentUpon>
@@ -1599,7 +1640,6 @@
     <Compile Include="Code\UnallowedCodeAttribute.cs" />
     <Compile Include="Code\Word2Pdf.cs" />
     <Compile Include="Areas\Finance\Controllers\QuickBooksController.cs" />
-    <None Include="Docs\dave.md" />
     <Compile Include="Controllers\SupportController.cs" />
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />
@@ -1711,13 +1751,6 @@
     <Compile Include="Contributions\Deposit.aspx.designer.cs">
       <DependentUpon>Deposit.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Contributions\GLExtract.aspx.cs">
-      <DependentUpon>GLExtract.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Contributions\GLExtract.aspx.designer.cs">
-      <DependentUpon>GLExtract.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Contributions\Reports\JournalDetails.aspx.cs">
       <DependentUpon>JournalDetails.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1767,31 +1800,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Report\DecisionSummary.aspx.cs">
-      <DependentUpon>DecisionSummary.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Report\DecisionSummary.aspx.designer.cs">
-      <DependentUpon>DecisionSummary.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Report\Reports.Master.cs">
-      <DependentUpon>Reports.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Report\Reports.Master.designer.cs">
-      <DependentUpon>Reports.Master</DependentUpon>
-    </Compile>
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Site.Master.cs">
-      <DependentUpon>Site.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Site.Master.designer.cs">
-      <DependentUpon>Site.Master</DependentUpon>
     </Compile>
     <Compile Include="UploadPicture.aspx.cs">
       <DependentUpon>UploadPicture.aspx</DependentUpon>
@@ -1799,13 +1811,6 @@
     </Compile>
     <Compile Include="UploadPicture.aspx.designer.cs">
       <DependentUpon>UploadPicture.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\GridPager.ascx.cs">
-      <DependentUpon>GridPager.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UserControls\GridPager.ascx.designer.cs">
-      <DependentUpon>GridPager.ascx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Resource1.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -1879,6 +1884,7 @@
     <Content Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\EmailAddress.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Phone.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditorTemplates\DropDown.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1891,12 +1897,9 @@
     <Content Include="Scripts\jQuery\jquery.textarea.js" />
     <Content Include="Scripts\jQuery\jquery.transpose.js" />
     <Content Include="Scripts\jQuery\jquery.transpose.min.js" />
-    <Content Include="constants.py" />
-    <Content Include="Tutorials\_Home_Index_Menu.cshtml" />
-    <Content Include="Tutorials\_Home_Index.cshtml" />
-    <Content Include="EmailTemplates\BasicNewsletter.htm" />
-    <Content Include="EmailTemplates\BasicWithHeader.htm" />
-    <Content Include="EmailTemplates\Plain.htm" />
+    <Content Include="Content\constants.py" />
+    <Content Include="Content\Tutorials\_Home_Index_Menu.cshtml" />
+    <Content Include="Content\Tutorials\_Home_Index.cshtml" />
     <Content Include="Errors\DatabaseNotFound.aspx" />
     <Content Include="Errors\SiteDisabled.htm" />
     <Content Include="images\arrowdnup.png" />
@@ -2109,7 +2112,7 @@
     <Content Include="Areas\Search\Views\SavedQuery\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Results.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Row.cshtml" />
-    <Content Include="Areas\Search\Views\Query\CodesDropdown.cshtml" />
+    <Content Include="Areas\Search\Views\Query\EditorTemplates\CodesDropdown.cshtml" />
     <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
     <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
     <Content Include="Areas\Manage\Views\Display\ContentView.cshtml" />
@@ -2189,7 +2192,7 @@
     <Content Include="Content\less\variables.less" />
     <Content Include="Content\less\wells.less" />
     <None Include="images\LibraryTemplate.xls" />
-    <Content Include="Tutorials\_SearchAdd_Index.cshtml" />
+    <Content Include="Content\Tutorials\_SearchAdd_Index.cshtml" />
     <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <Content Include="Scripts\Volunteer\volunteering.js" />
     <Content Include="UploadPicture.aspx" />
@@ -2743,7 +2746,6 @@
     </Content>
     <Content Include="Areas\Main\Views\OrgChildren\Rows.cshtml">
     </Content>
-    <Content Include="Admin\ToggleOrgLeadersOnly.ashx" />
     <Content Include="Areas\Main\Views\Person\ChangesGrid.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\ContactSearch\Index.cshtml">
@@ -2853,7 +2855,6 @@
     <Content Include="images\loading.gif" />
     <Content Include="images\navigation-shadow.png" />
     <Content Include="Contributions\Deposit.aspx" />
-    <Content Include="Contributions\GLExtract.aspx" />
     <Content Include="Contributions\Reports\JournalDetails.aspx" />
     <Content Include="Contributions\Reports\TotalsByFundRange.aspx" />
     <Content Include="images\1pix.gif" />
@@ -2878,9 +2879,6 @@
     <Content Include="images\tags.png" />
     <Content Include="images\unknown.jpg" />
     <Content Include="images\work.gif" />
-    <Content Include="Report\DecisionSummary.aspx" />
-    <Content Include="Site.Master" />
-    <Content Include="UserControls\GridPager.ascx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CmsData\CmsData.csproj">
@@ -2897,7 +2895,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Admin\Web.config" />
     <Content Include="images\attention48.png" />
     <Content Include="images\blackredgradient.png" />
     <Content Include="images\check48.png" />
@@ -2929,11 +2926,9 @@
     <Content Include="Scripts\People\Person.js" />
     <Content Include="Views\Shared\bvorg.Master" />
     <Content Include="Views\Shared\Site3b.Master" />
-    <Content Include="Report\Reports.Master" />
     <Content Include="Scripts\js\ExportToolBar.js" />
     <Content Include="Scripts\Search\QueryBuilder.js" />
     <Content Include="Scripts\js\Task.js" />
-    <Content Include="StaffOnly\Web.config" />
     <Content Include="Views\Shared\LogOnUserControl.ascx" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -2954,14 +2949,12 @@
     <Folder Include="Areas\Org\Views\Shared\" />
     <Folder Include="Areas\People\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
+    <Folder Include="Areas\Reports\Models\" />
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />
     <Folder Include="Models\PersonPage\" />
     <Folder Include="Scripts\Other\" />
     <Folder Include="Upload\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
@@ -2969,7 +2962,7 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target> -->
+  </Target>-->
   <!--<UsingTask TaskName="Microsoft.Web.Mvc.Build.CreateAreaManifest" AssemblyName="Microsoft.Web.Mvc.Build, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
   <UsingTask TaskName="Microsoft.Web.Mvc.Build.CopyAreaManifests" AssemblyName="Microsoft.Web.Mvc.Build, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
   <Target Name="AfterBuild" DependsOnTargets="AfterBuildCompiler">
@@ -2987,8 +2980,8 @@
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>-->
   <Target Name="AfterClean">
-    <RemoveDir Directories="obj\bvcms2\" />
-    <RemoveDir Directories="obj\Debug\" />
+    <RemoveDir Directories="obj\bvcms2" />
+    <RemoveDir Directories="obj\Debug" />
   </Target>
   <ProjectExtensions>
     <VisualStudio>

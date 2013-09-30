@@ -33,8 +33,8 @@ namespace CmsWeb.Areas.Main.Models.Report
         private DateTime dt;
         private PdfContentByte dc;
 
-        private int? qid;
-        public WeeklyAttendanceResult(int? id)
+        private object qid;
+        public WeeklyAttendanceResult(object id)
         {
             qid = id;
         }
@@ -54,9 +54,9 @@ namespace CmsWeb.Areas.Main.Models.Report
             dc = w.DirectContent;
 
             StartPageSet();
-            if (qid.HasValue) // print using a query
+            if (qid != null) // print using a query
             {
-                var q = from p in DbUtil.Db.PeopleQuery(qid.Value)
+                var q = from p in DbUtil.Db.PeopleQuery(qid)
                         orderby p.Name2
                         select p;
                 foreach (var p in q)

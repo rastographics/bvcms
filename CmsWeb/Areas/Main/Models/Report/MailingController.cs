@@ -7,14 +7,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using CmsData;
 using UtilityExtensions;
-using System.ComponentModel;
 using System.Collections;
-using System.Threading;
-using System.Web;
 
 namespace CmsWeb.Models
 {
@@ -22,7 +18,7 @@ namespace CmsWeb.Models
     {
         public bool UseTitles { get; set; }
 
-        public IEnumerable<MailingInfo> FetchIndividualList(string sortExpression, int QueryId)
+        public IEnumerable<MailingInfo> FetchIndividualList(string sortExpression, object QueryId)
         {
             var q = DbUtil.Db.PeopleQuery(QueryId);
             var q2 = from p in q
@@ -47,7 +43,7 @@ namespace CmsWeb.Models
             q2 = ApplySort(q2, sortExpression);
             return q2;
         }
-        public IEnumerable<MailingInfo> GroupByAddress(int QueryId)
+        public IEnumerable<MailingInfo> GroupByAddress(object QueryId)
         {
             var q = DbUtil.Db.PeopleQuery(QueryId);
             var q2 = from p in q
@@ -76,12 +72,12 @@ namespace CmsWeb.Models
         }
 
         private int _FamilyCount;
-        public int FamilyCount(int startRowIndex, int maximumRows, string sortExpression, int QueryId)
+        public int FamilyCount(int startRowIndex, int maximumRows, string sortExpression, object QueryId)
         {
             return _FamilyCount;
         }
 
-        public IEnumerable<MailingInfo> FetchFamilyList(int startRowIndex, int maximumRows, string sortExpression, int QueryId)
+        public IEnumerable<MailingInfo> FetchFamilyList(int startRowIndex, int maximumRows, string sortExpression, object QueryId)
         {
             var q1 = DbUtil.Db.PeopleQuery(QueryId);
             var q = from f in DbUtil.Db.Families
@@ -120,7 +116,7 @@ namespace CmsWeb.Models
                 return q2;
             return q2.Skip(startRowIndex).Take(maximumRows);
         }
-        public IEnumerable<MailingInfo> FetchFamilyMembers(string sortExpression, int QueryId)
+        public IEnumerable<MailingInfo> FetchFamilyMembers(string sortExpression, object QueryId)
         {
 			var q = DbUtil.Db.PeopleQuery(QueryId);
 			var q2 = from pp in q
@@ -147,14 +143,14 @@ namespace CmsWeb.Models
             q2 = ApplySort(q2, sortExpression);
 			return q2;
         }
-        public IEnumerable<MailingInfo> FetchFamilyList(string sortExpression, int QueryId)
+        public IEnumerable<MailingInfo> FetchFamilyList(string sortExpression, object QueryId)
         {
             int startRowIndex = 0;
             int maximumRows = 0;
             return FetchFamilyList(startRowIndex, maximumRows, sortExpression, QueryId);
         }
 
-        public IEnumerable<MailingInfo> FetchParentsOfList(string sortExpression, int QueryId)
+        public IEnumerable<MailingInfo> FetchParentsOfList(string sortExpression, object QueryId)
         {
             var q = DbUtil.Db.PeopleQuery(QueryId);
             var q2 = from p in q
@@ -194,7 +190,7 @@ namespace CmsWeb.Models
             return q1;
         }
 
-        public IEnumerable<MailingInfo> FetchCouplesEitherList(string sortExpression, int QueryId)
+        public IEnumerable<MailingInfo> FetchCouplesEitherList(string sortExpression, object QueryId)
         {
             var q = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
             var q1 = EliminateCoupleDoublets(q);
@@ -224,7 +220,7 @@ namespace CmsWeb.Models
             return q2;
         }
 
-        public IEnumerable<MailingInfo> FetchCouplesBothList(string sortExpression, int QueryId)
+        public IEnumerable<MailingInfo> FetchCouplesBothList(string sortExpression, object QueryId)
         {
             var q = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
             var q1 = EliminateCoupleDoublets(q);
@@ -270,7 +266,7 @@ namespace CmsWeb.Models
             return query;
         }
 
-        public IEnumerable FetchExcelCouplesBoth(int QueryId, int maximumRows)
+        public IEnumerable FetchExcelCouplesBoth(object QueryId, int maximumRows)
         {
             var q = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
             var q1 = EliminateCoupleDoublets(q);
@@ -303,7 +299,7 @@ namespace CmsWeb.Models
             return q2.Take(maximumRows);
         }
 
-        public IEnumerable FetchExcelCouplesEither(int QueryId, int maximumRows)
+        public IEnumerable FetchExcelCouplesEither(object QueryId, int maximumRows)
         {
             var q = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
             var q1 = EliminateCoupleDoublets(q);
@@ -337,7 +333,7 @@ namespace CmsWeb.Models
             return q2.Take(maximumRows);
         }
 
-        public IEnumerable FetchExcelFamily(int QueryId, int maximumRows)
+        public IEnumerable FetchExcelFamily(object QueryId, int maximumRows)
         {
             var qp = DbUtil.Db.PeopleQuery(QueryId);
 
@@ -367,10 +363,12 @@ namespace CmsWeb.Models
                         City = h.PrimaryCity,
                         State = h.PrimaryState,
                         Zip = h.PrimaryZip,
+                        Email = h.EmailAddress,
+                        SpouseEmail = spouse.EmailAddress
                     }).Take(maximumRows);
         }
 
-        public IEnumerable FetchExcelParents(int QueryId, int maximumRows)
+        public IEnumerable FetchExcelParents(object QueryId, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(QueryId);
             var q2 = from p in q

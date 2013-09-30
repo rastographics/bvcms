@@ -242,6 +242,10 @@ namespace CmsWeb.Areas.People.Models
         public void UpdatePerson()
         {
             var p = DbUtil.Db.LoadPersonById(PeopleId);
+
+            if (Grade == null && p.Grade == 0) // special case to fix bug
+                p.Grade = null;
+
             var changes = this.CopyPropertiesTo(p);
             p.LogChanges(DbUtil.Db, changes);
             if (p.DeceasedDateChanged)

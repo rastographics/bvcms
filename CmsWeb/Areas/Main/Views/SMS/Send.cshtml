@@ -1,7 +1,8 @@
 ﻿@{
     ViewBag.Title = "Send";
     Layout = "~/Views/Shared/SiteLayout.cshtml";
+    var url = ViewBag.QBID is Guid ? "/Email/Index2/" + ViewBag.QBID : "/Email/Index/" + ViewBag.QBID;
 }
 
 <h2>SMS Messages Sent</h2>
-<a href="/Email/Index/@ViewBag.QBID?subj=@Server.UrlEncode(ViewBag.sTitle)&body=@Server.UrlEncode(ViewBag.sMessage)">Click Here</a> to send an e-mail to the same people.<br />
+<a href="@url?subj=@Server.UrlEncode(ViewBag.sTitle)&body=@Server.UrlEncode(ViewBag.sMessage)">Click Here</a> to send an e-mail to the same people.<br />

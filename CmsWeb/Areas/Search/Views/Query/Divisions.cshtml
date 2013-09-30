@@ -1,2 +1,3 @@
-﻿@model int
-@Html.DropDownList("Division", CmsWeb.Areas.Search.Models.QueryModel.Divisions(Model))
+﻿@using CmsWeb.Areas.Search.Models
+@model int?
+@Html.DropDownList("Division", QueryModel.Divisions(Model), new { style="display:none" })

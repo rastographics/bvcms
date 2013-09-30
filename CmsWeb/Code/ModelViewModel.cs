@@ -15,7 +15,7 @@ namespace CmsWeb.Code
     public class PhoneNumberAttribute : Attribute { }
     public class TrackChangesAttribute : Attribute { }
     public class NoUpdate : Attribute { }
-    public class SkipField : Attribute { }
+    public class SkipFieldOnCopyProperties : Attribute { }
     public class RemoveNA : Attribute { }
 
     public class FieldInfoAttribute : Attribute
@@ -45,7 +45,7 @@ namespace CmsWeb.Code
                     continue;
                 if (excludefields.HasValue() && exclude.Contains(vm.Name))
                     continue;
-                if (vm.HasAttribute<SkipField>())
+                if (vm.HasAttribute<SkipFieldOnCopyProperties>())
                     continue;
 
                 if (typeof(IModelViewModelObject).IsAssignableFrom(vm.PropertyType))

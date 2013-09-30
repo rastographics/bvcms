@@ -40,10 +40,10 @@ namespace CmsWeb.Areas.Search.Models
 
             var u = DbUtil.Db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
-            var isAdminFinance = roles.Contains("admin") && roles.Contains("finance") && SearchParameters.Private;
+            var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
             var q = from c in DbUtil.Db.Contacts
-                    where (c.LimitToRole ?? "") == ""  || roles.Contains(c.LimitToRole) || isAdminFinance
-                    select c;
+                   where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
+                   select c;
 
             if (ppl != null && Util.UserPeopleId != null)
                 q = from c in q

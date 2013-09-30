@@ -251,7 +251,7 @@
         });
         return false;
     });
-    $("#tasks,#contacts").on("click", 'a.add-task-contact', function (ev) {
+    $("#tasksabout,#contactsreceived,#contactsmade").on("click", 'a.add-task-contact', function (ev) {
         ev.preventDefault();
         var link = $(this).attr("href");
         bootbox.confirm("Are you sure?", function (result) {

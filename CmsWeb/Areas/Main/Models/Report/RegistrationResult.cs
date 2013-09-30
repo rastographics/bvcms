@@ -38,9 +38,9 @@ namespace CmsWeb.Areas.Main.Models.Report
 		private DateTime dt;
 		private PdfContentByte dc;
 
-		private int? qid;
+		private object qid;
 		private int? oid;
-		public RegistrationResult(int? id, int? oid)
+		public RegistrationResult(object id, int? oid)
 		{
 			qid = id;
 			this.oid = oid;
@@ -66,11 +66,11 @@ namespace CmsWeb.Areas.Main.Models.Report
 			doc.Open();
 			dc = w.DirectContent;
 
-			if (qid.HasValue) // print using a query
+			if (qid != null) // print using a query
 			{
 				var re = new Regex("((?<label>.*?:) (?<value>.*$))|(?<value0>.*$)", RegexOptions.Multiline);
 				pageEvents.StartPageSet("Registration Report: {0:d}".Fmt(dt));
-				var q2 = DbUtil.Db.PeopleQuery(qid.Value);
+				var q2 = DbUtil.Db.PeopleQuery(qid);
 				var q = from p in q2
 						orderby p.Name2
 						select new

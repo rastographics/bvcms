@@ -22,18 +22,10 @@
             margin-bottom: 20px;
         }
     </style>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="/Content/js/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="/Content/js/jquery.gmap.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script src="/Scripts/jQuery/jquery-1.9.1.min.js"></script>
+    <script src="/Scripts/js/sgmap.js"></script>
     @Html.Raw(Html.Json("markers", Model.Locations()))
-    <script type="text/javascript">
-        $(function () {
-            $('#map').gMap({
-                zoom: 13,
-                markers: markers
-            });
-        });
-    </script>
 </head>
 <body>
 <h2>Prototype BVCMS Small Group Mapper and selector</h2>

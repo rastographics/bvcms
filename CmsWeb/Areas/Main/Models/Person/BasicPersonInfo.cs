@@ -158,7 +158,10 @@ namespace CmsWeb.Models.PersonPage
             p.UpdateValue(psb, "LastName", Last);
             p.UpdateValue(psb, "AltName", AltName);
             p.UpdateValue(psb, "GenderId", GenderId);
-            p.UpdateValue(psb, "Grade", Grade.ToInt2());
+            if (Grade == null && p.Grade == 0)
+                p.Grade = null;
+            else
+                p.UpdateValue(psb, "Grade", Grade.ToInt2());
             p.UpdateValue(psb, "CellPhone", CellPhone.GetDigits());
             p.Family.UpdateValue(fsb, "HomePhone", HomePhone.GetDigits());
             p.UpdateValue(psb, "MaidenName", Maiden);

@@ -98,6 +98,16 @@ namespace CmsData
                                c.EndDate,
                                CompType,
                                c.TextValue.ToInt());
+                case QueryType.AttendTypeCodes:
+                    return Expressions.AttendTypeIds(parm,
+                               c.Program,
+                               c.Division,
+                               c.Organization,
+							   c.OrgType ?? 0,
+                               c.Schedule,
+							   c.Campus ?? 0,
+                               CompType,
+                               c.CodeIntIds);
                 case QueryType.AttendTypeAsOf:
                     return Expressions.AttendanceTypeAsOf(parm,
                                c.StartDate,
@@ -643,6 +653,10 @@ namespace CmsData
                                c.Division,
                                c.Organization,
                                CompType, c.TextValue);
+                case QueryType.SpouseHasEmail:
+                    return Expressions.SpouseHasEmail(Db, parm,
+                        CompType,
+                        c.CodeIds == "1");
                 case QueryType.StatusFlag:
                     return Expressions.StatusFlag(parm,
                                CompType,

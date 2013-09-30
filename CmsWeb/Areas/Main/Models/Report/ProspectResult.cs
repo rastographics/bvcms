@@ -31,8 +31,8 @@ namespace CmsWeb.Areas.Main.Models.Report
 		private bool ShowForm;
 		private bool AlphaSort;
 
-		private int? qid;
-		public ProspectResult(int? id, bool ShowForm, bool Alpha)
+		private object qid;
+		public ProspectResult(object id, bool ShowForm, bool Alpha)
 		{
 			qid = id;
 			this.ShowForm = ShowForm;
@@ -143,11 +143,11 @@ namespace CmsWeb.Areas.Main.Models.Report
             dc = w.DirectContent;
             ct = new ColumnText(dc);
 
-            if (!qid.HasValue)
+            pageEvents.StartPageSet("Outreach/Inreach Report: {0:d}".Fmt(dt));
+            if (qid == null)
                 doc.Add(new Phrase("no data"));
             else
             {
-                pageEvents.StartPageSet("Outreach/Inreach Report: {0:d}".Fmt(dt));
                 IQueryable<ProspectInfo> q = GetProspectInfo(AlphaSort);
 				if (!q.Any())
 					doc.Add(new Phrase("no data"));
@@ -329,7 +329,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 		private IQueryable<ProspectInfo> GetProspectInfo(bool Alpha = false)
 		{
 			var Db = DbUtil.Db;
-			var q = Db.PeopleQuery(qid.Value);
+			var q = Db.PeopleQuery(qid);
 			if (Alpha)
 				q = q.OrderBy(pp => pp.Name2);
 			else

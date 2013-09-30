@@ -22,9 +22,9 @@ namespace CmsWeb.Areas.Main.Models.Directories
 	public class CompactDir : ActionResult
 	{
 		IEnumerable<CompactFamilyInfo> q;
-		public CompactDir(int? qid)
+		public CompactDir(object qid)
 		{
-			var q0 = DbUtil.Db.PeopleQuery(qid.Value);
+			var q0 = DbUtil.Db.PeopleQuery(qid);
 		    var tag = DbUtil.Db.PopulateTemporaryTag(q0.Select(vv => vv.PeopleId));
 			q = from p in tag.People(DbUtil.Db)
 				let person = p

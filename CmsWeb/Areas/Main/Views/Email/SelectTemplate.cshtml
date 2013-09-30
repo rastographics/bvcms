@@ -8,6 +8,7 @@
     Layout = "~/Views/Shared/SiteLayout.cshtml";
     const int WRAP_COUNT = 3;
     var wrapAt = WRAP_COUNT;
+    var url = Model.queryid is Guid ? "/Email/Index2/" + Model.queryid : "/Email/Index/" + Model.queryid;
 }
 @section scripts
 {
@@ -97,11 +98,11 @@
 	</td>
 	<td width="50%" class="top">
 
-		<center>
-		<b>Use a Template</b>
-		<hr />
-		</center>
-	    <form id="selectTemplate" action="/Email/Index/@Model.queryid" method="post">
+	    <center>
+	        <b>Use a Template</b>
+	        <hr />
+	    </center>
+	    <form id="selectTemplate" action="@url" method="post">
 	        @Html.Hidden("templateID", "0")
 	        @Html.Hidden("parents", @Model.wantparents)
 	    </form>

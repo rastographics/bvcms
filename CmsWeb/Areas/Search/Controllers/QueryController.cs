@@ -50,8 +50,8 @@ namespace CmsWeb.Areas.Search.Controllers
             ViewBag.OnQueryBuilder = "true";
             ViewBag.TagAction = "/Query/TagAll/";
             ViewBag.UnTagAction = "/Query/UnTagAll/";
-            ViewBag.Contact = "/Query/AddContact/";
-            ViewBag.Tasks = "/Query/AddTasks/";
+            ViewBag.AddContact = "/Query/AddContact/";
+            ViewBag.AddTasks = "/Query/AddTasks/";
             ViewBag.GearSpan = "span12";
             ViewBag.queryid = m.TopClause.Id;
         }
@@ -93,11 +93,10 @@ namespace CmsWeb.Areas.Search.Controllers
             m.InsertGroupAbove();
             return View("Conditions", m);
         }
-        [POST("Query/CodesDropdown/")]
-        public ActionResult CodesDropdown(QueryModel m)
+        [POST("Query/CodeSelect/")]
+        public ActionResult CodeSelect(QueryModel m)
         {
-            m.SetCodes();
-            return View(m);
+            return View("EditorTemplates/CodeSelect", m);
         }
         [POST("Query/SelectCondition/{id:guid}")]
         public ActionResult SelectCondition(Guid id, string conditionName)
@@ -105,7 +104,6 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = new QueryModel { SelectedId = id };
             m.LoadQuery();
             m.ConditionName = conditionName;
-            m.SetVisibility();
             m.Comparison = "Equal";
             m.UpdateCondition();
             return View("EditCondition", m);
@@ -268,7 +266,7 @@ namespace CmsWeb.Areas.Search.Controllers
             DbUtil.Db.TagCurrent();
             return Content("Manage");
         }
-        [HttpPost]
+        [POST("Query/UnTagAll")]
         public ContentResult UnTagAll()
         {
             var m = new QueryModel();
@@ -276,7 +274,7 @@ namespace CmsWeb.Areas.Search.Controllers
             m.UnTagAll();
             return Content("Add");
         }
-        [HttpPost]
+        [POST("Query/AddContact")]
         public ContentResult AddContact()
         {
             var m = new QueryModel();
@@ -284,14 +282,12 @@ namespace CmsWeb.Areas.Search.Controllers
             var cid = Contact.AddContact(m.TopClause.Id);
             return Content("/Contact/" + cid);
         }
-        [HttpPost]
+        [POST("Query/AddTasks")]
         public ActionResult AddTasks()
         {
             var m = new QueryModel();
             m.LoadQuery();
-            var c = new ContentResult();
-            c.Content = Task.AddTasks(m.TopClause.Id).ToString();
-            return c;
+            return Content(Task.AddTasks(m.TopClause.Id).ToString());
         }
 
         public ActionResult Export()

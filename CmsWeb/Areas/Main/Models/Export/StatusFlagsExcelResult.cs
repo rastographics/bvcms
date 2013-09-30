@@ -1,24 +1,16 @@
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Xml;
 using System.Web.Mvc;
-using System.Xml.Linq;
 using UtilityExtensions;
-using System.Linq;
 using CmsData;
 using System.Web.UI.WebControls;
 using System.Web.UI;
-using System.Linq.Dynamic;
-using CmsWeb.Areas.Main.Controllers;
-using CmsWeb.Areas.Manage.Controllers;
 
 namespace CmsWeb.Models
 {
     public class StatusFlagsExcelResult : ActionResult
     {
-        private int qid;
-        public StatusFlagsExcelResult(int qid)
+        private object qid;
+        public StatusFlagsExcelResult(object qid)
         {
             this.qid = qid;
         }

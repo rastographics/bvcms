@@ -410,7 +410,7 @@ namespace CmsWeb.Code
         public SelectList PositionInFamilySelectList() { return PositionInFamilyList().ToSelect(); }
 
 
-        public List<CodeValueItem> PmmLabels()
+        public static List<CodeValueItem> PmmLabels()
         {
             var list = (from lab in DbUtil.Db.BackgroundCheckLabels
                         select new CodeValueItem()

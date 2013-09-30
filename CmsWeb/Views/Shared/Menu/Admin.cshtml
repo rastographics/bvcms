@@ -24,7 +24,6 @@
 
                             <li class="header"></li>
                             @Helper.LiAnchorLink("Statements (All)", "/Statements/", true, "_blank")
-                            @Helper.LiAnchorLink("GL Extract", "/Contributions/GLExtract.aspx")
                             @Helper.LiAnchorLink("Totals by Fund", "/FinanceReports/TotalsByFund/")
                             @Helper.LiAnchorLink("Donor Totals by Range", "/FinanceReports/DonorTotalsByRange/")
                             @Helper.LiAnchorLink("Totals by Fund Age Range", "/Contributions/Reports/TotalsByFundAgeRange.aspx", true, "_blank")
@@ -66,9 +65,6 @@
     @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
     @Helper.LiAnchorLink("System", "/Setup/Setting/", admin)
     @Helper.LiAnchorLink("Twilio Setup", "/Setup/Twilio/", admin)
-    @Helper.LiAnchorLink(Util2.OrgLeadersOnly ?
-        "OrgLeadersOnly is on" : "OrgLeadersOnly is off",
-        "/Admin/ToggleOrgLeadersOnly.ashx", admin)
 }
 @helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
 {

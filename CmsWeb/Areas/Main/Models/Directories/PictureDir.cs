@@ -59,10 +59,10 @@ namespace CmsWeb.Areas.Main.Models.Directories
 	{
 		private IEnumerable<IndividualInfo> q;
 
-		public PictureDir(int? qid)
+		public PictureDir(object qid)
 		{
 			var Db = DbUtil.Db;
-			var q0 = Db.PeopleQuery(qid.Value);
+			var q0 = Db.PeopleQuery(qid);
 			q = from p in q0
 					let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
 					let spouse = Db.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
