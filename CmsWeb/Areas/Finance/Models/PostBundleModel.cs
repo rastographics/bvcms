@@ -471,6 +471,10 @@ namespace CmsWeb.Models
         }
         public static int? BatchProcess(string text, DateTime date, int? fundid)
         {
+            if (DbUtil.Db.Setting("BankDepositFormat", "none") == "fcchudson")
+                using (var csv = new CsvReader(new StringReader(text), true, '\t'))
+                    return BatchProcessFcchudson(csv, date, fundid);
+            
             if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Redeemer")
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessRedeemer(csv, date, fundid);
@@ -519,6 +523,45 @@ namespace CmsWeb.Models
             }
         }
 
+        private static int? BatchProcessFcchudson(CsvReader csv, DateTime date, int? fundid)
+        {
+            var cols = csv.GetFieldHeaders();
+            BundleHeader bh = null;
+            var firstfund = FirstFundId();
+            var fund = fundid ?? firstfund;
+
+            var list = new List<depositRecord>();
+            while (csv.ReadNextRecord())
+                list.Add(new depositRecord()
+                {
+                    batch = csv[0],
+                    routing = csv[1],
+                    account = csv[2],
+                    amount = csv[3],
+                    checkno = csv[4],
+                    type = csv[5],
+                });
+            var q = from r in list
+                    where r.type == "Check"
+                    select r;
+            var prevbatch = "";
+            foreach (var r in q)
+            {
+                if (r.batch != prevbatch)
+                {
+                    if (bh != null)
+                        FinishBundle(bh);
+                    bh = GetBundleHeader(r.batch.ToDate().Value, DateTime.Now);
+                    prevbatch = r.batch;
+                }
+                var bd = AddContributionDetail(date, fund, r.amount, r.checkno, r.routing, r.account);
+                bh.BundleDetails.Add(bd);
+            }
+            if (bh == null)
+                return null;
+            FinishBundle(bh);
+            return bh.BundleHeaderId;
+        }
         private static int? BatchProcessRedeemer(CsvReader csv, DateTime date, int? fundid)
         {
             var cols = csv.GetFieldHeaders();
@@ -591,7 +634,7 @@ namespace CmsWeb.Models
             public string account { get; set; }
             public string checkno { get; set; }
             public string amount { get; set; }
-
+            public string type { get; set; }
         }
 
         private static int? BatchProcessEbcfamily(CsvReader csv, DateTime date, int? fundid)
