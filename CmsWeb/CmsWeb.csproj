@@ -303,6 +303,7 @@
     <Compile Include="Areas\People\Models\Person\Emails\EmailReceivedModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailSentModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Profile\CommentsModel.cs" />
     <Compile Include="Areas\Reports\Controllers\ReportsController.cs" />
     <Compile Include="Areas\Search\Controllers\ContactSearchController.cs" />
     <Compile Include="Areas\People\Controllers\Person\Emails.cs" />
@@ -386,10 +387,10 @@
     <Compile Include="Areas\People\Models\Person\GrowthInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\MemberInfo.cs">
+    <Compile Include="Areas\People\Models\Person\Profile\MemberInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\MemberNotesInfo.cs">
+    <Compile Include="Areas\People\Models\Person\Profile\MemberNotesModel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\People\Models\Person\PersonModel.cs">
@@ -1045,7 +1046,7 @@
     <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MembershipEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MembershipNotes.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MemberNotes.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\ExtraValuesAdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
@@ -1072,7 +1073,7 @@
     <Content Include="Areas\People\Views\Person\Emails\Failed.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MembershipDocuments.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MemberDocuments.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Entry.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
@@ -1111,6 +1112,9 @@
     <Content Include="Areas\Reports\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\MultiSelect.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\CodeSelect.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Comments.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\CommentsEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MemberNotesEdit.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -2140,7 +2144,7 @@
     <Content Include="Areas\People\Views\Person\DisplayTemplates\EmailInfo.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\ProfileHeader.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MembershipDisplay.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Membership.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />
     <Content Include="Areas\Main\Views\OrgSearch\OrganizationStructure.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />

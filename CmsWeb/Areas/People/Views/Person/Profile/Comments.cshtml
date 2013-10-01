@@ -1,0 +1,15 @@
+﻿@model CmsWeb.Areas.People.Models.CommentsModel
+<form class="form form-horizontal margin-top ajax span12" method="post">
+    <fieldset class="left-gutter">
+        <legend>Comments</legend>
+        <div class="margin-top">
+            @Html.DisplayFor(m => m.Comments)
+        </div>
+        <div>
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Person2/CommentsEdit/@Model.PeopleId" class="pull-right btn btn-primary ajax">Edit</a>
+            }
+        </div>
+    </fieldset>
+</form>

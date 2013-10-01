@@ -1,0 +1,14 @@
+﻿@model CmsWeb.Areas.People.Models.CommentsModel
+<form class="form form-horizontal margin-top ajax span12" method="post">
+    @Html.HiddenFor(m => m.PeopleId)
+    <fieldset class="left-gutter">
+        <legend>Comments</legend>
+        <div class="margin-top">
+            @Html.EditorFor(m => m.Comments)
+        </div>
+        <div class="pull-right">
+            <a href="/Person2/Comments/@Model.PeopleId" class="btn ajax">Cancel</a>
+            <a href="/Person2/CommentsUpdate" class="btn btn-primary ajax">Save</a>
+        </div>
+    </fieldset>
+</form>

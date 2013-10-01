@@ -4,17 +4,14 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
-using Thinktecture.IdentityModel.Extensions;
-using UtilityExtensions;
 using System.Data.Linq;
-using System.Text;
 using CmsWeb.Code;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class MemberInfo
     {
-        public CmsData.Person person;
+        public Person person;
         private readonly CMSDataContext Db;
 
         [NoUpdate]
@@ -82,18 +79,6 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Prev Church"), StringLength(60)]
         public string OtherPreviousChurch { get; set; }
 
-        private int _id;
-        public int Id
-        {
-            get { return _id; }
-            set
-            {
-                _id = value;
-                if (_id == 0)
-                    return;
-                person = Db.LoadPersonById(value);
-            }
-        }
         public MemberInfo()
         {
             Db = DbUtil.Db;
@@ -101,7 +86,7 @@ namespace CmsWeb.Areas.People.Models
         public MemberInfo(int id)
             : this()
         {
-            Id = id;
+            person = Db.LoadPersonById(id);
             if (person == null)
                 return;
             this.CopyPropertiesFrom(person);

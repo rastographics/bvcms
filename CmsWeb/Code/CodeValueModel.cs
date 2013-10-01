@@ -387,6 +387,7 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> ResCodeList() { return ResidentCodesWithZero(); }
         public IEnumerable<CodeValueItem> StateList() { return GetStateList(); }
         public IEnumerable<CodeValueItem> TitleList() { return TitleCodes(); }
+        public IEnumerable<CodeValueItem> LetterStatusList() { return LetterStatusCodes(); }
 
         public SelectList MinistrySelectList() { return MinistryList().ToSelect(); }
         public SelectList ContactReasonSelectList() { return ContactReasonCodes().ToSelect(); }
