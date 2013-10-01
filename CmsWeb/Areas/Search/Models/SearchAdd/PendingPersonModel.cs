@@ -56,7 +56,6 @@ namespace CmsWeb.Areas.Search.Models
 
         public CodeInfo Campus { get; set; }
 
-        [UnallowedCode("0", ErrorMessage = "specify an Entry Point")]
         public CodeInfo EntryPoint { get; set; }
 
         [StringLength(20), RemoveNA]
