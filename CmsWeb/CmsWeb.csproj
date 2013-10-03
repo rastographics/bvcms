@@ -297,29 +297,32 @@
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
-    <Compile Include="Areas\People\Controllers\Person\RegistrationsModel.cs" />
+    <Compile Include="Areas\People\Models\Person\ExtraValues\ExtraValue.cs" />
+    <Compile Include="Areas\People\Models\Person\ExtraValues\StandardExtraValues.cs" />
+    <Compile Include="Areas\People\Models\Person\RegistrationsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailTransactionalModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailRow.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailReceivedModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailSentModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailModel.cs" />
     <Compile Include="Areas\People\Models\Person\Profile\CommentsModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Profile\MemberDocs.cs" />
     <Compile Include="Areas\Reports\Controllers\ReportsController.cs" />
     <Compile Include="Areas\Search\Controllers\ContactSearchController.cs" />
-    <Compile Include="Areas\People\Controllers\Person\Emails.cs" />
+    <Compile Include="Areas\People\Controllers\Person\EmailsController.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonController.cs" />
     <Compile Include="Areas\Org\Controllers\VolunteersController.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchAddController.cs" />
-    <Compile Include="Areas\People\Controllers\Person\Admin.cs" />
-    <Compile Include="Areas\People\Controllers\Person\Personal.cs" />
-    <Compile Include="Areas\People\Controllers\Person\ExtraValues.cs" />
-    <Compile Include="Areas\People\Controllers\Person\Lookups.cs" />
-    <Compile Include="Areas\People\Controllers\Person\Profile.cs" />
-    <Compile Include="Areas\People\Controllers\Person\Ministry.cs" />
-    <Compile Include="Areas\People\Controllers\Person\System.cs" />
-    <Compile Include="Areas\People\Controllers\Person\Giving.cs" />
-    <Compile Include="Areas\People\Controllers\Person\Family.cs" />
-    <Compile Include="Areas\People\Controllers\Person\Enrollment.cs" />
+    <Compile Include="Areas\People\Controllers\Person\AdminController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\PersonalController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\ExtraValuesController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\LookupsController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\ProfileController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\MinistryController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\SystemController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\GivingController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\FamilyController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\EnrollmentController.cs" />
     <Compile Include="Areas\Reports\Controllers\ExportController.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactorSummaryInfo.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactSearchInfo.cs" />
@@ -1073,7 +1076,6 @@
     <Content Include="Areas\People\Views\Person\Emails\Failed.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MemberDocuments.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Entry.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
@@ -1115,6 +1117,10 @@
     <Content Include="Areas\People\Views\Person\Profile\Comments.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\CommentsEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MemberNotesEdit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\UploadDocument.cshtml" />
+    <Content Include="Areas\Main\Views\MemberDocs\Image.cshtml" />
+    <Content Include="Areas\Main\Views\MemberDocs\Index.cshtml" />
+    <Content Include="Areas\People\Views\Person\EditorTemplates\Field.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1834,6 +1840,7 @@
     <Content Include="Scripts\Volunteer\volunteering.min.js">
       <DependentUpon>volunteering.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\_references.js" />
     <Content Include="Views\Shared\Pager3.cshtml" />
     <Content Include="Views\Shared\NotFound.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />
@@ -2001,8 +2008,7 @@
     </Content>
     <Content Include="Areas\Dialog\Views\AddOrganization\Index.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\MemberDocs\Index.cshtml" />
-    <Content Include="Areas\Main\Views\MemberDocs\Image.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MemberDocuments.cshtml" />
     <Content Include="Areas\Main\Views\Person\EditorTemplates\Field.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\VolunteerSlotsSummary.cshtml" />
     <Content Include="Areas\Main\Views\Person\CurrentRegistrations.cshtml" />
@@ -2098,7 +2104,6 @@
     <Content Include="Areas\People\Views\Address\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\Display.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\Edit.cshtml" />
-    <Content Include="Areas\People\Views\Person\EditorTemplates\ExtraValue.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Members.cshtml" />
     <Content Include="Areas\People\Views\Person\Index.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\Index.cshtml" />

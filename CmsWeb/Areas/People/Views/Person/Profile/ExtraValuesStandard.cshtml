@@ -1,8 +1,28 @@
-﻿<form class="form form-horizontal ajax span12" method="post">
-    <div class="row-fluid">
-        <fieldset>
-            <legend>AdHoc Extra Values</legend>
-            <div class="well"></div>
-        </fieldset>
-    </div>
+﻿@using CmsWeb.Areas.People.Models
+@model int
+<form class="form span12 margin-top" method="post" data-init="ExtraEditable">
+    <fieldset class="left-gutter">
+        <legend>Standard Extra Values
+                <a href="/Person2/ExtraValuesAdHoc/@Model"class="pull-right ajax">Show AdHoc Values</a>
+        </legend>
+        <table class="table not-wide">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Value 
+                        @if (User.IsInRole("Edit"))
+                        {
+                            <small><em class="">(click to edit)</em></small>
+                        }
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in StandardExtraValues.GetExtraValues(Model, "Standard").ToList())
+                {
+                    @Html.EditorFor(m => f)
+                }
+            </tbody>
+        </table>
+    </fieldset>
 </form>

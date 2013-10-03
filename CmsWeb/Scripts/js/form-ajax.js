@@ -1,14 +1,14 @@
-﻿$(function() {
-    $.AttachFormElements = function() {
+﻿$(function () {
+    $.AttachFormElements = function () {
         $("form.ajax input.ajax-typeahead").typeahead({
             minLength: 3,
-            source: function(query, process) {
+            source: function (query, process) {
                 return $.ajax({
                     url: $(this.$element[0]).data("link"),
                     type: 'post',
                     data: { query: query },
                     dataType: 'json',
-                    success: function(jsonResult) {
+                    success: function (jsonResult) {
                         return typeof jsonResult == 'undefined' ? false : process(jsonResult);
                     }
                 });
@@ -16,7 +16,7 @@
         });
         $.DatePickersAndChosen();
     };
-    $.DatePickersAndChosen = function() {
+    $.DatePickersAndChosen = function () {
         $("form.ajax .date:not(.noparse)").datepicker({
             autoclose: true,
             orientation: "auto"
@@ -38,8 +38,13 @@
                 url: url,
                 data: {},
                 success: function (data, status) {
-                    d.html(data);
                     d.addClass("loaded");
+                    d.html(data).ready(function () {
+                        var $form = d.find("form.ajax");
+                        if ($form.data("init")) {
+                            $.InitFunctions[$form.data("init")]();
+                        }
+                    });
                 }
             });
         return true;
@@ -57,7 +62,7 @@
         });
         return false;
     });
-    $("form.ajax a.submit").live("click", function(event) {
+    $("form.ajax a.submit").live("click", function (event) {
         event.preventDefault();
         var $form = $(this).closest("form.ajax");
         $form.attr("action", this.href);
@@ -93,6 +98,8 @@
                         var results = $($form.data("results") || $form);
                         results.html(ret).ready(function () {
                             $.AttachFormElements();
+                            if ($form.data("init"))
+                                $.InitFunctions[$form.data("init")]();
                         });
                     }
                 },
@@ -122,8 +129,9 @@
         },
         complete: function () {
             $loadingcount--;
-            if($loadingcount === 0)
+            if ($loadingcount === 0)
                 $("#loading-indicator").hide();
         }
     });
+    $.InitFunctions = {};
 });

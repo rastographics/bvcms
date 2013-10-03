@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using AttributeRouting.Helpers;
 using CmsData;
 
 namespace CmsWeb.Areas.People.Models
@@ -13,8 +14,8 @@ namespace CmsWeb.Areas.People.Models
                     where !(e.Transactional ?? false)
                     where e.EmailQueueTos.Any()
                     where e.QueuedBy == person.PeopleId
-                         || (e.FromAddr == person.EmailAddress && person.EmailAddress.Length > 0)
-                         || (e.FromAddr == person.EmailAddress2 && person.EmailAddress2.Length > 0)
+                         || (e.FromAddr == person.EmailAddress && person.EmailAddress.HasValue())
+                         || (e.FromAddr == person.EmailAddress2 && person.EmailAddress2.HasValue())
                     select e;
             return FilterForUser(q);
         }

@@ -1,160 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
-using System.Xml.Linq;
 using CmsData;
 using System.Web.Mvc;
 using System.Xml.Serialization;
 using System.IO;
 using Newtonsoft.Json;
-using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 
-namespace CmsWeb.Code
+namespace CmsWeb.Areas.People.Models
 {
-    public class StandardExtraValues
+    public partial class StandardExtraValues
     {
-        [Serializable]
-        public class Fields
-        {
-            [XmlElement("Field")]
-            public Field[] fields { get; set; }
-        }
-        [Serializable]
-        public class Field
-        {
-            [XmlAttribute]
-            public string name { get; set; }
-            [XmlAttribute]
-            public string type { get; set; }
-            [XmlAttribute]
-            public string location { get; set; }
-            [XmlAttribute]
-            public string VisibilityRoles { get; set; }
-            public List<string> Codes { get; set; }
-            internal int order;
-            public int peopleid;
-            public bool nonstandard;
-            public bool standard { get { return !nonstandard; } }
-
-            internal PeopleExtra extravalue;
-            internal static Field AddField(Field f, PeopleExtra v)
-            {
-                if (f == null)
-                {
-                    f = new Field
-                    {
-                        name = v.Field,
-                        nonstandard = true,
-                        peopleid = v.PeopleId,
-                        extravalue = v,
-                    };
-                    f.type = v.StrValue.HasValue() ? "Code"
-                        : v.Data.HasValue() ? "Data"
-                        : v.DateValue.HasValue ? "Date"
-                        : v.IntValue.HasValue ? "Int"
-                        : v.BitValue.HasValue ? "Bit"
-                        : "Code";
-                }
-                f.extravalue = v;
-                return f;
-            }
-            public bool UserCanView()
-            {
-                if (!VisibilityRoles.HasValue())
-                    return true;
-                var a = VisibilityRoles.SplitStr(",");
-                var user = HttpContext.Current.User;
-                return a.Any(role => user.IsInRole(role.Trim()));
-            }
-            public bool UserCanEdit()
-            {
-                var user = HttpContext.Current.User;
-                return user.IsInRole("Edit");
-            }
-            public override string ToString()
-            {
-                if (extravalue == null && type != "Bits")
-                    return "Click to edit";
-                if (extravalue == null)
-                    extravalue = new PeopleExtra();
-                switch (type)
-                {
-                    case "Code":
-                        return extravalue.StrValue;
-                    case "Data":
-                        return extravalue.Data;
-                    case "Date":
-                        return extravalue.DateValue.FormatDate();
-                    case "Bit":
-                        return extravalue.BitValue.ToString();
-                    case "Bits":
-                        {
-                            var q = from e in DbUtil.Db.PeopleExtras
-                                    where e.BitValue == true
-                                    where e.PeopleId == peopleid
-                                    where Codes.Contains(e.Field)
-                                    select e.Field;
-                            return string.Join(",", q);
-                        }
-                    case "Int":
-                        if (extravalue.IntValue2.HasValue)
-                            return "{0} {1}".Fmt(extravalue.IntValue, extravalue.IntValue2);
-                        return extravalue.IntValue.ToString();
-                }
-                return "";
-            }
-
-            public string EditableDataSource
-            {
-                get
-                {
-                    var n = HttpUtility.UrlEncode(name);
-                    var source = "";
-                    if (type == "Code" && standard)
-                        source = "/Person2/ExtraValueCodes/{0}".Fmt(n);
-                    else if(type == "Bits")
-                        source = "/Person2/ExtraValueBits/{0}/{1}".Fmt(peopleid, n);
-                    else if (type == "Bit")
-                        source = "{'1': 'true'}";
-                    return source.HasValue() ? "data-source={0}".Fmt(source) : "";
-                }
-            }
-            public string EditableDataType
-            {
-                get
-                {
-                    return "click-{0}{1}".Fmt(type, type == "Code" && standard ? "-Select" : "");
-                }
-            }
-            public string EditableDataValue
-            {
-                get
-                {
-                    if (type == "Code")
-                        return "data-value={0}".Fmt(this);
-                    if (type.StartsWith("Bit"))
-                        return "data-value={0}".Fmt(ExtraValueSetBitsJson(peopleid, name)).Replace('"', '\'');
-                    return "";
-                }
-            }
-            public string EditableDataKey
-            {
-                get
-                {
-                    return "{0}-{1}".Fmt(type, peopleid);
-                }
-            }
-            public string EditableDataName
-            {
-                get
-                {
-                    return HttpUtility.UrlEncode(name);
-                }
-            }
-        }
         public static IEnumerable<Field> GetExtraValues()
         {
             var emptylist = new List<Field>() as IEnumerable<Field>;
@@ -311,9 +169,7 @@ namespace CmsWeb.Code
                     p.AddEditExtraInt(name, value.ToInt());
                     break;
                 case "Bit":
-                    if (value == null)
-                        value = HttpContext.Current.Request.Form["value[]"];
-                    if (value == "True")
+                    if (value == "1")
                         p.AddEditExtraBool(name, true);
                     else
                         p.RemoveExtraValue(DbUtil.Db, name);

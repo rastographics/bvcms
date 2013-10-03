@@ -1,0 +1,22 @@
+﻿@model CmsWeb.Areas.People.Models.StandardExtraValues.Field
+@if (Model.UserCanView())
+{
+    <tr>
+        <td>@Model.name</td>
+        @if (Model.UserCanEdit())
+        {
+            <td><a data-pk="@Model.EditableDataKey" data-name="@Model.EditableDataName" class="@Model.EditableDataType" @Model.EditableDataValue @Model.EditableDataSource>@Model.ToString()</a></td>
+        }
+        else
+        {
+            <td>@Model</td>
+        }
+        <td>
+            @if (Model.nonstandard && Model.UserCanEdit())
+            {
+                <a href="#" class="deleteextra" field="@Model.name">
+                    <img src="/images/delete.gif" /></a>
+            }
+        </td>
+    </tr>
+}
