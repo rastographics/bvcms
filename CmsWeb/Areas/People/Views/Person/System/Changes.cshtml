@@ -1,6 +1,6 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ChangesModel
-<form class="non-modal ajax">
+<form class="non-modal ajax" method="post">
     <a href="#" class="ajax-refresh pull-right"><i class="icon-refresh"></i></a>
     <div class="pagination pagination-mini">
         @Html.Partial("Pager3", Model.Pager)
@@ -27,7 +27,7 @@
                 <td>@c.After</td>
                 @if (c.Reversable)
                 {
-                    <td><a class="reverse" href="/Person2/Reverse/@Model.person.PeopleId" data-field="@c.Field" data-value="@c.Before" data-pf="@c.pf">reverse</a></td>
+                    <td><a class="ajax" data-confirm="Are you sure?" href="/Person2/Reverse/@Model.person.PeopleId/@c.pf/@c.Field?value=@c.Before">reverse</a></td>
                 }
                 else
                 {

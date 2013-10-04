@@ -54,9 +54,9 @@ namespace CmsWeb.Areas.People.Models
                        Uploader = uploader.Name
                    };
         }
-        public static void DeleteDocument(int id)
+        public static void DeleteDocument(int id, int docid)
         {
-            var m = DbUtil.Db.MemberDocForms.SingleOrDefault(mm => mm.Id == id);
+            var m = DbUtil.Db.MemberDocForms.SingleOrDefault(mm => mm.Id == docid && mm.PeopleId == id);
             ImageData.Image.DeleteOnSubmit(m.SmallId);
             ImageData.Image.DeleteOnSubmit(m.MediumId);
             ImageData.Image.DeleteOnSubmit(m.LargeId);

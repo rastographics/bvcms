@@ -68,6 +68,12 @@ namespace CmsWeb.Areas.People.Models
                 var user = HttpContext.Current.User;
                 return user.IsInRole("Edit");
             }
+
+            public bool HasValue
+            {
+                get { return extravalue != null && extravalue.ToString().HasValue(); }
+            }
+
             public override string ToString()
             {
                 if (extravalue == null)
@@ -116,6 +122,16 @@ namespace CmsWeb.Areas.People.Models
                     return source.HasValue() ? "data-source={0}".Fmt(source) : "";
                 }
             }
+            public string EditableDeleteUrl
+            {
+                get
+                {
+                    if (standard)
+                        return "";
+                    var n = HttpUtility.UrlEncode(name);
+                    return "/Person2/DeleteExtra/{0}?name={1}".Fmt(peopleid, n);
+                }
+            }
             public string EditableDataType
             {
                 get
@@ -127,7 +143,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 get
                 {
-                    if (type == "Code")
+                    if (type == "Code" && standard && HasValue)
                         return "data-value={0}".Fmt(this);
                     if (type == "Bits")
                         return "data-value={0}".Fmt(ExtraValueSetBitsJson(peopleid, name)).Replace('"', '\'');

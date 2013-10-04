@@ -71,21 +71,33 @@
     });
     $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();
-        var $this = $(this);
-        var $form = $this.closest("form.ajax");
-        var url = $this.data("link");
+        var t = $(this);
+        if (t.data("confirm"))
+            bootbox.confirm(t.data("confirm"), function(ret) {
+                if (ret == true)
+                    $.formAjaxClick(t);
+            });
+        else
+            $.formAjaxClick(t);
+        return false;
+    });
+    $.formAjaxClick = function (a) {
+        var $form = a.closest("form.ajax");
+        var url = a.data("link");
         if (typeof url === 'undefined')
-            url = $this[0].href;
+            url = a[0].href;
         var data = $form.serialize();
         if (data.length === 0)
             data = {};
-        if (!$this.hasClass("validate") || $form.valid()) {
+        if (!a.hasClass("validate") || $form.valid()) {
             $.ajax({
                 type: 'POST',
                 url: url,
                 data: data,
                 success: function (ret, status) {
-                    if ($form.hasClass("modal")) {
+                    if(a.data("redirect"))
+                        window.location = ret;
+                    else if ($form.hasClass("modal")) {
                         $form.html(ret).ready(function () {
                             $form.removeClass("hide");
                             var top = ($(window).height() - $form.height()) / 2;
@@ -96,7 +108,7 @@
                         });
                     } else {
                         var results = $($form.data("results") || $form);
-                        results.html(ret).ready(function () {
+                        results.replaceWith(ret).ready(function () {
                             $.AttachFormElements();
                             if ($form.data("init"))
                                 $.InitFunctions[$form.data("init")]();
@@ -110,7 +122,7 @@
             });
         }
         return false;
-    });
+    };
 
     $.validator.addMethod("unallowedcode", function (value, element, params) {
         return value !== params.code;

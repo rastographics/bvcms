@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 DbUtil.Db.SubmitChanges();
                 DbUtil.DbDispose();
             }
-            return Content("done");
+            return Content("Extra Value Added");
         }
         [POST("Manage/ExtraValues2/Delete/{id}")]
         public ActionResult Delete(Guid id, string field, string value)

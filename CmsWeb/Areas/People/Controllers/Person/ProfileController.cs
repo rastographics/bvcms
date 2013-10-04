@@ -90,6 +90,12 @@ namespace CmsWeb.Areas.People.Controllers
             MemberDocModel.UpdateName(pk, value);
             return new EmptyResult();
         }
+        [POST("Person2/DeleteDocument/{id:int}/{docid:int}")]
+        public ActionResult DeleteDocument(int id, int docid)
+        {
+            MemberDocModel.DeleteDocument(id, docid);
+            return View("Profile/MemberDocuments", id);
+        }
 
         #endregion
 

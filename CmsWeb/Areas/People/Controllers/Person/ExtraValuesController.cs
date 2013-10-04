@@ -3,19 +3,19 @@ using System.Web;
 using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
 using CmsData;
-using CmsWeb.Code;
+using CmsWeb.Areas.People.Models;
 
 namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [POST("Person2/DeleteExtra/{id:int}/{name}")]
-        public ContentResult DeleteExtra(int id, string name)
+        [POST("Person2/DeleteExtra/{id:int}")]
+        public ActionResult DeleteExtra(int id, string name)
         {
             var e = DbUtil.Db.PeopleExtras.First(ee => ee.PeopleId == id && ee.Field == HttpUtility.UrlDecode(name));
             DbUtil.Db.PeopleExtras.DeleteOnSubmit(e);
             DbUtil.Db.SubmitChanges();
-            return Content("done");
+            return View("Profile/ExtraValuesAdHoc", id);
         }
 
         [GET("Person2/ExtraValueCodes")]

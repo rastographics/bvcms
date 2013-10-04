@@ -38,6 +38,7 @@
         </div>
     </div>
     @FormAction()
+     <p class="record_added muted"><small>Record added @Model.CreatedDate.FormatDateTm()</small></p>
 </form>
 
 @helper FormAction()
@@ -49,4 +50,3 @@
     </div>
     }
 }
- <p class="record_added muted"><small>Record added @Model.Created.FormatDate()</small></p>

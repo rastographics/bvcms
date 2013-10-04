@@ -5,18 +5,19 @@
         <td>@Model.name</td>
         @if (Model.UserCanEdit())
         {
-            <td><a data-pk="@Model.EditableDataKey" data-name="@Model.EditableDataName" class="@Model.EditableDataType" @Model.EditableDataValue @Model.EditableDataSource>@Model.ToString()</a></td>
+            <td><a data-pk="@Model.EditableDataKey" data-name="@Model.EditableDataName" class="@Model.EditableDataType" 
+                   data-url="/Person2/EditExtra" @Model.EditableDataValue @Model.EditableDataSource>@Model.ToString()</a>
+            </td>
         }
         else
         {
             <td>@Model</td>
         }
-        <td>
-            @if (Model.nonstandard && Model.UserCanEdit())
-            {
-                <a href="#" class="deleteextra" field="@Model.name">
-                    <img src="/images/delete.gif" /></a>
-            }
-        </td>
+        @if (Model.nonstandard && Model.UserCanEdit())
+        {
+            <td>
+                <a href="@Model.EditableDeleteUrl" class="ajax" data-confirm="Are you sure?"><i class="icon-remove"></i></a>
+            </td>
+        }
     </tr>
 }

@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.TagAction = "/Person2/Tag/" + id;
             ViewBag.UnTagAction = "/Person2/UnTag/" + id;
             ViewBag.AddContact = "/Person2/AddContactReceived/" + id;
-            ViewBag.AddTasks = "/Person2/AddAboutTask/" + id;
+            ViewBag.AddTasks = "/Person2/AddTaskAbout/" + id;
         }
 
         [POST("Person2/Tag/{id:int}")]

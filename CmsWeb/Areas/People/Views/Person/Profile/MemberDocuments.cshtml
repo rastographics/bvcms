@@ -13,7 +13,7 @@
                 <div>
                     <a class="name editable" data-pk="@i.Id" data-url="/Person2/MemberDocumentUpdateName" data-title="Enter Query Description">@i.FormName</a>
                     <a class="nameEdit" href="#"><i class="icon-pencil"></i></a>
-                    <a class="delete" href="/People2/DeleteDocument/@Model/@i.Id"><i class="icon-remove"></i></a>
+                    <a class="ajax" href="/Person2/DeleteDocument/@Model/@i.Id" data-confirm="Are you sure?"><i class="icon-remove"></i></a>
                 </div>
             </div>
         }
