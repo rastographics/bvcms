@@ -143,7 +143,7 @@
 </table>
     <p id="memberdocs" style="display:none"><a href="/MemberDocs/Index/@Model.PeopleId">Membership Docs</a></p>
 @{
-    var extravalues = CmsWeb.Code.StandardExtraValues.GetExtraValues(Model.PeopleId, "MemberProfile");
+    var extravalues = CmsWeb.Code.StandardExtraValues.GetExtraValues(Model.PeopleId, "MemberProfile").ToList();
 }
 @if (extravalues.Any())
 {

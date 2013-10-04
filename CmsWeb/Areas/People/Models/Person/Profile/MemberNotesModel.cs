@@ -18,13 +18,14 @@ namespace CmsWeb.Areas.People.Models
         public int PeopleId { get; set; }
 
         public CodeInfo LetterStatus { get; set; }
+
         [DisplayName("Letter Requested")]
         public DateTime? LetterDateRequested { get; set; }
+
         [DisplayName("Letter Received")]
         public DateTime? LetterDateReceived { get; set; }
 
-        [UIHint("Textarea")]
-        [DisplayName("Letter Notes")]
+        [UIHint("Textarea"), DisplayName("Letter Notes")]
         public string LetterStatusNotes { get; set; }
 
         public MemberNotesModel(int id)

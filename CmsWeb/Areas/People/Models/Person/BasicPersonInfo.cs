@@ -181,7 +181,7 @@ namespace CmsWeb.Areas.People.Models
         public bool DoNotPublishPhones { get; set; }
 
         [NoUpdate]
-        public DateTime? Created { get; set; }
+        public DateTime? CreatedDate { get; set; }
         [NoUpdate]
         public DateTime? JoinDate { get; set; }
         [NoUpdate]

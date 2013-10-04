@@ -95,8 +95,8 @@ namespace CmsWeb.Areas.People.Controllers
             m.Pager.Set("/Person2/Changes/" + id, page, size, sort, dir);
             return View("System/Changes", m);
         }
-        [POST("Person2/Reverse/{id:int}")]
-        public ActionResult Reverse(int id, string field, string value, string pf)
+        [POST("Person2/Reverse/{id:int}/{pf}/{field}")]
+        public ActionResult Reverse(int id, string field, string pf, string value)
         {
             var m = new ChangesModel(id);
             m.Reverse(field, value, pf);

@@ -17,6 +17,7 @@ namespace CmsWeb.Areas.People.Controllers
             p.SplitFamily(DbUtil.Db);
             return Content("/Person2/" + id);
         }
+
         [POST("Person2/Delete/{id}"), Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
@@ -40,6 +41,7 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.LogActivity("Deleted Record {0}".Fmt(person.PeopleId));
             return Content("/Person2/DeletedPerson");
         }
+
         [GET("Person2/DeletedPerson")]
         public ActionResult DeletedPerson()
         {

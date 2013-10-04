@@ -14,7 +14,10 @@
                 }
                 else {
                     var q = $(form).serialize();
-                    $.post(form.action, q);
+                    $.post(form.action, q, function(ret) {
+                        if (ret)
+                            $.growlUI("", ret);
+                    });
                 }
             },
             highlight: function (element) {

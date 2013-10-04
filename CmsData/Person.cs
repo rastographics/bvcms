@@ -1150,7 +1150,7 @@ namespace CmsData
         }
         public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
-		    field = field.Replace('/', '-');
+            field = field.Replace('/', '-');
             var q = from v in db.PeopleExtras
                     where v.Field == field
                     where v.PeopleId == id
@@ -1174,7 +1174,7 @@ namespace CmsData
             var q = from v in db.PeopleExtras
                     where v.PeopleId == id
                     where v.Field == field
-                    where novalue || v.StrValue == value 
+                    where novalue || v.StrValue == value
                     select v;
             var ev = q.SingleOrDefault();
             return ev;
@@ -1362,7 +1362,47 @@ namespace CmsData
             p.LargeId = ImageData.Image.NewImageFromBits(bits, 570, 800).Id;
             LogPictureUpload(db, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
+
         }
+
+        public void UploadDocument(CMSDataContext db, System.IO.Stream stream, string name, string mimetype)
+        {
+            var mdf = new MemberDocForm
+            {
+                PeopleId = PeopleId,
+                DocDate = Util.Now,
+                UploaderId = Util2.CurrentPeopleId,
+                Name = System.IO.Path.GetFileName(name).Truncate(100)
+            };
+            db.MemberDocForms.InsertOnSubmit(mdf);
+            var bits = new byte[stream.Length];
+            stream.Read(bits, 0, bits.Length);
+            switch (mimetype)
+            {
+                case "image/jpeg":
+                case "image/pjpeg":
+                case "image/gif":
+                case "image/png":
+                    mdf.IsDocument = false;
+                    mdf.SmallId = ImageData.Image.NewImageFromBits(bits, 165, 220).Id;
+                    mdf.MediumId = ImageData.Image.NewImageFromBits(bits, 675, 900).Id;
+                    mdf.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
+                    break;
+                case "text/plain":
+                case "application/pdf":
+                case "application/msword":
+                case "application/vnd.ms-excel":
+                    mdf.MediumId = ImageData.Image.NewImageFromBits(bits, mimetype).Id;
+                    mdf.SmallId = mdf.MediumId;
+                    mdf.LargeId = mdf.MediumId;
+                    mdf.IsDocument = true;
+                    break;
+                default:
+                    throw new FormatException("file type not supported: " + mimetype);
+            }
+            db.SubmitChanges();
+        }
+
         public void SplitFamily(CMSDataContext db)
         {
             var f = new Family

@@ -1,1 +1,28 @@
-﻿<h1>Documents</h1>
+﻿@using UtilityExtensions
+@using CmsWeb.Areas.People.Models
+@model int
+<form id="memberdocs-form" action="/Person2/UploadDocument/@Model" class="form form-horizontal margin-top ajax span8" data-init="MemberDocsEditable" method="post" enctype="multipart/form-data">
+    <fieldset class="left-gutter">
+        <legend>Membership Documents</legend>
+        @foreach (var i in MemberDocModel.DocForms(Model))
+        {
+            <div class="inline margin-top margin-left">
+                <a href="@i.DocUrl" target="docpage" >
+                    <img title="Uploaded: @i.DocDate.FormatDateTm()" src="@i.ImgUrl" alt="" />
+                </a>
+                <div>
+                    <a class="name editable" data-pk="@i.Id" data-url="/Person2/MemberDocumentUpdateName" data-title="Enter Query Description">@i.FormName</a>
+                    <a class="nameEdit" href="#"><i class="icon-pencil"></i></a>
+                    <a class="ajax" href="/Person2/DeleteDocument/@Model/@i.Id" data-confirm="Are you sure?"><i class="icon-remove"></i></a>
+                </div>
+            </div>
+        }
+        <hr/>
+        <div>
+            Select Image File To Upload:
+            <input type="file" name="doc" />
+            <input type="submit" name="Upload" value="Submit" class="btn btn-primary" />
+            <div style="color: Red;">@Html.ValidationMessage("doc")</div>
+        </div>
+    </fieldset>
+</form>

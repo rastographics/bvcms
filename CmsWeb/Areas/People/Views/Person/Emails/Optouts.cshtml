@@ -1,30 +1,41 @@
 ﻿@model CmsData.Person
+@using AttributeRouting.Helpers
 @using UtilityExtensions
-<fieldset>
-    OptOut of Email Address: <input type="text" id="optoutemail" style="width: 20em" />
-    <a href="/Person2/AddOptout/@Model.PeopleId" id="addoptoutemail" class="btn btn-warning">Add Optout</a>
-</fieldset>
-@if (Model.EmailOptOuts.Count > 0)
-{
-    <table class="table not-wide">
-        <thead>
-            <tr>
-                <td><b>From Email</b></td>
-                <td>Date</td>
-                <td></td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var oo in Model.EmailOptOuts)
-            { 
+<form class="non-modal ajax left-gutter" method="post">
+    <fieldset class="margin-top">
+        <legend>Email Optouts</legend>
+        OptOut of Email Address:
+        <input type="text" name="emailaddress" style="width: 20em" />
+        <a href="/Person2/AddOptout/@Model.PeopleId" class="btn btn-warning ajax">Add Optout</a>
+    </fieldset>
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Oops!</strong> @ViewBag.Error
+        </div>
+    }
+    @if (Model.EmailOptOuts.Count > 0)
+    {
+        <table class="table not-wide">
+            <thead>
                 <tr>
-                    <td>@oo.FromEmail</td>
-                    <td>@oo.DateX.FormatDate()</td>
-                    <td><a class="deloptout" href="/Person2/DeleteOptout/@oo.ToPeopleId?email=@oo.FromEmail">
-                        <i class="icon-remove"></i></a></td>
+                    <td><b>From Email</b></td>
+                    <td>Date</td>
+                    <td></td>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
-
+            </thead>
+            <tbody>
+                @foreach (var oo in Model.EmailOptOuts)
+                { 
+                    <tr>
+                        <td>@oo.FromEmail</td>
+                        <td>@oo.DateX.FormatDate()</td>
+                        <td><a class="ajax" data-confirm="Are you sure?" href="/Person2/DeleteOptout/@oo.ToPeopleId?email=@Html.Encode(oo.FromEmail)">
+                            <i class="icon-remove"></i></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</form>

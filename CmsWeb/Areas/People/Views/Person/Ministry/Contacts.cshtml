@@ -1,7 +1,11 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactsModel
 <form class="non-modal ajax">
-    <p class="pull-right"><a class="btn btn-success add-task-contact" href="@Model.AddContact">Add Contact</a></p>
+    <p class="pull-right">
+        <a class="btn btn-success ajax" data-confirm="Are you sure?" data-redirect="true" href="@Model.AddContact">
+            Add Contact
+        </a>
+    </p>
     <div class="pagination pagination-mini">
         @Html.Partial("Pager3", Model.Pager)
     </div>

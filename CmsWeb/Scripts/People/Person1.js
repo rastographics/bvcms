@@ -63,36 +63,6 @@
                 });
             });
     });
-    $("#profile-actions a.manageUser").live("click", function (ev) {
-        ev.preventDefault();
-        $("<div class='modal fade hide' data-width='760' />").load($(this).attr("href"), {}, function () {
-            var modal = $(this);
-            modal.modal("show");
-            modal.on('hidden', function () {
-                $(this).remove();
-            });
-            modal.on("click", "a.save", function (e) {
-                e.preventDefault();
-                var q = modal.find("form").serialize();
-                $.post($(this).attr("href"), q, function (ret) {
-                    $("#profile-actions").html(ret);
-                    modal.modal("hide");
-                });
-            });
-            modal.on("click", "a.delete", function (e) {
-                e.preventDefault();
-                var a = $(this);
-                bootbox.confirm(a.data("prompt"), function (result) {
-                    if (result === true)
-                        $.post(a.attr("href"), {}, function (ret) {
-                            $("#profile-actions").html(ret);
-                            modal.modal("hide");
-                        });
-                });
-                return false;
-            });
-        });
-    });
     $("#family_related a.edit").live("click", function (ev) {
         ev.preventDefault();
         $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
@@ -125,7 +95,7 @@
             });
         });
     });
-    $('#moveperson').click(function (ev) {
+    $('#merge').click(function (ev) {
         ev.preventDefault();
         var d = $('#dialogbox');
         $('iframe', d).attr("src", this.href);
@@ -214,75 +184,10 @@
             } else {
                 var f = ck.closest('form');
                 var q = f.serialize();
-                $.post($(f).attr("action"), q, function (ret) {
-                    $(f).html(ret);
+                $.post($(f).attr("action"), q, function (ret2) {
+                    $(f).html(ret2);
                 });
             }
-        });
-    });
-    $("body").on("click", 'a.deleteextra', function (ev) {
-        ev.preventDefault();
-        bootbox.confirm("Are you sure?", function (result) {
-            if (result === true)
-                $.post("/Person/DeleteExtra/" + $("#PeopleId").val(), { field: $(this).attr("field") }, function (ret) {
-                    if (ret.startsWith("error"))
-                        alert(ret);
-                    else {
-                        $.getTable($("#extras-tab form"));
-                        $.extraEditable('#extravalues');
-                    }
-                });
-            return false;
-        });
-    });
-    $("#changes").on('click', 'a.reverse', function (ev) {
-        ev.preventDefault();
-        var a = $(this);
-        bootbox.confirm("Are you sure?", function (result) {
-            if (result === true) {
-                $.post(a.attr("href"), {
-                    field: a.data("field"),
-                    value: a.data("value"),
-                    pf: a.data("pf")
-                }, function (ret) {
-                    $("#changes").html(ret);
-                });
-            }
-        });
-        return false;
-    });
-    $("#tasksabout,#contactsreceived,#contactsmade").on("click", 'a.add-task-contact', function (ev) {
-        ev.preventDefault();
-        var link = $(this).attr("href");
-        bootbox.confirm("Are you sure?", function (result) {
-            if (result === true) {
-                $.post(link, null, function (ret) {
-                    window.location = ret;
-                });
-            }
-        });
-        return false;
-    });
-    $("#addoptoutemail").live('click', function (ev) {
-        ev.preventDefault();
-        $.post($(this).attr("href"), { email: $("#optoutemail").val() }, function (ret) {
-            $("#optouts").html(ret);
-        });
-        return false;
-    });
-    $('#optouts').on("click", 'a.deloptout', function (ev) {
-        ev.preventDefault();
-        var href = $(this).attr("href");
-        bootbox.confirm('Are you sure you want to delete optout?', function (result) {
-            if (result === true)
-                $.post(href, {}, function (ret) {
-                    if (ret.startsWith("ok"))
-                        $.growlUI("failed", ret);
-                    else {
-                        $("#optouts").html(ret);
-                        $.growlUI("Success", "OptOut deleted");
-                    }
-                });
         });
     });
     //    $("#failedemails").on("click", "a.unblock").click(function (ev) {
@@ -371,6 +276,27 @@
         $.cookie('lasttab', tlink.attr("href"));
         tlink.click().tab("show");
     }
+    $.fn.editabletypes.abstractinput.prototype.value2input = function (value) {
+        this.$input.val((value || "").toString());
+    };
+    $.InitFunctions.ExtraEditable = function () {
+        $(".click-Code").editable({ mode: 'inline' });
+        $('.click-Data').editable({ type: 'textarea', mode: 'inline' });
+        $(".click-Code-Select").editable({ type: "select", mode: 'inline' });
+        $('.click-Bits').editable({ type: "checklist", mode: 'inline' });
+        $(".click-Date").editable({ type: 'date', mode: 'inline', format: $.dtoptions.format });
+        $(".click-Bit").editable({ type: 'checklist', mode: 'inline', source: { 'True': 'True' }, emptytext: 'False' });
+    };
+    $.InitFunctions.MemberDocsEditable = function () {
+        $("#memberdocs-form a.editable").editable({
+            placement: "right",
+            showbuttons: "bottom"
+        });
+        $('#memberdocs-form a.nameEdit').click(function (e) {
+            e.stopPropagation();
+            $(this).previousSibling().editable('toggle');
+        });
+    };
 });
 
 
