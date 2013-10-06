@@ -435,6 +435,12 @@
     <RecentContributionAmount Title="Recent Contribution Amount" Type="Number" DisplayAs="RecentContributionAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">
       Enter a number and select Comparison for the Contribution Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentContributionAmount>
+    <RecentNonTaxDedCount Title="Recent NonTaxDed Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentNonTaxDedCount({0},{1})" Params="Days,Quarters">
+      Enter a number and select Comparison for the number of NonTaxDeds, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
+    </RecentNonTaxDedCount>
+    <RecentNonTaxDedAmount Title="Recent NonTaxDed Amount" Type="Number" DisplayAs="RecentNonTaxDedAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">
+      Enter a number and select Comparison for the NonTaxDed Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
+    </RecentNonTaxDedAmount>
     <RecentPledgeCount Title="Recent Pledge Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentPledgeCount({0},{1})" Params="Days,Quarters">
       Enter a number and select Comparison for the number of Pledges, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentPledgeCount>

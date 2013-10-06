@@ -1841,7 +1841,10 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? fd,
             [Parameter(DbType="datetime")] DateTime? td,
             [Parameter(DbType="int")] int? fundid,
-            [Parameter(DbType="int")] int? campusid
+            [Parameter(DbType="int")] int? campusid,
+            [Parameter(DbType="bit")] bool? pledges,
+            [Parameter(DbType="bit")] bool? nontaxded,
+            [Parameter(DbType="bit")] bool? includeUnclosed
             )
 		{
 			return this.CreateMethodCallQuery< View.Contributions0>(this, 
@@ -1849,7 +1852,10 @@ namespace CmsData
                 fd,
                 td,
                 fundid,
-                campusid
+                campusid,
+                pledges,
+                nontaxded,
+                includeUnclosed
                 );
 		}
 
@@ -2393,18 +2399,6 @@ namespace CmsData
     #endregion
 	#region Scalar Functions
 		
-		[Function(Name="dbo.OrganizationPrevMemberCount", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? OrganizationPrevMemberCount(
-            [Parameter(Name = "oid", DbType="int")] int? oid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.AttendItem", IsComposable = true)]
 		[return: Parameter(DbType = "datetime")]
 		public DateTime? AttendItem(
@@ -3602,6 +3596,18 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrganizationPrevMemberCount", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? OrganizationPrevMemberCount(
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
                 ).ReturnValue));
 		}
 
