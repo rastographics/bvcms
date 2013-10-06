@@ -38,17 +38,6 @@ $(function () {
         window.location = this.href;
         return false;
     });
-    $("#delete").live("click", function (ev) {
-        ev.preventDefault();
-        var url = this.href;
-        var f = $(this).closest("form");
-        bootbox.confirm("Delete this contact?", function(confirmed) {
-            if (!confirmed) return;
-            f.attr("action", url);
-            f.submit();
-        });
-        return false;
-    });
     $("#newteamcontact").live("click", function (ev) {
         ev.preventDefault();
         if ($("#edit-contact").length > 0) {

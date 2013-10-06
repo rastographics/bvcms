@@ -1,7 +1,7 @@
 ﻿@using System.Text
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
-@model CmsWeb.Areas.People.Models.PersonModel
+@model PersonModel
 @if (Model.Person.CanUserEditBasic)
 {
     <a id="profile-picture" href="#picture-modal" title="Click to see larger version or upload new" data-toggle="modal">@Picture()</a>
@@ -11,7 +11,9 @@ else
     <a href="@Model.Picture.LargeUrl" title="Click to see larger version" target="_blank">@Picture()</a>
 }
 <div class="profile">
-    <h2 id="nameline" class="span8">@Model.Name</h2>
+    <h2 id="nameline" class="span8 @(Model.Person.IsDeceased == true ? "alert alert-danger" : "")">
+        @Model.Name
+    </h2>
     @if (User.IsInRole("Access"))
     {
         <div class="span4 pull-right" id="profile-actions">

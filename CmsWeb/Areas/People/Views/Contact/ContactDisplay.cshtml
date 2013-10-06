@@ -1,37 +1,41 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
-
-<div id="contact-display" class="table not-wide">
-    @if (Model.Incomplete.HasValue())
-    {
-        <div class="alert alert-error">
-            @Model.Incomplete
+<form class="form ajax form-horizontal w120" method="post">
+    <fieldset>
+        <legend>Contact 
+            <small><a href="/ContactSearch2" class="pull-right">Search Contacts</a></small>
+        </legend>
+        @if (Model.Incomplete.HasValue())
+        {
+            <div class="alert alert-error">
+                @Model.Incomplete
+            </div>
+        }
+        <div class="inline w120 align-top width220">
+            @Html.DisplayFor(m => m.ContactDate)
+            @Html.DisplayFor(m => m.Ministry)
+            @Html.DisplayFor(m => m.ContactType)
+            @Html.DisplayFor(m => m.ContactReason)
+            @Html.DisplayFor(m => m.LimitToRole)
         </div>
-    }
-    <div class="inline w120 align-top width220">
-        @Html.DisplayFor(m => m.ContactDate)
-        @Html.DisplayFor(m => m.Ministry)
-        @Html.DisplayFor(m => m.ContactType)
-        @Html.DisplayFor(m => m.ContactReason)
-        @Html.DisplayFor(m => m.LimitToRole)
-    </div>
-    <div class="inline w180 left-gutter">
-        @Html.DisplayFor(m => m.NotAtHome)
-        @Html.DisplayFor(m => m.LeftDoorHanger)
-        @Html.DisplayFor(m => m.LeftMessage)
-        @Html.DisplayFor(m => m.ContactMade)
-        @Html.DisplayFor(m => m.GospelShared)
-        @Html.DisplayFor(m => m.PrayerRequest)
-        @Html.DisplayFor(m => m.GiftBagGiven)
-    </div>
-    @if (Model.CanViewComments)
-    {
-        <div class="w120 margin-top">
-            @Html.DisplayFor(m => m.Comments, "TextArea")
+        <div class="inline w180 left-gutter">
+            @Html.DisplayFor(m => m.NotAtHome)
+            @Html.DisplayFor(m => m.LeftDoorHanger)
+            @Html.DisplayFor(m => m.LeftMessage)
+            @Html.DisplayFor(m => m.ContactMade)
+            @Html.DisplayFor(m => m.GospelShared)
+            @Html.DisplayFor(m => m.PrayerRequest)
+            @Html.DisplayFor(m => m.GiftBagGiven)
         </div>
-        <div class="right">
-            <a id="delete" class="btn btn-danger" href="/Contact2/ContactDelete/@Model.ContactId">Delete</a>
-            <a id="edit" class="btn btn-primary ajax" href="/Contact2/ContactEdit/@Model.ContactId">Edit</a>
-        </div>
-    }
-</div>
+        @if (Model.CanViewComments)
+        {
+            <div class="w120 margin-top">
+                @Html.DisplayFor(m => m.Comments, "TextArea")
+            </div>
+            <div class="right">
+                <a id="delete" class="btn btn-danger submit" data-confirm="Are you sure?" href="/Contact2/ContactDelete/@Model.ContactId">Delete</a>
+                <a class="btn btn-primary ajax" href="/Contact2/ContactEdit/@Model.ContactId">Edit</a>
+            </div>
+        }
+    </fieldset>
+</form>

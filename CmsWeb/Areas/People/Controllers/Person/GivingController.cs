@@ -16,7 +16,15 @@ namespace CmsWeb.Areas.People.Controllers
             m.Pager.Set("/Person2/Contributions/" + id, page, size, sort, dir);
             return View("Giving/Contributions", m);
         }
-        public ActionResult ContributionStatement(int id, string fr, string to)
+        [POST("Person2/Statements/{id:int}")]
+        public ActionResult Statements(int id)
+        {
+            if (Util.UserPeopleId != id && !User.IsInRole("Finance"))
+                return Content("No permission to view statement");
+            var m = new ContributionsModel(id);
+            return View("Giving/Statements", m);
+        }
+        public ActionResult Statement(int id, string fr, string to)
         {
             if (Util.UserPeopleId != id && !User.IsInRole("Finance"))
                 return Content("No permission to view statement");

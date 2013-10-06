@@ -5,8 +5,8 @@
         <td>@Model.name</td>
         @if (Model.UserCanEdit())
         {
-            <td><a data-pk="@Model.EditableDataKey" data-name="@Model.EditableDataName" class="@Model.EditableDataType" 
-                   data-url="/Person2/EditExtra" @Model.EditableDataValue @Model.EditableDataSource>@Model.ToString()</a>
+            <td><a href="#" data-pk="@Model.EditableDataKey" data-name="@Model.EditableDataName" class="@Model.EditableDataType" 
+                   data-url="/Person2/EditExtra" @Model.EditableDataValue @Model.EditableDataSource><span>@Model.ToString()</span></a>
             </td>
         }
         else

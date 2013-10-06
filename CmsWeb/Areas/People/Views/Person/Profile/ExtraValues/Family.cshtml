@@ -2,19 +2,17 @@
 @model int
 <form class="form ajax span12 margin-top" method="post" data-init="ExtraEditable">
     <fieldset class="left-gutter">
-        <legend>Standard Extra Values
-                <small><a href="/Person2/ExtraValuesAdHoc/@Model"class="pull-right ajax">Show AdHoc Values</a></small>
+        <legend>Family Extra Values
+            <small class="pull-right">
+                <a href="/Person2/ExtraValuesStandard/@Model"class="ajax">Standard Values</a> &bull;
+                <a href="/Person2/ExtraValuesAdHoc/@Model"class="ajax">AdHoc Values</a>
+            </small>
         </legend>
         <table class="table not-wide">
             <thead>
                 <tr>
                     <th>Field</th>
-                    <th>Value 
-                        @if (User.IsInRole("Edit"))
-                        {
-                            <small><em class="">(click to edit)</em></small>
-                        }
-                    </th>
+                    <th>Value</th>
                 </tr>
             </thead>
             <tbody>

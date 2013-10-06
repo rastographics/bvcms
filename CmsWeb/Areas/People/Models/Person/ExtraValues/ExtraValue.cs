@@ -89,7 +89,7 @@ namespace CmsWeb.Areas.People.Models
                     case "Code":
                         return extravalue.StrValue;
                     case "Data":
-                        return extravalue.Data;
+                        return extravalue.Data.Trim();
                     case "Date":
                         return extravalue.DateValue.FormatDate();
                     case "Bits":
@@ -136,7 +136,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 get
                 {
-                    return "click-{0}{1}".Fmt(type, type == "Code" && standard ? "-Select" : "");
+                    return "click-pencil click-{0}{1}".Fmt(type, type == "Code" && standard ? "-Select" : "");
                 }
             }
             public string EditableDataValue

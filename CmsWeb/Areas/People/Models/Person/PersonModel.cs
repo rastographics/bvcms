@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -42,7 +41,7 @@ namespace CmsWeb.Areas.People.Models
         private AddressInfo _PrimaryAddr;
         private AddressInfo _OtherAddr;
         private Picture picture;
-        public CmsData.Person Person { get; set; }
+        public Person Person { get; set; }
 
         public AddressInfo PrimaryAddr
         {

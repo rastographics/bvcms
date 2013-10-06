@@ -623,7 +623,7 @@ label.error {
     margin-bottom: 0;
 }
 
-fieldset.inline, div.inline {
+fieldset.inline, div.inline, table.inline {
     display: inline-block;
 }
 
@@ -683,8 +683,8 @@ legend {
 }
 
 fieldset {
+    padding: 0 0 1em 0;
     margin-bottom: 1em;
-    padding: 0;
 }
 
 .nowrap {
@@ -828,4 +828,42 @@ a.go-back {
 }
 .width100 {
     width: 100%;
+}
+a.click-pencil {
+    text-decoration: none;
+}
+a.click-pencil:after {
+    content: "\f040"; 
+    font-family: FontAwesome;
+    text-decoration: none;
+    color: gray;
+    padding-left: 0.5em;
+}
+a.click-pencil span:hover {
+    text-decoration: underline;
+}
+legend small {
+    font-size: 80%;
+}
+.control-label {
+    font-size: 11px;
+    text-transform: none;
+}
+.form-horizontal .wauto .control-label {
+    float: none;
+    display: inline;
+}
+
+.form-horizontal .wauto .controls {
+    margin-left: auto;
+    display: inline;
+}
+.form-horizontal .wauto .controls input {
+    margin-bottom: 9px;
+}
+.pre-wrap {
+    white-space: pre-wrap;
+}
+.size11 {
+    font-size: 11px;
 }

@@ -299,7 +299,8 @@
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
     <Compile Include="Areas\People\Models\Person\ExtraValues\ExtraValue.cs" />
     <Compile Include="Areas\People\Models\Person\ExtraValues\StandardExtraValues.cs" />
-    <Compile Include="Areas\People\Models\Person\RegistrationsModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Giving\StatementInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\Enrollments\RegistrationsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailTransactionalModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailRow.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailReceivedModel.cs" />
@@ -1048,9 +1049,9 @@
     <Content Include="Areas\People\Views\Person\Enrollment\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MembershipEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MemberNotes.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\ExtraValuesAdHoc.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Membership\Edit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Display.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\ExtraValues\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
@@ -1077,7 +1078,7 @@
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\Entry.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\ExtraValues\Entry.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Emails.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactTypeTotals.cshtml" />
@@ -1090,7 +1091,7 @@
     <Content Include="Areas\People\Views\Contact\Index.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Users.cshtml" />
     <Content Include="Areas\Manage\Views\EmailsView\View.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\ExtraValuesStandard.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\ExtraValues\Standard.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\Attendance.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\AttendanceDetail.cshtml" />
@@ -1114,13 +1115,16 @@
     <Content Include="Areas\Reports\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\MultiSelect.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\CodeSelect.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\Comments.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\CommentsEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MemberNotesEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\UploadDocument.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Comments\Display.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Comments\Edit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Edit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Membership\UploadDocument.cshtml" />
     <Content Include="Areas\Main\Views\MemberDocs\Image.cshtml" />
     <Content Include="Areas\Main\Views\MemberDocs\Index.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\Field.cshtml" />
+    <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
+    <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\ExtraValues\Family.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1897,6 +1901,7 @@
     <Content Include="Views\Shared\EditorTemplates\EmailAddress.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Phone.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\DropDown.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\InlineCodeInfo.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2008,7 +2013,7 @@
     </Content>
     <Content Include="Areas\Dialog\Views\AddOrganization\Index.cshtml">
     </Content>
-    <Content Include="Areas\People\Views\Person\Profile\MemberDocuments.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Membership\Documents.cshtml" />
     <Content Include="Areas\Main\Views\Person\EditorTemplates\Field.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\VolunteerSlotsSummary.cshtml" />
     <Content Include="Areas\Main\Views\Person\CurrentRegistrations.cshtml" />
@@ -2147,9 +2152,9 @@
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\EmailInfo.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\EmailInfo.cshtml" />
-    <Content Include="Areas\People\Views\Person\Personal\ProfileHeader.cshtml" />
+    <Content Include="Areas\People\Views\Person\Personal\Header.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\Membership.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Membership\Display.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />
     <Content Include="Areas\Main\Views\OrgSearch\OrganizationStructure.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />

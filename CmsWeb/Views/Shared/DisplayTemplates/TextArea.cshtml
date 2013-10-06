@@ -1,7 +1,5 @@
 ﻿@model string
 <div class="control-group">
     @Html.LabelFor(m => m, new { @class="control-label"})
-    <div class="controls display">
-        @Html.TextAreaFor(m => m, new { disabled="disabled" })<span class="help-block">@Html.Raw(ViewData["help"])</span>
-    </div>
+    <div class="controls display pre-wrap well">@Model</div>
 </div>

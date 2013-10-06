@@ -3,18 +3,16 @@
 <form class="form ajax span12 margin-top" method="post"  data-init="ExtraEditable">
     <fieldset class="left-gutter">
         <legend>AdHoc Extra Values
-                <small><a href="/Person2/ExtraValuesStandard/@Model"class="pull-right ajax">Show Standard Values</a></small>
+            <small class="pull-right">
+                <a href="/Person2/ExtraValuesStandard/@Model"class="ajax">Standard Extra Values</a> &bull;
+                <a href="/Person2/ExtraValuesFamily/@Model"class="ajax">Family Values</a>
+            </small>
         </legend>
         <table class="table not-wide">
             <thead>
                 <tr>
                     <th>Field</th>
-                    <th>Value 
-                        @if (User.IsInRole("Edit"))
-                        {
-                            <small><em class="">(click to edit)</em></small>
-                        }
-                    </th>
+                    <th>Value</th>
                 </tr>
             </thead>
             <tbody>

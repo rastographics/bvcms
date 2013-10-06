@@ -1,6 +1,13 @@
 ﻿@model CmsWeb.Areas.People.Models.MemberInfo
-<form class="form form-horizontal ajax span12" method="post">
-     <div class="row-fluid margin-top display">
+@{
+    var editable = new
+    {
+        url = "/Person2/InlineEdit/" + Model.PeopleId,
+        source = "/Person2/InlineCodes/"
+    };
+}
+<form class="form ajax form-horizontal span12 margin-top" method="post" data-init="Editable">
+     <div class="row-fluid display">
         <fieldset class="left-gutter">
             <legend>Member Profile @FormAction()</legend>
             <div class="inline align-top">
@@ -36,6 +43,11 @@
                     @Html.DisplayFor(m => m.DropDate)
                     @Html.DisplayFor(m => m.OtherNewChurch)
                 </div>
+                <div>
+                    <p><b>Statement/Envelope Options</b></p>
+                    @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+                    @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                </div>
             </div>
             <div class="margin-bottom">@FormAction()</div>
         </fieldset>
@@ -46,6 +58,6 @@
 {
     if (User.IsInRole("Membership"))
     { 
-        <a href="/Person2/MembershipEdit/@Model.PeopleId" class="edit-basic btn pull-right ajax">Edit</a>
+        <a href="/Person2/MembershipEdit/@Model.PeopleId" class="edit-basic btn pull-right ajax">Edit Membership</a>
     }
 }

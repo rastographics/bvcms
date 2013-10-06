@@ -1,10 +1,12 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using iTextSharp.text;
+using Newtonsoft.Json;
 using UtilityExtensions;
 using System.Web.Routing;
 
@@ -62,13 +64,13 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
             {
-                CmsData.Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+                Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
                 return Content("OK");
             }
             var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
                 DbUtil.Db.ClearTag(tag);
-            CmsData.Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            Person.Tag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
             DbUtil.Db.SubmitChanges();
             Util2.CurrentTag = tagname;
             DbUtil.Db.TagCurrent();
@@ -77,9 +79,42 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult UnTag(int id)
         {
-            CmsData.Person.UnTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            Person.UnTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
+        }
+
+        [POST("Person2/InlineEdit/{id:int}")]
+        public ActionResult InlineEdit(int id, int pk, string name, string value)
+        {
+            var p = DbUtil.Db.LoadPersonById(id);
+            switch (name)
+            {
+                case "ContributionOptions":
+                case "EnvelopeOptions":
+                    name = name + "Id";
+                    break;
+            }
+            p.UpdateValue(name, value.ToInt());
+            p.LogChanges(DbUtil.Db);
+            DbUtil.Db.SubmitChanges();
+            return new EmptyResult();
+        }
+        [GET("Person2/InlineCodes/{name}")]
+        public ActionResult InlineCodes(string name)
+        {
+            var q = from v in new List<string>()
+                    select new { value = "", text = "" };
+            switch (name)
+            {
+                case "ContributionOptions":
+                case "EnvelopeOptions":
+                    q = from c in DbUtil.Db.EnvelopeOptions
+                        select new { value = c.Id.ToString(), text = c.Description };
+                    break;
+            }
+            var j = JsonConvert.SerializeObject(q.ToArray());
+            return Content(j);
         }
     }
 }

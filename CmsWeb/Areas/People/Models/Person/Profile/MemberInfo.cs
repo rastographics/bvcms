@@ -17,15 +17,16 @@ namespace CmsWeb.Areas.People.Models
         [NoUpdate]
         public int PeopleId { get; set; }
 
-        // Contributions --------------------------------------------------
+        #region Contributions --------------------------------------------------
 
-        [DisplayName("Contribution Statement")]
+        [DisplayName("Statement Option")]
         public CodeInfo ContributionOptions { get; set; }
 
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
 
-        // Decision --------------------------------------------------
+        #endregion
+        #region Decision --------------------------------------------------
 
         [DisplayName("Type")]
         public CodeInfo DecisionType { get; set; }
@@ -33,7 +34,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Date")]
         public DateTime? DecisionDate { get; set; }
 
-        // Baptism --------------------------------------------------
+        #endregion
+        #region Baptism --------------------------------------------------
 
         [DisplayName("Status")]
         public CodeInfo BaptismStatus { get; set; }
@@ -47,7 +49,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Scheduled")]
         public DateTime? BaptismSchedDate { get; set; }
 
-        // Drop --------------------------------------------------
+        #endregion
+        #region Drop --------------------------------------------------
 
         [DisplayName("Type"), FieldInfo(IdField = "DropCodeId")]
         public CodeInfo DropType { get; set; }
@@ -58,7 +61,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("New Church"), StringLength(60)]
         public string OtherNewChurch { get; set; }
 
-        // New Member Class --------------------------------------------------
+        #endregion
+        #region New Member Class --------------------------------------------------
 
         [DisplayName("Status")]
         public CodeInfo NewMemberClassStatus { get; set; }
@@ -66,7 +70,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Date")]
         public DateTime? NewMemberClassDate { get; set; }
 
-        // Membership --------------------------------------------------
+        #endregion
+        #region Membership -----------------------------------------------------
 
         [TrackChanges]
         public CodeInfo MemberStatus { get; set; }
@@ -78,6 +83,8 @@ namespace CmsWeb.Areas.People.Models
 
         [DisplayName("Prev Church"), StringLength(60)]
         public string OtherPreviousChurch { get; set; }
+
+        #endregion
 
         public MemberInfo()
         {

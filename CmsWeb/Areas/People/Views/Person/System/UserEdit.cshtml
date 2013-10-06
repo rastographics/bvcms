@@ -1,59 +1,51 @@
 ﻿@using UtilityExtensions
 @using CmsData
 @model User
-<div class="margin-top left-gutter">
+<form class="margin-top form-horizontal ajax left-gutter">
     <fieldset>
         <legend>Manage User @Model.Username
             <span class="pull-right">
-            <a class="helplink btn btn-mini ajax" href='/Person2/Users/@Model.PeopleId'>user list</a>
+                <small><a class="ajax" href='/Person2/Users/@Model.PeopleId'>User List</a></small>&nbsp;&nbsp;
             <a class="helplink" target="_blank" href='@Util.HelpLink("ManageUser")'>help</a>
             </span>
         </legend>
         <div class="row-fluid">
-            <div class="inline align-top">
+            <div class="inline align-top wauto">
                 @Html.EditorFor(m => m.Username)
-                @Html.EditorFor(m => m.Password, "password")
-                @Html.DisplayFor(m => m.CreationDate, "DateTime")
             </div>
-            <div class="inline align-top">
-                @Html.EditorFor(m => m.IsLockedOut)
-                @Html.Editor("sendwelcome", new { label = "Send Welcome" })
+            <div class="inline align-top left-gutter wauto">
+                @Html.EditorFor(m => m.Password, "password")
             </div>
         </div>
         <div class="well">
             @{
                 var list = CmsData.User.AllRoles(DbUtil.Db).Where(rr => rr.RoleName != "OrgLeadersOnly").Select(rr => rr.RoleName).ToList();
-                var third = list.Count / 3;
+                var itemspercol = list.Count / 4;
             }
-            <div class="inline align-top">
-                @for (var i = 0; i < third; i++)
-                {
-                    @Role(list[i])
-                }
-            </div>
-            <div class="inline align-top left-gutter">
-                @for (var i = third; i < third * 2; i++)
-                {
-                    @Role(list[i])
-                }
-            </div>
-            <div class="inline align-top left-gutter">
-                @for (var i = third * 2; i < list.Count; i++)
-                {
-                    @Role(list[i])
-                }
-            </div>
+            @for (var col = 0; col < list.Count / itemspercol; col++)
+            {
+                <div class="inline align-top left-gutter">
+                    @for (var i = col * itemspercol; i < (col + 1) * itemspercol; i++)
+                    {
+                        @Role(list[i])
+                    }
+                </div>
+            }
             <div>
                 @Role("OrgLeadersOnly", "<strong>Warning!</strong> limiting role, see help link above")
             </div>
         </div>
-        <div class="modal-footer">
-            <a href="/Person2/Impersonate/@Model.UserId" class="btn btn-warning">Impersonate User</a>
-            <a href="/Person2/UserDelete/@Model.UserId" class="btn btn-danger delete ajax" data-prompt="Are you sure you want to remove User @Model.Username?">Delete User</a>
-            <a href="/Person2/UserUpdate/@Model.UserId" class="btn btn-primary save validate ajax">Save</a>
+        <div>
+            User Created: @Model.CreationDate.FormatDateTm()
+            <div class="pull-right inline">
+                <a href="/Person2/Impersonate/@Model.UserId" class="btn btn-warning">Impersonate User</a>
+                <a href="/Person2/UserDelete/@Model.UserId" class="btn btn-danger ajax" data-confirm="Are you sure you want to remove User @Model.Username?">Delete User</a>
+                <a href="/Person2/UserUpdate/@Model.UserId" class="btn btn-primary validate ajax">Save</a>
+                <div class="inline wauto">@Html.Editor("sendwelcome", new { label = "Send Welcome" })</div>
+            </div>
         </div>
     </fieldset>
-</div>
+</form>
 @helper Role(string role, string warning = null)
 {
     <div class="control-group @(warning.HasValue() ? "warning" : "")">

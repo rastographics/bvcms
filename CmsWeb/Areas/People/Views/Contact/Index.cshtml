@@ -27,18 +27,13 @@
     @Fingerprint.Script("/Scripts/Bootstrap/jquery.bootstrap-growl.js")
     @if (ViewBag.edit == true)
     {
-        <script> $(function () { $(".in").addClass("out"); }); </script>
+        <script> $(function () { $("#edit").click(); }); </script>
     }
 }
 @Html.Hidden("Id")
 <div class="container">
     <div class="table not-wide">
-        <fieldset class="border-bottom">
-            <legend>Contact <a href="/ContactSearch2" class="pull-right go-back">Search Contacts</a></legend>
-            <form id="form-contact" class="ajax form-horizontal w120" method="post">
-                @Html.Partial("ContactDisplay", Model)
-            </form>
-        </fieldset>
+        @Html.Partial("ContactDisplay", Model)
         <div class="table center not-wide">
             <fieldset class="inline align-top">
                 <legend>Ministry Team @Add("Contactor")</legend>
@@ -66,6 +61,6 @@
 {
     if (Model.CanViewComments)
     {
-        <a href="/SearchAdd2/Dialog/@type/@Model.ContactId" class="searchadd pull-right"><i class="icon-plus"></i></a>
+    <a href="/SearchAdd2/Dialog/@type/@Model.ContactId" class="searchadd pull-right in"><i class="icon-plus"></i></a>
     }
 }

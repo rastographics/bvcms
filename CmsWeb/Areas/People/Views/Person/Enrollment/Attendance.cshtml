@@ -1,64 +1,67 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonAttendHistoryModel
 @using UtilityExtensions
-<form class="non-modal ajax">
-    <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
-    </div>
-    <table class="expanding table table-condensed table-hover">
-        <thead>
-            <tr>
-                <th></th>
-                <th>@Model.Pager.SortLink("Meeting")</th>
-                <th>@Model.Pager.SortLink("Organization")</th>
-                <th>@Model.Pager.SortLink("MemberType")</th>
-                <th>@Model.Pager.SortLink("AttendType")</th>
-                <th>OtherAttends</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="section">
-                <td></td>
-                @if (Model.Future)
-                {
-                    <td colspan="5"><span>Showing Future Meetings <a class="btn btn-small btn-success ajax" href="/Person2/Attendance/@Model.PeopleId">show past</a></span></td>
-                }
-                else
-                {
-                    <td colspan="5"><span>Showing Past Meetings <a class="btn btn-small btn-success ajax" href="/Person2/AttendanceFuture/@Model.PeopleId">show future</a></span></td>
-                }
-            </tr>
-            @if (User.IsInRole("Access"))
+<form class="non-modal ajax margin-top left-gutter">
+    <fieldset>
+        <legend>
+            @if (Model.Future)
             {
-                foreach (var a in Model.ViewList())
-                { 
-                <tr>
-                    <td>
-                        <input type="checkbox" mid="@a.MeetingId" pid="@a.PeopleId" @(a.AttendFlag ? "checked=checked" : "") class="atck" @(User.IsInRole("Admin") ? "" : "disabled=disabled") /></td>
-                    <td nowrap="nowrap"><a href="/Meeting/Index/@a.MeetingId">@a.MeetingDate.GetWeekNumber() @a.MeetingDate.Value.ToString("g") (@a.MeetingDate.Value.ToString("ddd"))</a></td>
-                    <td><a href="/Organization/Index/@a.OrganizationId">@a.OrganizationName</a></td>
-                    <td>@a.MemberType</td>
-                    <td>@a.AttendType</td>
-                    <td>@a.OtherAttends</td>
-                </tr>
-                }
+                <text>Future Meetings</text>
+                <small class="pull-right"><a class="ajax" href="/Person2/Attendance/@Model.PeopleId">Show Attendance History</a></small>
             }
             else
             {
-                foreach (var a in Model.ViewList())
-                { 
-                <tr>
-                    <td>
-                        <input type="checkbox" @(a.AttendFlag ? "checked=checked" : "") disabled=disabled /></td>
-                    <td>@a.MeetingDate.Value.ToString("g")</td>
-                    <td>@a.OrganizationName</td>
-                    <td>@a.MemberType</td>
-                    <td>@a.AttendType</td>
-                </tr>
-                }
+                <text>Attendance History</text>
+                <small class="pull-right"><a class="ajax" href="/Person2/AttendanceFuture/@Model.PeopleId">Show Future Meetings</a></small>
             }
-        </tbody>
-    </table>
-    <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
-    </div>
+        </legend>
+        <div class="pagination pagination-mini">
+            @Html.Partial("Pager3", Model.Pager)
+        </div>
+        <table class="expanding table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>@Model.Pager.SortLink("Meeting")</th>
+                    <th>@Model.Pager.SortLink("Organization")</th>
+                    <th>@Model.Pager.SortLink("MemberType")</th>
+                    <th>@Model.Pager.SortLink("AttendType")</th>
+                    <th>OtherAttends</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (User.IsInRole("Access"))
+                {
+                    foreach (var a in Model.ViewList())
+                    { 
+                    <tr>
+                        <td>
+                            <input type="checkbox" mid="@a.MeetingId" pid="@a.PeopleId" @(a.AttendFlag ? "checked=checked" : "") class="atck" @(User.IsInRole("Admin") ? "" : "disabled=disabled") /></td>
+                        <td nowrap="nowrap"><a href="/Meeting/Index/@a.MeetingId">@a.MeetingDate.GetWeekNumber() @a.MeetingDate.Value.ToString("g") (@a.MeetingDate.Value.ToString("ddd"))</a></td>
+                        <td><a href="/Organization/Index/@a.OrganizationId">@a.OrganizationName</a></td>
+                        <td>@a.MemberType</td>
+                        <td>@a.AttendType</td>
+                        <td>@a.OtherAttends</td>
+                    </tr>
+                    }
+                }
+                else
+                {
+                    foreach (var a in Model.ViewList())
+                    { 
+                    <tr>
+                        <td>
+                            <input type="checkbox" @(a.AttendFlag ? "checked=checked" : "") disabled=disabled /></td>
+                        <td>@a.MeetingDate.Value.ToString("g")</td>
+                        <td>@a.OrganizationName</td>
+                        <td>@a.MemberType</td>
+                        <td>@a.AttendType</td>
+                    </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div class="pagination pagination-mini">
+            @Html.Partial("Pager3", Model.Pager)
+        </div>
+    </fieldset>
 </form>

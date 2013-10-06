@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.People.Controllers
             var e = DbUtil.Db.PeopleExtras.First(ee => ee.PeopleId == id && ee.Field == HttpUtility.UrlDecode(name));
             DbUtil.Db.PeopleExtras.DeleteOnSubmit(e);
             DbUtil.Db.SubmitChanges();
-            return View("Profile/ExtraValuesAdHoc", id);
+            return View("Profile/ExtraValues/AdHoc", id);
         }
 
         [GET("Person2/ExtraValueCodes")]
@@ -28,13 +28,19 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/ExtraValuesStandard/{id}")]
         public ActionResult ExtraValuesStandard(int id)
         {
-            return View("Profile/ExtraValuesStandard", id);
+            return View("Profile/ExtraValues/Standard", id);
+        }
+
+        [POST("Person2/ExtraValuesFamily/{id}")]
+        public ActionResult ExtraValuesFamily(int id)
+        {
+            return View("Profile/ExtraValues/Family", id);
         }
 
         [POST("Person2/ExtraValuesAdhoc/{id}")]
         public ActionResult ExtraValuesAdhoc(int id)
         {
-            return View("Profile/ExtraValuesAdhoc", id);
+            return View("Profile/ExtraValues/Adhoc", id);
         }
 
         [POST("Person2/EditExtra")]

@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<CmsData.User>
 <form class="form form-horizontal table not-wide non-modal ajax margin-top" method="post">
     <fieldset class="left-gutter">
-        <legend>Manage Users</legend>
-        <div><a class="btn btn-primary ajax" href="/Person2/UserEdit">Add New User</a></div>
+        <legend>Manage Users
+            <a class="btn btn-primary ajax pull-right" href="/Person2/UserEdit">Add New User</a>
+        </legend>
         <table class="table no-border">
             @foreach (var u in Model)
             {
                 <tr>
-                    <td><a class="ajax" href="/Person2/UserEdit/@u.UserId">@u.Username</a></td>
+                    <td><a class="ajax click-pencil" href="/Person2/UserEdit/@u.UserId"><span>@u.Username</span></a></td>
                     <td>@string.Join(", ", u.Roles)</td>
                 </tr>
             }

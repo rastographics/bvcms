@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.People.Models
         [UIHint("Textarea")]
         public string MedicalDescription { get; set; }
 
-        [UIHint("Textarea")]
+        [UIHint("Textarea"), DisplayName("Registration Log")]
         public string Comments { get; set; }
 
         public bool Tylenol { get; set; }
