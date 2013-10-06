@@ -176,6 +176,9 @@ namespace CmsWeb.Models
         private Organization GetAppropriateOrg()
         {
             List<Organization> list = null;
+            var bestbirthdate = birthday;
+            if (person != null && person.BirthDate.HasValue)
+                bestbirthdate = person.BirthDate;
             if (!masterorgid.HasValue)
                 return null;
             var cklist = masterorg.OrgPickList.Split(',').Select(oo => oo.ToInt()).ToList();
@@ -185,8 +188,8 @@ namespace CmsWeb.Models
                     select o;
             list = q.ToList();
             var q2 = from o in list
-                     where birthday >= o.BirthDayStart || o.BirthDayStart == null
-                     where birthday <= o.BirthDayEnd || o.BirthDayEnd == null
+                     where bestbirthdate >= o.BirthDayStart || o.BirthDayStart == null
+                     where bestbirthdate <= o.BirthDayEnd || o.BirthDayEnd == null
                      select o;
             return q2.FirstOrDefault();
         }
