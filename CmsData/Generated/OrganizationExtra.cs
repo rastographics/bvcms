@@ -23,6 +23,14 @@ namespace CmsData
 		
 		private string _Data;
 		
+		private string _StrValue;
+		
+		private DateTime? _DateValue;
+		
+		private int? _IntValue;
+		
+		private bool? _BitValue;
+		
 		private string _DataType;
 		
    		
@@ -44,6 +52,18 @@ namespace CmsData
 		
 		partial void OnDataChanging(string value);
 		partial void OnDataChanged();
+		
+		partial void OnStrValueChanging(string value);
+		partial void OnStrValueChanged();
+		
+		partial void OnDateValueChanging(DateTime? value);
+		partial void OnDateValueChanged();
+		
+		partial void OnIntValueChanging(int? value);
+		partial void OnIntValueChanged();
+		
+		partial void OnBitValueChanging(bool? value);
+		partial void OnBitValueChanged();
 		
 		partial void OnDataTypeChanging(string value);
 		partial void OnDataTypeChanged();
@@ -123,6 +143,94 @@ namespace CmsData
 					this._Data = value;
 					this.SendPropertyChanged("Data");
 					this.OnDataChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="StrValue", UpdateCheck=UpdateCheck.Never, Storage="_StrValue", DbType="nvarchar(200)")]
+		public string StrValue
+		{
+			get { return this._StrValue; }
+
+			set
+			{
+				if (this._StrValue != value)
+				{
+				
+                    this.OnStrValueChanging(value);
+					this.SendPropertyChanging();
+					this._StrValue = value;
+					this.SendPropertyChanged("StrValue");
+					this.OnStrValueChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="DateValue", UpdateCheck=UpdateCheck.Never, Storage="_DateValue", DbType="datetime")]
+		public DateTime? DateValue
+		{
+			get { return this._DateValue; }
+
+			set
+			{
+				if (this._DateValue != value)
+				{
+				
+                    this.OnDateValueChanging(value);
+					this.SendPropertyChanging();
+					this._DateValue = value;
+					this.SendPropertyChanged("DateValue");
+					this.OnDateValueChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="IntValue", UpdateCheck=UpdateCheck.Never, Storage="_IntValue", DbType="int")]
+		public int? IntValue
+		{
+			get { return this._IntValue; }
+
+			set
+			{
+				if (this._IntValue != value)
+				{
+				
+                    this.OnIntValueChanging(value);
+					this.SendPropertyChanging();
+					this._IntValue = value;
+					this.SendPropertyChanged("IntValue");
+					this.OnIntValueChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="BitValue", UpdateCheck=UpdateCheck.Never, Storage="_BitValue", DbType="bit")]
+		public bool? BitValue
+		{
+			get { return this._BitValue; }
+
+			set
+			{
+				if (this._BitValue != value)
+				{
+				
+                    this.OnBitValueChanging(value);
+					this.SendPropertyChanging();
+					this._BitValue = value;
+					this.SendPropertyChanged("BitValue");
+					this.OnBitValueChanged();
 				}
 
 			}

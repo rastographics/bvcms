@@ -1,0 +1,23 @@
+﻿@model CmsWeb.Models.ExtraValueModel.Field
+@if (Model.UserCanView())
+{
+    <tr>
+        <td>@Model.name</td>
+        @if (Model.UserCanEdit())
+        {
+            <td><a href="#" data-pk="@Model.EditableDataKey" data-name="@Model.EditableDataName" class="@Model.EditableDataType" 
+                   data-url="/ExtraValue/Edit" @Model.EditableDataValue @Model.EditableDataSource><span>@Model.ToString()</span></a>
+            </td>
+        }
+        else
+        {
+            <td>@Model</td>
+        }
+        @if (Model.nonstandard && Model.UserCanEdit())
+        {
+            <td>
+                <a href="@Model.EditableDeleteUrl" class="ajax" data-confirm="Are you sure?"><i class="icon-remove"></i></a>
+            </td>
+        }
+    </tr>
+}

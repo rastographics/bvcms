@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace CmsData
 {
-	public partial class Organization
+	public partial class Organization : ITableWithExtraValues
 	{
 		public static string FormatOrgName(string name, string leader, string loc)
 		{
@@ -392,5 +392,52 @@ namespace CmsData
 				return null;
 			return oev.Data;
 		}
-	}
+
+        public void AddEditExtraValue(string field, string value)
+        {
+            if (!field.HasValue())
+                return;
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.StrValue = value;
+        }
+
+        public void AddEditExtraData(string field, string value)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.Data = value;
+        }
+
+        public void AddEditExtraDate(string field, DateTime? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(field);
+            ev.DateValuie = value;
+        }
+
+        public void AddEditExtraInt(string field, int value)
+        {
+            var ev = GetExtraValue(field);
+            ev.IntValue = value;
+        }
+
+        public void AddEditExtraBool(string field, bool tf)
+        {
+            if (!field.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.BitValue = tf;
+        }
+
+        public void RemoveExtraValue(CMSDataContext Db, string field)
+        {
+            var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
+            if (ev != null)
+                Db.OrganizationExtras.DeleteOnSubmit(ev);
+        }
+    }
 }

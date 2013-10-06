@@ -26,7 +26,7 @@ using CmsData.Codes;
 namespace CmsData
 {
 
-    public partial class Person
+    public partial class Person : ITableWithExtraValues
     {
         public static int[] DiscClassStatusCompletedCodes = new int[]
         { 

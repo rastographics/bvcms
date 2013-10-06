@@ -1,0 +1,28 @@
+﻿@using CmsWeb.Models
+@model int
+@{
+    var extravalues = ExtraValueModel.GetPeopleExtraValues(Model, "Entry").ToList();
+}
+<form>
+    <legend>Standard Extra Values</legend>
+    @if (extravalues.Any())
+    {
+        <table id="memberextras" class="table">
+            <thead>
+                <tr>
+                    <th colspan="2">Extra Values</th>
+                </tr>
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in extravalues)
+                {
+                    @Html.EditorFor(m => f)
+                }
+            </tbody>
+        </table>
+    }
+</form>

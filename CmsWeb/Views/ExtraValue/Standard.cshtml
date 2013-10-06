@@ -1,0 +1,30 @@
+﻿@model CmsWeb.Models.ExtraValues.ExtraValueModel
+<form class="form ajax span12 margin-top" method="post" data-init="ExtraEditable">
+    <fieldset class="left-gutter">
+        <legend>@Model.Location Extra Values
+            <small class="pull-right">
+                @{ var bull = ""; }
+                @foreach (var loc in Model.OtherLocations.Split(','))
+                {
+                    @Html.Raw(bull)
+                    <a href="/ExtraValue/@Model.Table/@loc"class="ajax">@loc Values</a>
+                    bull = "&bull;";
+                }
+            </small>
+        </legend>
+        <table class="table not-wide">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.GetExtraValues())
+                {
+                    @Html.EditorFor(m => f)
+                }
+            </tbody>
+        </table>
+    </fieldset>
+</form>

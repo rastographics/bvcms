@@ -1,0 +1,20 @@
+﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Search for Person to @Model.DialogTitle</h3>
+</div>
+<div id="search-person-form" class="modal-body">
+    <fieldset class="display">
+        @Html.EditorFor(m => m.Name, new { help = "<i>Starting letters of First &amp; Last or just Last, e.g. <u>Pe Smi</u></i>" })
+        @Html.EditorFor(m => m.Phone, new { help = "<i>Any part of any Phone or Email</i>" })
+        @Html.EditorFor(m => m.Address, new { help = "<i>Any part of the Street Address, City or Zip</i>" })
+        @Html.EditorFor(m => m.dob, new { help = "<i>YYYY or MM or MM/DD or MM/DD/YY</i>" })
+        @Html.EditorFor(m => m, "HiddenMeta")
+        @Html.EditorFor(m => m, "HiddenPeople")
+    </fieldset>
+</div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+    <a href="/SearchAdd2/NewPerson/0" class="btn btn-danger ajax" title="add new"><small>skip search</small></a>
+    <a id="searchperson" href="/SearchAdd2/Results" class="btn btn-primary ajax" title="add new">Search</a>
+</div>

@@ -1,0 +1,30 @@
+﻿@using CmsWeb.Models
+@model string
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Standard Extra Values</h3>
+</div>
+<div class="modal-body">
+    <a class="helplink" target="_blank" href='@ExtraValueModel.HelpLink("List")'>help</a>
+    <table id="fields" class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var f in ExtraValueModel.GetExtraValues(Model))
+            {
+                <tr>
+                    <td>@f.name</td>
+                    <td>@f.type</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <a class="btn" data-dismiss="modal">Dismiss</a>
+    <a href="/ExtraValue/DialogAdd" class="btn btn-primary commit">Add Another</a>
+</div>
