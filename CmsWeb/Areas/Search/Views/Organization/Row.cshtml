@@ -2,7 +2,7 @@
 @model CmsWeb.Areas.Search.Models.OrganizationModel.OrganizationInfo
 @{ var o = Model; }
     <tr>
-        <td class="tip" title="@o.ToolTip"><img src="/images/group.png" /></td>
+        <td class="tip" title="@o.ToolTip"><img src="/Content/images/group.png" /></td>
         <td><a href="/Organization/Index/@o.Id">@o.OrganizationName</a></td>
         <td><a href="/Person/Index/@o.LeaderId">@o.LeaderName</a></td>
         <td class="right">@o.MemberCount</td>

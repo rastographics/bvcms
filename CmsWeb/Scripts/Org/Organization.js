@@ -664,7 +664,7 @@ $(function () {
             submit: 'OK',
             rows: 5,
             width: 200,
-            indicator: '<img src="/images/loading.gif">',
+            indicator: '<img src="/Content/images/loading.gif">',
             tooltip: 'Click to edit...'
         });
         $(".editline").editable("/Organization/EditExtra/", {

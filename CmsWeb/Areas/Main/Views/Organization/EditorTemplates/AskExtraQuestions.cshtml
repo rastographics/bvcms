@@ -8,7 +8,7 @@
 		<div class="text big tip" title="ExtraQuestions
     |These questions can be answered with text">
 			ExtraQuestions:
-					<a class="delt" href="#"><img align="top" src="/images/delete.gif" title="remove this item" /></a></div>
+					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></div>
 		<ul id="ExtraQuestions" class="sort">
 			@foreach(var item in Model.list)
 			{
@@ -16,7 +16,7 @@
 				@Html.EditorFor(m => item)
 			}
 		</ul>
-		<div class="newitem"><a href="/Organization/NewExtraQuestion/@listname"><img src="/images/plus1.png" /> Add Item</a></div>
+		<div class="newitem"><a href="/Organization/NewExtraQuestion/@listname"><img src="/Content/images/plus1.png" /> Add Item</a></div>
 	</li>
 }
 

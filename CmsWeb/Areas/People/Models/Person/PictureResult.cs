@@ -73,7 +73,7 @@ namespace CmsWeb.Areas.People.Models
             var u = HttpRuntime.Cache["unknownimagesm"] as byte[];
             if (u == null)
             {
-                u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/images/unknownsm.jpg"));
+                u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/images/unknownsm.jpg"));
                 HttpRuntime.Cache["unknownimagesm"] = u;
                 HttpRuntime.Cache.Insert("unknownimagesm", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
             }
@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.People.Models
             var u = HttpRuntime.Cache["unknownimage"] as byte[];
             if (u == null)
             {
-                u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/images/unknown.jpg"));
+                u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/images/unknown.jpg"));
                 HttpRuntime.Cache.Insert("unknownimagesm", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
             }
             return u;

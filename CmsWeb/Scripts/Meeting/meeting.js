@@ -21,7 +21,7 @@
         d.dialog("open");
     });
     $(".clickSelectG").editable("/Meeting/EditGroup/", {
-        indicator: '<img src="/images/loading.gif">',
+        indicator: '<img src="/Content/images/loading.gif">',
         loadurl: "/Meeting/MeetingTypes/",
         loadtype: "POST",
         type: "select",
@@ -36,7 +36,7 @@
         }
     });
     $(".clickSelectC").editable("/Meeting/EditAttendCredit/", {
-        indicator: '<img src="/images/loading.gif">',
+        indicator: '<img src="/Content/images/loading.gif">',
         loadurl: "/Meeting/AttendCredits/",
         loadtype: "POST",
         type: "select",
@@ -197,7 +197,7 @@
         if ($.atckenabled) {
             if ($(e.target).hasClass("rgck")) {
                 $(e.target).editable("/Meeting/EditCommitment/", {
-                    indicator: '<img src="/images/loading.gif">',
+                    indicator: '<img src="/Content/images/loading.gif">',
                     loadtype: 'post',
                     loadurl: "/Meeting/AttendCommitments/",
                     type: "select",
@@ -264,7 +264,7 @@
             submit: 'OK',
             rows: 5,
             width: 200,
-            indicator: '<img src="/images/loading.gif">',
+            indicator: '<img src="/Content/images/loading.gif">',
             tooltip: 'Click to edit...'
         });
         $(".editline").editable("/Meeting/EditExtra/", {

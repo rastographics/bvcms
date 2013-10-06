@@ -387,11 +387,11 @@ namespace CmsWeb
             //tb.MergeAttribute("height", "12");
             //if ((Required ?? true) == true)
             //{
-            //    tb.MergeAttribute("src", "/images/req.gif");
+            //    tb.MergeAttribute("src", "/Content/images/req.gif");
             //    tb.MergeAttribute("alt", "req");
             //    return tb.ToString();
             //}
-            //tb.MergeAttribute("src", "/images/notreq.gif");
+            //tb.MergeAttribute("src", "/Content/images/notreq.gif");
             //tb.MergeAttribute("alt", "not req");
             var tb = new TagBuilder("span");
             tb.MergeAttribute("class", "asterisk");

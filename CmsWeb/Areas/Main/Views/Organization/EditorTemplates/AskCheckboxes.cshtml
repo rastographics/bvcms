@@ -14,7 +14,7 @@
     |Optional Limit which limits the number of people allowed for a selection
     |Optional DateTime which registers them in a meeting">
 			AskCheckboxes:
-					<a class="delt" href="#"><img align="top" src="/images/delete.gif" title="remove this item" /></a></span>
+					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></span>
 		<ul>
 			<li> <span class="keyword2">Label:</span> @Html.TextBoxFor(m => m.Label, new {@class = "long"}) </li>
 			<li> <span class="keyword2">Minimum:</span> @Html.TextBoxFor(m => m.Min) </li>
@@ -27,7 +27,7 @@
 						@Html.EditorFor(m => item)
 					}
 				</ul>
-				<div class="newitem"><a href="/Organization/NewCheckbox/@listname"><img src="/images/plus1.png" alt="" /> Add Item</a></div>
+				<div class="newitem"><a href="/Organization/NewCheckbox/@listname"><img src="/Content/images/plus1.png" alt="" /> Add Item</a></div>
 			</li>
 		</ul>
 	</li>

@@ -5,7 +5,7 @@
     var targetperson = DbUtil.Db.UserPreference("TargetLinkPeople", "false").ToBool();
     if (!headimage.HasValue())
     {
-        headimage = @"<img src=""/images/bvcms132x55.png"" width=""132"" height=""55"" />";
+        headimage = @"<img src=""/Content/images/bvcms132x55.png"" width=""132"" height=""55"" />";
     }
 }
     <div class="header">
@@ -21,7 +21,7 @@
                     <div id="userarea">
                         <div id="welcome" class="dropdown">
                             <a href="#" class="trigger-dropdown">
-                                Welcome, @Util.UserPreferredName! <img src="/images/dnarrow.png" />
+                                Welcome, @Util.UserPreferredName! <img src="/Content/images/dnarrow.png" />
                             </a>
                             <div class="dropdown-menu has-tip anchor-right">
                                 <ul>

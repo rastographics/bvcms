@@ -10,7 +10,7 @@
 |allowing you to enter the number of items to purchase or select.
 |You can optionally associate a fee with one or more items.">
 			MenuItems:
-					<a class="delt" href="#"><img align="top" src="/images/delete.gif" title="remove this item" /></a></div>
+					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></div>
 		<ul id="MenuItems" class="sort">
 			@foreach (var item in Model.list)
 			{
@@ -18,7 +18,7 @@
 				@Html.EditorFor(m => item)
 			}
 		</ul>
-		<div class="newitem"><a href="/Organization/NewMenuItem/@listname"><img src="/images/plus1.png" alt="" /> Add Item</a></div> 
+		<div class="newitem"><a href="/Organization/NewMenuItem/@listname"><img src="/Content/images/plus1.png" alt="" /> Add Item</a></div> 
 	</li>
 }
 

@@ -9,7 +9,7 @@
     //id=elements_id&value=user_edited_content
         $(function() {
             $(".clickSelect").editable("/Setup/MetroZip/Edit/", {
-                indicator: '<img src="/images/loading.gif">',
+                indicator: '<img src="/Content/images/loading.gif">',
                 loadurl: "/Setup/MetroZip/ResidentCodes/",
                 loadtype: "POST",
                 type: "select",
@@ -44,7 +44,7 @@
                 class='clickSelect'>@(item.ResidentCode == null ? "" : item.ResidentCode.Description)</span>
         </td>
         <td>
-            <a id='d@(item.ZipCode)' href="#" class="delete"><img border="0" src="/images/delete.gif" /></a>
+            <a id='d@(item.ZipCode)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
         </td>
     </tr>
 }

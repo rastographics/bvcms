@@ -40,7 +40,7 @@ namespace CmsWeb.Models
                 var u = context.Cache["unknownimage"] as Byte[];
                 if (u == null)
                 {
-                    u = File.ReadAllBytes(context.Server.MapPath("/images/unknown.jpg"));
+                    u = File.ReadAllBytes(context.Server.MapPath("/Content/images/unknown.jpg"));
                     context.Cache["unknownimage"] = u;
                 }
                 context.Response.BinaryWrite(u);
