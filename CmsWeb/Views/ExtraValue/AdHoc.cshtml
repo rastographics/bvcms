@@ -1,11 +1,9 @@
-﻿@using CmsWeb.Models
-@model int
+﻿@model CmsWeb.Models.ExtraValues.ExtraValueModel
 <form class="form ajax span12 margin-top" method="post"  data-init="ExtraEditable">
     <fieldset class="left-gutter">
         <legend>AdHoc Extra Values
             <small class="pull-right">
-                <a href="/ExtraValue/Standard/@Model"class="ajax">Standard Extra Values</a> &bull;
-                <a href="/ExtraValue/Family/@Model"class="ajax">Family Values</a>
+                <a href="/ExtraValue/Index/@Model.Table/Standard/@Model.Id" class="ajax">Standard Extra Values</a>
             </small>
         </legend>
         <table class="table not-wide">
@@ -16,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var f in ExtraValueModel.GetPeopleExtraValues(Model, "AdHoc").ToList())
+                @foreach (var f in Model.GetExtraValues("Adhoc").ToList())
                 {
                     @Html.EditorFor(m => f)
                 }
@@ -24,3 +22,4 @@
         </table>
     </fieldset>
 </form>
+

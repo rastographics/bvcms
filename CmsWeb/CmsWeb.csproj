@@ -1118,7 +1118,7 @@
     <Content Include="Views\ExtraValue\EditorTemplates\Field.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
-    <Content Include="Views\ExtraValue\Family.cshtml" />
+    <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />

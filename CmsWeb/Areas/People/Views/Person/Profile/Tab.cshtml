@@ -5,6 +5,7 @@
     <li><a href="#memberdocs" data-toggle="tab" class="ajax">Documents</a></li>
     <li><a href="#comments" data-toggle="tab" class="ajax">Comments</a></li>
     <li><a href="#extravalues" data-toggle="tab" class="ajax">Extra Values</a></li>
+    <li><a href="#familyextravalues" data-toggle="tab" class="ajax">FamilyExtra Values</a></li>
     <li><a href="#entry" data-toggle="tab" class="ajax">Entry</a></li>
 </ul> 
 <div class="tab-content">
@@ -12,7 +13,8 @@
     <div class="tab-pane" id="membernotes" data-link="/Person2/MemberNotes/@Model.PeopleId"></div>
     <div class="tab-pane" id="memberdocs" data-link="/Person2/MemberDocuments/@Model.PeopleId" data-init="MemberDocsEditable"></div>
     <div class="tab-pane" id="comments" data-link="/Person2/Comments/@Model.PeopleId"></div>
-    <div class="tab-pane" id="extravalues" data-link="/ExtraValue/Standard/@Model.PeopleId"></div>
+    <div class="tab-pane" id="extravalues" data-link="/ExtraValue/Index/Person/Standard/@Model.PeopleId"></div>
+    <div class="tab-pane" id="familyextravalues" data-link="/ExtraValue/Index/Family/Standard/@Model.PeopleId"></div>
     <div class="tab-pane" id="entry" data-link="/ExtraValue/Entry/@Model.PeopleId"></div>
 </div>
 

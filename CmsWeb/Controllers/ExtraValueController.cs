@@ -20,10 +20,11 @@ namespace CmsWeb.Controllers
             return View("AdHoc", id);
         }
 
-        [GET("ExtraValue/Codes")]
-        public ActionResult Codes(string name)
+        [GET("ExtraValue/Codes/{table}")]
+        public ActionResult Codes(string table, string name)
         {
-            var j = ExtraValueModel.CodesJson(HttpUtility.UrlDecode(name));
+            var m = new ExtraValueModel(0, table);
+            var j = m.CodesJson(HttpUtility.UrlDecode(name));
             return Content(j);
         }
 
@@ -32,31 +33,17 @@ namespace CmsWeb.Controllers
         {
             return View("DialogList", location);
         }
-        [POST("ExtraValue/{table}/{location}/{id}")]
+        [POST("ExtraValue/Index/{table}/{location}/{id}")]
         public ActionResult Index(string table, string location, int id)
         {
             var m = new ExtraValueModel(id, location, table);
             return View(location, m);
         }
 
-        [POST("ExtraValue/Family/{id}")]
-        public ActionResult Family(int id)
+        [POST("ExtraValue/Edit/{table}/{type}")]
+        public ActionResult Edit(string table, string type, string pk, string name, string value)
         {
-            return View("Family", id);
-        }
-
-        [POST("ExtraValue/Adhoc/{id}")]
-        public ActionResult Adhoc(int id)
-        {
-            return View("Adhoc", id);
-        }
-
-        [POST("ExtraValue/Edit/{table}")]
-        public ActionResult Edit(string table, string pk, string name, string value)
-        {
-            var a = pk.SplitStr("-", 2);
-            var type = a[0];
-            var m = new ExtraValueModel(a[1].ToInt(), table);
+            var m = new ExtraValueModel(pk.ToInt(), table);
             m.EditExtra(type, HttpUtility.UrlDecode(name), value);
             return new EmptyResult();
         }

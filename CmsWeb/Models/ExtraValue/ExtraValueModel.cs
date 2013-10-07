@@ -6,8 +6,6 @@ using System.Web.Mvc;
 using System.Xml.Serialization;
 using System.IO;
 using CmsData;
-using CmsWeb.Areas.Dialog.Controllers;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Newtonsoft.Json;
 using UtilityExtensions;
 
@@ -57,13 +55,14 @@ namespace CmsWeb.Models.ExtraValues
 
             if (fs == null)
                 return emptylist;
-            var fields = fs.fields ?? emptylist;
-
-            var q = from ff in fields
-                    where ff.location == location || location == "Standard"
-                    select ff;
-            var list = q.ToList();
-            return list;
+            var fields = (from ff in (fs.fields ?? emptylist)
+                          where ff.table == Table.ToString()
+                          where ff.location == location || location == null
+                          select ff).ToList();
+            var n = 0;
+            foreach (var ff in fields)
+                ff.order = n++;
+            return fields;
         }
 
         public string HelpLink(string page)
@@ -78,22 +77,22 @@ namespace CmsWeb.Models.ExtraValues
                 case OriginTable.Person:
                     q = from ee in DbUtil.Db.PeopleExtras
                         where ee.PeopleId == Id
-                        select new ExtraValue(ee);
+                        select new ExtraValue(ee, this);
                     break;
                 case OriginTable.Family:
                     q = from ee in DbUtil.Db.FamilyExtras
                         where ee.FamilyId == Id
-                        select new ExtraValue(ee);
+                        select new ExtraValue(ee, this);
                     break;
                 case OriginTable.Organization:
                     q = from ee in DbUtil.Db.OrganizationExtras
                         where ee.OrganizationId == Id
-                        select new ExtraValue(ee);
+                        select new ExtraValue(ee, this);
                     break;
                 case OriginTable.Meeting:
                     q = from ee in DbUtil.Db.MeetingExtras
                         where ee.MeetingId == Id
-                        select new ExtraValue(ee);
+                        select new ExtraValue(ee, this);
                     break;
                 default:
                     q = new List<ExtraValue>();
@@ -109,12 +108,10 @@ namespace CmsWeb.Models.ExtraValues
                     return DbUtil.Db.LoadPersonById(Id);
                 case OriginTable.Organization:
                     return DbUtil.Db.LoadOrganizationById(Id);
-                //case OriginTable.Family:
-                //                case OriginTable.Meeting:
-                //                    q = from ee in DbUtil.Db.MeetingExtras
-                //                        where ee.MeetingId == Id
-                //                        select new ExtraValue(ee);
-                //                    break;
+                case OriginTable.Family:
+                    return DbUtil.Db.Families.Single(ff => ff.FamilyId == Id);
+                //  case OriginTable.Meeting:
+                //  break;
                 default:
                     return null;
             }
@@ -125,22 +122,19 @@ namespace CmsWeb.Models.ExtraValues
             var standardfields = GetStandardExtraValues(loc ?? Location).ToList();
             var extraValues = ListExtraValues();
 
-
-            return (loc ?? Location) == "adhoc"
-
-                ? from v in extraValues
-                  join f in standardfields on v.Field equals f.name into j
-                  from f in j.DefaultIfEmpty()
-                  where f == null
-                  where !standardfields.Any(ff => ff.Codes.Any(cc => cc == v.Field))
-                  orderby v.Field
-                  select Field.AddField(f, v)
-
-                : from f in standardfields
-                  join v in extraValues on f.name equals v.Field into j
-                  from v in j.DefaultIfEmpty()
-                  orderby f.order
-                  select Field.AddField(f, v);
+            if ((loc ?? Location ?? "").ToLower() == "adhoc")
+                return from v in extraValues
+                       join f in standardfields on v.Field equals f.name into j
+                       from f in j.DefaultIfEmpty()
+                       where f == null
+                       where !standardfields.Any(ff => ff.Codes.Any(cc => cc == v.Field))
+                       orderby v.Field
+                       select Field.AddField(f, v, this);
+            return from f in standardfields
+                   join v in extraValues on f.name equals v.Field into j
+                   from v in j.DefaultIfEmpty()
+                   orderby f.order
+                   select Field.AddField(f, v, this);
         }
         public List<SelectListItem> ExtraValueCodes()
         {
@@ -163,13 +157,13 @@ namespace CmsWeb.Models.ExtraValues
                             };
             return q2.ToList();
         }
-        public static Dictionary<string, string> Codes(string name)
+        public Dictionary<string, string> Codes(string name)
         {
             var f = GetStandardExtraValues(null).Single(ee => ee.name == name);
             return f.Codes.ToDictionary(ee => ee, ee => ee);
         }
 
-        public static string CodesJson(string name)
+        public string CodesJson(string name)
         {
             var f = GetStandardExtraValues(null).Single(ee => ee.name == name);
             var q = from c in f.Codes
@@ -213,6 +207,8 @@ namespace CmsWeb.Models.ExtraValues
             var o = TableObject();
             if (o == null)
                 return;
+            if (value == null)
+                value = HttpContext.Current.Request.Form["value[]"];
             switch (type)
             {
                 case "Code":
@@ -225,31 +221,22 @@ namespace CmsWeb.Models.ExtraValues
                     {
                         DateTime dt;
                         if (DateTime.TryParse(value, out dt))
-                        {
                             o.AddEditExtraDate(name, dt);
-                            value = dt.ToShortDateString();
-                        }
                         else
-                        {
                             o.RemoveExtraValue(DbUtil.Db, name);
-                            value = "";
-                        }
                     }
                     break;
                 case "Int":
                     o.AddEditExtraInt(name, value.ToInt());
                     break;
                 case "Bit":
-                    if (value == "1")
+                    if (value == "True")
                         o.AddEditExtraBool(name, true);
                     else
                         o.RemoveExtraValue(DbUtil.Db, name);
                     break;
                 case "Bits":
                     {
-                        if (value == null)
-                            value = HttpContext.Current.Request.Form["value[]"];
-
                         var cc = ExtraValueBits(name);
                         var aa = value.Split(',');
                         foreach (var c in cc)

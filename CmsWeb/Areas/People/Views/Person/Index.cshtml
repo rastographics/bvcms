@@ -34,7 +34,7 @@
                 <div class="span12">
                     <div id="tab-area" class="tabbable primary-tabs">
                         <ul class="nav nav-tabs">
-                            <li><a href="#personal" data-toggle="tab" class="active">Personal</a></li>
+                            <li><a href="#" data-target="#personal" data-toggle="tab" class="active">Personal</a></li>
                             <li><a href="#enrollment" data-toggle="tab">Involvement</a></li>
                             <li><a href="#profile" data-toggle="tab">Profile</a></li>
                             @if (User.IsInRole("Access")) 
@@ -79,6 +79,7 @@
                 @Html.Partial("Family/Members", Model.FamilyModel)
                 @Html.Partial("Family/Related", Model.FamilyModel)
                 @Html.Partial("Family/Photo", Model)
+                @Html.Partial("Family/ExtraValues", Model)
             </div>
         </div>
     </div>

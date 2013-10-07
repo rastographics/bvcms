@@ -416,7 +416,7 @@ namespace CmsData
             if (!value.HasValue)
                 return;
             var ev = GetExtraValue(field);
-            ev.DateValuie = value;
+            ev.DateValue = value;
         }
 
         public void AddEditExtraInt(string field, int value)

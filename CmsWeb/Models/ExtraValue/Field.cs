@@ -21,27 +21,56 @@ namespace CmsWeb.Models.ExtraValues
         public string name { get; set; }
         [XmlAttribute]
         public string type { get; set; }
+
         [XmlAttribute]
-        public string location { get; set; }
+        public string location
+        {
+            get
+            { 
+                if(_location.HasValue())
+                    return _location;
+                return "Standard";
+            }
+            set 
+            { 
+                if(value != "MemberProfile")
+                    _location = value; 
+            }
+        }
+
+        [XmlAttribute]
+        public string table
+        {
+            get
+            { 
+                if(_table.HasValue())
+                    return _table;
+                return "Person";
+            }
+            set { _table = value; }
+        }
+
         [XmlAttribute]
         public string VisibilityRoles { get; set; }
         public List<string> Codes { get; set; }
         internal int order;
-        public int id;
-        public bool nonstandard;
-        public bool standard { get { return !nonstandard; } }
+        public int Id;
+        public bool NonStandard;
+        public bool standard { get { return !NonStandard; } }
 
         internal ExtraValue extravalue;
+        internal ExtraValueModel model; // only applies to standard extra values
+        private string _table;
+        private string _location;
 
-        internal static Field AddField(Field f, ExtraValue ev)
+        internal static Field AddField(Field f, ExtraValue ev, ExtraValueModel m = null)
         {
             if (f == null)
             {
                 f = new Field
                 {
                     name = ev.Field,
-                    nonstandard = true,
-                    id = ev.Id,
+                    NonStandard = true,
                 };
                 f.type = ev.StrValue.HasValue() ? "Code"
                     : ev.Data.HasValue() ? "Data"
@@ -50,6 +79,9 @@ namespace CmsWeb.Models.ExtraValues
                     : ev.BitValue.HasValue ? "Bit"
                     : "Code";
             }
+            f.Id = ev != null ? ev.Id : m != null ? m.Id : 0; 
+            f.extravalue = ev;
+            f.model = m;
             return f;
         }
         public bool UserCanView()
@@ -73,30 +105,31 @@ namespace CmsWeb.Models.ExtraValues
 
         public override string ToString()
         {
-            if (extravalue == null)
-                extravalue = new ExtraValue();
+            var ev = extravalue;
+            if (ev == null)
+                ev = new ExtraValue();
             switch (type)
             {
                 case "Bit":
                     if (extravalue == null)
-                        if (nonstandard)
+                        if (NonStandard)
                             return "Click to edit";
                         else return "false";
-                    return extravalue.BitValue.ToString();
+                    return ev.BitValue.ToString();
                 case "Code":
-                    return extravalue.StrValue;
+                    return ev.StrValue;
                 case "Data":
-                    return extravalue.Data.Trim();
+                    return (ev.Data ?? "").Trim();
                 case "Date":
-                    return extravalue.DateValue.FormatDate();
+                    return ev.DateValue.FormatDate();
                 case "Bits":
                     {
                         var q = from e in DbUtil.Db.PeopleExtras
                                 where e.BitValue == true
-                                where e.PeopleId == id
+                                where e.PeopleId == Id
                                 where Codes.Contains(e.Field)
                                 select e.Field;
-                        return string.Join(",", q);
+                        return string.Join(", ", q);
                     }
                 case "Int":
                     return extravalue.IntValue.ToString();
@@ -104,7 +137,7 @@ namespace CmsWeb.Models.ExtraValues
             return "";
         }
 
-        public string EditableDataSource
+        public string DataSource
         {
             get
             {
@@ -113,48 +146,49 @@ namespace CmsWeb.Models.ExtraValues
                 if (type == "Code" && standard)
                     source = "/ExtraValue/Codes?name={0}".Fmt(n);
                 else if (type == "Bits")
-                    source = "/ExtraValue/Bits/{0}?name={1}".Fmt(id, n);
+                    source = "/ExtraValue/Bits/{0}?name={1}".Fmt(Id, n);
                 return source.HasValue() ? "data-source={0}".Fmt(source) : "";
             }
         }
-        public string EditableDeleteUrl
+        public string EditUrl
+        {
+            get
+            {
+                var n = HttpUtility.UrlEncode(name);
+                return "/ExtraValue/Edit/{0}/{1}".Fmt(model.Table, type, Id, n);
+            }
+        }
+        public string DeleteUrl
         {
             get
             {
                 if (standard)
                     return "";
                 var n = HttpUtility.UrlEncode(name);
-                return "/ExtraValue/Delete/{0}?name={1}".Fmt(id, n);
+                return "/ExtraValue/Delete/{0}?name={1}".Fmt(Id, n);
             }
         }
-        public string EditableDataType
+        public string EditableClass
         {
             get
             {
                 return "click-pencil click-{0}{1}".Fmt(type, type == "Code" && standard ? "-Select" : "");
             }
         }
-        public string EditableDataValue
+        public string DataValue
         {
             get
             {
                 if (type == "Code" && standard && HasValue)
                     return "data-value={0}".Fmt(this);
                 if (type == "Bits")
-                    return "data-value={0}".Fmt(extravalue.Model.ListBitsJson(name)).Replace('"', '\'');
+                    return "data-value={0}".Fmt(model.ListBitsJson(name)).Replace('"', '\'');
                 if (type == "Bit")
                     return "data-value={0}".Fmt(this);
                 return "";
             }
         }
-        public string EditableDataKey
-        {
-            get
-            {
-                return "{0}-{1}".Fmt(type, id);
-            }
-        }
-        public string EditableDataName
+        public string DataName
         {
             get
             {
