@@ -144,9 +144,9 @@ namespace CmsWeb.Models.ExtraValues
                 var n = HttpUtility.UrlEncode(name);
                 var source = "";
                 if (type == "Code" && standard)
-                    source = "/ExtraValue/Codes?name={0}".Fmt(n);
+                    source = "/ExtraValue/Codes/{0}?name={1}".Fmt(table, n);
                 else if (type == "Bits")
-                    source = "/ExtraValue/Bits/{0}?name={1}".Fmt(Id, n);
+                    source = "/ExtraValue/Bits/{0}/{1}?name={2}".Fmt(model.Table, Id, n);
                 return source.HasValue() ? "data-source={0}".Fmt(source) : "";
             }
         }

@@ -119,18 +119,21 @@ namespace CmsWeb.Models.ExtraValues
 
         public IEnumerable<Field> GetExtraValues(string loc = null)
         {
-            var standardfields = GetStandardExtraValues(loc ?? Location).ToList();
             var extraValues = ListExtraValues();
 
             if ((loc ?? Location ?? "").ToLower() == "adhoc")
+            {
+                var allstandardfields = GetStandardExtraValues(null).ToList();
                 return from v in extraValues
-                       join f in standardfields on v.Field equals f.name into j
+                       join f in allstandardfields on v.Field equals f.name into j
                        from f in j.DefaultIfEmpty()
                        where f == null
-                       where !standardfields.Any(ff => ff.Codes.Any(cc => cc == v.Field))
+                       where !allstandardfields.Any(ff => ff.Codes.Any(cc => cc == v.Field))
                        orderby v.Field
                        select Field.AddField(f, v, this);
-            return from f in standardfields
+            }
+           
+            return from f in GetStandardExtraValues(loc ?? Location)
                    join v in extraValues on f.name equals v.Field into j
                    from v in j.DefaultIfEmpty()
                    orderby f.order

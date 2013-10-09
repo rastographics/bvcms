@@ -1,8 +1,7 @@
 ﻿@model IEnumerable<CmsData.User>
 <form class="form form-horizontal table not-wide non-modal ajax margin-top" method="post">
     <fieldset class="left-gutter">
-        <legend>Manage Users
-            <a class="btn btn-primary ajax pull-right" href="/Person2/UserEdit">Add New User</a>
+        <legend>Manage Users <a class="ajax" href="/Person2/UserEdit"><i class="icon-plus"></i></a>
         </legend>
         <table class="table no-border">
             @foreach (var u in Model)
