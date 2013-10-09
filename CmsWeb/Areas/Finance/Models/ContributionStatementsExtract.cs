@@ -19,12 +19,13 @@ namespace CmsWeb.Areas.Finance.Models.Report
 		public string Host { get; set; }
 		public int LastSet { get; set; }
 		public string StartsWith { get; set; }
+		public string Sort { get; set; }
 
         // For extended report
         public bool showCheckNo { get; set; }
         public bool showNotes { get; set; }
 
-		public ContributionStatementsExtract(string Host, DateTime fd, DateTime td, bool PDF, string OutputFile, string startswith = null)
+		public ContributionStatementsExtract(string Host, DateTime fd, DateTime td, bool PDF, string OutputFile, string startswith = null, string sort = null)
 		{
 			this.fd = fd;
 			this.td = td;
@@ -32,6 +33,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
 			this.Host = Host;
 			this.OutputFile = OutputFile;
 		    StartsWith = startswith;
+		    Sort = sort;
 		}
 
 		public CMSDataContext Db { get; set; }
@@ -45,7 +47,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             showCheckNo = Db.Setting("RequireCheckNoOnStatement", "false").ToLower() == "true";
             showNotes = Db.Setting("RequireNotesOnStatement", "false").ToLower() == "true";
 
-			var qc = APIContribution.contributors(Db, fd, td, 0, 0, 0, noaddressok, useMinAmt: true, startswith: StartsWith);
+			var qc = APIContribution.contributors(Db, fd, td, 0, 0, 0, noaddressok, useMinAmt: true, startswith: StartsWith, sort: Sort);
 			var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
 			runningtotals.Count = qc.Count();
 			Db.SubmitChanges();
