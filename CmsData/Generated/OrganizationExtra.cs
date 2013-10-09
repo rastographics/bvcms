@@ -23,6 +23,8 @@ namespace CmsData
 		
 		private string _Data;
 		
+		private string _DataType;
+		
 		private string _StrValue;
 		
 		private DateTime? _DateValue;
@@ -30,8 +32,6 @@ namespace CmsData
 		private int? _IntValue;
 		
 		private bool? _BitValue;
-		
-		private string _DataType;
 		
    		
     	
@@ -53,6 +53,9 @@ namespace CmsData
 		partial void OnDataChanging(string value);
 		partial void OnDataChanged();
 		
+		partial void OnDataTypeChanging(string value);
+		partial void OnDataTypeChanged();
+		
 		partial void OnStrValueChanging(string value);
 		partial void OnStrValueChanged();
 		
@@ -64,9 +67,6 @@ namespace CmsData
 		
 		partial void OnBitValueChanging(bool? value);
 		partial void OnBitValueChanged();
-		
-		partial void OnDataTypeChanging(string value);
-		partial void OnDataTypeChanged();
 		
     #endregion
 		public OrganizationExtra()
@@ -143,6 +143,28 @@ namespace CmsData
 					this._Data = value;
 					this.SendPropertyChanged("Data");
 					this.OnDataChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="DataType", UpdateCheck=UpdateCheck.Never, Storage="_DataType", DbType="nvarchar(5)")]
+		public string DataType
+		{
+			get { return this._DataType; }
+
+			set
+			{
+				if (this._DataType != value)
+				{
+				
+                    this.OnDataTypeChanging(value);
+					this.SendPropertyChanging();
+					this._DataType = value;
+					this.SendPropertyChanged("DataType");
+					this.OnDataTypeChanged();
 				}
 
 			}
@@ -231,28 +253,6 @@ namespace CmsData
 					this._BitValue = value;
 					this.SendPropertyChanged("BitValue");
 					this.OnBitValueChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="DataType", UpdateCheck=UpdateCheck.Never, Storage="_DataType", DbType="nvarchar(5)")]
-		public string DataType
-		{
-			get { return this._DataType; }
-
-			set
-			{
-				if (this._DataType != value)
-				{
-				
-                    this.OnDataTypeChanging(value);
-					this.SendPropertyChanging();
-					this._DataType = value;
-					this.SendPropertyChanged("DataType");
-					this.OnDataTypeChanged();
 				}
 
 			}

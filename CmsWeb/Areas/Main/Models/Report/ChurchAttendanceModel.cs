@@ -128,7 +128,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                                                   date = m.MeetingDate.Value,
                                                   OrgId = m.OrganizationId,
                                                   OrgName = m.Organization.OrganizationName,
-                                                  Present = m.NumPresent,
+                                                  Present = m.MaxCount ?? 0,
                                                   Visitors = m.NumNewVisit + m.NumRepeatVst,
                                                   OutTowners = m.NumOutTown ?? 0
                                               }
@@ -140,7 +140,7 @@ namespace CmsWeb.Areas.Main.Models.Report
         {
             var q = from m in DbUtil.Db.Meetings
                     where m.MeetingDate.Value.Date.DayOfWeek == 0
-                    where m.NumPresent > 0
+                    where m.MaxCount > 0
                     where m.MeetingDate < Util.Now
                     orderby m.MeetingDate descending
                     select m.MeetingDate.Value.Date;

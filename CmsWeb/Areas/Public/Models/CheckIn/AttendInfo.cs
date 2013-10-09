@@ -20,6 +20,7 @@ namespace CmsWeb.Models.OrganizationPage
             }
         }
         public int OrganizationId { get; set; }
+        public int? HeadCount { get; set; }
         public int NumPresent { get; set; }
         public int NumVisitors { get; set; }
         public string Location { get; set; }

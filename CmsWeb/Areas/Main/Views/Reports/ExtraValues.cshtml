@@ -32,7 +32,7 @@
 		<td>@e.Count</td>
         @if(User.IsInRole("Admin"))
 		{
-            <td><a class="delete" href="/Manage/ExtraValues/DeleteAll?field=@Server.UrlEncode(e.Field)&value=@e.type&value=@Server.UrlEncode(e.Value)"><img src="/Content/images/delete.gif" /></a></td>
+            <td><a class="delete" href="/Manage/ExtraValues/DeleteAll?field=@Server.UrlEncode(e.Field)&type=@e.type&value=@Server.UrlEncode(e.Value)"><img src="/Content/images/delete.gif" /></a></td>
 		}
     </tr>
 }

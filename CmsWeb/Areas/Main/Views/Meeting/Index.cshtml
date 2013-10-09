@@ -1,8 +1,11 @@
 ﻿@using UtilityExtensions
+@using CmsData
 @model CmsWeb.Models.MeetingModel
 @{
     ViewBag.Title = "Meeting";
     Layout = "~/Views/Shared/SiteLayout.cshtml";
+    var RegularMeetingHeadCount = DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
+    var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount == "enable";
 }
 @section head
 {
@@ -23,16 +26,11 @@
 @section scripts
 {
     @Fingerprint.Script("/Scripts/meeting/meeting.js")
-    @if (!Model.meeting.GroupMeetingFlag)
-    {
-        <script type="text/javascript">
-            $(function () { $(".numpresent").editable("disable"); });
-        </script>
-    }
 }
 
 @Html.Hidden("meetingid", Model.meeting.MeetingId)
 @Html.Hidden("sort", "false")
+@Html.Hidden("RegularMeetingHeadCount", RegularMeetingHeadCount);
 @if (Model.HasRegistered())
 {
 @Html.Hidden("showregistered", "true")
@@ -74,17 +72,23 @@ This will allow you to mark them as members.
               <td><fieldset>
                 <table width="100%" cellpadding="4">
                   <tr>
+                    <td class="right">HeadCount:</td>
+                      <td class="right" id="HeadCount">
+                          @if (User.IsInRole("Attendance") && CanEditHeadCount)
+                          {
+                              <span id="h=@Model.meeting.MeetingId" class="clickEdit headcount">@Model.meeting.HeadCount.ToStringNoZero()</span>
+                          }
+                          else
+                          {
+                              @Model.meeting.HeadCount.ToStringNoZero()
+                          }
+                      </td>
+                      <td colspan="2"></td>
+                  </tr>
+                  <tr>
+                  <tr>
                     <td class="right">Present:</td>
-                    <td class="right" id="NumPresent">
-        @if (User.IsInRole("Attendance"))
-        {
-                        <span id="n=@Model.meeting.MeetingId" class="clickEdit numpresent">@Model.meeting.NumPresent</span>
-        }
-        else
-        {
-                        @Model.meeting.NumPresent
-        }
-                    </td>
+                    <td class="right" id="NumPresent"> @Model.meeting.NumPresent </td>
                     <td class="right">New Guests:</td>
                     <td class="right" id="NumNewVisit"><span>@Model.meeting.NumNewVisit</span></td>
                     </tr>

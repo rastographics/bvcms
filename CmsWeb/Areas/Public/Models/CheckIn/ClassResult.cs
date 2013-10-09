@@ -12,7 +12,7 @@ namespace CmsWeb.Models
     public class ClassResult : ActionResult
     {
         private List<string> items;
-        private CmsData.Meeting meeting;
+        private Meeting meeting;
         public ClassResult(int OrgId, int thisday)
         {
             var mid = DbUtil.Db.GetTodaysMeetingId(OrgId, thisday);
@@ -45,7 +45,7 @@ namespace CmsWeb.Models
                     w.WriteAttributeString("Teacher", meeting.Organization.LeaderName);
                     w.WriteAttributeString("Date", meeting.MeetingDate.FormatDate());
                     w.WriteAttributeString("Time", meeting.MeetingDate.Value.ToString("t"));
-                    w.WriteAttributeString("Count", meeting.NumPresent.ToString());
+                    w.WriteAttributeString("Count", meeting.MaxCount.ToString());
                     foreach (var f in items)
                         w.WriteElementString("Name", f);
                 }

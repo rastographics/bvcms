@@ -85,7 +85,13 @@ namespace CmsData
                     s2 = "Tags";
                 object prop = Util.GetProperty(c, s2);
                 if (prop is DateTime?)
-                    prop = ((DateTime?) prop).FormatDate();
+                {
+                    var dt = prop as DateTime?;
+                    if (dt.Value != dt.Value.Date)
+                        prop = dt.FormatDateTm();
+                    else
+                        prop = dt.FormatDate();
+                }
                 if (s == "SavedQueryValue")
                     prop = ((string)prop).Split(',')[1];
                 p.Add(prop);

@@ -7,4 +7,5 @@
             return;
         window.location = "/Reports/ChurchAttendance/" + $.SortableDate($("#Sunday").val());
     });
+    $("table.centered tbody tr:odd").addClass("alt");
 });

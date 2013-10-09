@@ -349,7 +349,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [POST("Reports2/Meetings")]
         public ActionResult Meetings(MeetingsModel m)
         {
-            if (m.FromOrgSearch)
+            if (!m.FromWeekAtAGlance)
                 m.Dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
             if (!m.Dt2.HasValue)
                 m.Dt2 = m.Dt1.Value.AddDays(1);

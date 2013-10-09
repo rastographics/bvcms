@@ -53,6 +53,10 @@ namespace CmsData
 		
 		private bool? _NoAutoAbsents;
 		
+		private int? _HeadCount;
+		
+		private int? _MaxCount;
+		
    		
    		private EntitySet< Attend> _Attends;
 		
@@ -125,6 +129,12 @@ namespace CmsData
 		
 		partial void OnNoAutoAbsentsChanging(bool? value);
 		partial void OnNoAutoAbsentsChanged();
+		
+		partial void OnHeadCountChanging(int? value);
+		partial void OnHeadCountChanged();
+		
+		partial void OnMaxCountChanging(int? value);
+		partial void OnMaxCountChanged();
 		
     #endregion
 		public Meeting()
@@ -542,6 +552,50 @@ namespace CmsData
 					this._NoAutoAbsents = value;
 					this.SendPropertyChanged("NoAutoAbsents");
 					this.OnNoAutoAbsentsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="HeadCount", UpdateCheck=UpdateCheck.Never, Storage="_HeadCount", DbType="int")]
+		public int? HeadCount
+		{
+			get { return this._HeadCount; }
+
+			set
+			{
+				if (this._HeadCount != value)
+				{
+				
+                    this.OnHeadCountChanging(value);
+					this.SendPropertyChanging();
+					this._HeadCount = value;
+					this.SendPropertyChanged("HeadCount");
+					this.OnHeadCountChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="MaxCount", UpdateCheck=UpdateCheck.Never, Storage="_MaxCount", DbType="int", IsDbGenerated=true)]
+		public int? MaxCount
+		{
+			get { return this._MaxCount; }
+
+			set
+			{
+				if (this._MaxCount != value)
+				{
+				
+                    this.OnMaxCountChanging(value);
+					this.SendPropertyChanging();
+					this._MaxCount = value;
+					this.SendPropertyChanged("MaxCount");
+					this.OnMaxCountChanged();
 				}
 
 			}

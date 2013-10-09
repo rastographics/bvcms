@@ -25,4 +25,10 @@
             $("#Direction").val('asc');
         $.reloadmeetings();
     });
+    $("a.submit").click(function(ev) {
+        ev.preventDefault();
+        $("#meetingsform").attr("action", this.href);
+        $("#meetingsform").submit();
+        return false;
+    });
 });

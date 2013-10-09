@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                         location = m.Organization.Location,
                         date = m.MeetingDate.Value,
                         OrgId = m.OrganizationId,
-                        Present = m.NumPresent,
+                        Present = m.MaxCount ?? 0,
                         Visitors = m.NumNewVisit + m.NumRepeatVst,
                         OutTowners = m.NumOutTown ?? 0
                     };

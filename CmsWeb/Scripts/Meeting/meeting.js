@@ -30,9 +30,9 @@
         tooltip: 'Click to edit...',
         callback: function (value, settings) {
             if (value == 'Group (headcount)')
-                $(".numpresent").editable("enable");
+                $(".headcount").editable("enable");
             else
-                $(".numpresent").editable("disable");
+                $(".headcount").editable($("#RegularMeetingHeadCount").val());
         }
     });
     $(".clickSelectC").editable("/Meeting/EditAttendCredit/", {
