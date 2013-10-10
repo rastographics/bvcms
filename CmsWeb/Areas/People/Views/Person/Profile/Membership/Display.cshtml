@@ -12,6 +12,11 @@
             <legend>Member Profile @FormAction()</legend>
             <div class="inline align-top">
                 <div class="well">
+                    <p><b>Statement/Envelope Options</b></p>
+                    @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+                    @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                </div>
+                <div class="well">
                     <p><b>Decision</b></p>
                     @Html.DisplayFor(m => m.DecisionType)
                     @Html.DisplayFor(m => m.DecisionDate)
@@ -43,10 +48,12 @@
                     @Html.DisplayFor(m => m.DropDate)
                     @Html.DisplayFor(m => m.OtherNewChurch)
                 </div>
-                <div>
-                    <p><b>Statement/Envelope Options</b></p>
-                    @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
-                    @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                <div class="well">
+                    <p><b>Letter Status</b></p>
+                    @Html.DisplayFor(m => m.LetterStatus)
+                    @Html.DisplayFor(m => m.LetterDateRequested)
+                    @Html.DisplayFor(m => m.LetterDateReceived)
+                    @Html.DisplayFor(m => m.LetterStatusNotes)
                 </div>
             </div>
             <div class="margin-bottom">@FormAction()</div>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web.Mvc;
 using CmsData;
 using System.Data.Linq;
 using CmsWeb.Code;
@@ -85,6 +86,20 @@ namespace CmsWeb.Areas.People.Models
         public string OtherPreviousChurch { get; set; }
 
         #endregion
+        #region Letter Status
+
+        public CodeInfo LetterStatus { get; set; }
+
+        [DisplayName("Letter Requested")]
+        public DateTime? LetterDateRequested { get; set; }
+
+        [DisplayName("Letter Received")]
+        public DateTime? LetterDateReceived { get; set; }
+
+        [UIHint("Textarea"), DisplayName("Letter Notes")]
+        public string LetterStatusNotes { get; set; }
+
+        #endregion
 
         public MemberInfo()
         {
@@ -120,7 +135,9 @@ namespace CmsWeb.Areas.People.Models
                 changes = this.CopyPropertiesTo(i.Family, onlyfields: "HomePhone");
                 i.Family.LogChanges(DbUtil.Db, changes, i.p.PeopleId);
                 person = i.p;
+                DbUtil.Db.SubmitChanges();
                 DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
+                this.CopyPropertiesFrom(person);
             }
             return ret;
         }

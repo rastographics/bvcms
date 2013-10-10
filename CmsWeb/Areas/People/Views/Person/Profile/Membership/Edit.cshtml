@@ -1,4 +1,11 @@
 ﻿@model CmsWeb.Areas.People.Models.MemberInfo
+@{
+    var editable = new
+    {
+        url = "/Person2/InlineEdit/" + Model.PeopleId,
+        source = "/Person2/InlineCodes/"
+    };
+}
 <form class="form form-horizontal ajax span12 validate" method="post">
     @Html.HiddenFor(m => m.PeopleId)
     @Html.ValidationMessage("automation")
@@ -7,6 +14,11 @@
         <fieldset class="left-gutter">
             <legend>Member Profile @FormAction()</legend>
             <div class="inline align-top">
+                <div class="well">
+                    <p><b>Statement/Envelope Options</b></p>
+                    @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+                    @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                </div>
                 <div class="well">
                     <p><b>Decision</b></p>
                     @Html.EditorFor(m => m.DecisionType)
@@ -38,6 +50,13 @@
                     @Html.EditorFor(m => m.DropType)
                     @Html.EditorFor(m => m.DropDate)
                     @Html.EditorFor(m => m.OtherNewChurch)
+                </div>
+                <div class="well">
+                    <p><b>Letter Status</b></p>
+                    @Html.EditorFor(m => m.LetterStatus)
+                    @Html.EditorFor(m => m.LetterDateRequested)
+                    @Html.EditorFor(m => m.LetterDateReceived)
+                    @Html.EditorFor(m => m.LetterStatusNotes)
                 </div>
             </div>
             <div>@FormAction()</div>

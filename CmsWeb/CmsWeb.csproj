@@ -888,6 +888,9 @@
       <DependentUpon>Transactions.js</DependentUpon>
     </Content>
     <Content Include="Scripts\js\ExtraValue.js" />
+    <Content Include="Scripts\js\ExtraValue.min.js">
+      <DependentUpon>ExtraValue.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\js\sgmap.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.min.js">
       <DependentUpon>jquery-1.9.1.js</DependentUpon>

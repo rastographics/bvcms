@@ -1,7 +1,7 @@
 ﻿@using CmsWeb.Code
 @model CodeInfo
 @{
-    var source = ViewData["source"] + Model.Name;
+    var source = ViewData["source"] + ViewData.TemplateInfo.HtmlFieldPrefix;
     var url = ViewData["url"];
 }
 <div class="control-group">

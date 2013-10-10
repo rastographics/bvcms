@@ -28,10 +28,11 @@ namespace CmsWeb.Controllers
             return Content(j);
         }
 
-        [POST("ExtraValue/AddDialog/{location}/{id}")]
-        public ActionResult AddDialog(int id, string location)
+        [POST("ExtraValue/AddDialog/{table}/{location}/{id:int}")]
+        public ActionResult AddDialog(string location, string table, int id)
         {
-            return View("DialogList", location);
+            var m = new ExtraValueModel(id, location, table);
+            return View("DialogList", m);
         }
         [POST("ExtraValue/Index/{table}/{location}/{id}")]
         public ActionResult Index(string table, string location, int id)
