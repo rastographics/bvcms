@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             showCheckNo = Db.Setting("RequireCheckNoOnStatement", "false").ToLower() == "true";
             showNotes = Db.Setting("RequireNotesOnStatement", "false").ToLower() == "true";
 
-			var qc = APIContribution.contributors(Db, fd, td, 0, 0, 0, noaddressok, useMinAmt: true, startswith: StartsWith, sort: Sort);
+		    var qc = APIContribution.contributors(Db, fd, td, 0, 0, 0, noaddressok, useMinAmt: true, startswith: StartsWith, sort: Sort);
 			var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
 			runningtotals.Count = qc.Count();
 			Db.SubmitChanges();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Linq.SqlClient;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Xml;
@@ -110,8 +111,24 @@ namespace CmsData.API
             if (!useMinAmt)
                 MinAmt = 0;
 
+            var endswith = "";
+		    if (startswith != null && startswith.Contains("-"))
+		    {
+		        var a = startswith.SplitStr("-", 2);
+		        startswith = a[0];
+		        endswith = a[1];
+		    }
             var q = from p in Db.Contributors(fromDate, toDate, PeopleId, SpouseId, FamilyId, noaddressok)
-                    where startswith == null || p.LastName.StartsWith(startswith)
+                    select p;
+
+            if (startswith.HasValue() && !endswith.HasValue())
+                q = from p in q
+                    where p.LastName.StartsWith(startswith)
+                    select p;
+            else if(startswith.HasValue() && endswith.HasValue())
+                q = from p in q
+                    // ReSharper disable StringCompareToIsCultureSpecific
+                    where (p.LastName.CompareTo(startswith) >= 0 && p.LastName.CompareTo(endswith) < 0) || SqlMethods.Like(p.LastName, endswith + "%")
                     select p;
 
             if (MinAmt > 0)
