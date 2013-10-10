@@ -112,7 +112,7 @@
                             { 
                                 <td class="right">@d.Meetings.Where(m => c.Times.Contains(m.date.TimeOfDay)).Sum(m => m.Present).ToString("n0")</td>
                             }
-                            <td class="right"><a href='/Reports/Meetings?Dt1=@p.Dt1.ToString2("s")&dt2=@p.Dt2.ToString2("s")&DivisionId=@d.DivId&FromWeekAtAGlance=true'>
+                            <td class="right"><a href='/Reports/Meetings?Dt1=@p.Dt1.ToString2("s")&dt2=@p.Dt2.ToString2("s")&ProgramId=@p.progid&DivisionId=@d.DivId&FromWeekAtAGlance=true'>
                                 @d.Meetings.Sum(m => m.Present).ToString("n0")
                             </a></td>
                             <td class="right">@d.Meetings.Sum(m => m.Visitors).ToString("n0")</td>

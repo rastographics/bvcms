@@ -30,7 +30,7 @@
 
 @Html.Hidden("meetingid", Model.meeting.MeetingId)
 @Html.Hidden("sort", "false")
-@Html.Hidden("RegularMeetingHeadCount", RegularMeetingHeadCount);
+@Html.Hidden("RegularMeetingHeadCount", RegularMeetingHeadCount)
 @if (Model.HasRegistered())
 {
 @Html.Hidden("showregistered", "true")

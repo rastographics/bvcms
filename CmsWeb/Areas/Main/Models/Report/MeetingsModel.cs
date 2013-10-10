@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CmsData;
-using CmsData.Codes;
 using CmsWeb.Models;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Models.Report
 {
@@ -130,11 +127,9 @@ namespace CmsWeb.Areas.Main.Models.Report
             else
                 nc = qb.AddNewClause(QueryType.AttendedAsOf, CompareType.Equal, "1,T");
             if (ProgramId > 0)
-            {
                 nc.Program = ProgramId.Value;
-                if (DivisionId > 0)
-                    nc.Division = DivisionId.Value;
-            }
+            if (DivisionId > 0)
+                nc.Division = DivisionId.Value;
             nc.StartDate = Dt1.Value;
             nc.EndDate = Dt2.Value;
             DbUtil.Db.SubmitChanges();
