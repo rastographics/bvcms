@@ -252,7 +252,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                                                   date = m.MeetingDate.Value,
                                                   OrgId = m.OrganizationId,
                                                   OrgName = m.Organization.OrganizationName,
-                                                  Present = m.NumPresent,
+                                                  Present = m.MaxCount ?? 0,
                                               }
                                },
                     };
