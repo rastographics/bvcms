@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.Web.Caching;
 using System.Globalization;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace UtilityExtensions
@@ -125,6 +126,12 @@ namespace UtilityExtensions
             bool.TryParse(s, out b);
             return b;
         }
+        public static bool ToBool(this object o)
+        {
+            if (o is bool)
+                return (bool)o;
+            return false;
+        }
         public static int? ToInt2(this object o)
         {
             int? r = null;
@@ -181,6 +188,12 @@ namespace UtilityExtensions
         {
             return s.Split(delimiter.ToCharArray(), nitems);
         }
+        public static string[] SplitLines(this string source)
+        {
+            if(source == null)
+                return new string[0];
+            return source.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+        }
         public static int? IntOrNull(this string s)
         {
             int? i = null;
@@ -204,6 +217,14 @@ namespace UtilityExtensions
         public static bool NotEqual(this string s, string s2)
         {
             return !s.Equal(s2);
+        }
+
+        public static string GetAttr(this XElement e, string n)
+        {
+            var a = e.Attribute(n);
+                if (a != null)
+                    return a.Value;
+            return null;
         }
 
         public static string Truncate(this string source, int length)
@@ -434,7 +455,7 @@ namespace UtilityExtensions
                 return Regex.Replace(ph, @"(\d{3})(\d{3})(\d{4})", "$1-$2-$3").Trim();
             if (ph.Length > 10)
                 return Regex.Replace(ph, @"(\d{3})(\d{3})(\d{4})(\d*)", "$1-$2-$3 $4").Trim();
-                return phone;
+            return phone;
         }
         public static string GetDigits(this string zip, int maxlen = 99)
         {

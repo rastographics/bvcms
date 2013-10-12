@@ -297,8 +297,9 @@
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
-    <Compile Include="Models\ExtraValue\ExtraValue.cs" />
     <Compile Include="Models\ExtraValue\Field.cs" />
+    <Compile Include="Models\ExtraValue\StandardExtraValueModel.cs" />
+    <Compile Include="Models\ExtraValue\ExtraValue.cs" />
     <Compile Include="Models\ExtraValue\ExtraValueModel.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\StatementInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Enrollments\RegistrationsModel.cs" />
@@ -1029,7 +1030,6 @@
     <Content Include="Areas\Search\Views\SearchAdd\NewAddress.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenAddress.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\DeletedPerson.cshtml" />
-    <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <Content Include="Areas\Main\Views\Organization\DialogAddMES.cshtml" />
     <Content Include="Areas\Main\Views\Reports\WeeklyDecisions.cshtml" />
     <Content Include="Areas\Main\Views\Reports\Decisions.cshtml" />
@@ -1075,7 +1075,6 @@
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
-    <Content Include="Views\ExtraValue\Entry.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Emails.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactTypeTotals.cshtml" />
@@ -1904,6 +1903,9 @@
     <Content Include="Views\ExtraValue\Add\ResultsFamily.cshtml" />
     <Content Include="Views\ExtraValue\Add\SearchFamily.cshtml" />
     <Content Include="Views\ExtraValue\Add\SearchPerson.cshtml" />
+    <Content Include="Views\ExtraValue\NewStandard.cshtml" />
+    <Content Include="Views\ExtraValue\EditStandard.cshtml" />
+    <Content Include="Views\ExtraValue\Entry.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

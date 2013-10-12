@@ -1,0 +1,29 @@
+﻿@using CmsWeb.Models.ExtraValues
+@model StandardExtraValueModel
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>New Standard Extra Value</h3>
+</div>
+<div class="modal-body">
+    <a class="helplink pull-right" target="_blank" href='@ExtraValueModel.HelpLink("NewExtraValue")'>help</a>
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.ExtraValueTable)
+    @Html.HiddenFor(m => m.ExtraValueLocation)
+
+    @Html.EditorFor(m => m.ExtraValueType, new {PlainSelect = true})
+    @Html.EditorFor(m => m.ExtraValueName)
+    @Html.EditorFor(m => m.VisibilityRoles)
+    @Html.EditorFor(m => m.ExtraValueBitPrefix, new {disabled=Model.ExtraValueBitPrefixDisabled})
+    @Html.EditorFor(m => m.ExtraValueCodes, "TextArea", new {disabled=Model.ExtraValueCodesDisabled})
+    @if (ViewBag.Error != null)
+    {
+        <div id="StandardExtraValueError" class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <div>@Html.Raw(ViewBag.Error)</div>
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <a class="btn" data-dismiss="modal">Cancel</a>
+    <a href="/ExtraValue/SaveNewStandard" class="save btn btn-primary ajax" data-callback="CheckSavedExtraValue">Save</a>
+</div>

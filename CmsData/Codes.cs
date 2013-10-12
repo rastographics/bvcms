@@ -175,6 +175,7 @@ namespace CmsData.Codes
             return s.Value;
         }
     }
+
     public static class AttendTypeCode
     {
         public const int Absent = 0;

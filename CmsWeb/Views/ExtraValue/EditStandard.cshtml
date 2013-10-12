@@ -1,0 +1,33 @@
+﻿@using CmsWeb.Models.ExtraValues
+@model ExtraValueModel
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Edit Standard Extra Values</h3>
+</div>
+<div class="modal-body">
+    <a class="helplink pull-right" target="_blank" href='@ExtraValueModel.HelpLink("ExtraValueList")'>help</a>
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.Table)
+    @Html.HiddenFor(m => m.Location)
+    <table id="fields" class="table table-condensed not-wide table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var f in Model.GetExtraValues(Model.Location))
+            {
+                <tr>
+                    <td>@f.name</td>
+                    <td>@f.type</td>
+                    <td><a href="ExtraValue/Delete"><i class="icon-remove"></i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <a class="btn" data-dismiss="modal">Close</a>
+</div>

@@ -1,11 +1,14 @@
 ﻿@model CmsWeb.Models.ExtraValues.ExtraValueModel
 <form class="form ajax span12 margin-top" method="post" data-init="ExtraEditable">
     <fieldset class="left-gutter">
-        <legend>Standard Extra Values <a class="addextravalue" href="/ExtraValue/AddDialog/@Model.Table/Standard/@Model.Id"><i class="icon-plus"></i></a>
-            <small class="pull-right">
-                <a href="/ExtraValue/Index/@Model.Table/Adhoc/@Model.Id" class="ajax">Adhoc Values</a>
-            </small>
+        <legend>Standard Extra Values 
+            <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Standard/@Model.Id"><i class="icon-plus"></i></a>
+            <a class="extravalue nounderline font14px edit pad-left" href="/ExtraValue/EditStandard/@Model.Table/Standard/@Model.Id"><i class="icon-pencil"></i></a>
+            <span class="pull-right">
+                <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="ajax font14px">Adhoc Values</a>
+            </span>
         </legend>
+        <a href="#" class="pull-right ajax-refresh"><i class="icon-refresh"></i></a>
         <table class="table not-wide">
             <thead>
                 <tr>
@@ -21,4 +24,5 @@
             </tbody>
         </table>
     </fieldset>
+    <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@Model.Table/Standard/>@Model.Id" />
 </form>

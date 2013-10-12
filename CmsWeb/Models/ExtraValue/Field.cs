@@ -2,57 +2,78 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Schema;
 using System.Xml.Serialization;
+using CmsData;
+using CmsData.API;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
 {
-    [Serializable]
-    public class Fields
+    public class Fields : IXmlSerializable
     {
-        [XmlElement("Field")]
-        public Field[] fields { get; set; }
+        public List<Field> fields { get; set; }
+        public XmlSchema GetSchema() { throw new NotImplementedException(); }
+
+        public void ReadXml(XmlReader reader)
+        {
+            var s = reader.ReadOuterXml();
+            var x = XDocument.Parse(s);
+            if (x.Root == null) return;
+            fields = new List<Field>();
+            foreach (var e in x.Root.Elements("Field"))
+                fields.Add(Util.DeSerialize<Field>(e.ToString()));
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            var w = new APIWriter(writer);
+            writer.WriteComment(DateTime.Now.ToString());
+            foreach (var f in fields)
+                Util.Serialize(f, writer);
+        }
     }
-    [Serializable]
-    public class Field
+    public class Field : IXmlSerializable
     {
-        [XmlAttribute]
         public string name { get; set; }
-        [XmlAttribute]
         public string type { get; set; }
 
-        [XmlAttribute]
         public string location
         {
             get
-            { 
-                if(_location.HasValue())
+            {
+                if (_location.HasValue())
                     return _location;
                 return "Standard";
             }
-            set 
-            { 
-                if(value != "MemberProfile")
-                    _location = value; 
+            set
+            {
+                if (value != "MemberProfile")
+                    _location = value;
             }
         }
 
-        [XmlAttribute]
         public string table
         {
             get
-            { 
-                if(_table.HasValue())
+            {
+                if (_table.HasValue())
                     return _table;
                 return "Person";
             }
             set { _table = value; }
         }
 
-        [XmlAttribute]
         public string VisibilityRoles { get; set; }
+
         public List<string> Codes { get; set; }
+
+        private string _table;
+        private string _location;
+
         internal int order;
         public int Id;
         public bool NonStandard;
@@ -60,8 +81,6 @@ namespace CmsWeb.Models.ExtraValues
 
         internal ExtraValue extravalue;
         internal ExtraValueModel model; // only applies to standard extra values
-        private string _table;
-        private string _location;
 
         internal static Field AddField(Field f, ExtraValue ev, ExtraValueModel m = null)
         {
@@ -79,7 +98,7 @@ namespace CmsWeb.Models.ExtraValues
                     : ev.BitValue.HasValue ? "Bit"
                     : "Code";
             }
-            f.Id = ev != null ? ev.Id : m != null ? m.Id : 0; 
+            f.Id = ev != null ? ev.Id : m != null ? m.Id : 0;
             f.extravalue = ev;
             f.model = m;
             return f;
@@ -118,6 +137,8 @@ namespace CmsWeb.Models.ExtraValues
                     return ev.BitValue.ToString();
                 case "Code":
                     return ev.StrValue;
+                case "Text":
+                case "Text2":
                 case "Data":
                     return (ev.Data ?? "").Trim();
                 case "Date":
@@ -193,6 +214,46 @@ namespace CmsWeb.Models.ExtraValues
             get
             {
                 return HttpUtility.UrlEncode(name);
+            }
+        }
+
+        public XmlSchema GetSchema() { throw new NotImplementedException(); }
+
+        public void ReadXml(XmlReader reader)
+        {
+            var s = reader.ReadOuterXml();
+            var x = XDocument.Parse(s);
+            if (x.Root == null) 
+                return;
+            var e = x.Root;
+            name = e.GetAttr("name");
+            type = e.GetAttr("type");
+            table = e.GetAttr("table");
+            location = e.GetAttr("location");
+            VisibilityRoles = e.GetAttr("VisibilityRoles");
+            Codes = new List<string>();
+            if (type == "Code" || type == "Bits")
+            {
+                var codes = e.Element("Codes");
+                foreach (var c in codes.Elements("string"))
+                    Codes.Add(c.Value);
+            }
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            var w = new APIWriter(writer);
+            w.Attr("name", name);
+            w.Attr("location", location);
+            w.Attr("type", type);
+            w.Attr("table", table);
+            w.Attr("VisibilityRoles", VisibilityRoles);
+            if (type == "Code" || type == "Bits")
+            {
+                w.Start("Codes");
+                foreach (var c in Codes)
+                    w.Add("string", c);
+                w.End();
             }
         }
     }

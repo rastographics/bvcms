@@ -867,3 +867,52 @@ legend small {
 .size11 {
     font-size: 11px;
 }
+a.nounderline {
+    text-decoration: none;
+}
+
+.control-group.disabled .control-label,
+.control-group.disabled .help-block,
+.control-group.disabled .help-inline {
+  color: #b4b4b4;
+}
+.control-group.disabled .checkbox,
+.control-group.disabled .radio,
+.control-group.disabled input,
+.control-group.disabled select,
+.control-group.disabled textarea {
+  color: #b4b4b4;
+}
+.control-group.disabled input,
+.control-group.disabled select,
+.control-group.disabled textarea {
+  border-color: #b4b4b4;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.control-group.disabled input:focus,
+.control-group.disabled select:focus,
+.control-group.disabled textarea:focus {
+  border-color: #787878;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d6d6d6;
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d6d6d6;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d6d6d6;
+}
+.control-group.disabled .input-prepend .add-on,
+.control-group.disabled .input-append .add-on {
+  color: #b4b4b4;
+  background-color: #d0d0d0;
+  border-color: #b4b4b4;
+}
+
+.font14px {
+    font-size: 14px;
+}
+.font18px {
+    font-size: 18px;
+}
+.dark {
+    color: #555555;
+}
+

@@ -1,2 +1,25 @@
-﻿
-<h2>Entry</h2>
+﻿@model CmsWeb.Models.ExtraValues.ExtraValueModel
+<form class="form ajax span12 margin-top" method="post" data-init="ExtraEditable">
+    <fieldset class="left-gutter">
+        <legend>Information Card
+            <a class="addextravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Entry/@Model.Id"><i class="icon-plus"></i></a>
+            <a class="editextravalue nounderline font14px edit pad-left" href="/ExtraValue/EditStandard/@Model.Table/Entry/@Model.Id"><i class="icon-pencil"></i></a>
+        </legend>
+        <a href="#" class="pull-right ajax-refresh"><i class="icon-refresh"></i></a>
+        <table class="table not-wide">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.GetExtraValues())
+                {
+                    @Html.EditorFor(m => f)
+                }
+            </tbody>
+        </table>
+    </fieldset>
+    <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@Model.Table/Entry/@Model.Id" />
+</form>
