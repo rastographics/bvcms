@@ -1,0 +1,54 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Search.Models.SearchAddModel
+@{
+    var hasErrors = ViewData.ModelState.Any(mm => mm.Value.Errors.Count > 0);
+}
+@Html.EditorFor(m => m, "HiddenSearch")
+@Html.EditorFor(m => m, "HiddenMeta")
+@{  var n = 0;
+    for (n = 0; n < Model.PendingList.Count - 1; n++)
+    {
+    @Html.EditorFor(m => m.PendingList[n], "HiddenPerson")
+    @Html.EditorFor(m => m.PendingList[n], "HiddenAddress")
+    }
+    var p = Model.PendingList[n];
+    var potentialDuplicate = p.PotentialDuplicate.HasValue() && !hasErrors;
+    @Html.HiddenFor(m => Model.PendingList[n].IsNewFamily)
+    @Html.HiddenFor(m => Model.PendingList[n].context)
+    @Html.HiddenFor(m => Model.PendingList[n].FamilyId)
+    @Html.HiddenFor(m => Model.PendingList[n].IsNewFamily)
+}
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Add New Person @(p.IsNewFamily ? "to New Family" : "to Existing Family")</h3>
+</div>
+<div class="modal-body">
+    <a class="helplink pull-right" target="_blank" href='@Model.HelpLink("NewFamily")'>help</a>
+    <fieldset class="display">
+        @Html.EditorFor(m => Model.PendingList[n], "Person")
+    </fieldset>
+    @if (potentialDuplicate)
+    {
+        <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4>Potential Duplicate</h4>
+            <p>
+                Looking for a unique combination of First, Last, Birthday, or Phone
+            </p>
+            <div>@Html.Raw(Model.PendingList[n].PotentialDuplicate)</div>
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel All</a>
+    <a href="/SearchAdd2/CancelPerson/@n" class="btn ajax">Cancel Person</a>
+    @if (potentialDuplicate)
+    {
+        <a href="/SearchAdd2/AddNewFamily/NoDupCheck" class="btn btn-danger ajax">Submit, no duplicate check</a>
+        <a href="/SearchAdd2/AddNewPerson" class="btn btn-primary ajax validate">Submit Again</a>
+    }
+    else
+    {
+        <a href="/SearchAdd2/AddNewPerson" class="btn btn-primary ajax validate">Submit</a>
+    }
+</div>

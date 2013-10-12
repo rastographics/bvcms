@@ -149,7 +149,7 @@ namespace CmsData
                     return Expressions.CreatedBy(parm, Db,
                         CompType, c.TextValue);
                 case QueryType.ContributionAmount2:
-                    return Expressions.ContributionAmount2(parm, Db,
+                    return Expressions.ContributionAmount(parm, Db,
                                c.StartDate,
                                c.EndDate, c.Quarters.ToInt(),
                                CompType,
@@ -415,6 +415,12 @@ namespace CmsData
                                c.Schedule,
                                CompType,
                                c.TextValue.ToInt());
+                case QueryType.NonTaxDedAmount:
+                    return Expressions.NonTaxDedAmount(parm, Db,
+                               c.StartDate,
+                               c.EndDate, c.Quarters.ToInt(),
+                               CompType,
+                               Decimal.Parse(c.TextValue));
                 case QueryType.NumberOfFamilyMembers:
                     return Expressions.NumberOfFamilyMembers(parm,
                                CompType,
@@ -552,6 +558,11 @@ namespace CmsData
                                c.Days, c.Quarters.ToInt(),
                                CompType,
                                c.TextValue.ToInt());
+                case QueryType.RecentNonTaxDedCount:
+                    return Expressions.RecentNonTaxDedCount(parm, Db,
+                               c.Days, c.Quarters.ToInt(),
+                               CompType,
+                               c.TextValue.ToInt());
                 case QueryType.RecentFirstTimeGiver:
                     return Expressions.RecentFirstTimeGiver(parm, Db,
                                c.Days, c.Quarters.ToInt(),
@@ -559,6 +570,11 @@ namespace CmsData
 							   c.CodeIds == "1");
                 case QueryType.RecentContributionAmount:
                     return Expressions.RecentContributionAmount(parm, Db,
+                               c.Days, c.Quarters.ToInt(),
+                               CompType,
+                               Decimal.Parse(c.TextValue));
+                case QueryType.RecentNonTaxDedAmount:
+                    return Expressions.RecentNonTaxDedAmount(parm, Db,
                                c.Days, c.Quarters.ToInt(),
                                CompType,
                                Decimal.Parse(c.TextValue));
@@ -643,7 +659,7 @@ namespace CmsData
                                c.TextValue.ToInt());
                 // S -------------------------
                 case QueryType.SavedQuery:
-                    return Expressions.SavedQuery2(parm, Db,
+                    return Expressions.SavedQuery(parm, Db,
                                c.SavedQuery,
                                CompType,
                                c.CodeIds == "1");
@@ -792,6 +808,7 @@ namespace CmsData
                             throw new ArgumentException();
                     }
             }
+            
         }
         public static CompareType Convert(string type)
         {

@@ -1,5 +1,8 @@
 ﻿@model CmsWeb.Areas.People.Models.EmailModel
 @using UtilityExtensions
+@{
+    var access = User.IsInRole("Access");
+}
 <form class="non-modal ajax" method="post">
     <div class="pagination pagination-mini">
         @Html.Partial("Pager3", Model.Pager)
@@ -9,7 +12,10 @@
             <tr>
                 <th>@Model.Pager.SortLink("Sent")</th>
                 <th>@Model.Pager.SortLink("From")</th>
-                <th>@Model.Pager.SortLink("Count")</th>
+                @if (access)
+                {
+                    <th>@Model.Pager.SortLink("Count")</th>
+                }
                 <th>@Model.Pager.SortLink("Subject")</th>
             </tr>
         </thead>
@@ -22,11 +28,11 @@
                         {
                             if (i.SendWhen.HasValue)
                             {
-                            <span class="green" title="scheduled @i.SendWhen.Value.ToShortTimeString()">@i.SendWhen.FormatDate()</span>
+                                <span class="green" title="scheduled @i.SendWhen.Value.ToShortTimeString()">@i.SendWhen.FormatDate()</span>
                             }
                             else
                             {
-                            <span class="red" title="failed @i.Queued.Value.ToShortTimeString()">@i.Queued.FormatDate()</span>
+                                <span class="red" title="failed @i.Queued.Value.ToShortTimeString()">@i.Queued.FormatDate()</span>
                             }
                         }
                         else
@@ -37,7 +43,10 @@
                     <td>@i.From<br/>
                         @i.FromAddr
                     </td>
-                    <td>@i.Count</td>
+                    @if (access)
+                    {
+                        <td>@i.Count</td>
+                    }
                     <td>
                         <a target="viewemail" href="/Person2/ViewEmail/@i.Id">@i.Subject</a>
                     </td>

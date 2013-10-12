@@ -297,9 +297,11 @@
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
-    <Compile Include="Areas\People\Models\Person\ExtraValues\ExtraValue.cs" />
-    <Compile Include="Areas\People\Models\Person\ExtraValues\StandardExtraValues.cs" />
-    <Compile Include="Areas\People\Models\Person\RegistrationsModel.cs" />
+    <Compile Include="Models\ExtraValue\ExtraValue.cs" />
+    <Compile Include="Models\ExtraValue\Field.cs" />
+    <Compile Include="Models\ExtraValue\ExtraValueModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Giving\StatementInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\Enrollments\RegistrationsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailTransactionalModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailRow.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailReceivedModel.cs" />
@@ -315,7 +317,7 @@
     <Compile Include="Areas\Dialog\Controllers\SearchAddController.cs" />
     <Compile Include="Areas\People\Controllers\Person\AdminController.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonalController.cs" />
-    <Compile Include="Areas\People\Controllers\Person\ExtraValuesController.cs" />
+    <Compile Include="Controllers\ExtraValueController.cs" />
     <Compile Include="Areas\People\Controllers\Person\LookupsController.cs" />
     <Compile Include="Areas\People\Controllers\Person\ProfileController.cs" />
     <Compile Include="Areas\People\Controllers\Person\MinistryController.cs" />
@@ -597,11 +599,6 @@
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.svg" />
     <Content Include="Content\img\ajax-loader.gif" />
-    <Content Include="Content\images\ajax-loader.gif" />
-    <Content Include="Content\images\icons-18-black.png" />
-    <Content Include="Content\images\icons-18-white.png" />
-    <Content Include="Content\images\icons-36-black.png" />
-    <Content Include="Content\images\icons-36-white.png" />
     <Content Include="Content\css\jquery.mobile-1.3.0.css" />
     <Content Include="Content\css\jquery.mobile-1.3.1.min.css" />
     <Content Include="Content\css\jquery.mobile.structure-1.3.0.css" />
@@ -628,10 +625,8 @@
       <DependentUpon>person.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\Support.css" />
-    <Content Include="images\chosen-sprite.png" />
+    <Content Include="Content\images\chosen-sprite.png" />
     <Content Include="Content\css\chosen.css" />
-    <Content Include="Content\images\glyphicons-halflings-white.png" />
-    <Content Include="Content\images\glyphicons-halflings.png" />
     <Content Include="Content\css\normalize.css" />
     <Content Include="ckeditor2\build-config.js" />
     <Content Include="ckeditor2\ckeditor.js" />
@@ -789,8 +784,8 @@
     <Content Include="ckeditor2\skins\kama\images\sprites_ie6.png" />
     <Content Include="ckeditor2\skins\kama\images\toolbar_start.gif" />
     <Content Include="ckeditor2\styles.js" />
-    <Content Include="images\saf-bg.png" />
-    <Content Include="images\saf.png" />
+    <Content Include="Content\images\saf-bg.png" />
+    <Content Include="Content\images\saf.png" />
     <Content Include="Scripts\Admin\Divisions.min.js">
       <DependentUpon>Divisions.js</DependentUpon>
     </Content>
@@ -891,6 +886,10 @@
     </Content>
     <Content Include="Scripts\Finance\Transactions.min.js">
       <DependentUpon>Transactions.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\ExtraValue.js" />
+    <Content Include="Scripts\js\ExtraValue.min.js">
+      <DependentUpon>ExtraValue.js</DependentUpon>
     </Content>
     <Content Include="Scripts\js\sgmap.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.min.js">
@@ -1048,12 +1047,11 @@
     <Content Include="Areas\People\Views\Person\Enrollment\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MembershipEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MemberNotes.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\ExtraValuesAdHoc.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Membership\Edit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Display.cshtml" />
+    <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
-    <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
     <Content Include="Areas\Search\Views\Query\SelectCondition.cshtml" />
     <Content Include="Areas\People\Views\Person\Toolbar\Gear.cshtml" />
     <Content Include="Areas\Main\Views\Contact\Contactors.cshtml" />
@@ -1077,7 +1075,7 @@
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\Entry.cshtml" />
+    <Content Include="Views\ExtraValue\Entry.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Emails.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactTypeTotals.cshtml" />
@@ -1090,23 +1088,12 @@
     <Content Include="Areas\People\Views\Contact\Index.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Users.cshtml" />
     <Content Include="Areas\Manage\Views\EmailsView\View.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\ExtraValuesStandard.cshtml" />
+    <Content Include="Views\ExtraValue\Standard.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\Attendance.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\AttendanceDetail.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ChurchAttendance.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ChurchAttendance2.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\ExtraValueData.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\ExtraValues.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid2.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\Meetings.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ShirtSizes.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\VitalStats.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\WeeklyDecisions.cshtml" />
     <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
     <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Reports\Web.config" />
@@ -1114,13 +1101,17 @@
     <Content Include="Areas\Reports\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\MultiSelect.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\CodeSelect.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\Comments.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\CommentsEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\MemberNotesEdit.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\UploadDocument.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Comments\Display.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Comments\Edit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Edit.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Membership\UploadDocument.cshtml" />
     <Content Include="Areas\Main\Views\MemberDocs\Image.cshtml" />
     <Content Include="Areas\Main\Views\MemberDocs\Index.cshtml" />
-    <Content Include="Areas\People\Views\Person\EditorTemplates\Field.cshtml" />
+    <Content Include="Views\ExtraValue\EditorTemplates\Field.cshtml" />
+    <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
+    <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
+    <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1410,7 +1401,7 @@
     <Content Include="Scripts\Bootstrap\bootstrap-modal.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-modalmanager.js" />
     <Content Include="Content\css\bvcms.css" />
-    <Content Include="images\ding.wav" />
+    <Content Include="Content\images\ding.wav" />
     <Content Include="Content\img\footer_powered.png" />
     <Content Include="Content\img\glyphicons-halflings-white.png" />
     <Content Include="Content\img\glyphicons-halflings.png" />
@@ -1434,7 +1425,7 @@
     </Content>
     <Content Include="Areas\Public\Views\APITest\Index.cshtml">
     </Content>
-    <Content Include="images\BUZZ.WAV" />
+    <Content Include="Content\images\BUZZ.WAV" />
     <Content Include="Content\img\bvcms-provided.png" />
     <Content Include="Content\img\calendar.png" />
     <Content Include="Content\img\icon-user.png" />
@@ -1494,14 +1485,14 @@
     <Content Include="Content\css\search.css" />
     <Content Include="Errors\AppOffline.htm" />
     <Content Include="healthcheck.txt" />
-    <Content Include="images\28pix.gif" />
-    <Content Include="images\bullet.png" />
-    <Content Include="images\bvcms-provided.png" />
-    <Content Include="images\cross.gif" />
-    <Content Include="images\dnarrow.png" />
-    <Content Include="images\dnarrowt.png" />
-    <Content Include="images\gear.png" />
-    <Content Include="images\group.png" />
+    <Content Include="Content\images\28pix.gif" />
+    <Content Include="Content\images\bullet.png" />
+    <Content Include="Content\images\bvcms-provided.png" />
+    <Content Include="Content\images\cross.gif" />
+    <Content Include="Content\images\dnarrow.png" />
+    <Content Include="Content\images\dnarrowt.png" />
+    <Content Include="Content\images\gear.png" />
+    <Content Include="Content\images\group.png" />
     <Content Include="Content\styles\images\icons-18-black.png" />
     <Content Include="Content\styles\images\icons-18-white.png" />
     <Content Include="Content\styles\images\icons-36-black.png" />
@@ -1595,11 +1586,11 @@
     <Content Include="Content\styles\thickbox.css" />
     <Content Include="Content\styles\touch.css" />
     <Content Include="Content\styles\ui.timepickr.css" />
-    <Content Include="images\zylo.wav" />
-    <Content Include="images\calendar.gif" />
-    <Content Include="images\Home.png" />
-    <Content Include="images\RapidSSL_SEAL-90x50.gif" />
-    <Content Include="images\unknownsm.jpg" />
+    <Content Include="Content\images\zylo.wav" />
+    <Content Include="Content\images\calendar.gif" />
+    <Content Include="Content\images\Home.png" />
+    <Content Include="Content\images\RapidSSL_SEAL-90x50.gif" />
+    <Content Include="Content\images\unknownsm.jpg" />
     <Content Include="Content\MembershipAutomation2.py" />
     <Content Include="Scripts\Bootstrap\bootstrap.js" />
     <Content Include="Scripts\Bootstrap\bootstrap.min.js" />
@@ -1897,6 +1888,22 @@
     <Content Include="Views\Shared\EditorTemplates\EmailAddress.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Phone.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\DropDown.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\InlineCodeInfo.cshtml" />
+    <Content Include="Views\ExtraValue\DisplayTemplates\Field.cshtml" />
+    <Content Include="Views\ExtraValue\Add\EditorTemplates\Address.cshtml" />
+    <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenAddress.cshtml" />
+    <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenMeta.cshtml" />
+    <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenPeople.cshtml" />
+    <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenPerson.cshtml" />
+    <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenSearch.cshtml" />
+    <Content Include="Views\ExtraValue\Add\EditorTemplates\Person.cshtml" />
+    <Content Include="Views\ExtraValue\DialogList.cshtml" />
+    <Content Include="Views\ExtraValue\Add\NewAddress.cshtml" />
+    <Content Include="Views\ExtraValue\Add\NewPerson.cshtml" />
+    <Content Include="Views\ExtraValue\Add\Results.cshtml" />
+    <Content Include="Views\ExtraValue\Add\ResultsFamily.cshtml" />
+    <Content Include="Views\ExtraValue\Add\SearchFamily.cshtml" />
+    <Content Include="Views\ExtraValue\Add\SearchPerson.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1904,7 +1911,7 @@
   <ItemGroup>
     <Content Include="Areas\Manage\Views\Batch\UpdatePeople.cshtml">
     </Content>
-    <Content Include="images\bvcms132x55.png" />
+    <Content Include="Content\images\bvcms132x55.png" />
     <Content Include="Scripts\jQuery\jquery.sortElements.js" />
     <Content Include="Scripts\jQuery\jquery.textarea.js" />
     <Content Include="Scripts\jQuery\jquery.transpose.js" />
@@ -1914,25 +1921,25 @@
     <Content Include="Content\Tutorials\_Home_Index.cshtml" />
     <Content Include="Errors\DatabaseNotFound.aspx" />
     <Content Include="Errors\SiteDisabled.htm" />
-    <Content Include="images\arrowdnup.png" />
-    <Content Include="images\deliveredbybvcms.gif" />
-    <Content Include="images\draggable-icon.png" />
-    <Content Include="images\dropdown.gif" />
-    <Content Include="images\linkselect_bkgrd.png" />
+    <Content Include="Content\images\arrowdnup.png" />
+    <Content Include="Content\images\deliveredbybvcms.gif" />
+    <Content Include="Content\images\draggable-icon.png" />
+    <Content Include="Content\images\dropdown.gif" />
+    <Content Include="Content\images\linkselect_bkgrd.png" />
     <Content Include="Errors\SessionTimeout.htm" />
     <Content Include="favicon.ico" />
     <Content Include="Scripts\jQuery\jquery.mousewheel.js" />
-    <Content Include="images\magnifier.png" />
-    <Content Include="images\Welcome.png" />
-    <Content Include="images\amex.jpg" />
-    <Content Include="images\discovercard.jpg" />
-    <Content Include="images\mastercard.jpg" />
-    <Content Include="images\notreq.gif" />
-    <Content Include="images\plus1.png" />
-    <Content Include="images\plus2.png" />
-    <Content Include="images\sfs_icon_facebook.png" />
-    <Content Include="images\Up-down.png" />
-    <Content Include="images\visa.jpg" />
+    <Content Include="Content\images\magnifier.png" />
+    <Content Include="Content\images\Welcome.png" />
+    <Content Include="Content\images\amex.jpg" />
+    <Content Include="Content\images\discovercard.jpg" />
+    <Content Include="Content\images\mastercard.jpg" />
+    <Content Include="Content\images\notreq.gif" />
+    <Content Include="Content\images\plus1.png" />
+    <Content Include="Content\images\plus2.png" />
+    <Content Include="Content\images\sfs_icon_facebook.png" />
+    <Content Include="Content\images\Up-down.png" />
+    <Content Include="Content\images\visa.jpg" />
     <Content Include="iTextAsian.dll" />
     <Content Include="Scripts\Volunteer\Calendar.js" />
     <Content Include="Scripts\js\CheckinActivity.js" />
@@ -1964,10 +1971,10 @@
     <Content Include="Scripts\OnlineReg\OnlineRegPayment.js" />
     <Content Include="Errors\AccessDenied.htm" />
     <Content Include="Global.asax" />
-    <Content Include="images\bvcms120.png" />
-    <Content Include="images\bvcms130.png" />
-    <Content Include="images\bvcms150.png" />
-    <Content Include="images\req.gif" />
+    <Content Include="Content\images\bvcms120.png" />
+    <Content Include="Content\images\bvcms130.png" />
+    <Content Include="Content\images\bvcms150.png" />
+    <Content Include="Content\images\req.gif" />
     <Content Include="Scripts\Email\Email.js" />
     <Content Include="Scripts\Admin\TransactionHistory.js" />
     <Content Include="Scripts\Finance\Transactions.js" />
@@ -2008,7 +2015,7 @@
     </Content>
     <Content Include="Areas\Dialog\Views\AddOrganization\Index.cshtml">
     </Content>
-    <Content Include="Areas\People\Views\Person\Profile\MemberDocuments.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Membership\Documents.cshtml" />
     <Content Include="Areas\Main\Views\Person\EditorTemplates\Field.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\VolunteerSlotsSummary.cshtml" />
     <Content Include="Areas\Main\Views\Person\CurrentRegistrations.cshtml" />
@@ -2147,9 +2154,9 @@
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\EmailInfo.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\EmailInfo.cshtml" />
-    <Content Include="Areas\People\Views\Person\Personal\ProfileHeader.cshtml" />
+    <Content Include="Areas\People\Views\Person\Personal\Header.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
-    <Content Include="Areas\People\Views\Person\Profile\Membership.cshtml" />
+    <Content Include="Areas\People\Views\Person\Profile\Membership\Display.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />
     <Content Include="Areas\Main\Views\OrgSearch\OrganizationStructure.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />
@@ -2201,7 +2208,7 @@
     <Content Include="Content\less\utilities.less" />
     <Content Include="Content\less\variables.less" />
     <Content Include="Content\less\wells.less" />
-    <None Include="images\LibraryTemplate.xls" />
+    <None Include="Content\images\LibraryTemplate.xls" />
     <Content Include="Content\Tutorials\_SearchAdd_Index.cshtml" />
     <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <Content Include="Scripts\Volunteer\volunteering.js" />
@@ -2780,11 +2787,11 @@
     </Content>
     <Content Include="Areas\Main\Views\Reports\ExtraValues.cshtml">
     </Content>
-    <Content Include="images\UpdatePeople.xls" />
+    <Content Include="Content\images\UpdatePeople.xls" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="images\MucketyTemplate.xls" />
+    <Content Include="Content\images\MucketyTemplate.xls" />
     <Content Include="Areas\Main\Views\Tags\ConvertTagToExtraValue.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Batch\ExtraValuesFromPeopleIds.cshtml">
@@ -2854,41 +2861,41 @@
     <Content Include="Errors\Error.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="images\12-em-cross.png" />
-    <Content Include="images\border-2.gif" />
-    <Content Include="images\border.gif" />
-    <Content Include="images\header-gradient.png" />
+    <Content Include="Content\images\12-em-cross.png" />
+    <Content Include="Content\images\border-2.gif" />
+    <Content Include="Content\images\border.gif" />
+    <Content Include="Content\images\header-gradient.png" />
     <Content Include="Scripts\jQuery\jquery.blockUI.js" />
     <Content Include="Scripts\jQuery\jquery.jeditable.js" />
     <Content Include="Scripts\jQuery\jquery.tooltip.js" />
     <Content Include="Scripts\jQuery\jquery.tooltip.min.js" />
-    <Content Include="images\loading.gif" />
-    <Content Include="images\navigation-shadow.png" />
+    <Content Include="Content\images\loading.gif" />
+    <Content Include="Content\images\navigation-shadow.png" />
     <Content Include="Contributions\Deposit.aspx" />
     <Content Include="Contributions\Reports\JournalDetails.aspx" />
     <Content Include="Contributions\Reports\TotalsByFundRange.aspx" />
-    <Content Include="images\1pix.gif" />
-    <Content Include="images\adobe.png" />
-    <Content Include="images\ajax-loader.gif" />
-    <Content Include="images\arrow_left.gif" />
-    <Content Include="images\arrow_right2.gif" />
-    <Content Include="images\BulkMailing.png" />
-    <Content Include="images\delete.gif" />
-    <Content Include="images\DownRight.gif" />
-    <Content Include="images\EmptyMap.png" />
-    <Content Include="images\Excel.png" />
-    <Content Include="images\help_out.gif" />
-    <Content Include="images\individual.gif" />
-    <Content Include="images\Mail.png" />
-    <Content Include="images\minus.png" />
-    <Content Include="images\pdficon_small.gif" />
-    <Content Include="images\plus.png" />
-    <Content Include="images\Report.png" />
-    <Content Include="images\Run.png" />
-    <Content Include="images\Tag.png" />
-    <Content Include="images\tags.png" />
-    <Content Include="images\unknown.jpg" />
-    <Content Include="images\work.gif" />
+    <Content Include="Content\images\1pix.gif" />
+    <Content Include="Content\images\adobe.png" />
+    <Content Include="Content\images\ajax-loader.gif" />
+    <Content Include="Content\images\arrow_left.gif" />
+    <Content Include="Content\images\arrow_right2.gif" />
+    <Content Include="Content\images\BulkMailing.png" />
+    <Content Include="Content\images\delete.gif" />
+    <Content Include="Content\images\DownRight.gif" />
+    <Content Include="Content\images\EmptyMap.png" />
+    <Content Include="Content\images\Excel.png" />
+    <Content Include="Content\images\help_out.gif" />
+    <Content Include="Content\images\individual.gif" />
+    <Content Include="Content\images\Mail.png" />
+    <Content Include="Content\images\minus.png" />
+    <Content Include="Content\images\pdficon_small.gif" />
+    <Content Include="Content\images\plus.png" />
+    <Content Include="Content\images\Report.png" />
+    <Content Include="Content\images\Run.png" />
+    <Content Include="Content\images\Tag.png" />
+    <Content Include="Content\images\tags.png" />
+    <Content Include="Content\images\unknown.jpg" />
+    <Content Include="Content\images\work.gif" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CmsData\CmsData.csproj">
@@ -2905,11 +2912,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="images\attention48.png" />
-    <Content Include="images\blackredgradient.png" />
-    <Content Include="images\check48.png" />
+    <Content Include="Content\images\attention48.png" />
+    <Content Include="Content\images\blackredgradient.png" />
+    <Content Include="Content\images\check48.png" />
     <Content Include="Scripts\jQuery\jquery.cookie.js" />
-    <Content Include="images\star.png" />
+    <Content Include="Content\images\star.png" />
     <Content Include="Scripts\jQuery\jquery.multiSelect.js" />
     <Content Include="Contributions\Reports\TotalsByFundAgeRange.aspx" />
     <Content Include="Contributions\Reports\Reports.Master" />
@@ -2962,9 +2969,7 @@
     <Folder Include="Areas\Reports\Models\" />
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />
-    <Folder Include="Models\PersonPage\" />
     <Folder Include="Scripts\Other\" />
-    <Folder Include="Upload\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [POST("Person2/UserUpdate/{id}"), Authorize(Roles = "Admin")]
-        public ActionResult UserUpdate(int id, string username, string password, bool islockedout, bool sendwelcome,
+        public ActionResult UserUpdate(int id, string username, string password, bool sendwelcome,
             string[] role)
         {
             var u = DbUtil.Db.Users.Single(us => us.UserId == id);
@@ -49,7 +49,6 @@ namespace CmsWeb.Areas.People.Controllers
             }
             var p = DbUtil.Db.LoadPersonById(u.PeopleId.Value);
             u.Username = username;
-            u.IsLockedOut = islockedout;
             u.SetRoles(DbUtil.Db, role, User.IsInRole("Finance"));
             if (password.HasValue())
                 u.ChangePassword(password);

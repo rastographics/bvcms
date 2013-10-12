@@ -38,7 +38,7 @@ else
 @foreach (var p in Model.people)
 { 
 	<tr>
-		<td><img src="/images/individual.gif" width="10px" height="12px" />
+		<td><img src="/Content/images/individual.gif" width="10px" height="12px" />
 			<a href='/Person/Index/@p.PeopleId' class="target" @target>@p.Name</a>
 		</td>
 		<td>
@@ -86,7 +86,7 @@ else
 @foreach (var o in Model.orgs)
 { 
     <tr>
-        <td class="tip" title="@o.ToolTip"><img src="/images/group.png" /></td>
+        <td class="tip" title="@o.ToolTip"><img src="/Content/images/group.png" /></td>
         <td><a href="/Organization/Index/@o.Id">@o.OrganizationName</a></td>
         <td><a href="/Person/Index/@o.LeaderId">@o.LeaderName</a></td>
         <td class="right">@o.MemberCount</td>

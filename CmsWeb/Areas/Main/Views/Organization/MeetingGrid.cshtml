@@ -11,6 +11,7 @@
 <tr>
     <th><a href="#" class="sortable">Date</a></th>
     <th><a href="#" class="sortable">Time</a></th>
+    <th><a href="#" class="sortable">HeadCount</a></th>
     <th><a href="#" class="sortable">Present</a></th>
     <th><a href="#" class="sortable">Guests</a></th>
     <th><a href="#" class="sortable">Location</a></th>
@@ -24,6 +25,7 @@
 <tr>
     <td><a href="/Meeting/Index/@m.MeetingId">@m.MeetingDate.FormatDate()</a></td>
     <td>@m.MeetingDate.ToString2("t")</td>
+    <td>@m.HeadCount.ToStringNoZero()</td>
     <td>@m.NumPresent</td>
     <td>@m.NumVisitors</td>
     <td>@m.Location</td>
@@ -31,7 +33,7 @@
     <td>
     @if (User.IsInRole("Attendance"))
     {
-        <a href="/DeleteMeeting/Index/@m.MeetingId" class="delmeeting"><img border="0" src="/images/delete.gif" /></a>
+        <a href="/DeleteMeeting/Index/@m.MeetingId" class="delmeeting"><img border="0" src="/Content/images/delete.gif" /></a>
     }
     </td>
 </tr>

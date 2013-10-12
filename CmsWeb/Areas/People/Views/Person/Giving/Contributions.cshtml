@@ -1,17 +1,6 @@
 ﻿@model CmsWeb.Areas.People.Models.ContributionsModel
 @using UtilityExtensions
-@{
-    var jan1 = new DateTime(DateTime.Now.Year, 1, 1).ToSortableDate();
-    var today = DateTime.Today.ToSortableDate();
-    var jan1Last = new DateTime(DateTime.Now.Year - 1, 1, 1).ToSortableDate();
-    var dec31Last = new DateTime(DateTime.Now.Year - 1, 12, 31).ToSortableDate();
-}
 <form class="non-modal ajax">
-    <div class="pull-right">
-        <span>Statement:</span>
-        <a class="btn btn-mini" target="_blank" href="/Person/ContributionStatement/@Model.person.PeopleId/@jan1/@today">Year to date</a>
-        <a class="btn btn-mini" target="_blank" href="/Person/ContributionStatement/@Model.person.PeopleId/@jan1Last/@dec31Last">Last Year</a>
-    </div>
     <div class="pagination pagination-mini">
     @Html.Partial("Pager3", Model.Pager)
     </div>

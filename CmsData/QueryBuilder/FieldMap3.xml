@@ -421,6 +421,12 @@
     <DaysAfterNthVisitDateRange Title="Attend Days After Nth Visit" Type="NullInteger" DisplayAs="DaysAfterNthVisitDateRange({0}, {1}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Quarters,Program,Division,Organization" QuartersLabel="Nth Visit Number">
       Enter a number and select the Comparison for the number of days after the Nth Attendance, enter a number for the Nth Attendance, pick a date range and select Program/Division/Organization.
     </DaysAfterNthVisitDateRange>
+    <GuestAsOf Title="Guest As Of" Type="Bit" DisplayAs="GuestAsOf({0}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division">
+      Choose a starting date/time and ending date/time, then pick a Program/Division/Organization
+    </GuestAsOf>
+    <AttendedAsOf Title="Attended As Of" Type="Bit" DisplayAs="AttendedAsOf({0}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division">
+      Choose a starting date/time and ending date/time, then pick a Program/Division/Organization
+    </AttendedAsOf>
   </AttendanceHistory>
   <Contributions TopMessage="Must have Finance role in order to get results for searches relating to actual contributions.">
     <EnvelopeOptionsId Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">
@@ -435,6 +441,12 @@
     <RecentContributionAmount Title="Recent Contribution Amount" Type="Number" DisplayAs="RecentContributionAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">
       Enter a number and select Comparison for the Contribution Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentContributionAmount>
+    <RecentNonTaxDedCount Title="Recent NonTaxDed Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentNonTaxDedCount({0},{1})" Params="Days,Quarters">
+      Enter a number and select Comparison for the number of NonTaxDeds, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
+    </RecentNonTaxDedCount>
+    <RecentNonTaxDedAmount Title="Recent NonTaxDed Amount" Type="Number" DisplayAs="RecentNonTaxDedAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">
+      Enter a number and select Comparison for the NonTaxDed Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
+    </RecentNonTaxDedAmount>
     <RecentPledgeCount Title="Recent Pledge Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentPledgeCount({0},{1})" Params="Days,Quarters">
       Enter a number and select Comparison for the number of Pledges, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentPledgeCount>

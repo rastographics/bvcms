@@ -5,7 +5,7 @@
         changeYear: true,
         yearRange: "-95:+0",
         showOn: "button",
-        buttonImage: "/images/calendar.gif",
+        buttonImage: "/Content/images/calendar.gif",
         buttonImageOnly: true,
         onSelect: function (dateText, inst) {
             var f = $(this).closest('form');

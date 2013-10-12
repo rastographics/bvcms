@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.People.Models
                            select t;
                 case "Completed":
                     return from t in q
-                           orderby (t.CompletedOn != null), t.Due ?? t.CreatedOn
+                           orderby (t.CompletedOn != null) descending, t.Due ?? t.CreatedOn
                            select t;
                 case "Created desc":
                     return from t in q
@@ -67,7 +67,7 @@ namespace CmsWeb.Areas.People.Models
                 case "Completed desc":
                 default:
                     return from t in q
-                           orderby (t.CompletedOn != null) descending, t.Due ?? t.CreatedOn descending
+                           orderby (t.CompletedOn != null), t.Due ?? t.CreatedOn descending
                            select t;
             }
         }

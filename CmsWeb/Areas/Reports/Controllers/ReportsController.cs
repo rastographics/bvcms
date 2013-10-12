@@ -24,21 +24,6 @@ namespace CmsWeb.Areas.Reports.Controllers
     [RouteArea("Reports", AreaUrl = "Reports2")]
     public class ReportsController : CmsStaffController
     {
-        [GET("Reports2/Attendance/{id}")]
-        public ActionResult Attendance(int id)
-        {
-
-            try
-            {
-                var m = new AttendanceModel(id);
-                UpdateModel(m);
-                return View(m);
-            }
-            catch (Exception ex)
-            {
-                return Content(ex.Message);
-            }
-        }
         [GET("Reports2/WeeklyAttendance/{id}")]
         public ActionResult WeeklyAttendance(Guid id)
         {
@@ -101,37 +86,6 @@ namespace CmsWeb.Areas.Reports.Controllers
                 Model = m
             };
         }
-        [POST("Reports2/OrgLeaders/{org}")]
-        public ActionResult OrgLeaders(string org, OrgSearchModel m)
-        {
-            return new OrgLeadersResult(m) { orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null };
-        }
-        [POST("Reports2/ClassList/{org}")]
-        public ActionResult ClassList(string org, OrgSearchModel m)
-        {
-            return new ClassListResult(m) { orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null };
-        }
-        public class ShirtSizeInfo
-        {
-            public string Size { get; set; }
-            public int Count { get; set; }
-        }
-        [POST("Reports2/ShirtSizes/{org}")]
-        public ActionResult ShirtSizes(string org, OrgSearchModel m)
-        {
-            var orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null;
-            var orgs = m.FetchOrgs();
-            var q = from om in DbUtil.Db.OrganizationMembers
-                    join o in orgs on om.OrganizationId equals o.OrganizationId
-                    where o.OrganizationId == orgid || (orgid ?? 0) == 0
-                    group 1 by om.ShirtSize into g
-                    select new ShirtSizeInfo
-                    {
-                        Size = g.Key,
-                        Count = g.Count(),
-                    };
-            return View(q);
-        }
         [GET("Reports2/Roster1/{id}")]
         public ActionResult Roster1(Guid id, int? oid)
         {
@@ -140,11 +94,6 @@ namespace CmsWeb.Areas.Reports.Controllers
                 qid = id,
                 org = oid,
             };
-        }
-        [POST("Reports2/Roster")]
-        public ActionResult Roster(OrgSearchModel m)
-        {
-            return new RosterListResult(m);
         }
         [GET("Reports2/Avery/{id}")]
         public ActionResult Avery(Guid? id)
@@ -167,10 +116,6 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no query");
             return new Avery3Result { id = id };
         }
-        //public ActionResult Coupons()
-        //{
-        //    return new CouponsResult(null, null);
-        //}
         [GET("Reports2/AveryAddress/{id}")]
         public ActionResult AveryAddress(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip, int skipNum = 0)
         {
@@ -209,20 +154,6 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no query");
             return new ProspectResult(id, Form ?? false, Alpha ?? false);
         }
-        [GET("Reports2/Attendee/{id}")]
-        public ActionResult Attendee(int? id)
-        {
-            if (!id.HasValue)
-                return Content("no meetingid");
-            return new AttendeeResult(meetingid: id);
-        }
-        [GET("Reports2/VisitsAbsents/{id}")]
-        public ActionResult VisitsAbsents(int? id)
-        {
-            if (!id.HasValue)
-                return Content("no meetingid");
-            return new VisitsAbsentsResult(meetingid: id);
-        }
         [GET("Reports2/VisitsAbsents2/{id}")]
         public ActionResult VisitsAbsents2(int? id)
         {
@@ -231,88 +162,12 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no meetingid");
             return new VisitsAbsentsResult2(meetingid: id);
         }
-        [GET("Reports2/PastAttendee/{id}")]
-        public ActionResult PastAttendee(int? id)
-        {
-            if (!id.HasValue)
-                return Content("no orgid");
-            return new PastAttendeeResult(orgid: id);
-        }
         [GET("Reports2/Registration/{id}")]
         public ActionResult Registration(Guid? id, int? oid)
         {
             if (!id.HasValue)
                 return Content("no query");
             return new RegistrationResult(id, oid);
-        }
-        [GET("Reports2/ChurchAttendance/{id}")]
-        public ActionResult ChurchAttendance(string id)
-        {
-            var dt2 = id.ToDate();
-            if (!dt2.HasValue)
-                dt2 = ChurchAttendanceModel.MostRecentAttendedSunday();
-            var m = new ChurchAttendanceModel(dt2.Value);
-            return View(m);
-        }
-        [GET("Reports2/WeeklyDecisions/{id}")]
-        public ActionResult WeeklyDecisions(string id)
-        {
-            var dt = id.ToDate();
-            var m = new WeeklyDecisionsModel(dt);
-            return View(m);
-        }
-        [POST("Reports2/Decisions")]
-        public ActionResult Decisions()
-        {
-            DbUtil.LogActivity("Viewing Decision Summary Rpt");
-            var today = Util.Now.Date;
-            var dt1 = new DateTime(today.Year, 1, 1);
-            var dt2 = today;
-            var m = new DecisionSummaryModel(dt1, dt2);
-            return View(m);
-        }
-        [POST("Reports2/Decisions/{dt1}/{dt2}")]
-        public ActionResult Decisions(DateTime? dt1, DateTime? dt2)
-        {
-            var today = Util.Now.Date;
-            if (!dt1.HasValue)
-                dt1 = new DateTime(today.Year, 1, 1);
-            if (!dt2.HasValue)
-                dt2 = today;
-            var m = new DecisionSummaryModel(dt1, dt2);
-            return View(m);
-        }
-
-        [POST("Reports2/DecisionsToQuery/{command}/{key}")]
-        public ActionResult DecisionsToQuery(string command, string key, DateTime? dt1, DateTime? dt2)
-        {
-            var r = new DecisionSummaryModel(dt1, dt2).QueryBuider(command, key);
-            return Redirect(r);
-        }
-
-        [GET("Reports2/ChurchAttendance2/{dt1:datetime?}/{dt2:datetime?}")]
-        public ActionResult ChurchAttendance2(DateTime? Dt1, DateTime? Dt2, string skipweeks)
-        {
-            var dt1 = Dt1.ToDate();
-            var dt2 = Dt2.ToDate();
-            if (!dt1.HasValue)
-                dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
-            if (!dt2.HasValue)
-                dt2 = DateTime.Today;
-            var m = new ChurchAttendance2Model(dt1, dt2, skipweeks);
-            return View(m);
-        }
-        [GET("Reports2/AttendanceDetail/{dt1}/{dt2}")]
-        public ActionResult AttendanceDetail(DateTime? Dt1, DateTime? Dt2, OrgSearchModel m)
-        {
-            var dt1 = Dt1.ToDate();
-            if (!dt1.HasValue)
-                dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
-            var dt2 = Dt2.ToDate();
-            if (!dt2.HasValue)
-                dt2 = dt1.Value.AddDays(1);
-            var m2 = new AttendanceDetailModel(dt1.Value, dt2, m);
-            return View(m2);
         }
         [GET("Reports2/RecentAbsents/{id}")]
         public ActionResult RecentAbsents1(Guid id)
@@ -325,47 +180,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View("RecentAbsents", q);
         }
 
-        [POST("Reports2/RecentAbsents/{id}")]
-        public ActionResult RecentAbsents(Guid id, OrgSearchModel m)
-        {
-            var cn = new SqlConnection(Util.ConnectionString);
-            cn.Open();
-            var q = cn.Query("RecentAbsentsSP2", new
-            {
-                name = m.Name,
-                prog = m.ProgramId,
-                div = m.DivisionId,
-                type = m.TypeId,
-                campus = m.CampusId,
-                sched = m.ScheduleId,
-                status = m.StatusId,
-                onlinereg = m.OnlineReg,
-                mainfellowship = m.MainFellowship,
-                parentorg = m.ParentOrg
-            }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
-            return View(q);
-        }
-
-        [POST("Reports2/Meetings")]
-        public ActionResult Meetings(MeetingsModel m)
-        {
-            if (m.FromOrgSearch)
-                m.Dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
-            if (!m.Dt2.HasValue)
-                m.Dt2 = m.Dt1.Value.AddDays(1);
-            return View(m);
-        }
-        [GET("Reports2/QueryStats")]
-        public ActionResult QueryStats()
-        {
-            return new QueryStatsResult();
-        }
-        [GET("Reports2/VitalStats")]
-        public ActionResult VitalStats()
-        {
-            ViewData["table"] = CmsData.QueryFunctions.VitalStats(DbUtil.Db);
-            return View();
-        }
         public class ExtraInfo
         {
             public string Field { get; set; }
@@ -483,115 +297,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult EmployerAddress(Guid id)
         {
             return new EmployerAddress(id, true);
-        }
-
-        public class QueryStatsResult : ActionResult
-        {
-            StringBuilder sb = new StringBuilder();
-            public override void ExecuteResult(ControllerContext context)
-            {
-                var dt = DateTime.Parse("1/1/1900");
-                var firstrunid = DateTime.Now.Date.Subtract(dt).Days - 200;
-                var q = from s in DbUtil.Db.QueryStats
-                        where s.RunId > firstrunid
-                        group s by s.RunId into g
-                        orderby g.Key descending
-                        select new
-                        {
-                            g.Key,
-                            list = from s in g.OrderBy(ss => ss.StatId)
-                                   select new { Count = s.Count as int?, s.StatId }
-                        };
-                var rows = q.Count();
-
-                var d = new List<Dictionary<string, string>>();
-
-                var q3 = from s in DbUtil.Db.QueryStats
-                         where s.RunId > firstrunid
-                         group s by s.StatId into g
-                         orderby g.Key
-                         select new { g.Key, g.OrderByDescending(ss => ss.RunId).First().Description };
-
-                var head = q3.ToDictionary(ss => ss.Key, ss => ss.Description);
-
-                var Response = context.HttpContext.Response;
-                foreach (var r in q)
-                {
-                    var row = new Dictionary<string, string>();
-                    row["S00"] = dt.AddDays(r.Key).ToString("d");
-                    foreach (var s in r.list)
-                        row[s.StatId] = s.Count.ToString2("N0");
-                    d.Add(row);
-                }
-                Response.Write("<table cellpadding=4>\n<tr><td>Date</td>");
-                foreach (var c in head)
-                    Response.Write("<td align='right'>{0}</td>".Fmt(c.Value));
-                Response.Write("</tr>\n");
-                foreach (var r in d)
-                {
-                    Response.Write("<tr><td>{0}</td>".Fmt(r["S00"]));
-                    foreach (var c in head)
-                    {
-                        if (r.ContainsKey(c.Key))
-                            Response.Write("<td align='right'>{0}</td>".Fmt(r[c.Key]));
-                        else
-                            Response.Write("<td></td>");
-                    }
-                    Response.Write("</tr>\n");
-                }
-                Response.Write("</table>");
-            }
-        }
-        [POST("Reports2/EnrollmentControl")]
-        public ActionResult EnrollmentControl(bool? excel, EnrollmentControlModel m)
-        {
-            if (excel != true)
-                return new EnrollmentControlResult { model = m };
-
-            var d = from p in m.list()
-                    orderby p.Name
-                    select p;
-            var workbook = new HSSFWorkbook(); // todo: Convert all Excel exports to this approach
-            var sheet = workbook.CreateSheet("EnrollmentControl");
-            var rowIndex = 0;
-            var row = sheet.CreateRow(rowIndex);
-            row.CreateCell(0).SetCellValue("PeopleId");
-            row.CreateCell(1).SetCellValue("Name");
-            row.CreateCell(2).SetCellValue("Organization");
-            row.CreateCell(3).SetCellValue("Location");
-            row.CreateCell(4).SetCellValue("MemberType");
-            rowIndex++;
-            sheet.DisplayRowColHeadings = true;
-
-            foreach (var i in d)
-            {
-                row = sheet.CreateRow(rowIndex);
-                row.CreateCell(0).SetCellValue(i.Id);
-                row.CreateCell(1).SetCellValue(i.Name);
-                row.CreateCell(2).SetCellValue(i.Organization);
-                row.CreateCell(3).SetCellValue(i.Location);
-                row.CreateCell(4).SetCellValue(i.MemberType);
-                rowIndex++;
-            }
-            sheet.AutoSizeColumn(0);
-            sheet.AutoSizeColumn(1);
-            sheet.AutoSizeColumn(2);
-            sheet.AutoSizeColumn(3);
-            sheet.AutoSizeColumn(4);
-            string saveAsFileName = string.Format("EnrollmentControl-{0:d}.xls", DateTime.Now);
-            var ms = new MemoryStream();
-            workbook.Write(ms);
-            return File(ms.ToArray(), "application/vnd.ms-excel", "attachment;filename=" + saveAsFileName);
-        }
-        [POST("Reports2/CheckinControl")]
-        public ActionResult CheckinControl(CheckinControlModel m)
-        {
-            return new CheckinControlResult { model = m };
-        }
-        [POST("Reports2/EnrollmentControl2")]
-        public ActionResult EnrollmentControl2(EnrollmentControlModel m)
-        {
-            return View(m);
         }
     }
 }

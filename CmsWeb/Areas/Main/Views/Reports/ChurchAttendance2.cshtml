@@ -6,26 +6,61 @@
 }
 @section head {
     <style type="text/css">
-        body
-        {
-            font-size: 100%;
+        body {
+            font-size: 110%;
         }
-        .totalrow td
-        {
+
+        td {
+            padding: 4px;
+        }
+        th {
+            padding: 0 4px;
+        }
+
+            th > h2 {
+                margin-bottom: 3px;
+            }
+
+        th {
+            font: default;
+            font-weight: bold;
+        }
+
+        table.centered {
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: collapse;
+        }
+
+        .totalrow td {
             border-top: 2px solid black;
             font-weight: bold;
             text-align: right;
         }
-        .headerrow th
-        {
+
+        .headerrow th {
             border-bottom: 2px solid black;
             text-align: center;
+            font-weight: bold;
         }
-        input#SundayDate
-        {
+
+        .nobottom {
+            margin-bottom: 0;
+        }
+
+        input#SundayDate {
             width: 100px;
             font-size: 100%;
         }
+
+        table.centered a {
+            color: #0088cc;
+        }
+
+            table.centered a:hover {
+                text-decoration: underline;
+                color: #0088cc;
+            }
     </style>
 }
 @section scripts

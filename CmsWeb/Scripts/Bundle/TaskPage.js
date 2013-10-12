@@ -1246,7 +1246,7 @@ $.QueryString = function(q, item) {
     return r[item];
 };
 $.block = function() {
-    $.blockUI({ message: 'working on it...<img src="/images/loading.gif"/>' });
+    $.blockUI({ message: 'working on it...<img src="/Content/images/loading.gif"/>' });
 };
 $.unblock = function() {
     $.unblockUI({ fadeOut: 150 });

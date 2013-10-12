@@ -240,7 +240,7 @@
         }
         else if ($(e.target).hasClass("clickSelect")) {
             $(e.target).editable("/PostBundle/Edit/", {
-                indicator: '<img src="/images/loading.gif">',
+                indicator: '<img src="/Content/images/loading.gif">',
                 loadtype: 'post',
                 loadurl: "/PostBundle/Funds/",
                 type: "select",

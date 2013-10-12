@@ -330,11 +330,18 @@ namespace CmsWeb.Areas.Main.Controllers
 
         public ActionResult Meetings(MeetingsModel m)
         {
-            if (m.FromOrgSearch)
+            if (!m.FromWeekAtAGlance)
                 m.Dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
-            if (!m.Dt2.HasValue)
+            if (!m.Dt2.HasValue && m.Dt1.HasValue)
                 m.Dt2 = m.Dt1.Value.AddDays(1);
             return View(m);
+        }
+        [POST("Reports/MeetingsToQuery/{type}")]
+        public ActionResult MeetingsToQuery(string type, MeetingsModel m)
+        {
+            var r = m.QueryBuilder(type);
+			TempData["autorun"] = true;
+            return Redirect(r);
         }
         public ActionResult Test()
         {

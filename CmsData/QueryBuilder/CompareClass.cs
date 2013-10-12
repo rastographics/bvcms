@@ -118,6 +118,15 @@ namespace CmsData
 							   c.OrgType ?? 0,
                                CompType,
                                c.CodeIntIds);
+                case QueryType.AttendedAsOf:
+                    return Expressions.AttendedAsOf(parm,
+                               c.StartDate,
+                               c.EndDate,
+                               c.Program,
+                               c.Division,
+                               CompType,
+                               c.CodeIds == "1",
+                               guestonly: false);
                 case QueryType.AttendMemberTypeAsOf:
                     return Expressions.AttendMemberTypeAsOf(Db,
                                parm,
@@ -149,7 +158,7 @@ namespace CmsData
                     return Expressions.CreatedBy(parm, Db,
                         CompType, c.TextValue);
                 case QueryType.ContributionAmount2:
-                    return Expressions.ContributionAmount2(parm, Db,
+                    return Expressions.ContributionAmount(parm, Db,
                                c.StartDate,
                                c.EndDate, c.Quarters.ToInt(),
                                CompType,
@@ -207,6 +216,16 @@ namespace CmsData
                     return Expressions.FamilyHasChildrenAged2(parm, c.Quarters, CompType, c.CodeIds == "1");
                 case QueryType.FamilyHasChildrenAged3:
                     return Expressions.FamilyHasChildrenAged3(parm, c.Quarters, CompType, c.CodeIntIds);
+                // G --------------------
+                case QueryType.GuestAsOf:
+                    return Expressions.AttendedAsOf(parm,
+                               c.StartDate,
+                               c.EndDate,
+                               c.Program,
+                               c.Division,
+                               CompType,
+                               c.CodeIds == "1",
+                               guestonly: true);
                 // H --------------------
                 case QueryType.HasBalanceInCurrentOrg:
                     return Expressions.HasBalanceInCurrentOrg(Db, parm,
@@ -415,6 +434,12 @@ namespace CmsData
                                c.Schedule,
                                CompType,
                                c.TextValue.ToInt());
+                case QueryType.NonTaxDedAmount:
+                    return Expressions.NonTaxDedAmount(parm, Db,
+                               c.StartDate,
+                               c.EndDate, c.Quarters.ToInt(),
+                               CompType,
+                               Decimal.Parse(c.TextValue));
                 case QueryType.NumberOfFamilyMembers:
                     return Expressions.NumberOfFamilyMembers(parm,
                                CompType,
@@ -552,6 +577,11 @@ namespace CmsData
                                c.Days, c.Quarters.ToInt(),
                                CompType,
                                c.TextValue.ToInt());
+                case QueryType.RecentNonTaxDedCount:
+                    return Expressions.RecentNonTaxDedCount(parm, Db,
+                               c.Days, c.Quarters.ToInt(),
+                               CompType,
+                               c.TextValue.ToInt());
                 case QueryType.RecentFirstTimeGiver:
                     return Expressions.RecentFirstTimeGiver(parm, Db,
                                c.Days, c.Quarters.ToInt(),
@@ -559,6 +589,11 @@ namespace CmsData
 							   c.CodeIds == "1");
                 case QueryType.RecentContributionAmount:
                     return Expressions.RecentContributionAmount(parm, Db,
+                               c.Days, c.Quarters.ToInt(),
+                               CompType,
+                               Decimal.Parse(c.TextValue));
+                case QueryType.RecentNonTaxDedAmount:
+                    return Expressions.RecentNonTaxDedAmount(parm, Db,
                                c.Days, c.Quarters.ToInt(),
                                CompType,
                                Decimal.Parse(c.TextValue));

@@ -78,8 +78,8 @@ namespace CmsWeb.Areas.Search.Models
         {
             get
             {
-                if (birthday.HasValue)
-                    return birthday.Value.AgeAsOf(Util.Now);
+                if (Birthday.HasValue)
+                    return Birthday.Value.AgeAsOf(Util.Now);
                 return null;
             }
         }
@@ -121,7 +121,7 @@ namespace CmsWeb.Areas.Search.Models
 
         internal void CheckDuplicate()
         {
-            var pids = DbUtil.Db.FindPerson(FirstName, LastName, birthday, null, CellPhone.GetDigits()).Select(pp => pp.PeopleId).ToList();
+            var pids = DbUtil.Db.FindPerson(FirstName, LastName, Birthday, null, CellPhone.GetDigits()).Select(pp => pp.PeopleId).ToList();
             var q = from p in DbUtil.Db.People
                     where pids.Contains(p.PeopleId)
                     select new { p.PeopleId, p.Name, p.PrimaryAddress, p.Age, };
@@ -153,7 +153,7 @@ namespace CmsWeb.Areas.Search.Models
                 NickName = NickName.Trim();
             var position = PositionInFamily.Child;
 
-            if (!birthday.HasValue)
+            if (!Birthday.HasValue)
                 position = PositionInFamily.PrimaryAdult;
             if (Age >= 18)
                 if (f.People.Count(per =>

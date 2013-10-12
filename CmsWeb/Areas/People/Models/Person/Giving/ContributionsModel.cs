@@ -1,21 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Data.Linq;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Code;
 using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class ContributionsModel : PagedTableModel<Contribution, ContributionInfo>
     {
-        public CmsData.Person person;
+        public int PeopleId { get; set; }
+        public Person person;
         public bool ShowNames;
         public bool ShowTypes;
+        [DisplayName("Statement Option")]
+        public CodeInfo ContributionOptions { get; set; }
+        [DisplayName("Envelope Option")]
+        public CodeInfo EnvelopeOptions { get; set; }
 
         public ContributionsModel(int id)
             : base("Date", "desc")
         {
+            PeopleId = id;
             person = DbUtil.Db.LoadPersonById(id);
+            ContributionOptions = new CodeInfo(person.ContributionOptionsId, "ContributionOptions");
+            EnvelopeOptions = new CodeInfo(person.EnvelopeOptionsId, "EnvelopeOptions");
         }
 
         public override IQueryable<Contribution> DefineModelList()
@@ -96,6 +108,23 @@ namespace CmsWeb.Areas.People.Models
                        Fund = c.ContributionFund.FundDescription,
                        Name = c.Person.PeopleId == person.PeopleId ? c.Person.PreferredName : c.Person.Name,
                        Type = ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId) ? c.ContributionType.Description : online ? "Online" : "Check/Cash",
+                   };
+        }
+
+        public static IEnumerable<StatementInfo> Statements(int id)
+        {
+            return from c in DbUtil.Db.Contributions2(new DateTime(1900,1,1), new DateTime(3000, 12, 31), 0, false, false, true)
+                   where c.PeopleId == id
+                   group c by c.DateX.Value.Year into g
+                   orderby g.Key descending 
+                   select new StatementInfo()
+                   {
+                       Count = g.Count(),
+                       Amount = g.Sum(cc => cc.Amount ?? 0),
+                       StartDate = new DateTime(g.Key, 1, 1),
+                       EndDate = new DateTime(g.Key, 12, 31)
+//                       StartDate = g.Min(cc => cc.DateX.Value),
+//                       EndDate = g.Max(cc => cc.DateX.Value)
                    };
         }
     }

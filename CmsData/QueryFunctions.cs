@@ -85,7 +85,7 @@ namespace CmsData
                     select m;
             if (!q.Any())
                 return 0;
-            return q.Sum(mm => mm.NumPresent);
+            return q.Sum(mm => mm.MaxCount ?? 0);
         }
 
         public int RegistrationCount(int days, int progid, int divid, int orgid)

@@ -144,7 +144,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="HeadName", Storage="_HeadName", DbType="varchar(139)")]
+		[Column(Name="HeadName", Storage="_HeadName", DbType="nvarchar(139)")]
 		public string HeadName
 		{
 			get
@@ -161,7 +161,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="SpouseName", Storage="_SpouseName", DbType="varchar(139)")]
+		[Column(Name="SpouseName", Storage="_SpouseName", DbType="nvarchar(139)")]
 		public string SpouseName
 		{
 			get
@@ -229,7 +229,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="ContributionDesc", Storage="_ContributionDesc", DbType="varchar(256)")]
+		[Column(Name="ContributionDesc", Storage="_ContributionDesc", DbType="nvarchar(256)")]
 		public string ContributionDesc
 		{
 			get
@@ -246,7 +246,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="CheckNo", Storage="_CheckNo", DbType="varchar(20)")]
+		[Column(Name="CheckNo", Storage="_CheckNo", DbType="nvarchar(20)")]
 		public string CheckNo
 		{
 			get
@@ -280,7 +280,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="FundName", Storage="_FundName", DbType="varchar(256) NOT NULL")]
+		[Column(Name="FundName", Storage="_FundName", DbType="nvarchar(256) NOT NULL")]
 		public string FundName
 		{
 			get
@@ -314,7 +314,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="BundleType", Storage="_BundleType", DbType="varchar(50)")]
+		[Column(Name="BundleType", Storage="_BundleType", DbType="nvarchar(50)")]
 		public string BundleType
 		{
 			get
@@ -331,7 +331,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="BundleStatus", Storage="_BundleStatus", DbType="varchar(50)")]
+		[Column(Name="BundleStatus", Storage="_BundleStatus", DbType="nvarchar(50)")]
 		public string BundleStatus
 		{
 			get

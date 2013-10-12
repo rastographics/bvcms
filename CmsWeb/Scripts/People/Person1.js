@@ -43,6 +43,9 @@
                     case 'Menu':
                         window.location = '/Person2/' + ret.pid;
                         break;
+                    case 'MergeTo':
+                        window.location = "/Manage/Merge?PeopleId1=" + ret.pid + "&PeopleId2=" + ret.pid2;
+                        break;
                 }
         });
         return false;
@@ -95,14 +98,6 @@
             });
         });
     });
-    $('#merge').click(function (ev) {
-        ev.preventDefault();
-        var d = $('#dialogbox');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("option", "title", "Merge To Person");
-        d.dialog("open");
-        return false;
-    });
     $("form.ajax a.membertype").live("click", function (ev) {
         ev.preventDefault();
         $("#member-dialog").css({ 'margin-top': '', 'top': '' })
@@ -114,8 +109,22 @@
             });
     });
     $('a[data-toggle="tab"]').on('shown', function (e) {
-        $.cookie('lasttab', $(e.target).attr('href'));
+        window.location.hash = $(e.target).attr('href');
+        $.cookie('lasttab', window.location.hash);
     });
+    var lastTab = $.cookie('lasttab');
+    if (window.location.hash) {
+        lastTab = window.location.hash;
+    }
+    if (lastTab) {
+        var tlink = $("a[href='" + lastTab + "']");
+        var tabparent = tlink.closest("ul").data("tabparent");
+        if (tabparent) {
+            $("a[href='#" + tabparent + "']").click().tab("show");
+        }
+        $.cookie('lasttab', tlink.attr("href"));
+        tlink.click().tab("show");
+    }
     $("a[href='#enrollment']").on('shown', function (e) {
         if ($("#current").length < 2) {
             $("a[href='#current']").click().tab("show");
@@ -266,35 +275,29 @@
         });
     };
     SetProfileEditable();
-    var lastTab = $.cookie('lasttab');
-    if (lastTab) {
-        var tlink = $("a[href='" + lastTab + "']");
-        var tabparent = tlink.closest("ul").data("tabparent");
-        if (tabparent) {
-            $("a[href='#" + tabparent + "']").click().tab("show");
-        }
-        $.cookie('lasttab', tlink.attr("href"));
-        tlink.click().tab("show");
-    }
     $.fn.editabletypes.abstractinput.prototype.value2input = function (value) {
         this.$input.val((value || "").toString());
     };
-    $.InitFunctions.ExtraEditable = function () {
-        $(".click-Code").editable({ mode: 'inline' });
-        $('.click-Data').editable({ type: 'textarea', mode: 'inline' });
-        $(".click-Code-Select").editable({ type: "select", mode: 'inline' });
-        $('.click-Bits').editable({ type: "checklist", mode: 'inline' });
-        $(".click-Date").editable({ type: 'date', mode: 'inline', format: $.dtoptions.format });
-        $(".click-Bit").editable({ type: 'checklist', mode: 'inline', source: { 'True': 'True' }, emptytext: 'False' });
+    $.InitFunctions.Editable = function() {
+        $("a.editable").editable();
     };
+    $.InitFunctions.ExtraEditable = function () {
+        $("a.click-Code").editable({ mode: 'inline' });
+        $('a.click-Data').editable({ type: 'textarea', mode: 'inline' });
+        $("a.click-Code-Select").editable({ type: "select", mode: 'inline' });
+        $('a.click-Bits').editable({ type: "checklist", mode: 'inline' });
+        $("a.click-Date").editable({ type: 'date', mode: 'inline', format: $.dtoptions.format });
+        $("a.click-Bit").editable({ type: 'checklist', mode: 'inline', source: { 'True': 'True' }, emptytext: 'False' });
+    };
+    $('a.click-pencil').live("click", function (e) {
+        e.stopPropagation();
+        $(this).prev().editable('toggle');
+        return false;
+    });
     $.InitFunctions.MemberDocsEditable = function () {
         $("#memberdocs-form a.editable").editable({
             placement: "right",
             showbuttons: "bottom"
-        });
-        $('#memberdocs-form a.nameEdit').click(function (e) {
-            e.stopPropagation();
-            $(this).previousSibling().editable('toggle');
         });
     };
 });
@@ -309,9 +312,6 @@ function RebindMemberGrids() {
 function RebindUserInfoGrid() {
     $.updateTable($('#user-tab form'));
     $("#memberDialog").dialog('close');
-}
-function AddSelected(ret) {
-    window.location = "/Merge?PeopleId1=" + $("#PeopleId").val() + "&PeopleId2=" + ret.pid;
 }
 function dialogError(arg) {
     return arg;

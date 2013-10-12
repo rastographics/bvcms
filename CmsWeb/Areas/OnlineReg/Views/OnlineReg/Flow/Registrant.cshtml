@@ -105,7 +105,7 @@
             @if ((Model.Found == true || Model.IsNew) && !Model.Parent.ManagingSubscriptions() && !Model.IsCreateAccount())
             {
                 <a href="/OnlineReg/Cancel/@index" class="close submitlink">
-                    <img src="/images/delete.gif" border="0" alt="cancel" title="cancel this registration" /></a>
+                    <img src="/Content/images/delete.gif" border="0" alt="cancel" title="cancel this registration" /></a>
             }
 @* Show the finished registrant in a box *@
             @if (Model.Finished())

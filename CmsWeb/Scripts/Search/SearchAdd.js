@@ -20,7 +20,7 @@
     });
     $(document).on("shown", "#search-add", function() {
         $("#search-add #Name").focus();
-        $("#search-add #Name").keydown(function (event) {
+        $("#search-add #Name").live("keydown", function (event) {
             if (event.keyCode == 13) {
                 event.preventDefault();
                 $("#searchperson").click();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Linq.SqlClient;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Xml;
@@ -23,144 +24,186 @@ namespace CmsData.API
             this.Db = Db;
         }
 
-		public string PostContribution(int PeopleId, decimal Amount, int FundId, string desc, string date, int? type, string checkno)
-		{
-			try
-			{
-				var p = Db.LoadPersonById(PeopleId);
-				if (p == null)
-					throw new Exception("no person");
-				var c = p.PostUnattendedContribution(Db, Amount, FundId, desc);
-			    DateTime dt;
-			    if (date.DateTryParse(out dt))
-			        c.ContributionDate = dt;
+        public string PostContribution(int PeopleId, decimal Amount, int FundId, string desc, string date, int? type, string checkno)
+        {
+            try
+            {
+                var p = Db.LoadPersonById(PeopleId);
+                if (p == null)
+                    throw new Exception("no person");
+                var c = p.PostUnattendedContribution(Db, Amount, FundId, desc);
+                DateTime dt;
+                if (date.DateTryParse(out dt))
+                    c.ContributionDate = dt;
                 if (type.HasValue)
-    			    c.ContributionTypeId = type.Value;
-			    if (checkno.HasValue())
-			        c.CheckNo = checkno;
+                    c.ContributionTypeId = type.Value;
+                if (checkno.HasValue())
+                    c.CheckNo = checkno;
                 Db.SubmitChanges();
-				return @"<PostContribution status=""ok"" id=""{0}"" />".Fmt(c.ContributionId);
-			}
-			catch (Exception ex)
-			{
-				return @"<PostContribution status=""error"">" + ex.Message + "</PostContribution>";
-			}
-		}
+                return @"<PostContribution status=""ok"" id=""{0}"" />".Fmt(c.ContributionId);
+            }
+            catch (Exception ex)
+            {
+                return @"<PostContribution status=""error"">" + ex.Message + "</PostContribution>";
+            }
+        }
 
-	    public string Contributions(int PeopleId, int Year)
-		{
-		    try
-		    {
-				var p = Db.LoadPersonById(PeopleId);
-				if (p == null)
-					throw new Exception("no person");
-				if (p.PositionInFamilyId != PositionInFamily.PrimaryAdult)
-					throw new Exception("not a primary adult");
-			    var frdt = new DateTime(Year, 1, 1);
-			    var todt = new DateTime(Year, 12, 31);
-			    var f = GetFamilyContributions(frdt, todt, p);
-			    return SerializeContributions(f);
-		    }
-		    catch (Exception ex)
-		    {
-				return @"<PostContribution status=""error"">" + ex.Message + "</PostContribution>";
-		    }
-		}
+        public string Contributions(int PeopleId, int Year)
+        {
+            try
+            {
+                var p = Db.LoadPersonById(PeopleId);
+                if (p == null)
+                    throw new Exception("no person");
+                if (p.PositionInFamilyId != PositionInFamily.PrimaryAdult)
+                    throw new Exception("not a primary adult");
+                var frdt = new DateTime(Year, 1, 1);
+                var todt = new DateTime(Year, 12, 31);
+                var f = GetFamilyContributions(frdt, todt, p);
+                return SerializeContributions(f);
+            }
+            catch (Exception ex)
+            {
+                return @"<PostContribution status=""error"">" + ex.Message + "</PostContribution>";
+            }
+        }
 
-	    private FamilyContributions GetFamilyContributions(DateTime frdt, DateTime todt, Person p)
-	    {
-		    var f = new FamilyContributions
-		    {
-			    status = "ok",
-			    Contributors = (from ci in contributors(Db, frdt, todt, 0, 0, p.FamilyId, noaddressok: true, useMinAmt: false)
-			                    select new Contributor
-			                    {
-				                    Name = ci.Name,
-									Type = ci.Joint ? "Joint" : "Individual",
-				                    Contributions = (from c in contributions(Db, ci, frdt, todt)
-				                                     select new Contribution
-				                                     {
-					                                     Amount = c.ContributionAmount,
-					                                     Date = c.ContributionDate.ToShortDateString(),
-					                                     Description = c.Description,
-														 CheckNo = c.CheckNo,
-					                                     Fund = c.Fund,
-					                                     Name = c.Name,
-				                                     }).ToList()
-			                    }).ToList()
-		    };
-		    return f;
-	    }
+        private FamilyContributions GetFamilyContributions(DateTime frdt, DateTime todt, Person p)
+        {
+            var f = new FamilyContributions
+            {
+                status = "ok",
+                Contributors = (from ci in contributors(Db, frdt, todt, 0, 0, p.FamilyId, noaddressok: true, useMinAmt: false)
+                                select new Contributor
+                                {
+                                    Name = ci.Name,
+                                    Type = ci.Joint ? "Joint" : "Individual",
+                                    Contributions = (from c in contributions(Db, ci, frdt, todt)
+                                                     select new Contribution
+                                                     {
+                                                         Amount = c.ContributionAmount,
+                                                         Date = c.ContributionDate.ToShortDateString(),
+                                                         Description = c.Description,
+                                                         CheckNo = c.CheckNo,
+                                                         Fund = c.Fund,
+                                                         Name = c.Name,
+                                                     }).ToList()
+                                }).ToList()
+            };
+            return f;
+        }
 
-	    private static string SerializeContributions(FamilyContributions f)
-	    {
-		    var sw = new StringWriter();
-		    var xs = new XmlSerializer(typeof (FamilyContributions));
-		    var ns = new XmlSerializerNamespaces();
-		    ns.Add("", "");
-		    xs.Serialize(sw, f, ns);
-		    return sw.ToString();
-	    }
+        private static string SerializeContributions(FamilyContributions f)
+        {
+            var sw = new StringWriter();
+            var xs = new XmlSerializer(typeof(FamilyContributions));
+            var ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+            xs.Serialize(sw, f, ns);
+            return sw.ToString();
+        }
 
-        public static IEnumerable<ContributorInfo> contributors(CMSDataContext Db, DateTime fromDate, DateTime toDate, int PeopleId, int? SpouseId, int FamilyId, bool noaddressok, bool useMinAmt, string startswith = null)
+        public static IEnumerable<ContributorInfo> contributors(CMSDataContext Db, 
+            DateTime fromDate, DateTime toDate, int PeopleId, int? SpouseId, int FamilyId, bool noaddressok, bool useMinAmt, 
+            string startswith = null, string sort = null)
         {
             var MinAmt = Db.Setting("MinContributionAmount", "5").ToDecimal();
             if (!useMinAmt)
                 MinAmt = 0;
-            var q11 = from p in Db.Contributors(fromDate, toDate, PeopleId, SpouseId, FamilyId, noaddressok)
-                      let option =
-                          (p.ContributionOptionsId ?? 0) == 0
-                              ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
-                              : p.ContributionOptionsId
-                      let option2 =
-                          (p.SpouseContributionOptionsId ?? 0) == 0
-                              ? (p.SpouseId > 0 ? 2 : 1)
-                              : p.SpouseContributionOptionsId
-                      let name = (option == 1
-                                      ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
-                                      : (p.SpouseId == null
-                                             ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
-                                             : (p.HohFlag == 1
-                                                    ? ((p.Title != null && p.Title != "")
-                                                           ? p.Title + " and Mrs. " + p.Name
-                                                           : "Mr. and Mrs. " + p.Name)
-                                                    : ((p.SpouseTitle != null && p.SpouseTitle != "")
-                                                           ? p.SpouseTitle + " and Mrs. " + p.SpouseName
-                                                           : "Mr. and Mrs. " + p.SpouseName))))
-                                 + ((p.Suffix == null || p.Suffix == "") ? "" : ", " + p.Suffix)
-                      where option != 9 || noaddressok
-                      where startswith == null || p.LastName.StartsWith(startswith)
+
+            var endswith = "";
+		    if (startswith != null && startswith.Contains("-"))
+		    {
+		        var a = startswith.SplitStr("-", 2);
+		        startswith = a[0];
+		        endswith = a[1];
+		    }
+            var q = from p in Db.Contributors(fromDate, toDate, PeopleId, SpouseId, FamilyId, noaddressok)
+                    select p;
+
+            if (startswith.HasValue() && !endswith.HasValue())
+                q = from p in q
+                    where p.LastName.StartsWith(startswith)
+                    select p;
+            else if(startswith.HasValue() && endswith.HasValue())
+                q = from p in q
+                    // ReSharper disable StringCompareToIsCultureSpecific
+                    where (p.LastName.CompareTo(startswith) >= 0 && p.LastName.CompareTo(endswith) < 0) || SqlMethods.Like(p.LastName, endswith + "%")
+                    select p;
+
+            if (MinAmt > 0)
+                q = from p in q
+                    let option = (p.ContributionOptionsId ?? 0) == 0
+                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                            : p.ContributionOptionsId
+                    where option != 9 || noaddressok
+                    where (option == 1 && (p.Amount > MinAmt))
+                            || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > MinAmt))
+                    select p;
+            else
+                q = from p in q
+                    let option =
+                        (p.ContributionOptionsId ?? 0) == 0
+                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                            : p.ContributionOptionsId
+                    where option != 9 || noaddressok
+                    where
+                        (option == 1 && (p.Amount > 0 || p.GiftInKind == true))  // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
+                        || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > 0 || p.GiftInKind == true))
+                    select p;
+
+            if(sort == "zip")
+                q = from p in q
+                    orderby p.PrimaryZip, p.FamilyId, p.PositionInFamilyId, p.HohFlag, p.Age
+                    select p;
+            else if (sort == "name")
+                q = from p in q
+                    orderby p.LastName, p.FamilyId, p.PositionInFamilyId, p.HohFlag, p.Age
+                    select p;
+            else
+                q = from p in q
+                    orderby p.FamilyId, p.PositionInFamilyId, p.HohFlag, p.Age
+                    select p;
+
+            var q2 = from p in q
+                     let option = (p.ContributionOptionsId ?? 0) == 0
+                             ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                             : p.ContributionOptionsId
+                     let name = (option == 1
+                         ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
+                         : (p.SpouseId == null
+                             ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
+                             : (p.HohFlag == 1
+                                 ? ((p.Title != null && p.Title != "")
+                                     ? p.Title + " and Mrs. " + p.Name
+                                     : "Mr. and Mrs. " + p.Name)
+                                 : ((p.SpouseTitle != null && p.SpouseTitle != "")
+                                     ? p.SpouseTitle + " and Mrs. " + p.SpouseName
+                                     : "Mr. and Mrs. " + p.SpouseName))))
+                                + ((p.Suffix == null || p.Suffix == "") ? "" : ", " + p.Suffix)
+                     select new ContributorInfo
+                     {
+                         Name = name,
+                         Address1 = p.PrimaryAddress,
+                         Address2 = p.PrimaryAddress2,
+                         City = p.PrimaryCity,
+                         State = p.PrimaryState,
+                         Zip = p.PrimaryZip,
+                         PeopleId = p.PeopleId,
+                         SpouseID = p.SpouseId,
+                         DeacesedDate = p.DeceasedDate,
+                         FamilyId = p.FamilyId,
+                         Age = p.Age,
+                         FamilyPositionId = p.PositionInFamilyId,
+                         hohInd = p.HohFlag,
+                         Joint = option == 2,
+                         CampusId = p.CampusId,
+                     };
+
 #if DEBUG2
-                      where p.PeopleId == 828612
-#endif
-                     
-                      where (option == 1 && (p.Amount > MinAmt || p.GiftInKind == true))  // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
-                            || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > MinAmt || p.GiftInKind == true))
-
-                      orderby p.FamilyId, p.PositionInFamilyId, p.HohFlag, p.Age
-                      select new ContributorInfo
-                      {
-                          Name = name,
-                          Address1 = p.PrimaryAddress,
-                          Address2 = p.PrimaryAddress2,
-                          City = p.PrimaryCity,
-                          State = p.PrimaryState,
-                          Zip = p.PrimaryZip,
-                          PeopleId = p.PeopleId,
-                          SpouseID = p.SpouseId,
-                          DeacesedDate = p.DeceasedDate,
-                          FamilyId = p.FamilyId,
-                          Age = p.Age,
-                          FamilyPositionId = p.PositionInFamilyId,
-                          hohInd = p.HohFlag,
-                          Joint = option == 2,
-                          CampusId = p.CampusId,
-                      };
-
-#if DEBUG
-            return q11.Take(30);
+            return q2.Take(30);
 #else
-            return q11;
+            return q2;
 #endif
         }
 
@@ -172,7 +215,7 @@ namespace CmsData.API
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
                     where c.ContributionDate >= fromDate && c.ContributionDate.Value.Date <= toDate
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
-					where !(c.ContributionFund.NonTaxDeductible ?? false)
+                    where !(c.ContributionFund.NonTaxDeductible ?? false)
                     where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
                     orderby c.ContributionDate
                     select new ContributionInfo
@@ -181,8 +224,8 @@ namespace CmsData.API
                         ContributionAmount = c.ContributionAmount ?? 0,
                         ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
                         Fund = c.ContributionFund.FundName,
-						CheckNo = c.CheckNo,
-						Name = c.Person.Name,
+                        CheckNo = c.CheckNo,
+                        Name = c.Person.Name,
                         Description = c.ContributionDesc
                     };
 
@@ -196,7 +239,7 @@ namespace CmsData.API
                 ContributionTypeCode.Reversed,
             };
 
-			var showPledgeIfMet = Db.Setting("ShowPledgeIfMet", "true").ToBool();
+            var showPledgeIfMet = Db.Setting("ShowPledgeIfMet", "true").ToBool();
 
             var qp = from p in Db.Contributions
                      where p.PeopleId == ci.PeopleId || (ci.Joint && p.PeopleId == ci.SpouseID)
@@ -217,7 +260,7 @@ namespace CmsData.API
             var q = from p in qp
                     join c in qc on p.FundId equals c.FundId into items
                     from c in items.DefaultIfEmpty()
-					where (p.Total ?? 0) > (c == null ? 0 : c.Total ?? 0) || showPledgeIfMet
+                    where (p.Total ?? 0) > (c == null ? 0 : c.Total ?? 0) || showPledgeIfMet
                     orderby p.Fund descending
                     select new PledgeSummaryInfo
                     {
@@ -245,7 +288,7 @@ namespace CmsData.API
                     where c.ContributionDate <= toDate
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
-					where (c.ContributionFund.NonTaxDeductible ?? false) == false
+                    where (c.ContributionFund.NonTaxDeductible ?? false) == false
                     group c by c.ContributionFund.FundName into g
                     orderby g.Key
                     select new ContributionInfo
@@ -299,9 +342,9 @@ namespace CmsData.API
             public string Date { get; set; }
             public decimal Amount { get; set; }
             public string Fund { get; set; }
-            [DefaultValue("")]  
+            [DefaultValue("")]
             public string Description { get; set; }
-            [DefaultValue("")]  
+            [DefaultValue("")]
             public string CheckNo { get; set; }
         }
     }

@@ -8,16 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 using CmsData.View;
 using CmsWeb.Areas.Main.Controllers;
-using CmsWeb.Areas.Main.Models.Report;
 using UtilityExtensions;
 using System.Web.Mvc;
-using System.Web.Routing;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Data.Linq;
 using CmsData;
 using System.Collections;
 using CmsData.Codes;
@@ -39,7 +33,7 @@ namespace CmsWeb.Models
         public int? OnlineReg { get; set; }
         public bool? MainFellowship { get; set; }
         public bool? ParentOrg { get; set; }
-        public bool FromOrgSearch { get; set; }
+        public bool FromWeekAtAGlance { get; set; }
 
         public OrgSearchModel()
         {
@@ -146,7 +140,7 @@ namespace CmsWeb.Models
         {
             var q = FetchOrgs();
             var Db = DbUtil.Db;
-            var q2 = from o in q 
+            var q2 = from o in q
                      from om in o.OrganizationMembers
                      let p = om.Person
                      let sc = o.OrgSchedules.FirstOrDefault() // SCHED
@@ -225,11 +219,7 @@ namespace CmsWeb.Models
                             where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                             select o;
 
-            if (Util2.OrgMembersOnly)
-                organizations = from o in organizations
-                                where o.OrganizationMembers.Any(om => om.PeopleId == Util.UserPeopleId)
-                                select o;
-            else if (Util2.OrgLeadersOnly)
+            if (Util2.OrgLeadersOnly)
             {
                 var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
                 organizations = DbUtil.Db.Organizations.Where(o => oids.Contains(o.OrganizationId));
@@ -257,10 +247,17 @@ namespace CmsWeb.Models
                                 where o.DivOrgs.Any(t => t.DivId == DivisionId)
                                 select o;
             else if (ProgramId > 0)
-                organizations = from o in organizations
-                                where o.DivOrgs.Any(d => d.Division.ProgDivs.Any(p => p.ProgId == ProgramId))
-                                || o.Division.ProgId == ProgramId
-                                select o;
+                if (FromWeekAtAGlance)
+                    organizations = from o in organizations
+                                    where o.DivOrgs.Any(d => d.Division.ProgDivs.Any(p => p.ProgId == ProgramId 
+                                        && p.Division.ReportLine > 0))
+                                    || (o.Division.ProgId == ProgramId && o.Division.ReportLine > 0)
+                                    select o;
+                else
+                    organizations = from o in organizations
+                                    where o.DivOrgs.Any(d => d.Division.ProgDivs.Any(p => p.ProgId == ProgramId))
+                                    || o.Division.ProgId == ProgramId
+                                    select o;
 
             if (ScheduleId > 0)
                 organizations = from o in organizations

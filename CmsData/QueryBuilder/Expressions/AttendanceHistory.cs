@@ -73,6 +73,31 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal static Expression AttendedAsOf(
+            ParameterExpression parm,
+            DateTime? from,
+            DateTime? to,
+            int? progid,
+            int? divid,
+            CompareType op,
+            bool tf,
+            bool guestonly)
+        {
+            Expression<Func<Person, bool>> pred = p => (
+                from a in p.Attends
+                where a.MeetingDate >= @from
+                where a.MeetingDate <= to
+                where guestonly == false || a.AttendanceTypeId == 50 || a.AttendanceTypeId == 60
+                where a.AttendanceFlag
+                where divid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == divid)
+                where progid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                select a
+                ).Any();
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal static Expression AttendPctHistory(
            ParameterExpression parm, CMSDataContext Db,
            int? progid,

@@ -1191,6 +1191,13 @@ namespace UtilityExtensions
                 return "";
             return value;
         }
+        public static string ToStringNoZero(this int? value)
+        {
+            value = value ?? 0;
+            if (value == 0)
+                return "";
+            return value.ToString();
+        }
         public static string ObscureEmail(string email)
         {
             if (!ValidEmail(email))

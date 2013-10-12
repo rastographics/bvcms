@@ -135,7 +135,7 @@
             submit: 'OK',
             rows: 10,
             width: 600,
-            indicator: '<img src="/images/loading.gif">',
+            indicator: '<img src="/Content/images/loading.gif">',
             tooltip: 'Click to edit...'
         });
         $(".clickEdit", table).editable("/Person/EditExtra/", {
@@ -154,7 +154,7 @@
             submit: 'OK'
         });
         $(".clickSelect", table).editable("/Person/EditExtra/", {
-            indicator: '<img src="/images/loading.gif">',
+            indicator: '<img src="/Content/images/loading.gif">',
             loadurl: "/Person/ExtraValues/",
             loadtype: "POST",
             type: "select",
@@ -167,7 +167,7 @@
             submit: 'OK'
         });
         $('.clickMultiselect', table).editable('/Person/EditExtra', {
-            indicator: '<img src="/images/loading.gif">',
+            indicator: '<img src="/Content/images/loading.gif">',
             loadurl: "/Person/ExtraValues2/",
             loadtype: "POST",
             type: "multiselect",

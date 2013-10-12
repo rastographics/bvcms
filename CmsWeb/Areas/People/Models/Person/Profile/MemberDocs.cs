@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (IsDocument == true)
-                    return "/images/adobe.png";
+                    return "/Content/images/adobe.png";
                 return "/Image/" + ThumbId;
             }
         }

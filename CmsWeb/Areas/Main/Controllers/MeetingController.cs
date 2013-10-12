@@ -1,21 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
-using System.Text;
-using CmsWeb.Models.PersonPage;
 using CmsWeb.Models;
-using System.Diagnostics;
-using System.Web.Routing;
-using System.Threading;
 using System.Data.Linq;
 using System.Text.RegularExpressions;
-using System.Web.UI.WebControls;
-using System.Web.UI;
 using CmsData.Codes;
 
 namespace CmsWeb.Areas.Main.Controllers
@@ -136,8 +127,8 @@ namespace CmsWeb.Areas.Main.Controllers
                     case 'd':
                         m.meeting.Description = value;
                         break;
-                    case 'n':
-                        m.meeting.NumPresent = value.ToInt();
+                    case 'h':
+                        m.meeting.HeadCount = value.ToInt();
                         break;
                 }
                 DbUtil.Db.SubmitChanges();
@@ -417,7 +408,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             qb.CleanSlate(DbUtil.Db);
             qb.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
-            var c = qb.AddNewClause(QueryType.AttendTypeAsOf, CompareType.OneOf, "40;50;60");
+            var c = qb.AddNewClause(QueryType.AttendTypeAsOf, CompareType.OneOf, "40,VM;50,RG;60,NG");
             c.StartDate = m.MeetingDate;
             c.Program = m.Organization.Division.Program.Id;
             c.Division = m.Organization.DivisionId.Value;

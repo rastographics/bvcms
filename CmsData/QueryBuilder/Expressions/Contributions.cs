@@ -23,12 +23,33 @@ namespace CmsData
 {
     internal static partial class Expressions
     {
-        internal static Expression RecentContributionCount(
+        internal static Expression RecentContributionCount( ParameterExpression parm, CMSDataContext Db,
+            int days, int fund, CompareType op, int cnt)
+        {
+            return RecentContributionCount2(parm, Db, days, fund, op, cnt, taxnontax: false);
+        }
+        internal static Expression RecentContributionAmount( ParameterExpression parm, CMSDataContext Db,
+            int days, int fund, CompareType op, decimal amt)
+        {
+            return RecentContributionAmount2(parm, Db, days, fund, op, amt, taxnontax: false);
+        }
+        internal static Expression RecentNonTaxDedCount( ParameterExpression parm, CMSDataContext Db,
+            int days, int fund, CompareType op, int cnt)
+        {
+            return RecentContributionCount2(parm, Db, days, fund, op, cnt, taxnontax: true);
+        }
+        internal static Expression RecentNonTaxDedAmount( ParameterExpression parm, CMSDataContext Db,
+            int days, int fund, CompareType op, decimal amt)
+        {
+            return RecentContributionAmount2(parm, Db, days, fund, op, amt, taxnontax: true);
+        }
+        private static Expression RecentContributionCount2(
             ParameterExpression parm, CMSDataContext Db,
             int days,
             int fund,
             CompareType op,
-            int cnt)
+            int cnt,
+            bool taxnontax)
         {
             if (Db.CurrentUser == null || Db.CurrentUser.Roles.All(rr => rr != "Finance"))
                 return AlwaysFalse(parm);
@@ -38,7 +59,7 @@ namespace CmsData
             switch (op)
             {
                 case CompareType.Greater:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -46,7 +67,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.GreaterEqual:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0 || cnt == 0
                         group c by c.CreditGiverId into g
@@ -54,7 +75,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Less:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -62,7 +83,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.LessEqual:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -72,13 +93,13 @@ namespace CmsData
                 case CompareType.Equal:
                     if (cnt == 0) // This is a very special case, use different approach
                     {
-                        q = from pid in Db.Contributions0(dt, now, fund, 0)
+                        q = from pid in Db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
                             select pid.PeopleId;
                         Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
                         Expression expr0 = Expression.Invoke(pred0, parm);
                         return expr0;
                     }
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -86,7 +107,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.NotEqual:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -99,12 +120,13 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression RecentContributionAmount(
+        private static Expression RecentContributionAmount2(
             ParameterExpression parm, CMSDataContext Db,
             int days,
             int fund,
             CompareType op,
-            decimal amt)
+            decimal amt,
+            bool taxnontax)
         {
             if (Db.CurrentUser == null || Db.CurrentUser.Roles.All(rr => rr != "Finance"))
                 return AlwaysFalse(parm);
@@ -114,21 +136,21 @@ namespace CmsData
             switch (op)
             {
                 case CompareType.Greater:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         group c by c.CreditGiverId into g
                         where g.Sum(cc => cc.Amount) > amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.GreaterEqual:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         group c by c.CreditGiverId into g
                         where g.Sum(cc => cc.Amount) >= amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.Less:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -136,7 +158,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.LessEqual:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -144,7 +166,15 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Equal:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    if (amt == 0) // This is a very special case, use different approach
+                    {
+                        q = from pid in Db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
+                            select pid.PeopleId;
+                        Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
+                        Expression expr0 = Expression.Invoke(pred0, parm);
+                        return expr0;
+                    }
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -152,7 +182,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.NotEqual:
-                    q = from c in Db.Contributions2(dt, now, 0, false, false, true)
+                    q = from c in Db.Contributions2(dt, now, 0, false, taxnontax, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -308,7 +338,8 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression ContributionAmount2(
+
+        internal static Expression ContributionAmount(
             ParameterExpression parm, CMSDataContext Db,
             DateTime? start,
             DateTime? end,
@@ -316,27 +347,49 @@ namespace CmsData
             CompareType op,
             decimal amt)
         {
+            return ContributionAmount2(parm, Db, start, end, fund, op, amt, false);
+        }
+        internal static Expression NonTaxDedAmount(
+            ParameterExpression parm, CMSDataContext Db,
+            DateTime? start,
+            DateTime? end,
+            int fund,
+            CompareType op,
+            decimal amt)
+        {
+            return ContributionAmount2(parm, Db, start, end, fund, op, amt, true);
+        }
+
+        private static Expression ContributionAmount2(
+            ParameterExpression parm, CMSDataContext Db,
+            DateTime? start,
+            DateTime? end,
+            int fund,
+            CompareType op,
+            decimal amt,
+            bool nontaxded)
+        {
             if (Db.CurrentUser == null || Db.CurrentUser.Roles.All(rr => rr != "Finance"))
                 return AlwaysFalse(parm);
             IQueryable<int> q = null;
             switch (op)
             {
                 case CompareType.GreaterEqual:
-                    q = from c in Db.Contributions2(start, end, 0, false, false, true)
+                    q = from c in Db.Contributions2(start, end, 0, false, nontaxded, true)
                         where fund == 0 || c.FundId == fund
                         group c by c.CreditGiverId into g
                         where g.Sum(cc => cc.Amount) >= amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.Greater:
-                    q = from c in Db.Contributions2(start, end, 0, false, false, true)
+                    q = from c in Db.Contributions2(start, end, 0, false, nontaxded, true)
                         where fund == 0 || c.FundId == fund
                         group c by c.CreditGiverId into g
                         where g.Sum(cc => cc.Amount) > amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.LessEqual:
-                    q = from c in Db.Contributions2(start, end, 0, false, false, true)
+                    q = from c in Db.Contributions2(start, end, 0, false, nontaxded, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -344,7 +397,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Less:
-                    q = from c in Db.Contributions2(start, end, 0, false, false, true)
+                    q = from c in Db.Contributions2(start, end, 0, false, nontaxded, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -352,14 +405,22 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Equal:
-                    q = from c in Db.Contributions2(start, end, 0, false, false, true)
+                    if (amt == 0) // This is a very special case, use different approach
+                    {
+                        q = from pid in Db.Contributions0(start, end, fund, 0, false, nontaxded, true)
+                            select pid.PeopleId;
+                        Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
+                        Expression expr0 = Expression.Invoke(pred0, parm);
+                        return expr0;
+                    }
+                    q = from c in Db.Contributions2(start, end, 0, false, nontaxded, true)
                         where fund == 0 || c.FundId == fund
                         group c by c.CreditGiverId into g
                         where g.Sum(cc => cc.Amount) == amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.NotEqual:
-                    q = from c in Db.Contributions2(start, end, 0, false, false, true)
+                    q = from c in Db.Contributions2(start, end, 0, false, nontaxded, true)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g

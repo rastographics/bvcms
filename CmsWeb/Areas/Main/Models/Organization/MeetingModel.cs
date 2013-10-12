@@ -59,6 +59,7 @@ namespace CmsWeb.Models.OrganizationPage
                          MeetingDate = m.MeetingDate,
                          Location = m.Location,
                          NumPresent = m.NumPresent,
+                         HeadCount = m.HeadCount,
                          NumVisitors = m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers,
                          Description = m.Description
                      };

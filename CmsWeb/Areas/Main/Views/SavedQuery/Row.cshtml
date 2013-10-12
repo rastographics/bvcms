@@ -5,7 +5,7 @@
 @if (User.IsInRole("Admin") || string.Compare(Util.UserName,Model.User, ignoreCase: true) == 0)
 {
     <td><span id='p.@Model.QueryId' class='yesno'>@(Model.IsPublic ? "yes" : "no")</span></td>
-    <td><a id='x.@Model.QueryId' href="#" class="delete"><img border="0" src="/images/delete.gif" /></a></td>
+    <td><a id='x.@Model.QueryId' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a></td>
 }
 else
 {

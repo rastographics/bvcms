@@ -1,0 +1,8 @@
+﻿@model CmsWeb.Areas.Search.Models.PendingPersonModel
+@Html.HiddenFor(m => m.HomePhone)
+@Html.HiddenFor(m => m.AddressInfo.AddressLineOne)
+@Html.HiddenFor(m => m.AddressInfo.AddressLineTwo)
+@Html.HiddenFor(m => m.AddressInfo.ZipCode)
+@Html.HiddenFor(m => m.AddressInfo.CityName)
+@Html.EditorFor(m => m.AddressInfo.StateCode, "HiddenCodeInfo")
+@Html.EditorFor(m => m.AddressInfo.Country, "HiddenCodeInfo")

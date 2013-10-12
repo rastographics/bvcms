@@ -222,7 +222,7 @@ namespace CmsWeb.Areas.Search.Models
                     break;
                 case "mergeto":
                     if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected", pid = PendingList[0].PeopleId, from = AddContext };
+                        return new ReturnResult { close = true, how = "addselected", pid = PendingList[0].PeopleId, from = AddContext,  pid2=PrimaryKeyForContextType.ToInt() };
                     break;
                 case "taskowner":
                     if (PendingList.Count > 0)
@@ -238,6 +238,7 @@ namespace CmsWeb.Areas.Search.Models
             public string how { get; set; }
             public string url { get; set; }
             public int? pid { get; set; }
+            public int? pid2 { get; set; }
             public string from { get; set; }
             public string name { get; set; }
             public int? cid { get; set; }

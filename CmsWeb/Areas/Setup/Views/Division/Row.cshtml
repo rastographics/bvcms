@@ -1,6 +1,6 @@
 ﻿@model CmsWeb.Models.DivisionInfo
 <tr>
-    <td class="tip" title="@Model.ToolTip"><img src="/images/group.png" /></td>
+    <td class="tip" title="@Model.ToolTip"><img src="/Content/images/group.png" /></td>
     <td><a href="/OrgSearch/Index/?div=@Model.Id&progid=@Model.ProgId">@Model.Id</a></td>
     <td>
         <span id='n@(Model.Id)' 
@@ -20,7 +20,7 @@
     <td>
 @if (Model.CanDelete)
 { 
-        <a id='x@(Model.Id)' href="#" class="delete"><img border="0" src="/images/delete.gif" /></a>
+        <a id='x@(Model.Id)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
 } 
     </td>
 </tr>

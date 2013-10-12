@@ -413,6 +413,12 @@
     <Field Name="AttendTypeAsOf" Title="Attendance Type As Of" Type="Code" DisplayAs="AttendanceTypeAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="AttendanceTypeCodes" DataValueField="IdCode">
       Selects attendees based on an attendance type within a Program, Program/Division or Program/Division/Organization for a specified date range.
     </Field>
+    <Field Name="GuestAsOf" Title="Guest As Of" Type="Bit" DisplayAs="GuestAsOf({0:d}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division">
+      Selects guests within a Program/Division for a specified date/time range
+    </Field>
+    <Field Name="AttendedAsOf" Title="Attended As Of" Type="Bit" DisplayAs="AttendedAsOf({0:d}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division">
+      Selects attendees within a Program/Division for a specified date/time range
+    </Field>
     <Field Name="VisitNumber" Title="Visit date Nth time" Type="Date" DisplayAs="VisitNumber({0})" Params="Quarters" QuartersLabel="Visit number">
       Selects attendees based on whether they have visted once, twice or three times
     </Field>
@@ -537,6 +543,12 @@
     <Field Name="RecentContributionAmount" Title="Recent Contribution Amount" Type="Number" DisplayAs="RecentContributionAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">
       Must have Finance role for this to work.
     </Field>
+    <Field Name="RecentNonTaxDedCount" Title="Recent NonTaxDed Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="NonTaxDedCount({0},{1})" Params="Days,Quarters">
+      Must have Finance role for this to work.
+    </Field>
+    <Field Name="RecentNonTaxDedAmount" Title="Recent NonTaxDed Amount" Type="Number" DisplayAs="RecentNonTaxDedAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">
+      Must have Finance role for this to work.
+    </Field>
     <Field Name="RecentPledgeCount" Title="Recent Pledge Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentPledgeCount({0},{1})" Params="Days,Quarters">
       Must have Finance role for this to work.
     </Field>
@@ -544,6 +556,9 @@
       Must have Finance role for this to work.
     </Field>
     <Field Name="ContributionAmount2" Title="Contribution Amount History" Type="Number" DisplayAs="ContributionAmount2({0},{1},{2})" QuartersLabel="Fund Id (or null for all)" Params="StartDate,EndDate,Quarters">
+      Must have Finance role for this to work.
+    </Field>
+    <Field Name="NonTaxDedAmount" Title="NonTaxDed Contribution Amount History" Type="Number" DisplayAs="NonTaxDedAmount({0},{1},{2})" QuartersLabel="Fund Id (or null for all)" Params="StartDate,EndDate,Quarters">
       Must have Finance role for this to work.
     </Field>
     <Field Name="ContributionChange" Title="Contribution Change Pct" Type="Number" DisplayAs="ContributionChange({0},{1})" Params="StartDate,EndDate">

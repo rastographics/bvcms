@@ -15,11 +15,18 @@
 <h2>Contribution Statements</h2>
 <a href="/">Home</a>
 <form action="/Statements/ContributionStatements" method="post">
-    <input type="hidden" name="startswith" value="@ViewBag.startswith"/>
     <table>
         <tr>
             <th>PDF: </th>
             <td>@Html.CheckBox("PDF", true) (otherwise, text extract) </td>
+        </tr>
+        <tr>
+            <th>StartsWith: </th>
+            <td>@Html.TextBox("startswith") (lastname starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow) </td>
+        </tr>
+        <tr>
+            <th>Sort: </th>
+            <td>@Html.TextBox("sort") (type: name or zip) </td>
         </tr>
         <tr>
             <th>Start Date: </th>

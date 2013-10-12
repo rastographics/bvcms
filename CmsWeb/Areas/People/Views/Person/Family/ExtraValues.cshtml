@@ -1,8 +1,9 @@
 ﻿@using CmsWeb.Areas.People.Models
+@using NPOI.SS.Formula.Functions
 @model PersonModel
-<div id="family-extra-values-div">
+<div>
     <div class="sidebar_title group inactive">
-        <a href="#"><i class="icon-plus"></i> Add Extra Values</a>
+        <a href="/Person2/@Model.PeopleId?v=@DateTime.Now.Second#familyextravalues"><i class="icon-plus"></i> Family Extra Values</a>
     </div>
 </div>
 

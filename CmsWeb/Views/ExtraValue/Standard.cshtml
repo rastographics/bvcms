@@ -1,0 +1,24 @@
+﻿@model CmsWeb.Models.ExtraValues.ExtraValueModel
+<form class="form ajax span12 margin-top" method="post" data-init="ExtraEditable">
+    <fieldset class="left-gutter">
+        <legend>Standard Extra Values <a class="addextravalue" href="/ExtraValue/AddDialog/@Model.Table/Standard/@Model.Id"><i class="icon-plus"></i></a>
+            <small class="pull-right">
+                <a href="/ExtraValue/Index/@Model.Table/Adhoc/@Model.Id" class="ajax">Adhoc Values</a>
+            </small>
+        </legend>
+        <table class="table not-wide">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.GetExtraValues())
+                {
+                    @Html.EditorFor(m => f)
+                }
+            </tbody>
+        </table>
+    </fieldset>
+</form>

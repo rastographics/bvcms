@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web.Mvc;
 using CmsData;
 using System.Data.Linq;
 using CmsWeb.Code;
@@ -17,15 +18,16 @@ namespace CmsWeb.Areas.People.Models
         [NoUpdate]
         public int PeopleId { get; set; }
 
-        // Contributions --------------------------------------------------
+        #region Contributions --------------------------------------------------
 
-        [DisplayName("Contribution Statement")]
+        [DisplayName("Statement Option")]
         public CodeInfo ContributionOptions { get; set; }
 
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
 
-        // Decision --------------------------------------------------
+        #endregion
+        #region Decision --------------------------------------------------
 
         [DisplayName("Type")]
         public CodeInfo DecisionType { get; set; }
@@ -33,7 +35,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Date")]
         public DateTime? DecisionDate { get; set; }
 
-        // Baptism --------------------------------------------------
+        #endregion
+        #region Baptism --------------------------------------------------
 
         [DisplayName("Status")]
         public CodeInfo BaptismStatus { get; set; }
@@ -47,7 +50,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Scheduled")]
         public DateTime? BaptismSchedDate { get; set; }
 
-        // Drop --------------------------------------------------
+        #endregion
+        #region Drop --------------------------------------------------
 
         [DisplayName("Type"), FieldInfo(IdField = "DropCodeId")]
         public CodeInfo DropType { get; set; }
@@ -58,7 +62,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("New Church"), StringLength(60)]
         public string OtherNewChurch { get; set; }
 
-        // New Member Class --------------------------------------------------
+        #endregion
+        #region New Member Class --------------------------------------------------
 
         [DisplayName("Status")]
         public CodeInfo NewMemberClassStatus { get; set; }
@@ -66,7 +71,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Date")]
         public DateTime? NewMemberClassDate { get; set; }
 
-        // Membership --------------------------------------------------
+        #endregion
+        #region Membership -----------------------------------------------------
 
         [TrackChanges]
         public CodeInfo MemberStatus { get; set; }
@@ -78,6 +84,22 @@ namespace CmsWeb.Areas.People.Models
 
         [DisplayName("Prev Church"), StringLength(60)]
         public string OtherPreviousChurch { get; set; }
+
+        #endregion
+        #region Letter Status
+
+        public CodeInfo LetterStatus { get; set; }
+
+        [DisplayName("Letter Requested")]
+        public DateTime? LetterDateRequested { get; set; }
+
+        [DisplayName("Letter Received")]
+        public DateTime? LetterDateReceived { get; set; }
+
+        [UIHint("Textarea"), DisplayName("Letter Notes")]
+        public string LetterStatusNotes { get; set; }
+
+        #endregion
 
         public MemberInfo()
         {
@@ -113,7 +135,9 @@ namespace CmsWeb.Areas.People.Models
                 changes = this.CopyPropertiesTo(i.Family, onlyfields: "HomePhone");
                 i.Family.LogChanges(DbUtil.Db, changes, i.p.PeopleId);
                 person = i.p;
+                DbUtil.Db.SubmitChanges();
                 DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
+                this.CopyPropertiesFrom(person);
             }
             return ret;
         }

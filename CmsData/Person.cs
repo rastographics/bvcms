@@ -26,7 +26,7 @@ using CmsData.Codes;
 namespace CmsData
 {
 
-    public partial class Person
+    public partial class Person : ITableWithExtraValues
     {
         public static int[] DiscClassStatusCompletedCodes = new int[]
         { 
@@ -1007,6 +1007,13 @@ namespace CmsData
             psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
             Util.SetPropertyFromText(this, field, value);
         }
+
+        public void LogChanges(CMSDataContext Db)
+        {
+            if (psbDefault != null)
+                LogChanges(Db, psbDefault.ToString(), Util.UserPeopleId ?? 0);
+        }
+
         public void LogChanges(CMSDataContext Db, int UserPeopleId)
         {
             if (psbDefault != null)

@@ -20,15 +20,11 @@
     <div class="row-fluid">
         <div class="span4">
             <fieldset>
-                <legend>Advanced Search Builder</legend>
-                <div id="QueryMeta" class="table">
-                    <div class="cell">
-                        <a id="Description" title="Enter Query Description">@Model.TopClause.Description</a>
-                        <a id="DescriptionEdit" href="#"><i class="icon-pencil"></i></a>
-                    </div>
-                    <div class="cell pad-left right">
-                        <div><a href="/SavedQuery2" class="nowrap">Saved Queries</a></div>
-                        <div class="pad-top"><a href="/Query/NewQuery" class="btn btn-success nowrap">New Search</a></div>
+            <legend>Advanced Search Builder</legend>
+                <div>
+                    <div class="size11 cell align-top">Description: </div>
+                    <div class="cell pad-left">
+                        <a id="Description" class="click-pencil" title="Enter Query Description">@Model.TopClause.Description</a>
                     </div>
                 </div>
             </fieldset>
