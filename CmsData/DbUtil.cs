@@ -135,13 +135,29 @@ namespace CmsData
 			}
 			return s;
 		}
+		public static string StandardExtraValues2()
+		{
+			var s = HttpRuntime.Cache[Db.Host + "StandardExtraValues2"] as string;
+			if (s == null)
+			{
+				s = Content("StandardExtraValues2", "<Fields />");
+				HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues2", s, null,
+					 DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
+			}
+			return s;
+		}
 		public static void SetStandardExtraValues(string xml)
 		{
-		    var c = Content("StandardExtraValues.xml");
-			if (c == null)
-                c = new Content();
+		    var c = Content("StandardExtraValues.xml") ?? new Content();
 		    c.Body = xml;
 			HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues", c.Body, null,
+				 DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
+		}
+		public static void SetStandardExtraValues2(string xml)
+		{
+		    var c = Content("StandardExtraValues2") ?? new Content();
+		    c.Body = xml;
+			HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues2", c.Body, null,
 				 DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
 		}
 		public static string FamilyExtraValues()

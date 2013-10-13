@@ -8,33 +8,32 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData;
 using CmsData.API;
-using DocumentFormat.OpenXml.Office.CustomUI;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
 {
     public class Fields : IXmlSerializable
     {
-        public List<Field> fields { get; set; }
-        public XmlSchema GetSchema() { throw new NotImplementedException(); }
+        public List<Field> FieldList { get; set; }
 
         public void ReadXml(XmlReader reader)
         {
             var s = reader.ReadOuterXml();
             var x = XDocument.Parse(s);
             if (x.Root == null) return;
-            fields = new List<Field>();
+            FieldList = new List<Field>();
             foreach (var e in x.Root.Elements("Field"))
-                fields.Add(Util.DeSerialize<Field>(e.ToString()));
+                FieldList.Add(Util.DeSerialize<Field>(e.ToString()));
         }
-
         public void WriteXml(XmlWriter writer)
         {
             var w = new APIWriter(writer);
             writer.WriteComment(DateTime.Now.ToString());
-            foreach (var f in fields)
+            foreach (var f in FieldList)
                 Util.Serialize(f, writer);
         }
+
+        public XmlSchema GetSchema() { throw new NotImplementedException(); }
     }
     public class Field : IXmlSerializable
     {
@@ -62,7 +61,7 @@ namespace CmsWeb.Models.ExtraValues
             {
                 if (_table.HasValue())
                     return _table;
-                return "Person";
+                return "People";
             }
             set { _table = value; }
         }

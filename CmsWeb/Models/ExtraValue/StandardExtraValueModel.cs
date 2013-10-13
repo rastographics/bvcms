@@ -52,7 +52,7 @@ namespace CmsWeb.Models.ExtraValues
         {
             var c = DbUtil.Content("StandardExtraValues.xml");
             var Fields = Util.DeSerialize<Fields>(c.Body);
-            var existing = Fields.fields.SingleOrDefault(ff => ff.name == ExtraValueName);
+            var existing = Fields.FieldList.SingleOrDefault(ff => ff.name == ExtraValueName);
             if (existing != null)
                 return "field already exists";
 
@@ -68,7 +68,7 @@ namespace CmsWeb.Models.ExtraValues
                 Codes = ExtraValueCodes.SplitLines().Select(ss => BitPrefix + ss).ToList(),
                 VisibilityRoles = VisibilityRoles
             };
-            Fields.fields.Add(f);
+            Fields.FieldList.Add(f);
             var newxml = Util.Serialize(Fields);
             DbUtil.SetStandardExtraValues(newxml);
             DbUtil.Db.SubmitChanges();

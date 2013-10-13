@@ -4,11 +4,11 @@ using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsWeb.Models.ExtraValues;
+using DocumentFormat.OpenXml.Bibliography;
 using UtilityExtensions;
 
 namespace CmsWeb.Controllers
 {
-
     public class ExtraValueController : CmsStaffController
     {
         [POST("ExtraValue/Display/{table}/{location}/{id}")]
@@ -18,13 +18,12 @@ namespace CmsWeb.Controllers
             return View(location, m);
         }
 
-        [POST("ExtraValue/Delete/{id:int}")]
-        public ActionResult Delete(int id, string name)
+        [POST("ExtraValue/Delete/{table}/{location}/{id:int}")]
+        public ActionResult Delete(string table, string location, int id, string name)
         {
-            var e = DbUtil.Db.PeopleExtras.First(ee => ee.PeopleId == id && ee.Field == HttpUtility.UrlDecode(name));
-            DbUtil.Db.PeopleExtras.DeleteOnSubmit(e);
-            DbUtil.Db.SubmitChanges();
-            return View("AdHoc", id);
+            var m = new ExtraValueModel(id, table, location);
+            m.Delete(name);
+            return View("AdHoc", m);
         }
 
         [GET("ExtraValue/Codes/{table}")]
@@ -41,18 +40,19 @@ namespace CmsWeb.Controllers
             var m = new StandardExtraValueModel(id, table, location);
             return View(m);
         }
-        [POST("ExtraValue/EditStandard/{table}/{location}/{id:int}")]
-        public ActionResult EditStandard(string location, string table, int id)
+        [POST("ExtraValue/ListStandard/{table}/{location}/{id:int}")]
+        public ActionResult ListStandard(string table, string location, int id, string title)
         {
             var m = new ExtraValueModel(id, table, location);
+            ViewBag.DialogTitle = title ?? "Edit Standard Extra Value";
             return View(m);
         }
-        [POST("ExtraValue/DeleteStandard/{table}/{name}")]
-        public ActionResult DeleteStandard(string table, string name)
+        [POST("ExtraValue/DeleteStandard/{table}/{location}")]
+        public ActionResult DeleteStandard(string table, string location, string name, bool removedata)
         {
-            var m = new ExtraValueModel(table);
-            ExtraValueModel.DeleteStandard(name);
-            return View("EditStandard", m);
+            var m = new ExtraValueModel(table, location);
+            m.DeleteStandard(name, removedata);
+            return Content("ok");
         }
         [POST("ExtraValue/SaveNewStandard")]
         public ActionResult SaveNewStandard(StandardExtraValueModel m)

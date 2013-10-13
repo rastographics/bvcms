@@ -297,6 +297,7 @@
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
+    <Compile Include="Controllers\DialogController.cs" />
     <Compile Include="Models\ExtraValue\Field.cs" />
     <Compile Include="Models\ExtraValue\StandardExtraValueModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraValue.cs" />
@@ -533,7 +534,6 @@
     <Compile Include="Code\CodeInfo.cs" />
     <Compile Include="Code\CodeValueModel.cs" />
     <Compile Include="Code\CodeValueItem.cs" />
-    <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\Fingerprint.cs" />
     <Compile Include="Code\LabelMetaData.cs" />
     <Compile Include="Code\ModelViewMetadataProvider.cs" />
@@ -1896,7 +1896,6 @@
     <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenPerson.cshtml" />
     <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenSearch.cshtml" />
     <Content Include="Views\ExtraValue\Add\EditorTemplates\Person.cshtml" />
-    <Content Include="Views\ExtraValue\DialogList.cshtml" />
     <Content Include="Views\ExtraValue\Add\NewAddress.cshtml" />
     <Content Include="Views\ExtraValue\Add\NewPerson.cshtml" />
     <Content Include="Views\ExtraValue\Add\Results.cshtml" />
@@ -1904,8 +1903,12 @@
     <Content Include="Views\ExtraValue\Add\SearchFamily.cshtml" />
     <Content Include="Views\ExtraValue\Add\SearchPerson.cshtml" />
     <Content Include="Views\ExtraValue\NewStandard.cshtml" />
-    <Content Include="Views\ExtraValue\EditStandard.cshtml" />
+    <Content Include="Views\ExtraValue\ListStandard.cshtml" />
     <Content Include="Views\ExtraValue\Entry.cshtml" />
+    <Content Include="Views\Dialog\ChooseFormat.cshtml" />
+    <Content Include="Views\Dialog\TagAll.cshtml" />
+    <Content Include="Views\Dialog\DeleteStandardExtra.cshtml" />
+    <Content Include="Views\Dialog\GetExtraValue.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

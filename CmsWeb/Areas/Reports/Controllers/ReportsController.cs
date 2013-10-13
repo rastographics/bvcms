@@ -13,6 +13,7 @@ using CmsData;
 using System.IO;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using CmsWeb.Models.ExtraValues;
 using Dapper;
 using NPOI.HSSF.UserModel;
 using UtilityExtensions;
@@ -190,7 +191,9 @@ namespace CmsWeb.Areas.Reports.Controllers
         [GET("Reports2/ExtraValues")]
         public ActionResult ExtraValues()
         {
-            var ev = StandardExtraValues.GetExtraValues();
+            var fields = from field in ExtraValueModel.GetStandardExtraFields()
+                         where field.table == "People"
+                         select field;
             var q = from e in DbUtil.Db.PeopleExtras
                     where e.StrValue != null || e.BitValue != null
                     let TypeValue = e.StrValue != null ? "Code" : "Bit"
@@ -204,7 +207,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                     };
 
             var list = from e in q.ToList()
-                       let f = ev.SingleOrDefault(ff => ff.name == e.Field)
+                       let f = fields.SingleOrDefault(ff => ff.name == e.Field)
                        where f == null || f.UserCanView()
                        orderby e.Field
                        select e;
@@ -213,7 +216,9 @@ namespace CmsWeb.Areas.Reports.Controllers
         [GET("Reports2/ExtraValueData")]
         public ActionResult ExtraValueData()
         {
-            var ev = StandardExtraValues.GetExtraValues();
+            var fields = from field in ExtraValueModel.GetStandardExtraFields()
+                         where field.table == "People"
+                         select field;
             var q = from e in DbUtil.Db.PeopleExtras
                     where e.StrValue == null && e.BitValue == null
                     let TypeValue = e.DateValue != null ? "Date" : e.Data != null ? "Text" : e.IntValue != null ? "Int" : "?"
@@ -226,7 +231,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                     };
 
             var list = from e in q.ToList()
-                       let f = ev.SingleOrDefault(ff => ff.name == e.Field)
+                       let f = fields.SingleOrDefault(ff => ff.name == e.Field)
                        where f == null || f.UserCanView()
                        orderby e.Field
                        select e;
@@ -237,11 +242,10 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult ExtraValuesGrid(Guid id, string sort)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues.xml", "<Fields/>"));
-            var fields = (from ff in xml.Root.Elements("Field")
-                          let vroles = ff.Attribute("VisibilityRoles")
-                          where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
-                          select ff.Attribute("name").Value);
+            var fields = from field in ExtraValueModel.GetStandardExtraFields()
+                         where field.table == "People"
+                         where field.VisibilityRoles != null && (field.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
+                         select field.name;
             var nodisplaycols = string.Join("|", fields);
 
             var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
@@ -260,11 +264,10 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult ExtraValuesGrid2(Guid id, string sort)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues.xml", "<Fields/>"));
-            var fields = (from ff in xml.Root.Elements("Field")
-                          let vroles = ff.Attribute("VisibilityRoles")
-                          where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
-                          select ff.Attribute("name").Value);
+            var fields = from field in ExtraValueModel.GetStandardExtraFields()
+                         where field.table == "People"
+                         where field.VisibilityRoles != null && (field.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
+                         select field.name;
             var nodisplaycols = string.Join("|", fields);
 
             var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);

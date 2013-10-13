@@ -37,12 +37,19 @@
                 };
                 $(this).on("change", "#ExtraValueType_Value", showHide);
             });
-        $.InitFunctions.CheckSavedExtraValue = function () {
+        $.InitFunctions.StandardExtraValueDialogCallback = function () {
             if ($("#StandardExtraValueError").length == 0) {
                 $("#extravalue-dialog").modal("hide");
                 $a.closest("form.ajax").find("a.ajax-refresh").click();
             }
         };
+        $.InitFunctions.DeleteStandardCallback = function (a) {
+            $(a.data("rowid")).remove();
+        };
+        $("#CloseListStandard").live("click", function(e) {
+            e.preventDefault();
+            $.InitFunctions.StandardExtraValueDialogCallback();
+        });
     });
     $.InitFunctions.ExtraEditable = function () {
         $("a.click-Code").editable({ mode: 'inline' });

@@ -2,7 +2,7 @@
 @model ExtraValueModel
 <div class="modal-header">
     <a class="close" data-dismiss="modal">×</a>
-    <h3>Edit Standard Extra Values</h3>
+    <h3>@ViewBag.DialogTitle</h3>
 </div>
 <div class="modal-body">
     <a class="helplink pull-right" target="_blank" href='@ExtraValueModel.HelpLink("ExtraValueList")'>help</a>
@@ -19,15 +19,20 @@
         <tbody>
             @foreach (var f in Model.GetExtraValues(Model.Location))
             {
-                <tr>
+                <tr id="ev-name-@f.name">
                     <td>@f.name</td>
                     <td>@f.type</td>
-                    <td><a href="ExtraValue/Delete"><i class="icon-remove"></i></a></td>
+                    <td><a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@f.name" 
+                           class="dialog-options" 
+                           data-target="/Dialog/DeleteStandardExtra"
+                           data-callback="DeleteStandardCallback"
+                           data-rowid="#ev-name-@f.name"
+                           title="Delete Standard Extra Value: @f.name"><i class="icon-remove"></i></a></td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
 <div class="modal-footer">
-    <a class="btn" data-dismiss="modal">Close</a>
+    <a id="CloseListStandard" href="#" class="btn">Close</a>
 </div>

@@ -8,6 +8,7 @@ using System.IO;
 using CmsData;
 using CmsData.API;
 using CmsWeb.Code;
+using Dapper;
 using DocumentFormat.OpenXml.EMMA;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -31,6 +32,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public ExtraValueModel(int id, string table) : this(id, table, null) { }
         public ExtraValueModel(string table) : this(0, table, null) { }
+        public ExtraValueModel(string table, string location) : this(0, table, location) { }
 
         public ExtraValueModel(int id, string table, string location)
         {
@@ -55,11 +57,10 @@ namespace CmsWeb.Models.ExtraValues
             if (DbUtil.Db.Setting("UseStandardExtraValues", "false") != "true")
                 return null;
             var xml = DbUtil.StandardExtraValues();
-            var sr = new StringReader(xml);
-            var f = new XmlSerializer(typeof(Fields)).Deserialize(sr) as Fields;
+            var f = Util.DeSerialize<Fields>(xml);
             if (f == null)
                 return new List<Field>();
-            return f.fields;
+            return f.FieldList;
         }
 
         public static string HelpLink(string page)
@@ -71,7 +72,7 @@ namespace CmsWeb.Models.ExtraValues
             IEnumerable<ExtraValue> q = null;
             switch (Table)
             {
-                case "Person":
+                case "People":
                     q = from ee in DbUtil.Db.PeopleExtras
                         where ee.PeopleId == Id
                         select new ExtraValue(ee, this);
@@ -101,14 +102,14 @@ namespace CmsWeb.Models.ExtraValues
         {
             switch (Table)
             {
-                case "Person":
+                case "People":
                     return DbUtil.Db.LoadPersonById(Id);
                 case "Organization":
                     return DbUtil.Db.LoadOrganizationById(Id);
                 case "Family":
                     return DbUtil.Db.Families.SingleOrDefault(f => f.FamilyId == Id);
-//                case "Meeting":
-//                    return DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == Id);
+                //                case "Meeting":
+                //                    return DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == Id);
                 default:
                     return null;
             }
@@ -270,7 +271,7 @@ namespace CmsWeb.Models.ExtraValues
                     v.Data = value;
                     break;
                 case "date":
-                    var dt = DateTime.MinValue;
+                    DateTime dt;
                     DateTime.TryParse(value, out dt);
                     v.DateValue = dt;
                     break;
@@ -281,10 +282,33 @@ namespace CmsWeb.Models.ExtraValues
             DbUtil.Db.SubmitChanges();
         }
 
-        public static void DeleteStandard(string name)
+        public void DeleteStandard(string name, bool removedata)
         {
-            var m = ExtraValueModel();
-            var f = GetStandardExtraFields(null).Single(ee => ee.name == name);
+            var c = DbUtil.Content("StandardExtraValues.xml");
+            var Fields = Util.DeSerialize<Fields>(c.Body);
+            var field = Fields.FieldList.SingleOrDefault(ff => ff.name == name);
+            if (field == null)
+                return;
+            Fields.FieldList.Remove(field);
+            var newxml = Util.Serialize(Fields);
+            DbUtil.SetStandardExtraValues(newxml);
+            DbUtil.Db.SubmitChanges();
+
+            var cn = DbUtil.Db.Connection;
+            cn.Open();
+            if (!removedata)
+                return;
+            if (field.Codes.Count == 0)
+                cn.Execute("delete from dbo.{0}Extra where Field = @name".Fmt(Table), new { name });
+            else
+                cn.Execute("delete from dbo.{0}Extra where Field in @codes".Fmt(Table), new { codes = field.Codes });
+        }
+
+        public void Delete(string name)
+        {
+            var o = TableObject();
+            o.RemoveExtraValue(DbUtil.Db, name);
+            DbUtil.Db.SubmitChanges();
         }
     }
 }

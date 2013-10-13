@@ -2,8 +2,11 @@
 <form class="form ajax span12 margin-top" method="post" data-init="ExtraEditable">
     <fieldset class="left-gutter">
         <legend>Information Card
-            <a class="addextravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Entry/@Model.Id"><i class="icon-plus"></i></a>
-            <a class="editextravalue nounderline font14px edit pad-left" href="/ExtraValue/EditStandard/@Model.Table/Entry/@Model.Id"><i class="icon-pencil"></i></a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Entry/@Model.Id"><i class="icon-plus"></i></a>
+                <a class="extravalue nounderline font14px edit pad-left" href="/ExtraValue/ListStandard/@Model.Table/Entry/@Model.Id?title=Edit+Entry+Card"><i class="icon-pencil"></i></a>
+            }
         </legend>
         <a href="#" class="pull-right ajax-refresh"><i class="icon-refresh"></i></a>
         <table class="table not-wide">
