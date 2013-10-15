@@ -44,7 +44,6 @@
         tooltip: 'Click to edit...',
         style: 'display: inline'
     });
-    $(".numpresent").editable("enable");
     $(".clickEdit").editable("/Meeting/Edit/", {
         indicator: "<img src='/images/loading.gif'>",
         tooltip: "Click to edit...",
