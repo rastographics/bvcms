@@ -7,16 +7,11 @@
 using System;
 using System.Web.Mvc;
 using CmsData;
-using System.Data.Linq;
 using System.Collections.Generic;
 using System.Linq;
-using System.ComponentModel;
-using iTextSharp.text;
+using DocumentFormat.OpenXml.Wordprocessing;
 using UtilityExtensions;
-using System.Web;
-using System.Configuration;
 using System.Data.Linq.SqlClient;
-using System.Web.Security;
 using CmsData.Codes;
 using CmsData.Classes.ProtectMyMinistry;
 
@@ -392,7 +387,8 @@ namespace CmsWeb.Code
         public SelectList MinistrySelectList() { return MinistryList().ToSelect(); }
         public SelectList ContactReasonSelectList() { return ContactReasonCodes().ToSelect(); }
         public SelectList ContactTypeSelectList() { return ContactTypeCodes().ToSelect(); }
-        
+        public SelectList ExtraValueTypeList() { return ExtraValueTypeCodes().ToSelect(datafield: "Code"); }
+
         public IEnumerable<CodeValueItem> ContactResultList()
         {
             return new List<CodeValueItem> 
@@ -406,6 +402,18 @@ namespace CmsWeb.Code
 				new CodeValueItem { Value = "Prayer Request Received" },
 				new CodeValueItem { Value = "Gift Bag Given" },
 			};
+        }
+        
+
+        public IEnumerable<CodeValueItem> ExtraValueTypeCodes()
+        {
+            yield return new CodeValueItem {Code = "Text", Value = "Text (single line)"};
+            yield return new CodeValueItem {Code = "Text2", Value = "Text (multi line)"};
+            yield return new CodeValueItem {Code = "Code", Value = "Dropdown"};
+            yield return new CodeValueItem {Code = "Bit", Value = "Checkbox"};
+            yield return new CodeValueItem {Code = "Bits", Value = "Checkboxes"};
+            yield return new CodeValueItem {Code = "Int", Value = "Integer"};
+            yield return new CodeValueItem {Code = "Date", Value = "Date"};
         }
 
         public SelectList PositionInFamilySelectList() { return PositionInFamilyList().ToSelect(); }
@@ -496,12 +504,12 @@ namespace CmsWeb.Code
                         Value = cf.OnBehalfOfPerson.Name
                     };
             var list = q.ToList();
-                list.Insert(0, new CodeValueItem
-                {
-                    Id = p.PeopleId,
-                    Code = p.EmailAddress,
-                    Value = p.Name
-                });
+            list.Insert(0, new CodeValueItem
+            {
+                Id = p.PeopleId,
+                Code = p.EmailAddress,
+                Value = p.Name
+            });
             return list;
         }
         public List<CodeValueItem> UserQueries()
@@ -670,7 +678,7 @@ namespace CmsWeb.Code
                             Code = i.Key.ToString(),
                             Value = i.Value
                         }).ToList();
-            list.Insert(0, new CodeValueItem { Id = 99, Code = "99", Value = "(not specified)"});
+            list.Insert(0, new CodeValueItem { Id = 99, Code = "99", Value = "(not specified)" });
             return list;
         }
 

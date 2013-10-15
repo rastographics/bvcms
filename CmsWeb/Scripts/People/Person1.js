@@ -281,14 +281,6 @@
     $.InitFunctions.Editable = function() {
         $("a.editable").editable();
     };
-    $.InitFunctions.ExtraEditable = function () {
-        $("a.click-Code").editable({ mode: 'inline' });
-        $('a.click-Data').editable({ type: 'textarea', mode: 'inline' });
-        $("a.click-Code-Select").editable({ type: "select", mode: 'inline' });
-        $('a.click-Bits').editable({ type: "checklist", mode: 'inline' });
-        $("a.click-Date").editable({ type: 'date', mode: 'inline', format: $.dtoptions.format });
-        $("a.click-Bit").editable({ type: 'checklist', mode: 'inline', source: { 'True': 'True' }, emptytext: 'False' });
-    };
     $('a.click-pencil').live("click", function (e) {
         e.stopPropagation();
         $(this).prev().editable('toggle');

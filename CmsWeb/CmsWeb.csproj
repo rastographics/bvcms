@@ -193,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
+    <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Models\SearchModel.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />
@@ -297,8 +298,11 @@
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
+    <Compile Include="Code\FamilyExtraValues.cs" />
+    <Compile Include="Controllers\DialogController.cs" />
+    <Compile Include="Models\ExtraValue\Value.cs" />
+    <Compile Include="Models\ExtraValue\NewExtraValueModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraValue.cs" />
-    <Compile Include="Models\ExtraValue\Field.cs" />
     <Compile Include="Models\ExtraValue\ExtraValueModel.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\StatementInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Enrollments\RegistrationsModel.cs" />
@@ -532,7 +536,6 @@
     <Compile Include="Code\CodeInfo.cs" />
     <Compile Include="Code\CodeValueModel.cs" />
     <Compile Include="Code\CodeValueItem.cs" />
-    <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\Fingerprint.cs" />
     <Compile Include="Code\LabelMetaData.cs" />
     <Compile Include="Code\ModelViewMetadataProvider.cs" />
@@ -1029,7 +1032,6 @@
     <Content Include="Areas\Search\Views\SearchAdd\NewAddress.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenAddress.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\DeletedPerson.cshtml" />
-    <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <Content Include="Areas\Main\Views\Organization\DialogAddMES.cshtml" />
     <Content Include="Areas\Main\Views\Reports\WeeklyDecisions.cshtml" />
     <Content Include="Areas\Main\Views\Reports\Decisions.cshtml" />
@@ -1075,7 +1077,6 @@
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
-    <Content Include="Views\ExtraValue\Entry.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Emails.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactTypeTotals.cshtml" />
@@ -1107,7 +1108,7 @@
     <Content Include="Areas\People\Views\Person\Profile\Membership\UploadDocument.cshtml" />
     <Content Include="Areas\Main\Views\MemberDocs\Image.cshtml" />
     <Content Include="Areas\Main\Views\MemberDocs\Index.cshtml" />
-    <Content Include="Views\ExtraValue\EditorTemplates\Field.cshtml" />
+    <Content Include="Views\ExtraValue\EditorTemplates\Value.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
@@ -1643,6 +1644,8 @@
     <Compile Include="Code\Word2Pdf.cs" />
     <Compile Include="Areas\Finance\Controllers\QuickBooksController.cs" />
     <Compile Include="Controllers\SupportController.cs" />
+    <Compile Include="Models\ExtraValue\Views.cs" />
+    <Compile Include="Models\ExtraValue\View.cs" />
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailsModel.cs" />
@@ -1897,13 +1900,19 @@
     <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenPerson.cshtml" />
     <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenSearch.cshtml" />
     <Content Include="Views\ExtraValue\Add\EditorTemplates\Person.cshtml" />
-    <Content Include="Views\ExtraValue\DialogList.cshtml" />
     <Content Include="Views\ExtraValue\Add\NewAddress.cshtml" />
     <Content Include="Views\ExtraValue\Add\NewPerson.cshtml" />
     <Content Include="Views\ExtraValue\Add\Results.cshtml" />
     <Content Include="Views\ExtraValue\Add\ResultsFamily.cshtml" />
     <Content Include="Views\ExtraValue\Add\SearchFamily.cshtml" />
     <Content Include="Views\ExtraValue\Add\SearchPerson.cshtml" />
+    <Content Include="Views\ExtraValue\NewStandard.cshtml" />
+    <Content Include="Views\ExtraValue\ListStandard.cshtml" />
+    <Content Include="Views\ExtraValue\Entry.cshtml" />
+    <Content Include="Views\Dialog\ChooseFormat.cshtml" />
+    <Content Include="Views\Dialog\TagAll.cshtml" />
+    <Content Include="Views\Dialog\DeleteStandardExtra.cshtml" />
+    <Content Include="Views\Dialog\GetExtraValue.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

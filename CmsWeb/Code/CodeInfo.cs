@@ -70,7 +70,13 @@ namespace CmsWeb.Code
                     default:
                         var getlist = cv.GetType().GetMethod(value + "List");
                         if (getlist != null)
-                            Items = ((IEnumerable<CodeValueItem>)getlist.Invoke(cv, null)).ToSelect();
+                        {
+                            var list = getlist.Invoke(cv, null);
+                            if(list as IEnumerable<CodeValueItem> != null)
+                                Items = ((IEnumerable<CodeValueItem>) getlist.Invoke(cv, null)).ToSelect();
+                            else if (list as SelectList != null)
+                                Items = ((SelectList) getlist.Invoke(cv, null));
+                        }
                         else
                             Items = new List<CodeValueItem>().ToSelect();
                         break;

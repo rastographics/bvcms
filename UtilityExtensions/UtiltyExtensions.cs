@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.Web.Caching;
 using System.Globalization;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace UtilityExtensions
@@ -125,6 +126,12 @@ namespace UtilityExtensions
             bool.TryParse(s, out b);
             return b;
         }
+        public static bool ToBool(this object o)
+        {
+            if (o is bool)
+                return (bool)o;
+            return false;
+        }
         public static int? ToInt2(this object o)
         {
             int? r = null;
@@ -181,6 +188,12 @@ namespace UtilityExtensions
         {
             return s.Split(delimiter.ToCharArray(), nitems);
         }
+        public static string[] SplitLines(this string source)
+        {
+            if (source == null)
+                return new string[0];
+            return source.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+        }
         public static int? IntOrNull(this string s)
         {
             int? i = null;
@@ -204,6 +217,12 @@ namespace UtilityExtensions
         public static bool NotEqual(this string s, string s2)
         {
             return !s.Equal(s2);
+        }
+
+        public static string GetAttr(this XElement e, string n, string def = null)
+        {
+            var a = e.Attribute(n);
+            return a != null ? a.Value : def;
         }
 
         public static string Truncate(this string source, int length)
@@ -434,7 +453,7 @@ namespace UtilityExtensions
                 return Regex.Replace(ph, @"(\d{3})(\d{3})(\d{4})", "$1-$2-$3").Trim();
             if (ph.Length > 10)
                 return Regex.Replace(ph, @"(\d{3})(\d{3})(\d{4})(\d*)", "$1-$2-$3 $4").Trim();
-                return phone;
+            return phone;
         }
         public static string GetDigits(this string zip, int maxlen = 99)
         {
@@ -1285,7 +1304,10 @@ namespace UtilityExtensions
         public static string Serialize<T>(T m)
         {
             var sw = new StringWriter();
-            new XmlSerializer(typeof(T)).Serialize(sw, m);
+            var ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+            var slz = new XmlSerializer(typeof(T));
+            slz.Serialize(sw, m, ns);
             return sw.ToString();
         }
         public static T DeSerialize<T>(string s) where T : class

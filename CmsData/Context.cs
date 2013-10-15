@@ -1147,6 +1147,21 @@ namespace CmsData
             //ExecuteCommand("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED"); 
         }
 
+        public int FetchOrCreateCampusId(string name)
+        {
+            var c = Campus.SingleOrDefault(pp => pp.Description == name);
+            if (c == null)
+            {
+                var max = 10;
+                if(Campus.Any())
+                    max = Campus.Max(mm => mm.Id) + 10;
+                c = new Campu() { Id = max, Description = name, Code = name.Truncate(20) };
+                Campus.InsertOnSubmit(c);
+                SubmitChanges();
+            }
+            return c.Id;
+        }
+
         public ContributionFund FetchOrCreateFund(string Description)
         {
             return FetchOrCreateFund(0, Description);

@@ -50,16 +50,9 @@
         return true;
     });
     $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {
+        event.preventDefault();
         var d = $(this).closest("div.tab-pane");
-        $.ajax({
-            type: 'POST',
-            url: d.data("link"),
-            data: {},
-            success: function (data, status) {
-                d.html(data);
-                d.addClass("loaded");
-            }
-        });
+        $.formAjaxClick($(this), d.data("link"));
         return false;
     });
     $("form.ajax a.submit").live("click", function (event) {
@@ -81,9 +74,9 @@
             $.formAjaxClick(t);
         return false;
     });
-    $.formAjaxClick = function (a) {
+    $.formAjaxClick = function (a, link) {
         var $form = a.closest("form.ajax");
-        var url = a.data("link");
+        var url = link || a.data("link");
         if (typeof url === 'undefined')
             url = a[0].href;
         var data = $form.serialize();
@@ -105,6 +98,8 @@
                                 top = 10;
                             $form.css({ 'margin-top': top, 'top': '0' });
                             $.AttachFormElements();
+                            if (a.data("callback"))
+                                $.InitFunctions[a.data("callback")]();
                         });
                     } else {
                         var results = $($form.data("results") || $form);
@@ -112,6 +107,8 @@
                             $.AttachFormElements();
                             if ($form.data("init"))
                                 $.InitFunctions[$form.data("init")]();
+                            if (a.data("callback"))
+                                $.InitFunctions[a.data("callback")]();
                         });
                     }
                 },

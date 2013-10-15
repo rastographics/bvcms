@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Dialog
             {
                 return "Dialog";
             }
-        }
+       } 
 
         public override void RegisterArea(AreaRegistrationContext context)
         {

@@ -6,8 +6,9 @@
     {
         help = "<label class='help-inline'>{0}</label>".Fmt(help);
     }
+    var disabled = ViewData["disabled"].ToBool();
 }
-<div class="control-group">
+<div class="control-group @(disabled ? "disabled" : "")">
     @if (label.HasValue())
     {
         @Html.Label(label, new {@class = "control-label"})
@@ -17,7 +18,7 @@
         @Html.LabelFor(m => m, new {@class = "control-label"})
     }
     <div class="controls">
-        @Html.TextBoxFor2(m => m, true)@Html.Raw(help)
+        @Html.TextBoxFor2(m => m, true, null, disabled ? new { disabled = "true" } : null)@Html.Raw(help)
         @Html.ValidationMessageLabelFor(m => m)
     </div>
 </div>

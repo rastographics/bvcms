@@ -1,27 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 using AttributeRouting.Web.Mvc;
 using CmsData;
-using System.Diagnostics;
-using CmsData.API;
 using CmsData.Registration;
 using CmsWeb.Areas.People.Models;
-using Dapper;
 using UtilityExtensions;
-using System.Threading;
-using System.Text.RegularExpressions;
-using System.IO;
-using System.Data.SqlClient;
-using System.Net.Mail;
 using CmsWeb.Models;
-using System.Configuration;
-using System.Data;
 
 namespace CmsWeb.Controllers
 {

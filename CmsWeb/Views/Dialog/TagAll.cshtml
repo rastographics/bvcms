@@ -1,0 +1,25 @@
+﻿@model dynamic
+<form id="TagAllDialog" class="modal dialog-options form-horizontal validate fade hide" method="POST">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h3>Tag All</h3>
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <label class="control-label">TagName:</label>
+            <div class="controls">
+                <input name="tagname" type="text" value="@Util2.CurrentTagName" data-rule-required="true" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">Clear Tag First:</label>
+            <div class="controls">
+                @Html.CheckBox("cleartagfirst", false)
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a class="btn btn-success" data-dismiss="modal">Close</a>
+        <input type="submit" class="btn btn-primary" value="OK" />
+    </div>
+</form>

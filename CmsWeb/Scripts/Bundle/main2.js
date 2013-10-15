@@ -26222,31 +26222,41 @@ $(function () {
 $(document).ready(function () {
     $(document).on("click", "a.dialog-options", function (ev) {
         ev.preventDefault();
-        var f = $($(this).data("target"));
-        f.attr("action", this.href);
-        if (this.title)
-            f.find("h3.title").text(this.title);
-        f.modal("show");
-        $(f).validate({
-            submitHandler: function (form) {
-                $(form).modal("hide");
-                if (form.method.toUpperCase() === 'GET') {
-                    form.submit();
+        var $a = $(this);
+        $("<div id='options-dialog'></div>").load($a.data("target"), function () {
+            var d = $(this);
+            var f = d.find("form");
+            if ($a[0].title)
+                f.find("h3.title").text($a[0].title);
+            f.modal("show");
+            f.attr("action", $a[0].href);
+            f.on('hidden', function () {
+                d.remove();
+            });
+            f.validate({
+                submitHandler: function (form) {
+                    if (form.method.toUpperCase() === 'GET') {
+                        form.submit();
+                    }
+                    else {
+                        var q = f.serialize();
+                        $.post(form.action, q, function (ret) {
+                            if (ret)
+                                $.growlUI("", ret);
+                            if ($a.data("callback")) {
+                                $.InitFunctions[$a.data("callback")]($a);
+                            }
+                        });
+                    }
+                    f.modal("hide");
+                },
+                highlight: function (element) {
+                    $(element).closest(".control-group").addClass("error");
+                },
+                unhighlight: function (element) {
+                    $(element).closest(".control-group").removeClass("error");
                 }
-                else {
-                    var q = $(form).serialize();
-                    $.post(form.action, q, function(ret) {
-                        if (ret)
-                            $.growlUI("", ret);
-                    });
-                }
-            },
-            highlight: function (element) {
-                $(element).closest(".control-group").addClass("error");
-            },
-            unhighlight: function (element) {
-                $(element).closest(".control-group").removeClass("error");
-            }
+            });
         });
         return false;
     });
@@ -26693,16 +26703,9 @@ $(function () {
         return true;
     });
     $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {
+        event.preventDefault();
         var d = $(this).closest("div.tab-pane");
-        $.ajax({
-            type: 'POST',
-            url: d.data("link"),
-            data: {},
-            success: function (data, status) {
-                d.html(data);
-                d.addClass("loaded");
-            }
-        });
+        $.formAjaxClick($(this), d.data("link"));
         return false;
     });
     $("form.ajax a.submit").live("click", function (event) {
@@ -26724,9 +26727,9 @@ $(function () {
             $.formAjaxClick(t);
         return false;
     });
-    $.formAjaxClick = function (a) {
+    $.formAjaxClick = function (a, link) {
         var $form = a.closest("form.ajax");
-        var url = a.data("link");
+        var url = link || a.data("link");
         if (typeof url === 'undefined')
             url = a[0].href;
         var data = $form.serialize();
@@ -26748,6 +26751,8 @@ $(function () {
                                 top = 10;
                             $form.css({ 'margin-top': top, 'top': '0' });
                             $.AttachFormElements();
+                            if (a.data("callback"))
+                                $.InitFunctions[a.data("callback")]();
                         });
                     } else {
                         var results = $($form.data("results") || $form);
@@ -26755,6 +26760,8 @@ $(function () {
                             $.AttachFormElements();
                             if ($form.data("init"))
                                 $.InitFunctions[$form.data("init")]();
+                            if (a.data("callback"))
+                                $.InitFunctions[a.data("callback")]();
                         });
                     }
                 },
