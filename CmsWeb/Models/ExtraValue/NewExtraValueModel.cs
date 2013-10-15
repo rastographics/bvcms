@@ -2,11 +2,12 @@
 using System.Linq;
 using CmsData;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
 {
-    public class StandardExtraValueModel
+    public class NewExtraValueModel
     {
         public int Id { get; set; }
         public string ExtraValueTable { get; set; }
@@ -30,14 +31,14 @@ namespace CmsWeb.Models.ExtraValues
         public string ExtraValueCodes { get; set; }
         public string VisibilityRoles { get; set; }
 
-        public StandardExtraValueModel(int id, string table, string location)
+        public NewExtraValueModel(int id, string table, string location)
         {
             ExtraValueType = new CodeInfo("2", "ExtraValueType");
             Id = id;
             ExtraValueTable = table;
             ExtraValueLocation = location;
         }
-        public StandardExtraValueModel() { }
+        public NewExtraValueModel() { }
 
         public bool ExtraValueBitPrefixDisabled
         {
@@ -50,28 +51,24 @@ namespace CmsWeb.Models.ExtraValues
 
         public string AddAsNew()
         {
-            var c = DbUtil.Content("StandardExtraValues.xml");
-            var Fields = Util.DeSerialize<Fields>(c.Body);
-            var existing = Fields.FieldList.SingleOrDefault(ff => ff.name == ExtraValueName);
+            var fields = Views.GetStandardExtraValues(ExtraValueTable);
+            var existing = fields.SingleOrDefault(ff => ff.Name == ExtraValueName);
             if (existing != null)
                 return "field already exists";
 
             // Check for conflicts in AdHoc fields here
             // It is OK if an AdHoc field already exists which is the same type as this one.
 
-            var f = new Field
+            var v = new Value
             {
-                name = ExtraValueName,
-                table = ExtraValueTable.ToString(),
-                type = ExtraValueType.Value,
-                location = ExtraValueLocation,
+                Name = ExtraValueName,
+                Type = ExtraValueType.Value,
                 Codes = ExtraValueCodes.SplitLines().Select(ss => BitPrefix + ss).ToList(),
                 VisibilityRoles = VisibilityRoles
             };
-            Fields.FieldList.Add(f);
-            var newxml = Util.Serialize(Fields);
-            DbUtil.SetStandardExtraValues(newxml);
-            DbUtil.Db.SubmitChanges();
+            var i = Views.GetViewsView(ExtraValueTable, ExtraValueLocation);
+            i.view.Values.Add(v);
+            i.views.Save();
             return null;
         }
     }

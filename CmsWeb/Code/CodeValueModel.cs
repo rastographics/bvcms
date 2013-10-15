@@ -407,9 +407,9 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> ExtraValueTypeCodes()
         {
-            yield return new CodeValueItem {Code = "Code", Value = "Dropdown"};
             yield return new CodeValueItem {Code = "Text", Value = "Text (single line)"};
             yield return new CodeValueItem {Code = "Text2", Value = "Text (multi line)"};
+            yield return new CodeValueItem {Code = "Code", Value = "Dropdown"};
             yield return new CodeValueItem {Code = "Bit", Value = "Checkbox"};
             yield return new CodeValueItem {Code = "Bits", Value = "Checkboxes"};
             yield return new CodeValueItem {Code = "Int", Value = "Integer"};

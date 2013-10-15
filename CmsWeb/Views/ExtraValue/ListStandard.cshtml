@@ -12,22 +12,25 @@
     <table id="fields" class="table table-condensed not-wide table-striped">
         <thead>
             <tr>
+                <th>Order</th>
                 <th>Name</th>
                 <th>Type</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var f in Model.GetExtraValues(Model.Location))
+            @foreach (var f in Views.GetStandardExtraValues(Model.Table, Model.Location))
             {
-                <tr id="ev-name-@f.name">
-                    <td>@f.name</td>
-                    <td>@f.type</td>
-                    <td><a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@f.name" 
+                <tr id="ev-name-@f.Name">
+                    <td>@Html.TextBox(@"Orders[{0}]".Fmt(f.Name), f.Order.ToString(), new { @class = "input-mini" })</td>
+                    <td>@f.Name</td>
+                    <td>@f.Type</td>
+                    <td><a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@f.Name" 
                            class="dialog-options" 
                            data-target="/Dialog/DeleteStandardExtra"
                            data-callback="DeleteStandardCallback"
-                           data-rowid="#ev-name-@f.name"
-                           title="Delete Standard Extra Value: @f.name"><i class="icon-remove"></i></a></td>
+                           data-rowid="#ev-name-@f.Name"
+                           title="Delete Standard Extra Value: @f.Name"><i class="icon-remove"></i></a>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -35,4 +38,5 @@
 </div>
 <div class="modal-footer">
     <a id="CloseListStandard" href="#" class="btn">Close</a>
+    <a href="/ExtraValue/ApplyOrder/@Model.Table/@Model.Location" class="btn btn-warning ajax">Apply Ordering</a>
 </div>

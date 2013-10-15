@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var f in Model.GetExtraValues("Adhoc").ToList())
+                @foreach (var f in Model.GetExtraValues().ToList())
                 {
                     @Html.EditorFor(m => f)
                 }

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -5,6 +7,7 @@ using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsWeb.Models.ExtraValues;
 using DocumentFormat.OpenXml.Bibliography;
+using iTextSharp.text;
 using UtilityExtensions;
 
 namespace CmsWeb.Controllers
@@ -37,7 +40,7 @@ namespace CmsWeb.Controllers
         [POST("ExtraValue/NewStandard/{table}/{location}/{id:int}")]
         public ActionResult NewStandard(string location, string table, int id)
         {
-            var m = new StandardExtraValueModel(id, table, location);
+            var m = new NewExtraValueModel(id, table, location);
             return View(m);
         }
         [POST("ExtraValue/ListStandard/{table}/{location}/{id:int}")]
@@ -55,7 +58,7 @@ namespace CmsWeb.Controllers
             return Content("ok");
         }
         [POST("ExtraValue/SaveNewStandard")]
-        public ActionResult SaveNewStandard(StandardExtraValueModel m)
+        public ActionResult SaveNewStandard(NewExtraValueModel m)
         {
             var ret = m.AddAsNew();
             if (ret.HasValue())
@@ -76,6 +79,13 @@ namespace CmsWeb.Controllers
             var m = new ExtraValueModel(id, table);
             var j = m.DropdownBitsJson(HttpUtility.UrlDecode(name));
             return Content(j);
+        }
+        [POST("ExtraValue/ApplyOrder/{table}/{location}")]
+        public ActionResult ApplyOrder(string table, string location, Dictionary<string, int> orders)
+        {
+            var m = new ExtraValueModel(table, location);
+            m.ApplyOrder(orders);
+            return View("ListStandard", m);
         }
     }
 }

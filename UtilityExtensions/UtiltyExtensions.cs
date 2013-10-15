@@ -190,7 +190,7 @@ namespace UtilityExtensions
         }
         public static string[] SplitLines(this string source)
         {
-            if(source == null)
+            if (source == null)
                 return new string[0];
             return source.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
@@ -219,12 +219,10 @@ namespace UtilityExtensions
             return !s.Equal(s2);
         }
 
-        public static string GetAttr(this XElement e, string n)
+        public static string GetAttr(this XElement e, string n, string def = null)
         {
             var a = e.Attribute(n);
-                if (a != null)
-                    return a.Value;
-            return null;
+            return a != null ? a.Value : def;
         }
 
         public static string Truncate(this string source, int length)
@@ -1306,7 +1304,10 @@ namespace UtilityExtensions
         public static string Serialize<T>(T m)
         {
             var sw = new StringWriter();
-            new XmlSerializer(typeof(T)).Serialize(sw, m);
+            var ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+            var slz = new XmlSerializer(typeof(T));
+            slz.Serialize(sw, m, ns);
             return sw.ToString();
         }
         public static T DeSerialize<T>(string s) where T : class

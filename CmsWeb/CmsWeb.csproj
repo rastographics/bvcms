@@ -193,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
+    <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Models\SearchModel.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />
@@ -297,9 +298,10 @@
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
+    <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Controllers\DialogController.cs" />
-    <Compile Include="Models\ExtraValue\Field.cs" />
-    <Compile Include="Models\ExtraValue\StandardExtraValueModel.cs" />
+    <Compile Include="Models\ExtraValue\Value.cs" />
+    <Compile Include="Models\ExtraValue\NewExtraValueModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraValue.cs" />
     <Compile Include="Models\ExtraValue\ExtraValueModel.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\StatementInfo.cs" />
@@ -1106,7 +1108,7 @@
     <Content Include="Areas\People\Views\Person\Profile\Membership\UploadDocument.cshtml" />
     <Content Include="Areas\Main\Views\MemberDocs\Image.cshtml" />
     <Content Include="Areas\Main\Views\MemberDocs\Index.cshtml" />
-    <Content Include="Views\ExtraValue\EditorTemplates\Field.cshtml" />
+    <Content Include="Views\ExtraValue\EditorTemplates\Value.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
@@ -1642,6 +1644,8 @@
     <Compile Include="Code\Word2Pdf.cs" />
     <Compile Include="Areas\Finance\Controllers\QuickBooksController.cs" />
     <Compile Include="Controllers\SupportController.cs" />
+    <Compile Include="Models\ExtraValue\Views.cs" />
+    <Compile Include="Models\ExtraValue\View.cs" />
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailsModel.cs" />
