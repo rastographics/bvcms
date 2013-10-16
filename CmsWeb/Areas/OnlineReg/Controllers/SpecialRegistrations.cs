@@ -649,7 +649,6 @@ You have the following subscriptions:<br/>
             var oid = a[0].ToInt();
             var pid = a[1].ToInt();
             var emailid = a[2].ToInt();
-            var pre = a[3];
             if (a.Length == 5)
                 smallgroup = a[4];
             var q = (from pp in DbUtil.Db.People

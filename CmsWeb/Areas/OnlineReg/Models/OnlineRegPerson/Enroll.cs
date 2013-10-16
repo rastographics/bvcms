@@ -448,7 +448,7 @@ namespace CmsWeb.Models
                             {
                                 var v = (from li in lines
                                     where li.StartsWith(q.Question + ": ")
-                                    select li.Substring(q.Question.Length + 2)).SingleOrDefault();
+                                    select li.Substring(q.Question.Length + 2)).FirstOrDefault();
                                 if (v.HasValue())
                                     eq[q.Question] = v;
                             }

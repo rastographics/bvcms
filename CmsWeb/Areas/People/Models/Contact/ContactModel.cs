@@ -55,6 +55,7 @@ namespace CmsWeb.Areas.People.Models
             if (contact == null)
                 return;
 
+            ContactId = id;
             MinisteredTo = new ContacteesModel(id);
             Ministers = new ContactorsModel(id);
             MinisteredTo.CanViewComments = CanViewComments;
