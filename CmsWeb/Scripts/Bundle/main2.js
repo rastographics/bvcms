@@ -26223,7 +26223,7 @@ $(document).ready(function () {
     $(document).on("click", "a.dialog-options", function (ev) {
         ev.preventDefault();
         var $a = $(this);
-        $("<div id='options-dialog'></div>").load($a.data("target"), function () {
+        $("<div id='dialog-options' />").load($a.data("target"), function () {
             var d = $(this);
             var f = d.find("form");
             if ($a[0].title)

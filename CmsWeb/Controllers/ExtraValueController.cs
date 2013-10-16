@@ -8,6 +8,7 @@ using CmsData;
 using CmsWeb.Models.ExtraValues;
 using DocumentFormat.OpenXml.Bibliography;
 using iTextSharp.text;
+using NPOI.SS.Formula;
 using UtilityExtensions;
 
 namespace CmsWeb.Controllers
@@ -60,10 +61,33 @@ namespace CmsWeb.Controllers
         [POST("ExtraValue/SaveNewStandard")]
         public ActionResult SaveNewStandard(NewExtraValueModel m)
         {
-            var ret = m.AddAsNew();
+            var ret = m.AddAsNewStandard();
             if (ret.HasValue())
                 ViewBag.Error = ret;
             return View("NewStandard", m);
+        }
+        [POST("ExtraValue/NewAdhoc/{table}/{location}/{id:int}")]
+        public ActionResult NewAdhoc(string table, string location, int id)
+        {
+            var m = new NewExtraValueModel(id, table, location);
+            return View(m);
+        }
+        [POST("ExtraValue/NewAdhocQuery/{id:guid}")]
+        public ActionResult NewAdhocQuery(Guid id)
+        {
+            var m = new NewExtraValueModel(id);
+            return View("NewAdhoc", m);
+        }
+        [POST("ExtraValue/SaveNewAdhoc")]
+        public ActionResult SaveNewAdhoc(NewExtraValueModel m)
+        {
+            var ret = m.AddAsNewAdhoc();
+            if (ret.HasValue())
+            {
+                ViewBag.Error = ret;
+                return View("NewAdhoc", m);
+            }
+            return Content(ret);
         }
         [POST("ExtraValue/Edit/{table}/{type}")]
         public ActionResult Edit(string table, string type, string pk, string name, string value)

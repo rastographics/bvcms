@@ -1,5 +1,5 @@
 ﻿@model bool
-<div class="control-group">
+<div class="control-group @ViewBag.hide">
     @if (((string) ViewBag.label).HasValue())
     {
         @Html.LabelFor(m => m, ((string)ViewBag.label), new {@class = "control-label"})

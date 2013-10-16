@@ -1,10 +1,11 @@
 ﻿@model string
 @{
-    var disabled = ViewData["disabled"].ToBool();
+    var disabled = ViewData["disabled"].ToBool() ? "warning" : "";
+    var disabledattr = ViewData["disabled"].ToBool() ? new {disabled = "true"} : null;
 }
-<div class="control-group @(disabled ? "warning" : "")">
+<div class="control-group @ViewBag.hide @disabled">
     @Html.LabelFor(m => m, new { @class = "control-label"})
     <div class="controls">
-        @Html.TextAreaFor(m => m, 5, 80, disabled ? new { disabled = "true" } : null)<span class="help-block">@Html.Raw(ViewData["help"])</span>
+        @Html.TextAreaFor(m => m, 5, 80, disabledattr)<span class="help-block">@Html.Raw(ViewData["help"])</span>
     </div>
 </div>

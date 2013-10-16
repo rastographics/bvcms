@@ -5,7 +5,7 @@
             @if (User.IsInRole("Admin"))
             {
                 <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Standard/@Model.Id"><i class="icon-plus"></i></a>
-                <a class="extravalue nounderline font14px edit pad-left" href="/ExtraValue/ListStandard/@Model.Table/Standard/@Model.Id"><i class="icon-pencil"></i></a>
+                <a class="extravalue nounderline font14px dark pad-left" href="/ExtraValue/ListStandard/@Model.Table/Standard/@Model.Id"><i class="icon-pencil"></i></a>
             }
             <span class="pull-right">
                 <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="ajax font14px">Adhoc Values</a>

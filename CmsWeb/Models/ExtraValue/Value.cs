@@ -94,7 +94,7 @@ namespace CmsWeb.Models.ExtraValues
                 if (Standard)
                     return "";
                 var n = HttpUtility.UrlEncode(Name);
-                return "/ExtraValue/Delete/{0}?name={1}".Fmt(Id, n);
+                return "/ExtraValue/Delete/{0}/{1}/{2}?name={3}".Fmt(Model.Table, Model.Location, Id, n);
             }
         }
         public string EditableClass

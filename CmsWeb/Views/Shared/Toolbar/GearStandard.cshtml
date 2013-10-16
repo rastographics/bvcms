@@ -14,7 +14,7 @@
 @if (admin)
 {
     <li class="header">Extra Values</li>
-    <li><a href='/Manage/ExtraValues2/Add/@ViewBag.queryid' class="dialog-options" data-target="/Dialog/GetExtraValue" title="Add Extra Value">Add Extra Values</a></li>
+    <li><a data-update='/Manage/ExtraValues2/Add/@ViewBag.queryid' class="adhoc-extravalue" href="/ExtraValue/NewAdhocQuery/@ViewBag.queryid" title="Add Extra Value">Add Extra Values</a></li>
     <li><a href='/Manage/ExtraValues2/Delete/@ViewBag.queryid' class="dialog-options" data-target="/Dialog/GetExtraValue" title="Delete Extra Values">Delete Extra Values</a></li>
     <li><a href="/Reports2/ExtraValuesGrid/@ViewBag.queryid">Extra Values Grid</a></li>
     if (developer)

@@ -72,16 +72,22 @@ namespace CmsWeb.Models.ExtraValues
             }
             return q.ToList();
         }
+
         private ITableWithExtraValues TableObject()
         {
-            switch (Table)
+            return TableObject(Id, Table);
+        }
+
+        public static ITableWithExtraValues TableObject(int id, string table)
+        {
+            switch (table)
             {
                 case "People":
-                    return DbUtil.Db.LoadPersonById(Id);
+                    return DbUtil.Db.LoadPersonById(id);
                 case "Organization":
-                    return DbUtil.Db.LoadOrganizationById(Id);
+                    return DbUtil.Db.LoadOrganizationById(id);
                 case "Family":
-                    return DbUtil.Db.Families.SingleOrDefault(f => f.FamilyId == Id);
+                    return DbUtil.Db.Families.SingleOrDefault(f => f.FamilyId == id);
 //                                case "Meeting":
 //                                    return DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == Id);
                 default:

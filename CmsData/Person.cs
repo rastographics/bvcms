@@ -1193,6 +1193,34 @@ namespace CmsData
             var ev = GetExtraValue(db, id, field);
             ev.StrValue = value;
         }
+        public static void AddEditExtraData(CMSDataContext db, int id, string field, string value)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.Data = value;
+        }
+        public static void AddEditExtraDate(CMSDataContext db, int id, string field, DateTime? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.DateValue = value;
+        }
+        public static void AddEditExtraInt(CMSDataContext db, int id, string field, int? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.IntValue = value;
+        }
+        public static void AddEditExtraBool(CMSDataContext db, int id, string field, bool? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.BitValue = value;
+        }
         public ManagedGiving ManagedGiving()
         {
             var mg = ManagedGivings.SingleOrDefault();

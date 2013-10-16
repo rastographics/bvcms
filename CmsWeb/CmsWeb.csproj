@@ -1913,6 +1913,7 @@
     <Content Include="Views\Dialog\TagAll.cshtml" />
     <Content Include="Views\Dialog\DeleteStandardExtra.cshtml" />
     <Content Include="Views\Dialog\GetExtraValue.cshtml" />
+    <Content Include="Views\ExtraValue\NewAdHoc.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
