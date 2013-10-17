@@ -212,6 +212,8 @@
     <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
     <Compile Include="Areas\Main\Models\Export\ExcelResult.cs" />
     <Compile Include="Areas\Manage\Controllers\ExtraValues2Controller.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\SpecialRegistration.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineReg\SpecialRegModel.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMembersDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -1113,6 +1115,7 @@
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\SpecialRegistrationResults.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1652,7 +1655,7 @@
     <Compile Include="Areas\Manage\Models\TransactionModel.cs" />
     <Compile Include="Areas\Manage\Models\TransactionsModel.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ConfirmTest.cs" />
-    <Compile Include="Areas\OnlineReg\Controllers\SpecialRegistrations.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\ManageVolunteers.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Coupon.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\PayDueOld.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\PayDue.cs" />
