@@ -5,19 +5,10 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using CmsData.API;
-using UtilityExtensions;
-using System.Configuration;
-using System.Reflection;
-using System.Collections;
-using System.Data.Linq.SqlClient;
-using System.Text.RegularExpressions;
-using System.Web;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -181,12 +172,37 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression RecentVisitNumber(
-            ParameterExpression parm, CMSDataContext Db,
-            string number,
-            int days,
-            CompareType op,
-            bool tf)
+
+		internal static Expression CheckInByDate(ParameterExpression parm, CMSDataContext Db, CompareType op, DateTime? dt)
+		{
+			Expression<Func<Person, bool>> pred = null;
+
+			switch (op)
+			{
+				case CompareType.Greater:
+					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX > dt );
+					break;
+				case CompareType.Less:
+					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX < dt );
+					break;
+				case CompareType.GreaterEqual:
+					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX >= dt );
+					break;
+				case CompareType.LessEqual:
+					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX <= dt );
+					break;
+				case CompareType.Equal:
+					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX == dt );
+					break;
+				case CompareType.NotEqual:
+					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX != dt );
+					break;
+			}
+
+			Expression expr = Expression.Invoke(pred, parm);
+			return expr;
+		}
+		internal static Expression RecentVisitNumber( ParameterExpression parm, CMSDataContext Db, string number, int days, CompareType op, bool tf )
         {
             int n = number.ToInt2() ?? 1;
             var dt = DateTime.Now.AddDays(-days);

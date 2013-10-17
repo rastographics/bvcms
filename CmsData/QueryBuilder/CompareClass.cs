@@ -7,12 +7,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UtilityExtensions;
-using System.Text;
-using System.Xml.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Caching;
+using System.Xml.Linq;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -152,8 +151,9 @@ namespace CmsData
                                CompType,
                                c.CodeIntIds);
                 case QueryType.CheckInVisits:
-                    return Expressions.CheckInVisits(parm, Db,
-                        CompType, c.TextValue.ToInt());
+					return Expressions.CheckInVisits( parm, Db, CompType, c.TextValue.ToInt() );
+				case QueryType.CheckInByDate:
+					return Expressions.CheckInByDate( parm, Db, CompType, c.DateValue );
                 case QueryType.CreatedBy:
                     return Expressions.CreatedBy(parm, Db,
                         CompType, c.TextValue);

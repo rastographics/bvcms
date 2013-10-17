@@ -466,6 +466,9 @@
     <Field Name="RegisteredForMeetingId" Type="Integer">
       Advanced use
     </Field>
+    <Field Name="CheckInByDate" Title="Building Check-In By Date" Type="Date" >
+      Searchs by Date, can do greater than, less than, etc.
+    </Field>
   </Category>
   <Category Title="Miscellaneous">
     <Field Name="IncludeDeceased" Title="Included Deceased" Type="Bit" DataValueField="IdCode">

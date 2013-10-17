@@ -24,6 +24,7 @@ namespace CmsData
         CampusId,
         CellPhone,
         CheckInVisits,
+		CheckInByDate,
         ChristAsSavior,
         ContributionOptionsId,
         ContributionsStatement,
