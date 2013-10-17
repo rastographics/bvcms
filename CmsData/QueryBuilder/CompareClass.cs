@@ -151,10 +151,10 @@ namespace CmsData
                                CompType,
                                c.CodeIntIds);
                 case QueryType.CheckInVisits:
-					return Expressions.CheckInVisits( parm, Db, CompType, c.TextValue.ToInt() );
-				case QueryType.CheckInByDate:
-					return Expressions.CheckInByDate( parm, Db, CompType, c.DateValue );
-                case QueryType.CreatedBy:
+						return Expressions.CheckInVisits( parm, Db, CompType, c.TextValue.ToInt() );
+					case QueryType.CheckInByDate:
+						return Expressions.CheckInByDate(parm, Db, c.StartDate, c.EndDate, CompType, c.TextValue.ToInt());
+					case QueryType.CreatedBy:
                     return Expressions.CreatedBy(parm, Db,
                         CompType, c.TextValue);
                 case QueryType.ContributionAmount2:

@@ -173,35 +173,19 @@ namespace CmsData
             return expr;
         }
 
-		internal static Expression CheckInByDate(ParameterExpression parm, CMSDataContext Db, CompareType op, DateTime? dt)
-		{
-			Expression<Func<Person, bool>> pred = null;
+	    internal static Expression CheckInByDate( ParameterExpression parm, CMSDataContext Db, DateTime? start, DateTime? end, CompareType op, int cnt )
+	    {
+		    Expression<Func<Person, int>> pred = null;
+		    if( end != null ) end = end.Value.AddDays( 1 ).AddTicks( -1 );
+		    else end = DateTime.Now.Date.AddDays( 1 ).AddTicks( -1 );
 
-			switch (op)
-			{
-				case CompareType.Greater:
-					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX > dt );
-					break;
-				case CompareType.Less:
-					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX < dt );
-					break;
-				case CompareType.GreaterEqual:
-					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX >= dt );
-					break;
-				case CompareType.LessEqual:
-					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX <= dt );
-					break;
-				case CompareType.Equal:
-					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX == dt );
-					break;
-				case CompareType.NotEqual:
-					pred = p => p.CheckInTimes.Any( ct => ct.CheckInTimeX != dt );
-					break;
-			}
+		    pred = p => p.CheckInTimes.Count(ct => ct.CheckInTimeX >= start && ct.CheckInTimeX <= end);
 
-			Expression expr = Expression.Invoke(pred, parm);
-			return expr;
-		}
+		    Expression left = Expression.Invoke( pred, parm );
+			 var right = Expression.Convert(Expression.Constant(cnt), left.Type);
+		    return Compare( left, op, right );
+	    }
+
 		internal static Expression RecentVisitNumber( ParameterExpression parm, CMSDataContext Db, string number, int days, CompareType op, bool tf )
         {
             int n = number.ToInt2() ?? 1;

@@ -466,7 +466,7 @@
     <Field Name="RegisteredForMeetingId" Type="Integer">
       Advanced use
     </Field>
-    <Field Name="CheckInByDate" Title="Building Check-In By Date" Type="Date" >
+    <Field Name="CheckInByDate" Title="Building Check-In By Date" DisplayAs="CheckInByDate({0:d}, {1:d})" Type="Integer" Params="StartDate,EndDate">
       Searchs by Date, can do greater than, less than, etc.
     </Field>
   </Category>
