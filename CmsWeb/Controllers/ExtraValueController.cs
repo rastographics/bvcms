@@ -45,10 +45,9 @@ namespace CmsWeb.Controllers
             return View(m);
         }
         [POST("ExtraValue/ListStandard/{table}/{location}/{id:int}")]
-        public ActionResult ListStandard(string table, string location, int id, string title)
+        public ActionResult ListStandard(string table, string location, int id)
         {
             var m = new ExtraValueModel(id, table, location);
-            ViewBag.DialogTitle = title ?? "Edit Standard Extra Value";
             return View(m);
         }
         [POST("ExtraValue/DeleteStandard/{table}/{location}")]
@@ -104,11 +103,18 @@ namespace CmsWeb.Controllers
             var j = m.DropdownBitsJson(HttpUtility.UrlDecode(name));
             return Content(j);
         }
-        [POST("ExtraValue/ApplyOrder/{table}/{location}")]
-        public ActionResult ApplyOrder(string table, string location, Dictionary<string, int> orders)
+        [POST("ExtraValue/ApplyListChanges/{table}/{location}")]
+        public ActionResult ApplyListChanges(string table, string location, Dictionary<string, int> orders)
         {
             var m = new ExtraValueModel(table, location);
             m.ApplyOrder(orders);
+            return View("ListStandard", m);
+        }
+        [POST("ExtraValue/SwitchMultiline/{table}/{location}")]
+        public ActionResult SwitchMultiline(string table, string location, string name)
+        {
+            var m = new ExtraValueModel(table, location);
+            m.SwitchMultiline(name);
             return View("ListStandard", m);
         }
     }

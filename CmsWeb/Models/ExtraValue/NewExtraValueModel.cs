@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Data.SqlClient;
 using System.Linq;
 using CmsData;
 using CmsWeb.Code;
-using Dapper;
-using DocumentFormat.OpenXml.Drawing;
-using iTextSharp.text;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -56,8 +52,12 @@ namespace CmsWeb.Models.ExtraValues
                 return "";
             }
         }
-        [DisplayNameAttribute("Checkboxes")]
+        [DisplayNameAttribute("Codes")]
         public string ExtraValueCodes { get; set; }
+
+        [DisplayNameAttribute("Checkboxes"), UIHint("Textarea")]
+        public string ExtraValueCheckboxes { get; set; }
+
         public string VisibilityRoles { get; set; }
 
         public NewExtraValueModel(Guid id)
@@ -77,20 +77,6 @@ namespace CmsWeb.Models.ExtraValues
             ExtraValueLocation = location;
         }
         public NewExtraValueModel() { }
-
-        public bool ExtraValueBitPrefixDisabled
-        {
-            get { return ExtraValueType != null && ExtraValueType.Value != "Bits"; }
-        }
-        public bool ExtraValueCodesDisabled
-        {
-            get
-            {
-                if (ExtraValueType == null)
-                    return false;
-                return new string[] { "Code", "Bits" }.Contains(ExtraValueType.Value);
-            }
-        }
 
         public string AddAsNewStandard()
         {
@@ -131,7 +117,7 @@ namespace CmsWeb.Models.ExtraValues
                     o.AddEditExtraValue(ExtraValueName, ExtraValueTextBox);
                     break;
                 case "Text":
-                    o.AddEditExtraData(ExtraValueName, ExtraValueTextBox);
+                    o.AddEditExtraData(ExtraValueName, ExtraValueTextArea);
                     break;
                 case "Text2":
                     o.AddEditExtraData(ExtraValueName, ExtraValueTextArea);

@@ -14,8 +14,9 @@
         @Html.EditorFor(m => m.ExtraValueType, new { PlainSelect = true })
         @Html.EditorFor(m => m.ExtraValueName)
         @Html.EditorFor(m => m.VisibilityRoles)
-        @Html.EditorFor(m => m.ExtraValueBitPrefix, new { disabled = Model.ExtraValueBitPrefixDisabled })
-        @Html.EditorFor(m => m.ExtraValueCodes, "TextArea", new { disabled = Model.ExtraValueCodesDisabled })
+        @Html.EditorFor(m => m.ExtraValueBitPrefix, new { hide = "hide" })
+        @Html.EditorFor(m => m.ExtraValueCodes, "TextArea", new { hide = "hide" })
+        @Html.EditorFor(m => m.ExtraValueCheckboxes, "TextArea", new { hide = "hide" })
         @if (ViewBag.Error != null)
         {
             <div id="StandardExtraValueError" class="alert">

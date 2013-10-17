@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using System.Windows.Forms.VisualStyles;
 using System.Xml.Serialization;
 using UtilityExtensions;
@@ -125,6 +126,18 @@ namespace CmsWeb.Models.ExtraValues
             }
         }
 
+        public string SwitchMultiLineText
+        {
+            get
+            {
+                if (Type == "Text")
+                    return "Switch to Multiline";
+                if (Type == "Text2")
+                    return "Switch to Singleline";
+                return "";
+            }
+        }
+
         public override string ToString()
         {
             var ev = Extravalue;
@@ -153,7 +166,7 @@ namespace CmsWeb.Models.ExtraValues
                                 where e.Id == Id
                                 where Codes.Contains(e.Field)
                                 select e.Field;
-                        return string.Join(", ", q);
+                        return string.Join("<br/>\n", q);
                     }
                 case "Int":
                     return Extravalue.IntValue.ToString();

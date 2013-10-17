@@ -24,29 +24,28 @@
                     f.remove();
                 });
                 var showHide = function () {
-                    $("#ExtraValueCodes").prop('disabled', true);
-                    $("#ExtraValueBitPrefix").prop('disabled', true);
-                    $("#ExtraValueBitPrefix").parent().parent().addClass('disabled');
-                    $("#ExtraValueCodes").parent().parent().addClass('disabled');
+                    $("#ExtraValueBitPrefix").parent().parent().addClass('hide');
+                    $("#ExtraValueCheckboxes").parent().parent().addClass('hide');
+                    $("#ExtraValueCodes").parent().parent().addClass('hide');
                     switch ($("#ExtraValueType_Value").val()) {
-                        case "Code": // code
-                            $("#ExtraValueCodes").prop('disabled', false);
-                            $("#ExtraValueCodes").parent().parent().removeClass('disabled');
+                        case "Code":
+                            $("#ExtraValueCodes").parent().parent().removeClass('hide');
                             break;
-                        case "Bits": // bits
-                            $("#ExtraValueBitPrefix").prop('disabled', false);
-                            $("#ExtraValueCodes").prop('disabled', false);
-                            $("#ExtraValueBitPrefix").parent().parent().removeClass('disabled');
-                            $("#ExtraValueCodes").parent().parent().removeClass('disabled');
+                        case "Bits":
+                            $("#ExtraValueBitPrefix").parent().parent().removeClass('hide');
+                            $("#ExtraValueCheckboxes").parent().parent().removeClass('hide');
+                            break;
+                        case "Codes":
+                            $("#ExtraValueCodes").parent().parent().removeClass('hide');
                             break;
                     }
                 };
-                $(this).on("change", "#ExtraValueType_Value", showHide);
+                $("#ExtraValueType_Value").live("change", showHide);
             });
         $.InitFunctions.StandardExtraValueDialogCallback = function () {
             if ($("#StandardExtraValueError").length == 0) {
                 $("#extravalue-dialog").modal("hide");
-                var a = $a.closest("form").find("a.ajax.reload");
+                var a = $a.closest("form").find("a.ajax-refresh");
                 if(a.length > 0)
                     a.click();
             }
@@ -121,20 +120,13 @@
                 $("#AdhocExtraValueType_Value").click(showHide);
             });
         $.InitFunctions.AdhocDialogCallback = function () {
-            if ($("#ExtraValueError").length == 0) {
+            if ($("#ExtraValueErrmr").length == 0) {
                 $("#extravalue-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax.reload");
                 if(a.length > 0)
                     a.click();
             }
         };
-        $.InitFunctions.DeleteStandardCallback = function (a) {
-            $(a.data("rowid")).remove();
-        };
-        $("#CloseListStandard").live("click", function(e) {
-            e.preventDefault();
-            $.InitFunctions.StandardExtraValueDialogCallback();
-        });
     });
     $.InitFunctions.AdhocExtraEditable = function () {
         $("a.click-Code").editable({ mode: 'inline' });

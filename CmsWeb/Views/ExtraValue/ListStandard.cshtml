@@ -1,42 +1,51 @@
 ﻿@using CmsWeb.Models.ExtraValues
 @model ExtraValueModel
-<div class="modal-header">
-    <a class="close" data-dismiss="modal">×</a>
-    <h3>@ViewBag.DialogTitle</h3>
-</div>
-<div class="modal-body">
-    <a class="helplink pull-right" target="_blank" href='@ExtraValueModel.HelpLink("ExtraValueList")'>help</a>
-    @Html.HiddenFor(m => m.Id)
-    @Html.HiddenFor(m => m.Table)
-    @Html.HiddenFor(m => m.Location)
-    <table id="fields" class="table table-condensed not-wide table-striped">
-        <thead>
-            <tr>
-                <th>Order</th>
-                <th>Name</th>
-                <th>Type</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var f in Views.GetStandardExtraValues(Model.Table, Model.Location))
-            {
-                <tr id="ev-name-@f.Name">
-                    <td>@Html.TextBox(@"Orders[{0}]".Fmt(f.Name), f.Order.ToString(), new { @class = "input-mini" })</td>
-                    <td>@f.Name</td>
-                    <td>@f.Type</td>
-                    <td><a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@f.Name" 
+<form id='extravalue-dialog' class='modal fade hide validate ajax form-horizontal' data-width='600'>
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>Edit List of Standard Values</h3>
+    </div>
+    <div class="modal-body">
+        <a class="helplink pull-right" target="_blank" href='@ExtraValueModel.HelpLink("ExtraValueList")'>help</a>
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.Table)
+        @Html.HiddenFor(m => m.Location)
+        <table id="fields" class="table table-condensed not-wide table-striped">
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Views.GetStandardExtraValues(Model.Table, Model.Location))
+                {
+                    <tr id="ev-name-@f.Name">
+                        <td>@Html.TextBox(@"Orders[{0}]".Fmt(f.Name), f.Order.ToString(), new { @class = "input-mini" })</td>
+                        <td>@f.Name</td>
+                        <td>@f.Type
+                            @if(f.Type.StartsWith("Text"))
+                            { 
+                                <a href="/ExtraValue/SwitchMultiline/@Model.Table/@Model.Location?name=@f.Name" class="ajax btn btn-mini">@f.SwitchMultiLineText</a>
+                            }
+                        </td>
+                        <td>@Model.Location</td>
+                        <td><a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@f.Name" 
                            class="dialog-options" 
                            data-target="/Dialog/DeleteStandardExtra"
                            data-callback="DeleteStandardCallback"
                            data-rowid="#ev-name-@f.Name"
                            title="Delete Standard Extra Value: @f.Name"><i class="icon-remove"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-<div class="modal-footer">
-    <a id="CloseListStandard" href="#" class="btn">Close</a>
-    <a href="/ExtraValue/ApplyOrder/@Model.Table/@Model.Location" class="btn btn-warning ajax">Apply Ordering</a>
-</div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <a id="CloseListStandard" href="#" class="btn">Close</a>
+        <a href="/ExtraValue/ApplyListChanges/@Model.Table/@Model.Location" class="btn btn-warning ajax">Apply Changes</a>
+    </div>
+</form>

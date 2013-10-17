@@ -296,5 +296,12 @@ namespace CmsWeb.Models.ExtraValues
             i.view.Values = q.ToList();
             i.views.Save();
         }
+
+        public void SwitchMultiline(string name)
+        {
+            var i = Views.GetViewsViewValue(Table, name);
+            i.value.Type = i.value.Type == "Text" ? "Text2" : "Text";
+            i.views.Save();
+        }
     }
 }
