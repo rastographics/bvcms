@@ -255,9 +255,15 @@ namespace CmsWeb.Models
                         CodeData = StandardExtraValues.ExtraValueCodes();
                     else if (fieldMap.DataSource == "Campuses")
                         CodeData = Campuses();
-                    else
-                        CodeData = CodeValueModel.ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
-                    break;
+						  else if( fieldMap.DataSource == "Activities" )
+						  {
+							  var ret = ( from e in DbUtil.Db.CheckInActivities select e.Activity ).Distinct();
+							  CodeData = from e in ret
+								  select new SelectListItem() {Text = e, Value = e};
+						  }
+						  else
+							  CodeData = CodeValueModel.ConvertToSelect( Util.CallMethod( cvctl, fieldMap.DataSource ), fieldMap.DataValueField );
+		            break;
                 case FieldType.Date:
                 case FieldType.DateSimple:
                     DateVisible = true;

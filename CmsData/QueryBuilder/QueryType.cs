@@ -25,6 +25,7 @@ namespace CmsData
         CellPhone,
         CheckInVisits,
 		CheckInByDate,
+		 CheckInByActivity,
         ChristAsSavior,
         ContributionOptionsId,
         ContributionsStatement,

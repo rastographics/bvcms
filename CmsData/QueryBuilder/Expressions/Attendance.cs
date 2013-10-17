@@ -186,6 +186,17 @@ namespace CmsData
 		    return Compare( left, op, right );
 	    }
 
+		internal static Expression CheckInByActivity(ParameterExpression parm, CMSDataContext Db, CompareType op, string[] values)
+		{
+			Expression<Func<Person, bool>> pred = p => p.CheckInTimes.Any( e => e.CheckInActivities.Any( a => values.Contains( a.Activity )));
+			Expression expr = Expression.Invoke(pred, parm);
+
+			if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+				expr = Expression.Not(expr);
+
+			return expr;
+		}
+
 		internal static Expression RecentVisitNumber( ParameterExpression parm, CMSDataContext Db, string number, int days, CompareType op, bool tf )
         {
             int n = number.ToInt2() ?? 1;
