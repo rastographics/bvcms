@@ -365,8 +365,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			if (p.ManageSubscriptions()
 				 || p.OnlinePledge()
 				 || p.ManageGiving()
-				 || m.ChoosingSlots()
-				 || m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
+				 || m.ChoosingSlots())
+//				 || m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
 			{
 				p.OtherOK = true;
 			}
