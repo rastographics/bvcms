@@ -96,33 +96,42 @@ namespace CmsWeb.Areas.Finance.Controllers
             ViewData["date"] = dt;
             return View();
         }
-        [HttpPost]
-        public ActionResult BatchUpload(DateTime date, HttpPostedFileBase file, int? fundid, string text)
-        {
-            string s;
-            if (file != null)
-            {
-                byte[] buffer = new byte[file.ContentLength];
-                file.InputStream.Read(buffer, 0, file.ContentLength);
-                System.Text.Encoding enc = null;
-                if (buffer[0] == 0xFF && buffer[1] == 0xFE)
-                {
-                    enc = new System.Text.UnicodeEncoding();
-                    s = enc.GetString(buffer, 2, buffer.Length - 2);
-                }
-                else
-                {
-                    enc = new System.Text.ASCIIEncoding();
-                    s = enc.GetString(buffer);
-                }
-            }
-            else
-                s = text;
-            var id = PostBundleModel.BatchProcess(s, date, fundid);
-            if (id.HasValue)
-                return Redirect("/PostBundle/Index/" + id);
-            return RedirectToAction("Batch");
-        }
+
+	    [HttpPost]
+	    public ActionResult BatchUpload( DateTime date, HttpPostedFileBase file, int? fundid, string text )
+	    {
+		    bool fromFile = false;
+		    string s;
+
+		    if( file != null )
+		    {
+			    byte[] buffer = new byte[file.ContentLength];
+			    file.InputStream.Read( buffer, 0, file.ContentLength );
+			    System.Text.Encoding enc = null;
+			    if( buffer[0] == 0xFF && buffer[1] == 0xFE )
+			    {
+				    enc = new System.Text.UnicodeEncoding();
+				    s = enc.GetString( buffer, 2, buffer.Length - 2 );
+			    }
+			    else
+			    {
+				    enc = new System.Text.ASCIIEncoding();
+				    s = enc.GetString( buffer );
+			    }
+
+			    fromFile = true;
+		    }
+		    else
+			    s = text;
+
+		    var id = PostBundleModel.BatchProcess( s, date, fundid, fromFile );
+
+		    if( id.HasValue )
+			    return Redirect( "/PostBundle/Index/" + id );
+
+		    return RedirectToAction( "Batch" );
+	    }
+
         [HttpPost]
         public JsonResult Funds()
         {
