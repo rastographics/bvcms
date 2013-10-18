@@ -469,7 +469,7 @@ namespace CmsWeb.Models
             }
             return null;
         }
-        public static int? BatchProcess(string text, DateTime date, int? fundid)
+        public static int? BatchProcess(string text, DateTime date, int? fundid, bool fromFile)
         {
             if (DbUtil.Db.Setting("BankDepositFormat", "none") == "fcchudson")
                 using (var csv = new CsvReader(new StringReader(text), true, '\t'))
@@ -487,11 +487,21 @@ namespace CmsWeb.Models
                 using (var csv = new CsvReader(new StringReader(text), false))
                     return BatchProcessEbcfamily(csv, date, fundid);
 
-            if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Vanco")
-                using (var csv = new CsvReader(new StringReader(text), false, '\t'))
-                    return BatchProcessVanco(csv, date, fundid);
+	        if( DbUtil.Db.Setting( "BankDepositFormat", "none" ).ToLower() == "vanco" )
+	        {
+		        if( fromFile )
+		        {
+					  using (var csv = new CsvReader(new StringReader(text), false))
+						  return BatchProcessVanco(csv, date, fundid);
+		        }
+		        else
+		        {
+					  using (var csv = new CsvReader(new StringReader(text), false, '\t'))
+						  return BatchProcessVanco(csv, date, fundid);
+		        }
+	        }
 
-            if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Silverdale")
+	        if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Silverdale")
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessSilverdale(csv, date, fundid);
 
