@@ -102,9 +102,9 @@ namespace CmsData
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                c.Schedule,
-							   c.Campus ?? 0,
+                               c.Campus ?? 0,
                                CompType,
                                c.CodeIntIds);
                 case QueryType.AttendTypeAsOf:
@@ -114,7 +114,7 @@ namespace CmsData
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                CompType,
                                c.CodeIntIds);
                 case QueryType.AttendedAsOf:
@@ -151,12 +151,12 @@ namespace CmsData
                                CompType,
                                c.CodeIntIds);
                 case QueryType.CheckInVisits:
-						return Expressions.CheckInVisits( parm, Db, CompType, c.TextValue.ToInt() );
-					case QueryType.CheckInByDate:
-						return Expressions.CheckInByDate(parm, Db, c.StartDate, c.EndDate, CompType, c.TextValue.ToInt());
-					case QueryType.CheckInByActivity:
-		            return Expressions.CheckInByActivity( parm, Db, CompType, c.CodeStrIds );
-					case QueryType.CreatedBy:
+                    return Expressions.CheckInVisits(parm, Db, CompType, c.TextValue.ToInt());
+                case QueryType.CheckInByDate:
+                    return Expressions.CheckInByDate(parm, Db, c.StartDate, c.EndDate, CompType, c.TextValue.ToInt());
+                case QueryType.CheckInByActivity:
+                    return Expressions.CheckInByActivity(parm, Db, CompType, c.CodeStrIds);
+                case QueryType.CreatedBy:
                     return Expressions.CreatedBy(parm, Db,
                         CompType, c.TextValue);
                 case QueryType.ContributionAmount2:
@@ -283,13 +283,13 @@ namespace CmsData
                     return Expressions.HasTaskWithName(parm,
                                 CompType,
                                 c.TextValue);
-				case QueryType.HasIncompleteTask:
-					return Expressions.HasIncompleteTask(parm,
+                case QueryType.HasIncompleteTask:
+                    return Expressions.HasIncompleteTask(parm,
                                 CompType,
                                 c.TextValue);
                 case QueryType.HasOptoutsForEmail:
                     return Expressions.HasEmailOptout(parm,
-								c.EndDate,
+                                c.EndDate,
                                 CompType,
                                 c.TextValue);
                 // I -----------------
@@ -388,12 +388,12 @@ namespace CmsData
                     return Expressions.MedicalLength(parm,
                                CompType,
                                c.TextValue.ToInt());
-				case QueryType.MembOfOrgWithCampus:
+                case QueryType.MembOfOrgWithCampus:
                     return Expressions.MembOfOrgWithCampus(parm,
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                CompType,
                                c.CodeIntIds);
                 case QueryType.MembOfOrgWithSched:
@@ -408,9 +408,9 @@ namespace CmsData
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                c.Schedule,
-							   c.Campus ?? 0,
+                               c.Campus ?? 0,
                                CompType,
                                c.CodeIntIds);
                 case QueryType.MemberTypeAsOf:
@@ -420,7 +420,7 @@ namespace CmsData
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                CompType,
                                c.CodeIntIds);
                 case QueryType.MeetingId:
@@ -518,7 +518,7 @@ namespace CmsData
                 case QueryType.PeopleIds:
                     return Expressions.PeopleIds(parm,
                                 CompType,
-								(c.TextValue ?? "").Split(',').Select(aa => aa.ToInt()).ToArray());
+                                (c.TextValue ?? "").Split(',').Select(aa => aa.ToInt()).ToArray());
                 case QueryType.PreviousCurrentOrg:
                     return Expressions.PreviousCurrentOrg(Db, parm,
                                CompType,
@@ -526,7 +526,7 @@ namespace CmsData
                 // R ----------------
                 case QueryType.RecentCreated:
                     return Expressions.RecentCreated(parm,
-								c.Days,
+                                c.Days,
                                CompType,
                                c.CodeIds == "1");
                 case QueryType.RecentJoinChurch:
@@ -540,7 +540,7 @@ namespace CmsData
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                c.Days,
                                CompType,
                                c.CodeIntIds);
@@ -569,11 +569,11 @@ namespace CmsData
                                c.Days,
                                CompType,
                                c.TextValue.ToInt());
-				case QueryType.RecentHasIndContributions:
-					return Expressions.RecentHasIndContributions(parm, Db,
-							   c.Days,
-							   CompType,
-							   c.CodeIds == "1");
+                case QueryType.RecentHasIndContributions:
+                    return Expressions.RecentHasIndContributions(parm, Db,
+                               c.Days,
+                               CompType,
+                               c.CodeIds == "1");
                 case QueryType.RecentContributionCount:
                     return Expressions.RecentContributionCount(parm, Db,
                                c.Days, c.Quarters.ToInt(),
@@ -588,7 +588,7 @@ namespace CmsData
                     return Expressions.RecentFirstTimeGiver(parm, Db,
                                c.Days, c.Quarters.ToInt(),
                                CompType,
-							   c.CodeIds == "1");
+                               c.CodeIds == "1");
                 case QueryType.RecentContributionAmount:
                     return Expressions.RecentContributionAmount(parm, Db,
                                c.Days, c.Quarters.ToInt(),
@@ -619,7 +619,7 @@ namespace CmsData
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                c.Days,
                                CompType,
                                c.TextValue.ToInt());
@@ -628,7 +628,7 @@ namespace CmsData
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.Quarters.ToInt(),
+                               c.Quarters.ToInt(),
                                c.Schedule,
                                c.Days,
                                CompType,
@@ -638,7 +638,7 @@ namespace CmsData
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                c.Quarters,
                                c.Days,
                                CompType,
@@ -648,7 +648,7 @@ namespace CmsData
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                c.Days,
                                CompType,
                                c.CodeIntIds);
@@ -660,9 +660,9 @@ namespace CmsData
                                c.Days,
                                CompType,
                                c.CodeIntIds);
-				case QueryType.RecentVisitNumber:
+                case QueryType.RecentVisitNumber:
                     return Expressions.RecentVisitNumber(parm, Db,
-								c.Quarters,
+                                c.Quarters,
                                c.Days,
                                CompType,
                                c.CodeIds == "1");
@@ -728,13 +728,13 @@ namespace CmsData
                         int.Parse(c.TextValue));
                 // W ----------------------
                 case QueryType.WasMemberAsOf:
-                    return Expressions.WasMemberAsOf(parm, 
+                    return Expressions.WasMemberAsOf(parm,
                                c.StartDate,
                                c.EndDate,
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                CompType,
                                c.CodeIds == "1");
                 case QueryType.WeddingDate:
@@ -744,33 +744,33 @@ namespace CmsData
                                Db,
                                CompType,
                                c.DateValue);
-				case QueryType.MemberStatusId:
-				case QueryType.MaritalStatusId:
-				case QueryType.GenderId:
-				case QueryType.DropCodeId:
-				case QueryType.JoinCodeId:
+                case QueryType.MemberStatusId:
+                case QueryType.MaritalStatusId:
+                case QueryType.GenderId:
+                case QueryType.DropCodeId:
+                case QueryType.JoinCodeId:
                     if (CompType == CompareType.IsNull || CompType == CompareType.IsNotNull)
-						return Expressions.CompareConstant(parm, c.Field, CompType, -1);
-            		return Expressions.CompareConstant(parm, c.Field, CompType,
-            			IsMultiple ? (object)c.CodeIntIds : (object)c.CodeIds.ToInt());
-				case QueryType.PrimaryAddress:
-				case QueryType.PrimaryAddress2:
-				case QueryType.PrimaryZip:
-				case QueryType.PrimaryCountry:
-				case QueryType.PrimaryCity:
-				case QueryType.FirstName:
-				case QueryType.MiddleName:
-				case QueryType.MaidenName:
-				case QueryType.NickName:
-				case QueryType.CellPhone:
-				case QueryType.WorkPhone:
-				case QueryType.HomePhone:
-				case QueryType.EmailAddress:
-				case QueryType.EmailAddress2:
+                        return Expressions.CompareConstant(parm, c.Field, CompType, -1);
+                    return Expressions.CompareConstant(parm, c.Field, CompType,
+                        IsMultiple ? (object)c.CodeIntIds : (object)c.CodeIds.ToInt());
+                case QueryType.PrimaryAddress:
+                case QueryType.PrimaryAddress2:
+                case QueryType.PrimaryZip:
+                case QueryType.PrimaryCountry:
+                case QueryType.PrimaryCity:
+                case QueryType.FirstName:
+                case QueryType.MiddleName:
+                case QueryType.MaidenName:
+                case QueryType.NickName:
+                case QueryType.CellPhone:
+                case QueryType.WorkPhone:
+                case QueryType.HomePhone:
+                case QueryType.EmailAddress:
+                case QueryType.EmailAddress2:
                     if (CompType == CompareType.IsNull || CompType == CompareType.IsNotNull)
-						return Expressions.CompareConstant(parm, c.Field, CompType, null);
-					return Expressions.CompareStringConstant(parm, c.Field, CompType, c.TextValue ?? "");
-            	default:
+                        return Expressions.CompareConstant(parm, c.Field, CompType, null);
+                    return Expressions.CompareStringConstant(parm, c.Field, CompType, c.TextValue ?? "");
+                default:
                     if (CompType == CompareType.IsNull || CompType == CompareType.IsNotNull)
                         return Expressions.CompareConstant(parm,
                                    c.Field,
@@ -853,8 +853,8 @@ namespace CmsData
                                 Display = (string)c.Attribute("Display")
                             };
                     _Comparisons = q.ToList();
-					HttpRuntime.Cache.Insert("comparisons", _Comparisons, null,
-						DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
+                    HttpRuntime.Cache.Insert("comparisons", _Comparisons, null,
+                        DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
                 }
                 return _Comparisons;
             }

@@ -466,11 +466,11 @@
     <Field Name="RegisteredForMeetingId" Type="Integer">
       Advanced use
     </Field>
-    <Field Name="CheckInByDate" Title="Building Check-In By Date" DisplayAs="CheckInByDate({0:d}, {1:d})" Type="Integer" Params="StartDate,EndDate">
-      Searches by Date, can do greater than, less than, etc.
+    <Field Name="CheckInByDate" Title="Building Check-In Count History" DisplayAs="CheckInByDate({0:d}, {1:d})" Type="Integer" Params="StartDate,EndDate">
+      Searches by Date Range, can do # times visited greater than, less than, etc.
     </Field>
 	  <Field Name="CheckInByActivity" Title="Building Check-In By Activity" Type="CodeStr" DataSource="Activities">
-		  Searches by Activity
+		  Searches by Building Activity
 	  </Field>
   </Category>
   <Category Title="Miscellaneous">

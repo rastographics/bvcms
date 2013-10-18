@@ -427,6 +427,12 @@
     <AttendedAsOf Title="Attended As Of" Type="Bit" DisplayAs="AttendedAsOf({0}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division">
       Choose a starting date/time and ending date/time, then pick a Program/Division/Organization
     </AttendedAsOf>
+    <CheckInByDate Title="Building Check-In Count History" DisplayAs="CheckInByDate({0:d}, {1:d})" Type="Integer" Params="StartDate,EndDate">
+      Searches by Date Range, can do # times visited greater than, less than, etc.
+    </CheckInByDate>
+	  <CheckInByActivity Title="Building Check-In By Activity" Type="CodeStr" DataSource="Activities">
+		  Searches by Building Activity
+	  </CheckInByActivity>
   </AttendanceHistory>
   <Contributions TopMessage="Must have Finance role in order to get results for searches relating to actual contributions.">
     <EnvelopeOptionsId Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">
