@@ -60,9 +60,14 @@ namespace CmsWeb.Controllers
         [POST("ExtraValue/SaveNewStandard")]
         public ActionResult SaveNewStandard(NewExtraValueModel m)
         {
-            var ret = m.AddAsNewStandard();
-            if (ret.HasValue())
-                ViewBag.Error = ret;
+            try
+            {
+                m.AddAsNewStandard();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+            }
             return View("NewStandard", m);
         }
         [POST("ExtraValue/NewAdhoc/{table}/{location}/{id:int}")]
@@ -80,13 +85,16 @@ namespace CmsWeb.Controllers
         [POST("ExtraValue/SaveNewAdhoc")]
         public ActionResult SaveNewAdhoc(NewExtraValueModel m)
         {
-            var ret = m.AddAsNewAdhoc();
-            if (ret.HasValue())
+            try
             {
-                ViewBag.Error = ret;
+                m.AddAsNewAdhoc();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
                 return View("NewAdhoc", m);
             }
-            return Content(ret);
+            return new EmptyResult();
         }
         [POST("ExtraValue/Edit/{table}/{type}")]
         public ActionResult Edit(string table, string type, string pk, string name, string value)
@@ -103,11 +111,12 @@ namespace CmsWeb.Controllers
             var j = m.DropdownBitsJson(HttpUtility.UrlDecode(name));
             return Content(j);
         }
-        [POST("ExtraValue/ApplyListChanges/{table}/{location}")]
-        public ActionResult ApplyListChanges(string table, string location, Dictionary<string, int> orders)
+        [POST("ExtraValue/ApplyOrder/{table}/{location}")]
+        public ActionResult ApplyOrder(string table, string location, Dictionary<string, int> orders)
         {
             var m = new ExtraValueModel(table, location);
             m.ApplyOrder(orders);
+            m = new ExtraValueModel(table, location);
             return View("ListStandard", m);
         }
         [POST("ExtraValue/SwitchMultiline/{table}/{location}")]

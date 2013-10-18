@@ -37,6 +37,8 @@ namespace CmsData
 		
 		private string _FieldValue;
 		
+		private string _Type;
+		
    		
     	
 		private EntityRef< Person> _Person;
@@ -77,6 +79,9 @@ namespace CmsData
 		
 		partial void OnFieldValueChanging(string value);
 		partial void OnFieldValueChanged();
+		
+		partial void OnTypeChanging(string value);
+		partial void OnTypeChanged();
 		
     #endregion
 		public PeopleExtra()
@@ -307,6 +312,28 @@ namespace CmsData
 					this._FieldValue = value;
 					this.SendPropertyChanged("FieldValue");
 					this.OnFieldValueChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(18) NOT NULL", IsDbGenerated=true)]
+		public string Type
+		{
+			get { return this._Type; }
+
+			set
+			{
+				if (this._Type != value)
+				{
+				
+                    this.OnTypeChanging(value);
+					this.SendPropertyChanging();
+					this._Type = value;
+					this.SendPropertyChanged("Type");
+					this.OnTypeChanged();
 				}
 
 			}

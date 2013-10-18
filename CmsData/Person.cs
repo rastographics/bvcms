@@ -1455,5 +1455,10 @@ namespace CmsData
             db.Families.InsertOnSubmit(f);
             db.SubmitChanges();
         }
+
+        public static void TryExtraValueIntegrity(CMSDataContext Db, string type, string newfield, List<string> BitCodes)
+        {
+            const string nameAlreadyExistsAsADifferentType = "name already exists as a different type";
+        }
     }
 }

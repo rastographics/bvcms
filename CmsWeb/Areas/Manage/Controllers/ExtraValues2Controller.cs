@@ -78,5 +78,11 @@ namespace CmsWeb.Areas.Manage.Controllers
 		    }
 		    return Content("done");
         }
+        [POST("RenameAll")]
+        public ActionResult RenameAll(string field, string newname )
+        {
+            DbUtil.Db.ExecuteCommand("update PeopleExtra set field = {0} where field = {1}", newname, field);
+		    return Content(newname);
+        }
     }
 }

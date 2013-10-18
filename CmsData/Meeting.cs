@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace CmsData
 {
-	public partial class Meeting
+	public partial class Meeting : ITableWithExtraValues
 	{
 		public MeetingExtra GetExtraValue(string field)
 		{
@@ -86,5 +83,57 @@ namespace CmsData
 			}
 			return meeting;
 		}
-	}
+
+        public void AddEditExtraValue(string field, string value)
+        {
+            if (!field.HasValue())
+                return;
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.StrValue = value;
+        }
+
+        public void AddEditExtraData(string field, string value)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.Data = value;
+        }
+
+        public void AddEditExtraDate(string field, DateTime? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(field);
+            ev.DateValue = value;
+        }
+
+        public void AddEditExtraInt(string field, int value)
+        {
+            var ev = GetExtraValue(field);
+            ev.IntValue = value;
+        }
+
+        public void AddEditExtraBool(string field, bool tf)
+        {
+            if (!field.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            ev.BitValue = tf;
+        }
+
+        public void RemoveExtraValue(CMSDataContext Db, string field)
+        {
+            var ev = MeetingExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
+            if (ev != null)
+                Db.MeetingExtras.DeleteOnSubmit(ev);
+        }
+
+        public static bool CheckExtraValueIntegrity(CMSDataContext Db, string type, string newfield)
+        {
+            return !Db.MeetingExtras.Any(ee => ee.Field == newfield && ee.Type != type);
+        }
+    }
 }

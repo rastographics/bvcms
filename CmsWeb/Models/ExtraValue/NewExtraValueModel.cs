@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -78,6 +80,56 @@ namespace CmsWeb.Models.ExtraValues
         }
         public NewExtraValueModel() { }
 
+        public void TryCheckIntegrity()
+        {
+            const string nameAlreadyExistsAsADifferentType = "name already exists as a different type";
+            switch (ExtraValueTable)
+            {
+                case "People":
+                    if (ExtraValueType.Value == "Bits")
+                        foreach (var b in BitCodes().Where(b => DbUtil.Db.PeopleExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
+                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
+                    else
+                        if(DbUtil.Db.PeopleExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != ExtraValueType.Value))
+                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
+                    break;
+                case "Family":
+                    if (ExtraValueType.Value == "Bits")
+                        foreach (var b in BitCodes().Where(b => DbUtil.Db.FamilyExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
+                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
+                    else
+                        if(DbUtil.Db.FamilyExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != ExtraValueType.Value))
+                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
+                    break;
+                case "Organization":
+                    if (ExtraValueType.Value == "Bits")
+                        foreach (var b in BitCodes().Where(b => DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
+                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
+                    else
+                        if(DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != ExtraValueType.Value))
+                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
+                    break;
+                case "Meeting":
+                    if (ExtraValueType.Value == "Bits")
+                        foreach (var b in BitCodes().Where(b => DbUtil.Db.MeetingExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
+                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
+                    else
+                        if(DbUtil.Db.MeetingExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != ExtraValueType.Value))
+                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
+                    break;
+            }
+        }
+
+        public List<string> BitCodes()
+        {
+            var codes = ExtraValueType.Value == "Bits"
+                ? ExtraValueCheckboxes
+                : ExtraValueType.Value == "Code"
+                ? ExtraValueCodes
+                : "";
+            return codes.SplitLines().Select(ss => BitPrefix + ss).ToList();
+        }
+
         public string AddAsNewStandard()
         {
             var fields = Views.GetStandardExtraValues(ExtraValueTable);
@@ -85,14 +137,13 @@ namespace CmsWeb.Models.ExtraValues
             if (existing != null)
                 return "field already exists";
 
-            // Check for conflicts in AdHoc fields here
-            // It is OK if an AdHoc field already exists which is the same type as this one.
+            TryCheckIntegrity();
 
             var v = new Value
             {
                 Name = ExtraValueName,
                 Type = ExtraValueType.Value,
-                Codes = ExtraValueCodes.SplitLines().Select(ss => BitPrefix + ss).ToList(),
+                Codes = BitCodes(),
                 VisibilityRoles = VisibilityRoles
             };
             var i = Views.GetViewsView(ExtraValueTable, ExtraValueLocation);
@@ -101,8 +152,10 @@ namespace CmsWeb.Models.ExtraValues
             return null;
         }
 
+
         public string AddAsNewAdhoc()
         {
+            TryCheckIntegrity();
             if (Id > 0)
                 return AddNewExtraValueToRecord();
             return AddNewExtraValueToSelectionFromQuery();

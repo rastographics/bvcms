@@ -358,6 +358,10 @@ namespace CmsData
         partial void UpdateNewMemberClassStatus(NewMemberClassStatus instance);
         partial void DeleteNewMemberClassStatus(NewMemberClassStatus instance);
         
+        partial void InsertNumber(Number instance);
+        partial void UpdateNumber(Number instance);
+        partial void DeleteNumber(Number instance);
+        
         partial void InsertOneTimeLink(OneTimeLink instance);
         partial void UpdateOneTimeLink(OneTimeLink instance);
         partial void DeleteOneTimeLink(OneTimeLink instance);
@@ -1171,6 +1175,12 @@ namespace CmsData
 		public Table< NewMemberClassStatus> NewMemberClassStatuses
 		{
 			get	{ return this.GetTable< NewMemberClassStatus>(); }
+
+		}
+
+		public Table< Number> Numbers
+		{
+			get	{ return this.GetTable< Number>(); }
 
 		}
 
@@ -2345,6 +2355,17 @@ namespace CmsData
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 InputText,
                 Delimiter
+                );
+		}
+
+		[Function(Name="dbo.SplitInts", IsComposable = true)]
+		public IQueryable< View.SplitInt > SplitInts(
+            [Parameter(DbType="varchar")] string List
+            )
+		{
+			return this.CreateMethodCallQuery< View.SplitInt>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                List
                 );
 		}
 

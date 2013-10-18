@@ -59,6 +59,9 @@
         });
     });
     $.InitFunctions.ExtraEditable = function () {
+        $.fn.editabletypes.abstractinput.prototype.value2input = function (value) {
+            this.$input.val((value.toString()));
+        };
         $("a.click-Code").editable({ mode: 'inline' });
         $('a.click-Text').editable({ mode: 'inline' });
         $('a.click-Text2,a.click-Data').editable({ type: 'textarea', mode: 'inline' });
@@ -117,10 +120,10 @@
                             break;
                     }
                 };
-                $("#AdhocExtraValueType_Value").click(showHide);
+                $("#AdhocExtraValueType_Value").live("change", showHide);
             });
         $.InitFunctions.AdhocDialogCallback = function () {
-            if ($("#ExtraValueErrmr").length == 0) {
+            if ($("#ExtraValueError").length == 0) {
                 $("#extravalue-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax.reload");
                 if(a.length > 0)

@@ -439,5 +439,10 @@ namespace CmsData
             if (ev != null)
                 Db.OrganizationExtras.DeleteOnSubmit(ev);
         }
+
+        public static bool CheckExtraValueIntegrity(CMSDataContext Db, string type, string newfield)
+        {
+            return !Db.OrganizationExtras.Any(ee => ee.Field == newfield && ee.Type != type);
+        }
     }
 }
