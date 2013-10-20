@@ -26846,31 +26846,19 @@ $(function () {
             if ($("#StandardExtraValueError").length == 0) {
                 $("#extravalue-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax-refresh");
-                if(a.length > 0)
+                if (a.length > 0)
                     a.click();
             }
         };
         $.InitFunctions.DeleteStandardCallback = function (a) {
             $(a.data("rowid")).remove();
         };
-        $("#CloseListStandard").live("click", function(e) {
+        $("#CloseListStandard").live("click", function (e) {
             e.preventDefault();
             $.InitFunctions.StandardExtraValueDialogCallback();
         });
     });
-    $.InitFunctions.ExtraEditable = function () {
-        $.fn.editabletypes.abstractinput.prototype.value2input = function (value) {
-            this.$input.val((value.toString()));
-        };
-        $("a.click-Code").editable({ mode: 'inline' });
-        $('a.click-Text').editable({ mode: 'inline' });
-        $('a.click-Text2,a.click-Data').editable({ type: 'textarea', mode: 'inline' });
-        $("a.click-Code-Select").editable({ type: "select", mode: 'inline' });
-        $('a.click-Bits').editable({ type: "checklist", mode: 'inline' });
-        $("a.click-Date").editable({ type: 'date', mode: 'inline', format: $.dtoptions.format });
-        $("a.click-Bit").editable({ type: 'checklist', mode: 'inline', source: { 'True': 'True' }, emptytext: 'False' });
-    };
-    
+
     //-------------------------------------------
     // AdHoc ------------------------------------
     //-------------------------------------------
@@ -26901,7 +26889,7 @@ $(function () {
                     $("#ExtraValueCheckbox").parent().parent().addClass('hide');
                     $("#ExtraValueDate").parent().parent().parent().addClass('hide');
                     $("#ExtraValueInteger").parent().parent().addClass('hide');
-                    
+
                     switch ($("#AdhocExtraValueType_Value").val()) {
                         case "Code":
                             $("#ExtraValueTextBox").parent().parent().removeClass('hide');
@@ -26926,15 +26914,26 @@ $(function () {
             if ($("#ExtraValueError").length == 0) {
                 $("#extravalue-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax.reload");
-                if(a.length > 0)
+                if (a.length > 0)
                     a.click();
             }
         };
     });
-    $.InitFunctions.AdhocExtraEditable = function () {
+    $.InitFunctions.ExtraEditable = function () {
+        $.fn.editabletypes.abstractinput.prototype.value2input = function (value) {
+            this.$input.val((value.toString()));
+        };
         $("a.click-Code").editable({ mode: 'inline' });
         $('a.click-Text').editable({ mode: 'inline' });
-        $('a.click-Text2,a.click-Data').editable({ type: 'textarea', mode: 'inline' });
+        $('a.click-Text2,a.click-Data').editable({
+            type: 'textarea',
+            mode: 'inline',
+            inputclass: 'width100',
+            showbuttons: 'bottom'
+        }).on('shown', function (e, editable) {
+            editable.input.$input.closest("span.editable-inline").css("width", "100%");
+            editable.input.$input.closest("div.editable-input").css("width", "100%");
+        });
         $("a.click-Code-Select").editable({ type: "select", mode: 'inline' });
         $('a.click-Bits').editable({ type: "checklist", mode: 'inline' });
         $("a.click-Date").editable({ type: 'date', mode: 'inline', format: $.dtoptions.format });

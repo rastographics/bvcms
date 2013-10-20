@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
+using Dapper;
 using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
 
@@ -45,6 +47,8 @@ namespace CmsWeb.Models.ExtraValues
         [DisplayName("Integer Value")]
         public int ExtraValueInteger { get; set; }
 
+        public bool RemoveAnyValue { get; set; }
+
         private string BitPrefix
         {
             get
@@ -83,38 +87,39 @@ namespace CmsWeb.Models.ExtraValues
         public void TryCheckIntegrity()
         {
             const string nameAlreadyExistsAsADifferentType = "name already exists as a different type";
+            string type = ExtraValueLocation == "Adhoc" ? AdhocExtraValueType.Value : ExtraValueType.Value;
             switch (ExtraValueTable)
             {
                 case "People":
-                    if (ExtraValueType.Value == "Bits")
+                    if (type == "Bits")
                         foreach (var b in BitCodes().Where(b => DbUtil.Db.PeopleExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
                     else
-                        if(DbUtil.Db.PeopleExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != ExtraValueType.Value))
+                        if (DbUtil.Db.PeopleExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
                     break;
                 case "Family":
-                    if (ExtraValueType.Value == "Bits")
+                    if (type == "Bits")
                         foreach (var b in BitCodes().Where(b => DbUtil.Db.FamilyExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
                     else
-                        if(DbUtil.Db.FamilyExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != ExtraValueType.Value))
+                        if (DbUtil.Db.FamilyExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
                     break;
                 case "Organization":
-                    if (ExtraValueType.Value == "Bits")
+                    if (type == "Bits")
                         foreach (var b in BitCodes().Where(b => DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
                     else
-                        if(DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != ExtraValueType.Value))
+                        if (DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
                     break;
                 case "Meeting":
-                    if (ExtraValueType.Value == "Bits")
+                    if (type == "Bits")
                         foreach (var b in BitCodes().Where(b => DbUtil.Db.MeetingExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
                     else
-                        if(DbUtil.Db.MeetingExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != ExtraValueType.Value))
+                        if (DbUtil.Db.MeetingExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
                     break;
             }
@@ -259,6 +264,44 @@ namespace CmsWeb.Models.ExtraValues
                 DbUtil.DbDispose();
             }
             return null;
+        }
+
+        public void DeleteFromQuery()
+        {
+            var list = DbUtil.Db.PeopleQuery(QueryId).Select(pp => pp.PeopleId).ToList();
+
+            var cn = new SqlConnection(Util.ConnectionString);
+            cn.Open();
+            if (RemoveAnyValue)
+            {
+                cn.Execute("delete from dbo.PeopleExtra where Field = @name and PeopleId in @ids",
+                    new {name = ExtraValueName, ids = list});
+                return;
+            }
+            switch (AdhocExtraValueType.Value)
+            {
+                case "Bit":
+                    cn.Execute("delete from dbo.PeopleExtra where Field = @name and BitValue = @value and PeopleId in @ids",
+                        new { name = ExtraValueName, value = ExtraValueCheckbox, ids = list });
+                    break;
+                case "Code":
+                    cn.Execute("delete from dbo.PeopleExtra where Field = @name and StrValue = @value and PeopleId in @ids",
+                        new { name = ExtraValueName, value = ExtraValueCheckbox, ids = list });
+                    break;
+                case "Text2":
+                case "Text":
+                    cn.Execute("delete from dbo.PeopleExtra where Field = @name and Data = @value and PeopleId in @ids",
+                        new { name = ExtraValueName, value = ExtraValueTextArea, ids = list });
+                    break;
+                case "Date":
+                    cn.Execute("delete from dbo.PeopleExtra where Field = @name and Date = @value and PeopleId in @ids",
+                        new { name = ExtraValueName, value = ExtraValueDate, ids = list });
+                    break;
+                case "Int":
+                    cn.Execute("delete from dbo.PeopleExtra where Field = @name and IntValue = @value and PeopleId in @ids",
+                        new { name = ExtraValueName, value = ExtraValueInteger, ids = list });
+                    break;
+            }
         }
     }
 }

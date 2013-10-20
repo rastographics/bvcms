@@ -92,10 +92,10 @@ namespace CmsWeb.Models.ExtraValues
         {
             get
             {
-                if (Standard)
+                if (Model.Location != "Adhoc")
                     return "";
                 var n = HttpUtility.UrlEncode(Name);
-                return "/ExtraValue/Delete/{0}/{1}/{2}?name={3}".Fmt(Model.Table, Model.Location, Id, n);
+                return "/ExtraValue/DeleteAdhoc/{0}/{1}?name={2}".Fmt(Model.Table, Id, n);
             }
         }
         public string EditableClass

@@ -7,7 +7,7 @@
             @foreach (var u in Model)
             {
                 <tr>
-                    <td><a class="ajax click-pencil" href="/Person2/UserEdit/@u.UserId"><span>@u.Username</span></a></td>
+                    <td class="nowrap"><a class="ajax click-pencil" href="/Person2/UserEdit/@u.UserId"><span>@u.Username</span></a></td>
                     <td>@string.Join(", ", u.Roles)</td>
                 </tr>
             }

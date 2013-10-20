@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CmsWeb.Areas.Reports.Controllers.ReportsController.ExtraInfo>
+﻿@model IEnumerable<CmsWeb.Models.ExtraValues.ExtraInfo>
 @{
     ViewBag.Title = "ExtraValues";
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
@@ -34,23 +34,33 @@
 }
 
 <div class="container">
-    <h2>ExtraValues</h2>
+    <h2>Extra Values Codes</h2>
     <table class="table table-condensed table-striped not-wide left-gutter">
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+            <th>Type</th>
+            <th>Count</th>
+            <th></th>
+            <th></th>
+        </tr>
         @foreach (var e in Model)
         {
             <tr>
                 <td>
-                    <a href="/Manage/ExtraValues2/QueryCodes?field=@Server.UrlEncode(e.Field)&value=@Server.UrlEncode(e.Value)">@e.Field</a>
-                    <a class="rename" href="/Manage/ExtraValues2/RenameAll?field=@Server.UrlEncode(e.Field)">
+                    <a href="/ExtraValue/QueryCodes?field=@Server.UrlEncode(e.Field)&value=@Server.UrlEncode(e.Value)">@e.Field</a>
+                    <a class="rename" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)">
                         <i class="icon-pencil"></i></a>
                 </td>
                 <td>@e.Value</td>
-                <td>@e.Count</td>
+                <td>@e.Type</td>
+                <td>@e.Count.ToString("N0")</td>
+                <td>@(e.Standard ? "Standard" : "Adhoc")</td>
                 @if (User.IsInRole("Admin"))
                 {
-                    <td><a class="delete" href="/Manage/ExtraValues2/DeleteAll?field=@Server.UrlEncode(e.Field)&type=@e.type&value=@Server.UrlEncode(e.Value)">
-                        <i class="icon-remove"></i>
-                    </a></td>
+                    <td><a class="delete" href="/ExtraValue/DeleteAll?field=@Server.UrlEncode(e.Field)&type=@e.Type&value=@Server.UrlEncode(e.Value)">
+                            <i class="icon-remove"></i>
+                        </a></td>
                 }
             </tr>
         }

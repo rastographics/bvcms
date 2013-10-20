@@ -1,0 +1,50 @@
+﻿@model IEnumerable<CmsWeb.Models.ExtraValues.ExtraInfo>
+@{
+    ViewBag.Title = "ExtraValues";
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('table.grid tbody tr:even').addClass('alt');
+            $("a.delete").click(function (ev) {
+                ev.preventDefault();
+                var d = $(this);
+                if (confirm("are you sure?"))
+                    $.post(d.attr("href"), null, function () {
+                        d.closest("tr").remove();
+                        $('table.grid tbody tr').removeClass('alt');
+                        $('table.grid tbody tr:even').addClass('alt');
+                    });
+            });
+        });
+    </script>
+}
+<div class="container">
+    <h2>Extra Value Data</h2>
+    <table class="table table-condensed table-striped not-wide left-gutter">
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th class="right">Count</th>
+            <th></th>
+            <th></th>
+        </tr>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td><a href="/ExtraValue/QueryDataFields?field=@Server.UrlEncode(e.Field)&type=@e.Type">@e.Field</a></td>
+                <td>@e.Type</td>
+                <td class="right">@e.Count.ToString("N0")</td>
+                <td>@(e.Standard ? "Standard" : "Adhoc")</td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td><a class="delete" href="/ExtraValue/DeleteAll?field=@Server.UrlEncode(e.Field)&type=@e.Type">
+                            <i class="icon-remove"></i>
+                        </a></td>
+                }
+            </tr>
+        }
+    </table>
+</div>

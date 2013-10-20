@@ -12,11 +12,11 @@
         @Html.HiddenFor(m => m.ExtraValueLocation)
 
         @Html.EditorFor(m => m.ExtraValueType, new { PlainSelect = true })
-        @Html.EditorFor(m => m.ExtraValueName)
-        @Html.EditorFor(m => m.VisibilityRoles)
-        @Html.EditorFor(m => m.ExtraValueBitPrefix, new { hide = "hide" })
-        @Html.EditorFor(m => m.ExtraValueCodes, "TextArea", new { hide = "hide" })
-        @Html.EditorFor(m => m.ExtraValueCheckboxes, "TextArea", new { hide = "hide" })
+        @Html.EditorFor(m => m.ExtraValueName, new { help = "Shorter names are better" })
+        @Html.EditorFor(m => m.VisibilityRoles, new { help = "Comma separated, leave blank for everybody"})
+        @Html.EditorFor(m => m.ExtraValueBitPrefix, new { hide = "hide", help = "Short (2-3 letter) abbreviations" })
+        @Html.EditorFor(m => m.ExtraValueCodes, "TextArea", new { hide = "hide", help = "Short names on separate lines" })
+        @Html.EditorFor(m => m.ExtraValueCheckboxes, "TextArea", new { hide = "hide", help = "Short names on separate lines" })
         @if (ViewBag.Error != null)
         {
             <div id="StandardExtraValueError" class="alert">

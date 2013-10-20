@@ -69,42 +69,44 @@ This will allow you to mark them as members.
         }
             <tr>
             	<td class="right top">Attendance:</td>
-              <td><fieldset>
-                <table width="100%" cellpadding="4">
-                  <tr>
-                    <td class="right">HeadCount:</td>
-                      <td class="right" id="HeadCount">
-                          @if (User.IsInRole("Attendance") && CanEditHeadCount)
-                          {
-                              <span id="h=@Model.meeting.MeetingId" class="clickEdit headcount">@Model.meeting.HeadCount.ToStringNoZero()</span>
-                          }
-                          else
-                          {
-                              @Model.meeting.HeadCount.ToStringNoZero()
-                          }
-                      </td>
-                      <td colspan="2"></td>
-                  </tr>
-                  <tr>
-                  <tr>
-                    <td class="right">Present:</td>
-                    <td class="right" id="NumPresent"><span>@Model.meeting.NumPresent</span></td>
-                    <td class="right">New Guests:</td>
-                    <td class="right" id="NumNewVisit"><span>@Model.meeting.NumNewVisit</span></td>
-                    </tr>
-                  <tr>
-                    <td class="right">Members:</td>
-                    <td class="right" id="NumMembers"><span>@Model.meeting.NumMembers</span></td>
-                    <td class="right">Repeat Guests:</td>
-                    <td class="right" id="NumRepeatVst"><span>@Model.meeting.NumRepeatVst</span></td>
-                    </tr>
-                  <tr>
-                    <td class="right">Other Attends:</td>
-                    <td class="right" id="NumOtherAttends"><span>@Model.meeting.NumOtherAttends</span></td>
-                    <td class="right">Visiting Members:</td>
-                    <td class="right" id="NumVstMembers"><span>@Model.meeting.NumVstMembers</span></td>
-                    </tr>
-                </table></fieldset></td>
+                <td>
+                    <fieldset>
+                        <table width="100%" cellpadding="4">
+                            <tr>
+                                <td class="right">HeadCount:</td>
+                                <td class="right" id="HeadCount">
+                                    @if (User.IsInRole("Attendance") && CanEditHeadCount)
+                                    {
+                                        <span id="h=@Model.meeting.MeetingId" class="clickEdit headcount">@Model.meeting.HeadCount.ToStringNoZero()</span>
+                                    }
+                                    else
+                                    {
+                                        @Model.meeting.HeadCount.ToStringNoZero()
+                                    }
+                                </td>
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td class="right">Present:</td>
+                                <td class="right" id="NumPresent"><span>@Model.meeting.NumPresent</span></td>
+                                <td class="right">New Guests:</td>
+                                <td class="right" id="NumNewVisit"><span>@Model.meeting.NumNewVisit</span></td>
+                            </tr>
+                            <tr>
+                                <td class="right">Members:</td>
+                                <td class="right" id="NumMembers"><span>@Model.meeting.NumMembers</span></td>
+                                <td class="right">Repeat Guests:</td>
+                                <td class="right" id="NumRepeatVst"><span>@Model.meeting.NumRepeatVst</span></td>
+                            </tr>
+                            <tr>
+                                <td class="right">Other Attends:</td>
+                                <td class="right" id="NumOtherAttends"><span>@Model.meeting.NumOtherAttends</span></td>
+                                <td class="right">Visiting Members:</td>
+                                <td class="right" id="NumVstMembers"><span>@Model.meeting.NumVstMembers</span></td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </td>
             </tr>
             <tr>
               <td class="right">Show:</td>

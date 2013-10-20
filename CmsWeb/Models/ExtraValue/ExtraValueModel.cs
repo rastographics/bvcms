@@ -26,15 +26,18 @@ namespace CmsWeb.Models.ExtraValues
         public bool? ValueBit { get; set; }
         public int? ValueInt { get; set; }
 
-        public ExtraValueModel(int id, string table) : this(id, table, null)
+        public ExtraValueModel(int id, string table)
+            : this(id, table, null)
         {
         }
 
-        public ExtraValueModel(string table) : this(0, table, null)
+        public ExtraValueModel(string table)
+            : this(0, table, null)
         {
         }
 
-        public ExtraValueModel(string table, string location) : this(0, table, location)
+        public ExtraValueModel(string table, string location)
+            : this(0, table, location)
         {
         }
 
@@ -97,8 +100,8 @@ namespace CmsWeb.Models.ExtraValues
                     return DbUtil.Db.LoadOrganizationById(id);
                 case "Family":
                     return DbUtil.Db.Families.SingleOrDefault(f => f.FamilyId == id);
-//                                case "Meeting":
-//                                    return DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == Id);
+                //                                case "Meeting":
+                //                                    return DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == Id);
                 default:
                     return null;
             }
@@ -112,43 +115,43 @@ namespace CmsWeb.Models.ExtraValues
             {
                 var standardExtraValues = Views.GetStandardExtraValues(Table);
                 return from v in realExtraValues
-                    join f in standardExtraValues on v.Field equals f.Name into j
-                    from f in j.DefaultIfEmpty()
-                    where f == null
-                    // only adhoc values
-                    where !standardExtraValues.Any(ff => ff.Codes.Any(cc => cc == v.Field))
-                    orderby v.Field
-                    select Value.AddField(f, v, this);
+                       join f in standardExtraValues on v.Field equals f.Name into j
+                       from f in j.DefaultIfEmpty()
+                       where f == null
+                       // only adhoc values
+                       where !standardExtraValues.Any(ff => ff.Codes.Any(cc => cc == v.Field))
+                       orderby v.Field
+                       select Value.AddField(f, v, this);
             }
 
             return from f in Views.GetStandardExtraValues(Table, Location)
-                join v in realExtraValues on f.Name equals v.Field into j
-                from v in j.DefaultIfEmpty()
-                orderby f.Order
-                select Value.AddField(f, v, this);
+                   join v in realExtraValues on f.Name equals v.Field into j
+                   from v in j.DefaultIfEmpty()
+                   orderby f.Order
+                   select Value.AddField(f, v, this);
         }
 
-//        public List<SelectListItem> ExtraValueCodes()
-//        {
-//            var q = from e in DbUtil.Db.PeopleExtras
-//                    where e.StrValue != null || e.BitValue != null
-//                    group e by new { e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0") }
-//                        into g
-//                        select g.Key;
-//            var list = q.ToList();
-//
-//            var ev = Views.GetStandardExtraValues(Table);
-//            var q2 = from e in list
-//                     let f = ev.SingleOrDefault(ff => ff.Name == e.Field)
-//                     where f == null || f.UserCanView()
-//                     orderby e.Field, e.val
-//                     select new SelectListItem()
-//                            {
-//                                Text = e.Field + ":" + e.val,
-//                                Value = e.Field + ":" + e.val,
-//                            };
-//            return q2.ToList();
-//        }
+        //        public List<SelectListItem> ExtraValueCodes()
+        //        {
+        //            var q = from e in DbUtil.Db.PeopleExtras
+        //                    where e.StrValue != null || e.BitValue != null
+        //                    group e by new { e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0") }
+        //                        into g
+        //                        select g.Key;
+        //            var list = q.ToList();
+        //
+        //            var ev = Views.GetStandardExtraValues(Table);
+        //            var q2 = from e in list
+        //                     let f = ev.SingleOrDefault(ff => ff.Name == e.Field)
+        //                     where f == null || f.UserCanView()
+        //                     orderby e.Field, e.val
+        //                     select new SelectListItem()
+        //                            {
+        //                                Text = e.Field + ":" + e.val,
+        //                                Value = e.Field + ":" + e.val,
+        //                            };
+        //            return q2.ToList();
+        //        }
         public Dictionary<string, string> Codes(string name)
         {
             var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
@@ -159,19 +162,29 @@ namespace CmsWeb.Models.ExtraValues
         {
             var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
             var q = from c in f.Codes
-                select new {value = c, text = c};
+                    select new { value = c, text = c };
             return JsonConvert.SerializeObject(q.ToArray());
         }
 
-        public Dictionary<string, bool> ExtraValueBits(string name)
+        private class AllBitsCheckedOrNot
+        {
+            public string Name { get; set; }
+            public bool Checked { get; set; }
+        }
+
+        private IEnumerable<AllBitsCheckedOrNot> ExtraValueBits(string name)
         {
             var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Contains(pp.Field)).ToList();
             var q = from c in f.Codes
-                join e in list on c equals e.Field into j
-                from e in j.DefaultIfEmpty()
-                select new {value = c, selected = (e != null && (e.BitValue ?? false))};
-            return q.ToDictionary(ee => ee.value, ee => ee.selected);
+                    join e in list on c equals e.Field into j
+                    from e in j.DefaultIfEmpty()
+                    select new AllBitsCheckedOrNot()
+                    { 
+                        Name = c, 
+                        Checked = (e != null && (e.BitValue ?? false)) 
+                    };
+            return q;
         }
 
         public string DropdownBitsJson(string name)
@@ -179,9 +192,13 @@ namespace CmsWeb.Models.ExtraValues
             var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Contains(pp.Field)).ToList();
             var q = from c in f.Codes
-                join e in list on c equals e.Field into j
-                from e in j.DefaultIfEmpty()
-                select new {value = c, text = c};
+                    join e in list on c equals e.Field into j
+                    from e in j.DefaultIfEmpty()
+                    select new 
+                    { 
+                        value = c, 
+                        text = c 
+                    };
             return JsonConvert.SerializeObject(q.ToArray());
         }
 
@@ -190,63 +207,63 @@ namespace CmsWeb.Models.ExtraValues
             var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Contains(pp.Field)).ToList();
             var q = from c in f.Codes
-                join e in list on c equals e.Field into j
-                from e in j.DefaultIfEmpty()
-                where e != null && e.BitValue == true
-                select c;
+                    join e in list on c equals e.Field into j
+                    from e in j.DefaultIfEmpty()
+                    where e != null && e.BitValue == true
+                    select c;
             return JsonConvert.SerializeObject(q.ToArray());
         }
 
         public void EditExtra(string type, string name, string value)
         {
-            var o = TableObject();
-            if (o == null)
+            var record = TableObject();
+            if (record == null)
                 return;
             if (value == null)
                 value = HttpContext.Current.Request.Form["value[]"];
             switch (type)
             {
                 case "Code":
-                    o.AddEditExtraValue(name, value);
+                    record.AddEditExtraValue(name, value);
                     break;
                 case "Data":
                 case "Text":
                 case "Text2":
-                    o.AddEditExtraData(name, value);
+                    record.AddEditExtraData(name, value);
                     break;
                 case "Date":
-                {
-                    DateTime dt;
-                    if (DateTime.TryParse(value, out dt))
-                        o.AddEditExtraDate(name, dt);
-                    else
-                        o.RemoveExtraValue(DbUtil.Db, name);
-                }
+                    {
+                        DateTime dt;
+                        if (DateTime.TryParse(value, out dt))
+                            record.AddEditExtraDate(name, dt);
+                        else
+                            record.RemoveExtraValue(DbUtil.Db, name);
+                    }
                     break;
                 case "Int":
-                    o.AddEditExtraInt(name, value.ToInt());
+                    record.AddEditExtraInt(name, value.ToInt());
                     break;
                 case "Bit":
                     if (value == "True")
-                        o.AddEditExtraBool(name, true);
+                        record.AddEditExtraBool(name, true);
                     else
-                        o.RemoveExtraValue(DbUtil.Db, name);
+                        record.RemoveExtraValue(DbUtil.Db, name);
                     break;
                 case "Bits":
-                {
-                    var cc = ExtraValueBits(name);
-                    var aa = value.Split(',');
-                    foreach (var c in cc)
                     {
-                        if (aa.Contains(c.Key)) // checked now
-                            if (!c.Value) // was not checked before
-                                o.AddEditExtraBool(c.Key, true);
-                        if (!aa.Contains(c.Key)) // not checked now
-                            if (c.Value) // was checked before
-                                o.RemoveExtraValue(DbUtil.Db, c.Key);
+                        var existingBits = ExtraValueBits(name);
+                        var newCheckedBits = value.Split(',');
+                        foreach (var currentBit in existingBits)
+                        {
+                            if (newCheckedBits.Contains(currentBit.Name))
+                                if (!currentBit.Checked)
+                                    record.AddEditExtraBool(currentBit.Name, true);
+                            if (!newCheckedBits.Contains(currentBit.Name))
+                                if (currentBit.Checked)
+                                    record.RemoveExtraValue(DbUtil.Db, currentBit.Name);
+                        }
+                        break;
                     }
-                    break;
-                }
             }
             DbUtil.Db.SubmitChanges();
         }
@@ -254,7 +271,7 @@ namespace CmsWeb.Models.ExtraValues
         public static void NewExtra(int id, string field, string type, string value)
         {
             field = field.Replace('/', '-');
-            var v = new PeopleExtra {PeopleId = id, Field = field};
+            var v = new PeopleExtra { PeopleId = id, Field = field };
             DbUtil.Db.PeopleExtras.InsertOnSubmit(v);
             switch (type)
             {
@@ -282,14 +299,14 @@ namespace CmsWeb.Models.ExtraValues
             i.view.Values.Remove(i.value);
             i.views.Save();
 
-            var cn = DbUtil.Db.Connection;
-            cn.Open();
             if (!removedata)
                 return;
+            var cn = DbUtil.Db.Connection;
+            cn.Open();
             if (i.value.Codes.Count == 0)
-                cn.Execute("delete from dbo.{0}Extra where Field = @name".Fmt(Table), new {name});
+                cn.Execute("delete from dbo.{0}Extra where Field = @name".Fmt(Table), new { name });
             else
-                cn.Execute("delete from dbo.{0}Extra where Field in @codes".Fmt(Table), new {codes = i.value.Codes});
+                cn.Execute("delete from dbo.{0}Extra where Field in @codes".Fmt(Table), new { codes = i.value.Codes });
         }
 
         public void Delete(string name)
@@ -303,9 +320,9 @@ namespace CmsWeb.Models.ExtraValues
         {
             var i = Views.GetViewsView(Table, Location);
             var q = from v in i.view.Values
-                join o in orders on v.Name equals o.Key
-                orderby o.Value
-                select v;
+                    join o in orders on v.Name equals o.Key
+                    orderby o.Value
+                    select v;
             i.view.Values = q.ToList();
             int n = 1;
             foreach (var v in i.view.Values)

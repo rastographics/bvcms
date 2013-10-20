@@ -374,6 +374,7 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> ContactTypeList() { return ContactTypeCodes().AddNotSpecified(); }
         public IEnumerable<CodeValueItem> CountryList() { return GetCountryList(); }
         public IEnumerable<CodeValueItem> EntryPointList() { return EntryPoints(); }
+        public IEnumerable<CodeValueItem> OriginList() { return Origins(); }
         public IEnumerable<CodeValueItem> GenderList() { return GenderCodesWithUnspecified(); }
         public IEnumerable<CodeValueItem> MaritalStatusList() { return MaritalStatusCodes99(); }
         public IEnumerable<CodeValueItem> MemberTypeList() { return MemberTypeCodes0(); }

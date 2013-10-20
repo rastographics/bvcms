@@ -1,53 +1,73 @@
-﻿@model CmsWeb.Areas.Main.Controllers.MeetingController.ScanTicketInfo
+﻿@model MeetingController.ScanTicketInfo
 @using CmsWeb.Areas.Main.Controllers
 @using UtilityExtensions
 <div class="@Model.CssClass()">
-@{
-	switch (Model.error)
-	{
-	    case MeetingController.ScanTicketInfo.Error.none:
-			<h1>Successfully Marked Present</h1>
-        break;
-	    case MeetingController.ScanTicketInfo.Error.noperson:
-			<h1>Person not found</h1>
-        break;
-		case MeetingController.ScanTicketInfo.Error.notmember:
-			<h1>Not a member of this organization</h1>
-        break;
-		case MeetingController.ScanTicketInfo.Error.notregistered:
-			<h1>Not registered</h1>
-        break;
-		case MeetingController.ScanTicketInfo.Error.alreadymarked:
-			<h1>Already marked present</h1>
-        break;
-		case MeetingController.ScanTicketInfo.Error.alreadymarkedelsewhere:
-			<h1>Already marked present elsewhere</h1>
-        break;
-		case MeetingController.ScanTicketInfo.Error.noorg:
-			<h1>No Organization</h1>
-        break;
-		case MeetingController.ScanTicketInfo.Error.nomeeting:
-			<h1>No Meeting</h1>
-        break;
-	}
-}
-@if (Model.SwitchOrg)
-{
-    @Html.Hidden("SwitchMeeting", Model.meeting.MeetingId)
-    @Html.Hidden("PeopleId", Model.person.PeopleId)
-}
-@if (Model.error != MeetingController.ScanTicketInfo.Error.none)
-{
-    @Html.Hidden("haserror", "true")
-}
-@if (Model.person != null)
-{
-	<table cellpadding="5">
-		<tr> <td>Name</td><td>@Model.person.Name</td> </tr>
-		<tr> <td>Address</td><td>@Model.person.FullAddress</td> </tr>
-		<tr> <td>Birthday</td><td>@Model.person.BirthDate.ToString2("m")</td> </tr>
-		<tr> <td>Email</td><td>@Model.person.EmailAddress</td> </tr>
-		<tr> <td colspan="2"><b>@Model.message</b></td></tr>
-	</table>
-}
+    @{
+        switch (Model.error)
+        {
+            case MeetingController.ScanTicketInfo.Error.none:
+        <h1>Successfully Marked Present</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.noperson:
+        <h1>Person not found</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.notmember:
+        <h1>Not a member of this organization</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.notregistered:
+        <h1>Not registered</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.alreadymarked:
+        <h1>Already marked present</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.alreadymarkedelsewhere:
+        <h1>Already marked present elsewhere</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.noorg:
+        <h1>No Organization</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.nomeeting:
+        <h1>No Meeting</h1>
+                break;
+        }
+    }
+    @if (Model.SwitchOrg)
+    {
+        @Html.Hidden("SwitchMeeting", Model.meeting.MeetingId)
+        @Html.Hidden("PeopleId", Model.person.PeopleId)
+    }
+    @if (Model.error != MeetingController.ScanTicketInfo.Error.none)
+    {
+        @Html.Hidden("haserror", "true")
+    }
+    @if (Model.person != null)
+    {
+        <table cellpadding="5">
+            <tr>
+                <td>Name</td>
+                <td>@Model.person.Name</td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td>@Model.person.FullAddress</td>
+            </tr>
+            <tr>
+                <td>Birthday</td>
+                <td>@Model.person.BirthDate.ToString2("m")</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>@Model.person.EmailAddress</td>
+            </tr>
+            <tr>
+                <td colspan="2"><b>@Model.message</b></td>
+            </tr>
+        </table>
+    }
+    @Html.Hidden("npresent", Model.meeting.NumPresent.ToString("N0"))
+    @Html.Hidden("nnew", Model.meeting.NumNewVisit.ToString("N0"))
+    @Html.Hidden("nmembers", Model.meeting.NumMembers.ToString("N0"))
+    @Html.Hidden("nrecent", Model.meeting.NumRepeatVst.ToString("N0"))
+    @Html.Hidden("nother", Model.meeting.NumOtherAttends.ToString2("N0"))
+    @Html.Hidden("nvmembers", Model.meeting.NumVstMembers.ToString("N0"))
 </div>

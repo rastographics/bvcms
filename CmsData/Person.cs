@@ -1100,7 +1100,10 @@ namespace CmsData
         }
         public void RemoveExtraValue(CMSDataContext Db, string field)
         {
-            var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
+            var ev = (from ee in Db.PeopleExtras
+                      where ee.Field == field
+                      where ee.PeopleId == PeopleId
+                      select ee).FirstOrDefault();
             if (ev != null)
                 Db.PeopleExtras.DeleteOnSubmit(ev);
         }

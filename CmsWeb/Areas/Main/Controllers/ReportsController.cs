@@ -330,7 +330,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
         public ActionResult Meetings(MeetingsModel m)
         {
-            if (!m.FromWeekAtAGlance)
+            if (!m.FromWeekAtAGlance && !m.Dt1.HasValue)
                 m.Dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
             if (!m.Dt2.HasValue && m.Dt1.HasValue)
                 m.Dt2 = m.Dt1.Value.AddDays(1);

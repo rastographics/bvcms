@@ -5,6 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
+using System.Dynamic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -200,6 +201,12 @@ namespace UtilityExtensions
             if (s.HasValue())
                 i = int.Parse(s);
             return i;
+        }
+        public static bool Has(this object obj, string propertyName)
+        {
+            var dynamic = obj as DynamicObject;
+            if (dynamic == null) return false;
+            return dynamic.GetDynamicMemberNames().Contains(propertyName);
         }
         public static bool HasValue(this string s)
         {
