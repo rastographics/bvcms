@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using System.Windows.Forms.VisualStyles;
 using System.Xml.Serialization;
 using UtilityExtensions;
@@ -91,10 +92,10 @@ namespace CmsWeb.Models.ExtraValues
         {
             get
             {
-                if (Standard)
+                if (Model.Location != "Adhoc")
                     return "";
                 var n = HttpUtility.UrlEncode(Name);
-                return "/ExtraValue/Delete/{0}?name={1}".Fmt(Id, n);
+                return "/ExtraValue/DeleteAdhoc/{0}/{1}?name={2}".Fmt(Model.Table, Id, n);
             }
         }
         public string EditableClass
@@ -122,6 +123,18 @@ namespace CmsWeb.Models.ExtraValues
             get
             {
                 return HttpUtility.UrlEncode(Name);
+            }
+        }
+
+        public string SwitchMultiLineText
+        {
+            get
+            {
+                if (Type == "Text")
+                    return "Switch to Multiline";
+                if (Type == "Text2")
+                    return "Switch to Singleline";
+                return "";
             }
         }
 
@@ -153,7 +166,7 @@ namespace CmsWeb.Models.ExtraValues
                                 where e.Id == Id
                                 where Codes.Contains(e.Field)
                                 select e.Field;
-                        return string.Join(", ", q);
+                        return string.Join("<br/>\n", q);
                     }
                 case "Int":
                     return Extravalue.IntValue.ToString();

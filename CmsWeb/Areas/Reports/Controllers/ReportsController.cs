@@ -1,23 +1,20 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Data.Linq;
 using System.Web.Mvc;
-using System.Xml.Linq;
+using System.Windows.Forms.VisualStyles;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Main.Models.Report;
 using CmsData;
-using System.IO;
-using CmsWeb.Code;
 using CmsWeb.Models;
 using CmsWeb.Models.ExtraValues;
 using Dapper;
-using NPOI.HSSF.UserModel;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
-using System.Text;
 using System.Data.SqlClient;
 
 namespace CmsWeb.Areas.Reports.Controllers
@@ -181,102 +178,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View("RecentAbsents", q);
         }
 
-        public class ExtraInfo
-        {
-            public string Field { get; set; }
-            public string Value { get; set; }
-            public string type { get; set; }
-            public int Count { get; set; }
-        }
-        [GET("Reports2/ExtraValues")]
-        public ActionResult ExtraValues()
-        {
-            var values = from value in Views.GetStandardExtraValues("People")
-                         select value;
-            var q = from e in DbUtil.Db.PeopleExtras
-                    where e.StrValue != null || e.BitValue != null
-                    let TypeValue = e.StrValue != null ? "Code" : "Bit"
-                    group e by new { e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0"), TypeValue } into g
-                    select new ExtraInfo
-                    {
-                        Field = g.Key.Field,
-                        Value = g.Key.val,
-                        type = g.Key.TypeValue,
-                        Count = g.Count(),
-                    };
-
-            var list = from e in q.ToList()
-                       let f = values.SingleOrDefault(ff => ff.Name == e.Field)
-                       where f == null || f.UserCanView()
-                       orderby e.Field
-                       select e;
-            return View(list);
-        }
-        [GET("Reports2/ExtraValueData")]
-        public ActionResult ExtraValueData()
-        {
-            var values = from value in Views.GetStandardExtraValues("People")
-                         select value;
-            var q = from e in DbUtil.Db.PeopleExtras
-                    where e.StrValue == null && e.BitValue == null
-                    let TypeValue = e.DateValue != null ? "Date" : e.Data != null ? "Text" : e.IntValue != null ? "Int" : "?"
-                    group e by new { e.Field, TypeValue } into g
-                    select new ExtraInfo
-                    {
-                        Field = g.Key.Field,
-                        type = g.Key.TypeValue,
-                        Count = g.Count(),
-                    };
-
-            var list = from e in q.ToList()
-                       let f = values.SingleOrDefault(ff => ff.Name == e.Field)
-                       where f == null || f.UserCanView()
-                       orderby e.Field
-                       select e;
-            return View(list);
-        }
-        [GET("Reports2/ExtraValuesGrid/{id}")]
-        [GET("Reports2/ExtraValuesGrid/{id}/{sort}")]
-        public ActionResult ExtraValuesGrid(Guid id, string sort)
-        {
-            var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var values = from value in Views.GetStandardExtraValues("People")
-                         where value.VisibilityRoles != null && (value.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
-                         select value.Name;
-            var nodisplaycols = string.Join("|", values);
-
-            var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
-            var cmd = new SqlCommand("dbo.ExtraValues @p1, @p2, @p3");
-            cmd.Parameters.AddWithValue("@p1", tag.Id);
-            cmd.Parameters.AddWithValue("@p2", sort ?? "");
-            cmd.Parameters.AddWithValue("@p3", nodisplaycols);
-            cmd.Connection = new SqlConnection(Util.ConnectionString);
-            cmd.Connection.Open();
-            var rdr = cmd.ExecuteReader();
-            ViewBag.queryid = id;
-            return View(rdr);
-        }
-        [GET("Reports2/ExtraValuesGrid2/{id}")]
-        [GET("Reports2/ExtraValuesGrid2/{id}/{sort}")]
-        public ActionResult ExtraValuesGrid2(Guid id, string sort)
-        {
-            var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var values = from value in Views.GetStandardExtraValues("People")
-                         where value.VisibilityRoles != null && (value.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
-                         select value.Name;
-            var nodisplaycols = string.Join("|", values);
-
-            var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
-            var cmd = new SqlCommand("dbo.ExtraValues @p1, @p2, @p3");
-            cmd.Parameters.AddWithValue("@p1", tag.Id);
-            cmd.Parameters.AddWithValue("@p2", sort ?? "");
-            cmd.Parameters.AddWithValue("@p3", nodisplaycols);
-            cmd.Connection = new SqlConnection(Util.ConnectionString);
-            cmd.Connection.Open();
-            var rdr = cmd.ExecuteReader();
-            ViewBag.queryid = id;
-            return View(rdr);
-        }
         [GET("Reports2/FamilyDirectory/{id}")]
         public ActionResult FamilyDirectory(Guid id)
         {

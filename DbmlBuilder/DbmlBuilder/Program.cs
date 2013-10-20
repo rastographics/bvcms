@@ -110,13 +110,7 @@ namespace DbmlBuilder
 
         private static string GetOutputDirectory()
         {
-            string outDir;
-            string outArg = GetArg("out");
-            //if there's a drive specified, then it's absolute
-            if (outArg.Contains(":"))
-                outDir = outArg;
-            else
-                outDir = Path.Combine(Directory.GetCurrentDirectory(), outArg);
+            string outDir = Path.Combine(Directory.GetCurrentDirectory(), "Generated");
             if (!Directory.Exists(outDir))
                 Directory.CreateDirectory(outDir);
             return outDir;

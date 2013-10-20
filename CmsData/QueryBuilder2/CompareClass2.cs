@@ -145,6 +145,10 @@ namespace CmsData
                 case QueryType.CheckInVisits:
                     return Expressions.CheckInVisits(parm, Db,
                         CompType, c.TextValue.ToInt());
+                case QueryType.CheckInByDate:
+                    return Expressions.CheckInByDate(parm, Db, c.StartDate, c.EndDate, CompType, c.TextValue.ToInt());
+                case QueryType.CheckInByActivity:
+                    return Expressions.CheckInByActivity(parm, Db, CompType, c.CodeStrIds);
                 case QueryType.CreatedBy:
                     return Expressions.CreatedBy(parm, Db,
                         CompType, c.TextValue);

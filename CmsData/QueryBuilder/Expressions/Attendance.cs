@@ -5,19 +5,10 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using CmsData.API;
-using UtilityExtensions;
-using System.Configuration;
-using System.Reflection;
-using System.Collections;
-using System.Data.Linq.SqlClient;
-using System.Text.RegularExpressions;
-using System.Web;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -181,12 +172,32 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression RecentVisitNumber(
-            ParameterExpression parm, CMSDataContext Db,
-            string number,
-            int days,
-            CompareType op,
-            bool tf)
+
+	    internal static Expression CheckInByDate( ParameterExpression parm, CMSDataContext Db, DateTime? start, DateTime? end, CompareType op, int cnt )
+	    {
+		    Expression<Func<Person, int>> pred = null;
+		    if( end != null ) end = end.Value.AddDays( 1 ).AddTicks( -1 );
+		    else end = DateTime.Now.Date.AddDays( 1 ).AddTicks( -1 );
+
+		    pred = p => p.CheckInTimes.Count(ct => ct.CheckInTimeX >= start && ct.CheckInTimeX <= end);
+
+		    Expression left = Expression.Invoke( pred, parm );
+			 var right = Expression.Convert(Expression.Constant(cnt), left.Type);
+		    return Compare( left, op, right );
+	    }
+
+		internal static Expression CheckInByActivity(ParameterExpression parm, CMSDataContext Db, CompareType op, string[] values)
+		{
+			Expression<Func<Person, bool>> pred = p => p.CheckInTimes.Any( e => e.CheckInActivities.Any( a => values.Contains( a.Activity )));
+			Expression expr = Expression.Invoke(pred, parm);
+
+			if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+				expr = Expression.Not(expr);
+
+			return expr;
+		}
+
+		internal static Expression RecentVisitNumber( ParameterExpression parm, CMSDataContext Db, string number, int days, CompareType op, bool tf )
         {
             int n = number.ToInt2() ?? 1;
             var dt = DateTime.Now.AddDays(-days);

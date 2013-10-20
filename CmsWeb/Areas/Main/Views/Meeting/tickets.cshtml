@@ -1,6 +1,4 @@
-﻿@using UtilityExtensions
-@using CmsWeb
-@model CmsWeb.Models.MeetingModel
+﻿@model CmsWeb.Models.MeetingModel
 @{
     ViewBag.Title = "Meeting Tickets";
     Layout = "~/Views/Shared/SiteLayout.cshtml";
@@ -21,8 +19,8 @@
 {
     @Fingerprint.Script("/Scripts/meeting/meeting-ticket.js")
 }
-<embed src="/Content/zylo.wav" autostart="false" width="0" height="0" id="zylo" enablejavascript="true">
-<embed src="/Content/ding.wav" autostart="false" width="0" height="0" id="ding" enablejavascript="true">
+<embed src="/Content/images/zylo.wav" autostart="false" width="0" height="0" id="zylo" enablejavascript="true">
+<embed src="/Content/images/ding.wav" autostart="false" width="0" height="0" id="ding" enablejavascript="true">
 <form id="markform" method="Post">
     <table>
         <tr>
@@ -44,4 +42,7 @@
 </form>
 <hr />
 <div id="mark">
+</div>
+<div id="visitorDialog" title="Add Guests">
+<iframe style="width:100%;height:99%;border-width:0px;"></iframe>
 </div>

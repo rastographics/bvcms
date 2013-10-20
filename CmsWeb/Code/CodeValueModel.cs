@@ -374,6 +374,7 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> ContactTypeList() { return ContactTypeCodes().AddNotSpecified(); }
         public IEnumerable<CodeValueItem> CountryList() { return GetCountryList(); }
         public IEnumerable<CodeValueItem> EntryPointList() { return EntryPoints(); }
+        public IEnumerable<CodeValueItem> OriginList() { return Origins(); }
         public IEnumerable<CodeValueItem> GenderList() { return GenderCodesWithUnspecified(); }
         public IEnumerable<CodeValueItem> MaritalStatusList() { return MaritalStatusCodes99(); }
         public IEnumerable<CodeValueItem> MemberTypeList() { return MemberTypeCodes0(); }
@@ -388,6 +389,7 @@ namespace CmsWeb.Code
         public SelectList ContactReasonSelectList() { return ContactReasonCodes().ToSelect(); }
         public SelectList ContactTypeSelectList() { return ContactTypeCodes().ToSelect(); }
         public SelectList ExtraValueTypeList() { return ExtraValueTypeCodes().ToSelect(datafield: "Code"); }
+        public SelectList AdhocExtraValueTypeList() { return AdhocExtraValueTypeCodes().ToSelect(datafield: "Code"); }
 
         public IEnumerable<CodeValueItem> ContactResultList()
         {
@@ -412,6 +414,14 @@ namespace CmsWeb.Code
             yield return new CodeValueItem {Code = "Code", Value = "Dropdown"};
             yield return new CodeValueItem {Code = "Bit", Value = "Checkbox"};
             yield return new CodeValueItem {Code = "Bits", Value = "Checkboxes"};
+            yield return new CodeValueItem {Code = "Int", Value = "Integer"};
+            yield return new CodeValueItem {Code = "Date", Value = "Date"};
+        }
+        public IEnumerable<CodeValueItem> AdhocExtraValueTypeCodes()
+        {
+            yield return new CodeValueItem {Code = "Text", Value = "Text"};
+            yield return new CodeValueItem {Code = "Code", Value = "Code"};
+            yield return new CodeValueItem {Code = "Bit", Value = "Checkbox"};
             yield return new CodeValueItem {Code = "Int", Value = "Integer"};
             yield return new CodeValueItem {Code = "Date", Value = "Date"};
         }

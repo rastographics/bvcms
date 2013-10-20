@@ -1,21 +1,46 @@
-﻿@model CmsWeb.Models.ExtraValues.ExtraValueModel
+﻿@using CmsWeb.Models.ExtraValues
+@model ExtraValueModel
+@{
+    var model2 = new EntryModel(Model.Id);
+}
 <form class="form ajax span12 margin-top" method="post" data-init="ExtraEditable">
     <fieldset class="left-gutter">
-        <legend>Information Card
+        <div class="legend">Origin and Entry Point</div>
+        <table class="table not-wide">
+            <tr>
+                <td class="nowrap">Origin:</td>
+                @if (User.IsInRole("Edit"))
+                {
+                    <td><a href="#" data-pk="@Model.Id" data-name="Origin" class="click-pencil click-Code-Select" 
+                           data-url="/ExtraValue/EditEntry" data-value="@model2.Origin.Value" data-source="/ExtraValue/OriginList"><span>@model2.Origin</span></a>
+                    </td>
+                }
+                else
+                {
+                    <td>@model2.Origin</td>
+                }
+                <td class="nowrap">EntryPoint:</td>
+                @if (User.IsInRole("Edit"))
+                {
+                    <td><a href="#" data-pk="@Model.Id" data-name="EntryPoint" class="click-pencil click-Code-Select" 
+                           data-url="/ExtraValue/EditEntry" data-value="@model2.EntryPoint.Value" data-source="/ExtraValue/EntryPointList"><span>@model2.EntryPoint</span></a>
+                    </td>
+                }
+                else
+                {
+                    <td>@model2.EntryPoint</td>
+                }
+            </tr>
+        </table>
+        <div class="legend">Information Card
             @if (User.IsInRole("Admin"))
             {
                 <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Entry/@Model.Id"><i class="icon-plus"></i></a>
-                <a class="extravalue nounderline font14px edit pad-left" href="/ExtraValue/ListStandard/@Model.Table/Entry/@Model.Id?title=Edit+Entry+Card"><i class="icon-pencil"></i></a>
+                <a class="extravalue nounderline font14px edit pad-left dark" href="/ExtraValue/ListStandard/@Model.Table/Entry/@Model.Id?title=Edit+Entry+Card"><i class="icon-pencil"></i></a>
             }
-        </legend>
+        </div>
         <a href="#" class="pull-right ajax-refresh"><i class="icon-refresh"></i></a>
         <table class="table not-wide">
-            <thead>
-                <tr>
-                    <th>Field</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
             <tbody>
                 @foreach (var f in Model.GetExtraValues())
                 {

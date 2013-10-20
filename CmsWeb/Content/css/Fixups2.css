@@ -597,6 +597,7 @@ label.error {
     display: table;
 }
 
+
 .tabs-left > .nav-tabs > li.active > a {
     border-right: white;
 }
@@ -635,8 +636,8 @@ fieldset.cell, div.cell {
     display: table-cell;
 }
 
-form.left-gutter, 
-fieldset.left-gutter, 
+form.left-gutter,
+fieldset.left-gutter,
 div.left-gutter {
     margin-left: 2em;
 }
@@ -648,6 +649,7 @@ div.right {
 .margin-top {
     margin-top: 1em;
 }
+
 .margin-bottom {
     margin-bottom: 1em;
 }
@@ -790,15 +792,19 @@ div.height33 div.control-group {
 .width140 div.controls {
     width: 140px;
 }
+
 .width180 div.controls {
     width: 180px;
 }
+
 .width220 div.controls {
     width: 220px;
 }
+
 .width240 div.controls {
     width: 240px;
 }
+
 .width280 div.controls {
     width: 280px;
 }
@@ -806,6 +812,7 @@ div.height33 div.control-group {
 a.go-back {
     font-size: 14px;
 }
+
 .table.center {
     margin-left: auto;
     margin-right: auto;
@@ -817,38 +824,48 @@ a.go-back {
 .min-width15em {
     min-width: 15em;
 }
+
 .min-width20em {
     min-width: 20em;
 }
+
 #condition-edit select {
     width: auto;
 }
+
 #condition-edit .controls p {
     padding-top: 2px;
 }
+
 .width100 {
     width: 100%;
 }
+
 a.click-pencil {
     text-decoration: none;
 }
-a.click-pencil:after {
-    content: "\f040"; 
-    font-family: FontAwesome;
-    text-decoration: none;
-    color: gray;
-    padding-left: 0.5em;
-}
-a.click-pencil span:hover {
-    text-decoration: underline;
-}
+
+    a.click-pencil:after {
+        content: "\f040";
+        font-family: FontAwesome;
+        text-decoration: none;
+        color: gray;
+        padding-left: 0.5em;
+    }
+
+    a.click-pencil span:hover {
+        text-decoration: underline;
+    }
+
 legend small {
     font-size: 80%;
 }
+
 .control-label {
     font-size: 11px;
     text-transform: none;
 }
+
 .form-horizontal .wauto .control-label {
     float: none;
     display: inline;
@@ -858,15 +875,19 @@ legend small {
     margin-left: auto;
     display: inline;
 }
-.form-horizontal .wauto .controls input {
-    margin-bottom: 9px;
-}
+
+    .form-horizontal .wauto .controls input {
+        margin-bottom: 9px;
+    }
+
 .pre-wrap {
     white-space: pre-wrap;
 }
+
 .size11 {
     font-size: 11px;
 }
+
 a.nounderline {
     text-decoration: none;
 }
@@ -874,45 +895,62 @@ a.nounderline {
 .control-group.disabled .control-label,
 .control-group.disabled .help-block,
 .control-group.disabled .help-inline {
-  color: #b4b4b4;
+    color: #b4b4b4;
 }
+
 .control-group.disabled .checkbox,
 .control-group.disabled .radio,
 .control-group.disabled input,
 .control-group.disabled select,
 .control-group.disabled textarea {
-  color: #b4b4b4;
+    color: #b4b4b4;
 }
+
 .control-group.disabled input,
 .control-group.disabled select,
 .control-group.disabled textarea {
-  border-color: #b4b4b4;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    border-color: #b4b4b4;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-.control-group.disabled input:focus,
-.control-group.disabled select:focus,
-.control-group.disabled textarea:focus {
-  border-color: #787878;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d6d6d6;
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d6d6d6;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d6d6d6;
-}
+
+    .control-group.disabled input:focus,
+    .control-group.disabled select:focus,
+    .control-group.disabled textarea:focus {
+        border-color: #787878;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d6d6d6;
+        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d6d6d6;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d6d6d6;
+    }
+
 .control-group.disabled .input-prepend .add-on,
 .control-group.disabled .input-append .add-on {
-  color: #b4b4b4;
-  background-color: #d0d0d0;
-  border-color: #b4b4b4;
+    color: #b4b4b4;
+    background-color: #d0d0d0;
+    border-color: #b4b4b4;
 }
 
 .font14px {
     font-size: 14px;
 }
+
 .font18px {
     font-size: 18px;
 }
+
 .dark {
     color: #555555;
 }
 
+div.legend {
+    line-height: 1.2em;
+    padding-bottom: 10px;
+    display: block;
+    width: 100%;
+    padding: 0;
+    font-size: 21px;
+    color: #333333;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+}

@@ -2,11 +2,11 @@
 @if (Model.UserCanView())
 {
     <tr>
-        <td>@Model.Name</td>
+        <td class="nowrap">@Model.Name</td>
         @if (Model.UserCanEdit())
         {
-            <td><a href="#" data-pk="@Model.Id" data-name="@Model.DataName" class="@Model.EditableClass" 
-                   data-url="@Model.EditUrl" @Model.DataValue @Model.DataSource><span>@Model</span></a>
+            <td class="width100"><a href="#" data-pk="@Model.Id" data-name="@Model.DataName" class="@Model.EditableClass" 
+                   data-url="@Model.EditUrl" @Model.DataValue @Model.DataSource><span>@Html.Raw(Model)</span></a>
             </td>
         }
         else

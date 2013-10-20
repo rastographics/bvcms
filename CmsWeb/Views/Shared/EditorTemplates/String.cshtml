@@ -1,24 +1,10 @@
 ﻿@model string
-@{
-    var help = ViewData["help"] as string;
-    var label = ViewData["label"] as string;
-    if (help.HasValue())
-    {
-        help = "<label class='help-inline'>{0}</label>".Fmt(help);
-    }
-    var disabled = ViewData["disabled"].ToBool();
-}
-<div class="control-group @(disabled ? "disabled" : "")">
-    @if (label.HasValue())
-    {
-        @Html.Label(label, new {@class = "control-label"})
-    }
-    else
-    {
-        @Html.LabelFor(m => m, new {@class = "control-label"})
-    }
+<div class="control-group @ViewBag.hide">
+    @(ViewBag.label != null
+        ? Html.Label(ViewBag.label as string, new {@class = "control-label"}) 
+        : Html.LabelFor(m => m, new {@class = "control-label"}))
     <div class="controls">
-        @Html.TextBoxFor2(m => m, true, null, disabled ? new { disabled = "true" } : null)@Html.Raw(help)
+        @Html.TextBoxFor2(m => m, true, null)<label class='help-inline'>@ViewBag.help</label>
         @Html.ValidationMessageLabelFor(m => m)
     </div>
 </div>

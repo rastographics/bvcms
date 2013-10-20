@@ -285,7 +285,7 @@ namespace CmsWeb.Areas.Main.Controllers
                             person = person,
                             meeting = meeting,
                             attended = attended,
-                            orgmember = orgmember
+                            orgmember = orgmember,
                         };
                 var d2 = q.SingleOrDefault();
                 if (d2 == null)
@@ -309,6 +309,11 @@ namespace CmsWeb.Areas.Main.Controllers
                 {
                     d.error = ScanTicketInfo.Error.alreadymarkedelsewhere;
                     d.message = ret;
+                }
+                else
+                {
+                    DbUtil.Db.UpdateMeetingCounters(MeetingId);
+                    DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, d.meeting);
                 }
             }
 

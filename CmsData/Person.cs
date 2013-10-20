@@ -1100,7 +1100,10 @@ namespace CmsData
         }
         public void RemoveExtraValue(CMSDataContext Db, string field)
         {
-            var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
+            var ev = (from ee in Db.PeopleExtras
+                      where ee.Field == field
+                      where ee.PeopleId == PeopleId
+                      select ee).FirstOrDefault();
             if (ev != null)
                 Db.PeopleExtras.DeleteOnSubmit(ev);
         }
@@ -1192,6 +1195,34 @@ namespace CmsData
                 return;
             var ev = GetExtraValue(db, id, field);
             ev.StrValue = value;
+        }
+        public static void AddEditExtraData(CMSDataContext db, int id, string field, string value)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.Data = value;
+        }
+        public static void AddEditExtraDate(CMSDataContext db, int id, string field, DateTime? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.DateValue = value;
+        }
+        public static void AddEditExtraInt(CMSDataContext db, int id, string field, int? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.IntValue = value;
+        }
+        public static void AddEditExtraBool(CMSDataContext db, int id, string field, bool? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, id, field);
+            ev.BitValue = value;
         }
         public ManagedGiving ManagedGiving()
         {
@@ -1426,6 +1457,11 @@ namespace CmsData
             f.People.Add(this);
             db.Families.InsertOnSubmit(f);
             db.SubmitChanges();
+        }
+
+        public static void TryExtraValueIntegrity(CMSDataContext Db, string type, string newfield, List<string> BitCodes)
+        {
+            const string nameAlreadyExistsAsADifferentType = "name already exists as a different type";
         }
     }
 }

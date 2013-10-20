@@ -1217,11 +1217,11 @@ namespace CmsData
             {
                 qb = QueryBuilderScratchPad();
                 qb.CleanSlate(this);
-                var anygroup = qb.AddNewGroupClause(CompareType.AnyTrue);
+                qb.SetComparisonType(CompareType.AnyTrue);
 
-                var clause = anygroup.AddNewClause(QueryType.RecentAttendCount, CompareType.GreaterEqual, "1");
+                var clause = qb.AddNewClause(QueryType.RecentAttendCount, CompareType.GreaterEqual, "1");
                 clause.Days = 365;
-                clause = anygroup.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
+                clause = qb.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
                 clause.Days = 365;
                 qb.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
                 qb.SaveTo(this, name, "public", true);

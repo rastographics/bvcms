@@ -16,10 +16,10 @@
       Search by Single, Married, Separated, Divorced, Widowed,Unknown
     </Field>
     <Field Name="Birthday" Title="Birthday" Type="StringEqual" ToolTip="MM/DD/YYYY or MM/DD or MM or YYYY">
-      Searchs by exact date (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
+      Searches by exact date (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
     </Field>
     <Field Name="BDate" Title="Birthdate" Type="Date" >
-      Searchs by Date, can do greater less etc.
+      Searches by Date, can do greater less etc.
     </Field>
     <Field Name="DaysTillBirthday" Title="Days Till Birthday" Type="Integer">
       Number of days until next birthday (if known.) Always less than 365.
@@ -49,19 +49,19 @@
       Todo: explain how unknown dates work
     </Field>
     <Field Name="FirstName" Title="First Name" Type="String">
-      Searchs all or part of First Name
+      Searches all or part of First Name
     </Field>
     <Field Name="LastName" Title="Last Name" Type="String">
-      Searchs all or part of Lastname
+      Searches all or part of Lastname
     </Field>
     <Field Name="NickName" Title="Nick Name" Type="String">
-      Searchs all or part of "goes by" Name
+      Searches all or part of "goes by" Name
     </Field>
     <Field Name="MaidenName" Title="Maiden Name" Type="String">
-      Searchs all or part of Maiden Name
+      Searches all or part of Maiden Name
     </Field>
     <Field Name="MiddleName" Title="Middle Name" Type="String">
-      Searchs all or part of Middle Name
+      Searches all or part of Middle Name
     </Field>
     <Field Name="TitleCode" Title="Title" Type="CodeStr" DataSource="TitleCodes" DataValueField="Code">
       Codes for Mr. Dr. Mrs. Ms. etc.
@@ -94,7 +94,7 @@
       Indication of whether this person's family is related to another family
     </Field>
     <Field Name="WeddingDate"  Title="Wedding Date" Type="StringEqual">
-      Searchs by exact date (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
+      Searches by exact date (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
     </Field>
     <Field Name="EmailAddress"  Title="Email" Type="String">
       Email address
@@ -466,6 +466,12 @@
     <Field Name="RegisteredForMeetingId" Type="Integer">
       Advanced use
     </Field>
+    <Field Name="CheckInByDate" Title="Building Check-In Count History" DisplayAs="CheckInByDate({0:d}, {1:d})" Type="Integer" Params="StartDate,EndDate">
+      Searches by Date Range, can do # times visited greater than, less than, etc.
+    </Field>
+	  <Field Name="CheckInByActivity" Title="Building Check-In By Activity" Type="CodeStr" DataSource="Activities">
+		  Searches by Building Activity
+	  </Field>
   </Category>
   <Category Title="Miscellaneous">
     <Field Name="IncludeDeceased" Title="Included Deceased" Type="Bit" DataValueField="IdCode">

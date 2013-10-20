@@ -23,5 +23,6 @@
   <file>/Scripts/js/ExportToolBar2.js</file>
   <file>/Scripts/js/headermenu2.js</file>
   <file>/Scripts/js/form-ajax.js</file>
+  <file>/Scripts/js/ExtraValue.js</file>
   <file>/Scripts/Search/SearchAdd.js</file>
 </bundle>

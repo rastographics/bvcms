@@ -211,7 +211,11 @@
     <Compile Include="Areas\Main\Models\Report\EnrollmentControlModel.cs" />
     <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
     <Compile Include="Areas\Main\Models\Export\ExcelResult.cs" />
-    <Compile Include="Areas\Manage\Controllers\ExtraValues2Controller.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\OtherRegistrations.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\ManageGiving.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\SpecialRegistration.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineReg\SpecialRegModel.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMembersDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -300,6 +304,13 @@
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Controllers\DialogController.cs" />
+    <Compile Include="Controllers\ExtraValue\EntryController.cs" />
+    <Compile Include="Controllers\ExtraValue\StandardController.cs" />
+    <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
+    <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
+    <Compile Include="Models\ExtraValue\EntryModel.cs" />
+    <Compile Include="Models\ExtraValue\ExtraInfo.cs" />
+    <Compile Include="Models\ExtraValue\ReportsModel.cs" />
     <Compile Include="Models\ExtraValue\Value.cs" />
     <Compile Include="Models\ExtraValue\NewExtraValueModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraValue.cs" />
@@ -321,7 +332,7 @@
     <Compile Include="Areas\Dialog\Controllers\SearchAddController.cs" />
     <Compile Include="Areas\People\Controllers\Person\AdminController.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonalController.cs" />
-    <Compile Include="Controllers\ExtraValueController.cs" />
+    <Compile Include="Controllers\ExtraValue\ExtraValueController.cs" />
     <Compile Include="Areas\People\Controllers\Person\LookupsController.cs" />
     <Compile Include="Areas\People\Controllers\Person\ProfileController.cs" />
     <Compile Include="Areas\People\Controllers\Person\MinistryController.cs" />
@@ -1091,10 +1102,10 @@
     <Content Include="Areas\Manage\Views\EmailsView\View.cshtml" />
     <Content Include="Views\ExtraValue\Standard.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ExtraValueData.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ExtraValues.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid2.cshtml" />
+    <Content Include="Views\ExtraValue\Reports\DataSummary.cshtml" />
+    <Content Include="Views\ExtraValue\Reports\CodeSummary.cshtml" />
+    <Content Include="Views\ExtraValue\Reports\Grid.cshtml" />
+    <Content Include="Views\ExtraValue\Reports\Grid2.cshtml" />
     <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
     <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Reports\Web.config" />
@@ -1113,6 +1124,7 @@
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\SpecialRegistrationResults.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1652,7 +1664,7 @@
     <Compile Include="Areas\Manage\Models\TransactionModel.cs" />
     <Compile Include="Areas\Manage\Models\TransactionsModel.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ConfirmTest.cs" />
-    <Compile Include="Areas\OnlineReg\Controllers\SpecialRegistrations.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\ManageVolunteers.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Coupon.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\PayDueOld.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\PayDue.cs" />
@@ -1892,7 +1904,7 @@
     <Content Include="Views\Shared\EditorTemplates\Phone.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\DropDown.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InlineCodeInfo.cshtml" />
-    <Content Include="Views\ExtraValue\DisplayTemplates\Field.cshtml" />
+    <Content Include="Views\ExtraValue\DisplayTemplates\Value.cshtml" />
     <Content Include="Views\ExtraValue\Add\EditorTemplates\Address.cshtml" />
     <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenAddress.cshtml" />
     <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenMeta.cshtml" />
@@ -1913,6 +1925,8 @@
     <Content Include="Views\Dialog\TagAll.cshtml" />
     <Content Include="Views\Dialog\DeleteStandardExtra.cshtml" />
     <Content Include="Views\Dialog\GetExtraValue.cshtml" />
+    <Content Include="Views\ExtraValue\NewAdHoc.cshtml" />
+    <Content Include="Views\ExtraValue\DeleteFromQuery.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

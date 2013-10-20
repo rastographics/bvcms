@@ -275,9 +275,6 @@
         });
     };
     SetProfileEditable();
-    $.fn.editabletypes.abstractinput.prototype.value2input = function (value) {
-        this.$input.val((value || "").toString());
-    };
     $.InitFunctions.Editable = function() {
         $("a.editable").editable();
     };

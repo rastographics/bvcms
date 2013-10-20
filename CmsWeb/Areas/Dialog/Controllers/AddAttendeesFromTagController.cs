@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 						select t.PeopleId;
 				var pids = q.ToList();
 				var meeting = Db.Meetings.SingleOrDefault(mm => mm.MeetingId == meetingid);
-				var dt = meeting.MeetingDate.Value;
+				var joindate = meeting.MeetingDate.Value.AddMinutes(-1);
 				var orgid = meeting.OrganizationId;
 				foreach (var pid in pids)
 				{
@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 					Db = new CMSDataContext(Util.GetConnectionString(host));
 					if (addasmembers)
 						OrganizationMember.InsertOrgMembers(Db,
-							orgid, pid, MemberTypeCode.Member, dt, null, false);
+							orgid, pid, MemberTypeCode.Member, joindate, null, false);
 					Db.RecordAttendance(meetingid, pid, true);
 					var r = Db.AddToOrgFromTagRuns.Where(mm => mm.Orgid == meetingid).OrderByDescending(mm => mm.Id).First();
 					r.Processed++;

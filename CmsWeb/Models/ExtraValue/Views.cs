@@ -36,6 +36,27 @@ namespace CmsWeb.Models.ExtraValues
                     from v in vv.Values
                     select v).ToList();
         }
+        public static List<string> GetViewableCodeNames(string table)
+        {
+            var list = (from vv in GetStandardExtraValues(table)
+                        where vv.UserCanView()
+                        where vv.Type == "Code" || vv.Type == "Bit"
+                        select vv.Name).ToList();
+            var list2 = (from vv in GetStandardExtraValues(table)
+                         where vv.UserCanView()
+                         where vv.Type == "Bits"
+                         from v in vv.Codes
+                         select v).ToList();
+            return list.Union(list2).OrderBy(vv => vv).ToList();
+        }
+        public static List<string> GetViewableDataNames(string table)
+        {
+            return (from vv in GetStandardExtraValues(table)
+                        where vv.UserCanView()
+                        where !(vv.Type == "Code" || vv.Type == "Bit")
+                        orderby vv.Name
+                        select vv.Name).ToList();
+        }
 
         public class ViewValue
         {

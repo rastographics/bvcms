@@ -51,6 +51,7 @@ namespace CmsWeb.Models.ContactPage
         public ContactModel(int id)
             : this()
         {
+            ContactId = id;
             LoadContact(id);
             this.CopyPropertiesFrom(contact);
         }
