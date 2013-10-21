@@ -64,10 +64,13 @@
             </tr>
         </table>
     }
-    @Html.Hidden("npresent", Model.meeting.NumPresent.ToString("N0"))
-    @Html.Hidden("nnew", Model.meeting.NumNewVisit.ToString("N0"))
-    @Html.Hidden("nmembers", Model.meeting.NumMembers.ToString("N0"))
-    @Html.Hidden("nrecent", Model.meeting.NumRepeatVst.ToString("N0"))
-    @Html.Hidden("nother", Model.meeting.NumOtherAttends.ToString2("N0"))
-    @Html.Hidden("nvmembers", Model.meeting.NumVstMembers.ToString("N0"))
+    @if(Model.meeting != null)
+    {
+        @Html.Hidden("npresent", Model.meeting.NumPresent.ToString("N0"))
+        @Html.Hidden("nnew", Model.meeting.NumNewVisit.ToString("N0"))
+        @Html.Hidden("nmembers", Model.meeting.NumMembers.ToString("N0"))
+        @Html.Hidden("nrecent", Model.meeting.NumRepeatVst.ToString("N0"))
+        @Html.Hidden("nother", Model.meeting.NumOtherAttends.ToString2("N0"))
+        @Html.Hidden("nvmembers", Model.meeting.NumVstMembers.ToString("N0"))
+    }
 </div>
