@@ -1,0 +1,14 @@
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+<div>
+<a class="displayedit bt" href="/Organization/SettingsOrg/@Model.OrganizationId">Cancel</a>
+<a href="/Organization/SettingsOrgUpdate/@Model.OrganizationId" class="submitbutton bt blue">Save Changes</a>
+</div>
+<div class="formerror">@Html.ValidationMessage("Form")</div>
+<ul>
+@Html.EditorFor(m => m, "TabOrg")
+</ul>
+<div>
+<a class="displayedit bt" href="/Organization/SettingsOrg/@Model.OrganizationId">Cancel</a>
+<a href="/Organization/SettingsOrgUpdate/@Model.OrganizationId" class="submitbutton bt blue">Save Changes</a>
+</div>
+<div class="formerror">@Html.ValidationMessage("Form")</div>

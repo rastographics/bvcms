@@ -1,0 +1,9 @@
+﻿@model CmsData.Registration.Settings
+@if (User.IsInRole("Edit"))
+{ 
+<a class="displayedit bt edit regsettingedit" href="/Organization/OnlineRegFeesEdit/@Model.OrgId">Edit</a>
+}
+<div class="formerror">@Html.ValidationMessage("Form")</div>
+<ul class="noedit">
+@Html.EditorFor(m => m, "TabFees")
+</ul>

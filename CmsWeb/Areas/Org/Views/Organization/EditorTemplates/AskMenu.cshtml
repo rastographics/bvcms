@@ -1,0 +1,24 @@
+﻿@model CmsData.Registration.AskMenu
+@using CmsWeb
+@using (var ci = Html.BeginCollectionItem(Model.Name))
+{
+	var listname = Html.NameFor2(m => m.list);
+	<li class="type-@Model.Type">@Html.Raw(ci.hiddenindex)
+        @Html.HiddenFor(m => m.Type)
+		<div class="text big tip" title="MenuItems
+|These will present a series of textboxes next to a label 
+|allowing you to enter the number of items to purchase or select.
+|You can optionally associate a fee with one or more items.">
+			MenuItems:
+					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></div>
+		<ul id="MenuItems" class="sort">
+			@foreach (var item in Model.list)
+			{
+				item.Name = listname;
+				@Html.EditorFor(m => item)
+			}
+		</ul>
+		<div class="newitem"><a href="/Organization/NewMenuItem/@listname"><img src="/Content/images/plus1.png" alt="" /> Add Item</a></div> 
+	</li>
+}
+
