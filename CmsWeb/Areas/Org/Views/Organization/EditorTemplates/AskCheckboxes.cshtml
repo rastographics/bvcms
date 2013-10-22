@@ -1,0 +1,34 @@
+﻿@model CmsData.Registration.AskCheckboxes
+@using CmsWeb
+@using (var ci = Html.BeginCollectionItem(Model.Name))
+{
+	var listname = Html.NameFor2(m => m.list);
+	<li class="type-@Model.Type">@Html.Raw(ci.hiddenindex)
+		@Html.HiddenFor(m => m.Type)
+		<span class="keyword big tip" title="AskCheckboxes
+    |This is a group of checkboxes where you can check more than one.
+    |You can specify a minumum number they must check.
+    |And you can specify a maximum number they can check.
+    |For each checkbox, you can specify the SmallGroup (required) and the following.
+    |Optional Fee for the selection
+    |Optional Limit which limits the number of people allowed for a selection
+    |Optional DateTime which registers them in a meeting">
+			AskCheckboxes:
+					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></span>
+		<ul>
+			<li> <span class="keyword2">Label:</span> @Html.TextBoxFor(m => m.Label, new {@class = "long"}) </li>
+			<li> <span class="keyword2">Minimum:</span> @Html.TextBoxFor(m => m.Min) </li>
+			<li> <span class="keyword2">Maximum:</span> @Html.TextBoxFor(m => m.Max) </li>
+			<li> <span class="keyword2">Columns:</span> @Html.TextBoxFor(m => m.Cols) 
+				<ul id="Checkboxes" class="sort">
+					@foreach (var item in Model.list)
+					{
+						item.Name = listname;
+						@Html.EditorFor(m => item)
+					}
+				</ul>
+				<div class="newitem"><a href="/Org/NewCheckbox/@listname"><img src="/Content/images/plus1.png" alt="" /> Add Item</a></div>
+			</li>
+		</ul>
+	</li>
+}

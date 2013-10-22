@@ -1,5 +1,4 @@
 using CmsData;
-using CmsWeb.Models.OrganizationPage;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models

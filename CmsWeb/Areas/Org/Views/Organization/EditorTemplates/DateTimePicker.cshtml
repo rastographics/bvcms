@@ -1,0 +1,3 @@
+﻿@using UtilityExtensions
+@model DateTime?
+@Html.TextBox(ViewData.TemplateInfo.HtmlFieldPrefix, Model.ToString2("g"), new { @class = "datetimepicker" })

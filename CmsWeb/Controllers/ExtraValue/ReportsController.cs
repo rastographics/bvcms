@@ -7,19 +7,11 @@ namespace CmsWeb.Controllers
 {
     public partial class ExtraValueController
     {
-        [GET("ExtraValue/CodeSummary")]
-        public ActionResult CodeSummary()
+        [GET("ExtraValue/Summary")]
+        public ActionResult Summary()
         {
             var m = ReportsModel.CodeSummary();
-            return View("Reports/CodeSummary", m);
-        }
-
-        [GET("ExtraValue/DataSummary")]
-        public ActionResult DataSummary()
-        {
-            var m = ReportsModel.DataSummary();
-            return View("Reports/DataSummary", m);
-
+            return View("Reports/Summary", m);
         }
 
         [GET("ExtraValue/Grid/{id}")]

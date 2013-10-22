@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
 using CmsWeb.Models.ExtraValues;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace CmsWeb.Controllers
 {
@@ -35,7 +36,10 @@ namespace CmsWeb.Controllers
         {
             try
             {
-                m.AddAsNewStandard();
+                if(ModelState.IsValid)
+                    m.AddAsNewStandard();
+                else
+                    ViewBag.Error = "not saved, errors in form";
             }
             catch (Exception ex)
             {

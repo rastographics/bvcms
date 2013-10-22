@@ -1,0 +1,26 @@
+﻿@model CmsData.Registration.Settings
+@using CmsWeb
+@using UtilityExtensions
+
+@foreach(var ask in Model.AskItems)
+{
+    ask.Name = Html.NameFor2(m => m.AskItems);
+    switch (ask.Type)
+    {
+        case "AskParents":
+        case "AskGradeOptions":
+        case "AskDoctor":
+        case "AskInsurance":
+        case "AskEmContact":
+        case "AskAllergies":
+        case "AskChurch":
+        case "AskTylenolEtc":
+        case "AskCoaching":
+            @Html.EditorFor(m => ask, ask.Type)
+             break;
+        default:
+            @Html.EditorFor(m => ask)
+            break;
+	  }
+}
+@Html.EditorFor(m => m.TimeSlots)

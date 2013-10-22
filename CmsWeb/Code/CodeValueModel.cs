@@ -419,7 +419,7 @@ namespace CmsWeb.Code
         }
         public IEnumerable<CodeValueItem> AdhocExtraValueTypeCodes()
         {
-            yield return new CodeValueItem {Code = "Text", Value = "Text"};
+            yield return new CodeValueItem {Code = "Text", Value = "Text (multi line)"};
             yield return new CodeValueItem {Code = "Code", Value = "Code"};
             yield return new CodeValueItem {Code = "Bit", Value = "Checkbox"};
             yield return new CodeValueItem {Code = "Int", Value = "Integer"};

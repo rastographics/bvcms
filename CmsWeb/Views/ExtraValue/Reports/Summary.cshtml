@@ -34,13 +34,13 @@
 }
 
 <div class="container">
-    <h2>Extra Values Codes</h2>
+    <h2>Extra Values</h2>
     <table class="table table-condensed table-striped not-wide left-gutter">
         <tr>
-            <th>Field</th>
+            <th>Name</th>
             <th>Value</th>
             <th>Type</th>
-            <th>Count</th>
+            <th class="right">Count</th>
             <th></th>
             <th></th>
         </tr>
@@ -53,8 +53,8 @@
                         <i class="icon-pencil"></i></a>
                 </td>
                 <td>@e.Value</td>
-                <td>@e.Type</td>
-                <td>@e.Count.ToString("N0")</td>
+                <td>@e.TypeDisplay</td>
+                <td class="right">@e.Count.ToString("N0")</td>
                 <td>@(e.Standard ? "Standard" : "Adhoc")</td>
                 @if (User.IsInRole("Admin"))
                 {

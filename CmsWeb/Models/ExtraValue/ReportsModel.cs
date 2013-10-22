@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using CmsData;
+using CmsWeb.Code;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -11,59 +13,66 @@ namespace CmsWeb.Models.ExtraValues
     {
         public static IEnumerable<ExtraInfo> CodeSummary()
         {
-            var values = Views.GetViewableCodeNames("People");
+            var NameTypes = Views.GetViewableNameTypes("People");
+            var standardtypes = new CodeValueModel().ExtraValueTypeCodes();
+            var adhoctypes = new CodeValueModel().AdhocExtraValueTypeCodes();
 
-            var q = (from e in DbUtil.Db.PeopleExtras
-                     where e.StrValue != null || e.BitValue != null
-                     group e by new
-                     {
-                         e.Field,
-                         val = e.StrValue ?? (e.BitValue == true ? "1" : "0"),
-                         e.Type,
-                     } into g
-                     select new { key = g.Key, count = g.Count() }).ToList();
+            var qcodevalues = (from e in DbUtil.Db.PeopleExtras
+                               where e.StrValue != null || e.BitValue != null
+                               group e by new
+                               {
+                                   e.Field,
+                                   val = e.StrValue ?? (e.BitValue == true ? "1" : "0"),
+                                   e.Type,
+                               } into g
+                               select new { key = g.Key, count = g.Count() }).ToList();
 
-            var q2 = from i in q
-                     join sv in values on i.key.Field equals sv into j
-                     from sv in j.DefaultIfEmpty()
-                     orderby i.key.Field
-                     select new ExtraInfo
-                     {
-                         Field = i.key.Field,
-                         Value = i.key.val,
-                         Type = i.key.Type,
-                         Standard = sv != null,
-                         Count = i.count,
-                     };
-            return q2;
+            var qcodes = from i in qcodevalues
+                         join sv in NameTypes on i.key.Field equals sv.Name into j
+                         from sv in j.DefaultIfEmpty()
+                         let type = sv == null ? i.key.Type : sv.Type
+                         let typedisplay = sv == null 
+                                ? adhoctypes.Single(ee => ee.Code == type).Value 
+                                : standardtypes.Single(ee => ee.Code == type).Value 
+                         select new ExtraInfo
+                         {
+                             Field = i.key.Field,
+                             Value = i.key.val,
+                             Type = i.key.Type,
+                             TypeDisplay = typedisplay,
+                             Standard = sv != null,
+                             Count = i.count,
+                         };
+
+            var qdatavalues = (from e in DbUtil.Db.PeopleExtras
+                               where e.StrValue == null && e.BitValue == null
+                               group e by new
+                               {
+                                   e.Field,
+                                   e.Type,
+                               } into g
+                               select new { key = g.Key, count = g.Count() }).ToList();
+
+            var qdatums = from i in qdatavalues
+                          join sv in NameTypes on i.key.Field equals sv.Name into j
+                          from sv in j.DefaultIfEmpty()
+                          let type = sv == null ? i.key.Type : sv.Type
+                          let typedisplay = sv == null 
+                                ? adhoctypes.Single(ee => ee.Code == type).Value 
+                                : standardtypes.Single(ee => ee.Code == type).Value 
+                          select new ExtraInfo
+                          {
+                              Field = i.key.Field,
+                              Value = "(multiple)",
+                              Type = i.key.Type,
+                              TypeDisplay = typedisplay,
+                              Standard = sv != null,
+                              Count = i.count,
+                          };
+
+            return qcodes.Union(qdatums).OrderBy(ee => ee.Field);
         }
 
-        public static IEnumerable<ExtraInfo> DataSummary()
-        {
-            var values = Views.GetViewableDataNames("People");
-
-            var q = (from e in DbUtil.Db.PeopleExtras
-                     where e.StrValue == null && e.BitValue == null
-                     group e by new
-                     {
-                         e.Field,
-                         e.Type,
-                     } into g
-                     select new { key = g.Key, count = g.Count() }).ToList();
-
-            var q2 = from i in q
-                     join sv in values on i.key.Field equals sv into j
-                     from sv in j.DefaultIfEmpty()
-                     orderby i.key.Field
-                     select new ExtraInfo()
-                     {
-                         Field = i.key.Field,
-                         Type = i.key.Type,
-                         Standard = sv != null,
-                         Count = i.count,
-                     };
-            return q2;
-        }
         public static Condition QueryCodesCondition(string field, string value)
         {
             var c = DbUtil.Db.ScratchPadCondition();
@@ -103,8 +112,8 @@ namespace CmsWeb.Models.ExtraValues
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
             var values = from value in Views.GetStandardExtraValues("People")
-                where value.VisibilityRoles != null && (value.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
-                select value.Name;
+                         where value.VisibilityRoles != null && (value.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
+                         select value.Name;
             var nodisplaycols = string.Join("|", values);
 
             var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
@@ -121,8 +130,8 @@ namespace CmsWeb.Models.ExtraValues
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
             var values = from value in Views.GetStandardExtraValues("People")
-                where value.VisibilityRoles != null && (value.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
-                select value.Name;
+                         where value.VisibilityRoles != null && (value.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
+                         select value.Name;
             var nodisplaycols = string.Join("|", values);
 
             var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
