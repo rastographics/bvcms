@@ -1,7 +1,7 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
 @if (User.IsInRole("Edit"))
 { 
-<a class="displayedit bt edit" href="/Organization/SettingsMeetingsEdit/@Model.OrganizationId">Edit</a>
+<a class="displayedit bt edit" href="/Org/SettingsMeetingsEdit/@Model.OrganizationId">Edit</a>
 }
 <ul class="noedit">
 @Html.EditorFor(m => m, "TabMeetings")

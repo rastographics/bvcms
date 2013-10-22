@@ -1,8 +1,8 @@
 ﻿@model CmsData.Registration.Settings
 <div>
-    <a class="displayedit bt" href="/Organization/OnlineRegQuestions/@Model.OrgId">Cancel</a>
+    <a class="displayedit bt" href="/Org/OnlineRegQuestions/@Model.OrgId">Cancel</a>
     <a class="AddQuestion bt green" href="#">Add Question Item</a>
-    <a href="/Organization/OnlineRegQuestionsUpdate/@Model.OrgId" class="submitbutton bt blue">Save Changes</a>
+    <a href="/Org/OnlineRegQuestionsUpdate/@Model.OrgId" class="submitbutton bt blue">Save Changes</a>
 </div>
 <div style="clear:both"></div>
 <hr />
@@ -17,9 +17,9 @@
     @Html.EditorFor(m => m, "TabQuestions")
 </ul>
 <div>
-    <a class="displayedit bt" href="/Organization/OnlineRegQuestions/@Model.OrgId">Cancel</a>
+    <a class="displayedit bt" href="/Org/OnlineRegQuestions/@Model.OrgId">Cancel</a>
     <a class="AddQuestion bt green" href="#">Add Question Item</a>
-    <a href="/Organization/OnlineRegQuestionsUpdate/@Model.OrgId" class="submitbutton bt blue">Save Changes</a>
+    <a href="/Org/OnlineRegQuestionsUpdate/@Model.OrgId" class="submitbutton bt blue">Save Changes</a>
 </div>
 <div class="formerror">@Html.ValidationMessage("Form")</div>
 <div id="selectquestions" style="display:none;padding-left:2em">

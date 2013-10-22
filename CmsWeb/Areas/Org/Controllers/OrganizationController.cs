@@ -133,13 +133,14 @@ namespace CmsWeb.Areas.Org.Controllers
                 }
             }
             ViewBag.queryid = qid;
-            ViewBag.TagAction = "/Organization/TagAll/{0}".Fmt(qid);
-            ViewBag.UnTagAction = "/Organization/UnTagAll/{0}".Fmt(qid);
-            ViewBag.AddContact = "/Organization/AddContact/" + qid;
-            ViewBag.AddTasks = "/Organization/AddTasks/" + qid;
+            ViewBag.TagAction = "/Org/TagAll/{0}".Fmt(qid);
+            ViewBag.UnTagAction = "/Org/UnTagAll/{0}".Fmt(qid);
+            ViewBag.AddContact = "/Org/AddContact/" + qid;
+            ViewBag.AddTasks = "/Org/AddTasks/" + qid;
             ViewBag.OrganizationContext = true;
         }
 
+        [POST("Org/CurrMemberGrid/{id:int}")]
         public ActionResult CurrMemberGrid(int id, int[] smallgrouplist, int? selectmode, string namefilter, string sgprefix)
         {
             ViewBag.OrgMemberContext = true;
@@ -153,7 +154,7 @@ namespace CmsWeb.Areas.Org.Controllers
             UpdateModel(m.Pager);
             return View(m);
         }
-        [HttpPost]
+        [POST("Org/PreviousMemberGrid/{id:int}")]
         public ActionResult PrevMemberGrid(int id, string namefilter)
         {
             var qb = DbUtil.Db.QueryBuilderPreviousCurrentOrg();
@@ -164,7 +165,7 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.LogActivity("Viewing Prev Members for {0}".Fmt(Session["ActiveOrganization"]));
             return View(m);
         }
-        [HttpPost]
+        [POST("Org/VisitorGrid/{id:int}/{namefilter}")]
         public ActionResult VisitorGrid(int id, string namefilter)
         {
             var qb = DbUtil.Db.QueryBuilderVisitedCurrentOrg();
@@ -175,7 +176,7 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.LogActivity("Viewing Visitors for {0}".Fmt(Session["ActiveOrganization"]));
             return View("VisitorGrid", m);
         }
-        [HttpPost]
+        [POST("Org/PendingMemberGrid/{id:int}")]
         public ActionResult PendingMemberGrid(int id, string namefilter)
         {
             var qb = DbUtil.Db.QueryBuilderPendingCurrentOrg();
@@ -185,7 +186,7 @@ namespace CmsWeb.Areas.Org.Controllers
             UpdateModel(m.Pager);
             return View(m);
         }
-        [HttpPost]
+        [POST("Org/InactiveMemberGrid/{id:int}")]
         public ActionResult InactiveMemberGrid(int id, string namefilter)
         {
             var qb = DbUtil.Db.QueryBuilderInactiveCurrentOrg();
@@ -196,7 +197,7 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.LogActivity("Viewing Inactive for {0}".Fmt(Session["ActiveOrganization"]));
             return View(m);
         }
-        [HttpPost]
+        [POST("Org/MeetingsGrid/{id:int}/{future:bool}")]
         public ActionResult MeetingGrid(int id, bool future)
         {
             var m = new MeetingModel(id, future);
@@ -205,19 +206,19 @@ namespace CmsWeb.Areas.Org.Controllers
             return View(m);
         }
 
-        [HttpPost]
+        [POST("Org/SettingsOrg/{id:int}")]
         public ActionResult SettingsOrg(int id)
         {
             var m = new OrganizationModel(id);
             return View(m);
         }
-        [HttpPost]
+        [POST("Org/SettingsOrgEdit/{id:int}")]
         public ActionResult SettingsOrgEdit(int id)
         {
             var m = new OrganizationModel(id);
             return View(m);
         }
-        [HttpPost]
+        [POST("Org/SettingsUpdate/{id:int}")]
         public ActionResult SettingsOrgUpdate(int id)
         {
             var m = new OrganizationModel(id);

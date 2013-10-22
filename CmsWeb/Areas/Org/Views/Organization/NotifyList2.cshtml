@@ -1,6 +1,6 @@
 ﻿@using CmsData
 @model CmsData.Registration.Settings
-<a class="notifylist" href="/Organization/NotifyIds/@Model.OrgId" data-target="#usersDialog">
+<a class="notifylist" href="/Org/NotifyIds/@Model.OrgId" data-target="#usersDialog">
 <div class="block border">
 <b>choose users to notify (confirmation comes from first)</b>
 @{  var q = from p in DbUtil.Db.PeopleFromPidString(Model.org.NotifyIds)

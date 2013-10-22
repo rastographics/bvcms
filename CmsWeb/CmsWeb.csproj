@@ -849,6 +849,18 @@
       <DependentUpon>jquery.bootstrap-growl.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Bootstrap\spin.min.js" />
+    <Content Include="Scripts\Bundle\org.js">
+      <DependentUpon>org.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\org.min.js">
+      <DependentUpon>org.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\org2.js">
+      <DependentUpon>org2.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\org2.min.js">
+      <DependentUpon>org2.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bundle\query.js">
       <DependentUpon>query.js.bundle</DependentUpon>
     </Content>
@@ -912,6 +924,7 @@
     <Content Include="Scripts\Finance\Transactions.min.js">
       <DependentUpon>Transactions.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\RegSetting2.js" />
     <Content Include="Scripts\js\ExtraValue.js" />
     <Content Include="Scripts\js\ExtraValue.min.js">
       <DependentUpon>ExtraValue.js</DependentUpon>
@@ -981,6 +994,7 @@
     <Content Include="Scripts\jQuery\jquery.validate.min.js">
       <DependentUpon>jquery.validate.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Org\Organization2.js" />
     <Content Include="Scripts\People\contact2.js" />
     <Content Include="Scripts\People\contact2.min.js">
       <DependentUpon>contact2.js</DependentUpon>
@@ -1113,8 +1127,7 @@
     <Content Include="Areas\Manage\Views\EmailsView\View.cshtml" />
     <Content Include="Views\ExtraValue\Standard.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
-    <Content Include="Views\ExtraValue\Reports\DataSummary.cshtml" />
-    <Content Include="Views\ExtraValue\Reports\CodeSummary.cshtml" />
+    <Content Include="Views\ExtraValue\Reports\Summary.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Grid.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Grid2.cshtml" />
     <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
@@ -1368,6 +1381,7 @@
     <Content Include="Scripts\Bundle\query2.js.bundle">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Scripts\Bundle\org2.js.bundle" />
     <None Include="Scripts\Bundle\main.js.bundle" />
     <None Include="Scripts\Bundle\main2.js.bundle" />
     <None Include="Scripts\Bundle\onlineregister.js.bundle" />
@@ -1382,12 +1396,6 @@
       <DependentUpon>Task.js</DependentUpon>
     </Content>
     <None Include="Scripts\Bundle\org.js.bundle" />
-    <Content Include="Scripts\Bundle\org.js">
-      <DependentUpon>org.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\org.min.js">
-      <DependentUpon>org.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\Org\OrgChildren.min.js">
       <DependentUpon>OrgChildren.js</DependentUpon>
     </Content>
@@ -2007,6 +2015,7 @@
     <Content Include="Views\Dialog\GetExtraValue.cshtml" />
     <Content Include="Views\ExtraValue\NewAdHoc.cshtml" />
     <Content Include="Views\ExtraValue\DeleteFromQuery.cshtml" />
+    <Content Include="Views\Shared\SiteLayout2c.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

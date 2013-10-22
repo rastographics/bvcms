@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.People.Models
         public bool PrayerRequest { get; set; }
         public bool GiftBagGiven { get; set; }
 
-        [UIHint("textedit")]
+        [UIHint("TextArea")]
         public string Comments { get; set; }
         public string LimitToRole { get; set; }
 
