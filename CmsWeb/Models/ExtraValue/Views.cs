@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Xml.Serialization;
 using CmsData;
+using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -36,26 +37,35 @@ namespace CmsWeb.Models.ExtraValues
                     from v in vv.Values
                     select v).ToList();
         }
-        public static List<string> GetViewableCodeNames(string table)
+
+        public class StandardValueNameType
+        {
+            public string Name { get; set; }
+            public string Type { get; set; }
+        }
+
+        public static List<StandardValueNameType> GetViewableNameTypes(string table)
         {
             var list = (from vv in GetStandardExtraValues(table)
+                        where vv.Type != "Bits"
                         where vv.UserCanView()
-                        where vv.Type == "Code" || vv.Type == "Bit"
-                        select vv.Name).ToList();
+                        select new StandardValueNameType()
+                        { 
+                            Name = vv.Name, 
+                            Type = vv.Type
+                        }).ToList();
+
             var list2 = (from vv in GetStandardExtraValues(table)
                          where vv.UserCanView()
                          where vv.Type == "Bits"
                          from v in vv.Codes
-                         select v).ToList();
-            return list.Union(list2).OrderBy(vv => vv).ToList();
-        }
-        public static List<string> GetViewableDataNames(string table)
-        {
-            return (from vv in GetStandardExtraValues(table)
-                        where vv.UserCanView()
-                        where !(vv.Type == "Code" || vv.Type == "Bit")
-                        orderby vv.Name
-                        select vv.Name).ToList();
+                         select new StandardValueNameType()
+                         { 
+                             Name = v, 
+                             Type = vv.Type
+                         }).ToList();
+
+            return list.Union(list2).OrderBy(vv => vv.Name).ToList();
         }
 
         public class ViewValue

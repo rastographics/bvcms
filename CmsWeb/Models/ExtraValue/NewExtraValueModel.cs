@@ -4,11 +4,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using Dapper;
-using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -20,7 +18,7 @@ namespace CmsWeb.Models.ExtraValues
         public string ExtraValueTable { get; set; }
         public string ExtraValueLocation { get; set; }
 
-        [DisplayName("Name")]
+        [DisplayName("Name"), StringLength(20), Required]
         public string ExtraValueName { get; set; }
 
         [DisplayName("Type")]
@@ -137,10 +135,11 @@ namespace CmsWeb.Models.ExtraValues
 
         public string AddAsNewStandard()
         {
+		    ExtraValueName = ExtraValueName.Replace('/', '-');
             var fields = Views.GetStandardExtraValues(ExtraValueTable);
             var existing = fields.SingleOrDefault(ff => ff.Name == ExtraValueName);
             if (existing != null)
-                return "field already exists";
+                throw new Exception("field already exists");
 
             TryCheckIntegrity();
 

@@ -109,15 +109,18 @@
             });
     });
     $('a[data-toggle="tab"]').on('shown', function (e) {
-        window.location.hash = $(e.target).attr('href');
-        $.cookie('lasttab', window.location.hash);
+        e.preventDefault();
+        var tab = $(e.target).attr('href').replace("#", "#tab-");;
+        window.location.hash = tab;
+        $.cookie('lasttab', tab);
+        return false;
     });
     var lastTab = $.cookie('lasttab');
     if (window.location.hash) {
         lastTab = window.location.hash;
     }
     if (lastTab) {
-        var tlink = $("a[href='" + lastTab + "']");
+        var tlink = $("a[href='" + lastTab.replace("tab-","") + "']");
         var tabparent = tlink.closest("ul").data("tabparent");
         if (tabparent) {
             $("a[href='#" + tabparent + "']").click().tab("show");

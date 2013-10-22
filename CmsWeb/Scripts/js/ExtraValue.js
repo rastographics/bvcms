@@ -121,7 +121,7 @@
     });
     $.InitFunctions.ExtraEditable = function () {
         $.fn.editabletypes.abstractinput.prototype.value2input = function (value) {
-            this.$input.val((value.toString()));
+            this.$input.val((value || "").toString());
         };
         $("a.click-Code").editable({ mode: 'inline' });
         $('a.click-Text').editable({ mode: 'inline' });

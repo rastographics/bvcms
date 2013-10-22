@@ -39,7 +39,7 @@ namespace CmsWeb.Controllers
         [POST("ExtraValue/DeleteAdhoc/{table}/{id:int}")]
         public ActionResult DeleteAdhoc(string table, int id, string name)
         {
-            var m = new ExtraValueModel(id, table);
+            var m = new ExtraValueModel(id, table, "Adhoc");
             m.Delete(name);
             return View("AdHoc", m);
         }
