@@ -26682,7 +26682,7 @@ $(function () {
         $('form.ajax select:not([plain])').chosen();
     };
     $("ul.nav-tabs a.ajax").live("click", function (event) {
-        var state = $(this).attr("href");
+        var state = $(this).attr("href") || $(this).data("target");
         var d = $(state);
         var url = d.data("link");
         if (!d.hasClass("loaded"))
@@ -26921,7 +26921,7 @@ $(function () {
     });
     $.InitFunctions.ExtraEditable = function () {
         $.fn.editabletypes.abstractinput.prototype.value2input = function (value) {
-            this.$input.val((value.toString()));
+            this.$input.val((value || "").toString());
         };
         $("a.click-Code").editable({ mode: 'inline' });
         $('a.click-Text').editable({ mode: 'inline' });

@@ -1,0 +1,40 @@
+﻿@model CmsData.Registration.AskSize
+@using CmsWeb
+@using (var ci = Html.BeginCollectionItem(Model.Name))
+{
+    var listname = Html.NameFor2(m => m.list);
+	<li class="type-@Model.Type">@Html.Raw(ci.hiddenindex)
+		@Html.HiddenFor(m => m.Type)
+		<span class="keyword big tip" title="AskSize
+    |Display a dropdown of sizes.">
+			AskSize
+					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></span>
+		<ul>
+			<li>
+				<span class="keyword2 tip" title="Label:
+        |Shirt Sizes (or something like that).">Label:</span> @Html.TextBoxFor(m => m.Label, new {@class = "long"})
+			</li>
+			<li>
+				<span class="keyword4 tip" title="AllowLastYearShirt
+        |Adds an extra item to the sizes to indicate they will use last year's.">AllowLastYear:</span> @Html.CheckBoxFor(m => m.AllowLastYear)
+			</li>
+			<li>
+				<span class="keyword2 tip" title="Fee
+        |Allows you to charge a fee.">Fee:</span> @Html.TextBoxFor(m => m.Fee)
+			</li>
+			<li>
+				<div class="text tip" title="ShirtSizes
+        |Allows you to customize the sizes offered.">
+					Sizes:</div>
+				<ul id="Sizes" class="sort">
+					@foreach (var item in Model.list)
+					{
+						item.Name = listname;
+						@Html.EditorFor(m => item)
+					}
+				</ul>
+				<div class="newitem"><a href="/Org/NewSize/@listname"><img src="/Content/images/plus1.png" alt="" />Add Item</a></div>
+			</li>
+		</ul>
+	</li>
+}

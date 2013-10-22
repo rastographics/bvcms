@@ -1,0 +1,54 @@
+﻿@model CmsData.Registration.Settings
+<div>
+    <a class="displayedit bt" href="/Org/OnlineRegQuestions/@Model.OrgId">Cancel</a>
+    <a class="AddQuestion bt green" href="#">Add Question Item</a>
+    <a href="/Org/OnlineRegQuestionsUpdate/@Model.OrgId" class="submitbutton bt blue">Save Changes</a>
+</div>
+<div style="clear:both"></div>
+<hr />
+<div class="formerror">@Html.ValidationMessage("Form")</div>
+<div>
+	<span class="keyword big tip" title="TargetExtraValues
+     |Small groups will actually refer to ExtraValue fields on the Person's record option
+     |This option is not normally used">
+		TargetExtraValues:</span> @Html.CheckBox("TargetExtraValues", Model.TargetExtraValues)
+</div>
+<ul class="enablesort sort edit" id="QuestionList">
+    @Html.EditorFor(m => m, "TabQuestions")
+</ul>
+<div>
+    <a class="displayedit bt" href="/Org/OnlineRegQuestions/@Model.OrgId">Cancel</a>
+    <a class="AddQuestion bt green" href="#">Add Question Item</a>
+    <a href="/Org/OnlineRegQuestionsUpdate/@Model.OrgId" class="submitbutton bt blue">Save Changes</a>
+</div>
+<div class="formerror">@Html.ValidationMessage("Form")</div>
+<div id="selectquestions" style="display:none;padding-left:2em">
+    <ul>
+        <li class="AskDropdown"></li>
+        <li class="AskCheckboxes"></li>
+        <li class="AskExtraQuestions"></li>
+        <li class="AskYesNoQuestions"></li>
+        <li class="AskMenu"></li>
+    </ul>
+    <ul>
+        <li class="AskAllergies"></li>
+        <li class="AskRequest"></li>
+        <li class="AskDoctor"></li>
+        <li class="AskHeader">Header</li>
+        <li class="AskInstruction">Instruction</li>
+    </ul>
+    <ul>
+        <li class="AskChurch"></li>
+        <li class="AskCoaching"></li>
+        <li class="AskEmContact"></li>
+        <li class="AskInsurance"></li>
+        <li class="AskTylenolEtc"></li>
+    </ul>
+    <ul>
+        <li class="AskParents"></li>
+        <li class="AskSuggestedFee"></li>
+        <li class="AskTickets"></li>
+        <li class="AskSize"></li>
+        <li class="AskGradeOptions"></li>
+    </ul>
+</div>

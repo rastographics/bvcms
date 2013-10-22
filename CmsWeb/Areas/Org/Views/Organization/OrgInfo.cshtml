@@ -1,0 +1,49 @@
+﻿@using UtilityExtensions
+@using CmsWeb
+@model CmsWeb.Areas.Org.Models.OrganizationModel
+@{ var o = Model.org; }
+<h2>@Model.org.OrganizationName@(Model.org.LeaderId.HasValue ? "," : "") <span style="font-size:12px">@Model.org.LeaderName</span></h2>
+<table cellspacing="5" width="100%">
+    <tr>
+        <th class="right">Name:</th>
+        <td colspan="2">@o.OrganizationName</td> 
+    </tr>
+    <tr>
+        <th class="right">Schedule:</th>
+        <td colspan="2">@Model.Schedule</td>
+    </tr>
+    <tr class="helptip" title="Divisions|use this link to manage the divisions this organization belongs to|a dialog box will pop up">
+        <th class="right">Divisions:</th>
+        <td colspan="2"><a id="divisionlist" href="/SearchDivisions/Index/@Model.OrganizationId?ordered=true">
+            @Html.Partial("DivisionList", Model.Divisions())</a></td>
+    </tr>
+    <tr>
+        <th class="right">Campus:</th>
+        <td colspan="2">@Html.CodeDesc("org.CampusId", Model.CampusList())</td>
+    </tr>
+    <tr>
+        <th class="right">Security Type:</th>
+        <td>@Html.CodeDesc("org.SecurityTypeId", Model.SecurityTypeList())</td>
+        <th class="right" style="padding-left:1em">Status:</th>
+        <td>@Html.CodeDesc("org.OrganizationStatusId", Model.OrgStatusList())</td>
+    </tr>
+    <tr class="helptip" title="What is Organization Type?|an upcoming new feature for classifying your organizations|in progress, stay tuned">
+		<th class="right">Organization Type:</th>
+		<td>@Html.CodeDesc("org.OrganizationTypeId", Model.OrganizationTypes())</td>
+		<th class="right"><span style="padding-left:1em">Leader Type:</span></th>
+        <td>@Html.CodeDesc("org.LeaderMemberTypeId", Model.LeaderTypeList())</td>
+    </tr>
+    <tr>
+        <th class="right">Main Fellowship:</th>
+        <td>@Html.CheckBoxReadonly(o.IsBibleFellowshipOrg)</td>
+        <td rowspan="2" class="right">
+@if (User.IsInRole("Edit"))
+{           <a class="displayedit2 bt" href="/Org/OrgInfoEdit/@Model.OrganizationId">Edit</a>
+}       </td>
+    </tr>
+    <tr>
+        <td class="right">Master OnlineReg:</td>
+        <td>@Html.CheckBoxReadonly(o.OrgPickList.HasValue())</td>
+    </tr>
+</table>
+

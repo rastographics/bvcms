@@ -1,0 +1,15 @@
+﻿@model CmsData.Registration.Settings
+<p><i>Drag the grey bars up/down arrow to reorder items.</i></p>
+<div>
+<a href="/Org/OnlineRegFeesUpdate/@Model.OrgId" class="submitbutton bt blue">Save Changes</a>
+<a class="displayedit bt" href="/Org/OnlineRegFees/@Model.OrgId">Cancel</a>
+</div>
+<div class="formerror">@Html.ValidationMessage("Form")</div>
+<ul class="enablesort edit">
+@Html.EditorFor(m => m, "TabFees")
+</ul>
+<div>
+<a href="/Org/OnlineRegFeesUpdate/@Model.OrgId" class="submitbutton bt blue">Save Changes</a>
+<a class="displayedit bt" href="/Org/OnlineRegFees/@Model.OrgId">Cancel</a>
+</div>
+<div class="formerror">@Html.ValidationMessage("Form")</div>

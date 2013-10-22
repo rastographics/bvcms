@@ -216,6 +216,7 @@
     <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SpecialRegistration.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\SpecialRegModel.cs" />
+    <Compile Include="Areas\Org\Controllers\OrganizationController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMembersDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -299,6 +300,16 @@
     <Compile Include="Areas\Org\Models\OrgMemberModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMembersDialogModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMoveInfo.cs" />
+    <Compile Include="Areas\Org\Models\Organization\MeetingInfo.cs" />
+    <Compile Include="Areas\Org\Models\Organization\MeetingModel.cs" />
+    <Compile Include="Areas\Org\Models\Organization\MemberModel.cs" />
+    <Compile Include="Areas\Org\Models\Organization\OrganizationModel.cs" />
+    <Compile Include="Areas\Org\Models\Organization\OrgChildrenModel.cs" />
+    <Compile Include="Areas\Org\Models\Organization\OrgGroupsModel.cs" />
+    <Compile Include="Areas\Org\Models\Organization\PersonMemberInfo.cs" />
+    <Compile Include="Areas\Org\Models\Organization\PrevMemberModel.cs" />
+    <Compile Include="Areas\Org\Models\Organization\ScheduleInfo.cs" />
+    <Compile Include="Areas\Org\Models\Organization\VisitorModel.cs" />
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
@@ -838,6 +849,18 @@
       <DependentUpon>jquery.bootstrap-growl.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Bootstrap\spin.min.js" />
+    <Content Include="Scripts\Bundle\org.js">
+      <DependentUpon>org.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\org.min.js">
+      <DependentUpon>org.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\org2.js">
+      <DependentUpon>org2.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\org2.min.js">
+      <DependentUpon>org2.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bundle\query.js">
       <DependentUpon>query.js.bundle</DependentUpon>
     </Content>
@@ -901,6 +924,7 @@
     <Content Include="Scripts\Finance\Transactions.min.js">
       <DependentUpon>Transactions.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\RegSetting2.js" />
     <Content Include="Scripts\js\ExtraValue.js" />
     <Content Include="Scripts\js\ExtraValue.min.js">
       <DependentUpon>ExtraValue.js</DependentUpon>
@@ -970,6 +994,7 @@
     <Content Include="Scripts\jQuery\jquery.validate.min.js">
       <DependentUpon>jquery.validate.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Org\Organization2.js" />
     <Content Include="Scripts\People\contact2.js" />
     <Content Include="Scripts\People\contact2.min.js">
       <DependentUpon>contact2.js</DependentUpon>
@@ -1102,8 +1127,7 @@
     <Content Include="Areas\Manage\Views\EmailsView\View.cshtml" />
     <Content Include="Views\ExtraValue\Standard.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
-    <Content Include="Views\ExtraValue\Reports\DataSummary.cshtml" />
-    <Content Include="Views\ExtraValue\Reports\CodeSummary.cshtml" />
+    <Content Include="Views\ExtraValue\Reports\Summary.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Grid.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Grid2.cshtml" />
     <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
@@ -1125,6 +1149,75 @@
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\SpecialRegistrationResults.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\CurrMemberGrid.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DialogAddMES.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DivisionList.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AgeGroup.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskAllergies.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskCheckboxes.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskChurch.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskCoaching.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskDoctor.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskDropdown.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskEmContact.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskExtraQuestions.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskGradeOptions.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskHeader.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskInstruction.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskInsurance.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskMenu.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskParents.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskRequest.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSize.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSuggestedFee.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskTickets.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskTylenolEtc.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskYesNoQuestions.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\CheckboxItem.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\DropdownItem.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\ExtraQuestion.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\GradeOption.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Html.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\MenuItem.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\OrgFee.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\ScheduleInfo.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Size.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabAdmin.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabFees.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMeetings.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMessages.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabOrg.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabQuestions.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TimeSlot.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TimeSlots.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\YesNoQuestion.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\ExtrasGrid.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\InactiveMemberGrid.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Org.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\MeetingGrid.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\MemberGrid.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\NotifyList2.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OnlineRegAdmin.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OnlineRegAdminEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OnlineRegFees.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OnlineRegFeesEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OnlineRegMessages.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OnlineRegMessagesEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OnlineRegQuestions.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OnlineRegQuestionsEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OrgInfo.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OrgInfoEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\OrgPickList2.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\PendingMemberGrid.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\PrevMemberGrid.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\SettingsMeetings.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\SettingsMeetingsEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\SettingsOrg.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\SettingsOrgEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\SmallGroups.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\VisitorGrid.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\VolunteerCommitmentsSummary.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1288,6 +1381,7 @@
     <Content Include="Scripts\Bundle\query2.js.bundle">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Scripts\Bundle\org2.js.bundle" />
     <None Include="Scripts\Bundle\main.js.bundle" />
     <None Include="Scripts\Bundle\main2.js.bundle" />
     <None Include="Scripts\Bundle\onlineregister.js.bundle" />
@@ -1302,12 +1396,6 @@
       <DependentUpon>Task.js</DependentUpon>
     </Content>
     <None Include="Scripts\Bundle\org.js.bundle" />
-    <Content Include="Scripts\Bundle\org.js">
-      <DependentUpon>org.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\org.min.js">
-      <DependentUpon>org.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\Org\OrgChildren.min.js">
       <DependentUpon>OrgChildren.js</DependentUpon>
     </Content>
@@ -1927,6 +2015,7 @@
     <Content Include="Views\Dialog\GetExtraValue.cshtml" />
     <Content Include="Views\ExtraValue\NewAdHoc.cshtml" />
     <Content Include="Views\ExtraValue\DeleteFromQuery.cshtml" />
+    <Content Include="Views\Shared\SiteLayout2c.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
