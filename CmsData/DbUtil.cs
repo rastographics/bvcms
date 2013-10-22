@@ -140,7 +140,7 @@ namespace CmsData
 			var s = HttpRuntime.Cache[Db.Host + "StandardExtraValues2"] as string;
 			if (s == null)
 			{
-				s = Content("StandardExtraValues2", "<Fields />");
+				s = Db.ContentText("StandardExtraValues2", "<Views />");
 				HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues2", s, null,
 					 DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
 			}
@@ -155,9 +155,9 @@ namespace CmsData
 		}
 		public static void SetStandardExtraValues2(string xml)
 		{
-		    var c = Content("StandardExtraValues2") ?? new Content();
+		    var c = Db.Content("StandardExtraValues2");
 		    c.Body = xml;
-			HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues2", c.Body, null,
+			HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues2", xml, null,
 				 DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
 		}
 		public static string FamilyExtraValues()

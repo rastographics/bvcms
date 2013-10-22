@@ -189,11 +189,14 @@ namespace UtilityExtensions
         {
             return s.Split(delimiter.ToCharArray(), nitems);
         }
-        public static string[] SplitLines(this string source)
+        public static string[] SplitLines(this string source, bool noblanks = false)
         {
             if (source == null)
                 return new string[0];
-            return source.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+            var option = noblanks 
+                ? StringSplitOptions.RemoveEmptyEntries 
+                : StringSplitOptions.None;
+            return source.Split(new string[] { "\r\n", "\n" }, option);
         }
         public static int? IntOrNull(this string s)
         {

@@ -2,7 +2,6 @@
 using System.Web;
 using CmsData;
 using CmsWeb.Models;
-using DocumentFormat.OpenXml.Drawing;
 
 namespace CmsWeb.Areas.People.Models
 {

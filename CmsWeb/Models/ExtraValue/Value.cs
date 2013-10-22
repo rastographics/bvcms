@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -15,7 +16,8 @@ namespace CmsWeb.Models.ExtraValues
         [XmlAttribute] public string Type { get; set; }
         [XmlAttribute] public string VisibilityRoles { get; set; }
 
-        [XmlElement("Code")] public List<string> Codes { get; set; }
+        [XmlElement("Code")] 
+        public List<string> Codes { get; set; }
 
         [XmlIgnore] public int Order;
         [XmlIgnore] public int Id;

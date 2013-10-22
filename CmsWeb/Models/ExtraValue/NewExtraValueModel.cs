@@ -82,15 +82,15 @@ namespace CmsWeb.Models.ExtraValues
         }
         public NewExtraValueModel() { }
 
-        public void TryCheckIntegrity()
+        private void TryCheckIntegrity()
         {
-            const string nameAlreadyExistsAsADifferentType = "name already exists as a different type";
+            const string nameAlreadyExistsAsADifferentType = "{0} already exists as a different type";
             string type = ExtraValueLocation == "Adhoc" ? AdhocExtraValueType.Value : ExtraValueType.Value;
             switch (ExtraValueTable)
             {
                 case "People":
                     if (type == "Bits")
-                        foreach (var b in BitCodes().Where(b => DbUtil.Db.PeopleExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
+                        foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.PeopleExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
                     else
                         if (DbUtil.Db.PeopleExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
@@ -98,7 +98,7 @@ namespace CmsWeb.Models.ExtraValues
                     break;
                 case "Family":
                     if (type == "Bits")
-                        foreach (var b in BitCodes().Where(b => DbUtil.Db.FamilyExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
+                        foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.FamilyExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
                     else
                         if (DbUtil.Db.FamilyExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
@@ -106,7 +106,7 @@ namespace CmsWeb.Models.ExtraValues
                     break;
                 case "Organization":
                     if (type == "Bits")
-                        foreach (var b in BitCodes().Where(b => DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
+                        foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
                     else
                         if (DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
@@ -114,7 +114,7 @@ namespace CmsWeb.Models.ExtraValues
                     break;
                 case "Meeting":
                     if (type == "Bits")
-                        foreach (var b in BitCodes().Where(b => DbUtil.Db.MeetingExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
+                        foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.MeetingExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
                     else
                         if (DbUtil.Db.MeetingExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
@@ -123,32 +123,36 @@ namespace CmsWeb.Models.ExtraValues
             }
         }
 
-        public List<string> BitCodes()
+        private List<string> ConvertToCodes()
         {
+            const string defaultCodes = @"
+Option 1
+Option 2
+";
             var codes = ExtraValueType.Value == "Bits"
-                ? ExtraValueCheckboxes
+                ? ExtraValueCheckboxes ?? defaultCodes
                 : ExtraValueType.Value == "Code"
-                ? ExtraValueCodes
-                : "";
-            return codes.SplitLines().Select(ss => BitPrefix + ss).ToList();
+                    ? ExtraValueCodes ?? defaultCodes
+                    : null;
+            return codes.SplitLines(noblanks: true).Select(ss => BitPrefix + ss).ToList();
         }
 
         public string AddAsNewStandard()
         {
-		    ExtraValueName = ExtraValueName.Replace('/', '-');
+            ExtraValueName = ExtraValueName.Replace('/', '-');
             var fields = Views.GetStandardExtraValues(ExtraValueTable);
             var existing = fields.SingleOrDefault(ff => ff.Name == ExtraValueName);
             if (existing != null)
-                throw new Exception("field already exists");
+                throw new Exception("{0} already exists".Fmt(ExtraValueName));
 
             TryCheckIntegrity();
 
             var v = new Value
             {
-                Name = ExtraValueName,
                 Type = ExtraValueType.Value,
-                Codes = BitCodes(),
-                VisibilityRoles = VisibilityRoles
+                Name = ExtraValueName,
+                VisibilityRoles = VisibilityRoles,
+                Codes = ConvertToCodes(),
             };
             var i = Views.GetViewsView(ExtraValueTable, ExtraValueLocation);
             i.view.Values.Add(v);
@@ -274,7 +278,7 @@ namespace CmsWeb.Models.ExtraValues
             if (RemoveAnyValue)
             {
                 cn.Execute("delete from dbo.PeopleExtra where Field = @name and PeopleId in @ids",
-                    new {name = ExtraValueName, ids = list});
+                    new { name = ExtraValueName, ids = list });
                 return;
             }
             switch (AdhocExtraValueType.Value)
@@ -301,6 +305,62 @@ namespace CmsWeb.Models.ExtraValues
                         new { name = ExtraValueName, value = ExtraValueInteger, ids = list });
                     break;
             }
+        }
+
+        public void ConvertToStandard(string name)
+        {
+            ExtraValue ev = null;
+            List<string> codes = null;
+            switch (ExtraValueTable)
+            {
+                case "People":
+                    ev = (from vv in DbUtil.Db.PeopleExtras
+                          where vv.Field == name
+                          select new ExtraValue(vv, null)).First();
+                    if(ev.Type == "Code")
+                        codes = (from vv in DbUtil.Db.PeopleExtras
+                                 where vv.Field == name
+                                 select vv.StrValue).ToList();
+                    break;
+                case "Organization":
+                    ev = (from vv in DbUtil.Db.OrganizationExtras
+                          where vv.Field == name
+                          select new ExtraValue(vv, null)).First();
+                    if(ev.Type == "Code")
+                        codes = (from vv in DbUtil.Db.OrganizationExtras
+                                 where vv.Field == name
+                                 select vv.StrValue).ToList();
+                    break;
+                case "Family":
+                    ev = (from vv in DbUtil.Db.FamilyExtras
+                          where vv.Field == name
+                          select new ExtraValue(vv, null)).First();
+                    if(ev.Type == "Code")
+                        codes = (from vv in DbUtil.Db.FamilyExtras
+                                 where vv.Field == name
+                                 select vv.StrValue).ToList();
+                    break;
+                case "Meeting":
+                    ev = (from vv in DbUtil.Db.MeetingExtras
+                          where vv.Field == name
+                          select new ExtraValue(vv, null)).First();
+                    if(ev.Type == "Code")
+                        codes = (from vv in DbUtil.Db.MeetingExtras
+                                 where vv.Field == name
+                                 select vv.StrValue).ToList();
+                    break;
+                default:
+                    return;
+            }
+            var v = new Value
+            {
+                Type = ev.Type,
+                Name = name,
+                Codes = codes,
+            };
+            var i = Views.GetViewsView(ExtraValueTable, ExtraValueLocation);
+            i.view.Values.Add(v);
+            i.views.Save();
         }
     }
 }

@@ -55,7 +55,16 @@
                 <td>@e.Value</td>
                 <td>@e.TypeDisplay</td>
                 <td class="right">@e.Count.ToString("N0")</td>
-                <td>@(e.Standard ? "Standard" : "Adhoc")</td>
+                <td>
+                    @if (e.Standard)
+                    {
+                        @:Standard
+                    }
+                    else
+                    {
+                        <a href="/ExtraValue/ConvertToStandard/People?name=@e.Field" class="btn btn-mini">Convert to Standard</a>
+                    }
+                </td>
                 @if (User.IsInRole("Admin"))
                 {
                     <td><a class="delete" href="/ExtraValue/DeleteAll?field=@Server.UrlEncode(e.Field)&type=@e.Type&value=@Server.UrlEncode(e.Value)">
