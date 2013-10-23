@@ -244,7 +244,13 @@ namespace CmsWeb.Areas.Main.Models.Report
             var q = q2.OrderByDescending(t => t.Count);
             return q.ToList().Union(Total(q.Sum(t => t.Count)));
         }
-        public string QueryBuider(string command, string key)
+        public string ConvertToSearch(string command, string key)
+        {
+            if (Fingerprint.UseNewLook())
+                return ConvertToQuery(command, key);
+            return ConvertToSearchBuilder(command, key);
+        }
+        private string ConvertToSearchBuilder(string command, string key)
         {
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             qb.CleanSlate(DbUtil.Db);
@@ -314,6 +320,77 @@ namespace CmsWeb.Areas.Main.Models.Report
             }
             DbUtil.Db.SubmitChanges();
             return "/QueryBuilder/Main/" + qb.QueryId;
+        }
+        private string ConvertToQuery(string command, string key)
+        {
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+
+            bool NotAll = key != "All";
+
+            switch (command)
+            {
+                case "ForDecisionType":
+                    cc.AddNewClause(QueryType.DecisionDate, CompareType.GreaterEqual, dt1);
+                    cc.AddNewClause(QueryType.DecisionDate, CompareType.LessEqual, dt2);
+                    if (NotAll)
+                        cc.AddNewClause(QueryType.DecisionTypeId, CompareType.Equal, key);
+                    break;
+                case "ForBaptismAge":
+                    cc.AddNewClause(QueryType.BaptismDate, CompareType.GreaterEqual, dt1);
+                    cc.AddNewClause(QueryType.BaptismDate, CompareType.LessEqual, dt2);
+                    if (NotAll)
+                    {
+                        var a = key.Split('-');
+                        if (a[0].StartsWith("Over "))
+                        {
+                            a = key.Split(' ');
+                            a[0] = (a[1].ToInt() + 1).ToString();
+                            a[1] = "120";
+                        }
+                        cc.AddNewClause(QueryType.Age, CompareType.GreaterEqual, a[0].ToInt());
+                        cc.AddNewClause(QueryType.Age, CompareType.LessEqual, a[1].ToInt());
+                    }
+                    break;
+                case "ForBaptismType":
+                    cc.AddNewClause(QueryType.BaptismDate, CompareType.GreaterEqual, dt1);
+                    cc.AddNewClause(QueryType.BaptismDate, CompareType.LessEqual, dt2);
+                    if (NotAll)
+                        cc.AddNewClause(QueryType.BaptismTypeId, CompareType.Equal, key);
+                    break;
+                case "ForNewMemberType":
+                    cc.AddNewClause(QueryType.JoinDate, CompareType.GreaterEqual, dt1);
+                    cc.AddNewClause(QueryType.JoinDate, CompareType.LessEqual, dt2);
+                    if (NotAll)
+                        cc.AddNewClause(QueryType.JoinCodeId, CompareType.Equal, key);
+                    break;
+                case "ForDropType":
+                    cc.AddNewClause(QueryType.DropDate, CompareType.GreaterEqual, dt1);
+                    cc.AddNewClause(QueryType.DropDate, CompareType.LessEqual, dt2);
+                    if (NotAll)
+                        cc.AddNewClause(QueryType.DropCodeId, CompareType.Equal, key);
+                    cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+                    break;
+                case "DroppedForChurch":
+                    cc.AddNewClause(QueryType.DropDate, CompareType.GreaterEqual, dt1);
+                    cc.AddNewClause(QueryType.DropDate, CompareType.LessEqual, dt2);
+                    switch (key)
+                    {
+                        case "Unknown":
+                            cc.AddNewClause(QueryType.OtherNewChurch, CompareType.IsNull, "");
+                            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+                            break;
+                        case "Total":
+                            break;
+                        default:
+                            cc.AddNewClause(QueryType.OtherNewChurch, CompareType.Equal, key);
+                            break;
+                    }
+                    cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+                    break;
+            }
+            cc.Save(DbUtil.Db);
+            return "/QueryBuilder/Main/" + cc.Id;
         }
     }
 }

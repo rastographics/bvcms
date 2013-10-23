@@ -400,24 +400,44 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult QueryAttendees(int Id)
         {
-            var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
+            if (Fingerprint.UseNewLook())
+            {
+                var cc = DbUtil.Db.ScratchPadCondition();
+                cc.Reset(DbUtil.Db);
+                cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
+                cc.Save(DbUtil.Db);
+                return Redirect("/Query/" + cc.Id);
+            }
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             qb.CleanSlate(DbUtil.Db);
-            qb.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
+            qb.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
             DbUtil.Db.SubmitChanges();
             return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
         }
         public ActionResult QueryVisitors(int Id)
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
+            if (Fingerprint.UseNewLook())
+            {
+                var cc = DbUtil.Db.ScratchPadCondition();
+                cc.Reset(DbUtil.Db);
+                cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
+                var c = cc.AddNewClause(QueryType.AttendTypeAsOf, CompareType.OneOf, "40,VM;50,RG;60,NG");
+                c.StartDate = m.MeetingDate;
+                c.Program = m.Organization.Division.Program.Id;
+                c.Division = m.Organization.DivisionId ?? 0;
+                c.Organization = m.OrganizationId;
+                cc.Save(DbUtil.Db);
+                return Redirect("/Query/" + cc.Id);
+            }
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             qb.CleanSlate(DbUtil.Db);
             qb.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
-            var c = qb.AddNewClause(QueryType.AttendTypeAsOf, CompareType.OneOf, "40,VM;50,RG;60,NG");
-            c.StartDate = m.MeetingDate;
-            c.Program = m.Organization.Division.Program.Id;
-            c.Division = m.Organization.DivisionId.Value;
-            c.Organization = m.OrganizationId;
+            var clause = qb.AddNewClause(QueryType.AttendTypeAsOf, CompareType.OneOf, "40,VM;50,RG;60,NG");
+            clause.StartDate = m.MeetingDate;
+            clause.Program = m.Organization.Division.Program.Id;
+            clause.Division = m.Organization.DivisionId ?? 0;
+            clause.Organization = m.OrganizationId;
 
             DbUtil.Db.SubmitChanges();
             return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
@@ -425,14 +445,27 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult QueryAbsents(int Id)
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
+            if (Fingerprint.UseNewLook())
+            {
+                var cc = DbUtil.Db.ScratchPadCondition();
+                cc.Reset(DbUtil.Db);
+                cc.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, Id);
+                var c = cc.AddNewClause(QueryType.WasMemberAsOf, CompareType.Equal, "1,T");
+                c.StartDate = m.MeetingDate;
+                c.Program = m.Organization.Division.Program.Id;
+                c.Division = m.Organization.DivisionId ?? 0;
+                c.Organization = m.OrganizationId;
+                cc.Save(DbUtil.Db);
+                return Redirect("/Query/" + cc.Id);
+            }
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             qb.CleanSlate(DbUtil.Db);
             qb.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, m.MeetingId);
-            var c = qb.AddNewClause(QueryType.WasMemberAsOf, CompareType.Equal, "1,T");
-            c.StartDate = m.MeetingDate;
-            c.Program = m.Organization.Division.Program.Id;
-            c.Division = m.Organization.DivisionId.Value;
-            c.Organization = m.OrganizationId;
+            var clause = qb.AddNewClause(QueryType.WasMemberAsOf, CompareType.Equal, "1,T");
+            clause.StartDate = m.MeetingDate;
+            clause.Program = m.Organization.Division.Program.Id;
+            clause.Division = m.Organization.DivisionId ?? 0;
+            clause.Organization = m.OrganizationId;
 
             DbUtil.Db.SubmitChanges();
             return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
@@ -440,6 +473,31 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult QueryRegistered(int Id, string type)
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
+            if (Fingerprint.UseNewLook())
+            {
+                var cc = DbUtil.Db.ScratchPadCondition();
+                cc.Reset(DbUtil.Db);
+                switch (type)
+                {
+                    case "Registered":
+                        cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
+                        break;
+                    case "Attends":
+                        cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
+                        cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
+                        break;
+                    case "Absents":
+                        cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
+                        cc.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, m.MeetingId);
+                        break;
+                    case "UnregisteredAttends":
+                        cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.NotEqual, m.MeetingId);
+                        cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
+                        break;
+                }
+                cc.Save(DbUtil.Db);
+                return Redirect("/Query/" + cc.Id);
+            }
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             qb.CleanSlate(DbUtil.Db);
             switch (type)

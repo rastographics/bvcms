@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsWeb.Models;
 using UtilityExtensions;
-using CmsData;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
@@ -18,11 +13,6 @@ namespace CmsWeb.Areas.Main.Controllers
             if (name.HasValue())
             {
                 m.m.name = name;
-//                if (m.Count() == 1)
-//                {
-//                    var pid = m.FetchPeople().Single().PeopleId;
-//                    return Redirect("/Person/Index/" + pid);
-//                }
             }
             else
             {
@@ -49,7 +39,7 @@ namespace CmsWeb.Areas.Main.Controllers
             UpdateModel(m);
             UpdateModel(m.m);
             Session["FindPeopleInfo"] = m.m;
-            return Content("/QueryBuilder/Main/" + m.ConvertToQuery());
+            return Content(m.ConvertToSearch());
         }
     }
 }

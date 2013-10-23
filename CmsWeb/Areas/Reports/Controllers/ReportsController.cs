@@ -1,9 +1,5 @@
 using System;
-using System.Data;
-using System.Linq;
-using System.Data.Linq;
 using System.Web.Mvc;
-using System.Windows.Forms.VisualStyles;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Main.Models.Avery;
@@ -11,11 +7,7 @@ using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Main.Models.Report;
 using CmsData;
 using CmsWeb.Models;
-using CmsWeb.Models.ExtraValues;
-using Dapper;
-using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
-using System.Data.SqlClient;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
@@ -166,16 +158,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (!id.HasValue)
                 return Content("no query");
             return new RegistrationResult(id, oid);
-        }
-        [GET("Reports2/RecentAbsents/{id}")]
-        public ActionResult RecentAbsents1(Guid id)
-        {
-            int? divid = null;
-            var cn = new SqlConnection(Util.ConnectionString);
-            cn.Open();
-            var q = cn.Query("RecentAbsentsSP", new { orgid = id, divid = divid, days = 36 },
-                            commandType: CommandType.StoredProcedure, commandTimeout: 600);
-            return View("RecentAbsents", q);
         }
 
         [GET("Reports2/FamilyDirectory/{id}")]

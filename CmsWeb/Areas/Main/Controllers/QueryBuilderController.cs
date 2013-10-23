@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult Main(int? id, int? run)
         {
-            if (DbUtil.Db.UserPreference("UseNewLook", "false").ToBool())
+            if (Fingerprint.UseNewLook())
                 return Redirect("/Query");
 
             ViewData["Title"] = "QueryBuilder";

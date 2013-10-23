@@ -211,6 +211,16 @@ namespace CmsData
                     return Expressions.FamilyHasChildrenAged2(parm, c.Quarters, CompType, c.CodeIds == "1");
                 case QueryType.FamilyHasChildrenAged3:
                     return Expressions.FamilyHasChildrenAged3(parm, c.Quarters, CompType, c.CodeIntIds);
+                // G --------------------
+                case QueryType.GuestAsOf:
+                    return Expressions.AttendedAsOf(parm,
+                               c.StartDate,
+                               c.EndDate,
+                               c.Program,
+                               c.Division,
+                               CompType,
+                               c.CodeIds == "1",
+                               guestonly: true);
                 // H --------------------
                 case QueryType.HasBalanceInCurrentOrg:
                     return Expressions.HasBalanceInCurrentOrg(Db, parm,

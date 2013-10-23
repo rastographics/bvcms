@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [GET("Org/Index/{id:int}")]
         public ActionResult Org(int? id)
         {
-            if (!DbUtil.Db.UserPreference("UseNewLook", "false").ToBool())
+            if (!Fingerprint.UseNewLook())
                 return Redirect("/Organization/Index/" + id);
             if (!id.HasValue)
                 return Content("no org");

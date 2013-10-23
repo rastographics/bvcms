@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [GET("Contact/{id}")]
         public ActionResult Index(int id)
         {
-            if (DbUtil.Db.UserPreference("UseNewLook", "false").ToBool())
+            if (Fingerprint.UseNewLook())
                 return Redirect("/Contact2/" + id);
             var m = new ContactModel(id);
             if (m.contact == null)

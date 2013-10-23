@@ -91,9 +91,13 @@ public class Fingerprint
     }
     public static string Layout()
     {
-        return DbUtil.Db.UserPreference("UseNewLook", "false").ToBool()
+        return (UseNewLook())
             ? "~/Views/Shared/SiteLayout2c.cshtml"
             : "~/Views/Shared/SiteLayout.cshtml";
 
+    }
+    public static bool UseNewLook()
+    {
+        return DbUtil.Db.UserPreference("UseNewLook", "false").ToBool();
     }
 }
