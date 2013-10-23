@@ -48,7 +48,7 @@
         {
             <tr>
                 <td>
-                    <a href="/ExtraValue/QueryCodes?field=@Server.UrlEncode(e.Field)&value=@Server.UrlEncode(e.Value)">@e.Field</a>
+                    <a href="@e.QueryUrl">@e.Field</a>
                     <a class="rename" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)">
                         <i class="icon-pencil"></i></a>
                 </td>
@@ -62,12 +62,12 @@
                     }
                     else
                     {
-                        <a href="/ExtraValue/ConvertToStandard/People?name=@e.Field" class="btn btn-mini">Convert to Standard</a>
+                        <a href="@e.ConvertToStandardUrl" class="btn btn-mini">Convert to Standard</a>
                     }
                 </td>
                 @if (User.IsInRole("Admin"))
                 {
-                    <td><a class="delete" href="/ExtraValue/DeleteAll?field=@Server.UrlEncode(e.Field)&type=@e.Type&value=@Server.UrlEncode(e.Value)">
+                    <td><a class="delete" href="">
                             <i class="icon-remove"></i>
                         </a></td>
                 }

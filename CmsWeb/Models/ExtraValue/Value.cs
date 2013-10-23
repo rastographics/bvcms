@@ -35,12 +35,7 @@ namespace CmsWeb.Models.ExtraValues
                     Name = ev.Field,
                     Standard = false,
                 };
-                f.Type = ev.StrValue.HasValue() ? "Code"
-                    : ev.Data.HasValue() ? "Data"
-                    : ev.DateValue.HasValue ? "Date"
-                    : ev.IntValue.HasValue ? "Int"
-                    : ev.BitValue.HasValue ? "Bit"
-                    : "Code";
+                f.Type = ev.Type;
             }
             else
                 f.Standard = true;
