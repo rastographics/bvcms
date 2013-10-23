@@ -4,7 +4,7 @@
 @model CmsWeb.Areas.Main.Models.Other.VolunteerModel
 @{
     ViewBag.Title = "Volunteer";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
 
     IQueryable<BackgroundCheck> bg = null;
     IQueryable<BackgroundCheck> credit = null;

@@ -17,7 +17,7 @@
             <a href="#" class="trigger-dropdown">People
                 <img src="/Content/images/dnarrowt.png" />
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown2-menu">
                 <ul>
                     <li>@Html.ActionLink("Search", "Index", "PeopleSearch", new { Area = "Main" }, null)</li>
                     @if (DbUtil.Db.Setting("MenuAddPeople", "true") == "true")
@@ -45,7 +45,7 @@
             <a href="#" class="trigger-dropdown">Organization
                 <img src="/Content/images/dnarrowt.png" />
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown2-menu">
                 <ul>
                     <li>@Html.ActionLink("Search", "Index", "OrgSearch", new { Area = "Main" }, null)</li>
                     @if (User.IsInRole("Edit"))
@@ -70,7 +70,7 @@
             <a href="#" class="trigger-dropdown">Reports
                 <img src="/Content/images/dnarrowt.png" />
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown2-menu">
                 <ul>
                     <li>@Html.ActionLink("Vital Stats", "VitalStats", "Reports", new { Area = "Main" }, null)</li>
                     <li>@Html.ActionLink("Week at a Glance", "ChurchAttendance", "Reports", new { Area = "Main" }, null)</li>
@@ -101,7 +101,7 @@
                 <a href="#" class="trigger-dropdown">Contributions
                     <img src="/Content/images/dnarrowt.png" />
                 </a>
-                <div class="dropdown-menu">
+                <div class="dropdown2-menu">
                     <ul>
                         <li>@Html.ActionLink("Bundles", "Index", "Bundles", new { Area = "Finance" }, null)</li>
                         <li>@Html.ActionLink("All Contributions (Search)", "Index", "Contributions", new { Area = "Finance" }, null)</li>
@@ -129,7 +129,7 @@
                 <a href="#" class="trigger-dropdown">Admin
                     <img src="/Content/images/dnarrowt.png" />
                 </a>
-                <div class="dropdown-menu">
+                <div class="dropdown2-menu">
                     <ul>
                         @if (admin)
                         {
@@ -184,7 +184,7 @@
             <a href="#" class="trigger-dropdown">Help
                 <img src="/Content/images/dnarrowt.png" />
             </a>
-            <div class="dropdown-menu anchor-right">
+            <div class="dropdown2-menu anchor-right">
                 <ul>
                     <li>@Helper.AnchorLink("Help Documentation", @Util.HelpLink(Util.Helpfile), "_blank")</li>
                     <li>@Helper.JQueryIdLink("Email Support", "emailsupport")</li>

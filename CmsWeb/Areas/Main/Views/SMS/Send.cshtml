@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "Send";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
     var url = ViewBag.QBID is Guid ? "/Email/Index2/" + ViewBag.QBID : "/Email/Index/" + ViewBag.QBID;
 }
 

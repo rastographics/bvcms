@@ -1,9 +1,10 @@
 ﻿@model CmsWeb.Areas.Finance.Models.BundleModel
+@using CmsData
 @using CmsWeb
 @using UtilityExtensions
 @{
     ViewBag.Title = "Contribution Bundle";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
 }
 @section head 
 {

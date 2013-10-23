@@ -27,6 +27,8 @@ namespace CmsWeb.Areas.Search.Controllers
         [GET("Query/{id:guid?}")]
         public ActionResult Index(Guid? id)
         {
+            if (!DbUtil.Db.UserPreference("UseNewLook", "false").ToBool())
+                return Redirect("/QueryBuilder/Main");
             ViewBag.Title = "QueryBuilder";
             var m = new QueryModel();
             m.Pager.Set("/Query/Results/");

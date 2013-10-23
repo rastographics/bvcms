@@ -22,6 +22,8 @@ namespace CmsWeb.Areas.Main.Controllers
         const string needNotify = "WARNING: please add the notify persons on messages tab.";
         public ActionResult Index(int? id)
         {
+            if (DbUtil.Db.UserPreference("UseNewLook", "false").ToBool())
+                return Redirect("/Org/" + id);
             if (!id.HasValue)
                 return Content("no org");
             if (Util2.CurrentOrgId != id)

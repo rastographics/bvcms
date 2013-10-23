@@ -42,7 +42,6 @@
 
     $('#UnTagAll').live("click", function (ev) {
         ev.preventDefault();
-        $('div.dropdown-menu').hide();
         $.block();
         $.post(this.href, null, function (ret) {
             $(".taguntag:visible").text(ret);

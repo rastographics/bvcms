@@ -2,7 +2,7 @@
 @using UtilityExtensions
 @{
     ViewBag.Title = "Meetings";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
     var meetings = Model.MeetingsForDate();
 }
 @section head

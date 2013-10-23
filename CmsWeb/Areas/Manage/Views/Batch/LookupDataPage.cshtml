@@ -2,6 +2,6 @@
 @model IEnumerable<TitleItems>
 @{
     ViewBag.Title = "LookupData";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
     Html.RenderPartial("LookupData", Model);
 }

@@ -3,7 +3,7 @@
 @model CmsWeb.Models.MeetingModel
 @{
     ViewBag.Title = "Meeting";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
     var RegularMeetingHeadCount = DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
     var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount == "enable";
 }
@@ -46,38 +46,38 @@ This will allow you to mark them as members.
 <table>
 <tr>
     <td rowspan="2">
-        <table class="roundbox" cellspacing="5">
+        <table class="roundbox pad5">
             <tr><td colspan="2" nowrap>
-                <h2><a href="/Organization/Index/@Model.meeting.OrganizationId">@Model.meeting.Organization.OrganizationName</a> <span style="font-size:12px">@Model.meeting.MeetingDate.FormatDateTm()</span></h2></td></tr>
-        @if (User.IsInRole("Attendance"))
-        {
-            <tr><td class="right">Description:</td>
-                <td><span id="d-@Model.meeting.MeetingId" class="clickEdit">@Model.meeting.Description</span></td></tr>
-            <tr><td class="right">Meeting Type:</td>
-                <td><span id='g-@Model.meeting.MeetingId' class='clickSelectG'>@(Model.meeting.GroupMeetingFlag ? "Group (headcount)" : "Regular")</span> | 
-                    <span id='c-@Model.meeting.MeetingId' class='clickSelectC'>@Model.AttendCreditType()</span>
-                </td></tr>
-        }
-        else
-        {
-            <tr><td class="right">Description:</td>
-                <td>@Model.meeting.Description</td></tr>
-            <tr><td class="right">Meeting Type:</td>
-                <td>@(Model.meeting.GroupMeetingFlag ? "Group (headcount)" : "Regular") |
-                    @Model.AttendCreditType()
-                </td></tr>
-        }
+                    <h2><a href="/Organization/Index/@Model.meeting.OrganizationId">@Model.meeting.Organization.OrganizationName</a> <span style="font-size:12px">@Model.meeting.MeetingDate.FormatDateTm()</span></h2></td></tr>
+            @if (User.IsInRole("Attendance"))
+            {
+                <tr><td class="right">Description:</td>
+                    <td><span id="d-@Model.meeting.MeetingId" class="clickEdit">@Model.meeting.Description</span></td></tr>
+                <tr><td class="right">Meeting Type:</td>
+                    <td><span id='g-@Model.meeting.MeetingId' class='clickSelectG'>@(Model.meeting.GroupMeetingFlag ? "Group (headcount)" : "Regular")</span> | 
+                        <span id='c-@Model.meeting.MeetingId' class='clickSelectC'>@Model.AttendCreditType()</span>
+                    </td></tr>
+            }
+            else
+            {
+                <tr><td class="right">Description:</td>
+                    <td>@Model.meeting.Description</td></tr>
+                <tr><td class="nowrap right">Meeting Type:</td>
+                    <td>@(Model.meeting.GroupMeetingFlag ? "Group (headcount)" : "Regular") |
+                        @Model.AttendCreditType()
+                    </td></tr>
+            }
             <tr>
-            	<td class="right top">Attendance:</td>
+                <td class="right top">Attendance:</td>
                 <td>
-                    <fieldset>
-                        <table width="100%" cellpadding="4">
+                    <fieldset style="padding:3px;border:1px solid #c0c0c0;">
+                        <table width="100%" class="pad0">
                             <tr>
                                 <td class="right">HeadCount:</td>
-                                <td class="right" id="HeadCount">
+                                <td id="HeadCount" class="right">
                                     @if (User.IsInRole("Attendance") && CanEditHeadCount)
                                     {
-                                        <span id="h=@Model.meeting.MeetingId" class="clickEdit headcount">@Model.meeting.HeadCount.ToStringNoZero()</span>
+                                        <span id="h=@Model.meeting.MeetingId" class="headcount">@Model.meeting.HeadCount.ToStringNoZero()</span>
                                     }
                                     else
                                     {
@@ -109,32 +109,32 @@ This will allow you to mark them as members.
                 </td>
             </tr>
             <tr>
-              <td class="right">Show:</td>
-              <td nowrap id="showbuttons" class="center">
-                <table width="100%"><tr>
-                    <td><input type="radio" id="showall" name="show" value="all" /><label for="showall">All</label></td>
-                    <td><input type="radio" id="showattends" name="show" value="attends" checked="checked" /><label for="showattends">Attends</label></td>
-                    <td><input type="radio" id="showabsents" name="show" value="absents" /><label for="showabsents">Absents</label></td>
-                    <td><input type="radio" id="showreg" name="show" value="reg" /><label for="showreg">Registered</label></td>
-                </tr></table>
-              </td>
+                <td class="right">Show:</td>
+                <td nowrap id="showbuttons" class="center">
+                    <table width="100%"><tr>
+                                            <td><input type="radio" id="showall" name="show" value="all" /><label for="showall">All</label></td>
+                                            <td><input type="radio" id="showattends" name="show" value="attends" checked="checked" /><label for="showattends">Attends</label></td>
+                                            <td><input type="radio" id="showabsents" name="show" value="absents" /><label for="showabsents">Absents</label></td>
+                                            <td><input type="radio" id="showreg" name="show" value="reg" /><label for="showreg">Registered</label></td>
+                                        </tr></table>
+                </td>
             </tr>
             
             @if (User.IsInRole("Attendance"))
             {
-            <tr><td class="right">Enable:</td><td>
-                <table width="100%"><tr>
-                  <td class="left" nowrap>
-                    <label for="editing" style="padding-right:2em;">@Html.CheckBox("editing", Model.showall) Editing</label><br>
-                    <label for="registering" style="padding-right:2em;">@Html.CheckBox("registering", Model.showregister) Register</label><br />
-                    <label for="currmembers">@Html.CheckBox("currmembers", Model.currmembers)</label> Current Mbrs
-                  </td>
-                  <td class="right" nowrap>
-                    <a id="addregistered" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=registered" class="bt hidden">Add Registered</a>
-                    <a id="addvisitor" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=visitor" class="bt" title="shift-click to Join All Guests">Add Guests</a>
-                  </td>
-                </tr></table>
-            </td></tr>
+                <tr><td class="right">Enable:</td><td>
+                                                      <table width="100%"><tr>
+                                                                              <td class="left" nowrap>
+                                                                                  <label for="editing" style="padding-right:2em;">@Html.CheckBox("editing", Model.showall) Editing</label><br>
+                                                                                  <label for="registering" style="padding-right:2em;">@Html.CheckBox("registering", Model.showregister) Register</label><br />
+                                                                                  <label for="currmembers">@Html.CheckBox("currmembers", Model.currmembers)</label> Current Mbrs
+                                                                              </td>
+                                                                              <td class="right" nowrap>
+                                                                                  <a id="addregistered" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=registered" class="bt hidden">Add Registered</a>
+                                                                                  <a id="addvisitor" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=visitor" class="bt" title="shift-click to Join All Guests">Add Guests</a>
+                                                                              </td>
+                                                                          </tr></table>
+                                                  </td></tr>
             }
         </table>
     </td>
@@ -144,7 +144,7 @@ This will allow you to mark them as members.
             <a href="#" class="trigger-dropdown">
                 Other Management <img src="/Content/images/dnarrow.png" />
             </a>
-            <div class="dropdown-menu has-tip">
+            <div class="dropdown2-menu has-tip">
                 <ul>
                     @if (Model.meeting.MeetingDate >= DateTime.Today)
                     {

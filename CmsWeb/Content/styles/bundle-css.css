@@ -1203,14 +1203,14 @@ a.trigger-dropdown:hover {
 }
 
 
-.dropdown-menu {
+.dropdown2-menu {
     font: 14px sans-serif;
     position: absolute;
     z-index: 9999999;
     display: none;
 }
 
-    .dropdown-menu UL {
+    .dropdown2-menu UL {
         min-width: 160px;
         list-style: none;
         background: #FFF;
@@ -1223,11 +1223,11 @@ a.trigger-dropdown:hover {
         margin: 0;
     }
 
-    .dropdown-menu.has-tip {
+    .dropdown2-menu.has-tip {
         margin-top: 8px;
     }
 
-        .dropdown-menu.has-tip:before {
+        .dropdown2-menu.has-tip:before {
             position: absolute;
             top: -6px;
             left: 9px;
@@ -1239,12 +1239,12 @@ a.trigger-dropdown:hover {
             display: inline-block;
         }
 
-        .dropdown-menu.has-tip.anchor-right:before {
+        .dropdown2-menu.has-tip.anchor-right:before {
             left: auto;
             right: 9px;
         }
 
-        .dropdown-menu.has-tip:after {
+        .dropdown2-menu.has-tip:after {
             position: absolute;
             top: -5px;
             left: 10px;
@@ -1255,18 +1255,18 @@ a.trigger-dropdown:hover {
             display: inline-block;
         }
 
-        .dropdown-menu.has-tip.anchor-right:after {
+        .dropdown2-menu.has-tip.anchor-right:after {
             left: auto;
             right: 10px;
         }
 
 
-    .dropdown-menu.has-scroll UL {
+    .dropdown2-menu.has-scroll UL {
         max-height: 358px;
         overflow: auto;
     }
 
-    .dropdown-menu li.header {
+    .dropdown2-menu li.header {
         margin-top: 9px;
         display: block;
         padding: 3px 15px;
@@ -1278,14 +1278,14 @@ a.trigger-dropdown:hover {
         text-transform: uppercase;
     }
 
-    .dropdown-menu li {
+    .dropdown2-menu li {
         list-style: none;
         padding: 0;
         margin: 0;
         line-height: 18px;
     }
 
-        .dropdown-menu li > a {
+        .dropdown2-menu li > a {
             display: block;
             color: #555;
             text-decoration: none;
@@ -1294,13 +1294,13 @@ a.trigger-dropdown:hover {
             white-space: nowrap;
         }
 
-            .dropdown-menu li > a:hover {
+            .dropdown2-menu li > a:hover {
                 background-color: #08C;
                 color: #FFF;
                 cursor: pointer;
             }
 
-    .dropdown-menu li.divider {
+    .dropdown2-menu li.divider {
         height: 1px;
         background: #E5E5E5;
         margin: 5px 1px;
@@ -1310,7 +1310,7 @@ a.trigger-dropdown:hover {
 body, html {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     background-image: none;
-    font-size: 12px;
+    font-size: 13px;
     color: #222;
 }
 
@@ -1482,7 +1482,7 @@ a, a:visited, a:focus {
     width: 100%;
 }
 
-#main div.homebox {
+div.homebox {
     height: 570px;
     width: 30%;
     float: left;
@@ -1675,7 +1675,7 @@ table.aspgrid tr th {
     z-index: 500!important;
 }
 
-#SearchText {
+div.header #SearchText {
     background-image: url('/images/magnifier.png');
     background-repeat: no-repeat;
     background-position: top left;

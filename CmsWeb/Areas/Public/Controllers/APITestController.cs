@@ -66,14 +66,19 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult UseNewLook()
         {
             DbUtil.Db.SetUserPreference("UseNewLook", true);
-            return Redirect("/Person2/Current");
+            if(Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.ToString());
+            return Redirect("/");
         }
         [Authorize(Roles = "Newlook")]
         public ActionResult UseOldLook()
         {
             DbUtil.Db.SetUserPreference("UseNewLook", false);
+            if(Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.ToString());
             return Redirect("/");
         }
+
         [Authorize(Roles = "Newlook")]
         public ActionResult UseAdvancedSearch()
         {

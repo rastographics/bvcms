@@ -1,11 +1,10 @@
 ﻿@using CmsData
 @using CmsWeb.Models
-@using CmsWeb
 @using UtilityExtensions
 @model PeopleSearchModel
 @{
 	ViewBag.Title = "People Search";
-	Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
 }
 @section head 
 {
@@ -21,7 +20,7 @@
     @Fingerprint.Script("/Scripts/Search/PeopleSearch.js")
 }
 <form id="peoplesearch" method="post" action="/PeopleSearch/Index">
-<table id="searchvalues" cellspacing="5" class="roundbox">
+<table id="searchvalues" class="roundbox pad5">
 <tr><td colspan="4"><h2>People Search</h2></td></tr>
 	<tr>
 		<th class="right"> Name/ID#: </th>

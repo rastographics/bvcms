@@ -954,3 +954,27 @@ div.legend {
     border: 0;
     border-bottom: 1px solid #e5e5e5;
 }
+#main-tab form li ul {
+    margin-left: 0;
+}
+.roundbox h2 {
+    line-height: inherit;
+}
+#oldpages table {
+    max-width: inherit;
+    background-color: inherit;
+    border-collapse: inherit;
+    border-spacing: inherit;
+}
+table.pad5 td {
+    padding: 5px;
+}
+table.pad0 td {
+    padding: 0;
+}
+#oldpages label {
+    display: inline;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+}

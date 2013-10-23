@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Caching;
 using System.Web.Hosting;
 using System.Xml.Linq;
+using CmsData;
+using UtilityExtensions;
 
 public class Fingerprint
 {
@@ -86,5 +88,12 @@ public class Fingerprint
             HttpRuntime.Cache.Insert(path, result.ToString(), new CacheDependency(absolute));
         }
         return new HtmlString(HttpRuntime.Cache[path] as string);
+    }
+    public static string Layout()
+    {
+        return DbUtil.Db.UserPreference("UseNewLook", "false").ToBool()
+            ? "~/Views/Shared/SiteLayout2c.cshtml"
+            : "~/Views/Shared/SiteLayout.cshtml";
+
     }
 }
