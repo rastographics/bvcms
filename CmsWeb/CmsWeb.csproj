@@ -849,6 +849,12 @@
       <DependentUpon>jquery.bootstrap-growl.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Bootstrap\spin.min.js" />
+    <Content Include="Scripts\Bundle\main2c.js">
+      <DependentUpon>main2c.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bundle\main2c.min.js">
+      <DependentUpon>main2c.js.bundle</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bundle\org.js">
       <DependentUpon>org.js.bundle</DependentUpon>
     </Content>
@@ -1045,10 +1051,10 @@
       <DependentUpon>main.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Bundle\main2.js">
-      <DependentUpon>main2c.js.bundle</DependentUpon>
+      <DependentUpon>main2.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Bundle\main2.min.js">
-      <DependentUpon>main2c.js.bundle</DependentUpon>
+      <DependentUpon>main2.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Meeting\meeting-ipad.min.js">
       <DependentUpon>meeting-ipad.js</DependentUpon>
