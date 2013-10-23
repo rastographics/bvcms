@@ -215,7 +215,6 @@
     <Compile Include="Areas\OnlineReg\Controllers\OtherRegistrations.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
-    <Compile Include="Areas\OnlineReg\Controllers\SpecialRegistration.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\SpecialRegModel.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMembersDialogController.cs" />

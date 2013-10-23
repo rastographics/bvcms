@@ -136,11 +136,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 					TempData["ps"] = m.UserPeopleId;
 					return Redirect("/OnlineReg/ManageVolunteer/{0}".Fmt(m.orgid));
 				}
-				if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
-				{
-					TempData["ps"] = m.UserPeopleId;
-					return Redirect("/OnlineReg/SpecialRegistration/{0}".Fmt(m.orgid));
-				}
 				if (showfamily != true && p.org != null && p.Found == true)
 				{
 					p.IsFilled = p.org.OrganizationMembers.Count() >= p.org.Limit;
@@ -196,6 +191,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				TempData["mg"] = Util.UserPeopleId;
 				return Content("/OnlineReg/ManageGiving/{0}".Fmt(m.orgid));
 			}
+
 			if (m.UserSelectsOrganization())
 				m.List[0].ValidateModelForFind(ModelState, m);
 			m.List[0].LoggedIn = true;
@@ -326,13 +322,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			p.ShowAddress = true;
 			return FlowList(m, "ShowMoreInfo");
 		}
+
 		[HttpPost]
 		public ActionResult PersonFind(int id, OnlineRegModel m)
 		{
 			m.History.Add("PersonFind id=" + id);
+
 			if (id >= m.List.Count)
 				return FlowList(m, "PersonFind");
+
 			DbUtil.Db.SetNoLock();
+
 			var p = m.List[id];
 			if (p.IsValidForNew)
 				return ErrorResult(m, new Exception("Unexpected onlinereg state: IsValidForNew is true and in PersonFind"), "PersonFind, unexpected state");
@@ -365,8 +365,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			if (p.ManageSubscriptions()
 				 || p.OnlinePledge()
 				 || p.ManageGiving()
-				 || m.ChoosingSlots()
-				 || m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
+				 || m.ChoosingSlots())
 			{
 				p.OtherOK = true;
 			}
@@ -541,6 +540,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		public ActionResult CompleteRegistration(OnlineRegModel m)
 		{
 			m.History.Add("CompleteRegistration");
+
+			if( m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript )
+			{
+				SpecialRegModel.ParseResults( m.orgid ?? 0, m.UserPeopleId ?? 0, Request.Form );
+				return View( "SpecialRegistrationResults" );
+			}
+
 			if (m.AskDonation() && !m.donor.HasValue && m.donation > 0)
 			{
 				SetHeaders(m);
