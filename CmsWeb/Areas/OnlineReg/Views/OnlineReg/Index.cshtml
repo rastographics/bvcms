@@ -60,7 +60,7 @@ else if (msg.HasValue())
 }
 else
 { 
-<form class="DisplayEdit" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
+<form id="completeReg" class="DisplayEdit" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
 @Html.Partial("Flow/List", Model)
 </form>
 }

@@ -350,7 +350,7 @@
             <div>@Html.ValidationMessageFor(m => m.paydeposit)</div></td>
     </tr>
 }
-@if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount())
+@if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript())
 { 
    <tr>
         <td></td>
@@ -386,10 +386,21 @@
     </table></td>
     </tr>
 }
-    <tr><td class="right" colspan="2">
-			<input type="button" id="otheredit" href="/OnlineReg/SubmitOtherInfo/@index" class="submitbutton ajax" 
-				   value="Submit" />
-<div class="formerror">@Html.ValidationMessage("Form")</div>
-        </td>
-    </tr>
 
+@if( Model.IsSpecialScript() )
+{
+	<tr>
+		<td colspan="2">
+			@Html.Raw( Model.GetSpecialScript() )
+		</td>
+	</tr>
+}
+else
+{
+	<tr><td class="right" colspan="2">
+		    <input type="button" id="otheredit" href="/OnlineReg/SubmitOtherInfo/@index" class="submitbutton ajax" 
+		           value="Submit" />
+		    <div class="formerror">@Html.ValidationMessage( "Form" )</div>
+	    </td>
+	</tr>
+}
