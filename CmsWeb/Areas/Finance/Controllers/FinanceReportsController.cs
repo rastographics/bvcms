@@ -54,6 +54,14 @@ namespace CmsWeb.Areas.Finance.Controllers
 		[HttpPost]
         public ActionResult TotalsByFundResults(TotalsByFundModel m)
         {
+            if(m.IncludeBundleType)
+                return View("TotalsByFundResults2", m);
+            return View(m);
+        }
+		[HttpGet]
+        public ActionResult BundleTotals()
+		{
+			var m = new TotalsByFundModel();
             return View(m);
         }
         public ActionResult PledgeReport()

@@ -1,6 +1,4 @@
 ﻿@model CmsWeb.Models.ContributionSearchModel
-@using CmsWeb
-@using UtilityExtensions
 @{
     ViewBag.Title = "Contributions";
     Layout = Fingerprint.Layout();
@@ -57,15 +55,20 @@
                 </tr>
                 <tr>
                     <th class="right">Bundle Type:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.BundleType, Model.BundleTypes())</td>
+                    <td class="nowrap">@Html.DropDownListFor(vv => vv.SearchInfo.BundleType, Model.BundleTypes()) 
+                        Closed Bundles Only: @Html.CheckBoxFor(vv => vv.SearchInfo.ClosedBundlesOnly)</td>
                 </tr>
                 <tr>
                     <th class="right">Contribution Type:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Type, Model.ContributionTypes())</td>
+                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Type, Model.ContributionTypes())
+                        Campuses: @Html.DropDownListFor(vv => vv.SearchInfo.CampusId, Model.Campuses())
+                    </td>
                 </tr>
                 <tr>
                     <th class="right">Fund:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.FundId, Model.Funds())</td>
+                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.FundId, Model.Funds())
+                        Online: @Html.DropDownListFor(vv => vv.SearchInfo.Online, Model.OnlineOptions())
+                    </td>
                 </tr>
                 <tr>
                     <th class="right">Status:</th>
@@ -85,6 +88,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="right">
+                        <a id="Bundles">Bundle Totals</a>
                         <a id="NewSearch" class="bt">Clear</a>
                         <a id="export" class="bt">Export</a>
                         <a id="search" class="bt blue">Search</a>

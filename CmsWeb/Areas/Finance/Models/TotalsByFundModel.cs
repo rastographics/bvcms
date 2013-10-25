@@ -5,7 +5,10 @@ using System.Data.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.API;
+using CmsData.Codes;
 using CmsData.View;
+using DocumentFormat.OpenXml.Wordprocessing;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -21,6 +24,9 @@ namespace CmsWeb.Models
         public int Online { get; set; }
         public bool Pledges { get; set; }
         public bool IncUnclosedBundles { get; set; }
+        public bool IncludeBundleType { get; set; }
+        public int? FundId { get; set; }
+        public string closedbundlesonly { get { return IncUnclosedBundles ? "false" : "true"; } }
 
         public TotalsByFundModel()
         {
@@ -36,19 +42,52 @@ namespace CmsWeb.Models
 
         public IEnumerable<FundTotalInfo> TotalsByFund()
         {
-            var q = from c in DbUtil.Db.GetTotalContributions2(Dt1, Dt2, CampusId, NonTaxDeductible, IncUnclosedBundles)
-                    where Online == 2 || (Online == 1 && c.OnLine == 1) || (Online == 0 && c.OnLine == 0)
-                    group c by new { c.FundId, c.QBSynced}
-                        into g
-                        orderby g.Key.FundId, g.Key.QBSynced
-                        select new FundTotalInfo
-                                   {
-                                       FundId = g.Key.FundId,
-                                       QBSynced = g.Key.QBSynced,
-                                       FundName = g.First().FundName,
-                                       Total = g.Sum(t => t.Amount).Value,
-                                       Count = g.Count(),
-                                   };
+            List<FundTotalInfo> q = null;
+
+            var api = new APIContributionSearchModel(DbUtil.Db)
+            {
+                model =
+                {
+                    FundId = FundId,
+                    StartDate = Dt1,
+                    EndDate = Dt2,
+                    ClosedBundlesOnly = !IncUnclosedBundles,
+                    TaxNonTax = NonTaxDeductible ? "All" : "TaxDed",
+                    CampusId = CampusId,
+                    Status = ContributionStatusCode.Recorded,
+                    Online = Online
+                }
+            };
+
+            if (IncludeBundleType)
+                q = (from c in api.FetchContributions()
+                     let BundleType = c.BundleDetails.First().BundleHeader.BundleHeaderType.Description
+                     let BundleTypeId = c.BundleDetails.First().BundleHeader.BundleHeaderTypeId
+                     group c by new { c.FundId, c.QBSyncID, BundleTypeId, BundleType } into g
+                     orderby g.Key.FundId, g.Key.QBSyncID, g.Key.BundleTypeId
+                     select new FundTotalInfo
+                                {
+                                    BundleType = g.Key.BundleType,
+                                    BundleTypeId = g.Key.BundleTypeId,
+                                    FundId = g.Key.FundId,
+                                    QBSynced = g.Key.QBSyncID ?? 0,
+                                    FundName = g.First().ContributionFund.FundName,
+                                    Total = g.Sum(t => t.ContributionAmount).Value,
+                                    Count = g.Count(),
+                                }).ToList();
+            else
+                q = (from c in api.FetchContributions()
+                     group c by new { c.FundId, c.QBSyncID } into g
+                     orderby g.Key.FundId, g.Key.QBSyncID
+                     select new FundTotalInfo
+                                {
+                                    FundId = g.Key.FundId,
+                                    QBSynced = g.Key.QBSyncID ?? 0,
+                                    FundName = g.First().ContributionFund.FundName,
+                                    Total = g.Sum(t => t.ContributionAmount).Value,
+                                    Count = g.Count(),
+                                }).ToList();
+
             FundTotal = new FundTotalInfo
                             {
                                 Count = q.Sum(t => t.Count),
@@ -62,8 +101,8 @@ namespace CmsWeb.Models
         public IEnumerable<GetTotalContributionsRange> TotalsByRange()
         {
             var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible, IncUnclosedBundles)
-                       orderby r.Range
-                       select r).ToList();
+                        orderby r.Range
+                        select r).ToList();
             RangeTotal = new GetTotalContributionsRange
                              {
                                  Count = list.Sum(t => t.Count),
@@ -81,7 +120,7 @@ namespace CmsWeb.Models
                                        Value = c.Id.ToString(),
                                        Text = c.Description,
                                    }).ToList();
-            list.Insert(0, new SelectListItem {Text = "(not specified)", Value = "0"});
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
 
@@ -90,6 +129,8 @@ namespace CmsWeb.Models
             public int FundId { get; set; }
             public int QBSynced { get; set; }
             public int OnLine { get; set; }
+            public string BundleType { get; set; }
+            public int? BundleTypeId { get; set; }
             public string FundName { get; set; }
             public decimal? Total { get; set; }
             public int? Count { get; set; }

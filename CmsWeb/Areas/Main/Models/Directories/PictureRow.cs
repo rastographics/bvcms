@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Windows.Media.Imaging;
 using CmsData;
 using DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
@@ -19,71 +20,58 @@ namespace CmsWeb.Areas.Main.Models.Directories
 
 	public class PictureRow
 	{
-		private static Drawing PictureElement(string relationshipId)
-		{
-			// Define the reference of the image.
-			var element =
-				 new Drawing(
-					 new Inline(
-						 new Extent() { Cx = 990000L, Cy = 792000L },
-						 new EffectExtent()
-						 {
-							 LeftEdge = 0L,
-							 TopEdge = 0L,
-							 RightEdge = 0L,
-							 BottomEdge = 0L
-						 },
-						 new DocProperties()
-						 {
-							 Id = (UInt32Value)1U,
-							 Name = "Picture 1"
-						 },
-						 new NonVisualGraphicFrameDrawingProperties(
-							 new A.GraphicFrameLocks() { NoChangeAspect = true }),
-						 new A.Graphic(
-							 new A.GraphicData(
-								 new PIC.Picture(
-									 new PIC.NonVisualPictureProperties(
-										 new PIC.NonVisualDrawingProperties()
-										 {
-											 Id = (UInt32Value)0U,
-											 Name = "New Bitmap Image.jpg"
-										 },
-										 new PIC.NonVisualPictureDrawingProperties()),
-									 new PIC.BlipFill(
-										 new A.Blip(
-											 new A.BlipExtensionList(
-												 new A.BlipExtension()
-												 {
-													 Uri =
-													   "{28A0092B-C50C-407E-A947-70E740481C1C}"
-												 })
-										 )
-										 {
-											 Embed = relationshipId,
-											 CompressionState =
-											 A.BlipCompressionValues.Print
-										 },
-										 new A.Stretch(
-											 new A.FillRectangle())),
-									 new PIC.ShapeProperties(
-										 new A.Transform2D(
-											 new A.Offset() { X = 0L, Y = 0L },
-											 new A.Extents() { Cx = 990000L, Cy = 792000L }),
-										 new A.PresetGeometry(
-											 new A.AdjustValueList()
-										 ) { Preset = A.ShapeTypeValues.Rectangle }))
-							 ) { Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture" })
-					 )
-					 {
-						 DistanceFromTop = (UInt32Value)0U,
-						 DistanceFromBottom = (UInt32Value)0U,
-						 DistanceFromLeft = (UInt32Value)0U,
-						 DistanceFromRight = (UInt32Value)0U,
-						 EditId = "50D07946"
-					 });
-			return element;
-		}
+//	    private static void ddd()
+//	    {
+//	        var img = new BitmapImage(new Uri("", UriKind.RelativeOrAbsolute));
+//	        var widthPx = img.PixelWidth;
+//	        var heightPx = img.PixelHeight;
+//	        var horzRezDpi = img.DpiX;
+//	        var vertRezDpi = img.DpiY;
+//	        const int emusPerInch = 914400;
+//	        const int emusPerCm = 360000;
+//	        var widthEmus = (long) (widthPx/horzRezDpi*emusPerInch);
+//	        var heightEmus = (long) (heightPx/vertRezDpi*emusPerInch);
+//	        var maxWidthEmus = (long) (maxWidthCm*emusPerCm);
+//	        if (widthEmus > maxWidthEmus)
+//	        {
+//	            var ratio = (heightEmus*1.0m)/widthEmus;
+//	            widthEmus = maxWidthEmus;
+//	            heightEmus = (long) (widthEmus*ratio);
+//	        }
+//	    }
+//        public void ResizeImage(string OriginalFile, string NewFile, int NewWidth, int MaxHeight, bool OnlyResizeIfWider)
+//{
+//	System.Drawing.Image FullsizeImage = System.Drawing.Image.FromFile(OriginalFile);
+//
+//	// Prevent using images internal thumbnail
+//	FullsizeImage.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipNone);
+//	FullsizeImage.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipNone);
+//
+//	if (OnlyResizeIfWider)
+//	{
+//		if (FullsizeImage.Width <= NewWidth)
+//		{
+//			NewWidth = FullsizeImage.Width;
+//		}
+//	}
+//
+//	int NewHeight = FullsizeImage.Height * NewWidth / FullsizeImage.Width;
+//	if (NewHeight > MaxHeight)
+//	{
+//		// Resize with height instead
+//		NewWidth = FullsizeImage.Width * MaxHeight / FullsizeImage.Height;
+//		NewHeight = MaxHeight;
+//	}
+//
+//	System.Drawing.Image NewImage = FullsizeImage.GetThumbnailImage(NewWidth, NewHeight, null, IntPtr.Zero);
+//
+//	// Clear handle to original file so that we can overwrite it if necessary
+//	FullsizeImage.Dispose();
+//
+//	// Save resized picture
+//	NewImage.Save(NewFile);
+//}
+//
 		// Creates an Paragraph instance and adds its children.
 		public TableRow GenerateTableRow(IndividualInfo ii, string iid)
 		{

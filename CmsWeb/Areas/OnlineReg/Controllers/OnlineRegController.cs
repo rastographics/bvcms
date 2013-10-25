@@ -540,8 +540,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		public ActionResult CompleteRegistration(OnlineRegModel m)
 		{
 			m.History.Add("CompleteRegistration");
-
-			if( m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript )
+            
+			if(m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript )
 			{
 				SpecialRegModel.ParseResults( m.orgid ?? 0, m.UserPeopleId ?? 0, Request.Form );
 				return View( "SpecialRegistrationResults" );

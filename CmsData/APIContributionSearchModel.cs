@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using CmsData.Codes;
+using IronPython.Modules;
 using UtilityExtensions;
 
 namespace CmsData.API
@@ -28,9 +29,12 @@ namespace CmsData.API
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string TaxNonTax { get; set; }
+        public int? CampusId { get; set; }
         public int? PeopleId { get; set; }
         public int? Year { get; set; }
         public int? FundId { get; set; }
+        public bool ClosedBundlesOnly { get; set; }
+        public int Online { get; set; }
     }
 
     public class APIContributionSearchModel
@@ -54,25 +58,25 @@ namespace CmsData.API
         public IEnumerable<ContributionInfo> ContributionsList(int startRow, int pageSize)
         {
             contributions = FetchContributions();
-            if (!_count.HasValue)
-                _count = contributions.Count();
+            if (!count.HasValue)
+                PopulateTotals(contributions);
             contributions = contributions.Skip(startRow).Take(pageSize);
             return ContributionsList(contributions);
         }
 
         public string ContributionsXML(int startRow, int pageSize)
         {
-            var xs = new XmlSerializer(typeof (ContributionElements));
+            var xs = new XmlSerializer(typeof(ContributionElements));
             var sw = new StringWriter();
             var cc = FetchContributions();
-            if (!_count.HasValue)
-                _count = contributions.Count();
+            if (!count.HasValue)
+                PopulateTotals(cc);
             cc = cc.OrderByDescending(m => m.ContributionDate).Skip(startRow).Take(pageSize);
             var a = new ContributionElements
                 {
-                    NumberOfPages = (int)Math.Ceiling((_count ?? 0) / 100.0),
-                    NumberOfItems = _count ?? 0,
-                    TotalAmount = Total(),
+                    NumberOfPages = (int)Math.Ceiling((count ?? 0) / 100.0),
+                    NumberOfItems = count ?? 0,
+                    TotalAmount = total ?? 0,
                     List = (from c in cc
                             let bd = c.BundleDetails.FirstOrDefault()
                             select new APIContribution.Contribution
@@ -104,6 +108,7 @@ namespace CmsData.API
                              ContributionType = c.ContributionType.Description,
                              ContributionTypeId = c.ContributionTypeId,
                              Fund = c.ContributionFund.FundName,
+                             BundleType = bd.BundleHeader.BundleHeaderType.Description,
                              NonTaxDed =
                                  c.ContributionTypeId == ContributionTypeCode.NonTaxDed ||
                                  (c.ContributionFund.NonTaxDeductible ?? false),
@@ -118,14 +123,6 @@ namespace CmsData.API
             return q2;
         }
 
-        private int? _count;
-
-        public int Count()
-        {
-            if (!_count.HasValue)
-                _count = FetchContributions().Count();
-            return _count.Value;
-        }
 
         private IQueryable<Contribution> contributions;
 
@@ -134,7 +131,7 @@ namespace CmsData.API
             if (contributions != null)
                 return contributions;
 
-            if(!model.TaxNonTax.HasValue())
+            if (!model.TaxNonTax.HasValue())
                 model.TaxNonTax = "TaxDed";
 
             contributions = from c in db.Contributions
@@ -167,7 +164,21 @@ namespace CmsData.API
 
             if (model.EndDate.HasValue)
                 contributions = from c in contributions
-                                where c.ContributionDate <= model.EndDate.Value.AddDays(1)
+                                where c.ContributionDate < model.EndDate.Value.AddDays(1)
+                                select c;
+
+            if(model.ClosedBundlesOnly)
+                contributions = from c in contributions
+                                where c.BundleDetails.First().BundleHeader.BundleStatusId == BundleStatusCode.Closed
+                                select c;
+
+            if(model.Online == 1)
+                contributions = from c in contributions
+                                where c.BundleDetails.First().BundleHeader.BundleHeaderTypeId == BundleTypeCode.Online
+                                select c;
+            else if(model.Online == 1)
+                contributions = from c in contributions
+                                where c.BundleDetails.First().BundleHeader.BundleHeaderTypeId != BundleTypeCode.Online
                                 select c;
 
             var i = model.Name.ToInt();
@@ -192,15 +203,32 @@ namespace CmsData.API
                                 where c.ContributionTypeId == model.Type
                                 select c;
 
+            if ((model.CampusId ?? 0) != 0)
+                contributions = from c in contributions
+                                where c.Person.CampusId == model.CampusId
+                                select c;
+
             if ((model.BundleType ?? 0) != 0)
                 contributions = from c in contributions
                                 where c.BundleDetails.First().BundleHeader.BundleHeaderTypeId == model.BundleType
                                 select c;
 
-            if ((model.Status ?? 99) != 99)
+            if (model.Status == ContributionStatusCode.Recorded)
                 contributions = from c in contributions
-                                where c.ContributionStatusId == model.Status
+                                where c.ContributionStatusId == ContributionStatusCode.Recorded
+                                where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId) 
                                 select c;
+            else if (model.Status == ContributionStatusCode.Returned)
+                contributions = from c in contributions
+                                where c.ContributionStatusId == ContributionStatusCode.Returned
+                                    || c.ContributionTypeId == ContributionTypeCode.ReturnedCheck
+                                select c;
+            else if (model.Status == ContributionStatusCode.Reversed)
+                contributions = from c in contributions
+                                where c.ContributionStatusId == ContributionStatusCode.Reversed
+                                    || c.ContributionTypeId == ContributionTypeCode.Reversed
+                                select c;
+
 
             if (model.Year.HasValue && model.Year > 0)
                 contributions = from c in contributions
@@ -215,18 +243,38 @@ namespace CmsData.API
             return contributions;
         }
 
+        private void PopulateTotals(IQueryable<Contribution> q)
+        {
+            total = 0;
+            count = 0;
+            var i = (from c in q
+                     group c by 1 into g
+                     select new
+                     {
+                         total = g.Sum(mm => mm.ContributionAmount ?? 0),
+                         count = g.Count()
+                     }).SingleOrDefault();
+
+            if (i == null)
+                return;
+            total = i.total;
+            count = i.count;
+        }
+
+        private decimal? total;
         public decimal Total()
         {
-            var q = FetchContributions();
-            q = from c in q
-                where c.ContributionStatusId == ContributionStatusCode.Recorded
-                where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                where model.TaxNonTax != "All" || c.ContributionTypeId != ContributionTypeCode.Pledge
-                select c;
-            var t = q.Sum(c => c.ContributionAmount);
-            if (t.HasValue)
-                return t.Value;
-            return 0;
+            if (!total.HasValue)
+                PopulateTotals(FetchContributions());
+            return total ?? 0;
+        }
+
+        private int? count;
+        public int Count()
+        {
+            if (!count.HasValue)
+                PopulateTotals(FetchContributions());
+            return count ?? 0;
         }
 
         [Serializable]

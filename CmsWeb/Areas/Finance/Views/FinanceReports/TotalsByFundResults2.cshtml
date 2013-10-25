@@ -3,6 +3,7 @@
 <table class="grid">
     <tr>
         <th> FundName </th>
+        <th> BundleType </th>
         <th class="right"> Total </th>
         <th class="right"> Count </th>
     </tr>
@@ -10,14 +11,15 @@
     {
         <tr>
             <td>
-                <a href="/Finance/Contributions/BundleTotals?FundId=@t.FundId&dt1=@Model.Dt1.ToSortableDate()&dt2=@Model.Dt2.ToSortableDate()&closedbundlesonly=@Model.closedbundlesonly&campus=@Model.CampusId&online=@Model.Online" target="bundles">
+                <a href="/Finance/Contributions/BundleTotals?FundId=@t.FundId&dt1=@Model.Dt1.ToSortableDate()&dt2=@Model.Dt2.ToSortableDate()&closedbundlesonly=@Model.closedbundlesonly&campus=@Model.CampusId&online=@Model.Online&bundletype=@t.BundleTypeId" target="bundles">
                     @t.FundName
                 </a> 
-                @(t.QBSynced == 1 ? " (QBSynced)" : "")  
+                @(t.QBSynced == 1 ? " (QBSynced)" : "")
                 @(t.OnLine == 1 ? " (Online)" : "")  
             </td>
+			<td>@t.BundleType</td>
             <td class="right">
-                <a href="/Finance/Contributions?FundId=@t.FundId&dt1=@Model.Dt1.ToSortableDate()&dt2=@Model.Dt2.ToSortableDate()&closedbundlesonly=@Model.closedbundlesonly&campus=@Model.CampusId&online=@Model.Online" target="search">
+                <a href="/Finance/Contributions?FundId=@t.FundId&dt1=@Model.Dt1.ToSortableDate()&dt2=@Model.Dt2.ToSortableDate()&closedbundlesonly=@Model.closedbundlesonly&campus=@Model.CampusId&online=@Model.Online&bundletype=@t.BundleTypeId" target="search">
                     @t.Total.ToString2("c")
                 </a> 
             </td>
@@ -25,7 +27,7 @@
         </tr>
     }
     <tr style="border-top: 2px solid black">
-        <th> Total </th>
+        <th colspan="2"> Total </th>
         <th class="right">
             <a href="/Finance/Contributions?dt1=@Model.Dt1.ToSortableDate()&dt2=@Model.Dt2.ToSortableDate()&closedbundlesonly=@Model.closedbundlesonly&campus=@Model.CampusId&online=@Model.Online" target="search">
                 @Model.FundTotal.Total.ToString2("c")

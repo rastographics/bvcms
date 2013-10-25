@@ -1,7 +1,5 @@
 ﻿@model CmsWeb.Models.TotalsByFundModel
 @using UtilityExtensions
-@using CmsWeb
-@using CmsData
 @using CmsData.Classes.QuickBooks
 @{
     Layout = Fingerprint.Layout();
@@ -44,6 +42,7 @@
             <option value="1">Online</option>
             <option value="0">Not Online</option>
         </select>
+        Include BundleType:@Html.CheckBox("IncludeBundleType")
         <p>
             <ul id="extractlist">
                <li><input id="run" type="submit" value="Run Report" class="bt" /></li> 

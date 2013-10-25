@@ -1,0 +1,33 @@
+﻿@model CmsWeb.Models.ContributionSearchModel
+@{
+    Layout = Fingerprint.Layout();
+    ViewBag.Title = "Bundle Totals";
+}
+<table class="grid">
+    <thead>
+        <tr>
+            <th>Bundle Id</th>
+            <th>Date</th>
+            <th class="right">Total</th>
+            <th class="right">Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model.BundlesList())
+        {
+            <tr>
+                <td><a href="/Bundle/Index/@t.Id" target="bundle">@t.Id</a></td>
+                <td>@t.Date.ToShortDateString()</td>
+                <td class="right">@t.Total.ToString("c")</td>
+                <td class="right">@t.Count.ToString("n0")</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2">Total</td>
+            <td class="right">@Model.Total().ToString("c")</td>
+            <td class="right">@Model.Count().ToString("n0")</td>
+        </tr>
+    </tfoot>
+</table>

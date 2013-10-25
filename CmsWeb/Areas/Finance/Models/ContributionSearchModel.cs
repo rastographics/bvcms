@@ -43,6 +43,11 @@ namespace CmsWeb.Models
             SearchInfo = api.model;
         }
 
+        public ContributionSearchModel(APIContributionSearchModel api)
+        {
+            this.api = api;
+            Setup();
+        }
         public ContributionSearchModel()
         {
             api = new APIContributionSearchModel(DbUtil.Db);
@@ -52,14 +57,6 @@ namespace CmsWeb.Models
         {
             api = new APIContributionSearchModel(DbUtil.Db, m);
             Setup();
-        }
-
-        public ContributionSearchModel(int? peopleId, int? year)
-        {
-            api = new APIContributionSearchModel(DbUtil.Db);
-            Setup();
-            SearchInfo.PeopleId = peopleId;
-            SearchInfo.Year = year;
         }
 
         public IEnumerable<ContributionInfo> ContributionsList()
@@ -142,15 +139,54 @@ namespace CmsWeb.Models
                 }
             return q;
         }
+
+        public class BundleInfo
+        {
+            public int Id { get; set; }
+            public DateTime Date { get; set; }
+            public decimal Total { get; set; }
+            public int Count { get; set; }
+        }
+        public IEnumerable<BundleInfo> BundlesList()
+        {
+            var q = from c in api.FetchContributions()
+                let bhid = c.BundleDetails.First().BundleHeaderId
+                group c by new { bhid, c.ContributionDate.Value.Date } into g
+                select new BundleInfo()
+                {
+                    Id = g.Key.bhid,
+                    Total = g.Sum(t => t.ContributionAmount ?? 0),
+                    Date = g.Key.Date,
+                    Count = g.Count()
+                };
+            return q;
+        }
         public SelectList ContributionStatuses()
         {
-            return new SelectList(new CodeValueModel().ContributionStatuses99(),
+            return new SelectList(new CodeValueModel().ContributionStatuses(),
                 "Id", "Value", SearchInfo.Status.ToString());
         }
         public SelectList ContributionTypes()
         {
             return new SelectList(new CodeValueModel().ContributionTypes0(),
                 "Id", "Value", SearchInfo.Type.ToString());
+        }
+        public SelectList Campuses()
+        {
+            return new SelectList(new CodeValueModel().AllCampuses0(),
+                "Id", "Value", SearchInfo.Type.ToString());
+        }
+        public SelectList OnlineOptions()
+        {
+            return new SelectList(
+                new List<CodeValueItem> 
+    			{
+    				new CodeValueItem { Id = 2, Value = "(not selected)" },
+    				new CodeValueItem { Id = 1, Value = "Online" },
+    				new CodeValueItem { Id = 0, Value = "Not Online" },
+                },
+                "Id", "Value", SearchInfo.Online.ToString()
+            );
         }
         public SelectList BundleTypes()
         {
