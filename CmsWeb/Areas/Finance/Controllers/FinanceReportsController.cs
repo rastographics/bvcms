@@ -123,7 +123,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                     qbjel.Add(jelCredit);
                     qbjel.Add(jelDebit);
 
-                    lFunds.Add(item.FundId);
+                    lFunds.Add(item.FundId ?? 0);
                 }
 			}
 

@@ -198,6 +198,7 @@
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Models\SearchModel.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />
+    <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContacteesModel.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContactorsModel.cs" />

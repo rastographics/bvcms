@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Finance.Controllers
     [Authorize(Roles = "Finance")]
     public class ContributionsController : CmsStaffController
     {
-        public ActionResult Index(int? id, int? year, int? fundId, DateTime? dt1, DateTime? dt2, bool? closedbundlesonly, int? campus, int? bundletype, int online = 2)
+        public ActionResult Index(int? id, int? year, int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype, bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed")
         {
             var api = new ContributionSearchInfo()
             {
@@ -20,13 +20,14 @@ namespace CmsWeb.Areas.Finance.Controllers
                 EndDate = dt2,
                 CampusId = campus,
                 Online = online,
-                ClosedBundlesOnly = closedbundlesonly ?? false,
+                TaxNonTax = taxnontax,
+                IncludeUnclosedBundles = includeunclosedbundles ?? false,
                 BundleType = bundletype
             };
             var m = new ContributionSearchModel(api);
             return View(m);
         }
-        public ActionResult BundleTotals(int? fundId, DateTime? dt1, DateTime? dt2, bool? closedbundlesonly, int? campus, int? bundletype, int online = 2)
+        public ActionResult BundleTotals(int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype, bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed")
         {
             var api = new ContributionSearchInfo()
             {
@@ -35,7 +36,8 @@ namespace CmsWeb.Areas.Finance.Controllers
                 EndDate = dt2,
                 CampusId = campus,
                 Online = online,
-                ClosedBundlesOnly = closedbundlesonly ?? false,
+                TaxNonTax = taxnontax,
+                IncludeUnclosedBundles = includeunclosedbundles ?? false,
                 BundleType = bundletype
             };
             var m = new ContributionSearchModel(api);

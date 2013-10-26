@@ -1,38 +1,44 @@
 ﻿@model CmsWeb.Models.TotalsByFundModel
 @using UtilityExtensions
-<table class="grid">
-    <tr>
-        <th> FundName </th>
-        <th> BundleType </th>
-        <th class="right"> Total </th>
-        <th class="right"> Count </th>
-    </tr>
-    @foreach (var t in Model.TotalsByFund())
-    {
-        <tr>
-            <td>
-                <a href="/Finance/Contributions/BundleTotals?FundId=@t.FundId&dt1=@Model.Dt1.ToSortableDate()&dt2=@Model.Dt2.ToSortableDate()&closedbundlesonly=@Model.closedbundlesonly&campus=@Model.CampusId&online=@Model.Online&bundletype=@t.BundleTypeId" target="bundles">
-                    @t.FundName
-                </a> 
-                @(t.QBSynced == 1 ? " (QBSynced)" : "")
-                @(t.OnLine == 1 ? " (Online)" : "")  
-            </td>
-			<td>@t.BundleType</td>
-            <td class="right">
-                <a href="/Finance/Contributions?FundId=@t.FundId&dt1=@Model.Dt1.ToSortableDate()&dt2=@Model.Dt2.ToSortableDate()&closedbundlesonly=@Model.closedbundlesonly&campus=@Model.CampusId&online=@Model.Online&bundletype=@t.BundleTypeId" target="search">
-                    @t.Total.ToString2("c")
-                </a> 
-            </td>
-            <td class="right">@t.Count.ToString2("n0")</td>
+<table class="grid" cellpadding="5">
+    <thead>
+        <tr style="border-bottom: 2px solid black">
+            <th> FundName </th>
+            <th> BundleType </th>
+            <th class="right"> Total </th>
+            <th class="right"> Count </th>
         </tr>
-    }
-    <tr style="border-top: 2px solid black">
-        <th colspan="2"> Total </th>
-        <th class="right">
-            <a href="/Finance/Contributions?dt1=@Model.Dt1.ToSortableDate()&dt2=@Model.Dt2.ToSortableDate()&closedbundlesonly=@Model.closedbundlesonly&campus=@Model.CampusId&online=@Model.Online" target="search">
-                @Model.FundTotal.Total.ToString2("c")
-            </a> 
-        </th>
-        <th class="right">@Model.FundTotal.Count.ToString2("n0") </th>
-    </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model.TotalsByFund())
+        {
+            <tr>
+                <td>
+                    <a href="@t.BundleTotalsUrl()" target="bundles">
+                        @t.FundName
+                    </a> 
+                    @(t.QBSynced == 1 ? " (QBSynced)" : "")
+                    @(t.OnLine == 1 ? " (Online)" : "")  
+                </td>
+                <td>@t.BundleType</td>
+                <td class="right">
+                    <a href="@t.ContributionsUrl()" target="search">
+                        @t.Total.ToString2("c")
+                    </a> 
+                </td>
+                <td class="right">@t.Count.ToString2("n0")</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr style="border-top: 2px solid black">
+            <th colspan="2"><a href="@Model.BundleTotalsUrl()" target="bundles">Total</a></th>
+            <th class="right">
+                <a href="@Model.ContributionsUrl()" target="search">
+                    @Model.FundTotal.Total.ToString2("c")
+                </a> 
+            </th>
+            <th class="right">@Model.FundTotal.Count.ToString2("n0") </th>
+        </tr>
+    </tfoot>
 </table>

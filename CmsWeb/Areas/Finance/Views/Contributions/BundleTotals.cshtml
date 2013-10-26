@@ -1,10 +1,40 @@
-﻿@model CmsWeb.Models.ContributionSearchModel
+﻿@using UtilityExtensions
+@model CmsWeb.Models.ContributionSearchModel
 @{
     Layout = Fingerprint.Layout();
     ViewBag.Title = "Bundle Totals";
 }
+
 <table class="grid">
     <thead>
+        <tr><td colspan="4">
+                <div class="roundbox">
+                    <h2>@(Model.FundName ?? "Total All Funds")</h2>
+                    <table>
+                        <tr>
+                            <td class="right">Start Date:</td>
+                            <td>@Model.SearchInfo.StartDate.FormatDate()</td>
+                        </tr>
+                        <tr>
+                            <td class="right">End Date:</td>
+                            <td>@Model.SearchInfo.EndDate.FormatDate()</td>
+                        </tr>
+                        <tr>
+                            <td class="right">Campus:</td>
+                            <td>@Model.Campus</td>
+                        </tr>
+                        <tr>
+                            <td class="right">Online/Not online:</td>
+                            <td>@Model.Online</td>
+                        </tr>
+                        <tr>
+                            <td class="right">Tax Ded/Non Tax:</td>
+                            <td>@Model.TaxDedNonTax</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
         <tr>
             <th>Bundle Id</th>
             <th>Date</th>
@@ -24,10 +54,10 @@
         }
     </tbody>
     <tfoot>
-        <tr>
+        <tr style="border-top: 1px solid black">
             <td colspan="2">Total</td>
-            <td class="right">@Model.Total().ToString("c")</td>
-            <td class="right">@Model.Count().ToString("n0")</td>
+            <td class="right">@Model.Total.ToString("c")</td>
+            <td class="right">@Model.Count.ToString("n0")</td>
         </tr>
     </tfoot>
 </table>

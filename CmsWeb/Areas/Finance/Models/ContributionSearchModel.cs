@@ -150,20 +150,20 @@ namespace CmsWeb.Models
         public IEnumerable<BundleInfo> BundlesList()
         {
             var q = from c in api.FetchContributions()
-                let bhid = c.BundleDetails.First().BundleHeaderId
-                group c by new { bhid, c.ContributionDate.Value.Date } into g
-                select new BundleInfo()
-                {
-                    Id = g.Key.bhid,
-                    Total = g.Sum(t => t.ContributionAmount ?? 0),
-                    Date = g.Key.Date,
-                    Count = g.Count()
-                };
+                    let bhid = c.BundleDetails.First().BundleHeaderId
+                    group c by new { bhid, c.ContributionDate.Value.Date } into g
+                    select new BundleInfo()
+                    {
+                        Id = g.Key.bhid,
+                        Total = g.Sum(t => t.ContributionAmount ?? 0),
+                        Date = g.Key.Date,
+                        Count = g.Count()
+                    };
             return q;
         }
         public SelectList ContributionStatuses()
         {
-            return new SelectList(new CodeValueModel().ContributionStatuses(),
+            return new SelectList(new CodeValueModel().ContributionStatuses(), 
                 "Id", "Value", SearchInfo.Status.ToString());
         }
         public SelectList ContributionTypes()
@@ -181,12 +181,10 @@ namespace CmsWeb.Models
             return new SelectList(
                 new List<CodeValueItem> 
     			{
-    				new CodeValueItem { Id = 2, Value = "(not selected)" },
+    				new CodeValueItem { Id = 2, Value = "Both Online & Not" },
     				new CodeValueItem { Id = 1, Value = "Online" },
     				new CodeValueItem { Id = 0, Value = "Not Online" },
-                },
-                "Id", "Value", SearchInfo.Online.ToString()
-            );
+                }, "Id", "Value", SearchInfo.Online.ToString() );
         }
         public SelectList BundleTypes()
         {
@@ -222,15 +220,12 @@ namespace CmsWeb.Models
             return list;
         }
 
-        public decimal Total()
-        {
-            return api.Total();
-        }
-
-        public int Count()
-        {
-            return api.Count();
-        }
+        public string FundName { get { return api.FundName(); } }
+        public string Campus { get { return api.Campus(); } }
+        public string Online { get { return api.Online(); } }
+        public string TaxDedNonTax { get { return api.TaxDedNonTax(); } }
+        public decimal Total { get { return api.Total(); } }
+        public int Count { get { return api.Count(); } }
 
         public void Return(int cid)
         {
@@ -270,6 +265,19 @@ namespace CmsWeb.Models
                 FundId = c.FundId,
             };
             return r;
+        }
+
+        public SelectList TaxTypes()
+        {
+            return new SelectList(
+                new List<CodeValueItem> 
+    			{
+    				new CodeValueItem { Code = "TaxDed", Value = "Tax Deductible" },
+    				new CodeValueItem { Code = "NonTaxDed", Value = "Non-Tax Deductible" },
+    				new CodeValueItem { Code = "Both", Value = "Both Tax & Non-Tax" },
+    				new CodeValueItem { Code = "Pledge", Value = "Pledges" },
+    				new CodeValueItem { Code = "All", Value = "All Items" },
+                }, "Code", "Value", SearchInfo.TaxNonTax );
         }
     }
 }
