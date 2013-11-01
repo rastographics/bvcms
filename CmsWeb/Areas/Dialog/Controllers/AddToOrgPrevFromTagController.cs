@@ -11,7 +11,7 @@ using CmsData.Codes;
 namespace CmsWeb.Areas.Dialog.Controllers
 {
 	[Authorize(Roles = "Edit")]
-	public class AddToOrgFromTagController : CmsController
+	public class AddToOrgPrevFromTagController : CmsController
 	{
 		public ActionResult Index(int id)
 		{
