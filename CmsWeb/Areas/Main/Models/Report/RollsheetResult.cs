@@ -84,13 +84,16 @@ namespace CmsWeb.Areas.Main.Models.Report
             box = new PdfPCell();
             box.Border = PdfPCell.NO_BORDER;
             box.CellEvent = new CellEvent();
-            List<PdfPTable> list = null;
+            PdfPTable table = null;
 
             OrgInfo lasto = null;
             foreach (var o in list1)
             {
                 lasto = o;
-                list = new List<PdfPTable>();
+                table = new PdfPTable(1);
+                table.DefaultCell.Border = PdfPCell.NO_BORDER;
+                table.DefaultCell.Padding = 0;
+                table.WidthPercentage = 100;
                 if (meeting != null)
                 {
                     var Groups = o.Groups;
@@ -109,7 +112,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                         if (q.Any())
                             StartPageSet(o);
                         foreach (var a in q)
-                            list.Add(AddRow(a.Code, a.Name2, a.PeopleId, a.DOB, "", font));
+                            table.AddCell(AddRow(a.Code, a.Name2, a.PeopleId, a.DOB, "", font));
                     }
                     else
                     {
@@ -134,7 +137,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                         if (q.Any())
                             StartPageSet(o);
                         foreach (var a in q)
-                            list.Add(AddRow(a.Code, a.Name2, a.PeopleId, a.DOB, "", font));
+                            table.AddCell(AddRow(a.Code, a.Name2, a.PeopleId, a.DOB, "", font));
                     }
                 }
                 else
@@ -168,16 +171,16 @@ namespace CmsWeb.Areas.Main.Models.Report
                     if (q.Any())
                         StartPageSet(o);
                     foreach (var m in q)
-                        list.Add(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china : font));
+                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china : font));
                 }
 
                 if (bygroup == false && groups[0] == 0 && meeting == null)
                 {
                     foreach ( var m in RollsheetModel.FetchVisitors(o.OrgId, dt.Value, NoCurrentMembers: true, UseAltNames: altnames == true))
                     {
-                        if(list.Count == 0)
+                        if(table.Rows.Count == 0)
                             StartPageSet(o);
-                        list.Add(AddRow(m.VisitorType, m.Name2, m.PeopleId, m.BirthDate, "", boldfont));
+                        table.AddCell(AddRow(m.VisitorType, m.Name2, m.PeopleId, m.BirthDate, "", boldfont));
                     }
                 }
                 if (!pageSetStarted)
@@ -187,8 +190,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                 float gutter = 20f;
                 float colwidth = (doc.Right - doc.Left - gutter) / 2;
                 var ct = new ColumnText(w.DirectContent);
-                foreach (var li in list)
-                    ct.AddElement(li);
+                ct.AddElement(table);
 
                 int status = 0;
 
@@ -277,7 +279,7 @@ namespace CmsWeb.Areas.Main.Models.Report
         private PdfPTable AddRow(string Code, string name, int pid, string dob, string highlight, Font font)
         {
             var t = new PdfPTable(4);
-            t.SplitRows = false;
+            //t.SplitRows = false;
             t.WidthPercentage = 100;
             t.SetWidths(new int[] { 30, 4, 6, 30 });
             t.DefaultCell.Border = PdfPCell.NO_BORDER;

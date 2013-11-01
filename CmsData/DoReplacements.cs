@@ -776,7 +776,7 @@ namespace CmsData
                                    bool showfamily = false)
         {
             string qs = "{0},{1},{2},{3}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id,
-                showfamily ? "registerlink" : "registerlink2");
+                showfamily ? "registerlink2" : "registerlink");
             OneTimeLink ot;
             if (list.ContainsKey(qs))
                 ot = list[qs];
