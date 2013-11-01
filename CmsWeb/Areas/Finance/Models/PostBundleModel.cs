@@ -1059,29 +1059,48 @@ namespace CmsWeb.Models
             return bh.BundleHeaderId;
         }
 
-        public static int? BatchProcessVanco(CsvReader csv, DateTime date, int? fundid)
-        {
-            var cols = csv.GetFieldHeaders();
-            BundleHeader bh = null;
-            var firstfund = FirstFundId();
-            var fund = fundid ?? firstfund;
+			public static int? BatchProcessVanco(CsvReader csv, DateTime date, int? fundid)
+			{
+				var fundList = (from f in DbUtil.Db.ContributionFunds
+									 orderby f.FundId
+									 select f.FundId).ToList();
 
-            while (csv.ReadNextRecord())
-            {
-                var routing = "0";
-                var checkno = "0";
-                var account = csv[0];
-                var amount = csv[1];
+				var cols = csv.GetFieldHeaders();
+				BundleHeader bh = null;
+				var firstfund = FirstFundId();
+				var fund = fundid != null && fundList.Contains(fundid ?? 0) ? fundid ?? 0 : firstfund;
 
-                if (bh == null)
-                    bh = GetBundleHeader(date, DateTime.Now);
+				while (csv.ReadNextRecord())
+				{
+					var routing = "0";
+					var checkno = "0";
+					var account = csv[0];
+					var amount = csv[1];
+					var fundText = csv[3];
+					int fundNum = 0;
 
-                var bd = AddContributionDetail(date, fund, amount, checkno, routing, account);
-                bh.BundleDetails.Add(bd);
-            }
-            FinishBundle(bh);
-            return bh.BundleHeaderId;
-        }
+					Int32.TryParse(fundText, out fundNum);
+
+					if (bh == null)
+					bh = GetBundleHeader(date, DateTime.Now);
+					
+					BundleDetail bd;
+
+					if (fundList.Contains(fundNum))
+						bd = AddContributionDetail(date, fundNum, amount, checkno, routing, account);
+					else
+					{
+						bd = AddContributionDetail(date, fund, amount, checkno, routing, account);
+						bd.Contribution.ContributionDesc = "Used default fund";
+					}
+
+					bh.BundleDetails.Add(bd);
+				}
+
+				FinishBundle(bh);
+
+				return bh.BundleHeaderId;
+			}
 
         private static int FirstFundId()
         {
