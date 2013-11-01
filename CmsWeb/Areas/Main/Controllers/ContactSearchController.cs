@@ -188,13 +188,13 @@ namespace CmsWeb.Areas.Main.Controllers
 			DbUtil.Db.SubmitChanges();
 			return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
 	    }
-        [Authorize(Roles = "Developer")]
-	    public ActionResult DeleteContactsForType(int id)
-        {
-            DbUtil.Db.ExecuteCommand("DELETE dbo.Contactees FROM dbo.Contactees ce JOIN dbo.Contact c ON ce.ContactId = c.ContactId WHERE c.ContactTypeId = {0}", id);
-            DbUtil.Db.ExecuteCommand("DELETE dbo.Contactors FROM dbo.Contactors co JOIN dbo.Contact c ON co.ContactId = c.ContactId WHERE c.ContactTypeId = {0}", id);
-            DbUtil.Db.ExecuteCommand("DELETE dbo.Contact WHERE ContactTypeId = {0}", id);
-            return Redirect("/ContactSearch/ContactTypeTotals");
-        }
+//        [Authorize(Roles = "Developer")]
+//	    public ActionResult DeleteContactsForType(int id)
+//        {
+//            DbUtil.Db.ExecuteCommand("DELETE dbo.Contactees FROM dbo.Contactees ce JOIN dbo.Contact c ON ce.ContactId = c.ContactId WHERE c.ContactTypeId = {0}", id);
+//            DbUtil.Db.ExecuteCommand("DELETE dbo.Contactors FROM dbo.Contactors co JOIN dbo.Contact c ON co.ContactId = c.ContactId WHERE c.ContactTypeId = {0}", id);
+//            DbUtil.Db.ExecuteCommand("DELETE dbo.Contact WHERE ContactTypeId = {0}", id);
+//            return Redirect("/ContactSearch/ContactTypeTotals");
+//        }
 	}
 }
