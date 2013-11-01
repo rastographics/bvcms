@@ -186,11 +186,6 @@ namespace CmsWeb.Areas.Main.Models.Report
                 var col = 0;
                 float gutter = 20f;
                 float colwidth = (doc.Right - doc.Left - gutter) / 2;
-                var cols = new Rectangle[]
-                               {
-                                   new Rectangle(doc.Left, doc.Bottom, doc.Left + colwidth, doc.Top),
-                                   new Rectangle(doc.Right - colwidth, doc.Bottom, doc.Right, doc.Top)
-                               };
                 var ct = new ColumnText(w.DirectContent);
                 foreach (var li in list)
                     ct.AddElement(li);
@@ -199,7 +194,10 @@ namespace CmsWeb.Areas.Main.Models.Report
 
                 while (ColumnText.HasMoreText(status))
                 {
-                    ct.SetSimpleColumn(cols[col]);
+                    if(col == 0)
+                        ct.SetSimpleColumn(doc.Left, doc.Bottom, doc.Left + colwidth, doc.Top);
+                    else
+                        ct.SetSimpleColumn(doc.Right - colwidth, doc.Bottom, doc.Right, doc.Top);
                     status = ct.Go();
                     ++col;
                     if (col > 1)
@@ -264,13 +262,13 @@ namespace CmsWeb.Areas.Main.Models.Report
         {
             doc.NewPage();
             pageSetStarted = true;
-            if (altnames == true)
-            {
-                BaseFont.AddToResourceSearch(HttpContext.Current.Server.MapPath("/iTextAsian.dll"));
-                var bfchina = BaseFont.CreateFont("MHei-Medium",
-                    "UniCNS-UCS2-H", BaseFont.EMBEDDED);
-                china = new Font(bfchina, 12, Font.NORMAL);
-            }
+//            if (altnames == true)
+//            {
+//                BaseFont.AddToResourceSearch(HttpContext.Current.Server.MapPath("/iTextAsian.dll"));
+//                var bfchina = BaseFont.CreateFont("MHei-Medium",
+//                    "UniCNS-UCS2-H", BaseFont.EMBEDDED);
+//                china = new Font(bfchina, 12, Font.NORMAL);
+//            }
             pageEvents.StartPageSet(
                                     "{0}: {1}, {2} ({3})".Fmt(o.Division, o.Name, o.Location, o.Teacher),
                                     "{0:f} ({1})".Fmt(dt, o.OrgId),
@@ -279,6 +277,7 @@ namespace CmsWeb.Areas.Main.Models.Report
         private PdfPTable AddRow(string Code, string name, int pid, string dob, string highlight, Font font)
         {
             var t = new PdfPTable(4);
+            t.SplitRows = false;
             t.WidthPercentage = 100;
             t.SetWidths(new int[] { 30, 4, 6, 30 });
             t.DefaultCell.Border = PdfPCell.NO_BORDER;

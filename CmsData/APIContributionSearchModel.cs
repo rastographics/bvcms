@@ -282,8 +282,10 @@ namespace CmsData.API
                 return;
 
             var q = FetchContributions();
-            var total = q.Sum(cc => cc.ContributionAmount ?? 0);
             var count = q.Count();
+            decimal total = 0;
+            if(count > 0)
+                total = q.Sum(cc => cc.ContributionAmount ?? 0);
             var fund = db.ContributionFunds.Where(ff => ff.FundId == model.FundId).Select(ff => ff.FundName).SingleOrDefault();
             var campus = db.Campus.Where(cc => cc.Id == model.CampusId).Select(cc => cc.Description).SingleOrDefault();
 

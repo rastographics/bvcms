@@ -33,10 +33,11 @@
         Start Date: @Html.TextBox("Dt1", Model.Dt1.ToString2("d"), new { style = "width: 100px; font-size: 110%", @class = "datepicker" })
         End Date: @Html.TextBox("Dt2", Model.Dt2.ToString2("d"), new { style = "width: 100px; font-size: 110%", @class = "datepicker" })
         <div style="color: Red">@Html.ValidationMessage("dates")</div>
-        Non Tax Deductible:@Html.DropDownList("TaxDedNonTax", Model.TaxTypes())
-        Pledges:@Html.CheckBox("Pledges")
+
+        Tax Status:@Html.DropDownList("TaxDedNonTax", Model.TaxTypes())
+        Source: @Html.DropDownList("Online", Model.OnlineOptions())
+
         Include Unclosed Bundles:@Html.CheckBox("IncUnclosedBundles")
-        Online: @Html.DropDownList("Online", Model.OnlineOptions())
         Include BundleType:@Html.CheckBox("IncludeBundleType")
         <p>
             <ul id="extractlist">

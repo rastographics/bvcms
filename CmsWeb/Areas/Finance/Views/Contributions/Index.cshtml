@@ -74,13 +74,13 @@
                 <tr>
                     <th class="right">Fund:</th>
                     <td>@Html.DropDownListFor(vv => vv.SearchInfo.FundId, Model.Funds())</td>
-                    <th class="right">Online:</th>
+                    <th class="right">Source:</th>
                     <td>@Html.DropDownListFor(vv => vv.SearchInfo.Online, Model.OnlineOptions())</td>
                 </tr>
                 <tr>
                     <th class="right">Status:</th>
                     <td>@Html.DropDownListFor(vv => vv.SearchInfo.Status, Model.ContributionStatuses())</td>
-                    <th class="right">Tax Type:</th>
+                    <th class="right">Tax Status:</th>
                     <td>@Html.DropDownListFor(vv => vv.SearchInfo.TaxNonTax, Model.TaxTypes())</td>
                 </tr>
                 <tr>

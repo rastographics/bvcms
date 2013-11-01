@@ -1,14 +1,15 @@
-﻿@model CmsWeb.Models.ContributionSearchModel
+﻿@using UtilityExtensions
+@model CmsWeb.Models.ContributionSearchModel
 <table id="results" class="grid">
     <thead>
         <tr>
             <td>Total:</td>
-            <td class="right">@Model.Total.ToString("c")</td>
+            <td class="right">@Model.Total.ToString2("c")</td>
             <td colspan="7"></td>
         </tr>
         <tr>
             <td>Count:</td>
-            <td class="right">@Model.Count.ToString("n0")</td>
+            <td class="right">@Model.Count.ToString2("n0")</td>
             <td colspan="7"></td>
         </tr>
         <tr>
@@ -72,7 +73,7 @@
     <tfoot>
         <tr>
             <td colspan="9">
-                <div>Count: @Model.Count.ToString("n0")</div>
+                <div>Count: @Model.Count.ToString2("n0")</div>
                 @Html.Partial("Pager2", Model)</td>
         </tr>
     </tfoot>

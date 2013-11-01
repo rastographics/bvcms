@@ -224,8 +224,8 @@ namespace CmsWeb.Models
         public string Campus { get { return api.Campus(); } }
         public string Online { get { return api.Online(); } }
         public string TaxDedNonTax { get { return api.TaxDedNonTax(); } }
-        public decimal Total { get { return api.Total(); } }
-        public int Count { get { return api.Count(); } }
+        public decimal? Total { get { return api.Total(); } }
+        public int? Count { get { return api.Count(); } }
 
         public void Return(int cid)
         {

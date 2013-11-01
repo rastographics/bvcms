@@ -172,8 +172,8 @@ namespace CmsWeb.Models
                 Append(sb, "dt1=" + Dt1.ToSortableDate());
             if (Dt2.HasValue)
                 Append(sb, "dt2=" + Dt2.ToSortableDate());
-            if (IncUnclosedBundles)
-                Append(sb, "includeunclosedbundles=true");
+            if (!IncUnclosedBundles)
+                Append(sb, "includeunclosedbundles=false");
             if(TaxDedNonTax != "TaxDed")
                 Append(sb, "taxnontax=" + TaxDedNonTax);
             if (CampusId > 0)
