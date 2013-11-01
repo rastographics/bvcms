@@ -35,7 +35,6 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-
         public static T QueryString<T>(this System.Web.UI.Page page, string param)
         {
             return QueryString<T>(HttpContext.Current.Request, param);
@@ -474,6 +473,16 @@ namespace UtilityExtensions
                 if (Char.IsDigit(c))
                     digits.Append(c);
             return digits.ToString().Truncate(maxlen);
+        }
+        public static string GetChars(this string s)
+        {
+            if (!s.HasValue())
+                return "";
+            var chars = new StringBuilder();
+            foreach (var c in s.ToCharArray())
+                if (!Char.IsDigit(c))
+                    chars.Append(c);
+            return chars.ToString();
         }
         public static decimal? GetAmount(this string s)
         {

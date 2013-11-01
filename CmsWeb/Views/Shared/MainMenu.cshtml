@@ -104,7 +104,8 @@
                 <div class="dropdown2-menu">
                     <ul>
                         <li>@Html.ActionLink("Bundles", "Index", "Bundles", new { Area = "Finance" }, null)</li>
-                        <li>@Html.ActionLink("All Contributions (Search)", "Index", "Contributions", new { Area = "Finance" }, null)</li>
+                        <li class="divider"></li>
+                        <li>@Html.ActionLink("Search", "Index", "Contributions", new { Area = "Finance" }, null)</li>
                         <li class="header"><span>Reports</span></li>
                         <li>@Html.ActionLink("Statements (All)", "Index", "Statements", new { Area = "Finance" }, new { target = "_blank" })</li>
                         <li>@Html.ActionLink("Totals by Fund", "TotalsByFund", "FinanceReports", new { Area = "Finance" }, null)</li>
@@ -115,6 +116,8 @@
                         <li>@Helper.AnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", "_blank")</li>
                         <li>@Html.ActionLink("Pledge Report", "PledgeReport", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
                         <li>@Html.ActionLink("Managed Giving", "ManagedGiving", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
+                        <li class="divider"></li>
+                        <li>@Html.ActionLink("Fund Management", "Index", "Fund", new { Area = "Finance" }, null)</li>
                         @if (DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true")
                         {
                             <li>@Html.ActionLink("QuickBooks", "Index", "QuickBooks", new { Area = "Finance" }, null)</li>

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Routing;
+using OfficeOpenXml;
+using Org.BouncyCastle.OpenSsl;
 using UtilityExtensions;
 using CmsData;
 using System.Web.Mvc;
@@ -188,6 +190,25 @@ namespace CmsWeb
             base.OnActionExecuting(filterContext);
         }
     }
+
+    public class EpplusResult : ActionResult
+    {
+        private ExcelPackage pkg;
+        private string fn;
+        public EpplusResult(ExcelPackage pkg, string fn)
+        {
+            this.pkg = pkg;
+            this.fn = fn;
+        }
+        public override void ExecuteResult(ControllerContext context)
+        {
+            context.HttpContext.Response.Clear();
+            context.HttpContext.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            context.HttpContext.Response.AddHeader("Content-Disposition", "attachment;filename=" + fn);
+            pkg.SaveAs(context.HttpContext.Response.OutputStream);
+        }
+    }
+
     public class DataGridResult : ActionResult
     {
         DataGrid dg;

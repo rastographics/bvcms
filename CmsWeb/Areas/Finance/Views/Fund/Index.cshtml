@@ -40,7 +40,14 @@ else
         <td> <a href="/Finance/Fund/Edit/@item.FundId">Edit</a> </td>
         <td> @item.FundId </td>
         <td> <span id="o@(item.FundId)" class="clickEdit">@(item.OnlineSort.HasValue ? item.OnlineSort.ToString() : "edit")</span> </td>
+        @if (item.FundPledgeFlag)
+        {
+        <td> <a href="/FinanceReports/PledgeFulfillments/@item.FundId" target="_blank">@item.FundName</a> </td>
+        }
+        else
+        {
         <td> @item.FundName </td>
+        }
         <td> <span id="s@(item.FundId)" class="clickSelect">@(item.FundStatusId == 1 ? "Open" : "Closed")</span> </td>
         <td> @item.FundPledgeFlag </td>
         <td> @(item.NonTaxDeductible ?? false)</td>

@@ -16,15 +16,23 @@ namespace CmsData.View
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
-		private int? _CreditGiverId;
-		
-		private int? _SpouseId;
-		
 		private string _First;
 		
 		private string _Last;
 		
 		private string _Spouse;
+		
+		private string _MemberStatus;
+		
+		private DateTime? _PledgeDate;
+		
+		private DateTime? _LastDate;
+		
+		private decimal? _PledgeAmt;
+		
+		private decimal? _TotalGiven;
+		
+		private decimal? _Balance;
 		
 		private string _Address;
 		
@@ -34,17 +42,9 @@ namespace CmsData.View
 		
 		private string _Zip;
 		
-		private string _MemberStatus;
+		private int? _CreditGiverId;
 		
-		private DateTime? _PledgeDate;
-		
-		private decimal? _PledgeAmt;
-		
-		private DateTime _LastDate;
-		
-		private decimal? _TotalGiven;
-		
-		private decimal? _Balance;
+		private int? _SpouseId;
 		
 		
 		public PledgeFulfillment()
@@ -53,41 +53,7 @@ namespace CmsData.View
 
 		
 		
-		[Column(Name="CreditGiverId", Storage="_CreditGiverId", DbType="int")]
-		public int? CreditGiverId
-		{
-			get
-			{
-				return this._CreditGiverId;
-			}
-
-			set
-			{
-				if (this._CreditGiverId != value)
-					this._CreditGiverId = value;
-			}
-
-		}
-
-		
-		[Column(Name="SpouseId", Storage="_SpouseId", DbType="int")]
-		public int? SpouseId
-		{
-			get
-			{
-				return this._SpouseId;
-			}
-
-			set
-			{
-				if (this._SpouseId != value)
-					this._SpouseId = value;
-			}
-
-		}
-
-		
-		[Column(Name="First", Storage="_First", DbType="varchar(25)")]
+		[Column(Name="First", Storage="_First", DbType="nvarchar(25)")]
 		public string First
 		{
 			get
@@ -104,7 +70,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Last", Storage="_Last", DbType="varchar(100) NOT NULL")]
+		[Column(Name="Last", Storage="_Last", DbType="nvarchar(100) NOT NULL")]
 		public string Last
 		{
 			get
@@ -121,7 +87,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Spouse", Storage="_Spouse", DbType="varchar(25)")]
+		[Column(Name="Spouse", Storage="_Spouse", DbType="nvarchar(25)")]
 		public string Spouse
 		{
 			get
@@ -138,75 +104,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Address", Storage="_Address", DbType="varchar(100)")]
-		public string Address
-		{
-			get
-			{
-				return this._Address;
-			}
-
-			set
-			{
-				if (this._Address != value)
-					this._Address = value;
-			}
-
-		}
-
-		
-		[Column(Name="City", Storage="_City", DbType="varchar(30)")]
-		public string City
-		{
-			get
-			{
-				return this._City;
-			}
-
-			set
-			{
-				if (this._City != value)
-					this._City = value;
-			}
-
-		}
-
-		
-		[Column(Name="State", Storage="_State", DbType="varchar(20)")]
-		public string State
-		{
-			get
-			{
-				return this._State;
-			}
-
-			set
-			{
-				if (this._State != value)
-					this._State = value;
-			}
-
-		}
-
-		
-		[Column(Name="Zip", Storage="_Zip", DbType="varchar(15)")]
-		public string Zip
-		{
-			get
-			{
-				return this._Zip;
-			}
-
-			set
-			{
-				if (this._Zip != value)
-					this._Zip = value;
-			}
-
-		}
-
-		
-		[Column(Name="MemberStatus", Storage="_MemberStatus", DbType="varchar(50)")]
+		[Column(Name="MemberStatus", Storage="_MemberStatus", DbType="nvarchar(50)")]
 		public string MemberStatus
 		{
 			get
@@ -240,6 +138,23 @@ namespace CmsData.View
 		}
 
 		
+		[Column(Name="LastDate", Storage="_LastDate", DbType="datetime")]
+		public DateTime? LastDate
+		{
+			get
+			{
+				return this._LastDate;
+			}
+
+			set
+			{
+				if (this._LastDate != value)
+					this._LastDate = value;
+			}
+
+		}
+
+		
 		[Column(Name="PledgeAmt", Storage="_PledgeAmt", DbType="Decimal(38,2)")]
 		public decimal? PledgeAmt
 		{
@@ -252,23 +167,6 @@ namespace CmsData.View
 			{
 				if (this._PledgeAmt != value)
 					this._PledgeAmt = value;
-			}
-
-		}
-
-		
-		[Column(Name="LastDate", Storage="_LastDate", DbType="datetime NOT NULL")]
-		public DateTime LastDate
-		{
-			get
-			{
-				return this._LastDate;
-			}
-
-			set
-			{
-				if (this._LastDate != value)
-					this._LastDate = value;
 			}
 
 		}
@@ -303,6 +201,108 @@ namespace CmsData.View
 			{
 				if (this._Balance != value)
 					this._Balance = value;
+			}
+
+		}
+
+		
+		[Column(Name="Address", Storage="_Address", DbType="nvarchar(100)")]
+		public string Address
+		{
+			get
+			{
+				return this._Address;
+			}
+
+			set
+			{
+				if (this._Address != value)
+					this._Address = value;
+			}
+
+		}
+
+		
+		[Column(Name="City", Storage="_City", DbType="nvarchar(30)")]
+		public string City
+		{
+			get
+			{
+				return this._City;
+			}
+
+			set
+			{
+				if (this._City != value)
+					this._City = value;
+			}
+
+		}
+
+		
+		[Column(Name="State", Storage="_State", DbType="nvarchar(20)")]
+		public string State
+		{
+			get
+			{
+				return this._State;
+			}
+
+			set
+			{
+				if (this._State != value)
+					this._State = value;
+			}
+
+		}
+
+		
+		[Column(Name="Zip", Storage="_Zip", DbType="nvarchar(15)")]
+		public string Zip
+		{
+			get
+			{
+				return this._Zip;
+			}
+
+			set
+			{
+				if (this._Zip != value)
+					this._Zip = value;
+			}
+
+		}
+
+		
+		[Column(Name="CreditGiverId", Storage="_CreditGiverId", DbType="int")]
+		public int? CreditGiverId
+		{
+			get
+			{
+				return this._CreditGiverId;
+			}
+
+			set
+			{
+				if (this._CreditGiverId != value)
+					this._CreditGiverId = value;
+			}
+
+		}
+
+		
+		[Column(Name="SpouseId", Storage="_SpouseId", DbType="int")]
+		public int? SpouseId
+		{
+			get
+			{
+				return this._SpouseId;
+			}
+
+			set
+			{
+				if (this._SpouseId != value)
+					this._SpouseId = value;
 			}
 
 		}
