@@ -471,7 +471,7 @@ namespace CmsWeb.Models
             if (DbUtil.Db.Setting("BankDepositFormat", "none") == "fcchudson")
                 using (var csv = new CsvReader(new StringReader(text), true, '\t'))
                     return BatchProcessFcchudson(csv, date, fundid);
-            
+
             if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Redeemer")
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessRedeemer(csv, date, fundid);
@@ -484,21 +484,21 @@ namespace CmsWeb.Models
                 using (var csv = new CsvReader(new StringReader(text), false))
                     return BatchProcessEbcfamily(csv, date, fundid);
 
-	        if( DbUtil.Db.Setting( "BankDepositFormat", "none" ).ToLower() == "vanco" )
-	        {
-		        if( fromFile )
-		        {
-					  using (var csv = new CsvReader(new StringReader(text), false))
-						  return BatchProcessVanco(csv, date, fundid);
-		        }
-		        else
-		        {
-					  using (var csv = new CsvReader(new StringReader(text), false, '\t'))
-						  return BatchProcessVanco(csv, date, fundid);
-		        }
-	        }
+            if (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower() == "vanco")
+            {
+                if (fromFile)
+                {
+                    using (var csv = new CsvReader(new StringReader(text), false))
+                        return BatchProcessVanco(csv, date, fundid);
+                }
+                else
+                {
+                    using (var csv = new CsvReader(new StringReader(text), false, '\t'))
+                        return BatchProcessVanco(csv, date, fundid);
+                }
+            }
 
-	        if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Silverdale")
+            if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Silverdale")
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessSilverdale(csv, date, fundid);
 
@@ -1059,48 +1059,48 @@ namespace CmsWeb.Models
             return bh.BundleHeaderId;
         }
 
-			public static int? BatchProcessVanco(CsvReader csv, DateTime date, int? fundid)
-			{
-				var fundList = (from f in DbUtil.Db.ContributionFunds
-									 orderby f.FundId
-									 select f.FundId).ToList();
+        public static int? BatchProcessVanco(CsvReader csv, DateTime date, int? fundid)
+        {
+            var fundList = (from f in DbUtil.Db.ContributionFunds
+                            orderby f.FundId
+                            select f.FundId).ToList();
 
-				var cols = csv.GetFieldHeaders();
-				BundleHeader bh = null;
-				var firstfund = FirstFundId();
-				var fund = fundid != null && fundList.Contains(fundid ?? 0) ? fundid ?? 0 : firstfund;
+            var cols = csv.GetFieldHeaders();
+            BundleHeader bh = null;
+            var firstfund = FirstFundId();
+            var fund = fundid != null && fundList.Contains(fundid ?? 0) ? fundid ?? 0 : firstfund;
 
-				while (csv.ReadNextRecord())
-				{
-					var routing = "0";
-					var checkno = "0";
-					var account = csv[0];
-					var amount = csv[1];
-					var fundText = csv[3];
-					int fundNum = 0;
+            while (csv.ReadNextRecord())
+            {
+                var routing = "0";
+                var checkno = "0";
+                var account = csv[0];
+                var amount = csv[1];
+                var fundText = csv[3];
+                int fundNum = 0;
 
-					Int32.TryParse(fundText, out fundNum);
+                Int32.TryParse(fundText, out fundNum);
 
-					if (bh == null)
-					bh = GetBundleHeader(date, DateTime.Now);
-					
-					BundleDetail bd;
+                if (bh == null)
+                    bh = GetBundleHeader(date, DateTime.Now);
 
-					if (fundList.Contains(fundNum))
-						bd = AddContributionDetail(date, fundNum, amount, checkno, routing, account);
-					else
-					{
-						bd = AddContributionDetail(date, fund, amount, checkno, routing, account);
-						bd.Contribution.ContributionDesc = "Used default fund";
-					}
+                BundleDetail bd;
 
-					bh.BundleDetails.Add(bd);
-				}
+                if (fundList.Contains(fundNum))
+                    bd = AddContributionDetail(date, fundNum, amount, checkno, routing, account);
+                else
+                {
+                    bd = AddContributionDetail(date, fund, amount, checkno, routing, account);
+                    bd.Contribution.ContributionDesc = "Used default fund (fund requested: {0})".Fmt(fundText);
+                }
 
-				FinishBundle(bh);
+                bh.BundleDetails.Add(bd);
+            }
 
-				return bh.BundleHeaderId;
-			}
+            FinishBundle(bh);
+
+            return bh.BundleHeaderId;
+        }
 
         private static int FirstFundId()
         {
