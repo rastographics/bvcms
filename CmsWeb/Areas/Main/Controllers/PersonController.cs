@@ -817,7 +817,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpGet]
 		public ActionResult ContributionStatement(int id, DateTime fr, DateTime to)
 		{
-			if (Util.UserPeopleId != id && !User.IsInRole("Finance"))
+            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
 				return Content("No permission to view statement");
 			var p = DbUtil.Db.LoadPersonById(id);
 			if (p == null)

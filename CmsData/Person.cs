@@ -1477,5 +1477,22 @@ namespace CmsData
         {
             const string nameAlreadyExistsAsADifferentType = "name already exists as a different type";
         }
+
+        public bool CanViewStatementFor(CMSDataContext Db, int id)
+        {
+            bool canview = Util.UserPeopleId == id || HttpContext.Current.User.IsInRole("Finance");
+            if (!canview)
+            {
+                var p = Db.CurrentUserPerson;
+                if (p.SpouseId == id)
+                {
+                    var sp = Db.LoadPersonById(id);
+                    if (p.ContributionOptionsId == EnvelopeOptionCode.Joint &&
+                        sp.ContributionOptionsId == EnvelopeOptionCode.Joint)
+                        canview = true;
+                }
+            }
+            return canview;
+        }
     }
 }

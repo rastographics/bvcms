@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/Statements/{id:int}")]
         public ActionResult Statements(int id)
         {
-            if (Util.UserPeopleId != id && !User.IsInRole("Finance"))
+            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
                 return Content("No permission to view statement");
             var m = new ContributionsModel(id);
             return View("Giving/Statements", m);
