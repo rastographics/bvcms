@@ -1,6 +1,0 @@
-﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
-@for (var n = 0; n < Model.PendingList.Count; n++)
-{
-    @Html.EditorFor(m => m.PendingList[n], "HiddenPerson")
-    @Html.EditorFor(m => m.PendingList[n], "HiddenAddress")
-}

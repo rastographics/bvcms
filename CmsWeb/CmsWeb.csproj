@@ -1093,7 +1093,7 @@
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
     <Content Include="Areas\Main\Views\OrgGroups\Management.cshtml" />
-    <Content Include="Areas\People\Views\Person\Personal\PictureUpload.cshtml" />
+    <Content Include="Areas\People\Views\Person\Personal\PictureDialog.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\RelatedEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Registrations.cshtml" />
@@ -1233,6 +1233,7 @@
     <Content Include="Areas\Org\Views\Organization\VolunteerCommitmentsSummary.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundResults2.cshtml" />
     <Content Include="Areas\Finance\Views\Contributions\BundleTotals.cshtml" />
+    <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -2009,19 +2010,6 @@
     <Content Include="Areas\Search\Views\Query\EditorTemplates\DropDown.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InlineCodeInfo.cshtml" />
     <Content Include="Views\ExtraValue\DisplayTemplates\Value.cshtml" />
-    <Content Include="Views\ExtraValue\Add\EditorTemplates\Address.cshtml" />
-    <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenAddress.cshtml" />
-    <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenMeta.cshtml" />
-    <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenPeople.cshtml" />
-    <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenPerson.cshtml" />
-    <Content Include="Views\ExtraValue\Add\EditorTemplates\HiddenSearch.cshtml" />
-    <Content Include="Views\ExtraValue\Add\EditorTemplates\Person.cshtml" />
-    <Content Include="Views\ExtraValue\Add\NewAddress.cshtml" />
-    <Content Include="Views\ExtraValue\Add\NewPerson.cshtml" />
-    <Content Include="Views\ExtraValue\Add\Results.cshtml" />
-    <Content Include="Views\ExtraValue\Add\ResultsFamily.cshtml" />
-    <Content Include="Views\ExtraValue\Add\SearchFamily.cshtml" />
-    <Content Include="Views\ExtraValue\Add\SearchPerson.cshtml" />
     <Content Include="Views\ExtraValue\NewStandard.cshtml" />
     <Content Include="Views\ExtraValue\ListStandard.cshtml" />
     <Content Include="Views\ExtraValue\Entry.cshtml" />

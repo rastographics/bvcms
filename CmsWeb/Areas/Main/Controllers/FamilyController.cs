@@ -225,7 +225,7 @@ namespace CmsWeb.Areas.Main.Controllers
 		[HttpPost]
 		public ActionResult ExtrasGrid(int id)
 		{
-			var f = DbUtil.Db.FamilyExtras.Single(ff => ff.FamilyId == id);
+			var f = DbUtil.Db.Families.Single(ff => ff.FamilyId == id);
 			return View(f);
 		}
 

@@ -21,12 +21,6 @@ namespace CmsWeb.Areas.Main.Controllers
             return View("Rows", m);
         }
         [HttpPost]
-        public ActionResult Display(int id, int pid)
-        {
-            var om = DbUtil.Db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == id);
-            return View(om);
-        }
-        [HttpPost]
         public ActionResult AssignSelectedToTargetGroup(OrgGroupsModel m)
         {
             var a = m.List.ToArray();

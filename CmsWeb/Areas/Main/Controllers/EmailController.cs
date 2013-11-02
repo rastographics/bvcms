@@ -331,10 +331,6 @@ namespace CmsWeb.Areas.Main.Controllers
 			}
 			return CMSMembershipProvider.provider.ValidateUser(username, password);
 		}
-		public ActionResult List()
-		{
-			return View();
-		}
 		public ActionResult CheckQueued()
 		{
 			var q = from e in DbUtil.Db.EmailQueues

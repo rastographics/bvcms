@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        #region Membership
+        // Membership ---------------------------------------------------
 
         [POST("Person2/Membership/{id}")]
         public ActionResult Membership(int id)
@@ -40,8 +40,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Profile/Membership/Display", m);
         }
 
-        #endregion
-        #region Member Notes
+        // Member Note ---------------------------------------------------
 
         [POST("Person2/MemberNotes/{id:int}")]
         public ActionResult MemberNotes(int id)
@@ -64,8 +63,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Profile/MemberNotes/Display", m);
         }
 
-        #endregion
-        #region Member Documents
+        // Member Documents ---------------------------------------------------
 
         [POST("Person2/MemberDocuments/{id}")]
         public ActionResult MemberDocuments(int id)
@@ -94,17 +92,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Profile/Membership/Documents", id);
         }
 
-        #endregion
-        #region Entry
-
-        [POST("Person2/Entry/{id}")]
-        public ActionResult Entry(int id)
-        {
-            return View("Profile/ExtraValues/Entry", id);
-        }
-
-        #endregion
-        #region Comments
+        // Comments ---------------------------------------------------
 
         [POST("Person2/Comments/{id}")]
         public ActionResult Comments(int id)
@@ -127,6 +115,5 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Profile/Comments/Display", m);
         }
 
-        #endregion
     }
 }
