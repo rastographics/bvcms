@@ -4,7 +4,7 @@
 @model PersonModel
 @if (Model.Person.CanUserEditBasic)
 {
-    <a id="profile-picture" href="#picture-modal" title="Click to see larger version or upload new" data-toggle="modal">@Picture()</a>
+    <a id="profile-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">@Picture()</a>
 }
 else
 {
@@ -40,7 +40,7 @@ else
         </li>
     </ul>
 </div>
-@Html.Partial("Personal/PictureUpload", Model)
+@*@Html.Partial("Personal/PictureUpload", Model)*@
 
 @helper Address(AddressInfo a)
 {

@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult ProfileHeader(int id)
         {
             var m = new PersonModel(id);
-            return View("Personal/ProfileHeader", m);
+            return View("Personal/Header", m);
         }
 
         [POST("Person2/PersonalDisplay/{id}")]
@@ -39,12 +39,23 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Personal/Display", m);
         }
 
-        [POST("Person2/UploadPicture/{id:int}/{picture}")]
+        [POST("Person2/PictureDialog/{id:int}")]
+        public ActionResult PictureDialog(int id)
+        {
+            var m = new PersonModel(id);
+            return View("Personal/PictureDialog", m);
+        }
+        [POST("Person2/UploadPicture/{id:int}")]
         public ActionResult UploadPicture(int id, HttpPostedFileBase picture)
         {
             var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
             DbUtil.LogActivity("Uploading Picture for {0}".Fmt(person.Name));
             person.UploadPicture(DbUtil.Db, picture.InputStream);
+            return Redirect("/Person2/" + id);
+        }
+        [POST("Person2/DeletePicture/{id:int}")]
+        public ActionResult DeletePicture(int id)
+        {
             return Redirect("/Person2/" + id);
         }
         [POST("Person2/PostData")]

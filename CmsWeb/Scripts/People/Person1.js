@@ -66,6 +66,38 @@
                 });
             });
     });
+    $("#profile-picture").click(function (ev) {
+        ev.preventDefault();
+        $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
+            var modal = $(this);
+            modal.modal("show");
+            modal.on('shown', function () {
+                modal.find("textarea").focus();
+            });
+            modal.on('hidden', function () {
+                $(this).remove();
+            });
+            modal.on("click", "a.save", function (e) {
+                e.preventDefault();
+                $.post($(this).attr("href"), { value: modal.find("textarea").val() }, function (ret) {
+                    $("#related-families-div").html(ret);
+                    modal.modal("hide");
+                });
+            });
+            modal.on("click", "a.delete", function (e) {
+                e.preventDefault();
+                var a = $(this);
+                bootbox.confirm("Are you sure you want to remove this relationship?", function (result) {
+                    if (result === true)
+                        $.post(a.attr("href"), {}, function (ret) {
+                            $("#related-families-div").html(ret);
+                            modal.modal("hide");
+                        });
+                });
+                return false;
+            });
+        });
+    });
     $("#family_related a.edit").live("click", function (ev) {
         ev.preventDefault();
         $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
