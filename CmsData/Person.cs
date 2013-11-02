@@ -7,6 +7,7 @@
 using System;
 using System.Data.SqlClient;
 using System.Linq;
+using ImageData;
 using UtilityExtensions;
 using System.Text;
 using System.Data.Linq;
@@ -1401,6 +1402,19 @@ namespace CmsData
             LogPictureUpload(db, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
 
+        }
+        public void DeletePicture(CMSDataContext db)
+        {
+            if (Picture == null)
+                return;
+            Image.Delete(Picture.ThumbId);
+            Image.Delete(Picture.SmallId);
+            Image.Delete(Picture.MediumId);
+            Image.Delete(Picture.LargeId);
+            var pid = PictureId;
+            Picture = null;
+            db.SubmitChanges();
+            db.ExecuteCommand("DELETE dbo.Picture WHERE PictureId = {0}", pid);
         }
 
         public void UploadDocument(CMSDataContext db, System.IO.Stream stream, string name, string mimetype)

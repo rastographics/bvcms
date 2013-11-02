@@ -11,6 +11,12 @@ namespace ImageData
 {
     public partial class Image
     {
+        public static void Delete(int? id)
+        {
+            if(id.HasValue)
+                ImageData.DbUtil.Db.ExecuteCommand("DELETE dbo.Image WHERE Id = {0}", id);
+        }
+
         public static Image NewImageFromBits(byte[] bits, int w, int h)
         {
             var i = new Image();

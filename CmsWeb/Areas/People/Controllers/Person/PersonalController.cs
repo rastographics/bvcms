@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/UploadPicture/{id:int}")]
         public ActionResult UploadPicture(int id, HttpPostedFileBase picture)
         {
-            var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
+            var person = DbUtil.Db.LoadPersonById(id);
             DbUtil.LogActivity("Uploading Picture for {0}".Fmt(person.Name));
             person.UploadPicture(DbUtil.Db, picture.InputStream);
             return Redirect("/Person2/" + id);
@@ -56,6 +56,8 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/DeletePicture/{id:int}")]
         public ActionResult DeletePicture(int id)
         {
+            var person = DbUtil.Db.LoadPersonById(id);
+            person.DeletePicture(DbUtil.Db);
             return Redirect("/Person2/" + id);
         }
         [POST("Person2/PostData")]

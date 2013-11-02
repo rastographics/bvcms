@@ -1,7 +1,5 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
-@using (Html.BeginForm("UploadPicture", "Person", new { id = Model.PeopleId }, FormMethod.Post, 
-    new {enctype = "multipart/form-data", @class = "modal hide fade", id = "picture-modal"}))
-{
+<form id="picture-modal" action="/Person2/UploadPicture/@Model.PeopleId" method="post" enctype="multipart/form-data" class="modal fade hide">
     <div class="modal-header">
         <button class="close" data-dismiss="modal" type="button" aria-hidden="true"><i class="icon-remove-sign"></i></button>
         <h3>Photo</h3>
@@ -15,7 +13,7 @@
     </div>
     <div class="modal-footer">
         <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="/Person2/DeletePicture/@Model.PeopleId" class="submit btn btn-danger">Delete</a>
+        <a id="delete-picture" href="/Person2/DeletePicture/@Model.PeopleId" class="btn btn-danger">Delete</a>
         <input type="submit" class="btn btn-primary" value="Save changes" />
     </div>
-}
+</form>
