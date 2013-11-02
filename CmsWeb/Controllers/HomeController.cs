@@ -160,5 +160,13 @@ namespace CmsWeb.Controllers
 			}
 			return Content("ok");
 		}
+		public ActionResult SwitchTag(string tag)
+		{
+            var m = new TagsModel {tag = tag};
+		    m.SetCurrentTag();
+            if(Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.ToString());
+            return Redirect("/");
+		}
 	}
 }

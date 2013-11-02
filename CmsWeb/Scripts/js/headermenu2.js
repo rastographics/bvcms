@@ -160,13 +160,6 @@
     //		d.dialog("option", "title", "Add Organization");
     //		d.dialog("open");
     //	});
-    $('#cleartag').click(function (e) {
-        e.preventDefault();
-        if (confirm("are you sure you want to empty the active tag?"))
-            $.post("/Tags/ClearTag", {}, function () {
-                window.location.reload();
-            });
-    });
     $('.warntip').tooltip({
         delay: 150,
         showBody: "|",
