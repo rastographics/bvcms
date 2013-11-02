@@ -21,13 +21,13 @@
             $("a.rename").click(function(ev) {
                 ev.preventDefault();
                 var url = this.href;
-                bootbox.prompt("New name:", function(result) {
+                bootbox.prompt("New name:", "Cancel", "Rename", function(result) {
                     if (result !== null) {
-                        $.post(url, { newname: result }, function () {
+                        $.post(url, { newname: result }, function() {
                             window.location.reload();
                         });
                     }
-                });
+                }, $(this).data("default"));
             });
         });
     </script>
@@ -49,7 +49,7 @@
             <tr>
                 <td>
                     <a href="@e.QueryUrl">@e.Field</a>
-                    <a class="rename" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)">
+                    <a class="rename" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)">
                         <i class="icon-pencil"></i></a>
                 </td>
                 <td>@e.Value</td>
