@@ -1,13 +1,13 @@
-﻿@using CmsData;
-@using CmsData.Classes.Twilio;
-@using CmsWeb
+﻿@using CmsData.Classes.Twilio;
 @using UtilityExtensions;
+@model object
 @{
     ViewBag.Title = "Options";
     Layout = Fingerprint.Layout();
 
     var groups = TwilioHelper.getAvailableLists(Util.UserId);
-    var count = TwilioHelper.getSendCount(ViewBag.QBID);
+    var count = TwilioHelper.getSendCount(Model);
+    var posturl = Model is Guid ? "/SMS/Send2/" + Model : "/SMS/Send/" + Model;
 }
 @section scripts
 {
@@ -26,8 +26,7 @@
 }
 <br />
 <b>Sending to @(count) @( count == 1 ? "person" : "people" )</b>
-<form action="/SMS/Send" method="post">
-    <input type="hidden" name="iQBID" value="@ViewBag.QBID" /><br />
+<form action="@posturl" method="post">
     @Html.DropDownList( "iSendGroup", new SelectList( groups, "ID", "Name" ) )<br />
     <br />
     <b>Title:</b><br />

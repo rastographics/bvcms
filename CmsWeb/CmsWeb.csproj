@@ -2259,7 +2259,6 @@
     <Content Include="ckeditor2\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
     <Content Include="ckeditor2\skins\kama\readme.md" />
     <Content Include="Areas\Main\Views\Volunteering\DialogEdit.cshtml" />
-    <Content Include="Areas\Main\Views\SMS\Index.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Options.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Send.cshtml" />
     <Content Include="Areas\Manage\Views\SMS\Details.cshtml" />
