@@ -95,5 +95,11 @@ namespace CmsWeb.Areas.People.Controllers
             m.Pager.Set("/Person2/TasksAssigned/" + id, page, size, sort, dir);
             return View("Ministry/Tasks", m);
         }
+        [POST("Person2/VolunteerApprovals/{id}")]
+        public ActionResult VolunteerApprovals(int id)
+        {
+            var m = new Main.Models.Other.VolunteerModel(id);
+            return View("Ministry/Volunteer", m);
+        }
     }
 }
