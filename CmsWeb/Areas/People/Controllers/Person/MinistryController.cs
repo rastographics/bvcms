@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.SubmitChanges();
 
             TempData["ContactEdit"] = true;
-            return Content("/Contact/" + c.ContactId);
+            return Content("/Contact2/" + c.ContactId);
         }
         [POST("Person2/ContactsReceived/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult ContactsReceived(int id, int? page, int? size, string sort, string dir)
@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.SubmitChanges();
 
             TempData["ContactEdit"] = true;
-            return Content("/Contact/{0}".Fmt(c.ContactId));
+            return Content("/Contact2/{0}".Fmt(c.ContactId));
         }
         [POST("Person2/TasksAbout/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult TasksAbout(int id, int? page, int? size, string sort, string dir)
