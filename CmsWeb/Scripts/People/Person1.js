@@ -309,9 +309,8 @@
 
 
 function RebindMemberGrids() {
-    $.updateTable($('#current-tab form'));
-    $.updateTable($('#pending-tab form'));
-    $("#memberDialog").dialog('close');
+    $("#refresh-current").click();
+    $("#refresh-pending").click();
 }
 function RebindUserInfoGrid() {
     $.updateTable($('#user-tab form'));

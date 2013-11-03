@@ -31,7 +31,8 @@ namespace CmsWeb.Areas.Org.Models
             Pager.ShowPageSize = false;
         }
 
-        public string orgsearch { get; set; }
+        public string OrgSearch { get; set; }
+
         public int? OrgId
         {
             get { return orgId; }
@@ -62,7 +63,7 @@ namespace CmsWeb.Areas.Org.Models
                    where o.DivOrgs.Any(dd => org.DivOrgs.Any(oo => oo.DivId == dd.DivId))
                    where o.OrganizationId != OrgId
                    where o.OrganizationStatusId == OrgStatusCode.Active
-                   where !orgsearch.HasValue() || o.OrganizationName.Contains(orgsearch)
+                   where !OrgSearch.HasValue() || o.OrganizationName.Contains(OrgSearch)
                    select o;
         }
 

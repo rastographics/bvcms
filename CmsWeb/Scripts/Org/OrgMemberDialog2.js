@@ -6,9 +6,11 @@
         return true;
     });
     $("#dropmember").live("click", function (ev) {
+        var f = $(this).closest('form');
         if (confirm("are you sure?"))
             $.post($(this).attr("href"), null, function (ret) {
-                self.parent.RebindMemberGrids($("#from").val());
+                f.modal("hide");
+                self.parent.RebindMemberGrids();
             });
         return false;
     });
@@ -23,7 +25,8 @@
         var f = $(this).closest('form');
         if (confirm("are you sure?"))
             $.post($(this).attr('href'), null, function (ret) {
-                self.parent.RebindMemberGrids($("#from").val());
+                f.modal("hide");
+                self.parent.RebindMemberGrids();
             });
         return false;
     });
