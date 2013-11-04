@@ -45,5 +45,14 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.Id = id;
             return View("Family/RelatedEdit", r);
         }
+        [GET("Person2/FamilyQuery/{id}")]
+        public ActionResult FamilyQuery(int id)
+        {
+            var c = DbUtil.Db.ScratchPadCondition();
+            c.Reset(DbUtil.Db);
+            c.AddNewClause(QueryType.FamilyId, CompareType.Equal, id);
+            c.Save(DbUtil.Db);
+            return Redirect("/Query/" + c.Id);
+        }
     }
 }
