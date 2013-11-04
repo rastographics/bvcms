@@ -14,7 +14,7 @@
             });
         return false;
     });
-    $('#orgsearch').live("keydown", function (event) {
+    $('#OrgSearch').live("keydown", function (event) {
         if (event.keyCode == 13) {
             event.preventDefault();
             $("#orgsearchbtn").click();
