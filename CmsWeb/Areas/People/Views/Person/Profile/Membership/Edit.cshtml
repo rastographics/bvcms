@@ -51,13 +51,13 @@
                     @Html.EditorFor(m => m.DropDate)
                     @Html.EditorFor(m => m.OtherNewChurch)
                 </div>
-                <div class="well">
-                    <p><b>Letter Status</b></p>
-                    @Html.EditorFor(m => m.LetterStatus)
-                    @Html.EditorFor(m => m.LetterDateRequested)
-                    @Html.EditorFor(m => m.LetterDateReceived)
-                    @Html.EditorFor(m => m.LetterStatusNotes)
-                </div>
+            </div>
+            <div class="well">
+                <p><b>Letter Status</b></p>
+                @Html.EditorFor(m => m.LetterStatus)
+                @Html.EditorFor(m => m.LetterDateRequested)
+                @Html.EditorFor(m => m.LetterDateReceived)
+                @Html.EditorFor(m => m.LetterStatusNotes)
             </div>
             <div>@FormAction()</div>
         </fieldset>

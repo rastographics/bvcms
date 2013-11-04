@@ -125,6 +125,7 @@ namespace CmsWeb.Areas.People.Models
                      }).Single();
 
             var changes = this.CopyPropertiesTo(i.p, excludefields: "HomePhone");
+
             i.p.LogChanges(DbUtil.Db, changes);
 
 
@@ -132,11 +133,14 @@ namespace CmsWeb.Areas.People.Models
             if (ret == "ok")
             {
                 DbUtil.Db.SubmitChanges();
-                changes = this.CopyPropertiesTo(i.Family, onlyfields: "HomePhone");
-                i.Family.LogChanges(DbUtil.Db, changes, i.p.PeopleId);
                 person = i.p;
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
+                this.CopyPropertiesFrom(person);
+            }
+            else
+            {
+                person = i.p;
                 this.CopyPropertiesFrom(person);
             }
             return ret;

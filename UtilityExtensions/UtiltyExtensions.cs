@@ -474,6 +474,22 @@ namespace UtilityExtensions
                     digits.Append(c);
             return digits.ToString().Truncate(maxlen);
         }
+        public static string NoLeadZeros(this string s)
+        {
+            if (!s.HasValue())
+                return "";
+            var digits = new StringBuilder();
+            var nonzeroseen = false;
+            foreach (var c in s.ToCharArray())
+                if (!nonzeroseen && c == '0')
+                    continue;
+                else
+                {
+                    nonzeroseen = true;
+                    digits.Append(c);
+                }
+            return digits.ToString();
+        }
         public static string GetChars(this string s)
         {
             if (!s.HasValue())
