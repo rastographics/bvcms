@@ -2,17 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Web;
-using System.Xml;
 using System.Text;
 using System.Linq;
 using System.Xml.Serialization;
 using CmsData.Codes;
 using CmsData.Registration;
-using IronPython.Hosting;
 using RazorEngine;
 using UtilityExtensions;
-using System.Data.Linq;
-using CmsData;
 
 namespace CmsData.API
 {
@@ -97,57 +93,57 @@ namespace CmsData.API
                     };
             return q.ToList();
         }
-//        public string OrgMembersPython(int orgid)
-//        {
-//            var list = OrgMembersData(orgid);
-//            var script = Db.Content("API-OrgMembers");
-//            if (script == null)
-//            {
-//                script = new Content();
-//                script.Body = @"
-//from System import *
-//from System.Text import *
-//
-//class OrgMembers(object):
-//
-//	def Run(self, m, w, q):
-//		w.Start('OrgMembers')
-//		for i in q:
-//			w.Start('Member')
-//			w.Attr('PeopleId', i.member.PeopleId)
-//			w.Attr('Name', i.member.Person.Name)
-//			w.Attr('PreferredName', i.member.Person.PreferredName)
-//			w.Attr('LastName', i.member.Person.LastName)
-//			w.Attr('Email', i.member.Person.EmailAddress)
-//			w.Attr('Enrolled', i.member.EnrollmentDate)
-//			w.Attr('MemberType', i.member.MemberType.Description)
-//			for t in i.tags:
-//				w.Add('Group', t)
-//			w.End()
-//		w.End()
-//		return w.ToString()
-//";
-//            }
-//            if (script == null)
-//                return "<login error=\"no API-OrgMembers script\" />";
-//            var engine = Python.CreateEngine();
-//            var sc = engine.CreateScriptSourceFromString(script.Body);
-//            try
-//            {
-//                var code = sc.Compile();
-//                var scope = engine.CreateScope();
-//                code.Execute(scope);
-//
-//                dynamic LoginInfo = scope.GetVariable("OrgMembers");
-//                dynamic m = LoginInfo();
-//                var w = new APIWriter();
-//                return m.Run(this, w, list);
-//            }
-//            catch (Exception ex)
-//            {
-//                return "<login error=\"API-OrgMembers script error: {0}\" />".Fmt(ex.Message);
-//            }
-//        }
+        //        public string OrgMembersPython(int orgid)
+        //        {
+        //            var list = OrgMembersData(orgid);
+        //            var script = Db.Content("API-OrgMembers");
+        //            if (script == null)
+        //            {
+        //                script = new Content();
+        //                script.Body = @"
+        //from System import *
+        //from System.Text import *
+        //
+        //class OrgMembers(object):
+        //
+        //	def Run(self, m, w, q):
+        //		w.Start('OrgMembers')
+        //		for i in q:
+        //			w.Start('Member')
+        //			w.Attr('PeopleId', i.member.PeopleId)
+        //			w.Attr('Name', i.member.Person.Name)
+        //			w.Attr('PreferredName', i.member.Person.PreferredName)
+        //			w.Attr('LastName', i.member.Person.LastName)
+        //			w.Attr('Email', i.member.Person.EmailAddress)
+        //			w.Attr('Enrolled', i.member.EnrollmentDate)
+        //			w.Attr('MemberType', i.member.MemberType.Description)
+        //			for t in i.tags:
+        //				w.Add('Group', t)
+        //			w.End()
+        //		w.End()
+        //		return w.ToString()
+        //";
+        //            }
+        //            if (script == null)
+        //                return "<login error=\"no API-OrgMembers script\" />";
+        //            var engine = Python.CreateEngine();
+        //            var sc = engine.CreateScriptSourceFromString(script.Body);
+        //            try
+        //            {
+        //                var code = sc.Compile();
+        //                var scope = engine.CreateScope();
+        //                code.Execute(scope);
+        //
+        //                dynamic LoginInfo = scope.GetVariable("OrgMembers");
+        //                dynamic m = LoginInfo();
+        //                var w = new APIWriter();
+        //                return m.Run(this, w, list);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                return "<login error=\"API-OrgMembers script error: {0}\" />".Fmt(ex.Message);
+        //            }
+        //        }
 
         public string OrgMembers2(int orgid, string search)
         {
@@ -667,23 +663,17 @@ namespace CmsData.API
                                    && a.PeopleId == om.PeopleId)
                                select om).ToList();
 
-            var subject = Util.PickFirst(setting.ReminderSubject, "no subject");
-            var message = Util.PickFirst(setting.ReminderBody, "no body");
-            if (subject == "no subject" || message == "no body")
-                throw new Exception("no subject or body");
             var notify = Db.StaffPeopleForOrg(org.OrganizationId);
-            var from = notify.FirstOrDefault();
-            if (from == null)
-                throw new Exception("no notify person");
+            var from = Db.StaffEmailForOrg(org.OrganizationId);
 
             foreach (var om in currmembers)
             {
-                var q = from a in org.Attends
-                        where a.PeopleId == om.PeopleId
-                        where a.Commitment == AttendCommitmentCode.Attending || a.Commitment == AttendCommitmentCode.Substitute
-                        where a.MeetingDate >= DateTime.Today
-                        orderby a.MeetingDate
-                        select a.MeetingDate;
+                var q = (from a in org.Attends
+                         where a.PeopleId == om.PeopleId
+                         where a.Commitment == AttendCommitmentCode.Attending || a.Commitment == AttendCommitmentCode.Substitute
+                         where a.MeetingDate >= DateTime.Today
+                         orderby a.MeetingDate
+                         select a.MeetingDate).ToList();
                 if (!q.Any())
                     continue;
                 var details = Razor.Parse(@"@model IEnumerable<DateTime>
@@ -705,8 +695,8 @@ namespace CmsData.API
 
                 var oname = org.OrganizationName;
 
-                subject = Util.PickFirst(setting.ReminderSubject, "no subject");
-                message = Util.PickFirst(setting.ReminderBody, "no body");
+                var subject = Util.PickFirst(setting.ReminderSubject, "no subject");
+                var message = Util.PickFirst(setting.ReminderBody, "no body");
 
                 string loc = org.Location;
                 message = MessageReplacements(Db, om.Person, null, oname, loc, message);
@@ -714,7 +704,7 @@ namespace CmsData.API
                 message = message.Replace("{phone}", org.PhoneNumber.FmtFone7());
                 message = message.Replace("{details}", details);
 
-                Db.Email(from.FromEmail, om.Person, subject, message);
+                Db.Email(from, om.Person, subject, message);
             }
             var sb = new StringBuilder(@"
 <blockquote>
@@ -747,7 +737,7 @@ namespace CmsData.API
             {
                 var organizationName = org.OrganizationName;
 
-                message = Util.PickFirst(setting.ReminderBody, "no body");
+                var message = Util.PickFirst(setting.ReminderBody, "no body");
 
                 string location = org.Location;
                 message = MessageReplacements(Db, n, null, organizationName, location, message);
@@ -755,7 +745,7 @@ namespace CmsData.API
                 message = message.Replace("{phone}", org.PhoneNumber.FmtFone7());
                 message = message.Replace("{details}", sb.ToString());
 
-                Db.Email(from.FromEmail, n, "Reminder Notices sent for " + organizationName, message);
+                Db.Email(from, n, "Reminder Notices sent for " + organizationName, message);
             }
         }
         public void SendEventReminders(int id)
