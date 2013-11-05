@@ -26,6 +26,8 @@
   <file>/Scripts/js/Pager.js</file>
   <file>/Scripts/js/dropdown.js</file>
   <file>/Scripts/js/headermenu1c.js</file>
+	<file>/Scripts/Bootstrap/typeahead.js</file>
+	<file>/Scripts/Search/SearchTypeahead.js</file>
   <file>/Scripts/js/ExportToolBar.js</file>
   <file>/Scripts/js/headermenu2.js</file>
   <file>/Scripts/Search/SearchAdd.js</file>

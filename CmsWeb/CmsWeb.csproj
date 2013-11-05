@@ -624,6 +624,7 @@
     <Content Include="Content\css\search.min.css">
       <DependentUpon>search.css</DependentUpon>
     </Content>
+    <Content Include="Content\css\typeahead.js-bootstrap.css" />
     <Content Include="Content\font-awesome\css\font-awesome-ie7.css" />
     <Content Include="Content\font-awesome\css\font-awesome-ie7.min.css" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
@@ -846,6 +847,9 @@
     <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js">
       <DependentUpon>bootstrap-multiselect.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Bootstrap\bootstrap.min.js">
+      <DependentUpon>bootstrap.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap.min.js.map">
       <DependentUpon>bootstrap.js</DependentUpon>
     </Content>
@@ -855,6 +859,7 @@
       <DependentUpon>jquery.bootstrap-growl.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Bootstrap\spin.min.js" />
+    <Content Include="Scripts\Bootstrap\typeahead.js" />
     <Content Include="Scripts\Bundle\main2c.js">
       <DependentUpon>main2c.js.bundle</DependentUpon>
     </Content>
@@ -1100,6 +1105,7 @@
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Display.cshtml" />
+    <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
@@ -1257,6 +1263,7 @@
     <Content Include="Content\font-awesome\scss\_mixins.scss" />
     <Content Include="Content\font-awesome\scss\_path.scss" />
     <Content Include="Content\font-awesome\scss\_variables.scss" />
+    <Content Include="Content\less\typeahead.js-bootstrap.less" />
     <None Include="Content\styles\bundle-css.css.bundle" />
     <Content Include="Scripts\Admin\Divisions.min.js.map">
       <DependentUpon>Divisions.js</DependentUpon>
@@ -1711,7 +1718,6 @@
     <Content Include="Content\images\unknownsm.jpg" />
     <Content Include="Content\MembershipAutomation2.py" />
     <Content Include="Scripts\Bootstrap\bootstrap.js" />
-    <Content Include="Scripts\Bootstrap\bootstrap.min.js" />
     <Content Include="Scripts\Chosen\chosen.jquery.js" />
     <Content Include="Scripts\Chosen\chosen.jquery.min.js" />
     <Content Include="Scripts\jQuery\jquery.contextmenu.r2.js" />
@@ -2020,6 +2026,7 @@
     <Content Include="Views\ExtraValue\NewAdHoc.cshtml" />
     <Content Include="Views\ExtraValue\DeleteFromQuery.cshtml" />
     <Content Include="Views\Shared\SiteLayout2c.cshtml" />
+    <Content Include="Views\Home\TestTypeahead.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -62,6 +62,9 @@ thead th a {
 */
 
 
+input.tt-query {
+    background-color: white;
+}
 .editable-click,
 a.editable-click,
 a.editable-click:hover {
@@ -69,9 +72,37 @@ a.editable-click:hover {
     text-decoration: none;
 }
 
-/*#navGlobal .form-search {
+#navGlobal .form-search {
     text-align: left;
-}*/
+}
+
+    #navGlobal .form-search > div {
+        padding-top: 12px;
+    }
+
+    #navGlobal .form-search input {
+        width: auto;
+    }
+    input.tt-hint {
+        border-radius: 0;
+    }
+
+    #navGlobal .form-search .input {
+        -webkit-border-radius: 0;
+        -webkit-background-clip: padding-box;
+        -moz-border-radius: 0;
+        -moz-background-clip: padding;
+        border-radius: 0;
+        background-clip: padding-box;
+        width: auto;
+        outline: none;
+    }
+
+        #navGlobal .form-search .input:focus {
+            outline: none;
+            border-color: inherit;
+            box-shadow: none;
+        }
 
 /*
 form.form-horizontal.onecol .control-group {
@@ -259,16 +290,15 @@ form.form.form-horizontal.ajax div.form-actions {
     height: 54px;
     background: #323334;
     background: rgba(50, 51, 52, 0.7);
-    color: #fff;
 }
 
-    #navGlobal .form-search {
+    /*#navGlobal .form-search {
         text-align: left;
     }
 
     #navGlobal ul.typeahead {
         float: left;
-    }
+    }*/
 
 
 
@@ -954,24 +984,30 @@ div.legend {
     border: 0;
     border-bottom: 1px solid #e5e5e5;
 }
+
 #main-tab form li ul {
     margin-left: 0;
 }
+
 .roundbox h2 {
     line-height: inherit;
 }
+
 #oldpages table {
     max-width: inherit;
     background-color: inherit;
     border-collapse: inherit;
     border-spacing: inherit;
 }
+
 table.pad5 td {
     padding: 5px;
 }
+
 table.pad0 td {
     padding: 0;
 }
+
 #oldpages label {
     display: inline;
     font-size: inherit;
