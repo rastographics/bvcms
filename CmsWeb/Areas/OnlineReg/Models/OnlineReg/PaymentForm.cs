@@ -221,11 +221,16 @@ namespace CmsWeb.Models
             {
                 pf.NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
                 pf.IsGiving = true;
+                pf.FinanceOnly = true;
                 pf.Type = r.payinfo.PreferredGivingType;
                 if (pf.NoCreditCardsAllowed)
                     pf.Type = "B"; // bank account only
                 else if (pf.NoEChecksAllowed)
                     pf.Type = "C"; // credit card only
+            }
+            else if (m.ManageGiving())
+            {
+                pf.FinanceOnly = true;
             }
             pf.Type = pf.NoEChecksAllowed ? "C" : pf.Type;
             return pf;
