@@ -192,8 +192,8 @@ namespace UtilityExtensions
         {
             if (source == null)
                 return new string[0];
-            var option = noblanks 
-                ? StringSplitOptions.RemoveEmptyEntries 
+            var option = noblanks
+                ? StringSplitOptions.RemoveEmptyEntries
                 : StringSplitOptions.None;
             return source.Split(new string[] { "\r\n", "\n" }, option);
         }
@@ -1172,6 +1172,11 @@ namespace UtilityExtensions
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
             Response.Cache.SetValidUntilExpires(false);
         }
+        public static void SetCacheMinutes(this HttpResponseBase Response, int minutes)
+        {
+            Response.Cache.SetExpires(DateTime.Now.AddMinutes(minutes));
+            Response.Cache.SetValidUntilExpires(true);
+        }
 
         public static string AppRoot
         {
@@ -1758,15 +1763,31 @@ namespace UtilityExtensions
         }
         public static void NameSplit(string name, out string First, out string Last)
         {
-            var a = (name ?? "").Split(' ');
-            First = "";
-            if (a.Length > 1)
+            if (name.Contains(","))
             {
-                First = a[0];
-                Last = a[1];
+                var a = (name ?? "").Split(',');
+                First = "";
+                if (a.Length > 1)
+                {
+                    First = a[1].Trim();
+                    Last = a[0].Trim();
+                }
+                else
+                    Last = a[0].Trim();
             }
             else
-                Last = a[0];
+            {
+                var a = (name ?? "").Split(' ');
+                First = "";
+                if (a.Length > 1)
+                {
+                    First = a[0];
+                    Last = a[1];
+                }
+                else
+                    Last = a[0];
+            }
+
         }
         public static void AppendNext(this StringBuilder sb, string sep, string s)
         {

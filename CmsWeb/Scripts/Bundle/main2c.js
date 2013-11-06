@@ -44144,7 +44144,7 @@ function CloseAddOrgDialog(id) {
             this.filter = o.filter;
             this.replace = o.replace;
             this.ajaxSettings = {
-                type: "get",
+                type: "post",
                 cache: o.cache,
                 timeout: o.timeout,
                 dataType: o.dataType || "json",
@@ -45023,8 +45023,12 @@ $(function () {
         name: 'search',
         valueKey: "line1",
         limit: 25,
+        beforeSend: function(jqXhr, settings) {
+            settings.type = 'POST';
+            $.SetLoadingIndicator();
+        },
         remote: {
-            url: '/Home/Names22?q=%QUERY',
+            url: '/FastSearch?q=%QUERY',
             filter: function (parsedResponse) {
                 return parsedResponse;
             }

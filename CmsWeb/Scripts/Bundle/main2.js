@@ -26821,7 +26821,7 @@ String.prototype.addCommas = function () {
             this.filter = o.filter;
             this.replace = o.replace;
             this.ajaxSettings = {
-                type: "get",
+                type: "post",
                 cache: o.cache,
                 timeout: o.timeout,
                 dataType: o.dataType || "json",
@@ -27700,8 +27700,12 @@ $(function () {
         name: 'search',
         valueKey: "line1",
         limit: 25,
+        beforeSend: function(jqXhr, settings) {
+            settings.type = 'POST';
+            $.SetLoadingIndicator();
+        },
         remote: {
-            url: '/Home/Names22?q=%QUERY',
+            url: '/FastSearch?q=%QUERY',
             filter: function (parsedResponse) {
                 return parsedResponse;
             }
@@ -27761,16 +27765,15 @@ $(function () {
     $.AttachFormElements = function () {
         $("form.ajax input.ajax-typeahead").typeahead({
             minLength: 3,
-            source: function (query, process) {
-                return $.ajax({
-                    url: $(this.$element[0]).data("link"),
-                    type: 'post',
-                    data: { query: query },
-                    dataType: 'json',
-                    success: function (jsonResult) {
-                        return typeof jsonResult == 'undefined' ? false : process(jsonResult);
-                    }
-                });
+            remote: {
+                url: "test",
+                beforeSend: function(jqXhr, settings) {
+                    settings.type = 'POST';
+                    $.SetLoadingIndicator();
+                },
+                replace: function (url, uriEncodedQuery) {
+                    return $("input:focus").data("link") + "?query=" + uriEncodedQuery;
+                }
             }
         });
         $.DatePickersAndChosen();
@@ -27887,13 +27890,7 @@ $(function () {
     var $loadingcount = 0;
     $.ajaxSetup({
         beforeSend: function () {
-            $("#loading-indicator").css({
-                'position': 'absolute',
-                'left': $(window).width() / 2,
-                'top': $(window).height() / 2,
-                'z-index': 2000
-            }).show();
-            $loadingcount++;
+            $.SetLoadingIndicator();
         },
         complete: function () {
             $loadingcount--;
@@ -27901,6 +27898,15 @@ $(function () {
                 $("#loading-indicator").hide();
         }
     });
+    $.SetLoadingIndicator = function() {
+        $("#loading-indicator").css({
+            'position': 'absolute',
+            'left': $(window).width() / 2,
+            'top': $(window).height() / 2,
+            'z-index': 2000
+        }).show();
+        $loadingcount++;
+    };
     $.InitFunctions = {};
 });
 

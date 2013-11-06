@@ -3,8 +3,12 @@
         name: 'search',
         valueKey: "line1",
         limit: 25,
+        beforeSend: function(jqXhr, settings) {
+            settings.type = 'POST';
+            $.SetLoadingIndicator();
+        },
         remote: {
-            url: '/Home/Names22?q=%QUERY',
+            url: '/FastSearch?q=%QUERY',
             filter: function (parsedResponse) {
                 return parsedResponse;
             }

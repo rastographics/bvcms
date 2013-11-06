@@ -142,9 +142,10 @@ namespace CmsWeb.Controllers
             var q = HomeModel.Names(term).ToList();
             return Json(q, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Names22(string q)
+        [POST("FastSearch")]
+        public ActionResult FastSearch(string q)
         {
-            var qq = HomeModel.Names22(q).ToArray();
+            var qq = HomeModel.FastSearch(q).ToArray();
             return Content(JsonConvert.SerializeObject(qq));
         }
 

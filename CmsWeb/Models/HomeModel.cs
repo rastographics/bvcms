@@ -417,7 +417,7 @@ namespace CmsWeb.Models
             public int id { get; set; }
             public bool addmargin { get; set; }
         }
-        public static IEnumerable<SearchInfo22> Names22(string text)
+        public static IEnumerable<SearchInfo22> FastSearch(string text)
         {
             string First, Last;
             var qp = DbUtil.Db.People.AsQueryable();
