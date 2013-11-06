@@ -228,7 +228,7 @@ namespace CmsWeb.Models
                 else if (pf.NoEChecksAllowed)
                     pf.Type = "C"; // credit card only
             }
-            else if (m.ManageGiving())
+            else if (m.ManageGiving() || m.OnlinePledge())
             {
                 pf.FinanceOnly = true;
             }
