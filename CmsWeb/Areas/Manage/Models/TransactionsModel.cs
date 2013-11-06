@@ -222,7 +222,7 @@ namespace CmsWeb.Models
 								date = r["date"].ToDate(),
 								type = r["transaction_code"].ToInt()
 							};
-				var settlelist = items.ToDictionary(ii => ii.reference, ii => ii);
+			    var settlelist = items.ToDictionary(ii => ii.reference, ii => ii);
 
 				var q = from t in DbUtil.Db.Transactions
 						where settlelist.Keys.Contains(t.TransactionId)
@@ -260,10 +260,13 @@ namespace CmsWeb.Models
 
 				foreach (var t in q)
 				{
-					t.Batch = batch.date;
-					t.Batchref = batch.reference;
-					t.Batchtyp = batch.type;
-					t.Settled = settlelist[t.TransactionId].settled;
+				    if (settlelist.ContainsKey(t.TransactionId))
+				    {
+				        t.Batch = batch.date;
+				        t.Batchref = batch.reference;
+				        t.Batchtyp = batch.type;
+				        t.Settled = settlelist[t.TransactionId].settled;
+				    }
 				}
 				DbUtil.Db.CheckedBatches.InsertOnSubmit(
 					new CheckedBatch()
