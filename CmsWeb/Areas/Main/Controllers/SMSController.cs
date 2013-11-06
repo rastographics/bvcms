@@ -14,12 +14,12 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             return View(id);
         }
-        public ActionResult Send(int iQBID, int iSendGroup, string sTitle, string sMessage)
+        public ActionResult Send(int id, int iSendGroup, string sTitle, string sMessage)
         {
-            TwilioHelper.QueueSMS(iQBID, iSendGroup, sTitle, sMessage);
+            TwilioHelper.QueueSMS(id, iSendGroup, sTitle, sMessage);
             ViewBag.sTitle = sTitle;
             ViewBag.sMessage = sMessage;
-            return View(iQBID);
+            return View(id);
         }
 
 
