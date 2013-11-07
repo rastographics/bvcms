@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Data.Linq;
 using System.Web;
 using CmsData;
 using UtilityExtensions;
@@ -207,6 +206,7 @@ namespace CmsWeb.Models
 			{
 				if (DbUtil.Db.CheckedBatches.Any(tt => tt.BatchRef == batch.reference))
 					continue;
+
 				var ds = sage.SettledBatchListing(batch.reference, batch.type);
 
 				var items = from r in ds.Tables[0].AsEnumerable()
@@ -260,21 +260,26 @@ namespace CmsWeb.Models
 
 				foreach (var t in q)
 				{
-				    if (settlelist.ContainsKey(t.TransactionId))
-				    {
-				        t.Batch = batch.date;
-				        t.Batchref = batch.reference;
-				        t.Batchtyp = batch.type;
-				        t.Settled = settlelist[t.TransactionId].settled;
-				    }
+				    if (!settlelist.ContainsKey(t.TransactionId)) 
+                        continue;
+				    t.Batch = batch.date;
+				    t.Batchref = batch.reference;
+				    t.Batchtyp = batch.type;
+				    t.Settled = settlelist[t.TransactionId].settled;
 				}
-				DbUtil.Db.CheckedBatches.InsertOnSubmit(
-					new CheckedBatch()
-					{
-						BatchRef = batch.reference,
-						CheckedX = DateTime.Now
-					});
-				DbUtil.Db.SubmitChanges();
+			    var cb = DbUtil.Db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.reference);
+			    if (cb == null)
+			    {
+			        DbUtil.Db.CheckedBatches.InsertOnSubmit(
+			            new CheckedBatch()
+			            {
+			                BatchRef = batch.reference,
+			                CheckedX = DateTime.Now
+			            });
+			    }
+			    else
+			        cb.CheckedX = DateTime.Now;
+			    DbUtil.Db.SubmitChanges();
 			}
 		}
 		public IQueryable<Transaction> ApplySort()
