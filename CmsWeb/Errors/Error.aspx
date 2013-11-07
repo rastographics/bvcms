@@ -30,7 +30,6 @@
       padding: 0;
     }
     body {
-      background: #F0F0F0;
       font: 14px/18px Arial, "Helvetica Neue", sans-serif;
       text-align: center;
     }
@@ -61,9 +60,13 @@
 </head>
 
 <body>
+    <img src="/Content/images/brokencode.jpg" style="margin-left: auto;margin-right:auto" />    
     <div id="surface">
-    <h1>Ooops! Our web page did something wrong</h1>
-    <p>We are very sorry and an email we have logged the error messsage. Please try again...but if you continue to have problems, please use the Contact Support button to let us know.</p>
+    <h1>Oops! It seems you stumbled on something that doesn't work very well.</h1>
+        <p>
+        If this problem persists, please kindly let us know.
+        Thanks!
+    </p>
     <h4><%=HttpContext.Current.Items["error"] %></h4>
     </div>
 </body>
