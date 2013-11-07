@@ -4,8 +4,8 @@ using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Areas.People.Models;
-using iTextSharp.text;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using System.Web.Routing;
@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.PeopleId = id.Value;
             Util2.CurrentPeopleId = id.Value;
             Session["ActivePerson"] = m.Person.Name;
-			DbUtil.LogActivity("Viewing Person: {0}".Fmt(m.Person.Name), m.Person.Name, pid: id);
+            DbUtil.LogActivity("Viewing Person: {0}".Fmt(m.Person.Name), m.Person.Name, pid: id);
             InitExportToolbar(id);
             return View(m);
         }
@@ -89,19 +89,17 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/InlineEdit/{id:int}")]
         public ActionResult InlineEdit(int id, int pk, string name, string value)
         {
-            var p = DbUtil.Db.LoadPersonById(id);
+            var m = new PersonModel(id);
             switch (name)
             {
                 case "ContributionOptions":
                 case "EnvelopeOptions":
-                    name = name + "Id";
+                    m.UpdateEnvelopeOption(name, value.ToInt());
                     break;
             }
-            p.UpdateValue(name, value.ToInt());
-            p.LogChanges(DbUtil.Db);
-            DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
+
         [GET("Person2/InlineCodes/{name}")]
         public ActionResult InlineCodes(string name)
         {

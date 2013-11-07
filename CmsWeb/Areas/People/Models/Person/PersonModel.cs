@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Code;
 using UtilityExtensions;
 using Picture = CmsData.Picture;
@@ -199,6 +200,31 @@ namespace CmsWeb.Areas.People.Models
                 }
             }
             return null;
+        }
+
+        internal void UpdateEnvelopeOption(string name, int option)
+        {
+            name = name + "Id";
+            Person.UpdateValue(name, option);
+            Person.LogChanges(DbUtil.Db);
+            var sp = DbUtil.Db.LoadPersonById(Person.SpouseId ?? 0);
+            if (sp != null)
+                if (option == EnvelopeOptionCode.Joint || option == EnvelopeOptionCode.Individual)
+                {
+                    sp.UpdateValue(name, option);
+                    sp.LogChanges(DbUtil.Db);
+                }
+                else if (name == "ContributionOptionsId" && sp.ContributionOptionsId == EnvelopeOptionCode.Joint)
+                {
+                    sp.UpdateValue(name, null);
+                    sp.LogChanges(DbUtil.Db);
+                }
+                else if (name == "EnvelopeOptionsId" && sp.EnvelopeOptionsId == EnvelopeOptionCode.Joint)
+                {
+                    sp.UpdateValue(name, null);
+                    sp.LogChanges(DbUtil.Db);
+                }
+            DbUtil.Db.SubmitChanges();
         }
     }
 }
