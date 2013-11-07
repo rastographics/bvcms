@@ -27701,7 +27701,6 @@ $(function () {
         valueKey: "line1",
         limit: 25,
         beforeSend: function(jqXhr, settings) {
-            settings.type = 'POST';
             $.SetLoadingIndicator();
         },
         remote: {
@@ -27768,7 +27767,6 @@ $(function () {
             remote: {
                 url: "test",
                 beforeSend: function(jqXhr, settings) {
-                    settings.type = 'POST';
                     $.SetLoadingIndicator();
                 },
                 replace: function (url, uriEncodedQuery) {

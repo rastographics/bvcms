@@ -63,7 +63,7 @@
 <body>
     <div id="surface">
     <h1>Ooops! Our web page did something wrong</h1>
-    <p>We are very sorry and an email has been sent to the developer to report the problem. Please try again...</p>
+    <p>We are very sorry and an email we have logged the error messsage. Please try again...but if you continue to have problems, please use the Contact Support button to let us know.</p>
     <h4><%=HttpContext.Current.Items["error"] %></h4>
     </div>
 </body>

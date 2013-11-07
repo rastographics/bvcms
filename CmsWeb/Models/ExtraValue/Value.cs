@@ -166,7 +166,7 @@ namespace CmsWeb.Models.ExtraValues
                         return string.Join("<br/>\n", q);
                     }
                 case "Int":
-                    return Extravalue.IntValue.ToString();
+                    return ev.IntValue.ToString2("d");
             }
             return "";
         }

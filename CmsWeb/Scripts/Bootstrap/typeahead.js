@@ -306,7 +306,7 @@
             this.filter = o.filter;
             this.replace = o.replace;
             this.ajaxSettings = {
-                type: "get",
+                type: "post",
                 cache: o.cache,
                 timeout: o.timeout,
                 dataType: o.dataType || "json",

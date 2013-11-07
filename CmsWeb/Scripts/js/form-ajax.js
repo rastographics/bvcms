@@ -5,7 +5,6 @@
             remote: {
                 url: "test",
                 beforeSend: function(jqXhr, settings) {
-                    settings.type = 'POST';
                     $.SetLoadingIndicator();
                 },
                 replace: function (url, uriEncodedQuery) {

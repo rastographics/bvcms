@@ -199,7 +199,7 @@ namespace CmsWeb.Models.ExtraValues
             if (record == null)
                 return;
             if (value == null)
-                value = HttpContext.Current.Request.Form["value[]"];
+                value = HttpContext.Current.Request.Form["value[]"] ?? "";
             switch (type)
             {
                 case "Code":
