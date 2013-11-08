@@ -1098,6 +1098,7 @@ namespace CmsData
             var q = from c in QueryBuilderClauses
                     where c.GroupId == null && c.Field == "Group"
                     where c.Description.StartsWith("F") && c.Description.Contains(":")
+                    orderby c.Description
                     select c.Description;
 
             const string FindPrefix = @"^F\d+:.*";

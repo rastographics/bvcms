@@ -6,6 +6,7 @@ using System.Data.Linq;
 using System.Web;
 using CmsData;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 using System.Web.Mvc;
 using System.Text;
@@ -410,13 +411,36 @@ namespace CmsWeb.Models
         }
         public class SearchInfo22
         {
-            public string order { get; set; }
             public string line1 { get; set; }
             public string line2 { get; set; }
-            public bool isOrg { get; set; }
-            public int id { get; set; }
+            public string url { get; set; }
             public bool addmargin { get; set; }
         }
+
+        public static IEnumerable<SearchInfo22> PrefetchSearch()
+        {
+            var list = (from c in DbUtil.Db.Queries
+                        where c.Name != Util.ScratchPad2
+                        where c.Owner == Util.UserName
+                        orderby c.LastRun descending
+                        select new SearchInfo22()
+                        {
+                            url = "/Query/" + c.QueryId,
+                            line1 = c.Name,
+                        }).Take(3).ToList();
+            list.InsertRange(0, new List<SearchInfo22>() 
+            {
+                //new SearchInfo22() { url = "/PeopleSearch?name=%QUERY", line1 = "Find Person"  }, 
+                new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  }, 
+                new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
+                new SearchInfo22() { url = "/Query", line1 = "Advanced Search" }, 
+                new SearchInfo22() { url = "/SavedQuery2", line1 = "Saved Searches" }, 
+                new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search", 
+                    addmargin = true }, 
+            });
+            return list;
+        }
+
         public static IEnumerable<SearchInfo22> FastSearch(string text)
         {
             string First, Last;
@@ -488,19 +512,17 @@ namespace CmsWeb.Models
                      orderby p.Name2
                      select new SearchInfo22()
                                 {
-                                    id = p.PeopleId,
+                                    url = "/Person2/" + p.PeopleId,
                                     line1 = p.Name2 + age,
                                     line2 = p.PrimaryAddress ?? "",
-                                    isOrg = false,
                                 };
             var ro = from o in qo
                      orderby o.OrganizationName
                      select new SearchInfo22()
                                 {
-                                    id = o.OrganizationId,
+                                    url = "/Organization/Index/" + o.OrganizationId,
                                     line1 = o.OrganizationName,
                                     line2 = o.Division.Name,
-                                    isOrg = true
                                 };
 
             var list = new List<SearchInfo22>();
@@ -513,13 +535,10 @@ namespace CmsWeb.Models
                 list[list.Count - 1].addmargin = true;
             list.AddRange(new List<SearchInfo22>() 
             {
-                new SearchInfo22() { id = -1, line1 = "Find Person"  }, 
-                new SearchInfo22() { id = -2, line1 = "Advanced Search Builder" }, 
-                new SearchInfo22() { id = -3, line1 = "Organization Search" }, 
+                new SearchInfo22() { url = "/PeopleSearch?name=%QUERY", line1 = "Find Person"  }, 
+                new SearchInfo22() { url = "/Query", line1 = "Advanced Search Builder" }, 
+                new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
             });
-            var n = 1;
-            foreach (var i in list)
-                i.order = (n++).ToString("000#");
             return list;
         }
     }
