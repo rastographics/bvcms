@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.People.Models
                 delete contactees where ContactId = @cid;
                 delete contactors where ContactId = @cid;
                 update task set CompletedContactId = NULL WHERE CompletedContactId = @cid;
-                update task set SourceContactId = NULL WHERE CompletedContactId = @cid;
+                update task set SourceContactId = NULL WHERE SourceContactId = @cid;
                 delete contact where ContactId = @cid;
                 ", new { cid });
         }

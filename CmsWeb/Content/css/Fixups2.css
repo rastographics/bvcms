@@ -1014,3 +1014,9 @@ table.pad0 td {
     font-weight: inherit;
     line-height: inherit;
 }
+.green {
+    color: green;
+}
+.red {
+    color: red;
+}

@@ -27817,11 +27817,22 @@ $(function () {
     });
     $("form.ajax a.submit").live("click", function (event) {
         event.preventDefault();
-        var $form = $(this).closest("form.ajax");
-        $form.attr("action", this.href);
-        $form.submit();
+        var t = $(this);
+        if (t.data("confirm"))
+            bootbox.confirm(t.data("confirm"), function(ret) {
+                if (ret == true)
+                    $.formAjaxSubmit(t);
+            });
+        else
+            $.formAjaxSubmit(t);
         return false;
     });
+    $.formAjaxSubmit = function(a) {
+        var $form = a.closest("form.ajax");
+        $form.attr("action", a[0].href);
+        $form.submit();
+    };
+
     $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();
         var t = $(this);

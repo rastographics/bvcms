@@ -2,6 +2,7 @@
     var admin = User.IsInRole("Admin");
     var edit = User.IsInRole("Edit");
     var manager2 = User.IsInRole("Manager2");
+    var manager = User.IsInRole("Manager");
 }
 @if (admin)
 {
@@ -21,7 +22,7 @@
         </li>
     </ul>
 }
-else if (manager2)
+else if (manager || manager2)
 {
     <ul class="dropdown-menu dropdown-div-gear">
         <li>
