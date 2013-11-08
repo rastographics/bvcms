@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -15,7 +16,8 @@ namespace CmsWeb.Models.ExtraValues
         [XmlAttribute] public string Type { get; set; }
         [XmlAttribute] public string VisibilityRoles { get; set; }
 
-        [XmlElement("Code")] public List<string> Codes { get; set; }
+        [XmlElement("Code")] 
+        public List<string> Codes { get; set; }
 
         [XmlIgnore] public int Order;
         [XmlIgnore] public int Id;
@@ -33,12 +35,7 @@ namespace CmsWeb.Models.ExtraValues
                     Name = ev.Field,
                     Standard = false,
                 };
-                f.Type = ev.StrValue.HasValue() ? "Code"
-                    : ev.Data.HasValue() ? "Data"
-                    : ev.DateValue.HasValue ? "Date"
-                    : ev.IntValue.HasValue ? "Int"
-                    : ev.BitValue.HasValue ? "Bit"
-                    : "Code";
+                f.Type = ev.Type;
             }
             else
                 f.Standard = true;
@@ -169,7 +166,7 @@ namespace CmsWeb.Models.ExtraValues
                         return string.Join("<br/>\n", q);
                     }
                 case "Int":
-                    return Extravalue.IntValue.ToString();
+                    return ev.IntValue.ToString2("d");
             }
             return "";
         }

@@ -85,7 +85,7 @@ namespace CmsWeb.Models
             return q.Take(maximumRows);
         }
         public static IEnumerable DonorDetails(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool nontaxdeductible, bool includeUnclosed)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed)
         {
             var q = from c in DbUtil.Db.Contributions2(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed)
                     join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
@@ -101,6 +101,7 @@ namespace CmsWeb.Models
                         MainFellowship = mainFellowship,
                         MemberStatus = p.MemberStatus.Description,
                         Amount = c.Amount ?? 0m,
+                        Pledge = c.PledgeAmount ?? 0m,
                         c.CheckNo,
                         c.ContributionDesc,
                         c.FundId,
@@ -112,7 +113,7 @@ namespace CmsWeb.Models
             return q;
         }
         public static IEnumerable ExcelDonorTotals(DateTime startdt, DateTime enddt,
-            int campusid, bool pledges, bool nontaxdeductible, bool includeUnclosed)
+            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed)
         {
             var q2 = from r in DbUtil.Db.GetTotalContributionsDonor2(startdt, enddt, campusid, nontaxdeductible, includeUnclosed)
                      select new
@@ -129,7 +130,7 @@ namespace CmsWeb.Models
             return q2;
         }
         public static IEnumerable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool nontaxdeductible, bool includeUnclosed)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed)
         {
             var q2 = from r in DbUtil.Db.GetTotalContributions3(startdt, enddt, campusid, nontaxdeductible, includeUnclosed)
                      select new

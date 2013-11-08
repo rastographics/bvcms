@@ -106,7 +106,7 @@ namespace CmsWeb.Code
             if (track)
             {
                 var changes = new StringBuilder();
-                if (mid.PropertyType == typeof(int?))
+                if (mid.PropertyType == typeof(int?) || mid.PropertyType == typeof(int))
                     if (Value == "0")
                         model.UpdateValue(changes, altname, null);
                     else

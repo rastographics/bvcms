@@ -64,5 +64,13 @@ namespace CmsWeb.Controllers
             m.SwitchMultiline(name);
             return View("ListStandard", m);
         }
-   }
+
+        [GET("ExtraValue/ConvertToStandard/{table}")]
+        public ActionResult ConvertToStandard(string table, string name)
+        {
+            var m = new NewExtraValueModel(0, table, "Standard");
+            m.ConvertToStandard(name);
+            return Redirect("/ExtraValue/Summary");
+        }
+    }
 }

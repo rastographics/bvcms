@@ -1,13 +1,26 @@
 ﻿@model IEnumerable<CmsData.User>
 <form class="form form-horizontal table not-wide non-modal ajax margin-top" method="post">
     <fieldset class="left-gutter">
-        <legend>Manage Users <a class="ajax" href="/Person2/UserEdit"><i class="icon-plus"></i></a>
+        <legend>Manage Users 
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="ajax" href="/Person2/UserEdit"><i class="icon-plus"></i></a>
+            }
         </legend>
         <table class="table no-border">
             @foreach (var u in Model)
             {
                 <tr>
-                    <td class="nowrap"><a class="ajax click-pencil" href="/Person2/UserEdit/@u.UserId"><span>@u.Username</span></a></td>
+                    <td class="nowrap">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="ajax click-pencil" href="/Person2/UserEdit/@u.UserId"><span>@u.Username</span></a>
+                        }
+                        else
+                        {
+                            @u.Username
+                        }
+                    </td>
                     <td>@string.Join(", ", u.Roles)</td>
                 </tr>
             }

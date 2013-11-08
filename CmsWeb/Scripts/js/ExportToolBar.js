@@ -16,7 +16,7 @@
     });
     $(".ChooseFormat").live("click", function (ev) {
         ev.preventDefault();
-        $('div.dropdown-menu').hide();
+        $('div.dropdown2-menu').hide();
         var d = $("#ChooseFormat");
         d.dialog("open");
 
@@ -38,7 +38,7 @@
     $('#TagAll').live("click", function (ev) {
         ev.preventDefault();
         var action = this.href;
-        $('div.dropdown-menu').hide();
+        $('div.dropdown2-menu').hide();
         var d = $("#TagAllDialog").dialog("open");
         $("#TagAllRun").click(function (ev) {
             if ($("#tagalltagname").val().length === 0) {
@@ -63,7 +63,7 @@
     });
     $('#UnTagAll').live("click", function (ev) {
         ev.preventDefault();
-        $('div.dropdown-menu').hide();
+        $('div.dropdown2-menu').hide();
         $.block();
         $.post(this.href, null, function (ret) {
             $(".taguntag:visible").text(ret);
@@ -72,7 +72,7 @@
         return false;
     });
     $('body').on("click", '#AddContact', function (ev) {
-        $('div.dropdown-menu').hide();
+        $('div.dropdown2-menu').hide();
         ev.preventDefault();
         if (!confirm("Are you sure you want to add a contact for all these people?"))
             return false;
@@ -90,7 +90,7 @@
     });
     $('body').on("click", '#AddTasks', function (ev) {
         ev.preventDefault();
-        $('div.dropdown-menu').hide();
+        $('div.dropdown2-menu').hide();
         if (!confirm("Are you sure you want to add a task for each of these people?"))
             return false;
         $.block();

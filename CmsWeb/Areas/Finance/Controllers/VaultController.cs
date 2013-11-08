@@ -10,13 +10,6 @@ namespace CmsWeb.Areas.Finance.Controllers
 	[Authorize(Roles = "Admin")]
     public class VaultController : CmsController
     {
-        //
-        // GET: /Finance/Vault/
-
-        public ActionResult Index()
-        {
-            return View();
-        }
 		[HttpPost]
 		public ActionResult DeleteVaultData(int id)
 		{

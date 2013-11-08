@@ -96,7 +96,12 @@ namespace CmsWeb.Models.ExtraValues
                     where view.Table == table
                     where view.Location == location
                     select new ViewValue { views = views, view = view };
-            return i.Single();
+            var v = i.SingleOrDefault();
+            if (v != null) 
+                return v;
+            var vv = new View() {Location = location, Table = table};
+            views.List.Add(vv);
+            return new ViewValue() {views = views, view = vv};
         }
         public static List<Value> GetStandardExtraValues(string Table, string Location)
         {

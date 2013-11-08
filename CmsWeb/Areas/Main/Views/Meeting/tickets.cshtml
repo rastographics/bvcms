@@ -1,7 +1,9 @@
-﻿@model CmsWeb.Models.MeetingModel
+﻿@using CmsData
+@using UtilityExtensions
+@model CmsWeb.Models.MeetingModel
 @{
     ViewBag.Title = "Meeting Tickets";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
 }
 @section head
 {

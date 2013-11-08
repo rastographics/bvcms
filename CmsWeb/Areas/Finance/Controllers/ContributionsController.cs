@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
-using CmsData;
 using CmsData.API;
-using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Models;
 using ContributionSearchModel = CmsWeb.Models.ContributionSearchModel;
 
@@ -16,32 +9,63 @@ namespace CmsWeb.Areas.Finance.Controllers
     [Authorize(Roles = "Finance")]
     public class ContributionsController : CmsStaffController
     {
-        public ActionResult Index(int? id, int? year)
+        public ActionResult Index(int? id, int? year, int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype, 
+            bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed")
         {
-        	var m = new ContributionSearchModel(id, year);
+            var api = new ContributionSearchInfo()
+            {
+                PeopleId = id,
+                Year = year,
+                FundId = fundId,
+                StartDate = dt1,
+                EndDate = dt2,
+                CampusId = campus,
+                Online = online,
+                TaxNonTax = taxnontax,
+                IncludeUnclosedBundles = includeunclosedbundles ?? false,
+                BundleType = bundletype
+            };
+            var m = new ContributionSearchModel(api);
+            return View(m);
+        }
+        public ActionResult BundleTotals(int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype, 
+            bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed")
+        {
+            var api = new ContributionSearchInfo()
+            {
+                FundId = fundId,
+                StartDate = dt1,
+                EndDate = dt2,
+                CampusId = campus,
+                Online = online,
+                TaxNonTax = taxnontax,
+                IncludeUnclosedBundles = includeunclosedbundles ?? false,
+                BundleType = bundletype
+            };
+            var m = new ContributionSearchModel(api);
             return View(m);
         }
         [HttpPost]
-		public ActionResult Results(ContributionSearchModel m)
+        public ActionResult Results(ContributionSearchModel m)
         {
-			return View(m);
-		}
-        [HttpPost]
-		public ActionResult Export(ContributionSearchModel m)
-        {
-            return new ExcelResult(m.ContributionsListAll(), "contributions.xls" );
+            return View(m);
         }
         [HttpPost]
-		public ActionResult Return(int id, ContributionSearchModel m)
+        public ActionResult Export(ContributionSearchModel m)
+        {
+            return new ExcelResult(m.ContributionsListAll(), "contributions.xls");
+        }
+        [HttpPost]
+        public ActionResult Return(int id, ContributionSearchModel m)
         {
             m.Return(id);
-            return RedirectToAction("Index", new {id = m.SearchInfo.PeopleId, m.SearchInfo.Year});
+            return RedirectToAction("Index", new { id = m.SearchInfo.PeopleId, m.SearchInfo.Year });
         }
         [HttpPost]
-		public ActionResult Reverse(int id, ContributionSearchModel m)
+        public ActionResult Reverse(int id, ContributionSearchModel m)
         {
             m.Reverse(id);
-            return RedirectToAction("Index", new {id = m.SearchInfo.PeopleId, m.SearchInfo.Year});
+            return RedirectToAction("Index", new { id = m.SearchInfo.PeopleId, m.SearchInfo.Year });
         }
     }
 }

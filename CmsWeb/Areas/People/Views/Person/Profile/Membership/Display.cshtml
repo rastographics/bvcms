@@ -13,8 +13,16 @@
             <div class="inline align-top">
                 <div class="well">
                     <p><b>Statement/Envelope Options</b></p>
-                    @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
-                    @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                    @if (User.IsInRole("Membership") || Model.person.CanUserSeeGiving)
+                    {
+                        @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+                        @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(m => m.ContributionOptions)
+                        @Html.DisplayFor(m => m.EnvelopeOptions)
+                    }
                 </div>
                 <div class="well">
                     <p><b>Decision</b></p>

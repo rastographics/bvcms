@@ -44,6 +44,24 @@
         tooltip: 'Click to edit...',
         style: 'display: inline'
     });
+    $(".headcount").editable("/Meeting/Edit/", {
+        tooltip: "Click to edit...",
+        placeholder: "edit",
+        style: 'display: inline',
+        width: '40px',
+        height: 25,
+        submit: 'OK',
+        data: function (value, settings) {
+            if (value === '0')
+                return '';
+            return value;
+        },
+        callback: function (value) {
+            if (value.startsWith("error:"))
+                alert(value);
+            value = "";
+        }
+    });
     $(".clickEdit").editable("/Meeting/Edit/", {
         indicator: "<img src='/images/loading.gif'>",
         tooltip: "Click to edit...",

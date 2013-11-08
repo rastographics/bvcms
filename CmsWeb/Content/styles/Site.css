@@ -1,7 +1,7 @@
 body, html {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     background-image: none;
-    font-size: 12px;
+    font-size: 13px;
     color: #222;
 }
 
@@ -173,7 +173,7 @@ a, a:visited, a:focus {
     width: 100%;
 }
 
-#main div.homebox {
+div.homebox {
     height: 570px;
     width: 30%;
     float: left;
@@ -366,7 +366,7 @@ table.aspgrid tr th {
     z-index: 500!important;
 }
 
-#SearchText {
+div.header #SearchText {
     background-image: url('/images/magnifier.png');
     background-repeat: no-repeat;
     background-position: top left;

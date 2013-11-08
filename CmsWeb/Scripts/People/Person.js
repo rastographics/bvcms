@@ -307,6 +307,7 @@
         }
         $(".datepicker").datepicker();
         $(".submitbutton,.bt", f).button();
+        $("a.trigger-dropdown", f).dropdown2();
         return false;
     };
     $("form").on("click", "#verifyaddress", function () {
@@ -336,6 +337,7 @@
                     $(bc).html(ret);
                 });
                 $(".submitbutton,.bt").button();
+                $("a.trigger-dropdown", f).dropdown2();
             });
         });
         return false;

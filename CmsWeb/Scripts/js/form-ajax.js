@@ -2,16 +2,14 @@
     $.AttachFormElements = function () {
         $("form.ajax input.ajax-typeahead").typeahead({
             minLength: 3,
-            source: function (query, process) {
-                return $.ajax({
-                    url: $(this.$element[0]).data("link"),
-                    type: 'post',
-                    data: { query: query },
-                    dataType: 'json',
-                    success: function (jsonResult) {
-                        return typeof jsonResult == 'undefined' ? false : process(jsonResult);
-                    }
-                });
+            remote: {
+                url: "test",
+                beforeSend: function(jqXhr, settings) {
+                    $.SetLoadingIndicator();
+                },
+                replace: function (url, uriEncodedQuery) {
+                    return $("input:focus").data("link") + "?query=" + uriEncodedQuery;
+                }
             }
         });
         $.DatePickersAndChosen();
@@ -57,11 +55,22 @@
     });
     $("form.ajax a.submit").live("click", function (event) {
         event.preventDefault();
-        var $form = $(this).closest("form.ajax");
-        $form.attr("action", this.href);
-        $form.submit();
+        var t = $(this);
+        if (t.data("confirm"))
+            bootbox.confirm(t.data("confirm"), function(ret) {
+                if (ret == true)
+                    $.formAjaxSubmit(t);
+            });
+        else
+            $.formAjaxSubmit(t);
         return false;
     });
+    $.formAjaxSubmit = function(a) {
+        var $form = a.closest("form.ajax");
+        $form.attr("action", a[0].href);
+        $form.submit();
+    };
+
     $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();
         var t = $(this);
@@ -128,13 +137,7 @@
     var $loadingcount = 0;
     $.ajaxSetup({
         beforeSend: function () {
-            $("#loading-indicator").css({
-                'position': 'absolute',
-                'left': $(window).width() / 2,
-                'top': $(window).height() / 2,
-                'z-index': 2000
-            }).show();
-            $loadingcount++;
+            $.SetLoadingIndicator();
         },
         complete: function () {
             $loadingcount--;
@@ -142,5 +145,14 @@
                 $("#loading-indicator").hide();
         }
     });
+    $.SetLoadingIndicator = function() {
+        $("#loading-indicator").css({
+            'position': 'absolute',
+            'left': $(window).width() / 2,
+            'top': $(window).height() / 2,
+            'z-index': 2000
+        }).show();
+        $loadingcount++;
+    };
     $.InitFunctions = {};
 });

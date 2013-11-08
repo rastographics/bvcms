@@ -1,0 +1,63 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Models.ContributionSearchModel
+@{
+    Layout = Fingerprint.Layout();
+    ViewBag.Title = "Bundle Totals";
+}
+
+<table class="grid">
+    <thead>
+        <tr><td colspan="4">
+                <div class="roundbox">
+                    <h2>@(Model.FundName ?? "Total All Funds")</h2>
+                    <table>
+                        <tr>
+                            <td class="right">Start Date:</td>
+                            <td>@Model.SearchInfo.StartDate.FormatDate()</td>
+                        </tr>
+                        <tr>
+                            <td class="right">End Date:</td>
+                            <td>@Model.SearchInfo.EndDate.FormatDate()</td>
+                        </tr>
+                        <tr>
+                            <td class="right">Campus:</td>
+                            <td>@Model.Campus</td>
+                        </tr>
+                        <tr>
+                            <td class="right">Online/Not online:</td>
+                            <td>@Model.Online</td>
+                        </tr>
+                        <tr>
+                            <td class="right">Tax Ded/Non Tax:</td>
+                            <td>@Model.TaxDedNonTax</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Bundle Id</th>
+            <th>Date</th>
+            <th class="right">Total</th>
+            <th class="right">Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model.BundlesList())
+        {
+            <tr>
+                <td><a href="/Bundle/Index/@t.Id" target="bundle">@t.Id</a></td>
+                <td>@t.Date.ToShortDateString()</td>
+                <td class="right">@t.Total.ToString("c")</td>
+                <td class="right">@t.Count.ToString("n0")</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr style="border-top: 1px solid black">
+            <td colspan="2">Total</td>
+            <td class="right">@Model.Total.ToString2("c")</td>
+            <td class="right">@Model.Count.ToString2("n0")</td>
+        </tr>
+    </tfoot>
+</table>

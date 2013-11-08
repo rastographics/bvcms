@@ -66,6 +66,30 @@
                 });
             });
     });
+    $("#profile-picture").live("click", function (ev) {
+        ev.preventDefault();
+        $("<div />")
+            .load($(this).attr("href"), {}, function () {
+                var d = $(this);
+                var f = d.find("form");
+                f.modal("show");
+                f.on('hidden', function () {
+                    d.remove();
+                    f.remove();
+                });
+                $("#delete-picture").click(function (ev) {
+                    ev.preventDefault();
+                    var a = this;
+                    bootbox.confirm("Are you sure you want to delete this picture?", function (result) {
+                        if (result === true) {
+                            f.attr("action", a.href);
+                            f.submit();
+                        }
+                    });
+                    return false;
+                });
+            });
+    });
     $("#family_related a.edit").live("click", function (ev) {
         ev.preventDefault();
         $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
@@ -120,7 +144,7 @@
         lastTab = window.location.hash;
     }
     if (lastTab) {
-        var tlink = $("a[href='" + lastTab.replace("tab-","") + "']");
+        var tlink = $("a[href='" + lastTab.replace("tab-", "") + "']");
         var tabparent = tlink.closest("ul").data("tabparent");
         if (tabparent) {
             $("a[href='#" + tabparent + "']").click().tab("show");
@@ -202,18 +226,6 @@
             }
         });
     });
-    //    $("#failedemails").on("click", "a.unblock").click(function (ev) {
-    //        if (confirm('Are you sure you want unblock this email?')) {
-    //            $.post("/Person2/EmailUnblock", { email: $(this).attr("email") }, function (ret) {
-    //                $.growlUI("email unblocked", ret);
-    //            });
-    //    });
-    //    $("#failedemails").on("click", "a.unspam").click(function (ev) {
-    //        if (confirm("are you sure?"))
-    //            $.post("/Person2/EmailUnspam", { email: $(this).attr("email") }, function (ret) {
-    //                $.growlUI("email unspamed", ret);
-    //            });
-    //    });
     $('#vtab>ul>li').click(function () {
         $('#vtab>ul>li').removeClass('selected');
         $(this).addClass('selected');
@@ -278,7 +290,7 @@
         });
     };
     SetProfileEditable();
-    $.InitFunctions.Editable = function() {
+    $.InitFunctions.Editable = function () {
         $("a.editable").editable();
     };
     $('a.click-pencil').live("click", function (e) {
@@ -297,9 +309,8 @@
 
 
 function RebindMemberGrids() {
-    $.updateTable($('#current-tab form'));
-    $.updateTable($('#pending-tab form'));
-    $("#memberDialog").dialog('close');
+    $("#refresh-current").click();
+    $("#refresh-pending").click();
 }
 function RebindUserInfoGrid() {
     $.updateTable($('#user-tab form'));

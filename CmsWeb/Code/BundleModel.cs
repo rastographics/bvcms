@@ -55,13 +55,6 @@ namespace CmsWeb.Models
         public decimal Cash { get; set; }
         public decimal Coins { get; set; }
     }
-    public class FundTotalInfo
-    {
-        public int FundId { get; set; }
-        public string FundName { get; set; }
-        public decimal? Total { get; set; }
-        public int? Count { get; set; }
-    }
     public class RangeInfo
     {
         string[] RangeLabels = new string[] 

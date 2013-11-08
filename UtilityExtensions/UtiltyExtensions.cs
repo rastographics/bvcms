@@ -35,7 +35,6 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-
         public static T QueryString<T>(this System.Web.UI.Page page, string param)
         {
             return QueryString<T>(HttpContext.Current.Request, param);
@@ -189,11 +188,14 @@ namespace UtilityExtensions
         {
             return s.Split(delimiter.ToCharArray(), nitems);
         }
-        public static string[] SplitLines(this string source)
+        public static string[] SplitLines(this string source, bool noblanks = false)
         {
             if (source == null)
                 return new string[0];
-            return source.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+            var option = noblanks
+                ? StringSplitOptions.RemoveEmptyEntries
+                : StringSplitOptions.None;
+            return source.Split(new string[] { "\r\n", "\n" }, option);
         }
         public static int? IntOrNull(this string s)
         {
@@ -471,6 +473,32 @@ namespace UtilityExtensions
                 if (Char.IsDigit(c))
                     digits.Append(c);
             return digits.ToString().Truncate(maxlen);
+        }
+        public static string NoLeadZeros(this string s)
+        {
+            if (!s.HasValue())
+                return "";
+            var digits = new StringBuilder();
+            var nonzeroseen = false;
+            foreach (var c in s.ToCharArray())
+                if (!nonzeroseen && c == '0')
+                    continue;
+                else
+                {
+                    nonzeroseen = true;
+                    digits.Append(c);
+                }
+            return digits.ToString();
+        }
+        public static string GetChars(this string s)
+        {
+            if (!s.HasValue())
+                return "";
+            var chars = new StringBuilder();
+            foreach (var c in s.ToCharArray())
+                if (!Char.IsDigit(c))
+                    chars.Append(c);
+            return chars.ToString();
         }
         public static decimal? GetAmount(this string s)
         {
@@ -1144,6 +1172,11 @@ namespace UtilityExtensions
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
             Response.Cache.SetValidUntilExpires(false);
         }
+        public static void SetCacheMinutes(this HttpResponseBase Response, int minutes)
+        {
+            Response.Cache.SetExpires(DateTime.Now.AddMinutes(minutes));
+            Response.Cache.SetValidUntilExpires(true);
+        }
 
         public static string AppRoot
         {
@@ -1730,15 +1763,31 @@ namespace UtilityExtensions
         }
         public static void NameSplit(string name, out string First, out string Last)
         {
-            var a = (name ?? "").Split(' ');
-            First = "";
-            if (a.Length > 1)
+            if (name.Contains(","))
             {
-                First = a[0];
-                Last = a[1];
+                var a = (name ?? "").Split(',');
+                First = "";
+                if (a.Length > 1)
+                {
+                    First = a[1].Trim();
+                    Last = a[0].Trim();
+                }
+                else
+                    Last = a[0].Trim();
             }
             else
-                Last = a[0];
+            {
+                var a = (name ?? "").Split(' ');
+                First = "";
+                if (a.Length > 1)
+                {
+                    First = a[0];
+                    Last = a[1];
+                }
+                else
+                    Last = a[0];
+            }
+
         }
         public static void AppendNext(this StringBuilder sb, string sep, string s)
         {

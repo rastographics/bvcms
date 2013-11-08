@@ -2,7 +2,7 @@
 @using CmsWeb
 @model CmsWeb.Models.PostBundleModel
 @{
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
     ViewBag.Title = "PostBundle";
 }
 @section head 
@@ -139,7 +139,7 @@
                     <a href="#" id="gear" class="trigger-dropdown" style="display: none">
                         <i class="icon-cog icon-large"></i>
                     </a>
-                    <div class="dropdown-menu has-tip">
+                    <div class="dropdown2-menu has-tip">
                         <ul>
                             <li><a id="showmove" href="#">Move To Another Bundle</a></li>
                             <li><a id="showdate" href="#">Edit Contribution Date</a></li>

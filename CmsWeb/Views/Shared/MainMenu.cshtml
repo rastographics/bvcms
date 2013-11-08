@@ -17,7 +17,7 @@
             <a href="#" class="trigger-dropdown">People
                 <img src="/Content/images/dnarrowt.png" />
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown2-menu">
                 <ul>
                     <li>@Html.ActionLink("Search", "Index", "PeopleSearch", new { Area = "Main" }, null)</li>
                     @if (DbUtil.Db.Setting("MenuAddPeople", "true") == "true")
@@ -45,7 +45,7 @@
             <a href="#" class="trigger-dropdown">Organization
                 <img src="/Content/images/dnarrowt.png" />
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown2-menu">
                 <ul>
                     <li>@Html.ActionLink("Search", "Index", "OrgSearch", new { Area = "Main" }, null)</li>
                     @if (User.IsInRole("Edit"))
@@ -70,7 +70,7 @@
             <a href="#" class="trigger-dropdown">Reports
                 <img src="/Content/images/dnarrowt.png" />
             </a>
-            <div class="dropdown-menu">
+            <div class="dropdown2-menu">
                 <ul>
                     <li>@Html.ActionLink("Vital Stats", "VitalStats", "Reports", new { Area = "Main" }, null)</li>
                     <li>@Html.ActionLink("Week at a Glance", "ChurchAttendance", "Reports", new { Area = "Main" }, null)</li>
@@ -101,10 +101,11 @@
                 <a href="#" class="trigger-dropdown">Contributions
                     <img src="/Content/images/dnarrowt.png" />
                 </a>
-                <div class="dropdown-menu">
+                <div class="dropdown2-menu">
                     <ul>
                         <li>@Html.ActionLink("Bundles", "Index", "Bundles", new { Area = "Finance" }, null)</li>
-                        <li>@Html.ActionLink("All Contributions (Search)", "Index", "Contributions", new { Area = "Finance" }, null)</li>
+                        <li class="divider"></li>
+                        <li>@Html.ActionLink("Search", "Index", "Contributions", new { Area = "Finance" }, null)</li>
                         <li class="header"><span>Reports</span></li>
                         <li>@Html.ActionLink("Statements (All)", "Index", "Statements", new { Area = "Finance" }, new { target = "_blank" })</li>
                         <li>@Html.ActionLink("Totals by Fund", "TotalsByFund", "FinanceReports", new { Area = "Finance" }, null)</li>
@@ -115,6 +116,8 @@
                         <li>@Helper.AnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", "_blank")</li>
                         <li>@Html.ActionLink("Pledge Report", "PledgeReport", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
                         <li>@Html.ActionLink("Managed Giving", "ManagedGiving", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
+                        <li class="divider"></li>
+                        <li>@Html.ActionLink("Fund Management", "Index", "Fund", new { Area = "Finance" }, null)</li>
                         @if (DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true")
                         {
                             <li>@Html.ActionLink("QuickBooks", "Index", "QuickBooks", new { Area = "Finance" }, null)</li>
@@ -129,7 +132,7 @@
                 <a href="#" class="trigger-dropdown">Admin
                     <img src="/Content/images/dnarrowt.png" />
                 </a>
-                <div class="dropdown-menu">
+                <div class="dropdown2-menu">
                     <ul>
                         @if (admin)
                         {
@@ -184,7 +187,7 @@
             <a href="#" class="trigger-dropdown">Help
                 <img src="/Content/images/dnarrowt.png" />
             </a>
-            <div class="dropdown-menu anchor-right">
+            <div class="dropdown2-menu anchor-right">
                 <ul>
                     <li>@Helper.AnchorLink("Help Documentation", @Util.HelpLink(Util.Helpfile), "_blank")</li>
                     <li>@Helper.JQueryIdLink("Email Support", "emailsupport")</li>

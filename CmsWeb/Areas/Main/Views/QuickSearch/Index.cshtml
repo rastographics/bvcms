@@ -5,7 +5,7 @@
 @model QuickSearchModel
 @{
 	ViewBag.Title = "Quick Search";
-	Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
 @section scripts

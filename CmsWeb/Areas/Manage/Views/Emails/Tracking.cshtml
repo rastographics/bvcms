@@ -1,7 +1,7 @@
 ﻿@using CmsData;
 @{
     ViewBag.Title = "Tracking";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
     int emailID = ViewBag.emailID;
     
     var links = from e in DbUtil.Db.EmailLinks

@@ -30,12 +30,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
 			return View("Rows", m);
 		}
 		[HttpPost]
-		public ActionResult Display(int id, int pid)
-		{
-			var om = DbUtil.Db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == id);
-			return View(om);
-		}
-		[HttpPost]
 		public ActionResult Update(OrgMembersDialogModel m)
 		{
 			var Db = DbUtil.Db;

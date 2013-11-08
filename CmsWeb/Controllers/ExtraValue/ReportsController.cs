@@ -10,6 +10,8 @@ namespace CmsWeb.Controllers
         [GET("ExtraValue/Summary")]
         public ActionResult Summary()
         {
+            if (!Fingerprint.UseNewLook())
+                return Redirect("/Reports/ExtraValues");
             var m = ReportsModel.CodeSummary();
             return View("Reports/Summary", m);
         }

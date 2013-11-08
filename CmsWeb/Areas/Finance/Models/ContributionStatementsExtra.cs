@@ -430,9 +430,7 @@ p { font-size: 11px; }
 				var status = 0;
 				while (ColumnText.HasMoreText(status))
 				{
-					var leftcol = new Rectangle(doc.Left, doc.Bottom, doc.Left + colwidth, pos);
-
-					ct.SetSimpleColumn(leftcol);
+					ct.SetSimpleColumn(doc.Left, doc.Bottom, doc.Left + colwidth, pos);
 
 					status = ct.Go();
 					pos = doc.Top;

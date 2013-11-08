@@ -1,12 +1,12 @@
 $(function() {
-    $.fn.dropdown = function() {
+    $.fn.dropdown2 = function() {
         return this.each(function() {
             $(this).click(function(ev) {
                 ev.preventDefault();
                 var trigger = $(this),
-                    dd = $($(this).next('.dropdown-menu')),
+                    dd = $($(this).next('.dropdown2-menu')),
                     isOpen = trigger.hasClass('dropdown-open');
-                $("div.dropdown-menu").hide();
+                $("div.dropdown2-menu").hide();
                 $(".trigger-dropdown").removeClass("dropdown-open");
                 if (isOpen)
                     return false;
@@ -14,7 +14,8 @@ $(function() {
                 dd.css({
                     left: dd.hasClass('anchor-right') ?
                         trigger.position().left - (dd.outerWidth() - trigger.outerWidth())
-                        : trigger.position().left 
+                        : trigger.position().left,
+                    top: trigger.position().top + 22
                 });
                 trigger.addClass('dropdown-open');
                 return false;
@@ -26,9 +27,9 @@ $(function() {
             $(this).focus(function(ev) {
                 ev.preventDefault();
                 var trigger = $(this),
-                    dd = $($(this).next('.dropdown-menu')),
+                    dd = $($(this).next('.dropdown2-menu')),
                     isOpen = trigger.hasClass('dropdown-open');
-                $("div.dropdown-menu").hide();
+                $("div.dropdown2-menu").hide();
                 $(".trigger-dropdown").removeClass("dropdown-open");
                 if (isOpen)
                     return false;
@@ -62,9 +63,9 @@ $(function() {
 });
     function hideDropdowns(event) {
 		var targetGroup = event ? $(event.target).parents().andSelf() : null;
-		if (targetGroup && targetGroup.is('.dropdown-menu') && !targetGroup.is('A'))
+		if (targetGroup && targetGroup.is('.dropdown2-menu') && !targetGroup.is('A'))
 		    return;
-		$('div.dropdown-menu').hide();
+		$('div.dropdown2-menu').hide();
 		$('.trigger-dropdown').removeClass('dropdown-open');
         $("li.hideAlt").hide();
 	};

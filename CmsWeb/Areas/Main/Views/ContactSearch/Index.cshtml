@@ -3,7 +3,7 @@
 @model CmsWeb.Models.ContactSearchModel
 @{
     ViewBag.Title = "ContactSearch";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
 }
 @section scripts
 {
@@ -64,7 +64,7 @@
     <a href="#" class="trigger-dropdown">
         Contacts Management <img src="/Content/images/dnarrow.png" />
     </a>
-    <div class="dropdown-menu has-tip">
+    <div class="dropdown2-menu has-tip">
         <ul>
             <li><a id="ConvertToQuery" href="/ContactSearch/ConvertToQuery/">Convert To Search (Contactors)</a></li>
             <li><a id="ContactorSummary" href="/ContactSearch/ContactorSummary">Contactor Summary Report</a></li>

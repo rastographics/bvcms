@@ -1,1 +1,29 @@
-﻿<h2>Volunteer</h2>
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Main.Models.Other.VolunteerModel
+<fieldset class="left-gutter margin-top">
+    <legend>Volunteer Approvals @FormAction()</legend>
+    <table class="table not-wide">
+        <tr>
+            <th>Approvals:</th>
+            <td>
+                @foreach (var ck in Model.ApprovalList)
+                {
+                    <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") disabled="disabled"/>
+                    @ck.Description<br />
+                }
+            </td>
+        </tr>
+        <tr>
+            <th>Background Check:</th>
+            <td colspan="2">@Model.V.ProcessedDate.FormatDate()</td>
+        </tr>
+    </table>
+</fieldset>
+
+@helper FormAction()
+{
+    if (User.IsInRole("ApplicationReview"))
+    { 
+    <a href="/Volunteering/Index/@Model.V.PeopleId" class="btn pull-right">Manage</a>
+    }
+}

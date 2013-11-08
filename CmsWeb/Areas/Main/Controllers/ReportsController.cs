@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Xml;
 using System.Xml.Linq;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
@@ -13,16 +11,12 @@ using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Main.Models.Report;
 using CmsData;
 using System.IO;
-using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using Dapper;
-using DocumentFormat.OpenXml.Drawing;
 using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
 using UtilityExtensions;
 using System.Text;
-using System.Web.UI;
 using System.Data.SqlClient;
 
 namespace CmsWeb.Areas.Main.Controllers
@@ -271,7 +265,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [POST("Reports/DecisionsToQuery/{command}/{key}")]
         public ActionResult DecisionsToQuery(string command, string key, DateTime? dt1, DateTime? dt2)
         {
-            var r = new DecisionSummaryModel(dt1, dt2).QueryBuider(command, key);
+            var r = new DecisionSummaryModel(dt1, dt2).ConvertToSearch(command, key);
             return Redirect(r);
         }
 
@@ -339,7 +333,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [POST("Reports/MeetingsToQuery/{type}")]
         public ActionResult MeetingsToQuery(string type, MeetingsModel m)
         {
-            var r = m.QueryBuilder(type);
+            var r = m.ConvertToSearch(type);
 			TempData["autorun"] = true;
             return Redirect(r);
         }
@@ -365,6 +359,8 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult ExtraValues()
         {
+            if (Fingerprint.UseNewLook())
+                return Redirect("/ExtraValue/Summary");
             var ev = StandardExtraValues.GetExtraValues();
             var q = from e in DbUtil.Db.PeopleExtras
                     where e.StrValue != null || e.BitValue != null
@@ -387,6 +383,8 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult ExtraValueData()
         {
+            if (Fingerprint.UseNewLook())
+                return Redirect("/ExtraValue/Summary");
             var ev = StandardExtraValues.GetExtraValues();
             var q = from e in DbUtil.Db.PeopleExtras
                     where e.StrValue == null && e.BitValue == null

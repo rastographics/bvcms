@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsWeb.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Models.Report
 {
@@ -116,7 +117,14 @@ namespace CmsWeb.Areas.Main.Models.Report
             }
         }
 
-        public string QueryBuilder(string type)
+        public string ConvertToSearch(string type)
+        {
+            if (Fingerprint.UseNewLook())
+                return ConvertToQuery(type);
+            return ConvertToSearchBuilder(type);
+        }
+
+        public string ConvertToSearchBuilder(string type)
         {
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             qb.CleanSlate(DbUtil.Db);
@@ -126,14 +134,28 @@ namespace CmsWeb.Areas.Main.Models.Report
                 nc = qb.AddNewClause(QueryType.GuestAsOf, CompareType.Equal, "1,T");
             else
                 nc = qb.AddNewClause(QueryType.AttendedAsOf, CompareType.Equal, "1,T");
-            if (ProgramId > 0)
+            if (ProgramId.HasValue && ProgramId > 0)
                 nc.Program = ProgramId.Value;
-            if (DivisionId > 0)
+            if (DivisionId.HasValue && DivisionId > 0)
                 nc.Division = DivisionId.Value;
-            nc.StartDate = Dt1.Value;
-            nc.EndDate = Dt2.Value;
+            nc.StartDate = Dt1;
+            nc.EndDate = Dt2;
             DbUtil.Db.SubmitChanges();
             return "/QueryBuilder/Main/" + qb.QueryId;
+        }
+        public string ConvertToQuery(string type)
+        {
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+            var c = cc.AddNewClause(type == "Guests" ? QueryType.GuestAsOf : QueryType.AttendedAsOf, CompareType.Equal, "1,T");
+            if (ProgramId.HasValue && ProgramId > 0)
+                c.Program = ProgramId.Value;
+            if (DivisionId.HasValue && DivisionId > 0)
+                c.Division = DivisionId.Value;
+            c.StartDate = Dt1;
+            c.EndDate = Dt2;
+            cc.Save(DbUtil.Db);
+            return "/Query/" + cc.Id;
         }
     }
     public class MeetingInfo

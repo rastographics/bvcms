@@ -382,6 +382,7 @@ namespace CmsData.API
         public string Name { get; set; }
         public DateTime ContributionDate { get; set; }
         public decimal ContributionAmount { get; set; }
+        public string BundleType { get; set; }
         public string Fund { get; set; }
         public string Description { get; set; }
         public string CheckNo { get; set; }

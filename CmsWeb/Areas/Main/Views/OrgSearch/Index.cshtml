@@ -1,7 +1,9 @@
 ﻿@model CmsWeb.Models.OrgSearchModel
+@using CmsData
 @using CmsWeb
+@using UtilityExtensions
 @{
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
     ViewBag.Title = "OrgSearch";
 }
 @section scripts
@@ -81,7 +83,7 @@
     <a href="#" class="trigger-dropdown">
         Exports/Reports <img src="/Content/images/dnarrow.png" />
     </a>
-    <div class="dropdown-menu has-tip">
+    <div class="dropdown2-menu has-tip">
         <ul>
             <li><a id="ExportExcel" href="#">Export to Excel</a></li>
             <li><a id="ExportMembersExcel" href="#">Export Members to Excel</a></li>

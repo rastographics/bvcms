@@ -1,8 +1,7 @@
 ﻿@model CmsWeb.Models.HomeModel
-@using System.Diagnostics
 @{
     ViewBag.Title = "Home";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
 }
 @section scripts
 {
@@ -22,7 +21,7 @@
         });
     </script>
 }
-<div class="homebox roundbox five columns alpha">
+<div class="homebox roundbox">
     <div style="height: 33%;">
         <h2 id="bdays"><a href="Tags?tag=TrackBirthdays">Birthdays</a></h2>
         <div class="jscroll" style="height: 130px">
@@ -58,7 +57,7 @@
     </div>
 </div>
 <div style="margin-left: 1%; float: left;">&nbsp;</div>
-<div class="homebox roundbox five columns">
+<div class="homebox roundbox">
     <div style="height: 50%">
         <h2><a href="@DbUtil.Db.Setting("BlogAppUrl", "#")">BVCMS News</a></h2>
         <div class="jscroll" style="height: 215px">
@@ -85,7 +84,7 @@
     </div>
 </div>
 <div style="margin-left: 1%; float: left;">&nbsp;</div>
-<div class="homebox roundbox five columns omega">
+<div class="homebox roundbox">
     <div style="height: 50%">
         <h2 id="tags"><a href="/Tags">My Tags</a></h2>
         <div class="jscroll" style="height: 215px">

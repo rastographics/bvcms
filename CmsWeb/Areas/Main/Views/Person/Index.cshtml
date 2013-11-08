@@ -3,7 +3,7 @@
 @using UtilityExtensions
 @model CmsWeb.Models.PersonPage.PersonModel
 @{
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
     ViewBag.Title = "Person";
     CmsWeb.Models.PersonPage.PersonInfo p = Model.displayperson;
     var isaccess = User.IsInRole("Access");
@@ -83,7 +83,7 @@ pre {
         <a href="#" class="trigger-dropdown">
             Maps and Directions <img src="/Content/images/dnarrow.png" />
         </a>
-        <div class="dropdown-menu has-tip">
+        <div class="dropdown2-menu has-tip">
             <ul>
                 <li><a href="http://www.google.com/maps?q=@p.PrimaryAddr.AddrCityStateZip()" target="_blank">Google Map</a></li>
                 <li><a href="http://www.bing.com/maps/?q=@p.PrimaryAddr.AddrCityStateZip()" target="_blank">Bing Map</a></li>
@@ -98,7 +98,7 @@ pre {
         <a href="#" class="trigger-dropdown">
             Other Management <img src="/Content/images/dnarrow.png" />
         </a>
-        <div class="dropdown-menu has-tip">
+        <div class="dropdown2-menu has-tip">
             <ul>
                 @if (Model.CanCheckIn)
                 { 
@@ -134,7 +134,7 @@ pre {
         <a href="#" class="trigger-dropdown">
             Contributions <img src="/Content/images/dnarrow.png" />
         </a>
-        <div class="dropdown-menu has-tip">
+        <div class="dropdown2-menu has-tip">
             <ul>
                 @if (isfinance)
                 {

@@ -131,27 +131,6 @@ namespace CmsWeb.Models.ExtraValues
                    select Value.AddField(f, v, this);
         }
 
-        //        public List<SelectListItem> ExtraValueCodes()
-        //        {
-        //            var q = from e in DbUtil.Db.PeopleExtras
-        //                    where e.StrValue != null || e.BitValue != null
-        //                    group e by new { e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0") }
-        //                        into g
-        //                        select g.Key;
-        //            var list = q.ToList();
-        //
-        //            var ev = Views.GetStandardExtraValues(Table);
-        //            var q2 = from e in list
-        //                     let f = ev.SingleOrDefault(ff => ff.Name == e.Field)
-        //                     where f == null || f.UserCanView()
-        //                     orderby e.Field, e.val
-        //                     select new SelectListItem()
-        //                            {
-        //                                Text = e.Field + ":" + e.val,
-        //                                Value = e.Field + ":" + e.val,
-        //                            };
-        //            return q2.ToList();
-        //        }
         public Dictionary<string, string> Codes(string name)
         {
             var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
@@ -220,7 +199,7 @@ namespace CmsWeb.Models.ExtraValues
             if (record == null)
                 return;
             if (value == null)
-                value = HttpContext.Current.Request.Form["value[]"];
+                value = HttpContext.Current.Request.Form["value[]"] ?? "";
             switch (type)
             {
                 case "Code":

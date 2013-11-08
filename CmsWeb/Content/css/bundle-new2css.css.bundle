@@ -7,5 +7,6 @@
   <file>/Content/css/chosen.css</file>
   <file>/Content/css/bootstrap-editable.css</file>
   <file>/Content/css/datepicker.css</file>
+  <file>/Content/css/typeahead.js-bootstrap.css</file>
   <!--<file>/Content/styles/support.css</file>-->
 </bundle>

@@ -32,6 +32,8 @@ namespace CmsWeb.Areas.Search.Models
                     case "addpeople":
                     case "menu":
                         return "Add to Database";
+                    case "mergeto":
+                        return "Merge to Another";
                     case "addtotag":
                         return "Add to Tag";
                     case "family":
@@ -83,6 +85,9 @@ namespace CmsWeb.Areas.Search.Models
                     EntryPointId = 0;
                     break;
                 case "addtotag":
+                    EntryPointId = null;
+                    break;
+                case "mergeto":
                     EntryPointId = null;
                     break;
                 case "family":

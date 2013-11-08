@@ -945,6 +945,23 @@ namespace CmsData
             HttpContext.Current.Session["pref-" + pref] = p.ValueX;
             SubmitChanges();
         }
+        public void SetUserPreference(int id, string pref, object value)
+        {
+            var u = Users.Single(uu => uu.UserId == id);
+            var p = u.Preferences.SingleOrDefault(up => up.PreferenceX == pref);
+            if (p != null)
+            {
+                if (p.ValueX == value.ToString())
+                    return;
+                p.ValueX = value.ToString();
+            }
+            else
+            {
+                p = new Preference {UserId = id, PreferenceX = pref, ValueX = value.ToString()};
+                Preferences.InsertOnSubmit(p);
+            }
+            SubmitChanges();
+        }
 
         [Function(Name = "dbo.LinkEnrollmentTransaction")]
         public int LinkEnrollmentTransaction([Parameter(DbType = "Int")] int? tid, [Parameter(DbType = "DateTime")] DateTime? trandt, [Parameter(DbType = "Int")] int? typeid, [Parameter(DbType = "Int")] int? orgid, [Parameter(DbType = "Int")] int? pid)

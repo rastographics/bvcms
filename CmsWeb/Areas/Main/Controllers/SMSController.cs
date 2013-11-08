@@ -10,26 +10,29 @@ namespace CmsWeb.Areas.Main.Controllers
 {
     public class SMSController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Options(int id )
         {
-            return View();
+            return View(id);
         }
-
-
-        public ActionResult Options( int id )
+        public ActionResult Send(int id, int iSendGroup, string sTitle, string sMessage)
         {
-            ViewBag.QBID = id;
-            return View();
-        }
-
-        public ActionResult Send(int iQBID, int iSendGroup, string sTitle, string sMessage)
-        {
-            TwilioHelper.QueueSMS(iQBID, iSendGroup, sTitle, sMessage);
-
-            ViewBag.QBID = iQBID;
+            TwilioHelper.QueueSMS(id, iSendGroup, sTitle, sMessage);
             ViewBag.sTitle = sTitle;
             ViewBag.sMessage = sMessage;
-            return View();
+            return View(id);
+        }
+
+
+        public ActionResult Options2(Guid id )
+        {
+            return View("Options", id);
+        }
+        public ActionResult Send2(Guid id, int iSendGroup, string sTitle, string sMessage)
+        {
+            TwilioHelper.QueueSMS(id, iSendGroup, sTitle, sMessage);
+            ViewBag.sTitle = sTitle;
+            ViewBag.sMessage = sMessage;
+            return View("Send", id);
         }
     }
 }

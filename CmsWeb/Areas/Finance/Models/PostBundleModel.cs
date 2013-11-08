@@ -7,12 +7,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data.SqlTypes;
 using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Finance.Controllers;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
@@ -474,7 +471,7 @@ namespace CmsWeb.Models
             if (DbUtil.Db.Setting("BankDepositFormat", "none") == "fcchudson")
                 using (var csv = new CsvReader(new StringReader(text), true, '\t'))
                     return BatchProcessFcchudson(csv, date, fundid);
-            
+
             if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Redeemer")
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessRedeemer(csv, date, fundid);
@@ -487,21 +484,21 @@ namespace CmsWeb.Models
                 using (var csv = new CsvReader(new StringReader(text), false))
                     return BatchProcessEbcfamily(csv, date, fundid);
 
-	        if( DbUtil.Db.Setting( "BankDepositFormat", "none" ).ToLower() == "vanco" )
-	        {
-		        if( fromFile )
-		        {
-					  using (var csv = new CsvReader(new StringReader(text), false))
-						  return BatchProcessVanco(csv, date, fundid);
-		        }
-		        else
-		        {
-					  using (var csv = new CsvReader(new StringReader(text), false, '\t'))
-						  return BatchProcessVanco(csv, date, fundid);
-		        }
-	        }
+            if (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower() == "vanco")
+            {
+                if (fromFile)
+                {
+                    using (var csv = new CsvReader(new StringReader(text), false))
+                        return BatchProcessVanco(csv, date, fundid);
+                }
+                else
+                {
+                    using (var csv = new CsvReader(new StringReader(text), false, '\t'))
+                        return BatchProcessVanco(csv, date, fundid);
+                }
+            }
 
-	        if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Silverdale")
+            if (DbUtil.Db.Setting("BankDepositFormat", "none") == "Silverdale")
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessSilverdale(csv, date, fundid);
 
@@ -1064,10 +1061,14 @@ namespace CmsWeb.Models
 
         public static int? BatchProcessVanco(CsvReader csv, DateTime date, int? fundid)
         {
+            var fundList = (from f in DbUtil.Db.ContributionFunds
+                            orderby f.FundId
+                            select f.FundId).ToList();
+
             var cols = csv.GetFieldHeaders();
             BundleHeader bh = null;
             var firstfund = FirstFundId();
-            var fund = fundid ?? firstfund;
+            var fund = fundid != null && fundList.Contains(fundid ?? 0) ? fundid ?? 0 : firstfund;
 
             while (csv.ReadNextRecord())
             {
@@ -1075,14 +1076,29 @@ namespace CmsWeb.Models
                 var checkno = "0";
                 var account = csv[0];
                 var amount = csv[1];
+                var fundText = csv[3];
+                int fundNum = 0;
+
+                Int32.TryParse(fundText, out fundNum);
 
                 if (bh == null)
                     bh = GetBundleHeader(date, DateTime.Now);
 
-                var bd = AddContributionDetail(date, fund, amount, checkno, routing, account);
+                BundleDetail bd;
+
+                if (fundList.Contains(fundNum))
+                    bd = AddContributionDetail(date, fundNum, amount, checkno, routing, account);
+                else
+                {
+                    bd = AddContributionDetail(date, fund, amount, checkno, routing, account);
+                    bd.Contribution.ContributionDesc = "Used default fund (fund requested: {0})".Fmt(fundText);
+                }
+
                 bh.BundleDetails.Add(bd);
             }
+
             FinishBundle(bh);
+
             return bh.BundleHeaderId;
         }
 

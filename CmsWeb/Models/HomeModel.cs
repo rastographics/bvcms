@@ -306,14 +306,6 @@ namespace CmsWeb.Models
             public bool isOrg { get; set; }
             public int id { get; set; }
         }
-        public class SearchInfo2
-        {
-            public string order { get; set; }
-            public string line1 { get; set; }
-            public string line2 { get; set; }
-            public bool isOrg { get; set; }
-            public int id { get; set; }
-        }
         public static IEnumerable<SearchInfo> Names(string text)
         {
             string First, Last;
@@ -416,7 +408,16 @@ namespace CmsWeb.Models
             });
             return list;
         }
-        public static IEnumerable<SearchInfo2> Names2(string text)
+        public class SearchInfo22
+        {
+            public string order { get; set; }
+            public string line1 { get; set; }
+            public string line2 { get; set; }
+            public bool isOrg { get; set; }
+            public int id { get; set; }
+            public bool addmargin { get; set; }
+        }
+        public static IEnumerable<SearchInfo22> FastSearch(string text)
         {
             string First, Last;
             var qp = DbUtil.Db.People.AsQueryable();
@@ -485,7 +486,7 @@ namespace CmsWeb.Models
             var rp = from p in qp
                      let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                      orderby p.Name2
-                     select new SearchInfo2()
+                     select new SearchInfo22()
                                 {
                                     id = p.PeopleId,
                                     line1 = p.Name2 + age,
@@ -494,7 +495,7 @@ namespace CmsWeb.Models
                                 };
             var ro = from o in qo
                      orderby o.OrganizationName
-                     select new SearchInfo2()
+                     select new SearchInfo22()
                                 {
                                     id = o.OrganizationId,
                                     line1 = o.OrganizationName,
@@ -502,19 +503,19 @@ namespace CmsWeb.Models
                                     isOrg = true
                                 };
 
-            var list = new List<SearchInfo2>();
+            var list = new List<SearchInfo22>();
             list.AddRange(rp.Take(6));
             if (list.Count > 0)
-                list.Add(new SearchInfo2() { id = 0, line1 = "separator1" });
+                list[list.Count - 1].addmargin = true;
             var roTake = ro.Take(4).ToList();
             list.AddRange(roTake);
             if (roTake.Count > 0)
-                list.Add(new SearchInfo2() { id = 0, line1 = "separator2" });
-            list.AddRange(new List<SearchInfo2>() 
-            { 
-                new SearchInfo2() { id = -1, line1 = "People Search"  }, 
-                new SearchInfo2() { id = -2, line1 = "Search Builder" }, 
-                new SearchInfo2() { id = -3, line1 = "Organization Search" }, 
+                list[list.Count - 1].addmargin = true;
+            list.AddRange(new List<SearchInfo22>() 
+            {
+                new SearchInfo22() { id = -1, line1 = "Find Person"  }, 
+                new SearchInfo22() { id = -2, line1 = "Advanced Search Builder" }, 
+                new SearchInfo22() { id = -3, line1 = "Organization Search" }, 
             });
             var n = 1;
             foreach (var i in list)

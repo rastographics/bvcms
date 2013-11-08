@@ -1,19 +1,19 @@
-﻿@model CmsWeb.Models.ContributionSearchModel
-@using UtilityExtensions
+﻿@using UtilityExtensions
+@model CmsWeb.Models.ContributionSearchModel
 <table id="results" class="grid">
     <thead>
         <tr>
             <td>Total:</td>
-            <td class="right">@Model.Total().ToString("c")</td>
-            <td colspan="6"><em>Total always excludes reversals/returns</em></td>
+            <td class="right">@Model.Total.ToString2("c")</td>
+            <td colspan="7"></td>
         </tr>
         <tr>
             <td>Count:</td>
-            <td class="right">@Model.Count().ToString("n0")</td>
-            <td colspan="6"></td>
+            <td class="right">@Model.Count.ToString2("n0")</td>
+            <td colspan="7"></td>
         </tr>
         <tr>
-            <td colspan="8">
+            <td colspan="9">
                 @Html.Partial("Pager2", Model)</td>
         </tr>
         <tr>
@@ -72,8 +72,8 @@
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="8">
-                <div>Count: @Model.Count().ToString("n0")</div>
+            <td colspan="9">
+                <div>Count: @Model.Count.ToString2("n0")</div>
                 @Html.Partial("Pager2", Model)</td>
         </tr>
     </tfoot>

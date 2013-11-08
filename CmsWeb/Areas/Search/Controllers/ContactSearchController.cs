@@ -1,6 +1,7 @@
 using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
+using CmsData;
 using CmsWeb.Areas.Search.Models;
 using UtilityExtensions;
 
@@ -12,6 +13,8 @@ namespace CmsWeb.Areas.Search.Controllers
         [GET("ContactSearch2")]
         public ActionResult Index()
         {
+            if (!Fingerprint.UseNewLook())
+                return Redirect("/ContactSearch");
             Response.NoCache();
             var m = new ContactSearchModel();
             m.Pager.Set("/ContactSearch2/Results");

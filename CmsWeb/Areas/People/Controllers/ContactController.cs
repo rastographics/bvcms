@@ -1,8 +1,9 @@
-using System.Text;
 using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
+using CmsData;
 using CmsWeb.Areas.People.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
@@ -12,6 +13,8 @@ namespace CmsWeb.Areas.People.Controllers
         [GET("Contact2/{id}")]
         public ActionResult Index(int id)
         {
+            if (!Fingerprint.UseNewLook())
+                return Redirect("/Contact/Index/" + id);
             var m = new ContactModel(id);
             if (m.contact == null)
                 return Content("contact is private or does not exist");

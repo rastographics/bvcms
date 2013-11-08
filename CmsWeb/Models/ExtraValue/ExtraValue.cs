@@ -12,12 +12,15 @@ namespace CmsWeb.Models.ExtraValues
         public string Data { get; set; }
         public int? IntValue { get; set; }
         public bool? BitValue { get; set; }
+        public string Type { get; set; } 
+
         public ExtraValueModel Model { get; set; }
 
         public ExtraValue() { }
 
         public ExtraValue(PeopleExtra v, ExtraValueModel model)
         {
+            Type = v.Type;
             Field = v.Field;
             StrValue = v.StrValue;
             DateValue = v.DateValue;
@@ -29,6 +32,7 @@ namespace CmsWeb.Models.ExtraValues
         }
         public ExtraValue(FamilyExtra v, ExtraValueModel model)
         {
+            Type = v.Type;
             Field = v.Field;
             StrValue = v.StrValue;
             DateValue = v.DateValue;
@@ -40,6 +44,7 @@ namespace CmsWeb.Models.ExtraValues
         }
         public ExtraValue(OrganizationExtra v, ExtraValueModel model)
         {
+            Type = v.Type;
             Field = v.Field;
             StrValue = v.StrValue;
             DateValue = v.DateValue;
@@ -51,6 +56,7 @@ namespace CmsWeb.Models.ExtraValues
         }
         public ExtraValue(MeetingExtra v, ExtraValueModel model)
         {
+            Type = v.Type;
             Field = v.Field;
             Data = v.Data;
             Id = v.MeetingId;

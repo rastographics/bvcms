@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $("a.trigger-dropdown").dropdown();
+    $("a.trigger-dropdown").dropdown2();
 
     $('#SearchText').each(function () {
         var searchterm = "";

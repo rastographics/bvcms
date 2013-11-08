@@ -7,6 +7,7 @@
 using System;
 using System.Data.SqlClient;
 using System.Linq;
+using ImageData;
 using UtilityExtensions;
 using System.Text;
 using System.Data.Linq;
@@ -1402,6 +1403,19 @@ namespace CmsData
             db.SubmitChanges();
 
         }
+        public void DeletePicture(CMSDataContext db)
+        {
+            if (Picture == null)
+                return;
+            Image.Delete(Picture.ThumbId);
+            Image.Delete(Picture.SmallId);
+            Image.Delete(Picture.MediumId);
+            Image.Delete(Picture.LargeId);
+            var pid = PictureId;
+            Picture = null;
+            db.SubmitChanges();
+            db.ExecuteCommand("DELETE dbo.Picture WHERE PictureId = {0}", pid);
+        }
 
         public void UploadDocument(CMSDataContext db, System.IO.Stream stream, string name, string mimetype)
         {
@@ -1462,6 +1476,23 @@ namespace CmsData
         public static void TryExtraValueIntegrity(CMSDataContext Db, string type, string newfield, List<string> BitCodes)
         {
             const string nameAlreadyExistsAsADifferentType = "name already exists as a different type";
+        }
+
+        public bool CanViewStatementFor(CMSDataContext Db, int id)
+        {
+            bool canview = Util.UserPeopleId == id || HttpContext.Current.User.IsInRole("Finance");
+            if (!canview)
+            {
+                var p = Db.CurrentUserPerson;
+                if (p.SpouseId == id)
+                {
+                    var sp = Db.LoadPersonById(id);
+                    if (p.ContributionOptionsId == EnvelopeOptionCode.Joint &&
+                        sp.ContributionOptionsId == EnvelopeOptionCode.Joint)
+                        canview = true;
+                }
+            }
+            return canview;
         }
     }
 }

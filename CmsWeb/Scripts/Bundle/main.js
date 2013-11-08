@@ -31421,14 +31421,14 @@ jQuery.fn.sortElements = (function(){
 }).call(this);
 
 $(function() {
-    $.fn.dropdown = function() {
+    $.fn.dropdown2 = function() {
         return this.each(function() {
             $(this).click(function(ev) {
                 ev.preventDefault();
                 var trigger = $(this),
-                    dd = $($(this).next('.dropdown-menu')),
+                    dd = $($(this).next('.dropdown2-menu')),
                     isOpen = trigger.hasClass('dropdown-open');
-                $("div.dropdown-menu").hide();
+                $("div.dropdown2-menu").hide();
                 $(".trigger-dropdown").removeClass("dropdown-open");
                 if (isOpen)
                     return false;
@@ -31436,7 +31436,8 @@ $(function() {
                 dd.css({
                     left: dd.hasClass('anchor-right') ?
                         trigger.position().left - (dd.outerWidth() - trigger.outerWidth())
-                        : trigger.position().left 
+                        : trigger.position().left,
+                    top: trigger.position().top + 22
                 });
                 trigger.addClass('dropdown-open');
                 return false;
@@ -31448,9 +31449,9 @@ $(function() {
             $(this).focus(function(ev) {
                 ev.preventDefault();
                 var trigger = $(this),
-                    dd = $($(this).next('.dropdown-menu')),
+                    dd = $($(this).next('.dropdown2-menu')),
                     isOpen = trigger.hasClass('dropdown-open');
-                $("div.dropdown-menu").hide();
+                $("div.dropdown2-menu").hide();
                 $(".trigger-dropdown").removeClass("dropdown-open");
                 if (isOpen)
                     return false;
@@ -31484,9 +31485,9 @@ $(function() {
 });
     function hideDropdowns(event) {
 		var targetGroup = event ? $(event.target).parents().andSelf() : null;
-		if (targetGroup && targetGroup.is('.dropdown-menu') && !targetGroup.is('A'))
+		if (targetGroup && targetGroup.is('.dropdown2-menu') && !targetGroup.is('A'))
 		    return;
-		$('div.dropdown-menu').hide();
+		$('div.dropdown2-menu').hide();
 		$('.trigger-dropdown').removeClass('dropdown-open');
         $("li.hideAlt").hide();
 	};
@@ -31568,7 +31569,7 @@ $(document).ready(function () {
     });
     $(".ChooseFormat").live("click", function (ev) {
         ev.preventDefault();
-        $('div.dropdown-menu').hide();
+        $('div.dropdown2-menu').hide();
         var d = $("#ChooseFormat");
         d.dialog("open");
 
@@ -31590,7 +31591,7 @@ $(document).ready(function () {
     $('#TagAll').live("click", function (ev) {
         ev.preventDefault();
         var action = this.href;
-        $('div.dropdown-menu').hide();
+        $('div.dropdown2-menu').hide();
         var d = $("#TagAllDialog").dialog("open");
         $("#TagAllRun").click(function (ev) {
             if ($("#tagalltagname").val().length === 0) {
@@ -31615,7 +31616,7 @@ $(document).ready(function () {
     });
     $('#UnTagAll').live("click", function (ev) {
         ev.preventDefault();
-        $('div.dropdown-menu').hide();
+        $('div.dropdown2-menu').hide();
         $.block();
         $.post(this.href, null, function (ret) {
             $(".taguntag:visible").text(ret);
@@ -31624,7 +31625,7 @@ $(document).ready(function () {
         return false;
     });
     $('body').on("click", '#AddContact', function (ev) {
-        $('div.dropdown-menu').hide();
+        $('div.dropdown2-menu').hide();
         ev.preventDefault();
         if (!confirm("Are you sure you want to add a contact for all these people?"))
             return false;
@@ -31642,7 +31643,7 @@ $(document).ready(function () {
     });
     $('body').on("click", '#AddTasks', function (ev) {
         ev.preventDefault();
-        $('div.dropdown-menu').hide();
+        $('div.dropdown2-menu').hide();
         if (!confirm("Are you sure you want to add a task for each of these people?"))
             return false;
         $.block();
@@ -31808,7 +31809,7 @@ String.prototype.addCommas = function () {
 
 
 $(document).ready(function () {
-    $("a.trigger-dropdown").dropdown();
+    $("a.trigger-dropdown").dropdown2();
 
     $('#SearchText').each(function () {
         var searchterm = "";

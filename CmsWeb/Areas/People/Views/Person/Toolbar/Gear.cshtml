@@ -1,6 +1,8 @@
 ﻿@{
     var admin = User.IsInRole("Admin");
     var edit = User.IsInRole("Edit");
+    var manager2 = User.IsInRole("Manager2");
+    var manager = User.IsInRole("Manager");
 }
 @if (admin)
 {
@@ -12,6 +14,23 @@
                     <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId">Put in New Family</a></li>
                     <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId">Merge this duplicate</a></li>
                     <li><a id="deletePerson" href="/Person2/Delete/@ViewBag.PeopleId">Delete this record</a></li>
+                </ul>
+                <ul class="unstyled pull-left span6">
+                    @Html.Partial("Toolbar/GearStandard")
+                </ul>
+            </div>
+        </li>
+    </ul>
+}
+else if (manager || manager2)
+{
+    <ul class="dropdown-menu dropdown-div-gear">
+        <li>
+            <div>
+                <ul id="ultoolbar" class="span6 unstyled pull-left">
+                    <li class="header">Administrative</li>
+                    <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId">Put in New Family</a></li>
+                    <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId">Merge this duplicate</a></li>
                 </ul>
                 <ul class="unstyled pull-left span6">
                     @Html.Partial("Toolbar/GearStandard")

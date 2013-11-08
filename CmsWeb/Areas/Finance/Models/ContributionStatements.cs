@@ -351,12 +351,10 @@ p { font-size: 11px; }
                 var status = 0;
                 while (ColumnText.HasMoreText(status))
                 {
-                    var leftcol = new Rectangle(doc.Left, doc.Bottom, doc.Left + colwidth, pos);
-                    var rightcol = new Rectangle(doc.Right - colwidth, doc.Bottom, doc.Right, pos);
                     if (col == 0)
-                        ct.SetSimpleColumn(leftcol);
+                        ct.SetSimpleColumn(doc.Left, doc.Bottom, doc.Left + colwidth, pos);
                     else if (col == 1)
-                        ct.SetSimpleColumn(rightcol);
+                        ct.SetSimpleColumn(doc.Right - colwidth, doc.Bottom, doc.Right, pos);
                     status = ct.Go();
                     ++col;
                     if (col > 1)

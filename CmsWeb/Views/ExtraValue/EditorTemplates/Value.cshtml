@@ -11,7 +11,7 @@
         }
         else
         {
-            <td>@Model</td>
+            <td>@Html.Raw(Model)</td>
         }
         @if (!Model.Standard && Model.UserCanEdit())
         {

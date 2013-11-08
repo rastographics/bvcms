@@ -18,7 +18,7 @@ namespace CmsWeb.Models.ExtraValues
             var adhoctypes = new CodeValueModel().AdhocExtraValueTypeCodes();
 
             var qcodevalues = (from e in DbUtil.Db.PeopleExtras
-                               where e.StrValue != null || e.BitValue != null
+                               where e.Type == "Bit" || e.Type == "Code"
                                group e by new
                                {
                                    e.Field,
@@ -45,7 +45,7 @@ namespace CmsWeb.Models.ExtraValues
                          };
 
             var qdatavalues = (from e in DbUtil.Db.PeopleExtras
-                               where e.StrValue == null && e.BitValue == null
+                               where !(e.Type == "Bit" || e.Type == "Code")
                                group e by new
                                {
                                    e.Field,

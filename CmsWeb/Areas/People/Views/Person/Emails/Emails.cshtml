@@ -48,7 +48,14 @@
                         <td>@i.Count</td>
                     }
                     <td>
-                        <a target="viewemail" href="/Person2/ViewEmail/@i.Id">@i.Subject</a>
+                        @if (access)
+                        {
+                            <a target="viewemail" href="/Manage/Emails/Details/@i.Id">@i.Subject</a>
+                        }
+                        else
+                        {
+                            <a target="viewemail" href="/Person2/ViewEmail/@i.Id">@i.Subject</a>
+                        }
                     </td>
                 </tr>
             }

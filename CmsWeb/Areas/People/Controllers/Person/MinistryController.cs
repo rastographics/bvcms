@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.SubmitChanges();
 
             TempData["ContactEdit"] = true;
-            return Content("/Contact/" + c.ContactId);
+            return Content("/Contact2/" + c.ContactId);
         }
         [POST("Person2/ContactsReceived/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult ContactsReceived(int id, int? page, int? size, string sort, string dir)
@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.SubmitChanges();
 
             TempData["ContactEdit"] = true;
-            return Content("/Contact/{0}".Fmt(c.ContactId));
+            return Content("/Contact2/{0}".Fmt(c.ContactId));
         }
         [POST("Person2/TasksAbout/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult TasksAbout(int id, int? page, int? size, string sort, string dir)
@@ -94,6 +94,12 @@ namespace CmsWeb.Areas.People.Controllers
             var m = new TasksAssignedModel(id);
             m.Pager.Set("/Person2/TasksAssigned/" + id, page, size, sort, dir);
             return View("Ministry/Tasks", m);
+        }
+        [POST("Person2/VolunteerApprovals/{id}")]
+        public ActionResult VolunteerApprovals(int id)
+        {
+            var m = new Main.Models.Other.VolunteerModel(id);
+            return View("Ministry/Volunteer", m);
         }
     }
 }

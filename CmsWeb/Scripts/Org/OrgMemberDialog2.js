@@ -6,13 +6,15 @@
         return true;
     });
     $("#dropmember").live("click", function (ev) {
+        var f = $(this).closest('form');
         if (confirm("are you sure?"))
             $.post($(this).attr("href"), null, function (ret) {
-                self.parent.RebindMemberGrids($("#from").val());
+                f.modal("hide");
+                self.parent.RebindMemberGrids();
             });
         return false;
     });
-    $('#orgsearch').live("keydown", function (event) {
+    $('#OrgSearch').live("keydown", function (event) {
         if (event.keyCode == 13) {
             event.preventDefault();
             $("#orgsearchbtn").click();
@@ -23,7 +25,8 @@
         var f = $(this).closest('form');
         if (confirm("are you sure?"))
             $.post($(this).attr('href'), null, function (ret) {
-                self.parent.RebindMemberGrids($("#from").val());
+                f.modal("hide");
+                self.parent.RebindMemberGrids();
             });
         return false;
     });

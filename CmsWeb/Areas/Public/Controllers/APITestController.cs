@@ -63,17 +63,30 @@ namespace CmsWeb.Areas.Public.Controllers
 			return Content(APIFunctions.TestAPI(init, script, args));
 		}
         [Authorize(Roles = "Newlook")]
-        public ActionResult UseNewLook()
+        public ActionResult UseNewLook(int? id)
         {
-            DbUtil.Db.SetUserPreference("UseNewLook", true);
-            return Redirect("/Person2/Current");
-        }
-        [Authorize(Roles = "Newlook")]
-        public ActionResult UseOldLook()
-        {
-            DbUtil.Db.SetUserPreference("UseNewLook", false);
+            if(id.HasValue)
+                DbUtil.Db.SetUserPreference(id.Value, "UseNewLook", true);
+            else
+                DbUtil.Db.SetUserPreference("UseNewLook", true);
+
+            if(Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.ToString());
             return Redirect("/");
         }
+        [Authorize(Roles = "Newlook")]
+        public ActionResult UseOldLook(int? id)
+        {
+            if(id.HasValue)
+                DbUtil.Db.SetUserPreference(id.Value, "UseNewLook", false);
+            else
+                DbUtil.Db.SetUserPreference("UseNewLook", false);
+
+            if(Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.ToString());
+            return Redirect("/");
+        }
+
         [Authorize(Roles = "Newlook")]
         public ActionResult UseAdvancedSearch()
         {

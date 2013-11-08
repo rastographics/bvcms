@@ -2,6 +2,8 @@ using System.Linq;
 using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
 using CmsData;
+using NPOI.HPSF;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
@@ -10,6 +12,7 @@ namespace CmsWeb.Areas.People.Controllers
         [GET("Person2/Campuses")]
         public JsonResult Campuses()
         {
+            Response.SetCacheMinutes(5);
             var q = from c in DbUtil.Db.Campus
                     select new { value = c.Id, text = c.Description };
             return Json(q.ToArray(), JsonRequestBehavior.AllowGet);

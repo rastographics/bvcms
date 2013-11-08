@@ -1,7 +1,8 @@
-﻿@{
+﻿@model object
+@{
     ViewBag.Title = "Send";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
-    var url = ViewBag.QBID is Guid ? "/Email/Index2/" + ViewBag.QBID : "/Email/Index/" + ViewBag.QBID;
+    Layout = Fingerprint.Layout();
+    var url = Model is Guid ? "/Email/Index2/" + Model : "/Email/Index/" + Model;
 }
 
 <h2>SMS Messages Sent</h2>

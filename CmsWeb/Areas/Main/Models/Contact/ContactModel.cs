@@ -4,11 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Web.Mvc;
+using System.Web;
 using CmsData;
 using CmsWeb.Code;
 using Dapper;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ContactPage
@@ -38,7 +37,18 @@ namespace CmsWeb.Models.ContactPage
         internal Contact contact;
         private void LoadContact(int id)
         {
-            contact = DbUtil.Db.Contacts.SingleOrDefault(cc => cc.ContactId == id);
+            var u = DbUtil.Db.CurrentUser;
+            var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
+            var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
+            var q = from c in DbUtil.Db.Contacts
+                   where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
+                   where c.ContactId == id
+                   select c;
+            contact = q.SingleOrDefault();
+
+            if (contact == null)
+                return;
+
             MinisteredTo = new ContacteesModel(id);
             Ministers = new ContactorsModel(id);
             MinisteredTo.CanViewComments = CanViewComments;

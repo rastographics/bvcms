@@ -1,9 +1,7 @@
 ﻿@model CmsWeb.Models.ContributionSearchModel
-@using CmsWeb
-@using UtilityExtensions
 @{
     ViewBag.Title = "Contributions";
-    Layout = "~/Views/Shared/SiteLayout.cshtml";
+    Layout = Fingerprint.Layout();
 }
 @section head
 {
@@ -25,7 +23,7 @@
         <table cellspacing="5">
             <tbody>
                 <tr>
-                    <td colspan="2">
+                    <td colspan="4">
                         <h2>Contributions</h2>
                     </td>
                 </tr>
@@ -33,58 +31,64 @@
                 {
                     <tr>
                         <th class="right">Name:</th>
-                        <td><a href="/Person/Index/@Model.SearchInfo.PeopleId">@Model.Name</a></td>
+                        <td colspan="3"><a href="/Person/Index/@Model.SearchInfo.PeopleId">@Model.Name</a></td>
                     </tr>
                 }
                 else
                 {
                     <tr>
                         <th class="right">Name:</th>
-                        <td>@Html.TextBoxFor(vv => vv.SearchInfo.Name) <em>All or part of full name, or PeopleId</em></td>
+                        <td colspan="3">@Html.TextBoxFor(vv => vv.SearchInfo.Name)
+                            <em>All or part of full name, or PeopleId</em></td>
                     </tr>
                 }
                 <tr>
-                    <th class="right">Min/Max Amounts:</th>
-                    <td>@Html.TextBoxFor(vv => vv.SearchInfo.MinAmt) @Html.TextBoxFor(vv => vv.SearchInfo.MaxAmt) </td>
+                    <th class="right">Min Amt:</th>
+                    <td>@Html.TextBoxFor(vv => vv.SearchInfo.MinAmt) </td>
+                    <th class="right">Start Date:</th>
+                    <td>@Html.EditorFor(vv => vv.SearchInfo.StartDate, "datepicker") </td>
                 </tr>
                 <tr>
-                    <th class="right">Start/End Dates:</th>
-                    <td>@Html.EditorFor(vv => vv.SearchInfo.StartDate, "datepicker") @Html.EditorFor(vv => vv.SearchInfo.EndDate, "datepicker") </td>
+                    <th class="right">Max Amt:</th>
+                    <td>@Html.TextBoxFor(vv => vv.SearchInfo.MaxAmt)</td>
+                    <th class="right">End Date:</th>
+                    <td>@Html.EditorFor(vv => vv.SearchInfo.EndDate, "datepicker")</td>
                 </tr>
                 <tr>
                     <th class="right">Notes:</th>
-                    <td>@Html.TextBoxFor(vv => vv.SearchInfo.Comments) <em>Check # or phrase or ContributionId</em></td>
+                    <td colspan="3">@Html.TextBoxFor(vv => vv.SearchInfo.Comments)
+                        <em>Check # or phrase or ContributionId</em></td>
                 </tr>
                 <tr>
                     <th class="right">Bundle Type:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.BundleType, Model.BundleTypes())</td>
+                    <td class="nowrap">@Html.DropDownListFor(vv => vv.SearchInfo.BundleType, Model.BundleTypes())</td> 
+                    <td colspan="2">Include Unclosed Bundles:
+                        @Html.CheckBoxFor(vv => vv.SearchInfo.IncludeUnclosedBundles) </td>
                 </tr>
                 <tr>
                     <th class="right">Contribution Type:</th>
                     <td>@Html.DropDownListFor(vv => vv.SearchInfo.Type, Model.ContributionTypes())</td>
+                    <th class="right">Campus:</th>
+                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.CampusId, Model.Campuses())</td>
                 </tr>
                 <tr>
                     <th class="right">Fund:</th>
                     <td>@Html.DropDownListFor(vv => vv.SearchInfo.FundId, Model.Funds())</td>
+                    <th class="right">Source:</th>
+                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Online, Model.OnlineOptions())</td>
                 </tr>
                 <tr>
                     <th class="right">Status:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Status, Model.ContributionStatuses())
-                        Tax Type:
-                        <select name="SearchInfo.TaxNonTax">
-                            <option value="TaxDed">Tax Deductible</option>
-                            <option value="NonTaxDed">Non-Tax Deductible</option>
-                            <option value="Pledge">Pledges</option>
-                            <option value="All">All Items</option>
-                        </select>
-                    </td>
+                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Status, Model.ContributionStatuses())</td>
+                    <th class="right">Tax Status:</th>
+                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.TaxNonTax, Model.TaxTypes())</td>
                 </tr>
                 <tr>
                     <th class="right">Year:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Year, Model.Years())</td>
+                    <td colspan="3">@Html.DropDownListFor(vv => vv.SearchInfo.Year, Model.Years())</td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="right">
+                    <td colspan="4" class="right">
                         <a id="NewSearch" class="bt">Clear</a>
                         <a id="export" class="bt">Export</a>
                         <a id="search" class="bt blue">Search</a>

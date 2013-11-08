@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                     join o in orgs on a.Meeting.OrganizationId equals o.OrganizationId
                     let sched = o.OrgSchedules.SingleOrDefault(ss => ss.ScheduleId == ScheduleId)
                     where a.MeetingDate.Date == CheckinDate
+                    where a.AttendanceFlag
                     where ScheduleId == null || a.MeetingDate.TimeOfDay == sched.SchedTime.Value.TimeOfDay
                     select a;
             var q2 = from a in q
