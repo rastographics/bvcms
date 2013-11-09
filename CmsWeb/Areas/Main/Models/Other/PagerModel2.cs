@@ -168,14 +168,31 @@ namespace CmsWeb.Models
         {
             var active = "";
             var asc = " asc";
+            var dir = "asc";
             if (label == Sort)
             {
                 active = " active";
                 if(Direction == "asc")
                     asc = "";
+                dir = Direction == "asc" ? "desc" : "asc";
             }
             return new HtmlString("<a href='{0}/{1}/{2}/{3}/{4}' class='ajax{5}{6}'>{3}</a>"
-                .Fmt(URL, Page, PageSize, label, Direction == "asc" ? "desc" : "asc", active, asc));
+                .Fmt(URL, Page, PageSize, label, dir, active, asc));
+        }
+        public HtmlString SortLink2(string label, string html)
+        {
+            var active = "";
+            var asc = " asc";
+            var dir = "asc";
+            if (label == Sort)
+            {
+                active = " active";
+                if(Direction == "asc")
+                    asc = "";
+                dir = Direction == "asc" ? "desc" : "asc";
+            }
+            return new HtmlString("<a href='{0}/{1}/{2}/{3}/{4}' class='ajax{5}{6}'>{7}</a>"
+                .Fmt(URL, Page, PageSize, label, dir, active, asc, html));
         }
         public HtmlString PageLink(string label, int? page, int? size = null)
         {

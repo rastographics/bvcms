@@ -39,9 +39,24 @@ namespace CmsWeb.Areas.People.Models
             switch (Pager.SortExpression)
             {
                 case "Enroll Date":
+                    return from om in q
+                        orderby om.EnrollmentDate descending // this is the natural order for date
+                        select om;
                 case "Enroll Date desc":
                     return from om in q
-                        orderby om.Organization.OrganizationType.Code ?? "z", om.EnrollmentDate
+                        orderby om.EnrollmentDate
+                        select om;
+                case "Organization":
+                    return from om in q
+                        orderby om.Organization.OrganizationName
+                        select om;
+                case "Organization desc":
+                    return from om in q
+                        orderby om.Organization.OrganizationName descending
+                        select om;
+                case "default desc":
+                    return from om in q
+                        orderby om.Organization.OrganizationType.Code ?? "z" descending, om.Organization.OrganizationName descending 
                         select om;
                 default:
                     return from om in q

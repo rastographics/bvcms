@@ -12,7 +12,7 @@
     <table class="enrollments table table-condensed table-hover">
         <thead>
             <tr>
-                <th></th>
+                <th>@Model.Pager.SortLink2("default", @"<i class=""icon-sort""></i>")</th>
                 <th>@Model.Pager.SortLink("Organization")</th>
                 <th>@Model.Pager.SortLink("Enroll Date")</th>
                 <th>@Model.Pager.SortLink("Drop Date")</th>
@@ -25,7 +25,7 @@
             {
                 rownum++;
                 var oddrow = rownum % 2 == 0 ? "oddrow" : "";
-                if (om.OrgType != pOrgType)
+                if (om.OrgType != pOrgType && Model.Pager.Sort == "default")
                 {
                     pOrgType = om.OrgType;
                 <tr class="section notshown">
@@ -35,7 +35,7 @@
                 }
                 if (User.IsInRole("Access"))
                 {
-                <tr class="organization @oddrow">
+                <tr class="master @oddrow">
                     <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="icon-info-sign"></i></a></td>
                     <td><a href="/Organization/Index/@om.OrgId" class="reveal">@om.Name</a></td>
                     <td>@om.EnrollDate.FormatDate()</td>

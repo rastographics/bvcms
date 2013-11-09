@@ -9,10 +9,10 @@ namespace CmsWeb.Areas.People.Controllers
     public partial class PersonController
     {
         [POST("Person2/EnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult EnrollGrid(int id, int? page, int? size, string sort, string dir)
+        public ActionResult EnrollGrid(int id, int? page, int? size, string sort , string dir)
         {
             var m = new CurrentEnrollments(id);
-            m.Pager.Set("/Person2/EnrollGrid/" + id, page, size, sort, dir);
+            m.Pager.Set("/Person2/EnrollGrid/" + id, page, size, sort ?? "default", dir ?? "asc");
             DbUtil.LogActivity("Viewing Enrollments for: {0}".Fmt(m.person.Name));
             return View("Enrollment/Current", m);
         }
@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult PrevEnrollGrid(int id, int? page, int? size, string sort, string dir)
         {
             var m = new PreviousEnrollments(id);
-            m.Pager.Set("/Person2/PrevEnrollGrid/" + id, page, size, sort, dir);
+            m.Pager.Set("/Person2/PrevEnrollGrid/" + id, page, size, sort ?? "default", dir ?? "asc");
             DbUtil.LogActivity("Viewing Prev Enrollments for: {0}".Fmt(m.person.Name));
             return View("Enrollment/Previous", m);
         }
