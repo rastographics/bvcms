@@ -10,24 +10,29 @@ namespace CmsWeb.Areas.Search.Models
     public class QueryResults : PagedTableModel<Person, PeopleInfo>
     {
         internal CMSDataContext Db;
-        public Condition TopClause;
+        public Guid? QueryId { get; set; }
+
+        private Condition topclause;
+        public Condition TopClause
+        {
+            get
+            {
+                return topclause ?? (TopClause = QueryId == null
+                    ? Db.FetchLastQuery()
+                    : Db.LoadCopyOfExistingQuery(QueryId.Value));
+            }
+            set
+            {
+                topclause = value;
+                QueryId = value.Id;
+            }
+        }
 
         public QueryResults()
             : base("na", "asc")
         {
             Db = DbUtil.Db;
         }
-
-        public void LoadQuery(Guid? id = null)
-        {
-            if (id.HasValue)
-                TopClause = Db.LoadCopyOfExistingQuery(id.Value);
-            else
-                TopClause = Db.FetchLastQuery();
-
-            DbUtil.LogActivity("Running Query ({0})".Fmt(TopClause.Id));
-        }
-
 
         public override IQueryable<Person> DefineModelList()
         {

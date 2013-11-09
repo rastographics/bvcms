@@ -1253,10 +1253,5 @@ namespace CmsData
 
         internal bool FromActiveRecords { get; set; }
 
-        public bool ClipboardHasCondition()
-        {
-            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
-            return clip.HasValue();
-        }
     }
 }

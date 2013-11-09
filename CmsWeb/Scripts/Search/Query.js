@@ -1,4 +1,14 @@
 ﻿$(function () {
+    $.postQuery = function (action, selectedid, cb) {
+        if ($.isFunction(selectedid)) {
+            cb = selectedid;
+            selectedid = undefined;
+        }
+        if (selectedid !== undefined) 
+            $("#SelectedId").val(selectedid);
+        var q = $('#query-form').serialize();
+        $.post("/Query/" + action, q, cb);
+    };
     var liedit;
     var $backdrop = $('<div class="modal-backdrop hide" />').appendTo('body');
     $('#conditions').on("click", 'a.edit-popover', function () {
@@ -12,7 +22,7 @@
         if ($("#editcondition").is(":visible")) {
             $.HideEditCondition();
         }
-        $.post('/Query/EditCondition/' + qid, null, function (ret) {
+        $.postQuery("EditCondition", qid, function (ret) {
             $("#editcondition .popover-content").html(ret).ready(function () {
                 $.AdjustEditCondition(option);
             });
@@ -30,7 +40,6 @@
         $('#Description').editable('toggle');
     });
     $.AdjustEditCondition = function (option) {
-
         $("#editcondition .date").datepicker({ autoclose: true, orientation: "auto" });
         $("#editcondition select").multiselect({
             includeSelectAllOption: true,
@@ -63,7 +72,9 @@
         var oh = $("#editcondition").attr("originalheight");
         $("#editcondition").slideUp(150);
         var pliedit = $("li[data-qid='" + $("#SelectedId").val() + "']");
-        pliedit.animate({ height: oh }, 400);
+        pliedit.animate({ height: oh }, 400, function() {
+            $("#editcondition .popover-content").empty();
+        });
     };
     $(document).on("click", '#CancelChange', function () {
         $.HideEditCondition();
@@ -77,9 +88,8 @@
         li.removeClass("borderleftred");
     });
     $(document).on("click", '#SaveCondition', function () {
-        var q = $('#editForm').serialize();
-        $.post('/Query/SaveCondition/', q, function (ret) {
-            if (ret.startsWith("<form"))
+        $.postQuery('SaveCondition', function (ret) {
+            if (ret.startsWith("<fieldset"))
                 $("#editcondition .popover-content").html(ret).ready(function () {
                     $.InitCodeValues();
                 });
@@ -103,7 +113,7 @@
         var v = $(this).val();
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
-        $.post('/Query/ChangeGroup/' + qid, { comparison: v }, function () {
+        $.postQuery('ChangeGroup/' + v, qid, function () {
             RefreshList();
         });
         return false;
@@ -111,7 +121,7 @@
     $('#conditions').on("click", 'a.addnewclause', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
-        $.post('/Query/AddNewCondition/' + qid, {}, function (ret) {
+        $.postQuery('AddNewCondition', qid, function (ret) {
             $("#conditions").html(ret).ready(function () {
                 liedit = $("li[data-qid='" + $("#NewId").val() + "']");
                 $EditCondition({ isnew: true });
@@ -122,7 +132,7 @@
     $('#conditions').on("click", 'a.addnewgroup', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
-        $.post('/Query/AddNewGroup/' + qid, {}, function (ret) {
+        $.postQuery('AddNewGroup', qid, function (ret) {
             $("#conditions").html(ret).ready(function () {
                 liedit = $("li[data-qid='" + $("#NewId").val() + "']");
                 $EditCondition({ isnew: true });
@@ -137,14 +147,18 @@
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
         $(this).parent().parent().prev().dropdown("toggle");
-        $.post('/Query/Cut/' + qid);
-        $("li.pastecondition").show();
+        $.postQuery('Cut', qid, function (ret) {
+            $("#conditions").html(ret).ready(function() {
+                $("li.pastecondition").show();
+                RefreshList();
+            });
+        });
         return false;
     });
     $('#conditions').on("click", 'a.copycondition', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
-        $.post('/Query/Copy/' + qid);
+        $.postQuery('Copy', qid);
         $(this).parent().parent().prev().dropdown("toggle");
         $("li.pastecondition").show();
         return false;
@@ -152,7 +166,7 @@
     $('#conditions').on("click", 'a.pastecondition', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
-        $.post('/Query/Paste/' + qid, {}, function (ret) {
+        $.postQuery('Paste', qid, function (ret) {
             $("#conditions").html(ret);
             RefreshList();
         });
@@ -161,7 +175,7 @@
     $('#conditions').on("click", 'a.insgroupabove', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
-        $.post('/Query/InsGroupAbove/' + qid, {}, function (ret) {
+        $.postQuery('InsGroupAbove', qid, function (ret) {
             $("#conditions").html(ret);
             RefreshList();
         });
@@ -172,7 +186,7 @@
         var qid = liedit.data("qid");
         bootbox.confirm("Are you sure you want to delete?", function (result) {
             if (result === true) {
-                $.post('/Query/RemoveCondition/' + qid, null, function (ret) {
+                $.postQuery('RemoveCondition', qid, function (ret) {
                     $("#conditions").html(ret);
                     RefreshList();
                 });
@@ -183,9 +197,8 @@
     $(document).on("change", '#Comparison', function (ev) {
         var sel = "#CodeValues";
         if ($(sel).length > 0) {
-            var q = $('#editForm').serialize();
-            $.post('/Query/CodeSelect', q, function (ret) {
-                $(sel).multiselect("destroy").ready(function() {
+            $.postQuery('CodeSelect', function (ret) {
+                $(sel).multiselect("destroy").ready(function () {
                     $(sel).replaceWith(ret).ready(function () {
                         $(sel).multiselect({
                             enableFiltering: true,
@@ -201,7 +214,7 @@
     });
 
     $(document).on("change", '#Program', function (ev) {
-        $.post('/Query/Divisions/' + $(this).val(), null, function (ret) {
+        $.postQuery('Divisions/' + $(this).val(), function (ret) {
             $("#Division").replaceWith(ret)
                 .multiselect({
                     enableFiltering: true,
@@ -215,7 +228,7 @@
         });
     });
     $(document).on("change", '#Division', function () {
-        $.post('/Query/Organizations/' + $(this).val(), null, function (ret) {
+        $.postQuery('Organizations/' + $(this).val(), function (ret) {
             $("#Organization").replaceWith(ret)
                 .multiselect({
                     enableFiltering: true,
@@ -244,7 +257,7 @@
     $('.FieldLink a').click(function (ev) {
         ev.preventDefault();
         var qid = liedit.data("qid");
-        $.post('/Query/SelectCondition/' + qid, { conditionName: ev.target.id }, function (ret) {
+        $.postQuery('SelectCondition/' + ev.target.id, qid, function (ret) {
             $('#QueryConditionSelect').modal("hide");
             $("#editcondition .popover-content").html(ret).ready($.AdjustEditCondition);
         });
@@ -282,7 +295,7 @@ function RefreshList(qs) {
             $('#results').html(ret);
             $('#people tbody tr:even').addClass('alt');
             $('a.taguntag').click(function (ev) {
-                $.post('/Query/ToggleTag/' + $(this).attr('value'), null, function (ret) {
+                $.post('/Query/ToggleTag/' + $(this).attr('value'), function (ret) {
                     if (ret.error)
                         alert(ret.error);
                     else
