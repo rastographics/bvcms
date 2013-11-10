@@ -65,6 +65,7 @@ thead th a {
 input.tt-query {
     background-color: white;
 }
+
 .editable-click,
 a.editable-click,
 a.editable-click:hover {
@@ -83,26 +84,27 @@ a.editable-click:hover {
     #navGlobal .form-search input {
         width: auto;
     }
-    input.tt-hint {
-        border-radius: 0;
-    }
 
-    #navGlobal .form-search .input {
-        -webkit-border-radius: 0;
-        -webkit-background-clip: padding-box;
-        -moz-border-radius: 0;
-        -moz-background-clip: padding;
-        border-radius: 0;
-        background-clip: padding-box;
-        width: auto;
+input.tt-hint {
+    border-radius: 0;
+}
+
+#navGlobal .form-search .input {
+    -webkit-border-radius: 0;
+    -webkit-background-clip: padding-box;
+    -moz-border-radius: 0;
+    -moz-background-clip: padding;
+    border-radius: 0;
+    background-clip: padding-box;
+    width: auto;
+    outline: none;
+}
+
+    #navGlobal .form-search .input:focus {
         outline: none;
+        border-color: inherit;
+        box-shadow: none;
     }
-
-        #navGlobal .form-search .input:focus {
-            outline: none;
-            border-color: inherit;
-            box-shadow: none;
-        }
 
 /*
 form.form-horizontal.onecol .control-group {
@@ -244,7 +246,14 @@ ul.typeahead li.active a,
         background-repeat: no-repeat;
     }
 
-
+#family-photo-div div.portrait {
+    margin-top: 1em;
+    overflow: hidden;
+    height: 230px;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
 
 ul.dropdown-div-reports {
     margin-left: -470px;
@@ -1014,9 +1023,11 @@ table.pad0 td {
     font-weight: inherit;
     line-height: inherit;
 }
+
 .green {
     color: green;
 }
+
 .red {
     color: red;
 }

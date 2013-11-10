@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using ImageData;
 using UtilityExtensions;
 using System.Text;
 
@@ -111,6 +112,49 @@ namespace CmsData
                 };
                 Db.ChangeLogs.InsertOnSubmit(c);
             }
+        }
+        public void LogPictureUpload(CMSDataContext Db, int PeopleId, int UserPeopleId)
+        {
+            var c = new ChangeLog
+            {
+                UserPeopleId = UserPeopleId,
+                PeopleId = PeopleId,
+                FamilyId = FamilyId,
+                Field = "Family",
+                Data = "<table>\n<tr><td>Picture</td><td></td><td>(new upload)</td></tr>\n</table>",
+                Created = Util.Now
+            };
+            Db.ChangeLogs.InsertOnSubmit(c);
+        }
+        public void UploadPicture(CMSDataContext db, System.IO.Stream stream, int PeopleId)
+        {
+            if (Picture == null)
+                Picture = new Picture();
+            var bits = new byte[stream.Length];
+            stream.Read(bits, 0, bits.Length);
+            var p = Picture;
+            p.CreatedDate = Util.Now;
+            p.CreatedBy = Util.UserName;
+            p.ThumbId = Image.NewImageFromBits(bits, 50, 50).Id;
+            p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
+            p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
+            p.LargeId = Image.NewImageFromBits(bits, 570, 800).Id;
+            LogPictureUpload(db, PeopleId, Util.UserPeopleId ?? 1);
+            db.SubmitChanges();
+
+        }
+        public void DeletePicture(CMSDataContext db)
+        {
+            if (Picture == null)
+                return;
+            Image.Delete(Picture.ThumbId);
+            Image.Delete(Picture.SmallId);
+            Image.Delete(Picture.MediumId);
+            Image.Delete(Picture.LargeId);
+            var pid = PictureId;
+            Picture = null;
+            db.SubmitChanges();
+            db.ExecuteCommand("DELETE dbo.Picture WHERE PictureId = {0}", pid);
         }
         public void SetExtra(string field, string value)
         {

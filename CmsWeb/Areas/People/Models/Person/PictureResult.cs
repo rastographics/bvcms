@@ -6,7 +6,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
-using UtilityExtensions;
+using DocumentFormat.OpenXml.EMMA;
+using net.openstack.Core.Exceptions;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -15,12 +16,14 @@ namespace CmsWeb.Areas.People.Models
         private readonly int id;
         private readonly bool portrait;
         private readonly bool tiny;
+        private readonly bool nodefault;
         private int? w, h;
-        public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false)
+        public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false, bool nodefault = false)
         {
             this.id = id;
             this.portrait = portrait;
             this.tiny = tiny;
+            this.nodefault = nodefault;
             this.w = w;
             this.h = h;
         }
@@ -44,6 +47,8 @@ namespace CmsWeb.Areas.People.Models
                 var i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
                 if (i == null || i.Secure == true)
                 {
+                    if (nodefault)
+                        return;
                     if (portrait)
                     {
                         context.HttpContext.Response.ContentType = "image/jpeg";
@@ -92,7 +97,7 @@ namespace CmsWeb.Areas.People.Models
         public byte[] FetchResizedImage(ImageData.Image img, int w, int h)
         {
             var istream = new MemoryStream(img.Bits);
-            var img1 = System.Drawing.Image.FromStream(istream);
+            var img1 = Image.FromStream(istream);
             var ratio = Math.Min(w / (double)img1.Width, h / (double)img1.Height);
             if (ratio >= 1) // image is smaller than requested
                 ratio = 1; // same size

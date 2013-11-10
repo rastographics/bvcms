@@ -126,6 +126,10 @@ namespace CmsData
         {
             return this.People.FirstOrDefault(p => p.PeopleId == id);
         }
+        public Family LoadFamilyByPersonId(int id)
+        {
+            return this.Families.SingleOrDefault(ff => ff.People.Any(mm => mm.PeopleId == id));
+        }
         public Organization LoadOrganizationById(int? id)
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationId == id);

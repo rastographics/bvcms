@@ -1,0 +1,19 @@
+﻿@model CmsWeb.Areas.People.Models.PersonModel
+<form id="picture-modal" action="/Person2/UploadFamilyPicture/@Model.PeopleId" method="post" enctype="multipart/form-data" class="modal fade hide">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal" type="button" aria-hidden="true"><i class="icon-remove-sign"></i></button>
+        <h3>Photo</h3>
+    </div>
+    <div class="modal-body">
+        <a href="@Model.FamilyPicture.LargeUrl" target="_blank"><img src="@Model.FamilyPicture.SmallUrl" alt=""> View full image</a>
+        <fieldset class="">
+            <label>Upload new photo</label>
+            <input type="file" name="picture">
+        </fieldset>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+        <a id="delete-picture" href="/Person2/DeleteFamilyPicture/@Model.PeopleId" class="btn btn-danger">Delete</a>
+        <input type="submit" class="btn btn-primary" value="Save changes" />
+    </div>
+</form>

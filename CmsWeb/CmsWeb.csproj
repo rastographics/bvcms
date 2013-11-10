@@ -1241,6 +1241,7 @@
     <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundResults2.cshtml" />
     <Content Include="Areas\Finance\Views\Contributions\BundleTotals.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
+    <Content Include="Areas\People\Views\Person\Family\PictureDialog.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />

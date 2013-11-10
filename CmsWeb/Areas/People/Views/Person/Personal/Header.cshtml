@@ -4,7 +4,7 @@
 @model PersonModel
 @if (Model.Person.CanUserEditBasic)
 {
-    <a id="profile-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">@Picture()</a>
+    <a class="personal-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">@Picture()</a>
 }
 else
 {

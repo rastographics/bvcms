@@ -1,8 +1,26 @@
 ﻿@using CmsWeb.Areas.People.Models
 @model PersonModel
 <div id="family-photo-div">
-    <div class="sidebar_title group inactive">
-        <a href="#"><i class="icon-plus"></i> Add Family Photo</a>
-    </div>
+    @if (Model.Person.Family.PictureId.HasValue)
+    {
+        if (Model.Person.CanUserEditBasic)
+        {
+        <a class="family-picture" href="/Person2/FamilyPictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">@Picture()</a>
+        }
+        else
+        {
+        <a href="@Model.FamilyPicture.LargeUrl" title="Click to see larger version" target="_blank">@Picture()</a>
+        }
+    }
+    else
+    {
+        <div class="sidebar_title group inactive">
+            <a class="family-picture" href="/Person2/FamilyPictureDialog/@Model.PeopleId"><i class="icon-plus"></i>Add Family Photo</a>
+        </div>
+    }
 </div>
+@helper Picture()
+{
+    <div class="portrait" style="background-image: url(@Model.FamilyPicture.MediumUrl);"></div>
+}
 
