@@ -362,5 +362,34 @@ namespace CmsWeb.Areas.Main.Controllers
             var ret = QueryBuilderClause.Import(DbUtil.Db, text, name);
             return Redirect("/QueryBuilder/Main/" + ret.newid);
         }
+
+        public ActionResult Convert()
+        {
+            var m = new QueryModel();
+            m.LoadScratchPad();
+            if (m.QueryId == null)
+                return Content("");
+            var c = m.GetTopClause();
+            var xml = c.ToXml("conv", c.QueryId);
+            string name = null;
+            if (c.Description != Util.ScratchPad)
+                name = c.Description.Truncate(50);
+            var nc = Condition.Import(xml, name);
+            xml = nc.ToXml();
+            var q = new Query()
+            {
+                QueryId = nc.Id,
+                Name = name ?? Util.ScratchPad2,
+                Text = xml,
+                Owner = c.SavedBy,
+                Created = c.CreatedOn,
+                LastRun = c.CreatedOn,
+                Ispublic = c.IsPublic,
+                RunCount = 0
+            };
+            DbUtil.Db.Queries.InsertOnSubmit(q);
+            DbUtil.Db.SubmitChanges();
+            return Redirect("/Query/" + q.QueryId);
+        }
     }
 }

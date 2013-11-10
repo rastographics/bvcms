@@ -217,5 +217,10 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             return new PictureResult(id ?? 0, w, h, portrait: true);
         }
+        [GET("FamilyPortrait/{id:int?}/{w:int?}/{h:int?}")]
+        public ActionResult FamilyPortrait(int? id, int? w, int? h)
+        {
+            return new PictureResult(id ?? 0, w, h, portrait: false);
+        }
     }
 }

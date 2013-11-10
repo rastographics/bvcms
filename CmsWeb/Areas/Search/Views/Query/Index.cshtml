@@ -20,7 +20,7 @@
     <div class="row-fluid">
         <div class="span4">
             <fieldset>
-            <legend>Advanced Search Builder</legend>
+                <legend>Advanced Search Builder</legend>
                 <div>
                     <div class="size11 cell align-top">Description: </div>
                     <div class="cell pad-left">
@@ -28,7 +28,9 @@
                     </div>
                 </div>
             </fieldset>
-            @Html.Partial("Conditions", Model)
+            <div id="conditions">
+                @Html.Partial("Conditions", Model)
+            </div>
         </div>
         <div id="results" class="span8">
         </div>
@@ -37,11 +39,6 @@
 
 @section PopupsPlaceholder
 {
-    <div id="editcondition" class="popover2">
-        <h3 class="popover-title">Edit Condition</h3>
-        <div class="popover-content">
-        </div>
-    </div>
     @Html.Partial("SelectCondition", Model)
     <div id="QueryConditionHelp" class='modal fade hide'>
         <div class="modal-header">

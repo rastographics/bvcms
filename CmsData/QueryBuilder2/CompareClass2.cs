@@ -826,7 +826,7 @@ namespace CmsData
         }
         public static CompareType Convert(string type)
         {
-            if (type == null)
+            if (!type.HasValue())
                 return CompareType.Equal;
             return (CompareType)Enum.Parse(typeof(CompareType), type);
         }

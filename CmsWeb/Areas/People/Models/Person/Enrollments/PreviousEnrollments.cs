@@ -52,16 +52,39 @@ namespace CmsWeb.Areas.People.Models
         {
             switch (Pager.SortExpression)
             {
-                case "Enroll Date":
                 case "Enroll Date desc":
                     return from om in q
-                           orderby om.Organization.OrganizationType.Code ?? "z", om.EnrollmentDate
+                           orderby om.FirstTransaction.TransactionDate
                            select om;
-                case "Org Name":
-                case "Org Name desc":
+                case "Enroll Date":
                     return from om in q
-                           orderby om.Organization.OrganizationType.Code ?? "z", om.Organization.OrganizationName
+                           orderby om.FirstTransaction.TransactionDate descending 
                            select om;
+                case "Drop Date desc":
+                    return from om in q
+                           orderby om.TransactionDate
+                           select om;
+                case "Drop Date":
+                    return from om in q
+                           orderby om.TransactionDate descending 
+                           select om;
+                case "Organization":
+                    return from om in q
+                           orderby om.Organization.OrganizationName
+                           select om;
+                case "Organization desc":
+                    return from om in q
+                           orderby om.Organization.OrganizationName descending 
+                           select om;
+
+                case "default desc":
+                    return from om in q
+                        orderby om.Organization.OrganizationType.Code ?? "z" descending, om.Organization.OrganizationName descending 
+                        select om;
+                default:
+                    return from om in q
+                        orderby om.Organization.OrganizationType.Code ?? "z", om.Organization.OrganizationName
+                        select om;
             }
             return q;
         }

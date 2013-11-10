@@ -27,7 +27,7 @@
                 <td>@c.After</td>
                 @if (c.Reversable)
                 {
-                    <td><a class="ajax" data-confirm="Are you sure?" href="/Person2/Reverse/@Model.person.PeopleId/@c.pf/@c.Field?value=@c.Before">reverse</a></td>
+                    <td><a class="ajax" data-confirm="Are you sure you want to reverse this change?" href="/Person2/Reverse/@Model.person.PeopleId/@c.pf/@c.Field?value=@c.Before">reverse</a></td>
                 }
                 else
                 {

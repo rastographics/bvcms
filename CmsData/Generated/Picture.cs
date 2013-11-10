@@ -32,6 +32,8 @@ namespace CmsData
 		private int? _ThumbId;
 		
    		
+   		private EntitySet< Family> _Families;
+		
    		private EntitySet< Person> _People;
 		
     	
@@ -66,6 +68,8 @@ namespace CmsData
     #endregion
 		public Picture()
 		{
+			
+			this._Families = new EntitySet< Family>(new Action< Family>(this.attach_Families), new Action< Family>(this.detach_Families)); 
 			
 			this._People = new EntitySet< Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
 			
@@ -234,6 +238,16 @@ namespace CmsData
         
     #region Foreign Key Tables
    		
+   		[Association(Name="FK_Families_Picture", Storage="_Families", OtherKey="PictureId")]
+   		public EntitySet< Family> Families
+   		{
+   		    get { return this._Families; }
+
+			set	{ this._Families.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FK_PEOPLE_TBL_Picture", Storage="_People", OtherKey="PictureId")]
    		public EntitySet< Person> People
    		{
@@ -265,6 +279,19 @@ namespace CmsData
 		}
 
    		
+		private void attach_Families(Family entity)
+		{
+			this.SendPropertyChanging();
+			entity.Picture = this;
+		}
+
+		private void detach_Families(Family entity)
+		{
+			this.SendPropertyChanging();
+			entity.Picture = null;
+		}
+
+		
 		private void attach_People(Person entity)
 		{
 			this.SendPropertyChanging();

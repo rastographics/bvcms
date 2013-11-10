@@ -33,7 +33,7 @@
                 @Html.DisplayFor(m => m.Comments, "TextArea")
             </div>
             <div class="right">
-                <a id="delete" class="btn btn-danger submit" data-confirm="Are you sure?" href="/Contact2/ContactDelete/@Model.ContactId">Delete</a>
+                <a id="delete" class="btn btn-danger submit" data-confirm="Are you sure you want to delete this contact?" href="/Contact2/ContactDelete/@Model.ContactId">Delete</a>
                 <a id="edit" class="btn btn-primary ajax" href="/Contact2/ContactEdit/@Model.ContactId">Edit</a>
             </div>
         }

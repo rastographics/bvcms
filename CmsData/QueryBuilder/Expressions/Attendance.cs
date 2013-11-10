@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using CmsData.Codes;
+using Community.CsharpSqlite;
 using UtilityExtensions;
 
 namespace CmsData
@@ -321,8 +322,10 @@ namespace CmsData
         {
             var mindt = Util.Now.AddDays(-days).Date;
             Expression<Func<Person, int>> pred = p =>
-                p.Family.People.Where(k => k.PositionInFamilyId == 30).Max(k =>
-                    k.Attends.Count(a => a.AttendanceFlag == true && a.MeetingDate >= mindt));
+                p.Family.People.Any(k => k.PositionInFamilyId == 30 && k.Attends.Any())
+                    ? p.Family.People.Where(k => k.PositionInFamilyId == 30).Max(k =>
+                        k.Attends.Count(a => a.AttendanceFlag && a.MeetingDate >= mindt))
+                    : 0;
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
             return Compare(left, op, right);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using System.Web.Mvc;
@@ -43,15 +44,18 @@ namespace CmsWeb.Models.PersonPage
         public static PersonInfo GetPersonInfo(int? id)
         {
             var flags = DbUtil.Db.Setting("StatusFlags", "F04,F01,F02,F03");
+            var isvalid = Regex.IsMatch(flags, @"\A(F\d\d,{0,1})(,F\d\d,{0,1})*\z", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 			var i = (from pp in DbUtil.Db.People
 					 let spouse = (from sp in pp.Family.People where sp.PeopleId == pp.SpouseId select sp.Name).SingleOrDefault()
-                     let statusflags = DbUtil.Db.StatusFlag(pp.PeopleId)
+                     let statusflags = isvalid
+                            ? DbUtil.Db.StatusFlags(flags).Single(sf => sf.PeopleId == id).StatusFlags
+                            : "invalid setting in status flags"
 					 where pp.PeopleId == id
 					 select new
 					 {
 						 pp,
 						 f = pp.Family,
-						 spouse = spouse,
+                         spouse,
 						 pp.Picture.SmallId,
                          statusflags
 					 }).FirstOrDefault();

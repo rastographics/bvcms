@@ -7,74 +7,61 @@ namespace CmsWeb.Areas.Search.Models
 {
     public partial class QueryModel
     {
-        [Serializable]
-        public class ClipboardItem
+        public static bool ClipboardHasCondition()
         {
-            public string from { get; set; }
-            public Guid guid { get; set; }
-            public string xml { get; set; }
-
-            public ClipboardItem(string @from, Guid guid, string xml)
-            {
-                this.@from = @from;
-                this.guid = guid;
-                this.xml = xml;
-            }
+            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
+            return clip != null;
         }
 
-        public void Paste(Guid id)
+        public void Copy()
         {
-            var clip = HttpContext.Current.Session["QueryClipboard"] as ClipboardItem;
+            HttpContext.Current.Session["QueryClipboard"] = Selected.ToXml(newGuids: true);
+        }
+        public void Cut()
+        {
+            HttpContext.Current.Session["QueryClipboard"] = Selected.ToXml();
+            Selected.DeleteClause();
+            TopClause.Save(Db, increment: true);
+        }
+
+        public void Paste()
+        {
+            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
             if (clip == null)
                 return;
-            var newclause = Condition.Import(clip.xml, newGuids: clip.from == "copy");
-            Condition prevParent = null;
-            if (clip.from == "cut")
-                if (clip.guid != TopClause.Id)
-                {
-                    var originalquery = Db.LoadQueryById2(clip.guid).ToClause();
-                    var origclause = originalquery.AllConditions[newclause.Id];
-                    originalquery.AllConditions.Remove(newclause.Id);
-                    if (!origclause.Parent.Conditions.Any())
-                        originalquery.AllConditions.Remove(origclause.Parent.Id);
-                    originalquery.Save(Db);
-                }
-                else
-                    prevParent = TopClause.AllConditions[newclause.Id].Parent;
+            var newclause = Condition.Import(clip);
 
-            newclause.AllConditions = Current.AllConditions;
-            Current.AllConditions[newclause.Id] = newclause;
+            foreach(var c in newclause.AllConditions)
+                Selected.AllConditions[c.Key] = c.Value;;
+            newclause.AllConditions = Selected.AllConditions;
 
-
-            if (Current.IsGroup)
+            if (Selected.IsGroup)
             {
-                newclause.Order = Current.MaxClauseOrder() + 2;
-                newclause.ParentId = Current.Id;
+                newclause.Order = Selected.MaxClauseOrder() + 2;
+                newclause.ParentId = Selected.Id;
             }
             else
             {
-                newclause.Order = Current.Order + 1;
-                newclause.ParentId = Current.Parent.Id;
-                Current.Parent.ReorderClauses();
+                newclause.Order = Selected.Order + 1;
+                newclause.ParentId = Selected.Parent.Id;
+                Selected.Parent.ReorderClauses();
             }
-            if (prevParent != null && !prevParent.Conditions.Any())
-                TopClause.AllConditions.Remove(prevParent.Id);
             TopClause.Save(Db, increment: true);
         }
         public Guid AddConditionToGroup()
         {
-            var nc = Current.AddNewClause();
+            var nc = Selected.AddNewClause();
             TopClause.Save(Db);
             return nc.Id;
         }
         public Guid AddGroupToGroup()
         {
-            var g = Current.AddNewGroupClause();
+            var g = Selected.AddNewGroupClause();
             var nc = g.AddNewClause();
             TopClause.Save(Db);
             return nc.Id;
         }
-        public Condition Current
+        public Condition Selected
         {
             get
             {
@@ -84,7 +71,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public void DeleteCondition()
         {
-            Current.DeleteClause();
+            Selected.DeleteClause();
             TopClause.Save(Db, increment: true);
         }
         public void InsertGroupAbove()
@@ -94,22 +81,22 @@ namespace CmsWeb.Areas.Search.Models
                 Id = Guid.NewGuid(),
                 ConditionName = QueryType.Group.ToString(),
                 Comparison = CompareType.AnyTrue.ToString(),
-                AllConditions = Current.AllConditions
+                AllConditions = Selected.AllConditions
             };
-            if (Current.IsFirst)
+            if (Selected.IsFirst)
             {
-                Current.ParentId = g.Id;
+                Selected.ParentId = g.Id;
                 g.ParentId = null;
             }
             else
             {
-                var list = Current.Parent.Conditions.Where(cc => cc.Order >= Current.Order).ToList();
-                g.ParentId = Current.ParentId;
+                var list = Selected.Parent.Conditions.Where(cc => cc.Order >= Selected.Order).ToList();
+                g.ParentId = Selected.ParentId;
                 foreach (var c in list)
                     c.ParentId = g.Id;
-                g.Order = Current.MaxClauseOrder();
+                g.Order = Selected.MaxClauseOrder();
             }
-            Current.AllConditions.Add(g.Id, g);
+            Selected.AllConditions.Add(g.Id, g);
             if (g.IsFirst)
             {
                 TopClause = g;

@@ -122,6 +122,15 @@ namespace CmsData
             var q = Db.People.Where(qB.Predicate(Db));
             return q.Count();
         }
+        public int StatusCount(string s)
+        {
+            var statusflags = s.Split(',');
+            var q = from p in Db.People
+                    let ac = p.Tags.Count(tt => statusflags.Contains(tt.Tag.Name))
+                    where ac == statusflags.Length
+                    select p;
+            return q.Count();
+        }
         public decimal ContributionTotals(int days1, int days2, string funds)
         {
             var fundids = (from f in funds.Split(',')

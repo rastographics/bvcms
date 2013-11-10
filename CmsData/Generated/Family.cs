@@ -69,6 +69,8 @@ namespace CmsData
 		
 		private string _Comments;
 		
+		private int? _PictureId;
+		
    		
    		private EntitySet< FamilyCheckinLock> _FamilyCheckinLocks;
 		
@@ -84,6 +86,8 @@ namespace CmsData
 		private EntityRef< Person> _HeadOfHousehold;
 		
 		private EntityRef< Person> _HeadOfHouseholdSpouse;
+		
+		private EntityRef< Picture> _Picture;
 		
 		private EntityRef< ResidentCode> _ResidentCode;
 		
@@ -172,6 +176,9 @@ namespace CmsData
 		partial void OnCommentsChanging(string value);
 		partial void OnCommentsChanged();
 		
+		partial void OnPictureIdChanging(int? value);
+		partial void OnPictureIdChanged();
+		
     #endregion
 		public Family()
 		{
@@ -190,6 +197,8 @@ namespace CmsData
 			this._HeadOfHousehold = default(EntityRef< Person>); 
 			
 			this._HeadOfHouseholdSpouse = default(EntityRef< Person>); 
+			
+			this._Picture = default(EntityRef< Picture>); 
 			
 			this._ResidentCode = default(EntityRef< ResidentCode>); 
 			
@@ -780,6 +789,31 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="PictureId", UpdateCheck=UpdateCheck.Never, Storage="_PictureId", DbType="int")]
+		public int? PictureId
+		{
+			get { return this._PictureId; }
+
+			set
+			{
+				if (this._PictureId != value)
+				{
+				
+					if (this._Picture.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				
+                    this.OnPictureIdChanging(value);
+					this.SendPropertyChanging();
+					this._PictureId = value;
+					this.SendPropertyChanged("PictureId");
+					this.OnPictureIdChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
@@ -915,6 +949,48 @@ namespace CmsData
 					}
 
 					this.SendPropertyChanged("HeadOfHouseholdSpouse");
+				}
+
+			}
+
+		}
+
+		
+		[Association(Name="FK_Families_Picture", Storage="_Picture", ThisKey="PictureId", IsForeignKey=true)]
+		public Picture Picture
+		{
+			get { return this._Picture.Entity; }
+
+			set
+			{
+				Picture previousValue = this._Picture.Entity;
+				if (((previousValue != value) 
+							|| (this._Picture.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						this._Picture.Entity = null;
+						previousValue.Families.Remove(this);
+					}
+
+					this._Picture.Entity = value;
+					if (value != null)
+					{
+						value.Families.Add(this);
+						
+						this._PictureId = value.PictureId;
+						
+					}
+
+					else
+					{
+						
+						this._PictureId = default(int?);
+						
+					}
+
+					this.SendPropertyChanged("Picture");
 				}
 
 			}

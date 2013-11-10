@@ -148,6 +148,13 @@ namespace CmsWeb.Controllers
             var qq = HomeModel.FastSearch(q).ToArray();
             return Content(JsonConvert.SerializeObject(qq));
         }
+        [GET("FastSearchPrefetch")]
+        public ActionResult FastSearchPrefetch()
+        {
+            Response.NoCache();
+            var qq = HomeModel.PrefetchSearch().ToArray();
+            return Content(JsonConvert.SerializeObject(qq));
+        }
 
         public ActionResult TestTypeahead()
         {

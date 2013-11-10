@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using CmsData.Codes;
@@ -37,23 +38,29 @@ namespace CmsWeb.Areas.People.Models
             get { return picture ?? new Picture(); }
             set { picture = value; }
         }
+        public Picture FamilyPicture
+        {
+            get { return familypicture ?? new Picture(); }
+            set { familypicture = value; }
+        }
 
         public int AddressTypeId { get; set; }
-        private AddressInfo _PrimaryAddr;
-        private AddressInfo _OtherAddr;
+        private AddressInfo primaryAddr;
+        private AddressInfo otherAddr;
         private Picture picture;
+        private Picture familypicture;
         public Person Person { get; set; }
 
         public AddressInfo PrimaryAddr
         {
             get
             {
-                if (_PrimaryAddr == null)
+                if (primaryAddr == null)
                     if (FamilyAddr.Preferred)
-                        _PrimaryAddr = FamilyAddr;
+                        primaryAddr = FamilyAddr;
                     else if (PersonalAddr.Preferred)
-                        _PrimaryAddr = PersonalAddr;
-                return _PrimaryAddr;
+                        primaryAddr = PersonalAddr;
+                return primaryAddr;
             }
         }
 
@@ -61,12 +68,12 @@ namespace CmsWeb.Areas.People.Models
         {
             get
             {
-                if (_OtherAddr == null)
+                if (otherAddr == null)
                     if (FamilyAddr.Preferred)
-                        _OtherAddr = PersonalAddr;
+                        otherAddr = PersonalAddr;
                     else if (PersonalAddr.Preferred)
-                        _OtherAddr = FamilyAddr;
-                return _OtherAddr;
+                        otherAddr = FamilyAddr;
+                return otherAddr;
             }
         }
 
@@ -104,16 +111,20 @@ namespace CmsWeb.Areas.People.Models
         public PersonModel(int id)
         {
             var flags = DbUtil.Db.Setting("StatusFlags", "F04,F01,F02,F03");
+            var isvalid = Regex.IsMatch(flags, @"\A(F\d\d,{0,1})(,F\d\d,{0,1})*\z", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+
             var i = (from pp in DbUtil.Db.People
                      let spouse = (from sp in pp.Family.People where sp.PeopleId == pp.SpouseId select sp.Name).SingleOrDefault()
-                     let statusflags = DbUtil.Db.StatusFlags(flags).Single(sf => sf.PeopleId == id).StatusFlags
+                     let statusflags = isvalid
+                            ? DbUtil.Db.StatusFlags(flags).Single(sf => sf.PeopleId == id).StatusFlags
+                            : "invalid setting in status flags"
                      where pp.PeopleId == id
                      select new
                      {
                          pp,
-                         f = pp.Family,
-                         spouse,
                          pp.Picture,
+                         f = pp.Family,
+                         FamilyPicture = pp.Family.Picture,
                          statusflags,
                          memberStatus = pp.MemberStatus.Description,
                      }).FirstOrDefault();
@@ -130,6 +141,7 @@ namespace CmsWeb.Areas.People.Models
             FamilyId = p.FamilyId;
             Name = p.Name;
             Picture = i.Picture;
+            FamilyPicture = i.FamilyPicture;
             StatusFlags = (i.statusflags ?? "").Split(',');
 
             basic = new BasicPersonInfo(p.PeopleId);

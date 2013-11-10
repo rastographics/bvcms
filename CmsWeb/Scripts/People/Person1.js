@@ -66,7 +66,7 @@
                 });
             });
     });
-    $("#profile-picture").live("click", function (ev) {
+    $("a.personal-picture, a.family-picture").live("click", function (ev) {
         ev.preventDefault();
         $("<div />")
             .load($(this).attr("href"), {}, function () {

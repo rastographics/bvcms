@@ -22,6 +22,7 @@ namespace CmsWeb.Areas.Search.Models
         private FieldClass fieldMap;
         private List<SelectListItem> tagData;
 
+        public Guid? SelectedId { get; set; }
         public string CodeIdValue { get; set; }
 
         public QueryModel()
@@ -30,7 +31,12 @@ namespace CmsWeb.Areas.Search.Models
             ConditionName = "Group";
         }
 
-        public Guid? SelectedId { get; set; }
+        public QueryModel(Guid? id)
+            : this()
+        {
+            QueryId = id;
+            DbUtil.LogActivity("Running Query ({0})".Fmt(id));
+        }
 
         public int? Program { get; set; }
         public int? Division { get; set; }
@@ -135,8 +141,6 @@ namespace CmsWeb.Areas.Search.Models
 
         public void TagAll(Tag tag = null)
         {
-            if (TopClause == null)
-                LoadQuery();
             Db.SetNoLock();
             var q = Db.People.Where(TopClause.Predicate(Db));
             if (TopClause.ParentsOf)
@@ -149,8 +153,6 @@ namespace CmsWeb.Areas.Search.Models
 
         public void UnTagAll()
         {
-            if (TopClause == null)
-                LoadQuery();
             Db.SetNoLock();
             var q = Db.People.Where(TopClause.Predicate(Db));
             if (TopClause.ParentsOf)
@@ -175,15 +177,12 @@ namespace CmsWeb.Areas.Search.Models
         }
         public void UpdateCondition()
         {
-            var c = Current;
-            this.CopyPropertiesTo(c);
+            this.CopyPropertiesTo(Selected);
             TopClause.Save(Db, increment: true);
         }
         public void EditCondition()
         {
-            var c = Current;
-            SelectedId = c.Id;
-            this.CopyPropertiesFrom(c);
+            this.CopyPropertiesFrom(Selected);
         }
     }
 }

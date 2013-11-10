@@ -10,7 +10,7 @@
         $(function () {
             $("a.delete").click(function (ev) {
                 ev.preventDefault();
-                if (confirm("are you sure?"))
+                if (confirm("are you sure you want to delete all of these contacts?"))
                     window.location = $(this).attr("href");
                 return false;
             });

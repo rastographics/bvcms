@@ -69,27 +69,31 @@ namespace CmsData
             Db.SubmitChanges();
         }
 
-        public string ToXml()
+        public string ToXml(bool newGuids = false)
         {
             var settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.Encoding = new UTF8Encoding(false);
             var sb = new StringBuilder();
             using (var w = XmlWriter.Create(sb, settings))
-                SendToWriter(w);
+                SendToWriter(w, newGuids);
             return sb.ToString();
         }
-        public void SendToWriter(XmlWriter w)
+        public void SendToWriter(XmlWriter w, bool newGuids = false)
         {
             w.WriteStartElement("Condition");
-            WriteAttributes(w);
+            WriteAttributes(w, newGuids);
             foreach (var qc in Conditions)
-                qc.SendToWriter(w);
+                qc.SendToWriter(w, newGuids);
             w.WriteEndElement();
         }
-        private void WriteAttributes(XmlWriter w)
+        private void WriteAttributes(XmlWriter w, bool newGuids = false)
         {
-            w.WriteAttributeString("Id", Id.ToString());
+            if (newGuids)
+                w.WriteAttributeString("Id", Guid.NewGuid().ToString());
+            else
+                w.WriteAttributeString("Id", Id.ToString());
+
             w.WriteAttributeString("Order", Order.ToString());
             w.WriteAttributeString("Field", ConditionName);
             w.WriteAttributeString("Comparison", Comparison);

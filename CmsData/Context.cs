@@ -126,6 +126,10 @@ namespace CmsData
         {
             return this.People.FirstOrDefault(p => p.PeopleId == id);
         }
+        public Family LoadFamilyByPersonId(int id)
+        {
+            return this.Families.SingleOrDefault(ff => ff.People.Any(mm => mm.PeopleId == id));
+        }
         public Organization LoadOrganizationById(int? id)
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationId == id);
@@ -1098,6 +1102,7 @@ namespace CmsData
             var q = from c in QueryBuilderClauses
                     where c.GroupId == null && c.Field == "Group"
                     where c.Description.StartsWith("F") && c.Description.Contains(":")
+                    orderby c.Description
                     select c.Description;
 
             const string FindPrefix = @"^F\d+:.*";
@@ -1252,10 +1257,5 @@ namespace CmsData
 
         internal bool FromActiveRecords { get; set; }
 
-        public bool ClipboardHasCondition()
-        {
-            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
-            return clip.HasValue();
-        }
     }
 }
