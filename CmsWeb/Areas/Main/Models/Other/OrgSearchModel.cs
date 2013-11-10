@@ -230,17 +230,22 @@ namespace CmsWeb.Models
                 if (Name.AllDigits())
                     organizations = from o in organizations
                                     where o.OrganizationId == Name.ToInt()
-                                        || o.Location == Name
-                                        || o.PendingLoc == Name
                                     select o;
+                else if (Name.ToInt() < 0)
+                {
+                    var loc = Name.GetDigits();
+                    organizations = from o in organizations
+                        where o.Location == loc
+                        select o;
+                }
                 else
                     organizations = from o in organizations
-                                    where o.OrganizationName.Contains(Name)
-                                        || o.LeaderName.Contains(Name)
-                                        || o.Location == Name
-                                        || o.PendingLoc == Name
-                                        || o.DivOrgs.Any(t => t.Division.Name.Contains(Name))
-                                    select o;
+                        where o.OrganizationName.Contains(Name)
+                              || o.LeaderName.Contains(Name)
+                              || o.Location == Name
+                              || o.PendingLoc == Name
+                              || o.DivOrgs.Any(t => t.Division.Name.Contains(Name))
+                        select o;
             }
             if (DivisionId > 0)
                 organizations = from o in organizations
