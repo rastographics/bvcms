@@ -1,8 +1,10 @@
-﻿@using CmsWeb
+﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Areas.Search.Models.QueryModel
 @{
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Search Builder";
+    var showtip = !DbUtil.Db.UserPreference("hide-tip-query", "false").ToBool();
 }
 @section head 
 {
@@ -22,10 +24,20 @@
             <fieldset>
                 <legend>Advanced Search Builder</legend>
                 <div>
-                    <div class="size11 cell align-top">Description: </div>
+                    <div class="size11 cell align-top">Name: </div>
                     <div class="cell pad-left">
-                        <a id="Description" class="click-pencil" title="Enter Query Description">@Model.TopClause.Description</a>
+                        <a id="Description" href="#" class="click-pencil" title="Enter Query Description">@Model.TopClause.Description</a>
+                        &nbsp;<a id="CopyQuery" href="#" title="Make a Copy"><i class="icon-copy"></i></a>
                     </div>
+                    @if (showtip)
+                    {
+                        <div class="alert alert-warning">
+                            <a class="close hide-tip" data-dismiss="alert" data-hidetip="query" href="#">&times;</a>
+                            You can edit the name of this query above. Or you can click the copy icon to make a copy.
+                            Editing the conditions below will automatically update your query. 
+                            Click the x to remove this help-tip if you got this.
+                        </div>
+                    }
                 </div>
             </fieldset>
             <div id="conditions">

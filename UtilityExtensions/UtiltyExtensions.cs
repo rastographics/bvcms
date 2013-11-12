@@ -1763,7 +1763,7 @@ namespace UtilityExtensions
         }
         public static void NameSplit(string name, out string First, out string Last)
         {
-            if (name.Contains(","))
+            if ((name ?? "").Contains(","))
             {
                 var a = (name ?? "").Split(',');
                 First = "";

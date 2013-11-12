@@ -837,6 +837,12 @@ $(function () {
         url: "/Query/DescriptionUpdate",
         mode: "popup"
     });
+    $("#CopyQuery").click(function (ev) {
+        ev.preventDefault();
+        $.postQuery("CopyQuery", function(ret) {
+            $("#Description").text(ret);
+        });
+    });
     $('#DescriptionEdit').click(function (e) {
         e.stopPropagation();
         $('#Description').editable('toggle');
@@ -1059,7 +1065,8 @@ $(function () {
     $('.FieldLink a').click(function (ev) {
         ev.preventDefault();
         var qid = liedit.data("qid");
-        $.postQuery('SelectCondition/' + ev.target.id, qid, function (ret) {
+        $("#ConditionName").val(ev.target.id);
+        $.postQuery('SelectCondition', qid, function (ret) {
             $('#QueryConditionSelect').modal("hide");
             $("#editcondition .popover-content").html(ret).ready($.AdjustEditCondition);
         });

@@ -924,13 +924,21 @@ namespace CmsData
         }
         public string UserPreference(string pref, string def)
         {
-            var cp = HttpContext.Current.Session["pref-" + pref];
-            if (cp != null)
-                return cp.ToString();
+            var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
+            if (d != null && d.ContainsKey(pref))
+                return d[pref] ?? def;
+            if (d == null)
+            {
+                d = new Dictionary<string, string>();
+                HttpContext.Current.Session["preferences"] = d;
+            }
             Preference p = null;
             if (CurrentUser != null)
                 p = CurrentUser.Preferences.SingleOrDefault(up => up.PreferenceX == pref);
-            return p != null ? p.ValueX : def;
+            if (p != null)
+                return d[pref] = p.ValueX;
+            d[pref] = null;
+            return def;
         }
         public void SetUserPreference(string pref, object value)
         {
@@ -946,7 +954,13 @@ namespace CmsData
                 p = new Preference { UserId = Util.UserId1, PreferenceX = pref, ValueX = value.ToString() };
                 Preferences.InsertOnSubmit(p);
             }
-            HttpContext.Current.Session["pref-" + pref] = p.ValueX;
+            var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
+            if (d == null)
+            {
+                d = new Dictionary<string, string>();
+                HttpContext.Current.Session["preferences"] = d;
+            }
+            d[pref] = p.ValueX;
             SubmitChanges();
         }
         public void SetUserPreference(int id, string pref, object value)
