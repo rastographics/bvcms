@@ -35,14 +35,13 @@
                             <a class="close hide-tip" data-dismiss="alert" data-hidetip="query" href="#">&times;</a>
                             You can edit the name of this query above. Or you can click the copy icon to make a copy.
                             Editing the conditions below will automatically update your query. 
-                            Click the x to remove this help-tip if you got this.
                         </div>
                     }
                 </div>
+                <div id="conditions">
+                    @Html.Partial("Conditions", Model)
+                </div>
             </fieldset>
-            <div id="conditions">
-                @Html.Partial("Conditions", Model)
-            </div>
         </div>
         <div id="results" class="span8">
         </div>
