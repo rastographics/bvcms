@@ -118,7 +118,7 @@ namespace CmsWeb.Models
             var q2 = from r in DbUtil.Db.GetTotalContributionsDonor2(startdt, enddt, campusid, nontaxdeductible, includeUnclosed)
                      select new
                      {
-                         r.CreditGiverId,
+                         GiverId = r.CreditGiverId.Value,
                          Count = r.Count ?? 0,
                          Amount = r.Amount ?? 0m,
                          Pledged = r.PledgeAmount ?? 0m,
@@ -135,6 +135,7 @@ namespace CmsWeb.Models
             var q2 = from r in DbUtil.Db.GetTotalContributions3(startdt, enddt, campusid, nontaxdeductible, includeUnclosed)
                      select new
                      {
+                         GiverId = r.CreditGiverId.Value,
                          Count = r.Count ?? 0,
                          Amount = r.Amount ?? 0m,
                          Pledged = r.PledgeAmount ?? 0m,
