@@ -1,6 +1,13 @@
 ﻿@model CmsWeb.Models.OrganizationPage.OrganizationModel
 @using CmsWeb
-@using UtilityExtensions
+    <li>
+        <span class="keyword big tip"
+              title="Does not meet weekly
+        | Check this if the org does not meet weekly.
+        | Leave unchecked for weekly meetings">
+        Does NOT meet weekly:</span>
+        @Html.CheckBox("org.NotWeekly")
+    </li>
     <li>
         <span class="keyword big tip"
         title="Schedule

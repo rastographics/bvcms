@@ -151,6 +151,8 @@ namespace CmsData
 		
 		private DateTime? _VisitorDate;
 		
+		private bool? _NotWeekly;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -398,6 +400,9 @@ namespace CmsData
 		
 		partial void OnVisitorDateChanging(DateTime? value);
 		partial void OnVisitorDateChanged();
+		
+		partial void OnNotWeeklyChanging(bool? value);
+		partial void OnNotWeeklyChanged();
 		
     #endregion
 		public Organization()
@@ -1936,6 +1941,28 @@ namespace CmsData
 					this._VisitorDate = value;
 					this.SendPropertyChanged("VisitorDate");
 					this.OnVisitorDateChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="NotWeekly", UpdateCheck=UpdateCheck.Never, Storage="_NotWeekly", DbType="bit")]
+		public bool? NotWeekly
+		{
+			get { return this._NotWeekly; }
+
+			set
+			{
+				if (this._NotWeekly != value)
+				{
+				
+                    this.OnNotWeeklyChanging(value);
+					this.SendPropertyChanging();
+					this._NotWeekly = value;
+					this.SendPropertyChanged("NotWeekly");
+					this.OnNotWeeklyChanged();
 				}
 
 			}
