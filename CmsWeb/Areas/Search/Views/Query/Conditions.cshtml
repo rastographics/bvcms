@@ -67,6 +67,10 @@
             {
                 <li><a href="#" class="cutcondition"><i class="icon-cut icon-fixedwidth"></i>Cut</a></li>
             }
+            @if (clause.IsGroup && !clause.CanCut && !clause.IsFirst)
+            {
+            <li><a href="#" class="maketopgroup"><i class="icon-arrow-up icon-fixedwidth"></i>Make Top Group</a></li>
+            }
             <li><a href="#" class="copycondition"><i class="icon-copy icon-fixedwidth"></i>Copy</a></li>
             <li class="pastecondition" style="display: none"><a href="#" class="pastecondition"><i class="icon-paste icon-fixedwidth"></i>Paste</a></li>
             <li><a href="#" class="insgroupabove"><i class="icon-share-alt icon-fixedwidth"></i>Insert Group Above this</a></li>

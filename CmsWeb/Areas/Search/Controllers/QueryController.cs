@@ -81,6 +81,12 @@ namespace CmsWeb.Areas.Search.Controllers
             m.InsertGroupAbove();
             return View("Conditions", m);
         }
+        [POST("Query/MakeTopGroup")]
+        public ActionResult MakeTopGroup(QueryModel m)
+        {
+            m.MakeTopGroup();
+            return View("Conditions", m);
+        }
         [POST("Query/CodeSelect")]
         public ActionResult CodeSelect(QueryModel m)
         {

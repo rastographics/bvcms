@@ -187,6 +187,15 @@
         });
         return false;
     });
+    $('#conditions').on("click", 'a.maketopgroup', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.postQuery('MakeTopGroup', qid, function (ret) {
+            $("#conditions").html(ret);
+            RefreshList();
+        });
+        return false;
+    });
     $('#conditions').on("click", 'a.delete', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
