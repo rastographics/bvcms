@@ -13,14 +13,17 @@ namespace CmsWeb.Areas.Main.Controllers
 {
     public class MeetingController : CmsStaffController
     {
-        public ActionResult Index(int? id, bool? showall, bool? sortbyname, bool? CurrentMembers)
+        public ActionResult Index(int? id, bool? showall, bool? sortbyname, bool? CurrentMembers, bool? showlarge)
         {
             if (!id.HasValue)
                 return RedirectShowError("no id");
-            var m = new MeetingModel(id.Value);
-            m.currmembers = CurrentMembers ?? false;
-            m.showall = showall == true;
-            m.sortbyname = sortbyname == true;
+            var m = new MeetingModel(id.Value)
+            {
+                currmembers = CurrentMembers ?? false,
+                showall = showall == true,
+                sortbyname = sortbyname == true,
+                showlarge = showlarge ?? false
+            };
             if (m.meeting == null)
                 return RedirectShowError("no meeting");
 
