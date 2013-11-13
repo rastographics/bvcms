@@ -90,7 +90,7 @@
         <div class="jscroll" style="height: 215px">
             @foreach (var t in Model.Tags())
             {
-                <div class="drow"><a href="/Tags?tag=@t.Code">@t.Value</a></div>
+                <div class="drow"><a href="/Tags?tag=@Server.UrlEncode(t.Code)">@t.Value</a></div>
             }
         </div>
     </div>
