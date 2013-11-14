@@ -1459,7 +1459,7 @@ namespace UtilityExtensions
         {
             get
             {
-                var path = ConfigurationManager.AppSettings["AppOfflineFile"];
+                var path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
                 return File.Exists(path);
             }
         }
@@ -1468,7 +1468,7 @@ namespace UtilityExtensions
         {
             get
             {
-                var path = ConfigurationManager.AppSettings["UrgentTextFile"];
+                var path = ConfigurationManager.AppSettings["UrgentTextFile"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!path.HasValue())
                     return HttpContext.Current.Application["UrgentMessage"] as string;
                 string fileContent = HttpRuntime.Cache["UrgentMessage"] as string;
@@ -1481,7 +1481,7 @@ namespace UtilityExtensions
             }
             set
             {
-                var path = ConfigurationManager.AppSettings["UrgentTextFile"];
+                var path = ConfigurationManager.AppSettings["UrgentTextFile"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!path.HasValue())
                 {
                     if (value.HasValue())

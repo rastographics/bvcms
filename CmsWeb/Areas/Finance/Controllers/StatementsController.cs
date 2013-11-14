@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
         private string Output(bool? pdf)
         {
-            string output = ConfigurationManager.AppSettings["SharedFolder"];
+            string output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
             if (pdf == true)
                 output = output + "/Statements/contributions_{0}.pdf".Fmt(Util.Host);
             else
