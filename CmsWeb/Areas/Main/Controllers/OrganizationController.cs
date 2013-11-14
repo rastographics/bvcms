@@ -1,16 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
-using System.Text;
 using CmsWeb.Models.OrganizationPage;
-using System.Diagnostics;
 using CmsData.Codes;
 
 namespace CmsWeb.Areas.Main.Controllers
@@ -22,8 +16,8 @@ namespace CmsWeb.Areas.Main.Controllers
         const string needNotify = "WARNING: please add the notify persons on messages tab.";
         public ActionResult Index(int? id)
         {
-            if (Fingerprint.UseNewLook())
-                return Redirect("/Org/" + id);
+//            if (Fingerprint.UseNewLook())
+//                return Redirect("/Org/" + id);
             if (!id.HasValue)
                 return Content("no org");
             if (Util2.CurrentOrgId != id)

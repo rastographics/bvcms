@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Security.Permissions;
 using System.Web;
 using CmsData;
 
@@ -99,10 +100,33 @@ namespace CmsWeb.Areas.Search.Models
             Selected.AllConditions.Add(g.Id, g);
             if (g.IsFirst)
             {
+                // g will now becojme the new TopClause
+                g.Description = TopClause.Description;
+
+                // swap TopClauseId with the new GroupId so the saved query will have the same id
+                var tcid = TopClause.Id;
+                var gid = g.Id;
+                var conditions = TopClause.Conditions.ToList();
+                TopClause.Id = gid;
+                foreach (var c in conditions)
+                    c.ParentId = gid;
+                g.Id = tcid;
+                TopClause.ParentId = g.Id;
                 TopClause = g;
-                SelectedId = g.Id;
+                TopClause.Save(Db);
             }
             TopClause.Save(Db, increment: true);
+        }
+        public void MakeTopGroup()
+        {
+            Selected.Description = TopClause.Description;
+            var conditions = Selected.Conditions.ToList();
+            foreach (var c in conditions)
+                c.ParentId = TopClause.Id;
+            Selected.Id = TopClause.Id;
+            Selected.ParentId = null;
+            TopClause = Selected;
+            TopClause.Save(Db);
         }
     }
 }

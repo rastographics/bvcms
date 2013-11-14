@@ -35,6 +35,12 @@
         url: "/Query/DescriptionUpdate",
         mode: "popup"
     });
+    $("#CopyQuery").click(function (ev) {
+        ev.preventDefault();
+        $.postQuery("CopyQuery", function(ret) {
+            $("#Description").text(ret);
+        });
+    });
     $('#DescriptionEdit').click(function (e) {
         e.stopPropagation();
         $('#Description').editable('toggle');
@@ -181,6 +187,15 @@
         });
         return false;
     });
+    $('#conditions').on("click", 'a.maketopgroup', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.postQuery('MakeTopGroup', qid, function (ret) {
+            $("#conditions").html(ret);
+            RefreshList();
+        });
+        return false;
+    });
     $('#conditions').on("click", 'a.delete', function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
@@ -257,7 +272,8 @@
     $('.FieldLink a').click(function (ev) {
         ev.preventDefault();
         var qid = liedit.data("qid");
-        $.postQuery('SelectCondition/' + ev.target.id, qid, function (ret) {
+        $("#ConditionName").val(ev.target.id);
+        $.postQuery('SelectCondition', qid, function (ret) {
             $('#QueryConditionSelect').modal("hide");
             $("#editcondition .popover-content").html(ret).ready($.AdjustEditCondition);
         });

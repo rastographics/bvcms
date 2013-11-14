@@ -221,6 +221,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CMSImage">
+      <HintPath>..\ImageData\bin\Debug\CMSImage.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper">
       <HintPath>..\packages\Dapper.1.13\lib\net45\Dapper.dll</HintPath>
     </Reference>
@@ -769,10 +772,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImageData\ImageData.csproj">
-      <Project>{512da381-e81b-4121-b978-fc850ec88353}</Project>
-      <Name>ImageData</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{c504e3d2-5498-451b-bf82-309623706f11}</Project>
       <Name>UtilityExtensions</Name>

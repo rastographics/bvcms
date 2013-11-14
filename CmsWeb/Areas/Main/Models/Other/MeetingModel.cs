@@ -21,6 +21,7 @@ namespace CmsWeb.Models
         public bool showregister { get; set; }
         public bool showregistered { get; set; }
         public bool sortbyname { get; set; }
+        public bool showlarge { get; set; }
 
         public MeetingModel(int id)
         {
@@ -29,7 +30,7 @@ namespace CmsWeb.Models
                      select new
                                 {
                                     org = m.Organization,
-                                    m
+                                    m,
                                 }).Single();
             meeting = i.m;
             org = i.org;

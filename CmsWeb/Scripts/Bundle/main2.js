@@ -26385,6 +26385,10 @@ $(function () {
         ev.preventDefault();
         startTutorial($(this).attr("href"));
     });
+    $("a.hide-tip").live("click", function (ev) {
+        ev.preventDefault();
+        $.post("/HideTip", { tip: $(this).data("hidetip") });
+    });
     //	$('#AddDialog').dialog({
     //		bgiframe: true,
     //		autoOpen: false,

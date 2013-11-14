@@ -1119,15 +1119,14 @@ namespace UtilityExtensions
                 name = name.Replace("\"", "");
             if (ValidEmail(address))
                 return Util.FirstAddress(address, name);
-            else
-                return null;
+            return null;
         }
         public static bool ValidEmail(string email)
         {
             if (!email.HasValue())
                 return false;
-            var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+\.[A-Z]{2,4}\b\b(?!\w)$", RegexOptions.IgnoreCase);
-            var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+\.[A-Z]{2,4}$", RegexOptions.IgnoreCase);
+            var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,4}\b\b(?!\w)$", RegexOptions.IgnoreCase);
+            var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,4}$", RegexOptions.IgnoreCase);
             var a = email.SplitStr(",;");
             foreach (var m in a)
             {
@@ -1460,7 +1459,7 @@ namespace UtilityExtensions
         {
             get
             {
-                var path = ConfigurationManager.AppSettings["AppOfflineFile"];
+                var path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
                 return File.Exists(path);
             }
         }
@@ -1469,7 +1468,7 @@ namespace UtilityExtensions
         {
             get
             {
-                var path = ConfigurationManager.AppSettings["UrgentTextFile"];
+                var path = ConfigurationManager.AppSettings["UrgentTextFile"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!path.HasValue())
                     return HttpContext.Current.Application["UrgentMessage"] as string;
                 string fileContent = HttpRuntime.Cache["UrgentMessage"] as string;
@@ -1482,7 +1481,7 @@ namespace UtilityExtensions
             }
             set
             {
-                var path = ConfigurationManager.AppSettings["UrgentTextFile"];
+                var path = ConfigurationManager.AppSettings["UrgentTextFile"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!path.HasValue())
                 {
                     if (value.HasValue())
@@ -1763,7 +1762,7 @@ namespace UtilityExtensions
         }
         public static void NameSplit(string name, out string First, out string Last)
         {
-            if (name.Contains(","))
+            if ((name ?? "").Contains(","))
             {
                 var a = (name ?? "").Split(',');
                 First = "";

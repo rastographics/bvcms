@@ -156,6 +156,26 @@ namespace CmsWeb.Controllers
             return Content(JsonConvert.SerializeObject(qq));
         }
 
+        [POST("HideTip")]
+        public ActionResult HideTip(string tip)
+        {
+            DbUtil.Db.SetUserPreference("hide-tip-" + tip, "true");
+            return new EmptyResult();
+        }
+        [GET("ResetTips")]
+        public ActionResult ResetTips()
+        {
+            DbUtil.Db.ExecuteCommand("DELETE dbo.Preferences WHERE Preference LIKE 'hide-tip-%' AND UserId = {0}", Util.UserId);
+            var d = Session["preferences"] as Dictionary<string, string>;
+            var keys = d.Keys.Where(kk => kk.StartsWith("hide-tip-")).ToList();
+            foreach (var k in keys)
+                d.Remove(k);
+            
+            if(Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.ToString());
+            return Redirect("/");
+        }
+
         public ActionResult TestTypeahead()
         {
             return View();

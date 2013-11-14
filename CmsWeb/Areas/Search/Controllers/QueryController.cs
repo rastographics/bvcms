@@ -8,6 +8,8 @@
 using System;
 using System.Diagnostics;
 using System.Net;
+using System.Data.Linq;
+using System.Linq;
 using System.Web.Mvc;
 using System.Xml;
 using AttributeRouting;
@@ -79,15 +81,20 @@ namespace CmsWeb.Areas.Search.Controllers
             m.InsertGroupAbove();
             return View("Conditions", m);
         }
+        [POST("Query/MakeTopGroup")]
+        public ActionResult MakeTopGroup(QueryModel m)
+        {
+            m.MakeTopGroup();
+            return View("Conditions", m);
+        }
         [POST("Query/CodeSelect")]
         public ActionResult CodeSelect(QueryModel m)
         {
             return View("EditorTemplates/CodeSelect", m);
         }
-        [POST("Query/SelectCondition/{conditionName}")]
-        public ActionResult SelectCondition(string conditionName, QueryModel m)
+        [POST("Query/SelectCondition")]
+        public ActionResult SelectCondition(QueryModel m)
         {
-            m.ConditionName = conditionName;
             m.Comparison = "Equal";
             m.UpdateCondition();
             return View("EditCondition", m);
@@ -167,9 +174,19 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult DescriptionUpdate(string name, string value, QueryModel m)
         {
             Debug.Assert(name == "Description");
-            m.TopClause.Description = value;
-            m.TopClause.Save(DbUtil.Db);
+            var q = (from qq in DbUtil.Db.Queries
+                     where qq.QueryId == m.TopClause.Id
+                     select qq).Single();
+            q.Name = value;
+            DbUtil.Db.SubmitChanges();
             return new EmptyResult();
+        }
+        [POST("Query/CopyQuery")]
+        public ActionResult CopyQuery(QueryModel m)
+        {
+            m.TopClause.Description = m.TopClause.Description + " Copy";
+            m.TopClause.Save(DbUtil.Db);
+            return Content(m.TopClause.Description);
         }
 
         [POST("Query/Results/{page?}/{size?}/{sort?}/{dir?}")]
