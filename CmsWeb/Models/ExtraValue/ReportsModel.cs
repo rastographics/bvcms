@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using CmsData;
 using CmsWeb.Code;
-using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
