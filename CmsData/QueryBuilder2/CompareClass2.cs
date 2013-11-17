@@ -439,6 +439,10 @@ namespace CmsData
                     return Expressions.NumberOfFamilyMembers(parm,
                                CompType,
                                c.TextValue.ToInt());
+                case QueryType.NumberOfPrimaryAdults:
+                    return Expressions.NumberOfPrimaryAdults(parm,
+                               CompType,
+                               c.TextValue.ToInt());
                 // O --------------------------
                 //case QueryType.OrgMemberCreatedDate:
                 //    return Expressions.OrgMemberCreatedDate(parm,

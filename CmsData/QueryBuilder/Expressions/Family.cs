@@ -33,6 +33,16 @@ namespace CmsData
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
             return Compare(left, op, right);
         }
+        internal static Expression NumberOfPrimaryAdults(
+            ParameterExpression parm,
+            CompareType op,
+            int cnt)
+        {
+            Expression<Func<Person, int>> pred = p => p.Family.People.Count(pp => pp.PositionInFamilyId == 10);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Convert(Expression.Constant(cnt), left.Type);
+            return Compare(left, op, right);
+        }
         internal static Expression HasParents(
             ParameterExpression parm,
             CompareType op,

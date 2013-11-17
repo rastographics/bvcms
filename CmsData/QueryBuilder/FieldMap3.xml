@@ -83,6 +83,9 @@
     <NumberOfFamilyMembers Title="Number of Family Members" Type="Integer">
       Enter a number with a comparison.
     </NumberOfFamilyMembers>
+    <NumberOfPrimaryAdults Title="Number of Primary Adults" Type="Integer">
+      Number of Primary Adults
+    </NumberOfPrimaryAdults>
     <HasParents Title="Has Parents" Type="Bit" DataValueField="IdCode">
       Select True or False for children with a Primary Adult in the family.
     </HasParents>

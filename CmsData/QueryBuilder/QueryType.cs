@@ -126,6 +126,7 @@ namespace CmsData
         NonTaxDedAmount,
         NumberOfMemberships,
         NumberOfFamilyMembers,
+        NumberOfPrimaryAdults,
         OccupationOther,
         OrgInactiveDate,
         OrgJoinDate,
