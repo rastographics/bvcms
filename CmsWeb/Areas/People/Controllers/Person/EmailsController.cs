@@ -82,6 +82,13 @@ namespace CmsWeb.Areas.People.Controllers
             m.Pager.Set("/Person2/SentEmails/" + id, page, size, sort, dir);
             return View("Emails/Emails", m);
         }
+        [POST("Person2/ScheduledEmails/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult ScheduledEmails(int id, int? page, int? size, string sort, string dir)
+        {
+            var m = new EmailScheduledModel(id);
+            m.Pager.Set("/Person2/ScheduledEmails/" + id, page, size, sort, dir);
+            return View("Emails/Emails", m);
+        }
         [POST("Person2/TransactionalEmails/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult TransactionalEmails(int id, int? page, int? size, string sort, string dir)
         {

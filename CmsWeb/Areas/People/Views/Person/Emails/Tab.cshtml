@@ -3,6 +3,10 @@
     <li><a href="#receivedemails" data-toggle="tab" class="ajax"><span>Received</span></a></li>
     <li><a href="#sentemails" data-toggle="tab" class="ajax"><span>Sent</span></a></li>
     <li><a href="#transactional" data-toggle="tab" class="ajax"><span>Transactional</span></a></li>
+    @if (User.IsInRole("Access"))
+    {
+        <li><a href="#scheduledemails" data-toggle="tab" class="ajax"><span>Scheduled</span></a></li>
+    }
     <li><a href="#optouts" data-toggle="tab" class="ajax"><span>Optouts</span></a></li>
     <li><a href="#failedemails" data-toggle="tab" class="ajax"><span>Failed</span></a></li>
 </ul>
@@ -10,6 +14,10 @@
     <div class="tab-pane" id="receivedemails" data-link="/Person2/ReceivedEmails/@Model.PeopleId"></div>
     <div class="tab-pane" id="sentemails" data-link="/Person2/SentEmails/@Model.PeopleId"></div>
     <div class="tab-pane" id="transactional" data-link="/Person2/TransactionalEmails/@Model.PeopleId"></div>
+    @if (User.IsInRole("Access"))
+    {
+        <div class="tab-pane" id="scheduledemails" data-link="/Person2/ScheduledEmails/@Model.PeopleId"></div>
+    }
     <div class="tab-pane" id="optouts" data-link="/Person2/Optouts/@Model.PeopleId"></div>
     <div class="tab-pane" id="failedemails" data-link="/Person2/FailedEmails/@Model.PeopleId"></div>
 </div>

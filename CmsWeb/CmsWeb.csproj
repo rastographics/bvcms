@@ -319,6 +319,7 @@
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
+    <Compile Include="Areas\People\Models\Person\Emails\EmailScheduled.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Controllers\DialogController.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
