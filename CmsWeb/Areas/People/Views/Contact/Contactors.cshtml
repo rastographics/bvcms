@@ -11,3 +11,9 @@
         </tr>
     }
 </table>
+@if (Model.CanViewComments)
+{
+    <div class="right">
+        <a id="newteamcontact" href="/Contact2/NewTeamContact/@Model.Contact.ContactId" class="btn btn-success in">Add New Contact for Team</a>
+    </div>
+}

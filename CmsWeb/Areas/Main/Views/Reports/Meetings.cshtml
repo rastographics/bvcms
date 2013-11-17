@@ -101,7 +101,7 @@
         }
         else
         {
-            <td><a href="/Meeting/Index/@m.MeetingId">@m.Time.ToString2("h:mm tt")</a></td>
+            <td><a href="/Meeting/Index/@m.MeetingId">@m.Time.FormatDateTm()</a></td>
             <td class="right">@m.HeadCount.ToStringNoZero()</td>
             <td class="right">@m.Attended</td>
         }

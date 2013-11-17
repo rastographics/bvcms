@@ -85,7 +85,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new ContactModel(cid);
             var nid = m.AddNewTeamContact();
-            return Redirect("/Contact/" + nid);
+            return Redirect("/Contact2/" + nid);
         }
         [POST("Contact2/AddTask/{cid:int}/{pid:int}")]
         public ActionResult AddTask(int cid, int pid)

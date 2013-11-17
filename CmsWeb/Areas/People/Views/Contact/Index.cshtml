@@ -37,19 +37,13 @@
         <div class="table center not-wide">
             <fieldset class="inline align-top">
                 <legend>Ministry Team @Add("Contactor")</legend>
-                <form id="contactors" action="/Contacts/Contactors/@Model.ContactId" class="min-width15em">
+                <form id="contactors" action="/Contact2/Contactors/@Model.ContactId" class="min-width15em" method="post">
                     @Html.Partial("Contactors", Model.Ministers)
                 </form>
-                @if (Model.CanViewComments)
-                {
-                    <div class="right">
-                        <a id="newteamcontact" href="/Contact/NewTeamContact/@Model.ContactId" class="btn btn-success in">Add New Contact for Team</a>
-                    </div>
-                }
             </fieldset>
             <fieldset class="inline align-top left-gutter">
                 <legend>Those Contacted @Add("Contactee")</legend>
-                <form id="contactees" action="/Contacts/Contactees/@Model.ContactId" class="min-width15em">
+                <form id="contactees" action="/Contact2/Contactees/@Model.ContactId" class="min-width15em" method="post">
                     @Html.Partial("Contactees", Model.MinisteredTo)
                 </form>
             </fieldset>
