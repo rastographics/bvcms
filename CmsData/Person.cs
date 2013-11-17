@@ -1179,6 +1179,16 @@ namespace CmsData
             }
             return ev;
         }
+        public static bool ExtraValueExists(CMSDataContext db, int id, string field)
+        {
+            field = field.Replace('/', '-');
+            var q = from v in db.PeopleExtras
+                    where v.Field == field
+                    where v.PeopleId == id
+                    select v;
+            var ev = q.SingleOrDefault();
+            return ev != null;
+        }
         public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field, string value)
         {
             var novalue = !value.HasValue();
@@ -1336,6 +1346,30 @@ namespace CmsData
                 Db.SubmitChanges();
             }
             return ms.Id;
+        }
+        public static int FetchOrCreateBaptismType(CMSDataContext Db, string type)
+        {
+            var bt = Db.BaptismTypes.SingleOrDefault(m => m.Description == type);
+            if (bt == null)
+            {
+                var max = Db.BaptismTypes.Max(mm => mm.Id) + 10;
+                bt = new BaptismType() { Id = max, Code = "b" + max, Description = type };
+                Db.BaptismTypes.InsertOnSubmit(bt);
+                Db.SubmitChanges();
+            }
+            return bt.Id;
+        }
+        public static int FetchOrCreateDecisionType(CMSDataContext Db, string type)
+        {
+            var bt = Db.DecisionTypes.SingleOrDefault(m => m.Description == type);
+            if (bt == null)
+            {
+                var max = Db.DecisionTypes.Max(mm => mm.Id) + 10;
+                bt = new DecisionType() { Id = max, Code = "d" + max, Description = type };
+                Db.DecisionTypes.InsertOnSubmit(bt);
+                Db.SubmitChanges();
+            }
+            return bt.Id;
         }
         public static Campu FetchOrCreateCampus(CMSDataContext Db, string campus)
         {
