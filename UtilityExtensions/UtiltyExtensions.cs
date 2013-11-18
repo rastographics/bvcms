@@ -595,29 +595,6 @@ namespace UtilityExtensions
                 return h.Replace("{church}", Host, ignoreCase: true);
             }
         }
-        private const string STR_ConnectionString = "ConnectionString";
-        public static string ConnectionString
-        {
-            get
-            {
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_ConnectionString] != null)
-                            return HttpContext.Current.Session[STR_ConnectionString].ToString();
-                var cs = ConfigurationManager.ConnectionStrings["CMSHosted"];
-                if (cs == null)
-                    return ConfigurationManager.ConnectionStrings["CMS"].ConnectionString;
-
-                var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-                cb.InitialCatalog = "CMS_{0}".Fmt(Host);
-                return cb.ConnectionString;
-            }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_ConnectionString] = value;
-            }
-        }
         public static bool IsHosted
         {
             get
@@ -685,33 +662,63 @@ namespace UtilityExtensions
                 return @"^-?(?:\d+)?(?:\.\d+)?$";
             }
         }
-        public static string GetConnectionString(string Host)
+        public static string GetConnectionString(string host)
         {
-            var cs = ConfigurationManager.ConnectionStrings["CMSHosted"];
-            if (cs == null)
-                cs = ConfigurationManager.ConnectionStrings["CMS"];
+            var cs = ConnectionStringSettings(host) ?? ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-            var a = Host.SplitStr(".:");
+            var a = host.SplitStr(".:");
             cb.InitialCatalog = "CMS_{0}".Fmt(a[0]);
             return cb.ConnectionString;
         }
         public static string GetMasterConnectionString()
         {
-            var cs = ConfigurationManager.ConnectionStrings["CMSHosted"];
-            if (cs == null)
-                cs = ConfigurationManager.ConnectionStrings["CMS"];
-            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-            cb.InitialCatalog = "master";
+            var cs = ConnectionStringSettings("master") ?? ConfigurationManager.ConnectionStrings["CMS"];
+            var cb = new SqlConnectionStringBuilder(cs.ConnectionString) {InitialCatalog = "master"};
             return cb.ConnectionString;
+        }
+
+        private static ConnectionStringSettings ConnectionStringSettings(string host)
+        {
+            var h2 = ConfigurationManager.AppSettings["CmsHosted2"];
+            if (h2.HasValue())
+            {
+                var a = h2.Split(',');
+                if (a.Contains(host))
+                    return ConfigurationManager.ConnectionStrings["CMSHosted2"];
+            }
+            return ConfigurationManager.ConnectionStrings["CMSHosted"];
+        }
+
+        private const string STR_ConnectionString = "ConnectionString";
+        public static string ConnectionString
+        {
+            get
+            {
+                if (HttpContext.Current != null)
+                    if (HttpContext.Current.Session != null)
+                        if (HttpContext.Current.Session[STR_ConnectionString] != null)
+                            return HttpContext.Current.Session[STR_ConnectionString].ToString();
+
+                var cs = ConnectionStringSettings(Host);
+                if (cs == null)
+                    return ConfigurationManager.ConnectionStrings["CMS"].ConnectionString;
+
+                var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+                cb.InitialCatalog = "CMS_{0}".Fmt(Host);
+                return cb.ConnectionString;
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                    HttpContext.Current.Session[STR_ConnectionString] = value;
+            }
         }
 
         public static string ConnectionStringImage
         {
             get
             {
-                var cs = ConfigurationManager.ConnectionStrings["CMSHosted"];
-                if (cs == null)
-                    cs = ConfigurationManager.ConnectionStrings["CMS"];
+                var cs = ConnectionStringSettings(Host);
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
                 var a = Host.SplitStr(".:");
                 cb.InitialCatalog = "CMSi_{0}".Fmt(a[0]);
