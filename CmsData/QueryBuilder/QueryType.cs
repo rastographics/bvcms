@@ -156,6 +156,7 @@ namespace CmsData
         PrimaryState,
         PrimaryZip,
         PrimaryCountry,
+        ProspectCurrentOrg,
         ReceiveSms,
         RecentAttendCount,
         RecentAttendCountAttCred,

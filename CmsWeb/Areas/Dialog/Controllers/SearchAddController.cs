@@ -31,6 +31,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                     break;
                 case "org":
                 case "pending":
+                case "prospect":
                     org = DbUtil.Db.LoadOrganizationById(id);
                     m.CampusId = org.CampusId;
                     m.EntryPointId = org.EntryPointId ?? 0;
@@ -226,9 +227,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 case "relatedfamily":
                     return AddRelatedFamilys(iid, m, OriginCode.NewFamilyMember);
                 case "org":
-                    return AddOrgMembers(iid, m, false, OriginCode.Enrollment);
+                    return AddOrgMembers(iid, m, OriginCode.Enrollment);
                 case "pending":
-                    return AddOrgMembers(iid, m, true, OriginCode.Enrollment);
+                    return AddOrgMembers(iid, m, OriginCode.Enrollment, pending: true);
+                case "prospect":
+                    return AddProspects(iid, m, OriginCode.Enrollment);
                 case "visitor":
                     return AddVisitors(iid, m, OriginCode.Visit);
                 case "registered":
@@ -364,7 +367,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             DbUtil.Db.SubmitChanges();
             return Json(new { close = true, how = "CloseAddDialog" });
         }
-        private JsonResult AddOrgMembers(int id, SearchModel m, bool pending, int origin)
+        private JsonResult AddOrgMembers(int id, SearchModel m, int origin, bool pending = false)
         {
             string message = null;
             if (id > 0)
@@ -396,6 +399,21 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 }
                 DbUtil.Db.SubmitChanges();
 				DbUtil.Db.UpdateMainFellowship(id);
+            }
+            return Json(new { close = true, how = "rebindgrids", message = message });
+        }
+        private JsonResult AddProspects(int id, SearchModel m, int origin)
+        {
+            string message = null;
+            if (id > 0)
+            {
+                foreach (var p in m.List)
+                {
+                    AddPerson(p, m.List, origin, m.EntryPointId);
+                    OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                        id, p.PeopleId ?? 0, MemberTypeCode.Prospect, Util.Now, null, pending: false);
+                }
+                DbUtil.Db.SubmitChanges();
             }
             return Json(new { close = true, how = "rebindgrids", message = message });
         }

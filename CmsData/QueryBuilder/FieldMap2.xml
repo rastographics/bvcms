@@ -390,6 +390,9 @@
     <Field Name="InactiveCurrentOrg" Title="Inactive in Current Organization" Type="Bit" DataValueField="IdCode">
       Selects everyone who is enrolled but inactive in the last organization you worked with. (used internally, but you can too if it will help you)
     </Field>
+    <Field Name="ProspectCurrentOrg" Title="Prospects in Current Organization" Type="Bit" DataValueField="IdCode">
+      Selects everyone who is a prospect in the last organization you worked with. (used internally, but you can too if it will help you)
+    </Field>
     <Field Name="PendingCurrentOrg" Title="Pending in Current Organization" Type="Bit" DataValueField="IdCode">
       Selects everyone who is enrolled but pending in the last organization you worked with. (used internally, but you can too if it will help you)
     </Field>

@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CmsData;
 using System.Web.Mvc;
 using CmsWeb.Code;
 using UtilityExtensions;
-using System.Text.RegularExpressions;
 using CmsData.Codes;
 
 namespace CmsWeb.Models
@@ -16,6 +14,7 @@ namespace CmsWeb.Models
         public int orgid { get; set; }
         public bool inactives { get; set; }
         public bool pendings { get; set; }
+        public bool prospects { get; set; }
         public int? sg { get; set; }
 
         public int memtype { get; set; }
@@ -113,13 +112,27 @@ namespace CmsWeb.Models
         }
         public IQueryable<OrganizationMember> OrgMembers()
         {
-            int inactive = MemberTypeCode.InActive;
             var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.OrganizationId == orgid
-                    where om.OrgMemMemTags.Any(g => g.MemberTagId == sg) || (sg ?? 0) == 0
+                where om.OrganizationId == orgid
+                where om.OrgMemMemTags.Any(g => g.MemberTagId == sg) || (sg ?? 0) == 0
+                select om;
+            if (pendings)
+                q = from om in q
                     where (om.Pending ?? false) == pendings
-                    where (inactives && om.MemberTypeId == inactive)
-                        || (!inactives && om.MemberTypeId != inactive)
+                    select om;
+            else if (inactives)
+                q = from om in q
+                    where (inactives && om.MemberTypeId == MemberTypeCode.InActive)
+                    select om;
+            else if (prospects)
+                q = from om in q
+                    where (prospects && om.MemberTypeId == MemberTypeCode.Prospect)
+                    select om;
+            else // regular active members
+                q = from om in q
+                    where om.MemberTypeId != MemberTypeCode.InActive
+                    where om.MemberTypeId != MemberTypeCode.Prospect
+                    where (om.Pending ?? false) == false
                     select om;
             return q;
         }
@@ -127,7 +140,7 @@ namespace CmsWeb.Models
         {
             if (pendings)
                 return "UpdatePending";
-            else if (inactives)
+            if (inactives)
                 return "UpdateInactive";
             return "UpdateMembers";
         }
@@ -135,7 +148,7 @@ namespace CmsWeb.Models
         {
             if (pendings)
                 return "Update Pending Members";
-            else if (inactives)
+            if (inactives)
                 return "Update Inactive Members";
             return "Update Members";
         }

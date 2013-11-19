@@ -527,6 +527,10 @@ namespace CmsData
                     return Expressions.PreviousCurrentOrg(Db, parm,
                                CompType,
                                c.CodeIds == "1");
+                case QueryType.ProspectCurrentOrg:
+                    return Expressions.ProspectCurrentOrg(Db, parm,
+                               CompType,
+                               c.CodeIds == "1");
                 // R ----------------
                 case QueryType.RecentCreated:
                     return Expressions.RecentCreated(parm,

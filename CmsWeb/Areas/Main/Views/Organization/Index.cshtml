@@ -92,6 +92,10 @@
         <li><a id="inactive-link" href="#Inactive-tab"><span>Inactive</span></a></li>
         <li><a id="pending-link" href="#Pending-tab"><span>Pending</span></a></li>
         <li><a id="priors-link" href="#Priors-tab"><span>Previous</span></a></li>
+        @if (User.IsInRole("NewLook"))
+        {
+            <li><a id="prospects-link" href="#Prospects-tab"><span>Prospects</span></a></li>
+        }
         <li><a id="visitors-link" href="#Visitors-tab"><span>Guests</span></a></li>
         <li><a href="#Settings-tab"><span>Settings</span></a></li>
         <li><a id="meetings-link" href="#Meetings-tab"><span>Meetings</span></a></li>
@@ -113,6 +117,13 @@
         <form action="/Organization/PrevMemberGrid/@Model.OrganizationId" method="post">
         </form>
     </div>
+    @if (User.IsInRole("NewLook"))
+    {
+        <div id="Prospects-tab">
+            <form action="/Organization/ProspectGrid/@Model.OrganizationId" method="post">
+            </form>
+        </div>
+    }
     <div id="Visitors-tab">
         <form action="/Organization/VisitorGrid/@Model.OrganizationId" method="post">
         </form>

@@ -125,6 +125,21 @@ namespace CmsData
             return expr;
         }
 
+        internal static Expression ProspectCurrentOrg(CMSDataContext Db,
+            ParameterExpression parm,
+            CompareType op,
+            bool tf)
+        {
+            Expression<Func<Person, bool>> pred = p =>
+                p.OrganizationMembers.Any(m =>
+                    m.OrganizationId == Db.CurrentOrgId
+                    && m.MemberTypeId == MemberTypeCode.Prospect);
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof (bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
+
         internal static Expression PendingCurrentOrg(CMSDataContext Db,
             ParameterExpression parm,
             CompareType op,

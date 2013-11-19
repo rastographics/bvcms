@@ -323,6 +323,22 @@ namespace CmsData
             }
             return qb;
         }
+        public QueryBuilderClause QueryBuilderProspectCurrentOrg()
+        {
+            const string STR_ProspectCurrentOrg = "ProspectCurrentOrg";
+            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
+                && c.Description == STR_ProspectCurrentOrg);
+            if (qb == null)
+            {
+                qb = QueryBuilderClause.NewGroupClause();
+                qb.Description = STR_ProspectCurrentOrg;
+                qb.SavedBy = STR_System;
+                qb.AddNewClause(QueryType.ProspectCurrentOrg, CompareType.Equal, "1,T");
+                QueryBuilderClauses.InsertOnSubmit(qb);
+                SubmitChanges();
+            }
+            return qb;
+        }
         public QueryBuilderClause QueryBuilderPendingCurrentOrg()
         {
             const string STR_PendingCurrentOrg = "PendingCurrentOrg";
@@ -1081,12 +1097,6 @@ namespace CmsData
         public int DeleteQueryBitTags()
         {
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
-            return ((int)(result.ReturnValue));
-        }
-        [Function(Name = "dbo.RecordAttend2")]
-        public int RecordAttend2([Parameter(DbType = "Int")] int orgid, [Parameter(DbType = "DateTime")] DateTime? mdt, [Parameter(DbType = "Int")] int? pid)
-        {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, mdt, pid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.CreateMeeting")]

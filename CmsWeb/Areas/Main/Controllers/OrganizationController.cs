@@ -194,6 +194,17 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(m);
         }
         [HttpPost]
+        public ActionResult ProspectGrid(int id, string namefilter)
+        {
+            var qb = DbUtil.Db.QueryBuilderProspectCurrentOrg();
+            InitExportToolbar(id, qb.QueryId);
+            ViewBag.orgname = Session["ActiveOrganization"] + " - Prospects";
+            var m = new MemberModel(id, MemberModel.GroupSelect.Prospect, namefilter);
+            UpdateModel(m.Pager);
+            DbUtil.LogActivity("Viewing Prospects for {0}".Fmt(Session["ActiveOrganization"]));
+            return View(m);
+        }
+        [HttpPost]
         public ActionResult MeetingGrid(int id, bool future)
         {
             var m = new MeetingModel(id, future);

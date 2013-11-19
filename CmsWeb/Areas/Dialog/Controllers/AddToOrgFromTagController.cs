@@ -13,16 +13,18 @@ namespace CmsWeb.Areas.Dialog.Controllers
 	[Authorize(Roles = "Edit")]
 	public class AddToOrgFromTagController : CmsController
 	{
-		public ActionResult Index(int id)
+		public ActionResult Index(int id, bool pending = false, bool prospect = false)
 		{
 			ViewBag.tag = CmsWeb.Models.OrganizationPage.OrganizationModel.Tags();
 			var o = DbUtil.Db.LoadOrganizationById(id);
 			ViewBag.orgid = id;
+			ViewBag.pending = pending;
+			ViewBag.prospect = prospect;
 			ViewBag.orgname = o.OrganizationName;
 			return View();
 		}
 		[HttpPost]
-		public ActionResult Start(int tag, int orgid)
+		public ActionResult Start(int tag, int orgid, bool pending = false, bool prospect = false)
 		{
 			var runningtotals = new AddToOrgFromTagRun
 			{
@@ -54,8 +56,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
 				{
 					Db.Dispose();
 					Db = new CMSDataContext(Util.GetConnectionString(host));
-					OrganizationMember.InsertOrgMembers(Db,
-						orgid, pid, MemberTypeCode.Member, DateTime.Now, null, false);
+					OrganizationMember.InsertOrgMembers(Db, orgid, pid, 
+                        prospect ? MemberTypeCode.Prospect : MemberTypeCode.Member, 
+                        DateTime.Now, null, pending);
 					var r = Db.AddToOrgFromTagRuns.Where(mm => mm.Orgid == orgid).OrderByDescending(mm => mm.Id).First();
 					r.Processed++;
 					r.Count = pids.Count;
