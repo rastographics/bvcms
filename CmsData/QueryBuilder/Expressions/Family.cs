@@ -49,7 +49,7 @@ namespace CmsData
             bool tf)
         {
             Expression<Func<Person, bool>> pred = p =>
-                p.Family.People.Any(m => m.PositionInFamilyId == 10 && p.PositionInFamilyId == 30);
+                p.Family.People.Any(m => m.PositionInFamilyId == PositionInFamily.PrimaryAdult && p.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
@@ -61,7 +61,7 @@ namespace CmsData
             bool tf)
         {
             Expression<Func<Person, bool>> pred = p =>
-                p.Family.People.Any(m => m.Age <= 12);
+                p.Family.People.Any(m => (m.Age ?? 0) <= 12 && m.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
@@ -74,7 +74,7 @@ namespace CmsData
             bool tf)
         {
             Expression<Func<Person, bool>> pred = p =>
-                p.Family.People.Any(m => m.Age <= age);
+                p.Family.People.Any(m => (m.Age ?? 0) <= age && m.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
@@ -88,7 +88,7 @@ namespace CmsData
         {
             var a = range.Split('-');
             Expression<Func<Person, bool>> pred = p =>
-                p.Family.People.Any(m => m.Age >= a[0].ToInt() && m.Age <= a[1].ToInt());
+                p.Family.People.Any(m => (m.Age ?? 0) >= a[0].ToInt() && m.Age <= a[1].ToInt() && m.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
@@ -103,9 +103,10 @@ namespace CmsData
             var a = range.Split('-');
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m =>
-                    m.Age >= a[0].ToInt()
-                    && m.Age <= a[1].ToInt()
-                    && ids.Contains(m.GenderId)
+                    (m.Age ?? 0) >= a[0].ToInt()
+                    && (m.Age ?? 0) <= a[1].ToInt()
+                    && ids.Contains(m.GenderId) 
+                    && m.PositionInFamilyId == PositionInFamily.Child
                 );
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)

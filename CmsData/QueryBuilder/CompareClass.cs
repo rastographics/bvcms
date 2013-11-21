@@ -334,6 +334,13 @@ namespace CmsData
                                c.Organization,
                                CompType,
                                c.CodeIds == "1");
+                case QueryType.IsProspectOf:
+                    return Expressions.IsProspectOf(parm,
+                               c.Program,
+                               c.Division,
+                               c.Organization,
+                               CompType,
+                               c.CodeIds == "1");
                 case QueryType.IsTopGiver:
                     return Expressions.IsTopGiver(parm, Db,
                                 c.Days,

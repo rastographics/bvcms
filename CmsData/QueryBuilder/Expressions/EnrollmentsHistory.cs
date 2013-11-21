@@ -87,46 +87,6 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression IsPendingMemberOf(
-            ParameterExpression parm,
-            int? progid,
-            int? divid,
-            int? org,
-            CompareType op,
-            bool tf)
-        {
-            Expression<Func<Person, bool>> pred = p =>
-                    p.OrganizationMembers.Any(m =>
-                    (m.Pending ?? false) == true
-                    && (org == 0 || m.OrganizationId == org)
-                    && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                    && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                    );
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
-            return expr;
-        }
-        internal static Expression IsInactiveMemberOf(
-            ParameterExpression parm,
-            int? progid,
-            int? divid,
-            int? org,
-            CompareType op,
-            bool tf)
-        {
-            Expression<Func<Person, bool>> pred = p =>
-                    p.OrganizationMembers.Any(m =>
-                    m.MemberTypeId == MemberTypeCode.InActive
-                    && (org == 0 || m.OrganizationId == org)
-                    && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                    && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                    );
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
-            return expr;
-        }
         internal static Expression OrgJoinDate(
             ParameterExpression parm,
             int? progid,

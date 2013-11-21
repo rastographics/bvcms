@@ -152,6 +152,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                             where !Groups.Contains(-1) || (Groups.Contains(-1) && om.OrgMemMemTags.Count() == 0)
                             where (om.Pending ?? false) == false
                             where om.MemberTypeId != MemberTypeCode.InActive
+                            where om.MemberTypeId != MemberTypeCode.Prospect
                             where om.EnrollmentDate <= Util.Now
                             orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
                             let p = om.Person

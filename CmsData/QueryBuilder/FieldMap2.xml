@@ -341,6 +341,9 @@
     <Field Name="IsInactiveMemberOf" Type="Bit" DisplayAs="IsInactiveMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
       Selects inactive members of organization(s). Specify the Program or Program/Division or Program/Division/Organization
     </Field>
+    <Field Name="IsProspectOf" Type="Bit" DisplayAs="IsProspectOf({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
+      Selects prospects of organization(s). Specify the Program or Program/Division or Program/Division/Organization
+    </Field>
     <Field Name="WasMemberAsOf" Type="Bit" DisplayAs="WasMemberAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataValueField="IdCode">
       Select members based on a date range that they were enrolled in that Program; Program/Division; or Program/Division/ Organization
     </Field>

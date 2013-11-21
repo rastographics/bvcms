@@ -5,18 +5,9 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using CmsData.API;
 using UtilityExtensions;
-using System.Configuration;
-using System.Reflection;
-using System.Collections;
-using System.Data.Linq.SqlClient;
-using System.Text.RegularExpressions;
-using System.Web;
 using CmsData.Codes;
 
 namespace CmsData
@@ -34,6 +25,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.OrganizationMembers.Any(m =>
                     m.MemberTypeId != MemberTypeCode.InActive
+                    && m.MemberTypeId != MemberTypeCode.Prospect
                     && (m.Pending ?? false) == false
                     && (org == 0 || m.OrganizationId == org)
                     && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
@@ -148,6 +140,9 @@ namespace CmsData
         {
             Expression<Func<Person, bool>> pred = p => (
                     from m in p.OrganizationMembers
+                    where m.MemberTypeId != MemberTypeCode.InActive
+                    where m.MemberTypeId != MemberTypeCode.Prospect
+                    where (m.Pending ?? false) == false
                     where org == 0 || m.OrganizationId == org
                     where divid == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == divid)
                     where progid == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
@@ -170,6 +165,9 @@ namespace CmsData
         {
             Expression<Func<Person, bool>> pred = p => (
                 from m in p.OrganizationMembers
+                where m.MemberTypeId != MemberTypeCode.InActive
+                where m.MemberTypeId != MemberTypeCode.Prospect
+                where (m.Pending ?? false) == false
                 where orgtype == 0 || m.Organization.OrganizationTypeId == orgtype
                 where org == 0 || m.OrganizationId == org
                 where divid == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == divid)
@@ -192,6 +190,8 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.OrganizationMembers.Any(m =>
                     m.Organization.IsBibleFellowshipOrg == true
+                    && m.MemberTypeId != MemberTypeCode.InActive
+                    && m.MemberTypeId != MemberTypeCode.Prospect
                     && (m.Pending ?? false) == false);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
@@ -315,6 +315,66 @@ namespace CmsData
             var left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
             return Compare(left, op, right);
+        }
+        internal static Expression IsPendingMemberOf(
+            ParameterExpression parm,
+            int? progid,
+            int? divid,
+            int? org,
+            CompareType op,
+            bool tf)
+        {
+            Expression<Func<Person, bool>> pred = p =>
+                    p.OrganizationMembers.Any(m =>
+                    (m.Pending ?? false) == true
+                    && (org == 0 || m.OrganizationId == org)
+                    && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
+                    && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
+                    );
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal static Expression IsInactiveMemberOf(
+            ParameterExpression parm,
+            int? progid,
+            int? divid,
+            int? org,
+            CompareType op,
+            bool tf)
+        {
+            Expression<Func<Person, bool>> pred = p =>
+                    p.OrganizationMembers.Any(m =>
+                    m.MemberTypeId == MemberTypeCode.InActive
+                    && (org == 0 || m.OrganizationId == org)
+                    && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
+                    && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
+                    );
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal static Expression IsProspectOf(
+            ParameterExpression parm,
+            int? progid,
+            int? divid,
+            int? org,
+            CompareType op,
+            bool tf)
+        {
+            Expression<Func<Person, bool>> pred = p =>
+                    p.OrganizationMembers.Any(m =>
+                    m.MemberTypeId == MemberTypeCode.Prospect
+                    && (org == 0 || m.OrganizationId == org)
+                    && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
+                    && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
+                    );
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
         }
     }
 }
