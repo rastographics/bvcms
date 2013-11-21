@@ -195,6 +195,26 @@ namespace CmsData
 			};
 			return tr;
 		}
+		public TransactionResponse voidCheckRequest(string reference)
+		{
+			var wc = new WebClient();
+			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
+			var coll = new NameValueCollection();
+			coll["M_ID"] = login;
+			coll["M_KEY"] = key;
+			coll["T_REFERENCE"] = reference;
+            var b = wc.UploadValues("VIRTUAL_CHECK_VOID", "POST", coll);
+			var ret = Encoding.ASCII.GetString(b);
+			var resp = getResponse(ret);
+			var tr = new TransactionResponse
+			{
+				Approved = resp.Element("APPROVAL_INDICATOR").Value == "A",
+				AuthCode = resp.Element("CODE").Value,
+				Message = resp.Element("MESSAGE").Value,
+				TransactionId = resp.Element("REFERENCE").Value
+			};
+			return tr;
+		}
 
 		public TransactionResponse creditTransactionRequest(string reference, Decimal amt)
 		{

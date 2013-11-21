@@ -223,7 +223,7 @@ namespace CmsData.Codes
         public const int Online = 4;
         public const int OnlinePledge = 5;
         public const int Pledge = 6;
-        public const int GiftsInKind = 7;
+        public const int GiftsInKind = 30;
     }
     public class ContributionStatusCode
     {
@@ -239,6 +239,7 @@ namespace CmsData.Codes
     public class ContributionTypeCode
     {
         public const int CheckCash = 1;
+        public const int Online = 5;
         public const int ReturnedCheck = 6;
         public const int Reversed = 7;
         public const int Pledge = 8;

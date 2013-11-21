@@ -76,6 +76,7 @@ namespace CmsWeb.Models
                     select new ContributionInfo
                     {
                         ContributionId = d.ContributionId,
+                        BundleTypeId = d.BundleHeader.BundleHeaderTypeId,
                         PeopleId = d.Contribution.PeopleId,
                         Name = d.Contribution.Person.Name2
                              + (d.Contribution.Person.DeceasedDate.HasValue ? " [DECEASED]" : ""),
@@ -391,7 +392,11 @@ namespace CmsWeb.Models
         }
         public object UpdateContribution(PostBundleController ctl)
         {
-            int type;
+            var c = DbUtil.Db.Contributions.SingleOrDefault(cc => cc.ContributionId == editid);
+            if (c == null)
+                return null;
+
+            int type = c.ContributionTypeId;
             switch (PLNT)
             {
                 case "PL":
@@ -403,13 +408,7 @@ namespace CmsWeb.Models
                 case "GK":
                     type = ContributionTypeCode.GiftInKind;
                     break;
-                default:
-                    type = ContributionTypeCode.CheckCash;
-                    break;
             }
-            var c = DbUtil.Db.Contributions.SingleOrDefault(cc => cc.ContributionId == editid);
-            if (c == null)
-                return null;
             c.FundId = fund;
             c.PeopleId = pid.ToInt2();
             c.ContributionAmount = amt;
@@ -1644,6 +1643,7 @@ namespace CmsWeb.Models
             public string extra { get; set; }
             public int? PeopleId { get; set; }
             public int? Age { get; set; }
+            public int BundleTypeId { get; set; }
             public string Address { get; set; }
             public string City { get; set; }
             public string State { get; set; }

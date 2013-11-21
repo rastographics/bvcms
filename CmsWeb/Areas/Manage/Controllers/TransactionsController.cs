@@ -93,7 +93,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 			if (type == "Void")
 			{
 				resp = sage.voidTransactionRequest(re);
-				if (resp.Approved)
+			    if (!resp.Approved)
+			        resp = sage.voidCheckRequest(re);
+			    if (resp.Approved)
 					t.Voided = true;
 				amt = t.Amt;
 			}
