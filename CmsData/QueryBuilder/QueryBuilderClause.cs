@@ -320,6 +320,7 @@ namespace CmsData
             Organization = from.Organization;
             Program = from.Program;
             Quarters = from.Quarters;
+            OrgType = from.OrgType;
             SavedQueryIdDesc = from.SavedQueryIdDesc;
             Schedule = from.Schedule;
             StartDate = from.StartDate;

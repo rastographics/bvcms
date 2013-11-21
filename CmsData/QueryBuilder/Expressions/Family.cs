@@ -88,7 +88,7 @@ namespace CmsData
         {
             var a = range.Split('-');
             Expression<Func<Person, bool>> pred = p =>
-                p.Family.People.Any(m => (m.Age ?? 0) >= a[0].ToInt() && m.Age <= a[1].ToInt() && m.PositionInFamilyId == PositionInFamily.Child);
+                p.Family.People.Any(m => (m.Age ?? 0) >= a[0].ToInt() && (m.Age ?? 0) <= a[1].ToInt() && m.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
