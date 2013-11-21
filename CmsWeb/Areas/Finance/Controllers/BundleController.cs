@@ -39,13 +39,20 @@ namespace CmsWeb.Areas.Finance.Controllers
             var m = new BundleModel(id);
             UpdateModel<BundleModel>(m);
             UpdateModel<BundleHeader>(m.Bundle, "Bundle");
-            if (m.Bundle.ContributionDateChanged)
+            var q = from d in DbUtil.Db.BundleDetails
+                    where d.BundleHeaderId == m.Bundle.BundleHeaderId
+                    select d.Contribution;
+            var dt = q.Select(cc => cc.ContributionDate).FirstOrDefault();
+            if (m.Bundle.ContributionDateChanged && q.All(cc => cc.ContributionDate == dt))
             {
-                var q = from d in DbUtil.Db.BundleDetails
-                        where d.BundleHeaderId == m.Bundle.BundleHeaderId
-                        select d.Contribution;
                 foreach (var c in q)
                     c.ContributionDate = m.Bundle.ContributionDate;
+            }
+            var fid = q.Select(cc => cc.FundId).FirstOrDefault();
+            if (m.Bundle.FundIdChanged && q.All(cc => cc.FundId == fid))
+            {
+                foreach (var c in q)
+                    c.FundId = m.Bundle.FundId ?? 1;
             }
             var postingdt = Util.Now;
             if (m.Bundle.BundleStatusIdChanged && m.Bundle.BundleStatusId == BundleStatusCode.Closed)

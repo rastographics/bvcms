@@ -517,7 +517,7 @@ namespace CmsWeb.Models
             if (text.StartsWith("Financial_Institution"))
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessSunTrust(csv, date, fundid);
-            if (text.StartsWith("Report Date,Report Requestor"))
+            if (text.StartsWith("Report Date,Report Requestor") && DbUtil.Db.Setting("DefaultHost", "") != "https://bellevue.bvcms.com")
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessSunTrust2(csv, date, fundid);
             if (text.StartsWith("TOTAL DEPOSIT AMOUNT"))
@@ -561,7 +561,7 @@ namespace CmsWeb.Models
                 {
                     if (bh != null)
                         FinishBundle(bh);
-                    bh = GetBundleHeader(r.batch.ToDate().Value, DateTime.Now);
+                    bh = GetBundleHeader(date, DateTime.Now);
                     prevbatch = r.batch;
                 }
                 var bd = AddContributionDetail(date, fund, r.amount, r.checkno, r.routing, r.account);
