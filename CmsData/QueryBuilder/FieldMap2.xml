@@ -72,6 +72,9 @@
     <Field Name="NumberOfFamilyMembers" Title="Number of Family Members" Type="Integer">
       Number of Family Members
     </Field>
+    <Field Name="NumberOfPrimaryAdults" Title="Number of Primary Adults" Type="Integer">
+      Number of Primary Adults
+    </Field>
     <Field Name="HasParents" Title="Has Parents" Type="Bit" DataValueField="IdCode">
       A member of the family is a Primary Adult and this person is a Child
     </Field>
@@ -338,6 +341,9 @@
     <Field Name="IsInactiveMemberOf" Type="Bit" DisplayAs="IsInactiveMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
       Selects inactive members of organization(s). Specify the Program or Program/Division or Program/Division/Organization
     </Field>
+    <Field Name="IsProspectOf" Type="Bit" DisplayAs="IsProspectOf({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
+      Selects prospects of organization(s). Specify the Program or Program/Division or Program/Division/Organization
+    </Field>
     <Field Name="WasMemberAsOf" Type="Bit" DisplayAs="WasMemberAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataValueField="IdCode">
       Select members based on a date range that they were enrolled in that Program; Program/Division; or Program/Division/ Organization
     </Field>
@@ -386,6 +392,9 @@
     </Field>
     <Field Name="InactiveCurrentOrg" Title="Inactive in Current Organization" Type="Bit" DataValueField="IdCode">
       Selects everyone who is enrolled but inactive in the last organization you worked with. (used internally, but you can too if it will help you)
+    </Field>
+    <Field Name="ProspectCurrentOrg" Title="Prospects in Current Organization" Type="Bit" DataValueField="IdCode">
+      Selects everyone who is a prospect in the last organization you worked with. (used internally, but you can too if it will help you)
     </Field>
     <Field Name="PendingCurrentOrg" Title="Pending in Current Organization" Type="Bit" DataValueField="IdCode">
       Selects everyone who is enrolled but pending in the last organization you worked with. (used internally, but you can too if it will help you)

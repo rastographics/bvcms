@@ -319,6 +319,7 @@
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
+    <Compile Include="Areas\People\Models\Person\Emails\EmailScheduled.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Controllers\DialogController.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
@@ -1242,6 +1243,7 @@
     <Content Include="Areas\Finance\Views\Contributions\BundleTotals.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\PictureDialog.cshtml" />
+    <Content Include="Areas\Main\Views\Organization\ProspectGrid.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />

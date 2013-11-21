@@ -120,6 +120,7 @@ namespace CmsData.Codes
         public const int InActive = 230;
         public const int VisitingMember = 300;
         public const int Visitor = 310;
+        public const int Prospect = 311;
         public const int InServiceMember = 500;
         public const int VIP = 700;
         public const int Drop = -1;
@@ -191,6 +192,7 @@ namespace CmsData.Codes
         public const int Offsite = 80;
         public const int Group = 90;
         public const int OtherClass = 110;
+        public const int Prospect = 190;
     };
     public class TaskStatusCode
     {

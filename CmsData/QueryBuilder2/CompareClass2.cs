@@ -327,6 +327,13 @@ namespace CmsData
                                c.Organization,
                                CompType,
                                c.CodeIds == "1");
+                case QueryType.IsProspectOf:
+                    return Expressions.IsProspectOf(parm,
+                               c.Program,
+                               c.Division,
+                               c.Organization,
+                               CompType,
+                               c.CodeIds == "1");
                 case QueryType.IsTopGiver:
                     return Expressions.IsTopGiver(parm, Db,
                                 c.Days,
@@ -437,6 +444,10 @@ namespace CmsData
                                Decimal.Parse(c.TextValue));
                 case QueryType.NumberOfFamilyMembers:
                     return Expressions.NumberOfFamilyMembers(parm,
+                               CompType,
+                               c.TextValue.ToInt());
+                case QueryType.NumberOfPrimaryAdults:
+                    return Expressions.NumberOfPrimaryAdults(parm,
                                CompType,
                                c.TextValue.ToInt());
                 // O --------------------------

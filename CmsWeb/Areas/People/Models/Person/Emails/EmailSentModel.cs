@@ -13,6 +13,7 @@ namespace CmsWeb.Areas.People.Models
             var q = from e in DbUtil.Db.EmailQueues
                     where !(e.Transactional ?? false)
                     where e.EmailQueueTos.Any()
+                    where e.Sent != null
                     where e.QueuedBy == person.PeopleId
                          || (e.FromAddr == person.EmailAddress && person.EmailAddress.HasValue())
                          || (e.FromAddr == person.EmailAddress2 && person.EmailAddress2.HasValue())

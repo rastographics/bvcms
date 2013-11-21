@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
-using UtilityExtensions;
+using CmsData.Codes;
 
 namespace CmsWeb.Models.PersonPage
 {
@@ -23,14 +22,15 @@ namespace CmsWeb.Models.PersonPage
         {
             if (_enrollments == null)
             {
-                var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly
-                    || !HttpContext.Current.User.IsInRole("Access");
+                var mydata = !HttpContext.Current.User.IsInRole("Access");
+                var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly || mydata;
             	var roles = DbUtil.Db.CurrentRoles();
                 _enrollments = from etd in DbUtil.Db.EnrollmentTransactions
 							   let org = etd.Organization
                                where etd.TransactionStatus == false
                                where etd.PeopleId == PeopleId
                                where etd.TransactionTypeId >= 4
+                               where !mydata || etd.MemberTypeId != MemberTypeCode.Prospect
                                where !(limitvisibility && etd.Organization.SecurityTypeId == 3)
 							   where org.LimitToRole == null || roles.Contains(org.LimitToRole)
                                select etd;

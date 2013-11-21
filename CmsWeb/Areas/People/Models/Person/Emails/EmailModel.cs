@@ -57,9 +57,17 @@ namespace CmsWeb.Areas.People.Models
                     return from e in q
                            orderby e.Sent
                            select e;
+                case "Scheduled":
+                    return from e in q
+                           orderby e.SendWhen
+                           select e;
                 case "Sent desc":
                     return from e in q
-                           orderby e.Sent ?? e.SendWhen descending
+                           orderby e.Sent descending
+                           select e;
+                case "Scheduled desc":
+                    return from e in q
+                           orderby e.SendWhen descending
                            select e;
                 case "From":
                     return from e in q

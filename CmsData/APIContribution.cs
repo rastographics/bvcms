@@ -165,42 +165,76 @@ namespace CmsData.API
                     orderby p.FamilyId, p.PositionInFamilyId, p.HohFlag, p.Age
                     select p;
 
-            var q2 = from p in q
-                     let option = (p.ContributionOptionsId ?? 0) == 0
-                             ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
-                             : p.ContributionOptionsId
-                     let name = (option == 1
-                         ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
-                         : (p.SpouseId == null
-                             ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
-                             : (p.HohFlag == 1
-                                 ? ((p.Title != null && p.Title != "")
-                                     ? p.Title + " and Mrs. " + p.Name
-                                     : "Mr. and Mrs. " + p.Name)
-                                 : ((p.SpouseTitle != null && p.SpouseTitle != "")
-                                     ? p.SpouseTitle + " and Mrs. " + p.SpouseName
-                                     : "Mr. and Mrs. " + p.SpouseName))))
-                                + ((p.Suffix == null || p.Suffix == "") ? "" : ", " + p.Suffix)
-                     select new ContributorInfo
-                     {
-                         Name = name,
-                         Address1 = p.PrimaryAddress,
-                         Address2 = p.PrimaryAddress2,
-                         City = p.PrimaryCity,
-                         State = p.PrimaryState,
-                         Zip = p.PrimaryZip,
-                         PeopleId = p.PeopleId,
-                         SpouseID = p.SpouseId,
-                         DeacesedDate = p.DeceasedDate,
-                         FamilyId = p.FamilyId,
-                         Age = p.Age,
-                         FamilyPositionId = p.PositionInFamilyId,
-                         hohInd = p.HohFlag,
-                         Joint = option == 2,
-                         CampusId = p.CampusId,
-                     };
+            IQueryable<ContributorInfo> q2 = null;
+            if(Db.Setting("NoTitlesOnStatements", "false").ToBool())
+                q2 = from p in q
+                    let option = (p.ContributionOptionsId ?? 0) == 0
+                        ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                        : p.ContributionOptionsId
+                    let name = 
+                        option == 1
+                            ? p.Name
+                            : (p.SpouseId == null
+                                ? p.Name
+                                : (p.HohFlag == 1
+                                    ? p.Name + " and " + p.SpouseName
+                                    : p.SpouseName + " and " + p.Name))
+                    select new ContributorInfo
+                    {
+                        Name = name,
+                        Address1 = p.PrimaryAddress,
+                        Address2 = p.PrimaryAddress2,
+                        City = p.PrimaryCity,
+                        State = p.PrimaryState,
+                        Zip = p.PrimaryZip,
+                        PeopleId = p.PeopleId,
+                        SpouseID = p.SpouseId,
+                        DeacesedDate = p.DeceasedDate,
+                        FamilyId = p.FamilyId,
+                        Age = p.Age,
+                        FamilyPositionId = p.PositionInFamilyId,
+                        hohInd = p.HohFlag,
+                        Joint = option == 2,
+                        CampusId = p.CampusId,
+                    };
+            else
+                q2 = from p in q
+                    let option = (p.ContributionOptionsId ?? 0) == 0
+                        ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                        : p.ContributionOptionsId
+                    let name = 
+                        (option == 1
+                            ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
+                            : (p.SpouseId == null
+                                ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
+                                : (p.HohFlag == 1
+                                    ? ((p.Title != null && p.Title != "")
+                                        ? p.Title + " and Mrs. " + p.Name
+                                        : "Mr. and Mrs. " + p.Name)
+                                    : ((p.SpouseTitle != null && p.SpouseTitle != "")
+                                        ? p.SpouseTitle + " and Mrs. " + p.SpouseName
+                                        : "Mr. and Mrs. " + p.SpouseName))))
+                        + ((p.Suffix == null || p.Suffix == "") ? "" : ", " + p.Suffix)
+                    select new ContributorInfo
+                    {
+                        Name = name,
+                        Address1 = p.PrimaryAddress,
+                        Address2 = p.PrimaryAddress2,
+                        City = p.PrimaryCity,
+                        State = p.PrimaryState,
+                        Zip = p.PrimaryZip,
+                        PeopleId = p.PeopleId,
+                        SpouseID = p.SpouseId,
+                        DeacesedDate = p.DeceasedDate,
+                        FamilyId = p.FamilyId,
+                        Age = p.Age,
+                        FamilyPositionId = p.PositionInFamilyId,
+                        hohInd = p.HohFlag,
+                        Joint = option == 2,
+                        CampusId = p.CampusId,
+                    };
 
-#if DEBUG2
+#if DEBUG
             return q2.Take(30);
 #else
             return q2;

@@ -334,6 +334,13 @@ namespace CmsData
                                c.Organization,
                                CompType,
                                c.CodeIds == "1");
+                case QueryType.IsProspectOf:
+                    return Expressions.IsProspectOf(parm,
+                               c.Program,
+                               c.Division,
+                               c.Organization,
+                               CompType,
+                               c.CodeIds == "1");
                 case QueryType.IsTopGiver:
                     return Expressions.IsTopGiver(parm, Db,
                                 c.Days,
@@ -446,6 +453,10 @@ namespace CmsData
                     return Expressions.NumberOfFamilyMembers(parm,
                                CompType,
                                c.TextValue.ToInt());
+                case QueryType.NumberOfPrimaryAdults:
+                    return Expressions.NumberOfPrimaryAdults(parm,
+                               CompType,
+                               c.TextValue.ToInt());
                 // O --------------------------
                 //case QueryType.OrgMemberCreatedDate:
                 //    return Expressions.OrgMemberCreatedDate(parm,
@@ -521,6 +532,10 @@ namespace CmsData
                                 (c.TextValue ?? "").Split(',').Select(aa => aa.ToInt()).ToArray());
                 case QueryType.PreviousCurrentOrg:
                     return Expressions.PreviousCurrentOrg(Db, parm,
+                               CompType,
+                               c.CodeIds == "1");
+                case QueryType.ProspectCurrentOrg:
+                    return Expressions.ProspectCurrentOrg(Db, parm,
                                CompType,
                                c.CodeIds == "1");
                 // R ----------------

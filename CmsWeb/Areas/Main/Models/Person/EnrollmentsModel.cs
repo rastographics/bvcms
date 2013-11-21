@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Codes;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.PersonPage
@@ -23,8 +25,8 @@ namespace CmsWeb.Models.PersonPage
         {
             if (_enrollments == null)
             {
-                var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly
-                    || !HttpContext.Current.User.IsInRole("Access");
+                var mydata = !HttpContext.Current.User.IsInRole("Access");
+                var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly || mydata;
                 var oids = new int[0];
                 if (Util2.OrgLeadersOnly)
                     oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
@@ -32,6 +34,7 @@ namespace CmsWeb.Models.PersonPage
                 _enrollments = from om in DbUtil.Db.OrganizationMembers
 							   let org = om.Organization
                                where om.PeopleId == PeopleId
+                               where !mydata || om.MemberTypeId != MemberTypeCode.Prospect
                                where (om.Pending ?? false) == false
                                where oids.Contains(om.OrganizationId) || !(limitvisibility && om.Organization.SecurityTypeId == 3) 
 							   where org.LimitToRole == null || roles.Contains(org.LimitToRole)
@@ -52,6 +55,7 @@ namespace CmsWeb.Models.PersonPage
             q = q.Skip(Pager.StartRow).Take(Pager.PageSize);
             var q2 = from om in q
                      let sc = om.Organization.OrgSchedules.FirstOrDefault() // SCHED
+                     let orgtype = om.MemberTypeId == MemberTypeCode.Prospect ? "Prospect" : om.Organization.OrganizationType.Description ?? "Other"
                      select new OrgMemberInfo
                      {
                          OrgId = om.OrganizationId,
@@ -65,7 +69,7 @@ namespace CmsWeb.Models.PersonPage
                          EnrollDate = om.EnrollmentDate,
                          AttendPct = om.AttendPct,
                          DivisionName = om.Organization.Division.Program.Name + "/" + om.Organization.Division.Name,
-						 OrgType = om.Organization.OrganizationType.Description ?? "Other",
+						 OrgType = orgtype,
                          HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0
                      };
             return q2;

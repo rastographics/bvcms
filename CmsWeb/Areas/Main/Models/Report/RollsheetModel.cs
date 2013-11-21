@@ -115,6 +115,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 		            let p = m.Person
 		            let enrolled = m.EnrollmentDate
 		            where m.MemberTypeId != MemberTypeCode.InActive
+		            where m.MemberTypeId != MemberTypeCode.Prospect
 		            orderby p.LastName, p.FamilyId, p.PreferredName
 		            select new PersonMemberInfo
 		                       {
@@ -169,45 +170,6 @@ namespace CmsWeb.Areas.Main.Models.Report
 						MemberTypeId = m.MemberTypeId,
 						Joined = m.Joined
 		            };
-//				q = from ee in DbUtil.Db.EnrollmentTransactions
-//					where ee.TransactionTypeId <= 3 // enrollments or changes
-//					where ee.TransactionStatus == false
-//					where ee.TransactionDate <= MeetingDate // transaction starts <= looked for end
-//					where (ee.Pending ?? false) == false
-//					where (ee.NextTranChangeDate >= MeetingDate || ee.NextTranChangeDate == null)// transaction ends >= looked for start
-//					where ee.OrganizationId == OrganizationId
-//					group ee by ee.PeopleId into g
-//					let enrolled = g.OrderByDescending(laet => laet.TransactionDate).FirstOrDefault()
-//					where enrolled != null && enrolled.MemberTypeId != MemberTypeCode.InActive
-//					let p = enrolled.Person
-//					orderby p.LastName, p.FamilyId, p.PreferredName
-//					select new PersonMemberInfo
-//					{
-//						PeopleId = p.PeopleId,
-//						Name = p.Name,
-//						Name2 = p.Name2,
-//						BirthDate = Util.FormatBirthday(
-//							p.BirthYear,
-//							p.BirthMonth,
-//							p.BirthDay),
-//						Address = p.PrimaryAddress,
-//						Address2 = p.PrimaryAddress2,
-//						CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
-//						PhonePref = p.PhonePrefId,
-//						HomePhone = p.HomePhone,
-//						CellPhone = p.CellPhone,
-//						WorkPhone = p.WorkPhone,
-//						MemberStatus = p.MemberStatus.Description,
-//						Email = p.EmailAddress,
-//						BFTeacher = p.BFClass.LeaderName,
-//						BFTeacherId = p.BFClass.LeaderId,
-//						Age = p.Age.ToString(),
-//						MemberTypeCode = enrolled.MemberType.Code,
-//						MemberType = enrolled.MemberType.Description,
-//						MemberTypeId = enrolled.MemberTypeId,
-//						Joined = enrolled.EnrollmentDate ?? enrolled.TransactionDate,
-//					};
-
 			return q;
 		}
 

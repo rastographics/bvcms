@@ -20,8 +20,9 @@ $(function () {
             $.bootstrapGrowl("update first");
             return false;
         }
-        var url = this.href;
         var f = $(this).closest("form");
+        var url = this.href;
+        f.attr("action", url);
         bootbox.confirm("Add new task for person?", function(confirmed) {
             if (!confirmed) return;
             f.attr("action", url);

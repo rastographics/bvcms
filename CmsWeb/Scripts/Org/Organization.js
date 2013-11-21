@@ -173,6 +173,9 @@ $(function () {
     $("#inactive-link").click(function () {
         $.showTable($('#Inactive-tab form'));
     });
+    $("#prospects-link").click(function () {
+        $.showTable($('#Prospects-tab form'));
+    });
     $("#pending-link").click(function () {
         $.showTable($('#Pending-tab form'));
     });
@@ -748,6 +751,7 @@ function RebindMemberGrids(from) {
     $.updateTable($('#Inactive-tab form'));
     $.updateTable($('#Pending-tab form'));
     $.updateTable($('#Priors-tab form'));
+    $.updateTable($('#Prospects-tab form'));
     $.updateTable($('#Visitors-tab form'));
     $("#memberDialog").dialog("close");
 }

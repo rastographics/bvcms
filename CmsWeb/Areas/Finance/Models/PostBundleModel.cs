@@ -517,6 +517,9 @@ namespace CmsWeb.Models
             if (text.StartsWith("Financial_Institution"))
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessSunTrust(csv, date, fundid);
+            if (text.StartsWith("Report Date,Report Requestor") && DbUtil.Db.Setting("DefaultHost", "") != "https://bellevue.bvcms.com")
+                using (var csv = new CsvReader(new StringReader(text), true))
+                    return BatchProcessSunTrust2(csv, date, fundid);
             if (text.StartsWith("TOTAL DEPOSIT AMOUNT"))
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessChase(csv, date, fundid);
@@ -530,6 +533,45 @@ namespace CmsWeb.Models
             }
         }
 
+        private static int? BatchProcessSunTrust2(CsvReader csv, DateTime date, int? fundid)
+        {
+            var cols = csv.GetFieldHeaders();
+            BundleHeader bh = null;
+            var firstfund = FirstFundId();
+            var fund = fundid ?? firstfund;
+
+            var list = new List<depositRecord>();
+            while (csv.ReadNextRecord())
+                list.Add(new depositRecord()
+                {
+                    batch = csv[11],
+                    routing = csv[18],
+                    account = csv[19],
+                    amount = csv[20],
+                    checkno = csv[24],
+                    type = csv[12],
+                });
+            var q = from r in list
+                    where r.type.Contains("Check")
+                    select r;
+            var prevbatch = "";
+            foreach (var r in q)
+            {
+                if (r.batch != prevbatch)
+                {
+                    if (bh != null)
+                        FinishBundle(bh);
+                    bh = GetBundleHeader(date, DateTime.Now);
+                    prevbatch = r.batch;
+                }
+                var bd = AddContributionDetail(date, fund, r.amount, r.checkno, r.routing, r.account);
+                bh.BundleDetails.Add(bd);
+            }
+            if (bh == null)
+                return null;
+            FinishBundle(bh);
+            return bh.BundleHeaderId;
+        }
         private static int? BatchProcessFcchudson(CsvReader csv, DateTime date, int? fundid)
         {
             var cols = csv.GetFieldHeaders();

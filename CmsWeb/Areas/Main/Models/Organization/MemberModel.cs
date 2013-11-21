@@ -16,6 +16,7 @@ namespace CmsWeb.Models.OrganizationPage
             Active,
             Inactive,
             Pending,
+            Prospect,
         }
         public int? OrganizationId { get; set; }
         private int[] Groups;
@@ -35,7 +36,7 @@ namespace CmsWeb.Models.OrganizationPage
             }
             else // No Filter
             {
-                Groups = new int[] {0}; 
+                Groups = new int[] { 0 };
                 GroupsMode = 0;
             }
             Select = select;
@@ -65,64 +66,60 @@ namespace CmsWeb.Models.OrganizationPage
             get { return Util2.CurrentGroups[0] != 0 || NameFilter.HasValue() || SgPrefix.HasValue(); }
         }
 
-        private IQueryable<OrganizationMember> _members;
+        private IQueryable<OrganizationMember> members;
         private IQueryable<OrganizationMember> FetchMembers()
         {
-            int inactive = MemberTypeCode.InActive;
-            bool Active = true;
-            bool Pending = false;
-            switch (Select)
-            {
-                case GroupSelect.Inactive:
-                    Active = false;
-                    Pending = false;
-                    break;
-                case GroupSelect.Pending:
-                    Active = true;
-                    Pending = true;
-                    break;
-                //case GroupSelect.Previous:
-                //    return PrevOrgMembers(OrganizationId, sortExpression, maximumRows, startRowIndex);
-            }
-
-            if (_members == null)
-                _members = from om in DbUtil.Db.OrganizationMembers
+            if (members == null)
+                members = from om in DbUtil.Db.OrganizationMembers
                            where om.OrganizationId == OrganizationId
-						   let gc = om.OrgMemMemTags.Count(mt => Groups.Contains(mt.MemberTagId))
+                           let gc = om.OrgMemMemTags.Count(mt => Groups.Contains(mt.MemberTagId))
                            // for Match Any
-						   where gc > 0 || Groups[0] <= 0 || GroupsMode == 1
+                           where gc > 0 || Groups[0] <= 0 || GroupsMode == 1
                            // for Match All
-						   where gc == Groups.Length || Groups[0] <= 0 || GroupsMode == 0
+                           where gc == Groups.Length || Groups[0] <= 0 || GroupsMode == 0
                            // for Match No SmallGroup assigned
                            where om.OrgMemMemTags.Count() == 0 || Groups[0] != -1
                            select om;
-            if (Active)
-                if (Pending == false) // current
-                    _members = from om in _members
-                               where om.MemberTypeId != inactive
+            var active = new[] {MemberTypeCode.InActive, MemberTypeCode.Prospect};
+
+            switch (Select)
+            {
+                case GroupSelect.Active:
+                    members = from om in members
+                               where !active.Contains(om.MemberTypeId)
                                where (om.Pending ?? false) == false
                                select om;
-                else // pending
-                    _members = from om in _members
-                               where om.MemberTypeId != inactive
+                    break;
+                case GroupSelect.Pending:
+                    members = from om in members
+                               where !active.Contains(om.MemberTypeId)
                                where (om.Pending ?? false) == true
                                select om;
-            else // inactive
-                _members = from om in _members
-                           where om.MemberTypeId == inactive
-                           select om;
+                    break;
+                case GroupSelect.Inactive:
+                    members = from om in members
+                               where om.MemberTypeId == MemberTypeCode.InActive
+                               select om;
+                    break;
+                case GroupSelect.Prospect:
+                    members = from om in members
+                               where om.MemberTypeId == MemberTypeCode.Prospect
+                               select om;
+                    break;
+            }
+
             if (NameFilter.HasValue())
             {
                 string First, Last;
                 Util.NameSplit(NameFilter, out First, out Last);
                 if (First.HasValue())
-                    _members = from om in _members
+                    members = from om in members
                                let p = om.Person
                                where p.LastName.StartsWith(Last)
                                where p.FirstName.StartsWith(First) || p.NickName.StartsWith(First)
                                select om;
                 else
-                    _members = from om in _members
+                    members = from om in members
                                let p = om.Person
                                where p.LastName.StartsWith(Last)
                                select om;
@@ -130,18 +127,18 @@ namespace CmsWeb.Models.OrganizationPage
             if (SgPrefix.HasValue())
             {
                 var a = SgPrefix.Split(',');
-                foreach(var p in a)
+                foreach (var p in a)
                     if (p.StartsWith("-"))
-                        _members = from om in _members
+                        members = from om in members
                                    where om.OrgMemMemTags.All(mm => !mm.MemberTag.Name.StartsWith(p.Substring(1)))
                                    select om;
                     else
-                        _members = from om in _members
+                        members = from om in members
                                    where om.OrgMemMemTags.Any(mm => mm.MemberTag.Name.StartsWith(p))
                                    select om;
 
             }
-            return _members;
+            return members;
         }
         int? _count;
         public int Count()

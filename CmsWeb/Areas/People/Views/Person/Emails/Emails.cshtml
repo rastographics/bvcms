@@ -1,7 +1,9 @@
 ﻿@model CmsWeb.Areas.People.Models.EmailModel
+@using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @{
     var access = User.IsInRole("Access");
+    var sentlabel = Model is EmailScheduledModel ? "Scheduled" : "Sent";
 }
 <form class="non-modal ajax" method="post">
     <div class="pagination pagination-mini">
@@ -10,7 +12,7 @@
     <table class="table table-striped table-condensed">
         <thead>
             <tr>
-                <th>@Model.Pager.SortLink("Sent")</th>
+                <th>@Model.Pager.SortLink(sentlabel)</th>
                 <th>@Model.Pager.SortLink("From")</th>
                 @if (access)
                 {
@@ -24,20 +26,14 @@
             {
                 <tr>
                     <td>
-                        @if (!i.Sent.HasValue)
+                        @if (!i.Sent.HasValue && !i.SendWhen.HasValue)
                         {
-                            if (i.SendWhen.HasValue)
-                            {
-                                <span class="green" title="scheduled @i.SendWhen.Value.ToShortTimeString()">@i.SendWhen.FormatDate()</span>
-                            }
-                            else
-                            {
-                                <span class="red" title="failed @i.Queued.Value.ToShortTimeString()">@i.Queued.FormatDate()</span>
-                            }
+                            <span class="red" title="failed @i.Queued.FormatDateTm()">i.Queued.FormatDate())</span>
                         }
                         else
                         {
-                            <span title="sent @i.Sent.Value.ToShortTimeString()">@i.Sent.FormatDate()</span>
+                            var dt = sentlabel == "Scheduled" ? i.SendWhen : i.Sent;
+                            <span title="@dt.FormatDateTm()">@dt.FormatDate()</span>
                         }
                     </td>
                     <td>@i.From<br/>

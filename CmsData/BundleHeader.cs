@@ -24,5 +24,11 @@ namespace CmsData
             BundleStatusIdChanged = true;
         }
         public bool BundleStatusIdChanged { get; private set; }
+
+        partial void OnFundIdChanged()
+        {
+            FundIdChanged = true;
+        }
+        public bool FundIdChanged { get; private set; }
     }
 }

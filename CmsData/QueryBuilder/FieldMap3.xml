@@ -83,6 +83,9 @@
     <NumberOfFamilyMembers Title="Number of Family Members" Type="Integer">
       Enter a number with a comparison.
     </NumberOfFamilyMembers>
+    <NumberOfPrimaryAdults Title="Number of Primary Adults" Type="Integer">
+      Number of Primary Adults
+    </NumberOfPrimaryAdults>
     <HasParents Title="Has Parents" Type="Bit" DataValueField="IdCode">
       Select True or False for children with a Primary Adult in the family.
     </HasParents>
@@ -282,6 +285,15 @@
     <IsMemberOf Title="Is Member Of" Type="Bit" DisplayAs="IsMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
       Select Program/Division/Organization from the list for current members.
     </IsMemberOf>
+    <IsInactiveMemberOf Title="Is Inactive Member Of" Type="Bit" DisplayAs="IsInactiveMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
+      Select Program/Division/Organization from the list and specify True or False.
+    </IsInactiveMemberOf>
+    <IsProspectOf Type="Bit" DisplayAs="IsProspectOf({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
+      Selects prospects of organization(s). Specify the Program or Program/Division or Program/Division/Organization
+    </IsProspectOf>
+    <IsPendingMemberOf Title="Is Pending Member Of" Type="Bit" DisplayAs="IsPendingMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
+      Select Program/Division/Organization from the list and specify True or False.
+    </IsPendingMemberOf>
     <MemberTypeCodes Title="Member Type Codes" Type="Code" DisplayAs="MemberTypeCodes({0}, {1}, {2}, {3}, {4}, {5})" Params="Program,Division,Organization,OrgType,Schedule,Campus" DataSource="MemberTypeCodes" DataValueField="IdCode">
       Select Member Type from the list and select other options: Program/Division/Organization, Org Type, Schedule, Campus.
     </MemberTypeCodes>
@@ -311,12 +323,6 @@
     <MemberTypeAsOf Title="Member Type As Of" Type="Code" DisplayAs="MemberTypeAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="MemberTypeCodes" DataValueField="IdCode">
       Select Member Type from the list, pick a date range and select other options: Program/Division/Organization, Org Type.
     </MemberTypeAsOf>
-    <IsPendingMemberOf Title="Is Pending Member Of" Type="Bit" DisplayAs="IsPendingMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
-      Select Program/Division/Organization from the list and specify True or False.
-    </IsPendingMemberOf>
-    <IsInactiveMemberOf Title="Is Inactive Member Of" Type="Bit" DisplayAs="IsInactiveMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
-      Select Program/Division/Organization from the list and specify True or False.
-    </IsInactiveMemberOf>
     <OrgJoinDate Title="Org Enrollment Date" Type="Date" DisplayAs="OrgJoinDate({0}, {1}, {2})" Params="Program,Division,Organization">
       Pick the Date and Comparison and select Program/Division/Organization.
     </OrgJoinDate>

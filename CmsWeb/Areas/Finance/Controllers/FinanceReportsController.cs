@@ -153,7 +153,9 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult PledgeFulfillments(int id)
         {
-            var q = DbUtil.Db.PledgeFulfillment(id).OrderByDescending(vv => vv.PledgeAmt).ToList();
+            var q = DbUtil.Db.PledgeFulfillment(id)
+                .OrderByDescending(vv => vv.PledgeAmt)
+                .ThenByDescending(vv => vv.TotalGiven).ToList();
             var count = q.Count;
 
             var cols = DbUtil.Db.Mapping.MappingSource.GetModel(typeof(CMSDataContext))
