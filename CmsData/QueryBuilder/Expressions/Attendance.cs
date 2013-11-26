@@ -17,12 +17,7 @@ namespace CmsData
     {
         internal static Expression RecentAttendMemberType(
             ParameterExpression parm, CMSDataContext Db,
-            int? progid,
-            int? divid,
-            int? org,
-            int days,
-            CompareType op,
-            int[] ids)
+            int? progid, int? divid, int? org, int days, CompareType op, int[] ids)
         {
             var q = Db.RecentAttendMemberType(progid, divid, org, days, string.Join(",", ids));
             Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
@@ -33,13 +28,7 @@ namespace CmsData
         }
         internal static Expression RecentAttendCount(
             ParameterExpression parm, CMSDataContext Db,
-            int? progid,
-            int? divid,
-            int? org,
-            int orgtype,
-            int days,
-            CompareType op,
-            int cnt)
+            int? progid, int? divid, int? org, int orgtype, int days, CompareType op, int cnt)
         {
             var q = Db.RecentAttendInDaysByCount(progid, divid, org, orgtype, days);
             switch (op)
@@ -62,16 +51,8 @@ namespace CmsData
             return expr;
         }
         internal static Expression RecentAttendCountAttCred(
-            ParameterExpression parm,
-            CMSDataContext Db,
-            int? progid,
-            int? divid,
-            int? org,
-            int? attcred,
-            int sched,
-            int days,
-            CompareType op,
-            int cnt)
+            ParameterExpression parm, CMSDataContext Db,
+            int? progid, int? divid, int? org, int? attcred, int sched, int days, CompareType op, int cnt)
         {
             var mindt = Util.Now.AddDays(-days).Date;
             var sc = Db.OrgSchedules.FirstOrDefault(cc => cc.ScheduleId == sched);
@@ -115,9 +96,7 @@ namespace CmsData
         }
         internal static Expression VisitNumber(
             ParameterExpression parm, CMSDataContext Db,
-            string number,
-            CompareType op,
-            DateTime? dt)
+            string number, CompareType op, DateTime? dt)
         {
             int n = number.ToInt2() ?? 1;
             var cdt = Db.Setting("DbConvertedDate", "1/1/1900").ToDate();
