@@ -1,49 +1,68 @@
-using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Mail;
 using CmsData.Codes;
+using Microsoft.Scripting.Hosting;
 using UtilityExtensions;
 using IronPython.Hosting;
 using System;
-using System.Text;
 
 namespace CmsData
 {
 	public class PythonEvents
 	{
-		private CMSDataContext Db;
+		private readonly CMSDataContext db;
 		public dynamic instance { get; set; }
 
 		public PythonEvents(CMSDataContext Db, string classname, string script)
 		{
-			this.Db = Db;
-			var engine = Python.CreateEngine();
-			var sc = engine.CreateScriptSourceFromString(script);
+			this.db = Db;
+		    var engine = Python.CreateEngine();
+		    var sc = engine.CreateScriptSourceFromString(script);
 
 			var code = sc.Compile();
-			var scope = engine.CreateScope();
-            scope.SetVariable("model", this);
+		    var scope = engine.CreateScope();
+		    scope.SetVariable("model", this);
 			code.Execute(scope);
 
 			dynamic Event = scope.GetVariable(classname);
 			instance = Event();
 		}
+		public PythonEvents(CMSDataContext db)
+		{
+		    this.db = db;
+		}
 
-        // List of api functions to call from Python
+	    public static string RunScript(CMSDataContext db, string script)
+	    {
+		    var engine = Python.CreateEngine();
+            var ms = new MemoryStream();
+		    var sw = new StreamWriter(ms);
+		    engine.Runtime.IO.SetOutput(ms, sw);
+		    engine.Runtime.IO.SetErrorOutput(ms, sw);
+		    var sc = engine.CreateScriptSourceFromString(script);
+			var code = sc.Compile();
+		    var scope = engine.CreateScope();
+	        var pe = new PythonEvents(db);
+		    scope.SetVariable("model", pe);
+			code.Execute(scope);
+	        return ms.ToString();
+	    }
+
+	    // List of api functions to call from Python
 
 		public void CreateTask(int forPeopleId, Person p, string description)
 		{
 			DbUtil.LogActivity("Adding Task about: {0}".Fmt(p.Name));
-			var t = p.AddTaskAbout(Db, forPeopleId, description);
-			Db.SubmitChanges();
-            Db.Email(DbUtil.SystemEmailAddress, DbUtil.Db.LoadPersonById(forPeopleId),
+			var t = p.AddTaskAbout(db, forPeopleId, description);
+			db.SubmitChanges();
+            db.Email(DbUtil.SystemEmailAddress, DbUtil.Db.LoadPersonById(forPeopleId),
                 "TASK: " + description,
-                Task.TaskLink(Db, description, t.Id) + "<br/>" + p.Name);
+                Task.TaskLink(db, description, t.Id) + "<br/>" + p.Name);
 		}
 		public void JoinOrg(int orgId, Person p)
 		{
-		    OrganizationMember.InsertOrgMembers(Db, orgId, p.PeopleId, 220, DateTime.Now, null, false);
+		    OrganizationMember.InsertOrgMembers(db, orgId, p.PeopleId, 220, DateTime.Now, null, false);
 		}
 		public void UpdateField(Person p, string field, object value)
 		{
@@ -51,8 +70,8 @@ namespace CmsData
 		}
         public void EmailReminders(int orgId)
         {
-            var org = Db.LoadOrganizationById(orgId);
-            var m = new API.APIOrganization(Db);
+            var org = db.LoadOrganizationById(orgId);
+            var m = new API.APIOrganization(db);
             if (org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
                 m.SendVolunteerReminders(orgId, false);
             else
@@ -65,43 +84,43 @@ namespace CmsData
 	    public void Email(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string body, bool transactional = false)
 	    {
             var from = new MailAddress(fromaddr, fromname);
-			var qB = Db.QueryBuilderClauses.FirstOrDefault(c => c.Description == savedquery);
+			var qB = db.QueryBuilderClauses.FirstOrDefault(c => c.Description == savedquery);
 	        if (qB == null)
 	            return;
-            var q = Db.PeopleQuery(qB.QueryId);
+            var q = db.PeopleQuery(qB.QueryId);
             if (qB.ParentsOf)
-				q = Db.PersonQueryParents(q);
+				q = db.PersonQueryParents(q);
 
             q = from p in q
                 where p.EmailAddress != null
                 where p.EmailAddress != ""
                 where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
                 select p;
-            var tag = Db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
-	        var emailqueue = Db.CreateQueue(queuedBy, from, subject, body, null, tag.Id, false);
-            Db.SendPeopleEmail(emailqueue.Id);
+            var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
+	        var emailqueue = db.CreateQueue(queuedBy, from, subject, body, null, tag.Id, false);
+            db.SendPeopleEmail(emailqueue.Id);
 	    }
 	    public void EmailContent(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string content)
 	    {
             var from = new MailAddress(fromaddr, fromname);
-			var qB = Db.QueryBuilderClauses.FirstOrDefault(cc => cc.Description == savedquery);
+			var qB = db.QueryBuilderClauses.FirstOrDefault(cc => cc.Description == savedquery);
 	        if (qB == null)
 	            return;
-            var q = Db.PeopleQuery(qB.QueryId);
+            var q = db.PeopleQuery(qB.QueryId);
             if (qB.ParentsOf)
-				q = Db.PersonQueryParents(q);
+				q = db.PersonQueryParents(q);
 
             q = from p in q
                 where p.EmailAddress != null
                 where p.EmailAddress != ""
                 where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
                 select p;
-            var tag = Db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
-	        var c = Db.Content(content);
+            var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
+	        var c = db.Content(content);
 	        if (c == null)
 	            return;
-	        var emailqueue = Db.CreateQueue(queuedBy, from, subject, c.Body, null, tag.Id, false);
-            Db.SendPeopleEmail(emailqueue.Id);
+	        var emailqueue = db.CreateQueue(queuedBy, from, subject, c.Body, null, tag.Id, false);
+            db.SendPeopleEmail(emailqueue.Id);
 	    }
 	}
 }
