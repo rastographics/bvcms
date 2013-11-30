@@ -118,7 +118,7 @@ namespace CmsData
                                CompType,
                                c.CodeIntIds);
                 case QueryType.AttendedAsOf:
-                    return Expressions.AttendedAsOf(parm,
+                    return Expressions.AttendedAsOf(parm, Db,
                                c.StartDate,
                                c.EndDate,
                                c.Program,
@@ -220,7 +220,7 @@ namespace CmsData
                     return Expressions.FamilyHasChildrenAged3(parm, c.Quarters, CompType, c.CodeIntIds);
                 // G --------------------
                 case QueryType.GuestAsOf:
-                    return Expressions.AttendedAsOf(parm,
+                    return Expressions.AttendedAsOf(parm, Db,
                                c.StartDate,
                                c.EndDate,
                                c.Program,

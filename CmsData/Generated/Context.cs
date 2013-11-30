@@ -1731,6 +1731,27 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.AttendedAsOf", IsComposable = true)]
+		public IQueryable< View.AttendedAsOf > AttendedAsOf(
+            [Parameter(DbType="int")] int? progid,
+            [Parameter(DbType="int")] int? divid,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="datetime")] DateTime? dt1,
+            [Parameter(DbType="datetime")] DateTime? dt2,
+            [Parameter(DbType="bit")] bool? guestonly
+            )
+		{
+			return this.CreateMethodCallQuery< View.AttendedAsOf>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                progid,
+                divid,
+                org,
+                dt1,
+                dt2,
+                guestonly
+                );
+		}
+
 		[Function(Name="dbo.AttendMemberTypeAsOf", IsComposable = true)]
 		public IQueryable< View.AttendMemberTypeAsOf > AttendMemberTypeAsOf(
             [Parameter(DbType="datetime")] DateTime? from,

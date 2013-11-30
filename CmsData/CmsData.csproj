@@ -366,6 +366,7 @@
     <Compile Include="BundleHeader.cs" />
     <Compile Include="CheckinFamilyMember.cs" />
     <Compile Include="APIContributionSearchModel.cs" />
+    <Compile Include="Generated\Functions\AttendedAsOf.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCount.cs" />
     <Compile Include="Generated\Functions\RecentAttendMemberType.cs" />
     <Compile Include="Generated\Functions\RecentAttendType.cs" />
