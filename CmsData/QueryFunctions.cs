@@ -1,19 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Xml;
 using UtilityExtensions;
-using System.Text.RegularExpressions;
-using System.Data.Linq;
-using System.Xml.Linq;
-using System.Data.Linq.SqlClient;
 using IronPython.Hosting;
 using System.IO;
 using CmsData.Codes;
-using System.Web;
-using CmsData.API;
 
 namespace CmsData
 {
@@ -57,6 +47,34 @@ namespace CmsData
                 dynamic VitalStats = scope.GetVariable("VitalStats");
                 dynamic m = VitalStats();
                 return m.Run(qf);
+            }
+            catch (Exception ex)
+            {
+                return "VitalStats script error: " + ex.Message;
+            }
+        }
+	    public static string RunScript(CMSDataContext db, string script)
+	    {
+            if (!script.HasValue())
+                return "no VitalStats script";
+
+            var qf = new QueryFunctions(db);
+		    var engine = Python.CreateEngine();
+            var ms = new MemoryStream();
+		    var sw = new StreamWriter(ms);
+		    engine.Runtime.IO.SetOutput(ms, sw);
+		    engine.Runtime.IO.SetErrorOutput(ms, sw);
+		    var sc = engine.CreateScriptSourceFromString(script);
+            try
+            {
+                var code = sc.Compile();
+                var scope = engine.CreateScope();
+    		    scope.SetVariable("q", qf);
+    		    scope.SetVariable("db", db);
+                code.Execute(scope);
+                ms.Position = 0;
+                var sr = new StreamReader(ms);
+                return sr.ReadToEnd();
             }
             catch (Exception ex)
             {
