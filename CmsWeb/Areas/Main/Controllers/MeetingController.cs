@@ -189,6 +189,7 @@ namespace CmsWeb.Areas.Main.Controllers
             }
             public Error error { get; set; }
             public Person person { get; set; }
+            public IEnumerable<FamilyMemberInfo> family { get; set; } 
             public Meeting meeting { get; set; }
             public string message { get; set; }
             public bool SwitchOrg { get; set; }
@@ -212,6 +213,13 @@ namespace CmsWeb.Areas.Main.Controllers
                 error = err;
                 return this;
             }
+        }
+        public class FamilyMemberInfo
+        {
+            public int PeopleId { get; set; }
+            public Person person { get; set; }
+            public bool attended { get; set; }
+            public bool orgmember { get; set; }
         }
 
         public ActionResult Tickets(int? id)
@@ -289,6 +297,17 @@ namespace CmsWeb.Areas.Main.Controllers
                             meeting = meeting,
                             attended = attended,
                             orgmember = orgmember,
+                            family = from m in person.Family.People
+                                     where m.PeopleId != pid
+                                     let att = DbUtil.Db.Attends.SingleOrDefault(aa => aa.MeetingId == MeetingId && aa.PeopleId == m.PeopleId && aa.AttendanceFlag == true)
+                                     let orgmem = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == meeting.OrganizationId && om.PeopleId == m.PeopleId)
+                                     select new FamilyMemberInfo()
+                                     {
+                                         PeopleId = m.PeopleId,
+                                         person = m,
+                                         attended = att != null,
+                                         orgmember = orgmem != null,
+                                     }
                         };
                 var d2 = q.SingleOrDefault();
                 if (d2 == null)

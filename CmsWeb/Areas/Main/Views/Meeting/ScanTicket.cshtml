@@ -44,24 +44,36 @@
     {
         <table cellpadding="5">
             <tr>
-                <td>Name</td>
-                <td>@Model.person.Name</td>
+                <td class="center">
+                    <input type="checkbox" pid="@Model.person.PeopleId" checked="checked" class="atck" /></td>
+                <td>@Model.person.Name (@Model.person.Age)</td>
+                <td>@(Model.orgmember != null ? "Group Member" : "Group Visitor")</td>
             </tr>
             <tr>
-                <td>Address</td>
-                <td>@Model.person.FullAddress</td>
+                <td></td>
+                <td colspan="2">@Model.person.FullAddress</td>
             </tr>
             <tr>
-                <td>Birthday</td>
-                <td>@Model.person.BirthDate.ToString2("m")</td>
+                <td></td>
+                <td colspan="2">@Model.person.EmailAddress</td>
             </tr>
             <tr>
-                <td>Email</td>
-                <td>@Model.person.EmailAddress</td>
-            </tr>
-            <tr>
+                <td></td>
                 <td colspan="2"><b>@Model.message</b></td>
             </tr>
+            @foreach (var m in Model.family)
+            {
+                <tr>
+                    <td class="center">
+                        <input type="checkbox" pid="@m.PeopleId" @(m.attended ? "checked=checked" : "") class="atck" /></td>
+                    <td class="name">@m.person.Name (@m.person.Age)</td>
+                    <td>@(m.orgmember ? "Group Member" : "Group Visitor")</td>
+                </tr>
+            }
+        </table>
+        <table class="grid">
+        <tbody>
+        </tbody>
         </table>
     }
     @if(Model.meeting != null)
