@@ -68,7 +68,7 @@
         }
     }).data("uiAutocomplete")._renderItem = function (ul, item) {
         return $("<li>")
-            .append("<a><b>" + item.Name + "</b><br>" + item.Addr + item.RecentGifts + "</a>")
+            .append("<a><b>" + item.Name + "</b>" + item.Spouse + "<br>" + item.Addr + item.RecentGifts + "</a>")
             .appendTo(ul);
     };
     $("#name").blur(function () {

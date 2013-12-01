@@ -185,11 +185,16 @@ namespace CmsWeb.Models
 
             var rp = from p in qp
                      let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
+                     let spouse = DbUtil.Db.People.SingleOrDefault(ss =>
+                         ss.PeopleId == p.SpouseId
+                         && ss.ContributionOptionsId == EnvelopeOptionCode.Joint
+                         && p.ContributionOptionsId == EnvelopeOptionCode.Joint)
                      orderby p.Name2
                      select new NamesInfo()
                                 {
                                     Pid = p.PeopleId,
                                     Name = p.Name2 + age,
+                                    spouse = spouse.Name,
                                     Addr = p.PrimaryAddress ?? "",
                                 };
             return rp.Take(limit);
@@ -212,7 +217,17 @@ namespace CmsWeb.Models
             public string Addr { get; set; }
             public int Pid { get; set; }
             internal List<RecentContribution> recent { get; set; }
+            internal string spouse { get; set; }
 
+            public string Spouse
+            {
+                get
+                {
+                    if (spouse.HasValue())
+                        return "<br>Giving with: " + spouse;
+                    return "";
+                }
+            }
             public string RecentGifts
             {
                 get
@@ -234,11 +249,16 @@ namespace CmsWeb.Models
 
             var rp = from p in qp
                      let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
+                     let spouse = DbUtil.Db.People.SingleOrDefault(ss => 
+                         ss.PeopleId == p.SpouseId 
+                         && ss.ContributionOptionsId == EnvelopeOptionCode.Joint 
+                         && p.ContributionOptionsId == EnvelopeOptionCode.Joint)
                      orderby p.Name2
                      select new NamesInfo()
                                 {
                                     Pid = p.PeopleId,
                                     Name = p.Name2 + age,
+                                    spouse = spouse.Name,
                                     Addr = p.PrimaryAddress ?? "",
                                     recent = (from c in p.Contributions
                                               where c.ContributionStatusId == 0
