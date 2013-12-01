@@ -41,6 +41,7 @@ namespace CmsData
                 where et.TransactionTypeId <= 3 // things that start a change
                 where et.TransactionStatus == false
                 where et.TransactionDate <= enddt // transaction starts <= looked for end
+                where et.MemberTypeId != MemberTypeCode.Prospect
                 where (et.Pending ?? false) == false
                 where (et.NextTranChangeDate ?? now) >= startdt // transaction ends >= looked for start
                 where orgtype == 0 || et.Organization.OrganizationTypeId == orgtype

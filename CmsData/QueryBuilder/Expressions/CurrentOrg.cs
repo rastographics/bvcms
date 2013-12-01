@@ -164,6 +164,7 @@ namespace CmsData
                 p.EnrollmentTransactions.Any(m =>
                     m.OrganizationId == Db.CurrentOrgId
                     && m.TransactionTypeId > 3
+                    && m.MemberTypeId != MemberTypeCode.Prospect
                     && m.TransactionStatus == false
                     && (m.Pending ?? false) == false)
                 && !p.OrganizationMembers.Any(m =>

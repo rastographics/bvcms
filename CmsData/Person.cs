@@ -611,7 +611,7 @@ namespace CmsData
                                             || p.WorkPhoneLU == CellPhoneLU
                                             || p.WorkPhoneLU == Family.HomePhoneLU
                                             || p.WorkPhoneLU == WorkPhoneLU)
-                        let samefamily = p.FamilyId == FamilyId
+                        let samefamily = p.FamilyId == FamilyId && p.PeopleId != PeopleId
                         let nmatches = samefamily ? 0 :
                                         (firstmatch ? 1 : 0)
                                         + (bdmatch ? 1 : 0)
@@ -619,7 +619,8 @@ namespace CmsData
                                         + (phonematch ? 1 : 0)
                                         + (addrmatch ? 1 : 0)
                         where (lastmatch && nmatches >= 3)
-                                || ((firstmatch && lastmatch && bdmatchpart) && p.PeopleId != PeopleId)
+                                || ((firstmatch && lastmatch && bdmatchpart))
+                        where p.PeopleId != PeopleId
                         select new Duplicate
                                                 {
                                                     PeopleId = p.PeopleId,
@@ -677,6 +678,7 @@ namespace CmsData
                 var bm = BirthMonth ?? -1;
                 var byr = BirthYear ?? -1;
                 var q = from p in ctx.People
+                        where p.PeopleId != PeopleId
                         let firstmatch = p.FirstName == FirstName || (p.NickName ?? "") == FirstName || (p.MiddleName ?? "") == FirstName
                                     || p.FirstName == nick || (p.NickName ?? "") == nick || (p.MiddleName ?? "") == nick
                         let lastmatch = p.LastName == LastName || (p.MaidenName ?? "") == LastName
