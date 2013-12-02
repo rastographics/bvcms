@@ -126,17 +126,21 @@ namespace CmsWeb.Areas.Main.Controllers
                     };
             return View(q);
         }
-        public ActionResult Roster1(int? id, int? oid)
+        public ActionResult Roster1(int? id, int? oid, OrgSearchModel m)
         {
-            return new RosterResult
+            return new RosterResult(m)
             {
                 qid = id,
                 org = oid,
             };
         }
-        public ActionResult Roster(OrgSearchModel m)
+        public ActionResult Roster(int? id, int? oid, OrgSearchModel m)
         {
-            return new RosterListResult(m);
+            return new RosterListResult(m)
+                {
+                    qid = id,
+                    orgid = oid,
+                };
         }
         public ActionResult Avery(int? id)
         {
@@ -334,7 +338,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult MeetingsToQuery(string type, MeetingsModel m)
         {
             var r = m.ConvertToSearch(type);
-			TempData["autorun"] = true;
+            TempData["autorun"] = true;
             return Redirect(r);
         }
         public ActionResult Test()
