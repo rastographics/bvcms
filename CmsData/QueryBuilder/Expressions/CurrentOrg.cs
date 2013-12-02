@@ -5,18 +5,9 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using CmsData.API;
 using UtilityExtensions;
-using System.Configuration;
-using System.Reflection;
-using System.Collections;
-using System.Data.Linq.SqlClient;
-using System.Text.RegularExpressions;
-using System.Web;
 using CmsData.Codes;
 
 namespace CmsData
@@ -202,6 +193,7 @@ namespace CmsData
                     from m in p.OrganizationMembers
                     where m.OrganizationId == Db.CurrentOrgId
                     where (m.Pending ?? false) == false
+                    where (m.MemberTypeId != MemberTypeCode.Prospect)
                     select m
                     ).Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof (bool));

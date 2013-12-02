@@ -605,7 +605,7 @@ $(function () {
     };
     $('a.joinlink').live('click', function (ev) {
         ev.preventDefault();
-        $.post("/Organization/Join/", { id: this.id },
+        $.post($(this)[0].href,
             function (ret) {
                 if (ret == "ok")
                     RebindMemberGrids();
