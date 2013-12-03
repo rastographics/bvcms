@@ -154,11 +154,11 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(m);
         }
         [HttpPost]
-        public ActionResult PrevMemberGrid(int id, string namefilter)
+        public ActionResult PrevMemberGrid(int id, string namefilter, bool? ShowProspects)
         {
             var qb = DbUtil.Db.QueryBuilderPreviousCurrentOrg();
             InitExportToolbar(id, qb.QueryId);
-            var m = new PrevMemberModel(id, namefilter);
+            var m = new PrevMemberModel(id, namefilter) { ShowProspects = ShowProspects ?? false };
             UpdateModel(m.Pager);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Previous Members";
             DbUtil.LogActivity("Viewing Prev Members for {0}".Fmt(Session["ActiveOrganization"]));

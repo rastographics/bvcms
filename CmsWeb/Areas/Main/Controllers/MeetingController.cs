@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Main.Models.Report;
 using UtilityExtensions;
 using CmsWeb.Models;
 using System.Data.Linq;
@@ -255,7 +256,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult ScanTicket(string wandtarget, int MeetingId, bool? requireMember, bool? requireRegistered)
         {
-            var d = new ScanTicketInfo { person = new Person() };
+            var d = new ScanTicketInfo { person = new Person()};
             int pid = 0;
 
             if (wandtarget.StartsWith("M."))

@@ -190,7 +190,11 @@ namespace CmsData
 				{
 					var m = Db.OrganizationMembers.SingleOrDefault(m2 => m2.PeopleId == PeopleId && m2.OrganizationId == OrganizationId);
 					if (m != null)
+					{
+					    m.MemberTypeId = MemberTypeId;
+            			Db.SubmitChanges();
 						return m;
+                    }
 					var org = Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == OrganizationId);
 					if (org == null)
 						return null;
