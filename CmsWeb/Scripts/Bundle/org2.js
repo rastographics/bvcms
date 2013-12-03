@@ -1,4 +1,5 @@
-﻿/*
+﻿///#source 1 1 /Scripts/jquery/jquery-ui-timepicker-addon.js
+/*
  * jQuery timepicker addon
  * By: Trent Richardson [http://trentrichardson.com]
  * Version 1.1.1
@@ -1880,6 +1881,7 @@
     $.timepicker.version = "1.1.1";
 
 })(jQuery);
+///#source 1 1 /Scripts/Org/Organization2.js
 onload = function () {
     var e = document.getElementById("refreshed");
     if (e.value == "no")
@@ -2644,6 +2646,7 @@ function UpdateSelectedOrgs(list) {
         $("#orgsDialog").dialog("close");
     });
 }
+///#source 1 1 /Scripts/Dialog/SearchUsers.js
 (function ($) {
     $.fn.SearchUsers = function (options) {
         debug(this);
@@ -2750,6 +2753,7 @@ function UpdateSelectedOrgs(list) {
     };
 })(jQuery);
 
+///#source 1 1 /Scripts/js/RegSetting2.js
 $(function () {
     CKEDITOR.replace('editor', {
         height: 200,
