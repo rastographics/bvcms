@@ -7,6 +7,7 @@ using CmsData;
 using CmsWeb.Models.iPhone;
 using CmsWeb.MobileAPI;
 using UtilityExtensions;
+using Newtonsoft.Json;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -14,19 +15,25 @@ namespace CmsWeb.Areas.Public.Controllers
 	{
 		public ActionResult Authorize()
 		{
+			var authError = Authenticate();
+			if (authError != null) return authError;
+			
 			BaseReturn br = new BaseReturn();
+			br.error = 0;
+			br.id = Util.UserPeopleId ?? 0;
 
-			if (CmsWeb.Models.AccountModel.AuthenticateMobile())
+			List<MobilePerson> mp = new List<MobilePerson>();
+
+			var person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == Util.UserPeopleId);
+
+			if (person != null)
 			{
-				br.id = Util.UserPeopleId ?? 0;
-				return br;
+				mp.Add(new MobilePerson().populate(person));
+				br.data = JsonConvert.SerializeObject(mp);
+				br.count = 1;
 			}
-			else
-			{
-				br.error = 1;
-				br.data = "Username and password combination not found, please try again.";
-				return br;
-			}
+
+			return br;
 		}
 
 		private ActionResult Authenticate()
@@ -35,14 +42,12 @@ namespace CmsWeb.Areas.Public.Controllers
 			else
 			{
 				BaseReturn br = new BaseReturn();
-
-				br.error = 1;
 				br.data = "You are not authorized!";
 				return br;
 			}
 		}
 
-		public ActionResult Search(string name, string comm, string addr)
+		public ActionResult DoSearch(string name, string comm, string addr)
 		{
 			var authError = Authenticate();
 			if (authError != null) return authError;
@@ -52,6 +57,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			var m = new SearchModel(name, comm, addr);
 
+			br.error = 0;
 			br.type = 1;
 			br.count = m.Count;
 
@@ -60,7 +66,127 @@ namespace CmsWeb.Areas.Public.Controllers
 				mp.Add(new MobilePerson().populate(item));
 			}
 
-			br.data = JSONHelper.JsonSerializer<List<MobilePerson>>(mp);
+			br.data = JsonConvert.SerializeObject(mp);
+			return br;
+		}
+
+		public ActionResult FetchPerson(int id)
+		{
+			var authError = Authenticate();
+			if (authError != null) return authError;
+
+			BaseReturn br = new BaseReturn();
+			List<MobilePerson> mp = new List<MobilePerson>();
+
+			var person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == id);
+
+			if (person == null)
+			{
+				br.error = 1;
+				br.data = "Person not found.";
+				return br;
+			}
+
+			br.error = 0;
+			br.type = 1;
+			br.count = 1;
+
+			mp.Add(new MobilePerson().populate(person));
+
+			br.data = JsonConvert.SerializeObject(mp);
+
+			return br;
+		}
+
+		public ActionResult FetchImage( int id, int size )
+		{
+			var authError = Authenticate();
+			if (authError != null) return authError;
+
+			BaseReturn br = new BaseReturn();
+			if( id == 0 ) return br.setData("The ID for the person cannot be set to zero");
+
+			br.data = "The picture was not found.";
+
+			var person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == id);
+
+			if (person.PictureId != null)
+			{
+				ImageData.Image image = null;
+
+				switch (size)
+				{
+					case 0: // 50 x 50
+						image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
+						break;
+
+					case 1: // 120 x 120
+						image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+						break;
+
+					case 2: // 320 x 400
+						image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
+						break;
+
+					case 3: // 570 x 800
+						image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
+						break;
+
+				}
+
+				if (image != null)
+				{
+					br.data = Convert.ToBase64String(image.Bits);
+					br.count = 1;
+					br.error = 0;
+				}
+			}
+
+			return br;
+		}
+
+		public ActionResult SaveImage(int id, string image)
+		{
+			var authError = Authenticate();
+			if (authError != null) return authError;
+
+			BaseReturn br = new BaseReturn();
+
+			var imageBytes = Convert.FromBase64String(image);
+
+			var person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == id);
+
+			if (person.Picture != null)
+			{
+				ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.Where(i => i.Id == person.Picture.ThumbId).SingleOrDefault());
+				ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.Where(i => i.Id == person.Picture.SmallId).SingleOrDefault());
+				ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.Where(i => i.Id == person.Picture.MediumId).SingleOrDefault());
+				ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.Where(i => i.Id == person.Picture.LargeId).SingleOrDefault());
+
+				person.Picture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
+				person.Picture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
+				person.Picture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
+				person.Picture.LargeId = ImageData.Image.NewImageFromBits(imageBytes, 570, 800).Id;
+			}
+			else
+			{
+				var newPicture = new Picture();
+
+				newPicture.ThumbId = ImageData.Image.NewImageFromBits( imageBytes, 50, 50 ).Id;
+				newPicture.SmallId = ImageData.Image.NewImageFromBits( imageBytes, 120, 120 ).Id;
+				newPicture.MediumId = ImageData.Image.NewImageFromBits( imageBytes, 320, 400 ).Id;
+				newPicture.LargeId = ImageData.Image.NewImageFromBits( imageBytes, 570, 800 ).Id;
+
+				person.Picture = newPicture;
+			}
+
+			DbUtil.Db.SubmitChanges();
+
+			br.error = 0;
+			br.data = "Image updated.";
+			br.id = id;
+			br.count = 1;
+
 			return br;
 		}
 
@@ -278,7 +404,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 	public class BaseReturn : ActionResult
 	{
-		public int error = 0;
+		public int error = 1;
 		public int type = 0;
 		public int count = 0;
 		public int id = 0;
@@ -287,7 +413,13 @@ namespace CmsWeb.Areas.Public.Controllers
 		public override void ExecuteResult(ControllerContext context)
 		{
 			context.HttpContext.Response.ContentType = "application/json";
-			context.HttpContext.Response.Output.Write(JSONHelper.JsonSerializer<BaseReturn>(this));
+			context.HttpContext.Response.Output.Write(JsonConvert.SerializeObject(this));
+		}
+
+		public BaseReturn setData(string newData)
+		{
+			data = newData;
+			return this;
 		}
 	}
 }
