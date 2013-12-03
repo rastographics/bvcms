@@ -35,6 +35,8 @@ namespace CmsWeb.Models
 
             while (csv.ReadNextRecord())
             {
+                if (!csv[12].Contains("Check"))
+                    continue;
                 var bd = new CmsData.BundleDetail
                 {
                     CreatedBy = Util.UserId,
