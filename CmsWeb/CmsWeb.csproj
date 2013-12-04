@@ -1927,6 +1927,9 @@
     <Content Include="Views\ExtraValue\DeleteFromQuery.cshtml" />
     <Content Include="Views\Shared\SiteLayout2c.cshtml" />
     <Content Include="Views\Home\TestTypeahead.cshtml" />
+    <Content Include="Scripts\Org\OrgMembers.min.js.map">
+      <DependentUpon>OrgMembers.js</DependentUpon>
+    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

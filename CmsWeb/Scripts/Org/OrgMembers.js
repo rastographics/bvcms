@@ -11,17 +11,17 @@
                 $("#manage select").css("width", "100%");
             });
         });
-    }
+    };
     $(".bt").button();
     $("select").css("width", "100%");
-    $("#form").delegate("#refresh", "click", $.RefreshPage);
-    $("#form").delegate('#ProgId', "change", $.RefreshPage);
-    $("#form").delegate('#DivId', "change", $.RefreshPage);
-    $("#form").delegate('#SourceId', "change", $.RefreshPage);
-    $("#form").delegate('#TargetId', "change", $.RefreshPage);
-    $("#form").delegate('#MembersOnly', "change", $.RefreshPage);
-    $("#form").delegate('#Grades', "change", $.RefreshPage);
-    $("#form").delegate('#move', "click", function (e) {
+    $("#refresh").live("click", $.RefreshPage);
+    $("#ProgId").live("change", $.RefreshPage);
+    $("#DivId").live("change", $.RefreshPage);
+    $("#SourceId").live("change", $.RefreshPage);
+    $("#TargetId").live("change", $.RefreshPage);
+    $("#MembersOnly").live("change", $.RefreshPage);
+    $("#Grades").live("change", $.RefreshPage);
+    $("#move").live("click", function (e) {
         e.preventDefault();
         var f = $('#form');
         var q = f.serialize();
@@ -67,7 +67,7 @@
             css: $.blockUI.defaults.growlCSS
         });
     };
-    $("body").on("click", '#EmailNotices', function (e) {
+    $("#EmailNotices").live("click", function (e) {
         e.preventDefault();
         var f = $("#form");
         var q = f.serialize();
@@ -86,7 +86,7 @@
     });
 
     //    $('input.check').click(UpdateTotals);
-    $('form table.grid').on("click", 'a.sortable', function (ev) {
+    $('form table.grid a.sort').live("click", function (ev) {
         var newsort = $(this).text();
         var oldsort = $("#Sort").val();
         $("#Sort").val(newsort);

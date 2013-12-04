@@ -20,19 +20,11 @@ namespace CmsWeb.Models
         public static int? BatchProcess(string text, DateTime date, int? fundid, bool fromFile)
         {
             var defaulthost = DbUtil.Db.Setting("DefaultHost", "");
-            var dh = new List<string>()
-            {
-                "https://bellevue.bvcms.com",
-                "https://northmobile.bvcms.com"
-            };
-            if (dh.Contains(defaulthost))
+            
+            var specialcases = new List<string>() { "https://bellevue.bvcms.com", "https://northmobile.bvcms.com" };
+            if (specialcases.Contains(defaulthost) && text.StartsWith("Report Date,Report Requestor"))
                 using (var csv = new CsvReader(new StringReader(text), true))
-                {
-                    var names = csv.GetFieldHeaders();
-                    if (names.Contains("ProfileID"))
-                        return BatchProcessServiceU(csv, date);
                     return BatchProcessRegions(csv, date, fundid);
-                }
 
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
@@ -49,11 +41,11 @@ namespace CmsWeb.Models
                     using (var csv = new CsvReader(new StringReader(text), false))
                         return BatchProcessEbcfamily(csv, date, fundid);
                 case "vanco":
-                            if (fromFile)
-                                using (var csv = new CsvReader(new StringReader(text), false))
-                                    return BatchProcessVanco(csv, date, fundid);
-                            using (var csv = new CsvReader(new StringReader(text), false, '\t'))
-                                return BatchProcessVanco(csv, date, fundid);
+                    if (fromFile)
+                        using (var csv = new CsvReader(new StringReader(text), false))
+                            return BatchProcessVanco(csv, date, fundid);
+                    using (var csv = new CsvReader(new StringReader(text), false, '\t'))
+                        return BatchProcessVanco(csv, date, fundid);
                 case "silverdale":
                     using (var csv = new CsvReader(new StringReader(text), true))
                         return BatchProcessSilverdale(csv, date, fundid);
@@ -71,17 +63,24 @@ namespace CmsWeb.Models
 
             if (text.StartsWith("From MICR :"))
                 return BatchProcessMagTek(text, date);
+
             if (text.StartsWith("Financial_Institution"))
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessSunTrust(csv, date, fundid);
-            if (text.StartsWith("Report Date,Report Requestor"))
-                using (var csv = new CsvReader(new StringReader(text), true))
-                    return BatchProcessSunTrust2(csv, date, fundid);
+
             if (text.StartsWith("TOTAL DEPOSIT AMOUNT"))
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessChase(csv, date, fundid);
 
-            throw new Exception("missing deposit format");
+            if (text.StartsWith("Report Date,Report Requestor"))
+                using (var csv = new CsvReader(new StringReader(text), true))
+                    return BatchProcessSunTrust2(csv, date, fundid);
+
+            if (text.Contains("ProfileID"))
+                using (var csv = new CsvReader(new StringReader(text), true))
+                    return BatchProcessServiceU(csv, date);
+
+            throw new Exception("unsupported import file");
         }
 
         private class depositRecord

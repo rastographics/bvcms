@@ -428,6 +428,9 @@ namespace CmsWeb.Models
                 case "GK":
                     type = ContributionTypeCode.GiftInKind;
                     break;
+                default:
+                    type = ContributionTypeCode.CheckCash;
+                    break;
             }
             c.FundId = fund;
             c.PeopleId = pid.ToInt2();
