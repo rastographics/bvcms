@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data.Linq;
 using System.Web;
+using CmsWeb.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
@@ -27,6 +28,17 @@ namespace CmsWeb.Areas.Main.Models.Report
     {
         public object qid;
         public int? org;
+        private OrgSearchModel model;
+
+        public RosterResult()
+        {
+            
+        }
+
+        public RosterResult(OrgSearchModel m)
+        {
+            model = m;
+        }
 
         public override void ExecuteResult(ControllerContext context)
         {
@@ -43,7 +55,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 
             if (qid != null)
             {
-                var o = list(org).First();
+                var o = ReportList().First();
                 StartPageSet(o);
                 var q = DbUtil.Db.PeopleQuery(qid);
                 var q2 = from p in q
@@ -66,21 +78,22 @@ namespace CmsWeb.Areas.Main.Models.Report
                     doc.Add(new Phrase("no data"));
             }
             else
-                foreach (var o in list(org))
+                foreach (var o in ReportList())
                 {
                     var q = from m in RollsheetModel.FetchOrgMembers(o.OrgId, null)
                             orderby m.Name2
                             select new
                             {
-                                m.Name2,
-                                m.MemberType,
-                                m.PeopleId,
+                                 m.Name,
+                                 m.MemberType,
+                                 m.PeopleId,
+                                 m.MedicalDescription
                             };
                     if (!q.Any())
                         continue;
                     StartPageSet(o);
                     foreach (var i in q)
-                        ;
+                        AddRow(i.MemberType, i.Name, i.MedicalDescription, i.PeopleId, font);
 
                     if (t.Rows.Count > 1)
                         doc.Add(t);
@@ -145,13 +158,13 @@ namespace CmsWeb.Areas.Main.Models.Report
             public string Teacher { get; set; }
             public string Location { get; set; }
         }
-        private IEnumerable<OrgInfo> list(int? orgid)
+        private IEnumerable<OrgInfo> ReportList()
         {
+            var orgs = model.FetchOrgs();
         	var roles = DbUtil.Db.CurrentRoles();
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in orgs
         	        where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    where o.OrganizationId == orgid || (orgid ?? 0) == 0
-                    where o.OrganizationStatusId == OrgStatusCode.Active
+                    where o.OrganizationId == org || (org ?? 0) == 0
                     select new OrgInfo
                     {
                         OrgId = o.OrganizationId,

@@ -52,7 +52,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="FundName", Storage="_FundName", DbType="varchar(256) NOT NULL")]
+		[Column(Name="FundName", Storage="_FundName", DbType="nvarchar(256) NOT NULL")]
 		public string FundName
 		{
 			get

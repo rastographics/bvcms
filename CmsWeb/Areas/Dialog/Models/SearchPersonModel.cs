@@ -31,6 +31,15 @@ namespace CmsWeb.Models
         public int marital { get; set; }
         public int? campus { get; set; }
         public int? entrypoint { get; set; }
+        public string displayname
+        {
+            get
+            {
+                if (goesby.HasValue() && goesby != first)
+                    return "{0} ({1}) {2}".Fmt(first, goesby, last);
+                return "{0} {1}".Fmt(first, last);
+            }
+        }
 
         public string homephone { get; set; }
         public string address { get; set; }
@@ -107,7 +116,7 @@ namespace CmsWeb.Models
         public IEnumerable<SelectListItem> Countries()
         {
             var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList(), null);
-            list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
             return list;
         }
 

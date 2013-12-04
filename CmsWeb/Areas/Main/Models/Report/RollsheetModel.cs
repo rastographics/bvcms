@@ -50,6 +50,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 			public DateTime? InactiveDate { get; set; }
 			public decimal? AttendPct { get; set; }
 			public DateTime? Joined { get; set; }
+            public string MedicalDescription { get; set; }
 		}
 		public class PersonVisitorInfo : PersonInfo
 		{
@@ -69,9 +70,11 @@ namespace CmsWeb.Areas.Main.Models.Report
 					where !groups.Contains(-1) || (groups.Contains(-1) && om.OrgMemMemTags.Count() == 0)
 					where (om.Pending ?? false) == false
 					where om.MemberTypeId != MemberTypeCode.InActive
+					where om.MemberTypeId != MemberTypeCode.Prospect
 					where om.EnrollmentDate <= Util.Now
 					orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
 					let p = om.Person
+                    let rr = p.RecRegs.SingleOrDefault()
 					select new PersonMemberInfo
 					{
 						PeopleId = p.PeopleId,
@@ -101,6 +104,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 						LastAttended = om.LastAttended,
 						HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
 						Joined = om.EnrollmentDate,
+                        MedicalDescription = rr.MedicalDescription
 					};
 			return q;
 		}

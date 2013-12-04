@@ -56,7 +56,9 @@ namespace CmsWeb.Models
                     {
                         PeopleId = p.PeopleId,
                         FamilyId = p.FamilyId,
-                        Name = p.Name,
+                        First = p.FirstName,
+                        Goesby = p.NickName,
+                        Last = p.LastName,
                         Address = p.PrimaryAddress,
                         CityStateZip = p.PrimaryCity + ", " + p.PrimaryState + " " + p.PrimaryZip.Substring(0, 5),
                         Age = p.Age,
@@ -99,12 +101,12 @@ namespace CmsWeb.Models
                 return query;
 
             var db = DbUtil.Db;
-			if (Util2.OrgMembersOnly)
-				query = db.OrgMembersOnlyTag2().People(db);
-			else if (Util2.OrgLeadersOnly)
-				query = db.OrgLeadersOnlyTag2().People(db);
+            if (Util2.OrgMembersOnly)
+                query = db.OrgMembersOnlyTag2().People(db);
+            else if (Util2.OrgLeadersOnly)
+                query = db.OrgLeadersOnlyTag2().People(db);
             else
-    			query = db.People.AsQueryable();
+                query = db.People.AsQueryable();
 
             if (UsersOnly)
                 query = query.Where(p => p.Users.Any(uu => uu.UserRoles.Any(ur => ur.Role.RoleName == "Access")));
@@ -173,7 +175,19 @@ namespace CmsWeb.Models
         {
             public int PeopleId { get; set; }
             public int FamilyId { get; set; }
-            public string Name { get; set; }
+            public string First { get; set; }
+            public string Goesby { get; set; }
+            public string Last { get; set; }
+            public string Name
+            {
+                get
+                {
+                    if (Goesby.HasValue() && Goesby != First)
+                        return "{0} ({1}) {2}".Fmt(First, Goesby, Last);
+                    return "{0} {1}".Fmt(First, Last);
+                }
+            }
+
             public string Address { get; set; }
             public string CityStateZip { get; set; }
             public int? Age { get; set; }

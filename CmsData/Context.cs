@@ -32,7 +32,11 @@ namespace CmsData
 
         partial void OnCreated()
         {
+#if DEBUG
+            CommandTimeout = 60;
+#else
             CommandTimeout = 1200;
+#endif
             Host = Util.Host;
         }
         private string _LogFile;

@@ -1,22 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
-using System.Xml.Serialization;
+using AttributeRouting.Web.Mvc;
 using CmsData;
-using UtilityExtensions;
 using CmsWeb.Models;
-using System.Xml;
-using System.IO;
-using System.Net.Mail;
-using CmsData.Codes;
 using CmsData.API;
-using System.Text;
-using System.Net;
-using CmsWeb.Areas.Manage.Controllers;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -119,5 +106,25 @@ namespace CmsWeb.Areas.Public.Controllers
             Session["testnofinance"] = "true";
             return Redirect("/Person2/Current");
         }
+        [HttpGet]
+        [Authorize(Roles = "Developer")]
+        public ActionResult RunScript()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateInput(false)]
+        [Authorize(Roles = "Developer")]
+        public ActionResult RunScript(string script)
+        {
+            return Content(QueryFunctions.RunScript(DbUtil.Db, script));
+        }
+            /*
+print """
+<div title='hellow world'>
+{0}
+</div>
+""".format("test")
+             */
     }
 }

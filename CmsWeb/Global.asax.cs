@@ -32,15 +32,15 @@ namespace CmsWeb
     public class MvcApplication : System.Web.HttpApplication
     {
 
-//        private void RegisterCors(MvcCorsConfiguration corsConfig)
-//        {
-//            corsConfig
-//                .ForResources("APIMeta")
-//                .AllowAllOrigins()
-//                .AllowAllMethods()
-//                .AllowCookies()
-//                .AllowRequestHeaders("Content-Type", "Authorization");
-//        }
+        //        private void RegisterCors(MvcCorsConfiguration corsConfig)
+        //        {
+        //            corsConfig
+        //                .ForResources("APIMeta")
+        //                .AllowAllOrigins()
+        //                .AllowAllMethods()
+        //                .AllowCookies()
+        //                .AllowRequestHeaders("Content-Type", "Authorization");
+        //        }
         protected void Application_Start()
         {
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
@@ -49,7 +49,7 @@ namespace CmsWeb
             RegisterRoutes(RouteTable.Routes);
             RouteTable.Routes.RouteExistingFiles = true;
             HttpRuntime.Cache.Remove("BuildDate");
-//            RegisterCors(MvcCorsConfiguration.Configuration);
+            //            RegisterCors(MvcCorsConfiguration.Configuration);
 #if DEBUG
             //HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlProfiler.Initialize();
 #endif
@@ -104,8 +104,12 @@ namespace CmsWeb
             {
                 if (!DbUtil.DatabaseExists())
                 {
+#if DEBUG
+                    DbUtil.CreateDatabase();
+#else
                     Response.Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
                     return;
+#endif
                 }
                 if (1 == 1) // should be 1 == 1 (or just true) to run normally
                     Models.AccountModel.SetUserInfo(Util.UserName, Session);
@@ -129,8 +133,12 @@ namespace CmsWeb
             }
             if (!DbUtil.DatabaseExists())
             {
+#if DEBUG
+                DbUtil.CreateDatabase();
+#else
                 Response.Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
                 return;
+#endif
             }
 
             Util.AdminMail = DbUtil.Db.Setting("AdminMail", "");
@@ -139,6 +147,7 @@ namespace CmsWeb
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
         }
+
         protected void Application_EndRequest(object sender, EventArgs e)
         {
             if (HttpContext.Current != null)

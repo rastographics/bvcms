@@ -348,6 +348,14 @@ $(function () {
             $(".bt", f).button();
         });
     });
+    $("#ShowProspects").live('click', function () {
+        var f = $(this).closest('form');
+        var q = f.serialize();
+        $.post($(f).attr("action"), q, function (ret) {
+            $(f).html(ret);
+            $(".bt", f).button();
+        });
+    });
     $("form.DisplayEdit").submit(function () {
         if (!$("#submitit").val())
             return false;
@@ -605,7 +613,7 @@ $(function () {
     };
     $('a.joinlink').live('click', function (ev) {
         ev.preventDefault();
-        $.post("/Organization/Join/", { id: this.id },
+        $.post($(this)[0].href,
             function (ret) {
                 if (ret == "ok")
                     RebindMemberGrids();

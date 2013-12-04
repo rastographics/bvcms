@@ -25,13 +25,7 @@ namespace CmsData
     {
         internal static Expression AttendMemberTypeAsOf(CMSDataContext Db,
             ParameterExpression parm,
-            DateTime? from,
-            DateTime? to,
-            int? progid,
-            int? divid,
-            int? org,
-            CompareType op,
-            string ids)
+            DateTime? from, DateTime? to, int? progid, int? divid, int? org, CompareType op, string ids)
         {
             to = to.HasValue ? to.Value.AddDays(1) : from.Value.AddDays(1);
             Expression<Func<Person, bool>> pred = p =>
@@ -45,14 +39,7 @@ namespace CmsData
         }
         internal static Expression AttendanceTypeAsOf(
             ParameterExpression parm,
-            DateTime? from,
-            DateTime? to,
-            int? progid,
-            int? divid,
-            int? org,
-            int orgtype,
-            CompareType op,
-            params int[] ids)
+            DateTime? from, DateTime? to, int? progid, int? divid, int? org, int orgtype, CompareType op, params int[] ids)
         {
             to = to.HasValue ? to.Value.AddDays(1) : from.Value.AddDays(1);
             Expression<Func<Person, bool>> pred = p => (
@@ -74,39 +61,18 @@ namespace CmsData
             return expr;
         }
         internal static Expression AttendedAsOf(
-            ParameterExpression parm,
-            DateTime? from,
-            DateTime? to,
-            int? progid,
-            int? divid,
-            CompareType op,
-            bool tf,
-            bool guestonly)
+            ParameterExpression parm, CMSDataContext Db,
+            DateTime? from, DateTime? to, int? progid, int? divid, CompareType op, bool tf, bool guestonly)
         {
-            Expression<Func<Person, bool>> pred = p => (
-                from a in p.Attends
-                where a.MeetingDate >= @from
-                where a.MeetingDate <= to
-                where guestonly == false || a.AttendanceTypeId == 50 || a.AttendanceTypeId == 60
-                where a.AttendanceFlag
-                where divid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                where progid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
-                select a
-                ).Any();
+            var q = Db.AttendedAsOf(progid, divid, null, from, to, guestonly)
+                .Where(aa => aa.Attended == (op == CompareType.Equal));
+            Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
             return expr;
         }
         internal static Expression AttendPctHistory(
            ParameterExpression parm, CMSDataContext Db,
-           int? progid,
-           int? divid,
-           int? org,
-           DateTime? start,
-           DateTime? end,
-           CompareType op,
-           double pct)
+           int? progid, int? divid, int? org, DateTime? start, DateTime? end, CompareType op, double pct)
         {
             if (!end.HasValue)
                 end = start.Value;
@@ -200,14 +166,7 @@ namespace CmsData
         }
         internal static Expression AttendCntHistory(
             ParameterExpression parm, CMSDataContext Db,
-            int? progid,
-            int? divid,
-            int? org,
-            int sched,
-            DateTime? start,
-            DateTime? end,
-            CompareType op,
-            int cnt)
+            int? progid, int? divid, int? org, int sched, DateTime? start, DateTime? end, CompareType op, int cnt)
         {
             if (!end.HasValue)
                 end = start.Value;
@@ -252,12 +211,7 @@ namespace CmsData
         }
         internal static Expression DaysBetween12Attendance(
             ParameterExpression parm, CMSDataContext Db,
-            int? lookback,
-            int? progid,
-            int? divid,
-            int? org,
-            CompareType op,
-            int days)
+            int? lookback, int? progid, int? divid, int? org, CompareType op, int days)
         {
             Expression<Func<Person, int>> pred = p =>
                     Db.DaysBetween12Attend(p.PeopleId, progid, divid, org, lookback).Value;
@@ -267,14 +221,7 @@ namespace CmsData
         }
         internal static Expression DaysAfterNthVisitDateRange(
             ParameterExpression parm, CMSDataContext db,
-            DateTime? from,
-            DateTime? to,
-            int nthvisit,
-            int? progid,
-            int? divid,
-            int? org,
-            CompareType op,
-            int days)
+            DateTime? from, DateTime? to, int nthvisit, int? progid, int? divid, int? org, CompareType op, int days)
         {
             Expression<Func<Person, int>> pred = p =>
                  db.AttendDaysAfterNthVisitInDateRange(p.PeopleId, progid, divid, org,

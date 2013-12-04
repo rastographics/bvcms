@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using AttributeRouting;
+using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
@@ -11,6 +13,7 @@ namespace CmsWeb.Areas.Main.Controllers
 {
     [ValidateInput(false)]
     [SessionExpire]
+    [RouteArea("Main", AreaUrl = "Organization")]
     public class OrganizationController : CmsStaffController
     {
         const string needNotify = "WARNING: please add the notify persons on messages tab.";
@@ -151,11 +154,11 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(m);
         }
         [HttpPost]
-        public ActionResult PrevMemberGrid(int id, string namefilter)
+        public ActionResult PrevMemberGrid(int id, string namefilter, bool? ShowProspects)
         {
             var qb = DbUtil.Db.QueryBuilderPreviousCurrentOrg();
             InitExportToolbar(id, qb.QueryId);
-            var m = new PrevMemberModel(id, namefilter);
+            var m = new PrevMemberModel(id, namefilter) { ShowProspects = ShowProspects ?? false };
             UpdateModel(m.Pager);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Previous Members";
             DbUtil.LogActivity("Viewing Prev Members for {0}".Fmt(Session["ActiveOrganization"]));
@@ -569,14 +572,9 @@ namespace CmsWeb.Areas.Main.Controllers
             Session["OrgCopySettings"] = Util2.CurrentOrgId;
             return Redirect("/OrgSearch/");
         }
-        [HttpPost]
-        public ActionResult Join(string id)
+        [POST("Join/{oid:int}/{pid:int}")]
+        public ActionResult Join(int oid, int pid)
         {
-            var aa = id.Split('.');
-            if (aa.Length != 3)
-                return Content("error: bad info");
-            var pid = aa[1].ToInt();
-            var oid = aa[2].ToInt();
             var org = DbUtil.Db.LoadOrganizationById(oid);
             if (org.AllowAttendOverlap != true)
             {
@@ -601,6 +599,16 @@ namespace CmsWeb.Areas.Main.Controllers
                 DateTime.Now, null, false);
             DbUtil.Db.UpdateMainFellowship(oid);
             DbUtil.LogActivity("Joining Org {0}({1})".Fmt(org.OrganizationName, pid));
+            return Content("ok");
+        }
+        [POST("AddProspect/{oid:int}/{pid:int}")]
+        public ActionResult AddProspect(int oid, int pid)
+        {
+            var org = DbUtil.Db.LoadOrganizationById(oid);
+            OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                oid, pid, MemberTypeCode.Prospect,
+                DateTime.Now, null, false);
+            DbUtil.LogActivity("Adding Prospect {0}({1})".Fmt(org.OrganizationName, pid));
             return Content("ok");
         }
 

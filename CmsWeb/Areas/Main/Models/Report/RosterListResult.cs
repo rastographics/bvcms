@@ -44,9 +44,14 @@ namespace CmsWeb.Areas.Main.Models.Report
     }
     public class RosterListResult : ActionResult
     {
+        public object qid;
         public int? orgid;
         private OrgSearchModel model;
 
+        public RosterListResult()
+        {
+
+        }
         public RosterListResult(OrgSearchModel m)
         {
             model = m;
@@ -55,13 +60,6 @@ namespace CmsWeb.Areas.Main.Models.Report
         {
             var Response = context.HttpContext.Response;
 
-            var list1 = ReportList();
-
-            if (!list1.Any())
-            {
-                Response.Write("no data found");
-                return;
-            }
             Response.ContentType = "application/pdf";
             Response.AddHeader("content-disposition", "filename=foo.pdf");
 
@@ -71,47 +69,90 @@ namespace CmsWeb.Areas.Main.Models.Report
             doc.Open();
             dc = w.DirectContent;
 
-            foreach (var o in list1)
+            if (qid != null)
             {
-                var t = StartPageSet(o);
-
                 var color = BaseColor.BLACK;
-
-                var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.OrganizationId == o.OrgId
-                        where (om.Pending ?? false) == false
-                        where om.MemberTypeId != MemberTypeCode.InActive
-                        let rr = om.Person.RecRegs.FirstOrDefault()
-                        orderby om.Person.Name2
-                        select new MemberInfo
-                        {
-                            ActiveOther = rr.ActiveInAnotherChurch ?? false,
-                            ThisChurch = rr.Member ?? false,
-                            Address = om.Person.PrimaryAddress,
-                            Address2 = om.Person.PrimaryAddress2,
-                            CityStateZip = om.Person.CityStateZip5,
-                            CellPhone = om.Person.CellPhone,
-                            HomePhone = om.Person.HomePhone,
-                            MemberStatus = om.Person.MemberStatus.Description,
-                            MemberType = om.MemberType.Description,
-                            FamMemberThis = om.Person.Family.People.Any(f => f.PositionInFamilyId == 10 && f.MemberStatusId == MemberStatusCode.Member),
-                            Name = om.Person.Name,
-                            Medical = rr.MedicalDescription,
-                            PeopleId = om.PeopleId,
-                            Parents = DbUtil.Db.ParentNamesAndCells(om.PeopleId),
-                            Age = om.Person.Age
-                        };
-
-                foreach (var m in q)
+                var o = ReportList().First();
+                var t = StartPageSet(o);
+                var q = DbUtil.Db.PeopleQuery(qid);
+                var q2 = from p in q
+                         let rr = p.RecRegs.FirstOrDefault()
+                         join m in RollsheetModel.FetchOrgMembers(o.OrgId, null) on p.PeopleId equals m.PeopleId into j
+                         from m in j.DefaultIfEmpty()
+                         orderby p.Name2
+                         select new MemberInfo
+                         {
+                             ActiveOther = rr.ActiveInAnotherChurch ?? false,
+                             ThisChurch = rr.Member ?? false,
+                             Address = p.PrimaryAddress,
+                             Address2 = p.PrimaryAddress2,
+                             CityStateZip = p.CityStateZip5,
+                             CellPhone = p.CellPhone,
+                             HomePhone = p.HomePhone,
+                             MemberStatus = p.MemberStatus.Description,
+                             MemberType = m.MemberType,
+                             FamMemberThis = p.Family.People.Any(f => f.PositionInFamilyId == 10 && f.MemberStatusId == MemberStatusCode.Member),
+                             Name = p.Name,
+                             Medical = rr.MedicalDescription,
+                             PeopleId = p.PeopleId,
+                             Parents = DbUtil.Db.ParentNamesAndCells(p.PeopleId),
+                             Age = p.Age
+                         };
+                foreach (var m in q2)
                 {
-                    if (color == BaseColor.WHITE)
+                    if (color.Equals(BaseColor.WHITE))
                         color = new GrayColor(240);
                     else
                         color = BaseColor.WHITE;
                     AddRow(t, m, color);
                 }
-                doc.Add(t);
+                if (t.Rows.Count > 1)
+                    doc.Add(t);
+                else
+                    doc.Add(new Phrase("no data"));
             }
+            else
+                foreach (var o in ReportList())
+                {
+                    var t = StartPageSet(o);
+
+                    var color = BaseColor.BLACK;
+
+                    var q = from om in DbUtil.Db.OrganizationMembers
+                            where om.OrganizationId == o.OrgId
+                            where (om.Pending ?? false) == false
+                            where om.MemberTypeId != MemberTypeCode.InActive
+                            let rr = om.Person.RecRegs.FirstOrDefault()
+                            orderby om.Person.Name2
+                            select new MemberInfo
+                            {
+                                ActiveOther = rr.ActiveInAnotherChurch ?? false,
+                                ThisChurch = rr.Member ?? false,
+                                Address = om.Person.PrimaryAddress,
+                                Address2 = om.Person.PrimaryAddress2,
+                                CityStateZip = om.Person.CityStateZip5,
+                                CellPhone = om.Person.CellPhone,
+                                HomePhone = om.Person.HomePhone,
+                                MemberStatus = om.Person.MemberStatus.Description,
+                                MemberType = om.MemberType.Description,
+                                FamMemberThis = om.Person.Family.People.Any(f => f.PositionInFamilyId == 10 && f.MemberStatusId == MemberStatusCode.Member),
+                                Name = om.Person.Name,
+                                Medical = rr.MedicalDescription,
+                                PeopleId = om.PeopleId,
+                                Parents = DbUtil.Db.ParentNamesAndCells(om.PeopleId),
+                                Age = om.Person.Age
+                            };
+
+                    foreach (var m in q)
+                    {
+                        if (color == BaseColor.WHITE)
+                            color = new GrayColor(240);
+                        else
+                            color = BaseColor.WHITE;
+                        AddRow(t, m, color);
+                    }
+                    doc.Add(t);
+                }
             pageEvents.EndPageSet();
             doc.Close();
         }
@@ -160,7 +201,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             if ((p.Age ?? 0) <= 18 && p.Parents != null)
             {
                 var a = p.Parents.Replace(", c ", "|c ").Split('|');
-                foreach(var li in a)
+                foreach (var li in a)
                     AddLine(sb, li);
             }
             else
@@ -211,11 +252,11 @@ namespace CmsWeb.Areas.Main.Models.Report
         }
         private IEnumerable<OrgInfo> ReportList()
         {
-        	var roles = DbUtil.Db.CurrentRoles();
+            var roles = DbUtil.Db.CurrentRoles();
             var q = from o in model.FetchOrgs()
-        	        where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where o.OrganizationId == orgid || (orgid ?? 0) == 0
-					orderby o.OrganizationName
+                    orderby o.OrganizationName
                     select new OrgInfo
                     {
                         OrgId = o.OrganizationId,

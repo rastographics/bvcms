@@ -280,15 +280,15 @@
         $("#orgsearchform").submit();
         return false;
     });
-    $('#Roster').click(function (ev) {
-        ev.preventDefault();
-        hideDropdowns();
-        $("#orgsearchform").attr("action", "/Reports/Roster");
-        $("#orgsearchform").attr("target", "_blank");
-        $("#orgsearchform").submit();
-        $("#orgsearchform").removeAttr("target");
-        return false;
-    });
+//    $('#Roster').click(function (ev) {
+//        ev.preventDefault();
+//        hideDropdowns();
+//        $("#orgsearchform").attr("action", "/Reports/Roster");
+//        $("#orgsearchform").attr("target", "_blank");
+//        $("#orgsearchform").submit();
+//        $("#orgsearchform").removeAttr("target");
+//        return false;
+//    });
     $('#PasteSettings').click(function (ev) {
         ev.preventDefault();
         hideDropdowns();

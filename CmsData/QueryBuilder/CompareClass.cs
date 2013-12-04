@@ -118,7 +118,7 @@ namespace CmsData
                                CompType,
                                c.CodeIntIds);
                 case QueryType.AttendedAsOf:
-                    return Expressions.AttendedAsOf(parm,
+                    return Expressions.AttendedAsOf(parm, Db,
                                c.StartDate,
                                c.EndDate,
                                c.Program,
@@ -220,7 +220,7 @@ namespace CmsData
                     return Expressions.FamilyHasChildrenAged3(parm, c.Quarters, CompType, c.CodeIntIds);
                 // G --------------------
                 case QueryType.GuestAsOf:
-                    return Expressions.AttendedAsOf(parm,
+                    return Expressions.AttendedAsOf(parm, Db,
                                c.StartDate,
                                c.EndDate,
                                c.Program,
@@ -551,7 +551,7 @@ namespace CmsData
                         CompType,
                         c.CodeIds == "1");
                 case QueryType.RecentAttendType:
-                    return Expressions.RecentAttendType(parm,
+                    return Expressions.RecentAttendType(parm, Db,
                                c.Program,
                                c.Division,
                                c.Organization,
@@ -630,7 +630,7 @@ namespace CmsData
                                CompType,
                                Decimal.Parse(c.TextValue));
                 case QueryType.RecentAttendCount:
-                    return Expressions.RecentAttendCount(parm,
+                    return Expressions.RecentAttendCount(parm, Db,
                                c.Program,
                                c.Division,
                                c.Organization,
@@ -668,7 +668,7 @@ namespace CmsData
                                CompType,
                                c.CodeIntIds);
                 case QueryType.RecentAttendMemberType:
-                    return Expressions.RecentAttendMemberType(parm,
+                    return Expressions.RecentAttendMemberType(parm, Db,
                                c.Program,
                                c.Division,
                                c.Organization,

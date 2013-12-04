@@ -103,7 +103,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PreferredName", Storage="_PreferredName", DbType="varchar(25)")]
+		[Column(Name="PreferredName", Storage="_PreferredName", DbType="nvarchar(25)")]
 		public string PreferredName
 		{
 			get
@@ -120,7 +120,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="LastName", Storage="_LastName", DbType="varchar(100) NOT NULL")]
+		[Column(Name="LastName", Storage="_LastName", DbType="nvarchar(100) NOT NULL")]
 		public string LastName
 		{
 			get
@@ -188,7 +188,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PrimaryAddress", Storage="_PrimaryAddress", DbType="varchar(100)")]
+		[Column(Name="PrimaryAddress", Storage="_PrimaryAddress", DbType="nvarchar(100)")]
 		public string PrimaryAddress
 		{
 			get
@@ -205,7 +205,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PrimaryAddress2", Storage="_PrimaryAddress2", DbType="varchar(100)")]
+		[Column(Name="PrimaryAddress2", Storage="_PrimaryAddress2", DbType="nvarchar(100)")]
 		public string PrimaryAddress2
 		{
 			get
@@ -222,7 +222,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PrimaryCity", Storage="_PrimaryCity", DbType="varchar(30)")]
+		[Column(Name="PrimaryCity", Storage="_PrimaryCity", DbType="nvarchar(30)")]
 		public string PrimaryCity
 		{
 			get
@@ -239,7 +239,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PrimaryState", Storage="_PrimaryState", DbType="varchar(20)")]
+		[Column(Name="PrimaryState", Storage="_PrimaryState", DbType="nvarchar(20)")]
 		public string PrimaryState
 		{
 			get
@@ -256,7 +256,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PrimaryZip", Storage="_PrimaryZip", DbType="varchar(15)")]
+		[Column(Name="PrimaryZip", Storage="_PrimaryZip", DbType="nvarchar(15)")]
 		public string PrimaryZip
 		{
 			get
@@ -273,7 +273,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="HomePhone", Storage="_HomePhone", DbType="varchar(20)")]
+		[Column(Name="HomePhone", Storage="_HomePhone", DbType="nvarchar(20)")]
 		public string HomePhone
 		{
 			get
@@ -290,7 +290,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="CellPhone", Storage="_CellPhone", DbType="varchar(20)")]
+		[Column(Name="CellPhone", Storage="_CellPhone", DbType="nvarchar(20)")]
 		public string CellPhone
 		{
 			get
@@ -307,7 +307,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="WorkPhone", Storage="_WorkPhone", DbType="varchar(20)")]
+		[Column(Name="WorkPhone", Storage="_WorkPhone", DbType="nvarchar(20)")]
 		public string WorkPhone
 		{
 			get
@@ -324,7 +324,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="EmailAddress", Storage="_EmailAddress", DbType="varchar(150)")]
+		[Column(Name="EmailAddress", Storage="_EmailAddress", DbType="nvarchar(150)")]
 		public string EmailAddress
 		{
 			get
@@ -341,7 +341,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="MemberStatus", Storage="_MemberStatus", DbType="varchar(50)")]
+		[Column(Name="MemberStatus", Storage="_MemberStatus", DbType="nvarchar(50)")]
 		public string MemberStatus
 		{
 			get
@@ -358,7 +358,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="BFTeacher", Storage="_BFTeacher", DbType="varchar(126)")]
+		[Column(Name="BFTeacher", Storage="_BFTeacher", DbType="nvarchar(138)")]
 		public string BFTeacher
 		{
 			get
@@ -409,7 +409,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="MemberType", Storage="_MemberType", DbType="varchar(100)")]
+		[Column(Name="MemberType", Storage="_MemberType", DbType="nvarchar(100)")]
 		public string MemberType
 		{
 			get

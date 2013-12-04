@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.OrganizationPage
@@ -19,6 +20,7 @@ namespace CmsWeb.Models.OrganizationPage
             Pager.Sort = "Name";
             NameFilter = name;
         }
+        public bool ShowProspects { get; set; }
         private string NameFilter;
         private IQueryable<EnrollmentTransaction> _enrollments;
         private IQueryable<EnrollmentTransaction> FetchPrevMembers()
@@ -33,6 +35,9 @@ namespace CmsWeb.Models.OrganizationPage
                                    && m.TransactionStatus == false).Select(m => m.TransactionDate).Max()
                                where etd.TransactionStatus == false
                                where etd.TransactionDate == mdt
+                               where ShowProspects 
+                                    ? etd.MemberTypeId == MemberTypeCode.Prospect 
+                                    : etd.MemberTypeId != MemberTypeCode.Prospect
                                where etd.OrganizationId == OrganizationId
                                where etd.TransactionTypeId >= 4
                                where !etd.Person.OrganizationMembers.Any(om => om.OrganizationId == OrganizationId)

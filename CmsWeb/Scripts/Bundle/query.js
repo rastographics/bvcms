@@ -1,4 +1,5 @@
-﻿/**
+﻿///#source 1 1 /Scripts/Bootstrap/bootstrap-multiselect.js
+/**
  * bootstrap-multiselect.js
  * https://github.com/davidstutz/bootstrap-multiselect
  *
@@ -591,6 +592,7 @@
 
 }(window.jQuery);
 
+///#source 1 1 /Scripts/jQuery/jquery.scrollintoview.js
 /*!
  * jQuery scrollintoview() plugin and :scrollable selector filter
  *
@@ -800,6 +802,7 @@
 	});
 })(jQuery);
 
+///#source 1 1 /Scripts/Search/Query.js
 $(function () {
     $.postQuery = function (action, selectedid, cb) {
         if ($.isFunction(selectedid)) {

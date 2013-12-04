@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.OrganizationPage
@@ -62,6 +63,7 @@ namespace CmsWeb.Models.OrganizationPage
             q = q.Skip(Pager.StartRow).Take(Pager.PageSize);
             var tagownerid = Util2.CurrentTagOwnerId;
             var q2 = from p in q
+                     let prospect = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == p.PeopleId && mm.OrganizationId == OrganizationId && mm.MemberTypeId == MemberTypeCode.Prospect)
                      select new PersonMemberInfo
                      {
                          PeopleId = p.PeopleId,
@@ -86,6 +88,7 @@ namespace CmsWeb.Models.OrganizationPage
                          Age = p.Age.ToString(),
                          LastAttended = DbUtil.Db.LastAttended(OrganizationId, p.PeopleId),
                          HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
+                         MemberTypeId = prospect != null ? 311 : 0
                      };
             return q2;
         }

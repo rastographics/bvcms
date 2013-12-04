@@ -586,6 +586,16 @@ namespace UtilityExtensions
                 return null;
             }
         }
+        public static string DbServer
+        {
+            get
+            {
+                var s = ConfigurationManager.AppSettings["dbserver"];
+                if (s.HasValue())
+                    return s;
+                return null;
+            }
+        }
 
         public static string CmsHost2
         {
@@ -666,14 +676,17 @@ namespace UtilityExtensions
         {
             var cs = ConnectionStringSettings(host) ?? ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            cb.DataSource = DbServer ?? cb.DataSource;
             var a = host.SplitStr(".:");
             cb.InitialCatalog = "CMS_{0}".Fmt(a[0]);
             return cb.ConnectionString;
         }
-        public static string GetMasterConnectionString()
+        public static string GetConnectionString2(string db)
         {
-            var cs = ConnectionStringSettings("master") ?? ConfigurationManager.ConnectionStrings["CMS"];
-            var cb = new SqlConnectionStringBuilder(cs.ConnectionString) {InitialCatalog = "master"};
+            var cs = ConnectionStringSettings(db) ?? ConfigurationManager.ConnectionStrings["CMS"];
+            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            cb.InitialCatalog = db;
+            cb.DataSource = DbServer ?? cb.DataSource;
             return cb.ConnectionString;
         }
 
@@ -704,6 +717,7 @@ namespace UtilityExtensions
                     return ConfigurationManager.ConnectionStrings["CMS"].ConnectionString;
 
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+                cb.DataSource = DbServer ?? cb.DataSource;
                 cb.InitialCatalog = "CMS_{0}".Fmt(Host);
                 return cb.ConnectionString;
             }
@@ -721,6 +735,7 @@ namespace UtilityExtensions
                 var cs = ConnectionStringSettings(Host);
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
                 var a = Host.SplitStr(".:");
+                cb.DataSource = DbServer ?? cb.DataSource;
                 cb.InitialCatalog = "CMSi_{0}".Fmt(a[0]);
                 return cb.ConnectionString;
             }
@@ -1466,6 +1481,9 @@ namespace UtilityExtensions
         {
             get
             {
+                string output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+                if (!Directory.Exists(output))
+                    return true;
                 var path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
                 return File.Exists(path);
             }

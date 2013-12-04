@@ -143,12 +143,10 @@ namespace CmsWeb.Areas.Public.Controllers
                 link.Count += 1;
                 DbUtil.Db.SubmitChanges();
 
-                return Redirect( link.Link );
+                if(link.Link.HasValue())
+                    return Redirect( link.Link );
             }
-            else
-            {
-                return Redirect( "http://www.bvcms.com" );
-            }
+            return Redirect( "http://www.bvcms.com" );
         }
     }
 }

@@ -70,7 +70,7 @@ namespace CmsData.Classes.ProtectMyMinistry
             sb.sSSN = sSSN;
             sb.sServiceCode = bc.ServiceCode;
             sb.sResponseURL = sResponseURL;
-            sb.bTestMode = (DbUtil.Db.Setting("PMMTestMode", "true") == "true");
+            sb.bTestMode = (DbUtil.Db.Setting("PMMTestMode", "false") == "true");
             sb.sPlusCounty = sPlusCounty;
             sb.sPlusState = sPlusState;
 
@@ -350,7 +350,7 @@ namespace CmsData.Classes.ProtectMyMinistry
     public class SubmitBundle
     {
         // Internal
-        public bool bTestMode = true;
+        public bool bTestMode = false;
 
         public string sUser = "";
         public string sPassword = "";

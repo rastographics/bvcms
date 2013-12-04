@@ -7,6 +7,25 @@
         $.mark();
         return false;
     });
+    $(".atck").live("click", function (ev) {
+        var ck = $(this);
+        var tr = ck.parent().parent();
+        $.post("/Meeting/MarkAttendance/", {
+            MeetingId: $("#meetingid").val(),
+            PeopleId: ck.attr("pid"),
+            Present: ck.is(':checked')
+        }, function (ret) {
+            if (ret.error) {
+                ck.attr("checked", !ck.is(':checked'));
+                alert(ret.error);
+            } else {
+                tr.effect("highlight", {}, 3000);
+                for (var i in ret) {
+                    $("#" + i).text(ret[i]);
+                }
+            }
+        });
+    });
     $.mark = function () {
         var tb = $("#wandtarget");
         var q = $("#markform").serialize();

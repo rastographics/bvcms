@@ -1,19 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Xml;
 using UtilityExtensions;
-using System.Text.RegularExpressions;
-using System.Data.Linq;
-using System.Xml.Linq;
-using System.Data.Linq.SqlClient;
 using IronPython.Hosting;
 using System.IO;
 using CmsData.Codes;
-using System.Web;
-using CmsData.API;
 
 namespace CmsData
 {
@@ -63,6 +53,34 @@ namespace CmsData
                 return "VitalStats script error: " + ex.Message;
             }
         }
+	    public static string RunScript(CMSDataContext db, string script)
+	    {
+            if (!script.HasValue())
+                return "no VitalStats script";
+
+            var qf = new QueryFunctions(db);
+		    var engine = Python.CreateEngine();
+            var ms = new MemoryStream();
+		    var sw = new StreamWriter(ms);
+		    engine.Runtime.IO.SetOutput(ms, sw);
+		    engine.Runtime.IO.SetErrorOutput(ms, sw);
+		    var sc = engine.CreateScriptSourceFromString(script);
+            try
+            {
+                var code = sc.Compile();
+                var scope = engine.CreateScope();
+    		    scope.SetVariable("q", qf);
+    		    scope.SetVariable("db", db);
+                code.Execute(scope);
+                ms.Position = 0;
+                var sr = new StreamReader(ms);
+                return sr.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                return "VitalStats script error: " + ex.Message;
+            }
+        }
         public int MeetingCount(int days, int progid, int divid, int orgid)
         {
             var dt = DateTime.Now.AddDays(-days);
@@ -100,7 +118,7 @@ namespace CmsData
                     select m;
             return q.Count();
         }
-        public decimal ContributionTotals(int days1, int days2, int fundid)
+        public double ContributionTotals(int days1, int days2, int fundid)
         {
             return ContributionTotals(days1, days2, fundid.ToString());
         }
@@ -131,7 +149,7 @@ namespace CmsData
                     select p;
             return q.Count();
         }
-        public decimal ContributionTotals(int days1, int days2, string funds)
+        public double ContributionTotals(int days1, int days2, string funds)
         {
             var fundids = (from f in funds.Split(',')
                            let i = f.ToInt()
@@ -153,7 +171,7 @@ namespace CmsData
                     where exfundids.Length == 0 || !exfundids.Contains(c.FundId)
                     where !typs.Contains(c.ContributionTypeId)
                     select c;
-            return q.Sum(c => c.ContributionAmount) ?? 0;
+            return Convert.ToDouble(q.Sum(c => c.ContributionAmount) ?? 0);
         }
 
         public int ContributionCount(int days1, int days2, string funds)

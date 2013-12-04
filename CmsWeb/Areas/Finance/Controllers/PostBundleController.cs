@@ -124,7 +124,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 		    else
 			    s = text;
 
-		    var id = PostBundleModel.BatchProcess( s, date, fundid, fromFile );
+		    var id = BatchImportContributions.BatchProcess( s, date, fundid, fromFile );
 
 		    if( id.HasValue )
 			    return Redirect( "/PostBundle/Index/" + id );

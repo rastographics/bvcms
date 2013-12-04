@@ -14,7 +14,7 @@
  */
 
 var CKBUILDER_CONFIG = {
-	skin: 'kama',
+	skin: 'moono',
 	preset: 'standard',
 	ignore: [
 		'dev',
@@ -38,11 +38,11 @@ var CKBUILDER_CONFIG = {
 		'filebrowser' : 1,
 		'floatingspace' : 1,
 		'format' : 1,
-		'htmlwriter' : 1,
 		'horizontalrule' : 1,
+		'htmlwriter' : 1,
 		'wysiwygarea' : 1,
 		'image' : 1,
-		'indent' : 1,
+		'indentlist' : 1,
 		'link' : 1,
 		'list' : 1,
 		'magicline' : 1,
@@ -68,20 +68,11 @@ var CKBUILDER_CONFIG = {
 		'popup' : 1,
 		'richcombo' : 1,
 		'listblock' : 1,
+		'indent' : 1,
 		'fakeobjects' : 1,
-		'menubutton' : 1,
-		'panelbutton' : 1,
-		'colorbutton' : 1,
-		'find' : 1,
-		'font' : 1,
-		'justify' : 1,
-		'liststyle' : 1,
-		'mediaembed' : 1,
-		'preview' : 1,
-		'selectall' : 1,
-		'xml' : 1
+		'menubutton' : 1
 	},
 	languages : {
-		'en' : 1,
+		'en' : 1
 	}
 };

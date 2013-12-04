@@ -1,4 +1,5 @@
-﻿/*!
+﻿///#source 1 1 /Scripts/jQuery/jquery-1.9.1.js
+/*!
  * jQuery JavaScript Library v1.9.1
  * http://jquery.com/
  *
@@ -9596,6 +9597,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
 })( window );
 
+///#source 1 1 /Scripts/jQuery/jquery-migrate-1.1.1.js
 /*!
  * jQuery Migrate - v1.1.1 - 2013-02-16
  * https://github.com/jquery/jquery-migrate
@@ -10108,6 +10110,7 @@ jQuery.each( ajaxEvents.split("|"),
 
 })( jQuery, window );
 
+///#source 1 1 /Scripts/jQuery/jquery-ui-1.10.0.custom.js
 /*! jQuery UI - v1.10.0 - 2013-02-10
 * http://jqueryui.com
 * Includes: jquery.ui.core.js, jquery.ui.widget.js, jquery.ui.mouse.js, jquery.ui.position.js, jquery.ui.draggable.js, jquery.ui.droppable.js, jquery.ui.resizable.js, jquery.ui.selectable.js, jquery.ui.sortable.js, jquery.ui.accordion.js, jquery.ui.autocomplete.js, jquery.ui.button.js, jquery.ui.datepicker.js, jquery.ui.dialog.js, jquery.ui.menu.js, jquery.ui.progressbar.js, jquery.ui.slider.js, jquery.ui.spinner.js, jquery.ui.tabs.js, jquery.ui.tooltip.js, jquery.ui.effect.js, jquery.ui.effect-blind.js, jquery.ui.effect-bounce.js, jquery.ui.effect-clip.js, jquery.ui.effect-drop.js, jquery.ui.effect-explode.js, jquery.ui.effect-fade.js, jquery.ui.effect-fold.js, jquery.ui.effect-highlight.js, jquery.ui.effect-pulsate.js, jquery.ui.effect-scale.js, jquery.ui.effect-shake.js, jquery.ui.effect-slide.js, jquery.ui.effect-transfer.js
@@ -24959,6 +24962,7 @@ $.effects.effect.transfer = function( o, done ) {
 
 })(jQuery);
 
+///#source 1 1 /Scripts/jQuery/jquery.validate.js
 /*!
  * jQuery Validation Plugin 1.11.1
  *
@@ -26191,6 +26195,7 @@ $.format = $.validator.format;
 	});
 }(jQuery));
 
+///#source 1 1 /Scripts/jQuery/jquery.idle-timer.js
 (function($){
 
 $.idleTimer = function(newTimeout){
@@ -26232,6 +26237,7 @@ $.idleTimer = function(newTimeout){
     $.idleTimer.tId = setTimeout(toggleIdleState, timeout);
 };
 })(jQuery);
+///#source 1 1 /Scripts/jQuery/jquery.blockUI.js
 /*!
  * jQuery blockUI plugin
  * Version 2.56.0-2013.01.31
@@ -26807,6 +26813,7 @@ $.idleTimer = function(newTimeout){
     }
 
 })();
+///#source 1 1 /Scripts/jQuery/jquery.sortElements.js
 /**
  * jQuery.fn.sortElements
  * --------------
@@ -26876,6 +26883,7 @@ jQuery.fn.sortElements = (function(){
     };
     
 })();
+///#source 1 1 /Scripts/jQuery/jquery.showpassword.js
 /*
 *	@name							Show Password
 *	@descripton						
@@ -26989,4 +26997,3 @@ jQuery.fn.sortElements = (function(){
         }
     });
 })(jQuery);
-
