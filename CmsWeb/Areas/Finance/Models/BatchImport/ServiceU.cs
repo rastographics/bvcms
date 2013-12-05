@@ -81,13 +81,14 @@ namespace CmsWeb.Models
                     ed = new ExtraDatum { Data = person, Stamp = Util.Now };
                 }
                 CmsData.BundleDetail bd = null;
+                var defaultfundid = DbUtil.Db.Setting("DefaultFundId", "1").ToInt();
                 for (var c = 0; c < csv.FieldCount; c++)
                 {
                     var col = cols[c].Trim();
                     if (col != "Amount" && !col.Contains("Comment") && csv[c].StartsWith("$") && csv[c].GetAmount() > 0)
                     {
                         var fundid = FindFund(col);
-                        bd = CreateContribution(date, fundid ?? 1);
+                        bd = CreateContribution(date, fundid ?? defaultfundid);
                         bd.Contribution.ContributionAmount = csv[c].GetAmount();
                         if (col == "Other")
                             col = oth;

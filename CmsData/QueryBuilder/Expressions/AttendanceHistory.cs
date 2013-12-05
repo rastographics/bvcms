@@ -5,18 +5,8 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using CmsData.API;
-using UtilityExtensions;
-using System.Configuration;
-using System.Reflection;
-using System.Collections;
-using System.Data.Linq.SqlClient;
-using System.Text.RegularExpressions;
-using System.Web;
 using CmsData.Codes;
 
 namespace CmsData
@@ -64,9 +54,12 @@ namespace CmsData
             ParameterExpression parm, CMSDataContext Db,
             DateTime? from, DateTime? to, int? progid, int? divid, CompareType op, bool tf, bool guestonly)
         {
-            var q = Db.AttendedAsOf(progid, divid, null, from, to, guestonly)
-                .Where(aa => aa.Attended == (op == CompareType.Equal));
-            Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
+            var q = Db.AttendedAsOf(progid, divid, null, from, to, guestonly).Select(p => p.PeopleId);
+            Expression<Func<Person, bool>> pred;
+            if (op == CompareType.Equal ^ tf)
+                pred = p => !q.Contains(p.PeopleId);
+            else
+                pred = p => q.Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
