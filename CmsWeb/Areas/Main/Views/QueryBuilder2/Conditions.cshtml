@@ -1,0 +1,11 @@
+﻿@model CmsWeb.Models.QueryModel2
+@foreach(var c in Model.ConditionList())
+{ 
+	<li class="conditionPopup" id='@c.Clause.Id'>
+        <img src="/Content/images/1pix.gif" width="@c.Level" height="1px" />
+        <img src="/Content/images/DownRight.gif" width="19px" height="12px" />
+        <a href='#'>@c.Clause</a>
+   </li>
+}
+
+

@@ -42,6 +42,8 @@ namespace CmsWeb.Areas.Main
             AddRoute(context, "Statement", "Person", "Person/ContributionStatement/{id}/{fr}/{to}", "ContributionStatement");
             AddRoute(context, "QueryBuilderMain", "QueryBuilder", "QueryBuilder/{action}/{id}", "Main");
             AddRoute(context, "QueryBuilder");
+            AddRoute(context, "QueryBuilderMain2", "QueryBuilder2", "QueryBuilder2/{action}/{id}", "Main");
+            AddRoute(context, "QueryBuilder2");
             AddRoute(context, "CurrentRegs", "Person", "CurrentRegistrations", "CurrentRegistrations");
 
             //context.MapRoute(
