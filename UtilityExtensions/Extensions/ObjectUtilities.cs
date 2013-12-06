@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using System.Net.Mime;
 using System.Reflection;
 using System.Collections;
 using System.Web.UI;
@@ -218,7 +216,7 @@ namespace UtilityExtensions
             if (!GetValue(textvalue, typBindingSource, ref value)) 
                 return;
 
-            Util.SetPropertyEx(obj, member, value);
+            SetPropertyEx(obj, member, value);
         }
 
         private static bool GetValue(string textvalue, Type typBindingSource, ref object value)
