@@ -13,7 +13,6 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        private const string STR_Host = "HostString";
         public static string Host
         {
             get
@@ -49,8 +48,7 @@ namespace UtilityExtensions
         {
             get
             {
-                var cs = ConfigurationManager.ConnectionStrings["CMSHosted"];
-                return cs != null;
+                return ConfigurationManager.AppSettings["CMSHosted"] == "true";
             }
         }
         public static string GetConnectionString(string host)
@@ -78,9 +76,9 @@ namespace UtilityExtensions
             {
                 var a = h2.Split(',');
                 if (a.Contains(host))
-                    return ConfigurationManager.ConnectionStrings["CMSHosted2"];
+                    return ConfigurationManager.ConnectionStrings["CMS2"];
             }
-            return ConfigurationManager.ConnectionStrings["CMSHosted"];
+            return ConfigurationManager.ConnectionStrings["CMS"];
         }
 
         private const string STR_ConnectionString = "ConnectionString";
@@ -94,9 +92,6 @@ namespace UtilityExtensions
                             return HttpContext.Current.Session[STR_ConnectionString].ToString();
 
                 var cs = ConnectionStringSettings(Host);
-                if (cs == null)
-                    return ConfigurationManager.ConnectionStrings["CMS"].ConnectionString;
-
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
                 cb.DataSource = DbServer ?? cb.DataSource;
                 cb.InitialCatalog = "CMS_{0}".Fmt(Host);

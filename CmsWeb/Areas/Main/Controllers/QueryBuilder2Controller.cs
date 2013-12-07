@@ -7,9 +7,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Data.Linq;
 using System.Threading;
 using System.Web.Mvc;
-using Elmah;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
@@ -58,7 +59,6 @@ namespace CmsWeb.Areas.Main.Controllers
         public JsonResult SelectCondition(Guid id, string ConditionName)
         {
             var m = new QueryModel2 { ConditionName = ConditionName, SelectedId = id };
-            m.LoadScratchPad();
 
             m.TextValue = "";
             m.Comparison = "";
@@ -79,7 +79,6 @@ namespace CmsWeb.Areas.Main.Controllers
         public JsonResult GetCodes(string Comparison, string ConditionName)
         {
             var m = new QueryModel2 { Comparison = Comparison, ConditionName = ConditionName };
-            m.SetCodes();
             return Json(new
             {
                 CodesVisible = m.CodesVisible,
@@ -92,48 +91,35 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult EditCondition(Guid id)
         {
             var m = new QueryModel2 { SelectedId = id };
-            m.LoadScratchPad();
             m.EditCondition();
             var j = JsonConvert.SerializeObject(m, Formatting.Indented);
             return Content(j);
         }
 
         [HttpPost]
-        public ActionResult AddToGroup()
+        public ActionResult AddToGroup(QueryModel2 m)
         {
-            var m = new QueryModel2();
-            UpdateModel(m);
-            m.LoadScratchPad();
             if (Validate(m))
                 m.AddConditionToGroup();
             return PartialView("TryConditions", m);
         }
         [HttpPost]
-        public ActionResult Add()
+        public ActionResult Add(QueryModel2 m)
         {
-            var m = new QueryModel2();
-            UpdateModel(m);
-            m.LoadScratchPad();
             if (Validate(m))
                 m.AddConditionAfterCurrent();
             return PartialView("TryConditions", m);
         }
         [HttpPost]
-        public ActionResult Update()
+        public ActionResult Update(QueryModel2 m)
         {
-            var m = new QueryModel2();
-            UpdateModel(m);
-            m.LoadScratchPad();
             if (Validate(m))
                 m.UpdateCondition();
             return PartialView("TryConditions", m);
         }
         [HttpPost]
-        public JsonResult Remove()
+        public JsonResult Remove(QueryModel2 m)
         {
-            var m = new QueryModel2();
-            UpdateModel(m);
-            m.LoadScratchPad();
             m.DeleteCondition();
             return Json(m);
         }
@@ -141,8 +127,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult InsGroupAbove(Guid id)
         {
             var m = new QueryModel2 { SelectedId = id };
-            m.LoadScratchPad();
-            m.InsertGroupAbove();
+            //m.InsertGroupAbove();
             var c = new ContentResult();
             c.Content = m.QueryId.ToString();
             return c;
@@ -151,8 +136,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult CopyAsNew(Guid id)
         {
             var m = new QueryModel2 { SelectedId = id };
-            m.LoadScratchPad();
-            m.CopyAsNew();
+            //m.CopyAsNew();
             var c = new ContentResult();
             c.Content = m.QueryId.ToString();
             return c;
@@ -181,14 +165,12 @@ namespace CmsWeb.Areas.Main.Controllers
             return Json(m.SavedQueries()); ;
         }
         [HttpPost]
-        public ActionResult SaveQuery()
+        public ActionResult SaveQuery(Guid QueryId, string SavedQueryDesc, bool IsPublic)
         {
-            var m = new QueryModel2();
-            UpdateModel(m);
-            m.LoadScratchPad();
-            var ret = m.SaveQuery();
-            if (ret.HasValue())
-                return Content(ret);
+            var m = new QueryModel2() {QueryId = QueryId};
+//            var ret = m.SaveQuery();
+//            if (ret.HasValue())
+//                return Content(ret);
             return Content(m.Description);
         }
         public void Results2Async()
@@ -214,22 +196,14 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         [HttpPost]
-        public ActionResult Results()
+        public ActionResult Results(QueryModel2 m)
         {
             var cb = new SqlConnectionStringBuilder(Util.ConnectionString);
             cb.ApplicationName = "qb";
-            DbUtil.Db = new CMSDataContext(cb.ConnectionString);
-            var m = new QueryModel2();
-            try
-            {
-                UpdateModel(m);
-            }
-            catch (Exception ex)
-            {
-                return Content("Something went wrong<br><p>" + ex.Message + "</p>");
-            }
-            m.LoadScratchPad();
             var starttime = DateTime.Now;
+#if DEBUG
+            m.PopulateResults();
+#else
             try
             {
                 m.PopulateResults();
@@ -240,6 +214,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 errorLog.Log(new Error(ex));
                 return Content("Something went wrong<br><p>" + ex.Message + "</p>");
             }
+#endif
             DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.QueryId));
             return View(m);
         }
@@ -263,7 +238,6 @@ namespace CmsWeb.Areas.Main.Controllers
             if (!tagname.HasValue())
                 return Content("error: no tag name");
             var m = new QueryModel2();
-            m.LoadScratchPad();
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
             {
                 m.TagAll();
@@ -281,7 +255,6 @@ namespace CmsWeb.Areas.Main.Controllers
         public ContentResult UnTagAll()
         {
             var m = new QueryModel2();
-            m.LoadScratchPad();
             m.UnTagAll();
             var c = new ContentResult();
             c.Content = "Add";
@@ -291,7 +264,6 @@ namespace CmsWeb.Areas.Main.Controllers
         public ContentResult AddContact()
         {
             var m = new QueryModel2();
-            m.LoadScratchPad();
             var cid = CmsData.Contact.AddContact(m.QueryId.Value);
             return Content("/Contact/" + cid);
         }
@@ -299,7 +271,6 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult AddTasks()
         {
             var m = new QueryModel2();
-            m.LoadScratchPad();
             var c = new ContentResult();
             c.Content = Task.AddTasks(m.QueryId.Value).ToString();
             return c;

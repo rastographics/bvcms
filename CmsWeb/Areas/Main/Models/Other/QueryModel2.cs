@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CmsData;
@@ -17,26 +19,30 @@ namespace CmsWeb.Models
         public QueryModel2()
         {
             Db = DbUtil.Db;
+            Db.SetUserPreference("NewCategories", "false");
+            ConditionName = "Group";
+            Direction = "asc";
+            TagTypeId = DbUtil.TagTypeId_Personal;
+            TagName = Util2.CurrentTagName;
+            TagOwner = Util2.CurrentTagOwnerId;
         }
+
         private Condition topclause;
         [JsonIgnore]
         public Condition TopClause
         {
             get
             {
-                var tc =  topclause ?? (topclause = QueryId == null
+                if (topclause != null)
+                    return topclause;
+                topclause = topclause ?? (topclause = QueryId == null
                     ? Db.FetchLastQuery()
                     : Db.LoadCopyOfExistingQuery(QueryId.Value));
-                QueryId = tc.Id;
-                ConditionName = "Group";
-                return tc;
+                return topclause;
             }
         }
         public string Description { get; set; }
         public Guid? QueryId { get; set; }
-        public void LoadScratchPad()
-        {
-        }
 
         private string conditionName;
         public string ConditionName
@@ -87,7 +93,7 @@ namespace CmsWeb.Models
         public bool AddToGroupEnabled { get; set; }
         public bool AddEnabled { get; set; }
         public bool RemoveEnabled { get; set; }
-        public bool SelectMultiple { get; set; }
+        public bool SelectMultiple { get { return Comparison.EndsWith("OneOf"); } }
         public string ConditionText { get { return fieldMap.Title; } }
         private static List<CodeValueItem> BitCodes =
             new List<CodeValueItem> 
@@ -104,18 +110,12 @@ namespace CmsWeb.Models
                 return dt;
             return null;
         }
-
         public string DateString(DateTime? dt)
         {
             if (dt.HasValue)
                 return dt.Value.ToShortDateString();
             return "";
         }
-
-//        public void UpdateCondition(QueryBuilderClause c)
-//        {
-//        }
-
         [JsonIgnore]
         public Condition Selected
         {
@@ -130,8 +130,8 @@ namespace CmsWeb.Models
             var c = Selected;
             if (c == null)
                 return;
-            CompareData = Comparisons().ToList();
             ConditionName = c.FieldInfo.Name;
+            CompareData = Comparisons().ToList();
             Comparison = c.Comparison;
 
             if (QuartersVisible)
@@ -160,15 +160,15 @@ namespace CmsWeb.Models
                         CodeData = StandardExtraValues.ExtraValueCodes();
                     else if (fieldMap.DataSource == "Campuses")
                         CodeData = Campuses();
-						  else if( fieldMap.DataSource == "Activities" )
-						  {
-							  var ret = ( from e in DbUtil.Db.CheckInActivities select e.Activity ).Distinct();
-							  CodeData = from e in ret
-								  select new SelectListItem() {Text = e, Value = e};
-						  }
-						  else
-							  CodeData = CodeValueModel.ConvertToSelect( Util.CallMethod( cvctl, fieldMap.DataSource ), fieldMap.DataValueField );
-		            break;
+                    else if (fieldMap.DataSource == "Activities")
+                    {
+                        var ret = (from e in DbUtil.Db.CheckInActivities select e.Activity).Distinct();
+                        CodeData = from e in ret
+                                   select new SelectListItem() { Text = e, Value = e };
+                    }
+                    else
+                        CodeData = CodeValueModel.ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
+                    break;
                 case FieldType.DateField:
                     CodeData = CodeValueModel.ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
                     break;
@@ -233,7 +233,6 @@ namespace CmsWeb.Models
             OrgType = c.OrgType;
             StartDate = DateString(c.StartDate);
             EndDate = DateString(c.EndDate);
-            SelectMultiple = c.HasMultipleCodes;
             AddToGroupEnabled = c.IsGroup;
             AddEnabled = !c.IsFirst;
             RemoveEnabled = !c.IsFirst;
@@ -255,7 +254,7 @@ namespace CmsWeb.Models
                     PmmLabels = c.Tags.Split(',').Select(vv => vv).ToArray();
                 var cv = new CodeValueModel();
                 PmmLabelData = CodeValueModel.ConvertToSelect(CodeValueModel.PmmLabels(), "Id");
-                if(PmmLabels != null)
+                if (PmmLabels != null)
                     foreach (var i in PmmLabelData)
                         i.Selected = PmmLabels.Contains(i.Value);
             }
@@ -263,33 +262,6 @@ namespace CmsWeb.Models
                 Ministry = c.Program;
             //SavedQueryDesc = c.SavedQueryIdDesc;
         }
-
-        public void SetCodes()
-        {
-            SelectMultiple = Comparison.EndsWith("OneOf");
-        }
-
-//        public void NewCondition(QueryBuilderClause gc, int order)
-//        {
-//        }
-
-        public string SaveQuery()
-        {
-            return null;
-        }
-
-        public void AddConditionToGroup()
-        {
-        }
-
-        public void AddConditionAfterCurrent()
-        {
-        }
-
-        public void DeleteCondition()
-        {
-        }
-
         public void UpdateCondition()
         {
             var c = Selected;
@@ -355,19 +327,65 @@ namespace CmsWeb.Models
             else
                 c.Tags = null;
             c.Description = SavedQueryDesc;
+            TopClause.Save(Db, increment: true);
+        }
+
+        public string SaveQuery(string desc)
+        {
+            var query = (from qq in DbUtil.Db.Queries
+                         where qq.QueryId == TopClause.Id
+                         select qq).Single();
+
+            var admin = HttpContext.Current.User.IsInRole("Admin");
+            var saveto = Db.QueryBuilderClauses.FirstOrDefault(c =>
+                (c.SavedBy == Util.UserName || admin) && c.Description == SavedQueryDesc);
+            var isStatusFlag = Regex.IsMatch(SavedQueryDesc, @"\AF\d\d:", RegexOptions.IgnoreCase);
+            if (isStatusFlag)
+            {
+                var prefix = SavedQueryDesc.Substring(0, 4);
+                var exis = Db.QueryBuilderClauses.FirstOrDefault(c => c.Description.StartsWith(prefix));
+                if (exis != null)
+                    if ((!admin && exis.SavedBy != Util.UserName) || exis.Description != SavedQueryDesc)
+                        return "error: StatusFlag {0} already exists".Fmt(prefix);
+            }
+            if (saveto == null)
+            {
+                saveto = new QueryBuilderClause();
+                Db.QueryBuilderClauses.InsertOnSubmit(saveto);
+                saveto.SavedBy = Util.UserName;
+            }
+            //saveto.CopyFromAll(Qb, DbUtil.Db); // save Qb on top of existing
+            if (!admin)
+                saveto.SavedBy = Util.UserName;
+            saveto.Description = SavedQueryDesc;
+            saveto.IsPublic = IsPublic;
             Db.SubmitChanges();
-        }
 
-        public void CopyAsNew()
-        {
-        }
+            query.Name = desc;
+            Description = SavedQueryDesc;
 
-        public void InsertGroupAbove()
+            return "";
+        }
+        public void AddConditionToGroup()
         {
+            Selected.AddNewClause();
+            TopClause.Save(Db);
+        }
+        public void AddConditionAfterCurrent()
+        {
+            Selected.Parent.AddNewClause();
+            TopClause.Save(Db);
+        }
+        public void DeleteCondition()
+        {
+            Selected.DeleteClause();
+            TopClause.Save(Db, increment: true);
         }
 
         public IEnumerable<SelectListItem> Comparisons()
         {
+            if (!ConditionName.HasValue())
+                ConditionName = "Group";
             return from c in CompareClass.Comparisons
                    where c.FieldType == fieldMap.Type
                    select new SelectListItem { Text = c.CompType.ToString(), Value = c.CompType.ToString() };
@@ -449,7 +467,7 @@ namespace CmsWeb.Models
         {
             var roles = Db.CurrentRoles();
             var q = from ot in Db.DivOrgs
-                where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
+                    where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
                     where ot.DivId == (divid ?? 0)
                     && (SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14
                         || ot.Organization.OrganizationStatusId == 30)
@@ -484,79 +502,270 @@ namespace CmsWeb.Models
 
         public IEnumerable<CategoryClass> FieldCategories()
         {
-            yield break;
+            var q = from c in CategoryClass.Categories
+                    where c.Title != "Grouping"
+                    select c;
+            return q;
         }
-
-        public IEnumerable<SelectListItem> SavedQueries()
+        public List<SelectListItem> SavedQueries()
         {
-            yield break;
+            var cv = new CodeValueModel();
+            return CodeValueModel.ConvertToSelect(cv.UserQueries(), "Code");
         }
-
-        public IEnumerable<SelectListItem> Ministries()
+        public List<SelectListItem> Ministries()
         {
-            yield break;
+            var q = from t in Db.Ministries
+                    orderby t.MinistryDescription
+                    select new SelectListItem
+                    {
+                        Value = t.MinistryId.ToString(),
+                        Text = t.MinistryName
+                    };
+            var list = q.ToList();
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
+            return list;
         }
 
-//        public int FetchCount()
-//        {
-//            return 0;
-//        }
+        private int count;
+        private int TagTypeId { get; set; }
+        private string TagName { get; set; }
+        private int? TagOwner { get; set; }
 
-        public List<CmsWeb.Models.PeopleInfo> Results { get; set; }
+        public List<PeopleInfo> Results { get; set; }
         public void PopulateResults()
         {
+            var query = PersonQuery();
+            count = query.Count();
+            query = ApplySort(query);
+            query = query.Skip(StartRow).Take(PageSize.Value);
+            Results = FetchPeopleList(query).ToList();
         }
-
-//        public IEnumerable<CmsWeb.Models.PeopleInfo> FetchPeopleList()
-//        {
-//            yield break;
-//        }
+        private IQueryable<Person> PersonQuery()
+        {
+            Db.SetNoLock();
+            var q = Db.People.Where(TopClause.Predicate(Db));
+            if (TopClause.ParentsOf)
+                return Db.PersonQueryParents(q);
+            return q;
+        }
+        private IQueryable<Person> ApplySort(IQueryable<Person> q)
+        {
+            if (Sort == null)
+                Sort = "Name";
+            if (Direction != "desc")
+                switch (Sort)
+                {
+                    case "Name":
+                        q = from p in q
+                            orderby p.LastName,
+                            p.FirstName,
+                            p.PeopleId
+                            select p;
+                        break;
+                    case "Status":
+                        q = from p in q
+                            orderby p.MemberStatus.Code,
+                            p.LastName,
+                            p.FirstName,
+                            p.PeopleId
+                            select p;
+                        break;
+                    case "Address":
+                        q = from p in q
+                            orderby p.PrimaryState,
+                            p.PrimaryCity,
+                            p.PrimaryAddress,
+                            p.PeopleId
+                            select p;
+                        break;
+                    case "Fellowship Leader":
+                        q = from p in q
+                            orderby p.BFClass.LeaderName,
+                            p.LastName,
+                            p.FirstName,
+                            p.PeopleId
+                            select p;
+                        break;
+                    case "Employer":
+                        q = from p in q
+                            orderby p.EmployerOther,
+                            p.LastName,
+                            p.FirstName,
+                            p.PeopleId
+                            select p;
+                        break;
+                    case "Communication":
+                        q = from p in q
+                            orderby p.EmailAddress,
+                            p.LastName,
+                            p.FirstName,
+                            p.PeopleId
+                            select p;
+                        break;
+                    case "DOB":
+                        q = from p in q
+                            orderby p.BirthMonth, p.BirthDay,
+                            p.LastName, p.FirstName
+                            select p;
+                        break;
+                }
+            else
+                switch (Sort)
+                {
+                    case "Status":
+                        q = from p in q
+                            orderby p.MemberStatus.Code descending,
+                            p.LastName descending,
+                            p.FirstName descending,
+                            p.PeopleId descending
+                            select p;
+                        break;
+                    case "Address":
+                        q = from p in q
+                            orderby p.PrimaryState descending,
+                            p.PrimaryCity descending,
+                            p.PrimaryAddress descending,
+                            p.PeopleId descending
+                            select p;
+                        break;
+                    case "Name":
+                        q = from p in q
+                            orderby p.LastName descending,
+                            p.LastName descending,
+                            p.PeopleId descending
+                            select p;
+                        break;
+                    case "Fellowship Leader":
+                        q = from p in q
+                            orderby p.BFClass.LeaderName descending,
+                            p.LastName descending,
+                            p.FirstName descending,
+                            p.PeopleId descending
+                            select p;
+                        break;
+                    case "Employer":
+                        q = from p in q
+                            orderby p.EmployerOther descending,
+                            p.LastName descending,
+                            p.FirstName descending,
+                            p.PeopleId descending
+                            select p;
+                        break;
+                    case "Communication":
+                        q = from p in q
+                            orderby p.EmailAddress descending,
+                            p.LastName descending,
+                            p.FirstName descending,
+                            p.PeopleId descending
+                            select p;
+                        break;
+                    case "DOB":
+                        q = from p in q
+                            orderby p.BirthMonth descending, p.BirthDay descending,
+                            p.LastName descending, p.FirstName descending
+                            select p;
+                        break;
+                }
+            return q;
+        }
+        private IEnumerable<PeopleInfo> FetchPeopleList(IQueryable<Person> query)
+        {
+            if (query == null)
+            {
+                Db.SetNoLock();
+                query = PersonQuery();
+                count = query.Count();
+            }
+            var q = from p in query
+                    select new PeopleInfo
+                    {
+                        PeopleId = p.PeopleId,
+                        Name = p.Name,
+                        BirthDate = Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay),
+                        Address = p.PrimaryAddress,
+                        Address2 = p.PrimaryAddress2,
+                        CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
+                        HomePhone = p.HomePhone,
+                        CellPhone = p.CellPhone,
+                        WorkPhone = p.WorkPhone,
+                        PhonePref = p.PhonePrefId,
+                        MemberStatus = p.MemberStatus.Description,
+                        Email = p.EmailAddress,
+                        BFTeacher = p.BFClass.LeaderName,
+                        BFTeacherId = p.BFClass.LeaderId,
+                        Employer = p.EmployerOther,
+                        Age = p.Age.ToString(),
+                        HasTag = p.Tags.Any(t => t.Tag.Name == TagName && t.Tag.PeopleId == TagOwner && t.Tag.TypeId == TagTypeId),
+                    };
+            return q;
+        }
 
         public Tag TagAllIds()
         {
-            return null;
+            var q = PersonQuery();
+            var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
+            Db.TagAll(q, tag);
+            return tag;
         }
-
-//        public IQueryable<Person> PersonQuery()
-//        {
-//            return null;
-//        }
 
         public void TagAll(Tag tag = null)
         {
+            var q = PersonQuery();
+            if (tag != null)
+                Db.TagAll(q, tag);
+            else
+                Db.TagAll(q);
         }
 
         public void UnTagAll()
         {
+            var q = PersonQuery();
+            Db.UnTagAll(q);
         }
-
-//        public IEnumerable<CmsWeb.Models.PeopleInfo> FetchPeopleList(IQueryable<Person> query)
-//        {
-//            yield break;
-//        }
-
-//        public IQueryable<Person> ApplySort(IQueryable<Person> q)
-//        {
-//            return null;
-//        }
 
         public Dictionary<string, string> Errors { get; set; }
         public bool ShowResults { get; set; }
         public string Sort { get; set; }
         public string Direction { get; set; }
-        public int? Page { get; set; }
-        public int StartRow { get; set; }
-        public int? PageSize { get; set; }
-        public int Count { get; private set; }
-        public PagerModel pagerModel()
+        private int? _Page;
+        public int? Page
         {
-            return null;
+            get { return _Page ?? 1; }
+            set { _Page = value; }
+        }
+        private int StartRow
+        {
+            get { return ((Page ?? 1) - 1) * PageSize ?? 10; }
+        }
+        public int? PageSize
+        {
+            get { return DbUtil.Db.UserPreference("PageSize", "10").ToInt(); }
+            set
+            {
+                if (value.HasValue)
+                    DbUtil.Db.SetUserPreference("PageSize", value);
+            }
         }
 
-//        public PagerModel pagerModel()
-//        {
-//            return null;
-//        }
+        public int Count { get { return count; } }
+
+        public PagerModel pagerModel()
+        {
+            return new PagerModel
+            {
+                Page = Page ?? 1,
+                PageSize = PageSize ?? 10,
+                Action = "List",
+                Controller = "Task",
+                Count = Count,
+                ToggleTarget = true
+            };
+        }
+
+        //        public PagerModel pagerModel()
+        //        {
+        //            return null;
+        //        }
     }
     public class QueryClauseDisplay2
     {
