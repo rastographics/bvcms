@@ -45,8 +45,9 @@ namespace CmsCheckin
             grade.Visible = Program.AskGrade;
             gradelab.Visible = Program.AskGrade;
 
-            if (dob.Text.Age().ToInt() < 18)
-                single.Checked = true;
+            //if (Marital == 0 && dob.Text.Age().ToInt() < 18)
+            //    single.Checked = true;
+
             Program.TimerStart(timer1_Tick);
 
         }

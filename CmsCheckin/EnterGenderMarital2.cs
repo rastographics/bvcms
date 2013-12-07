@@ -23,8 +23,8 @@ namespace CmsCheckin
             addr.Text = home.addr.textBox1.Text;
             zip.Text = home.zip.textBox1.Text;
 
-            if (dob.Text.Age().ToInt() < 18)
-                single.Checked = true;
+//            if (Marital == 0 && dob.Text.Age().ToInt() < 18)
+//                single.Checked = true;
             Program.TimerStart(timer1_Tick);
 
         }
