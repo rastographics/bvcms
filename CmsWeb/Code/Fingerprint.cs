@@ -100,4 +100,8 @@ public class Fingerprint
     {
         return DbUtil.Db.UserPreference("UseNewLook", "false").ToBool();
     }
+    public static bool TestSb2()
+    {
+        return DbUtil.Db.UserPreference("TestSb2", "false").ToBool();
+    }
 }

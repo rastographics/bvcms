@@ -16,7 +16,7 @@ $(function () {
             $('iframe', this).attr("src", "");
         }
     });
-    $('body').on("click", 'a.help', function (event) {
+    $('a.help').live("click", function (event) {
         event.preventDefault();
         var d = $('#QueryConditionHelp');
         if (this.href.endsWith('-'))
@@ -42,7 +42,7 @@ $(function () {
             $("#selectconditions select").css("width", "100%");
         });
     });
-    $('body').on("click", '#AddToGroup[href]', function () {
+    $('#AddToGroup[href]').live("click", function () {
         qs = $('#conditionForm').serialize();
         $.post('/QueryBuilder2/AddToGroup/', qs, function (ret) {
             var a = ret.split("<!---------->");
@@ -51,7 +51,7 @@ $(function () {
         });
         return false;
     });
-    $('body').on("click", '#Add[href]', function () {
+    $('#Add[href]').live("click", function () {
         qs = $('#conditionForm').serialize();
         $.post('/QueryBuilder2/Add/', qs, function (ret) {
             var a = ret.split("<!---------->");
@@ -60,7 +60,7 @@ $(function () {
         });
         return false;
     });
-    $('body').on("click", '#Update[href]', function () {
+    $('#Update[href]').live("click", function () {
         qs = $('#conditionForm').serialize();
         $.post('/QueryBuilder2/Update/', qs, function (ret) {
             var a = ret.split("<!---------->");
@@ -69,14 +69,14 @@ $(function () {
         });
         return false;
     });
-    $('body').on("click", '#Remove[href]', function () {
+    $('#Remove[href]').live("click", function () {
         qs = $('#conditionForm').serialize();
         $.post('/QueryBuilder2/Remove/', qs, function (ret) {
             UpdateView(ret);
             $.post('/QueryBuilder2/Conditions/', null, function (ret) {
                 FillConditionGrid(ret);
             });
-        });
+        }, "json");
         return false;
     });
     $('#Run').click(function (ev) {
@@ -94,11 +94,11 @@ $(function () {
     $('#SaveQueryDiv').dialog(dialogOptions);
     $('#OpenQueryDiv').dialog(dialogOptions);
 
-    $('body').on("click", '#ShowSaveQuery', function (ev) {
+    $('#ShowSaveQuery').live("click", function (ev) {
         $('#SaveQueryDesc').val($('#Description').text());
         $('#SaveQueryDiv').dialog("open");
     });
-    $('body').on("click", '#ShowOpenQuery', function (ev) {
+    $('#ShowOpenQuery').live("click", function (ev) {
         $.post("/QueryBuilder2/SavedQueries", null, function (ret) {
             $('#ExistingQueries').fillOptions(ret);
         });
@@ -135,11 +135,6 @@ function HighlightCondition() {
         bindings: {
             'ins': function (t) {
                 $.post("/QueryBuilder2/InsGroupAbove/" + t.id, null, function (ret) {
-                    $.navigate("/QueryBuilder2/Main/" + ret);
-                });
-            },
-            'copy': function (t) {
-                $.post("/QueryBuilder2/CopyAsNew/" + t.id, null, function (ret) {
                     $.navigate("/QueryBuilder2/Main/" + ret);
                 });
             }
@@ -307,13 +302,13 @@ function EditCondition(ev) {
         $('div.FieldLink a').click(function (ev) {
             ev.preventDefault();
             $.post('/QueryBuilder2/SelectCondition/', {
-                ConditionName: ev.target.id,
-                Id: $('#SelectedId').val()
+                id: $('#SelectedId').val(),
+                conditionName: ev.target.id
             }, function (ret) {
                 //$.unblockUI();
                 $('#QueryConditionSelect').dialog("close");
                 UpdateView(ret);
-            });
+            }, "json");
             return false;
         });
         $("a.closeit").click(function (ev) {

@@ -35,6 +35,7 @@ namespace CmsWeb.Areas.Main
             AddRoute(context, "OrgGroups");
             AddRoute(context, "OrgChildren");
             AddRoute(context, "SavedQuery");
+            AddRoute(context, "SavedQuery2");
             AddRoute(context, "Reports");
             AddRoute(context, "Person");
             AddRoute(context, "Family");

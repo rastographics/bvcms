@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using CmsData;
@@ -40,8 +39,13 @@ namespace CmsWeb.Models
                     : Db.LoadCopyOfExistingQuery(QueryId.Value));
                 return topclause;
             }
+            set
+            {
+                topclause = value;
+                QueryId = value.Id;
+            }
         }
-        public string Description { get; set; }
+        public string Description { get { return topclause.Description; } }
         public Guid? QueryId { get; set; }
 
         private string conditionName;
@@ -125,11 +129,73 @@ namespace CmsWeb.Models
                 return TopClause.AllConditions[gid];
             }
         }
+        public void SetVisibility()
+        {
+            CodeData = null;
+            ConditionName = ConditionName;
+            CompareData = Comparisons().ToList();
+            if (QuartersVisible)
+                QuartersLabel = fieldMap.QuartersTitle;
+            if (TagsVisible)
+            {
+                var cv = new CodeValueModel();
+                TagData = CodeValueModel.ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Code");
+            }
+            if (PmmLabelsVisible)
+            {
+                var cv = new CodeValueModel();
+                PmmLabelData = CodeValueModel.ConvertToSelect(CodeValueModel.PmmLabels(), "Code");
+            }
+
+            var cvctl = new CodeValueModel();
+            switch (fieldMap.Type)
+            {
+                case FieldType.Bit:
+                case FieldType.NullBit:
+                    CodeData = CodeValueModel.ConvertToSelect(BitCodes, fieldMap.DataValueField);
+                    break;
+                case FieldType.NullCode:
+                case FieldType.Code:
+                case FieldType.CodeStr:
+                    if (fieldMap.DataSource == "ExtraValues")
+                        CodeData = StandardExtraValues.ExtraValueCodes();
+                    else if (fieldMap.DataSource == "Campuses")
+                        CodeData = Campuses();
+						  else if( fieldMap.DataSource == "Activities" )
+						  {
+							  var ret = ( from e in DbUtil.Db.CheckInActivities select e.Activity ).Distinct();
+							  CodeData = from e in ret
+								  select new SelectListItem() {Text = e, Value = e};
+						  }
+						  else
+							  CodeData = CodeValueModel.ConvertToSelect( Util.CallMethod( cvctl, fieldMap.DataSource ), fieldMap.DataValueField );
+		            break;
+                case FieldType.DateField:
+                    CodeData = CodeValueModel.ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
+                    break;
+            }
+            var cc = Selected;
+            if (cc == null)
+                return;
+
+            if (fieldMap.Type == FieldType.Group)
+            {
+                CompareData = Comparisons().ToList();
+                UpdateEnabled = cc.IsGroup;
+                return;
+            }
+            UpdateEnabled = !cc.IsGroup && !cc.IsFirst;
+            AddToGroupEnabled = cc.IsGroup;
+            AddEnabled = !cc.IsFirst;
+            RemoveEnabled = !cc.IsFirst;
+        }
         public void EditCondition()
         {
             var c = Selected;
             if (c == null)
                 return;
+            SetVisibility();
+
             ConditionName = c.FieldInfo.Name;
             CompareData = Comparisons().ToList();
             Comparison = c.Comparison;
@@ -330,56 +396,128 @@ namespace CmsWeb.Models
             TopClause.Save(Db, increment: true);
         }
 
-        public string SaveQuery(string desc)
+        public string SaveQuery()
         {
-            var query = (from qq in DbUtil.Db.Queries
-                         where qq.QueryId == TopClause.Id
-                         select qq).Single();
-
-            var admin = HttpContext.Current.User.IsInRole("Admin");
-            var saveto = Db.QueryBuilderClauses.FirstOrDefault(c =>
-                (c.SavedBy == Util.UserName || admin) && c.Description == SavedQueryDesc);
             var isStatusFlag = Regex.IsMatch(SavedQueryDesc, @"\AF\d\d:", RegexOptions.IgnoreCase);
             if (isStatusFlag)
             {
                 var prefix = SavedQueryDesc.Substring(0, 4);
-                var exis = Db.QueryBuilderClauses.FirstOrDefault(c => c.Description.StartsWith(prefix));
+                // see if there is a status flag query with this flag number already existing
+                var exis = Db.Queries.FirstOrDefault(c => c.Name.StartsWith(prefix));
                 if (exis != null)
-                    if ((!admin && exis.SavedBy != Util.UserName) || exis.Description != SavedQueryDesc)
-                        return "error: StatusFlag {0} already exists".Fmt(prefix);
+                {
+                    if (exis.Owner != Util.UserName)
+                        return "error: StatusFlag {0} already exists by owner '{1}'".Fmt(prefix, exis.Owner);
+                    if (exis.Name != SavedQueryDesc)
+                        return "error: StatusFlag {0} already exists with a different name '{1}'".Fmt(prefix, exis.Name);
+                    exis.Text = TopClause.ToXml();
+                    exis.Ispublic = IsPublic;
+                    return "";
+                }
             }
-            if (saveto == null)
-            {
-                saveto = new QueryBuilderClause();
-                Db.QueryBuilderClauses.InsertOnSubmit(saveto);
-                saveto.SavedBy = Util.UserName;
-            }
-            //saveto.CopyFromAll(Qb, DbUtil.Db); // save Qb on top of existing
-            if (!admin)
-                saveto.SavedBy = Util.UserName;
-            saveto.Description = SavedQueryDesc;
-            saveto.IsPublic = IsPublic;
-            Db.SubmitChanges();
-
-            query.Name = desc;
-            Description = SavedQueryDesc;
-
+            TopClause.IsPublic = IsPublic;
+            TopClause.Description = SavedQueryDesc;
+            TopClause.Save(Db, increment: true);
             return "";
+        }
+        private void NewCondition(Condition gc)
+        {
+            var c = gc.AddNewClause();
+            UpdateCondition(c);
         }
         public void AddConditionToGroup()
         {
-            Selected.AddNewClause();
+            NewCondition(Selected);
             TopClause.Save(Db);
         }
         public void AddConditionAfterCurrent()
         {
-            Selected.Parent.AddNewClause();
+            NewCondition(Selected.Parent);
             TopClause.Save(Db);
         }
         public void DeleteCondition()
         {
-            Selected.DeleteClause();
+            var c = Selected;
+            SelectedId = c.Parent.Id;
+            c.DeleteClause();
+            SetVisibility();
             TopClause.Save(Db, increment: true);
+        }
+        public void InsertGroupAbove()
+        {
+            var g = new Condition
+            {
+                Id = Guid.NewGuid(),
+                ConditionName = QueryType.Group.ToString(),
+                Comparison = CompareType.AnyTrue.ToString(),
+                AllConditions = Selected.AllConditions
+            };
+            if (Selected.IsFirst)
+            {
+                Selected.ParentId = g.Id;
+                g.ParentId = null;
+            }
+            else
+            {
+                var list = Selected.Parent.Conditions.Where(cc => cc.Order >= Selected.Order).ToList();
+                g.ParentId = Selected.ParentId;
+                foreach (var c in list)
+                    c.ParentId = g.Id;
+                g.Order = Selected.MaxClauseOrder();
+            }
+            Selected.AllConditions.Add(g.Id, g);
+            if (g.IsFirst)
+            {
+                // g will now becojme the new TopClause
+                g.Description = TopClause.Description;
+
+                // swap TopClauseId with the new GroupId so the saved query will have the same id
+                var tcid = TopClause.Id;
+                var gid = g.Id;
+                var conditions = TopClause.Conditions.ToList();
+                TopClause.Id = gid;
+                foreach (var c in conditions)
+                    c.ParentId = gid;
+                g.Id = tcid;
+                TopClause.ParentId = g.Id;
+                TopClause = g;
+                TopClause.Save(Db);
+            }
+            TopClause.Save(Db, increment: true);
+            //            var cc = Db.LoadQueryById(SelectedId);
+            //            var g = new QueryBuilderClause();
+            //            g.SetQueryType(QueryType.Group);
+            //            g.SetComparisonType(CompareType.AllTrue);
+            //            g.ClauseOrder = cc.ClauseOrder;
+            //            if (cc.IsFirst)
+            //                cc.Parent = g;
+            //            else
+            //            {
+            //                var currParent = cc.Parent;
+            //                // find all clauses from cc down at same level
+            //                var q = from c in cc.Parent.Clauses
+            //                        orderby c.ClauseOrder
+            //                        where c.ClauseOrder >= cc.ClauseOrder
+            //                        select c;
+            //                foreach (var c in q)
+            //                    c.Parent = g;   // change to new parent
+            //                g.Parent = currParent;
+            //            }
+            //            if (cc.SavedBy.HasValue())
+            //            {
+            //                g.SavedBy = Util.UserName;
+            //                g.Description = cc.Description;
+            //                g.CreatedOn = cc.CreatedOn;
+            //                cc.IsPublic = false;
+            //                cc.Description = null;
+            //                cc.SavedBy = null;
+            //            }
+            //            Db.SubmitChanges();
+            //            if (g.IsFirst)
+            //            {
+            //                Qb = g;
+            //                QueryId = g.QueryId;
+            //            }
         }
 
         public IEnumerable<SelectListItem> Comparisons()
@@ -724,6 +862,52 @@ namespace CmsWeb.Models
         }
 
         public Dictionary<string, string> Errors { get; set; }
+        public bool Validate()
+        {
+            SetVisibility();
+            Errors = new Dictionary<string, string>();
+            DateTime dt = DateTime.MinValue;
+            if (StartDateVisible)
+                if (!DateTime.TryParse(StartDate, out dt) || dt.Year <= 1900 || dt.Year >= 2200)
+                    Errors.Add("StartDate", "invalid");
+            if (EndDateVisible && EndDate.HasValue())
+                if (!DateTime.TryParse(EndDate, out dt) || dt.Year <= 1900 || dt.Year >= 2200)
+                    Errors.Add("EndDate", "invalid");
+            int i = 0;
+            if (DaysVisible && !int.TryParse(Days, out i))
+                Errors.Add("Days", "must be integer");
+            if (i > 10000)
+                Errors.Add("Days", "days > 1000");
+            if (AgeVisible && !int.TryParse(Age, out i))
+                Errors.Add("Age", "must be integer");
+
+
+            if (TagsVisible && string.Join(",", Tags).Length > 500)
+                Errors.Add("tagvalues", "too many tags selected");
+
+            if (CodesVisible && CodeValues.Length == 0)
+                Errors.Add("CodeValues", "must select item(s)");
+
+            if (NumberVisible && !NumberValue.HasValue())
+                Errors.Add("NumberValue", "must have a number value");
+            else
+            {
+                float f;
+                if (NumberVisible && NumberValue.HasValue())
+                    if (!float.TryParse(NumberValue, out f))
+                        Errors.Add("NumberValue", "must have a valid number value (no decoration)");
+            }
+
+            if (DateVisible && !Comparison.EndsWith("Equal"))
+                if (!DateTime.TryParse(DateValue, out dt) || dt.Year <= 1900 || dt.Year >= 2200)
+                    Errors.Add("DateValue", "need valid date");
+
+            if (Comparison == "Contains")
+                if (!TextValue.HasValue())
+                    Errors.Add("TextValue", "cannot be empty");
+
+            return Errors.Count == 0;
+        }
         public bool ShowResults { get; set; }
         public string Sort { get; set; }
         public string Direction { get; set; }

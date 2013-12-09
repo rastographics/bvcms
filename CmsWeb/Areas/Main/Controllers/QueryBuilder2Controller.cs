@@ -11,6 +11,7 @@ using System.Linq;
 using System.Data.Linq;
 using System.Threading;
 using System.Web.Mvc;
+using Elmah;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
@@ -19,7 +20,7 @@ using CmsData;
 namespace CmsWeb.Areas.Main.Controllers
 {
     [SessionExpire]
-    public class QueryBuilder2Controller : CmsStaffAsyncController
+    public class QueryBuilder2Controller : CmsStaffController
     {
         public ActionResult NewQuery()
         {
@@ -28,10 +29,13 @@ namespace CmsWeb.Areas.Main.Controllers
             TempData["newsearch"] = ncid;
             return RedirectToAction("Main");
         }
+
         public ActionResult Main(Guid? id, int? run)
         {
             if (Fingerprint.UseNewLook())
                 return Redirect("/Query");
+            if(!Fingerprint.TestSb2())
+                return Redirect("/QueryBuilder");
 
             ViewData["Title"] = "QueryBuilder";
             ViewData["OnQueryBuilder"] = "true";
@@ -56,29 +60,26 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(m);
         }
         [HttpPost]
-        public JsonResult SelectCondition(Guid id, string ConditionName)
+        public ActionResult SelectCondition(Guid id, string conditionName)
         {
-            var m = new QueryModel2 { ConditionName = ConditionName, SelectedId = id };
+            var m = new QueryModel2
+            {
+                SelectedId = id,
+                ConditionName = conditionName,
+                CodeValues = new string[0],
+                Program = 0,
+                Comparison = "Equal"
+            };
+            m.SetVisibility();
 
-            m.TextValue = "";
-            m.Comparison = "";
-            m.IntegerValue = "";
-            m.DateValue = "";
-            m.CodeValue = "";
-            m.CodeValues = new string[0];
-            m.Days = "";
-            m.Age = "";
-            m.Program = 0;
-            m.Quarters = "";
-            m.StartDate = "";
-            m.EndDate = "";
-
-            return Json(m);
+            var j = JsonConvert.SerializeObject(m, Formatting.Indented);
+            return Content(j);
         }
         [HttpPost]
         public JsonResult GetCodes(string Comparison, string ConditionName)
         {
             var m = new QueryModel2 { Comparison = Comparison, ConditionName = ConditionName };
+            m.SetVisibility();
             return Json(new
             {
                 CodesVisible = m.CodesVisible,
@@ -99,48 +100,38 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult AddToGroup(QueryModel2 m)
         {
-            if (Validate(m))
+            if (m.Validate())
                 m.AddConditionToGroup();
             return PartialView("TryConditions", m);
         }
         [HttpPost]
         public ActionResult Add(QueryModel2 m)
         {
-            if (Validate(m))
+            if (m.Validate())
                 m.AddConditionAfterCurrent();
             return PartialView("TryConditions", m);
         }
         [HttpPost]
         public ActionResult Update(QueryModel2 m)
         {
-            if (Validate(m))
+            if (m.Validate())
                 m.UpdateCondition();
             return PartialView("TryConditions", m);
         }
         [HttpPost]
-        public JsonResult Remove(QueryModel2 m)
+        public ActionResult Remove(QueryModel2 m)
         {
             m.DeleteCondition();
-            return Json(m);
+            return Content(JsonConvert.SerializeObject(m));
         }
         [HttpPost]
         public ActionResult InsGroupAbove(Guid id)
         {
             var m = new QueryModel2 { SelectedId = id };
-            //m.InsertGroupAbove();
-            var c = new ContentResult();
-            c.Content = m.QueryId.ToString();
-            return c;
+            m.InsertGroupAbove();
+            return Content(m.QueryId.ToString());
         }
         [HttpPost]
-        public ActionResult CopyAsNew(Guid id)
-        {
-            var m = new QueryModel2 { SelectedId = id };
-            //m.CopyAsNew();
-            var c = new ContentResult();
-            c.Content = m.QueryId.ToString();
-            return c;
-        }
         public ActionResult Conditions()
         {
             var m = new QueryModel2();
@@ -165,36 +156,14 @@ namespace CmsWeb.Areas.Main.Controllers
             return Json(m.SavedQueries()); ;
         }
         [HttpPost]
-        public ActionResult SaveQuery(Guid QueryId, string SavedQueryDesc, bool IsPublic)
+        public ActionResult SaveQuery(string SavedQueryDesc, bool IsPublic)
         {
-            var m = new QueryModel2() {QueryId = QueryId};
-//            var ret = m.SaveQuery();
-//            if (ret.HasValue())
-//                return Content(ret);
+            var m = new QueryModel2() { SavedQueryDesc = SavedQueryDesc, IsPublic = IsPublic };
+            var ret = m.SaveQuery();
+            if (ret.HasValue())
+                return Content(ret);
             return Content(m.Description);
         }
-        public void Results2Async()
-        {
-            AsyncManager.OutstandingOperations.Increment();
-            string host = Util.Host;
-            ThreadPool.QueueUserWorkItem((e) =>
-            {
-                var Db = new CMSDataContext(Util.GetConnectionString(host));
-                Db.DeleteQueryBitTags();
-                foreach (var a in Db.StatusFlags())
-                {
-                    var t = Db.FetchOrCreateSystemTag(a[0]);
-                    Db.TagAll(Db.PeopleQuery(a[0] + ":" + a[1]), t);
-                    Db.SubmitChanges();
-                }
-                AsyncManager.OutstandingOperations.Decrement();
-            });
-        }
-        public ActionResult Results2Completed()
-        {
-            return null;
-        }
-
         [HttpPost]
         public ActionResult Results(QueryModel2 m)
         {
@@ -276,50 +245,5 @@ namespace CmsWeb.Areas.Main.Controllers
             return c;
         }
 
-        private bool Validate(QueryModel2 m)
-        {
-            m.Errors = new Dictionary<string, string>();
-            DateTime dt = DateTime.MinValue;
-            if (m.StartDateVisible)
-                if (!DateTime.TryParse(m.StartDate, out dt) || dt.Year <= 1900 || dt.Year >= 2200)
-                    m.Errors.Add("StartDate", "invalid");
-            if (m.EndDateVisible && m.EndDate.HasValue())
-                if (!DateTime.TryParse(m.EndDate, out dt) || dt.Year <= 1900 || dt.Year >= 2200)
-                    m.Errors.Add("EndDate", "invalid");
-            int i = 0;
-            if (m.DaysVisible && !int.TryParse(m.Days, out i))
-                m.Errors.Add("Days", "must be integer");
-            if (i > 10000)
-                m.Errors.Add("Days", "days > 1000");
-            if (m.AgeVisible && !int.TryParse(m.Age, out i))
-                m.Errors.Add("Age", "must be integer");
-
-
-            if (m.TagsVisible && string.Join(",", m.Tags).Length > 500)
-                m.Errors.Add("tagvalues", "too many tags selected");
-
-            if (m.CodesVisible && m.CodeValues.Length == 0)
-                m.Errors.Add("CodeValues", "must select item(s)");
-
-            if (m.NumberVisible && !m.NumberValue.HasValue())
-                m.Errors.Add("NumberValue", "must have a number value");
-            else
-            {
-                float f;
-                if (m.NumberVisible && m.NumberValue.HasValue())
-                    if (!float.TryParse(m.NumberValue, out f))
-                        m.Errors.Add("NumberValue", "must have a valid number value (no decoration)");
-            }
-
-            if (m.DateVisible && !m.Comparison.EndsWith("Equal"))
-                if (!DateTime.TryParse(m.DateValue, out dt) || dt.Year <= 1900 || dt.Year >= 2200)
-                    m.Errors.Add("DateValue", "need valid date");
-
-            if (m.Comparison == "Contains")
-                if (!m.TextValue.HasValue())
-                    m.Errors.Add("TextValue", "cannot be empty");
-
-            return m.Errors.Count == 0;
-        }
     }
 }

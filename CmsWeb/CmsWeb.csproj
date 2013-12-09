@@ -264,6 +264,7 @@
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Main\Controllers\QueryBuilder2Controller.cs" />
+    <Compile Include="Areas\Main\Controllers\SavedQuery2Controller.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContacteesModel.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContactorsModel.cs" />
     <Compile Include="Areas\Main\Models\Export\CsvResult.cs" />
@@ -272,6 +273,7 @@
     <Compile Include="Areas\Main\Models\Export\OrgsMembersExcelResult.cs" />
     <Compile Include="Areas\Main\Models\Other\QueryModel2.cs" />
     <Compile Include="Areas\Main\Models\Other\QueryVisibility.cs" />
+    <Compile Include="Areas\Main\Models\Other\SavedQuery2Model.cs" />
     <Compile Include="Areas\Main\Models\Report\CheckinControlModel.cs" />
     <Compile Include="Areas\Main\Models\Report\CheckinControlResult.cs" />
     <Compile Include="Areas\Main\Models\Report\WeeklyDecisionsModel.cs" />
@@ -1338,6 +1340,13 @@
     <Content Include="Scripts\Search\QueryBuilder2.min.js">
       <DependentUpon>QueryBuilder2.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Search\SavedQuery2.js" />
+    <Content Include="Scripts\Search\SavedQuery2.min.js">
+      <DependentUpon>SavedQuery2.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\SavedQueryList.min.js">
+      <DependentUpon>SavedQueryList.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
@@ -1491,6 +1500,10 @@
     <Content Include="Areas\Main\Views\QueryBuilder2\Main.cshtml" />
     <Content Include="Areas\Main\Views\QueryBuilder2\Results.cshtml" />
     <Content Include="Areas\Main\Views\QueryBuilder2\TryConditions.cshtml" />
+    <Content Include="Areas\Main\Views\SavedQuery2\Index.cshtml" />
+    <Content Include="Areas\Main\Views\SavedQuery2\Results.cshtml" />
+    <Content Include="Areas\Main\Views\SavedQuery2\Row.cshtml" />
+    <Content Include="Areas\Main\Views\SavedQuery2\Rows.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
@@ -1624,10 +1637,7 @@
     <Content Include="Scripts\Search\SavedQuery.min.js">
       <DependentUpon>SavedQuery.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\Search\SavedQuery2.js" />
-    <Content Include="Scripts\Search\SavedQuery2.min.js">
-      <DependentUpon>SavedQuery2.js</DependentUpon>
-    </Content>
+    <Content Include="Scripts\Search\SavedQueryList.js" />
     <Content Include="Scripts\Search\SearchAdd.js" />
     <Content Include="Scripts\Search\SearchOrgs.min.js">
       <DependentUpon>SearchOrgs.js</DependentUpon>
@@ -2142,6 +2152,12 @@
     </Content>
     <Content Include="Scripts\Search\QueryBuilder2.min.js.map">
       <DependentUpon>QueryBuilder2.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\SavedQueryList.min.js.map">
+      <DependentUpon>SavedQueryList.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\SavedQuery2.min.js.map">
+      <DependentUpon>SavedQuery2.js</DependentUpon>
     </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>

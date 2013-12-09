@@ -206,6 +206,17 @@ namespace CmsData
                 q = PersonQueryParents(q);
             return q;
         }
+        public IQueryable<Person> PeopleQuery2(string name)
+        {
+            var qB = Queries.FirstOrDefault(cc => cc.Name == name);
+            if (qB == null)
+                return null;
+            var c = qB.ToClause();
+            var q = People.Where(c.Predicate(this));
+            if (c.ParentsOf)
+                q = PersonQueryParents(q);
+            return q;
+        }
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
         {
             var q2 = from p in q
@@ -224,6 +235,18 @@ namespace CmsData
 
             foreach (var i in q3.Distinct())
                 tag.PersonTags.Add(new TagPerson { PeopleId = i.Value });
+            SubmitChanges();
+            return tag.People(this);
+        }
+        public IQueryable<Person> ReturnPrimaryAdults(IQueryable<Person> q)
+        {
+            var q2 = from p in q
+                     from m in p.Family.People
+                     where m.PositionInFamilyId == 10
+                     where m.DeceasedDate == null
+                     select m.PeopleId;
+            var tag = PopulateTemporaryTag(q2.Distinct());
+
             SubmitChanges();
             return tag.People(this);
         }

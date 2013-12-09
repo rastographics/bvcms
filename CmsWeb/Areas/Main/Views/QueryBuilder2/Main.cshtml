@@ -18,7 +18,7 @@
 <form id="conditionForm" action="/QueryBuilder2/Main" method="get">
     <div id="Description"><b>@Model.Description</b></div>
     <div class="roundbox floatleft">
-        <h2 class="helptip" title="Next Step|After selecting a condition and configuring it|then update or add it to the Conditions below">Configure a search condition</h2>
+        <h2 class="helptip" style="color: rgb(218, 0, 0)" title="Next Step|After selecting a condition and configuring it|then update or add it to the Conditions below">Configure a search condition</h2>
         <table id="selectconditions" cellspacing="5">
             <tr>
                 <td>
@@ -183,7 +183,6 @@
     <div class="popupMenu" id="InsCopyMenu">
         <ul>
             <li id="ins">Insert Group Above</li>
-            <li id="copy">Copy As New</li>
         </ul>
     </div>
     <div id="toolbar" style='@(Model.ShowResults ? "" : "display:none")'>

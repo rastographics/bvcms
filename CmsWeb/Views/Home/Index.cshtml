@@ -51,7 +51,7 @@
         <div class="jscroll" style="height: 130px">
             @foreach (var q in Model.MyQueries())
             {
-                <div class="drow"><a href="/QueryBuilder/Main/@q.QueryId">@q.Name</a></div>
+                <div class="drow"><a href="@q.Url">@q.Name</a></div>
             }
         </div>
     </div>

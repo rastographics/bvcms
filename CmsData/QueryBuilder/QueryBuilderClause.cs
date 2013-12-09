@@ -93,6 +93,7 @@ namespace CmsData
         }
         private bool includeDeceased = false;
         public bool ParentsOf { get; set; }
+        public int ReturnPrimaryAdult { get; set; }
         public Expression<Func<Person, bool>> Predicate(CMSDataContext db)
         {
             db.CopySession();

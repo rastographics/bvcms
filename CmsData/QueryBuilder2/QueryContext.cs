@@ -124,6 +124,7 @@ namespace CmsData
                 c = q.ToClause();
             c.Id = q.QueryId; // force these to match
             c.justloadedquery = q;
+            c.Description = q.Name;
             return c;
         }
         public Condition LoadCopyOfExistingQuery(Guid existingId)

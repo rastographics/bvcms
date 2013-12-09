@@ -31,6 +31,8 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (Fingerprint.UseNewLook())
                 return Redirect("/Query");
+            if(Fingerprint.TestSb2())
+                return Redirect("/QueryBuilder2");
 
             ViewData["Title"] = "QueryBuilder";
             ViewData["OnQueryBuilder"] = "true";
