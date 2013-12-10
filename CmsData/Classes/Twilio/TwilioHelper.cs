@@ -167,7 +167,7 @@ namespace CmsData.Classes.Twilio
             else
             {
                 var twilio = new TwilioRestClient(sSID, sToken);
-                var msg = twilio.SendSmsMessage(sFrom, sTo, sBody);
+                var msg = twilio.SendMessage(sFrom, sTo, sBody);
                 if (msg.Status != "failed") return true;
                 else return false;
             }

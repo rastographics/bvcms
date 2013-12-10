@@ -18,8 +18,6 @@ namespace CmsData.View
 		
 		private int _PeopleId;
 		
-		private bool? _Attended;
-		
 		
 		public AttendedAsOf()
 		{
@@ -39,23 +37,6 @@ namespace CmsData.View
 			{
 				if (this._PeopleId != value)
 					this._PeopleId = value;
-			}
-
-		}
-
-		
-		[Column(Name="Attended", Storage="_Attended", DbType="bit")]
-		public bool? Attended
-		{
-			get
-			{
-				return this._Attended;
-			}
-
-			set
-			{
-				if (this._Attended != value)
-					this._Attended = value;
 			}
 
 		}

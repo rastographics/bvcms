@@ -81,7 +81,6 @@ namespace CmsWeb.Areas.People.Controllers
             Session.Remove("CurrentTag");
             FormsAuthentication.SetAuthCookie(user.Username, false);
             CmsWeb.Models.AccountModel.SetUserInfo(user.Username, Session);
-            Util.FormsBasedAuthentication = true;
             Util.UserPeopleId = user.PeopleId;
             Util.UserPreferredName = user.Username;
             return Redirect("/");

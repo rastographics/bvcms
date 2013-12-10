@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -55,6 +56,7 @@ namespace CmsWeb.Models
 
 		public class TotalTransaction
 		{
+            public int Count { get; set; }
 			public decimal Amt { get; set; }
 			public decimal Amtdue { get; set; }
 			public decimal Donate { get; set; }
@@ -62,7 +64,7 @@ namespace CmsWeb.Models
 
 		public TotalTransaction TotalTransactions()
 		{
-			var q0 = FetchTransactions();
+		    var q0 = FetchTransactions();
 			var q = from t in q0
 					group t by 1 into g
 					select new TotalTransaction()
@@ -70,6 +72,7 @@ namespace CmsWeb.Models
 						Amt = g.Sum(tt => tt.Amt ?? 0),
 						Amtdue = g.Sum(tt => tt.Amtdue ?? 0),
 						Donate = g.Sum(tt => tt.Donate ?? 0),
+                        Count = g.Count()
 					};
 			return q.FirstOrDefault();
 		}
@@ -116,6 +119,9 @@ namespace CmsWeb.Models
 								where t.TransactionDate >= startdt || startdt == null
 								where t.TransactionDate <= edt || edt == null
 								select t;
+//			var q0 = _transactions.ToList();
+//            foreach(var t in q0)
+//                Debug.WriteLine("\"{0}\"\t{1}\t{2}", t.Description, t.Id, t.Amt);
 			return _transactions;
 		}
 
@@ -158,9 +164,10 @@ namespace CmsWeb.Models
 			public string Description { get; set; }
 			public decimal Total { get; set; }
 		}
-		public IQueryable<DescriptionGroup> FetchTransactionsByDescription()
+		public IEnumerable<DescriptionGroup> FetchTransactionsByDescription()
 		{
-			var q = from t in FetchTransactions()
+		    var q0 = FetchTransactions();
+			var q = from t in q0
 					group t by t.Description into g
 					orderby g.First().Batch descending
 					select new DescriptionGroup()

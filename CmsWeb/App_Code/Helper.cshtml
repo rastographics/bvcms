@@ -1,16 +1,27 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
+@using UtilityExtensions
 @helper SearchBuilderDropdown(bool onqb)
 {
     <div class="dropdown2-menu">
         <ul>
-            <li>@AnchorLink("Last Search", "/QueryBuilder/Main")</li>
-            <li>@AnchorLink("New Search", "/QueryBuilder/NewQuery")</li>
-            <li><a href="/SavedQuery">Saved Searches</a></li>
+            @if (Fingerprint.TestSb2())
+            {
+                <li>@AnchorLink("Last Search", "/QueryBuilder2/Main")</li>
+                <li>@AnchorLink("New Search", "/QueryBuilder2/NewQuery")</li>
+                <li><a href="/SavedQuery2">Saved Searches</a></li>
+            }
+            else
+            {
+                <li>@AnchorLink("Last Search", "/QueryBuilder/Main")</li>
+                <li>@AnchorLink("New Search", "/QueryBuilder/NewQuery")</li>
+                <li><a href="/SavedQuery">Saved Searches</a></li>
+            }
             @if (onqb)
             {
                 <li>@JQueryIdLink("Save Search As", "ShowSaveQuery")</li>
             }
         </ul>
+
     </div>
 }
 @helper AnchorLink(string text, string href, string target = null)

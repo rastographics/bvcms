@@ -242,24 +242,34 @@ namespace CmsWeb.Models
         public class MySavedQueryInfo
         {
             public string Name { get; set; }
-            public int QueryId { get; set; }
+            public string Url { get; set; }
         }
         public IEnumerable<MySavedQueryInfo> MyQueries()
         {
             var up = DbUtil.Db.CurrentUserPerson;
             if (up == null)
                 return new List<MySavedQueryInfo>();
-            var q = from c in DbUtil.Db.QueryBuilderClauses
-                    where c.SavedBy == Util.UserName
-                    where c.GroupId == null && c.Field == "Group" && c.Clauses.Any()
-                    where !c.Description.Contains("scratchpad")
-                    orderby c.Description
-                    select new MySavedQueryInfo
-                    {
-                        Name = c.Description,
-                        QueryId = c.QueryId
-                    };
-            return q;
+
+            if (Fingerprint.TestSb2())
+                return from c in DbUtil.Db.Queries
+                       where c.Owner == Util.UserName
+                       where c.Name != Util.ScratchPad2
+                       orderby c.Name
+                       select new MySavedQueryInfo
+                       {
+                           Name = c.Name,
+                           Url = "/QueryBuilder2/Main/" + c.QueryId
+                       };
+            return from c in DbUtil.Db.QueryBuilderClauses
+                   where c.SavedBy == Util.UserName
+                   where c.GroupId == null && c.Field == "Group" && c.Clauses.Any()
+                   where !c.Description.Contains("scratchpad")
+                   orderby c.Description
+                   select new MySavedQueryInfo
+                   {
+                       Name = c.Description,
+                       Url = "/QueryBuilder/Main/" + c.QueryId
+                   };
         }
         public class TaskInfo
         {
@@ -434,7 +444,7 @@ namespace CmsWeb.Models
                 new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
                 new SearchInfo22() { url = "/Query", line1 = "Advanced Search" }, 
-                new SearchInfo22() { url = "/SavedQuery2", line1 = "Saved Searches" }, 
+                new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" }, 
                 new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search", 
                     addmargin = true }, 
             });

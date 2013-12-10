@@ -352,6 +352,9 @@
     <PreviousCurrentOrg Title="Previous Member in Current Organization" Type="Bit" DataValueField="IdCode">
       Select True or False for Previous Members of the last organization you viewed.
     </PreviousCurrentOrg>
+    <ProspectCurrentOrg Title="Prospects in Current Organization" Type="Bit" DataValueField="IdCode">
+      Selects everyone who is a prospect in the last organization you worked with. (used internally, but you can too if it will help you)
+    </ProspectCurrentOrg>
     <VisitedCurrentOrg Title="Has Visited Current Organization" Type="Bit" DataValueField="IdCode">
       Specify True or False for Guests in Current Organization.
     </VisitedCurrentOrg>
@@ -459,6 +462,9 @@
     <RecentNonTaxDedAmount Title="Recent NonTaxDed Amount" Type="Number" DisplayAs="RecentNonTaxDedAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">
       Enter a number and select Comparison for the NonTaxDed Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentNonTaxDedAmount>
+    <NonTaxDedAmount Title="NonTaxDed Contribution Amount History" Type="Number" DisplayAs="NonTaxDedAmount({0},{1},{2})" QuartersLabel="Fund Id (or null for all)" Params="StartDate,EndDate,Quarters">
+      Enter a number and select Comparison for the NonTaxDed Amount, enter the date range, enter a Fund ID (or leave blank for all funds).
+    </NonTaxDedAmount>
     <RecentPledgeCount Title="Recent Pledge Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentPledgeCount({0},{1})" Params="Days,Quarters">
       Enter a number and select Comparison for the number of Pledges, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentPledgeCount>
@@ -489,6 +495,9 @@
     <HasManagedGiving Title="Has Managed Giving" Type="Bit" DisplayAs="Has Managed Giving" DataValueField="IdCode">
       Specify True or False for those with Managed Giving.
     </HasManagedGiving>
+    <RecentBundleType Title="Recent Contributions In BundleType" Type="Code" DisplayAs="RecentBundleType({0})" Params="Days" DataSource="BundleHeaderTypes" DataValueField="IdCode">
+      Must have Finance role for this to work.
+    </RecentBundleType >
   </Contributions>
   <ExtraValues Title="Extra Values">
     <PeopleExtra Title="Extra Value Code" Type="CodeStr" DataSource="ExtraValues">

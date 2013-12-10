@@ -15,6 +15,8 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult Index()
         {
             if (Fingerprint.UseNewLook())
+                return Redirect("/SavedQueryList");
+            if(Fingerprint.TestSb2())
                 return Redirect("/SavedQuery2");
             var m = new SavedQueryModel();
             return View(m);

@@ -217,7 +217,6 @@ namespace CmsWeb.Models
                 var user = o as User;
                 FormsAuthentication.SetAuthCookie(user.Username, false);
                 SetUserInfo(user.Username, Session);
-                Util.FormsBasedAuthentication = true;
                 DbUtil.LogActivity("User {0} logged in".Fmt(user.Username));
                 return user;
             }

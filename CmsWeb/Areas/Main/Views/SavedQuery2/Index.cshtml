@@ -1,0 +1,16 @@
+﻿@model CmsWeb.Models.SavedQuery2Model
+@using CmsWeb
+@{
+    ViewBag.Title = "SavedQuery";
+    Layout = Fingerprint.Layout();
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Search/SavedQuery2.js")
+}
+<div class="roundbox" style="display: table">
+<h2 style="color:rgb(218, 0, 0)">Saved Search Builder Queries</h2>
+@using (Html.BeginForm("Results", "SavedQuery2")) {
+    Html.RenderPartial("Results", Model);
+}
+</div>

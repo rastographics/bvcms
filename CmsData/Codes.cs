@@ -125,6 +125,19 @@ namespace CmsData.Codes
         public const int VIP = 700;
         public const int Drop = -1;
     }
+    public static class ReturnFamilyMemberTypeCode
+    {
+        public const int PrimaryAdultsOnly = 10;
+        public const int AddPrimaryAdults = 112;
+        public const int HusbandOnly = 11;
+        public const int WifeOnly = 12;
+        public const int AddSpouse = 102;
+        public const int ChildrenOnly = 20;
+        public const int AddChildren = 200;
+        public const int SecondaryOnly = 30;
+        public const int AddSecondary = 300;
+    }
+    //ReturnPrimaryAdult
     public static class OrgStatusCode
     {
         public const int Active = 30;

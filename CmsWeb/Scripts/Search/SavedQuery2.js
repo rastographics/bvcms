@@ -1,67 +1,68 @@
 ﻿$(function () {
-    $("a.edit-saved-query").live("click", function (ev) {
-        ev.preventDefault();
-        var a = $(this);
-        var modal = $("#edit-saved-query-dialog");
-        var rowid = "#" + a.closest("tr").attr("id");
-        modal.css({ 'margin-top': '', 'top': '' })
-            .load(a.attr("href"), {}, function () {
-                modal.modal("show");
-                $("#SaveQueryInfo").click(function (ev) {
-                    ev.preventDefault();
-                    var q = modal.serialize();
-                    $.post("/SavedQuery2/Update", q, function (ret) {
-                        $(rowid).replaceWith(ret);
-                        modal.modal("hide");
-                        modal.empty();
-                    });
-                });
-                $("#ExportToOld").click(function (ev) {
-                    ev.preventDefault();
-                    window.location = "/SavedQuery2/ExportToOld/" + $("#QueryId").val();
-                });
+    $.editable.addInputType("checkbox", {
+        element: function (settings, original) {
+            var input = $('<input type="checkbox">');
+            $(this).append(input);
+            $(input).click(function () {
+                var value = $(input).attr("checked") ? 'yes' : 'no';
+                $(input).val(value);
             });
+            return (input);
+        },
+        content: function (string, settings, original) {
+            var checked = string == "yes" ? 1 : 0;
+            var input = $(':input:first', this);
+            $(input).attr("checked", checked);
+            var value = $(input).attr("checked") ? 'yes' : 'no';
+            $(input).val(value);
+        }
     });
-    $("a.delete-saved-query").live("click", function (ev) {
+    $.onready = function () {
+        $(".clickEdit").editable("/SavedQuery2/Edit/", {
+            indicator: "<img src='/images/loading.gif'>",
+            tooltip: "Click to edit...",
+            style: 'display: inline',
+            width: '200px',
+            height: 25,
+            submit: "OK"
+        });
+        $('span.yesno').editable('/SavedQuery2/Edit/', {
+            type: 'checkbox',
+            onblur: 'ignore',
+            submit: 'OK'
+        });
+    };
+    $('table.grid > tbody > tr:even').addClass('alt');
+    $.getTable = function (f) {
+        var q;
+        if (f)
+            q = f.serialize();
+        $.post(f.attr('action'), q, function (ret) {
+            $(f).html(ret).ready(function () {
+                $('table.grid > tbody > tr:even', f).addClass('alt');
+                //$('.dropdown', f).hoverIntent(dropdownshow, dropdownhide);
+                $('.bt').button();
+                $(".datepicker").datepicker();
+                $.onready();
+            });
+        });
+        return false;
+    };
+    $("#filter").live("click", function (ev) {
+        ev.preventDefault();
+        $.getTable($(this).closest("form"));
+        $.onready();
+    });
+    $(".bt").button();
+
+    $("a.delete").live("click", function (ev) {
         ev.preventDefault();
         var a = $(this);
         if (confirm("Delete this saved search?"))
-            $.post(a.attr("href"), {}, function (ret) {
+            $.post("/SavedQuery2/Delete", { id: a.attr("id") }, function (ret) {
                 a.closest("tr").fadeOut().remove();
             });
         return false;
     });
-
-    $("#SearchQuery").live("keydown", function (event) {
-        if (event.keyCode == 13) {
-            event.preventDefault();
-            $("#filter-link").click();
-            return false;
-        }
-        return true;
-    });
-    $.ajaxSetup({
-        complete: function () {
-            $("#loading-indicator").hide();
-            $("#SearchQuery").focus().select();
-        }
-    });
-    $("#SearchQuery").focus();
-
-    /* This is a good example of how to use the single checkbox edit with a checklist
-    $('.public-editable').editable({
-        type: 'checklist',
-        name: 'public',
-        url: function (params) {
-            var d = new $.Deferred;
-            $.post("/SavedQuery2/PostPublic", { pk: params.pk, value: params.value[0] }, function(ret) {
-                d.resolve();
-            });
-            return d.promise();
-        },
-        title: 'Public Query',
-        source: { '1': 'public' },
-        emptytext: 'private'
-    });
-    */
+    $.onready();
 });

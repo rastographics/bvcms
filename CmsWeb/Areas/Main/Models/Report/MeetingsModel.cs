@@ -126,6 +126,9 @@ namespace CmsWeb.Areas.Main.Models.Report
 
         public string ConvertToSearchBuilder(string type)
         {
+            if(Fingerprint.TestSb2())
+                return ConvertToQuery(type).Replace("/Query/", "/QueryBuilder2/Main/");
+
             var qb = DbUtil.Db.QueryBuilderScratchPad();
             qb.CleanSlate(DbUtil.Db);
 

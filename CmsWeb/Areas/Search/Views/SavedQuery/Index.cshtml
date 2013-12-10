@@ -5,7 +5,7 @@
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Search/savedQuery2.js")
+    @Fingerprint.Script("/Scripts/Search/savedQueryList.js")
 }
 <div class="container">
     <form id="form-saved-query" class="ajax form-horizontal" data-results="#results">
@@ -24,7 +24,7 @@
                     <div>@Html.CheckBoxFor(m => m.PublicOnly) Public Only</div>
                     <div>@Html.CheckBoxFor(m => m.ScratchPadsOnly) Scratch Pads Only</div>
                 </div>
-                <div class="inline left-gutter"><a id="filter-link" href="/SavedQuery2/Results" class="btn btn-primary ajax">Filter</a> </div>
+                <div class="inline left-gutter"><a id="filter-link" href="/SavedQueryList/Results" class="btn btn-primary ajax">Filter</a> </div>
             </fieldset>
         </div>
         <div id="results">

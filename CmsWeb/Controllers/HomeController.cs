@@ -76,13 +76,47 @@ namespace CmsWeb.Controllers
         public ActionResult NthTimeAttenders(int id)
         {
             var name = "VisitNumber-" + id;
+            const CompareType comp = CompareType.Equal;
+            if (Fingerprint.TestSb2())
+            {
+                var cc = DbUtil.Db.ScratchPadCondition();
+                cc.Reset(DbUtil.Db);
+                Condition c;
+                switch (id)
+                {
+                    case 1:
+                        c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                        c.Quarters = "1";
+                        c.Days = 7;
+                        break;
+                    case 2:
+                        c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                        c.Quarters = "2";
+                        c.Days = 7;
+                        c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+                        c.Quarters = "1";
+                        c.Days = 7;
+                        break;
+                    case 3:
+                        c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                        c.Quarters = "3";
+                        c.Days = 7;
+                        c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+                        c.Quarters = "2";
+                        c.Days = 7;
+                        break;
+                }
+                cc.Save(DbUtil.Db);
+                TempData["autorun"] = true;
+                return Redirect("/QueryBuilder2/Main/" + cc.Id);
+
+            }
             var qb = DbUtil.Db.QueryBuilderClauses.FirstOrDefault(c => c.IsPublic && c.Description == name && c.SavedBy == "public");
             if (qb == null)
             {
                 qb = DbUtil.Db.QueryBuilderScratchPad();
                 qb.CleanSlate(DbUtil.Db);
 
-                var comp = CompareType.Equal;
                 QueryBuilderClause clause = null;
                 switch (id)
                 {
@@ -170,8 +204,8 @@ namespace CmsWeb.Controllers
             var keys = d.Keys.Where(kk => kk.StartsWith("hide-tip-")).ToList();
             foreach (var k in keys)
                 d.Remove(k);
-            
-            if(Request.UrlReferrer != null)
+
+            if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.ToString());
             return Redirect("/");
         }

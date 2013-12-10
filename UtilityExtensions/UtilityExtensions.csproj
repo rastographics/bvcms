@@ -114,12 +114,19 @@
   <ItemGroup>
     <Compile Include="Emailer.cs" />
     <Compile Include="EnDeCrypt.cs" />
+    <Compile Include="Extensions\ConnectionStrings.cs" />
+    <Compile Include="Extensions\User.cs" />
+    <Compile Include="Extensions\Dates.cs" />
+    <Compile Include="Extensions\Validation.cs" />
+    <Compile Include="Extensions\EmailAddresses.cs" />
+    <Compile Include="Extensions\TypeConversions.cs" />
+    <Compile Include="Extensions\Formatting.cs" />
     <Compile Include="GenericConfigCollection.cs" />
     <Compile Include="JSONHelper.cs" />
     <Compile Include="ObjectDumper.cs" />
-    <Compile Include="StringExtensions.cs" />
-    <Compile Include="Utils.cs" />
-    <Compile Include="UtiltyExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\ObjectUtilities.cs" />
+    <Compile Include="Extensions\UtiltyExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +152,7 @@
   <ItemGroup>
     <Content Include="App_Readme\Elmah.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

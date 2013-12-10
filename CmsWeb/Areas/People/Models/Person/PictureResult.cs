@@ -44,7 +44,8 @@ namespace CmsWeb.Areas.People.Models
             }
             else
             {
-                var i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
+                ImageData.Image i = null;
+                try { i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id); } catch (Exception) { }
                 if (i == null || i.Secure == true)
                 {
                     if (nodefault)

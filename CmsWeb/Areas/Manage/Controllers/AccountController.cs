@@ -104,7 +104,6 @@ CKEditorFuncNum, baseurl + fn, error));
                 {
                     AccountModel.SetUserInfo(username, Session);
                     FormsAuthentication.SetAuthCookie(username, false);
-                    Util.FormsBasedAuthentication = true;
                     var returnUrl = Request.QueryString["returnUrl"];
                     if (returnUrl.HasValue())
                         return Redirect(returnUrl);
@@ -116,7 +115,6 @@ CKEditorFuncNum, baseurl + fn, error));
                 {
                     FormsAuthentication.SetAuthCookie(user, false);
                     AccountModel.SetUserInfo(user, Session);
-                    Util.FormsBasedAuthentication = true;
                     var returnUrl = Request.QueryString["returnUrl"];
                     if (returnUrl.HasValue())
                         return Redirect(returnUrl);
@@ -238,7 +236,6 @@ The bvCMS Team</p>
             ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
             ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
 
-            Util.FormsBasedAuthentication = true;
             return View("SetPassword");
         }
         [MyRequireHttps]
@@ -281,7 +278,6 @@ The bvCMS Team</p>
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
             ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
             ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
-            Util.FormsBasedAuthentication = true;
             return View();
         }
         [MyRequireHttps]

@@ -590,40 +590,12 @@ namespace CmsWeb.Areas.Manage.Controllers
             foreach (var a in qbits)
             {
                 var t = DbUtil.Db.FetchOrCreateSystemTag(a[0]);
-                DbUtil.Db.TagAll2(DbUtil.Db.PeopleQuery(a[0] + ":" + a[1]), t);
+                if(Fingerprint.TestSb2())
+                    DbUtil.Db.TagAll2(DbUtil.Db.PeopleQuery2(a[0] + ":" + a[1]), t);
+                else
+                    DbUtil.Db.TagAll2(DbUtil.Db.PeopleQuery(a[0] + ":" + a[1]), t);
             }
             return View();
-        }
-        [AsyncTimeout(600000)]
-        [Authorize(Roles = "Admin")]
-        public void UpdateQueryStatsAsync()
-        {
-            AsyncManager.OutstandingOperations.Increment();
-            string host = Util.Host;
-            var uid = Util.UserId;
-            ThreadPool.QueueUserWorkItem((e) =>
-            {
-                Util.SessionId = Guid.NewGuid().ToString();
-                var Db = new CMSDataContext(Util.GetConnectionString(host));
-                var d = DateTime.Today.Subtract(DateTime.Parse("1/1/1900")).Days;
-                var list = Db.QueryStats.Where(ss => ss.RunId == d);
-                foreach (var a in Db.QueryStatClauses())
-                {
-                    var st = list.SingleOrDefault(ss => ss.StatId == a[0]);
-                    if (st == null)
-                    {
-                        st = new QueryStat { StatId = a[0], Description = a[1], RunId = d, Runtime = DateTime.Now };
-                        Db.QueryStats.InsertOnSubmit(st);
-                    }
-                    st.Count = Db.PeopleQuery(a[0] + ":" + a[1]).Count();
-                    Db.SubmitChanges();
-                }
-                AsyncManager.OutstandingOperations.Decrement();
-            });
-        }
-        public ActionResult UpdateQueryStatsCompleted()
-        {
-            return Redirect("/");
         }
 
         public class FindInfo
@@ -817,7 +789,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ConvertQueries()
         {
             DbUtil.Db.CheckLoadQueries(reload: true);
-            return Redirect("/SavedQuery2");
+            return Redirect("/SavedQueryList");
         }
     }
 }

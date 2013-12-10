@@ -93,6 +93,15 @@ namespace CmsData
         }
         private bool includeDeceased = false;
         public bool ParentsOf { get; set; }
+
+        public List<int> ReturnFamilyMemberTypeCodes { get; set; }
+        public void AddFamilyMemberTypeCode(int code)
+        {
+            if(ReturnFamilyMemberTypeCodes == null)
+                ReturnFamilyMemberTypeCodes = new List<int>();
+            if (!ReturnFamilyMemberTypeCodes.Contains(code))
+                ReturnFamilyMemberTypeCodes.Add(code);
+        }
         public Expression<Func<Person, bool>> Predicate(CMSDataContext db)
         {
             db.CopySession();

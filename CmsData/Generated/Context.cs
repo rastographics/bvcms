@@ -1731,6 +1731,50 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.AttendanceTypeAsOf", IsComposable = true)]
+		public IQueryable< View.AttendanceTypeAsOf > AttendanceTypeAsOf(
+            [Parameter(DbType="datetime")] DateTime? from,
+            [Parameter(DbType="datetime")] DateTime? to,
+            [Parameter(DbType="int")] int? progid,
+            [Parameter(DbType="int")] int? divid,
+            [Parameter(DbType="int")] int? orgtype,
+            [Parameter(DbType="int")] int? orgid,
+            [Parameter(DbType="nvarchar")] string ids
+            )
+		{
+			return this.CreateMethodCallQuery< View.AttendanceTypeAsOf>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                from,
+                to,
+                progid,
+                divid,
+                orgtype,
+                orgid,
+                ids
+                );
+		}
+
+		[Function(Name="dbo.AttendCntHistory", IsComposable = true)]
+		public IQueryable< View.AttendCntHistory > AttendCntHistory(
+            [Parameter(DbType="int")] int? progid,
+            [Parameter(DbType="int")] int? divid,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="int")] int? sched,
+            [Parameter(DbType="datetime")] DateTime? start,
+            [Parameter(DbType="datetime")] DateTime? end
+            )
+		{
+			return this.CreateMethodCallQuery< View.AttendCntHistory>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                progid,
+                divid,
+                org,
+                sched,
+                start,
+                end
+                );
+		}
+
 		[Function(Name="dbo.AttendedAsOf", IsComposable = true)]
 		public IQueryable< View.AttendedAsOf > AttendedAsOf(
             [Parameter(DbType="int")] int? progid,
@@ -1759,7 +1803,6 @@ namespace CmsData
             [Parameter(DbType="int")] int? progid,
             [Parameter(DbType="int")] int? divid,
             [Parameter(DbType="int")] int? orgid,
-            [Parameter(DbType="bit")] bool? not,
             [Parameter(DbType="nvarchar")] string ids
             )
 		{
@@ -1770,7 +1813,6 @@ namespace CmsData
                 progid,
                 divid,
                 orgid,
-                not,
                 ids
                 );
 		}

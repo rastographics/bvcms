@@ -5,40 +5,31 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using CmsData.API;
 using UtilityExtensions;
-using System.Configuration;
-using System.Reflection;
-using System.Collections;
-using System.Data.Linq.SqlClient;
-using System.Text.RegularExpressions;
-using System.Web;
 using CmsData.Codes;
 
 namespace CmsData
 {
     internal static partial class Expressions
     {
-        internal static Expression RecentContributionCount( ParameterExpression parm, CMSDataContext Db,
+        internal static Expression RecentContributionCount(ParameterExpression parm, CMSDataContext Db,
             int days, int fund, CompareType op, int cnt)
         {
             return RecentContributionCount2(parm, Db, days, fund, op, cnt, taxnontax: false);
         }
-        internal static Expression RecentContributionAmount( ParameterExpression parm, CMSDataContext Db,
+        internal static Expression RecentContributionAmount(ParameterExpression parm, CMSDataContext Db,
             int days, int fund, CompareType op, decimal amt)
         {
             return RecentContributionAmount2(parm, Db, days, fund, op, amt, taxnontax: false);
         }
-        internal static Expression RecentNonTaxDedCount( ParameterExpression parm, CMSDataContext Db,
+        internal static Expression RecentNonTaxDedCount(ParameterExpression parm, CMSDataContext Db,
             int days, int fund, CompareType op, int cnt)
         {
             return RecentContributionCount2(parm, Db, days, fund, op, cnt, taxnontax: true);
         }
-        internal static Expression RecentNonTaxDedAmount( ParameterExpression parm, CMSDataContext Db,
+        internal static Expression RecentNonTaxDedAmount(ParameterExpression parm, CMSDataContext Db,
             int days, int fund, CompareType op, decimal amt)
         {
             return RecentContributionAmount2(parm, Db, days, fund, op, amt, taxnontax: true);
@@ -459,7 +450,7 @@ namespace CmsData
             CompareType op,
             bool tf)
         {
-            if(!Db.FromActiveRecords)
+            if (!Db.FromActiveRecords)
                 if (Db.CurrentUser == null || Db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse(parm);
             var now = DateTime.Now;
@@ -468,6 +459,30 @@ namespace CmsData
                            p.Contributions.Any(cc => cc.ContributionDate > dt && cc.ContributionAmount > 0 && !ContributionTypeCode.ReturnedReversedTypes.Contains(cc.ContributionTypeId));
             Expression expr = Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal static Expression RecentBundleType(
+            ParameterExpression parm, CMSDataContext Db,
+            int days,
+            CompareType op,
+            int[] ids)
+        {
+            if (Db.CurrentUser == null || Db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                return AlwaysFalse(parm);
+            var now = DateTime.Now;
+            var dt = now.AddDays(-days);
+            Expression<Func<Person, bool>> pred = p =>
+            (
+                from c in p.Contributions
+                where c.ContributionDate > dt
+                where c.ContributionAmount > 0 
+                where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                where c.BundleDetails.Any(cc => ids.Contains(cc.BundleHeader.BundleHeaderTypeId))
+                select c
+            ).Any();
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -495,11 +510,18 @@ namespace CmsData
             if (Db.CurrentUser == null || Db.CurrentUser.Roles.All(rr => rr != "Finance"))
                 return AlwaysFalse(parm);
 
-            var q = from f in Db.FirstTimeGivers(days, fund)
-                    select f.PeopleId;
+            var q = Db.FirstTimeGivers(days, fund).Select(p => p.PeopleId);
 
-            var tag = Db.PopulateTemporaryTag(q);
-            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            //var tag = Db.PopulateTemporaryTag(q);
+            //            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            //            Expression expr = Expression.Invoke(pred, parm);
+            //            return expr;
+
+            Expression<Func<Person, bool>> pred;
+            if (op == CompareType.Equal ^ tf)
+                pred = p => !q.Contains(p.PeopleId);
+            else
+                pred = p => q.Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
