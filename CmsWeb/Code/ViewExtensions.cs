@@ -5,6 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq.Expressions;
@@ -18,6 +19,8 @@ using AttributeRouting.Helpers;
 using CmsData;
 using CmsWeb.Code;
 using iTextSharp.tool.xml.html;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using UtilityExtensions;
 using System.Configuration;
 using System.Web.Routing;
@@ -625,6 +628,23 @@ namespace CmsWeb
             bool show, object viewdata = null)
         {
             return htmlHelper.EditorForIf(expression, show, null, viewdata);
+        }
+        public static void SetExcelHeader(this ExcelWorksheet ws, params string[] headers)
+        {
+            var col = 0;
+            foreach(var h in headers)
+            {
+                col++;
+                var c = ws.Cells[1, col];
+                c.Value = h;
+            }
+            var range = ws.Cells[1, 1, 1, col];
+            range.Style.Font.Name = "Calibri";
+            range.Style.Font.Size = 13;
+            range.Style.Font.Bold = true;
+            range.Style.Font.Color.SetColor(Color.FromArgb(68, 84, 106));
+            range.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+            range.Style.Border.Bottom.Color.SetColor(Color.FromArgb(172, 204, 234));
         }
 
         public static CollectionItemNamePrefixScope BeginCollectionItem<TModel>(this HtmlHelper<TModel> html, string collectionName)

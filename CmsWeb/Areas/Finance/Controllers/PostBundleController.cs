@@ -1,15 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using UtilityExtensions;
 using CmsWeb.Models;
-using System.Web.Script.Serialization;
-using System.IO;
 using CmsData.Codes;
+using CmsWeb;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
@@ -97,40 +96,40 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View();
         }
 
-	    [HttpPost]
-	    public ActionResult BatchUpload( DateTime date, HttpPostedFileBase file, int? fundid, string text )
-	    {
-		    bool fromFile = false;
-		    string s;
+        [HttpPost]
+        public ActionResult BatchUpload(DateTime date, HttpPostedFileBase file, int? fundid, string text)
+        {
+            bool fromFile = false;
+            string s;
 
-		    if( file != null )
-		    {
-			    byte[] buffer = new byte[file.ContentLength];
-			    file.InputStream.Read( buffer, 0, file.ContentLength );
-			    System.Text.Encoding enc = null;
-			    if( buffer[0] == 0xFF && buffer[1] == 0xFE )
-			    {
-				    enc = new System.Text.UnicodeEncoding();
-				    s = enc.GetString( buffer, 2, buffer.Length - 2 );
-			    }
-			    else
-			    {
-				    enc = new System.Text.ASCIIEncoding();
-				    s = enc.GetString( buffer );
-			    }
+            if (file != null)
+            {
+                byte[] buffer = new byte[file.ContentLength];
+                file.InputStream.Read(buffer, 0, file.ContentLength);
+                System.Text.Encoding enc = null;
+                if (buffer[0] == 0xFF && buffer[1] == 0xFE)
+                {
+                    enc = new System.Text.UnicodeEncoding();
+                    s = enc.GetString(buffer, 2, buffer.Length - 2);
+                }
+                else
+                {
+                    enc = new System.Text.ASCIIEncoding();
+                    s = enc.GetString(buffer);
+                }
 
-			    fromFile = true;
-		    }
-		    else
-			    s = text;
+                fromFile = true;
+            }
+            else
+                s = text;
 
-		    var id = BatchImportContributions.BatchProcess( s, date, fundid, fromFile );
+            var id = BatchImportContributions.BatchProcess(s, date, fundid, fromFile);
 
-		    if( id.HasValue )
-			    return Redirect( "/PostBundle/Index/" + id );
+            if (id.HasValue)
+                return Redirect("/PostBundle/Index/" + id);
 
-		    return RedirectToAction( "Batch" );
-	    }
+            return RedirectToAction("Batch");
+        }
 
         [HttpPost]
         public JsonResult Funds()
@@ -157,6 +156,27 @@ namespace CmsWeb.Areas.Finance.Controllers
                         return Content("{0} - {1}".Fmt(c.ContributionFund.FundId, c.ContributionFund.FundName));
                 }
             return new EmptyResult();
+        }
+
+        public ActionResult BankAccountAssociations()
+        {
+            var q = from c in DbUtil.Db.CardIdentifiers
+                    orderby c.Person.Name2
+                    select new
+                    {
+                        c.Person.PeopleId,
+                        Name = c.Person.Name2,
+                        ac = Util.Decrypt(c.Id)
+                    };
+            var count = q.Count();
+            var ep = new ExcelPackage();
+            var ws = ep.Workbook.Worksheets.Add("Sheet1");
+            ws.SetExcelHeader("PeopleId", "Name", "Routing/Account Number");
+            var colrange = ws.Cells[1, 1, count + 1, 1];
+            colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            ws.Cells["A2"].LoadFromCollection(q);
+            ws.Cells[ws.Dimension.Address].AutoFitColumns();
+            return new EpplusResult(ep, "BankAccountAssociations.xlsx");
         }
     }
 }
