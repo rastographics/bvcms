@@ -405,8 +405,8 @@ namespace CmsWeb.Models
                         Db2.SubmitChanges();
                         if (!testing)
                         {
-                            Db.SubmitChanges();
                             Person.Tag(Db, p.PeopleId, "InsertPeopleAdded", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                            Db.SubmitChanges();
                         }
                     }
                     catch (Exception)
