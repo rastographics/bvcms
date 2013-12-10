@@ -109,18 +109,26 @@ namespace CmsData
                                CompType,
                                c.CodeIntIds);
                 case QueryType.AttendTypeAsOf:
-                    return Expressions.AttendanceTypeAsOf(parm,
+                    return Expressions.AttendanceTypeAsOf(Db, parm,
                                c.StartDate,
                                c.EndDate,
                                c.Program,
                                c.Division,
                                c.Organization,
-							   c.OrgType ?? 0,
+                               c.OrgType ?? 0,
                                CompType,
-                               c.CodeIntIds);
+                               string.Join(",", c.CodeStrIds));
+                case QueryType.AttendedAsOf:
+                    return Expressions.AttendedAsOf(parm, Db,
+                               c.StartDate,
+                               c.EndDate,
+                               c.Program,
+                               c.Division,
+                               CompType,
+                               c.CodeIds == "1",
+                               guestonly: false);
                 case QueryType.AttendMemberTypeAsOf:
-                    return Expressions.AttendMemberTypeAsOf(Db,
-                               parm,
+                    return Expressions.AttendMemberTypeAsOf(Db, parm,
                                c.StartDate,
                                c.EndDate,
                                c.Program,
@@ -527,6 +535,10 @@ namespace CmsData
                     return Expressions.PreviousCurrentOrg(Db, parm,
                                CompType,
                                c.CodeIds == "1");
+                case QueryType.ProspectCurrentOrg:
+                    return Expressions.ProspectCurrentOrg(Db, parm,
+                               CompType,
+                               c.CodeIds == "1");
                 // R ----------------
                 case QueryType.RecentCreated:
                     return Expressions.RecentCreated(parm,
@@ -578,6 +590,11 @@ namespace CmsData
 							   c.Days,
 							   CompType,
 							   c.CodeIds == "1");
+                case QueryType.RecentBundleType:
+                    return Expressions.RecentBundleType(parm, Db,
+                        c.Days,
+                        CompType,
+                        c.CodeIntIds);
                 case QueryType.RecentContributionCount:
                     return Expressions.RecentContributionCount(parm, Db,
                                c.Days, c.Quarters.ToInt(),

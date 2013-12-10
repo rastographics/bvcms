@@ -340,7 +340,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Twilio.3.5.12\lib\3.5\Twilio.Api.dll</HintPath>
+      <HintPath>..\packages\Twilio.3.6.10\lib\3.5\Twilio.Api.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -366,6 +366,8 @@
     <Compile Include="BundleHeader.cs" />
     <Compile Include="CheckinFamilyMember.cs" />
     <Compile Include="APIContributionSearchModel.cs" />
+    <Compile Include="Generated\Functions\AttendanceTypeAsOf.cs" />
+    <Compile Include="Generated\Functions\AttendCntHistory.cs" />
     <Compile Include="Generated\Functions\AttendedAsOf.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCount.cs" />
     <Compile Include="Generated\Functions\RecentAttendMemberType.cs" />

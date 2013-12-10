@@ -6,11 +6,13 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Web;
 using System.Xml.Linq;
 using Community.CsharpSqlite;
+using IronPython.Modules;
 using UtilityExtensions;
 using System.Web.Caching;
 
@@ -58,6 +60,11 @@ namespace CmsData
                     categories = q.ToList();
                     HttpRuntime.Cache.Insert("FieldCategories", categories, null,
                         DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
+#if DEBUG2
+                    foreach(var e in Enum.GetValues(typeof(QueryType)).Cast<QueryType>())
+                        if(!categories.Any(cc => cc.Fields.Any(ff => ff.Name == e.ToString())))
+                            Debug.WriteLine(e.ToString());
+#endif
                 }
                 return categories;
             }

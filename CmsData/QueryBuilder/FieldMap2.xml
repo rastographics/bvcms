@@ -594,6 +594,9 @@
     <Field Name="IsTopPledger" Title="Recent Top Pledger" Type="Bit" DisplayAs="RecentTopPledger({0},{1})" Params="Days,Quarters" QuartersLabel="Top number" DataValueField="IdCode">
       Must have Finance role for this to work.
     </Field>
+    <Field Name="RecentBundleType" Title="Recent Contributions In BundleType" Type="Code" DisplayAs="RecentBundleType({0})" Params="Days" DataSource="BundleHeaderTypes" DataValueField="IdCode">
+      Must have Finance role for this to work.
+    </Field>
     <Field Name="PeopleIds" Title="HasOneOfPeopleIds" Type="StringEqual" >
       People with one of these PeopleIds
     </Field>
