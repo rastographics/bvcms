@@ -7,30 +7,25 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using CmsData.Codes;
-using Community.CsharpSqlite;
 using UtilityExtensions;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression RecentAttendMemberType(
-            ParameterExpression parm, CMSDataContext Db,
-            int? progid, int? divid, int? org, int days, CompareType op, int[] ids)
+        internal Expression RecentAttendMemberType()
         {
-            var q = Db.RecentAttendMemberType(progid, divid, org, days, string.Join(",", ids));
+            var q = db.RecentAttendMemberType(Program, Division, Organization, Days, string.Join(",", CodeIntIds));
             Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression RecentAttendCount(
-            ParameterExpression parm, CMSDataContext Db,
-            int? progid, int? divid, int? org, int orgtype, int days, CompareType op, int cnt)
+        internal Expression RecentAttendCount()
         {
-            var q = Db.RecentAttendInDaysByCount(progid, divid, org, orgtype, days);
+            var cnt = TextValue.ToInt();
+            var q = db.RecentAttendInDaysByCount(Program, Division, Organization, OrgType ?? 0, Days);
             switch (op)
             {
                 case CompareType.Greater:
@@ -50,12 +45,12 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression RecentAttendCountAttCred(
-            ParameterExpression parm, CMSDataContext Db,
-            int? progid, int? divid, int? org, int? attcred, int sched, int days, CompareType op, int cnt)
+        internal Expression RecentAttendCountAttCred()
         {
-            var mindt = Util.Now.AddDays(-days).Date;
-            var sc = Db.OrgSchedules.FirstOrDefault(cc => cc.ScheduleId == sched);
+            var attcred = Quarters.ToInt();
+            var cnt = TextValue.ToInt();
+            var mindt = Util.Now.AddDays(-Days).Date;
+            var sc = db.OrgSchedules.FirstOrDefault(cc => cc.ScheduleId == Schedule);
             DateTime? mtime = null;
             if (sc != null)
                 mtime = sc.SchedTime;
@@ -69,9 +64,9 @@ namespace CmsData
                         where a.MeetingDate >= mindt
                         where attcred == 0 || a.Meeting.AttendCreditId == attcred
                         where a.MeetingDate.TimeOfDay == mtime.Value.TimeOfDay
-                        where org == 0 || a.Meeting.OrganizationId == org
-                        where divid == 0 || a.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                        where progid == 0 || a.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                        where Organization == 0 || a.Meeting.OrganizationId == Organization
+                        where Division == 0 || a.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                        where Program == 0 || a.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
                         select a
                       ).Count();
             }
@@ -83,51 +78,49 @@ namespace CmsData
                         where a.AttendanceFlag
                         where a.MeetingDate >= mindt
                         where attcred == 0 || a.Meeting.AttendCreditId == attcred
-                        where org == 0 || a.Meeting.OrganizationId == org
-                        where divid == 0 || a.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                        where progid == 0 || a.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                        where Organization == 0 || a.Meeting.OrganizationId == Organization
+                        where Division == 0 || a.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                        where Program == 0 || a.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
                         select a
                      ).Count();
 
             }
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression VisitNumber(
-            ParameterExpression parm, CMSDataContext Db,
-            string number, CompareType op, DateTime? dt)
+        internal Expression VisitNumber()
         {
-            int n = number.ToInt2() ?? 1;
-            var cdt = Db.Setting("DbConvertedDate", "1/1/1900").ToDate();
+            var n = Quarters.ToInt2() ?? 1;
+            var cdt = db.Setting("DbConvertedDate", "1/1/1900").ToDate();
 
             Expression<Func<Person, bool>> pred = null;
             switch (op)
             {
                 case CompareType.Greater:
                     pred = p => p.CreatedDate > cdt &&
-                           p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate > dt);
+                           p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate > DateValue);
                     break;
                 case CompareType.Less:
                     pred = p => p.CreatedDate > cdt &&
-                           p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate < dt);
+                           p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate < DateValue);
                     break;
                 case CompareType.GreaterEqual:
                     pred = p => p.CreatedDate > cdt &&
-                           p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate >= dt);
+                           p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate >= DateValue);
                     break;
                 case CompareType.LessEqual:
                     pred = p => p.CreatedDate > cdt &&
-                           p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate <= dt);
+                           p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate <= DateValue);
                     break;
                 case CompareType.Equal:
                     pred = p => p.CreatedDate > cdt &&
-                           p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate.Date == dt);
+                           p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate.Date == DateValue);
                     break;
                 case CompareType.NotEqual:
                 case CompareType.IsNull:
                     pred = p => p.CreatedDate > cdt &&
-                           !p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate.Date == dt);
+                           !p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate.Date == DateValue);
                     break;
                 case CompareType.IsNotNull:
                     pred = p => p.CreatedDate > cdt &&
@@ -137,23 +130,23 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-
-        internal static Expression CheckInByDate(ParameterExpression parm, CMSDataContext Db, DateTime? start, DateTime? end, CompareType op, int cnt)
+        internal Expression CheckInByDate()
         {
+            var cnt = TextValue.ToInt();
             Expression<Func<Person, int>> pred = null;
+            var end = EndDate;
             if (end != null) end = end.Value.AddDays(1).AddTicks(-1);
             else end = DateTime.Now.Date.AddDays(1).AddTicks(-1);
 
-            pred = p => p.CheckInTimes.Count(ct => ct.CheckInTimeX >= start && ct.CheckInTimeX <= end);
+            pred = p => p.CheckInTimes.Count(ct => ct.CheckInTimeX >= StartDate && ct.CheckInTimeX <= end);
 
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-
-        internal static Expression CheckInByActivity(ParameterExpression parm, CMSDataContext Db, CompareType op, string[] values)
+        internal Expression CheckInByActivity()
         {
-            Expression<Func<Person, bool>> pred = p => p.CheckInTimes.Any(e => e.CheckInActivities.Any(a => values.Contains(a.Activity)));
+            Expression<Func<Person, bool>> pred = p => p.CheckInTimes.Any(e => e.CheckInActivities.Any(a => CodeStrIds.Contains(a.Activity)));
             Expression expr = Expression.Invoke(pred, parm);
 
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
@@ -161,12 +154,12 @@ namespace CmsData
 
             return expr;
         }
-
-        internal static Expression RecentVisitNumber(ParameterExpression parm, CMSDataContext Db, string number, int days, CompareType op, bool tf)
+        internal Expression RecentVisitNumber()
         {
-            int n = number.ToInt2() ?? 1;
-            var dt = DateTime.Now.AddDays(-days);
-            var cdt = Db.Setting("DbConvertedDate", "1/1/1900").ToDate();
+            var tf = CodeIds == "1";
+            int n = Quarters.ToInt2() ?? 1;
+            var dt = DateTime.Now.AddDays(-Days);
+            var cdt = db.Setting("DbConvertedDate", "1/1/1900").ToDate();
             Expression<Func<Person, bool>> pred = p => p.CreatedDate > cdt &&
                 p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate > dt);
             Expression expr = Expression.Invoke(pred, parm);
@@ -175,12 +168,11 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-
-        internal static Expression RecentNewVisitCount(
-            ParameterExpression parm, CMSDataContext Db,
-            int? progid, int? divid, int? org, int orgtype, string days0, int days, CompareType op, int cnt)
+        internal Expression RecentNewVisitCount()
         {
-            var q = Db.RecentNewVisitCount(progid, divid, org, orgtype, days0.ToInt2(), days);
+            var days0 = Quarters.ToInt2();
+            var cnt = TextValue.ToInt();
+            var q = db.RecentNewVisitCount(Program, Division, Organization, OrgType ?? 0, days0, Days);
             switch (op)
             {
                 case CompareType.Greater:
@@ -200,11 +192,10 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression KidsRecentAttendCount(
-            ParameterExpression parm,
-            int days, CompareType op, int cnt)
+        internal Expression KidsRecentAttendCount()
         {
-            var mindt = Util.Now.AddDays(-days).Date;
+            var cnt = TextValue.ToInt();
+            var mindt = Util.Now.AddDays(-Days).Date;
             Expression<Func<Person, int>> pred = p =>
                 p.Family.People.Any(k => k.PositionInFamilyId == 30 && k.Attends.Any())
                     ? p.Family.People.Where(k => k.PositionInFamilyId == 30).Max(k =>
@@ -212,29 +203,24 @@ namespace CmsData
                     : 0;
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression AttendPct(
-            ParameterExpression parm,
-            int? progid, int? divid, int? org, CompareType op, decimal pct)
+        internal Expression AttendPct()
         {
             Expression<Func<Person, decimal>> pred = p => (
                 from om in p.OrganizationMembers
-                where org == 0 || om.OrganizationId == org
-                where divid == 0 || om.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                where progid == 0 || om.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                where Organization == 0 || om.OrganizationId == Organization
+                where Division == 0 || om.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                where Program == 0 || om.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
                 select om
                 ).Average(om => om.AttendPct).Value;
             Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Convert(Expression.Constant(pct), left.Type);
-            return Compare(left, op, right);
+            var right = Expression.Convert(Expression.Constant(decimal.Parse(TextValue)), left.Type);
+            return Compare(left, right);
         }
-
-        internal static Expression RecentAttendType(
-            ParameterExpression parm, CMSDataContext Db,
-            int? progid, int? divid, int? org, int orgtype, int days, CompareType op, int[] ids)
+        internal Expression RecentAttendType()
         {
-            var q = Db.RecentAttendType(progid, divid, org, days, string.Join(",", ids));
+            var q = db.RecentAttendType(Program, Division, Organization, Days, string.Join(",", CodeIntIds));
             Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)

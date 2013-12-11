@@ -12,12 +12,11 @@ using System.Data.Linq.SqlClient;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression HasVolunteerApplications(ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression HasVolunteerApplications()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.Volunteers.Any(v => v.VolunteerForms.Any());
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -25,45 +24,39 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression VolunteerApprovalCode(ParameterExpression parm,
-            CompareType op,
-            int[] ids)
+        internal Expression VolunteerApprovalCode()
         {
             Expression<Func<Person, bool>> pred =
-                p => p.VoluteerApprovalIds.Any(vid => ids.Contains(vid.ApprovalId))
-                     || (!p.VoluteerApprovalIds.Any() && ids.Contains(0));
+                p => p.VoluteerApprovalIds.Any(vid => CodeIntIds.Contains(vid.ApprovalId))
+                     || (!p.VoluteerApprovalIds.Any() && CodeIntIds.Contains(0));
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression VolAppStatusCode(ParameterExpression parm,
-            CompareType op,
-            int[] ids)
+        internal Expression VolAppStatusCode()
         {
             Expression<Func<Person, bool>> pred = p =>
-                p.Volunteers.Any(v => ids.Contains(v.StatusId ?? 0));
+                p.Volunteers.Any(v => CodeIntIds.Contains(v.StatusId ?? 0));
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression VolunteerProcessedDateMonthsAgo(ParameterExpression parm,
-            CompareType op,
-            int months)
+        internal Expression VolunteerProcessedDateMonthsAgo()
         {
+            var months = TextValue.ToInt();
             Expression<Func<Person, int?>> pred = p =>
                 SqlMethods.DateDiffMonth(p.Volunteers.Max(v => v.ProcessedDate), Util.Now);
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Constant(months, typeof(int?));
-            return Compare(left, op, right);
+            return Compare(parm, left, op, right);
         }
-        internal static Expression BackgroundCheckStatus(ParameterExpression parm,
-            string labels,
-            string usernameOrPeopleId,
-            CompareType op,
-            int[] ids)
+        internal Expression BackgroundCheckStatus()
         {
+            var labels = Tags; 
+            var usernameOrPeopleId = Quarters;
+            var ids = CodeIntIds;
             int[] lab = (labels ?? "99").Split(',').Select(vv => vv.ToInt()).ToArray();
             var pid = usernameOrPeopleId.ToInt();
             var user = "";
@@ -83,24 +76,5 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        //internal static Expression HasVolunteered(ParameterExpression parm,
-        //	string View,
-        //	CompareType op,
-        //	bool tf)
-        //{
-        //	Expression<Func<Person, bool>> pred;
-        //	if (View == "ns")
-        //		pred = p => p.VolInterestInterestCodes.Count() > 0;
-        //	else
-        //	{
-        //		var orgkeys = Person.OrgKeys(View);
-        //		pred = p =>
-        //			  p.VolInterestInterestCodes.Any(vi => orgkeys.Contains(vi.VolInterestCode.Org));
-        //	}
-        //	Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-        //	if (!(op == CompareType.Equal && tf))
-        //		expr = Expression.Not(expr);
-        //	return expr;
-        //}
     }
 }

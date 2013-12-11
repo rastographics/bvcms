@@ -7,55 +7,42 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using UtilityExtensions;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression PeopleExtra(
-            ParameterExpression parm,
-            CompareType op,
-            string[] values)
+        internal Expression PeopleExtra()
         {
             Expression<Func<Person, bool>> pred = p =>
-                p.PeopleExtras.Any(e =>
-                    values.Contains(e.FieldValue));
+                p.PeopleExtras.Any(e => CodeStrIds.Contains(e.FieldValue));
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression HasPeopleExtraField(
-            ParameterExpression parm,
-            CompareType op,
-            string field)
+        internal Expression HasPeopleExtraField()
         {
-            Expression<Func<Person, bool>> pred = p =>
-                p.PeopleExtras.Any(e =>
-                    e.Field == field);
+            Expression<Func<Person, bool>> pred = p => p.PeopleExtras.Any(e => e.Field == TextValue);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression PeopleExtraData(
-            ParameterExpression parm,
-            string field,
-            CompareType op,
-            string value)
+        internal Expression PeopleExtraData()
         {
+            var field = Quarters;
             Expression<Func<Person, string>> pred = p =>
                 p.PeopleExtras.Where(ff => ff.Field == field).Select(ff => ff.Data).SingleOrDefault();
             Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Constant(value, typeof(string));
-            return Compare(left, op, right);
+            var right = Expression.Constant(TextValue, typeof(string));
+            return Compare(left, right);
         }
-        internal static Expression PeopleExtraInt(
-            ParameterExpression parm,
-            string field,
-            CompareType op,
-            int? value)
+        internal Expression PeopleExtraInt()
         {
+            var field = Quarters;
+            var value = TextValue.ToInt2();
             if (!value.HasValue)
             {
                 Expression<Func<Person, bool>> predint = null;
@@ -69,7 +56,7 @@ namespace CmsData
                         predint = p => p.PeopleExtras.SingleOrDefault(e => e.Field == field).IntValue != null;
                         return Expression.Invoke(predint, parm);
                     default:
-                        return AlwaysFalse(parm);
+                        return AlwaysFalse();
                 }
             }
 
@@ -78,15 +65,12 @@ namespace CmsData
                     e.Field == field).IntValue ?? 0;
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(value), left.Type);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression PeopleExtraDate(
-            ParameterExpression parm,
-            string field,
-            CompareType op,
-            DateTime? value)
+        internal Expression PeopleExtraDate()
         {
-            if (!value.HasValue)
+            var field = Quarters;
+            if (!DateValue.HasValue)
             {
                 Expression<Func<Person, bool>> pred = null;
                 switch (op)
@@ -99,15 +83,15 @@ namespace CmsData
                         pred = p => p.PeopleExtras.SingleOrDefault(e => e.Field == field).DateValue != null;
                         return Expression.Invoke(pred, parm);
                     default:
-                        return AlwaysFalse(parm);
+                        return AlwaysFalse();
                 }
             }
             else
             {
                 Expression<Func<Person, DateTime>> pred = p => p.PeopleExtras.SingleOrDefault(e => e.Field == field).DateValue.Value;
                 Expression left = Expression.Invoke(pred, parm);
-                var right = Expression.Convert(Expression.Constant(value), left.Type);
-                return Compare(left, op, right);
+                var right = Expression.Convert(Expression.Constant(DateValue), left.Type);
+                return Compare(left, right);
             }
         }
     }

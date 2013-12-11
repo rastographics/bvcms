@@ -97,7 +97,7 @@ namespace CmsData
             get { return CompareClass2.Convert(Comparison); }
         }
         private CompareClass2 compare;
-        public CompareClass2 Compare
+        public CompareClass2 Compare2
         {
             get
             {
@@ -124,8 +124,8 @@ namespace CmsData
                     ret = "Match NONE of the conditions below";
                     break;
                 default:
-                    if (Compare != null)
-                        ret = Compare.ToString(this);
+                    if (Compare2 != null)
+                        ret = Compare2.ToString(this);
                     break;
             }
             return ret;
@@ -153,10 +153,9 @@ namespace CmsData
             var parm = Expression.Parameter(typeof(Person), "p");
             var tree = ExpressionTree(parm, db);
             if (tree == null)
-                tree = Expressions.CompareConstant(parm, "PeopleId", CompareType.NotEqual, 0);
+                tree = CompareConstant(parm, "PeopleId", CompareType.NotEqual, 0);
             if (includeDeceased == false)
-                tree = Expression.And(tree, Expressions.CompareConstant(parm,
-                                        "IsDeceased", CompareType.NotEqual, true));
+                tree = Expression.And(tree, CompareConstant(parm, "IsDeceased", CompareType.NotEqual, true));
             if (Util2.OrgMembersOnly)
                 tree = Expression.And(OrgMembersOnly(db, parm), tree);
             else if (Util2.OrgLeadersOnly)
@@ -204,10 +203,10 @@ namespace CmsData
                     }
                 return expr;
             }
-            if(Compare == null)
-                expr = Expressions.AlwaysFalse(parm);
+            if(Compare2 == null)
+                expr = AlwaysFalse();
             else
-                expr = Compare.Expression(this, parm, Db);
+                expr = Compare2.Expression(this, parm, Db);
             if (InAllAnyFalse)
                 expr = Expression.Not(expr);
             return expr;
@@ -218,7 +217,7 @@ namespace CmsData
             {
                 if (ConditionName == "MatchAnything")
                     return false;
-                var e = Compare;
+                var e = Compare2;
                 if (e == null)
                     return false;
                 return e.CompType == CompareType.OneOf
@@ -229,7 +228,7 @@ namespace CmsData
         {
             get
             {
-                var e = Compare;
+                var e = Compare2;
                 return e.FieldType == FieldType.Bit
                     || e.FieldType == FieldType.NullBit
                     || e.FieldType == FieldType.Code

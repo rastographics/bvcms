@@ -13,13 +13,11 @@ using CmsData.Codes;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression HasTaskWithName(
-            ParameterExpression parm,
-            CompareType op,
-            string task)
+        internal Expression HasTaskWithName()
         {
+            var task = TextValue;
             if (task == null)
                 task = "";
             Expression<Func<Person, bool>> pred = p =>
@@ -30,11 +28,9 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression HasIncompleteTask(
-            ParameterExpression parm,
-            CompareType op,
-            string task)
+        internal Expression HasIncompleteTask()
         {
+            var task = TextValue;
             var empty = !task.HasValue();
             Expression<Func<Person, bool>> pred = p => (
                 from t in p.TasksCoOwned
@@ -46,11 +42,9 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression DaysSinceContact(
-            ParameterExpression parm,
-            CompareType op,
-            int days)
+        internal Expression DaysSinceContact()
         {
+            var days = TextValue.ToInt();
             Expression<Func<Person, bool>> hadcontact = p => p.contactsHad.Count() > 0;
             var dt = Util.Now.Date;
             Expression<Func<Person, int?>> pred = p =>
@@ -58,71 +52,54 @@ namespace CmsData
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Constant(days, typeof(int?));
             var expr1 = Expression.Invoke(hadcontact, parm);
-            return Expression.And(expr1, Compare(left, op, right));
+            return Expression.And(expr1, Compare(left, right));
         }
-        internal static Expression RecentContactMinistry(
-            ParameterExpression parm,
-            int days,
-            CompareType op,
-            int[] ids)
+        internal Expression RecentContactMinistry()
         {
-            var mindt = Util.Now.AddDays(-days).Date;
+            var mindt = Util.Now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 p.contactsHad.Any(a => a.contact.ContactDate >= mindt
-                    && ids.Contains(a.contact.MinistryId ?? 0));
+                    && CodeIntIds.Contains(a.contact.MinistryId ?? 0));
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression RecentContactType(
-            ParameterExpression parm,
-            int days,
-            CompareType op,
-            int[] ids)
+        internal Expression RecentContactType()
         {
-            var mindt = Util.Now.AddDays(-days).Date;
+            var mindt = Util.Now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 p.contactsHad.Any(a => a.contact.ContactDate >= mindt
-                    && ids.Contains(a.contact.ContactTypeId ?? 0));
+                    && CodeIntIds.Contains(a.contact.ContactTypeId ?? 0));
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression RecentContactReason(
-            ParameterExpression parm,
-            int days,
-            CompareType op,
-            int[] ids)
+        internal Expression RecentContactReason()
         {
-            var mindt = Util.Now.AddDays(-days).Date;
+            var mindt = Util.Now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 p.contactsHad.Any(a => a.contact.ContactDate >= mindt
-                    && ids.Contains(a.contact.ContactReasonId ?? 0));
+                    && CodeIntIds.Contains(a.contact.ContactReasonId ?? 0));
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression RecentEmailCount(
-            ParameterExpression parm,
-            int days,
-            CompareType op,
-            int cnt)
+        internal Expression RecentEmailCount()
         {
-            var mindt = Util.Now.AddDays(-days).Date;
+            var cnt = TextValue.ToInt();
+            var mindt = Util.Now.AddDays(-Days).Date;
             Expression<Func<Person, int>> pred = p =>
                 p.EmailQueueTos.Count(e => e.Sent >= mindt);
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression EmailRecipient(
-            ParameterExpression parm,
-            CompareType op,
-            int id)
+        internal Expression EmailRecipient()
         {
+            var id = TextValue.ToInt();
             Expression<Func<Person, bool>> pred = p =>
                 p.EmailQueueTos.Any(e => e.Id == id);
             Expression expr = Expression.Invoke(pred, parm);
@@ -130,21 +107,17 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression MadeContactTypeAsOf(
-            ParameterExpression parm,
-            DateTime? from,
-            DateTime? to,
-            int? ministryid,
-            CompareType op,
-            params int[] ids)
+        internal Expression MadeContactTypeAsOf()
         {
-            to =  (to ?? from ?? DateTime.Now).AddDays(1) ;
+            //StartDate, EndDate, Program, CodeIntIds
+            var ministryid = Program;
+            var to = (EndDate ?? StartDate ?? DateTime.Now).AddDays(1);
 
             Expression<Func<Person, bool>> pred = p => (
                 from c in p.contactsMade
                 where c.contact.MinistryId == ministryid || ministryid == 0
-                where ids.Contains(c.contact.ContactTypeId ?? 0) || ids.Length == 0 || ids[0] == 0
-                where @from == null || @from <= c.contact.ContactDate
+                where CodeIntIds.Contains(c.contact.ContactTypeId ?? 0) || CodeIntIds.Length == 0 || CodeIntIds[0] == 0
+                where StartDate == null || StartDate <= c.contact.ContactDate
                 where c.contact.ContactDate <= to
                 select c
                 ).Any();
@@ -153,11 +126,9 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression HasContacts(
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression HasContacts()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p => p.contactsHad.Count() > 0;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))

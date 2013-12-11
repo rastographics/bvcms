@@ -413,6 +413,7 @@
     <Compile Include="Classes\QuickBooks\QBDHelper.cs" />
     <Compile Include="Classes\QuickBooks\QBOHelper.cs" />
     <Compile Include="Picture.cs" />
+    <Compile Include="QueryBuilder\GetExpression.cs" />
     <Compile Include="QueryBuilder\Expressions\Admin.cs" />
     <Compile Include="QueryBuilder\Expressions\Membership.cs" />
     <Compile Include="QueryBuilder\Expressions\Miscellaneous.cs" />

@@ -5,49 +5,33 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using CmsData.API;
 using UtilityExtensions;
-using System.Configuration;
-using System.Reflection;
-using System.Collections;
 using System.Data.Linq.SqlClient;
-using System.Text.RegularExpressions;
-using System.Web;
 using CmsData.Codes;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression WasMemberAsOf(
-            ParameterExpression parm,
-            DateTime? startdt,
-            DateTime? enddt,
-            int? progid,
-            int? divid,
-            int? orgid,
-            int orgtype,
-            CompareType op,
-            bool tf)
+        internal Expression WasMemberAsOf()
         {
+            var tf = CodeIds == "1";
             var now = DateTime.Now;
-            enddt = enddt.HasValue ? enddt.Value.AddDays(1) : startdt.Value.AddDays(1);
+            EndDate = EndDate.HasValue ? EndDate.Value.AddDays(1) : StartDate.Value.AddDays(1);
             Expression<Func<Person, bool>> pred = p => (
                 from et in p.EnrollmentTransactions
                 where et.TransactionTypeId <= 3 // things that start a change
                 where et.TransactionStatus == false
-                where et.TransactionDate <= enddt // transaction starts <= looked for end
+                where et.TransactionDate <= EndDate // transaction starts <= looked for end
                 where et.MemberTypeId != MemberTypeCode.Prospect
                 where (et.Pending ?? false) == false
-                where (et.NextTranChangeDate ?? now) >= startdt // transaction ends >= looked for start
-                where orgtype == 0 || et.Organization.OrganizationTypeId == orgtype
-                where orgid == 0 || et.OrganizationId == orgid
-                where divid == 0 || et.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                where progid == 0 || et.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                where (et.NextTranChangeDate ?? now) >= StartDate // transaction ends >= looked for start
+                where (OrgType ?? 0) == 0 || et.Organization.OrganizationTypeId == OrgType
+                where Organization == 0 || et.OrganizationId == Organization
+                where Division == 0 || et.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                where Program == 0 || et.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
                 select et
                 ).Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -55,32 +39,22 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-
-        internal static Expression MemberTypeAsOf(
-            ParameterExpression parm,
-            DateTime? frdt,
-            DateTime? todt,
-            int? progid,
-            int? divid,
-            int? org,
-            int orgtype,
-            CompareType op,
-            params int[] ids)
+        internal Expression MemberTypeAsOf()
         {
-            todt = todt.HasValue ? todt.Value.AddDays(1) : frdt.Value.AddDays(1);
+            var end = EndDate.HasValue ? EndDate.Value.AddDays(1) : StartDate.Value.AddDays(1);
 
             Expression<Func<Person, bool>> pred = p => (
                 from et in p.EnrollmentTransactions
                 where et.TransactionTypeId <= 3 // things that start a change
                 where et.TransactionStatus == false
-                where frdt <= (et.NextTranChangeDate ?? Util.Now) // where it ends
-                where et.TransactionDate <= todt // where it begins
+                where StartDate <= (et.NextTranChangeDate ?? Util.Now) // where it ends
+                where et.TransactionDate <= end // where it begins
                 where (et.Pending ?? false) == false
-                where ids.Contains(et.MemberTypeId)  // what it's type was during that time
-                where orgtype == 0 || et.Organization.OrganizationTypeId == orgtype
-                where org == 0 || et.OrganizationId == org
-                where divid == 0 || et.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                where progid == 0 || et.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                where CodeIntIds.Contains(et.MemberTypeId)  // what it's type was during that time
+                where (OrgType ?? 0) == 0 || et.Organization.OrganizationTypeId == OrgType
+                where Organization == 0 || et.OrganizationId == Organization
+                where Division == 0 || et.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                where Program == 0 || et.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
                 select et
                 ).Any();
             Expression expr = Expression.Invoke(pred, parm);
@@ -88,177 +62,155 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression OrgJoinDate(
-            ParameterExpression parm,
-            int? progid,
-            int? divid,
-            int? org,
-            CompareType op,
-            DateTime? date)
+        internal Expression OrgJoinDate()
         {
             Expression<Func<Person, bool>> pred = null;
             switch (op)
             {
                 case CompareType.Equal:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.EnrollmentDate.Value.Date == date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.EnrollmentDate.Value.Date == DateValue);
                     break;
                 case CompareType.Greater:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.EnrollmentDate.Value.Date > date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.EnrollmentDate.Value.Date > DateValue);
                     break;
                 case CompareType.GreaterEqual:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.EnrollmentDate.Value.Date >= date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.EnrollmentDate.Value.Date >= DateValue);
                     break;
                 case CompareType.Less:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.EnrollmentDate.Value.Date < date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.EnrollmentDate.Value.Date < DateValue);
                     break;
                 case CompareType.LessEqual:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.EnrollmentDate.Value.Date <= date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.EnrollmentDate.Value.Date <= DateValue);
                     break;
                 case CompareType.NotEqual:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.EnrollmentDate.Value.Date != date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.EnrollmentDate.Value.Date != DateValue);
                     break;
                 case CompareType.IsNull:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate == null);
                     break;
                 case CompareType.IsNotNull:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate != null);
                     break;
             }
             return Expression.Invoke(pred, parm);
         }
-        internal static Expression OrgJoinDateDaysAgo(
-            ParameterExpression parm,
-            int? progid,
-            int? divid,
-            int? org,
-            CompareType op,
-            int days)
+        internal Expression OrgJoinDateDaysAgo()
         {
+            var days = TextValue.ToInt();
             Expression<Func<Person, int?>> pred = p =>
                 SqlMethods.DateDiffDay(p.OrganizationMembers.Where(m =>
-                    (org == 0 || m.OrganizationId == org)
-                    && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                    && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
+                    (Organization == 0 || m.OrganizationId == Organization)
+                    && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                    && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                     ).Min(m => m.EnrollmentDate), Util.Now);
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Constant(days, typeof(int?));
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression OrgJoinDateCompare(
-           ParameterExpression parm,
-           int? progid,
-           int? divid,
-           int? org,
-           CompareType op,
-           string prop2)
+        internal Expression OrgJoinDateCompare()
         {
+            var prop2 = CodeIdValue;
             Expression<Func<Person, DateTime?>> pred = p =>
                 p.OrganizationMembers.Where(m =>
-                    (org == 0 || m.OrganizationId == org)
-                    && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                    && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
+                    (Organization == 0 || m.OrganizationId == Organization)
+                    && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                    && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                     ).Min(m => m.EnrollmentDate);
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Property(parm, prop2);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression OrgInactiveDate(
-            ParameterExpression parm,
-            int? progid,
-            int? divid,
-            int? org,
-            CompareType op,
-            DateTime? date)
+        internal Expression OrgInactiveDate()
         {
             Expression<Func<Person, bool>> pred = null;
             switch (op)
             {
                 case CompareType.Equal:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.InactiveDate.Value.Date == date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.InactiveDate.Value.Date == DateValue);
                     break;
                 case CompareType.Greater:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.InactiveDate.Value.Date > date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.InactiveDate.Value.Date > DateValue);
                     break;
                 case CompareType.GreaterEqual:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.InactiveDate.Value.Date >= date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.InactiveDate.Value.Date >= DateValue);
                     break;
                 case CompareType.Less:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.InactiveDate.Value.Date < date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.InactiveDate.Value.Date < DateValue);
                     break;
                 case CompareType.LessEqual:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.InactiveDate.Value.Date <= date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.InactiveDate.Value.Date <= DateValue);
                     break;
                 case CompareType.NotEqual:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
-                        && m.InactiveDate.Value.Date != date);
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                        && m.InactiveDate.Value.Date != DateValue);
                     break;
                 case CompareType.IsNull:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.InactiveDate == null);
                     break;
                 case CompareType.IsNotNull:
                     pred = p => p.OrganizationMembers.Any(m =>
-                        (org == 0 || m.OrganizationId == org)
-                        && (divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid))
-                        && (progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid)))
+                        (Organization == 0 || m.OrganizationId == Organization)
+                        && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                        && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.InactiveDate != null);
                     break;
             }

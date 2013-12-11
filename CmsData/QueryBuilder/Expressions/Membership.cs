@@ -11,15 +11,12 @@ using UtilityExtensions;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression RecentJoinChurch(
-            ParameterExpression parm,
-            int days,
-            CompareType op,
-            bool tf)
+        internal Expression RecentJoinChurch()
         {
-            var mindt = Util.Now.AddDays(-days).Date;
+            var tf = CodeIds == "1";
+            var mindt = Util.Now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 p.JoinDate > mindt;
             Expression expr = Expression.Invoke(pred, parm);
@@ -29,26 +26,20 @@ namespace CmsData
             return expr;
 
         }
-
-        internal static Expression RecentDecisionType(
-            ParameterExpression parm,
-            int days,
-            CompareType op,
-            int[] ids)
+        internal Expression RecentDecisionType()
         {
-            var mindt = Util.Now.AddDays(-days).Date;
+            var mindt = Util.Now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 p.DecisionDate > mindt
-                && ids.Contains(p.DecisionTypeId.Value);
+                && CodeIntIds.Contains(p.DecisionTypeId.Value);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression CampusId(ParameterExpression parm,
-            CompareType op,
-            int[] ids)
+        internal Expression CampusId()
         {
+            var ids = CodeIntIds;
             Expression<Func<Person, bool>> pred = null;
             if (op == CompareType.IsNull)
                 pred = p => p.CampusId == null;
@@ -62,6 +53,5 @@ namespace CmsData
 
             return expr;
         }
-
     }
 }

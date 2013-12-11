@@ -7,43 +7,48 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression AttendMemberTypeAsOf(CMSDataContext Db,
-            ParameterExpression parm,
-            DateTime? from, DateTime? to, int? progid, int? divid, int? org, CompareType op, string ids)
+        internal Expression AttendMemberTypeAsOf()
         {
-            to = to.HasValue ? to.Value.AddDays(1) : from.Value.AddDays(1);
+            var ids = string.Join(",", CodeStrIds);
+            EndDate = EndDate.HasValue ? EndDate.Value.AddDays(1) : StartDate.Value.AddDays(1);
             Expression<Func<Person, bool>> pred = p =>
-                Db.AttendMemberTypeAsOf(from, to, progid, divid, org, ids)
+                db.AttendMemberTypeAsOf(StartDate, EndDate, Program, Division, Organization, ids)
                 .Select(a => a.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression AttendanceTypeAsOf(CMSDataContext Db,
-            ParameterExpression parm,
-            DateTime? from, DateTime? to, int? progid, int? divid, int? org, int orgtype, CompareType op, string ids)
+        internal Expression AttendanceTypeAsOf()
         {
-            to = to.HasValue ? to.Value.AddDays(1) : from.Value.AddDays(1);
+            var ids = string.Join(",", CodeStrIds);
+            EndDate = EndDate.HasValue ? EndDate.Value.AddDays(1) : StartDate.Value.AddDays(1);
             Expression<Func<Person, bool>> pred = p =>
-                Db.AttendanceTypeAsOf(from, to, progid, divid, org, orgtype, ids)
+                db.AttendanceTypeAsOf(StartDate, EndDate, Program, Division, Organization, OrgType ?? 0, ids)
                 .Select(a => a.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression AttendedAsOf(
-            ParameterExpression parm, CMSDataContext Db,
-            DateTime? from, DateTime? to, int? progid, int? divid, CompareType op, bool tf, bool guestonly)
+        internal Expression GuestAttendedAsOf()
         {
-            var q = Db.AttendedAsOf(progid, divid, null, from, to, guestonly).Select(p => p.PeopleId);
+            return AttendedAsOf(guestonly: true);
+        }
+        internal Expression MemberAttendedAsOf()
+        {
+            return AttendedAsOf(guestonly: false);
+        }
+        private Expression AttendedAsOf(bool guestonly)
+        {
+            var tf = CodeIds == "1"; 
+            var q = db.AttendedAsOf(Program, Division, null, StartDate, EndDate, guestonly).Select(p => p.PeopleId);
             Expression<Func<Person, bool>> pred;
             if (op == CompareType.Equal ^ tf)
                 pred = p => !q.Contains(p.PeopleId);
@@ -52,26 +57,26 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression AttendPctHistory(
-           ParameterExpression parm, CMSDataContext Db,
-           int? progid, int? divid, int? org, DateTime? start, DateTime? end, CompareType op, double pct)
+        internal Expression AttendPctHistory()
         {
+            var end = EndDate;
             if (!end.HasValue)
-                end = start.Value;
+                end = StartDate.Value;
             end = end.Value.AddDays(1);
+            var pct = double.Parse(TextValue);
             // note: this only works for members because visitors do not have att%
             var now = DateTime.Now;
 
-            var q = from p in Db.People
+            var q = from p in db.People
                     let m = from et in p.EnrollmentTransactions
                             where et.TransactionTypeId <= 3 // things that start a change
                             where et.TransactionStatus == false
                             where et.TransactionDate < end // transaction starts <= looked for end
                             where (et.Pending ?? false) == false
-                            where (et.NextTranChangeDate ?? now) >= start // transaction ends >= looked for start
-                            where org == 0 || et.OrganizationId == org
-                            where divid == 0 || et.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                            where progid == 0 || et.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                            where (et.NextTranChangeDate ?? now) >= StartDate // transaction ends >= looked for start
+                            where Organization == 0 || et.OrganizationId == Organization
+                            where Division == 0 || et.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                            where Program == 0 || et.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
                             select et
                     where m.Any()
                     select p;
@@ -82,11 +87,11 @@ namespace CmsData
                 case CompareType.Greater:
                     q2 = from p in q
                          let g = from a in p.Attends
-                                 where a.MeetingDate >= start
+                                 where a.MeetingDate >= StartDate
                                  where a.MeetingDate < end
-                                 where org == 0 || a.Meeting.OrganizationId == org
-                                 where divid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                                 where progid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                                 where Organization == 0 || a.Meeting.OrganizationId == Organization
+                                 where Division == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                                 where Program == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
                                  select a
                          let n = g.Count(aa => aa.EffAttendFlag == true)
                          let d = g.Count(aa => aa.EffAttendFlag != null)
@@ -96,11 +101,11 @@ namespace CmsData
                 case CompareType.GreaterEqual:
                     q2 = from p in q
                          let g = from a in p.Attends
-                                 where a.MeetingDate >= start
+                                 where a.MeetingDate >= StartDate
                                  where a.MeetingDate < end
-                                 where org == 0 || a.Meeting.OrganizationId == org
-                                 where divid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                                 where progid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                                 where Organization == 0 || a.Meeting.OrganizationId == Organization
+                                 where Division == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                                 where Program == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
                                  select a
                          let n = g.Count(aa => aa.EffAttendFlag == true)
                          let d = g.Count(aa => aa.EffAttendFlag != null)
@@ -110,11 +115,11 @@ namespace CmsData
                 case CompareType.Less:
                     q2 = from p in q
                          let g = from a in p.Attends
-                                 where a.MeetingDate >= start
+                                 where a.MeetingDate >= StartDate
                                  where a.MeetingDate < end
-                                 where org == 0 || a.Meeting.OrganizationId == org
-                                 where divid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                                 where progid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                                 where Organization == 0 || a.Meeting.OrganizationId == Organization
+                                 where Division == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                                 where Program == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
                                  select a
                          let n = g.Count(aa => aa.EffAttendFlag == true)
                          let d = g.Count(aa => aa.EffAttendFlag != null)
@@ -124,11 +129,11 @@ namespace CmsData
                 case CompareType.LessEqual:
                     q2 = from p in q
                          let g = from a in p.Attends
-                                 where a.MeetingDate >= start
+                                 where a.MeetingDate >= StartDate
                                  where a.MeetingDate < end
-                                 where org == 0 || a.Meeting.OrganizationId == org
-                                 where divid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == divid)
-                                 where progid == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == progid))
+                                 where Organization == 0 || a.Meeting.OrganizationId == Organization
+                                 where Division == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                                 where Program == 0 || a.Meeting.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
                                  select a
                          let n = g.Count(aa => aa.EffAttendFlag == true)
                          let d = g.Count(aa => aa.EffAttendFlag != null)
@@ -137,25 +142,27 @@ namespace CmsData
                     break;
                 case CompareType.NotEqual:
                 case CompareType.Equal:
-                    return AlwaysFalse(parm);
+                    return AlwaysFalse();
+                default:
+                    break;
             }
 
-            var tag = Db.PopulateTemporaryTag(q2);
+            var tag = db.PopulateTemporaryTag(q2);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
 
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression AttendCntHistory(
-            ParameterExpression parm, CMSDataContext Db,
-            int? progid, int? divid, int? org, int sched, DateTime? start, DateTime? end, CompareType op, int cnt)
+        internal Expression AttendCntHistory()
         {
+            var end = EndDate;
             if (!end.HasValue)
-                end = start.Value;
+                end = StartDate.Value;
             end = end.Value.AddDays(1);
+            var cnt = TextValue.ToInt();
 
-            var q = Db.AttendCntHistory(progid, divid, org, sched, start, end);
-            switch(op)
+            var q = db.AttendCntHistory(Program, Division, Organization, Schedule, StartDate, end);
+            switch (op)
             {
                 case CompareType.Greater:
                     q = q.Where(cc => cc.Cnt > cnt); break;
@@ -174,26 +181,24 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression DaysBetween12Attendance(
-            ParameterExpression parm, CMSDataContext Db,
-            int? lookback, int? progid, int? divid, int? org, CompareType op, int days)
+        internal Expression DaysBetween12Attendance()
         {
+            var lookback = TextValue.ToInt();
             Expression<Func<Person, int>> pred = p =>
-                    Db.DaysBetween12Attend(p.PeopleId, progid, divid, org, lookback).Value;
+                    db.DaysBetween12Attend(p.PeopleId, Program, Division, Organization, lookback).Value;
             Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Convert(Expression.Constant(days), left.Type);
-            return Compare(left, op, right);
+            var right = Expression.Convert(Expression.Constant(Days), left.Type);
+            return Compare(left, right);
         }
-        internal static Expression DaysAfterNthVisitDateRange(
-            ParameterExpression parm, CMSDataContext db,
-            DateTime? from, DateTime? to, int nthvisit, int? progid, int? divid, int? org, CompareType op, int days)
+        internal Expression DaysAfterNthVisitDateRange()
         {
+            var nthvisit = TextValue.ToInt();
             Expression<Func<Person, int>> pred = p =>
-                 db.AttendDaysAfterNthVisitInDateRange(p.PeopleId, progid, divid, org,
-                                                       from, to, nthvisit).Value;
+                 db.AttendDaysAfterNthVisitInDateRange(p.PeopleId, Program, Division, Organization,
+                                                       StartDate, EndDate, nthvisit).Value;
             Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Convert(Expression.Constant(days), left.Type);
-            return Compare(left, op, right);
+            var right = Expression.Convert(Expression.Constant(Quarters.ToInt()), left.Type);
+            return Compare(left, right);
         }
     }
 }
