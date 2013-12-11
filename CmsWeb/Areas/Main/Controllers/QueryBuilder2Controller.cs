@@ -233,16 +233,16 @@ namespace CmsWeb.Areas.Main.Controllers
         public ContentResult AddContact()
         {
             var m = new QueryModel2();
-            var cid = CmsData.Contact.AddContact(m.QueryId.Value);
+            var qid = m.TopClause.Id;
+            var cid = CmsData.Contact.AddContact(qid);
             return Content("/Contact/" + cid);
         }
         [HttpPost]
         public ActionResult AddTasks()
         {
             var m = new QueryModel2();
-            var c = new ContentResult();
-            c.Content = Task.AddTasks(m.QueryId.Value).ToString();
-            return c;
+            var qid = m.TopClause.Id;
+            return Content(Task.AddTasks(m.TopClause.Id).ToString());
         }
 
     }
