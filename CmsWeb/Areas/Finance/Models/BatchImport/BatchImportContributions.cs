@@ -20,11 +20,8 @@ namespace CmsWeb.Models
         public static int? BatchProcess(string text, DateTime date, int? fundid, bool fromFile)
         {
             var defaulthost = DbUtil.Db.Setting("DefaultHost", "");
-            
+
             var specialcases = new List<string>() { "https://bellevue.bvcms.com", "https://northmobile.bvcms.com" };
-            if (specialcases.Contains(defaulthost) && text.StartsWith("Report Date,Report Requestor"))
-                using (var csv = new CsvReader(new StringReader(text), true))
-                    return BatchProcessRegions(csv, date, fundid);
 
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
@@ -58,8 +55,10 @@ namespace CmsWeb.Models
                     return BatchProcessFbcStark2(text, date, fundid);
                 case "discovercrosspoint":
                     return BatchProcessDiscoverCrosspoint(text, date, fundid);
-
             }
+            if (text.StartsWith("Report Date,Report Requestor"))
+                using (var csv = new CsvReader(new StringReader(text), true))
+                    return BatchProcessRegions(csv, date, fundid);
 
             if (text.StartsWith("From MICR :"))
                 return BatchProcessMagTek(text, date);
@@ -72,9 +71,9 @@ namespace CmsWeb.Models
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessChase(csv, date, fundid);
 
-            if (text.StartsWith("Report Date,Report Requestor"))
-                using (var csv = new CsvReader(new StringReader(text), true))
-                    return BatchProcessSunTrust2(csv, date, fundid);
+            //if (text.StartsWith("Report Date,Report Requestor"))
+            //    using (var csv = new CsvReader(new StringReader(text), true))
+            //        return BatchProcessSunTrust2(csv, date, fundid);
 
             if (text.Contains("ProfileID"))
                 using (var csv = new CsvReader(new StringReader(text), true))
