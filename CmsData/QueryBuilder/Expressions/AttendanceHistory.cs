@@ -16,9 +16,9 @@ namespace CmsData
         internal Expression AttendMemberTypeAsOf()
         {
             var ids = string.Join(",", CodeStrIds);
-            EndDate = EndDate.HasValue ? EndDate.Value.AddDays(1) : StartDate.Value.AddDays(1);
+            var end = EndDate.HasValue ? EndDate.Value.AddDays(1) : StartDate.Value.AddDays(1);
             Expression<Func<Person, bool>> pred = p =>
-                db.AttendMemberTypeAsOf(StartDate, EndDate, Program, Division, Organization, ids)
+                db.AttendMemberTypeAsOf(StartDate, end, Program, Division, Organization, ids)
                 .Select(a => a.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
@@ -28,9 +28,9 @@ namespace CmsData
         internal Expression AttendanceTypeAsOf()
         {
             var ids = string.Join(",", CodeStrIds);
-            EndDate = EndDate.HasValue ? EndDate.Value.AddDays(1) : StartDate.Value.AddDays(1);
+            var end = EndDate.HasValue ? EndDate.Value.AddDays(1) : StartDate.Value.AddDays(1);
             Expression<Func<Person, bool>> pred = p =>
-                db.AttendanceTypeAsOf(StartDate, EndDate, Program, Division, Organization, OrgType ?? 0, ids)
+                db.AttendanceTypeAsOf(StartDate, end, Program, Division, Organization, OrgType ?? 0, ids)
                 .Select(a => a.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)

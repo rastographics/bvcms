@@ -12,6 +12,7 @@
     var ExportController = "Export" + two;
     var ReportsController = "Reports" + two;
     var AddExtraValueAction = "Add" + two;
+    var ExtraValuesGridAction = "ExtraValuesGrid" + two;
     var DeleteExtraValueAction = "Delete" + two;
     var NotesExcelAction = "NotesExcel" + two;
 }
@@ -148,11 +149,11 @@
                     {
                         <li><a href='/Manage/ExtraValues/@AddExtraValueAction/@qid' class="ChooseExtraValues">Add Extra Values</a></li>
                         <li><a href='/Manage/ExtraValues/@DeleteExtraValueAction/@qid' class="ChooseExtraValues">Delete Extra Values</a></li>
-                        <li><a href="/@ReportsController/ExtraValuesGrid/@qid">Extra Values Grid</a></li>
+                        <li><a href="/Reports/@ExtraValuesGridAction/@qid">Extra Values Grid</a></li>
                     }
                     @if (User.IsInRole("Developer"))
                     {
-                        <li><a href="/@ReportsController/ExtraValuesGrid2/@qid" class="hideAlt">Extra Values Grid2</a></li>
+                        <li><a href="/Reports/@ExtraValuesGridAction/@qid?alternate=true" class="hideAlt">Extra Values Grid2</a></li>
                     }
                     <li><a href='/Task/@NotesExcelAction/@qid'>Export Task Notes</a></li>
                 </ul>

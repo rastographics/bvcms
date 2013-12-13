@@ -60,11 +60,12 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(m);
         }
         [HttpPost]
-        public ActionResult SelectCondition(Guid id, string conditionName)
+        public ActionResult SelectCondition(Guid queryid, Guid selectedid, string conditionName)
         {
             var m = new QueryModel2
             {
-                SelectedId = id,
+                QueryId = queryid,
+                SelectedId = selectedid,
                 ConditionName = conditionName,
                 CodeValues = new string[0],
                 Program = 0,
@@ -89,9 +90,9 @@ namespace CmsWeb.Areas.Main.Controllers
             });
         }
         [HttpPost]
-        public ActionResult EditCondition(Guid id)
+        public ActionResult EditCondition(Guid queryid, Guid selectedid)
         {
-            var m = new QueryModel2 { SelectedId = id };
+            var m = new QueryModel2 { QueryId = queryid, SelectedId = selectedid };
             m.EditCondition();
             var j = JsonConvert.SerializeObject(m, Formatting.Indented);
             return Content(j);
