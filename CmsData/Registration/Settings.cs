@@ -162,6 +162,8 @@ namespace CmsData.Registration
 			switch (parser.curr.kw)
 			{
 				case Parser.RegKeywords.AskParents:
+				case Parser.RegKeywords.AnswersNotRequired:
+				case Parser.RegKeywords.AskSMS:
 				case Parser.RegKeywords.AskDoctor:
 				case Parser.RegKeywords.AskInsurance:
 				case Parser.RegKeywords.AskEmContact:

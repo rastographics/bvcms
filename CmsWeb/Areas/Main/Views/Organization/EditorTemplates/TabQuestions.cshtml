@@ -7,6 +7,8 @@
     ask.Name = Html.NameFor2(m => m.AskItems);
     switch (ask.Type)
     {
+        case "AnswersNotRequired":
+        case "AskSMS":
         case "AskParents":
         case "AskGradeOptions":
         case "AskDoctor":

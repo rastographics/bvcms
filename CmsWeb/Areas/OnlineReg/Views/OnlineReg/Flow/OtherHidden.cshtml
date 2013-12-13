@@ -42,6 +42,13 @@
             @Html.HiddenFor2(m => m.mname)
             @Html.HiddenFor2(m => m.fname)
             break;
+        case "AnswersNotRequired":
+            @Html.HiddenFor2(m => m.mname)
+            @Html.HiddenFor2(m => m.fname)
+            break;
+        case "AskSMS":
+            @Html.HiddenFor2(m => m.sms)
+            break;
         case "AskCoaching":
             @Html.HiddenFor2(m => m.coaching)
             break;

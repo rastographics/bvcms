@@ -88,6 +88,12 @@
             <td>@(Model.coaching == true ? "Yes" : "No") </td>
         </tr>
             break;
+        case "AskSMS":
+        <tr>
+            <td>Recive Text Messages?</td>
+            <td>@(Model.sms == true ? "Yes" : "No") </td>
+        </tr>
+            break;
         case "AskChurch":
         <tr>
             <td>@(Model.setting.AskVisible("AskParents") ? "Parent's Church" : "Church")</td>

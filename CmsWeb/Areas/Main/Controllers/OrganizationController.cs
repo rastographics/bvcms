@@ -521,6 +521,8 @@ namespace CmsWeb.Areas.Main.Controllers
             var template = "EditorTemplates/" + type;
             switch (type)
             {
+                case "AnswersNotRequired":
+                case "AskSMS":
                 case "AskEmContact":
                 case "AskInsurance":
                 case "AskDoctor":

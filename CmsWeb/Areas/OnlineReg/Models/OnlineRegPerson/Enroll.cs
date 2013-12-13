@@ -63,6 +63,10 @@ namespace CmsWeb.Models
                     case "AskCoaching":
                         reg.Coaching = coaching;
                         break;
+                    case "AskSMS":
+                        if (sms.HasValue && LoggedIn == true)
+                            person.UpdateValue("ReceiveSMS", sms.Value);
+                        break;
                     case "AskInsurance":
                         reg.Insurance = insurance;
                         reg.Policy = policy;
@@ -279,6 +283,9 @@ namespace CmsWeb.Models
                     case "AskCoaching":
                         sb.AppendFormat("<tr><td>Coaching:</td><td>{0}</td></tr>\n", rr.Coaching);
                         break;
+                    case "AskSMS":
+                        sb.AppendFormat("<tr><td>Receive Texts:</td><td>{0}</td></tr>\n", person.ReceiveSMS);
+                        break;
                     case "AskDropdown":
                         sb.AppendFormat("<tr><td>{1}:</td><td>{0}</td></tr>\n", ((AskDropdown)ask).SmallGroupChoice(option).Description,
                                         Util.PickFirst(((AskDropdown)ask).Label, "Options"));
@@ -391,6 +398,9 @@ namespace CmsWeb.Models
                     case "AskCoaching":
                         coaching = reg.Coaching;
                         break;
+//                    case "AskSMS":
+//                        sms = person.ReceiveSMS;
+//                        break;
                     case "AskInsurance":
                         insurance = reg.Insurance;
                         policy = reg.Policy;

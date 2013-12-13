@@ -85,6 +85,10 @@
         </tr>
             break;
         case "AskTylenolEtc":
+            var tylenolname = Html.NameFor(m => m.tylenol);
+            var advilname = Html.NameFor(m => m.advil);
+            var maaloxname = Html.NameFor(m => m.maalox);
+            var robiname = Html.NameFor(m => m.robitussin);
         <tr>
             <td>May we give your child</td>
             <td>
@@ -92,32 +96,32 @@
                     <tr>
                         <td>Tylenol?:</td>
                         <td nowrap>
-                            @Html.RadioButtonFor(m => m.tylenol, true, Model.tylenol == true) Yes
-                            @Html.RadioButtonFor(m => m.tylenol, false, Model.tylenol == false) No
+                            <input type="radio" name="@tylenolname" value="true" @(Model.tylenol == true ? "checked='checked'" : "") /> Yes
+                            <input type="radio" name="@tylenolname" value="false" @(Model.tylenol == false ? "checked='checked'" : "") /> No
                             <div>@Html.ValidationMessageFor(m => m.tylenol)</div>
                         </td>
                     </tr>
                     <tr>
                         <td>Advil?:</td>
                         <td nowrap>
-                            @Html.RadioButtonFor(m => m.advil, true, Model.advil == true) Yes
-                            @Html.RadioButtonFor(m => m.advil, false, Model.advil == false) No
+                            <input type="radio" name="@advilname" value="true" @(Model.advil == true ? "checked='checked'" : "") /> Yes
+                            <input type="radio" name="@advilname" value="false" @(Model.advil == false ? "checked='checked'" : "") /> No
                             <div>@Html.ValidationMessageFor(m => m.advil)</div>
                         </td>
                     </tr>
                     <tr>
                         <td>Maalox?:</td>
                         <td nowrap>
-                            @Html.RadioButtonFor(m => m.maalox, true, Model.maalox == true) Yes
-                            @Html.RadioButtonFor(m => m.maalox, false, Model.maalox == false) No
+                            <input type="radio" name="@maaloxname" value="true" @(Model.maalox == true ? "checked='checked'" : "") /> Yes
+                            <input type="radio" name="@maaloxname" value="false" @(Model.maalox == false ? "checked='checked'" : "") /> No
                             <div>@Html.ValidationMessageFor(m => m.maalox)</div>
                         </td>
                     </tr>
                     <tr>
                         <td>Robitussin?:</td>
                         <td nowrap>
-                            @Html.RadioButtonFor(m => m.robitussin, true, Model.robitussin == true) Yes
-                            @Html.RadioButtonFor(m => m.robitussin, false, Model.robitussin == false) No
+                            <input type="radio" name="@robiname" value="true" @(Model.robitussin == true ? "checked='checked'" : "") /> Yes
+                            <input type="radio" name="@robiname" value="false" @(Model.robitussin == false ? "checked='checked'" : "") /> No
                             <div>@Html.ValidationMessageFor(m => m.robitussin)</div>
                         </td>
                     </tr>
@@ -137,12 +141,24 @@
                 <div>@Html.ValidationMessageFor(m => m.fname)</div></td>
         </tr>
             break;
+        case "AskSMS":
+            var smsname = Html.NameFor2(m => m.sms);
+        <tr>
+            <td>Opt-in to receive Text Messages (SMS)</td>
+            <td>
+                <input type="radio" name="@smsname" value="true" @(Model.sms == true ? "checked='checked'" : "") /> Yes
+                <input type="radio" name="@smsname" value="false" @(Model.sms == false ? "checked='checked'" : "") /> No
+                    <div>@Html.ValidationMessageFor(m => m.sms)</div>
+            </td>
+        </tr>
+            break;
         case "AskCoaching":
+            var coachingname = Html.NameFor2(m => m.coaching);
         <tr>
             <td>Interested in Coaching?</td>
             <td>
-                @Html.RadioButtonFor(m => m.coaching, true, Model.coaching == true) Yes
-                @Html.RadioButtonFor(m => m.coaching, false, Model.coaching == false) No
+                <input type="radio" name="@coachingname" value="true" @(Model.coaching == true ? "checked='checked'" : "") /> Yes
+                <input type="radio" name="@coachingname" value="false" @(Model.coaching == false ? "checked='checked'" : "") /> No
                     <div>@Html.ValidationMessageFor(m => m.coaching)</div>
             </td>
         </tr>
