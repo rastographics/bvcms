@@ -37,8 +37,8 @@ namespace CmsData
                 pred = p => (
                     from m in p.OrganizationMembers
                     where CodeIntIds.Contains(m.MemberType.AttendanceTypeId ?? 0)
-                    where (Campus == 0
-                            || m.Organization.CampusId == Campus
+                    where ((Campus ?? 0) == 0
+                            || m.Organization.CampusId == (Campus ?? 0)
                             || (Campus == -1 && m.Organization.CampusId == null)
                             )
                     where (OrgType ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgType
@@ -52,8 +52,8 @@ namespace CmsData
                 pred = p => (
                     from m in p.OrganizationMembers
                     where CodeIntIds.Contains(m.MemberType.AttendanceTypeId ?? 0)
-                    where (Campus == 0
-                            || m.Organization.CampusId == Campus
+                    where ((Campus ?? 0) == 0
+                            || m.Organization.CampusId == (Campus ?? 0)
                             || (Campus == -1 && m.Organization.CampusId == null)
                             )
                     where (OrgType ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgType
@@ -75,8 +75,8 @@ namespace CmsData
                 pred = p => (
                     from m in p.OrganizationMembers
                     where CodeIntIds.Contains(m.MemberTypeId)
-                    where (Campus == 0
-                            || m.Organization.CampusId == Campus
+                    where ((Campus ?? 0) == 0
+                            || m.Organization.CampusId == (Campus ?? 0)
                             || (Campus == -1 && m.Organization.CampusId == null)
                             )
                     where (OrgType ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgType
@@ -90,8 +90,8 @@ namespace CmsData
                 pred = p => (
                     from m in p.OrganizationMembers
                     where CodeIntIds.Contains(m.MemberTypeId)
-                    where (Campus == 0
-                            || m.Organization.CampusId == Campus
+                    where ((Campus ?? 0) == 0
+                            || m.Organization.CampusId == (Campus ?? 0)
                             || (Campus == -1 && m.Organization.CampusId == null)
                             )
                     where (OrgType ?? 0) == 0 || m.Organization.OrganizationTypeId == OrgType
