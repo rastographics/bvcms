@@ -603,6 +603,10 @@ namespace CmsData
                 GetCurrentUser();
                 return _currentuser;
             }
+            set
+            {
+                _currentuser = value;
+            }
         }
         private void GetCurrentUser()
         {
@@ -629,6 +633,7 @@ namespace CmsData
                 GetCurrentUser();
             return _roles;
         }
+
         private int[] _roleids;
         public int[] CurrentRoleIds()
         {

@@ -17,7 +17,7 @@ td.center, th.center {
 .dropdown-menu::before,
 .dropdown-menu::after {
     border: none;
-    content: none!important;
+    content: none !important;
 }
 
 ul.dropdown-menu {
@@ -1030,4 +1030,17 @@ table.pad0 td {
 
 .red {
     color: red;
+}
+
+@media only screen and (max-device-width: 480px) {
+    .navbar-fixed-top,
+    .navbar-fixed-bottom {
+        position: relative;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    body {
+        padding-top: 0 !important;
+    }
 }

@@ -1,13 +1,11 @@
 ﻿@model CmsData.Registration.Settings
 @using CmsWeb
-@using UtilityExtensions
 
 @foreach(var ask in Model.AskItems)
 {
     ask.Name = Html.NameFor2(m => m.AskItems);
     switch (ask.Type)
     {
-        case "AnswersNotRequired":
         case "AskSMS":
         case "AskParents":
         case "AskGradeOptions":
