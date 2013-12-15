@@ -14,7 +14,7 @@
         @if (finance)
         {
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin</a>
-            <ul class="dropdown-menu dropdown-div-admin">
+            <ul class="dropdown-menu dropdown-div-finance">
                 <li>
                     <div class="row-fluid">
                         <ul class="span5 unstyled pull-left">
@@ -49,9 +49,17 @@
         else
         {
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin</a>
-            <ul class="dropdown-menu">
-                @AdminList1(admin, design, managetrans, edit, manageemails, false)
-                @AdminList2(admin, design, managetrans, edit, manageemails, false, developer)
+            <ul class="dropdown-menu dropdown-div-admin">
+                <li>
+                    <div class="row-fluid">
+                        <ul class="span6 unstyled pull-left">
+                            @AdminList2(admin, design, managetrans, edit, manageemails, finance:false, developer:developer)
+                        </ul>
+                        <ul class="span6 unstyled pull-left">
+                            @AdminList1(admin, design, managetrans, edit, manageemails, finance:false)
+                        </ul>
+                    </div>
+                </li>
             </ul>
         }
     </li>
@@ -65,6 +73,10 @@
     @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
     @Helper.LiAnchorLink("System", "/Setup/Setting/", admin)
     @Helper.LiAnchorLink("Twilio Setup", "/Setup/Twilio/", admin)
+    
+    @Helper.LiHeader("Reports", admin)
+    @Helper.LiAnchorLink("Recent Registrations", "/Reports/RecentRegistrations?days=90&orgid=0", admin)
+    @Helper.LiAnchorLink("Recent Registration Summary", "/Reports/RegistrationSummary?days=90", admin)
 }
 @helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
 {

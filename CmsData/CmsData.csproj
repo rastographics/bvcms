@@ -373,6 +373,8 @@
     <Compile Include="Generated\Functions\RecentAttendMemberType.cs" />
     <Compile Include="Generated\Functions\RecentAttendType.cs" />
     <Compile Include="Generated\Functions\RecentNewVisitCount.cs" />
+    <Compile Include="Generated\Functions\RecentRegistration.cs" />
+    <Compile Include="Generated\Functions\Registration.cs" />
     <Compile Include="Generated\Functions\SplitInt.cs" />
     <Compile Include="Generated\Number.cs" />
     <Compile Include="ITableWithExtraValues.cs" />

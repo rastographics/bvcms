@@ -1,0 +1,56 @@
+﻿@using UtilityExtensions
+@model IOrderedQueryable<CmsData.View.Registration>
+
+@{
+    ViewBag.Title = "Recent Registrations";
+    Layout = Fingerprint.Layout();
+    var useclass = "grid";
+    if (Fingerprint.UseNewLook())
+    {
+        useclass = "table table-condensed table-striped";
+    }
+}
+@section scripts
+{
+    @if (!Fingerprint.UseNewLook())
+    {
+        <script>
+            $(function () {
+                $("table.grid > tbody > tr:even").addClass("alt");
+            });
+        </script>
+    }
+}
+
+<h2>Recent Registrations</h2>
+
+<table class="@useclass">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Registrant/User</th>
+            <th>Birthday</th>
+            <th>Count</th>
+            <th>Organization</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td class="nowrap @(r.Completed!="completed" ? "red" : "")"><a href="/OnlineReg/ConfirmTestXml/@r.Id" target="detail">@r.Stamp.FormatDateTm()</a></td>
+                <td>
+                    @r.First @r.Last
+                    <div>
+                        <a href="/Person/Index/@r.PeopleId" target="detail">
+                            @(r.PeopleId != null ? r.Name : "anonymous")
+                        </a>
+                    </div>
+                </td>
+                <td>@r.Dob</td>
+                <td>@r.Cnt</td>
+                <td><a href="/Organization/Index/@r.OrganizationId" target="detail">@r.OrganizationName</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

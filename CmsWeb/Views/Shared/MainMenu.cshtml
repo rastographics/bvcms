@@ -86,6 +86,12 @@
                     <li>@Html.ActionLink("Third Time Attenders", "NthTimeAttenders", "Home", new { Area = "", Id = 3 }, null)</li>
                     <li>@Html.ActionLink("Extra Value Codes", "ExtraValues", "Reports", new { Area = "Main" }, null)</li>
                     <li>@Html.ActionLink("Extra Value Data", "ExtraValueData", "Reports", new { Area = "Main" }, null)</li>
+                    @if (admin)
+                    {
+                    <li class="header"><span>Admins</span></li>
+                    <li>@Helper.AnchorLink("Recent Registrations", "/Reports/RecentRegistrations?days=90&orgid=0")</li>
+                    <li>@Helper.AnchorLink("Recent Registration Summary", "/Reports/RegistrationSummary?days=90")</li>
+                    }
                 </ul>
             </div>
         </li>

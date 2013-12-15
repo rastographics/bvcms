@@ -24,9 +24,13 @@ ul.dropdown-menu {
     text-align: left;
 }
 
-ul.dropdown-div-admin {
+ul.dropdown-div-finance {
     margin-left: -250px;
     width: 600px;
+}
+ul.dropdown-div-admin {
+    margin-left: -250px;
+    width: 360px;
 }
 
 

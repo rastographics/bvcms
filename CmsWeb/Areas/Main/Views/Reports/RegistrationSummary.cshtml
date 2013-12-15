@@ -1,0 +1,46 @@
+﻿@using UtilityExtensions
+@model IEnumerable<CmsData.View.RecentRegistration>
+@{
+    ViewBag.Title = "Registrations Summary";
+    Layout = Fingerprint.Layout();
+    var useclass = "grid";
+    if (Fingerprint.UseNewLook())
+    {
+        useclass = "table table-condensed table-striped";
+    }
+}
+@section scripts
+{
+    @if (!Fingerprint.UseNewLook())
+    {
+        <script>
+            $(function () {
+                $("table.grid > tbody > tr:even").addClass("alt");
+            });
+        </script>
+    }
+}
+
+<h2>Registrations Summary</h2>
+
+<table class="@useclass">
+    <thead>
+        <tr>
+            <th>FirstDate</th>
+            <th>LastDate</th>
+            <th>Count</th>
+            <th>Organization</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Dt1.FormatDate()</td>
+                <td>@r.Dt2.FormatDate()</td>
+                <td><a href="/Organization/Index/@r.OrganizationId">@r.Cnt</a></td>
+                <td><a href="/OnlineReg/Index/@r.OrganizationId" target="detail">@r.OrganizationName</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

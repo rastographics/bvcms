@@ -2486,6 +2486,28 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.RecentRegistrations", IsComposable = true)]
+		public IQueryable< View.RecentRegistration > RecentRegistrations(
+            [Parameter(DbType="int")] int? days
+            )
+		{
+			return this.CreateMethodCallQuery< View.RecentRegistration>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                days
+                );
+		}
+
+		[Function(Name="dbo.Registrations", IsComposable = true)]
+		public IQueryable< View.Registration > Registrations(
+            [Parameter(DbType="int")] int? days
+            )
+		{
+			return this.CreateMethodCallQuery< View.Registration>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                days
+                );
+		}
+
 		[Function(Name="dbo.Split", IsComposable = true)]
 		public IQueryable< View.Split > Split(
             [Parameter(DbType="nvarchar")] string InputText,
@@ -2674,6 +2696,22 @@ namespace CmsData
                 thisday,
                 MeetingTime,
                 SchedDay
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.ComputeAge", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? ComputeAge(
+            [Parameter(Name = "m", DbType="int")] int? m,
+            [Parameter(Name = "d", DbType="int")] int? d,
+            [Parameter(Name = "y", DbType="int")] int? y
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                m,
+                d,
+                y
                 ).ReturnValue));
 		}
 

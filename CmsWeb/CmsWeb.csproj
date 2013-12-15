@@ -1515,6 +1515,8 @@
     <Content Include="Areas\Main\Views\SavedQuery2\Rows.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\AnswersNotRequired.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\AskSMS.cshtml" />
+    <Content Include="Areas\Main\Views\Reports\RecentRegistrations.cshtml" />
+    <Content Include="Areas\Main\Views\Reports\RegistrationSummary.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />

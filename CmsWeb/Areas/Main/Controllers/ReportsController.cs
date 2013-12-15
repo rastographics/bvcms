@@ -561,5 +561,21 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             return View(m);
         }
+
+        public ActionResult RecentRegistrations(int? days, int? orgid)
+        {
+            var q = from r in DbUtil.Db.Registrations(days ?? 90)
+                where (orgid ?? 0) == 0 || r.OrganizationId == orgid
+                orderby r.Stamp descending 
+                select r;
+            return View(q);
+        }
+        public ActionResult RegistrationSummary(int? days)
+        {
+            var q = from r in DbUtil.Db.RecentRegistrations(days ?? 90)
+                orderby r.Dt2 descending 
+                select r;
+            return View(q);
+        }
     }
 }
