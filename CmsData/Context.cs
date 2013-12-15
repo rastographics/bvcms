@@ -500,7 +500,20 @@ namespace CmsData
         {
             var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
-            TagAll(q, tag);
+            var qpids = q.Select(pp => pp.PeopleId);
+            var cmd = GetCommand(qpids);
+            var s = cmd.CommandText;
+            var plist = new List<DbParameter>();
+            var n = 0;
+            foreach (var p in cmd.Parameters)
+            {
+                s = s.Replace("@p" + n, "{{{0}}}".Fmt(n));
+                n++;
+                plist.Add(p as DbParameter);
+            }
+            s = Regex.Replace(s, "^SELECT( DISTINCT)?",
+                @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
+            ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
             return tag;
         }
         public Tag PopulateTemporaryTag(IQueryable<int> q)
