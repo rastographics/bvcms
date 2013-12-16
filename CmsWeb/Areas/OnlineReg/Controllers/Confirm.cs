@@ -109,6 +109,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     			    m.TranId = ti.Id;
                     m.History.Add("ProcessPayment");
     			    ed.Data = Util.Serialize<OnlineRegModel>(m);
+    			    ed.Completed = true;
                     DbUtil.Db.SubmitChanges();
     			}
 				Session["FormId"] = pf.FormId;
@@ -257,6 +258,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			    if (ed != null)
 			    {
                     m.History.Add("ConfirmTransaction");
+			        ed.Completed = true;
 			        ed.Data = Util.Serialize<OnlineRegModel>(m);
 			        DbUtil.Db.SubmitChanges();
 			    }
