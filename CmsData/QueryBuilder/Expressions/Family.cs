@@ -5,49 +5,34 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using CmsData.API;
 using UtilityExtensions;
-using System.Configuration;
-using System.Reflection;
-using System.Collections;
-using System.Data.Linq.SqlClient;
-using System.Text.RegularExpressions;
-using System.Web;
 using CmsData.Codes;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression NumberOfFamilyMembers(
-            ParameterExpression parm,
-            CompareType op,
-            int cnt)
+        internal Expression NumberOfFamilyMembers()
         {
+            var cnt = TextValue.ToInt();
             Expression<Func<Person, int>> pred = p => p.Family.People.Count();
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression NumberOfPrimaryAdults(
-            ParameterExpression parm,
-            CompareType op,
-            int cnt)
+        internal Expression NumberOfPrimaryAdults()
         {
+            var cnt = TextValue.ToInt();
             Expression<Func<Person, int>> pred = p => p.Family.People.Count(pp => pp.PositionInFamilyId == 10);
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression HasParents(
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression HasParents()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m => m.PositionInFamilyId == PositionInFamily.PrimaryAdult && p.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -55,11 +40,9 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression FamilyHasChildren(
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression FamilyHasChildren()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m => (m.Age ?? 0) <= 12 && m.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -67,45 +50,35 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression FamilyHasChildrenAged(
-            ParameterExpression parm,
-            int age,
-            CompareType op,
-            bool tf)
+        internal Expression FamilyHasChildrenAged()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
-                p.Family.People.Any(m => (m.Age ?? 0) <= age && m.PositionInFamilyId == PositionInFamily.Child);
+                p.Family.People.Any(m => (m.Age ?? 0) <= (Age ?? 0) && m.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression FamilyHasChildrenAged2(
-            ParameterExpression parm,
-            string range,
-            CompareType op,
-            bool tf)
+        internal Expression FamilyHasChildrenAged2()
         {
-            var a = range.Split('-');
+            var range = Quarters.Split('-');
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
-                p.Family.People.Any(m => (m.Age ?? 0) >= a[0].ToInt() && (m.Age ?? 0) <= a[1].ToInt() && m.PositionInFamilyId == PositionInFamily.Child);
+                p.Family.People.Any(m => (m.Age ?? 0) >= range[0].ToInt() && (m.Age ?? 0) <= range[1].ToInt() && m.PositionInFamilyId == PositionInFamily.Child);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression FamilyHasChildrenAged3(
-            ParameterExpression parm,
-            string range,
-            CompareType op,
-            int[] ids)
+        internal Expression FamilyHasChildrenAged3()
         {
-            var a = range.Split('-');
+            var range = Quarters.Split('-');
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m =>
-                    (m.Age ?? 0) >= a[0].ToInt()
-                    && (m.Age ?? 0) <= a[1].ToInt()
-                    && ids.Contains(m.GenderId) 
+                    (m.Age ?? 0) >= range[0].ToInt()
+                    && (m.Age ?? 0) <= range[1].ToInt()
+                    && CodeIntIds.Contains(m.GenderId)
                     && m.PositionInFamilyId == PositionInFamily.Child
                 );
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
@@ -113,11 +86,9 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression HasRelatedFamily(
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression HasRelatedFamily()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.RelatedFamilies1.Any()
                 || p.Family.RelatedFamilies2.Any();
@@ -126,11 +97,9 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression IsHeadOfHousehold(
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression IsHeadOfHousehold()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.HeadOfHouseholdId == p.PeopleId;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -138,11 +107,9 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression FamHasPrimAdultChurchMemb(
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression FamHasPrimAdultChurchMemb()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(m =>
                     m.PositionInFamilyId == PositionInFamily.PrimaryAdult
@@ -151,7 +118,7 @@ namespace CmsData
                     );
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(tf), left.Type);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
     }
 }

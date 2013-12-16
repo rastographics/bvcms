@@ -7,7 +7,6 @@ using System.Text;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
-using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
@@ -208,8 +207,9 @@ namespace CmsWeb.Models
                 message = re.Replace(message, "");
 
             // send confirmations
-            Db.Email(NotifyIds[0].FromEmail, p0, elist,
-                subject, message, false);
+            if(subject != "DO NOT SEND")
+                Db.Email(NotifyIds[0].FromEmail, p0, elist,
+                    subject, message, false);
             // notify the staff
             foreach (var p in List)
             {

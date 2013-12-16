@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaUrl = "Manage/ExtraValues")]
     public class ExtraValuesController : CmsStaffController
     {
-        [POST("Add/{id}")]
+        [POST("Add/{id:int}")]
         public ActionResult Add(int id, string field, string value)
         {
             var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
@@ -25,8 +25,35 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return Content("done");
         }
-        [POST("Delete/{id}")]
+        [POST("Delete/{id:int}")]
         public ActionResult Delete(int id, string field, string value)
+        {
+            var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
+            foreach (var pid in list)
+            {
+                var ev = Person.GetExtraValue(DbUtil.Db, pid, field, value);
+                if (ev == null)
+                    continue;
+                DbUtil.Db.PeopleExtras.DeleteOnSubmit(ev);
+                DbUtil.Db.SubmitChanges();
+                DbUtil.DbDispose();
+            }
+            return Content("done");
+        }
+        [POST("Add2/{id:guid}")]
+        public ActionResult Add2(Guid id, string field, string value)
+        {
+            var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
+            foreach (var pid in list)
+            {
+                Person.AddEditExtraValue(DbUtil.Db, pid, field, value);
+                DbUtil.Db.SubmitChanges();
+                DbUtil.DbDispose();
+            }
+            return Content("done");
+        }
+        [POST("Delete2/{id:guid}")]
+        public ActionResult Delete2(Guid id, string field, string value)
         {
             var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
             foreach (var pid in list)

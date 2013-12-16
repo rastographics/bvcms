@@ -108,10 +108,9 @@ namespace CmsData
             var parm = Expression.Parameter(typeof(Person), "p");
             var tree = ExpressionTree(parm, db);
             if (tree == null)
-                tree = Expressions.CompareConstant(parm, "PeopleId", CompareType.NotEqual, 0);
+                tree = Condition.CompareConstant(parm, "PeopleId", CompareType.NotEqual, 0);
             if (includeDeceased == false)
-                tree = Expression.And(tree, Expressions.CompareConstant(parm,
-                                        "IsDeceased", CompareType.NotEqual, true));
+                tree = Expression.And(tree, Condition.CompareConstant(parm, "IsDeceased", CompareType.NotEqual, true));
             if (Util2.OrgMembersOnly)
                 tree = Expression.And(OrgMembersOnly(db, parm), tree);
             else if (Util2.OrgLeadersOnly)

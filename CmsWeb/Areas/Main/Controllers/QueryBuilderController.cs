@@ -215,6 +215,9 @@ namespace CmsWeb.Areas.Main.Controllers
             cb.ApplicationName = "qb";
             DbUtil.Db = new CMSDataContext(cb.ConnectionString);
             var m = new QueryModel();
+#if DEBUG
+            UpdateModel<IQBUpdateable>(m);
+#else
             try
             {
                 UpdateModel<IQBUpdateable>(m);
@@ -223,8 +226,12 @@ namespace CmsWeb.Areas.Main.Controllers
             {
                 return Content("Something went wrong<br><p>" + ex.Message + "</p>");
             }
+#endif
             m.LoadScratchPad();
             var starttime = DateTime.Now;
+#if DEBUG
+            m.PopulateResults();
+#else
             try
             {
                 m.PopulateResults();
@@ -236,6 +243,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 errorLog.Log(new Error(ex2));
                 return Content("Something went wrong<br><p>" + ex.Message + "</p>");
             }
+#endif
             DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.QueryId));
             return View(m);
         }

@@ -11,13 +11,12 @@ using UtilityExtensions;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression IncludeDeceased(
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression IncludeDeceased()
         {
+            setIncludeDeceased();
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = null;
 
             bool include = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
@@ -28,11 +27,10 @@ namespace CmsData
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             return expr;
         }
-        internal static Expression ParentsOf(
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression ExprParentsOf()
         {
+            var tf = CodeIds == "1";
+            setParentsOf(op, tf);
             Expression<Func<Person, bool>> pred = null;
 
             bool include = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
@@ -40,35 +38,29 @@ namespace CmsData
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             return expr;
         }
-        internal static Expression StatusFlag(
-            ParameterExpression parm,
-            CompareType op,
-            params string[] codes)
+        internal Expression StatusFlag()
         {
+            var codes = CodeValues.Split(',');
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(tt => codes.Contains(tt.Tag.Name) && tt.Tag.TypeId == 100);
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression HasCurrentTag(CMSDataContext Db,
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression HasCurrentTag()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
-                    p.Tags.Any(t => t.Tag.Name == Db.CurrentTagName && t.Tag.PeopleId == Db.CurrentTagOwnerId);
+                    p.Tags.Any(t => t.Tag.Name == db.CurrentTagName && t.Tag.PeopleId == db.CurrentTagOwnerId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression HasMyTag(ParameterExpression parm,
-            string tag,
-            CompareType op,
-            bool tf)
+        internal Expression HasMyTag()
         {
-            var a = (tag ?? "").Split(';').Select(s => s.Split(',')[0].ToInt()).ToArray();
+            var tf = CodeIds == "1";
+            var a = (Tags ?? "").Split(';').Select(s => s.Split(',')[0].ToInt()).ToArray();
             Expression<Func<Person, bool>> pred = p =>
                 p.Tags.Any(t => a.Contains(t.Id));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -76,10 +68,9 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression HasMemberDocs(ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression HasMemberDocs()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.MemberDocForms.Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -87,61 +78,49 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression SavedQuery(ParameterExpression parm,
-            CMSDataContext Db,
-            string QueryIdDesc,
-            CompareType op,
-            bool tf)
+        internal Expression EvalSavedQuery(string QueryIdDesc)
         {
+            var tf = CodeIds == "1";
             var a = QueryIdDesc.Split(":".ToCharArray(), 2);
             var QueryId = a[0].ToInt();
-            var q2 = Db.PeopleQuery(QueryId);
+            var q2 = db.PeopleQuery(QueryId);
             if (q2 == null)
-                return AlwaysFalse(parm);
-            var tag = Db.PopulateTemporaryTag(q2.Select(pp => pp.PeopleId));
+                return AlwaysFalse();
+            var tag = db.PopulateTemporaryTag(q2.Select(pp => pp.PeopleId));
 
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression SavedQuery2(ParameterExpression parm,
-            CMSDataContext Db,
-            string QueryIdDesc,
-            CompareType op,
-            bool tf)
+        internal Expression SavedQuery2()
         {
-            var a = QueryIdDesc.Split(":".ToCharArray(), 2);
+            var tf = CodeIds == "1";
+            var a = SavedQuery.Split(":".ToCharArray(), 2);
             Guid QueryId;
             Guid.TryParse(a[0], out QueryId);
-            var q2 = Db.PeopleQuery(QueryId);
+            var q2 = db.PeopleQuery(QueryId);
             if (q2 == null)
-                return AlwaysFalse(parm);
-            var tag = Db.PopulateTemporaryTag(q2.Select(pp => pp.PeopleId));
+                return AlwaysFalse();
+            var tag = db.PopulateTemporaryTag(q2.Select(pp => pp.PeopleId));
 
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression SavedQueryPlus(ParameterExpression parm,
-            CMSDataContext Db,
-            string QueryIdDesc,
-            CompareType op,
-            int[] ids)
+        internal Expression SavedQueryPlus()
         {
-            var a = QueryIdDesc.SplitStr(":", 2);
-            var savedquery = Db.QueryBuilderClauses.SingleOrDefault(q =>
+            var a = SavedQuery.SplitStr(":", 2);
+            var savedquery = db.QueryBuilderClauses.SingleOrDefault(q =>
                 q.SavedBy == a[0] && q.Description == a[1]);
-            var pred = savedquery.Predicate(Db);
+            var pred = savedquery.Predicate(db);
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression RecActiveOtherChurch(
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression RecActiveOtherChurch()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> hasapp = p => p.RecRegs.Count() > 0;
             Expression<Func<Person, bool>> pred = p =>
                     p.RecRegs.Any(v => v.ActiveInAnotherChurch == true)
@@ -152,11 +131,9 @@ namespace CmsData
                 expr2 = Expression.Not(expr2);
             return Expression.And(expr1, expr2);
         }
-        internal static Expression RecInterestedCoaching(
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression RecInterestedCoaching()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> hasapp = p => p.RecRegs.Count() > 0;
             Expression<Func<Person, bool>> pred = p =>
                     p.RecRegs.Any(v => v.Coaching == true)
@@ -167,26 +144,22 @@ namespace CmsData
                 expr2 = Expression.Not(expr2);
             return Expression.And(expr1, expr2);
         }
-        internal static Expression InOneOfMyOrgs(
-            ParameterExpression parm, CMSDataContext Db,
-            CompareType op,
-            bool tf)
+        internal Expression InOneOfMyOrgs()
         {
+            var tf = CodeIds == "1";
             var uid = Util.UserPeopleId;
             Expression<Func<Person, bool>> pred = p =>
                 p.OrganizationMembers.Any(m =>
-                    Db.OrganizationMembers.Any(um =>
+                    db.OrganizationMembers.Any(um =>
                         um.OrganizationId == m.OrganizationId && um.PeopleId == uid)
                 );
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(tf), left.Type);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression CheckInVisits(
-            ParameterExpression parm, CMSDataContext Db,
-            CompareType op,
-            int visits)
+        internal Expression CheckInVisits()
         {
+            var visits = TextValue.ToInt();
             Expression<Func<Person, bool>> pred = null;
             switch (op)
             {
@@ -237,11 +210,9 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression MedicalLength(
-            ParameterExpression parm,
-            CompareType op,
-            int len)
+        internal Expression MedicalLength()
         {
+            var len = TextValue.ToInt();
             if (len == 0 && op == CompareType.Equal)
             {
                 Expression<Func<Person, bool>> pp = p =>
@@ -252,7 +223,7 @@ namespace CmsData
             Expression<Func<Person, int>> pred = p => p.RecRegs.Sum(rr => rr.MedicalDescription.Length);
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Convert(Expression.Constant(len), left.Type);
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
     }
 }

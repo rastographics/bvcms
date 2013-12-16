@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Data.Linq;
 using System.IO;
+using ImageResizer;
 using Drawing = System.Drawing;
 using System.Drawing.Imaging;
 using UtilityExtensions;
@@ -33,22 +34,23 @@ namespace ImageData
         }
         private void LoadResizeFromBits(byte[] bits, int w, int h)
         {
-            var istream = new MemoryStream(bits);
-            var img1 = Drawing.Image.FromStream(istream);
-            var ratio = Math.Min(w / (double)img1.Width, h / (double)img1.Height);
-            if (ratio >= 1) // image is smaller than requested
-                ratio = 1; // same size
-            w = Convert.ToInt32(ratio * img1.Width);
-            h = Convert.ToInt32(ratio * img1.Height);
-            var img2 = new Drawing.Bitmap(img1, w, h);
-            var ostream = new MemoryStream();
-            img2.Save(ostream, ImageFormat.Jpeg);
-            Bits = ostream.GetBuffer();
-            Length = Bits.Length;
-            img1.Dispose();
-            img2.Dispose();
-            istream.Close();
-            ostream.Close();
+            using (var istream = new MemoryStream(bits))
+            using (var img1 = Drawing.Image.FromStream(istream))
+            {
+                var ratio = Math.Min(w/(double) img1.Width, h/(double) img1.Height);
+                if (ratio >= 1) // image is smaller than requested
+                    ratio = 1; // same size
+                w = Convert.ToInt32(ratio*img1.Width);
+                h = Convert.ToInt32(ratio*img1.Height);
+                var resizeCropSettings = new ResizeSettings("width={0}&height={1}&format=jpg&mode=max".Fmt(w, h));
+                using (var ostream = new MemoryStream())
+                {
+                    ImageBuilder.Current.Build(bits, ostream, resizeCropSettings);
+                    Bits = ostream.ToArray();
+                }
+                Length = Bits.Length;
+                img1.Dispose();
+            }
         }
         public static Image NewTextFromString(string s)
         {

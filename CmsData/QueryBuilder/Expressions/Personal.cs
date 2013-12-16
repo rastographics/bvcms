@@ -12,13 +12,11 @@ using System.Text.RegularExpressions;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression Birthday(
-            ParameterExpression parm,
-            CompareType op,
-            string dob)
+        internal Expression Birthday()
         {
+            var dob = TextValue;
             Expression<Func<Person, bool>> pred = p => false; // default
             DateTime dt;
             if (DateTime.TryParse(dob, out dt))
@@ -40,22 +38,19 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression WeddingDate(
-            ParameterExpression parm,
-            CompareType op,
-            string wed)
+        internal Expression WeddingDate()
         {
             Expression<Func<Person, bool>> pred = p => false; // default
-            DateTime dt;
-            if (DateTime.TryParse(wed, out dt))
-                if (Regex.IsMatch(wed, @"\d+/\d+/\d+"))
-                    pred = p => p.WeddingDate == dt;
+            DateTime weddingdate;
+            if (DateTime.TryParse(TextValue, out weddingdate))
+                if (Regex.IsMatch(TextValue, @"\d+/\d+/\d+"))
+                    pred = p => p.WeddingDate == weddingdate;
                 else
-                    pred = p => p.WeddingDate.Value.Day == dt.Day && p.WeddingDate.Value.Month == dt.Month;
+                    pred = p => p.WeddingDate.Value.Day == weddingdate.Day && p.WeddingDate.Value.Month == weddingdate.Month;
             else
             {
                 int y;
-                if (int.TryParse(wed, out y))
+                if (int.TryParse(TextValue, out y))
                     if (y <= 12 && y > 0)
                         pred = p => p.WeddingDate.Value.Month == y;
                     else
@@ -66,43 +61,35 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression WidowedDate(
-            ParameterExpression parm, CMSDataContext Db,
-            CompareType op,
-            DateTime? date)
+        internal Expression WidowedDate()
         {
             Expression<Func<Person, DateTime?>> pred = p =>
-                Db.WidowedDate(p.PeopleId);
+                db.WidowedDate(p.PeopleId);
             Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Constant(date, typeof(DateTime?));
-            return Compare(left, op, right);
+            var right = Expression.Constant(DateValue, typeof(DateTime?));
+            return Compare(left, right);
         }
-        internal static Expression DaysTillBirthday(
-            ParameterExpression parm, CMSDataContext Db,
-            CompareType op,
-            int days)
+        internal Expression DaysTillBirthday()
         {
+            var days = TextValue.ToInt();
             Expression<Func<Person, int?>> pred = p =>
-                SqlMethods.DateDiffDay(Util.Now.Date, Db.NextBirthday(p.PeopleId));
+                SqlMethods.DateDiffDay(Util.Now.Date, db.NextBirthday(p.PeopleId));
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Constant(days, typeof(int?));
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression DaysTillAnniversary(
-            ParameterExpression parm, CMSDataContext Db,
-            CompareType op,
-            int days)
+        internal Expression DaysTillAnniversary()
         {
+            var days = TextValue.ToInt();
             Expression<Func<Person, int?>> pred = p =>
-                SqlMethods.DateDiffDay(Util.Now.Date, Db.NextAnniversary(p.PeopleId));
+                SqlMethods.DateDiffDay(Util.Now.Date, db.NextAnniversary(p.PeopleId));
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Constant(days, typeof(int?));
-            return Compare(left, op, right);
+            return Compare(left, right);
         }
-        internal static Expression HasPicture(ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression HasPicture()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p => p.PictureId != null;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))

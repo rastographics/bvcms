@@ -272,9 +272,12 @@ function CascadeComparison() {
 }
 function EditCondition(ev) {
     $('#ConditionGrid li').removeClass('SelectedRow');
-    var qid = $(this).parent("li").attr("id");
-    $('#ConditionGrid li#' + qid).addClass('SelectedRow');
-    $.post('/QueryBuilder2/EditCondition/' + qid, null, function (ret) {
+    var selectedid = $(this).parent("li").attr("id");
+    $('#ConditionGrid li#' + selectedid).addClass('SelectedRow');
+    $.post('/QueryBuilder2/EditCondition', {
+        queryid: $("#QueryId").val(),
+        selectedid: selectedid
+    }, function (ret) {
         UpdateView(ret);
     }, "json");
     return false;
@@ -302,7 +305,8 @@ function EditCondition(ev) {
         $('div.FieldLink a').click(function (ev) {
             ev.preventDefault();
             $.post('/QueryBuilder2/SelectCondition/', {
-                id: $('#SelectedId').val(),
+                queryid: $('#QueryId').val(),
+                selectedid: $('#SelectedId').val(),
                 conditionName: ev.target.id
             }, function (ret) {
                 //$.unblockUI();

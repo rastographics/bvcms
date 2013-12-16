@@ -96,6 +96,17 @@ CKEditorFuncNum, baseurl + fn, error));
             if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
                 return Content("Site is disabled, contact {0} for help".Fmt(Util.SendErrorsTo()[0].Address));
 
+            string user = AccountModel.GetValidToken(Request.QueryString["otltoken"]);
+            if (user.HasValue())
+            {
+                FormsAuthentication.SetAuthCookie(user, false);
+                AccountModel.SetUserInfo(user, Session);
+                var returnUrl = Request.QueryString["returnUrl"];
+                if (returnUrl.HasValue())
+                    return Redirect(returnUrl);
+                return Redirect("/");
+            }
+
             if (!User.Identity.IsAuthenticated)
             {
 #if DEBUG
@@ -110,16 +121,6 @@ CKEditorFuncNum, baseurl + fn, error));
                     return Redirect("/");
                 }
 #endif
-                string user = AccountModel.GetValidToken(Request.QueryString["otltoken"]);
-                if (user.HasValue())
-                {
-                    FormsAuthentication.SetAuthCookie(user, false);
-                    AccountModel.SetUserInfo(user, Session);
-                    var returnUrl = Request.QueryString["returnUrl"];
-                    if (returnUrl.HasValue())
-                        return Redirect(returnUrl);
-                    return Redirect("/");
-                }
             }
             return View();
         }

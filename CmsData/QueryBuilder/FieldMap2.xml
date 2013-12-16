@@ -151,7 +151,7 @@
     <Field Name="EmailRecipient" Title="Email Recipients" Type="IntegerEqual" DisplayAs="EmailRecipientForId">
       Selects people who were recipients of an Email Id #
     </Field>
-    <Field Name="MadeContactTypeAsOf" Title="Made Contact Type As Of" Type="Code" DisplayAs="MadeContactTypeAsOf({0:d}, {1:d}, {2})" Params="StartDate,EndDate,Ministry" DataSource="ContactTypeCodes0" DataValueField="IdCode">
+    <Field Name="MadeContactTypeAsOf" Title="Made Contact Type As Of" Type="Code" DisplayAs="MadeContactTypeAsOf({0:d}, {1:d}, {2})" Params="StartDate,EndDate,Ministry" DataSource="ContactTypeCodes" DataValueField="IdCode">
       Selects people based on having made a contact type during the dates specified.
     </Field>
     <Field Name="HasContacts" Title="Has Contacts" Type="Bit" DataValueField="IdCode">

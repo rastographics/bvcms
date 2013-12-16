@@ -10,26 +10,23 @@ using System.Linq.Expressions;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression HasInvalidEmailAddress(CMSDataContext Db, ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression HasInvalidEmailAddress()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
-                (Db.IsValidEmail(p.EmailAddress ?? "") == false
-                || Db.IsValidEmail(p.EmailAddress2 ?? "") == false);
+                (db.IsValidEmail(p.EmailAddress ?? "") == false
+                || db.IsValidEmail(p.EmailAddress2 ?? "") == false);
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression SpouseHasEmail(CMSDataContext Db,
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression SpouseHasEmail()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.Family.People.Any(pp => pp.PeopleId == p.SpouseId && pp.EmailAddress.Contains("@"));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));

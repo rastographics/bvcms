@@ -1,16 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using System.Data.Linq;
 using System.Web;
 using CmsData;
 using UtilityExtensions;
-using System.Web.Mvc;
-using System.Text;
-using System.Net.Mail;
-using System.Web.UI.WebControls;
-using System.Web.UI;
 
 namespace CmsWeb.Models
 {
@@ -79,11 +71,12 @@ namespace CmsWeb.Models
 					|| (opened == false && filter == "Not Opened")
 					//|| (fail != null && filter == "Failed")
                     select t;
-            if ((!DbUtil.Db.CurrentUser.Roles.Contains("Admin") 
-                        || DbUtil.Db.CurrentUser.Roles.Contains("ManageEmails"))
-                    && queue.QueuedBy != Util.UserPeopleId)
-                q = q.Where(ee => ee.PeopleId == Util.UserPeopleId);
-            return q;
+
+            var roles = DbUtil.Db.CurrentRoles();
+            var isadmin = roles.Contains("Admin") || roles.Contains("ManageEmails");
+            if (isadmin || queue.QueuedBy == Util.UserPeopleId) 
+                return q;
+            return q.Where(ee => ee.PeopleId == Util.UserPeopleId);
         }
     }
     public class RecipientInfo

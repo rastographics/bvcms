@@ -8,30 +8,26 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using CmsData.Codes;
+using System.Data.Linq;
+using UtilityExtensions;
 
 namespace CmsData
 {
-    internal static partial class Expressions
+    public partial class Condition
     {
-        internal static Expression UserRole(
-            ParameterExpression parm,
-            CompareType op,
-            int[] ids)
+        internal Expression UserRole()
         {
             Expression<Func<Person, bool>> pred = p =>
-                p.Users.Any(u => u.UserRoles.Any(ur => ids.Contains(ur.RoleId))
-                    || (!u.UserRoles.Any() && ids.Contains(0))
+                p.Users.Any(u => u.UserRoles.Any(ur => CodeIntIds.Contains(ur.RoleId))
+                    || (!u.UserRoles.Any() && CodeIntIds.Contains(0))
                 );
-            Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
-            return expr;
+            return op == CompareType.NotEqual || op == CompareType.NotOneOf 
+                ? (Expression)Expression.Not(Expression.Invoke(pred, parm)) 
+                : (Expression)Expression.Invoke(pred, parm);
         }
-        internal static Expression IsUser(
-           ParameterExpression parm,
-           CompareType op,
-           bool tf)
+        internal Expression IsUser()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.Users.Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -39,137 +35,113 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression CreatedBy(
-            ParameterExpression parm, CMSDataContext Db,
-            CompareType op,
-            string name)
+        internal Expression CreatedBy()
         {
             Expression<Func<Person, string>> pred = p =>
-                Db.People.FirstOrDefault(u => u.Users.Any(u2 => u2.UserId == p.CreatedBy)).Name2;
+                db.People.FirstOrDefault(u => u.Users.Any(u2 => u2.UserId == p.CreatedBy)).Name2;
             Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Constant(name, typeof(string));
-            return Compare(left, op, right);
+            var right = Expression.Constant(TextValue, typeof(string));
+            return Compare(parm, left, op, right);
         }
-        internal static Expression RecentCreated(
-            ParameterExpression parm,
-            int days,
-            CompareType op,
-            bool tf)
+        internal Expression RecentCreated()
         {
-            var dt = DateTime.Today.AddDays(-days);
+            var tf = CodeIds == "1";
+            var dt = DateTime.Today.AddDays(-Days);
             Expression<Func<Person, bool>> pred = p => p.CreatedDate >= dt;
             Expression expr = Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression IsCurrentPerson(CMSDataContext Db,
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression IsCurrentPerson()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
-                    p.PeopleId == Db.CurrentPeopleId;
+                    p.PeopleId == db.CurrentPeopleId;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression DuplicateEmails(CMSDataContext Db,
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression DuplicateEmails()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.EmailAddress != null && p.EmailAddress != ""
-                    && Db.People.Any(pp => pp.PeopleId != p.PeopleId && pp.EmailAddress == p.EmailAddress);
+                    && db.People.Any(pp => pp.PeopleId != p.PeopleId && pp.EmailAddress == p.EmailAddress);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression DuplicateNames(CMSDataContext Db,
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression DuplicateNames()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
-                    Db.People.Any(pp => pp.PeopleId != p.PeopleId && pp.FirstName == p.FirstName && pp.LastName == p.LastName);
+                    db.People.Any(pp => pp.PeopleId != p.PeopleId && pp.FirstName == p.FirstName && pp.LastName == p.LastName);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression HasLowerName(CMSDataContext Db,
-            ParameterExpression parm,
-            CompareType op,
-            bool tf)
+        internal Expression HasLowerName()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
-                    Db.StartsLower(p.FirstName).Value
-                    || Db.StartsLower(p.LastName).Value;
+                    db.StartsLower(p.FirstName).Value
+                    || db.StartsLower(p.LastName).Value;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression PeopleIds(
-            ParameterExpression parm,
-            CompareType op,
-            int[] ids)
+        internal Expression PeopleIds()
         {
+            var ids = (TextValue ?? "").Split(',').Select(aa => aa.ToInt()).ToArray();
             Expression<Func<Person, bool>> pred = p => ids.Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression MatchAnything(
-            ParameterExpression parm)
+        internal Expression MatchAnything()
         {
             Expression<Func<Person, bool>> pred = p => true;
             return Expression.Invoke(pred, parm);
         }
-        internal static Expression HasEmailOptout(
-            ParameterExpression parm,
-            DateTime? to,
-            CompareType op,
-            string email)
+        internal Expression HasEmailOptout()
         {
+            var email = TextValue;
             Expression<Func<Person, bool>> pred = p =>
                 (from oo in p.EmailOptOuts
                  where email == null || email == "" || oo.FromEmail == email
-                 where @to == null || (oo.DateX >= @to)
+                 where EndDate == null || (oo.DateX >= EndDate)
                  select oo).Any();
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal static Expression MeetingId(
-            ParameterExpression parm,
-            CompareType op,
-            int id)
+        internal Expression MeetingId()
         {
+            var meetingid = TextValue.ToInt();
             Expression<Func<Person, bool>> pred = p =>
                 p.Attends.Any(a =>
                     (a.AttendanceFlag == true)
-                    && a.MeetingId == id
+                    && a.MeetingId == meetingid
                     );
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual)
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal static Expression RegisteredForMeetingId(
-            ParameterExpression parm,
-            CompareType op,
-            int id)
+        internal Expression RegisteredForMeetingId()
         {
+            var meetingid = TextValue.ToInt();
             Expression<Func<Person, bool>> pred = p =>
                 p.Attends.Any(a =>
                     (a.Commitment == AttendCommitmentCode.Attending
                     || a.Commitment == AttendCommitmentCode.Substitute
                     || a.Commitment == AttendCommitmentCode.FindSub)
-                    && a.MeetingId == id
+                    && a.MeetingId == meetingid
                     );
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual)

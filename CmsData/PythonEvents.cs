@@ -119,8 +119,17 @@ namespace CmsData
 	        var c = db.Content(content);
 	        if (c == null)
 	            return;
+#if DEBUG2
+            var items = new string[] { "Purity", "Rite", "Launch", "Overview"};
+            if(items.Any(ii => savedquery.Contains(ii)))
+            {
+    	        var emailqueue = db.CreateQueue(queuedBy, from, subject, c.Body, null, tag.Id, false);
+                db.SendPeopleEmail(emailqueue.Id);
+            }
+#else
 	        var emailqueue = db.CreateQueue(queuedBy, from, subject, c.Body, null, tag.Id, false);
             db.SendPeopleEmail(emailqueue.Id);
+#endif
 	    }
 	}
 }

@@ -26,6 +26,8 @@ namespace CmsWeb
 
 				switch (type)
 				{
+					case "AnswersNotRequired":
+					case "AskSMS":
 					case "AskEmContact":
 					case "AskInsurance":
 					case "AskDoctor":

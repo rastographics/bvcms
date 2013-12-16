@@ -4,16 +4,20 @@
 @using UtilityExtensions
   <li>
     <div class="text big tip" title="Confirmation
-    |This is the email that is sent as a confirmation of a successful registration.">
+    |This is the email that is sent as a confirmation of a successful registration.
+    |Put DO NOT SEND as the Subject if you do not need a confirmation.">
     Confirmation: </div>
-    <ul>
-      <li> <span class="keyword2">Subject:</span> @Html.TextBox("Subject", Model.Subject, new { @class = "long" }) </li>
-      <li>
-        <div class="text"><span class="keyword2"> Body:</span>
-        @Html.EditorFor(m => m.Body, "Html")
-        </div>
-      </li>
-    </ul>
+      <ul>
+          <li><span class="keyword2">Subject:</span>
+              @Html.TextBox("Subject", Model.Subject, new { @class = "long" })
+          </li>
+          <li>
+              <div class="text">
+                  <span class="keyword2"> Body:</span>
+                  @Html.EditorFor(m => m.Body, "Html")
+              </div>
+          </li>
+      </ul>
   </li>
   <li>
     <span class="text big tip" title="Online Notify Persons

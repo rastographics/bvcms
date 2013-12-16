@@ -373,6 +373,8 @@
     <Compile Include="Generated\Functions\RecentAttendMemberType.cs" />
     <Compile Include="Generated\Functions\RecentAttendType.cs" />
     <Compile Include="Generated\Functions\RecentNewVisitCount.cs" />
+    <Compile Include="Generated\Functions\RecentRegistration.cs" />
+    <Compile Include="Generated\Functions\Registration.cs" />
     <Compile Include="Generated\Functions\SplitInt.cs" />
     <Compile Include="Generated\Number.cs" />
     <Compile Include="ITableWithExtraValues.cs" />
@@ -413,6 +415,7 @@
     <Compile Include="Classes\QuickBooks\QBDHelper.cs" />
     <Compile Include="Classes\QuickBooks\QBOHelper.cs" />
     <Compile Include="Picture.cs" />
+    <Compile Include="QueryBuilder\GetExpression.cs" />
     <Compile Include="QueryBuilder\Expressions\Admin.cs" />
     <Compile Include="QueryBuilder\Expressions\Membership.cs" />
     <Compile Include="QueryBuilder\Expressions\Miscellaneous.cs" />

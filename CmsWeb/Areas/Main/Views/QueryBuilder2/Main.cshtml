@@ -16,6 +16,7 @@
 
 @Html.Hidden("AutoRun")
 <form id="conditionForm" action="/QueryBuilder2/Main" method="get">
+    @Html.Hidden("QueryId")
     <div id="Description"><b>@Model.Description</b></div>
     <div class="roundbox floatleft">
         <h2 class="helptip" style="color: rgb(218, 0, 0)" title="Next Step|After selecting a condition and configuring it|then update or add it to the Conditions below">Configure a search condition</h2>

@@ -101,6 +101,7 @@ namespace CmsWeb.Models
         public bool memberus { get; set; }
         public bool otherchurch { get; set; }
         public bool? coaching { get; set; }
+        public bool? sms { get; set; }
         public bool? tylenol { get; set; }
         public bool? advil { get; set; }
         public bool? maalox { get; set; }

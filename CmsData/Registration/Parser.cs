@@ -265,6 +265,8 @@ namespace CmsData.Registration
 			ValidateOrgs,
 			MemberOnly,
 			LinkGroupsFromOrgs,
+			AnswersNotRequired,
+			AskSMS,
 			AskParents,
 			AskDoctor,
 			AskInsurance,
