@@ -36,7 +36,7 @@ namespace CmsData.View
 		
 		private int? _Cnt;
 		
-		private string _Completed;
+		private bool? _Completed;
 		
 		
 		public Registration()
@@ -215,8 +215,8 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="completed", Storage="_Completed", DbType="varchar(8) NOT NULL")]
-		public string Completed
+		[Column(Name="completed", Storage="_Completed", DbType="bit")]
+		public bool? Completed
 		{
 			get
 			{

@@ -26,6 +26,8 @@ namespace CmsData.View
 		
 		private string _OrganizationName;
 		
+		private bool? _Completed;
+		
 		
 		public RecentRegistration()
 		{
@@ -113,6 +115,23 @@ namespace CmsData.View
 			{
 				if (this._OrganizationName != value)
 					this._OrganizationName = value;
+			}
+
+		}
+
+		
+		[Column(Name="completed", Storage="_Completed", DbType="bit")]
+		public bool? Completed
+		{
+			get
+			{
+				return this._Completed;
+			}
+
+			set
+			{
+				if (this._Completed != value)
+					this._Completed = value;
 			}
 
 		}
