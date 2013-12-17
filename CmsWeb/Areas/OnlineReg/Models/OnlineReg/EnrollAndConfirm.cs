@@ -302,12 +302,12 @@ AmountDue: {4:C}<br/>
                 string DivisionName = masterorg.OrganizationName;
                 string OrganizationName = p.org.OrganizationName;
 
-                string EmailSubject = null;
+                string emailSubject = null;
                 string message = null;
 
                 if (p.setting.Body.HasValue())
                 {
-                    EmailSubject = Util.PickFirst(p.setting.Subject, "no subject");
+                    emailSubject = Util.PickFirst(p.setting.Subject, "no subject");
                     message = p.setting.Body;
                 }
                 else
@@ -317,7 +317,7 @@ AmountDue: {4:C}<br/>
                         if (masterorgid.HasValue && !settings.ContainsKey(masterorgid.Value))
                             ParseSettings();
                         var os = settings[masterorgid.Value];
-                        EmailSubject = Util.PickFirst(os.Subject, "no subject");
+                        emailSubject = Util.PickFirst(os.Subject, "no subject");
                         message = Util.PickFirst(os.Body, "no body");
                     }
                     catch (Exception)
@@ -350,7 +350,9 @@ AmountDue: {4:C}<br/>
                 message = message.Replace("{participants}", details);
 
                 // send confirmations
-                Db.Email(notify.FromEmail, p.person, Util.EmailAddressListFromString(p.fromemail), EmailSubject, message, redacted:false);
+                if(emailSubject != "DO NOT SEND")
+                    Db.Email(notify.FromEmail, p.person, Util.EmailAddressListFromString(p.fromemail),
+                        emailSubject, message, redacted:false);
                 // notify the staff
                 Db.Email(Util.PickFirst(p.person.FromEmail, notify.FromEmail),
                     NotifyIds, Header,
