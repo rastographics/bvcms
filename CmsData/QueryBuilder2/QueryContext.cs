@@ -47,28 +47,66 @@ namespace CmsData
             c.justloadedquery = q;
             return c;
         }
-        public Query QueryIsCurrentPerson()
+        public Query StandardQuery(string name, QueryType typ)
         {
-            const string STR_IsCurrentPerson = "IsCurrentPerson2";
-            var qb = Queries.FirstOrDefault(c => c.Owner == STR_System
-                && c.Name == STR_IsCurrentPerson);
+            var qb = Queries.FirstOrDefault(c => c.Owner == STR_System && c.Name == name);
             if (qb == null)
             {
                 var c = Condition.CreateNewGroupClause();
-                c.AddNewClause(QueryType.IsCurrentPerson, CompareType.Equal, "1,T");
+                c.AddNewClause(typ, CompareType.Equal, "1,T");
                 qb = new Query
                 {
                     QueryId = c.Id,
                     Owner = STR_System,
                     Created = DateTime.Now,
                     LastRun = DateTime.Now,
-                    Name = STR_IsCurrentPerson,
+                    Name = name,
                     Text = c.ToXml()
                 };
                 Queries.InsertOnSubmit(qb);
                 SubmitChanges();
             }
             return qb;
+        }
+        public Query QueryIsCurrentPerson()
+        {
+            return StandardQuery("IsCurrentPerson", QueryType.IsCurrentPerson);
+        }
+        public Query QueryHasCurrentTag()
+        {
+            return StandardQuery("HasCurrentTag", QueryType.HasCurrentTag);
+        }
+        public Query QueryInCurrentOrg()
+        {
+            return StandardQuery("InCurrentOrg", QueryType.InCurrentOrg);
+        }
+        public Query QueryLeadersUnderCurrentOrg()
+        {
+            return StandardQuery("LeadersUnderCurrentOrg", QueryType.LeadersUnderCurrentOrg);
+        }
+        public Query QueryMembersUnderCurrentOrg()
+        {
+            return StandardQuery("MembersUnderCurrentOrg", QueryType.MembersUnderCurrentOrg);
+        }
+        public Query QueryInactiveCurrentOrg()
+        {
+            return StandardQuery("InactiveCurrentOrg", QueryType.InactiveCurrentOrg);
+        }
+        public Query QueryProspectCurrentOrg()
+        {
+            return StandardQuery("ProspectCurrentOrg", QueryType.ProspectCurrentOrg);
+        }
+        public Query QueryPendingCurrentOrg()
+        {
+            return StandardQuery("PendingCurrentOrg", QueryType.PendingCurrentOrg);
+        }
+        public Query QueryPreviousCurrentOrg()
+        {
+            return StandardQuery("PreviousCurrentOrg", QueryType.PreviousCurrentOrg);
+        }
+        public Query QueryVisitedCurrentOrg()
+        {
+            return StandardQuery("VisitedCurrentOrg", QueryType.VisitedCurrentOrg);
         }
         public List<Query> FetchLastFiveQueries()
         {

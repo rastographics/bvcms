@@ -66,12 +66,15 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         private void InitExportToolbar()
         {
-            var qb = DbUtil.Db.QueryBuilderHasCurrentTag();
-            ViewData["queryid"] = qb.QueryId;
-            ViewData["TagAction"] = "/Tags/TagAll/{0}".Fmt(qb.QueryId);
-            ViewData["UnTagAction"] = "/Tags/UnTagAll/{0}".Fmt(qb.QueryId);
-            ViewData["AddContact"] = "/Tags/AddContact/" + qb.QueryId;
-            ViewData["AddTasks"] = "/Tags/AddTasks/" + qb.QueryId;
+            object qid = Fingerprint.TestSb2()
+                ? (object)DbUtil.Db.QueryHasCurrentTag().QueryId
+                : DbUtil.Db.QueryBuilderHasCurrentTag().QueryId;
+
+            ViewData["queryid"] = qid;
+            ViewData["TagAction"] = "/Tags/TagAll/{0}".Fmt(qid);
+            ViewData["UnTagAction"] = "/Tags/UnTagAll/{0}".Fmt(qid);
+            ViewData["AddContact"] = "/Tags/AddContact/" + qid;
+            ViewData["AddTasks"] = "/Tags/AddTasks/" + qid;
         }
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult ToggleTag(int id)

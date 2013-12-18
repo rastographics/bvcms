@@ -769,8 +769,10 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
 		private void InitExportToolbar(int? id)
 		{
-			var qb = DbUtil.Db.QueryBuilderIsCurrentPerson();
-			ViewBag.queryid = qb.QueryId;
+		    var qid = Fingerprint.TestSb2()
+		        ? (object) DbUtil.Db.QueryIsCurrentPerson().QueryId
+		        : DbUtil.Db.QueryBuilderIsCurrentPerson().QueryId;
+		    ViewBag.queryid = qid;
 			ViewBag.TagAction = "/Person/Tag/" + id;
 			ViewBag.UnTagAction = "/Person/UnTag/" + id;
 			ViewBag.AddContact = "/Person/AddContactReceived/" + id;
