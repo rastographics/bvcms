@@ -77,17 +77,24 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content(j);
         }
         [HttpPost]
-        public JsonResult GetCodes(string Comparison, string ConditionName)
+        public ActionResult GetCodes(Guid queryid, Guid selectedid, string Comparison, string ConditionName)
         {
-            var m = new QueryModel2 { Comparison = Comparison, ConditionName = ConditionName };
-            m.SetVisibility();
-            return Json(new
+            var m = new QueryModel2
             {
-                CodesVisible = m.CodesVisible,
-                CodeVisible = m.CodeVisible,
-                CodeData = m.CodeData,
-                SelectMultiple = m.SelectMultiple
-            });
+                QueryId = queryid,
+                SelectedId = selectedid,
+                Comparison = Comparison, 
+                ConditionName = ConditionName
+            };
+            m.SetVisibility();
+            var j = new
+            {
+                m.CodesVisible,
+                m.CodeVisible,
+                m.CodeData,
+                m.SelectMultiple
+            };
+            return Content(JsonConvert.SerializeObject(j, Formatting.Indented));
         }
         [HttpPost]
         public ActionResult EditCondition(Guid queryid, Guid selectedid)

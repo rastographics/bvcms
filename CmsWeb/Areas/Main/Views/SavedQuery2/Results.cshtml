@@ -8,8 +8,9 @@ Status Flags: @Html.CheckBoxFor(m => m.statusFlags)
 <button id="filter" class="bt" value="Filter">Filter</button>
 <table cellpadding="4" class="grid">
 <thead>
-<tr><td>@pager</td></tr>
+<tr><td colspan="6">@pager</td></tr>
 <tr>
+<td><a href="#" class="sortable">LastRun</a></td>
 <td><a href="#" class="sortable">Description</a></td>
 <td><a href="#" class="sortable">Owner</a></td>
 <td><a href="#" class="sortable">Public</a></td>
@@ -23,5 +24,5 @@ Status Flags: @Html.CheckBoxFor(m => m.statusFlags)
     Html.RenderPartial("Row", r);
 }
 </tbody>
-<tfoot><tr><td>@pager</td></tr></tfoot>
+<tfoot><tr><td colspan="6">@pager</td></tr></tfoot>
 </table>

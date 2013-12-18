@@ -46,6 +46,7 @@ namespace CmsWeb.Models
             }
         }
         public string Description { get { return topclause.Description; } }
+        public string SaveToDescription { get { return topclause.PreviousName ?? topclause.Description; } }
         public Guid? QueryId { get; set; }
 
         private string conditionName;

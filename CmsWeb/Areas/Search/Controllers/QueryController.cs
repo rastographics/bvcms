@@ -184,7 +184,8 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/CopyQuery")]
         public ActionResult CopyQuery(QueryModel m)
         {
-            m.TopClause.Description = m.TopClause.Description + " Copy";
+            m.TopClause.PreviousName = m.TopClause.Description;
+            m.TopClause.Description = Util.ScratchPad2;
             m.TopClause.Save(DbUtil.Db);
             return Content(m.TopClause.Description);
         }

@@ -1,4 +1,5 @@
 ﻿@using CmsWeb
+@using RestSharp.Extensions
 @model CmsWeb.Models.QueryModel2
 @{
     Layout = Fingerprint.Layout();
@@ -15,9 +16,16 @@
 }
 
 @Html.Hidden("AutoRun")
+@Html.Hidden("SaveToDescription")
 <form id="conditionForm" action="/QueryBuilder2/Main" method="get">
     @Html.Hidden("QueryId")
-    <div id="Description"><b>@Model.Description</b></div>
+    <div id="rename">
+        <span id="Description"><b>@Model.Description</b></span>
+        @if (Model.SaveToDescription.HasValue() && Model.SaveToDescription != Model.Description)
+        {
+            @:Copied from: @Model.SaveToDescription
+        }
+    </div>
     <div class="roundbox floatleft">
         <h2 class="helptip" style="color: rgb(218, 0, 0)" title="Next Step|After selecting a condition and configuring it|then update or add it to the Conditions below">Configure a search condition</h2>
         <table id="selectconditions" cellspacing="5">
@@ -27,9 +35,9 @@
                         <tr id="CategoryDiv2">
                             <td nowrap colspan="2">
                                 <a id="SelectCondition" href="#" class="bt helptip"
-                                    title="Select a Condition|To build a query, you should select a condition.">Select Condition</a>
+                                   title="Select a Condition|To build a query, you should select a condition.">Select Condition</a>
                                 <a class="help" href="https://www.bvcms.com/DocDialog/QB-"
-                                    title="Get SearchBuilder Help|Click this link to get help on this condition.">
+                                   title="Get SearchBuilder Help|Click this link to get help on this condition.">
                                     <span id='ConditionText'>Group</span>
                                 </a>
                                 @Html.Hidden("ConditionName", "Group")
@@ -129,13 +137,13 @@
                 </td>
                 <td class="top">
                     <b style="color: #999" class="helptip"
-                        title="Comparison|Choose how the Condition on the left 
+                       title="Comparison|Choose how the Condition on the left
                |should compare with the value(s)">Comparison</b><hr />
                     @Html.DropDownList("Comparison", Model.Comparisons())
                 </td>
                 <td class="top" id="RightPanel" style="display: none">
                     <b style="color: #999" class="helptip"
-                        title="To Value|This is what you are comparing 
+                       title="To Value|This is what you are comparing
                |to the result of the Condition on the left
                |using the comparison operator">To Value</b><hr />
                     <span id="values" style="display: none"></span>
@@ -148,13 +156,13 @@
             <tr>
                 <td nowrap class="right" colspan="2">
                     <a id="Update" class="conditionButton bt disabled helptip"
-                        title="Update Button|Copies the above condition into the selected condition below">Update</a>
+                       title="Update Button|Copies the above condition into the selected condition below">Update</a>
                     <a id="Add" class="conditionButton bt disabled helptip"
-                        title="Add Button|Adds the above condition after the selected condition below">Add</a>
+                       title="Add Button|Adds the above condition after the selected condition below">Add</a>
                     <a id="AddToGroup" href="#" class="conditionButton bt helptip"
-                        title="Add To Group Button|Adds the above condition to the group">Add To Group</a>
+                       title="Add To Group Button|Adds the above condition to the group">Add To Group</a>
                     <a id="Remove" class="conditionButton bt disabled helptip"
-                        title="Remove Button|Removes the selected condition below">Remove</a>
+                       title="Remove Button|Removes the selected condition below">Remove</a>
                 </td>
                 <td></td>
             </tr>
@@ -192,7 +200,7 @@
     <div id="Results" style="clear: both; margin-top: 6px">
         @if (Model.ShowResults)
         {
-            @Html.Partial("Results", Model) 
+            @Html.Partial("Results", Model)
         }
     </div>
 </form>

@@ -56,12 +56,9 @@ namespace CmsData
                         LastRun = q.LastRun
                     };
                     Db.Queries.InsertOnSubmit(cq);
-                    CopiedFrom = cq.QueryId;
                     q.LastRun = DateTime.Now;
                 }
             }
-            if (CopiedFrom.HasValue)
-                q.CopiedFrom = CopiedFrom;
             q.Name = Description;
             if (increment)
                 q.RunCount = q.RunCount + 1;
@@ -114,12 +111,9 @@ namespace CmsData
                         LastRun = q.LastRun
                     };
                     Db.Queries.InsertOnSubmit(cq);
-                    CopiedFrom = cq.QueryId;
                     q.LastRun = DateTime.Now;
                 }
             }
-            if (CopiedFrom.HasValue)
-                q.CopiedFrom = CopiedFrom;
             q.Name = Description;
             if (increment)
                 q.RunCount = q.RunCount + 1;
@@ -157,6 +151,8 @@ namespace CmsData
             w.WriteAttributeString("Comparison", Comparison);
             if (Description.HasValue())
                 w.WriteAttributeString("Description", Description);
+            if (PreviousName.HasValue())
+                w.WriteAttributeString("PreviousName", Description);
             if (TextValue.HasValue())
                 w.WriteAttributeString("TextValue", TextValue);
             if (DateValue.HasValue)
@@ -186,16 +182,16 @@ namespace CmsData
             if (SavedQuery.HasValue())
                 w.WriteAttributeString("SavedQueryIdDesc", SavedQuery);
         }
-        public static Condition Import(string text, string name = null, bool newGuids = false)
+        public static Condition Import(string text, string name = null, bool newGuids = false, Guid? topguid = null)
         {
             if (!text.HasValue())
                 return CreateNewGroupClause(name);
             var x = XDocument.Parse(text);
             Debug.Assert(x.Root != null, "x.Root != null");
-            var c = ImportClause(x.Root, null, newGuids);
+            var c = ImportClause(x.Root, null, newGuids, topguid);
             return c;
         }
-        private static Condition ImportClause(XElement r, Condition p, bool newGuids)
+        private static Condition ImportClause(XElement r, Condition p, bool newGuids, Guid? topguid)
         {
             var allClauses = p == null ? new Dictionary<Guid, Condition>() : p.AllConditions;
             Guid? parentGuid = null;
@@ -204,7 +200,7 @@ namespace CmsData
             var c = new Condition
             {
                 ParentId = parentGuid,
-                Id = AttributeGuid(r, "Id"),
+                Id = topguid ?? (newGuids ? Guid.NewGuid() : AttributeGuid(r, "Id")),
                 Order = AttributeInt(r, "Order"),
                 ConditionName = Attribute(r, "Field"),
                 Comparison = Attribute(r, "Comparison"),
@@ -226,13 +222,14 @@ namespace CmsData
                 AllConditions = allClauses
             };
             if (p == null)
+            {
                 c.Description = Attribute(r, "Description");
+                c.PreviousName = Attribute(r, "PreviousName");
+            }
             c.AllConditions.Add(c.Id, c);
-            if (newGuids)
-                c.Id = Guid.NewGuid();
             if (c.ConditionName == "Group")
                 foreach (var rr in r.Elements())
-                    ImportClause(rr, c, newGuids);
+                    ImportClause(rr, c, newGuids, null);
             return c;
         }
         private static string Attribute(XElement r, string attr, string def = null)

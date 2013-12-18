@@ -130,28 +130,19 @@ namespace CmsData
         public Condition LoadCopyOfExistingQuery(Guid existingId)
         {
             var i = (from existing in Queries
-                     let copy = (from v in Queries
-                                 where v.Owner == Util.UserName && v.CopiedFrom == existingId
-                                 orderby v.LastRun descending
-                                 select v).FirstOrDefault()
                      where existing.QueryId == existingId
-                     select new { copy, existing }).Single();
+                     select existing).Single();
 
-            if (string.Compare(i.existing.Owner, Util.UserName, StringComparison.OrdinalIgnoreCase) == 0 && !i.existing.Ispublic)
-                return i.existing.ToClause();
+            // This is my non public query
+            if (string.Compare(i.Owner, Util.UserName, StringComparison.OrdinalIgnoreCase) == 0)
+                return i.ToClause();
 
-            // record on existing that it was run
-            i.existing.RunCount = i.existing.RunCount + 1;
-
-            // return the copy if it is available
-            if (i.copy != null)
-                return i.copy.ToClause();
-
-            // at this point, I am either not the owner or this is a public query
-
-            var c = i.existing.ToClause().Clone(useGuid: Guid.NewGuid());
-            c.CopiedFrom = existingId;
-            c.Description = "Copy of " + i.existing.Name;
+            i.RunCount = i.RunCount + 1;
+            var q = ScratchPadCondition().justloadedquery;
+            q.Text = i.Text;
+            var c = Condition.Import(i.Text, i.Name, newGuids: true, topguid: q.QueryId);
+            c.Description = Util.ScratchPad2;
+            c.PreviousName = i.Name;
             c.Save(this);
             return c;
         }
