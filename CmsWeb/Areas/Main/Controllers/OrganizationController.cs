@@ -130,8 +130,12 @@ namespace CmsWeb.Areas.Main.Controllers
                 if (isParent)
                 {
                     ViewBag.ParentOrgContext = true;
-                    ViewBag.leadersqid = DbUtil.Db.QueryBuilderLeadersUnderCurrentOrg().QueryId;
-                    ViewBag.membersqid = DbUtil.Db.QueryBuilderMembersUnderCurrentOrg().QueryId;
+                    ViewBag.leadersqid = Fingerprint.TestSb2()
+                        ? (object)DbUtil.Db.QueryLeadersUnderCurrentOrg().QueryId
+                        : DbUtil.Db.QueryBuilderLeadersUnderCurrentOrg().QueryId;
+                    ViewBag.membersqid = Fingerprint.TestSb2()
+                        ? (object)DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId
+                        : DbUtil.Db.QueryBuilderMembersUnderCurrentOrg().QueryId;
                 }
             }
             ViewBag.queryid = qid;
