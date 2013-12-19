@@ -7,11 +7,15 @@
     });
     $("#dropmember").live("click", function (ev) {
         var f = $(this).closest('form');
-        if (confirm("are you sure?"))
-            $.post($(this).attr("href"), null, function (ret) {
-                f.modal("hide");
-                self.parent.RebindMemberGrids();
-            });
+        var href = this.href;
+        bootbox.confirm("are you sure?", function (confirmed) {
+            if (confirmed) {
+                $.post(href, null, function(ret) {
+                    f.modal("hide");
+                    self.parent.RebindMemberGrids();
+                });
+            }
+        });
         return false;
     });
     $('#OrgSearch').live("keydown", function (event) {
@@ -23,11 +27,15 @@
     $("a.movemember").live('click', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
-        if (confirm("are you sure?"))
-            $.post($(this).attr('href'), null, function (ret) {
-                f.modal("hide");
-                self.parent.RebindMemberGrids();
-            });
+        var href = $(this).attr("href");
+        bootbox.confirm("are you sure?", function (confirmed) {
+            if (confirmed) {
+                $.post(href, null, function(ret) {
+                    f.modal("hide");
+                    self.parent.RebindMemberGrids();
+                });
+            }
+        });
         return false;
     });
 });

@@ -2172,6 +2172,9 @@
     <Content Include="Scripts\Search\SavedQuery2.min.js.map">
       <DependentUpon>SavedQuery2.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Org\OrgMemberDialog2.min.js.map">
+      <DependentUpon>OrgMemberDialog2.js</DependentUpon>
+    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
