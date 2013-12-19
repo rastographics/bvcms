@@ -126,7 +126,13 @@ namespace CmsWeb.Areas.Main.Controllers
 			}
 			else
 			{
-				content = new Content { Name = name, TypeID = ContentTypeCode.TypeSavedDraft, RoleID = roleid };
+				content = new Content
+				{
+				    Name = name.HasValue() ? name 
+                        : "new draft " + DateTime.Now.FormatDateTm(), 
+                    TypeID = ContentTypeCode.TypeSavedDraft, 
+                    RoleID = roleid
+				};
 				content.OwnerID = Util.UserId;
 			}
 
