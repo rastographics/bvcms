@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
 using CmsData;
@@ -48,6 +49,27 @@ namespace CmsWeb.Areas.People.Controllers
                 noaddressok = true,
                 useMinAmt = false,
             };
+        }
+
+        [GET("Person2/ManageGiving")]
+        public ActionResult ManageGiving()
+        {
+            int org = (from o in DbUtil.Db.Organizations
+                where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
+                select o.OrganizationId).FirstOrDefault();
+            if (org > 0)
+                return Redirect("/OnlineReg/Index/" + org);
+            return new EmptyResult();
+        }
+        [GET("Person2/OneTimeGift")]
+        public ActionResult OneTimeGift()
+        {
+            int org = (from o in DbUtil.Db.Organizations
+                where o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving
+                select o.OrganizationId).FirstOrDefault();
+            if (org > 0)
+                return Redirect("/OnlineReg/Index/" + org);
+            return new EmptyResult();
         }
     }
 }
