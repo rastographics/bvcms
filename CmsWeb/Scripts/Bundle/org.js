@@ -2140,8 +2140,8 @@ $(function () {
                 $("#selectquestions").dialog({
                     title: "Add Question",
                     autoOpen: false,
-                    width: 595,
-                    height: 195,
+                    width: 500,
+                    height: 250,
                     modal: true
                 });
                 $('a.AddQuestion').click(function (ev) {
