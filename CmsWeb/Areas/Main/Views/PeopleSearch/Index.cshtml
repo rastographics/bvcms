@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using CmsWeb.Code
 @using CmsWeb.Models
 @using UtilityExtensions
 @model PeopleSearchModel
@@ -59,7 +60,7 @@
         <td></td>*@
         <th class="right" colspan="3"> Status Flags: </th>
         <td>
-            @Html.DropDownList("statusflags", new SelectList(QueryBuilderClause.StatusFlags(DbUtil.Db), "Tag", "Text"), new { multiple="multiple" })
+            @Html.DropDownList("statusflags", new SelectList(CodeValueModel.StatusFlags(), "Code", "Value"), new { multiple="multiple" })
         </td>
     </tr>
     }

@@ -1697,6 +1697,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.StatusFlagList> ViewStatusFlagLists
+	    {
+		    get { return this.GetTable< View.StatusFlagList>(); }
+
+	    }
+
 	    public Table< View.Trigger> ViewTriggers
 	    {
 		    get { return this.GetTable< View.Trigger>(); }
@@ -2543,6 +2549,17 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.StatusFlagsPerson", IsComposable = true)]
+		public IQueryable< View.StatusFlagsPerson > StatusFlagsPerson(
+            [Parameter(DbType="int")] int? pid
+            )
+		{
+			return this.CreateMethodCallQuery< View.StatusFlagsPerson>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                );
+		}
+
 		[Function(Name="dbo.SundayDates", IsComposable = true)]
 		public IQueryable< View.SundayDate > SundayDates(
             [Parameter(DbType="datetime")] DateTime? dt1,
@@ -2937,20 +2954,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.StatusFlagsForPerson", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string StatusFlagsForPerson(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "flags", DbType="nvarchar")] string flags
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                flags
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.PrimaryAddress2", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string PrimaryAddress2(
@@ -2960,6 +2963,22 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.StatusFlagsForPerson", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string StatusFlagsForPerson(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "uid", DbType="int")] int? uid,
+            [Parameter(Name = "flags", DbType="nvarchar")] string flags
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                uid,
+                flags
                 ).ReturnValue));
 		}
 

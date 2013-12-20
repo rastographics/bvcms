@@ -127,9 +127,13 @@ namespace CmsWeb.Areas.People.Models
             if (i == null)
                 return;
 
-            var statusflags = isvalid
-                ? DbUtil.Db.StatusFlagsForPerson(id, flags)
-                : "invalid setting in status flags";
+            string statusflags;
+            if (isvalid)
+                statusflags = string.Join(", ", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
+                                                where s.RoleName == null || HttpContext.Current.User.IsInRole(s.RoleName)
+                                                select s.Name);
+            else
+                statusflags = "invalid setting in status flags";
 
             Person = i.pp;
             var p = Person;

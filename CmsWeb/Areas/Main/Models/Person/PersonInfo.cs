@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using System.Web.Mvc;
+using Microsoft.IdentityModel.Protocols.WSTrust;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.PersonPage
@@ -45,24 +46,27 @@ namespace CmsWeb.Models.PersonPage
         {
             var flags = DbUtil.Db.Setting("StatusFlags", "F04,F01,F02,F03");
             var isvalid = Regex.IsMatch(flags, @"\A(F\d\d,{0,1})(,F\d\d,{0,1})*\z", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-			var i = (from pp in DbUtil.Db.People
-					 let spouse = (from sp in pp.Family.People where sp.PeopleId == pp.SpouseId select sp.Name).SingleOrDefault()
-					 where pp.PeopleId == id
-					 select new
-					 {
-						 pp,
-						 f = pp.Family,
+            var i = (from pp in DbUtil.Db.People
+                     let spouse = (from sp in pp.Family.People where sp.PeopleId == pp.SpouseId select sp.Name).SingleOrDefault()
+                     where pp.PeopleId == id
+                     select new
+                     {
+                         pp,
+                         f = pp.Family,
                          spouse,
-						 pp.Picture.SmallId,
-					 }).FirstOrDefault();
+                         pp.Picture.SmallId,
+                     }).FirstOrDefault();
             if (i == null)
                 return null;
-			var p = i.pp;
-			var fam = i.f;
-            var statusflags = isvalid
-                ? DbUtil.Db.StatusFlagsForPerson(id, flags)
-                : "invalid setting in status flags";
-
+            var p = i.pp;
+            var fam = i.f;
+            string statusflags;
+            if (isvalid)
+                statusflags = string.Join(", ", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
+                                                where s.RoleName == null || HttpContext.Current.User.IsInRole(s.RoleName)
+                                                select s.Name);
+            else
+                statusflags = "invalid setting in status flags";
             var pi = new PersonInfo
             {
                 PeopleId = p.PeopleId,
