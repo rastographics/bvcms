@@ -47,9 +47,6 @@ namespace CmsWeb.Models.PersonPage
             var isvalid = Regex.IsMatch(flags, @"\A(F\d\d,{0,1})(,F\d\d,{0,1})*\z", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 			var i = (from pp in DbUtil.Db.People
 					 let spouse = (from sp in pp.Family.People where sp.PeopleId == pp.SpouseId select sp.Name).SingleOrDefault()
-                     let statusflags = isvalid
-                            ? DbUtil.Db.StatusFlags(flags).Single(sf => sf.PeopleId == id).StatusFlags
-                            : "invalid setting in status flags"
 					 where pp.PeopleId == id
 					 select new
 					 {
@@ -57,12 +54,14 @@ namespace CmsWeb.Models.PersonPage
 						 f = pp.Family,
                          spouse,
 						 pp.Picture.SmallId,
-                         statusflags
 					 }).FirstOrDefault();
             if (i == null)
                 return null;
 			var p = i.pp;
 			var fam = i.f;
+            var statusflags = isvalid
+                ? DbUtil.Db.StatusFlagsForPerson(id, flags)
+                : "invalid setting in status flags";
 
             var pi = new PersonInfo
             {
@@ -73,7 +72,7 @@ namespace CmsWeb.Models.PersonPage
                 Name = p.Name,
                 SmallPicId = i.SmallId,
                 SpouseId = p.SpouseId,
-                StatusFlags = i.statusflags,
+                StatusFlags = statusflags,
 
                 member = new MemberInfo
                 {

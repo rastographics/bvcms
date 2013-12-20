@@ -1737,8 +1737,8 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? to,
             [Parameter(DbType="int")] int? progid,
             [Parameter(DbType="int")] int? divid,
-            [Parameter(DbType="int")] int? orgtype,
             [Parameter(DbType="int")] int? orgid,
+            [Parameter(DbType="int")] int? orgtype,
             [Parameter(DbType="nvarchar")] string ids
             )
 		{
@@ -1748,8 +1748,8 @@ namespace CmsData
                 to,
                 progid,
                 divid,
-                orgtype,
                 orgid,
+                orgtype,
                 ids
                 );
 		}
@@ -2934,6 +2934,20 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 oid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.StatusFlagsForPerson", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string StatusFlagsForPerson(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "flags", DbType="nvarchar")] string flags
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                flags
                 ).ReturnValue));
 		}
 
