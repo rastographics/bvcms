@@ -38,9 +38,9 @@
     });
     $("#SelectAll").live("click", function () {
         if ($(this).attr("checked"))
-            $("table.grid input[name='List']").attr('checked', true);
+            $("#list input[name='List']").attr('checked', true);
         else
-            $("table.grid input[name='List']").removeAttr('checked');
+            $("#list input[name='List']").removeAttr('checked');
     });
     $.blockUI.defaults.growlCSS = {
         width: '350px',
@@ -86,7 +86,7 @@
     });
 
     //    $('input.check').click(UpdateTotals);
-    $('form table.grid a.sort').live("click", function (ev) {
+    $('#list a.sort').live("click", function (ev) {
         var newsort = $(this).text();
         var oldsort = $("#Sort").val();
         $("#Sort").val(newsort);
