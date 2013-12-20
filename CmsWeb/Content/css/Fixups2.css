@@ -236,6 +236,7 @@ ul.typeahead li.active a,
 #profile-header {
     /*border-top: 5px solid #3482C6;*/
     height: auto;
+    min-height: 140px;
 }
 
 
