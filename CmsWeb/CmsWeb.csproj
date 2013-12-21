@@ -1518,6 +1518,10 @@
     <Content Include="Areas\Main\Views\Reports\RecentRegistrations.cshtml" />
     <Content Include="Areas\Main\Views\Reports\RegistrationSummary.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\GivingLinks.cshtml" />
+    <Content Include="Areas\Search\Views\ContactSearch\ContactorSummary.cshtml" />
+    <Content Include="Areas\Main\Views\ContactSearch\ContactorSummary.cshtml" />
+    <Content Include="Areas\Main\Views\ContactSearch\ContactSummary.cshtml" />
+    <Content Include="Areas\Search\Views\ContactSearch\ContactSummary.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />

@@ -261,6 +261,7 @@ namespace CmsWeb.Areas.Search.Models
                    select new ContactorSummaryInfo
                    {
                        PeopleId = g.Key.PeopleId,
+                       Name = g.Key.Name,
                        ContactType = g.Key.Description,
                        Ministry = g.Key.MinistryName,
                        Count = g.Count()

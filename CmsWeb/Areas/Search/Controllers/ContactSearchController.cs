@@ -52,13 +52,13 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult ContactorSummary(ContactSearchModel m)
         {
             var q = m.ContactorSummary();
-            return new DataGridResult(q);
+            return View(q);
         }
         [POST("ContactSearch2/ContactSummary")]
         public ActionResult ContactSummary(ContactSearchModel m)
         {
             var q = m.ContactSummary();
-            return new DataGridResult(q);
+            return View(q);
         }
 
         [POST("ContactSearch2/ContactTypeTotals")]

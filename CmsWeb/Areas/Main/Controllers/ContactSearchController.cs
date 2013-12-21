@@ -131,34 +131,55 @@ namespace CmsWeb.Areas.Main.Controllers
 					} into g
 					where g.Key.MinistryId != null
 					orderby g.Key.MinistryId
-					select new
+					select new ContactorSummaryInfo
 					{
-						g.Key.PeopleId,
-						g.Key.Name,
-						g.Key.Description,
-						g.Key.MinistryName,
+					    PeopleId = g.Key.PeopleId, 
+                        Name = g.Key.Name, 
+                        Description = g.Key.Description, 
+                        MinistryName = g.Key.MinistryName,
 						cnt = g.Count()
 					};
-			return new DataGridResult(q);
+		    return View(q);
 		}
-		public ActionResult ContactSummary(string start, string end, int ministry, int typeid, int reas)
+
+	    public class ContactorSummaryInfo
+	    {
+	        public int PeopleId { get; set; }
+	        public string Name { get; set; }
+	        public string Description { get; set; }
+	        public string MinistryName { get; set; }
+	        public int cnt { get; set; }
+	    }
+
+	    public class ContactSummaryInfo
+	    {
+	        public int Count { get; set; }
+	        public string ContactType { get; set; }
+	        public string ReasonType { get; set; }
+	        public string Ministry { get; set; }
+	        public string HasComments { get; set; }
+	        public string HasDate { get; set; }
+	        public string HasContactor { get; set; }
+	    }
+
+	    public ActionResult ContactSummary(string start, string end, int ministry, int typeid, int reas)
 		{
 		    var sdt = start.ToDate();
 		    var edt = end.ToDate();
 
 		    var q = DbUtil.Db.ContactSummary(sdt, edt, ministry, typeid, reas);
 		    var q2 = from i in q
-		             select new
-		                 {
-                             Count = i.Count ?? 0,
-                             i.ContactType,
-                             i.ReasonType,
-                             i.Ministry,
-                             HasComments = i.Comments,
-                             HasDate = i.ContactDate,
-                             HasContactor = i.Contactor,
-		                 };
-			return new DataGridResult(q2);
+		             select new ContactSummaryInfo
+		             {
+		                 Count = i.Count ?? 0, 
+                         ContactType = i.ContactType, 
+                         ReasonType = i.ReasonType, 
+                         Ministry = i.Ministry, 
+                         HasComments = i.Comments, 
+                         HasDate = i.ContactDate, 
+                         HasContactor = i.Contactor
+		             };
+	        return View(q2);
 		}
 
 		public ActionResult ContactTypeTotals(string start, string end, int? ministry, int? reason)
