@@ -227,7 +227,7 @@ namespace CmsWeb.Areas.Search.Models
                     break;
                 case "mergeto":
                     if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected", pid = PendingList[0].PeopleId, from = AddContext,  pid2=PrimaryKeyForContextType.ToInt() };
+                        return new ReturnResult { close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext };
                     break;
                 case "taskowner":
                     if (PendingList.Count > 0)

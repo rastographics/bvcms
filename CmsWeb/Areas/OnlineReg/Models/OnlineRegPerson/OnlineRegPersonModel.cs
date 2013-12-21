@@ -396,6 +396,7 @@ namespace CmsWeb.Models
                 null, first.Trim(), null, last.Trim(), dob, married == 20, gender ?? 0,
                     OriginCode.Enrollment, entrypoint);
             person.EmailAddress = email.Trim();
+            person.SendEmailAddress1 = true;
             person.SuffixCode = suffix;
             person.MiddleName = middle;
             person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();

@@ -1,140 +1,134 @@
-﻿    <script>
-        (function () {
-            var cx = '012864427410831580707:fj9oufx9opi';
-            var gcse = document.createElement('script');
-            gcse.type = 'text/javascript';
-            gcse.async = true;
-            gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-                '//www.google.com/cse/cse.js?cx=' + cx;
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(gcse, s);
-        })();
+﻿<script>
+    (function () {
+        var cx = '012864427410831580707:fj9oufx9opi';
+        var gcse = document.createElement('script');
+        gcse.type = 'text/javascript';
+        gcse.async = true;
+        gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+            '//www.google.com/cse/cse.js?cx=' + cx;
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(gcse, s);
+    })();
 
-        $(function () {
-            $(".bt", "#supportDialog").button();
-        });
-	</script>
-    
-    <div id="supportfeedback" class="sb">
-		<img src="/Content/images/saf.png">
-	</div>
-    <div id="supportDialog" style="display:none">
-		<div style="background:url('/images/saf-bg.png') repeat-y; position:absolute; top:0; right:0; bottom:0; left:0;">
-			<div style="overflow:auto; position:absolute; top:5px; bottom:5px; left:5px; width:315px;">
-				<gcse:searchresults></gcse:searchresults>
-			</div>
-			<div style="position:absolute; top:10px; bottom:5px; right:10px; width:455px;">
-				<gcse:searchbox></gcse:searchbox>
-                <div id="supportInstructions" style="margin-top:5px;">
-                    <div style="text-align:center;"><b>How to Get Support</b></div>
-                    <hr />
-                    We're here to help you!  We made it really easy and convenient to search our help articles. 
-                    Just type a few keywords in the search box above and hit enter or click the search button.<br />
-                    <br />
-                    A list of articles will appear on the left. When you click an article's link, it will open in a new tab. 
-                    If you don't find an article that answers your question, just click "I need help" and submit your request.<br />
-                    <br />
-                    <b>Note:</b> Please limit each request to a single topic. This will ensure that all questions get answered.<br />
-                    <br />
-                    <br />
-                    <div>
-                        <input disabled type="button" class="bt" id="showSupportForm" value="I need help" />
-                        <div style="float:right;">
-                            <input id="cancelSupport" type="button" class="bt" value="Cancel">
-                        </div>
+    $(function () {
+        $(".bt", "#supportDialog").button();
+    });
+</script>
+
+<div id="supportfeedback" class="sb">
+    <img src="/Content/images/saf.png">
+</div>
+<div id="supportDialog" style="display:none">
+    <div style="background:url('/images/saf-bg.png') repeat-y; position:absolute; top:0; right:0; bottom:0; left:0;">
+        <div style="overflow:auto; position:absolute; top:5px; bottom:5px; left:5px; width:315px;">
+            <gcse:searchresults></gcse:searchresults>
+        </div>
+        <div style="position:absolute; top:10px; bottom:5px; right:10px; width:455px;">
+            <gcse:searchbox></gcse:searchbox>
+            <div id="supportInstructions" style="margin-top:5px;">
+                <div style="text-align:center;"><b>How to Get Support</b></div>
+                <hr />
+                We're here to help you!  We made it really easy and convenient to search our help articles.
+                Just type a few keywords in the search box above and hit enter or click the search button.<br />
+                <br />
+                A list of articles will appear on the left. When you click an article's link, it will open in a new tab.
+                If you don't find an article that answers your question, just click "I need help" and submit your request.<br />
+                <br />
+                <b>Note:</b> Please limit each request to a single topic. This will ensure that all questions get answered.<br />
+                <br />
+                <br />
+                <div style="min-height: 25px;">
+                    <input disabled type="button" class="bt" id="showSupportForm" value="I need help" />
+                    <div style="float:right;">
+                        <input id="cancelSupport" type="button" class="bt" value="Cancel">
                     </div>
                 </div>
-                <div id="supportForm" style="display:none">
-                    <br />
-                    <form>
-                        <input id="supportLastSearch" type="hidden" name="search" value="" />
-				        <table cellpadding="0" cellspacing="0">
-					        <tr>
-						        <td colspan="2">
-                                    <select name="urgency" id="supportUrgency">
-                                        <option selected="">-- Please select an urgency for your request...</option>
-                                        <option >No Rush. This can wait until tomorrow morning</option>
-                                        <option>I just need an answer before tomorrow morning</option>
-                                        <option>Urgent, I need an answer ASAP</option>
-                                    </select>
-						        </td>
-					        </tr>
-					        <tr><td colspan="2">&nbsp;</td></tr>
-					        <tr>
-						        <td style="padding-bottom:5px; white-space:nowrap;">
-							        <a href="#" supportHelp="yes" contentID="goodSupport">
-                                        See sample support request
-							        </a>
-						        </td>
-						        <td style="padding-bottom:5px; text-align:right; white-space:nowrap;">
-							        <a href="#" supportHelp="yes" contentID="goodBug">
-                                        See sample bug report
-							        </a>
-						        </td>
-					        </tr>
-					        <tr>
-						        <td colspan="2">
-							        <textarea name="request" style="width:445px; height:275px;" id="reqBody"></textarea>
-						        </td>
-					        </tr>
-							  <tr><td colspan="2">&nbsp;</td></tr>
-							  <tr>
-						        <td colspan="2" style="padding-bottom:7px;">Enter comma separated e-mail addresses to copy the request.</td>
-					        </tr>
-							  <tr>
-						        <td colspan="2">
-							        CC: <input type="text" name="cc" size="60" />
-						        </td>
-					        </tr>
-					        <tr><td colspan="2">&nbsp;</td></tr>
-					        <tr>
-						        <td>
-							        <input id="sendSupport" type="button"  class="bt" value="Submit Request">
-						        </td>
-						        <td style="text-align:right;">
-							        <input id="cancelSupport" type="button" class="bt" value="Cancel">
-						        </td>
-					        </tr>
-				        </table>
-                    </form>
-                </div>
-			</div>
-		</div>
-        <div id="goodSupport" style="display:none;">
-            <div style="text-align:center;"><b>Sample support request</b></div>
-            <hr />
-            <br />
-		    Hello!<br />
-            <br />
-            I am looking at John Doe’s record (people ID # 1015).  He is a member of the Adult
-            Choir (Org ID # 27), but I can’t mark him present for a choir meeting several weeks
-            ago (6/23/13 at 9:30 AM).  Can you please look into this issue for me?<br />
-            <br />
-            Thank you!<br />
-            Mary Smith<br />
-		    <br />
-            <br />
-            <div style="text-align:right;">
-		        <input type="button" class="bt" supportCancelHelp="yes" value="Close" />
             </div>
-	    </div>
-	    <div id="goodBug" style="display:none;">
-            <div style="text-align:center;"><b>Sample bug report</b></div>
-            <hr />
-            <br />
-		    Hello!<br />
-            <br />
-            I am on John Doe’s record (people ID # 1015).  I was trying to look at his enrollments
-            tab, but as soon as I click on “Enrollment”, I get an error message, that says
-            “Object not set to an instance of an object”. Can you please look into this for me?<br />
-            <br />
-            Thank you!<br />
-            Mary Smith<br />
-		    <br>
-            <br />
-            <div style="text-align:right;">
-		        <input type="button" class="bt" supportCancelHelp="yes" value="Close" />
+            <div id="supportForm" style="display:none">
+                <form>
+                    <input id="supportLastSearch" type="hidden" name="search" value="" />
+                    <table cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td colspan="2" style="min-height:25px;">
+                                <select name="urgency" id="supportUrgency">
+                                    <option selected="">-- Please select an urgency for your request...</option>
+                                    <option>No Rush. This can wait until tomorrow morning</option>
+                                    <option>I just need an answer before tomorrow morning</option>
+                                    <option>Urgent, I need an answer ASAP</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="min-height: 25px;padding-bottom:5px; white-space:nowrap;">
+                                <a href="#" supporthelp="yes" contentid="goodSupport">
+                                    See sample support request
+                                </a>
+                            </td>
+                            <td style="padding-bottom:5px; text-align:right; white-space:nowrap;">
+                                <a href="#" supporthelp="yes" contentid="goodBug">
+                                    See sample bug report
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <textarea name="request" style="width:445px; height:225px;" id="reqBody"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="min-height: 50px;">
+                                <div>Enter comma separated e-mail addresses to copy the request.</div>
+                                <div>CC: <input type="text" name="cc" size="60" /></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="min-height: 30px">
+                                <input id="sendSupport" type="button" class="bt" value="Submit Request">
+                            </td>
+                            <td style="text-align:right;">
+                                <input id="cancelSupport" type="button" class="bt" value="Cancel">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
             </div>
-	    </div>
-	</div>
-    <div id="supportHelp"></div>
+        </div>
+    </div>
+    <div id="goodSupport" style="display:none;">
+        <div style="text-align:center;"><b>Sample support request</b></div>
+        <hr />
+        <br />
+        Hello!<br />
+        <br />
+        I am looking at John Doe’s record (people ID # 1015).  He is a member of the Adult
+        Choir (Org ID # 27), but I can’t mark him present for a choir meeting several weeks
+        ago (6/23/13 at 9:30 AM).  Can you please look into this issue for me?<br />
+        <br />
+        Thank you!<br />
+        Mary Smith<br />
+        <br />
+        <br />
+        <div style="text-align:right;">
+            <input type="button" class="bt" supportcancelhelp="yes" value="Close" />
+        </div>
+    </div>
+    <div id="goodBug" style="display:none;">
+        <div style="text-align:center;"><b>Sample bug report</b></div>
+        <hr />
+        <br />
+        Hello!<br />
+        <br />
+        I am on John Doe’s record (people ID # 1015).  I was trying to look at his enrollments
+        tab, but as soon as I click on “Enrollment”, I get an error message, that says
+        “Object not set to an instance of an object”. Can you please look into this for me?<br />
+        <br />
+        Thank you!<br />
+        Mary Smith<br />
+        <br>
+        <br />
+        <div style="text-align:right;">
+            <input type="button" class="bt" supportcancelhelp="yes" value="Close" />
+        </div>
+    </div>
+</div>
+<div id="supportHelp"></div>
