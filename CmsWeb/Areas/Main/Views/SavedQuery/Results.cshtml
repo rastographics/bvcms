@@ -6,7 +6,7 @@ Only Mine: @Html.CheckBoxFor(m => m.onlyMine)
 Search: @Html.TextBoxFor(m => m.search)<br/>
 Status Flags: @Html.CheckBoxFor(m => m.statusFlags)
 <button id="filter" class="bt" value="Filter">Filter</button>
-<table cellpadding="4" class="grid">
+<table cellpadding="4" class="@Fingerprint.GridClass">
 <thead>
 <tr><td>@pager</td></tr>
 <tr>

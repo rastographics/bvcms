@@ -8,15 +8,12 @@
 {
 <script type="text/javascript">
         $(function () {
-            $('table.grid tbody tr:even').addClass('alt');
             $("a.delete").click(function (ev) {
                 ev.preventDefault();
                 var d = $(this);
                 if(confirm("are you sure?"))
                     $.post(d.attr("href"), null, function () {
                         d.closest("tr").remove();
-                        $('table.grid tbody tr').removeClass('alt');
-                        $('table.grid tbody tr:even').addClass('alt');
                     });
             });
         });
@@ -24,7 +21,7 @@
 }
 
 <h2>ExtraValues</h2>
-<table class="grid">
+<table class="@Fingerprint.GridClass">
 @foreach (var e in Model)
 {
     <tr><td><a href="/Manage/ExtraValues/QueryCodes?field=@Server.UrlEncode(e.Field)&value=@Server.UrlEncode(e.Value)">@e.Field</a></td>

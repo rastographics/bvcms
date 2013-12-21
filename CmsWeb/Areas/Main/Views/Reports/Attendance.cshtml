@@ -55,7 +55,7 @@
     @Html.Hidden("Sort", Model.Sort)
     @Html.Hidden("Dir", Model.Dir)
     } 
-    <table id="Attendances">
+    <table id="Attendances" class="@Fingerprint.GridClass">
     <thead>
     <th><a href='#' class="sortable">Name</a></th>
     <th><a href='#' class="sortable">Age</a></th>

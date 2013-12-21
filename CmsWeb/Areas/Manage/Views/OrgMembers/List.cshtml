@@ -1,11 +1,4 @@
 ﻿@model CmsWeb.Models.OrgMembersModel
-@{
-    var useclass = "grid";
-    if (Fingerprint.UseNewLook())
-    {
-        useclass = "table table-condensed table-striped";
-    }
-}
 @Html.Hidden("Sort")
 @Html.Hidden("Dir")
 <div class="roundbox floatleft">
@@ -48,7 +41,7 @@
 </div>
 <div class="floatclear"></div>
 <div><input id="SelectAll" type="checkbox" /> Select All</div>
-<table id="list" class="@useclass">
+<table id="list" class="@Fingerprint.GridClass">
 <thead>
 <tr>
     <th><a href="#" class="sort">Mixed</a></th>

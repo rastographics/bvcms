@@ -4,7 +4,7 @@
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
-<table id="results" class="grid" cellspacing="5">
+<table id="results" class="@Fingerprint.GridClass" cellspacing="5">
 <thead>
 	<tr><td colspan="6">
         <div><b>Count: @Model.Count()</b></div>

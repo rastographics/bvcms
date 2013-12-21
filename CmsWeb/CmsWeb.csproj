@@ -1564,6 +1564,12 @@
     </Content>
     <Content Include="Scripts\Bundle\org2.js.bundle" />
     <Content Include="Scripts\Bundle\main2c.js.bundle" />
+    <Content Include="Scripts\Admin\merge.min.js.map">
+      <DependentUpon>merge.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Admin\TransactionHistory.min.js.map">
+      <DependentUpon>TransactionHistory.js</DependentUpon>
+    </Content>
     <None Include="Scripts\Bundle\main.js.bundle" />
     <Content Include="Scripts\Bundle\main.min.js.map">
       <DependentUpon>main.js.bundle</DependentUpon>
@@ -1666,6 +1672,36 @@
     </Content>
     <Content Include="Scripts\jQuery\jquery.contextmenu.r2.min.js.map">
       <DependentUpon>jquery.contextmenu.r2.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Dialog\OrgMembersDialog.min.js.map">
+      <DependentUpon>OrgMembersDialog.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Finance\Funds.min.js.map">
+      <DependentUpon>Funds.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Finance\Bundle.min.js.map">
+      <DependentUpon>Bundle.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Finance\Contributions.min.js.map">
+      <DependentUpon>Contributions.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Finance\TotalsByFund.min.js.map">
+      <DependentUpon>TotalsByFund.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Finance\TotalsByRange.min.js.map">
+      <DependentUpon>TotalsByRange.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Finance\Transactions.min.js.map">
+      <DependentUpon>Transactions.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\js\CheckinActivity.min.js.map">
+      <DependentUpon>CheckinActivity.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Meeting\Meetings.min.js.map">
+      <DependentUpon>Meetings.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Dialog\SearchDivisions.min.js.map">
+      <DependentUpon>SearchDivisions.js</DependentUpon>
     </Content>
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\js\Pager3.js" />
@@ -2175,6 +2211,27 @@
     </Content>
     <Content Include="Scripts\Org\OrgMemberDialog2.min.js.map">
       <DependentUpon>OrgMemberDialog2.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Org\OrgChildren.min.js.map">
+      <DependentUpon>OrgChildren.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Org\OrgGroups.min.js.map">
+      <DependentUpon>OrgGroups.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Volunteer\ManageVolunteer.min.js.map">
+      <DependentUpon>ManageVolunteer.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Volunteer\ManageVolunteer2.min.js.map">
+      <DependentUpon>ManageVolunteer2.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\People\Person.min.js.map">
+      <DependentUpon>Person.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\ContactSearch.min.js.map">
+      <DependentUpon>ContactSearch.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\SavedQuery.min.js.map">
+      <DependentUpon>SavedQuery.js</DependentUpon>
     </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>

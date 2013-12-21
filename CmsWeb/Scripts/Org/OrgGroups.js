@@ -1,7 +1,6 @@
 ﻿$(function () {
-    $.fmtTable = function () {
-        $("table.grid td.tip").tooltip({ showBody: "|" });
-        $('table.grid > tbody > tr:even').addClass('alt');
+    $.fmtTable = function() {
+        $("table.grid2 td.tip").tooltip({ showBody: "|" });
         $(".bt").button();
 
         $(".clickEdit").editable("/OrgGroups/UpdateScore", {
@@ -14,7 +13,7 @@
         });
 
         checkChanged();
-    }
+    };
 
     $.fmtTable();
 
@@ -41,9 +40,9 @@
 
     $("#SelectAll").click(function () {
         if ($(this).attr("checked"))
-            $("table.grid input[name='list']").attr('checked', true);
+            $("table.grid2 input[name='list']").attr('checked', true);
         else
-            $("table.grid input[name='list']").removeAttr('checked');
+            $("table.grid2 input[name='list']").removeAttr('checked');
     });
 
     $("#ingroup, #notgroup").keypress(function (ev) {
@@ -109,7 +108,7 @@
         $.block();
         var q = $('form').serialize();
         $.post(action, q, function (ret) {
-            $("table.grid > tbody").html(ret).ready($.fmtTable);
+            $("table.grid2 > tbody").html(ret).ready($.fmtTable);
             $.unblock();
         });
         return false;

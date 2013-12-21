@@ -2,7 +2,7 @@
 @using UtilityExtensions
 @model CmsWeb.Models.UsersModel
 
-<table id="results" class="grid" cellpadding="4">
+<table id="results" class="@Fingerprint.GridClass" cellpadding="4">
     <thead>
 		<tr><td colspan="6">User Count: @Model.Count().ToString("N0")</td></tr>
     	<tr><td colspan="6">@Html.Partial("Pager2", Model)

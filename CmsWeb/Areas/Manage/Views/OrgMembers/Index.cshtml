@@ -7,14 +7,6 @@
 @section scripts
 {
     @Fingerprint.Script("/Scripts/Org/OrgMembers.js")
-    @if (!Fingerprint.UseNewLook())
-    {
-        <script>
-            $(function () {
-                $("table.grid > tbody > tr:even").addClass("alt");
-            });
-        </script>
-    }
 }
 <form id="form" method="post" action="/OrgMembers/Move">
     @Html.Partial("List", Model)

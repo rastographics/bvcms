@@ -6,7 +6,7 @@
     var prevorgid = 0;
 }
 <h2>Recent Absents</h2>
-<table class="grid table-striped">
+<table class="@Fingerprint.GridClass">
 @foreach (var item in Model)
 {
     var ld = item.lastmeeting as DateTime?;
@@ -14,21 +14,23 @@
     if (item.OrganizationId != prevorgid)
     {
         prevorgid = item.OrganizationId;
+        <thead>
         <tr>
-            <td colspan="6"><hr/>
+            <th colspan="6" class="left"><hr/>
                 <a href="/Organization/Index/@item.OrganizationId">@item.OrganizationName</a> (@item.LeaderName) <br/>
                 Members with @(item.ConsecutiveAbsentsThreshold ?? 2) or more consecutive absents on and before @Util.FormatDate(item.lastmeeting)
                 <hr/>
-            </td>
+            </th>
         </tr>
         <tr>
-            <td></td>
-            <td>Absent</td>
-            <td>Last Attend</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <th></th>
+            <th>Absent</th>
+            <th>Last Attend</th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
+        </thead>
     }
     <tr>
         <td><a href="/Person/Index/@item.PeopleId" target="person">@item.Name2</a></td>

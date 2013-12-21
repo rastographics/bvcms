@@ -6,48 +6,51 @@
 @section scripts
 {
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $(".clickEdit").editable("/Setup/Setting/Edit", {
                 indicator: "<img src='/images/loading.gif'>",
                 width: 400,
                 height: 22,
                 tooltip: "Click to edit..."
             });
-            $("a.delete").click(function(ev) {
+            $("a.delete").click(function (ev) {
                 if (confirm("are you sure?"))
-                    $.post("/Setup/Setting/Delete/" + $(this).attr("id"), null, function(ret) {
+                    $.post("/Setup/Setting/Delete/" + $(this).attr("id"), null, function (ret) {
                         window.location = "/Setup/Setting/";
                     });
             });
-            $("#settings tr:even").attr("style", "background-color:#eee");
             $(".bt").button();
         });
     </script>
 }
 <h2>Settings</h2>
-<table id="settings">
-    <tr>
-        <th> SettingId </th>
-        <th> Setting </th>
-        <th></th>
-    </tr>
-@foreach (var item in Model)
-{ 
-    <tr>
-        <td>@item.Id</td>
-        <td>
-            <span id='@item.Id' class='clickEdit'>@item.SettingX</span>
-        </td>
-        <td>
-            <a id='d@(item.Id)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
-        </td>
-    </tr>
-}
+<table id="settings" class="@Fingerprint.GridClass">
+    <thead>
+        <tr>
+            <th> SettingId </th>
+            <th> Setting </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>
+                <span id='@item.Id' class='clickEdit'>@item.SettingX</span>
+            </td>
+            <td>
+                <a id='d@(item.Id)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
+            </td>
+        </tr>
+    }
+    </tbody>
 </table>
 @using (Html.BeginForm("Create", "Setting"))
-{ 
-<p>
-    New Setting: @Html.TextBox("Id")
-    <input type="submit" class="bt" value="Create" />
-</p>
+{
+    <p>
+        New Setting: @Html.TextBox("Id")
+        <input type="submit" class="bt" value="Create" />
+    </p>
 } 

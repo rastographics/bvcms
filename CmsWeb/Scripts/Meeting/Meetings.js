@@ -12,7 +12,6 @@
     };
     $('#Inactive').change($.reloadmeetings);
     $('#NoZero').change($.reloadmeetings);
-    $('table.grid tbody tr:even').addClass('alt');
     $("a.sortable").click(function (ev) {
         ev.preventDefault();
         var newsort = $(this).text();

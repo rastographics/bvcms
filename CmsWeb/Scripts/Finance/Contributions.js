@@ -1,10 +1,6 @@
 ﻿$(function () {
     $(".bt").button();
     $(".datepicker").datepicker();
-    $.fmtTable = function () {
-        $('table.grid > tbody > tr:even').addClass('alt');
-    };
-    $.fmtTable();
     $("#search").click(function (ev) {
         ev.preventDefault();
         $.getTable();
@@ -25,7 +21,7 @@
         var q = f.serialize();
         $.block();
         $.post('/Finance/Contributions/Results', q, function (ret) {
-            $('#results').replaceWith(ret).ready($.fmtTable);
+            $('#results').replaceWith(ret);
             $.unblock();
         });
     };

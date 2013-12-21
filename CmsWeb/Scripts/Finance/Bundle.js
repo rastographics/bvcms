@@ -20,7 +20,6 @@
         }
         return false;
     });
-    $('form table.grid > tbody > tr:even').addClass('alt');
 
     $("a.displayedit").live('click', function (ev) {
         ev.preventDefault();

@@ -196,7 +196,7 @@ This will allow you to mark them as members.
             @if (User.IsInRole("Edit"))
             {
                 <div>
-                    <table id="extras" class="grid" style="margin-top: 2em">
+                    <table id="extras" class="@Fingerprint.GridClass" style="margin-top: 2em">
                         <thead>
                             <tr>
                                 <td>Field</td>
@@ -230,7 +230,7 @@ This will allow you to mark them as members.
 <hr />
 @if (Model.org.MemberCount < 1000 || Model.showlarge)
 {
-    <table id="attends" class="grid">
+    <table id="attends" class="@Fingerprint.GridClass">
         <thead>
             <tr>
                 <th>Attended</th>

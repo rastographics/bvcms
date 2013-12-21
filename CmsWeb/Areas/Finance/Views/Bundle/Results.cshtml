@@ -1,6 +1,6 @@
 ﻿@model CmsWeb.Areas.Finance.Models.BundleModel
 @using UtilityExtensions
-<table class="grid" cellpadding="4">
+<table class="@Fingerprint.GridClass">
     <thead>
         <tr><td colspan="8">Bundle Count: @Model.Count().ToString("N0")</td></tr>
         <tr>

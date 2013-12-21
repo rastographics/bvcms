@@ -12,7 +12,7 @@ Count: <strong>@Model.Count()</strong>
 } 
 Show Previous Prospects:@Html.CheckBox("ShowProspects")
 </p>
-<table id="MemberGrid" class="grid" cellpadding="4">
+<table id="MemberGrid" class="@Fingerprint.GridClass" cellpadding="4">
 <thead>
 <tr>
     <th><br /><a href="#" class="sortable">Name</a></th>

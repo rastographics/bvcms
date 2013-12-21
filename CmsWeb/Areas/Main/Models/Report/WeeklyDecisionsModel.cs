@@ -103,12 +103,6 @@ namespace CmsWeb.Areas.Main.Models.Report
         }
         public DateTime? dt1 { get; set; }
         public DateTime? dt2 { get; set; }
-        private int[] decisionTypes = new int[] 
-        { 
-            DecisionCode.Unknown,
-            DecisionCode.ProfessionNotForMembership,
-            DecisionCode.Cancelled,
-        };
         IEnumerable<TypeCountInfo> Total(int? count)
         {
             if (!count.HasValue || count.Value == 0)
@@ -118,23 +112,38 @@ namespace CmsWeb.Areas.Main.Models.Report
                 new TypeCountInfo() { Id="All", Desc = "Total", Count = count ?? 0 } 
             };
         }
+        private int[] decisionTypes = new int[] 
+        { 
+            DecisionCode.Unknown,
+            DecisionCode.ProfessionNotForMembership,
+            DecisionCode.Cancelled,
+        };
+        public int DecisionsCount { get; set; }
         public IEnumerable<TypeCountInfo> DecisionsByType()
         {
             if (!dt1.HasValue)
                 return null;
             // member decisions
             var q = from p in DbUtil.Db.People
-                    where p.DecisionDate >= dt1 && p.DecisionDate < (dt2 ?? dt1).Value.AddDays(1)
-                    where p.DecisionTypeId != null
-                    where !decisionTypes.Contains(p.DecisionTypeId.Value)
-                    group p by p.DecisionTypeId + "," + p.DecisionType.Code into g
-                    orderby g.Key
-                    select new TypeCountInfo
-                    {
-                        Id = g.Key,
-                        Desc = g.First().DecisionType.Description,
-                        Count = g.Count(),
-                    };
+                where p.DecisionDate >= dt1 && p.DecisionDate < (dt2 ?? dt1).Value.AddDays(1)
+                where p.DecisionTypeId != null
+                where !decisionTypes.Contains(p.DecisionTypeId.Value)
+                group p by p.DecisionTypeId + "," + p.DecisionType.Code
+                into g
+                orderby g.Key
+                select new TypeCountInfo
+                {
+                    Id = g.Key,
+                    Desc = g.First().DecisionType.Description,
+                    Count = g.Count(),
+                };
+            DecisionsCount = q.Sum(t => t.Count) ?? 0;
+            return q.ToList();
+        }
+        public IEnumerable<TypeCountInfo> DecisionsByType2()
+        {
+            if (!dt1.HasValue)
+                return null;
             // non member decisions
             var q2 = from p in DbUtil.Db.People
                      where p.DecisionDate >= dt1 && p.DecisionDate <= (dt2 ?? dt1).Value.AddDays(1)
@@ -148,8 +157,10 @@ namespace CmsWeb.Areas.Main.Models.Report
                          Desc = g.First().DecisionType.Description,
                          Count = g.Count(),
                      };
-            return q.ToList().Union(Total(q.Sum(t => t.Count))).Union(q2);
+            return q2;
         }
+
+        public int BaptismsCount { get; set; }
         public IEnumerable<TypeCountInfo> BaptismsByAge()
         {
             if (!dt1.HasValue)
@@ -165,7 +176,8 @@ namespace CmsWeb.Areas.Main.Models.Report
                         Desc = g.Key,
                         Count = g.Count(),
                     };
-            return q.ToList().Union(Total(q.Sum(t => t.Count)));
+            BaptismsCount = q.Sum(t => t.Count) ?? 0;
+            return q.ToList();
         }
         public IEnumerable<TypeCountInfo> BaptismsByType()
         {
@@ -181,9 +193,11 @@ namespace CmsWeb.Areas.Main.Models.Report
                         Desc = g.First().BaptismType.Description,
                         Count = g.Count(),
                     };
-            return q.ToList().Union(Total(q.Sum(t => t.Count)));
+            BaptismsCount = q.Sum(t => t.Count) ?? 0;
+            return q.ToList();
         }
 
+        public int NewMembersCount { get; set; }
         public IEnumerable<TypeCountInfo> NewMemberByType()
         {
             if (!dt1.HasValue)
@@ -198,9 +212,11 @@ namespace CmsWeb.Areas.Main.Models.Report
                         Desc = g.First().JoinType.Description,
                         Count = g.Count(),
                     };
-            return q.ToList().Union(Total(q.Sum(t => t.Count)));
+            NewMembersCount = q.Sum(t => t.Count) ?? 0;
+            return q.ToList();
         }
 
+        public int DroppedMembersCount { get; set; }
         public IEnumerable<TypeCountInfo> DroppedMemberByType()
         {
             if (!dt1.HasValue)
@@ -215,7 +231,8 @@ namespace CmsWeb.Areas.Main.Models.Report
                         Desc = g.First().DropType.Description,
                         Count = g.Count(),
                     };
-            return q.ToList().Union(Total(q.Sum(t => t.Count)));
+            DroppedMembersCount = q.Sum(t => t.Count) ?? 0;
+            return q.ToList();
         }
 
         public IEnumerable<TypeCountInfo> DroppedMemberByChurch()
@@ -225,7 +242,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             var q0 = from p in DbUtil.Db.People
                      where p.DropDate >= dt1 && p.DropDate <= (dt2 ?? dt1).Value
                      select p;
-            var count = (float)q0.Count();
+            DroppedMembersCount = q0.Count();
             var q1 = from p in q0
                      group p by p.OtherNewChurch into g
                      select new TypeCountInfo
@@ -241,9 +258,10 @@ namespace CmsWeb.Areas.Main.Models.Report
                          Desc = gg.Key,
                          Count = gg.Sum(t => t.Count)
                      };
-            var q = q2.OrderByDescending(t => t.Count);
-            return q.ToList().Union(Total(q.Sum(t => t.Count)));
+            return q2.OrderByDescending(t => t.Count).ToList();
         }
+
+
         public string ConvertToSearch(string command, string key)
         {
             if (Fingerprint.UseNewLook())

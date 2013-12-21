@@ -5,7 +5,7 @@
 @{
     var list = Model.DivisionList();
 }
-<table id="results">
+<table id="results" class="@Fingerprint.GridClass">
 <thead>
     <tr><td colspan="3">
         <b>showing top @Model.listcount of @Model.count.ToString("N0")</b>
@@ -22,8 +22,8 @@
 { 
     <tr>
         <td><input type="checkbox" @(d.IsChecked ? "checked='checked'" : "") value="@d.DivId" @(d.DivId == Model.topid? "disabled=disabled" : "") /> </td>
-        <td title="Other Programs|@d.Programs" class="tooltip">@d.Program</td>
-        <td title="@d.DivId" class="tooltip">@d.Name</td>
+        <td title="Other Programs|@d.Programs" class="tip">@d.Program</td>
+        <td title="@d.DivId" class="tip">@d.Name</td>
         <th id="a@d.DivId">
         <span class="move">
         @if (d.IsChecked && d.DivId != Model.topid)

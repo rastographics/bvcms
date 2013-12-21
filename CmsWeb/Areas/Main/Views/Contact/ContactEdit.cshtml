@@ -3,7 +3,7 @@
 <h2>Contact</h2>
 @Html.Hidden("editing", "true")
 @Html.HiddenFor(m => m.ContactId)
-<table class="grid">
+<table class="@Fingerprint.GridClass">
     <tbody>
         <tr>
             <th class="right">Contact Date:</th>

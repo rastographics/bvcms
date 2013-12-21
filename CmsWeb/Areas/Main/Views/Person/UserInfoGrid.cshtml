@@ -7,7 +7,7 @@
 } 
 @if (Model.Users.Count > 0)
 { 
-<table class="grid">
+<table class="@Fingerprint.GridClass">
 <thead>
     <tr>
         @if (User.IsInRole("Admin"))

@@ -8,7 +8,7 @@
 <a href="/Person/AddOptout/@Model.PeopleId" id="addoptoutemail" class="bt">Add Optout</a>
 @if (Model.EmailOptOuts.Count > 0)
 {
-<table class="grid" cellspacing="5">
+<table class="@Fingerprint.GridClass" cellspacing="5">
 <thead>
     <tr>
 		<td><b>From Email</b></td>

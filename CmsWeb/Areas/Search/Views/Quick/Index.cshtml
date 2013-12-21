@@ -16,7 +16,7 @@
 <input id="qsearch" type="submit" value="Search" name="qsearch" />
 </form>
 <h2>People</h2>
-<table id="presults" class="grid">
+<table id="presults" class="@Fingerprint.GridClass">
 @if(Model.people.Count == 0)
 { 
 	<tr><td colspan="5">No matching records.</td></tr>
@@ -64,7 +64,7 @@ else
 </tbody>
 </table>
 <h2>Organizations</h2>
-<table id="oresults" class="grid">
+<table id="oresults" class="@Fingerprint.GridClass">
 <thead>
     <tr>
         <th><a href="#" class="sortable">ID</a></th>

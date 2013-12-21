@@ -1,6 +1,6 @@
 ﻿@model CmsWeb.Areas.Finance.Models.BundlesModel
 @using UtilityExtensions
-<table class="grid" cellpadding="4">
+<table class="@Fingerprint.GridClass">
     <thead>
         <tr><td colspan="4">Bundle Count: @Model.Count().ToString("N0")</td>
             <td colspan="4">*<i>= includes non tax deductible items</i></td>

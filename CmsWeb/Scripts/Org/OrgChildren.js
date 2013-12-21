@@ -1,9 +1,8 @@
 ﻿$(function () {
     $.fmtTable = function() {
-        $("table.grid td.tip").tooltip({ showBody: "|" });
-        $('table.grid > tbody > tr:even').addClass('alt');
+        $("table.grid2 td.tip").tooltip({ showBody: "|" });
         if (!$('#canedit').val()) {
-            $('table.grid input').attr("disabled", "disabled");
+            $('table.grid2 input').attr("disabled", "disabled");
         }
         $(".bt").button();
     };

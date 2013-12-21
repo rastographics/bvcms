@@ -6,37 +6,40 @@
     var prevorgid = 0;
 }
 <h2>Recent Absents</h2>
-<table class="grid table-striped">
-@foreach (var item in Model)
-{
-    var ld = item.lastmeeting as DateTime?;
-    var la = item.lastattend as DateTime?;
-    if (item.OrganizationId != prevorgid)
+<table class="@Fingerprint.GridClass table-striped">
+    @foreach (var item in Model)
     {
-        prevorgid = item.OrganizationId;
+        var ld = item.lastmeeting as DateTime?;
+        var la = item.lastattend as DateTime?;
+        if (item.OrganizationId != prevorgid)
+        {
+            prevorgid = item.OrganizationId;
+            <thead>
+                <tr>
+                    <td colspan="6" class="left">
+                        <hr />
+                        <a href="/Organization/Index/@item.OrganizationId">@item.OrganizationName</a> (@item.LeaderName) <br />
+                        Members with @(item.ConsecutiveAbsentsThreshold ?? 2) or more consecutive absents on and before @Util.FormatDate(item.lastmeeting)
+                        <hr />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Absent</td>
+                    <td>Last Attend</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </thead>
+        }
         <tr>
-            <td colspan="6"><hr/>
-                <a href="/Organization/Index/@item.OrganizationId">@item.OrganizationName</a> (@item.LeaderName) <br/>
-                Members with @(item.ConsecutiveAbsentsThreshold ?? 2) or more consecutive absents on and before @Util.FormatDate(item.lastmeeting)
-                <hr/>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Absent</td>
-            <td>Last Attend</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td><a href="/Person/Index/@item.PeopleId" target="person">@item.Name2</a></td>
+            <td class="right"> @item.consecutive times </td>
+            <td class="right"> @Util.FormatDate(item.lastattend)</td>
+            <td>@Util.FmtFone(item.HomePhone, prefix: "H")</td>
+            <td>@Util.FmtFone(item.CellPhone, prefix: "C")</td>
+            <td><a href="mailto:@item.EmailAddress">@item.EmailAddress</a></td>
         </tr>
     }
-    <tr>
-        <td><a href="/Person/Index/@item.PeopleId" target="person">@item.Name2</a></td>
-        <td class="right"> @item.consecutive times </td>
-        <td class="right"> @Util.FormatDate(item.lastattend)</td>
-        <td>@Util.FmtFone(item.HomePhone, prefix:"H")</td>
-        <td>@Util.FmtFone(item.CellPhone, prefix:"C")</td>
-        <td><a href="mailto:@item.EmailAddress">@item.EmailAddress</a></td>
-    </tr>
-}
 </table>

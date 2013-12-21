@@ -8,7 +8,7 @@
 }
     <div>
 		<form action="/Manage/Users/LastActivity" method="GET">@Html.TextBox("activity") <input id="filter" type="submit" name="activity" value="Search"/></form> 
-    <table class="grid" cellpadding="5">
+    <table class="@Fingerprint.GridClass" cellpadding="5">
         <tr>
             <td></td>
             <td><a href="/Manage/Users/LastActivity">All</a></td>

@@ -11,9 +11,9 @@
 { 
     <li>
         <input type="checkbox" @(o.IsChecked ? "checked='checked'" : "") value="@o.OrgId" />
-        <span title="Other Divisions|@o.Divisions" class="tooltip">@o.Division</span>
+        <span title="Other Divisions|@o.Divisions" class="tip">@o.Division</span>
         &mdash;
-        <span title="@o.OrgId" class="tooltip">@o.Name</span>
+        <span title="@o.OrgId" class="tip">@o.Name</span>
     </li>
 }
 </ul>

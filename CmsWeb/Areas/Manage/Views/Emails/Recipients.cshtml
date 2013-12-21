@@ -2,7 +2,7 @@
 @using CmsWeb;
 @model CmsWeb.Models.EmailModel
 @Html.Hidden("filter")
-<table class="grid">
+<table class="@Fingerprint.GridClass">
 <thead>
 <tr><th>Name</th><th>Address</th><th>Opens</th></tr>
 </thead>

@@ -3,8 +3,7 @@
         $.block();
         return true;
     });
-    $('table.grid > tbody > tr:odd').addClass('alt');
-    $('table.grid > thead td').css('font-weight', 'bold');
+    $('table.grid2 > thead td').css('font-weight', 'bold');
     $("#usefrom").change(function (ev) {
         ev.preventDefault();
         $("input:radio[value=0]").attr("checked", "checked")

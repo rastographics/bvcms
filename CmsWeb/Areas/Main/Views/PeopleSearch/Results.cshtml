@@ -5,7 +5,7 @@
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
-<table id="results" class="grid">
+<table id="results" class="@Fingerprint.GridClass">
 <thead>
 	<tr><td colspan="6">@Html.Partial("Pager2", Model)
             @Html.Hidden("totcnt", Model.Count().ToString("N0"))</td></tr>

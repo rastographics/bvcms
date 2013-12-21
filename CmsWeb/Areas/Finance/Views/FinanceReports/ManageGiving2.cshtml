@@ -1,5 +1,9 @@
 ﻿@model CmsWeb.Models.ManageGivingModel
-<table cellpadding="4" style="font-family: Sans-Serif">
+@{
+    ViewBag.Title = "ManagedGiving";
+    Layout = Fingerprint.Layout();
+}
+<table class="@Fingerprint.GridClass">
 <tr>
 	<td class="right">Name:</td>
 	<td><a href="/Person/Index/@Model.person.PeopleId">@Model.person.Name</a></td>
@@ -7,7 +11,7 @@
 <tr>
     <td class="right">Give to Funds:</td>
     <td>
-        <table class="grid" cellpadding="2">
+        <table class="@Fingerprint.GridClass">
 @{ var funds = CmsWeb.Models.OnlineRegPersonModel.Funds(); }
 @for (var n = 0; n < funds.Length; n++)
 {

@@ -5,7 +5,6 @@
         $.block();
         $.post("/OrgMembers/List", q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
                 $.unblock();
                 $(".bt").button();
                 $("#manage select").css("width", "100%");
@@ -28,7 +27,6 @@
         $.block();
         $.post("/OrgMembers/Move", q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
                 $.unblock();
                 $.growlUI("Move", "Completed");
                 $(".bt").button();
@@ -73,7 +71,6 @@
         var q = f.serialize();
         $.post("/OrgMembers/EmailNotices", q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
                 $.growlUI("Email Notices", "emails sent");
                 $(".bt").button();
                 $("#manage select").css("width", "100%");

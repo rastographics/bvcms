@@ -5,17 +5,9 @@
     ViewBag.Title = "FindTagPeople";
     Layout = Fingerprint.Layout();
 }
-@section scripts
-{
-    <script type="text/javascript">
-        $(function () {
-            $("table.grid > tbody > tr:even").addClass("alt");
-        });
-    </script>
-}
 <h2>FindTagPeople</h2>
 
-<table class="grid" cellpadding="4">
+<table class="@Fingerprint.GridClass">
     <tr>
         <th> PeopleId </th>
         <th> Found </th>

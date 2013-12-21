@@ -104,4 +104,12 @@ public class Fingerprint
     {
         return DbUtil.Db.UserPreference("TestSb2", "false").ToBool();
     }
+
+    public static string GridClass
+    {
+        get
+        {
+            return UseNewLook() ? "table table-condensed table-striped not-wide grid2" : "grid table-striped grid2";
+        }
+    }
 }

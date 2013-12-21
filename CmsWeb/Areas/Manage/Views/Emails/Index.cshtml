@@ -20,14 +20,12 @@
                 var q = f.serialize();
                 $.post(f.attr('action'), q, function(ret) {
                     $(f).html(ret).ready(function() {
-                        $('table.grid > tbody > tr:even').addClass('alt');
                         $(".bt").button();
                         $(".datepicker").datepicker();
                     });
                 });
                 return false;
             });
-            $('table.grid > tbody > tr:even').addClass('alt');
             $(".bt").button();
         });
 

@@ -5,7 +5,7 @@
 @{
     var list = Model.PeopleList();
 }
-<table class="results grid">
+<table class="results @Fingerprint.GridClass">
 <thead>
     <tr><td colspan="3">
         <b>showing top @Model.maxitems of @Model.count.ToString("N0")</b>

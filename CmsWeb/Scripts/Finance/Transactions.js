@@ -1,6 +1,5 @@
 ﻿$(document).ready(function () {
     $.preptable = function () {
-        $('table.grid > tbody > tr:even').addClass('alt');
         $(".bt").button();
         $(".datepicker").datepicker();
         $('.tip').tooltip({
@@ -134,6 +133,5 @@
         $.unblockUI();
         return false;
     });
-    $('table.grid > tbody > tr:even').addClass('alt');
     $(".bt").button();
 });

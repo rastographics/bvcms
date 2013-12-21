@@ -3,27 +3,11 @@
 @{
     ViewBag.Title = "Registrations Summary";
     Layout = Fingerprint.Layout();
-    var useclass = "grid";
-    if (Fingerprint.UseNewLook())
-    {
-        useclass = "table table-condensed table-striped";
-    }
-}
-@section scripts
-{
-    @if (!Fingerprint.UseNewLook())
-    {
-        <script>
-            $(function () {
-                $("table.grid > tbody > tr:even").addClass("alt");
-            });
-        </script>
-    }
 }
 
 <h2>Registrations Summary</h2>
 
-<table class="@useclass">
+<table class="@Fingerprint.GridClass">
     <thead>
         <tr>
             <th>FirstDate</th>

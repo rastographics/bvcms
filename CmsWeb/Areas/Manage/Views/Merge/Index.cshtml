@@ -13,7 +13,7 @@
 <form method="post" action="/Manage/Merge/Run">
 @Html.HiddenFor(m => m.pi[0].PeopleId)
 @Html.HiddenFor(m => m.pi[1].PeopleId)
-<table class="grid">
+<table class="@Fingerprint.GridClass">
     <thead>
         <tr>
             <td>

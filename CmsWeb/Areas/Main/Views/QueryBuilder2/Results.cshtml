@@ -6,7 +6,7 @@
 }
 <h4>Total Count: @Model.Count.ToString("N0")</h4>
 @Html.Partial("Pager", Model.pagerModel())
-<table id="people" class="grid">
+<table id="people" class="@Fingerprint.GridClass">
 <thead>
     <tr>
         <th> <a href="#" class="sortable">Name</a> </th>

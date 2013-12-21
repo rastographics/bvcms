@@ -32,15 +32,12 @@
             submit: 'OK'
         });
     };
-    $('table.grid > tbody > tr:even').addClass('alt');
     $.getTable = function (f) {
         var q;
         if (f)
             q = f.serialize();
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
-                //$('.dropdown', f).hoverIntent(dropdownshow, dropdownhide);
                 $('.bt').button();
                 $(".datepicker").datepicker();
                 $.onready();
