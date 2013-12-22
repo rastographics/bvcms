@@ -1,7 +1,7 @@
 ﻿@model CmsWeb.Models.PromotionModel
 @using CmsWeb
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Promotion";
 }
 @section scripts
@@ -133,7 +133,7 @@
 @Html.Hidden("Sort", Model.Sort)
 @Html.Hidden("Dir", Model.Dir)
 </div>
-<table id="Promotions" class="@Fingerprint.GridClass">
+<table id="Promotions" class="@ViewExtensions2.GridClass">
     <thead>
     <tr>
         <th><a href="#" class="sortable">Mixed</a></th>

@@ -27,8 +27,8 @@
                 @CogItems(clause)
             </header>
             <div class="group-actions">
-                <a href="#" class="addnewclause"><i class="icon-plus">Condition</i></a>
-                <a href="#" class="addnewgroup"><i class="icon-plus">Group</i></a>
+                <a href="#" class="addnewclause"><i class="fa fa-plus">Condition</i></a>
+                <a href="#" class="addnewgroup"><i class="fa fa-plus">Group</i></a>
             </div>
             <ul class="conditions">
                 @foreach (var c in clause.Conditions.Where(cc => !cc.IsGroup))
@@ -56,27 +56,27 @@
 {
     <div class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="icon-cog"></i>
+            <i class="fa fa-cog"></i>
         </a>
         <ul class="dropdown-menu">
             @if (!clause.IsGroup)
             {
-                <li><a href="#editCondition" class="edit-popover"><i class="icon-pencil icon-fixedwidth"></i>Edit</a></li>
+                <li><a href="#editCondition" class="edit-popover"><i class="fa fa-pencil fa-fw"></i>Edit</a></li>
             }
             @if (clause.CanCut)
             {
-                <li><a href="#" class="cutcondition"><i class="icon-cut icon-fixedwidth"></i>Cut</a></li>
+                <li><a href="#" class="cutcondition"><i class="fa fa-cut fa-fw"></i>Cut</a></li>
             }
             @if (clause.IsGroup && !clause.CanCut && !clause.IsFirst)
             {
-            <li><a href="#" class="maketopgroup"><i class="icon-arrow-up icon-fixedwidth"></i>Make Top Group</a></li>
+            <li><a href="#" class="maketopgroup"><i class="fa fa-long-arrow-up fa-fw"></i>Make Top Group</a></li>
             }
-            <li><a href="#" class="copycondition"><i class="icon-copy icon-fixedwidth"></i>Copy</a></li>
-            <li class="pastecondition" style="display: none"><a href="#" class="pastecondition"><i class="icon-paste icon-fixedwidth"></i>Paste</a></li>
-            <li><a href="#" class="insgroupabove"><i class="icon-share-alt icon-fixedwidth"></i>Insert Group Above this</a></li>
+            <li><a href="#" class="copycondition"><i class="fa fa-copy fa-fw"></i>Copy</a></li>
+            <li class="pastecondition" style="display: none"><a href="#" class="pastecondition"><i class="fa fa-paste fa-fw"></i>Paste</a></li>
+            <li><a href="#" class="insgroupabove"><i class="fa fa-share-alt fa-fw"></i>Insert Group Above this</a></li>
             @if (clause.CanRemove)
             {
-                <li><a class="delete" href="#"><i class="icon-trash icon-fixedwidth icon-fixedwidth"></i><span class="text-warning">Delete</span></a></li>
+                <li><a class="delete" href="#"><i class="fa fa-trash-o fa-fw"></i><span class="text-warning">Delete</span></a></li>
             }
         </ul>
     </div>

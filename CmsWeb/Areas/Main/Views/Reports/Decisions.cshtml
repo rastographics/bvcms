@@ -1,7 +1,7 @@
 ﻿@using CmsWeb
 @model CmsWeb.Areas.Main.Models.Report.DecisionSummaryModel
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Decision Summary Report";
 }
 @section head {
@@ -83,7 +83,7 @@
             <tr>
                 <td colspan="2" class="top">
 
-                    <table class="@Fingerprint.GridClass center">
+                    <table class="@ViewExtensions2.GridClass center">
                         <thead>
                             <tr class="headerrow">
                                 <th colspan="2">Decisions</th>
@@ -117,7 +117,7 @@
             <tr><td colspan="2"><hr /></td></tr>
             <tr>
                 <td class="top">
-                    <table class="@Fingerprint.GridClass center">
+                    <table class="@ViewExtensions2.GridClass center">
                         <tbody>
                             <tr class="headerrow">
                                 <th colspan="2">Baptisms By Age</th>
@@ -139,7 +139,7 @@
                     </table>
                 </td>
                 <td class="top">
-                    <table class="@Fingerprint.GridClass center">
+                    <table class="@ViewExtensions2.GridClass center">
                         <thead>
                             <tr class="headerrow">
                                 <th colspan="2">Baptisms By Type</th>
@@ -166,7 +166,7 @@
             <tr><td colspan="2"><hr /></td></tr>
             <tr>
                 <td class="top">
-                    <table class="@Fingerprint.GridClass center">
+                    <table class="@ViewExtensions2.GridClass center">
                         <thead>
                             <tr class="headerrow">
                                 <th colspan="2">New Member by Type</th>
@@ -190,7 +190,7 @@
                     </table>
                 </td>
                 <td class="top">
-                    <table class="@Fingerprint.GridClass center">
+                    <table class="@ViewExtensions2.GridClass center">
                         <thead>
                             <tr class="headerrow">
                                 <th colspan="2">Dropped Members by Type</th>
@@ -217,7 +217,7 @@
             <tr><td colspan="2"><hr /></td></tr>
             <tr>
                 <td colspan="2">
-                    <table class="@Fingerprint.GridClass center">
+                    <table class="@ViewExtensions2.GridClass center">
                         <thead>
                             <tr class="headerrow">
                                 <th colspan="2">Dropped Members by Church</th>

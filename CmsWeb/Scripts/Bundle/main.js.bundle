@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bundle minify="true" runOnBuild="true" output="main.js">
   <!--The order of the <file> elements determines the order of them when bundled.-->
-  <file>/Scripts/jQuery/jquery-1.9.1.js</file>
   <file>/Scripts/jQuery/jquery-migrate-1.1.1.js</file>
-  <file>/Scripts/jQuery/jquery-ui-1.10.0.custom.js</file>
   <file>/Scripts/jQuery/jquery.cookie.js</file>
   <file>/Scripts/jQuery/jquery.blockUI.js</file>
   <file>/Scripts/jQuery/jquery.mousewheel.js</file>

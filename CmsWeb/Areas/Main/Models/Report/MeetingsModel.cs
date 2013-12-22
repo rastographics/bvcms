@@ -119,14 +119,14 @@ namespace CmsWeb.Areas.Main.Models.Report
 
         public string ConvertToSearch(string type)
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return ConvertToQuery(type);
             return ConvertToSearchBuilder(type);
         }
 
         public string ConvertToSearchBuilder(string type)
         {
-            if(Fingerprint.TestSb2())
+            if(ViewExtensions2.TestSb2())
                 return ConvertToQuery(type).Replace("/Query/", "/QueryBuilder2/Main/");
 
             var qb = DbUtil.Db.QueryBuilderScratchPad();

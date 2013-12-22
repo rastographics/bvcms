@@ -1,8 +1,9 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model IQueryable<CmsWeb.Areas.Main.Controllers.MeetingController.ttt>
 @{
     ViewBag.Title = "Attendance By Groups";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 <!DOCTYPE html>
 
@@ -11,7 +12,7 @@
 		<title>Attendance by Groups</title>
 	</head>
 	<body>
-		<table cellpadding="5" class="@Fingerprint.GridClass">
+		<table cellpadding="5" class="@ViewExtensions2.GridClass">
 			<thead>
 				<tr><td>Attended</td><td>SmallGroup</td><td>Name</td></tr>
 			</thead>

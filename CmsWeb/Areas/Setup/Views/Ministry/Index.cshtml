@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<CmsData.Ministry>
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Ministry";
 }
 @section scripts
@@ -26,7 +26,7 @@
 }
 <h2>Ministries</h2>
 
-<table class="@Fingerprint.GridClass">
+<table class="@ViewExtensions2.GridClass">
     <tr>
         <th> MinistryId </th>
         <th> MinistryName </th>

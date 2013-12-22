@@ -1,9 +1,10 @@
-﻿@using CmsWeb.Code
+﻿@using CmsWeb
+@using CmsWeb.Code
 @model CmsWeb.Models.ContactPage.ContactModel
 <h2>Contact</h2>
 @Html.Hidden("editing", "true")
 @Html.HiddenFor(m => m.ContactId)
-<table class="@Fingerprint.GridClass">
+<table class="@ViewExtensions2.GridClass">
     <tbody>
         <tr>
             <th class="right">Contact Date:</th>

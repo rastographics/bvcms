@@ -4,7 +4,7 @@
 @using UtilityExtensions
 @model CmsWeb.Models.OrganizationPage.OrganizationModel
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Organization";
 }
 @section head
@@ -186,7 +186,7 @@
             </form>
         </div>
         <div id="ExtraValues" class="settings">
-            <table id="extras" class="@Fingerprint.GridClass">
+            <table id="extras" class="@ViewExtensions2.GridClass">
                 <thead>
                     <tr>
                         <td>Field

@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.People.Controllers
         [GET("Contact2/{id}")]
         public ActionResult Index(int id)
         {
-            if (!Fingerprint.UseNewLook())
+            if (!ViewExtensions2.UseNewLook())
                 return Redirect("/Contact/Index/" + id);
             var m = new ContactModel(id);
             if (m.contact == null)

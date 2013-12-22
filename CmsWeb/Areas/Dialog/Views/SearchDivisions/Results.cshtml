@@ -1,11 +1,12 @@
-﻿@using CmsWeb.Models
+﻿@using CmsWeb
+@using CmsWeb.Models
 @using CmsData
 @using UtilityExtensions
 @model SearchDivisionsModel
 @{
     var list = Model.DivisionList();
 }
-<table id="results" class="@Fingerprint.GridClass">
+<table id="results" class="@ViewExtensions2.GridClass">
 <thead>
     <tr><td colspan="3">
         <b>showing top @Model.listcount of @Model.count.ToString("N0")</b>

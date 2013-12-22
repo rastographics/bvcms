@@ -1,9 +1,10 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @using CmsData
 @model CmsWeb.Models.MeetingModel
 @{
     ViewBag.Title = "Meeting";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     var RegularMeetingHeadCount = DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
     var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount == "enable";
 }
@@ -196,7 +197,7 @@ This will allow you to mark them as members.
             @if (User.IsInRole("Edit"))
             {
                 <div>
-                    <table id="extras" class="@Fingerprint.GridClass" style="margin-top: 2em">
+                    <table id="extras" class="@ViewExtensions2.GridClass" style="margin-top: 2em">
                         <thead>
                             <tr>
                                 <td>Field</td>
@@ -230,7 +231,7 @@ This will allow you to mark them as members.
 <hr />
 @if (Model.org.MemberCount < 1000 || Model.showlarge)
 {
-    <table id="attends" class="@Fingerprint.GridClass">
+    <table id="attends" class="@ViewExtensions2.GridClass">
         <thead>
             <tr>
                 <th>Attended</th>

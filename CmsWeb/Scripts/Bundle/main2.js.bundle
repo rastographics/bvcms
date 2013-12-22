@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bundle minify="true" runOnBuild="true" output="main2.js">
   <!--The order of the <file> elements determines the order of them when bundled.-->
-  <file>/Scripts/jQuery/jquery-1.9.1.js</file>
   <file>/Scripts/jQuery/jquery-migrate-1.1.1.js</file>
-  <file>/Scripts/Bootstrap/bootstrap.js</file>
   <file>/Scripts/Bootstrap/bootstrap-modalmanager.js</file>
   <file>/Scripts/Bootstrap/bootstrap-modal.js</file>
   <file>/Scripts/Bootstrap/bootstrap-editable.js</file>
@@ -27,5 +25,5 @@
   <file>/Scripts/js/form-ajax.js</file>
   <file>/Scripts/js/ExtraValue.js</file>
   <file>/Scripts/Search/SearchAdd.js</file>
-  <file>/Scripts/js/Support.js</file>
+<!--  <file>/Scripts/js/Support.js</file>-->
 </bundle>

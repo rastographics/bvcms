@@ -160,8 +160,7 @@ table.expanding tr.oddrow > td {
 
 
 
-a.edit [class^="icon-"],
-a.edit [class*=" icon-"] {
+a.edit.fa {
     color: #CCC;
 }
 
@@ -205,7 +204,7 @@ a.edit:hover {
 
 
 
-.icon-fixedwidth {
+.fa-fw {
     display: inline-block !important;
     width: 1.3em;
     text-align: center;
@@ -257,6 +256,10 @@ ul.typeahead li.active a,
     height: 230px;
     background-position: center top;
     background-repeat: no-repeat;
+    -ms-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    -webkit-background-size: contain;
     background-size: contain;
 }
 
@@ -378,6 +381,7 @@ form.form.form-horizontal.ajax div.form-actions {
 
 .navbar .nav > li > a {
     -ms-text-shadow: none;
+    -webkit-text-shadow: none;
     text-shadow: none;
 }
 
@@ -415,7 +419,7 @@ form.form.form-horizontal.ajax div.form-actions {
 span.currentTag {
     display: inline-block;
     overflow: hidden;
-    max-width: 80px;
+    max-width: 150px;
     -moz-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
@@ -487,8 +491,7 @@ span.currentTag {
     right: -2px;
 }
 
-#conditionsList a.edit [class^="icon-"],
-#conditionsList a.edit [class*=" icon-"] {
+#conditionsList a.edit.fa {
     color: #666;
 }
 

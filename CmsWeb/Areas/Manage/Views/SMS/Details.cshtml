@@ -1,7 +1,8 @@
 ﻿@using CmsData
+@using CmsWeb
 @{
     ViewBag.Title = "Details";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 
     int ListID = ViewBag.ListID;
     
@@ -16,7 +17,7 @@
 <b>Message:</b><br />
 @l.Message<br />
 <br />
-<table class="@Fingerprint.GridClass" cellpadding="4">
+<table class="@ViewExtensions2.GridClass" cellpadding="4">
     <thead>
     <tr>
         <th align="center">Person</th>

@@ -1,7 +1,8 @@
-﻿@using CmsWeb.Models
+﻿@using CmsWeb
+@using CmsWeb.Models
 @model IEnumerable<TitleItems>
 @{
     ViewBag.Title = "LookupData";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     Html.RenderPartial("LookupData", Model);
 }

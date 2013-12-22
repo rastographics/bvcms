@@ -371,7 +371,7 @@ namespace CmsWeb.Models
 
         public string ConvertToSearch()
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return ConvertToQuery();
             return ConvertToSearchBuilder();
         }

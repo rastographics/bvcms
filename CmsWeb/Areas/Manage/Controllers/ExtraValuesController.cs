@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [GET("QueryCodes")]
         public ActionResult QueryCodes(string field, string value)
         {
-            if (Fingerprint.TestSb2())
+            if (ViewExtensions2.TestSb2())
             {
                 var cc = DbUtil.Db.ScratchPadCondition();
                 cc.Reset(DbUtil.Db);
@@ -117,7 +117,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [GET("QueryDataFields")]
         public ActionResult QueryDataFields(string field, string type)
         {
-            if (Fingerprint.TestSb2())
+            if (ViewExtensions2.TestSb2())
             {
                 var cc = DbUtil.Db.ScratchPadCondition();
                 cc.Reset(DbUtil.Db);

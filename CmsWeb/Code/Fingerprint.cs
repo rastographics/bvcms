@@ -6,8 +6,6 @@ using System.Web;
 using System.Web.Caching;
 using System.Web.Hosting;
 using System.Xml.Linq;
-using CmsData;
-using UtilityExtensions;
 
 public class Fingerprint
 {
@@ -26,7 +24,8 @@ public class Fingerprint
                 {
                     string a = HostingEnvironment.MapPath("~" + i.Value);
                     var fd = File.GetLastWriteTime(a);
-                    string t = i.Value + "?v=" + fd.Ticks;
+                    int index = i.Value.LastIndexOf('/');
+                    string t = i.Value.Insert(index, "/v-" + fd.Ticks); 
                     result.AppendFormat("<script type=\"text/javascript\" src=\"{0}\"></script>\n", t);
                 }
             }
@@ -34,7 +33,8 @@ public class Fingerprint
             {
                 Debug.Assert(absolute != null, "absolute != null");
                 var fd = File.GetLastWriteTime(absolute);
-                string t = path + "?v=" + fd.Ticks;
+                int index = path.LastIndexOf('/');
+                string t = path.Insert(index, "/v-" + fd.Ticks); 
                 result.AppendFormat("<script type=\"text/javascript\" src=\"{0}\"></script>\n", t);
             }
 #else
@@ -65,7 +65,8 @@ public class Fingerprint
                 {
                     string a = HostingEnvironment.MapPath("~" + i.Value);
                     var fd = File.GetLastWriteTime(a);
-                    string t = i.Value + "?v=" + fd.Ticks;
+                    int index = i.Value.LastIndexOf('/');
+                    string t = i.Value.Insert(index, "/v-" + fd.Ticks); 
                     result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />\n", t);
                 }
             }
@@ -73,7 +74,8 @@ public class Fingerprint
             {
                 Debug.Assert(absolute != null, "absolute != null");
                 var fd = File.GetLastWriteTime(absolute);
-                string t = path + "?v=" + fd.Ticks;
+                int index = path.LastIndexOf('/');
+                string t = path.Insert(index, "/v-" + fd.Ticks); 
                 result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />\n", t);
             }
 #else
@@ -89,27 +91,5 @@ public class Fingerprint
         }
         return new HtmlString(HttpRuntime.Cache[path] as string);
     }
-    public static string Layout()
-    {
-        return (UseNewLook())
-            ? "~/Views/Shared/SiteLayout2c.cshtml"
-            : "~/Views/Shared/SiteLayout.cshtml";
 
-    }
-    public static bool UseNewLook()
-    {
-        return DbUtil.Db.UserPreference("UseNewLook", "false").ToBool();
-    }
-    public static bool TestSb2()
-    {
-        return DbUtil.Db.UserPreference("TestSb2", "false").ToBool();
-    }
-
-    public static string GridClass
-    {
-        get
-        {
-            return UseNewLook() ? "table table-condensed table-striped not-wide grid2" : "grid table-striped grid2";
-        }
-    }
 }

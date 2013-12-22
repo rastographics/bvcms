@@ -2,12 +2,12 @@
 @using CmsWeb
 @using UtilityExtensions
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Ministry";
 }
         <p>@Model.Name<br />
             @Model.Org</p>
-        <table id="attends" class="@Fingerprint.GridClass" cellpadding="5">
+        <table id="attends" class="@ViewExtensions2.GridClass" cellpadding="5">
             <thead>
                 <tr>
                     <th> </th>

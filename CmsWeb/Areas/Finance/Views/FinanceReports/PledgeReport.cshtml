@@ -1,12 +1,13 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model IEnumerable<CmsData.View.PledgeReport>
 @{
     ViewBag.Title = "PledgeReport";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 
 <h2>PledgeReport</h2>
-<table class="@Fingerprint.GridClass" cellpadding="5">
+<table class="@ViewExtensions2.GridClass" cellpadding="5">
 	<thead>
 	    <td>FundId</td>
 	    <td>FundName</td>

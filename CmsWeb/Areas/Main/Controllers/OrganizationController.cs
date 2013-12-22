@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Main.Controllers
         const string needNotify = "WARNING: please add the notify persons on messages tab.";
         public ActionResult Index(int? id)
         {
-            //            if (Fingerprint.UseNewLook())
+            //            if (ViewExtensions2.UseNewLook())
             //                return Redirect("/Org/" + id);
             if (!id.HasValue)
                 return Content("no org");
@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.LogActivity("Viewing Organization ({0})".Fmt(m.org.OrganizationName), m.org.OrganizationName, orgid: id);
 
             Util2.CurrentOrgId = m.org.OrganizationId;
-            object qid = Fingerprint.TestSb2()
+            object qid = ViewExtensions2.TestSb2()
                 ? (object) DbUtil.Db.QueryInCurrentOrg().QueryId
                 : DbUtil.Db.QueryBuilderInCurrentOrg().QueryId;
             ViewBag.OrganizationContext = true;
@@ -130,10 +130,10 @@ namespace CmsWeb.Areas.Main.Controllers
                 if (isParent)
                 {
                     ViewBag.ParentOrgContext = true;
-                    ViewBag.leadersqid = Fingerprint.TestSb2()
+                    ViewBag.leadersqid = ViewExtensions2.TestSb2()
                         ? (object)DbUtil.Db.QueryLeadersUnderCurrentOrg().QueryId
                         : DbUtil.Db.QueryBuilderLeadersUnderCurrentOrg().QueryId;
-                    ViewBag.membersqid = Fingerprint.TestSb2()
+                    ViewBag.membersqid = ViewExtensions2.TestSb2()
                         ? (object)DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId
                         : DbUtil.Db.QueryBuilderMembersUnderCurrentOrg().QueryId;
                 }
@@ -152,7 +152,7 @@ namespace CmsWeb.Areas.Main.Controllers
             Util2.CurrentGroups = smallgrouplist;
             Util2.CurrentGroupsPrefix = sgprefix;
             Util2.CurrentGroupsMode = selectmode.Value;
-            object qid = Fingerprint.TestSb2()
+            object qid = ViewExtensions2.TestSb2()
                 ? (object)DbUtil.Db.QueryInCurrentOrg().QueryId
                 : DbUtil.Db.QueryBuilderInCurrentOrg().QueryId;
             InitExportToolbar(id, qid, checkparent: true);
@@ -164,7 +164,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult PrevMemberGrid(int id, string namefilter, bool? ShowProspects)
         {
-            object qid = Fingerprint.TestSb2()
+            object qid = ViewExtensions2.TestSb2()
                 ? (object)DbUtil.Db.QueryPreviousCurrentOrg().QueryId
                 : DbUtil.Db.QueryBuilderPreviousCurrentOrg().QueryId;
             InitExportToolbar(id, qid);
@@ -177,7 +177,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult VisitorGrid(int id, string namefilter)
         {
-            object qid = Fingerprint.TestSb2()
+            object qid = ViewExtensions2.TestSb2()
                 ? (object)DbUtil.Db.QueryVisitedCurrentOrg().QueryId
                 : DbUtil.Db.QueryBuilderVisitedCurrentOrg().QueryId;
             InitExportToolbar(id, qid);
@@ -190,7 +190,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult PendingMemberGrid(int id, string namefilter)
         {
-            object qid = Fingerprint.TestSb2()
+            object qid = ViewExtensions2.TestSb2()
                 ? (object)DbUtil.Db.QueryPendingCurrentOrg().QueryId
                 : DbUtil.Db.QueryBuilderPendingCurrentOrg().QueryId;
             InitExportToolbar(id, qid);
@@ -202,7 +202,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult InactiveMemberGrid(int id, string namefilter)
         {
-            object qid = Fingerprint.TestSb2()
+            object qid = ViewExtensions2.TestSb2()
                 ? (object)DbUtil.Db.QueryInactiveCurrentOrg().QueryId
                 : DbUtil.Db.QueryBuilderInactiveCurrentOrg().QueryId;
             InitExportToolbar(id, qid);
@@ -215,7 +215,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult ProspectGrid(int id, string namefilter)
         {
-            object qid = Fingerprint.TestSb2()
+            object qid = ViewExtensions2.TestSb2()
                 ? (object)DbUtil.Db.QueryProspectCurrentOrg().QueryId
                 : DbUtil.Db.QueryBuilderProspectCurrentOrg().QueryId;
             InitExportToolbar(id, qid);

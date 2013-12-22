@@ -4,7 +4,7 @@
 @using UtilityExtensions
 @{
     ViewBag.Title = "ExtraValuesGrid";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
 @section head
@@ -39,7 +39,7 @@
     </script>
 }
 <h2>ExtraValuesGrid</h2>
-<table id="extragrid" class="@Fingerprint.GridClass">
+<table id="extragrid" class="@ViewExtensions2.GridClass">
     <thead>
         <tr>
             @for (var c = 1; c < Model.FieldCount; c++)

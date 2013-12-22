@@ -4,6 +4,7 @@
 @RenderSection("head", false)
 @RenderBody()
 @Html.Raw((string)ViewData["bottom"])
+@ViewExtensions2.jQuery()
 @Fingerprint.Script("/Scripts/bundle/onlineregister.js")
 @RenderSection("scripts", false)
 }
@@ -24,6 +25,7 @@ else
 @Html.Raw((string)ViewData["top"])
 @RenderBody()
 @Html.Raw((string)ViewData["bottom"])
+@ViewExtensions2.jQuery()
 @Fingerprint.Script("/Scripts/bundle/onlineregister.js")
 @RenderSection("scripts", false)
 </body>

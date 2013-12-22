@@ -264,7 +264,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 
         public string ConvertToSearch(string command, string key)
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return ConvertToQuery(command, key);
             return ConvertToSearchBuilder(command, key);
         }

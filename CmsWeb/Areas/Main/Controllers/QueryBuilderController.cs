@@ -29,9 +29,9 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult Main(int? id, int? run)
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return Redirect("/Query");
-            if(Fingerprint.TestSb2())
+            if(ViewExtensions2.TestSb2())
                 return Redirect("/QueryBuilder2");
 
             ViewData["Title"] = "QueryBuilder";

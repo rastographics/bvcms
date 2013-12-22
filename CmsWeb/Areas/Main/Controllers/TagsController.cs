@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         private void InitExportToolbar()
         {
-            object qid = Fingerprint.TestSb2()
+            object qid = ViewExtensions2.TestSb2()
                 ? (object)DbUtil.Db.QueryHasCurrentTag().QueryId
                 : DbUtil.Db.QueryBuilderHasCurrentTag().QueryId;
 

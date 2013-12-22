@@ -2,7 +2,7 @@
 @model IEnumerable<CmsWeb.Areas.Main.Controllers.ReportsController.ExtraInfo>
 @{
     ViewBag.Title = "ExtraValues";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section scripts
 {
@@ -20,7 +20,7 @@
     </script>
 }
 <h2>ExtraValues</h2>
-<table class="@Fingerprint.GridClass">
+<table class="@ViewExtensions2.GridClass">
 @foreach (var e in Model)
 {
 	<tr><td><a href="/Manage/ExtraValues/QueryDataFields?field=@Server.UrlEncode(e.Field)&type=@e.type">@e.Field</a></td>

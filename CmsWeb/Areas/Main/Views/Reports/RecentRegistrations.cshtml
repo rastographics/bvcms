@@ -1,14 +1,15 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model IOrderedQueryable<CmsData.View.Registration>
 
 @{
     ViewBag.Title = "Recent Registrations";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 
 <h2>Recent Registrations</h2>
 
-<table class="@Fingerprint.GridClass">
+<table class="@ViewExtensions2.GridClass">
     <thead>
         <tr>
             <th><a href="/Reports/RecentRegistrations?days=90&orgid=0">Date</a></th>

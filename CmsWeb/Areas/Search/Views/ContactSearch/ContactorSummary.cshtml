@@ -8,7 +8,7 @@
 <div class="container">
 <h2>Contactor Summary</h2>
 
-    <table class="@Fingerprint.GridClass">
+    <table class="table table-condensed table-striped not-wide">
         <thead>
             <tr>
                 <th> Name </th>
@@ -19,14 +19,15 @@
         </thead>
         <tbody>
 
-        @foreach (var item in Model) {
-            <tr>
-                <td> @item.Name </td>
-                <td> @item.ContactType </td>
-                <td> @item.Ministry </td>
-                <td> @item.Count </td>
-            </tr>
-        }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td> @item.Name </td>
+                    <td> @item.ContactType </td>
+                    <td> @item.Ministry </td>
+                    <td> @item.Count </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>

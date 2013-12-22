@@ -1,13 +1,14 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model IEnumerable<CmsData.View.RecentRegistration>
 @{
     ViewBag.Title = "Registrations Summary";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 
 <h2>Registrations Summary</h2>
 
-<table class="@Fingerprint.GridClass">
+<table class="@ViewExtensions2.GridClass">
     <thead>
         <tr>
             <th>FirstDate</th>

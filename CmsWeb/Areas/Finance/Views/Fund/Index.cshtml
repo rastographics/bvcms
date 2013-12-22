@@ -1,7 +1,7 @@
 ﻿@using CmsWeb
 @model IEnumerable<CmsData.ContributionFund>
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Funds";
 }
 @section scripts
@@ -20,7 +20,7 @@ else
 }
 </p>
 @Html.Hidden("status")
-<table class="@Fingerprint.GridClass" cellpadding="5">
+<table class="@ViewExtensions2.GridClass" cellpadding="5">
 <thead>
 	<tr>
 		<th></th>

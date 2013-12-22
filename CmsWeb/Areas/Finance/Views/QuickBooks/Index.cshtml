@@ -1,6 +1,7 @@
 @using CmsData.Classes.QuickBooks
+@using CmsWeb
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 	ViewBag.Title = "QuickBooks Connect/Disconnect";
     var qbh = new QuickBooksHelper(Request);
 }

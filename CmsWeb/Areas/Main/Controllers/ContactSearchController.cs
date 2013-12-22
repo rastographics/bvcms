@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 		public ActionResult Index()
 		{
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return Redirect("/ContactSearch2/");
 			Response.NoCache();
 			var m = new ContactSearchModel();

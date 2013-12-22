@@ -363,7 +363,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult ExtraValues()
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return Redirect("/ExtraValue/Summary");
             var ev = StandardExtraValues.GetExtraValues();
             var q = from e in DbUtil.Db.PeopleExtras
@@ -387,7 +387,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult ExtraValueData()
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return Redirect("/ExtraValue/Summary");
             var ev = StandardExtraValues.GetExtraValues();
             var q = from e in DbUtil.Db.PeopleExtras

@@ -423,7 +423,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult QueryAttendees(int Id)
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
             {
                 var cc = DbUtil.Db.ScratchPadCondition();
                 cc.Reset(DbUtil.Db);
@@ -440,7 +440,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult QueryVisitors(int Id)
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
             {
                 var cc = DbUtil.Db.ScratchPadCondition();
                 cc.Reset(DbUtil.Db);
@@ -468,7 +468,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult QueryAbsents(int Id)
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
             {
                 var cc = DbUtil.Db.ScratchPadCondition();
                 cc.Reset(DbUtil.Db);
@@ -496,7 +496,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult QueryRegistered(int Id, string type)
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
             {
                 var cc = DbUtil.Db.ScratchPadCondition();
                 cc.Reset(DbUtil.Db);

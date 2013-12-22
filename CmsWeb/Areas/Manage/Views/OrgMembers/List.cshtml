@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.OrgMembersModel
+﻿@using CmsWeb
+@model CmsWeb.Models.OrgMembersModel
 @Html.Hidden("Sort")
 @Html.Hidden("Dir")
 <div class="roundbox floatleft">
@@ -41,7 +42,7 @@
 </div>
 <div class="floatclear"></div>
 <div><input id="SelectAll" type="checkbox" /> Select All</div>
-<table id="list" class="@Fingerprint.GridClass">
+<table id="list" class="@ViewExtensions2.GridClass">
 <thead>
 <tr>
     <th><a href="#" class="sort">Mixed</a></th>

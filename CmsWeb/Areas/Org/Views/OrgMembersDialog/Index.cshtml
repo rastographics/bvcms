@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.OrgMembersDialogModel
+﻿@using CmsWeb
+@model CmsWeb.Models.OrgMembersDialogModel
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
@@ -57,7 +58,7 @@
 <input id="SelectAll" type="checkbox" /> Select All
 	<input id="submit" type="submit" class="bt" name="Update" class="bt blue" value="Update Selected" />
 <div>
-<table class="@Fingerprint.GridClass">
+<table class="@ViewExtensions2.GridClass">
     <thead>
 	<tr>
 		<th>Select </th>

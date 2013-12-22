@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [GET("ContactSearch2")]
         public ActionResult Index()
         {
-            if (!Fingerprint.UseNewLook())
+            if (!ViewExtensions2.UseNewLook())
                 return Redirect("/ContactSearch");
             Response.NoCache();
             var m = new ContactSearchModel();

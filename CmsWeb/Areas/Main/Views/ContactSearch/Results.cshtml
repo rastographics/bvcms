@@ -1,6 +1,7 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model CmsWeb.Models.ContactSearchModel
-<table id="results" class="@Fingerprint.GridClass">
+<table id="results" class="@ViewExtensions2.GridClass">
 <thead>
     <tr><td colspan="4">
 <div>Count: @Model.Count().ToString("n0")</div>

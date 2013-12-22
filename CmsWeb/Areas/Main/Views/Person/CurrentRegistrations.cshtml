@@ -1,7 +1,8 @@
-﻿@model IQueryable<CmsWeb.Areas.Main.Controllers.PersonController.CurrentRegistration>
+﻿@using CmsWeb
+@model IQueryable<CmsWeb.Areas.Main.Controllers.PersonController.CurrentRegistration>
 @{
 	ViewBag.Title = "Current Registrations";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 
 <h2>Current Registrations</h2>

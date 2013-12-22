@@ -1,13 +1,14 @@
-﻿@model IEnumerable<CmsWeb.Areas.Main.Controllers.ContactSearchController.ContactSummaryInfo>
+﻿@using CmsWeb
+@model IEnumerable<CmsWeb.Areas.Main.Controllers.ContactSearchController.ContactSummaryInfo>
 
 @{
     ViewBag.Title = "ContactSummary";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 
 <h2>Contact Summary</h2>
 
-<table class="@Fingerprint.GridClass">
+<table class="@ViewExtensions2.GridClass">
     <thead>
         <tr>
             <th> Count </th>

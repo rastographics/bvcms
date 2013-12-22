@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.SavedQueryModel
+﻿@using CmsWeb
+@model CmsWeb.Models.SavedQueryModel
 @{
     var pager = Html.Partial("Pager2", Model.Pager);
 }
@@ -6,7 +7,7 @@ Only Mine: @Html.CheckBoxFor(m => m.onlyMine)
 Search: @Html.TextBoxFor(m => m.search)<br/>
 Status Flags: @Html.CheckBoxFor(m => m.statusFlags)
 <button id="filter" class="bt" value="Filter">Filter</button>
-<table cellpadding="4" class="@Fingerprint.GridClass">
+<table cellpadding="4" class="@ViewExtensions2.GridClass">
 <thead>
 <tr><td>@pager</td></tr>
 <tr>

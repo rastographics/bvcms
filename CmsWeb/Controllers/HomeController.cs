@@ -77,7 +77,7 @@ namespace CmsWeb.Controllers
         {
             var name = "VisitNumber-" + id;
             const CompareType comp = CompareType.Equal;
-            if (Fingerprint.TestSb2())
+            if (ViewExtensions2.TestSb2())
             {
                 var cc = DbUtil.Db.ScratchPadCondition();
                 cc.Reset(DbUtil.Db);

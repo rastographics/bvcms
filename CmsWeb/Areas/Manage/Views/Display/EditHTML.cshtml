@@ -1,6 +1,7 @@
-﻿@model CmsData.Content
+﻿@using CmsWeb
+@model CmsData.Content
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section scripts
 {
@@ -18,7 +19,7 @@
             });
             CKEDITOR.replace('body', {
                 height: 400,
-                fullPage: true,
+                fullPage: false,
                 filebrowserUploadUrl: '/Account/CKEditorUpload/',
                 filebrowserImageUploadUrl: '/Account/CKEditorUpload/'
             });

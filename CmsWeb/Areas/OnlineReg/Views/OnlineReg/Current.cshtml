@@ -6,7 +6,7 @@
     </head>
 	<body>
 <h2>Current Registrations</h2>
-			<table class="@Fingerprint.GridClass" cellpadding="5">
+			<table class="@ViewExtensions2.GridClass" cellpadding="5">
             @foreach(var r in Model)
 			{
 				<tr><td><a href="/OnlineReg/Index/@r.OrgId">@r.OrgName</a></td>

@@ -291,7 +291,6 @@
     <Compile Include="Areas\OnlineReg\Controllers\ManageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\SpecialRegModel.cs" />
-    <Compile Include="Areas\Org\Controllers\OrganizationController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgMembersDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -374,16 +373,6 @@
     <Compile Include="Areas\Org\Models\OrgMemberModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMembersDialogModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMoveInfo.cs" />
-    <Compile Include="Areas\Org\Models\Organization\MeetingInfo.cs" />
-    <Compile Include="Areas\Org\Models\Organization\MeetingModel.cs" />
-    <Compile Include="Areas\Org\Models\Organization\MemberModel.cs" />
-    <Compile Include="Areas\Org\Models\Organization\OrganizationModel.cs" />
-    <Compile Include="Areas\Org\Models\Organization\OrgChildrenModel.cs" />
-    <Compile Include="Areas\Org\Models\Organization\OrgGroupsModel.cs" />
-    <Compile Include="Areas\Org\Models\Organization\PersonMemberInfo.cs" />
-    <Compile Include="Areas\Org\Models\Organization\PrevMemberModel.cs" />
-    <Compile Include="Areas\Org\Models\Organization\ScheduleInfo.cs" />
-    <Compile Include="Areas\Org\Models\Organization\VisitorModel.cs" />
     <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
@@ -417,7 +406,6 @@
     <Compile Include="Areas\Search\Controllers\ContactSearchController.cs" />
     <Compile Include="Areas\People\Controllers\Person\EmailsController.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonController.cs" />
-    <Compile Include="Areas\Org\Controllers\VolunteersController.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchAddController.cs" />
     <Compile Include="Areas\People\Controllers\Person\AdminController.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonalController.cs" />
@@ -504,8 +492,6 @@
     <Compile Include="Areas\People\Models\Person\PersonModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Org\Models\VolunteerCommitmentsModel.cs" />
-    <Compile Include="Areas\Org\Models\VolunteerRequestModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\PendingPersonModel.cs" />
     <Compile Include="Areas\People\PeopleAreaRegistration.cs" />
@@ -617,13 +603,9 @@
     <Compile Include="Areas\Public\Models\OrgContentInfo.cs" />
     <Compile Include="Areas\Public\Models\SGMapModel.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModel.cs" />
-    <Compile Include="Areas\Search\Controllers\OrganizationController.cs" />
-    <Compile Include="Areas\Search\Controllers\PeopleController.cs" />
     <Compile Include="Areas\Search\Controllers\QueryController.cs" />
     <Compile Include="Areas\Search\Controllers\QuickController.cs" />
     <Compile Include="Areas\Search\Controllers\SavedQueryController.cs" />
-    <Compile Include="Areas\Search\Models\OrganizationModel.cs" />
-    <Compile Include="Areas\Search\Models\PeopleModel.cs" />
     <Compile Include="Areas\Search\Models\QuickSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
     <Compile Include="Areas\Search\SearchAreaRegistration.cs" />
@@ -1008,7 +990,6 @@
     <Content Include="Content\css\chosen.min.css" />
     <Content Include="Content\css\datepicker.css" />
     <Content Include="Content\css\Fixups2.css" />
-    <Content Include="Content\css\custom.css" />
     <Content Include="Content\css\demo_page.css" />
     <Content Include="Content\css\demo_table.css" />
     <Content Include="Content\css\Fixups2.min.css">
@@ -1032,11 +1013,9 @@
       <DependentUpon>search.css</DependentUpon>
     </Content>
     <Content Include="Content\css\typeahead.js-bootstrap.css" />
-    <Content Include="Content\font-awesome\css\font-awesome-ie7.css" />
-    <Content Include="Content\font-awesome\css\font-awesome-ie7.min.css" />
-    <Content Include="Content\font-awesome\css\font-awesome.css" />
-    <Content Include="Content\font-awesome\css\font-awesome.min.css" />
-    <Content Include="Content\font-awesome\font\fontawesome-webfont.svg" />
+    <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
+    <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
+    <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\brokencode.jpg" />
     <Content Include="Content\img\ajax-loader.gif" />
     <Content Include="Content\css\jquery.mobile-1.3.0.css" />
@@ -1187,6 +1166,8 @@
     <Content Include="Scripts\Finance\Transactions.min.js">
       <DependentUpon>Transactions.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\jQuery\jquery-1.10.2.js" />
+    <Content Include="Scripts\jQuery\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jQuery\jquery.contextmenu.r2.min.js">
       <DependentUpon>jquery.contextmenu.r2.js</DependentUpon>
     </Content>
@@ -1197,9 +1178,6 @@
       <DependentUpon>ExtraValue.js</DependentUpon>
     </Content>
     <Content Include="Scripts\js\sgmap.js" />
-    <Content Include="Scripts\jQuery\jquery-1.9.1.min.js">
-      <DependentUpon>jquery-1.9.1.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.js" />
     <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.min.js">
       <DependentUpon>jquery.gmap-1.1.0.js</DependentUpon>
@@ -1419,75 +1397,6 @@
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\SpecialRegistrationResults.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\CurrMemberGrid.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\DialogAddMES.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\DivisionList.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AgeGroup.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskAllergies.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskCheckboxes.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskChurch.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskCoaching.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskDoctor.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskDropdown.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskEmContact.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskExtraQuestions.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskGradeOptions.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskHeader.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskInstruction.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskInsurance.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskMenu.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskParents.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskRequest.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSize.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSuggestedFee.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskTickets.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskTylenolEtc.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskYesNoQuestions.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\CheckboxItem.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\DropdownItem.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\ExtraQuestion.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\GradeOption.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Html.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\MenuItem.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\OrgFee.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\ScheduleInfo.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Size.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabAdmin.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabFees.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMeetings.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMessages.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabOrg.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabQuestions.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TimeSlot.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TimeSlots.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\YesNoQuestion.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\ExtrasGrid.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\InactiveMemberGrid.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Org.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\MeetingGrid.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\MemberGrid.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\NotifyList2.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OnlineRegAdmin.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OnlineRegAdminEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OnlineRegFees.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OnlineRegFeesEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OnlineRegMessages.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OnlineRegMessagesEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OnlineRegQuestions.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OnlineRegQuestionsEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OrgInfo.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OrgInfoEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OrgPickList2.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\PendingMemberGrid.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\PrevMemberGrid.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\SettingsMeetings.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\SettingsMeetingsEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\SettingsOrg.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\SettingsOrgEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\SmallGroups.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\VisitorGrid.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\VolunteerCommitmentsSummary.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundResults2.cshtml" />
     <Content Include="Areas\Finance\Views\Contributions\BundleTotals.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
@@ -1523,29 +1432,37 @@
     <Content Include="Areas\Main\Views\ContactSearch\ContactSummary.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactSummary.cshtml" />
     <None Include="Content\css\bundle-new2css.css.bundle" />
-    <Content Include="Content\font-awesome\font\fontawesome-webfont.eot" />
-    <Content Include="Content\font-awesome\font\fontawesome-webfont.ttf" />
-    <Content Include="Content\font-awesome\font\fontawesome-webfont.woff" />
-    <Content Include="Content\font-awesome\font\FontAwesome.otf" />
-    <Content Include="Content\font-awesome\less\bootstrap.less" />
-    <Content Include="Content\font-awesome\less\core.less" />
-    <Content Include="Content\font-awesome\less\extras.less" />
-    <Content Include="Content\font-awesome\less\font-awesome-ie7.less" />
-    <Content Include="Content\font-awesome\less\font-awesome.less" />
-    <Content Include="Content\font-awesome\less\icons.less" />
-    <Content Include="Content\font-awesome\less\mixins.less" />
-    <Content Include="Content\font-awesome\less\path.less" />
-    <Content Include="Content\font-awesome\less\variables.less" />
-    <Content Include="Content\font-awesome\scss\font-awesome-ie7.scss" />
-    <Content Include="Content\font-awesome\scss\font-awesome.scss" />
-    <Content Include="Content\font-awesome\scss\_bootstrap.scss" />
-    <Content Include="Content\font-awesome\scss\_core.scss" />
-    <Content Include="Content\font-awesome\scss\_extras.scss" />
-    <Content Include="Content\font-awesome\scss\_icons.scss" />
-    <Content Include="Content\font-awesome\scss\_mixins.scss" />
-    <Content Include="Content\font-awesome\scss\_path.scss" />
-    <Content Include="Content\font-awesome\scss\_variables.scss" />
     <Content Include="Content\less\typeahead.js-bootstrap.less" />
+    <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\font-awesome-4.0.3\fonts\FontAwesome.otf" />
+    <Content Include="Content\font-awesome-4.0.3\less\bordered-pulled.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\core.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\fixed-width.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\font-awesome.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\icons.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\larger.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\list.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\mixins.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\path.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\rotated-flipped.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\spinning.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\stacked.less" />
+    <Content Include="Content\font-awesome-4.0.3\less\variables.less" />
+    <Content Include="Content\font-awesome-4.0.3\scss\font-awesome.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_bordered-pulled.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_core.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_fixed-width.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_icons.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_larger.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_list.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_mixins.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_path.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_rotated-flipped.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_spinning.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_stacked.scss" />
+    <Content Include="Content\font-awesome-4.0.3\scss\_variables.scss" />
     <None Include="Content\styles\bundle-css.css.bundle" />
     <Content Include="Scripts\Bundle\onlineregister.js">
       <DependentUpon>onlineregister.js.bundle</DependentUpon>
@@ -1707,6 +1624,7 @@
     <Content Include="Scripts\Dialog\SearchDivisions.min.js.map">
       <DependentUpon>SearchDivisions.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\jQuery\jquery-1.10.2.min.map" />
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\js\Pager3.js" />
     <Content Include="Scripts\Mobile\jquery-1.6.4.js" />
@@ -1879,12 +1797,6 @@
     <Content Include="Content\styles\jquery.dataTables.css" />
     <Content Include="Content\styles\jquery.dataTables_themeroller.css" />
     <Content Include="Content\styles\jquery.jscrollpane.css" />
-    <Content Include="Content\styles\jquery.mobile-1.2.0.css" />
-    <Content Include="Content\styles\jquery.mobile-1.2.0.min.css" />
-    <Content Include="Content\styles\jquery.mobile.structure-1.2.0.css" />
-    <Content Include="Content\styles\jquery.mobile.structure-1.2.0.min.css" />
-    <Content Include="Content\styles\jquery.mobile.theme-1.2.0.css" />
-    <Content Include="Content\styles\jquery.mobile.theme-1.2.0.min.css" />
     <Content Include="Content\styles\jquery.multiSelect.css" />
     <Content Include="Content\styles\jquery.sb.css" />
     <Content Include="Content\styles\jquery.timepickr.css" />
@@ -1940,8 +1852,6 @@
     <Content Include="Scripts\Volunteer\Calendar2.js" />
     <Content Include="Areas\Manage\Views\Users\LastActivity.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
-    <None Include="Scripts\jQuery\jquery-1.9.1.intellisense.js" />
-    <Content Include="Scripts\jQuery\jquery-1.9.1.js" />
     <Content Include="Scripts\jQuery\jquery-migrate-1.1.1.js" />
     <Content Include="Scripts\Volunteer\Calendar2.min.js">
       <DependentUpon>Calendar2.js</DependentUpon>
@@ -2448,13 +2358,6 @@
     <Content Include="Areas\People\Views\Person\Index.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\Index.cshtml" />
     <Content Include="Areas\Search\Views\Web.config" />
-    <Content Include="Areas\Search\Views\Organization\DivisionIds.cshtml" />
-    <Content Include="Areas\Search\Views\Organization\Index.cshtml" />
-    <Content Include="Areas\Search\Views\Organization\RecentAbsentsEmail.cshtml" />
-    <Content Include="Areas\Search\Views\Organization\Results.cshtml" />
-    <Content Include="Areas\Search\Views\Organization\Row.cshtml" />
-    <Content Include="Areas\Search\Views\People\Index.cshtml" />
-    <Content Include="Areas\Search\Views\People\Results.cshtml" />
     <Content Include="Areas\Search\Views\Query\Import.cshtml" />
     <Content Include="Areas\Search\Views\Query\Index.cshtml" />
     <Content Include="Areas\Search\Views\Query\Results.cshtml" />
@@ -2483,13 +2386,7 @@
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />
     <Content Include="Areas\Main\Views\OrgSearch\OrganizationStructure.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />
-    <Content Include="Areas\Org\Views\Volunteers\Calendar.cshtml" />
-    <Content Include="Areas\Org\Views\Volunteers\EmailVolunteerRequest.cshtml" />
-    <Content Include="Areas\Org\Views\Volunteers\ManageArea.cshtml" />
-    <Content Include="Areas\Org\Views\Volunteers\Request.cshtml" />
     <Content Include="Areas\Org\Views\Web.config" />
-    <Content Include="Areas\Org\Views\Volunteers\Slot.cshtml" />
-    <Content Include="Areas\Manage\Views\Volunteers\Slot.cshtml" />
     <Content Include="Content\less\accordion.less" />
     <Content Include="Content\less\alerts.less" />
     <Content Include="Content\less\breadcrumbs.less" />
@@ -3316,11 +3213,11 @@
   </Target>
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
-  </Target>-->
+  </Target>
   <Target Name="AfterClean">
     <RemoveDir Directories="obj\bvcms2" />
     <RemoveDir Directories="obj\Debug" />
-  </Target>
+  </Target>-->
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">

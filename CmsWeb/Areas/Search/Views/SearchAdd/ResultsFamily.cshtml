@@ -27,14 +27,14 @@
             </thead>
             <tbody>
                 <tr class="section notshown">
-                    <td colspan="3"><a rel="reveal" href="#" class="reveal"><i class="icon-info-sign"></i></a><span>Toggle Details Display</span></td>
+                    <td colspan="3"><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a><span>Toggle Details Display</span></td>
                 </tr>
                 @foreach (var c in Model.ViewList())
                 {
                     rownum++;
                     var oddrow = rownum % 2 == 0 ? "oddrow" : "";
                     <tr class="master @oddrow">
-                        <td><a rel="reveal" href="#" class="reveal"><i class="icon-info-sign"></i></a><a href="/SearchAdd2/NewPerson/@c.FamilyId" class="ajax">@c.Name</a></td>
+                        <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a><a href="/SearchAdd2/NewPerson/@c.FamilyId" class="ajax">@c.Name</a></td>
                         <td class="addrcol" title="click for more info">@c.Address</td>
                         <td>@c.Age</td>
                     </tr>

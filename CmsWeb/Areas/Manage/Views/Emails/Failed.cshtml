@@ -3,7 +3,7 @@
 @using UtilityExtensions
 @{
     ViewBag.Title = "Details";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section scripts
 {
@@ -25,7 +25,7 @@
     </script>
 }
 <h2>Failed Emails</h2>
-    <table class="@Fingerprint.GridClass">
+    <table class="@ViewExtensions2.GridClass">
     @foreach(var e in Model)
     {
         <tr><td>@e.time.FormatDateTm()</td>

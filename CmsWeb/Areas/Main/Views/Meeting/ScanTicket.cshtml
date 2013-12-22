@@ -1,4 +1,5 @@
 ﻿@model MeetingController.ScanTicketInfo
+@using CmsWeb
 @using CmsWeb.Areas.Main.Controllers
 @using UtilityExtensions
 <div class="@Model.CssClass()">
@@ -73,7 +74,7 @@
             </tr>
             }
         </table>
-        <table class="@Fingerprint.GridClass">
+        <table class="@ViewExtensions2.GridClass">
             <tbody></tbody>
         </table>
     }

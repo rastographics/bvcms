@@ -1,11 +1,12 @@
-﻿@using CmsWeb.Models
+﻿@using CmsWeb
+@using CmsWeb.Models
 @using CmsData
 @using UtilityExtensions
 @model SearchUsersModel
 @{
     var list = Model.PeopleList();
 }
-<table class="results @Fingerprint.GridClass">
+<table class="results @ViewExtensions2.GridClass">
 <thead>
     <tr><td colspan="3">
         <b>showing top @Model.maxitems of @Model.count.ToString("N0")</b>

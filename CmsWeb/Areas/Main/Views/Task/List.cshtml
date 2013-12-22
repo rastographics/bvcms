@@ -1,7 +1,7 @@
 ﻿@model CmsWeb.Models.TaskModel
 @using CmsWeb
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Tasks";
 }
 @section scripts
@@ -60,7 +60,7 @@
                 </td>
             </tr>
         </table>
-        <table id="tasks" class="@Fingerprint.GridClass">
+        <table id="tasks" class="@ViewExtensions2.GridClass">
             <thead>
                 <tr>
                     <th> </th>

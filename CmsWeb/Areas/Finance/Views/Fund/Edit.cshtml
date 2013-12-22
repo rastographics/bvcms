@@ -1,9 +1,10 @@
-﻿@using CmsWeb.Models
+﻿@using CmsWeb
+@using CmsWeb.Models
 @using CmsData
 @using CmsData.Classes.QuickBooks
 @model CmsData.ContributionFund
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Fund";
     var qhb = new QuickBooksHelper(); 
 }

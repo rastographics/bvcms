@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.SearchModel
+﻿@using CmsWeb
+@model CmsWeb.Models.SearchModel
 <input type="hidden" name="m.type" value="@Model.type" />
 <input type="hidden" name="m.typeid" value="@Model.typeid" />
 <input type="hidden" name="m.from" value="@Model.from" />
@@ -16,7 +17,7 @@
         @Html.Partial("HiddenPerson", p)
     }
 }
-<table id="people" width="100%" class="@Fingerprint.GridClass" cellspacing="5">
+<table id="people" width="100%" class="@ViewExtensions2.GridClass" cellspacing="5">
 <thead>
 <tr>
 <td colspan="2"><h4>Individual Search Results (top 15)</h4></td>

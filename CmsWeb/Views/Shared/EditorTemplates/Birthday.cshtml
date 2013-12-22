@@ -11,7 +11,7 @@
     <div class="controls">
         <div class="input-append date noparse" data-date="@Model" data-datepicker-format="@Util.jQueryDateFormat" data-datepicker-forceParse="false">
             @Html.TextBoxFor2(m => m, true)
-            <span class="add-on"><i class="icon-calendar"></i></span>@Html.Raw(help)
+            <span class="add-on"><i class="fa fa-calendar"></i></span>@Html.Raw(help)
         </div>
         @Html.ValidationMessageLabelFor(m => m)
     </div>

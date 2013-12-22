@@ -1,7 +1,8 @@
 ﻿@using CmsData;
+@using CmsWeb
 @{
     ViewBag.Title = "Tracking";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     int emailID = ViewBag.emailID;
     
     var links = from e in DbUtil.Db.EmailLinks
@@ -11,7 +12,7 @@
 <a href="/Manage/Emails/Details/@emailID">Back to Details</a><br />
 <br />
 <h2>Tracked Links</h2>
-<table class="@Fingerprint.GridClass">
+<table class="@ViewExtensions2.GridClass">
 <thead>
 <tr><th style="text-align:center">Created</th><th style="text-align:center">Count</th><th>Link</th></tr>
 </thead>

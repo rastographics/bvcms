@@ -4,24 +4,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>@ViewBag.Title</title>
-	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <title>@ViewBag.Title</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     @Fingerprint.Css("/content/styles/bundle-css.css")
-	@RenderSection("head", required: false)
-	@if (bkcolor.HasValue())
-	{
+    <link href="/Content/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+    @RenderSection("head", required: false)
+    @if (bkcolor.HasValue())
+    {
         <style type="text/css">
 			#header { background-color: @bkcolor; }
-		</style>
-		<style type="text/css" media="print">
-			#supportfeedback {
-				display: none;
-			}
-		</style>
-	}
+        </style>
+        <style type="text/css" media="print">
+            #supportfeedback {
+                display: none;
+            }
+        </style>
+    }
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/Bundle/main.js")
-	@Html.Partial("DatePickerDefaults")
-	@RenderSection("scripts", required: false)
+    @Html.Partial("DatePickerDefaults")
+    @RenderSection("scripts", required: false)
 </head>
 <body>
     @Html.Partial("Notices")
@@ -33,6 +36,6 @@
     </div>
     @Html.Partial("Dialogs")
     @RenderSection("PopupsPlaceholder", required: false)
-    @Html.Partial("Support")
+    @*    @Html.Partial("Support")*@
 </body>
 </html>

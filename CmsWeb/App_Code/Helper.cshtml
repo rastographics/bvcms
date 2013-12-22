@@ -1,10 +1,11 @@
 ﻿@using CmsData
+@using CmsWeb
 @using UtilityExtensions
 @helper SearchBuilderDropdown(bool onqb)
 {
     <div class="dropdown2-menu">
         <ul>
-            @if (Fingerprint.TestSb2())
+            @if (ViewExtensions2.TestSb2())
             {
                 <li>@AnchorLink("Last Search", "/QueryBuilder2/Main")</li>
                 <li>@AnchorLink("New Search", "/QueryBuilder2/NewQuery")</li>

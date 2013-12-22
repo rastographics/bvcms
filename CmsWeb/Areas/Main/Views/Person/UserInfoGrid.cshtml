@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @using CmsData
 @model CmsData.Person
 @if (User.IsInRole("Admin"))
@@ -7,7 +8,7 @@
 } 
 @if (Model.Users.Count > 0)
 { 
-<table class="@Fingerprint.GridClass">
+<table class="@ViewExtensions2.GridClass">
 <thead>
     <tr>
         @if (User.IsInRole("Admin"))

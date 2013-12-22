@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [GET("Query/{id:guid?}")]
         public ActionResult Index(Guid? id)
         {
-            if (!Fingerprint.UseNewLook())
+            if (!ViewExtensions2.UseNewLook())
                 return Redirect("/QueryBuilder/Main");
             ViewBag.Title = "QueryBuilder";
             var m = new QueryModel(id);

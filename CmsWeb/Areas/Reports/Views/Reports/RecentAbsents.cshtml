@@ -1,12 +1,13 @@
 ﻿@model IEnumerable<dynamic>
+@using CmsWeb
 @using UtilityExtensions
 @{
     ViewBag.Title = "RecentAbsents";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     var prevorgid = 0;
 }
 <h2>Recent Absents</h2>
-<table class="@Fingerprint.GridClass table-striped">
+<table class="@ViewExtensions2.GridClass table-striped">
     @foreach (var item in Model)
     {
         var ld = item.lastmeeting as DateTime?;
