@@ -688,8 +688,7 @@ namespace CmsWeb
         }
         public static bool TestSb2()
         {
-            var db = DbUtil.Db;
-            return db.Setting("TestSb2", "true").ToBool() || db.UserPreference("TestSb2", "false").ToBool();
+            return DbUtil.Db.Setting("TestSb2", "true").ToBool();
         }
 
         public static string GridClass

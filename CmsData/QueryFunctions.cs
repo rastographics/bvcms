@@ -134,16 +134,12 @@ namespace CmsData
         }
         public int QueryCount(string s)
         {
-            var qb = TestSb2() 
+            var qb = Db.Setting("TestSb2", "true").ToBool()
                 ? Db.PeopleQuery2(s) 
                 : Db.PeopleQuery(s);
             if (qb == null)
                 return 0;
             return qb.Count();
-        }
-        public bool TestSb2()
-        {
-            return Db.Setting("TestSb2", "true").ToBool() || Db.UserPreference("TestSb2", "false").ToBool();
         }
 
         public int StatusCount(string s)
