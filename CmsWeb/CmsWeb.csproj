@@ -2147,6 +2147,9 @@
     <Content Include="Scripts\Search\SavedQuery.min.js.map">
       <DependentUpon>SavedQuery.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Search\Query.min.js.map">
+      <DependentUpon>Query.js</DependentUpon>
+    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -809,7 +809,7 @@ $(function () {
             cb = selectedid;
             selectedid = undefined;
         }
-        if (selectedid !== undefined) 
+        if (selectedid !== undefined)
             $("#SelectedId").val(selectedid);
         var q = $('#query-form').serialize();
         $.post("/Query/" + action, q, cb);
@@ -842,7 +842,7 @@ $(function () {
     });
     $("#CopyQuery").click(function (ev) {
         ev.preventDefault();
-        $.postQuery("CopyQuery", function(ret) {
+        $.postQuery("CopyQuery", function (ret) {
             $("#Description").text(ret);
         });
     });
@@ -883,22 +883,23 @@ $(function () {
         var oh = $("#editcondition").attr("originalheight");
         $("#editcondition").slideUp(150);
         var pliedit = $("li[data-qid='" + $("#SelectedId").val() + "']");
-        pliedit.animate({ height: oh }, 400, function() {
+        pliedit.animate({ height: oh }, 400, function () {
             $("#editcondition .popover-content").empty();
         });
     };
-    $(document).on("click", '#CancelChange', function () {
+    $('#CancelChange').live("click", function () {
         $.HideEditCondition();
         return false;
     });
-    $("#conditions").on("mouseenter", "header", function () {
+    $("#conditions header").live("mouseenter", function () {
         var li = $(this).closest("li");
         li.addClass("borderleftred");
-    }).on("mouseleave", "header", function () {
+    });
+    $("#conditions header").live("mouseleave", function () {
         var li = $(this).closest("li");
         li.removeClass("borderleftred");
     });
-    $(document).on("click", '#SaveCondition', function () {
+    $('#SaveCondition').live("click", function () {
         $.postQuery('SaveCondition', function (ret) {
             if (ret.startsWith("<fieldset"))
                 $("#editcondition .popover-content").html(ret).ready(function () {
@@ -913,14 +914,14 @@ $(function () {
         });
         return false;
     });
-    $(document).on("keydown", '#editForm input', function (event) {
+    $('#editForm input').live("keydown", function (event) {
         if (event.keyCode == 13) {
             event.preventDefault();
             $('#SaveCondition').click();
             return false;
         }
     });
-    $('#conditions').on("change", "select.changegroup", function () {
+    $('#conditions select.changegroup').live("change", function () {
         var v = $(this).val();
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
@@ -929,7 +930,7 @@ $(function () {
         });
         return false;
     });
-    $('#conditions').on("click", 'a.addnewclause', function () {
+    $('#conditions a.addnewclause').live("click", function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
         $.postQuery('AddNewCondition', qid, function (ret) {
@@ -940,7 +941,7 @@ $(function () {
         });
         return false;
     });
-    $('#conditions').on("click", 'a.addnewgroup', function () {
+    $('#conditions a.addnewgroup').live("click", function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
         $.postQuery('AddNewGroup', qid, function (ret) {
@@ -954,19 +955,19 @@ $(function () {
     if ($.ClipboardHasCondition) {
         $("li.pastecondition").show();
     }
-    $('#conditions').on("click", 'a.cutcondition', function () {
+    $('#conditions a.cutcondition').live("click", function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
         $(this).parent().parent().prev().dropdown("toggle");
         $.postQuery('Cut', qid, function (ret) {
-            $("#conditions").html(ret).ready(function() {
+            $("#conditions").html(ret).ready(function () {
                 $("li.pastecondition").show();
                 RefreshList();
             });
         });
         return false;
     });
-    $('#conditions').on("click", 'a.copycondition', function () {
+    $('#conditions a.copycondition').live("click", function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
         $.postQuery('Copy', qid);
@@ -974,7 +975,7 @@ $(function () {
         $("li.pastecondition").show();
         return false;
     });
-    $('#conditions').on("click", 'a.pastecondition', function () {
+    $('#conditions a.pastecondition').live("click", function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
         $.postQuery('Paste', qid, function (ret) {
@@ -983,7 +984,7 @@ $(function () {
         });
         return false;
     });
-    $('#conditions').on("click", 'a.insgroupabove', function () {
+    $('#conditions a.insgroupabove').live("click", function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
         $.postQuery('InsGroupAbove', qid, function (ret) {
@@ -992,7 +993,7 @@ $(function () {
         });
         return false;
     });
-    $('#conditions').on("click", 'a.maketopgroup', function () {
+    $('#conditions a.maketopgroup').live("click", function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
         $.postQuery('MakeTopGroup', qid, function (ret) {
@@ -1001,7 +1002,7 @@ $(function () {
         });
         return false;
     });
-    $('#conditions').on("click", 'a.delete', function () {
+    $('#conditions a.delete').live("click", function () {
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
         bootbox.confirm("Are you sure you want to delete?", function (result) {
@@ -1014,18 +1015,11 @@ $(function () {
         });
         return false;
     });
-    $(document).on("change", '#Comparison', function (ev) {
+    $('#Comparison').live("change", function (ev) {
         var sel = "#CodeValues";
         if ($(sel).length > 0) {
             $.postQuery('CodeSelect', function (ret) {
-                $(sel).multiselect("destroy").ready(function () {
-                    $(sel).replaceWith(ret).ready(function () {
-                        $(sel).multiselect({
-                            enableFiltering: true,
-                            enableCaseInsensitiveFiltering: true
-                        });
-                    });
-                });
+                $.replaceSelect("#CodeValues", ret);
             });
         }
     });
@@ -1033,30 +1027,28 @@ $(function () {
         $('#TagsPopup').show();
     });
 
-    $(document).on("change", '#Program', function (ev) {
+    $.replaceSelect = function (sel, ret) {
+        $(sel).multiselect("destroy").ready(function () {
+            $(sel).replaceWith(ret).ready(function () {
+                $(sel).multiselect({
+                    enableFiltering: true,
+                    enableCaseInsensitiveFiltering: true
+                });
+            });
+        });
+    };
+    $('#Program').live("change", function (ev) {
         $.postQuery('Divisions/' + $(this).val(), function (ret) {
-            $("#Division").replaceWith(ret)
-                .multiselect({
-                    enableFiltering: true,
-                    enableCaseInsensitiveFiltering: true
-                });
-            $("#Organization").replaceWith("<select id='Organization' name='Organization' style='display:none'><option value='0'>(not specified)</option></select>")
-                .multiselect({
-                    enableFiltering: true,
-                    enableCaseInsensitiveFiltering: true
-                });
+            $.replaceSelect('#Division', ret);
+            $.replaceSelect('#Organization', "<select id='Organization' name='Organization' style='display:none'><option value='0'>(not specified)</option></select>");
         });
     });
-    $(document).on("change", '#Division', function () {
+    $('#Division').live("change", function () {
         $.postQuery('Organizations/' + $(this).val(), function (ret) {
-            $("#Organization").replaceWith(ret)
-                .multiselect({
-                    enableFiltering: true,
-                    enableCaseInsensitiveFiltering: true
-                });
+            $.replaceSelect("#Organization", ret);
         });
     });
-    $(document).on("click", '#Run', function (ev) {
+    $('#Run').live("click", function (ev) {
         RefreshList();
         return false;
     });
@@ -1064,13 +1056,13 @@ $(function () {
         window.location = "/Query/Export/" + $("#QueryId").val();
     });
 
-    $(document).on("click", "#SelectCondition", function (ev) {
+    $("#SelectCondition").live("click", function (ev) {
         ev.preventDefault();
         $backdrop.css({ "z-index": 1042 });
         $('#QueryConditionSelect').modal("show");
         return false;
     });
-    $(document).on("hidden", "#QueryConditionSelect", function (ev) {
+    $("#QueryConditionSelect").live("hidden", function (ev) {
         $backdrop.css({ "z-index": 1040 });
     });
 

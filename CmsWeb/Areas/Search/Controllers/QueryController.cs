@@ -11,6 +11,7 @@ using System.Net;
 using System.Data.Linq;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Mvc.Html;
 using System.Xml;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
@@ -155,15 +156,15 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             return View("Conditions", m);
         }
-        [POST("Query/Divisions")]
+        [POST("Query/Divisions/{id:int}")]
         public ActionResult Divisions(int id)
         {
-            return View(id);
+            return View(QueryModel.Divisions(id));
         }
-        [POST("Query/Organizations")]
+        [POST("Query/Organizations/{id:int}")]
         public ActionResult Organizations(int id)
         {
-            return View(id);
+            return View(QueryModel.Organizations(id));
         }
         [POST("Query/SavedQueries")]
         public JsonResult SavedQueries(QueryModel m)
