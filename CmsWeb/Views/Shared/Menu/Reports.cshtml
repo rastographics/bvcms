@@ -1,14 +1,10 @@
-﻿@{
-    var bellevue = DbUtil.Db.Setting("Bellevue", "false") == "true";
-}
-<li class="dropdown">
+﻿<li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports</a>
     <ul class="dropdown-menu">
         @Helper.LiAnchorLink("Vital Stats", "/Reports/VitalStats")
         @Helper.LiAnchorLink("Week at a Glance", "/Reports/ChurchAttendance")
         @Helper.LiAnchorLink("Average Week at a Glance", "/Reports/ChurchAttendance2")
-        @Helper.LiAnchorLink("Church Attendance Summary", "/Report/ChurchAttendanceSummaryRpt.aspx", bellevue, "_blank")
-        @Helper.LiAnchorLink("Weekly Decisions", "/Report/ChurchAttendanceRpt.aspx", true, "_blank")
+        @Helper.LiAnchorLink("Weekly Decisions", "/Reports/WeeklyDecisions", true, "_blank")
         @Helper.LiAnchorLink("Decision Summary", "/Reports/Decisions", true, "_blank")
         <li class="space"></li>
         @Helper.LiAnchorLink("First Time Attenders", "/Home/NthTimeAttenders/1")
