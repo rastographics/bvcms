@@ -2,8 +2,16 @@
 @using CmsWeb
 @model CmsWeb.Models.PostBundleModel.ContributionInfo
 <tr cid="@Model.ContributionId">
-	<td><a href="/SearchAdd/Index/@Model.ContributionId?type=contributor" class="pid">
-		@(Model.PeopleId == null? "select" : Model.PeopleId.ToString())</a>
+    <td>
+        @if (ViewExtensions2.UseNewLook()) {
+        <a href="/SearchAdd2/Dialog/contributor/@Model.ContributionId" class="searchadd pid">
+            @(Model.PeopleId == null ? "select" : Model.PeopleId.ToString())
+        </a>
+        } else {
+        <a href="/SearchAdd/Index/@Model.ContributionId?type=contributor" class="pid">
+            @(Model.PeopleId == null ? "select" : Model.PeopleId.ToString())
+        </a>
+        }
     </td>
     <td class="name" title="@Model.tip">@Model.Name</td>
     <td class="amt" val="@Model.Amt" class="right">

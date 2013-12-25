@@ -1,4 +1,25 @@
 ﻿$(function () {
+    $("#search-add a.commit").live("click", function (ev) {
+        ev.preventDefault();
+        var f = $(this).closest("form");
+        var q = f.serialize();
+        var loc = $(this).attr("href");
+        $.post(loc, q, function (ret) {
+            f.modal("hide");
+            if (ret.message) {
+                alert(ret.message);
+            } else
+                switch (ret.from) {
+                    case 'contributor':
+                        AddSelected(ret);
+                        break;
+                    case 'Menu':
+                        window.location = '/Person2/' + ret.pid;
+                        break;
+                }
+        });
+        return false;
+    });
     $('#pid').blur(function () {
         var tr, pid;
         if ($(this).val() == '')
@@ -144,7 +165,7 @@
         event.preventDefault();
         $.PostRow({ scroll: true });
     });
-    $('body').on("click", 'a.edit', function (ev) {
+    $('a.edit').live("click", function (ev) {
         ev.preventDefault();
         var tr = $(this).closest("tr");
         $('#editid').val(tr.attr("cid"));
@@ -179,7 +200,7 @@
             v = "";
         $("#entry .PLNT").text(v);
     });
-    $('body').on("click", 'a.split', function (ev) {
+    $('a.split').live("click", function (ev) {
         ev.preventDefault();
         var newamt = prompt("Amount to split out", "");
         newamt = parseFloat(newamt);
@@ -200,7 +221,7 @@
         };
         $.PostRow({ scroll: true, q: q });
     });
-    $('body').on("click", 'a.delete', function (ev) {
+    $('a.delete').live("click", function (ev) {
         ev.preventDefault();
         if (confirm("are you sure?")) {
             var tr = $(this).closest("tr");
@@ -215,11 +236,13 @@
             });
         }
     });
-    $('body').on("click", 'a.pid', function (event) {
-        event.preventDefault();
-        var d = $('#searchDialog');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("open");
+    $('a.pid').live("click", function (event) {
+        if (!$(this).hasClass('searchadd')) {
+            event.preventDefault();
+            var d = $('#searchDialog');
+            $('iframe', d).attr("src", this.href);
+            d.dialog("open");
+        }
     });
     $('#bundle').bind('mousedown', function (e) {
         if ($(e.target).hasClass("clickEdit")) {

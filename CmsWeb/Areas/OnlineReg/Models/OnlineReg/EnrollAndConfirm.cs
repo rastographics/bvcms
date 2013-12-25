@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using CmsData;
 using System.Text;
+using CmsData.Codes;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
@@ -134,7 +135,7 @@ namespace CmsWeb.Models
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
 				if (grouptojoin > 0)
 				{
-					OrganizationMember.InsertOrgMembers(Db, grouptojoin, p.PeopleId.Value, 220, DateTime.Now, null, false);
+					OrganizationMember.InsertOrgMembers(Db, grouptojoin, p.PeopleId.Value, MemberTypeCode.Member, DateTime.Now, null, false);
 					DbUtil.Db.UpdateMainFellowship(grouptojoin);
 				}
 
@@ -289,7 +290,7 @@ AmountDue: {4:C}<br/>
 
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
                 if (grouptojoin > 0)
-                    OrganizationMember.InsertOrgMembers(Db, grouptojoin, p.PeopleId.Value, 220, DateTime.Now, null, false);
+                    OrganizationMember.InsertOrgMembers(Db, grouptojoin, p.PeopleId.Value, MemberTypeCode.Member, DateTime.Now, null, false);
 
                 OnlineRegPersonModel.CheckNotifyDiffEmails(p.person,
                     Db.StaffEmailForOrg(p.org.OrganizationId),

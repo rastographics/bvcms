@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.OrganizationPage.MemberModel
+﻿@using CmsWeb
+@model CmsWeb.Models.OrganizationPage.MemberModel
 @Html.Partial("ExportToolBar") 
 &nbsp;<div style="clear: both"></div>
 <p style="margin-bottom:5px">
@@ -6,9 +7,13 @@ Count: <strong>@Model.Count()</strong>
 <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
 @if(User.IsInRole("Edit"))
 { 
-<a href="/SearchAdd/Index/@Model.OrganizationId?type=prospect" class="memberdialog bt">add prospects</a>
-<a href="/AddToOrgFromTag/Index/@Model.OrganizationId?prospect=true" title="Add Prospects From Tag" class="addfromtag bt">add from tag</a>
-<a href="/OrgMembersDialog/Index/@Model.OrganizationId?prospects=true" title="Update Prospects" class="memberdialog bt">update</a>
+    if (ViewExtensions2.UseNewLook()) {
+    <a href="/SearchAdd2/Dialog/prospect/@Model.OrganizationId" class="searchadd bt">Add Prospects</a>
+    } else {
+    <a href="/SearchAdd/Index/@Model.OrganizationId?type=prospect" class="memberdialog bt">add prospects</a>
+    }
+    <a href="/AddToOrgFromTag/Index/@Model.OrganizationId?prospect=true" title="Add Prospects From Tag" class="addfromtag bt">add from tag</a>
+    <a href="/OrgMembersDialog/Index/@Model.OrganizationId?prospects=true" title="Update Prospects" class="memberdialog bt">update</a>
 } 
 </p>
 @Html.Partial("MemberGrid", Model) 

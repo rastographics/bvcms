@@ -148,7 +148,7 @@ namespace CmsWeb.Models
             foreach (var id in joins)
             {
                 OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                    id, pid, 220, DateTime.Now, null, false);
+                    id, pid, MemberTypeCode.Member, DateTime.Now, null, false);
                 DbUtil.Db.SubmitChanges();
                 //DbUtil.Db.UpdateMainFellowship(id);
             }

@@ -395,7 +395,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 {
                     AddPerson(p, m.List, origin, m.EntryPointId);
                     OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                        id, p.PeopleId.Value, 220, Util.Now, null, pending);
+                        id, p.PeopleId.Value, MemberTypeCode.Member, Util.Now, null, pending);
                 }
                 DbUtil.Db.SubmitChanges();
 				DbUtil.Db.UpdateMainFellowship(id);

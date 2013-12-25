@@ -217,7 +217,7 @@ namespace CmsWeb.Models
 			foreach (var newcommit in commits)
 				Attend.MarkRegistered(DbUtil.Db, OrgId, PeopleId, newcommit, AttendCommitmentCode.Attending);
 			OrganizationMember.InsertOrgMembers(DbUtil.Db,
-					OrgId, PeopleId, 220, DateTime.Now, null, false);
+					OrgId, PeopleId, MemberTypeCode.Member, DateTime.Now, null, false);
 		}
 		public string Summary(CmsController controller)
 		{

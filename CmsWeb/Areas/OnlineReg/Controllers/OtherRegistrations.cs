@@ -58,7 +58,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var omb = q.om;
             omb = OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                 oid, pid, 220, DateTime.Now, null, false);
+                 oid, pid, MemberTypeCode.Member, DateTime.Now, null, false);
             //DbUtil.Db.UpdateMainFellowship(oid);
 
             if (q.org.AddToSmallGroupScript.HasValue())
@@ -194,7 +194,7 @@ emailid={2}
             if (q.org.Limit <= q.meeting.Attends.Count(aa => aa.Commitment == 1))
                 return Content("sorry, maximum limit has been reached");
             var omb = OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                                              q.meeting.OrganizationId, pid, 220, DateTime.Now, null, false);
+                                              q.meeting.OrganizationId, pid, MemberTypeCode.Member, DateTime.Now, null, false);
             if (smallgroup.HasValue())
                 omb.AddToGroup(DbUtil.Db, smallgroup);
             omb.AddToGroup(DbUtil.Db, "emailid:" + emailid);

@@ -8,6 +8,29 @@
     }
 };
 $(function () {
+    $("#search-add a.commit").live("click", function (ev) {
+        ev.preventDefault();
+        var f = $(this).closest("form");
+        var q = f.serialize();
+        var loc = $(this).attr("href");
+        $.post(loc, q, function (ret) {
+            f.modal("hide");
+            if (ret.message) {
+                alert(ret.message);
+            } else
+                switch (ret.from) {
+                    case 'org':
+                    case 'prospect':
+                    case 'pending':
+                        RebindMemberGrids();
+                        break;
+                    case 'Menu':
+                        window.location = '/Person2/' + ret.pid;
+                        break;
+                }
+        });
+        return false;
+    });
     $("#Settings-tab").tabs();
     $("#main-tab").tabs();
     $("#main-tab").show();

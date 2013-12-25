@@ -283,7 +283,6 @@
     <Compile Include="Areas\Main\Models\Report\CheckinControlModel.cs" />
     <Compile Include="Areas\Main\Models\Report\CheckinControlResult.cs" />
     <Compile Include="Areas\Main\Models\Report\WeeklyDecisionsModel.cs" />
-    <Compile Include="Areas\Main\Models\Report\DecisionsModel.cs" />
     <Compile Include="Areas\Main\Models\Report\EnrollmentControlModel.cs" />
     <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
     <Compile Include="Areas\Main\Models\Export\ExcelResult.cs" />
@@ -1625,6 +1624,9 @@
       <DependentUpon>SearchDivisions.js</DependentUpon>
     </Content>
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.map" />
+    <Content Include="Scripts\Finance\PostBundle.min.js.map">
+      <DependentUpon>PostBundle.js</DependentUpon>
+    </Content>
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\js\Pager3.js" />
     <Content Include="Scripts\Mobile\jquery-1.6.4.js" />
