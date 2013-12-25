@@ -1,7 +1,10 @@
-﻿@model CmsData.UploadPeopleRun
+﻿@using CmsWeb
+@model CmsData.UploadPeopleRun
 <html>
 <head>
     <title>Upload People</title>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/Bundle/main.js")
 </head>
 <body>

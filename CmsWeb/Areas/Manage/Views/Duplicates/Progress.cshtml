@@ -1,7 +1,10 @@
-﻿@model CmsData.DuplicatesRun
+﻿@using CmsWeb
+@model CmsData.DuplicatesRun
 <html>
 <head>
     <title>Duplicates Finder</title>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/Bundle/main.js")
     @if (Model.Running == 1)
     {

@@ -1,4 +1,7 @@
-﻿<html>
+﻿@using CmsWeb
+<html>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/Bundle/main.js")
     <script type="text/javascript">
         $(function () {

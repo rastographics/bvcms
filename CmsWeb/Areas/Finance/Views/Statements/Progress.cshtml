@@ -1,7 +1,10 @@
-﻿@model CmsData.ContributionsRun
+﻿@using CmsWeb
+@model CmsData.ContributionsRun
 <html>
 <head>
     <title>Contribution Statements</title>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/Bundle/main.js")
 </head>
 <body>

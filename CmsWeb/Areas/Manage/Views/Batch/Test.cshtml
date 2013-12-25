@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using CmsWeb
+<!DOCTYPE html>
 <html>
 <head>
     <title>Test</title>
@@ -21,6 +22,8 @@
             height:5px;
         }
     </style>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/Bundle/main.js")
     <script type="text/javascript">
         $(document).ready(function (ev) {

@@ -1,5 +1,6 @@
 ﻿@model System.Data.SqlClient.SqlDataReader
 @using CmsData
+@using CmsWeb
 @using UtilityExtensions
 @{
     ViewBag.Title = "ExtraValuesGrid";
@@ -66,6 +67,8 @@
             padding: 20px;
         }
     </style>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/Bundle/main2.js")
     @Html.Partial("DatePickerDefaults2")
     <script src="/Scripts/jQuery/jquery.dataTables.js"></script>
