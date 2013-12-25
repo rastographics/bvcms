@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content(t ? "Remove" : "Add");
         }
         [HttpPost]
-        public ContentResult TagAll(int id, string tagname, bool? cleartagfirst)
+        public ContentResult TagAll(Guid id, string tagname, bool? cleartagfirst)
         {
             if (!tagname.HasValue())
                 return Content("error: no tag name");
@@ -104,12 +104,39 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content("Manage");
         }
         [HttpPost]
-        public ContentResult UnTagAll(int id)
+        public ContentResult UnTagAll(Guid id)
         {
             var q = DbUtil.Db.PeopleQuery(id);
             DbUtil.Db.UnTagAll(q);
             return Content("Add");
         }
+//        [HttpPost]
+//        public ContentResult TagAll(int id, string tagname, bool? cleartagfirst)
+//        {
+//            if (!tagname.HasValue())
+//                return Content("error: no tag name");
+//            DbUtil.Db.SetNoLock();
+//            var q = DbUtil.Db.PeopleQuery(id);
+//            if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
+//            {
+//                DbUtil.Db.TagAll(q);
+//                return Content("Remove");
+//            }
+//            var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+//            if (cleartagfirst ?? false)
+//                DbUtil.Db.ClearTag(tag);
+//            DbUtil.Db.TagAll(q, tag);
+//            Util2.CurrentTag = tagname;
+//            DbUtil.Db.TagCurrent();
+//            return Content("Manage");
+//        }
+//        [HttpPost]
+//        public ContentResult UnTagAll(int id)
+//        {
+//            var q = DbUtil.Db.PeopleQuery(id);
+//            DbUtil.Db.UnTagAll(q);
+//            return Content("Add");
+//        }
         [HttpPost]
         public ContentResult ClearTag()
         {

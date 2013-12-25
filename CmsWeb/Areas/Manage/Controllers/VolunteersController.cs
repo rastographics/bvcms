@@ -82,9 +82,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 
 		public ActionResult EmailReminders(int id)
 		{
-			var qb = DbUtil.Db.QueryBuilderScratchPad();
-			qb.CleanSlate(DbUtil.Db);
-			var clause = qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, id.ToString());
+			var qb = DbUtil.Db.ScratchPadCondition();
+			qb.Reset(DbUtil.Db);
+			qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, id.ToString());
 			DbUtil.Db.SubmitChanges();
 
 			var meeting = DbUtil.Db.Meetings.Single(m => m.MeetingId == id);
@@ -99,8 +99,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 								meeting.Organization.LeaderName);
 
 			TempData["body"] = body;
-			return Redirect("/Email/Index/{0}?subj={1}&ishtml=true"
-				.Fmt(qb.QueryId, Server.UrlEncode(subject)));
+			return Redirect("/Email/Index2/{0}?subj={1}&ishtml=true"
+				.Fmt(qb.Id, Server.UrlEncode(subject)));
 		}
 		[HttpGet]
 		public new ActionResult Request(int mid, int limit)
@@ -130,11 +130,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult EmailSlot(int id)
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == id);
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
+            var qb = DbUtil.Db.ScratchPadCondition();
+            qb.Reset(DbUtil.Db);
             qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Email/Index/{0}?TemplateId=0&body={1} {2}&subj={1} {2}".Fmt(qb.QueryId, m.Organization.OrganizationName, m.MeetingDate.FormatDateTm()));
+            return Redirect("/Email/Index2/{0}?TemplateId=0&body={1} {2}&subj={1} {2}".Fmt(qb.Id, m.Organization.OrganizationName, m.MeetingDate.FormatDateTm()));
         }
 
 	}

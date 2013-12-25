@@ -117,36 +117,8 @@ namespace CmsWeb.Areas.Main.Models.Report
             }
         }
 
+
         public string ConvertToSearch(string type)
-        {
-            if (ViewExtensions2.UseNewLook())
-                return ConvertToQuery(type);
-            return ConvertToSearchBuilder(type);
-        }
-
-        public string ConvertToSearchBuilder(string type)
-        {
-            if(ViewExtensions2.TestSb2())
-                return ConvertToQuery(type).Replace("/Query/", "/QueryBuilder2/Main/");
-
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
-
-            QueryBuilderClause nc = null;
-            if (type == "Guests")
-                nc = qb.AddNewClause(QueryType.GuestAsOf, CompareType.Equal, "1,T");
-            else
-                nc = qb.AddNewClause(QueryType.AttendedAsOf, CompareType.Equal, "1,T");
-            if (ProgramId.HasValue && ProgramId > 0)
-                nc.Program = ProgramId.Value;
-            if (DivisionId.HasValue && DivisionId > 0)
-                nc.Division = DivisionId.Value;
-            nc.StartDate = Dt1;
-            nc.EndDate = Dt2;
-            DbUtil.Db.SubmitChanges();
-            return "/QueryBuilder/Main/" + qb.QueryId;
-        }
-        public string ConvertToQuery(string type)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
             cc.Reset(DbUtil.Db);
@@ -158,7 +130,9 @@ namespace CmsWeb.Areas.Main.Models.Report
             c.StartDate = Dt1;
             c.EndDate = Dt2;
             cc.Save(DbUtil.Db);
-            return "/Query/" + cc.Id;
+            if(ViewExtensions2.UseNewLook())
+                return "/Query/" + cc.Id;
+            return "/QueryBuilder2/Main/" + cc.Id;
         }
     }
     public class MeetingInfo

@@ -148,8 +148,8 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 				attend.SubRequests.Add(vr);
 			}
 
-			var qb = Db.QueryBuilderScratchPad();
-			qb.CleanSlate(Db);
+			var qb = Db.ScratchPadCondition();
+			qb.Reset(Db);
 			qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, "{0},temp".Fmt(tag.Id));
 			attend.Commitment = CmsData.Codes.AttendCommitmentCode.FindSub;
 			Db.SubmitChanges();
@@ -167,7 +167,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 </blockquote>".Fmt(person.Name, attend.MeetingDate, reportlink));
 
 			// Email subs
-			var m = new MassEmailer(qb.QueryId, null);
+			var m = new MassEmailer(qb.Id, null);
 			m.Subject = subject;
 			m.Body = message;
 

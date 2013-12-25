@@ -154,8 +154,8 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 				meeting.VolRequests.Add(vr);
 			}
 
-			var qb = Db.QueryBuilderScratchPad();
-			qb.CleanSlate(Db);
+			var qb = Db.ScratchPadCondition();
+			qb.Reset(Db);
 			qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, "{0},temp".Fmt(tag.Id));
 			meeting.AddEditExtra(Db, "TotalVolunteersNeeded", ((additional ?? 0) + limit).ToString());
 			Db.SubmitChanges();
@@ -173,7 +173,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 </blockquote>".Fmt(person.Name, meeting.MeetingDate, reportlink));
 
 			// Email subs
-			var m = new MassEmailer(qb.QueryId, null);
+			var m = new MassEmailer(qb.Id, null);
 			m.Subject = subject;
 			m.Body = message;
 

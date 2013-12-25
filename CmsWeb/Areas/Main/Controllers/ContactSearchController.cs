@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using CmsData;
+using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 
@@ -95,11 +96,12 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
         [HttpPost]
 		public ActionResult ConvertToQuery(ContactSearchModel m)
-		{
-			var qb = DbUtil.Db.QueryBuilderScratchPad();
-			qb.CleanSlate(DbUtil.Db);
+        {
+            var cc = DbUtil.Db.ScratchPadCondition();
+			cc.CleanSlate2(DbUtil.Db);
+            cc.Reset(DbUtil.Db);
 			var comp = CompareType.Equal;
-			var clause = qb.AddNewClause(QueryType.MadeContactTypeAsOf, comp, "1,T");
+			var clause = cc.AddNewClause(QueryType.MadeContactTypeAsOf, comp, "1,T");
 			clause.Program = m.Ministry ?? 0;
 			clause.StartDate = m.StartDate ?? DateTime.Parse("1/1/2000");
 			clause.EndDate = m.EndDate ?? DateTime.Today;
@@ -109,8 +111,10 @@ namespace CmsWeb.Areas.Main.Controllers
 					select v.IdCode;
 			var idvalue = q.Single();
 			clause.CodeIdValue = idvalue;
-			DbUtil.Db.SubmitChanges();
-			return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
+            cc.Save(DbUtil.Db);
+            if (ViewExtensions2.UseNewLook())
+                return Redirect("/Query/" + cc.Id);
+			return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
 		}
 		public ActionResult ContactorSummary(string start, string end, int ministry)
 		{
@@ -196,18 +200,20 @@ namespace CmsWeb.Areas.Main.Controllers
 
 	    public ActionResult ContactTypeSearchBuilder(int id)
 	    {
-			var qb = DbUtil.Db.QueryBuilderScratchPad();
-			qb.CleanSlate(DbUtil.Db);
+			var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
 			var comp = CompareType.Equal;
-			var clause = qb.AddNewClause(QueryType.RecentContactType, comp, "1,T");
+			var clause = cc.AddNewClause(QueryType.RecentContactType, comp, "1,T");
 	        clause.Days = 10000;
 			var cvc = new CodeValueModel();
 			var q = from v in cvc.ContactTypeCodes()
 					where v.Id == id
 					select v.IdCode;
 	        clause.CodeIdValue = q.Single();
-			DbUtil.Db.SubmitChanges();
-			return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
+            cc.Save(DbUtil.Db);
+            if (ViewExtensions2.UseNewLook())
+                return Redirect("/Query/" + cc.Id);
+			return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
 	    }
 //        [Authorize(Roles = "Developer")]
 //	    public ActionResult DeleteContactsForType(int id)

@@ -56,8 +56,8 @@ namespace CmsWeb.Controllers
         }
         public ActionResult NewQuery()
         {
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
+            var qb = DbUtil.Db.ScratchPadCondition();
+            qb.Reset(DbUtil.Db);
             return Redirect("/QueryBuilder/Main");
         }
         public ActionResult Test()

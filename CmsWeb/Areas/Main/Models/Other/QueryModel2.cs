@@ -98,7 +98,7 @@ namespace CmsWeb.Models
         public bool AddToGroupEnabled { get; set; }
         public bool AddEnabled { get; set; }
         public bool RemoveEnabled { get; set; }
-        public bool SelectMultiple { get { return Comparison.EndsWith("OneOf"); } }
+        public bool SelectMultiple { get { return Comparison != null && Comparison.EndsWith("OneOf"); } }
         public string ConditionText { get { return fieldMap.Title; } }
         private static List<CodeValueItem> BitCodes =
             new List<CodeValueItem> 

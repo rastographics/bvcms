@@ -264,83 +264,6 @@ namespace CmsWeb.Areas.Main.Models.Report
 
         public string ConvertToSearch(string command, string key)
         {
-            if (ViewExtensions2.UseNewLook())
-                return ConvertToQuery(command, key);
-            return ConvertToSearchBuilder(command, key);
-        }
-        private string ConvertToSearchBuilder(string command, string key)
-        {
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
-
-            bool NotAll = key != "All";
-
-            switch (command)
-            {
-                case "ForDecisionType":
-                    qb.AddNewClause(QueryType.DecisionDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.DecisionDate, CompareType.LessEqual, dt2);
-                    if (NotAll)
-                        qb.AddNewClause(QueryType.DecisionTypeId, CompareType.Equal, key);
-                    break;
-                case "ForBaptismAge":
-                    qb.AddNewClause(QueryType.BaptismDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.BaptismDate, CompareType.LessEqual, dt2);
-                    if (NotAll)
-                    {
-                        var a = key.Split('-');
-                        if (a[0].StartsWith("Over "))
-                        {
-                            a = key.Split(' ');
-                            a[0] = (a[1].ToInt() + 1).ToString();
-                            a[1] = "120";
-                        }
-                        qb.AddNewClause(QueryType.Age, CompareType.GreaterEqual, a[0].ToInt());
-                        qb.AddNewClause(QueryType.Age, CompareType.LessEqual, a[1].ToInt());
-                    }
-                    break;
-                case "ForBaptismType":
-                    qb.AddNewClause(QueryType.BaptismDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.BaptismDate, CompareType.LessEqual, dt2);
-                    if (NotAll)
-                        qb.AddNewClause(QueryType.BaptismTypeId, CompareType.Equal, key);
-                    break;
-                case "ForNewMemberType":
-                    qb.AddNewClause(QueryType.JoinDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.JoinDate, CompareType.LessEqual, dt2);
-                    if (NotAll)
-                        qb.AddNewClause(QueryType.JoinCodeId, CompareType.Equal, key);
-                    break;
-                case "ForDropType":
-                    qb.AddNewClause(QueryType.DropDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.DropDate, CompareType.LessEqual, dt2);
-                    if (NotAll)
-                        qb.AddNewClause(QueryType.DropCodeId, CompareType.Equal, key);
-                    qb.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
-                    break;
-                case "DroppedForChurch":
-                    qb.AddNewClause(QueryType.DropDate, CompareType.GreaterEqual, dt1);
-                    qb.AddNewClause(QueryType.DropDate, CompareType.LessEqual, dt2);
-                    switch (key)
-                    {
-                        case "Unknown":
-                            qb.AddNewClause(QueryType.OtherNewChurch, CompareType.IsNull, "");
-                            qb.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
-                            break;
-                        case "Total":
-                            break;
-                        default:
-                            qb.AddNewClause(QueryType.OtherNewChurch, CompareType.Equal, key);
-                            break;
-                    }
-                    qb.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
-                    break;
-            }
-            DbUtil.Db.SubmitChanges();
-            return "/QueryBuilder/Main/" + qb.QueryId;
-        }
-        private string ConvertToQuery(string command, string key)
-        {
             var cc = DbUtil.Db.ScratchPadCondition();
             cc.Reset(DbUtil.Db);
 
@@ -408,6 +331,8 @@ namespace CmsWeb.Areas.Main.Models.Report
                     break;
             }
             cc.Save(DbUtil.Db);
+            if (ViewExtensions2.UseNewLook())
+                return "/Query/" + cc.Id;
             return "/QueryBuilder/Main/" + cc.Id;
         }
     }
