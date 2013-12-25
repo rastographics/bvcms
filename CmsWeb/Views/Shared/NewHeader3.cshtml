@@ -47,10 +47,7 @@
                         @Helper.LiAnchorLink("Target Person Tab is " + (targetperson ? "ON" : "OFF"), "/Home/TargetPerson/" + targetperson)
                         @if (innewlook)
                         {
-                            @Helper.LiAnchorLink("Use New Pages", "/APITest/UseNewLook")
-                            @Helper.LiAnchorLink("Use Old Pages", "/APITest/UseOldLook")
-                            @Helper.LiAnchorLink("Test QueryBuilder2", "/APITest/TestSb2")
-                            @Helper.LiAnchorLink("Stop Testing QueryBuilder2", "/APITest/StopTestingSb2")
+                            @Helper.LiAnchorLink("Use Old Look", "/APITest/UseOldLook")
                             @Helper.LiAnchorLink("Turn finance off", "/APITest/TurnFinanceOff", !testnofinance)
                             @Helper.LiAnchorLink("Turn finance on", "/APITest/TurnFinanceOn", testnofinance)
                         }
@@ -59,7 +56,7 @@
                 </div>
                 <div class="nav-drop btn-group">
                     <a href="#" class="btn dropdown-toggle" style="display: inline-block" data-toggle="dropdown">
-                        <i class="fa fa-tag"></i><span class="currentTag username"> @Util2.CurrentTagName</span> <span class="caret"></span>
+                        <i class="fa fa-tag outsideCurrentTag"></i><span class="currentTag username"><i class="fa fa-tag"></i> @Util2.CurrentTagName</span> <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li><a class="current"><b>@Util2.CurrentTagName</b></a></li>

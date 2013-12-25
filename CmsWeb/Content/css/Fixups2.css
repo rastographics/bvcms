@@ -415,7 +415,9 @@ form.form.form-horizontal.ajax div.form-actions {
 }
 
 
-
+i.outsideCurrentTag {
+    display: none;
+}
 span.currentTag {
     display: inline-block;
     overflow: hidden;
@@ -441,6 +443,14 @@ span.currentTag {
     div.controls.code-dropdown {
         min-height: 31px;
     }
+  #navGlobal .outsideCurrentTag {
+    display: inline;
+  }
+}
+@media (max-width: 979px) {
+  #navGlobal .outsideCurrentTag {
+    display: inline;
+  }
 }
 
 #conditionsList .conditions > li .dropdown {
