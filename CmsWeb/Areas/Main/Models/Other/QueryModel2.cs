@@ -127,7 +127,9 @@ namespace CmsWeb.Models
             get
             {
                 var gid = SelectedId ?? Guid.Empty;
-                return TopClause.AllConditions[gid];
+                if(TopClause.AllConditions.ContainsKey(gid))
+                    return TopClause.AllConditions[gid];
+                return null;
             }
         }
         public void SetVisibility()
@@ -421,24 +423,32 @@ namespace CmsWeb.Models
             TopClause.Save(Db, increment: true);
             return "";
         }
-        private void NewCondition(Condition gc)
+        private Condition NewCondition(Condition gc)
         {
+            if (gc == null)
+                return null;
             var c = gc.AddNewClause();
             UpdateCondition(c);
+            return c;
         }
         public void AddConditionToGroup()
         {
-            NewCondition(Selected);
-            TopClause.Save(Db);
+            if(NewCondition(Selected) != null)
+                TopClause.Save(Db);
         }
         public void AddConditionAfterCurrent()
         {
-            NewCondition(Selected.Parent);
-            TopClause.Save(Db);
+            var c = Selected;
+            if (c == null)
+                return;
+            if(NewCondition(Selected.Parent) != null)
+                TopClause.Save(Db);
         }
         public void DeleteCondition()
         {
             var c = Selected;
+            if (c == null)
+                return;
             SelectedId = c.Parent.Id;
             c.DeleteClause();
             SetVisibility();
@@ -883,7 +893,7 @@ namespace CmsWeb.Models
                 Errors.Add("Age", "must be integer");
 
 
-            if (TagsVisible && string.Join(",", Tags).Length > 500)
+            if (TagsVisible && Tags != null && string.Join(",", Tags).Length > 500)
                 Errors.Add("tagvalues", "too many tags selected");
 
             if (CodesVisible && CodeValues.Length == 0)

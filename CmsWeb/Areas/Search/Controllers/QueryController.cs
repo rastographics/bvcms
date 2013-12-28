@@ -204,8 +204,11 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
-            var ncid = qb.CleanSlate2(DbUtil.Db);
-            TempData["newsearch"] = ncid;
+            qb.Reset(DbUtil.Db);
+            var nc = qb.AddNewClause();
+            qb.Description = Util.ScratchPad2;
+            qb.Save(DbUtil.Db);
+            TempData["newsearch"] = nc.Id;
             return Redirect("/Query");
         }
         [GET("Query/Help/{name}")]

@@ -80,7 +80,7 @@ namespace CmsData
                     list = Settings.ToDictionary(c => c.Id, c => c.SettingX,
                         StringComparer.OrdinalIgnoreCase);
 					HttpRuntime.Cache.Insert(Host + "Setting", list, null,
-						DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+						DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);
                 }
                 catch (Exception)
                 {

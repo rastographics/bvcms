@@ -98,7 +98,6 @@ namespace CmsWeb.Areas.Main.Controllers
 		public ActionResult ConvertToQuery(ContactSearchModel m)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
-			cc.CleanSlate2(DbUtil.Db);
             cc.Reset(DbUtil.Db);
 			var comp = CompareType.Equal;
 			var clause = cc.AddNewClause(QueryType.MadeContactTypeAsOf, comp, "1,T");

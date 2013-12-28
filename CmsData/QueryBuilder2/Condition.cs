@@ -365,18 +365,6 @@ namespace CmsData
                 c.DeleteClause();
             allClauses.Remove(Id);
         }
-        public Guid CleanSlate2(CMSDataContext Db)
-        {
-            foreach (var c in Conditions)
-                c.DeleteClause();
-            SetQueryType(QueryType.Group);
-            SetComparisonType(CompareType.AllTrue);
-            var nc = AddNewClause();
-            Description = Util.ScratchPad2;
-            PreviousName = null;
-            Save(Db);
-            return nc.Id;
-        }
         public void Reset(CMSDataContext Db)
         {
             foreach (var c in Conditions)

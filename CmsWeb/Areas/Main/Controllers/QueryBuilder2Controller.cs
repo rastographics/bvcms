@@ -25,8 +25,8 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
-            var ncid = qb.CleanSlate2(DbUtil.Db);
-            TempData["newsearch"] = ncid;
+            qb.Reset(DbUtil.Db);
+            qb.Save(DbUtil.Db);
             return RedirectToAction("Main");
         }
 
@@ -67,6 +67,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 QueryId = queryid,
                 SelectedId = selectedid,
                 ConditionName = conditionName,
+                CodeValue = "",
                 CodeValues = new string[0],
                 Program = 0,
                 Comparison = "Equal"
