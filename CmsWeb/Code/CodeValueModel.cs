@@ -5,6 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using System.Collections.Generic;
@@ -405,25 +406,25 @@ namespace CmsWeb.Code
 				new CodeValueItem { Value = "Gift Bag Given" },
 			};
         }
-        
+
 
         public IEnumerable<CodeValueItem> ExtraValueTypeCodes()
         {
-            yield return new CodeValueItem {Code = "Text", Value = "Text (single line)"};
-            yield return new CodeValueItem {Code = "Text2", Value = "Text (multi line)"};
-            yield return new CodeValueItem {Code = "Code", Value = "Dropdown"};
-            yield return new CodeValueItem {Code = "Bit", Value = "Checkbox"};
-            yield return new CodeValueItem {Code = "Bits", Value = "Checkboxes"};
-            yield return new CodeValueItem {Code = "Int", Value = "Integer"};
-            yield return new CodeValueItem {Code = "Date", Value = "Date"};
+            yield return new CodeValueItem { Code = "Text", Value = "Text (single line)" };
+            yield return new CodeValueItem { Code = "Text2", Value = "Text (multi line)" };
+            yield return new CodeValueItem { Code = "Code", Value = "Dropdown" };
+            yield return new CodeValueItem { Code = "Bit", Value = "Checkbox" };
+            yield return new CodeValueItem { Code = "Bits", Value = "Checkboxes" };
+            yield return new CodeValueItem { Code = "Int", Value = "Integer" };
+            yield return new CodeValueItem { Code = "Date", Value = "Date" };
         }
         public IEnumerable<CodeValueItem> AdhocExtraValueTypeCodes()
         {
-            yield return new CodeValueItem {Code = "Text", Value = "Text (multi line)"};
-            yield return new CodeValueItem {Code = "Code", Value = "Code"};
-            yield return new CodeValueItem {Code = "Bit", Value = "Checkbox"};
-            yield return new CodeValueItem {Code = "Int", Value = "Integer"};
-            yield return new CodeValueItem {Code = "Date", Value = "Date"};
+            yield return new CodeValueItem { Code = "Text", Value = "Text (multi line)" };
+            yield return new CodeValueItem { Code = "Code", Value = "Code" };
+            yield return new CodeValueItem { Code = "Bit", Value = "Checkbox" };
+            yield return new CodeValueItem { Code = "Int", Value = "Integer" };
+            yield return new CodeValueItem { Code = "Date", Value = "Date" };
         }
 
         public SelectList PositionInFamilySelectList() { return PositionInFamilyList().ToSelect(); }
@@ -726,14 +727,14 @@ namespace CmsWeb.Code
         {
             return MemberStatusCodes().AddNotSpecified();
         }
-        public IEnumerable<CodeValueItem> StatusFlags()
+        public static IEnumerable<CodeValueItem> StatusFlags()
         {
-            return from ms in QueryBuilderClause.StatusFlags(DbUtil.Db)
+            return from ms in DbUtil.Db.ViewStatusFlagLists.ToList()
+                   where ms.RoleName == null || HttpContext.Current.User.IsInRole(ms.RoleName)
                    select new CodeValueItem
                    {
-                       Id = ms.Value,
-                       Code = ms.Tag,
-                       Value = ms.Text
+                       Code = ms.Flag,
+                       Value = ms.Name
                    };
         }
 

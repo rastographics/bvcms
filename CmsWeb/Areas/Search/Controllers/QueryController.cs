@@ -11,6 +11,7 @@ using System.Net;
 using System.Data.Linq;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Mvc.Html;
 using System.Xml;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
@@ -27,7 +28,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [GET("Query/{id:guid?}")]
         public ActionResult Index(Guid? id)
         {
-            if (!Fingerprint.UseNewLook())
+            if (!ViewExtensions2.UseNewLook())
                 return Redirect("/QueryBuilder/Main");
             ViewBag.Title = "QueryBuilder";
             var m = new QueryModel(id);
@@ -155,15 +156,15 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             return View("Conditions", m);
         }
-        [POST("Query/Divisions")]
+        [POST("Query/Divisions/{id:int}")]
         public ActionResult Divisions(int id)
         {
-            return View(id);
+            return View(QueryModel.Divisions(id));
         }
-        [POST("Query/Organizations")]
+        [POST("Query/Organizations/{id:int}")]
         public ActionResult Organizations(int id)
         {
-            return View(id);
+            return View(QueryModel.Organizations(id));
         }
         [POST("Query/SavedQueries")]
         public JsonResult SavedQueries(QueryModel m)
@@ -184,7 +185,8 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/CopyQuery")]
         public ActionResult CopyQuery(QueryModel m)
         {
-            m.TopClause.Description = m.TopClause.Description + " Copy";
+            m.TopClause.PreviousName = m.TopClause.Description;
+            m.TopClause.Description = Util.ScratchPad2;
             m.TopClause.Save(DbUtil.Db);
             return Content(m.TopClause.Description);
         }
@@ -202,8 +204,11 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
-            var ncid = qb.CleanSlate2(DbUtil.Db);
-            TempData["newsearch"] = ncid;
+            qb.Reset(DbUtil.Db);
+            var nc = qb.AddNewClause();
+            qb.Description = Util.ScratchPad2;
+            qb.Save(DbUtil.Db);
+            TempData["newsearch"] = nc.Id;
             return Redirect("/Query");
         }
         [GET("Query/Help/{name}")]

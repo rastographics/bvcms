@@ -16,7 +16,6 @@
             q = f.serialize();
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
                 $("a.trigger-dropdown", f).dropdown();
                 $('.bt').button();
                 $(".datepicker").datepicker();
@@ -24,7 +23,7 @@
         });
         return false;
     };
-    $('table.grid > thead a.sortable').live("click", function () {
+    $('table.grid2 > thead a.sortable').live("click", function () {
         var f = $(this).closest("form");
         var newsort = $(this).text();
         var sort = $("#Sort", f);
@@ -38,12 +37,12 @@
         return false;
     });
     $.showTable = function (f) {
-        if ($('table.grid', f).size() == 0)
+        if ($('table.grid2', f).size() == 0)
             $.getTable(f);
         return false;
     };
     $.updateTable = function (f) {
-        if ($('table.grid', f).size() > 0)
+        if ($('table.grid2', f).size() > 0)
             $.getTable(f);
         return false;
     };

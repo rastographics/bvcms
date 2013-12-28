@@ -115,9 +115,6 @@ namespace CmsWeb.Areas.People.Models
 
             var i = (from pp in DbUtil.Db.People
                      let spouse = (from sp in pp.Family.People where sp.PeopleId == pp.SpouseId select sp.Name).SingleOrDefault()
-                     let statusflags = isvalid
-                            ? DbUtil.Db.StatusFlags(flags).Single(sf => sf.PeopleId == id).StatusFlags
-                            : "invalid setting in status flags"
                      where pp.PeopleId == id
                      select new
                      {
@@ -125,11 +122,18 @@ namespace CmsWeb.Areas.People.Models
                          pp.Picture,
                          f = pp.Family,
                          FamilyPicture = pp.Family.Picture,
-                         statusflags,
                          memberStatus = pp.MemberStatus.Description,
                      }).FirstOrDefault();
             if (i == null)
                 return;
+
+            string statusflags;
+            if (isvalid)
+                statusflags = string.Join(", ", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
+                                                where s.RoleName == null || HttpContext.Current.User.IsInRole(s.RoleName)
+                                                select s.Name);
+            else
+                statusflags = "invalid setting in status flags";
 
             Person = i.pp;
             var p = Person;
@@ -142,7 +146,7 @@ namespace CmsWeb.Areas.People.Models
             Name = p.Name;
             Picture = i.Picture;
             FamilyPicture = i.FamilyPicture;
-            StatusFlags = (i.statusflags ?? "").Split(',');
+            StatusFlags = (statusflags ?? "").Split(',');
 
             basic = new BasicPersonInfo(p.PeopleId);
 

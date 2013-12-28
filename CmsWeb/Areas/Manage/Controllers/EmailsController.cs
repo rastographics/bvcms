@@ -2,13 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Models;
 using Dapper;
+using Elmah;
 using UtilityExtensions;
 using System.Net.Mail;
 
@@ -56,18 +59,41 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
 		[Authorize(Roles = "Developer")]
-		public ActionResult Requeue(int id)
+		public ActionResult SendNow(int id)
 		{
-			var email = (from e in DbUtil.Db.EmailQueues
-						 where e.Id == id
-						 select e).Single();
-			var m = new EmailModel { id = id };
-            if (m.queue.Sent.HasValue || !m.queue.SendWhen.HasValue || !m.CanDelete())
-				return Redirect("/");
-		    foreach (var et in email.EmailQueueTos)
-		        et.Sent = null;
-		    email.Sent = null;
-			DbUtil.Db.SubmitChanges();
+			string host = Util.Host;
+			// save these from HttpContext to set again inside thread local storage
+			var useremail = Util.UserEmail;
+			var isinroleemailtest = User.IsInRole("EmailTest");
+
+			System.Threading.Tasks.Task.Factory.StartNew(() =>
+			{
+				Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
+				try
+				{
+					var Db = new CMSDataContext(Util.GetConnectionString(host));
+					Db.Host = host;
+					var cul = Db.Setting("Culture", "en-US");
+					Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
+					Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
+					// set these again inside thread local storage
+					Util.UserEmail = useremail;
+					Util.IsInRoleEmailTest = isinroleemailtest;
+					Db.SendPeopleEmail(id);
+				}
+				catch (Exception ex)
+				{
+					var ex2 = new Exception("Emailing error for queueid " + id, ex);
+					ErrorLog errorLog = ErrorLog.GetDefault(null);
+					errorLog.Log(new Error(ex2));
+
+					var Db = new CMSDataContext(Util.GetConnectionString(host));
+					Db.Host = host;
+					var equeue = Db.EmailQueues.Single(ee => ee.Id == id);
+					equeue.Error = ex.Message.Truncate(200);
+					Db.SubmitChanges();
+				}
+			});
 			return Redirect("/Manage/Emails/Details/" + id);
 		}
 		public ActionResult DeleteQueued(int id)

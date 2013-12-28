@@ -10,8 +10,8 @@
     <td class="right">@Model.RunCount.ToString("N0")</td>
     @if (Model.CanDelete)
     {
-        <td><a class="edit-saved-query" href="/SavedQueryList/Edit/@Model.QueryId"><i class="icon-pencil"></i></a></td>
-        <td><a class="delete-saved-query" href="/SavedQueryList/Delete/@Model.QueryId"><i class="icon-remove"></i></a></td>
+        <td><a class="edit-saved-query" href="/SavedQueryList/Edit/@Model.QueryId"><i class="fa fa-pencil"></i></a></td>
+        <td><a class="delete-saved-query" href="/SavedQueryList/Delete/@Model.QueryId"><i class="fa fa-times"></i></a></td>
     }
     else
     {

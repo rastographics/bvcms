@@ -1,14 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using CmsData;
 using UtilityExtensions;
 using System.Web.Mvc;
 using System.Text;
-using System.Net.Mail;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using CmsData.Codes;
@@ -231,6 +226,11 @@ namespace CmsWeb.Models
                             orderby om.Person.Gender.Code, om.Organization.OrganizationName, om.Person.Name2
                             select om;
                         break;
+                    case "Mixed":
+                        q = from om in q
+                            orderby om.Person.HashNum
+                            select om;
+                        break;
                 }
             else
                 switch (Sort)
@@ -259,6 +259,11 @@ namespace CmsWeb.Models
                     case "Gender":
                         q = from om in q
                             orderby om.Person.Gender.Code descending, om.Organization.OrganizationName, om.Person.Name2
+                            select om;
+                        break;
+                    case "Mixed":
+                        q = from om in q
+                            orderby om.Person.HashNum
                             select om;
                         break;
                 }

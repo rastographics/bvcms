@@ -3,13 +3,12 @@
 @using UtilityExtensions
 @{
     ViewBag.Title = "Details";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section scripts
 {
     <script type="text/javascript">
         $(function() {
-            $('table.grid tr:even').addClass('alt');
             $("a.unblock").click(function(ev) {
                 if (confirm("are you sure?"))
                     $.post("/Manage/Emails/Unblock", { email: $(this).attr("email") }, function(ret) {
@@ -26,7 +25,7 @@
     </script>
 }
 <h2>Failed Emails</h2>
-    <table class="grid" cellpadding="5">
+    <table class="@ViewExtensions2.GridClass">
     @foreach(var e in Model)
     {
         <tr><td>@e.time.FormatDateTm()</td>

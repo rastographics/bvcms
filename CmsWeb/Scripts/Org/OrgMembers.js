@@ -5,7 +5,6 @@
         $.block();
         $.post("/OrgMembers/List", q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
                 $.unblock();
                 $(".bt").button();
                 $("#manage select").css("width", "100%");
@@ -28,7 +27,6 @@
         $.block();
         $.post("/OrgMembers/Move", q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
                 $.unblock();
                 $.growlUI("Move", "Completed");
                 $(".bt").button();
@@ -38,9 +36,9 @@
     });
     $("#SelectAll").live("click", function () {
         if ($(this).attr("checked"))
-            $("table.grid input[name='List']").attr('checked', true);
+            $("#list input[name='List']").attr('checked', true);
         else
-            $("table.grid input[name='List']").removeAttr('checked');
+            $("#list input[name='List']").removeAttr('checked');
     });
     $.blockUI.defaults.growlCSS = {
         width: '350px',
@@ -73,7 +71,6 @@
         var q = f.serialize();
         $.post("/OrgMembers/EmailNotices", q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
                 $.growlUI("Email Notices", "emails sent");
                 $(".bt").button();
                 $("#manage select").css("width", "100%");
@@ -86,7 +83,7 @@
     });
 
     //    $('input.check').click(UpdateTotals);
-    $('form table.grid a.sort').live("click", function (ev) {
+    $('#list a.sort').live("click", function (ev) {
         var newsort = $(this).text();
         var oldsort = $("#Sort").val();
         $("#Sort").val(newsort);

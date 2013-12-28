@@ -1,7 +1,7 @@
 ﻿@model CmsWeb.Models.PromotionModel
 @using CmsWeb
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Promotion";
 }
 @section scripts
@@ -28,7 +28,7 @@
                 RefreshList();
             });
             $(window).scroll(function() {
-                $('#float_box').animate({ top: $(window).scrollTop() + "px" }, { queue: false, duration: 350 });
+                $('#float_box').animate({ top: $(window).scrollTop() + 60 + "px" }, { queue: false, duration: 350 });
             });
             $('#close_float').click(function() {
                 $('#float_box').animate({ top: "+=15px", opacity: 0 }, "slow");
@@ -94,7 +94,7 @@
    <style type="text/css">
       #float_box { 
        position: absolute; 
-       top: 0; right: 0;
+       top: 60px; right: 0;
        z-index: 1000; 
 	   background:#ffc;
 	   padding:5px;
@@ -133,7 +133,7 @@
 @Html.Hidden("Sort", Model.Sort)
 @Html.Hidden("Dir", Model.Dir)
 </div>
-<table id="Promotions">
+<table id="Promotions" class="@ViewExtensions2.GridClass">
     <thead>
     <tr>
         <th><a href="#" class="sortable">Mixed</a></th>

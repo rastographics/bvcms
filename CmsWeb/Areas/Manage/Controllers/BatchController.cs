@@ -590,7 +590,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             foreach (var a in qbits)
             {
                 var t = DbUtil.Db.FetchOrCreateSystemTag(a[0]);
-                if(Fingerprint.TestSb2())
+                if(ViewExtensions2.TestSb2())
                     DbUtil.Db.TagAll2(DbUtil.Db.PeopleQuery2(a[0] + ":" + a[1]), t);
                 else
                     DbUtil.Db.TagAll2(DbUtil.Db.PeopleQuery(a[0] + ":" + a[1]), t);

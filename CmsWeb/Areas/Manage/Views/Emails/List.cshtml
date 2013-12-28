@@ -25,7 +25,7 @@
 </table>
 </div>
 <div class="floatclear"></div>
-<table id="Emails" class="grid" cellpadding="4">
+<table id="Emails" class="@ViewExtensions2.GridClass" cellpadding="4">
     <thead>
     <tr>
         <th></th>
@@ -41,7 +41,7 @@
 @foreach (var i in Model.Emails()) {
     <tr>
         <td> </td>
-        <td>
+        <td class="nowrap">
             @if(!i.queue.Sent.HasValue) {
                 if(i.queue.SendWhen.HasValue) {
                     <span style="color:green" title="scheduled">@i.queue.SendWhen.FormatDate()</span>

@@ -1,25 +1,19 @@
 ﻿@using CmsWeb.Code
 @{
     var access = User.IsInRole("Access");
-    var onqb = (string)ViewData["OnQueryBuilder"] == "true";
+    var finance = User.IsInRole("Finance");
     var targetperson = DbUtil.Db.UserPreference("TargetLinkPeople", "false").ToBool();
-    var innewlook = User.IsInRole("Newlook");
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
-    //var headimage = DbUtil.HeaderImage("");
-    //if (!headimage.HasValue())
-    //{
-    //    headimage = DbUtil.Header();
-    //}
+    var headerimage = DbUtil.Db.Setting("HeaderImage", "/Content/images/bvcms-logo-on-dark.png");
 }
 @if (access)
 {
     <div class="navbar navbar-fixed-top yamm">
         <div class="navbar-inner" id="navGlobal">
             <div class="container-fluid container">
+                @Html.Partial("CustomHeader")
                 <div id="brand">
-                    <!-- class="with-image" -->
-                    <a href="/"><div class="logo" style="background-image: url(https://c4265878.ssl.cf2.rackcdn.com/bellevue.1308091433.logo.png)"></div></a>
-                    @*<h1 class="textfill"><span style="font-size: 13px;">Bellevue Baptist Church</span></h1>*@
+                    <a href="/"><div class="logo" style="background-image: url(@headerimage); background-position: left center;"></div></a>
                 </div>
                 <ul class="nav">
                     @Html.Partial("Menu/People")
@@ -37,40 +31,47 @@
                 </div>
                 <div id="nav-account" class="nav-drop btn-group">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="icon-user"></i>
+                        <i class="fa fa-user"></i>
                         <span class="username">@Util.UserName</span> <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu pull-right">
                         @Helper.LiAnchorLink("Logout as " + Util.UserName, "/Account/LogOff/")
                         @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
                         <li class="space"></li>
-                        @Helper.LiAnchorLink("Target Person Tab is " + (targetperson ? "ON" : "OFF"), "/Home/TargetPerson/" + targetperson)
-                        @if (innewlook)
+                        @Helper.LiAnchorLink("Target Person Tab is " + (targetperson ? "ON" : "OFF"), "/Home/TargetPerson/" + targetperson, access)
+                        @Helper.LiAnchorLink("Use Old Look", "/APITest/UseOldLook", access)
+                        @if (finance)
                         {
-                            @Helper.LiAnchorLink("Use New Pages", "/APITest/UseNewLook")
-                            @Helper.LiAnchorLink("Use Old Pages", "/APITest/UseOldLook")
-                            @Helper.LiAnchorLink("Test QueryBuilder2", "/APITest/TestSb2")
-                            @Helper.LiAnchorLink("Stop Testing QueryBuilder2", "/APITest/StopTestingSb2")
                             @Helper.LiAnchorLink("Turn finance off", "/APITest/TurnFinanceOff", !testnofinance)
                             @Helper.LiAnchorLink("Turn finance on", "/APITest/TurnFinanceOn", testnofinance)
                         }
-                        @Helper.LiAnchorLink("Reset tips", "/ResetTips")
+                        @Helper.LiAnchorLink("Reset Help tips", "/ResetTips")
                     </ul>
                 </div>
-                <div class="nav-drop btn-group">
-                    <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
-                        <i class="icon-tag"></i>
-                        <span class="currentTag username"> @Util2.CurrentTagName</span> <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu pull-right">
-                        <li><a class="current"><b>@Util2.CurrentTagName</b></a></li>
-                        @foreach (var t in CodeValueModel.UserTags())
-                        {
-                            <li><a href="/Home/SwitchTag?tag=@t.Value">@t.Value</a></li>
-                        }
-                    </ul>
-                </div>
+                @if (access)
+                {
+                    <div class="nav-drop btn-group">
+                        <a href="#" class="btn dropdown-toggle" style="display: inline-block" data-toggle="dropdown">
+                            <i class="fa fa-tag outsideCurrentTag"></i><span class="currentTag username"><i class="fa fa-tag"></i> @Util2.CurrentTagName</span> <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a class="current"><b>@Util2.CurrentTagName</b></a></li>
+                            @foreach (var t in CodeValueModel.UserTags())
+                            {
+                                <li><a href="/Home/SwitchTag?tag=@t.Value">@t.Value</a></li>
+                            }
+                        </ul>
+                    </div>
+                }
             </div>
         </div>
     </div>
+}
+else
+{
+    <style type="text/css">
+        body { padding-top: 0 !important; }
+        .navbar-fixed-top { position: relative; }
+    </style>
+    @Html.Partial("MyDataHeader")
 }

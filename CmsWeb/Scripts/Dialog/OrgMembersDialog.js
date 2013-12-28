@@ -1,14 +1,13 @@
 ﻿$(function () {
     $.fmtTable = function () {
-        $("table.grid td.tip").tooltip({ showBody: "|" });
-        $('table.grid > tbody > tr:even').addClass('alt');
+        $("table.grid2 td.tip").tooltip({ showBody: "|" });
     }
     $.fmtTable();
     $(".bt").button();
     $(".filter").change(function (ev) {
         var q = $("form").serialize();
         $.post("/OrgMembersDialog/Filter", q, function (ret) {
-            $("table.grid > tbody").html(ret).ready($.fmtTable);
+            $("table.grid2 > tbody").html(ret).ready($.fmtTable);
         });
     });
 
@@ -44,7 +43,7 @@
         $("#inactivedt").val("");
         var q = $("form").serialize();
         $.post("/OrgMembersDialog/Filter", q, function (ret) {
-            $("table.grid > tbody").html(ret).ready($.fmtTable);
+            $("table.grid2 > tbody").html(ret).ready($.fmtTable);
         });
 
         return false;

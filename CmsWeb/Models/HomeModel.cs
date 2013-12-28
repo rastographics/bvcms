@@ -250,7 +250,7 @@ namespace CmsWeb.Models
             if (up == null)
                 return new List<MySavedQueryInfo>();
 
-            if (Fingerprint.TestSb2())
+            if (ViewExtensions2.TestSb2())
                 return from c in DbUtil.Db.Queries
                        where c.Owner == Util.UserName
                        where c.Name != Util.ScratchPad2

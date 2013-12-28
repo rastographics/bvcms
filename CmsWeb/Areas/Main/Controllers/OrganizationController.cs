@@ -19,8 +19,8 @@ namespace CmsWeb.Areas.Main.Controllers
         const string needNotify = "WARNING: please add the notify persons on messages tab.";
         public ActionResult Index(int? id)
         {
-//            if (Fingerprint.UseNewLook())
-//                return Redirect("/Org/" + id);
+            //            if (ViewExtensions2.UseNewLook())
+            //                return Redirect("/Org/" + id);
             if (!id.HasValue)
                 return Content("no org");
             if (Util2.CurrentOrgId != id)
@@ -55,11 +55,13 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.LogActivity("Viewing Organization ({0})".Fmt(m.org.OrganizationName), m.org.OrganizationName, orgid: id);
 
             Util2.CurrentOrgId = m.org.OrganizationId;
+            object qid = ViewExtensions2.TestSb2()
+                ? (object) DbUtil.Db.QueryInCurrentOrg().QueryId
+                : DbUtil.Db.QueryBuilderInCurrentOrg().QueryId;
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.org.FullName;
             ViewBag.selectmode = 0;
-            var qb = DbUtil.Db.QueryBuilderInCurrentOrg();
-            InitExportToolbar(id.Value, qb.QueryId, checkparent: true);
+            InitExportToolbar(id.Value, qid, checkparent: true);
             Session["ActiveOrganization"] = m.org.OrganizationName;
             return View(m);
         }
@@ -119,7 +121,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.LogActivity("Creating new meeting for {0}".Fmt(organization.OrganizationName));
             return Content("/Meeting/Index/" + mt.MeetingId);
         }
-        private void InitExportToolbar(int oid, int qid, bool checkparent = false)
+        private void InitExportToolbar(int oid, object qid, bool checkparent = false)
         {
             Util2.CurrentOrgId = oid;
             if (checkparent)
@@ -128,8 +130,12 @@ namespace CmsWeb.Areas.Main.Controllers
                 if (isParent)
                 {
                     ViewBag.ParentOrgContext = true;
-                    ViewBag.leadersqid = DbUtil.Db.QueryBuilderLeadersUnderCurrentOrg().QueryId;
-                    ViewBag.membersqid = DbUtil.Db.QueryBuilderMembersUnderCurrentOrg().QueryId;
+                    ViewBag.leadersqid = ViewExtensions2.TestSb2()
+                        ? (object)DbUtil.Db.QueryLeadersUnderCurrentOrg().QueryId
+                        : DbUtil.Db.QueryBuilderLeadersUnderCurrentOrg().QueryId;
+                    ViewBag.membersqid = ViewExtensions2.TestSb2()
+                        ? (object)DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId
+                        : DbUtil.Db.QueryBuilderMembersUnderCurrentOrg().QueryId;
                 }
             }
             ViewBag.queryid = qid;
@@ -146,8 +152,10 @@ namespace CmsWeb.Areas.Main.Controllers
             Util2.CurrentGroups = smallgrouplist;
             Util2.CurrentGroupsPrefix = sgprefix;
             Util2.CurrentGroupsMode = selectmode.Value;
-            var qb = DbUtil.Db.QueryBuilderInCurrentOrg();
-            InitExportToolbar(id, qb.QueryId, checkparent: true);
+            object qid = ViewExtensions2.TestSb2()
+                ? (object)DbUtil.Db.QueryInCurrentOrg().QueryId
+                : DbUtil.Db.QueryBuilderInCurrentOrg().QueryId;
+            InitExportToolbar(id, qid, checkparent: true);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Members";
             var m = new MemberModel(id, MemberModel.GroupSelect.Active, namefilter, sgprefix);
             UpdateModel(m.Pager);
@@ -156,8 +164,10 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult PrevMemberGrid(int id, string namefilter, bool? ShowProspects)
         {
-            var qb = DbUtil.Db.QueryBuilderPreviousCurrentOrg();
-            InitExportToolbar(id, qb.QueryId);
+            object qid = ViewExtensions2.TestSb2()
+                ? (object)DbUtil.Db.QueryPreviousCurrentOrg().QueryId
+                : DbUtil.Db.QueryBuilderPreviousCurrentOrg().QueryId;
+            InitExportToolbar(id, qid);
             var m = new PrevMemberModel(id, namefilter) { ShowProspects = ShowProspects ?? false };
             UpdateModel(m.Pager);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Previous Members";
@@ -167,9 +177,11 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult VisitorGrid(int id, string namefilter)
         {
-            var qb = DbUtil.Db.QueryBuilderVisitedCurrentOrg();
-            InitExportToolbar(id, qb.QueryId);
-            var m = new VisitorModel(id, qb.QueryId, namefilter);
+            object qid = ViewExtensions2.TestSb2()
+                ? (object)DbUtil.Db.QueryVisitedCurrentOrg().QueryId
+                : DbUtil.Db.QueryBuilderVisitedCurrentOrg().QueryId;
+            InitExportToolbar(id, qid);
+            var m = new VisitorModel(id, qid, namefilter);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Guests";
             UpdateModel(m.Pager);
             DbUtil.LogActivity("Viewing Visitors for {0}".Fmt(Session["ActiveOrganization"]));
@@ -178,8 +190,10 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult PendingMemberGrid(int id, string namefilter)
         {
-            var qb = DbUtil.Db.QueryBuilderPendingCurrentOrg();
-            InitExportToolbar(id, qb.QueryId);
+            object qid = ViewExtensions2.TestSb2()
+                ? (object)DbUtil.Db.QueryPendingCurrentOrg().QueryId
+                : DbUtil.Db.QueryBuilderPendingCurrentOrg().QueryId;
+            InitExportToolbar(id, qid);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Pending Members";
             var m = new MemberModel(id, MemberModel.GroupSelect.Pending, namefilter);
             UpdateModel(m.Pager);
@@ -188,8 +202,10 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult InactiveMemberGrid(int id, string namefilter)
         {
-            var qb = DbUtil.Db.QueryBuilderInactiveCurrentOrg();
-            InitExportToolbar(id, qb.QueryId);
+            object qid = ViewExtensions2.TestSb2()
+                ? (object)DbUtil.Db.QueryInactiveCurrentOrg().QueryId
+                : DbUtil.Db.QueryBuilderInactiveCurrentOrg().QueryId;
+            InitExportToolbar(id, qid);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Inactive Members";
             var m = new MemberModel(id, MemberModel.GroupSelect.Inactive, namefilter);
             UpdateModel(m.Pager);
@@ -199,8 +215,10 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult ProspectGrid(int id, string namefilter)
         {
-            var qb = DbUtil.Db.QueryBuilderProspectCurrentOrg();
-            InitExportToolbar(id, qb.QueryId);
+            object qid = ViewExtensions2.TestSb2()
+                ? (object)DbUtil.Db.QueryProspectCurrentOrg().QueryId
+                : DbUtil.Db.QueryBuilderProspectCurrentOrg().QueryId;
+            InitExportToolbar(id, qid);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Prospects";
             var m = new MemberModel(id, MemberModel.GroupSelect.Prospect, namefilter);
             UpdateModel(m.Pager);
@@ -622,7 +640,7 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content(t ? "Remove" : "Add");
         }
         [HttpPost]
-        public ContentResult TagAll(int id, string tagname, bool? cleartagfirst)
+        public ContentResult TagAll(Guid id, string tagname, bool? cleartagfirst)
         {
             if (!tagname.HasValue())
                 return Content("no tag name");
@@ -642,13 +660,41 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content("Manage");
         }
         [HttpPost]
-        public ContentResult UnTagAll(int id)
+        public ContentResult UnTagAll(Guid id)
         {
             DbUtil.Db.SetNoLock();
             var q = DbUtil.Db.PeopleQuery(id);
             DbUtil.Db.UnTagAll(q);
             return Content("Add");
         }
+//        [HttpPost]
+//        public ContentResult TagAll(int id, string tagname, bool? cleartagfirst)
+//        {
+//            if (!tagname.HasValue())
+//                return Content("no tag name");
+//            DbUtil.Db.SetNoLock();
+//            var q = DbUtil.Db.PeopleQuery(id);
+//            if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
+//            {
+//                DbUtil.Db.TagAll(q);
+//                return Content("Remove");
+//            }
+//            var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+//            if (cleartagfirst ?? false)
+//                DbUtil.Db.ClearTag(tag);
+//            DbUtil.Db.TagAll(q, tag);
+//            Util2.CurrentTag = tagname;
+//            DbUtil.Db.TagCurrent();
+//            return Content("Manage");
+//        }
+//        [HttpPost]
+//        public ContentResult UnTagAll(int id)
+//        {
+//            DbUtil.Db.SetNoLock();
+//            var q = DbUtil.Db.PeopleQuery(id);
+//            DbUtil.Db.UnTagAll(q);
+//            return Content("Add");
+//        }
         [HttpPost]
         public ActionResult AddContact(int id)
         {

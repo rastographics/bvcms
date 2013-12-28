@@ -4,7 +4,7 @@
 @using UtilityExtensions
 @model CmsWeb.Models.ContentModel
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Special Content";
 
     var roleList = ContentModel.fetchRoles();
@@ -82,7 +82,7 @@
 	</ul>
 	<div id="t1"> <!-- HTML Files -->
 		<center><a href="#" newtype="0" newmessage="Create New HTML File" class="bt">New HTML File</a></center>
-		<table class="grid" cellspacing="4">
+		<table class="@ViewExtensions2.GridClass" cellspacing="4">
 		<tr>
 			<td><b>Name/Title</b></td>
 		</tr>
@@ -98,7 +98,7 @@
 	</div>
 	<div id="t2"> <!-- Text Files -->
 		<center><a href="#" newtype="1" newmessage="Create New Text File" class="bt">New Text File</a></center>
-		<table class="grid" cellpadding="4">
+		<table class="@ViewExtensions2.GridClass" cellpadding="4">
 		<tr>
 			<td><b>Name</b></td>
 		</tr>
@@ -114,7 +114,7 @@
 	</div>
 	<div id="t3"> <!-- e-Mail Templates -->
 		<center><a href="#" newtypewithrole="2" newmessage="Create New Email Template" class="bt">New Email Template</a></center>
-		<table class="grid" cellspacing="4">
+		<table class="@ViewExtensions2.GridClass" cellspacing="4">
         <tr>
 		@foreach (var t in Model.fetchEmailTemplates())
         {
@@ -149,7 +149,7 @@
         <br />
         <br />
         <form id="savedDrafts" action="/Display/ContentDeleteDrafts">
-		    <table class="grid" cellspacing="4">
+		    <table class="@ViewExtensions2.GridClass" cellspacing="4">
 		        <tr>
 			        <td><b>Name</b></td>
 		        </tr>

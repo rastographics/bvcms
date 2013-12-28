@@ -1303,22 +1303,26 @@ namespace CmsData
         public int ActiveRecords()
         {
             const string name = "ActiveRecords";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.IsPublic && c.Description == name && c.SavedBy == "public");
+            var qb = Queries.FirstOrDefault(c => c.Ispublic && c.Name == name && c.Owner == "public");
+            Condition cc;
             if (qb == null)
             {
-                qb = QueryBuilderScratchPad();
-                qb.CleanSlate(this);
-                qb.SetComparisonType(CompareType.AnyTrue);
+                cc = ScratchPadCondition();
+                cc.Reset(this);
+                cc.SetComparisonType(CompareType.AnyTrue);
 
-                var clause = qb.AddNewClause(QueryType.RecentAttendCount, CompareType.GreaterEqual, "1");
+                var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.GreaterEqual, "1");
                 clause.Days = 365;
-                clause = qb.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
+                clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
                 clause.Days = 365;
-                qb.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
-                qb.SaveTo(this, name, "public", true);
+                cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+                cc.SaveAs(this, name, false);
+                qb = cc.justloadedquery;
             }
+            else
+                cc = qb.ToClause();
             FromActiveRecords = true;
-            var n = PeopleQuery(qb.QueryId).Count();
+            var n = PeopleQuery(cc.Id).Count();
             FromActiveRecords = false;
             return n;
         }

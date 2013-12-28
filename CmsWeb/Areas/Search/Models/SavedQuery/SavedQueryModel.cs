@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
@@ -16,6 +17,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool PublicOnly { get; set; }
         public string SearchQuery { get; set; }
         public bool ScratchPadsOnly { get; set; }
+        public bool StatusFlagsOnly { get; set; }
 
         public SavedQueryModel() : base("", "") { }
 
@@ -33,6 +35,10 @@ namespace CmsWeb.Areas.Search.Models
             else
                 q = from c in q
                     where c.Name != Util.ScratchPad2
+                    select c;
+            if (StatusFlagsOnly)
+                q = from c in q
+                    where StatusFlagsOnly == false || SqlMethods.Like(c.Name, "F[0-9][0-9]%")
                     select c;
             DbUtil.Db.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
             if (OnlyMine)

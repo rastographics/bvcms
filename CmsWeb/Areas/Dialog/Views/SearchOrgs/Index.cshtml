@@ -1,10 +1,13 @@
-﻿@using CmsWeb.Models
+﻿@using CmsWeb
+@using CmsWeb.Models
 @model SearchOrgsModel
 <html>
 <head>
 <title>Index</title>
     @Fingerprint.Css("/content/styles/bundle-css.css")
     <link href="/Content/styles/style2.css" rel="stylesheet" type="text/css" />
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/Bundle/main.js")
     @Fingerprint.Script("/Scripts/Search/SearchOrgs.js")
 </head>

@@ -1,7 +1,8 @@
-﻿@model IEnumerable<CmsWeb.Models.TaskModel.IncompleteTask>
+﻿@using CmsWeb
+@model IEnumerable<CmsWeb.Models.TaskModel.IncompleteTask>
 @if (Model.Count() > 0)
 {
-<table class="grid">
+<table class="@ViewExtensions2.GridClass">
     <thead>
     <tr>
         <th>Task</th>

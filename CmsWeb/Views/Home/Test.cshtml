@@ -2,7 +2,7 @@
 @model IEnumerable<Organization>
 @{
     ViewBag.Title = "Test";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section scripts
 {
@@ -11,7 +11,7 @@
 
 <h2>Test</h2>
 
-<table class="grid">
+<table class="@ViewExtensions2.GridClass">
 @foreach (var o in Model)
 {
     <tr>

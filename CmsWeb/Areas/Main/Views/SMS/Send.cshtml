@@ -1,7 +1,8 @@
-﻿@model object
+﻿@using CmsWeb
+@model object
 @{
     ViewBag.Title = "Send";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     var url = Model is Guid ? "/Email/Index2/" + Model : "/Email/Index/" + Model;
 }
 

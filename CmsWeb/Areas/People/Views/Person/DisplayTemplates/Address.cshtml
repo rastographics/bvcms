@@ -4,7 +4,7 @@
 <div class="tab-pane@(Model.Preferred ? " active" : "")" id="tab-@Model.Name">
     <div class="btn-group">
         <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
-            <i class="icon-map-marker"></i>
+            <i class="fa fa-map-marker"></i>
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
@@ -17,7 +17,7 @@
     <p style="min-height: 5em;">
         @if (Model.CanUserEditAddress)
         {
-            <a href="/Address/Edit/@Model.Name/@Model.PeopleId" class="editaddr editable-click">@Model.AddressLineOne <i class="icon-pencil pull-right"></i>
+            <a href="/Address/Edit/@Model.Name/@Model.PeopleId" class="editaddr editable-click">@Model.AddressLineOne <i class="fa fa-pencil pull-right"></i>
                 <br />
                 @if (Model.AddressLineTwo.HasValue())
                 {

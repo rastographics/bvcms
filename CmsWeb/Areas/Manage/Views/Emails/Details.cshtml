@@ -1,8 +1,9 @@
-﻿@using UtilityExtensions;
+﻿@using CmsWeb
+@using UtilityExtensions;
 @model CmsWeb.Models.EmailModel
 @{
     ViewBag.Title = "Details";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section scripts
 {
@@ -11,7 +12,6 @@
             $("#filter").change(function() {
                 window.location = window.location.pathname + "?filter=" + $(this).val();
             });
-            $("table.grid > tbody > tr:even").addClass("alt");
             $(".bt").button();
         });
     </script>

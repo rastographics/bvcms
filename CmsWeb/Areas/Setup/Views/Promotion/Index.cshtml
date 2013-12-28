@@ -1,6 +1,6 @@
 ﻿@model CmsWeb.Areas.Setup.Models.PromotionModel
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Promotion";
 }
 @section scripts
@@ -46,48 +46,52 @@
 }
 <h2>Promotion Setup</h2>
 @Html.DropDownList("Programs", Model.Programs())
-<table>
-    <tr>
-        <th>Sort </th>
-        <th>Description </th>
-        <th>From Division </th>
-        <th>To Division </th>
-        <th>Easy Button</th>
-        <th></th>
-    </tr>
-    @foreach (var item in Model.Promotions())
-    { 
+<table class="@ViewExtensions2.GridClass">
+    <thead>
         <tr>
-            <td>
-                <span id='s@(item.Id)' 
-                class='clickEdit'>@item.Sort</span>
-            </td>
-            <td>
-                <span id='d@(item.Id)' 
-                class='clickEdit'>@item.Description</span>
-            </td>
-            <td>
-                <span id='f@(item.Id)' 
-                class='clickSelect'>@(item.FromDivId == null ? "click to set" : item.FromDivision.Name)</span>
-            </td>
-            <td>
-                <span id='t@(item.Id)' 
-                class='clickSelect'>@(item.ToDivId == null ? "click to set" : item.ToDivision.Name)</span>
-            </td>
-            <td>
-                @if (Model.CanPromote(item.Id))
-                { <a id='p@(item.Id)'  href="#" class="promote">promote</a>
-                }
-            </td>
-            <td>
-                <a id='x@(item.Id)' href="#" class="delete">
-                    <img border="0" src="/Content/images/delete.gif" /></a>
-            </td>
+            <th>Sort </th>
+            <th>Description </th>
+            <th>From Division </th>
+            <th>To Division </th>
+            <th>Easy Button</th>
+            <th></th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Promotions())
+        {
+            <tr>
+                <td>
+                    <span id='s@(item.Id)' class='clickEdit'>@item.Sort</span>
+                </td>
+                <td>
+                    <span id='d@(item.Id)' class='clickEdit'>@item.Description</span>
+                </td>
+                <td>
+                    <span id='f@(item.Id)' class='clickSelect'>@(item.FromDivId == null ? "click to set" : item.FromDivision.Name)</span>
+                </td>
+                <td>
+                    <span id='t@(item.Id)' class='clickSelect'>@(item.ToDivId == null ? "click to set" : item.ToDivision.Name)</span>
+                </td>
+                <td>
+                    @if (Model.CanPromote(item.Id))
+                    {
+                        <a id='p@(item.Id)' href="#" class="promote">promote</a>
+                    }
+                </td>
+
+                <td>
+                    <a id='x@(item.Id)' href="#" class="delete">
+                        <img border="0" src="/Content/images/delete.gif" />
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 @using (Html.BeginForm("Create", "Promotion"))
-{ 
+{
     <p>
-        <input type="submit" class="bt" value="Create" /></p>
+        <input type="submit" class="bt" value="Create" />
+    </p>
 } 

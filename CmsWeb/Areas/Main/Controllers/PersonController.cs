@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Main.Controllers
 		{
 			if (!id.HasValue)
 				return Content("no id");
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return Redirect("/Person2/" + id);
             var m = new PersonModel(id);
 			if (User.IsInRole("Access"))
@@ -769,8 +769,10 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
 		private void InitExportToolbar(int? id)
 		{
-			var qb = DbUtil.Db.QueryBuilderIsCurrentPerson();
-			ViewBag.queryid = qb.QueryId;
+		    var qid = ViewExtensions2.TestSb2()
+		        ? (object) DbUtil.Db.QueryIsCurrentPerson().QueryId
+		        : DbUtil.Db.QueryBuilderIsCurrentPerson().QueryId;
+		    ViewBag.queryid = qid;
 			ViewBag.TagAction = "/Person/Tag/" + id;
 			ViewBag.UnTagAction = "/Person/UnTag/" + id;
 			ViewBag.AddContact = "/Person/AddContactReceived/" + id;

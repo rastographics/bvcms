@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Models;
@@ -10,9 +11,9 @@ namespace CmsWeb.Areas.Main.Controllers
     {
         public ActionResult Index()
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return Redirect("/SavedQueryList");
-            if(!Fingerprint.TestSb2())
+            if(!ViewExtensions2.TestSb2())
                 return Redirect("/SavedQuery");
             var m = new SavedQuery2Model();
             return View(m);
@@ -21,7 +22,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult Edit(string id, string value)
         {
             var a = id.SplitStr(".", 2);
-            var iid = a[1].ToGuid();
+            var iid = Guid.Parse(a[1]);
             var c = DbUtil.Db.Queries.SingleOrDefault(cc => cc.QueryId == iid);
             switch (a[0])
             {
@@ -39,11 +40,9 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content(value);
         }
         [HttpPost]
-        public ActionResult Delete(string id)
+        public ActionResult Delete(Guid id)
         {
-            var a = id.Split('.');
-            var iid = a[1].ToGuid();
-            var c = DbUtil.Db.Queries.Single(cc => cc.QueryId == iid);
+            var c = DbUtil.Db.Queries.Single(cc => cc.QueryId == id);
             DbUtil.Db.Queries.DeleteOnSubmit(c);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();

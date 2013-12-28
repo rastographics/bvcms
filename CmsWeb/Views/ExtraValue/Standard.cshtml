@@ -4,14 +4,14 @@
         <legend>Standard Extra Values 
             @if (User.IsInRole("Admin"))
             {
-                <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Standard/@Model.Id"><i class="icon-plus"></i></a>
-                <a class="extravalue nounderline font14px dark pad-left" href="/ExtraValue/ListStandard/@Model.Table/Standard/@Model.Id"><i class="icon-pencil"></i></a>
+                <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Standard/@Model.Id"><i class="fa fa-plus"></i></a>
+                <a class="extravalue nounderline font14px dark pad-left" href="/ExtraValue/ListStandard/@Model.Table/Standard/@Model.Id"><i class="fa fa-pencil"></i></a>
             }
             <span class="pull-right">
                 <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="ajax font14px">Adhoc Values</a>
             </span>
         </legend>
-        <a href="#" class="pull-right ajax-refresh"><i class="icon-refresh"></i></a>
+        <a href="#" class="pull-right ajax-refresh"><i class="fa fa-refresh"></i></a>
         <table class="table not-wide">
             <thead>
                 <tr>

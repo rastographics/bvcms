@@ -180,7 +180,6 @@
         var q = f.serialize();
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
                 $('.bt').button();
                 $(".datepicker").datepicker();
                 $.extraEditable('#extravalues');
@@ -269,7 +268,6 @@
     $("#optouts-link").click(function () {
         $.showTable($("#optouts-tab form"));
     });
-    $('#family table.grid > tbody > tr:even').addClass('alt');
     $("#recreg-link").click(function (ev) {
         ev.preventDefault();
         var f = $('#recreg-tab form');

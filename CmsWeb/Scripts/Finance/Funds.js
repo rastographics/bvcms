@@ -1,5 +1,5 @@
 ﻿$(function () {
-    $('table.grid').bind('mousedown', function (e) {
+    $('table.grid2').bind('mousedown', function (e) {
         if ($(e.target).hasClass("clickEdit")) {
             $(e.target).editable("/Finance/Fund/EditOrder/", {
                 tooltip: "Click to edit ...",
@@ -29,7 +29,6 @@
             window.location = "/Finance/Fund?sort=" + $(this).text();
     });
     $(".bt").button();
-    $("table.grid > tbody > tr:even").addClass("alt");
     $("form").submit(function (ev) {
         ev.preventDefault();
         $.post("/Finance/Fund/Create", { fundid: $("#fundid").val() }, function (ret) {

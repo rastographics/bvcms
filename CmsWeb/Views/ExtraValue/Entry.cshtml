@@ -35,11 +35,11 @@
         <div class="legend">Information Card
             @if (User.IsInRole("Admin"))
             {
-                <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Entry/@Model.Id"><i class="icon-plus"></i></a>
-                <a class="extravalue nounderline font14px edit pad-left dark" href="/ExtraValue/ListStandard/@Model.Table/Entry/@Model.Id?title=Edit+Entry+Card"><i class="icon-pencil"></i></a>
+                <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Entry/@Model.Id"><i class="fa fa-plus"></i></a>
+                <a class="extravalue nounderline font14px edit pad-left dark" href="/ExtraValue/ListStandard/@Model.Table/Entry/@Model.Id?title=Edit+Entry+Card"><i class="fa fa-pencil"></i></a>
             }
         </div>
-        <a href="#" class="pull-right ajax-refresh"><i class="icon-refresh"></i></a>
+        <a href="#" class="pull-right ajax-refresh"><i class="fa fa-refresh"></i></a>
         <table class="table not-wide">
             <tbody>
                 @foreach (var f in Model.GetExtraValues())

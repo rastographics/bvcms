@@ -48,6 +48,8 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/UploadPicture/{id:int}")]
         public ActionResult UploadPicture(int id, HttpPostedFileBase picture)
         {
+            if (picture == null) 
+                return Redirect("/Person2/" + id);
             var person = DbUtil.Db.LoadPersonById(id);
             DbUtil.LogActivity("Uploading Picture for {0}".Fmt(person.Name));
             person.UploadPicture(DbUtil.Db, picture.InputStream);

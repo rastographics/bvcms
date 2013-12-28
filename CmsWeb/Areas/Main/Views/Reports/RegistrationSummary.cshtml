@@ -1,29 +1,14 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model IEnumerable<CmsData.View.RecentRegistration>
 @{
     ViewBag.Title = "Registrations Summary";
-    Layout = Fingerprint.Layout();
-    var useclass = "grid";
-    if (Fingerprint.UseNewLook())
-    {
-        useclass = "table table-condensed table-striped";
-    }
-}
-@section scripts
-{
-    @if (!Fingerprint.UseNewLook())
-    {
-        <script>
-            $(function () {
-                $("table.grid > tbody > tr:even").addClass("alt");
-            });
-        </script>
-    }
+    Layout = ViewExtensions2.Layout();
 }
 
 <h2>Registrations Summary</h2>
 
-<table class="@useclass">
+<table class="@ViewExtensions2.GridClass">
     <thead>
         <tr>
             <th>FirstDate</th>

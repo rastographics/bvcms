@@ -1,10 +1,12 @@
 ﻿@using CmsData
+@using CmsWeb
+@using CmsWeb.Code
 @using CmsWeb.Models
 @using UtilityExtensions
 @model PeopleSearchModel
 @{
 	ViewBag.Title = "People Search";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section head 
 {
@@ -59,7 +61,7 @@
         <td></td>*@
         <th class="right" colspan="3"> Status Flags: </th>
         <td>
-            @Html.DropDownList("statusflags", new SelectList(QueryBuilderClause.StatusFlags(DbUtil.Db), "Tag", "Text"), new { multiple="multiple" })
+            @Html.DropDownList("statusflags", new SelectList(CodeValueModel.StatusFlags(), "Code", "Value"), new { multiple="multiple" })
         </td>
     </tr>
     }

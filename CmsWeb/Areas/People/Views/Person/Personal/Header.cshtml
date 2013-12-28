@@ -46,10 +46,10 @@ else
 {
     if (a.AddressLineOne.HasValue() || a.Preferred)
     {
-        var icon = a.Name == "FamilyAddr" ? "icon-home" : "icon-male";
-    <i class="@icon icon-fixedwidth"></i>
+        var icon = a.Name == "FamilyAddr" ? "fa-home" : "fa-male";
+    <i class="fa @icon fa-fw"></i>
     <a href="#" class="popover-map" rel="popover">@a.AddrCityStateZipLine()</a>
-    <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="edit editaddr">&nbsp;&nbsp;<i class="icon-pencil"></i></a>
+    <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="edit editaddr">&nbsp;&nbsp;<i class="fa fa-pencil"></i></a>
     <br />
     }
 }
@@ -61,7 +61,7 @@ else
     sb.AppendNext(bull, Model.HomePhone);
     if (sb.Length > 0)
     {
-    <i class="icon-comment-alt icon-fixedwidth"></i>
+    <i class="fa fa-comment-o fa-fw"></i>
     <span id="contactline">@Html.Raw(sb)</span>
     }
 }

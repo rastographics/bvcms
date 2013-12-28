@@ -17,10 +17,6 @@
 		$("#accesstype").val(0);
 		$.getTable();
 	});
-	$.formatTable = function () {
-		$('table.grid > tbody > tr:even').addClass('alt');
-	};
-	$.formatTable();
 	$(".bt").button();
 	$(".datepicker").datepicker();
 });

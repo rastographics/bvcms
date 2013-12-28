@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.SearchModel
+﻿@using CmsWeb
+@model CmsWeb.Models.SearchModel
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title></title>
@@ -9,6 +10,8 @@
             white-space: nowrap;
         }
     </style>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/Bundle/main.js")
     @Html.Partial("DatePickerDefaults")
     @Fingerprint.Script("/Scripts/Dialog/SearchAdd.js")

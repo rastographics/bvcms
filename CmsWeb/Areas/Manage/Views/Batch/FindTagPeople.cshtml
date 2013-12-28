@@ -3,19 +3,11 @@
 @using UtilityExtensions
 @{
     ViewBag.Title = "FindTagPeople";
-    Layout = Fingerprint.Layout();
-}
-@section scripts
-{
-    <script type="text/javascript">
-        $(function () {
-            $("table.grid > tbody > tr:even").addClass("alt");
-        });
-    </script>
+    Layout = ViewExtensions2.Layout();
 }
 <h2>FindTagPeople</h2>
 
-<table class="grid" cellpadding="4">
+<table class="@ViewExtensions2.GridClass">
     <tr>
         <th> PeopleId </th>
         <th> Found </th>

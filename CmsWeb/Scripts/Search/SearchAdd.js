@@ -21,7 +21,7 @@
     $(document).on("shown", "#search-add", function() {
         $("#search-add #Name").focus();
         $("#search-add #Name").live("keydown", function (event) {
-            if (event.keyCode == 13) {
+            if (event.keyCode === 13) {
                 event.preventDefault();
                 $("#searchperson").click();
                 return false;
@@ -80,7 +80,7 @@
             .on("hidden", function (e) { e.stopPropagation(); })
             .collapse("show");
         tr.removeClass("notshown").addClass("shown");
-        tr.find("i").removeClass("icon-caret-right").addClass("icon-caret-down");
+        tr.find("i").removeClass("fa-caret-right").addClass("fa-caret-down");
     };
     var $CollapseAll = function (tr) {
         tr.nextUntil("tr.section").find("div.collapse")
@@ -88,7 +88,7 @@
             .on("hidden", function (e) { e.stopPropagation(); })
             .collapse('hide');
         tr.removeClass("shown").addClass("notshown");
-        tr.find("i").removeClass("icon-caret-down").addClass("icon-caret-right");
+        tr.find("i").removeClass("fa-caret-down").addClass("fa-caret-right");
     };
     $("form.ajax tr.master").live("click", function (ev) {
         if ($.NotReveal(ev)) return;

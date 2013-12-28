@@ -9,9 +9,7 @@
 	    var f = $(this).closest('form');
 		var q = f.serialize();
 		$.post("/FinanceReports/TotalsByFundResults", q, function (ret) {
-			$("#results").html(ret).ready(function () {
-				$('table.grid tbody tr:even').addClass('alt');
-			});
+		    $("#results").html(ret);
 		});
 	});
 	$("#exportdonordetails").click(function (ev) {

@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using CmsData;
+using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 
@@ -30,7 +31,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 		public ActionResult Index()
 		{
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return Redirect("/ContactSearch2/");
 			Response.NoCache();
 			var m = new ContactSearchModel();
@@ -95,11 +96,11 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
         [HttpPost]
 		public ActionResult ConvertToQuery(ContactSearchModel m)
-		{
-			var qb = DbUtil.Db.QueryBuilderScratchPad();
-			qb.CleanSlate(DbUtil.Db);
+        {
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
 			var comp = CompareType.Equal;
-			var clause = qb.AddNewClause(QueryType.MadeContactTypeAsOf, comp, "1,T");
+			var clause = cc.AddNewClause(QueryType.MadeContactTypeAsOf, comp, "1,T");
 			clause.Program = m.Ministry ?? 0;
 			clause.StartDate = m.StartDate ?? DateTime.Parse("1/1/2000");
 			clause.EndDate = m.EndDate ?? DateTime.Today;
@@ -109,8 +110,10 @@ namespace CmsWeb.Areas.Main.Controllers
 					select v.IdCode;
 			var idvalue = q.Single();
 			clause.CodeIdValue = idvalue;
-			DbUtil.Db.SubmitChanges();
-			return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
+            cc.Save(DbUtil.Db);
+            if (ViewExtensions2.UseNewLook())
+                return Redirect("/Query/" + cc.Id);
+			return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
 		}
 		public ActionResult ContactorSummary(string start, string end, int ministry)
 		{
@@ -131,34 +134,55 @@ namespace CmsWeb.Areas.Main.Controllers
 					} into g
 					where g.Key.MinistryId != null
 					orderby g.Key.MinistryId
-					select new
+					select new ContactorSummaryInfo
 					{
-						g.Key.PeopleId,
-						g.Key.Name,
-						g.Key.Description,
-						g.Key.MinistryName,
+					    PeopleId = g.Key.PeopleId, 
+                        Name = g.Key.Name, 
+                        Description = g.Key.Description, 
+                        MinistryName = g.Key.MinistryName,
 						cnt = g.Count()
 					};
-			return new DataGridResult(q);
+		    return View(q);
 		}
-		public ActionResult ContactSummary(string start, string end, int ministry, int typeid, int reas)
+
+	    public class ContactorSummaryInfo
+	    {
+	        public int PeopleId { get; set; }
+	        public string Name { get; set; }
+	        public string Description { get; set; }
+	        public string MinistryName { get; set; }
+	        public int cnt { get; set; }
+	    }
+
+	    public class ContactSummaryInfo
+	    {
+	        public int Count { get; set; }
+	        public string ContactType { get; set; }
+	        public string ReasonType { get; set; }
+	        public string Ministry { get; set; }
+	        public string HasComments { get; set; }
+	        public string HasDate { get; set; }
+	        public string HasContactor { get; set; }
+	    }
+
+	    public ActionResult ContactSummary(string start, string end, int ministry, int typeid, int reas)
 		{
 		    var sdt = start.ToDate();
 		    var edt = end.ToDate();
 
 		    var q = DbUtil.Db.ContactSummary(sdt, edt, ministry, typeid, reas);
 		    var q2 = from i in q
-		             select new
-		                 {
-                             Count = i.Count ?? 0,
-                             i.ContactType,
-                             i.ReasonType,
-                             i.Ministry,
-                             HasComments = i.Comments,
-                             HasDate = i.ContactDate,
-                             HasContactor = i.Contactor,
-		                 };
-			return new DataGridResult(q2);
+		             select new ContactSummaryInfo
+		             {
+		                 Count = i.Count ?? 0, 
+                         ContactType = i.ContactType, 
+                         ReasonType = i.ReasonType, 
+                         Ministry = i.Ministry, 
+                         HasComments = i.Comments, 
+                         HasDate = i.ContactDate, 
+                         HasContactor = i.Contactor
+		             };
+	        return View(q2);
 		}
 
 		public ActionResult ContactTypeTotals(string start, string end, int? ministry, int? reason)
@@ -175,18 +199,20 @@ namespace CmsWeb.Areas.Main.Controllers
 
 	    public ActionResult ContactTypeSearchBuilder(int id)
 	    {
-			var qb = DbUtil.Db.QueryBuilderScratchPad();
-			qb.CleanSlate(DbUtil.Db);
+			var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
 			var comp = CompareType.Equal;
-			var clause = qb.AddNewClause(QueryType.RecentContactType, comp, "1,T");
+			var clause = cc.AddNewClause(QueryType.RecentContactType, comp, "1,T");
 	        clause.Days = 10000;
 			var cvc = new CodeValueModel();
 			var q = from v in cvc.ContactTypeCodes()
 					where v.Id == id
 					select v.IdCode;
 	        clause.CodeIdValue = q.Single();
-			DbUtil.Db.SubmitChanges();
-			return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
+            cc.Save(DbUtil.Db);
+            if (ViewExtensions2.UseNewLook())
+                return Redirect("/Query/" + cc.Id);
+			return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
 	    }
 //        [Authorize(Roles = "Developer")]
 //	    public ActionResult DeleteContactsForType(int id)

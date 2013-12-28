@@ -1,23 +1,24 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model CmsWeb.Models.CouponModel
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Coupon";
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Bundle/main.js")
     <script type="text/javascript">
         $(function () {
             $("a.confirm").click(function () {
                 return confirm("are you sure?");
             });
+            $("#list > tbody > tr:even").addClass("alt");
         });
     </script>
 }
 <div>
     <form action="/Coupon/List" method="post">
-        <table>
+        <table class="grid">
             <tr>
                 <td>User:</td>
                 <td>@Html.DropDownList("useridfilter", Model.Users())</td>
@@ -44,63 +45,68 @@
     </form>
 </div>
 
-<table cellpadding="4" cellspacing="0">
-    <tr>
-        <th></th>
-        <th></th>
-        <th>User<br />
-            Purchaser<br />
-            Person
-        </th>
-        <th>
-            <br />
-            Coupon Amt<br />
-            Trans. Amt
-        </th>
-        <th>
-            <br />
-            <br />
-            Registration
-        </th>
-        <th>Created<br />
-            Used<br />
-        </th>
-    </tr>
-
-    @{ var n = 0; }
-    @foreach (var item in Model.Coupons())
-    {
-        n++; 
-        <tr @((n % 2) == 0 ? "class='alt'" : "")>
-            <td>
-                @if ((!item.Used.HasValue || item.Code.Length != 12) && !item.Canceled.HasValue)
-                {
-                    @Html.ActionLink("X", "Cancel", new { id = item.Code }, new { @class = "confirm" })
-                }
-            </td>
-            <td nowrap="nowrap">
-                <span style="font-family: Courier New">@item.Coupon</span>
-            </td>
-            <td>
-                @item.UserName<br />
-                @item.Name<br />
-                @(item.Person ?? "na")
-            </td>
-            <td class="right">
-                @item.Amount.ToString2("C")<br />
-                @item.RegAmt.ToString2("C")
-            </td>
-            <td>
-                @item.OrgDivName
-            </td>
-            <td>
-                @item.Created.FormatDateTm()<br />
-                @item.Used.FormatDateTm(item.Canceled.HasValue ? "canceled" : "not used")<br />
-            </td>
-            <td></td>
+<table id="list" class="@ViewExtensions2.GridClass">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th>
+                User<br />
+                Purchaser<br />
+                Person
+            </th>
+            <th>
+                <br />
+                Coupon Amt<br />
+                Trans. Amt
+            </th>
+            <th>
+                <br />
+                <br />
+                Registration
+            </th>
+            <th>
+                Created<br />
+                Used<br />
+            </th>
         </tr>
-    
-    }
+    </thead>
+    <tbody>
+        @{ var n = 0; }
+        @foreach (var item in Model.Coupons())
+        {
+            n++;
+            <tr @((n % 2) == 0 ? "class='alt'" : "")>
+                <td>
+                    @if ((!item.Used.HasValue || item.Code.Length != 12) && !item.Canceled.HasValue)
+                    {
+                        @Html.ActionLink("X", "Cancel", new { id = item.Code }, new { @class = "confirm" })
+                    }
+                </td>
+                <td nowrap="nowrap">
+                    <span style="font-family: Courier New">@item.Coupon</span>
+                </td>
+                <td>
+                    @item.UserName<br />
+                    @item.Name<br />
+                    @(item.Person ?? "na")
+                </td>
+                <td class="right">
+                    @item.Amount.ToString2("C")<br />
+                    @item.RegAmt.ToString2("C")
+                </td>
+                <td>
+                    @item.OrgDivName
+                </td>
+                <td>
+                    @item.Created.FormatDateTm()<br />
+                    @item.Used.FormatDateTm(item.Canceled.HasValue ? "canceled" : "not used")<br />
+                </td>
+                <td></td>
+            </tr>
+
+        }
+    </tbody>
 </table>
 <p>
     @Html.ActionLink("Coupon", "Index")

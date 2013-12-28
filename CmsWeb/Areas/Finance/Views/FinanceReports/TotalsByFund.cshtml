@@ -1,8 +1,9 @@
 ﻿@model CmsWeb.Models.TotalsByFundModel
+@using CmsWeb
 @using UtilityExtensions
 @using CmsData.Classes.QuickBooks
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Totals By Fund";
     var qbh = new QuickBooksHelper();
 }

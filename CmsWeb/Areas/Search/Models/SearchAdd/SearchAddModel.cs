@@ -42,6 +42,8 @@ namespace CmsWeb.Areas.Search.Models
                         return "Add as Related Family";
                     case "org":
                         return "Add as Member of Organization";
+                    case "prospect":
+                        return "Add as Prospect of Organization";
                     case "pending":
                         return "Add as Pending Member of Organization";
                     case "visitor":
@@ -96,6 +98,7 @@ namespace CmsWeb.Areas.Search.Models
                     break;
                 case "org":
                 case "pending":
+                case "prospect":
                     org = DbUtil.Db.LoadOrganizationById(contextid.ToInt());
                     CampusId = org.CampusId;
                     EntryPointId = org.EntryPointId ?? 0;
@@ -203,6 +206,8 @@ namespace CmsWeb.Areas.Search.Models
                     return AddOrgMembers(iid, false, OriginCode.Enrollment);
                 case "pending":
                     return AddOrgMembers(iid, true, OriginCode.Enrollment);
+                case "prospect":
+                    return AddOrgMembers(iid, true, OriginCode.Enrollment, membertypeid: MemberTypeCode.Prospect);
                 case "visitor":
                     return AddVisitors(iid, OriginCode.Visit);
                 case "registered":
@@ -227,7 +232,7 @@ namespace CmsWeb.Areas.Search.Models
                     break;
                 case "mergeto":
                     if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected", pid = PendingList[0].PeopleId, from = AddContext,  pid2=PrimaryKeyForContextType.ToInt() };
+                        return new ReturnResult { close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext };
                     break;
                 case "taskowner":
                     if (PendingList.Count > 0)
@@ -354,7 +359,7 @@ namespace CmsWeb.Areas.Search.Models
             DbUtil.Db.SubmitChanges();
             return new ReturnResult { pid = PendingList[0].PeopleId, from = AddContext };
         }
-        private ReturnResult  AddOrgMembers(int id, bool pending, int origin)
+        private ReturnResult  AddOrgMembers(int id, bool pending, int origin, int membertypeid = MemberTypeCode.Member)
         {
             string message = null;
             if (id > 0)
@@ -382,7 +387,7 @@ namespace CmsWeb.Areas.Search.Models
                 {
                     AddPerson(p, PendingList, origin, EntryPointId);
                     OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                        id, p.PeopleId.Value, 220, Util.Now, null, pending);
+                        id, p.PeopleId.Value, membertypeid, Util.Now, null, pending);
                 }
                 DbUtil.Db.SubmitChanges();
 				DbUtil.Db.UpdateMainFellowship(id);

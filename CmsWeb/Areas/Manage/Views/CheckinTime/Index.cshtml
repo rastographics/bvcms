@@ -4,7 +4,7 @@
 @model CmsWeb.Models.CheckinTimeModel
 @{
 	ViewBag.Title = "Check-in Activity";
-	Layout = Fingerprint.Layout();
+	Layout = ViewExtensions2.Layout();
 
     var at = Model.AccessTypes();
     var atd = Model.AccessTypes(true);
@@ -83,7 +83,7 @@
 </div>
 <div class="floatclear">
 </div>
-<table id="Checkins" class="grid" cellpadding="5">
+<table id="Checkins" class="@ViewExtensions2.GridClass" cellpadding="5">
 	<thead>
 		<tr><td colspan="3"><hr /></td></tr>
 		<tr>

@@ -4,13 +4,12 @@
 
 @{
     ViewBag.Title = "ManagedGiving";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section scripts
 {
     <script type="text/javascript">
         $(function() {
-            $('table.grid tbody tr:even').addClass('alt');
             $("a.delete").click(function(ev) {
                 ev.preventDefault();
                 if (confirm("are you sure?")) {
@@ -23,7 +22,7 @@
     </script>
 }
 <h2>Managed Giving</h2>
-<table class="grid" cellpadding="5">
+<table class="@ViewExtensions2.GridClass">
 	<thead>
 		<tr>
 			<td>Name</td>

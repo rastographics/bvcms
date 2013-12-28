@@ -1,9 +1,10 @@
-﻿@using CmsWeb.Models
+﻿@using CmsWeb
+@using CmsWeb.Models
 @using CmsData
 @using UtilityExtensions
 @model CmsWeb.Models.PersonPage.PersonModel
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Person";
     CmsWeb.Models.PersonPage.PersonInfo p = Model.displayperson;
     var isaccess = User.IsInRole("Access");

@@ -1,7 +1,7 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
 <form id="picture-modal" action="/Person2/UploadFamilyPicture/@Model.PeopleId" method="post" enctype="multipart/form-data" class="modal fade hide">
     <div class="modal-header">
-        <button class="close" data-dismiss="modal" type="button" aria-hidden="true"><i class="icon-remove-sign"></i></button>
+        <button class="close" data-dismiss="modal" type="button" aria-hidden="true"><i class="fa fa-times-sign"></i></button>
         <h3>Photo</h3>
     </div>
     <div class="modal-body">
@@ -14,6 +14,6 @@
     <div class="modal-footer">
         <a href="#" class="btn" data-dismiss="modal">Cancel</a>
         <a id="delete-picture" href="/Person2/DeleteFamilyPicture/@Model.PeopleId" class="btn btn-danger">Delete</a>
-        <input type="submit" class="btn btn-primary" value="Save changes" />
+        <input type="submit" class="btn btn-primary" value="Upload" />
     </div>
 </form>

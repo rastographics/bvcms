@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.People.Controllers
         [GET("{id:int}")]
         public ActionResult Index(int? id)
         {
-            if (!Fingerprint.UseNewLook())
+            if (!ViewExtensions2.UseNewLook())
                 return Redirect("/Person/Index/" + id);
             if (!id.HasValue)
                 return Content("no id");

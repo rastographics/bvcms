@@ -7,12 +7,12 @@
 <form  class="non-modal ajax">
     <div class="pagination pagination-mini">
         @Html.Partial("Pager3", Model.Pager)
-        <a id="refresh-current" href="#" class="ajax-refresh pull-right"><i class="icon-refresh"></i></a>
+        <a id="refresh-current" href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
     </div>
     <table class="expanding table table-condensed table-hover">
         <thead>
             <tr>
-                <th>@Model.Pager.SortLink2("default", @"<i class=""icon-sort""></i>")</th>
+                <th>@Model.Pager.SortLink2("default", @"<i class=""fa fa-sort""></i>")</th>
                 <th>@Model.Pager.SortLink("Organization")</th>
                 <th>Leader</th>
                 <th>@Model.Pager.SortLink("Enroll Date")</th>
@@ -29,14 +29,14 @@
                 {
                     pOrgType = om.OrgType;
                 <tr class="section notshown">
-                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="icon-caret-right"></i></a></td>
+                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
                     <td colspan="5"><span>@om.OrgType</span></td>
                 </tr>
                 }
                 if (User.IsInRole("Access"))
                 {
                 <tr class="master @oddrow">
-                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="icon-info-sign"></i></a></td>
+                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
                     <td><a href="/Organization/Index/@om.OrgId">@om.Name</a></td>
                     <td><a href="/Person/Index/@om.LeaderId">@om.LeaderName</a></td>
                     <td>@om.EnrollDate.FormatDate()</td>

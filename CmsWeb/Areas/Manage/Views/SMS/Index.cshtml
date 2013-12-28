@@ -2,7 +2,7 @@
 @model CmsWeb.Models.SMSModel
 @{
     ViewBag.Title = "Index";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section scripts
 {
@@ -62,7 +62,7 @@
 </div>
 <div class="floatclear"></div>
 <br />
-<table class="grid" cellpadding="4">
+<table class="@ViewExtensions2.GridClass" cellpadding="4">
     <thead>
     <tr>
         <th align="center"><a href="#" class="sortable">Sent/Scheduled</a></th>

@@ -16,7 +16,6 @@ namespace CmsData
         #region Fields
 
         public Guid Id { get; set; }
-        public Guid? CopiedFrom { get; set; }
         public Guid? ParentId { get; set; }
         public int Order { get; set; }
         public string ConditionName { get; set; }
@@ -33,6 +32,7 @@ namespace CmsData
         public int Days { get; set; }
         public string Owner { get; set; }
         public string Description { get; set; }
+        public string PreviousName { get; set; }
         public bool IsPublic { get; set; }
         public DateTime CreatedOn { get; set; }
         public string Quarters { get; set; }
@@ -345,6 +345,7 @@ namespace CmsData
             DateValue = from.DateValue;
             Days = from.Days;
             Description = from.Description;
+            PreviousName = from.PreviousName;
             Division = from.Division;
             EndDate = from.EndDate;
             ConditionName = from.ConditionName;
@@ -363,17 +364,6 @@ namespace CmsData
             foreach (var c in Conditions)
                 c.DeleteClause();
             allClauses.Remove(Id);
-        }
-        public Guid CleanSlate2(CMSDataContext Db)
-        {
-            foreach (var c in Conditions)
-                c.DeleteClause();
-            SetQueryType(QueryType.Group);
-            SetComparisonType(CompareType.AllTrue);
-            var nc = AddNewClause();
-            Description = Util.ScratchPad2;
-            Save(Db);
-            return nc.Id;
         }
         public void Reset(CMSDataContext Db)
         {

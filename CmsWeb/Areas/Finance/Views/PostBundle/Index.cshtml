@@ -2,7 +2,7 @@
 @using CmsWeb
 @model CmsWeb.Models.PostBundleModel
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "PostBundle";
 }
 @section head 
@@ -45,7 +45,6 @@
     <table>
         <tr>
             <td>
-
                 <table class="roundbox">
                     <thead>
                         <tr>
@@ -109,7 +108,7 @@
     </table>
     @Html.Hidden("id")
     @Html.Hidden("editid")
-    <table id='bundle'>
+    <table id='bundle' class="@ViewExtensions2.GridClass">
         <thead>
             <tr id="headerrow">
                 <td>PeopleId</td>
@@ -137,7 +136,7 @@
                 <td colspan="2"><a class="update bt blue" href='#'>update</a></td>
                 <td>
                     <a href="#" id="gear" class="trigger-dropdown" style="display: none">
-                        <i class="icon-cog icon-large"></i>
+                        <i class="fa fa-cog fa-lg"></i>
                     </a>
                     <div class="dropdown2-menu has-tip">
                         <ul>

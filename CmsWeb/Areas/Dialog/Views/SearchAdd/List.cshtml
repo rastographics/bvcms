@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.SearchModel
+﻿@using CmsWeb
+@model CmsWeb.Models.SearchModel
 <input type="hidden" name="m.type" value="@Model.type" />
 <input type="hidden" name="m.typeid" value="@Model.typeid" />
 <input type="hidden" name="m.from" value="@Model.from" />
@@ -11,7 +12,7 @@
 
 <h4>Pending Selection List</h4>
 <a class="helplink" target="_blank" href='@Model.HelpLink("List")'>help</a>
-<table id="people" width="100%" class="grid">
+<table id="people" width="100%" class="@ViewExtensions2.GridClass">
 <thead>
 <tr class="headrow">
     <th>Name</th>

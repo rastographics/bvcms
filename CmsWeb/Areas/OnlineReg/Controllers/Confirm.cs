@@ -412,7 +412,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				ViewData["email"] = m.List[0].person.EmailAddress;
 			else
 				ViewData["email"] = m.List[0].email;
-		    ViewData["orgname"] = m.org != null ? m.org.OrganizationName : m.masterorg.OrganizationName;
+
+            if(m.masterorgid.HasValue && m.orgid.HasValue && !m.settings[m.orgid.Value].Subject.HasValue())
+    		    ViewData["orgname"] = m.masterorg.OrganizationName;
+            else
+    		    ViewData["orgname"] = m.org != null ? m.org.OrganizationName : m.masterorg.OrganizationName;
+
 		    LogOutOfOnlineReg();
 			return confirm;
 		}

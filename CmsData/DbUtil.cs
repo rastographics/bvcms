@@ -49,11 +49,18 @@ namespace CmsData
         {
             using (var cn = new SqlConnection(Util.GetConnectionString2("master")))
             {
-                cn.Open();
-                var cmd = new SqlCommand(
-                        "SELECT CAST(CASE WHEN EXISTS(SELECT NULL FROM sys.databases WHERE name = '"
-                        + name + "') THEN 1 ELSE 0 END AS BIT)", cn);
-                return (bool)cmd.ExecuteScalar();
+                try
+                {
+                    cn.Open();
+                    var cmd = new SqlCommand(
+                            "SELECT CAST(CASE WHEN EXISTS(SELECT NULL FROM sys.databases WHERE name = '"
+                            + name + "') THEN 1 ELSE 0 END AS BIT)", cn);
+                    return (bool)cmd.ExecuteScalar();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
 

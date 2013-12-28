@@ -1,9 +1,10 @@
 ﻿@using CmsData.Classes.Twilio;
+@using CmsWeb
 @using UtilityExtensions;
 @model object
 @{
     ViewBag.Title = "Options";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 
     var groups = TwilioHelper.getAvailableLists(Util.UserId);
     var count = TwilioHelper.getSendCount(Model);

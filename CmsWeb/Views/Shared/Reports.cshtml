@@ -8,6 +8,8 @@
        span.noPrint { display:none; }
     </style>
     @RenderSection("head", required: false)
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/Bundle/main.js")
     @Html.Partial("DatePickerDefaults")
     @RenderSection("scripts", required: false)

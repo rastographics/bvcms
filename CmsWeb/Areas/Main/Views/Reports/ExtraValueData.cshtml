@@ -2,28 +2,25 @@
 @model IEnumerable<CmsWeb.Areas.Main.Controllers.ReportsController.ExtraInfo>
 @{
     ViewBag.Title = "ExtraValues";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section scripts
 {
     <script type="text/javascript">
          $(function () {
-             $('table.grid tbody tr:even').addClass('alt');
              $("a.delete").click(function (ev) {
                  ev.preventDefault();
                  var d = $(this);
                  if (confirm("are you sure?"))
                      $.post(d.attr("href"), null, function () {
                          d.closest("tr").remove();
-                         $('table.grid tbody tr').removeClass('alt');
-                         $('table.grid tbody tr:even').addClass('alt');
                      });
              });
          });
     </script>
 }
 <h2>ExtraValues</h2>
-<table class="grid">
+<table class="@ViewExtensions2.GridClass">
 @foreach (var e in Model)
 {
 	<tr><td><a href="/Manage/ExtraValues/QueryDataFields?field=@Server.UrlEncode(e.Field)&type=@e.type">@e.Field</a></td>

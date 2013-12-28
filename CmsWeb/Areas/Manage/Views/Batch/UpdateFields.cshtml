@@ -1,7 +1,8 @@
-﻿@model CmsWeb.Models.UpdateFieldsModel
+﻿@using CmsWeb
+@model CmsWeb.Models.UpdateFieldsModel
 @{
     ViewBag.Title = "Update Fields for Tag";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 <h2>Update Fields for Tag</h2>
 <h4>@ViewData["success"]</h4>

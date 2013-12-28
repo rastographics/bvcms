@@ -94,8 +94,8 @@ $(function () {
     $('#SaveQueryDiv').dialog(dialogOptions);
     $('#OpenQueryDiv').dialog(dialogOptions);
 
-    $('#ShowSaveQuery').live("click", function (ev) {
-        $('#SaveQueryDesc').val($('#Description').text());
+    $('#ShowSaveQuery,#rename').live("click", function (ev) {
+        $('#SaveQueryDesc').val($('#SaveToDescription').val());
         $('#SaveQueryDiv').dialog("open");
     });
     $('#ShowOpenQuery').live("click", function (ev) {
@@ -118,8 +118,10 @@ $(function () {
         }, function (ret) {
             if (ret.startsWith("error:")) {
                 alert(ret);
-            } else
+            } else {
                 $("#Description").text(ret);
+                $("#SaveToDescription").val(ret);
+            }
         });
         return false;
     });
@@ -260,14 +262,15 @@ function CascadeDivision() {
     });
 }
 function CascadeComparison() {
-
     $('#Comparison').change(function (ev) {
         $.post('/QueryBuilder2/GetCodes/', {
+            queryid: $("#QueryId").val(),
+            selectedid: $("#SelectedId").val(),
             ConditionName: $('#ConditionName').val(),
             Comparison: $('#Comparison').val()
         }, function (ret) {
             UpdateCodes(ret);
-        });
+        }, "json");
     });
 }
 function EditCondition(ev) {

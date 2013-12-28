@@ -1,12 +1,13 @@
 ﻿@model CmsWeb.Models.QueryModel
 @using CmsData
+@using CmsWeb
 @{
     var useemployer = DbUtil.Db.Setting("UseEmployerNotTeacher", "false") == "true";
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
 <h4>Total Count: @Model.Count.ToString("N0")</h4>
 @Html.Partial("Pager", Model.pagerModel())
-<table id="people" class="grid">
+<table id="people" class="@ViewExtensions2.GridClass">
 <thead>
     <tr>
         <th> <a href="#" class="sortable">Name</a> </th>

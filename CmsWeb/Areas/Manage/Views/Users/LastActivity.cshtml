@@ -3,12 +3,12 @@
 @using CmsWeb;
 @using UtilityExtensions;
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Last Activity";
 }
     <div>
 		<form action="/Manage/Users/LastActivity" method="GET">@Html.TextBox("activity") <input id="filter" type="submit" name="activity" value="Search"/></form> 
-    <table class="grid" cellpadding="5">
+    <table class="@ViewExtensions2.GridClass" cellpadding="5">
         <tr>
             <td></td>
             <td><a href="/Manage/Users/LastActivity">All</a></td>

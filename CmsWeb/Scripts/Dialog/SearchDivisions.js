@@ -21,11 +21,10 @@
         window.parent.$('#divisionsDialog').dialog('close');
     });
     $.formatTable = function () {
-        $("td.tooltip").tooltip({
+        $("td.tip").tooltip({
             showURL: false,
             showBody: "|"
         });
-        $('#results > tbody > tr:even').addClass('alt');
     };
     $.formatTable();
     $('input:checkbox').live("change", function (ev) {

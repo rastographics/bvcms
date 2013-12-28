@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model CmsWeb.Models.OrgSearchModel
     @if (User.IsInRole("edit"))
     {
@@ -9,7 +10,7 @@
     </script>
     }
 
-<table id="results" class="grid">
+<table id="results" class="@ViewExtensions2.GridClass">
 <thead>
     <tr><td colspan="10">
 <div>Count: @Model.Count()</div>

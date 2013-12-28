@@ -74,6 +74,8 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/UploadDocument/{id:int}")]
         public ActionResult UploadDocument(int id, HttpPostedFileBase doc)
         {
+            if (doc == null) 
+                return Redirect("/Person2/" + id);
             var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
             DbUtil.LogActivity("Uploading Document for {0}".Fmt(person.Name));
             person.UploadDocument(DbUtil.Db, doc.InputStream, doc.FileName, doc.ContentType);

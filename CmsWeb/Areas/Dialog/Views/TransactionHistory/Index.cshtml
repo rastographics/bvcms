@@ -1,21 +1,13 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.TransactionHistoryModel
 @using CmsWeb
 @using UtilityExtensions
-<!DOCTYPE html>
-<html>
-<head>
-    <title>History</title>
-    @Fingerprint.Css("/content/styles/bundle-css.css")
-    <link href="/Content/styles/style2.css" rel="stylesheet" type="text/css" />
-    @Fingerprint.Script("/Scripts/Bundle/main.js")
-    @Html.Partial("DatePickerDefaults")
-    @Fingerprint.Script("/Scripts/Admin/TransactionHistory.js")
-</head>
-<body>
-    <div>
+@{
+    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Ministry";
+}
         <p>@Model.Name<br />
             @Model.Org</p>
-        <table id="attends" class="grid" cellpadding="5">
+        <table id="attends" class="@ViewExtensions2.GridClass" cellpadding="5">
             <thead>
                 <tr>
                     <th> </th>
@@ -50,6 +42,3 @@
         </table>
         <div>&nbsp;</div>
         @{Html.RenderPartial("History", Model.FetchHistory()); }
-    </div>
-</body>
-</html>

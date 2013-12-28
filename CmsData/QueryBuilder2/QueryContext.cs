@@ -47,28 +47,66 @@ namespace CmsData
             c.justloadedquery = q;
             return c;
         }
-        public Query QueryIsCurrentPerson()
+        public Query StandardQuery(string name, QueryType typ)
         {
-            const string STR_IsCurrentPerson = "IsCurrentPerson2";
-            var qb = Queries.FirstOrDefault(c => c.Owner == STR_System
-                && c.Name == STR_IsCurrentPerson);
+            var qb = Queries.FirstOrDefault(c => c.Owner == STR_System && c.Name == name);
             if (qb == null)
             {
                 var c = Condition.CreateNewGroupClause();
-                c.AddNewClause(QueryType.IsCurrentPerson, CompareType.Equal, "1,T");
+                c.AddNewClause(typ, CompareType.Equal, "1,T");
                 qb = new Query
                 {
                     QueryId = c.Id,
                     Owner = STR_System,
                     Created = DateTime.Now,
                     LastRun = DateTime.Now,
-                    Name = STR_IsCurrentPerson,
+                    Name = name,
                     Text = c.ToXml()
                 };
                 Queries.InsertOnSubmit(qb);
                 SubmitChanges();
             }
             return qb;
+        }
+        public Query QueryIsCurrentPerson()
+        {
+            return StandardQuery("IsCurrentPerson", QueryType.IsCurrentPerson);
+        }
+        public Query QueryHasCurrentTag()
+        {
+            return StandardQuery("HasCurrentTag", QueryType.HasCurrentTag);
+        }
+        public Query QueryInCurrentOrg()
+        {
+            return StandardQuery("InCurrentOrg", QueryType.InCurrentOrg);
+        }
+        public Query QueryLeadersUnderCurrentOrg()
+        {
+            return StandardQuery("LeadersUnderCurrentOrg", QueryType.LeadersUnderCurrentOrg);
+        }
+        public Query QueryMembersUnderCurrentOrg()
+        {
+            return StandardQuery("MembersUnderCurrentOrg", QueryType.MembersUnderCurrentOrg);
+        }
+        public Query QueryInactiveCurrentOrg()
+        {
+            return StandardQuery("InactiveCurrentOrg", QueryType.InactiveCurrentOrg);
+        }
+        public Query QueryProspectCurrentOrg()
+        {
+            return StandardQuery("ProspectCurrentOrg", QueryType.ProspectCurrentOrg);
+        }
+        public Query QueryPendingCurrentOrg()
+        {
+            return StandardQuery("PendingCurrentOrg", QueryType.PendingCurrentOrg);
+        }
+        public Query QueryPreviousCurrentOrg()
+        {
+            return StandardQuery("PreviousCurrentOrg", QueryType.PreviousCurrentOrg);
+        }
+        public Query QueryVisitedCurrentOrg()
+        {
+            return StandardQuery("VisitedCurrentOrg", QueryType.VisitedCurrentOrg);
         }
         public List<Query> FetchLastFiveQueries()
         {
@@ -130,28 +168,19 @@ namespace CmsData
         public Condition LoadCopyOfExistingQuery(Guid existingId)
         {
             var i = (from existing in Queries
-                     let copy = (from v in Queries
-                                 where v.Owner == Util.UserName && v.CopiedFrom == existingId
-                                 orderby v.LastRun descending
-                                 select v).FirstOrDefault()
                      where existing.QueryId == existingId
-                     select new { copy, existing }).Single();
+                     select existing).Single();
 
-            if (string.Compare(i.existing.Owner, Util.UserName, StringComparison.OrdinalIgnoreCase) == 0 && !i.existing.Ispublic)
-                return i.existing.ToClause();
+            // This is my non public query
+            if (string.Compare(i.Owner, Util.UserName, StringComparison.OrdinalIgnoreCase) == 0)
+                return i.ToClause();
 
-            // record on existing that it was run
-            i.existing.RunCount = i.existing.RunCount + 1;
-
-            // return the copy if it is available
-            if (i.copy != null)
-                return i.copy.ToClause();
-
-            // at this point, I am either not the owner or this is a public query
-
-            var c = i.existing.ToClause().Clone(useGuid: Guid.NewGuid());
-            c.CopiedFrom = existingId;
-            c.Description = "Copy of " + i.existing.Name;
+            i.RunCount = i.RunCount + 1;
+            var q = ScratchPadCondition().justloadedquery;
+            q.Text = i.Text;
+            var c = Condition.Import(i.Text, i.Name, newGuids: true, topguid: q.QueryId);
+            c.Description = Util.ScratchPad2;
+            c.PreviousName = i.Name;
             c.Save(this);
             return c;
         }

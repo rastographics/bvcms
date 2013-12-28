@@ -73,8 +73,6 @@ $(function () {
     $(".bt").button();
     $(".datepicker").datepicker();
 
-    $('form table.grid > tbody > tr:even').addClass('alt');
-
     $(".CreateAndGo").click(function (ev) {
         ev.preventDefault();
         if (confirm($(this).attr("confirm")))
@@ -405,7 +403,6 @@ $(function () {
         q = q + '&' + ff.serialize();
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
                 $("a.trigger-dropdown", f).dropdown2();
                 $('.bt').button();
                 $(".datepicker").datepicker();

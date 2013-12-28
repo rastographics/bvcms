@@ -1,10 +1,6 @@
 ﻿$(function () {
     $(".bt").button();
     $(".datepicker").datepicker();
-    $.fmtTable = function () {
-        $('table.grid > tbody > tr:even').addClass('alt');
-    };
-    $.fmtTable();
     $("#search").click(function (ev) {
         ev.preventDefault();
         $.getTable();
@@ -24,7 +20,7 @@
         var f = $('#results').closest('form');
         var q = f.serialize();
         $.post('/ContactSearch/Results', q, function (ret) {
-            $('#results').replaceWith(ret).ready($.fmtTable);
+            $('#results').replaceWith(ret);
         });
     };
     $("#ConvertToQuery").click(function (ev) {

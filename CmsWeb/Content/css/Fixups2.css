@@ -160,8 +160,7 @@ table.expanding tr.oddrow > td {
 
 
 
-a.edit [class^="icon-"],
-a.edit [class*=" icon-"] {
+a.edit.fa {
     color: #CCC;
 }
 
@@ -205,7 +204,7 @@ a.edit:hover {
 
 
 
-.icon-fixedwidth {
+.fa-fw {
     display: inline-block !important;
     width: 1.3em;
     text-align: center;
@@ -236,6 +235,7 @@ ul.typeahead li.active a,
 #profile-header {
     /*border-top: 5px solid #3482C6;*/
     height: auto;
+    min-height: 140px;
 }
 
 
@@ -256,6 +256,10 @@ ul.typeahead li.active a,
     height: 230px;
     background-position: center top;
     background-repeat: no-repeat;
+    -ms-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    -webkit-background-size: contain;
     background-size: contain;
 }
 
@@ -298,11 +302,8 @@ form.form.form-horizontal.ajax div.form-actions {
     padding: 35px 0 0 0;
 }
 
-
 #navGlobal {
-    height: 54px;
-    background: #323334;
-    background: rgba(50, 51, 52, 0.7);
+    height: auto;
 }
 
     /*#navGlobal .form-search {
@@ -377,6 +378,7 @@ form.form.form-horizontal.ajax div.form-actions {
 
 .navbar .nav > li > a {
     -ms-text-shadow: none;
+    -webkit-text-shadow: none;
     text-shadow: none;
 }
 
@@ -410,11 +412,13 @@ form.form.form-horizontal.ajax div.form-actions {
 }
 
 
-
+i.outsideCurrentTag {
+    display: none;
+}
 span.currentTag {
     display: inline-block;
     overflow: hidden;
-    max-width: 80px;
+    max-width: 150px;
     -moz-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
@@ -436,6 +440,14 @@ span.currentTag {
     div.controls.code-dropdown {
         min-height: 31px;
     }
+  #navGlobal .outsideCurrentTag {
+    display: inline;
+  }
+}
+@media (max-width: 979px) {
+  #navGlobal .outsideCurrentTag {
+    display: inline;
+  }
 }
 
 #conditionsList .conditions > li .dropdown {
@@ -486,8 +498,7 @@ span.currentTag {
     right: -2px;
 }
 
-#conditionsList a.edit [class^="icon-"],
-#conditionsList a.edit [class*=" icon-"] {
+#conditionsList a.edit.fa {
     color: #666;
 }
 
@@ -1036,6 +1047,16 @@ table.pad0 td {
     color: red;
 }
 
+.navbar-fixed-top {
+  height: auto;
+}
+
+#urgentNotice {
+    background-color: #FF0;
+    font-size: 120%;
+    padding: .2em 1em .2em 1em;
+}
+
 @media only screen and (max-device-width: 480px) {
     .navbar-fixed-top,
     .navbar-fixed-bottom {
@@ -1046,5 +1067,25 @@ table.pad0 td {
 
     body {
         padding-top: 0 !important;
+    }
+}
+#clientheader h1 {
+    margin: 0;
+    line-height: 1.5em;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 150%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+#clientheader h1 i {
+    font-size: 60%;
+}
+@media (max-width: 1200px) {
+    #navGlobal .nav a.dropdown-toggle {
+        font-size: 13px;
     }
 }

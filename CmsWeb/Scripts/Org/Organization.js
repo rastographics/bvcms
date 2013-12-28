@@ -8,6 +8,29 @@
     }
 };
 $(function () {
+    $("#search-add a.commit").live("click", function (ev) {
+        ev.preventDefault();
+        var f = $(this).closest("form");
+        var q = f.serialize();
+        var loc = $(this).attr("href");
+        $.post(loc, q, function (ret) {
+            f.modal("hide");
+            if (ret.message) {
+                alert(ret.message);
+            } else
+                switch (ret.from) {
+                    case 'org':
+                    case 'prospect':
+                    case 'pending':
+                        RebindMemberGrids();
+                        break;
+                    case 'Menu':
+                        window.location = '/Person2/' + ret.pid;
+                        break;
+                }
+        });
+        return false;
+    });
     $("#Settings-tab").tabs();
     $("#main-tab").tabs();
     $("#main-tab").show();
@@ -72,8 +95,6 @@ $(function () {
     });
     $(".bt").button();
     $(".datepicker").datepicker();
-
-    $('form table.grid > tbody > tr:even').addClass('alt');
 
     $(".CreateAndGo").click(function (ev) {
         ev.preventDefault();
@@ -256,8 +277,8 @@ $(function () {
                 $("#selectquestions").dialog({
                     title: "Add Question",
                     autoOpen: false,
-                    width: 595,
-                    height: 195,
+                    width: 500,
+                    height: 250,
                     modal: true
                 });
                 $('a.AddQuestion').click(function (ev) {
@@ -416,7 +437,6 @@ $(function () {
         q = q + '&' + ff.serialize();
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
-                $('table.grid > tbody > tr:even', f).addClass('alt');
                 $("a.trigger-dropdown", f).dropdown2();
                 $('.bt').button();
                 $(".datepicker").datepicker();

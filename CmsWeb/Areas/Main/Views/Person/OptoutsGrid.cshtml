@@ -1,5 +1,6 @@
 ﻿@model CmsData.Person
 @using CmsData
+@using CmsWeb
 @using UtilityExtensions
 <a href="/Manage/Emails/Failed/@Model.PeopleId">Failed Sent Emails</a>
 <h3>Email Optouts</h3>
@@ -8,7 +9,7 @@
 <a href="/Person/AddOptout/@Model.PeopleId" id="addoptoutemail" class="bt">Add Optout</a>
 @if (Model.EmailOptOuts.Count > 0)
 {
-<table class="grid" cellspacing="5">
+<table class="@ViewExtensions2.GridClass" cellspacing="5">
 <thead>
     <tr>
 		<td><b>From Email</b></td>

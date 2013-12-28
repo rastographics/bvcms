@@ -1,6 +1,7 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model CmsWeb.Models.MemberDirectoryModel
-<table id="results" class="grid">
+<table id="results" class="@ViewExtensions2.GridClass">
 <thead>
     <tr><td colspan="6">
 Count: @Model.Count().ToString("n0") @(Model.Sort == "Birthday" ? "people" : "families")

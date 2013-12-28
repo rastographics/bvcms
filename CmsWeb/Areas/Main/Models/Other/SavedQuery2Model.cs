@@ -21,8 +21,8 @@ namespace CmsWeb.Models
         {
             onlyMine = DbUtil.Db.UserPreference("savedSearchOnlyMine", "true").ToBool();
             Pager = new PagerModel2(Count);
-            Pager.Direction = "asc";
-            Pager.Sort = "Description";
+            Pager.Direction = "desc";
+            Pager.Sort = "LastRun";
         }
         private int? _count;
         public int Count()
@@ -57,6 +57,7 @@ namespace CmsWeb.Models
                          Description = c.Name,
                          IsPublic = c.Ispublic,
                          LastUpdated = c.Created,
+                         LastRun = c.LastRun ?? c.Created,
                          User = c.Owner
                      };
             return q3;
@@ -88,6 +89,12 @@ namespace CmsWeb.Models
                                 orderby c.Owner, c.Name
                                 select c;
                             break;
+                        case "LastRun":
+                            q = from c in q
+                                let dt = c.LastRun ?? c.Created
+                                orderby dt 
+                                select c;
+                            break;
                     }
                     break;
                 case "desc":
@@ -113,6 +120,12 @@ namespace CmsWeb.Models
                                 orderby c.Owner descending, c.Name
                                 select c;
                             break;
+                        case "LastRun":
+                            q = from c in q
+                                let dt = c.LastRun ?? c.Created
+                                orderby dt descending
+                                select c;
+                            break;
                     }
                     break;
             }
@@ -126,5 +139,6 @@ namespace CmsWeb.Models
         public string User { get; set; }
         public string Description { get; set; }
         public DateTime? LastUpdated { get; set; }
+        public DateTime? LastRun { get; set; }
     }
 }

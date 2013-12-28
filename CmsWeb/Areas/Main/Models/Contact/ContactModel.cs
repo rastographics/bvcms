@@ -63,6 +63,8 @@ namespace CmsWeb.Models.ContactPage
         {
             ContactId = id;
             LoadContact(id);
+            if (contact == null)
+                return;
             this.CopyPropertiesFrom(contact);
         }
 

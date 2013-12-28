@@ -56,8 +56,8 @@ namespace CmsWeb.Controllers
         }
         public ActionResult NewQuery()
         {
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
+            var qb = DbUtil.Db.ScratchPadCondition();
+            qb.Reset(DbUtil.Db);
             return Redirect("/QueryBuilder/Main");
         }
         public ActionResult Test()
@@ -77,7 +77,7 @@ namespace CmsWeb.Controllers
         {
             var name = "VisitNumber-" + id;
             const CompareType comp = CompareType.Equal;
-            if (Fingerprint.TestSb2())
+            if (ViewExtensions2.TestSb2())
             {
                 var cc = DbUtil.Db.ScratchPadCondition();
                 cc.Reset(DbUtil.Db);

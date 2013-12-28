@@ -1,8 +1,9 @@
 ﻿@model CmsWeb.Areas.Main.Models.Report.MeetingsModel
+@using CmsWeb
 @using UtilityExtensions
 @{
     ViewBag.Title = "Meetings";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     var meetings = Model.MeetingsForDate();
 }
 @section head
@@ -51,7 +52,7 @@
     @Html.HiddenFor(m => m.Direction)
 </form>
 <hr/>
-<table class="grid" cellspacing="10">
+<table class="@ViewExtensions2.GridClass" cellspacing="10">
     <tr>
         <td class="right"> Total Individuals </td>
         <td class="right"><a class="submit" href="/Reports/MeetingsToQuery/All">@Model.TotalPeople.ToString("N0")</a></td>
@@ -72,7 +73,7 @@
     </tr>
 </table>
 <hr />
-<table class="grid" cellspacing="3">
+<table class="@ViewExtensions2.GridClass" cellspacing="3">
     <thead>
         <tr>
             <th>Meeting</th>

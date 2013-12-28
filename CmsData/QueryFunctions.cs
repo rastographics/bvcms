@@ -53,24 +53,24 @@ namespace CmsData
                 return "VitalStats script error: " + ex.Message;
             }
         }
-	    public static string RunScript(CMSDataContext db, string script)
-	    {
+        public static string RunScript(CMSDataContext db, string script)
+        {
             if (!script.HasValue())
                 return "no VitalStats script";
 
             var qf = new QueryFunctions(db);
-		    var engine = Python.CreateEngine();
+            var engine = Python.CreateEngine();
             var ms = new MemoryStream();
-		    var sw = new StreamWriter(ms);
-		    engine.Runtime.IO.SetOutput(ms, sw);
-		    engine.Runtime.IO.SetErrorOutput(ms, sw);
-		    var sc = engine.CreateScriptSourceFromString(script);
+            var sw = new StreamWriter(ms);
+            engine.Runtime.IO.SetOutput(ms, sw);
+            engine.Runtime.IO.SetErrorOutput(ms, sw);
+            var sc = engine.CreateScriptSourceFromString(script);
             try
             {
                 var code = sc.Compile();
                 var scope = engine.CreateScope();
-    		    scope.SetVariable("q", qf);
-    		    scope.SetVariable("db", db);
+                scope.SetVariable("q", qf);
+                scope.SetVariable("db", db);
                 code.Execute(scope);
                 ms.Position = 0;
                 var sr = new StreamReader(ms);
@@ -134,12 +134,14 @@ namespace CmsData
         }
         public int QueryCount(string s)
         {
-            var qB = Db.QueryBuilderClauses.FirstOrDefault(c => c.Description == s);
-            if (qB == null)
+            var qb = Db.Setting("TestSb2", "true").ToBool()
+                ? Db.PeopleQuery2(s) 
+                : Db.PeopleQuery(s);
+            if (qb == null)
                 return 0;
-            var q = Db.People.Where(qB.Predicate(Db));
-            return q.Count();
+            return qb.Count();
         }
+
         public int StatusCount(string s)
         {
             var statusflags = s.Split(',');

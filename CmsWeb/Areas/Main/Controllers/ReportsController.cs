@@ -363,7 +363,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult ExtraValues()
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return Redirect("/ExtraValue/Summary");
             var ev = StandardExtraValues.GetExtraValues();
             var q = from e in DbUtil.Db.PeopleExtras
@@ -387,7 +387,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult ExtraValueData()
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return Redirect("/ExtraValue/Summary");
             var ev = StandardExtraValues.GetExtraValues();
             var q = from e in DbUtil.Db.PeopleExtras
@@ -562,16 +562,20 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(m);
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult RecentRegistrations(int? days, int? orgid, string sort)
         {
             var q = from r in DbUtil.Db.Registrations(days ?? 90)
                 where (orgid ?? 0) == 0 || r.OrganizationId == orgid
                 select r;
+            if (!User.IsInRole("Finance"))
+                q = q.Where(rr => !rr.OrganizationName.Contains("Giving"));
             q = sort == "Organization" 
                 ? q.OrderBy(rr => rr.OrganizationName).ThenByDescending(rr => rr.Completed) 
                 : q.OrderByDescending(rr => rr.Stamp);
             return View(q);
         }
+        [Authorize(Roles = "Admin")]
         public ActionResult RegistrationSummary(int? days, string sort)
         {
             var q = DbUtil.Db.RecentRegistrations(days ?? 90);

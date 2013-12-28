@@ -1,8 +1,9 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model IEnumerable<CmsData.View.OrganizationStructure>
 @{
     ViewBag.Title = "Organization Structure";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     var prevprog = "";
     var prevdiv = "";
 }
@@ -16,7 +17,7 @@
 }
 <h2>@ViewBag.Title</h2>
 <div>
-    <table class="grid" cellpadding="4">
+    <table class="@ViewExtensions2.GridClass" cellpadding="4">
         <thead>
             <tr>
                 <td>Program</td>

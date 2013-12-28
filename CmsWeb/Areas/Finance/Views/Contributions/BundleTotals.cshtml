@@ -1,11 +1,12 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model CmsWeb.Models.ContributionSearchModel
 @{
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Bundle Totals";
 }
 
-<table class="grid">
+<table class="@ViewExtensions2.GridClass">
     <thead>
         <tr><td colspan="4">
                 <div class="roundbox">

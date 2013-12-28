@@ -1,11 +1,12 @@
 ﻿@using CmsData
+@using CmsWeb
 @using CmsWeb.Models
 @using UtilityExtensions
 @model PeopleSearchModel
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
-<table id="results" class="grid">
+<table id="results" class="@ViewExtensions2.GridClass">
 <thead>
 	<tr><td colspan="6">@Html.Partial("Pager2", Model)
             @Html.Hidden("totcnt", Model.Count().ToString("N0"))</td></tr>

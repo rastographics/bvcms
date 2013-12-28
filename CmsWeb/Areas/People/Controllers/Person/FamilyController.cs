@@ -65,6 +65,8 @@ namespace CmsWeb.Areas.People.Controllers
         [POST("Person2/UploadFamilyPicture/{id:int}")]
         public ActionResult UploadFamilyPicture(int id, HttpPostedFileBase picture)
         {
+            if (picture == null) 
+                return Redirect("/Person2/" + id);
             var family = DbUtil.Db.Families.SingleOrDefault(ff => ff.People.Any(mm => mm.PeopleId == id));
             if (family == null)
                 return Content("family not found");

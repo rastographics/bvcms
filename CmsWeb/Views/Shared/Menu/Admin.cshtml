@@ -30,7 +30,7 @@
                             @Helper.LiAnchorLink("Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx", true, "_blank")
                             @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", true, "_blank")
                             @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
-                            @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManageGiving/")
+                            @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManagedGiving/")
                             <li class="header"></li>
                             @Helper.LiAnchorLink("Fund Management", "/Finance/Fund/")
                             @Helper.LiAnchorLink("Batch Upload Contributions", "/PostBundle/Batch/")
@@ -66,13 +66,13 @@
 }
 @helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance)
 {
-    @Helper.LiHeader("Settings", admin || finance || design)
+    @Helper.LiHeader("Setup", admin || finance || design)
     @Helper.LiAnchorLink("Lookups", "/Setup/Lookup/", admin || finance)
     @Helper.LiAnchorLink("Metro Zips", "/Setup/MetroZip/", admin)
-    @Helper.LiAnchorLink("Promotion Setup", "/Setup/Promotion/", admin)
+    @Helper.LiAnchorLink("Promotion", "/Setup/Promotion/", admin)
+    @Helper.LiAnchorLink("Settings", "/Setup/Setting/", admin)
     @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
-    @Helper.LiAnchorLink("System", "/Setup/Setting/", admin)
-    @Helper.LiAnchorLink("Twilio Setup", "/Setup/Twilio/", admin)
+    @Helper.LiAnchorLink("Twilio", "/Setup/Twilio/", admin)
     
     @Helper.LiHeader("Reports", admin)
     @Helper.LiAnchorLink("Recent Registrations", "/Reports/RecentRegistrations?days=90&orgid=0", admin)
@@ -85,11 +85,12 @@
     @Helper.LiAnchorLink("Check-in Activity", "/Manage/CheckinTime/", admin || edit)
     @Helper.LiAnchorLink("Divisions", "/Setup/Division/", admin)
     @Helper.LiAnchorLink("Emails", "/Manage/Emails/", admin || manageemails)
-    @Helper.LiAnchorLink("User Can Email For", "/Setup/UsersCanEmailFor/", admin || manageemails)
     @Helper.LiAnchorLink("Programs", "/Setup/Program/", admin)
+    @Helper.LiAnchorLink("Promotion", "/Manage/Promotion/", admin)
     @Helper.LiAnchorLink("SMS Messages", "/Manage/SMS/", admin)
     @Helper.LiAnchorLink("Transactions", "/Manage/Transactions/", admin || managetrans)
     @Helper.LiAnchorLink("Users", "/Manage/Users/", admin)
+    @Helper.LiAnchorLink("User Can Email For", "/Setup/UsersCanEmailFor/", admin || manageemails)
 
     @Helper.LiHeader("Batch Actions", admin)
     @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg", admin)

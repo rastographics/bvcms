@@ -25,16 +25,16 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
-            var ncid = qb.CleanSlate2(DbUtil.Db);
-            TempData["newsearch"] = ncid;
+            qb.Reset(DbUtil.Db);
+            qb.Save(DbUtil.Db);
             return RedirectToAction("Main");
         }
 
         public ActionResult Main(Guid? id, int? run)
         {
-            if (Fingerprint.UseNewLook())
+            if (ViewExtensions2.UseNewLook())
                 return Redirect("/Query");
-            if(!Fingerprint.TestSb2())
+            if(!ViewExtensions2.TestSb2())
                 return Redirect("/QueryBuilder");
 
             ViewData["Title"] = "QueryBuilder";
@@ -67,6 +67,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 QueryId = queryid,
                 SelectedId = selectedid,
                 ConditionName = conditionName,
+                CodeValue = "",
                 CodeValues = new string[0],
                 Program = 0,
                 Comparison = "Equal"
@@ -77,17 +78,24 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content(j);
         }
         [HttpPost]
-        public JsonResult GetCodes(string Comparison, string ConditionName)
+        public ActionResult GetCodes(Guid queryid, Guid selectedid, string Comparison, string ConditionName)
         {
-            var m = new QueryModel2 { Comparison = Comparison, ConditionName = ConditionName };
-            m.SetVisibility();
-            return Json(new
+            var m = new QueryModel2
             {
-                CodesVisible = m.CodesVisible,
-                CodeVisible = m.CodeVisible,
-                CodeData = m.CodeData,
-                SelectMultiple = m.SelectMultiple
-            });
+                QueryId = queryid,
+                SelectedId = selectedid,
+                Comparison = Comparison, 
+                ConditionName = ConditionName
+            };
+            m.SetVisibility();
+            var j = new
+            {
+                m.CodesVisible,
+                m.CodeVisible,
+                m.CodeData,
+                m.SelectMultiple
+            };
+            return Content(JsonConvert.SerializeObject(j, Formatting.Indented));
         }
         [HttpPost]
         public ActionResult EditCondition(Guid queryid, Guid selectedid)

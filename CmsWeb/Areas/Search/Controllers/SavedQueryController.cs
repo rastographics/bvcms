@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [GET("SavedQueryList/")]
         public ActionResult Index()
         {
-            if (!Fingerprint.UseNewLook())
+            if (!ViewExtensions2.UseNewLook())
                 return Redirect("/SavedQuery");
             var m = new SavedQueryModel { OnlyMine = DbUtil.Db.UserPreference("SavedQueryOnlyMine", "false").ToBool() };
             m.Pager.Set("/SavedQueryList/Results", 1, null, "Last Run", "desc");

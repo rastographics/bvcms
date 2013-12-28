@@ -1,8 +1,9 @@
 ﻿@model CmsWeb.Models.MergeModel
+@using CmsWeb
 @using UtilityExtensions
 @{
     ViewBag.Title = "Merge Controller";
-    Layout = Fingerprint.Layout();
+    Layout = ViewExtensions2.Layout();
 }
 @section scripts
 {
@@ -13,7 +14,7 @@
 <form method="post" action="/Manage/Merge/Run">
 @Html.HiddenFor(m => m.pi[0].PeopleId)
 @Html.HiddenFor(m => m.pi[1].PeopleId)
-<table class="grid">
+<table class="@ViewExtensions2.GridClass">
     <thead>
         <tr>
             <td>

@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @using CmsData
 @model CmsData.Person
 <h3>Extra Values</h3>
@@ -6,7 +7,7 @@
 {
 <a id="newextravalue" href="#" class="bt">Add New Field</a>
 }
-<table id="extravalues" class="grid">
+<table id="extravalues" class="@ViewExtensions2.GridClass">
 <thead>
     <tr>
     </tr>
