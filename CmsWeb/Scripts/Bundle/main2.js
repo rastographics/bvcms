@@ -14361,6 +14361,11 @@ $(function () {
     });
 });
 
+///#source 1 1 /Scripts/js/header.js
+$(document).ready(function () {
+    var h = $("div.navbar-fixed-top").outerHeight();
+    $("body").css("padding-top", h + "px");
+});
 ///#source 1 1 /Scripts/js/ExportToolBar2.js
 $(document).ready(function () {
     $(document).on("click", "a.dialog-options", function (ev) {

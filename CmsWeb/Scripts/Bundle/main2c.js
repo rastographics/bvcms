@@ -17018,6 +17018,11 @@ $(document).ready(function () {
     });
 });
 
+///#source 1 1 /Scripts/js/header.js
+$(document).ready(function () {
+    var h = $("div.navbar-fixed-top").outerHeight();
+    $("body").css("padding-top", h + "px");
+});
 ///#source 1 1 /Scripts/js/dropdown.js
 $(function() {
     $.fn.dropdown2 = function() {

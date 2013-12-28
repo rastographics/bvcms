@@ -1,4 +1,9 @@
-﻿<a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
+﻿@{
+    var access = User.IsInRole("Access");
+    var headerimage = DbUtil.Db.Setting("MyDataSupport", "");
+
+}
+<a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
     <i class="fa fa-question-circle"></i>
     <span class="caret"></span>
 </a>

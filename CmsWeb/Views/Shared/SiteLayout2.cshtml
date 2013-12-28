@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var access = User.IsInRole("Access");
+}
+<!DOCTYPE html>
 <html>
 <head>
     <title>@ViewBag.Title</title>
@@ -8,29 +11,29 @@
     <link href="/Content/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet" />
     @RenderSection("head", required: false)
     @Fingerprint.Css("/content/css/Fixups2.css")
-    <style type="text/css">
-        @{ var bkcolor = DbUtil.Db.Setting("HeaderBackground", ""); }
-        @if (bkcolor.HasValue())
-        {
-            @:#header { background-color: @bkcolor; }
-        }
-    </style>
     @ViewExtensions2.jQuery()
     @ViewExtensions2.Bootstrap()
     @Fingerprint.Script("/Scripts/Bundle/main2.js")
     @Html.Partial("DatePickerDefaults2")
     @RenderSection("scripts", required: false)
 </head>
-<body>
-    <div class="page-container">
-        @Html.Partial("Notices")
-        @Html.Partial("NewHeader3")
-        @RenderBody()
-    </div>
-    @Html.Partial("Footer")
-    @Html.Partial("Dialogs2")
-    @RenderSection("PopupsPlaceholder", required: false)
-@*    @Html.Partial("Support")*@
-    <img src="/Content/images/ajax-loader.gif" id="loading-indicator" style="display: none" />
-</body>
+    <body>
+        @if (access)
+        {
+        <div class="page-container">
+            @Html.Partial("NewHeader3")
+            @Html.Partial("Notices")
+            @RenderBody()
+        </div>
+        }
+        else
+        {
+        @Html.Partial("MyDataHeader")
+        }
+        @(access ? Html.Partial("Footer") : Html.Partial("MyDataFooter"))
+        @Html.Partial("Dialogs2")
+        @RenderSection("PopupsPlaceholder", required: false)
+        @*    @Html.Partial("Support")*@
+        <img src="/Content/images/ajax-loader.gif" id="loading-indicator" style="display: none" />
+    </body>
 </html>

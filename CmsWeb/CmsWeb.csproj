@@ -1016,6 +1016,7 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\brokencode.jpg" />
+    <Content Include="Content\images\bvcms-logo-on-dark.png" />
     <Content Include="Content\img\ajax-loader.gif" />
     <Content Include="Content\css\jquery.mobile-1.3.0.css" />
     <Content Include="Content\css\jquery.mobile-1.3.1.min.css" />
@@ -1171,6 +1172,7 @@
       <DependentUpon>jquery.contextmenu.r2.js</DependentUpon>
     </Content>
     <Content Include="Scripts\js\headermenu1c.js" />
+    <Content Include="Scripts\js\header.js" />
     <Content Include="Scripts\js\RegSetting2.js" />
     <Content Include="Scripts\js\ExtraValue.js" />
     <Content Include="Scripts\js\ExtraValue.min.js">
@@ -2152,6 +2154,9 @@
     <Content Include="Scripts\Search\Query.min.js.map">
       <DependentUpon>Query.js</DependentUpon>
     </Content>
+    <Content Include="Views\Shared\MyDataHeader.cshtml" />
+    <Content Include="Views\Shared\CustomHeader.cshtml" />
+    <Content Include="Views\Shared\MyDataFooter.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
