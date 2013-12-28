@@ -58,7 +58,8 @@
             $(f).html(ret).ready(function () {
                 if ($("#submitit").attr("onlyoneallowed") == "true") {
                     $.InstructionsShow();
-                    $("#submitit").click();
+                    f.submit();
+                    //$("#submitit").click();
                 }
                 else {
                     $.InstructionsShow();

@@ -2157,6 +2157,9 @@
     <Content Include="Views\Shared\MyDataHeader.cshtml" />
     <Content Include="Views\Shared\CustomHeader.cshtml" />
     <Content Include="Views\Shared\MyDataFooter.cshtml" />
+    <Content Include="Scripts\OnlineReg\OnlineReg.min.js.map">
+      <DependentUpon>OnlineReg.js</DependentUpon>
+    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
