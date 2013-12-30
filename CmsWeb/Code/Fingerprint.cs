@@ -24,19 +24,13 @@ public class Fingerprint
                 foreach (var i in xd.Descendants("file"))
                 {
                     string a = HostingEnvironment.MapPath("~" + i.Value);
-                    var fd = File.GetLastWriteTime(a);
-                    var index = i.Value.LastIndexOf('/');
-                    var t = i.Value.Insert(index + 1, "v-{0:yyMMddhhmmss}-".Fmt(fd)); 
-                    result.AppendFormat("<script type=\"text/javascript\" src=\"{0}\"></script>\n", t);
+                    result.AppendFormat("<script type=\"text/javascript\" src=\"{0}\"></script>\n", i.Value);
                 }
             }
             else
             {
                 Debug.Assert(absolute != null, "absolute != null");
-                var fd = File.GetLastWriteTime(absolute);
-                var index = path.LastIndexOf('/');
-                var t = path.Insert(index + 1, "v-{0:yyMMddhhmmss}-".Fmt(fd)); 
-                result.AppendFormat("<script type=\"text/javascript\" src=\"{0}\"></script>\n", t);
+                result.AppendFormat("<script type=\"text/javascript\" src=\"{0}\"></script>\n", path);
             }
 #else
             const string min = ".min";
@@ -65,19 +59,13 @@ public class Fingerprint
                 foreach (var i in xd.Descendants("file"))
                 {
                     string a = HostingEnvironment.MapPath("~" + i.Value);
-                    var fd = File.GetLastWriteTime(a);
-                    var index = i.Value.LastIndexOf('/');
-                    var t = i.Value.Insert(index + 1, "v-{0:yyMMddhhmmss}-".Fmt(fd)); 
-                    result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />\n", t);
+                    result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />\n", i.Value);
                 }
             }
             else
             {
                 Debug.Assert(absolute != null, "absolute != null");
-                var fd = File.GetLastWriteTime(absolute);
-                var index = path.LastIndexOf('/');
-                var t = path.Insert(index + 1, "v-{0:yyMMddhhmmss}-".Fmt(fd)); 
-                result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />\n", t);
+                result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />\n", path);
             }
 #else
             const string min = ".min";

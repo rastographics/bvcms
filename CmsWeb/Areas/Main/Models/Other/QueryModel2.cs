@@ -118,7 +118,10 @@ namespace CmsWeb.Models
         public string DateString(DateTime? dt)
         {
             if (dt.HasValue)
-                return dt.Value.ToShortDateString();
+                if (dt.Value.TimeOfDay.Ticks > 0)
+                    return dt.FormatDateTm();
+                else
+                    return dt.Value.ToShortDateString();
             return "";
         }
         [JsonIgnore]

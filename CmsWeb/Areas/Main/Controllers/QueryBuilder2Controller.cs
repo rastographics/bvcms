@@ -37,16 +37,10 @@ namespace CmsWeb.Areas.Main.Controllers
             if(!ViewExtensions2.TestSb2())
                 return Redirect("/QueryBuilder");
 
-            ViewData["Title"] = "QueryBuilder";
-            ViewData["OnQueryBuilder"] = "true";
-            ViewData["TagAction"] = "/QueryBuilder2/TagAll/";
-            ViewData["UnTagAction"] = "/QueryBuilder2/UnTagAll/";
-            ViewData["AddContact"] = "/QueryBuilder2/AddContact/";
-            ViewData["AddTasks"] = "/QueryBuilder2/AddTasks/";
-
             var newsearchid = (Guid?)TempData["newsearch"];
             var m = new QueryModel2 { QueryId = id };
-            m.SelectedId = m.TopClause.Id;
+            id = m.TopClause.Id;
+            m.SelectedId = id;
             if (m.TopClause.NewMatchAnyId.HasValue)
                 newsearchid = m.TopClause.NewMatchAnyId;
             if (newsearchid.HasValue)
@@ -55,7 +49,13 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.LogActivity("QueryBuilder");
             if (run.HasValue)
                 m.ShowResults = true;
-            ViewBag.queryid = m.TopClause.Id;
+            ViewBag.queryid = id;
+            ViewBag.Title = "QueryBuilder";
+            ViewBag.OnQueryBuilder = "true";
+            ViewBag.TagAction = "/QueryBuilder2/TagAll/" + id;
+            ViewBag.UnTagAction = "/QueryBuilder2/UnTagAll/" + id;
+            ViewBag.AddContact = "/QueryBuilder2/AddContact/" + id;
+            ViewBag.AddTasks = "/QueryBuilder2/AddTasks/" + id;
             ViewBag.AutoRun = (bool?)(TempData["AutoRun"]) == true;
             return View(m);
         }
@@ -211,11 +211,11 @@ namespace CmsWeb.Areas.Main.Controllers
             }
         }
         [HttpPost]
-        public ContentResult TagAll(string tagname, bool? cleartagfirst)
+        public ContentResult TagAll(Guid id, string tagname, bool? cleartagfirst)
         {
             if (!tagname.HasValue())
                 return Content("error: no tag name");
-            var m = new QueryModel2();
+            var m = new QueryModel2() { QueryId = id };
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
             {
                 m.TagAll();
@@ -230,28 +230,22 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content("Manage");
         }
         [HttpPost]
-        public ContentResult UnTagAll()
+        public ContentResult UnTagAll(Guid id)
         {
-            var m = new QueryModel2();
+            var m = new QueryModel2() { QueryId = id };
             m.UnTagAll();
-            var c = new ContentResult();
-            c.Content = "Add";
-            return c;
+            return Content("Add");
         }
         [HttpPost]
-        public ContentResult AddContact()
+        public ContentResult AddContact(Guid id)
         {
-            var m = new QueryModel2();
-            var qid = m.TopClause.Id;
-            var cid = CmsData.Contact.AddContact(qid);
+            var cid = CmsData.Contact.AddContact(id);
             return Content("/Contact/" + cid);
         }
         [HttpPost]
-        public ActionResult AddTasks()
+        public ActionResult AddTasks(Guid id)
         {
-            var m = new QueryModel2();
-            var qid = m.TopClause.Id;
-            return Content(Task.AddTasks(m.TopClause.Id).ToString());
+            return Content(Task.AddTasks(id).ToString());
         }
 
     }

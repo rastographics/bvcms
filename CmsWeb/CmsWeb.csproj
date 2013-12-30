@@ -1046,6 +1046,9 @@
     <Content Include="Content\styles\person.min.css">
       <DependentUpon>person.css</DependentUpon>
     </Content>
+    <Content Include="Content\styles\Site.min.css">
+      <DependentUpon>Site.css</DependentUpon>
+    </Content>
     <Content Include="Content\styles\Siteblue.css" />
     <Content Include="Content\styles\Siteblue.min.css">
       <DependentUpon>Siteblue.css</DependentUpon>
@@ -2161,7 +2164,6 @@
     <Content Include="Scripts\Search\Query.min.js.map">
       <DependentUpon>Query.js</DependentUpon>
     </Content>
-    <Content Include="Views\Shared\MyDataHeader.cshtml" />
     <Content Include="Views\Shared\CustomHeader.cshtml" />
     <Content Include="Views\Shared\MyDataFooter.cshtml" />
     <Content Include="Scripts\OnlineReg\OnlineReg.min.js.map">

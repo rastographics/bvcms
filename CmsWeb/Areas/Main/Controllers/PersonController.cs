@@ -278,7 +278,7 @@ namespace CmsWeb.Areas.Main.Controllers
 	    [HttpPost]
 	    public ActionResult AddContact(int id)
 	    {
-	        return Content(CmsData.Contact.AddContact(id, Util.UserPeopleId).ToString());
+	        return Content(Contact.AddContact(id, Util.UserPeopleId).ToString());
 	    }
 
 	    [HttpPost]
@@ -769,9 +769,7 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
 		private void InitExportToolbar(int? id)
 		{
-		    var qid = ViewExtensions2.TestSb2()
-		        ? (object) DbUtil.Db.QueryIsCurrentPerson().QueryId
-		        : DbUtil.Db.QueryBuilderIsCurrentPerson().QueryId;
+		    var qid = DbUtil.Db.QueryIsCurrentPerson().QueryId;
 		    ViewBag.queryid = qid;
 			ViewBag.TagAction = "/Person/Tag/" + id;
 			ViewBag.UnTagAction = "/Person/UnTag/" + id;

@@ -139,7 +139,7 @@ namespace CmsData
         {
             var q = (from cc in Queries
                      where cc.Owner == Util.UserName
-                     where !cc.Ispublic
+                     //where !cc.Ispublic
                      orderby cc.LastRun descending
                      select cc).FirstOrDefault();
             Condition c;
