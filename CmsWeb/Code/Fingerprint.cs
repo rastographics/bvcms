@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Caching;
 using System.Web.Hosting;
 using System.Xml.Linq;
+using UtilityExtensions;
 
 public class Fingerprint
 {
@@ -13,7 +14,7 @@ public class Fingerprint
     {
         if (HttpRuntime.Cache[path] == null)
         {
-            string absolute = HostingEnvironment.MapPath("~" + path);
+            string absolute = HostingEnvironment.MapPath("~" + path) ?? "";
             var result = new StringBuilder();
 #if DEBUG
             var bundle = absolute + ".bundle";
@@ -24,8 +25,8 @@ public class Fingerprint
                 {
                     string a = HostingEnvironment.MapPath("~" + i.Value);
                     var fd = File.GetLastWriteTime(a);
-                    int index = i.Value.LastIndexOf('/');
-                    string t = i.Value.Insert(index, "/v-" + fd.Ticks); 
+                    var index = i.Value.LastIndexOf('/');
+                    var t = i.Value.Insert(index + 1, "v-{0:yyMMddhhmmss}-".Fmt(fd)); 
                     result.AppendFormat("<script type=\"text/javascript\" src=\"{0}\"></script>\n", t);
                 }
             }
@@ -33,18 +34,18 @@ public class Fingerprint
             {
                 Debug.Assert(absolute != null, "absolute != null");
                 var fd = File.GetLastWriteTime(absolute);
-                int index = path.LastIndexOf('/');
-                string t = path.Insert(index, "/v-" + fd.Ticks); 
+                var index = path.LastIndexOf('/');
+                var t = path.Insert(index + 1, "v-{0:yyMMddhhmmss}-".Fmt(fd)); 
                 result.AppendFormat("<script type=\"text/javascript\" src=\"{0}\"></script>\n", t);
             }
 #else
             const string min = ".min";
+            var dt = File.GetLastWriteTime(absolute);
             var ext = Path.GetExtension(absolute);
             var f = Path.GetFileNameWithoutExtension(absolute);
             var d = path.Remove(path.LastIndexOf('/'));
-            DateTime dt = File.GetLastWriteTime(absolute);
-            string tag = "?v=" + dt.Ticks;
-            result.AppendFormat("<script type=\"text/javascript\" src=\"{0}/{1}{2}{3}{4}\"></script>\n", d, f, min, ext, tag);
+            var t = "v-{0:yyMMddhhmmss}-".Fmt(dt); 
+            result.AppendFormat("<script type=\"text/javascript\" src=\"{0}/{1}{2}{3}{4}\"></script>\n", d, t, f, min, ext);
 #endif
             HttpRuntime.Cache.Insert(path, result.ToString(), new CacheDependency(absolute));
         }
@@ -54,7 +55,7 @@ public class Fingerprint
     {
         if (HttpRuntime.Cache[path] == null)
         {
-            string absolute = HostingEnvironment.MapPath("~" + path);
+            string absolute = HostingEnvironment.MapPath("~" + path) ?? "";
             var result = new StringBuilder();
 #if DEBUG
             var bundle = absolute + ".bundle";
@@ -65,8 +66,8 @@ public class Fingerprint
                 {
                     string a = HostingEnvironment.MapPath("~" + i.Value);
                     var fd = File.GetLastWriteTime(a);
-                    int index = i.Value.LastIndexOf('/');
-                    string t = i.Value.Insert(index, "/v-" + fd.Ticks); 
+                    var index = i.Value.LastIndexOf('/');
+                    var t = i.Value.Insert(index + 1, "v-{0:yyMMddhhmmss}-".Fmt(fd)); 
                     result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />\n", t);
                 }
             }
@@ -74,18 +75,18 @@ public class Fingerprint
             {
                 Debug.Assert(absolute != null, "absolute != null");
                 var fd = File.GetLastWriteTime(absolute);
-                int index = path.LastIndexOf('/');
-                string t = path.Insert(index, "/v-" + fd.Ticks); 
+                var index = path.LastIndexOf('/');
+                var t = path.Insert(index + 1, "v-{0:yyMMddhhmmss}-".Fmt(fd)); 
                 result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />\n", t);
             }
 #else
             const string min = ".min";
+            var dt = File.GetLastWriteTime(absolute);
             var ext = Path.GetExtension(absolute);
             var f = Path.GetFileNameWithoutExtension(absolute);
             var d = path.Remove(path.LastIndexOf('/'));
-            DateTime dt = File.GetLastWriteTime(absolute);
-            string tag = "?v=" + dt.Ticks;
-            result.AppendFormat("<link href=\"{0}/{1}{2}{3}{4}\" rel=\"stylesheet\" />\n", d, f, min, ext, tag);
+            var t = "v-{0:yyMMddhhmmss}-".Fmt(dt); 
+            result.AppendFormat("<link href=\"{0}/{1}{2}{3}{4}\" rel=\"stylesheet\" />\n", d, t, f, min, ext);
 #endif
             HttpRuntime.Cache.Insert(path, result.ToString(), new CacheDependency(absolute));
         }

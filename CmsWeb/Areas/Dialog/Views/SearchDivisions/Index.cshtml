@@ -14,6 +14,8 @@
     @if (ViewExtensions2.UseNewLook())
     {
         @Fingerprint.Css("/content/css/bundle-new2css.css")
+        @Fingerprint.Css("/content/styles/jquery-ui-1.10.0.custom.css")
+        @Fingerprint.Css("/content/styles/siteblue.css")
         @Fingerprint.Css("/content/styles/bundle-css.css")
         <link href="~/Content/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet" />
         @Fingerprint.Css("/content/css/Fixups2.css")
@@ -27,6 +29,8 @@
     }
     else
     {
+        @Fingerprint.Css("/content/styles/jquery-ui-1.10.0.custom.css")
+        @Fingerprint.Css("/content/styles/site.css")
         @Fingerprint.Css("/content/styles/bundle-css.css")
         @ViewExtensions2.jQuery()
         @ViewExtensions2.jQueryUI()

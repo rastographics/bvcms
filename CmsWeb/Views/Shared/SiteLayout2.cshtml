@@ -18,19 +18,12 @@
     @RenderSection("scripts", required: false)
 </head>
     <body>
-        @if (access)
-        {
         <div class="page-container">
-            @Html.Partial("NewHeader3")
             @Html.Partial("Notices")
+            @Html.Partial("NewHeader3")
             @RenderBody()
         </div>
-        }
-        else
-        {
-        @Html.Partial("MyDataHeader")
-        }
-        @(access ? Html.Partial("Footer") : Html.Partial("MyDataFooter"))
+        @Html.Partial("Footer")
         @Html.Partial("Dialogs2")
         @RenderSection("PopupsPlaceholder", required: false)
         @*    @Html.Partial("Support")*@

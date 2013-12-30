@@ -1037,11 +1037,18 @@
     <Content Include="Content\styles\Dialog.min.css">
       <DependentUpon>Dialog.css</DependentUpon>
     </Content>
+    <Content Include="Content\styles\jquery-ui-1.10.0.custom.min.css">
+      <DependentUpon>jquery-ui-1.10.0.custom.css</DependentUpon>
+    </Content>
     <Content Include="Content\styles\organization.min.css">
       <DependentUpon>organization.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\person.min.css">
       <DependentUpon>person.css</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\Siteblue.css" />
+    <Content Include="Content\styles\Siteblue.min.css">
+      <DependentUpon>Siteblue.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\Support.css" />
     <Content Include="Content\images\chosen-sprite.png" />
@@ -2160,6 +2167,7 @@
     <Content Include="Scripts\OnlineReg\OnlineReg.min.js.map">
       <DependentUpon>OnlineReg.js</DependentUpon>
     </Content>
+    <Content Include="Views\Shared\Toolbar\ToolbarMyData.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
