@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class RosterResult : ActionResult
     {
-        public object qid;
+        public Guid? qid;
         public int? org;
         private OrgSearchModel model;
 
@@ -160,7 +160,9 @@ namespace CmsWeb.Areas.Main.Models.Report
         }
         private IEnumerable<OrgInfo> ReportList()
         {
-            var orgs = model.FetchOrgs();
+            var orgs = org == null
+                ? model.FetchOrgs()
+                : DbUtil.Db.Organizations.AsQueryable();
         	var roles = DbUtil.Db.CurrentRoles();
             var q = from o in orgs
         	        where o.LimitToRole == null || roles.Contains(o.LimitToRole)

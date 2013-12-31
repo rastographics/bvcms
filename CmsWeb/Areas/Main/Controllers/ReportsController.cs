@@ -126,22 +126,22 @@ namespace CmsWeb.Areas.Main.Controllers
                     };
             return View(q);
         }
-        public ActionResult Roster1(int? id, int? oid, OrgSearchModel m)
-        {
-            return new RosterResult(m)
-            {
-                qid = id,
-                org = oid,
-            };
-        }
-        public ActionResult Roster(int? id, int? oid, OrgSearchModel m)
-        {
-            return new RosterListResult(m)
-                {
-                    qid = id,
-                    orgid = oid,
-                };
-        }
+//        public ActionResult Roster1(int? id, int? oid, OrgSearchModel m)
+//        {
+//            return new RosterResult(m)
+//            {
+//                qid = id,
+//                org = oid,
+//            };
+//        }
+//        public ActionResult Roster(int? id, int? oid, OrgSearchModel m)
+//        {
+//            return new RosterListResult(m)
+//                {
+//                    qid = id,
+//                    orgid = oid,
+//                };
+//        }
         public ActionResult Avery(int? id)
         {
             if (!id.HasValue)

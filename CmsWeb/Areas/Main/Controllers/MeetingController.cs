@@ -190,7 +190,7 @@ namespace CmsWeb.Areas.Main.Controllers
             }
             public Error error { get; set; }
             public Person person { get; set; }
-            public IEnumerable<FamilyMemberInfo> family { get; set; } 
+            public IEnumerable<FamilyMemberInfo> family { get; set; }
             public Meeting meeting { get; set; }
             public string message { get; set; }
             public bool SwitchOrg { get; set; }
@@ -256,7 +256,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult ScanTicket(string wandtarget, int MeetingId, bool? requireMember, bool? requireRegistered)
         {
-            var d = new ScanTicketInfo { person = new Person()};
+            var d = new ScanTicketInfo { person = new Person() };
             int pid = 0;
 
             if (wandtarget.StartsWith("M."))
@@ -423,126 +423,73 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         public ActionResult QueryAttendees(int Id)
         {
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+            cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
+            cc.Save(DbUtil.Db);
             if (ViewExtensions2.UseNewLook())
-            {
-                var cc = DbUtil.Db.ScratchPadCondition();
-                cc.Reset(DbUtil.Db);
-                cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
-                cc.Save(DbUtil.Db);
                 return Redirect("/Query/" + cc.Id);
-            }
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
-            qb.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
+            return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
         }
         public ActionResult QueryVisitors(int Id)
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+            cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
+            var c = cc.AddNewClause(QueryType.AttendTypeAsOf, CompareType.OneOf, "40,VM;50,RG;60,NG");
+            c.StartDate = m.MeetingDate;
+            c.Program = m.Organization.Division.Program.Id;
+            c.Division = m.Organization.DivisionId ?? 0;
+            c.Organization = m.OrganizationId;
+            cc.Save(DbUtil.Db);
             if (ViewExtensions2.UseNewLook())
-            {
-                var cc = DbUtil.Db.ScratchPadCondition();
-                cc.Reset(DbUtil.Db);
-                cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
-                var c = cc.AddNewClause(QueryType.AttendTypeAsOf, CompareType.OneOf, "40,VM;50,RG;60,NG");
-                c.StartDate = m.MeetingDate;
-                c.Program = m.Organization.Division.Program.Id;
-                c.Division = m.Organization.DivisionId ?? 0;
-                c.Organization = m.OrganizationId;
-                cc.Save(DbUtil.Db);
                 return Redirect("/Query/" + cc.Id);
-            }
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
-            qb.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
-            var clause = qb.AddNewClause(QueryType.AttendTypeAsOf, CompareType.OneOf, "40,VM;50,RG;60,NG");
-            clause.StartDate = m.MeetingDate;
-            clause.Program = m.Organization.Division.Program.Id;
-            clause.Division = m.Organization.DivisionId ?? 0;
-            clause.Organization = m.OrganizationId;
-
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
+            return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
         }
         public ActionResult QueryAbsents(int Id)
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+            cc.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, Id);
+            var c = cc.AddNewClause(QueryType.WasMemberAsOf, CompareType.Equal, "1,T");
+            c.StartDate = m.MeetingDate;
+            c.Program = m.Organization.Division.Program.Id;
+            c.Division = m.Organization.DivisionId ?? 0;
+            c.Organization = m.OrganizationId;
+            cc.Save(DbUtil.Db);
             if (ViewExtensions2.UseNewLook())
-            {
-                var cc = DbUtil.Db.ScratchPadCondition();
-                cc.Reset(DbUtil.Db);
-                cc.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, Id);
-                var c = cc.AddNewClause(QueryType.WasMemberAsOf, CompareType.Equal, "1,T");
-                c.StartDate = m.MeetingDate;
-                c.Program = m.Organization.Division.Program.Id;
-                c.Division = m.Organization.DivisionId ?? 0;
-                c.Organization = m.OrganizationId;
-                cc.Save(DbUtil.Db);
                 return Redirect("/Query/" + cc.Id);
-            }
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
-            qb.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, m.MeetingId);
-            var clause = qb.AddNewClause(QueryType.WasMemberAsOf, CompareType.Equal, "1,T");
-            clause.StartDate = m.MeetingDate;
-            clause.Program = m.Organization.Division.Program.Id;
-            clause.Division = m.Organization.DivisionId ?? 0;
-            clause.Organization = m.OrganizationId;
-
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
+            return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
         }
         public ActionResult QueryRegistered(int Id, string type)
         {
             var m = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == Id);
-            if (ViewExtensions2.UseNewLook())
-            {
-                var cc = DbUtil.Db.ScratchPadCondition();
-                cc.Reset(DbUtil.Db);
-                switch (type)
-                {
-                    case "Registered":
-                        cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
-                        break;
-                    case "Attends":
-                        cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
-                        cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
-                        break;
-                    case "Absents":
-                        cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
-                        cc.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, m.MeetingId);
-                        break;
-                    case "UnregisteredAttends":
-                        cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.NotEqual, m.MeetingId);
-                        cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
-                        break;
-                }
-                cc.Save(DbUtil.Db);
-                return Redirect("/Query/" + cc.Id);
-            }
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
             switch (type)
             {
                 case "Registered":
-                    qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
+                    cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
                     break;
                 case "Attends":
-                    qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
-                    qb.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
+                    cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
+                    cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
                     break;
                 case "Absents":
-                    qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
-                    qb.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, m.MeetingId);
+                    cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
+                    cc.AddNewClause(QueryType.MeetingId, CompareType.NotEqual, m.MeetingId);
                     break;
                 case "UnregisteredAttends":
-                    qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.NotEqual, m.MeetingId);
-                    qb.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
+                    cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.NotEqual, m.MeetingId);
+                    cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, m.MeetingId);
                     break;
             }
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
+            cc.Save(DbUtil.Db);
+            if (ViewExtensions2.UseNewLook())
+                return Redirect("/Query/" + cc.Id);
+            return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
         }
         public class ttt
         {

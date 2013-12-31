@@ -76,7 +76,8 @@ namespace CmsWeb.Areas.Reports.Controllers
                 Model = m
             };
         }
-        [GET("Reports2/Roster1/{id}")]
+
+        [GET("Reports2/Roster1/{id:guid}")]
         public ActionResult Roster1(Guid id, int? oid)
         {
             return new RosterResult
@@ -84,6 +85,25 @@ namespace CmsWeb.Areas.Reports.Controllers
                 qid = id,
                 org = oid,
             };
+        }
+        [POST("Reports2/Roster1")]
+        public ActionResult Roster1(OrgSearchModel m)
+        {
+            return new RosterResult(m);
+        }
+        [GET("Reports2/Roster/{id:guid}")]
+        public ActionResult Roster(Guid id, int? oid)
+        {
+            return new RosterListResult
+                {
+                    qid = id,
+                    orgid = oid,
+                };
+        }
+        [POST("Reports2/Roster")]
+        public ActionResult Roster(OrgSearchModel m)
+        {
+            return new RosterListResult(m);
         }
         [GET("Reports2/Avery/{id}")]
         public ActionResult Avery(Guid? id)
