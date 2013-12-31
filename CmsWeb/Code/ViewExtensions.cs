@@ -686,10 +686,6 @@ namespace CmsWeb
         {
             return DbUtil.Db.UserPreference("UseNewLook", "false").ToBool();
         }
-        public static bool TestSb2()
-        {
-            return DbUtil.Db.Setting("TestSb2", "true").ToBool();
-        }
 
         public static string GridClass
         {

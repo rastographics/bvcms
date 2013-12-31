@@ -205,12 +205,6 @@ namespace CmsWeb.Areas.Main.Controllers
 
             return PartialView("Rows", tasks);
         }
-        public ActionResult NotesExcel(int? id)
-        {
-            if (!id.HasValue)
-                return Content("no query");
-            return new TaskNotesExcelResult(id.Value);
-        }
         public ActionResult NotesExcel2(Guid? id)
         {
             if (!id.HasValue)

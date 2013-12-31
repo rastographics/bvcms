@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index(Guid? id)
         {
             if (!ViewExtensions2.UseNewLook())
-                return Redirect("/QueryBuilder/Main");
+                return Redirect("/QueryBuilder2/Main");
             ViewBag.Title = "QueryBuilder";
             var m = new QueryModel(id);
             m.Pager.Set("/Query/Results/");

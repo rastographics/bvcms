@@ -66,10 +66,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         private void InitExportToolbar()
         {
-            object qid = ViewExtensions2.TestSb2()
-                ? (object)DbUtil.Db.QueryHasCurrentTag().QueryId
-                : DbUtil.Db.QueryBuilderHasCurrentTag().QueryId;
-
+            var qid = DbUtil.Db.QueryHasCurrentTag().QueryId;
             ViewBag.queryid = qid;
             ViewBag.TagAction = "/Tags/TagAll/{0}".Fmt(qid);
             ViewBag.UnTagAction = "/Tags/UnTagAll/{0}".Fmt(qid);

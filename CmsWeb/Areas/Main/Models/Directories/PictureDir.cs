@@ -59,7 +59,7 @@ namespace CmsWeb.Areas.Main.Models.Directories
 	{
 		private IEnumerable<IndividualInfo> q;
 
-		public PictureDir(object qid)
+		public PictureDir(Guid qid)
 		{
 			var Db = DbUtil.Db;
 			var q0 = Db.PeopleQuery(qid);

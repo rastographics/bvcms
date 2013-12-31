@@ -19,8 +19,8 @@ namespace CmsWeb.Models
 {
     public class UpdatePeopleModel : ActionResult
     {
-        int queryid;
-        public UpdatePeopleModel(int QueryId)
+        Guid queryid;
+        public UpdatePeopleModel(Guid QueryId)
         {
             this.queryid = QueryId;
         }

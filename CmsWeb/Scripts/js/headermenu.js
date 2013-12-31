@@ -40,7 +40,7 @@
                 if (ui.item.id === -1)
                     window.location = "/PeopleSearch?name=" + searchterm;
                 else if (ui.item.id === -2)
-                    window.location = "/QueryBuilder/Main";
+                    window.location = "/QueryBuilder2/Main";
                 else if (ui.item.id === -3)
                     window.location = "/OrgSearch";
                 else

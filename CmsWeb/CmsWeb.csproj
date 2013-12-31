@@ -341,7 +341,6 @@
     <Compile Include="Areas\Manage\Controllers\UploadPeopleController.cs" />
     <Compile Include="Areas\Finance\Controllers\StatementsController.cs" />
     <Compile Include="Areas\Main\Controllers\OrgChildrenController.cs" />
-    <Compile Include="Areas\Main\Models\Export\FreshbooksResult.cs" />
     <Compile Include="Areas\Main\Models\Export\ExtraExcelResult.cs" />
     <Compile Include="Areas\Main\Models\Organization\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
@@ -362,7 +361,6 @@
     <Compile Include="Areas\Main\Controllers\RegSettingController.cs" />
     <Compile Include="Areas\Main\Controllers\MeetingController.cs" />
     <Compile Include="Areas\Main\Controllers\FamilyController.cs" />
-    <Compile Include="Areas\Main\Controllers\SavedQueryController.cs" />
     <Compile Include="Areas\Main\Controllers\TagsController.cs" />
     <Compile Include="Areas\Main\Controllers\EmailController.cs" />
     <Compile Include="Areas\Main\Controllers\ExportController.cs" />
@@ -524,14 +522,11 @@
     <Compile Include="Areas\Main\Models\Export\ExportInvolvements.cs" />
     <Compile Include="Areas\Main\Models\Export\InvovementInfo.cs" />
     <Compile Include="Areas\Main\Models\Export\StatusFlagsExcelResult.cs" />
-    <Compile Include="Areas\Main\Models\Export\MucketyMapResult.cs" />
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Main\Models\Organization\ScheduleInfo.cs" />
-    <Compile Include="Areas\Main\Models\Other\QBExportResult.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContactModel.cs" />
     <Compile Include="Areas\Main\Models\Other\ContactSearchModel.cs" />
     <Compile Include="Areas\Main\Models\Other\MeetingModel.cs" />
-    <Compile Include="Areas\Main\Models\Other\SavedQueryModel.cs" />
     <Compile Include="Areas\Main\Models\Other\TagsModel.cs" />
     <Compile Include="Areas\Main\Models\Other\PeopleSearchModel.cs" />
     <Compile Include="Areas\Main\Models\Other\FamilyModel.cs" />
@@ -1529,9 +1524,6 @@
     <Content Include="Scripts\Bundle\query2.min.js.map">
       <DependentUpon>query2.js.bundle</DependentUpon>
     </Content>
-    <Content Include="Scripts\Bundle\querybuilder.min.js.map">
-      <DependentUpon>querybuilder.js.bundle</DependentUpon>
-    </Content>
     <None Include="Scripts\Bundle\TaskPage.js.bundle" />
     <None Include="Scripts\Bundle\org.js.bundle" />
     <Content Include="Scripts\Org\OrgChildren.min.js">
@@ -1560,15 +1552,6 @@
     </Content>
     <Content Include="Scripts\People\Person2.min.js">
       <DependentUpon>Person2.js</DependentUpon>
-    </Content>
-    <None Include="Scripts\Bundle\querybuilder.js.bundle">
-      <SubType>Designer</SubType>
-    </None>
-    <Content Include="Scripts\Bundle\querybuilder.js">
-      <DependentUpon>querybuilder.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\querybuilder.min.js">
-      <DependentUpon>querybuilder.js.bundle</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\ContactSearch.min.js">
       <DependentUpon>ContactSearch.js</DependentUpon>
@@ -2023,7 +2006,6 @@
     <Compile Include="Areas\Public\Controllers\APICheckin2Controller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Areas\Manage\Controllers\PromotionController.cs" />
-    <Compile Include="Areas\Main\Controllers\QueryBuilderController.cs" />
     <Compile Include="Areas\Main\Controllers\TaskController.cs" />
     <Compile Include="Areas\Manage\Controllers\VolunteersController.cs" />
     <Compile Include="Global.asax.cs">
@@ -2036,7 +2018,6 @@
     <Compile Include="Areas\Main\Models\Person\PeopleInfo.cs" />
     <Compile Include="Areas\Manage\Models\PromoteInfo.cs" />
     <Compile Include="Areas\Manage\Models\PromotionModel.cs" />
-    <Compile Include="Areas\Main\Models\Other\QueryModel.cs" />
     <Compile Include="Areas\Main\Models\Report\AttendanceModel.cs" />
     <Compile Include="Areas\Main\Models\Other\SearchContactModel.cs" />
     <Compile Include="Areas\Main\Models\Other\TaskInfo.cs" />
@@ -2650,14 +2631,6 @@
     </Content>
     <Content Include="Areas\Main\Views\Task\TabsOptionsRows.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\QueryBuilder\Conditions.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\QueryBuilder\Main.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\QueryBuilder\Results.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\QueryBuilder\TryConditions.cshtml">
-    </Content>
     <Content Include="Areas\Search\Views\SearchAdd\NewPerson.cshtml">
     </Content>
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenPerson.cshtml">
@@ -2904,12 +2877,6 @@
     </Content>
     <Content Include="Areas\Public\Views\OrgContent\Edit.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\SavedQuery\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\SavedQuery\Row.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\SavedQuery\Rows.cshtml">
-    </Content>
     <Content Include="Areas\Main\Views\Organization\DivisionList.cshtml">
     </Content>
     <Content Include="Areas\Dialog\Views\SearchDivisions\Index.cshtml">
@@ -2920,8 +2887,6 @@
     </Content>
     <Content Include="Areas\Main\Views\Reports\Meetings.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\SavedQuery\Results.cshtml">
-    </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmManagePledge.cshtml">
@@ -2931,8 +2896,6 @@
     <Content Include="Areas\Main\Views\Reports\VitalStats.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Email\Timeout.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\QueryBuilder\Import.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Display\EditText.cshtml">
     </Content>
@@ -3187,7 +3150,6 @@
     <Content Include="Views\Shared\bvorg.Master" />
     <Content Include="Views\Shared\Site3b.Master" />
     <Content Include="Scripts\js\ExportToolBar.js" />
-    <Content Include="Scripts\Search\QueryBuilder.js" />
     <Content Include="Scripts\js\Task.js" />
     <Content Include="Views\Shared\LogOnUserControl.ascx" />
     <Content Include="Web.Debug.config">

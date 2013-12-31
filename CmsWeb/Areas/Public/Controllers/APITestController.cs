@@ -73,41 +73,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Redirect(Request.UrlReferrer.ToString());
             return Redirect("/");
         }
-        [Authorize(Roles = "Newlook")]
-        public ActionResult TestSb2(int? id)
-        {
-            if(id.HasValue)
-                DbUtil.Db.SetUserPreference(id.Value, "TestSb2", true);
-            else
-                DbUtil.Db.SetUserPreference("TestSb2", true);
 
-            if(Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.ToString());
-            return Redirect("/");
-        }
-        [Authorize(Roles = "Newlook")]
-        public ActionResult StopTestingSb2(int? id)
-        {
-            if(id.HasValue)
-                DbUtil.Db.SetUserPreference(id.Value, "TestSb2", false);
-            else
-                DbUtil.Db.SetUserPreference("TestSb2", false);
-
-            if(Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.ToString());
-            return Redirect("/");
-        }
-
-        [Authorize(Roles = "Newlook")]
-        public ActionResult UseNewPersonPage()
-        {
-            return Redirect("/Person2/Current");
-        }
-        [Authorize(Roles = "Newlook")]
-        public ActionResult UseOldPersonPage()
-        {
-            return Redirect("/Person/Current");
-        }
         [Authorize(Roles = "Finance")]
         public ActionResult TurnFinanceOn()
         {

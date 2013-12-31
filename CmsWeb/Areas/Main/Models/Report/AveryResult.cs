@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class AveryResult : ActionResult
     {
-        public object id;
+        public Guid id;
         protected float W = 197f;
         public bool namesonly;
 

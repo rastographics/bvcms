@@ -250,25 +250,14 @@ namespace CmsWeb.Models
             if (up == null)
                 return new List<MySavedQueryInfo>();
 
-            if (ViewExtensions2.TestSb2())
-                return from c in DbUtil.Db.Queries
-                       where c.Owner == Util.UserName
-                       where c.Name != Util.ScratchPad2
-                       orderby c.Name
-                       select new MySavedQueryInfo
-                       {
-                           Name = c.Name,
-                           Url = "/QueryBuilder2/Main/" + c.QueryId
-                       };
-            return from c in DbUtil.Db.QueryBuilderClauses
-                   where c.SavedBy == Util.UserName
-                   where c.GroupId == null && c.Field == "Group" && c.Clauses.Any()
-                   where !c.Description.Contains("scratchpad")
-                   orderby c.Description
+            return from c in DbUtil.Db.Queries
+                   where c.Owner == Util.UserName
+                   where c.Name != Util.ScratchPad2
+                   orderby c.Name
                    select new MySavedQueryInfo
                    {
-                       Name = c.Description,
-                       Url = "/QueryBuilder/Main/" + c.QueryId
+                       Name = c.Name,
+                       Url = "/QueryBuilder2/Main/" + c.QueryId
                    };
         }
         public class TaskInfo

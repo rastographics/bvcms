@@ -201,7 +201,7 @@ namespace CmsWeb.Models
         {
             Util2.CurrentPeopleId = WhoId.Value;
             HttpContext.Current.Session["ActivePerson"] = Who;
-            var qb = DbUtil.Db.QueryBuilderIsCurrentPerson();
+            var qb = DbUtil.Db.QueryIsCurrentPerson();
             return "/Reports/Prospect/" + qb.QueryId + "?form=true";
         }
         public IEnumerable<SelectListItem> StatusList()

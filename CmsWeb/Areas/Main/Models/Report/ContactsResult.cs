@@ -5,29 +5,22 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using CmsWeb.Code;
-using CmsWeb.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.IO;
-using System.Collections;
 using CmsData;
 using UtilityExtensions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using System.Diagnostics;
 
 namespace CmsWeb.Areas.Main.Models.Report
 {
     public class ContactsResult : ActionResult
     {
-        private object qid;
-        public ContactsResult(object id, bool? sortAddress, string orgname)
+        private Guid qid;
+        public ContactsResult(Guid id, bool? sortAddress, string orgname)
         {
             qid = id;
             this.sortAddress = sortAddress ?? false;
@@ -61,27 +54,22 @@ namespace CmsWeb.Areas.Main.Models.Report
             dc = w.DirectContent;
 
             StartPageSet();
-            if (qid != null) // print using a query
-            {
-                var q = DbUtil.Db.PeopleQuery(qid);
-                
-                if (sortAddress)
-                    q = from p in q
-                        orderby p.PrimaryState, p.PrimaryCity, p.PrimaryZip, p.PrimaryCity, p.PrimaryAddress, p.Name2
-                        select p;
-                else
-                    q = from p in q
-                        orderby p.Name2
-                        select p;
-                foreach (var p in q)
-                    t.AddCell(NewCell(p));
-                t.SplitLate = false;
-                t.SplitRows = true;
-                if (t.Rows.Count > 1)
-                    doc.Add(t);
-                else
-                    doc.Add(new Phrase("no data"));
-            }
+            var q = DbUtil.Db.PeopleQuery(qid);
+
+            if (sortAddress)
+                q = from p in q
+                    orderby p.PrimaryState, p.PrimaryCity, p.PrimaryZip, p.PrimaryCity, p.PrimaryAddress, p.Name2
+                    select p;
+            else
+                q = from p in q
+                    orderby p.Name2
+                    select p;
+            foreach (var p in q)
+                t.AddCell(NewCell(p));
+            t.SplitLate = false;
+            t.SplitRows = true;
+            if (t.Rows.Count > 1)
+                doc.Add(t);
             else
                 doc.Add(new Phrase("no data"));
             pageEvents.EndPageSet();
@@ -100,7 +88,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             t.DefaultCell.Border = border;
             t.DefaultCell.Padding = 5;
             t.HeaderRows = 1;
-            if(OrganizationName.HasValue())
+            if (OrganizationName.HasValue())
                 pageEvents.StartPageSet("Contacts - {0}: {1:d}".Fmt(OrganizationName, dt));
             else
                 pageEvents.StartPageSet("Contact Report: {0:d}".Fmt(dt));
@@ -183,7 +171,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             }
             c = new PdfPCell(t.DefaultCell);
             c.Padding = 0;
-            t3.SplitLate = false; 
+            t3.SplitLate = false;
             t3.SplitRows = true;
             c.AddElement(t3);
             return c;
@@ -299,7 +287,7 @@ namespace CmsWeb.Areas.Main.Models.Report
                 list.Add(new iTextSharp.text.ListItem(1.2f * font.Size, s, font));
             }
             if (cq.Count() > 10)
-                list.Add(new ListItem(1.2f*font.Size, "(showing most recent 10 of {0})".Fmt(cq.Count()), font));
+                list.Add(new ListItem(1.2f * font.Size, "(showing most recent 10 of {0})".Fmt(cq.Count()), font));
             return list;
         }
         class PageEvent : PdfPageEventHelper

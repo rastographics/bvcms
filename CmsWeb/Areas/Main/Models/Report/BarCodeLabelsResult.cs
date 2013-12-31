@@ -24,8 +24,8 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class BarCodeLabelsResult : ActionResult
     {
-        private object qid;
-        public BarCodeLabelsResult(object id)
+        private Guid qid;
+        public BarCodeLabelsResult(Guid id)
         {
             qid = id;
         }

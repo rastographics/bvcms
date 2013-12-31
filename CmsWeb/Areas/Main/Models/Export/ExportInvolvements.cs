@@ -22,7 +22,7 @@ namespace CmsWeb.Models
             public decimal? Pct { get; set; }
             public string Leader { get; set; }
         }
-        public static IEnumerable<InvovementInfo> InvolvementList(object queryid)
+        public static IEnumerable<InvovementInfo> InvolvementList(Guid queryid)
         {
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);
@@ -71,7 +71,7 @@ namespace CmsWeb.Models
                      };
             return q2;
         }
-        public static IEnumerable ChildrenList(object queryid, int maximumRows)
+        public static IEnumerable ChildrenList(Guid queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
@@ -104,7 +104,7 @@ namespace CmsWeb.Models
                      };
             return q2.Take(maximumRows);
         }
-        public static IEnumerable ChurchList(object queryid, int maximumRows)
+        public static IEnumerable ChurchList(Guid queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
@@ -139,7 +139,7 @@ namespace CmsWeb.Models
                      };
             return q2.Take(maximumRows);
         }
-        public static IEnumerable AttendList(object queryid, int maximumRows)
+        public static IEnumerable AttendList(Guid queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
@@ -175,19 +175,19 @@ namespace CmsWeb.Models
                      };
             return q2.Take(maximumRows);
         }
-        public static IEnumerable OrgMemberList2(int qid)
-        {
-            var q = DbUtil.Db.PeopleQuery(qid);
-            var q2 = q.Select(p => new
-            {
-                om = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == Util2.CurrentOrgId && om.PeopleId == p.PeopleId),
-                rr = p.RecRegs.FirstOrDefault(),
-                p = p,
-                test = p.PeopleExtras.SingleOrDefault(vv => vv.Field == "test")
-            });
-            var q3 = q2.Select("new(p.PreferredName,p.LastName,om.AttendStr,om.AmountPaid)");
-            return q3;
-        }
+//        public static IEnumerable OrgMemberList2(int qid)
+//        {
+//            var q = DbUtil.Db.PeopleQuery(qid);
+//            var q2 = q.Select(p => new
+//            {
+//                om = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == Util2.CurrentOrgId && om.PeopleId == p.PeopleId),
+//                rr = p.RecRegs.FirstOrDefault(),
+//                p = p,
+//                test = p.PeopleExtras.SingleOrDefault(vv => vv.Field == "test")
+//            });
+//            var q3 = q2.Select("new(p.PreferredName,p.LastName,om.AttendStr,om.AmountPaid)");
+//            return q3;
+//        }
         public static IEnumerable OrgMemberListGroups()
         {
             var Db = DbUtil.Db;
@@ -268,7 +268,7 @@ namespace CmsWeb.Models
             public string Tickets { get; set; }
         }
 
-        public static IEnumerable<MemberInfoClass> OrgMemberList(object queryid)
+        public static IEnumerable<MemberInfoClass> OrgMemberList(Guid queryid)
         {
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);
@@ -314,7 +314,7 @@ namespace CmsWeb.Models
                      };
             return q2;
         }
-        public static IEnumerable PromoList(object queryid, int maximumRows)
+        public static IEnumerable PromoList(Guid queryid, int maximumRows)
         {
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);

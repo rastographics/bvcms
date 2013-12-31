@@ -19,54 +19,6 @@ namespace CmsWeb.Areas.Main.Controllers
 	public class EmailController : CmsStaffController
 	{
 		[ValidateInput(false)]
-		public ActionResult Index(int? id, int? templateID, bool? parents, string body, string subj, bool? ishtml)
-		{
-			if (!id.HasValue) return Content("no id");
-			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
-			if (!body.HasValue())
-				body = TempData["body"] as string;
-
-			if (!subj.HasValue() && templateID != 0 && DbUtil.Db.Setting("UseEmailTemplates", "false") == "true")
-			{
-				if (templateID == null)
-					return View("SelectTemplate", new EmailTemplatesModel() { wantparents = parents ?? false, queryid = id.Value });
-				else
-				{
-					DbUtil.LogActivity("Emailing people");
-
-					var m = new MassEmailer(id.Value, parents);
-					m.CmsHost = DbUtil.Db.CmsHost;
-					m.Host = Util.Host;
-
-					ViewBag.templateID = templateID;
-					return View("Compose", m);
-				}
-			}
-
-			// using no templates
-
-			DbUtil.LogActivity("Emailing people");
-
-			var me = new MassEmailer(id.Value, parents);
-			me.CmsHost = DbUtil.Db.CmsHost;
-			me.Host = Util.Host;
-
-			if (body.HasValue())
-				me.Body = Server.UrlDecode(body);
-
-			if (subj.HasValue())
-				me.Subject = Server.UrlDecode(subj);
-
-			ViewData["oldemailer"] = "/EmailPeople.aspx?id=" + id
-				 + "&subj=" + subj + "&body=" + body + "&ishtml=" + ishtml
-				 + (parents == true ? "&parents=true" : "");
-
-			if (parents == true)
-				ViewData["parentsof"] = "with ParentsOf option";
-
-			return View(me);
-		}
-		[ValidateInput(false)]
 		public ActionResult Index2(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml)
 		{
 			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
@@ -161,14 +113,14 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult ContentDeleteDrafts(int queryid, bool parents, int[] draftId)
+		public ActionResult ContentDeleteDrafts(Guid queryid, bool parents, int[] draftId)
 		{
 			using (var cn = new SqlConnection(Util.ConnectionString))
 			{
 				cn.Open();
 				cn.Execute("delete from dbo.Content where id in @ids", new { ids = draftId });
 			}
-			return RedirectToAction("Index", new { id = queryid, parents });
+			return RedirectToAction("Index2", new { id = queryid, parents });
 		}
 
 		[HttpPost]

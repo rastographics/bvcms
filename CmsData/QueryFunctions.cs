@@ -134,9 +134,7 @@ namespace CmsData
         }
         public int QueryCount(string s)
         {
-            var qb = Db.Setting("TestSb2", "true").ToBool()
-                ? Db.PeopleQuery2(s) 
-                : Db.PeopleQuery(s);
+            var qb = Db.PeopleQuery2(s);
             if (qb == null)
                 return 0;
             return qb.Count();

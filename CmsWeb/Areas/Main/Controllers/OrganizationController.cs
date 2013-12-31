@@ -55,13 +55,10 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.LogActivity("Viewing Organization ({0})".Fmt(m.org.OrganizationName), m.org.OrganizationName, orgid: id);
 
             Util2.CurrentOrgId = m.org.OrganizationId;
-            object qid = ViewExtensions2.TestSb2()
-                ? (object) DbUtil.Db.QueryInCurrentOrg().QueryId
-                : DbUtil.Db.QueryBuilderInCurrentOrg().QueryId;
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.org.FullName;
             ViewBag.selectmode = 0;
-            InitExportToolbar(id.Value, qid, checkparent: true);
+            InitExportToolbar(id.Value, DbUtil.Db.QueryInCurrentOrg().QueryId, checkparent: true);
             Session["ActiveOrganization"] = m.org.OrganizationName;
             return View(m);
         }
@@ -121,7 +118,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.LogActivity("Creating new meeting for {0}".Fmt(organization.OrganizationName));
             return Content("/Meeting/Index/" + mt.MeetingId);
         }
-        private void InitExportToolbar(int oid, object qid, bool checkparent = false)
+        private void InitExportToolbar(int oid, Guid qid, bool checkparent = false)
         {
             Util2.CurrentOrgId = oid;
             if (checkparent)
@@ -130,12 +127,8 @@ namespace CmsWeb.Areas.Main.Controllers
                 if (isParent)
                 {
                     ViewBag.ParentOrgContext = true;
-                    ViewBag.leadersqid = ViewExtensions2.TestSb2()
-                        ? (object)DbUtil.Db.QueryLeadersUnderCurrentOrg().QueryId
-                        : DbUtil.Db.QueryBuilderLeadersUnderCurrentOrg().QueryId;
-                    ViewBag.membersqid = ViewExtensions2.TestSb2()
-                        ? (object)DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId
-                        : DbUtil.Db.QueryBuilderMembersUnderCurrentOrg().QueryId;
+                    ViewBag.leadersqid = DbUtil.Db.QueryLeadersUnderCurrentOrg().QueryId;
+                    ViewBag.membersqid = DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId;
                 }
             }
             ViewBag.queryid = qid;
@@ -152,10 +145,7 @@ namespace CmsWeb.Areas.Main.Controllers
             Util2.CurrentGroups = smallgrouplist;
             Util2.CurrentGroupsPrefix = sgprefix;
             Util2.CurrentGroupsMode = selectmode.Value;
-            object qid = ViewExtensions2.TestSb2()
-                ? (object)DbUtil.Db.QueryInCurrentOrg().QueryId
-                : DbUtil.Db.QueryBuilderInCurrentOrg().QueryId;
-            InitExportToolbar(id, qid, checkparent: true);
+            InitExportToolbar(id, DbUtil.Db.QueryInCurrentOrg().QueryId, checkparent: true);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Members";
             var m = new MemberModel(id, MemberModel.GroupSelect.Active, namefilter, sgprefix);
             UpdateModel(m.Pager);
@@ -164,10 +154,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult PrevMemberGrid(int id, string namefilter, bool? ShowProspects)
         {
-            object qid = ViewExtensions2.TestSb2()
-                ? (object)DbUtil.Db.QueryPreviousCurrentOrg().QueryId
-                : DbUtil.Db.QueryBuilderPreviousCurrentOrg().QueryId;
-            InitExportToolbar(id, qid);
+            InitExportToolbar(id, DbUtil.Db.QueryPreviousCurrentOrg().QueryId);
             var m = new PrevMemberModel(id, namefilter) { ShowProspects = ShowProspects ?? false };
             UpdateModel(m.Pager);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Previous Members";
@@ -177,9 +164,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult VisitorGrid(int id, string namefilter)
         {
-            object qid = ViewExtensions2.TestSb2()
-                ? (object)DbUtil.Db.QueryVisitedCurrentOrg().QueryId
-                : DbUtil.Db.QueryBuilderVisitedCurrentOrg().QueryId;
+            var qid = DbUtil.Db.QueryVisitedCurrentOrg().QueryId;
             InitExportToolbar(id, qid);
             var m = new VisitorModel(id, qid, namefilter);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Guests";
@@ -190,10 +175,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult PendingMemberGrid(int id, string namefilter)
         {
-            object qid = ViewExtensions2.TestSb2()
-                ? (object)DbUtil.Db.QueryPendingCurrentOrg().QueryId
-                : DbUtil.Db.QueryBuilderPendingCurrentOrg().QueryId;
-            InitExportToolbar(id, qid);
+            InitExportToolbar(id, DbUtil.Db.QueryPendingCurrentOrg().QueryId);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Pending Members";
             var m = new MemberModel(id, MemberModel.GroupSelect.Pending, namefilter);
             UpdateModel(m.Pager);
@@ -202,10 +184,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult InactiveMemberGrid(int id, string namefilter)
         {
-            object qid = ViewExtensions2.TestSb2()
-                ? (object)DbUtil.Db.QueryInactiveCurrentOrg().QueryId
-                : DbUtil.Db.QueryBuilderInactiveCurrentOrg().QueryId;
-            InitExportToolbar(id, qid);
+            InitExportToolbar(id, DbUtil.Db.QueryInactiveCurrentOrg().QueryId);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Inactive Members";
             var m = new MemberModel(id, MemberModel.GroupSelect.Inactive, namefilter);
             UpdateModel(m.Pager);
@@ -215,10 +194,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult ProspectGrid(int id, string namefilter)
         {
-            object qid = ViewExtensions2.TestSb2()
-                ? (object)DbUtil.Db.QueryProspectCurrentOrg().QueryId
-                : DbUtil.Db.QueryBuilderProspectCurrentOrg().QueryId;
-            InitExportToolbar(id, qid);
+            InitExportToolbar(id, DbUtil.Db.QueryProspectCurrentOrg().QueryId);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Prospects";
             var m = new MemberModel(id, MemberModel.GroupSelect.Prospect, namefilter);
             UpdateModel(m.Pager);

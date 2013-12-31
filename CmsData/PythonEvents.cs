@@ -84,12 +84,10 @@ namespace CmsData
 	    public void Email(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string body, bool transactional = false)
 	    {
             var from = new MailAddress(fromaddr, fromname);
-			var qB = db.QueryBuilderClauses.FirstOrDefault(c => c.Description == savedquery);
+			var qB = db.Queries.FirstOrDefault(c => c.Name == savedquery);
 	        if (qB == null)
 	            return;
             var q = db.PeopleQuery(qB.QueryId);
-            if (qB.ParentsOf)
-				q = db.PersonQueryParents(q);
 
             q = from p in q
                 where p.EmailAddress != null
@@ -103,12 +101,10 @@ namespace CmsData
 	    public void EmailContent(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string content)
 	    {
             var from = new MailAddress(fromaddr, fromname);
-			var qB = db.QueryBuilderClauses.FirstOrDefault(cc => cc.Description == savedquery);
+			var qB = db.Queries.FirstOrDefault(cc => cc.Name == savedquery);
 	        if (qB == null)
 	            return;
             var q = db.PeopleQuery(qB.QueryId);
-            if (qB.ParentsOf)
-				q = db.PersonQueryParents(q);
 
             q = from p in q
                 where p.EmailAddress != null
