@@ -1,3 +1,4 @@
+using System;
 using System.Web.Mvc;
 using System.Linq;
 using CmsData;
@@ -8,8 +9,8 @@ namespace CmsWeb.Models
 {
     public class TaskNotesExcelResult : ActionResult
     {
-        object qid;
-        public TaskNotesExcelResult(object id)
+        Guid qid;
+        public TaskNotesExcelResult(Guid id)
         {
             qid = id;
         }

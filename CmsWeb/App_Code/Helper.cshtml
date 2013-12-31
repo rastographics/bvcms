@@ -1,22 +1,11 @@
-﻿@using CmsData
-@using CmsWeb
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @helper SearchBuilderDropdown(bool onqb)
 {
     <div class="dropdown2-menu">
         <ul>
-            @if (ViewExtensions2.TestSb2())
-            {
-                <li>@AnchorLink("Last Search", "/QueryBuilder2/Main")</li>
-                <li>@AnchorLink("New Search", "/QueryBuilder2/NewQuery")</li>
-                <li><a href="/SavedQuery2">Saved Searches</a></li>
-            }
-            else
-            {
-                <li>@AnchorLink("Last Search", "/QueryBuilder/Main")</li>
-                <li>@AnchorLink("New Search", "/QueryBuilder/NewQuery")</li>
-                <li><a href="/SavedQuery">Saved Searches</a></li>
-            }
+            <li>@AnchorLink("Last Search", "/QueryBuilder2/Main")</li>
+            <li>@AnchorLink("New Search", "/QueryBuilder2/NewQuery")</li>
+            <li><a href="/SavedQuery2">Saved Searches</a></li>
             @if (onqb)
             {
                 <li>@JQueryIdLink("Save Search As", "ShowSaveQuery")</li>
@@ -29,18 +18,18 @@
 {
     if (target.HasValue())
     {
-    <a href="@href" target="@target">@text</a>
+        <a href="@href" target="@target">@text</a>
     }
     else
     {
-    <a href="@href">@text</a>
+        <a href="@href">@text</a>
     }
 }
 @helper LiAnchorLink(string text, string url, bool display = true, string target = null)
 {
     if (display)
     {
-    <li>@Helper.AnchorLink(text, url, target)</li>
+        <li>@Helper.AnchorLink(text, url, target)</li>
     }
 }
 @helper LiHeader(string text, bool display = true)
@@ -69,17 +58,17 @@
 {
     if (display)
     {
-    <li><a id="@id" href="#">@text</a></li>
+        <li><a id="@id" href="#">@text</a></li>
     }
 }
 @helper ButtonLink(string text, string href, string target = null)
 {
     if (target.HasValue())
     {
-    <a href="@href" target="@target">@text</a>
+        <a href="@href" target="@target">@text</a>
     }
     else
     {
-    <a href="@href">@text</a>
+        <a href="@href">@text</a>
     }
 }

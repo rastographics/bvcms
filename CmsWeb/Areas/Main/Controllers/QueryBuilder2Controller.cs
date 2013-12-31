@@ -34,8 +34,6 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (ViewExtensions2.UseNewLook())
                 return Redirect("/Query");
-            if(!ViewExtensions2.TestSb2())
-                return Redirect("/QueryBuilder");
 
             var newsearchid = (Guid?)TempData["newsearch"];
             var m = new QueryModel2 { QueryId = id };

@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Main.Models.Directories
 	public class FamilyDir : ActionResult
 	{
 		IEnumerable<FamilyInfo> q;
-		public FamilyDir(object qid)
+		public FamilyDir(Guid qid)
 		{
                 var q0 = DbUtil.Db.PeopleQuery(qid);
     		    var tag = DbUtil.Db.PopulateTemporaryTag(q0.Select(vv => vv.PeopleId));

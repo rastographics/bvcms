@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 Model = m
             };
         }
-        [GET("Reports2/Roster1/{id}")]
+        [GET("Reports2/Roster1/{id:guid}")]
         public ActionResult Roster1(Guid id, int? oid)
         {
             return new RosterResult
@@ -85,26 +85,45 @@ namespace CmsWeb.Areas.Reports.Controllers
                 org = oid,
             };
         }
+        [POST("Reports2/Roster1")]
+        public ActionResult Roster1(OrgSearchModel m)
+        {
+            return new RosterResult(m);
+        }
+        [GET("Reports2/Roster/{id:guid}")]
+        public ActionResult Roster(Guid id, int? oid)
+        {
+            return new RosterListResult
+                {
+                    qid = id,
+                    orgid = oid,
+                };
+        }
+        [POST("Reports2/Roster")]
+        public ActionResult Roster(OrgSearchModel m)
+        {
+            return new RosterListResult(m);
+        }
         [GET("Reports2/Avery/{id}")]
         public ActionResult Avery(Guid? id)
         {
             if (!id.HasValue)
                 return Content("no query");
-            return new AveryResult { id = id };
+            return new AveryResult { id = id.Value };
         }
         [GET("Reports2/NameLabels/{id}")]
         public ActionResult NameLabels(Guid? id)
         {
             if (!id.HasValue)
                 return Content("no query");
-            return new AveryResult { namesonly = true, id = id };
+            return new AveryResult { namesonly = true, id = id.Value };
         }
         [GET("Reports2/Avery3/{id}")]
         public ActionResult Avery3(Guid? id)
         {
             if (!id.HasValue)
                 return Content("no query");
-            return new Avery3Result { id = id };
+            return new Avery3Result { id = id.Value };
         }
         [GET("Reports2/AveryAddress/{id}")]
         public ActionResult AveryAddress(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip, int skipNum = 0)
@@ -115,7 +134,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no format");
             return new AveryAddressResult
             {
-                id = id,
+                id = id.Value,
                 format = format,
                 titles = titles,
                 usephone = usephone ?? false,
@@ -130,7 +149,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no query");
             return new RollLabelsResult
             {
-                qid = id,
+                qid = id.Value,
                 format = format,
                 titles = titles ?? false,
                 usephone = usephone ?? false,
@@ -142,7 +161,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             if (!id.HasValue)
                 return Content("no query");
-            return new ProspectResult(id, Form ?? false, Alpha ?? false);
+            return new ProspectResult(id.Value, Form ?? false, Alpha ?? false);
         }
         [GET("Reports2/VisitsAbsents2/{id}")]
         public ActionResult VisitsAbsents2(int? id)

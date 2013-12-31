@@ -1,14 +1,13 @@
 ﻿@using CmsData.Classes.Twilio;
 @using CmsWeb
 @using UtilityExtensions;
-@model object
+@model Guid
 @{
     ViewBag.Title = "Options";
     Layout = ViewExtensions2.Layout();
 
     var groups = TwilioHelper.getAvailableLists(Util.UserId);
     var count = TwilioHelper.getSendCount(Model);
-    var posturl = Model is Guid ? "/SMS/Send2/" + Model : "/SMS/Send/" + Model;
 }
 @section scripts
 {
@@ -27,7 +26,7 @@
 }
 <br />
 <b>Sending to @(count) @( count == 1 ? "person" : "people" )</b>
-<form action="@posturl" method="post">
+<form action="/SMS/Send2/@Model" method="post">
     @Html.DropDownList( "iSendGroup", new SelectList( groups, "ID", "Name" ) )<br />
     <br />
     <b>Title:</b><br />

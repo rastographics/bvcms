@@ -12,8 +12,8 @@ namespace CmsWeb.Models
 {
     public class ExtraValueExcelResult : ActionResult
     {
-        private object qid;
-        public ExtraValueExcelResult(object qid)
+        private Guid qid;
+        public ExtraValueExcelResult(Guid qid)
         {
             this.qid = qid;
         }

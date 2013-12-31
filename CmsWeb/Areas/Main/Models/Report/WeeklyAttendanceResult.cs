@@ -33,8 +33,8 @@ namespace CmsWeb.Areas.Main.Models.Report
         private DateTime dt;
         private PdfContentByte dc;
 
-        private object qid;
-        public WeeklyAttendanceResult(object id)
+        private Guid qid;
+        public WeeklyAttendanceResult(Guid id)
         {
             qid = id;
         }

@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 			DbUtil.Db.AddToOrgFromTagRuns.InsertOnSubmit(runningtotals);
 			DbUtil.Db.SubmitChanges();
 			var host = Util.Host;
-			var qid = Util.QueryBuilderScratchPadId;
+		    var qid = DbUtil.Db.FetchLastQuery().Id;
 			System.Threading.Tasks.Task.Factory.StartNew(() =>
 			{
 				Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;

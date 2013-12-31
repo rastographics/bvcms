@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
 using CmsData;
@@ -19,7 +20,7 @@ namespace CmsWeb.Areas.Main.Models.Avery
 	{
 		IEnumerable<Person> q;
 	    private bool addEmployer;
-		public EmployerAddress(object qid, bool addEmployer)
+		public EmployerAddress(Guid qid, bool addEmployer)
 		{
             q =  from p in DbUtil.Db.PeopleQuery(qid)
 				 orderby p.Name2

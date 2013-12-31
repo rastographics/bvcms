@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class Avery3Result : ActionResult
     {
-        public object id;
+        public Guid id;
         const float W = 197f;
 
         protected PdfContentByte dc;

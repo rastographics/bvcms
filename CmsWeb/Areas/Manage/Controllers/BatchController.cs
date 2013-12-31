@@ -422,7 +422,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             IQueryable<Person> q = null;
             if (a[0] == "last query")
             {
-                q = DbUtil.Db.PeopleQuery(Util.QueryBuilderScratchPadId);
+                var id = DbUtil.Db.FetchLastQuery().Id;
+                q = DbUtil.Db.PeopleQuery(id);
             }
             else if (a[0] == "tag")
             {
@@ -590,10 +591,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             foreach (var a in qbits)
             {
                 var t = DbUtil.Db.FetchOrCreateSystemTag(a[0]);
-                if(ViewExtensions2.TestSb2())
-                    DbUtil.Db.TagAll2(DbUtil.Db.PeopleQuery2(a[0] + ":" + a[1]), t);
-                else
-                    DbUtil.Db.TagAll2(DbUtil.Db.PeopleQuery(a[0] + ":" + a[1]), t);
+                DbUtil.Db.TagAll2(DbUtil.Db.PeopleQuery2(a[0] + ":" + a[1]), t);
             }
             return View();
         }
@@ -783,13 +781,6 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Content(e.Message);
             }
             return Content("done");
-        }
-        [HttpGet]
-        [Authorize(Roles = "Developer")]
-        public ActionResult ConvertQueries()
-        {
-            DbUtil.Db.CheckLoadQueries(reload: true);
-            return Redirect("/SavedQueryList");
         }
     }
 }

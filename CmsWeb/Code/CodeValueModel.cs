@@ -576,7 +576,7 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> QueryBuilderFields(string category)
         {
             int n = 1;
-            return from f in FieldClass.Fields.Values
+            return from f in FieldClass2.Fields.Values
                    where f.CategoryTitle == category
                    select new CodeValueItem
                    {
@@ -588,7 +588,7 @@ namespace CmsWeb.Code
 
         public List<string> QueryBuilderCategories()
         {
-            return (from f in CategoryClass.Categories
+            return (from f in CategoryClass2.Categories
                     select f.Title).ToList();
         }
 

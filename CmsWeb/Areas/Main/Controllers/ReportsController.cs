@@ -6,8 +6,6 @@ using System.Web.Mvc;
 using System.Xml.Linq;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
-using CmsWeb.Areas.Main.Models.Avery;
-using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Main.Models.Report;
 using CmsData;
 using System.IO;
@@ -38,62 +36,62 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Content(ex.Message);
             }
         }
-        public ActionResult WeeklyAttendance(int? id)
-        {
-            return new WeeklyAttendanceResult(id);
-        }
-        public ActionResult Family(int? id)
-        {
-            return new CmsWeb.Areas.Main.Models.Report.FamilyResult(id);
-        }
-        public ActionResult BarCodeLabels(int? id)
-        {
-            if (!id.HasValue)
-                return Content("no query");
-            return new BarCodeLabelsResult(id.Value);
-        }
-        public ActionResult Contacts(int? id, bool? sortAddress, string orgname)
-        {
-            if (!id.HasValue)
-                return Content("no query");
-            return new ContactsResult(id.Value, sortAddress, orgname);
-        }
+//        public ActionResult WeeklyAttendance(Guid id)
+//        {
+//            return new WeeklyAttendanceResult(id);
+//        }
+//        public ActionResult Family(int? id)
+//        {
+//            return new CmsWeb.Areas.Main.Models.Report.FamilyResult(id);
+//        }
+//        public ActionResult BarCodeLabels(int? id)
+//        {
+//            if (!id.HasValue)
+//                return Content("no query");
+//            return new BarCodeLabelsResult(id.Value);
+//        }
+//        public ActionResult Contacts(int? id, bool? sortAddress, string orgname)
+//        {
+//            if (!id.HasValue)
+//                return Content("no query");
+//            return new ContactsResult(id.Value, sortAddress, orgname);
+//        }
+//
+//        public ActionResult Rollsheet(int? id, string org, string dt, int? meetingid, int? bygroup, string sgprefix, bool? altnames, string highlight, OrgSearchModel m)
+//        {
+//            var dt2 = dt.ToDate();
+//            return new RollsheetResult
+//            {
+//                qid = id,
+//                orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null,
+//                groups = org == "curr" ? Util2.CurrentGroups : new int[] { 0 },
+//                meetingid = meetingid,
+//                bygroup = bygroup.HasValue,
+//                sgprefix = sgprefix,
+//                dt = dt2,
+//                altnames = altnames,
+//                highlightsg = highlight,
+//                Model = m
+//            };
+//        }
 
-        public ActionResult Rollsheet(int? id, string org, string dt, int? meetingid, int? bygroup, string sgprefix, bool? altnames, string highlight, OrgSearchModel m)
-        {
-            var dt2 = dt.ToDate();
-            return new RollsheetResult
-            {
-                qid = id,
-                orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null,
-                groups = org == "curr" ? Util2.CurrentGroups : new int[] { 0 },
-                meetingid = meetingid,
-                bygroup = bygroup.HasValue,
-                sgprefix = sgprefix,
-                dt = dt2,
-                altnames = altnames,
-                highlightsg = highlight,
-                Model = m
-            };
-        }
-
-        public ActionResult RallyRollsheet(int? id, string org, string dt, int? meetingid, int? bygroup, string sgprefix, bool? altnames, string highlight, OrgSearchModel m)
-        {
-            var dt2 = dt.ToDate();
-
-            return new RallyRollsheetResult
-            {
-                qid = id,
-                orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null,
-                groups = org == "curr" ? Util2.CurrentGroups : new int[] { 0 },
-                meetingid = meetingid,
-                bygroup = bygroup.HasValue,
-                sgprefix = sgprefix,
-                dt = dt2,
-                altnames = altnames,
-                Model = m
-            };
-        }
+//        public ActionResult RallyRollsheet(int? id, string org, string dt, int? meetingid, int? bygroup, string sgprefix, bool? altnames, string highlight, OrgSearchModel m)
+//        {
+//            var dt2 = dt.ToDate();
+//
+//            return new RallyRollsheetResult
+//            {
+//                qid = id,
+//                orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null,
+//                groups = org == "curr" ? Util2.CurrentGroups : new int[] { 0 },
+//                meetingid = meetingid,
+//                bygroup = bygroup.HasValue,
+//                sgprefix = sgprefix,
+//                dt = dt2,
+//                altnames = altnames,
+//                Model = m
+//            };
+//        }
         public ActionResult OrgLeaders(string org, OrgSearchModel m)
         {
             return new OrgLeadersResult(m) { orgid = org == "curr" ? (int?)Util2.CurrentOrgId : null };
@@ -126,85 +124,85 @@ namespace CmsWeb.Areas.Main.Controllers
                     };
             return View(q);
         }
-        public ActionResult Roster1(int? id, int? oid, OrgSearchModel m)
-        {
-            return new RosterResult(m)
-            {
-                qid = id,
-                org = oid,
-            };
-        }
-        public ActionResult Roster(int? id, int? oid, OrgSearchModel m)
-        {
-            return new RosterListResult(m)
-                {
-                    qid = id,
-                    orgid = oid,
-                };
-        }
-        public ActionResult Avery(int? id)
-        {
-            if (!id.HasValue)
-                return Content("no query");
-            return new AveryResult { id = id };
-        }
-        public ActionResult NameLabels(int? id)
-        {
-            if (!id.HasValue)
-                return Content("no query");
-            return new AveryResult { namesonly = true, id = id };
-        }
-        public ActionResult Avery3(int? id)
-        {
-            if (!id.HasValue)
-                return Content("no query");
-            return new Avery3Result { id = id };
-        }
+//        public ActionResult Roster1(int? id, int? oid, OrgSearchModel m)
+//        {
+//            return new RosterResult(m)
+//            {
+//                qid = id,
+//                org = oid,
+//            };
+//        }
+//        public ActionResult Roster(int? id, int? oid, OrgSearchModel m)
+//        {
+//            return new RosterListResult(m)
+//                {
+//                    qid = id,
+//                    orgid = oid,
+//                };
+//        }
+//        public ActionResult Avery(int? id)
+//        {
+//            if (!id.HasValue)
+//                return Content("no query");
+//            return new AveryResult { id = id };
+//        }
+//        public ActionResult NameLabels(int? id)
+//        {
+//            if (!id.HasValue)
+//                return Content("no query");
+//            return new AveryResult { namesonly = true, id = id };
+//        }
+//        public ActionResult Avery3(int? id)
+//        {
+//            if (!id.HasValue)
+//                return Content("no query");
+//            return new Avery3Result { id = id };
+//        }
         //public ActionResult Coupons()
         //{
         //    return new CouponsResult(null, null);
         //}
-        public ActionResult AveryAddress(int? id, string format, bool? titles, bool? usephone, bool? sortzip, int skipNum = 0)
-        {
-            if (!id.HasValue)
-                return Content("no query");
-            if (!format.HasValue())
-                return Content("no format");
-            return new AveryAddressResult
-            {
-                id = id,
-                format = format,
-                titles = titles,
-                usephone = usephone ?? false,
-                skip = skipNum,
-                sortzip = sortzip
-            };
-        }
-        public ActionResult RollLabels(int? id, string format, bool? titles, bool? usephone, bool? sortzip)
-        {
-            if (!id.HasValue)
-                return Content("no query");
-            return new RollLabelsResult
-            {
-                qid = id,
-                format = format,
-                titles = titles ?? false,
-                usephone = usephone ?? false,
-                sortzip = sortzip
-            };
-        }
-        public ActionResult Prospect(int? id, bool? Form, bool? Alpha)
-        {
-            if (!id.HasValue)
-                return Content("no query");
-            return new ProspectResult(id, Form ?? false, Alpha ?? false);
-        }
-        public ActionResult Attendee(int? id)
-        {
-            if (!id.HasValue)
-                return Content("no meetingid");
-            return new AttendeeResult(id);
-        }
+//        public ActionResult AveryAddress(int? id, string format, bool? titles, bool? usephone, bool? sortzip, int skipNum = 0)
+//        {
+//            if (!id.HasValue)
+//                return Content("no query");
+//            if (!format.HasValue())
+//                return Content("no format");
+//            return new AveryAddressResult
+//            {
+//                id = id,
+//                format = format,
+//                titles = titles,
+//                usephone = usephone ?? false,
+//                skip = skipNum,
+//                sortzip = sortzip
+//            };
+//        }
+//        public ActionResult RollLabels(int? id, string format, bool? titles, bool? usephone, bool? sortzip)
+//        {
+//            if (!id.HasValue)
+//                return Content("no query");
+//            return new RollLabelsResult
+//            {
+//                qid = id,
+//                format = format,
+//                titles = titles ?? false,
+//                usephone = usephone ?? false,
+//                sortzip = sortzip
+//            };
+//        }
+//        public ActionResult Prospect(int? id, bool? Form, bool? Alpha)
+//        {
+//            if (!id.HasValue)
+//                return Content("no query");
+//            return new ProspectResult(id, Form ?? false, Alpha ?? false);
+//        }
+//        public ActionResult Attendee(int? id)
+//        {
+//            if (!id.HasValue)
+//                return Content("no meetingid");
+//            return new AttendeeResult(id);
+//        }
         public ActionResult VisitsAbsents(int? id)
         {
             if (!id.HasValue)
@@ -224,12 +222,12 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Content("no orgid");
             return new PastAttendeeResult(id);
         }
-        public ActionResult Registration(int? id, int? oid)
-        {
-            if (!id.HasValue)
-                return Content("no query");
-            return new RegistrationResult(id, oid);
-        }
+//        public ActionResult Registration(int? id, int? oid)
+//        {
+//            if (!id.HasValue)
+//                return Content("no query");
+//            return new RegistrationResult(id, oid);
+//        }
         public ActionResult ChurchAttendance(string id)
         {
             var dt2 = id.ToDate();
@@ -408,15 +406,15 @@ namespace CmsWeb.Areas.Main.Controllers
                        select e;
             return View(list);
         }
-        public ActionResult ExtraValuesGrid(int id, string sort, bool alternate = false)
-        {
-            return RunExtraValuesGrid(id, sort, alternate);
-        }
+//        public ActionResult ExtraValuesGrid(int id, string sort, bool alternate = false)
+//        {
+//            return RunExtraValuesGrid(id, sort, alternate);
+//        }
         public ActionResult ExtraValuesGrid2(Guid id, string sort, bool alternate = false)
         {
             return RunExtraValuesGrid(id, sort, alternate);
         }
-        private ActionResult RunExtraValuesGrid(object id, string sort, bool alternate)
+        private ActionResult RunExtraValuesGrid(Guid id, string sort, bool alternate)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
             var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues.xml", "<Fields/>"));
@@ -439,22 +437,22 @@ namespace CmsWeb.Areas.Main.Controllers
                 return View("ExtraValuesGrid2", rdr);
             return View("ExtraValuesGrid", rdr);
         }
-        public ActionResult FamilyDirectory(int id)
-        {
-            return new FamilyDir(id);
-        }
-        public ActionResult FamilyDirectoryCompact(int id)
-        {
-            return new CompactDir(id);
-        }
-        public ActionResult PictureDirectory(int id)
-        {
-            return new PictureDir(id);
-        }
-        public ActionResult EmployerAddress(int id)
-        {
-            return new EmployerAddress(id, true);
-        }
+//        public ActionResult FamilyDirectory(int id)
+//        {
+//            return new FamilyDir(id);
+//        }
+//        public ActionResult FamilyDirectoryCompact(int id)
+//        {
+//            return new CompactDir(id);
+//        }
+//        public ActionResult PictureDirectory(int id)
+//        {
+//            return new PictureDir(id);
+//        }
+//        public ActionResult EmployerAddress(int id)
+//        {
+//            return new EmployerAddress(id, true);
+//        }
 
         public class QueryStatsResult : ActionResult
         {

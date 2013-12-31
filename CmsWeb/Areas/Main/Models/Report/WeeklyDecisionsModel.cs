@@ -318,10 +318,10 @@ namespace CmsWeb.Areas.Main.Models.Report
                     switch (key)
                     {
                         case "Unknown":
-                            cc.AddNewClause(QueryType.OtherNewChurch, CompareType.IsNull, "");
+                            cc.AddNewClause(QueryType.OtherNewChurch, CompareType.Equal, "");
                             cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
                             break;
-                        case "Total":
+                        case "All":
                             break;
                         default:
                             cc.AddNewClause(QueryType.OtherNewChurch, CompareType.Equal, key);
@@ -333,7 +333,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             cc.Save(DbUtil.Db);
             if (ViewExtensions2.UseNewLook())
                 return "/Query/" + cc.Id;
-            return "/QueryBuilder/Main/" + cc.Id;
+            return "/QueryBuilder2/Main/" + cc.Id;
         }
     }
 }

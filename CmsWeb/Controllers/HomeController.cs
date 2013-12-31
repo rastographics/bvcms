@@ -58,7 +58,7 @@ namespace CmsWeb.Controllers
         {
             var qb = DbUtil.Db.ScratchPadCondition();
             qb.Reset(DbUtil.Db);
-            return Redirect("/QueryBuilder/Main");
+            return Redirect("/QueryBuilder2/Main");
         }
         public ActionResult Test()
         {
@@ -77,75 +77,36 @@ namespace CmsWeb.Controllers
         {
             var name = "VisitNumber-" + id;
             const CompareType comp = CompareType.Equal;
-            if (ViewExtensions2.TestSb2())
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+            Condition c;
+            switch (id)
             {
-                var cc = DbUtil.Db.ScratchPadCondition();
-                cc.Reset(DbUtil.Db);
-                Condition c;
-                switch (id)
-                {
-                    case 1:
-                        c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
-                        c.Quarters = "1";
-                        c.Days = 7;
-                        break;
-                    case 2:
-                        c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
-                        c.Quarters = "2";
-                        c.Days = 7;
-                        c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
-                        c.Quarters = "1";
-                        c.Days = 7;
-                        break;
-                    case 3:
-                        c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
-                        c.Quarters = "3";
-                        c.Days = 7;
-                        c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
-                        c.Quarters = "2";
-                        c.Days = 7;
-                        break;
-                }
-                cc.Save(DbUtil.Db);
-                TempData["autorun"] = true;
-                return Redirect("/QueryBuilder2/Main/" + cc.Id);
-
+                case 1:
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c.Quarters = "1";
+                    c.Days = 7;
+                    break;
+                case 2:
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c.Quarters = "2";
+                    c.Days = 7;
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+                    c.Quarters = "1";
+                    c.Days = 7;
+                    break;
+                case 3:
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
+                    c.Quarters = "3";
+                    c.Days = 7;
+                    c = cc.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
+                    c.Quarters = "2";
+                    c.Days = 7;
+                    break;
             }
-            var qb = DbUtil.Db.QueryBuilderClauses.FirstOrDefault(c => c.IsPublic && c.Description == name && c.SavedBy == "public");
-            if (qb == null)
-            {
-                qb = DbUtil.Db.QueryBuilderScratchPad();
-                qb.CleanSlate(DbUtil.Db);
-
-                QueryBuilderClause clause = null;
-                switch (id)
-                {
-                    case 1:
-                        clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
-                        clause.Quarters = "1";
-                        clause.Days = 7;
-                        break;
-                    case 2:
-                        clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
-                        clause.Quarters = "2";
-                        clause.Days = 7;
-                        clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
-                        clause.Quarters = "1";
-                        clause.Days = 7;
-                        break;
-                    case 3:
-                        clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "1,T");
-                        clause.Quarters = "3";
-                        clause.Days = 7;
-                        clause = qb.AddNewClause(QueryType.RecentVisitNumber, comp, "0,F");
-                        clause.Quarters = "2";
-                        clause.Days = 7;
-                        break;
-                }
-                qb = qb.SaveTo(DbUtil.Db, name, "public", true);
-            }
+            cc.Save(DbUtil.Db);
             TempData["autorun"] = true;
-            return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
+            return Redirect("/QueryBuilder2/Main/" + cc.Id);
         }
         [Authorize(Roles = "Admin")]
         public ActionResult ActiveRecords()

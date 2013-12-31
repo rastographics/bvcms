@@ -19,7 +19,6 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        private const string STR_QBScratchPad = "QBScratchPad";
         private const string STR_SessionStarting = "SessionStarting";
         private const string STR_Auditing = "Auditing";
         private const string STR_Helpfile = "Helpfile";
@@ -27,32 +26,9 @@ namespace UtilityExtensions
         private const string STR_SMTPDEBUG = "SMTPDebug";
         public static int CreateAccountCode = -1952;
 
-        public static string ScratchPad
-        {
-            get { return "<--ScratchPad-->"; }
-        }
-
         public static string ScratchPad2
         {
             get { return "New Query"; }
-        }
-
-        public static int QueryBuilderScratchPadId
-        {
-            get
-            {
-                int id = 0;
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_QBScratchPad] != null)
-                            id = HttpContext.Current.Session[STR_QBScratchPad].ToInt();
-                return id;
-            }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_QBScratchPad] = value;
-            }
         }
 
         public static string SessionId

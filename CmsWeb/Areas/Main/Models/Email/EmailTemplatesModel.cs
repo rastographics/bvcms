@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Models;
-using CmsWeb.Areas.Manage.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Models
@@ -13,7 +11,7 @@ namespace CmsWeb.Areas.Main.Models
 	public class EmailTemplatesModel
 	{
 	    public bool wantparents { get; set; }
-	    public object queryid { get; set; }
+	    public Guid queryid { get; set; }
 		public IQueryable<Content> fetchTemplates()
 		{
 			var currentRoleIds = DbUtil.Db.CurrentRoleIds();

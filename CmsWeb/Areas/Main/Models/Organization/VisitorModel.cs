@@ -10,11 +10,11 @@ namespace CmsWeb.Models.OrganizationPage
 {
     public class VisitorModel
     {
-        private object queryid;
+        private Guid queryid;
         public int OrganizationId { get; set; }
         public PagerModel2 Pager { get; set; }
         private string NameFilter;
-        public VisitorModel(int id, object qid, string name)
+        public VisitorModel(int id, Guid qid, string name)
         {
             OrganizationId = id;
             queryid = qid;

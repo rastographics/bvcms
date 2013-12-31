@@ -12,7 +12,6 @@ using iTextSharp.text.pdf;
 using CmsData;
 using CmsData.Codes;
 using UtilityExtensions;
-using System.Text;
 using System.Web.Mvc;
 using CmsWeb.Models;
 
@@ -31,8 +30,8 @@ namespace CmsWeb.Areas.Main.Models.Report
 		private bool ShowForm;
 		private bool AlphaSort;
 
-		private object qid;
-		public ProspectResult(object id, bool ShowForm, bool Alpha)
+		private Guid qid;
+		public ProspectResult(Guid id, bool ShowForm, bool Alpha)
 		{
 			qid = id;
 			this.ShowForm = ShowForm;

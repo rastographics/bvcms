@@ -376,7 +376,7 @@ namespace CmsWeb.Models
 
             if (m.memberstatus > 0)
                 cc.AddNewClause(QueryType.MemberStatusId, CompareType.Equal,
-                                QueryModel.IdCode(cv.MemberStatusCodes(), m.memberstatus));
+                                QueryModel2.IdCode(cv.MemberStatusCodes(), m.memberstatus));
 
             if (m.name.HasValue())
             {
@@ -454,16 +454,16 @@ namespace CmsWeb.Models
             }
             if (m.campus > 0)
                 cc.AddNewClause(QueryType.CampusId, CompareType.Equal,
-                                QueryModel.IdCode(cv.AllCampuses(), m.campus));
+                                QueryModel2.IdCode(cv.AllCampuses(), m.campus));
             else if (m.campus == -1)
                 cc.AddNewClause(QueryType.CampusId, CompareType.IsNull,
-                                QueryModel.IdCode(cv.AllCampuses(), m.campus));
+                                QueryModel2.IdCode(cv.AllCampuses(), m.campus));
             if (m.gender != 99)
                 cc.AddNewClause(QueryType.GenderId, CompareType.Equal,
-                                QueryModel.IdCode(cv.GenderCodes(), m.gender));
+                                QueryModel2.IdCode(cv.GenderCodes(), m.gender));
             if (m.marital != 99)
                 cc.AddNewClause(QueryType.MaritalStatusId, CompareType.Equal,
-                                QueryModel.IdCode(cv.MaritalStatusCodes(), m.marital));
+                                QueryModel2.IdCode(cv.MaritalStatusCodes(), m.marital));
             if(m.statusflags != null)
                 foreach (var f in m.statusflags)
                     cc.AddNewClause(QueryType.StatusFlag, CompareType.Equal, f);
