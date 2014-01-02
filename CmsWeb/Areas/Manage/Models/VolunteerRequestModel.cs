@@ -158,7 +158,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 			qb.Reset(Db);
 			qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, "{0},temp".Fmt(tag.Id));
 			meeting.AddEditExtra(Db, "TotalVolunteersNeeded", ((additional ?? 0) + limit).ToString());
-			Db.SubmitChanges();
+            qb.Save(DbUtil.Db);
 
 			var reportlink = @"<a href=""{0}OnlineReg/RequestReport/{1}/{2}/{3}"">Volunteer Request Status Report</a>"
 				.Fmt(Db.CmsHost, meeting.MeetingId, person.PeopleId, dt.Ticks);

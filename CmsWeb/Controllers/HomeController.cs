@@ -58,6 +58,7 @@ namespace CmsWeb.Controllers
         {
             var qb = DbUtil.Db.ScratchPadCondition();
             qb.Reset(DbUtil.Db);
+            qb.Save(DbUtil.Db);
             return Redirect("/QueryBuilder2/Main");
         }
         public ActionResult Test()

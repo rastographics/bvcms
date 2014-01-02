@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.Main.Controllers
             qb.Reset(DbUtil.Db);
             var comp = CompareType.Equal;
             var clause = qb.AddNewClause(QueryType.FamilyId, comp, id);
-            DbUtil.Db.SubmitChanges();
+            qb.Save(DbUtil.Db);
             return Redirect("/QueryBuilder2/Main/{0}".Fmt(qb.Id));
         }
         [AcceptVerbs(HttpVerbs.Post)]
