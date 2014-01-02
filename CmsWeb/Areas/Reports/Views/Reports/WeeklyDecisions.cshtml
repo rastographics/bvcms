@@ -1,14 +1,11 @@
 ﻿@using CmsWeb
 @model CmsWeb.Areas.Main.Models.Report.WeeklyDecisionsModel
 @{
-    Layout = "~/Views/Shared/Reports.cshtml";
+    Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Weekly Decisions Report";
 }
 @section head {
     <style type="text/css">
-        body {
-            font-size: 110%;
-        }
 
         .totalrow td {
             border-top: 2px solid black;

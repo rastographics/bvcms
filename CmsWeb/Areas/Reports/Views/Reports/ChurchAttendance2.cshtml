@@ -74,7 +74,7 @@
     <div style="text-align: center">
         <h1>
             Church Attendance</h1>
-        <form action="/Reports/ChurchAttendance2/" method = "post">
+        <form action="/Reports/ChurchAttendance2/" method = "GET">
         Start Date:
         @Html.DatePicker("Dt1") End Date: @Html.DatePicker("Dt2")<br />
         Skip Dates (optional, comma separated sundays): @Html.TextBox("skipweeks")

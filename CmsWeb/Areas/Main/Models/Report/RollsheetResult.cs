@@ -31,7 +31,6 @@ namespace CmsWeb.Areas.Main.Models.Report
         }
 
         public OrgSearchModel Model;
-        public Guid? qid;
         public int? meetingid, orgid;
         public int[] groups;
         public bool? bygroup;
@@ -316,8 +315,11 @@ namespace CmsWeb.Areas.Main.Models.Report
         }
         private IEnumerable<OrgInfo> ReportList()
         {
+            var orgs = Model == null
+                ? DbUtil.Db.Organizations.AsQueryable()
+                : Model.FetchOrgs();
             var roles = DbUtil.Db.CurrentRoles();
-            var q = from o in Model.FetchOrgs()
+            var q = from o in orgs
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where o.OrganizationId == orgid || (orgid ?? 0) == 0
                     orderby o.Division.Name, o.OrganizationName
@@ -334,8 +336,11 @@ namespace CmsWeb.Areas.Main.Models.Report
         }
         private IEnumerable<OrgInfo> ReportList2()
         {
+            var orgs = Model == null
+                ? DbUtil.Db.Organizations.AsQueryable()
+                : Model.FetchOrgs();
             var roles = DbUtil.Db.CurrentRoles();
-            var q = from o in Model.FetchOrgs()
+            var q = from o in orgs
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     from sg in o.MemberTags
                     where (sgprefix ?? "") == "" || sg.Name.StartsWith(sgprefix)

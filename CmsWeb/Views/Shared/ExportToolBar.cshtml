@@ -60,35 +60,35 @@
             </a>
             <div class="dropdown2-menu has-tip">
                 <ul>
-                    <li><a href='/Reports2/Prospect/@qid'>Inreach/Outreach</a></li>
-                    <li><a href='/Reports2/Prospect/@qid?Form=true'>Inreach/Outreach with Form</a></li>
+                    <li><a href='/Reports/Prospect/@qid'>Inreach/Outreach</a></li>
+                    <li><a href='/Reports/Prospect/@qid?Form=true'>Inreach/Outreach with Form</a></li>
                     @if ((bool?)ViewBag.OrganizationContext == true)
                     {
-                        <li><a href='/Reports2/Contacts/@qid?orgname=@ViewBag.orgname' title="Report for Robo-calling Contacts">Contact Report</a></li>
-                        <li class="hideAlt"><a href='/Reports2/Contacts/@qid?sortAddress=true&orgname=@ViewBag.orgname'>Contact Report (by addr)</a></li>
+                        <li><a href='/Reports/Contacts/@qid?orgname=@ViewBag.orgname' title="Report for Robo-calling Contacts">Contact Report</a></li>
+                        <li class="hideAlt"><a href='/Reports/Contacts/@qid?sortAddress=true&orgname=@ViewBag.orgname'>Contact Report (by addr)</a></li>
                     }
                     else
                     {
-                        <li><a href='/Reports2/Contacts/@qid' title="Report for Robo-calling Contacts">Contact Report</a></li>
-                        <li class="hideAlt"><a href='/Reports2/Contacts/@qid'>Contact Report (by addr)</a></li>
+                        <li><a href='/Reports/Contacts/@qid' title="Report for Robo-calling Contacts">Contact Report</a></li>
+                        <li class="hideAlt"><a href='/Reports/Contacts/@qid'>Contact Report (by addr)</a></li>
                     }
-                    <li><a href='/Reports2/WeeklyAttendance/@qid' title="General Attendance Stats">Weekly Attend</a></li>
+                    <li><a href='/Reports/WeeklyAttendance/@qid' title="General Attendance Stats">Weekly Attend</a></li>
                     <li><a href='/Export2/Excel/Involvement/@qid' title="Personal, Contact and Enrollment Info">Involvement</a></li>
-                    <li><a href='/Reports2/Family/@qid'>Family Report</a></li>
-                    <li><a href="/Reports2/PictureDirectory/@qid">Picture Directory</a></li>
-                    <li><a href="/Reports2/FamilyDirectory/@qid">Family Directory</a></li>
-                    <li><a href="/Reports2/FamilyDirectoryCompact/@qid">Compact Directory</a></li>
+                    <li><a href='/Reports/Family/@qid'>Family Report</a></li>
+                    <li><a href="/Reports/PictureDirectory/@qid">Picture Directory</a></li>
+                    <li><a href="/Reports/FamilyDirectory/@qid">Family Directory</a></li>
+                    <li><a href="/Reports/FamilyDirectoryCompact/@qid">Compact Directory</a></li>
                     @if ((bool?)ViewBag.OrganizationContext == true)
                     {
                         <li><a id="RollsheetLink" href='#' title="Rollsheet Report">Rollsheet Report</a></li>
                         <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report">Rally Rollsheet</a></li>
-                        <li><a href='/Reports2/Roster1/@qid?oid=@Util2.CurrentOrgId'>Roster</a></li>
-                        <li><a href='/Reports2/Roster/@qid?oid=@Util2.CurrentOrgId'>Roster Extended</a></li>
-                        <li><a href='/Reports2/Registration/@qid?oid=@Util2.CurrentOrgId'>Registration Report</a></li>
+                        <li><a href='/Reports/Roster1/@qid?oid=@Util2.CurrentOrgId'>Roster</a></li>
+                        <li><a href='/Reports/Roster/@qid?oid=@Util2.CurrentOrgId'>Roster Extended</a></li>
+                        <li><a href='/Reports/Registration/@qid?oid=@Util2.CurrentOrgId'>Registration Report</a></li>
                     }
                     else
                     {
-                        <li><a href='/Reports2/Registration/@qid'>Registration Rpt</a></li>
+                        <li><a href='/Reports/Registration/@qid'>Registration Rpt</a></li>
                     }
                     <li><a href='/Export2/Excel/Attend/@qid' title="Contains attendance information for their class">Main Fellowship Att</a></li>
                     <li><a href='/Export2/Excel/Children/@qid' title="Contains emergency contact, who brought child info">Children</a></li>
@@ -102,13 +102,13 @@
             </a>
             <div class="dropdown2-menu has-tip">
                 <ul>
-                    <li><a href='/Reports2/RollLabels/@qid' class="ChooseFormat" title="Labels (pdf for Datamax label printer)">Roll Labels</a></li>
-                    <li><a href='/Reports2/BarCodeLabels/@qid' title="Labels for Choir Attendance">Barcode Labels</a></li>
-                    <li><a href='/Reports2/Avery/@qid' title="Avery Name Labels">Name Labels (with phones)</a></li>
-                    <li><a href='/Reports2/NameLabels/@qid' title="Avery Name Labels (no phones)">Name Labels</a></li>
-                    <li><a href='/Reports2/Avery3/@qid' title="Avery 3 Across Labels (person per row)">Avery Labels 3</a></li>
-                    <li><a href='/Reports2/AveryAddress/@qid' class="ChooseFormat" title="Address Labels">Avery Address</a></li>
-                    <li><a href="/Reports2/EmployerAddress/@qid">Avery Employer</a></li>
+                    <li><a href='/Reports/RollLabels/@qid' class="ChooseFormat" title="Labels (pdf for Datamax label printer)">Roll Labels</a></li>
+                    <li><a href='/Reports/BarCodeLabels/@qid' title="Labels for Choir Attendance">Barcode Labels</a></li>
+                    <li><a href='/Reports/Avery/@qid' title="Avery Name Labels">Name Labels (with phones)</a></li>
+                    <li><a href='/Reports/NameLabels/@qid' title="Avery Name Labels (no phones)">Name Labels</a></li>
+                    <li><a href='/Reports/Avery3/@qid' title="Avery 3 Across Labels (person per row)">Avery Labels 3</a></li>
+                    <li><a href='/Reports/AveryAddress/@qid' class="ChooseFormat" title="Address Labels">Avery Address</a></li>
+                    <li><a href="/Reports/EmployerAddress/@qid">Avery Employer</a></li>
                 </ul>
             </div>
         </li>

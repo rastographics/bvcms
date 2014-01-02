@@ -270,6 +270,7 @@
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Main\Controllers\QueryBuilder2Controller.cs" />
+    <Compile Include="Areas\Main\Models\Report\QueryStatsResult.cs" />
     <Compile Include="Areas\Main\Controllers\SavedQuery2Controller.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContacteesModel.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContactorsModel.cs" />
@@ -506,7 +507,6 @@
     <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Main\Controllers\OrganizationController.cs" />
     <Compile Include="Areas\Main\Controllers\PersonController.cs" />
-    <Compile Include="Areas\Main\Controllers\ReportsController.cs" />
     <Compile Include="Areas\Main\Controllers\UserPrefController.cs" />
     <Compile Include="Areas\Public\Controllers\APIPersonController.cs" />
     <Compile Include="Areas\Public\Controllers\APIOrgController.cs" />
@@ -572,7 +572,6 @@
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtract.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatements.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatementsResult.cs" />
-    <Compile Include="Areas\Main\Models\Report\TestResult.cs" />
     <Compile Include="Areas\Main\Models\Report\RollsheetModel.cs" />
     <Compile Include="Areas\Main\Models\Report\PastAttendeeResult.cs" />
     <Compile Include="Areas\Main\Models\Report\VisitsAbsentsResult.cs" />
@@ -971,6 +970,10 @@
     </Content>
     <Content Include="Content\css\bootstrap-responsive.css" />
     <Content Include="Content\css\bootstrap-responsive.min.css" />
+    <Content Include="Content\css\bootstrap-tour.css" />
+    <Content Include="Content\css\bootstrap-tour.min.css">
+      <DependentUpon>bootstrap-tour.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\bundle-new2css.css">
@@ -1083,6 +1086,10 @@
     <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js">
       <DependentUpon>bootstrap-multiselect.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Bootstrap\bootstrap-tour.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-tour.min.js">
+      <DependentUpon>bootstrap-tour.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap.min.js">
       <DependentUpon>bootstrap.js</DependentUpon>
     </Content>
@@ -1176,8 +1183,13 @@
     <Content Include="Scripts\jQuery\jquery.contextmenu.r2.min.js">
       <DependentUpon>jquery.contextmenu.r2.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\jQuery\jquery.smoothscroll.js" />
+    <Content Include="Scripts\jQuery\jquery.smoothscroll.min.js">
+      <DependentUpon>jquery.smoothscroll.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\js\headermenu1c.js" />
     <Content Include="Scripts\js\header.js" />
+    <Content Include="Scripts\People\tour.js" />
     <Content Include="Scripts\js\RegSetting2.js" />
     <Content Include="Scripts\js\ExtraValue.js" />
     <Content Include="Scripts\js\ExtraValue.min.js">
@@ -1214,7 +1226,7 @@
     <Content Include="Areas\Main\Views\Volunteering\DialogSubmit.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Address.cshtml" />
     <Content Include="Areas\Main\Views\OrgSearch\RecentVisitsEmail.cshtml" />
-    <Content Include="Areas\Main\Views\Reports\ExtraValueData.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ExtraValueData.cshtml" />
     <Content Include="Areas\Dialog\Views\SearchAdd\EditAddress.cshtml" />
     <Content Include="Areas\Dialog\Views\SearchAdd\EditPerson.cshtml" />
     <Content Include="Areas\Dialog\Views\SearchAdd\FormAbbreviated.cshtml" />
@@ -1311,11 +1323,11 @@
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenAddress.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\DeletedPerson.cshtml" />
     <Content Include="Areas\Main\Views\Organization\DialogAddMES.cshtml" />
-    <Content Include="Areas\Main\Views\Reports\WeeklyDecisions.cshtml" />
-    <Content Include="Areas\Main\Views\Reports\Decisions.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\WeeklyDecisions.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Pending.cshtml" />
     <Content Include="Areas\Manage\Views\CheckinLabels\Index.cshtml" />
-    <Content Include="Areas\Main\Views\Reports\ExtraValuesGrid2.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid2.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Attendance.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\DoNotContact.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DoNotContact.cshtml" />
@@ -1329,6 +1341,9 @@
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Display.cshtml" />
+    <Content Include="Scripts\People\tour.min.js">
+      <DependentUpon>tour.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\Search\QueryBuilder2.js" />
     <Content Include="Scripts\Search\QueryBuilder2.min.js">
       <DependentUpon>QueryBuilder2.js</DependentUpon>
@@ -1401,7 +1416,6 @@
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\SpecialRegistrationResults.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundResults2.cshtml" />
     <Content Include="Areas\Finance\Views\Contributions\BundleTotals.cshtml" />
@@ -1430,8 +1444,8 @@
     <Content Include="Areas\Main\Views\SavedQuery2\Rows.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\AnswersNotRequired.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\AskSMS.cshtml" />
-    <Content Include="Areas\Main\Views\Reports\RecentRegistrations.cshtml" />
-    <Content Include="Areas\Main\Views\Reports\RegistrationSummary.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\RecentRegistrations.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\RegistrationSummary.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\GivingLinks.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactorSummary.cshtml" />
     <Content Include="Areas\Main\Views\ContactSearch\ContactorSummary.cshtml" />
@@ -1496,6 +1510,9 @@
     </Content>
     <Content Include="Scripts\Admin\TransactionHistory.min.js.map">
       <DependentUpon>TransactionHistory.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bootstrap\bootstrap-tour.min.js.map">
+      <DependentUpon>bootstrap-tour.js</DependentUpon>
     </Content>
     <None Include="Scripts\Bundle\main.js.bundle" />
     <Content Include="Scripts\Bundle\main.min.js.map">
@@ -1578,7 +1595,7 @@
       <DependentUpon>SearchOrgs.js</DependentUpon>
     </Content>
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
-    <Content Include="Areas\Main\Views\Reports\EnrollmentControl2.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
     <Content Include="Scripts\Bundle\TaskPage.min.js.map">
       <DependentUpon>TaskPage.js.bundle</DependentUpon>
     </Content>
@@ -1621,6 +1638,9 @@
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.map" />
     <Content Include="Scripts\Finance\PostBundle.min.js.map">
       <DependentUpon>PostBundle.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jQuery\jquery.smoothscroll.min.js.map">
+      <DependentUpon>jquery.smoothscroll.js</DependentUpon>
     </Content>
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\js\Pager3.js" />
@@ -2151,6 +2171,9 @@
       <DependentUpon>OnlineReg.js</DependentUpon>
     </Content>
     <Content Include="Views\Shared\Toolbar\ToolbarMyData.cshtml" />
+    <Content Include="Scripts\People\tour.min.js.map">
+      <DependentUpon>tour.js</DependentUpon>
+    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2236,7 +2259,7 @@
     </Content>
     <Content Include="Areas\Manage\Views\Account\Error.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\Reports\ExtraValuesGrid.cshtml">
+    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Account\SetPassword.cshtml">
     </Content>
@@ -2350,7 +2373,7 @@
     <Content Include="Areas\Main\Views\MemberDirectory\Index.cshtml" />
     <Content Include="Areas\Main\Views\MemberDirectory\Results.cshtml" />
     <Content Include="Areas\Main\Views\ContactSearch\ContactTypeTotals.cshtml" />
-    <Content Include="Areas\Main\Views\Reports\RecentAbsents.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
     <Content Include="Areas\Main\Views\OrgSearch\RecentAbsentsEmail.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRange.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRangeResults.cshtml" />
@@ -2453,7 +2476,7 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\UpdateFields.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\Reports\AttendanceDetail.cshtml">
+    <Content Include="Areas\Reports\Views\Reports\AttendanceDetail.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Batch\LookupData.cshtml">
     </Content>
@@ -2644,13 +2667,13 @@
     <Content Include="Areas\Search\Views\SearchAdd\SearchPerson.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Areas\Main\Views\Reports\Attendance.cshtml">
+    <Content Include="Areas\Reports\Views\Reports\Attendance.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Areas\Main\Views\Reports\ChurchAttendance.cshtml">
+    <Content Include="Areas\Reports\Views\Reports\ChurchAttendance.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Areas\Main\Views\Reports\ChurchAttendance2.cshtml">
+    <Content Include="Areas\Reports\Views\Reports\ChurchAttendance2.cshtml">
       <SubType>Code</SubType>
     </Content>
     <Content Include="Areas\Finance\Views\Statements\Progress.cshtml">
@@ -2826,7 +2849,7 @@
     <Content Include="Areas\Public\Views\OptOut\UnSubscribe.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Areas\Main\Views\Reports\ShirtSizes.cshtml">
+    <Content Include="Areas\Reports\Views\Reports\ShirtSizes.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\AskDonation.cshtml">
     </Content>
@@ -2885,7 +2908,7 @@
     </Content>
     <Content Include="Areas\Main\Views\OrgSearch\Row.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\Reports\Meetings.cshtml">
+    <Content Include="Areas\Reports\Views\Reports\Meetings.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge.cshtml">
     </Content>
@@ -2893,7 +2916,7 @@
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmPledge.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\Reports\VitalStats.cshtml">
+    <Content Include="Areas\Reports\Views\Reports\VitalStats.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Email\Timeout.cshtml">
     </Content>
@@ -2991,7 +3014,7 @@
     </Content>
     <Content Include="Areas\Manage\Views\Duplicates\Index.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\Reports\ExtraValues.cshtml">
+    <Content Include="Areas\Reports\Views\Reports\ExtraValues.cshtml">
     </Content>
     <Content Include="Content\images\UpdatePeople.xls" />
     <Content Include="packages.config">
