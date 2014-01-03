@@ -6,11 +6,11 @@
 <title>Index</title>
     @Fingerprint.Css("/content/styles/jquery-ui-1.10.0.custom.css")
     @(ViewExtensions2.UseNewLook() ? Fingerprint.Css("/content/styles/siteblue.css") : Fingerprint.Css("/content/styles/site.css"))
-    @Fingerprint.Css("/content/styles/bundle-css.css")
+    @Fingerprint.Css("/content/bundle.stylecss.css")
     <link href="/Content/styles/style2.css" rel="stylesheet" type="text/css" />
     @ViewExtensions2.jQuery()
     @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/bundle.main.js")
     @Fingerprint.Script("/Scripts/Search/SearchOrgs.js")
 </head>
 <body>

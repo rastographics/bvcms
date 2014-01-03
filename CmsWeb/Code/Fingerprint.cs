@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Hosting;
@@ -10,75 +11,77 @@ using UtilityExtensions;
 
 public class Fingerprint
 {
-    public static HtmlString Script(string path)
+    private static HtmlString Include(string path)
     {
+
         if (HttpRuntime.Cache[path] == null)
         {
-            string absolute = HostingEnvironment.MapPath("~" + path) ?? "";
+            string absolute = HostingEnvironment.MapPath(path) ?? "";
+            var ext = Path.GetExtension(absolute);
+            var fmt = ext == ".js"
+                    ? "<script type=\"text/javascript\" src=\"{0}\"></script>\n"
+                    : "<link href=\"{0}\" rel=\"stylesheet\" />\n";
             var result = new StringBuilder();
-#if DEBUG
-            var bundle = absolute + ".bundle";
-            if (File.Exists(bundle))
+            var re = new Regex(@".*/bundle\.(?<name>.*)\.(?:js|css)", RegexOptions.Singleline | RegexOptions.Multiline);
+            var m = re.Match(path);
+            if (m.Success) // process bundle
             {
-                var xd = XDocument.Load(bundle);
-                foreach (var i in xd.Descendants("file"))
+                const string bundleTargets = "/minify.xml";
+                var xd = HttpRuntime.Cache[bundleTargets] as XDocument;
+                if (xd == null)
                 {
-                    string a = HostingEnvironment.MapPath("~" + i.Value);
-                    result.AppendFormat("<script type=\"text/javascript\" src=\"{0}\"></script>\n", i.Value);
+                    string fn = HostingEnvironment.MapPath(bundleTargets);
+                    xd = XDocument.Load(fn);
+                    HttpRuntime.Cache.Insert(bundleTargets, xd);
                 }
-            }
+                var ns = xd.Root.Name.Namespace;
+                var node = m.Groups["name"].Value;
+#if DEBUG
+                foreach (var p in xd.Descendants(ns + node).Select(i => i.Attribute("Include").Value))
+                    result.AppendFormat(fmt, "/" + p);
+#else
+                DateTime lastdate = DateTime.MinValue;
+                foreach (var p in xd.Descendants(ns + node).Select(i => i.Attribute("Include").Value))
+                {
+                    string fpath = HostingEnvironment.MapPath("/" + p) ?? "";
+                    var fdate = File.GetLastWriteTime(fpath);
+                    if (fdate > lastdate)
+                        lastdate = fdate;
+                }
+                var f = Path.GetFileName(absolute);
+                var d = path.Remove(path.LastIndexOf('/'));
+                var t = "v-{0:yyMMddhhmmss}-".Fmt(lastdate);
+                var pp = "{0}/{1}{2}".Fmt(d, t, f);
+                result.AppendFormat(fmt, pp);
+#endif
+            } // end bundle handling
             else
             {
-                Debug.Assert(absolute != null, "absolute != null");
-                result.AppendFormat("<script type=\"text/javascript\" src=\"{0}\"></script>\n", path);
-            }
+#if DEBUG
+                result.AppendFormat(fmt, path);
 #else
-            const string min = ".min";
-            var dt = File.GetLastWriteTime(absolute);
-            var ext = Path.GetExtension(absolute);
-            var f = Path.GetFileNameWithoutExtension(absolute);
-            var d = path.Remove(path.LastIndexOf('/'));
-            var t = "v-{0:yyMMddhhmmss}-".Fmt(dt); 
-            result.AppendFormat("<script type=\"text/javascript\" src=\"{0}/{1}{2}{3}{4}\"></script>\n", d, t, f, min, ext);
+                const string min = ".min";
+                var dt = File.GetLastWriteTime(absolute);
+                var f = Path.GetFileNameWithoutExtension(absolute);
+                var d = path.Remove(path.LastIndexOf('/'));
+                var t = "v-{0:yyMMddhhmmss}-".Fmt(dt);
+                var minfile = "{0}/{1}{2}{3}".Fmt(d, f, min, ext);
+                string p = File.Exists(HostingEnvironment.MapPath(minfile))
+                    ? "{0}/{1}{2}{3}{4}".Fmt(d, t, f, min, ext)
+                    : "{0}/{1}{2}{3}".Fmt(d, t, f, ext);
+                result.AppendFormat(fmt, p);
 #endif
+            }
             HttpRuntime.Cache.Insert(path, result.ToString(), new CacheDependency(absolute));
         }
         return new HtmlString(HttpRuntime.Cache[path] as string);
     }
     public static HtmlString Css(string path)
     {
-        if (HttpRuntime.Cache[path] == null)
-        {
-            string absolute = HostingEnvironment.MapPath("~" + path) ?? "";
-            var result = new StringBuilder();
-#if DEBUG
-            var bundle = absolute + ".bundle";
-            if (File.Exists(bundle))
-            {
-                var xd = XDocument.Load(bundle);
-                foreach (var i in xd.Descendants("file"))
-                {
-                    string a = HostingEnvironment.MapPath("~" + i.Value);
-                    result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />\n", i.Value);
-                }
-            }
-            else
-            {
-                Debug.Assert(absolute != null, "absolute != null");
-                result.AppendFormat("<link href=\"{0}\" rel=\"stylesheet\" />\n", path);
-            }
-#else
-            const string min = ".min";
-            var dt = File.GetLastWriteTime(absolute);
-            var ext = Path.GetExtension(absolute);
-            var f = Path.GetFileNameWithoutExtension(absolute);
-            var d = path.Remove(path.LastIndexOf('/'));
-            var t = "v-{0:yyMMddhhmmss}-".Fmt(dt); 
-            result.AppendFormat("<link href=\"{0}/{1}{2}{3}{4}\" rel=\"stylesheet\" />\n", d, t, f, min, ext);
-#endif
-            HttpRuntime.Cache.Insert(path, result.ToString(), new CacheDependency(absolute));
-        }
-        return new HtmlString(HttpRuntime.Cache[path] as string);
+        return Include(path);
     }
-
+    public static HtmlString Script(string path)
+    {
+        return Include(path);
+    }
 }

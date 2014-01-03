@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<bundle minify="true" runOnBuild="true" output="query.js">
-    <file>/Scripts/Bootstrap/bootstrap-multiselect.js</file>
-    <file>/Scripts/jQuery/jquery.scrollintoview.js</file>
-    <file>/Scripts/Search/Query.js</file> 
-</bundle>

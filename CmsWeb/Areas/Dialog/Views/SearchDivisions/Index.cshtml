@@ -13,16 +13,16 @@
 
     @if (ViewExtensions2.UseNewLook())
     {
-        @Fingerprint.Css("/content/css/bundle-new2css.css")
+        @Fingerprint.Css("/content/bundle.new2css.css")
         @Fingerprint.Css("/content/styles/jquery-ui-1.10.0.custom.css")
         @Fingerprint.Css("/content/styles/siteblue.css")
-        @Fingerprint.Css("/content/styles/bundle-css.css")
+        @Fingerprint.Css("/content/bundle.stylecss.css")
         <link href="~/Content/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet" />
         @Fingerprint.Css("/content/css/Fixups2.css")
         @ViewExtensions2.jQuery()
         @ViewExtensions2.Bootstrap()
         @ViewExtensions2.jQueryUI()
-        @Fingerprint.Script("/Scripts/Bundle/main2c.js")
+        @Fingerprint.Script("/Scripts/bundle.main2c.js")
         @Html.Partial("DatePickerDefaults")
         <script>
             $.dtoptions = { format: '@Util.jQueryDateFormat2' };
@@ -32,10 +32,10 @@
     {
         @Fingerprint.Css("/content/styles/jquery-ui-1.10.0.custom.css")
         @Fingerprint.Css("/content/styles/site.css")
-        @Fingerprint.Css("/content/styles/bundle-css.css")
+        @Fingerprint.Css("/content/bundle.stylecss.css")
         @ViewExtensions2.jQuery()
         @ViewExtensions2.jQueryUI()
-        @Fingerprint.Script("/Scripts/Bundle/main.js")
+        @Fingerprint.Script("/Scripts/bundle.main.js")
     }
     @Fingerprint.Script("/Scripts/Dialog/SearchDivisions.js")
 </head>

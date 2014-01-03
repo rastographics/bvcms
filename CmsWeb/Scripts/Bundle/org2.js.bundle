@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<bundle minify="true" runOnBuild="true" output="org2.js">
-  <!--The order of the <file> elements determines the order of them when bundled.-->
-  <file>/Scripts/jquery/jquery-ui-timepicker-addon.js</file>
-  <file>/Scripts/Org/Organization2.js</file>
-  <file>/Scripts/Dialog/SearchUsers.js</file>
-  <file>/Scripts/js/RegSetting2.js</file>
-</bundle>

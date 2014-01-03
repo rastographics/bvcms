@@ -6,7 +6,7 @@
     <title>API Tester</title>
     @Fingerprint.Css("/content/styles/jquery-ui-1.10.0.custom.css")
     @(ViewExtensions2.UseNewLook() ? Fingerprint.Css("/content/styles/siteblue.css") : Fingerprint.Css("/content/styles/site.css"))
-    @Fingerprint.Css("/content/styles/bundle-css.css")
+    @Fingerprint.Css("/content/bundle.stylecss.css")
 	<link rel="stylesheet" href="/Content/styles/faary.css?v=1" type="text/css" />
 	<style>
 	    div.section
@@ -18,7 +18,7 @@
 	</style>
     @ViewExtensions2.jQuery()
     @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/bundle.main.js")
     @Fingerprint.Script("/Scripts/js/TestAPI.js")
 </head>
 <body>

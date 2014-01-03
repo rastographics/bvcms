@@ -646,33 +646,17 @@ namespace CmsWeb
             range.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
             range.Style.Border.Bottom.Color.SetColor(Color.FromArgb(172, 204, 234));
         }
-        const string jqueryloc = @"<script type=""text/javascript"" src=""/Scripts/jQuery/{0}""></script>";
         public static HtmlString jQuery()
         {
-
-#if DEBUG
-            return new HtmlString(jqueryloc.Fmt("jquery-1.10.2.js"));
-#else
-        return new HtmlString(jqueryloc.Fmt("jquery-1.10.2.min.js"));
-#endif
+            return Fingerprint.Script("/Scripts/jQuery/jquery-1.10.2.js");
         }
         public static HtmlString jQueryUI()
         {
-#if DEBUG
-            return new HtmlString(jqueryloc.Fmt("jquery-ui-1.10.0.custom.js"));
-#else
-        return new HtmlString(jqueryloc.Fmt("jquery-ui-1.10.0.custom.min.js"));
-#endif
+            return Fingerprint.Script("/Scripts/jQuery/jquery-ui-1.10.0.custom.js");
         }
         public static HtmlString Bootstrap()
         {
-            const string boostraploc = @"<script type=""text/javascript"" src=""/Scripts/Bootstrap/{0}""></script>";
-
-#if DEBUG
-            return new HtmlString(boostraploc.Fmt("bootstrap.js"));
-#else
-        return new HtmlString(boostraploc.Fmt("bootstrap.min.js"));
-#endif
+            return Fingerprint.Script("/Scripts/Bootstrap/bootstrap.js");
         }
 
         public static string Layout()

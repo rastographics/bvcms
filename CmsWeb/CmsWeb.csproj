@@ -106,6 +106,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
+    <Reference Include="EcmaScript.NET">
+      <HintPath>..\packages\EcmaScript.Net.1.0.1.0\lib\net20\EcmaScript.NET.dll</HintPath>
+    </Reference>
     <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
@@ -206,6 +209,12 @@
       <HintPath>..\packages\WebActivator.1.0.0.0\lib\WebActivator.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="Yahoo.Yui.Compressor">
+      <HintPath>..\packages\YUICompressor.NET.2.3.0.0\lib\NET20\Yahoo.Yui.Compressor.dll</HintPath>
+    </Reference>
+    <Reference Include="Yahoo.Yui.Compressor.Build.MsBuild">
+      <HintPath>..\packages\YUICompressor.NET.MSBuild.2.3.0.0\lib\NET20\Yahoo.Yui.Compressor.Build.MsBuild.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
@@ -963,6 +972,8 @@
     <Content Include="ckeditor\skins\moono\images\lock.png" />
     <Content Include="ckeditor\skins\moono\images\refresh.png" />
     <Content Include="ckeditor\styles.js" />
+    <Content Include="Content\bundle.new2css.css" />
+    <Content Include="Content\bundle.stylecss.css" />
     <Content Include="Content\css\bootstrap-editable.css" />
     <Content Include="Content\css\bootstrap-multiselect.css" />
     <Content Include="Content\css\bootstrap-multiselect.min.css">
@@ -976,12 +987,6 @@
     </Content>
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
-    <Content Include="Content\css\bundle-new2css.css">
-      <DependentUpon>bundle-new2css.css.bundle</DependentUpon>
-    </Content>
-    <Content Include="Content\css\bundle-new2css.min.css">
-      <DependentUpon>bundle-new2css.css.bundle</DependentUpon>
-    </Content>
     <Content Include="Content\css\chosen-sprite%402x.png" />
     <Content Include="Content\css\chosen-sprite.png" />
     <Content Include="Content\css\chosen.min.css" />
@@ -1026,12 +1031,6 @@
     <Content Include="Content\img\clear.png" />
     <Content Include="Content\img\loading.gif" />
     <Content Include="Content\css\jquery.dialog2.css" />
-    <Content Include="Content\styles\bundle-css.css">
-      <DependentUpon>bundle-css.css.bundle</DependentUpon>
-    </Content>
-    <Content Include="Content\styles\bundle-css.min.css">
-      <DependentUpon>bundle-css.css.bundle</DependentUpon>
-    </Content>
     <Content Include="Content\styles\Dialog.min.css">
       <DependentUpon>Dialog.css</DependentUpon>
     </Content>
@@ -1057,126 +1056,32 @@
     <Content Include="Content\css\normalize.css" />
     <Content Include="Content\images\saf-bg.png" />
     <Content Include="Content\images\saf.png" />
-    <Content Include="Scripts\Admin\Divisions.min.js">
-      <DependentUpon>Divisions.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Admin\merge.min.js">
-      <DependentUpon>merge.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Admin\TransactionHistory.min.js">
-      <DependentUpon>TransactionHistory.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Admin\Users.min.js">
-      <DependentUpon>Users.js</DependentUpon>
-    </Content>
+    <Content Include="minify.xml" />
     <Content Include="Scripts\Bootstrap\bootbox.js" />
     <Content Include="Scripts\Bootstrap\bootbox.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-ajax.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-datepicker.js" />
-    <Content Include="Scripts\Bootstrap\bootstrap-datepicker.min.js">
-      <DependentUpon>bootstrap-datepicker.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-editable.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-editable.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-modal-popover.js" />
-    <Content Include="Scripts\Bootstrap\bootstrap-modal-popover.min.js">
-      <DependentUpon>bootstrap-modal-popover.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-multiselect.js" />
-    <Content Include="Scripts\Bootstrap\bootstrap-multiselect.min.js">
-      <DependentUpon>bootstrap-multiselect.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Bootstrap\bootstrap-tour.js" />
-    <Content Include="Scripts\Bootstrap\bootstrap-tour.min.js">
-      <DependentUpon>bootstrap-tour.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bootstrap\bootstrap.min.js">
-      <DependentUpon>bootstrap.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Bootstrap\bootstrapx-clickover.js" />
     <Content Include="Scripts\Bootstrap\jquery.bootstrap-growl.js" />
-    <Content Include="Scripts\Bootstrap\jquery.bootstrap-growl.min.js">
-      <DependentUpon>jquery.bootstrap-growl.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Bootstrap\spin.min.js" />
     <Content Include="Scripts\Bootstrap\typeahead.js" />
-    <Content Include="Scripts\Bundle\main2c.js">
-      <DependentUpon>main2c.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\main2c.min.js">
-      <DependentUpon>main2c.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\org.js">
-      <DependentUpon>org.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\org.min.js">
-      <DependentUpon>org.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\org2.js">
-      <DependentUpon>org2.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\org2.min.js">
-      <DependentUpon>org2.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\query.js">
-      <DependentUpon>query.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\query.min.js">
-      <DependentUpon>query.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\query2.js">
-      <DependentUpon>query2.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\query2.min.js">
-      <DependentUpon>query2.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Dialog\OrgMemberDialog.min.js">
-      <DependentUpon>OrgMemberDialog.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Dialog\OrgMembersDialog.min.js">
-      <DependentUpon>OrgMembersDialog.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Dialog\SearchAdd.min.js">
-      <DependentUpon>SearchAdd.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Dialog\SearchDivisions.min.js">
-      <DependentUpon>SearchDivisions.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Dialog\SearchUsers.min.js">
-      <DependentUpon>SearchUsers.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Dialog\UserDialog.min.js">
-      <DependentUpon>UserDialog.js</DependentUpon>
-    </Content>
+    <Content Include="Scripts\bundle.main.js" />
+    <Content Include="Scripts\bundle.main2.js" />
+    <Content Include="Scripts\bundle.main2c.js" />
+    <Content Include="Scripts\bundle.onlineregister.js" />
+    <Content Include="Scripts\bundle.org.js" />
+    <Content Include="Scripts\bundle.query2.js" />
+    <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="Scripts\Email\compose.min.js">
       <DependentUpon>compose.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\Email\Email.min.js">
-      <DependentUpon>Email.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\Bundle.min.js">
-      <DependentUpon>Bundle.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\Bundles.min.js">
-      <DependentUpon>Bundles.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\Contributions.min.js">
-      <DependentUpon>Contributions.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\Funds.min.js">
-      <DependentUpon>Funds.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Finance\PostBundle.min.js">
       <DependentUpon>PostBundle.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\TotalsByFund.min.js">
-      <DependentUpon>TotalsByFund.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\TotalsByRange.min.js">
-      <DependentUpon>TotalsByRange.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\Transactions.min.js">
-      <DependentUpon>Transactions.js</DependentUpon>
     </Content>
     <Content Include="Scripts\jQuery\jquery-1.10.2.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.js" />
@@ -1189,12 +1094,15 @@
     </Content>
     <Content Include="Scripts\js\headermenu1c.js" />
     <Content Include="Scripts\js\header.js" />
+    <Content Include="Scripts\js\modernizr-2.6.2.min.js">
+      <DependentUpon>modernizr-2.6.2.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Org\Organization.min.js">
+      <DependentUpon>Organization.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\People\tour.js" />
     <Content Include="Scripts\js\RegSetting2.js" />
     <Content Include="Scripts\js\ExtraValue.js" />
-    <Content Include="Scripts\js\ExtraValue.min.js">
-      <DependentUpon>ExtraValue.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\sgmap.js" />
     <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.js" />
     <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.min.js">
@@ -1248,25 +1156,9 @@
     <Content Include="Scripts\jQuery\jquery.validate.min.js">
       <DependentUpon>jquery.validate.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\Org\Organization2.js" />
     <Content Include="Scripts\People\contact2.js" />
-    <Content Include="Scripts\People\contact2.min.js">
-      <DependentUpon>contact2.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\ExportToolBar2.js" />
-    <Content Include="Scripts\js\CheckIn.min.js">
-      <DependentUpon>CheckIn.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\js\CheckinActivity.min.js">
-      <DependentUpon>CheckinActivity.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\js\ChurchAttendance.min.js">
-      <DependentUpon>ChurchAttendance.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\contact.js" />
-    <Content Include="Scripts\js\contact.min.js">
-      <DependentUpon>contact.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\Task.min.js">
       <DependentUpon>Task.js</DependentUpon>
     </Content>
@@ -1274,46 +1166,16 @@
     <Content Include="Scripts\js\ExtraValuesGrid2.js" />
     <Content Include="Scripts\js\form-ajax.js" />
     <Content Include="Scripts\js\give.js" />
-    <Content Include="Scripts\js\HomeTest.min.js">
-      <DependentUpon>HomeTest.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\RegSettings.min.js">
       <DependentUpon>RegSettings.js</DependentUpon>
     </Content>
     <Content Include="Scripts\js\Support.js" />
     <Content Include="Scripts\js\Tags.js" />
-    <Content Include="Scripts\js\Tags.min.js">
-      <DependentUpon>Tags.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\js\TestAPI.min.js">
-      <DependentUpon>TestAPI.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\js\UsersEmailFor.min.js">
-      <DependentUpon>UsersEmailFor.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\main.js">
-      <DependentUpon>main.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\main.min.js">
-      <DependentUpon>main.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\main2.js">
-      <DependentUpon>main2.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\main2.min.js">
-      <DependentUpon>main2.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Meeting\meeting-ipad.min.js">
-      <DependentUpon>meeting-ipad.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Meeting\meeting-ticket.min.js">
       <DependentUpon>meeting-ticket.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Meeting\meeting.min.js">
       <DependentUpon>meeting.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Meeting\Meetings.min.js">
-      <DependentUpon>Meetings.js</DependentUpon>
     </Content>
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\Address.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\Person.cshtml" />
@@ -1341,20 +1203,11 @@
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Display.cshtml" />
-    <Content Include="Scripts\People\tour.min.js">
-      <DependentUpon>tour.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\QueryBuilder2.js" />
     <Content Include="Scripts\Search\QueryBuilder2.min.js">
       <DependentUpon>QueryBuilder2.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Search\SavedQuery2.js" />
-    <Content Include="Scripts\Search\SavedQuery2.min.js">
-      <DependentUpon>SavedQuery2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SavedQueryList.min.js">
-      <DependentUpon>SavedQueryList.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
@@ -1451,7 +1304,6 @@
     <Content Include="Areas\Main\Views\ContactSearch\ContactorSummary.cshtml" />
     <Content Include="Areas\Main\Views\ContactSearch\ContactSummary.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactSummary.cshtml" />
-    <None Include="Content\css\bundle-new2css.css.bundle" />
     <Content Include="Content\less\typeahead.js-bootstrap.less" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.ttf" />
@@ -1483,13 +1335,6 @@
     <Content Include="Content\font-awesome-4.0.3\scss\_spinning.scss" />
     <Content Include="Content\font-awesome-4.0.3\scss\_stacked.scss" />
     <Content Include="Content\font-awesome-4.0.3\scss\_variables.scss" />
-    <None Include="Content\styles\bundle-css.css.bundle" />
-    <Content Include="Scripts\Bundle\onlineregister.js">
-      <DependentUpon>onlineregister.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\onlineregister.min.js">
-      <DependentUpon>onlineregister.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\OnlineReg\OnlineReg.min.js">
       <DependentUpon>OnlineReg.js</DependentUpon>
     </Content>
@@ -1497,69 +1342,8 @@
       <DependentUpon>OnlineRegPayment.js</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\production.pubxml" />
-    <Content Include="Scripts\Bundle\query.js.bundle">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Scripts\Bundle\query2.js.bundle">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Scripts\Bundle\org2.js.bundle" />
-    <Content Include="Scripts\Bundle\main2c.js.bundle" />
-    <Content Include="Scripts\Admin\merge.min.js.map">
-      <DependentUpon>merge.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Admin\TransactionHistory.min.js.map">
-      <DependentUpon>TransactionHistory.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bootstrap\bootstrap-tour.min.js.map">
-      <DependentUpon>bootstrap-tour.js</DependentUpon>
-    </Content>
-    <None Include="Scripts\Bundle\main.js.bundle" />
-    <Content Include="Scripts\Bundle\main.min.js.map">
-      <DependentUpon>main.js.bundle</DependentUpon>
-    </Content>
-    <None Include="Scripts\Bundle\main2.js.bundle" />
-    <Content Include="Scripts\Bundle\main2.min.js.map">
-      <DependentUpon>main2.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\main2c.min.js.map">
-      <DependentUpon>main2c.js.bundle</DependentUpon>
-    </Content>
-    <None Include="Scripts\Bundle\onlineregister.js.bundle" />
-    <Content Include="Scripts\Bundle\onlineregister.min.js.map">
-      <DependentUpon>onlineregister.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\org.min.js.map">
-      <DependentUpon>org.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\org2.min.js.map">
-      <DependentUpon>org2.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\query.min.js.map">
-      <DependentUpon>query.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\query2.min.js.map">
-      <DependentUpon>query2.js.bundle</DependentUpon>
-    </Content>
-    <None Include="Scripts\Bundle\TaskPage.js.bundle" />
-    <None Include="Scripts\Bundle\org.js.bundle" />
-    <Content Include="Scripts\Org\OrgChildren.min.js">
-      <DependentUpon>OrgChildren.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Org\OrgGroups.min.js">
-      <DependentUpon>OrgGroups.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Org\OrgMemberDialog2.min.js">
-      <DependentUpon>OrgMemberDialog2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Org\OrgMembers.min.js">
-      <DependentUpon>OrgMembers.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Org\OrgSearch.min.js">
       <DependentUpon>OrgSearch.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\People\family.min.js">
-      <DependentUpon>family.js</DependentUpon>
     </Content>
     <Content Include="Scripts\People\Person.min.js">
       <DependentUpon>Person.js</DependentUpon>
@@ -1567,78 +1351,15 @@
     <Content Include="Scripts\People\Person1.min.js">
       <DependentUpon>Person1.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\People\Person2.min.js">
-      <DependentUpon>Person2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\ContactSearch.min.js">
-      <DependentUpon>ContactSearch.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\ContactSearch2.js" />
-    <Content Include="Scripts\Search\ContactSearch2.min.js">
-      <DependentUpon>ContactSearch2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\PeopleSearch.min.js">
-      <DependentUpon>PeopleSearch.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\Query.min.js">
       <DependentUpon>Query.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\Search\QuickSearch.min.js">
-      <DependentUpon>QuickSearch.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SavedQuery.min.js">
-      <DependentUpon>SavedQuery.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\SavedQueryList.js" />
     <Content Include="Scripts\Search\SearchAdd.js" />
-    <Content Include="Scripts\Search\SearchOrgs.min.js">
-      <DependentUpon>SearchOrgs.js</DependentUpon>
-    </Content>
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
-    <Content Include="Scripts\Bundle\TaskPage.min.js.map">
-      <DependentUpon>TaskPage.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Email\Email.min.js.map">
-      <DependentUpon>Email.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\jQuery\jquery.contextmenu.r2.min.js.map">
-      <DependentUpon>jquery.contextmenu.r2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Dialog\OrgMembersDialog.min.js.map">
-      <DependentUpon>OrgMembersDialog.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\Funds.min.js.map">
-      <DependentUpon>Funds.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\Bundle.min.js.map">
-      <DependentUpon>Bundle.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\Contributions.min.js.map">
-      <DependentUpon>Contributions.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\TotalsByFund.min.js.map">
-      <DependentUpon>TotalsByFund.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\TotalsByRange.min.js.map">
-      <DependentUpon>TotalsByRange.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\Transactions.min.js.map">
-      <DependentUpon>Transactions.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\js\CheckinActivity.min.js.map">
-      <DependentUpon>CheckinActivity.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Meeting\Meetings.min.js.map">
-      <DependentUpon>Meetings.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Dialog\SearchDivisions.min.js.map">
-      <DependentUpon>SearchDivisions.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.map" />
-    <Content Include="Scripts\Finance\PostBundle.min.js.map">
-      <DependentUpon>PostBundle.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jQuery\jquery.smoothscroll.min.js.map">
       <DependentUpon>jquery.smoothscroll.js</DependentUpon>
     </Content>
@@ -1857,12 +1578,6 @@
     <Content Include="Scripts\Org\enroll-control-ipad.js" />
     <Content Include="Scripts\Org\OrgMemberDialog2.js" />
     <Content Include="Scripts\Search\Query.js" />
-    <Content Include="Scripts\Bundle\TaskPage.js">
-      <DependentUpon>TaskPage.js.bundle</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Bundle\TaskPage.min.js">
-      <DependentUpon>TaskPage.js.bundle</DependentUpon>
-    </Content>
     <Content Include="Scripts\Volunteer\Calendar.min.js">
       <DependentUpon>Calendar.js</DependentUpon>
     </Content>
@@ -1872,9 +1587,6 @@
     <Content Include="Scripts\jQuery\jquery-migrate-1.1.1.js" />
     <Content Include="Scripts\Volunteer\Calendar2.min.js">
       <DependentUpon>Calendar2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Volunteer\ManageVolunteer.min.js">
-      <DependentUpon>ManageVolunteer.js</DependentUpon>
     </Content>
     <Content Include="Scripts\Volunteer\ManageVolunteer2.js" />
     <Content Include="Scripts\js\headermenu2.js" />
@@ -2065,12 +1777,6 @@
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Content Include="Scripts\Volunteer\ManageVolunteer2.min.js">
-      <DependentUpon>ManageVolunteer2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Volunteer\volunteering.min.js">
-      <DependentUpon>volunteering.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\Shared\Pager3.cshtml" />
     <Content Include="Views\Shared\NotFound.cshtml" />
@@ -2126,54 +1832,9 @@
     <Content Include="Views\ExtraValue\DeleteFromQuery.cshtml" />
     <Content Include="Views\Shared\SiteLayout2c.cshtml" />
     <Content Include="Views\Home\TestTypeahead.cshtml" />
-    <Content Include="Scripts\Org\OrgMembers.min.js.map">
-      <DependentUpon>OrgMembers.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\QueryBuilder2.min.js.map">
-      <DependentUpon>QueryBuilder2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SavedQueryList.min.js.map">
-      <DependentUpon>SavedQueryList.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SavedQuery2.min.js.map">
-      <DependentUpon>SavedQuery2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Org\OrgMemberDialog2.min.js.map">
-      <DependentUpon>OrgMemberDialog2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Org\OrgChildren.min.js.map">
-      <DependentUpon>OrgChildren.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Org\OrgGroups.min.js.map">
-      <DependentUpon>OrgGroups.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Volunteer\ManageVolunteer.min.js.map">
-      <DependentUpon>ManageVolunteer.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Volunteer\ManageVolunteer2.min.js.map">
-      <DependentUpon>ManageVolunteer2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\People\Person.min.js.map">
-      <DependentUpon>Person.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\ContactSearch.min.js.map">
-      <DependentUpon>ContactSearch.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\SavedQuery.min.js.map">
-      <DependentUpon>SavedQuery.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\Query.min.js.map">
-      <DependentUpon>Query.js</DependentUpon>
-    </Content>
     <Content Include="Views\Shared\CustomHeader.cshtml" />
     <Content Include="Views\Shared\MyDataFooter.cshtml" />
-    <Content Include="Scripts\OnlineReg\OnlineReg.min.js.map">
-      <DependentUpon>OnlineReg.js</DependentUpon>
-    </Content>
     <Content Include="Views\Shared\Toolbar\ToolbarMyData.cshtml" />
-    <Content Include="Scripts\People\tour.min.js.map">
-      <DependentUpon>tour.js</DependentUpon>
-    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2236,7 +1897,6 @@
     <Content Include="Scripts\js\markers.js" />
     <Content Include="Scripts\Meeting\meeting.js" />
     <Content Include="Scripts\js\RegSettings.js" />
-    <Content Include="Scripts\Search\SavedQuery.js" />
     <Content Include="Scripts\Dialog\SearchUsers.js" />
     <Content Include="Scripts\OnlineReg\OnlineRegPayment.js" />
     <Content Include="Errors\AccessDenied.htm" />
@@ -3226,6 +2886,10 @@
     <RemoveDir Directories="obj\bvcms2" />
     <RemoveDir Directories="obj\Debug" />
   </Target>-->
+  <Import Project="minify.xml" />
+  <Target Name="AfterBuild" Condition="'$(Configuration)'!='Debug'">
+    <CallTarget Targets="Minify" />
+  </Target>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
