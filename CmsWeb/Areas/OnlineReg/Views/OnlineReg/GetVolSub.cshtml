@@ -8,7 +8,7 @@
 @section scripts
 {
     @Fingerprint.Script("/Scripts/Volunteer/ManageVolunteer.js")
-    <script src="/ckeditor/ckeditor.js" type="text/javascript"></script>
+    @ViewExtensions2.CKEditor()
     <script type="text/javascript">
         $(function() {
             CKEDITOR.replace('message', {
