@@ -13,7 +13,6 @@ public class Fingerprint
 {
     private static HtmlString Include(string path)
     {
-
         if (HttpRuntime.Cache[path] == null)
         {
             string absolute = HostingEnvironment.MapPath(path) ?? "";
@@ -35,7 +34,7 @@ public class Fingerprint
                     HttpRuntime.Cache.Insert(bundleTargets, xd);
                 }
                 var ns = xd.Root.Name.Namespace;
-                var node = m.Groups["name"].Value;
+                var node = m.Groups["name"].Value.ToLower();
 #if DEBUG
                 foreach (var p in xd.Descendants(ns + node).Select(i => i.Attribute("Include").Value))
                     result.AppendFormat(fmt, "/" + p);

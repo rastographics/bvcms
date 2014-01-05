@@ -1092,11 +1092,16 @@
     <Content Include="Scripts\jQuery\jquery.smoothscroll.min.js">
       <DependentUpon>jquery.smoothscroll.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\jQuery\jquery.ui.accordion.js" />
+    <Content Include="Scripts\jQuery\jquery.ui.accordion.min.js">
+      <DependentUpon>jquery.ui.accordion.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\js\headermenu1c.js" />
     <Content Include="Scripts\js\header.js" />
     <Content Include="Scripts\js\modernizr-2.6.2.min.js">
       <DependentUpon>modernizr-2.6.2.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\Org\Organization.min.js">
       <DependentUpon>Organization.js</DependentUpon>
     </Content>
@@ -1169,7 +1174,6 @@
     <Content Include="Scripts\js\RegSettings.min.js">
       <DependentUpon>RegSettings.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\js\Support.js" />
     <Content Include="Scripts\js\Tags.js" />
     <Content Include="Scripts\Meeting\meeting-ticket.min.js">
       <DependentUpon>meeting-ticket.js</DependentUpon>
@@ -1835,6 +1839,7 @@
     <Content Include="Views\Shared\CustomHeader.cshtml" />
     <Content Include="Views\Shared\MyDataFooter.cshtml" />
     <Content Include="Views\Shared\Toolbar\ToolbarMyData.cshtml" />
+    <Content Include="Views\Home\Support2.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

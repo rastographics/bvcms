@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
     <title>Index</title>
-    @Fingerprint.Css("/content/styles/jquery-ui-1.10.0.custom.css")
+    @ViewExtensions2.jQueryUICss()
     @(ViewExtensions2.UseNewLook() ? Fingerprint.Css("/content/styles/siteblue.css") : Fingerprint.Css("/content/styles/site.css"))
     @Fingerprint.Css("/content/bundle.stylecss.css")
     @ViewExtensions2.jQuery()

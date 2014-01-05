@@ -19,7 +19,7 @@
       <stylecss Include="Content/styles/joyride-1.0.5.css"/>
       <stylecss Include="Content/styles/jquery.multiselect.css"/>
       <stylecss Include="Content/styles/jquery.tooltip.css"/>
-      <stylecss Include="Content/styles/Support.css"/>
+<!--      <stylecss Include="Content/styles/Support.css"/>-->
 
       <main Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
       <main Include="Scripts/jQuery/jquery.cookie.js"/>
@@ -38,7 +38,7 @@
       <main Include="Scripts/js/Pager.js"/>
       <main Include="Scripts/js/ExportToolBar.js"/>
       <main Include="Scripts/js/headermenu.js"/>
-      <main Include="Scripts/js/Support.js"/>
+<!--      <main Include="Scripts/js/Support.js"/>-->
 
       <main2 Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
       <main2 Include="Scripts/Bootstrap/bootstrap-modalmanager.js"/>
@@ -97,7 +97,7 @@
       <main2c Include="Scripts/js/ExportToolBar.js"/>
       <main2c Include="Scripts/js/headermenu2.js"/>
       <main2c Include="Scripts/Search/SearchAdd.js"/>
-      <main2c Include="Scripts/js/Support.js"/>
+<!--      <main2c Include="Scripts/js/Support.js"/>-->
 
       <onlineregister Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.validate.js"/>

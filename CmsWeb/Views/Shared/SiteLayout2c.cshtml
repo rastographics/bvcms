@@ -3,12 +3,12 @@
 <head>
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700' rel='stylesheet' type='text/css'>
+    @ViewExtensions2.GoogleFonts()
     @Fingerprint.Css("/content/bundle.new2css.css")
-    @Fingerprint.Css("/content/styles/jquery-ui-1.10.0.custom.css")
+    @ViewExtensions2.jQueryUICss()
     @Fingerprint.Css("/content/styles/siteblue.css")
     @Fingerprint.Css("/content/bundle.stylecss.css")
-    <link href="/Content/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+    @ViewExtensions2.FontAwesome()
     @RenderSection("head", required: false)
     @Fingerprint.Css("/content/css/Fixups2.css")
     @ViewExtensions2.jQuery()
@@ -32,7 +32,6 @@
     @Html.Partial("Footer")
     @Html.Partial("Dialogs")
     @RenderSection("PopupsPlaceholder", required: false)
-    @Html.Partial("Support")
     <img src="/Content/images/ajax-loader.gif" id="loading-indicator" style="display: none" />
 </body>
 </html>

@@ -47,6 +47,10 @@ namespace CmsWeb.Controllers
         {
             return View();
         }
+        public ActionResult Support2()
+        {
+            return View();
+        }
         [ValidateInput(false)]
         public ActionResult ShowError(string error, string url)
         {

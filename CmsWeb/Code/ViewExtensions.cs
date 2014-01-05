@@ -646,13 +646,29 @@ namespace CmsWeb
             range.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
             range.Style.Border.Bottom.Color.SetColor(Color.FromArgb(172, 204, 234));
         }
+        public static HtmlString GoogleFonts()
+        {
+            return new HtmlString("<link href=\"//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700\" rel=\"stylesheet\">\n");
+        }
+        public static HtmlString FontAwesome()
+        {
+            return new HtmlString( "<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\n");
+        }
+        public static HtmlString CKEditor()
+        {
+            return new HtmlString("<script src=\"/ckeditor/ckeditor.js\" type=\"text/javascript\"></script>\n");
+        }
         public static HtmlString jQuery()
         {
-            return Fingerprint.Script("/Scripts/jQuery/jquery-1.10.2.js");
+            return new HtmlString("<script src=\"//code.jquery.com/jquery-1.10.2.min.js\" type=\"text/javascript\"></script>\n");
+        }
+        public static HtmlString jQueryUICss()
+        {
+            return new HtmlString("<link href=\"//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.min.css\" rel=\"stylesheet\" />\n");
         }
         public static HtmlString jQueryUI()
         {
-            return Fingerprint.Script("/Scripts/jQuery/jquery-ui-1.10.0.custom.js");
+            return new HtmlString("<script src=\"//code.jquery.com/ui/1.10.3/jquery-ui.min.js\" type=\"text/javascript\"></script>\n");
         }
         public static HtmlString Bootstrap()
         {

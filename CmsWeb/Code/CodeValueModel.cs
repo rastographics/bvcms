@@ -461,6 +461,10 @@ namespace CmsWeb.Code
             var tid = DbUtil.Db.TagCurrent().Id;
             return new CodeValueModel().UserTags(Util.UserPeopleId).Where(tt => tt.Id != tid).ToList();
         }
+        public static List<CodeValueItem> UserTagsAll()
+        {
+            return new CodeValueModel().UserTags(Util.UserPeopleId).ToList();
+        }
 
         public List<CodeValueItem> UserTags(int? UserPeopleId)
         {

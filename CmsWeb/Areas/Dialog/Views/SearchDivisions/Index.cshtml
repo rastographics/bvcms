@@ -14,10 +14,10 @@
     @if (ViewExtensions2.UseNewLook())
     {
         @Fingerprint.Css("/content/bundle.new2css.css")
-        @Fingerprint.Css("/content/styles/jquery-ui-1.10.0.custom.css")
+        @ViewExtensions2.jQueryUICss()
         @Fingerprint.Css("/content/styles/siteblue.css")
         @Fingerprint.Css("/content/bundle.stylecss.css")
-        <link href="~/Content/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+        @ViewExtensions2.FontAwesome()
         @Fingerprint.Css("/content/css/Fixups2.css")
         @ViewExtensions2.jQuery()
         @ViewExtensions2.Bootstrap()
@@ -30,7 +30,7 @@
     }
     else
     {
-        @Fingerprint.Css("/content/styles/jquery-ui-1.10.0.custom.css")
+        @ViewExtensions2.jQueryUICss()
         @Fingerprint.Css("/content/styles/site.css")
         @Fingerprint.Css("/content/bundle.stylecss.css")
         @ViewExtensions2.jQuery()

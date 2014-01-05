@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public IEnumerable<SelectListItem> TagData()
         {
-            return TagsVisible ? ConvertToSelect(CodeValueModel.UserTags(), "Code", TagValues) : null;
+            return TagsVisible ? ConvertToSelect(CodeValueModel.UserTagsAll(), "Code", TagValues) : null;
         }
 
         public IEnumerable<SelectListItem> PmmLabelData()

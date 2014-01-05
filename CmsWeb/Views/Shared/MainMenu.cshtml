@@ -188,21 +188,6 @@
                 </div>
             </li>
         }
-        <li>
-            <a href="#" class="trigger-dropdown">Help
-                <img src="/Content/images/dnarrowt.png" />
-            </a>
-            <div class="dropdown2-menu anchor-right">
-                <ul>
-                    <li>@Helper.AnchorLink("Help Documentation", @Util.HelpLink(Util.Helpfile), "_blank")</li>
-                    <li>@Helper.JQueryIdLink("Email Support", "emailsupport")</li>
-                    @if (innewlook)
-                    {
-                        <li>@Html.ActionLink("Use New Look", "UseNewLook", "APITest", new { Area = "" }, null)</li>
-                    }
-                    <li>@Html.ActionLink("About", "About", "Home", new { Area = "" }, null)</li>
-                </ul>
-            </div>
-        </li>
+        <li><a href="/Home/Support2">Help</a></li>
     </ul>
 </div>

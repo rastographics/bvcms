@@ -1,14 +1,4 @@
-﻿@{
-    var access = User.IsInRole("Access");
-    var headerimage = DbUtil.Db.Setting("MyDataSupport", "");
-
-}
-<a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
+﻿<a href="/Home/Support2" class="btn">
     <i class="fa fa-question-circle"></i>
-    <span class="caret"></span>
+    <span class="username">Help</span>
 </a>
-<ul class="dropdown-menu pull-right">
-    @Helper.LiAnchorLink("Help Documentation", @Util.HelpLink(Util.Helpfile), true, "_blank")
-    @Helper.LiJQueryIdLink("Email Support", "emailsupport")
-    @Helper.LiAnchorLink("About BVCMS", "/Home/About")
-</ul>
