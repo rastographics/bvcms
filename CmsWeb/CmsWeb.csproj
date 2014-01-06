@@ -972,8 +972,6 @@
     <Content Include="ckeditor\skins\moono\images\lock.png" />
     <Content Include="ckeditor\skins\moono\images\refresh.png" />
     <Content Include="ckeditor\styles.js" />
-    <Content Include="Content\bundle.new2css.css" />
-    <Content Include="Content\bundle.stylecss.css" />
     <Content Include="Content\css\bootstrap-editable.css" />
     <Content Include="Content\css\bootstrap-multiselect.css" />
     <Content Include="Content\css\bootstrap-multiselect.min.css">
@@ -987,6 +985,7 @@
     </Content>
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\bundle.new2css.css" />
     <Content Include="Content\css\chosen-sprite%402x.png" />
     <Content Include="Content\css\chosen-sprite.png" />
     <Content Include="Content\css\chosen.min.css" />
@@ -1031,6 +1030,7 @@
     <Content Include="Content\img\clear.png" />
     <Content Include="Content\img\loading.gif" />
     <Content Include="Content\css\jquery.dialog2.css" />
+    <Content Include="Content\styles\bundle.stylecss.css" />
     <Content Include="Content\styles\Dialog.min.css">
       <DependentUpon>Dialog.css</DependentUpon>
     </Content>

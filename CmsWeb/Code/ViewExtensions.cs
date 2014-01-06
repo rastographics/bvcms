@@ -650,6 +650,14 @@ namespace CmsWeb
         {
             return new HtmlString("<link href=\"//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700\" rel=\"stylesheet\">\n");
         }
+        public static HtmlString OldStyles()
+        {
+            return Fingerprint.Css("/content/styles/bundle.stylecss.css");
+        }
+        public static HtmlString NewStyles()
+        {
+            return Fingerprint.Css("/content/css/bundle.new2css.css");
+        }
         public static HtmlString FontAwesome()
         {
             return new HtmlString( "<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\n");

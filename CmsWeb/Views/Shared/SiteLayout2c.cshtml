@@ -4,10 +4,10 @@
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     @ViewExtensions2.GoogleFonts()
-    @Fingerprint.Css("/content/bundle.new2css.css")
+    @ViewExtensions2.NewStyles()
     @ViewExtensions2.jQueryUICss()
     @Fingerprint.Css("/content/styles/siteblue.css")
-    @Fingerprint.Css("/content/bundle.stylecss.css")
+    @ViewExtensions2.OldStyles()
     @ViewExtensions2.FontAwesome()
     @RenderSection("head", required: false)
     @Fingerprint.Css("/content/css/Fixups2.css")

@@ -123,8 +123,8 @@
 
     <Message Text="minify stuff" />
    
-    <CssCompressorTask SourceFiles="@(new2css)" OutputFile="Content\bundle.new2css.css" />
-    <CssCompressorTask SourceFiles="@(stylecss)" OutputFile="Content\bundle.stylecss.css" />
+    <CssCompressorTask SourceFiles="@(new2css)" OutputFile="Content\css\bundle.new2css.css" />
+    <CssCompressorTask SourceFiles="@(stylecss)" OutputFile="Content\styles\bundle.stylecss.css" />
    
     <JavascriptCompressorTask SourceFiles="@(main)" OutputFile="Scripts\bundle.main.js" />
     <JavascriptCompressorTask SourceFiles="@(main2)" OutputFile="Scripts\bundle.main2.js" />

@@ -91,8 +91,8 @@ namespace CmsWeb.Controllers
 
 			smtp.Send(email);
 
-			var responseSubject = "Your BVCMS support reqbody has been received";
-			var responseBody = "Your support reqbody has been received. We will respond to you as quickly as possible.<br><br>BVCMS Support Team";
+			var responseSubject = "Your BVCMS support request has been received";
+			var responseBody = "Your support request has been received. We will respond to you as quickly as possible.<br><br>BVCMS Support Team";
 
 			var response = new MailMessage("support@bvcms.com", Util.UserEmail, responseSubject, responseBody);
 			response.IsBodyHtml = true;
@@ -101,7 +101,7 @@ namespace CmsWeb.Controllers
 
 			if (DbUtil.AdminMail.Length > 0)
 			{
-				var toAdmin = new MailMessage("support@bvcms.com", DbUtil.AdminMail, subject, Util.UserFullName + " submitted a support reqbody to BVCMS:<br><br>" + req.body);
+				var toAdmin = new MailMessage("support@bvcms.com", DbUtil.AdminMail, subject, Util.UserFullName + " submitted a support request to BVCMS:<br><br>" + req.body);
 				toAdmin.IsBodyHtml = true;
 
 				smtp.Send(toAdmin);
@@ -109,7 +109,7 @@ namespace CmsWeb.Controllers
 
 			foreach (var ccsend in ccAddrs)
 			{
-				var toCC = new MailMessage("support@bvcms.com", ccsend, subject, Util.UserFullName + " submitted a support reqbody to BVCMS and CCed you:<br><br>" + req.body);
+				var toCC = new MailMessage("support@bvcms.com", ccsend, subject, Util.UserFullName + " submitted a support request to BVCMS and CCed you:<br><br>" + req.body);
 				toCC.IsBodyHtml = true;
 
 				smtp.Send(toCC);

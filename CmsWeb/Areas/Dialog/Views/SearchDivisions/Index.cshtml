@@ -13,10 +13,10 @@
 
     @if (ViewExtensions2.UseNewLook())
     {
-        @Fingerprint.Css("/content/bundle.new2css.css")
+        @ViewExtensions2.NewStyles()
         @ViewExtensions2.jQueryUICss()
         @Fingerprint.Css("/content/styles/siteblue.css")
-        @Fingerprint.Css("/content/bundle.stylecss.css")
+        @ViewExtensions2.OldStyles()
         @ViewExtensions2.FontAwesome()
         @Fingerprint.Css("/content/css/Fixups2.css")
         @ViewExtensions2.jQuery()
@@ -32,7 +32,7 @@
     {
         @ViewExtensions2.jQueryUICss()
         @Fingerprint.Css("/content/styles/site.css")
-        @Fingerprint.Css("/content/bundle.stylecss.css")
+        @ViewExtensions2.OldStyles()
         @ViewExtensions2.jQuery()
         @ViewExtensions2.jQueryUI()
         @Fingerprint.Script("/Scripts/bundle.main.js")
