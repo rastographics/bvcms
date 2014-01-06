@@ -432,7 +432,7 @@ namespace CmsWeb.Models
                 //new SearchInfo22() { url = "/PeopleSearch?name=%QUERY", line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
-                new SearchInfo22() { url = "/Query", line1 = "Advanced Search" }, 
+                new SearchInfo22() { url = "/Query", line1 = "Search Builder" }, 
                 new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" }, 
                 new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search", 
                     addmargin = true }, 
@@ -535,7 +535,7 @@ namespace CmsWeb.Models
             list.AddRange(new List<SearchInfo22>() 
             {
                 new SearchInfo22() { url = "/PeopleSearch?name=%QUERY", line1 = "Find Person"  }, 
-                new SearchInfo22() { url = "/Query", line1 = "Advanced Search Builder" }, 
+                new SearchInfo22() { url = "/Query", line1 = "Search Builder" }, 
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
             });
             return list;

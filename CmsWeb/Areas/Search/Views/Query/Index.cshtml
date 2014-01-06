@@ -6,8 +6,9 @@
     ViewBag.Title = "Search Builder";
     var showtip = !DbUtil.Db.UserPreference("hide-tip-query", "false").ToBool();
 }
-@section head 
+@section head
 {
+    @Fingerprint.Css("/Content/css/bootstrap-tour.css")
     @Fingerprint.Css("/Content/css/bootstrap-multiselect.css")
     @Fingerprint.Css("/Content/css/search.css")
 }
@@ -16,27 +17,25 @@
     @Fingerprint.Script("/Scripts/bundle.Query2.js")
     @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-multiselect.js")
     @Fingerprint.Script("/Scripts/jQuery/jquery.scrollintoview.js")
+    @Fingerprint.Script("/Scripts/jQuery/jquery.smoothscroll.js")
+    @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-tour.js")
+    @if (showtip)
+    {
+        @Fingerprint.Script("/Scripts/Search/tour.js")
+    }
 }
 
 <div class="container">
     <div class="row-fluid">
         <div class="span4">
             <fieldset>
-                <legend>Advanced Search Builder</legend>
+                <legend>Search Builder</legend>
                 <div>
                     <div class="size11 cell align-top">Name: </div>
                     <div class="cell pad-left">
                         <a id="Description" href="#" class="click-pencil" title="Enter Query Description">@Model.TopClause.Description</a>
                         &nbsp;<a id="CopyQuery" href="#" title="Make a Copy"><i class="fa fa-copy"></i></a>
                     </div>
-                    @if (showtip)
-                    {
-                        <div class="alert alert-warning">
-                            <a class="close hide-tip" data-dismiss="alert" data-hidetip="query" href="#">&times;</a>
-                            You can edit the name of this query above. Or you can click the copy icon to make a copy.
-                            Editing the conditions below will automatically update your query. 
-                        </div>
-                    }
                 </div>
                 <div id="conditions">
                     @Html.Partial("Conditions", Model)
@@ -51,12 +50,13 @@
 @section PopupsPlaceholder
 {
     @Html.Partial("SelectCondition", Model)
-    <div id="QueryConditionHelp" class='modal fade hide'>
-        <div class="modal-header">
-            <a class="close" data-dismiss="modal">x</a>
-            <h4>&nbsp;</h4>
-        </div>
-        <div class="modal-body">
+    <div id="QueryConditionHelp" class='modal fade hide' data-width='700'>
+        <div class=" modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h4>&nbsp;</h4>
+</div>
+        <div id="helpcontent" class="modal-body">
+            <iframe style="width:100%;height: 500px;border:none"></iframe>
         </div>
     </div>
     <div id="OpenQueryDiv" title="Open Query" class="modalDiv" style="display: none">
@@ -68,13 +68,13 @@
     <div id="SaveQueryDiv" class="modalDiv" style="display: none">
         <div style="text-align: left">
             Search Description:
-        @Html.TextBox("SaveQueryDesc")
+            @Html.TextBox("SaveQueryDesc")
             &nbsp;
-        <input id="IsPublic" type="checkbox" />
+            <input id="IsPublic" type="checkbox" />
             Is Public
-        <span class="footer">
-            <a id="SaveQuery" href="#">Save</a>
-        </span>
+            <span class="footer">
+                <a id="SaveQuery" href="#">Save</a>
+            </span>
             <br />
         </div>
     </div>
