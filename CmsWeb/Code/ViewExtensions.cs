@@ -682,6 +682,10 @@ namespace CmsWeb
                 : "~/Views/Shared/SiteLayout.cshtml";
 
         }
+        public static bool CanNewLook()
+        {
+            return HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("NewLook");
+        }
         public static bool UseNewLook()
         {
             return DbUtil.Db.UserPreference("UseNewLook", "false").ToBool();

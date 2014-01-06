@@ -23,10 +23,7 @@ namespace CmsData
         private FieldType FieldType { get { return Compare2.FieldType; } }
         private CompareType op { get { return Compare2.CompType; } }
 
-        private Action<CompareType, bool> setParentsOf;
-        private Action setIncludeDeceased;
-
-        internal Expression GetExpression(ParameterExpression parm, CMSDataContext Db, Action SetIncludeDeceased, Action<CompareType, bool> SetParentsOf)
+        internal Expression GetExpression(ParameterExpression parm, CMSDataContext Db)
         {
             var expressionDictionary = new Dictionary<QueryType, Func<Expression>>()
             {
@@ -77,7 +74,6 @@ namespace CmsData
                 { QueryType.HaveVolunteerApplications, HasVolunteerApplications },
                 { QueryType.InactiveCurrentOrg, InactiveCurrentOrg },
                 { QueryType.InBFClass, InBFClass },
-                { QueryType.IncludeDeceased, IncludeDeceased },
                 { QueryType.InCurrentOrg, InCurrentOrg },
                 { QueryType.InOneOfMyOrgs, InOneOfMyOrgs },
                 { QueryType.IsCurrentPerson, IsCurrentPerson },
@@ -108,7 +104,6 @@ namespace CmsData
                 { QueryType.OrgJoinDate, OrgJoinDate },
                 { QueryType.OrgJoinDateCompare, OrgJoinDateCompare },
                 { QueryType.OrgJoinDateDaysAgo, OrgJoinDateDaysAgo },
-                { QueryType.ParentsOf, ExprParentsOf },
                 { QueryType.PendingCurrentOrg, PendingCurrentOrg },
                 { QueryType.PeopleExtra, PeopleExtra },
                 { QueryType.PeopleExtraData, PeopleExtraData },
@@ -159,8 +154,6 @@ namespace CmsData
                 { QueryType.WeddingDate, WeddingDate },
                 { QueryType.WidowedDate, WidowedDate },
             };
-            setParentsOf = SetParentsOf;
-            setIncludeDeceased = SetIncludeDeceased;
             this.parm = parm;
             this.db = Db;
             Func<Expression> f = null;
@@ -213,8 +206,6 @@ namespace CmsData
                         case FieldType.NullInteger: return CompareIntConstant(ConditionName, TextValue);
                         case FieldType.Date:
                         case FieldType.DateSimple:
-                            if (ConditionName == "DeceasedDate")
-                                setIncludeDeceased();
                             return CompareDateConstant(ConditionName, DateValue);
                         default:
                             throw new ArgumentException();

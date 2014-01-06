@@ -828,7 +828,7 @@ namespace CmsData
             }
             else
             {
-                p = new Preference {UserId = id, PreferenceX = pref, ValueX = value.ToString()};
+                p = new Preference { UserId = id, PreferenceX = pref, ValueX = value.ToString() };
                 Preferences.InsertOnSubmit(p);
             }
             SubmitChanges();
@@ -1036,7 +1036,7 @@ namespace CmsData
             if (c == null)
             {
                 var max = 10;
-                if(Campus.Any())
+                if (Campus.Any())
                     max = Campus.Max(mm => mm.Id) + 10;
                 c = new Campu() { Id = max, Description = name, Code = name.Truncate(20) };
                 Campus.InsertOnSubmit(c);
@@ -1095,24 +1095,18 @@ namespace CmsData
         public int ActiveRecords()
         {
             const string name = "ActiveRecords";
-            var qb = Queries.FirstOrDefault(c => c.Ispublic && c.Name == name && c.Owner == "public");
-            Condition cc;
-            if (qb == null)
-            {
-                cc = ScratchPadCondition();
-                cc.Reset(this);
-                cc.SetComparisonType(CompareType.AnyTrue);
-
-                var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.GreaterEqual, "1");
-                clause.Days = 365;
-                clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
-                clause.Days = 365;
-                cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
-                cc.SaveAs(this, name, false);
-                qb = cc.justloadedquery;
-            }
-            else
-                cc = qb.ToClause();
+            var qb = Queries.FirstOrDefault(c => c.Name == name && c.Owner == "public");
+            Condition cc = qb == null ? ScratchPadCondition() : qb.ToClause();
+            cc.Reset(this);
+            cc.SetComparisonType(CompareType.AnyTrue);
+            var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.GreaterEqual, "1");
+            clause.Days = 365;
+            clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
+            clause.Days = 365;
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            qb = cc.justloadedquery;
+            cc.Description = name;
+            cc.Save(this, owner: "public");
             FromActiveRecords = true;
             var n = PeopleQuery(cc.Id).Count();
             FromActiveRecords = false;

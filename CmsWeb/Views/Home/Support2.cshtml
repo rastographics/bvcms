@@ -2,95 +2,120 @@
     ViewBag.Title = "Support";
     Layout = ViewExtensions2.Layout();
     var active = TempData["ActiveRecords"].ToInt();
-    var usenewlook = ViewExtensions2.UseNewLook();
-    var admin = User.IsInRole("Admin");
+    var helplink = TempData["HelpLink"];
+}
+@section head
+{
+    <style>
+        #needhelp td { padding: 5px; }
+        #needhelp b { font-size: 120%; }
+        #success { background-color: lightcoral !important; }
+        #success td {color: white;font-size: 130%; }
+    </style>
 }
 @section scripts
 {
     @ViewExtensions2.CKEditor()
     @Fingerprint.Script("/Scripts/js/Support2.js")
 }
-@if (admin)
+@if (ViewExtensions2.CanNewLook())
 {
-    if (usenewlook)
+    if (ViewExtensions2.UseNewLook())
     {
-        <div style="text-align: right"><a class="bt" href="/APITest/UseOldLook">Use Old Look</a></div>
+        <div style="text-align: right">
+            <a class="bt" href="/APITest/UseOldLook">Use Old Look</a>
+        </div>
     }
     else
     {
-        <div style="text-align: right"><a class="bt" href="/APITest/UseNewLook">Use New Look</a></div>
+        <div style="text-align: right">
+            <a class="bt" href="/APITest/UseNewLook">Use New Look</a>
+        </div>
     }
 }
-<form>
-    <table class="center roundbox" width="500">
-        <tr> <td> <h2>Need help using this software?</h2> </td></tr>
-        <tr> <td> Try searching our documentation first. If that doesn't help then click the Contact Support button... </td> </tr>
-        <tr> <td> Enter search terms here: <input type="text" id="cse-search-input-box-id" size="25" autocomplete="off" /> </td> </tr>
+<form id="requestform">
+    <table id="needhelp" class="center roundbox grid">
+        <tr> <td colspan="3"> <h2>Need help using this software?</h2> </td></tr>
         <tr>
-            <td class="right">
-                <input id="csearch" type="submit" class="bt green" value="Search Documentation" />
-                <input id="contactsupport" type="button" class="bt blue" value="Contact Support" />
+            <td> <b>Step 1.</b> </td>
+            <td>
+                Read the help article
+            </td>
+            <td>
+                <a href="@helplink" target="_blank" style="color:#08c;width:20em">Context Senstive Help Article</a>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top"><b>Step 2.</b></td>
+            <td valign="top">Search documentation</td>
+            <td>
+                <input type="text" id="cse-search-input-box-id" size="25" autocomplete="off" style="width:20em" /><br />
+                <input id="csearch" type="submit" class="bt green" value="Search Documentation" style="width:20em" />
+            </td>
+        </tr>
+        <tr>
+            <td><b>Step 3.</b></td>
+            <td>If you still need help ...</td>
+            <td> <input id="contactsupport" type="button" class="bt blue" value="Contact Support" style="width:20em" /> </td>
+        </tr>
+    </table>
+    <table class="center" width="800">
+        <tr>
+            <td>
+                <gcse:searchresults-only></gcse:searchresults-only>
+            </td>
+        </tr>
+    </table>
+    <table id="supportForm" class="center" style="display:none; width:700px">
+        <tr>
+            <td>
+                <div id="examples">
+                    <h3>Example of a good support request</h3>
+                    <div>
+                        <p>Hello!</p>
+                        <p>
+                            I am looking at John Doe’s record (people ID # 1015).  He is a member of the Adult
+                            Choir (Org ID # 27), but I can’t mark him present for a choir meeting several weeks
+                            ago (6/23/13 at 9:30 AM).  Can you please look into this issue for me?
+                        </p>
+                        <p>
+                            Thank you!<br />
+                            Mary Smith
+                        </p>
+                    </div>
+                    <h3>Example of a good bug report</h3>
+                    <div>
+                        <p>Hello!</p>
+                        <p>
+                            I am on John Doe’s record (people ID # 1015).  I was trying to look at his enrollments
+                            tab, but as soon as I click on “Enrollment”, I get an error message, that says
+                            “Object not set to an instance of an object”. Can you please look into this for me?<br />
+                        </p>
+                        <p>
+                            Thank you!<br />
+                            Mary Smith
+                        </p>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5em;">
+                    <textarea name="body" id="body"></textarea>
+                    <br />
+                    <p>Enter comma separated e-mail addresses to copy the request.</p>
+                    <p>
+                        CC: <input type="text" id="cc" name="cc" size="60" />
+                        <select name="urgency" id="urgency">
+                            <option value="0" selected="">--Select Urgency</option>
+                            <option>No Rush. This can wait until tomorrow</option>
+                            <option>I just need an answer before tomorrow morning</option>
+                            <option>Urgent, I need an answer ASAP</option>
+                        </select>
+                        <input id="sendSupport" type="button" class="bt blue" value="Submit Request">
+                    </p>
+                </div>
             </td>
         </tr>
     </table>
 </form>
-<table class="center" width="800">
-    <tr>
-        <td>
-            <gcse:searchresults-only></gcse:searchresults-only>
-        </td>
-    </tr>
-</table>
-<table id="supportForm" class="center" style="display:none; width:700px">
-    <tr>
-        <td>
-            <div id="examples">
-                <h3>Example of a good support request</h3>
-                <div>
-                    <p>Hello!</p>
-                    <p>
-                        I am looking at John Doe’s record (people ID # 1015).  He is a member of the Adult
-                        Choir (Org ID # 27), but I can’t mark him present for a choir meeting several weeks
-                        ago (6/23/13 at 9:30 AM).  Can you please look into this issue for me?
-                    </p>
-                    <p>
-                        Thank you!<br />
-                        Mary Smith
-                    </p>
-                </div>
-                <h3>Example of a good bug report</h3>
-                <div>
-                    <p>Hello!</p>
-                    <p>
-                        I am on John Doe’s record (people ID # 1015).  I was trying to look at his enrollments
-                        tab, but as soon as I click on “Enrollment”, I get an error message, that says
-                        “Object not set to an instance of an object”. Can you please look into this for me?<br />
-                    </p>
-                    <p>
-                        Thank you!<br />
-                        Mary Smith
-                    </p>
-                </div>
-            </div>
-            <form style="margin-top: 1.5em;">
-                <input id="supportLastSearch" type="hidden" name="search" value="" />
-                <textarea name="request" id="reqBody"></textarea>
-                <br />
-                <p>Enter comma separated e-mail addresses to copy the request.</p>
-                <p>
-                    CC: <input type="text" name="cc" size="60" />
-                    <select name="urgency" id="supportUrgency">
-                        <option value="0" selected="">-- Please select an urgency for your request...</option>
-                        <option>No Rush. This can wait until tomorrow</option>
-                        <option>I just need an answer before tomorrow morning</option>
-                        <option>Urgent, I need an answer ASAP</option>
-                    </select>
-                    <input id="sendSupport" type="button" class="bt blue" value="Submit Request">
-                </p>
-            </form>
-        </td>
-    </tr>
-</table>
 <table id="about" class="roundbox center">
     <tr>
         <td class="center">
@@ -123,5 +148,5 @@
     </tr>
 </table>
 <table id="success" class="roundbox center" width="500">
-    <tr><td>Your support request has been submitted. Thank you for contacting us. We will get back with you as soon as possible.</td></tr>
+    <tr><td>Your support request has been submitted. Thank you for contacting us. We will get back to you as soon as possible.</td></tr>
 </table>

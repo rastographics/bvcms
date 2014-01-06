@@ -190,23 +190,35 @@ namespace CmsData
             if (IsGroup)
             {
                 foreach (var clause in Conditions)
+                {
+                    if (clause.FieldInfo.QueryType == QueryType.IncludeDeceased)
+                    {
+                        SetIncludeDeceased();
+                        continue;
+                    }
+                    if (clause.FieldInfo.QueryType == QueryType.ParentsOf)
+                    {
+                        SetParentsOf(clause.ComparisonType, clause.CodeIds == "1");
+                        continue;
+                    }
+                    if(clause.FieldInfo.QueryType == QueryType.DeceasedDate)
+                        SetIncludeDeceased();
                     if (expr == null)
                         expr = clause.ExpressionTree(parm, Db);
                     else
                     {
                         var right = clause.ExpressionTree(parm, Db);
-                        if (right != null && expr != null)
-                            if (AnyFalseTrue)
-                                expr = Expression.Or(expr, right);
-                            else
-                                expr = Expression.And(expr, right);
+                        if (right != null)
+                            expr = AnyFalseTrue 
+                                ? Expression.Or(expr, right) 
+                                : Expression.And(expr, right);
                     }
+                }
                 return expr;
             }
-            if(Compare2 == null)
-                expr = AlwaysFalse();
-            else
-                expr = Compare2.Expression(this, parm, Db);
+            expr = Compare2 == null 
+                ? AlwaysFalse() 
+                : GetExpression(parm, Db);
             if (InAllAnyFalse)
                 expr = Expression.Not(expr);
             return expr;
@@ -320,7 +332,7 @@ namespace CmsData
         public Condition Clone(Condition parent = null, Guid? useGuid = null)
         {
             var newclause = new Condition();
-            if(parent == null)
+            if (parent == null)
                 newclause.AllConditions = new Dictionary<Guid, Condition>();
             else
                 newclause.AllConditions = parent.AllConditions;
@@ -387,7 +399,7 @@ namespace CmsData
         }
         public void IncrementLastRun()
         {
-            if (justloadedquery == null) 
+            if (justloadedquery == null)
                 return;
             justloadedquery.RunCount++;
             justloadedquery.LastRun = DateTime.Now;
@@ -494,7 +506,7 @@ namespace CmsData
         }
         public bool HasGroupBelow
         {
-            get { return ParentId.HasValue &&  Parent.Conditions.Any(gg => gg.IsGroup); }
+            get { return ParentId.HasValue && Parent.Conditions.Any(gg => gg.IsGroup); }
         }
         public class FlagItem
         {

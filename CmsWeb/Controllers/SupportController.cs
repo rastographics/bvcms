@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using AttributeRouting.Web.Mvc;
 using CmsData;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 using System.Data.SqlClient;
 using System.Linq;
@@ -15,7 +17,16 @@ namespace CmsWeb.Controllers
 		public static string[] SupportPeople = { "Unclaimed", "Bethany", "David", "Karen", "Kyle", "Steven" };
 		public static string SQLSupportInsert = "INSERT INTO [dbo].[SupportRequests] ( Created, Who, Host, Urgency, Request, Subject ) OUTPUT INSERTED.ID VALUES ( @c, @w, @h, @u, @r, @s )";
 
-		public ActionResult SendSupportRequest(string urgency, string request, string search, string cc)
+	    public class SupportRequest
+	    {
+	        public string urgency { get; set; } 
+            public string body { get; set; } 
+            public string lastsearch { get; set; }
+	        public string cc { get; set; }
+	    }
+        [POST("/Support/SendRequest")]
+        [ValidateInput(false)]
+		public ActionResult SendSupportRequest(SupportRequest req)
 		{
 			var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
 			if (cs == null) return Content("Database not available!");
@@ -33,7 +44,7 @@ namespace CmsWeb.Controllers
 			var to = "support@bvcms.com";
 			var subject = "Support Request: " + Util.UserFullName + " @ " + Util.Host + ".bvcms.com - " + DateTime.Now.ToString("g");
 			var roles = ( p != null ? p.roles : "" );
-			var ccto = cc != null && cc.Length > 0 ? "<b>CC:</b> " + cc + "<br>" : "";
+			var ccto = req.cc != null && req.cc.Length > 0 ? "<b>CC:</b> " + req.cc + "<br>" : "";
 			
 			var cn = new SqlConnection(cs.ConnectionString);
 			cn.Open();
@@ -42,8 +53,8 @@ namespace CmsWeb.Controllers
 			cmd.Parameters.AddWithValue("@c", DateTime.Now);
 			cmd.Parameters.AddWithValue("@w", who);
 			cmd.Parameters.AddWithValue("@h", Util.Host);
-			cmd.Parameters.AddWithValue("@u", urgency);
-			cmd.Parameters.AddWithValue("@r", request);
+			cmd.Parameters.AddWithValue("@u", req.urgency);
+			cmd.Parameters.AddWithValue("@r", req.body);
 			cmd.Parameters.AddWithValue("@s", subject);
 
 			int lastID = (int)cmd.ExecuteScalar();
@@ -54,18 +65,18 @@ namespace CmsWeb.Controllers
 				 "<b>Roles:</b> " + roles + "<br>" +
 				 ccto +
 				 "<b>Host:</b> https://" + Util.Host + ".bvcms.com<br>" +
-				 "<b>Urgency:</b> " + urgency + "<br>" +
-				 "<b>Last Search:</b> " + search + "<br>" +
+				 "<b>Urgency:</b> " + req.urgency + "<br>" +
+				 "<b>Last Search:</b> " + req.lastsearch + "<br>" +
 				 "<b>Claim:</b> " + CreateDibs(lastID) + "<br><br>" +
-				 request;
+				 req.body;
 
 			var smtp = Util.Smtp();
 			var email = new MailMessage(from, to, subject, body);
 			email.ReplyToList.Add(who);
 			email.ReplyToList.Add("support@bvcms.com");
-			if (cc != null && cc.Length > 0)
+			if (req.cc != null && req.cc.Length > 0)
 			{
-				var ccs = cc.Split(',');
+				var ccs = req.cc.Split(',');
 				foreach (var addcc in ccs)
 				{
 					try
@@ -80,8 +91,8 @@ namespace CmsWeb.Controllers
 
 			smtp.Send(email);
 
-			var responseSubject = "Your BVCMS support request has been received";
-			var responseBody = "Your support request has been received. We will respond to you as quickly as possible.<br><br>BVCMS Support Team";
+			var responseSubject = "Your BVCMS support reqbody has been received";
+			var responseBody = "Your support reqbody has been received. We will respond to you as quickly as possible.<br><br>BVCMS Support Team";
 
 			var response = new MailMessage("support@bvcms.com", Util.UserEmail, responseSubject, responseBody);
 			response.IsBodyHtml = true;
@@ -90,7 +101,7 @@ namespace CmsWeb.Controllers
 
 			if (DbUtil.AdminMail.Length > 0)
 			{
-				var toAdmin = new MailMessage("support@bvcms.com", DbUtil.AdminMail, subject, Util.UserFullName + " submitted a support request to BVCMS:<br><br>" + request);
+				var toAdmin = new MailMessage("support@bvcms.com", DbUtil.AdminMail, subject, Util.UserFullName + " submitted a support reqbody to BVCMS:<br><br>" + req.body);
 				toAdmin.IsBodyHtml = true;
 
 				smtp.Send(toAdmin);
@@ -98,7 +109,7 @@ namespace CmsWeb.Controllers
 
 			foreach (var ccsend in ccAddrs)
 			{
-				var toCC = new MailMessage("support@bvcms.com", ccsend, subject, Util.UserFullName + " submitted a support request to BVCMS and CCed you:<br><br>" + request);
+				var toCC = new MailMessage("support@bvcms.com", ccsend, subject, Util.UserFullName + " submitted a support reqbody to BVCMS and CCed you:<br><br>" + req.body);
 				toCC.IsBodyHtml = true;
 
 				smtp.Send(toCC);

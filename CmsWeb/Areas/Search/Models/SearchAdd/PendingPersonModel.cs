@@ -163,6 +163,9 @@ namespace CmsWeb.Areas.Search.Models
                 else
                     position = PositionInFamily.SecondaryAdult;
 
+            FirstName = FirstName.Trim();
+            if (FirstName == "na")
+                FirstName = "";
             person = Person.Add(f, position,
                                  null, FirstName.Trim(), NickName, LastName.Trim(), DOB, false, Gender.Value.ToInt(),
                                  originid, entrypointid);

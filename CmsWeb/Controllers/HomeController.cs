@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
 using CmsData;
@@ -47,8 +48,10 @@ namespace CmsWeb.Controllers
         {
             return View();
         }
-        public ActionResult Support2()
+        public ActionResult Support2(string helplink)
         {
+            if(helplink.HasValue())
+                TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
             return View();
         }
         [ValidateInput(false)]
@@ -117,7 +120,7 @@ namespace CmsWeb.Controllers
         public ActionResult ActiveRecords()
         {
             TempData["ActiveRecords"] = DbUtil.Db.ActiveRecords();
-            return View("About");
+            return View("Support2");
         }
         public ActionResult TargetPerson(bool id)
         {

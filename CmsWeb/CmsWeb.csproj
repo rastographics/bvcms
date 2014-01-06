@@ -1213,6 +1213,7 @@
     </Content>
     <Content Include="Scripts\Search\SavedQuery2.js" />
     <Content Include="Scripts\Search\SearchTypeahead.js" />
+    <Content Include="Scripts\Search\tour.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
@@ -1799,7 +1800,6 @@
     <Content Include="Views\Shared\EditorTemplates\HiddenCodeInfo.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Typeahead.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\datepicker.cshtml" />
-    <Content Include="Views\Shared\Support.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Password.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\DateTime.cshtml" />
     <Content Include="Views\Shared\Menu\People.cshtml" />

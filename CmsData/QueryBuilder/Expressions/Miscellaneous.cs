@@ -15,31 +15,6 @@ namespace CmsData
 {
     public partial class Condition
     {
-        internal Expression IncludeDeceased()
-        {
-            setIncludeDeceased();
-            var tf = CodeIds == "1";
-            Expression<Func<Person, bool>> pred = null;
-
-            bool include = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
-            if (include)
-                pred = p => p.DeceasedDate == null || p.DeceasedDate != null;
-            else
-                pred = p => p.DeceasedDate == null;
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            return expr;
-        }
-        internal Expression ExprParentsOf()
-        {
-            var tf = CodeIds == "1";
-            setParentsOf(op, tf);
-            Expression<Func<Person, bool>> pred = null;
-
-            bool include = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
-            pred = p => p.PeopleId > 0;
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            return expr;
-        }
         internal Expression StatusFlag()
         {
             var codes0 = CodeValues.Split(',');

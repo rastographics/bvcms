@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			var init = (string)Session["APIinit"];
 			return Content(APIFunctions.TestAPI(init, script, args));
 		}
-        [Authorize(Roles = "Newlook")]
+        [Authorize(Roles = "Newlook,Admin")]
         public ActionResult UseNewLook(int? id)
         {
             if(id.HasValue)
@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Redirect(Request.UrlReferrer.ToString());
             return Redirect("/");
         }
-        [Authorize(Roles = "Newlook")]
+        [Authorize(Roles = "Newlook,Admin")]
         public ActionResult UseOldLook(int? id)
         {
             if(id.HasValue)
