@@ -47,6 +47,13 @@ namespace CmsData
             c.justloadedquery = q;
             return c;
         }
+        public Condition StandardQuery(string name)
+        {
+            var q = Queries.FirstOrDefault(c => c.Owner == STR_System && c.Name == name);
+            if(q == null)
+                return null;
+            return q.ToClause();
+        }
         public Query StandardQuery(string name, QueryType typ)
         {
             var qb = Queries.FirstOrDefault(c => c.Owner == STR_System && c.Name == name);

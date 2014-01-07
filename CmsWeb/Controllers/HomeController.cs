@@ -84,6 +84,9 @@ namespace CmsWeb.Controllers
         public ActionResult NthTimeAttenders(int id)
         {
             var name = "VisitNumber-" + id;
+            var q = DbUtil.Db.Queries.FirstOrDefault(qq => qq.Owner == "System" && qq.Name == name);
+            if(q != null)
+
             const CompareType comp = CompareType.Equal;
             var cc = DbUtil.Db.ScratchPadCondition();
             cc.Reset(DbUtil.Db);

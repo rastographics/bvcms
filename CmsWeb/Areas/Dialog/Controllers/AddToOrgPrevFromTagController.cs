@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 				Db.SubmitChanges();
 				Db.UpdateMainFellowship(orgid);
 			});
-			return Redirect("/AddToOrgFromTag/Progress/" + orgid);
+			return Redirect("/AddToOrgPrevFromTag/Progress/" + orgid);
 		}
 		[HttpPost]
 		public JsonResult Progress2(int id)

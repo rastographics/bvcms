@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.Search.Controllers
             ViewBag.NewId = m.AddGroupToGroup();
             return View("Conditions", m);
         }
-        [POST("Query/SaveCondition/{comparison}")]
+        [POST("Query/ChangeGroup/{comparison}")]
         public ActionResult ChangeGroup(string comparison, QueryModel m)
         {
             m.Selected.Comparison = comparison;

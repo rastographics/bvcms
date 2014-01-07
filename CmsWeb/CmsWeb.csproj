@@ -1346,6 +1346,8 @@
     <Content Include="Scripts\OnlineReg\OnlineRegPayment.min.js">
       <DependentUpon>OnlineRegPayment.js</DependentUpon>
     </Content>
+    <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Progress.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Org\OrgSearch.min.js">
       <DependentUpon>OrgSearch.js</DependentUpon>
