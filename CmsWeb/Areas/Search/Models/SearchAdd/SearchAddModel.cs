@@ -230,13 +230,13 @@ namespace CmsWeb.Areas.Search.Models
                     if (PendingList.Count > 0)
                         return new ReturnResult { close = true, how = "addselected", url = "/Task/ChangeAbout/", pid = PendingList[0].PeopleId, from = AddContext };
                     break;
-                case "mergeto":
-                    if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext };
-                    break;
                 case "taskowner":
                     if (PendingList.Count > 0)
                         return new ReturnResult{ close = true, how = "addselected", url = "/Task/ChangeOwner/", pid = PendingList[0].PeopleId, from = AddContext };
+                    break;
+                case "mergeto":
+                    if (PendingList.Count > 0)
+                        return new ReturnResult { close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext };
                     break;
             }
             return new ReturnResult { close = true, from = AddContext };

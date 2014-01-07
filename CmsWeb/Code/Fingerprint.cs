@@ -38,6 +38,15 @@ public class Fingerprint
 #if DEBUG
                 foreach (var p in xd.Descendants(ns + node).Select(i => i.Attribute("Include").Value))
                     result.AppendFormat(fmt, "/" + p);
+//                {
+//                    string fpath = HostingEnvironment.MapPath("/" + p) ?? "";
+//                    var fdate = File.GetLastWriteTime(fpath);
+//                    var f = Path.GetFileName(fpath);
+//                    var d = p.Remove(p.LastIndexOf('/'));
+//                    var t = "v-{0:yyMMddhhmmss}-".Fmt(fdate);
+//                    var pp = "/{0}/{1}{2}".Fmt(d, t, f);
+//                    result.AppendFormat(fmt, pp);
+//                }
 #else
                 DateTime lastdate = DateTime.MinValue;
                 foreach (var p in xd.Descendants(ns + node).Select(i => i.Attribute("Include").Value))
@@ -58,6 +67,12 @@ public class Fingerprint
             {
 #if DEBUG
                 result.AppendFormat(fmt, path);
+//                var f = Path.GetFileName(absolute);
+//                var d = path.Remove(path.LastIndexOf('/'));
+//                var t = "v-{0:yyMMddhhmmss}-".Fmt(File.GetLastWriteTime(absolute));
+//                var pp = "{0}/{1}{2}".Fmt(d, t, f);
+//                result.AppendFormat(fmt, pp);
+
 #else
                 const string min = ".min";
                 var dt = File.GetLastWriteTime(absolute);

@@ -46,6 +46,11 @@ namespace CmsWeb.Models
         public string CoOwner { get; set; }
         public int? CoOwnerId { get; set; }
         internal Person who;
+
+        public string PersonUrl
+        {
+            get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person/Index/") + WhoId; }
+        }
         public int? WhoId
         {
             get
@@ -122,6 +127,11 @@ namespace CmsWeb.Models
                 return "no email";
             }
         }
+        public string ContactUrl
+        {
+            get { return (ViewExtensions2.UseNewLook() ? "/Contact2/" : "/Contact/Index/") + CompletedContactId; }
+        }
+
         public string WhoAddress
         {
             get { return who == null ? "" : who.PrimaryAddress; }

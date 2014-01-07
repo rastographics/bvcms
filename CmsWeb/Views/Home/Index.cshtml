@@ -27,12 +27,12 @@
         <div class="jscroll" style="height: 130px">
             @foreach (var bi in Model.Birthdays())
             {
-                <div class="drow"><a href="/Person/Index/@bi.PeopleId">@bi.Name (@bi.Birthday.ToString("m"))</a></div>
+                <div class="drow"><a href="@bi.Url">@bi.Name (@bi.Birthday.ToString("m"))</a></div>
             }
         </div>
     </div>
     <div style="height: 33%;">
-        <h2><a href="/Person/Index/@Util.UserPeopleId">My Involvement</a></h2>
+        <h2><a href="@Model.UserUrl">My Involvement</a></h2>
         <div class="jscroll" style="height: 130px">
             @{ var pOrgType = "Other"; }
             @foreach (var my in Model.MyInvolvements())
@@ -99,7 +99,7 @@
         <div class="jscroll" style="height: 215px">
             @foreach (var t in Model.Tasks())
             {
-                <div class="drow"><a href="/Task/List/@t.TaskId#Detail">@t.Description</a> (<a href="/Person/Index/@t.PeopleId">@t.Who</a>)</div>
+                <div class="drow"><a href="/Task/List/@t.TaskId#Detail">@t.Description</a> (<a href="@t.Url">@t.Who</a>)</div>
             }
         </div>
     </div>

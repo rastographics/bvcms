@@ -1,5 +1,6 @@
 ﻿@model CmsWeb.Models.MeetingModel
 @using CmsData
+@using CmsWeb
 @using UtilityExtensions
 @Html.Hidden("meetingid", Model.meeting.MeetingId)
 @{
@@ -67,7 +68,14 @@
         <td colspan="2">
             @Html.CheckBox("requireMember")Require Org Member |
 			@Html.CheckBox("requireRegistered")Require Registered
-            <a id="addvisitor" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=visitor" class="bt">Add Guests</a>
+            @if (ViewExtensions2.UseNewLook())
+            {
+                <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="bt searchadd" title="shift-click to Join All Guests">Add Guests</a>
+            }
+            else
+            {
+                <a id="addvisitor" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=visitor" class="bt">Add Guests</a>
+            }
         </td>
     </tr>
 </table>

@@ -1368,6 +1368,15 @@
     <Content Include="Scripts\jQuery\jquery.smoothscroll.min.js.map">
       <DependentUpon>jquery.smoothscroll.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\Task.min.js.map">
+      <DependentUpon>Task.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Meeting\meeting.min.js.map">
+      <DependentUpon>meeting.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Meeting\meeting-ticket.min.js.map">
+      <DependentUpon>meeting-ticket.js</DependentUpon>
+    </Content>
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\js\Pager3.js" />
     <Content Include="Scripts\Mobile\jquery-1.6.4.js" />

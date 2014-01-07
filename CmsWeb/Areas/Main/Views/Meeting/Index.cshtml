@@ -153,8 +153,22 @@ This will allow you to mark them as members.
                                         Current Mbrs
                                     </td>
                                     <td class="right" nowrap>
-                                        <a id="addregistered" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=registered" class="bt hidden">Add Registered</a>
-                                        <a id="addvisitor" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=visitor" class="bt" title="shift-click to Join All Guests">Add Guests</a>
+                                        @if (ViewExtensions2.UseNewLook())
+                                        {
+                                            <a href="/SearchAdd2/Dialog/registered/@Model.meeting.MeetingId" class="bt hidden searchadd">Add Registered</a>
+                                        }
+                                        else
+                                        {
+                                            <a id="addregistered" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=registered" class="bt hidden">Add Registered</a>
+                                        }
+                                        @if (ViewExtensions2.UseNewLook())
+                                        {
+                                            <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="bt searchadd" title="shift-click to Join All Guests">Add Guests</a>
+                                        }
+                                        else
+                                        {
+                                            <a id="addvisitor" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=visitor" class="bt" title="shift-click to Join All Guests">Add Guests</a>
+                                        }
                                     </td>
                                 </tr>
                             </table>
@@ -229,7 +243,7 @@ This will allow you to mark them as members.
     </tr>
 </table>
 <hr />
-@if (Model.org.MemberCount < 1000 || Model.showlarge)
+@if ((Model.org.MemberCount ?? 0) < 1000 || Model.showlarge)
 {
     <table id="attends" class="@ViewExtensions2.GridClass">
         <thead>
