@@ -991,18 +991,18 @@ namespace CmsData
         }
         public Content Content(string name)
         {
-            return Contents.SingleOrDefault(c => c.Name == name);
+            return Contents.FirstOrDefault(c => c.Name == name);
         }
         public string Content(string name, string def)
         {
-            var content = Contents.SingleOrDefault(c => c.Name == name);
+            var content = Contents.FirstOrDefault(c => c.Name == name);
             if (content != null)
                 return content.Body;
             return def;
         }
         public string Content2(string name, string def, int ContentTypeId)
         {
-            var c = Contents.SingleOrDefault(cc => cc.Name == name);
+            var c = Contents.FirstOrDefault(cc => cc.Name == name);
             if (c == null)
             {
                 c = new Content()

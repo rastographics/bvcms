@@ -15,17 +15,25 @@
     @ViewExtensions2.Bootstrap()
     @Fingerprint.Script("/Scripts/bundle.main2.js")
     @Html.Partial("DatePickerDefaults2")
+    <script>
+        $(function () {
+            $('#addorg').click(function (e) {
+                e.preventDefault();
+                bootbox.alert("Add Organization not available from this page yet in the new UI.");
+            });
+        });
+    </script>
     @RenderSection("scripts", required: false)
 </head>
-    <body>
-        <div class="page-container">
-            @Html.Partial("Notices")
-            @Html.Partial("NewHeader3")
-            @RenderBody()
-        </div>
-        @Html.Partial("Footer")
-        @Html.Partial("Dialogs2")
-        @RenderSection("PopupsPlaceholder", required: false)
-        <img src="/Content/images/ajax-loader.gif" id="loading-indicator" style="display: none" />
-    </body>
+<body>
+    <div class="page-container">
+        @Html.Partial("Notices")
+        @Html.Partial("NewHeader3")
+        @RenderBody()
+    </div>
+    @Html.Partial("Footer")
+    @Html.Partial("Dialogs2")
+    @RenderSection("PopupsPlaceholder", required: false)
+    <img src="/Content/images/ajax-loader.gif" id="loading-indicator" style="display: none" />
+</body>
 </html>

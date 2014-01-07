@@ -353,27 +353,6 @@
         var d = $('#rollsheetoptions');
         d.dialog("open");
     });
-    $("#search-add a.commit").live("click", function (ev) {
-        ev.preventDefault();
-        var f = $(this).closest("form");
-        var q = f.serialize();
-        var loc = $(this).attr("href");
-        $.post(loc, q, function (ret) {
-            f.modal("hide");
-            if (ret.message) {
-                alert(ret.message);
-            } else
-                switch (ret.from) {
-                    case 'Menu':
-                        window.location = '/Person2/' + ret.pid;
-                        break;
-                    default:
-                        AddSelected(ret);
-                        break;
-                }
-        });
-        return false;
-    });
 });
 function AddSelected(ret) {
     $('#visitorDialog').dialog("close");

@@ -45,7 +45,7 @@ ul.dropdown-div-admin {
     z-index: 2000;
 }
 
-thead th a {
+thead th a, thead th a:visited {
     color: #0088cc;
 }
 
@@ -125,7 +125,7 @@ form.form-horizontal.onecol .control-group {
 }
 */
 
-tbody td a {
+tbody td a, tbody td a:visited {
     color: #08c;
 }
 

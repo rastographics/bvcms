@@ -18,7 +18,23 @@
                 });
             });
     });
-    $(document).on("shown", "#search-add", function() {
+    $("#search-add a.commit").live("click", function (ev) {
+        ev.preventDefault();
+        var f = $(this).closest("form");
+        var q = f.serialize();
+        var loc = $(this).attr("href");
+        $.post(loc, q, function (ret) {
+            f.modal("hide");
+            if (ret.message)
+                alert(ret.message);
+            else if (ret.from === 'Menu')
+                window.location = '/Person2/' + ret.pid;
+            else
+                AddSelected(ret);
+        });
+        return false;
+    });
+    $(document).on("shown", "#search-add", function () {
         $("#search-add #Name").focus();
         $("#search-add #Name").live("keydown", function (event) {
             if (event.keyCode === 13) {
@@ -30,9 +46,9 @@
                 return true;
         });
     });
-    $.fn.loadWith = function(u, f){
-        var c=$(this);
-        $.post(u, function(d){
+    $.fn.loadWith = function (u, f) {
+        var c = $(this);
+        $.post(u, function (d) {
             c.replaceWith(d).ready(f);
         });
     };

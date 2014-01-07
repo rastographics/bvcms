@@ -1377,6 +1377,9 @@
     <Content Include="Scripts\Meeting\meeting-ticket.min.js.map">
       <DependentUpon>meeting-ticket.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\Finance\PostBundle.min.js.map">
+      <DependentUpon>PostBundle.js</DependentUpon>
+    </Content>
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\js\Pager3.js" />
     <Content Include="Scripts\Mobile\jquery-1.6.4.js" />
@@ -1849,6 +1852,12 @@
     <Content Include="Views\Shared\MyDataFooter.cshtml" />
     <Content Include="Views\Shared\Toolbar\ToolbarMyData.cshtml" />
     <Content Include="Views\Home\Support2.cshtml" />
+    <Content Include="Scripts\Org\Organization.min.js.map">
+      <DependentUpon>Organization.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\People\Person1.min.js.map">
+      <DependentUpon>Person1.js</DependentUpon>
+    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

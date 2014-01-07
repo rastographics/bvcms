@@ -151,12 +151,21 @@ a, a:visited, a:focus {
 
 .grid a, .grid a:visited {
     text-decoration: none;
-    color: #3E553B;
+    color: #08c;
 }
 
     .grid a:hover, .grid a:active {
         text-decoration: underline;
-        color: #3E553B;
+        color: #08c;
+    }
+.table td a, .table td a:visited {
+    text-decoration: none;
+    color: #08c;
+}
+
+    .table td a:hover, .table td a:active {
+        text-decoration: underline;
+        color: #08c;
     }
 
 #main {

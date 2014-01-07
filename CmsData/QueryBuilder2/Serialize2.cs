@@ -62,6 +62,7 @@ namespace CmsData
             q.Name = Description;
             if(owner.HasValue())
                 q.Owner = owner;
+            q.Ispublic = IsPublic;
             if (increment)
                 q.RunCount = q.RunCount + 1;
             q.Text = ToXml();
