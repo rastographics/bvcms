@@ -36,5 +36,5 @@
 });
 function CloseAddOrgDialog(id) {
     $("#AddDialog").dialog("close");
-    window.location = "/Org/" + id;
+    window.location = "/Organization/Index/" + id;
 }

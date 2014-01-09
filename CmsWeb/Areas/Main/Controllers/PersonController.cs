@@ -275,11 +275,11 @@ namespace CmsWeb.Areas.Main.Controllers
 			return Content("/Contact/{0}".Fmt(c.ContactId));
 		}
 
-	    [HttpPost]
-	    public ActionResult AddContact(int id)
-	    {
-	        return Content(CmsData.Contact.AddContact(id, Util.UserPeopleId).ToString());
-	    }
+//	    [HttpPost]
+//	    public ActionResult AddContact(int id)
+//	    {
+//	        return Content(Contact.AddContact(id, Util.UserPeopleId).ToString());
+//	    }
 
 	    [HttpPost]
 		public ActionResult AddAboutTask(int id)
@@ -498,7 +498,7 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
 
 	    [HttpPost]
-		public ActionResult AddTasks(int id)
+		public ActionResult AddTasks(Guid id)
 		{
 			var c = new ContentResult();
 			c.Content = Task.AddTasks(id).ToString();
@@ -769,9 +769,7 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
 		private void InitExportToolbar(int? id)
 		{
-		    var qid = ViewExtensions2.TestSb2()
-		        ? (object) DbUtil.Db.QueryIsCurrentPerson().QueryId
-		        : DbUtil.Db.QueryBuilderIsCurrentPerson().QueryId;
+		    var qid = DbUtil.Db.QueryIsCurrentPerson().QueryId;
 		    ViewBag.queryid = qid;
 			ViewBag.TagAction = "/Person/Tag/" + id;
 			ViewBag.UnTagAction = "/Person/UnTag/" + id;

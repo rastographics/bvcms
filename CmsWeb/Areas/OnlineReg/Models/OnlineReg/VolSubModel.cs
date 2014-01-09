@@ -152,7 +152,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 			qb.Reset(Db);
 			qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, "{0},temp".Fmt(tag.Id));
 			attend.Commitment = CmsData.Codes.AttendCommitmentCode.FindSub;
-			Db.SubmitChanges();
+            qb.Save(DbUtil.Db);
 
 			var reportlink = @"<a href=""{0}OnlineReg/VolSubReport/{1}/{2}/{3}"">Substitute Status Report</a>"
 				.Fmt(Db.CmsHost, attend.AttendId, person.PeopleId, dt.Ticks);

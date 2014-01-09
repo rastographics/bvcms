@@ -14,7 +14,7 @@ namespace CmsData.Classes.Twilio
     {
         public const Boolean bTestMode = false;
 
-        public static void QueueSMS(object iQBID, int iSendGroupID, string sTitle, string sMessage)
+        public static void QueueSMS(Guid iQBID, int iSendGroupID, string sTitle, string sMessage)
         {
             var q = DbUtil.Db.PeopleQuery(iQBID);
 
@@ -245,7 +245,7 @@ namespace CmsData.Classes.Twilio
             return groups;
         }
 
-        public static int getSendCount(object iQBID)
+        public static int getSendCount(Guid iQBID)
         {
             var q = DbUtil.Db.PeopleQuery(iQBID);
 

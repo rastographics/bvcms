@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 		}
 
         public OrgSearchModel Model;
-	    public object qid;
+	    public Guid qid;
 		public int? meetingid, orgid;
 		public int[] groups;
 		public bool? bygroup;
@@ -58,13 +58,9 @@ namespace CmsWeb.Areas.Main.Models.Report
 				orgid = meeting.OrganizationId;
 			}
 
-			IEnumerable<OrgInfo> list1;
-			if (bygroup == true)
-				list1 = ReportList2();
-			else
-				list1 = ReportList();
+		    var list1 = bygroup == true ? ReportList2() : ReportList();
 
-			if (list1.Count() == 0)
+			if (!list1.Any())
 			{
 				Response.Write("no data found");
 				return;

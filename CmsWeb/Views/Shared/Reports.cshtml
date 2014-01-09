@@ -2,7 +2,9 @@
 <html>
 <head>
     <title></title>
-    @Fingerprint.Css("/content/styles/bundle-css.css")
+    @ViewExtensions2.jQueryUICss()
+    @(ViewExtensions2.UseNewLook() ? Fingerprint.Css("/content/styles/siteblue.css") : Fingerprint.Css("/content/styles/site.css"))
+    @ViewExtensions2.OldStyles()
     <style type="text/css" media="print">
        input.noPrint { display: none; }
        span.noPrint { display:none; }
@@ -10,7 +12,7 @@
     @RenderSection("head", required: false)
     @ViewExtensions2.jQuery()
     @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/bundle.main.js")
     @Html.Partial("DatePickerDefaults")
     @RenderSection("scripts", required: false)
 </head>

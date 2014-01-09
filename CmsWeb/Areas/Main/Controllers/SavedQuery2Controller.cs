@@ -13,8 +13,6 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (ViewExtensions2.UseNewLook())
                 return Redirect("/SavedQueryList");
-            if(!ViewExtensions2.TestSb2())
-                return Redirect("/SavedQuery");
             var m = new SavedQuery2Model();
             return View(m);
         }

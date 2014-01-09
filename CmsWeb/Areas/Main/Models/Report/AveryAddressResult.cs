@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class AveryAddressResult : ActionResult
     {
-        public object id;
+        public Guid id;
         public string format;
         public bool? titles; 
         public bool usephone { get; set; }

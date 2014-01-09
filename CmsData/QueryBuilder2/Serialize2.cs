@@ -10,7 +10,7 @@ namespace CmsData
 {
     public partial class Condition
     {
-        public void Save(CMSDataContext Db, bool increment = false)
+        public void Save(CMSDataContext Db, bool increment = false, string owner = null)
         {
             var q = (from e in Db.Queries
                      where e.QueryId == Id
@@ -60,61 +60,9 @@ namespace CmsData
                 }
             }
             q.Name = Description;
-            if (increment)
-                q.RunCount = q.RunCount + 1;
-            q.Text = ToXml();
-            Db.SubmitChanges();
-        }
-        public void SaveAs(CMSDataContext Db, string name, bool increment = false)
-        {
-            var q = (from e in Db.Queries
-                     where e.QueryId == Id
-                     select e).FirstOrDefault();
-
-            if (q == null)
-            {
-                q = new Query
-                {
-                    QueryId = Id,
-                    Owner = Util.UserName,
-                    Created = DateTime.Now,
-                    Ispublic = IsPublic,
-                    Name = Description
-                };
-                Db.Queries.InsertOnSubmit(q);
-            }
-            q.LastRun = DateTime.Now;
-
-            if (Description != q.Name)
-            {
-                var same = (from v in Db.Queries
-                            where !v.Ispublic
-                            where v.Owner == Util.UserName
-                            where v.Name == Description
-                            orderby v.LastRun descending
-                            select v).FirstOrDefault();
-                if (same != null)
-                    same.Text = ToXml();
-                else
-                {
-                    var c = Clone();
-                    var cq = new Query
-                    {
-                        QueryId = c.Id,
-                        Owner = Util.UserName,
-                        Created = q.Created,
-                        Ispublic = q.Ispublic,
-                        Name = q.Name,
-                        Text = c.ToXml(),
-                        RunCount = q.RunCount,
-                        CopiedFrom = q.CopiedFrom,
-                        LastRun = q.LastRun
-                    };
-                    Db.Queries.InsertOnSubmit(cq);
-                    q.LastRun = DateTime.Now;
-                }
-            }
-            q.Name = Description;
+            if(owner.HasValue())
+                q.Owner = owner;
+            q.Ispublic = IsPublic;
             if (increment)
                 q.RunCount = q.RunCount + 1;
             q.Text = ToXml();

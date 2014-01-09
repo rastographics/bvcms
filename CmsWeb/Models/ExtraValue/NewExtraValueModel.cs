@@ -317,10 +317,10 @@ Option 2
                     ev = (from vv in DbUtil.Db.PeopleExtras
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
-                    if(ev.Type == "Code")
+                    if (ev.Type == "Code")
                         codes = (from vv in DbUtil.Db.PeopleExtras
                                  where vv.Field == name
-                                 select vv.StrValue).ToList();
+                                 select vv.StrValue).Distinct().ToList();
                     break;
                 case "Organization":
                     ev = (from vv in DbUtil.Db.OrganizationExtras
@@ -329,7 +329,7 @@ Option 2
                     if(ev.Type == "Code")
                         codes = (from vv in DbUtil.Db.OrganizationExtras
                                  where vv.Field == name
-                                 select vv.StrValue).ToList();
+                                 select vv.StrValue).Distinct().ToList();
                     break;
                 case "Family":
                     ev = (from vv in DbUtil.Db.FamilyExtras
@@ -338,7 +338,7 @@ Option 2
                     if(ev.Type == "Code")
                         codes = (from vv in DbUtil.Db.FamilyExtras
                                  where vv.Field == name
-                                 select vv.StrValue).ToList();
+                                 select vv.StrValue).Distinct().ToList();
                     break;
                 case "Meeting":
                     ev = (from vv in DbUtil.Db.MeetingExtras
@@ -347,7 +347,7 @@ Option 2
                     if(ev.Type == "Code")
                         codes = (from vv in DbUtil.Db.MeetingExtras
                                  where vv.Field == name
-                                 select vv.StrValue).ToList();
+                                 select vv.StrValue).Distinct().ToList();
                     break;
                 default:
                     return;

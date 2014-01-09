@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index(Guid? id)
         {
             if (!ViewExtensions2.UseNewLook())
-                return Redirect("/QueryBuilder/Main");
+                return Redirect("/QueryBuilder2/Main/" + id);
             ViewBag.Title = "QueryBuilder";
             var m = new QueryModel(id);
             m.Pager.Set("/Query/Results/");
@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.Search.Controllers
             ViewBag.NewId = m.AddGroupToGroup();
             return View("Conditions", m);
         }
-        [POST("Query/SaveCondition/{comparison}")]
+        [POST("Query/ChangeGroup/{comparison}")]
         public ActionResult ChangeGroup(string comparison, QueryModel m)
         {
             m.Selected.Comparison = comparison;

@@ -24,10 +24,10 @@ namespace CmsWeb.Areas.Search.Models
         [StringLength(25), Required(ErrorMessage = "required, or put 'na' if not known"), RemoveNA]
         public string FirstName { get; set; }
 
-        [StringLength(15)]
+        [StringLength(25)]
         public string NickName { get; set; }
 
-        [StringLength(15)]
+        [StringLength(25)]
         public string Middle { get; set; }
 
         [StringLength(100), Required(ErrorMessage = "required")]
@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Search.Models
         [StringLength(20), RemoveNA]
         public string CellPhone { get; set; }
 
-        [StringLength(20), EmailAddress, RemoveNA]
+        [StringLength(150), EmailAddress, RemoveNA]
         public string EmailAddress { get; set; }
 
         [UnallowedCode("99", ErrorMessage = "specify gender (or unknown)")]
@@ -163,6 +163,9 @@ namespace CmsWeb.Areas.Search.Models
                 else
                     position = PositionInFamily.SecondaryAdult;
 
+            FirstName = FirstName.Trim();
+            if (FirstName == "na")
+                FirstName = "";
             person = Person.Add(f, position,
                                  null, FirstName.Trim(), NickName, LastName.Trim(), DOB, false, Gender.Value.ToInt(),
                                  originid, entrypointid);

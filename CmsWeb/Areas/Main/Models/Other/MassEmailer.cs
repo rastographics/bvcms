@@ -35,23 +35,14 @@ namespace CmsWeb.Areas.Main.Models
         public MassEmailer()
         {
         }
-        public MassEmailer(object id, bool? parents)
+        public MassEmailer(Guid id, bool? parents)
         {
             wantParents = parents ?? false;
             var q = DbUtil.Db.PeopleQuery(id);
-            if (id is int)
-            {
-                var Qb = DbUtil.Db.LoadQueryById((int)id);
-                if (!Qb.ParentsOf && wantParents)
-                    q = DbUtil.Db.PersonQueryParents(q);
-            }
-            else
-            {
-                var c = DbUtil.Db.LoadQueryById2((Guid) id);
-                var cc = c.ToClause();
-                if (!cc.ParentsOf && wantParents)
-                    q = DbUtil.Db.PersonQueryParents(q);
-            }
+            var c = DbUtil.Db.LoadQueryById2((Guid)id);
+            var cc = c.ToClause();
+            if (!cc.ParentsOf && wantParents)
+                q = DbUtil.Db.PersonQueryParents(q);
 
             q = from p in q
                 where p.EmailAddress != null
@@ -67,11 +58,11 @@ namespace CmsWeb.Areas.Main.Models
         {
             var From = new MailAddress(FromAddress, FromName);
             DbUtil.Db.CopySession();
-			var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable);
+            var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable);
             if (emailqueue == null)
                 return 0;
-			emailqueue.Transactional = transactional;
-			return emailqueue.Id;
+            emailqueue.Transactional = transactional;
+            return emailqueue.Id;
         }
 
         public IEnumerable<SelectListItem> EmailFroms()

@@ -12,7 +12,7 @@ namespace CmsWeb.Models.ExtraValues
     {
         public static IEnumerable<ExtraInfo> CodeSummary()
         {
-            var NameTypes = Views.GetViewableNameTypes("People");
+            var NameTypes = Views.GetViewableNameTypes("People", nocache: true);
             var standardtypes = new CodeValueModel().ExtraValueTypeCodes();
             var adhoctypes = new CodeValueModel().AdhocExtraValueTypeCodes();
 
@@ -45,6 +45,7 @@ namespace CmsWeb.Models.ExtraValues
 
             var qdatavalues = (from e in DbUtil.Db.PeopleExtras
                                where !(e.Type == "Bit" || e.Type == "Code")
+                               where e.Type != "CodeText"
                                group e by new
                                {
                                    e.Field,
@@ -57,14 +58,14 @@ namespace CmsWeb.Models.ExtraValues
                           from sv in j.DefaultIfEmpty()
                           let type = sv == null ? i.key.Type : sv.Type
                           let typedisplay = sv == null 
-                                ? adhoctypes.Single(ee => ee.Code == type).Value 
-                                : standardtypes.Single(ee => ee.Code == type).Value 
+                                ? adhoctypes.Single(ee => ee.Code == type)
+                                : standardtypes.Single(ee => ee.Code == type)
                           select new ExtraInfo
                           {
                               Field = i.key.Field,
                               Value = "(multiple)",
                               Type = i.key.Type,
-                              TypeDisplay = typedisplay,
+                              TypeDisplay = typedisplay.Value,
                               Standard = sv != null,
                               Count = i.count,
                           };

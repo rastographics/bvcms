@@ -7,26 +7,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using CmsWeb.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.IO;
-using System.Collections;
 using CmsData;
 using UtilityExtensions;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using System.Diagnostics;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Main.Models.Report
 {
     public class RosterResult : ActionResult
     {
-        public object qid;
+        public Guid? qid;
         public int? org;
         private OrgSearchModel model;
 
@@ -57,7 +49,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             {
                 var o = ReportList().First();
                 StartPageSet(o);
-                var q = DbUtil.Db.PeopleQuery(qid);
+                var q = DbUtil.Db.PeopleQuery(qid.Value);
                 var q2 = from p in q
                          let rr = p.GetRecReg()
                          join m in RollsheetModel.FetchOrgMembers(o.OrgId, null) on p.PeopleId equals m.PeopleId into j
@@ -160,7 +152,9 @@ namespace CmsWeb.Areas.Main.Models.Report
         }
         private IEnumerable<OrgInfo> ReportList()
         {
-            var orgs = model.FetchOrgs();
+            var orgs = org == null
+                ? model.FetchOrgs()
+                : DbUtil.Db.Organizations.AsQueryable();
         	var roles = DbUtil.Db.CurrentRoles();
             var q = from o in orgs
         	        where o.LimitToRole == null || roles.Contains(o.LimitToRole)

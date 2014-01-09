@@ -6,23 +6,14 @@
 <head>
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    @Fingerprint.Css("/content/styles/bundle-css.css")
-    <link href="/Content/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+    @ViewExtensions2.jQueryUICss()
+    @Fingerprint.Css("/content/styles/site.css")
+    @ViewExtensions2.OldStyles()
+    @ViewExtensions2.FontAwesome()
     @RenderSection("head", required: false)
-    @if (bkcolor.HasValue())
-    {
-        <style type="text/css">
-			#header { background-color: @bkcolor; }
-        </style>
-        <style type="text/css" media="print">
-            #supportfeedback {
-                display: none;
-            }
-        </style>
-    }
     @ViewExtensions2.jQuery()
     @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/bundle.main.js")
     @Html.Partial("DatePickerDefaults")
     @RenderSection("scripts", required: false)
 </head>
@@ -36,6 +27,5 @@
     </div>
     @Html.Partial("Dialogs")
     @RenderSection("PopupsPlaceholder", required: false)
-    @Html.Partial("Support")
 </body>
 </html>

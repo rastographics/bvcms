@@ -4,10 +4,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
     <title>Index</title>
-    @Fingerprint.Css("/content/styles/bundle-css.css")
+    @ViewExtensions2.jQueryUICss()
+    @(ViewExtensions2.UseNewLook() ? Fingerprint.Css("/content/styles/siteblue.css") : Fingerprint.Css("/content/styles/site.css"))
+    @ViewExtensions2.OldStyles()
     @ViewExtensions2.jQuery()
     @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/bundle.main.js")
     @Html.Partial("DatePickerDefaults")
     @Fingerprint.Script("/Scripts/Dialog/OrgMembersDialog.js")
 </head>

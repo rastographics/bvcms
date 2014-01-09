@@ -6,34 +6,34 @@
 <head>
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700' rel='stylesheet' type='text/css'>
-    @Fingerprint.Css("/content/css/bundle-new2css.css")
-    <link href="/Content/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.NewStyles()
+    @ViewExtensions2.FontAwesome()
     @RenderSection("head", required: false)
     @Fingerprint.Css("/content/css/Fixups2.css")
     @ViewExtensions2.jQuery()
     @ViewExtensions2.Bootstrap()
-    @Fingerprint.Script("/Scripts/Bundle/main2.js")
+    @Fingerprint.Script("/Scripts/bundle.main2.js")
     @Html.Partial("DatePickerDefaults2")
+    <script>
+        $(function () {
+            $('#addorg').click(function (e) {
+                e.preventDefault();
+                bootbox.alert("Add Organization not available from this page yet in the new UI.");
+            });
+        });
+    </script>
     @RenderSection("scripts", required: false)
 </head>
-    <body>
-        @if (access)
-        {
-        <div class="page-container">
-            @Html.Partial("NewHeader3")
-            @Html.Partial("Notices")
-            @RenderBody()
-        </div>
-        }
-        else
-        {
-        @Html.Partial("MyDataHeader")
-        }
-        @(access ? Html.Partial("Footer") : Html.Partial("MyDataFooter"))
-        @Html.Partial("Dialogs2")
-        @RenderSection("PopupsPlaceholder", required: false)
-        @*    @Html.Partial("Support")*@
-        <img src="/Content/images/ajax-loader.gif" id="loading-indicator" style="display: none" />
-    </body>
+<body>
+    <div class="page-container">
+        @Html.Partial("Notices")
+        @Html.Partial("NewHeader3")
+        @RenderBody()
+    </div>
+    @Html.Partial("Footer")
+    @Html.Partial("Dialogs2")
+    @RenderSection("PopupsPlaceholder", required: false)
+    <img src="/Content/images/ajax-loader.gif" id="loading-indicator" style="display: none" />
+</body>
 </html>

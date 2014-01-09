@@ -15,31 +15,6 @@ namespace CmsData
 {
     public partial class Condition
     {
-        internal Expression IncludeDeceased()
-        {
-            setIncludeDeceased();
-            var tf = CodeIds == "1";
-            Expression<Func<Person, bool>> pred = null;
-
-            bool include = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
-            if (include)
-                pred = p => p.DeceasedDate == null || p.DeceasedDate != null;
-            else
-                pred = p => p.DeceasedDate == null;
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            return expr;
-        }
-        internal Expression ExprParentsOf()
-        {
-            var tf = CodeIds == "1";
-            setParentsOf(op, tf);
-            Expression<Func<Person, bool>> pred = null;
-
-            bool include = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
-            pred = p => p.PeopleId > 0;
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            return expr;
-        }
         internal Expression StatusFlag()
         {
             var codes0 = CodeValues.Split(',');
@@ -85,20 +60,6 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal Expression EvalSavedQuery(string QueryIdDesc)
-        {
-            var tf = CodeIds == "1";
-            var a = QueryIdDesc.Split(":".ToCharArray(), 2);
-            var QueryId = a[0].ToInt();
-            var q2 = db.PeopleQuery(QueryId);
-            if (q2 == null)
-                return AlwaysFalse();
-            var tag = db.PopulateTemporaryTag(q2.Select(pp => pp.PeopleId));
-
-            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
-            return expr;
-        }
         internal Expression SavedQuery2()
         {
             var tf = CodeIds == "1";
@@ -112,17 +73,6 @@ namespace CmsData
 
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
-            return expr;
-        }
-        internal Expression SavedQueryPlus()
-        {
-            var a = SavedQuery.SplitStr(":", 2);
-            var savedquery = db.QueryBuilderClauses.SingleOrDefault(q =>
-                q.SavedBy == a[0] && q.Description == a[1]);
-            var pred = savedquery.Predicate(db);
-            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
-            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
-                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression RecActiveOtherChurch()

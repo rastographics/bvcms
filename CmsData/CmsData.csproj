@@ -433,7 +433,6 @@
     <Compile Include="QueryBuilder\Expressions\CurrentOrg.cs" />
     <Compile Include="QueryBuilder\Expressions\EnrollmentsHistory.cs" />
     <Compile Include="QueryBuilder\Expressions\Enrollments.cs" />
-    <Compile Include="QueryBuilder\Serialize.cs" />
     <Compile Include="Volunteer.cs" />
     <Compile Include="FamilyExtra.cs" />
     <Compile Include="Generated\BackgroundCheck.cs" />
@@ -662,7 +661,6 @@
     <Compile Include="Generated\VolApplicationStatus.cs" />
     <Compile Include="Generated\Volunteer.cs" />
     <Compile Include="Generated\VolunteerForm.cs" />
-    <Compile Include="QueryBuilder\CategoryClass.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Generated\Role.cs" />
     <Compile Include="Generated\UserRole.cs" />
@@ -676,7 +674,6 @@
     <Compile Include="Generated\TagPerson.cs" />
     <Compile Include="Generated\TagType.cs" />
     <Compile Include="QueryBuilder\CompareType.cs" />
-    <Compile Include="QueryBuilder\CompareClass.cs" />
     <Compile Include="QueryBuilder\Expressions\Expressions.cs" />
     <Compile Include="Generated\Functions\Attendance.cs" />
     <Compile Include="Generated\Functions\MemberTypeId.cs" />
@@ -721,10 +718,6 @@
     <Compile Include="Generated\User.cs" />
     <Compile Include="Generated\Views\TableColumn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryBuilder\QueryBuilderClause.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="QueryBuilder\FieldClass.cs" />
     <Compile Include="QueryBuilder\FieldType.cs" />
     <Compile Include="QueryBuilder\QueryType.cs" />
     <Compile Include="Tag.cs" />
@@ -784,6 +777,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ImageData\ImageData.csproj">
+      <Project>{512da381-e81b-4121-b978-fc850ec88353}</Project>
+      <Name>ImageData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{c504e3d2-5498-451b-bf82-309623706f11}</Project>
       <Name>UtilityExtensions</Name>

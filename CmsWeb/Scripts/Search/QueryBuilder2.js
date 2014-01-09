@@ -339,6 +339,7 @@ function UpdateCodes(ret) {
         else {
             $('#values').after('<select id="CodeValue"></select>');
             $('#CodeValue').fillOptions(ret.CodeData);
+            //$("#CodeValue").val(ret.)
         }
     }
 }

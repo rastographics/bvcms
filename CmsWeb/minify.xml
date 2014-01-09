@@ -1,0 +1,136 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+ <UsingTask TaskName="CssCompressorTask" AssemblyFile="bin\Yahoo.Yui.Compressor.Build.MsBuild.dll" />
+ <UsingTask TaskName="JavascriptCompressorTask" AssemblyFile="bin\Yahoo.Yui.Compressor.Build.MsBuild.dll" />
+ <Target Name="Minify">
+    <ItemGroup>
+      <!-- Single files, listed in order of dependency -->
+      <new2css Include="Content/css/normalize.css"/>
+      <new2css Include="Content/css/bvcms.css"/>
+      <new2css Include="Content/bootstrap-modal/css/bootstrap-modal.css"/>
+      <new2css Include="Content/css/chosen.css"/>
+      <new2css Include="Content/css/bootstrap-editable.css"/>
+      <new2css Include="Content/css/datepicker.css"/>
+      <new2css Include="Content/css/typeahead.js-bootstrap.css"/>
+      
+      <stylecss Include="Content/styles/dropdown.css"/>
+      <stylecss Include="Content/styles/style2.css"/>
+      <stylecss Include="Content/styles/pager.css"/>
+      <stylecss Include="Content/styles/jquery.jscrollpane.css"/>
+      <stylecss Include="Content/styles/joyride-1.0.5.css"/>
+      <stylecss Include="Content/styles/jquery.multiselect.css"/>
+      <stylecss Include="Content/styles/jquery.tooltip.css"/>
+<!--      <stylecss Include="Content/styles/Support.css"/>-->
+
+      <main Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
+      <main Include="Scripts/jQuery/jquery.cookie.js"/>
+      <main Include="Scripts/jQuery/jquery.blockUI.js"/>
+      <main Include="Scripts/jQuery/jquery.mousewheel.js"/>
+      <main Include="Scripts/jQuery/jquery.jscrollpane.js"/>
+      <main Include="Scripts/jQuery/jquery.jeditable.js"/>
+      <main Include="Scripts/jQuery/jquery.validate.js"/>
+      <main Include="Scripts/jQuery/jquery.multiSelect.js"/>
+      <main Include="Scripts/jQuery/jquery.sortElements.js"/>
+      <main Include="Scripts/jQuery/jquery.textarea.js"/>
+      <main Include="Scripts/jQuery/jquery.tooltip.js"/>
+      <main Include="Scripts/jQuery/jquery.transpose.js"/>
+      <main Include="Scripts/chosen/chosen.jquery.js"/>
+      <main Include="Scripts/js/dropdown.js"/>
+      <main Include="Scripts/js/Pager.js"/>
+      <main Include="Scripts/js/ExportToolBar.js"/>
+      <main Include="Scripts/js/headermenu.js"/>
+<!--      <main Include="Scripts/js/Support.js"/>-->
+
+      <main2 Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
+      <main2 Include="Scripts/Bootstrap/bootstrap-modalmanager.js"/>
+      <main2 Include="Scripts/Bootstrap/bootstrap-modal.js"/>
+      <main2 Include="Scripts/Bootstrap/bootstrap-editable.js"/>
+      <main2 Include="Scripts/Bootstrap/bootbox.js"/>
+      <main2 Include="Scripts/Bootstrap/bootstrap-datepicker.js"/>
+      <main2 Include="Scripts/jQuery/jquery.cookie.js"/>
+      <main2 Include="Scripts/jQuery/jquery.blockUI.js"/>
+      <main2 Include="Scripts/jQuery/jquery.mousewheel.js"/>
+      <main2 Include="Scripts/jQuery/jquery.validate.js"/>
+      <main2 Include="Scripts/jQuery/jquery.sortElements.js"/>
+      <main2 Include="Scripts/jQuery/jquery.textarea.js"/>
+      <main2 Include="Scripts/jQuery/jquery.tooltip.js"/>
+      <main2 Include="Scripts/jQuery/jquery.validate.js"/>
+      <main2 Include="Scripts/jquery/jquery.hiddenposition.1.1.js"/>
+      <main2 Include="Scripts/chosen/chosen.jquery.js"/>
+      <main2 Include="Scripts/js/Pager3.js"/>
+      <main2 Include="Scripts/js/header.js"/>
+      <main2 Include="Scripts/js/ExportToolBar2.js"/>
+      <main2 Include="Scripts/js/headermenu2.js"/>
+      <main2 Include="Scripts/Bootstrap/typeahead.js"/>
+      <main2 Include="Scripts/Search/SearchTypeahead.js"/>
+      <main2 Include="Scripts/js/form-ajax.js"/>
+      <main2 Include="Scripts/js/ExtraValue.js"/>
+      <main2 Include="Scripts/Search/SearchAdd.js"/>
+
+
+
+      <main2c Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
+      <main2c Include="Scripts/Bootstrap/bootstrap-modalmanager.js"/>
+      <main2c Include="Scripts/Bootstrap/bootstrap-modal.js"/>
+      <main2c Include="Scripts/Bootstrap/bootstrap-editable.js"/>
+      <main2c Include="Scripts/Bootstrap/bootbox.js"/>
+      <main2c Include="Scripts/jQuery/jquery.cookie.js"/>
+      <main2c Include="Scripts/jQuery/jquery.blockUI.js"/>
+      <main2c Include="Scripts/jQuery/jquery.mousewheel.js"/>
+      <main2c Include="Scripts/jQuery/jquery.validate.js"/>
+      <main2c Include="Scripts/jQuery/jquery.sortElements.js"/>
+      <main2c Include="Scripts/jQuery/jquery.textarea.js"/>
+      <main2c Include="Scripts/jQuery/jquery.tooltip.js"/>
+      <main2c Include="Scripts/jQuery/jquery.validate.js"/>
+      <main2c Include="Scripts/jQuery/jquery.jscrollpane.js"/>
+      <main2c Include="Scripts/jQuery/jquery.jeditable.js"/>
+      <main2c Include="Scripts/jQuery/jquery.multiSelect.js"/>
+      <main2c Include="Scripts/jquery/jquery.hiddenposition.1.1.js"/>
+      <main2c Include="Scripts/chosen/chosen.jquery.js"/>
+      <main2c Include="Scripts/js/Pager.js"/>
+      <main2c Include="Scripts/js/header.js"/>
+      <main2c Include="Scripts/js/dropdown.js"/>
+      <main2c Include="Scripts/js/headermenu1c.js"/>
+      <main2c Include="Scripts/Bootstrap/typeahead.js"/>
+      <main2c Include="Scripts/Search/SearchTypeahead.js"/>
+      <main2c Include="Scripts/js/form-ajax.js"/>
+      <main2c Include="Scripts/js/ExportToolBar.js"/>
+      <main2c Include="Scripts/js/headermenu2.js"/>
+      <main2c Include="Scripts/Search/SearchAdd.js"/>
+<!--      <main2c Include="Scripts/js/Support.js"/>-->
+
+      <onlineregister Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
+      <onlineregister Include="Scripts/jQuery/jquery.validate.js"/>
+      <onlineregister Include="Scripts/jQuery/jquery.idle-timer.js"/>
+      <onlineregister Include="Scripts/jQuery/jquery.blockUI.js"/>
+      <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>
+      <onlineregister Include="Scripts/jQuery/jquery.showpassword.js"/>
+
+      <org Include="Scripts/jquery/jquery-ui-timepicker-addon.js"/>
+      <org Include="Scripts/Org/Organization.js"/>
+      <org Include="Scripts/Dialog/SearchUsers.js"/>
+      <org Include="Scripts/js/RegSetting.js"/>
+
+      <query2 Include="Scripts/Bootstrap/bootstrap-multiselect.js"/>
+      <query2 Include="Scripts/jQuery/jquery.scrollintoview.js"/>
+      <query2 Include="Scripts/Search/Query.js"/>
+
+      <taskpage Include="Scripts/jQuery/jquery.form.js"/>
+      <taskpage Include="Scripts/jQuery/jquery.form2.js"/>
+      <taskpage Include="Scripts/js/Task.js"/>
+
+    </ItemGroup>
+
+    <Message Text="minify stuff" />
+   
+    <CssCompressorTask SourceFiles="@(new2css)" OutputFile="Content\css\bundle.new2css.css" />
+    <CssCompressorTask SourceFiles="@(stylecss)" OutputFile="Content\styles\bundle.stylecss.css" />
+   
+    <JavascriptCompressorTask SourceFiles="@(main)" OutputFile="Scripts\bundle.main.js" />
+    <JavascriptCompressorTask SourceFiles="@(main2)" OutputFile="Scripts\bundle.main2.js" />
+    <JavascriptCompressorTask SourceFiles="@(main2c)" OutputFile="Scripts\bundle.main2c.js" />
+    <JavascriptCompressorTask SourceFiles="@(onlineregister)" OutputFile="Scripts\bundle.onlineregister.js" />
+    <JavascriptCompressorTask SourceFiles="@(org)" OutputFile="Scripts\bundle.org.js" />
+    <JavascriptCompressorTask SourceFiles="@(query2)" OutputFile="Scripts\bundle.query2.js" />
+    <JavascriptCompressorTask SourceFiles="@(taskpage)" OutputFile="Scripts\bundle.taskpage.js" />
+  </Target>
+</Project>

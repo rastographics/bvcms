@@ -150,19 +150,6 @@ namespace CmsData
                     HttpContext.Current.Session[STR_OrgLeadersOnly] = value;
             }
         }
-        public const string STR_CheckedLoadQueries = "CheckedLoadQueries";
-        public static bool CheckedLoadQueries
-        {
-            get
-            {
-                return (bool)GetSessionObj(STR_CheckedLoadQueries, false);
-            }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_CheckedLoadQueries] = value;
-            }
-        }
         private const string STR_VisitLookbackDays = "VisitLookbackDays";
         public static int VisitLookbackDays
         {

@@ -28,6 +28,7 @@ ul.dropdown-div-finance {
     margin-left: -250px;
     width: 600px;
 }
+
 ul.dropdown-div-admin {
     margin-left: -250px;
     width: 360px;
@@ -44,7 +45,7 @@ ul.dropdown-div-admin {
     z-index: 2000;
 }
 
-thead th a {
+thead th a, thead th a:visited {
     color: #0088cc;
 }
 
@@ -77,38 +78,43 @@ a.editable-click:hover {
     text-decoration: none;
 }
 
-#navGlobal .form-search {
-    text-align: left;
-}
-
-    #navGlobal .form-search > div {
-        padding-top: 12px;
-    }
-
-    #navGlobal .form-search input {
-        width: auto;
-    }
-
 input.tt-hint {
     border-radius: 0;
 }
 
-#navGlobal .form-search .input {
-    -webkit-border-radius: 0;
-    -webkit-background-clip: padding-box;
-    -moz-border-radius: 0;
-    -moz-background-clip: padding;
-    border-radius: 0;
-    background-clip: padding-box;
-    width: auto;
-    outline: none;
+#navGlobal {
+    background: #777; /* backup color in case the next one is not supported */
+    background: rgba(50, 51, 52, 0.7); /* the 0.7 is the opacity component */
 }
 
-    #navGlobal .form-search .input:focus {
-        outline: none;
-        border-color: inherit;
-        box-shadow: none;
+    #navGlobal .form-search {
+        text-align: left;
     }
+
+        #navGlobal .form-search > div {
+            padding-top: 12px;
+        }
+
+        #navGlobal .form-search input {
+            width: auto;
+        }
+
+        #navGlobal .form-search .input {
+            -webkit-border-radius: 0;
+            -webkit-background-clip: padding-box;
+            -moz-border-radius: 0;
+            -moz-background-clip: padding;
+            border-radius: 0;
+            background-clip: padding-box;
+            width: auto;
+            outline: none;
+        }
+
+            #navGlobal .form-search .input:focus {
+                outline: none;
+                border-color: inherit;
+                box-shadow: none;
+            }
 
 /*
 form.form-horizontal.onecol .control-group {
@@ -119,7 +125,7 @@ form.form-horizontal.onecol .control-group {
 }
 */
 
-tbody td a {
+tbody td a, tbody td a:visited {
     color: #08c;
 }
 
@@ -406,15 +412,17 @@ form.form.form-horizontal.ajax div.form-actions {
     background: #FFF;
 }
 
+.dropdown-menu li > a.current :hover,
 .dropdown-menu li > a.current {
-    background: #555;
-    color: white;
+    color: #e3ece7;
+    font-weight: bold;
 }
 
 
 i.outsideCurrentTag {
     display: none;
 }
+
 span.currentTag {
     display: inline-block;
     overflow: hidden;
@@ -440,14 +448,16 @@ span.currentTag {
     div.controls.code-dropdown {
         min-height: 31px;
     }
-  #navGlobal .outsideCurrentTag {
-    display: inline;
-  }
+
+    #navGlobal .outsideCurrentTag {
+        display: inline;
+    }
 }
+
 @media (max-width: 979px) {
-  #navGlobal .outsideCurrentTag {
-    display: inline;
-  }
+    #navGlobal .outsideCurrentTag {
+        display: inline;
+    }
 }
 
 #conditionsList .conditions > li .dropdown {
@@ -1048,7 +1058,7 @@ table.pad0 td {
 }
 
 .navbar-fixed-top {
-  height: auto;
+    height: auto;
 }
 
 #urgentNotice {
@@ -1069,23 +1079,50 @@ table.pad0 td {
         padding-top: 0 !important;
     }
 }
-#clientheader h1 {
-    margin: 0;
-    line-height: 1.5em;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
-	font-size: 150%;
-	font-family: inherit;
-	vertical-align: baseline;
+
+#clientheader {
+    color: white;
 }
-#clientheader h1 i {
-    font-size: 60%;
-}
+
+    #clientheader h1, #clientheader h2 {
+        margin: 0;
+        line-height: 1.5em;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        font-weight: inherit;
+        font-style: inherit;
+        font-family: inherit;
+        vertical-align: baseline;
+        display: inline-block;
+    }
+
+    #clientheader h1 {
+        font-size: 150%;
+    }
+
+        #clientheader h1 i {
+            font-size: 60%;
+        }
+
+    #clientheader h2 {
+        padding-left: 1em;
+        font-size: 100%;
+    }
+
 @media (max-width: 1200px) {
     #navGlobal .nav a.dropdown-toggle {
         font-size: 13px;
     }
+}
+
+@media print {
+    #supportfeedback {
+        display: none;
+    }
+}
+
+div.logo {
+    background-image: url(/Content/images/bvcms-logo-on-dark.png);
+    background-position: left center;
 }

@@ -422,10 +422,10 @@
     <Field Name="AttendTypeAsOf" Title="Attendance Type As Of" Type="Code" DisplayAs="AttendanceTypeAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="AttendanceTypeCodes" DataValueField="IdCode">
       Selects attendees based on an attendance type within a Program, Program/Division or Program/Division/Organization for a specified date range.
     </Field>
-    <Field Name="GuestAsOf" Title="Guest As Of" Type="Bit" DisplayAs="GuestAsOf({0:d}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division">
+    <Field Name="GuestAsOf" Title="Guest As Of" Type="Bit" DisplayAs="GuestAsOf({0:d}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division" DataValueField="IdCode">
       Selects guests within a Program/Division for a specified date/time range
     </Field>
-    <Field Name="AttendedAsOf" Title="Attended As Of" Type="Bit" DisplayAs="AttendedAsOf({0:d}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division">
+    <Field Name="AttendedAsOf" Title="Attended As Of" Type="Bit" DisplayAs="AttendedAsOf({0:d}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division" DataValueField="IdCode">
       Selects attendees within a Program/Division for a specified date/time range
     </Field>
     <Field Name="VisitNumber" Title="Visit date Nth time" Type="Date" DisplayAs="VisitNumber({0})" Params="Quarters" QuartersLabel="Visit number">

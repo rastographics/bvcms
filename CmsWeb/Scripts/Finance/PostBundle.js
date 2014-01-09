@@ -1,25 +1,4 @@
 ﻿$(function () {
-    $("#search-add a.commit").live("click", function (ev) {
-        ev.preventDefault();
-        var f = $(this).closest("form");
-        var q = f.serialize();
-        var loc = $(this).attr("href");
-        $.post(loc, q, function (ret) {
-            f.modal("hide");
-            if (ret.message) {
-                alert(ret.message);
-            } else
-                switch (ret.from) {
-                    case 'contributor':
-                        AddSelected(ret);
-                        break;
-                    case 'Menu':
-                        window.location = '/Person2/' + ret.pid;
-                        break;
-                }
-        });
-        return false;
-    });
     $('#pid').blur(function () {
         var tr, pid;
         if ($(this).val() == '')
@@ -397,4 +376,3 @@ function AddSelected(ret) {
     $('td.name', tr).text(ret.name);
     $('a.edit', tr).click();
 }
-

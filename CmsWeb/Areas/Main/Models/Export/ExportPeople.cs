@@ -12,7 +12,7 @@ namespace CmsWeb.Models
 {
     public class ExportPeople
     {
-        public static IEnumerable FetchExcelLibraryList(object queryid)
+        public static IEnumerable FetchExcelLibraryList(Guid queryid)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -38,7 +38,7 @@ namespace CmsWeb.Models
                     };
             return q;
         }
-        public static IEnumerable FetchExcelList(object queryid, int maximumRows)
+        public static IEnumerable FetchExcelList(Guid queryid, int maximumRows)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -149,7 +149,7 @@ namespace CmsWeb.Models
             return q2;
         }
 
-        public static IEnumerable<ExcelFamilyMember> FetchExcelListFamilyMembers(object qid)
+        public static IEnumerable<ExcelFamilyMember> FetchExcelListFamilyMembers(Guid qid)
         {
             var q = DbUtil.Db.PeopleQuery(qid);
             var q2 = from pp in q
@@ -193,7 +193,7 @@ namespace CmsWeb.Models
                      };
             return q2;
         }
-        public static IEnumerable FetchExcelListFamily(object queryid)
+        public static IEnumerable FetchExcelListFamily(Guid queryid)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -222,7 +222,7 @@ namespace CmsWeb.Models
                     };
             return q;
         }
-        public static IEnumerable FetchExcelListFamily2(object queryid)
+        public static IEnumerable FetchExcelListFamily2(Guid queryid)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -263,7 +263,7 @@ namespace CmsWeb.Models
             return q;
         }
 
-        public static IEnumerable<ExcelPic> FetchExcelListPics(object queryid, int maximumRows)
+        public static IEnumerable<ExcelPic> FetchExcelListPics(Guid queryid, int maximumRows)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -304,7 +304,7 @@ namespace CmsWeb.Models
                     };
             return q.Take(maximumRows);
         }
-        public static IEnumerable ExportExtraValues(object qid)
+        public static IEnumerable ExportExtraValues(Guid qid)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
             var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues.xml", "<Fields/>"));

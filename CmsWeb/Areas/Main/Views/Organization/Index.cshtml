@@ -13,8 +13,8 @@
 }
 @section scripts
 {
-    <script src="/ckeditor/ckeditor.js" type="text/javascript"></script>
-    @Fingerprint.Script("/Scripts/Bundle/org.js")
+    @ViewExtensions2.CKEditor()
+    @Fingerprint.Script("/Scripts/bundle.org.js")
 }
 @{ CmsData.Organization o = Model.org; }
 @Html.Hidden("refreshed", "no")

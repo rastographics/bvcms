@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.People.Controllers
         [GET("{id:int}")]
         public ActionResult Index(int? id)
         {
-            if (!ViewExtensions2.UseNewLook())
+            if (!ViewExtensions2.UseNewLook() && User.IsInRole("Access"))
                 return Redirect("/Person/Index/" + id);
             if (!id.HasValue)
                 return Content("no id");

@@ -30,12 +30,12 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (!id.HasValue)
                 return Content("no id");
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
+            var qb = DbUtil.Db.ScratchPadCondition();
+            qb.Reset(DbUtil.Db);
             var comp = CompareType.Equal;
             var clause = qb.AddNewClause(QueryType.FamilyId, comp, id);
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/QueryBuilder/Main/{0}".Fmt(qb.QueryId));
+            qb.Save(DbUtil.Db);
+            return Redirect("/QueryBuilder2/Main/{0}".Fmt(qb.Id));
         }
         [AcceptVerbs(HttpVerbs.Post)]
         public ContentResult EditPosition(string id, string value)

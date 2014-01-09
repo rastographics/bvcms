@@ -8,14 +8,7 @@
     <ul class="dropdown-menu">
         @if (menuaddpeople)
         {
-            if (isperson2)
-            {
             <li><a href="/SearchAdd2/Dialog/Menu" class="searchadd">Add People</a></li>
-            }
-            else
-            {
-            <li>@Helper.JQueryIdLink("Add People", "addpeople")</li>
-            }
         }
         @Helper.LiAnchorLink("Add People", "http://www.bvcms.com/doc/AddPeopleContext", !menuaddpeople, "_blank")
         @Helper.LiAnchorLink("Manage Tags", "/Tags/")

@@ -14,12 +14,9 @@ else
     <h2 id="nameline" class="span8 @(Model.Person.IsDeceased == true ? "alert alert-danger" : "")">
         @Model.Name
     </h2>
-    @if (User.IsInRole("Access"))
-    {
-        <div class="span4 pull-right" id="profile-actions">
-            @Html.Partial("Toolbar/Toolbar", Model.Users)
-        </div>
-    }
+    <div class="span4 pull-right" id="profile-actions">
+        @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
+    </div>
     <ul class="meta unstyled">
         <li class="role">
             @Address(Model.PrimaryAddr)

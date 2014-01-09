@@ -1,3 +1,4 @@
+using System;
 using System.Data.SqlClient;
 using System.Web.Mvc;
 using UtilityExtensions;
@@ -9,8 +10,8 @@ namespace CmsWeb.Models
 {
     public class StatusFlagsExcelResult : ActionResult
     {
-        private object qid;
-        public StatusFlagsExcelResult(object qid)
+        private Guid qid;
+        public StatusFlagsExcelResult(Guid qid)
         {
             this.qid = qid;
         }

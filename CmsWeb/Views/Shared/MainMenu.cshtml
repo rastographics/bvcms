@@ -72,25 +72,25 @@
             </a>
             <div class="dropdown2-menu">
                 <ul>
-                    <li>@Html.ActionLink("Vital Stats", "VitalStats", "Reports", new { Area = "Main" }, null)</li>
-                    <li>@Html.ActionLink("Week at a Glance", "ChurchAttendance", "Reports", new { Area = "Main" }, null)</li>
-                    <li>@Html.ActionLink("Average Week at a Glance", "ChurchAttendance2", "Reports", new { Area = "Main" }, null)</li>
+                    <li>@Helper.AnchorLink("Vital Stats", "/Reports/VitalStats")</li>
+                    <li>@Helper.AnchorLink("Week at a Glance", "/Reports/ChurchAttendance", "_blank")</li>
+                    <li>@Helper.AnchorLink("Average Week at a Glance", "/Reports/ChurchAttendance2", "_blank")</li>
                     @if (DbUtil.Db.Setting("Bellevue", "false") == "true")
                     {
                         <li>@Helper.AnchorLink("Church Attendance Summary", "/Report/ChurchAttendanceSummaryRpt.aspx", "_blank")</li>
                     }
-                    <li>@Html.ActionLink("Weekly Decisions", "WeeklyDecisions", "Reports", new { Area = "Main" }, new { target = "_blank" })</li>
-                    <li>@Helper.AnchorLink("Decision Summary", "/Reports/Decisions", "_blank")</li>
-                    <li>@Html.ActionLink("First Time Attenders", "NthTimeAttenders", "Home", new { Area = "", Id = 1 }, null)</li>
-                    <li>@Html.ActionLink("Second Time Attenders", "NthTimeAttenders", "Home", new { Area = "", Id = 2 }, null)</li>
-                    <li>@Html.ActionLink("Third Time Attenders", "NthTimeAttenders", "Home", new { Area = "", Id = 3 }, null)</li>
-                    <li>@Html.ActionLink("Extra Value Codes", "ExtraValues", "Reports", new { Area = "Main" }, null)</li>
-                    <li>@Html.ActionLink("Extra Value Data", "ExtraValueData", "Reports", new { Area = "Main" }, null)</li>
+                    <li>@Helper.AnchorLink("Weekly Decisions", "/Reports/WeeklyDecisions")</li>
+                    <li>@Helper.AnchorLink("Decision Summary", "/Reports/Decisions")</li>
+                    <li>@Helper.AnchorLink("First Time Attenders", "/Home/NthTimeAttenders/1")</li>
+                    <li>@Helper.AnchorLink("Second Time Attenders", "/Home/NthTimeAttenders/2")</li>
+                    <li>@Helper.AnchorLink("Third Time Attenders", "/Home/NthTimeAttenders/3")</li>
+                    <li>@Helper.AnchorLink("Extra Value Codes", "/Reports/ExtraValues")</li>
+                    <li>@Helper.AnchorLink("Extra Value Data", "/Reports/ExtraValueData")</li>
                     @if (admin)
                     {
-                    <li class="header"><span>Admins</span></li>
-                    <li>@Helper.AnchorLink("Recent Registrations", "/Reports/RecentRegistrations?days=90&orgid=0")</li>
-                    <li>@Helper.AnchorLink("Recent Registration Summary", "/Reports/RegistrationSummary?days=90")</li>
+                        <li class="header"><span>Admins</span></li>
+                        <li>@Helper.AnchorLink("Recent Registrations", "/Reports/RecentRegistrations?days=90&orgid=0")</li>
+                        <li>@Helper.AnchorLink("Recent Registration Summary", "/Reports/RegistrationSummary?days=90")</li>
                     }
                 </ul>
             </div>
@@ -188,21 +188,6 @@
                 </div>
             </li>
         }
-        <li>
-            <a href="#" class="trigger-dropdown">Help
-                <img src="/Content/images/dnarrowt.png" />
-            </a>
-            <div class="dropdown2-menu anchor-right">
-                <ul>
-                    <li>@Helper.AnchorLink("Help Documentation", @Util.HelpLink(Util.Helpfile), "_blank")</li>
-                    <li>@Helper.JQueryIdLink("Email Support", "emailsupport")</li>
-                    @if (innewlook)
-                    {
-                        <li>@Html.ActionLink("Use New Look", "UseNewLook", "APITest", new { Area = "" }, null)</li>
-                    }
-                    <li>@Html.ActionLink("About", "About", "Home", new { Area = "" }, null)</li>
-                </ul>
-            </div>
-        </li>
+        <li><a href="/Home/Support2?helplink=@HttpUtility.UrlEncode(Util.HelpLink(Util.Helpfile))">Help</a></li>
     </ul>
 </div>

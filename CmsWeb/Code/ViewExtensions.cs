@@ -646,33 +646,41 @@ namespace CmsWeb
             range.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
             range.Style.Border.Bottom.Color.SetColor(Color.FromArgb(172, 204, 234));
         }
-        const string jqueryloc = @"<script type=""text/javascript"" src=""/Scripts/jQuery/{0}""></script>";
+        public static HtmlString GoogleFonts()
+        {
+            return new HtmlString("<link href=\"//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700\" rel=\"stylesheet\">\n");
+        }
+        public static HtmlString OldStyles()
+        {
+            return Fingerprint.Css("/content/styles/bundle.stylecss.css");
+        }
+        public static HtmlString NewStyles()
+        {
+            return Fingerprint.Css("/content/css/bundle.new2css.css");
+        }
+        public static HtmlString FontAwesome()
+        {
+            return new HtmlString( "<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\n");
+        }
+        public static HtmlString CKEditor()
+        {
+            return new HtmlString("<script src=\"/ckeditor/ckeditor.js\" type=\"text/javascript\"></script>\n");
+        }
         public static HtmlString jQuery()
         {
-
-#if DEBUG
-            return new HtmlString(jqueryloc.Fmt("jquery-1.10.2.js"));
-#else
-        return new HtmlString(jqueryloc.Fmt("jquery-1.10.2.min.js"));
-#endif
+            return new HtmlString("<script src=\"//code.jquery.com/jquery-1.10.2.min.js\" type=\"text/javascript\"></script>\n");
+        }
+        public static HtmlString jQueryUICss()
+        {
+            return new HtmlString("<link href=\"//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.min.css\" rel=\"stylesheet\" />\n");
         }
         public static HtmlString jQueryUI()
         {
-#if DEBUG
-            return new HtmlString(jqueryloc.Fmt("jquery-ui-1.10.0.custom.js"));
-#else
-        return new HtmlString(jqueryloc.Fmt("jquery-ui-1.10.0.custom.min.js"));
-#endif
+            return new HtmlString("<script src=\"//code.jquery.com/ui/1.10.3/jquery-ui.min.js\" type=\"text/javascript\"></script>\n");
         }
         public static HtmlString Bootstrap()
         {
-            const string boostraploc = @"<script type=""text/javascript"" src=""/Scripts/Bootstrap/{0}""></script>";
-
-#if DEBUG
-            return new HtmlString(boostraploc.Fmt("bootstrap.js"));
-#else
-        return new HtmlString(boostraploc.Fmt("bootstrap.min.js"));
-#endif
+            return Fingerprint.Script("/Scripts/Bootstrap/bootstrap.js");
         }
 
         public static string Layout()
@@ -682,13 +690,13 @@ namespace CmsWeb
                 : "~/Views/Shared/SiteLayout.cshtml";
 
         }
+        public static bool CanNewLook()
+        {
+            return HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("NewLook");
+        }
         public static bool UseNewLook()
         {
             return DbUtil.Db.UserPreference("UseNewLook", "false").ToBool();
-        }
-        public static bool TestSb2()
-        {
-            return DbUtil.Db.Setting("TestSb2", "true").ToBool();
         }
 
         public static string GridClass

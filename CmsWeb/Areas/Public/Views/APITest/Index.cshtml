@@ -4,7 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <title>API Tester</title>
-    @Fingerprint.Css("/content/styles/bundle-css.css")
+    @ViewExtensions2.jQueryUICss()
+    @(ViewExtensions2.UseNewLook() ? Fingerprint.Css("/content/styles/siteblue.css") : Fingerprint.Css("/content/styles/site.css"))
+    @ViewExtensions2.OldStyles()
 	<link rel="stylesheet" href="/Content/styles/faary.css?v=1" type="text/css" />
 	<style>
 	    div.section
@@ -16,7 +18,7 @@
 	</style>
     @ViewExtensions2.jQuery()
     @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/bundle.main.js")
     @Fingerprint.Script("/Scripts/js/TestAPI.js")
 </head>
 <body>

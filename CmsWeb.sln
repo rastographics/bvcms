@@ -151,8 +151,8 @@ Global
 		{FC942D51-94B5-456B-9683-0BA000A1EAF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC942D51-94B5-456B-9683-0BA000A1EAF4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FC942D51-94B5-456B-9683-0BA000A1EAF4}.Release|Itanium.ActiveCfg = Release|Any CPU
-		{FC942D51-94B5-456B-9683-0BA000A1EAF4}.Release|Mixed Platforms.ActiveCfg = bvcms2|Any CPU
-		{FC942D51-94B5-456B-9683-0BA000A1EAF4}.Release|Mixed Platforms.Build.0 = bvcms2|Any CPU
+		{FC942D51-94B5-456B-9683-0BA000A1EAF4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FC942D51-94B5-456B-9683-0BA000A1EAF4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FC942D51-94B5-456B-9683-0BA000A1EAF4}.Release|x86.ActiveCfg = Release|Any CPU
 		{FC942D51-94B5-456B-9683-0BA000A1EAF4}.Release2|Any CPU.ActiveCfg = Release|Any CPU
 		{FC942D51-94B5-456B-9683-0BA000A1EAF4}.Release2|Any CPU.Build.0 = Release|Any CPU

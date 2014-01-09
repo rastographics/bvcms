@@ -27,7 +27,7 @@
         $("ul.noedit a", f).not('[target="otherorg"]').unbind("click");
         $('ul.edit a.notifylist').SearchUsers({
             UpdateShared: function(topid) {
-                $.post("/Org/UpdateNotifyIds", { id: $("#OrganizationId").val(), topid: topid }, function (ret) {
+                $.post("/Organization/UpdateNotifyIds", { id: $("#OrganizationId").val(), topid: topid }, function (ret) {
                     $("a.notifylist").html(ret);
                 });
             }

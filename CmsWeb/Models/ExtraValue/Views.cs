@@ -21,18 +21,16 @@ namespace CmsWeb.Models.ExtraValues
 
         public static Views GetViews(bool nocache = false)
         {
-            var xml = nocache
-                ? DbUtil.Content("StandardExtraValues2", "<Views />")
-                : DbUtil.StandardExtraValues2();
+            var xml = DbUtil.StandardExtraValues2(nocache);
 
             var f = Util.DeSerialize<Views>(xml);
             if (f == null)
                 return new Views();
             return f;
         }
-        public static List<Value> GetStandardExtraValues(string table)
+        public static List<Value> GetStandardExtraValues(string table, bool nocache = false)
         {
-            return (from vv in GetViews().List
+            return (from vv in GetViews(nocache).List
                     where vv.Table == table
                     from v in vv.Values
                     select v).ToList();
@@ -44,9 +42,9 @@ namespace CmsWeb.Models.ExtraValues
             public string Type { get; set; }
         }
 
-        public static List<StandardValueNameType> GetViewableNameTypes(string table)
+        public static List<StandardValueNameType> GetViewableNameTypes(string table, bool nocache = false)
         {
-            var list = (from vv in GetStandardExtraValues(table)
+            var list = (from vv in GetStandardExtraValues(table, nocache)
                         where vv.Type != "Bits"
                         where vv.UserCanView()
                         select new StandardValueNameType()
@@ -55,7 +53,7 @@ namespace CmsWeb.Models.ExtraValues
                             Type = vv.Type
                         }).ToList();
 
-            var list2 = (from vv in GetStandardExtraValues(table)
+            var list2 = (from vv in GetStandardExtraValues(table, nocache)
                          where vv.UserCanView()
                          where vv.Type == "Bits"
                          from v in vv.Codes

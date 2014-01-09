@@ -54,10 +54,6 @@ namespace CmsData
                     throw new ArgumentException();
             }
         }
-        internal Expression Expression(Condition c, ParameterExpression parm, CMSDataContext Db)
-        {
-            return c.GetExpression(parm, Db, c.SetIncludeDeceased, c.SetParentsOf);
-        }
         public static CompareType Convert(string type)
         {
             if (!type.HasValue())

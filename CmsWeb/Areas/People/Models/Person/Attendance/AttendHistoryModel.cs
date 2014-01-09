@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -72,9 +73,13 @@ namespace CmsWeb.Areas.People.Models
                     return q.OrderByDescending(a => a.AttendanceTypeId).ThenByDescending(a => a.MeetingDate);
                 case "Meeting":
                 default:
+                    if (Future)
+                        return Pager.Direction == "desc"
+                            ? q.OrderBy(a => a.MeetingDate) 
+                            : q.OrderByDescending(a => a.MeetingDate);
                     return Pager.Direction == "asc"
-                        ? (Future ? q.OrderBy(a => a.MeetingDate) : q.OrderByDescending(a => a.MeetingDate))
-                        : (!Future ? q.OrderBy(a => a.MeetingDate) : q.OrderByDescending(a => a.MeetingDate));
+                        ? q.OrderBy(a => a.MeetingDate)
+                        : q.OrderByDescending(a => a.MeetingDate);
             }
         }
     }

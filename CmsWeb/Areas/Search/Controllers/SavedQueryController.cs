@@ -47,20 +47,5 @@ namespace CmsWeb.Areas.Search.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("ok");
         }
-        [GET("SavedQueryList/ExportToOld/{id:guid}")]
-        public ActionResult ExportToOld(Guid id)
-        {
-            var q = DbUtil.Db.LoadQueryById2(id);
-            var ret = QueryBuilderClause.Import(DbUtil.Db, q.ToClause().ToXml(), q.Name);
-            return Redirect("/QueryBuilder/Main/" + ret.newid);
-        }
-//        [POST("SavedQueryList/PostPublic")]
-//        public ActionResult PostPublic(int pk, string value)
-//        {
-//            var c = DbUtil.Db.QueryBuilderClauses.SingleOrDefault(cc => cc.QueryId == pk);
-//            c.IsPublic = value == "1";
-//            DbUtil.Db.SubmitChanges();
-//            return Content(value);
-//        }
     }
 }

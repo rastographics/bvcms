@@ -5,8 +5,17 @@
         <td class="nowrap">@Model.Name</td>
         @if (Model.UserCanEdit())
         {
-            <td class="width100"><a href="#" data-pk="@Model.Id" data-name="@Model.DataName" class="@Model.EditableClass" 
-                   data-url="@Model.EditUrl" @Model.DataValue @Model.DataSource><span>@Html.Raw(Model)</span></a>
+            var dv = Model.DataValue;
+            var ds = Model.DataSource;
+            <td class="width100">
+                <a href="#" 
+                   data-pk="@Model.Id" 
+                   data-name="@Model.DataName" 
+                   class="@Model.EditableClass" 
+                   data-url="@Model.EditUrl"
+                   @if (dv.HasValue()) { <text> data-value="@dv" </text>  }
+                   @if (ds.HasValue()) {  <text> data-source="@ds" </text> }>
+                   <span>@Html.Raw(Model)</span></a>
             </td>
         }
         else

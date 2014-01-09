@@ -56,7 +56,7 @@ namespace CmsWeb.Models
             set
             {
                 conditionName = value;
-                fieldMap = FieldClass.Fields[value];
+                fieldMap = FieldClass2.Fields[value];
             }
         }
         public Guid? SelectedId { get; set; }
@@ -106,8 +106,16 @@ namespace CmsWeb.Models
                 new CodeValueItem { Id = 1, Value = "True", Code = "T" }, 
                 new CodeValueItem { Id = 0, Value = "False", Code = "F" }, 
             };
-        internal FieldClass fieldMap;
+        internal FieldClass2 fieldMap;
 
+        public static string IdCode(object items, int id)
+        {
+            var list = items as IEnumerable<CodeValueItem>;
+            var ret = (from v in list
+                       where v.Id == id
+                       select v.IdCode).Single();
+            return ret;
+        }
         DateTime? DateParse(string s)
         {
             DateTime dt;
@@ -118,7 +126,10 @@ namespace CmsWeb.Models
         public string DateString(DateTime? dt)
         {
             if (dt.HasValue)
-                return dt.Value.ToShortDateString();
+                if (dt.Value.TimeOfDay.Ticks > 0)
+                    return dt.FormatDateTm();
+                else
+                    return dt.Value.ToShortDateString();
             return "";
         }
         [JsonIgnore]
@@ -535,7 +546,7 @@ namespace CmsWeb.Models
         {
             if (!ConditionName.HasValue())
                 ConditionName = "Group";
-            return from c in CompareClass.Comparisons
+            return from c in CompareClass2.Comparisons
                    where c.FieldType == fieldMap.Type
                    select new SelectListItem { Text = c.CompType.ToString(), Value = c.CompType.ToString() };
         }
@@ -649,9 +660,9 @@ namespace CmsWeb.Models
             return list;
         }
 
-        public IEnumerable<CategoryClass> FieldCategories()
+        public IEnumerable<CategoryClass2> FieldCategories()
         {
-            var q = from c in CategoryClass.Categories
+            var q = from c in CategoryClass2.Categories
                     where c.Title != "Grouping"
                     select c;
             return q;

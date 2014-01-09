@@ -461,6 +461,10 @@ namespace CmsWeb.Code
             var tid = DbUtil.Db.TagCurrent().Id;
             return new CodeValueModel().UserTags(Util.UserPeopleId).Where(tt => tt.Id != tid).ToList();
         }
+        public static List<CodeValueItem> UserTagsAll()
+        {
+            return new CodeValueModel().UserTags(Util.UserPeopleId).ToList();
+        }
 
         public List<CodeValueItem> UserTags(int? UserPeopleId)
         {
@@ -576,7 +580,7 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> QueryBuilderFields(string category)
         {
             int n = 1;
-            return from f in FieldClass.Fields.Values
+            return from f in FieldClass2.Fields.Values
                    where f.CategoryTitle == category
                    select new CodeValueItem
                    {
@@ -588,7 +592,7 @@ namespace CmsWeb.Code
 
         public List<string> QueryBuilderCategories()
         {
-            return (from f in CategoryClass.Categories
+            return (from f in CategoryClass2.Categories
                     select f.Title).ToList();
         }
 

@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Main.Models.Report
 {
     public class RollLabelsResult : ActionResult
     {
-        public object qid { get; set; }
+        public Guid qid { get; set; }
         public string format { get; set; }
         public bool titles { get; set; }
         public bool usephone { get; set; }

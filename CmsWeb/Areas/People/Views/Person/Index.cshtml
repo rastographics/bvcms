@@ -1,11 +1,15 @@
-﻿@using CmsWeb.Areas.People.Models
+﻿@using CmsData
+@using CmsWeb.Areas.People.Models
+@using UtilityExtensions
 @model PersonModel
 @{
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Person";
+    var showtip = !DbUtil.Db.UserPreference("hide-tip-person", "false").ToBool();
 }
 @section head
 {
+    @Fingerprint.Css("/Content/css/bootstrap-tour.css")
     @Fingerprint.Css("/Content/css/person-main.css")
     <style>
         #tab-area textarea {
@@ -19,8 +23,14 @@
 }
 @section scripts
 {
+    @Fingerprint.Script("/Scripts/jQuery/jquery.smoothscroll.js")
+    @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-tour.js")
     @Fingerprint.Script("/Scripts/People/person1.js")
     @Fingerprint.Script("/Scripts/Org/OrgMemberDialog2.js")
+    @if (showtip)
+    {
+        @Fingerprint.Script("/Scripts/People/tour.js")
+    }
 }
 <div class="container">
     <div class="row-fluid">

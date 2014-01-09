@@ -5,23 +5,11 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Dynamic;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
 using System.Linq;
-using System.Configuration;
-using System.Net.Mail;
 using System.IO;
-using System.Security.Cryptography;
 using System.Globalization;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace UtilityExtensions
 {

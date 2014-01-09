@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Search.Models
             };
 
         private string conditionName;
-        private FieldClass fieldMap;
+        private FieldClass2 fieldMap;
         private List<SelectListItem> tagData;
 
         public Guid? SelectedId { get; set; }
@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public IEnumerable<SelectListItem> TagData()
         {
-            return TagsVisible ? ConvertToSelect(CodeValueModel.UserTags(), "Code", TagValues) : null;
+            return TagsVisible ? ConvertToSelect(CodeValueModel.UserTagsAll(), "Code", TagValues) : null;
         }
 
         public IEnumerable<SelectListItem> PmmLabelData()
@@ -117,7 +117,7 @@ namespace CmsWeb.Areas.Search.Models
             set
             {
                 conditionName = value;
-                fieldMap = FieldClass.Fields[value];
+                fieldMap = FieldClass2.Fields[value];
             }
         }
 

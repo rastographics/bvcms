@@ -1,29 +1,10 @@
-﻿@model dynamic
+﻿@{
+    var db = DbUtil.Db;
+    var oldheader = db.Setting("UseOldHeader", "false").ToBool() ? db.Content("Header", "") : "";
+    var customheader = db.Content("CustomHeader", @"");
+}
 <div id="clientheader">
-    <style type="text/css">
-        #navGlobal {
-            background: #323334;
-            background: rgba(50, 51, 52, 0.7);
-        }
-        body {
-            padding-top: 0 !important;
-        }
-
-        .navbar-fixed-top {
-            position: relative;
-        }
-
-        #clientheader {
-            color: white;
-        }
-    /* https://c4265878.ssl.cf2.rackcdn.com/bellevue.1308091433.logo.png
-        #navGlobal {
-            background: #E4ECE7;
-        }
-        #navGlobal .nav a.dropdown-toggle {
-            color: darkblue;
-        }
-        */
-    </style>
-    <h1>Bellevue Baptist Church &nbsp; <i>Love God, Love People, Share Jesus, Make Disciples</i></h1>
+    @Html.Raw(User.IsInRole("Access")
+        ? Util.PickFirst(customheader, oldheader)
+        : Util.PickFirst(db.Content("MyDataHeader", ""), customheader, oldheader))
 </div>

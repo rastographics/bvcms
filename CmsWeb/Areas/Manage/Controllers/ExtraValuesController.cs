@@ -13,33 +13,6 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaUrl = "Manage/ExtraValues")]
     public class ExtraValuesController : CmsStaffController
     {
-        [POST("Add/{id:int}")]
-        public ActionResult Add(int id, string field, string value)
-        {
-            var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
-            foreach (var pid in list)
-            {
-                Person.AddEditExtraValue(DbUtil.Db, pid, field, value);
-                DbUtil.Db.SubmitChanges();
-                DbUtil.DbDispose();
-            }
-            return Content("done");
-        }
-        [POST("Delete/{id:int}")]
-        public ActionResult Delete(int id, string field, string value)
-        {
-            var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
-            foreach (var pid in list)
-            {
-                var ev = Person.GetExtraValue(DbUtil.Db, pid, field, value);
-                if (ev == null)
-                    continue;
-                DbUtil.Db.PeopleExtras.DeleteOnSubmit(ev);
-                DbUtil.Db.SubmitChanges();
-                DbUtil.DbDispose();
-            }
-            return Content("done");
-        }
         [POST("Add2/{id:guid}")]
         public ActionResult Add2(Guid id, string field, string value)
         {
@@ -100,72 +73,38 @@ namespace CmsWeb.Areas.Manage.Controllers
         [GET("QueryCodes")]
         public ActionResult QueryCodes(string field, string value)
         {
-            if (ViewExtensions2.TestSb2())
-            {
-                var cc = DbUtil.Db.ScratchPadCondition();
-                cc.Reset(DbUtil.Db);
-                cc.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
-                cc.Save(DbUtil.Db);
-                return Redirect("/QueryBuilder2/Main/" + cc.Id);
-            }
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            qb.CleanSlate(DbUtil.Db);
-            qb.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/QueryBuilder/Main/" + qb.QueryId);
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+            cc.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
+            cc.Save(DbUtil.Db);
+            return Redirect("/QueryBuilder2/Main/" + cc.Id);
         }
         [GET("QueryDataFields")]
         public ActionResult QueryDataFields(string field, string type)
         {
-            if (ViewExtensions2.TestSb2())
-            {
-                var cc = DbUtil.Db.ScratchPadCondition();
-                cc.Reset(DbUtil.Db);
-                Condition c2;
-                switch (type.ToLower())
-                {
-                    case "text":
-                        c2 = cc.AddNewClause(QueryType.PeopleExtraData, CompareType.NotEqual, "");
-                        c2.Quarters = field;
-                        break;
-                    case "date":
-                        c2 = cc.AddNewClause(QueryType.PeopleExtraDate, CompareType.NotEqual, null);
-                        c2.Quarters = field;
-                        break;
-                    case "int":
-                        c2 = cc.AddNewClause(QueryType.PeopleExtraInt, CompareType.NotEqual, "");
-                        c2.Quarters = field;
-                        break;
-                    case "?":
-                        cc.AddNewClause(QueryType.HasPeopleExtraField, CompareType.Equal, field);
-                        break;
-                }
-                cc.Save(DbUtil.Db);
-                return Redirect("/QueryBuilder2/Main/" + cc.Id);
-            }
-            var qb = DbUtil.Db.QueryBuilderScratchPad();
-            QueryBuilderClause c = null;
-            qb.CleanSlate(DbUtil.Db);
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+            Condition c2;
             switch (type.ToLower())
             {
                 case "text":
-                    c = qb.AddNewClause(QueryType.PeopleExtraData, CompareType.NotEqual, "");
-                    c.Quarters = field;
+                    c2 = cc.AddNewClause(QueryType.PeopleExtraData, CompareType.NotEqual, "");
+                    c2.Quarters = field;
                     break;
                 case "date":
-                    c = qb.AddNewClause(QueryType.PeopleExtraDate, CompareType.NotEqual, null);
-                    c.Quarters = field;
+                    c2 = cc.AddNewClause(QueryType.PeopleExtraDate, CompareType.NotEqual, null);
+                    c2.Quarters = field;
                     break;
                 case "int":
-                    c = qb.AddNewClause(QueryType.PeopleExtraInt, CompareType.NotEqual, "");
-                    c.Quarters = field;
+                    c2 = cc.AddNewClause(QueryType.PeopleExtraInt, CompareType.NotEqual, "");
+                    c2.Quarters = field;
                     break;
                 case "?":
-                    qb.AddNewClause(QueryType.HasPeopleExtraField, CompareType.Equal, field);
+                    cc.AddNewClause(QueryType.HasPeopleExtraField, CompareType.Equal, field);
                     break;
             }
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/QueryBuilder/Main/" + qb.QueryId);
+            cc.Save(DbUtil.Db);
+            return Redirect("/QueryBuilder2/Main/" + cc.Id);
         }
     }
 }

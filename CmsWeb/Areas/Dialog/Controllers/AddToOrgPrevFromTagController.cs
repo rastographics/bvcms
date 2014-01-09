@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 			DbUtil.Db.AddToOrgFromTagRuns.InsertOnSubmit(runningtotals);
 			DbUtil.Db.SubmitChanges();
 			var host = Util.Host;
-			var qid = Util.QueryBuilderScratchPadId;
+		    var qid = DbUtil.Db.FetchLastQuery().Id;
 			System.Threading.Tasks.Task.Factory.StartNew(() =>
 			{
 				Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 				Db.SubmitChanges();
 				Db.UpdateMainFellowship(orgid);
 			});
-			return Redirect("/AddToOrgFromTag/Progress/" + orgid);
+			return Redirect("/AddToOrgPrevFromTag/Progress/" + orgid);
 		}
 		[HttpPost]
 		public JsonResult Progress2(int id)

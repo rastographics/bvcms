@@ -47,6 +47,13 @@ namespace CmsData
             c.justloadedquery = q;
             return c;
         }
+        public Condition StandardQuery(string name)
+        {
+            var q = Queries.FirstOrDefault(c => c.Owner == STR_System && c.Name == name);
+            if(q == null)
+                return null;
+            return q.ToClause();
+        }
         public Query StandardQuery(string name, QueryType typ)
         {
             var qb = Queries.FirstOrDefault(c => c.Owner == STR_System && c.Name == name);
@@ -139,7 +146,7 @@ namespace CmsData
         {
             var q = (from cc in Queries
                      where cc.Owner == Util.UserName
-                     where !cc.Ispublic
+                     //where !cc.Ispublic
                      orderby cc.LastRun descending
                      select cc).FirstOrDefault();
             Condition c;
@@ -183,42 +190,6 @@ namespace CmsData
             c.PreviousName = i.Name;
             c.Save(this);
             return c;
-        }
-        public void CheckLoadQueries(bool reload = false)
-        {
-            if (Queries.Any() && !reload)
-                return;
-            List<int> list;
-            {
-                ExecuteCommand("Truncate table dbo.Query");
-                var q = ExecuteQuery<int>("select QueryId from QueryBuilderClauses where GroupId is null and Description is not null and savedby is not null");
-                list = q.ToList();
-            }
-            foreach (var qid in list)
-            {
-                var c = LoadQueryById(qid);
-                var xml = c.ToXml("conv", qid);
-                string name = null;
-                if (c.Description != Util.ScratchPad)
-                    name = c.Description.Truncate(50);
-                var nc = Condition.Import(xml, name);
-                xml = nc.ToXml();
-                if (!nc.Conditions.Any())
-                    continue;
-                var q = new Query()
-                {
-                    QueryId = nc.Id,
-                    Name = name ?? Util.ScratchPad2,
-                    Text = xml,
-                    Owner = c.SavedBy,
-                    Created = c.CreatedOn,
-                    LastRun = c.CreatedOn,
-                    Ispublic = c.IsPublic,
-                    RunCount = 0
-                };
-                Queries.InsertOnSubmit(q);
-                SubmitChanges();
-            }
         }
     }
 }

@@ -167,45 +167,21 @@ namespace CmsData
             var qb = QueryBuilderClauses.SingleOrDefault(c => c.QueryId == queryid);
             return CheckBadQuery(qb);
         }
-        public IQueryable<Person> PeopleQuery(object id)
+        public IQueryable<Person> PeopleQuery(Guid id)
         {
             if (id == null)
                 return null;
             IQueryable<Person> q = null;
-            if (id is Guid)
-            {
-                var qid = (Guid)id;
-                var query = LoadQueryById2(qid);
-                if (query == null)
-                    return null;
-                var c = query.ToClause();
-                q = People.Where(c.Predicate(this));
-                if (c.ParentsOf)
-                    q = PersonQueryParents(q);
-            }
-            else
-            {
-                var qid = (int)id;
-                var qB = LoadQueryById(qid);
-                if (qB == null)
-                    return null;
-                q = People.Where(qB.Predicate(this));
-                if (qB.ParentsOf)
-                    q = PersonQueryParents(q);
-            }
-            return q;
-        }
-
-        public IQueryable<Person> PeopleQuery(string name)
-        {
-            var qB = this.QueryBuilderClauses.FirstOrDefault(c => c.Description == name);
-            if (qB == null)
+            var query = LoadQueryById2(id);
+            if (query == null)
                 return null;
-            var q = People.Where(qB.Predicate(this));
-            if (qB.ParentsOf)
+            var c = query.ToClause();
+            q = People.Where(c.Predicate(this));
+            if (c.ParentsOf)
                 q = PersonQueryParents(q);
             return q;
         }
+
         public IQueryable<Person> PeopleQuery2(string name)
         {
             var qB = Queries.FirstOrDefault(cc => cc.Name == name);
@@ -249,186 +225,6 @@ namespace CmsData
 
             SubmitChanges();
             return tag.People(this);
-        }
-        public QueryBuilderClause QueryBuilderScratchPad()
-        {
-            var qb = LoadQueryById(Util.QueryBuilderScratchPadId);
-            if (qb == null)
-            {
-                qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == Util.UserName
-                    && c.Description == Util.ScratchPad);
-                qb = CheckBadQuery(qb);
-                if (qb == null)
-                {
-                    qb = QueryBuilderClause.NewGroupClause();
-                    qb.Description = Util.ScratchPad;
-                    qb.SavedBy = Util.UserName;
-                    QueryBuilderClauses.InsertOnSubmit(qb);
-                    SubmitChanges();
-                }
-            }
-            Util.QueryBuilderScratchPadId = qb.QueryId;
-            return qb;
-        }
-        public QueryBuilderClause QueryBuilderHasCurrentTag()
-        {
-            const string STR_HasCurrentTag = "HasCurrentTag";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
-                && c.Description == STR_HasCurrentTag);
-            if (qb == null)
-            {
-                qb = QueryBuilderClause.NewGroupClause();
-                qb.Description = STR_HasCurrentTag;
-                qb.SavedBy = STR_System;
-                qb.AddNewClause(QueryType.HasCurrentTag, CompareType.Equal, "1,T");
-                QueryBuilderClauses.InsertOnSubmit(qb);
-                SubmitChanges();
-            }
-            return qb;
-        }
-        public QueryBuilderClause QueryBuilderInCurrentOrg()
-        {
-            const string STR_InCurrentOrg = "InCurrentOrg";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
-                && c.Description == STR_InCurrentOrg);
-            if (qb == null)
-            {
-                qb = QueryBuilderClause.NewGroupClause();
-                qb.Description = STR_InCurrentOrg;
-                qb.SavedBy = STR_System;
-                qb.AddNewClause(QueryType.InCurrentOrg, CompareType.Equal, "1,T");
-                QueryBuilderClauses.InsertOnSubmit(qb);
-                SubmitChanges();
-            }
-            return qb;
-        }
-        public QueryBuilderClause QueryBuilderLeadersUnderCurrentOrg()
-        {
-            const string STR_LeadersUnderCurrentOrg = "LeadersUnderCurrentOrg";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
-                && c.Description == STR_LeadersUnderCurrentOrg);
-            if (qb == null)
-            {
-                qb = QueryBuilderClause.NewGroupClause();
-                qb.Description = STR_LeadersUnderCurrentOrg;
-                qb.SavedBy = STR_System;
-                qb.AddNewClause(QueryType.LeadersUnderCurrentOrg, CompareType.Equal, "1,T");
-                QueryBuilderClauses.InsertOnSubmit(qb);
-                SubmitChanges();
-            }
-            return qb;
-        }
-        public QueryBuilderClause QueryBuilderMembersUnderCurrentOrg()
-        {
-            const string STR_MembersUnderCurrentOrg = "MembersUnderCurrentOrg";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
-                && c.Description == STR_MembersUnderCurrentOrg);
-            if (qb == null)
-            {
-                qb = QueryBuilderClause.NewGroupClause();
-                qb.Description = STR_MembersUnderCurrentOrg;
-                qb.SavedBy = STR_System;
-                qb.AddNewClause(QueryType.MembersUnderCurrentOrg, CompareType.Equal, "1,T");
-                QueryBuilderClauses.InsertOnSubmit(qb);
-                SubmitChanges();
-            }
-            return qb;
-        }
-        public QueryBuilderClause QueryBuilderInactiveCurrentOrg()
-        {
-            const string STR_InactiveCurrentOrg = "InactiveCurrentOrg";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
-                && c.Description == STR_InactiveCurrentOrg);
-            if (qb == null)
-            {
-                qb = QueryBuilderClause.NewGroupClause();
-                qb.Description = STR_InactiveCurrentOrg;
-                qb.SavedBy = STR_System;
-                qb.AddNewClause(QueryType.InactiveCurrentOrg, CompareType.Equal, "1,T");
-                QueryBuilderClauses.InsertOnSubmit(qb);
-                SubmitChanges();
-            }
-            return qb;
-        }
-        public QueryBuilderClause QueryBuilderProspectCurrentOrg()
-        {
-            const string STR_ProspectCurrentOrg = "ProspectCurrentOrg";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
-                && c.Description == STR_ProspectCurrentOrg);
-            if (qb == null)
-            {
-                qb = QueryBuilderClause.NewGroupClause();
-                qb.Description = STR_ProspectCurrentOrg;
-                qb.SavedBy = STR_System;
-                qb.AddNewClause(QueryType.ProspectCurrentOrg, CompareType.Equal, "1,T");
-                QueryBuilderClauses.InsertOnSubmit(qb);
-                SubmitChanges();
-            }
-            return qb;
-        }
-        public QueryBuilderClause QueryBuilderPendingCurrentOrg()
-        {
-            const string STR_PendingCurrentOrg = "PendingCurrentOrg";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
-                && c.Description == STR_PendingCurrentOrg);
-            if (qb == null)
-            {
-                qb = QueryBuilderClause.NewGroupClause();
-                qb.Description = STR_PendingCurrentOrg;
-                qb.SavedBy = STR_System;
-                qb.AddNewClause(QueryType.PendingCurrentOrg, CompareType.Equal, "1,T");
-                QueryBuilderClauses.InsertOnSubmit(qb);
-                SubmitChanges();
-            }
-            return qb;
-        }
-        public QueryBuilderClause QueryBuilderPreviousCurrentOrg()
-        {
-            const string STR_PreviousCurrentOrg = "PreviousCurrentOrg";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
-                && c.Description == STR_PreviousCurrentOrg);
-            if (qb == null)
-            {
-                qb = QueryBuilderClause.NewGroupClause();
-                qb.Description = STR_PreviousCurrentOrg;
-                qb.SavedBy = STR_System;
-                qb.AddNewClause(QueryType.PreviousCurrentOrg, CompareType.Equal, "1,T");
-                QueryBuilderClauses.InsertOnSubmit(qb);
-                SubmitChanges();
-            }
-            return qb;
-        }
-        public QueryBuilderClause QueryBuilderVisitedCurrentOrg()
-        {
-            const string STR_VisitedCurrentOrg = "VisitedCurrentOrg";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
-                && c.Description == STR_VisitedCurrentOrg);
-            if (qb == null)
-            {
-                qb = QueryBuilderClause.NewGroupClause();
-                qb.Description = STR_VisitedCurrentOrg;
-                qb.SavedBy = STR_System;
-                qb.AddNewClause(QueryType.VisitedCurrentOrg, CompareType.Equal, "1,T");
-                QueryBuilderClauses.InsertOnSubmit(qb);
-                SubmitChanges();
-            }
-            return qb;
-        }
-        public QueryBuilderClause QueryBuilderIsCurrentPerson()
-        {
-            const string STR_IsCurrentPerson = "IsCurrentPerson";
-            var qb = QueryBuilderClauses.FirstOrDefault(c => c.SavedBy == STR_System
-                && c.Description == STR_IsCurrentPerson);
-            if (qb == null)
-            {
-                qb = QueryBuilderClause.NewGroupClause();
-                qb.Description = STR_IsCurrentPerson;
-                qb.SavedBy = STR_System;
-                qb.AddNewClause(QueryType.IsCurrentPerson, CompareType.Equal, "1,T");
-                QueryBuilderClauses.InsertOnSubmit(qb);
-                SubmitChanges();
-            }
-            return qb;
         }
         public void DeleteQueryBuilderClauseOnSubmit(QueryBuilderClause qb)
         {
@@ -487,13 +283,9 @@ namespace CmsData
                 TagPeople.DeleteOnSubmit(t);
             SubmitChanges();
         }
-        public Tag PopulateSpecialTag(object QueryId, int TagTypeId)
+        public Tag PopulateSpecialTag(Guid QueryId, int TagTypeId)
         {
-            IQueryable<Person> q;
-            if(QueryId is Guid)
-                q = PeopleQuery((Guid)QueryId);
-            else
-                q = PeopleQuery((int)QueryId);
+            var q = PeopleQuery(QueryId);
             return PopulateSpecialTag(q, TagTypeId);
         }
         public Tag PopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
@@ -1036,7 +828,7 @@ namespace CmsData
             }
             else
             {
-                p = new Preference {UserId = id, PreferenceX = pref, ValueX = value.ToString()};
+                p = new Preference { UserId = id, PreferenceX = pref, ValueX = value.ToString() };
                 Preferences.InsertOnSubmit(p);
             }
             SubmitChanges();
@@ -1199,18 +991,18 @@ namespace CmsData
         }
         public Content Content(string name)
         {
-            return Contents.SingleOrDefault(c => c.Name == name);
+            return Contents.FirstOrDefault(c => c.Name == name);
         }
         public string Content(string name, string def)
         {
-            var content = Contents.SingleOrDefault(c => c.Name == name);
+            var content = Contents.FirstOrDefault(c => c.Name == name);
             if (content != null)
                 return content.Body;
             return def;
         }
         public string Content2(string name, string def, int ContentTypeId)
         {
-            var c = Contents.SingleOrDefault(cc => cc.Name == name);
+            var c = Contents.FirstOrDefault(cc => cc.Name == name);
             if (c == null)
             {
                 c = new Content()
@@ -1244,7 +1036,7 @@ namespace CmsData
             if (c == null)
             {
                 var max = 10;
-                if(Campus.Any())
+                if (Campus.Any())
                     max = Campus.Max(mm => mm.Id) + 10;
                 c = new Campu() { Id = max, Description = name, Code = name.Truncate(20) };
                 Campus.InsertOnSubmit(c);
@@ -1303,24 +1095,18 @@ namespace CmsData
         public int ActiveRecords()
         {
             const string name = "ActiveRecords";
-            var qb = Queries.FirstOrDefault(c => c.Ispublic && c.Name == name && c.Owner == "public");
-            Condition cc;
-            if (qb == null)
-            {
-                cc = ScratchPadCondition();
-                cc.Reset(this);
-                cc.SetComparisonType(CompareType.AnyTrue);
-
-                var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.GreaterEqual, "1");
-                clause.Days = 365;
-                clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
-                clause.Days = 365;
-                cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
-                cc.SaveAs(this, name, false);
-                qb = cc.justloadedquery;
-            }
-            else
-                cc = qb.ToClause();
+            var qb = Queries.FirstOrDefault(c => c.Name == name && c.Owner == "public");
+            Condition cc = qb == null ? ScratchPadCondition() : qb.ToClause();
+            cc.Reset(this);
+            cc.SetComparisonType(CompareType.AnyTrue);
+            var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.GreaterEqual, "1");
+            clause.Days = 365;
+            clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
+            clause.Days = 365;
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            qb = cc.justloadedquery;
+            cc.Description = name;
+            cc.Save(this, owner: "public");
             FromActiveRecords = true;
             var n = PeopleQuery(cc.Id).Count();
             FromActiveRecords = false;

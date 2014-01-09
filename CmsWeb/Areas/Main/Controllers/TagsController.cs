@@ -66,15 +66,12 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         private void InitExportToolbar()
         {
-            object qid = ViewExtensions2.TestSb2()
-                ? (object)DbUtil.Db.QueryHasCurrentTag().QueryId
-                : DbUtil.Db.QueryBuilderHasCurrentTag().QueryId;
-
-            ViewData["queryid"] = qid;
-            ViewData["TagAction"] = "/Tags/TagAll/{0}".Fmt(qid);
-            ViewData["UnTagAction"] = "/Tags/UnTagAll/{0}".Fmt(qid);
-            ViewData["AddContact"] = "/Tags/AddContact/" + qid;
-            ViewData["AddTasks"] = "/Tags/AddTasks/" + qid;
+            var qid = DbUtil.Db.QueryHasCurrentTag().QueryId;
+            ViewBag.queryid = qid;
+            ViewBag.TagAction = "/Tags/TagAll/{0}".Fmt(qid);
+            ViewBag.UnTagAction = "/Tags/UnTagAll/{0}".Fmt(qid);
+            ViewBag.AddContact = "/Tags/AddContact/" + qid;
+            ViewBag.AddTasks = "/Tags/AddTasks/" + qid;
         }
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult ToggleTag(int id)
@@ -110,33 +107,6 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.UnTagAll(q);
             return Content("Add");
         }
-//        [HttpPost]
-//        public ContentResult TagAll(int id, string tagname, bool? cleartagfirst)
-//        {
-//            if (!tagname.HasValue())
-//                return Content("error: no tag name");
-//            DbUtil.Db.SetNoLock();
-//            var q = DbUtil.Db.PeopleQuery(id);
-//            if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
-//            {
-//                DbUtil.Db.TagAll(q);
-//                return Content("Remove");
-//            }
-//            var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
-//            if (cleartagfirst ?? false)
-//                DbUtil.Db.ClearTag(tag);
-//            DbUtil.Db.TagAll(q, tag);
-//            Util2.CurrentTag = tagname;
-//            DbUtil.Db.TagCurrent();
-//            return Content("Manage");
-//        }
-//        [HttpPost]
-//        public ContentResult UnTagAll(int id)
-//        {
-//            var q = DbUtil.Db.PeopleQuery(id);
-//            DbUtil.Db.UnTagAll(q);
-//            return Content("Add");
-//        }
         [HttpPost]
         public ContentResult ClearTag()
         {
@@ -145,17 +115,15 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content("ok");
         }
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult AddContact(int id)
+        public ActionResult AddContact(Guid id)
         {
             var cid = CmsData.Contact.AddContact(id);
             return Content("/Contact/" + cid);
         }
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult AddTasks(int id)
+        public ActionResult AddTasks(Guid id)
         {
-            var c = new ContentResult();
-            c.Content = Task.AddTasks(id).ToString();
-            return c;
+            return Content(Task.AddTasks(id).ToString());
         }
         public ActionResult SharedTags()
         {

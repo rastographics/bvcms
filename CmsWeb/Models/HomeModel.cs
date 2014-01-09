@@ -25,11 +25,13 @@ namespace CmsWeb.Models
 {
     public class HomeModel
     {
+        public string UserUrl { get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person/Index/") + Util.UserPeopleId; }}
         public class BirthdayInfo
         {
             public DateTime Birthday { get; set; }
             public string Name { get; set; }
             public int PeopleId { get; set; }
+            public string Url { get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person/Index/") + PeopleId; }}
         }
         public IEnumerable<BirthdayInfo> Birthdays()
         {
@@ -250,25 +252,17 @@ namespace CmsWeb.Models
             if (up == null)
                 return new List<MySavedQueryInfo>();
 
-            if (ViewExtensions2.TestSb2())
-                return from c in DbUtil.Db.Queries
-                       where c.Owner == Util.UserName
-                       where c.Name != Util.ScratchPad2
-                       orderby c.Name
-                       select new MySavedQueryInfo
-                       {
-                           Name = c.Name,
-                           Url = "/QueryBuilder2/Main/" + c.QueryId
-                       };
-            return from c in DbUtil.Db.QueryBuilderClauses
-                   where c.SavedBy == Util.UserName
-                   where c.GroupId == null && c.Field == "Group" && c.Clauses.Any()
-                   where !c.Description.Contains("scratchpad")
-                   orderby c.Description
+            var url = ViewExtensions2.UseNewLook()
+                ? "/Query/"
+                : "/QueryBuilder2/Main/";
+            return from c in DbUtil.Db.Queries
+                   where c.Owner == Util.UserName
+                   where c.Name != Util.ScratchPad2
+                   orderby c.Name
                    select new MySavedQueryInfo
                    {
-                       Name = c.Description,
-                       Url = "/QueryBuilder/Main/" + c.QueryId
+                       Name = c.Name,
+                       Url = url + c.QueryId
                    };
         }
         public class TaskInfo
@@ -277,6 +271,7 @@ namespace CmsWeb.Models
             public int PeopleId { get; set; }
             public string Who { get; set; }
             public string Description { get; set; }
+            public string Url { get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person/Index/") + PeopleId; } }
         }
         public IEnumerable<TaskInfo> Tasks()
         {
@@ -443,7 +438,7 @@ namespace CmsWeb.Models
                 //new SearchInfo22() { url = "/PeopleSearch?name=%QUERY", line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
-                new SearchInfo22() { url = "/Query", line1 = "Advanced Search" }, 
+                new SearchInfo22() { url = "/Query", line1 = "Search Builder" }, 
                 new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" }, 
                 new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search", 
                     addmargin = true }, 
@@ -546,7 +541,7 @@ namespace CmsWeb.Models
             list.AddRange(new List<SearchInfo22>() 
             {
                 new SearchInfo22() { url = "/PeopleSearch?name=%QUERY", line1 = "Find Person"  }, 
-                new SearchInfo22() { url = "/Query", line1 = "Advanced Search Builder" }, 
+                new SearchInfo22() { url = "/Query", line1 = "Search Builder" }, 
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
             });
             return list;

@@ -37,8 +37,8 @@ namespace CmsWeb.Areas.Main.Models.Report
         private DateTime dt;
         private PdfContentByte dc;
 
-        private object qid;
-        public FamilyResult(object id)
+        private Guid qid;
+        public FamilyResult(Guid id)
         {
             qid = id;
         }
@@ -69,51 +69,46 @@ namespace CmsWeb.Areas.Main.Models.Report
             t.DefaultCell.BorderColorTop = BaseColor.BLACK;
             t.DefaultCell.BorderWidthTop = 2.0f;
 
-            if (qid != null) // print using a query
+            var q = DbUtil.Db.PeopleQuery(qid);
+            var q2 = from p in q
+                     let person = p
+                     group p by p.FamilyId into g
+                     let hhname = g.First().Family.HeadOfHousehold.Name2
+                     orderby hhname
+                     select new
+                     {
+                         members = from m in g.First().Family.People
+                                   where !m.DeceasedDate.HasValue
+                                   select new
+                                   {
+                                       order = m.PositionInFamilyId * 1000 + (m.PositionInFamilyId == 10 ? m.GenderId : 1000 - (m.Age ?? 0)),
+                                       //                                           order = g.Any(p => p.PeopleId == m.PeopleId) ? 1 :
+                                       //                                                 m.PositionInFamilyId,
+                                       person = m
+                                   }
+                     };
+            foreach (var f in q2)
             {
-                var q = DbUtil.Db.PeopleQuery(qid);
-                var q2 = from p in q
-                         let person = p
-                         group p by p.FamilyId into g
-                         let hhname = g.First().Family.HeadOfHousehold.Name2
-                         orderby hhname
-                         select new
-                         {
-                             members = from m in g.First().Family.People
-                                       where !m.DeceasedDate.HasValue
-                                       select new
-                                       {
-                                           order = m.PositionInFamilyId * 1000 + (m.PositionInFamilyId == 10 ? m.GenderId : 1000 - (m.Age ?? 0)),
-//                                           order = g.Any(p => p.PeopleId == m.PeopleId) ? 1 :
-//                                                 m.PositionInFamilyId,
-                                           person = m
-                                       }
-                         };
-                foreach (var f in q2)
+                var ft = new PdfPTable(HeaderWids);
+                ft.DefaultCell.SetLeading(2.0f, 1f);
+                ft.DefaultCell.Border = PdfPCell.NO_BORDER;
+                ft.DefaultCell.Padding = 5;
+                int fn = 1;
+                var color = BaseColor.BLACK;
+                foreach (var p in f.members.OrderBy(m => m.order))
                 {
-                    var ft = new PdfPTable(HeaderWids);
-                    ft.DefaultCell.SetLeading(2.0f, 1f);
-                    ft.DefaultCell.Border = PdfPCell.NO_BORDER;
-                    ft.DefaultCell.Padding = 5;
-                    int fn = 1;
-                    var color = BaseColor.BLACK;
-                    foreach (var p in f.members.OrderBy(m => m.order))
-                    {
-                        if (color == BaseColor.WHITE)
-                            color = new GrayColor(240);
-                        else
-                            color = BaseColor.WHITE;
-                        Debug.WriteLine("{0:##}: {1}".Fmt(p.order, p.person.Name));
-                        AddRow(ft, p.person, fn, color);
-                        fn++;
-                    }
-                    t.AddCell(ft);
+                    if (color == BaseColor.WHITE)
+                        color = new GrayColor(240);
+                    else
+                        color = BaseColor.WHITE;
+                    Debug.WriteLine("{0:##}: {1}".Fmt(p.order, p.person.Name));
+                    AddRow(ft, p.person, fn, color);
+                    fn++;
                 }
-                if (t.Rows.Count > 1)
-                    doc.Add(t);
-                else
-                    doc.Add(new Phrase("no data"));
+                t.AddCell(ft);
             }
+            if (t.Rows.Count > 1)
+                doc.Add(t);
             else
                 doc.Add(new Phrase("no data"));
             pageEvents.EndPageSet();

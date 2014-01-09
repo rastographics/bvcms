@@ -7,33 +7,6 @@
         ev.preventDefault();
         $.post("/HideTip", { tip: $(this).data("hidetip") });
     });
-    //	$('#AddDialog').dialog({
-    //		bgiframe: true,
-    //		autoOpen: false,
-    //		width: 750,
-    //		height: 700,
-    //		modal: true,
-    //		overlay: {
-    //			opacity: 0.5,
-    //			background: "black"
-    //		}, close: function () {
-    //			$('iframe', this).attr("src", "");
-    //		}
-    //	});
-    //	$('#addpeople').click(function (e) {
-    //		e.preventDefault();
-    //		var d = $('#AddDialog');
-    //		$('iframe', d).attr("src", "/SearchAdd?type=addpeople");
-    //		d.dialog("option", "title", "Add People");
-    //		d.dialog("open");
-    //	});
-    //	$('#addorg').click(function (e) {
-    //		e.preventDefault();
-    //		var d = $('#AddDialog');
-    //		$('iframe', d).attr("src", "/AddOrganization");
-    //		d.dialog("option", "title", "Add Organization");
-    //		d.dialog("open");
-    //	});
     $('.warntip').tooltip({
         delay: 150,
         showBody: "|",

@@ -237,6 +237,7 @@ namespace CmsWeb.Areas.People.Models
             Id = id;
             if (person == null)
                 return;
+            person.SendEmailAddress1 = person.SendEmailAddress1 ?? true; // set sendemailaddress1 to either true or false, null is not allowed, default is true
             this.CopyPropertiesFrom(person);
         }
         public void UpdatePerson()

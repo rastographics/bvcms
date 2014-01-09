@@ -2,13 +2,19 @@
 @using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Models.TaskDetail
-@{var link=Server.UrlEncode(DbUtil.Db.CmsHost + "/Task/List/" + Model.Id + "#detail#select"); }
-<td colspan="7"><a name="detail"></a>
+@{var link = Server.UrlEncode(DbUtil.Db.CmsHost + "/Task/List/" + Model.Id + "#detail#select"); }
+<td colspan="7">
+    <a name="detail"></a>
     <table class="Design2" style="border: 3px solid black">
-    <tr><td class="right" colspan="2"><a href="#" class="deselect">
-        <img style="border:0" src="/Content/styles/images/closek.png" /></a></td></tr>
         <tr>
-   
+            <td class="right" colspan="2">
+                <a href="#" class="deselect">
+                    <img style="border:0" src="/Content/styles/images/closek.png" />
+                </a>
+            </td>
+        </tr>
+        <tr>
+
             <th>Task</th>
             <td>
                 @Html.Hidden("TaskId", Model.Id)
@@ -25,23 +31,37 @@
             <th>Owner</th>
             <td>
                 <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link">@Model.Owner</a>
-@if (Model.IsOwner)
-{ 
-                <a id="changeowner" href="/SearchAdd/Index/@Model.Id?type=taskowner">(transfer)</a>
-} 
+                @if (Model.IsOwner)
+                {
+                    if (ViewExtensions2.UseNewLook())
+                    {
+                        <a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd">(transfer)</a>
+                    }
+                    else
+                    {
+                        <a id="changeowner" href="/SearchAdd/Index/@Model.Id?type=taskowner">(transfer)</a>
+                    }
+                }
             </td>
         </tr>
         <tr>
             <th>Delegated To:</th>
             <td>
-@if (Model.CoOwnerId.HasValue) 
-{ 
-                <a href="mailto:@Model.CoOwnerEmail">@Model.CoOwner</a>
-} 
-@if (Model.IsOwner) 
-{ 
-                <a id="delegate" href="/SearchAdd/Index/@Model.Id?type=taskdelegate">@Model.ChangeCoOwner</a>
-}
+                @if (Model.CoOwnerId.HasValue)
+                {
+                    <a href="mailto:@Model.CoOwnerEmail">@Model.CoOwner</a>
+                }
+                @if (Model.IsOwner)
+                {
+                    if (ViewExtensions2.UseNewLook())
+                    {
+                        <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">@Model.ChangeCoOwner</a>
+                    }
+                    else
+                    {
+                        <a id="delegate" href="/SearchAdd/Index/@Model.Id?type=taskdelegate">@Model.ChangeCoOwner</a>
+                    }
+                }
             </td>
         </tr>
         <tr>
@@ -52,72 +72,80 @@
             <th>Status:</th>
             <td>
                 <span class="edit-select" vid="Status" canedit="@Model.IsAnOwner">@Model.Status</span>
-@if (Model.CanComplete)
-{ 
-                <a href="#" class="complete" task="@Model.Id" style="font-size:120%">(complete)</a>
-}
-@if (Model.CanAccept)
-{ 
-                <a href="#" class="accept" task="@Model.Id" style="font-size:120%">(accept)</a>
-}
-@if (Model.ShowCompleted)
-{ 
-                <span style="font-size: smaller; color: Gray">@Model.CompletedOn.ToString2("f")</span>
-}
+                @if (Model.CanComplete)
+                {
+                    <a href="#" class="complete" task="@Model.Id" style="font-size:120%">(complete)</a>
+                }
+                @if (Model.CanAccept)
+                {
+                    <a href="#" class="accept" task="@Model.Id" style="font-size:120%">(accept)</a>
+                }
+                @if (Model.ShowCompleted)
+                {
+                    <span style="font-size: smaller; color: Gray">@Model.CompletedOn.ToString2("f")</span>
+                }
             </td>
         </tr>
-@if (Model.ShowLocation)
-{ 
-        <tr>
-            <th>Project:</th>
-            <td>@Model.Project
-            </td>
-        </tr>
-} 
+        @if (Model.ShowLocation)
+        {
+            <tr>
+                <th>Project:</th>
+                <td>
+                    @Model.Project
+                </td>
+            </tr>
+        }
         <tr style='font-size: larger'>
             <th>Regarding Person:</th>
             <td style="border: 1px solid grey">
-@if (Model.WhoId.HasValue)
-{ 
-                <a href="/Person/Index/@Model.WhoId">@Model.Who</a>
-} 
-@if (Model.IsAnOwner)
-{ 
-                <a id="changeabout" href="/SearchAdd/Index/@Model.Id?type=taskabout">@Model.ChangeWho</a>
-}
-@if (Model.WhoId.HasValue)
-{ 
-                <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
-                <div>
-                    <a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a>
-                    | <a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">driving directions</a><br />
-                    <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
-                    | @Model.WhoPhone 
-                </div>
-}
+                @if (Model.WhoId.HasValue)
+                {
+                    <a href="@Model.PersonUrl">@Model.Who</a>
+                }
+                @if (Model.IsAnOwner)
+                {
+                    if (ViewExtensions2.UseNewLook())
+                    {
+                        <a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd">@Model.ChangeWho</a>
+                    }
+                    else
+                    {
+                        <a id="changeabout" href="/SearchAdd/Index/@Model.Id?type=taskabout">@Model.ChangeWho</a>
+                    }
+                }
+                @if (Model.WhoId.HasValue)
+                {
+                    <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
+                    <div>
+                        <a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a>
+                        | <a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">driving directions</a><br />
+                        <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
+                        | @Model.WhoPhone
+                    </div>
+                }
             </td>
         </tr>
-@if (Model.ShowLocation)
-{ 
-        <tr>
-            <th>Location:</th>
-            <td>
-                <span class=".location">@Model.Location</span>
-    @if (Model.IsAnOwner)
-    { 
-                <div id='SetLocation'></div>
-    } 
-            </td>
-        </tr>
-} 
+        @if (Model.ShowLocation)
+        {
+            <tr>
+                <th>Location:</th>
+                <td>
+                    <span class=".location">@Model.Location</span>
+                    @if (Model.IsAnOwner)
+                    {
+                        <div id='SetLocation'></div>
+                    }
+                </td>
+            </tr>
+        }
         <tr>
             <th>Completed Contact:</th>
             <td>
-                <a href="/Contact/@Model.CompletedContactId">@Model.CompletedContact.FormatDate()</a>
-@if(Model.CanCompleteWithContact) 
-{ 
-                <a href="#" class="completewcontact">(complete)</a>
-} 
+                <a href="@Model.ContactUrl">@Model.CompletedContact.FormatDate()</a>
+                @if (Model.CanCompleteWithContact)
+                {
+                    <a href="#" class="completewcontact">(complete)</a>
+                }
             </td>
         </tr>
         <tr>
@@ -128,15 +156,13 @@
                 </div>
             </td>
         </tr>
-@if(Model.IsAnOwner)
-{ 
-        <tr>
-            <td colspan="2" class="center">
-                <input type="button" value="Edit" class="edit" task="@Model.Id" />
-            </td>
-        </tr>
-} 
+        @if (Model.IsAnOwner)
+        {
+            <tr>
+                <td colspan="2" class="center">
+                    <input type="button" value="Edit" class="edit" task="@Model.Id" />
+                </td>
+            </tr>
+        }
     </table>
 </td>
-
-

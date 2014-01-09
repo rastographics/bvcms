@@ -150,15 +150,16 @@ namespace CmsData
             }
             return s;
         }
-        public static string StandardExtraValues2()
+        public static string StandardExtraValues2(bool forceread = false)
         {
+            if(forceread)
+                return Db.ContentText("StandardExtraValues2", "<Views />");
             var s = HttpRuntime.Cache[Db.Host + "StandardExtraValues2"] as string;
-            if (s == null)
-            {
-                s = Db.ContentText("StandardExtraValues2", "<Views />");
-                HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues2", s, null,
-                     DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
-            }
+            if (s != null) 
+                return s;
+            s = Db.ContentText("StandardExtraValues2", "<Views />");
+            HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues2", s, null,
+                DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
             return s;
         }
         public static void SetStandardExtraValues(string xml)

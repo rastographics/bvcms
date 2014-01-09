@@ -6,9 +6,9 @@ $(function () {
             $.bootstrapGrowl("update first");
             return false;
         }
-        bootbox.confirm("Remove this person?", function(confirmed) {
+        bootbox.confirm("Remove this person?", function (confirmed) {
             if (!confirmed) return;
-            $.post(url, {}, function(ret) {
+            $.post(url, {}, function (ret) {
                 window.location.reload(true);
             });
         });
@@ -23,7 +23,7 @@ $(function () {
         var f = $(this).closest("form");
         var url = this.href;
         f.attr("action", url);
-        bootbox.confirm("Add new task for person?", function(confirmed) {
+        bootbox.confirm("Add new task for person?", function (confirmed) {
             if (!confirmed) return;
             f.attr("action", url);
             f.submit();
@@ -47,7 +47,7 @@ $(function () {
         }
         var url = this.href;
         var f = $(this).closest("form");
-        bootbox.confirm("Add new contact for team?", function(confirmed) {
+        bootbox.confirm("Add new contact for team?", function (confirmed) {
             if (!confirmed) return;
             f.attr("action", url);
             f.submit();
@@ -62,32 +62,21 @@ $(function () {
         }
         var url = this.href;
         var f = $(this).closest("form");
-        bootbox.confirm("Add new task for person?", function(confirmed) {
+        bootbox.confirm("Add new task for person?", function (confirmed) {
             if (!confirmed) return;
             f.attr("action", url);
             f.submit();
         });
         return false;
     });
-    $("#search-add a.commit").live("click", function (ev) {
-        ev.preventDefault();
-        var f = $(this).closest("form");
-        var q = f.serialize();
-        var url = this.href;
-        $.post(url, q, function (ret) {
-            f.modal("hide");
-            if (ret.message) {
-                alert(ret.message);
-            } else
-                switch (ret.from) {
-                    case 'Contactor':
-                        $("#contactors").load('/Contact2/Contactors/' + ret.cid, {});
-                        break;
-                    case 'Contactee':
-                        $("#contactees").load('/Contact2/Contactees/' + ret.cid, {});
-                        break;
-                }
-        });
-        return false;
-    });
 });
+function AddSelected(ret) {
+    switch (ret.from) {
+        case 'Contactor':
+            $("#contactors").load('/Contact2/Contactors/' + ret.cid, {});
+            break;
+        case 'Contactee':
+            $("#contactees").load('/Contact2/Contactees/' + ret.cid, {});
+            break;
+    }
+}

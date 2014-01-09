@@ -23,6 +23,26 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new ExtraValueExcelResult(id);
         }
 
+        [Authorize(Roles = "Finance")]
+        [POST("Export2/Contributions/{id}")]
+        public ActionResult Contributions(string id, ContributionsExcelResult m)
+        {
+            m.type = id;
+            return m;
+        }
+        [Authorize(Roles = "Finance")]
+        [POST("Export2/GLExport")]
+        public ActionResult GLExport(GLExportResult m)
+        {
+            return m;
+        }
+
+        [GET("Export2/Excel/Groups")]
+        public ActionResult ExcelGroups()
+        {
+            return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
+        }
+
         [GET("Export2/Excel/{id:guid}")]
         [GET("Export2/Excel/{format}/{id:guid}")]
         public ActionResult Excel(Guid id, string format, bool? titles)

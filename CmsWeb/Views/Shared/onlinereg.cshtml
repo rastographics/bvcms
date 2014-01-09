@@ -6,7 +6,7 @@
 @Html.Raw((string)ViewData["bottom"])
 @ViewExtensions2.jQuery()
 @ViewExtensions2.jQueryUI()
-@Fingerprint.Script("/Scripts/bundle/onlineregister.js")
+@Fingerprint.Script("/Scripts/bundle.onlineregister.js")
 @RenderSection("scripts", false)
 }
 else
@@ -16,9 +16,9 @@ else
 <head>
 <title>Online Registration</title>
 @Html.Raw(Util.PickFirst((string)ViewData["header"], @"
-<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
-<link href='/Content/styles/jquery-ui-1.10.0.custom.css' rel='stylesheet' type='text/css' />
-<link href='/Content/styles/onlinereg.css?v=7' rel='stylesheet' type='text/css' />
+<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />" +
+ViewExtensions2.jQueryUICss() +
+@"<link href='/Content/styles/onlinereg.css?v=7' rel='stylesheet' type='text/css' />
 "))
 @RenderSection("head", false)
 </head>
@@ -27,7 +27,8 @@ else
 @RenderBody()
 @Html.Raw((string)ViewData["bottom"])
 @ViewExtensions2.jQuery()
-@Fingerprint.Script("/Scripts/bundle/onlineregister.js")
+@ViewExtensions2.jQueryUI()
+@Fingerprint.Script("/Scripts/bundle.onlineregister.js")
 @RenderSection("scripts", false)
 </body>
 </html>

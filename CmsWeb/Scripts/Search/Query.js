@@ -275,14 +275,14 @@
         url += (url.match(/\?/) ? "&" : "?") + data;
         window.location = url;
     };
-    $('a.help').live("click", function (event) {
-        event.preventDefault();
-        var d = $('#QueryConditionHelp');
-        if (this.href.endsWith('-'))
-            $('iframe', d).attr("src", this.href + $("#ConditionName").val());
-        else
-            $('iframe', d).attr("src", this.href);
-        d.dialog("open");
+    $("a.help").live("click", function (ev) {
+        ev.preventDefault();
+        var href = "//www.bvcms.com/DocDialog/" + $(this).data("name");
+        if (href.endsWith('-'))
+            href = href + $("#ConditionName").val();
+        $("#helpcontent iframe").attr("src", href).ready(function() {
+            $("#QueryConditionHelp").modal("show");
+        });
     });
     if ($("#NewSearchId").val()) {
         liedit = $("li[data-qid='" + $("#NewSearchId").val() + "']");

@@ -3,24 +3,18 @@
 <head>
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700' rel='stylesheet' type='text/css'>
-    @Fingerprint.Css("/content/css/bundle-new2css.css")
-    @Fingerprint.Css("/content/styles/bundle-css.css")
-    <link href="/Content/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.NewStyles()
+    @ViewExtensions2.jQueryUICss()
+    @Fingerprint.Css("/content/styles/siteblue.css")
+    @ViewExtensions2.OldStyles()
+    @ViewExtensions2.FontAwesome()
     @RenderSection("head", required: false)
     @Fingerprint.Css("/content/css/Fixups2.css")
-
-    <style type="text/css">
-        @{ var bkcolor = DbUtil.Db.Setting("HeaderBackground", ""); }
-        @if (bkcolor.HasValue())
-        {
-            @:#header { background-color: @bkcolor; }
-        }
-    </style>
     @ViewExtensions2.jQuery()
     @ViewExtensions2.Bootstrap()
     @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/Bundle/main2c.js")
+    @Fingerprint.Script("/Scripts/bundle.main2c.js")
     @Html.Partial("DatePickerDefaults")
     <script>
         $.dtoptions = { format: '@Util.jQueryDateFormat2' };
@@ -38,7 +32,6 @@
     @Html.Partial("Footer")
     @Html.Partial("Dialogs")
     @RenderSection("PopupsPlaceholder", required: false)
-    @Html.Partial("Support")
     <img src="/Content/images/ajax-loader.gif" id="loading-indicator" style="display: none" />
 </body>
 </html>

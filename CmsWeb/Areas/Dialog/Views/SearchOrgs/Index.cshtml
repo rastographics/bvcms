@@ -4,11 +4,13 @@
 <html>
 <head>
 <title>Index</title>
-    @Fingerprint.Css("/content/styles/bundle-css.css")
+    @ViewExtensions2.jQueryUICss()
+    @(ViewExtensions2.UseNewLook() ? Fingerprint.Css("/content/styles/siteblue.css") : Fingerprint.Css("/content/styles/site.css"))
+    @ViewExtensions2.OldStyles()
     <link href="/Content/styles/style2.css" rel="stylesheet" type="text/css" />
     @ViewExtensions2.jQuery()
     @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/Bundle/main.js")
+    @Fingerprint.Script("/Scripts/bundle.main.js")
     @Fingerprint.Script("/Scripts/Search/SearchOrgs.js")
 </head>
 <body>

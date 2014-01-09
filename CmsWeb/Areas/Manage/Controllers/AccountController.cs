@@ -87,12 +87,6 @@ CKEditorFuncNum, baseurl + fn, error));
             if (!DbUtil.DatabaseExists())
                 return Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
 
-            if (!Util2.CheckedLoadQueries)
-            {
-                Util2.CheckedLoadQueries = true;
-                DbUtil.Db.CheckLoadQueries();
-            }
-
             if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
                 return Content("Site is disabled, contact {0} for help".Fmt(Util.SendErrorsTo()[0].Address));
 
