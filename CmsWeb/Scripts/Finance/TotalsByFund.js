@@ -15,25 +15,25 @@
 	$("#exportdonordetails").click(function (ev) {
 		ev.preventDefault();
 		var f = $(this).closest('form');
-		f.attr("action", "/Export/Contributions/donordetails");
+		f.attr("action", "/Export2/Contributions/donordetails");
 	    f.submit();
 	});
 	$("#exportdonorfundtotals").click(function (ev) {
 		ev.preventDefault();
 		var f = $(this).closest('form');
-		f.attr("action", "/Export/Contributions/donorfundtotals");
+		f.attr("action", "/Export2/Contributions/donorfundtotals");
 	    f.submit();
 	});
 	$("#exportdonortotals").click(function (ev) {
 		ev.preventDefault();
 		var f = $(this).closest('form');
-		f.attr("action", "/Export/Contributions/donortotals");
+		f.attr("action", "/Export2/Contributions/donortotals");
 	    f.submit();
 	});
 	$("#glextract").click(function (ev) {
 		ev.preventDefault();
 		var f = $(this).closest('form');
-		f.attr("action", "/Export/GLExport");
+		f.attr("action", "/Export2/GLExport");
 	    f.submit();
 	});
     $(document).keydown(function(e) {

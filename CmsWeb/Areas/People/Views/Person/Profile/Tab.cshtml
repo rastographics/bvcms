@@ -1,18 +1,34 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
+@{
+    var canviewmemberdocs = User.IsInRole("Membership") || User.IsInRole("Admin");
+}
 <ul class="nav nav-tabs subnav" data-tabparent="profile">
     <li><a href="#memberstatus" data-toggle="tab" class="ajax">Member</a></li>
-    <li><a href="#memberdocs" data-toggle="tab" class="ajax">Documents</a></li>
-    <li><a href="#comments" data-toggle="tab" class="ajax">Comments</a></li>
-    <li><a href="#extravalues" data-toggle="tab" class="ajax">Extra Values</a></li>
-    <li><a href="#familyextravalues" data-toggle="tab" class="ajax">FamilyExtra Values</a></li>
-    <li><a href="#entry" data-toggle="tab" class="ajax">Entry</a></li>
+    @if (User.IsInRole("Access"))
+    {
+        if (canviewmemberdocs)
+        {
+            <li><a href="#memberdocs" data-toggle="tab" class="ajax">Documents</a></li>
+        }
+        <li><a href="#comments" data-toggle="tab" class="ajax">Comments</a></li>
+        <li><a href="#extravalues" data-toggle="tab" class="ajax">Extra Values</a></li>
+        <li><a href="#familyextravalues" data-toggle="tab" class="ajax">FamilyExtra Values</a></li>
+        <li><a href="#entry" data-toggle="tab" class="ajax">Entry</a></li>
+    }
+    
 </ul> 
 <div class="tab-content">
     <div class="tab-pane" id="memberstatus" data-link="/Person2/Membership/@Model.PeopleId"></div>
-    <div class="tab-pane" id="memberdocs" data-link="/Person2/MemberDocuments/@Model.PeopleId" data-init="MemberDocsEditable"></div>
-    <div class="tab-pane" id="comments" data-link="/Person2/Comments/@Model.PeopleId"></div>
-    <div class="tab-pane" id="extravalues" data-link="/ExtraValue/Display/People/Standard/@Model.PeopleId"></div>
-    <div class="tab-pane" id="familyextravalues" data-link="/ExtraValue/Display/Family/Standard/@Model.FamilyId"></div>
-    <div class="tab-pane" id="entry" data-link="/ExtraValue/Display/People/Entry/@Model.PeopleId"></div>
+    @if (User.IsInRole("Access"))
+    {
+        if (canviewmemberdocs)
+        {
+            <div class="tab-pane" id="memberdocs" data-link="/Person2/MemberDocuments/@Model.PeopleId" data-init="MemberDocsEditable"></div>
+        }
+        <div class="tab-pane" id="comments" data-link="/Person2/Comments/@Model.PeopleId"></div>
+        <div class="tab-pane" id="extravalues" data-link="/ExtraValue/Display/People/Standard/@Model.PeopleId"></div>
+        <div class="tab-pane" id="familyextravalues" data-link="/ExtraValue/Display/Family/Standard/@Model.FamilyId"></div>
+        <div class="tab-pane" id="entry" data-link="/ExtraValue/Display/People/Entry/@Model.PeopleId"></div>
+    }
 </div>
 

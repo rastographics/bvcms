@@ -151,7 +151,15 @@ namespace CmsData
         {
             db.CopySession();
             var parm = Expression.Parameter(typeof(Person), "p");
-            var tree = ExpressionTree(parm, db);
+            Expression tree;
+            try
+            {
+                tree = ExpressionTree(parm, db);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("problem in query:\n" + ToXml(), ex);
+            }
             if (tree == null)
                 tree = CompareConstant(parm, "PeopleId", CompareType.NotEqual, 0);
             if (includeDeceased == false)

@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
                 var t = re.Match(s).Groups[1].Value.Replace("<!--FORM CSS-->", 
                 ViewExtensions2.jQueryUICss() +
-                @"<link href=""/Content/styles/onlinereg.css?v=8"" rel=""stylesheet"" type=""text/css"" />\n"); 
+                "\r\n<link href=\"/Content/styles/onlinereg.css?v=8\" rel=\"stylesheet\" type=\"text/css\" />\r\n"); 
                 ViewData["hasshell"] = true;
                 ViewData["top"] = t;
                 var b = re.Match(s).Groups[2].Value;

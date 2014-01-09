@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -37,6 +38,24 @@ namespace ImageData
             set
             {
                 InternalDb = value;
+            }
+        }
+        public static bool CheckDatabaseExists()
+        {
+            using (var cn = new SqlConnection(Util.GetConnectionString2("master")))
+            {
+                try
+                {
+                    cn.Open();
+                    var cmd = new SqlCommand(
+                            "SELECT CAST(CASE WHEN EXISTS(SELECT NULL FROM sys.databases WHERE name = 'CMSi_"
+                            + Util.Host + "') THEN 1 ELSE 0 END AS BIT)", cn);
+                    return (bool)cmd.ExecuteScalar();
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
         public static void DbDispose()

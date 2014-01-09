@@ -66,7 +66,9 @@ namespace CmsWeb.Controllers
             var qb = DbUtil.Db.ScratchPadCondition();
             qb.Reset(DbUtil.Db);
             qb.Save(DbUtil.Db);
-            return Redirect("/QueryBuilder2/Main");
+            return Redirect(ViewExtensions2.UseNewLook()
+                ? "/Query"
+                : "/QueryBuilder2/Main");
         }
         public ActionResult Test()
         {
@@ -86,6 +88,10 @@ namespace CmsWeb.Controllers
             var name = "VisitNumber-" + id;
             var q = DbUtil.Db.Queries.FirstOrDefault(qq => qq.Owner == "System" && qq.Name == name);
             if(q != null)
+                return Redirect(
+                    ViewExtensions2.UseNewLook()
+                        ? "/Query/" + q.QueryId
+                        : "/QueryBuilder2/Main/" + q.QueryId);
 
             const CompareType comp = CompareType.Equal;
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -115,9 +121,13 @@ namespace CmsWeb.Controllers
                     c.Days = 7;
                     break;
             }
-            cc.Save(DbUtil.Db);
+            cc.Description = name;
+            cc.Save(DbUtil.Db, owner: "System");
             TempData["autorun"] = true;
-            return Redirect("/QueryBuilder2/Main/" + cc.Id);
+            return Redirect(
+                ViewExtensions2.UseNewLook()
+                    ? "/Query/" + cc.Id
+                    : "/QueryBuilder2/Main/" + cc.Id);
         }
         [Authorize(Roles = "Admin")]
         public ActionResult ActiveRecords()

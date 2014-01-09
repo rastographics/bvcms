@@ -373,7 +373,6 @@
     <Compile Include="Areas\Main\Controllers\FamilyController.cs" />
     <Compile Include="Areas\Main\Controllers\TagsController.cs" />
     <Compile Include="Areas\Main\Controllers\EmailController.cs" />
-    <Compile Include="Areas\Main\Controllers\ExportController.cs" />
     <Compile Include="Areas\Manage\Models\VolunteerRequestModel.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\VolSubModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMemberMoveModel.cs" />

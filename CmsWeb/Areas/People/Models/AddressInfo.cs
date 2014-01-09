@@ -120,7 +120,7 @@ namespace CmsWeb.Areas.People.Models
             if (AddressLineTwo.HasValue())
                 sb.Append(", " + AddressLineTwo);
             if(sb.Length > 0)
-                sb.Append(", " + Util.FormatCSZ5(CityName, StateCode.Value, ZipCode));
+                sb.Append(", " + Util.FormatCSZ(CityName, StateCode.Value, ZipCode));
             return sb.ToString();
         }
         public string MapAddrCityStateZip()

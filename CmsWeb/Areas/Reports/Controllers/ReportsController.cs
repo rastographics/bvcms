@@ -40,6 +40,12 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content(ex.Message);
             }
         }
+        [GET("Reports/Attendee/{id}")]
+        public ActionResult Attendee(int id)
+        {
+            return new AttendeeResult(id);
+        }
+
 
         [POST("Reports/AttendanceDetail")]
         public ActionResult AttendanceDetail(string Dt1, string Dt2, OrgSearchModel m)

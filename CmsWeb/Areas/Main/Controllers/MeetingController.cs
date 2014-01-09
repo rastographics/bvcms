@@ -427,9 +427,9 @@ namespace CmsWeb.Areas.Main.Controllers
             cc.Reset(DbUtil.Db);
             cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
             cc.Save(DbUtil.Db);
-            if (ViewExtensions2.UseNewLook())
-                return Redirect("/Query/" + cc.Id);
-            return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
+            return ViewExtensions2.UseNewLook() 
+                ? Redirect("/Query/" + cc.Id) 
+                : Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
         }
         public ActionResult QueryVisitors(int Id)
         {

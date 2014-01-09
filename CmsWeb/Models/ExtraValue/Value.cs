@@ -74,7 +74,7 @@ namespace CmsWeb.Models.ExtraValues
                     source = "/ExtraValue/Codes/{0}?name={1}".Fmt(Model.Table, n);
                 else if (Type == "Bits")
                     source = "/ExtraValue/Bits/{0}/{1}?name={2}".Fmt(Model.Table, Id, n);
-                return source.HasValue() ? "data-source={0}".Fmt(source) : "";
+                return source.HasValue() ? source : "";
             }
         }
         public string EditUrl
@@ -106,13 +106,11 @@ namespace CmsWeb.Models.ExtraValues
         {
             get
             {
-                if (Type == "Code" && Standard && HasValue)
-                    return "data-value={0}".Fmt(this);
                 if (Type == "Bits")
-                    return "data-value={0}".Fmt(Model.ListBitsJson(Name)).Replace('"', '\'');
-                if (Type == "Bit")
-                    return "data-value={0}".Fmt(this);
-                return "";
+                    return Model.ListBitsJson(Name).Replace('"', '\'');
+                if (Type == "Code" && Standard && HasValue)
+                    return ToString();
+                return Type == "Bit" ? ToString() : "";
             }
         }
         public string DataName

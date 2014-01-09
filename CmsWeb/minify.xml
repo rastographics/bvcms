@@ -73,7 +73,6 @@
       <main2c Include="Scripts/Bootstrap/bootstrap-modal.js"/>
       <main2c Include="Scripts/Bootstrap/bootstrap-editable.js"/>
       <main2c Include="Scripts/Bootstrap/bootbox.js"/>
-      <main2c Include="Scripts/Bootstrap/bootstrap-datepicker.js"/>
       <main2c Include="Scripts/jQuery/jquery.cookie.js"/>
       <main2c Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2c Include="Scripts/jQuery/jquery.mousewheel.js"/>

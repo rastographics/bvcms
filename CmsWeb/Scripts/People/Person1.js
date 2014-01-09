@@ -120,8 +120,10 @@
         if (tabparent) {
             $("a[href='#" + tabparent + "']").click().tab("show");
         }
-        $.cookie('lasttab', tlink.attr("href"));
-        tlink.click().tab("show");
+        if (tlink.attr("href") !== '#') {
+            $.cookie('lasttab', tlink.attr("href"));
+            tlink.click().tab("show");
+        }
     }
     $("a[href='#enrollment']").on('shown', function (e) {
         if ($("#current").length < 2) {
