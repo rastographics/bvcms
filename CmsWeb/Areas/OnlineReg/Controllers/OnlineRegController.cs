@@ -32,6 +32,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				DbUtil.Db.SubmitChanges();
 			}
 #endif
+            if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
+                return Content("Site is disabled for maintenance, check back later");
 			Util.NoCache(Response);
 			if (!id.HasValue)
 				return Content("no organization");

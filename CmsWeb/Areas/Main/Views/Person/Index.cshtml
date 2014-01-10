@@ -230,15 +230,18 @@ pre {
                 <form id="memberdisplay" class="DisplayEdit" action="/Person/MemberDisplay/@p.PeopleId">
                 </form>
             </div>
-            <div id="membernotes-tab">
-                <form class="DisplayEdit" action="">
-                 @Html.Partial("MemberNotesDisplay", p.membernotes) 
-                </form>
-            </div>
-            <div id="extras-tab">
-                <form action="/Person/ExtrasGrid/@p.PeopleId">
-                </form>
-            </div>
+            @if (isaccess)
+            {
+                <div id="membernotes-tab">
+                    <form class="DisplayEdit" action="">
+                        @Html.Partial("MemberNotesDisplay", p.membernotes) 
+                    </form>
+                </div>
+                <div id="extras-tab">
+                    <form action="/Person/ExtrasGrid/@p.PeopleId">
+                    </form>
+                </div>
+            }
         </div>
 @if (isaccess)
 { 

@@ -338,7 +338,10 @@ table.grid tr:nth-child(1) {
                 cmd.Parameters.AddWithValue("action", action);
                 cmd.Parameters.AddWithValue("userid", userid);
                 cmd.Parameters.AddWithValue("duration", duration);
-                cmd.Parameters.AddWithValue("newui", ViewExtensions2.UseNewLook());
+                if(userid.HasValue())
+                    cmd.Parameters.AddWithValue("newui", ViewExtensions2.UseNewLook());
+                else
+                    cmd.Parameters.AddWithValue("newui", false);
                 cmd.ExecuteNonQuery();
                 cn.Close();
             }

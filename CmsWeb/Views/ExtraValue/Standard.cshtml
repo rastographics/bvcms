@@ -23,7 +23,17 @@
             <tbody>
                 @foreach (var f in Model.GetExtraValues())
                 {
-                    @Html.EditorFor(m => f)
+                    if (f.UserCanView())
+                    {
+                        if (f.UserCanEdit())
+                        {
+                            @Html.EditorFor(m => f)
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(m => f)
+                        }
+                    }
                 }
             </tbody>
         </table>

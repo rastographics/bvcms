@@ -61,7 +61,10 @@
                     @Html.DisplayFor(m => m.LetterStatus)
                     @Html.DisplayFor(m => m.LetterDateRequested)
                     @Html.DisplayFor(m => m.LetterDateReceived)
+                    @if (User.IsInRole("Access"))
+                    {
                     @Html.DisplayFor(m => m.LetterStatusNotes)
+                    }
                 </div>
             </div>
             <div class="margin-bottom">@FormAction()</div>
