@@ -71,7 +71,7 @@ $(function () {
         return false;
     });
     $(".bt").button();
-    $(".datepicker").datepicker();
+    $(".datepicker").jqdatepicker();
 
     $(".CreateAndGo").click(function (ev) {
         ev.preventDefault();
@@ -204,7 +204,7 @@ $(function () {
     };
 
     $.initDatePicker = function (f) {
-        $("ul.edit .datepicker", f).datepicker({
+        $("ul.edit .datepicker", f).jqdatepicker({
             //beforeShow: function () { $('#ui-datepicker-div').maxZIndex(); }
         });
         $("ul.edit .timepicker", f).timepicker({
@@ -214,7 +214,7 @@ $(function () {
             timeFormat: "hh:mm tt",
             controlType: "slider"
         });
-        $("ul.edit .datetimepicker", f).datetimepicker({
+        $("ul.edit .datetimepicker", f).jqdatetimepicker({
             stepHour: 1,
             stepMinute: 15,
             timeOnly: false,
@@ -416,7 +416,7 @@ $(function () {
             $(f).html(ret).ready(function () {
                 $("a.trigger-dropdown", f).dropdown2();
                 $('.bt').button();
-                $(".datepicker").datepicker();
+                $(".datepicker").jqdatepicker();
             });
         });
         return false;

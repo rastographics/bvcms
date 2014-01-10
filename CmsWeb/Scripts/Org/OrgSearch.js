@@ -40,7 +40,7 @@
         });
         return false;
     };
-    $(".datepicker").datepicker();
+    $(".datepicker").jqdatepicker();
     $.editable.addInputType('datepicker', {
         element: function (settings, original) {
             var input = $('<input>');
@@ -53,8 +53,8 @@
         plugin: function (settings, original) {
             var form = this;
             settings.onblur = 'ignore';
-            $(this).find('input').datepicker().bind('click', function () {
-                $(this).datepicker('show');
+            $(this).find('input').jqdatepicker().bind('click', function () {
+                $(this).datepickerjq('show');
                 return false;
             }).bind('dateSelected', function (e, selectedDate, $td) {
                 $(form).submit();

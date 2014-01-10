@@ -5,7 +5,7 @@ $(function () {
         $.post($(this)[0].href, {}, function (ret) {
             $("#contact").html(ret).ready(function () {
                 $(".bt").button();
-                $(".datepicker").datepicker();
+                $(".datepicker").jqdatepicker();
                 $(".in").addClass("out");
             });
         });
@@ -18,7 +18,7 @@ $(function () {
             $("#contact").html(ret).ready(function () {
                 $(".bt").button();
                 if($("#editing").val() === "true")
-                    $(".datepicker").datepicker();
+                    $(".datepicker").jqdatepicker();
                 else
                     $(".out").removeClass("out");
             });

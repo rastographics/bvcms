@@ -1,5 +1,5 @@
 ﻿$(function () {
-    $(".datepicker").datepicker();
+    $(".datepicker").jqdatepicker();
     $("#Dt1").change(function () {
         $("#Dt2").val("");
         $.reloadmeetings();

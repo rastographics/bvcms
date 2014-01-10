@@ -47,7 +47,7 @@
                 minChars: 3,
                 matchContains: 1
             };
-            $(".datepicker").datepicker();
+            $(".datepicker").jqdatepicker();
             $(".bt").button();
             $("a.move").tooltip({
                 showBody: "|",

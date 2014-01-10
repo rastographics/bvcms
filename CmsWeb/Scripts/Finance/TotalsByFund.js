@@ -1,5 +1,5 @@
 ﻿$(function () {
-    $(".datepicker").datepicker();
+    $(".datepicker").jqdatepicker();
 	$("#run").click(function (ev) {
 	    ev.preventDefault();
 	    if (!$.DateValid($("#Dt1").val(), true))

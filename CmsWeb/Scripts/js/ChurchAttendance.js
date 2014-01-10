@@ -1,5 +1,5 @@
 ﻿$(function () {
-    $(".datepicker").datepicker();
+    $(".datepicker").jqdatepicker();
     $("a.run").button();
     $("a.run").click(function (ev) {
         ev.preventDefault();

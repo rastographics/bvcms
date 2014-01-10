@@ -12,6 +12,9 @@
     @RenderSection("head", required: false)
     @ViewExtensions2.jQuery()
     @ViewExtensions2.jQueryUI()
+    <script>
+        $.fn.jqdatepicker = $.fn.datepicker;
+    </script>
     @Fingerprint.Script("/Scripts/bundle.main.js")
     @Html.Partial("DatePickerDefaults")
     @RenderSection("scripts", required: false)

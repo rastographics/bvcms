@@ -60,7 +60,7 @@
         });
         return false;
     }
-    $(".datepicker").datepicker();
+    $(".datepicker").jqdatepicker();
 
     $("body").on("click", '#SelectAll', function () {
         $("input[name='list']").attr('checked', $(this).attr('checked'));

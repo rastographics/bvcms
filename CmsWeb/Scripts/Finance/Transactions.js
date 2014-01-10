@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
     $.preptable = function () {
         $(".bt").button();
-        $(".datepicker").datepicker();
+        $(".datepicker").jqdatepicker();
         $('.tip').tooltip({
             delay: 0,
             showURL: false,

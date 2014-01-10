@@ -25,6 +25,7 @@
       <main Include="Scripts/jQuery/jquery.cookie.js"/>
       <main Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main Include="Scripts/jQuery/jquery.mousewheel.js"/>
+      <main Include="Scripts/jquery/jquery-ui-timepicker-addon.js"/>
       <main Include="Scripts/jQuery/jquery.jscrollpane.js"/>
       <main Include="Scripts/jQuery/jquery.jeditable.js"/>
       <main Include="Scripts/jQuery/jquery.validate.js"/>
@@ -66,13 +67,12 @@
       <main2 Include="Scripts/js/ExtraValue.js"/>
       <main2 Include="Scripts/Search/SearchAdd.js"/>
 
-
-
       <main2c Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
       <main2c Include="Scripts/Bootstrap/bootstrap-modalmanager.js"/>
       <main2c Include="Scripts/Bootstrap/bootstrap-modal.js"/>
       <main2c Include="Scripts/Bootstrap/bootstrap-editable.js"/>
       <main2c Include="Scripts/Bootstrap/bootbox.js"/>
+      <main2c Include="Scripts/Bootstrap/bootstrap-datepicker.js"/>
       <main2c Include="Scripts/jQuery/jquery.cookie.js"/>
       <main2c Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2c Include="Scripts/jQuery/jquery.mousewheel.js"/>
@@ -105,7 +105,6 @@
       <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.showpassword.js"/>
 
-      <org Include="Scripts/jquery/jquery-ui-timepicker-addon.js"/>
       <org Include="Scripts/Org/Organization.js"/>
       <org Include="Scripts/Dialog/SearchUsers.js"/>
       <org Include="Scripts/js/RegSetting.js"/>

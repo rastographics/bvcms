@@ -8,7 +8,7 @@
 {
     <script type="text/javascript">
         $(document).ready(function() {
-            $(".datepicker").datepicker();
+            $(".datepicker").jqdatepicker();
             $('td.tip').tooltip({
                 delay: 0,
                 showURL: false,
@@ -21,7 +21,7 @@
                 $.post(f.attr('action'), q, function(ret) {
                     $(f).html(ret).ready(function() {
                         $(".bt").button();
-                        $(".datepicker").datepicker();
+                        $(".datepicker").jqdatepicker();
                     });
                 });
                 return false;

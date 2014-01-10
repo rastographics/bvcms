@@ -18,5 +18,5 @@
 		$.getTable();
 	});
 	$(".bt").button();
-	$(".datepicker").datepicker();
+	$(".datepicker").jqdatepicker();
 });

@@ -18,7 +18,7 @@
             $(f).html(ret).ready(function () {
                 $("a.trigger-dropdown", f).dropdown();
                 $('.bt').button();
-                $(".datepicker").datepicker();
+                $(".datepicker").jqdatepicker();
             });
         });
         return false;

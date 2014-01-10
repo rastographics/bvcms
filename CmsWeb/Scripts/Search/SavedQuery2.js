@@ -39,7 +39,7 @@
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
                 $('.bt').button();
-                $(".datepicker").datepicker();
+                $(".datepicker").jqdatepicker();
                 $.onready();
             });
         });

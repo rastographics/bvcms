@@ -29,7 +29,7 @@ $(function () {
     $('#Tags').click(function (ev) {
         $('#TagsPopup').show();
     });
-    $(".datepicker").datepicker();
+    $(".datepicker").jqdatepicker();
     $(".bt").button();
     $("#selectconditions select").css("width", "100%");
 
@@ -433,9 +433,9 @@ function UpdateView(vs) {
     $('#CodesValue').showhide(vs.CodesVisible);
     $('#DateValue').showhide(vs.DateVisible);
     if (vs.DateVisible)
-        $('#DateValue').datepicker();
+        $('#DateValue').jqdatepicker();
     else
-        $('#DateValue').datepicker("destroy");
+        $('#DateValue').jqdatepicker("destroy");
     $('#NumberValue').showhide(vs.NumberVisible);
     $('#IntegerValue').showhide(vs.IntegerVisible);
 

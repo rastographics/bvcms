@@ -247,7 +247,7 @@
         var id = $("#TaskId").val();
         $.post('/Task/Edit/' + id, function(ret) {
             $('#r' + id).html(ret);
-            $(".datepicker").datepicker();
+            $(".datepicker").jqdatepicker();
         });
     });
     $("body").on("click", 'input.update', function (ev) {

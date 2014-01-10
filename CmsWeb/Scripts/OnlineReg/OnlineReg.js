@@ -63,7 +63,7 @@
                 }
                 else {
                     $.InstructionsShow();
-                    $("#dob").datepicker($.dpoptions);
+                    $("#dob").jqdatepicker($.dpoptions);
                 }
             });
         });

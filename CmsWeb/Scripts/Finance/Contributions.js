@@ -1,6 +1,6 @@
 ﻿$(function () {
     $(".bt").button();
-    $(".datepicker").datepicker();
+    $(".datepicker").jqdatepicker();
     $("#search").click(function (ev) {
         ev.preventDefault();
         $.getTable();

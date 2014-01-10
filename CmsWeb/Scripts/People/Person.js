@@ -93,8 +93,8 @@
         plugin: function (settings, original) {
             var form = this;
             settings.onblur = 'ignore';
-            $(this).find('input').datepicker().bind('click', function () {
-                $(this).datepicker('show');
+            $(this).find('input').jqdatepicker().bind('click', function () {
+                $(this).jqdatepicker('show');
                 return false;
             }).bind('dateSelected', function (e, selectedDate, $td) {
                 $(form).submit();
@@ -181,7 +181,7 @@
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
                 $('.bt').button();
-                $(".datepicker").datepicker();
+                $(".datepicker").jqdatepicker();
                 $.extraEditable('#extravalues');
                 $('.tooltip', f).tooltip({ showURL: false, showBody: '|' });
             });
@@ -301,9 +301,9 @@
 
         if ($("#newlook").val() == "true") {
             $("form select").chosen();
-            $("input.date").datepicker();
+            $("input.date").jqdatepicker();
         }
-        $(".datepicker").datepicker();
+        $(".datepicker").jqdatepicker();
         $(".submitbutton,.bt", f).button();
         $("a.trigger-dropdown", f).dropdown2();
         return false;

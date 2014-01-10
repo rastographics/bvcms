@@ -60,7 +60,7 @@
                 "Bundle.TotalEnvelopes": { number: true },
             }
         });
-        $("input.datepicker").datepicker();
+        $("input.datepicker").jqdatepicker();
         $("a.bt").button();
     };
     $.SetValidation();

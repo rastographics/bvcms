@@ -11,7 +11,7 @@
         });
     });
 
-    $(".datepicker").datepicker();
+    $(".datepicker").jqdatepicker();
 
     $("#SelectAll").click(function () {
         $("input[name='list']").attr('checked', $(this).attr('checked'));

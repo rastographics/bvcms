@@ -361,7 +361,7 @@
 
     $("#showdate").click(function (ev) {
         ev.preventDefault();
-        $("#contributiondate").datepicker();
+        $("#contributiondate").jqdatepicker();
         $.blockUI({ message: $('#editdate') });
     });
     $("#editdatedone").click(function (ev) {

@@ -1059,6 +1059,7 @@
     <Content Include="Scripts\Bootstrap\bootbox.js" />
     <Content Include="Scripts\Bootstrap\bootbox.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-ajax.js" />
+    <Content Include="Scripts\Bootstrap\renamedatepicker.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-datepicker.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-editable.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-editable.min.js" />
@@ -1860,6 +1861,18 @@
       <DependentUpon>Person1.js</DependentUpon>
     </Content>
     <Content Include="Views\Home\UserPreferences.cshtml" />
+    <Content Include="Scripts\OnlineReg\OnlineReg.min.js.map">
+      <DependentUpon>OnlineReg.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Search\QueryBuilder2.min.js.map">
+      <DependentUpon>QueryBuilder2.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\People\Person.min.js.map">
+      <DependentUpon>Person.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Org\OrgSearch.min.js.map">
+      <DependentUpon>OrgSearch.js</DependentUpon>
+    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

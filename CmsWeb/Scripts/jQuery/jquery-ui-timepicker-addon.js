@@ -951,7 +951,7 @@
 
             if (typeof (o) == 'string') {
                 if (o == 'getDate') {
-                    return $.fn.datepicker.apply($(this[0]), tmp_args);
+                    return $.fn.jqdatepicker.apply($(this[0]), tmp_args);
                 } else {
                     return this.each(function () {
                         var $t = $(this);
@@ -961,7 +961,7 @@
             } else {
                 return this.each(function () {
                     var $t = $(this);
-                    $t.datepicker($.timepicker._newInst($t, o)._defaults);
+                    $t.jqdatepicker($.timepicker._newInst($t, o)._defaults);
                 });
             }
         }
