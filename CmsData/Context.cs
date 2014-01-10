@@ -436,7 +436,7 @@ namespace CmsData
         {
             if (_roles == null)
                 GetCurrentUser();
-            return _roles;
+            return _roles ?? new string[0];
         }
 
         private int[] _roleids;
