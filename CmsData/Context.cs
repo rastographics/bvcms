@@ -789,7 +789,10 @@ namespace CmsData
             if (CurrentUser != null)
                 p = CurrentUser.Preferences.SingleOrDefault(up => up.PreferenceX == pref);
             if (p != null)
-                return d[pref] = p.ValueX;
+            {
+                d[pref] = p.ValueX;
+                return p.ValueX;
+            }
             d[pref] = null;
             return def;
         }

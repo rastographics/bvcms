@@ -1,0 +1,21 @@
+﻿@model User
+
+@{
+    ViewBag.Title = "User Preferences";
+    Layout = ViewExtensions2.Layout();
+    var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
+}
+
+<h2>User Preferences for @Model.Username: @Model.Name</h2>
+
+<h2>Database</h2>
+@foreach (var p in Model.Preferences)
+{
+    @p.PreferenceX@:, @p.ValueX <br/>
+}
+<h2>Session</h2>
+@foreach (var dd in d)
+{
+    @dd.Key@:, @dd.Value<br/>
+}
+

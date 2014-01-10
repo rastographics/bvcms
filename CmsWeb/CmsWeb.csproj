@@ -1859,6 +1859,7 @@
     <Content Include="Scripts\People\Person1.min.js.map">
       <DependentUpon>Person1.js</DependentUpon>
     </Content>
+    <Content Include="Views\Home\UserPreferences.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

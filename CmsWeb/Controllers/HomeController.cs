@@ -220,5 +220,11 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.ToString());
             return Redirect("/");
         }
+
+        [GET("Preferences")]
+        public ActionResult UserPreferences()
+        {
+            return View(DbUtil.Db.CurrentUser);
+        }
     }
 }
