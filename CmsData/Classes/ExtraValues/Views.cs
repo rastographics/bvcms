@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Xml.Serialization;
 using CmsData;
-using CmsWeb.Code;
 using UtilityExtensions;
 
-namespace CmsWeb.Models.ExtraValues
+namespace CmsData.ExtraValue
 {
+    // Views are a set of places for extravalues to be seen (see View which is a single place)
     public class Views
     {
         [XmlElement("View")]
@@ -102,12 +102,12 @@ namespace CmsWeb.Models.ExtraValues
             views.List.Add(vv);
             return new ViewValue() {views = views, view = vv};
         }
-        public static List<Value> GetStandardExtraValues(string Table, string Location)
+        public static List<Value> GetStandardExtraValuesOrdered(string table, string location)
         {
             var views = GetViews();
             var q = from vv in views.List
-                    where vv.Table == Table
-                    where vv.Location == Location
+                    where vv.Table == table
+                    where vv.Location == location
                     from v in vv.Values
                     select v;
             var values = q.ToList();

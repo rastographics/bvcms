@@ -53,7 +53,7 @@
         $.InitFunctions.DeleteStandardCallback = function (a) {
             $(a.data("rowid")).remove();
         };
-        $("#CloseListStandard").live("click", function (e) {
+        $(".CloseListStandard").live("click", function (e) {
             e.preventDefault();
             $.InitFunctions.StandardExtraValueDialogCallback();
         });

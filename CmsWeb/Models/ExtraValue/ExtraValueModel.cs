@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.ExtraValue;
 using CmsWeb.Code;
 using Dapper;
-using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Drawing;
 using Newtonsoft.Json;
 using UtilityExtensions;
 
@@ -107,13 +108,17 @@ namespace CmsWeb.Models.ExtraValues
             }
         }
 
+        public List<Value> GetStandardExtraValues(string table, string location = null)
+        {
+            return Views.GetStandardExtraValuesOrdered(table, location).Select(Value.FromValue).ToList();
+        }
         public IEnumerable<Value> GetExtraValues()
         {
             var realExtraValues = ListExtraValues();
 
             if (Location.ToLower() == "adhoc")
             {
-                var standardExtraValues = Views.GetStandardExtraValues(Table);
+                var standardExtraValues = GetStandardExtraValues(Table);
                 return from v in realExtraValues
                        join f in standardExtraValues on v.Field equals f.Name into j
                        from f in j.DefaultIfEmpty()
@@ -124,7 +129,7 @@ namespace CmsWeb.Models.ExtraValues
                        select Value.AddField(f, v, this);
             }
 
-            return from f in Views.GetStandardExtraValues(Table, Location)
+            return from f in GetStandardExtraValues(Table, Location)
                    join v in realExtraValues on f.Name equals v.Field into j
                    from v in j.DefaultIfEmpty()
                    orderby f.Order
@@ -295,7 +300,7 @@ namespace CmsWeb.Models.ExtraValues
             DbUtil.Db.SubmitChanges();
         }
 
-        public void ApplyOrder(Dictionary<string, int> orders)
+        public void ApplyOrderRoles(Dictionary<string, int> orders, Dictionary<string, string> roles)
         {
             var i = Views.GetViewsView(Table, Location);
             var q = from v in i.view.Values
@@ -305,7 +310,10 @@ namespace CmsWeb.Models.ExtraValues
             i.view.Values = q.ToList();
             int n = 1;
             foreach (var v in i.view.Values)
+            {
                 v.Order = n++;
+                v.VisibilityRoles = roles[v.Name];
+            }
             i.views.Save();
         }
 

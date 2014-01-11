@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using CmsData;
+using CmsData.ExtraValue;
 using CmsWeb.Code;
 using Dapper;
 using UtilityExtensions;
@@ -313,7 +314,7 @@ Option 2
             StandardExtraValues.Field bits = null;
             ExtraValue ev = null;
             List<string> codes = null;
-            var v = new Value { Name = name };
+            var v = new CmsData.ExtraValue.Value { Name = name };
             switch (ExtraValueTable)
             {
                 case "People":

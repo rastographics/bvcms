@@ -349,6 +349,9 @@
     <Compile Include="AuthorizeNet.cs" />
     <Compile Include="Batch\ExpressionVisitor.cs" />
     <Compile Include="Batch\LinqToSqlExtensions.cs" />
+    <Compile Include="Classes\ExtraValues\Value.cs" />
+    <Compile Include="Classes\ExtraValues\View.cs" />
+    <Compile Include="Classes\ExtraValues\Views.cs" />
     <Compile Include="Classes\MinistrESpace\MinistrESpaceHelper.cs" />
     <Compile Include="Classes\QuickBooks\QBAccount.cs" />
     <Compile Include="Classes\QuickBooks\QBJournalEntryLine.cs" />

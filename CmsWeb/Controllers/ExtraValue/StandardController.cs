@@ -48,11 +48,11 @@ namespace CmsWeb.Controllers
             return View("NewStandard", m);
         }
 
-        [POST("ExtraValue/ApplyOrder/{table}/{location}")]
-        public ActionResult ApplyOrder(string table, string location, Dictionary<string, int> orders)
+        [POST("ExtraValue/ApplyOrderRoles/{table}/{location}")]
+        public ActionResult ApplyOrderRoles(string table, string location, Dictionary<string, int> orders, Dictionary<string, string> roles)
         {
             var m = new ExtraValueModel(table, location);
-            m.ApplyOrder(orders);
+            m.ApplyOrderRoles(orders, roles);
             m = new ExtraValueModel(table, location);
             return View("ListStandard", m);
         }
@@ -71,6 +71,12 @@ namespace CmsWeb.Controllers
             var m = new NewExtraValueModel(0, table, "Standard");
             m.ConvertToStandard(name);
             return Redirect("/ExtraValue/Summary");
+        }
+        [POST("ExtraValue/ChangeRoles/{table}/{location}")]
+        public ActionResult ChangeRoles(string table, string location, string pk, string value)
+        {
+            var m = new ExtraValueModel(table, location);
+            return new EmptyResult();
         }
     }
 }

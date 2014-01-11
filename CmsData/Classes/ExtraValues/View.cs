@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace CmsWeb.Models.ExtraValues
+namespace CmsData.ExtraValue
 {
-    public class View
+    // A View is a place for a set of Extravalues to be seen in the UI, like Standard, Entry, Family etc.
+    public class View 
     {
         [XmlElement("Value")] public List<Value> Values { get; set; }
         [XmlAttribute] public string Table { get; set; }

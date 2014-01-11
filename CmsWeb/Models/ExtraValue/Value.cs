@@ -1,27 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using System.Windows.Forms.VisualStyles;
-using System.Xml.Serialization;
+using Org.BouncyCastle.Cms;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
 {
-    public class Value
+
+    // The specs for a single Standard Extra Value
+    public class Value : CmsData.ExtraValue.Value
     {
-        [XmlAttribute] public string Name { get; set; }
-        [XmlAttribute] public string Type { get; set; }
-        [XmlAttribute] public string VisibilityRoles { get; set; }
-
-        [XmlElement("Code")] 
-        public List<string> Codes { get; set; }
-
-        [XmlIgnore] public int Order;
-        [XmlIgnore] public int Id;
-        [XmlIgnore] public bool Standard;
+        public static Value FromValue(CmsData.ExtraValue.Value ptr)
+        {
+            var v = new Value()
+            {
+                Name = ptr.Name,
+                Type = ptr.Type,
+                VisibilityRoles = ptr.VisibilityRoles,
+                Codes = ptr.Codes,
+                Order = ptr.Order,
+                Standard = ptr.Standard,
+            };
+            return v;
+        }
 
         internal ExtraValue Extravalue;
         internal ExtraValueModel Model; // only applies to standard extra values
@@ -44,19 +44,6 @@ namespace CmsWeb.Models.ExtraValues
             f.Extravalue = ev;
             f.Model = m;
             return f;
-        }
-        public bool UserCanView()
-        {
-            if (!VisibilityRoles.HasValue())
-                return true;
-            var a = VisibilityRoles.SplitStr(",");
-            var user = HttpContext.Current.User;
-            return a.Any(role => user.IsInRole(role.Trim()));
-        }
-        public bool UserCanEdit()
-        {
-            var user = HttpContext.Current.User;
-            return user.IsInRole("Edit");
         }
 
         public bool HasValue

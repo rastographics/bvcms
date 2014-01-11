@@ -16,23 +16,24 @@
                     <th>Order</th>
                     <th>Name</th>
                     <th>Type</th>
-                    <th></th>
+                    <th>Roles</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var f in Views.GetStandardExtraValues(Model.Table, Model.Location))
+                @foreach (var f in Model.GetStandardExtraValues(Model.Table, Model.Location))
                 {
                     <tr id="ev-name-@f.Name">
-                        <td><input type="text" name="Orders[@f.Name]" value="@f.Order" class="input-mini" /></td>
+                        <td><input type="text" name="orders[@f.Name]" value="@f.Order" class="input-mini" /></td>
                         <td>@f.Name</td>
-                        <td>@f.Type</td>
                         <td>
+                            @f.Type
                             @if (f.Type.StartsWith("Text"))
                             { 
-                                <a href="/ExtraValue/SwitchMultiline/@Model.Table/@Model.Location?name=@f.Name" class="ajax btn btn-mini">@f.SwitchMultiLineText</a>
+                                <br/><a href="/ExtraValue/SwitchMultiline/@Model.Table/@Model.Location?name=@f.Name" class="ajax btn btn-mini">@f.SwitchMultiLineText</a>
                             }
                         </td>
+                        <td><input type="text" name="roles[@f.Name]" value="@f.VisibilityRoles" class="input" /></td>
                         <td><a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@f.Name" 
                            class="dialog-options" 
                            data-target="/Dialog/DeleteStandardExtra"
@@ -46,7 +47,7 @@
         </table>
     </div>
     <div class="modal-footer">
-        <a id="CloseListStandard" href="#" class="btn">Close</a>
-        <a href="/ExtraValue/ApplyOrder/@Model.Table/@Model.Location" class="btn btn-warning ajax">Apply Ordering</a>
+        <a href="#" class="btn CloseListStandard">Close</a>
+        <a href="/ExtraValue/ApplyOrderRoles/@Model.Table/@Model.Location" class="btn btn-primary ajax CloseListStandard">Submit Changes</a>
     </div>
 </form>

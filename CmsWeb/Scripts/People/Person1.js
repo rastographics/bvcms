@@ -265,6 +265,11 @@
         $(this).prev().editable('toggle');
         return false;
     });
+    $('a.visibilityroles').live("click", function (e) {
+        e.preventDefault();
+        $(this).editable('toggle');
+        return false;
+    });
     $.InitFunctions.MemberDocsEditable = function () {
         $("#memberdocs-form a.editable").editable({
             placement: "right",
@@ -284,7 +289,6 @@
             });
     });
 });
-
 
 function AddSelected(ret) {
     switch (ret.from) {
