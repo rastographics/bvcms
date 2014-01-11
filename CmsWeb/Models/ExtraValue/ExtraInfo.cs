@@ -11,6 +11,7 @@ namespace CmsWeb.Models.ExtraValues
         public string TypeDisplay { get; set; }
         public int Count { get; set; }
         public bool Standard { get; set; }
+        public bool CanView { get; set; }
 
         public string QueryUrl
         {

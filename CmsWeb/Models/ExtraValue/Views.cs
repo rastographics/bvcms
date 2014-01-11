@@ -40,27 +40,28 @@ namespace CmsWeb.Models.ExtraValues
         {
             public string Name { get; set; }
             public string Type { get; set; }
+            public bool CanView { get; set; }
         }
 
         public static List<StandardValueNameType> GetViewableNameTypes(string table, bool nocache = false)
         {
             var list = (from vv in GetStandardExtraValues(table, nocache)
                         where vv.Type != "Bits"
-                        where vv.UserCanView()
                         select new StandardValueNameType()
                         { 
                             Name = vv.Name, 
-                            Type = vv.Type
+                            Type = vv.Type,
+                            CanView = vv.UserCanView()
                         }).ToList();
 
             var list2 = (from vv in GetStandardExtraValues(table, nocache)
-                         where vv.UserCanView()
                          where vv.Type == "Bits"
                          from v in vv.Codes
                          select new StandardValueNameType()
                          { 
                              Name = v, 
-                             Type = vv.Type
+                             Type = vv.Type,
+                             CanView = vv.UserCanView()
                          }).ToList();
 
             return list.Union(list2).OrderBy(vv => vv.Name).ToList();

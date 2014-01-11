@@ -220,11 +220,12 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             if (ViewExtensions2.UseNewLook())
                 return Redirect("/ExtraValue/Summary");
-            IEnumerable<StandardExtraValues.Field> ev = StandardExtraValues.GetExtraValues();
-            IQueryable<ExtraInfo> q = from e in DbUtil.Db.PeopleExtras
+            var q = from e in DbUtil.Db.PeopleExtras
                 where e.StrValue == null && e.BitValue == null
-                let TypeValue =
-                    e.DateValue != null ? "Date" : e.Data != null ? "Text" : e.IntValue != null ? "Int" : "?"
+                let TypeValue = e.DateValue != null 
+                    ? "Date" : e.Data != null 
+                    ? "Text" : e.IntValue != null 
+                    ? "Int" : "?"
                 group e by new {e.Field, TypeValue}
                 into g
                 select new ExtraInfo
@@ -234,7 +235,8 @@ namespace CmsWeb.Areas.Reports.Controllers
                     Count = g.Count(),
                 };
 
-            IEnumerable<ExtraInfo> list = from e in q.ToList()
+            var ev = StandardExtraValues.GetExtraValues();
+            var list = from e in q.ToList()
                 let f = ev.SingleOrDefault(ff => ff.name == e.Field)
                 where f == null || f.UserCanView()
                 orderby e.Field
@@ -247,8 +249,8 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             if (ViewExtensions2.UseNewLook())
                 return Redirect("/ExtraValue/Summary");
-            IEnumerable<StandardExtraValues.Field> ev = StandardExtraValues.GetExtraValues();
-            IQueryable<ExtraInfo> q = from e in DbUtil.Db.PeopleExtras
+            var ev = StandardExtraValues.GetExtraValues();
+            var q = from e in DbUtil.Db.PeopleExtras
                 where e.StrValue != null || e.BitValue != null
                 let TypeValue = e.StrValue != null ? "Code" : "Bit"
                 group e by new {e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0"), TypeValue}
@@ -261,7 +263,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                     Count = g.Count(),
                 };
 
-            IEnumerable<ExtraInfo> list = from e in q.ToList()
+            var list = from e in q.ToList()
                 let f = ev.SingleOrDefault(ff => ff.name == e.Field)
                 where f == null || f.UserCanView()
                 orderby e.Field

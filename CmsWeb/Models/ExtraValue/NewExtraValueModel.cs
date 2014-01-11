@@ -52,7 +52,7 @@ namespace CmsWeb.Models.ExtraValues
             get
             {
                 if (ExtraValueBitPrefix.HasValue())
-                    return ExtraValueBitPrefix + "-";
+                    return ExtraValueBitPrefix + ":";
                 return "";
             }
         }
@@ -309,24 +309,44 @@ Option 2
 
         public void ConvertToStandard(string name)
         {
+            var oldfields = StandardExtraValues.GetExtraValues().ToList();
+            StandardExtraValues.Field bits = null;
             ExtraValue ev = null;
             List<string> codes = null;
+            var v = new Value { Name = name };
             switch (ExtraValueTable)
             {
                 case "People":
                     ev = (from vv in DbUtil.Db.PeopleExtras
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
-                    if (ev.Type == "Code")
-                        codes = (from vv in DbUtil.Db.PeopleExtras
-                                 where vv.Field == name
-                                 select vv.StrValue).Distinct().ToList();
+
+                    bits = oldfields.SingleOrDefault(ff => ff.Codes.Contains(name));
+                    if (bits != null)
+                    {
+                        codes = bits.Codes;
+                        ev.Type = "Bits";
+                        v.Name = bits.name;
+                        v.VisibilityRoles = bits.VisibilityRoles;
+                    }
+                    else
+                    {
+                        var f = oldfields.SingleOrDefault(ff => ff.name == name);
+                        if (f != null)
+                            v.VisibilityRoles = f.VisibilityRoles;
+                        if (ev.Type == "Code")
+                        {
+                            codes = (from vv in DbUtil.Db.PeopleExtras
+                                     where vv.Field == name
+                                     select vv.StrValue).Distinct().ToList();
+                        }
+                    }
                     break;
                 case "Organization":
                     ev = (from vv in DbUtil.Db.OrganizationExtras
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
-                    if(ev.Type == "Code")
+                    if (ev.Type == "Code")
                         codes = (from vv in DbUtil.Db.OrganizationExtras
                                  where vv.Field == name
                                  select vv.StrValue).Distinct().ToList();
@@ -335,7 +355,7 @@ Option 2
                     ev = (from vv in DbUtil.Db.FamilyExtras
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
-                    if(ev.Type == "Code")
+                    if (ev.Type == "Code")
                         codes = (from vv in DbUtil.Db.FamilyExtras
                                  where vv.Field == name
                                  select vv.StrValue).Distinct().ToList();
@@ -344,7 +364,7 @@ Option 2
                     ev = (from vv in DbUtil.Db.MeetingExtras
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
-                    if(ev.Type == "Code")
+                    if (ev.Type == "Code")
                         codes = (from vv in DbUtil.Db.MeetingExtras
                                  where vv.Field == name
                                  select vv.StrValue).Distinct().ToList();
@@ -352,12 +372,8 @@ Option 2
                 default:
                     return;
             }
-            var v = new Value
-            {
-                Type = ev.Type,
-                Name = name,
-                Codes = codes,
-            };
+            v.Type = ev.Type;
+            v.Codes = codes;
             var i = Views.GetViewsView(ExtraValueTable, ExtraValueLocation);
             i.view.Values.Add(v);
             i.views.Save();

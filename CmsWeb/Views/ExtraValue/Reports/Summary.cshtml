@@ -5,32 +5,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript">
-        $(function () {
-            $("a.delete").click(function (ev) {
-                ev.preventDefault();
-                var d = $(this);
-                var url = this.href;
-                bootbox.confirm("are you sure you want to delete?", function (ret) {
-                    if (ret === true)
-                        $.post(url, null, function () {
-                            d.closest("tr").remove();
-                        });
-                });
-            });
-            $("a.rename").click(function (ev) {
-                ev.preventDefault();
-                var url = this.href;
-                bootbox.prompt("New name:", "Cancel", "Rename", function (result) {
-                    if (result !== null) {
-                        $.post(url, { newname: result }, function () {
-                            window.location.reload();
-                        });
-                    }
-                }, $(this).data("default"));
-            });
-        });
-    </script>
+    @Fingerprint.Script("/Scripts/js/ExtraValueSummary.js")
 }
 
 <div class="container">
@@ -46,49 +21,56 @@
         </tr>
         @foreach (var e in Model)
         {
+            if (!e.CanView) { continue; }
             if (User.IsInRole("Admin"))
             {
-            <tr>
-                <td>
-                    <a href="@e.QueryUrl">@e.Field</a>
-                    <a class="rename" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)">
-                        <i class="fa fa-pencil"></i></a>
-                </td>
-                <td>@e.Value</td>
-                <td>@e.TypeDisplay</td>
-                <td class="right">@e.Count.ToString("N0")</td>
-                <td>
-                    @if (e.Standard)
-                    {
-                        @:Standard
-                    }
-                    else
-                    {
-                        <a href="@e.ConvertToStandardUrl" class="btn btn-mini">Convert to Standard</a>
-                    }
-                </td>
-                <td><a class="delete" href=""><i class="fa fa-times"></i></a></td>
-            </tr>
+                <tr>
+                    <td>
+                        <a href="@e.QueryUrl">@e.Field</a>
+                        <a class="rename" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                    </td>
+                    <td>@e.Value</td>
+                    <td>@e.TypeDisplay</td>
+                    <td class="right">@e.Count.ToString("N0")</td>
+                    <td>
+                        @if (e.Standard)
+                        {
+                            @:Standard
+                        }
+                        else
+                        {
+                            <a href="@e.ConvertToStandardUrl" class="btn btn-mini">Convert to Standard</a>
+                        }
+                    </td>
+                    <td><a class="delete" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-times"></i></a></td>
+                </tr>
             }
             else
             {
-            <tr>
-                <td>
-                    <a href="@e.QueryUrl">@e.Field</a>
-                </td>
-                <td>@e.Value</td>
-                <td>@e.TypeDisplay</td>
-                <td class="right">@e.Count.ToString("N0")</td>
-                <td>
-                    @if (e.Standard)
-                    {
-                        @:Standard
-                    }
-                </td>
-                <td></td>
-            </tr>
+                <tr>
+                    <td>
+                        <a href="@e.QueryUrl">@e.Field</a>
+                    </td>
+                    <td>@e.Value</td>
+                    <td>@e.TypeDisplay</td>
+                    <td class="right">@e.Count.ToString("N0")</td>
+                    <td>
+                        @if (e.Standard)
+                        {
+                            @:Standard
+                        }
+                    </td>
+                    <td></td>
+                </tr>
 
             }
         }
     </table>
+    @if (User.IsInRole("Admin"))
+{
+    <a href="/Display/ContentEdit/@ViewBag.EvSpecId">Standard ExtraValues Specification</a>
+
+}
 </div>

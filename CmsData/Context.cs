@@ -1003,7 +1003,7 @@ namespace CmsData
                 return content.Body;
             return def;
         }
-        public string Content2(string name, string def, int ContentTypeId)
+        public Content Content(string name, string def, int ContentTypeId)
         {
             var c = Contents.FirstOrDefault(cc => cc.Name == name);
             if (c == null)
@@ -1018,6 +1018,11 @@ namespace CmsData
                 Contents.InsertOnSubmit(c);
                 SubmitChanges();
             }
+            return c;
+        }
+        public string Content2(string name, string def, int ContentTypeId)
+        {
+            var c = Content(name, def, ContentTypeId);
             return c.Body;
         }
         public string ContentHtml(string name, string def)

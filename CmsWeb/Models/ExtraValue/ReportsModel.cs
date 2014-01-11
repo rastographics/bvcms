@@ -41,6 +41,7 @@ namespace CmsWeb.Models.ExtraValues
                              TypeDisplay = typedisplay,
                              Standard = sv != null,
                              Count = i.count,
+                             CanView = sv == null || sv.CanView
                          };
 
             var qdatavalues = (from e in DbUtil.Db.PeopleExtras
@@ -68,6 +69,7 @@ namespace CmsWeb.Models.ExtraValues
                               TypeDisplay = typedisplay.Value,
                               Standard = sv != null,
                               Count = i.count,
+                              CanView = sv == null || sv.CanView
                           };
 
             return qcodes.Union(qdatums).OrderBy(ee => ee.Field);

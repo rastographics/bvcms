@@ -190,12 +190,6 @@
             if (ret.error) {
                 ck.attr("checked", !ck.is(':checked'));
                 alert(ret.error);
-            } else {
-                var f = ck.closest('form');
-                var q = f.serialize();
-                $.post($(f).attr("action"), q, function (ret2) {
-                    $(f).html(ret2);
-                });
             }
         });
     });

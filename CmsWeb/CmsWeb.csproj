@@ -1102,6 +1102,7 @@
       <DependentUpon>modernizr-2.6.2.js</DependentUpon>
     </Content>
     <Content Include="Scripts\js\Support2.js" />
+    <Content Include="Scripts\js\ExtraValueSummary.js" />
     <Content Include="Scripts\Org\Organization.min.js">
       <DependentUpon>Organization.js</DependentUpon>
     </Content>

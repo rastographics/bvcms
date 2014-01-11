@@ -125,6 +125,7 @@
         };
         $("a.click-Code").editable({ mode: 'inline' });
         $('a.click-Text').editable({ mode: 'inline' });
+        $('a.click-Int').editable({ mode: 'inline' });
         $('a.click-Text2,a.click-Data').editable({
             type: 'textarea',
             mode: 'inline',

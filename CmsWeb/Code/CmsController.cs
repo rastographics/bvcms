@@ -316,34 +316,40 @@ table.grid tr:nth-child(1) {
 
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
-                var routeData = filterContext.RouteData;
-                var ts = (DateTime.Now - start_time);
-                var duration = ts.TotalSeconds;
-                var method = filterContext.HttpContext.Request.HttpMethod;
-                var controller = (string)routeData.Values["controller"];
-                var action = (string)routeData.Values["action"];
-                var userid = Util.UserName;
-                var dbname = Util.Host;
+            var routeData = filterContext.RouteData;
+            var ts = (DateTime.Now - start_time);
+            var duration = ts.TotalSeconds;
+            var method = filterContext.HttpContext.Request.HttpMethod;
+            var controller = (string)routeData.Values["controller"];
+            var action = (string)routeData.Values["action"];
+            var userid = Util.UserName;
+            var dbname = Util.Host;
             if (action == "FetchPrintJobs")
                 return;
-            var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-            if (cs != null)
+            try
             {
-                var cn = new SqlConnection(cs.ConnectionString);
-                cn.Open();
-                var cmd = new SqlCommand("LogRequest", cn) {CommandType = CommandType.StoredProcedure};
-                cmd.Parameters.AddWithValue("dbname", dbname);
-                cmd.Parameters.AddWithValue("method", method);
-                cmd.Parameters.AddWithValue("controller", controller);
-                cmd.Parameters.AddWithValue("action", action);
-                cmd.Parameters.AddWithValue("userid", userid);
-                cmd.Parameters.AddWithValue("duration", duration);
-                if(userid.HasValue())
-                    cmd.Parameters.AddWithValue("newui", ViewExtensions2.UseNewLook());
-                else
-                    cmd.Parameters.AddWithValue("newui", false);
-                cmd.ExecuteNonQuery();
-                cn.Close();
+                var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
+                if (cs != null)
+                {
+                    var cn = new SqlConnection(cs.ConnectionString);
+                    cn.Open();
+                    var cmd = new SqlCommand("LogRequest", cn) { CommandType = CommandType.StoredProcedure };
+                    cmd.Parameters.AddWithValue("dbname", dbname);
+                    cmd.Parameters.AddWithValue("method", method);
+                    cmd.Parameters.AddWithValue("controller", controller);
+                    cmd.Parameters.AddWithValue("action", action);
+                    cmd.Parameters.AddWithValue("userid", userid);
+                    cmd.Parameters.AddWithValue("duration", duration);
+                    if (userid.HasValue())
+                        cmd.Parameters.AddWithValue("newui", ViewExtensions2.UseNewLook());
+                    else
+                        cmd.Parameters.AddWithValue("newui", false);
+                    cmd.ExecuteNonQuery();
+                    cn.Close();
+                }
+            }
+            catch
+            {
             }
         }
     }
