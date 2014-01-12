@@ -676,7 +676,9 @@ namespace CmsWeb
         }
         public static HtmlString jQueryUI()
         {
-            return new HtmlString("<script src=\"//code.jquery.com/ui/1.10.3/jquery-ui.min.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString(@"<script src=""//code.jquery.com/ui/1.10.3/jquery-ui.min.js"" type=""text/javascript""></script>
+    <script> $.fn.jqdatepicker = $.fn.datepicker; </script>
+");
         }
         public static HtmlString Bootstrap()
         {

@@ -6,9 +6,6 @@
 @Html.Raw((string)ViewData["bottom"])
 @ViewExtensions2.jQuery()
 @ViewExtensions2.jQueryUI()
-    <script>
-        $.fn.jqdatepicker = $.fn.datepicker;
-    </script>
 @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
 @RenderSection("scripts", false)
 }
