@@ -86,7 +86,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public NewExtraValueModel(string table, string name)
         {
-            var f = Views.GetStandardExtraValues(table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, table).Single(ee => ee.Name == name);
             ExtraValueType = new CodeInfo(f.Type, "ExtraValueType");
             ExtraValueName = name;
             ExtraValueTable = table;
@@ -156,26 +156,25 @@ Option 2
         public string AddAsNewStandard()
         {
             ExtraValueName = ExtraValueName.Replace('/', '-');
-            var fields = Views.GetStandardExtraValues(ExtraValueTable);
+            var fields = Views.GetStandardExtraValues(DbUtil.Db, ExtraValueTable);
             var existing = fields.SingleOrDefault(ff => ff.Name == ExtraValueName);
             if (existing != null)
                 throw new Exception("{0} already exists".Fmt(ExtraValueName));
 
             TryCheckIntegrity();
 
-            var v = new Value
+            var v = new CmsData.ExtraValue.Value
             {
                 Type = ExtraValueType.Value,
                 Name = ExtraValueName,
                 VisibilityRoles = VisibilityRoles,
                 Codes = ConvertToCodes(),
             };
-            var i = Views.GetViewsView(ExtraValueTable, ExtraValueLocation);
+            var i = Views.GetViewsView(DbUtil.Db, ExtraValueTable, ExtraValueLocation);
             i.view.Values.Add(v);
-            i.views.Save();
+            i.views.Save(DbUtil.Db);
             return null;
         }
-
 
         public string AddAsNewAdhoc()
         {
@@ -390,9 +389,9 @@ Option 2
             }
             v.Type = ev.Type;
             v.Codes = codes;
-            var i = Views.GetViewsView(ExtraValueTable, ExtraValueLocation);
+            var i = Views.GetViewsView(DbUtil.Db, ExtraValueTable, ExtraValueLocation);
             i.view.Values.Add(v);
-            i.views.Save();
+            i.views.Save(DbUtil.Db);
         }
     }
 }

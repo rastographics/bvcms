@@ -24,7 +24,7 @@ namespace CmsData
         }
         internal Expression HasPeopleExtraField()
         {
-            var sev = ExtraValue.Views.GetViewableNameTypes("People", nocache: true).SingleOrDefault(nn => nn.Name == TextValue);
+            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == TextValue);
             if (sev != null && !sev.CanView)
                 return AlwaysFalse();
             Expression<Func<Person, bool>> pred = p => p.PeopleExtras.Any(e => e.Field == TextValue);
@@ -36,7 +36,7 @@ namespace CmsData
         internal Expression PeopleExtraData()
         {
             var field = Quarters;
-            var sev = ExtraValue.Views.GetViewableNameTypes("People", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == field);
             if (sev != null && !sev.CanView)
                 return AlwaysFalse();
             Expression<Func<Person, string>> pred = p =>
@@ -48,7 +48,7 @@ namespace CmsData
         internal Expression PeopleExtraInt()
         {
             var field = Quarters;
-            var sev = ExtraValue.Views.GetViewableNameTypes("People", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == field);
             if (sev != null && !sev.CanView)
                 return AlwaysFalse();
             var value = TextValue.ToInt2();
@@ -79,7 +79,7 @@ namespace CmsData
         internal Expression PeopleExtraDate()
         {
             var field = Quarters;
-            var sev = ExtraValue.Views.GetViewableNameTypes("People", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == field);
             if (sev != null && !sev.CanView)
                 return AlwaysFalse();
             if (!DateValue.HasValue)

@@ -152,28 +152,29 @@ namespace CmsData
         }
         public static string StandardExtraValues2(bool forceread = false)
         {
+            return StandardExtraValues2(DbUtil.Db, forceread: forceread);
+        }
+        public static string StandardExtraValues2(CMSDataContext db, bool forceread = false)
+        {
             if(forceread)
-                return Db.ContentText("StandardExtraValues2", "<Views />");
-            var s = HttpRuntime.Cache[Db.Host + "StandardExtraValues2"] as string;
+                return db.ContentText("StandardExtraValues2", "<Views />");
+            var s = HttpRuntime.Cache[db.Host + "StandardExtraValues2"] as string;
             if (s != null) 
                 return s;
-            s = Db.ContentText("StandardExtraValues2", "<Views />");
-            HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues2", s, null,
+            s = db.ContentText("StandardExtraValues2", "<Views />");
+            HttpRuntime.Cache.Insert(db.Host + "StandardExtraValues2", s, null,
                 DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
             return s;
         }
-        public static void SetStandardExtraValues(string xml)
-        {
-            var c = Content("StandardExtraValues.xml") ?? new Content();
-            c.Body = xml;
-            HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues", c.Body, null,
-                 DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
-        }
         public static void SetStandardExtraValues2(string xml)
         {
-            var c = Db.Content("StandardExtraValues2");
+            SetStandardExtraValues2(Db, xml);
+        }
+        public static void SetStandardExtraValues2(CMSDataContext db, string xml)
+        {
+            var c = db.Content("StandardExtraValues2");
             c.Body = xml;
-            HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues2", xml, null,
+            HttpRuntime.Cache.Insert(db.Host + "StandardExtraValues2", xml, null,
                  DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
         }
         public static string FamilyExtraValues()

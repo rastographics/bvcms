@@ -110,7 +110,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public List<Value> GetStandardExtraValues(string table, string location = null)
         {
-            return Views.GetStandardExtraValuesOrdered(table, location).Select(Value.FromValue).ToList();
+            return Views.GetStandardExtraValuesOrdered(DbUtil.Db, table, location).Select(Value.FromValue).ToList();
         }
         public IEnumerable<Value> GetExtraValues()
         {
@@ -138,13 +138,13 @@ namespace CmsWeb.Models.ExtraValues
 
         public Dictionary<string, string> Codes(string name)
         {
-            var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
             return f.Codes.ToDictionary(ee => ee, ee => ee);
         }
 
         public string CodesJson(string name)
         {
-            var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
             var q = from c in f.Codes
                     select new { value = c, text = c };
             return JsonConvert.SerializeObject(q.ToArray());
@@ -158,7 +158,7 @@ namespace CmsWeb.Models.ExtraValues
 
         private IEnumerable<AllBitsCheckedOrNot> ExtraValueBits(string name)
         {
-            var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Contains(pp.Field)).ToList();
             var q = from c in f.Codes
                     join e in list on c equals e.Field into j
@@ -173,7 +173,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public string DropdownBitsJson(string name)
         {
-            var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Contains(pp.Field)).ToList();
             var q = from c in f.Codes
                     join e in list on c equals e.Field into j
@@ -188,7 +188,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public string ListBitsJson(string name)
         {
-            var f = Views.GetStandardExtraValues(Table).Single(ee => ee.Name == name);
+            var f = Views.GetStandardExtraValues(DbUtil.Db, Table).Single(ee => ee.Name == name);
             var list = ListExtraValues().Where(pp => f.Codes.Contains(pp.Field)).ToList();
             var q = from c in f.Codes
                     join e in list on c equals e.Field into j
@@ -279,9 +279,9 @@ namespace CmsWeb.Models.ExtraValues
 
         public void DeleteStandard(string name, bool removedata)
         {
-            var i = Views.GetViewsViewValue(Table, name);
+            var i = Views.GetViewsViewValue(DbUtil.Db, Table, name);
             i.view.Values.Remove(i.value);
-            i.views.Save();
+            i.views.Save(DbUtil.Db);
 
             if (!removedata)
                 return;
@@ -302,7 +302,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public void ApplyOrder(Dictionary<string, int> orders)
         {
-            var i = Views.GetViewsView(Table, Location);
+            var i = Views.GetViewsView(DbUtil.Db, Table, Location);
             var q = from v in i.view.Values
                     join o in orders on v.Name equals o.Key
                     orderby o.Value
@@ -311,14 +311,14 @@ namespace CmsWeb.Models.ExtraValues
             int n = 1;
             foreach (var v in i.view.Values)
                 v.Order = n++;
-            i.views.Save();
+            i.views.Save(DbUtil.Db);
         }
 
         public void SwitchMultiline(string name)
         {
-            var i = Views.GetViewsViewValue(Table, name);
+            var i = Views.GetViewsViewValue(DbUtil.Db, Table, name);
             i.value.Type = i.value.Type == "Text" ? "Text2" : "Text";
-            i.views.Save();
+            i.views.Save(DbUtil.Db);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
+using CmsData;
 using CmsData.ExtraValue;
 using CmsWeb.Models.ExtraValues;
 using DocumentFormat.OpenXml.EMMA;
@@ -26,10 +27,10 @@ namespace CmsWeb.Controllers
         [POST("ExtraValue/SaveEditedStandard")]
         public ActionResult SaveEditedStandard(NewExtraValueModel m)
         {
-            var i = Views.GetViewsViewValue(m.ExtraValueTable, m.ExtraValueName);
+            var i = Views.GetViewsViewValue(DbUtil.Db, m.ExtraValueTable, m.ExtraValueName);
             i.value.VisibilityRoles = m.VisibilityRoles;
             i.value.Codes = m.ConvertToCodes();
-            i.views.Save();
+            i.views.Save(DbUtil.Db);
             return View("EditStandard", m);
         }
 

@@ -13,7 +13,7 @@ namespace CmsWeb.Models.ExtraValues
     {
         public static IEnumerable<ExtraInfo> CodeSummary()
         {
-            var NameTypes = Views.GetViewableNameTypes("People", nocache: true);
+            var NameTypes = Views.GetViewableNameTypes(DbUtil.Db, "People", nocache: true);
             var standardtypes = new CodeValueModel().ExtraValueTypeCodes();
             var adhoctypes = new CodeValueModel().AdhocExtraValueTypeCodes();
 
@@ -114,7 +114,7 @@ namespace CmsWeb.Models.ExtraValues
         public static SqlDataReader GridReader(Guid id, string sort)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var values = from value in Views.GetStandardExtraValues("People")
+            var values = from value in Views.GetStandardExtraValues(DbUtil.Db, "People")
                          where value.VisibilityRoles != null && (value.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
                          select value.Name;
             var nodisplaycols = string.Join("|", values);
@@ -132,7 +132,7 @@ namespace CmsWeb.Models.ExtraValues
         public static SqlDataReader Grid2Reader(Guid id, string sort)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var values = from value in Views.GetStandardExtraValues("People")
+            var values = from value in Views.GetStandardExtraValues(DbUtil.Db, "People")
                          where value.VisibilityRoles != null && (value.VisibilityRoles.Split(',').All(rr => !roles.Contains(rr)))
                          select value.Name;
             var nodisplaycols = string.Join("|", values);

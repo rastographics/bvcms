@@ -12,25 +12,25 @@ namespace CmsData.ExtraValue
         [XmlElement("View")]
         public List<View> List;
 
-        public void Save()
+        public void Save(CMSDataContext db)
         {
             var newxml = Util.Serialize(this);
-            DbUtil.SetStandardExtraValues2(newxml);
-            DbUtil.Db.SubmitChanges();
+            DbUtil.SetStandardExtraValues2(db, newxml);
+            db.SubmitChanges();
         }
 
-        public static Views GetViews(bool nocache = false)
+        public static Views GetViews(CMSDataContext db, bool nocache = false)
         {
-            var xml = DbUtil.StandardExtraValues2(nocache);
+            var xml = DbUtil.StandardExtraValues2(db, nocache);
 
             var f = Util.DeSerialize<Views>(xml);
             if (f == null)
                 return new Views();
             return f;
         }
-        public static List<Value> GetStandardExtraValues(string table, bool nocache = false)
+        public static List<Value> GetStandardExtraValues(CMSDataContext db, string table, bool nocache = false)
         {
-            return (from vv in GetViews(nocache).List
+            return (from vv in GetViews(db, nocache).List
                     where vv.Table == table
                     from v in vv.Values
                     select v).ToList();
@@ -43,9 +43,9 @@ namespace CmsData.ExtraValue
             public bool CanView { get; set; }
         }
 
-        public static List<StandardValueNameType> GetViewableNameTypes(string table, bool nocache = false)
+        public static List<StandardValueNameType> GetViewableNameTypes(CMSDataContext db, string table, bool nocache = false)
         {
-            var list = (from vv in GetStandardExtraValues(table, nocache)
+            var list = (from vv in GetStandardExtraValues(db, table, nocache)
                         where vv.Type != "Bits"
                         select new StandardValueNameType()
                         { 
@@ -54,7 +54,7 @@ namespace CmsData.ExtraValue
                             CanView = vv.UserCanView()
                         }).ToList();
 
-            var list2 = (from vv in GetStandardExtraValues(table, nocache)
+            var list2 = (from vv in GetStandardExtraValues(db, table, nocache)
                          where vv.Type == "Bits"
                          from v in vv.Codes
                          select new StandardValueNameType()
@@ -73,9 +73,9 @@ namespace CmsData.ExtraValue
             public View view;
             public Value value;
         }
-        public static ViewValue GetViewsViewValue(string table, string name)
+        public static ViewValue GetViewsViewValue(CMSDataContext db, string table, string name)
         {
-            var views = GetViews(nocache: true);
+            var views = GetViews(db, nocache: true);
             var i = from view in views.List
                     where view.Table == table
                     from value in view.Values
@@ -88,9 +88,9 @@ namespace CmsData.ExtraValue
                     };
             return i.Single();
         }
-        public static ViewValue GetViewsView(string table, string location)
+        public static ViewValue GetViewsView(CMSDataContext db, string table, string location)
         {
-            var views = GetViews(nocache: true);
+            var views = GetViews(db, nocache: true);
             var i = from view in views.List
                     where view.Table == table
                     where view.Location == location
@@ -102,9 +102,9 @@ namespace CmsData.ExtraValue
             views.List.Add(vv);
             return new ViewValue() {views = views, view = vv};
         }
-        public static List<Value> GetStandardExtraValuesOrdered(string table, string location)
+        public static List<Value> GetStandardExtraValuesOrdered(CMSDataContext db, string table, string location)
         {
-            var views = GetViews();
+            var views = GetViews(db);
             var q = from vv in views.List
                     where vv.Table == table
                     where vv.Location == location
