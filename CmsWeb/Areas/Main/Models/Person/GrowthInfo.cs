@@ -39,19 +39,18 @@ namespace CmsWeb.Models.PersonPage
                         InterestPointId = p.InterestPointId ?? 0,
                         OriginId = p.OriginId ?? 0,
                         EntryPointId = p.EntryPointId ?? 0,
-                        ChristAsSavior = p.ChristAsSavior,
                         Comments = p.Comments,
-                        InterestedInJoining = p.InterestedInJoining,
-                        MemberAnyChurch = p.MemberAnyChurch,
-                        PleaseVisit = p.PleaseVisit,
-                        SendInfo = p.InfoBecomeAChristian,
+                        ChristAsSavior = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "ChristAsSavior").BitValue ?? false,
+                        InterestedInJoining = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "InterestedInJoining").BitValue ?? false,
+                        SendInfo = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "InfoBecomeAChristian").BitValue ?? false,
+                        PleaseVisit = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "PleaseVisit").BitValue ?? false,
+                        MemberAnyChurch = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "MemberAnyChurch").BitValue ?? false,
                     };
             return q.Single();
         }
         public void UpdateGrowth()
         {
             var p = DbUtil.Db.LoadPersonById(PeopleId);
-
 
             if (InterestPointId == 0)
                 InterestPointId = null;
@@ -63,12 +62,37 @@ namespace CmsWeb.Models.PersonPage
             p.InterestPointId = InterestPointId;
             p.OriginId = OriginId;
             p.EntryPointId = EntryPointId;
-            p.ChristAsSavior = ChristAsSavior;
             p.Comments = Comments;
-            p.InterestedInJoining = InterestedInJoining;
-            p.MemberAnyChurch = MemberAnyChurch;
-            p.PleaseVisit = PleaseVisit;
-            p.InfoBecomeAChristian = SendInfo;
+
+            if(p.ChristAsSavior != ChristAsSavior)
+                if(p.ChristAsSavior)
+                    p.RemoveExtraValue(DbUtil.Db, "ChristAsSavior");
+                else
+                    p.AddEditExtraBool("ChristAsSavior", true);
+
+            if(p.InterestedInJoining != InterestedInJoining)
+                if(p.InterestedInJoining)
+                    p.RemoveExtraValue(DbUtil.Db, "InterestedInJoining");
+                else
+                    p.AddEditExtraBool("InterestedInJoining", true);
+
+            if(p.MemberAnyChurch != MemberAnyChurch)
+                if(p.MemberAnyChurch == true)
+                    p.RemoveExtraValue(DbUtil.Db, "MemberAnyChurch");
+                else
+                    p.AddEditExtraBool("MemberAnyChurch", true);
+
+            if(p.PleaseVisit != PleaseVisit)
+                if(p.PleaseVisit)
+                    p.RemoveExtraValue(DbUtil.Db, "PleaseVisit");
+                else
+                    p.AddEditExtraBool("PleaseVisit", true);
+            
+            if(p.InfoBecomeAChristian != SendInfo)
+                if(p.InfoBecomeAChristian)
+                    p.RemoveExtraValue(DbUtil.Db, "InfoBecomeAChristian");
+                else
+                    p.AddEditExtraBool("InfoBecomeAChristian", true);
 
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("Updated Growth: {0}".Fmt(p.Name));

@@ -30,6 +30,17 @@
                 {
                     <td>@model2.EntryPoint</td>
                 }
+                <td class="nowrap">InterestPoint:</td>
+                @if (User.IsInRole("Edit"))
+                {
+                    <td><a href="#" data-pk="@Model.Id" data-name="InterestPoint" class="click-pencil click-Code-Select" 
+                           data-url="/ExtraValue/EditEntry" data-value="@model2.InterestPoint.Value" data-source="/ExtraValue/InterestPointList"><span>@model2.InterestPoint</span></a>
+                    </td>
+                }
+                else
+                {
+                    <td>@model2.InterestPoint</td>
+                }
             </tr>
         </table>
         <div class="legend">Information Card

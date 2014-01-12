@@ -55,6 +55,11 @@ namespace CmsWeb.Models.PersonPage
                          f = pp.Family,
                          spouse,
                          pp.Picture.SmallId,
+                         ChristAsSavior = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "ChristAsSavior").BitValue,
+                         InterestedInJoining = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "InterestedInJoining").BitValue,
+                         InfoBecomeAChristian = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "InfoBecomeAChristian").BitValue,
+                         PleaseVisit = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "PleaseVisit").BitValue,
+                         MemberAnyChurch = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "MemberAnyChurch").BitValue,
                      }).FirstOrDefault();
             if (i == null)
                 return null;
@@ -144,12 +149,12 @@ namespace CmsWeb.Models.PersonPage
                     InterestPointId = p.InterestPointId ?? 0,
                     OriginId = p.OriginId ?? 0,
                     EntryPointId = p.EntryPointId ?? 0,
-                    ChristAsSavior = p.ChristAsSavior,
                     Comments = p.Comments,
-                    InterestedInJoining = p.InterestedInJoining,
-                    MemberAnyChurch = p.MemberAnyChurch,
-                    PleaseVisit = p.PleaseVisit,
-                    SendInfo = p.InfoBecomeAChristian,
+                    ChristAsSavior = i.ChristAsSavior ?? false,
+                    InterestedInJoining = i.InterestedInJoining ?? false,
+                    MemberAnyChurch = i.MemberAnyChurch ?? false,
+                    PleaseVisit = i.PleaseVisit ?? false,
+                    SendInfo = i.InfoBecomeAChristian ?? false,
                 },
                 membernotes = new MemberNotesInfo
                 {
