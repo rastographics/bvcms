@@ -24,8 +24,8 @@ namespace CmsData
         }
         internal Expression HasPeopleExtraField()
         {
-            var NameTypes = ExtraValue.Views.GetViewableNameTypes("People", nocache: true);
-            if (!NameTypes.Any(nn => nn.Name == TextValue && nn.CanView))
+            var sev = ExtraValue.Views.GetViewableNameTypes("People", nocache: true).SingleOrDefault(nn => nn.Name == TextValue);
+            if (sev != null && !sev.CanView)
                 return AlwaysFalse();
             Expression<Func<Person, bool>> pred = p => p.PeopleExtras.Any(e => e.Field == TextValue);
             Expression expr = Expression.Invoke(pred, parm);
@@ -36,8 +36,8 @@ namespace CmsData
         internal Expression PeopleExtraData()
         {
             var field = Quarters;
-            var NameTypes = ExtraValue.Views.GetViewableNameTypes("People", nocache: true);
-            if (!NameTypes.Any(nn => nn.Name == field && nn.CanView))
+            var sev = ExtraValue.Views.GetViewableNameTypes("People", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            if (sev != null && !sev.CanView)
                 return AlwaysFalse();
             Expression<Func<Person, string>> pred = p =>
                 p.PeopleExtras.Where(ff => ff.Field == field).Select(ff => ff.Data).SingleOrDefault();
@@ -48,8 +48,8 @@ namespace CmsData
         internal Expression PeopleExtraInt()
         {
             var field = Quarters;
-            var NameTypes = ExtraValue.Views.GetViewableNameTypes("People", nocache: true);
-            if (!NameTypes.Any(nn => nn.Name == field && nn.CanView))
+            var sev = ExtraValue.Views.GetViewableNameTypes("People", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            if (sev != null && !sev.CanView)
                 return AlwaysFalse();
             var value = TextValue.ToInt2();
             if (!value.HasValue)
@@ -79,8 +79,8 @@ namespace CmsData
         internal Expression PeopleExtraDate()
         {
             var field = Quarters;
-            var NameTypes = ExtraValue.Views.GetViewableNameTypes("People", nocache: true);
-            if (!NameTypes.Any(nn => nn.Name == field && nn.CanView))
+            var sev = ExtraValue.Views.GetViewableNameTypes("People", nocache: true).SingleOrDefault(nn => nn.Name == field);
+            if (sev != null && !sev.CanView)
                 return AlwaysFalse();
             if (!DateValue.HasValue)
             {
