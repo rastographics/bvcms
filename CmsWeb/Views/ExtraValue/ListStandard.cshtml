@@ -16,7 +16,8 @@
                     <th>Order</th>
                     <th>Name</th>
                     <th>Type</th>
-                    <th>Roles</th>
+                    <th></th>
+                    <th></th>
                     <th></th>
                 </tr>
             </thead>
@@ -28,12 +29,16 @@
                         <td>@f.Name</td>
                         <td>
                             @f.Type
+                        </td>
+                        <td>
                             @if (f.Type.StartsWith("Text"))
                             { 
-                                <br/><a href="/ExtraValue/SwitchMultiline/@Model.Table/@Model.Location?name=@f.Name" class="ajax btn btn-mini">@f.SwitchMultiLineText</a>
+                                <a href="/ExtraValue/SwitchMultiline/@Model.Table/@Model.Location?name=@f.Name" class="ajax btn btn-mini">@f.SwitchMultiLineText</a>
                             }
                         </td>
-                        <td><input type="text" name="roles[@f.Name]" value="@f.VisibilityRoles" class="input" /></td>
+                        <td>
+                            <a href="/ExtraValue/EditStandard/@Model.Table?name=@Server.UrlEncode(f.Name)" class="extravalue btn btn-mini">Edit</a>
+                        </td>
                         <td><a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@f.Name" 
                            class="dialog-options" 
                            data-target="/Dialog/DeleteStandardExtra"
@@ -47,7 +52,7 @@
         </table>
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn CloseListStandard">Close</a>
-        <a href="/ExtraValue/ApplyOrderRoles/@Model.Table/@Model.Location" class="btn btn-primary ajax CloseListStandard">Submit Changes</a>
+        <a id="CloseListStandard" href="#" class="btn ">Close</a>
+        <a href="/ExtraValue/ApplyOrder/@Model.Table/@Model.Location" class="btn btn-warning ajax">Apply Ordering</a>
     </div>
 </form>

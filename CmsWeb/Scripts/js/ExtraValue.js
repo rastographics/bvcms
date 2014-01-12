@@ -50,10 +50,18 @@
                     a.click();
             }
         };
+        $.InitFunctions.EditStandardExtraValueDialogCallback = function () {
+            if ($("#EditStandardExtraValueError").length == 0) {
+                $("#editextravalue-dialog").modal("hide");
+                var a = $a.closest("form").find("a.ajax-refresh");
+                if (a.length > 0)
+                    a.click();
+            }
+        };
         $.InitFunctions.DeleteStandardCallback = function (a) {
             $(a.data("rowid")).remove();
         };
-        $(".CloseListStandard").live("click", function (e) {
+        $("#CloseListStandard").live("click", function (e) {
             e.preventDefault();
             $.InitFunctions.StandardExtraValueDialogCallback();
         });

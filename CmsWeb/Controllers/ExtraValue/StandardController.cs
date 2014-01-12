@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
+using CmsData.ExtraValue;
 using CmsWeb.Models.ExtraValues;
 using DocumentFormat.OpenXml.EMMA;
 
@@ -14,6 +16,21 @@ namespace CmsWeb.Controllers
         {
             var m = new NewExtraValueModel(id, table, location);
             return View(m);
+        }
+        [POST("ExtraValue/EditStandard/{table}")]
+        public ActionResult EditStandard(string table, string name)
+        {
+            var m = new NewExtraValueModel(table, name);
+            return View(m);
+        }
+        [POST("ExtraValue/SaveEditedStandard")]
+        public ActionResult SaveEditedStandard(NewExtraValueModel m)
+        {
+            var i = Views.GetViewsViewValue(m.ExtraValueTable, m.ExtraValueName);
+            i.value.VisibilityRoles = m.VisibilityRoles;
+            i.value.Codes = m.ConvertToCodes();
+            i.views.Save();
+            return View("EditStandard", m);
         }
 
         [POST("ExtraValue/ListStandard/{table}/{location}/{id:int}")]
@@ -48,11 +65,11 @@ namespace CmsWeb.Controllers
             return View("NewStandard", m);
         }
 
-        [POST("ExtraValue/ApplyOrderRoles/{table}/{location}")]
-        public ActionResult ApplyOrderRoles(string table, string location, Dictionary<string, int> orders, Dictionary<string, string> roles)
+        [POST("ExtraValue/ApplyOrder/{table}/{location}")]
+        public ActionResult ApplyOrder(string table, string location, Dictionary<string, int> orders)
         {
             var m = new ExtraValueModel(table, location);
-            m.ApplyOrderRoles(orders, roles);
+            m.ApplyOrder(orders);
             m = new ExtraValueModel(table, location);
             return View("ListStandard", m);
         }
@@ -72,11 +89,10 @@ namespace CmsWeb.Controllers
             m.ConvertToStandard(name);
             return Redirect("/ExtraValue/Summary");
         }
-        [POST("ExtraValue/ChangeRoles/{table}/{location}")]
-        public ActionResult ChangeRoles(string table, string location, string pk, string value)
+        [GET("ExtraValue/ConvertInfoCard")]
+        public ActionResult ConvertInfoCard()
         {
-            var m = new ExtraValueModel(table, location);
-            return new EmptyResult();
+            return Redirect("/ExtraValue/Summary");
         }
     }
 }

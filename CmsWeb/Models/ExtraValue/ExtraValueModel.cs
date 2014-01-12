@@ -300,7 +300,7 @@ namespace CmsWeb.Models.ExtraValues
             DbUtil.Db.SubmitChanges();
         }
 
-        public void ApplyOrderRoles(Dictionary<string, int> orders, Dictionary<string, string> roles)
+        public void ApplyOrder(Dictionary<string, int> orders)
         {
             var i = Views.GetViewsView(Table, Location);
             var q = from v in i.view.Values
@@ -310,10 +310,7 @@ namespace CmsWeb.Models.ExtraValues
             i.view.Values = q.ToList();
             int n = 1;
             foreach (var v in i.view.Values)
-            {
                 v.Order = n++;
-                v.VisibilityRoles = roles[v.Name];
-            }
             i.views.Save();
         }
 

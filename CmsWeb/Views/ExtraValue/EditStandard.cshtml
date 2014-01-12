@@ -1,0 +1,39 @@
+﻿@using System.Diagnostics.Eventing.Reader
+@using CmsWeb.Models.ExtraValues
+@model NewExtraValueModel
+<form id='editextravalue-dialog' class='modal fade hide validate ajax form-horizontal' data-width='600'>
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>Edit Standard Extra Value</h3>
+    </div>
+    <div class="modal-body">
+        <a class="helplink pull-right" target="_blank" href='@ExtraValueModel.HelpLink("EditExtraValue")'>help</a>
+        @Html.HiddenFor(m => m.ExtraValueTable)
+        @Html.HiddenFor(m => m.ExtraValueName)
+        @Html.HiddenFor(m => m.ExtraValueType.Name)
+        @Html.HiddenFor(m => m.ExtraValueType.Value)
+        @Html.DisplayFor(m => m.ExtraValueType)
+        @Html.DisplayFor(m => m.ExtraValueName)
+        @Html.EditorFor(m => m.VisibilityRoles, new { help = "Comma separated roles, blank is visible to all including MyData users, Access role excludes MyData users" })
+        @switch (Model.ExtraValueType.Value)
+        {
+            case "Bits":
+                @Html.EditorFor(m => m.ExtraValueCheckboxes, "TextArea", new { help = "Each code should be a short name on a separate line" })
+                break;
+            case "Code":
+                @Html.EditorFor(m => m.ExtraValueCodes, "TextArea", new { help = "Each code should be a short name on a separate line" })
+                break;
+        }
+        @if (ViewBag.Error != null)
+        {
+        <div id="EditStandardExtraValueError" class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <div>@Html.Raw(ViewBag.Error)</div>
+        </div>
+        }
+    </div>
+    <div class="modal-footer">
+        <a class="btn" data-dismiss="modal">Cancel</a>
+        <a href="/ExtraValue/SaveEditedStandard" class="save btn btn-primary ajax" data-callback="EditStandardExtraValueDialogCallback">Save</a>
+    </div>
+</form>

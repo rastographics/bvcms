@@ -8,6 +8,7 @@ using CmsData;
 using CmsData.ExtraValue;
 using CmsWeb.Code;
 using Dapper;
+using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -83,6 +84,20 @@ namespace CmsWeb.Models.ExtraValues
         }
         public NewExtraValueModel() { }
 
+        public NewExtraValueModel(string table, string name)
+        {
+            var f = Views.GetStandardExtraValues(table).Single(ee => ee.Name == name);
+            ExtraValueType = new CodeInfo(f.Type, "ExtraValueType");
+            ExtraValueName = name;
+            ExtraValueTable = table;
+            var codes = string.Join("\n", f.Codes);
+            switch (ExtraValueType.Value)
+            {
+                case "Bits": ExtraValueCheckboxes = codes; break;
+                case "Code": ExtraValueCodes = codes; break;
+            }
+        }
+
         private void TryCheckIntegrity()
         {
             const string nameAlreadyExistsAsADifferentType = "{0} already exists as a different type";
@@ -124,7 +139,7 @@ namespace CmsWeb.Models.ExtraValues
             }
         }
 
-        private List<string> ConvertToCodes()
+        public List<string> ConvertToCodes()
         {
             const string defaultCodes = @"
 Option 1

@@ -1872,6 +1872,7 @@
     <Content Include="Scripts\Org\OrgSearch.min.js.map">
       <DependentUpon>OrgSearch.js</DependentUpon>
     </Content>
+    <Content Include="Views\ExtraValue\EditStandard.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
