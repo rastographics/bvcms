@@ -44,16 +44,6 @@ namespace CmsWeb.Controllers
         {
             return new PictureResult(id);
         }
-        public ActionResult About()
-        {
-            return View();
-        }
-        public ActionResult Support2(string helplink)
-        {
-            if(helplink.HasValue())
-                TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
-            return View();
-        }
         [ValidateInput(false)]
         public ActionResult ShowError(string error, string url)
         {
@@ -225,6 +215,17 @@ namespace CmsWeb.Controllers
         public ActionResult UserPreferences()
         {
             return View(DbUtil.Db.CurrentUser);
+        }
+    }
+
+    public class Home2Controller : CmsController
+    {
+        [GET("Home/Support2")]
+        public ActionResult Support2(string helplink)
+        {
+            if(helplink.HasValue())
+                TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
+            return View("../Home/Support2");
         }
     }
 }

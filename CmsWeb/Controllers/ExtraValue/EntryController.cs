@@ -26,7 +26,7 @@ namespace CmsWeb.Controllers
         [GET("ExtraValue/InterestPointList")]
         public ActionResult InterestPointList()
         {
-            return Content(EntryModel.EntryPointList());
+            return Content(EntryModel.InterestPointList());
         }
    }
 }

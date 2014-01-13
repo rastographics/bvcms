@@ -37,7 +37,3 @@
     </fieldset>
     <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@Model.Table/Standard/>@Model.Id" />
 </form>
-@if (User.IsInRole("Admin"))
-{
-    <a href="/Display/ContentEdit/@ViewBag.EvSpecId">Standard ExtraValues Specification</a>
-}

@@ -9,12 +9,15 @@
         </ul>
     </div>
     <div class="btn-group omega">
-        <button class="btn dropdown-toggle btn-person-action" data-toggle="dropdown"><i class="fa fa-question-circle"></i></button>
-        <ul class="dropdown-menu pull-left">
-            @Helper.LiAnchorLink("Help Documentation", Util.HelpLink(Util.Helpfile), true, "_blank")
-            @Helper.LiJQueryIdLink("Email Support", "emailsupport")
-            @Helper.LiAnchorLink("About BVCMS", "/Home/About")
-        </ul>
+        <a href="/Home/Support2?helplink=@HttpUtility.UrlEncode(Util.HelpLink(Util.Helpfile))" class="btn btn-person-action">
+            <i class="fa fa-question-circle"></i>
+        </a>
+@*        <button class="btn dropdown-toggle btn-person-action" data-toggle="dropdown"><i class="fa fa-question-circle"></i></button>*@
+@*        <ul class="dropdown-menu pull-left">*@
+@*            @Helper.LiAnchorLink("Help Documentation", Util.HelpLink(Util.Helpfile), true, "_blank")*@
+@*            @Helper.LiJQueryIdLink("Email Support", "emailsupport")*@
+@*            @Helper.LiAnchorLink("About BVCMS", "/Home/About")*@
+@*        </ul>*@
     </div>
 </div>
 
