@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Search.Models
         [SkipFieldOnCopyProperties]
         public int RunCount { get; set; }
 
-        private Query query;
+        public Query query;
 
         public SavedQueryInfo()
         {

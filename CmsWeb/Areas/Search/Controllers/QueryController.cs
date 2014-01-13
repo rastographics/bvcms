@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Data.Linq;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Xml;
@@ -18,6 +19,7 @@ using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
 using UtilityExtensions;
 using CmsData;
+using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
@@ -44,6 +46,12 @@ namespace CmsWeb.Areas.Search.Controllers
                 ViewBag.AutoRun = true;
             m.TopClause.IncrementLastRun();
             DbUtil.Db.SubmitChanges();
+            m.QueryId = m.TopClause.Id;
+            ViewBag.xml = m.TopClause.ToXml();
+            var sb = new StringBuilder();
+            foreach (var c in m.TopClause.AllConditions)
+                sb.AppendLine(c.Key.ToString());
+            ViewBag.ConditionList = sb.ToString();
             return View(m);
         }
 
@@ -171,24 +179,19 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             return Json(m.SavedQueries());
         }
-        [POST("Query/DescriptionUpdate")]
-        public ActionResult DescriptionUpdate(string name, string value, QueryModel m)
+        [POST("Query/SaveAs")]
+        public ActionResult SaveAs(Guid id, string nametosaveas)
         {
-            Debug.Assert(name == "Description");
-            var q = (from qq in DbUtil.Db.Queries
-                     where qq.QueryId == m.TopClause.Id
-                     select qq).Single();
-            q.Name = value;
-            DbUtil.Db.SubmitChanges();
-            return new EmptyResult();
+            var m2 = new SavedQueryInfo(id) {Name = nametosaveas};
+            return View(m2);
         }
-        [POST("Query/CopyQuery")]
-        public ActionResult CopyQuery(QueryModel m)
+        [POST("Query/Save")]
+        public ActionResult Save(string name, string value, SavedQueryInfo m)
         {
-            m.TopClause.PreviousName = m.TopClause.Description;
-            m.TopClause.Description = Util.ScratchPad2;
-            m.TopClause.Save(DbUtil.Db);
-            return Content(m.TopClause.Description);
+            var query = DbUtil.Db.LoadQueryById2(m.QueryId);
+            m.CopyPropertiesTo(query);
+            DbUtil.Db.SubmitChanges();
+            return Redirect("/Query/" + m.QueryId);
         }
 
         [POST("Query/Results/{page?}/{size?}/{sort?}/{dir?}")]

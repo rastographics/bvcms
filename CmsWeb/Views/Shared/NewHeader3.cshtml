@@ -38,12 +38,13 @@
                         @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
                         <li class="space"></li>
                         @Helper.LiAnchorLink("Target Person Tab is " + (targetperson ? "ON" : "OFF"), "/Home/TargetPerson/" + targetperson, access)
-                        @Helper.LiAnchorLink("Use Old Look", "/APITest/UseOldLook", ViewExtensions2.UseNewLook())
                         @if (finance)
                         {
                             @Helper.LiAnchorLink("Turn finance off", "/APITest/TurnFinanceOff", !testnofinance)
                             @Helper.LiAnchorLink("Turn finance on", "/APITest/TurnFinanceOn", testnofinance)
                         }
+                        <li class="space"></li>
+                        @Helper.LiAnchorLink("Use Old Look", "/APITest/UseOldLook", ViewExtensions2.UseNewLook())
                         @Helper.LiAnchorLink("Reset Help tips", "/ResetTips")
                     </ul>
                 </div>

@@ -10,6 +10,8 @@ namespace CmsWeb.Areas.Search.Models
     public class QueryResults : PagedTableModel<Person, PeopleInfo>
     {
         internal CMSDataContext Db;
+        public string Description { get { return topclause.Description; } }
+        public string SaveToDescription { get { return topclause.PreviousName ?? topclause.Description; } }
         public Guid? QueryId { get; set; }
 
         private Condition topclause;
@@ -17,9 +19,14 @@ namespace CmsWeb.Areas.Search.Models
         {
             get
             {
-                return topclause ?? (TopClause = QueryId == null
-                    ? Db.FetchLastQuery()
-                    : Db.LoadCopyOfExistingQuery(QueryId.Value));
+                if(topclause != null) 
+                    return topclause;
+                Condition tc;
+                if(QueryId == null)
+                    topclause =  Db.FetchLastQuery();
+                else
+                    topclause = Db.LoadCopyOfExistingQuery(QueryId.Value);
+                return topclause;
             }
             set
             {

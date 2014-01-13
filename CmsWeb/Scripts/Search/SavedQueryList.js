@@ -16,10 +16,6 @@
                         modal.empty();
                     });
                 });
-                $("#ExportToOld").click(function (ev) {
-                    ev.preventDefault();
-                    window.location = "/SavedQueryList/ExportToOld/" + $("#QueryId").val();
-                });
             });
     });
     $("a.delete-saved-query").live("click", function (ev) {

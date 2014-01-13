@@ -177,12 +177,9 @@ namespace CmsData
             var i = (from existing in Queries
                      where existing.QueryId == existingId
                      select existing).Single();
-
-            // This is my non public query
-            if (string.Compare(i.Owner, Util.UserName, StringComparison.OrdinalIgnoreCase) == 0)
-                return i.ToClause();
-
             i.RunCount = i.RunCount + 1;
+            if (i.Name == Util.ScratchPad2)
+                return i.ToClause();
             var q = ScratchPadCondition().justloadedquery;
             q.Text = i.Text;
             var c = Condition.Import(i.Text, i.Name, newGuids: true, topguid: q.QueryId);

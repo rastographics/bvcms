@@ -46,22 +46,13 @@ namespace CmsWeb.Models.PersonPage
                         PleaseVisit = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:PleaseVisit").BitValue ?? false,
                         MemberAnyChurch = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:MemberAnyChurch").BitValue ?? false,
                     };
-            return q.Single();
+            var gi = q.Single();
+            return gi;
         }
         public void UpdateGrowth()
         {
             var p = DbUtil.Db.LoadPersonById(PeopleId);
-            var q = from pp in DbUtil.Db.People
-                    where pp.PeopleId == PeopleId
-                    select new GrowthInfo
-                    {
-                        ChristAsSavior = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:ChristAsSavior").BitValue ?? false,
-                        InterestedInJoining = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:InterestedInJoining").BitValue ?? false,
-                        SendInfo = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:InfoBecomeAChristian").BitValue ?? false,
-                        PleaseVisit = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:PleaseVisit").BitValue ?? false,
-                        MemberAnyChurch = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:MemberAnyChurch").BitValue ?? false,
-                    };
-            var gi = q.Single();
+            var gi = GetGrowthInfo(PeopleId);
 
             if (InterestPointId == 0)
                 InterestPointId = null;

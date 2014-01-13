@@ -28,22 +28,21 @@
             });
         });
     };
-    $("#Description").editable({
-        placement: "right",
-        showbuttons: "bottom",
-        pk: 1,
-        url: "/Query/DescriptionUpdate",
-        mode: "popup"
-    });
-    $("#CopyQuery").click(function (ev) {
+    $("#SaveAs").click(function (ev) {
         ev.preventDefault();
-        $.postQuery("CopyQuery", function (ret) {
-            $("#Description").text(ret);
+        var href = this.href;
+        $("<div />").load("/Query/SaveAs", {
+            id: $("#QueryId").val(),
+            nametosaveas: $("#SaveToDescription").val()
+        }, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
+            });
         });
-    });
-    $('#DescriptionEdit').click(function (e) {
-        e.stopPropagation();
-        $('#Description').editable('toggle');
     });
     $.AdjustEditCondition = function (option) {
         $("#editcondition .date").datepicker({ autoclose: true, orientation: "auto" });
@@ -280,7 +279,7 @@
         var href = "//www.bvcms.com/DocDialog/" + $(this).data("name");
         if (href.endsWith('-'))
             href = href + $("#ConditionName").val();
-        $("#helpcontent iframe").attr("src", href).ready(function() {
+        $("#helpcontent iframe").attr("src", href).ready(function () {
             $("#QueryConditionHelp").modal("show");
         });
     });

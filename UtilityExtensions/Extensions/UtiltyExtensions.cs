@@ -28,7 +28,7 @@ namespace UtilityExtensions
 
         public static string ScratchPad2
         {
-            get { return "New Query"; }
+            get { return "scratchpad"; }
         }
 
         public static string SessionId

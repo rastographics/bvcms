@@ -25,16 +25,30 @@
     }
 }
 
+<!--
+    @Html.Raw(ViewBag.xml)
+    
+    @Html.Raw(ViewBag.ConditionList)
+    -->
 <div class="container">
     <div class="row-fluid">
         <div class="span4">
             <fieldset>
                 <legend>Search Builder</legend>
                 <div>
-                    <div class="size11 cell align-top">Name: </div>
+                    @Html.Hidden("SaveToDescription")
+                    <div class="size11 cell align-top">
+                        @if (Model.SaveToDescription.HasValue() && Model.SaveToDescription != Model.Description)
+                        {
+                            <small class="muted">Copied from: @Model.SaveToDescription</small>
+                        }
+                        else
+                        {
+                            <small class="muted">@Model.SaveToDescription</small>
+                        }
+                    </div>
                     <div class="cell pad-left">
-                        <a id="Description" href="#" class="click-pencil" title="Enter Query Description">@Model.TopClause.Description</a>
-                        &nbsp;<a id="CopyQuery" href="#" title="Make a Copy"><i class="fa fa-copy"></i></a>
+                        <a id="SaveAs" href="#" class="btn">Save As</a>
                     </div>
                 </div>
                 <div id="conditions">

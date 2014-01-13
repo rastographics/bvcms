@@ -55,11 +55,11 @@ namespace CmsWeb.Models.PersonPage
                          f = pp.Family,
                          spouse,
                          pp.Picture.SmallId,
-                         ChristAsSavior = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "ChristAsSavior").BitValue,
-                         InterestedInJoining = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "InterestedInJoining").BitValue,
-                         InfoBecomeAChristian = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "InfoBecomeAChristian").BitValue,
-                         PleaseVisit = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "PleaseVisit").BitValue,
-                         MemberAnyChurch = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "MemberAnyChurch").BitValue,
+                         ChristAsSavior = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:ChristAsSavior").BitValue,
+                         InterestedInJoining = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:InterestedInJoining").BitValue,
+                         InfoBecomeAChristian = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:InfoBecomeAChristian").BitValue,
+                         PleaseVisit = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:PleaseVisit").BitValue,
+                         MemberAnyChurch = pp.PeopleExtras.SingleOrDefault(ee => ee.Field == "IC:MemberAnyChurch").BitValue,
                      }).FirstOrDefault();
             if (i == null)
                 return null;

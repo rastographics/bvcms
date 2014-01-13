@@ -24,23 +24,18 @@
         "You can go to view all Saved Searches. " +
         "The last five named searches you have used are shown at the bottom of the list."
 }, {
-  title: "A search by any other name..."
-  , element: "#Description"
+  title: "Name it and claim it..."
+  , element: "#SaveAs"
   , placement: "bottom"
-  , content: "You don't have to do a Save As like you used to. " +
-      "Just click in the name or on the pencil and edit the name right here. " +
-      "As you build your searches, they are saved automatically. " +
-      "A new search will have the name 'New Query' " +
-      "and will be reused the next time you need a new search, unless you change the name"
-}, {
-  title: "Make a Copy of this search"
-  , element: "#CopyQuery"
-  , placement: "bottom"
-  , content: "Any search you are running can be cloned. " +
-      "Just click on the double paper icon, and the new search will be named Copy Of..."
+  , content: "Or give it away... " +
+      "You always get a copy of any query you want to look at (we call it the scratchpad). " +
+      "As you build your searches, they are saved automatically to this scratchpad. " +
+      "You can give your search a name using this button. " +
+      "You can even make it public or give it to another user. " +
+      "Once you save your query with a name, you will be working with another copy in your scratchpad."
 }, {
   title: "How conditions are grouped together"
-  , element: "#conditions ul li:first select"
+  , element: "#conditions > ul > li:first > header > select"
   , placement: "bottom"
   , content: "This grey bar is the header for one or more selecting conditions. " +
       "The one I am pointing to is the top most group and will always be there. " +
@@ -58,7 +53,7 @@
   , placement: "right"
   , content: "Click the little gear next to a group or a condition to " +
         "get a dropdown menu with actions like cut, copy, paste, and delete. " +
-        "This is how you will edit copy and move conditions and groups around and even to a new query. " +
+        "This is how you will edit, copy and move conditions and groups around, even to a new query. " +
         "Only the actions that make sense at that point will be shown."
 }, {
   title: "Edit a condition"

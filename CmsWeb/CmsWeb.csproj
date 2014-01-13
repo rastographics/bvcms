@@ -1349,6 +1349,7 @@
     </Content>
     <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Progress.cshtml" />
+    <Content Include="Areas\Search\Views\Query\SaveAs.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Org\OrgSearch.min.js">
       <DependentUpon>OrgSearch.js</DependentUpon>
@@ -1873,6 +1874,9 @@
       <DependentUpon>OrgSearch.js</DependentUpon>
     </Content>
     <Content Include="Views\ExtraValue\EditStandard.cshtml" />
+    <Content Include="Scripts\Search\Query.min.js.map">
+      <DependentUpon>Query.js</DependentUpon>
+    </Content>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
