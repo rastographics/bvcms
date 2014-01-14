@@ -1101,12 +1101,13 @@
     <Content Include="Scripts\js\modernizr-2.6.2.min.js">
       <DependentUpon>modernizr-2.6.2.js</DependentUpon>
     </Content>
+    <Content Include="Scripts\js\hometour.js" />
     <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
     <Content Include="Scripts\Org\Organization.min.js">
       <DependentUpon>Organization.js</DependentUpon>
     </Content>
-    <Content Include="Scripts\People\tour.js" />
+    <Content Include="Scripts\People\persontour.js" />
     <Content Include="Scripts\js\RegSetting2.js" />
     <Content Include="Scripts\js\ExtraValue.js" />
     <Content Include="Scripts\js\sgmap.js" />
@@ -1214,7 +1215,7 @@
     </Content>
     <Content Include="Scripts\Search\SavedQuery2.js" />
     <Content Include="Scripts\Search\SearchTypeahead.js" />
-    <Content Include="Scripts\Search\tour.js" />
+    <Content Include="Scripts\Search\searchtour.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />

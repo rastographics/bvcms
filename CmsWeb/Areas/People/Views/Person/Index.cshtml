@@ -29,7 +29,7 @@
     @Fingerprint.Script("/Scripts/Org/OrgMemberDialog2.js")
     @if (showtip)
     {
-        @Fingerprint.Script("/Scripts/People/tour.js")
+        @Fingerprint.Script("/Scripts/People/persontour.js")
     }
 }
 <div class="container">
@@ -45,11 +45,11 @@
                     <div id="tab-area" class="tabbable primary-tabs">
                         <ul class="nav nav-tabs">
                             <li><a href="#" data-target="#personal" data-toggle="tab" class="active">Personal</a></li>
-                            <li><a href="#enrollment" data-toggle="tab">Involvement</a></li>
+                            <li><a href="#enrollment" class="involvementstop" data-toggle="tab">Involvement</a></li>
                             <li><a href="#profile" data-toggle="tab">Profile</a></li>
                             @if (User.IsInRole("Access")) 
                             {
-                                <li><a href="#ministry" data-toggle="tab">Ministry</a></li> 
+                                <li><a href="#ministry" class="ministrystop" data-toggle="tab">Ministry</a></li> 
                             }
                             @if (Model.Person.CanUserSeeGiving) 
                             {

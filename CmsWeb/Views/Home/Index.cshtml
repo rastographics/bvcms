@@ -2,9 +2,26 @@
 @{
     ViewBag.Title = "Home";
     Layout = ViewExtensions2.Layout();
+    var showtip = !DbUtil.Db.UserPreference("hide-tip-home", "false").ToBool();
+}
+@section head
+{
+    @if (ViewExtensions2.UseNewLook())
+    {
+        @Fingerprint.Css("/Content/css/bootstrap-tour.css")
+    }
 }
 @section scripts
 {
+    @if (ViewExtensions2.UseNewLook())
+    {
+        if (showtip)
+        {
+            @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-tour.js")
+            @Fingerprint.Script("/Scripts/jQuery/jquery.smoothscroll.js")
+            @Fingerprint.Script("/Scripts/js/hometour.js")
+        }
+    }
     <script type="text/javascript">
         $(document).ready(function () {
             $('.jscroll').each(function () {

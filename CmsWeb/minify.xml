@@ -16,7 +16,6 @@
       <stylecss Include="Content/styles/style2.css"/>
       <stylecss Include="Content/styles/pager.css"/>
       <stylecss Include="Content/styles/jquery.jscrollpane.css"/>
-      <stylecss Include="Content/styles/joyride-1.0.5.css"/>
       <stylecss Include="Content/styles/jquery.multiselect.css"/>
       <stylecss Include="Content/styles/jquery.tooltip.css"/>
 <!--      <stylecss Include="Content/styles/Support.css"/>-->

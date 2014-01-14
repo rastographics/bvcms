@@ -7,10 +7,10 @@
 {
   title: "Welcome to the new Person Page!"
   , content: "This page is in beta, but we want you to use it. " +
-      "This guided tour will point a few things out to you. " +
+      "In this tour, we will show you a few things to help you get acclimated. " +
       "Click next to continue. " +
       "Once you have watched this tour, " +
-      "you can <a id='tourdone' class='hide-tip' data-hidetip='person' href='#'>click here</a> so you won't see it again."
+      "you can <a id='tourdone' class='hide-tip red' data-hidetip='person' href='#'>click here</a> so you won't see it again."
   , backdrop: true
   , orphan: true
 }, {
@@ -18,20 +18,20 @@
   , element: "a.edit.editaddr:first"
   , placement: "right"
   , content: "Click the pencil icon. " +
-      "The pencil is used throughout the new UI to indicate edit. " +
-      "A dialog box will appear. You can add a personal address on that dialog."
+      "The pencil is used frequently in the new UI to indicate edit in place of the Edit Button. " +
+      "A dialog box will appear. This dialog is also where you can add a personal address."
 }, {
   title: "We got Badges!"
   , element: "li.badges span:first"
   , placement: "bottom"
-  , content: "You will see what we have been calling Status Flags as badges here. " +
-      "The green ones are updated every night. The blue ones are for campus and membership"
+  , content: "These are status flags presented as badges on a person's record. " +
+      "The green ones are updated every night. The blue ones are for displaying and editing campus and family position."
 }, {
   title: "The new blue toolbar"
   , element: 'div.btn-page-actions'
   , placement: "bottom"
-  ,content: "This replaces the old green toolbar. " +
-      "Email, reports and other actions are done from here."
+  ,content: "This replaces the old green toolbar and the Other Mangement menu as well as a few things from the old family page. " +
+      "You will email, run reports/exports and do other management functions from here."
 }, {
   title: "Famliy Sidebar"
   ,element: "#family-div"
@@ -51,7 +51,7 @@
   , placement: "left"
   ,content: "Related families show here. " +
       "Click the + to add a related family. " +
-      "Click the pencil to edit the desription. " +
+      "For an existing related family, click the pencil to edit the desription. " +
       "Click the family name to go to the head of that family."
 }, {
   title: "Family Photo"
@@ -61,8 +61,25 @@
       "Click the + to upload a photo. " +
       "Click the picture to edit or delete an existing photo."
 }, {
+  title: "Stuff in the Tabs"
+  , element: "a.involvementstop"
+  , placement: "bottom"
+  ,content: "Note the Basic tab is now called Personal. " +
+      "There is no longer an Address tab. " +
+      "Enrollment is now called Involvement. " +
+      "Member Profile is just Profile and " +
+      "Extra Values are found as sub tabs there. "
+}, {
+  title: "More Stuff in the Tabs"
+  , element: "a.ministrystop"
+  , placement: "bottom"
+  ,content: "Growth is now Ministry with various sub-tabs. " +
+      "If you are on your own record or have Finance role, there will be a Giving tab. " +
+      "We added a new tab for Emails also with sub-tabs for sent/received, etc. " +
+      "The System tab is still where you find users, changes, and duplicates."
+}, {
   title: "Want to know more?"
-  ,content: "This ends this little show. " +
+  ,content: "This ends this little tour. " +
       "The next time it starts, you can tell the system that you don't need to see it anymore. " +
       "Be sure to <a href='http://www.youtube.com/bvcmscom' target='_blank'>" +
       "watch the videos we will be doing to introduce the new UI.</a>"

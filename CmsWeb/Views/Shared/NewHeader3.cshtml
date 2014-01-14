@@ -25,7 +25,7 @@
                         <input id="SearchText" type="text" class="input" placeholder="Search" name="search" autocomplete="off">
                     </div>
                 </form>
-                <div class="nav-drop btn-group">
+                <div id="helpstop" class="nav-drop btn-group">
                     @Html.Partial("Menu/Help")
                 </div>
                 <div id="nav-account" class="nav-drop btn-group">
@@ -48,7 +48,7 @@
                         @Helper.LiAnchorLink("Reset Help tips", "/ResetTips")
                     </ul>
                 </div>
-                <div class="nav-drop btn-group">
+                <div id="tagstop" class="nav-drop btn-group">
                     <a href="#" class="btn dropdown-toggle" style="display: inline-block" data-toggle="dropdown">
                         <i class="fa fa-tag outsideCurrentTag"></i><span class="currentTag username"><i class="fa fa-tag"></i> @Util2.CurrentTagName</span> <span class="caret"></span>
                     </a>
