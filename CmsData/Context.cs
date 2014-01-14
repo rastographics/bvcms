@@ -162,11 +162,6 @@ namespace CmsData
             }
             return qb;
         }
-        public QueryBuilderClause LoadQueryById(int? queryid)
-        {
-            var qb = QueryBuilderClauses.SingleOrDefault(c => c.QueryId == queryid);
-            return CheckBadQuery(qb);
-        }
         public IQueryable<Person> PeopleQuery(Guid id)
         {
             if (id == null)
@@ -963,11 +958,10 @@ namespace CmsData
         }
         public IEnumerable<string[]> StatusFlags()
         {
-            var q = from c in QueryBuilderClauses
-                    where c.GroupId == null && c.Field == "Group"
-                    where c.Description.StartsWith("F") && c.Description.Contains(":")
-                    orderby c.Description
-                    select c.Description;
+            var q = from c in Queries
+                    where c.Name.StartsWith("F") && c.Name.Contains(":")
+                    orderby c.Name
+                    select c.Name;
 
             const string FindPrefix = @"^F\d+:.*";
             var re = new Regex(FindPrefix, RegexOptions.Singleline | RegexOptions.Multiline);
@@ -979,10 +973,9 @@ namespace CmsData
         }
         public IEnumerable<string[]> QueryStatClauses()
         {
-            var q = from c in QueryBuilderClauses
-                    where c.GroupId == null && c.Field == "Group"
-                    where c.Description.StartsWith("S") && c.Description.Contains(":")
-                    select c.Description;
+            var q = from c in Queries
+                    where c.Name.StartsWith("S") && c.Name.Contains(":")
+                    select c.Name;
 
             const string FindPrefix = @"^S\d+:.*";
             var re = new Regex(FindPrefix, RegexOptions.Singleline | RegexOptions.Multiline);
