@@ -60,14 +60,14 @@ namespace CmsWeb.Models.ExtraValues
                           from sv in j.DefaultIfEmpty()
                           let type = sv == null ? i.key.Type : sv.Type
                           let typedisplay = sv == null 
-                                ? adhoctypes.Single(ee => ee.Code == type)
-                                : standardtypes.Single(ee => ee.Code == type)
+                                ? adhoctypes.SingleOrDefault(ee => ee.Code == type)
+                                : standardtypes.SingleOrDefault(ee => ee.Code == type)
                           select new ExtraInfo
                           {
                               Field = i.key.Field,
                               Value = "(multiple)",
                               Type = i.key.Type,
-                              TypeDisplay = typedisplay.Value,
+                              TypeDisplay = typedisplay == null ? (type ?? "unknown") : typedisplay.Value,
                               Standard = sv != null,
                               Count = i.count,
                               CanView = sv == null || sv.CanView
