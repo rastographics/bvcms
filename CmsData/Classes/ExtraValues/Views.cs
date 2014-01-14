@@ -107,7 +107,7 @@ namespace CmsData.ExtraValue
             var views = GetViews(db);
             var q = from vv in views.List
                     where vv.Table == table
-                    where vv.Location == location
+                    where location == null || vv.Location == location
                     from v in vv.Values
                     select v;
             var values = q.ToList();
