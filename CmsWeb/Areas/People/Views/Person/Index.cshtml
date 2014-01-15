@@ -5,7 +5,9 @@
 @{
     Layout = "~/Views/Shared/SiteLayout2.cshtml";
     ViewBag.Title = "Person";
-    var showtip = !DbUtil.Db.UserPreference("hide-tip-person", "false").ToBool();
+    var inaccess = User.IsInRole("Access");
+    var showtip = !DbUtil.Db.UserPreference("hide-tip-person", "false").ToBool() && inaccess;
+    var mydatashowtip = !DbUtil.Db.UserPreference("hide-tip-mydata", "false").ToBool() && !inaccess;
 }
 @section head
 {
@@ -23,13 +25,14 @@
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/jQuery/jquery.smoothscroll.js")
-    @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-tour.js")
-    @Fingerprint.Script("/Scripts/People/person1.js")
-    @Fingerprint.Script("/Scripts/Org/OrgMemberDialog2.js")
+    @Fingerprint.Script("/Scripts/bundle.person.js")
     @if (showtip)
     {
         @Fingerprint.Script("/Scripts/People/persontour.js")
+    }
+    @if (mydatashowtip)
+    {
+        @Fingerprint.Script("/Scripts/People/mydatatour.js")
     }
 }
 <div class="container">
@@ -45,13 +48,17 @@
                     <div id="tab-area" class="tabbable primary-tabs">
                         <ul class="nav nav-tabs">
                             <li><a href="#" data-target="#personal" data-toggle="tab" class="active">Personal</a></li>
-                            <li><a href="#enrollment" class="involvementstop" data-toggle="tab">Involvement</a></li>
+                            <li id="involvementstop"><a href="#enrollment"  data-toggle="tab">Involvement</a></li>
                             <li><a href="#profile" data-toggle="tab">Profile</a></li>
                             @if (User.IsInRole("Access")) 
                             {
-                                <li><a href="#ministry" class="ministrystop" data-toggle="tab">Ministry</a></li> 
+                                <li id="ministrystop"><a href="#ministry" data-toggle="tab">Ministry</a></li> 
                             }
-                            @if (Model.Person.CanUserSeeGiving) 
+                            @if (!User.IsInRole("Access"))
+                            {
+                                <li id="givingstop"><a href="#giving" data-toggle="tab">Giving</a></li> 
+                            }
+                            else if (Model.Person.CanUserSeeGiving) 
                             {
                                 <li><a href="#giving" data-toggle="tab">Giving</a></li> 
                             }
@@ -88,7 +95,10 @@
             <div id="sidebar">
                 @Html.Partial("Family/Members", Model.FamilyModel)
                 @Html.Partial("Family/Related", Model.FamilyModel)
-                @Html.Partial("Family/ExtraValues", Model)
+                @if (User.IsInRole("Access"))
+                {
+                    @Html.Partial("Family/ExtraValues", Model)
+                }
                 @Html.Partial("Family/Photo", Model)
             </div>
         </div>

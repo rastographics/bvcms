@@ -1,7 +1,10 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
 <ul class="nav nav-tabs subnav" data-tabparent="emails">
     <li><a href="#receivedemails" data-toggle="tab" class="ajax"><span>Received</span></a></li>
-    <li><a href="#sentemails" data-toggle="tab" class="ajax"><span>Sent</span></a></li>
+    @if (User.IsInRole("Access"))
+    {
+        <li><a href="#sentemails" data-toggle="tab" class="ajax"><span>Sent</span></a></li>
+    }
     <li><a href="#transactional" data-toggle="tab" class="ajax"><span>Transactional</span></a></li>
     @if (User.IsInRole("Access"))
     {
@@ -12,7 +15,10 @@
 </ul>
 <div class="tab-content">
     <div class="tab-pane" id="receivedemails" data-link="/Person2/ReceivedEmails/@Model.PeopleId"></div>
-    <div class="tab-pane" id="sentemails" data-link="/Person2/SentEmails/@Model.PeopleId"></div>
+    @if (User.IsInRole("Access"))
+    {
+        <div class="tab-pane" id="sentemails" data-link="/Person2/SentEmails/@Model.PeopleId"></div>
+    }
     <div class="tab-pane" id="transactional" data-link="/Person2/TransactionalEmails/@Model.PeopleId"></div>
     @if (User.IsInRole("Access"))
     {

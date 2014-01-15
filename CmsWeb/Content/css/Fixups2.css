@@ -1054,7 +1054,7 @@ table.pad0 td {
 }
 
 .red {
-    color: red;
+    color: red !important;
 }
 
 .navbar-fixed-top {

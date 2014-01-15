@@ -1,5 +1,19 @@
-﻿<fieldset class="left-gutter margin-top">
+﻿@using CmsData
+@using UtilityExtensions
+@{
+    var mid = DbUtil.Db.Setting("M_ID", "");
+    var giving = mid.Length > 0 || DbUtil.Db.Setting("OnlineGiving", "false").ToBool();
+        
+}
+<fieldset class="left-gutter margin-top">
     <legend>Online Giving</legend>
+    @if (!giving)
+    {
+        <p class="alert alert-block alert-info">Sorry, it appears that your church has not set up online giving through BVCMS.</p>
+        
+    }
+    else
+    {
     <div class="row-fluid">
         <div class="span6">
             <a href="/Person2/ManageGiving" class="btn btn-primary">Manage Your Recurring Giving</a>
@@ -8,4 +22,5 @@
             <a href="/Person2/OneTimeGift" class="btn btn-primary">Make a One Time Gift</a>
         </div>
     </div>
+    }
 </fieldset>

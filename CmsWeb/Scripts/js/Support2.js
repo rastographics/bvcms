@@ -42,6 +42,7 @@
         CKEDITOR.replace('body', {
             height: 200,
             fullPage: false,
+            allowedContent: true,
             filebrowserUploadUrl: '/Account/CKEditorUpload/',
             filebrowserImageUploadUrl: '/Account/CKEditorUpload/'
         });

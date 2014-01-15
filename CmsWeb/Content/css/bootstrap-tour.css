@@ -82,3 +82,15 @@
 .popover[class*="tour-"].left .arrow:after {
   border-left-color: #f0ffe0;
 }
+.popover[class*="tour-"].right .arrow {
+  border-right-color: red;
+}
+.popover[class*="tour-"].left .arrow {
+  border-left-color: red;
+}
+.popover[class*="tour-"].bottom .arrow {
+  border-bottom-color: red;
+}
+.popover[class*="tour-"].top .arrow {
+  border-top-color: red;
+}

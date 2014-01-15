@@ -3,7 +3,13 @@
 @model PersonModel
 <div>
     <div class="sidebar_title group inactive">
-        <a href="/Person2/@Model.PeopleId?v=@DateTime.Now.Second#familyextravalues"><i class="fa fa-plus"></i> Family Extra Values</a>
+        <a href="/Person2/@Model.PeopleId?v=@DateTime.Now.Second#familyextravalues">
+            @if (Model.Person.CanUserEditAll)
+            {
+            <i class="fa fa-plus"></i>
+            }
+            Family Extra Values
+        </a>
     </div>
 </div>
 

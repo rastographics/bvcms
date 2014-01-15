@@ -44,10 +44,13 @@ else
     if (a.AddressLineOne.HasValue() || a.Preferred)
     {
         var icon = a.Name == "FamilyAddr" ? "fa-home" : "fa-male";
-    <i class="fa @icon fa-fw"></i>
-    <a href="#" class="popover-map" rel="popover">@a.AddrCityStateZipLine()</a>
-    <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="edit editaddr">&nbsp;&nbsp;<i class="fa fa-pencil"></i></a>
-    <br />
+        <i class="fa @icon fa-fw"></i>
+        <a href="#" class="popover-map" rel="popover">@a.AddrCityStateZipLine()</a>
+        if (Model.Person.CanUserEditFamilyAddress)
+        {
+            <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="edit editaddr">&nbsp;&nbsp;<i class="fa fa-pencil"></i></a>
+        }
+        <br />
     }
 }
 @helper ContactLine()
@@ -58,15 +61,15 @@ else
     sb.AppendNext(bull, Model.HomePhone);
     if (sb.Length > 0)
     {
-    <i class="fa fa-comment-o fa-fw"></i>
-    <span id="contactline">@Html.Raw(sb)</span>
+        <i class="fa fa-comment-o fa-fw"></i>
+        <span id="contactline">@Html.Raw(sb)</span>
     }
 }
 @helper Badge(bool tf, string badge, string labeltype)
 {
     if (tf)
     {
-    <span class="label @labeltype">@badge</span>
+        <span class="label @labeltype">@badge</span>
     }
 }
 @helper Picture()

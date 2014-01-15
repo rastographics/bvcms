@@ -25,8 +25,7 @@
   title: "Name it and claim it..."
   , element: "#SaveAs"
   , placement: "bottom"
-  , content: "Or give it away... " +
-      "You always get a copy of any query you want to look at (we call it the scratchpad). " +
+  , content: "You always get a copy of any query you want to look at (we call it the scratchpad). " +
       "As you add and edit Conditions, the search is automatically run and saved to the scratchpad. " +
     "You can give your search a name using this button. " +
       "You can even make it public. " +

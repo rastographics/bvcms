@@ -1,4 +1,4 @@
-﻿<div class="btn-group btn-page-actions">
+﻿<div id="mydatabluetoolbarstop" class="btn-group btn-page-actions">
     <div class="btn-group alpha">
         <button class="btn dropdown-toggle btn-person-action" data-toggle="dropdown"><i class="fa fa-user"></i></button>
         <ul class="dropdown-menu pull-left">
@@ -9,15 +9,9 @@
         </ul>
     </div>
     <div class="btn-group omega">
-        <a href="/Home/Support2?helplink=@HttpUtility.UrlEncode(Util.HelpLink(Util.Helpfile))" class="btn btn-person-action">
+        <a href="/Home/MyDataSupport" class="btn btn-person-action">
             <i class="fa fa-question-circle"></i>
         </a>
-@*        <button class="btn dropdown-toggle btn-person-action" data-toggle="dropdown"><i class="fa fa-question-circle"></i></button>*@
-@*        <ul class="dropdown-menu pull-left">*@
-@*            @Helper.LiAnchorLink("Help Documentation", Util.HelpLink(Util.Helpfile), true, "_blank")*@
-@*            @Helper.LiJQueryIdLink("Email Support", "emailsupport")*@
-@*            @Helper.LiAnchorLink("About BVCMS", "/Home/About")*@
-@*        </ul>*@
     </div>
 </div>
 

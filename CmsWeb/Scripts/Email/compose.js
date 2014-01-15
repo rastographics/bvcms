@@ -5,6 +5,7 @@
         height: 400,
         autoParagraph: false,
         fullPage: false,
+        allowedContent: true,
         filebrowserUploadUrl: '/Account/CKEditorUpload/',
         filebrowserImageUploadUrl: '/Account/CKEditorUpload/'
     });

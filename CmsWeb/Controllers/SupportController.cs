@@ -15,7 +15,7 @@ namespace CmsWeb.Controllers
 	public class SupportController : CmsController
 	{
 		public static string[] SupportPeople = { "Unclaimed", "Bethany", "David", "Karen", "Kyle", "Steven" };
-		public static string SQLSupportInsert = "INSERT INTO [dbo].[SupportRequests] ( Created, Who, Host, Urgency, Request, Subject ) OUTPUT INSERTED.ID VALUES ( @c, @w, @h, @u, @r, @s )";
+		public static string SQLSupportInsert = "INSERT INTO [dbo].[SupportRequests] ( Created, Who, Host, Request, Subject ) OUTPUT INSERTED.ID VALUES ( @c, @w, @h, @r, @s )";
 
 	    public class SupportRequest
 	    {
@@ -24,7 +24,7 @@ namespace CmsWeb.Controllers
             public string lastsearch { get; set; }
 	        public string cc { get; set; }
 	    }
-        [POST("/Support/SendRequest")]
+        [POST("Support/SendRequest")]
         [ValidateInput(false)]
 		public ActionResult SendSupportRequest(SupportRequest req)
 		{
@@ -118,6 +118,46 @@ namespace CmsWeb.Controllers
 			return Content("OK");
 		}
 
+        [POST("Support/MyDataSendRequest")]
+        [ValidateInput(false)]
+		public ActionResult MyDataSendSupportRequest(SupportRequest req)
+		{
+			var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
+			if (cs == null) return Content("Database not available!");
+
+			var who = Util.UserFullName + " <" + Util.UserEmail + ">";
+			var from = "support-system@bvcms.com";
+            var to = DbUtil.AdminMail;
+			var subject = "Support Request: " + Util.UserFullName + " @ " + Util.Host + ".bvcms.com - " + DateTime.Now.ToString("g");
+			
+			var cn = new SqlConnection(cs.ConnectionString);
+			cn.Open();
+			var cmd = new SqlCommand(SQLSupportInsert, cn);
+
+			cmd.Parameters.AddWithValue("@c", DateTime.Now);
+			cmd.Parameters.AddWithValue("@w", who);
+			cmd.Parameters.AddWithValue("@h", Util.Host);
+			cmd.Parameters.AddWithValue("@r", req.body);
+			cmd.Parameters.AddWithValue("@s", subject);
+
+			int lastID = (int)cmd.ExecuteScalar();
+			cn.Close();
+
+			var body = "<b>Request ID:</b> " + lastID + "<br>" +
+				 "<b>Request By:</b> " + Util.UserFullName + " (" + Util.UserEmail + ")<br>" +
+				 "<b>Host:</b> https://" + Util.Host + ".bvcms.com<br>" +
+				 req.body;
+
+			var smtp = Util.Smtp();
+			var email = new MailMessage(from, to, subject, body);
+			email.ReplyToList.Add(who);
+			email.ReplyToList.Add("support@bvcms.com");
+			email.IsBodyHtml = true;
+
+			smtp.Send(email);
+
+			return Content("OK");
+		}
 #if DEBUG
 		private static string DibClick = "<a href='http://test.bvcms.com/ExternalServices/BVCMSSupportLink?requestID={0}&supportPersonID={1}'>{2}</a>";
 #else

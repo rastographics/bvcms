@@ -7,8 +7,8 @@
 @section scripts
 {
     <script type="text/javascript">
-        $(function() {
-            $('#Attendances > thead a.sortable').click(function(ev) {
+        $(function () {
+            $('#Attendances > thead a.sortable').click(function (ev) {
                 ev.preventDefault();
                 var newsort = $(this).text();
                 var oldsort = $("#Sort").val();
@@ -27,35 +27,36 @@
         }
     </script>
 }
-    <h2>Attendance for <a href="/Organization/Index/@Model.OrgId">@Model.OrgName</a></h2>
-    @using (Html.BeginForm())
-    { 
-        <div>
-            <fieldset>
-                <table style="empty-cells:show">
+<h2>Attendance for <a href="/Organization/Index/@Model.OrgId">@Model.OrgName</a></h2>
+<form action="/Reports/Attendance" method="POST">
+    @Html.Hidden("OrgId")
+    <div>
+        <fieldset>
+            <table style="empty-cells:show">
                 <col style="width: 13em; text-align:right" />
                 <col />
                 <col />
-                 <tr>
+                <tr>
                     <td><label for="end">Start Date</label></td>
                     <td>@Html.TextBox("start")</td>
                     <td>@Html.ValidationMessage("start")</td>
                 </tr>
-                 <tr>
+                <tr>
                     <td><label for="end">End Date</label></td>
                     <td>@Html.TextBox("end")</td>
                     <td>@Html.ValidationMessage("end")</td>
                 </tr>
                 <tr>
-                    <td>&nbsp;</td><td><input type="submit" class="bt" value="Run" /></td>
+                    <td>&nbsp;</td>
+                    <td><input type="submit" class="bt" value="Run" /></td>
                 </tr>
-                </table>
-            </fieldset>
-        </div>
+            </table>
+        </fieldset>
+    </div>
     @Html.Hidden("Sort", Model.Sort)
     @Html.Hidden("Dir", Model.Dir)
-    } 
-    <table id="Attendances" class="@ViewExtensions2.GridClass">
+</form>
+<table id="Attendances" class="@ViewExtensions2.GridClass">
     <thead>
     <th><a href='#' class="sortable">Name</a></th>
     <th><a href='#' class="sortable">Age</a></th>
@@ -64,15 +65,15 @@
     <th><a href='#' class="sortable">Count</a></th>
     </thead>
     <tbody>
-@foreach (var p in Model.Attendances())
-{ 
-        <tr>
-        <td><a href="/Person/Index/@p.PeopleId">@p.Name</a></td>
-        <td class="right">@p.Age</td>
-        <td><span style="font-family:Courier New">@p.AttendStr</span></td>
-        <td class="right">@p.AttendPct.ToString("N1")</td>
-        <td class="right">@p.AttendCount</td>
-        </tr>
-}
+        @foreach (var p in Model.Attendances())
+        {
+            <tr>
+                <td><a href="/Person/Index/@p.PeopleId">@p.Name</a></td>
+                <td class="right">@p.Age</td>
+                <td><span style="font-family:Courier New">@p.AttendStr</span></td>
+                <td class="right">@p.AttendPct.ToString("N1")</td>
+                <td class="right">@p.AttendCount</td>
+            </tr>
+        }
     </tbody>
-    </table>
+</table>

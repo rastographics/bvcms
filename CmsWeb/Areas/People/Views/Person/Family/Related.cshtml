@@ -6,14 +6,17 @@
 <div id="related-families-div">
     @if (!Model.RelatedFamilies().Any())
     {
+        if (Model.Person.CanUserEditAll)
+        {
         <div class="sidebar_title group inactive">
             <a href="@dialog" class="searchadd"><i class="fa fa-plus"></i> Add Related Family</a>
         </div>
+        }
     }
     else
     {
         <div class="sidebar_title group">
-            <h2>Related Families</h2>
+            <h2><a>Related Families</a></h2>
             @if (Model.Person.CanUserEditAll)
             {
                 <div class="dropdown">
@@ -41,7 +44,14 @@
                     {
                     <li>
                         <p>
+                            @if (User.IsInRole("Access"))
+                            {
                             <a href="/Person2/@f.PeopleId">@f.Name</a>
+                            }
+                            else
+                            {
+                                @f.Name
+                            }
                             <span class="summary" title="Description of Relationship">@f.Description </span>
                         </p>
                     </li>

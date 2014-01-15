@@ -694,7 +694,8 @@ namespace CmsWeb
         }
         public static bool CanNewLook()
         {
-            return HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("NewLook");
+            return true;
+            //return HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("NewLook");
         }
         public static bool UseNewLook()
         {

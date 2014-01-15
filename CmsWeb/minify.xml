@@ -111,6 +111,13 @@
       <query2 Include="Scripts/Bootstrap/bootstrap-multiselect.js"/>
       <query2 Include="Scripts/jQuery/jquery.scrollintoview.js"/>
       <query2 Include="Scripts/Search/Query.js"/>
+      <query2 Include="Scripts/jQuery/jquery.smoothscroll.js"/>
+      <query2 Include="Scripts/Bootstrap/bootstrap-tour.js"/>
+      
+      <person Include="Scripts/jQuery/jquery.smoothscroll.js"/>
+      <person Include="Scripts/Bootstrap/bootstrap-tour.js"/>
+      <person Include="Scripts/People/person1.js"/>
+      <person Include="Scripts/Org/OrgMemberDialog2.js"/>
 
       <taskpage Include="Scripts/jQuery/jquery.form.js"/>
       <taskpage Include="Scripts/jQuery/jquery.form2.js"/>
@@ -129,6 +136,7 @@
     <JavascriptCompressorTask SourceFiles="@(onlineregister)" OutputFile="Scripts\bundle.onlineregister.js" />
     <JavascriptCompressorTask SourceFiles="@(org)" OutputFile="Scripts\bundle.org.js" />
     <JavascriptCompressorTask SourceFiles="@(query2)" OutputFile="Scripts\bundle.query2.js" />
+    <JavascriptCompressorTask SourceFiles="@(person)" OutputFile="Scripts\bundle.person.js" />
     <JavascriptCompressorTask SourceFiles="@(taskpage)" OutputFile="Scripts\bundle.taskpage.js" />
   </Target>
 </Project>

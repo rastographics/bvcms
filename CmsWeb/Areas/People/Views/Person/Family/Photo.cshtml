@@ -14,9 +14,12 @@
     }
     else
     {
-        <div class="sidebar_title group inactive">
-            <a class="family-picture" href="/Person2/FamilyPictureDialog/@Model.PeopleId"><i class="fa fa-plus"></i>Add Family Photo</a>
-        </div>
+        if (Model.Person.CanUserEditBasic)
+        {
+            <div class="sidebar_title group inactive">
+                <a class="family-picture" href="/Person2/FamilyPictureDialog/@Model.PeopleId"><i class="fa fa-plus"></i>Add Family Photo</a>
+            </div>
+        }
     }
 </div>
 @helper Picture()

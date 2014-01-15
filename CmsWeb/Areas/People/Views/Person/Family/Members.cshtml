@@ -2,7 +2,14 @@
 @model FamilyModel
 <div id="family-div">
     <div class="sidebar_title group">
+        @if (User.IsInRole("Access"))
+        {
         <h2><a href="/Person2/FamilyQuery/@Model.Family.FamilyId">Family Members</a></h2>
+        }
+        else
+        {
+            <h2><a>Family Members</a></h2>
+        }
         @if (Model.Person.CanUserEditAll)
         {
             <div class="dropdown">

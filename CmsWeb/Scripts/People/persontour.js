@@ -27,11 +27,17 @@
   , content: "These are status flags presented as badges on a person's record. " +
       "The green ones are updated every night. The blue ones are for displaying and editing campus and family position."
 }, {
-  title: "The new blue toolbar"
-  , element: 'div.btn-page-actions'
+  title: "The new blue toolbar" // only for access users
+  , element: '#bluetoolbarstop'
   , placement: "bottom"
   ,content: "This replaces the old green toolbar and the Other Mangement menu as well as a few things from the old family page. " +
       "You will email, run reports/exports and do other management functions from here."
+}, {
+  title: "The blue toolbar" // for mydata users
+  , element: '#mydatabluetoolbarstop'
+  , placement: "bottom"
+  ,content: "There is a User button which will allow you to logout, change password, and reset help tips. " +
+      "The ? takes you to the help page. You can contact your church there. "
 }, {
   title: "Famliy Sidebar"
   ,element: "#family-div"
@@ -62,7 +68,7 @@
       "Click the picture to edit or delete an existing photo."
 }, {
   title: "Stuff in the Tabs"
-  , element: "a.involvementstop"
+  , element: "#involvementstop"
   , placement: "bottom"
   ,content: "Note the Basic tab is now called Personal. " +
       "There is no longer an Address tab. " +
@@ -70,13 +76,25 @@
       "Member Profile is just Profile and " +
       "Extra Values are found as sub tabs there. "
 }, {
-  title: "More Stuff in the Tabs"
-  , element: "a.ministrystop"
+    title: "More Stuff in the Tabs" // for access users
+  , element: "#ministrystop"
   , placement: "bottom"
   ,content: "Growth is now Ministry with various sub-tabs. " +
-      "If you are on your own record or have Finance role, there will be a Giving tab. " +
+      "If you are on your own record or have Finance role, " +
+      "there will be a Giving tab which also contains links for online giving. " +
       "We added a new tab for Emails also with sub-tabs for sent/received, etc. " +
       "The System tab is still where you find users, changes, and duplicates."
+}, {
+    title: "More Stuff in the Tabs" // for mydata users
+  , element: "#mydatagiving"
+  , placement: "bottom"
+  ,content: "<p>Your Giving tab contains a list of your contributions, " +
+      "a tab for generating statements, " +
+      "and a tab with links for managing your recurring giving or making a one-time gift. " +
+        "By the way, only you and a Finance person will ever be able to see this information.</p>" +
+        "<p>The emails tab will be a list of emails you have received, both regular and confirmations (transactional). " +
+        "There is also a tab to manage your email opt-outs and see your failed emails." +
+        "</p>"
 }, {
   title: "Want to know more?"
   ,content: "This ends this little tour. " +

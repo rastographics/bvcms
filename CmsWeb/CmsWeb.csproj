@@ -1075,58 +1075,32 @@
     <Content Include="Scripts\bundle.main2c.js" />
     <Content Include="Scripts\bundle.onlineregister.js" />
     <Content Include="Scripts\bundle.org.js" />
+    <Content Include="Scripts\bundle.person.js" />
     <Content Include="Scripts\bundle.query2.js" />
     <Content Include="Scripts\bundle.taskpage.js" />
-    <Content Include="Scripts\Email\compose.min.js">
-      <DependentUpon>compose.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\PostBundle.min.js">
-      <DependentUpon>PostBundle.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jQuery\jquery-1.10.2.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.js" />
-    <Content Include="Scripts\jQuery\jquery.contextmenu.r2.min.js">
-      <DependentUpon>jquery.contextmenu.r2.js</DependentUpon>
-    </Content>
+    <Content Include="Scripts\jQuery\jquery-ui-timepicker-addon.min.js" />
     <Content Include="Scripts\jQuery\jquery.smoothscroll.js" />
-    <Content Include="Scripts\jQuery\jquery.smoothscroll.min.js">
-      <DependentUpon>jquery.smoothscroll.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jQuery\jquery.ui.accordion.js" />
-    <Content Include="Scripts\jQuery\jquery.ui.accordion.min.js">
-      <DependentUpon>jquery.ui.accordion.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\headermenu1c.js" />
     <Content Include="Scripts\js\header.js" />
-    <Content Include="Scripts\js\modernizr-2.6.2.min.js">
-      <DependentUpon>modernizr-2.6.2.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\hometour.js" />
+    <Content Include="Scripts\js\MyDataSupport.js" />
     <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
-    <Content Include="Scripts\Org\Organization.min.js">
-      <DependentUpon>Organization.js</DependentUpon>
-    </Content>
+    <Content Include="Scripts\People\mydatatour.js" />
     <Content Include="Scripts\People\persontour.js" />
     <Content Include="Scripts\js\RegSetting2.js" />
     <Content Include="Scripts\js\ExtraValue.js" />
     <Content Include="Scripts\js\sgmap.js" />
     <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.js" />
-    <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.min.js">
-      <DependentUpon>jquery.gmap-1.1.0.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jQuery\jquery.validate.js" />
     <Content Include="Scripts\jQuery\FixedColumns.js" />
     <Content Include="Scripts\jQuery\FixedHeader.js" />
     <Content Include="Scripts\jQuery\jquery.dataTables.js" />
     <Content Include="Scripts\jQuery\jquery.hiddenposition.1.1.js" />
-    <Content Include="Scripts\jQuery\jquery.multiSelect.min.js">
-      <DependentUpon>jquery.multiSelect.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jQuery\jquery.scrollintoview.js" />
-    <Content Include="Scripts\jQuery\jquery.scrollintoview.min.js">
-      <DependentUpon>jquery.scrollintoview.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jQuery\jquery.textfill.js" />
     <Content Include="Areas\People\Views\Person\Enrollment\Previous.cshtml" />
     <Content Include="Areas\Org\Views\OrgMembersDialog\Index.cshtml" />
@@ -1160,29 +1134,14 @@
     <Content Include="Areas\People\Views\Person\EditorTemplates\CellPhoneInfo.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\CellPhoneInfo.cshtml" />
     <Content Include="Scripts\jQuery\jquery.ui.position.js" />
-    <Content Include="Scripts\jQuery\jquery.validate.min.js">
-      <DependentUpon>jquery.validate.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\People\contact2.js" />
     <Content Include="Scripts\js\ExportToolBar2.js" />
     <Content Include="Scripts\js\contact.js" />
-    <Content Include="Scripts\js\Task.min.js">
-      <DependentUpon>Task.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\UsersEmailFor.js" />
     <Content Include="Scripts\js\ExtraValuesGrid2.js" />
     <Content Include="Scripts\js\form-ajax.js" />
     <Content Include="Scripts\js\give.js" />
-    <Content Include="Scripts\js\RegSettings.min.js">
-      <DependentUpon>RegSettings.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\js\Tags.js" />
-    <Content Include="Scripts\Meeting\meeting-ticket.min.js">
-      <DependentUpon>meeting-ticket.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Meeting\meeting.min.js">
-      <DependentUpon>meeting.js</DependentUpon>
-    </Content>
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\Address.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\Person.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\ResultsFamily.cshtml" />
@@ -1210,9 +1169,6 @@
     <Content Include="Areas\People\Views\Person\Profile\Membership\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Display.cshtml" />
     <Content Include="Scripts\Search\QueryBuilder2.js" />
-    <Content Include="Scripts\Search\QueryBuilder2.min.js">
-      <DependentUpon>QueryBuilder2.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\SavedQuery2.js" />
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
@@ -1342,49 +1298,16 @@
     <Content Include="Content\font-awesome-4.0.3\scss\_spinning.scss" />
     <Content Include="Content\font-awesome-4.0.3\scss\_stacked.scss" />
     <Content Include="Content\font-awesome-4.0.3\scss\_variables.scss" />
-    <Content Include="Scripts\OnlineReg\OnlineReg.min.js">
-      <DependentUpon>OnlineReg.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\OnlineReg\OnlineRegPayment.min.js">
-      <DependentUpon>OnlineRegPayment.js</DependentUpon>
-    </Content>
     <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Progress.cshtml" />
     <Content Include="Areas\Search\Views\Query\SaveAs.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
-    <Content Include="Scripts\Org\OrgSearch.min.js">
-      <DependentUpon>OrgSearch.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\People\Person.min.js">
-      <DependentUpon>Person.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\People\Person1.min.js">
-      <DependentUpon>Person1.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\ContactSearch2.js" />
-    <Content Include="Scripts\Search\Query.min.js">
-      <DependentUpon>Query.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Search\SavedQueryList.js" />
     <Content Include="Scripts\Search\SearchAdd.js" />
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.map" />
-    <Content Include="Scripts\jQuery\jquery.smoothscroll.min.js.map">
-      <DependentUpon>jquery.smoothscroll.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\js\Task.min.js.map">
-      <DependentUpon>Task.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Meeting\meeting.min.js.map">
-      <DependentUpon>meeting.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Meeting\meeting-ticket.min.js.map">
-      <DependentUpon>meeting-ticket.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Finance\PostBundle.min.js.map">
-      <DependentUpon>PostBundle.js</DependentUpon>
-    </Content>
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\js\Pager3.js" />
     <Content Include="Scripts\Mobile\jquery-1.6.4.js" />
@@ -1600,16 +1523,10 @@
     <Content Include="Scripts\Org\enroll-control-ipad.js" />
     <Content Include="Scripts\Org\OrgMemberDialog2.js" />
     <Content Include="Scripts\Search\Query.js" />
-    <Content Include="Scripts\Volunteer\Calendar.min.js">
-      <DependentUpon>Calendar.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Volunteer\Calendar2.js" />
     <Content Include="Areas\Manage\Views\Users\LastActivity.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
     <Content Include="Scripts\jQuery\jquery-migrate-1.1.1.js" />
-    <Content Include="Scripts\Volunteer\Calendar2.min.js">
-      <DependentUpon>Calendar2.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\Volunteer\ManageVolunteer2.js" />
     <Content Include="Scripts\js\headermenu2.js" />
     <Content Include="Scripts\js\modernizr-2.6.2.js" />
@@ -1855,29 +1772,9 @@
     <Content Include="Views\Shared\MyDataFooter.cshtml" />
     <Content Include="Views\Shared\Toolbar\ToolbarMyData.cshtml" />
     <Content Include="Views\Home\Support2.cshtml" />
-    <Content Include="Scripts\Org\Organization.min.js.map">
-      <DependentUpon>Organization.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\People\Person1.min.js.map">
-      <DependentUpon>Person1.js</DependentUpon>
-    </Content>
     <Content Include="Views\Home\UserPreferences.cshtml" />
-    <Content Include="Scripts\OnlineReg\OnlineReg.min.js.map">
-      <DependentUpon>OnlineReg.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Search\QueryBuilder2.min.js.map">
-      <DependentUpon>QueryBuilder2.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\People\Person.min.js.map">
-      <DependentUpon>Person.js</DependentUpon>
-    </Content>
-    <Content Include="Scripts\Org\OrgSearch.min.js.map">
-      <DependentUpon>OrgSearch.js</DependentUpon>
-    </Content>
     <Content Include="Views\ExtraValue\EditStandard.cshtml" />
-    <Content Include="Scripts\Search\Query.min.js.map">
-      <DependentUpon>Query.js</DependentUpon>
-    </Content>
+    <Content Include="Views\Home\MyDataSupport.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

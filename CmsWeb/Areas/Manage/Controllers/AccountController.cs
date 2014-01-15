@@ -145,8 +145,8 @@ CKEditorFuncNum, baseurl + fn, error));
             if (!returnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person/Index/" + Util.UserPeopleId);
-//            if(!DbUtil.Db.UserPreference("UseNewLook").HasValue())
-//                DbUtil.Db.SetUserPreference("UseNewLook", "true");
+            if(!DbUtil.Db.UserPreference("UseNewLook").HasValue())
+                DbUtil.Db.SetUserPreference("UseNewLook", "true");
             if (returnUrl.HasValue())
                 return Redirect(returnUrl);
             return Redirect("/");

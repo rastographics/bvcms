@@ -30,20 +30,6 @@ namespace CmsWeb.Controllers
             var m = new HomeModel();
             return View(m);
         }
-        [GET("Person/TinyImage/{id}")]
-        [GET("Person2/TinyImage/{id}")]
-        [GET("TinyImage/{id}")]
-        public ActionResult TinyImage(int id)
-        {
-            return new PictureResult(id, portrait: true, tiny: true);
-        }
-        [GET("Person/Image/{id:int}/{w:int?}/{h:int?}")]
-        [GET("Person2/Image/{id:int}/{w:int?}/{h:int?}")]
-        [GET("Image/{id:int}/{w:int?}/{h:int?}")]
-        public ActionResult Image(int id, int? w, int? h)
-        {
-            return new PictureResult(id);
-        }
         [ValidateInput(false)]
         public ActionResult ShowError(string error, string url)
         {
@@ -162,26 +148,6 @@ namespace CmsWeb.Controllers
             return Content(JsonConvert.SerializeObject(qq));
         }
 
-        [POST("HideTip")]
-        public ActionResult HideTip(string tip)
-        {
-            DbUtil.Db.SetUserPreference("hide-tip-" + tip, "true");
-            return new EmptyResult();
-        }
-        [GET("ResetTips")]
-        public ActionResult ResetTips()
-        {
-            DbUtil.Db.ExecuteCommand("DELETE dbo.Preferences WHERE Preference LIKE 'hide-tip-%' AND UserId = {0}", Util.UserId);
-            var d = Session["preferences"] as Dictionary<string, string>;
-            var keys = d.Keys.Where(kk => kk.StartsWith("hide-tip-")).ToList();
-            foreach (var k in keys)
-                d.Remove(k);
-
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.ToString());
-            return Redirect("/");
-        }
-
         public ActionResult TestTypeahead()
         {
             return View();
@@ -216,16 +182,54 @@ namespace CmsWeb.Controllers
         {
             return View(DbUtil.Db.CurrentUser);
         }
-    }
-
-    public class Home2Controller : CmsController
-    {
         [GET("Home/Support2")]
         public ActionResult Support2(string helplink)
         {
             if(helplink.HasValue())
                 TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
-            return View("../Home/Support2");
+            return View();
+        }
+    }
+
+    public class Home2Controller : CmsController
+    {
+        [GET("Home/MyDataSupport")]
+        public ActionResult MyDataSupport()
+        {
+            return View("../Home/MyDataSupport");
+        }
+        [POST("HideTip")]
+        public ActionResult HideTip(string tip)
+        {
+            DbUtil.Db.SetUserPreference("hide-tip-" + tip, "true");
+            return new EmptyResult();
+        }
+        [GET("ResetTips")]
+        public ActionResult ResetTips()
+        {
+            DbUtil.Db.ExecuteCommand("DELETE dbo.Preferences WHERE Preference LIKE 'hide-tip-%' AND UserId = {0}", Util.UserId);
+            var d = Session["preferences"] as Dictionary<string, string>;
+            var keys = d.Keys.Where(kk => kk.StartsWith("hide-tip-")).ToList();
+            foreach (var k in keys)
+                d.Remove(k);
+
+            if (Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.ToString());
+            return Redirect("/");
+        }
+        [GET("Person/TinyImage/{id}")]
+        [GET("Person2/TinyImage/{id}")]
+        [GET("TinyImage/{id}")]
+        public ActionResult TinyImage(int id)
+        {
+            return new PictureResult(id, portrait: true, tiny: true);
+        }
+        [GET("Person/Image/{id:int}/{w:int?}/{h:int?}")]
+        [GET("Person2/Image/{id:int}/{w:int?}/{h:int?}")]
+        [GET("Image/{id:int}/{w:int?}/{h:int?}")]
+        public ActionResult Image(int id, int? w, int? h)
+        {
+            return new PictureResult(id);
         }
     }
 }

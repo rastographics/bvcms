@@ -29,16 +29,13 @@ namespace CmsWeb.Areas.Reports.Controllers
         [GET("Reports/Attendance/{id}")]
         public ActionResult Attendance(int id)
         {
-            try
-            {
-                var m = new AttendanceModel(id);
-                UpdateModel(m);
-                return View(m);
-            }
-            catch (Exception ex)
-            {
-                return Content(ex.Message);
-            }
+            var m = new AttendanceModel() { OrgId = id };
+            return View(m);
+        }
+        [POST("Reports/Attendance")]
+        public ActionResult Attendance(AttendanceModel m)
+        {
+            return View("Attendance", m);
         }
         [GET("Reports/Attendee/{id}")]
         public ActionResult Attendee(int id)

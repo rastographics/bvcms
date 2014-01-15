@@ -6,41 +6,50 @@ using CmsData;
 using System.Text;
 using System.Collections;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Models.Report
 {
     public class AttendanceModel
     {
-        public DateTime start { get; set; }
-        public DateTime end { get; set; }
-        public int OrgId { get; set; }
+        public DateTime? start { get; set; }
+        public DateTime? end { get; set; }
+
+        private int _orgId;
+        public int OrgId
+        {
+            get { return _orgId; }
+            set
+            {
+                _orgId = value;
+                var dt = UtilityExtensions.Util.Now;
+                var q = from o in DbUtil.Db.Organizations
+                        where o.OrganizationId == _orgId
+                        select new
+                        {
+                            o.OrganizationName,
+                            MaxMeet = o.Meetings.Where(m => m.MeetingDate < dt).Max(m => m.MeetingDate),
+                            MinMeet = o.Meetings.Min(m => m.MeetingDate)
+                        };
+                var i = q.SingleOrDefault();
+                if (i == null)
+                    throw new Exception("organization not found");
+                if (!i.MinMeet.HasValue)
+                    throw new Exception("no meetings");
+                OrgName = i.OrganizationName;
+                if (!end.HasValue)
+                {
+                    end = i.MaxMeet.Value;
+                    start = end.Value.AddYears(-1);
+                }
+                if (i.MinMeet > start)
+                    start = i.MinMeet.Value;
+            }
+        }
+
         public string OrgName { get; set; }
         public string Sort { get; set; }
         public string Dir { get; set; }
-
-        public AttendanceModel(int orgId)
-        {
-            OrgId = orgId;
-            var dt = UtilityExtensions.Util.Now;
-            var q = from o in DbUtil.Db.Organizations
-                    where o.OrganizationId == orgId
-                    select new
-                    {
-                        o.OrganizationName,
-                        MaxMeet = o.Meetings.Where(m => m.MeetingDate < dt).Max(m => m.MeetingDate),
-                        MinMeet = o.Meetings.Min(m => m.MeetingDate)
-                    };
-            var i = q.SingleOrDefault();
-            if (i == null)
-                throw new Exception("organization not found");
-            if (!i.MinMeet.HasValue)
-                throw new Exception("no meetings");
-            OrgName = i.OrganizationName;
-            end = i.MaxMeet.Value;
-            start = end.AddYears(-1);
-            if (i.MinMeet > start)
-                start = i.MinMeet.Value;
-        }
 
         public IEnumerable<AttendInfo> Attendances()
         {

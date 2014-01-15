@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Support";
+    Layout = ViewExtensions2.Layout();
+}
+@section head
+{
+    <style>
+        #needhelp td {
+            padding: 5px;
+        }
+
+        #needhelp b {
+            font-size: 120%;
+        }
+
+        #success {
+            background-color: lightcoral !important;
+        }
+
+            #success td {
+                color: white;
+                font-size: 130%;
+            }
+    </style>
+}
+@section scripts
+{
+    @ViewExtensions2.CKEditor()
+    @Fingerprint.Script("/Scripts/js/MyDataSupport.js")
+}
+<h2>Get Help</h2>
+<form id="requestform">
+    <table id="supportForm" class="center" style="width:700px">
+        <tr>
+            <td>
+                <textarea name="body" id="body"></textarea>
+                <input id="sendSupport" type="button" class="bt blue" value="Submit Request">
+            </td>
+        </tr>
+    </table>
+</form>
+<table id="about" class="roundbox center">
+    <tr>
+        <td class="center">
+            <h2>
+                @if (Util.IsHosted)
+                {
+                    <text>Open Source Software,<br />Hosting and Support Provided By</text>
+                }
+                else
+                {
+                    <text>Open Source Software Provided By</text>
+                }
+            </h2>
+            <br /><br />
+            <span class="center"><a href="http://www.bvcms.com"><img src="/Content/images/bvcms150.png" /></a></span>
+        </td>
+    </tr>
+</table>
+<table id="success" class="roundbox center" width="500">
+    <tr><td>Your support request has been submitted. Thank you for contacting us. We will get back to you as soon as possible.</td></tr>
+</table>
