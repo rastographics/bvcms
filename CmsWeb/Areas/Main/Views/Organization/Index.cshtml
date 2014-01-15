@@ -14,10 +14,6 @@
 @section scripts
 {
     @ViewExtensions2.CKEditor()
-    @Fingerprint.Script("/Scripts/jquery/jquery-ui-timepicker-addon.js")
-    <script>
-        $.fn.jqdatetimepicker = $.fn.datetimepicker;
-    </script>
     @Fingerprint.Script("/Scripts/bundle.org.js")
 }
 @{ CmsData.Organization o = Model.org; }

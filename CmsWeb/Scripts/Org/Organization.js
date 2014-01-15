@@ -207,7 +207,7 @@ $(function () {
         $("ul.edit .datepicker", f).jqdatepicker({
             //beforeShow: function () { $('#ui-datepicker-div').maxZIndex(); }
         });
-        $("ul.edit .timepicker", f).timepicker({
+        $("ul.edit .timepicker", f).jqdatetimepicker({
             stepHour: 1,
             stepMinute: 5,
             timeOnly: true,

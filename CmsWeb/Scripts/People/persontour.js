@@ -30,7 +30,7 @@
   title: "The new blue toolbar" // only for access users
   , element: '#bluetoolbarstop'
   , placement: "bottom"
-  ,content: "This replaces the old green toolbar and the Other Mangement menu as well as a few things from the old family page. " +
+  ,content: "This replaces the old green toolbar and the Other Management menu as well as a few things from the old family page. " +
       "You will email, run reports/exports and do other management functions from here."
 }, {
   title: "The blue toolbar" // for mydata users

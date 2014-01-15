@@ -799,7 +799,7 @@
 					this.$timeObj.text(this.formattedTime + pickerTimeSuffix);
 				}
 				else {
-					this.$timeObj.text($.datepicker.formatTime(pickerTimeFormat, this, o) + pickerTimeSuffix);
+				    this.$timeObj.text($.datepicker.formatTime(pickerTimeFormat, this, o) + pickerTimeSuffix);
 				}
 			}
 
@@ -1036,7 +1036,7 @@
 		/*
 		* shorthand just to use timepicker.
 		*/
-		timepicker: function (o) {
+		jqtimepicker: function (o) {
 			o = o || {};
 			var tmp_args = Array.prototype.slice.call(arguments);
 
@@ -1047,30 +1047,30 @@
 			}
 
 			return $(this).each(function () {
-				$.fn.datetimepicker.apply($(this), tmp_args);
+			    $.fn.jqdatetimepicker.apply($(this), tmp_args);
 			});
 		},
 
 		/*
 		* extend timepicker to datepicker
 		*/
-		datetimepicker: function (o) {
+		jqdatetimepicker: function (o) {
 			o = o || {};
 			var tmp_args = arguments;
 
 			if (typeof(o) === 'string') {
 				if (o === 'getDate') {
-					return $.fn.datepicker.apply($(this[0]), tmp_args);
+					return $.fn.jqdatepicker.apply($(this[0]), tmp_args);
 				} else {
 					return this.each(function () {
 						var $t = $(this);
-						$t.datepicker.apply($t, tmp_args);
+						$t.jqdatepicker.apply($t, tmp_args);
 					});
 				}
 			} else {
 				return this.each(function () {
 					var $t = $(this);
-					$t.datepicker($.timepicker._newInst($t, o)._defaults);
+					$t.jqdatepicker($.timepicker._newInst($t, o)._defaults);
 				});
 			}
 		}

@@ -24,7 +24,6 @@
       <main Include="Scripts/jQuery/jquery.cookie.js"/>
       <main Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main Include="Scripts/jQuery/jquery.mousewheel.js"/>
-      <main Include="Scripts/jquery/jquery-ui-timepicker-addon.js"/>
       <main Include="Scripts/jQuery/jquery.jscrollpane.js"/>
       <main Include="Scripts/jQuery/jquery.jeditable.js"/>
       <main Include="Scripts/jQuery/jquery.validate.js"/>
@@ -104,6 +103,7 @@
       <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.showpassword.js"/>
 
+      <org Include="Scripts/jQuery/jquery-ui-timepicker-addon.js"/>
       <org Include="Scripts/Org/Organization.js"/>
       <org Include="Scripts/Dialog/SearchUsers.js"/>
       <org Include="Scripts/js/RegSetting.js"/>

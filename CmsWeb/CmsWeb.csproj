@@ -1080,7 +1080,6 @@
     <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.js" />
-    <Content Include="Scripts\jQuery\jquery-ui-timepicker-addon.min.js" />
     <Content Include="Scripts\jQuery\jquery.smoothscroll.js" />
     <Content Include="Scripts\jQuery\jquery.ui.accordion.js" />
     <Content Include="Scripts\js\headermenu1c.js" />
