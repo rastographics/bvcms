@@ -229,8 +229,8 @@ namespace CmsWeb.Models
         }
         public string ShowCount()
         {
-            var cnt = 0;
             var n = GetCount();
+            var cnt = n;
             if (n > PageSize)
                 cnt = n - StartRow;
             if (cnt > PageSize)

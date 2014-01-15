@@ -140,7 +140,7 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Resident Code")]
         public CodeInfo ResCode { get; set; }
 
-        [DisplayName("Primar Address")]
+        [DisplayName("Primary Address")]
         public bool Preferred { get; set; }
 
         [DisplayName("From Date")]

@@ -14,7 +14,7 @@
         @Html.HiddenFor(m => m.ExtraValueType.Value)
         @Html.DisplayFor(m => m.ExtraValueType)
         @Html.DisplayFor(m => m.ExtraValueName)
-        @Html.EditorFor(m => m.VisibilityRoles, new { help = "Comma separated roles, blank is visible to all including MyData users, Access role excludes MyData users" })
+        @Html.EditorFor(m => m.VisibilityRoles, new { help = "Comma separated roles, blank is visible to all, execpt for MyData users" })
         @switch (Model.ExtraValueType.Value)
         {
             case "Bits":
