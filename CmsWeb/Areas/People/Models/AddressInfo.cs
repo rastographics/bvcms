@@ -135,7 +135,8 @@ namespace CmsWeb.Areas.People.Models
         public AddressVerify.AddressResult Result { get; set; }
 
         [DisplayName("Bad Address Flag")]
-        public bool? BadAddress { get; set; }
+        public bool BadAddress { get; set; }
+        public string BadAddressClass { get { return BadAddress ? "badaddress" : ""; }}
 
         [DisplayName("Resident Code")]
         public CodeInfo ResCode { get; set; }
@@ -206,7 +207,7 @@ namespace CmsWeb.Areas.People.Models
                     a.AddressLineOne = p.Family.AddressLineOne;
                     a.AddressLineTwo = p.Family.AddressLineTwo;
                     a.ToDt = p.Family.AddressToDate;
-                    a.BadAddress = p.Family.BadAddressFlag;
+                    a.BadAddress = p.Family.BadAddressFlag ?? false;
                     a.CityName = p.Family.CityName;
                     a.ZipCode = p.Family.ZipCode;
                     a.StateCode = new CodeInfo(p.Family.StateCode, "State");
@@ -220,7 +221,7 @@ namespace CmsWeb.Areas.People.Models
                     a.AddressLineOne = p.AddressLineOne;
                     a.AddressLineTwo = p.AddressLineTwo;
                     a.ToDt = p.AddressToDate;
-                    a.BadAddress = p.BadAddressFlag;
+                    a.BadAddress = p.BadAddressFlag ?? false;
                     a.CityName = p.CityName;
                     a.ZipCode = p.ZipCode;
                     a.StateCode = new CodeInfo(p.StateCode, "State");

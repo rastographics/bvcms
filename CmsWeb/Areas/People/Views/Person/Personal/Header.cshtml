@@ -45,7 +45,7 @@ else
     {
         var icon = a.Name == "FamilyAddr" ? "fa-home" : "fa-male";
         <i class="fa @icon fa-fw"></i>
-        <a href="#" class="popover-map" rel="popover">@a.AddrCityStateZipLine()</a>
+        <a href="#" class="popover-map @a.BadAddressClass" rel="popover">@a.AddrCityStateZipLine()</a>
         if (Model.Person.CanUserEditFamilyAddress)
         {
             <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="edit editaddr">&nbsp;&nbsp;<i class="fa fa-pencil"></i></a>
