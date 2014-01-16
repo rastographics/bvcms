@@ -83,7 +83,8 @@ namespace CmsWeb.Areas.People.Models
                        AttendPct = om.AttendPct,
                        DivisionName = om.Organization.Division.Name,
                        ProgramName = om.Organization.Division.Program.Name,
-                       OrgType = om.Organization.OrganizationType.Description ?? "Other"
+                       OrgType = om.Organization.OrganizationType.Description ?? "Other",
+                       HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0
                    };
         }
     }

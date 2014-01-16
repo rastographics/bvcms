@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.People.Models
         public string DivisionName { get; set; }
         public string ProgramName { get; set; }
         public string OrgType { get; set; }
-        public string HasDirectory { get; set; }
+        public bool HasDirectory { get; set; }
 
         public string Schedule { get { return "{0:ddd h:mm tt}".Fmt(MeetingTime); } }
         public string SchComma { get { return MeetingTime.HasValue ? ", " : ""; } }

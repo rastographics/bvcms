@@ -68,7 +68,14 @@
                 {
                 <tr>
                     <td class="indent">
-                        <a title="@om.DivisionName" href="/OrgContent/Index/@om.OrgId">@om.Name</a>
+                        @if (om.HasDirectory)
+                        {
+                            <a title="@om.DivisionName" href="/MemberDirectory/Index/@om.OrgId">@om.Name</a>
+                        }
+                        else
+                        {
+                            <a title="@om.DivisionName" href="/OrgContent/Index/@om.OrgId">@om.Name</a>
+                        }
                     </td>
                     <td>@om.LeaderName</td>
                     <td>@om.EnrollDate.FormatDate()</td>
