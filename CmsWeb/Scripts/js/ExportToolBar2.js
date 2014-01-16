@@ -40,11 +40,19 @@
         return false;
     });
 
+    if (!$.InitFunctions)
+        $.InitFunctions = {};
+    $.InitFunctions.TagAllCallBack = function (a) {
+        $(".taguntag:visible").text("Remove");
+    };
+
     $('#UnTagAll').live("click", function (ev) {
         ev.preventDefault();
+        var $a = $(this);
         $.block();
         $.post(this.href, null, function (ret) {
             $(".taguntag:visible").text(ret);
+            $('[data-toggle="dropdown"]').parent().removeClass('open');
             $.unblock();
         });
         return false;

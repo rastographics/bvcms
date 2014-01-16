@@ -3,7 +3,7 @@
     var developer = User.IsInRole("Developer");
 }
 <li class="header">Tags</li>
-<li><a href='@ViewBag.TagAction' class="dialog-options" data-target="/Dialog/TagAll">Add All</a></li>
+<li><a href='@ViewBag.TagAction' class="dialog-options" data-target="/Dialog/TagAll" data-callback="TagAllCallBack">Add All</a></li>
 <li><a id="UnTagAll" href='@ViewBag.UnTagAction'>Remove All</a></li>
 
 <li class="header">Contacts / Tasks</li>

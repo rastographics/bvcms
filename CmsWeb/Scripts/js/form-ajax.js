@@ -155,5 +155,6 @@
         }).show();
         $loadingcount++;
     };
-    $.InitFunctions = {};
+    if(!$.InitFunctions)
+        $.InitFunctions = {};
 });

@@ -14,7 +14,7 @@
     $(".datepicker").jqdatepicker();
 
     $("#SelectAll").click(function () {
-        $("input[name='list']").attr('checked', $(this).attr('checked'));
+        $("input[name='list']:checkbox").prop('checked', this.checked);
     });
     $("body").on('click', 'a.display', function (ev) {
         ev.preventDefault();
