@@ -289,6 +289,15 @@
     }
     else if ($("#AutoRun").val() === "True")
         RefreshList();
+    $('a.taguntag').live("click", function (ev) {
+        $.post('/Query/ToggleTag/' + $(this).attr('value'), function (ret) {
+            if (ret.error)
+                alert(ret.error);
+            else
+                $(ev.target).text(ret.HasTag ? "Remove" : "Add");
+        });
+        return false;
+    });
 });
 
 function RefreshList(qs) {
@@ -301,15 +310,6 @@ function RefreshList(qs) {
             $('#toolbar').show();
             $('#results').html(ret);
             $('#people tbody tr:even').addClass('alt');
-            $('a.taguntag').click(function (ev) {
-                $.post('/Query/ToggleTag/' + $(this).attr('value'), function (ret) {
-                    if (ret.error)
-                        alert(ret.error);
-                    else
-                        $(ev.target).text(ret.HasTag ? "Remove" : "Add");
-                });
-                return false;
-            });
             $('#people thead a.sortable').click(function (ev) {
                 var newsort = $(this).text();
                 var oldsort = $("#Sort").val();
