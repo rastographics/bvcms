@@ -3,12 +3,18 @@
     <div class="modal-header">
         <a class="close" data-dismiss="modal">x</a>
         <h4>Save Query As</h4>
-        <p>
-            This will not overwrite any existing searches.
-            If you save this with the same name as an existing search, you will then have two searches with the same name.
-            After you have saved this, go to Saved Searches to delete the old one if you don't need it any more.
-            The most recently run search will be at the top of your saved searches.
-        </p>
+        <div class="alert alert-block alert-info">
+            A existing query will be overwritten in the following two cases:
+            <ol>
+                <li>
+                    You <b>are not</b> an Admin and you own an existing query the same name.
+                </li>
+                <li>
+                    You <b>are</b> an Admin, and there is an existing query with the same name and owner you specify.
+                </li>
+            </ol>
+            Otherwise, a new query will be written.
+        </div>
     </div>
     <div class="modal-body">
         <fieldset class="display">

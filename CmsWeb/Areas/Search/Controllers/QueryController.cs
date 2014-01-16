@@ -6,13 +6,10 @@
  */
 
 using System;
-using System.Diagnostics;
 using System.Net;
-using System.Data.Linq;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using System.Web.Mvc.Html;
 using System.Xml;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
@@ -189,6 +186,24 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Save(string name, string value, SavedQueryInfo m)
         {
             var query = DbUtil.Db.LoadQueryById2(m.QueryId);
+            var previous = DbUtil.Db.Queries.SingleOrDefault(vv => vv.Owner == m.Owner && vv.Name == name);
+            if (previous != null)
+            {
+                // copying over a previous query with same name and owner
+                m.CopyPropertiesTo(previous);
+                previous.Text = query.Text;
+                DbUtil.Db.SubmitChanges();
+                return Redirect("/Query/" + previous.QueryId);
+
+//                m.CopyPropertiesTo(previous);
+//                var pc = previous.ToClause();
+//                pc.Reset(DbUtil.Db);
+//                pc = Condition.Import(query.Text, name, newGuids: true, topguid: previous.QueryId);
+//                previous.Text = pc.ToXml();
+//                DbUtil.Db.SubmitChanges();
+//                return Redirect("/Query/" + previous.QueryId);
+            }
+            // saving to a new query
             m.CopyPropertiesTo(query);
             DbUtil.Db.SubmitChanges();
             return Redirect("/Query/" + m.QueryId);

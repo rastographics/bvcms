@@ -178,6 +178,7 @@ namespace CmsData
                      where existing.QueryId == existingId
                      select existing).Single();
             i.RunCount = i.RunCount + 1;
+            i.LastRun = DateTime.Now;
             if (i.Name == Util.ScratchPad2)
                 return i.ToClause();
             var q = ScratchPadCondition().justloadedquery;
