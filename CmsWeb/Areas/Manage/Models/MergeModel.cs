@@ -191,7 +191,7 @@ namespace CmsWeb.Models
             target.UpdateValue(psb, "AltName", pi[UseAltName].AltName);
             target.UpdateValue(psb, "MaidenName", pi[UseMaiden].Maiden);
             target.UpdateValue(psb, "GenderId", pi[UseGenderId].GenderId);
-            target.UpdateValue(psb, "CampusId", pi[UseCampusId].CampusId == 0 ? (int?)null : (int?)pi[UseCampusId].CampusId);
+            target.UpdateValue(psb, "CampusId", (pi[UseCampusId].CampusId ?? 0) == 0 ? (int?)null : (int?)pi[UseCampusId].CampusId);
             target.UpdateValue(psb, "MaritalStatusId", pi[UseMaritalStatusId].MaritalStatusId);
             target.UpdateValue(psb, "DOB", pi[UseDOB].DOB);
             target.UpdateValue(psb, "CellPhone", pi[UseCellPhone].CellPhone.GetDigits());

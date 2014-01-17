@@ -20,6 +20,14 @@
         });
         return r[item];
     };
+    $('#cleartag').click(function (e) {
+        e.preventDefault();
+        var href = this.href;
+        if (confirm("are you sure you want to empty the active tag?"))
+            $.post(href, {}, function () {
+                window.location.reload();
+            });
+    });
     $.block = function (message) {
         if (!message)
             message = '<h1>working on it...</h1>';

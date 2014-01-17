@@ -1156,3 +1156,8 @@ div.logo {
 .editable-pre-wrapped {
     white-space: pre-line;
 }
+
+#tagdropdown {
+    height: 35em;
+    overflow: auto;
+}
