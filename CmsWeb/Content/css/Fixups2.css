@@ -437,6 +437,7 @@ span.currentTag {
 #sidebar .sidebar_title.inactive a {
     color: #bbb;
 }
+
 @media (min-width: 1200px) {
     .maxWidthMedium {
         max-width: 35em;
@@ -1138,4 +1139,20 @@ table.pad0 td {
 div.logo {
     background-image: url(/Content/images/bvcms-logo-on-dark.png);
     background-position: left center;
+}
+
+#profile-actions .btn-person-action {
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#3482C6', endColorstr='#25639A'); /*For IE7-8-9*/
+}
+
+#profile_tabs {
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#fafafa', endColorstr='#e5e5e5'); /*For IE7-8-9*/
+}
+
+    #profile_tabs li.tabs_selected {
+        filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#e1e1e1', endColorstr='#cecece'); /*For IE7-8-9*/
+    }
+
+.editable-pre-wrapped {
+    white-space: pre-line;
 }
