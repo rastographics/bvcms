@@ -102,6 +102,8 @@ namespace CmsWeb.Models.ExtraValues
         {
             const string nameAlreadyExistsAsADifferentType = "{0} already exists as a different type";
             string type = ExtraValueLocation == "Adhoc" ? AdhocExtraValueType.Value : ExtraValueType.Value;
+            if (type == "Text2")
+                type = "Text";
             switch (ExtraValueTable)
             {
                 case "People":
