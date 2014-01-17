@@ -9,6 +9,7 @@
         url = "/Person2/InlineEdit/" + Model.PeopleId,
         source = "/Person2/InlineCodes/"
     };
+    var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
 }
 <form class="form ajax form-horizontal span12 margin-top" method="post" data-init="Editable">
     <fieldset class="left-gutter margin-top">
@@ -29,7 +30,16 @@
                     <tr>
                         <td><a href="/Person/ContributionStatement/@Model.PeopleId/@year.StartDate.ToSortableDate()/@year.EndDate.ToSortableDate()">@year.StartDate.Year</a></td>
                         <td class="right">@year.Count.ToString("N0")</td>
-                        <td class="right">@year.Amount.ToString("c")</td>
+                        <td class="right">
+                            @if (finance)
+                            {
+                            <a href='/Finance/Contributions?id=@Model.PeopleId&year=@year.StartDate.Year'>@year.Amount.ToString("c")</a>
+                            }
+                            else
+                            {
+                            @year.Amount.ToString("c")
+                            }
+                        </td>
                     </tr>
                 }
                 <tfoot>

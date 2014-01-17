@@ -939,7 +939,7 @@ namespace CmsData
             {
                 if (!canUserSeeGiving.HasValue)
                     canUserSeeGiving = Util.UserPeopleId == PeopleId
-                                        || HttpContext.Current.User.IsInRole("Finance")
+                                        || (HttpContext.Current.User.IsInRole("Finance") && ((string)HttpContext.Current.Session["testnofinance"]) != "true")
                                         || (PositionInFamilyId == PositionInFamily.PrimaryAdult
                                             && Family.People.Any(m => m.PeopleId == Util.UserPeopleId)
                                             && ContributionOptionsId == EnvelopeOptionCode.Joint);
