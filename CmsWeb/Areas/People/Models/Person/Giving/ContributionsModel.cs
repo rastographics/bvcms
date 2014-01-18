@@ -107,7 +107,13 @@ namespace CmsWeb.Areas.People.Models
                        Date = c.ContributionDate.Value,
                        Fund = c.ContributionFund.FundDescription,
                        Name = c.Person.PeopleId == person.PeopleId ? c.Person.PreferredName : c.Person.Name,
-                       Type = ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId) ? c.ContributionType.Description : online ? "Online" : "Check/Cash",
+                       Type = ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId) 
+                            ? c.ContributionType.Description 
+                            : !online 
+                                ? "Check/Cash" 
+                                : c.ContributionDesc == "Recurring Giving" 
+                                    ? c.ContributionDesc 
+                                    : "Online",
                    };
         }
 
