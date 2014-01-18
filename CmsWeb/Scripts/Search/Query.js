@@ -45,7 +45,11 @@
         });
     });
     $.AdjustEditCondition = function (option) {
-        $("#editcondition .date").datepicker({ autoclose: true, orientation: "auto" });
+        $("#editcondition .date").datepicker({
+            keyboardNavigation: true,
+            orientation: "auto",
+            forceParse: false
+        });
         $("#editcondition select").multiselect({
             includeSelectAllOption: true,
             enableFiltering: true,
