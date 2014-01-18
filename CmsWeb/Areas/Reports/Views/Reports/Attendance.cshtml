@@ -58,11 +58,13 @@
 </form>
 <table id="Attendances" class="@ViewExtensions2.GridClass">
     <thead>
-    <th><a href='#' class="sortable">Name</a></th>
-    <th><a href='#' class="sortable">Age</a></th>
-    <th>Attendance String</th>
-    <th><a href='#' class="sortable">Percent</a></th>
-    <th><a href='#' class="sortable">Count</a></th>
+        <tr>
+        <th><a href='#' class="sortable">Name</a></th>
+        <th><a href='#' class="sortable">Age</a></th>
+        <th>Attendance String</th>
+        <th><a href='#' class="sortable">Percent</a></th>
+        <th><a href='#' class="sortable">Count</a></th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var p in Model.Attendances())

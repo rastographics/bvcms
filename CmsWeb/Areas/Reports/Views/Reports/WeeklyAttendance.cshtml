@@ -1,0 +1,81 @@
+﻿@using CmsWeb
+@model CmsWeb.Areas.Main.Models.Report.WeeklyAttendanceModel
+@{
+    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "AttendanceReport";
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $.reloadmeetings = function () {
+                $("#attendanceform").submit();
+            };
+            $("a.sortable").click(function (ev) {
+                ev.preventDefault();
+                var newsort = $(this).text();
+                var oldsort = $("#Sort").val();
+                $("#Sort").val(newsort);
+                var dir = $("#Direction").val();
+                if (oldsort == newsort && dir == 'asc')
+                    $("#Direction").val('desc');
+                else
+                    $("#Direction").val('asc');
+                $.reloadmeetings();
+            });
+            $('#Attendances > thead a.sortable').click(function (ev) {
+                ev.preventDefault();
+                var newsort = $(this).text();
+                var oldsort = $("#Sort").val();
+                $("#Sort").val(newsort);
+                var dir = $("#Dir").val();
+                if (oldsort == newsort && dir == 'asc')
+                    $("#Dir").val('desc');
+                else
+                    $("#Dir").val('asc');
+                RefreshList();
+            });
+        });
+        function RefreshList() {
+            var q = $('#attendanceform').serialize();
+            $.navigate("/Reports/Weekly/Attendance", q);
+        }
+    </script>
+}
+<h2>Weekly Attendance</h2>
+<form id="attendanceform" action="/Reports/WeeklyAttendance" method="POST">
+    @Html.HiddenFor(m => m.Name)
+    @Html.HiddenFor(m => m.StatusId)
+    @Html.HiddenFor(m => m.ProgramId)
+    @Html.HiddenFor(m => m.DivisionId)
+    @Html.HiddenFor(m => m.ScheduleId)
+    @Html.HiddenFor(m => m.CampusId)
+    @Html.HiddenFor(m => m.OnlineReg)
+    @Html.HiddenFor(m => m.MainFellowship)
+    @Html.HiddenFor(m => m.TypeId)
+    @Html.HiddenFor(m => m.Sort)
+    @Html.HiddenFor(m => m.Direction)
+</form>
+<table id="Attendances" class="@ViewExtensions2.GridClass">
+    <tbody>
+        <tr>
+            <th><a href='#' class="sortable">Name</a></th>
+            <th><a href='#' class="sortable">Age</a></th>
+            <th>Attendance String</th>
+            <th><a href='#' class="sortable">Percent</a></th>
+            <th><a href='#' class="sortable">Count</a></th>
+        </tr>
+    </tbody>
+    <tbody>
+        @foreach (var p in Model.Attendances())
+        {
+            <tr>
+                <td><a href="/Person/Index/@p.PeopleId">@p.Name</a></td>
+                <td class="right">@p.Age</td>
+                <td><span style="font-family:Courier New">@p.AttendStr</span></td>
+                <td class="right">@p.AttendPct.ToString("N1")</td>
+                <td class="right">@p.Count</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -170,7 +170,7 @@ namespace CmsWeb.Areas.Main.Models.Report
             {
                 get
                 {
-                    return AttendStr.ToCharArray().Count(c => c == 'P');
+                    return AttendStr.Count(c => c == 'P');
                 }
             }
         }

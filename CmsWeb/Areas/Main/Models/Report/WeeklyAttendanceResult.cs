@@ -197,9 +197,10 @@ namespace CmsWeb.Areas.Main.Models.Report
                     select g.Key;
             var list = q.ToList();
 
-            var attstr = new StringBuilder("\n");
+            var attstr = new StringBuilder();
             var dt = Util.Now;
             var yearago = dt.AddYears(-1);
+            var tp = 0;
             while (dt > yearago)
             {
                 var dt2 = dt.AddDays(-7);
@@ -211,12 +212,14 @@ namespace CmsWeb.Areas.Main.Models.Report
                     if (d <= dt)
                     {
                         indicator = "P";
+                        tp++;
                         break;
                     }
                 }
                 attstr.Insert(0, indicator);
                 dt = dt2;
             }
+            attstr.AppendFormat("  ({0:f1}%)\n", tp / 52.0 * 100);
             var ph = new Paragraph(attstr.ToString(), monofont);
             ph.SetLeading(0, 1.2f);
 

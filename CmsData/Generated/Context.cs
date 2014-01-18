@@ -2280,6 +2280,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.MembersWhoAttendedOrgs", IsComposable = true)]
+		public IQueryable< View.MembersWhoAttendedOrg > MembersWhoAttendedOrgs(
+            [Parameter(DbType="varchar")] string orgs,
+            [Parameter(DbType="datetime")] DateTime? firstdate
+            )
+		{
+			return this.CreateMethodCallQuery< View.MembersWhoAttendedOrg>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgs,
+                firstdate
+                );
+		}
+
 		[Function(Name="dbo.MostRecentItems", IsComposable = true)]
 		public IQueryable< View.MostRecentItem > MostRecentItems(
             [Parameter(DbType="int")] int? uid
@@ -2597,6 +2610,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.WeeklyAttendsForOrgs", IsComposable = true)]
+		public IQueryable< View.WeeklyAttendsForOrg > WeeklyAttendsForOrgs(
+            [Parameter(DbType="varchar")] string orgs,
+            [Parameter(DbType="datetime")] DateTime? firstdate
+            )
+		{
+			return this.CreateMethodCallQuery< View.WeeklyAttendsForOrg>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgs,
+                firstdate
+                );
+		}
+
     #endregion
 	#region Scalar Functions
 		
@@ -2713,22 +2739,6 @@ namespace CmsData
                 thisday,
                 MeetingTime,
                 SchedDay
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.ComputeAge", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? ComputeAge(
-            [Parameter(Name = "m", DbType="int")] int? m,
-            [Parameter(Name = "d", DbType="int")] int? d,
-            [Parameter(Name = "y", DbType="int")] int? y
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                m,
-                d,
-                y
                 ).ReturnValue));
 		}
 
@@ -2963,22 +2973,6 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.StatusFlagsForPerson", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string StatusFlagsForPerson(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "uid", DbType="int")] int? uid,
-            [Parameter(Name = "flags", DbType="nvarchar")] string flags
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                uid,
-                flags
                 ).ReturnValue));
 		}
 
@@ -3509,6 +3503,22 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.ComputeAge", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? ComputeAge(
+            [Parameter(Name = "m", DbType="int")] int? m,
+            [Parameter(Name = "d", DbType="int")] int? d,
+            [Parameter(Name = "y", DbType="int")] int? y
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                m,
+                d,
+                y
                 ).ReturnValue));
 		}
 

@@ -243,6 +243,13 @@
         $("#orgsearchform").submit();
         return false;
     });
+    $('#weeklyattendance').click(function (ev) {
+        ev.preventDefault();
+        hideDropdowns();
+        $("#orgsearchform").attr("action", "/Reports/WeeklyAttendance");
+        $("#orgsearchform").submit();
+        return false;
+    });
     $('#ExportMembersExcel').click(function (ev) {
         ev.preventDefault();
         hideDropdowns();

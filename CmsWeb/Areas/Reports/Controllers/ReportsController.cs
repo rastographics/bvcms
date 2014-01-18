@@ -18,6 +18,8 @@ using CmsWeb.Models;
 using Dapper;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using UtilityExtensions;
 using FamilyResult = CmsWeb.Areas.Main.Models.Report.FamilyResult;
 
@@ -42,7 +44,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return new AttendeeResult(id);
         }
-
 
         [POST("Reports/AttendanceDetail")]
         public ActionResult AttendanceDetail(string Dt1, string Dt2, OrgSearchModel m)
@@ -595,6 +596,46 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             ViewData["table"] = QueryFunctions.VitalStats(DbUtil.Db);
             return View();
+        }
+
+        [POST("Reports/WeeklyAttendance")]
+        public ActionResult WeeklyAttendance(WeeklyAttendanceModel m)
+        {
+            var q = m.Attendances();
+            var cols = typeof (WeeklyAttendanceModel.AttendInfo).GetProperties();
+            var count = q.Count();
+            var ep = new ExcelPackage();
+            var ws = ep.Workbook.Worksheets.Add("Sheet1");
+            //ws.SetExcelHeader("PeopleId", "Name", "Age", "MainFellowship", "OrgId", "Teacher", "1+ Attendance Per Week Across All Groups", "AttendPct", "Count", "FirstDate", "LastDate");
+            ws.Cells["A2"].LoadFromCollection(q);
+            var range = ws.Cells[1, 1, count + 1, cols.Length];
+            var table = ws.Tables.Add(range, "Attends");
+            for (var i = 0; i < cols.Length; i++)
+            {
+                var col = i + 1;
+                var name = cols[i].Name;
+                table.Columns[i].Name = name;
+                var colrange = ws.Cells[1, col, count + 2, col];
+                switch (name)
+                {
+                    case "AttendStr":
+                        table.Columns[i].Name = "1+ Attendance Per Week Across All Groups";
+                        break;
+                    case "AttendPct":
+                        colrange.Style.Numberformat.Format = "0.0";
+                        colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                        ws.Column(col).Width = 8;
+                        break;
+                    case "FirstDate":
+                    case "LastDate":
+                        colrange.Style.Numberformat.Format = "mm-dd-yy";
+                        colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                        ws.Column(col).Width = 12;
+                        break;
+                }
+            }
+            ws.Cells[ws.Dimension.Address].AutoFitColumns();
+            return new EpplusResult(ep, "WeeklyAttendance.xlsx");
         }
 
         [GET("Reports/WeeklyAttendance/{id}")]

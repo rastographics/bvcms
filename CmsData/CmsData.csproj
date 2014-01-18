@@ -372,6 +372,7 @@
     <Compile Include="Generated\Functions\AttendanceTypeAsOf.cs" />
     <Compile Include="Generated\Functions\AttendCntHistory.cs" />
     <Compile Include="Generated\Functions\AttendedAsOf.cs" />
+    <Compile Include="Generated\Functions\MembersWhoAttendedOrg.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCount.cs" />
     <Compile Include="Generated\Functions\RecentAttendMemberType.cs" />
     <Compile Include="Generated\Functions\RecentAttendType.cs" />
@@ -380,6 +381,7 @@
     <Compile Include="Generated\Functions\Registration.cs" />
     <Compile Include="Generated\Functions\SplitInt.cs" />
     <Compile Include="Generated\Functions\StatusFlagsPerson.cs" />
+    <Compile Include="Generated\Functions\WeeklyAttendsForOrg.cs" />
     <Compile Include="Generated\Number.cs" />
     <Compile Include="Generated\Views\StatusFlagList.cs" />
     <Compile Include="ITableWithExtraValues.cs" />
