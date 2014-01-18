@@ -36,7 +36,7 @@
     });
     $(document).on("shown", "#search-add", function () {
         $("#search-add #Name").focus();
-        $("#search-add #Name").live("keydown", function (event) {
+        $("#search-add input").live("keydown", function (event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
                 $("#searchperson").click();
@@ -54,9 +54,9 @@
     };
     $("#search-add a.clear").live('click', function (ev) {
         ev.preventDefault();
-        $("#name").val('');
-        $("#phone").val('');
-        $("#address").val('');
+        $("#Name").val('');
+        $("#Phone").val('');
+        $("#Address").val('');
         $("#dob").val('');
         return false;
     });
