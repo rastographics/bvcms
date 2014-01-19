@@ -401,6 +401,10 @@ namespace CmsData
                             });
             TrySubmit(db, "PaymentInfos");
 
+            foreach (var bc in this.BackgroundChecks)
+                bc.PeopleID = targetid;
+            TrySubmit(db, "BackgroundChecks");
+
             foreach (var c in this.CheckInTimes)
                 c.PeopleId = targetid;
             TrySubmit(db, "CheckinTimes");

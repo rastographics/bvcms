@@ -1,6 +1,6 @@
 ﻿$(function () {
-    $.fmtTable = function() {
-        $("table.grid2 td.tip").tooltip({ showBody: "|" });
+    $.fmtTable = function () {
+        $("#members td.tip").tooltip({ showBody: "|" });
         $(".bt").button();
 
         $(".clickEdit").editable("/OrgGroups/UpdateScore", {
@@ -40,9 +40,9 @@
 
     $("#SelectAll").click(function () {
         if ($(this).attr("checked"))
-            $("table.grid2 input[name='list']").attr('checked', true);
+            $("#members input[name='list']").attr('checked', true);
         else
-            $("table.grid2 input[name='list']").removeAttr('checked');
+            $("#members input[name='list']").removeAttr('checked');
     });
 
     $("#ingroup, #notgroup").keypress(function (ev) {
@@ -56,7 +56,7 @@
     $.getTable = function (f) {
         var q = f.serialize();
         $.post("/OrgGroups/Filter", q, function (ret) {
-            $('table.grid > tbody').html(ret).ready($.fmtTable);
+            $('#members > tbody').html(ret).ready($.fmtTable);
         });
         return false;
     }
@@ -108,7 +108,7 @@
         $.block();
         var q = $('form').serialize();
         $.post(action, q, function (ret) {
-            $("table.grid2 > tbody").html(ret).ready($.fmtTable);
+            $("#members tbody").html(ret).ready($.fmtTable);
             $.unblock();
         });
         return false;
