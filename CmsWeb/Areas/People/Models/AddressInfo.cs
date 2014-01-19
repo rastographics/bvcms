@@ -364,7 +364,7 @@ namespace CmsWeb.Areas.People.Models
             if (Addrok == false)
                 return false;
 
-            if ((Country.Value == "United States" || !Country.Value.HasValue()))
+            if ((Country.Value == "United States"))
             {
                 Result = AddressVerify.LookupAddress(AddressLineOne, AddressLineTwo, CityName, StateCode.Value, ZipCode);
                 const string alertdiv = @" <div class=""alert"">{0}</div>";

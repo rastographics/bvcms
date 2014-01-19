@@ -1,4 +1,5 @@
 ﻿@using System.Text
+@using CmsData
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @model PersonModel
@@ -44,13 +45,22 @@ else
     if (a.AddressLineOne.HasValue() || a.Preferred)
     {
         var icon = a.Name == "FamilyAddr" ? "fa-home" : "fa-male";
+        var addr = a.AddrCityStateZipLine();
+        var start = DbUtil.StartAddress;
+        <div class="dropdown">
         <i class="fa @icon fa-fw"></i>
-        <a href="#" class="popover-map @a.BadAddressClass" rel="popover">@a.AddrCityStateZipLine()</a>
-        if (Model.Person.CanUserEditFamilyAddress)
+        <a href="#" class="dropdown-toggle @a.BadAddressClass" data-toggle="dropdown">@addr</a>
+        @if (Model.Person.CanUserEditFamilyAddress)
         {
             <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="edit editaddr">&nbsp;&nbsp;<i class="fa fa-pencil"></i></a>
         }
-        <br />
+            <ul class="dropdown-menu">
+                <li><a href="http://www.google.com/maps?q=@addr" target="_blank">Google Map</a></li>
+                <li><a href="http://www.bing.com/maps/?q=@addr" target="_blank">Bing Map</a></li>
+                <li><a href='http://www.bing.com/maps/?rtp=adr.@start~adr.@addr' target="_blank">Driving Directions (Bing)</a></li>
+                <li><a href='http://www.google.com/maps?f=d&saddr=@(start)&pw=2&daddr=@addr' target="_blank">Driving Directions (Google)</a></li>
+            </ul>
+        </div>
     }
 }
 @helper ContactLine()

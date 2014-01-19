@@ -30,6 +30,20 @@
                 modal.on('hidden', function () {
                     $(this).empty();
                 });
+                modal.on("click", "a.clear-address", function () {
+                    $("#AddressLineOne").val("");
+                    $("#AddressLineTwo").val("");
+                    $("#CityName").val("");
+                    $("#ZipCode").val("");
+                    $("#BadAddress").prop('checked', false); ;
+                    $("#StateCode_Value").val("");
+                    $("#StateCode_Value").trigger("chosen:updated");
+                    $("#ResCode_Value").val("0");
+                    $("#ResCode_Value").trigger("chosen:updated");
+                    $("#Country_Value").val("");
+                    $("#FromDt").val("");
+                    $("#ToDt").val("");
+                });
                 modal.on("click", "a.close-saved-address", function () {
                     $.post($(this).attr("href"), {}, function (ret) {
                         $("#profile-header").html(ret).ready(SetProfileEditable);
@@ -199,38 +213,8 @@
         var index = $('#vtab>ul>li').index($(this));
         $('#vtab>div').hide().eq(index).show();
     });
-    $('body').on('click', function (e) {
-        $('[rel=popover]').each(function () {
-            //the 'is' for buttons that trigger popups
-            //the 'has' for icons within a button that triggers a popup
-            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-                $(this).popover('hide');
-            }
-        });
-    });
-    var getMap = function (opts) {
-        var src = "https://maps.googleapis.com/maps/api/staticmap?",
-            params = $.extend({
-                center: 'New York, NY',
-                size: '128x128',
-                sensor: false
-            }, opts),
-            query = [];
-
-        $.each(params, function (k, v) {
-            query.push(k + '=' + encodeURIComponent(v));
-        });
-
-        src += query.join('&');
-        return '<img src="' + src + '" /><br><a href="https://www.google.com/maps/?q=' + opts.center + '" rel="external" target="_blank">View in Google Maps</a>\
-      <br><a href="http://www.bing.com/maps/?q=' + opts.center + '" rel="external" target="_blank">View in Bing Maps</a>';
-    };
     var SetProfileEditable = function () {
-        $('[class="popover-map"]').each(function () {
-            var $this = $(this);
-            $this.data('html', true).data('content', getMap({ center: $this.text() }));
-            $this.popover();
-        });
+        $(".popover-map").dropdown();
         $('#PositionInFamily').editable({
             source: [{
                 value: 10,
