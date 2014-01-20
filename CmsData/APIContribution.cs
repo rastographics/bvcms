@@ -103,21 +103,21 @@ namespace CmsData.API
             return sw.ToString();
         }
 
-        public static IEnumerable<ContributorInfo> contributors(CMSDataContext Db, 
-            DateTime fromDate, DateTime toDate, int PeopleId, int? SpouseId, int FamilyId, bool noaddressok, bool useMinAmt, 
-            string startswith = null, string sort = null)
+        public static IEnumerable<ContributorInfo> contributors(CMSDataContext Db,
+            DateTime fromDate, DateTime toDate, int PeopleId, int? SpouseId, int FamilyId, bool noaddressok, bool useMinAmt,
+            string startswith = null, string sort = null, bool singleStatement = false)
         {
             var MinAmt = Db.Setting("MinContributionAmount", "5").ToDecimal();
             if (!useMinAmt)
                 MinAmt = 0;
 
             var endswith = "";
-		    if (startswith != null && startswith.Contains("-"))
-		    {
-		        var a = startswith.SplitStr("-", 2);
-		        startswith = a[0];
-		        endswith = a[1];
-		    }
+            if (startswith != null && startswith.Contains("-"))
+            {
+                var a = startswith.SplitStr("-", 2);
+                startswith = a[0];
+                endswith = a[1];
+            }
             var q = from p in Db.Contributors(fromDate, toDate, PeopleId, SpouseId, FamilyId, noaddressok)
                     select p;
 
@@ -125,34 +125,13 @@ namespace CmsData.API
                 q = from p in q
                     where p.LastName.StartsWith(startswith)
                     select p;
-            else if(startswith.HasValue() && endswith.HasValue())
+            else if (startswith.HasValue() && endswith.HasValue())
                 q = from p in q
                     // ReSharper disable StringCompareToIsCultureSpecific
                     where (p.LastName.CompareTo(startswith) >= 0 && p.LastName.CompareTo(endswith) < 0) || SqlMethods.Like(p.LastName, endswith + "%")
                     select p;
 
-            if (MinAmt > 0)
-                q = from p in q
-                    let option = (p.ContributionOptionsId ?? 0) == 0
-                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
-                            : p.ContributionOptionsId
-                    where option != 9 || noaddressok
-                    where (option == 1 && (p.Amount > MinAmt))
-                            || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > MinAmt))
-                    select p;
-            else
-                q = from p in q
-                    let option =
-                        (p.ContributionOptionsId ?? 0) == 0
-                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
-                            : p.ContributionOptionsId
-                    where option != 9 || noaddressok
-                    where
-                        (option == 1 && (p.Amount > 0 || p.GiftInKind == true))  // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
-                        || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > 0 || p.GiftInKind == true))
-                    select p;
-
-            if(sort == "zip")
+            if (sort == "zip")
                 q = from p in q
                     orderby p.PrimaryZip, p.FamilyId, p.PositionInFamilyId, p.HohFlag, p.Age
                     select p;
@@ -165,74 +144,101 @@ namespace CmsData.API
                     orderby p.FamilyId, p.PositionInFamilyId, p.HohFlag, p.Age
                     select p;
 
+            if (singleStatement)
+            {
+            }
+            else
+            {
+                if (MinAmt > 0)
+                    q = from p in q
+                        let option = (p.ContributionOptionsId ?? 0) == 0
+                                ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                                : p.ContributionOptionsId
+                        where option != 9 || noaddressok
+                        where (option == 1 && (p.Amount > MinAmt))
+                                || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > MinAmt))
+                        select p;
+                else
+                    q = from p in q
+                        let option =
+                            (p.ContributionOptionsId ?? 0) == 0
+                                ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                                : p.ContributionOptionsId
+                        where option != 9 || noaddressok
+                        where
+                            (option == 1 && (p.Amount > 0 || p.GiftInKind == true))  // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
+                            || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > 0 || p.GiftInKind == true))
+                        select p;
+            }
+
             IQueryable<ContributorInfo> q2 = null;
-            if(Db.Setting("NoTitlesOnStatements", "false").ToBool())
+            if (Db.Setting("NoTitlesOnStatements", "false").ToBool())
                 q2 = from p in q
-                    let option = (p.ContributionOptionsId ?? 0) == 0
-                        ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
-                        : p.ContributionOptionsId
-                    let name = 
-                        option == 1
-                            ? p.Name
-                            : (p.SpouseId == null
-                                ? p.Name
-                                : (p.HohFlag == 1
-                                    ? p.Name + " and " + p.SpouseName
-                                    : p.SpouseName + " and " + p.Name))
-                    select new ContributorInfo
-                    {
-                        Name = name,
-                        Address1 = p.PrimaryAddress,
-                        Address2 = p.PrimaryAddress2,
-                        City = p.PrimaryCity,
-                        State = p.PrimaryState,
-                        Zip = p.PrimaryZip,
-                        PeopleId = p.PeopleId,
-                        SpouseID = p.SpouseId,
-                        DeacesedDate = p.DeceasedDate,
-                        FamilyId = p.FamilyId,
-                        Age = p.Age,
-                        FamilyPositionId = p.PositionInFamilyId,
-                        hohInd = p.HohFlag,
-                        Joint = option == 2,
-                        CampusId = p.CampusId,
-                    };
+                     let option = (p.ContributionOptionsId ?? 0) == 0
+                         ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                         : p.ContributionOptionsId
+                     let name =
+                         option == 1
+                             ? p.Name
+                             : (p.SpouseId == null
+                                 ? p.Name
+                                 : (p.HohFlag == 1
+                                     ? p.Name + " and " + p.SpouseName
+                                     : p.SpouseName + " and " + p.Name))
+                     select new ContributorInfo
+                     {
+                         Name = name,
+                         Address1 = p.PrimaryAddress,
+                         Address2 = p.PrimaryAddress2,
+                         City = p.PrimaryCity,
+                         State = p.PrimaryState,
+                         Zip = p.PrimaryZip,
+                         PeopleId = p.PeopleId,
+                         SpouseID = p.SpouseId,
+                         DeacesedDate = p.DeceasedDate,
+                         FamilyId = p.FamilyId,
+                         Age = p.Age,
+                         FamilyPositionId = p.PositionInFamilyId,
+                         hohInd = p.HohFlag,
+                         Joint = option == 2,
+                         CampusId = p.CampusId,
+                     };
             else
                 q2 = from p in q
-                    let option = (p.ContributionOptionsId ?? 0) == 0
-                        ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
-                        : p.ContributionOptionsId
-                    let name = 
-                        (option == 1
-                            ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
-                            : (p.SpouseId == null
-                                ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
-                                : (p.HohFlag == 1
-                                    ? ((p.Title != null && p.Title != "")
-                                        ? p.Title + " and Mrs. " + p.Name
-                                        : "Mr. and Mrs. " + p.Name)
-                                    : ((p.SpouseTitle != null && p.SpouseTitle != "")
-                                        ? p.SpouseTitle + " and Mrs. " + p.SpouseName
-                                        : "Mr. and Mrs. " + p.SpouseName))))
-                        + ((p.Suffix == null || p.Suffix == "") ? "" : ", " + p.Suffix)
-                    select new ContributorInfo
-                    {
-                        Name = name,
-                        Address1 = p.PrimaryAddress,
-                        Address2 = p.PrimaryAddress2,
-                        City = p.PrimaryCity,
-                        State = p.PrimaryState,
-                        Zip = p.PrimaryZip,
-                        PeopleId = p.PeopleId,
-                        SpouseID = p.SpouseId,
-                        DeacesedDate = p.DeceasedDate,
-                        FamilyId = p.FamilyId,
-                        Age = p.Age,
-                        FamilyPositionId = p.PositionInFamilyId,
-                        hohInd = p.HohFlag,
-                        Joint = option == 2,
-                        CampusId = p.CampusId,
-                    };
+                     let option = (p.ContributionOptionsId ?? 0) == 0
+                         ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                         : p.ContributionOptionsId
+                     let name =
+                         (option == 1
+                             ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
+                             : (p.SpouseId == null
+                                 ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
+                                 : (p.HohFlag == 1
+                                     ? ((p.Title != null && p.Title != "")
+                                         ? p.Title + " and Mrs. " + p.Name
+                                         : "Mr. and Mrs. " + p.Name)
+                                     : ((p.SpouseTitle != null && p.SpouseTitle != "")
+                                         ? p.SpouseTitle + " and Mrs. " + p.SpouseName
+                                         : "Mr. and Mrs. " + p.SpouseName))))
+                         + ((p.Suffix == null || p.Suffix == "") ? "" : ", " + p.Suffix)
+                     select new ContributorInfo
+                     {
+                         Name = name,
+                         Address1 = p.PrimaryAddress,
+                         Address2 = p.PrimaryAddress2,
+                         City = p.PrimaryCity,
+                         State = p.PrimaryState,
+                         Zip = p.PrimaryZip,
+                         PeopleId = p.PeopleId,
+                         SpouseID = p.SpouseId,
+                         DeacesedDate = p.DeceasedDate,
+                         FamilyId = p.FamilyId,
+                         Age = p.Age,
+                         FamilyPositionId = p.PositionInFamilyId,
+                         hohInd = p.HohFlag,
+                         Joint = option == 2,
+                         CampusId = p.CampusId,
+                     };
 
 #if DEBUG
             return q2.Take(30);

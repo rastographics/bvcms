@@ -48,6 +48,7 @@ namespace CmsWeb.Areas.People.Controllers
                 typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult ? 2 : 1,
                 noaddressok = true,
                 useMinAmt = false,
+                singleStatement = true,
             };
         }
 

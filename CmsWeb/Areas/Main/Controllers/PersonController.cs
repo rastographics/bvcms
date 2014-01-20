@@ -832,6 +832,7 @@ namespace CmsWeb.Areas.Main.Controllers
 				typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult && p.ContributionOptionsId == EnvelopeOptionCode.Joint ? 2 : 1,
 				noaddressok = true,
 				useMinAmt = false,
+                singleStatement = true,
 			};
 		}
 	}

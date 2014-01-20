@@ -35,6 +35,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
 		public bool noaddressok { get; set; }
         public bool showCheckNo { get; set; }
         public bool showNotes { get; set; }
+        public bool singleStatement { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
 
@@ -71,14 +72,14 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 switch (typ)
                 {
                     case 1:
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, PeopleId, SpouseId, 0, noaddressok, useMinAmt);
+                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, PeopleId, SpouseId, 0, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 2:
                         FamilyId = DbUtil.Db.People.Single(p => p.PeopleId == PeopleId).FamilyId;
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, FamilyId, noaddressok, useMinAmt);
+                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, FamilyId, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 3:
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, noaddressok, useMinAmt);
+                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
                 c.Run(Response.OutputStream, DbUtil.Db, q);
@@ -99,14 +100,14 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 switch (typ)
                 {
                     case 1:
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, PeopleId, SpouseId, 0, noaddressok, useMinAmt);
+                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, PeopleId, SpouseId, 0, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 2:
                         FamilyId = DbUtil.Db.People.Single(p => p.PeopleId == PeopleId).FamilyId;
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, FamilyId, noaddressok, useMinAmt);
+                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, FamilyId, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 3:
-                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, noaddressok, useMinAmt);
+                        q = APIContribution.contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
                 c.Run(Response.OutputStream, DbUtil.Db, q);
