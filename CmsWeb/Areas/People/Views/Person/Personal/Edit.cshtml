@@ -18,14 +18,16 @@
             @Html.EditorFor(m => m.MaritalStatus)
             @Html.EditorFor(m => m.DOB, "Birthday")
             @Html.EditorFor(m => m.WeddingDate)
-            @Html.EditorFor(m => m.DeceasedDate)
+            @(User.IsInRole("Access")
+                ? @Html.EditorFor(m => m.DeceasedDate)
+                : @Html.DisplayFor(m => m.DeceasedDate))
             @Html.EditorFor(m => m.OccupationOther, "Typeahead", new { link = "/Person2/Occupations" })
             @Html.EditorFor(m => m.EmployerOther, "Typeahead", new { link = "/Person2/Employers" })
             @Html.EditorFor(m => m.SchoolOther, "Typeahead", new { link = "/Person2/Schools" })
             @Html.EditorFor(m => m.Grade)
         </div>
     </div>
-    <hr/>
+    <hr />
     <div class="row-fluid">
         <div class="inline">
             @Html.EditorFor(m => m.EmailAddress)
