@@ -12,18 +12,20 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class SavedQueryModel : PagedTableModel<Query, SavedQueryInfo>
     {
-        public bool isdev { get; set; }
+        public bool admin { get; set; }
         public bool OnlyMine { get; set; }
         public bool PublicOnly { get; set; }
         public string SearchQuery { get; set; }
         public bool ScratchPadsOnly { get; set; }
         public bool StatusFlagsOnly { get; set; }
 
-        public SavedQueryModel() : base("", "") { }
+        public SavedQueryModel() : base("", "")
+        {
+            admin = Roles.IsUserInRole("Admin");
+        }
 
         public override IQueryable<Query> DefineModelList()
         {
-            isdev = Roles.IsUserInRole("Developer");
             var q = from c in DbUtil.Db.Queries
                     where !PublicOnly || c.Ispublic
                     where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
@@ -45,7 +47,7 @@ namespace CmsWeb.Areas.Search.Models
                 q = from c in q
                     where c.Owner == Util.UserName
                     select c;
-            else if (!isdev)
+            else if (!admin)
                 q = from c in q
                     where c.Owner == Util.UserName || c.Ispublic
                     select c;
@@ -103,7 +105,6 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IEnumerable<SavedQueryInfo> DefineViewList(IQueryable<Query> q)
         {
-            var admin = HttpContext.Current.User.IsInRole("Admin");
             var user = Util.UserName;
             return from c in q
                    select new SavedQueryInfo
