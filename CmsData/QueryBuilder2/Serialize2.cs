@@ -117,6 +117,8 @@ namespace CmsData
                 w.WriteAttributeString("Division", Division.ToString());
             if (Organization > 0)
                 w.WriteAttributeString("Organization", Organization.ToString());
+            if (OrgType > 0)
+                w.WriteAttributeString("OrgType", OrgType.ToString());
             if (Days > 0)
                 w.WriteAttributeString("Days", Days.ToString());
             if (Quarters.HasValue())
@@ -160,6 +162,7 @@ namespace CmsData
                 Program = Attribute(r, "Program").ToInt(),
                 Division = Attribute(r, "Division").ToInt(),
                 Organization = Attribute(r, "Organization").ToInt(),
+                OrgType = Attribute(r, "OrgType").ToInt(),
                 Days = Attribute(r, "Days").ToInt(),
                 Quarters = Attribute(r, "Quarters"),
                 Tags = Attribute(r, "Tags"),

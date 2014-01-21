@@ -8,6 +8,9 @@
 }
 @section head
 {
+<!--
+    @Html.Raw(ViewBag.xml)
+-->
     @Fingerprint.Css("/Content/css/bootstrap-tour.css")
     @Fingerprint.Css("/Content/css/bootstrap-multiselect.css")
     @Fingerprint.Css("/Content/css/search.css")
@@ -21,11 +24,6 @@
     }
 }
 
-<!--
-    @Html.Raw(ViewBag.xml)
-    
-    @Html.Raw(ViewBag.ConditionList)
-    -->
 <div class="container">
     <div class="row-fluid">
         <div class="span4">
