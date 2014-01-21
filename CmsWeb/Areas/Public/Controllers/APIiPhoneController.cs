@@ -147,7 +147,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 p.CellPhone = m.cell.GetDigits();
             p.MaritalStatusId = m.marital;
             p.GenderId = m.gender;
-            DbUtil.Db.SubmitChanges();
+            DbUtil.Db.SubmitChanges(); 
+            DbUtil.LogActivity("iPhone AddPerson {0}".Fmt(p.PeopleId));
             var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == id);
             Attend.RecordAttendance(p.PeopleId, id, true);
             DbUtil.Db.UpdateMeetingCounters(id);

@@ -12,9 +12,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 	[Authorize(Roles = "Admin")]
     public class UsersController : CmsController
     {
-        public ActionResult Index()
+        public ActionResult Index(string id)
         {
-	        var m = new UsersModel();
+	        var m = new UsersModel {name = id};
             return View(m);
         }
         [HttpPost]

@@ -25,7 +25,7 @@
             @Html.DisplayFor(m => m.Grade)
         </div>
     </div>
-    <hr/>
+    <hr />
     <div class="row-fluid">
         <div class="inline display width140">
             @Html.DisplayFor(m => m.EmailAddress)
@@ -39,7 +39,15 @@
         </div>
     </div>
     @FormAction()
-     <p class="record_added muted"><small>Record added @Model.CreatedDate.FormatDateTm()</small></p>
+    <p class="record_added muted">
+        <small>
+            Record added @Model.CreatedDate.FormatDateTm()
+            @if (User.IsInRole("Admin"))
+            {
+                @:(<a href="/Manage/Users/Index/@Model.person.CreatedBy">@Model.person.CreatedBy</a>)
+            }
+        </small>
+    </p>
 </form>
 
 @helper FormAction()

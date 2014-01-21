@@ -80,7 +80,11 @@ namespace CmsWeb.Models
 			if (_users != null)
 				return _users;
 			_users = from u in DbUtil.Db.Users select u;
-			if (name.HasValue())
+		    if (name.AllDigits())
+		        _users = from u in _users
+		            where u.UserId == name.ToInt()
+		            select u;
+			else if (name.HasValue())
 				_users = from u in _users
 					where u.Username == name || u.Person.Name.Contains(name)
 					select u;
