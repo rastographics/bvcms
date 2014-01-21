@@ -32,9 +32,9 @@
         $.post("/Meeting/ScanTicket/", q, function (ret) {
             $("#mark").html(ret).ready(function () {
                 if ($("#haserror").val())
-                    PlaySound("zylo");
+                    $.ionSound.play("computer_error");
                 else {
-                    PlaySound("ding");
+                    $.ionSound.play("glass");
                     $("#NumPresent").text($("#npresent").val());
                     $("#NumNewVisit").text($("#nnew").val());
                     $("#NumMembers").text($("#nmembers").val());
@@ -97,19 +97,20 @@
         d.dialog("open");
     });
     $("#wandtarget").focus();
+    $.ionSound({
+        sounds: [ "computer_error", "glass" ],
+        path: "/content/images/",
+        multiPlay: false,
+    });
 });
-function PlaySound(soundObj) {
-    var sound = document.getElementById(soundObj);
-    sound.Play();
-}
 function AddSelected(ret) {
     $('#visitorDialog').dialog("close");
     if (ret.error) {
         $("#mark").html("<div class='bgred'><h1>Error in adding Guests</h1><p>" + ret.error + "</p>");
-        PlaySound("zylo");
+        $.ionSound.play("computer_error");
     } else {
         $("#mark").html("<div class='bgyellow'><h1>Guests Added</h1>");
-        PlaySound("ding");
+        $.ionSound.play("glass");
     }
 }
 

@@ -1019,6 +1019,8 @@
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\brokencode.jpg" />
     <Content Include="Content\images\bvcms-logo-on-dark.png" />
+    <Content Include="Content\images\computer_error.mp3" />
+    <Content Include="Content\images\glass.mp3" />
     <Content Include="Content\img\ajax-loader.gif" />
     <Content Include="Content\css\jquery.mobile-1.3.0.css" />
     <Content Include="Content\css\jquery.mobile-1.3.1.min.css" />
@@ -1086,6 +1088,7 @@
     <Content Include="Scripts\js\headermenu1c.js" />
     <Content Include="Scripts\js\header.js" />
     <Content Include="Scripts\js\hometour.js" />
+    <Content Include="Scripts\js\ion.sound.min.js" />
     <Content Include="Scripts\js\MyDataSupport.js" />
     <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
@@ -1302,6 +1305,8 @@
     <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Progress.cshtml" />
     <Content Include="Areas\Search\Views\Query\SaveAs.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\WeeklyAttendance.cshtml" />
+    <Content Include="Content\images\computer_error.ogg" />
+    <Content Include="Content\images\glass.ogg" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
