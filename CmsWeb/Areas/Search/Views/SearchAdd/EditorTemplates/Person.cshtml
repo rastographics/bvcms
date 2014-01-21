@@ -18,6 +18,8 @@
 {
     @Html.DisplayFor(m => m.Campus)
     @Html.DisplayFor(m => m.EntryPoint)
+    @Html.EditorFor(m => m.Campus, "HiddenCodeInfo")
+    @Html.EditorFor(m => m.EntryPoint, "HiddenCodeInfo")
 }
 else
 {
