@@ -633,9 +633,10 @@ namespace CmsWeb.Models
         [DataObjectMethod(DataObjectMethodType.Select, false)]
         public IEnumerable<RangeInfo> TotalsByFundRange(int fundid, DateTime dt1, DateTime dt2, string Pledges, int CampusId)
         {
+            dt2 = dt2.AddDays(1);
             var q0 = from c in DbUtil.Db.Contributions
                      where dt1 <= c.ContributionDate.Value.Date
-                     where c.ContributionDate.Value.Date <= dt2
+                     where c.ContributionDate.Value.Date < dt2
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                      where c.FundId == fundid || fundid == 0
                      where CampusId == 0 || c.Person.CampusId == CampusId
@@ -651,7 +652,7 @@ namespace CmsWeb.Models
                     q0 = from c in q0
                          where c.ContributionStatusId == ContributionStatusCode.Recorded
                          where c.ContributionTypeId != ContributionTypeCode.Pledge
-                         where c.PostingDate != null
+                         //where c.PostingDate != null
                          select c;
                     break;
                 case "both":
@@ -715,7 +716,7 @@ namespace CmsWeb.Models
                     q0 = from c in q0
                          where c.ContributionStatusId == ContributionStatusCode.Recorded
                          where c.ContributionTypeId != ContributionTypeCode.Pledge
-                         where c.PostingDate != null
+//                         where c.PostingDate != null
                          select c;
                     break;
                 case "both":
