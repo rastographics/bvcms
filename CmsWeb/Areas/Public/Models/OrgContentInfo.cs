@@ -88,12 +88,13 @@ namespace CmsWeb.Models
                         NotAuthenticated = !Util.UserPeopleId.HasValue
                     };
             var o = q.SingleOrDefault();
-            if (o.NotAuthenticated)
+            if (o != null && !o.IsMember)
             {
                 var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(o.OrgId)) 
                     return o;
                 o.NotAuthenticated = false;
+                o.IsMember = true;
                 o.IsLeader = true;
             }
             return o;
