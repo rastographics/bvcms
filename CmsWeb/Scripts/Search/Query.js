@@ -106,7 +106,10 @@
             else {
                 $.HideEditCondition();
                 $("#conditions").html(ret).ready(function () {
-                    RefreshList();
+                    if ($("#AutoRun").prop("checked"))
+                        RefreshList();
+                    else
+                        FadeList();
                 });
             }
         });
@@ -124,7 +127,10 @@
         liedit = $(this).closest("li.condition");
         var qid = liedit.data("qid");
         $.postQuery('ChangeGroup/' + v, qid, function () {
-            RefreshList();
+            if ($("#AutoRun").prop("checked"))
+                RefreshList();
+            else
+                FadeList();
         });
         return false;
     });
@@ -160,7 +166,10 @@
         $.postQuery('Cut', qid, function (ret) {
             $("#conditions").html(ret).ready(function () {
                 $("li.pastecondition").show();
-                RefreshList();
+                if ($("#AutoRun").prop("checked"))
+                    RefreshList();
+                else
+                    FadeList();
             });
         });
         return false;
@@ -178,7 +187,10 @@
         var qid = liedit.data("qid");
         $.postQuery('Paste', qid, function (ret) {
             $("#conditions").html(ret);
-            RefreshList();
+            if ($("#AutoRun").prop("checked"))
+                RefreshList();
+            else
+                FadeList();
         });
         return false;
     });
@@ -187,7 +199,10 @@
         var qid = liedit.data("qid");
         $.postQuery('InsGroupAbove', qid, function (ret) {
             $("#conditions").html(ret);
-            RefreshList();
+            if ($("#AutoRun").prop("checked"))
+                RefreshList();
+            else
+                FadeList();
         });
         return false;
     });
@@ -196,7 +211,10 @@
         var qid = liedit.data("qid");
         $.postQuery('MakeTopGroup', qid, function (ret) {
             $("#conditions").html(ret);
-            RefreshList();
+            if ($("#AutoRun").prop("checked"))
+                RefreshList();
+            else
+                FadeList();
         });
         return false;
     });
@@ -207,7 +225,10 @@
             if (result === true) {
                 $.postQuery('RemoveCondition', qid, function (ret) {
                     $("#conditions").html(ret);
-                    RefreshList();
+                    if ($("#AutoRun").prop("checked"))
+                        RefreshList();
+                    else
+                        FadeList();
                 });
             }
         });
@@ -291,8 +312,11 @@
         liedit = $("li[data-qid='" + $("#NewSearchId").val() + "']");
         $EditCondition({ isnew: true });
     }
-    else if ($("#AutoRun").val() === "True")
+    else if ($("#AutoRun").prop("checked"))
         RefreshList();
+    $('#AutoRun').change(function () {
+        $.post("/Query/SetAutoRun", { setting: $(this).prop("checked") });
+    });
     $('a.taguntag').live("click", function (ev) {
         $.post('/Query/ToggleTag/' + $(this).attr('value'), function (ret) {
             if (ret.error)
@@ -304,6 +328,10 @@
     });
 });
 
+function FadeList() {
+    $("#results").addClass("faded-results");
+}
+
 function RefreshList(qs) {
     $.ajax({
         type: "POST",
@@ -313,6 +341,7 @@ function RefreshList(qs) {
         success: function (ret) {
             $('#toolbar').show();
             $('#results').html(ret);
+            $("#results").removeClass("faded-results");
             $('#people tbody tr:even').addClass('alt');
             $('#people thead a.sortable').click(function (ev) {
                 var newsort = $(this).text();

@@ -241,4 +241,8 @@
 .popover.right {
     text-align: left;
 }
+.faded-results {
+    -ms-opacity: .3;
+    opacity: .3;
+}
 

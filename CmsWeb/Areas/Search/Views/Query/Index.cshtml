@@ -45,6 +45,10 @@
                 <div id="conditions">
                     @Html.Partial("Conditions", Model)
                 </div>
+                <div class="pull-right">
+                    <a id="Run" href="#" class="btn btn-primary">Run</a>
+                    @Html.CheckBox("AutoRun") auto
+                </div>
             </fieldset>
         </div>
         <div id="results" class="span8">

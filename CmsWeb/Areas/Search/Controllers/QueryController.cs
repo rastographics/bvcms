@@ -39,8 +39,6 @@ namespace CmsWeb.Areas.Search.Controllers
                 newsearchid = m.TopClause.NewMatchAnyId;
             if (newsearchid.HasValue)
                 ViewBag.NewSearchId = newsearchid.Value;
-            else
-                ViewBag.AutoRun = true;
             m.TopClause.IncrementLastRun();
             DbUtil.Db.SubmitChanges();
             m.QueryId = m.TopClause.Id;
@@ -179,7 +177,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/SaveAs")]
         public ActionResult SaveAs(Guid id, string nametosaveas)
         {
-            var m2 = new SavedQueryInfo(id) {Name = nametosaveas};
+            var m2 = new SavedQueryInfo(id) { Name = nametosaveas };
             return View(m2);
         }
         [POST("Query/Save")]
@@ -195,13 +193,13 @@ namespace CmsWeb.Areas.Search.Controllers
                 DbUtil.Db.SubmitChanges();
                 return Redirect("/Query/" + previous.QueryId);
 
-//                m.CopyPropertiesTo(previous);
-//                var pc = previous.ToClause();
-//                pc.Reset(DbUtil.Db);
-//                pc = Condition.Import(query.Text, name, newGuids: true, topguid: previous.QueryId);
-//                previous.Text = pc.ToXml();
-//                DbUtil.Db.SubmitChanges();
-//                return Redirect("/Query/" + previous.QueryId);
+                //                m.CopyPropertiesTo(previous);
+                //                var pc = previous.ToClause();
+                //                pc.Reset(DbUtil.Db);
+                //                pc = Condition.Import(query.Text, name, newGuids: true, topguid: previous.QueryId);
+                //                previous.Text = pc.ToXml();
+                //                DbUtil.Db.SubmitChanges();
+                //                return Redirect("/Query/" + previous.QueryId);
             }
             // saving to a new query
             m.CopyPropertiesTo(query);
@@ -249,6 +247,12 @@ namespace CmsWeb.Areas.Search.Controllers
             {
                 return Json(new { error = ex.Message + ". Please report this to support@bvcms.com" });
             }
+        }
+        [POST("Query/SetAutoRun/")]
+        public ActionResult ToggleAutoRun(bool setting)
+        {
+            DbUtil.Db.SetUserPreference("QueryAutoRun", setting ? "true": "false");
+            return Content(setting.ToString().ToLower());
         }
         [POST("Query/TagAll/{tagname}/{cleartagfirst:bool?}")]
         public ContentResult TagAll(string tagname, bool? cleartagfirst, QueryModel m)

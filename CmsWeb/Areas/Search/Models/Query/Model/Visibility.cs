@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CmsData;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -29,6 +30,12 @@ namespace CmsWeb.Areas.Search.Models
         public bool QuartersVisible { get { return fieldMap.HasParam("Quarters"); } }
         public bool TagsVisible { get { return fieldMap.HasParam("Tags"); } }
         public bool PmmLabelsVisible { get { return fieldMap.HasParam("PmmLabels"); } }
+
+        public bool AutoRun
+        {
+            get { return DbUtil.Db.UserPreference("QueryAutoRun", "true").ToBool(); }
+
+        }
 
         private List<FieldType> texttypes = new List<FieldType>() 
         { 
