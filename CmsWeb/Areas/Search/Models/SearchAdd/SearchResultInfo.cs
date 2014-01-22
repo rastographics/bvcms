@@ -36,6 +36,8 @@ namespace CmsWeb.Areas.Search.Models
                     ret.AppendFormat("{0}&nbsp;&nbsp;", HomePhone.FmtFone("H "));
                 if (WorkPhone.HasValue())
                     ret.AppendFormat("{0}&nbsp;&nbsp;", WorkPhone.FmtFone("W "));
+                if (Email.HasValue())
+                    ret.AppendFormat("<a>{0}</a>&nbsp;&nbsp;", Email);
                 if (ret.Length > 0)
                     ret.Append("<br>\n");
 
