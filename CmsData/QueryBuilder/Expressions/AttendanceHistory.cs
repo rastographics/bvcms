@@ -177,7 +177,8 @@ namespace CmsData
                 case CompareType.NotEqual:
                     q = q.Where(cc => cc.Cnt != cnt); break;
             }
-            Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
+            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
