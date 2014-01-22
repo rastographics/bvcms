@@ -141,7 +141,7 @@ namespace UtilityExtensions
                 string output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!Directory.Exists(output))
-                    return true;
+                    return false;
                 var path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 return File.Exists(path);
