@@ -4,14 +4,10 @@ using System.ComponentModel;
 using System.Data.Linq.SqlClient;
 using System.Data.SqlTypes;
 using System.IO;
-using System.Xml;
-using System.Text;
 using System.Linq;
 using System.Xml.Serialization;
 using CmsData.Codes;
-using IronPython.Modules;
 using UtilityExtensions;
-using System.Data.Linq;
 
 namespace CmsData.API
 {
@@ -146,32 +142,33 @@ namespace CmsData.API
 
             if (singleStatement)
             {
-            }
-            else
-            {
-                if (MinAmt > 0)
-                    q = from p in q
-                        let option = (p.ContributionOptionsId ?? 0) == 0
-                                ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
-                                : p.ContributionOptionsId
-                        where option != 9 || noaddressok
-                        where (option == 1 && (p.Amount > MinAmt))
-                                || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > MinAmt))
-                        select p;
-                else
-                    q = from p in q
-                        let option =
-                            (p.ContributionOptionsId ?? 0) == 0
-                                ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
-                                : p.ContributionOptionsId
-                        where option != 9 || noaddressok
-                        where
-                            (option == 1 && (p.Amount > 0 || p.GiftInKind == true))  // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
-                            || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > 0 || p.GiftInKind == true))
-                        select p;
+                var familylist = q.ToList();
+                if (familylist.Any(m => m.DeceasedDate != null && m.ContributionOptionsId == 2))
+                    return GetInfo(familylist);
             }
 
-            IQueryable<ContributorInfo> q2 = null;
+            if (MinAmt > 0)
+                q = from p in q
+                    let option = (p.ContributionOptionsId ?? 0) == 0
+                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                            : p.ContributionOptionsId
+                    where option != 9 || noaddressok
+                    where (option == 1 && (p.Amount > MinAmt))
+                            || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > MinAmt))
+                    select p;
+            else
+                q = from p in q
+                    let option =
+                        (p.ContributionOptionsId ?? 0) == 0
+                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                            : p.ContributionOptionsId
+                    where option != 9 || noaddressok
+                    where
+                        (option == 1 && (p.Amount > 0 || p.GiftInKind == true))  // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
+                        || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > 0 || p.GiftInKind == true))
+                    select p;
+
+            IEnumerable<ContributorInfo> q2 = null;
             if (Db.Setting("NoTitlesOnStatements", "false").ToBool())
                 q2 = from p in q
                      let option = (p.ContributionOptionsId ?? 0) == 0
@@ -204,7 +201,14 @@ namespace CmsData.API
                          CampusId = p.CampusId,
                      };
             else
-                q2 = from p in q
+                q2 = GetInfo(q);
+
+            return q2;
+        }
+
+        private static IEnumerable<ContributorInfo> GetInfo(IEnumerable<View.Contributor> q)
+        {
+            var q2 = from p in q
                      let option = (p.ContributionOptionsId ?? 0) == 0
                          ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
                          : p.ContributionOptionsId
@@ -239,12 +243,7 @@ namespace CmsData.API
                          Joint = option == 2,
                          CampusId = p.CampusId,
                      };
-
-#if DEBUG
-            return q2.Take(30);
-#else
             return q2;
-#endif
         }
 
         public static IEnumerable<ContributionInfo> contributions(CMSDataContext Db, ContributorInfo ci, DateTime fromDate, DateTime toDate)
