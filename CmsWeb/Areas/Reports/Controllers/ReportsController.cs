@@ -35,6 +35,11 @@ namespace CmsWeb.Areas.Reports.Controllers
                 m = new AttendanceModel() { OrgId = id };
             return View(m);
         }
+        [POST("Reports/Attendance")]
+        public ActionResult Attendance(AttendanceModel m)
+        {
+            return View(m);
+        }
         [GET("Reports/Attendee/{id}")]
         public ActionResult Attendee(int id)
         {
