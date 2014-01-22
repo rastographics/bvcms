@@ -29,15 +29,11 @@ namespace CmsWeb.Areas.Reports.Controllers
     public class ReportsController : CmsStaffController
     {
         [GET("Reports/Attendance/{id}")]
-        public ActionResult Attendance(int id)
+        public ActionResult Attendance(int id, AttendanceModel m)
         {
-            var m = new AttendanceModel() { OrgId = id };
+            if(m.OrgId == 0)
+                m = new AttendanceModel() { OrgId = id };
             return View(m);
-        }
-        [POST("Reports/Attendance")]
-        public ActionResult Attendance(AttendanceModel m)
-        {
-            return View("Attendance", m);
         }
         [GET("Reports/Attendee/{id}")]
         public ActionResult Attendee(int id)
