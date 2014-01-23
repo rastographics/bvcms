@@ -14,8 +14,8 @@ namespace CmsWeb.Areas.People.Models
                     where !(e.Transactional ?? false)
                     where e.EmailQueueTos.Any(ee => ee.PeopleId == person.PeopleId)
                     where e.QueuedBy != person.PeopleId
-                    where e.FromAddr != person.EmailAddress
-                    where e.FromAddr != person.EmailAddress2
+                    where e.FromAddr != (person.EmailAddress ?? "")
+                    where e.FromAddr != (person.EmailAddress2 ?? "")
                     select e;
             return FilterForUser(q);
         }
