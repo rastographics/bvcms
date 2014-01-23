@@ -37,7 +37,7 @@ namespace CmsData
 	        public string Zip { get; set; }
 	        public bool Changed (string addr1, string addr2, string city, string state, string zip )
             { 
-                return Line1 != addr1 || Line2 != (addr2 ?? "") || City != city || State != state || Zip != (zip ?? "");
+                return Line1 != addr1 || (Line2 ?? "") != (addr2 ?? "") || City != city || State != state || (Zip ?? "") != (zip ?? "");
             }
 	    }
 
@@ -46,8 +46,8 @@ namespace CmsData
 			string url = ConfigurationManager.AppSettings["amiurl"];
 			string password = ConfigurationManager.AppSettings["amipassword"];
 
-			if (!url.HasValue() || !password.HasValue())
-				return new AddressResult { Line1 = "error" };
+	        if (!url.HasValue() || !password.HasValue())
+	            return new AddressResult { Line1 = line1, Line2 = line2, City = city, State = st, Zip = zip };
 
 			var wc = new MyWebClient();
 			var coll = new NameValueCollection();
