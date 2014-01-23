@@ -38,7 +38,7 @@ namespace UtilityExtensions
                 if (HttpContext.Current != null)
                     if (HttpContext.Current.Session != null)
                         return HttpContext.Current.Session.SessionID;
-                return (string) HttpRuntime.Cache["SessionId"];
+                return (string)HttpRuntime.Cache["SessionId"];
             }
             set { HttpRuntime.Cache["SessionId"] = value; }
         }
@@ -51,7 +51,7 @@ namespace UtilityExtensions
                 if (HttpContext.Current != null)
                     if (HttpContext.Current.Session != null)
                         if (HttpContext.Current.Session[STR_SessionStarting] != null)
-                            tf = (bool) HttpContext.Current.Session[STR_SessionStarting];
+                            tf = (bool)HttpContext.Current.Session[STR_SessionStarting];
                 return tf;
             }
             set { HttpContext.Current.Session[STR_SessionStarting] = value; }
@@ -63,7 +63,7 @@ namespace UtilityExtensions
             {
                 object tf = HttpContext.Current.Items[STR_Auditing];
                 if (tf.IsNotNull())
-                    return (bool) tf;
+                    return (bool)tf;
                 else return true;
             }
             set { HttpContext.Current.Items[STR_Auditing] = value; }
@@ -90,7 +90,7 @@ namespace UtilityExtensions
                     if (HttpContext.Current.Request.IsLocal)
                         return true;
                     string hostPrefix = HttpContext.Current.Request.UserHostAddress;
-                    string[] ipClass = hostPrefix.Split(new char[] {'.'});
+                    string[] ipClass = hostPrefix.Split(new char[] { '.' });
                     int classA = Convert.ToInt16(ipClass[0]);
                     int classB = Convert.ToInt16(ipClass[1]);
                     if (classA == 10 || classA == 127)
@@ -140,7 +140,7 @@ namespace UtilityExtensions
             {
                 string output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
-                if (!Directory.Exists(output))
+                if (!Directory.Exists(output)) 
                     return false;
                 var path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
@@ -190,12 +190,12 @@ namespace UtilityExtensions
                 {
                     if (HttpContext.Current.Session != null)
                         if (HttpContext.Current.Session[STR_SMTPDEBUG] != null)
-                            deb = (bool) HttpContext.Current.Session[STR_SMTPDEBUG];
+                            deb = (bool)HttpContext.Current.Session[STR_SMTPDEBUG];
                 }
                 else
                 {
                     var localDataStoreSlot = Thread.GetNamedDataSlot(STR_SMTPDEBUG);
-                    deb = (bool?) Thread.GetData(localDataStoreSlot);
+                    deb = (bool?)Thread.GetData(localDataStoreSlot);
                 }
                 return deb ?? false;
             }
@@ -219,7 +219,7 @@ namespace UtilityExtensions
         public static T QueryString<T>(this System.Web.HttpRequest req, string param)
         {
             if (req.QueryString[param].HasValue())
-                return (T) req.QueryString[param].ChangeType(typeof (T));
+                return (T)req.QueryString[param].ChangeType(typeof(T));
             return default(T);
         }
 
@@ -255,7 +255,7 @@ namespace UtilityExtensions
 
         public static string Cookie(string name, string defaultValue)
         {
-            var v = (string) HttpContext.Current.Items["tCookie-" + name];
+            var v = (string)HttpContext.Current.Items["tCookie-" + name];
             if (v.HasValue())
                 return v;
             var c = HttpContext.Current.Request.Cookies[name];
@@ -360,7 +360,7 @@ namespace UtilityExtensions
 
         public static void Serialize<T>(T m, XmlWriter writer)
         {
-            new XmlSerializer(typeof (T)).Serialize(writer, m);
+            new XmlSerializer(typeof(T)).Serialize(writer, m);
         }
 
         public static string Serialize<T>(T m)
@@ -368,7 +368,7 @@ namespace UtilityExtensions
             var sw = new StringWriter();
             var ns = new XmlSerializerNamespaces();
             ns.Add("", "");
-            var slz = new XmlSerializer(typeof (T));
+            var slz = new XmlSerializer(typeof(T));
             slz.Serialize(sw, m, ns);
             return sw.ToString();
         }
@@ -376,7 +376,7 @@ namespace UtilityExtensions
         public static T DeSerialize<T>(string s) where T : class
         {
             var sr = new StringReader(s);
-            return (new XmlSerializer(typeof (T)).Deserialize(sr) as T);
+            return (new XmlSerializer(typeof(T)).Deserialize(sr) as T);
         }
 
         public static bool FastFileExists(string path)

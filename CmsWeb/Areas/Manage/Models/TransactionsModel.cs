@@ -84,6 +84,9 @@ namespace CmsWeb.Models
 				return _transactions;
 			if (!name.HasValue())
 				name = null;
+		    string first, last;
+            Util.NameSplit(name, out first, out last);
+            var hasfirst = first.HasValue();
 			var nameid = name.ToInt();
 			_transactions
 			   = from t in DbUtil.Db.Transactions
@@ -91,12 +94,20 @@ namespace CmsWeb.Models
 				 where t.Amt > gtamount || gtamount == null
 				 where t.Amt <= ltamount || ltamount == null
 				 where description == null || t.Description.Contains(description)
-				 where name == null || t.Name.Contains(name) || t.Last.Contains(name) || t.Batchref == name || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
 				 where (t.Testing ?? false) == testtransactions
 				 where apprtransactions == (t.Moneytran == true) || !apprtransactions
 				 where (nocoupons && !t.TransactionId.Contains("Coupon")) || !nocoupons
 				 where (t.Financeonly ?? false) == false || finance
 				 select t;
+            if(name != null)
+                _transactions = from t in _transactions
+                     where
+                         (
+                             (t.Last.StartsWith(last) || t.Last.StartsWith(name))
+                             && (!hasfirst || t.First.StartsWith(first) || t.Last.StartsWith(name))
+                         )
+                         || t.Batchref == name || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
+                     select t;
 			if (!HttpContext.Current.User.IsInRole("Finance"))
 				_transactions = _transactions.Where(tt => (tt.Financeonly ?? false) == false);
 
@@ -243,9 +254,13 @@ namespace CmsWeb.Models
 				foreach (var st in q2)
 				{
 					var t = DbUtil.Db.Transactions.SingleOrDefault(j => j.TransactionId == st.reference && st.date >= notbefore);
+				    string first, last;
+                    Util.NameSplit(st.name, out first, out last);
 					var tt = new Transaction
 					{
 						Name = st.name,
+						First = first,
+						Last = last,
 						TransactionId = st.reference,
 						Amt = st.amount.ToDecimal(),
 						Approved = st.approved,

@@ -289,6 +289,7 @@ namespace CmsWeb.Models
 
             person.CellPhone = phone.GetDigits();
             DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("OldUI AddPerson {0}".Fmt(person.PeopleId));
             DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
             PeopleId = person.PeopleId;
         }

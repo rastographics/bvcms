@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Models.ExtraValues.Value
 <tr>
     <td>@Model.Name</td>
-    <td>@Model.Type</td>
+    <td>@Html.Raw(Model.ToString())</td>
 </tr>

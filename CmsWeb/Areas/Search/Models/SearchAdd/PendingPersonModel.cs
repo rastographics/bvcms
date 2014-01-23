@@ -179,6 +179,7 @@ namespace CmsWeb.Areas.Search.Models
                 Person.CampusId = null;
 
             DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("AddPerson {0}".Fmt(person.PeopleId));
             DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, Person);
             PeopleId = Person.PeopleId;
         }

@@ -117,7 +117,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 				var tt = new Transaction
 				{
 					TransactionId = resp.TransactionId + (t.Testing == true ? "(testing)" : ""),
-					Name = t.Name,
                     First = t.First,
                     MiddleInitial = t.MiddleInitial,
                     Last = t.Last,
@@ -181,7 +180,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 			var t2 = new Transaction
 				{
 					TransactionId = "Adjustment",
-					Name = t.Name,
                     First = t.First,
                     MiddleInitial = t.MiddleInitial,
                     Last = t.Last,

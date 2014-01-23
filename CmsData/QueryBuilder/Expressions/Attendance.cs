@@ -16,7 +16,8 @@ namespace CmsData
         internal Expression RecentAttendMemberType()
         {
             var q = db.RecentAttendMemberType(Program, Division, Organization, Days, string.Join(",", CodeIntIds));
-            Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
+            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId.Value));
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
@@ -41,7 +42,8 @@ namespace CmsData
                 case CompareType.NotEqual:
                     q = q.Where(cc => cc.Cnt != cnt); break;
             }
-            Expression<Func<Person, bool>> pred = p => q.Select(c => c.PeopleId).Contains(p.PeopleId);
+            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }

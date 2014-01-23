@@ -27,6 +27,17 @@ namespace CmsWeb.Areas.People.Controllers
         {
             return Redirect("/Person2/" + Util2.CurrentPeopleId);
         }
+
+        [GET("Person2/User/{id:int}")]
+        public ActionResult UserPerson(int? id)
+        {
+            var pid = (from p in DbUtil.Db.People
+                where p.Users.Any(uu => uu.UserId == id)
+                select p.PeopleId).SingleOrDefault();
+            if (pid == 0)
+                return Content("no person");
+            return Redirect("/Person2/" + pid);
+        }
         [GET("Person2/{id:int}")]
         [GET("{id:int}")]
         public ActionResult Index(int? id)

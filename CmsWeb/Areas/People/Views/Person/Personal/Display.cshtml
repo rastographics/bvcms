@@ -42,9 +42,9 @@
     <p class="record_added muted">
         <small>
             Record added @Model.CreatedDate.FormatDateTm()
-            @if (User.IsInRole("Admin"))
+            @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
             {
-                @:(<a href="/Manage/Users/Index/@Model.person.CreatedBy">@Model.person.CreatedBy</a>)
+                @:(<a href="/Person2/User/@Model.person.CreatedBy">@Model.person.CreatedBy</a>)
             }
         </small>
     </p>
