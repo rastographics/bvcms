@@ -63,7 +63,11 @@
     @Html.EditorFor(m => m, "HiddenPeople")
 </div>
 <div class="modal-footer">
-    <a href="/SearchAdd2/SearchFamily" class="btn ajax">Go Back to Refine your FamilySearch</a>
+    <a href="/SearchAdd2/SearchFamily" class="btn ajax">Refine your Family Search</a>
+    @if (Model.PendingList.Count > 0)
+    {
+    <a href="/SearchAdd2/CancelSearch" class="btn ajax">List</a>
+    }
     @if (Model.CanAdd)
     { 
         <a href="/SearchAdd2/NewPerson/0" class="btn btn-success ajax">Add New Family</a>
