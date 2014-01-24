@@ -96,14 +96,11 @@
             $('iframe', this).attr("src", "");
         }
     });
+
     $('#addvisitor,#addregistered').click(function (e) {
         e.preventDefault();
         if (e.shiftKey) {
-            if (confirm("Are you sure you want to join all guests to org?")) {
-                $.post("/Meeting/JoinAllVisitors/" + $("#meetingid").val(), {}, function (ret) {
-                    alert(ret);
-                });
-            }
+            $("#addallguests").click();
         }
         else {
             var d = $('#visitorDialog');
@@ -111,8 +108,12 @@
             d.dialog("open");
         }
     });
-    $('#JoinAllVisitors').click(function (e) {
-        e.preventDefault();
+    $('#addallguests').click(function (e) {
+        if (confirm("Are you sure you want to join all guests to org?")) {
+            $.post("/Meeting/JoinAllVisitors/" + $("#meetingid").val(), {}, function (ret) {
+                alert(ret);
+            });
+        }
     });
     if ($("#showbuttons input[name=show]:checked").val() == "attends") {
         $(".atck:not(:checked)").parent().parent().hide();
