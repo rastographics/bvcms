@@ -42,7 +42,7 @@ namespace CmsWeb.Models
         public IEnumerable<RollsheetModel.AttendInfo> VisitAttends(bool sorted = false)
         {
             var q = RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted);
-            return q.Where(vv => !vv.Member);
+            return q.Where(vv => !vv.Member && vv.Attended);
         }
         public string AttendCreditType()
         {
