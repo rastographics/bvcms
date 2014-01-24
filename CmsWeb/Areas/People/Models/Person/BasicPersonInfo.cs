@@ -249,6 +249,11 @@ namespace CmsWeb.Areas.People.Models
 
             var changes = this.CopyPropertiesTo(p);
             p.LogChanges(DbUtil.Db, changes);
+
+            var fsb = new StringBuilder();
+            p.Family.UpdateValue(fsb, "HomePhone", HomePhone.GetDigits());
+            p.Family.LogChanges(DbUtil.Db, fsb.ToString(), p.PeopleId, Util.UserPeopleId ?? 0);
+
             if (p.DeceasedDateChanged)
             {
                 var ret = p.MemberProfileAutomation(DbUtil.Db);
