@@ -391,6 +391,7 @@
     <Compile Include="QueryBuilder2\FieldClass2.cs" />
     <Compile Include="QueryBuilder2\Condition.cs" />
     <Compile Include="QueryBuilder2\QueryContext.cs" />
+    <Compile Include="QueryBuilder2\SerializeJson.cs" />
     <Compile Include="QueryBuilder2\Serialize2.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="DoReplacements.cs" />

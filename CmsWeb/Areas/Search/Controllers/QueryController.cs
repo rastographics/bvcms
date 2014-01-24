@@ -214,6 +214,7 @@ namespace CmsWeb.Areas.Search.Controllers
             var starttime = DateTime.Now;
             DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.TopClause.Id));
             InitToolbar(m);
+            ViewBag.xml = m.TopClause.ToXml();
             return View(m);
         }
         [GET("Query/NewQuery")]
