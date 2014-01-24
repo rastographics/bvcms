@@ -1,5 +1,6 @@
 ﻿@model CmsWeb.Areas.Search.Models.ContactSearchModel
 <div id="results">
+    <div>Count: @Model.Count().ToString("n0")</div>
     <div class="pagination pagination-mini">
         @Html.Partial("Pager3", Model.Pager)
     </div>
