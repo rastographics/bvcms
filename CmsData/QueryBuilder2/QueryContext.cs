@@ -24,11 +24,12 @@ namespace CmsData
                      where !cc.Ispublic
                      where cc.Name == Util.ScratchPad2
                      orderby cc.LastRun // get the oldest one
-                     select cc).FirstOrDefault();
-            if (q == null)
+                     select cc).ToList();
+            Query query = null;
+            if (q.Count < 5)
             {
                 c = Condition.CreateNewGroupClause();
-                q = new Query
+                query = new Query
                 {
                     QueryId = c.Id,
                     Owner = Util.UserName,
@@ -37,14 +38,16 @@ namespace CmsData
                     Name = Util.ScratchPad2,
                     Text = c.ToXml()
                 };
-                Queries.InsertOnSubmit(q);
+                Queries.InsertOnSubmit(query);
                 SubmitChanges();
             }
             else
-                c = q.ToClause();
-
-            c.Id = q.QueryId; // force these to match
-            c.justloadedquery = q;
+            {
+                query = q.First();
+                c = query.ToClause();
+            }
+            c.Id = query.QueryId; // force these to match
+            c.justloadedquery = query;
             return c;
         }
         public Condition StandardQuery(string name)

@@ -97,6 +97,17 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression RelatedFamilyMembers()
+        {
+            var familyid = TextValue.ToInt();
+            Expression<Func<Person, bool>> pred = p =>
+                p.Family.RelatedFamilies1.Any(rr => rr.FamilyId == familyid || rr.RelatedFamilyId == familyid)
+                || p.Family.RelatedFamilies2.Any(rr => rr.FamilyId == familyid || rr.RelatedFamilyId == familyid);
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (op != CompareType.Equal)
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression IsHeadOfHousehold()
         {
             var tf = CodeIds == "1";

@@ -46,6 +46,8 @@ namespace CmsData.View
 		
 		private int? _SpouseId;
 		
+		private int _FamilyId;
+		
 		
 		public PledgeFulfillment()
 		{
@@ -303,6 +305,23 @@ namespace CmsData.View
 			{
 				if (this._SpouseId != value)
 					this._SpouseId = value;
+			}
+
+		}
+
+		
+		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int NOT NULL")]
+		public int FamilyId
+		{
+			get
+			{
+				return this._FamilyId;
+			}
+
+			set
+			{
+				if (this._FamilyId != value)
+					this._FamilyId = value;
 			}
 
 		}

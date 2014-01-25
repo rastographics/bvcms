@@ -332,7 +332,8 @@ function FadeList() {
     $("#results").addClass("faded-results");
 }
 
-function RefreshList(qs) {
+function RefreshList() {
+    var qs = $("#query-form").serialize();
     $.ajax({
         type: "POST",
         url: "/Query/Results/",

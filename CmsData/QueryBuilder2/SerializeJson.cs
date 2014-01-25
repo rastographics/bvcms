@@ -11,66 +11,7 @@ namespace CmsData
 {
     public partial class Condition
     {
-        public void Save(CMSDataContext Db, bool increment = false, string owner = null)
-        {
-            var q = (from e in Db.Queries
-                     where e.QueryId == Id
-                     select e).FirstOrDefault();
-
-            if (q == null)
-            {
-                q = new Query
-                {
-                    QueryId = Id,
-                    Owner = Util.UserName,
-                    Created = DateTime.Now,
-                    Ispublic = IsPublic,
-                    Name = Description
-                };
-                Db.Queries.InsertOnSubmit(q);
-            }
-            q.LastRun = DateTime.Now;
-
-            if (Description != q.Name)
-            {
-                var same = (from v in Db.Queries
-                            where !v.Ispublic
-                            where v.Owner == Util.UserName
-                            where v.Name == Description
-                            orderby v.LastRun descending
-                            select v).FirstOrDefault();
-                if (same != null)
-                    same.Text = ToXml();
-                else
-                {
-                    var c = Clone();
-                    var cq = new Query
-                    {
-                        QueryId = c.Id,
-                        Owner = Util.UserName,
-                        Created = q.Created,
-                        Ispublic = q.Ispublic,
-                        Name = q.Name,
-                        Text = c.ToXml(),
-                        RunCount = q.RunCount,
-                        CopiedFrom = q.CopiedFrom,
-                        LastRun = q.LastRun
-                    };
-                    Db.Queries.InsertOnSubmit(cq);
-                    q.LastRun = DateTime.Now;
-                }
-            }
-            q.Name = Description;
-            if(owner.HasValue())
-                q.Owner = owner;
-            q.Ispublic = IsPublic;
-            if (increment)
-                q.RunCount = q.RunCount + 1;
-            q.Text = ToXml();
-            Db.SubmitChanges();
-        }
-
-        public string ToXml(bool newGuids = false)
+        public string ToJson(bool newGuids = false)
         {
             var settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -80,15 +21,15 @@ namespace CmsData
                 SendToWriter(w, newGuids);
             return sb.ToString();
         }
-        public void SendToWriter(XmlWriter w, bool newGuids = false)
+        public void SendToJson(XmlWriter w, bool newGuids = false)
         {
             w.WriteStartElement("Condition");
-            WriteAttributes(w, newGuids);
+            WriteJson(w, newGuids);
             foreach (var qc in Conditions)
-                qc.SendToWriter(w, newGuids);
+                qc.SendToJson(w, newGuids);
             w.WriteEndElement();
         }
-        private void WriteAttributes(XmlWriter w, bool newGuids = false)
+        private void WriteJson(XmlWriter w, bool newGuids = false)
         {
             if (newGuids)
                 w.WriteAttributeString("Id", Guid.NewGuid().ToString());
@@ -135,16 +76,16 @@ namespace CmsData
             if (SavedQuery.HasValue())
                 w.WriteAttributeString("SavedQueryIdDesc", SavedQuery);
         }
-        public static Condition Import(string text, string name = null, bool newGuids = false, Guid? topguid = null)
+        public static Condition ImportFromJson(string text, string name = null, bool newGuids = false, Guid? topguid = null)
         {
             if (!text.HasValue())
                 return CreateNewGroupClause(name);
             var x = XDocument.Parse(text);
             Debug.Assert(x.Root != null, "x.Root != null");
-            var c = ImportClause(x.Root, null, newGuids, topguid);
+            var c = ImportJsonClause(x.Root, null, newGuids, topguid);
             return c;
         }
-        private static Condition ImportClause(XElement r, Condition p, bool newGuids, Guid? topguid)
+        private static Condition ImportJsonClause(XElement r, Condition p, bool newGuids, Guid? topguid)
         {
             var allClauses = p == null ? new Dictionary<Guid, Condition>() : p.AllConditions;
             Guid? parentGuid = null;
@@ -154,62 +95,62 @@ namespace CmsData
             {
                 ParentId = parentGuid,
                 Id = topguid ?? (newGuids ? Guid.NewGuid() : AttributeGuid(r, "Id")),
-                Order = AttributeInt(r, "Order"),
-                ConditionName = Attribute(r, "Field"),
-                Comparison = Attribute(r, "Comparison"),
-                TextValue = Attribute(r, "TextValue"),
+                Order = PropertyInt(r, "Order"),
+                ConditionName = Property(r, "Field"),
+                Comparison = Property(r, "Comparison"),
+                TextValue = Property(r, "TextValue"),
                 DateValue = AttributeDate(r, "DateValue"),
-                CodeIdValue = Attribute(r, "CodeIdValue"),
+                CodeIdValue = Property(r, "CodeIdValue"),
                 StartDate = AttributeDate(r, "StartDate"),
                 EndDate = AttributeDate(r, "EndDate"),
-                Program = Attribute(r, "Program").ToInt(),
-                Division = Attribute(r, "Division").ToInt(),
-                Organization = Attribute(r, "Organization").ToInt(),
-                OrgType = Attribute(r, "OrgType").ToInt(),
-                Days = Attribute(r, "Days").ToInt(),
-                Quarters = Attribute(r, "Quarters"),
-                Tags = Attribute(r, "Tags"),
-                Schedule = Attribute(r, "Schedule").ToInt(),
-                Age = Attribute(r, "Age").ToInt2(),
-                Owner = Attribute(r, "Owner"),
-                SavedQuery = Attribute(r, "SavedQueryIdDesc"),
+                Program = Property(r, "Program").ToInt(),
+                Division = Property(r, "Division").ToInt(),
+                Organization = Property(r, "Organization").ToInt(),
+                OrgType = Property(r, "OrgType").ToInt(),
+                Days = Property(r, "Days").ToInt(),
+                Quarters = Property(r, "Quarters"),
+                Tags = Property(r, "Tags"),
+                Schedule = Property(r, "Schedule").ToInt(),
+                Age = Property(r, "Age").ToInt2(),
+                Owner = Property(r, "Owner"),
+                SavedQuery = Property(r, "SavedQueryIdDesc"),
                 AllConditions = allClauses
             };
             if (c.ConditionName != "FamilyHasChildrenAged")
                 c.Age = null;
             if (p == null)
             {
-                c.Description = Attribute(r, "Description");
-                c.PreviousName = Attribute(r, "PreviousName");
+                c.Description = Property(r, "Description");
+                c.PreviousName = Property(r, "PreviousName");
             }
             c.AllConditions.Add(c.Id, c);
             if (c.ConditionName == "Group")
                 foreach (var rr in r.Elements())
-                    ImportClause(rr, c, newGuids, null);
+                    ImportJsonClause(rr, c, newGuids, null);
             return c;
         }
-        private static string Attribute(XElement r, string attr, string def = null)
+        private static string Property(XElement r, string attr, string def = null)
         {
             var a = r.Attributes(attr).FirstOrDefault();
             if (a == null)
                 return def;
             return a.Value;
         }
-        private static DateTime? AttributeDate(XElement r, string attr)
+        private static DateTime? PropertyDate(XElement r, string attr)
         {
             var a = r.Attributes(attr).FirstOrDefault();
             if (a == null)
                 return null;
             return a.Value.ToDate();
         }
-        private static int AttributeInt(XElement r, string attr)
+        private static int PropertyInt(XElement r, string attr)
         {
             var a = r.Attributes(attr).FirstOrDefault();
             if (a == null)
                 return 0;
             return a.Value.ToInt();
         }
-        private static Guid AttributeGuid(XElement r, string attr)
+        private static Guid PropertyGuid(XElement r, string attr)
         {
             var a = r.Attributes(attr).FirstOrDefault();
             if (a == null)

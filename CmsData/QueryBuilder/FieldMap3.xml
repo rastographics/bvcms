@@ -113,6 +113,9 @@
     <FamilyId Title="Family" Type="Integer">
       Enter a Family ID number and select a comparison.
     </FamilyId>
+    <RelatedFamilyMembers Type="Integer">
+      Select all persons in related families given a single family id.
+    </RelatedFamilyMembers>
   </Family>
   <Address Title="Address">
     <PrimaryResCode Title="Resident Code" Type="Code" DataSource="ResidentCodes" DataValueField="IdCode">

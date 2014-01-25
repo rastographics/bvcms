@@ -63,6 +63,13 @@ namespace CmsWeb.Areas.Search.Controllers
                 return View("List", m);
             return View("SearchPerson", m);
         }
+        [POST("SearchAdd2/CancelSearch")]
+        public ActionResult CancelSearch(SearchAddModel m)
+        {
+            if (m.PendingList.Count > 0)
+                return View("List", m);
+            return View("SearchPerson", m);
+        }
 
         [POST("SearchAdd2/Select/{id}")]
         public ActionResult Select(int id, SearchAddModel m)

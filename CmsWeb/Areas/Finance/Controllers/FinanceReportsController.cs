@@ -205,6 +205,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                     case "Zip":
                     case "CreditGiverId":
                     case "SpouseId":
+                    case "FamilyId":
                         colrange.Style.Numberformat.Format = "@";
                         colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
                         break;

@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Goes By"), StringLength(15)]
         public string NickName { get; set; }
 
-        [StringLength(15)]
+        [StringLength(30)]
         public string MiddleName { get; set; }
 
         [StringLength(100), Required]
@@ -249,6 +249,11 @@ namespace CmsWeb.Areas.People.Models
 
             var changes = this.CopyPropertiesTo(p);
             p.LogChanges(DbUtil.Db, changes);
+
+            var fsb = new StringBuilder();
+            p.Family.UpdateValue(fsb, "HomePhone", HomePhone.GetDigits());
+            p.Family.LogChanges(DbUtil.Db, fsb.ToString(), p.PeopleId, Util.UserPeopleId ?? 0);
+
             if (p.DeceasedDateChanged)
             {
                 var ret = p.MemberProfileAutomation(DbUtil.Db);

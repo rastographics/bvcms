@@ -391,6 +391,7 @@
     <Compile Include="QueryBuilder2\FieldClass2.cs" />
     <Compile Include="QueryBuilder2\Condition.cs" />
     <Compile Include="QueryBuilder2\QueryContext.cs" />
+    <Compile Include="QueryBuilder2\SerializeJson.cs" />
     <Compile Include="QueryBuilder2\Serialize2.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="DoReplacements.cs" />
@@ -742,9 +743,6 @@
   <ItemGroup>
     <Content Include="MigrationScripts\Migrate-10-20-2012.sql" />
     <Content Include="QueryBuilder\FieldMap3.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="QueryBuilder\FieldMap2.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="QueryBuilder\CompareMap.xml">

@@ -14,6 +14,7 @@ using System.Xml;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 using CmsData;
 using CmsWeb.Code;
@@ -177,6 +178,8 @@ namespace CmsWeb.Areas.Search.Controllers
         [POST("Query/SaveAs")]
         public ActionResult SaveAs(Guid id, string nametosaveas)
         {
+            if (nametosaveas.Equals(Util.ScratchPad2))
+                nametosaveas = "copy of scratchpad";
             var m2 = new SavedQueryInfo(id) { Name = nametosaveas };
             return View(m2);
         }
@@ -184,12 +187,18 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Save(string name, string value, SavedQueryInfo m)
         {
             var query = DbUtil.Db.LoadQueryById2(m.QueryId);
-            var previous = DbUtil.Db.Queries.SingleOrDefault(vv => vv.Owner == m.Owner && vv.Name == name);
+            var previous = (from p in DbUtil.Db.Queries
+                            where p.Owner == m.Owner
+                            where p.Name == name
+                            orderby p.LastRun
+                            select p).FirstOrDefault();
             if (previous != null)
             {
                 // copying over a previous query with same name and owner
                 m.CopyPropertiesTo(previous);
                 previous.Text = query.Text;
+                if (previous.Name.Equal(Util.ScratchPad2))
+                    previous.Ispublic = false;
                 DbUtil.Db.SubmitChanges();
                 return Redirect("/Query/" + previous.QueryId);
 
@@ -203,6 +212,8 @@ namespace CmsWeb.Areas.Search.Controllers
             }
             // saving to a new query
             m.CopyPropertiesTo(query);
+            if (query.Name.Equal(Util.ScratchPad2))
+                query.Ispublic = false;
             DbUtil.Db.SubmitChanges();
             return Redirect("/Query/" + m.QueryId);
         }
@@ -214,6 +225,7 @@ namespace CmsWeb.Areas.Search.Controllers
             var starttime = DateTime.Now;
             DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.TopClause.Id));
             InitToolbar(m);
+            ViewBag.xml = m.TopClause.ToXml();
             return View(m);
         }
         [GET("Query/NewQuery")]
