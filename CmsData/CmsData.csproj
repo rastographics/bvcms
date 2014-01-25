@@ -745,9 +745,6 @@
     <Content Include="QueryBuilder\FieldMap3.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="QueryBuilder\FieldMap2.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

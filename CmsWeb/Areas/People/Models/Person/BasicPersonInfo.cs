@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Goes By"), StringLength(15)]
         public string NickName { get; set; }
 
-        [StringLength(15)]
+        [StringLength(30)]
         public string MiddleName { get; set; }
 
         [StringLength(100), Required]

@@ -140,6 +140,7 @@ namespace CmsData
                 { QueryType.RecentVisitNumber, RecentVisitNumber },
                 { QueryType.RecInterestedCoaching, RecInterestedCoaching },
                 { QueryType.RegisteredForMeetingId, RegisteredForMeetingId },
+                { QueryType.RelatedFamilyMembers, RelatedFamilyMembers },
                 { QueryType.SavedQuery, SavedQuery2 },
                 { QueryType.SmallGroup, SmallGroup },
                 { QueryType.SpouseHasEmail, SpouseHasEmail },

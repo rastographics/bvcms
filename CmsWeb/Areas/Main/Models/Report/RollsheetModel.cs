@@ -299,8 +299,8 @@ namespace CmsWeb.Areas.Main.Models.Report
 								AttendCommitmentId = cid,
 								Commitment = CmsData.Codes.AttendCommitmentCode.Lookup(cid ?? 99),
 								Member = false,
-								MemberType = "unknown",
-								AttendType = "unknown",
+								MemberType = pa.a.MemberType.Description + " ?",
+								AttendType = pa.a.AttendType.Description + " ?",
 							};
 
 			// the final rollsheet

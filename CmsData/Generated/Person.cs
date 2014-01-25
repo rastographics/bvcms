@@ -1887,7 +1887,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="MiddleName", UpdateCheck=UpdateCheck.Never, Storage="_MiddleName", DbType="nvarchar(25)")]
+		[Column(Name="MiddleName", UpdateCheck=UpdateCheck.Never, Storage="_MiddleName", DbType="nvarchar(30)")]
 		public string MiddleName
 		{
 			get { return this._MiddleName; }

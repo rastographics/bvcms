@@ -56,6 +56,15 @@ namespace CmsWeb.Areas.People.Controllers
             c.Save(DbUtil.Db);
             return Redirect("/Query/" + c.Id);
         }
+        [GET("Person2/RelatedFamilyQuery/{id}")]
+        public ActionResult RelatedFamilyQuery(int id)
+        {
+            var c = DbUtil.Db.ScratchPadCondition();
+            c.Reset(DbUtil.Db);
+            c.AddNewClause(QueryType.RelatedFamilyMembers, CompareType.Equal, id);
+            c.Save(DbUtil.Db);
+            return Redirect("/Query/" + c.Id);
+        }
         [POST("Person2/FamilyPictureDialog/{id:int}")]
         public ActionResult FamilyPictureDialog(int id)
         {
