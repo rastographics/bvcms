@@ -31,11 +31,15 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Edit(Guid id)
         {
             var m = new SavedQueryInfo(id);
+            if (m.Name.Equals(Util.ScratchPad2))
+                m.Name = "copy of scratchpad";
             return View(m);
         }
         [POST("SavedQueryList/Update")]
         public ActionResult Update(SavedQueryInfo m)
         {
+            if (m.Name.Equal(Util.ScratchPad2))
+                m.Ispublic = false;
             m.UpdateModel();
             return View("Row", m);
         }
