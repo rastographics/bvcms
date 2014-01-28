@@ -22,7 +22,7 @@ namespace CmsData.Registration
 		{
 			if (list.Count == 0)
 				return;
-			Settings.AddValueNoCk(0, sb, "MenuItems", "");
+			Settings.AddValueNoCk(0, sb, "MenuItems", Label);
 			foreach (var i in list)
 				i.Output(sb);
 			sb.AppendLine();
