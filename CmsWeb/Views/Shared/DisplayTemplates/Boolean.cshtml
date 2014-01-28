@@ -1,7 +1,10 @@
 ﻿@model bool
+@{
+    var t = Model ? ViewBag.TrueValue ?? "True" : ViewBag.FalseValue ?? "False";
+}
 <div class="control-group">
     @Html.LabelFor(m=> m, new { @class = "control-label"})
     <div class="controls">
-        <p>@Model</p>
+        <p>@t</p>
     </div>
 </div>

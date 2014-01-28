@@ -744,7 +744,16 @@ table.enrollments tr.oddrow > td {
   display: inline-block;
   width: 100px;
 }
-@media (max-width: 1200px) {
+@media (min-width: 961px) and (max-width: 1200px) {
+  .form-horizontal input,
+  .form-horizontal textarea,
+  .form-horizontal .uneditable-input,
+  .form-horizontal select {
+    /*width: 160px;*/
+  }
+}
+
+@media (max-width: 960px) {
   .form-horizontal:not(.table) .control-label {
     float: none;
     text-align: left;

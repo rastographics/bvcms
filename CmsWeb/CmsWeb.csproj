@@ -1159,8 +1159,6 @@
     <Content Include="Areas\Manage\Views\CheckinLabels\Index.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid2.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Attendance.cshtml" />
-    <Content Include="Areas\People\Views\Person\EditorTemplates\DoNotContact.cshtml" />
-    <Content Include="Areas\People\Views\Person\DisplayTemplates\DoNotContact.cshtml" />
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
     <Content Include="Areas\Main\Views\OrgGroups\Management.cshtml" />

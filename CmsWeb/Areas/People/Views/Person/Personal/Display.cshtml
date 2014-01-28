@@ -3,7 +3,7 @@
 <form class="form form-horizontal ajax span12 pad-left" method="post">
     @FormAction()
     <div class="row-fluid">
-        <div class="inline display width140 align-top">
+        <div class="inline display width280 align-top">
             @Html.DisplayFor(m => m.TitleCode)
             @Html.DisplayFor(m => m.FirstName)
             @Html.DisplayFor(m => m.NickName)
@@ -27,15 +27,18 @@
     </div>
     <hr />
     <div class="row-fluid">
-        <div class="inline display width140">
+        <div class="inline display width280">
             @Html.DisplayFor(m => m.EmailAddress)
             @Html.DisplayFor(m => m.EmailAddress2)
-            @Html.DisplayFor(m => m, "DoNotContact")
+            @Html.DisplayFor(m => m.DoNotCallFlag, new { TrueValue = "No Calls", FalseValue = "N/A"})
+            @Html.DisplayFor(m => m.DoNotMailFlag, new { TrueValue = "No Mail", FalseValue = "N/A"})
+            @Html.DisplayFor(m => m.DoNotVisitFlag, new { TrueValue = "No Visit", FalseValue = "N/A"})
         </div>
-        <div class="inline display left-gutter">
+        <div class="inline display left-gutter width280 align-top">
             @Html.DisplayFor(m => m.CellPhone)
             @Html.DisplayFor(m => m.WorkPhone)
             @Html.DisplayFor(m => m.HomePhone)
+            @Html.DisplayFor(m => m.DoNotPublishPhones, new { TrueValue = "No Directories", FalseValue = "N/A" })
         </div>
     </div>
     @FormAction()

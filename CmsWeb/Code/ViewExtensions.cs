@@ -658,6 +658,10 @@ namespace CmsWeb
         {
             return Fingerprint.Css("/content/css/bundle.new2css.css");
         }
+        public static HtmlString FixupsCss()
+        {
+            return Fingerprint.Css("/content/css/Fixups2.css");
+        }
         public static HtmlString FontAwesome()
         {
             return new HtmlString( "<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\n");
