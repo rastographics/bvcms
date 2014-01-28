@@ -401,7 +401,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(q);
         }
 
-        [POST("Reports/RecentAbsents/{id}")]
+        [GET("Reports/RecentAbsents/{id}")]
         public ActionResult RecentAbsents1(int? id)
         {
             int? divid = null;

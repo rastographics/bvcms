@@ -172,10 +172,13 @@ namespace CmsWeb.Areas.People.Models
 
         public DateTime? DeceasedDate { get; set; }
 
+        [DisplayName("Do not call")]
         public bool DoNotCallFlag { get; set; }
 
+        [DisplayName("Do not visit")]
         public bool DoNotVisitFlag { get; set; }
 
+        [DisplayName("Do not mail")]
         public bool DoNotMailFlag { get; set; }
 
         public bool DoNotPublishPhones { get; set; }
@@ -192,41 +195,6 @@ namespace CmsWeb.Areas.People.Models
 
         [NoUpdate]
         public CodeInfo MemberStatus { get; set; }
-
-        [NoTrack]
-        public string DoNotContact
-        {
-            get
-            {
-                var list = new List<string>();
-                if (DoNotCallFlag)
-                    list.Add("by Phone");
-                if (DoNotMailFlag)
-                    list.Add("by Mail");
-                if (DoNotVisitFlag)
-                    list.Add("in Person");
-                var s = string.Join(", ", list);
-                if (!s.HasValue())
-                    s = "N/A";
-                return s;
-            }
-        }
-        public string DoNotCall
-        {
-            get { return DoNotCallFlag ? "Do Not Call" : ""; }
-        }
-        public string DoNotVisit
-        {
-            get { return DoNotVisitFlag ? "Do Not Visit" : ""; }
-        }
-        public string DoNotMail
-        {
-            get { return DoNotMailFlag ? "Do Not Mail" : ""; }
-        }
-        public bool DoNotContactAny
-        {
-            get { return DoNotCallFlag || DoNotCallFlag || DoNotVisitFlag; }
-        }
 
         public BasicPersonInfo()
         {

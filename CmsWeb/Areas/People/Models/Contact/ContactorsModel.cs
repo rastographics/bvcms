@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.People.Models
         public Contact Contact;
         public ContactorsModel(int id)
         {
-            Contact = DbUtil.Db.Contacts.Single(cc => cc.ContactId == id);
+            Contact = DbUtil.Db.Contacts.SingleOrDefault(cc => cc.ContactId == id);
         }
         public bool CanViewComments { get; set; }
         private IQueryable<Contactor> _contactors;

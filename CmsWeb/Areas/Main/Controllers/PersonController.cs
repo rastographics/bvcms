@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 		    DbUtil.Db.PurgePerson(person.PeopleId);
 
-			DbUtil.LogActivity("Deleted Record {0}".Fmt(person.PeopleId));
+			DbUtil.LogActivity("Deleted Record {0} ({1})".Fmt(person.Name, person.PeopleId));
 			return Content("ok");
 		}
 		[HttpPost]

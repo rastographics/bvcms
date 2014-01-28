@@ -289,6 +289,8 @@ namespace CmsWeb.Areas.Main.Models.Report
 							from v in jv.DefaultIfEmpty()
 							from m in jm.DefaultIfEmpty()
 						    let cid = pa != null ? pa.a.Commitment : null
+							let mt = pa.a.MemberType == null ? "?" : pa.a.MemberType.Description + " ?"
+							let at = pa.a.AttendType == null ? "?" : pa.a.AttendType.Description + " ?"
 							where v == null && m == null
 							select new AttendInfo
 							{
@@ -299,8 +301,8 @@ namespace CmsWeb.Areas.Main.Models.Report
 								AttendCommitmentId = cid,
 								Commitment = CmsData.Codes.AttendCommitmentCode.Lookup(cid ?? 99),
 								Member = false,
-								MemberType = pa.a.MemberType.Description + " ?",
-								AttendType = pa.a.AttendType.Description + " ?",
+								MemberType = mt,
+								AttendType = at
 							};
 
 			// the final rollsheet

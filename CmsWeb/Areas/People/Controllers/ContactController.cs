@@ -36,7 +36,8 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult RemoveContactor(int cid, int pid)
         {
             var m = new ContactorsModel(cid);
-            m.RemoveContactor(pid);
+            if (m.Contact != null)
+                m.RemoveContactor(pid);
             return Content("ok");
         }
 

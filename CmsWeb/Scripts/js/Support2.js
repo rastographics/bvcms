@@ -48,7 +48,8 @@
         });
     });
     $("#sendSupport").live("click", function (e) {
-        if ($("#supportUrgency").val() == 0) {
+        e.preventDefault();
+        if ($("#urgency").val() == 0) {
             alert("Please select an urgency before submitting your support request");
             return;
         }
