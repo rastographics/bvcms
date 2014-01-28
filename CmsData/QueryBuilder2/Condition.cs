@@ -158,7 +158,8 @@ namespace CmsData
             }
             catch (Exception ex)
             {
-                throw new Exception("problem in query:\n" + ToXml(), ex);
+                var x = ToXml();
+                throw new Exception("problem in query:\n" + x, ex);
             }
             if (tree == null)
                 tree = CompareConstant(parm, "PeopleId", CompareType.NotEqual, 0);

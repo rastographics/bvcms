@@ -40,6 +40,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             if (m.Name.Equal(Util.ScratchPad2))
                 m.Ispublic = false;
+            m.CanDelete = true; // must be true since they can edit if they got here
             m.UpdateModel();
             return View("Row", m);
         }

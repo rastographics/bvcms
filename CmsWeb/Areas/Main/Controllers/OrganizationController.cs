@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.Main.Controllers
             ViewBag.OrgMemberContext = true;
             Util2.CurrentGroups = smallgrouplist;
             Util2.CurrentGroupsPrefix = sgprefix;
-            Util2.CurrentGroupsMode = selectmode.Value;
+            Util2.CurrentGroupsMode = selectmode ?? 0;
             InitExportToolbar(id, DbUtil.Db.QueryInCurrentOrg().QueryId, checkparent: true);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Members";
             var m = new MemberModel(id, MemberModel.GroupSelect.Active, namefilter, sgprefix);
