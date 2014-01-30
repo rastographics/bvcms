@@ -49,7 +49,7 @@ namespace CmsWeb.Models
                          MemberType = om.MemberType.Description,
                          AttendPct = om.AttendPct,
 
-                         Age = p.Age,
+                         Age = p.Age ?? 0,
                          Spouse = spouse != null ? spouse.FirstName : "",
 
                          activities = from m in p.OrganizationMembers

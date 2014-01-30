@@ -134,7 +134,7 @@ namespace CmsWeb.Models
 
         
         public string Spouse { get; set; }
-        public int? Age { get; set; }
+        public int Age { get; set; }
         public string JoinInfo { get; set; }
         private IEnumerable<ExportInvolvements.ActivityInfo> _Activities;
         public IEnumerable<ExportInvolvements.ActivityInfo> activities
