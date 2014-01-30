@@ -464,6 +464,9 @@ namespace CmsWeb.Areas.Manage.Controllers
                     case "Baptism Type":
                         p.BaptismTypeId = m.NewValue.ToInt();
                         break;
+                    case "Join Type":
+                        p.JoinCodeId = m.NewValue.ToInt();
+                        break;
                     case "Campus":
                         p.CampusId = m.NewValue.ToInt();
                         break;
