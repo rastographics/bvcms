@@ -29,20 +29,17 @@
     <script type="text/javascript">
         $(function () {
             $(".datepicker").jqdatepicker();
-            $("a.run").button();
-            $("a.run").click(function (ev) {
-                ev.preventDefault();
-                if (!$.DateValid($("#Sunday").val(), true))
-                    return;
-                window.location = "/Reports/WeeklyDecisions/" + $.SortableDate($("#Sunday").val());
-            });
+            $(".bt").button();
         });
     </script>
 }
 <div style="text-align: center">
     <h1>Weekly Decisions Report</h1>
+    <form action="/Reports/WeeklyDecisions" method="GET">
+    Campus: @Html.DropDownList("Campus", Model.CampusList())<br/>
     Sunday Date:
-        @Html.DatePicker("Sunday") <a class="run bt">Run</a>
+        @Html.DatePicker("Sunday") <input type="submit" class="bt" value="Run"/>
+    </form>
     <hr />
     <table style="margin-left: auto; margin-right: auto;">
         <tbody>
