@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.People.Models
         {
             var c = new Contact
             {
-                ContactDate = DateTime.Now.Date,
+                ContactDate = contact.ContactDate.Date,
                 MinistryId = contact.MinistryId,
                 CreatedBy = Util.UserId1,
                 CreatedDate = DateTime.Now,

@@ -25,7 +25,10 @@ else
             @ContactLine()
         </li>
         <li class="badges">
+            @if (Model.basic.Campus.Items.Count() > 1)
+            {
             @Html.DisplayFor(m => m.basic.Campus, "InlineCode")
+            }
             @Html.DisplayFor(m => m.basic.PositionInFamily, "InlineCode")
             @Badge(true, @Model.MemberStatus, "label-success")
             @foreach (var status in Model.StatusFlags)
