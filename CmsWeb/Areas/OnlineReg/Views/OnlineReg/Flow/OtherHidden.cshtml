@@ -101,11 +101,13 @@
             }
         break;
          case "AskMenu":
-            var nn = 0;
-			foreach (var i in ((AskMenu)ask).MenuItemsChosen(Model.MenuItem))
+            var mu = ((AskMenu)ask);
+            var mnuname = Html.NameFor2(m => m.MenuItem[ask.UniqueId]);
+			for (var n = 0; n < mu.list.Count; n++)
 			{
-    			<input type="hidden" name="@(prefix).MenuItem[@nn].Key" value="@i.sg" />
-				<input type="hidden" name="@(prefix).MenuItem[@(nn++)].Value" value="@Model.MenuItemValue(i.sg)" />
+				var i = mu.list[n];
+                <input type="hidden" name="@(mnuname)[@n].Key" value="@i.SmallGroup"/>
+				<input type="hidden" name="@(mnuname)[@n].Value"  value="@Model.MenuItemValue(ask.UniqueId, i.SmallGroup)" />
 			}
             break;
         case "AskGradeOptions":
