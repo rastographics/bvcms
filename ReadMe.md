@@ -10,7 +10,6 @@ BVCMS Developer Quick Start Guide
 ### Install Development Tools
 1. **[Visual Studio Express 2012][IDE]**
 1. **[SQL Server Express 2012 SP1][SQL]**
-1. **[Web Essentials 2013 Extension][WEB]**
 1. **[GitHub for Windows][GHW]**
 
 ### Clone the Source Code Repository
