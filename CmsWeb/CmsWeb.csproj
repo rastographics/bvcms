@@ -636,6 +636,7 @@
     <Content Include="Areas\People\Views\Person\Family\Related.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Areas\Reports\Views\Web.config" />
     <Content Include="ckeditor\adapters\jquery.js" />
     <Content Include="ckeditor\build-config.js" />
     <Content Include="ckeditor\ckeditor.js" />
@@ -1218,7 +1219,6 @@
     <Content Include="Views\ExtraValue\Reports\Grid2.cshtml" />
     <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
     <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
-    <Content Include="Areas\Reports\Web.config" />
     <Content Include="Areas\Reports\Views\Export\FamilyMembers.cshtml" />
     <Content Include="Areas\Reports\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\MultiSelect.cshtml" />

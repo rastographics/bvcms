@@ -434,7 +434,7 @@ namespace CmsWeb.Models
             dt = dt.AddDays(-dw);
             var b = new BundleHeader
             {
-                BundleHeaderTypeId = BundleTypeCode.PreprintedEnvelope,
+                BundleHeaderTypeId = DbUtil.Db.Setting("DefaultBundleTypeId", BundleTypeCode.PreprintedEnvelope.ToString()).ToInt(),
                 BundleStatusId = BundleStatusCode.Open,
                 ChurchId = 1,
                 ContributionDate = dt,
