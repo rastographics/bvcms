@@ -15,7 +15,9 @@ namespace CmsWeb.Areas.People.Controllers
             Response.SetCacheMinutes(5);
             var q = from c in DbUtil.Db.Campus
                     select new { value = c.Id, text = c.Description };
-            return Json(q.ToArray(), JsonRequestBehavior.AllowGet);
+            var list = q.ToList();
+            list.Insert(0, new { value = 0, text = "(not specified)" });
+            return Json(list.ToArray(), JsonRequestBehavior.AllowGet);
         }
         [POST("Person2/Schools")]
         public JsonResult Schools(string query)

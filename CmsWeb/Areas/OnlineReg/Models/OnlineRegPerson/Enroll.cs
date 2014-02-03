@@ -114,11 +114,11 @@ namespace CmsWeb.Models
                                     om.AddToMemberData("{0}: {1}".Fmt(g.Key, g.Value));
                         break;
                     case "AskMenu":
-                        foreach (var i in MenuItem)
+                        foreach (var i in MenuItem[ask.UniqueId])
                             om.AddToGroup(DbUtil.Db, i.Key, i.Value);
-                        {
-                            var menulabel = "Menu Items";
-                            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem))
+                    {
+                            var menulabel = ((AskMenu) ask).Label;
+                            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
                             {
                                 om.AddToMemberData(menulabel);
                                 string desc;
@@ -291,9 +291,9 @@ namespace CmsWeb.Models
                                         Util.PickFirst(((AskDropdown)ask).Label, "Options"));
                         break;
                     case "AskMenu":
-                        {
-                            var menulabel = "Menu Items";
-                            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem))
+                    {
+                            var menulabel = ((AskMenu) ask).Label;
+                            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
                             {
                                 string row;
                                 if (i.amt > 0)

@@ -1417,9 +1417,9 @@ namespace CmsData
             LogChanges(db, Util.UserPeopleId.Value);
             db.SubmitChanges();
         }
-        public void UpdateCampus(CMSDataContext db, int value)
+        public void UpdateCampus(CMSDataContext db, object value)
         {
-            var campusid = CampusId = value.ToInt();
+            var campusid = value.ToInt2();
             if (campusid == 0)
                 campusid = null;
             this.UpdateValue("CampusId", campusid);

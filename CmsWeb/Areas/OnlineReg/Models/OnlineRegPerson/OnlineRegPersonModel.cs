@@ -13,8 +13,6 @@ using System.Xml.Serialization;
 using CmsData;
 using CmsData.API;
 using UtilityExtensions;
-using System.Runtime.Serialization;
-using System.Web.Mvc;
 using CmsData.Codes;
 
 namespace CmsWeb.Models
@@ -122,7 +120,7 @@ namespace CmsWeb.Models
         public Dictionary<string, bool?> YesNoQuestion { get; set; }
         public List<string> option { get; set; }
         public List<string> Checkbox { get; set; }
-        public Dictionary<string, int?> MenuItem { get; set; }
+        public List<Dictionary<string, int?>> MenuItem { get; set; }
 
         public void ReadXml(XmlReader reader)
         {
@@ -131,6 +129,7 @@ namespace CmsWeb.Models
             if (x.Root == null) return;
 
             var eqset = 0;
+            var menuset = 0;
             foreach (var e in x.Root.Elements())
             {
                 var name = e.Name.ToString();
@@ -174,11 +173,16 @@ namespace CmsWeb.Models
                         break;
                     case "MenuItem":
                         if (MenuItem == null)
-                            MenuItem = new Dictionary<string, int?>();
+                            MenuItem = new List<Dictionary<string, int?>>();
+                        var menusetattr = e.Attribute("set");
+                        if(menusetattr != null)
+                            menuset = menusetattr.Value.ToInt();
+                        if (MenuItem.Count == menuset)
+                            MenuItem.Add(new Dictionary<string, int?>());
                         var aname = e.Attribute("name");
                         var number = e.Attribute("number");
                         if (aname != null && number != null)
-                            MenuItem.Add(aname.Value, number.Value.ToInt());
+                            MenuItem[menuset].Add(aname.Value, number.Value.ToInt());
                         break;
                     default:
                         Util.SetPropertyFromText(this, name, e.Value);
@@ -244,15 +248,17 @@ namespace CmsWeb.Models
                         checkoxesAdded = true;
                         break;
                     case "MenuItem":
-                        if (MenuItem != null && !menuitemsAdded)
-                            foreach (var kv in MenuItem)
-                            {
-                                w.Start("MenuItem");
-                                w.Attr("name", kv.Key);
-                                w.Attr("number", kv.Value);
-                                w.End();
-                            }
-                        menuitemsAdded = true;
+                        if(MenuItem != null)
+                            for (var i = 0; i < MenuItem.Count; i++)
+                                if (MenuItem[i] != null && MenuItem[i].Count > 0)
+                                    foreach (var q in MenuItem[i])
+                                    {
+                                        w.Start("MenuItem");
+                                        w.Attr("set", i);
+                                        w.Attr("name", q.Key);
+                                        w.Attr("number", q.Value);
+                                        w.End();
+                                    }
                         break;
                     default:
                         w.Add(pi.Name, pi.GetValue(this, null));
@@ -284,7 +290,11 @@ namespace CmsWeb.Models
             }
             var nmi = setting.AskItems.Count(aa => aa.Type == "AskMenu");
             if (nmi > 0 && MenuItem == null)
-                MenuItem = new Dictionary<string, int?>();
+            {
+                MenuItem = new List<Dictionary<string, int?>>();
+                for(var i = 0; i < nmi; i++)
+                    MenuItem.Add(new Dictionary<string, int?>());
+            }
 
             var ncb = setting.AskItems.Count(aa => aa.Type == "AskCheckboxes");
             if (ncb > 0 && Checkbox == null)
@@ -322,10 +332,10 @@ namespace CmsWeb.Models
             get { return first + " " + last + " <" + email + ">"; }
         }
 
-        public int? MenuItemValue(string s)
+        public int? MenuItemValue(int i, string s)
         {
-            if (MenuItem.ContainsKey(s))
-                return MenuItem[s];
+            if (MenuItem[i].ContainsKey(s))
+                return MenuItem[i][s];
             return null;
         }
 

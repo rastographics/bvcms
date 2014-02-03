@@ -319,7 +319,7 @@
             break;
         case "AskMenu":
             var mu = ((AskMenu)ask);
-            var mnuname = Html.NameFor2(m => m.MenuItem);
+            var mnuname = Html.NameFor2(m => m.MenuItem[ask.UniqueId]);
         <tr>
 		<td><strong>@(mu.Label)</strong></td>
 		<td>
@@ -332,7 +332,7 @@
 						<td>@i.Description </td>
                         <td nowrap="nowrap">
                             <input type="hidden" name="@(mnuname)[@n].Key" value="@i.SmallGroup"/>
-    						<input type="text" name="@(mnuname)[@n].Value"  value="@Model.MenuItemValue(i.SmallGroup)" class="short"/>
+    						<input type="text" name="@(mnuname)[@n].Value"  value="@Model.MenuItemValue(ask.UniqueId, i.SmallGroup)" class="short"/>
 						@if (i.Fee > 0)
 						{
 							<text> at $@i.Fee.ToString2("N2")</text>

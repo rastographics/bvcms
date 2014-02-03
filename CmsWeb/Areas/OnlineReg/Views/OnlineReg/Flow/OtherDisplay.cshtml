@@ -158,7 +158,7 @@
             }
             break;
         case "AskMenu":
-            foreach (var i in ((AskMenu)ask).MenuItemsChosen(Model.MenuItem))
+            foreach (var i in ((AskMenu)ask).MenuItemsChosen(Model.MenuItem[ask.UniqueId]))
             {
         <tr>
             <td>@i.desc</td>

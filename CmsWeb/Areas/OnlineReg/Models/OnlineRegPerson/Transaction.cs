@@ -70,7 +70,7 @@ namespace CmsWeb.Models
 				switch (ask.Type)
 				{
 					case "AskMenu":
-						amt += ((AskMenu)ask).MenuItemsChosen(MenuItem).Sum(m => m.number * m.amt);
+						amt += ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]).Sum(m => m.number * m.amt);
 						break;
 					case "AskDropdown":
 				        var cc = ((AskDropdown) ask).SmallGroupChoice(option);

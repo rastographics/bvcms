@@ -370,7 +370,7 @@ namespace CmsWeb.Code
                        Value = c.Description
                    };
         }
-        public IEnumerable<CodeValueItem> CampusList() { return AllCampuses0(); }
+        public IEnumerable<CodeValueItem> CampusList() { return AllCampusesNo(); }
         public IEnumerable<CodeValueItem> ContactReasonList() { return ContactReasonCodes().AddNotSpecified(); }
         public IEnumerable<CodeValueItem> ContactTypeList() { return ContactTypeCodes().AddNotSpecified(); }
         public IEnumerable<CodeValueItem> CountryList() { return GetCountryList(); }
@@ -640,6 +640,10 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> AllCampuses0()
         {
             return AllCampuses().AddNotSpecified();
+        }
+        public IEnumerable<CodeValueItem> AllCampusesNo()
+        {
+            return AllCampuses().AddNotSpecified("No Campus");
         }
 
         public IEnumerable<CodeValueItem> OrganizationStatusCodes()

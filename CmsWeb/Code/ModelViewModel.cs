@@ -162,14 +162,14 @@ namespace CmsWeb.Code
                 throw new Exception("items are null in SelectList");
             return new SelectList(items, datafield, "Value");
         }
-        public static IEnumerable<CodeValueItem> AddNotSpecified(this IEnumerable<CodeValueItem> q)
+        public static IEnumerable<CodeValueItem> AddNotSpecified(this IEnumerable<CodeValueItem> q, string notspecified = "(not specified)")
         {
-            return q.AddNotSpecified(0);
+            return q.AddNotSpecified(0, notspecified);
         }
-        public static IEnumerable<CodeValueItem> AddNotSpecified(this IEnumerable<CodeValueItem> q, int value)
+        public static IEnumerable<CodeValueItem> AddNotSpecified(this IEnumerable<CodeValueItem> q, int value, string notspecified = "(not specified)")
         {
             var list = q.ToList();
-            list.Insert(0, new CodeValueItem { Id = value, Code = value.ToString(), Value = "(not specified)" });
+            list.Insert(0, new CodeValueItem { Id = value, Code = value.ToString(), Value = notspecified });
             return list;
         }
 

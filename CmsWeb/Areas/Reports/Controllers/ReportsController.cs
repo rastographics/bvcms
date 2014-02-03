@@ -142,21 +142,21 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [GET("Reports/Decisions")]
-        public ActionResult Decisions(DateTime? dt1, DateTime? dt2)
+        public ActionResult Decisions(int? campus, DateTime? dt1, DateTime? dt2)
         {
             DateTime today = Util.Now.Date;
             if (!dt1.HasValue)
                 dt1 = new DateTime(today.Year, 1, 1);
             if (!dt2.HasValue)
                 dt2 = today;
-            var m = new DecisionSummaryModel(dt1, dt2);
+            var m = new DecisionSummaryModel(dt1, dt2) { Campus = campus };
             return View(m);
         }
 
         [GET("Reports/DecisionsToQuery/{command}/{key}")]
-        public ActionResult DecisionsToQuery(string command, string key, DateTime? dt1, DateTime? dt2)
+        public ActionResult DecisionsToQuery(string command, string key, int? campus, DateTime? dt1, DateTime? dt2)
         {
-            string r = new DecisionSummaryModel(dt1, dt2).ConvertToSearch(command, key);
+            string r = new DecisionSummaryModel(dt1, dt2) { Campus = campus }.ConvertToSearch(command, key);
             return Redirect(r);
         }
 
@@ -645,10 +645,10 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new WeeklyAttendanceResult(id);
         }
 
-        [GET("Reports/WeeklyDecisions/{dt:datetime?}")]
-        public ActionResult WeeklyDecisions(DateTime? dt)
+        [GET("Reports/WeeklyDecisions")]
+        public ActionResult WeeklyDecisions(int? campus, DateTime? sunday)
         {
-            var m = new WeeklyDecisionsModel(dt);
+            var m = new WeeklyDecisionsModel(sunday) { Campus = campus };
             return View(m);
         }
 
