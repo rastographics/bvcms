@@ -453,22 +453,22 @@ namespace CmsWeb.Areas.Manage.Controllers
                         p.DeceasedDate = m.NewValue.ToDate();
                         break;
                     case "New Member Class":
-                        p.NewMemberClassStatusId = m.NewValue.ToInt();
+                        p.NewMemberClassStatusId = m.NewValue.ToInt2();
                         break;
                     case "Drop Type":
                         p.DropCodeId = m.NewValue.ToInt();
                         break;
                     case "Baptism Status":
-                        p.BaptismStatusId = m.NewValue.ToInt();
+                        p.BaptismStatusId = m.NewValue.ToInt2();
                         break;
                     case "Baptism Type":
-                        p.BaptismTypeId = m.NewValue.ToInt();
+                        p.BaptismTypeId = m.NewValue.ToInt2();
                         break;
                     case "Join Type":
                         p.JoinCodeId = m.NewValue.ToInt();
                         break;
                     case "Campus":
-                        p.CampusId = m.NewValue.ToInt();
+                        p.CampusId = m.NewValue.ToInt2();
                         break;
                     case "Marital Status":
                         p.MaritalStatusId = m.NewValue.ToInt();
@@ -477,7 +477,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                         p.PositionInFamilyId = m.NewValue.ToInt();
                         break;
                     case "Entry Point":
-                        p.EntryPointId = m.NewValue.ToInt();
+                        p.EntryPointId = m.NewValue.ToInt2();
                         break;
                     case "Gender":
                         p.GenderId = m.NewValue.ToInt();
@@ -498,10 +498,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                             p.Grade = m.NewValue.ToInt2();
                         break;
                     case "Statement Options":
-                        p.ContributionOptionsId = m.NewValue.ToInt();
+                        p.ContributionOptionsId = m.NewValue.ToInt2();
                         break;
                     case "Envelope Options":
-                        p.EnvelopeOptionsId = m.NewValue.ToInt();
+                        p.EnvelopeOptionsId = m.NewValue.ToInt2();
                         break;
                     case "Approval Codes":
                         {
