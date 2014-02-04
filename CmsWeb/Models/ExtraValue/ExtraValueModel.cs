@@ -213,7 +213,10 @@ namespace CmsWeb.Models.ExtraValues
                 case "Data":
                 case "Text":
                 case "Text2":
-                    record.AddEditExtraData(name, value);
+                    if(!value.HasValue())
+                        record.RemoveExtraValue(DbUtil.Db, name);
+                    else
+                        record.AddEditExtraData(name, value);
                     break;
                 case "Date":
                     {
