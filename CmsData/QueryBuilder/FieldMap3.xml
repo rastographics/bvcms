@@ -576,7 +576,7 @@
     </MedicalLength>
   </Miscellaneous>
   <Admin>
-    <UserRole Title="User In Role" Type="Code" DisplayAs="UserRole" DataSource="UserRoles" DataValueField="IdCode">
+    <UserRole Title="User In Role" Type="Code" DisplayAs="UserRole" DataSource="UserRolesMyData" DataValueField="IdCode">
       Select User Role from the list.
     </UserRole>
     <IsUser Title="Is System User" Type="Bit" DataValueField="IdCode">

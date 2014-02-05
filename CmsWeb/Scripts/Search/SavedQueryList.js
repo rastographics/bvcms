@@ -39,7 +39,8 @@
     $.ajaxSetup({
         complete: function () {
             $("#loading-indicator").hide();
-            $("#SearchQuery").focus().select();
+            if($("#filter-link").is(":focus"))
+                $("#SearchQuery").focus().select();
         }
     });
     $("#SearchQuery").focus();

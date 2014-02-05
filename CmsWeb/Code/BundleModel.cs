@@ -427,26 +427,6 @@ namespace CmsWeb.Models
             }
             return q;
         }
-        public BundleHeader NewBundle()
-        {
-            var dt = Util.Now.Date;
-            var dw = (int)dt.DayOfWeek;
-            dt = dt.AddDays(-dw);
-            var b = new BundleHeader
-            {
-                BundleHeaderTypeId = DbUtil.Db.Setting("DefaultBundleTypeId", BundleTypeCode.PreprintedEnvelope.ToString()).ToInt(),
-                BundleStatusId = BundleStatusCode.Open,
-                ChurchId = 1,
-                ContributionDate = dt,
-                CreatedBy = Util.UserId1,
-                CreatedDate = Util.Now,
-                RecordStatus = false,
-                FundId = DbUtil.Db.Setting("DefaultFundId", "1").ToInt(), 
-            };
-            DbUtil.Db.BundleHeaders.InsertOnSubmit(b);
-            DbUtil.Db.SubmitChanges();
-            return b;
-        }
         [DataObjectMethod(DataObjectMethodType.Select, false)]
         public List<DepositInfo> FetchDepositBundles(DateTime depositdt)
         {

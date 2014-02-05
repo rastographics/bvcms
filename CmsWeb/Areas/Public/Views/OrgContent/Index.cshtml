@@ -20,7 +20,7 @@ else if (Model.Inactive)
 else
 {
     <div style="max-width: 600px;">
-    <h1>@Model.OrgName</h1>
+    <h1><a href="/Organization/Index/@Model.OrgId">@Model.OrgName</a></h1>
     @Html.Raw(Model.Html)
     </div>
 }
