@@ -9,16 +9,18 @@
 			switch (iType)
 			{
 				case TYPE_STRING:
-				{
-					sText = liItem.GetType().GetProperty( sText ).GetValue(liItem, null).ToString();
+					if( liItem.GetType().GetProperty(sText) != null )
+						sText = liItem.GetType().GetProperty(sText).GetValue(liItem, null).ToString();
+					else
+						sText = "";
 					break;
-				}
 
 				case TYPE_BARCODE:
-				{
-					sText = liItem.GetType().GetProperty( sText ).GetValue(liItem, null).ToString();
+					if (liItem.GetType().GetProperty(sText) != null)
+						sText = liItem.GetType().GetProperty(sText).GetValue(liItem, null).ToString();
+					else
+						sText = "";
 					break;
-				}
 			}
 		}
 	}
