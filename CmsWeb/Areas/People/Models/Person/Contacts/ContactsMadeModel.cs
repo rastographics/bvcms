@@ -13,6 +13,7 @@ namespace CmsWeb.Areas.People.Models
             : base(id)
         {
             AddContact = "/Person2/AddContactMade/" + id;
+            base.AddContactButton = "Add Contact Made By This Person";
         }
         override public IQueryable<Contact> DefineModelList()
         {

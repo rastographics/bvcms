@@ -13,6 +13,7 @@ using CmsData.View;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Main.Models.Report;
+using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using Dapper;
@@ -31,7 +32,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [GET("Reports/Attendance/{id}")]
         public ActionResult Attendance(int id, AttendanceModel m)
         {
-            if(m.OrgId == 0)
+            if (m.OrgId == 0)
                 m = new AttendanceModel() { OrgId = id };
             return View(m);
         }
@@ -64,7 +65,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             if (!id.HasValue)
                 return Content("no query");
-            return new AveryResult {id = id.Value};
+            return new AveryResult { id = id.Value };
         }
 
         [GET("Reports/Avery3/{id}")]
@@ -72,7 +73,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             if (!id.HasValue)
                 return Content("no query");
-            return new Avery3Result {id = id.Value};
+            return new Avery3Result { id = id.Value };
         }
 
         [GET("Reports/AveryAddress/{id}")]
@@ -104,7 +105,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [POST("Reports/CheckinControl")]
         public ActionResult CheckinControl(CheckinControlModel m)
         {
-            return new CheckinControlResult {model = m};
+            return new CheckinControlResult { model = m };
         }
 
         [GET("Reports/ChurchAttendance/{dt:datetime?}")]
@@ -130,7 +131,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [POST("Reports/ClassList")]
         public ActionResult ClassList(string org, OrgSearchModel m)
         {
-            return new ClassListResult(m) {orgid = org == "curr" ? Util2.CurrentOrgId : null};
+            return new ClassListResult(m) { orgid = org == "curr" ? Util2.CurrentOrgId : null };
         }
 
         [GET("Reports/Contacts/{id:guid}")]
@@ -170,11 +171,11 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult EnrollmentControl(bool? excel, EnrollmentControlModel m)
         {
             if (excel != true)
-                return new EnrollmentControlResult {model = m};
+                return new EnrollmentControlResult { model = m };
 
             IOrderedEnumerable<EnrollmentControlModel.MemberInfo> d = from p in m.list()
-                orderby p.Name
-                select p;
+                                                                      orderby p.Name
+                                                                      select p;
             var workbook = new HSSFWorkbook(); // todo: Convert all Excel exports to this approach
             ISheet sheet = workbook.CreateSheet("EnrollmentControl");
             int rowIndex = 0;
@@ -220,26 +221,26 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (ViewExtensions2.UseNewLook())
                 return Redirect("/ExtraValue/Summary");
             var q = from e in DbUtil.Db.PeopleExtras
-                where e.StrValue == null && e.BitValue == null
-                let TypeValue = e.DateValue != null 
-                    ? "Date" : e.Data != null 
-                    ? "Text" : e.IntValue != null 
-                    ? "Int" : "?"
-                group e by new {e.Field, TypeValue}
-                into g
-                select new ExtraInfo
-                {
-                    Field = g.Key.Field,
-                    type = g.Key.TypeValue,
-                    Count = g.Count(),
-                };
+                    where e.StrValue == null && e.BitValue == null
+                    let TypeValue = e.DateValue != null
+                        ? "Date" : e.Data != null
+                        ? "Text" : e.IntValue != null
+                        ? "Int" : "?"
+                    group e by new { e.Field, TypeValue }
+                        into g
+                        select new ExtraInfo
+                        {
+                            Field = g.Key.Field,
+                            type = g.Key.TypeValue,
+                            Count = g.Count(),
+                        };
 
             var ev = StandardExtraValues.GetExtraValues();
             var list = from e in q.ToList()
-                let f = ev.SingleOrDefault(ff => ff.name == e.Field)
-                where f == null || f.UserCanView()
-                orderby e.Field
-                select e;
+                       let f = ev.SingleOrDefault(ff => ff.name == e.Field)
+                       where f == null || f.UserCanView()
+                       orderby e.Field
+                       select e;
             return View(list);
         }
 
@@ -250,23 +251,23 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Redirect("/ExtraValue/Summary");
             var ev = StandardExtraValues.GetExtraValues();
             var q = from e in DbUtil.Db.PeopleExtras
-                where e.StrValue != null || e.BitValue != null
-                let TypeValue = e.StrValue != null ? "Code" : "Bit"
-                group e by new {e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0"), TypeValue}
-                into g
-                select new ExtraInfo
-                {
-                    Field = g.Key.Field,
-                    Value = g.Key.val,
-                    type = g.Key.TypeValue,
-                    Count = g.Count(),
-                };
+                    where e.StrValue != null || e.BitValue != null
+                    let TypeValue = e.StrValue != null ? "Code" : "Bit"
+                    group e by new { e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0"), TypeValue }
+                        into g
+                        select new ExtraInfo
+                        {
+                            Field = g.Key.Field,
+                            Value = g.Key.val,
+                            type = g.Key.TypeValue,
+                            Count = g.Count(),
+                        };
 
             var list = from e in q.ToList()
-                let f = ev.SingleOrDefault(ff => ff.name == e.Field)
-                where f == null || f.UserCanView()
-                orderby e.Field
-                select e;
+                       let f = ev.SingleOrDefault(ff => ff.name == e.Field)
+                       where f == null || f.UserCanView()
+                       orderby e.Field
+                       select e;
             return View(list);
         }
 
@@ -297,7 +298,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [GET("Reports/Meetings")]
         public ActionResult Meetings(DateTime dt1, DateTime dt2, int? programid, int? divisionid)
         {
-            var m = new MeetingsModel() {Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid};
+            var m = new MeetingsModel() { Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid };
             return View(m);
         }
         [POST("Reports/Meetings")]
@@ -323,13 +324,13 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             if (!id.HasValue)
                 return Content("no query");
-            return new AveryResult {namesonly = true, id = id.Value};
+            return new AveryResult { namesonly = true, id = id.Value };
         }
 
         [POST("Reports/OrgLeaders")]
         public ActionResult OrgLeaders(string org, OrgSearchModel m)
         {
-            return new OrgLeadersResult(m) {orgid = org == "curr" ? Util2.CurrentOrgId : null};
+            return new OrgLeadersResult(m) { orgid = org == "curr" ? Util2.CurrentOrgId : null };
         }
 
         [GET("Reports/PastAttendee/{id}")]
@@ -370,7 +371,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             {
                 qid = id,
                 orgid = org == "curr" ? Util2.CurrentOrgId : null,
-                groups = org == "curr" ? Util2.CurrentGroups : new[] {0},
+                groups = org == "curr" ? Util2.CurrentGroups : new[] { 0 },
                 meetingid = meetingid,
                 bygroup = bygroup.HasValue,
                 sgprefix = sgprefix,
@@ -401,15 +402,11 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(q);
         }
 
-        [GET("Reports/RecentAbsents/{id}")]
-        public ActionResult RecentAbsents1(int? id)
+        [GET("Reports/RecentAbsents1/{id}/{idfilter?}")]
+        public ActionResult RecentAbsents1(int id, int? idfilter)
         {
-            int? divid = null;
-            var cn = new SqlConnection(Util.ConnectionString);
-            cn.Open();
-            var q = cn.Query("RecentAbsentsSP", new {orgid = id, divid, days = 36},
-                commandType: CommandType.StoredProcedure, commandTimeout: 600);
-            return View("RecentAbsents", q);
+            var m = new RecentAbsentsViewModel(id, idfilter);
+            return View(m);
         }
 
         [Authorize(Roles = "Admin")]
@@ -417,8 +414,8 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult RecentRegistrations(int? days, int? orgid, string sort)
         {
             IQueryable<Registration> q = from r in DbUtil.Db.Registrations(days ?? 90)
-                where (orgid ?? 0) == 0 || r.OrganizationId == orgid
-                select r;
+                                         where (orgid ?? 0) == 0 || r.OrganizationId == orgid
+                                         select r;
             if (!User.IsInRole("Finance"))
                 q = q.Where(rr => !rr.OrganizationName.Contains("Giving"));
             q = sort == "Organization"
@@ -469,7 +466,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new RollsheetResult
             {
                 orgid = org == "curr" ? Util2.CurrentOrgId : null,
-                groups = org == "curr" ? Util2.CurrentGroups : new[] {0},
+                groups = org == "curr" ? Util2.CurrentGroups : new[] { 0 },
                 meetingid = meetingid,
                 bygroup = bygroup.HasValue,
                 sgprefix = sgprefix,
@@ -485,7 +482,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             DateTime? dt2 = dt.ToDate();
             return new RollsheetResult
             {
-                groups = new[] {0},
+                groups = new[] { 0 },
                 bygroup = bygroup.HasValue,
                 sgprefix = sgprefix,
                 dt = dt2,
@@ -532,9 +529,9 @@ namespace CmsWeb.Areas.Reports.Controllers
             string[] roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
             XDocument xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues.xml", "<Fields/>"));
             IEnumerable<string> fields = (from ff in xml.Root.Elements("Field")
-                let vroles = ff.Attribute("VisibilityRoles")
-                where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
-                select ff.Attribute("name").Value);
+                                          let vroles = ff.Attribute("VisibilityRoles")
+                                          where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
+                                          select ff.Attribute("name").Value);
             string nodisplaycols = string.Join("|", fields);
 
             Tag tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
@@ -563,15 +560,15 @@ namespace CmsWeb.Areas.Reports.Controllers
             int? orgid = org == "curr" ? Util2.CurrentOrgId : null;
             IQueryable<Organization> orgs = m.FetchOrgs();
             IQueryable<ShirtSizeInfo> q = from om in DbUtil.Db.OrganizationMembers
-                join o in orgs on om.OrganizationId equals o.OrganizationId
-                where o.OrganizationId == orgid || (orgid ?? 0) == 0
-                group 1 by om.ShirtSize
-                into g
-                select new ShirtSizeInfo
-                {
-                    Size = g.Key,
-                    Count = g.Count(),
-                };
+                                          join o in orgs on om.OrganizationId equals o.OrganizationId
+                                          where o.OrganizationId == orgid || (orgid ?? 0) == 0
+                                          group 1 by om.ShirtSize
+                                              into g
+                                              select new ShirtSizeInfo
+                                              {
+                                                  Size = g.Key,
+                                                  Count = g.Count(),
+                                              };
             return View(q);
         }
 
@@ -603,7 +600,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult WeeklyAttendance(WeeklyAttendanceModel m)
         {
             var q = m.Attendances();
-            var cols = typeof (WeeklyAttendanceModel.AttendInfo).GetProperties();
+            var cols = typeof(WeeklyAttendanceModel.AttendInfo).GetProperties();
             var count = q.Count();
             var ep = new ExcelPackage();
             var ws = ep.Workbook.Worksheets.Add("Sheet1");
