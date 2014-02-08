@@ -444,63 +444,36 @@ namespace CmsWeb.Areas.Main.Models.Report
 
 		public void ContactForm()
 		{
-            /*Add additional variables to handle option of building Contact Form based on Lookup tables
-             * If the setting FormSource = "lookuptables" then the lookup tables for ContactReason and ContactType will be used
-             * If FormSource = anything else then the default contact form lists will be used.
-             *
-             * There is no look up table for Contact Results because they are hardcoded into the form for actually adding a contact to a record
-             * Another Setting is used to allow for custimization of the blank Contact Form.  It is called "ContactFormResults"
+            /* There is no look up table for Contact Results because they are hardcoded into the form for actually adding a contact to a record
+             * Another Setting is used to allow for customization of the blank Contact Form.  It is called "ContactFormResults"
              * The code takes a semi-colon seperated string stored in ContactFormResults and converts it to a list.
              * If ContactFormResults does not exist in Settings then the default list is used.
+             * 
+             * However, because the results are hardcoded, there will be no translation between the results on this form and the results on the Contact page itself.
+             * We will implement extra values for this table to accomodate this at some point.
              * */
             var Db = DbUtil.Db;
-            var TempString = "";
-            var ContactReason = new List<string> { };
-            var ContactType = new List<string> { };
-            var FormSource = Db.Setting("ContactFormSource", "Default");
-            List<string> ContactResult = Db.Setting("ContactFormResults", "Not at Home; Left Door Hanger; Left Message; Contact Made; Gospel Shared; Profession of Faith; Prayer Request Rec'd; Prayed for Person; Already Saved").Split(';').ToList();
+            List<string> ContactResult = 
+                Db.Setting(
+                "ContactFormResults", 
+                "Not at Home;Left Door Hanger;Left Message;Contact Made;Gospel Shared;Profession of Faith;Prayer Request Rec'd;Prayed for Person;Already Saved"
+                ).Split(';').ToList();
 
             doc.NewPage();
 
-			var t = new PdfPTable(1);
+			var t = new PdfPTable(2);
                         
 			t.SetNoBorder();
-			t.AddCentered("InReach/Outreach Card", 1, h1font);
-			t.AddCentered("Contact Summary", 1, h2font);
+			t.AddCentered("InReach/Outreach Card", 2, h1font);
+			t.AddCentered("Contact Summary", 2, h2font);
             /* Added line for noting the Ministry recording the contact*/
-            t.AddCentered("Ministry: ______________________                                                                            Contact Date: _______________", 1, bfont);
+		    t.AddLeft("Ministry: ______________________", 1, bfont);
+            t.AddRight("Contact Date: _______________", 1, bfont);
 
 			doc.Add(t);
             
-            if (FormSource == "lookuptables")
-            {
-                /* Custom lists for Reason and Type based on look up tables*/
-
-                int i = 0;
-                foreach (var r in Db.ContactReasons)
-                {
-                    if (i == 10) break;
-                    ContactReason.Add(r.Description);
-                    i++;
-                };
-
-                i = 0;
-                foreach (var r in Db.ContactTypes)
-                {
-                    if (i == 10) break;
-                    ContactType.Add(r.Description);
-                    i++;
-                };
-            }
-            else
-            {
-                /* default lists for Reason and Type*/
-                TempString ="Out-Reach (not a church member); In-Reach (church/group member); Information; Bereavement; Health; Personal; Other";
-                ContactReason = TempString.Split(';').ToList();
-
-                TempString = "Personal Visit; Phone Call; Card Sent; Email Sent";
-                ContactType = TempString.Split(';').ToList();
-            };
+            var ContactReason = Db.ContactReasons.Select(rr => rr.Description).Take(10).ToList();
+            var ContactType = Db.ContactTypes.Select(rr => rr.Description).Take(10).ToList();
 
             DisplayTable("Contact Reason", 5.7f, 1.2f, 24.2f, ContactReason);
             DisplayTable("Type of Contact", 5.7f, 8f, 24.2f, ContactType);
