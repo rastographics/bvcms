@@ -14,7 +14,7 @@ using System.IO;
 using CmsData;
 using UtilityExtensions;
 using iTextSharp.text.xml.simpleparser;
-using CmsWeb.Areas.Main.Models.Report;
+using CmsWeb.Areas.Reports.Models;
 using System.Diagnostics;
 using iTextSharp.tool.xml;
 using iTextSharp.tool.xml.pipeline;

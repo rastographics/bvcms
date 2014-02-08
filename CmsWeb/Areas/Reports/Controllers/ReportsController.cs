@@ -12,7 +12,6 @@ using CmsData;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
-using CmsWeb.Areas.Main.Models.Report;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Code;
 using CmsWeb.Models;
@@ -22,7 +21,7 @@ using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
-using FamilyResult = CmsWeb.Areas.Main.Models.Report.FamilyResult;
+using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {

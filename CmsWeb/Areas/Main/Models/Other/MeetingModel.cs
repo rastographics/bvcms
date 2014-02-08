@@ -5,7 +5,7 @@ using System.Web;
 using CmsData;
 using System.Web.Mvc;
 using UtilityExtensions;
-using CmsWeb.Areas.Main.Models.Report;
+using CmsWeb.Areas.Reports.Models;
 using CmsData.Codes;
 using System.Collections;
 

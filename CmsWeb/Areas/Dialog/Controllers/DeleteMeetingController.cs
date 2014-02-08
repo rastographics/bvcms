@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
-using CmsWeb.Areas.Main.Models.Report;
+using CmsWeb.Areas.Reports.Models;
 using System.IO;
 using CmsData;
 using UtilityExtensions;

@@ -6,7 +6,7 @@ using System.Xml.Linq;
 using UtilityExtensions;
 using System.Linq;
 using CmsData;
-using CmsWeb.Areas.Main.Models.Report;
+using CmsWeb.Areas.Reports.Models;
 
 namespace CmsWeb.Models.iPhone
 {

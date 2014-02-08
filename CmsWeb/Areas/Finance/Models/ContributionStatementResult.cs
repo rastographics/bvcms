@@ -21,7 +21,7 @@ using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Diagnostics;
 using iTextSharp.text.html.simpleparser;
-using CmsWeb.Areas.Main.Models.Report;
+using CmsWeb.Areas.Reports.Models;
 
 namespace CmsWeb.Areas.Finance.Models.Report
 {
