@@ -48,24 +48,24 @@ namespace CmsCheckin.Classes
 		 * If Guess (1 inch): Main, Guest, Security, Location (multiples
  		*/
 
-		public static void doPrinting( IEnumerable<LabelInfo> q, bool bPrintSingle = false )
+		public static void doPrinting(IEnumerable<LabelInfo> q, bool bPrintSingle = false)
 		{
 			LabelSet lsLabels = new LabelSet();
 			int iLabelSize = PrinterHelper.getPageHeight(Program.Printer);
 
-            // Adjust all records that are not members to have a "G" for Guest. Fix for iPad sending a "V" instead of a "G"
-            foreach( var u in (from c in q where c.mv != "M" select c) ) { u.mv = "G"; }
+			// Adjust all records that are not members to have a "G" for Guest. Fix for iPad sending a "V" instead of a "G"
+			foreach (var u in (from c in q where c.mv != "M" select c)) { u.mv = "G"; }
 
-            var q2 = from c in q
-                     where c.n > 0
-                     orderby c.first ascending, c.hour descending
-                     group c by new { c.pid } into g
-                     select from c in g
-                            select c;
+			var q2 = from c in q
+						where c.n > 0
+						orderby c.first ascending, c.hour descending
+						group c by new { c.pid } into g
+						select from c in g
+								 select c;
 
-			if( bPrintSingle )
+			if (bPrintSingle)
 			{
-                string[] sFormats = PrinterHelper.SINGLE;
+				string[] sFormats = PrinterHelper.SINGLE;
 
 				foreach (var li in q2)
 				{
@@ -77,96 +77,96 @@ namespace CmsCheckin.Classes
 			}
 			else
 			{
-                var extras = from e in q
-                             where e.n > 1
-                             where e.requiressecuritylabel == true
-                             orderby e.first ascending, e.hour ascending
-                             group e by new { e.pid, e.org } into eg
-                             select from e in eg
-                                    select e;
+				var extras = from e in q
+								 where e.n > 1
+								 where e.requiressecuritylabel == true
+								 orderby e.first ascending, e.hour ascending
+								 group e by new { e.pid, e.org } into eg
+								 select from e in eg
+										  select e;
 
 				var locs = from c in q
-						   where c.mv != "M"
-                           where c.age < 13
-                           where c.n > 0
-						   orderby c.first ascending, c.hour ascending
-						   group c by c.securitycode into g
-						   select from c in g
-								  select c;
+							  where c.mv != "M"
+							  where c.age < 13
+							  where c.n > 0
+							  orderby c.first ascending, c.hour ascending
+							  group c by c.securitycode into g
+							  select from c in g
+										select c;
 
 				foreach (var li in q2)
 				{
-                    int iPersonSecurityCount = PrinterHelper.getSecurityCount(li);
+					int iPersonSecurityCount = PrinterHelper.getSecurityCount(li);
 
-                    if (iPersonSecurityCount > 0 || li.First().age < 13)
-                    {
-                        string[] sFormats = PrinterHelper.MAIN;
-                        foreach (string sItem in sFormats)
-                        {
-                            lsLabels.addPages(PrinterHelper.fetchLabelFormat(sItem, iLabelSize), li.ToList<LabelInfo>());
-                        }
+					if (iPersonSecurityCount > 0 || li.First().age < 13)
+					{
+						string[] sFormats = PrinterHelper.MAIN;
+						foreach (string sItem in sFormats)
+						{
+							lsLabels.addPages(PrinterHelper.fetchLabelFormat(sItem, iLabelSize), li.ToList<LabelInfo>());
+						}
 
-                        var guestIn = from gi in li
-                                      where gi.mv != "M"
-                                      select gi;
-                        
-                        foreach( var guestLabel in guestIn )
-                        {
-                            string[] sGuestFormats = PrinterHelper.GUEST;
-                            IEnumerable<LabelInfo> iGuestLabels = new [] { guestLabel };
+						var guestIn = from gi in li
+										  where gi.mv != "M"
+										  select gi;
 
-                            foreach (string sItem in sGuestFormats)
-                            {
-                                lsLabels.addPages(PrinterHelper.fetchLabelFormat(sItem, iLabelSize), iGuestLabels.ToList<LabelInfo>());
-                            }
-                        }
-                    }
-                    else
-                    {
-                    
-                        string[] sFormats = PrinterHelper.NAMETAG;
-                        foreach (string sItem in sFormats)
-                        {
-                            lsLabels.addPages(PrinterHelper.fetchLabelFormat(sItem, iLabelSize), li.ToList<LabelInfo>());
-                        }
-                    }
+						foreach (var guestLabel in guestIn)
+						{
+							string[] sGuestFormats = PrinterHelper.GUEST;
+							IEnumerable<LabelInfo> iGuestLabels = new[] { guestLabel };
+
+							foreach (string sItem in sGuestFormats)
+							{
+								lsLabels.addPages(PrinterHelper.fetchLabelFormat(sItem, iLabelSize), iGuestLabels.ToList<LabelInfo>());
+							}
+						}
+					}
+					else
+					{
+
+						string[] sFormats = PrinterHelper.NAMETAG;
+						foreach (string sItem in sFormats)
+						{
+							lsLabels.addPages(PrinterHelper.fetchLabelFormat(sItem, iLabelSize), li.ToList<LabelInfo>());
+						}
+					}
 				}
 
-                foreach (var le in extras)
-                {
-                    int iLabels = le.FirstOrDefault().n - 1;
+				foreach (var le in extras)
+				{
+					int iLabels = le.FirstOrDefault().n - 1;
 
-                    for (int iX = 0; iX < iLabels; iX++)
-                    {
-                        lsLabels.addPages(PrinterHelper.fetchLabelFormat("Extra", iLabelSize), le.ToList<LabelInfo>());
-                    }
-                }
+					for (int iX = 0; iX < iLabels; iX++)
+					{
+						lsLabels.addPages(PrinterHelper.fetchLabelFormat("Extra", iLabelSize), le.ToList<LabelInfo>());
+					}
+				}
 
 				if (lsLabels.getCount() > 0)
 				{
 					int iSecurityCount = PrinterHelper.getSecurityCount(q);
 
-                    if (iSecurityCount > 0)
-                    {
-                        var s = q2.First().Take(1).ToList<LabelInfo>();
+					if (iSecurityCount > 0)
+					{
+						var s = q2.First().Take(1).ToList<LabelInfo>();
 
-                        for (int iX = 0; iX < iSecurityCount; iX++)
-                        {
-                            lsLabels.addPages(PrinterHelper.fetchLabelFormat("Security", iLabelSize), s);
-                        }
-                    }
+						for (int iX = 0; iX < iSecurityCount; iX++)
+						{
+							lsLabels.addPages(PrinterHelper.fetchLabelFormat("Security", iLabelSize), s);
+						}
+					}
 
-                    if (Program.DisableLocationLabels == false)
-                    {
-                        foreach (var lc in locs)
-                        {
-                            lsLabels.addPages(PrinterHelper.fetchLabelFormat("Location", iLabelSize), lc.ToList<LabelInfo>());
-                        }
-                    }
+					if (Program.DisableLocationLabels == false)
+					{
+						foreach (var lc in locs)
+						{
+							lsLabels.addPages(PrinterHelper.fetchLabelFormat("Location", iLabelSize), lc.ToList<LabelInfo>());
+						}
+					}
 				}
 			}
 
-            if (Settings1.Default.ExtraBlankLabel == true && q.Count() > 0) lsLabels.addBlank();
+			if (Settings1.Default.ExtraBlankLabel == true && q.Count() > 0) lsLabels.addBlank();
 
 			PrinterHelper.printAllLabels(Program.Printer, lsLabels);
 		}
@@ -199,15 +199,15 @@ namespace CmsCheckin.Classes
 			}
 		}
 
-		public static void printAllLabels( string sPrinter, LabelSet lsLabels )
+		public static void printAllLabels(string sPrinter, LabelSet lsLabels)
 		{
-			if( sPrinter == null ) return;
+			if (sPrinter == null) return;
 			if (sPrinter.Length == 0 || lsLabels.getCount() == 0) return;
 
 			lPageList = lsLabels.lPages;
 
 			PrintDocument pd = new PrintDocument();
-            pd.PrintController = new StandardPrintController();
+			pd.PrintController = new StandardPrintController();
 			pd.PrinterSettings.PrinterName = sPrinter;
 
 			setPaperSize(pd);
@@ -242,35 +242,30 @@ namespace CmsCheckin.Classes
 			e.HasMorePages = (lPageList.Count() > 0);
 		}
 
-		public static void printLabel( Graphics gPage, LabelPage lpPage )
+		public static void printLabel(Graphics gPage, LabelPage lpPage)
 		{
-			foreach(LabelEntry leItem in lpPage.leEntries)
+			foreach (LabelEntry leItem in lpPage.leEntries)
 			{
 				switch (leItem.iType)
 				{
 					case LabelEntry.TYPE_STRING:
 					case LabelEntry.TYPE_LABEL:
-					{
 						drawString(gPage, leItem.sFontName, leItem.fSize, leItem.sText, iPageWidth * leItem.fStartX, iPageHeight * leItem.fStartY, leItem.iAlignX, leItem.iAlignY);
 						break;
-					}
 
 					case LabelEntry.TYPE_LINE:
-					{
 						Pen pLine = new Pen(Brushes.Black, leItem.fSize);
 						gPage.DrawLine(pLine, iPageWidth * leItem.fStartX, iPageHeight * leItem.fStartY, iPageWidth * leItem.fEndX, iPageHeight * leItem.fEndY);
 						break;
-					}
 
 					case LabelEntry.TYPE_BARCODE:
-					{
 						float offsetX = 0, offsetY = 0;
 
-                        BarcodeWriter bw = new BarcodeWriter();
-                        bw.Format = BarcodeFormat.CODE_128;
-                        bw.Options = new EncodingOptions { Width = leItem.iWidth, Height = leItem.iHeight, PureBarcode = true };
-                      
-                        Image ibc = (Image)bw.Write(leItem.sText);
+						BarcodeWriter bw = new BarcodeWriter();
+						bw.Format = BarcodeFormat.CODE_128;
+						bw.Options = new EncodingOptions { Width = leItem.iWidth, Height = leItem.iHeight, PureBarcode = true };
+
+						Image ibc = (Image)bw.Write(leItem.sText);
 
 						switch (leItem.iAlignX)
 						{
@@ -286,24 +281,23 @@ namespace CmsCheckin.Classes
 							case 3: offsetY = leItem.iHeight; break;
 						}
 
-                        gPage.DrawImage( ibc, (iPageWidth * leItem.fStartX) - offsetX, (iPageHeight * leItem.fStartY) - offsetY);
+						gPage.DrawImage(ibc, (iPageWidth * leItem.fStartX) - offsetX, (iPageHeight * leItem.fStartY) - offsetY);
 						break;
-					}
 				}
 			}
 		}
 
-		public static void drawString( Graphics g, string sFont, float fSize, string sText, float fX, float fY, int iAlignX, int iAlignY)
+		public static void drawString(Graphics g, string sFont, float fSize, string sText, float fX, float fY, int iAlignX, int iAlignY)
 		{
 			Font drawFont = new Font(sFont, fSize);
 			SolidBrush drawBrush = new SolidBrush(Color.Black);
 
-			SizeF sfSize = g.MeasureString( sText, drawFont);
+			SizeF sfSize = g.MeasureString(sText, drawFont);
 
 			switch (iAlignX)
 			{
 				case 1: break;
-				case 2:	fX = fX - (sfSize.Width * 0.5f); break;
+				case 2: fX = fX - (sfSize.Width * 0.5f); break;
 				case 3: fX = fX - sfSize.Width; break;
 			}
 
@@ -317,26 +311,26 @@ namespace CmsCheckin.Classes
 			g.DrawString(sText, drawFont, drawBrush, fX, fY);
 		}
 
-		public static void setPageInfo( PrintDocument pd )
+		public static void setPageInfo(PrintDocument pd)
 		{
 			iPageHeight = pd.DefaultPageSettings.Landscape ? pd.DefaultPageSettings.PaperSize.Width : pd.DefaultPageSettings.PaperSize.Height;
 			iPageWidth = pd.DefaultPageSettings.Landscape ? pd.DefaultPageSettings.PaperSize.Height : pd.DefaultPageSettings.PaperSize.Width;
 
-			iPagePixelsX = (int)( (iPageWidth/100f) * (pd.DefaultPageSettings.PrinterResolution.X) );
-			iPagePixelsY = (int)( (iPageHeight/100f) * (pd.DefaultPageSettings.PrinterResolution.Y) );
+			iPagePixelsX = (int)((iPageWidth / 100f) * (pd.DefaultPageSettings.PrinterResolution.X));
+			iPagePixelsY = (int)((iPageHeight / 100f) * (pd.DefaultPageSettings.PrinterResolution.Y));
 		}
 
-		public static int getSecurityCount( IEnumerable<LabelInfo> liList )
+		public static int getSecurityCount(IEnumerable<LabelInfo> liList)
 		{
-            if (Program.SecurityLabelPerChild)
-            {
-                return liList.Count(li => li.requiressecuritylabel == true && li.n > 0);
-            }
-            else
-            {
-                if (liList.Count(li => li.requiressecuritylabel == true && li.n > 0) > 0) return 1;
-                else return 0;
-            }
+			if (Program.SecurityLabelPerChild)
+			{
+				return liList.Count(li => li.requiressecuritylabel == true && li.n > 0);
+			}
+			else
+			{
+				if (liList.Count(li => li.requiressecuritylabel == true && li.n > 0) > 0) return 1;
+				else return 0;
+			}
 		}
 
 		public static int getPageWidth(string sPrinter)
@@ -399,7 +393,7 @@ namespace CmsCheckin.Classes
 		{
 			string sKey = createLabelName(sName, iSize);
 
-			if( dLabelFormats.ContainsKey(sKey) )
+			if (dLabelFormats.ContainsKey(sKey))
 			{
 				Debug.Print("Using cached label format for: " + sKey);
 				return dLabelFormats[sKey];
@@ -471,9 +465,9 @@ namespace CmsCheckin.Classes
 				var wc = Util.CreateWebClient();
 				var resp = wc.DownloadData(url);
 
-                string ret = Encoding.ASCII.GetString(resp);
+				string ret = Encoding.ASCII.GetString(resp);
 
-                return ret.Split(new char[] { ',' });
+				return ret.Split(new char[] { ',' });
 			}
 			catch (Exception) { }
 

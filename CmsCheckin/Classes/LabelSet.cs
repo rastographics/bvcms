@@ -13,20 +13,20 @@ namespace CmsCheckin.Classes
 
 		public int getCount() { return lPages.Count(); }
 
-        public void addBlank()
-        {
-            LabelPage lpNew = new LabelPage();
-            lPages.Add(lpNew);
-        }
+		public void addBlank()
+		{
+			LabelPage lpNew = new LabelPage();
+			lPages.Add(lpNew);
+		}
 
-		public void addPages( string sLabelFormat, List<LabelInfo> lItems )
+		public void addPages(string sLabelFormat, List<LabelInfo> lItems)
 		{
 			lFormats = new List<LabelEntryBase>();
 
 			string[] sTextList = sLabelFormat.Split(new char[] { '~' });
-			foreach( string sItem in sTextList )
+			foreach (string sItem in sTextList)
 			{
-				if( sItem.Length > 0 ) lFormats.Add( LabelEntryBase.create(sItem) );
+				if (sItem.Length > 0) lFormats.Add(LabelEntryBase.create(sItem));
 			}
 
 			if (lItems == null)
@@ -39,28 +39,28 @@ namespace CmsCheckin.Classes
 			{
 				if (lItems.Count() == 0) return;
 
-                int iMaxRepeat = getMaxRepeat(lFormats);
-                int iCount = (int)Math.Ceiling( (decimal)lItems.Count() / iMaxRepeat);
+				int iMaxRepeat = getMaxRepeat(lFormats);
+				int iCount = (int)Math.Ceiling((decimal)lItems.Count() / iMaxRepeat);
 
-                for (int iX = 0; iX < iCount; iX++)
-                {
-                    LabelPage lpNew = new LabelPage();
-                    lpNew.populate(lFormats, lItems, iX * iMaxRepeat);
-                    lPages.Add(lpNew);
-                }
+				for (int iX = 0; iX < iCount; iX++)
+				{
+					LabelPage lpNew = new LabelPage();
+					lpNew.populate(lFormats, lItems, iX * iMaxRepeat);
+					lPages.Add(lpNew);
+				}
 			}
 		}
 
-        public int getMaxRepeat(List<LabelEntryBase> lebList)
-        {
-            int iMax = 0;
+		public int getMaxRepeat(List<LabelEntryBase> lebList)
+		{
+			int iMax = 0;
 
-            foreach (LabelEntryBase lebItem in lebList)
-            {
-                if (lebItem.iRepeat > iMax) iMax = lebItem.iRepeat;
-            }
+			foreach (LabelEntryBase lebItem in lebList)
+			{
+				if (lebItem.iRepeat > iMax) iMax = lebItem.iRepeat;
+			}
 
-            return iMax;
-        }
+			return iMax;
+		}
 	}
 }
