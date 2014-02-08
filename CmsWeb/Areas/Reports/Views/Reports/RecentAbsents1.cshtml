@@ -1,0 +1,53 @@
+﻿@model CmsWeb.Areas.Reports.Models.RecentAbsentsViewModel
+@using CmsWeb
+@using UtilityExtensions
+@{
+    ViewBag.Title = "RecentAbsents";
+    Layout = ViewExtensions2.Layout();
+}
+<h2>Recent Absents</h2>
+<table class="@ViewExtensions2.GridClass">
+    <thead>
+        @if (Model.DefaultWorshipId > 0 && Model.OrgId != Model.DefaultWorshipId)
+        {
+            <tr>
+                <td colspan="6" class="left border-bottom">
+                    View <a href="/Reports/RecentAbsents1/@Model.DefaultWorshipId/@Model.OrgId">@Model.DefaultWorshipName</a> recent absents.
+                </td>
+            </tr>
+        }
+        <tr>
+            <th colspan="6" class="left border-bottom">
+                @if (Model.OrgFilterId > 0)
+                {
+                    <div>Members of the <a href="/Organization/Index/@Model.OrgFilterId">@Model.OrgFilterName</a> (@Model.OrgFilterLeaderName) Class</div>
+                    <div>With @Model.ConsecutiveAbsentsThreshold or more consecutive absents on and before @Model.LastMeeting.FormatDate() in <a href="/Organization/Index/@Model.OrgId">@Model.OrganizationName</a></div>
+                }
+                else
+                {
+                    <div><a href="/Organization/Index/@Model.OrgId">@Model.OrganizationName</a> (@Model.OrganizationLeader) </div>
+                    <div>Members with @Model.ConsecutiveAbsentsThreshold or more consecutive absents on and before @Model.LastMeeting.FormatDate()</div>
+                }
+            </th>
+        </tr>
+        <tr>
+            <th></th>
+            <th class="right">Absent</th>
+            <th class="right">Last Attend</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    @foreach (var item in Model.FetchAbsents())
+    {
+        <tr>
+            <td><a href="/Person/Index/@item.PeopleId" target="person">@item.Name2</a></td>
+            <td class="right"> @item.consecutive times </td>
+            <td class="right"> @Util.FormatDate(item.lastattend)</td>
+            <td>@Util.FmtFone(item.HomePhone, prefix: "H")</td>
+            <td>@Util.FmtFone(item.CellPhone, prefix: "C")</td>
+            <td><a href="mailto:@item.EmailAddress">@item.EmailAddress</a></td>
+        </tr>
+    }
+</table>

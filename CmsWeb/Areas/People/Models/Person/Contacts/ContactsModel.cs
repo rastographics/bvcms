@@ -15,6 +15,7 @@ namespace CmsWeb.Areas.People.Models
             person = DbUtil.Db.LoadPersonById(id);
         }
         public string AddContact { get; set; }
+        public string AddContactButton { get; set; }
 
         public IQueryable<Contact> FilteredModelList()
         {

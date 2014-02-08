@@ -57,6 +57,16 @@ public static class TableUtil
             c.HorizontalAlignment = Element.ALIGN_RIGHT;
             t.AddCell(c);
         }
+        public static void AddLeft(this PdfPTable t, string s, int colspan, Font font)
+        {
+            var c = new PdfPCell(new Paragraph(s, font));
+            c.Border = t.DefaultCell.Border;
+            c.BackgroundColor = t.DefaultCell.BackgroundColor;
+            c.SetLeading(t.DefaultCell.Leading, 1f);
+            c.Colspan = colspan;
+            c.HorizontalAlignment = Element.ALIGN_LEFT;
+            t.AddCell(c);
+        }
         public static void AddRight(this PdfPTable t, string s, int colspan, Font font)
         {
             var c = new PdfPCell(new Paragraph(s, font));

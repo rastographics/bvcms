@@ -776,7 +776,21 @@ namespace CmsWeb.Code
                         Value = s.RoleName,
                     };
             var list = q.ToList();
-            list.Insert(0, new CodeValueItem { Code = "(not specified)", Id = 0 });
+            list.Insert(0, new CodeValueItem { Value = "(not specified)", Id = 0 });
+            return list;
+        }
+        public IEnumerable<CodeValueItem> UserRolesMyData()
+        {
+            var q = from s in DbUtil.Db.Roles
+                    orderby s.RoleId
+                    select new CodeValueItem
+                    {
+                        Id = s.RoleId,
+                        Code = s.RoleName,
+                        Value = s.RoleName,
+                    };
+            var list = q.ToList();
+            list.Insert(0, new CodeValueItem { Value = "(mydata, no role)", Id = 0 });
             return list;
         }
 

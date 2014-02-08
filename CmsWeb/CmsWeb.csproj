@@ -387,6 +387,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileContact.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFamilyMember.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonAddress.cs" />
+    <Compile Include="Areas\Reports\Models\RecentAbsentsViewModel.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Controllers\DialogController.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
@@ -1305,6 +1306,7 @@
     <Content Include="Areas\Reports\Views\Reports\WeeklyAttendance.cshtml" />
     <Content Include="Content\images\computer_error.ogg" />
     <Content Include="Content\images\glass.ogg" />
+    <Content Include="Areas\Reports\Views\Reports\RecentAbsents1.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -2798,7 +2800,6 @@
     <Folder Include="Areas\Org\Views\Shared\" />
     <Folder Include="Areas\People\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
-    <Folder Include="Areas\Reports\Models\" />
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />
     <Folder Include="Scripts\Other\" />

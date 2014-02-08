@@ -310,6 +310,8 @@ namespace CmsWeb.Models
         }
         public static string ForgotPassword(string username)
         {
+            // first find a user with the email address or username
+
             username = username.Trim();
             var q = DbUtil.Db.Users.Where(uu =>
                 uu.Username == username ||
@@ -319,6 +321,9 @@ namespace CmsWeb.Models
             var list = q.ToList();
             if (list.Count == 0)
             {
+                // could not find a user to match
+                // so we look for a person without an account, to match the email address
+
                 var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
                 var q2 = from uu in DbUtil.Db.People
                          where uu.EmailAddress == username || uu.EmailAddress2 == username
@@ -326,6 +331,8 @@ namespace CmsWeb.Models
                          select uu;
                 if (q2.Count() == 1)
                 {
+                    // we found a person, not a user
+                    // we will compose an email for them to create an account
                     var p = q2.Single();
 
                     var ot = new OneTimeLink
@@ -356,8 +363,9 @@ namespace CmsWeb.Models
                 }
                 return null;
             }
-            else
+            else // we found a user with the email or username
             {
+                // so now we send the users who match the username or email a set of links to all their usernames
                 var sb = new StringBuilder();
                 var addrlist = new List<MailAddress>();
                 foreach (var user in list)
