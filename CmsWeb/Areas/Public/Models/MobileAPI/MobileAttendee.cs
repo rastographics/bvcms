@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsWeb.Areas.Main.Models.Report;
+using CmsWeb.Areas.Reports.Models;
 
 namespace CmsWeb.MobileAPI
 {

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Models.iPhone;
 using CmsWeb.MobileAPI;
 using UtilityExtensions;
 using Newtonsoft.Json;
 using CmsWeb.Models;
 using CmsData.Codes;
-using CmsWeb.Areas.Main.Models.Report;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
