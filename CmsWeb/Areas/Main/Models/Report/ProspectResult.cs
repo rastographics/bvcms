@@ -439,58 +439,54 @@ namespace CmsWeb.Areas.Main.Models.Report
 
 		private const float cm2pts = 28.34f;
 		private Font h1font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14);
-		private Font h2font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+        private Font h2font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+
 
 		public void ContactForm()
 		{
-			doc.NewPage();
+            /* There is no look up table for Contact Results because they are hardcoded into the form for actually adding a contact to a record
+             * Another Setting is used to allow for customization of the blank Contact Form.  It is called "ContactFormResults"
+             * The code takes a semi-colon seperated string stored in ContactFormResults and converts it to a list.
+             * If ContactFormResults does not exist in Settings then the default list is used.
+             * 
+             * However, because the results are hardcoded, there will be no translation between the results on this form and the results on the Contact page itself.
+             * We will implement extra values for this table to accomodate this at some point.
+             * */
+            var Db = DbUtil.Db;
+            List<string> ContactResult = 
+                Db.Setting(
+                "ContactFormResults", 
+                "Not at Home;Left Door Hanger;Left Message;Contact Made;Gospel Shared;Profession of Faith;Prayer Request Rec'd;Prayed for Person;Already Saved"
+                ).Split(';').ToList();
 
-			var t = new PdfPTable(1);
+            doc.NewPage();
+
+			var t = new PdfPTable(2);
+                        
 			t.SetNoBorder();
-			t.AddCentered("InReach/Outreach Card", 1, h1font);
-			t.AddCentered("Contact Summary", 1, h2font);
-			t.AddRight("Contact Date: _______________", bfont);
+			t.AddCentered("InReach/Outreach Card", 2, h1font);
+			t.AddCentered("Contact Summary", 2, h2font);
+            /* Added line for noting the Ministry recording the contact*/
+		    t.AddLeft("Ministry: ______________________", 1, bfont);
+            t.AddRight("Contact Date: _______________", 1, bfont);
 
 			doc.Add(t);
+            
+            var ContactReason = Db.ContactReasons.Select(rr => rr.Description).Take(10).ToList();
+            var ContactType = Db.ContactTypes.Select(rr => rr.Description).Take(10).ToList();
 
-			DisplayTable("Contact Reason", 5.7f, 1.2f, 24f, new List<string> 
-            { 
-                "Out-Reach (not a church member)",
-                "In-Reach (church/group member)",
-                "Information",
-                "Bereavement",
-                "Health",
-                "Personal",
-                "Other"
-            });
-
-			DisplayTable("Type of Contact", 5.7f, 8f, 24f, new List<string> 
-            { 
-                "Personal Visit",
-                "Phone Call",
-                "Card Sent",
-                "Email Sent",
-            });
-			DisplayTable("Results", 5.7f, 14.5f, 24f, new List<string> 
-            { 
-                "Not at Home",
-                "Left Door Hanger",
-                "Left Message",
-                "Contact Made",
-                "Gospel Shared",
-                "Profession of Faith",
-                "Prayer Request Rec'd",
-                "Prayed for Person",
-                "Already Saved",
-            });
-			DisplayNotes("Team Members", 4, 7.5f, 6f, 18.5f);
+            DisplayTable("Contact Reason", 5.7f, 1.2f, 24.2f, ContactReason);
+            DisplayTable("Type of Contact", 5.7f, 8f, 24.2f, ContactType);
+            DisplayTable("Results", 5.7f, 14.5f, 24.2f, ContactResult);
+            
+			DisplayNotes("Team Members", 3, 6f, 13.7f, 6.5f);
 			DisplayNotes("Specific Comments on Contact", 5, 18.5f, 1.2f, 13f);
-
 			DisplayTable("Actions to be taken", 12f, 1f, 6.5f, new List<string> 
             { 
                 "Recycle to me on ____/____/____",
                 "Random Recycle",
                 "Follow-up Completed",
+                "Other Action:___________________________________",
             });
 
 			var t2 = new PdfPTable(1);
