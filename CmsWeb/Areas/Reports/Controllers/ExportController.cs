@@ -22,6 +22,11 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return new ExtraValueExcelResult(id);
         }
+        [GET("Export2/WorshipAttendance/{id:guid}")]
+        public ActionResult WorshipAttendance(Guid id)
+        {
+            return WorshipAttendanceModel.Attendance(id);
+        }
 
         [Authorize(Roles = "Finance")]
         [POST("Export2/Contributions/{id}")]

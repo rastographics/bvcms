@@ -279,6 +279,7 @@
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Main\Controllers\QueryBuilder2Controller.cs" />
+    <Compile Include="Areas\Main\Models\Export\WorshipAttendanceModel.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\BaseReturn.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileAttendee.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCountry.cs" />

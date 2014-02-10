@@ -3,13 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CmsData;
-using System.Data.Linq;
-using System.ComponentModel;
 using UtilityExtensions;
 using System.Collections;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Linq.Dynamic;
 using System.Data.SqlClient;
 
 namespace CmsWeb.Models
@@ -54,7 +49,7 @@ namespace CmsWeb.Models
 
                          activities = from m in p.OrganizationMembers
                                       where m.Organization.SecurityTypeId != 3 || !(Util2.OrgMembersOnly && Util2.OrgLeadersOnly)
-                                      select new ActivityInfo
+                                      select new ExportInvolvements.ActivityInfo
                                       {
                                           Name = m.Organization.OrganizationName,
                                           Pct = m.AttendPct,
@@ -175,7 +170,8 @@ namespace CmsWeb.Models
                      };
             return q2.Take(maximumRows);
         }
-//        public static IEnumerable OrgMemberList2(int qid)
+
+        //        public static IEnumerable OrgMemberList2(int qid)
 //        {
 //            var q = DbUtil.Db.PeopleQuery(qid);
 //            var q2 = q.Select(p => new
@@ -268,7 +264,7 @@ namespace CmsWeb.Models
             public string Tickets { get; set; }
         }
 
-        public static IEnumerable<MemberInfoClass> OrgMemberList(Guid queryid)
+        public static IEnumerable<ExportInvolvements.MemberInfoClass> OrgMemberList(Guid queryid)
         {
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);
@@ -280,7 +276,7 @@ namespace CmsWeb.Models
                                 where t.OriginalTransaction.OrgId == Util2.CurrentOrgId
                                 orderby t.Id descending
                                 select t.Amtdue).FirstOrDefault()
-                     select new MemberInfoClass
+                     select new ExportInvolvements.MemberInfoClass
                      {
                          FirstName = p.PreferredName,
                          LastName = p.LastName,
