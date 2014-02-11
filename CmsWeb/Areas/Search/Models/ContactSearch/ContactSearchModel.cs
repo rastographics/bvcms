@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.Search.Models
 
             if (SearchParameters.ContacteeName.HasValue())
                 q = from c in q
-                    where c.contactsMakers.Any(p => p.person.Name.Contains(SearchParameters.ContacteeName))
+                    where c.contactees.Any(p => p.person.Name.Contains(SearchParameters.ContacteeName))
                     select c;
 
             if (SearchParameters.ContactorName.HasValue())
