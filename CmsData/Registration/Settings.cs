@@ -28,6 +28,7 @@ namespace CmsData.Registration
 		public decimal? MaximumFee { get; set; }
 		public bool ApplyMaxToOtherFees { get; set; }
 		public bool AllowOnlyOne { get; set; }
+		public bool AllowFundRaising { get; set; }
 		public bool TargetExtraValues { get; set; }
 		public bool AllowReRegister { get; set; }
 		public bool OtherFeesAddedToOrgFee { get; set; }
@@ -347,7 +348,10 @@ namespace CmsData.Registration
 				case Parser.RegKeywords.AllowOnlyOne:
 					AllowOnlyOne = parser.GetBool();
 					break;
-				case Parser.RegKeywords.OtherFeesAdded:
+                case Parser.RegKeywords.AllowFundRaising:
+                    AllowFundRaising = parser.GetBool();
+                    break;
+                case Parser.RegKeywords.OtherFeesAdded:
 				case Parser.RegKeywords.OtherFeesAddedToOrgFee:
 					OtherFeesAddedToOrgFee = parser.GetBool();
 					break;
@@ -573,6 +577,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "Shell", Shell);
 			AddValueCk(0, sb, "SpecialScript", SpecialScript);
 			AddValueCk(0, sb, "AllowOnlyOne", AllowOnlyOne);
+			AddValueCk(0, sb, "AllowFundRaising", AllowFundRaising);
 			AddValueCk(0, sb, "TargetExtraValues", TargetExtraValues);
 			AddValueCk(0, sb, "AllowReRegister", AllowReRegister);
 			AddValueCk(0, sb, "MemberOnly", MemberOnly);

@@ -247,6 +247,7 @@ namespace CmsData.Registration
 			ExtraFee,
 			MaximumFee,
 			AllowOnlyOne,
+            AllowFundRaising,
 			TargetExtraValues,
 			AllowReRegister,
 			OrgMemberFees,
