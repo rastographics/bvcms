@@ -1,6 +1,7 @@
 ﻿@using CmsData.Classes.Twilio
 @{
     var qid = ViewBag.queryid;
+    var wid = DbUtil.Db.Setting("WorshipId", "0").ToInt();
 }
 <div class="toolbar">
     <ul horizontal-offset="-70">
@@ -91,6 +92,10 @@
                         <li><a href='/Reports/Registration/@qid'>Registration Rpt</a></li>
                     }
                     <li><a href='/Export2/Excel/Attend/@qid' title="Contains attendance information for their class">Main Fellowship Att</a></li>
+                @if (wid > 0)
+                {
+                    <li><a href='/Export2/WorshipAttendance/@qid' title="Contains attendance information for worship">Worship Att</a></li>
+                }
                     <li><a href='/Export2/Excel/Children/@qid' title="Contains emergency contact, who brought child info">Children</a></li>
                     <li><a href='/Export2/Excel/Church/@qid' title="Contains other Church Info">Other Churches</a></li>
                 </ul>
