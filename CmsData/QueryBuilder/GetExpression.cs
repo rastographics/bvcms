@@ -42,7 +42,7 @@ namespace CmsData
                 { QueryType.ContributionAmount2, ContributionAmount },
                 { QueryType.ContributionChange, ContributionChange },
                 { QueryType.CreatedBy, CreatedBy },
-                { QueryType.DaysAfterNthVisitDateRange, DaysAfterNthVisitDateRange },
+                { QueryType.DaysAfterNthVisitAsOf, DaysAfterNthVisitAsOf },
                 { QueryType.DaysBetween12Attendance, DaysBetween12Attendance },
                 { QueryType.DaysSinceContact, DaysSinceContact },
                 { QueryType.DaysTillAnniversary, DaysTillAnniversary },

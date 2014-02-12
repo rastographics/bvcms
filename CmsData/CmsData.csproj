@@ -371,6 +371,7 @@
     <Compile Include="APIContributionSearchModel.cs" />
     <Compile Include="Generated\Functions\AttendanceTypeAsOf.cs" />
     <Compile Include="Generated\Functions\AttendCntHistory.cs" />
+    <Compile Include="Generated\Functions\AttendDaysAfterNthVisitAsOf.cs" />
     <Compile Include="Generated\Functions\AttendedAsOf.cs" />
     <Compile Include="Generated\Functions\MembersWhoAttendedOrg.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCount.cs" />
@@ -383,6 +384,7 @@
     <Compile Include="Generated\Functions\StatusFlagsPerson.cs" />
     <Compile Include="Generated\Functions\WeeklyAttendsForOrg.cs" />
     <Compile Include="Generated\Number.cs" />
+    <Compile Include="Generated\Views\AttendCredit.cs" />
     <Compile Include="Generated\Views\StatusFlagList.cs" />
     <Compile Include="ITableWithExtraValues.cs" />
     <Compile Include="Query.cs" />

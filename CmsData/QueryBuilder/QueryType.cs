@@ -33,7 +33,7 @@ namespace CmsData
         ContributionChange,
         CreatedBy,
         CreatedDate,
-        DaysAfterNthVisitDateRange,
+        DaysAfterNthVisitAsOf,
         DaysBetween12Attendance,
         DaysSinceContact,
         DaysTillAnniversary,

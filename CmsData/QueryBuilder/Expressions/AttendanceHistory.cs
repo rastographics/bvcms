@@ -191,15 +191,19 @@ namespace CmsData
             var right = Expression.Convert(Expression.Constant(Days), left.Type);
             return Compare(left, right);
         }
-        internal Expression DaysAfterNthVisitDateRange()
+        internal Expression DaysAfterNthVisitAsOf()
         {
-            var nthvisit = TextValue.ToInt();
-            Expression<Func<Person, int>> pred = p =>
-                 db.AttendDaysAfterNthVisitInDateRange(p.PeopleId, Program, Division, Organization,
-                                                       StartDate, EndDate, nthvisit).Value;
-            Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Convert(Expression.Constant(Quarters.ToInt()), left.Type);
-            return Compare(left, right);
+            var tf = CodeIds == "1";
+            var q = db.AttendDaysAfterNthVisitAsOf(Program, Division, Organization, StartDate, EndDate, Quarters.ToInt(), Days).Select(p => p.PeopleId);
+
+            Expression<Func<Person, bool>> pred;
+            if (op == CompareType.Equal ^ tf)
+                pred = p => !q.Contains(p.PeopleId);
+            else
+                pred = p => q.Contains(p.PeopleId);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+
         }
     }
 }
