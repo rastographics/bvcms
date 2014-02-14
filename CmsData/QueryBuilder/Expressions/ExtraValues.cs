@@ -25,8 +25,9 @@ namespace CmsData
         internal Expression HasPeopleExtraField()
         {
             var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == TextValue);
-            if (sev != null && !sev.CanView)
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (sev != null && !sev.CanView)
+                    return AlwaysFalse();
             Expression<Func<Person, bool>> pred = p => p.PeopleExtras.Any(e => e.Field == TextValue);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual)
@@ -37,8 +38,9 @@ namespace CmsData
         {
             var field = Quarters;
             var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == field);
-            if (sev != null && !sev.CanView)
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (sev != null && !sev.CanView)
+                    return AlwaysFalse();
             Expression<Func<Person, string>> pred = p =>
                 p.PeopleExtras.Where(ff => ff.Field == field).Select(ff => ff.Data).SingleOrDefault();
             Expression left = Expression.Invoke(pred, parm);
@@ -49,8 +51,9 @@ namespace CmsData
         {
             var field = Quarters;
             var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == field);
-            if (sev != null && !sev.CanView)
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (sev != null && !sev.CanView)
+                    return AlwaysFalse();
             var value = TextValue.ToInt2();
             if (!value.HasValue)
             {
@@ -80,8 +83,9 @@ namespace CmsData
         {
             var field = Quarters;
             var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == field);
-            if (sev != null && !sev.CanView)
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (sev != null && !sev.CanView)
+                    return AlwaysFalse();
             if (!DateValue.HasValue)
             {
                 Expression<Func<Person, bool>> pred = null;

@@ -7,8 +7,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Community.CsharpSqlite;
-using DDay.iCal;
 using UtilityExtensions;
 
 namespace CmsData
@@ -18,8 +16,12 @@ namespace CmsData
         internal Expression StatusFlag()
         {
             var codes0 = CodeValues.Split(',');
-            var codes = (from f in db.ViewStatusFlagLists.ToList()
-                         where f.RoleName == null || db.CurrentRoles().Contains(f.RoleName)
+            var q = db.ViewStatusFlagLists.ToList();
+            if (!db.FromBatch)
+                q = (from f in q
+                     where f.RoleName == null || db.CurrentRoles().Contains(f.RoleName)
+                     select f).ToList();
+            var codes = (from f in q
                          join c in codes0 on f.Flag equals c into j
                          from c in j
                          select c).ToList();
