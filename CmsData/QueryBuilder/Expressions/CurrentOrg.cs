@@ -58,6 +58,7 @@ namespace CmsData
                 // for Match No SmallGroup assigned
                 where !m.OrgMemMemTags.Any() || cg[0] != -1
                 where m.MemberTypeId != MemberTypeCode.InActive
+                where m.MemberTypeId != MemberTypeCode.Prospect
                 where (m.Pending ?? false) == false
                 select m
                 ).Any();

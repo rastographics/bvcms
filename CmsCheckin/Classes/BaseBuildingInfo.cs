@@ -13,15 +13,15 @@ namespace CmsCheckin
 		[XmlAttribute]
 		public int maxguests { get; set; }
 
-        [XmlAttribute]
-        public int maxvisits { get; set; }
+		[XmlAttribute]
+		public int maxvisits { get; set; }
 
 		[XmlArray]
 		public List<Activity> Activities { get; set; }
 
 		public BaseBuildingInfo()
 		{
-            querybit = "";
+			querybit = "";
 			maxguests = -1;
 		}
 	}

@@ -590,11 +590,15 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateStatusFlags()
         {
+            DbUtil.Db.DeleteQueryBitTags();
             var qbits = DbUtil.Db.StatusFlags().ToList();
             foreach (var a in qbits)
             {
                 var t = DbUtil.Db.FetchOrCreateSystemTag(a[0]);
-                DbUtil.Db.TagAll2(DbUtil.Db.PeopleQuery2(a[0] + ":" + a[1]), t);
+                var qq = DbUtil.Db.PeopleQuery2(a[0] + ":" + a[1]);
+                if (qq == null)
+                    continue;
+                DbUtil.Db.TagAll2(qq, t);
             }
             return View();
         }

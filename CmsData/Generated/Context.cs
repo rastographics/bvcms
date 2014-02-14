@@ -1595,6 +1595,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.AttendCredit> ViewAttendCredits
+	    {
+		    get { return this.GetTable< View.AttendCredit>(); }
+
+	    }
+
 	    public Table< View.BundleList> ViewBundleLists
 	    {
 		    get { return this.GetTable< View.BundleList>(); }
@@ -1778,6 +1784,29 @@ namespace CmsData
                 sched,
                 start,
                 end
+                );
+		}
+
+		[Function(Name="dbo.AttendDaysAfterNthVisitAsOf", IsComposable = true)]
+		public IQueryable< View.AttendDaysAfterNthVisitAsOf > AttendDaysAfterNthVisitAsOf(
+            [Parameter(DbType="int")] int? progid,
+            [Parameter(DbType="int")] int? divid,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="datetime")] DateTime? d1,
+            [Parameter(DbType="datetime")] DateTime? d2,
+            [Parameter(DbType="int")] int? n,
+            [Parameter(DbType="int")] int? days
+            )
+		{
+			return this.CreateMethodCallQuery< View.AttendDaysAfterNthVisitAsOf>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                progid,
+                divid,
+                org,
+                d1,
+                d2,
+                n,
+                days
                 );
 		}
 
@@ -3767,30 +3796,6 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid,
                 field
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.AttendDaysAfterNthVisitInDateRange", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? AttendDaysAfterNthVisitInDateRange(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "progid", DbType="int")] int? progid,
-            [Parameter(Name = "divid", DbType="int")] int? divid,
-            [Parameter(Name = "orgid", DbType="int")] int? orgid,
-            [Parameter(Name = "d1", DbType="datetime")] DateTime? d1,
-            [Parameter(Name = "d2", DbType="datetime")] DateTime? d2,
-            [Parameter(Name = "n", DbType="int")] int? n
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                progid,
-                divid,
-                orgid,
-                d1,
-                d2,
-                n
                 ).ReturnValue));
 		}
 

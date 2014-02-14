@@ -16,8 +16,9 @@ namespace CmsData
     {
         private Expression RecentContributionCount2(int days, int fund, int cnt, bool taxnontax)
         {
-            if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
             var now = DateTime.Now;
             var dt = now.AddDays(-days);
             IQueryable<int> q = null;
@@ -87,8 +88,9 @@ namespace CmsData
         }
         private Expression RecentContributionAmount2(int days, int fund, decimal amt, bool taxnontax)
         {
-            if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
             var now = DateTime.Now;
             var dt = now.AddDays(-days);
             IQueryable<int> q = null;
@@ -156,8 +158,9 @@ namespace CmsData
         }
         private Expression ContributionAmount2(DateTime? start, DateTime? end, int fund, decimal amt, bool nontaxded)
         {
-            if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
             IQueryable<int> q = null;
             switch (op)
             {
@@ -246,8 +249,9 @@ namespace CmsData
         }
         internal Expression RecentPledgeCount()
         {
-            if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
 
             var fund = Quarters.ToInt();
             var cnt = TextValue.ToInt();
@@ -320,8 +324,9 @@ namespace CmsData
         }
         internal Expression RecentPledgeAmount()
         {
-            if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
             var fund = Quarters.ToInt();
             var amt = decimal.Parse(TextValue);
             var now = DateTime.Now;
@@ -396,8 +401,9 @@ namespace CmsData
         internal Expression ContributionChange()
         {
             var pct = double.Parse(TextValue);
-            if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
             var q = db.GivingCurrentPercentOfFormer(StartDate, EndDate,
                 op == CompareType.Greater ? ">" :
                 op == CompareType.GreaterEqual ? ">=" :
@@ -412,7 +418,7 @@ namespace CmsData
         internal Expression RecentHasIndContributions()
         {
             var tf = CodeIds == "1";
-            if (!db.FromActiveRecords)
+            if (!db.FromActiveRecords && !db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var now = DateTime.Now;
@@ -426,8 +432,9 @@ namespace CmsData
         }
         internal Expression RecentBundleType()
         {
-            if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
             var now = DateTime.Now;
             var dt = now.AddDays(-Days);
             Expression<Func<Person, bool>> pred = p =>
@@ -461,8 +468,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             var fund = Quarters.ToInt();
 
-            if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
-                return AlwaysFalse();
+            if(!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
 
             var q = db.FirstTimeGivers(Days, fund).Select(p => p.PeopleId);
 

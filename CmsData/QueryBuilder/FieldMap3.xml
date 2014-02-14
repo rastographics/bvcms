@@ -430,9 +430,9 @@
     <DaysBetween12Attendance Title="Days Between First/Second Attend" Type="Integer" DisplayAs="DaysBetween12Attendance({0}, {1}, {2}, {3})" Params="Days,Program,Division,Organization">
       Enter a number and select the Comparison for the number of Days between 1st and 2nd Attendance, enter a number of days to look back, select Program/Division/Organization.
     </DaysBetween12Attendance>
-    <DaysAfterNthVisitDateRange Title="Attend Days After Nth Visit" Type="NullInteger" DisplayAs="DaysAfterNthVisitDateRange({0}, {1}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Quarters,Program,Division,Organization" QuartersLabel="Nth Visit Number">
-      Enter a number and select the Comparison for the number of days after the Nth Attendance, enter a number for the Nth Attendance, pick a date range and select Program/Division/Organization.
-    </DaysAfterNthVisitDateRange>
+    <DaysAfterNthVisitAsOf Title="Attend Days After Nth Visit" Type="Bit" DisplayAs="DaysAfterNthVisitAsOf({0}, {1}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Quarters,Program,Division,Organization,Days" QuartersLabel="Nth Visit Number" DataValueField="IdCode">
+      After an Nth Visit number during a date range to anything, select a Program/Division/Organization where they made another visit with a specified number of days
+    </DaysAfterNthVisitAsOf>
     <GuestAsOf Title="Guest As Of" Type="Bit" DisplayAs="GuestAsOf({0}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division" DataValueField="IdCode">
       Choose a starting date/time and ending date/time, then pick a Program/Division/Organization
     </GuestAsOf>

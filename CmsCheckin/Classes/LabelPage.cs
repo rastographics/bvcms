@@ -11,9 +11,9 @@ namespace CmsCheckin.Classes
 
 		public int populate(List<LabelEntryBase> lList)
 		{
-			foreach(LabelEntryBase lebItem in lList)
+			foreach (LabelEntryBase lebItem in lList)
 			{
-				for( int iX = 0; iX < lebItem.iRepeat; iX++ )
+				for (int iX = 0; iX < lebItem.iRepeat; iX++)
 				{
 					LabelEntry leNew = new LabelEntry();
 					leNew.copy(lebItem.textToUpper());
@@ -38,7 +38,7 @@ namespace CmsCheckin.Classes
 				}
 				else
 				{
-                    for (int iX = iOffset; iX < (lebItem.iRepeat + iOffset) && iX < liItem.Count(); iX++)
+					for (int iX = iOffset; iX < (lebItem.iRepeat + iOffset) && iX < liItem.Count(); iX++)
 					{
 						LabelEntry leNew = new LabelEntry();
 						leNew.copy(lebItem);

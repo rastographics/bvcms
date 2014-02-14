@@ -1116,6 +1116,6 @@ namespace CmsData
 
 
         internal bool FromActiveRecords { get; set; }
-
+        public bool FromBatch { get; set; }
     }
 }

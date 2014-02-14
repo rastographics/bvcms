@@ -29,6 +29,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(m);
         }
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult Run(string submit, bool? Delete, MergeModel m)
         {
 			if (submit.StartsWith("Merge Fields"))

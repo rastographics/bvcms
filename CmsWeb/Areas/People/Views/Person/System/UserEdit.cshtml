@@ -2,12 +2,13 @@
 @using UtilityExtensions
 @using CmsData
 @model User
-<form class="margin-top form-horizontal ajax left-gutter">
+<form class="margin-top form-horizontal ajax left-gutter" autocomplete="off">
     <fieldset>
-        <legend>Manage User @Model.Username
+        <legend>
+            Manage User @Model.Username
             <span class="pull-right">
                 <small><a class="ajax" href='/Person2/Users/@Model.PeopleId'>User List</a></small>&nbsp;&nbsp;
-            <a class="helplink" target="_blank" href='@Util.HelpLink("ManageUser")'>help</a>
+                <a class="helplink" target="_blank" href='@Util.HelpLink("ManageUser")'>help</a>
             </span>
         </legend>
         <div class="row-fluid">

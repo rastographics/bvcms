@@ -20,19 +20,30 @@
 @section scripts
 {
     <script type="text/javascript">
-        $(function() {
+        var dialog;
+
+        $(function () {
+
+            $('#askName').dialog({ autoOpen: false, width: "auto", resizable: false, modal: true });
+
             $("a[newtype]").click(function(e) {
                 e.preventDefault();
                 $("#newType", $("#askName")).val($(this).attr("newtype"));
-                $("#newMessage", $("#askName")).html($(this).attr("newmessage"));
-                $.block($('#askName'));
+
+                dialog = $('#askName');
+                dialog.dialog("option", "title", $(this).attr("newmessage"));
+                dialog.dialog("open");
             });
+
+            $('#askNameWithRole').dialog({ autoOpen: false, width: "auto", resizable: false, modal: true });
 
             $("a[newtypewithrole]").click(function(e) {
                 e.preventDefault();
                 $("#newType", $("#askNameWithRole")).val($(this).attr("newtypewithrole"));
-                $("#newMessage", $("#askNameWithRole")).html($(this).attr("newmessage"));
-                $.block($('#askNameWithRole'));
+
+                dialog = $('#askNameWithRole');
+                dialog.dialog("option", "title", $(this).attr("newmessage"));
+                dialog.dialog("open");
             });
 
             $("a.bt").button();
@@ -174,47 +185,43 @@
 </div>
 <div id="askName" style="display:none">
 	<br />
-	<span id="newMessage" style="font-weight:bold"></span>
 	<center>
 	<form action="/Display/ContentCreate/" method="post">
 	<input type="hidden" id="newType" name="newType" value="0" />
 	<table cellspacing="10">
 	<tr>
-		<td class="right">FileName:</td>
-		<td class="left"><input name="newName" size="25" /></td>
+		<td class="right">File Name:</td>
+		<td class="left">@Html.TextBox("newName")</td>
 	</tr>
 	<tr>
 		<td class="center" colspan="2">
-			<input type="submit" class="bt" value="Submit" /> &nbsp;&nbsp; <input type="button" class="bt" onclick="$.unblockUI()" value="Cancel" />
+			<input type="submit" class="bt" value="Submit" /> &nbsp;&nbsp; <input type="button" class="bt" onclick="dialog.dialog('close');" value="Cancel" />
 		</td>
 	</tr>
 	</table>
 	</form>
 	</center>
-	<br />
 </div>
 <div id="askNameWithRole" style="display:none">
-	<br />
-	<span id="newMessage" style="font-weight:bold"></span>
+    <br />
 	<center>
 	<form action="/Display/ContentCreate/" method="post">
 	<input type="hidden" id="newType" name="newType" value="0" />
 	<table cellspacing="10">
 	<tr>
-		<td class="right">Role:</td>
+		<td class="right">Role:&nbsp;</td>
 		<td class="left">@Html.DropDownList("newRole", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"))</td>
 	</tr>
 	<tr>
-		<td class="right">FileName:</td>
-		<td class="left"><input name="newName" size="25" /></td>
+		<td class="right">File Name:&nbsp;</td>
+		<td class="left">@Html.TextBox("newName")</td>
 	</tr>
 	<tr>
 		<td class="center" colspan="2">
-			<input type="submit" class="bt" value="Submit" /> &nbsp;&nbsp; <input type="button" class="bt" onclick="$.unblockUI()" value="Cancel" />
+			<input type="submit" class="bt" value="Submit" /> &nbsp;&nbsp; <input type="button" class="bt" onclick="dialog.dialog('close');" value="Cancel" />
 		</td>
 	</tr>
 	</table>
 	</form>
 	</center>
-	<br />
 </div>

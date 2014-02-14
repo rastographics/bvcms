@@ -54,7 +54,6 @@ namespace CmsCheckin.Classes
 			{
 				case TYPE_STRING:
 				case TYPE_LABEL:
-				{
 					sFontName = sParts[OFFSET + 1];
 					fSize = float.Parse(sParts[OFFSET + 2]);
 					sText = sParts[OFFSET + 3];
@@ -65,10 +64,8 @@ namespace CmsCheckin.Classes
 					iAlignX = int.Parse(sParts[OFFSET + 6]);
 					iAlignY = int.Parse(sParts[OFFSET + 7]);
 					break;
-				}
 
 				case TYPE_LINE:
-				{
 					fSize = float.Parse(sParts[OFFSET + 1]);
 
 					fStartX = float.Parse(sParts[OFFSET + 2]);
@@ -77,10 +74,8 @@ namespace CmsCheckin.Classes
 					fEndX = float.Parse(sParts[OFFSET + 4]);
 					fEndY = float.Parse(sParts[OFFSET + 5]);
 					break;
-				}
 
 				case TYPE_BARCODE:
-				{
 					sText = sParts[OFFSET + 1];
 
 					fStartX = float.Parse(sParts[OFFSET + 2]);
@@ -92,7 +87,6 @@ namespace CmsCheckin.Classes
 					iAlignX = int.Parse(sParts[OFFSET + 6]);
 					iAlignY = int.Parse(sParts[OFFSET + 7]);
 					break;
-				}
 			}
 
 			return this;
@@ -104,8 +98,8 @@ namespace CmsCheckin.Classes
 			iRepeat = lebFrom.iRepeat;
 			fRepeatOffset = lebFrom.fRepeatOffset;
 
-			sFontName = String.Copy( lebFrom.sFontName );
-			sText = String.Copy( lebFrom.sText );
+			sFontName = String.Copy(lebFrom.sFontName);
+			sText = String.Copy(lebFrom.sText);
 
 			iWidth = lebFrom.iWidth;
 			iHeight = lebFrom.iHeight;

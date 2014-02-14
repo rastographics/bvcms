@@ -1,5 +1,6 @@
 ﻿@{
     var qid = ViewBag.queryid;
+    var wid = DbUtil.Db.Setting("WorshipId", "0").ToInt();
 }
 <ul class="dropdown-menu dropdown-div-reports">
     <li>
@@ -30,6 +31,10 @@
                 <li><a href='/Export2/Excel/Involvement/@qid'>Involvement</a></li>
                 <li><a href='/Export2/Excel/Library/@qid'>Library</a></li>
                 <li><a href='/Export2/Excel/Church/@qid'>Other Churches</a></li>
+                @if (wid > 0)
+                {
+                <li><a href='/Export2/WorshipAttendance/@qid'>Worship Attendance</a></li>
+                }
             </ul>
             <ul class="span4 unstyled pull-left">
                 <li class="header">Reports</li>

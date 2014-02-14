@@ -5,6 +5,10 @@
     Layout = ViewExtensions2.Layout();
     ViewBag.Title = "Ministry";
 }
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Admin/TransactionHistory.js")
+}
         <p>@Model.Name<br />
             @Model.Org</p>
         <table id="attends" class="@ViewExtensions2.GridClass" cellpadding="5">
