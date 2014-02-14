@@ -241,13 +241,24 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			{
 				p.IsFilled = p.org.OrganizationMembers.Count() >= p.org.Limit;
 				if (p.IsFilled)
-					ModelState.AddModelError(m.GetNameFor(mm => mm.List[m.List.IndexOf(p)].Found), "Sorry, but registration is closed.");
-				if (p.Found == true)
-					p.FillPriorInfo();
+					ModelState.AddModelError(m.GetNameFor(mm => mm.List[m.List.IndexOf(p)].Found), "Sorry, but registration is filled.");
+    			if (p.Found == true)
+    				p.FillPriorInfo();
 				//if (!p.AnyOtherInfo())
 				//p.OtherOK = true;
 				return FlowList(m, "Register");
 			}
+		    if (p.ComputesOrganizationByAge())
+		    {
+			    if (p.org == null)
+					ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, cannot find an appropriate age group");
+                else if(p.org.RegEnd.HasValue && DateTime.Now > p.org.RegEnd)
+					ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, registration has ended for that group");
+                else if(p.org.OrganizationStatusId == OrgStatusCode.Inactive)
+					ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
+                else if(p.org.OrganizationStatusId == OrgStatusCode.Inactive)
+					ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
+		    }
 			if (p.ShowDisplay() && p.org != null && p.ComputesOrganizationByAge())
 				p.classid = p.org.OrganizationId;
 			return FlowList(m, "Register");
@@ -458,8 +469,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 					SetHeaders(m);
 					return View("ConfirmManageGiving");
 				}
-				if (p.org == null && p.ComputesOrganizationByAge())
-					ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, cannot find an appropriate age group");
+			    if (p.ComputesOrganizationByAge())
+			    {
+    			    if (p.org == null)
+    					ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, cannot find an appropriate age group");
+                    else if(p.org.RegEnd.HasValue && DateTime.Now > p.org.RegEnd)
+    					ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, registration has ended for that group");
+                    else if(p.org.OrganizationStatusId == OrgStatusCode.Inactive)
+    					ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
+                    else if(p.org.OrganizationStatusId == OrgStatusCode.Inactive)
+    					ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
+			    }
 				else if (!p.ManageSubscriptions())
 				{
 					p.IsFilled = p.org.OrganizationMembers.Count() >= p.org.Limit;

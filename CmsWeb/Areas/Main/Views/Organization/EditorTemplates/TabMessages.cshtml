@@ -87,16 +87,32 @@
     Terms:</span>
     @Html.EditorFor(m => m.Terms, "Html")
   </li>
-  <li>
+<li>
     <div class="text big tip" title="Reminder
     |This is the email that is sent as a reminder for members of an event.">
-    Reminder: </div>
+        Reminder: </div>
     <ul>
-      <li> <span class="keyword2">Subject:</span> @Html.TextBox("ReminderSubject", Model.ReminderSubject, new { @class = "long" }) </li>
+        <li> <span class="keyword2">Subject:</span> @Html.TextBox("ReminderSubject", Model.ReminderSubject, new { @class = "long" }) </li>
+        <li>
+            <div class="text"><span class="keyword2"> Body:</span>
+                @Html.EditorFor(m => m.ReminderBody, "Html")
+            </div>
+        </li>
+    </ul>
+</li>
+@if (Model.org.IsMissionTrip == true)
+{
+  <li>
+    <div class="text big tip" title="SupportEmail
+    |This is the email that is sent to solicit supporters.">
+    SupportEmail: </div>
+    <ul>
+      <li> <span class="keyword2">Subject:</span> @Html.TextBox("SupportSubject", Model.SupportSubject, new { @class = "long" }) </li>
       <li>
         <div class="text"><span class="keyword2"> Body:</span>
-        @Html.EditorFor(m => m.ReminderBody, "Html")
+        @Html.EditorFor(m => m.SupportBody, "Html")
         </div>
       </li>
     </ul>
   </li>
+}

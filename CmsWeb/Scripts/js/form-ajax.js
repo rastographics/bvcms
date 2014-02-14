@@ -27,7 +27,7 @@
         $('form.ajax select:not([plain])').chosen();
         $('form.ajax a.editable').editable();
     };
-    $("ul.nav-tabs a.ajax").live("click", function (event) {
+    $("ul.nav-tabs a.ajax,a.ajax.ui-tabs-anchor").live("click", function (event) {
         var state = $(this).attr("href") || $(this).data("target");
         var d = $(state);
         var url = d.data("link");

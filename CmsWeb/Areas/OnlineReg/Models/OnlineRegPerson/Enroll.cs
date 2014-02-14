@@ -180,6 +180,8 @@ namespace CmsWeb.Models
                 foreach (var name in q)
                     om.AddToGroup(DbUtil.Db, name);
             }
+            if (om.Organization.IsMissionTrip == true)
+                om.AddToGroup(DbUtil.Db, "Goer");
 
             var sb = new StringBuilder();
 

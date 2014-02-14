@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using CmsData;
 using System.Linq;
 using CmsWeb.Code;
@@ -16,10 +18,10 @@ namespace CmsWeb.Areas.People.Models
         public int PeopleId
         {
             get { return peopleId; }
-            set 
-            { 
+            set
+            {
                 peopleId = value;
-                person = DbUtil.Db.LoadPersonById(peopleId); 
+                person = DbUtil.Db.LoadPersonById(peopleId);
             }
         }
 
@@ -90,6 +92,31 @@ namespace CmsWeb.Areas.People.Models
 
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("Updated RecReg: {0}".Fmt(person.Name));
+        }
+
+        public class GoerItem
+        {
+            public int Id { get; set; }
+            public string Trip { get; set; }
+            public decimal Cost { get; set; }
+            public decimal Paid { get; set; }
+        }
+
+        public List<GoerItem> GoerList()
+        {
+            if(!HttpContext.Current.User.IsInRole("Developer"))
+                return new List<GoerItem>();
+            return (from m in person.OrganizationMembers
+                    where m.Organization.IsMissionTrip == true
+                    where m.Organization.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
+                    where m.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
+                    select new GoerItem
+                    {
+                        Id = m.OrganizationId,
+                        Trip = m.Organization.OrganizationName,
+                        Cost = m.Amount ?? 0,
+                        Paid = m.AmountPaid ?? 0,
+                    }).ToList();
         }
     }
 }

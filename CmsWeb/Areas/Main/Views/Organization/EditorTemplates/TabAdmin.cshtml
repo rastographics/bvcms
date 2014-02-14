@@ -120,15 +120,6 @@
         GroupToJoin:
     </span> @Html.TextBox("GroupToJoin", Model.GroupToJoin)
 </li>
-@if (User.IsInRole("Developer"))
-{
-    <li>
-        <span class="keyword big tip" title="AllowFundRaising
-        |Allows others to donate on a member's behalf'">
-            AllowFundRaising:
-        </span> @Html.CheckBox("AllowFundRaising", Model.AllowFundRaising)
-    </li>
-}
 <li>
     <span class="keyword big tip" title="GiveOrgMembAccess
         |Gives the person OrgMemberOnly role when creating an account">

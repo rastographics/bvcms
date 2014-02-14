@@ -1,0 +1,56 @@
+﻿@using CmsWeb
+@model CmsWeb.Areas.Org.Models.MissionTripEmailer
+
+@{
+    ViewBag.Title = "Mission Trip Emailer";
+    Layout = ViewExtensions2.Layout();
+}
+@section head
+{
+    <style>
+        div.ti {
+            position: relative;
+            border: #0000ff dashed 1px;
+            min-height: 20px;
+        }
+
+            div.ti:hover {
+                background: #eeeeff;
+            }
+
+        div.tiAdd {
+            position: absolute;
+        }
+    </style>
+}
+@section scripts
+{
+    @ViewExtensions2.CKEditor()
+    @Fingerprint.Script("/Scripts/Email/compose.js")
+    
+}
+<h2 style="margin-bottom:5px;">Mission Trip Emailer</h2>
+<form id="SendEmail" method="post">
+    <input type="hidden" id="body" name="body" />
+
+    <div>
+        <label>Subject:</label>
+        <input name="Subject" size="75" value="@Model.Subject" />
+    </div>
+    <div id="tempateBody">
+        @Html.Raw(Model.Body)
+    </div>
+    <div>
+        <input type="button" id="TestSend" class="bt" value="Test (Send To Yourself)" />
+        <input type="button" id="Send" value="Send" class="bt" /><br />
+    </div>
+</form>
+<div id="popupeditor" style="display:none;position: absolute;z-index: 2005;">
+    <form>
+        <textarea id="htmleditor"></textarea>
+        <div style="text-align: right;">
+            <a href="#" class="bt cancel">Cancel</a>
+            <a href="#" class="bt save blue">Save</a>
+        </div>
+    </form>
+</div>

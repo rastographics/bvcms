@@ -1,15 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
-using System.Text.RegularExpressions;
 using UtilityExtensions;
-using CmsData;
 using System.Text;
-using System.Reflection;
-using System.Diagnostics;
-using System.Collections.Specialized;
 
 namespace CmsData.Registration
 {
@@ -28,7 +20,6 @@ namespace CmsData.Registration
 		public decimal? MaximumFee { get; set; }
 		public bool ApplyMaxToOtherFees { get; set; }
 		public bool AllowOnlyOne { get; set; }
-		public bool AllowFundRaising { get; set; }
 		public bool TargetExtraValues { get; set; }
 		public bool AllowReRegister { get; set; }
 		public bool OtherFeesAddedToOrgFee { get; set; }
@@ -37,6 +28,8 @@ namespace CmsData.Registration
 		public string Body { get; set; }
 		public string ReminderSubject { get; set; }
 		public string ReminderBody { get; set; }
+		public string SupportSubject { get; set; }
+		public string SupportBody { get; set; }
 		public string Terms { get; set; }
 
 		public bool MemberOnly { get; set; }
@@ -288,6 +281,9 @@ namespace CmsData.Registration
 				case Parser.RegKeywords.Reminder:
 					ParseReminder(parser);
 					break;
+				case Parser.RegKeywords.SupportEmail:
+					ParseSupport(parser);
+					break;
 				case Parser.RegKeywords.AgeGroups:
 					ParseAgeGroups(parser);
 					break;
@@ -348,9 +344,6 @@ namespace CmsData.Registration
 				case Parser.RegKeywords.AllowOnlyOne:
 					AllowOnlyOne = parser.GetBool();
 					break;
-                case Parser.RegKeywords.AllowFundRaising:
-                    AllowFundRaising = parser.GetBool();
-                    break;
                 case Parser.RegKeywords.OtherFeesAdded:
 				case Parser.RegKeywords.OtherFeesAddedToOrgFee:
 					OtherFeesAddedToOrgFee = parser.GetBool();
@@ -440,6 +433,28 @@ namespace CmsData.Registration
 						break;
 					default:
 						throw parser.GetException("unexpected line in Reminder");
+				}
+			}
+		}
+		private void ParseSupport(Parser parser)
+		{
+			parser.lineno++;
+			var startindent = parser.curr.indent;
+			while (parser.curr.indent == startindent)
+			{
+				switch (parser.curr.kw)
+				{
+					case Parser.RegKeywords.Html:
+						parser.lineno++;
+						break;
+					case Parser.RegKeywords.SupportSubject:
+						SupportSubject = parser.GetString();
+						break;
+					case Parser.RegKeywords.SupportBody:
+						SupportBody = parser.GetString();
+						break;
+					default:
+						throw parser.GetException("unexpected line in SupportEmail");
 				}
 			}
 		}
@@ -564,6 +579,7 @@ namespace CmsData.Registration
 
 			AddConfirmation(sb);
 			AddReminder(sb);
+			AddSupport(sb);
 			AddFees(sb);
 			AddValueCk(0, sb, "IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit);
 			AddDonation(sb);
@@ -577,7 +593,6 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "Shell", Shell);
 			AddValueCk(0, sb, "SpecialScript", SpecialScript);
 			AddValueCk(0, sb, "AllowOnlyOne", AllowOnlyOne);
-			AddValueCk(0, sb, "AllowFundRaising", AllowFundRaising);
 			AddValueCk(0, sb, "TargetExtraValues", TargetExtraValues);
 			AddValueCk(0, sb, "AllowReRegister", AllowReRegister);
 			AddValueCk(0, sb, "MemberOnly", MemberOnly);
@@ -638,6 +653,12 @@ namespace CmsData.Registration
 			AddValueNoCk(0, sb, "Reminder", "");
 			AddValueNoCk(1, sb, "ReminderSubject", ReminderSubject);
 			AddSingleOrMultiLine(1, sb, "ReminderBody", ReminderBody);
+		}
+		private void AddSupport(StringBuilder sb)
+		{
+			AddValueNoCk(0, sb, "SupportEmail", "");
+			AddValueNoCk(1, sb, "SupportSubject", SupportSubject);
+			AddSingleOrMultiLine(1, sb, "SupportBody", SupportBody);
 		}
 		private void AddSingleOrMultiLine(int n, StringBuilder sb, string Section, string ht)
 		{

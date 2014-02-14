@@ -153,6 +153,8 @@ namespace CmsData
 		
 		private bool? _NotWeekly;
 		
+		private bool? _IsMissionTrip;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -403,6 +405,9 @@ namespace CmsData
 		
 		partial void OnNotWeeklyChanging(bool? value);
 		partial void OnNotWeeklyChanged();
+		
+		partial void OnIsMissionTripChanging(bool? value);
+		partial void OnIsMissionTripChanged();
 		
     #endregion
 		public Organization()
@@ -1963,6 +1968,28 @@ namespace CmsData
 					this._NotWeekly = value;
 					this.SendPropertyChanged("NotWeekly");
 					this.OnNotWeeklyChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="IsMissionTrip", UpdateCheck=UpdateCheck.Never, Storage="_IsMissionTrip", DbType="bit")]
+		public bool? IsMissionTrip
+		{
+			get { return this._IsMissionTrip; }
+
+			set
+			{
+				if (this._IsMissionTrip != value)
+				{
+				
+                    this.OnIsMissionTripChanging(value);
+					this.SendPropertyChanging();
+					this._IsMissionTrip = value;
+					this.SendPropertyChanged("IsMissionTrip");
+					this.OnIsMissionTripChanged();
 				}
 
 			}
