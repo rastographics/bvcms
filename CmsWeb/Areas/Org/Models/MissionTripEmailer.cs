@@ -176,27 +176,24 @@ namespace CmsWeb.Areas.Org.Models
 
             DbUtil.LogActivity("MissionTripEmail Send {0}".Fmt(PeopleId));
 
-            var glist = (from g in DbUtil.Db.GoerSupporters
-                         where g.GoerId == PeopleId
-                         where Recipient.Contains(g.Id)
-                         select g).ToList();
+            var glist = from g in DbUtil.Db.GoerSupporters
+                        where g.GoerId == PeopleId
+                        where Recipient.Contains(g.Id)
+                        select g;
             var elist = (from g in glist
                          where g.SupporterId == null
                          select g).ToList();
-            var plist = (from g in glist
-                         where g.SupporterId != null
-                         where (g.Unsubscribe ?? false) == false
-                         select g.SupporterId ?? 0).ToList();
+            var plist = from g in glist
+                        where g.SupporterId != null
+                        where (g.Unsubscribe ?? false) == false
+                        select g;
 
             if (plist.Any())
             {
-                var tag = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_Emailer);
-                DbUtil.Db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
-                DbUtil.Db.TagAll(plist, tag);
                 DbUtil.Db.CopySession();
                 var from = new MailAddress(p.EmailAddress ?? p.EmailAddress2, p.Name);
                 DbUtil.Db.CurrentOrgId = OrgId;
-                var emailQueue = DbUtil.Db.CreateQueue(p.PeopleId, from, Subject, Body, null, tag.Id, false);
+                var emailQueue = DbUtil.Db.CreateQueueForSupporters(p.PeopleId, from, Subject, Body, null, plist, false);
                 DbUtil.Db.SendPeopleEmail(emailQueue.Id);
             }
             foreach (var e in elist)
