@@ -177,7 +177,7 @@ namespace CmsData
         {
             return CreateQueue(Util.UserPeopleId, From, subject, body, schedule, tagId, publicViewable);
         }
-        public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable)
+        public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, int? goerSupporterId = null)
         {
             var tag = TagById(tagId);
             if (tag == null)
@@ -228,7 +228,8 @@ namespace CmsData
                 {
                     PeopleId = pid,
                     OrgId = CurrentOrgId,
-                    Guid = Guid.NewGuid()
+                    Guid = Guid.NewGuid(),
+                    GoerSupportId = goerSupporterId,
                 });
             }
             SubmitChanges();

@@ -1,0 +1,8 @@
+﻿@model int
+@using CmsWeb.Areas.Org.Models
+@foreach (var r in MissionTripEmailer.GetRecipients(Model))
+{
+    <li rid="@r.Id" @(r.Active ? "" : "class=notselected") @(r.Id == ViewBag.newid ? "class=newsupporter" : "")>
+        <a href="/MissionTripEmail/ToggleActive/@r.Id">@r.NameOrEmail</a>
+    </li>
+}

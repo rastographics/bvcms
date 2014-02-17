@@ -1,12 +1,12 @@
 ﻿@using CmsWeb
 @model CmsWeb.Areas.Org.Models.MissionTripEmailer
-
 @{
     ViewBag.Title = "Mission Trip Emailer";
-    Layout = ViewExtensions2.Layout();
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
 }
 @section head
 {
+    @Fingerprint.Css("/Content/css/jquery-ui.effects.min.css")
     <style>
         div.ti {
             position: relative;
@@ -21,36 +21,125 @@
         div.tiAdd {
             position: absolute;
         }
+
+        .message-area {
+            position: relative;
+            margin: 15px 0;
+            padding: 39px 19px 14px;
+            border: 1px solid #ddd;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+        }
+
+            .message-area:after {
+                content: "Message Content";
+                position: absolute;
+                top: -1px;
+                left: -1px;
+                padding: 3px 7px;
+                font-size: 12px;
+                font-weight: bold;
+                background-color: #f5f5f5;
+                border: 1px solid #ddd;
+                color: #9da0a4;
+                -webkit-border-radius: 4px 0 4px 0;
+                -moz-border-radius: 4px 0 4px 0;
+                border-radius: 4px 0 4px 0;
+            }
+
+        li.notselected a {
+            -ms-opacity: .5;
+            opacity: .5;
+            text-decoration: line-through;
+        }
+
+        #recipients.nav > li > a > i {
+            color: red;
+        }
+        #recipients.nav > li > a:hover {
+            background-color: #0088cc;
+            color: white;
+        }
+        #recipients.nav > li > a.remove:hover {
+            background-color: #cc9898;
+            color: white;
+        }
     </style>
 }
 @section scripts
 {
+    @Fingerprint.Script("/Scripts/jQuery/jquery-ui.effects.min.js")
+    @Fingerprint.Script("/Scripts/Bootstrap/notify.js")
     @ViewExtensions2.CKEditor()
-    @Fingerprint.Script("/Scripts/Email/compose.js")
-    
-}
-<h2 style="margin-bottom:5px;">Mission Trip Emailer</h2>
-<form id="SendEmail" method="post">
-    <input type="hidden" id="body" name="body" />
+    @Fingerprint.Script("/Scripts/Email/EmailSupporter.js")
 
-    <div>
-        <label>Subject:</label>
-        <input name="Subject" size="75" value="@Model.Subject" />
-    </div>
-    <div id="tempateBody">
-        @Html.Raw(Model.Body)
-    </div>
-    <div>
-        <input type="button" id="TestSend" class="bt" value="Test (Send To Yourself)" />
-        <input type="button" id="Send" value="Send" class="bt" /><br />
-    </div>
-</form>
-<div id="popupeditor" style="display:none;position: absolute;z-index: 2005;">
-    <form>
-        <textarea id="htmleditor"></textarea>
-        <div style="text-align: right;">
-            <a href="#" class="bt cancel">Cancel</a>
-            <a href="#" class="bt save blue">Save</a>
+}
+<div class="container">
+    <h2>Mission Trip Emailer</h2>
+    <div  class="row-fluid">
+        <div class="span9">
+            <form id="SendEmail" class="form" method="post">
+                <fieldset>
+                    <legend>Compose your Email</legend>
+                    <div class="control-group">
+                        @Html.LabelFor(m => m.Subject, new { @class = "control-label" })
+                        <div class="controls">
+                            @Html.TextBoxFor(m => m.Subject)
+                            @Html.ValidationMessageLabelFor(m => m.Subject)
+                        </div>
+                    </div>
+                    @Html.Hidden("PeopleId")
+                    @Html.Hidden("OrgId")
+                    @Html.Hidden("Body")
+                    <div style="display: table">
+                        <div class="right">
+                            <input type="button" value="Test (Send To Yourself)" class="testsend btn btn-success" />
+                            <input type="button" value="Send" class="send btn btn-primary" /><br />
+                        </div>
+                        <div id="tempateBody" class="message-area">
+                            @Html.Raw(Model.Body)
+                        </div>
+                        <div class="pull-right">
+                            <input type="button" value="Test (Send To Yourself)" class="testsend btn btn-success" />
+                            <input type="button" value="Send" class="send btn btn-primary" /><br />
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
         </div>
-    </form>
+        <div class="span3">
+            <fieldset>
+                <legend>Find Supporters</legend>
+                <label class='help-block'>Enter a 10 digit phone number or an email address, then select your recipient to add them to the supporter list below.</label>
+                <div class="control-group">
+                    <label class="control-label">Find Supporter</label>
+                    <div class="controls">
+                        @Html.TextBox("supportsearch")
+                    </div>
+                </div>
+                <br />
+                <legend>
+                    Recipients
+                    <small>
+                        <a id="editsupporters" href="/MissionTripEmail/SupportersEdit/@Model.PeopleId" class="pull-right">edit</a>
+                        <a id="done-editing" href="/MissionTripEmail/Supporters/@Model.PeopleId" class="pull-right hide">done</a>
+                    </small>
+                </legend>
+                <label class='help-block'>Click a recipient below to toggle whether to send to or not</label>
+                <ul id="recipients" class="nav nav-list">
+                    @Html.Partial("Supporters", Model.PeopleId)
+                </ul>
+            </fieldset>
+        </div>
+    </div>
+    <div id="popupeditor" style="display:none;position: absolute;z-index: 2005;">
+        <form>
+            <textarea id="htmleditor"></textarea>
+            <div style="text-align: right;">
+                <a href="#" class="btn cancel">Cancel</a>
+                <a href="#" class="btn btn-primary save">Save</a>
+            </div>
+        </form>
+    </div>
 </div>

@@ -1,0 +1,8 @@
+﻿@model int
+@using CmsWeb.Areas.Org.Models
+@foreach (var r in MissionTripEmailer.GetRecipients(Model))
+{
+    <li id="r-@r.Id" @(r.Active ? "" : "class=notselected")>
+        <a class="remove" href="/MissionTripEmail/RemoveSupporter/@r.Id"><i class="fa fa-minus-circle"></i> @r.NameOrEmail</a>
+    </li>
+}

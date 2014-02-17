@@ -264,6 +264,7 @@ emailid={2}
                 url += "&showfamily=true";
             return Redirect(url);
         }
+        [ValidateInput(false)]
 
         public ActionResult SendLink(string id)
         {

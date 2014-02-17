@@ -31,6 +31,8 @@ namespace CmsData
 		
 		private string _Messageid;
 		
+		private int? _GoerSupportId;
+		
    		
     	
 		private EntityRef< EmailQueue> _EmailQueue;
@@ -64,6 +66,9 @@ namespace CmsData
 		
 		partial void OnMessageidChanging(string value);
 		partial void OnMessageidChanged();
+		
+		partial void OnGoerSupportIdChanging(int? value);
+		partial void OnGoerSupportIdChanged();
 		
     #endregion
 		public EmailQueueTo()
@@ -233,6 +238,28 @@ namespace CmsData
 					this._Messageid = value;
 					this.SendPropertyChanged("Messageid");
 					this.OnMessageidChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="GoerSupportId", UpdateCheck=UpdateCheck.Never, Storage="_GoerSupportId", DbType="int")]
+		public int? GoerSupportId
+		{
+			get { return this._GoerSupportId; }
+
+			set
+			{
+				if (this._GoerSupportId != value)
+				{
+				
+                    this.OnGoerSupportIdChanging(value);
+					this.SendPropertyChanging();
+					this._GoerSupportId = value;
+					this.SendPropertyChanged("GoerSupportId");
+					this.OnGoerSupportIdChanged();
 				}
 
 			}

@@ -112,10 +112,11 @@ Please call the church to resolve this before we can complete your information."
                     }
                     else if (ComputesOrganizationByAge() && org == null)
                     {
+                        var msg = NoAppropriateOrgError ?? "Sorry, no approprate org";
                         if (selectfromfamily)
-                            ModelState.AddModelError("age-" + person.PeopleId, "Sorry, cannot find an appropriate age group");
+                            ModelState.AddModelError("age-" + person.PeopleId, msg);
                         else
-                            ModelState.AddModelError(dobname, "Sorry, cannot find an appropriate age group");
+                            ModelState.AddModelError(dobname, msg);
                         IsValidForContinue = false;
                     }
                     else if (MemberOnly() && person.MemberStatusId != MemberStatusCode.Member)

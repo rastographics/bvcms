@@ -82,6 +82,8 @@ namespace CmsData
                 text = DoVoteLink(text, emailqueueto);
             if (text.Contains("http://sendlink", ignoreCase: true))
                 text = DoSendLink(text, emailqueueto);
+            if (text.Contains("http://supportlink", ignoreCase: true))
+                text = DoSupportLink(text, emailqueueto);
             if (text.Contains("http://registerlink", ignoreCase: true))
                 text = DoRegisterLink(text, emailqueueto);
             if (text.Contains("http://rsvplink", ignoreCase: true))
@@ -462,6 +464,29 @@ namespace CmsData
             }
             return text;
         }
+        private string DoSupportLink(string text, EmailQueueTo emailqueueto)
+        {
+            var list = new Dictionary<string, OneTimeLink>();
+            const string SendLinkRE = "<a[^>]*?href=\"https{0,1}://(?<slink>supportlink)/{0,1}\"[^>]*>.*?</a>";
+            var re = new Regex(SendLinkRE, RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            Match match = re.Match(text);
+            while (match.Success)
+            {
+                string tag = match.Value;
+                string slink = match.Groups["slink"].Value.ToLower();
+
+                var doc = new HtmlDocument();
+                doc.LoadHtml(tag);
+                HtmlNode ele = doc.DocumentNode.Element("a");
+                string inside = ele.InnerHtml;
+                Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
+
+                string url = SendSupportLinkUrl(emailqueueto, list);
+                text = text.Replace(tag, @"<a href=""{0}"">{1}</a>".Fmt(url, inside));
+                match = match.NextMatch();
+            }
+            return text;
+        }
         private string DoRegisterLink(string text, EmailQueueTo emailqueueto)
         {
             var list = new Dictionary<string, OneTimeLink>();
@@ -777,6 +802,28 @@ namespace CmsData
         {
             string qs = "{0},{1},{2},{3}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id,
                 showfamily ? "registerlink2" : "registerlink");
+
+            OneTimeLink ot;
+            if (list.ContainsKey(qs))
+                ot = list[qs];
+            else
+            {
+                ot = new OneTimeLink
+                    {
+                        Id = Guid.NewGuid(),
+                        Querystring = qs
+                    };
+                OneTimeLinks.InsertOnSubmit(ot);
+                SubmitChanges();
+                list.Add(qs, ot);
+            }
+            string url = Util.URLCombine(CmsHost, "/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
+            return url;
+        }
+        private string SendSupportLinkUrl(EmailQueueTo emailqueueto, Dictionary<string, OneTimeLink> list)
+        {
+            string qs = "{0},{1},{2},{3}".Fmt(emailqueueto.OrgId, emailqueueto.PeopleId, emailqueueto.Id, "supportlink");
+
             OneTimeLink ot;
             if (list.ContainsKey(qs))
                 ot = list[qs];

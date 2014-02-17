@@ -294,6 +294,10 @@ namespace CmsData
         partial void UpdateGeoCode(GeoCode instance);
         partial void DeleteGeoCode(GeoCode instance);
         
+        partial void InsertGoerSupporter(GoerSupporter instance);
+        partial void UpdateGoerSupporter(GoerSupporter instance);
+        partial void DeleteGoerSupporter(GoerSupporter instance);
+        
         partial void InsertInterestPoint(InterestPoint instance);
         partial void UpdateInterestPoint(InterestPoint instance);
         partial void DeleteInterestPoint(InterestPoint instance);
@@ -1079,6 +1083,12 @@ namespace CmsData
 		public Table< GeoCode> GeoCodes
 		{
 			get	{ return this.GetTable< GeoCode>(); }
+
+		}
+
+		public Table< GoerSupporter> GoerSupporters
+		{
+			get	{ return this.GetTable< GoerSupporter>(); }
 
 		}
 

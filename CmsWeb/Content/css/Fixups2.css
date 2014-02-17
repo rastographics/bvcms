@@ -1209,3 +1209,32 @@ div.logo {
         display: none;
     }
 }
+.darkClass {
+    background-color: white;
+    -webkit-filter: alpha(opacity=50);
+    -moz-filter: alpha(opacity=50);
+    -o-filter: alpha(opacity=50);
+    filter: alpha(opacity=50); /* IE */
+    -ms-opacity: 0.5;
+    opacity: 0.5; /* Safari, Opera */
+    -moz-opacity: 0.50; /* FireFox */
+    z-index: 1002;
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+div.growlUI {
+    background: url(/images/check48.png) no-repeat 10px 10px;
+    top: 100px;
+}
+
+    div.growlUI h1, div.growlUI h2, div.growlUI2 h1, div.growlUI2 h2 {
+        padding: 5px 5px 5px 75px;
+        color: white;
+        text-align: left;
+    }
