@@ -4,6 +4,6 @@
 <table>
 @foreach (var f in Model.TotalsByFund())
 { 
-    <tr><td>@f.Name</td><td class="right">@f.Total.ToString2("N2")</td></tr>
+    <tr><td>@f.Name (@f.FundId)</td><td class="right">@f.Total.ToString2("N2")</td></tr>
 }
 </table>

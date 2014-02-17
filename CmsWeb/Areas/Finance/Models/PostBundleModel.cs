@@ -13,10 +13,6 @@ using CmsWeb.Areas.Finance.Controllers;
 using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.IO;
-using LumenWorks.Framework.IO.Csv;
 
 namespace CmsWeb.Models
 {
@@ -24,6 +20,7 @@ namespace CmsWeb.Models
     {
         public class FundTotal
         {
+            public int FundId { get; set; }
             public string Name { get; set; }
             public decimal? Total { get; set; }
         }
@@ -115,11 +112,12 @@ namespace CmsWeb.Models
         {
             var q = from d in DbUtil.Db.BundleDetails
                     where d.BundleHeaderId == id
-                    group d by d.Contribution.ContributionFund.FundName into g
-                    orderby g.Key
+                    group d by new { d.Contribution.ContributionFund.FundName, d.Contribution.ContributionFund.FundId } into g
+                    orderby g.Key.FundName
                     select new FundTotal
                     {
-                        Name = g.Key,
+                        FundId = g.Key.FundId,
+                        Name = g.Key.FundName,
                         Total = g.Sum(d => d.Contribution.ContributionAmount)
                     };
             return q;
