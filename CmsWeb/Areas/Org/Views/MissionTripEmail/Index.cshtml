@@ -48,22 +48,14 @@
                 border-radius: 4px 0 4px 0;
             }
 
-        li.notselected a {
+        #recipients td.notselected {
             -ms-opacity: .5;
             opacity: .5;
             text-decoration: line-through;
         }
 
-        #recipients.nav > li > a > i {
+        #recipients a > i {
             color: red;
-        }
-        #recipients.nav > li > a:hover {
-            background-color: #0088cc;
-            color: white;
-        }
-        #recipients.nav > li > a.remove:hover {
-            background-color: #cc9898;
-            color: white;
         }
     </style>
 }
@@ -122,14 +114,18 @@
                 <legend>
                     Recipients
                     <small>
-                        <a id="editsupporters" href="/MissionTripEmail/SupportersEdit/@Model.PeopleId" class="pull-right">edit</a>
-                        <a id="done-editing" href="/MissionTripEmail/Supporters/@Model.PeopleId" class="pull-right hide">done</a>
+                        <a id="edit-supporters" href="/MissionTripEmail/SupportersEdit/@Model.PeopleId" class="btn btn-small pull-right">Edit</a>
+                        <span id="editing" class="pull-right hide">
+                            <a id="cancel-editing" href="/MissionTripEmail/Supporters/@Model.PeopleId" class="btn btn-small">Cancel</a>
+                            <a id="done-editing" href="/MissionTripEmail/SupportersUpdate" class="btn btn-small btn-primary">Save</a>
+                        </span>
                     </small>
                 </legend>
-                <label class='help-block'>Click a recipient below to toggle whether to send to or not</label>
-                <ul id="recipients" class="nav nav-list">
-                    @Html.Partial("Supporters", Model.PeopleId)
-                </ul>
+                <label id="edit-help" class='help-block'>Click the edit button above to allow you to customize the greeting, change the send status, and remove a supporter.</label>
+                <label id="done-help" class='help-block hide'>Click the done button above to save your changes</label>
+                <form id="recipients">
+                    @Html.Partial("Supporters", Model)
+                </form>
             </fieldset>
         </div>
     </div>

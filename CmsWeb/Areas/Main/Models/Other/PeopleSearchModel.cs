@@ -359,7 +359,7 @@ namespace CmsWeb.Models
         }
         public SelectList MemberStatusCodes()
         {
-            return new SelectList(cv.MemberStatusList(), "Id", "Value", m.memberstatus);
+            return new SelectList(cv.MemberStatusCodes0(), "Id", "Value", m.memberstatus);
         }
         private int? _count;
         public int Count()

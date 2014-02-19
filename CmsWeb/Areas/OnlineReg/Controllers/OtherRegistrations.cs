@@ -241,9 +241,18 @@ emailid={2}
                 return Content("link used");
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
                 return Content("link expired");
-            var a = ot.Querystring.Split(',');
+            var a = ot.Querystring.SplitStr(",", 4);
             var oid = a[0].ToInt();
             var pid = a[1].ToInt();
+            var linktype = a[3].Split(',');
+            int? supportid = null;
+            if (linktype[0] == "supportlink" && linktype.Length > 1)
+            {
+                var gs = DbUtil.Db.GoerSupporters.SingleOrDefault(gg => gg.Id == linktype[1].ToInt());
+                if (gs != null)
+                    supportid = gs.GoerId;
+            }
+
             var q = (from pp in DbUtil.Db.People
                      where pp.PeopleId == pid
                      let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == oid)
@@ -260,6 +269,10 @@ emailid={2}
                 return Content("sorry, registration has been closed");
 
             var url = "/OnlineReg/Index/{0}?registertag={1}".Fmt(oid, id);
+            if(linktype[0] == "supportlink")
+                url += "&support=true";
+            if (supportid.HasValue)
+                url += "&supportid=" + supportid;
             if (showfamily == true)
                 url += "&showfamily=true";
             return Redirect(url);
@@ -285,7 +298,7 @@ emailid={2}
             var orgid = a[0].ToInt();
             var pid = a[1].ToInt();
             var queueid = a[2].ToInt();
-            var linktype = a[3];
+            var linktype = a[3]; // for supportlink, this will also have the goerid
             var q = (from pp in DbUtil.Db.People
                      where pp.PeopleId == pid
                      let org = DbUtil.Db.LoadOrganizationById(orgid)
@@ -305,7 +318,7 @@ emailid={2}
             var msg = @"<p>Here is your <a href=""{0}"">LINK</a></p>
 <p>Note: If you did not request this link, please ignore this email,
 or contact the church if you need help.</p>"
-                .Fmt(DbUtil.Db.RegisterLinkUrl(orgid, pid, queueid, showfamily: linktype == "registerlink2"));
+                .Fmt(DbUtil.Db.RegisterLinkUrl(orgid, pid, queueid, linktype));
             var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);
 
             DbUtil.Db.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation

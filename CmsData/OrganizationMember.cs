@@ -282,6 +282,8 @@ namespace CmsData
 		}
 		public Decimal? AmountDue(CMSDataContext Db)
 		{
+		    if (Organization.IsMissionTrip == true)
+		        return Amount - TotalPaid(Db);
 			var qq = from t in Db.Transactions
 					 where t.OriginalTransaction.TransactionPeople.Any(pp => pp.PeopleId == PeopleId)
 					 where t.OriginalTransaction.OrgId == OrganizationId
@@ -291,6 +293,18 @@ namespace CmsData
 			if (tt == null)
 				return null;
 			return tt.Amtdue;
+		}
+		public Decimal? TotalPaid(CMSDataContext Db)
+		{
+		    if (Organization.IsMissionTrip != true) 
+                return AmountPaid;
+		    var q = from a in Db.GoerSenderAmounts
+		        where a.GoerId == PeopleId
+		        where a.OrgId == OrganizationId
+		        where (a.InActive ?? false) == false
+		        select a.Amount;
+		    var totalpaid = q.Sum();
+		    return totalpaid;
 		}
 	}
 }

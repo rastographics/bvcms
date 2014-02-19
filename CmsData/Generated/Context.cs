@@ -294,6 +294,10 @@ namespace CmsData
         partial void UpdateGeoCode(GeoCode instance);
         partial void DeleteGeoCode(GeoCode instance);
         
+        partial void InsertGoerSenderAmount(GoerSenderAmount instance);
+        partial void UpdateGoerSenderAmount(GoerSenderAmount instance);
+        partial void DeleteGoerSenderAmount(GoerSenderAmount instance);
+        
         partial void InsertGoerSupporter(GoerSupporter instance);
         partial void UpdateGoerSupporter(GoerSupporter instance);
         partial void DeleteGoerSupporter(GoerSupporter instance);
@@ -1083,6 +1087,12 @@ namespace CmsData
 		public Table< GeoCode> GeoCodes
 		{
 			get	{ return this.GetTable< GeoCode>(); }
+
+		}
+
+		public Table< GoerSenderAmount> GoerSenderAmounts
+		{
+			get	{ return this.GetTable< GoerSenderAmount>(); }
 
 		}
 

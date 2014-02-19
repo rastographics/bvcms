@@ -252,13 +252,6 @@ namespace CmsData
             EmailQueues.InsertOnSubmit(emailqueue);
             SubmitChanges();
 
-            if (body.Contains("{tracklinks}", true))
-            {
-                body = body.Replace("{tracklinks}", "", ignoreCase: true);
-                emailqueue.Body = createClickTracking(emailqueue.Id, body);
-                SubmitChanges();
-            }
-
             var q2 = from g in list
                      where g.SupporterId != null
                      where g.Supporter.EmailAddress != null

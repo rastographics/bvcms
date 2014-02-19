@@ -5,9 +5,8 @@
     remaining = duration;
     tour.addSteps([
 {
-  title: "Welcome to the new Person Page!"
-  , content: "This is the new user interface for your record. " +
-      "In this tour, we will show you a few things to help you get acclimated. " +
+  title: "Welcome to your profile page!"
+  , content: "In this tour, we will show you a few things to help you get acclimated. " +
       "Click next to continue. " +
       "Once you have watched this tour, " +
       "you can <a id='tourdone' class='hide-tip red' data-hidetip='mydata' href='/'>click here</a> so you won't see it again."
@@ -44,17 +43,16 @@
   title: "Family Photo"
   ,element: "#family-photo-div"
   , placement: "left"
-  ,content: "You can now have a family photo in addtion to your personal photo! " +
+  ,content: "You can have a family photo in addtion to your personal photo! " +
       "Click the + to upload a photo. " +
       "Click the picture to edit or delete an existing photo."
 }, {
   title: "Stuff in the Tabs"
   , element: "#involvementstop"
   , placement: "bottom"
-  ,content: "Note the Basic tab is now called Personal. " +
-      "There is no longer an Address tab. " +
-      "Enrollment is now called Involvement. " +
-      "Member Profile is just Profile. " 
+  ,content: "You can edit your information on the Personal tab. " +
+      "The Involvement tab shows all of your current and past memberships. " +
+      "The Profile tab shows your Church Membership information. " 
 }, {
     title: "More Stuff in the Tabs"
   , element: "#givingstop"
@@ -67,7 +65,7 @@
         "There is also a tab to manage your email opt-outs (unsubscribe) and see failure notices about emails that did not reach you." +
         "</p>"
 }, {
-  title: "Want to know more?"
+  title: "That's all folks"
   ,content: "This ends this little tour. " +
       "The next time it starts, you can tell the system that you don't need to see the tour anymore. "
   ,backdrop: true

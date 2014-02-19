@@ -1,177 +1,188 @@
 ﻿@model CmsWeb.Models.OnlineRegPersonModel
 @using CmsWeb
-@* Allow to Complete Registration 
-   if displaying the last registrant (the one we are editing)
-   and it is not finished and not the first one
+@* Allow to Complete Registration
+    if displaying the last registrant (the one we are editing)
+    and it is not finished and not the first one
 *@
-@{ 
+@{
     var index = Model.Index();
     var selectfamily = Model.Parent.UserPeopleId.HasValue && Model.Parent.FamilyMembers().Any();
 }
 @if (Model.LastItem() && !Model.Finished() && index > 0)
-{ 
+{
     <tr>
         <td>
             <div style="margin-top: 10px; text-align: right">
                 <input id="submitit" type="submit" class="submitbutton"
-                    value='Complete Registration' />
+                       value='Complete Registration' />
             </div>
             <div class="instruct">New Registrations</div>
         </td>
     </tr>
 }
-@* This is a header that will show above the last unfinished item *@
-@if (!Model.ShowDisplay())
-{
-    // show a select organization dropdown
-    if (Model.UserSelectsOrganization())
-    { 
-    <tr> <td> <div class="instruct">Make a Selection</div> </td> </tr>
-    <tr>
-        <td>
-            <div>
-                <select name="@Html.NameFor2(m => m.classid)">
-                    @{ var classidname = Html.NameFor2(m => m.classid); }
-                    @foreach (var i in Model.Parent.Classes(Model.classid))
-                    { 
-                        <option value="@i.Id" @(i.selected ? "selected=selected" : "") @(i.filled ? "disabled=disabled" : "")>@i.Text</option> 
-                    }
-                </select>
-                <div>@Html.ValidationMessageFor(m => m.classid)</div>
-            </div>
-        </td>
-    </tr>
-    }
-    // show a family list because logged in and more than one in family
-    if (selectfamily)
+    @* This is a header that will show above the last unfinished item *@
+    @if (!Model.ShowDisplay())
     {
-    <tr> <td> <h4>Select Family Member</h4> </td> </tr>
-    <tr>
-        <td>
-            <div id="selectfamily" class="box">
-                <table>
-                @foreach (var fm in Model.Parent.FamilyMembers())
-                { 
-                    <tr>
-                        <td nowrap>
-                            Choose <a href="/OnlineReg/Register/@fm.PeopleId" class="submitlink">@fm.Name</a> (@fm.Age) 
-                        </td>
-                        <td>
-                            @Html.ValidationMessage2("age-" + fm.PeopleId)
-                       </td>
-                    </tr>
-                }
-                </table>
-            </div>
-        </td>
-    </tr>
-    }
-    // indicate that the form is for a new person if logged in and not on first registrant  
-    <tr>
-        <td>
-    @if (selectfamily)
-    {
-           <h4>Or enter another non-family member here</h4>
-    }
-    else
-    {
-           <h4>Please fill out the form for a registrant</h4>
-    }
-           <div>@Html.ValidationMessageFor(m => m.Found)</div>
-        </td>
-    </tr>
-} 
-@* Show the registrant info, finished or not *@
-<tr>
-    <td>
-        <div class="box">
-            @* Store some non editable meta data about the person *@
-            @Html.Partial("Flow/PersonMetaHidden", Model)
-
-            @* Store the already entered info about a person *@
-            @if (Model.ShowDisplay())
-            { 
-                @Html.Partial("Flow/PersonHidden", Model)
-                // need to store the other info too because it is complete and passes validation
-                if (Model.OtherOK && !Model.ManageSubscriptions() && !Model.ChooseVolunteerTimes())
+        // show a select organization dropdown
+        if (Model.UserSelectsOrganization())
+        {
+            <tr> <td> <div class="instruct">Make a Selection</div> </td> </tr>
+            <tr>
+                <td>
+                    <div>
+                        <select name="@Html.NameFor2(m => m.classid)">
+                            @{ var classidname = Html.NameFor2(m => m.classid); }
+                            @foreach (var i in Model.Parent.Classes(Model.classid))
+                            {
+                                <option value="@i.Id" @(i.selected ? "selected=selected" : "") @(i.filled ? "disabled=disabled" : "")>@i.Text</option>
+                            }
+                        </select>
+                        <div>@Html.ValidationMessageFor(m => m.classid)</div>
+                    </div>
+                </td>
+            </tr>
+        }
+        // show a family list because logged in and more than one in family
+        if (selectfamily)
+        {
+            <tr> <td> <h4>Select Family Member</h4> </td> </tr>
+            <tr>
+                <td>
+                    <div id="selectfamily" class="box">
+                        <table>
+                            @foreach (var fm in Model.Parent.FamilyMembers())
+                            {
+                                <tr>
+                                    <td nowrap>
+                                        Choose <a href="/OnlineReg/Register/@fm.PeopleId" class="submitlink">@fm.Name</a> (@fm.Age)
+                                    </td>
+                                    <td>
+                                        @Html.ValidationMessage2("age-" + fm.PeopleId)
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        }
+        // indicate that the form is for a new person if logged in and not on first registrant
+        <tr>
+            <td>
+                @if (selectfamily)
                 {
-                @Html.Partial("Flow/OtherHidden", Model)
+                    <h4>Or enter another non-family member here</h4>
                 }
-            } 
-@* 
-  Show the Cancel link because we have either found the record or this is a new record
-  and we're not in create account mode nor in manage subscriptions mode 
-*@
-            @if ((Model.Found == true || Model.IsNew) && !Model.Parent.ManagingSubscriptions() && !Model.IsCreateAccount())
-            {
-                <a href="/OnlineReg/Cancel/@index" class="close submitlink">
-                    <img src="/Content/images/delete.gif" border="0" alt="cancel" title="cancel this registration" /></a>
-            }
-@* Show the finished registrant in a box *@
-            @if (Model.Finished())
-            {
-                <div class="personheader">
-                    @(Model.first + " " + Model.last)
-                    <span class="blue" style="font-size: 80%">(<a class="toggle" href="#">Details</a>)</span>
-                </div>
-            }
-            <table class="particpant" width="95%" cellpadding="6" style='@(!Model.Finished() ? "" : "display: none")'>
-                @* Show finished Name/Address then Questions *@
+                else
+                {
+                    <h4>Please fill out the form for a registrant</h4>
+                }
+                <div>@Html.ValidationMessageFor(m => m.Found)</div>
+            </td>
+        </tr>
+    }
+    @* Show the registrant info, finished or not *@
+    <tr>
+        <td>
+            <div class="box">
+                @* Store some non editable meta data about the person *@
+                @Html.Partial("Flow/PersonMetaHidden", Model)
+
+                @* Store the already entered info about a person *@
                 @if (Model.ShowDisplay())
                 {
-                    @Html.Partial("Flow/PersonDisplay", Model)
-                    if (!Model.ManageSubscriptions() && !Model.OnlinePledge())
+                    @Html.Partial("Flow/PersonHidden", Model)
+                    // need to store the other info too because it is complete and passes validation
+                    if (Model.OtherOK && !Model.ManageSubscriptions() && !Model.ChooseVolunteerTimes())
                     {
-                        // Display answers to Questions
-                        if (Model.OtherOK)
-                        {
-                    @Html.Partial("Flow/OtherDisplay", Model)
-                        }
-                        // Show Questions to ask
-                        else
-                        { 
-                    <tr>
-                        <td colspan="2">
-                            <p>
-                                <i>OK, We @(Model.IsNew ? "have your new" : "found your") record,
-                                please continue below.</i>
-                            </p>
-                        </td>
-                    </tr>
-                            Model.Parent.ShowOtherInstructions = true;
-                    @Html.Partial("Flow/OtherEdit", Model)
-                        }
+                        @(Model.Parent.SupportMissionTrip
+                            ? Html.Partial("Flow/SupportMissionTripHidden", Model)
+                            : Html.Partial("Flow/OtherHidden", Model))
                     }
                 }
-                // Show next person to register, because still taking registrations
-                else if (!Model.Parent.IsEnded())
+                @*
+                Show the Cancel link because we have either found the record or this is a new record
+                and we're not in create account mode nor in manage subscriptions mode
+                *@
+                @if ((Model.Found == true || Model.IsNew) && !Model.Parent.ManagingSubscriptions() && !Model.IsCreateAccount())
                 {
-                    // Already found, display only
-                    if (Model.IsFamily)
-                    {
-                    @Html.Partial("Flow/PersonDisplay", Model)
-                    }
-                    // Find or Add New Registrant
-                    else
-                    {
-                        Model.Parent.ShowFindInstructions = true;
-                    @Html.Partial("Flow/PersonEdit", Model)
-                    }
+                    <a href="/OnlineReg/Cancel/@index" class="close submitlink">
+                        <img src="/Content/images/delete.gif" border="0" alt="cancel" title="cancel this registration" />
+                    </a>
                 }
-            </table>
-        </div>
-        @* Allow them to go back to login if:
-           we only have one registrant so far
-           we have committed to a new record yet
-           we have not found a record yet
-           we are not logged in
-           we have not got past the other info yet
-        *@
-        @if (Model.Parent.List.Count == 1 && !Model.IsNew && Model.Found != true && !Model.LoggedIn && !Model.OtherOK)
-        { 
-            <div style="margin: 10px; text-align: center;">
-                <a href="/OnlineReg/YesLogin" class="submitlink bt">Login with an account</a>
+                @* Show the finished registrant in a box *@
+                @if (Model.Finished())
+                {
+                    <div class="personheader">
+                        @(Model.first + " " + Model.last)
+                        <span class="blue" style="font-size: 80%">(<a class="toggle" href="#">Details</a>)</span>
+                    </div>
+                }
+                <table class="particpant" width="95%" cellpadding="6" style='@(!Model.Finished() ? "" : "display: none")'>
+                    @* Show finished Name/Address then Questions *@
+                    @if (Model.ShowDisplay())
+                    {
+                        @Html.Partial("Flow/PersonDisplay", Model)
+                        if (!Model.ManageSubscriptions() && !Model.OnlinePledge())
+                        {
+                            // Display answers to Questions
+                            if (Model.OtherOK)
+                            {
+                                @Html.Partial("Flow/OtherDisplay", Model)
+                            }
+                            // Show Questions to ask
+                            else
+                            {
+                                <tr>
+                                    <td colspan="2">
+                                        <p>
+                                            <i>
+                                                OK, We @(Model.IsNew ? "have your new" : "found your") record,
+                                                please continue below.
+                                            </i>
+                                        </p>
+                                    </td>
+                                </tr>
+                                Model.Parent.ShowOtherInstructions = true;
+                                @(Model.Parent.SupportMissionTrip
+                                    ? Html.Partial("Flow/SupportMissionTrip", Model)
+                                    : Html.Partial("Flow/OtherEdit", Model))
+                            }
+                        }
+                    }
+                    // Show next person to register, because still taking registrations
+                    else if (!Model.Parent.IsEnded())
+                    {
+                        // Already found, display only
+                        if (Model.IsFamily)
+                        {
+                            @Html.Partial("Flow/PersonDisplay", Model)
+                        }
+                        // Find or Add New Registrant
+                        else
+                        {
+                            Model.Parent.ShowFindInstructions = true;
+                            @Html.Partial("Flow/PersonEdit", Model)
+                        }
+                    }
+                </table>
+
+
             </div>
-        }
-    </td>
-</tr>
+            @* Allow them to go back to login if:
+            we only have one registrant so far
+            we have committed to a new record yet
+            we have not found a record yet
+            we are not logged in
+            we have not got past the other info yet
+            *@
+            @if (Model.Parent.List.Count == 1 && !Model.IsNew && Model.Found != true && !Model.LoggedIn && !Model.OtherOK)
+            {
+                <div style="margin: 10px; text-align: center;">
+                    <a href="/OnlineReg/YesLogin" class="submitlink bt">Login with an account</a>
+                </div>
+            }
+        </td>
+
+
+    </tr>

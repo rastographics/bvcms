@@ -17,6 +17,7 @@ namespace CmsData
             "http://votelink", 
             "http://registerlink", 
             "http://registerlink2", 
+            "http://supportlink", 
             "http://rsvplink", 
             "http://volsublink", 
             "http://volreqlink", 
@@ -46,6 +47,11 @@ namespace CmsData
                 else
                     text = text.Replace("{first}", p.PreferredName, ignoreCase: true);
             text = text.Replace("{last}", p.LastName, ignoreCase: true);
+            if (emailqueueto.GoerSupportId.HasValue)
+            {
+                var salutation = GoerSupporters.Where(ee => ee.Id == emailqueueto.GoerSupportId).Select(ee => ee.Salutation).Single();
+                text = text.Replace("{salutation}", salutation, ignoreCase: true);
+            }
             if (text.Contains("{occupation}", ignoreCase: true))
                 text = text.Replace("{occupation}", p.OccupationOther, ignoreCase: true);
 
@@ -780,9 +786,10 @@ namespace CmsData
                 url += "?showfamily=true";
             return url;
         }
-        public string RegisterLinkUrl(int orgid, int pid, int queueid, bool showfamily = false)
+        public string RegisterLinkUrl(int orgid, int pid, int queueid, string linktype)
         {
-            string qs = "{0},{1},{2}".Fmt(orgid, pid, queueid);
+            var showfamily = linktype == "registerlink2";
+            string qs = "{0},{1},{2},{3}".Fmt(orgid, pid, queueid, linktype);
             var ot = new OneTimeLink
                 {
                     Id = Guid.NewGuid(),
@@ -822,7 +829,7 @@ namespace CmsData
         }
         private string SendSupportLinkUrl(EmailQueueTo emailqueueto, Dictionary<string, OneTimeLink> list)
         {
-            string qs = "{0},{1},{2},{3}".Fmt(emailqueueto.OrgId, emailqueueto.PeopleId, emailqueueto.Id, "supportlink");
+            string qs = "{0},{1},{2},{3},{4}".Fmt(emailqueueto.OrgId, emailqueueto.PeopleId, emailqueueto.Id, "supportlink", emailqueueto.GoerSupportId);
 
             OneTimeLink ot;
             if (list.ContainsKey(qs))

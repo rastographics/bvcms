@@ -160,6 +160,9 @@ namespace CmsWeb.Models
         public bool ShowLoginInstructions;
         public bool ShowOtherInstructions;
 
+        public int? SupportGoerId { get; set; }
+        public bool SupportMissionTrip { get; set; }
+
         public void ParseSettings()
         {
 //            if (HttpContext.Current.Items.Contains("RegSettings"))
@@ -315,5 +318,6 @@ namespace CmsWeb.Models
             get { return history; }
             set { history = value; }
         }
+
     }
 }

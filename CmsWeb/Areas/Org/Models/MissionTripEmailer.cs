@@ -12,10 +12,19 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class MissionTripEmailer
     {
-
-        public int PeopleId { get; set; }
+        public int PeopleId
+        {
+            get { return _peopleId; }
+            set
+            {
+                _peopleId = value;
+                Recipients = GetRecipients();
+            }
+        }
 
         private int orgId;
+        private int _peopleId;
+
         public int OrgId
         {
             get { return orgId; }
@@ -28,7 +37,8 @@ namespace CmsWeb.Areas.Org.Models
                 Body = m.SupportBody;
             }
         }
-        public List<int> Recipient { get; set; }
+
+        public List<RecipientItem> Recipients { get; set; }
 
         public string Subject { get; set; }
         public string Body { get; set; }
@@ -47,28 +57,26 @@ namespace CmsWeb.Areas.Org.Models
             if (!Util.ValidEmail(text) && text.Trim().GetDigits().Length != 10)
                 return new List<SearchInfo>();
 
-            var qp = from p in DbUtil.Db.People.AsQueryable()
+            var qp = from p in DbUtil.Db.People
                      where p.DeceasedDate == null
                      select p;
 
             var phone = text.GetDigits();
             if (phone.Length == 10)
                 qp = from p in qp
-                     where (p.EmailAddress.HasValue() && p.SendEmailAddress1 == true)
-                            || (p.EmailAddress2.HasValue() && p.SendEmailAddress2 == true)
-                     where
-                         p.CellPhone.Contains(phone)
+                     where p.CellPhone.Contains(phone)
                          || p.Family.HomePhone.Contains(phone)
                          || p.WorkPhone.Contains(phone)
                      select p;
             else if (Util.ValidEmail(text))
                 qp = from p in qp
-                     where (p.EmailAddress == text && p.SendEmailAddress1 == true)
-                           || (p.EmailAddress2 == text && p.SendEmailAddress2 == true)
+                     where p.EmailAddress == text || p.EmailAddress2 == text
                      select p;
             const string addsupport = "/MissionTripEmail/AddSupporter/{0}/{1}";
             var rp = from p in qp
-                     let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
+//                     where (p.EmailAddress.Length > 0 && (p.SendEmailAddress1 ?? true))
+//                         || (p.EmailAddress2.Length > 0 && p.SendEmailAddress2 == true)
+                     let age = p.Age != null ? " (" + p.Age + ")" : ""
                      orderby p.Name2
                      select new SearchInfo()
                      {
@@ -91,12 +99,13 @@ namespace CmsWeb.Areas.Org.Models
             public int Id { get; set; }
             public string NameOrEmail { get; set; }
             public bool Active { get; set; }
+            public string Salutation { get; set; }
         }
 
-        public static IEnumerable<RecipientItem> GetRecipients(int id)
+        private List<RecipientItem> GetRecipients()
         {
             var q = from g in DbUtil.Db.GoerSupporters
-                    where g.GoerId == id
+                    where g.GoerId == PeopleId
                     where (g.Unsubscribe ?? false) == false
                     select new RecipientItem()
                     {
@@ -105,54 +114,90 @@ namespace CmsWeb.Areas.Org.Models
                             ? g.Supporter.Name
                             : g.NoDbEmail,
                         Active = g.Active ?? false,
+                        Salutation = (g.Salutation.Length > 0)
+                            ? g.Salutation
+                            : g.SupporterId == null
+                                ? "Dear Friend"
+                                : (g.Goer.Age < 30 && (g.Supporter.Age - g.Goer.Age) > 10)
+                                    ? "Dear " + g.Supporter.TitleCode + " " + g.Supporter.LastName
+                                    : "Hi " + g.Supporter.PreferredName
                     };
-            return q;
+            return q.ToList();
         }
 
-        public static int ToggleActive(int id)
+        public void UpdateRecipients()
         {
-            var q = from e in DbUtil.Db.GoerSupporters
-                    where e.Id == id
-                    select e;
-            var r = q.Single();
-            r.Active = !r.Active;
+            var q = (from g in DbUtil.Db.GoerSupporters
+                     where g.GoerId == PeopleId
+                     where (g.Unsubscribe ?? false) == false
+                     select new { g, goer = g.Goer, supporter = g.Supporter }).ToList();
+            var list = (from gs in q
+                        join r in Recipients on gs.g.Id equals r.Id
+                        select new { gs, r }).ToList();
+            foreach (var i in list)
+            {
+                var goersupporter = i.gs.g;
+                var goer = i.gs.goer;
+                var supporter = i.gs.supporter;
+                var recipient = i.r;
+                goersupporter.Active = i.r.Active;
+                goersupporter.Salutation = recipient.Salutation;
+                if (recipient.Salutation.HasValue())
+                    continue;
+                goersupporter.Salutation = supporter == null
+                    ? "Dear Friend"
+                    : (goer.Age < 30 && (supporter.Age - goer.Age) > 10)
+                        ? "Dear " + supporter.TitleCode + " " + supporter.LastName
+                        : "Hi " + supporter.PreferredName;
+            }
             DbUtil.Db.SubmitChanges();
-            return r.GoerId;
+            Recipients = GetRecipients();
         }
-        public static int RemoveSupporter(int id)
+
+        public void RemoveSupporter(int id)
         {
             var q = from e in DbUtil.Db.GoerSupporters
                     where e.Id == id
                     select e;
             var r = q.Single();
-            var goerid = r.GoerId;
             DbUtil.Db.GoerSupporters.DeleteOnSubmit(r);
             DbUtil.Db.SubmitChanges();
-            return goerid;
+            Recipients = GetRecipients();
         }
 
-        public static int AddRecipient(int id, int? supporterid, string email)
+        public int AddRecipient(int? supporterid, string email)
         {
             var q = from e in DbUtil.Db.GoerSupporters
-                    where e.GoerId == id
+                    where e.GoerId == PeopleId
                     where e.SupporterId == supporterid || e.NoDbEmail == email
                     select e;
             var r = q.SingleOrDefault();
             if (r == null)
             {
-                var n = new GoerSupporter()
+                r = new GoerSupporter()
                 {
-                    GoerId = id,
+                    GoerId = PeopleId,
                     SupporterId = supporterid,
                     NoDbEmail = email,
                     Active = true,
                     Created = DateTime.Now,
                 };
-                DbUtil.Db.GoerSupporters.InsertOnSubmit(n);
+                var supporter = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == supporterid);
+                var goer = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == PeopleId);
+                if (supporter == null)
+                    r.Salutation = "Dear Friend";
+                else
+                    if (goer != null && goer.Age < 30 && (supporter.Age - goer.Age) > 10)
+                        r.Salutation = "Dear " + supporter.TitleCode + " " + supporter.LastName;
+                    else
+                        r.Salutation = "Hi " + supporter.PreferredName;
+
+                DbUtil.Db.GoerSupporters.InsertOnSubmit(r);
             }
             else
                 r.Active = true;
             DbUtil.Db.SubmitChanges();
+            Recipients = GetRecipients();
             return r.Id;
         }
         public string TestSend()
@@ -177,15 +222,15 @@ namespace CmsWeb.Areas.Org.Models
             DbUtil.LogActivity("MissionTripEmail Send {0}".Fmt(PeopleId));
 
             var glist = from g in DbUtil.Db.GoerSupporters
+                        where (g.Unsubscribe ?? false) == false
+                        where (g.Active == true)
                         where g.GoerId == PeopleId
-                        where Recipient.Contains(g.Id)
                         select g;
             var elist = (from g in glist
                          where g.SupporterId == null
                          select g).ToList();
             var plist = from g in glist
                         where g.SupporterId != null
-                        where (g.Unsubscribe ?? false) == false
                         select g;
 
             if (plist.Any())
@@ -200,15 +245,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 SendNoDbEmail(p, e);
             }
-
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                return JsonConvert.SerializeObject(new { error = true, message = ex.Message });
-            }
-            return JsonConvert.SerializeObject(new { message = "Test Email Sent" });
+            return JsonConvert.SerializeObject(new { message = "Email Sent" });
         }
         private void SendNoDbEmail(Person goer, GoerSupporter gs)
         {
@@ -220,11 +257,13 @@ namespace CmsWeb.Areas.Org.Models
                 var text = Body;
                 //var aa = DbUtil.Db.DoReplacements(ref text, goer, null);
 
+                text = text.Replace("{salutation}", gs.Salutation, ignoreCase: true);
                 var qs = "OptOut/UnSubscribe/?gid=" + Util.EncryptForUrl("{0}".Fmt(gs.Id));
                 var url = Util.URLCombine(DbUtil.Db.CmsHost, qs);
                 var link = @"<a href=""{0}"">Unsubscribe</a>".Fmt(url);
                 text = text.Replace("{unsubscribe}", link, ignoreCase: true);
                 text = text.Replace("%7Bfromemail%7D", from.Address, ignoreCase: true);
+                text = text.Replace("http://sendlink", "");
                 Util.SendMsg(sysFromEmail, DbUtil.Db.CmsHost, from, Subject, text, Util.ToMailAddressList(gs.NoDbEmail), gs.Id, null);
             }
             catch (Exception ex)

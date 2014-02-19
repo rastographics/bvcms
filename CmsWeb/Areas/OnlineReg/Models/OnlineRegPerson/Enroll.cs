@@ -20,168 +20,176 @@ namespace CmsWeb.Models
             om.AmountPaid = ti.Amt;
 
             var reg = person.RecRegs.SingleOrDefault();
-
             if (reg == null)
             {
                 reg = new RecReg();
                 person.RecRegs.Add(reg);
             }
-            foreach (var ask in setting.AskItems)
+            if (Parent.SupportMissionTrip)
             {
-                switch (ask.Type)
-                {
-                    case "AskSize":
-                        om.ShirtSize = shirtsize;
-                        reg.ShirtSize = shirtsize;
-                        break;
-                    case "AskChurch":
-                        reg.ActiveInAnotherChurch = otherchurch;
-                        reg.Member = memberus;
-                        break;
-                    case "AskAllergies":
-                        reg.MedAllergy = medical.HasValue();
-                        reg.MedicalDescription = medical;
-                        break;
-                    case "AskParents":
-                        reg.Mname = mname;
-                        reg.Fname = fname;
-                        break;
-                    case "AskEmContact":
-                        reg.Emcontact = emcontact;
-                        reg.Emphone = emphone;
-                        break;
-                    case "AskTylenolEtc":
-                        reg.Tylenol = tylenol;
-                        reg.Advil = advil;
-                        reg.Robitussin = robitussin;
-                        reg.Maalox = maalox;
-                        break;
-                    case "AskDoctor":
-                        reg.Docphone = docphone;
-                        reg.Doctor = doctor;
-                        break;
-                    case "AskCoaching":
-                        reg.Coaching = coaching;
-                        break;
-                    case "AskSMS":
-                        if (sms.HasValue && LoggedIn == true)
-                            person.UpdateValue("ReceiveSMS", sms.Value);
-                        break;
-                    case "AskInsurance":
-                        reg.Insurance = insurance;
-                        reg.Policy = policy;
-                        break;
-                    case "AskTickets":
-                        om.Tickets = ntickets;
-                        break;
-                    case "AskYesNoQuestions":
-                        if (setting.TargetExtraValues == false)
-                        {
-                            foreach (var yn in ((AskYesNoQuestions)ask).list)
-                            {
-                                om.RemoveFromGroup(DbUtil.Db, "Yes:" + yn.SmallGroup);
-                                om.RemoveFromGroup(DbUtil.Db, "No:" + yn.SmallGroup);
-                            }
-                            foreach (var g in YesNoQuestion)
-                                om.AddToGroup(DbUtil.Db, (g.Value == true ? "Yes:" : "No:") + g.Key);
-                        }
-                        else
-                            foreach (var g in YesNoQuestion)
-                                person.AddEditExtraValue(g.Key, g.Value == true ? "Yes" : "No");
-                        break;
-                    case "AskCheckboxes":
-                        if (setting.TargetExtraValues)
-                        {
-                            foreach (var ck in ((AskCheckboxes)ask).list)
-                                person.RemoveExtraValue(DbUtil.Db, ck.SmallGroup);
-                            foreach (var g in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
-                                person.AddEditExtraValue(g.SmallGroup, "true");
-                        }
-                        else
-                        {
-                            foreach (var ck in ((AskCheckboxes)ask).list)
-                                ck.RemoveFromSmallGroup(DbUtil.Db, om);
-                            foreach (var i in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
-                                i.AddToSmallGroup(DbUtil.Db, om, PythonEvents);
-                        }
-                        break;
-                    case "AskExtraQuestions":
-                        foreach (var g in ExtraQuestion[ask.UniqueId])
-                            if (g.Value.HasValue())
-                                if (setting.TargetExtraValues)
-                                    person.AddEditExtraData(g.Key, g.Value);
-                                else
-                                    om.AddToMemberData("{0}: {1}".Fmt(g.Key, g.Value));
-                        break;
-                    case "AskMenu":
-                        foreach (var i in MenuItem[ask.UniqueId])
-                            om.AddToGroup(DbUtil.Db, i.Key, i.Value);
-                    {
-                            var menulabel = ((AskMenu) ask).Label;
-                            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
-                            {
-                                om.AddToMemberData(menulabel);
-                                string desc;
-                                if (i.amt > 0)
-                                    desc = "{0} {1} (at {2:N2})".Fmt(i.number, i.desc, i.amt);
-                                else
-                                    desc = "{0} {1}".Fmt(i.number, i.desc);
-                                om.AddToMemberData(desc);
-                                menulabel = string.Empty;
-                            }
-                        }
-                        break;
-                    case "AskDropdown":
-                        if (setting.TargetExtraValues)
-                        {
-                            foreach (var op in ((AskDropdown)ask).list)
-                                person.RemoveExtraValue(DbUtil.Db, op.SmallGroup);
-                            person.AddEditExtraValue(((AskDropdown)ask).SmallGroupChoice(option).SmallGroup, "true");
-                        }
-                        else
-                        {
-                            foreach (var op in ((AskDropdown)ask).list)
-                                op.RemoveFromSmallGroup(DbUtil.Db, om);
-                            ((AskDropdown)ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonEvents);
-                        }
-                        break;
-                    case "AskGradeOptions":
-                        if (setting.TargetExtraValues)
-                            person.Grade = gradeoption.ToInt();
-                        else
-                        {
-                            om.Grade = gradeoption.ToInt();
-                            person.Grade = gradeoption.ToInt();
-                        }
-                        break;
-                }
-            }
-            if (setting.TargetExtraValues)
-            {
-                foreach (var ag in setting.AgeGroups)
-                    person.RemoveExtraValue(DbUtil.Db, ag.SmallGroup);
-                if (setting.AgeGroups.Count > 0)
-                    person.AddEditExtraValue(AgeGroup(), "true");
+                om.AddToGroup(DbUtil.Db, "Sender");
+                if(MissionTripPray || TotalAmount() > 0)
+                    om.AddToGroup(DbUtil.Db, "Pray");
             }
             else
             {
-                foreach (var ag in setting.AgeGroups)
-                    om.RemoveFromGroup(DbUtil.Db, ag.SmallGroup);
-                if (setting.AgeGroups.Count > 0)
-                    om.AddToGroup(DbUtil.Db, AgeGroup());
-            }
+                foreach (var ask in setting.AskItems)
+                {
+                    switch (ask.Type)
+                    {
+                        case "AskSize":
+                            om.ShirtSize = shirtsize;
+                            reg.ShirtSize = shirtsize;
+                            break;
+                        case "AskChurch":
+                            reg.ActiveInAnotherChurch = otherchurch;
+                            reg.Member = memberus;
+                            break;
+                        case "AskAllergies":
+                            reg.MedAllergy = medical.HasValue();
+                            reg.MedicalDescription = medical;
+                            break;
+                        case "AskParents":
+                            reg.Mname = mname;
+                            reg.Fname = fname;
+                            break;
+                        case "AskEmContact":
+                            reg.Emcontact = emcontact;
+                            reg.Emphone = emphone;
+                            break;
+                        case "AskTylenolEtc":
+                            reg.Tylenol = tylenol;
+                            reg.Advil = advil;
+                            reg.Robitussin = robitussin;
+                            reg.Maalox = maalox;
+                            break;
+                        case "AskDoctor":
+                            reg.Docphone = docphone;
+                            reg.Doctor = doctor;
+                            break;
+                        case "AskCoaching":
+                            reg.Coaching = coaching;
+                            break;
+                        case "AskSMS":
+                            if (sms.HasValue && LoggedIn == true)
+                                person.UpdateValue("ReceiveSMS", sms.Value);
+                            break;
+                        case "AskInsurance":
+                            reg.Insurance = insurance;
+                            reg.Policy = policy;
+                            break;
+                        case "AskTickets":
+                            om.Tickets = ntickets;
+                            break;
+                        case "AskYesNoQuestions":
+                            if (setting.TargetExtraValues == false)
+                            {
+                                foreach (var yn in ((AskYesNoQuestions)ask).list)
+                                {
+                                    om.RemoveFromGroup(DbUtil.Db, "Yes:" + yn.SmallGroup);
+                                    om.RemoveFromGroup(DbUtil.Db, "No:" + yn.SmallGroup);
+                                }
+                                foreach (var g in YesNoQuestion)
+                                    om.AddToGroup(DbUtil.Db, (g.Value == true ? "Yes:" : "No:") + g.Key);
+                            }
+                            else
+                                foreach (var g in YesNoQuestion)
+                                    person.AddEditExtraValue(g.Key, g.Value == true ? "Yes" : "No");
+                            break;
+                        case "AskCheckboxes":
+                            if (setting.TargetExtraValues)
+                            {
+                                foreach (var ck in ((AskCheckboxes)ask).list)
+                                    person.RemoveExtraValue(DbUtil.Db, ck.SmallGroup);
+                                foreach (var g in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
+                                    person.AddEditExtraValue(g.SmallGroup, "true");
+                            }
+                            else
+                            {
+                                foreach (var ck in ((AskCheckboxes)ask).list)
+                                    ck.RemoveFromSmallGroup(DbUtil.Db, om);
+                                foreach (var i in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
+                                    i.AddToSmallGroup(DbUtil.Db, om, PythonEvents);
+                            }
+                            break;
+                        case "AskExtraQuestions":
+                            foreach (var g in ExtraQuestion[ask.UniqueId])
+                                if (g.Value.HasValue())
+                                    if (setting.TargetExtraValues)
+                                        person.AddEditExtraData(g.Key, g.Value);
+                                    else
+                                        om.AddToMemberData("{0}: {1}".Fmt(g.Key, g.Value));
+                            break;
+                        case "AskMenu":
+                            foreach (var i in MenuItem[ask.UniqueId])
+                                om.AddToGroup(DbUtil.Db, i.Key, i.Value);
+                            {
+                                var menulabel = ((AskMenu)ask).Label;
+                                foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
+                                {
+                                    om.AddToMemberData(menulabel);
+                                    string desc;
+                                    if (i.amt > 0)
+                                        desc = "{0} {1} (at {2:N2})".Fmt(i.number, i.desc, i.amt);
+                                    else
+                                        desc = "{0} {1}".Fmt(i.number, i.desc);
+                                    om.AddToMemberData(desc);
+                                    menulabel = string.Empty;
+                                }
+                            }
+                            break;
+                        case "AskDropdown":
+                            if (setting.TargetExtraValues)
+                            {
+                                foreach (var op in ((AskDropdown)ask).list)
+                                    person.RemoveExtraValue(DbUtil.Db, op.SmallGroup);
+                                person.AddEditExtraValue(((AskDropdown)ask).SmallGroupChoice(option).SmallGroup, "true");
+                            }
+                            else
+                            {
+                                foreach (var op in ((AskDropdown)ask).list)
+                                    op.RemoveFromSmallGroup(DbUtil.Db, om);
+                                ((AskDropdown)ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonEvents);
+                            }
+                            break;
+                        case "AskGradeOptions":
+                            if (setting.TargetExtraValues)
+                                person.Grade = gradeoption.ToInt();
+                            else
+                            {
+                                om.Grade = gradeoption.ToInt();
+                                person.Grade = gradeoption.ToInt();
+                            }
+                            break;
+                    }
+                }
+                if (setting.TargetExtraValues)
+                {
+                    foreach (var ag in setting.AgeGroups)
+                        person.RemoveExtraValue(DbUtil.Db, ag.SmallGroup);
+                    if (setting.AgeGroups.Count > 0)
+                        person.AddEditExtraValue(AgeGroup(), "true");
+                }
+                else
+                {
+                    foreach (var ag in setting.AgeGroups)
+                        om.RemoveFromGroup(DbUtil.Db, ag.SmallGroup);
+                    if (setting.AgeGroups.Count > 0)
+                        om.AddToGroup(DbUtil.Db, AgeGroup());
+                }
 
-            if (setting.LinkGroupsFromOrgs.Count > 0)
-            {
-                var q = from omt in DbUtil.Db.OrgMemMemTags
-                        where setting.LinkGroupsFromOrgs.Contains(omt.OrgId)
-                        where omt.PeopleId == om.PeopleId
-                        select omt.MemberTag.Name;
-                foreach (var name in q)
-                    om.AddToGroup(DbUtil.Db, name);
+                if (setting.LinkGroupsFromOrgs.Count > 0)
+                {
+                    var q = from omt in DbUtil.Db.OrgMemMemTags
+                            where setting.LinkGroupsFromOrgs.Contains(omt.OrgId)
+                            where omt.PeopleId == om.PeopleId
+                            select omt.MemberTag.Name;
+                    foreach (var name in q)
+                        om.AddToGroup(DbUtil.Db, name);
+                }
+                if (om.Organization.IsMissionTrip == true)
+                    om.AddToGroup(DbUtil.Db, "Goer");
             }
-            if (om.Organization.IsMissionTrip == true)
-                om.AddToGroup(DbUtil.Db, "Goer");
 
             var sb = new StringBuilder();
 
@@ -293,8 +301,8 @@ namespace CmsWeb.Models
                                         Util.PickFirst(((AskDropdown)ask).Label, "Options"));
                         break;
                     case "AskMenu":
-                    {
-                            var menulabel = ((AskMenu) ask).Label;
+                        {
+                            var menulabel = ((AskMenu)ask).Label;
                             foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
                             {
                                 string row;
@@ -400,9 +408,9 @@ namespace CmsWeb.Models
                     case "AskCoaching":
                         coaching = reg.Coaching;
                         break;
-//                    case "AskSMS":
-//                        sms = person.ReceiveSMS;
-//                        break;
+                    //                    case "AskSMS":
+                    //                        sms = person.ReceiveSMS;
+                    //                        break;
                     case "AskInsurance":
                         insurance = reg.Insurance;
                         policy = reg.Policy;
@@ -448,7 +456,7 @@ namespace CmsWeb.Models
                         var eq = new Dictionary<string, string>();
                         ExtraQuestion.Add(eq);
                         var lines = (om.UserData ?? "").Split('\n');
-                        foreach (var q in ((AskExtraQuestions) ask).list)
+                        foreach (var q in ((AskExtraQuestions)ask).list)
                         {
                             if (setting.TargetExtraValues)
                             {
@@ -459,8 +467,8 @@ namespace CmsWeb.Models
                             else
                             {
                                 var v = (from li in lines
-                                    where li.StartsWith(q.Question + ": ")
-                                    select li.Substring(q.Question.Length + 2)).FirstOrDefault();
+                                         where li.StartsWith(q.Question + ": ")
+                                         select li.Substring(q.Question.Length + 2)).FirstOrDefault();
                                 if (v.HasValue())
                                     eq[q.Question] = v;
                             }
@@ -468,22 +476,22 @@ namespace CmsWeb.Models
                         break;
 
                     case "AskMenu":
-//                        foreach (var i in MenuItem)
-//                            om.AddToGroup(DbUtil.Db, i.Key, i.Value);
-//                        {
-//                            var menulabel = "Menu Items";
-//                            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem))
-//                            {
-//                                om.AddToMemberData(menulabel);
-//                                string desc;
-//                                if (i.amt > 0)
-//                                    desc = "{0} {1} (at {2:N2})".Fmt(i.number, i.desc, i.amt);
-//                                else
-//                                    desc = "{0} {1}".Fmt(i.number, i.desc);
-//                                om.AddToMemberData(desc);
-//                                menulabel = string.Empty;
-//                            }
-//                        }
+                        //                        foreach (var i in MenuItem)
+                        //                            om.AddToGroup(DbUtil.Db, i.Key, i.Value);
+                        //                        {
+                        //                            var menulabel = "Menu Items";
+                        //                            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem))
+                        //                            {
+                        //                                om.AddToMemberData(menulabel);
+                        //                                string desc;
+                        //                                if (i.amt > 0)
+                        //                                    desc = "{0} {1} (at {2:N2})".Fmt(i.number, i.desc, i.amt);
+                        //                                else
+                        //                                    desc = "{0} {1}".Fmt(i.number, i.desc);
+                        //                                om.AddToMemberData(desc);
+                        //                                menulabel = string.Empty;
+                        //                            }
+                        //                        }
                         break;
                     case "AskDropdown":
                         if (option == null)
@@ -506,20 +514,20 @@ namespace CmsWeb.Models
                         break;
                 }
             }
-//            if (setting.TargetExtraValues)
-//            {
-//                foreach (var ag in setting.AgeGroups)
-//                    person.RemoveExtraValue(DbUtil.Db, ag.SmallGroup);
-//                if (setting.AgeGroups.Count > 0)
-//                    person.AddEditExtraValue(AgeGroup(), "true");
-//            }
-//            else
-//            {
-//                foreach (var ag in setting.AgeGroups)
-//                    om.RemoveFromGroup(DbUtil.Db, ag.SmallGroup);
-//                if (setting.AgeGroups.Count > 0)
-//                    om.AddToGroup(DbUtil.Db, AgeGroup());
-//            }
+            //            if (setting.TargetExtraValues)
+            //            {
+            //                foreach (var ag in setting.AgeGroups)
+            //                    person.RemoveExtraValue(DbUtil.Db, ag.SmallGroup);
+            //                if (setting.AgeGroups.Count > 0)
+            //                    person.AddEditExtraValue(AgeGroup(), "true");
+            //            }
+            //            else
+            //            {
+            //                foreach (var ag in setting.AgeGroups)
+            //                    om.RemoveFromGroup(DbUtil.Db, ag.SmallGroup);
+            //                if (setting.AgeGroups.Count > 0)
+            //                    om.AddToGroup(DbUtil.Db, AgeGroup());
+            //            }
         }
     }
 }

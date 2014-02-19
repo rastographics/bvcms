@@ -179,7 +179,41 @@ namespace CmsWeb.Models
                 message = message.Replace("{paylink}", "You have a zero balance.");
 
             var re = new Regex(@"\{donation(?<text>.*)donation\}", RegexOptions.Singleline | RegexOptions.Multiline);
-            if (ti.Donate > 0)
+            if (SupportMissionTrip && TotalAmount() > 0)
+            {
+                var p = List[0];
+                ti.Fund = p.setting.DonationFund();
+                if (p.Parent.SupportGoerId > 0 || p.MissionTripGoerId > 0 && p.MissionTripSupportGoer > 0)
+                {
+                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                        new GoerSenderAmount 
+                        {
+                            Amount = p.MissionTripSupportGoer.Value,
+                            GoerId = p.Parent.SupportGoerId ?? p.MissionTripGoerId,
+                            Created = DateTime.Now,
+                            OrgId = p.orgid.Value,
+                            SupporterId = p.PeopleId.Value
+                        });
+                    p.person.PostUnattendedContribution(DbUtil.Db,
+                        p.MissionTripSupportGoer.Value, p.setting.DonationFundId, 
+                        "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.MissionTripGoerId));
+                }
+                if (p.MissionTripSupportGeneral > 0)
+                {
+                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                        new GoerSenderAmount 
+                        {
+                            Amount = p.MissionTripSupportGeneral.Value,
+                            Created = DateTime.Now,
+                            OrgId = p.orgid.Value,
+                            SupporterId = p.PeopleId.Value
+                        });
+                    p.person.PostUnattendedContribution(DbUtil.Db,
+                        p.MissionTripSupportGoer.Value, p.setting.DonationFundId, 
+                        "SupportMissionTrip: org={0}".Fmt(p.orgid));
+                }
+            }
+            else if (ti.Donate > 0)
             {
                 var p = List[donor.Value];
                 ti.Fund = p.setting.DonationFund();

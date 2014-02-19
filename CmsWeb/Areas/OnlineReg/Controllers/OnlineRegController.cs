@@ -22,16 +22,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #endif
 
         // Main page
-        public ActionResult Index(int? id, bool? testing, int? o, int? d, string email, bool? nologin, bool? login, string registertag, bool? showfamily)
+        public ActionResult Index(int? id, bool? testing, int? o, int? d, string email, bool? nologin, bool? login, string registertag, bool? showfamily, int? supportid, bool? support)
         {
-#if DEBUG
-            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == 89469 && mm.PeopleId == 828612);
-            if (om != null)
-            {
-                om.Drop(DbUtil.Db, false);
-                DbUtil.Db.SubmitChanges();
-            }
-#endif
             if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
                 return Content("Site is disabled for maintenance, check back later");
             Util.NoCache(Response);
@@ -50,6 +42,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 if ((m.org.RegistrationTypeId ?? 0) == RegistrationTypeCode.None)
                     return Content("no registration allowed on this org");
+                if (m.org.IsMissionTrip == true)
+                {
+                    m.SupportMissionTrip = (support ?? false) || supportid.HasValue;
+                    m.SupportGoerId = supportid;
+                }
             }
             m.URL = Request.Url.OriginalString;
 
@@ -71,6 +68,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (Util.ValidEmail(email))
                 m.List[0].email = email;
+
 
             var pid = 0;
             if (registertag.HasValue())

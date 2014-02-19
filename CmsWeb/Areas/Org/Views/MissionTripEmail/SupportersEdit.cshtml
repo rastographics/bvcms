@@ -1,8 +1,17 @@
-﻿@model int
+﻿@model MissionTripEmailer
 @using CmsWeb.Areas.Org.Models
-@foreach (var r in MissionTripEmailer.GetRecipients(Model))
+<table class="table table-condensed table-striped">
+@for(var i = 0; i < Model.Recipients.Count; i++)
 {
-    <li id="r-@r.Id" @(r.Active ? "" : "class=notselected")>
-        <a class="remove" href="/MissionTripEmail/RemoveSupporter/@r.Id"><i class="fa fa-minus-circle"></i> @r.NameOrEmail</a>
-    </li>
+    var r = Model.Recipients[i];
+    <tr>
+        <td>
+            @Html.HiddenFor(m => m.Recipients[i].Id)
+            @Html.CheckBoxFor(m => m.Recipients[i].Active)
+            <a>@r.NameOrEmail</a>
+            <a class="remove pull-right" href="/MissionTripEmail/RemoveSupporter/@Model.PeopleId/@r.Id"><i class="fa fa-minus-circle"></i></a><br />
+            @Html.TextBoxFor(m => m.Recipients[i].Salutation, new { @class = "input-medium" })
+        </td>
+    </tr>
 }
+</table>

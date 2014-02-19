@@ -7,7 +7,7 @@
             $.SetLoadingIndicator();
         },
         remote: '/MissionTripEmail/Search/{0}?q=%QUERY'.format($("#PeopleId").val()),
-        //        minLength: 0,
+        minLength: 3,
         template: 'dummy string',
         engine: {
             compile: function (t) {
@@ -31,11 +31,11 @@
         $.post(datum.url, {}, function(ret) {
             $("#recipients").html(ret).ready(function() {
                 $("#supportsearch").val("");
-                $("#recipients li.newsupporter").effect("highlight", {}, 2000);
+                $("#recipients .newsupporter").effect("highlight", {}, 2000);
             });
         });
     });
-    $("#recipients > li > a").live("click", function (ev) {
+    $("#recipients a.remove").live("click", function (ev) {
         ev.preventDefault();
         var href = this.href;
         $.post(href, {}, function (ret) {
@@ -43,11 +43,25 @@
         });
         return false;
     });
-    $("#editsupporters").click(function (ev) {
+    $("#edit-supporters").click(function (ev) {
         ev.preventDefault();
         var href = this.href;
-        $(this).hide();
-        $("#done-editing").show();
+        $("#edit-supporters").hide();
+        $("#editing").show();
+        $("#edit-help").hide();
+        $("#done-help").show();
+        $.post(href, {}, function (ret) {
+            $("#recipients").html(ret);
+        });
+        return false;
+    });
+    $("#cancel-editing").click(function (ev) {
+        ev.preventDefault();
+        var href = this.href;
+        $("#editing").hide();
+        $("#edit-supporters").show();
+        $("#edit-help").show();
+        $("#done-help").hide();
         $.post(href, {}, function (ret) {
             $("#recipients").html(ret);
         });
@@ -56,9 +70,14 @@
     $("#done-editing").click(function (ev) {
         ev.preventDefault();
         var href = this.href;
-        $(this).hide();
-        $("#editsupporters").show();
-        $.post(href, {}, function (ret) {
+        $("#editing").hide();
+        $("#edit-supporters").show();
+        $("#edit-help").show();
+        $("#done-help").hide();
+
+        var q = $("#SendEmail,#recipients").serialize();
+
+        $.post(href, q, function (ret) {
             $("#recipients").html(ret);
         });
         return false;
@@ -98,10 +117,11 @@
     $(".send").click(function () {
         $('#body').val($("#tempateBody").html());
 
-        var a = $.map($("#recipients li").not(".notselected"), function(e, i) {
-            return "Recipient=" + $(e).attr("rid");
-        });
-        var q = $("#SendEmail").serialize() + "&" + a.join("&");
+//        var a = $.map($("#recipients li").not(".notselected"), function(e, i) {
+//            return "Recipient=" + $(e).attr("rid");
+//        });
+//        var q = $("#SendEmail").serialize() + "&" + a.join("&");
+        var q = $("#SendEmail").serialize();
 
         $.post('/MissionTripEmail/Send', q, function (ret) {
             if (ret.startsWith("http"))

@@ -31,6 +31,8 @@ namespace CmsData
 		
 		private DateTime _Created;
 		
+		private string _Salutation;
+		
    		
     	
 		private EntityRef< Person> _Supporter;
@@ -64,6 +66,9 @@ namespace CmsData
 		
 		partial void OnCreatedChanging(DateTime value);
 		partial void OnCreatedChanged();
+		
+		partial void OnSalutationChanging(string value);
+		partial void OnSalutationChanged();
 		
     #endregion
 		public GoerSupporter()
@@ -233,6 +238,28 @@ namespace CmsData
 					this._Created = value;
 					this.SendPropertyChanged("Created");
 					this.OnCreatedChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Salutation", UpdateCheck=UpdateCheck.Never, Storage="_Salutation", DbType="nvarchar(80)")]
+		public string Salutation
+		{
+			get { return this._Salutation; }
+
+			set
+			{
+				if (this._Salutation != value)
+				{
+				
+                    this.OnSalutationChanging(value);
+					this.SendPropertyChanging();
+					this._Salutation = value;
+					this.SendPropertyChanged("Salutation");
+					this.OnSalutationChanged();
 				}
 
 			}

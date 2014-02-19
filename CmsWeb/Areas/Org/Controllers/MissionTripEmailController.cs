@@ -12,6 +12,7 @@ using CmsData.Codes;
 using CmsWeb.Areas.Main.Models;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Org.Models;
+using DocumentFormat.OpenXml.EMMA;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsData;
@@ -58,24 +59,28 @@ namespace CmsWeb.Areas.Org.Controllers
         [POST("MissionTripEmail/Supporters/{id:int}")]
         public ActionResult Supporters(int id)
         {
-            return View(id);
+            var m = new MissionTripEmailer() {PeopleId = id};
+            return View(m);
         }
         [POST("MissionTripEmail/SupportersEdit/{id:int}")]
         public ActionResult SupportersEdit(int id)
         {
-            return View(id);
+            var m = new MissionTripEmailer() {PeopleId = id};
+            return View(m);
         }
-        [POST("MissionTripEmail/ToggleActive/{id:int}")]
-        public ActionResult ToggleActive(int id)
+        [POST("MissionTripEmail/SupportersUpdate")]
+        [ValidateInput(false)]
+        public ActionResult SupportersUpdate(MissionTripEmailer m)
         {
-            var goer = MissionTripEmailer.ToggleActive(id);
-            return View("Supporters", goer);
+            m.UpdateRecipients();
+            return View("Supporters", m);
         }
-        [POST("MissionTripEmail/RemoveSupporter/{id:int}")]
-        public ActionResult RemoveSupporter(int id)
+        [POST("MissionTripEmail/RemoveSupporter/{id:int}/{supporterid:int}")]
+        public ActionResult RemoveSupporter(int id, int supporterid)
         {
-            var goer = MissionTripEmailer.RemoveSupporter(id);
-            return View("SupportersEdit", goer);
+            var m = new MissionTripEmailer() {PeopleId = id};
+            m.RemoveSupporter(supporterid);
+            return View("SupportersEdit", m);
         }
         [POST("MissionTripEmail/AddSupporter/{id:int}/{supporter}")]
         public ActionResult AddSupporter(int id, string supporter)
@@ -86,8 +91,9 @@ namespace CmsWeb.Areas.Org.Controllers
                 supporterid = supporter.ToInt();
             else
                 email = supporter;
-            ViewBag.newid = MissionTripEmailer.AddRecipient(id, supporterid, email);
-            return View("Supporters", id);
+            var m = new MissionTripEmailer() {PeopleId = id};
+            ViewBag.newid = m.AddRecipient(supporterid, email);
+            return View("Supporters", m);
         }
     }
 }

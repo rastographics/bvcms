@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.People.Models
                         Id = m.OrganizationId,
                         Trip = m.Organization.OrganizationName,
                         Cost = m.Amount ?? 0,
-                        Paid = m.AmountPaid ?? 0,
+                        Paid = m.TotalPaid(DbUtil.Db) ?? 0,
                     }).ToList();
         }
     }

@@ -5,9 +5,8 @@
     remaining = duration;
     tour.addSteps([
 {
-  title: "Welcome to the new Search Builder Page!"
-  , content: "This page is in beta, but we want you to use it. " +
-      "This tour will guide you in discovering the changes in Search Builder. " +
+  title: "Welcome to Search Builder!"
+  , content:"This tour will introduce you to Search Builder. " +
       "Click next to continue. " +
       "Once you have watched this tour, " +
       "you can <a id='tourdone' class='hide-tip red' data-hidetip='query' href='#'>click here</a> so you won't see it again."
@@ -59,10 +58,10 @@
   , content: "Click the text of a condition to edit it."
   , orphan: true
 }, {
-  title: "It's not easy being green"
+  title: "What can I do with this?"
   , element: "div.btn-page-actions"
   , placement: "left"
-  , content: "This is the new Blue Toolbar you will use to email, text, get reports, exports, " +
+  , content: "With the Blue Toolbar you can email, text, get reports, exports, " +
       "and do other things with the resulting list of people."
 }, {
   title: ""
@@ -73,9 +72,9 @@
   title: "Want to know more?"
   ,content: "This ends this little show. " +
       "The next time it starts, you can tell the system that you don't need to see it anymore. " +
-      "Be sure to <a href='http://www.youtube.com/bvcmscom' target='_blank'>" +
-      "watch the videos we will be doing to introduce the new UI.</a>"
-  ,backdrop: true
+      "Be sure to check out our <a href='http://www.youtube.com/bvcmscom' target='_blank'>" +
+      "YouTube channel.</a>"
+  , backdrop: true
   ,orphan: true
 }
     ]);
