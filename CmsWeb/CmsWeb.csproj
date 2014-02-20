@@ -1334,6 +1334,8 @@
     <Content Include="Areas\Org\Views\MissionTripEmail\SupportersEdit.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTrip.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTripHidden.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTripDisplay.cshtml" />
+    <Content Include="Areas\Org\Views\MissionTripEmail\Sent.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

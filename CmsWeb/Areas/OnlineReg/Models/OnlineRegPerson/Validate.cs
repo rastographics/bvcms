@@ -303,6 +303,11 @@ Please search with a different email, phone, or birthday.";
         public void ValidateModelForOther(ModelStateDictionary modelState)
         {
             var i = Index();
+            if (Parent.SupportMissionTrip)
+            {
+                OtherOK = true;
+                return;
+            }
             foreach (var ask in setting.AskItems)
                 switch (ask.Type)
                 {

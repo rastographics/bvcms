@@ -74,8 +74,8 @@ namespace CmsWeb.Areas.Org.Models
                      select p;
             const string addsupport = "/MissionTripEmail/AddSupporter/{0}/{1}";
             var rp = from p in qp
-//                     where (p.EmailAddress.Length > 0 && (p.SendEmailAddress1 ?? true))
-//                         || (p.EmailAddress2.Length > 0 && p.SendEmailAddress2 == true)
+                     where (p.EmailAddress.Length > 0 && (p.SendEmailAddress1 ?? true))
+                         || (p.EmailAddress2.Length > 0 && p.SendEmailAddress2 == true)
                      let age = p.Age != null ? " (" + p.Age + ")" : ""
                      orderby p.Name2
                      select new SearchInfo()
@@ -245,7 +245,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 SendNoDbEmail(p, e);
             }
-            return JsonConvert.SerializeObject(new { message = "Email Sent" });
+            return null;
         }
         private void SendNoDbEmail(Person goer, GoerSupporter gs)
         {
@@ -263,7 +263,7 @@ namespace CmsWeb.Areas.Org.Models
                 var link = @"<a href=""{0}"">Unsubscribe</a>".Fmt(url);
                 text = text.Replace("{unsubscribe}", link, ignoreCase: true);
                 text = text.Replace("%7Bfromemail%7D", from.Address, ignoreCase: true);
-                text = text.Replace("http://sendlink", "");
+                text = text.Replace("http://supportlink", Util.ServerLink("/OnlineReg/Index/{0}?support=true&supportid={1}".Fmt(OrgId, PeopleId)), ignoreCase: true);
                 Util.SendMsg(sysFromEmail, DbUtil.Db.CmsHost, from, Subject, text, Util.ToMailAddressList(gs.NoDbEmail), gs.Id, null);
             }
             catch (Exception ex)

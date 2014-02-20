@@ -128,7 +128,9 @@
                             // Display answers to Questions
                             if (Model.OtherOK)
                             {
-                                @Html.Partial("Flow/OtherDisplay", Model)
+                                @(Model.Parent.SupportMissionTrip
+                                    ? Html.Partial("Flow/SupportMissionTripDisplay", Model)
+                                    : Html.Partial("Flow/OtherDisplay", Model))
                             }
                             // Show Questions to ask
                             else

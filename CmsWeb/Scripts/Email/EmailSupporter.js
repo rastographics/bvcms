@@ -115,7 +115,7 @@
     $('div[bvedit]').bind('click', $.hClick).addClass("ti");
 
     $(".send").click(function () {
-        $('#body').val($("#tempateBody").html());
+        $('#Body').val($("#tempateBody").html());
 
 //        var a = $.map($("#recipients li").not(".notselected"), function(e, i) {
 //            return "Recipient=" + $(e).attr("rid");
@@ -124,7 +124,7 @@
         var q = $("#SendEmail").serialize();
 
         $.post('/MissionTripEmail/Send', q, function (ret) {
-            if (ret.startsWith("http"))
+            if (ret.startsWith("/MissionTripEmail"))
                 window.location = ret;
             else
                 $(".send").notify(ret, "error");
@@ -133,7 +133,7 @@
 
     $(".testsend").click(function () {
         $.clearTemplateClass();
-        $("#body").val($("#tempateBody").html());
+        $("#Body").val($("#tempateBody").html());
         $.addTemplateClass();
         var q = $("#SendEmail").serialize();
         $.post('/MissionTripEmail/TestSend', q, function (ret) {

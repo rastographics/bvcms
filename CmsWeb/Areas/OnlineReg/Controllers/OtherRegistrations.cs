@@ -246,7 +246,7 @@ emailid={2}
             var pid = a[1].ToInt();
             var linktype = a[3].Split(',');
             int? supportid = null;
-            if (linktype[0] == "supportlink" && linktype.Length > 1)
+            if (linktype[0].Equal("supportlink")  && linktype.Length > 1)
             {
                 var gs = DbUtil.Db.GoerSupporters.SingleOrDefault(gg => gg.Id == linktype[1].ToInt());
                 if (gs != null)
@@ -269,7 +269,7 @@ emailid={2}
                 return Content("sorry, registration has been closed");
 
             var url = "/OnlineReg/Index/{0}?registertag={1}".Fmt(oid, id);
-            if(linktype[0] == "supportlink")
+            if(linktype[0].Equal("supportlink"))
                 url += "&support=true";
             if (supportid.HasValue)
                 url += "&supportid=" + supportid;

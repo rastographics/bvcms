@@ -32,13 +32,20 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new MissionTripEmailer {PeopleId = pid, OrgId = oid};
             return View(m);
         }
+        [GET("MissionTripEmail/Sent")]
+        public ActionResult Sent()
+        {
+            return View();
+        }
 
         [POST("MissionTripEmail/Send")]
         [ValidateInput(false)]
         public ActionResult Send(MissionTripEmailer m)
         {
             var s = m.Send();
-            return Content("");
+            if (s == null)
+                return Content("/MissionTripEmail/Sent");
+            return Content(s);
         }
         [POST("MissionTripEmail/TestSend")]
         [ValidateInput(false)]

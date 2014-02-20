@@ -183,13 +183,14 @@ namespace CmsWeb.Models
             {
                 var p = List[0];
                 ti.Fund = p.setting.DonationFund();
-                if (p.Parent.SupportGoerId > 0 || p.MissionTripGoerId > 0 && p.MissionTripSupportGoer > 0)
+                var goerid = p.Parent.SupportGoerId ?? p.MissionTripGoerId;
+                if (goerid > 0 && p.MissionTripSupportGoer > 0)
                 {
                     DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
                         new GoerSenderAmount 
                         {
                             Amount = p.MissionTripSupportGoer.Value,
-                            GoerId = p.Parent.SupportGoerId ?? p.MissionTripGoerId,
+                            GoerId = goerid,
                             Created = DateTime.Now,
                             OrgId = p.orgid.Value,
                             SupporterId = p.PeopleId.Value
@@ -212,6 +213,24 @@ namespace CmsWeb.Models
                         p.MissionTripSupportGoer.Value, p.setting.DonationFundId, 
                         "SupportMissionTrip: org={0}".Fmt(p.orgid));
                 }
+            }
+            else if (!SupportMissionTrip && org != null && org.IsMissionTrip == true && ti.Amt > 0)
+            {
+                var p = List[0];
+                ti.Fund = p.setting.DonationFund();
+
+                DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                    new GoerSenderAmount 
+                    {
+                        Amount = ti.Amt,
+                        GoerId = p.PeopleId,
+                        Created = DateTime.Now,
+                        OrgId = p.orgid.Value,
+                        SupporterId = p.PeopleId.Value
+                    });
+                p.person.PostUnattendedContribution(DbUtil.Db,
+                    ti.Amt.Value, p.setting.DonationFundId, 
+                    "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId));
             }
             else if (ti.Donate > 0)
             {

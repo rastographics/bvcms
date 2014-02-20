@@ -14,7 +14,9 @@ namespace CmsWeb.Models
         {
             if (paydeposit == true && setting.Deposit.HasValue && setting.Deposit > 0)
                 return setting.Deposit.Value + (setting.IncludeOtherFeesWithDeposit ? TotalOther() : 0);
-            return TotalAmount();
+            return Parent.SupportMissionTrip 
+                ? TotalOther() 
+                : TotalAmount();
         }
         public decimal TotalAmount()
         {
