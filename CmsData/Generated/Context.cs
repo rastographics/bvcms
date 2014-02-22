@@ -2805,6 +2805,20 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.TotalPaid", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? TotalPaid(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.SpouseIdJoint", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? SpouseIdJoint(

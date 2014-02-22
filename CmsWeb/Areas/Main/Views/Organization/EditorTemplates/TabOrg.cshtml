@@ -83,15 +83,12 @@
             Recreation Team:</span>
         @Html.CheckBox("org.IsRecreationTeam")
     </li>
-@if (User.IsInRole("Developer"))
-{
     <li>
         <span class="keyword big tip" title="Mission Trip
         |Allows others to donate on a member's behalf'">
             Mission Trip:
         </span> @Html.CheckBox("org.IsMissionTrip")
     </li>
-}
 @if(User.IsInRole("Admin"))
 {
     <li>

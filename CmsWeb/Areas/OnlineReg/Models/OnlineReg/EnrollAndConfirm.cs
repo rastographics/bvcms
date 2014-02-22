@@ -183,7 +183,7 @@ namespace CmsWeb.Models
             {
                 var p = List[0];
                 ti.Fund = p.setting.DonationFund();
-                var goerid = p.Parent.SupportGoerId ?? p.MissionTripGoerId;
+                var goerid = p.Parent.GoerId ?? p.MissionTripGoerId;
                 if (goerid > 0 && p.MissionTripSupportGoer > 0)
                 {
                     DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
@@ -193,11 +193,25 @@ namespace CmsWeb.Models
                             GoerId = goerid,
                             Created = DateTime.Now,
                             OrgId = p.orgid.Value,
-                            SupporterId = p.PeopleId.Value
+                            SupporterId = p.PeopleId.Value,
+                            NoNoticeToGoer = p.MissionTripNoNoticeToGoer,
                         });
+                    if (p.Parent.GoerSupporterId.HasValue)
+                    {
+                        var gs = DbUtil.Db.GoerSupporters.Single(gg => gg.Id == p.Parent.GoerSupporterId);
+                        if (!gs.SupporterId.HasValue)
+                            gs.SupporterId = p.PeopleId;
+                    }
                     p.person.PostUnattendedContribution(DbUtil.Db,
                         p.MissionTripSupportGoer.Value, p.setting.DonationFundId, 
-                        "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.MissionTripGoerId));
+                        "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid));
+                    // send notices
+                    if (!p.MissionTripNoNoticeToGoer)
+                    {
+                        var goer = DbUtil.Db.LoadPersonById(goerid.Value);
+                        Db.Email(NotifyIds[0].FromEmail, goer, subject + "-donation",
+                            "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value, ti.FullName));
+                    }
                 }
                 if (p.MissionTripSupportGeneral > 0)
                 {
@@ -210,9 +224,11 @@ namespace CmsWeb.Models
                             SupporterId = p.PeopleId.Value
                         });
                     p.person.PostUnattendedContribution(DbUtil.Db,
-                        p.MissionTripSupportGoer.Value, p.setting.DonationFundId, 
+                        p.MissionTripSupportGeneral.Value, p.setting.DonationFundId, 
                         "SupportMissionTrip: org={0}".Fmt(p.orgid));
                 }
+                Db.Email(NotifyIds[0].FromEmail, NotifyIds, subject + "-donation",
+                    "${0:N2} donation received from {1}".Fmt(ti.Amt, ti.FullName));
             }
             else if (!SupportMissionTrip && org != null && org.IsMissionTrip == true && ti.Amt > 0)
             {
@@ -264,21 +280,25 @@ namespace CmsWeb.Models
             if(subject != "DO NOT SEND")
                 Db.Email(NotifyIds[0].FromEmail, p0, elist,
                     subject, message, false);
+
+            Db.SubmitChanges();
+            if (SupportMissionTrip) 
+                return;
             // notify the staff
             foreach (var p in List)
             {
                 Db.Email(Util.PickFirst(p.person.FromEmail, NotifyIds[0].FromEmail), NotifyIds, Header,
-@"{6}{0} has registered for {1}<br/>
+                    @"{6}{0} has registered for {1}<br/>
 Feepaid for this registrant: {2:C}<br/>
 Total Fee for this registration: {3:C}<br/>
 AmountDue: {4:C}<br/>
 <pre>{5}</pre>".Fmt(p.person.Name,
-               Header,
-               amtpaid,
-               TotalAmount(),
-               amtdue, // Amount Due
-               p.PrepareSummaryText(ti),
-               usedAdmins? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
+                        Header,
+                        amtpaid,
+                        TotalAmount(),
+                        amtdue, // Amount Due
+                        p.PrepareSummaryText(ti),
+                        usedAdmins? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
 <a href='http://www.bvcms.com/Doc/MessagesSettings'>see documentation</a><br/>" : ""));
             }
         }

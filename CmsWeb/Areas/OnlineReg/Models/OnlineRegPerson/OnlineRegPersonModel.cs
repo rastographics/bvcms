@@ -114,6 +114,7 @@ namespace CmsWeb.Models
 
         public int? MissionTripGoerId { get; set; }
         public bool MissionTripPray { get; set; }
+        public bool MissionTripNoNoticeToGoer { get; set; }
         public decimal? MissionTripSupportGoer { get; set; }
         public decimal? MissionTripSupportGeneral { get; set; }
 

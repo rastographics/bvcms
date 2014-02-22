@@ -63,17 +63,25 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 					var om = Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == ti.OrgId && m.PeopleId == pi.PeopleId);
 					if (om == null)
 						continue;
-
-					var due = (om.Amount - om.AmountPaid) ?? 0;
-					var pay = amt;
-					if (pay > due)
-						pay = due;
-					om.AmountPaid += pay;
+				    var pay = amt;
+				    if (org.IsMissionTrip == true)
+				    {
+				        Db.ExecuteCommand(@"
+INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created ) VALUES  ( {0}, {1}, {1}, {2}, {3} )", 
+                             org.OrganizationId, p.PeopleId, pay, DateTime.Now );
+				    }
+				    else
+				    {
+    				    var due = om.Amount - om.TotalPaid(Db);
+				        if (pay > due)
+    						pay = due;
+    					om.AmountPaid += pay;
+				    }
 
 				    var sb = new StringBuilder();
 					sb.AppendFormat("{0:g} ----------\n", Util.Now);
 					sb.AppendFormat("{0:c} ({1} id) transaction amount\n", ti.Amt, ti.Id);
-					sb.AppendFormat("{0:c} applied to this registrant\n",pay);
+					sb.AppendFormat("{0:c} applied to this registrant\n", pay);
 					sb.AppendFormat("{0:c} total due all registrants\n", ti.Amtdue);
 
                     om.AddToMemberData(sb.ToString());

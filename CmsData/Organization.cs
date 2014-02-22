@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData.Codes;
+using Community.CsharpSqlite;
 using UtilityExtensions;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -471,6 +472,16 @@ namespace CmsData
         public static bool CheckExtraValueIntegrity(CMSDataContext Db, string type, string newfield)
         {
             return !Db.OrganizationExtras.Any(ee => ee.Field == newfield && ee.Type != type);
+        }
+
+        private int? regLimitCount;
+        public int RegLimitCount(CMSDataContext db)
+        {
+            if (!regLimitCount.HasValue)
+                regLimitCount = IsMissionTrip == true
+                    ? (db.OrganizationMemberCount2(OrganizationId) ?? 0)
+                    : (MemberCount ?? 0);
+            return regLimitCount.Value;
         }
     }
 }

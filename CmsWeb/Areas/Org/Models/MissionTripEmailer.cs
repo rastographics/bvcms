@@ -18,7 +18,6 @@ namespace CmsWeb.Areas.Org.Models
             set
             {
                 _peopleId = value;
-                Recipients = GetRecipients();
             }
         }
 
@@ -100,13 +99,21 @@ namespace CmsWeb.Areas.Org.Models
             public string NameOrEmail { get; set; }
             public bool Active { get; set; }
             public string Salutation { get; set; }
+            public decimal SenderAmt { get; set; }
         }
 
-        private List<RecipientItem> GetRecipients()
+        public List<RecipientItem> GetRecipients()
         {
             var q = from g in DbUtil.Db.GoerSupporters
                     where g.GoerId == PeopleId
                     where (g.Unsubscribe ?? false) == false
+                    let sender = (from s in DbUtil.Db.GoerSenderAmounts
+                                  where s.GoerId == g.GoerId
+                                  where s.OrgId == OrgId
+                                  where (s.InActive ?? false) == false
+                                  where s.SupporterId == g.SupporterId
+                                  where (s.NoNoticeToGoer ?? false) == false
+                                  select s.Amount).Sum()
                     select new RecipientItem()
                     {
                         Id = g.Id,
@@ -114,6 +121,7 @@ namespace CmsWeb.Areas.Org.Models
                             ? g.Supporter.Name
                             : g.NoDbEmail,
                         Active = g.Active ?? false,
+                        SenderAmt = sender ?? 0,
                         Salutation = (g.Salutation.Length > 0)
                             ? g.Salutation
                             : g.SupporterId == null

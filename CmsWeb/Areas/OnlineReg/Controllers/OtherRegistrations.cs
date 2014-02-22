@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
                 return Content("votelink is no longer active");
 
-            if (q.om == null && q.org.Limit <= q.org.MemberCount)
+            if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
                 return Content("sorry, maximum limit has been reached");
 
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (q.org == null)
                 return Content("no org " + oid);
 
-            if (q.om == null && q.org.Limit <= q.org.MemberCount)
+            if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
                 return Content("sorry, maximum limit has been reached");
 
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
@@ -262,7 +262,7 @@ emailid={2}
             if (q.org == null)
                 return Content("org missing, bad link");
 
-            if (q.om == null && q.org.Limit <= q.org.MemberCount)
+            if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
                 return Content("sorry, maximum limit has been reached");
 
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))

@@ -37,7 +37,7 @@
                         <td class="right">@g.Paid.ToString("C")</td>
                         <td class="right">@((g.Cost - g.Paid).ToString("C"))</td>
                         <td>
-                            @if (Util.UserPeopleId == Model.PeopleId)
+                            @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
                             {
                             <a href="/MissionTripEmail/@g.Id/@Model.PeopleId">Email Supporters</a>
                             }

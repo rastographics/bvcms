@@ -99,7 +99,7 @@ namespace CmsWeb.Models
         private bool Filled(Organization o)
         {
             if (o != null)
-                if ((o.ClassFilled ?? false) || (o.Limit > 0 && o.Limit <= o.MemberCount))
+                if ((o.ClassFilled ?? false) || (o.Limit > 0 && o.Limit <= o.RegLimitCount(DbUtil.Db)))
                     return true;
             return false;
         }
@@ -196,9 +196,9 @@ namespace CmsWeb.Models
                 if (masterorgid.HasValue)
                     return masterorg.OrganizationName;
                 if (SupportMissionTrip)
-                    if (SupportGoerId.HasValue)
+                    if (GoerId.HasValue)
                     {
-                        var g = DbUtil.Db.LoadPersonById(SupportGoerId.Value);
+                        var g = DbUtil.Db.LoadPersonById(GoerId.Value);
                         return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
                     }
                     else

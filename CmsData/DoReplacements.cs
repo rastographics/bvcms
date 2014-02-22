@@ -125,7 +125,7 @@ namespace CmsData
             {
                 var qm = (from m in OrganizationMembers
                           where m.PeopleId == emailqueueto.PeopleId && m.OrganizationId == emailqueueto.OrgId
-                          select new { m.PayLink, m.Amount, m.AmountPaid, m.RegisterEmail }).SingleOrDefault();
+                          select new { m.PayLink, m.Amount, AmountPaid = TotalPaid(emailqueueto.OrgId, emailqueueto.PeopleId), m.RegisterEmail }).SingleOrDefault();
                 if (qm != null)
                 {
                     if (qm.PayLink.HasValue())

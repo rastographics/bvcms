@@ -86,7 +86,7 @@ namespace CmsWeb.Models
 			return (from a in DbUtil.Db.Attends
 					where a.OrganizationId == OrgId
 					where a.MeetingDate >= Sunday
-					where a.MeetingDate <= EndDt
+					where a.MeetingDate <= EndDt.AddHours(24)
 					where a.Commitment == AttendCommitmentCode.Attending || a.Commitment == AttendCommitmentCode.Substitute
 					group a by a.MeetingDate into g
 					let attend = (from aa in g

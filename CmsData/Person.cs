@@ -408,6 +408,12 @@ namespace CmsData
             foreach (var c in this.CheckInTimes)
                 c.PeopleId = targetid;
             TrySubmit(db, "CheckinTimes");
+
+            db.ExecuteCommand(@"
+UPDATE dbo.GoerSupporter SET GoerId = {1} WHERE GoerId = {0};
+UPDATE dbo.GoerSupporter SET SupporterId = {1} WHERE SupporterId = {0};
+UPDATE dbo.GoerSenderAmounts SET GoerId = {1} WHERE GoerId = {0};
+UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", PeopleId, targetid);
         }
 
         private void TrySubmit(CMSDataContext db, string message)

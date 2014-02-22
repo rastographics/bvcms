@@ -28,6 +28,10 @@
         <td>@Html.TextBoxFor(m => m.MissionTripSupportGoer)</td>
     </tr>
     <tr>
+        <td>If you don't want @name to be notified of your gift, check this box.</td>
+        <td>@Html.CheckBoxFor(m => m.MissionTripNoNoticeToGoer)</td>
+    </tr>
+    <tr>
         <td>Your additional gift to support other Mission trips</td>
         <td>
             @Html.TextBoxFor(m => m.MissionTripSupportGeneral)<br />

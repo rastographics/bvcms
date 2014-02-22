@@ -285,7 +285,7 @@ namespace CmsWeb.Models
                          ShirtSize = om.ShirtSize,
                          Request = om.Request,
                          Amount = om.Amount ?? 0,
-                         AmountPaid = om.AmountPaid ?? 0,
+                         AmountPaid = om.TotalPaid(Db),
                          HasBalance = bal != null && bal > 0,
                          Groups = string.Join(",", om.OrgMemMemTags.Select(mt => mt.MemberTag.Name)),
                          Email = p.EmailAddress,

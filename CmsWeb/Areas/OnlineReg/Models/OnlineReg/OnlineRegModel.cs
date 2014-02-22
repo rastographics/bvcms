@@ -160,8 +160,9 @@ namespace CmsWeb.Models
         public bool ShowLoginInstructions;
         public bool ShowOtherInstructions;
 
-        public int? SupportGoerId { get; set; }
-        public bool SupportMissionTrip { get; set; }
+        public int? GoerSupporterId { get; set; }
+        public int? GoerId { get; set; }
+        public bool SupportMissionTrip { get { return GoerSupporterId.HasValue || GoerId.HasValue; } }
 
         public void ParseSettings()
         {

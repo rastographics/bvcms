@@ -31,6 +31,8 @@ namespace CmsData
 		
 		private bool? _InActive;
 		
+		private bool? _NoNoticeToGoer;
+		
    		
     	
 	#endregion
@@ -60,6 +62,9 @@ namespace CmsData
 		
 		partial void OnInActiveChanging(bool? value);
 		partial void OnInActiveChanged();
+		
+		partial void OnNoNoticeToGoerChanging(bool? value);
+		partial void OnNoNoticeToGoerChanged();
 		
     #endregion
 		public GoerSenderAmount()
@@ -219,6 +224,28 @@ namespace CmsData
 					this._InActive = value;
 					this.SendPropertyChanged("InActive");
 					this.OnInActiveChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="NoNoticeToGoer", UpdateCheck=UpdateCheck.Never, Storage="_NoNoticeToGoer", DbType="bit")]
+		public bool? NoNoticeToGoer
+		{
+			get { return this._NoNoticeToGoer; }
+
+			set
+			{
+				if (this._NoNoticeToGoer != value)
+				{
+				
+                    this.OnNoNoticeToGoerChanging(value);
+					this.SendPropertyChanging();
+					this._NoNoticeToGoer = value;
+					this.SendPropertyChanged("NoNoticeToGoer");
+					this.OnNoNoticeToGoerChanged();
 				}
 
 			}

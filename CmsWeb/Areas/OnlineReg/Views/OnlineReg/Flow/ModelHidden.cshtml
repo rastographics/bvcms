@@ -9,8 +9,8 @@
 @Html.HiddenFor2(mm => mm.registertag)
 @if (Model.SupportMissionTrip)
 {
-    @Html.HiddenFor2(mm => mm.SupportMissionTrip)
-    @Html.HiddenFor2(mm => mm.SupportGoerId)
+    @Html.HiddenFor2(mm => mm.GoerSupporterId)
+    @Html.HiddenFor2(mm => mm.GoerId)
 }
 @for(var i = 0; i< Model.History.Count; i++)
 {
