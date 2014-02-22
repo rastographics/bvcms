@@ -13,6 +13,7 @@ namespace CmsData
     public partial class CMSDataContext
     {
         public int? CurrentOrgId { get; set; }
+        public int CurrentOrgId0 { get { return CurrentOrgId ?? 0; } }
         public int[] CurrentGroups { get; set; }
         public string CurrentGroupsPrefix { get; set; }
         public int CurrentGroupsMode { get; set; }
