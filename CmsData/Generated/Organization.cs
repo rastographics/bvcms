@@ -155,6 +155,8 @@ namespace CmsData
 		
 		private bool? _IsMissionTrip;
 		
+		private bool? _NoCreditCards;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -408,6 +410,9 @@ namespace CmsData
 		
 		partial void OnIsMissionTripChanging(bool? value);
 		partial void OnIsMissionTripChanged();
+		
+		partial void OnNoCreditCardsChanging(bool? value);
+		partial void OnNoCreditCardsChanged();
 		
     #endregion
 		public Organization()
@@ -1990,6 +1995,28 @@ namespace CmsData
 					this._IsMissionTrip = value;
 					this.SendPropertyChanged("IsMissionTrip");
 					this.OnIsMissionTripChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="NoCreditCards", UpdateCheck=UpdateCheck.Never, Storage="_NoCreditCards", DbType="bit")]
+		public bool? NoCreditCards
+		{
+			get { return this._NoCreditCards; }
+
+			set
+			{
+				if (this._NoCreditCards != value)
+				{
+				
+                    this.OnNoCreditCardsChanging(value);
+					this.SendPropertyChanging();
+					this._NoCreditCards = value;
+					this.SendPropertyChanged("NoCreditCards");
+					this.OnNoCreditCardsChanged();
 				}
 
 			}

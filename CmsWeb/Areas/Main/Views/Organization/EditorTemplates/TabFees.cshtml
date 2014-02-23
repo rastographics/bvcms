@@ -77,6 +77,10 @@
     |Other Fees on the Questions tab.">
         Other Fees are Additional:</span> @Html.CheckBox("OtherFeesAddedToOrgFee", Model.OtherFeesAddedToOrgFee)
 </li>
+<li><span class="keyword big tip" title="NoCreditCards
+    |Disallow Credit Cards on this org">
+        No Credit Cards:</span> @Html.CheckBox("org.NoCreditCards", Model.org.NoCreditCards)
+</li>
 <li><span class="keyword big tip" title="Accounting Code
     |Used to add a (1234) to the end of the OrgName passed to the payment processor">
     AccountingCode:</span> @Html.TextBox("AccountingCode", Model.AccountingCode)

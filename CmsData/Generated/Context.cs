@@ -1675,6 +1675,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.MissionTripTotal> ViewMissionTripTotals
+	    {
+		    get { return this.GetTable< View.MissionTripTotal>(); }
+
+	    }
+
 	    public Table< View.Nick> ViewNicks
 	    {
 		    get { return this.GetTable< View.Nick>(); }

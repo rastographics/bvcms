@@ -217,21 +217,22 @@ namespace CmsWeb.Models
                 Type = r.payinfo.PreferredPaymentType,
 #endif
             };
+            pf.NoCreditCardsAllowed = m.org.NoCreditCards == true;
             if (m.OnlineGiving())
             {
                 pf.NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
                 pf.IsGiving = true;
                 pf.FinanceOnly = true;
                 pf.Type = r.payinfo.PreferredGivingType;
-                if (pf.NoCreditCardsAllowed)
-                    pf.Type = "B"; // bank account only
-                else if (pf.NoEChecksAllowed)
-                    pf.Type = "C"; // credit card only
             }
             else if (m.ManageGiving() || m.OnlinePledge())
             {
                 pf.FinanceOnly = true;
             }
+            if (pf.NoCreditCardsAllowed)
+                pf.Type = "B"; // bank account only
+            else if (pf.NoEChecksAllowed)
+                pf.Type = "C"; // credit card only
             pf.Type = pf.NoEChecksAllowed ? "C" : pf.Type;
             return pf;
         }

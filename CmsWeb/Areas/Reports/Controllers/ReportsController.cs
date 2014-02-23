@@ -317,6 +317,16 @@ namespace CmsWeb.Areas.Reports.Controllers
             TempData["autorun"] = true;
             return Redirect(r);
         }
+        [GET("Reports/MissionTripFunding/{orgid:int}")]
+        public ActionResult MissionTripFunding(int orgid)
+        {
+            return View(MissionTripFundingModel.List(orgid));
+        }
+        [POST("Reports/MissionTripFunding")]
+        public ActionResult MissionTripFunding(OrgSearchModel m)
+        {
+            return View(MissionTripFundingModel.List(m));
+        }
 
         [GET("Reports/NameLabels/{id}")]
         public ActionResult NameLabels(Guid? id)

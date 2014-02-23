@@ -47,6 +47,11 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
         }
+        [POST("Export2/MissionTripFunding")]
+        public ActionResult MissionTripFunding(OrgSearchModel m)
+        {
+            return MissionTripFundingModel.Result(m);
+        }
 
         [GET("Export2/Excel/{id:guid}")]
         [GET("Export2/Excel/{format}/{id:guid}")]

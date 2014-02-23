@@ -39,8 +39,6 @@ ul.dropdown-div-admin {
     margin: auto;
 }
 
-
-
 .datepicker {
     z-index: 2000;
 }
@@ -1130,6 +1128,7 @@ div.logo {
     .maxWidthMedium {
         max-width: 35em;
     }
+
     .width280 {
         width: 410px;
     }
@@ -1146,13 +1145,15 @@ div.logo {
     .form-horizontal .width280 .controls {
         margin-left: 110px;
     }
-    .form-horizontal .width280 input, 
+
+    .form-horizontal .width280 input,
     .form-horizontal .width280 textarea {
         width: 255px;
     }
-    .form-horizontal .width280 input[type=checkbox] {
-        width: auto;
-    }
+
+        .form-horizontal .width280 input[type=checkbox] {
+            width: auto;
+        }
 }
 
 @media (max-width: 960px) {
@@ -1209,6 +1210,7 @@ div.logo {
         display: none;
     }
 }
+
 .darkClass {
     background-color: white;
     -webkit-filter: alpha(opacity=50);
@@ -1238,3 +1240,14 @@ div.growlUI {
         color: white;
         text-align: left;
     }
+
+@media print {
+    footer.container,
+    div.page-container > div.navbar {
+        display: none;
+    }
+
+    div.headshot, div.portrait {
+        -webkit-print-color-adjust: exact;
+    }
+}

@@ -387,6 +387,7 @@
     <Compile Include="Generated\GoerSupporter.cs" />
     <Compile Include="Generated\Number.cs" />
     <Compile Include="Generated\Views\AttendCredit.cs" />
+    <Compile Include="Generated\Views\MissionTripTotal.cs" />
     <Compile Include="Generated\Views\StatusFlagList.cs" />
     <Compile Include="ITableWithExtraValues.cs" />
     <Compile Include="Query.cs" />
