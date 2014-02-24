@@ -103,6 +103,18 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             return "";
         }
+        [POST("OrgMemberDialog2/MissionSupport/{oid}/{pid}")]
+        public ActionResult MissionSupport(int oid, int pid)
+        {            
+            var m = new MissionSupportModel {OrgId = oid, PeopleId = pid};
+            return View(m);
+        }
+        [POST("OrgMemberDialog2/AddMissionSupport/{oid}/{pid}")]
+        public ActionResult AddMissionSupport(int oid, int pid, MissionSupportModel m)
+        {
+            m.PostContribution();
+            return View("MissionSupportDone", m);
+        }
 
     }
 }

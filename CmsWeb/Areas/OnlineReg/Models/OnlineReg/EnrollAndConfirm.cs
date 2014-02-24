@@ -227,7 +227,7 @@ namespace CmsWeb.Models
                         p.MissionTripSupportGeneral.Value, p.setting.DonationFundId, 
                         "SupportMissionTrip: org={0}".Fmt(p.orgid));
                 }
-                Db.Email(NotifyIds[0].FromEmail, NotifyIds, subject + "-donation",
+                Db.Email(NotifyIds[0].FromEmail, NotifyIds, org.OrganizationName + "-donation",
                     "${0:N2} donation received from {1}".Fmt(ti.Amt, ti.FullName));
             }
             else if (!SupportMissionTrip && org != null && org.IsMissionTrip == true && ti.Amt > 0)

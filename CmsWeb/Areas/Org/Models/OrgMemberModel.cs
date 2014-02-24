@@ -15,6 +15,7 @@ namespace CmsWeb.Areas.Org.Models
         private OrganizationMember om;
         public CmsData.Organization Organization;
         public List<OrgMemMemTag> OrgMemMemTags;
+        public bool IsMissionTrip;
         private int? _orgId;
         private int? _peopleId;
 
@@ -29,7 +30,8 @@ namespace CmsWeb.Areas.Org.Models
                              mm.Organization.OrganizationName,
                              mm.Organization.RegSetting,
                              mm.Organization,
-                             mm.OrgMemMemTags
+                             mm.OrgMemMemTags,
+                             mm.Organization.IsMissionTrip
                          }).SingleOrDefault();
             if (i == null)
                 throw new Exception("missing OrgMember at oid={0}, pid={0}".Fmt(_orgId, _peopleId));
@@ -39,6 +41,7 @@ namespace CmsWeb.Areas.Org.Models
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
+            IsMissionTrip = i.IsMissionTrip ?? false;
             Setting = new Settings(i.RegSetting, DbUtil.Db, _orgId.Value);
         }
 

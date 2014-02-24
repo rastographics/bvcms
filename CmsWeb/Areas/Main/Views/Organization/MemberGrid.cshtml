@@ -24,9 +24,17 @@
 { 
 <tr>
     <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person/Index/@om.PeopleId">@om.Name</a></td>
-    <td><a class="memberdialog" href="/OrgMemberDialog/Index/@Model.OrganizationId?pid=@om.PeopleId&from=MemberGrid">
-        @om.MemberType</a>
+    <td>
+    @if (ViewExtensions2.UseNewLook())
+    {
+        <a class="membertype" href="/OrgMemberDialog2/Display/@Model.OrganizationId/@om.PeopleId"> @om.MemberType </a>
+    }
+    else
+    {
+        <a class="memberdialog" href="/OrgMemberDialog/Index/@Model.OrganizationId?pid=@om.PeopleId&from=MemberGrid"> @om.MemberType</a>
+    }
     </td>
+
     <td>@om.MemberStatus<br />
     
         @om.Age - @om.BirthDate

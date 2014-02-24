@@ -15,6 +15,10 @@
 {
     @ViewExtensions2.CKEditor()
     @Fingerprint.Script("/Scripts/bundle.org.js")
+    @if (ViewExtensions2.UseNewLook())
+    {
+    @Fingerprint.Script("/Scripts/Org/OrgMemberDialog2.js")
+    }
 }
 @{ CmsData.Organization o = Model.org; }
 @Html.Hidden("refreshed", "no")
@@ -214,6 +218,7 @@
 <div id="dialogHolder"></div>
 @section PopupsPlaceholder
 {
+    <form id='member-dialog' class='modal fade hide validate ajax form-horizontal' method='POST' data-backdrop='static' data-width='600'></form>
     <div id="NewMeetingDialog" class="roundbox" style="display: none">
         <table>
             <tr>

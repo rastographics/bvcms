@@ -1251,3 +1251,8 @@ div.growlUI {
         -webkit-print-color-adjust: exact;
     }
 }
+
+div.scroll150 {
+    height: 150px;
+    overflow-y: scroll;
+}

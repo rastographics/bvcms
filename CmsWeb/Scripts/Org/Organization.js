@@ -168,6 +168,17 @@ $(function () {
         d.dialog("open");
     });
 
+    $("a.membertype").live("click", function (ev) {
+        ev.preventDefault();
+        $("#member-dialog").css({ 'margin-top': '', 'top': '' })
+            .load($(this).attr("href"), {}, function () {
+                $(this).modal("show");
+                $(this).on('hidden', function () {
+                    $(this).empty();
+                });
+            });
+    });
+
     $("#inactive-link").click(function () {
         $.showTable($('#Inactive-tab form'));
     });
