@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
 	public class MobileAPIController : Controller
 	{
-		private ActionResult Authenticate()
+		public ActionResult Authenticate()
 		{
 			if (CmsWeb.Models.AccountModel.AuthenticateMobile()) return null;
 			else
@@ -381,7 +381,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			return br;
 		}
-
+		
 		/*
 		public ActionResult AddPerson(string data)
 		{
@@ -432,6 +432,12 @@ namespace CmsWeb.Areas.Public.Controllers
 			else
 			{
 				f = new Family();
+				f.HomePhone = p.HomePhone;
+				f.AddressLineOne = p.AddressLineOne;
+				f.CityName = p.CityName;
+				f.StateCode = p.StateCode;
+				f.ZipCode = p.ZipCode;
+
 				DbUtil.Db.Families.InsertOnSubmit(f);
 			}
 
@@ -451,15 +457,9 @@ namespace CmsWeb.Areas.Public.Controllers
 			p.FixTitle();
 			DbUtil.Db.SubmitChanges();
 
-			/*
-			
 			if (m.addtofamilyid == 0)
 			{
-				p.Family.HomePhone = m.home.GetDigits();
-				p.Family.AddressLineOne = m.addr;
-				p.Family.CityName = z != null ? z.City : null;
-				p.Family.StateCode = z != null ? z.State : null;
-				p.Family.ZipCode = m.zip;
+				
 			}
 			p.EmailAddress = Trim(m.email);
 			if (m.cell.HasValue())
@@ -475,83 +475,7 @@ namespace CmsWeb.Areas.Public.Controllers
 		}
 		*/
 
-		public ActionResult fetchMaritalStatuses()
-		{
-			// Authenticate first
-			var authError = Authenticate();
-			if (authError != null) return authError;
-
-			var statuses = (from e in DbUtil.Db.MaritalStatuses
-								 orderby e.Id
-								 select e).ToList();
-
-			BaseReturn br = new BaseReturn();
-			List<MobileMaritalStatus> ma = new List<MobileMaritalStatus>();
-
-			br.error = 0;
-			br.type = BaseReturn.API_TYPE_SYSTEM_MARITAL_STATUSES;
-			br.count = statuses.Count();
-
-			foreach (var status in statuses)
-			{
-				ma.Add(new MobileMaritalStatus().populate(status));
-			}
-
-			br.data = JsonConvert.SerializeObject(ma);
-			return br;
-		}
-
-		public ActionResult fetchStates()
-		{
-			// Authenticate first
-			var authError = Authenticate();
-			if (authError != null) return authError;
-
-			var states = (from e in DbUtil.Db.StateLookups
-							  orderby e.StateCode
-							  select e).ToList();
-
-			BaseReturn br = new BaseReturn();
-			List<MobileState> ma = new List<MobileState>();
-
-			br.error = 0;
-			br.type = BaseReturn.API_TYPE_SYSTEM_STATES;
-			br.count = states.Count();
-
-			foreach (var state in states)
-			{
-				ma.Add(new MobileState().populate(state));
-			}
-
-			br.data = JsonConvert.SerializeObject(ma);
-			return br;
-		}
-
-		public ActionResult fetchCountries()
-		{
-			// Authenticate first
-			var authError = Authenticate();
-			if (authError != null) return authError;
-
-			var countries = (from e in DbUtil.Db.Countries
-								  orderby e.Id
-								  select e).ToList();
-
-			BaseReturn br = new BaseReturn();
-			List<MobileCountry> ma = new List<MobileCountry>();
-
-			br.error = 0;
-			br.type = BaseReturn.API_TYPE_SYSTEM_COUNTRIES;
-			br.count = countries.Count();
-
-			foreach (var country in countries)
-			{
-				ma.Add(new MobileCountry().populate(country));
-			}
-
-			br.data = JsonConvert.SerializeObject(ma);
-			return br;
-		}
+		
 
 		/*
 		public ActionResult TaskList(int ID)
