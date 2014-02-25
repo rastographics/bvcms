@@ -30,6 +30,8 @@ namespace CmsData.Registration
 		public string ReminderBody { get; set; }
 		public string SupportSubject { get; set; }
 		public string SupportBody { get; set; }
+		public string SenderSubject { get; set; }
+		public string SenderBody { get; set; }
 		public string Terms { get; set; }
 
 		public bool MemberOnly { get; set; }
@@ -458,6 +460,28 @@ namespace CmsData.Registration
 				}
 			}
 		}
+		private void ParseSender(Parser parser)
+		{
+			parser.lineno++;
+			var startindent = parser.curr.indent;
+			while (parser.curr.indent == startindent)
+			{
+				switch (parser.curr.kw)
+				{
+					case Parser.RegKeywords.Html:
+						parser.lineno++;
+						break;
+					case Parser.RegKeywords.SenderSubject:
+						SenderSubject = parser.GetString();
+						break;
+					case Parser.RegKeywords.SenderBody:
+						SenderBody = parser.GetString();
+						break;
+					default:
+						throw parser.GetException("unexpected line in SenderConfirmation");
+				}
+			}
+		}
 		private void ParseInstructions(Parser parser)
 		{
 			parser.lineno++;
@@ -580,6 +604,7 @@ namespace CmsData.Registration
 			AddConfirmation(sb);
 			AddReminder(sb);
 			AddSupport(sb);
+			AddSender(sb);
 			AddFees(sb);
 			AddValueCk(0, sb, "IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit);
 			AddDonation(sb);
@@ -659,6 +684,12 @@ namespace CmsData.Registration
 			AddValueNoCk(0, sb, "SupportEmail", "");
 			AddValueNoCk(1, sb, "SupportSubject", SupportSubject);
 			AddSingleOrMultiLine(1, sb, "SupportBody", SupportBody);
+		}
+		private void AddSender(StringBuilder sb)
+		{
+			AddValueNoCk(0, sb, "SenderEmail", "");
+			AddValueNoCk(1, sb, "SenderSubject", SenderSubject);
+			AddSingleOrMultiLine(1, sb, "SenderBody", SenderBody);
 		}
 		private void AddSingleOrMultiLine(int n, StringBuilder sb, string Section, string ht)
 		{

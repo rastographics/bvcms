@@ -31,7 +31,7 @@ namespace CmsWeb.Models
                     amount = csv[4],
                 });
             var q = from r in list
-                    where r.batch.Contains("contribution")
+                    where r.batch.ToLower().Contains("contribution")
                     orderby r.batch
                     select r;
             var prevbatch = "";

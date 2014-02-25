@@ -237,21 +237,20 @@ emailid={2}
             var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
             if (ot == null)
                 return Content("invalid link");
+#if DEBUG
+#else
             if (ot.Used)
                 return Content("link used");
+#endif
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
                 return Content("link expired");
             var a = ot.Querystring.SplitStr(",", 4);
             var oid = a[0].ToInt();
             var pid = a[1].ToInt();
-            var linktype = a[3].Split(',');
-            int? supportid = null;
+            var linktype = a.Length > 3 ? a[3].Split(',') : "".Split(',');
+            int? gsid = null;
             if (linktype[0].Equal("supportlink")  && linktype.Length > 1)
-            {
-                var gs = DbUtil.Db.GoerSupporters.SingleOrDefault(gg => gg.Id == linktype[1].ToInt());
-                if (gs != null)
-                    supportid = gs.GoerId;
-            }
+                gsid = linktype[1].ToInt();
 
             var q = (from pp in DbUtil.Db.People
                      where pp.PeopleId == pid
@@ -269,10 +268,8 @@ emailid={2}
                 return Content("sorry, registration has been closed");
 
             var url = "/OnlineReg/Index/{0}?registertag={1}".Fmt(oid, id);
-            if(linktype[0].Equal("supportlink"))
-                url += "&support=true";
-            if (supportid.HasValue)
-                url += "&supportid=" + supportid;
+            if (gsid.HasValue)
+                url += "&gsid=" + gsid;
             if (showfamily == true)
                 url += "&showfamily=true";
             return Redirect(url);

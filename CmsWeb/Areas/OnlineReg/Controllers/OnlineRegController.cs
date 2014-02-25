@@ -617,7 +617,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                       mm => mm.OrganizationId == m.orgid && mm.PeopleId == m.List[0].PeopleId);
             m.ParseSettings();
 
-            if (om != null && m.settings[m.orgid.Value].AllowReRegister == false)
+            if (om != null && m.settings[m.orgid.Value].AllowReRegister == false && !m.SupportMissionTrip)
             {
                 return Content("You are already registered it appears");
             }

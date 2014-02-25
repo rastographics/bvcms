@@ -4,7 +4,7 @@
     var items = (ViewData["items"] as IEnumerable<SelectListItem> ?? new List<SelectListItem>()).ToList();
     if (Model != null)
     {
-        var selected = items.SingleOrDefault(ii => ii.Value == Model.ToString());
+        var selected = items.FirstOrDefault(ii => ii.Value == Model.ToString());
         if (selected != null)
         {
             selected.Selected = true;

@@ -271,7 +271,7 @@ namespace CmsWeb.Areas.Org.Models
                 var link = @"<a href=""{0}"">Unsubscribe</a>".Fmt(url);
                 text = text.Replace("{unsubscribe}", link, ignoreCase: true);
                 text = text.Replace("%7Bfromemail%7D", from.Address, ignoreCase: true);
-                text = text.Replace("http://supportlink", Util.ServerLink("/OnlineReg/Index/{0}?support=true&supportid={1}".Fmt(OrgId, PeopleId)), ignoreCase: true);
+                text = text.Replace("http://supportlink", Util.ServerLink("/OnlineReg/Index/{0}?goerid={1}".Fmt(OrgId, PeopleId)), ignoreCase: true);
                 Util.SendMsg(sysFromEmail, DbUtil.Db.CmsHost, from, Subject, text, Util.ToMailAddressList(gs.NoDbEmail), gs.Id, null);
             }
             catch (Exception ex)

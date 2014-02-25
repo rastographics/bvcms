@@ -67,7 +67,7 @@ namespace CmsWeb.Models
             //var emails = string.Join(",", elist.ToArray());
             string paylink = string.Empty;
             var amtpaid = ti.Amt ?? 0;
-			var amtdue = ti.Amtdue;
+            var amtdue = ti.Amtdue;
 
             var pids2 = new List<TransactionPerson>();
             foreach (var p in List)
@@ -113,7 +113,7 @@ namespace CmsWeb.Models
 </td></tr>", i + 1, p.PrepareSummaryText(ti));
 
                 om.RegisterEmail = p.email;
-				om.TranId = ti.Id;
+                om.TranId = ti.Id;
                 if (p.setting.GiveOrgMembAccess == true)
                 {
                     if (p.person.Users.Count() == 0)
@@ -133,11 +133,11 @@ namespace CmsWeb.Models
                     Db.SubmitChanges();
                 }
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
-				if (grouptojoin > 0)
-				{
-					OrganizationMember.InsertOrgMembers(Db, grouptojoin, p.PeopleId.Value, MemberTypeCode.Member, DateTime.Now, null, false);
-					DbUtil.Db.UpdateMainFellowship(grouptojoin);
-				}
+                if (grouptojoin > 0)
+                {
+                    OrganizationMember.InsertOrgMembers(Db, grouptojoin, p.PeopleId.Value, MemberTypeCode.Member, DateTime.Now, null, false);
+                    DbUtil.Db.UpdateMainFellowship(grouptojoin);
+                }
 
                 OnlineRegPersonModel.CheckNotifyDiffEmails(p.person,
                     Db.StaffEmailForOrg(p.org.OrganizationId),
@@ -158,7 +158,7 @@ namespace CmsWeb.Models
 
             bool usedAdmins;
             List<Person> NotifyIds = Db.StaffPeopleForOrg(org.OrganizationId, out usedAdmins);
-            
+
             var Location = org.Location;
 
             var subject = Util.PickFirst(EmailSubject, "no subject");
@@ -167,7 +167,7 @@ namespace CmsWeb.Models
             message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p0, DivisionName, org.OrganizationName, Location, message);
             subject = subject.Replace("{org}", org.OrganizationName);
 
-			message = message.Replace("{phone}", org.PhoneNumber.FmtFone7());
+            message = message.Replace("{phone}", org.PhoneNumber.FmtFone7());
             message = message.Replace("{tickets}", List[0].ntickets.ToString());
             message = message.Replace("{details}", details.ToString());
             message = message.Replace("{paid}", amtpaid.ToString("c"));
@@ -187,7 +187,7 @@ namespace CmsWeb.Models
                 if (goerid > 0 && p.MissionTripSupportGoer > 0)
                 {
                     DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
-                        new GoerSenderAmount 
+                        new GoerSenderAmount
                         {
                             Amount = p.MissionTripSupportGoer.Value,
                             GoerId = goerid,
@@ -203,20 +203,20 @@ namespace CmsWeb.Models
                             gs.SupporterId = p.PeopleId;
                     }
                     p.person.PostUnattendedContribution(DbUtil.Db,
-                        p.MissionTripSupportGoer.Value, p.setting.DonationFundId, 
+                        p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
                         "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid));
                     // send notices
                     if (!p.MissionTripNoNoticeToGoer)
                     {
                         var goer = DbUtil.Db.LoadPersonById(goerid.Value);
-                        Db.Email(NotifyIds[0].FromEmail, goer, subject + "-donation",
+                        Db.Email(NotifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
                             "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value, ti.FullName));
                     }
                 }
                 if (p.MissionTripSupportGeneral > 0)
                 {
                     DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
-                        new GoerSenderAmount 
+                        new GoerSenderAmount
                         {
                             Amount = p.MissionTripSupportGeneral.Value,
                             Created = DateTime.Now,
@@ -224,19 +224,30 @@ namespace CmsWeb.Models
                             SupporterId = p.PeopleId.Value
                         });
                     p.person.PostUnattendedContribution(DbUtil.Db,
-                        p.MissionTripSupportGeneral.Value, p.setting.DonationFundId, 
+                        p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
                         "SupportMissionTrip: org={0}".Fmt(p.orgid));
                 }
                 Db.Email(NotifyIds[0].FromEmail, NotifyIds, org.OrganizationName + "-donation",
                     "${0:N2} donation received from {1}".Fmt(ti.Amt, ti.FullName));
+
+                var senderSubject = os.SenderSubject;
+                var senderBody = os.SenderBody ?? "NO SENDEREMAIL MESSAGE HAS BEEN SET";
+                senderBody = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person, DivisionName, org.OrganizationName, Location, senderBody);
+                senderBody = senderBody.Replace("{phone}", org.PhoneNumber.FmtFone7());
+                senderBody = senderBody.Replace("{paid}", ti.Amt.ToString2("c"));
+                senderSubject = senderSubject.Replace("{org}", org.OrganizationName);
+                Db.Email(NotifyIds[0].FromEmail, p.person, elist, senderSubject, senderBody, false);
+                Db.SubmitChanges();
+                return;
             }
-            else if (!SupportMissionTrip && org != null && org.IsMissionTrip == true && ti.Amt > 0)
+
+            if (!SupportMissionTrip && org != null && org.IsMissionTrip == true && ti.Amt > 0)
             {
                 var p = List[0];
                 ti.Fund = p.setting.DonationFund();
 
                 DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
-                    new GoerSenderAmount 
+                    new GoerSenderAmount
                     {
                         Amount = ti.Amt,
                         GoerId = p.PeopleId,
@@ -245,7 +256,7 @@ namespace CmsWeb.Models
                         SupporterId = p.PeopleId.Value
                     });
                 p.person.PostUnattendedContribution(DbUtil.Db,
-                    ti.Amt.Value, p.setting.DonationFundId, 
+                    ti.Amt.Value, p.setting.DonationFundId,
                     "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId));
             }
             else if (ti.Donate > 0)
@@ -277,13 +288,11 @@ namespace CmsWeb.Models
                 message = re.Replace(message, "");
 
             // send confirmations
-            if(subject != "DO NOT SEND")
+            if (subject != "DO NOT SEND")
                 Db.Email(NotifyIds[0].FromEmail, p0, elist,
                     subject, message, false);
 
             Db.SubmitChanges();
-            if (SupportMissionTrip) 
-                return;
             // notify the staff
             foreach (var p in List)
             {
@@ -298,13 +307,13 @@ AmountDue: {4:C}<br/>
                         TotalAmount(),
                         amtdue, // Amount Due
                         p.PrepareSummaryText(ti),
-                        usedAdmins? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
+                        usedAdmins ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
 <a href='http://www.bvcms.com/Doc/MessagesSettings'>see documentation</a><br/>" : ""));
             }
         }
 
 
-//---------------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------
         private void EnrollAndConfirm2()
         {
             var Db = DbUtil.Db;
@@ -350,12 +359,12 @@ AmountDue: {4:C}<br/>
 
             for (var i = 0; i < List.Count; i++)
             {
-                var p = List[i]; 
-                
+                var p = List[i];
+
                 var q = from pp in Db.People
-                                         where pids.Contains(pp.PeopleId)
-                                         where pp.PeopleId != p.PeopleId
-                                         select pp.Name;
+                        where pids.Contains(pp.PeopleId)
+                        where pp.PeopleId != p.PeopleId
+                        select pp.Name;
                 var others = string.Join(",", q.ToArray());
 
                 var om = p.Enroll(ti, null, testing, others);
@@ -424,9 +433,9 @@ AmountDue: {4:C}<br/>
                 message = message.Replace("{participants}", details);
 
                 // send confirmations
-                if(emailSubject != "DO NOT SEND")
+                if (emailSubject != "DO NOT SEND")
                     Db.Email(notify.FromEmail, p.person, Util.EmailAddressListFromString(p.fromemail),
-                        emailSubject, message, redacted:false);
+                        emailSubject, message, redacted: false);
                 // notify the staff
                 Db.Email(Util.PickFirst(p.person.FromEmail, notify.FromEmail),
                     NotifyIds, Header,

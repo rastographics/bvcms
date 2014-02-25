@@ -217,7 +217,7 @@ namespace CmsWeb.Models
                 Type = r.payinfo.PreferredPaymentType,
 #endif
             };
-            pf.NoCreditCardsAllowed = m.org.NoCreditCards == true;
+            pf.NoCreditCardsAllowed = m.NoCreditCardsAllowed();
             if (m.OnlineGiving())
             {
                 pf.NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();

@@ -99,27 +99,26 @@ namespace CmsWeb.Areas.People.Controllers
         [GET("Person2/ViewEmail/{emailid:int}")]
 		public ActionResult ViewEmail(int emailid)
         {
-            var q = from e in DbUtil.Db.EmailQueues
-                where e.Id == emailid
-                let isAdmin = User.IsInRole("Admin")
-    			let isPublic = (e.PublicX ?? false)
-                let p = DbUtil.Db.People.Single(pp => pp.PeopleId == Util.UserPeopleId)
-                let isSender = e.QueuedBy == Util.UserPeopleId
-                               || (e.FromAddr == p.EmailAddress && p.EmailAddress.Length > 0)
-                               || (e.FromAddr == p.EmailAddress2 && p.EmailAddress2.Length > 0)
-                let isReceiver = e.EmailQueueTos.Any(ee => ee.PeopleId == Util.UserPeopleId)
-                select new {e, isAdmin, isSender, isPublic };
-
-            var i = q.SingleOrDefault();
-			if (i == null)
-				return Content("email document not found");
-
-			var em = new EmailQueue
-			{
-				Subject = i.e.Subject,
-				Body = i.e.Body.Replace("{track}", "", ignoreCase: true).Replace("{first}", "", ignoreCase: true)
-			};
-			return View("Emails/View", em);
-		}
+            var email = DbUtil.Db.EmailQueues.SingleOrDefault(ee => ee.Id == emailid);
+		    if (email == null)
+		        return Content("no email found");
+			var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
+            if (curruser == null)
+    			return Content("no user");
+            if (User.IsInRole("Admin")
+                || User.IsInRole("ManageEmails")
+                || email.FromAddr == curruser.EmailAddress
+                || email.QueuedBy == curruser.PeopleId
+                || email.EmailQueueTos.Any(et => et.PeopleId == curruser.PeopleId))
+            {
+    			var em = new EmailQueue
+    			{
+    				Subject = email.Subject,
+    				Body = email.Body.Replace("{track}", "", ignoreCase: true).Replace("{first}", "", ignoreCase: true)
+    			};
+    			return View("Emails/View", em);
+            }
+            return Content("not authorized");
+        }
     }
 }

@@ -88,7 +88,7 @@ namespace CmsWeb.Areas.Search.Models
                 return null;
             var q = from o in Db.Organizations
                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                    where sc != null
+                    where sc != null && sc.MeetingTime != null
                     group o by new { ScheduleId = sc.ScheduleId ?? 10800, sc.MeetingTime } into g
                     orderby g.Key.ScheduleId
                     select new SelectListItem
@@ -96,10 +96,10 @@ namespace CmsWeb.Areas.Search.Models
                         Value = g.Key.ScheduleId.ToString(),
                         Text = Db.GetScheduleDesc(g.Key.MeetingTime)
                     };
-            var list = q.ToList();
-            list.Insert(0, new SelectListItem { Text = "(None)", Value = "-1" });
-            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
-            return list;
+            var slist = q.ToList();
+            slist.Insert(0, new SelectListItem { Text = "(None)", Value = "-1" });
+            slist.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
+            return slist;
         }
         public IEnumerable<SelectListItem> Campuses()
         {

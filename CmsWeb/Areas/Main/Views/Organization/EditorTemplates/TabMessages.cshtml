@@ -115,4 +115,17 @@
       </li>
     </ul>
   </li>
+  <li>
+    <div class="text big tip" title="SenderConfirmation
+    |This is the email that is sent to notify senders.">
+    SenderConfirmation: </div>
+    <ul>
+      <li> <span class="keyword2">Subject:</span> @Html.TextBox("SenderSubject", Model.SenderSubject, new { @class = "long" }) </li>
+      <li>
+        <div class="text"><span class="keyword2"> Body:</span>
+        @Html.EditorFor(m => m.SenderBody, "Html")
+        </div>
+      </li>
+    </ul>
+  </li>
 }

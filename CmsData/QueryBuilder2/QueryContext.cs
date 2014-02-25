@@ -179,7 +179,7 @@ namespace CmsData
         {
             var i = (from existing in Queries
                      where existing.QueryId == existingId
-                     select existing).Single();
+                     select existing).First();
             i.RunCount = i.RunCount + 1;
             i.LastRun = DateTime.Now;
             if (i.Name == Util.ScratchPad2)

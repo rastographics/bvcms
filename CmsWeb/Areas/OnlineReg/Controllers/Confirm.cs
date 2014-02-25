@@ -26,16 +26,22 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 	    public ActionResult ProcessPayment(PaymentForm pf)
 		{
+#if DEBUG
+#else
 			if (Session["FormId"] != null)
 				if ((Guid)Session["FormId"] == pf.FormId)
 					return Content("Already submitted");                    
+#endif
 			OnlineRegModel m = null;
 			var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == pf.DatumId);
 			if (ed != null)
 				m = Util.DeSerialize<OnlineRegModel>(ed.Data);
 
+#if DEBUG
+#else
             if(m != null && m.History.Contains("ProcessPayment"))
 					return Content("Already submitted");                    
+#endif
 
 			if (pf.AmtToPay < 0) pf.AmtToPay = 0;
 			if (pf.Donate < 0) pf.Donate = 0;

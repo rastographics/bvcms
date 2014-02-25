@@ -175,6 +175,12 @@ namespace CmsWeb.Models
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving;
             return false;
         }
+        public bool NoCreditCardsAllowed()
+        {
+            if (org != null)
+                return org.NoCreditCards == true;
+            return List.Any(p => p.org.NoCreditCards == true);
+        }
         public bool AskDonation()
         {
             if (org != null)
