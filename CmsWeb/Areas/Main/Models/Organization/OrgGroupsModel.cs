@@ -328,8 +328,8 @@ namespace CmsWeb.Models
                     var tagTop = new OrgMemMemTag();
                     var tagBot = new OrgMemMemTag();
 
-                    var top = p.OrderByDescending(t => t.Score).Take(1).SingleOrDefault();
-                    var bot = p.OrderBy(t => t.Score).Take(1).SingleOrDefault();
+                    var top = p.OrderByDescending(t => t.Score).ThenByDescending(t => t.PeopleId).Take(1).SingleOrDefault();
+						  var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
 
                     tagTop.MemberTagId = team.Id;
                     tagTop.OrgId = orgid;
@@ -353,7 +353,7 @@ namespace CmsWeb.Models
                 {
                     var tagBot = new OrgMemMemTag();
 
-                    var bot = p.OrderBy(t => t.Score).Take(1).SingleOrDefault();
+						  var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
                     if (bot == null) break;
 
                     tagBot.MemberTagId = team.Id;
@@ -372,7 +372,7 @@ namespace CmsWeb.Models
                 {
                     var tagBot = new OrgMemMemTag();
 
-                    var bot = p.OrderBy(t => t.Score).Take(1).SingleOrDefault();
+						  var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
                     if (bot == null) break;
 
                     tagBot.MemberTagId = team.Id;
