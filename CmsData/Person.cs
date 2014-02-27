@@ -1444,7 +1444,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             p.ThumbId = ImageData.Image.NewImageFromBits(bits, 50, 50).Id;
             p.SmallId = ImageData.Image.NewImageFromBits(bits, 120, 120).Id;
             p.MediumId = ImageData.Image.NewImageFromBits(bits, 320, 400).Id;
-            p.LargeId = ImageData.Image.NewImageFromBits(bits, 570, 800).Id;
+            p.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
             LogPictureUpload(db, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
 

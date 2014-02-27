@@ -138,7 +138,7 @@ namespace CmsData
             p.ThumbId = Image.NewImageFromBits(bits, 50, 50).Id;
             p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
             p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
-            p.LargeId = Image.NewImageFromBits(bits, 570, 800).Id;
+            p.LargeId = Image.NewImageFromBits(bits).Id;
             LogPictureUpload(db, PeopleId, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
 
