@@ -5,6 +5,7 @@ using System.Web;
 using CmsData;
 using System.Text;
 using CmsData.Codes;
+using NPOI.POIFS.Properties;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
@@ -230,12 +231,11 @@ namespace CmsWeb.Models
                 Db.Email(NotifyIds[0].FromEmail, NotifyIds, org.OrganizationName + "-donation",
                     "${0:N2} donation received from {1}".Fmt(ti.Amt, ti.FullName));
 
-                var senderSubject = os.SenderSubject;
+                var senderSubject = os.SenderSubject ?? "NO SUBJECT SET";
                 var senderBody = os.SenderBody ?? "NO SENDEREMAIL MESSAGE HAS BEEN SET";
                 senderBody = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person, DivisionName, org.OrganizationName, Location, senderBody);
                 senderBody = senderBody.Replace("{phone}", org.PhoneNumber.FmtFone7());
                 senderBody = senderBody.Replace("{paid}", ti.Amt.ToString2("c"));
-                senderSubject = senderSubject.Replace("{org}", org.OrganizationName);
                 Db.Email(NotifyIds[0].FromEmail, p.person, elist, senderSubject, senderBody, false);
                 Db.SubmitChanges();
                 return;

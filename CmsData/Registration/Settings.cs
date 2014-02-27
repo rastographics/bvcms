@@ -286,6 +286,9 @@ namespace CmsData.Registration
 				case Parser.RegKeywords.SupportEmail:
 					ParseSupport(parser);
 					break;
+				case Parser.RegKeywords.SenderEmail:
+					ParseSender(parser);
+					break;
 				case Parser.RegKeywords.AgeGroups:
 					ParseAgeGroups(parser);
 					break;
