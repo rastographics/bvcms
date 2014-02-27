@@ -24,7 +24,7 @@
 
                     @Html.DisplayFor(m => m.MemberType)
                     @Html.DisplayFor(m => m.InactiveDate)
-                    @Html.DisplayFor(m => m.Enrollment)
+                    @Html.DisplayFor(m => m.EnrollmentDate)
                     @Html.DisplayFor(m => m.Pending)
                     @if (Model.RegisterEmail.HasValue())
                     {
@@ -88,7 +88,7 @@
     }
     <a id="dropmember" href="/OrgMemberDialog2/Drop/@Model.OrgId/@Model.PeopleId" class="btn btn-danger">Drop</a>
     <a href="/OrgMemberDialog2/Move/@Model.OrgId/@Model.PeopleId" class="btn btn-warning ajax">Move</a>
-    <a href="/OrgMemberDialog2/Edit" class="btn btn-primary ajax">Edit</a>
+    <a href="/OrgMemberDialog2/Edit/@Model.OrgId/@Model.PeopleId" class="btn btn-primary ajax">Edit</a>
 </div>
 @helper SmallGroup(MemberTag mt)
 {
