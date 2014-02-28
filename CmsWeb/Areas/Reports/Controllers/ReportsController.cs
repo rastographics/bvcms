@@ -327,6 +327,17 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return View(MissionTripFundingModel.List(m));
         }
+        [GET("Reports/MissionTripSenders/{orgid:int}")]
+        public ActionResult MissionTripSenders(int orgid)
+        {
+            return MissionTripSendersModel.List(orgid);
+        }
+
+        [POST("Reports/MissionTripSenders")]
+        public ActionResult MissionTripSenders(OrgSearchModel m)
+        {
+            return MissionTripSendersModel.List(m);
+        }
 
         [GET("Reports/NameLabels/{id}")]
         public ActionResult NameLabels(Guid? id)

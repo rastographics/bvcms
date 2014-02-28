@@ -46,6 +46,7 @@ namespace CmsWeb.Areas.Org.Models
             om = i.mm;
             this.CopyPropertiesFrom(om);
             Name = i.Name;
+            AmountPaid = om.TotalPaid(DbUtil.Db);
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
@@ -83,7 +84,11 @@ namespace CmsWeb.Areas.Org.Models
 
         public int? Tickets { get; set; }
 
+        [DisplayName("Total Amount")]
         public decimal? Amount { get; set; }
+
+        [DisplayName("Amount Paid")]
+        public decimal? AmountPaid { get; set; }
 
         public decimal? AmountDue { get { return om.AmountDue(DbUtil.Db); } }
 

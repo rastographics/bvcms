@@ -165,6 +165,19 @@ namespace CmsData
             bool usedAdmins;
             return StaffPeopleForOrg(orgid, out usedAdmins);
         }
+        public List<Person> NotifyIds(int orgid, string ids)
+        {
+            var org = LoadOrganizationById(orgid);
+            var a = ids.Split(',').Select(ss => ss.ToInt()).ToArray();
+            var q2 = from p in People
+                     where a.Contains(p.PeopleId)
+                     orderby p.PeopleId == a.FirstOrDefault() descending
+                     select p;
+            var list = q2.ToList();
+            if(list.Count == 0)
+                return AdminPeople();
+            return list;
+        }
         public Person UserPersonFromEmail(string email)
         {
             var q = from u in Users

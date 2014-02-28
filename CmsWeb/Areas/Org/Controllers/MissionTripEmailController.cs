@@ -1,24 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.WebPages;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
-using CmsData.Codes;
-using CmsWeb.Areas.Main.Models;
-using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Org.Models;
-using DocumentFormat.OpenXml.EMMA;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsData;
-using Elmah;
-using System.Threading;
-using Dapper;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -28,6 +15,8 @@ namespace CmsWeb.Areas.Org.Controllers
         [GET("MissionTripEmail/{oid}/{pid}")]
         public ActionResult Index(int oid, int pid)
         {
+            if (Util.UserPeopleId != pid && !User.IsInRole("MissionGiving"))
+                return Content("not authorized");
             DbUtil.LogActivity("MissionTripEmail {0}".Fmt(pid));
             var m = new MissionTripEmailer {PeopleId = pid, OrgId = oid};
             return View(m);

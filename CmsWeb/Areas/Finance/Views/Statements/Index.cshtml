@@ -1,7 +1,9 @@
 ﻿@using CmsWeb
+@using CmsWeb.Code
 @{
     Layout = "~/Views/Shared/Reports.cshtml";
     ViewBag.Title = "Contribution Statements";
+    var cv = new CodeValueModel();
 }
 @section scripts
 {
@@ -35,6 +37,10 @@
         <tr>
             <th>End Date: </th>
             <td>@Html.DatePicker("EndDate")</td>
+        </tr>
+        <tr>
+            <th>Tag: </th>
+            <td>@Html.DropDownList("TagId", cv.UserTagsWithUnspecified().ToSelect())</td>
         </tr>
         <tr>
             <td colspan="2" class="center">

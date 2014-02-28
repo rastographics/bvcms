@@ -113,24 +113,24 @@ namespace CmsWeb.Models
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving;
             return false;
         }
-		  public bool IsSpecialScript()
-		  {
-			  if (org != null)
-				  return org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript;
-			  return false;
-		  }
+        public bool IsSpecialScript()
+        {
+            if (org != null)
+                return org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript;
+            return false;
+        }
 
-	    public string GetSpecialScript()
-	    {
-		    if( org == null ) return "Organization not found.";
+        public string GetSpecialScript()
+        {
+            if (org == null) return "Organization not found.";
 
-		    var settings = new Settings( org.RegSetting, DbUtil.Db, org.OrganizationId );
+            var settings = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
 
-		    var body = DbUtil.Content( settings.SpecialScript, "Shell not found." );
-			 body = body.Replace("[action]", "/OnlineReg/SpecialRegistrationResults/" + org.OrganizationId, true);
+            var body = DbUtil.Content(settings.SpecialScript, "Shell not found.");
+            body = body.Replace("[action]", "/OnlineReg/SpecialRegistrationResults/" + org.OrganizationId, true);
 
-		    return body;
-	    }
+            return body;
+        }
 
         public bool OnlinePledge()
         {
@@ -215,7 +215,7 @@ namespace CmsWeb.Models
                      select o;
             var oo = q2.FirstOrDefault();
 
-            if(oo == null)
+            if (oo == null)
                 NoAppropriateOrgError = "Sorry, cannot find an appropriate age group";
             else if (oo.RegEnd.HasValue && DateTime.Now > oo.RegEnd)
                 NoAppropriateOrgError = "Sorry, registration has ended for {0}".Fmt(oo.OrganizationName);

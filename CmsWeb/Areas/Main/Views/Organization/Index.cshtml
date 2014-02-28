@@ -70,9 +70,12 @@
                     <li><a id="sendreminders" href="/Organization/Reminders/@o.OrganizationId?emailall=true">Send Event Reminders
                     </a></li>
                     }
-                    <li><a href="/OrgChildren/Index/@Model.OrganizationId">Child Organization Management
-                        </a></li>
+                    <li><a href="/OrgChildren/Index/@Model.OrganizationId">Child Organization Management</a></li>
+                    if (Model.org.IsMissionTrip == true && User.IsInRole("MissionGiving"))
+                    {
                     <li><a href="/Reports/MissionTripFunding/@Model.OrganizationId">Mission Trip Funding</a></li>
+                    <li><a href="/Reports/MissionTripSenders/@Model.OrganizationId">Mission Trip Senders Export</a></li>
+                    }
                 }
                 @if (User.IsInRole("Admin"))
                 {

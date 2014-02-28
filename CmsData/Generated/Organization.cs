@@ -157,6 +157,8 @@ namespace CmsData
 		
 		private bool? _NoCreditCards;
 		
+		private string _GiftNotifyIds;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -413,6 +415,9 @@ namespace CmsData
 		
 		partial void OnNoCreditCardsChanging(bool? value);
 		partial void OnNoCreditCardsChanged();
+		
+		partial void OnGiftNotifyIdsChanging(string value);
+		partial void OnGiftNotifyIdsChanged();
 		
     #endregion
 		public Organization()
@@ -1537,7 +1542,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="NotifyIds", UpdateCheck=UpdateCheck.Never, Storage="_NotifyIds", DbType="nvarchar(50)")]
+		[Column(Name="NotifyIds", UpdateCheck=UpdateCheck.Never, Storage="_NotifyIds", DbType="varchar(50)")]
 		public string NotifyIds
 		{
 			get { return this._NotifyIds; }
@@ -2017,6 +2022,28 @@ namespace CmsData
 					this._NoCreditCards = value;
 					this.SendPropertyChanged("NoCreditCards");
 					this.OnNoCreditCardsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="GiftNotifyIds", UpdateCheck=UpdateCheck.Never, Storage="_GiftNotifyIds", DbType="varchar(50)")]
+		public string GiftNotifyIds
+		{
+			get { return this._GiftNotifyIds; }
+
+			set
+			{
+				if (this._GiftNotifyIds != value)
+				{
+				
+                    this.OnGiftNotifyIdsChanging(value);
+					this.SendPropertyChanging();
+					this._GiftNotifyIds = value;
+					this.SendPropertyChanged("GiftNotifyIds");
+					this.OnGiftNotifyIdsChanged();
 				}
 
 			}

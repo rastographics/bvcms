@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.Org.Models
             {
 
                 var org = DbUtil.Db.LoadOrganizationById(OrgId);
-                var notifyIds = DbUtil.Db.StaffPeopleForOrg(org.OrganizationId);
+                var notifyIds = DbUtil.Db.NotifyIds(org.OrganizationId, org.GiftNotifyIds);
                 var person = DbUtil.Db.LoadPersonById(PeopleId ?? 0);
                 var setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
                 var fund = setting.DonationFundId;

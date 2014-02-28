@@ -90,8 +90,15 @@ namespace CmsWeb.Models
             ti.TransactionDate = DateTime.Now;
             ti.TransactionPeople.AddRange(pids2);
 
-            var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.Id.ToString()));
-            paylink = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
+            if (org.IsMissionTrip == true)
+            {
+                paylink = Util.ResolveServerUrl("/OnlineReg/Index/{0}?goerid={1}".Fmt(orgid, p0.PeopleId));
+            }
+            else
+            {
+                var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.Id.ToString()));
+                paylink = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
+            }
 
             var pids = pids2.Select(pp => pp.PeopleId);
 
@@ -145,8 +152,8 @@ namespace CmsWeb.Models
                     p.fromemail,
                     p.org.OrganizationName,
                     p.org.PhoneNumber);
-                if (p.CreatingAccount == true && p.setting.GiveOrgMembAccess == false)
-                    p.CreateAccount();
+                    if (p.IsCreateAccount() && p.setting.GiveOrgMembAccess == false)
+                        p.CreateAccount();
             }
             details.Append("\n</table>\n");
             Db.SubmitChanges();
@@ -158,7 +165,7 @@ namespace CmsWeb.Models
             var EmailMessage = Util.PickFirst(os.Body, "no body");
 
             bool usedAdmins;
-            List<Person> NotifyIds = Db.StaffPeopleForOrg(org.OrganizationId, out usedAdmins);
+            var NotifyIds = Db.StaffPeopleForOrg(org.OrganizationId, out usedAdmins);
 
             var Location = org.Location;
 
@@ -228,7 +235,8 @@ namespace CmsWeb.Models
                         p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
                         "SupportMissionTrip: org={0}".Fmt(p.orgid));
                 }
-                Db.Email(NotifyIds[0].FromEmail, NotifyIds, org.OrganizationName + "-donation",
+                var notifyids = Db.NotifyIds(org.OrganizationId, org.GiftNotifyIds);
+                Db.Email(NotifyIds[0].FromEmail, notifyids, org.OrganizationName + "-donation",
                     "${0:N2} donation received from {1}".Fmt(ti.Amt, ti.FullName));
 
                 var senderSubject = os.SenderSubject ?? "NO SUBJECT SET";
@@ -236,7 +244,8 @@ namespace CmsWeb.Models
                 senderBody = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person, DivisionName, org.OrganizationName, Location, senderBody);
                 senderBody = senderBody.Replace("{phone}", org.PhoneNumber.FmtFone7());
                 senderBody = senderBody.Replace("{paid}", ti.Amt.ToString2("c"));
-                Db.Email(NotifyIds[0].FromEmail, p.person, elist, senderSubject, senderBody, false);
+
+                Db.Email(notifyids[0].FromEmail, p.person, elist, senderSubject, senderBody, false);
                 Db.SubmitChanges();
                 return;
             }

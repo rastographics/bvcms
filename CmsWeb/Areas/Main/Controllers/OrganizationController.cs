@@ -656,7 +656,7 @@ namespace CmsWeb.Areas.Main.Controllers
             c.Content = Task.AddTasks(id).ToString();
             return c;
         }
-        public ActionResult NotifyIds(int id)
+        public ActionResult NotifyIds(int id, string field)
         {
             if (Util.SessionTimedOut())
                 return Content("<script type='text/javascript'>window.onload = function() { parent.location = '/'; }</script>");
@@ -666,7 +666,17 @@ namespace CmsWeb.Areas.Main.Controllers
             Util2.CurrentOrgId = id;
             DbUtil.Db.SubmitChanges();
             var o = DbUtil.Db.LoadOrganizationById(id);
-            var q = DbUtil.Db.PeopleFromPidString(o.NotifyIds).Select(p => p.PeopleId);
+            string notifyids = null;
+            switch (field)
+            {
+                case "notifyids":
+                    notifyids = o.NotifyIds;
+                    break;
+                case "giftnotifyids":
+                    notifyids = o.GiftNotifyIds;
+                    break;
+            }
+            var q = DbUtil.Db.PeopleFromPidString(notifyids).Select(p => p.PeopleId);
             foreach (var pid in q)
                 t.PersonTags.Add(new TagPerson { PeopleId = pid });
             DbUtil.Db.SubmitChanges();
@@ -683,20 +693,31 @@ namespace CmsWeb.Areas.Main.Controllers
             return Redirect("/SearchOrgs/Index/" + id);
         }
         [HttpPost]
-        public ActionResult UpdateNotifyIds(int id, int topid)
+        public ActionResult UpdateNotifyIds(int id, int topid, string field)
         {
             var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             var selected_pids = (from p in t.People(DbUtil.Db)
                                  orderby p.PeopleId == topid ? "0" : "1"
                                  select p.PeopleId).ToArray();
             var o = DbUtil.Db.LoadOrganizationById(Util2.CurrentOrgId);
-            o.NotifyIds = string.Join(",", selected_pids);
+            var notifyids = string.Join(",", selected_pids);
+            switch (field)
+            {
+                case "notifyids":
+                    o.NotifyIds = notifyids;
+                    break;
+                case "giftnotifyids":
+                    o.GiftNotifyIds = notifyids;
+                    break;
+            }
             DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
             DbUtil.Db.Tags.DeleteOnSubmit(t);
             DbUtil.Db.SubmitChanges();
-            var rs = new Settings(o.RegSetting, DbUtil.Db, id);
-            rs.org = o;
-            return View("NotifyList2", rs);
+            ViewBag.OrgId = id;
+            ViewBag.field = field;
+            var view = ViewExtensions2.RenderPartialViewToString2(this, "NotifyList2", notifyids);
+            return Content(view);
+            //return View("NotifyList2", notifyids);
         }
         [HttpPost]
         public ActionResult UpdateOrgIds(int id, string list)

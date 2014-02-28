@@ -441,9 +441,14 @@ namespace CmsWeb.Models
         }
         public bool IsCreateAccount()
         {
+            bool tf = false;
             if (org != null)
-                return org.RegistrationTypeId == RegistrationTypeCode.CreateAccount;
-            return false;
+            {
+                tf = org.RegistrationTypeId == RegistrationTypeCode.CreateAccount;
+                tf |= org.IsMissionTrip ?? false;
+            }
+            tf |= CreatingAccount;
+            return tf;
         }
         public XmlSchema GetSchema()
         {

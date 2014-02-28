@@ -24,7 +24,7 @@
                         var topid = $("table.results tbody tr:first ", d).find("input[type=checkbox]").attr("value");
                         var topid0 = $("#topid0").val();
                         if (opts.UpdateShared)
-                            opts.UpdateShared(topid, topid0);
+                            opts.UpdateShared(topid, topid0, $this);
                         d.dialog("close");
                         return false;
                     });
