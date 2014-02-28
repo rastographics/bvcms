@@ -69,7 +69,6 @@ namespace CmsWeb.Areas.Finance.Models.Report
 		{
 			pageEvents.set = set;
 			IEnumerable<ContributorInfo> contributors = q;
-			var toDate = ToDate.Date.AddHours(24).AddTicks(-1);
 
 			PdfContentByte dc;
 			var font = FontFactory.GetFont(FontFactory.HELVETICA, 11);
@@ -187,7 +186,7 @@ p { font-size: 11px; }
 				doc.Add(new Paragraph(" "));
 				doc.Add(new Paragraph(" ") { SpacingBefore = 72f * 2.125f });
 
-				doc.Add(new Phrase("\n  Period: {0:d} - {1:d}".Fmt(FromDate, toDate), boldfont));
+				doc.Add(new Phrase("\n  Period: {0:d} - {1:d}".Fmt(FromDate, ToDate), boldfont));
 
 				var pos = w.GetVerticalPosition(true);
 
@@ -231,7 +230,7 @@ p { font-size: 11px; }
 				t.DefaultCell.Border = Rectangle.NO_BORDER;
 
 				var total = 0m;
-				foreach (var c in APIContribution.contributions(Db, ci, FromDate, toDate))
+				foreach (var c in APIContribution.contributions(Db, ci, FromDate, ToDate))
 				{
 					t.AddCell(new Phrase(c.ContributionDate.ToShortDateString(), font));
 					t.AddCell(new Phrase(c.Fund, font));
@@ -280,7 +279,7 @@ p { font-size: 11px; }
 
 
 				//------Pledges
-				var pledges = APIContribution.pledges(Db, ci, toDate).ToList();
+				var pledges = APIContribution.pledges(Db, ci, ToDate).ToList();
 				if (pledges.Count > 0)
 				{
 					t = new PdfPTable(new float[] { 25f, 15f, 15f, 15f, 30f });
@@ -329,7 +328,7 @@ p { font-size: 11px; }
 				}
 
 				//------Gifts In Kind
-				var giftsinkind = APIContribution.GiftsInKind(Db, ci, FromDate, toDate).ToList();
+				var giftsinkind = APIContribution.GiftsInKind(Db, ci, FromDate, ToDate).ToList();
 				if (giftsinkind.Count > 0)
 				{
 					t = new PdfPTable(new float[] { 15f, 25f, 15f, 15f, 30f });
@@ -395,7 +394,7 @@ p { font-size: 11px; }
 				t.DefaultCell.Border = Rectangle.NO_BORDER;
 				t.AddCell(new Phrase("", boldfont));
 
-				foreach (var c in APIContribution.quarterlySummary(Db, ci, FromDate, toDate))
+				foreach (var c in APIContribution.quarterlySummary(Db, ci, FromDate, ToDate))
 				{
 					t.AddCell(new Phrase(c.Fund, font));
 

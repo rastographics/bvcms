@@ -2021,7 +2021,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? pid,
             [Parameter(DbType="int")] int? spid,
             [Parameter(DbType="int")] int? fid,
-            [Parameter(DbType="bit")] bool? noaddrok
+            [Parameter(DbType="bit")] bool? noaddrok,
+            [Parameter(DbType="int")] int? tagid
             )
 		{
 			return this.CreateMethodCallQuery< View.Contributor>(this, 
@@ -2031,7 +2032,8 @@ namespace CmsData
                 pid,
                 spid,
                 fid,
-                noaddrok
+                noaddrok,
+                tagid
                 );
 		}
 

@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Finance.Models.Report;
 using CmsData;
 using CmsData.Classes.QuickBooks;
-using DocumentFormat.OpenXml.Spreadsheet;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
 using UtilityExtensions;
 using CmsWeb.Models;
 using TableStyles = OfficeOpenXml.Table.TableStyles;
