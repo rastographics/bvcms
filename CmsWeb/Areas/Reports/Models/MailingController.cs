@@ -112,13 +112,13 @@ namespace CmsWeb.Models
         }
         public IEnumerable<MailingInfo> FetchFamilyMembers(string sortExpression, Guid QueryId)
         {
-			var q = DbUtil.Db.PeopleQuery(QueryId);
-			var q2 = from pp in q
-					 group pp by pp.FamilyId into g
-					 from p in g.First().Family.People
-					 where p.DeceasedDate == null
-					 let famname = g.First().Family.People.Single(hh => hh.PeopleId == hh.Family.HeadOfHouseholdId).LastName
-					 orderby famname, p.FamilyId, p.PositionInFamilyId, p.GenderId
+            var q = DbUtil.Db.PeopleQuery(QueryId);
+            var q2 = from pp in q
+                     group pp by pp.FamilyId into g
+                     from p in g.First().Family.People
+                     where p.DeceasedDate == null
+                     let famname = g.First().Family.People.Single(hh => hh.PeopleId == hh.Family.HeadOfHouseholdId).LastName
+                     orderby famname, p.FamilyId, p.PositionInFamilyId, p.GenderId
                      select new MailingInfo
                      {
                          Address = p.PrimaryAddress,
@@ -135,7 +135,7 @@ namespace CmsWeb.Models
                          PeopleId = p.PeopleId
                      };
             q2 = ApplySort(q2, sortExpression);
-			return q2;
+            return q2;
         }
         public IEnumerable<MailingInfo> FetchFamilyList(string sortExpression, Guid QueryId)
         {
@@ -172,18 +172,27 @@ namespace CmsWeb.Models
 
         private const string STR_Couples = "couples";
 
-        private static IQueryable<Person> EliminateCoupleDoublets(IQueryable<Person> q)
+        private IQueryable<Person> EliminateCoupleDoublets(IQueryable<Person> q)
         {
-            var q1 = from p in q
+            IQueryable<Person> q1 = q;
+            if (UseMailFlags)
+                q1 = from p in q
+                     // exclude wife who has a husband who is already in the list
+                     where !(p.GenderId == 2 && p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId))
+                     where (p.BadAddressFlag ?? false) == false
+                     where p.DoNotMailFlag == false
+                     select p;
+            else
+                q1 = from p in q
                      // exclude wife who has a husband who is already in the list
                      where !(p.GenderId == 2 && p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId))
                      select p;
             return q1;
         }
-        private static IQueryable<Person> FilterMailFlags(IQueryable<Person> q)
+        public static IQueryable<Person> FilterMailFlags(IQueryable<Person> q)
         {
             var q1 = from p in q
-                     where p.BadAddressFlag ?? false
+                     where (p.BadAddressFlag ?? false) == false
                      where p.DoNotMailFlag == false
                      select p;
             return q1;
@@ -192,8 +201,6 @@ namespace CmsWeb.Models
         public IEnumerable<MailingInfo> FetchCouplesEitherList(string sortExpression, Guid QueryId)
         {
             var q = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
-            if (UseMailFlags)
-                q = FilterMailFlags(q);
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
                      let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -224,8 +231,6 @@ namespace CmsWeb.Models
         public IEnumerable<MailingInfo> FetchCouplesBothList(string sortExpression, Guid QueryId)
         {
             var q = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
-            if (UseMailFlags)
-                q = FilterMailFlags(q);
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
                      // get spouse if in the query
@@ -272,8 +277,6 @@ namespace CmsWeb.Models
         public IEnumerable FetchExcelCouplesBoth(Guid QueryId, int maximumRows)
         {
             var q = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
-            if (UseMailFlags)
-                q = FilterMailFlags(q);
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
                      // get spouse if in the query
@@ -307,8 +310,6 @@ namespace CmsWeb.Models
         public IEnumerable FetchExcelCouplesEither(Guid QueryId, int maximumRows)
         {
             var q = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
-            if (UseMailFlags)
-                q = FilterMailFlags(q);
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
                      let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)

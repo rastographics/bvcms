@@ -38,10 +38,12 @@ namespace CmsWeb.Models
                     };
             return q;
         }
-        public static IEnumerable FetchExcelList(Guid queryid, int maximumRows)
+        public static IEnumerable FetchExcelList(Guid queryid, int maximumRows, bool useMailFlags)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
+            if (useMailFlags)
+                query = MailingController.FilterMailFlags(query);
             var q = from p in query
                     let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
                     let oid = p.PeopleExtras.FirstOrDefault(pe => pe.Field == "OtherId").Data

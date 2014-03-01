@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             {
                 case "Individual":
                 case "GroupAddress":
-                    return new ExcelResult(ExportPeople.FetchExcelList(id, maxExcelRows));
+                    return new ExcelResult(ExportPeople.FetchExcelList(id, maxExcelRows, useMailFlags ?? false));
                 case "Library":
                     return new ExcelResult(ExportPeople.FetchExcelLibraryList(id));
                 case "AllFamily":
