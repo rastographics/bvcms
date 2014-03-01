@@ -5,6 +5,7 @@ using System.Linq;
 using CmsData;
 using CmsData.View;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace CmsWeb.Models
 {
@@ -52,10 +53,10 @@ namespace CmsWeb.Models
             return q;
         }
 
-        public static EpplusResult Result(IEnumerable<MissionTripSendInfo> q)
+        private static EpplusResult Result(IEnumerable<MissionTripSendInfo> q)
         {
             var list = q.ToList();
-            var cols = typeof(MissionTripTotal).GetProperties();
+            var cols = typeof(MissionTripSendInfo).GetProperties();
             var count = list.Count;
             var ep = new ExcelPackage();
             var ws = ep.Workbook.Worksheets.Add("Sheet1");
@@ -68,9 +69,21 @@ namespace CmsWeb.Models
                 var name = cols[i].Name;
                 table.Columns[i].Name = name;
                 var colrange = ws.Cells[1, col, count + 2, col];
+                if (name == "DateGiven")
+                {
+                    colrange.Style.Numberformat.Format = "mm-dd-yy";
+                    colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    ws.Column(col).Width = 12;
+                }
+                else if (name == "Amt")
+                {
+                    colrange.Style.Numberformat.Format = "#,##0.00";
+                    colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    ws.Column(col).Width = 8;
+                }
             }
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
-            return new EpplusResult(ep, "MissionTripFunding.xlsx");
+            return new EpplusResult(ep, "MissionTripSenders.xlsx");
         }
     }
 }
