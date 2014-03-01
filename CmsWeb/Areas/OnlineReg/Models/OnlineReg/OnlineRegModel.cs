@@ -69,8 +69,9 @@ namespace CmsWeb.Models
         public decimal? donation { get; set; }
         public int? donor { get; set; }
         public int? UserPeopleId { get; set; }
-        private string _Registertag;
+        public bool prospect { get; set; }
 
+        private string _Registertag;
         public string registertag
         {
             get { return _Registertag; }

@@ -285,6 +285,7 @@ namespace CmsData.Registration
             AccountingCode,
             GroupToJoin,
             GiveOrgMembAccess,
+            AddAsProspect,
             NotReqDOB,
             NotReqAddr,
             NotReqZip,

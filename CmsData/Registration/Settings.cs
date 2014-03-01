@@ -50,6 +50,7 @@ namespace CmsData.Registration
 		public int? TimeSlotLockDays { get; set; }
 		public string GroupToJoin { get; set; }
 		public bool GiveOrgMembAccess { get; set; }
+	    public bool AddAsProspect { get; set; }
 
 		public string DonationFund()
 		{
@@ -111,7 +112,7 @@ namespace CmsData.Registration
 		public int OrgId { get; set; }
 		public CMSDataContext Db { get; set; }
 
-		public Settings()
+	    public Settings()
 		{
 			OrgFees = new OrgFees();
 			TimeSlots = new TimeSlots();
@@ -260,6 +261,9 @@ namespace CmsData.Registration
 					break;
 				case Parser.RegKeywords.GiveOrgMembAccess:
 					GiveOrgMembAccess = parser.GetBool();
+					break;
+				case Parser.RegKeywords.AddAsProspect:
+					AddAsProspect = parser.GetBool();
 					break;
 				case Parser.RegKeywords.LinkGroupsFromOrgs:
 					LinkGroupsFromOrgs = (from i in parser.curr.value.Split(',')
@@ -626,6 +630,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "MemberOnly", MemberOnly);
 			AddValueCk(0, sb, "GroupToJoin", GroupToJoin);
 			AddValueCk(0, sb, "GiveOrgMembAccess", GiveOrgMembAccess);
+			AddValueCk(0, sb, "AddAsProspect", AddAsProspect);
 			AddValueCk(0, sb, "NotReqDOB", NotReqDOB);
 			AddValueCk(0, sb, "NotReqAddr", NotReqAddr);
 			AddValueCk(0, sb, "NotReqZip", NotReqZip);

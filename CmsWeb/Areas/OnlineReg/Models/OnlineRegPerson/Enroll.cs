@@ -13,9 +13,9 @@ namespace CmsWeb.Models
     {
         public OrganizationMember Enroll(Transaction ti, string paylink, bool? testing, string others)
         {
-            var om = OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                org.OrganizationId, person.PeopleId,
-                MemberTypeCode.Member, DateTime.Now, null, false);
+            var om = OrganizationMember.InsertOrgMembers(DbUtil.Db, org.OrganizationId, person.PeopleId,
+                setting.AddAsProspect ? MemberTypeCode.Prospect : MemberTypeCode.Member, 
+                DateTime.Now, null, false);
 
             var reg = person.RecRegs.SingleOrDefault();
             if (reg == null)
