@@ -20,17 +20,7 @@ namespace CmsWeb.Models
                 SawExistingAccount = true;
                 var user = person.Users.OrderByDescending(uu => uu.LastActivityDate).First();
 
-                var message = DbUtil.Content("ExistingUserConfirmation", 
-                        @"Hi {name},
-<p>We noticed you already have an account in our church database.</p>
-<p>You can login at <a href=""{host}"">{host}</a>. 
-And if you can't remember your password or username, click the Forgot Password link when you get there. 
-Note: you will need to know your username for this to work. If you do not know your username, then please click forgot username first.
-This will send you a link you can use to reset your password.</p>
-<p>You can use your account to help us maintain your correct address, email and phone numbers.
-Just login to <a href=""{host}"">{host}</a> and you will be taken to your record where you can make corrections if needed.</p>
-<p>Thank You</p>
-");
+                var message = DbUtil.Db.ContentHtml("ExistingUserConfirmation", Resource1.CreateAccount_ExistingUser);
                 message = message
                     .Replace("{name}", person.Name)
                     .Replace("{host}", DbUtil.Db.CmsHost);

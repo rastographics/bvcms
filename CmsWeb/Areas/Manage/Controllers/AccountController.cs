@@ -177,12 +177,10 @@ CKEditorFuncNum, baseurl + fn, error));
                     select u;
             foreach (var user in q)
             {
-                DbUtil.Db.EmailRedacted(DbUtil.AdminMail, user.Person, "bvcms forgot username", @"Hi {0},
-<p>Your username is: {1}</p>
-<p>If you did not request this, please disregard this message.</p>
-<p>Thanks,<br />
-The bvCMS Team</p>
-".Fmt(user.Name, user.Username));
+                var message = DbUtil.Db.ContentHtml("ForgotUsername", Resource1.AccountController_ForgotUsername);
+                message = message.Replace("{name}", user.Name);
+                message = message.Replace("{username}", user.Username);
+                DbUtil.Db.EmailRedacted(DbUtil.AdminMail, user.Person, "bvcms forgot username", message);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.EmailRedacted(DbUtil.AdminMail,
                     CMSRoleProvider.provider.GetAdmins(),

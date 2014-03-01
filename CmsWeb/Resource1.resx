@@ -235,4 +235,29 @@ But we won't add that to your record without your permission.
 
 Thank you&lt;/p&gt;</value>
   </data>
+  <data name="AccountController_ForgotUsername" xml:space="preserve">
+    <value>Hi {name},
+&lt;p&gt;Your username is: {username}&lt;/p&gt;
+&lt;p&gt;If you did not request this, please disregard this message.&lt;/p&gt;
+&lt;p&gt;Thanks,&lt;br /&gt;
+The bvCMS Team&lt;/p&gt;
+</value>
+  </data>
+  <data name="CreateAccount_ExistingUser" xml:space="preserve">
+    <value>Hi {name},
+&lt;p&gt;We noticed you already have an account in our church database.&lt;/p&gt;
+&lt;p&gt;You can login at &lt;a href="{host}"&gt;{host}&lt;/a&gt;. 
+And if you can't remember your password or username, click the Forgot Password link when you get there. 
+Note: you will need to know your username for this to work. If you do not know your username, then please click forgot username first.
+This will send you a link you can use to reset your password.&lt;/p&gt;
+&lt;p&gt;You can use your account to help us maintain your correct address, email and phone numbers.
+Just login to &lt;a href="{host}"&gt;{host}&lt;/a&gt; and you will be taken to your record where you can make corrections if needed.&lt;/p&gt;
+&lt;p&gt;Thank You&lt;/p&gt;
+</value>
+  </data>
+  <data name="ConfirmSubscriptions" xml:space="preserve">
+    <value>Thank you for managing your subscriptions to {org}&lt;br/&gt;
+You have the following subscriptions:&lt;br/&gt;
+{details}</value>
+  </data>
 </root>
