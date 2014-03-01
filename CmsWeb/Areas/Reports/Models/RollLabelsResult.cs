@@ -28,6 +28,7 @@ namespace CmsWeb.Areas.Reports.Models
         public Guid qid { get; set; }
         public string format { get; set; }
         public bool titles { get; set; }
+        public bool useMailFlags { get; set; }
         public bool usephone { get; set; }
 
         public bool? sortzip; 
@@ -56,8 +57,7 @@ namespace CmsWeb.Areas.Reports.Models
             document.Open();
             dc = w.DirectContent;
 
-            var ctl = new MailingController();
-            ctl.UseTitles = titles;
+            var ctl = new MailingController {UseTitles = titles, UseMailFlags = useMailFlags};
 
             IEnumerable<MailingController.MailingInfo> q = null;
             switch (format)

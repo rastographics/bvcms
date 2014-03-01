@@ -21,6 +21,7 @@ namespace CmsWeb.Areas.Reports.Models
         public Guid id;
         public string format;
         public bool? titles; 
+        public bool? useMailFlags; 
         public bool usephone { get; set; }
 		public int skip = 0;
 
@@ -39,7 +40,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public override void ExecuteResult(ControllerContext context)
         {
-            var ctl = new MailingController { UseTitles = titles == true };
+            var ctl = new MailingController {UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false};
             var Response = context.HttpContext.Response;
 
             IEnumerable<MailingController.MailingInfo> q = null;

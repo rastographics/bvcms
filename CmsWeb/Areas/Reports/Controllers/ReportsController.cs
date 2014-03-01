@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [GET("Reports/AveryAddress/{id}")]
-        public ActionResult AveryAddress(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip, int skipNum = 0)
+        public ActionResult AveryAddress(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip, bool? useMailFlags, int skipNum = 0)
         {
             if (!id.HasValue)
                 return Content("no query");
@@ -89,7 +89,8 @@ namespace CmsWeb.Areas.Reports.Controllers
                 titles = titles,
                 usephone = usephone ?? false,
                 skip = skipNum,
-                sortzip = sortzip
+                sortzip = sortzip,
+                useMailFlags = useMailFlags
             };
         }
 
@@ -464,7 +465,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [GET("Reports/RollLabels/{id}")]
-        public ActionResult RollLabels(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip)
+        public ActionResult RollLabels(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip, bool? useMailFlags)
         {
             if (!id.HasValue)
                 return Content("no query");
@@ -474,7 +475,8 @@ namespace CmsWeb.Areas.Reports.Controllers
                 format = format,
                 titles = titles ?? false,
                 usephone = usephone ?? false,
-                sortzip = sortzip
+                sortzip = sortzip,
+                useMailFlags = useMailFlags ?? false
             };
         }
 
