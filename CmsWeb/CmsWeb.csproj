@@ -1111,6 +1111,8 @@
     <Content Include="Scripts\jQuery\jquery-ui.effects.min.js" />
     <Content Include="Scripts\jQuery\jquery.smoothscroll.js" />
     <Content Include="Scripts\jQuery\jquery.ui.accordion.js" />
+    <Content Include="Scripts\jQuery\jquery.ui.touch-punch.js" />
+    <Content Include="Scripts\jQuery\jquery.ui.touch-punch.min.js" />
     <Content Include="Scripts\js\headermenu1c.js" />
     <Content Include="Scripts\js\header.js" />
     <Content Include="Scripts\js\hometour.js" />
