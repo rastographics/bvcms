@@ -147,6 +147,13 @@ Please call the church to resolve this before we can complete your account.<br /
                             }
 #endif
                         }
+                        else if (om != null && org.IsMissionTrip == true
+                            && !Parent.SupportMissionTrip
+                            && om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Sender")
+                            && !om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer"))
+                        {
+                            IsValidForContinue = true;
+                        }
                         else if (om != null && setting.AllowReRegister == false
                             && om.Organization.RegistrationTypeId != RegistrationTypeCode.ChooseVolunteerTimes
                             && !Parent.SupportMissionTrip)
