@@ -12,6 +12,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData;
 using CmsData.API;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -441,14 +442,14 @@ namespace CmsWeb.Models
         }
         public bool IsCreateAccount()
         {
-            bool tf = false;
             if (org != null)
             {
-                tf = org.RegistrationTypeId == RegistrationTypeCode.CreateAccount;
-                tf |= org.IsMissionTrip ?? false;
+                if (org.RegistrationTypeId == RegistrationTypeCode.CreateAccount)
+                    return true;
+                if ((org.IsMissionTrip ?? false) && !Parent.SupportMissionTrip)
+                    return true;
             }
-            tf |= CreatingAccount;
-            return tf;
+            return CreatingAccount;
         }
         public XmlSchema GetSchema()
         {
