@@ -15,7 +15,7 @@
         @Html.HiddenFor(m => m.PeopleId)
         @Html.EditorFor(m => m.MemberType)
         @Html.EditorFor(m => m.InactiveDate)
-        @Html.EditorFor(m => m.Enrollment)
+        @Html.EditorFor(m => m.EnrollmentDate)
         @Html.EditorFor(m => m.Pending)
         @if (Model.RegisterEmail.HasValue())
         {
@@ -33,9 +33,10 @@
         {
             @Html.EditorFor(m => m.Tickets)
         }
-        @if (Model.Amount.HasValue)
+        @if (Model.Organization.RegistrationTypeId > 0)
         {
             @Html.EditorFor(m => m.Amount)
+            @Html.EditorFor(m => m.AmountPaid)
             @Html.DisplayFor(m => m.AmountDue)
             if (Model.AmountDue > 0)
             {

@@ -446,7 +446,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			p.ThumbId = ImageData.Image.NewImageFromBits(bits, 50, 50).Id;
 			p.SmallId = ImageData.Image.NewImageFromBits(bits, 120, 120).Id;
 			p.MediumId = ImageData.Image.NewImageFromBits(bits, 320, 400).Id;
-            p.LargeId = ImageData.Image.NewImageFromBits(bits, 570, 800).Id;
+            p.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
 			person.LogPictureUpload(DbUtil.Db, Util.UserPeopleId ?? 1);
 			DbUtil.Db.SubmitChanges();
 			return Content("done");

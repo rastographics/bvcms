@@ -1,0 +1,50 @@
+﻿@model CmsWeb.Models.OnlineRegPersonModel
+@using CmsData
+@using CmsData.Registration
+@using CmsWeb
+@using UtilityExtensions
+@{
+    var index = Model.Index();
+    var goer = DbUtil.Db.LoadPersonById(Model.Parent.GoerId ?? 0);
+    var name = goer != null ? goer.Name : "selected participant";
+}
+
+@if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount())
+{
+    <tr>
+        <td></td>
+        <td>@Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)</td>
+    </tr>
+}
+@if (goer == null)
+{
+    <tr>
+        <td>Choose Participant</td>
+        <td>@Html.DropDownListFor(m => m.MissionTripGoerId, Model.MissionTripGoers())</td>
+    </tr>
+}
+    <tr>
+        <td>Your gift to support @name</td>
+        <td>@Html.TextBoxFor(m => m.MissionTripSupportGoer)</td>
+    </tr>
+    <tr>
+        <td>If you don't want @name to be notified of your gift, check this box.</td>
+        <td>@Html.CheckBoxFor(m => m.MissionTripNoNoticeToGoer)</td>
+    </tr>
+    <tr>
+        <td>Your additional gift to support other Mission trips</td>
+        <td>
+            @Html.TextBoxFor(m => m.MissionTripSupportGeneral)<br />
+            (note: these will show as two separate contributions)
+    </td>
+    </tr>
+    <tr>
+        <td>I will pray for the trip</td>
+        <td>@Html.CheckBoxFor(m => m.MissionTripPray)</td>
+    </tr>
+	<tr><td class="right" colspan="2">
+		    <input type="button" id="otheredit" href="/OnlineReg/SubmitOtherInfo/@index" class="submitbutton ajax" 
+		           value="Submit" />
+		    <div class="formerror">@Html.ValidationMessage( "Form" )</div>
+	    </td>
+	</tr>

@@ -204,7 +204,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				person.Picture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
 				person.Picture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
 				person.Picture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
-				person.Picture.LargeId = ImageData.Image.NewImageFromBits(imageBytes, 570, 800).Id;
+				person.Picture.LargeId = ImageData.Image.NewImageFromBits(imageBytes).Id;
 			}
 			else
 			{
@@ -213,7 +213,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				newPicture.ThumbId = ImageData.Image.NewImageFromBits(imageBytes, 50, 50).Id;
 				newPicture.SmallId = ImageData.Image.NewImageFromBits(imageBytes, 120, 120).Id;
 				newPicture.MediumId = ImageData.Image.NewImageFromBits(imageBytes, 320, 400).Id;
-				newPicture.LargeId = ImageData.Image.NewImageFromBits(imageBytes, 570, 800).Id;
+				newPicture.LargeId = ImageData.Image.NewImageFromBits(imageBytes).Id;
 
 				person.Picture = newPicture;
 			}

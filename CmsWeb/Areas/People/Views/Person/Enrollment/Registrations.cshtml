@@ -11,10 +11,10 @@
         </legend>
         @if (goerlist.Count > 0)
         {
-            <h4>Mission Trip Fund Raising</h4>
+            <h4>Mission Trip Funding</h4>
             <table class="table table-condensed not-wide">
                 <tr>
-                    <th>Mission Trip</th>
+                    <th>Trip</th>
                     <th class="right">Cost</th>
                     <th class="right">Paid</th>
                     <th class="right">Balance</th>
@@ -37,7 +37,7 @@
                         <td class="right">@g.Paid.ToString("C")</td>
                         <td class="right">@((g.Cost - g.Paid).ToString("C"))</td>
                         <td>
-                            @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Developer"))
+                            @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
                             {
                             <a href="/MissionTripEmail/@g.Id/@Model.PeopleId">Email Supporters</a>
                             }

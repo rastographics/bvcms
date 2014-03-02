@@ -279,9 +279,12 @@
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Main\Controllers\QueryBuilder2Controller.cs" />
+    <Compile Include="Areas\Main\Models\Export\MissionTripSendersModel.cs" />
+    <Compile Include="Areas\Main\Models\Export\MissionTripFundingModel.cs" />
     <Compile Include="Areas\Main\Models\Export\WorshipAttendanceModel.cs" />
     <Compile Include="Areas\Org\Controllers\MissionTripEmailController.cs" />
     <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
+    <Compile Include="Areas\Org\Models\MissionSupportModel.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\BaseReturn.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileAttendee.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCountry.cs" />
@@ -1017,6 +1020,7 @@
     <Content Include="Content\css\give.css" />
     <Content Include="Content\css\images\ajax-loader.gif" />
     <Content Include="Content\css\img\ajax-loader.gif" />
+    <Content Include="Content\css\jquery-ui.effects.min.css" />
     <Content Include="Content\css\jquery.dataTables.css" />
     <Content Include="Content\css\main.css" />
     <Content Include="Content\css\main.min.css">
@@ -1082,6 +1086,7 @@
     <Content Include="Scripts\Bootstrap\bootbox.js" />
     <Content Include="Scripts\Bootstrap\bootbox.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-ajax.js" />
+    <Content Include="Scripts\Bootstrap\notify.js" />
     <Content Include="Scripts\Bootstrap\renamedatepicker.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-datepicker.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-editable.js" />
@@ -1103,6 +1108,7 @@
     <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\jQuery\jquery-ui.effects.min.js" />
     <Content Include="Scripts\jQuery\jquery.smoothscroll.js" />
     <Content Include="Scripts\jQuery\jquery.ui.accordion.js" />
     <Content Include="Scripts\js\headermenu1c.js" />
@@ -1110,6 +1116,7 @@
     <Content Include="Scripts\js\hometour.js" />
     <Content Include="Scripts\js\ion.sound.min.js" />
     <Content Include="Scripts\js\MyDataSupport.js" />
+    <Content Include="Scripts\Email\EmailSupporter.js" />
     <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
     <Content Include="Scripts\People\mydatatour.js" />
@@ -1326,6 +1333,15 @@
     <Content Include="Content\images\glass.ogg" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents1.cshtml" />
     <Content Include="Areas\Org\Views\MissionTripEmail\Index.cshtml" />
+    <Content Include="Areas\Org\Views\MissionTripEmail\Supporters.cshtml" />
+    <Content Include="Areas\Org\Views\MissionTripEmail\SupportersEdit.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTrip.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTripHidden.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTripDisplay.cshtml" />
+    <Content Include="Areas\Org\Views\MissionTripEmail\Sent.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\MissionTripFunding.cshtml" />
+    <Content Include="Areas\Org\Views\OrgMemberDialog\MissionSupport.cshtml" />
+    <Content Include="Areas\Org\Views\OrgMemberDialog\MissionSupportDone.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

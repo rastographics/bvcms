@@ -15,13 +15,22 @@ namespace CmsWeb.Areas.Org.Models
         private OrganizationMember om;
         public CmsData.Organization Organization;
         public List<OrgMemMemTag> OrgMemMemTags;
-        private int? _orgId;
-        private int? _peopleId;
+        public bool IsMissionTrip;
 
+        public OrgMemberModel()
+        {
+        }
+
+        public OrgMemberModel(int oid, int pid)
+        {
+            OrgId = oid;
+            PeopleId = pid;
+            Populate();
+        }
         private void Populate()
         {
             var i = (from mm in DbUtil.Db.OrganizationMembers
-                     where mm.OrganizationId == _orgId && mm.PeopleId == _peopleId
+                     where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
                      select new
                          {
                              mm,
@@ -29,42 +38,27 @@ namespace CmsWeb.Areas.Org.Models
                              mm.Organization.OrganizationName,
                              mm.Organization.RegSetting,
                              mm.Organization,
-                             mm.OrgMemMemTags
+                             mm.OrgMemMemTags,
+                             mm.Organization.IsMissionTrip
                          }).SingleOrDefault();
             if (i == null)
-                throw new Exception("missing OrgMember at oid={0}, pid={0}".Fmt(_orgId, _peopleId));
+                throw new Exception("missing OrgMember at oid={0}, pid={0}".Fmt(OrgId, PeopleId));
             om = i.mm;
             this.CopyPropertiesFrom(om);
             Name = i.Name;
+            AmountPaid = om.TotalPaid(DbUtil.Db);
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
-            Setting = new Settings(i.RegSetting, DbUtil.Db, _orgId.Value);
+            IsMissionTrip = i.IsMissionTrip ?? false;
+            Setting = new Settings(i.RegSetting, DbUtil.Db, OrgId.Value);
         }
 
 
-        public int? OrgId
-        {
-            get { return _orgId; }
-            set
-            {
-                _orgId = value;
-                if(_peopleId.HasValue)
-                    Populate();
-            }
-        }
+        public int? OrgId { get; set; }
 
         [SkipFieldOnCopyProperties]
-        public int? PeopleId
-        {
-            get { return _peopleId; }
-            set
-            {
-                _peopleId = value;
-                if(_orgId.HasValue)
-                    Populate();
-            }
-        }
+        public int? PeopleId { get; set; }
 
         public string Name { get; set; }
         public string OrgName { get; set; }
@@ -78,7 +72,7 @@ namespace CmsWeb.Areas.Org.Models
         public DateTime? InactiveDate { get; set; }
 
         [DisplayName("Enrollment Date")]
-        public DateTime? Enrollment { get; set; }
+        public DateTime? EnrollmentDate { get; set; }
 
         public bool Pending { get; set; }
 
@@ -90,7 +84,11 @@ namespace CmsWeb.Areas.Org.Models
 
         public int? Tickets { get; set; }
 
+        [DisplayName("Total Amount")]
         public decimal? Amount { get; set; }
+
+        [DisplayName("Amount Paid")]
+        public decimal? AmountPaid { get; set; }
 
         public decimal? AmountDue { get { return om.AmountDue(DbUtil.Db); } }
 
@@ -103,8 +101,10 @@ namespace CmsWeb.Areas.Org.Models
 
         public void UpdateModel()
         {
+            om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
             this.CopyPropertiesTo(om);
             DbUtil.Db.SubmitChanges();
+            Populate();
         }
     }
 }

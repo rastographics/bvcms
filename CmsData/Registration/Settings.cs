@@ -30,6 +30,8 @@ namespace CmsData.Registration
 		public string ReminderBody { get; set; }
 		public string SupportSubject { get; set; }
 		public string SupportBody { get; set; }
+		public string SenderSubject { get; set; }
+		public string SenderBody { get; set; }
 		public string Terms { get; set; }
 
 		public bool MemberOnly { get; set; }
@@ -48,6 +50,7 @@ namespace CmsData.Registration
 		public int? TimeSlotLockDays { get; set; }
 		public string GroupToJoin { get; set; }
 		public bool GiveOrgMembAccess { get; set; }
+	    public bool AddAsProspect { get; set; }
 
 		public string DonationFund()
 		{
@@ -109,7 +112,7 @@ namespace CmsData.Registration
 		public int OrgId { get; set; }
 		public CMSDataContext Db { get; set; }
 
-		public Settings()
+	    public Settings()
 		{
 			OrgFees = new OrgFees();
 			TimeSlots = new TimeSlots();
@@ -259,6 +262,9 @@ namespace CmsData.Registration
 				case Parser.RegKeywords.GiveOrgMembAccess:
 					GiveOrgMembAccess = parser.GetBool();
 					break;
+				case Parser.RegKeywords.AddAsProspect:
+					AddAsProspect = parser.GetBool();
+					break;
 				case Parser.RegKeywords.LinkGroupsFromOrgs:
 					LinkGroupsFromOrgs = (from i in parser.curr.value.Split(',')
 										  where i.ToInt() > 0
@@ -283,6 +289,9 @@ namespace CmsData.Registration
 					break;
 				case Parser.RegKeywords.SupportEmail:
 					ParseSupport(parser);
+					break;
+				case Parser.RegKeywords.SenderEmail:
+					ParseSender(parser);
 					break;
 				case Parser.RegKeywords.AgeGroups:
 					ParseAgeGroups(parser);
@@ -458,6 +467,28 @@ namespace CmsData.Registration
 				}
 			}
 		}
+		private void ParseSender(Parser parser)
+		{
+			parser.lineno++;
+			var startindent = parser.curr.indent;
+			while (parser.curr.indent == startindent)
+			{
+				switch (parser.curr.kw)
+				{
+					case Parser.RegKeywords.Html:
+						parser.lineno++;
+						break;
+					case Parser.RegKeywords.SenderSubject:
+						SenderSubject = parser.GetString();
+						break;
+					case Parser.RegKeywords.SenderBody:
+						SenderBody = parser.GetString();
+						break;
+					default:
+						throw parser.GetException("unexpected line in SenderConfirmation");
+				}
+			}
+		}
 		private void ParseInstructions(Parser parser)
 		{
 			parser.lineno++;
@@ -580,6 +611,7 @@ namespace CmsData.Registration
 			AddConfirmation(sb);
 			AddReminder(sb);
 			AddSupport(sb);
+			AddSender(sb);
 			AddFees(sb);
 			AddValueCk(0, sb, "IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit);
 			AddDonation(sb);
@@ -598,6 +630,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "MemberOnly", MemberOnly);
 			AddValueCk(0, sb, "GroupToJoin", GroupToJoin);
 			AddValueCk(0, sb, "GiveOrgMembAccess", GiveOrgMembAccess);
+			AddValueCk(0, sb, "AddAsProspect", AddAsProspect);
 			AddValueCk(0, sb, "NotReqDOB", NotReqDOB);
 			AddValueCk(0, sb, "NotReqAddr", NotReqAddr);
 			AddValueCk(0, sb, "NotReqZip", NotReqZip);
@@ -659,6 +692,12 @@ namespace CmsData.Registration
 			AddValueNoCk(0, sb, "SupportEmail", "");
 			AddValueNoCk(1, sb, "SupportSubject", SupportSubject);
 			AddSingleOrMultiLine(1, sb, "SupportBody", SupportBody);
+		}
+		private void AddSender(StringBuilder sb)
+		{
+			AddValueNoCk(0, sb, "SenderEmail", "");
+			AddValueNoCk(1, sb, "SenderSubject", SenderSubject);
+			AddSingleOrMultiLine(1, sb, "SenderBody", SenderBody);
 		}
 		private void AddSingleOrMultiLine(int n, StringBuilder sb, string Section, string ht)
 		{

@@ -131,6 +131,20 @@ namespace CmsWeb.Models
         {
             return ShirtSizes(setting);
         }
+        public List<SelectListItem> MissionTripGoers()
+        {
+            var q = from g in DbUtil.Db.OrganizationMembers
+                where g.OrganizationId == orgid
+                where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
+                select new SelectListItem()
+                {
+                    Value = g.PeopleId.ToString(),
+                    Text = g.Person.Name
+                };
+            var list = q.ToList();
+            list.Insert(0, new SelectListItem() {Value = "0", Text = "(please select)"});
+            return list;
+        }
         public void FillPriorInfo()
         {
             if (!IsNew && LoggedIn == true)

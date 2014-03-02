@@ -14,8 +14,8 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="memberdata">
-                <a href="/TransactionHistory/Index/@Model.PeopleId?oid=@Model.OrgId" target="_blank" 
-                       style="font-family: Courier New">Attendance</a>: @Model.AttendStr
+                <a href="/TransactionHistory/Index/@Model.PeopleId?oid=@Model.OrgId" target="_blank"
+                   style="font-family: Courier New">Attendance</a>: @Model.AttendStr
                 <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("UpdateOrgMember")'>help</a>
                 <fieldset class="display">
                     @* These need to be the first two *@
@@ -24,7 +24,7 @@
 
                     @Html.DisplayFor(m => m.MemberType)
                     @Html.DisplayFor(m => m.InactiveDate)
-                    @Html.DisplayFor(m => m.Enrollment)
+                    @Html.DisplayFor(m => m.EnrollmentDate)
                     @Html.DisplayFor(m => m.Pending)
                     @if (Model.RegisterEmail.HasValue())
                     {
@@ -48,29 +48,54 @@
                         @Html.DisplayFor(m => m.AmountDue)
                         if (Model.AmountDue > 0)
                         {
-                        @Html.DisplayFor(m => m.PayLink)
+                            @Html.DisplayFor(m => m.PayLink)
                         }
                     }
                     @if (Model.Setting.AskVisible("AskSize"))
                     {
                         @Html.DisplayFor(m => m.ShirtSize)
                     }
-                    @Html.DisplayFor(m => m.UserData, "TextArea")
+                    @Html.DisplayFor(m => m.UserData, "TextArea", new { AddClass = "scroll150" })
                 </fieldset>
             </div>
             <div class="tab-pane" id="membergroups">
-                @foreach (var mt in Model.Organization.MemberTags.OrderBy(t => t.Name))
-                { 
-                    <input href="/OrgMemberDialog2/SmallGroupChecked/@Model.OrgId/@Model.PeopleId/@mt.Id" class="ckbox" type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mt.Id) ? "checked='checked'" : "") />
-                    <span>@mt.Name</span><br />
-                }
+                <div class="well">
+                    @{
+                        var list = Model.Organization.MemberTags.OrderBy(t => t.Name).ToList();
+                        var itemspercol = list.Count / 3;
+                        var remainder = list.Count % 3;
+                        itemspercol += (remainder > 0 ? 1 : 0);
+                    }
+                    @for (var col = 0; col < (int)Math.Ceiling((double)list.Count / itemspercol); col++)
+                    {
+                        <div class="inline align-top">
+                            @for (var i = col * itemspercol; i < Math.Min((col + 1) * itemspercol, list.Count); i++)
+                            {
+                                @SmallGroup(list[i])
+                            }
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
 </div>
 <div class="modal-footer">
     <a href="#" class="btn" data-dismiss="modal">Close</a>
+    @if (Model.IsMissionTrip)
+    {
+    <a href="/OrgMemberDialog2/MissionSupport/@Model.OrgId/@Model.PeopleId" class="btn btn-success ajax">Add Mission Trip Support</a>
+    }
     <a id="dropmember" href="/OrgMemberDialog2/Drop/@Model.OrgId/@Model.PeopleId" class="btn btn-danger">Drop</a>
     <a href="/OrgMemberDialog2/Move/@Model.OrgId/@Model.PeopleId" class="btn btn-warning ajax">Move</a>
-    <a href="/OrgMemberDialog2/Edit" class="btn btn-primary ajax">Edit</a>
+    <a href="/OrgMemberDialog2/Edit/@Model.OrgId/@Model.PeopleId" class="btn btn-primary ajax">Edit</a>
 </div>
+@helper SmallGroup(MemberTag mt)
+{
+    <div class="control-group">
+        <label class="control-label">@mt.Name</label>
+        <div class="controls">
+            <input href="/OrgMemberDialog2/SmallGroupChecked/@Model.OrgId/@Model.PeopleId/@mt.Id" class="ckbox" type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mt.Id) ? "checked='checked'" : "") />
+        </div>
+    </div>
+}

@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
                 return Content("votelink is no longer active");
 
-            if (q.om == null && q.org.Limit <= q.org.MemberCount)
+            if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
                 return Content("sorry, maximum limit has been reached");
 
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (q.org == null)
                 return Content("no org " + oid);
 
-            if (q.om == null && q.org.Limit <= q.org.MemberCount)
+            if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
                 return Content("sorry, maximum limit has been reached");
 
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
@@ -237,13 +237,21 @@ emailid={2}
             var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
             if (ot == null)
                 return Content("invalid link");
+#if DEBUG
+#else
             if (ot.Used)
                 return Content("link used");
+#endif
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
                 return Content("link expired");
-            var a = ot.Querystring.Split(',');
+            var a = ot.Querystring.SplitStr(",", 4);
             var oid = a[0].ToInt();
             var pid = a[1].ToInt();
+            var linktype = a.Length > 3 ? a[3].Split(',') : "".Split(',');
+            int? gsid = null;
+            if (linktype[0].Equal("supportlink")  && linktype.Length > 1)
+                gsid = linktype[1].ToInt();
+
             var q = (from pp in DbUtil.Db.People
                      where pp.PeopleId == pid
                      let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == oid)
@@ -253,17 +261,20 @@ emailid={2}
             if (q.org == null)
                 return Content("org missing, bad link");
 
-            if (q.om == null && q.org.Limit <= q.org.MemberCount)
+            if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
                 return Content("sorry, maximum limit has been reached");
 
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
                 return Content("sorry, registration has been closed");
 
             var url = "/OnlineReg/Index/{0}?registertag={1}".Fmt(oid, id);
+            if (gsid.HasValue)
+                url += "&gsid=" + gsid;
             if (showfamily == true)
                 url += "&showfamily=true";
             return Redirect(url);
         }
+        [ValidateInput(false)]
 
         public ActionResult SendLink(string id)
         {
@@ -284,7 +295,7 @@ emailid={2}
             var orgid = a[0].ToInt();
             var pid = a[1].ToInt();
             var queueid = a[2].ToInt();
-            var linktype = a[3];
+            var linktype = a[3]; // for supportlink, this will also have the goerid
             var q = (from pp in DbUtil.Db.People
                      where pp.PeopleId == pid
                      let org = DbUtil.Db.LoadOrganizationById(orgid)
@@ -304,7 +315,7 @@ emailid={2}
             var msg = @"<p>Here is your <a href=""{0}"">LINK</a></p>
 <p>Note: If you did not request this link, please ignore this email,
 or contact the church if you need help.</p>"
-                .Fmt(DbUtil.Db.RegisterLinkUrl(orgid, pid, queueid, showfamily: linktype == "registerlink2"));
+                .Fmt(DbUtil.Db.RegisterLinkUrl(orgid, pid, queueid, linktype));
             var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);
 
             DbUtil.Db.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation

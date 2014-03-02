@@ -134,8 +134,8 @@ ul.sort > li
 {
     margin-top: 12px;
     margin-bottom: 12px;
-    border-left: 7px solid grey;
-    padding-left: 3px;
+    border-left: 7px solid #ddd;
+    padding-left: 8px;
 }
 
 div.settings ul.padded
@@ -174,3 +174,7 @@ textarea.html
 .ui-timepicker-rtl{ direction: rtl; }
 .ui-timepicker-rtl dl { text-align: right; }
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+
+#QuestionList, #QuestionList ul {
+    list-style-type: none;
+}

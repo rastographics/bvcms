@@ -1,0 +1,20 @@
+﻿@model MissionTripEmailer
+@using CmsWeb.Areas.Org.Models
+@{
+    Model.Recipients = Model.GetRecipients().ToList();
+}
+<table class="table table-condensed table-striped">
+    @for(var i = 0; i < Model.Recipients.Count; i++)
+    {
+        var r = Model.Recipients[i];
+        <tr>
+            <td>
+                @Html.HiddenFor(m => m.Recipients[i].Id)
+                @Html.CheckBoxFor(m => m.Recipients[i].Active)
+                <a>@r.NameOrEmail</a>
+                <a class="remove pull-right" href="/MissionTripEmail/RemoveSupporter/@Model.PeopleId/@r.Id"><i class="fa fa-minus-circle"></i></a><br />
+                @Html.TextBoxFor(m => m.Recipients[i].Salutation, new { @class = "input-medium" })
+            </td>
+        </tr>
+    }
+</table>

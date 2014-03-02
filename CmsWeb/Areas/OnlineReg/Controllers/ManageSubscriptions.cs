@@ -51,19 +51,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			m.UpdateSubscriptions();
 			var Staff = DbUtil.Db.StaffPeopleForOrg(m.masterorgid.Value);
 
-			DbUtil.Db.Email(Staff.First().FromEmail, m.person,
-					  "Subscription Confirmation",
-@"Thank you for managing your subscriptions to {0}<br/>
-You have the following subscriptions:<br/>
-{1}".Fmt(m.Description(), m.Summary));
+		    var msg = DbUtil.Db.ContentHtml("ConfirmSubscriptions", Resource1.ConfirmSubscriptions);
+		    msg = msg.Replace("{org}", m.Description()).Replace("{details}", m.Summary);
+			DbUtil.Db.Email(Staff.First().FromEmail, m.person, "Subscription Confirmation", msg);
 
-			DbUtil.Db.Email(m.person.FromEmail, Staff, "Subscriptions managed", @"{0} managed subscriptions to {1}<br/>
-You have the following subscriptions:<br/>
-{2}".Fmt(m.person.Name, m.Description(), m.Summary));
+			DbUtil.Db.Email(m.person.FromEmail, Staff, "Subscriptions managed", 
+            @"{0} managed subscriptions to {1}<br/>{2}".Fmt(m.person.Name, m.Description(), m.Summary));
 
 			SetHeaders(m.masterorgid.Value);
 			return View(m);
 		}
-
 	}
 }

@@ -27,6 +27,7 @@
                 + sep + "titles=" + $('#UseTitle')[0].checked
                 + "&format=" + $('input[name=format]:checked').val()
                 + "&usephone=" + $('#UsePhone')[0].checked
+                + "&usemailflags=" + $('#UseMailFlags')[0].checked
                 + "&sortzip=" + $('#SortZip')[0].checked
 				+ "&skipNum=" + $('#SkipNum').val();
             $("#ChooseFormat").dialog("close");

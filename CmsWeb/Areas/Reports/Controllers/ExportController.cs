@@ -47,23 +47,28 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
         }
+        [POST("Export2/MissionTripFunding")]
+        public ActionResult MissionTripFunding(OrgSearchModel m)
+        {
+            return MissionTripFundingModel.Result(m);
+        }
 
         [GET("Export2/Excel/{id:guid}")]
         [GET("Export2/Excel/{format}/{id:guid}")]
-        public ActionResult Excel(Guid id, string format, bool? titles)
+        public ActionResult Excel(Guid id, string format, bool? titles, bool? useMailFlags)
         {
-            var ctl = new MailingController {UseTitles = titles ?? false};
+            var ctl = new MailingController {UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false};
             switch (format)
             {
                 case "Individual":
                 case "GroupAddress":
-                    return new ExcelResult(ExportPeople.FetchExcelList(id, maxExcelRows));
+                    return new ExcelResult(ExportPeople.FetchExcelList(id, maxExcelRows, useMailFlags ?? false));
                 case "Library":
                     return new ExcelResult(ExportPeople.FetchExcelLibraryList(id));
-                case "Family":
-                    return new ExcelResult(ctl.FetchExcelFamily(id, maxExcelRows));
                 case "AllFamily":
                     return new ExcelResult(ExportPeople.FetchExcelListFamily(id));
+                case "Family":
+                    return new ExcelResult(ctl.FetchExcelFamily(id, maxExcelRows));
                 case "ParentsOf":
                     return new ExcelResult(ctl.FetchExcelParents(id, maxExcelRows));
                 case "CouplesEither":
@@ -95,9 +100,9 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [GET("Export2/Csv/{id:guid}")]
-        public ActionResult Csv(Guid id, string format, bool? sortzip, bool? titles)
+        public ActionResult Csv(Guid id, string format, bool? sortzip, bool? titles, bool? useMailFlags)
         {
-            var ctl = new MailingController {UseTitles = titles ?? false};
+            var ctl = new MailingController {UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false};
 
             var sort = "Name";
             if (sortzip ?? false)

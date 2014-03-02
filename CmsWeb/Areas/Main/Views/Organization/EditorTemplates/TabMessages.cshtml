@@ -24,7 +24,7 @@
     |These are the users that will be notified when a registration occurs.
     |The top most user will be the 'sender' of the confirmation email.">
     Online Notify Persons:</span>
-        @Html.Partial("NotifyList2", Model)
+        @Html.Partial("NotifyList2", Model.org.NotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "notifyids" }})
   </li>
   <li>
     <span class="keyword big tip" title="Instructions
@@ -103,6 +103,13 @@
 @if (Model.org.IsMissionTrip == true)
 {
   <li>
+    <span class="text big tip" title="Notify Persons for Gift
+    |These are the users that will be notified when a gift occurs.
+    |The top most user will be the 'sender' of the confirmation email.">
+    Notify Persons for Gift:</span>
+        @Html.Partial("NotifyList2", Model.org.GiftNotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "giftnotifyids" }})
+  </li>
+  <li>
     <div class="text big tip" title="SupportEmail
     |This is the email that is sent to solicit supporters.">
     SupportEmail: </div>
@@ -111,6 +118,19 @@
       <li>
         <div class="text"><span class="keyword2"> Body:</span>
         @Html.EditorFor(m => m.SupportBody, "Html")
+        </div>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <div class="text big tip" title="SenderConfirmation
+    |This is the email that is sent to notify senders.">
+    SenderConfirmation: </div>
+    <ul>
+      <li> <span class="keyword2">Subject:</span> @Html.TextBox("SenderSubject", Model.SenderSubject, new { @class = "long" }) </li>
+      <li>
+        <div class="text"><span class="keyword2"> Body:</span>
+        @Html.EditorFor(m => m.SenderBody, "Html")
         </div>
       </li>
     </ul>

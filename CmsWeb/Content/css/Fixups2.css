@@ -39,8 +39,6 @@ ul.dropdown-div-admin {
     margin: auto;
 }
 
-
-
 .datepicker {
     z-index: 2000;
 }
@@ -1130,6 +1128,7 @@ div.logo {
     .maxWidthMedium {
         max-width: 35em;
     }
+
     .width280 {
         width: 410px;
     }
@@ -1146,13 +1145,15 @@ div.logo {
     .form-horizontal .width280 .controls {
         margin-left: 110px;
     }
-    .form-horizontal .width280 input, 
+
+    .form-horizontal .width280 input,
     .form-horizontal .width280 textarea {
         width: 255px;
     }
-    .form-horizontal .width280 input[type=checkbox] {
-        width: auto;
-    }
+
+        .form-horizontal .width280 input[type=checkbox] {
+            width: auto;
+        }
 }
 
 @media (max-width: 960px) {
@@ -1208,4 +1209,50 @@ div.logo {
     #supportfeedback {
         display: none;
     }
+}
+
+.darkClass {
+    background-color: white;
+    -webkit-filter: alpha(opacity=50);
+    -moz-filter: alpha(opacity=50);
+    -o-filter: alpha(opacity=50);
+    filter: alpha(opacity=50); /* IE */
+    -ms-opacity: 0.5;
+    opacity: 0.5; /* Safari, Opera */
+    -moz-opacity: 0.50; /* FireFox */
+    z-index: 1002;
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+div.growlUI {
+    background: url(/images/check48.png) no-repeat 10px 10px;
+    top: 100px;
+}
+
+    div.growlUI h1, div.growlUI h2, div.growlUI2 h1, div.growlUI2 h2 {
+        padding: 5px 5px 5px 75px;
+        color: white;
+        text-align: left;
+    }
+
+@media print {
+    footer.container,
+    div.page-container > div.navbar {
+        display: none;
+    }
+
+    div.headshot, div.portrait {
+        -webkit-print-color-adjust: exact;
+    }
+}
+
+div.scroll150 {
+    height: 150px;
+    overflow-y: scroll;
 }

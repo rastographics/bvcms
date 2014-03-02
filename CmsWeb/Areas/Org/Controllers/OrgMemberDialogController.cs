@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [POST("OrgMemberDialog2/Display/{oid}/{pid}")]
         public ActionResult Display(int oid, int pid)
         {
-            var m = new OrgMemberModel {OrgId = oid, PeopleId = pid};
+            var m = new OrgMemberModel(oid, pid);
             return View(m);
         }
         [POST("OrgMemberDialog2/SmallGroupChecked/{oid:int}/{pid:int}/{sgtagid:int}")]
@@ -39,9 +39,10 @@ namespace CmsWeb.Areas.Org.Controllers
             return Content("ok");
         }
 
-        [POST("OrgMemberDialog2/Edit")]
-        public ActionResult Edit(OrgMemberModel m)
+        [POST("OrgMemberDialog2/Edit/{oid:int}/{pid:int}")]
+        public ActionResult Edit(int oid, int pid)
         {
+            var m = new OrgMemberModel(oid, pid);
             return View(m);
         }
         [POST("OrgMemberDialog2/Update")]
@@ -102,6 +103,18 @@ namespace CmsWeb.Areas.Org.Controllers
         public string HelpLink()
         {
             return "";
+        }
+        [POST("OrgMemberDialog2/MissionSupport/{oid}/{pid}")]
+        public ActionResult MissionSupport(int oid, int pid)
+        {            
+            var m = new MissionSupportModel {OrgId = oid, PeopleId = pid};
+            return View(m);
+        }
+        [POST("OrgMemberDialog2/AddMissionSupport/{oid}/{pid}")]
+        public ActionResult AddMissionSupport(int oid, int pid, MissionSupportModel m)
+        {
+            m.PostContribution();
+            return View("MissionSupportDone", m);
         }
 
     }

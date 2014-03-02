@@ -12,6 +12,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData;
 using CmsData.API;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -112,6 +113,12 @@ namespace CmsWeb.Models
         public string gradeoption { get; set; }
         public bool IsFamily { get; set; }
 
+        public int? MissionTripGoerId { get; set; }
+        public bool MissionTripPray { get; set; }
+        public bool MissionTripNoNoticeToGoer { get; set; }
+        public decimal? MissionTripSupportGoer { get; set; }
+        public decimal? MissionTripSupportGeneral { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         public decimal? Suggestedfee { get; set; }
 
@@ -183,6 +190,12 @@ namespace CmsWeb.Models
                         var number = e.Attribute("number");
                         if (aname != null && number != null)
                             MenuItem[menuset].Add(aname.Value, number.Value.ToInt());
+                        break;
+                    case "MissionTripPray":
+                        MissionTripPray = e.Value.ToBool();
+                        break;
+                    case "MissionTripGoerId":
+                        MissionTripGoerId = e.Value.ToInt();
                         break;
                     default:
                         Util.SetPropertyFromText(this, name, e.Value);
@@ -259,6 +272,14 @@ namespace CmsWeb.Models
                                         w.Attr("number", q.Value);
                                         w.End();
                                     }
+                        break;
+                    case "MissionTripPray":
+                        if(Parent.SupportMissionTrip)
+                            w.Add(pi.Name, MissionTripPray);
+                        break;
+                    case "MissionTripGoerId":
+                        if(Parent.SupportMissionTrip)
+                            w.Add(pi.Name, MissionTripGoerId);
                         break;
                     default:
                         w.Add(pi.Name, pi.GetValue(this, null));
@@ -422,8 +443,13 @@ namespace CmsWeb.Models
         public bool IsCreateAccount()
         {
             if (org != null)
-                return org.RegistrationTypeId == RegistrationTypeCode.CreateAccount;
-            return false;
+            {
+                if (org.RegistrationTypeId == RegistrationTypeCode.CreateAccount)
+                    return true;
+                if ((org.IsMissionTrip ?? false) && !Parent.SupportMissionTrip)
+                    return true;
+            }
+            return CreatingAccount;
         }
         public XmlSchema GetSchema()
         {

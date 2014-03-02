@@ -61,7 +61,7 @@
         </tr>
         <tr>
             <th class='right'>Amount Paid:</th>
-            <td>@Model.AmountPaid.ToString2("N")</td>
+            <td>@Model.TotalPaid(DbUtil.Db).ToString("N")</td>
         </tr>
         if (amtdue.HasValue)
         {

@@ -73,7 +73,7 @@ namespace CmsData.View
 
 		
 		
-		[Column(Name="PrimaryAddress", Storage="_PrimaryAddress", DbType="varchar(100)")]
+		[Column(Name="PrimaryAddress", Storage="_PrimaryAddress", DbType="nvarchar(100)")]
 		public string PrimaryAddress
 		{
 			get
@@ -90,7 +90,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PrimaryAddress2", Storage="_PrimaryAddress2", DbType="varchar(100)")]
+		[Column(Name="PrimaryAddress2", Storage="_PrimaryAddress2", DbType="nvarchar(100)")]
 		public string PrimaryAddress2
 		{
 			get
@@ -107,7 +107,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PrimaryCity", Storage="_PrimaryCity", DbType="varchar(30)")]
+		[Column(Name="PrimaryCity", Storage="_PrimaryCity", DbType="nvarchar(30)")]
 		public string PrimaryCity
 		{
 			get
@@ -124,7 +124,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PrimaryState", Storage="_PrimaryState", DbType="varchar(20)")]
+		[Column(Name="PrimaryState", Storage="_PrimaryState", DbType="nvarchar(20)")]
 		public string PrimaryState
 		{
 			get
@@ -141,7 +141,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="PrimaryZip", Storage="_PrimaryZip", DbType="varchar(15)")]
+		[Column(Name="PrimaryZip", Storage="_PrimaryZip", DbType="nvarchar(15)")]
 		public string PrimaryZip
 		{
 			get
@@ -192,7 +192,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="LastName", Storage="_LastName", DbType="varchar(100) NOT NULL")]
+		[Column(Name="LastName", Storage="_LastName", DbType="nvarchar(100) NOT NULL")]
 		public string LastName
 		{
 			get
@@ -209,7 +209,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Name", Storage="_Name", DbType="varchar(126)")]
+		[Column(Name="Name", Storage="_Name", DbType="nvarchar(126)")]
 		public string Name
 		{
 			get
@@ -226,7 +226,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Title", Storage="_Title", DbType="varchar(10)")]
+		[Column(Name="Title", Storage="_Title", DbType="nvarchar(10)")]
 		public string Title
 		{
 			get
@@ -243,7 +243,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Suffix", Storage="_Suffix", DbType="varchar(10)")]
+		[Column(Name="Suffix", Storage="_Suffix", DbType="nvarchar(10)")]
 		public string Suffix
 		{
 			get
@@ -379,7 +379,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="SpouseName", Storage="_SpouseName", DbType="varchar(138)")]
+		[Column(Name="SpouseName", Storage="_SpouseName", DbType="nvarchar(138)")]
 		public string SpouseName
 		{
 			get
@@ -396,7 +396,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="SpouseTitle", Storage="_SpouseTitle", DbType="varchar(10)")]
+		[Column(Name="SpouseTitle", Storage="_SpouseTitle", DbType="nvarchar(10)")]
 		public string SpouseTitle
 		{
 			get
@@ -481,7 +481,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="HouseName", Storage="_HouseName", DbType="varchar(100)")]
+		[Column(Name="HouseName", Storage="_HouseName", DbType="nvarchar(100)")]
 		public string HouseName
 		{
 			get

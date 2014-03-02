@@ -63,7 +63,7 @@
     </tr>
     <tr>
         <th class='right'>Amount Paid:</th>
-        <td>@Html.TextBox("AmountPaid", Model.AmountPaid.ToString2("f2"))
+        <td>@Html.TextBox("AmountPaid", Model.TotalPaid(DbUtil.Db).ToString("f2"))
         <br /><span style="color:Red">@Html.ValidationMessage("AmountPaid")</span></td>
     </tr>
 }

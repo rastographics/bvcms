@@ -294,6 +294,14 @@ namespace CmsData
         partial void UpdateGeoCode(GeoCode instance);
         partial void DeleteGeoCode(GeoCode instance);
         
+        partial void InsertGoerSenderAmount(GoerSenderAmount instance);
+        partial void UpdateGoerSenderAmount(GoerSenderAmount instance);
+        partial void DeleteGoerSenderAmount(GoerSenderAmount instance);
+        
+        partial void InsertGoerSupporter(GoerSupporter instance);
+        partial void UpdateGoerSupporter(GoerSupporter instance);
+        partial void DeleteGoerSupporter(GoerSupporter instance);
+        
         partial void InsertInterestPoint(InterestPoint instance);
         partial void UpdateInterestPoint(InterestPoint instance);
         partial void DeleteInterestPoint(InterestPoint instance);
@@ -1082,6 +1090,18 @@ namespace CmsData
 
 		}
 
+		public Table< GoerSenderAmount> GoerSenderAmounts
+		{
+			get	{ return this.GetTable< GoerSenderAmount>(); }
+
+		}
+
+		public Table< GoerSupporter> GoerSupporters
+		{
+			get	{ return this.GetTable< GoerSupporter>(); }
+
+		}
+
 		public Table< InterestPoint> InterestPoints
 		{
 			get	{ return this.GetTable< InterestPoint>(); }
@@ -1655,6 +1675,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.MissionTripTotal> ViewMissionTripTotals
+	    {
+		    get { return this.GetTable< View.MissionTripTotal>(); }
+
+	    }
+
 	    public Table< View.Nick> ViewNicks
 	    {
 		    get { return this.GetTable< View.Nick>(); }
@@ -1995,7 +2021,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? pid,
             [Parameter(DbType="int")] int? spid,
             [Parameter(DbType="int")] int? fid,
-            [Parameter(DbType="bit")] bool? noaddrok
+            [Parameter(DbType="bit")] bool? noaddrok,
+            [Parameter(DbType="int")] int? tagid
             )
 		{
 			return this.CreateMethodCallQuery< View.Contributor>(this, 
@@ -2005,7 +2032,8 @@ namespace CmsData
                 pid,
                 spid,
                 fid,
-                noaddrok
+                noaddrok,
+                tagid
                 );
 		}
 
@@ -2782,6 +2810,20 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 thisday
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.TotalPaid", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? TotalPaid(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid
                 ).ReturnValue));
 		}
 

@@ -155,6 +155,10 @@ namespace CmsData
 		
 		private bool? _IsMissionTrip;
 		
+		private bool? _NoCreditCards;
+		
+		private string _GiftNotifyIds;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -408,6 +412,12 @@ namespace CmsData
 		
 		partial void OnIsMissionTripChanging(bool? value);
 		partial void OnIsMissionTripChanged();
+		
+		partial void OnNoCreditCardsChanging(bool? value);
+		partial void OnNoCreditCardsChanged();
+		
+		partial void OnGiftNotifyIdsChanging(string value);
+		partial void OnGiftNotifyIdsChanged();
 		
     #endregion
 		public Organization()
@@ -1532,7 +1542,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="NotifyIds", UpdateCheck=UpdateCheck.Never, Storage="_NotifyIds", DbType="nvarchar(50)")]
+		[Column(Name="NotifyIds", UpdateCheck=UpdateCheck.Never, Storage="_NotifyIds", DbType="varchar(50)")]
 		public string NotifyIds
 		{
 			get { return this._NotifyIds; }
@@ -1990,6 +2000,50 @@ namespace CmsData
 					this._IsMissionTrip = value;
 					this.SendPropertyChanged("IsMissionTrip");
 					this.OnIsMissionTripChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="NoCreditCards", UpdateCheck=UpdateCheck.Never, Storage="_NoCreditCards", DbType="bit")]
+		public bool? NoCreditCards
+		{
+			get { return this._NoCreditCards; }
+
+			set
+			{
+				if (this._NoCreditCards != value)
+				{
+				
+                    this.OnNoCreditCardsChanging(value);
+					this.SendPropertyChanging();
+					this._NoCreditCards = value;
+					this.SendPropertyChanged("NoCreditCards");
+					this.OnNoCreditCardsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="GiftNotifyIds", UpdateCheck=UpdateCheck.Never, Storage="_GiftNotifyIds", DbType="varchar(50)")]
+		public string GiftNotifyIds
+		{
+			get { return this._GiftNotifyIds; }
+
+			set
+			{
+				if (this._GiftNotifyIds != value)
+				{
+				
+                    this.OnGiftNotifyIdsChanging(value);
+					this.SendPropertyChanging();
+					this._GiftNotifyIds = value;
+					this.SendPropertyChanged("GiftNotifyIds");
+					this.OnGiftNotifyIdsChanged();
 				}
 
 			}

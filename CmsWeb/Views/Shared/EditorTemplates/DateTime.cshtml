@@ -20,7 +20,7 @@
 <div class="control-group @ViewBag.height33 @ViewBag.hide">
     @Html.LabelFor(m => m, new { @class = "control-label" })
     <div class="controls">
-        <div class="input-append date" data-date="@s" data-date-format="@Util.jQueryDateFormat2" data-date-orientation="top">
+        <div class="input-append date">
             @Html.TextBoxFor2(m => m, 
                 useNativeUnobtrusiveAttributes:true, 
                 format: @fmt, 

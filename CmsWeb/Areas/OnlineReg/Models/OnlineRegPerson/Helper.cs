@@ -113,24 +113,24 @@ namespace CmsWeb.Models
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving;
             return false;
         }
-		  public bool IsSpecialScript()
-		  {
-			  if (org != null)
-				  return org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript;
-			  return false;
-		  }
+        public bool IsSpecialScript()
+        {
+            if (org != null)
+                return org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript;
+            return false;
+        }
 
-	    public string GetSpecialScript()
-	    {
-		    if( org == null ) return "Organization not found.";
+        public string GetSpecialScript()
+        {
+            if (org == null) return "Organization not found.";
 
-		    var settings = new Settings( org.RegSetting, DbUtil.Db, org.OrganizationId );
+            var settings = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
 
-		    var body = DbUtil.Content( settings.SpecialScript, "Shell not found." );
-			 body = body.Replace("[action]", "/OnlineReg/SpecialRegistrationResults/" + org.OrganizationId, true);
+            var body = DbUtil.Content(settings.SpecialScript, "Shell not found.");
+            body = body.Replace("[action]", "/OnlineReg/SpecialRegistrationResults/" + org.OrganizationId, true);
 
-		    return body;
-	    }
+            return body;
+        }
 
         public bool OnlinePledge()
         {
@@ -192,15 +192,18 @@ namespace CmsWeb.Models
                 return _masterorg;
             }
         }
+
+        public string NoAppropriateOrgError;
         private Organization GetAppropriateOrg()
         {
+            NoAppropriateOrgError = null;
             List<Organization> list = null;
             var bestbirthdate = birthday;
             if (person != null && person.BirthDate.HasValue)
                 bestbirthdate = person.BirthDate;
             if (!masterorgid.HasValue)
                 return null;
-            var cklist = masterorg.OrgPickList.Split(',').Select(oo => oo.ToInt()).ToList();
+            var cklist = masterorg.OrgPickList.Split(',').Select(o => o.ToInt()).ToList();
             var q = from o in DbUtil.Db.Organizations
                     where cklist.Contains(o.OrganizationId)
                     where gender == null || o.GenderId == gender || (o.GenderId ?? 0) == 0
@@ -210,7 +213,23 @@ namespace CmsWeb.Models
                      where bestbirthdate >= o.BirthDayStart || o.BirthDayStart == null
                      where bestbirthdate <= o.BirthDayEnd || o.BirthDayEnd == null
                      select o;
-            return q2.FirstOrDefault();
+            var oo = q2.FirstOrDefault();
+
+            if (oo == null)
+                NoAppropriateOrgError = "Sorry, cannot find an appropriate age group";
+            else if (oo.RegEnd.HasValue && DateTime.Now > oo.RegEnd)
+                NoAppropriateOrgError = "Sorry, registration has ended for {0}".Fmt(oo.OrganizationName);
+            else if (oo.OrganizationStatusId == OrgStatusCode.Inactive)
+                NoAppropriateOrgError = "Sorry, {0} is inactive".Fmt(oo.OrganizationName);
+            else if (oo.ClassFilled == true)
+                NoAppropriateOrgError = "Sorry, {0} is filled".Fmt(oo.OrganizationName);
+            else if (oo.RegistrationTypeId == RegistrationTypeCode.None)
+                NoAppropriateOrgError = "Sorry, {0} is not available".Fmt(oo.OrganizationName);
+            else if (oo.RegistrationClosed == true)
+                NoAppropriateOrgError = "Sorry, {0} is closed".Fmt(oo.OrganizationName);
+            if (NoAppropriateOrgError.HasValue())
+                oo = null;
+            return oo;
         }
         public bool Finished()
         {

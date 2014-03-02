@@ -284,6 +284,8 @@ namespace CmsData
 		
    		private EntitySet< EmailResponse> _EmailResponses;
 		
+   		private EntitySet< GoerSupporter> _FK_Goers;
+		
    		private EntitySet< ManagedGiving> _ManagedGivings;
 		
    		private EntitySet< MemberDocForm> _MemberDocForms;
@@ -299,6 +301,8 @@ namespace CmsData
    		private EntitySet< SMSItem> _SMSItems;
 		
    		private EntitySet< SMSList> _SMSLists;
+		
+   		private EntitySet< GoerSupporter> _FK_Supporters;
 		
    		private EntitySet< TagShare> _TagShares;
 		
@@ -781,6 +785,8 @@ namespace CmsData
 			
 			this._EmailResponses = new EntitySet< EmailResponse>(new Action< EmailResponse>(this.attach_EmailResponses), new Action< EmailResponse>(this.detach_EmailResponses)); 
 			
+			this._FK_Goers = new EntitySet< GoerSupporter>(new Action< GoerSupporter>(this.attach_FK_Goers), new Action< GoerSupporter>(this.detach_FK_Goers)); 
+			
 			this._ManagedGivings = new EntitySet< ManagedGiving>(new Action< ManagedGiving>(this.attach_ManagedGivings), new Action< ManagedGiving>(this.detach_ManagedGivings)); 
 			
 			this._MemberDocForms = new EntitySet< MemberDocForm>(new Action< MemberDocForm>(this.attach_MemberDocForms), new Action< MemberDocForm>(this.detach_MemberDocForms)); 
@@ -796,6 +802,8 @@ namespace CmsData
 			this._SMSItems = new EntitySet< SMSItem>(new Action< SMSItem>(this.attach_SMSItems), new Action< SMSItem>(this.detach_SMSItems)); 
 			
 			this._SMSLists = new EntitySet< SMSList>(new Action< SMSList>(this.attach_SMSLists), new Action< SMSList>(this.detach_SMSLists)); 
+			
+			this._FK_Supporters = new EntitySet< GoerSupporter>(new Action< GoerSupporter>(this.attach_FK_Supporters), new Action< GoerSupporter>(this.detach_FK_Supporters)); 
 			
 			this._TagShares = new EntitySet< TagShare>(new Action< TagShare>(this.attach_TagShares), new Action< TagShare>(this.detach_TagShares)); 
 			
@@ -3691,6 +3699,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_Goers__Supporter", Storage="_FK_Goers", OtherKey="SupporterId")]
+   		public EntitySet< GoerSupporter> FK_Goers
+   		{
+   		    get { return this._FK_Goers; }
+
+			set	{ this._FK_Goers.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FK_ManagedGiving_People", Storage="_ManagedGivings", OtherKey="PeopleId")]
    		public EntitySet< ManagedGiving> ManagedGivings
    		{
@@ -3767,6 +3785,16 @@ namespace CmsData
    		    get { return this._SMSLists; }
 
 			set	{ this._SMSLists.Assign(value); }
+
+   		}
+
+		
+   		[Association(Name="FK_Supporters__Goer", Storage="_FK_Supporters", OtherKey="GoerId")]
+   		public EntitySet< GoerSupporter> FK_Supporters
+   		{
+   		    get { return this._FK_Supporters; }
+
+			set	{ this._FK_Supporters.Assign(value); }
 
    		}
 
@@ -5102,6 +5130,19 @@ namespace CmsData
 		}
 
 		
+		private void attach_FK_Goers(GoerSupporter entity)
+		{
+			this.SendPropertyChanging();
+			entity.Supporter = this;
+		}
+
+		private void detach_FK_Goers(GoerSupporter entity)
+		{
+			this.SendPropertyChanging();
+			entity.Supporter = null;
+		}
+
+		
 		private void attach_ManagedGivings(ManagedGiving entity)
 		{
 			this.SendPropertyChanging();
@@ -5203,6 +5244,19 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.Person = null;
+		}
+
+		
+		private void attach_FK_Supporters(GoerSupporter entity)
+		{
+			this.SendPropertyChanging();
+			entity.Goer = this;
+		}
+
+		private void detach_FK_Supporters(GoerSupporter entity)
+		{
+			this.SendPropertyChanging();
+			entity.Goer = null;
 		}
 
 		

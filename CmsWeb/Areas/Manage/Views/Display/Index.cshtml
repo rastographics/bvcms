@@ -128,7 +128,8 @@
 		<table class="@ViewExtensions2.GridClass" cellspacing="4">
         <tr>
 		@foreach (var t in Model.fetchEmailTemplates())
-        {
+		{
+		    var ro = roleList.FirstOrDefault(r => r.RoleId == t.RoleID);
             <td width="@( 100 / WRAP_COUNT)%" class="center">
 				@t.Name<br />
                 <a href="/Display/ContentEdit/@t.Id">
@@ -140,7 +141,7 @@
 				</div>
                 </a>
                 Limited to Role:<br />
-                <b>@roleList.Where(r => r.RoleId == t.RoleID).FirstOrDefault().RoleName</b>
+                <b>@(ro != null ? ro.RoleName : "missing role!")</b>
 			</td>
             wrapAt--;
             if (wrapAt == 0)

@@ -1,9 +1,9 @@
 ﻿@using CmsData
-@model CmsData.Registration.Settings
-<a class="notifylist" href="/Organization/NotifyIds/@Model.OrgId" data-target="#usersDialog">
+@model string
+<a class="notifylist" href="/Organization/NotifyIds/@ViewBag.OrgId?field=@ViewBag.field" data-field="@ViewBag.field" data-target="#usersDialog">
 <div class="block border">
 <b>choose users to notify (confirmation comes from first)</b>
-@{  var q = from p in DbUtil.Db.PeopleFromPidString(Model.org.NotifyIds)
+@{  var q = from p in DbUtil.Db.PeopleFromPidString(Model)
             select new { p.FromEmail, p.PeopleId };
     foreach (var p in q)
     {

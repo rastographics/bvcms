@@ -15,14 +15,11 @@
         $.DatePickersAndChosen();
     };
     $.DatePickersAndChosen = function () {
-        $("form.ajax .date:not(.noparse)").datepicker({
-            autoclose: true,
-            orientation: "auto"
-        });
-        $("form.ajax .date.noparse").datepicker({
+        $("form.ajax .date").datepicker({
             autoclose: true,
             orientation: "auto",
-            forceParse: false
+            forceParse: false,
+            format: $.dtoptions.format
         });
         $('form.ajax select:not([plain])').chosen();
         $('form.ajax a.editable').editable();

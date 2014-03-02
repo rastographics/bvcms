@@ -408,6 +408,12 @@ namespace CmsData
             foreach (var c in this.CheckInTimes)
                 c.PeopleId = targetid;
             TrySubmit(db, "CheckinTimes");
+
+            db.ExecuteCommand(@"
+UPDATE dbo.GoerSupporter SET GoerId = {1} WHERE GoerId = {0};
+UPDATE dbo.GoerSupporter SET SupporterId = {1} WHERE SupporterId = {0};
+UPDATE dbo.GoerSenderAmounts SET GoerId = {1} WHERE GoerId = {0};
+UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", PeopleId, targetid);
         }
 
         private void TrySubmit(CMSDataContext db, string message)
@@ -1438,7 +1444,7 @@ namespace CmsData
             p.ThumbId = ImageData.Image.NewImageFromBits(bits, 50, 50).Id;
             p.SmallId = ImageData.Image.NewImageFromBits(bits, 120, 120).Id;
             p.MediumId = ImageData.Image.NewImageFromBits(bits, 320, 400).Id;
-            p.LargeId = ImageData.Image.NewImageFromBits(bits, 570, 800).Id;
+            p.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
             LogPictureUpload(db, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
 

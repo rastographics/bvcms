@@ -9,7 +9,7 @@
 <div class="control-group">
     @Html.LabelFor(m => m, new { @class="control-label"})
     <div class="controls">
-        <div class="input-append date noparse" data-date="@Model" data-datepicker-format="@Util.jQueryDateFormat" data-datepicker-forceParse="false">
+        <div class="input-append date">
             @Html.TextBoxFor2(m => m, true)
             <span class="add-on"><i class="fa fa-calendar"></i></span>@Html.Raw(help)
         </div>

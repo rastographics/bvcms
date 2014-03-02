@@ -69,8 +69,9 @@ namespace CmsWeb.Models
         public decimal? donation { get; set; }
         public int? donor { get; set; }
         public int? UserPeopleId { get; set; }
-        private string _Registertag;
+        public bool prospect { get; set; }
 
+        private string _Registertag;
         public string registertag
         {
             get { return _Registertag; }
@@ -159,6 +160,10 @@ namespace CmsWeb.Models
         public bool ShowFindInstructions;
         public bool ShowLoginInstructions;
         public bool ShowOtherInstructions;
+
+        public int? GoerSupporterId { get; set; }
+        public int? GoerId { get; set; }
+        public bool SupportMissionTrip { get { return GoerSupporterId.HasValue || GoerId.HasValue; } }
 
         public void ParseSettings()
         {
@@ -315,5 +320,6 @@ namespace CmsWeb.Models
             get { return history; }
             set { history = value; }
         }
+
     }
 }

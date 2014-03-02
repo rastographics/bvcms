@@ -99,7 +99,7 @@ namespace CmsWeb.Models
         private bool Filled(Organization o)
         {
             if (o != null)
-                if ((o.ClassFilled ?? false) || (o.Limit > 0 && o.Limit <= o.MemberCount))
+                if ((o.ClassFilled ?? false) || (o.Limit > 0 && o.Limit <= o.RegLimitCount(DbUtil.Db)))
                     return true;
             return false;
         }
@@ -135,7 +135,8 @@ namespace CmsWeb.Models
                 return org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes
                     || org.RegistrationTypeId == RegistrationTypeCode.CreateAccount
                     || setting.AllowOnlyOne || setting.AskVisible("AskTickets")
-                    || setting.GiveOrgMembAccess;
+                    || setting.GiveOrgMembAccess
+                    || SupportMissionTrip;
             }
             if (settings != null)
             {
@@ -174,6 +175,12 @@ namespace CmsWeb.Models
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving;
             return false;
         }
+        public bool NoCreditCardsAllowed()
+        {
+            if (org != null)
+                return org.NoCreditCards == true;
+            return List.Any(p => p.org.NoCreditCards == true);
+        }
         public bool AskDonation()
         {
             if (org != null)
@@ -194,6 +201,14 @@ namespace CmsWeb.Models
             {
                 if (masterorgid.HasValue)
                     return masterorg.OrganizationName;
+                if (SupportMissionTrip)
+                    if (GoerId.HasValue)
+                    {
+                        var g = DbUtil.Db.LoadPersonById(GoerId.Value);
+                        return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
+                    }
+                    else
+                        return "Support: " + org.OrganizationName;
                 if (settings != null && org != null && settings.ContainsKey(org.OrganizationId))
                     return Util.PickFirst(settings[org.OrganizationId].Title, org.OrganizationName);
                 return org.OrganizationName;

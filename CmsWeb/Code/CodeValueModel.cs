@@ -731,9 +731,13 @@ namespace CmsWeb.Code
                        Value = ms.Description
                    };
         }
-        public IEnumerable<CodeValueItem> MemberStatusList()
+        public IEnumerable<CodeValueItem> MemberStatusCodes0()
         {
             return MemberStatusCodes().AddNotSpecified();
+        }
+        public IEnumerable<CodeValueItem> MemberStatusList()
+        {
+            return MemberStatusCodes();
         }
         public static IEnumerable<CodeValueItem> StatusFlags()
         {

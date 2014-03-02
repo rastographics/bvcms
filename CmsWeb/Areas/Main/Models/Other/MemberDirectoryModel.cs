@@ -4,13 +4,12 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using CmsData.Codes;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
-using System.Data.Linq.SqlClient;
 
 namespace CmsWeb.Models
 {
@@ -116,12 +115,21 @@ namespace CmsWeb.Models
 
             if(FamilyOption)
                 members = from p in DbUtil.Db.People
-                          where p.Family.People.Any(pp => pp.OrganizationMembers.Any(mm => mm.OrganizationId == OrgId))
+                          where p.Family.People.Any(pp => 
+                              pp.OrganizationMembers.Any(mm => 
+                                  mm.OrganizationId == OrgId 
+                                  && (mm.Pending ?? false) == false 
+                                  && mm.MemberTypeId != MemberTypeCode.InActive 
+                                  && mm.MemberTypeId != MemberTypeCode.Prospect))
                           where p.DeceasedDate == null
                           select p;
             else
                 members = from p in DbUtil.Db.People
-                          where p.OrganizationMembers.Any(mm => mm.OrganizationId == OrgId)
+                          where p.OrganizationMembers.Any(mm => 
+                                  mm.OrganizationId == OrgId 
+                                  && (mm.Pending ?? false) == false 
+                                  && mm.MemberTypeId != MemberTypeCode.InActive 
+                                  && mm.MemberTypeId != MemberTypeCode.Prospect)
                           where p.DeceasedDate == null
                           select p;
 

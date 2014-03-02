@@ -17,14 +17,15 @@ namespace CmsWeb.Models
     public class MailingController
     {
         public bool UseTitles { get; set; }
+        public bool UseMailFlags { get; set; }
 
         public IEnumerable<MailingInfo> FetchIndividualList(string sortExpression, Guid QueryId)
         {
             var q = DbUtil.Db.PeopleQuery(QueryId);
+            if (UseMailFlags)
+                q = FilterMailFlags(q);
             var q2 = from p in q
                      where p.DeceasedDate == null
-                     where p.PrimaryBadAddrFlag != 1
-                     where p.DoNotMailFlag == false
                      select new MailingInfo
                      {
                          Address = p.PrimaryAddress,
@@ -46,10 +47,10 @@ namespace CmsWeb.Models
         public IEnumerable<MailingInfo> GroupByAddress(Guid QueryId)
         {
             var q = DbUtil.Db.PeopleQuery(QueryId);
+            if (UseMailFlags)
+                q = FilterMailFlags(q);
             var q2 = from p in q
                      where p.DeceasedDate == null
-                     where p.PrimaryBadAddrFlag != 1
-                     where p.DoNotMailFlag == false
                      group p by p.FamilyId into g
                      let one = g.First().Family.HeadOfHousehold
                      let last = one.LastName
@@ -78,11 +79,11 @@ namespace CmsWeb.Models
                     where q1.Any(p => p.FamilyId == f.FamilyId)
                     select f.People.Single(fm => fm.PeopleId == f.HeadOfHouseholdId);
 
+            if (UseMailFlags)
+                q = FilterMailFlags(q);
             var q2 = from h in q
                      let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == h.SpouseId)
                      where h.DeceasedDate == null
-                     where h.PrimaryBadAddrFlag != 1
-                     where h.DoNotMailFlag == false
                      select new MailingInfo
                      {
                          Address = h.PrimaryAddress,
@@ -111,13 +112,13 @@ namespace CmsWeb.Models
         }
         public IEnumerable<MailingInfo> FetchFamilyMembers(string sortExpression, Guid QueryId)
         {
-			var q = DbUtil.Db.PeopleQuery(QueryId);
-			var q2 = from pp in q
-					 group pp by pp.FamilyId into g
-					 from p in g.First().Family.People
-					 where p.DeceasedDate == null
-					 let famname = g.First().Family.People.Single(hh => hh.PeopleId == hh.Family.HeadOfHouseholdId).LastName
-					 orderby famname, p.FamilyId, p.PositionInFamilyId, p.GenderId
+            var q = DbUtil.Db.PeopleQuery(QueryId);
+            var q2 = from pp in q
+                     group pp by pp.FamilyId into g
+                     from p in g.First().Family.People
+                     where p.DeceasedDate == null
+                     let famname = g.First().Family.People.Single(hh => hh.PeopleId == hh.Family.HeadOfHouseholdId).LastName
+                     orderby famname, p.FamilyId, p.PositionInFamilyId, p.GenderId
                      select new MailingInfo
                      {
                          Address = p.PrimaryAddress,
@@ -134,7 +135,7 @@ namespace CmsWeb.Models
                          PeopleId = p.PeopleId
                      };
             q2 = ApplySort(q2, sortExpression);
-			return q2;
+            return q2;
         }
         public IEnumerable<MailingInfo> FetchFamilyList(string sortExpression, Guid QueryId)
         {
@@ -146,10 +147,10 @@ namespace CmsWeb.Models
         public IEnumerable<MailingInfo> FetchParentsOfList(string sortExpression, Guid QueryId)
         {
             var q = DbUtil.Db.PeopleQuery(QueryId);
+            if (UseMailFlags)
+                q = FilterMailFlags(q);
             var q2 = from p in q
                      where p.DeceasedDate == null
-                     where p.PrimaryBadAddrFlag != 1
-                     where p.DoNotMailFlag == false
                      select new MailingInfo
                      {
                          Address = p.PrimaryAddress,
@@ -171,13 +172,27 @@ namespace CmsWeb.Models
 
         private const string STR_Couples = "couples";
 
-        private static IQueryable<Person> EliminateCoupleDoublets(IQueryable<Person> q)
+        private IQueryable<Person> EliminateCoupleDoublets(IQueryable<Person> q)
         {
-            var q1 = from p in q
+            IQueryable<Person> q1 = q;
+            if (UseMailFlags)
+                q1 = from p in q
                      // exclude wife who has a husband who is already in the list
                      where !(p.GenderId == 2 && p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId))
-                     where p.DeceasedDate == null
-                     where (p.BadAddressFlag == null || p.BadAddressFlag == false)
+                     where (p.BadAddressFlag ?? false) == false
+                     where p.DoNotMailFlag == false
+                     select p;
+            else
+                q1 = from p in q
+                     // exclude wife who has a husband who is already in the list
+                     where !(p.GenderId == 2 && p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId))
+                     select p;
+            return q1;
+        }
+        public static IQueryable<Person> FilterMailFlags(IQueryable<Person> q)
+        {
+            var q1 = from p in q
+                     where (p.BadAddressFlag ?? false) == false
                      where p.DoNotMailFlag == false
                      select p;
             return q1;
@@ -333,12 +348,12 @@ namespace CmsWeb.Models
             var q = from f in DbUtil.Db.Families
                     where qp.Any(p => p.FamilyId == f.FamilyId)
                     select f.People.Single(fm => fm.PeopleId == f.HeadOfHouseholdId);
+            if (UseMailFlags)
+                q = FilterMailFlags(q);
 
             return (from h in q
                     let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == h.SpouseId)
                     where h.DeceasedDate == null
-                    where h.PrimaryBadAddrFlag != 1
-                    where h.DoNotMailFlag == false
                     select new
                     {
                         LabelName = (h.Family.CoupleFlag == 1 ? (UseTitles ? (h.TitleCode != null ? h.TitleCode + " and Mrs. " + h.Name
@@ -364,10 +379,10 @@ namespace CmsWeb.Models
         public IEnumerable FetchExcelParents(Guid QueryId, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(QueryId);
+            if (UseMailFlags)
+                q = FilterMailFlags(q);
             var q2 = from p in q
                      where p.DeceasedDate == null
-                     where p.PrimaryBadAddrFlag != 1
-                     where p.DoNotMailFlag == false
                      let hohemail = p.Family.HeadOfHousehold.EmailAddress
                      select new
                      {
@@ -479,7 +494,5 @@ namespace CmsWeb.Models
             public bool Deceased { get; set; }
 
         }
-
-
     }
 }

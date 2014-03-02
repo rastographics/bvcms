@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Routing;
+using Dapper;
 using OfficeOpenXml;
 using Org.BouncyCastle.OpenSsl;
 using UtilityExtensions;
@@ -308,14 +309,12 @@ table.grid tr:nth-child(1) {
     public class CMSLogAttribute : ActionFilterAttribute
     {
         protected DateTime start_time;
+        protected Guid id;
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            id = Guid.NewGuid();
             start_time = DateTime.Now;
-        }
-
-        public override void OnResultExecuted(ResultExecutedContext filterContext)
-        {
             var routeData = filterContext.RouteData;
             var ts = (DateTime.Now - start_time);
             var duration = ts.TotalSeconds;
@@ -339,12 +338,37 @@ table.grid tr:nth-child(1) {
                     cmd.Parameters.AddWithValue("controller", controller);
                     cmd.Parameters.AddWithValue("action", action);
                     cmd.Parameters.AddWithValue("userid", userid);
-                    cmd.Parameters.AddWithValue("duration", duration);
+                    cmd.Parameters.AddWithValue("id", id);
                     if (userid.HasValue())
                         cmd.Parameters.AddWithValue("newui", ViewExtensions2.UseNewLook());
                     else
                         cmd.Parameters.AddWithValue("newui", false);
                     cmd.ExecuteNonQuery();
+                    cn.Close();
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        public override void OnResultExecuted(ResultExecutedContext filterContext)
+        {
+            var routeData = filterContext.RouteData;
+            var action = (string)routeData.Values["action"];
+            if (action == "FetchPrintJobs")
+                return;
+
+            var ts = (DateTime.Now - start_time);
+            var duration = ts.TotalSeconds;
+            try
+            {
+                var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
+                if (cs != null)
+                {
+                    var cn = new SqlConnection(cs.ConnectionString);
+                    cn.Open();
+                    cn.Execute("update dbo.RequestLog set duration = @duration where id = @id", new {duration, id});
                     cn.Close();
                 }
             }

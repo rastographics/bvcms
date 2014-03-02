@@ -108,7 +108,7 @@ namespace CmsData
             var list = (from p in CMSRoleProvider.provider.GetAdmins()
                         where !p.EmailAddress.Contains("bvcms.com")
                         select p).ToList();
-            if(list.Count == 0)
+            if (list.Count == 0)
                 list = (from p in CMSRoleProvider.provider.GetAdmins()
                         select p).ToList();
             return list;
@@ -165,6 +165,19 @@ namespace CmsData
             bool usedAdmins;
             return StaffPeopleForOrg(orgid, out usedAdmins);
         }
+        public List<Person> NotifyIds(int orgid, string ids)
+        {
+            var org = LoadOrganizationById(orgid);
+            var a = ids.Split(',').Select(ss => ss.ToInt()).ToArray();
+            var q2 = from p in People
+                     where a.Contains(p.PeopleId)
+                     orderby p.PeopleId == a.FirstOrDefault() descending
+                     select p;
+            var list = q2.ToList();
+            if(list.Count == 0)
+                return AdminPeople();
+            return list;
+        }
         public Person UserPersonFromEmail(string email)
         {
             var q = from u in Users
@@ -177,7 +190,7 @@ namespace CmsData
         {
             return CreateQueue(Util.UserPeopleId, From, subject, body, schedule, tagId, publicViewable);
         }
-        public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable)
+        public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, int? goerSupporterId = null)
         {
             var tag = TagById(tagId);
             if (tag == null)
@@ -228,7 +241,47 @@ namespace CmsData
                 {
                     PeopleId = pid,
                     OrgId = CurrentOrgId,
-                    Guid = Guid.NewGuid()
+                    Guid = Guid.NewGuid(),
+                    GoerSupportId = goerSupporterId,
+                });
+            }
+            SubmitChanges();
+            return emailqueue;
+        }
+        public EmailQueue CreateQueueForSupporters(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, IQueryable<GoerSupporter> list, bool publicViewable)
+        {
+            var emailqueue = new EmailQueue
+            {
+                Queued = DateTime.Now,
+                FromAddr = from.Address,
+                FromName = from.DisplayName,
+                Subject = subject,
+                Body = body,
+                SendWhen = schedule,
+                QueuedBy = queuedBy,
+                Transactional = false,
+                PublicX = publicViewable,
+            };
+            EmailQueues.InsertOnSubmit(emailqueue);
+            SubmitChanges();
+
+            var q2 = from g in list
+                     where g.SupporterId != null
+                     where g.Supporter.EmailAddress != null
+                     where g.Supporter.EmailAddress != ""
+                     where (g.Supporter.SendEmailAddress1 ?? true) || (g.Supporter.SendEmailAddress2 ?? false)
+                     where g.Supporter.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
+                     orderby g.SupporterId
+                     select g;
+
+            foreach (var g in q2)
+            {
+                emailqueue.EmailQueueTos.Add(new EmailQueueTo
+                {
+                    PeopleId = g.SupporterId ?? 0,
+                    OrgId = CurrentOrgId,
+                    Guid = Guid.NewGuid(),
+                    GoerSupportId = g.Id,
                 });
             }
             SubmitChanges();
@@ -401,10 +454,10 @@ namespace CmsData
 
         private static string CLICK_TRACK = "https://{0}.bvcms.com/ExternalServices/ct?l={1}";
 
-        private static string createClickTracking( int emailID, string input )
+        private static string createClickTracking(int emailID, string input)
         {
             var doc = new HtmlDocument();
-            doc.LoadHtml( input );
+            doc.LoadHtml(input);
             int linkIndex = 0;
 
             using (var md5Hash = MD5.Create())
@@ -412,12 +465,12 @@ namespace CmsData
                 var linkList = doc.DocumentNode.SelectNodes("//a[@href]");
                 if (linkList == null) return doc.DocumentNode.OuterHtml;
 
-                foreach (HtmlNode link in linkList )
+                foreach (HtmlNode link in linkList)
                 {
                     var att = link.Attributes["href"];
-                    if( IsSpecialLink( att.Value ) ) continue;
+                    if (IsSpecialLink(att.Value)) continue;
 
-                    var hash = hashMD5Base64(md5Hash, att.Value + DateTime.Now.ToString("o") + linkIndex );
+                    var hash = hashMD5Base64(md5Hash, att.Value + DateTime.Now.ToString("o") + linkIndex);
 
                     var emailLink = new EmailLink
                         {

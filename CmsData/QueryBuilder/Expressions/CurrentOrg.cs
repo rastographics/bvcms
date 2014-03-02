@@ -21,7 +21,7 @@ namespace CmsData
             var cgmode = db.CurrentGroupsMode;
             Expression<Func<Person, bool>> pred = p => (
                 from m in p.OrganizationMembers
-                where m.OrganizationId == db.CurrentOrgId
+                where m.OrganizationId == db.CurrentOrgId0
                 let gc = m.OrgMemMemTags.Count(mt => cg.Contains(mt.MemberTagId))
                 // for Match Any
                 where gc > 0 || cg[0] <= 0 || cgmode == 1
@@ -33,7 +33,7 @@ namespace CmsData
                 where (m.Pending ?? false) == false
                 where (from t in db.Transactions
                        where t.OriginalTransaction.TransactionPeople.Any(pp => pp.PeopleId == p.PeopleId)
-                       where t.OriginalTransaction.OrgId == db.CurrentOrgId
+                       where t.OriginalTransaction.OrgId == db.CurrentOrgId0
                        orderby t.Id descending
                        select t.Amtdue).FirstOrDefault() > 0
                 select m).Any();
@@ -49,7 +49,7 @@ namespace CmsData
             var cgmode = db.CurrentGroupsMode;
             Expression<Func<Person, bool>> pred = p => (
                 from m in p.OrganizationMembers
-                where m.OrganizationId == db.CurrentOrgId
+                where m.OrganizationId == db.CurrentOrgId0
                 let gc = m.OrgMemMemTags.Count(mt => cg.Contains(mt.MemberTagId))
                 // for Match Any
                 where gc > 0 || cg[0] <= 0 || cgmode == 1
@@ -74,7 +74,7 @@ namespace CmsData
                     {
                         var g = sg.Substring(1);
                         pred2 = p => (from om in p.OrganizationMembers
-                                      where om.OrganizationId == db.CurrentOrgId
+                                      where om.OrganizationId == db.CurrentOrgId0
                                       where om.OrgMemMemTags.All(
                                           mm => !mm.MemberTag.Name.StartsWith(g))
                                       select om).Any();
@@ -82,7 +82,7 @@ namespace CmsData
                     else
                     {
                         pred2 = p => (from om in p.OrganizationMembers
-                                      where om.OrganizationId == db.CurrentOrgId
+                                      where om.OrganizationId == db.CurrentOrgId0
                                       where om.OrgMemMemTags.Any(
                                           mm => mm.MemberTag.Name.StartsWith(sg))
                                       select om).Any();
@@ -101,7 +101,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.OrganizationMembers.Any(m =>
-                    m.OrganizationId == db.CurrentOrgId
+                    m.OrganizationId == db.CurrentOrgId0
                     && m.MemberTypeId == MemberTypeCode.InActive);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
@@ -113,7 +113,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.OrganizationMembers.Any(m =>
-                    m.OrganizationId == db.CurrentOrgId
+                    m.OrganizationId == db.CurrentOrgId0
                     && m.MemberTypeId == MemberTypeCode.Prospect);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
@@ -125,7 +125,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.OrganizationMembers.Any(m =>
-                    m.OrganizationId == db.CurrentOrgId
+                    m.OrganizationId == db.CurrentOrgId0
                     && (m.Pending ?? false) == true);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
@@ -137,13 +137,13 @@ namespace CmsData
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                 p.EnrollmentTransactions.Any(m =>
-                    m.OrganizationId == db.CurrentOrgId
+                    m.OrganizationId == db.CurrentOrgId0
                     && m.TransactionTypeId > 3
                     && m.MemberTypeId != MemberTypeCode.Prospect
                     && m.TransactionStatus == false
                     && (m.Pending ?? false) == false)
                 && !p.OrganizationMembers.Any(m =>
-                    m.OrganizationId == db.CurrentOrgId
+                    m.OrganizationId == db.CurrentOrgId0
                     && (m.Pending ?? false) == false);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
@@ -168,11 +168,11 @@ namespace CmsData
                 where dt == null || a.MeetingDate >= dt
                 where a.MeetingDate > db.LastDrop(a.OrganizationId, a.PeopleId)
                 where ids.Contains(a.AttendanceTypeId.Value)
-                where a.OrganizationId == db.CurrentOrgId
+                where a.OrganizationId == db.CurrentOrgId0
                 select a
                 ).Any() && !(
                     from m in p.OrganizationMembers
-                    where m.OrganizationId == db.CurrentOrgId
+                    where m.OrganizationId == db.CurrentOrgId0
                     where (m.Pending ?? false) == false
                     where (m.MemberTypeId != MemberTypeCode.Prospect)
                     select m
@@ -185,7 +185,7 @@ namespace CmsData
         internal Expression LeadersUnderCurrentOrg()
         {
             var tf = CodeIds == "1";
-            var oids = db.GetParentChildOrgIds(db.CurrentOrgId);
+            var oids = db.GetParentChildOrgIds(db.CurrentOrgId0);
             Expression<Func<Person, bool>> pred = p =>
                 p.OrganizationMembers.Any(m =>
                     p.OrganizationMembers.Any(mm => oids.Contains(mm.OrganizationId) && mm.MemberType.AttendanceTypeId == AttendTypeCode.Leader)
@@ -197,7 +197,7 @@ namespace CmsData
         internal Expression MembersUnderCurrentOrg()
         {
             var tf = CodeIds == "1";
-            var oids = db.GetParentChildOrgIds(db.CurrentOrgId);
+            var oids = db.GetParentChildOrgIds(db.CurrentOrgId0);
             Expression<Func<Person, bool>> pred = p =>
                 p.OrganizationMembers.Any(m =>
                     p.OrganizationMembers.Any(mm => oids.Contains(mm.OrganizationId))

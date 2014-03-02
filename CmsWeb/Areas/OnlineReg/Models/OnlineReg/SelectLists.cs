@@ -62,7 +62,7 @@ namespace CmsWeb.Models
         public static List<ClassInfo> Classes(Organization masterorg, int id)
         {
             var q = from o in OrderedClasses(masterorg)
-                    let hasroom = (o.ClassFilled ?? false) == false && ((o.Limit ?? 0) == 0 || o.Limit > (o.MemberCount ?? 0))
+                    let hasroom = (o.ClassFilled ?? false) == false && ((o.Limit ?? 0) == 0 || o.Limit > o.RegLimitCount(DbUtil.Db))
                     where o.RegistrationTypeId > 0
                     select new ClassInfo
                     {

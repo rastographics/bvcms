@@ -101,7 +101,7 @@ namespace CmsData.API
 
         public static IEnumerable<ContributorInfo> contributors(CMSDataContext Db,
             DateTime fromDate, DateTime toDate, int PeopleId, int? SpouseId, int FamilyId, bool noaddressok, bool useMinAmt,
-            string startswith = null, string sort = null, bool singleStatement = false)
+            string startswith = null, string sort = null, bool singleStatement = false, int? tagid = null)
         {
             var MinAmt = Db.Setting("MinContributionAmount", "5").ToDecimal();
             if (!useMinAmt)
@@ -114,7 +114,7 @@ namespace CmsData.API
                 startswith = a[0];
                 endswith = a[1];
             }
-            var q = from p in Db.Contributors(fromDate, toDate, PeopleId, SpouseId, FamilyId, noaddressok)
+            var q = from p in Db.Contributors(fromDate, toDate, PeopleId, SpouseId, FamilyId, noaddressok, tagid)
                     select p;
 
             if (startswith.HasValue() && !endswith.HasValue())
@@ -252,7 +252,7 @@ namespace CmsData.API
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionTypeId != ContributionTypeCode.GiftInKind
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
-                    where c.ContributionDate >= fromDate && c.ContributionDate.Value.Date <= toDate
+                    where c.ContributionDate >= fromDate && c.ContributionDate.Value.Date <= toDate.Date
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
                     where !(c.ContributionFund.NonTaxDeductible ?? false)
                     where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)

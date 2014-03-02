@@ -1,21 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
-using CmsData.Codes;
-using CmsWeb.Areas.Main.Models;
-using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Org.Models;
+using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsData;
-using Elmah;
-using System.Threading;
-using Dapper;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -25,57 +15,81 @@ namespace CmsWeb.Areas.Org.Controllers
         [GET("MissionTripEmail/{oid}/{pid}")]
         public ActionResult Index(int oid, int pid)
         {
-            DbUtil.LogActivity("Emailing people");
-
-            var m = new MissionTripEmailer(oid, pid);
-
+            if (Util.UserPeopleId != pid && !User.IsInRole("MissionGiving"))
+                return Content("not authorized");
+            DbUtil.LogActivity("MissionTripEmail {0}".Fmt(pid));
+            var m = new MissionTripEmailer {PeopleId = pid, OrgId = oid};
             return View(m);
         }
-
-        [POST("MissionTripEmail/Send")]
-        [ValidateInput(false)]
-        public ActionResult QueueEmails(MissionTripEmailer m)
+        [GET("MissionTripEmail/Sent")]
+        public ActionResult Sent()
         {
-            if (!m.Subject.HasValue() || !m.Body.HasValue())
-                return Json(new { id = 0, content = "<h2>Both Subject and Body need some text</h2>" });
-            if (!User.IsInRole("Admin") && m.Body.Contains("{createaccount}"))
-                return Json(new { id = 0, content = "<h2>Only Admin can use {createaccount}</h2>" });
-
-            if (Util.SessionTimedOut())
-            {
-                Session["massemailer"] = m;
-                return Content("timeout");
-            }
-
-            DbUtil.LogActivity("Emailing people");
-
-            string host = Util.Host;
-            // save these from HttpContext to set again inside thread local storage
-            var useremail = Util.UserEmail;
-            var isinroleemailtest = User.IsInRole("EmailTest");
-
-                    DbUtil.Db.SendPeopleEmail(0);
-            return Content("");
+            return View();
         }
+
         [POST("MissionTripEmail/Send")]
         [ValidateInput(false)]
-        public ActionResult TestEmail(MissionTripEmailer m)
+        public ActionResult Send(MissionTripEmailer m)
         {
-            if (Util.SessionTimedOut())
-            {
-                Session["massemailer"] = m;
-                return Content("timeout");
-            }
-            var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
-            try
-            {
-                DbUtil.Db.Email("", p, null, m.Subject, m.Body, false);
-            }
-            catch (Exception ex)
-            {
-                return Content("<h2>Error Email Sent</h2>" + ex.Message);
-            }
-            return Content("<h2>Test Email Sent</h2>");
+            var s = m.Send();
+            if (s == null)
+                return Content("/MissionTripEmail/Sent");
+            return Content(s);
+        }
+        [POST("MissionTripEmail/TestSend")]
+        [ValidateInput(false)]
+        public ActionResult TestSend(MissionTripEmailer m)
+        {
+            var s = m.TestSend();
+            return Content(s);
+        }
+
+
+        [POST("MissionTripEmail/Search/{id:int}")]
+        public ActionResult SupportSearch(int id, string q)
+        {
+            var qq = MissionTripEmailer.Search(id, q).ToArray();
+            return Content(JsonConvert.SerializeObject(qq));
+        }
+
+        [POST("MissionTripEmail/Supporters/{id:int}")]
+        public ActionResult Supporters(int id)
+        {
+            var m = new MissionTripEmailer() {PeopleId = id};
+            return View(m);
+        }
+        [POST("MissionTripEmail/SupportersEdit/{id:int}")]
+        public ActionResult SupportersEdit(int id)
+        {
+            var m = new MissionTripEmailer() {PeopleId = id};
+            return View(m);
+        }
+        [POST("MissionTripEmail/SupportersUpdate")]
+        [ValidateInput(false)]
+        public ActionResult SupportersUpdate(MissionTripEmailer m)
+        {
+            m.UpdateRecipients();
+            return View("Supporters", m);
+        }
+        [POST("MissionTripEmail/RemoveSupporter/{id:int}/{supporterid:int}")]
+        public ActionResult RemoveSupporter(int id, int supporterid)
+        {
+            var m = new MissionTripEmailer() {PeopleId = id};
+            m.RemoveSupporter(supporterid);
+            return View("SupportersEdit", m);
+        }
+        [POST("MissionTripEmail/AddSupporter/{id:int}/{supporter}")]
+        public ActionResult AddSupporter(int id, string supporter)
+        {
+            int? supporterid = null;
+            string email = null;
+            if (supporter.AllDigits())
+                supporterid = supporter.ToInt();
+            else
+                email = supporter;
+            var m = new MissionTripEmailer() {PeopleId = id};
+            ViewBag.newid = m.AddRecipient(supporterid, email);
+            return View("Supporters", m);
         }
     }
 }

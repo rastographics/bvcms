@@ -112,10 +112,11 @@ Please call the church to resolve this before we can complete your information."
                     }
                     else if (ComputesOrganizationByAge() && org == null)
                     {
+                        var msg = NoAppropriateOrgError ?? "Sorry, no approprate org";
                         if (selectfromfamily)
-                            ModelState.AddModelError("age-" + person.PeopleId, "Sorry, cannot find an appropriate age group");
+                            ModelState.AddModelError("age-" + person.PeopleId, msg);
                         else
-                            ModelState.AddModelError(dobname, "Sorry, cannot find an appropriate age group");
+                            ModelState.AddModelError(dobname, msg);
                         IsValidForContinue = false;
                     }
                     else if (MemberOnly() && person.MemberStatusId != MemberStatusCode.Member)
@@ -147,7 +148,8 @@ Please call the church to resolve this before we can complete your account.<br /
 #endif
                         }
                         else if (om != null && setting.AllowReRegister == false
-                            && om.Organization.RegistrationTypeId != RegistrationTypeCode.ChooseVolunteerTimes)
+                            && om.Organization.RegistrationTypeId != RegistrationTypeCode.ChooseVolunteerTimes
+                            && !Parent.SupportMissionTrip)
                         {
                             ModelState.AddModelError(foundname, "This person is already registered");
                             IsValidForContinue = false;
@@ -215,7 +217,7 @@ Please search with a different email, phone, or birthday.";
                 ModelState.AddModelError(dobname, "must be {0} to create account".Fmt(minage));
 
             if (ComputesOrganizationByAge() && GetAppropriateOrg() == null)
-                ModelState.AddModelError(dobname, "Sorry, cannot find an appropriate age group");
+                ModelState.AddModelError(dobname, NoAppropriateOrgError);
 
             ValidateBirthdayRange(ModelState);
             int n = 0;
@@ -302,6 +304,11 @@ Please search with a different email, phone, or birthday.";
         public void ValidateModelForOther(ModelStateDictionary modelState)
         {
             var i = Index();
+            if (Parent.SupportMissionTrip)
+            {
+                OtherOK = true;
+                return;
+            }
             foreach (var ask in setting.AskItems)
                 switch (ask.Type)
                 {

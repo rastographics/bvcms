@@ -104,8 +104,6 @@ namespace CmsWeb.Areas.People.Models
 
         public List<GoerItem> GoerList()
         {
-            if(!HttpContext.Current.User.IsInRole("Developer"))
-                return new List<GoerItem>();
             return (from m in person.OrganizationMembers
                     where m.Organization.IsMissionTrip == true
                     where m.Organization.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
@@ -115,7 +113,7 @@ namespace CmsWeb.Areas.People.Models
                         Id = m.OrganizationId,
                         Trip = m.Organization.OrganizationName,
                         Cost = m.Amount ?? 0,
-                        Paid = m.AmountPaid ?? 0,
+                        Paid = m.TotalPaid(DbUtil.Db),
                     }).ToList();
         }
     }
