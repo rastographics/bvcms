@@ -26,16 +26,32 @@ namespace CmsWeb.Areas.Search.Models
                 case FieldType.NullCode:
                 case FieldType.CodeStr:
                     if (fieldMap.DataSource == "ExtraValues")
-                        return StandardExtraValues.ExtraValueCodes();
+                        return SelectedList(StandardExtraValues.ExtraValueCodes());
+                    if (fieldMap.DataSource == "FamilyExtraValues")
+                        return SelectedList(StandardExtraValues.FamilyExtraValueCodes());
                     if (fieldMap.DataSource == "Campuses")
-                        return Campuses();
+                        return SelectedList(Campuses());
                     return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
                 case FieldType.DateField:
                     return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
             }
             return null;
         }
-        private List<SelectListItem> ConvertToSelect(object items, string valuefield, List<string> values = null )
+
+        private IEnumerable<SelectListItem> SelectedList(IEnumerable<SelectListItem> items)
+        {
+            if (CodeValues != null)
+                return items.Select(c => 
+                    new SelectListItem
+                    {
+                        Text = c.Text, 
+                        Value = c.Value, 
+                        Selected = CodeValues.Contains(c.Value)
+                    });
+            return items;
+        }
+
+        private List<SelectListItem> ConvertToSelect(object items, string valuefield, List<string> values = null)
         {
             var list = items as IEnumerable<CodeValueItem>;
             List<SelectListItem> list2;
@@ -151,7 +167,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public static IEnumerable<SelectListItem> Divisions(int? id)
         {
-            if(!id.HasValue)
+            if (!id.HasValue)
                 return null;
             var q = from div in DbUtil.Db.Divisions
                     where div.ProgDivs.Any(d => d.ProgId == id)
