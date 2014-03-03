@@ -94,7 +94,7 @@
                         @while (Model.Read())
                         {
                             <tr>
-                                <td><a class="target" href="/Person/Index/@Model.GetValue(0)" @target>@Model.GetValue(1)</a></td>
+                                <td><a class="target" href="/Person2/@Model.GetValue(0)" @target>@Model.GetValue(1)</a></td>
                                 @for (var c = 2; c < Model.FieldCount; c++)
                                 {
                                     var v = Model.GetValue(c).ToString();

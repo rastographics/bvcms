@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Search.Controllers
 			if (m.people.Count == 1 && (q.AllDigits() || m.orgs.Count == 0))
 			{
 				var pid = m.people.Single().PeopleId;
-				return Redirect("/Person/Index/" + pid);
+				return Redirect("/Person2/" + pid);
 			}
 			if (m.orgs.Count == 1 && m.people.Count == 0)
 			{

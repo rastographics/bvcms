@@ -270,7 +270,7 @@ namespace CmsWeb.Models
             if (!Roles.IsUserInRole(name, "Access") && !Roles.IsUserInRole(name, "OrgMembersOnly"))
             {
                 if (Util.UserPeopleId > 0)
-                    return "/Person/Index/" + Util.UserPeopleId;
+                    return "/Person2/" + Util.UserPeopleId;
 
                 if (name.HasValue())
                     DbUtil.LogActivity("user {0} loggedin without a role ".Fmt(name));

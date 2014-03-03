@@ -6,7 +6,7 @@
 <table cellspacing="5">
 <tr><td class="right">From:</td><td>@Html.TextBox("from")</td>
     <td class="right">SentById:</td><td>@Html.TextBox("senderid")
-        @if(Model.senderid.HasValue) { <a href="/Person/Index/@Model.senderid">@Model.sender</a>}</td>
+        @if(Model.senderid.HasValue) { <a href="/Person2/@Model.senderid">@Model.sender</a>}</td>
 </tr>
 <tr><td class="right">Subject:</td><td>@Html.TextBox("subject")</td>
     <td class="right">Body:</td><td>@Html.TextBox("body")</td>
@@ -15,7 +15,7 @@
     <td class="right">End Date:</td><td>@Html.DatePicker("enddt")</td>
 </tr>
 <tr><td class="right">RecipientId:</td><td>@Html.TextBox("peopleid") 
-        @if(Model.peopleid.HasValue) { <a href="/Person/Index/@Model.peopleid">@Model.name</a>}</td>
+        @if(Model.peopleid.HasValue) { <a href="/Person2/@Model.peopleid">@Model.name</a>}</td>
 	<td class="right">Transactional</td>
 	<td>@Html.CheckBox("transactional") | Scheduled @Html.CheckBox("scheduled")</td>
 </tr>

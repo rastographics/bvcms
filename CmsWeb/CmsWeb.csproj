@@ -106,6 +106,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
+    <Reference Include="DocX">
+      <HintPath>..\packages\DocX.1.0.0.13\lib\net40\DocX.dll</HintPath>
+    </Reference>
     <Reference Include="EcmaScript.NET">
       <HintPath>..\packages\EcmaScript.Net.1.0.1.0\lib\net20\EcmaScript.NET.dll</HintPath>
     </Reference>
@@ -271,6 +274,7 @@
     <Compile Include="Areas\Finance\Models\BatchImport\SilverDale.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Areas\Finance\Models\BatchImport\StewardshipTechnology.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\Vanco.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -298,6 +302,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSaveImage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSearch.cs" />
+    <Compile Include="Areas\Reports\Models\AveryAddressWordResult.cs" />
     <Compile Include="Areas\Reports\Models\QueryStatsResult.cs" />
     <Compile Include="Areas\Main\Controllers\SavedQuery2Controller.cs" />
     <Compile Include="Areas\Main\Models\Contact\ContacteesModel.cs" />
@@ -1344,6 +1349,7 @@
     <Content Include="Areas\Reports\Views\Reports\MissionTripFunding.cshtml" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\MissionSupport.cshtml" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\MissionSupportDone.cshtml" />
+    <Content Include="Content\avery5160.docx" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

@@ -54,7 +54,7 @@ pre {
 @foreach(var m in Model.Members())
 {
         <tr>
-            <td><a href="/Person/Index/@m.PeopleId">@m.Name</a></td>
+            <td><a href="/Person2/@m.PeopleId">@m.Name</a></td>
             <td><span id="p.@m.PeopleId" class="clickSelect @(m.Deceased?"red":"")">@m.FamilyPosition</span></td>
             <td>@m.Age</td>
             <td>@m.MemberStatus</td>
@@ -79,7 +79,7 @@ pre {
 @foreach (var r in Model.RelatedFamilies())
 {
         <tr>
-            <td><a href="/Person/Index/@r.PeopleId">@r.Name</a></td>
+            <td><a href="/Person2/@r.PeopleId">@r.Name</a></td>
             <td><span id="e.@r.Id1.@r.Id2" class="clickEdit">@Html.Raw(r.Description)</span></td>
             <td><a id="d.@r.Id1.@r.Id2.@r.Id" href="#" confirm="Are you sure?" class="delete">delete</a></td>
         </tr>

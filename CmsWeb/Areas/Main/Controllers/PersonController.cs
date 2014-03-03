@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
 		public ActionResult Current()
 		{
-			return Redirect("/Person/Index/" + Util2.CurrentPeopleId);
+			return Redirect("/Person2/" + Util2.CurrentPeopleId);
 		}
 		public ActionResult Index(int? id)
 		{
@@ -765,7 +765,7 @@ namespace CmsWeb.Areas.Main.Controllers
 				Session["showallmeetings"] = true;
 			else
 				Session.Remove("showallmeetings");
-			return Redirect("/Person/Index/" + id);
+			return Redirect("/Person2/" + id);
 		}
 		private void InitExportToolbar(int? id)
 		{

@@ -88,7 +88,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.LogActivity("Splitting Family for {0}".Fmt(p.Name));
             if (p == null)
                 return Content("/");
-            return Content("/Person/Index/" + id);
+            return Content("/Person2/" + id);
         }
 
 

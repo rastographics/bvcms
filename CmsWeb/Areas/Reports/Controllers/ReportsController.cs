@@ -90,7 +90,25 @@ namespace CmsWeb.Areas.Reports.Controllers
                 usephone = usephone ?? false,
                 skip = skipNum,
                 sortzip = sortzip,
-                useMailFlags = useMailFlags
+                useMailFlags = useMailFlags,
+            };
+        }
+        [GET("Reports/AveryAddressWord/{id}")]
+        public ActionResult AveryAddressWord(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip, bool? useMailFlags, int skipNum = 0)
+        {
+            if (!id.HasValue)
+                return Content("no query");
+            if (!format.HasValue())
+                return Content("no format");
+            return new AveryAddressWordResult
+            {
+                id = id.Value,
+                format = format,
+                titles = titles,
+                usephone = usephone ?? false,
+                skip = skipNum,
+                sortzip = sortzip,
+                useMailFlags = useMailFlags,
             };
         }
 

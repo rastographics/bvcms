@@ -144,7 +144,7 @@ CKEditorFuncNum, baseurl + fn, error));
                 return Redirect("/Account/ChangePassword");
             if (!returnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
-                    return Redirect("/Person/Index/" + Util.UserPeopleId);
+                    return Redirect("/Person2/" + Util.UserPeopleId);
             if(!DbUtil.Db.UserPreference("UseNewLook").HasValue())
                 DbUtil.Db.SetUserPreference("UseNewLook", "true");
             if (returnUrl.HasValue())

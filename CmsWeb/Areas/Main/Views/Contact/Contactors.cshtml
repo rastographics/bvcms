@@ -14,7 +14,7 @@
         @foreach (var c in Model.Contactors())
         { 
             <tr>
-                <td><a class="link in" href="/Person/Index/@c.PeopleId">@c.Name</a></td>
+                <td><a class="link in" href="/Person2/@c.PeopleId">@c.Name</a></td>
                 @if (Model.CanViewComments)
                 {
                     <td><a class="remove in" href="/Contact/RemoveContactor/@c.ContactId/@c.PeopleId">Remove</a></td>

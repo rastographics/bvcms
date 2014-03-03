@@ -35,7 +35,7 @@ Show Previous Prospects:@Html.CheckBox("ShowProspects")
 @foreach(var om in Model.PrevMembers())
 { 
 <tr>
-    <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person/Index/@om.PeopleId">@om.Name</a></td>
+    <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@om.PeopleId">@om.Name</a></td>
     <td><a href="/TransactionHistory/Index/@om.PeopleId?oid=@Model.OrganizationId" target="_blank">
         @om.MemberType</a></td>
     <td>@om.MemberStatus<br />

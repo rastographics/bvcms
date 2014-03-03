@@ -26,7 +26,7 @@ Count: <strong>@Model.Count()</strong>
 @foreach(var om in Model.Visitors())
 { 
 <tr>
-    <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person/Index/@om.PeopleId">@om.Name</a></td>
+    <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@om.PeopleId">@om.Name</a></td>
     <td>
         <a href="/Organization/Join/@Model.OrganizationId/@om.PeopleId" class="joinlink">Join Org</a>
         <br/><a href="/Organization/AddProspect/@Model.OrganizationId/@om.PeopleId" class="joinlink">Add as Prospect</a>

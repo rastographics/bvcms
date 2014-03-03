@@ -19,7 +19,7 @@
 @foreach (var m in Model.Members())
 { 
     <tr>
-        <td><a href="/Person/Index/@m.Id"><span style='color: @m.Color'>@m.Name</span></a></td>
+        <td><a href="/Person2/@m.Id"><span style='color: @m.Color'>@m.Name</span></a></td>
         <td>@Html.Raw(m.SpouseIndicator)</td>
         <td>@m.Age</td>
         <td>@m.Email</td>

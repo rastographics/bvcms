@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 DbUtil.Db.SubmitChanges();
                 return Redirect("/Merge/Index?PeopleId1={0}&PeopleId2={1}".Fmt(m.pi[0].PeopleId,m.pi[1].PeopleId));
             }
-            return Redirect("/Person/Index/" + m.pi[1].PeopleId);
+            return Redirect("/Person2/" + m.pi[1].PeopleId);
         }
     }
 }

@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.People.Controllers
                 Session["showallmeetings"] = true;
             else
                 Session.Remove("showallmeetings");
-            return Redirect("/Person/Index/" + id);
+            return Redirect("/Person2/" + id);
         }
     }
 }

@@ -49,7 +49,7 @@ namespace CmsWeb.Models
 
         public string PersonUrl
         {
-            get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person/Index/") + WhoId; }
+            get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person2/") + WhoId; }
         }
         public int? WhoId
         {
