@@ -5,10 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
+using System.IO;
 using System.Linq;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using CmsData;
+using Novacode;
 using UtilityExtensions;
 using System.Web.Mvc;
 
@@ -27,6 +29,18 @@ namespace CmsWeb.Areas.Reports.Models
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
+            var q = DbUtil.Db.PeopleQuery(id);
+            var q2 = from p in q
+                     orderby p.Name2
+                     select new
+                     {
+                         First = p.PreferredName,
+                         Last = p.LastName,
+                         p.PeopleId,
+                         dob = p.DOB,
+                         Phone = p.CellPhone.Length > 0 ? p.CellPhone : p.HomePhone,
+                         p.DoNotPublishPhones
+                     };
             Response.ContentType = "application/pdf";
             Response.AddHeader("content-disposition", "filename=foo.pdf");
 
@@ -44,18 +58,6 @@ namespace CmsWeb.Areas.Reports.Models
             t.LockedWidth = true;
             t.DefaultCell.Border = PdfPCell.NO_BORDER;
 
-            var q = DbUtil.Db.PeopleQuery(id);
-            var q2 = from p in q
-                     orderby p.Name2
-                     select new
-                     {
-                         First = p.PreferredName,
-                         Last = p.LastName,
-                         p.PeopleId,
-                         dob = p.DOB,
-                         Phone = p.CellPhone.Length > 0 ? p.CellPhone : p.HomePhone,
-                         p.DoNotPublishPhones
-                     };
             if (!q2.Any())
                 document.Add(new Phrase("no data"));
             else
