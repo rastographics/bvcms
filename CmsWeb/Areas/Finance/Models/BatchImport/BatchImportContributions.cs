@@ -43,6 +43,12 @@ namespace CmsWeb.Models
                             return BatchProcessVanco(csv, date, fundid);
                     using (var csv = new CsvReader(new StringReader(text), false, '\t'))
                         return BatchProcessVanco(csv, date, fundid);
+                case "stewardshiptechnology":
+                    if (fromFile)
+                        using (var csv = new CsvReader(new StringReader(text), false))
+                            return BatchProcessStewardshipTechnology(csv, date, fundid);
+                    using (var csv = new CsvReader(new StringReader(text), false, '\t'))
+                        return BatchProcessStewardshipTechnology(csv, date, fundid);
                 case "silverdale":
                     using (var csv = new CsvReader(new StringReader(text), true))
                         return BatchProcessSilverdale(csv, date, fundid);
@@ -84,6 +90,7 @@ namespace CmsWeb.Models
 
         private class depositRecord
         {
+            public DateTime? date { get; set; }
             public string batch { get; set; }
             public string routing { get; set; }
             public string account { get; set; }
@@ -91,7 +98,7 @@ namespace CmsWeb.Models
             public string amount { get; set; }
             public string type { get; set; }
         }
-        private static BundleHeader GetBundleHeader(DateTime date, DateTime now)
+        private static BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null)
         {
             var bh = new BundleHeader
                         {
@@ -104,7 +111,7 @@ namespace CmsWeb.Models
                         };
             DbUtil.Db.BundleHeaders.InsertOnSubmit(bh);
             bh.BundleStatusId = BundleStatusCode.Open;
-            bh.BundleHeaderTypeId = BundleTypeCode.ChecksAndCash;
+            bh.BundleHeaderTypeId = btid ?? BundleTypeCode.ChecksAndCash;
             return bh;
         }
 
