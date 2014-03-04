@@ -1048,6 +1048,7 @@
     <Content Include="Content\images\bvcms-logo-on-dark.png" />
     <Content Include="Content\images\computer_error.mp3" />
     <Content Include="Content\images\glass.mp3" />
+    <Content Include="Content\images\sgfunknown.jpg" />
     <Content Include="Content\img\ajax-loader.gif" />
     <Content Include="Content\css\jquery.mobile-1.3.0.css" />
     <Content Include="Content\css\jquery.mobile-1.3.1.min.css" />
