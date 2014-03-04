@@ -42,6 +42,11 @@ namespace CmsWeb.Areas.People.Models
                 context.HttpContext.Response.ContentType = "image/jpeg";
                 context.HttpContext.Response.BinaryWrite(NoPic1());
             }
+				else if (id == -3)
+				{
+					context.HttpContext.Response.ContentType = "image/jpeg";
+					context.HttpContext.Response.BinaryWrite(NoPic3());
+				}
             else
             {
                 ImageData.Image i = null;
@@ -95,6 +100,18 @@ namespace CmsWeb.Areas.People.Models
             }
             return u;
         }
+
+		  private static byte[] NoPic3()
+		  {
+			  var u = HttpRuntime.Cache["sgfimage"] as byte[];
+			  if (u == null)
+			  {
+				  u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/images/sgfunknown.jpg"));
+				  HttpRuntime.Cache.Insert("sgfimage", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
+			  }
+			  return u;
+		  }
+
         public byte[] FetchResizedImage(ImageData.Image img, int w, int h)
         {
             var istream = new MemoryStream(img.Bits);

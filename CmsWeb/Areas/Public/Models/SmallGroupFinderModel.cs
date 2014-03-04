@@ -60,6 +60,28 @@ namespace CmsWeb.Areas.Public.Models
 			sShell = sShell.Replace("[SGF:Form]", getForm());
 			sShell = sShell.Replace("[SGF:Groups]", getGroupList());
 
+			if (search != null)
+			{
+				foreach (var entry in search)
+				{
+					if (entry.Value.Contains(","))
+					{
+						var valueArray = entry.Value.Split(',');
+
+						foreach (var value in valueArray)
+						{
+							sShell = sShell.Replace("[" + entry.Key + ":" + value + "]", "checked=\"checked\"");
+						}
+					}
+					else
+					{
+						sShell = sShell.Replace("[" + entry.Key + ":" + entry.Value + "]", "checked=\"checked\"");
+					}
+				}
+
+				sShell = Regex.Replace(sShell, GroupLookup.PATTERN_CLEAN_CHECKED, "");
+			}
+
 			return sShell;
 		}
 
@@ -81,6 +103,8 @@ namespace CmsWeb.Areas.Public.Models
 
 		public bool IsSelectedValue(string key, string value)
 		{
+			if (search == null) return false;
+
 			if (search.ContainsKey(key))
 			{
 				if (search[key] == value)
@@ -171,6 +195,8 @@ namespace CmsWeb.Areas.Public.Models
 
 		public List<Organization> getGroups()
 		{
+			if (search == null) return new List<Organization>();
+
 			var orgs = from o in DbUtil.Db.Organizations
 						  where o.DivOrgs.Any(ee => divList.Contains(ee.DivId))
 						  select o;
@@ -179,9 +205,20 @@ namespace CmsWeb.Areas.Public.Models
 			{
 				if (filter.Value == SHOW_ALL) continue;
 
-				orgs = from g in orgs
-						 where g.OrganizationExtras.Any(oe => oe.Field == filter.Key && oe.Data == filter.Value)
-						 select g;
+				if (filter.Value.Contains(","))
+				{
+					var valueArray = filter.Value.Split(',');
+
+					orgs = from g in orgs
+							 where g.OrganizationExtras.Any(oe => oe.Field == filter.Key && valueArray.Contains(oe.Data))
+							 select g;
+				}
+				else
+				{
+					orgs = from g in orgs
+							 where g.OrganizationExtras.Any(oe => oe.Field == filter.Key && oe.Data == filter.Value)
+							 select g;
+				}
 			}
 
 			return orgs.ToList<Organization>();
@@ -259,12 +296,17 @@ namespace CmsWeb.Areas.Public.Models
 	public class GroupLookup
 	{
 		public const string PATTERN_CLEAN = @"\[SGF:\w*\]";
+		public const string PATTERN_CLEAN_CHECKED = @"\[SGF:\w*:\w*\]";
 		public static string[] DAY_LAST = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "", "", "", "Any" };
 
 		public Dictionary<string, string> values = new Dictionary<string, string>();
 
 		public void populateFromOrg(Organization org)
 		{
+			var leader = (from e in DbUtil.Db.People
+							  where e.PeopleId == org.LeaderId
+							  select e).SingleOrDefault();
+
 			values["SGF:OrgID"] = org.OrganizationId.ToString();
 			values["SGF:Name"] = org.OrganizationName;
 			values["SGF:Description"] = org.Description;
@@ -272,6 +314,11 @@ namespace CmsWeb.Areas.Public.Models
 			values["SGF:Leader"] = org.LeaderName;
 			values["SGF:DateStamp"] = DateTime.Now.ToString("yyyy-MM-dd");
 			values["SGF:Schedule"] = "";
+
+			if (leader != null && leader.PictureId != null)
+				values["SGF:LeaderPicSrc"] = "/Portrait/" + leader.PictureId.ToString() + "?v=" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
+			else
+				values["SGF:LeaderPicSrc"] = "/Portrait/-3";
 
 			if (org.OrgSchedules.Count > 0)
 			{
