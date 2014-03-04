@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Code;
-using NPOI.SS.Formula;
 using UtilityExtensions;
 using CmsData;
 using System.Text;
@@ -28,7 +25,7 @@ namespace CmsWeb.Areas.Search.Models
         public string NickName { get; set; }
 
         [StringLength(25)]
-        public string Middle { get; set; }
+        public string MiddleName { get; set; }
 
         [StringLength(100), Required(ErrorMessage = "required")]
         public string LastName { get; set; }
