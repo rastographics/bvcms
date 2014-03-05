@@ -1122,6 +1122,7 @@
     <Content Include="Scripts\js\headermenu1c.js" />
     <Content Include="Scripts\js\header.js" />
     <Content Include="Scripts\js\hometour.js" />
+    <Content Include="Scripts\js\htmlcontent.js" />
     <Content Include="Scripts\js\ion.sound.min.js" />
     <Content Include="Scripts\js\MyDataSupport.js" />
     <Content Include="Scripts\Email\EmailSupporter.js" />
@@ -2882,7 +2883,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>888</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
