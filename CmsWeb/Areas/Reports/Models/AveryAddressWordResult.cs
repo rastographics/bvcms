@@ -69,8 +69,8 @@ namespace CmsWeb.Areas.Reports.Models
             using (var ms = new MemoryStream())
             {
                 var dd = DocX.Create("ttt.docx");
-                dd.MarginLeft = 18;
-                dd.MarginRight = 18;
+                dd.MarginLeft = 24;
+                dd.MarginRight = 24;
                 dd.MarginTop = 48;
                 dd.MarginBottom = 30;
                 dd.PageHeight = 1056;
@@ -91,6 +91,8 @@ namespace CmsWeb.Areas.Reports.Models
                                 rr.Cells[i].Width = i % 2 == 0
                                     ? 252.4667
                                     : 11.533;
+                                if (i % 2 == 0)
+                                    rr.Cells[i].MarginLeft = 8;
                             }
                     }
                     if (skip > 0)
