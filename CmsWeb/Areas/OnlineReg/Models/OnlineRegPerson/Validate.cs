@@ -214,10 +214,12 @@ Please search with a different email, phone, or birthday.";
             var isnewfamily = whatfamily == 3;
             ValidBasic(ModelState);
             DateTime dt;
-            if (RequiredDOB() && dob.HasValue() && !Util.BirthDateValid(dob, out dt))
+            if (RequiredDOB() && dob.HasValue() && !Util.BirthDateValid(bmon, bday, byear, out dt))
                 ModelState.AddModelError(dobname, "birthday invalid");
             else if (!birthday.HasValue && RequiredDOB())
                 ModelState.AddModelError(dobname, "birthday required");
+            if(birthday.HasValue && setting.NoReqBirthYear == false && birthday.Value.Year == Util.SignalNoYear)
+                ModelState.AddModelError(dobname, "BirthYear is required");
 
             var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
             if (orgid == Util.CreateAccountCode && age < minage)

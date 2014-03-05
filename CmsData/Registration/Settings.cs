@@ -39,6 +39,7 @@ namespace CmsData.Registration
 		public string SpecialScript { get; set; }
 		public string DonationLabel { get; set; }
 		public string ExtraValueFeeName { get; set; }
+		public bool NoReqBirthYear { get; set; }
 		public bool NotReqDOB { get; set; }
 		public bool NotReqAddr { get; set; }
 		public bool NotReqPhone { get; set; }
@@ -225,6 +226,9 @@ namespace CmsData.Registration
 					break;
 				case Parser.RegKeywords.AskDonation:
 					AskDonation = parser.GetBool();
+					break;
+				case Parser.RegKeywords.NoReqBirthYear:
+				    NoReqBirthYear = parser.GetBool();
 					break;
 				case Parser.RegKeywords.NotReqDOB:
 					NotReqDOB = parser.GetBool();
@@ -631,6 +635,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "GroupToJoin", GroupToJoin);
 			AddValueCk(0, sb, "GiveOrgMembAccess", GiveOrgMembAccess);
 			AddValueCk(0, sb, "AddAsProspect", AddAsProspect);
+			AddValueCk(0, sb, "NoReqBirthYear", NoReqBirthYear);
 			AddValueCk(0, sb, "NotReqDOB", NotReqDOB);
 			AddValueCk(0, sb, "NotReqAddr", NotReqAddr);
 			AddValueCk(0, sb, "NotReqZip", NotReqZip);

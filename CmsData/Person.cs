@@ -520,18 +520,28 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             p.MaritalStatusId = MarriedCode;
 
             DateTime dt;
-            if (Util.DateValid(dob, out dt))
+            if (Util.BirthDateValid(dob, out dt))
             {
-                while (dt.Year < 1900)
-                    dt = dt.AddYears(100);
-                if (dt > Util.Now)
-                    dt = dt.AddYears(-100);
-                p.BirthDay = dt.Day;
-                p.BirthMonth = dt.Month;
-                p.BirthYear = dt.Year;
+                if (dt.Year == Util.SignalNoYear)
+                {
+                    p.BirthDay = dt.Day;
+                    p.BirthMonth = dt.Month;
+                    p.BirthYear = null;
+                }
+                else
+                {
+                    while (dt.Year < 1900)
+                        dt = dt.AddYears(100);
+                    if (dt > Util.Now)
+                        dt = dt.AddYears(-100);
+                    p.BirthDay = dt.Day;
+                    p.BirthMonth = dt.Month;
+                    p.BirthYear = dt.Year;
+                }
                 if (p.GetAge() < 18 && MarriedCode == 0)
                     p.MaritalStatusId = MaritalStatusCode.Single;
             }
+                // I think this else statement is no longer necessary
             else if (DateTime.TryParse(dob, out dt))
             {
                 p.BirthDay = dt.Day;

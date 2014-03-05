@@ -1,6 +1,5 @@
 ﻿@model CmsWeb.Models.OnlineRegPersonModel
 @using UtilityExtensions
-@using CmsWeb
 @if ((Model.classid ?? 0) > 0)
 { 
     <tr>
@@ -25,7 +24,7 @@
         <td>@Model.dob 
             @if (Model.LoggedIn)
             {
-                <span>@Model.age</span>
+                @:(<span>@Model.age</span>)
             }
             <div>@Html.ValidationMessageFor(m => m.dob)</div></td>
     </tr>
