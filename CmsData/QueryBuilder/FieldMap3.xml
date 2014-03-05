@@ -498,6 +498,9 @@
     <HasManagedGiving Title="Has Managed Giving" Type="Bit" DisplayAs="Has Managed Giving" DataValueField="IdCode">
       Specify True or False for those with Managed Giving.
     </HasManagedGiving>
+    <CcExpiration Title="Credit Card Expire Days" Type="Bit" DisplayAs="CCExpiration({0})" Params="Days" DataValueField="IdCode">
+      Specify True or False for those with Managed Giving.
+    </CcExpiration>
     <RecentBundleType Title="Recent Contributions In BundleType" Type="Code" DisplayAs="RecentBundleType({0})" Params="Days" DataSource="BundleHeaderTypes" DataValueField="IdCode">
       Must have Finance role for this to work.
     </RecentBundleType >

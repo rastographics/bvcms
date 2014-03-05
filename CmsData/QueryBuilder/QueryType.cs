@@ -22,6 +22,7 @@ namespace CmsData
         Birthday,
         BDate,
         CampusId,
+        CcExpiration,
         CellPhone,
         CheckInVisits,
         CheckInByDate,

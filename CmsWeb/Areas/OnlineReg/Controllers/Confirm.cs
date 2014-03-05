@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 							au.AddUpdateCustomerProfile(m.UserPeopleId.Value,
 								pf.Type,
 								pf.CreditCard,
-								Payments.NormalizeExpires(pf.Expires),
+								DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
 								pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
 								pf.Routing,
 								pf.Account);
@@ -93,7 +93,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 							sg.storeVault(m.UserPeopleId.Value,
 										  pf.Type,
 										  pf.CreditCard,
-            							  Payments.NormalizeExpires(pf.Expires),
+            							  DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
 										  pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
 										  pf.Routing,
 										  pf.Account,
@@ -189,7 +189,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 					else
 						tinfo = OnlineRegModel.PostTransaction(
 							pf.CreditCard, pf.CCV,
-							Payments.NormalizeExpires(pf.Expires),
+							DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
 							pf.AmtToPay ?? 0,
 							ti.Id, pf.Description,
 							pid ?? 0, pf.Email, pf.First, pf.Last,
@@ -218,7 +218,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 					else
 						tinfo = OnlineRegModel.PostTransactionSage(
 							pf.CreditCard, pf.CCV,
-							Payments.NormalizeExpires(pf.Expires),
+							DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
 							pf.AmtToPay ?? 0,
 							ti.Id, pf.Description,
 							pid ?? 0, pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix,

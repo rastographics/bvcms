@@ -36,6 +36,7 @@ namespace CmsData
                 { QueryType.AttendTypeCodes, AttendTypeIds },
                 { QueryType.Birthday, Birthday },
                 { QueryType.CampusId, CampusId },
+                { QueryType.CcExpiration, CcExpiration },
                 { QueryType.CheckInByActivity, CheckInByActivity },
                 { QueryType.CheckInByDate, CheckInByDate },
                 { QueryType.CheckInVisits, CheckInVisits },
