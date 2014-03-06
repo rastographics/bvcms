@@ -41,14 +41,18 @@ namespace CmsWeb.Areas.People.Controllers
             string[] role)
         {
             var u = DbUtil.Db.Users.Single(us => us.UserId == id);
-            if (u.Username != username)
+            if (u.Username.HasValue())
             {
-                var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
-                if (uu != null)
-                    return Content("error: username already exists");
+                if (u.Username != username)
+                {
+                    var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
+                    if (uu != null)
+                        return Content("error: username already exists");
+                }
+                else
+                    u.Username = username;
             }
             var p = DbUtil.Db.LoadPersonById(u.PeopleId.Value);
-            u.Username = username;
             u.SetRoles(DbUtil.Db, role, User.IsInRole("Finance"));
             if (password.HasValue())
                 u.ChangePassword(password);

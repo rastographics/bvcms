@@ -92,7 +92,7 @@ namespace CmsWeb.Areas.Reports.Models
                                     ? 252.4667
                                     : 11.533;
                                 if (i % 2 == 0)
-                                    rr.Cells[i].MarginLeft = 8;
+                                    rr.Cells[i].MarginLeft = 11.5;
                             }
                     }
                     if (skip > 0)
