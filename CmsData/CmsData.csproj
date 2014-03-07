@@ -373,6 +373,7 @@
     <Compile Include="Generated\Functions\AttendCntHistory.cs" />
     <Compile Include="Generated\Functions\AttendDaysAfterNthVisitAsOf.cs" />
     <Compile Include="Generated\Functions\AttendedAsOf.cs" />
+    <Compile Include="Generated\Functions\MeetingsDataForDateRange.cs" />
     <Compile Include="Generated\Functions\MembersWhoAttendedOrg.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCount.cs" />
     <Compile Include="Generated\Functions\RecentAttendMemberType.cs" />

@@ -329,6 +329,23 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(m);
         }
 
+        [POST("Reports/MeetingsForMonth")]
+        public ActionResult MeetingsForMonth(DateTime dt1, OrgSearchModel m)
+        {
+            var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
+            var cn = new SqlConnection(Util.ConnectionString);
+            cn.Open();
+            ViewBag.Month = dt1.ToString("MMMM yyyy");
+            dt1 = new DateTime(dt1.Year, dt1.Month, 1);
+            var dt2 = dt1.AddMonths(1).AddDays(-1);
+            var q = cn.Query("MeetingsForDateRange", new
+            {
+                orgs,
+                startdate = dt1,
+                enddate = dt2,
+            }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
+            return View(q);
+        }
         [POST("Reports/MeetingsToQuery/{type}")]
         public ActionResult MeetingsToQuery(string type, MeetingsModel m)
         {

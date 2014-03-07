@@ -2318,6 +2318,21 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.MeetingsDataForDateRange", IsComposable = true)]
+		public IQueryable< View.MeetingsDataForDateRange > MeetingsDataForDateRange(
+            [Parameter(DbType="varchar")] string orgs,
+            [Parameter(DbType="datetime")] DateTime? startdate,
+            [Parameter(DbType="datetime")] DateTime? enddate
+            )
+		{
+			return this.CreateMethodCallQuery< View.MeetingsDataForDateRange>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgs,
+                startdate,
+                enddate
+                );
+		}
+
 		[Function(Name="dbo.MembersAsOf", IsComposable = true)]
 		public IQueryable< View.MembersAsOf > MembersAsOf(
             [Parameter(DbType="datetime")] DateTime? from,
