@@ -37,31 +37,33 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [POST("Person2/UserUpdate/{id}"), Authorize(Roles = "Admin")]
-        public ActionResult UserUpdate(int id, string username, string password, bool sendwelcome,
+        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome,
             string[] role)
         {
-            var u = DbUtil.Db.Users.Single(us => us.UserId == id);
-            if (u.Username.HasValue())
+            var user = DbUtil.Db.Users.Single(us => us.UserId == id);
+            if (user.Username.HasValue())
             {
-                if (u.Username != username)
+                if (user.Username != u)
                 {
-                    var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
+                    var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == u);
                     if (uu != null)
-                        return Content("error: username already exists");
+                    {
+                        ViewBag.ErrorMsg = "username '{0}' already exists".Fmt(u);
+                        return View("System/UserEdit", user);
+                    }
+                    user.Username = u;
                 }
-                else
-                    u.Username = username;
             }
-            var p = DbUtil.Db.LoadPersonById(u.PeopleId.Value);
-            u.SetRoles(DbUtil.Db, role, User.IsInRole("Finance"));
-            if (password.HasValue())
-                u.ChangePassword(password);
+            user.SetRoles(DbUtil.Db, role, User.IsInRole("Finance"));
+            if (p.HasValue())
+                user.ChangePassword(p);
             DbUtil.Db.SubmitChanges();
+            var pp = DbUtil.Db.LoadPersonById(user.PeopleId.Value);
             if (sendwelcome)
-                CmsWeb.Models.AccountModel.SendNewUserEmail(username);
+                CmsWeb.Models.AccountModel.SendNewUserEmail(u);
             DbUtil.LogActivity("Update User for: {0}".Fmt(Session["ActivePerson"]));
-            InitExportToolbar(u.PeopleId);
-            return View("System/Users", p.Users.AsEnumerable());
+            InitExportToolbar(user.PeopleId);
+            return View("System/Users", pp.Users.AsEnumerable());
         }
 
         [POST("Person2/UserDelete/{id}"), Authorize(Roles = "Admin")]

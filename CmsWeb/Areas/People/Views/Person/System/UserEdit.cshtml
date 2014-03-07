@@ -1,5 +1,4 @@
-﻿@using NPOI.SS.Formula.Functions
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @using CmsData
 @model User
 <form class="margin-top form-horizontal ajax left-gutter" autocomplete="off">
@@ -13,11 +12,25 @@
         </legend>
         <div class="row-fluid">
             <div class="inline align-top wauto">
-                @Html.EditorFor(m => m.Username)
+                <div class="control-group">
+                    <label class="control-label">Username</label>
+                    <div class="controls">
+                        <input type="text" name="u" value="@Model.Username" />
+                    </div>
+                </div>
             </div>
             <div class="inline align-top left-gutter wauto">
-                @Html.EditorFor(m => m.Password, "password")
+                <div class="control-group">
+                    <label class="control-label">Password</label>
+                    <div class="controls">
+                        <input type="password" name="p" value="@Model.Username" />
+                    </div>
+                </div>
             </div>
+            @if (ViewBag.ErrorMsg != null)
+            {
+                <div class="alert alert-error">@ViewBag.ErrorMsg</div>
+            }
         </div>
         <div class="well">
             @{
