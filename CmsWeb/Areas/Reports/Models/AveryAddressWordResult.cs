@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Reports.Models
             using (var ms = new MemoryStream())
             {
                 var dd = DocX.Create("ttt.docx");
-                dd.MarginLeft = 24;
+                dd.MarginLeft = 30;
                 dd.MarginRight = 24;
                 dd.MarginTop = 48;
                 dd.MarginBottom = 30;
@@ -90,9 +90,9 @@ namespace CmsWeb.Areas.Reports.Models
                                 rr.Height = 96.0;
                                 rr.Cells[i].Width = i % 2 == 0
                                     ? 252.4667
-                                    : 11.533;
+                                    : 11.4;
                                 if (i % 2 == 0)
-                                    rr.Cells[i].MarginLeft = 11.5;
+                                    rr.Cells[i].MarginLeft = 30;
                             }
                     }
                     if (skip > 0)
@@ -105,7 +105,10 @@ namespace CmsWeb.Areas.Reports.Models
                             col++;
                     }
                     var c = tt.Rows[row].Cells[col];
-                    c.Paragraphs[0].InsertText(p.Name);
+                    if (format == "GroupAddress")
+                        c.Paragraphs[0].InsertText(p.LabelName + " " + p.LastName);
+                    else
+                        c.Paragraphs[0].InsertText(p.LabelName);
                     c.InsertParagraph(p.Address);
                     if (p.Address2.HasValue())
                         c.InsertParagraph(p.Address2);
