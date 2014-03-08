@@ -7,6 +7,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using IronPython.Modules;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -16,7 +17,7 @@ namespace CmsData
     {
         private Expression RecentContributionCount2(int days, int fund, int cnt, bool taxnontax)
         {
-            if(!db.FromBatch)
+            if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var now = DateTime.Now;
@@ -88,7 +89,7 @@ namespace CmsData
         }
         private Expression RecentContributionAmount2(int days, int fund, decimal amt, bool taxnontax)
         {
-            if(!db.FromBatch)
+            if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var now = DateTime.Now;
@@ -158,7 +159,7 @@ namespace CmsData
         }
         private Expression ContributionAmount2(DateTime? start, DateTime? end, int fund, decimal amt, bool nontaxded)
         {
-            if(!db.FromBatch)
+            if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             IQueryable<int> q = null;
@@ -249,7 +250,7 @@ namespace CmsData
         }
         internal Expression RecentPledgeCount()
         {
-            if(!db.FromBatch)
+            if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
 
@@ -324,7 +325,7 @@ namespace CmsData
         }
         internal Expression RecentPledgeAmount()
         {
-            if(!db.FromBatch)
+            if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var fund = Quarters.ToInt();
@@ -401,7 +402,7 @@ namespace CmsData
         internal Expression ContributionChange()
         {
             var pct = double.Parse(TextValue);
-            if(!db.FromBatch)
+            if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var q = db.GivingCurrentPercentOfFormer(StartDate, EndDate,
@@ -432,7 +433,7 @@ namespace CmsData
         }
         internal Expression RecentBundleType()
         {
-            if(!db.FromBatch)
+            if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var now = DateTime.Now;
@@ -468,7 +469,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             var fund = Quarters.ToInt();
 
-            if(!db.FromBatch)
+            if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
 
@@ -525,6 +526,9 @@ namespace CmsData
         }
         internal Expression HasManagedGiving()
         {
+            if (!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p => (from e in p.RecurringAmounts
                                                         where e.Amt > 0
@@ -533,6 +537,26 @@ namespace CmsData
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression CcExpiration()
+        {
+            if (!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
+            var tf = CodeIds == "1";
+            var cclist = (from e in db.PaymentInfos
+                          join m in db.ManagedGivings on e.PeopleId equals m.PeopleId
+                          where e.Expires.Length > 0
+                          where e.MaskedCard.Length > 0
+                          select new { e.Expires, e.PeopleId }).ToList();
+            var pids = from i in cclist
+                       let d = DbUtil.NormalizeExpires(i.Expires)
+                       where d != null && d.Value.AddDays(-Days) <= DateTime.Today
+                       select i.PeopleId;
+            var tag = db.PopulateTemporaryTag(pids);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
     }

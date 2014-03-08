@@ -30,7 +30,7 @@
 { 
 	<tr>
 		<td><img src="/Content/images/individual.gif" width="10px" height="12px" />
-			<a href='/Person/Index/@p.PeopleId' @target>@p.Name</a>
+			<a href='/Person2/@p.PeopleId' @target>@p.Name</a>
 		</td>
 		<td>
 			@p.MemberStatus<br />
@@ -48,7 +48,7 @@
 	} 
 			<a href='mailto:@p.Email'>@p.Email</a>
 		</td>
-		<td><a href='/Person/Index/@p.BFTeacherId' @target>@p.BFTeacher</a></td>
+		<td><a href='/Person2/@p.BFTeacherId' @target>@p.BFTeacher</a></td>
 		<td><a href="/Tags/ToggleTag/@p.PeopleId" class="taguntag" title="Add to/Remove from Active Tag" value='@p.PeopleId'>@(p.HasTag? "Remove" : "Add")</a></td>
 	</tr>
 }

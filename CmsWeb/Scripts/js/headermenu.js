@@ -44,7 +44,7 @@
                 else if (ui.item.id === -3)
                     window.location = "/OrgSearch";
                 else
-                    window.location = (ui.item.isOrg ? "/Organization/Index/" : "/Person/Index/") + ui.item.id;
+                    window.location = (ui.item.isOrg ? "/Organization/Index/" : "/Person2/") + ui.item.id;
                 return true;
             },
             focus: function (ev) {

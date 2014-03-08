@@ -15,6 +15,7 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
+        public const int SignalNoYear = 1897;
         private static DateTime? GoodDate(DateTime? dt)
         {
             if (!dt.HasValue)
@@ -77,18 +78,32 @@ namespace UtilityExtensions
                 return true;
             if (!Regex.IsMatch(dt, @"\A(?:\A(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])((19|20)?[0-9]{2}))\Z"))
                 return false;
-            var culture = CultureInfo.CreateSpecificCulture("en-US");
-            var styles = DateTimeStyles.None;
+            var culture = CultureInfo.InvariantCulture;
+            var styles = DateTimeStyles.NoCurrentDateDefault;
             var s = dt.Substring(0, 2) + "/" + dt.Substring(2, 2) + "/" + dt.Substring(4);
             if (DateTime.TryParse(s, culture, styles, out dt2))
                 return true;
             return false;
         }
-        public static bool BirthDateValid(string dt, out DateTime dt2)
+        public static bool BirthDateValid(string dob, out DateTime dt2)
         {
             dt2 = DateTime.MinValue;
-            if (!DateValid(dt, out dt2))
+            if (DateTime.TryParseExact(dob, "m", CultureInfo.CurrentCulture, DateTimeStyles.None, out dt2))
+            {
+                dt2 = new DateTime(SignalNoYear, dt2.Month, dt2.Day);
+                return true;
+            }
+            return DateValid(dob, out dt2);
+        }
+        public static bool BirthDateValid(int? bmon, int? bday, int? byear, out DateTime dt2)
+        {
+            dt2 = DateTime.MinValue;
+            if (!bmon.HasValue || !bday.HasValue) // year is not required
                 return false;
+            var s = FormatBirthday(byear, bmon, bday);
+            if (!DateValid(s, out dt2))
+                return false;
+            dt2 = new DateTime(byear ?? SignalNoYear, bmon.Value, bday.Value);
             if (dt2 > DateTime.Now)
                 dt2 = dt2.AddYears(-100);
             return true;

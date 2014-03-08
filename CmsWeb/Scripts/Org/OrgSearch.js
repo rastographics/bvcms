@@ -132,7 +132,7 @@
         ev.preventDefault();
         var f = $('#results').closest('form');
         var q = f.serialize();
-        $.post('/OrgSearch/ApplyType/' + $("#TargetType").val(), q, function(ret) {
+        $.post('/OrgSearch/ApplyType/' + $("#TargetType").val(), q, function (ret) {
             if (ret !== "") {
                 if (ret === "ok")
                     $.getTable();
@@ -206,13 +206,6 @@
         });
         return false;
     });
-    $('#attdetail1').click(function (ev) {
-        ev.preventDefault();
-        hideDropdowns();
-        var d = $('#PanelAttDetail');
-        d.dialog('open');
-        return false;
-    });
     $('#rollsheet2').click(function (ev) {
         ev.preventDefault();
         hideDropdowns();
@@ -279,23 +272,53 @@
         $("#orgsearchform").submit();
         return false;
     });
-    $('#attdetail2').click(function (ev) {
+    $("MeetingsForDateRangeDialog").on("dialogclose", function (event, ui) {
+        $("#attdetail2").off("click");
+    });
+    $(".StartEndReport").click(function(ev) {
         ev.preventDefault();
-        $('div.dialog').dialog('close');
-        var args = "?dt1=" + $('#MeetingDate1').val() + "&dt2=" + $('#MeetingDate2').val();
-        $("#orgsearchform").attr("action", "/Reports/AttendanceDetail" + args);
-        $("#orgsearchform").submit();
+        hideDropdowns();
+        var action = this.href;
+        var d = $('#MeetingsForDateRangeDialog');
+        d.dialog('open');
+        $('#attdetail2').on("click", function (ev2) {
+            ev2.preventDefault();
+            $('div.dialog').dialog('close');
+            var args = "?dt1=" + $('#MeetingDate1').val() + "&dt2=" + $('#MeetingDate2').val();
+            $("#orgsearchform").attr("action", action + args);
+            $("#orgsearchform").submit();
+            return false;
+        });
         return false;
     });
-//    $('#Roster').click(function (ev) {
-//        ev.preventDefault();
-//        hideDropdowns();
-//        $("#orgsearchform").attr("action", "/Reports/Roster");
-//        $("#orgsearchform").attr("target", "_blank");
-//        $("#orgsearchform").submit();
-//        $("#orgsearchform").removeAttr("target");
-//        return false;
-//    });
+    $("MeetingsForMonthDialog").on("dialogclose", function (event, ui) {
+        $("#meetingsformonth2").off("click");
+    });
+    $(".MonthReport").click(function(ev) {
+        ev.preventDefault();
+        hideDropdowns();
+        var action = this.href;
+        var d = $('#MeetingsForMonthDialog');
+        d.dialog('open');
+        $('#meetingsformonth2').on("click", function (ev2) {
+            ev2.preventDefault();
+            $('div.dialog').dialog('close');
+            var args = "?dt1=" + $('#monthdt1').val();
+            $("#orgsearchform").attr("action", action + args);
+            $("#orgsearchform").submit();
+            return false;
+        });
+        return false;
+    });
+    //    $('#Roster').click(function (ev) {
+    //        ev.preventDefault();
+    //        hideDropdowns();
+    //        $("#orgsearchform").attr("action", "/Reports/Roster");
+    //        $("#orgsearchform").attr("target", "_blank");
+    //        $("#orgsearchform").submit();
+    //        $("#orgsearchform").removeAttr("target");
+    //        return false;
+    //    });
     $('#PasteSettings').click(function (ev) {
         ev.preventDefault();
         hideDropdowns();
@@ -323,11 +346,11 @@
     $('a.ViewReport').click(function (ev) {
         ev.preventDefault();
         hideDropdowns();
-//        var did = $('#DivisionId').val();
-//        if (did == '0') {
-//            $.growlUI("error", 'must choose division');
-//            return false;
-//        }
+        //        var did = $('#DivisionId').val();
+        //        if (did == '0') {
+        //            $.growlUI("error", 'must choose division');
+        //            return false;
+        //        }
         var href = $(this).attr("href");
         $("#orgsearchform").attr("action", href);
         $("#orgsearchform").attr("target", "_blank");
@@ -382,12 +405,12 @@
         ev.preventDefault();
         hideDropdowns();
         $('div.dialog').dialog('close');
-//        var pid = $('#ProgramId').val();
-//        var did = $('#DivisionId').val();
-//        if (pid == '0') {
-//            $.growlUI("error", 'must choose program');
-//            return false;
-//        }
+        //        var pid = $('#ProgramId').val();
+        //        var did = $('#DivisionId').val();
+        //        if (pid == '0') {
+        //            $.growlUI("error", 'must choose program');
+        //            return false;
+        //        }
         var url = "/Reports/EnrollmentControl";
         if ($('#enrcontrolfiltertag').is(":checked"))
             url = url.appendQuery("usecurrenttag=true");
@@ -411,12 +434,12 @@
         ev.preventDefault();
         hideDropdowns();
         $('div.dialog').dialog('close');
-//        var pid = $('#ProgramId').val();
-//        var did = $('#DivisionId').val();
-//        if (pid == '0') {
-//            $.growlUI("error", 'must choose program');
-//            return false;
-//        }
+        //        var pid = $('#ProgramId').val();
+        //        var did = $('#DivisionId').val();
+        //        if (pid == '0') {
+        //            $.growlUI("error", 'must choose program');
+        //            return false;
+        //        }
         $("#orgsearchform").attr("action", "/Reports/EnrollmentControl2");
         $("#orgsearchform").submit();
         return false;

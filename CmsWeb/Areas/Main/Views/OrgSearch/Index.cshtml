@@ -100,7 +100,9 @@
             <li><a class="ViewReport" href="/Reports/ClassList/">Class List</a></li>
             <li><a class="ViewReport" href="/Reports/ShirtSizes">Shirt Sizes</a></li>
             <li><a id="weeklyattendance" href='#'>Weekly Attendance Pct Export</a></li>
-            <li><a id="attdetail1" href='#'>Meetings/Attendance</a></li>
+            <li><a class="StartEndReport" href='/Reports/AttendanceDetail'>Meetings/Attendance</a></li>
+            <li><a class="MonthReport" href='/Reports/MeetingsForMonth'>Meetings For Month</a></li>
+            <li class="hideAlt"><a class="StartEndReport" href='/Export2/MeetingsForDateRange'>Meetings For Date Range Export</a></li>
             <li><a id="checkincontrol" href='#'>Checkin Control Report</a></li>
             <li><a id="enrollmentcontrol1" href='#'>Enrollment Control Report</a></li>
             <li><a id="enrollmentcontrol2i"href='#'>Enrollment Control iPhone/iPad</a></li>
@@ -168,13 +170,22 @@
         </tr>
         </table>
     </div>
-    <div id="PanelAttDetail" class="modalDiv dialog" style="display: none">
+    <div id="MeetingsForDateRangeDialog" class="modalDiv dialog" style="display: none">
         <table>
         <tr><th colspan="2">Select a date range</th></tr>
         <tr><th>Meetings Start Date</th><td><input id="MeetingDate1" type="text"  class='datepicker' /></td></tr>
         <tr><th>Meetings End Date</th><td><input id="MeetingDate2" type="text" class='datepicker' /></td></tr>
         <tr><td class="right" colspan="2">
             <a class="bt" id="attdetail2" href="#"> run </a></td>
+        </tr>
+        </table>
+    </div>
+    <div id="MeetingsForMonthDialog" class="modalDiv dialog" style="display: none">
+        <table>
+        <tr><th colspan="2">Select a date for a Month</th></tr>
+        <tr><th>Month</th><td><input id="monthdt1" type="text"  class='datepicker' /></td></tr>
+        <tr><td class="right" colspan="2">
+            <a class="bt" id="meetingsformonth2" href="#"> run </a></td>
         </tr>
         </table>
     </div>

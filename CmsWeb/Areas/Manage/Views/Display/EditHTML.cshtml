@@ -6,43 +6,31 @@
 @section scripts
 {
     @ViewExtensions2.CKEditor()
-    <script type="text/javascript">
-        $(function () {
-            $(".bt").button();
-            $("#delete").click(function (ev) {
-                ev.preventDefault();
-                if (confirm("Are you sure you want to delete this entry?")) {
-                    $.post("/Display/ContentDelete", { id: "@Model.Id" }, function () {
-                        window.location = "/Manage/Display/";
-                    });
-                }
-            });
-            CKEDITOR.replace('body', {
-                height: 400,
-                fullPage: false,
-                allowedContent: true,
-                filebrowserUploadUrl: '/Account/CKEditorUpload/',
-                filebrowserImageUploadUrl: '/Account/CKEditorUpload/'
-            });
-        });
-    </script>
+    @Fingerprint.Script("/Scripts/js/htmlcontent.js");
 }
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
-{ 
+{
     <div class="blogbody">
         <h2 class="title">@Model.Title</h2>
         <a href="/Display/Index">Menu of Content</a>
         <hr />
         @Html.Hidden("name")
         @Html.Hidden("id")
-        <div>Title: @Html.TextBox("title")</div>
-        <div>@Html.TextArea("body", new { @class = "editor", rows = "26", style = "width:90%" })
+        <div>
+            Title: @Html.TextBox("title")  FullPage: @Html.CheckBox("fullpage")
+            <i style="max-width:40em; display: inline-block; vertical-align: top">
+                (Note: this should only be clicked when you first come to the page, not after you have made any changes otherwise they will be lost)
+            </i>
         </div>
-        <br />
-        <input type="submit" class="bt" value="Save" />
-        &nbsp;&nbsp; 
-        <a id="cancel" href='/Manage/Display' class="bt">Cancel</a>
-        <a id="delete" href='#'>
-            <img src="/Content/images/delete.gif" /></a>
+        <div>
+            @Html.TextArea("body", new { @class = "editor", rows = "26", style = "width:90%" })
     </div>
+    <br />
+    <input type="submit" class="bt" value="Save" />
+    &nbsp;&nbsp;
+    <a id="cancel" href='/Manage/Display' class="bt">Cancel</a>
+    <a id="delete" href='#'>
+        <img src="/Content/images/delete.gif" />
+    </a>
+</div>
 }

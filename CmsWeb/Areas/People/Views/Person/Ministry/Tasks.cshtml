@@ -28,9 +28,9 @@
             {
                 <tr>
                     <td>@t.CreatedDate.ToShortDateString()</td>
-                    <td><a href="/Person/Index/@t.AssignedToId">@t.AssignedTo</a></td>
+                    <td><a href="/Person2/@t.AssignedToId">@t.AssignedTo</a></td>
                     <td><a href="@t.link">@t.Desc</a></td>
-                    <td><a href="/Person/Index/@t.AboutId">@t.About</a></td>
+                    <td><a href="/Person2/@t.AboutId">@t.About</a></td>
                     <td>@t.DueDate.FormatDate()</td>
                     <td>@(t.completed.HasValue ? t.completed.FormatDate() : "incomplete")</td>
                 </tr>

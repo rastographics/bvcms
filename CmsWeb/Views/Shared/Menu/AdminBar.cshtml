@@ -6,8 +6,6 @@
     var design = User.IsInRole("Design");
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
     var quickbooks = DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true";
-    var targetperson = DbUtil.Db.UserPreference("TargetLinkPeople", "false").ToBool();
-    var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
 }
 @if (admin || manageemails || managetrans || edit || design || finance)
 {

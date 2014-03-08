@@ -383,7 +383,7 @@ namespace CmsWeb.Models
                 //DbUtil.Db.Email(DbUtil.AdminMail, 
                 //    DbUtil.Db.PeopleFromPidString(org.NotifyIds), 
                 //    "cms check-in, {0} class on ".Fmt(what) + DbUtil.Db.CmsHost, 
-                //    "<a href='{0}/Person/Index/{1}'>{2}</a> {3} {4}".Fmt(Util.ServerLink("/Person/Index/" + PeopleId), PeopleId, p.Name, what, org.OrganizationName));
+                //    "<a href='{0}/Person2/{1}'>{2}</a> {3} {4}".Fmt(Util.ServerLink("/Person2/" + PeopleId), PeopleId, p.Name, what, org.OrganizationName));
                 DbUtil.LogActivity("cms check-in, {0} class ({1})".Fmt(what, p.PeopleId));
             }
         }

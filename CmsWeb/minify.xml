@@ -32,6 +32,7 @@
       <main Include="Scripts/jQuery/jquery.textarea.js"/>
       <main Include="Scripts/jQuery/jquery.tooltip.js"/>
       <main Include="Scripts/jQuery/jquery.transpose.js"/>
+<!--      <main Include="Scripts/jQuery/jquery.ui.touch-punch.js"/>-->
       <main Include="Scripts/chosen/chosen.jquery.js"/>
       <main Include="Scripts/js/dropdown.js"/>
       <main Include="Scripts/js/Pager.js"/>
@@ -54,6 +55,7 @@
       <main2 Include="Scripts/jQuery/jquery.tooltip.js"/>
       <main2 Include="Scripts/jQuery/jquery.validate.js"/>
       <main2 Include="Scripts/jquery/jquery.hiddenposition.1.1.js"/>
+<!--      <main2 Include="Scripts/jQuery/jquery.ui.touch-punch.js"/>-->
       <main2 Include="Scripts/chosen/chosen.jquery.js"/>
       <main2 Include="Scripts/js/Pager3.js"/>
       <main2 Include="Scripts/js/header.js"/>
@@ -83,6 +85,7 @@
       <main2c Include="Scripts/jQuery/jquery.jeditable.js"/>
       <main2c Include="Scripts/jQuery/jquery.multiSelect.js"/>
       <main2c Include="Scripts/jquery/jquery.hiddenposition.1.1.js"/>
+<!--      <main2c Include="Scripts/jQuery/jquery.ui.touch-punch.js"/>-->
       <main2c Include="Scripts/chosen/chosen.jquery.js"/>
       <main2c Include="Scripts/js/Pager.js"/>
       <main2c Include="Scripts/js/header.js"/>

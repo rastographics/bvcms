@@ -498,6 +498,9 @@
     <HasManagedGiving Title="Has Managed Giving" Type="Bit" DisplayAs="Has Managed Giving" DataValueField="IdCode">
       Specify True or False for those with Managed Giving.
     </HasManagedGiving>
+    <CcExpiration Title="Credit Card Expire Days" Type="Bit" DisplayAs="CCExpiration({0})" Params="Days" DataValueField="IdCode">
+      Specify True or False for those with Managed Giving.
+    </CcExpiration>
     <RecentBundleType Title="Recent Contributions In BundleType" Type="Code" DisplayAs="RecentBundleType({0})" Params="Days" DataSource="BundleHeaderTypes" DataValueField="IdCode">
       Must have Finance role for this to work.
     </RecentBundleType >
@@ -518,6 +521,21 @@
     <HasPeopleExtraField Title="Has Extra Value Field" Type="StringEqual">
       Enter the Field Name and a Comparison.
     </HasPeopleExtraField>
+    <FamilyExtra Title="FamilyExtra Value Code" Type="CodeStr" DataSource="FamilyExtraValues">
+      Select the Extra Value Code from the list
+    </FamilyExtra>
+    <FamilyExtraData Title="FamilyExtra Value Text" Type="String" DisplayAs="FamilyExtraValueText({0})" QuartersLabel=" Name" Params="Quarters">
+      Enter the Field Name and enter all or part of the value along with a Comparison.
+    </FamilyExtraData>
+    <FamilyExtraDate Title="FamilyExtra Value Date" Type="Date" DisplayAs="FamilyExtraValueDate({0})" QuartersLabel=" Name" Params="Quarters">
+      Enter the Field Name and pick a date and a Comparison.
+    </FamilyExtraDate>
+    <FamilyExtraInt Title="FamilyExtra Value Int" Type="Integer" DisplayAs="FamilyExtraValueInt({0})" QuartersLabel=" Name" Params="Quarters">
+      Enter the Field Name and enter all or part of the value (must be an integer) along with a Comparison.
+    </FamilyExtraInt>
+    <HasFamilyExtraField Title="Has FamilyExtra Value Field" Type="StringEqual">
+      Enter the Field Name and a Comparison.
+    </HasFamilyExtraField>
   </ExtraValues>
   <Miscellaneous>
     <IncludeDeceased Title="Included Deceased" Type="Bit" DataValueField="IdCode">

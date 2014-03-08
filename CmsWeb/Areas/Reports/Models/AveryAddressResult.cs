@@ -6,6 +6,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -13,6 +14,7 @@ using System.Text;
 using System.Web.Mvc;
 using CmsWeb.Models;
 using UtilityExtensions;
+using Paragraph = iTextSharp.text.Paragraph;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -20,18 +22,18 @@ namespace CmsWeb.Areas.Reports.Models
     {
         public Guid id;
         public string format;
-        public bool? titles; 
-        public bool? useMailFlags; 
+        public bool? titles;
+        public bool? useMailFlags;
         public bool usephone { get; set; }
-		public int skip = 0;
+        public int skip = 0;
 
-        public bool? sortzip; 
-	    public string sort
-	    {
-			get { return (sortzip ?? false) ? "Zip" : "Name"; }
-	    }
+        public bool? sortzip;
+        public string sort
+        {
+            get { return (sortzip ?? false) ? "Zip" : "Name"; }
+        }
 
-	    const float H = 72f;
+        const float H = 72f;
         const float W = 197f;
         private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
         private Font smfont = FontFactory.GetFont(FontFactory.HELVETICA, 8);
@@ -40,7 +42,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public override void ExecuteResult(ControllerContext context)
         {
-            var ctl = new MailingController {UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false};
+            var ctl = new MailingController { UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false };
             var Response = context.HttpContext.Response;
 
             IEnumerable<MailingController.MailingInfo> q = null;
@@ -95,21 +97,21 @@ namespace CmsWeb.Areas.Reports.Models
             t.DefaultCell.PaddingRight = 8f;
             t.DefaultCell.SetLeading(2.0f, 1f);
 
-			if (skip > 0)
-			{
-				var blankCell = new PdfPCell(t.DefaultCell);
+            if (skip > 0)
+            {
+                var blankCell = new PdfPCell(t.DefaultCell);
 
-				for (int iX = 0; iX < skip; iX++)
-				{
-					t.AddCell(blankCell);
-				}
-			}
+                for (int iX = 0; iX < skip; iX++)
+                {
+                    t.AddCell(blankCell);
+                }
+            }
 
             foreach (var m in q)
             {
                 var c = new PdfPCell(t.DefaultCell);
                 var ph = new Paragraph();
-                if(format == "GroupAddress")
+                if (format == "GroupAddress")
                     ph.AddLine(m.LabelName + " " + m.LastName, font);
                 else
                     ph.AddLine(m.LabelName, font);
@@ -132,7 +134,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.CompleteRow();
             document.Add(t);
 
-			document.Close();
+            document.Close();
         }
     }
 }

@@ -67,7 +67,7 @@
 <form action="" id="form">
     @Html.Hidden("OrgId")
     <div class="roundbox">
-        <p><a href="/Person/Index/@Util.UserPeopleId">My Profile Page</a></p>
+        <p><a href="/Person2/@Util.UserPeopleId">My Profile Page</a></p>
         <h2>@(Model.FamilyOption ? "Family" : "Member") Directory for @Model.OrgName</h2>
         @Html.LabelFor(vv => vv.Name, "Part of Name"): 
         @Html.TextBoxFor(vv => vv.Name, new { title = "Part of the Name" })

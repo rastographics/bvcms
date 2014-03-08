@@ -237,7 +237,11 @@ namespace CmsWeb.Models
                 case FieldType.Code:
                 case FieldType.CodeStr:
                     if (fieldMap.DataSource == "ExtraValues")
+                    {
                         CodeData = StandardExtraValues.ExtraValueCodes();
+                    }
+                    else if (fieldMap.DataSource == "FamilyExtraValues")
+                        CodeData = StandardExtraValues.FamilyExtraValueCodes();
                     else if (fieldMap.DataSource == "Campuses")
                         CodeData = Campuses();
                     else if (fieldMap.DataSource == "Activities")

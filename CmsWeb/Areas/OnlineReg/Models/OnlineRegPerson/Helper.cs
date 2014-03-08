@@ -58,9 +58,9 @@ namespace CmsWeb.Models
             get
             {
                 if (_Person != null && _Person.BirthDate.HasValue)
-                    return person.BirthDate.Value.AgeAsOf(Util.Now);
+                    return GetAge(_Person.BirthDate.Value);
                 if (birthday.HasValue)
-                    return birthday.Value.AgeAsOf(Util.Now);
+                    return GetAge(birthday.Value);
                 return 0;
             }
         }

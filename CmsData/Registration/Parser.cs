@@ -286,6 +286,7 @@ namespace CmsData.Registration
             GroupToJoin,
             GiveOrgMembAccess,
             AddAsProspect,
+            NoReqBirthYear,
             NotReqDOB,
             NotReqAddr,
             NotReqZip,

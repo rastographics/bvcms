@@ -42,13 +42,13 @@
             <td><input id="usefrom" name="useall" type="radio" value="0">
             </td>
             <td>
-                <a href="/Person/Index/@Model.pi[0].PeopleId" target="look1">@Model.pi[0].PeopleId</a>
+                <a href="/Person2/@Model.pi[0].PeopleId" target="look1">@Model.pi[0].PeopleId</a>
                 @Html.HiddenFor(m => m.pi[0].PeopleId)
             </td>
             <td><input checked="checked" id="usetarget" name="useall" type="radio" value="1">
             </td>
             <td>
-                <a href="/Person/Index/@Model.pi[1].PeopleId" target="look2">@Model.pi[1].PeopleId</a>
+                <a href="/Person2/@Model.pi[1].PeopleId" target="look2">@Model.pi[1].PeopleId</a>
                 @Html.HiddenFor(m => m.pi[1].PeopleId)
             </td>
             <td>

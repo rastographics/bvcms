@@ -30,7 +30,7 @@ namespace CmsWeb
             if (DbUtil.Db.UserPreference("newlook3", "false").ToBool() && DbUtil.Db.UserPreference("newpeoplepage", "false").ToBool())
                 HyperLink2.NavigateUrl = "~/Person2/" + id.ToString();
             else
-                HyperLink2.NavigateUrl = "~/Person/Index/" + id.ToString();
+                HyperLink2.NavigateUrl = "~/Person2/" + id.ToString();
             HyperLink2.Text = "Return to: " + person.Name;
         }
 

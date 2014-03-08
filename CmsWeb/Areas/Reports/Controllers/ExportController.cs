@@ -1,9 +1,16 @@
 using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
 using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
 using CmsData;
+using CmsData.API;
 using CmsWeb.Models;
+using Dapper;
+using OfficeOpenXml;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Controllers
@@ -47,6 +54,39 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
         }
+
+
+        [POST("Export2/MeetingsForDateRange")]
+        public ActionResult MeetingsForDateRange(DateTime dt1, DateTime dt2, OrgSearchModel m)
+        {
+            var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
+            var cn = new SqlConnection(Util.ConnectionString);
+            cn.Open();
+            var q = cn.Query("MeetingsForDateRange", new
+            {
+                orgs,
+                startdate = dt1,
+                enddate = dt2,
+            }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
+            var entity = (IDictionary<string, object>) q.First();
+            var cols = entity.Keys.Cast<string>().ToList();
+            var ep = new ExcelPackage();
+            var ws = ep.Workbook.Worksheets.Add("Sheet1");
+            int row = 1;
+            for (var i = 0; i < cols.Count; i++)
+                ws.Cells[row, i+1].Value = cols[i];
+            row++;
+            foreach (var r in q)
+            {
+                var rr = (IDictionary<string, object>) r;
+                for (var i = 0; i < cols.Count; i++)
+                    ws.Cells[row, i+1].Value = rr[cols[i]];
+                row++;
+            }
+            ws.Cells[ws.Dimension.Address].AutoFitColumns();
+            return new EpplusResult(ep, "MeetingsForDateRange.xlsx");
+        }
+
         [POST("Export2/MissionTripFunding")]
         public ActionResult MissionTripFunding(OrgSearchModel m)
         {

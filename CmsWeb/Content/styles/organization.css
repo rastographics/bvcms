@@ -130,6 +130,7 @@ div.settings > form > ul > li
     margin-bottom: 15px;
 }
 
+#QuestionList > li,
 ul.sort > li
 {
     margin-top: 12px;

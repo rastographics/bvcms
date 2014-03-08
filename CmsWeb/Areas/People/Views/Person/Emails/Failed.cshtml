@@ -14,7 +14,7 @@
         @foreach (var e in Model.ViewList())
         { 
         <tr><td>@e.time.FormatDateTm()</td>
-            <td><a href="/Person/Index/@e.peopleid">@e.name</a><br/>
+            <td><a href="/Person2/@e.peopleid">@e.name</a><br/>
                 <a href="/Manage/Emails/Failed/@e.peopleid">@e.email</a>
             </td>
             <td><a href="/Manage/Emails/Details/@e.emailid">@e.subject</a></td>

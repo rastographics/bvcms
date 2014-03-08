@@ -6,6 +6,6 @@
     <td>@Model.DueOrCompleted.FormatDate()</td>
     <td><a href="#" class="showdetail" task="@Model.Id">@Model.Description</a></td>
     <td>@if (Model.WhoId.HasValue)
-        {<a href="/Person/Index/@Model.WhoId">@Model.Who</a>}</td>
+        {<a href="/Person2/@Model.WhoId">@Model.Who</a>}</td>
     <td>@Model.Status</td>
     <td>@Model.DispOwner</td>

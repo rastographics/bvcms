@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			if (Request.Form.Count == 0)
 			{
-				sgfm.setDefaultSearch();
+				//sgfm.setDefaultSearch();
 			}
 			else
 			{

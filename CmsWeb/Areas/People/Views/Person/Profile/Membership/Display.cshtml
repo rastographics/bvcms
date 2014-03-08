@@ -1,4 +1,6 @@
-﻿@model CmsWeb.Areas.People.Models.MemberInfo
+﻿@using CmsData.Codes
+@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.MemberInfo
 @{
     var editable = new
     {
@@ -76,6 +78,12 @@
 {
     if (User.IsInRole("Membership"))
     { 
-        <a href="/Person2/MembershipEdit/@Model.PeopleId" class="edit-basic btn pull-right ajax">Edit Membership</a>
+        <span class="pull-right">
+            @if (Model.MemberStatus.Value.ToInt() == MemberStatusCode.JustAdded)
+            {
+            <a href="/Person2/JustAddedNotMember/@Model.PeopleId" class="btn ajax">Set Just Added to Not Member</a>
+            }
+            <a href="/Person2/MembershipEdit/@Model.PeopleId" class="edit-basic btn ajax">Edit Membership</a>
+        </span>
     }
 }

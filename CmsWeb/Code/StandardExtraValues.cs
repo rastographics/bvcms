@@ -177,6 +177,27 @@ namespace CmsWeb.Code
                             };
             return q2.ToList();
         }
+        public static List<SelectListItem> FamilyExtraValueCodes()
+        {
+            var q = from e in DbUtil.Db.FamilyExtras
+                    where e.StrValue != null || e.BitValue != null
+                    group e by new { e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0") }
+                        into g
+                        select g.Key;
+            var list = q.ToList();
+
+            var ev = GetExtraValues();
+            var q2 = from e in list
+                     let f = ev.SingleOrDefault(ff => ff.name == e.Field)
+                     where f == null || f.UserCanView()
+                     orderby e.Field, e.val
+                     select new SelectListItem()
+                            {
+                                Text = e.Field + ":" + e.val,
+                                Value = e.Field + ":" + e.val,
+                            };
+            return q2.ToList();
+        }
         public static Dictionary<string, string> Codes(string name)
         {
             var f = GetExtraValues().Single(ee => ee.name == name);

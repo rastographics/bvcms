@@ -265,7 +265,7 @@ $(function () {
                 $("#selectquestions").dialog({
                     title: "Add Question",
                     autoOpen: false,
-                    width: 500,
+                    width: 550,
                     height: 250,
                     modal: true
                 });

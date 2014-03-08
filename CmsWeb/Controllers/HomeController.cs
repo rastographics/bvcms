@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -7,9 +8,14 @@ using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Code;
+using DocumentFormat.OpenXml.Office2010.PowerPoint;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
+using iTextSharp.tool.xml.html;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
+using Novacode;
 
 namespace CmsWeb.Controllers
 {
@@ -48,8 +54,60 @@ namespace CmsWeb.Controllers
         }
         public ActionResult Test()
         {
-            string test = null;
-            var x = test.Replace('3', '4');
+            var q = from p in DbUtil.Db.People
+                    where p.LastName == "Carroll"
+                    select p;
+            byte[] contents = null;
+            using (var ms = new MemoryStream())
+            {
+                var dd = DocX.Create(Server.MapPath("/ttt.docx"));
+                dd.MarginLeft = 18;
+                dd.MarginRight = 18;
+                dd.MarginTop = 48;
+                dd.MarginBottom = 30;
+                dd.PageHeight = 1056;
+                dd.PageWidth = 816;
+                var col = 0;
+                var row = 0;
+                Table t = null;
+                foreach (var p in q)
+                {
+                    if (t == null || col == 0 && row == 0)
+                    {
+                        t = dd.InsertTable(10, 5);
+                        foreach (var rr in t.Rows)
+                            for (var i = 0; i < 5; i++)
+                            {
+                                rr.Cells[i].VerticalAlignment = VerticalAlignment.Center;
+                                rr.Height = 96.0;
+                                rr.Cells[i].Width = i % 2 == 0
+                                    ? 252.4667
+                                    : 11.533;
+                            }
+                    }
+                    var c = t.Rows[row].Cells[col];
+                    c.Paragraphs[0].InsertText(p.Name);
+                    c.InsertParagraph(p.PrimaryAddress);
+                    if (p.PrimaryAddress2.HasValue())
+                        c.InsertParagraph(p.PrimaryAddress2);
+                    c.InsertParagraph(p.CityStateZip);
+
+                    col += 2;
+                    if (col == 6)
+                    {
+                        row++;
+                        col = 0;
+                        if (row == 10)
+                            row = 0;
+                    }
+                }
+                dd.SaveAs(ms);
+                Response.ContentType = "application/msword";
+                Response.AddHeader("content-disposition", "inline; filename=minutes.docx");
+                Response.AddHeader("content-length", ms.Length.ToString());
+                Response.BinaryWrite(ms.ToArray());
+                Response.End();
+            }
             return Content("done");
         }
         public ActionResult RecordTest(int id, string v)
@@ -63,7 +121,7 @@ namespace CmsWeb.Controllers
         {
             var name = "VisitNumber-" + id;
             var q = DbUtil.Db.Queries.FirstOrDefault(qq => qq.Owner == "System" && qq.Name == name);
-            if(q != null)
+            if (q != null)
                 return Redirect(
                     ViewExtensions2.UseNewLook()
                         ? "/Query/" + q.QueryId
@@ -120,15 +178,6 @@ namespace CmsWeb.Controllers
             return Redirect("/");
         }
 
-        public ActionResult ToggleSupport()
-        {
-            var usesupport = DbUtil.Db.UserPreference("UseNewSupport", "false").ToBool();
-            DbUtil.Db.SetUserPreference("UseNewSupport", usesupport ? "false" : "true");
-            DbUtil.Db.SubmitChanges();
-            if (Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.OriginalString);
-            return Redirect("/");
-        }
         public ActionResult Names(string term)
         {
             var q = HomeModel.Names(term).ToList();
@@ -185,7 +234,7 @@ namespace CmsWeb.Controllers
         [GET("Home/Support2")]
         public ActionResult Support2(string helplink)
         {
-            if(helplink.HasValue())
+            if (helplink.HasValue())
                 TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
             return View();
         }

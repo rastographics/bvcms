@@ -174,7 +174,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Session["OnlineRegLogin"] = true;
             var user = ret as User;
             if (m.orgid == Util.CreateAccountCode)
-                return Content("/Person/Index/" + Util.UserPeopleId);
+                return Content("/Person2/" + Util.UserPeopleId);
 
             m.CreateList();
             m.UserPeopleId = user.PeopleId;

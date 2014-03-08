@@ -38,7 +38,7 @@ else
 { 
 	<tr>
 		<td><img src="/Content/images/individual.gif" width="10" height="12" />
-			<a href='/Person/Index/@p.PeopleId' class="target" @target>@p.Name</a>
+			<a href='/Person2/@p.PeopleId' class="target" @target>@p.Name</a>
 		</td>
 		<td>
 			@p.MemberStatus<br />
@@ -57,7 +57,7 @@ else
 			<a href='mailto:@p.Email'>@p.Email</a>
 		</td>
 		<td>
-			<a href='/Person/Index/@p.BFTeacherId'>@p.BFTeacher</a>
+			<a href='/Person2/@p.BFTeacherId'>@p.BFTeacher</a>
 		</td>
 	</tr>
 }
@@ -87,7 +87,7 @@ else
     <tr>
         <td class="tip" title="@o.ToolTip"><img src="/Content/images/group.png" /></td>
         <td><a href="/Organization/Index/@o.Id">@o.OrganizationName</a></td>
-        <td><a href="/Person/Index/@o.LeaderId">@o.LeaderName</a></td>
+        <td><a href="/Person2/@o.LeaderId">@o.LeaderName</a></td>
         <td class="right">@o.MemberCount</td>
         <td>@o.Schedule</td>
         <td><span id='ck-@o.Id' class='yesno'>@(o.AllowSelfCheckIn ? "yes" : "no")</span></td>

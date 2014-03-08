@@ -2,7 +2,7 @@
 @{
     var access = User.IsInRole("Access");
     var finance = User.IsInRole("Finance");
-    var targetperson = DbUtil.Db.UserPreference("TargetLinkPeople", "false").ToBool();
+    var targetperson = Util2.TargetLinkPeople;
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
 }
     <div class="navbar navbar-fixed-top yamm">

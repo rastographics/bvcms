@@ -4,6 +4,7 @@ using System.Web;
 using System.Web.Mvc;
 using AttributeRouting.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 
@@ -25,6 +26,15 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new MemberInfo(id);
             return View("Profile/Membership/Edit", m);
+        }
+        [POST("Person2/JustAddedNotMember/{id}")]
+        public ActionResult JustAddedNotMember(int id)
+        {
+            var p = DbUtil.Db.LoadPersonById(id);
+            p.MemberStatusId = MemberStatusCode.NotMember;
+            DbUtil.Db.SubmitChanges();
+            var m = new MemberInfo(id);
+            return View("Profile/Membership/Display", m);
         }
 
         [POST("Person2/MembershipUpdate/")]

@@ -7,8 +7,7 @@
     <a href="/Organization/OnlineRegQuestionsUpdate/@Model.OrgId" class="submitbutton bt blue">Save Changes</a>
 </div>
 <div style="clear:both"></div>
-<hr />
-<div class="formerror">@Html.ValidationMessage("Form")</div>
+<div class="formerror">@Html.ValidationMessage("Form")</div><br/>
 <div>
     <span class="keyword big tip" title="TargetExtraValues
      |Small groups will actually refer to ExtraValue fields on the Person's record option
@@ -16,6 +15,7 @@
         TargetExtraValues:
     </span> @Html.CheckBox("TargetExtraValues", Model.TargetExtraValues)
 </div>
+<i class="blue">Re-order items by dragging the gray bar</i>
 <ul class="enablesort sort edit" id="QuestionList">
     @Html.EditorFor(m => m, "TabQuestions")
 </ul>

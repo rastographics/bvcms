@@ -71,7 +71,7 @@ namespace CmsCheckin
 			var p = history.SelectedItem as PersonInfo;
 			if (p == null)
 				return;
-			System.Diagnostics.Process.Start(Program.URL + "/Person/Index/" + p.pid);
+			System.Diagnostics.Process.Start(Program.URL + "/Person2/" + p.pid);
 		}
 	}
 }

@@ -13,7 +13,7 @@
     foreach (var p in Model)
     {
     <p>
-        <a href="@Util.ResolveServerUrl("/Person/Index/" + p.PeopleId)" target="person">@p.Name2</a> <span>(@p.Consecutive times absent)</span>
+        <a href="@Util.ResolveServerUrl("/Person2/" + p.PeopleId)" target="person">@p.Name2</a> <span>(@p.Consecutive times absent)</span>
         @if (p.HomePhone.HasValue())
         {
             <br/>

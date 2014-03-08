@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Code
@@ -20,8 +21,8 @@ namespace CmsWeb.Code
                 return;
             }
 
-            var exp = NormalizeExpires(Expires);
-            if (!exp.HasValue())
+            var exp = DbUtil.NormalizeExpires(Expires);
+            if (exp == null)
                 ModelState.AddModelError("Expires", "invalid expiration date (MMYY)");
             if (!Cardcode.HasValue())
             {
@@ -42,23 +43,6 @@ namespace CmsWeb.Code
                 ModelState.AddModelError("Account", "please enter entire account number with any leading zeros");
         }
 
-        public static string NormalizeExpires(string expires)
-        {
-            if (expires == null)
-                return null;
-            expires = expires.Trim();
-            var re = new Regex(@"\A(?<mm>\d\d)(/|-| )?(20)?(?<yy>\d\d)\Z");
-            var m = re.Match(expires);
-            if (!m.Success)
-                return "";
-            DateTime dt;
-            var mm = m.Groups["mm"].Value;
-            var yy = m.Groups["yy"].Value;
-            var s = "{0}/15/{1}".Fmt(mm, yy);
-            if (!DateTime.TryParse(s, out dt))
-                return "";
-            return mm + yy;
-        }
 
         private static bool checkABA(string s)
         {

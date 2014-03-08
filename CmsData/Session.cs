@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web;
-using System.Web.Caching;
 using UtilityExtensions;
 
 namespace CmsData
@@ -236,7 +234,7 @@ namespace CmsData
         {
             get
             {
-                return DbUtil.Db.UserPreference("TargetLinkPeople", "false").ToBool();
+                return DbUtil.Db.UserPreference("TargetLinkPeople", "true").ToBool();
             }
         }
     }

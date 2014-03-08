@@ -12,7 +12,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData;
 using CmsData.API;
-using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -37,7 +36,6 @@ namespace CmsWeb.Models
         public string middle { get; set; }
         public string last { get; set; }
         public string suffix { get; set; }
-        //public string dob { get; set; }
         internal int? bmon, byear, bday;
 
         public string dob
@@ -373,9 +371,24 @@ namespace CmsWeb.Models
             get
             {
                 if (_Birthday == DateTime.MinValue)
-                    Util.BirthDateValid(dob, out _Birthday);
+                    Util.BirthDateValid(bmon, bday, byear, out _Birthday);
                 return _Birthday == DateTime.MinValue ? (DateTime?)null : _Birthday;
             }
+        }
+        public int GetAge(DateTime bd)
+        {
+            int y = bd.Year;
+            if (y == Util.SignalNoYear)
+                return 0;
+            if (y < 1000)
+                if (y < 50)
+                    y = y + 2000;
+                else y = y + 1900;
+            var dt = DateTime.Today;
+            int age = dt.Year - y;
+            if (dt.Month < bd.Month || (dt.Month == bd.Month && dt.Day < bd.Day))
+                age--;
+            return age;
         }
         public string NotFoundText;
         private int count;

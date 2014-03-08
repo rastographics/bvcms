@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using CmsData.View;
+using Community.CsharpSqlite;
 using UtilityExtensions;
 using System.Xml.Linq;
 using System.Web.Caching;
@@ -347,6 +348,23 @@ namespace CmsData
                         cmd.ExecuteNonQuery();
                     }
             }
+        }
+        public static DateTime? NormalizeExpires(string expires)
+        {
+            if (expires == null)
+                return null;
+            expires = expires.Trim();
+            var re = new Regex(@"\A(?<mm>\d\d)(/|-| )?(20)?(?<yy>\d\d)\Z");
+            var m = re.Match(expires);
+            if (!m.Success)
+                return null;
+            DateTime dt;
+            var mm = m.Groups["mm"].Value;
+            var yy = m.Groups["yy"].Value;
+            var s = "{0}/15/{1}".Fmt(mm, yy);
+            if (!DateTime.TryParse(s, out dt))
+                return null;
+            return dt;
         }
     }
 }
