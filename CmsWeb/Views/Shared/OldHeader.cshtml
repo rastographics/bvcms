@@ -2,7 +2,7 @@
     var access = User.IsInRole("Access");
     var onqb = (string) ViewData["OnQueryBuilder"] == "true";
     var headimage = DbUtil.HeaderImage("");
-    var targetperson = DbUtil.Db.UserPreference("TargetLinkPeople", "false").ToBool();
+    var targetperson = Util2.TargetLinkPeople;
     if (!headimage.HasValue())
     {
         headimage = @"<img src=""/Content/images/bvcms132x55.png"" width=""132"" height=""55"" />";
