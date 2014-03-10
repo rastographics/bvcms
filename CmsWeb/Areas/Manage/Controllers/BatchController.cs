@@ -789,5 +789,20 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return Content("done");
         }
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public ActionResult Script(string id)
+        {
+            try
+            {
+                var script = DbUtil.Db.Content(id);
+                PythonEvents.RunScript(DbUtil.Db, script.Body);
+            }
+            catch (Exception e)
+            {
+                return Content(e.Message);
+            }
+            return Content("done");
+        }
     }
 }

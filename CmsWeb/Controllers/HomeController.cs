@@ -54,61 +54,13 @@ namespace CmsWeb.Controllers
         }
         public ActionResult Test()
         {
-            var q = from p in DbUtil.Db.People
-                    where p.LastName == "Carroll"
-                    select p;
-            byte[] contents = null;
-            using (var ms = new MemoryStream())
-            {
-                var dd = DocX.Create(Server.MapPath("/ttt.docx"));
-                dd.MarginLeft = 18;
-                dd.MarginRight = 18;
-                dd.MarginTop = 48;
-                dd.MarginBottom = 30;
-                dd.PageHeight = 1056;
-                dd.PageWidth = 816;
-                var col = 0;
-                var row = 0;
-                Table t = null;
-                foreach (var p in q)
-                {
-                    if (t == null || col == 0 && row == 0)
-                    {
-                        t = dd.InsertTable(10, 5);
-                        foreach (var rr in t.Rows)
-                            for (var i = 0; i < 5; i++)
-                            {
-                                rr.Cells[i].VerticalAlignment = VerticalAlignment.Center;
-                                rr.Height = 96.0;
-                                rr.Cells[i].Width = i % 2 == 0
-                                    ? 252.4667
-                                    : 11.533;
-                            }
-                    }
-                    var c = t.Rows[row].Cells[col];
-                    c.Paragraphs[0].InsertText(p.Name);
-                    c.InsertParagraph(p.PrimaryAddress);
-                    if (p.PrimaryAddress2.HasValue())
-                        c.InsertParagraph(p.PrimaryAddress2);
-                    c.InsertParagraph(p.CityStateZip);
-
-                    col += 2;
-                    if (col == 6)
-                    {
-                        row++;
-                        col = 0;
-                        if (row == 10)
-                            row = 0;
-                    }
-                }
-                dd.SaveAs(ms);
-                Response.ContentType = "application/msword";
-                Response.AddHeader("content-disposition", "inline; filename=minutes.docx");
-                Response.AddHeader("content-length", ms.Length.ToString());
-                Response.BinaryWrite(ms.ToArray());
-                Response.End();
-            }
-            return Content("done");
+            var s = @"
+q = model.ChangedAddresses()
+for v in q:
+    print 'Hi {} {}, \nI noticed you have moved to {}\n'.format(v.FirstName, v.LastName, v.PrimaryCity)
+";
+            var ret = PythonEvents.RunScript(DbUtil.Db, s);
+            return Content("<pre>{0}</pre>".Fmt(ret));
         }
         public ActionResult RecordTest(int id, string v)
         {
