@@ -23,22 +23,22 @@ namespace CmsWeb.Areas.People.Models
         public string Address { get; set; }
         public bool Send { get; set; }
 
-        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track)
+        public List<ChangeDetail> CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track)
         {
+            var changes = new List<ChangeDetail>();
             var ckf = vm.GetAttribute<FieldInfoAttribute>().CheckboxField;
             var ckpi = modelProps.Single(mm => mm.Name == ckf);
             if (track)
             {
-                var changes = new StringBuilder();
                 model.UpdateValue(changes, vm.Name, Address);
                 model.UpdateValue(changes, ckf, Send);
-                return changes.ToString();
+                return changes;
             }
             var ci = modelProps.FirstOrDefault(ss => ss.Name == vm.Name);
             Debug.Assert(ci != null, "ci != null");
             ci.SetValue(model, Address, null);
             ckpi.SetValue(model, Send, null);
-            return string.Empty;
+            return changes;
         }
 
         public void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
@@ -58,22 +58,22 @@ namespace CmsWeb.Areas.People.Models
         public string Number { get; set; }
         public bool ReceiveText { get; set; }
 
-        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track)
+        public List<ChangeDetail> CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track)
         {
+            var changes = new List<ChangeDetail>();
             var ckf = vm.GetAttribute<FieldInfoAttribute>().CheckboxField;
             var ckpi = modelProps.Single(mm => mm.Name == ckf);
             if (track)
             {
-                var changes = new StringBuilder();
                 model.UpdateValue(changes, vm.Name, Number.GetDigits());
                 model.UpdateValue(changes, ckf, ReceiveText);
-                return changes.ToString();
+                return changes;
             }
             var ci = modelProps.FirstOrDefault(ss => ss.Name == vm.Name);
             Debug.Assert(ci != null, "ci != null");
             ci.SetValue(model, Number.GetDigits(), null);
             ckpi.SetValue(model, ReceiveText, null);
-            return string.Empty;
+            return changes;
         }
 
         public void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)
@@ -218,9 +218,9 @@ namespace CmsWeb.Areas.People.Models
             var changes = this.CopyPropertiesTo(p);
             p.LogChanges(DbUtil.Db, changes);
 
-            var fsb = new StringBuilder();
+            var fsb = new List<ChangeDetail>();
             p.Family.UpdateValue(fsb, "HomePhone", HomePhone.GetDigits());
-            p.Family.LogChanges(DbUtil.Db, fsb.ToString(), p.PeopleId, Util.UserPeopleId ?? 0);
+            p.Family.LogChanges(DbUtil.Db, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
 
             if (p.DeceasedDateChanged)
             {
@@ -233,7 +233,7 @@ namespace CmsWeb.Areas.People.Models
             DbUtil.Db.SubmitChanges();
 
             if (!HttpContext.Current.User.IsInRole("Access"))
-                if (!string.IsNullOrEmpty(changes))
+                if (changes.Count > 0)
                 {
                     DbUtil.Db.EmailRedacted(p.FromEmail, DbUtil.Db.GetNewPeopleManagers(),
                         "Basic Person Info Changed on " + Util.Host,

@@ -8,6 +8,7 @@ using System;
 using System.Data.SqlClient;
 using System.Linq;
 using ImageData;
+using IronPython.Modules;
 using UtilityExtensions;
 using System.Text;
 using System.Data.Linq;
@@ -992,21 +993,21 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return rr;
         }
-        private StringBuilder psbDefault;
+        private List<ChangeDetail> psbDefault;
         public void UpdateValue(string field, object value)
         {
             if (psbDefault == null)
-                psbDefault = new StringBuilder();
+                psbDefault = new List<ChangeDetail>();
             this.UpdateValue(psbDefault, field, value);
         }
         public void UpdateValueFromText(string field, string value)
         {
             if (psbDefault == null)
-                psbDefault = new StringBuilder();
+                psbDefault = new List<ChangeDetail>();
             this.UpdateValueFromText(psbDefault, field, value);
         }
 
-        public void UpdateValueFromText(StringBuilder psb, string field, string value)
+        public void UpdateValueFromText(List<ChangeDetail> psb, string field, string value)
         {
             value = value.TrimEnd();
             var o = Util.GetProperty(this, field);
@@ -1027,40 +1028,41 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return;
             if (value == null && o is string && !((string)o).HasValue())
                 return;
-            psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
+            //psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
+            psb.Add(new ChangeDetail(field, o, value));
             Util.SetPropertyFromText(this, field, value);
         }
 
         public void LogChanges(CMSDataContext Db)
         {
             if (psbDefault != null)
-                LogChanges(Db, psbDefault.ToString(), Util.UserPeopleId ?? 0);
+                LogChanges(Db, psbDefault, Util.UserPeopleId ?? 0);
         }
 
         public void LogChanges(CMSDataContext Db, int UserPeopleId)
         {
             if (psbDefault != null)
-                LogChanges(Db, psbDefault.ToString(), UserPeopleId);
+                LogChanges(Db, psbDefault, UserPeopleId);
         }
 
-        public void LogChanges(CMSDataContext Db, string changes)
+        public void LogChanges(CMSDataContext Db, List<ChangeDetail> changes)
         {
             LogChanges(Db, changes, Util.UserPeopleId ?? 0);
         }
 
-        public void LogChanges(CMSDataContext Db, string changes, int UserPeopleId)
+        public void LogChanges(CMSDataContext Db, List<ChangeDetail> changes, int UserPeopleId)
         {
-            if (changes.HasValue())
+            if (changes.Count > 0)
             {
                 var c = new ChangeLog
                 {
                     UserPeopleId = UserPeopleId,
                     PeopleId = PeopleId,
                     Field = "Basic Info",
-                    Data = "<table>\n" + changes + "</table>",
                     Created = Util.Now
                 };
                 Db.ChangeLogs.InsertOnSubmit(c);
+                c.ChangeDetails.AddRange(changes);
             }
         }
         public void LogPictureUpload(CMSDataContext Db, int UserPeopleId)
@@ -1070,10 +1072,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 UserPeopleId = UserPeopleId,
                 PeopleId = PeopleId,
                 Field = "Basic Info",
-                Data = "<table>\n<tr><td>Picture</td><td></td><td>(new upload)</td></tr>\n</table>",
                 Created = Util.Now
             };
             Db.ChangeLogs.InsertOnSubmit(c);
+            c.ChangeDetails.Add(new ChangeDetail("Picture", null, "(new upload)"));
         }
         public override string ToString()
         {

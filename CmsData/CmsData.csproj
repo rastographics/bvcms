@@ -344,6 +344,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Attend.cs" />
     <Compile Include="AuthorizeNet.cs" />
@@ -369,6 +370,7 @@
     <Compile Include="BundleHeader.cs" />
     <Compile Include="CheckinFamilyMember.cs" />
     <Compile Include="APIContributionSearchModel.cs" />
+    <Compile Include="DoReplacements2.cs" />
     <Compile Include="Generated\Functions\AttendanceTypeAsOf.cs" />
     <Compile Include="Generated\Functions\AttendCntHistory.cs" />
     <Compile Include="Generated\Functions\AttendDaysAfterNthVisitAsOf.cs" />
@@ -388,6 +390,7 @@
     <Compile Include="Generated\GoerSupporter.cs" />
     <Compile Include="Generated\Number.cs" />
     <Compile Include="Generated\Views\AttendCredit.cs" />
+    <Compile Include="Generated\Views\ChangeLogDetail.cs" />
     <Compile Include="Generated\Views\MissionTripTotal.cs" />
     <Compile Include="Generated\Views\StatusFlagList.cs" />
     <Compile Include="ITableWithExtraValues.cs" />

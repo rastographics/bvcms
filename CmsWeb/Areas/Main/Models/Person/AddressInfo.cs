@@ -197,7 +197,7 @@ namespace CmsWeb.Models.PersonPage
                     UpdateValue(f, "CountryName", Country);
                     if (Preferred)
                         UpdateValue(p, "AddressTypeId", 10);
-                    if (fsb.Length > 0)
+                    if (fsb.Count > 0)
                         BadAddress = false;
                     UpdateValue(f, "BadAddressFlag", BadAddress);
                     break;
@@ -212,24 +212,24 @@ namespace CmsWeb.Models.PersonPage
                     UpdateValue(p, "CountryName", Country);
                     if (Preferred)
                         UpdateValue(p, "AddressTypeId", 30);
-                    if (psb.Length > 0)
+                    if (psb.Count > 0)
                         BadAddress = false;
                     UpdateValue(p, "BadAddressFlag", BadAddress);
                     break;
             }
-            if (psb.Length > 0)
+            if (psb.Count > 0)
             {
                 var c = new ChangeLog
                 {
                     UserPeopleId = Util.UserPeopleId.Value,
                     PeopleId = PeopleId,
                     Field = Name,
-                    Data = "<table>\n" + psb + "</table>",
                     Created = Util.Now
                 };
                 DbUtil.Db.ChangeLogs.InsertOnSubmit(c);
+                c.ChangeDetails.AddRange(psb);
             }
-            if (fsb.Length > 0)
+            if (fsb.Count > 0)
             {
                 var c = new ChangeLog
                 {
@@ -237,10 +237,10 @@ namespace CmsWeb.Models.PersonPage
                     UserPeopleId = Util.UserPeopleId.Value,
                     PeopleId = PeopleId,
                     Field = Name,
-                    Data = "<table>\n" + fsb + "</table>",
                     Created = Util.Now
                 };
                 DbUtil.Db.ChangeLogs.InsertOnSubmit(c);
+                c.ChangeDetails.AddRange(fsb);
             }
             try
             {
@@ -251,16 +251,21 @@ namespace CmsWeb.Models.PersonPage
                 ModelState.AddModelError("error", ex.Message);
             }
 
+            var sb = new StringBuilder();
+            foreach (var c in psb)
+                sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
+            foreach (var c in fsb)
+                sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
             if (!HttpContext.Current.User.IsInRole("Access"))
-                if (psb.Length > 0 || fsb.Length > 0)
+                if (psb.Count > 0 || fsb.Count > 0)
                 {
                     DbUtil.Db.EmailRedacted(p.FromEmail, DbUtil.Db.GetNewPeopleManagers(),
                         "Address Info Changed",
-                        "{0} changed the following information:<br />\n<table>{1}{2}</table>"
-                        .Fmt(Util.UserName, psb.ToString(), fsb.ToString()));
+                        "{0} changed the following information:<br />\n<table>{1}</table>"
+                        .Fmt(Util.UserName, sb.ToString()));
                 }
         }
-        private StringBuilder fsb = new StringBuilder();
+        private List<ChangeDetail> fsb = new List<ChangeDetail>();
         private void UpdateValue(Family f, string field, object value)
         {
             var o = Util.GetProperty(f, field);
@@ -268,10 +273,10 @@ namespace CmsWeb.Models.PersonPage
                 return;
             if (o != null && o.Equals(value))
                 return;
-            fsb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
+            fsb.Add(new ChangeDetail(field, o, value));
             Util.SetProperty(f, field, value);
         }
-        private StringBuilder psb = new StringBuilder();
+        private List<ChangeDetail> psb = new List<ChangeDetail>();
         private void UpdateValue(Person p, string field, object value)
         {
             var o = Util.GetProperty(p, field);
@@ -279,7 +284,7 @@ namespace CmsWeb.Models.PersonPage
                 return;
             if (o != null && o.Equals(value))
                 return;
-            psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
+            psb.Add(new ChangeDetail(field, o, value));
             Util.SetProperty(p, field, value);
         }
         public static IEnumerable<SelectListItem> StateCodes()

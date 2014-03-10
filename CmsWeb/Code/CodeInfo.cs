@@ -8,6 +8,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Code
@@ -94,27 +95,27 @@ namespace CmsWeb.Code
             return i.Text;
         }
 
-        public string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track)
+        public List<ChangeDetail> CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track)
         {
+            var changes = new List<ChangeDetail>();
             string altname = vm.Name + "Id";
             var attr = vm.GetAttribute<FieldInfoAttribute>();
             if (attr != null && attr.IdField.HasValue())
                 altname = attr.IdField;
             var mid = modelProps.FirstOrDefault(mm => mm.Name == altname || mm.Name == vm.Name);
             if (mid == null)
-                return string.Empty;
+                return changes;
             if (track)
             {
-                var changes = new StringBuilder();
                 if (mid.PropertyType == typeof(int?) || mid.PropertyType == typeof(int))
                     if (Value == "0")
                         model.UpdateValue(changes, altname, null);
                     else
                         model.UpdateValue(changes, altname, Value.ToInt());
-                return changes.ToString();
+                return changes;
             }
             mid.SetPropertyFromText(model, Value);
-            return string.Empty;
+            return changes;
         }
 
         public void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps)

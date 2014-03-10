@@ -1627,6 +1627,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.ChangeLogDetail> ViewChangeLogDetails
+	    {
+		    get { return this.GetTable< View.ChangeLogDetail>(); }
+
+	    }
+
 	    public Table< View.Church> ViewChurches
 	    {
 		    get { return this.GetTable< View.Church>(); }

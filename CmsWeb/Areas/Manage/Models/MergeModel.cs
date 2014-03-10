@@ -182,7 +182,7 @@ namespace CmsWeb.Models
         public void Update()
         {
             var target = DbUtil.Db.LoadPersonById(pi[1].PeopleId);
-            var psb = new StringBuilder();
+            var psb = new List<ChangeDetail>();
 
             target.UpdateValue(psb, "TitleCode", pi[UseTitleCode].TitleCode);
             target.UpdateValue(psb, "FirstName", pi[UseFirstName].FirstName ?? "?");
@@ -201,7 +201,7 @@ namespace CmsWeb.Models
             target.UpdateValue(psb, "SuffixCode", pi[UseSuffixCode].SuffixCode);
             target.UpdateValue(psb, "MiddleName", pi[UseMiddleName].MiddleName);
 
-            var fsb = new StringBuilder();
+            var fsb = new List<ChangeDetail>();
 
             target.Family.UpdateValue(fsb, "HomePhone", pi[UseHomePhone].HomePhone.GetDigits());
             target.Family.UpdateValue(fsb, "AddressLineOne", pi[UseAddressLineOne].AddressLineOne);
@@ -211,8 +211,8 @@ namespace CmsWeb.Models
             target.Family.UpdateValue(fsb, "ZipCode", pi[UseZipCode].ZipCode);
             target.Family.UpdateValue(fsb, "CountryName", pi[UseCountry].Country);
 
-            target.LogChanges(DbUtil.Db, psb.ToString());
-            target.Family.LogChanges(DbUtil.Db, fsb.ToString(), target.PeopleId, Util.UserPeopleId.Value);
+            target.LogChanges(DbUtil.Db, psb);
+            target.Family.LogChanges(DbUtil.Db, fsb, target.PeopleId, Util.UserPeopleId.Value);
             DbUtil.Db.SubmitChanges();
         }
         public void Move()

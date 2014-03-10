@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
-using System.Web.Mvc;
 using UtilityExtensions;
-using System.Text.RegularExpressions;
-using System.Text;
 
 namespace CmsWeb.Models.PersonPage
 {
@@ -119,49 +116,28 @@ namespace CmsWeb.Models.PersonPage
             public string pf { get; set; }
             public bool Reversable { get; set; }
         }
-        public List<ChangeLogInfo> details(ChangeLog log, string name)
-        {
-            var list = new List<ChangeLogInfo>();
-            var re = new Regex("<tr><td>(?<field>[^<]+)</td><td>(?<before>[^<]*)</td><td>(?<after>[^<]*)</td></tr>", RegexOptions.Singleline);
-            Match matchResult = re.Match(log.Data);
-            var FieldSet = log.Field;
-            var pf = PersonOrFamily(FieldSet);
-            DateTime? Time = log.Created;
-            while (matchResult.Success)
-            {
-                var After = matchResult.Groups["after"].Value;
-                var Field = matchResult.Groups["field"].Value;
-                var c = new ChangeLogInfo
-                {
-                    User = name,
-                    FieldSet = FieldSet,
-                    Time = Time,
-                    Field = Field,
-                    Before = matchResult.Groups["before"].Value,
-                    After = After,
-                    pf = pf,
-                    Reversable = FieldEqual(pf, Field, After)
-                };
-                list.Add(c);
-                FieldSet = "";
-                name = "";
-                Time = null;
-                matchResult = matchResult.NextMatch();
-            }
-            return list;
-        }
         public IEnumerable<ChangeLogInfo> GetChangeLogs()
         {
-            var list = (from c in DbUtil.Db.ChangeLogs
+            var list = (from c in DbUtil.Db.ViewChangeLogDetails
                         let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
                         where c.PeopleId == Person.PeopleId || c.FamilyId == Person.FamilyId
                         where userp != null
-                        select new { userp, c }).ToList();
-            var q = from i in list
-                    orderby i.c.Created descending
-                    from d in details(i.c, i.userp.Name)
-                    select d;
-            return q;
+                        orderby c.Created descending
+                        select new ChangeLogInfo
+                        {
+                            User = userp.Name,
+                            FieldSet = c.Section,
+                            Time = c.Created,
+                            Field = c.Field,
+                            Before = c.Before,
+                            After = c.After
+                        }).ToList();
+            foreach (var i in list)
+            {
+                i.pf = PersonOrFamily(i.FieldSet);
+                i.Reversable = FieldEqual(i.pf, i.Field, i.After);
+            }
+            return list;
         }
         public void Reverse(string field, string value, string pf)
         {

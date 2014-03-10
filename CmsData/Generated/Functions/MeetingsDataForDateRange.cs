@@ -16,7 +16,7 @@ namespace CmsData.View
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
-		private string _OrganizationName;
+		private string _Organization;
 		
 		private string _LeaderName;
 		
@@ -31,18 +31,18 @@ namespace CmsData.View
 
 		
 		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
-		public string OrganizationName
+		[Column(Name="Organization", Storage="_Organization", DbType="nvarchar(100) NOT NULL")]
+		public string Organization
 		{
 			get
 			{
-				return this._OrganizationName;
+				return this._Organization;
 			}
 
 			set
 			{
-				if (this._OrganizationName != value)
-					this._OrganizationName = value;
+				if (this._Organization != value)
+					this._Organization = value;
 			}
 
 		}

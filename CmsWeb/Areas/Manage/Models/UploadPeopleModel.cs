@@ -13,8 +13,8 @@ namespace CmsWeb.Models
     public class UploadPeopleModel
     {
         private Dictionary<string, int> names;
-        private StringBuilder psb;
-        private StringBuilder fsb;
+        private List<ChangeDetail> psb;
+        private List<ChangeDetail> fsb;
         private CMSDataContext Db;
         private CMSDataContext Db2;
         private int PeopleId;
@@ -267,8 +267,8 @@ namespace CmsWeb.Models
                     if (pid != null) // found
                     {
                         p = Db.LoadPersonById(pid.PeopleId.Value);
-                        psb = new StringBuilder();
-                        fsb = new StringBuilder();
+                        psb = new List<ChangeDetail>();
+                        fsb = new List<ChangeDetail>();
 
                         UpdateField(p, a, "TitleCode", "title");
                         UpdateField(p, a, "FirstName", "first");
@@ -296,8 +296,8 @@ namespace CmsWeb.Models
 
                         if (!testing)
                         {
-                            p.LogChanges(Db, psb.ToString(), PeopleId);
-                            p.Family.LogChanges(Db, fsb.ToString(), p.PeopleId, PeopleId);
+                            p.LogChanges(Db, psb, PeopleId);
+                            p.Family.LogChanges(Db, fsb, p.PeopleId, PeopleId);
                             Db.SubmitChanges();
                             Person.Tag(Db, p.PeopleId, "InsertPeopleUpdated", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
                         }

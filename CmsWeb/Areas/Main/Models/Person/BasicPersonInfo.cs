@@ -140,8 +140,8 @@ namespace CmsWeb.Models.PersonPage
             if (CampusId == 0)
                 CampusId = null;
             var p = DbUtil.Db.LoadPersonById(PeopleId);
-            var psb = new StringBuilder();
-            var fsb = new StringBuilder();
+            var psb = new List<ChangeDetail>();
+            var fsb = new List<ChangeDetail>();
             p.UpdateValue(psb, "DOB", Birthday);
             p.UpdateValue(psb, "CampusId", CampusId);
             p.UpdateValue(psb, "DeceasedDate", DeceasedDate);
@@ -184,18 +184,23 @@ namespace CmsWeb.Models.PersonPage
             }
                     
 
-            p.LogChanges(DbUtil.Db, psb.ToString());
-            p.Family.LogChanges(DbUtil.Db, fsb.ToString(), p.PeopleId, Util.UserPeopleId.Value);
+            p.LogChanges(DbUtil.Db, psb);
+            p.Family.LogChanges(DbUtil.Db, fsb, p.PeopleId, Util.UserPeopleId.Value);
 
             DbUtil.Db.SubmitChanges();
-            
+
+            var sb = new StringBuilder();
+            foreach (var c in psb)
+                sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
+            foreach (var c in fsb)
+                sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
             if (!HttpContext.Current.User.IsInRole("Access"))
-                if (psb.Length > 0 || fsb.Length > 0)
+                if (psb.Count > 0 || fsb.Count > 0)
                 {
                     DbUtil.Db.EmailRedacted(p.FromEmail, DbUtil.Db.GetNewPeopleManagers(),
                         "Basic Person Info Changed on " + Util.Host,
-                        "{0} changed the following information for {1} ({2}):<br />\n<table>{3}{4}</table>"
-                        .Fmt(Util.UserName, First + " " + Last, PeopleId, psb.ToString(),fsb.ToString()));
+                        "{0} changed the following information for {1} ({2}):<br />\n<table>{3}</table>"
+                        .Fmt(Util.UserName, First + " " + Last, PeopleId, sb.ToString()));
                 }
         }
         public static IEnumerable<SelectListItem> GenderCodes()

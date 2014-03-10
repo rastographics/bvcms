@@ -8,13 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using CmsData.View;
-using Community.CsharpSqlite;
 using UtilityExtensions;
-using System.Xml.Linq;
 using System.Web.Caching;
 using System.Data.SqlClient;
 
@@ -286,7 +282,7 @@ namespace CmsData
         public const int TagTypeId_Emailer = 8;
         public const int TagTypeId_StatusFlags = 9;
 
-        public static void UpdateValue(this object obj, StringBuilder psb, string field, object value)
+        public static void UpdateValue(this object obj, List<ChangeDetail> psb, string field, object value)
         {
             if (value is string)
                 value = ((string)value).TrimEnd();
@@ -305,9 +301,11 @@ namespace CmsData
                 return;
             if (o is DateTime && o.Equals(value.ToDate()))
                 return;
-            psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
-            if (value is string)
-                Util.SetPropertyFromText(obj, field, (string)value);
+            psb.Add(new ChangeDetail(field, o, value));
+            //psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
+            var s = value as string;
+            if (s != null)
+                Util.SetPropertyFromText(obj, field, s);
             else
                 Util.SetProperty(obj, field, value);
         }

@@ -25,7 +25,7 @@ namespace CmsWeb.Code
 
     public interface IModelViewModelObject
     {
-        string CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track);
+        List<ChangeDetail> CopyToModel(PropertyInfo vm, object model, PropertyInfo[] modelProps, bool track);
         void CopyFromModel(PropertyInfo vm, object model, PropertyInfo[] modelProps);
     }
 
@@ -87,11 +87,11 @@ namespace CmsWeb.Code
                     vm.SetPropertyFromText(viewmodel, (modelvalue ?? "").ToString());
             }
         }
-        public static string CopyPropertiesTo(this object viewmodel, object model, string onlyfields = "", string excludefields = "")
+        public static List<ChangeDetail> CopyPropertiesTo(this object viewmodel, object model, string onlyfields = "", string excludefields = "")
         {
             var modelProps = model.GetType().GetProperties().Where(pp => pp.CanWrite).ToArray();
             var viewmodelProps = viewmodel.GetType().GetProperties().Where(pp => pp.CanWrite).ToArray();
-            var changes = new StringBuilder();
+            var changes = new List<ChangeDetail>();
             var only = onlyfields.Split(',');
             var exclude = excludefields.Split(',');
 
@@ -114,7 +114,7 @@ namespace CmsWeb.Code
                 if (viewmodelvalue is IModelViewModelObject)
                 {
                     var ivm = viewmodelvalue as IModelViewModelObject;
-                    changes.Append(ivm.CopyToModel(vm, model, modelProps, track));
+                    changes.AddRange(ivm.CopyToModel(vm, model, modelProps, track));
                     continue;
                 }
 
@@ -153,7 +153,7 @@ namespace CmsWeb.Code
                     else
                         m.SetPropertyFromText(model, (viewmodelvalue ?? "").ToString());
             }
-            return changes.ToString();
+            return changes;
         }
 
         public static SelectList ToSelect(this IEnumerable<CodeValueItem> items, string datafield = "Id")
