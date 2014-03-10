@@ -138,6 +138,12 @@ namespace CmsWeb.Models
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlinePledge;
             return false;
         }
+        public bool NoReqBirthYear()
+        {
+            if (org != null)
+                return setting.NoReqBirthYear;
+            return settings.Values.Any(o => o.NoReqBirthYear);
+        }
         public bool MemberOnly()
         {
             if (org != null)
