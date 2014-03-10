@@ -54,6 +54,10 @@ namespace CmsData
             }
             if (text.Contains("{occupation}", ignoreCase: true))
                 text = text.Replace("{occupation}", p.OccupationOther, ignoreCase: true);
+            if (text.Contains("{city}", ignoreCase: true))
+                text = text.Replace("{city}", p.PrimaryCity, ignoreCase: true);
+            if (text.Contains("{state}", ignoreCase: true))
+                text = text.Replace("{state}", p.PrimaryState, ignoreCase: true);
 
             if (text.Contains("{emailhref}", ignoreCase: true))
             {

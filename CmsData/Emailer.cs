@@ -386,6 +386,7 @@ namespace CmsData
                 {
                     var p = LoadPersonById(To.PeopleId);
                     string text = emailqueue.Body;
+                    var texta = Regex.Split(text, "({.*?})");
                     var aa = DoReplacements(ref text, p, To);
                     var qs = "OptOut/UnSubscribe/?enc=" + Util.EncryptForUrl("{0}|{1}".Fmt(To.PeopleId, from.Address));
                     var url = Util.URLCombine(CmsHost, qs);
