@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Data.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -9,7 +8,6 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -267,10 +265,6 @@ namespace CmsWeb.Areas.People.Models
             var p = DbUtil.Db.LoadPersonById(PeopleId);
             var f = p.Family;
 
-            int? ResCodeId = ResCode.Value.ToInt();
-            if (ResCodeId == 0)
-                ResCodeId = null;
-
             switch (Name)
             {
                 case "FamilyAddr":
@@ -279,9 +273,9 @@ namespace CmsWeb.Areas.People.Models
                     UpdateValue(f, "AddressToDate", ToDt);
                     UpdateValue(f, "CityName", CityName);
                     UpdateValue(f, "StateCode", StateCode.Value);
-                    UpdateValue(f, "ResCodeId", ResCodeId);
                     UpdateValue(f, "ZipCode", ZipCode ?? "");
                     UpdateValue(f, "CountryName", Country.Value);
+                    UpdateValue(f, "ResCodeId", DbUtil.Db.FindResCode(ZipCode, Country.Value));
                     if (Preferred)
                         UpdateValue(p, "AddressTypeId", 10);
                     if (fsb.Count > 0)
@@ -294,9 +288,9 @@ namespace CmsWeb.Areas.People.Models
                     UpdateValue(p, "AddressToDate", ToDt);
                     UpdateValue(p, "CityName", CityName);
                     UpdateValue(p, "StateCode", StateCode.Value);
-                    UpdateValue(p, "ResCodeId", ResCodeId);
                     UpdateValue(p, "ZipCode", ZipCode ?? "");
                     UpdateValue(p, "CountryName", Country.Value);
+                    UpdateValue(p, "ResCodeId", DbUtil.Db.FindResCode(ZipCode, Country.Value));
                     if (Preferred)
                         UpdateValue(p, "AddressTypeId", 30);
                     if (psb.Count > 0)
