@@ -968,14 +968,6 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
         }
 
-        //partial void OnZipCodeChanged()
-        //{
-        //    ResCodeId = FindResCode(Db, ZipCode);
-        //}
-        //partial void OnAltZipCodeChanged()
-        //{
-        //    AltResCodeId = FindResCode(Db, AltZipCode);
-        //}
         public RecReg GetRecReg()
         {
             var rr = RecRegs.SingleOrDefault();

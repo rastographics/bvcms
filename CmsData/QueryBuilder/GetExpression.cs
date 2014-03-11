@@ -130,6 +130,7 @@ namespace CmsData
                 { QueryType.RecentContactType, RecentContactType },
                 { QueryType.RecentContributionAmount, RecentContributionAmount },
                 { QueryType.RecentContributionCount, RecentContributionCount },
+                { QueryType.RecentChanged, RecentChanged },
                 { QueryType.RecentCreated, RecentCreated },
                 { QueryType.RecentDecisionType, RecentDecisionType },
                 { QueryType.RecentEmailCount, RecentEmailCount },

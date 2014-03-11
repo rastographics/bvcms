@@ -144,25 +144,6 @@ namespace CmsData
 #endif
         }
 
-        public IEnumerable<Person> ChangedAddresses()
-        {
-            var q = from p in db.People
-                    let pcl = (from cl in db.ChangeLogs
-                              where cl.PeopleId == p.PeopleId
-                              where cl.Created > DateTime.Now.AddDays(-30)
-                              where cl.ChangeDetails.Any(dd => dd.Field.StartsWith("Address"))
-                              select cl).Any()
-                    let fcl = (from cl in db.ChangeLogs
-                              where cl.FamilyId == p.FamilyId
-                              where cl.Created > DateTime.Now.AddDays(-30)
-                              where cl.ChangeDetails.Any(dd => dd.Field.StartsWith("Address"))
-                              select cl).Any()
-                    where pcl || fcl
-                    where p.PeopleId == p.Family.HeadOfHouseholdId
-                    select p;
-            return q;
-        }
-
         public void AddxtraValueCode(string savedquery, string name, string text)
         {
             var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();

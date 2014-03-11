@@ -152,16 +152,6 @@ namespace CmsData
             return this.PeopleExtras.OrderByDescending(e => e.TransactionTime)
                 .First(e => e.Field == field && e.PeopleId == pid).DateValue;
         }
-        private QueryBuilderClause CheckBadQuery(QueryBuilderClause qb)
-        {
-            if (qb != null && qb.Field == null) // bad query
-            {
-                DeleteQueryBuilderClauseOnSubmit(qb);
-                SubmitChanges();
-                return null;
-            }
-            return qb;
-        }
         public IQueryable<Person> PeopleQuery(Guid id)
         {
             if (id == null)
@@ -220,12 +210,6 @@ namespace CmsData
 
             SubmitChanges();
             return tag.People(this);
-        }
-        public void DeleteQueryBuilderClauseOnSubmit(QueryBuilderClause qb)
-        {
-            foreach (var c in qb.Clauses)
-                DeleteQueryBuilderClauseOnSubmit(c);
-            this.QueryBuilderClauses.DeleteOnSubmit(qb);
         }
         public void TagAll(IQueryable<Person> list)
         {
