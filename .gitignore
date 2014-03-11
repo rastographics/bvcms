@@ -66,3 +66,4 @@ CmsDataSqlClr_.*.sqlproj
 /.gitignore~
 
 /CmsWeb/Properties/PublishProfiles/production.pubxml
+/PythonApplication1/TextFile1.txt

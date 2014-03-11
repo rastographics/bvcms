@@ -370,7 +370,7 @@
     <Compile Include="BundleHeader.cs" />
     <Compile Include="CheckinFamilyMember.cs" />
     <Compile Include="APIContributionSearchModel.cs" />
-    <Compile Include="DoReplacements2.cs" />
+    <Compile Include="EmailReplacements.cs" />
     <Compile Include="Generated\Functions\AttendanceTypeAsOf.cs" />
     <Compile Include="Generated\Functions\AttendCntHistory.cs" />
     <Compile Include="Generated\Functions\AttendDaysAfterNthVisitAsOf.cs" />
@@ -403,7 +403,6 @@
     <Compile Include="QueryBuilder2\SerializeJson.cs" />
     <Compile Include="QueryBuilder2\Serialize2.cs" />
     <Compile Include="Content.cs" />
-    <Compile Include="DoReplacements.cs" />
     <Compile Include="Generated\ActivityOld.cs" />
     <Compile Include="Generated\BuildingAccessType.cs" />
     <Compile Include="Generated\CheckInAccessType.cs" />

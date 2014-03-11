@@ -315,7 +315,7 @@ emailid={2}
             var msg = @"<p>Here is your <a href=""{0}"">LINK</a></p>
 <p>Note: If you did not request this link, please ignore this email,
 or contact the church if you need help.</p>"
-                .Fmt(DbUtil.Db.RegisterLinkUrl(orgid, pid, queueid, linktype));
+                .Fmt(EmailReplacements.RegisterLinkUrl(DbUtil.Db, orgid, pid, queueid, linktype));
             var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);
 
             DbUtil.Db.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation

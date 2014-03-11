@@ -292,28 +292,17 @@ namespace CmsData
             var sysFromEmail = Util.SysFromEmail;
             var emailqueue = EmailQueues.Single(eq => eq.Id == id);
             var emailqueueto = EmailQueueTos.Single(eq => eq.Id == id && eq.PeopleId == pid);
-            var fromname = emailqueue.FromName;
+            var fromname = emailqueueto.EmailQueue.FromName;
             fromname = !fromname.HasValue() ? emailqueue.FromAddr : emailqueue.FromName.Replace("\"", "");
             var from = Util.FirstAddress(emailqueue.FromAddr, fromname);
+
 
             try
             {
                 var p = LoadPersonById(emailqueueto.PeopleId);
-                var text = emailqueue.Body;
-                var aa = DoReplacements(ref text, p, emailqueueto);
-
-                var qs = "OptOut/UnSubscribe/?enc=" + Util.EncryptForUrl("{0}|{1}".Fmt(emailqueueto.PeopleId, from.Address));
-                var url = Util.URLCombine(CmsHost, qs);
-                var link = @"<a href=""{0}"">Unsubscribe</a>".Fmt(url);
-                text = text.Replace("{unsubscribe}", link, ignoreCase: true);
-                text = text.Replace("{Unsubscribe}", link, ignoreCase: true);
-                if (aa.Count > 0)
-                {
-                    text = text.Replace("{toemail}", aa[0].Address, ignoreCase: true);
-                    text = text.Replace("%7Btoemail%7D", aa[0].Address, ignoreCase: true);
-                }
-                text = text.Replace("{fromemail}", from.Address, ignoreCase: true);
-                text = text.Replace("%7Bfromemail%7D", from.Address, ignoreCase: true);
+                var m = new EmailReplacements(this, emailqueue.Body, from);
+                var text = m.DoReplacements(p, emailqueueto);
+                var aa = m.ListAddresses;
 
                 if (Setting("sendemail", "true") != "false")
                 {
@@ -372,6 +361,7 @@ namespace CmsData
                 return;
             }
 
+            var m = new EmailReplacements(this, emailqueue.Body, from);
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
 
@@ -382,23 +372,14 @@ namespace CmsData
                     select To;
             foreach (var To in q)
             {
+#if DEBUG
+#else
                 try
                 {
+#endif
                     var p = LoadPersonById(To.PeopleId);
-                    string text = emailqueue.Body;
-                    var texta = Regex.Split(text, "({.*?})");
-                    var aa = DoReplacements(ref text, p, To);
-                    var qs = "OptOut/UnSubscribe/?enc=" + Util.EncryptForUrl("{0}|{1}".Fmt(To.PeopleId, from.Address));
-                    var url = Util.URLCombine(CmsHost, qs);
-                    var link = @"<a href=""{0}"">Unsubscribe</a>".Fmt(url);
-                    text = text.Replace("{unsubscribe}", link, ignoreCase: true);
-                    if (aa.Count > 0)
-                    {
-                        text = text.Replace("{toemail}", aa[0].Address, ignoreCase: true);
-                        text = text.Replace("%7Btoemail%7D", aa[0].Address);
-                    }
-                    text = text.Replace("{fromemail}", from.Address, ignoreCase: true);
-                    text = text.Replace("%7Bfromemail%7D", from.Address);
+                    var text = m.DoReplacements(p, To);
+                    var aa = m.ListAddresses;
 
                     if (Setting("sendemail", "true") != "false")
                     {
@@ -408,6 +389,8 @@ namespace CmsData
 
                         SubmitChanges();
                     }
+#if DEBUG
+#else
                 }
                 catch (Exception ex)
                 {
@@ -420,6 +403,7 @@ namespace CmsData
                         Util.SendErrorsTo(),
                         emailqueue.Id, null);
                 }
+#endif
             }
             emailqueue.Sent = DateTime.Now;
             if (emailqueue.Redacted ?? false)
@@ -469,7 +453,7 @@ namespace CmsData
                 foreach (HtmlNode link in linkList)
                 {
                     var att = link.Attributes["href"];
-                    if (IsSpecialLink(att.Value)) continue;
+                    if (EmailReplacements.IsSpecialLink(att.Value)) continue;
 
                     var hash = hashMD5Base64(md5Hash, att.Value + DateTime.Now.ToString("o") + linkIndex);
 
