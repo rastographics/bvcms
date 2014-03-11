@@ -14,12 +14,25 @@ namespace CmsData
     public class EmailReplacements
     {
         private const string RegisterLinkRe = "<a[^>]*?href=\"https{0,1}://registerlink2{0,1}/{0,1}\"[^>]*>.*?</a>";
+        private readonly Regex registerLinkRe = new Regex(RegisterLinkRe, RegexOptions.IgnoreCase);
+
         private const string RsvpLinkRe = "<a[^>]*?href=\"https{0,1}://rsvplink/{0,1}\"[^>]*>.*?</a>";
+        private readonly Regex rsvpLinkRe = new Regex(RsvpLinkRe, RegexOptions.IgnoreCase);
+
         private const string SendLinkRe = "<a[^>]*?href=\"https{0,1}://sendlink2{0,1}/{0,1}\"[^>]*>.*?</a>";
+        private readonly Regex sendLinkRe = new Regex(SendLinkRe, RegexOptions.IgnoreCase);
+
         private const string SupportLinkRe = "<a[^>]*?href=\"https{0,1}://supportlink/{0,1}\"[^>]*>.*?</a>";
+        private readonly Regex supportLinkRe = new Regex(SupportLinkRe, RegexOptions.IgnoreCase);
+
         private const string VolReqLinkRe = "<a[^>]*?href=\"https{0,1}://volreqlink\"[^>]*>.*?</a>";
+        private readonly Regex volReqLinkRe = new Regex(VolReqLinkRe, RegexOptions.IgnoreCase);
+
         private const string VolSubLinkRe = "<a[^>]*?href=\"https{0,1}://volsublink\"[^>]*>.*?</a>";
+        private readonly Regex volSubLinkRe = new Regex(VolSubLinkRe, RegexOptions.IgnoreCase);
+
         private const string VoteLinkRe = "<a[^>]*?href=\"https{0,1}://votelink/{0,1}\"[^>]*>.*?</a>";
+        private readonly Regex voteLinkRe = new Regex(VoteLinkRe, RegexOptions.IgnoreCase);
 
         private readonly CMSDataContext db;
 
@@ -33,7 +46,7 @@ namespace CmsData
             if (text == null)
                 text = "(no content)";
             stringlist = Regex.Split(text,
-                @"({{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6})".Fmt(RegisterLinkRe, RsvpLinkRe, SendLinkRe, SupportLinkRe, VolReqLinkRe, VolReqLinkRe, VolSubLinkRe, VoteLinkRe),
+                @"({{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7})".Fmt(RegisterLinkRe, RsvpLinkRe, SendLinkRe, SupportLinkRe, VolReqLinkRe, VolReqLinkRe, VolSubLinkRe, VoteLinkRe),
                 RegexOptions.IgnoreCase | RegexOptions.Multiline);
         }
 
@@ -159,13 +172,13 @@ namespace CmsData
                     if (code.StartsWith("{extra", StringComparison.OrdinalIgnoreCase))
                         return ExtraValue(code, emailqueueto);
 
-                    if (Regex.IsMatch(code, RegisterLinkRe, RegexOptions.IgnoreCase))
+                    if (registerLinkRe.IsMatch(code))
                         return RegisterLink(code, emailqueueto);
 
-                    if (Regex.IsMatch(code, RsvpLinkRe, RegexOptions.IgnoreCase))
+                    if (rsvpLinkRe.IsMatch(code))
                         return RsvpLink(code, emailqueueto);
 
-                    if (Regex.IsMatch(code, SendLinkRe, RegexOptions.IgnoreCase))
+                    if (sendLinkRe.IsMatch(code))
                         return SendLink(code, emailqueueto);
 
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
@@ -174,16 +187,16 @@ namespace CmsData
                     if (code.StartsWith("{smallgroups", StringComparison.OrdinalIgnoreCase))
                         return SmallGroups(code, emailqueueto); ;
 
-                    if (Regex.IsMatch(code, SupportLinkRe, RegexOptions.IgnoreCase))
+                    if (supportLinkRe.IsMatch(code))
                         return SupportLink(code, emailqueueto);
 
-                    if (Regex.IsMatch(code, VolReqLinkRe, RegexOptions.IgnoreCase))
+                    if (volReqLinkRe.IsMatch(code))
                         return VolReqLink(code, emailqueueto);
 
-                    if (Regex.IsMatch(code, VolSubLinkRe, RegexOptions.IgnoreCase))
+                    if (volSubLinkRe.IsMatch(code))
                         return VolSubLink(code, emailqueueto);
 
-                    if (Regex.IsMatch(code, VoteLinkRe, RegexOptions.IgnoreCase))
+                    if (voteLinkRe.IsMatch(code))
                         return VoteLink(code, emailqueueto);
 
                     break;
@@ -192,19 +205,19 @@ namespace CmsData
             return code;
         }
 
+        const string AddSmallGroupRe = @"\{addsmallgroup:\[(?<group>[^\]]*)\]\}";
+        readonly Regex addSmallGroupRe = new Regex(AddSmallGroupRe, RegexOptions.Singleline);
         private string AddSmallGroup(string code, EmailQueueTo emailqueueto)
         {
-            const string RE = @"\{addsmallgroup:\[(?<group>[^\]]*)\]\}";
-            var re = new Regex(RE, RegexOptions.Singleline);
-            Match match = re.Match(code);
+            var match = addSmallGroupRe.Match(code);
             if (!match.Success || !emailqueueto.OrgId.HasValue)
                 return code;
 
-            string group = match.Groups["group"].Value;
-            OrganizationMember om = (from mm in db.OrganizationMembers
-                                     where mm.OrganizationId == emailqueueto.OrgId
-                                     where mm.PeopleId == emailqueueto.PeopleId
-                                     select mm).SingleOrDefault();
+            var group = match.Groups["group"].Value;
+            var om = (from mm in db.OrganizationMembers
+                      where mm.OrganizationId == emailqueueto.OrgId
+                      where mm.PeopleId == emailqueueto.PeopleId
+                      select mm).SingleOrDefault();
             if (om != null)
                 om.AddToGroup(db, @group);
             return "";
@@ -234,15 +247,15 @@ namespace CmsData
             return @"<a href=""{0}"">Create Account</a>".Fmt(url);
         }
 
+        const string ExtraValueRe = @"{extra(?<type>.*?):(?<field>.*?)}";
+        readonly Regex extraValueRe = new Regex(ExtraValueRe, RegexOptions.Singleline);
         private string ExtraValue(string code, EmailQueueTo emailqueueto)
         {
-            const string RE = @"{extra(?<type>.*?):(?<field>.*?)}";
-            var re = new Regex(RE, RegexOptions.Singleline);
-            var match = re.Match(code);
+            var match = extraValueRe.Match(code);
             if (!match.Success)
                 return code;
-            string field = match.Groups["field"].Value;
-            string type = match.Groups["type"].Value;
+            var field = match.Groups["field"].Value;
+            var type = match.Groups["type"].Value;
             var ev = db.PeopleExtras.SingleOrDefault(ee => ee.Field == field && emailqueueto.PeopleId == ee.PeopleId);
             if (ev == null)
                 return "";
@@ -250,13 +263,18 @@ namespace CmsData
             switch (type)
             {
                 case "value":
+                case "code":
                     return ev.StrValue;
                 case "data":
+                case "text":
                     return ev.Data;
                 case "date":
                     return ev.DateValue.FormatDate();
                 case "int":
                     return ev.IntValue.ToString();
+                case "bit":
+                case "bool":
+                    return ev.BitValue.ToString();
             }
             return code;
         }
@@ -266,15 +284,14 @@ namespace CmsData
             if (!emailqueueto.OrgId.HasValue)
                 return code;
 
-            DateTime mt = (from aa in db.Attends
-                           where aa.OrganizationId == emailqueueto.OrgId
-                           where aa.PeopleId == emailqueueto.PeopleId
-                           where aa.Commitment == AttendCommitmentCode.Attending
-                           where aa.MeetingDate > DateTime.Now
-                           orderby aa.MeetingDate
-                           select aa.MeetingDate).FirstOrDefault();
-            code = mt.ToString("g");
-            return code;
+            var mt = (from aa in db.Attends
+                      where aa.OrganizationId == emailqueueto.OrgId
+                      where aa.PeopleId == emailqueueto.PeopleId
+                      where aa.Commitment == AttendCommitmentCode.Attending
+                      where aa.MeetingDate > DateTime.Now
+                      orderby aa.MeetingDate
+                      select aa.MeetingDate).FirstOrDefault();
+            return mt == DateTime.MinValue ? "none" : mt.ToString("g");
         }
 
         private string RegisterLink(string code, EmailQueueTo emailqueueto)
@@ -368,7 +385,7 @@ namespace CmsData
 
             var id = GetId(d, "SendLink");
 
-            var showfamily= code.Contains("sendlink2", ignoreCase: true);
+            var showfamily = code.Contains("sendlink2", ignoreCase: true);
             string qs = "{0},{1},{2},{3}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id,
                 showfamily ? "registerlink2" : "registerlink");
 
@@ -390,11 +407,11 @@ namespace CmsData
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
+        const string SmallGroupRe = @"\{smallgroup:\[(?<prefix>[^\]]*)\](?:,(?<def>[^}]*)){0,1}\}";
+        readonly Regex smallGroupRe = new Regex(SmallGroupRe, RegexOptions.Singleline);
         private string SmallGroup(string code, EmailQueueTo emailqueueto)
         {
-            const string RE = @"\{smallgroup:\[(?<prefix>[^\]]*)\](?:,(?<def>[^}]*)){0,1}\}";
-            var re = new Regex(RE, RegexOptions.Singleline);
-            var match = re.Match(code);
+            var match = smallGroupRe.Match(code);
             if (!match.Success || !emailqueueto.OrgId.HasValue)
                 return code;
 
