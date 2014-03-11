@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using System.Text;
 using CmsData.Codes;
 using DevDefined.OAuth.Utility;
 using UtilityExtensions;
@@ -165,7 +163,7 @@ namespace CmsData
             return q;
         }
 
-        public void AddNewExtraValueCode(string savedquery, string name, string text)
+        public void AddxtraValueCode(string savedquery, string name, string text)
         {
             var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
@@ -175,7 +173,7 @@ namespace CmsData
                 db.Dispose();
             }
         }
-        public void AddNewExtraValueText(string savedquery, string name, string text)
+        public void AddExtraValueText(string savedquery, string name, string text)
         {
             var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
@@ -185,7 +183,7 @@ namespace CmsData
                 ResetDb();
             }
         }
-        public void AddNewExtraValueDate(string savedquery, string name, DateTime dt)
+        public void AddExtraValueDate(string savedquery, string name, DateTime dt)
         {
             var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
@@ -195,7 +193,7 @@ namespace CmsData
                 ResetDb();
             }
         }
-        public void AddNewExtraValueInt(string savedquery, string name, int n)
+        public void AddExtraValueInt(string savedquery, string name, int n)
         {
             var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
@@ -205,7 +203,7 @@ namespace CmsData
                 ResetDb();
             }
         }
-        public void AddNewExtraValueBool(string savedquery, string name, bool b)
+        public void AddExtraValueBool(string savedquery, string name, bool b)
         {
             var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
