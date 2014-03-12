@@ -12,26 +12,7 @@ namespace CmsData
 {
     public partial class CMSDataContext
     {
-        private static List<string> SPECIAL_FORMATS = new List<string>() 
-        { 
-            "http://votelink", 
-            "http://registerlink", 
-            "http://registerlink2", 
-            "http://supportlink", 
-            "http://rsvplink", 
-            "http://volsublink", 
-            "http://volreqlink", 
-            "http://sendlink", 
-            "http://sendlink2", 
-            "{emailhref}" 
-        };
-
-        public static bool IsSpecialLink(string link)
-        {
-            return SPECIAL_FORMATS.Contains(link.ToLower());
-        }
-
-        public List<MailAddress> DoReplacements(ref string text, Person p, EmailQueueTo emailqueueto)
+        public List<MailAddress> DoReplacements0(ref string text, Person p, EmailQueueTo emailqueueto)
         {
             if (text == null)
                 text = "(no content)";
@@ -54,6 +35,10 @@ namespace CmsData
             }
             if (text.Contains("{occupation}", ignoreCase: true))
                 text = text.Replace("{occupation}", p.OccupationOther, ignoreCase: true);
+            if (text.Contains("{city}", ignoreCase: true))
+                text = text.Replace("{city}", p.PrimaryCity, ignoreCase: true);
+            if (text.Contains("{state}", ignoreCase: true))
+                text = text.Replace("{state}", p.PrimaryState, ignoreCase: true);
 
             if (text.Contains("{emailhref}", ignoreCase: true))
             {
@@ -691,17 +676,6 @@ namespace CmsData
             return text;
         }
 
-        private static string GetId(Dictionary<string, string> d, string from)
-        {
-            string id = null;
-            if (d.ContainsKey("lang"))
-                id = d["lang"];
-            else if (d.ContainsKey("id"))
-                id = d["id"];
-            if (id == null)
-                throw new Exception("{0}: no id attribute".Fmt(from));
-            return id;
-        }
 
         private string RsvpLinkUrl(
             EmailQueueTo emailqueueto,

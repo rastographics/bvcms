@@ -527,31 +527,6 @@ namespace CmsWeb.Code
             });
             return list;
         }
-        public List<CodeValueItem> UserQueries()
-        {
-            string uname = Util.UserName;
-            var q1 = from qb in DbUtil.Db.QueryBuilderClauses
-                     where qb.SavedBy == uname
-                     orderby qb.Description
-                     select new CodeValueItem
-                     {
-                         Id = qb.QueryId,
-                         Code = qb.QueryId.ToString() + ":" + qb.Description,
-                         Value = qb.SavedBy + ":" + qb.Description
-                     };
-            var q2 = from qb in DbUtil.Db.QueryBuilderClauses
-                     where qb.SavedBy != uname && qb.IsPublic
-                     orderby qb.SavedBy, qb.Description
-                     select new CodeValueItem
-                     {
-                         Id = qb.QueryId,
-                         Code = qb.QueryId.ToString() + ":" + qb.Description,
-                         Value = qb.SavedBy + ":" + qb.Description
-                     };
-
-            var list = q1.Union(q2).OrderBy(i => i.Value).ToList();
-            return list;
-        }
 
         public IEnumerable<CodeValueItem> MaritalStatusCodes()
         {

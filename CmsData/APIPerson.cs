@@ -332,8 +332,8 @@ namespace CmsData.API
 						u.UpdatePerson(e);
 						break;
 				}
-			p.LogChanges(DbUtil.Db, u.sb.ToString());
-			p.Family.LogChanges(DbUtil.Db, u.fsb.ToString(), p.PeopleId, Util.UserPeopleId.Value);
+			p.LogChanges(DbUtil.Db, u.sb);
+			p.Family.LogChanges(DbUtil.Db, u.fsb, p.PeopleId, Util.UserPeopleId.Value);
 			Db.SubmitChanges();
 			return "<Success />";
 		}
@@ -407,15 +407,15 @@ namespace CmsData.API
 		{
 			private CmsData.Person person;
 			private CmsData.Family family;
-			public StringBuilder sb { get; set; }
-			public StringBuilder fsb { get; set; }
+			public List<ChangeDetail> sb { get; set; }
+			public List<ChangeDetail> fsb { get; set; }
 			private XNamespace xsi = "xsi";
 			public Update(CmsData.Person p)
 			{
 				person = p;
 				family = p.Family;
-				sb = new StringBuilder();
-				fsb = new StringBuilder();
+				sb = new List<ChangeDetail>();
+				fsb = new List<ChangeDetail>();
 			}
 			public void UpdatePerson(XElement e)
 			{

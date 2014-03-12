@@ -673,8 +673,15 @@ namespace CmsWeb.Models
         }
         public List<SelectListItem> SavedQueries()
         {
-            var cv = new CodeValueModel();
-            return CodeValueModel.ConvertToSelect(cv.UserQueries(), "Code");
+            var q = from c in DbUtil.Db.Queries
+                    where c.Ispublic
+                    select new SelectListItem
+                    {
+                        Value = c.QueryId.ToString(),
+                        Text = c.Name
+                    };
+            var list = q.ToList();
+            return list;
         }
         public List<SelectListItem> Ministries()
         {

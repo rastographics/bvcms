@@ -2,8 +2,9 @@
     $(".bt").button();
     $("#delete").click(function (ev) {
         ev.preventDefault();
+        var href = this.href;
         if (confirm("Are you sure you want to delete this entry?")) {
-            $.post("/Display/ContentDelete", { id: "@Model.Id" }, function () {
+            $.post(href, function () {
                 window.location = "/Manage/Display/";
             });
         }

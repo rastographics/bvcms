@@ -462,10 +462,6 @@ namespace CmsData
         partial void UpdateQuery(Query instance);
         partial void DeleteQuery(Query instance);
         
-        partial void InsertQueryBuilderClause(QueryBuilderClause instance);
-        partial void UpdateQueryBuilderClause(QueryBuilderClause instance);
-        partial void DeleteQueryBuilderClause(QueryBuilderClause instance);
-        
         partial void InsertQueryStat(QueryStat instance);
         partial void UpdateQueryStat(QueryStat instance);
         partial void DeleteQueryStat(QueryStat instance);
@@ -1342,12 +1338,6 @@ namespace CmsData
 
 		}
 
-		public Table< QueryBuilderClause> QueryBuilderClauses
-		{
-			get	{ return this.GetTable< QueryBuilderClause>(); }
-
-		}
-
 		public Table< QueryStat> QueryStats
 		{
 			get	{ return this.GetTable< QueryStat>(); }
@@ -1624,6 +1614,12 @@ namespace CmsData
 	    public Table< View.BundleList> ViewBundleLists
 	    {
 		    get { return this.GetTable< View.BundleList>(); }
+
+	    }
+
+	    public Table< View.ChangeLogDetail> ViewChangeLogDetails
+	    {
+		    get { return this.GetTable< View.ChangeLogDetail>(); }
 
 	    }
 
@@ -3647,12 +3643,14 @@ namespace CmsData
 		[Function(Name="dbo.FindResCode", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? FindResCode(
-            [Parameter(Name = "zipcode", DbType="nvarchar")] string zipcode
+            [Parameter(Name = "zipcode", DbType="nvarchar")] string zipcode,
+            [Parameter(Name = "country", DbType="nvarchar")] string country
             )
 		{
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                zipcode
+                zipcode,
+                country
                 ).ReturnValue));
 		}
 

@@ -1,19 +1,12 @@
-class RegisterEvent:
+import clr
+clr.AddReferenceToFileAndPath("../CmsData/bin/Debug/CmsData.dll")
+from CmsData import PythonEvents
+model = PythonEvents()
 
-  def AddToSmallGroup(self, smallgroup, orgmember):
-    id = GetCampusId(smallgroup)
-    if id < 99:
-      orgmember.Person.CampusId = id
-      # model gets passed in to the script for your use
-      model.CreateTask(819918, orgmember.Person, "Please Contact about " + smallgroup)
+q = model.ChangedAddresses()
+for v in q:
+    model.Email
+    print 'Hi {} {}, \nI noticed you have moved to {}\n'.format(v.FirstName, v.LastName, v.PrimaryCity)
 
-def GetCampusId(campus):
-  if campus == 'East Side':
-    return 3
-  elif campus == 'West Side': 
-    return 2
-  elif campus == 'Downtown':
-    return 4    
-  else:
-    # default if campus not found
-    return 99
+
+

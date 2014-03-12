@@ -476,9 +476,6 @@
     <Compile Include="Areas\Search\Models\Query\PeopleInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Search\Models\Query\QBExportResult.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Areas\Search\Models\Query\Model\QueryModel.cs">
       <SubType>Code</SubType>
     </Compile>

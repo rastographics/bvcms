@@ -21,8 +21,8 @@ namespace CmsData
                 p.Users.Any(u => u.UserRoles.Any(ur => CodeIntIds.Contains(ur.RoleId))
                     || (!u.UserRoles.Any() && CodeIntIds.Contains(0))
                 );
-            return op == CompareType.NotEqual || op == CompareType.NotOneOf 
-                ? (Expression)Expression.Not(Expression.Invoke(pred, parm)) 
+            return op == CompareType.NotEqual || op == CompareType.NotOneOf
+                ? (Expression)Expression.Not(Expression.Invoke(pred, parm))
                 : (Expression)Expression.Invoke(pred, parm);
         }
         internal Expression IsUser()
@@ -143,6 +143,21 @@ namespace CmsData
                     || a.Commitment == AttendCommitmentCode.FindSub)
                     && a.MeetingId == meetingid
                     );
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+
+        internal Expression RecentChanged()
+        {
+            Expression<Func<Person, bool>> pred = p =>
+                (from cc in db.ViewChangeLogDetails
+                 where cc.PeopleId == p.PeopleId || cc.FamilyId == p.FamilyId
+                 where cc.Created > DateTime.Now.AddDays(-Days)
+                 where cc.Field.StartsWith(Quarters)
+                 select cc
+                ).Any();
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual)
                 expr = Expression.Not(expr);

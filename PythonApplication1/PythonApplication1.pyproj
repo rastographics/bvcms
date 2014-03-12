@@ -5,8 +5,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{019a33ac-25a8-4df1-b6bb-72d4180d30fc}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>class2.py</StartupFile>
-    <SearchPath>C:\Users\David\Documents\BellevueProject\BellevueHg\CmsWeb\;C:\Users\David\Documents\BellevueProject\BellevueHg\UtilityExtensions\obj\Debug\;C:\Users\David\Documents\BellevueProject\BellevueHg\CmsData\obj\Debug</SearchPath>
+    <StartupFile>Program.py</StartupFile>
+    <SearchPath>C:\Users\David\Documents\BellevueProject\BellevueHg\CmsWeb\;C:\Users\David\Documents\BellevueProject\BellevueHg\UtilityExtensions\obj\Debug\</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <AssemblyName>PythonApplication1</AssemblyName>
     <Name>PythonApplication1</Name>

@@ -166,7 +166,8 @@ namespace CmsWeb.Models
                 var i = Util.GetAs(rd, typeof(UpdatePeopleItem)) as UpdatePeopleItem;
                 var p = Db.LoadPersonById(i.PeopleId);
 
-                var psb = new StringBuilder();
+                //var psb = new StringBuilder();
+                var psb = new List<ChangeDetail>();
 
                 p.UpdateValue(psb, "TitleCode", i.Title);
                 p.UpdateValue(psb, "FirstName", i.First);
@@ -193,7 +194,7 @@ namespace CmsWeb.Models
                 p.UpdateValue(psb, "PositionInFamilyId", CviOrNull(cv.FamilyPositionCodes().SingleOrDefault(c => c.Value == i.FamilyPos)) ?? 0);
                 p.UpdateValue(psb, "CampusId", CviOrNull(cv.AllCampuses().SingleOrDefault(c => c.Value == i.Campus)));
                
-                p.LogChanges(Db, psb.ToString());
+                p.LogChanges(Db, psb);
                 Db.SubmitChanges();
             }
         }

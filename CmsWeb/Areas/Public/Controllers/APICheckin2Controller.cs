@@ -186,8 +186,8 @@ namespace CmsWeb.Areas.Public.Controllers
 		}
 		private void UpdatePerson(Person p, PersonInfo m, bool isNew)
 		{
-			var psb = new StringBuilder();
-			var fsb = new StringBuilder();
+			var psb = new List<ChangeDetail>();
+			var fsb = new List<ChangeDetail>();
 			var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == m.zip.Zip5());
 			if (!m.home.HasValue() && m.cell.HasValue())
 				m.home = m.cell;
@@ -260,26 +260,31 @@ namespace CmsWeb.Areas.Public.Controllers
 				if (keys.Contains("churchname"))
 					UpdateField(psb, p, "OtherPreviousChurch", Trim(m.churchname));
 
-			p.LogChanges(DbUtil.Db, psb.ToString());
-			p.Family.LogChanges(DbUtil.Db, fsb.ToString(), p.PeopleId, Util.UserPeopleId ?? 0);
+			p.LogChanges(DbUtil.Db, psb);
+			p.Family.LogChanges(DbUtil.Db, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
 			DbUtil.Db.SubmitChanges();
-            if (DbUtil.Db.Setting("NotifyCheckinChanges", "true").ToBool() && (psb.Length > 0 || fsb.Length > 0))
+            if (DbUtil.Db.Setting("NotifyCheckinChanges", "true").ToBool() && (psb.Count > 0 || fsb.Count > 0))
             {
+                var sb = new StringBuilder();
+                foreach (var c in psb)
+                    sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
+                foreach (var c in fsb)
+                    sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
                 DbUtil.Db.EmailRedacted(p.FromEmail, DbUtil.Db.GetNewPeopleManagers(),
                     "Basic Person Info Changed during checkin on " + Util.Host,
-                    "{0} changed the following information for {1} ({2}):<br />\n<table>{3}{4}</table>"
-                    .Fmt(Util.UserName, p.PreferredName, p.LastName, psb.ToString(), fsb.ToString()));
+                    "{0} changed the following information for {1} ({2}):<br />\n<table>{3}</table>"
+                    .Fmt(Util.UserName, p.PreferredName, p.LastName, sb.ToString()));
             }
 		}
-		private void UpdateField(StringBuilder fsb, Family f, string prop, string value)
+		private void UpdateField(List<ChangeDetail> fsb, Family f, string prop, string value)
 		{
 			f.UpdateValue(fsb, prop, value);
 		}
-		void UpdateField(StringBuilder psb, Person p, string prop, string value)
+		void UpdateField(List<ChangeDetail> psb, Person p, string prop, string value)
 		{
 			p.UpdateValue(psb, prop, value);
 		}
-		void UpdateField(StringBuilder psb, Person p, string prop, object value)
+		void UpdateField(List<ChangeDetail> psb, Person p, string prop, object value)
 		{
 			p.UpdateValue(psb, prop, value);
 		}

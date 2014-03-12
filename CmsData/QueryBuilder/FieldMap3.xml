@@ -609,6 +609,9 @@
     <RecentCreated Title="Recent Created Record" Type="Bit" DataValueField="IdCode" DisplayAs="RecentCreated({0})" Params="Days">
       Enter a number of days to look back and Specify True or False.
     </RecentCreated>
+    <RecentChanged Title="Recent Changed Record" Type="Bit" DataValueField="IdCode" DisplayAs="RecentChanged({0},{1})" QuartersLabel=" Field" Params="Quarters,Days">
+      Enter Field (or just first part of field), a number of days to look back and Specify True or False.
+    </RecentChanged>
     <IsCurrentPerson Title="Is Current Person" Type="Bit" DataValueField="IdCode">
       Specify True or False for person last viewed (used internally, but you can use it if you find a need for it)
     </IsCurrentPerson>

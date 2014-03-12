@@ -260,6 +260,15 @@ namespace CmsWeb.Areas.Manage.Controllers
                         case "RollSheetVisitorWks":
                             o.RollSheetVisitorWks = a[c] == "0" ? (int?)null : a[c].ToInt2();
                             break;
+
+							  default:
+									var x = o.OrganizationExtras.Where( e => e.Field == names[c].Trim()).SingleOrDefault();
+
+									if (x == null)
+										o.OrganizationExtras.Add(new OrganizationExtra() { Field = names[c].Trim(), Data = a[c] });
+									else
+										x.Data = a[c];
+									 break;
                     }
                 DbUtil.Db.SubmitChanges();
             }
@@ -782,6 +791,21 @@ namespace CmsWeb.Areas.Manage.Controllers
                 var script = DbUtil.Db.Content(id);
                 var pe = new PythonEvents(DbUtil.Db, id, script.Body);
                 pe.instance.Run();
+            }
+            catch (Exception e)
+            {
+                return Content(e.Message);
+            }
+            return Content("done");
+        }
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public ActionResult Script(string id)
+        {
+            try
+            {
+                var script = DbUtil.Db.Content(id);
+                PythonEvents.RunScript(DbUtil.Db, script.Body);
             }
             catch (Exception e)
             {

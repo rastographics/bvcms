@@ -1,14 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using CmsData;
+using CmsData.View;
 using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
-    public class ChangesModel : PagedTableModel<ChangeLog, ChangeLogInfo>
+    public class ChangesModel : PagedTableModel<ChangeLogDetail, ChangeLogInfo>
     {
         public readonly Person person;
         public ChangesModel(int id)
@@ -32,44 +31,13 @@ namespace CmsWeb.Areas.People.Models
             DbUtil.Db.SubmitChanges();
         }
 
-        override public IQueryable<ChangeLog> DefineModelList()
+        override public IQueryable<ChangeLogDetail> DefineModelList()
         {
-            return from c in DbUtil.Db.ChangeLogs
+            return from c in DbUtil.Db.ViewChangeLogDetails
                    where c.PeopleId == person.PeopleId || c.FamilyId == person.FamilyId
                    select c;
         }
-        private IEnumerable<ChangeLogInfo> Details(ChangeLog log, string name)
-        {
-            var list = new List<ChangeLogInfo>();
-            var re = new Regex("<tr><td>(?<field>[^<]+)</td><td>(?<before>[^<]*)</td><td>(?<after>[^<]*)</td></tr>", RegexOptions.Singleline);
-            Match matchResult = re.Match(log.Data);
-            var FieldSet = log.Field;
-            var pf = PersonOrFamily(FieldSet);
-            DateTime? Time = log.Created;
-            while (matchResult.Success)
-            {
-                var After = matchResult.Groups["after"].Value;
-                var Field = matchResult.Groups["field"].Value;
-                var c = new ChangeLogInfo
-                {
-                    User = name,
-                    FieldSet = FieldSet,
-                    Time = Time,
-                    Field = Field,
-                    Before = matchResult.Groups["before"].Value,
-                    After = After,
-                    pf = pf,
-                    Reversable = FieldEqual(pf, Field, After)
-                };
-                list.Add(c);
-                FieldSet = "";
-                name = "";
-                Time = null;
-                matchResult = matchResult.NextMatch();
-            }
-            return list;
-        }
-        override public IQueryable<ChangeLog> DefineModelSort(IQueryable<ChangeLog> q)
+        override public IQueryable<ChangeLogDetail> DefineModelSort(IQueryable<ChangeLogDetail> q)
         {
             switch (Pager.SortExpression)
             {
@@ -81,14 +49,25 @@ namespace CmsWeb.Areas.People.Models
             return q;
         }
 
-        public override IEnumerable<ChangeLogInfo> DefineViewList(IQueryable<ChangeLog> q)
+        public override IEnumerable<ChangeLogInfo> DefineViewList(IQueryable<ChangeLogDetail> q)
         {
-            var q2 = from c in q
-                     let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
-                     select new { c, userp.Name };
-            return from i in q2.AsEnumerable()
-                   from d in Details(i.c, i.Name)
-                   select d;
+            var q1 = (from c in q
+                      let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
+                      select new ChangeLogInfo()
+                      {
+                          User = userp.Name,
+                          FieldSet = c.Section,
+                          Time = c.Created,
+                          Field = c.Field,
+                          Before = c.Before,
+                          After = c.After,
+                      }).ToList();
+            foreach (var i in q1)
+            {
+                i.pf = PersonOrFamily(i.FieldSet);
+                i.Reversable = FieldEqual(i.pf, i.Field, i.After);
+            }
+            return q1;
         }
 
         private bool FieldEqual(CmsData.Person p, string field, string value)

@@ -215,6 +215,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
 			try
 			{
+                DbUtil.Db.CopySession();
 				DbUtil.Db.Email(From, p, null, m.Subject, m.Body, false);
 			}
 			catch (Exception ex)

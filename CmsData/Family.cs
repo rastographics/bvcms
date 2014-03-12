@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using ImageData;
+using IronPython.Modules;
 using UtilityExtensions;
 using System.Text;
 
@@ -56,20 +58,20 @@ namespace CmsData
             get { return People.Count; }
         }
 
-        private StringBuilder fsbDefault;
+        private List<ChangeDetail> fsbDefault;
         public void UpdateValue(string field, object value)
         {
             if (fsbDefault == null)
-                fsbDefault = new StringBuilder();
+                fsbDefault = new List<ChangeDetail>();
             this.UpdateValue(fsbDefault, field, value);
         }
         public void UpdateValueFromText(string field, string value)
         {
             if (fsbDefault == null)
-                fsbDefault = new StringBuilder();
+                fsbDefault = new List<ChangeDetail>();
             this.UpdateValueFromText(fsbDefault, field, value);
         }
-        public void UpdateValueFromText(StringBuilder fsb, string field, string value)
+        public void UpdateValueFromText(List<ChangeDetail> fsb, string field, string value)
         {
             value = value.TrimEnd();
             var o = Util.GetProperty(this, field);
@@ -83,23 +85,24 @@ namespace CmsData
                 return;
             if (value == null && o is string && !((string)o).HasValue())
                 return;
-            fsb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
+            //fsb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
+            fsb.Add(new ChangeDetail(field, o, value));
             Util.SetPropertyFromText(this, field, value);
         }
         public void LogChanges(CMSDataContext Db, int PeopleId, int UserPeopleId)
         {
             if (fsbDefault != null)
-                LogChanges(Db, fsbDefault.ToString(), PeopleId, UserPeopleId);
+                LogChanges(Db, fsbDefault, PeopleId, UserPeopleId);
         }
 
-        public void LogChanges(CMSDataContext Db, string changes, int PeopleId)
+        public void LogChanges(CMSDataContext Db, List<ChangeDetail> changes, int PeopleId)
         {
             LogChanges(Db, changes, PeopleId, Util.UserPeopleId ?? 0);
         }
 
-        public void LogChanges(CMSDataContext Db, string changes, int PeopleId, int UserPeopleId)
+        public void LogChanges(CMSDataContext Db, List<ChangeDetail> changes, int PeopleId, int UserPeopleId)
         {
-            if (changes.HasValue())
+            if (changes.Count > 0)
             {
                 var c = new ChangeLog
                 {
@@ -107,10 +110,10 @@ namespace CmsData
                     UserPeopleId = UserPeopleId,
                     PeopleId = PeopleId,
                     Field = "Family",
-                    Data = "<table>\n{0}</table>".Fmt(changes),
                     Created = Util.Now
                 };
                 Db.ChangeLogs.InsertOnSubmit(c);
+                c.ChangeDetails.AddRange(changes);
             }
         }
         public void LogPictureUpload(CMSDataContext Db, int PeopleId, int UserPeopleId)
@@ -121,10 +124,10 @@ namespace CmsData
                 PeopleId = PeopleId,
                 FamilyId = FamilyId,
                 Field = "Family",
-                Data = "<table>\n<tr><td>Picture</td><td></td><td>(new upload)</td></tr>\n</table>",
                 Created = Util.Now
             };
             Db.ChangeLogs.InsertOnSubmit(c);
+            c.ChangeDetails.Add(new ChangeDetail("Picture", null, "(new upload)"));
         }
         public void UploadPicture(CMSDataContext db, System.IO.Stream stream, int PeopleId)
         {

@@ -344,6 +344,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Attend.cs" />
     <Compile Include="AuthorizeNet.cs" />
@@ -369,6 +370,7 @@
     <Compile Include="BundleHeader.cs" />
     <Compile Include="CheckinFamilyMember.cs" />
     <Compile Include="APIContributionSearchModel.cs" />
+    <Compile Include="EmailReplacements.cs" />
     <Compile Include="Generated\Functions\AttendanceTypeAsOf.cs" />
     <Compile Include="Generated\Functions\AttendCntHistory.cs" />
     <Compile Include="Generated\Functions\AttendDaysAfterNthVisitAsOf.cs" />
@@ -388,19 +390,19 @@
     <Compile Include="Generated\GoerSupporter.cs" />
     <Compile Include="Generated\Number.cs" />
     <Compile Include="Generated\Views\AttendCredit.cs" />
+    <Compile Include="Generated\Views\ChangeLogDetail.cs" />
     <Compile Include="Generated\Views\MissionTripTotal.cs" />
     <Compile Include="Generated\Views\StatusFlagList.cs" />
     <Compile Include="ITableWithExtraValues.cs" />
     <Compile Include="Query.cs" />
-    <Compile Include="QueryBuilder2\CategoryClass2.cs" />
-    <Compile Include="QueryBuilder2\CompareClass2.cs" />
-    <Compile Include="QueryBuilder2\FieldClass2.cs" />
-    <Compile Include="QueryBuilder2\Condition.cs" />
-    <Compile Include="QueryBuilder2\QueryContext.cs" />
-    <Compile Include="QueryBuilder2\SerializeJson.cs" />
-    <Compile Include="QueryBuilder2\Serialize2.cs" />
+    <Compile Include="QueryBuilder\CategoryClass2.cs" />
+    <Compile Include="QueryBuilder\CompareClass2.cs" />
+    <Compile Include="QueryBuilder\FieldClass2.cs" />
+    <Compile Include="QueryBuilder\Condition.cs" />
+    <Compile Include="QueryBuilder\QueryContext.cs" />
+    <Compile Include="QueryBuilder\SerializeJson.cs" />
+    <Compile Include="QueryBuilder\Serialize2.cs" />
     <Compile Include="Content.cs" />
-    <Compile Include="DoReplacements.cs" />
     <Compile Include="Generated\ActivityOld.cs" />
     <Compile Include="Generated\BuildingAccessType.cs" />
     <Compile Include="Generated\CheckInAccessType.cs" />
