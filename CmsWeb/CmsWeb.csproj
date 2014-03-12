@@ -1350,6 +1350,7 @@
     <Content Include="Areas\Org\Views\OrgMemberDialog\MissionSupportDone.cshtml" />
     <Content Include="Content\avery5160.docx" />
     <Content Include="Areas\Reports\Views\Reports\MeetingsForMonth.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\FindTagEmail.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
