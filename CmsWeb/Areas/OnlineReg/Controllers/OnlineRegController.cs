@@ -562,7 +562,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
             {
-                SpecialRegModel.ParseResults(m.orgid ?? 0, m.UserPeopleId ?? 0, Request.Form);
+                SpecialRegModel.ParseResults(m.orgid ?? 0, m.List[0].PeopleId ?? 0, Request.Form);
                 return View("SpecialRegistrationResults");
             }
 
