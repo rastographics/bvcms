@@ -56,6 +56,5 @@ FROM
 		AS XML) tds
 
 FROM dbo.ChangeLog
-WHERE id > 140000
 ) t
 CROSS APPLY tds.nodes('table/tr') x(c)
