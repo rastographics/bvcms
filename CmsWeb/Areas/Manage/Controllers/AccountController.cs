@@ -110,8 +110,8 @@ CKEditorFuncNum, baseurl + fn, error));
                     AccountModel.SetUserInfo(username, Session);
                     FormsAuthentication.SetAuthCookie(username, false);
                     var returnUrl = Request.QueryString["returnUrl"];
-                    if(!DbUtil.Db.UserPreference("UseNewLook").HasValue())
-                        DbUtil.Db.SetUserPreference("UseNewLook", "true");
+                    if(!DbUtil.Db.UserPreference("UseNewLookForSure").HasValue())
+                        DbUtil.Db.SetUserPreference("UseNewLookForSure", "true");
                     return Redirect(returnUrl.HasValue() ? returnUrl : "/");
                 }
 #endif
@@ -145,8 +145,8 @@ CKEditorFuncNum, baseurl + fn, error));
             if (!returnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person2/" + Util.UserPeopleId);
-            if(!DbUtil.Db.UserPreference("UseNewLook").HasValue())
-                DbUtil.Db.SetUserPreference("UseNewLook", "true");
+            if(!DbUtil.Db.UserPreference("UseNewLookForSure").HasValue())
+                DbUtil.Db.SetUserPreference("UseNewLookForSure", "true");
             if (returnUrl.HasValue())
                 return Redirect(returnUrl);
             return Redirect("/");
