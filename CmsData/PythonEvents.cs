@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -24,9 +23,9 @@ namespace CmsData
             db = new CMSDataContext(cs);
         }
 
-        public PythonEvents(CMSDataContext Db, string classname, string script)
+        public PythonEvents(CMSDataContext db, string classname, string script)
         {
-            this.db = Db;
+            this.db = db;
             var engine = Python.CreateEngine();
             var sc = engine.CreateScriptSourceFromString(script);
 
@@ -97,10 +96,12 @@ namespace CmsData
         public int DayOfWeek { get { return DateTime.Today.DayOfWeek.ToInt(); } }
         public DateTime DateTime { get { return DateTime.Now; } }
 
-        public void Email(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string body, bool transactional = false)
+        public bool TestEmail { get; set; }
+
+        public void Email(string savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string body, bool transactional = false)
         {
-            var from = new MailAddress(fromaddr, fromname);
-            var qB = db.Queries.FirstOrDefault(c => c.Name == savedquery);
+            var from = new MailAddress(fromAddr, fromName);
+            var qB = db.Queries.FirstOrDefault(c => c.Name == savedQuery);
             if (qB == null)
                 return;
             var q = db.PeopleQuery(qB.QueryId);
@@ -111,13 +112,24 @@ namespace CmsData
                 where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
                 select p;
             var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
+
+            Util.IsInRoleEmailTest = TestEmail;
+            var queueremail = db.People.Where(pp => pp.PeopleId == queuedBy).Select(pp => pp.EmailAddress).Single();
+            Util.UserEmail = queueremail;
             var emailqueue = db.CreateQueue(queuedBy, from, subject, body, null, tag.Id, false);
             db.SendPeopleEmail(emailqueue.Id);
         }
-        public void EmailContent(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string content)
+        public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string contentName)
         {
-            var from = new MailAddress(fromaddr, fromname);
-            var qB = db.Queries.FirstOrDefault(cc => cc.Name == savedquery);
+            var c = db.Content(contentName);
+            if (c == null)
+                return;
+            EmailContent(savedQuery, queuedBy, fromAddr, fromName, c.Title, contentName);
+        }
+        public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName)
+        {
+            var from = new MailAddress(fromAddr, fromName);
+            var qB = db.Queries.FirstOrDefault(cc => cc.Name == savedQuery);
             if (qB == null)
                 return;
             var q = db.PeopleQuery(qB.QueryId);
@@ -128,25 +140,20 @@ namespace CmsData
                 where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
                 select p;
             var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
-            var c = db.Content(content);
+            var c = db.Content(contentName);
             if (c == null)
                 return;
-#if DEBUG2
-            var items = new string[] { "Purity", "Rite", "Launch", "Overview"};
-            if(items.Any(ii => savedquery.Contains(ii)))
-            {
-    	        var emailqueue = db.CreateQueue(queuedBy, from, subject, c.Body, null, tag.Id, false);
-                db.SendPeopleEmail(emailqueue.Id);
-            }
-#else
+
+            Util.IsInRoleEmailTest = TestEmail;
+            var queueremail = db.People.Where(pp => pp.PeopleId == queuedBy).Select(pp => pp.EmailAddress).Single();
+            Util.UserEmail = queueremail;
             var emailqueue = db.CreateQueue(queuedBy, from, subject, c.Body, null, tag.Id, false);
             db.SendPeopleEmail(emailqueue.Id);
-#endif
         }
 
-        public void AddxtraValueCode(string savedquery, string name, string text)
+        public void AddxtraValueCode(string savedQuery, string name, string text)
         {
-            var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 Person.AddEditExtraValue(db, pid, name, text);
@@ -154,9 +161,9 @@ namespace CmsData
                 db.Dispose();
             }
         }
-        public void AddExtraValueText(string savedquery, string name, string text)
+        public void AddExtraValueText(string savedQuery, string name, string text)
         {
-            var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 Person.AddEditExtraData(db, pid, name, text);
@@ -164,9 +171,9 @@ namespace CmsData
                 ResetDb();
             }
         }
-        public void AddExtraValueDate(string savedquery, string name, DateTime dt)
+        public void AddExtraValueDate(string savedQuery, string name, DateTime dt)
         {
-            var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 Person.AddEditExtraDate(db, pid, name, dt);
@@ -174,9 +181,9 @@ namespace CmsData
                 ResetDb();
             }
         }
-        public void AddExtraValueInt(string savedquery, string name, int n)
+        public void AddExtraValueInt(string savedQuery, string name, int n)
         {
-            var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 Person.AddEditExtraInt(db, pid, name, n);
@@ -184,9 +191,9 @@ namespace CmsData
                 ResetDb();
             }
         }
-        public void AddExtraValueBool(string savedquery, string name, bool b)
+        public void AddExtraValueBool(string savedQuery, string name, bool b)
         {
-            var list = db.PeopleQuery2(savedquery).Select(ii => ii.PeopleId).ToList();
+            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
             {
                 Person.AddEditExtraBool(db, pid, name, b);

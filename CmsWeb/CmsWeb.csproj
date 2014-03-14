@@ -283,6 +283,7 @@
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Main\Controllers\QueryBuilder2Controller.cs" />
+    <Compile Include="Areas\Main\Models\Directories\CompactPictureDir.cs" />
     <Compile Include="Areas\Main\Models\Export\MissionTripSendersModel.cs" />
     <Compile Include="Areas\Main\Models\Export\MissionTripFundingModel.cs" />
     <Compile Include="Areas\Main\Models\Export\WorshipAttendanceModel.cs" />
@@ -1125,6 +1126,7 @@
     <Content Include="Scripts\Email\EmailSupporter.js" />
     <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
+    <Content Include="Scripts\js\TestScript.js" />
     <Content Include="Scripts\People\mydatatour.js" />
     <Content Include="Scripts\People\persontour.js" />
     <Content Include="Scripts\js\RegSetting2.js" />
@@ -1351,6 +1353,7 @@
     <Content Include="Content\avery5160.docx" />
     <Content Include="Areas\Reports\Views\Reports\MeetingsForMonth.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\FindTagEmail.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\TestScript.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

@@ -96,6 +96,14 @@ namespace CmsData
         {
             switch (code.ToLower())
             {
+                case "{address}":
+                    return p.PrimaryAddress;
+
+                case "{address2}":
+                    if(p.PrimaryAddress2.HasValue())
+                        return "<br>" + p.PrimaryAddress2;
+                    return "";
+
                 case "{amtdue}":
                     if (pi != null)
                         return (pi.Amount - pi.AmountPaid).ToString2("c");
@@ -112,6 +120,12 @@ namespace CmsData
 
                 case "{city}":
                     return p.PrimaryCity;
+
+                case "{csz}":
+                    return Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip);
+
+                case "{country}":
+                    return p.PrimaryCountry;
 
                 case "{createaccount}":
                     return CreateUserTag(emailqueueto);

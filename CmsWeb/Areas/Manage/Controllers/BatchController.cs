@@ -770,10 +770,27 @@ namespace CmsWeb.Areas.Manage.Controllers
             return Redirect("/Reports/ExtraValues");
         }
         [HttpGet]
-        public ActionResult Test()
+        public ActionResult TestScript()
         {
-            ViewData["guid"] = Guid.NewGuid().ToString();
+#if DEBUG
+ViewBag.Script =
+@"
+model.TestEmail = True
+model.EmailContent( 
+	'RecentMovedOutOfTown',
+	819918, 'karen@bvcms.com', 'Karen Worrell',
+	'RecentMovedOutOfTownMessage')
+model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.DateTime )
+";
+#endif
             return View();
+        }
+        [HttpPost]
+        public ActionResult RunTestScript(string script)
+        {
+            Util.IsInRoleEmailTest = true;
+            var ret = PythonEvents.RunScript(DbUtil.Db, script);
+            return Content(ret);
         }
         [HttpGet]
         [Authorize(Roles = "Finance")]
