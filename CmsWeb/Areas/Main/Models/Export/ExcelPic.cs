@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using UtilityExtensions;
+
 namespace CmsWeb.Models
 {
     public class ExcelPic
@@ -23,12 +27,28 @@ namespace CmsWeb.Models
         public string MemberStatus { get; set; }
         public string FellowshipLeader { get; set; }
         public string Spouse { get; set; }
+        public string Children { get; set; }
         public string Age { get; set; }
         public string School { get; set; }
         public string Grade { get; set; }
         public decimal AttendPctBF { get; set; }
         public string Married { get; set; }
         public int FamilyId { get; set; }
-        public string Image { get; set; }
+        public int? ImageId { get; set; }
+
+        public ImageData.Image GetImage()
+        {
+            ImageData.Image i = null;
+            try { i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == ImageId); }
+            catch { }
+            return i;
+        }
+
+        public string ImageUrl()
+        {
+            return ImageId.HasValue
+                ? Util.ServerLink("/Portrait/{0}/160/200".Fmt(ImageId))
+                : "";
+        }
     }
 }

@@ -6,8 +6,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
-using DocumentFormat.OpenXml.EMMA;
-using net.openstack.Core.Exceptions;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -18,7 +16,8 @@ namespace CmsWeb.Areas.People.Models
         private readonly bool tiny;
         private readonly bool nodefault;
         private int? w, h;
-        public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false, bool nodefault = false)
+        private readonly string mode;
+        public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false, bool nodefault = false, string mode = "max")
         {
             this.id = id;
             this.portrait = portrait;
@@ -26,6 +25,7 @@ namespace CmsWeb.Areas.People.Models
             this.nodefault = nodefault;
             this.w = w;
             this.h = h;
+            this.mode = mode;
         }
         public override void ExecuteResult(ControllerContext context)
         {
@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.People.Models
                     if (w.HasValue && h.HasValue)
                     {
                         context.HttpContext.Response.ContentType = "image/jpeg";
-                        var ri = FetchResizedImage(i, w.Value, h.Value);
+                        var ri = FetchResizedImage(i, w.Value, h.Value, mode);
                         context.HttpContext.Response.BinaryWrite(ri);
                     }
                     else
@@ -112,25 +112,9 @@ namespace CmsWeb.Areas.People.Models
 			  return u;
 		  }
 
-        public byte[] FetchResizedImage(ImageData.Image img, int w, int h)
+        public byte[] FetchResizedImage(ImageData.Image img, int w, int h, string mode = "max")
         {
-            var istream = new MemoryStream(img.Bits);
-            var img1 = Image.FromStream(istream);
-            var ratio = Math.Min(w / (double)img1.Width, h / (double)img1.Height);
-            if (ratio >= 1) // image is smaller than requested
-                ratio = 1; // same size
-            w = Convert.ToInt32(ratio * img1.Width);
-            h = Convert.ToInt32(ratio * img1.Height);
-            var img2 = new System.Drawing.Bitmap(img1, w, h);
-            var ostream = new MemoryStream();
-            img2.Save(ostream, ImageFormat.Jpeg);
-            var Bits = ostream.GetBuffer();
-            var Length = Bits.Length;
-            img1.Dispose();
-            img2.Dispose();
-            istream.Close();
-            ostream.Close();
-            return Bits;
+            return ImageData.Image.ResizeFromBits(img.Bits, w, h, mode);
         }
         void NoPic(HttpContextBase context)
         {

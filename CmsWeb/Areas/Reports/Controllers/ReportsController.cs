@@ -152,6 +152,12 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new ClassListResult(m) { orgid = org == "curr" ? Util2.CurrentOrgId : null };
         }
 
+        [GET("Reports/CompactPictureDirectory/{id}")]
+        public ActionResult CompactPicureDirectory(Guid id)
+        {
+            return new CompactPictureDir(id);
+        }
+
         [GET("Reports/Contacts/{id:guid}")]
         public ActionResult Contacts(Guid? id, bool? sortAddress, string orgname)
         {

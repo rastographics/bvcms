@@ -14,8 +14,13 @@ namespace ImageData
     {
         public static void Delete(int? id)
         {
-            if(id.HasValue)
+            if (id.HasValue)
                 ImageData.DbUtil.Db.ExecuteCommand("DELETE dbo.Image WHERE Id = {0}", id);
+        }
+
+        public static Image ImageFromId(int? id)
+        {
+            return DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
         }
 
         public static Image NewImageFromBits(byte[] bits, int w, int h)
@@ -28,30 +33,60 @@ namespace ImageData
         }
         public static Image NewImageFromImage(Image i, int w, int h)
         {
-			var i2 = new Image();
+            var i2 = new Image();
             i2.LoadResizeFromBits(i.Bits, w, h);
             return i2;
         }
         private void LoadResizeFromBits(byte[] bits, int w, int h)
         {
-            using (var istream = new MemoryStream(bits))
-            using (var img1 = Drawing.Image.FromStream(istream))
-            {
-                var ratio = Math.Min(w/(double) img1.Width, h/(double) img1.Height);
-                if (ratio >= 1) // image is smaller than requested
-                    ratio = 1; // same size
-                w = Convert.ToInt32(ratio*img1.Width);
-                h = Convert.ToInt32(ratio*img1.Height);
-                var resizeCropSettings = new ResizeSettings("width={0}&height={1}&format=jpg&mode=max".Fmt(w, h));
-                using (var ostream = new MemoryStream())
-                {
-                    ImageBuilder.Current.Build(bits, ostream, resizeCropSettings);
-                    Bits = ostream.ToArray();
-                }
-                Length = Bits.Length;
-                img1.Dispose();
-            }
+            Bits = ResizeFromBits(bits, w, h);
         }
+        public static byte[] ResizeFromBits(byte[] bitsin, int w, int h, string mode = "max")
+        {
+            var resizeCropSettings = ResizeCropSettings(w, h, mode);
+            byte[] bits = null;
+            using (var ostream = new MemoryStream())
+            {
+                ImageBuilder.Current.Build(bitsin, ostream, resizeCropSettings);
+                bits = ostream.ToArray();
+            }
+            return bits;
+        }
+        public Stream ResizeToStream(int w, int h, string mode = "max")
+        {
+            var resizeCropSettings = ResizeCropSettings(w, h, mode);
+            var ostream = new MemoryStream();
+            ImageBuilder.Current.Build(Bits, ostream, resizeCropSettings);
+            ostream.Position = 0;
+            return ostream;
+        }
+
+        static readonly byte[] onepixelgif = { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x1, 0x0, 0x1, 0x0, 0x80, 0x0, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x2c, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x1, 0x0, 0x0, 0x2, 0x2, 0x44, 0x1, 0x0, 0x3b };
+        public static Stream BlankImage(int w, int h)
+        {
+            var resizeCropSettings = ResizeCropSettings(w, h, "pad");
+            var ostream = new MemoryStream();
+            ImageBuilder.Current.Build(onepixelgif, ostream, resizeCropSettings);
+            ostream.Position = 0;
+            return ostream;
+        }
+
+        private static ResizeSettings ResizeCropSettings(int w, int h, string mode)
+        {
+            var resizeCropSettings = new ResizeSettings
+            {
+                Format = "jpg",
+                Width = w,
+                Height = h,
+                Scale = ScaleMode.UpscaleCanvas,
+                Mode =  mode == "pad" ? FitMode.Pad : 
+                        mode == "max" ? FitMode.Max : 
+                        mode == "crop" ? FitMode.Crop : 
+                        FitMode.None
+            };
+            return resizeCropSettings;
+        }
+
         public static Image NewTextFromString(string s)
         {
             var i = new Image();
@@ -87,19 +122,25 @@ namespace ImageData
             return i;
         }
 
-		  public static Image UpdateImageFromBits( int imageID, byte[] bits )
-		  {
-			  var i = from t in DbUtil.Db.Images
-						 where t.Id == imageID
-						 select t;
+        public static Image UpdateImageFromBits(int imageID, byte[] bits)
+        {
+            var i = from t in DbUtil.Db.Images
+                    where t.Id == imageID
+                    select t;
 
-			  var ii = i.FirstOrDefault();
-              if (ii != null)
-                  ii.LoadImageFromBits(bits);
-			  DbUtil.Db.SubmitChanges();
-		      return ii;
-		  }
+            var ii = i.FirstOrDefault();
+            if (ii != null)
+                ii.LoadImageFromBits(bits);
+            DbUtil.Db.SubmitChanges();
+            return ii;
+        }
 
+        public double Ratio()
+        {
+            var istream = new MemoryStream(Bits);
+            var img1 = Drawing.Image.FromStream(istream);
+            return Convert.ToDouble(img1.Width)/img1.Height;
+        }
         private void LoadImageFromBits(byte[] bits)
         {
             var istream = new MemoryStream(bits);
@@ -119,6 +160,14 @@ namespace ImageData
         {
             var i = new Image();
             i.LoadFromBits(bits, type);
+            DbUtil.Db.Images.InsertOnSubmit(i);
+            DbUtil.Db.SubmitChanges();
+            return i;
+        }
+        public Image CreateNewTinyImage()
+        {
+            var i = new Image();
+            i.LoadResizeFromBits(Bits, 50, 50);
             DbUtil.Db.Images.InsertOnSubmit(i);
             DbUtil.Db.SubmitChanges();
             return i;
@@ -187,6 +236,18 @@ namespace ImageData
             if (this.Mimetype != "text/plain")
                 return null;
             return System.Text.ASCIIEncoding.ASCII.GetString(Bits);
+        }
+        public Drawing.Bitmap GetBitmap(int? w = null, int? h = null)
+        {
+            byte[] bits;
+            if (w.HasValue && h.HasValue)
+                bits = ResizeFromBits(Bits, w.Value, h.Value);
+            else
+                bits = Bits;
+            var istream = new MemoryStream(bits);
+            var img = Drawing.Image.FromStream(istream);
+            var bmp = new Drawing.Bitmap(img, img.Width, img.Height);
+            return bmp;
         }
     }
 }

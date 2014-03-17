@@ -1,5 +1,4 @@
 using System.Linq;
-using ImageData;
 using UtilityExtensions;
 
 namespace CmsData
@@ -8,7 +7,16 @@ namespace CmsData
     {
         public string ThumbUrl
         {
-            get { return "/TinyImage/{0}?v={1}".Fmt(ThumbId ?? -1, CreatedDate.HasValue ? CreatedDate.Value.Ticks : 0); }
+            get
+            {
+                if (!ThumbId.HasValue && LargeId.HasValue)
+                {
+                    var large = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == LargeId);
+                    if(large != null)
+                        ThumbId = large.CreateNewTinyImage().Id;
+                }
+                return "/TinyImage/{0}?v={1}".Fmt(ThumbId ?? -1, CreatedDate.HasValue ? CreatedDate.Value.Ticks : 0);
+            }
         }
         public string SmallUrl
         {
