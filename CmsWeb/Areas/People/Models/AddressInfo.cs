@@ -264,7 +264,9 @@ namespace CmsWeb.Areas.People.Models
         {
             var p = DbUtil.Db.LoadPersonById(PeopleId);
             var f = p.Family;
-            ResCode.Value = DbUtil.Db.FindResCode(ZipCode, Country.Value).ToString();
+            var rc = DbUtil.Db.FindResCode(ZipCode, Country.Value);
+            if (ResCode != null)
+                ResCode.Value = rc.ToString();
 
             switch (Name)
             {
@@ -276,7 +278,7 @@ namespace CmsWeb.Areas.People.Models
                     UpdateValue(f, "StateCode", StateCode.Value);
                     UpdateValue(f, "ZipCode", ZipCode ?? "");
                     UpdateValue(f, "CountryName", Country.Value);
-                    UpdateValue(f, "ResCodeId", ResCode.Value);
+                    UpdateValue(f, "ResCodeId", rc);
                     if (Preferred)
                         UpdateValue(p, "AddressTypeId", 10);
                     if (fsb.Count > 0)
@@ -291,7 +293,7 @@ namespace CmsWeb.Areas.People.Models
                     UpdateValue(p, "StateCode", StateCode.Value);
                     UpdateValue(p, "ZipCode", ZipCode ?? "");
                     UpdateValue(p, "CountryName", Country.Value);
-                    UpdateValue(p, "ResCodeId", ResCode.Value);
+                    UpdateValue(p, "ResCodeId", rc);
                     if (Preferred)
                         UpdateValue(p, "AddressTypeId", 30);
                     if (psb.Count > 0)
