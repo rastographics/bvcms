@@ -89,20 +89,25 @@ namespace UtilityExtensions
 		private static void AddAddr(this MailMessage msg, MailAddress a)
 		{
 			if (IsInRoleEmailTest)
-				a = new MailAddress(UserEmail, a.DisplayName);
+				a = new MailAddress(UserEmail, a.DisplayName + " (test)");
 			msg.To.Add(a);
 		}
 		public static bool IsInRoleEmailTest
 		{
 			get
 			{
-				if (HttpContext.Current != null)
-					return HttpContext.Current.User.IsInRole("EmailTest");
+			    if (HttpContext.Current != null)
+			        return HttpContext.Current.User.IsInRole("EmailTest") || ((bool?)HttpContext.Current.Session["IsInRoleEmailTest"] ?? false);
 				return (bool?)Thread.GetData(Thread.GetNamedDataSlot("IsInRoleEmailTest")) ?? false;
 			}
 			set
 			{
-				if (HttpContext.Current == null)
+				if (HttpContext.Current != null)
+				{
+					if (HttpContext.Current.Session != null)
+						HttpContext.Current.Session["IsInRoleEmailTest"] = value;
+				}
+				else
 					Thread.SetData(Thread.GetNamedDataSlot("IsInRoleEmailTest"), value);
 			}
 		}

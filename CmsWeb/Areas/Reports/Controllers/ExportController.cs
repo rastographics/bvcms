@@ -128,9 +128,11 @@ namespace CmsWeb.Areas.Reports.Controllers
                 case "Promotion":
                     return new ExcelResult(ExportInvolvements.PromoList(id, maxExcelRows));
                 case "IndividualPicture":
-                    Response.ContentType = "application/vnd.ms-excel";
-                    Response.AddHeader("content-disposition", "attachment;filename=pictures.xls");
-                    return View("Picture", ExportPeople.FetchExcelListPics(id, maxExcelRows));
+                    return ExcelExportModel.Result(id);
+//                case "IndividualPicture2":
+//                    Response.ContentType = "application/vnd.ms-excel";
+//                    Response.AddHeader("content-disposition", "attachment;filename=pictures.xls");
+//                    return View("Picture", ExportPeople.FetchExcelListPics(id, maxExcelRows));
                 case "FamilyMembers":
                     Response.ContentType = "application/vnd.ms-excel";
                     Response.AddHeader("content-disposition", "attachment;filename=familymembers.xls");

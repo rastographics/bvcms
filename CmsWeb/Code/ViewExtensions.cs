@@ -703,7 +703,7 @@ namespace CmsWeb
         }
         public static bool UseNewLook()
         {
-            return DbUtil.Db.UserPreference("UseNewLook", "false").ToBool();
+            return DbUtil.Db.UserPreference("UseNewLookForSure", "true").ToBool();
         }
 
         public static string GridClass

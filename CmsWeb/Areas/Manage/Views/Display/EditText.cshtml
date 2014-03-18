@@ -20,6 +20,14 @@
         });
     </script>
 }
+@section head
+{
+    <style>
+        textarea {
+            font-family: Courier New;
+        }
+    </style>
+}
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 { 
     <div class="blogbody">

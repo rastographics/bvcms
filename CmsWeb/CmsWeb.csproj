@@ -106,7 +106,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="DocX">
+    <Reference Include="DocX, Version=1.0.1.13, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DocX.1.0.0.13\lib\net40\DocX.dll</HintPath>
     </Reference>
     <Reference Include="EcmaScript.NET">
@@ -283,6 +284,9 @@
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Main\Controllers\QueryBuilder2Controller.cs" />
+    <Compile Include="Areas\Main\Models\Directories\CompactPictureDir.cs" />
+    <Compile Include="Areas\Main\Models\Export\ExcelExportModel.cs" />
+    <Compile Include="Areas\Main\Models\Export\ExcelHelper.cs" />
     <Compile Include="Areas\Main\Models\Export\MissionTripSendersModel.cs" />
     <Compile Include="Areas\Main\Models\Export\MissionTripFundingModel.cs" />
     <Compile Include="Areas\Main\Models\Export\WorshipAttendanceModel.cs" />
@@ -1125,6 +1129,7 @@
     <Content Include="Scripts\Email\EmailSupporter.js" />
     <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
+    <Content Include="Scripts\js\TestScript.js" />
     <Content Include="Scripts\People\mydatatour.js" />
     <Content Include="Scripts\People\persontour.js" />
     <Content Include="Scripts\js\RegSetting2.js" />
@@ -1350,6 +1355,8 @@
     <Content Include="Areas\Org\Views\OrgMemberDialog\MissionSupportDone.cshtml" />
     <Content Include="Content\avery5160.docx" />
     <Content Include="Areas\Reports\Views\Reports\MeetingsForMonth.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\FindTagEmail.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\TestScript.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

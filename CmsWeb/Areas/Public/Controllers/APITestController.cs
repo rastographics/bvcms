@@ -52,9 +52,9 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult UseNewLook(int? id)
         {
             if(id.HasValue)
-                DbUtil.Db.SetUserPreference(id.Value, "UseNewLook", true);
+                DbUtil.Db.SetUserPreference(id.Value, "UseNewLookForSure", true);
             else
-                DbUtil.Db.SetUserPreference("UseNewLook", true);
+                DbUtil.Db.SetUserPreference("UseNewLookForSure", true);
 
             if(Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.ToString());
@@ -63,9 +63,9 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult UseOldLook(int? id)
         {
             if(id.HasValue)
-                DbUtil.Db.SetUserPreference(id.Value, "UseNewLook", false);
+                DbUtil.Db.SetUserPreference(id.Value, "UseNewLookForSure", false);
             else
-                DbUtil.Db.SetUserPreference("UseNewLook", false);
+                DbUtil.Db.SetUserPreference("UseNewLookForSure", false);
 
             if(Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.ToString());

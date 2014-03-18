@@ -228,9 +228,15 @@ for v in q:
         [GET("Person/Image/{id:int}/{w:int?}/{h:int?}")]
         [GET("Person2/Image/{id:int}/{w:int?}/{h:int?}")]
         [GET("Image/{id:int}/{w:int?}/{h:int?}")]
-        public ActionResult Image(int id, int? w, int? h)
+        public ActionResult Image(int id, int? w, int? h, string mode)
         {
             return new PictureResult(id);
+        }
+        [GET("ImageSized/{id:int}/{w:int}/{h:int}/{mode}")]
+        public ActionResult ImageSized(int id, int w, int h, string mode)
+        {
+            var p = DbUtil.Db.LoadPersonById(id);
+            return new PictureResult(p.Picture.LargeId ?? 0, w, h, portrait: true, mode: mode);
         }
     }
 }

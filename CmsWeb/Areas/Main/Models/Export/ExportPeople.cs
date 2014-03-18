@@ -301,8 +301,6 @@ namespace CmsWeb.Models
                         AttendPctBF = (om == null ? 0 : om.AttendPct == null ? 0 : om.AttendPct.Value),
                         Married = p.MaritalStatus.Description,
                         FamilyId = p.FamilyId,
-                        Image = p.PictureId == null ? Util.ServerLink("/Content/images/unknown.jpg") :
-                            Util.ServerLink("/Portrait/{0}/160/200".Fmt(p.Picture.LargeId))
                     };
             return q.Take(maximumRows);
         }

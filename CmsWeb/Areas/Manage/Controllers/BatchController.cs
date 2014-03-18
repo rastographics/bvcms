@@ -711,6 +711,23 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             return View(list);
         }
+        [Authorize(Roles = "Edit")]
+        public ActionResult FindTagEmail(string emails, string tagname)
+        {
+            if (Request.HttpMethod.ToUpper() == "GET")
+                return View();
+            if (!tagname.HasValue())
+                return Content("no tag");
+
+            var a = emails.SplitLines();
+            var q = from p in DbUtil.Db.People
+                where a.Contains(p.EmailAddress) || a.Contains(p.EmailAddress2)
+                select p.PeopleId;
+            foreach (var pid in q.Distinct())
+                Person.Tag(DbUtil.Db, pid, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            DbUtil.Db.SubmitChanges();
+            return Redirect("/Tags?tag=" + tagname);
+        }
         [AcceptVerbs(HttpVerbs.Get)]
         [Authorize(Roles = "Edit")]
         public ActionResult TagPeopleIds()
@@ -753,10 +770,27 @@ namespace CmsWeb.Areas.Manage.Controllers
             return Redirect("/Reports/ExtraValues");
         }
         [HttpGet]
-        public ActionResult Test()
+        public ActionResult TestScript()
         {
-            ViewData["guid"] = Guid.NewGuid().ToString();
+#if DEBUG
+ViewBag.Script =
+@"
+model.TestEmail = True
+model.EmailContent( 
+	'RecentMovedOutOfTown',
+	819918, 'karen@bvcms.com', 'Karen Worrell',
+	'RecentMovedOutOfTownMessage')
+model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.DateTime )
+";
+#endif
             return View();
+        }
+        [HttpPost]
+        public ActionResult RunTestScript(string script)
+        {
+            Util.IsInRoleEmailTest = true;
+            var ret = PythonEvents.RunScript(DbUtil.Db, script);
+            return Content(ret);
         }
         [HttpGet]
         [Authorize(Roles = "Finance")]
