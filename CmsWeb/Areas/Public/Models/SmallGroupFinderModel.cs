@@ -316,7 +316,7 @@ namespace CmsWeb.Areas.Public.Models
 			values["SGF:Schedule"] = "";
 
 			if (leader != null && leader.PictureId != null)
-				values["SGF:LeaderPicSrc"] = "/Portrait/" + leader.PictureId.ToString() + "?v=" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
+				values["SGF:LeaderPicSrc"] = "/Portrait/" + leader.Picture.SmallId.Value + "?v=" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
 			else
 				values["SGF:LeaderPicSrc"] = "/Portrait/-3";
 

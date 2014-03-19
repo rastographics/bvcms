@@ -262,12 +262,19 @@ namespace CmsWeb.Areas.Manage.Controllers
                             break;
 
 							  default:
-									var x = o.OrganizationExtras.Where( e => e.Field == names[c].Trim()).SingleOrDefault();
+									 string name = names[c].Trim();
+									 string value = a[c].Trim();
 
-									if (x == null)
-										o.OrganizationExtras.Add(new OrganizationExtra() { Field = names[c].Trim(), Data = a[c] });
-									else
-										x.Data = a[c];
+									 if (value.Length > 0)
+									 {
+										 var x = o.OrganizationExtras.Where(e => e.Field == name).SingleOrDefault();
+
+										 if (x == null)
+											 o.OrganizationExtras.Add(new OrganizationExtra() { Field = name, Data = value });
+										 else
+											 x.Data = value;
+									 }
+
 									 break;
                     }
                 DbUtil.Db.SubmitChanges();
