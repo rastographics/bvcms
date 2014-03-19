@@ -15,7 +15,7 @@ namespace CmsData
     {
         internal Expression StatusFlag()
         {
-            var codes0 = CodeValues.Split(',');
+            var codes0 = CodeValues.Split(',').Select(ff => ff.Trim()).ToList();
             var q = db.ViewStatusFlagLists.ToList();
             if (!db.FromBatch)
                 q = (from f in q

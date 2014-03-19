@@ -153,7 +153,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [GET("Reports/CompactPictureDirectory/{id}")]
-        public ActionResult CompactPicureDirectory(Guid id)
+        public ActionResult CompactPictureDirectory(Guid id)
         {
             return new CompactPictureDir(id);
         }

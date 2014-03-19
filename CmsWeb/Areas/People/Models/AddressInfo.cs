@@ -265,8 +265,7 @@ namespace CmsWeb.Areas.People.Models
             var p = DbUtil.Db.LoadPersonById(PeopleId);
             var f = p.Family;
             var rc = DbUtil.Db.FindResCode(ZipCode, Country.Value);
-            if (ResCode != null)
-                ResCode.Value = rc.ToString();
+            ResCode = new CodeInfo(rc, "ResCode");
 
             switch (Name)
             {
@@ -381,6 +380,8 @@ namespace CmsWeb.Areas.People.Models
                     var msg = @"<h4>Address Found and Adjusted by USPS</h4><h6>What you entered</h6>"
                               + AddrCityStateZip().Replace("\n", "<br/>\n");
                     ResultChanged = true;
+                    var rc = DbUtil.Db.FindResCode(Result.Zip, Country.Value);
+                    ResCode = new CodeInfo(rc, "ResCode");
                     SetAddressInfo();
                     Error = alertdiv.Fmt(msg);
                 }
