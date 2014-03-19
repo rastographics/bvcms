@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Web.Mvc;
-using System.Xml.Linq;
 using UtilityExtensions;
 using System.Linq;
 using CmsData;
@@ -29,10 +28,12 @@ namespace CmsWeb.Models.iPhone
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where oids.Contains(o.OrganizationId)
                     where o.SecurityTypeId != 3
+                    where o.OrganizationStatusId == OrgStatusCode.Active
                     select o;
             else
                 q = from o in DbUtil.Db.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+                    where o.OrganizationStatusId == OrgStatusCode.Active
                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                     where (o.OrganizationMembers.Any(om => om.PeopleId == pid // either a leader, who is not pending / inactive
                               && (om.Pending ?? false) == false
