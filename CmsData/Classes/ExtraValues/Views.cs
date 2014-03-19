@@ -51,7 +51,7 @@ namespace CmsData.ExtraValue
                         { 
                             Name = vv.Name, 
                             Type = vv.Type,
-                            CanView = vv.UserCanView()
+                            CanView = vv.UserCanView(db)
                         }).ToList();
 
             var list2 = (from vv in GetStandardExtraValues(db, table, nocache)
@@ -61,7 +61,7 @@ namespace CmsData.ExtraValue
                          { 
                              Name = v, 
                              Type = vv.Type,
-                             CanView = vv.UserCanView()
+                             CanView = vv.UserCanView(db)
                          }).ToList();
 
             return list.Union(list2).OrderBy(vv => vv.Name).ToList();
