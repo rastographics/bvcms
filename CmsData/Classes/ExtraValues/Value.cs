@@ -20,8 +20,10 @@ namespace CmsData.ExtraValue
         [XmlIgnore] public int Id;
         [XmlIgnore] public bool Standard;
 
-        public bool UserCanView()
+        public bool UserCanView(CMSDataContext db)
         {
+            if (db.FromBatch)
+                return true;
             if (!VisibilityRoles.HasValue())
                 return true;
             var a = VisibilityRoles.SplitStr(",");
