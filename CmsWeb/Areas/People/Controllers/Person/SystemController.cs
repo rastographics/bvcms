@@ -37,8 +37,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [POST("Person2/UserUpdate/{id}"), Authorize(Roles = "Admin")]
-        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome,
-            string[] role)
+        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, string[] role)
         {
             var user = DbUtil.Db.Users.Single(us => us.UserId == id);
             if (user.Username.HasValue())
