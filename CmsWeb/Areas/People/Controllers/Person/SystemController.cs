@@ -31,6 +31,7 @@ namespace CmsWeb.Areas.People.Controllers
             {
                 u = CmsWeb.Models.AccountModel.AddUser(Util2.CurrentPeopleId);
                 DbUtil.LogActivity("New User for: {0}".Fmt(Session["ActivePerson"]));
+                ViewBag.username = u.Username;
             }
             ViewBag.sendwelcome = false;
             return View("System/UserEdit", u);

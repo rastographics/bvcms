@@ -62,7 +62,7 @@ namespace CmsWeb.Models
                 case "discovercrosspoint":
                     return BatchProcessDiscoverCrosspoint(text, date, fundid);
             }
-            if (text.StartsWith("Report Date,Report Requestor"))
+            if (text.Substring(0, 40).Contains("Report Date,Report Requestor"))
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessRegions(csv, date, fundid);
 
