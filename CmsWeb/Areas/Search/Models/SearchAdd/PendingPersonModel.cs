@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.Search.Models
             {
                 f = new Family();
                 AddressInfo.CopyPropertiesTo(f);
-                f.ResCodeId = AddressInfo.ResCode.Value.ToInt();
+                f.ResCodeId = AddressInfo.ResCode.Value.ToInt2();
                 f.HomePhone = HomePhone.GetDigits();
             }
             if (NickName != null)

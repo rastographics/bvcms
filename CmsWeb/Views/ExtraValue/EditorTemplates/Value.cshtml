@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Models.ExtraValues.Value
-@if (Model.UserCanView())
+@if (Model.UserCanView(DbUtil.Db))
 {
     <tr>
         <td class="nowrap">@Model.Name</td>

@@ -31,14 +31,14 @@ namespace CmsWeb.Areas.People.Controllers
             {
                 u = CmsWeb.Models.AccountModel.AddUser(Util2.CurrentPeopleId);
                 DbUtil.LogActivity("New User for: {0}".Fmt(Session["ActivePerson"]));
+                ViewBag.username = u.Username;
             }
             ViewBag.sendwelcome = false;
             return View("System/UserEdit", u);
         }
 
         [POST("Person2/UserUpdate/{id}"), Authorize(Roles = "Admin")]
-        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome,
-            string[] role)
+        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, string[] role)
         {
             var user = DbUtil.Db.Users.Single(us => us.UserId == id);
             if (user.Username.HasValue())
