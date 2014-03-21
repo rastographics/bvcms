@@ -129,6 +129,7 @@ namespace CmsData
         MemberTypeAsOf,
         MemberTypeCodes,
         MiddleName,
+        NeedAttendance,
         NickName,
         NonTaxDedAmount,
         NumberOfMemberships,
