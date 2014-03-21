@@ -41,18 +41,15 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, string[] role)
         {
             var user = DbUtil.Db.Users.Single(us => us.UserId == id);
-            if (user.Username.HasValue())
+            if (user.Username != u)
             {
-                if (user.Username != u)
+                var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == u);
+                if (uu != null)
                 {
-                    var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == u);
-                    if (uu != null)
-                    {
-                        ViewBag.ErrorMsg = "username '{0}' already exists".Fmt(u);
-                        return View("System/UserEdit", user);
-                    }
-                    user.Username = u;
+                    ViewBag.ErrorMsg = "username '{0}' already exists".Fmt(u);
+                    return View("System/UserEdit", user);
                 }
+                user.Username = u;
             }
             user.SetRoles(DbUtil.Db, role, User.IsInRole("Finance"));
             if (p.HasValue())

@@ -162,6 +162,56 @@ namespace CmsWeb {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {	
+        ///Comment: &quot;Gives a table 7.5 inches wide suitable for 8x11 portrait&quot;,
+        ///PageHeight: 11,
+        ///PageWidth: 8.5,
+        ///MarginLeft: .5,
+        ///MarginRight: .5,
+        ///MarginTop: .5,
+        ///MarginBottom: .5,
+        ///RowHeight: 1.2,
+        ///SpacerWidth: 0.04,
+        ///LabelWidth: 2.5,
+        ///PicWidth: .67,
+        ///PicWidthPixels: 62,
+        ///FontSizeName: 12,
+        ///FontSize: 10,
+        ///FontSizeEmail: 9 
+        ///}.
+        /// </summary>
+        internal static string CompactDirectoryParameters {
+            get {
+                return ResourceManager.GetString("CompactDirectoryParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///	Comment: &quot;Gives a table 4.9 inches wide suitable for bi-fold booklet landscape (2 pages per sheet)&quot;,
+        ///	PageHeight: 11,
+        ///	PageWidth: 8.5,
+        ///	MarginLeft: .3,
+        ///	MarginRight: .3,
+        ///	MarginTop: .4,
+        ///	MarginBottom: .4,
+        ///	RowHeight: .96,
+        ///	SpacerWidth: 0.04,
+        ///	LabelWidth: 1.6333,
+        ///	PicWidth: .55,
+        ///	PicWidthPixels: 50,
+        ///	FontSizeName: 7.5,
+        ///	FontSize: 7,
+        ///	FontSizeEmail: 5.5
+        ///}.
+        /// </summary>
+        internal static string CompactDirectoryParameters2 {
+            get {
+                return ResourceManager.GetString("CompactDirectoryParameters2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Thank you for managing your subscriptions to {org}&lt;br/&gt;
         ///You have the following subscriptions:&lt;br/&gt;
         ///{details}.
@@ -206,7 +256,7 @@ namespace CmsWeb {
         ///And if you can&apos;t remember your password or username, click the Forgot Password link when you get there. 
         ///Note: you will need to know your username for this to work. If you do not know your username, then please click forgot username first.
         ///This will send you a link you can use to reset your password.&lt;/p&gt;
-        ///&lt;p&gt;You can use your account to help us maintain your correct address, email [rest of string was truncated]&quot;;.
+        ///&lt;p&gt;You can use your account to help us maintain your correct address, [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CreateAccount_ExistingUser {
             get {

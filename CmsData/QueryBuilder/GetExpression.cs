@@ -98,6 +98,7 @@ namespace CmsData
                 { QueryType.MemberTypeCodes, MemberTypeIds },
                 { QueryType.MembOfOrgWithCampus, MembOfOrgWithCampus },
                 { QueryType.MembOfOrgWithSched, MembOfOrgWithSched },
+                { QueryType.NeedAttendance, NeedAttendance },
                 { QueryType.NonTaxDedAmount, NonTaxDedAmount },
                 { QueryType.NumberOfFamilyMembers, NumberOfFamilyMembers },
                 { QueryType.NumberOfMemberships, NumberOfMemberships },

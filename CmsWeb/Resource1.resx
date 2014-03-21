@@ -260,4 +260,42 @@ Just login to &lt;a href="{host}"&gt;{host}&lt;/a&gt; and you will be taken to y
 You have the following subscriptions:&lt;br/&gt;
 {details}</value>
   </data>
+  <data name="CompactDirectoryParameters" xml:space="preserve">
+    <value>{	
+Comment: "Gives a table 7.5 inches wide suitable for 8x11 portrait",
+PageHeight: 11,
+PageWidth: 8.5,
+MarginLeft: .5,
+MarginRight: .5,
+MarginTop: .5,
+MarginBottom: .5,
+RowHeight: 1.2,
+SpacerWidth: 0.04,
+LabelWidth: 2.5,
+PicWidth: .67,
+PicWidthPixels: 62,
+FontSizeName: 12,
+FontSize: 10,
+FontSizeEmail: 9 
+}</value>
+  </data>
+  <data name="CompactDirectoryParameters2" xml:space="preserve">
+    <value>{
+	Comment: "Gives a table 4.9 inches wide suitable for bi-fold booklet landscape (2 pages per sheet)",
+	PageHeight: 11,
+	PageWidth: 8.5,
+	MarginLeft: .3,
+	MarginRight: .3,
+	MarginTop: .4,
+	MarginBottom: .4,
+	RowHeight: .96,
+	SpacerWidth: 0.04,
+	LabelWidth: 1.6333,
+	PicWidth: .55,
+	PicWidthPixels: 50,
+	FontSizeName: 7.5,
+	FontSize: 7,
+	FontSizeEmail: 5.5
+}</value>
+  </data>
 </root>

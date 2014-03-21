@@ -16,7 +16,10 @@ namespace CmsWeb.Models
             var q = from p in query
                     let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
                     let spouse = Db.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
-                    orderby p.Name2
+                    let familyname = p.Family.People
+                                .Where(pp => pp.PeopleId == pp.Family.HeadOfHouseholdId)
+                                .Select(pp => pp.LastName).SingleOrDefault()
+                    orderby familyname, p.FamilyId, p.Name2
                     select new ExcelPic
                     {
                         PeopleId = p.PeopleId,
@@ -41,7 +44,10 @@ namespace CmsWeb.Models
                         FellowshipLeader = p.BFClass.LeaderName,
                         Spouse = spouse, 
                         Children = p.PositionInFamilyId != 10 ? "" 
-                            : string.Join(", ", p.Family.People.Where(cc => cc.PositionInFamilyId == 30).Select(cc => cc.PreferredName)),
+                            : string.Join(", ", p.Family.People
+                                .Where(cc => cc.PositionInFamilyId == 30)
+                                .Where(cc => cc.Age <= 18)
+                                .Select(cc => cc.PreferredName)),
                         Age = p.Age.ToString(),
                         School = p.SchoolOther,
                         Grade = p.Grade.ToString(),

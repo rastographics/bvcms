@@ -413,6 +413,9 @@
     <KidsRecentAttendCount Title="Kids Recent Attendance Count" Type="Integer" DisplayAs="KidsRecentAttendCount({0})" Params="Days">
       Enter a number and select a Comparison for the Attendance Count for children 12 and under and enter a number of days to look back.
     </KidsRecentAttendCount>
+    <NeedAttendance Title="Need Attendance" Type="Code" DisplayAs="NeedAttendance({0}, {1}, {2}, {3})" Params="Days,Program,Division,Organization" DataSource="MemberTypeCodes" DataValueField="IdCode">
+      Select Member Types and number of days to lookback for a Program/Division/Organization. Shows those who have not recorded their attendance.
+    </NeedAttendance>
   </Attendance>
   <AttendanceHistory Title="Attendance Dates">
     <AttendMemberTypeAsOf Title="Member Type Attended As Of" Type="Code" DisplayAs="AttendanceTypeAsOf({0:d}, {1:d}, {2}, {3}, {4})" Params="StartDate,EndDate,Program,Division,Organization" DataSource="MemberTypeCodes" DataValueField="IdCode">
