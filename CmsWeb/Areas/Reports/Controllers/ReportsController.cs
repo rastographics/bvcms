@@ -16,14 +16,12 @@ using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using Dapper;
-using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
 using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
-using ICSharpCode.SharpZipLib;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {

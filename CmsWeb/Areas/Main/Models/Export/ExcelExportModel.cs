@@ -47,7 +47,11 @@ namespace CmsWeb.Models
                             : string.Join(", ", p.Family.People
                                 .Where(cc => cc.PositionInFamilyId == 30)
                                 .Where(cc => cc.Age <= 18)
-                                .Select(cc => cc.PreferredName)),
+                                .Select(cc => 
+                                    cc.LastName == familyname 
+                                        ? cc.PreferredName
+                                        : cc.Name
+                                    )),
                         Age = p.Age.ToString(),
                         School = p.SchoolOther,
                         Grade = p.Grade.ToString(),
