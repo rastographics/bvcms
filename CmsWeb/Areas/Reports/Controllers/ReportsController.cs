@@ -16,12 +16,14 @@ using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using Dapper;
+using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
 using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
+using ICSharpCode.SharpZipLib;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
@@ -155,7 +157,15 @@ namespace CmsWeb.Areas.Reports.Controllers
         [GET("Reports/CompactPictureDirectory/{id}")]
         public ActionResult CompactPictureDirectory(Guid id)
         {
-            return new CompactPictureDir(id);
+            var s = DbUtil.Db.ContentText("CompactDirectoryParameters", Resource1.CompactDirectoryParameters);
+            return new CompactPictureDir(id, s);
+        }
+
+        [GET("Reports/CompactPictureDirectory2/{id}")]
+        public ActionResult CompactPictureDirectory2(Guid id)
+        {
+            var s = DbUtil.Db.ContentText("CompactDirectoryParameters2", Resource1.CompactDirectoryParameters2);
+            return new CompactPictureDir(id, s);
         }
 
         [GET("Reports/Contacts/{id:guid}")]

@@ -10,19 +10,51 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Models;
 using Novacode;
-using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
+using Newtonsoft.Json;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class CompactPictureDir : ActionResult
     {
-        public Guid id;
+        private readonly Guid id;
+        private readonly DocX dd;
+        private readonly Parameters pa;
 
-        public CompactPictureDir(Guid id)
+        public class Parameters
+        {
+            public string Comment { get; set; }
+            public double PageHeight { get; set; }
+            public double PageWidth { get; set; }
+            public double RowHeight { get; set; }
+            public double SpacerWidth { get; set; }
+            public double LabelWidth { get; set; }
+            public double PicWidth { get; set; }
+            public double FontSize { get; set; }
+            public double FontSizeName { get; set; }
+            public double FontSizeEmail { get; set; }
+            public double MarginLeft { get; set; }
+            public double MarginRight { get; set; }
+            public double MarginTop { get; set; }
+            public double MarginBottom { get; set; }
+            public int PicWidthPixels { get; set; }
+        }
+        public CompactPictureDir(Guid id, string parameters)
         {
             this.id = id;
+            dd = DocX.Create("ttt.docx");
+
+            pa = JsonConvert.DeserializeObject<Parameters>(parameters);
+
+            dd.PageHeight = Pixels(pa.PageHeight);
+            dd.PageWidth = Pixels(pa.PageWidth);
+            dd.MarginLeft = Pixels(pa.MarginLeft);
+            dd.MarginRight = Pixels(pa.MarginRight);
+            dd.MarginTop = Pixels(pa.MarginTop);
+            dd.MarginBottom = Pixels(pa.MarginBottom);
         }
+
+
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
@@ -36,13 +68,6 @@ namespace CmsWeb.Areas.Reports.Models
             }
             using (var ms = new MemoryStream())
             {
-                var dd = DocX.Create("ttt.docx");
-                dd.PageHeight = Pixels(11f);
-                dd.PageWidth = Pixels(8.5f);
-                dd.MarginLeft = Pixels(.5f);
-                dd.MarginRight = Pixels(.5f);
-                dd.MarginTop = Pixels(.5f);
-                dd.MarginBottom = Pixels(.5f);
                 var col = 0;
                 var row = 0;
                 var tt = dd.InsertTable(q.Count / 3 + (q.Count % 3 > 0 ? 1 : 0), 6);
@@ -50,28 +75,27 @@ namespace CmsWeb.Areas.Reports.Models
                 for (var r = 0; r < tt.RowCount; r++)
                 {
                     var rr = tt.Rows[r];
-                    rr.Height = 120;
+                    rr.Height = Pixels(pa.RowHeight);
                     for (var i = 0; i < 6; i++)
                     {
                         var c = rr.Cells[i];
                         c.MarginRight = 0;
-                        if (i%2 == 0)
+                        if (i % 2 == 0)
                         {
-                            c.Width = Pixels(.67f);
+                            c.Width = Pixels(pa.PicWidth);
                             c.MarginLeft = 0;
                         }
                         else
                         {
-                            c.Width = Pixels(1f);
-                            c.Width = Pixels(1.83f);
-                            c.MarginLeft = Pixels(.04f);
+                            c.Width = Pixels(pa.LabelWidth - pa.PicWidth);
+                            c.MarginLeft = Pixels(pa.SpacerWidth);
                         }
                     }
                 }
                 foreach (var p in q)
                 {
-                    col = FillCell(tt.Rows[row], col, p, dd);
-                    if (col < 6) 
+                    col = FillCell(tt.Rows[row], col, p);
+                    if (col < 6)
                         continue;
                     row++;
                     col = 0;
@@ -86,36 +110,36 @@ namespace CmsWeb.Areas.Reports.Models
         }
 
 
-        private static int FillCell(Novacode.Row rr, int col, ExcelPic p, DocX dd)
+        private int FillCell(Novacode.Row rr, int col, ExcelPic p)
         {
             var c = rr.Cells[col];
             var img = ImageData.Image.ImageFromId(p.ImageId);
             if (img != null)
                 using (var os = img.ResizeToStream(200, 300, "crop"))
                 {
-                    var pic = dd.AddImage(os).CreatePicture(93, 62);
+                    var pic = dd.AddImage(os).CreatePicture((pa.PicWidthPixels * 1.5).ToInt(), pa.PicWidthPixels);
                     c.Paragraphs[0].InsertPicture(pic);
                 }
             col++;
             c = rr.Cells[col];
-            c.Paragraphs.RemoveAt(0);
+            //c.RemoveParagraphAt(0);
 
             c.Paragraphs[0].InsertText("{0}, {1}".Fmt(p.LastName, p.FirstName));
-            c.Paragraphs[0].FontSize(12).Bold();
-            c.InsertParagraph(p.Email).FontSize(9);
+            c.Paragraphs[0].FontSize(pa.FontSizeName).Bold();
+            c.InsertParagraph(p.Email).FontSize(pa.FontSizeEmail);
             if (p.BirthDate.HasValue())
-                c.InsertParagraph("BD {0}".Fmt(p.BirthDay)).FontSize(10);
+                c.InsertParagraph("BD {0}".Fmt(p.BirthDay)).FontSize(pa.FontSize);
             if (p.Spouse.HasValue())
-                c.InsertParagraph("Spouse: {0}".Fmt(p.Spouse)).FontSize(10);
+                c.InsertParagraph("Spouse: {0}".Fmt(p.Spouse)).FontSize(pa.FontSize);
             if (p.Children.HasValue())
-                c.InsertParagraph("Kids: {0}".Fmt(p.Children)).FontSize(10);
+                c.InsertParagraph("Kids: {0}".Fmt(p.Children)).FontSize(pa.FontSize);
             col++;
             return col;
         }
 
-        private static float Pixels(float inches)
+        private static float Pixels(double inches)
         {
-            return inches * 1440 / 15;
+            return Convert.ToSingle(inches * 1440 / 15);
         }
     }
 }
