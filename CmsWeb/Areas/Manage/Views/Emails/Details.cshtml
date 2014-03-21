@@ -45,6 +45,8 @@
 <tr><td>SendWhen</td><td>@Model.queue.SendWhen.FormatDateTm()</td></tr>
 <tr><td>Sent</td><td>@Model.queue.Sent.FormatDateTm()</td></tr>
 <tr><td>Queued</td><td>@Model.queue.Queued.FormatDateTm() 
+<tr><td>Email Content</td><td><a href="/Manage/Emails/SeeHtml/@Model.id">View HTML Source</a></td></tr>
+<tr><td>Query Recipients</td><td><a href="/Manage/Emails/ConvertToSearch/@Model.id">Convert to Search</a></td></tr>
 @if (Model.CanDelete())
 {
     <a href="/Manage/Emails/DeleteQueued/@Model.queue.Id" class="bt">Delete</a>

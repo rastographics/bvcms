@@ -51,6 +51,32 @@ namespace CmsWeb.Areas.Manage.Controllers
     			return View(m);
 			return Content("not authorized");
 		}
+		public ActionResult SeeHtml(int id)
+		{
+			var m = new EmailModel { id = id };
+		    if (m.queue == null)
+		        return Content("no email found");
+			var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
+            if (curruser == null)
+    			return Content("no user");
+            if (User.IsInRole("Admin") 
+                || User.IsInRole("ManageEmails")
+                || m.queue.FromAddr == curruser.EmailAddress 
+                || m.queue.QueuedBy == curruser.PeopleId
+                || m.queue.EmailQueueTos.Any(et => et.PeopleId == curruser.PeopleId))
+    			return View(m);
+			return Content("not authorized");
+		}
+		public ActionResult ConvertToSearch(int id)
+		{
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+		    cc.AddNewClause(QueryType.EmailRecipient, CompareType.Equal, id);
+            cc.Save(DbUtil.Db);
+            return ViewExtensions2.UseNewLook() 
+                ? Redirect("/Query/" + cc.Id) 
+                : Redirect("/Querybuilder2/Main/" + cc.Id);
+		}
 
         public ActionResult Tracking(int id)
         {
