@@ -1,12 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using UtilityExtensions;
 using CmsData;
-using System.Web.Mvc;
-using System.Data.Linq.SqlClient;
 
 
 namespace CmsWeb.Models.iPhone
@@ -35,7 +30,7 @@ namespace CmsWeb.Models.iPhone
                         Last = p.LastName,
                         Address = p.PrimaryAddress,
                         CityStateZip = p.PrimaryCity + ", " + p.PrimaryState + " " + p.PrimaryZip.Substring(0, 5),
-                        Zip = p.PrimaryZip.Substring(0,5),
+                        Zip = p.PrimaryZip.Substring(0, 5),
                         Age = p.Age,
                         BirthDate = p.BirthMonth + "/" + p.BirthDay + "/" + p.BirthYear,
                         HomePhone = p.HomePhone,
@@ -44,7 +39,7 @@ namespace CmsWeb.Models.iPhone
                         MemberStatus = p.MemberStatus.Description,
                         Email = p.EmailAddress,
                         HasPicture = p.PictureId != null,
-                    };                    
+                    };
             return q;
         }
 
@@ -57,7 +52,7 @@ namespace CmsWeb.Models.iPhone
         }
         public IEnumerable<PeopleInfo> PeopleList()
         {
-            var q = ApplySearch().OrderBy(p => p.Name2).Take(20);
+            var q = ApplySearch().OrderBy(p => p.Name2).Take(50);
             return PeopleList(q);
         }
 
@@ -81,8 +76,11 @@ namespace CmsWeb.Models.iPhone
                 DbUtil.LogActivity("iphone search '{0}' '{1}'".Fmt(First, Last));
                 if (First.HasValue())
                     query = from p in query
-                            where (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last))
-                            && (p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First))
+                            where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                                || p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name) // gets Bob St Clair
+                            where
+                                p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First)
+                                || p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name) // gets Bob St Clair
                             select p;
                 else
                     if (Last.AllDigits())
@@ -91,7 +89,8 @@ namespace CmsWeb.Models.iPhone
                                 select p;
                     else
                         query = from p in query
-                                where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                                where p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name)
+                                || p.FirstName.StartsWith(Name) || p.NickName.StartsWith(Name) || p.MiddleName.StartsWith(Name)
                                 select p;
             }
             if (Addr.IsNotNull())

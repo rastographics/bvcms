@@ -25,13 +25,13 @@ namespace CmsWeb.Models
 {
     public class HomeModel
     {
-        public string UserUrl { get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person2/") + Util.UserPeopleId; }}
+        public string UserUrl { get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person2/") + Util.UserPeopleId; } }
         public class BirthdayInfo
         {
             public DateTime Birthday { get; set; }
             public string Name { get; set; }
             public int PeopleId { get; set; }
-            public string Url { get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person2/") + PeopleId; }}
+            public string Url { get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person2/") + PeopleId; } }
         }
         public IEnumerable<BirthdayInfo> Birthdays()
         {
@@ -409,7 +409,7 @@ namespace CmsWeb.Models
             list.AddRange(new List<SearchInfo>() 
             { 
                 new SearchInfo() { id = -1, line1 = "People Search"  }, 
-                new SearchInfo() { id = -2, line1 = "Search Builder" }, 
+                new SearchInfo() { id = -2, line1 = "Last Search" }, 
                 new SearchInfo() { id = -3, line1 = "Organization Search" }, 
             });
             return list;
@@ -438,7 +438,7 @@ namespace CmsWeb.Models
                 //new SearchInfo22() { url = "/PeopleSearch?name=%QUERY", line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
-                new SearchInfo22() { url = "/Query", line1 = "Search Builder" }, 
+                new SearchInfo22() { url = "/Query", line1 = "Last Search" }, 
                 new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" }, 
                 new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search", 
                     addmargin = true }, 
@@ -461,8 +461,8 @@ namespace CmsWeb.Models
                  select p;
 
             Util.NameSplit(text, out First, out Last);
+            IEnumerable<SearchInfo22> rp = null;
 
-            var hasfirst = First.HasValue();
             if (text.AllDigits())
             {
                 string phone = null;
@@ -492,35 +492,72 @@ namespace CmsWeb.Models
                          where o.OrganizationId == id
                          select o;
                 }
+                rp = (from p in qp
+                      let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
+                      orderby p.Name2
+                      select new SearchInfo22()
+                      {
+                          url = "/Person2/" + p.PeopleId,
+                          line1 = p.Name2 + age,
+                          line2 = p.PrimaryAddress ?? "",
+                      }).Take(6);
             }
             else
             {
-                qp = from p in qp
-                     where
-                         (
-                             (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                              || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text))
-                             &&
-                             (!hasfirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
-                              p.MiddleName.StartsWith(First)
-                              || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text))
-                         )
-                     select p;
+                if (First.HasValue())
+                {
+                    qp = from p in qp
+                         where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                             || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) // gets Bob St Clair
+                         where
+                             p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First)
+                             || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) // gets Bob St Clair
+                         select p;
+                    rp = (from p in qp
+                          let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
+                          orderby p.Name2
+                          select new SearchInfo22()
+                          {
+                              url = "/Person2/" + p.PeopleId,
+                              line1 = p.Name2 + age,
+                              line2 = p.PrimaryAddress ?? "",
+                          }).Take(6);
+                }
+                else
+                {
+                    var qp2 = from p in qp
+                              where p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text)
+                              select p;
+                    var qp1 = from p in qp
+                              where !qp2.Select(pp => pp.PeopleId).Contains(p.PeopleId)
+                              where p.FirstName.StartsWith(text) || p.NickName.StartsWith(text) || p.MiddleName.StartsWith(text)
+                              select p;
+                    var rp2 = (from p in qp2
+                               let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
+                               orderby p.Name2
+                               select new SearchInfo22()
+                                          {
+                                              url = "/Person2/" + p.PeopleId,
+                                              line1 = p.Name2 + age,
+                                              line2 = p.PrimaryAddress ?? "",
+                                          }).Take(6).ToList();
+                    var rp1 = (from p in qp1
+                               let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
+                               orderby p.Name2
+                               select new SearchInfo22()
+                                          {
+                                              url = "/Person2/" + p.PeopleId,
+                                              line1 = p.Name2 + age,
+                                              line2 = p.PrimaryAddress ?? "",
+                                          }).Take(6).ToList();
+                    rp = rp2.Union(rp1).Take(6);
+                }
 
                 qo = from o in qo
                      where o.OrganizationName.Contains(text) || o.LeaderName.Contains(text)
                      select o;
             }
 
-            var rp = from p in qp
-                     let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
-                     orderby p.Name2
-                     select new SearchInfo22()
-                                {
-                                    url = "/Person2/" + p.PeopleId,
-                                    line1 = p.Name2 + age,
-                                    line2 = p.PrimaryAddress ?? "",
-                                };
             var ro = from o in qo
                      orderby o.OrganizationName
                      select new SearchInfo22()
@@ -531,7 +568,7 @@ namespace CmsWeb.Models
                                 };
 
             var list = new List<SearchInfo22>();
-            list.AddRange(rp.Take(6));
+            list.AddRange(rp);
             if (list.Count > 0)
                 list[list.Count - 1].addmargin = true;
             var roTake = ro.Take(4).ToList();
@@ -540,7 +577,7 @@ namespace CmsWeb.Models
                 list[list.Count - 1].addmargin = true;
             list.AddRange(new List<SearchInfo22>() 
             {
-                new SearchInfo22() { url = "/PeopleSearch?name=%QUERY", line1 = "Find Person"  }, 
+                new SearchInfo22() { url = "/PeopleSearch?name={0}".Fmt(text), line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/Query", line1 = "Search Builder" }, 
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
             });

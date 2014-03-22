@@ -22,7 +22,7 @@
                 if (request.term === '---')
                     response([
                         { id: -1, line1: "People Search" },
-                        { id: -2, line1: "Search Builder" },
+                        { id: -2, line1: "Last Search" },
                         { id: -3, line1: "Organization Search" }
                     ]);
                 else {
