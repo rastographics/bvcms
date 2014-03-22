@@ -40,7 +40,7 @@
                     $("#StateCode_Value").trigger("chosen:updated");
                     $("#ResCode_Value").val("0");
                     $("#ResCode_Value").trigger("chosen:updated");
-                    $("#Country_Value").val("");
+                    $("#Country_Value").val("United States");
                     $("#FromDt").val("");
                     $("#ToDt").val("");
                 });

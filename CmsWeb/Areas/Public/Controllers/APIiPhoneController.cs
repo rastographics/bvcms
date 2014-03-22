@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Models;
@@ -109,50 +111,87 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (!AccountModel.AuthenticateMobile())
                 return Content("not authorized");
 
-            CmsData.Family f;
-            if (m.addtofamilyid > 0)
-                f = DbUtil.Db.Families.First(fam => fam.People.Any(pp => pp.PeopleId == m.addtofamilyid));
-            else
-                f = new CmsData.Family();
+            var f = m.addtofamilyid > 0 
+                ? DbUtil.Db.Families.First(fam => fam.People.Any(pp => pp.PeopleId == m.addtofamilyid)) 
+                : new CmsData.Family();
 
             if (m.goesby == "(Null)")
                 m.goesby = null;
             var position = PositionInFamily.Child;
             if (m.dob.Age0() >= 18)
-                if (f.People.Count(per =>
-                     per.PositionInFamilyId == PositionInFamily.PrimaryAdult)
-                     < 2)
-                    position = PositionInFamily.PrimaryAdult;
-                else
-                    position = PositionInFamily.SecondaryAdult;
+                position = f.People.Count(per => per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2 
+                    ? PositionInFamily.PrimaryAdult 
+                    : PositionInFamily.SecondaryAdult;
 
             var p = Person.Add(f, position,
                 null, Trim(m.first), Trim(m.goesby), Trim(m.last), m.dob, false, m.gender,
                     OriginCode.Visit, null);
 
-            var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == m.zip.Zip5());
-            if (!m.home.HasValue() && m.cell.HasValue())
-                m.home = m.cell;
-
-			if (m.addtofamilyid == 0)
-			{
-				p.Family.HomePhone = m.home.GetDigits();
-				p.Family.AddressLineOne = m.addr;
-				p.Family.CityName = z != null ? z.City : null;
-				p.Family.StateCode = z != null ? z.State : null;
-				p.Family.ZipCode = m.zip;
-			}
-        	p.EmailAddress = Trim(m.email);
-            if (m.cell.HasValue())
-                p.CellPhone = m.cell.GetDigits();
-            p.MaritalStatusId = m.marital;
-            p.GenderId = m.gender;
-            DbUtil.Db.SubmitChanges(); 
             DbUtil.LogActivity("iPhone AddPerson {0}".Fmt(p.PeopleId));
+            UpdatePerson(p, m);
             var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == id);
             Attend.RecordAttendance(p.PeopleId, id, true);
             DbUtil.Db.UpdateMeetingCounters(id);
             return new RollListResult(meeting, p.PeopleId);
+        }
+        private void UpdatePerson(Person p, PersonInfo m)
+        {
+            var psb = new List<ChangeDetail>();
+            var fsb = new List<ChangeDetail>();
+            var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == m.zip.Zip5());
+            if (!m.home.HasValue() && m.cell.HasValue())
+                m.home = m.cell;
+
+            var keys = Request.Form.AllKeys.ToList();
+
+            if (keys.Contains("home"))
+                p.Family.UpdateValue(fsb, "HomePhone", m.home.GetDigits());
+            if (keys.Contains("addr"))
+                p.Family.UpdateValue(fsb, "AddressLineOne", m.addr);
+            if (keys.Contains("zip"))
+            {
+                p.Family.UpdateValue(fsb, "CityName", z != null ? z.City : null);
+                p.Family.UpdateValue(fsb, "StateCode", z != null ? z.State : null);
+                p.Family.UpdateValue(fsb, "ZipCode", m.zip);
+                var rc = DbUtil.Db.FindResCode(m.zip, null);
+                p.Family.UpdateValue(fsb, "ResCodeId", rc.ToString());
+            }
+            if (keys.Contains("goesby"))
+                p.UpdateValue(psb, "NickName", Trim(m.goesby));
+            if (keys.Contains("first"))
+                p.UpdateValue(psb, "FirstName", Trim(m.first));
+            if (keys.Contains("last"))
+                p.UpdateValue(psb, "LastName", Trim(m.last));
+            if (keys.Contains("dob"))
+            {
+                DateTime dt;
+                DateTime.TryParse(m.dob, out dt);
+                if (p.BirthDate != dt)
+                    p.UpdateValue(psb, "DOB", m.dob);
+            }
+            if (keys.Contains("email"))
+                p.UpdateValue(psb, "EmailAddress", Trim(m.email));
+            if (keys.Contains("cell"))
+                p.UpdateValue(psb, "CellPhone", m.cell.GetDigits());
+            if (keys.Contains("marital"))
+                p.UpdateValue(psb, "MaritalStatusId", m.marital);
+            if (keys.Contains("gender"))
+                p.UpdateValue(psb, "GenderId", m.gender);
+
+            p.LogChanges(DbUtil.Db, psb);
+            p.Family.LogChanges(DbUtil.Db, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            DbUtil.Db.SubmitChanges();
+            if (!DbUtil.Db.Setting("NotifyCheckinChanges", "true").ToBool() || (psb.Count <= 0 && fsb.Count <= 0))
+                return;
+            var sb = new StringBuilder();
+            foreach (var c in psb)
+                sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
+            foreach (var c in fsb)
+                sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
+            DbUtil.Db.EmailRedacted(p.FromEmail, DbUtil.Db.GetNewPeopleManagers(),
+                "Basic Person Info Changed during checkin on " + Util.Host,
+                "{0} changed the following information for {1} ({2}):<br />\n<table>{3}</table>"
+                    .Fmt(Util.UserName, p.PreferredName, p.LastName, sb.ToString()));
         }
         [HttpPost]
         public ActionResult JoinUnJoinOrg(int PeopleId, int OrgId, bool Member)

@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.Search.Models
         public List<string> CodeValues
         {
             get { return (CodeIdValue ?? "").Split(';').ToList(); }
-            set { CodeIdValue = string.Join(";", value); }
+            set { CodeIdValue = string.Join(";", value.Where(cc => cc != "multiselect-all")); }
         }
 
         public string TextValue { get; set; }
