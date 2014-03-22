@@ -476,8 +476,8 @@ namespace CmsWeb.Code
 
             var q1 = from t in DbUtil.Db.Tags
                      where t.PeopleId == UserPeopleId
-                     where t.TypeId == DbUtil.TagTypeId_Personal
-                     orderby t.Name
+                     where t.TypeId == DbUtil.TagTypeId_Personal || t.TypeId == DbUtil.TagTypeId_Emailer
+                     orderby t.Name.StartsWith(".") ? "z" : "", t.Name
                      select new CodeValueItem
                      {
                          Id = t.Id,
@@ -487,8 +487,8 @@ namespace CmsWeb.Code
             var q2 = from t in DbUtil.Db.Tags
                      where t.PeopleId != UserPeopleId
                      where t.TagShares.Any(ts => ts.PeopleId == UserPeopleId)
-                     where t.TypeId == DbUtil.TagTypeId_Personal
-                     orderby t.PersonOwner.Name2, t.Name
+                     where t.TypeId == DbUtil.TagTypeId_Personal || t.TypeId == DbUtil.TagTypeId_Emailer
+                     orderby t.PersonOwner.Name2, t.Name.StartsWith(".") ? "z" : "", t.Name
                      let op = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == t.PeopleId)
                      select new CodeValueItem
                      {
