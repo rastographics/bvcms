@@ -1122,11 +1122,14 @@ div.logo {
     .form-horizontal .width280 .controls {
         margin-left: 110px;
     }
+    .maxWidthMedium {
+        max-width: 22em;
+    }
 }
 
 @media (min-width: 1200px) {
     .maxWidthMedium {
-        max-width: 35em;
+        max-width: 34em;
     }
 
     .width280 {
