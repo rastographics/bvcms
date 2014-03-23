@@ -1,7 +1,7 @@
 ﻿$(function () {
     $('#SearchText').typeahead({
         name: 'search',
-        valueKey: "line1",
+        valueKey: "url",
         limit: 25,
         beforeSend: function(jqXhr, settings) {
             $.SetLoadingIndicator();
@@ -32,7 +32,7 @@
         }
     });
     $('#SearchText').bind('typeahead:selected', function (obj, datum, name) {
-//        window.location = datum.url.replace("%QUERY", this.query);
+
         window.location = datum.url;
     });
 });
