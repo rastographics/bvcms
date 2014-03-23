@@ -15,6 +15,10 @@
         </fieldset>
     </div>
     <div class="modal-footer">
+        @if (User.IsInRole("Admin"))
+        {
+        <a id="refresh-thumbnail" href="/Person2/RefreshThumbnail/@Model.PeopleId" data-dismiss="modal">refresh thumbnail</a>
+        }
         <a href="#" class="btn" data-dismiss="modal">Cancel</a>
         <a id="delete-picture" href="/Person2/DeletePicture/@Model.PeopleId" class="btn btn-danger">Delete</a>
         <input type="submit" class="btn btn-primary" value="Upload" />

@@ -73,6 +73,13 @@
                     });
                     return false;
                 });
+                $("#refresh-thumbnail").click(function (ev) {
+                    ev.preventDefault();
+                    var a = this;
+                    f.attr("action", a.href);
+                    f.submit();
+                    return false;
+                });
             });
     });
     $("#family_related a.edit").live("click", function (ev) {
