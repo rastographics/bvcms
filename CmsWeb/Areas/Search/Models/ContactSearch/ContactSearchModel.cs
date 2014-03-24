@@ -12,7 +12,6 @@ using CmsData.View;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using UtilityExtensions;
-using System.Web.Mvc;
 using CmsData;
 
 namespace CmsWeb.Areas.Search.Models
@@ -346,12 +345,12 @@ namespace CmsWeb.Areas.Search.Models
         {
             var os = HttpContext.Current.Session[STR_ContactSearch] as ContactSearchInfo;
             if (os != null)
-                this.CopyPropertiesFrom(os);
+                SearchParameters.CopyPropertiesFrom(os);
         }
         internal void SaveToSession()
         {
             var os = new ContactSearchInfo();
-            this.CopyPropertiesTo(os);
+            SearchParameters.CopyPropertiesTo(os);
             HttpContext.Current.Session[STR_ContactSearch] = os;
         }
 

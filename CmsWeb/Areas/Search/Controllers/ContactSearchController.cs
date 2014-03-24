@@ -1,8 +1,8 @@
 using System.Web.Mvc;
 using AttributeRouting;
 using AttributeRouting.Web.Mvc;
-using CmsData;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
@@ -10,6 +10,7 @@ namespace CmsWeb.Areas.Search.Controllers
     [RouteArea("Search", AreaUrl = "ContactSearch2")]
     public class ContactSearchController : CmsStaffController
     {
+
         [GET("ContactSearch2")]
         public ActionResult Index()
         {
