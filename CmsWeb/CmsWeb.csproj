@@ -292,6 +292,7 @@
     <Compile Include="Areas\Org\Controllers\MissionTripEmailController.cs" />
     <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
     <Compile Include="Areas\Org\Models\MissionSupportModel.cs" />
+    <Compile Include="Areas\Public\Controllers\PersonInfo.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\BaseReturn.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileAttendee.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCountry.cs" />
@@ -1356,6 +1357,7 @@
     <Content Include="Areas\Reports\Views\Reports\MeetingsForMonth.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\FindTagEmail.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\TestScript.cshtml" />
+    <Content Include="Areas\Manage\Views\Emails\SeeHtml.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

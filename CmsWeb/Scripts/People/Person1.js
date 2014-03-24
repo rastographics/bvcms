@@ -40,7 +40,7 @@
                     $("#StateCode_Value").trigger("chosen:updated");
                     $("#ResCode_Value").val("0");
                     $("#ResCode_Value").trigger("chosen:updated");
-                    $("#Country_Value").val("");
+                    $("#Country_Value").val("United States");
                     $("#FromDt").val("");
                     $("#ToDt").val("");
                 });
@@ -71,6 +71,13 @@
                             f.submit();
                         }
                     });
+                    return false;
+                });
+                $("#refresh-thumbnail").click(function (ev) {
+                    ev.preventDefault();
+                    var a = this;
+                    f.attr("action", a.href);
+                    f.submit();
                     return false;
                 });
             });

@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Search.Models
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public CodeInfo ContactType { get; set; }
-        public CodeInfo  ContactReason { get; set; }
+        public CodeInfo ContactReason { get; set; }
         public CodeInfo Ministry { get; set; }
         public CodeInfo ContactResult { get; set; }
         public string CreatedBy { get; set; }

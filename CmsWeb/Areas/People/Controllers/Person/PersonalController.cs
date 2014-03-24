@@ -62,6 +62,13 @@ namespace CmsWeb.Areas.People.Controllers
             person.DeletePicture(DbUtil.Db);
             return Redirect("/Person2/" + id);
         }
+        [POST("Person2/RefreshThumbnail/{id:int}")]
+        public ActionResult RefreshThumbnail(int id)
+        {
+            var person = DbUtil.Db.LoadPersonById(id);
+            person.DeleteThumbnail(DbUtil.Db);
+            return Redirect("/Person2/" + id);
+        }
         [POST("Person2/PostData")]
         public ActionResult PostData(int pk, string name, string value)
         {

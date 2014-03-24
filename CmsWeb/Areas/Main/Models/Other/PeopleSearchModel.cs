@@ -7,14 +7,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using UtilityExtensions;
-using System.Data.Linq.SqlClient;
-using System.Web.UI.WebControls;
 using System.Text.RegularExpressions;
 
 namespace CmsWeb.Models
@@ -94,14 +90,15 @@ namespace CmsWeb.Models
                 else
                 {
                     string First, Last;
-                    NameSplit(m.name, out First, out Last);
+                    Util.NameSplit(m.name, out First, out Last);
                     if (First.HasValue())
-                        people = from p in people
-                                 where (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                                     || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name))
-                                 && (p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First)
-                                     || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name))
-                                 select p;
+                    people = from p in people
+                         where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                             || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
+                         where
+                             p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First)
+                             || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
+                         select p;
                     else
                         if (Last.AllDigits())
                             people = from p in people
@@ -109,9 +106,9 @@ namespace CmsWeb.Models
                                      select p;
                         else
                             people = from p in people
-                                     where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                                         || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name)
-                                     select p;
+                              where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name)
+                              || p.FirstName.StartsWith(m.name) || p.NickName.StartsWith(m.name) || p.MiddleName.StartsWith(m.name)
+                              select p;
                 }
             }
             if (m.address.IsNotNull())
@@ -219,19 +216,6 @@ namespace CmsWeb.Models
             return q;
         }
 
-        private static void NameSplit(string name, out string First, out string Last)
-        {
-            var a = name.Split(' ');
-            First = "";
-            if (a.Length > 1)
-            {
-                First = a[0];
-                Last = a[1];
-            }
-            else
-                Last = a[0];
-
-        }
         public Regex AddrRegex = new Regex(
         @"\A(?<addr>.*);\s*(?<city>.*),\s+(?<state>[A-Z]*)\s+(?<zip>\d{5}(-\d{4})?)\z");
 
@@ -381,7 +365,7 @@ namespace CmsWeb.Models
             if (m.name.HasValue())
             {
                 string First, Last;
-                NameSplit(m.name, out First, out Last);
+                Util.NameSplit(m.name, out First, out Last);
                 if (First.HasValue())
                 {
                     var g = cc.AddNewGroupClause();
@@ -399,7 +383,15 @@ namespace CmsWeb.Models
                     if (Last.AllDigits())
                         cc.AddNewClause(QueryType.PeopleId, CompareType.Equal, Last.ToInt());
                     else
-                        cc.AddNewClause(QueryType.LastName, CompareType.StartsWith, Last);
+                    {
+                        var g = cc.AddNewGroupClause();
+                        g.SetComparisonType(CompareType.AnyTrue);
+                        g.AddNewClause(QueryType.LastName, CompareType.StartsWith, m.name);
+                        g.AddNewClause(QueryType.MaidenName, CompareType.StartsWith, m.name);
+                        g.AddNewClause(QueryType.FirstName, CompareType.StartsWith, m.name);
+                        g.AddNewClause(QueryType.NickName, CompareType.StartsWith, m.name);
+                        g.AddNewClause(QueryType.MiddleName, CompareType.StartsWith, m.name);
+                    }
                 }
             }
             if (m.address.IsNotNull())

@@ -180,18 +180,6 @@
         }
         return true;
     });
-    $('div.dialog').dialog({ autoOpen: false });
-    $('#rollsheet1').click(function (ev) {
-        ev.preventDefault();
-        hideDropdowns();
-        $.post('/OrgSearch/DefaultMeetingDate/' + $('#ScheduleId').val(), null, function (ret) {
-            $('#MeetingDate').val(ret.date);
-            $('#MeetingTime').val(ret.time);
-            var d = $('#PanelRollsheet');
-            d.dialog('open');
-        });
-        return false;
-    });
     $('#AttNotices').click(function (ev) {
         ev.preventDefault();
         hideDropdowns();
@@ -203,6 +191,20 @@
         $.post("/OrgSearch/EmailAttendanceNotices", q, function () {
             $.unblock();
             $.growlUI("complete", "Email Notices Sent");
+        });
+        return false;
+    });
+    $('div.dialog').dialog({ autoOpen: false });
+    $('#rollsheet1').click(function (ev) {
+        ev.preventDefault();
+        hideDropdowns();
+        $.post('/OrgSearch/DefaultMeetingDate/' + $('#ScheduleId').val(), null, function (ret) {
+            $('#MeetingDate').val(ret.date);
+            $('#MeetingTime').val(ret.time);
+            $("#rollsheet2").attr("href", "/Reports/Rollsheet");
+            $("#rallycb").show();
+            var d = $('#PanelRollsheet');
+            d.dialog('open');
         });
         return false;
     });
@@ -224,9 +226,33 @@
             $("#orgsearchform").attr("action", "/Reports/RallyRollsheet" + args);
         else
             $("#orgsearchform").attr("action", "/Reports/Rollsheet" + args);
-        $("#orgsearchform").attr("target", "_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
+        return false;
+    });
+    $('#newmeetings').click(function (ev) {
+        ev.preventDefault();
+        hideDropdowns();
+        $.post('/OrgSearch/DefaultMeetingDate/' + $('#ScheduleId').val(), null, function (ret) {
+            $('#NewMeetingDate').val(ret.date);
+            $('#NewMeetingTime').val(ret.time);
+            var d = $('#PanelMeetings');
+            d.dialog('open');
+        });
+        return false;
+    });
+    $('#createmeetings').click(function (ev) {
+        ev.preventDefault();
+        hideDropdowns();
+        $('div.dialog').dialog('close');
+        var dt = getISODateTime(new Date($('#NewMeetingDate').val() + " " + $('#NewMeetingTime').val()));
+        var args = "?dt=" + dt;
+        var q = $("#orgsearchform").serialize();
+        $.post("/OrgSearch/CreateMeetings" + args, q, function () {
+            var args2 = "?dt1=" + dt + "&dt2=" + dt;
+            $("#orgsearchform").attr("action", "/Reports/AttendanceDetail" + args2);
+            $("#orgsearchform").submit();
+        });
         return false;
     });
     $('#ExportExcel').click(function (ev) {
@@ -275,7 +301,7 @@
     $("MeetingsForDateRangeDialog").on("dialogclose", function (event, ui) {
         $("#attdetail2").off("click");
     });
-    $(".StartEndReport").click(function(ev) {
+    $(".StartEndReport").click(function (ev) {
         ev.preventDefault();
         hideDropdowns();
         var action = this.href;

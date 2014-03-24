@@ -464,6 +464,11 @@ namespace CmsWeb.Models
             }
             return CreatingAccount;
         }
+        public bool IsMissionTrip()
+        {
+            return org != null && (org.IsMissionTrip ?? false);
+        }
+
         public XmlSchema GetSchema()
         {
             throw new System.NotImplementedException("The method or operation is not implemented.");

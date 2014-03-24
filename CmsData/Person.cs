@@ -1466,6 +1466,14 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             db.SubmitChanges();
             db.ExecuteCommand("DELETE dbo.Picture WHERE PictureId = {0}", pid);
         }
+        public void DeleteThumbnail(CMSDataContext db)
+        {
+            if (Picture == null)
+                return;
+            Image.Delete(Picture.ThumbId);
+            Picture.ThumbId = null;
+            db.SubmitChanges();
+        }
 
         public void UploadDocument(CMSDataContext db, System.IO.Stream stream, string name, string mimetype)
         {

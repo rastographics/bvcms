@@ -114,7 +114,7 @@ else
 		<input type="button" href="/OnlineReg/SubmitNew/@index" class="submitbutton ajax" 
 			   value="Submit" />
         @* only allow adults to create an account *@
-        @if ((Model.age >= 16 || !Model.birthday.HasValue) && Model.org.IsMissionTrip != true)
+        @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsMissionTrip())
         {
         <div>@Html.CheckBoxFor(m => m.CreatingAccount)
         Create Account (optional)</div>

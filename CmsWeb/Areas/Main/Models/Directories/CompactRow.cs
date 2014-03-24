@@ -172,7 +172,10 @@ namespace CmsWeb.Areas.Main.Models.Directories
 					run1.Append(new Break());
 				needbreak = true;
 				Text text1 = new Text();
-				text1.Text = "{0} {1}".Fmt(child.First, child.SafeAge);
+			    var name = child.Last == FamilyName
+			        ? child.First
+			        : "{0} {1}".Fmt(child.First, child.Last);
+				text1.Text = "{0} {1}".Fmt(name, child.SafeAge);
 	            run1.Append(text1);
 			}
             paragraph1.Append(run1);

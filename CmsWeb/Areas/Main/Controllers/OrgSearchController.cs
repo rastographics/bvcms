@@ -83,7 +83,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult ApplyType(int id, OrgSearchModel m)
         {
-            int? t = (id == -1 ? (int?) null : id);
+            int? t = (id == -1 ? (int?)null : id);
             if (t == 0)
                 return Content("");
             var ot = DbUtil.Db.OrganizationTypes.SingleOrDefault(tt => tt.Id == id);
@@ -257,6 +257,31 @@ namespace CmsWeb.Areas.Main.Controllers
             return Redirect("/Meeting/Index/{0}?showall=true".Fmt(newMtg.MeetingId));
         }
 
+        [HttpPost]
+        public ActionResult CreateMeetings(DateTime dt, OrgSearchModel model)
+        {
+            foreach (var o in model.FetchOrgs())
+            {
+                var mt = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingDate == dt
+                        && m.OrganizationId == o.OrganizationId);
+
+                if (mt != null)
+                    continue;
+
+                mt = new CmsData.Meeting
+                {
+                    CreatedDate = Util.Now,
+                    CreatedBy = Util.UserId1,
+                    OrganizationId = o.OrganizationId,
+                    Location = o.Location,
+                    MeetingDate = dt,
+                };
+                DbUtil.Db.Meetings.InsertOnSubmit(mt);
+                DbUtil.Db.SubmitChanges();
+            }
+            DbUtil.LogActivity("Creating new meetings from OrgSearch");
+            return Content("done");
+        }
         [HttpPost]
         [Authorize(Roles = "Attendance")]
         public ActionResult EmailAttendanceNotices(OrgSearchModel m)

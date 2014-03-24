@@ -318,7 +318,7 @@ namespace CmsWeb.Areas.Reports.Models
 							doc.Add(t);
 						}
 						if (ShowForm)
-							ContactForm();
+							ContactForm(p);
 					}
             }
             pageEvents.EndPageSet();
@@ -442,7 +442,7 @@ namespace CmsWeb.Areas.Reports.Models
         private Font h2font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
 
 
-		public void ContactForm()
+		public void ContactForm(ProspectInfo p)
 		{
             /* There is no look up table for Contact Results because they are hardcoded into the form for actually adding a contact to a record
              * Another Setting is used to allow for customization of the blank Contact Form.  It is called "ContactFormResults"
@@ -464,7 +464,7 @@ namespace CmsWeb.Areas.Reports.Models
 			var t = new PdfPTable(2);
                         
 			t.SetNoBorder();
-			t.AddCentered("InReach/Outreach Card", 2, h1font);
+			t.AddCentered("InReach/Outreach Card for {0} ({1})".Fmt(p.Name, p.PeopleId), 2, h1font);
 			t.AddCentered("Contact Summary", 2, h2font);
             /* Added line for noting the Ministry recording the contact*/
 		    t.AddLeft("Ministry: ______________________", 1, bfont);
