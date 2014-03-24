@@ -167,3 +167,22 @@
         return this;
     };
 });
+function getISODateTime(d){
+    // padding function
+    var s = function(p){
+        return (''+p).length<2?'0'+p:''+p;
+    };
+    
+    // default parameter
+    if (typeof d === 'undefined'){
+        var d = new Date();
+    };
+    
+    // return ISO datetime
+    return d.getFullYear() + '-' +
+        s(d.getMonth()+1) + '-' +
+        s(d.getDate()) + ' ' +
+        s(d.getHours()) + ':' +
+        s(d.getMinutes()) + ':' +
+        s(d.getSeconds());
+}

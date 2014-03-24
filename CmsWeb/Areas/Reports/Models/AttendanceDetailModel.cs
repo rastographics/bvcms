@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Reports.Models
             var q = from m in DbUtil.Db.Meetings
                     join o in orgs on m.OrganizationId equals o.OrganizationId
                     where m.MeetingDate >= dt1
-                    where m.MeetingDate < dt2
+                    where m.MeetingDate <= dt2
                     where Model.ScheduleId == 0 || m.ScheduleId == Model.ScheduleId
                     orderby o.OrganizationName, o.OrganizationId, m.MeetingDate descending
                     select new
