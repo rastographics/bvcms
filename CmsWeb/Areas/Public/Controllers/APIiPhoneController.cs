@@ -51,6 +51,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (!AccountModel.AuthenticateMobile())
                 return Content("not authorized");
 			Response.NoCache();
+            DbUtil.LogActivity("iphone view ({0})".Fmt(id));
             return new DetailResult(id);
         }
         public ActionResult Organizations()
@@ -68,6 +69,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (!AccountModel.AuthenticateMobile())
                 return Content("not authorized");
 			var u = DbUtil.Db.Users.Single(uu => uu.Username == AccountModel.UserName2);
+            DbUtil.LogActivity("iphone RollList {0} {1:g}".Fmt(id, datetime));
             var meeting = Meeting.FetchOrCreateMeeting(DbUtil.Db, id, datetime);
             return new RollListResult(meeting);
         }
@@ -76,6 +78,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
 			if (!AccountModel.AuthenticateMobile())
                 return Content("not authorized");
+            DbUtil.LogActivity("iphone attend(org:{0} person:{1} {2})".Fmt(id, PeopleId, Present));
             Attend.RecordAttendance(PeopleId, id, Present);
             DbUtil.Db.UpdateMeetingCounters(id);
             return new EmptyResult();
@@ -200,10 +203,16 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == PeopleId && m.OrganizationId == OrgId);
             if (om == null && Member)
+            {
                 om = OrganizationMember.InsertOrgMembers(DbUtil.Db,
                     OrgId, PeopleId, MemberTypeCode.Member, DateTime.Now, null, false);
+                DbUtil.LogActivity("iphone join(org:{0} person:{1})".Fmt(OrgId, PeopleId));
+            }
             else if (om != null && !Member)
+            {
                 om.Drop(DbUtil.Db, addToHistory: true);
+                DbUtil.LogActivity("iphone drop(org:{0} person:{1})".Fmt(OrgId, PeopleId));
+            }
             DbUtil.Db.SubmitChanges();
             return Content("OK");
         }
