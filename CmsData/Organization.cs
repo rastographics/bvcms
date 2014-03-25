@@ -478,9 +478,7 @@ namespace CmsData
         public int RegLimitCount(CMSDataContext db)
         {
             if (!regLimitCount.HasValue)
-                regLimitCount = IsMissionTrip == true
-                    ? (db.OrganizationMemberCount2(OrganizationId) ?? 0)
-                    : (MemberCount ?? 0);
+                regLimitCount = db.OrganizationMemberCount2(OrganizationId) ?? 0;
             return regLimitCount.Value;
         }
     }

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Web.Mvc;
-using RestSharp.Extensions;
+using UtilityExtensions;
 
 namespace CmsWeb.Code
 {
@@ -11,9 +10,11 @@ namespace CmsWeb.Code
     {
         public override bool IsValid(object value)
         {
-            var date = value as string;
+            var date = (string) value;
+            if (!date.HasValue())
+                return true;
             DateTime dt = DateTime.MinValue;
-            if (date.HasValue() && !DateTime.TryParse(date, out dt)) 
+            if (!DateTime.TryParse(date, out dt)) 
                 return false;
             return dt >= DateTime.Parse("1/1/1900");
         }

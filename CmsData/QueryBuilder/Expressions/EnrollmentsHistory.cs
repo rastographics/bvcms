@@ -7,6 +7,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using IronPython.Modules;
 using UtilityExtensions;
 using System.Data.Linq.SqlClient;
 using CmsData.Codes;
@@ -70,6 +71,8 @@ namespace CmsData
                 case CompareType.Equal:
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
+                        && m.MemberTypeId != MemberTypeCode.Prospect
+                        && (m.Pending ?? false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date == DateValue);
@@ -77,6 +80,8 @@ namespace CmsData
                 case CompareType.Greater:
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
+                        && m.MemberTypeId != MemberTypeCode.Prospect
+                        && (m.Pending ?? false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date > DateValue);
@@ -84,6 +89,8 @@ namespace CmsData
                 case CompareType.GreaterEqual:
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
+                        && m.MemberTypeId != MemberTypeCode.Prospect
+                        && (m.Pending ?? false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date >= DateValue);
@@ -91,6 +98,8 @@ namespace CmsData
                 case CompareType.Less:
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
+                        && m.MemberTypeId != MemberTypeCode.Prospect
+                        && (m.Pending ?? false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date < DateValue);
@@ -98,6 +107,8 @@ namespace CmsData
                 case CompareType.LessEqual:
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
+                        && m.MemberTypeId != MemberTypeCode.Prospect
+                        && (m.Pending ?? false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date <= DateValue);
@@ -105,6 +116,8 @@ namespace CmsData
                 case CompareType.NotEqual:
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
+                        && m.MemberTypeId != MemberTypeCode.Prospect
+                        && (m.Pending ?? false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date != DateValue);
@@ -112,6 +125,8 @@ namespace CmsData
                 case CompareType.IsNull:
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
+                        && m.MemberTypeId != MemberTypeCode.Prospect
+                        && (m.Pending ?? false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate == null);
@@ -119,6 +134,8 @@ namespace CmsData
                 case CompareType.IsNotNull:
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
+                        && m.MemberTypeId != MemberTypeCode.Prospect
+                        && (m.Pending ?? false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate != null);
