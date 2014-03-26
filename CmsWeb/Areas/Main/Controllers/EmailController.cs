@@ -70,13 +70,13 @@ namespace CmsWeb.Areas.Main.Controllers
 		[ValidateInput(false)]
 		public ActionResult SaveDraft(int tagId, bool wantParents, int saveid, string name, string subject, string body, int roleid)
 		{
-			Content content;
+			Content content = null;
 
 			if (saveid > 0)
 			{
 				content = DbUtil.ContentFromID(saveid);
 			}
-			else
+            if(content == null)
 			{
 				content = new Content
 				{

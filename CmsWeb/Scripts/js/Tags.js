@@ -134,6 +134,25 @@
     //            return true;
     //        return false;
     //    });
+    $("#addperson").autocomplete({
+        autoFocus: true,
+        minLength: 3,
+        source: function (request, response) {
+            $.post("/Meeting/Names", request, function (ret) {
+                response(ret.slice(0, 10));
+            }, "json");
+        },
+        select: function (event, ui) {
+            $("#wandtarget").val(ui.item.Pid);
+            $.mark();
+            $("#name").val('');
+            return false;
+        }
+    }).data("uiAutocomplete")._renderItem = function (ul, item) {
+        return $("<li>")
+            .append("<a>" + item.Name + "<br>" + item.Addr + "</a>")
+            .appendTo(ul);
+    };
 });
 function UpdateSelectedUsers(r) {
     $.post("/Tags/UpdateShared", null, function (ret) {

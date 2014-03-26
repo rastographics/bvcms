@@ -238,7 +238,7 @@ namespace CmsData
                 where Organization == 0 || m.OrganizationId == Organization
                 where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
                 where Program == 0 || m.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
-                where !m.Organization.Meetings.Any(mm => mm.MeetingDate > mindt && mm.Attends.Count(aa => aa.AttendanceFlag) > 0)
+                where !m.Organization.Meetings.Any(mm => mm.MeetingDate > mindt && mm.NumPresent > 0)
                 select m
                 ).Any();
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p

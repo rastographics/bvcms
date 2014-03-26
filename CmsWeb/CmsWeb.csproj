@@ -417,6 +417,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonAddress.cs" />
     <Compile Include="Areas\Reports\Models\RecentAbsentsViewModel.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
+    <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
     <Compile Include="Controllers\DialogController.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />

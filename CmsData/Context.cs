@@ -269,9 +269,14 @@ namespace CmsData
         }
         public Tag PopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
         {
-            string name = TagTypeId == DbUtil.TagTypeId_Emailer
-                ? ".temp email tag {0:t}".Fmt(DateTime.Now)
-                : Util.SessionId;
+            string name;
+            if (TagTypeId != DbUtil.TagTypeId_Emailer)
+                name = Util.SessionId;
+            else
+            {
+                name = ".temp email tag {0:t}".Fmt(DateTime.Now);
+                TagTypeId = DbUtil.TagTypeId_Personal;
+            }
             var tag = FetchOrCreateTag(name, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             var qpids = q.Select(pp => pp.PeopleId);

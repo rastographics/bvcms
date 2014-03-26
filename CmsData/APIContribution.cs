@@ -345,6 +345,7 @@ namespace CmsData.API
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
                     where c.ContributionTypeId == ContributionTypeCode.GiftInKind
                     where c.ContributionStatusId.Value != ContributionStatusCode.Reversed
+                    where c.ContributionDate >= fromDate
                     where c.ContributionDate <= toDate
                     orderby c.ContributionDate
                     select new ContributionInfo

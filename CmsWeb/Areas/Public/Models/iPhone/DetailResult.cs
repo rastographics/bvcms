@@ -42,7 +42,7 @@ namespace CmsWeb.Models.iPhone
                 w.WriteAttributeString("email", p.EmailAddress);
                 w.WriteAttributeString("haspicture", p.PictureId.HasValue ? "1" : "0");
 
-                foreach (var m in p.Family.People.Where(mm => mm.PeopleId != PeopleId))
+                foreach (var m in p.Family.People.Where(mm => mm.PeopleId != PeopleId && mm.DeceasedDate == null))
                 {
                     w.WriteStartElement("OtherMember");
                     w.WriteAttributeString("peopleid", m.PeopleId.ToString());

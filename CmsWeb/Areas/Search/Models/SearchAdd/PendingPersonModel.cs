@@ -37,6 +37,7 @@ namespace CmsWeb.Areas.Search.Models
         public string SuffixCode { get; set; }
 
         [DisplayName("Birthday")]
+        [DateEmptyOrValid]
         public string DOB { get; set; }
 
         [StringLength(20), RemoveNA]

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Routing;
+using CmsWeb.Models;
 using Dapper;
 using OfficeOpenXml;
 using Org.BouncyCastle.OpenSsl;
@@ -368,7 +369,13 @@ table.grid tr:nth-child(1) {
                 {
                     var cn = new SqlConnection(cs.ConnectionString);
                     cn.Open();
-                    cn.Execute("update dbo.RequestLog set duration = @duration where id = @id", new {duration, id});
+                    var userid = Util.UserName;
+                    if (!userid.HasValue())
+                        userid = AccountModel.UserName2;
+                    if(userid.HasValue())
+                        cn.Execute("update dbo.RequestLog set duration = @duration, userid = @userid where id = @id", new {duration, id, userid});
+                    else
+                        cn.Execute("update dbo.RequestLog set duration = @duration where id = @id", new {duration, id});
                     cn.Close();
                 }
             }

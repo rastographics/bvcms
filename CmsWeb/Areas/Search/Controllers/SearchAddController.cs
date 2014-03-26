@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult AddNewPerson(string noCheckDuplicate, SearchAddModel m)
         {
             var p = m.PendingList[m.PendingList.Count - 1];
-            if (!noCheckDuplicate.HasValue())
+            if (ModelState.IsValid && !noCheckDuplicate.HasValue())
                 p.CheckDuplicate();
             if (!ModelState.IsValid || p.PotentialDuplicate.HasValue())
                 return View("NewPerson", m);

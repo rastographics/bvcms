@@ -69,6 +69,8 @@ namespace CmsWeb.Models.iPhone
             else
                 query = db.People.Select(p => p);
 
+            query = query.Where(pp => pp.DeceasedDate == null);
+
             if (Name.HasValue())
             {
                 string First, Last;
