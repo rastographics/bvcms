@@ -73,7 +73,6 @@
     $.getTable = function () {
         var f = $('#results').closest('form');
         var q = f.serialize();
-        $.blockUI();
         $.post($('#refresh').attr('href'), q, function (ret) {
             $('#results').replaceWith(ret).ready(function () {
                 $('#results > tbody > tr:even').addClass('alt');
@@ -81,7 +80,6 @@
                 $("#tagalltagname").val($("#actag").val());
                 $("#sharecount").text($("#shcnt").val());
                 //$('.dropdown').hoverIntent(dropdownshow, dropdownhide);
-                $.unblockUI();
             });
         });
         return false;
@@ -134,25 +132,25 @@
     //            return true;
     //        return false;
     //    });
-    $("#addperson").autocomplete({
-        autoFocus: true,
-        minLength: 3,
-        source: function (request, response) {
-            $.post("/Meeting/Names", request, function (ret) {
-                response(ret.slice(0, 10));
-            }, "json");
-        },
-        select: function (event, ui) {
-            $("#wandtarget").val(ui.item.Pid);
-            $.mark();
-            $("#name").val('');
-            return false;
-        }
-    }).data("uiAutocomplete")._renderItem = function (ul, item) {
-        return $("<li>")
-            .append("<a>" + item.Name + "<br>" + item.Addr + "</a>")
-            .appendTo(ul);
-    };
+//    $("#addperson").autocomplete({
+//        autoFocus: true,
+//        minLength: 3,
+//        source: function (request, response) {
+//            $.post("/Meeting/Names", request, function (ret) {
+//                response(ret.slice(0, 10));
+//            }, "json");
+//        },
+//        select: function (event, ui) {
+//            $("#wandtarget").val(ui.item.Pid);
+//            $.mark();
+//            $("#name").val('');
+//            return false;
+//        }
+//    }).data("uiAutocomplete")._renderItem = function (ul, item) {
+//        return $("<li>")
+//            .append("<a>" + item.Name + "<br>" + item.Addr + "</a>")
+//            .appendTo(ul);
+//    };
 });
 function UpdateSelectedUsers(r) {
     $.post("/Tags/UpdateShared", null, function (ret) {
