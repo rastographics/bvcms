@@ -198,12 +198,14 @@ namespace CmsWeb.Areas.Main.Models.Directories
 				var first = new Run();
 				first.Append(new RunProperties(new NoProof()));
 				first.Append(new Break());
-				string fname;
-				if (m.Age.HasValue && m.Age < 22)
-					fname = "{0} ({1})".Fmt(m.First, m.Age);
-				else
-					fname = m.First;
-				first.Append(new Text(fname));
+			    string fname = m.Last == f.FamilyName
+			        ? m.First
+			        : m.First + " " + m.Last;
+			    fname = m.Age.HasValue && m.Age < 22 
+                    ? "{0} ({1})".Fmt(fname, m.Age) 
+                    : fname;
+
+			    first.Append(new Text(fname));
 				paragraph1.Append(first);
 
 				var email = new Run();
