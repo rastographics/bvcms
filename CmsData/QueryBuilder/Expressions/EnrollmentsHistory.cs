@@ -72,7 +72,7 @@ namespace CmsData
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
                         && m.MemberTypeId != MemberTypeCode.Prospect
-                        && (m.Pending ?? false)
+                        && ((m.Pending ?? false) == false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date == DateValue);
@@ -81,7 +81,7 @@ namespace CmsData
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
                         && m.MemberTypeId != MemberTypeCode.Prospect
-                        && (m.Pending ?? false)
+                        && ((m.Pending ?? false) == false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date > DateValue);
@@ -90,7 +90,7 @@ namespace CmsData
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
                         && m.MemberTypeId != MemberTypeCode.Prospect
-                        && (m.Pending ?? false)
+                        && ((m.Pending ?? false) == false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date >= DateValue);
@@ -99,7 +99,7 @@ namespace CmsData
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
                         && m.MemberTypeId != MemberTypeCode.Prospect
-                        && (m.Pending ?? false)
+                        && ((m.Pending ?? false) == false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date < DateValue);
@@ -108,7 +108,7 @@ namespace CmsData
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
                         && m.MemberTypeId != MemberTypeCode.Prospect
-                        && (m.Pending ?? false)
+                        && ((m.Pending ?? false) == false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date <= DateValue);
@@ -117,7 +117,7 @@ namespace CmsData
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
                         && m.MemberTypeId != MemberTypeCode.Prospect
-                        && (m.Pending ?? false)
+                        && ((m.Pending ?? false) == false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate.Value.Date != DateValue);
@@ -126,7 +126,7 @@ namespace CmsData
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
                         && m.MemberTypeId != MemberTypeCode.Prospect
-                        && (m.Pending ?? false)
+                        && ((m.Pending ?? false) == false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate == null);
@@ -135,7 +135,7 @@ namespace CmsData
                     pred = p => p.OrganizationMembers.Any(m =>
                         (Organization == 0 || m.OrganizationId == Organization)
                         && m.MemberTypeId != MemberTypeCode.Prospect
-                        && (m.Pending ?? false)
+                        && ((m.Pending ?? false) == false)
                         && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
                         && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                         && m.EnrollmentDate != null);
