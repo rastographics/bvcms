@@ -8,10 +8,14 @@
 <table id="results" class="@ViewExtensions2.GridClass" cellspacing="5">
 <thead>
 	<tr><td colspan="6">
-        <div><b>Count: @Model.Count()</b></div>
-		@Html.Partial("Pager2", Model)
-		@Html.Hidden("actag", Util2.CurrentTagName)
-		@Html.Hidden("shcnt", Model.SharedCount())</td></tr>
+    <div>
+        <b>Count: @Model.Count()</b>
+@*        <label style="margin-left: 5em;">Add Person to Tag:</label><input type="text" id="addperson" />*@
+    </div>
+    @Html.Partial("Pager2", Model)
+    @Html.Hidden("actag", Util2.CurrentTagName)
+    @Html.Hidden("shcnt", Model.SharedCount())
+</td></tr>
 	<tr>
 		<th> <a href="#" class="sortable">Name</a> </th>
 		<th> <a href="#" class="sortable">Status</a>/Age - <a href="#" class="sortable">DOB</a> </th>
