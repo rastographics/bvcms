@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (q.org == null)
                 return Content("org missing, bad link");
 
-            if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
+            if ((q.org.RegistrationTypeId ?? RegistrationTypeCode.None) == RegistrationTypeCode.None)
                 return Content("votelink is no longer active");
 
             if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
