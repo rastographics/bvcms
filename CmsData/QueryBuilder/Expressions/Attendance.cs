@@ -232,8 +232,11 @@ namespace CmsData
         internal Expression NeedAttendance()
         {
             var mindt = Util.Now.AddDays(-Days).Date;
+            var dow = Quarters.ToInt();
             Expression<Func<Person, bool>> pred = p => (
                 from m in p.OrganizationMembers
+                let sc = m.Organization.OrgSchedules.FirstOrDefault()
+                where sc == null || sc.SchedDay == dow
                 where CodeIntIds.Contains(m.MemberTypeId)
                 where Organization == 0 || m.OrganizationId == Organization
                 where Division == 0 || m.Organization.DivOrgs.Any(dg => dg.DivId == Division)
