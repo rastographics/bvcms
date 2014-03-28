@@ -243,34 +243,24 @@ namespace CmsWeb.Models
 
         internal void AddPerson(int originid, int? entrypointid, int? campusid)
         {
-            Family f;
-            string na = "na";
-            if (FamilyId > 0)
-                f = family;
-            else
-                f = new Family
-                        {
-                            HomePhone = homephone.GetDigits(),
-                            AddressLineOne = address.Disallow(na),
-                            AddressLineTwo = address2,
-                            CityName = city.Disallow(na),
-                            StateCode = state.Disallow(na),
-                            ZipCode = zip.Disallow(na),
-                            CountryName = country,
-                        };
+            var na = "na";
+            Family f = FamilyId > 0
+                ? family
+                : new Family
+                {
+                    HomePhone = homephone.GetDigits(),
+                    AddressLineOne = address.Disallow(na),
+                    AddressLineTwo = address2,
+                    CityName = city.Disallow(na),
+                    StateCode = state.Disallow(na),
+                    ZipCode = zip.Disallow(na),
+                    CountryName = country,
+                };
 
             if (goesby != null)
                 goesby = goesby.Trim();
-            var position = PositionInFamily.Child;
-            if (!birthday.HasValue)
-                position = PositionInFamily.PrimaryAdult;
-            if (age >= 18)
-                if (f.People.Count(per =>
-                                   per.PositionInFamilyId == PositionInFamily.PrimaryAdult)
-                    < 2)
-                    position = PositionInFamily.PrimaryAdult;
-                else
-                    position = PositionInFamily.SecondaryAdult;
+
+            var position = DbUtil.Db.ComputePositionInFamily(age ?? -1, MaritalStatusCode.Single, FamilyId) ?? 10;
 
             _Person = Person.Add(f, position,
                                  null, first.Trim(), goesby, last.Trim(), dob, false, gender,
