@@ -1833,6 +1833,7 @@
     <Content Include="Views\Home\UserPreferences.cshtml" />
     <Content Include="Views\ExtraValue\EditStandard.cshtml" />
     <Content Include="Views\Home\MyDataSupport.cshtml" />
+    <Content Include="Views\Home\TestScript.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

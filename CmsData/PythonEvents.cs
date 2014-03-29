@@ -58,6 +58,8 @@ namespace CmsData
             var scope = engine.CreateScope();
             var pe = new PythonEvents(db);
             scope.SetVariable("model", pe);
+            var qf = new QueryFunctions(db);
+            scope.SetVariable("q", qf);
             code.Execute(scope);
             ms.Position = 0;
             var s = ms.ReadToEnd();

@@ -178,6 +178,20 @@ for v in q:
             return Redirect("/");
         }
 
+        [GET("TestScript")]
+        [Authorize(Roles = "Developer")]
+        public ActionResult TestScript()
+        {
+            return View();
+        }
+        [POST("TestScript")]
+        [ValidateInput(false)]
+        [Authorize(Roles = "Developer")]
+        public ActionResult TestScript(string script)
+        {
+            return Content(PythonEvents.RunScript(DbUtil.Db, script));
+        }
+
         [GET("Preferences")]
         public ActionResult UserPreferences()
         {
