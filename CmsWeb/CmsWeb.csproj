@@ -1033,6 +1033,7 @@
     <Content Include="Content\css\main.min.css">
       <DependentUpon>main.css</DependentUpon>
     </Content>
+    <Content Include="Content\css\onlinereg2.css" />
     <Content Include="Content\css\person-main.css" />
     <Content Include="Content\css\person-main.min.css">
       <DependentUpon>person-main.css</DependentUpon>
@@ -1359,6 +1360,18 @@
     <Content Include="Areas\Manage\Views\Batch\FindTagEmail.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\TestScript.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\SeeHtml.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\AddressDisplay.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\AddressEdit.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Buttons.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\List.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Login.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\OtherDisplay.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\OtherEdit.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonDisplay.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonEdit.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Registrant.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SupportMissionTrip.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SupportMissionTripDisplay.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -1834,6 +1847,7 @@
     <Content Include="Views\ExtraValue\EditStandard.cshtml" />
     <Content Include="Views\Home\MyDataSupport.cshtml" />
     <Content Include="Views\Home\TestScript.cshtml" />
+    <Content Include="Views\Shared\OnlineReg2.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2712,7 +2726,7 @@
     </Content>
     <Content Include="Views\Shared\Site2.cshtml">
     </Content>
-    <Content Include="Views\Shared\onlinereg.cshtml">
+    <Content Include="Views\Shared\OnlineReg.cshtml">
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Shared\Reports.cshtml">

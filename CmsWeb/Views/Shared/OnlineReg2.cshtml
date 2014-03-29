@@ -1,0 +1,31 @@
+@if ((bool?)ViewBag.hasshell == true)
+{
+@Html.Raw((string)ViewBag.top)
+@RenderSection("head", false)
+@RenderBody()
+@Html.Raw((string)ViewBag.bottom)
+@ViewExtensions2.jQuery()
+@ViewExtensions2.Bootstrap()
+@Fingerprint.Script("/Scripts/bundle.onlinereg2.js")
+@RenderSection("scripts", false)
+}
+else
+{
+@:<!DOCTYPE html>
+<html>
+<head>
+<title>Online Registration</title>
+@Html.Raw(ViewExtensions2.OnlineReg2Css())
+@RenderSection("head", false)
+</head>
+<body>
+@Html.Raw((string)ViewBag.top)
+@RenderBody()
+@Html.Raw((string)ViewBag.bottom)
+@ViewExtensions2.jQuery()
+@ViewExtensions2.Bootstrap()
+@Fingerprint.Script("/Scripts/bundle.onlineregister.js")
+@RenderSection("scripts", false)
+</body>
+</html>
+}

@@ -1,7 +1,9 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Models.PaymentForm
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg.cshtml"
+        : "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "Online Registration";
 }
 @section scripts

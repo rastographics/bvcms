@@ -2,7 +2,9 @@
 @using CmsData
 @model CmsWeb.Models.PaymentForm
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg.cshtml"
+        : "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "Online Registration";
 
     var ServiceUOrgID = (Model.testing) ? DbUtil.Db.Setting("ServiceUOrgIDTest", "0") : DbUtil.Db.Setting("ServiceUOrgID", "0");

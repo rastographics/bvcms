@@ -147,6 +147,20 @@ namespace CmsWeb.Models
             }
             return false;
         }
+
+        private bool? usebootstrap;
+        public bool UseBootstrap
+        {
+            get
+            {
+                if (!usebootstrap.HasValue)
+                    usebootstrap = org != null
+                        ? settings[org.OrganizationId].UseBootstrap
+                        : settings != null && settings.Values.Any(ss => ss.UseBootstrap);
+                return usebootstrap.Value;
+            }
+        }
+
         public bool ChoosingSlots()
         {
             if (org != null)
@@ -345,6 +359,7 @@ namespace CmsWeb.Models
                 return "";
             }
         }
+
         public OnlineRegPersonModel LoadExistingPerson(int id, int index)
         {
             var person = DbUtil.Db.LoadPersonById(id);

@@ -1,7 +1,9 @@
 ﻿@model CmsWeb.Models.VolunteerRequestModel
 @using UtilityExtensions
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg.cshtml"
+        : "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "Volunteer Request Report";
 }
 @section scripts

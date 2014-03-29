@@ -24,7 +24,7 @@ namespace CmsWeb.Models
 		{
 			OrgId = orgId;
 			PeopleId = peopleId;
-			dtlock = DateTime.Now.AddDays(Regsettings.TimeSlots.TimeSlotLockDays ?? 0);
+			dtlock = DateTime.Now.AddDays(Setting.TimeSlots.TimeSlotLockDays ?? 0);
 			IsLeader = leader;
 			SendEmail = leader == false;
 		}
@@ -42,17 +42,6 @@ namespace CmsWeb.Models
 			{
 				return _org ??
 					(_org = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == OrgId));
-			}
-		}
-
-		private Settings _regsettings;
-
-		public Settings Regsettings
-		{
-			get
-			{
-				return _regsettings ??
-					(_regsettings = new Settings(Org.RegSetting, DbUtil.Db, OrgId));
 			}
 		}
 
@@ -144,7 +133,7 @@ namespace CmsWeb.Models
 			{
 				var dt = sunday;
 				{
-					var q = from ts in Regsettings.TimeSlots.list
+					var q = from ts in Setting.TimeSlots.list
 							orderby ts.Datetime()
 							let time = ts.Datetime(dt)
 							let meeting = meetings.SingleOrDefault(cc => cc.MeetingDate == time)
@@ -231,7 +220,6 @@ namespace CmsWeb.Models
 		{
 			get
 			{
-				var setting = OnlineRegModel.ParseSetting(Org.RegSetting, Org.OrganizationId);
 				return @"
 <div class=""instructions login"">{0}</div>
 <div class=""instructions select"">{1}</div>
@@ -240,25 +228,37 @@ namespace CmsWeb.Models
 <div class=""instructions special"">{4}</div>
 <div class=""instructions submit"">{5}</div>
 <div class=""instructions sorry"">{6}</div>
-".Fmt(setting.InstructionLogin,
-					 setting.InstructionSelect,
-					 setting.InstructionFind,
-					 setting.InstructionOptions,
-					 setting.InstructionSpecial,
-					 setting.InstructionSubmit,
-					 setting.InstructionSorry
+".Fmt(Setting.InstructionLogin,
+					 Setting.InstructionSelect,
+					 Setting.InstructionFind,
+					 Setting.InstructionOptions,
+					 Setting.InstructionSpecial,
+					 Setting.InstructionSubmit,
+					 Setting.InstructionSorry
 					 );
 			}
 		}
-		public Settings setting
+
+	    private Settings setting;
+		public Settings Setting
 		{
-			get { return new Settings(Org.RegSetting, DbUtil.Db, OrgId); }
+			get { return setting ?? (setting = new Settings(Org.RegSetting, DbUtil.Db, OrgId)); }
 		}
+        private bool? usebootstrap;
+        public bool UseBootstrap
+        {
+            get
+            {
+                if (!usebootstrap.HasValue)
+                    usebootstrap = Setting.UseBootstrap;
+                return usebootstrap.Value;
+            }
+        }
 		public SelectList Volunteers()
 		{
 			var q = from m in DbUtil.Db.OrganizationMembers
 					where m.OrganizationId == OrgId
-					where m.MemberTypeId != CmsData.Codes.MemberTypeCode.InActive
+					where m.MemberTypeId != MemberTypeCode.InActive
 					orderby m.Person.Name2
 					select new { m.PeopleId, m.Person.Name };
 			return new SelectList(q, "PeopleId", "Name", PeopleId);

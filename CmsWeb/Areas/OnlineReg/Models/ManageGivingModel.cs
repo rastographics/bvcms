@@ -87,10 +87,21 @@ namespace CmsWeb.Models
 			}
 		}
 
-		public Settings setting
+	    private Settings setting;
+		public Settings Setting
 		{
-			get { return new Settings(Organization.RegSetting, DbUtil.Db, orgid); }
+		    get { return setting ?? (setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid)); }
 		}
+        private bool? usebootstrap;
+        public bool UseBootstrap
+        {
+            get
+            {
+                if (!usebootstrap.HasValue)
+                    usebootstrap = Setting.UseBootstrap;
+                return usebootstrap.Value;
+            }
+        }
 
 		public bool NoCreditCardsAllowed { get; set; }
 		public bool NoEChecksAllowed { get; set; }
@@ -137,14 +148,14 @@ namespace CmsWeb.Models
 					Type = "C"; // credit card only
 				Type = NoEChecksAllowed ? "C" : Type;
 			}
-			else if (setting.ExtraValueFeeName.HasValue())
+			else if (Setting.ExtraValueFeeName.HasValue())
 			{
-				var f = CmsWeb.Models.OnlineRegPersonModel.Funds().SingleOrDefault(ff => ff.Text == setting.ExtraValueFeeName);
+				var f = CmsWeb.Models.OnlineRegPersonModel.Funds().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
 				// reasonable defaults
 				Period = "M";
 				SemiEvery = "E";
 				EveryN = 1;
-				var evamt = person.GetExtra(setting.ExtraValueFeeName).ToDecimal();
+				var evamt = person.GetExtra(Setting.ExtraValueFeeName).ToDecimal();
 				if (f != null && evamt > 0)
 					FundItem.Add(f.Value.ToInt(), evamt);
 			}
@@ -261,13 +272,13 @@ namespace CmsWeb.Models
 <div class=""instructions special"">{5}</div>
 <div class=""instructions sorry"">{6}</div>
 "
-						.Fmt(setting.InstructionLogin,
-							 setting.InstructionSelect,
-							 setting.InstructionFind,
-							 setting.InstructionOptions,
-							 setting.InstructionSubmit,
-							 setting.InstructionSpecial,
-							 setting.InstructionSorry
+						.Fmt(Setting.InstructionLogin,
+							 Setting.InstructionSelect,
+							 Setting.InstructionFind,
+							 Setting.InstructionOptions,
+							 Setting.InstructionSubmit,
+							 Setting.InstructionSpecial,
+							 Setting.InstructionSorry
 						);
 				ins = OnlineRegModel.DoReplaceForExtraValueCode(ins, person);
 				return ins;

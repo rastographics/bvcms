@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CmsData;
-using System.Text;
 using CmsData.Registration;
-using UtilityExtensions;
-using System.Web.Mvc;
-using System.Xml.Linq;
 using CmsData.Codes;
 
 namespace CmsWeb.Models
@@ -47,18 +40,30 @@ namespace CmsWeb.Models
             public decimal Pledged { get; set; }
             public decimal Given { get; set; }
         }
-        public Settings setting
+
+        private Settings setting;
+        public Settings Setting
         {
             get
             {
-                return new Settings(Organization.RegSetting, DbUtil.Db, orgid);
+                return setting ?? (setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid));
+            }
+        }
+        private bool? usebootstrap;
+        public bool UseBootstrap
+        {
+            get
+            {
+                if (!usebootstrap.HasValue)
+                    usebootstrap = Setting.UseBootstrap;
+                return usebootstrap.Value;
             }
         }
         public PledgeInfo GetPledgeInfo()
         {
             var RRTypes = new int[] { 6, 7 };
             var q = from c in DbUtil.Db.Contributions
-                    where c.FundId == setting.DonationFundId
+                    where c.FundId == Setting.DonationFundId
                     where c.PeopleId == pid
                     where !RRTypes.Contains(c.ContributionTypeId)
                     group c by pid into g

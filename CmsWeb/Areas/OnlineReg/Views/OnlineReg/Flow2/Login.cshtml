@@ -1,0 +1,23 @@
+﻿@model CmsWeb.Models.OnlineRegModel
+@{ Model.ShowLoginInstructions = true; }
+<div class="login box" style="margin-top:1em;width:350px" >
+    <div style="margin: 10px">
+        <div><label for="username">Username or Email</label></div>
+        <div>@Html.TextBoxFor(m => m.username)</div>
+    </div>
+    <div style="margin: 10px">
+        <div><label for="password">Password</label></div>
+        <div>@Html.PasswordFor(m => m.password)</div>
+    </div>
+    <div style="margin: 20px 10px">
+        <div style="text-align:right">
+        <input id="loginbt" type="button" href="/OnlineReg/Login/" class="submitbutton ajax" tabindex="3" value="Login" /></div>
+        <div>@Html.ValidationMessage("authentication")</div>
+    </div>
+    <div style="margin: 5px; text-align:center">
+        <a href="/Account/ForgotPassword">Forgot Password</a>?
+    </div>
+</div>
+<div style="margin: 10px; text-align:center; width:350px">
+    <a href="/OnlineReg/NoLogin" class="submitlink">Register without logging in</a>
+</div>

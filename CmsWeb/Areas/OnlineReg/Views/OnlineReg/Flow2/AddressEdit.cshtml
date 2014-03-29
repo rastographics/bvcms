@@ -1,0 +1,71 @@
+﻿@using CmsWeb
+@model CmsWeb.Models.OnlineRegPersonModel
+    <tr><td colspan="3">Please provide additional<br />information for a new profile</td></tr>
+@if(Model.whatfamily == 3)
+{
+    var index = Model.Index();
+    <tr>
+        <td>@Html.NotRequired()
+            Home Phone</td>
+        <td>@Html.TextBoxFor(m => m.homephone)</td>
+        <td colspan="3"></td>
+    </tr>
+    <tr>
+        <td>@Html.IsRequired(Model.RequiredAddr()) Address</td>
+        <td>@Html.TextBox3("address", Model.Parent.GetNameFor(m => m.List[index].address), Model.address)
+            <div>@Html.ValidationMessageFor(m => m.address)</div></td>
+        <td colspan="3"></td>
+    </tr>
+    <tr>
+        <td>@Html.NotRequired() Address2 </td>
+        <td>@Html.TextBox3("address2", Model.Parent.GetNameFor(m => m.List[index].address2), Model.address2)
+            <div>@Html.ValidationMessageFor(m => m.address2)</div></td>
+        <td colspan="3"></td>
+    </tr>
+    <tr>
+        <td>@Html.IsRequired(Model.RequiredZip()) City</td> 
+        <td>@Html.TextBox3("city", Model.Parent.GetNameFor(m => m.List[index].city), Model.city)
+            <div>@Html.ValidationMessageFor(m => m.city)</div></td>
+        <td colspan="3"></td>
+    </tr>
+    <tr>
+        <td>@Html.IsRequired(Model.RequiredZip()) State</td>
+        <td>@Html.TextBox3("state", Model.Parent.GetNameFor(m => m.List[index].state), Model.state)
+            <div>@Html.ValidationMessageFor(m => m.state)</div></td>
+        <td colspan="3"></td>
+    </tr>
+    <tr>
+        <td>@Html.IsRequired(Model.RequiredZip()) Zip</td>
+        <td>@Html.TextBox3("zip", Model.Parent.GetNameFor(m => m.List[index].zip), Model.zip)
+            <div>@Html.ValidationMessageFor(m => m.zip)</div></td>
+        <td colspan="3"></td>
+    </tr>
+    <tr>
+        <td>@Html.IsRequired(Model.RequiredZip()) Country</td>
+        <td>@Html.DropDownList3("country", Model.Parent.GetNameFor(m => m.List[index].country), Model.Countries(), Model.country)</td>
+        <td colspan="3"></td>
+    </tr>
+} 
+else
+{ 
+   @Html.HiddenFor2(m => m.address)
+   @Html.HiddenFor2(m => m.city)
+   @Html.HiddenFor2(m => m.state)
+   @Html.HiddenFor2(m => m.zip)
+} 
+   @Html.HiddenFor(m => m.whatfamily)
+    <tr>
+        <td>@Html.IsRequired(Model.RequiredGender()) Gender</td>
+        <td>@Html.RadioButtonFor(m => m.gender, "1") Male
+            @Html.RadioButtonFor(m => m.gender, "2") Female
+            <div>@Html.ValidationMessageFor(m => m.gender)</div></td>
+        <td colspan="3"></td>
+    </tr>
+    <tr>
+        <td>@Html.IsRequired(Model.RequiredMarital())
+            <label for="married">Marital Status</label></td>
+        <td>@Html.RadioButtonFor(m => m.married, "10") Single
+            @Html.RadioButtonFor(m => m.married, "20") Married
+            <div>@Html.ValidationMessageFor(m => m.married)</div></td>
+        <td colspan="3"></td>
+    </tr>

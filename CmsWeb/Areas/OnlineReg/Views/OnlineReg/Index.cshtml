@@ -2,7 +2,9 @@
 @using CmsWeb
 @model CmsWeb.Models.OnlineRegModel
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Transaction";
 }
 @section scripts
@@ -10,9 +12,9 @@
     @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js")
     <script type="text/javascript">
         $.dateFormat = '@Util.jQueryDateFormat';
-        $(function() {
+        $(function () {
             $.refreshenabled = false; // false until something happens
-            $(document).bind("idle.idleTimer", function() {
+            $(document).bind("idle.idleTimer", function () {
                 if ($.refreshenabled)
                     window.location.href = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
                 else
@@ -20,8 +22,8 @@
             });
             var tmout = parseInt('@ViewData["timeout"]');
 
-            if ($('input:text[value!=""]').length == 0)
-                $(document).bind("keydown", function() {
+            if ($('input:text:not([value=""])').length == 0)
+                $(document).bind("keydown", function () {
                     $(document).unbind("keydown");
                     $.idleTimer(tmout);
                 });
@@ -30,38 +32,78 @@
         });
     </script>
 }
-<style type="text/css">
-    .wider {width:70%;}
-    tr.alt { background-color: #eee }
-    .strike { text-decoration: line-through; }
-    div.instructions { display: none; }
-</style>
+@section head
+{
+    @if (!Model.UseBootstrap)
+    {
+        <style type="text/css">
+            .wider { width: 70%; }
+            tr.alt { background-color: #eee; }
+            .strike { text-decoration: line-through; }
+            div.instructions { display: none; }
+        </style>
+    }
+    else
+    {
+        <style type="text/css">
+            div.instructions { display: none; }
+        </style>
+    }
+}
 <noscript>
     <style type="text/css">
-        .pagecontainer {display:none;}
+        .pagecontainer {
+            display: none;
+        }
     </style>
     <div class="noscriptmsg">
         This registration site requires javascript to be enabled on your browser.
     </div>
 </noscript>
 
+@if (Model.UseBootstrap)
+{
 <div class="regform pagecontainer">
     <h2>@Model.Header</h2>
-@{var msg = Model.Filled();}
-@if (Model.NotAvailable())
-{ 
-    <h4 id="sorry">Sorry, Registration is not available at this time</h4>
+    @{var msg = Model.Filled();}
+    @if (Model.NotAvailable())
+    {
+        <h4 id="sorry">Sorry, Registration is not available at this time</h4>
         @Html.Raw(Util.PickFirst(Model.Instructions, ""))
-}
-else if (msg.HasValue())
-{ 
-    <h4 id="sorry">Sorry, @msg</h4>
+    }
+    else if (msg.HasValue())
+    {
+        <h4 id="sorry">Sorry, @msg</h4>
         @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+    }
+    else
+    {
+        <form id="completeReg" class="DisplayEdit" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
+            @Html.Partial("Flow2/List", Model)
+        </form>
+    }
+</div>
 }
 else
-{ 
-<form id="completeReg" class="DisplayEdit" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
-@Html.Partial("Flow/List", Model)
-</form>
-}
+{
+<div class="regform pagecontainer">
+    <h2>@Model.Header</h2>
+    @{var msg = Model.Filled();}
+    @if (Model.NotAvailable())
+    {
+        <h4 id="sorry">Sorry, Registration is not available at this time</h4>
+        @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+    }
+    else if (msg.HasValue())
+    {
+        <h4 id="sorry">Sorry, @msg</h4>
+        @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+    }
+    else
+    {
+        <form id="completeReg" class="DisplayEdit" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
+            @Html.Partial("Flow/List", Model)
+        </form>
+    }
 </div>
+}

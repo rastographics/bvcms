@@ -200,7 +200,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			var details = ViewExtensions2.RenderPartialViewToString(this, "ManageGiving2", m);
 
 			var staff = DbUtil.Db.StaffPeopleForOrg(m.orgid)[0];
-			var text = m.setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
+			var text = m.Setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
 			text = text.Replace("{name}", m.person.Name, ignoreCase: true);
 			text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
 			text = text.Replace("{email}", m.person.EmailAddress, ignoreCase: true);
@@ -217,7 +217,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			if (!Util.ValidEmail(contributionemail))
 				contributionemail = m.person.FromEmail;
 			Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(m.orgid)),
-				 m.setting.Subject, text,
+				 m.Setting.Subject, text,
 				 Util.EmailAddressListFromString(contributionemail), 0, m.pid);
 			Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(contributionemail),
 				 "Managed Giving",
@@ -251,17 +251,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 			m.person.PostUnattendedContribution(DbUtil.Db,
 				 m.pledge ?? 0,
-				 m.setting.DonationFundId,
+				 m.Setting.DonationFundId,
 				 desc, pledge: true);
 
 			var pi = m.GetPledgeInfo();
-			var body = m.setting.Body;
+			var body = m.Setting.Body;
 			if (!body.HasValue())
 				return Content("There is no Confirmation Message (required)");
 			body = body.Replace("{amt}", pi.Pledged.ToString("N2"), ignoreCase: true);
 			body = body.Replace("{org}", m.Organization.OrganizationName, ignoreCase: true);
 			body = body.Replace("{first}", m.person.PreferredName, ignoreCase: true);
-			DbUtil.Db.EmailRedacted(staff[0].FromEmail, m.person, m.setting.Subject, body);
+			DbUtil.Db.EmailRedacted(staff[0].FromEmail, m.person, m.Setting.Subject, body);
 
 			DbUtil.Db.Email(m.person.FromEmail, staff, "Online Pledge", @"{0} made a pledge to {1}".Fmt(m.person.Name, m.Organization.OrganizationName));
 

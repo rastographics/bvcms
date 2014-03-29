@@ -1,7 +1,9 @@
 ﻿@using CmsData
 @using UtilityExtensions
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Transaction";
     var churchWebSite = DbUtil.Db.Setting("ChurchWebSite", "");
 }

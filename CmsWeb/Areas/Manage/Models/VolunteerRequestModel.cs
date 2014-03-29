@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Registration;
 using CmsWeb.Areas.Manage.Controllers;
 using UtilityExtensions;
 using CmsWeb.Areas.Main.Models;
@@ -320,5 +321,20 @@ in {1}<br />
 					};
 			return q;
 		}
+	    private Settings setting;
+		public Settings Setting
+		{
+			get { return setting ?? (setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId)); }
+		}
+        private bool? usebootstrap;
+        public bool UseBootstrap
+        {
+            get
+            {
+                if (!usebootstrap.HasValue)
+                    usebootstrap = Setting.UseBootstrap;
+                return usebootstrap.Value;
+            }
+        }
 	}
 }

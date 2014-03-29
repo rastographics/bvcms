@@ -37,6 +37,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			}
 #endif
 			var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti);
+
 			SetHeaders(pf.OrgId ?? 0);
 
 			ViewBag.Url = pf.Url;

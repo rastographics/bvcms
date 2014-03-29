@@ -1,13 +1,15 @@
 ﻿@model CmsWeb.Models.OnlineRegModel
 @using UtilityExtensions
+@using CmsWeb
     <div style="background-color:Yellow">@Util.UrgentMessage</div>
 @Html.Raw(Model.Instructions)
 @Html.Partial("Flow/ModelHidden", Model)
 
+
 @* nobody registered yet *@
 @if (Model.DisplayLogin())
 {
-        @Html.Partial("Flow/Login", Model)
+        @Html.Partial("Flow2/Login", Model)
 }
 else
 { 
@@ -22,12 +24,12 @@ else
 		{ 
 			var viewdata = new ViewDataDictionary(ViewData)
                 { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "List[" + i + "]" } };
-			@Html.Partial("Flow/Registrant", Model.List[i], viewdata) 
+			@Html.Partial("Flow2/Registrant", Model.List[i], viewdata) 
 		}     
 	</table>
     //show the buttons if we are ready to move on 
     if (Model.last != null && Model.last.OtherOK && Model.last.ShowDisplay())
     {
-        @Html.Partial("Flow/Buttons", Model)
+        @Html.Partial("Flow2/Buttons", Model)
     }
 }

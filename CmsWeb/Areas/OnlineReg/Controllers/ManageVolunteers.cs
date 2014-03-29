@@ -135,7 +135,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				var staff = Staff[0];
 
 				var summary = m.Summary(this);
-				var text = Util.PickFirst(m.setting.Body, "confirmation email body not found");
+				var text = Util.PickFirst(m.Setting.Body, "confirmation email body not found");
 				text = text.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
 				text = text.Replace("{name}", m.Person.Name, ignoreCase: true);
 				text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
@@ -145,7 +145,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				text = text.Replace("{contactemail}", staff.EmailAddress, ignoreCase: true);
 				text = text.Replace("{contactphone}", m.Org.PhoneNumber.FmtFone(), ignoreCase: true);
 				text = text.Replace("{details}", summary, ignoreCase: true);
-				DbUtil.Db.Email(staff.FromEmail, m.Person, m.setting.Subject, text);
+				DbUtil.Db.Email(staff.FromEmail, m.Person, m.Setting.Subject, text);
 
 				DbUtil.Db.Email(m.Person.FromEmail, Staff, "Volunteer Commitments managed", @"{0} managed volunteer commitments to {1}<br/>
 The following Committments:<br/>

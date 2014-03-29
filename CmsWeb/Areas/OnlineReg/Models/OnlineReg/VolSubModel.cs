@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
-using CmsWeb.Areas.Manage.Controllers;
+using CmsData.Registration;
 using UtilityExtensions;
 using CmsWeb.Areas.Main.Models;
 using TaskAlias = System.Threading.Tasks.Task;
@@ -300,5 +300,20 @@ See you there!</p>".Fmt(r.Substitute.Name, r.Requestor.Name,
 					};
 			return q;
 		}
+	    private Settings setting;
+		public Settings Setting
+		{
+			get { return setting ?? (setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId)); }
+		}
+        private bool? usebootstrap;
+        public bool UseBootstrap
+        {
+            get
+            {
+                if (!usebootstrap.HasValue)
+                    usebootstrap = Setting.UseBootstrap;
+                return usebootstrap.Value;
+            }
+        }
 	}
 }

@@ -1,0 +1,39 @@
+﻿@model CmsWeb.Models.OnlineRegModel
+<div style="margin-top: 10px; text-align:right">
+@if (Model.ManagingSubscriptions())
+{ 
+    <input id="submitit" type="submit" class="submitbutton" 
+            value='Manage Subscriptions' />
+}
+@if (Model.OnlinePledge())
+{ 
+    <input id="submitit" type="submit" class="submitbutton" 
+            value='Email me a link to manage my pledge' />
+    <div>This link will be sent to @UtilityExtensions.Util.ObscureEmail(Model.last.person.EmailAddress)</div>
+}
+else if (Model.IsCreateAccount())
+{ 
+    <input id="submitit" type="submit" class="submitbutton" 
+            value='Create Account' />
+}
+else if (Model.ChoosingSlots())
+{ 
+    <input id="submitit" onlyoneallowed="true" type="submit" class="submitbutton" 
+            value='Processing, Please Wait...' />
+}
+else if (Model.OnlineGiving() || Model.SupportMissionTrip)
+{ 
+	<input id="submitit" onlyoneallowed="true" type="submit" class="submitbutton" 
+		   value='Processing, Please Wait...' />
+}
+else
+{ 
+    <input id="submitit" type="submit" class="submitbutton" 
+            value='Complete Registration' />
+}
+@if (!Model.OnlyOneAllowed())
+{ 
+    <input type="submit" href="/OnlineReg/AddAnotherPerson/" class="submitbutton ajax"
+            value="Add Other Registrations" />
+}
+</div>
