@@ -150,17 +150,19 @@ namespace CmsWeb.Areas.Search.Models
             }
             if (NickName != null)
                 NickName = NickName.Trim();
-            var position = PositionInFamily.Child;
+//            var position = PositionInFamily.Child;
+//
+//            if (!Birthday.HasValue)
+//                position = PositionInFamily.PrimaryAdult;
+//            if (Age >= 18)
+//                if (f.People.Count(per =>
+//                                   per.PositionInFamilyId == PositionInFamily.PrimaryAdult)
+//                    < 2)
+//                    position = PositionInFamily.PrimaryAdult;
+//                else
+//                    position = PositionInFamily.SecondaryAdult;
+            var position = DbUtil.Db.ComputePositionInFamily(Age ?? -1, MaritalStatusCode.Single, FamilyId) ?? 10;
 
-            if (!Birthday.HasValue)
-                position = PositionInFamily.PrimaryAdult;
-            if (Age >= 18)
-                if (f.People.Count(per =>
-                                   per.PositionInFamilyId == PositionInFamily.PrimaryAdult)
-                    < 2)
-                    position = PositionInFamily.PrimaryAdult;
-                else
-                    position = PositionInFamily.SecondaryAdult;
 
             FirstName = FirstName.Trim();
             if (FirstName == "na")

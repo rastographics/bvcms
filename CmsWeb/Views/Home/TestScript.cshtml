@@ -1,0 +1,26 @@
+﻿@using CmsWeb
+@{
+    ViewBag.Title = "Test Script";
+    Layout = ViewExtensions2.Layout();
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/js/TestScript.js")
+}
+@section head
+{
+    <style>
+        textarea {
+            font-family: Courier New;
+        }
+    </style>
+}
+
+<h2>Test Script</h2>
+<textarea id="script" name="script" cols="80" rows="20" wrap='off' spellcheck="false" style="width:90%">@ViewBag.Script</textarea>
+	 <br />
+<a id="run" href="/TestScript" class="bt">Run</a>
+
+<pre id="results">
+
+</pre>

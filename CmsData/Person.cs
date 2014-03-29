@@ -488,10 +488,6 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             return Person.Add(DbUtil.Db, true, fam, position, tag, firstname, nickname, lastname, dob, MarriedCode, gender, originId, EntryPointId);
         }
-        public static Person Add(CMSDataContext Db, Family fam, string firstname, string nickname, string lastname, DateTime? dob)
-        {
-            return Person.Add(Db, false, fam, 20, null, firstname, nickname, lastname, dob.FormatDate(), 0, 0, 0, 0);
-        }
 
         public static Person Add(CMSDataContext Db, bool SendNotices, Family fam, int position, Tag tag, string firstname, string nickname, string lastname, string dob, int MarriedCode, int gender, int originId, int? EntryPointId, bool testing = false)
         {

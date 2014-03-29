@@ -304,14 +304,8 @@ namespace CmsData
 			entity.Picture = null;
 		}
 
-
-
-        public ImageData.Image LargeImage()
-        {
-            var i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == LargeId);
-            return i;
-        }
-    }
+		
+	}
 
 }
 

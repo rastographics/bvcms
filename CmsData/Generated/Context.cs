@@ -2443,17 +2443,6 @@ namespace CmsData
                 );
 		}
 
-		[Function(Name="dbo.QBClauses", IsComposable = true)]
-		public IQueryable< View.QBClause > QBClauses(
-            [Parameter(DbType="int")] int? qid
-            )
-		{
-			return this.CreateMethodCallQuery< View.QBClause>(this, 
-			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                qid
-                );
-		}
-
 		[Function(Name="dbo.RecentAbsents", IsComposable = true)]
 		public IQueryable< View.RecentAbsent > RecentAbsents(
             [Parameter(DbType="int")] int? orgid,
@@ -3678,6 +3667,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.FamilyMakeup", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string FamilyMakeup(
+            [Parameter(Name = "fid", DbType="int")] int? fid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fid
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.GetPeopleIdFromACS", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? GetPeopleIdFromACS(
@@ -3701,6 +3702,22 @@ namespace CmsData
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.ComputePositionInFamily", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? ComputePositionInFamily(
+            [Parameter(Name = "age", DbType="int")] int? age,
+            [Parameter(Name = "marital", DbType="int")] int? marital,
+            [Parameter(Name = "fid", DbType="int")] int? fid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                age,
+                marital,
+                fid
                 ).ReturnValue));
 		}
 

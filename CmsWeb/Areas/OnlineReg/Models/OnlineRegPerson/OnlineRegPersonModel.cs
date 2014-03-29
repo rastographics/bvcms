@@ -436,7 +436,8 @@ namespace CmsWeb.Models
             else
                 f = p.Family;
 
-            _Person = Person.Add(f, PositionInFamily.Child,
+            var position = DbUtil.Db.ComputePositionInFamily(age, MaritalStatusCode.Single, f.FamilyId) ?? 10;
+            _Person = Person.Add(f, position,
                 null, first.Trim(), null, last.Trim(), dob, married == 20, gender ?? 0,
                     OriginCode.Enrollment, entrypoint);
             person.EmailAddress = email.Trim();
@@ -444,8 +445,8 @@ namespace CmsWeb.Models
             person.SuffixCode = suffix;
             person.MiddleName = middle;
             person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
-            if (person.Age >= 18)
-                person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
+//            if (person.Age >= 18)
+//                person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
             person.CellPhone = phone.GetDigits();
 
             DbUtil.Db.SubmitChanges();

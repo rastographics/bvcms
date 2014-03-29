@@ -119,21 +119,20 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             DbUtil.LogActivity("checkin AddPerson {0} {1} ({2})".Fmt(m.first, m.last, m.dob));
 
-            CmsData.Family f;
-            if (id > 0)
-                f = DbUtil.Db.Families.Single(fam => fam.FamilyId == id);
-            else
-                f = new CmsData.Family();
+            var f = id > 0 
+                ? DbUtil.Db.Families.Single(fam => fam.FamilyId == id) 
+                : new CmsData.Family();
 
-            var position = PositionInFamily.Child;
-            if (Util.Age0(m.dob) >= 18)
-                if (f.People.Count(per =>
-                     per.PositionInFamilyId == PositionInFamily.PrimaryAdult)
-                     < 2)
-                    position = PositionInFamily.PrimaryAdult;
-                else
-                    position = PositionInFamily.SecondaryAdult;
+//            var position = PositionInFamily.Child;
+//            if (Util.Age0(m.dob) >= 18)
+//                if (f.People.Count(per =>
+//                     per.PositionInFamilyId == PositionInFamily.PrimaryAdult)
+//                     < 2)
+//                    position = PositionInFamily.PrimaryAdult;
+//                else
+//                    position = PositionInFamily.SecondaryAdult;
 
+            var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), MaritalStatusCode.Single, id) ?? 10;
             var p = Person.Add(f, position,
                 null, m.first, m.goesby, m.last, m.dob, false, m.gender,
                     OriginCode.Visit, null);
