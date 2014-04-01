@@ -417,7 +417,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			if (m.IsCreateAccount() || m.ManagingSubscriptions())
 				ViewData["email"] = m.List[0].person.EmailAddress;
 			else
-				ViewData["email"] = m.List[0].email;
+				ViewData["email"] = m.List[0].EmailAddress;
 
             if(m.masterorgid.HasValue && m.orgid.HasValue && !m.settings[m.orgid.Value].Subject.HasValue())
     		    ViewData["orgname"] = m.masterorg.OrganizationName;

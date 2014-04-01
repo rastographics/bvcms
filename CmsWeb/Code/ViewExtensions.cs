@@ -15,14 +15,11 @@ using System.Text;
 using System.Collections;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
-using AttributeRouting.Helpers;
 using CmsData;
 using CmsWeb.Code;
-using iTextSharp.tool.xml.html;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
-using System.Configuration;
 using System.Web.Routing;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +34,44 @@ namespace CmsWeb
         Unordered,
         TableCell
     }
+    public static class ModelStateDictionaryExtensions
+    {
+        public static void SetModelValue(this ModelStateDictionary modelState, string key, object rawValue)
+        {
+            modelState.SetModelValue(key, new ValueProviderResult(rawValue, String.Empty, CultureInfo.InvariantCulture));
+        }
+    }
     public static class ViewExtensions2
     {
+        public static HtmlString DivValidationMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression)
+        {
+            var msg = helper.ValidationMessageFor(expression).ToString();
+            if (msg.HasValue() && msg.Contains("field-validation-valid"))
+                return null;
+            var div = new TagBuilder("div");
+            div.AddCssClass("alert alert-danger");
+            div.InnerHtml = msg;
+            return new HtmlString(div.ToString());
+        }
+        public static HtmlString DivValidationMessage(this HtmlHelper helper, string field)
+        {
+            var msg = helper.ValidationMessage(field).ToString();
+            if (msg.HasValue() && msg.Contains("field-validation-valid"))
+                return null;
+            var div = new TagBuilder("div");
+            div.AddCssClass("alert alert-danger");
+            div.InnerHtml = msg;
+            return new HtmlString(div.ToString());
+        }
+        public static HtmlString DivAlertBox(this HtmlHelper helper, string msg)
+        {
+            if (!msg.HasValue())
+                return null;
+            var div = new TagBuilder("div");
+            div.AddCssClass("alert alert-danger");
+            div.InnerHtml = msg;
+            return new HtmlString(div.ToString());
+        }
         public static MvcHtmlString PartialFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string partialViewName)
         {
             string name = ExpressionHelper.GetExpressionText(expression);
@@ -664,11 +697,14 @@ namespace CmsWeb
         }
         public static string OnlineReg2Css()
         {
-            return Fingerprint.Css("/content/css/bundle.onlinereg2css.css").ToString();
+            return @"
+<link rel=""stylesheet"" href=""//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"">
+<link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css"">
+";
         }
         public static HtmlString FontAwesome()
         {
-            return new HtmlString( "<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\n");
+            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\n");
         }
         public static HtmlString CKEditor()
         {

@@ -1,54 +1,21 @@
 ﻿@using UtilityExtensions
-@using CmsWeb
 @model CmsWeb.Models.OnlineRegModel
 @{
     Layout = Model.UseBootstrap
         ? "~/Views/Shared/onlinereg2.cshtml"
         : "~/Views/Shared/onlinereg.cshtml";
-    ViewBag.Title = "Online Transaction";
+    ViewBag.Title = "Online Registration";
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js")
     <script type="text/javascript">
         $.dateFormat = '@Util.jQueryDateFormat';
-        $(function () {
-            $.refreshenabled = false; // false until something happens
-            $(document).bind("idle.idleTimer", function () {
-                if ($.refreshenabled)
-                    window.location.href = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
-                else
-                    $.idleTimer(tmout);
-            });
-            var tmout = parseInt('@ViewData["timeout"]');
-
-            if ($('input:text:not([value=""])').length == 0)
-                $(document).bind("keydown", function () {
-                    $(document).unbind("keydown");
-                    $.idleTimer(tmout);
-                });
-            else
-                $.idleTimer(tmout);
-        });
+        $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
+        $.tmout = parseInt('@ViewBag.timeout');
     </script>
-}
-@section head
-{
-    @if (!Model.UseBootstrap)
-    {
-        <style type="text/css">
-            .wider { width: 70%; }
-            tr.alt { background-color: #eee; }
-            .strike { text-decoration: line-through; }
-            div.instructions { display: none; }
-        </style>
-    }
-    else
-    {
-        <style type="text/css">
-            div.instructions { display: none; }
-        </style>
-    }
+    @(Model.UseBootstrap 
+        ? @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
+        : @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
 }
 <noscript>
     <style type="text/css">
@@ -63,8 +30,8 @@
 
 @if (Model.UseBootstrap)
 {
-<div class="regform pagecontainer">
-    <h2>@Model.Header</h2>
+<div class="regform container">
+    <h3>@Model.Header</h3>
     @{var msg = Model.Filled();}
     @if (Model.NotAvailable())
     {
@@ -78,7 +45,7 @@
     }
     else
     {
-        <form id="completeReg" class="DisplayEdit" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
+        <form id="completeReg" class="DisplayEdit form-horizontal" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
             @Html.Partial("Flow2/List", Model)
         </form>
     }

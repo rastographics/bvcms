@@ -124,8 +124,7 @@ namespace CmsWeb.Models
         {
             var w = new APIWriter(writer);
             writer.WriteComment(DateTime.Now.ToString());
-            foreach (
-                PropertyInfo pi in typeof (OnlineRegModel).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            foreach (var pi in typeof (OnlineRegModel).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                                           .Where(vv => vv.CanRead && vv.CanWrite))
             {
                 Debug.WriteLine(pi.Name);
@@ -144,6 +143,14 @@ namespace CmsWeb.Models
                         w.End();
                         break;
                     case "password":
+                        break;
+                    case "testing":
+                        if (testing == true)
+                            w.Add(pi.Name, testing);
+                        break;
+                    case "prospect":
+                        if (prospect)
+                            w.Add(pi.Name, prospect);
                         break;
                     default:
                         w.Add(pi.Name, pi.GetValue(this, null));
@@ -303,11 +310,11 @@ namespace CmsWeb.Models
                             masterorgid = masterorgid,
                             LoggedIn = false,
 #if DEBUG
-                            first = "David",
-                            last = "Roll",
-                            dob = "5/30/52",
-                            email = "david@bvcms.com",
-                            phone = "",
+                            FirstName = "David",
+                            LastName = "Roll",
+                            DateOfBirth = "5/30/52",
+                            EmailAddress = "david@bvcms.com",
+                            Phone = "",
 #endif
                         }
                 };

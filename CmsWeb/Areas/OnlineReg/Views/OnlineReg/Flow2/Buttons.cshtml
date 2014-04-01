@@ -1,39 +1,41 @@
-﻿@model CmsWeb.Models.OnlineRegModel
-<div style="margin-top: 10px; text-align:right">
-@if (Model.ManagingSubscriptions())
-{ 
-    <input id="submitit" type="submit" class="submitbutton" 
-            value='Manage Subscriptions' />
-}
-@if (Model.OnlinePledge())
-{ 
-    <input id="submitit" type="submit" class="submitbutton" 
-            value='Email me a link to manage my pledge' />
-    <div>This link will be sent to @UtilityExtensions.Util.ObscureEmail(Model.last.person.EmailAddress)</div>
-}
-else if (Model.IsCreateAccount())
-{ 
-    <input id="submitit" type="submit" class="submitbutton" 
-            value='Create Account' />
-}
-else if (Model.ChoosingSlots())
-{ 
-    <input id="submitit" onlyoneallowed="true" type="submit" class="submitbutton" 
-            value='Processing, Please Wait...' />
-}
-else if (Model.OnlineGiving() || Model.SupportMissionTrip)
-{ 
-	<input id="submitit" onlyoneallowed="true" type="submit" class="submitbutton" 
-		   value='Processing, Please Wait...' />
-}
-else
-{ 
-    <input id="submitit" type="submit" class="submitbutton" 
-            value='Complete Registration' />
-}
-@if (!Model.OnlyOneAllowed())
-{ 
-    <input type="submit" href="/OnlineReg/AddAnotherPerson/" class="submitbutton ajax"
-            value="Add Other Registrations" />
-}
+﻿@using RestSharp.Extensions
+@model CmsWeb.Models.OnlineRegModel
+@{ var sendlinkmsg = "";}
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        <span class="pull-right">
+            @if (!Model.OnlyOneAllowed())
+            {
+                <a href="/OnlineReg/AddAnotherPerson/" class="submitbutton ajax btn btn-primary">
+                    Add Other Registrations
+                </a>
+                @:or
+        }
+            @if (Model.ManagingSubscriptions())
+            {
+                @Helper.OnlineRegSubmitButton("Manage Subscriptions")
+            }
+            else if (Model.OnlinePledge())
+            {
+                @Helper.OnlineRegSubmitButton("Email me a link to manage my pledge")
+                sendlinkmsg = "This link will be sent to " + UtilityExtensions.Util.ObscureEmail(Model.last.person.EmailAddress);
+            }
+            else if (Model.IsCreateAccount())
+            {
+                @Helper.OnlineRegSubmitButton("Create Account")
+            }
+            else if (Model.ChoosingSlots() || Model.OnlineGiving() || Model.SupportMissionTrip)
+            {
+                @Helper.OnlineRegSubmitButton("Processing, Please Wait", onlyoneallowed: true)
+            }
+            else
+            {
+                @Helper.OnlineRegSubmitButton("Complete Registration")
+            }
+        </span>
+        @if (sendlinkmsg.HasValue())
+        {
+            <div class="alert alert-info">@sendlinkmsg</div>
+        }
+    </div>
 </div>

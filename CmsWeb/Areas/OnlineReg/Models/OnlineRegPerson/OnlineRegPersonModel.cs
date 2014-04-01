@@ -32,13 +32,13 @@ namespace CmsWeb.Models
         public bool IsValidForExisting { get; set; }
         public bool ShowAddress { get; set; }
         public bool CreatingAccount { get; set; }
-        public string first { get; set; }
-        public string middle { get; set; }
-        public string last { get; set; }
-        public string suffix { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public string Suffix { get; set; }
         internal int? bmon, byear, bday;
 
-        public string dob
+        public string DateOfBirth
         {
             get
             {
@@ -74,14 +74,23 @@ namespace CmsWeb.Models
             return bmon.HasValue && byear.HasValue && bday.HasValue;
         }
 
-        public string phone { get; set; }
-        public string homephone { get; set; }
-        public string address { get; set; }
-        public string address2 { get; set; }
-        public string city { get; set; }
-        public string state { get; set; }
-        public string zip { get; set; }
-        public string country { get; set; }
+        public string Phone
+        {
+            get { return phone.FmtFone(); }
+            set { phone = value; }
+        }
+        public string HomePhone
+        {
+            get { return homephone.FmtFone(); }
+            set { homephone = value; }
+        }
+
+        public string AddressLineOne { get; set; }
+        public string AddressLineTwo { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string ZipCode { get; set; }
+        public string Country { get; set; }
         public int? gender { get; set; }
         public int? married { get; set; }
         public bool IsFilled { get; set; }
@@ -196,7 +205,7 @@ namespace CmsWeb.Models
                         MissionTripGoerId = e.Value.ToInt();
                         break;
                     default:
-                        Util.SetPropertyFromText(this, name, e.Value);
+                        Util.SetPropertyFromText(this, TranslateName(name), e.Value);
                         break;
                 }
             }
@@ -206,7 +215,6 @@ namespace CmsWeb.Models
         {
             var optionsAdded = false;
             var checkoxesAdded = false;
-            var menuitemsAdded = false;
             var w = new APIWriter(writer);
             foreach (PropertyInfo pi in typeof(OnlineRegPersonModel).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(vv => vv.CanRead && vv.CanWrite))
@@ -279,6 +287,26 @@ namespace CmsWeb.Models
                         if(Parent.SupportMissionTrip)
                             w.Add(pi.Name, MissionTripGoerId);
                         break;
+                    case "IsFilled":
+                        if(IsFilled)
+                            w.Add(pi.Name, IsFilled);
+                        break;
+                    case "CreatingAccount":
+                        if(CreatingAccount)
+                            w.Add(pi.Name, CreatingAccount);
+                        break;
+                    case "MissionTripNoNoticeToGoer":
+                        if(MissionTripNoNoticeToGoer)
+                            w.Add(pi.Name, MissionTripNoNoticeToGoer);
+                        break;
+                    case "memberus":
+                        if(memberus)
+                            w.Add(pi.Name, memberus);
+                        break;
+                    case "otherchurch":
+                        if(otherchurch)
+                            w.Add(pi.Name, otherchurch);
+                        break;
                     default:
                         w.Add(pi.Name, pi.GetValue(this, null));
                         break;
@@ -345,10 +373,10 @@ namespace CmsWeb.Models
         public bool CreatedAccount;
 
 
-        public string email { get; set; }
+        public string EmailAddress { get; set; }
         public string fromemail
         {
-            get { return first + " " + last + " <" + email + ">"; }
+            get { return FirstName + " " + LastName + " <" + EmailAddress + ">"; }
         }
 
         public int? MenuItemValue(int i, string s)
@@ -394,6 +422,8 @@ namespace CmsWeb.Models
         private int count;
 
         private Person _Person;
+        private string phone;
+        private string homephone;
 
         public Person person
         {
@@ -409,7 +439,7 @@ namespace CmsWeb.Models
                     {
                         //_Person = SearchPeopleModel.FindPerson(first, last, birthday, email, phone, out count);
 
-                        var list = DbUtil.Db.FindPerson(first, last, birthday, email, phone.GetDigits()).ToList();
+                        var list = DbUtil.Db.FindPerson(FirstName, LastName, birthday, EmailAddress, Phone.GetDigits()).ToList();
                         count = list.Count;
                         if (count == 1)
                             _Person = DbUtil.Db.LoadPersonById(list[0].PeopleId.Value);
@@ -425,29 +455,29 @@ namespace CmsWeb.Models
             if (p == null)
                 f = new Family
                 {
-                    AddressLineOne = address,
-                    AddressLineTwo = address2,
-                    CityName = city,
-                    StateCode = state,
-                    ZipCode = zip,
-                    CountryName = country,
-                    HomePhone = homephone,
+                    AddressLineOne = AddressLineOne,
+                    AddressLineTwo = AddressLineTwo,
+                    CityName = City,
+                    StateCode = State,
+                    ZipCode = ZipCode,
+                    CountryName = Country,
+                    HomePhone = HomePhone,
                 };
             else
                 f = p.Family;
 
             var position = DbUtil.Db.ComputePositionInFamily(age, MaritalStatusCode.Single, f.FamilyId) ?? 10;
             _Person = Person.Add(f, position,
-                null, first.Trim(), null, last.Trim(), dob, married == 20, gender ?? 0,
+                null, FirstName.Trim(), null, LastName.Trim(), DateOfBirth, married == 20, gender ?? 0,
                     OriginCode.Enrollment, entrypoint);
-            person.EmailAddress = email.Trim();
+            person.EmailAddress = EmailAddress.Trim();
             person.SendEmailAddress1 = true;
-            person.SuffixCode = suffix;
-            person.MiddleName = middle;
+            person.SuffixCode = Suffix;
+            person.MiddleName = MiddleName;
             person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
 //            if (person.Age >= 18)
 //                person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
-            person.CellPhone = phone.GetDigits();
+            person.CellPhone = Phone.GetDigits();
 
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("OnlineReg AddPerson {0}".Fmt(person.PeopleId));

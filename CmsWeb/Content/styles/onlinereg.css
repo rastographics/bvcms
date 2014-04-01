@@ -445,25 +445,43 @@ table.checkboxes {
 td.right, th.right {
     text-align: right;
 }
+
 td.left, th.left {
     text-align: left;
 }
+
 td.center, th.center {
     text-align: center;
 }
-td.nowrap, th.nowrap
-{
+
+td.nowrap, th.nowrap {
     white-space: nowrap;
 }
-td.top, th.top
-{
+
+td.top, th.top {
     vertical-align: top;
 }
-td.middle, th.middle
-{
+
+td.middle, th.middle {
     vertical-align: middle;
 }
-td.bottom, th.bottom
-{
+
+td.bottom, th.bottom {
     vertical-align: bottom;
+}
+
+.wider {
+    width: 70%;
+}
+
+tr.alt {
+    background-color: #eee;
+}
+
+.strike {
+    text-decoration: line-through;
+}
+
+div.instructions {
+    display: none;
 }

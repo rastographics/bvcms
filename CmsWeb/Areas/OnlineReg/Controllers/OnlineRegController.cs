@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.List = new List<OnlineRegPersonModel>();
 
             if (Util.ValidEmail(email))
-                m.List[0].email = email;
+                m.List[0].EmailAddress = email;
 
 
             var pid = 0;
@@ -272,10 +272,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     masterorgid = m.masterorgid,
                     LoggedIn = m.UserPeopleId.HasValue,
 #if DEBUG
-                    first = "Another",
-                    last = "Child",
-                    dob = "12/1/02",
-                    email = "karen@bvcms.com",
+                    FirstName = "Another",
+                    LastName = "Child",
+                    DateOfBirth = "12/1/02",
+                    EmailAddress = "karen@bvcms.com",
 #endif
                 });
             return FlowList(m, "Cancel");
@@ -291,7 +291,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                 if (p.IsFilled)
-                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].dob), "Sorry, but registration is closed.");
+                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
                 if (p.Found == true)
                     p.FillPriorInfo();
                 return FlowList(m, "ShowMoreInfo");
@@ -305,27 +305,27 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 case 1:
                     var u = DbUtil.Db.LoadPersonById(m.UserPeopleId.Value);
-                    p.address = u.PrimaryAddress;
-                    p.city = u.PrimaryCity;
-                    p.state = u.PrimaryState;
-                    p.zip = u.PrimaryZip.FmtZip();
+                    p.AddressLineOne = u.PrimaryAddress;
+                    p.City = u.PrimaryCity;
+                    p.State = u.PrimaryState;
+                    p.ZipCode = u.PrimaryZip.FmtZip();
                     break;
                 case 2:
                     var pb = m.List[id - 1];
-                    p.address = pb.address;
-                    p.city = pb.city;
-                    p.state = pb.state;
-                    p.zip = pb.zip;
+                    p.AddressLineOne = pb.AddressLineOne;
+                    p.City = pb.City;
+                    p.State = pb.State;
+                    p.ZipCode = pb.ZipCode;
                     break;
                 default:
 #if DEBUG
-                    p.address = "235 Riveredge Cv.";
-                    p.city = "Cordova";
-                    p.state = "TN";
-                    p.zip = "38018";
+                    p.AddressLineOne = "235 Riveredge Cv.";
+                    p.City = "Cordova";
+                    p.State = "TN";
+                    p.ZipCode = "38018";
                     p.gender = 1;
                     p.married = 10;
-                    p.homephone = "9017581862";
+                    p.HomePhone = "9017581862";
 #endif
                     break;
             }
@@ -383,7 +383,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                 if (p.IsFilled)
-                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].dob), "Sorry, but registration is closed.");
+                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
                 if (p.Found == true)
                     p.FillPriorInfo();
             }
@@ -421,6 +421,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult SubmitNew(int id, OnlineRegModel m)
         {
+            ModelState.Clear();
             m.History.Add("SubmitNew id=" + id);
             var p = m.List[id];
             p.ValidateModelForNew(ModelState);
@@ -481,7 +482,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                     if (p.IsFilled)
-                        ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].dob), "Sorry, that age group is filled");
+                        ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, that age group is filled");
                 }
                 p.IsNew = true;
             }
@@ -686,7 +687,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             try
             {
-                var view = ViewExtensions2.RenderPartialViewToString2(this, "Flow/List", m);
+                var view = m.UseBootstrap
+                    ? ViewExtensions2.RenderPartialViewToString2(this, "Flow2/List", m)
+                    : ViewExtensions2.RenderPartialViewToString2(this, "Flow/List", m);
                 return Content(view);
             }
             catch (Exception ex)

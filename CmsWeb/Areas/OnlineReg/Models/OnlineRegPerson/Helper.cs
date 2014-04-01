@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 using System.Xml;
@@ -64,10 +65,12 @@ namespace CmsWeb.Models
                 return 0;
             }
         }
+        [DisplayName("Gender")]
         public string genderdisplay
         {
             get { return gender == 1 ? "Male" : gender == 2 ? "Female" : "not specified"; }
         }
+        [DisplayName("Marital")]
         public string marrieddisplay
         {
             get { return married == 10 ? "Single" : married == 20 ? "Married" : "not specified"; }
@@ -354,17 +357,17 @@ namespace CmsWeb.Models
             {
                 sb.AppendFormat("{0}({1},{2},{3}), Birthday: {4}({5}), Phone: {6}, {7}, {8}<br />\n".Fmt(
                     person.Name, person.PeopleId, person.Gender.Code, person.MaritalStatus.Code,
-                    person.DOB, person.Age, phone.FmtFone(), person.EmailAddress, email));
+                    person.DOB, person.Age, Phone.FmtFone(), person.EmailAddress, EmailAddress));
                 if (ShowAddress)
                     sb.AppendFormat("&nbsp;&nbsp;{0}; {1}<br />\n", person.PrimaryAddress, person.CityStateZip);
             }
             else
             {
                 sb.AppendFormat("{0} {1}({2},{3}), Birthday: {4}({5}), Phone: {6}, {7}<br />\n".Fmt(
-                    first, last, gender, married,
-                    dob, age, phone.FmtFone(), email));
+                    FirstName, LastName, gender, married,
+                    DateOfBirth, age, Phone.FmtFone(), EmailAddress));
                 if (ShowAddress)
-                    sb.AppendFormat("&nbsp;&nbsp;{0}; {1}<br />\n", this.address, city);
+                    sb.AppendFormat("&nbsp;&nbsp;{0}; {1}<br />\n", this.AddressLineOne, City);
             }
             return sb.ToString();
         }
@@ -385,6 +388,29 @@ namespace CmsWeb.Models
         public PythonEvents PythonEvents
         {
             get { return _pythonEvents ?? (_pythonEvents = HttpContext.Current.Items["PythonEvents"] as PythonEvents); }
+        }
+
+        private Dictionary<string, string> NameLookup = new Dictionary<string, string>()
+        {
+            { "first", "FirstName" },
+            { "middle", "MiddleName" },
+            { "last", "LastName" },
+            { "suffix", "Suffix" },
+            { "dob", "DateOfBirth" },
+            { "phone", "Phone" },
+            { "email", "EmailAddress" },
+
+            { "homephone", "HomePhone" },
+            { "address", "AddressLineOne" },
+            { "address2", "AddressLineTwo" },
+            { "city", "City" },
+            { "state", "State" },
+            { "zip", "ZipCode" },
+            { "country", "Country" },
+        }; 
+        public string TranslateName(string name)
+        {
+            return NameLookup.ContainsKey(name) ? NameLookup[name] : name;
         }
     }
 }

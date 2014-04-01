@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using DocumentFormat.OpenXml.Drawing.Charts
+@using UtilityExtensions
 @helper SearchBuilderDropdown(bool onqb)
 {
     <div class="dropdown2-menu">
@@ -71,4 +72,32 @@
     {
         <a href="@href">@text</a>
     }
+}
+@helper OnlineRegSubmitButtonRow(string text, bool onlyoneallowed = false)
+{
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            @Helper.OnlineRegSubmitButton(text, onlyoneallowed)
+        </div>
+    </div>
+
+}
+@helper OnlineRegSubmitButton(string text, bool onlyoneallowed = false)
+{
+    <input type="submit" id="submitit" data-onlyoneallowed="@onlyoneallowed" class="btn btn-primary" value="@text" />
+}
+@helper OnlineRegAjaxButtonRow(string url, string text, string style = "btn-primary", string id = "")
+{
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            @OnlineRegAjaxButton(url, text, style, id)
+        </div>
+    </div>
+}
+
+@helper OnlineRegAjaxButton(string url, string text, string style = "btn-primary", string id = "")
+{
+    <a @(id.HasValue() ? "id=" + id : "") href="@url" class="btn @style submitbutton ajax">
+        @text
+    </a>
 }

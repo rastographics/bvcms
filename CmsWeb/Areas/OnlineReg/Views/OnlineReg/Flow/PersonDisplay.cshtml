@@ -12,31 +12,31 @@
 { 
     <tr>
         <td width="30%"><label for="first">First Name</label></td>
-        <td>@Model.first</td>
+        <td>@Model.FirstName</td>
     </tr>
     <tr>
         <td>Last Name</td>
-        <td>@Model.last @Html.ValidationMessage("find")</td>
+        <td>@Model.LastName @Html.ValidationMessage("find")</td>
     </tr>
 }
     <tr>
         <td>Date of Birth</td>
-        <td>@Model.dob 
+        <td>@Model.DateOfBirth 
             @if (Model.LoggedIn)
             {
                 @:(<span>@Model.age</span>)
             }
-            <div>@Html.ValidationMessageFor(m => m.dob)</div></td>
+            <div>@Html.ValidationMessageFor(m => m.DateOfBirth)</div></td>
     </tr>
     <tr>
         <td>Phone</td>
-        <td>@Model.phone.FmtFone()</td>
+        <td>@Model.Phone.FmtFone()</td>
     </tr>
-@if (Model.email.HasValue())
+@if (Model.EmailAddress.HasValue())
 { 
     <tr>
         <td>Contact Email</td>
-        <td>@Model.email</td>
+        <td>@Model.EmailAddress</td>
     </tr>
 }
 @if (Model.ShowAddress)

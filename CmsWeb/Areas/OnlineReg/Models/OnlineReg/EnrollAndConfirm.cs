@@ -120,7 +120,7 @@ namespace CmsWeb.Models
 {1}
 </td></tr>", i + 1, p.PrepareSummaryText(ti));
 
-                om.RegisterEmail = p.email;
+                om.RegisterEmail = p.EmailAddress;
                 om.TranId = ti.Id;
                 if (p.setting.GiveOrgMembAccess == true)
                 {
@@ -377,7 +377,7 @@ AmountDue: {4:C}<br/>
                 var others = string.Join(",", q.ToArray());
 
                 var om = p.Enroll(ti, null, testing, others);
-                om.RegisterEmail = p.email;
+                om.RegisterEmail = p.EmailAddress;
 
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
                 if (grouptojoin > 0)

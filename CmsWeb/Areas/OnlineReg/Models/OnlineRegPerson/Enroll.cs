@@ -222,7 +222,7 @@ namespace CmsWeb.Models
                 sbreg.AppendFormat("Request: {0}\n", request);
                 om.Request = request;
             }
-            sbreg.AppendFormat("{0}\n", email);
+            sbreg.AppendFormat("{0}\n", EmailAddress);
 
             reg.AddToComments(sbreg.ToString());
 

@@ -18,9 +18,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Session["gobackurl"] = m2.URL;
             ViewBag.timeout = INT_timeout;
             if(m2.UseBootstrap)
-                SetHeaders(m2.orgid ?? m2.masterorgid ?? 0);
-            else
                 SetHeaders2(m2.orgid ?? m2.masterorgid ?? 0);
+            else
+                SetHeaders(m2.orgid ?? m2.masterorgid ?? 0);
         }
         private void SetHeaders2(int id)
         {
@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!shell.HasValue() && settings != null && settings.ContainsKey(id))
                 shell = DbUtil.Content(settings[id].Shell, null);
             if (!shell.HasValue())
-                shell = DbUtil.Content("ShellDiv-" + id, DbUtil.Content("ShellDefault", ""));
+                shell = DbUtil.Content("ShellDefault", "");
 
             if (shell.HasValue())
             {

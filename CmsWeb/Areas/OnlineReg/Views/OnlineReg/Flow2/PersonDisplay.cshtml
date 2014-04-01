@@ -1,5 +1,4 @@
 ﻿@model CmsWeb.Models.OnlineRegPersonModel
-@using UtilityExtensions
 @if ((Model.classid ?? 0) > 0)
 { 
     <tr>
@@ -10,36 +9,13 @@
 @* name gets displayed elsewhere when finished *@
 @if (!Model.Finished()) 
 { 
-    <tr>
-        <td width="30%"><label for="first">First Name</label></td>
-        <td>@Model.first</td>
-    </tr>
-    <tr>
-        <td>Last Name</td>
-        <td>@Model.last @Html.ValidationMessage("find")</td>
-    </tr>
+    @Html.DisplayFor(m => m.FirstName)
+    @Html.DisplayFor(m => m.LastName)
 }
-    <tr>
-        <td>Date of Birth</td>
-        <td>@Model.dob 
-            @if (Model.LoggedIn)
-            {
-                @:(<span>@Model.age</span>)
-            }
-            <div>@Html.ValidationMessageFor(m => m.dob)</div></td>
-    </tr>
-    <tr>
-        <td>Phone</td>
-        <td>@Model.phone.FmtFone()</td>
-    </tr>
-@if (Model.email.HasValue())
-{ 
-    <tr>
-        <td>Contact Email</td>
-        <td>@Model.email</td>
-    </tr>
-}
+    @Html.DisplayFor(m => m.DateOfBirth) @Html.Raw(Model.LoggedIn ? "(<span>@Model.age</span>)" : "")
+    @Html.DisplayFor(m => m.Phone) @Html.Raw(Model.LoggedIn ? "(<span>@Model.age</span>)" : "")
+    @Html.DisplayFor(m => m.EmailAddress)
 @if (Model.ShowAddress)
 {
-       @Html.Partial("Flow2/AddressDisplay", Model)
+    @Html.Partial("Flow2/AddressDisplay", Model)
 }

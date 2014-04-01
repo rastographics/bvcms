@@ -1,0 +1,7 @@
+﻿@model string
+<div class="control-group @ViewBag.hide">
+    @Html.LabelFor(m => m, new { @class = "control-label"})
+    <div class="controls">
+        @Html.TextAreaFor(m => m, 5, 80, null)<span class="help-inline">@Html.Raw(ViewBag.help)</span>
+    </div>
+</div>

@@ -1,4 +1,29 @@
-﻿hoody, html {
+﻿.field-validation-error {
+    color: #FF0000;
+}
+
+.input-validation-error {
+    background-color: #FFEEEE;
+    border: 1px solid #FF0000;
+}
+
+.validation-summary-errors {
+    color: #FF0000;
+    font-weight: bold;
+}
+
+.well {
+    background-color: inherit;
+}
+
+div.instructions {
+    display: none;
+}
+
+div.regform {
+    max-width: 600px;
+}
+/*hody, html {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     background-image: none;
     font-size: 12px;
@@ -211,19 +236,6 @@ div#title {
         text-decoration: none;
     }
 
-.field-validation-error {
-    color: #FF0000;
-}
-
-.input-validation-error {
-    background-color: #FFEEEE;
-    border: 1px solid #FF0000;
-}
-
-.validation-summary-errors {
-    color: #FF0000;
-    font-weight: bold;
-}
 
 table#slots {
     border: 2px solid black;
@@ -325,10 +337,6 @@ input.wide70 {
 
 #dob {
     width: 8em;
-}
-
-div.wraparound {
-    /*max-width: 12em;*/
 }
 
 td.alt0 {
@@ -466,4 +474,4 @@ td.middle, th.middle
 td.bottom, th.bottom
 {
     vertical-align: bottom;
-}
+}*/

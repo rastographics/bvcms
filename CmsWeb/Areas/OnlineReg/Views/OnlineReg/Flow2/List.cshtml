@@ -1,34 +1,30 @@
 ﻿@model CmsWeb.Models.OnlineRegModel
 @using UtilityExtensions
-@using CmsWeb
-    <div style="background-color:Yellow">@Util.UrgentMessage</div>
+@if (Util.UrgentMessage.HasValue())
+{
+<div class="alert alert-warning"><strong>@Util.UrgentMessage</strong></div>
+}
 @Html.Raw(Model.Instructions)
 @Html.Partial("Flow/ModelHidden", Model)
 
-
-@* nobody registered yet *@
-@if (Model.DisplayLogin())
+@if (Model.DisplayLogin()) // nobody registered yet
 {
-        @Html.Partial("Flow2/Login", Model)
+    @Html.Partial("Flow2/Login", Model)
 }
 else
-{ 
-	<table width="100%">
-		@* label is necessary if more than one *@
-		@if (!Model.OnlyOneAllowed() && Model.List.Count > 1)
-		{ 
-			<tr><td><div class="instruct">Pending Registrations</div></td></tr>
-		}
-		@* show each registrant, including the one being worked on *@
-		@for (var i = 0; i < Model.List.Count; i++)
-		{ 
-			var viewdata = new ViewDataDictionary(ViewData)
-                { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "List[" + i + "]" } };
-			@Html.Partial("Flow2/Registrant", Model.List[i], viewdata) 
-		}     
-	</table>
-    //show the buttons if we are ready to move on 
-    if (Model.last != null && Model.last.OtherOK && Model.last.ShowDisplay())
+{
+    if (!Model.OnlyOneAllowed() && Model.List.Count > 1) // label is necessary if more than one
+    {
+        <div class="instruct">Pending Registrations</div>
+    }
+    for (var i = 0; i < Model.List.Count; i++) // show each registrant, including the one being worked on
+    {
+        var viewdata = new ViewDataDictionary(ViewData) { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "List[" + i + "]" } };
+        @Html.Partial("Flow2/Registrant", Model.List[i], viewdata)
+    }
+    if (Model.last != null 
+        && Model.last.OtherOK 
+        && Model.last.ShowDisplay()) //show the buttons if we are ready to move on
     {
         @Html.Partial("Flow2/Buttons", Model)
     }

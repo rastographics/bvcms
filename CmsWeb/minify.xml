@@ -4,9 +4,6 @@
  <Target Name="Minify">
     <ItemGroup>
       <!-- Single files, listed in order of dependency -->
-      <onlineregcss Include="Content/css/bootstrap.css"/>
-      <onlineregcss Include="Content/css/bootstrap-responsive.css"/>
-      <onlineregcss Include="Content/css/onlinereg2.css"/>
       
       <new2css Include="Content/css/normalize.css"/>
       <new2css Include="Content/css/bvcms.css"/>
@@ -138,7 +135,6 @@
    
     <CssCompressorTask SourceFiles="@(new2css)" OutputFile="Content\css\bundle.new2css.css" />
     <CssCompressorTask SourceFiles="@(stylecss)" OutputFile="Content\styles\bundle.stylecss.css" />
-    <CssCompressorTask SourceFiles="@(onlineregcss)" OutputFile="Content\styles\bundle.onlineregcss.css" />
    
     <JavascriptCompressorTask SourceFiles="@(main)" OutputFile="Scripts\bundle.main.js" />
     <JavascriptCompressorTask SourceFiles="@(main2)" OutputFile="Scripts\bundle.main2.js" />

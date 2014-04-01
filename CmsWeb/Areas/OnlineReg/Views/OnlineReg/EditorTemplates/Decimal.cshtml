@@ -1,0 +1,8 @@
+﻿@model decimal?
+<div class="control-group">
+    @Html.LabelFor(m => m, new { @class = "control-label"})
+    <div class="controls">
+        @Html.TextBoxFor2(m => m, true, "{0:N2}")<span class="help-inline">@Html.Raw(ViewData["help"])</span>
+        @Html.ValidationMessageLabelFor(m => m)
+    </div>
+</div>

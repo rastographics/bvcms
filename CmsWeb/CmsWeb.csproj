@@ -1012,7 +1012,9 @@
       <DependentUpon>bootstrap-tour.css</DependentUpon>
     </Content>
     <Content Include="Content\css\bootstrap.css" />
-    <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\bootstrap.min.css">
+      <DependentUpon>bootstrap.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\bundle.new2css.css" />
     <Content Include="Content\css\chosen-sprite%402x.png" />
     <Content Include="Content\css\chosen-sprite.png" />
@@ -1132,6 +1134,7 @@
     <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
     <Content Include="Scripts\js\TestScript.js" />
+    <Content Include="Scripts\OnlineReg\OnlineReg2.js" />
     <Content Include="Scripts\People\mydatatour.js" />
     <Content Include="Scripts\People\persontour.js" />
     <Content Include="Scripts\js\RegSetting2.js" />
@@ -1372,6 +1375,31 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Registrant.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SupportMissionTrip.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SupportMissionTripDisplay.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Birthday.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Boolean.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\CodeInfo.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Date2.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\datepicker.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\DateTime.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Decimal.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\EmailAddress.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\HiddenCodeInfo.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\InlineCodeInfo.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Int32.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Password.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Phone.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\String.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\TextArea.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Typeahead.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\Birthday.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\Boolean.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\CodeInfo.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\Date2.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\DateTime.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\Decimal.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\Int32.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\String.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\TextArea.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -2909,7 +2937,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>888</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

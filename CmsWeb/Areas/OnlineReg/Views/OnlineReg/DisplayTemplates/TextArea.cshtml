@@ -1,0 +1,5 @@
+﻿@model string
+<div class="control-group">
+    @Html.LabelFor(m => m, new { @class="control-label"})
+    <div class="controls display pre-wrap well @ViewBag.AddClass">@Model</div>
+</div>
