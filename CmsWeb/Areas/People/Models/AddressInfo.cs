@@ -280,8 +280,6 @@ namespace CmsWeb.Areas.People.Models
                     UpdateValue(f, "ResCodeId", rc);
                     if (Preferred)
                         UpdateValue(p, "AddressTypeId", 10);
-                    if (fsb.Count > 0)
-                        BadAddress = false;
                     UpdateValue(f, "BadAddressFlag", BadAddress);
                     break;
                 case "PersonalAddr":
@@ -295,8 +293,6 @@ namespace CmsWeb.Areas.People.Models
                     UpdateValue(p, "ResCodeId", rc);
                     if (Preferred)
                         UpdateValue(p, "AddressTypeId", 30);
-                    if (psb.Count > 0)
-                        BadAddress = false;
                     UpdateValue(p, "BadAddressFlag", BadAddress);
                     break;
             }

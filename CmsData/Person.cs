@@ -563,10 +563,6 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             else
                 fam.People.Add(p);
 
-            var PrimaryCount = fam.People.Where(c => c.PositionInFamilyId == PositionInFamily.PrimaryAdult).Count();
-            if (PrimaryCount > 2 && p.PositionInFamilyId == PositionInFamily.PrimaryAdult)
-                p.PositionInFamilyId = PositionInFamily.SecondaryAdult;
-
             if (tag != null)
                 tag.PersonTags.Add(new TagPerson { Person = p });
 

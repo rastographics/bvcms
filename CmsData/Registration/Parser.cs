@@ -49,7 +49,7 @@ namespace CmsData.Registration
 			if (lineno >= data.Count)
 				return false;
 			if (curr.kw == RegKeywords.None)
-				throw GetException("unknown keyword " + curr.value);
+				throw GetException("unknown keyword " + curr.line);
 			if (curr.indent > 0)
 				throw GetException("expected no indent");
 			// positioned ready for ParseSection();
@@ -286,6 +286,7 @@ namespace CmsData.Registration
             GroupToJoin,
             GiveOrgMembAccess,
             AddAsProspect,
+            UseBootstrap,
             NoReqBirthYear,
             NotReqDOB,
             NotReqAddr,

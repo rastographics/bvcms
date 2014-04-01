@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, string[] role)
         {
             var user = DbUtil.Db.Users.Single(us => us.UserId == id);
-            if (user.Username != u)
+            if (u.HasValue() && user.Username != u)
             {
                 var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == u);
                 if (uu != null)

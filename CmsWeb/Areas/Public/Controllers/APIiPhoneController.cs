@@ -120,11 +120,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (m.goesby == "(Null)")
                 m.goesby = null;
-//            var position = PositionInFamily.Child;
-//            if (m.dob.Age0() >= 18)
-//                position = f.People.Count(per => per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2 
-//                    ? PositionInFamily.PrimaryAdult 
-//                    : PositionInFamily.SecondaryAdult;
+
             var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), m.marital, f.FamilyId) ?? 10;
 
             var p = Person.Add(f, position,
