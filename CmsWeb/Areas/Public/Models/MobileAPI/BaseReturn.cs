@@ -9,6 +9,7 @@ namespace CmsWeb.MobileAPI
 {
 	public class BaseReturn : ActionResult
 	{
+		public int device = API_DEVICE_UNKNOWN;
 		public int error = 1;
 		public int type = 0;
 		public int count = 0;
@@ -55,6 +56,11 @@ namespace CmsWeb.MobileAPI
 			return data;
 		}
 		*/
+
+		// API Device Numbers
+		public const int API_DEVICE_UNKNOWN = 0;
+		public const int API_DEVICE_IOS = 1;
+		public const int API_DEVICE_ANDROID = 2;
 
 		// API Type Numbers
 		// 10000's - People = 11000's - Read / 12000's Write
