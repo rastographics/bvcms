@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			MobilePostSearch mps = JsonConvert.DeserializeObject<MobilePostSearch>(dataIn.data);
 
 			BaseReturn br = new BaseReturn();
-			List<MobilePerson> mp = new List<MobilePerson>();
+			
 
 			var m = new CmsWeb.Models.iPhone.SearchModel(mps.name, mps.comm, mps.addr);
 
@@ -71,12 +71,40 @@ namespace CmsWeb.Areas.Public.Controllers
 			br.type = BaseReturn.API_TYPE_PEOPLE_SEARCH;
 			br.count = m.Count;
 
-			foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
+			switch (dataIn.device)
 			{
-				mp.Add(new MobilePerson().populate(item));
+				case BaseReturn.API_DEVICE_ANDROID:
+					{
+						Dictionary<int, MobilePerson> mpl = new Dictionary<int, MobilePerson>();
+
+						MobilePerson mp;
+
+						foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
+						{
+							mp = new MobilePerson().populate(item);
+							mpl.Add(mp.id, mp);
+						}
+
+						br.data = JsonConvert.SerializeObject(mpl);
+						break;
+					}
+
+				case BaseReturn.API_DEVICE_IOS:
+					{
+						List<MobilePerson> mp = new List<MobilePerson>();
+
+						foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
+						{
+							mp.Add(new MobilePerson().populate(item));
+						}
+
+						br.data = JsonConvert.SerializeObject(mp);
+						break;
+					}
+
+				default: break;
 			}
 
-			br.data = JsonConvert.SerializeObject(mp);
 			return br;
 		}
 
@@ -317,6 +345,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			BaseReturn br = new BaseReturn();
 			List<MobileAttendee> ma = new List<MobileAttendee>();
 
+			br.id = meeting.MeetingId;
 			br.error = 0;
 			br.type = BaseReturn.API_TYPE_ORG_ROLL_REFRESH;
 			br.count = people.Count();
@@ -349,6 +378,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
 			var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mpa.orgID && m.MeetingDate == mpa.datetime);
+			
 			if (meeting == null)
 			{
 				meeting = new CmsData.Meeting
@@ -377,12 +407,12 @@ namespace CmsWeb.Areas.Public.Controllers
 			BaseReturn br = new BaseReturn();
 
 			br.error = 0;
+			br.count = 1;
 			br.type = BaseReturn.API_TYPE_ORG_RECORD_ATTEND;
 
 			return br;
 		}
 		
-		/*
 		public ActionResult AddPerson(string data)
 		{
 			// Authenticate first
@@ -391,15 +421,16 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			// Check Role
 			if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
-				return BaseReturn.createErrorReturn("Attendance roles is required to take attendance for organizations");
+				return BaseReturn.createErrorReturn("Attendance role is required to take attendance for organizations.");
 
 			// Check to see if type matches
 			BaseReturn dataIn = BaseReturn.createFromString(data);
-			if (dataIn.type != BaseReturn.API_TYPE_ORG_ROLL_REFRESH)
+			if (dataIn.type != BaseReturn.API_TYPE_PERSON_ADD)
 				return BaseReturn.createTypeErrorReturn();
 
 			// Everything is in order, start the return
 			MobilePostAddPerson mpap = JsonConvert.DeserializeObject<MobilePostAddPerson>(dataIn.data);
+			mpap.clean();
 
 			var p = new Person();
 
@@ -409,16 +440,20 @@ namespace CmsWeb.Areas.Public.Controllers
 			//Db.People.InsertOnSubmit(p);
 
 			p.MemberStatusId = MemberStatusCode.JustAdded;
-			//p.PositionInFamilyId = mpap.po;
 			p.AddressTypeId = 10;
 
 			p.FirstName = mpap.firstName;
-			p.NickName = mpap.goesBy;
 			p.LastName = mpap.lastName;
 
-			p.BirthDay = mpap.birthday.Day;
-			p.BirthMonth = mpap.birthday.Month;
-			p.BirthYear = mpap.birthday.Year;
+			if( mpap.goesBy.Length > 0)
+				p.NickName = mpap.goesBy;
+
+			if (mpap.birthday != null)
+			{
+				p.BirthDay = mpap.birthday.Value.Day;
+				p.BirthMonth = mpap.birthday.Value.Month;
+				p.BirthYear = mpap.birthday.Value.Year;
+			}
 
 			p.GenderId = mpap.genderID;
 			p.MaritalStatusId = mpap.maritalStatusID;
@@ -432,20 +467,33 @@ namespace CmsWeb.Areas.Public.Controllers
 			else
 			{
 				f = new Family();
-				f.HomePhone = p.HomePhone;
-				f.AddressLineOne = p.AddressLineOne;
-				f.CityName = p.CityName;
-				f.StateCode = p.StateCode;
-				f.ZipCode = p.ZipCode;
+
+				if( mpap.homePhone.Length > 0 )
+					f.HomePhone = mpap.homePhone;
+
+				if (mpap.address.Length > 0)
+					f.AddressLineOne = mpap.address;
+
+				if (mpap.address2.Length > 0)
+					f.AddressLineTwo = mpap.address2;
+
+				if (mpap.city.Length > 0)
+					f.CityName = mpap.city;
+
+				if (mpap.state.Length > 0)
+					f.StateCode = mpap.state;
+
+				if (mpap.zipcode.Length > 0)
+					f.ZipCode = mpap.zipcode;
 
 				DbUtil.Db.Families.InsertOnSubmit(f);
 			}
 
 			f.People.Add(p);
 
-			var position = PositionInFamily.Child;
+			p.PositionInFamilyId = PositionInFamily.Child;
 
-			if (p.GetAge() >= 18)
+			if (mpap.birthday != null && p.GetAge() >= 18)
 			{
 				if (f.People.Count(per => per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
 					p.PositionInFamilyId = PositionInFamily.PrimaryAdult;
@@ -455,27 +503,37 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			p.OriginId = OriginCode.Visit;
 			p.FixTitle();
+
+			if (mpap.eMail.Length > 0)
+				p.EmailAddress = mpap.eMail;
+
+			if (mpap.cellPhone.Length > 0)
+				p.CellPhone = mpap.cellPhone;
+
+			if (mpap.homePhone.Length > 0)
+				p.HomePhone = mpap.homePhone;
+
+			p.MaritalStatusId = mpap.maritalStatusID;
+			p.GenderId = mpap.genderID;
+
 			DbUtil.Db.SubmitChanges();
 
-			if (m.addtofamilyid == 0)
+			if( mpap.visitMeeting > 0 )
 			{
-				
+				var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == mpap.visitMeeting);
+				Attend.RecordAttendance(p.PeopleId, mpap.visitMeeting, true);
+				DbUtil.Db.UpdateMeetingCounters(mpap.visitMeeting);
 			}
-			p.EmailAddress = Trim(m.email);
-			if (m.cell.HasValue())
-				p.CellPhone = m.cell.GetDigits();
-			p.MaritalStatusId = m.marital;
-			p.GenderId = m.gender;
-			DbUtil.Db.SubmitChanges();
-			var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == id);
-			Attend.RecordAttendance(p.PeopleId, id, true);
-			DbUtil.Db.UpdateMeetingCounters(id);
-			return new RollListResult(meeting, p.PeopleId);
-			
-		}
-		*/
 
-		
+			BaseReturn br = new BaseReturn();
+
+			br.error = 0;
+			br.id = p.PeopleId;
+			br.count = 1;
+			br.type = BaseReturn.API_TYPE_PERSON_ADD;
+
+			return br;
+		}
 
 		/*
 		public ActionResult TaskList(int ID)
