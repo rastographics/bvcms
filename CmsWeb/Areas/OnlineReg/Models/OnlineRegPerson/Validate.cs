@@ -103,7 +103,8 @@ namespace CmsWeb.Models
                         ))
                     {
                         ModelState.AddModelError(foundname, "No Email Address on record");
-                        NotFoundText = @"We have found your record but we have no email address for you.<br/>
+                        NotFoundText = @"<strong>No Email Address on Record</strong><br/>
+We have found your record but we have no email address for you.<br/>
 This means that we cannot proceed until we have that to protect your data.<br/>
 Please call the church to resolve this before we can complete your information.";
                         IsValidForContinue = false;
@@ -186,7 +187,8 @@ Please call the church to resolve this before we can complete your account.<br /
                 else if (count > 1)
                 {
                     ModelState.AddModelError(foundname, "More than one match, sorry");
-                    NotFoundText = @"We have found more than one record that matches your information
+                    NotFoundText = @"<strong>MORE THAN ONE MATCH</strong><br />
+We have found more than one record that matches your information
 This is an unexpected error and we don't know which one is you.
 Please call the church to resolve this before we can complete your registration.";
                     IsValidForContinue = false;
@@ -194,9 +196,12 @@ Please call the church to resolve this before we can complete your registration.
                 else if (count == 0)
                 {
                     ModelState.AddModelError(foundname, "record not found");
-                    NotFoundText = @"The first and last name must match, 
-then just one of either birthday, email, or phone must match.
-Please search with a different email, phone, or birthday.";
+                    NotFoundText = @" <strong>RECORD NOT FOUND</strong><br />
+                            We were not able to find you in our database. Please check the information you entered.
+                            <ul>
+                                <li>If everything looks good, select ""New Profile""</li>
+                                <li>If you make a correction, select ""Search Again""</li>
+                            </ul>";
                 }
             }
             ValidateBirthdayRange(ModelState);

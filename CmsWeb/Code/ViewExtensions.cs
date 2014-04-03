@@ -63,12 +63,13 @@ namespace CmsWeb
             div.InnerHtml = msg;
             return new HtmlString(div.ToString());
         }
-        public static HtmlString DivAlertBox(this HtmlHelper helper, string msg)
+        public static HtmlString DivAlertBox(this HtmlHelper helper, string msg, string alerttype = "alert-danger")
         {
             if (!msg.HasValue())
                 return null;
             var div = new TagBuilder("div");
-            div.AddCssClass("alert alert-danger");
+            div.AddCssClass("alert");
+            div.AddCssClass(alerttype);
             div.InnerHtml = msg;
             return new HtmlString(div.ToString());
         }
