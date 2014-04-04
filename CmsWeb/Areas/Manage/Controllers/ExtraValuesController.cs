@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using AttributeRouting;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-    [RouteArea("Manage", AreaUrl = "Manage/ExtraValues")]
     public class ExtraValuesController : CmsStaffController
     {
-        [POST("Add2/{id:guid}")]
+        [HttpPost, Route("Add2/{id:guid}")]
         public ActionResult Add2(Guid id, string field, string value)
         {
             var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
@@ -25,7 +22,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return Content("done");
         }
-        [POST("Delete2/{id:guid}")]
+        [HttpPost, Route("Delete2/{id:guid}")]
         public ActionResult Delete2(Guid id, string field, string value)
         {
             var list = DbUtil.Db.PeopleQuery(id).Select(pp => pp.PeopleId).ToList();
@@ -41,7 +38,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return Content("done");
         }
         [Authorize(Roles = "Admin")]
-        [POST("DeleteAll")]
+        [HttpPost, Route("DeleteAll")]
         public ActionResult DeleteAll(string field, string type, string value)
         {
             var ev = DbUtil.Db.PeopleExtras.Where(ee => ee.Field == field).FirstOrDefault();
@@ -70,7 +67,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return Content("done");
         }
-        [GET("QueryCodes")]
+        [HttpGet, Route("QueryCodes")]
         public ActionResult QueryCodes(string field, string value)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -79,7 +76,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             cc.Save(DbUtil.Db);
             return Redirect("/QueryBuilder2/Main/" + cc.Id);
         }
-        [GET("QueryDataFields")]
+        [HttpGet, Route("QueryDataFields")]
         public ActionResult QueryDataFields(string field, string type)
         {
             var cc = DbUtil.Db.ScratchPadCondition();

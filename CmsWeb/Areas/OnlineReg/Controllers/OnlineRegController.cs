@@ -12,6 +12,7 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
+    [RouteArea("OnlineReg")]
     [ValidateInput(false)]
     public partial class OnlineRegController : CmsController
     {
@@ -22,6 +23,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #endif
 
         // Main page
+        [HttpGet]
         public ActionResult Index(int? id, bool? testing, string email, bool? nologin, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid)
         {
             if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))

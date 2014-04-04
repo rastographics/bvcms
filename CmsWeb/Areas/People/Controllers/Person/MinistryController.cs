@@ -1,5 +1,4 @@
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
@@ -8,14 +7,14 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [POST("Person2/ContactsMade/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Person2/ContactsMade/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult ContactsMade(int id, int? page, int? size, string sort, string dir)
         {
             var m = new ContactsMadeModel(id);
             m.Pager.Set("/Person2/ContactsMade/" + id, page, size, sort, dir);
             return View("Ministry/Contacts", m);
         }
-        [POST("Person2/AddContactMade/{id:int}")]
+        [HttpPost, Route("Person2/AddContactMade/{id:int}")]
         public ActionResult AddContactMade(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
@@ -42,14 +41,14 @@ namespace CmsWeb.Areas.People.Controllers
             TempData["ContactEdit"] = true;
             return Content("/Contact2/" + c.ContactId);
         }
-        [POST("Person2/ContactsReceived/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Person2/ContactsReceived/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult ContactsReceived(int id, int? page, int? size, string sort, string dir)
         {
             var m = new ContactsReceivedModel(id);
             m.Pager.Set("/Person2/ContactsReceived/" + id, page, size, sort, dir);
             return View("Ministry/Contacts", m);
         }
-        [POST("Person2/AddContactReceived/{id:int}")]
+        [HttpPost, Route("Person2/AddContactReceived/{id:int}")]
         public ActionResult AddContactReceived(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
@@ -71,14 +70,14 @@ namespace CmsWeb.Areas.People.Controllers
             TempData["ContactEdit"] = true;
             return Content("/Contact2/{0}".Fmt(c.ContactId));
         }
-        [POST("Person2/TasksAbout/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Person2/TasksAbout/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult TasksAbout(int id, int? page, int? size, string sort, string dir)
         {
             var m = new TasksAboutModel(id);
             m.Pager.Set("/Person2/TasksAbout/" + id, page, size, sort, dir);
             return View("Ministry/Tasks", m);
         }
-        [POST("Person2/AddTaskAbout/{id:int}")]
+        [HttpPost, Route("Person2/AddTaskAbout/{id:int}")]
         public ActionResult AddTaskAbout(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
@@ -88,14 +87,14 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("/Task/List/{0}".Fmt(t.Id));
         }
-        [POST("Person2/TasksAssigned/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Person2/TasksAssigned/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult TasksAssigned(int id, int? page, int? size, string sort, string dir)
         {
             var m = new TasksAssignedModel(id);
             m.Pager.Set("/Person2/TasksAssigned/" + id, page, size, sort, dir);
             return View("Ministry/Tasks", m);
         }
-        [POST("Person2/VolunteerApprovals/{id}")]
+        [HttpPost, Route("Person2/VolunteerApprovals/{id}")]
         public ActionResult VolunteerApprovals(int id)
         {
             var m = new Main.Models.Other.VolunteerModel(id);

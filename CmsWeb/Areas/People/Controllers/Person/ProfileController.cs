@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.People.Models;
@@ -14,20 +13,20 @@ namespace CmsWeb.Areas.People.Controllers
     {
         // Membership ---------------------------------------------------
 
-        [POST("Person2/Membership/{id}")]
+        [HttpPost, Route("Person2/Membership/{id}")]
         public ActionResult Membership(int id)
         {
             var m = new MemberInfo(id);
             return View("Profile/Membership/Display", m);
         }
 
-        [POST("Person2/MembershipEdit/{id}")]
+        [HttpPost, Route("Person2/MembershipEdit/{id}")]
         public ActionResult MembershipEdit(int id)
         {
             var m = new MemberInfo(id);
             return View("Profile/Membership/Edit", m);
         }
-        [POST("Person2/JustAddedNotMember/{id}")]
+        [HttpPost, Route("Person2/JustAddedNotMember/{id}")]
         public ActionResult JustAddedNotMember(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
@@ -37,7 +36,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Profile/Membership/Display", m);
         }
 
-        [POST("Person2/MembershipUpdate/")]
+        [HttpPost, Route("Person2/MembershipUpdate/")]
         public ActionResult MembershipUpdate(MemberInfo m)
         {
             var ret = m.UpdateMember();
@@ -52,21 +51,21 @@ namespace CmsWeb.Areas.People.Controllers
 
         // Member Note ---------------------------------------------------
 
-        [POST("Person2/MemberNotes/{id:int}")]
+        [HttpPost, Route("Person2/MemberNotes/{id:int}")]
         public ActionResult MemberNotes(int id)
         {
             var m = new MemberNotesModel(id);
             return View("Profile/MemberNotes/Display", m);
         }
 
-        [POST("Person2/MemberNotesEdit/{id}")]
+        [HttpPost, Route("Person2/MemberNotesEdit/{id}")]
         public ActionResult MemberNotesEdit(int id)
         {
             var m = new MemberNotesModel(id);
             return View("Profile/MemberNotes/Edit", m);
         }
 
-        [POST("Person2/MemberNotesUpdate")]
+        [HttpPost, Route("Person2/MemberNotesUpdate")]
         public ActionResult MemberNotesUpdate(MemberNotesModel m)
         {
             m.UpdateMemberNotes();
@@ -75,13 +74,13 @@ namespace CmsWeb.Areas.People.Controllers
 
         // Member Documents ---------------------------------------------------
 
-        [POST("Person2/MemberDocuments/{id}")]
+        [HttpPost, Route("Person2/MemberDocuments/{id}")]
         public ActionResult MemberDocuments(int id)
         {
             return View("Profile/Membership/Documents", id);
         }
 
-        [POST("Person2/UploadDocument/{id:int}")]
+        [HttpPost, Route("Person2/UploadDocument/{id:int}")]
         public ActionResult UploadDocument(int id, HttpPostedFileBase doc)
         {
             if (doc == null) 
@@ -91,13 +90,13 @@ namespace CmsWeb.Areas.People.Controllers
             person.UploadDocument(DbUtil.Db, doc.InputStream, doc.FileName, doc.ContentType);
             return Redirect("/Person2/" + id);
         }
-        [POST("Person2/MemberDocumentUpdateName")]
+        [HttpPost, Route("Person2/MemberDocumentUpdateName")]
         public ActionResult MemberDocumentEditName(int pk, string name, string value)
         {
             MemberDocModel.UpdateName(pk, value);
             return new EmptyResult();
         }
-        [POST("Person2/DeleteDocument/{id:int}/{docid:int}")]
+        [HttpPost, Route("Person2/DeleteDocument/{id:int}/{docid:int}")]
         public ActionResult DeleteDocument(int id, int docid)
         {
             MemberDocModel.DeleteDocument(id, docid);
@@ -106,21 +105,21 @@ namespace CmsWeb.Areas.People.Controllers
 
         // Comments ---------------------------------------------------
 
-        [POST("Person2/Comments/{id}")]
+        [HttpPost, Route("Person2/Comments/{id}")]
         public ActionResult Comments(int id)
         {
             var m = new CommentsModel(id);
             return View("Profile/Comments/Display", m);
         }
 
-        [POST("Person2/CommentsEdit/{id:int}")]
+        [HttpPost, Route("Person2/CommentsEdit/{id:int}")]
         public ActionResult CommentsEdit(int id)
         {
             var m = new CommentsModel(id);
             return View("Profile/Comments/Edit", m);
         }
 
-        [POST("Person2/CommentsUpdate")]
+        [HttpPost, Route("Person2/CommentsUpdate")]
         public ActionResult CommentsUpdate(CommentsModel m)
         {
             m.UpdateComments();

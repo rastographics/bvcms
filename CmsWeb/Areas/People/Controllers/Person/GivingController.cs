@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.People.Models;
@@ -10,14 +9,14 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [POST("Person2/Contributions/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Person2/Contributions/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult Contributions(int id, int? page, int? size, string sort, string dir)
         {
             var m = new ContributionsModel(id);
             m.Pager.Set("/Person2/Contributions/" + id, page, size, sort, dir);
             return View("Giving/Contributions", m);
         }
-        [POST("Person2/Statements/{id:int}")]
+        [HttpPost, Route("Person2/Statements/{id:int}")]
         public ActionResult Statements(int id)
         {
             if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
@@ -52,7 +51,7 @@ namespace CmsWeb.Areas.People.Controllers
             };
         }
 
-        [GET("Person2/ManageGiving")]
+        [HttpGet, Route("Person2/ManageGiving")]
         public ActionResult ManageGiving()
         {
             int org = (from o in DbUtil.Db.Organizations
@@ -62,7 +61,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return Redirect("/OnlineReg/Index/" + org);
             return new EmptyResult();
         }
-        [GET("Person2/OneTimeGift")]
+        [HttpGet, Route("Person2/OneTimeGift")]
         public ActionResult OneTimeGift()
         {
             int org = (from o in DbUtil.Db.Organizations

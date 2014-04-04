@@ -1,5 +1,4 @@
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
@@ -8,7 +7,7 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [POST("Person2/EnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Person2/EnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult EnrollGrid(int id, int? page, int? size, string sort , string dir)
         {
             var m = new CurrentEnrollments(id);
@@ -16,7 +15,7 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.LogActivity("Viewing Enrollments for: {0}".Fmt(m.person.Name));
             return View("Enrollment/Current", m);
         }
-        [POST("Person2/PrevEnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Person2/PrevEnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult PrevEnrollGrid(int id, int? page, int? size, string sort, string dir)
         {
             var m = new PreviousEnrollments(id);
@@ -24,14 +23,14 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.LogActivity("Viewing Prev Enrollments for: {0}".Fmt(m.person.Name));
             return View("Enrollment/Previous", m);
         }
-        [POST("Person2/PendingEnrollGrid/{id}")]
+        [HttpPost, Route("Person2/PendingEnrollGrid/{id}")]
         public ActionResult PendingEnrollGrid(int id)
         {
             var m = new PendingEnrollments(id);
             DbUtil.LogActivity("Viewing Pending Enrollments for: {0}".Fmt(m.person.Name));
             return View("Enrollment/Pending", m);
         }
-        [POST("Person2/Attendance/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Person2/Attendance/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult Attendance(int id, int? page, int? size, string sort, string dir)
         {
             var m = new PersonAttendHistoryModel(id, future: false);
@@ -40,7 +39,7 @@ namespace CmsWeb.Areas.People.Controllers
             UpdateModel(m.Pager);
             return View("Enrollment/Attendance", m);
         }
-        [POST("Person2/AttendanceFuture/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Person2/AttendanceFuture/{id}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult AttendanceFuture(int id, int? page, int? size, string sort, string dir)
         {
             var m = new PersonAttendHistoryModel(id, future: true);
@@ -49,20 +48,20 @@ namespace CmsWeb.Areas.People.Controllers
             UpdateModel(m.Pager);
             return View("Enrollment/Attendance", m);
         }
-        [POST("Person2/Registrations/{id}")]
+        [HttpPost, Route("Person2/Registrations/{id}")]
         public ActionResult Registrations(int id)
         {
             var m = new RegistrationsModel(id);
             DbUtil.LogActivity("Viewing Registrations for: {0}".Fmt(m.person.Name));
             return View("Enrollment/Registrations", m);
         }
-        [POST("Person2/RegistrationsEdit/{id}")]
+        [HttpPost, Route("Person2/RegistrationsEdit/{id}")]
         public ActionResult RegistrationsEdit(int id)
         {
             var m = new RegistrationsModel(id);
             return View("Enrollment/RegistrationsEdit", m);
         }
-        [POST("Person2/RegistrationsUpdate")]
+        [HttpPost, Route("Person2/RegistrationsUpdate")]
         public ActionResult RegistrationsUpdate(RegistrationsModel m)
         {
             m.UpdateModel();

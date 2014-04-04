@@ -1,6 +1,4 @@
 using System.Web.Mvc;
-using AttributeRouting;
-using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 using System.Web.Routing;
@@ -9,7 +7,6 @@ namespace CmsWeb.Areas.People.Controllers
 {
     [ValidateInput(false)]
     [SessionExpire]
-    [RouteArea("People", AreaUrl = "Address")]
     public class AddressController : CmsStaffController
     {
         protected override void Initialize(RequestContext requestContext)
@@ -18,20 +15,20 @@ namespace CmsWeb.Areas.People.Controllers
             base.Initialize(requestContext);
         }
 
-        [POST("Address/Edit/{type}/{id}")]
+        [HttpPost, Route("Address/Edit/{type}/{id}")]
         public ActionResult Edit(int id, string type)
         {
             var m = AddressInfo.GetAddressInfo(id, type);
             return View(m);
         }
 
-        [POST("Address/EditAgain")]
+        [HttpPost, Route("Address/EditAgain")]
         public ActionResult EditAgain(AddressInfo m)
         {
             return View("Edit", m);
         }
 
-        [POST("Address/Update/{noCheck?}")]
+        [HttpPost, Route("Address/Update/{noCheck?}")]
         public ActionResult Update(AddressInfo m, string noCheck)
         {
             if (noCheck.HasValue() == false)
@@ -47,7 +44,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Saved", m);
         }
 
-        [POST("Address/ForceSave")]
+        [HttpPost, Route("Address/ForceSave")]
         public ActionResult ForceSave(AddressInfo m)
         {
             m.UpdateAddress(ModelState, forceSave: true);

@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using AttributeRouting;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.People.Models;
@@ -14,7 +12,6 @@ namespace CmsWeb.Areas.People.Controllers
 {
     [ValidateInput(false)]
     [SessionExpire]
-    [RouteArea("People", AreaUrl = "Person2")]
     public partial class PersonController : CmsStaffController
     {
         protected override void Initialize(RequestContext requestContext)
@@ -22,13 +19,13 @@ namespace CmsWeb.Areas.People.Controllers
             NoCheckRole = true;
             base.Initialize(requestContext);
         }
-        [GET("Person2/Current")]
+        [HttpGet, Route("Person2/Current")]
         public ActionResult Current()
         {
             return Redirect("/Person2/" + Util2.CurrentPeopleId);
         }
 
-        [GET("Person2/User/{id:int}")]
+        [HttpGet, Route("Person2/User/{id:int}")]
         public ActionResult UserPerson(int? id)
         {
             var pid = (from p in DbUtil.Db.People
@@ -38,8 +35,9 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("no person");
             return Redirect("/Person2/" + pid);
         }
-        [GET("Person2/{id:int}")]
-        [GET("{id:int}")]
+        [HttpGet]
+        [Route("Person2/{id:int}")]
+        [Route("{id:int}")]
         public ActionResult Index(int? id)
         {
             if (!ViewExtensions2.UseNewLook() && User.IsInRole("Access"))
@@ -72,7 +70,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.AddTasks = "/Person2/AddTaskAbout/" + id;
         }
 
-        [POST("Person2/Tag/{id:int}")]
+        [HttpPost, Route("Person2/Tag/{id:int}")]
         public ActionResult Tag(int id, string tagname, bool? cleartagfirst)
         {
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
@@ -98,7 +96,7 @@ namespace CmsWeb.Areas.People.Controllers
             return new EmptyResult();
         }
 
-        [POST("Person2/InlineEdit/{id:int}")]
+        [HttpPost, Route("Person2/InlineEdit/{id:int}")]
         public ActionResult InlineEdit(int id, int pk, string name, string value)
         {
             var m = new PersonModel(id);
@@ -112,7 +110,7 @@ namespace CmsWeb.Areas.People.Controllers
             return new EmptyResult();
         }
 
-        [GET("Person2/InlineCodes/{name}")]
+        [HttpGet, Route("Person2/InlineCodes/{name}")]
         public ActionResult InlineCodes(string name)
         {
             var q = from v in new List<string>()

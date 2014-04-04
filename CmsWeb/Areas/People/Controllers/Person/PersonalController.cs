@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
@@ -10,27 +9,27 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [POST("Person2/ProfileHeader/{id}")]
+        [HttpPost, Route("Person2/ProfileHeader/{id}")]
         public ActionResult ProfileHeader(int id)
         {
             var m = new PersonModel(id);
             return View("Personal/Header", m);
         }
 
-        [POST("Person2/PersonalDisplay/{id}")]
+        [HttpPost, Route("Person2/PersonalDisplay/{id}")]
         public ActionResult PersonalDisplay(int id)
         {
             InitExportToolbar(id);
             var m = new BasicPersonInfo(id);
             return View("Personal/Display", m);
         }
-        [POST("Person2/PersonalEdit/{id}")]
+        [HttpPost, Route("Person2/PersonalEdit/{id}")]
         public ActionResult PersonalEdit(int id)
         {
             var m = new BasicPersonInfo(id);
             return View("Personal/Edit", m);
         }
-        [POST("Person2/PersonalUpdate/{id}")]
+        [HttpPost, Route("Person2/PersonalUpdate/{id}")]
         public ActionResult Personalpdate(int id, BasicPersonInfo m)
         {
             m.UpdatePerson();
@@ -39,13 +38,13 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Personal/Display", m);
         }
 
-        [POST("Person2/PictureDialog/{id:int}")]
+        [HttpPost, Route("Person2/PictureDialog/{id:int}")]
         public ActionResult PictureDialog(int id)
         {
             var m = new PersonModel(id);
             return View("Personal/PictureDialog", m);
         }
-        [POST("Person2/UploadPicture/{id:int}")]
+        [HttpPost, Route("Person2/UploadPicture/{id:int}")]
         public ActionResult UploadPicture(int id, HttpPostedFileBase picture)
         {
             if (picture == null) 
@@ -55,21 +54,21 @@ namespace CmsWeb.Areas.People.Controllers
             person.UploadPicture(DbUtil.Db, picture.InputStream);
             return Redirect("/Person2/" + id);
         }
-        [POST("Person2/DeletePicture/{id:int}")]
+        [HttpPost, Route("Person2/DeletePicture/{id:int}")]
         public ActionResult DeletePicture(int id)
         {
             var person = DbUtil.Db.LoadPersonById(id);
             person.DeletePicture(DbUtil.Db);
             return Redirect("/Person2/" + id);
         }
-        [POST("Person2/RefreshThumbnail/{id:int}")]
+        [HttpPost, Route("Person2/RefreshThumbnail/{id:int}")]
         public ActionResult RefreshThumbnail(int id)
         {
             var person = DbUtil.Db.LoadPersonById(id);
             person.DeleteThumbnail(DbUtil.Db);
             return Redirect("/Person2/" + id);
         }
-        [POST("Person2/PostData")]
+        [HttpPost, Route("Person2/PostData")]
         public ActionResult PostData(int pk, string name, string value)
         {
             var p = DbUtil.Db.LoadPersonById(pk);

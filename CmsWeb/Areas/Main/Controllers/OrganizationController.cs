@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using AttributeRouting;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
@@ -13,7 +11,6 @@ namespace CmsWeb.Areas.Main.Controllers
 {
     [ValidateInput(false)]
     [SessionExpire]
-    [RouteArea("Main", AreaUrl = "Organization")]
     public class OrganizationController : CmsStaffController
     {
         const string needNotify = "WARNING: please add the notify persons on messages tab.";
@@ -568,7 +565,7 @@ namespace CmsWeb.Areas.Main.Controllers
             Session["OrgCopySettings"] = Util2.CurrentOrgId;
             return Redirect("/OrgSearch/");
         }
-        [POST("Join/{oid:int}/{pid:int}")]
+        [HttpPost, Route("Join/{oid:int}/{pid:int}")]
         public ActionResult Join(int oid, int pid)
         {
             var org = DbUtil.Db.LoadOrganizationById(oid);
@@ -597,7 +594,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.LogActivity("Joining Org {0}({1})".Fmt(org.OrganizationName, pid));
             return Content("ok");
         }
-        [POST("AddProspect/{oid:int}/{pid:int}")]
+        [HttpPost, Route("AddProspect/{oid:int}/{pid:int}")]
         public ActionResult AddProspect(int oid, int pid)
         {
             var org = DbUtil.Db.LoadOrganizationById(oid);

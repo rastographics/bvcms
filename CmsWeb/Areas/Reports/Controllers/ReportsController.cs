@@ -6,8 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using System.Xml.Linq;
-using AttributeRouting;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models.Avery;
@@ -25,28 +23,27 @@ using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
-    [RouteArea("Reports", AreaUrl = "Reports")]
     public class ReportsController : CmsStaffController
     {
-        [GET("Reports/Attendance/{id}")]
+        [HttpGet, Route("Reports/Attendance/{id}")]
         public ActionResult Attendance(int id, AttendanceModel m)
         {
             if (m.OrgId == 0)
                 m = new AttendanceModel() { OrgId = id };
             return View(m);
         }
-        [POST("Reports/Attendance")]
+        [HttpPost, Route("Reports/Attendance")]
         public ActionResult Attendance(AttendanceModel m)
         {
             return View(m);
         }
-        [GET("Reports/Attendee/{id}")]
+        [HttpGet, Route("Reports/Attendee/{id}")]
         public ActionResult Attendee(int id)
         {
             return new AttendeeResult(id);
         }
 
-        [POST("Reports/AttendanceDetail")]
+        [HttpPost, Route("Reports/AttendanceDetail")]
         public ActionResult AttendanceDetail(string Dt1, string Dt2, OrgSearchModel m)
         {
             DateTime? dt1 = Dt1.ToDate();
@@ -59,7 +56,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(m2);
         }
 
-        [GET("Reports/Avery/{id}")]
+        [HttpGet, Route("Reports/Avery/{id}")]
         public ActionResult Avery(Guid? id)
         {
             if (!id.HasValue)
@@ -67,7 +64,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new AveryResult { id = id.Value };
         }
 
-        [GET("Reports/Avery3/{id}")]
+        [HttpGet, Route("Reports/Avery3/{id}")]
         public ActionResult Avery3(Guid? id)
         {
             if (!id.HasValue)
@@ -75,7 +72,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new Avery3Result { id = id.Value };
         }
 
-        [GET("Reports/AveryAddress/{id}")]
+        [HttpGet, Route("Reports/AveryAddress/{id}")]
         public ActionResult AveryAddress(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip, bool? useMailFlags, int skipNum = 0)
         {
             if (!id.HasValue)
@@ -93,7 +90,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 useMailFlags = useMailFlags,
             };
         }
-        [GET("Reports/AveryAddressWord/{id}")]
+        [HttpGet, Route("Reports/AveryAddressWord/{id}")]
         public ActionResult AveryAddressWord(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip, bool? useMailFlags, int skipNum = 0)
         {
             if (!id.HasValue)
@@ -112,7 +109,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             };
         }
 
-        [GET("Reports/BarCodeLabels/{id}")]
+        [HttpGet, Route("Reports/BarCodeLabels/{id}")]
         public ActionResult BarCodeLabels(Guid? id)
         {
             if (!id.HasValue)
@@ -120,13 +117,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new BarCodeLabelsResult(id.Value);
         }
 
-        [POST("Reports/CheckinControl")]
+        [HttpPost, Route("Reports/CheckinControl")]
         public ActionResult CheckinControl(CheckinControlModel m)
         {
             return new CheckinControlResult { model = m };
         }
 
-        [GET("Reports/ChurchAttendance/{dt:datetime?}")]
+        [HttpGet, Route("Reports/ChurchAttendance/{dt:datetime?}")]
         public ActionResult ChurchAttendance(DateTime? dt)
         {
             if (!dt.HasValue)
@@ -135,7 +132,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(m);
         }
 
-        [GET("Reports/ChurchAttendance2")]
+        [HttpGet, Route("Reports/ChurchAttendance2")]
         public ActionResult ChurchAttendance2(DateTime? dt1, DateTime? dt2, string skipweeks)
         {
             if (!dt1.HasValue)
@@ -146,27 +143,27 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(m);
         }
 
-        [POST("Reports/ClassList")]
+        [HttpPost, Route("Reports/ClassList")]
         public ActionResult ClassList(string org, OrgSearchModel m)
         {
             return new ClassListResult(m) { orgid = org == "curr" ? Util2.CurrentOrgId : null };
         }
 
-        [GET("Reports/CompactPictureDirectory/{id}")]
+        [HttpGet, Route("Reports/CompactPictureDirectory/{id}")]
         public ActionResult CompactPictureDirectory(Guid id)
         {
             var s = DbUtil.Db.ContentText("CompactDirectoryParameters", Resource1.CompactDirectoryParameters);
             return new CompactPictureDir(id, s);
         }
 
-        [GET("Reports/CompactPictureDirectory2/{id}")]
+        [HttpGet, Route("Reports/CompactPictureDirectory2/{id}")]
         public ActionResult CompactPictureDirectory2(Guid id)
         {
             var s = DbUtil.Db.ContentText("CompactDirectoryParameters2", Resource1.CompactDirectoryParameters2);
             return new CompactPictureDir(id, s);
         }
 
-        [GET("Reports/Contacts/{id:guid}")]
+        [HttpGet, Route("Reports/Contacts/{id:guid}")]
         public ActionResult Contacts(Guid? id, bool? sortAddress, string orgname)
         {
             if (!id.HasValue)
@@ -174,7 +171,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new ContactsResult(id.Value, sortAddress, orgname);
         }
 
-        [GET("Reports/Decisions")]
+        [HttpGet, Route("Reports/Decisions")]
         public ActionResult Decisions(int? campus, DateTime? dt1, DateTime? dt2)
         {
             DateTime today = Util.Now.Date;
@@ -186,20 +183,20 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(m);
         }
 
-        [GET("Reports/DecisionsToQuery/{command}/{key}")]
+        [HttpGet, Route("Reports/DecisionsToQuery/{command}/{key}")]
         public ActionResult DecisionsToQuery(string command, string key, int? campus, DateTime? dt1, DateTime? dt2)
         {
             string r = new DecisionSummaryModel(dt1, dt2) { Campus = campus }.ConvertToSearch(command, key);
             return Redirect(r);
         }
 
-        [GET("Reports/EmployerAddress/{id}")]
+        [HttpGet, Route("Reports/EmployerAddress/{id}")]
         public ActionResult EmployerAddress(Guid id)
         {
             return new EmployerAddress(id, true);
         }
 
-        [POST("Reports/EnrollmentControl")]
+        [HttpPost, Route("Reports/EnrollmentControl")]
         public ActionResult EnrollmentControl(bool? excel, EnrollmentControlModel m)
         {
             if (excel != true)
@@ -241,13 +238,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             return File(ms.ToArray(), "application/vnd.ms-excel", "attachment;filename=" + saveAsFileName);
         }
 
-        [POST("Reports/EnrollmentControl2")]
+        [HttpPost, Route("Reports/EnrollmentControl2")]
         public ActionResult EnrollmentControl2(EnrollmentControlModel m)
         {
             return View(m);
         }
 
-        [GET("Reports/ExtraValueData")]
+        [HttpGet, Route("Reports/ExtraValueData")]
         public ActionResult ExtraValueData()
         {
             if (ViewExtensions2.UseNewLook())
@@ -276,7 +273,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(list);
         }
 
-        [GET("Reports/ExtraValues")]
+        [HttpGet, Route("Reports/ExtraValues")]
         public ActionResult ExtraValues()
         {
             if (ViewExtensions2.UseNewLook())
@@ -303,37 +300,37 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(list);
         }
 
-        [GET("Reports/ExtraValuesGrid2/{id}")]
+        [HttpGet, Route("Reports/ExtraValuesGrid2/{id}")]
         public ActionResult ExtraValuesGrid2(Guid id, string sort, bool alternate = false)
         {
             return RunExtraValuesGrid(id, sort, alternate);
         }
 
-        [GET("Reports/Family/{id}")]
+        [HttpGet, Route("Reports/Family/{id}")]
         public ActionResult Family(Guid id)
         {
             return new FamilyResult(id);
         }
 
-        [GET("Reports/FamilyDirectory/{id}")]
+        [HttpGet, Route("Reports/FamilyDirectory/{id}")]
         public ActionResult FamilyDirectory(Guid id)
         {
             return new FamilyDir(id);
         }
 
-        [GET("Reports/FamilyDirectoryCompact/{id}")]
+        [HttpGet, Route("Reports/FamilyDirectoryCompact/{id}")]
         public ActionResult FamilyDirectoryCompact(Guid id)
         {
             return new CompactDir(id);
         }
 
-        [GET("Reports/Meetings")]
+        [HttpGet, Route("Reports/Meetings")]
         public ActionResult Meetings(DateTime dt1, DateTime dt2, int? programid, int? divisionid)
         {
             var m = new MeetingsModel() { Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid };
             return View(m);
         }
-        [POST("Reports/Meetings")]
+        [HttpPost, Route("Reports/Meetings")]
         public ActionResult Meetings(MeetingsModel m)
         {
             if (!m.Dt1.HasValue)
@@ -343,7 +340,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(m);
         }
 
-        [POST("Reports/MeetingsForMonth")]
+        [HttpPost, Route("Reports/MeetingsForMonth")]
         public ActionResult MeetingsForMonth(DateTime dt1, OrgSearchModel m)
         {
             var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
@@ -360,36 +357,36 @@ namespace CmsWeb.Areas.Reports.Controllers
             }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
             return View(q);
         }
-        [POST("Reports/MeetingsToQuery/{type}")]
+        [HttpPost, Route("Reports/MeetingsToQuery/{type}")]
         public ActionResult MeetingsToQuery(string type, MeetingsModel m)
         {
             string r = m.ConvertToSearch(type);
             TempData["autorun"] = true;
             return Redirect(r);
         }
-        [GET("Reports/MissionTripFunding/{orgid:int}")]
+        [HttpGet, Route("Reports/MissionTripFunding/{orgid:int}")]
         public ActionResult MissionTripFunding(int orgid)
         {
             return View(MissionTripFundingModel.List(orgid));
         }
-        [POST("Reports/MissionTripFunding")]
+        [HttpPost, Route("Reports/MissionTripFunding")]
         public ActionResult MissionTripFunding(OrgSearchModel m)
         {
             return View(MissionTripFundingModel.List(m));
         }
-        [GET("Reports/MissionTripSenders/{orgid:int}")]
+        [HttpGet, Route("Reports/MissionTripSenders/{orgid:int}")]
         public ActionResult MissionTripSenders(int orgid)
         {
             return MissionTripSendersModel.List(orgid);
         }
 
-        [POST("Reports/MissionTripSenders")]
+        [HttpPost, Route("Reports/MissionTripSenders")]
         public ActionResult MissionTripSenders(OrgSearchModel m)
         {
             return MissionTripSendersModel.List(m);
         }
 
-        [GET("Reports/NameLabels/{id}")]
+        [HttpGet, Route("Reports/NameLabels/{id}")]
         public ActionResult NameLabels(Guid? id)
         {
             if (!id.HasValue)
@@ -397,13 +394,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new AveryResult { namesonly = true, id = id.Value };
         }
 
-        [POST("Reports/OrgLeaders")]
+        [HttpPost, Route("Reports/OrgLeaders")]
         public ActionResult OrgLeaders(string org, OrgSearchModel m)
         {
             return new OrgLeadersResult(m) { orgid = org == "curr" ? Util2.CurrentOrgId : null };
         }
 
-        [GET("Reports/PastAttendee/{id}")]
+        [HttpGet, Route("Reports/PastAttendee/{id}")]
         public ActionResult PastAttendee(int? id)
         {
             if (!id.HasValue)
@@ -411,13 +408,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new PastAttendeeResult(id);
         }
 
-        [GET("Reports/PictureDirectory/{id}")]
+        [HttpGet, Route("Reports/PictureDirectory/{id}")]
         public ActionResult PictureDirectory(Guid id)
         {
             return new PictureDir(id);
         }
 
-        [GET("Reports/Prospect/{id}")]
+        [HttpGet, Route("Reports/Prospect/{id}")]
         public ActionResult Prospect(Guid? id, bool? Form, bool? Alpha)
         {
             if (!id.HasValue)
@@ -425,13 +422,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new ProspectResult(id.Value, Form ?? false, Alpha ?? false);
         }
 
-        [GET("Reports/QueryStats")]
+        [HttpGet, Route("Reports/QueryStats")]
         public ActionResult QueryStats()
         {
             return new QueryStatsResult();
         }
 
-        [POST("Reports/RallyRollsheet/{id}")]
+        [HttpPost, Route("Reports/RallyRollsheet/{id}")]
         public ActionResult RallyRollsheet(Guid id, string org, string dt, int? meetingid, int? bygroup, string sgprefix,
             bool? altnames, string highlight, OrgSearchModel m)
         {
@@ -451,7 +448,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             };
         }
 
-        [POST("Reports/RecentAbsents")]
+        [HttpPost, Route("Reports/RecentAbsents")]
         public ActionResult RecentAbsents(OrgSearchModel m)
         {
             var cn = new SqlConnection(Util.ConnectionString);
@@ -472,7 +469,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(q);
         }
 
-        [GET("Reports/RecentAbsents1/{id}/{idfilter?}")]
+        [HttpGet, Route("Reports/RecentAbsents1/{id}/{idfilter?}")]
         public ActionResult RecentAbsents1(int id, int? idfilter)
         {
             var m = new RecentAbsentsViewModel(id, idfilter);
@@ -480,7 +477,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [GET("Reports/RecentRegistrations")]
+        [HttpGet, Route("Reports/RecentRegistrations")]
         public ActionResult RecentRegistrations(int? days, int? orgid, string sort)
         {
             IQueryable<Registration> q = from r in DbUtil.Db.Registrations(days ?? 90)
@@ -494,7 +491,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(q);
         }
 
-        [GET("Reports/Registration/{id}")]
+        [HttpGet, Route("Reports/Registration/{id}")]
         public ActionResult Registration(Guid? id, int? oid)
         {
             if (!id.HasValue)
@@ -503,7 +500,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [GET("Reports/RegistrationSummary")]
+        [HttpGet, Route("Reports/RegistrationSummary")]
         public ActionResult RegistrationSummary(int? days, string sort)
         {
             IQueryable<RecentRegistration> q = DbUtil.Db.RecentRegistrations(days ?? 90);
@@ -513,7 +510,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(q);
         }
 
-        [GET("Reports/RollLabels/{id}")]
+        [HttpGet, Route("Reports/RollLabels/{id}")]
         public ActionResult RollLabels(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip, bool? useMailFlags)
         {
             if (!id.HasValue)
@@ -529,7 +526,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             };
         }
 
-        [GET("Reports/Rollsheet")]
+        [HttpGet, Route("Reports/Rollsheet")]
         public ActionResult Rollsheet(string org, string dt, int? meetingid, int? bygroup, string sgprefix,
             bool? altnames, string highlight)
         {
@@ -546,7 +543,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 highlightsg = highlight,
             };
         }
-        [POST("Reports/Rollsheet")]
+        [HttpPost, Route("Reports/Rollsheet")]
         public ActionResult Rollsheet(string dt, int? bygroup, string sgprefix,
             bool? altnames, string highlight, OrgSearchModel m)
         {
@@ -563,7 +560,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             };
         }
 
-        [GET("Reports/Roster/{id:guid}")]
+        [HttpGet, Route("Reports/Roster/{id:guid}")]
         public ActionResult Roster(Guid id, int? oid)
         {
             return new RosterListResult
@@ -573,13 +570,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             };
         }
 
-        [POST("Reports/Roster")]
+        [HttpPost, Route("Reports/Roster")]
         public ActionResult Roster(OrgSearchModel m)
         {
             return new RosterListResult(m);
         }
 
-        [GET("Reports/Roster1/{id:guid}")]
+        [HttpGet, Route("Reports/Roster1/{id:guid}")]
         public ActionResult Roster1(Guid id, int? oid)
         {
             return new RosterResult
@@ -589,7 +586,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             };
         }
 
-        [POST("Reports/Roster1")]
+        [HttpPost, Route("Reports/Roster1")]
         public ActionResult Roster1(OrgSearchModel m)
         {
             return new RosterResult(m);
@@ -619,13 +616,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View("ExtraValuesGrid", rdr);
         }
 
-        [POST("Reports/SGMap")]
+        [HttpPost, Route("Reports/SGMap")]
         public ActionResult SGMap(OrgSearchModel m)
         {
             return Redirect("/Sgmap/Index/" + m.DivisionId);
         }
 
-        [POST("Reports/ShirtSizes")]
+        [HttpPost, Route("Reports/ShirtSizes")]
         public ActionResult ShirtSizes(string org, OrgSearchModel m)
         {
             int? orgid = org == "curr" ? Util2.CurrentOrgId : null;
@@ -643,7 +640,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(q);
         }
 
-        [GET("Reports/VisitsAbsents/{id}")]
+        [HttpGet, Route("Reports/VisitsAbsents/{id}")]
         public ActionResult VisitsAbsents(int? id)
         {
             if (!id.HasValue)
@@ -651,7 +648,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new VisitsAbsentsResult(id);
         }
 
-        [GET("Reports/VisitsAbsents2/{id}")]
+        [HttpGet, Route("Reports/VisitsAbsents2/{id}")]
         public ActionResult VisitsAbsents2(int? id)
         {
             //This is basically a Contact Report version of the Visits Absents
@@ -660,14 +657,14 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new VisitsAbsentsResult2(id);
         }
 
-        [GET("Reports/VitalStats")]
+        [HttpGet, Route("Reports/VitalStats")]
         public ActionResult VitalStats()
         {
             ViewData["table"] = QueryFunctions.VitalStats(DbUtil.Db);
             return View();
         }
 
-        [POST("Reports/WeeklyAttendance")]
+        [HttpPost, Route("Reports/WeeklyAttendance")]
         public ActionResult WeeklyAttendance(WeeklyAttendanceModel m)
         {
             var q = m.Attendances();
@@ -707,13 +704,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new EpplusResult(ep, "WeeklyAttendance.xlsx");
         }
 
-        [GET("Reports/WeeklyAttendance/{id}")]
+        [HttpGet, Route("Reports/WeeklyAttendance/{id}")]
         public ActionResult WeeklyAttendance(Guid id)
         {
             return new WeeklyAttendanceResult(id);
         }
 
-        [GET("Reports/WeeklyDecisions")]
+        [HttpGet, Route("Reports/WeeklyDecisions")]
         public ActionResult WeeklyDecisions(int? campus, DateTime? sunday)
         {
             var m = new WeeklyDecisionsModel(sunday) { Campus = campus };

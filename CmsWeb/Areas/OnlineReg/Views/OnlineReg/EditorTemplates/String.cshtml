@@ -1,11 +1,17 @@
-﻿@model string
+﻿@using UtilityExtensions
+@model string
 @{
-    ViewData.Add("class", "form-control");
+    var d = new Dictionary<string, object>();
+    d.Add("class", "form-control");
+    if (((string) ViewBag.placeholder).HasValue())
+    {
+        d.Add("placeholder", ((string)ViewBag.placeholder));
+    }
 }
 <div class="form-group">
     @Html.LabelFor(m => m, new { @class = "control-label col-sm-3" })
     <div class="col-sm-9">
-        @Html.TextBoxFor(m => m, ViewData)
+        @Html.TextBoxFor(m => m, d)
         @Html.ValidationMessageFor(m => m)
     </div>
 </div>

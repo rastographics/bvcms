@@ -1,16 +1,13 @@
 using System.Web.Mvc;
-using AttributeRouting;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
-    [RouteArea("People", AreaUrl = "Contact2")]
     public class ContactController : CmsStaffController
     {
-        [GET("Contact2/{id}")]
+        [HttpGet, Route("Contact2/{id}")]
         public ActionResult Index(int id)
         {
             if (!ViewExtensions2.UseNewLook())
@@ -24,7 +21,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View(m);
         }
 
-        [POST("Contact2/RemoveContactee/{cid:int}/{pid:int}")]
+        [HttpPost, Route("Contact2/RemoveContactee/{cid:int}/{pid:int}")]
         public ActionResult RemoveContactee(int cid, int pid)
         {
             var m = new ContacteesModel(cid);
@@ -32,7 +29,7 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("ok");
 
         }
-        [POST("Contact2/RemoveContactor/{cid:int}/{pid:int}")]
+        [HttpPost, Route("Contact2/RemoveContactor/{cid:int}/{pid:int}")]
         public ActionResult RemoveContactor(int cid, int pid)
         {
             var m = new ContactorsModel(cid);
@@ -41,19 +38,19 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("ok");
         }
 
-        [POST("Contact2/Contactees/{cid:int}")]
+        [HttpPost, Route("Contact2/Contactees/{cid:int}")]
         public ActionResult Contactees(int cid)
         {
             var m = new ContactModel(cid);
             return View(m.MinisteredTo);
         }
-        [POST("Contact2/Contactors/{cid:int}")]
+        [HttpPost, Route("Contact2/Contactors/{cid:int}")]
         public ActionResult Contactors(int cid)
         {
             var m = new ContactModel(cid);
             return View(m.Ministers);
         }
-        [POST("Contact2/ContactEdit/{cid:int}")]
+        [HttpPost, Route("Contact2/ContactEdit/{cid:int}")]
         public ActionResult ContactEdit(int cid)
         {
             var m = new ContactModel(cid);
@@ -61,13 +58,13 @@ namespace CmsWeb.Areas.People.Controllers
                 return View("ContactDisplay", m);
             return View(m);
         }
-        [POST("Contact2/ContactDisplay/{cid:int}")]
+        [HttpPost, Route("Contact2/ContactDisplay/{cid:int}")]
         public ActionResult ContactDisplay(int cid)
         {
             var m = new ContactModel(cid);
             return View(m);
         }
-        [POST("Contact2/ContactUpdate/{cid:int}")]
+        [HttpPost, Route("Contact2/ContactUpdate/{cid:int}")]
         public ActionResult ContactUpdate(int cid, ContactModel c)
         {
             if (!ModelState.IsValid)
@@ -75,20 +72,20 @@ namespace CmsWeb.Areas.People.Controllers
             c.UpdateContact();
             return View("ContactDisplay", c);
         }
-        [POST("Contact2/ContactDelete/{cid:int}")]
+        [HttpPost, Route("Contact2/ContactDelete/{cid:int}")]
         public ActionResult ContactDelete(int cid)
         {
             ContactModel.DeleteContact(cid);
             return Redirect("/ContactSearch2");
         }
-        [POST("Contact2/NewTeamContact/{cid:int}")]
+        [HttpPost, Route("Contact2/NewTeamContact/{cid:int}")]
         public ActionResult NewTeamContact(int cid)
         {
             var m = new ContactModel(cid);
             var nid = m.AddNewTeamContact();
             return Redirect("/Contact2/" + nid);
         }
-        [POST("Contact2/AddTask/{cid:int}/{pid:int}")]
+        [HttpPost, Route("Contact2/AddTask/{cid:int}/{pid:int}")]
         public ActionResult AddTask(int cid, int pid)
         {
             var m = new ContacteesModel(cid);

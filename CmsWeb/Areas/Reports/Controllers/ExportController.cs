@@ -4,10 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
-using AttributeRouting;
-using AttributeRouting.Web.Mvc;
 using CmsData;
-using CmsData.API;
 using CmsWeb.Models;
 using Dapper;
 using OfficeOpenXml;
@@ -15,48 +12,47 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
-    [RouteArea("Reports", AreaUrl = "Export2")]
     public class ExportController : CmsStaffController
     {
-        [GET("Export2/StatusFlags/{id:guid}")]
+        [HttpGet, Route("Export2/StatusFlags/{id:guid}")]
         public ActionResult StatusFlags(Guid id)
         {
             return new StatusFlagsExcelResult(id);
         }
 
-        [GET("Export2/ExtraValues/{id:guid}")]
+        [HttpGet, Route("Export2/ExtraValues/{id:guid}")]
         public ActionResult ExtraValues(Guid id)
         {
             return new ExtraValueExcelResult(id);
         }
-        [GET("Export2/WorshipAttendance/{id:guid}")]
+        [HttpGet, Route("Export2/WorshipAttendance/{id:guid}")]
         public ActionResult WorshipAttendance(Guid id)
         {
             return WorshipAttendanceModel.Attendance(id);
         }
 
         [Authorize(Roles = "Finance")]
-        [POST("Export2/Contributions/{id}")]
+        [HttpPost, Route("Export2/Contributions/{id}")]
         public ActionResult Contributions(string id, ContributionsExcelResult m)
         {
             m.type = id;
             return m;
         }
         [Authorize(Roles = "Finance")]
-        [POST("Export2/GLExport")]
+        [HttpPost, Route("Export2/GLExport")]
         public ActionResult GLExport(GLExportResult m)
         {
             return m;
         }
 
-        [GET("Export2/Excel/Groups")]
+        [HttpGet, Route("Export2/Excel/Groups")]
         public ActionResult ExcelGroups()
         {
             return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
         }
 
 
-        [POST("Export2/MeetingsForDateRange")]
+        [HttpPost, Route("Export2/MeetingsForDateRange")]
         public ActionResult MeetingsForDateRange(DateTime dt1, DateTime dt2, OrgSearchModel m)
         {
             var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
@@ -87,14 +83,15 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new EpplusResult(ep, "MeetingsForDateRange.xlsx");
         }
 
-        [POST("Export2/MissionTripFunding")]
+        [HttpPost, Route("Export2/MissionTripFunding")]
         public ActionResult MissionTripFunding(OrgSearchModel m)
         {
             return MissionTripFundingModel.Result(m);
         }
 
-        [GET("Export2/Excel/{id:guid}")]
-        [GET("Export2/Excel/{format}/{id:guid}")]
+        [HttpGet]
+        [Route("Export2/Excel/{id:guid}")]
+        [Route("Export2/Excel/{format}/{id:guid}")]
         public ActionResult Excel(Guid id, string format, bool? titles, bool? useMailFlags)
         {
             var ctl = new MailingController {UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false};
@@ -141,7 +138,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return Content("no format");
         }
 
-        [GET("Export2/Csv/{id:guid}")]
+        [HttpGet, Route("Export2/Csv/{id:guid}")]
         public ActionResult Csv(Guid id, string format, bool? sortzip, bool? titles, bool? useMailFlags)
         {
             var ctl = new MailingController {UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false};
