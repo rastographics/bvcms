@@ -4,7 +4,7 @@
 @using CmsWeb
 @using UtilityExtensions
 @{
-    var index = Model.Index();
+    var index = Model.Index;
     var goer = DbUtil.Db.LoadPersonById(Model.Parent.GoerId ?? 0);
     var name = goer != null ? goer.Name : "selected participant";
 }

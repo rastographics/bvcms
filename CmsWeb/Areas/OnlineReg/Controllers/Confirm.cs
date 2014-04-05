@@ -419,7 +419,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			else
 				ViewData["email"] = m.List[0].EmailAddress;
 
-            if(m.masterorgid.HasValue && m.orgid.HasValue && !m.settings[m.orgid.Value].Subject.HasValue())
+            if(m.masterorgid.HasValue && m.Orgid.HasValue && !m.settings[m.Orgid.Value].Subject.HasValue())
     		    ViewData["orgname"] = m.masterorg.OrganizationName;
             else
     		    ViewData["orgname"] = m.org != null ? m.org.OrganizationName : m.masterorg.OrganizationName;

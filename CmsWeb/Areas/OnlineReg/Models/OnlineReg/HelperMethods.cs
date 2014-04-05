@@ -331,8 +331,8 @@ namespace CmsWeb.Models
                 if (masterorgid.HasValue)
                     if (settings.ContainsKey(masterorgid.Value))
                         return Util.PickFirst(settings[masterorgid.Value].Terms, "");
-                if (orgid.HasValue)
-                    if (settings.ContainsKey(orgid.Value))
+                if (Orgid.HasValue)
+                    if (settings.ContainsKey(Orgid.Value))
                         return Util.PickFirst(settings[org.OrganizationId].Terms, "");
                 return "";
             }
@@ -350,7 +350,7 @@ namespace CmsWeb.Models
                 LastName = person.LastName,
                 PeopleId = id,
                 Phone = Util.PickFirst(person.CellPhone, person.HomePhone),
-                orgid = orgid,
+                orgid = Orgid,
                 masterorgid = masterorgid,
                 classid = classid,
                 IsFamily = true,

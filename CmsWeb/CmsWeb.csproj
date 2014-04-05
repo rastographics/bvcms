@@ -158,9 +158,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web">
@@ -1378,10 +1376,9 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonEdit.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Registrant.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SupportMissionTrip.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SupportMissionTripDisplay.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Birthday.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Boolean.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\CodeInfo.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\SelectClass.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Date2.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\datepicker.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\DateTime.cshtml" />
@@ -1404,6 +1401,16 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\Int32.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\String.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\TextArea.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\WhatFamily.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\SelectFamily.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\AddToFamily.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FindOrNewButtons.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonMetaHidden.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonHidden.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\OtherHidden.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\ModelHidden.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\LoginOrFind.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SubmitNewButtons.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

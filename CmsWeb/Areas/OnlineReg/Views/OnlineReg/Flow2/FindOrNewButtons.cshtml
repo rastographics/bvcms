@@ -1,0 +1,37 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Models.OnlineRegPersonModel
+@if (!Model.Found.HasValue)
+// we have not searched for the person yet, let them find their profile
+{
+    @Helper.OnlineRegAjaxButtonRow("/OnlineReg/PersonFind/" + Model.Index, "Find Profile", style: "btn-primary pull-right")
+}
+else // display the results of the find
+{
+    if (Model.Found == false)
+    // Ask which family to add to
+    {
+        @Html.Partial("Flow2/AddToFamily", Model)
+    }
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <span class="pull-right">
+                @Helper.OnlineRegAjaxButton("/OnlineReg/PersonFind/" + Model.Index, "Search Again")
+                @if (Model.IsValidForContinue && !Model.MemberOnly() && Model.orgid != Util.CreateAccountCode)
+                // Allow Add New Profile if valid data, not memberonly, not create account mode
+                {
+                    @Helper.OnlineRegAjaxButton("/OnlineReg/ShowMoreInfo/" + Model.Index,
+                        "New Profile", style: "btn-warning", id: "regnew")
+                }
+            </span>
+            @if (!Model.IsValidForContinue && Model.orgid == Util.CreateAccountCode)
+            // display helpful message if an anonomous person is trying to create an account
+            {
+                <p class="alert alert-info">
+                    Call the church if you think your record should be in the system. It may be that
+                    we are missing some information on your record that we need to identify you like
+                    a phone number, date of birth or email address.
+                </p>
+            }
+        </div>
+    </div>
+}

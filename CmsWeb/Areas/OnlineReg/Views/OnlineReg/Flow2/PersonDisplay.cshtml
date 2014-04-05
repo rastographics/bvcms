@@ -1,21 +1,41 @@
-﻿@model CmsWeb.Models.OnlineRegPersonModel
+﻿@using UtilityExtensions
+@model CmsWeb.Models.OnlineRegPersonModel
 @if ((Model.classid ?? 0) > 0)
-{ 
+{
     <tr>
         <td>Chosen Class:</td>
         <td>@Model.org.OrganizationName</td>
     </tr>
 }
-@* name gets displayed elsewhere when finished *@
-@if (!Model.Finished()) 
-{ 
-    @Html.DisplayFor(m => m.FirstName)
-    @Html.DisplayFor(m => m.LastName)
-}
-    @Html.DisplayFor(m => m.DateOfBirth) @Html.Raw(Model.LoggedIn ? "(<span>@Model.age</span>)" : "")
-    @Html.DisplayFor(m => m.Phone) @Html.Raw(Model.LoggedIn ? "(<span>@Model.age</span>)" : "")
-    @Html.DisplayFor(m => m.EmailAddress)
-@if (Model.ShowAddress)
-{
-    @Html.Partial("Flow2/AddressDisplay", Model)
-}
+@Html.Partial("Flow2/PersonHidden", Model)
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        <address>
+            <strong>@Model.FirstName @Model.LastName</strong>
+            @if (Model.ShowCancelButton())
+            {
+                @Helper.OnlineRegAjaxButton("/OnlineReg/Cancel/" + Model.Index, "Cancel this person", style: "btn-xs btn-warning pull-right")
+            }
+            <br /><abbr>DOB:</abbr> @Model.DateOfBirth @Html.Raw(Model.LoggedIn ? "(<span>@Model.age</span>)" : "")
+            @if (Model.Phone.HasValue())
+            {
+                <br /><abbr title="Phone">P:</abbr> @Model.Phone
+            }
+            <br />@Model.EmailAddress
+            @if (Model.ShowAddress && Model.Finished())
+            {
+                <br />@Model.marrieddisplay @:&nbsp; @Model.genderdisplay<br/>
+                <br />@Model.AddressLineOne
+                if (Model.AddressLineTwo.HasValue())
+                {
+                    <br />@Model.AddressLineTwo
+                }
+                <br />@Util.FormatCSZ(Model.City, Model.State, Model.ZipCode)
+                if (Model.Country != "United States")
+                {
+                    <br />@Model.Country
+                }
+            }
+        </address>
+    </div>
+</div>

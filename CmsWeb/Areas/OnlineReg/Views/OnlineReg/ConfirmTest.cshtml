@@ -14,9 +14,9 @@
    <tr>
        <td>@i.ed.Id</td>
        <td><a href="@(Util.ResolveServerUrl("/OnlineReg/ConfirmTestXml"))/@i.ed.Id">@i.ed.Stamp.Value</a></td>
-    @if (i.m.orgid > 0 && i.m.org != null)
+    @if (i.m.Orgid > 0 && i.m.org != null)
     {
-           <td><a href='/Organization/Index/@i.m.orgid'>@i.m.org.OrganizationName</a></td>
+           <td><a href='/Organization/Index/@i.m.Orgid'>@i.m.org.OrganizationName</a></td>
     }
     else if (i.m.masterorgid > 0)
     {

@@ -1,4 +1,5 @@
-﻿@using DocumentFormat.OpenXml.Drawing.Charts
+﻿@using CmsWeb.Models
+@using DocumentFormat.OpenXml.Drawing.Charts
 @using UtilityExtensions
 @helper SearchBuilderDropdown(bool onqb)
 {
@@ -86,6 +87,17 @@
 {
     <input type="submit" id="submitit" data-onlyoneallowed="@onlyoneallowed" class="btn @style" value="@text" />
 }
+@helper OnlineRegSubmitLinkRow(string url, string text, string style = "btn-primary")
+{
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <a href="@url" class="btn @style submitlink">
+                @text
+            </a>
+        </div>
+    </div>
+}
+
 @helper OnlineRegAjaxButtonRow(string url, string text, string style = "btn-primary", string id = "")
 {
     <div class="form-group">
@@ -100,4 +112,12 @@
     <a @(id.HasValue() ? "id=" + id : "") href="@url" class="btn @style submitbutton ajax">
         @text
     </a>
+}
+@helper OnlineRegHeaderRow(string text)
+{
+    <div class="form-group">
+        <div class="col-sm-12">
+            <h4 class="form-control-static">@text</h4>
+        </div>
+    </div>
 }

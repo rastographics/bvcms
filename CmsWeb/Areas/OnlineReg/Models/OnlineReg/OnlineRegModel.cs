@@ -35,14 +35,13 @@ namespace CmsWeb.Models
             }
         }
 
-        private int? _Orgid;
-
-        public int? orgid
+        private int? orgid;
+        public int? Orgid
         {
-            get { return _Orgid; }
+            get { return orgid; }
             set
             {
-                _Orgid = value;
+                orgid = value;
                 if (value > 0)
                 {
                     CheckMasterOrg();
@@ -172,6 +171,11 @@ namespace CmsWeb.Models
         public int? GoerId { get; set; }
         public bool SupportMissionTrip { get { return GoerSupporterId.HasValue || GoerId.HasValue; } }
 
+        public Person GetGoer()
+        {
+            return DbUtil.Db.LoadPersonById(GoerId ?? 0);
+        }
+
         public void ParseSettings()
         {
 //            if (HttpContext.Current.Items.Contains("RegSettings"))
@@ -185,10 +189,10 @@ namespace CmsWeb.Models
                     list[i.OrganizationId] = new Settings(i.RegSetting, DbUtil.Db, i.OrganizationId);
                 list[masterorg.OrganizationId] = new Settings(masterorg.RegSetting, DbUtil.Db, masterorg.OrganizationId);
             }
-            else if (org == null)
+            else if (orgid == null)
                 return;
             else
-                list[_Orgid.Value] = new Settings(org.RegSetting, DbUtil.Db, _Orgid.Value);
+                list[orgid.Value] = new Settings(org.RegSetting, DbUtil.Db, orgid.Value);
 //            if (HttpContext.Current.Items.Contains("RegSettings"))
 //                return;
             HttpContext.Current.Items["RegSettings"] = list;
@@ -239,8 +243,8 @@ namespace CmsWeb.Models
                  || org.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2))
             {
                 _masterorg = org;
-                masterorgid = orgid;
-                _Orgid = null;
+                masterorgid = Orgid;
+                orgid = null;
                 _org = null;
             }
         }
@@ -251,11 +255,11 @@ namespace CmsWeb.Models
         {
             get
             {
-                if (_org == null && orgid.HasValue)
-                    if (orgid == Util.CreateAccountCode)
+                if (_org == null && Orgid.HasValue)
+                    if (Orgid == Util.CreateAccountCode)
                         _org = CreateAccountOrg();
                     else
-                        _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
+                        _org = DbUtil.Db.LoadOrganizationById(Orgid.Value);
                 return _org;
             }
         }
@@ -291,7 +295,7 @@ namespace CmsWeb.Models
             if (_meeting == null)
             {
                 var q = from m in DbUtil.Db.Meetings
-                        where m.Organization.OrganizationId == orgid
+                        where m.Organization.OrganizationId == Orgid
                         where m.MeetingDate > Util.Now.AddHours(-12)
                         orderby m.MeetingDate
                         select m;
@@ -306,7 +310,7 @@ namespace CmsWeb.Models
                 {
                     new OnlineRegPersonModel
                         {
-                            orgid = orgid,
+                            orgid = Orgid,
                             masterorgid = masterorgid,
                             LoggedIn = false,
 #if DEBUG

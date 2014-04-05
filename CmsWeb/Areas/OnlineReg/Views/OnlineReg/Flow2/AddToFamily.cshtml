@@ -1,0 +1,22 @@
+﻿@using CmsWeb.Models
+@model OnlineRegPersonModel
+<div class="col-sm-offset-3 col-sm-9">
+    @if (Model.Index > 0 || Model.LoggedIn) // logged in or beyond the first registrant
+    {
+        @Html.EditorFor(m => m, "WhatFamily", new { which = OnlineRegPersonModel.NewFamily })
+    }
+    else // assume this is going to a new family not logged in and on first registrant
+    {
+        Model.whatfamily = OnlineRegPersonModel.NewFamily;
+        @Html.HiddenFor(m => m.whatfamily)
+    }
+    @if (Model.Index > 0) // not on the first registrant
+    {
+        @Html.EditorFor(m => m, "WhatFamily", new { which = OnlineRegPersonModel.PreviousFamily })
+    }
+    @if (Model.LoggedIn)
+    {
+        @Html.EditorFor(m => m, "WhatFamily", new { which = OnlineRegPersonModel.MyFamily })
+    }
+</div>
+@Html.DivValidationMessageFor(m => m.whatfamily);

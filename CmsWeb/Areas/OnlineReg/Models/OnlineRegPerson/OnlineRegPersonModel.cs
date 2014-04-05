@@ -117,6 +117,11 @@ namespace CmsWeb.Models
         public string grade { get; set; }
         public int? ntickets { get; set; }
         public int? whatfamily { get; set; }
+
+        public const int MyFamily = 1;
+        public const int PreviousFamily = 2;
+        public const int NewFamily = 3;
+
         public string gradeoption { get; set; }
         public bool IsFamily { get; set; }
 
@@ -353,19 +358,23 @@ namespace CmsWeb.Models
 
         public OnlineRegModel Parent;
 
-        public int? index;
-        public int Index()
+        internal int? index;
+        public int Index
         {
-            if (!index.HasValue)
-                index = Parent.List.IndexOf(this);
-            if (index == -1)
-                index = 0;
-            return index.Value;
+            get
+            {
+                if (!index.HasValue)
+                    index = Parent.List.IndexOf(this);
+                if (index == -1)
+                    index = 0;
+                return index.Value;
+            }
         }
+
 
         public bool LastItem()
         {
-            return Index() == Parent.List.Count - 1;
+            return Index == Parent.List.Count - 1;
         }
 
         public bool SawExistingAccount;

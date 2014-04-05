@@ -5,7 +5,6 @@ using System.Web;
 using CmsData;
 using System.Text;
 using CmsData.Codes;
-using NPOI.POIFS.Properties;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
@@ -81,7 +80,7 @@ namespace CmsWeb.Models
                 {
                     PeopleId = p.PeopleId.Value,
                     Amt = p.TotalAmount(),
-                    OrgId = orgid,
+                    OrgId = Orgid,
                 });
             }
 
@@ -92,7 +91,7 @@ namespace CmsWeb.Models
 
             if (org.IsMissionTrip == true)
             {
-                paylink = Util.ResolveServerUrl("/OnlineReg/Index/{0}?goerid={1}".Fmt(orgid, p0.PeopleId));
+                paylink = Util.ResolveServerUrl("/OnlineReg/Index/{0}?goerid={1}".Fmt(Orgid, p0.PeopleId));
             }
             else
             {
@@ -160,7 +159,7 @@ namespace CmsWeb.Models
 
             var DivisionName = org.DivisionName;
 
-            var os = settings[orgid.Value];
+            var os = settings[Orgid.Value];
             var EmailSubject = Util.PickFirst(os.Subject, "no subject");
             var EmailMessage = Util.PickFirst(os.Body, "no body");
 
@@ -358,7 +357,7 @@ AmountDue: {4:C}<br/>
                 {
                     PeopleId = p.PeopleId.Value,
                     Amt = p.TotalAmount(),
-                    OrgId = orgid,
+                    OrgId = Orgid,
                 });
             }
 
@@ -489,7 +488,7 @@ Total Fee paid for this registration session: {4:C}<br/>
 <p>Here is your <a href=""{url}"">MANAGE REGISTRATION</a> link to manage {orgname}. This link will work only once. Creating an account will allow you to do this again without having to email the link.</p>");
             message = message.Replace("{orgname}", Header);
 
-            var Staff = DbUtil.Db.StaffPeopleForOrg(orgid.Value);
+            var Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
             p.SendOneTimeLink(Staff.First().FromEmail,
                 Util.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
         }
@@ -531,7 +530,7 @@ Total Fee paid for this registration session: {4:C}<br/>
 <p>Here is your <a href=""{url}"">link</a> to manage your volunteer commitments. (note: it will only work once for security reasons)</p> ");
 
             List<Person> Staff = null;
-            Staff = DbUtil.Db.StaffPeopleForOrg(orgid.Value);
+            Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
                 Util.ServerLink("/OnlineReg/ManageVolunteer/"), "Manage Your Volunteer Commitments", message);
@@ -554,7 +553,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             }
 
             p.SendOneTimeLink(
-                DbUtil.Db.StaffPeopleForOrg(orgid.Value).First().FromEmail,
+                DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
                 Util.ServerLink("/OnlineReg/ManagePledge/"), c.Title, c.Body);
         }
         public void ConfirmManageGiving()
@@ -575,7 +574,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             }
 
             p.SendOneTimeLink(
-                DbUtil.Db.StaffPeopleForOrg(orgid.Value).First().FromEmail,
+                DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
                 Util.ServerLink("/OnlineReg/ManageGiving/"), c.Title, c.Body);
         }
         public int GetEntryPoint()
@@ -590,12 +589,12 @@ Total Fee paid for this registration session: {4:C}<br/>
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("orgid: {0}<br/>\n", this.orgid);
+            sb.AppendFormat("orgid: {0}<br/>\n", this.Orgid);
             sb.AppendFormat("masterorgid: {0}<br/>\n", this.masterorgid);
             sb.AppendFormat("userid: {0}<br/>\n", this.UserPeopleId);
             foreach (var li in List)
             {
-                sb.AppendFormat("--------------------------------\nList: {0}<br/>\n", li.Index());
+                sb.AppendFormat("--------------------------------\nList: {0}<br/>\n", li.Index);
                 sb.Append(li.ToString());
             }
             return sb.ToString();

@@ -1,0 +1,18 @@
+﻿@model CmsWeb.Models.OnlineRegPersonModel
+@{
+    var or = "";
+}
+<div class="form-group">
+    <div class="col-sm-12">
+        @if (Model.Parent.List.Count == 1 && !Model.IsNew && Model.Found != true && !Model.LoggedIn && !Model.OtherOK)
+        {
+            <h4 class="inline-block">Already have an account?</h4>
+            <a href="/OnlineReg/YesLogin" class="btn btn-success submitlink">
+                Login Here
+            </a>
+            or = "Or ";
+        }
+        <h4 class="inline-block">@(or)Help us find your record in our database</h4>
+        <small class="inline-block">(you can add a new record if not found)</small>
+    </div>
+</div>

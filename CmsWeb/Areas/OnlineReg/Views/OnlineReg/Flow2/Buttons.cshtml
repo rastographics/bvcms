@@ -6,11 +6,8 @@
         <span class="pull-right">
             @if (!Model.OnlyOneAllowed())
             {
-                <a href="/OnlineReg/AddAnotherPerson/" class="submitbutton ajax btn btn-primary">
-                    Register Someone Else 
-                </a>
-                @:or
-        }
+                @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", "Register Someone Else")
+            }
             @if (Model.ManagingSubscriptions())
             {
                 @Helper.OnlineRegSubmitButton("Manage Subscriptions")
@@ -26,11 +23,11 @@
             }
             else if (Model.ChoosingSlots() || Model.OnlineGiving() || Model.SupportMissionTrip)
             {
-                @Helper.OnlineRegSubmitButton("Processing, Please Wait", onlyoneallowed: true)
+                @Helper.OnlineRegSubmitButton("Processing, Please Wait", onlyoneallowed: true, style: "btn-default")
             }
             else
             {
-                @Helper.OnlineRegSubmitButton("Complete Registration")
+                @Helper.OnlineRegSubmitButton("Complete Registration", style: "btn-success")
             }
         </span>
         @if (sendlinkmsg.HasValue())

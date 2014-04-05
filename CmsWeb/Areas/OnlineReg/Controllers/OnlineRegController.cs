@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Util.NoCache(Response);
             if (!id.HasValue)
                 return Content("no organization");
-            var m = new OnlineRegModel { orgid = id };
+            var m = new OnlineRegModel { Orgid = id };
             if (m.org == null && m.masterorg == null)
                 return Content("invalid registration");
 
@@ -134,17 +134,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
                 {
                     TempData["mg"] = m.UserPeopleId;
-                    return Redirect("/OnlineReg/ManageGiving/{0}".Fmt(m.orgid));
+                    return Redirect("/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid));
                 }
                 if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.OnlinePledge)
                 {
                     TempData["mp"] = m.UserPeopleId;
-                    return Redirect("/OnlineReg/ManagePledge/{0}".Fmt(m.orgid));
+                    return Redirect("/OnlineReg/ManagePledge/{0}".Fmt(m.Orgid));
                 }
                 if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
                 {
                     TempData["ps"] = m.UserPeopleId;
-                    return Redirect("/OnlineReg/ManageVolunteer/{0}".Fmt(m.orgid));
+                    return Redirect("/OnlineReg/ManageVolunteer/{0}".Fmt(m.Orgid));
                 }
                 if (showfamily != true && p.org != null && p.Found == true)
                 {
@@ -175,7 +175,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             Session["OnlineRegLogin"] = true;
             var user = ret as User;
-            if (m.orgid == Util.CreateAccountCode)
+            if (m.Orgid == Util.CreateAccountCode)
                 return Content("/Person2/" + Util.UserPeopleId);
 
             m.CreateList();
@@ -189,17 +189,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.ChoosingSlots())
             {
                 TempData["ps"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManageVolunteer/{0}".Fmt(m.orgid));
+                return Content("/OnlineReg/ManageVolunteer/{0}".Fmt(m.Orgid));
             }
             if (m.OnlinePledge())
             {
                 TempData["mp"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManagePledge/{0}".Fmt(m.orgid));
+                return Content("/OnlineReg/ManagePledge/{0}".Fmt(m.Orgid));
             }
             if (m.ManageGiving())
             {
                 TempData["mg"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManageGiving/{0}".Fmt(m.orgid));
+                return Content("/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid));
             }
 
             if (m.UserSelectsOrganization())
@@ -270,7 +270,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.List.Count == 0)
                 m.List.Add(new OnlineRegPersonModel
                 {
-                    orgid = m.orgid,
+                    orgid = m.Orgid,
                     masterorgid = m.masterorgid,
                     LoggedIn = m.UserPeopleId.HasValue,
 #if DEBUG
@@ -351,7 +351,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (p.classid.HasValue)
             {
-                m.orgid = p.classid;
+                m.Orgid = p.classid;
                 m.classid = p.classid;
                 p.orgid = p.classid;
             }
@@ -532,7 +532,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #else
             m.List.Add(new OnlineRegPersonModel
             {
-                orgid = m.orgid,
+                orgid = m.Orgid,
                 masterorgid = m.masterorgid,
                 LoggedIn = m.UserPeopleId.HasValue,
             });
@@ -565,7 +565,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
             {
-                SpecialRegModel.ParseResults(m.orgid ?? 0, m.List[0].PeopleId ?? 0, Request.Form);
+                SpecialRegModel.ParseResults(m.Orgid ?? 0, m.List[0].PeopleId ?? 0, Request.Form);
                 return View("SpecialRegistrationResults");
             }
 
@@ -617,10 +617,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var om =
                  DbUtil.Db.OrganizationMembers.SingleOrDefault(
-                      mm => mm.OrganizationId == m.orgid && mm.PeopleId == m.List[0].PeopleId);
+                      mm => mm.OrganizationId == m.Orgid && mm.PeopleId == m.List[0].PeopleId);
             m.ParseSettings();
 
-            if (om != null && m.settings[m.orgid.Value].AllowReRegister == false && !m.SupportMissionTrip)
+            if (om != null && m.settings[m.Orgid.Value].AllowReRegister == false && !m.SupportMissionTrip)
             {
                 return Content("You are already registered it appears");
             }

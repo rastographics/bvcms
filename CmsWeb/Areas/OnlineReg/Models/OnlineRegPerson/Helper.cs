@@ -90,6 +90,13 @@ namespace CmsWeb.Models
                     select o;
             return q.Any();
         }
+
+        public bool ShowCancelButton()
+        {
+            // Show the Cancel link because we have either found the record or this is a new record
+            // and we're not in create account mode nor in manage subscriptions mode
+            return (Found.HasValue || IsNew) && !Parent.ManagingSubscriptions() && !IsCreateAccount();
+        }
         public bool UserSelectsOrganization()
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2;
@@ -244,6 +251,10 @@ namespace CmsWeb.Models
         {
             return ShowDisplay() && OtherOK;
         }
+        public bool NotFirst()
+        {
+            return Index > 0;
+        }
         public bool ShowDisplay()
         {
             if (Found == true && IsValidForExisting)
@@ -252,9 +263,7 @@ namespace CmsWeb.Models
                 return false;
             if (IsFamily)
                 return IsValidForExisting;
-            if (IsNew && IsValidForNew)
-                return true;
-            return false;
+            return IsNew && IsValidForNew;
         }
         public bool AnyOtherInfo()
         {

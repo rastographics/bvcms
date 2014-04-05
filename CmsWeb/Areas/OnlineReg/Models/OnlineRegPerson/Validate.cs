@@ -14,7 +14,7 @@ namespace CmsWeb.Models
         public bool IsValidForContinue { get; set; }
         private void ValidateBirthdayRange(ModelStateDictionary ModelState)
         {
-            var i = Index();
+            var i = Index;
             if (org != null)
                 if (!birthday.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
                     ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].DateOfBirth), "birthday required");
@@ -27,7 +27,7 @@ namespace CmsWeb.Models
         }
         private void ValidBasic(ModelStateDictionary ModelState)
         {
-            var i = Index();
+            var i = Index;
             if (!FirstName.HasValue())
                 ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].FirstName), "first name required");
             if (!LastName.HasValue())
@@ -57,7 +57,7 @@ namespace CmsWeb.Models
         }
         public void ValidateModelForFind(ModelStateDictionary ModelState, OnlineRegModel m, bool selectfromfamily = false)
         {
-            var i = Index();
+            var i = Index;
             IsValidForContinue = true; // true till proven false
             if (UserSelectsOrganization())
                 if ((classid ?? 0) == 0)
@@ -210,7 +210,7 @@ Please call the church to resolve this before we can complete your registration.
         public bool IsValidForNew { get; set; }
         internal void ValidateModelForNew(ModelStateDictionary ModelState)
         {
-            var i = Index();
+            var i = Index;
             var dobname = Parent.GetNameFor(mm => mm.List[i].DateOfBirth);
             var foundname = Parent.GetNameFor(mm => mm.List[i].Found);
             var isnewfamily = whatfamily == 3;
@@ -304,7 +304,7 @@ Please call the church to resolve this before we can complete your registration.
         }
         public void ValidateModelForOther(ModelStateDictionary modelState)
         {
-            var i = Index();
+            var i = Index;
             if (Parent.SupportMissionTrip)
             {
                 OtherOK = true;

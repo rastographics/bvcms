@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
@@ -18,9 +14,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Session["gobackurl"] = m2.URL;
             ViewBag.timeout = INT_timeout;
             if(m2.UseBootstrap)
-                SetHeaders2(m2.orgid ?? m2.masterorgid ?? 0);
+                SetHeaders2(m2.Orgid ?? m2.masterorgid ?? 0);
             else
-                SetHeaders(m2.orgid ?? m2.masterorgid ?? 0);
+                SetHeaders(m2.Orgid ?? m2.masterorgid ?? 0);
         }
         private void SetHeaders2(int id)
         {
