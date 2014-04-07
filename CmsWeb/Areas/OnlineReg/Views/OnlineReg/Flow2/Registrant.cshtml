@@ -25,7 +25,7 @@
         @Html.Partial("Flow2/LoginOrFind", Model)
     }
 }
-<div class="well">
+<div class="well @(Model.Index % 2 == 0 ? "well-even" : "well-odd") ">
     @if (!Model.ShowAddress && Model.NotFoundText.HasValue())
     {
         @Html.DivAlertBox(Model.NotFoundText, alerttype: "alert-info")
@@ -34,27 +34,8 @@
 
     @if (Model.ShowDisplay())
     {
+        @Html.Partial("Flow2/PersonHidden", Model)
         @Html.Partial("Flow2/PersonDisplay", Model)
-        if (Model.OtherOK && !Model.ManageSubscriptions() && !Model.ChooseVolunteerTimes())
-        // need to store the other info too because it is complete and passes validation
-        {
-            @Html.Partial("Flow2/OtherHidden", Model)
-        }
-        if (!Model.ManageSubscriptions() && !Model.OnlinePledge())
-        {
-            if (Model.OtherOK)
-            // Display answers to Questions
-            {
-                @Html.Partial("Flow2/OtherDisplay", Model)
-            }
-            else // Show Questions to ask
-            {
-                @Html.DivAlertBox("OK, We {0} record, please continue below.".Fmt(Model.IsNew
-                            ? "have your new" : "found your"), alerttype: "alert-info")
-                Model.Parent.ShowOtherInstructions = true;
-                @Html.Partial("Flow2/OtherEdit", Model)
-            }
-        }
     }
     else if (!Model.Parent.IsEnded())
     // Show next person to register, because still taking registrations
@@ -62,6 +43,7 @@
         if (Model.IsFamily)
         // Already found, display only
         {
+            @Html.Partial("Flow2/PersonHidden", Model)
             @Html.Partial("Flow2/PersonDisplay", Model)
         }
         else // Find or Add New Registrant

@@ -431,6 +431,7 @@ namespace CmsWeb.Models
             return age;
         }
         public string NotFoundText;
+        public string CancelText = "Cancel this person";
         private int count;
 
         private Person _Person;

@@ -30,13 +30,25 @@ namespace UtilityExtensions
 			if (From == null)
 				From = Util.FirstAddress(senderrorsto);
 
-			msg.From = From;
-			if (SysFromEmail.HasValue())
-			{
-				var sysmail = new MailAddress(SysFromEmail);
-				if (From.Host != sysmail.Host)
-					msg.Sender = sysmail;
-			}
+		    if (From.Host == "yahoo.com" || to.Any(ee => ee.Host == "yahoo.com"))
+		    {
+		        if (!SysFromEmail.HasValue())
+		            SysFromEmail = "mailer@bvcms.com";
+				var sysmail = new MailAddress(SysFromEmail, From.DisplayName);
+    			msg.From = sysmail;
+                msg.ReplyToList.Add(From);
+		    }
+		    else
+		    {
+    			msg.From = From;
+    			if (SysFromEmail.HasValue())
+    			{
+    				var sysmail = new MailAddress(SysFromEmail);
+    				if (From.Host != sysmail.Host)
+    					msg.Sender = sysmail;
+    			}
+		    }
+
 			msg.Headers.Add("X-SMTPAPI",
 				"{{\"unique_args\":{{\"host\":\"{0}\",\"mailid\":\"{1}\",\"pid\":\"{2}\"}}}}"
 				.Fmt(CmsHost, id, pid));

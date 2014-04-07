@@ -1,7 +1,50 @@
 ﻿@using CmsWeb.Models
+@using UtilityExtensions
 @model OnlineRegPersonModel
 
-@if (!Model.ShowAddress)
+@if (Model.ShowAddress)
+{
+    @Html.HiddenFor(m => m.guid)
+    @Html.HiddenFor(m => m.FirstName)
+    @Html.HiddenFor(m => m.MiddleName)
+    @Html.HiddenFor(m => m.LastName)
+    @Html.HiddenFor(m => m.Suffix)
+    @Html.HiddenFor(m => m.EmailAddress)
+    <address>
+        <strong>@Model.FirstName @Model.LastName</strong>
+        @if (Model.ShowCancelButton())
+        {
+            @Helper.OnlineRegAjaxButton("/OnlineReg/Cancel/" + Model.Index, Model.CancelText, style: "btn-xs btn-warning pull-right")
+        }
+        <br /><abbr>DOB:</abbr> @Model.DateOfBirth @Html.Raw(Model.LoggedIn ? "(<span>{0}</span>)".Fmt(Model.age) : "")
+        @if (Model.Phone.HasValue())
+        {
+            <br /><abbr title="Phone">P:</abbr> @Model.Phone
+        }
+        <br />@Model.EmailAddress
+    </address>
+    
+    <div class="alert alert-info">Please provide additional information for a new profile</div>
+    if (Model.RequiredDOB() && !Model.DateOfBirth.HasValue())
+    {
+        @Html.EditorFor(m => m.DateOfBirth)
+    }
+    else
+    {
+        @Html.HiddenFor(m => m.DateOfBirth)
+    }
+    if (Model.RequiredPhone() && !Model.Phone.HasValue())
+    {
+        @Html.EditorFor(m => m.Phone)
+    }
+    else
+    {
+        @Html.HiddenFor(m => m.Phone)
+    }
+    @Html.Partial("Flow2/AddressEdit", Model)
+    @Html.Partial("Flow2/SubmitNewButtons", Model)
+}
+else
 {
     @Html.HiddenFor(m => m.guid)
     @Html.EditorFor(m => m.FirstName)
@@ -12,10 +55,4 @@
     @Html.EditorFor(m => m.Phone)
     @Html.EditorFor(m => m.EmailAddress)
     @Html.Partial("Flow2/FindOrNewButtons", Model)
-}
-else
-{
-    @Html.Partial("Flow2/PersonDisplay", Model)
-    @Html.Partial("Flow2/AddressEdit", Model)
-    @Html.Partial("Flow2/SubmitNewButtons", Model)
 }

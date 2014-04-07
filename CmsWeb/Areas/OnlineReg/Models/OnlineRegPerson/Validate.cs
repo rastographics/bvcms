@@ -121,6 +121,8 @@ Please call the church to resolve this before we can complete your information."
                     else if (MemberOnly() && person.MemberStatusId != MemberStatusCode.Member)
                     {
                         ModelState.AddModelError(foundname, "Sorry, must be a member of church");
+                        if(setting.UseBootstrap)
+                            NotFoundText = @"<strong>Sorry, must be a member of this church</strong>";
                         IsValidForContinue = false;
                     }
                     else if (org != null)
@@ -158,6 +160,9 @@ Please call the church to resolve this before we can complete your account.<br /
                             && !Parent.SupportMissionTrip)
                         {
                             ModelState.AddModelError(foundname, "This person is already registered");
+                            if(setting.UseBootstrap)
+                                NotFoundText = @"<strong>This person is already registered</strong>";
+                            CancelText = "Regiser a different person";
                             IsValidForContinue = false;
                         }
                         else if (setting.ValidateOrgIds.Count > 0)
@@ -167,20 +172,27 @@ Please call the church to resolve this before we can complete your account.<br /
                                 if (!person.OrganizationMembers.Any(mm => reqmemberids.Contains(mm.OrganizationId)))
                                 {
                                     ModelState.AddModelError(foundname, "Must be member of specified organization");
+                                    if(setting.UseBootstrap)
+                                        NotFoundText = @"<strong>Must be a member of specified organization to register</strong>";
                                     IsValidForContinue = false;
                                 }
                             var reqnomemberids = setting.ValidateOrgIds.Where(ii => ii < 0).ToList();
                             if (reqnomemberids.Count > 0)
                                 if (person.OrganizationMembers.Any(mm => reqnomemberids.Contains(-mm.OrganizationId)))
                                 {
-                                    ModelState.AddModelError(foundname, "Must be not be member of specified organization");
+                                    ModelState.AddModelError(foundname, "Must not be a member of specified organization");
+                                    if(setting.UseBootstrap)
+                                        NotFoundText = @"<strong>Must not be a member of specified organization to register</strong>";
                                     IsValidForContinue = false;
                                 }
                         }
                     }
                     if (m.List.Count(ii => ii.PeopleId == PeopleId) > 1)
                     {
-                        ModelState.AddModelError(foundname, "Person already in Pending Registrations");
+                        ModelState.AddModelError(foundname, "Person already in Pending Registration");
+                        CancelText = "Regiser a different person";
+                        if(setting.UseBootstrap)
+                            NotFoundText = @"<strong>Person already in Pending Registration</strong>";
                         IsValidForContinue = false;
                     }
                 }

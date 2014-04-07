@@ -7,35 +7,56 @@
         <td>@Model.org.OrganizationName</td>
     </tr>
 }
-@Html.Partial("Flow2/PersonHidden", Model)
-<div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
-        <address>
-            <strong>@Model.FirstName @Model.LastName</strong>
-            @if (Model.ShowCancelButton())
-            {
-                @Helper.OnlineRegAjaxButton("/OnlineReg/Cancel/" + Model.Index, "Cancel this person", style: "btn-xs btn-warning pull-right")
-            }
-            <br /><abbr>DOB:</abbr> @Model.DateOfBirth @Html.Raw(Model.LoggedIn ? "(<span>@Model.age</span>)" : "")
-            @if (Model.Phone.HasValue())
-            {
-                <br /><abbr title="Phone">P:</abbr> @Model.Phone
-            }
-            <br />@Model.EmailAddress
-            @if (Model.ShowAddress && Model.Finished())
-            {
-                <br />@Model.marrieddisplay @:&nbsp; @Model.genderdisplay<br/>
-                <br />@Model.AddressLineOne
-                if (Model.AddressLineTwo.HasValue())
-                {
-                    <br />@Model.AddressLineTwo
-                }
-                <br />@Util.FormatCSZ(Model.City, Model.State, Model.ZipCode)
-                if (Model.Country != "United States")
-                {
-                    <br />@Model.Country
-                }
-            }
-        </address>
+@if (Model.Finished())
+{
+    <div class="personheader">
+        <strong>@Model.FirstName @Model.LastName</strong>
+        @if (Model.ShowCancelButton())
+        {
+            @Helper.OnlineRegAjaxButton("/OnlineReg/Cancel/" + Model.Index, Model.CancelText, style: "btn-xs btn-warning pull-right")
+        }
     </div>
-</div>
+}
+else
+{
+    <div>
+        <div class="col-sm-offset-3 col-sm-12">
+            <address>
+                <strong>@Model.FirstName @Model.LastName</strong>
+                @if (Model.ShowCancelButton())
+                {
+                    @Helper.OnlineRegAjaxButton("/OnlineReg/Cancel/" + Model.Index, Model.CancelText, style: "btn-xs btn-warning pull-right")
+                }
+                <br /><abbr>DOB:</abbr> @Model.DateOfBirth @Html.Raw(Model.LoggedIn ? "(<span>{0}</span>)".Fmt(Model.age) : "")
+                @if (Model.Phone.HasValue())
+                {
+                    <br /><abbr title="Phone">P:</abbr> @Model.Phone
+                }
+                <br />@Model.EmailAddress
+                @if (Model.ShowAddress && Model.Finished())
+                {
+                    <br />@Model.marrieddisplay @:&nbsp; @Model.genderdisplay<br />
+                    <br />@Model.AddressLineOne
+                    if (Model.AddressLineTwo.HasValue())
+                    {
+                        <br />@Model.AddressLineTwo
+                    }
+                    <br />@Util.FormatCSZ(Model.City, Model.State, Model.ZipCode)
+                    if (Model.Country != "United States")
+                    {
+                        <br />@Model.Country
+                    }
+                }
+            </address>
+        </div>
+    </div>
+    if (Model.OtherOK)
+    {
+        @Html.Partial("Flow2/OtherHidden", Model)
+        @Html.Partial("Flow2/OtherDisplay", Model)
+    }
+    else
+    {
+        @Html.Partial("Flow2/OtherEdit", Model)
+    }
+}

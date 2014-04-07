@@ -6,7 +6,7 @@
     var prefix = ViewData.TemplateInfo.HtmlFieldPrefix;
     var checkoxesAdded = false;
 }
-@if (!Model.Parent.SupportMissionTrip)
+@if (!Model.Parent.SupportMissionTrip && !Model.ManageSubscriptions() && !Model.ChooseVolunteerTimes())
 {
     foreach (var ask in Model.setting.AskItems)
     {

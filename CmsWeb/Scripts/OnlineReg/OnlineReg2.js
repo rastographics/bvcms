@@ -143,9 +143,9 @@
             "m.donation": { number: true }
         }
     });
-    $(".personheader a").live("click", function (e) {
+    $("div.personheader").live("click", function (e) {
         e.preventDefault();
-        $(this).closest('div').nextAll('table').slideToggle();
+        $(this).closest('div').nextAll('div').slideToggle();
         return false;
     });
     $("input.sum").live("change", function () {

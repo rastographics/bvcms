@@ -12,21 +12,15 @@ else
             @switch (ask.Type)
             {
                 case "AskSize":
-                    <label class="control-label col-sm-3">@(((AskSize) ask).Label)</label>
-                    <div class="col-sm-9">
-                        <p class="form-control-static">@Model.shirtsize</p>
-                    </div>
+                    <div class="col-sm-3">@(((AskSize) ask).Label)</div>
+                    <div class="col-sm-9"><p>@Model.shirtsize</p></div>
                     break;
                 case "AskRequest":
-                    <label class="control-label col-sm-3">@Util.PickFirst(((AskRequest) ask).Label, "Request")</label>
-                    <div class="col-sm-9">
-                        <p class="form-control-static">@Model.request</p>
-                    </div>
+                    <label class="col-sm-3">@Util.PickFirst(((AskRequest) ask).Label, "Request")</label>
+                    <div class="col-sm-9"><p>@Model.request</p></div>
                     break;
                 case "AskHeader":
-                    <div class="col-sm-offset-3 col-sm-9">
-                        <h4 class="form-control-static">@(((AskHeader) ask).Label)</h4>
-                    </div>
+                    <div class="col-sm-offset-3 col-sm-9"><strong>@(((AskHeader) ask).Label)</strong></div>
                     break;
                 case "AskInstruction":
                     break;
