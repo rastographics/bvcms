@@ -583,5 +583,21 @@ namespace CmsWeb.Models
             });
             return list;
         }
+
+        public string ChurchBlogUrl
+        {
+            get { return DbUtil.Db.Setting("ChurchBlogUrl", "#"); }
+        }
+        public bool ShowTip
+        {
+            get
+            {
+                return !DbUtil.Db.UserPreference("hide-tip-home", "false").ToBool();
+            }
+        }
+        public string BlogAppUrl
+        {
+            get { return DbUtil.Db.Setting("BlogAppUrl", "#"); }
+        }
     }
 }

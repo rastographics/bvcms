@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
 
@@ -6,6 +7,10 @@ namespace CmsData
 {
 	public partial class Meeting : ITableWithExtraValues
 	{
+	    public IEnumerable<MeetingExtra> GetMeetingExtras()
+	    {
+	        return MeetingExtras.OrderBy(pp => pp.Field);
+	    }
 		public MeetingExtra GetExtraValue(string field)
 		{
 			var ev = MeetingExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);

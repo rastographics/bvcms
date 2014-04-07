@@ -1548,5 +1548,15 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return canview;
         }
+
+        public List<EmailOptOut> GetOptOuts()
+        {
+            return EmailOptOuts.ToList();
+        }
+
+        public List<User> GetUsers()
+        {
+            return Users.ToList();
+        }
     }
 }

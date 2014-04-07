@@ -481,5 +481,9 @@ namespace CmsData
                 regLimitCount = db.OrganizationMemberCount2(OrganizationId) ?? 0;
             return regLimitCount.Value;
         }
+	    public IEnumerable<OrganizationExtra> GetOrganizationExtras()
+	    {
+	        return OrganizationExtras.OrderBy(pp => pp.Field);
+	    }
     }
 }

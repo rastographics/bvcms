@@ -270,6 +270,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.List.Count == 0)
                 m.List.Add(new OnlineRegPersonModel
                 {
+                    guid = Guid.NewGuid(),
                     orgid = m.Orgid,
                     masterorgid = m.masterorgid,
                     LoggedIn = m.UserPeopleId.HasValue,
@@ -516,6 +517,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #if DEBUG2
             m.List.Add(new OnlineRegPersonModel
             {
+                guid = Guid.NewGuid(),
                 divid = m.divid,
                 orgid = m.orgid,
                 masterorgid = m.masterorgid,
@@ -532,6 +534,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #else
             m.List.Add(new OnlineRegPersonModel
             {
+                guid = Guid.NewGuid(),
                 orgid = m.Orgid,
                 masterorgid = m.masterorgid,
                 LoggedIn = m.UserPeopleId.HasValue,

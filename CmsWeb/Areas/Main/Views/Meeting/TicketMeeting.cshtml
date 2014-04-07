@@ -4,7 +4,7 @@
 @using UtilityExtensions
 @Html.Hidden("meetingid", Model.meeting.MeetingId)
 @{
-    var RegularMeetingHeadCount = DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
+    var RegularMeetingHeadCount = Model.RegularMeetingHeadCountSetting();
     var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount == "enable";
 }
 <table class="roundbox" cellspacing="5">

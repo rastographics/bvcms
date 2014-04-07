@@ -5,7 +5,7 @@
         ? "~/Views/Shared/onlinereg2.cshtml"
         : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Transaction";
-    var churchWebSite = DbUtil.Db.Setting("ChurchWebSite", "");
+    var churchWebSite = ViewExtensions2.DbSetting("ChurchWebSite", "");
 }
 @section scripts
 {

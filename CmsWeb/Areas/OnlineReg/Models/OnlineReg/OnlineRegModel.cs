@@ -310,6 +310,7 @@ namespace CmsWeb.Models
                 {
                     new OnlineRegPersonModel
                         {
+                            guid = Guid.NewGuid(),
                             orgid = Orgid,
                             masterorgid = masterorgid,
                             LoggedIn = false,

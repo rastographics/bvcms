@@ -20,7 +20,7 @@
             <div class="dropdown2-menu">
                 <ul>
                     <li>@Html.ActionLink("Search", "Index", "PeopleSearch", new { Area = "Main" }, null)</li>
-                    @if (DbUtil.Db.Setting("MenuAddPeople", "true") == "true")
+                    @if (ViewExtensions2.DbSetting("MenuAddPeople", "true") == "true")
                     {
                         <li>@Helper.JQueryIdLink("Add People", "addpeople")</li>
                     }
@@ -75,7 +75,7 @@
                     <li>@Helper.AnchorLink("Vital Stats", "/Reports/VitalStats")</li>
                     <li>@Helper.AnchorLink("Week at a Glance", "/Reports/ChurchAttendance", "_blank")</li>
                     <li>@Helper.AnchorLink("Average Week at a Glance", "/Reports/ChurchAttendance2", "_blank")</li>
-                    @if (DbUtil.Db.Setting("Bellevue", "false") == "true")
+                    @if (ViewExtensions2.DbSetting("Bellevue", "false") == "true")
                     {
                         <li>@Helper.AnchorLink("Church Attendance Summary", "/Report/ChurchAttendanceSummaryRpt.aspx", "_blank")</li>
                     }
@@ -123,7 +123,7 @@
                         <li>@Html.ActionLink("Managed Giving", "ManagedGiving", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
                         <li class="divider"></li>
                         <li>@Html.ActionLink("Fund Management", "Index", "Fund", new { Area = "Finance" }, null)</li>
-                        @if (DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true")
+                        @if (ViewExtensions2.DbSetting("ShowQuickBooksMenu", "false") == "true")
                         {
                             <li>@Html.ActionLink("QuickBooks", "Index", "QuickBooks", new { Area = "Finance" }, null)</li>
                         }

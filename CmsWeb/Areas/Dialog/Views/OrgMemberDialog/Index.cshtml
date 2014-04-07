@@ -2,10 +2,7 @@
 @using CmsWeb
 @model CmsData.OrganizationMember
 @{
-    var sglist = (from mt in Model.Organization.MemberTags
-        let cnt = mt.OrgMemMemTags.Count()
-        orderby mt.Name
-        select new {mt, cnt}).ToList();
+    var sglist = Model.SmallGroupList();
 }
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -51,7 +48,7 @@ body { margin: 1px; }
                         <table>
                             @foreach (var mti in sglist)
                             { 
-                                <tr><td><input id="smallgroup@(comboid)-@mti.mt.Id" class="ckbox" type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mti.mt.Id) ? "checked='checked'" : "") /></td>
+                                <tr><td><input id="smallgroup@(comboid)-@mti.mt.Id" class="ckbox" type="checkbox" @(Model.HasSmallGroup(mti.mt.Id) ? "checked='checked'" : "") /></td>
                                     <td>@mti.mt.Name (@mti.cnt)</td></tr>
                             }
                         </table>

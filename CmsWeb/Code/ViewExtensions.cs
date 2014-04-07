@@ -725,6 +725,11 @@ namespace CmsWeb
     <script> $.fn.jqdatepicker = $.fn.datepicker; </script>
 ");
         }
+        public static bool NewLook3()
+        {
+            return DbUtil.Db.UserPreference("newlook3", "false").ToBool();
+        }
+
         public static HtmlString Bootstrap()
         {
             return Fingerprint.Script("/Scripts/Bootstrap/bootstrap.js");
@@ -732,10 +737,45 @@ namespace CmsWeb
 
         public static string Layout()
         {
+            int tID = 0;
             return (UseNewLook())
                 ? "~/Views/Shared/SiteLayout2c.cshtml"
                 : "~/Views/Shared/SiteLayout.cshtml";
 
+        }
+
+        public static string DbSetting(string name, string def)
+        {
+            return DbUtil.Db.Setting(name, def);
+        }
+
+        public static string CmsHost
+        {
+            get { return DbUtil.Db.CmsHost; }
+        }
+
+        public static IEnumerable<Person> PeopleFromPidString(string pids)
+        {
+            return from p in DbUtil.Db.PeopleFromPidString(pids)
+                   select p;
+        }
+
+        public static List<string> AllRoles()
+        {
+            return User.AllRoles(DbUtil.Db).Select(rr => rr.RoleName).ToList();
+        }
+        public static string StatusFlagsAll(int peopleId)
+        {
+            return DbUtil.Db.StatusFlagsAll(peopleId);
+        }
+
+        public static Content GetContent(int tId)
+        {
+            var t = from e in DbUtil.Db.Contents
+                    where e.Id == tId
+                    select e;
+            var c = t.FirstOrDefault();
+            return c;
         }
         public static bool CanNewLook()
         {

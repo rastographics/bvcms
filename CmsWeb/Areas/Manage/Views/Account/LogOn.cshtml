@@ -1,3 +1,4 @@
+@using CmsWeb
 @using UtilityExtensions
 @using CmsData
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -14,7 +15,7 @@
     <div id="body">
     @using (Html.BeginForm()) { 
         <div id="login">
-        <h2>@DbUtil.Db.Setting("NameOfChurch", "NameOfChurch: " + Util.Host)</h2>
+        <h2>@ViewExtensions2.DbSetting("NameOfChurch", "NameOfChurch: " + Util.Host)</h2>
         <h4 id="provider">Provided by <a href="http://www.bvcms.com"><img src="/Content/images/bvcms130.png" border="0" /></a></h4>
             <fieldset>
                 <p>

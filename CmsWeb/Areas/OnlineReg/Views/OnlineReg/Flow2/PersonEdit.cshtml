@@ -3,6 +3,7 @@
 
 @if (!Model.ShowAddress)
 {
+    @Html.HiddenFor(m => m.guid)
     @Html.EditorFor(m => m.FirstName)
     @Html.EditorFor(m => m.MiddleName)
     @Html.EditorFor(m => m.LastName)

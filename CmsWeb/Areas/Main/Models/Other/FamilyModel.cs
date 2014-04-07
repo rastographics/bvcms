@@ -30,6 +30,12 @@ namespace CmsWeb.Models.PersonPage
             public string MemberStatus { get; set; }
             public bool Deceased { get; set; }
         }
+
+        public string FamilyName()
+        {
+            return (Family.HeadOfHousehold ?? Family.People.First()).Name;
+        }
+
         public IEnumerable<FamilyMemberInfo> Members()
         {
             var mindt = DateTime.Parse("1/1/1900");

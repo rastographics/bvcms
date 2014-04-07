@@ -343,6 +343,7 @@ namespace CmsWeb.Models
             var person = DbUtil.Db.LoadPersonById(id);
             var p = new OnlineRegPersonModel
             {
+                guid = Guid.NewGuid(),
                 index = index,
                 DateOfBirth = person.DOB,
                 EmailAddress = person.EmailAddress.HasValue() ? person.EmailAddress : user.EmailAddress,

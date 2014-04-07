@@ -7,8 +7,8 @@
         ? "~/Views/Shared/onlinereg.cshtml"
         : "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "Online Registration";
-    var ServiceUOrgID = (Model.testing) ? DbUtil.Db.Setting("ServiceUOrgIDTest", "0") : DbUtil.Db.Setting("ServiceUOrgID", "0");
-    var ServiceUOrgAccountID = (Model.testing) ? DbUtil.Db.Setting("ServiceUOrgAccountIDTest", "0") : DbUtil.Db.Setting("ServiceUOrgAccountID", "0");
+    var ServiceUOrgID = (Model.testing) ? ViewExtensions2.DbSetting("ServiceUOrgIDTest", "0") : ViewExtensions2.DbSetting("ServiceUOrgID", "0");
+    var ServiceUOrgAccountID = (Model.testing) ? ViewExtensions2.DbSetting("ServiceUOrgAccountIDTest", "0") : ViewExtensions2.DbSetting("ServiceUOrgAccountID", "0");
 }
 @section scripts
 {

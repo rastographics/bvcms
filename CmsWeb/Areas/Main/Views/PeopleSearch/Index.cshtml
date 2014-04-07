@@ -54,7 +54,7 @@
         <th class="right"> Married: </th>
         <td> @Html.DropDownList("marital", Model.MaritalCodes())</td>
     </tr>
-    @if (DbUtil.Db.Setting("UseStatusFlags", "false").ToBool())
+    @if (ViewExtensions2.DbSetting("UseStatusFlags", "false").ToBool())
     {
     <tr>
 @*        <th class="right"> </th>

@@ -34,8 +34,8 @@
     <tr><td></td>
         <td>Item @n</td>
         <td colspan="2">
-            <a href="@(DbUtil.Db.CmsHost)Person2/@p.PeopleId">@p.FirstName @p.LastName</a><br />
-            <a href="@(DbUtil.Db.CmsHost)Organization/Index/@p.orgid">@(p.org != null ? p.org.OrganizationName : "na")</a><br/>
+            <a href="@(ViewExtensions2.CmsHost)Person2/@p.PeopleId">@p.FirstName @p.LastName</a><br />
+            <a href="@(ViewExtensions2.CmsHost)Organization/Index/@p.orgid">@(p.org != null ? p.org.OrganizationName : "na")</a><br/>
             @p.DateOfBirth (@p.age)<br/>
             @p.Phone.FmtFone()<br/>
             @p.EmailAddress<br/>

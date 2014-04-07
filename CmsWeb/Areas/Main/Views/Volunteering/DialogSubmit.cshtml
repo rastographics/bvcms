@@ -1,4 +1,5 @@
 ﻿@using CmsData;
+@using CmsWeb
 @using UtilityExtensions;
 @model CmsData.BackgroundCheck
 @{
@@ -96,11 +97,11 @@
             </tr>
             <tr>
                 <td class="right" style="background-color:#EFF3FB; font-weight:bold;">User:</td>
-                <td><input name="sUser" size="12" value="@DbUtil.Db.Setting("PMMUser", "")"/></td>
+                <td><input name="sUser" size="12" value="@ViewExtensions2.DbSetting("PMMUser", "")"/></td>
             </tr>
             <tr>
                 <td class="right" style="background-color:#EFF3FB; font-weight:bold;">Password:</td>
-                <td><input type="password" name="sPassword" size="12" autocomplete="off" value="@DbUtil.Db.Setting("PMMPassword", "")"/></td>
+                <td><input type="password" name="sPassword" size="12" autocomplete="off" value="@ViewExtensions2.DbSetting("PMMPassword", "")"/></td>
             </tr>
             <tr><td>&nbsp;</td></tr>
             <tr>

@@ -6,7 +6,7 @@
     var edit = User.IsInRole("Edit");
     var design = User.IsInRole("Design");
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
-    var quickbooks = DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true";
+    var quickbooks = ViewExtensions2.DbSetting("ShowQuickBooksMenu", "false") == "true";
 }
 @if (admin || manageemails || managetrans || edit || design || finance)
 {

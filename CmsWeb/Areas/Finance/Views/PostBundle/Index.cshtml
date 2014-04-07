@@ -72,11 +72,11 @@
                         </tr>
                         <tr>
                             <th>Total Items:</th>
-                            <td><span id="totalitems">@b.BundleDetails.Sum(bd => bd.Contribution.ContributionAmount).ToString2("N2")</span></td>
+                            <td><span id="totalitems">@Model.TotalItems.ToString("N2")</span></td>
                         </tr>
                         <tr>
                             <th>Item Count:</th>
-                            <td><span id="itemcount">@b.BundleDetails.Count()</span></td>
+                            <td><span id="itemcount">@Model.TotalCount</span></td>
                         </tr>
                         <tr>
                             <td colspan="2" class="right">

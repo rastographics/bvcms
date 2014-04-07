@@ -1,5 +1,6 @@
 ﻿@using CmsData;
 @using CmsData.Classes.ProtectMyMinistry
+@using CmsWeb
 @model CmsData.Person
 @{
     int type = ViewBag.dialogType;
@@ -8,7 +9,7 @@
                  orderby e.Description
                  select e;
 
-    var labelEnabled = DbUtil.Db.Setting("EnableBackgroundLabels", "false") == "true";
+    var labelEnabled = ViewExtensions2.DbSetting("EnableBackgroundLabels", "false") == "true";
 }
 <!DOCTYPE html>
 <html>

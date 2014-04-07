@@ -20,6 +20,7 @@ namespace CmsWeb.Models
     [Serializable]
     public partial class OnlineRegPersonModel : IXmlSerializable
     {
+        public Guid? guid { get; set; }
         public int? orgid { get; set; }
         public int? masterorgid { get; set; }
         public int? divid { get; set; }
@@ -312,6 +313,8 @@ namespace CmsWeb.Models
                         if(otherchurch)
                             w.Add(pi.Name, otherchurch);
                         break;
+                    case "guid":
+                        break;
                     default:
                         w.Add(pi.Name, pi.GetValue(this, null));
                         break;
@@ -364,10 +367,10 @@ namespace CmsWeb.Models
             get
             {
                 if (!index.HasValue)
-                    index = Parent.List.IndexOf(this);
+                    index = Parent.List.FindIndex(p => p.guid == guid);
                 if (index == -1)
-                    index = 0;
-                return index.Value;
+                    index = null;
+                return index ?? 0;
             }
         }
 

@@ -5,7 +5,7 @@
 @{
     ViewBag.Title = "Meeting";
     Layout = ViewExtensions2.Layout();
-    var RegularMeetingHeadCount = DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
+    var RegularMeetingHeadCount = Model.RegularMeetingHeadCountSetting();
     var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount == "enable";
 }
 @section head

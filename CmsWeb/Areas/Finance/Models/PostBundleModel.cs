@@ -462,6 +462,15 @@ namespace CmsWeb.Models
         {
             return "PeopleId: {0}|Age: {1}|{2}|{3}|{4}".Fmt(pid, age, memstatus, address, Util.FormatCSZ(city, state, zip));
         }
+
+        public decimal TotalItems
+        {
+            get { return bundle.BundleDetails.Sum(dd => dd.Contribution.ContributionAmount) ?? 0; }
+        }
+        public int TotalCount
+        {
+            get { return bundle.BundleDetails.Count(); }
+        }
         public class ContributionInfo
         {
             public int ContributionId { get; set; }

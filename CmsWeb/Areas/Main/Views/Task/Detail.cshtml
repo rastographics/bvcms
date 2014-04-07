@@ -2,7 +2,7 @@
 @using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Models.TaskDetail
-@{var link = Server.UrlEncode(DbUtil.Db.CmsHost + "/Task/List/" + Model.Id + "#detail#select"); }
+@{var link = Server.UrlEncode(ViewExtensions2.CmsHost + "/Task/List/" + Model.Id + "#detail#select"); }
 <td colspan="7">
     <a name="detail"></a>
     <table class="Design2" style="border: 3px solid black">

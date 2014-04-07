@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -542,7 +542,6 @@
     <Compile Include="Areas\Finance\Controllers\PostBundleController.cs" />
     <Compile Include="Areas\Main\Controllers\QuickSearchController.cs" />
     <Compile Include="Areas\Search\Controllers\SearchAddController.cs" />
-    <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Main\Controllers\OrganizationController.cs" />
     <Compile Include="Areas\Main\Controllers\PersonController.cs" />
     <Compile Include="Areas\Main\Controllers\UserPrefController.cs" />
@@ -1377,7 +1376,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Registrant.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SupportMissionTrip.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Birthday.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Boolean.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\SelectClass.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Date2.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\datepicker.cshtml" />
@@ -1391,7 +1389,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Phone.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\String.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\TextArea.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Typeahead.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\Birthday.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\Boolean.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\CodeInfo.cshtml" />
@@ -2286,15 +2283,6 @@
     <Content Include="Areas\Main\Views\OrgGroups\Index.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\OrgGroups\Rows.cshtml">
-    </Content>
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Display.cshtml">
-    </Content>
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Edit.cshtml">
-    </Content>
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Index.cshtml">
-      <SubType>Code</SubType>
-    </Content>
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Move.cshtml">
     </Content>
     <Content Include="Areas\Dialog\Views\OrgMembersDialog\Index.cshtml">
     </Content>
