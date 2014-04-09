@@ -326,7 +326,10 @@
     <MemberTypeAsOf Title="Member Type As Of" Type="Code" DisplayAs="MemberTypeAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="MemberTypeCodes" DataValueField="IdCode">
       Select Member Type from the list, pick a date range and select other options: Program/Division/Organization, Org Type.
     </MemberTypeAsOf>
-    <OrgJoinDate Title="Org Enrollment Date" Type="Date" DisplayAs="OrgJoinDate({0}, {1}, {2})" Params="Program,Division,Organization">
+    <FirstOrgJoinDate Title="First Org Enrollment Date" Type="Date" DisplayAs="FirstOrgEnrollmentDate({0}, {1}, {2})" Params="Program,Division,Organization">
+      Pick the Date and Comparison and select Program/Division/Organization.
+    </FirstOrgJoinDate>
+    <OrgJoinDate Title="Org Join Date" Type="Date" DisplayAs="OrgJoinDate({0}, {1}, {2})" Params="Program,Division,Organization">
       Pick the Date and Comparison and select Program/Division/Organization.
     </OrgJoinDate>
     <OrgJoinDateDaysAgo Title="Recent Org Join Date" Type="Integer" DisplayAs="RecentOrgJoinDate({0}, {1}, {2})" Params="Program,Division,Organization">

@@ -235,6 +235,7 @@ namespace CmsData
             var dow = Quarters.ToInt2();
             Expression<Func<Person, bool>> pred = p => (
                 from m in p.OrganizationMembers
+                where m.Organization.OrganizationStatusId == Codes.OrgStatusCode.Active
                 let sc = m.Organization.OrgSchedules.FirstOrDefault()
                 where sc != null
                 where !dow.HasValue || sc.SchedDay == dow
