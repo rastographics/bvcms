@@ -52,7 +52,7 @@
             <td>@Model.Tickets</td>
         </tr>
     }
-    @if (Model.Organization.RegistrationTypeId > 0)
+    @if (Model.Organization.RegistrationTypeId > 0 || Model.TotalPaid(DbUtil.Db) > 0)
     {
         var amtdue = @Model.AmountDue(DbUtil.Db);
         <tr>
