@@ -489,6 +489,11 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             return Person.Add(DbUtil.Db, true, fam, position, tag, firstname, nickname, lastname, dob, MarriedCode, gender, originId, EntryPointId);
         }
 
+        // Used for Conversions
+        public static Person Add(CMSDataContext Db, Family fam, string firstname, string nickname, string lastname, DateTime? dob)
+        {
+            return Add(Db, false, fam, 20, null, firstname, nickname, lastname, dob.FormatDate(), 0, 0, 0, 0);
+        }
         public static Person Add(CMSDataContext Db, bool SendNotices, Family fam, int position, Tag tag, string firstname, string nickname, string lastname, string dob, int MarriedCode, int gender, int originId, int? EntryPointId, bool testing = false)
         {
             var p = new Person();
@@ -1253,11 +1258,14 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var pi = PaymentInfos.SingleOrDefault();
             return pi;
         }
-        public Contribution PostUnattendedContribution(CMSDataContext Db, decimal Amt, int? Fund, string Description, bool pledge = false)
+        public Contribution PostUnattendedContribution(CMSDataContext Db, decimal Amt, int? Fund, string Description, bool pledge = false, int? typecode = null)
         {
-            var typecode = BundleTypeCode.Online;
-            if (pledge)
-                typecode = BundleTypeCode.OnlinePledge;
+            if (!typecode.HasValue)
+            {
+                typecode = BundleTypeCode.Online;
+                if (pledge)
+                    typecode = BundleTypeCode.OnlinePledge;
+            }
 
             var now = DateTime.Now;
             var d = Util.Now.Date;
@@ -1275,7 +1283,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             {
                 bundle = new BundleHeader
                 {
-                    BundleHeaderTypeId = typecode,
+                    BundleHeaderTypeId = typecode.Value,
                     BundleStatusId = BundleStatusCode.Open,
                     CreatedBy = Util.UserId1,
                     ContributionDate = d,

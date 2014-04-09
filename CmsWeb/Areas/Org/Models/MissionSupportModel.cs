@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
+using CmsData.Codes;
 using CmsData.Registration;
 using CmsWeb.Code;
 using UtilityExtensions;
@@ -96,7 +97,7 @@ namespace CmsWeb.Areas.Org.Models
                         });
                     var c = person.PostUnattendedContribution(DbUtil.Db,
                         AmountGoer ?? 0, fund, 
-                        "SupportMissionTrip: org={0}; goer={1}".Fmt(OrgId, Goer.Value));
+                        "SupportMissionTrip: org={0}; goer={1}".Fmt(OrgId, Goer.Value), typecode: BundleTypeCode.ChecksAndCash);
                     c.CheckNo = CheckNo;
                     // send notices
                     var goer = DbUtil.Db.LoadPersonById(Goer.Value.ToInt());
@@ -116,7 +117,7 @@ namespace CmsWeb.Areas.Org.Models
                         });
                     var c = person.PostUnattendedContribution(DbUtil.Db,
                         AmountGeneral ?? 0, fund, 
-                        "SupportMissionTrip: org={0}".Fmt(OrgId));
+                        "SupportMissionTrip: org={0}".Fmt(OrgId), typecode: BundleTypeCode.ChecksAndCash);
                     c.CheckNo = CheckNo;
                 }
                 DbUtil.Db.SubmitChanges();
