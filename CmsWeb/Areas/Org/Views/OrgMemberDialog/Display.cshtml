@@ -42,9 +42,10 @@
                     {
                         @Html.DisplayFor(m => m.Tickets)
                     }
-                    @if (Model.Amount.HasValue)
+                    @if (Model.Amount.HasValue || Model.AmountPaid.HasValue)
                     {
                         @Html.DisplayFor(m => m.Amount)
+                        @Html.DisplayFor(m => m.AmountPaid)
                         @Html.DisplayFor(m => m.AmountDue)
                         if (Model.AmountDue > 0)
                         {

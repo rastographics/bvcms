@@ -68,6 +68,7 @@ namespace CmsData
         FamilyHasChildrenAged2,
         FamilyHasChildrenAged3,
         FamHasPrimAdultChurchMemb,
+        FirstOrgJoinDate,
         FirstName,
         GenderId,
         Grade,

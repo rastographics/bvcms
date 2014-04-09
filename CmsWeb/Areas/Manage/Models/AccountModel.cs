@@ -298,6 +298,7 @@ namespace CmsWeb.Models
         {
             var user = DbUtil.Db.Users.First(u => u.Username == username);
             var body = DbUtil.Db.ContentHtml("NewUserWelcome", Resource1.AccountModel_NewUserWelcome);
+            body = body.Replace("{first}", user.Person.PreferredName);
             body = body.Replace("{name}", user.Person.Name);
             body = body.Replace("{cmshost}", DbUtil.Db.Setting("DefaultHost", DbUtil.Db.Host));
             body = body.Replace("{username}", user.Username);
@@ -344,6 +345,8 @@ namespace CmsWeb.Models
                     DbUtil.Db.SubmitChanges();
                     var url = Util.ServerLink("/Account/CreateAccount/{0}".Fmt(ot.Id.ToCode()));
                     var message = DbUtil.Db.ContentHtml("ForgotPasswordReset", Resource1.AccountModel_ForgotPasswordReset);
+                    message = message.Replace("{name}", p.Name);
+                    message = message.Replace("{first}", p.PreferredName);
                     message = message.Replace("{email}", username);
                     message = message.Replace("{resetlink}", url);
                     Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],

@@ -92,13 +92,13 @@ namespace CmsWeb.Models
                     string First, Last;
                     Util.NameSplit(m.name, out First, out Last);
                     if (First.HasValue())
-                    people = from p in people
-                         where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                             || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
-                         where
-                             p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First)
-                             || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
-                         select p;
+                        people = from p in people
+                             where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                                 || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
+                             where
+                                 p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First)
+                                 || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
+                             select p;
                     else
                         if (Last.AllDigits())
                             people = from p in people
@@ -107,7 +107,6 @@ namespace CmsWeb.Models
                         else
                             people = from p in people
                               where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name)
-                              || p.FirstName.StartsWith(m.name) || p.NickName.StartsWith(m.name) || p.MiddleName.StartsWith(m.name)
                               select p;
                 }
             }
@@ -388,9 +387,9 @@ namespace CmsWeb.Models
                         g.SetComparisonType(CompareType.AnyTrue);
                         g.AddNewClause(QueryType.LastName, CompareType.StartsWith, m.name);
                         g.AddNewClause(QueryType.MaidenName, CompareType.StartsWith, m.name);
-                        g.AddNewClause(QueryType.FirstName, CompareType.StartsWith, m.name);
-                        g.AddNewClause(QueryType.NickName, CompareType.StartsWith, m.name);
-                        g.AddNewClause(QueryType.MiddleName, CompareType.StartsWith, m.name);
+//                        g.AddNewClause(QueryType.FirstName, CompareType.StartsWith, m.name);
+//                        g.AddNewClause(QueryType.NickName, CompareType.StartsWith, m.name);
+//                        g.AddNewClause(QueryType.MiddleName, CompareType.StartsWith, m.name);
                     }
                 }
             }

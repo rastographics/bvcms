@@ -143,6 +143,73 @@ namespace CmsData
             }
             return Expression.Invoke(pred, parm);
         }
+        internal Expression FirstOrgJoinDate()
+        {
+            IQueryable<int> q = null;
+            switch (op)
+            {
+                case CompareType.Equal:
+                    if (DateValue == null)
+                        q = from p in db.People
+                            where !(from et in p.EnrollmentTransactions
+                                    where et.TransactionTypeId == 1
+                                    select et).Any()
+                            select p.PeopleId;
+                    else
+                        q = from p in db.People
+                            where (from et in p.EnrollmentTransactions
+                                   where et.TransactionTypeId == 1
+                                   select et.TransactionDate.Date).Min() == DateValue
+                            select p.PeopleId;
+                    break;
+                case CompareType.Greater:
+                    q = from p in db.People
+                        where (from et in p.EnrollmentTransactions
+                               where et.TransactionTypeId == 1
+                               select et.TransactionDate.Date).Min() > DateValue
+                        select p.PeopleId;
+                    break;
+                case CompareType.GreaterEqual:
+                    q = from p in db.People
+                        where (from et in p.EnrollmentTransactions
+                               where et.TransactionTypeId == 1
+                               select et.TransactionDate.Date).Min() >= DateValue
+                        select p.PeopleId;
+                    break;
+                case CompareType.Less:
+                    q = from p in db.People
+                        where (from et in p.EnrollmentTransactions
+                               where et.TransactionTypeId == 1
+                               select et.TransactionDate.Date).Min() < DateValue
+                        select p.PeopleId;
+                    break;
+                case CompareType.LessEqual:
+                    q = from p in db.People
+                        where (from et in p.EnrollmentTransactions
+                               where et.TransactionTypeId == 1
+                               select et.TransactionDate.Date).Min() <= DateValue
+                        select p.PeopleId;
+                    break;
+                case CompareType.NotEqual:
+                    if (DateValue == null)
+                        q = from p in db.People
+                            where (from et in p.EnrollmentTransactions
+                                   where et.TransactionTypeId == 1
+                                   select et).Any()
+                            select p.PeopleId;
+                    else
+                        q = from p in db.People
+                            where (from et in p.EnrollmentTransactions
+                                   where et.TransactionTypeId == 1
+                                   select et.TransactionDate.Date).Min() != DateValue
+                            select p.PeopleId;
+                    break;
+            }
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
         internal Expression OrgJoinDateDaysAgo()
         {
             var days = TextValue.ToInt();

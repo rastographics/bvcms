@@ -35,8 +35,8 @@
         <div class="well">
             @{
                 var list = CmsData.User.AllRoles(DbUtil.Db).Where(rr => rr.RoleName != "OrgLeadersOnly").Select(rr => rr.RoleName).ToList();
-                var itemspercol = list.Count / 4;
-                var remainder = list.Count % 4;
+                var itemspercol = list.Count / 3;
+                var remainder = list.Count % 3;
                 itemspercol += (remainder > 0 ? 1 : 0);
             }
             @for (var col = 0; col < (int)Math.Ceiling((double)list.Count / itemspercol); col++)

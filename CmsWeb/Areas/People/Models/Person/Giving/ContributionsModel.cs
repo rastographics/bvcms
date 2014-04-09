@@ -119,7 +119,7 @@ namespace CmsWeb.Areas.People.Models
 
         public static IEnumerable<StatementInfo> Statements(int id)
         {
-            return from c in DbUtil.Db.Contributions2(new DateTime(1900,1,1), new DateTime(3000, 12, 31), 0, false, false, true)
+            return from c in DbUtil.Db.Contributions2(new DateTime(1900,1,1), new DateTime(3000, 12, 31), 0, false, null, true)
                    where c.PeopleId == id
                    group c by c.DateX.Value.Year into g
                    orderby g.Key descending 

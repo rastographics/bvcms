@@ -37,16 +37,18 @@
 
 </li>
 <li>
-    <span class="keyword big tip" title="Registration Start Date
-        |Your registration will become available on this date">
-        Registration Start Date:
+    <span class="keyword big tip" title="Registration Start (Central time)
+        |Your registration will become available on this date
+        |Note, this is Central Time Zone">
+        Registration Start (Central time):
     </span>
     <span>@Html.TextBox("org.RegStart", Model.org.RegStart.ToString2("g"), new { @class = "datetimepicker" })</span>
 </li>
 <li>
-    <span class="keyword big tip" title="Registration End Date
-        |Your registration will become unavailable on this date">
-        Registration End Date:
+    <span class="keyword big tip" title="Registration End 
+        |Your registration will become unavailable on this date
+        |Note, this is Central Time Zone">
+        Registration End (Central time):
     </span>
     <span>@Html.TextBox("org.RegEnd", Model.org.RegEnd.ToString2("g"), new { @class = "datetimepicker" })</span>
 </li>

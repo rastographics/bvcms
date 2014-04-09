@@ -52,6 +52,7 @@ namespace CmsData.Registration
 		public string GroupToJoin { get; set; }
 		public bool GiveOrgMembAccess { get; set; }
 	    public bool AddAsProspect { get; set; }
+	    public bool UseBootstrap { get; set; }
 
 		public string DonationFund()
 		{
@@ -268,6 +269,9 @@ namespace CmsData.Registration
 					break;
 				case Parser.RegKeywords.AddAsProspect:
 					AddAsProspect = parser.GetBool();
+					break;
+				case Parser.RegKeywords.UseBootstrap:
+					UseBootstrap = parser.GetBool();
 					break;
 				case Parser.RegKeywords.LinkGroupsFromOrgs:
 					LinkGroupsFromOrgs = (from i in parser.curr.value.Split(',')
@@ -635,6 +639,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "GroupToJoin", GroupToJoin);
 			AddValueCk(0, sb, "GiveOrgMembAccess", GiveOrgMembAccess);
 			AddValueCk(0, sb, "AddAsProspect", AddAsProspect);
+			AddValueCk(0, sb, "UseBootstrap", UseBootstrap);
 			AddValueCk(0, sb, "NoReqBirthYear", NoReqBirthYear);
 			AddValueCk(0, sb, "NotReqDOB", NotReqDOB);
 			AddValueCk(0, sb, "NotReqAddr", NotReqAddr);

@@ -14,25 +14,25 @@ namespace CmsData
     public class EmailReplacements
     {
         private const string RegisterLinkRe = "<a[^>]*?href=\"https{0,1}://registerlink2{0,1}/{0,1}\"[^>]*>.*?</a>";
-        private readonly Regex registerLinkRe = new Regex(RegisterLinkRe, RegexOptions.IgnoreCase);
+        private readonly Regex registerLinkRe = new Regex(RegisterLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string RsvpLinkRe = "<a[^>]*?href=\"https{0,1}://rsvplink/{0,1}\"[^>]*>.*?</a>";
-        private readonly Regex rsvpLinkRe = new Regex(RsvpLinkRe, RegexOptions.IgnoreCase);
+        private readonly Regex rsvpLinkRe = new Regex(RsvpLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string SendLinkRe = "<a[^>]*?href=\"https{0,1}://sendlink2{0,1}/{0,1}\"[^>]*>.*?</a>";
-        private readonly Regex sendLinkRe = new Regex(SendLinkRe, RegexOptions.IgnoreCase);
+        private readonly Regex sendLinkRe = new Regex(SendLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string SupportLinkRe = "<a[^>]*?href=\"https{0,1}://supportlink/{0,1}\"[^>]*>.*?</a>";
-        private readonly Regex supportLinkRe = new Regex(SupportLinkRe, RegexOptions.IgnoreCase);
+        private readonly Regex supportLinkRe = new Regex(SupportLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string VolReqLinkRe = "<a[^>]*?href=\"https{0,1}://volreqlink\"[^>]*>.*?</a>";
-        private readonly Regex volReqLinkRe = new Regex(VolReqLinkRe, RegexOptions.IgnoreCase);
+        private readonly Regex volReqLinkRe = new Regex(VolReqLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string VolSubLinkRe = "<a[^>]*?href=\"https{0,1}://volsublink\"[^>]*>.*?</a>";
-        private readonly Regex volSubLinkRe = new Regex(VolSubLinkRe, RegexOptions.IgnoreCase);
+        private readonly Regex volSubLinkRe = new Regex(VolSubLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string VoteLinkRe = "<a[^>]*?href=\"https{0,1}://votelink/{0,1}\"[^>]*>.*?</a>";
-        private readonly Regex voteLinkRe = new Regex(VoteLinkRe, RegexOptions.IgnoreCase);
+        private readonly Regex voteLinkRe = new Regex(VoteLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private readonly CMSDataContext db;
 
