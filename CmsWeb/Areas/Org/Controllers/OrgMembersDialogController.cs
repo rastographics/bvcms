@@ -10,6 +10,7 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
+    [RouteArea("Org", AreaPrefix = "")]
 	public class OrgMembersDialogController : CmsStaffController
 	{
 		public ActionResult Index(int id, bool? inactives, bool? pendings, int? sg)

@@ -734,6 +734,12 @@ namespace CmsWeb
         {
             return Fingerprint.Script("/Scripts/Bootstrap/bootstrap.js");
         }
+        public static HtmlString Bootstrap3()
+        {
+            return new HtmlString(@"
+<script src=""//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js""></script>
+");
+        }
 
         public static string Layout()
         {

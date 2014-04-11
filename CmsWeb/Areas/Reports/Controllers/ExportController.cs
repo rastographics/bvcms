@@ -12,6 +12,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
+    [RouteArea("Reports", AreaPrefix = "")]
     public class ExportController : CmsStaffController
     {
         [HttpGet, Route("Export2/StatusFlags/{id:guid}")]

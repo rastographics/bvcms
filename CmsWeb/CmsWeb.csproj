@@ -410,7 +410,6 @@
     <Compile Include="Areas\Org\Models\OrgMemberModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMembersDialogModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMoveInfo.cs" />
-    <Compile Include="Areas\Org\OrgAreaRegistration.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailScheduled.cs" />
@@ -530,7 +529,6 @@
     </Compile>
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\PendingPersonModel.cs" />
-    <Compile Include="Areas\People\PeopleAreaRegistration.cs" />
     <Compile Include="Areas\Public\Controllers\APIContributionController.cs" />
     <Compile Include="Areas\Public\Controllers\APIMetaController.cs" />
     <Compile Include="Areas\Public\Controllers\APITestController.cs" />
@@ -1364,7 +1362,6 @@
     <Content Include="Areas\Manage\Views\Batch\FindTagEmail.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\TestScript.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\SeeHtml.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\AddressDisplay.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\AddressEdit.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Buttons.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\List.cshtml" />
@@ -1406,8 +1403,8 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonHidden.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\OtherHidden.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\ModelHidden.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\LoginOrFind.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SubmitNewButtons.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FinishedHeader.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

@@ -6,6 +6,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix = "")]
     public class ContactController : CmsStaffController
     {
         [HttpGet, Route("Contact/{id}")]

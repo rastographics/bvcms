@@ -23,6 +23,7 @@ using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
+    [RouteArea("Reports", AreaPrefix = "")]
     public class ReportsController : CmsStaffController
     {
         [HttpGet, Route("Reports/Attendance/{id}")]

@@ -18,6 +18,7 @@ using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
+    [RouteArea("Search", AreaPrefix = "")]
     [SessionExpire]
     public class QueryController : CmsStaffController
     {

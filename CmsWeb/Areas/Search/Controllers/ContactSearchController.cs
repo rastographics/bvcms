@@ -5,9 +5,9 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
+    [RouteArea("Search", AreaPrefix = "")]
     public class ContactSearchController : CmsStaffController
     {
-
         [HttpGet, Route("ContactSearch2")]
         public ActionResult Index()
         {

@@ -10,6 +10,7 @@ using System.Web.Routing;
 
 namespace CmsWeb.Areas.People.Controllers
 {
+    [RouteArea("People", AreaPrefix = "")]
     [ValidateInput(false)]
     [SessionExpire]
     public partial class PersonController : CmsStaffController
@@ -37,7 +38,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
         [HttpGet]
         [Route("Person2/{id:int}")]
-        [Route("{id:int}")]
+        [Route("Index/{id:int}")]
         public ActionResult Index(int? id)
         {
             if (!ViewExtensions2.UseNewLook() && User.IsInRole("Access"))

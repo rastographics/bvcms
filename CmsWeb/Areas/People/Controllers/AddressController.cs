@@ -5,6 +5,7 @@ using System.Web.Routing;
 
 namespace CmsWeb.Areas.People.Controllers
 {
+    [RouteArea("People", AreaPrefix = "")]
     [ValidateInput(false)]
     [SessionExpire]
     public class AddressController : CmsStaffController

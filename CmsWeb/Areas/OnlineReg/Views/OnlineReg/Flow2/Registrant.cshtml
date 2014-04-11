@@ -19,84 +19,83 @@
     }
     else
     {
-        <div class="form-group">
-            <div class="col-sm-12">
-                @if (Model.Parent.List.Count == 1 && !Model.IsNew && Model.Found != true && !Model.LoggedIn && !Model.OtherOK)
-                {
+        if (Model.Parent.List.Count == 1 && !Model.IsNew && Model.Found != true && !Model.LoggedIn && !Model.OtherOK)
+        {
+            <div class="form-group">
+                <div class="col-sm-12">
                     <h4 class="inline-block">Already have an account?</h4>
                     <a href="/OnlineReg/YesLogin" class="btn btn-success submitlink">
                         Login Here
                     </a>
-                    or = "Or ";
-                }
+                    @{ or = "Or "; }
+                </div>
             </div>
-        </div>
+        }
     }
 }
 @if (Model.LastItem() && !Model.Finished() && Model.NotFirst())
 {
     @Helper.OnlineRegSubmitButtonRow("Complete Registration for the above people")
-    @Helper.OnlineRegHeaderRow("New Registrations")
 }
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapse@(Model.Index)">
+            @if (Model.Finished())
+            {
+                <a data-toggle="collapse" data-target="#collapse@(Model.Index)">
                 @if (Model.Found.HasValue)
                 {
-                @Model.FirstName  @Model.LastName
+                    @Model.FirstName@:&nbsp;@Model.LastName <small>(click to toggle details)</small>
+                }
+                </a>
+            }
+            else
+            {
+                if (Model.Found.HasValue)
+                {
+                    @Model.FirstName@:&nbsp;@Model.LastName
                 }
                 else
                 {
-                <text>
-                    @(or)Help us find your record in our database
-                    <small class="inline-block">(you can add a new record if not found)</small>
-                </text>
+                    <text>
+                        @(or)Help us find your record in our database
+                        <small class="inline-block">(you can add a new record if not found)</small>
+                    </text>
                 }
-            </a>
+            }
         </h4>
     </div>
     <div id="collapse@(Model.Index)" class="panel-collapse collapse @(Model.Finished() ? "" : "in")">
         <div class="panel-body">
-            @ShowRegistrant()
+            @if (!Model.ShowAddress && Model.NotFoundText.HasValue())
+            {
+                @Html.DivAlertBox(Model.NotFoundText, alerttype: "alert-info")
+            }
+            @Html.Partial("Flow2/PersonMetaHidden", Model)
+
+            @if (Model.ShowDisplay())
+            {
+                @Html.Partial("Flow2/PersonHidden", Model)
+                @Html.Partial("Flow2/PersonDisplay", Model)
+            }
+            else
+            {
+                if (!Model.Parent.IsEnded())
+                // Show next person to register, because still taking registrations
+                {
+                    if (Model.IsFamily)
+                    // Already found, display only
+                    {
+                        @Html.Partial("Flow2/PersonHidden", Model)
+                        @Html.Partial("Flow2/PersonDisplay", Model)
+                    }
+                    else // Find or Add New Registrant
+                    {
+                        Model.Parent.ShowFindInstructions = true;
+                        @Html.Partial("Flow2/PersonEdit", Model)
+                    }
+                }
+            }
         </div>
     </div>
 </div>
-
-@helper ShowRegistrant()
-{
-
-    <div class="well @(Model.Index%2 == 0 ? "well-even" : "well-odd") ">
-
-        @if (!Model.ShowAddress && Model.NotFoundText.HasValue())
-        {
-            @Html.DivAlertBox(Model.NotFoundText, alerttype: "alert-info")
-        }
-        @Html.Partial("Flow2/PersonMetaHidden", Model)
-
-
-        @if (Model.ShowDisplay())
-        {
-            @Html.Partial("Flow2/PersonHidden", Model)
-            @Html.Partial("Flow2/PersonDisplay", Model)
-        }
-        else
-        {
-            if (!Model.Parent.IsEnded())
-            // Show next person to register, because still taking registrations
-            {
-                if (Model.IsFamily)
-                // Already found, display only
-                {
-                    @Html.Partial("Flow2/PersonHidden", Model)
-                    @Html.Partial("Flow2/PersonDisplay", Model)
-                }
-                else // Find or Add New Registrant
-                {
-                    Model.Parent.ShowFindInstructions = true;
-                    @Html.Partial("Flow2/PersonEdit", Model)
-                }
-            }
-        }
-    </div>
-}

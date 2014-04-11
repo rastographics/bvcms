@@ -7,6 +7,7 @@ using CmsData;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
+    [RouteArea("Search", AreaPrefix = "")]
     public class SavedQueryController : CmsStaffController
     {
         [HttpGet, Route("SavedQueryList/")]

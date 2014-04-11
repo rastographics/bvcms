@@ -11,17 +11,7 @@
     @Html.HiddenFor(m => m.Suffix)
     @Html.HiddenFor(m => m.EmailAddress)
     <address>
-        <strong>@Model.FirstName @Model.LastName</strong>
-        @if (Model.ShowCancelButton())
-        {
-            @Helper.OnlineRegAjaxButton("/OnlineReg/Cancel/" + Model.Index, Model.CancelText, style: "btn-xs btn-warning pull-right")
-        }
-        <br /><abbr>DOB:</abbr> @Model.DateOfBirth @Html.Raw(Model.LoggedIn ? "(<span>{0}</span>)".Fmt(Model.age) : "")
-        @if (Model.Phone.HasValue())
-        {
-            <br /><abbr title="Phone">P:</abbr> @Model.Phone
-        }
-        <br />@Model.EmailAddress
+        @Html.Partial("Flow2/FinishedHeader", Model)
     </address>
     
     <div class="alert alert-info">Please provide additional information for a new profile</div>

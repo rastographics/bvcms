@@ -7,6 +7,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
+    [RouteArea("Search", AreaPrefix = "")]
     public class SearchAddController : CmsStaffController
     {
         [HttpPost, Route("SearchAdd2/Dialog/{type}/{typeid?}")]

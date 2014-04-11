@@ -7,6 +7,7 @@ using CmsData;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
+    [RouteArea("Org", AreaPrefix = "")]
     public class MissionTripEmailController : Controller
     {
         [HttpGet, Route("MissionTripEmail/{oid}/{pid}")]
