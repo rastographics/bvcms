@@ -1,8 +1,20 @@
 ﻿@model CmsWeb.Models.OnlineRegModel
+
+@functions {
+    private ViewDataDictionary GetViewData(int i)
+    {
+        var viewdata = new ViewDataDictionary(ViewData)
+        {
+            TemplateInfo = new TemplateInfo {HtmlFieldPrefix = "List[" + i + "]"}
+        };
+        return viewdata;
+    }
+}
+
 @using UtilityExtensions
 @if (Util.UrgentMessage.HasValue())
 {
-<div class="alert alert-warning"><strong>@Util.UrgentMessage</strong></div>
+    <div class="alert alert-warning"><strong>@Util.UrgentMessage</strong></div>
 }
 @Html.Raw(Model.Instructions)
 @Html.Partial("Flow2/ModelHidden", Model)
@@ -17,15 +29,17 @@ else
     {
         <div class="instruct">Pending Registrations</div>
     }
-    for (var i = 0; i < Model.List.Count; i++) // show each registrant, including the one being worked on
-    {
-        var viewdata = new ViewDataDictionary(ViewData) { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "List[" + i + "]" } };
-        @Html.Partial("Flow2/Registrant", Model.List[i], viewdata)
-    }
-    if (Model.last != null 
-        && Model.last.OtherOK 
-        && Model.last.ShowDisplay()) //show the buttons if we are ready to move on
+        <div class="panel-group" id="accordion">
+            @for (var i = 0; i < Model.List.Count; i++)
+            {
+                @Html.Partial("Flow2/Registrant", Model.List[i], GetViewData(i))
+            }
+        </div>
+
+    if (Model.last != null && Model.last.OtherOK && Model.last.ShowDisplay())
+    //show the buttons if we are ready to move on
     {
         @Html.Partial("Flow2/Buttons", Model)
     }
+
 }

@@ -379,6 +379,10 @@ namespace CmsWeb.Models
         {
             return Index == Parent.List.Count - 1;
         }
+        public bool NotLast()
+        {
+            return Index < Parent.List.Count - 1;
+        }
 
         public bool SawExistingAccount;
         public bool CannotCreateAccount;

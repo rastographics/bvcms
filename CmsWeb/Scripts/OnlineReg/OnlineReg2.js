@@ -143,11 +143,11 @@
             "m.donation": { number: true }
         }
     });
-    $("div.personheader").live("click", function (e) {
-        e.preventDefault();
-        $(this).closest('div').nextAll('div').slideToggle();
-        return false;
-    });
+//    $("div.personheader").live("click", function (e) {
+//        e.preventDefault();
+//        $(this).closest('div').nextAll('div').slideToggle();
+//        return false;
+//    });
     $("input.sum").live("change", function () {
         var sum = 0;
         $("input.sum").each(function () {
