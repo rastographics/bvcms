@@ -1,6 +1,5 @@
 ﻿@using CmsWeb
 @using UtilityExtensions
-@using CmsData
 @model CmsWeb.Models.MeetingModel
 @{
     ViewBag.Title = "Meeting";
@@ -51,7 +50,7 @@ This will allow you to mark them as members.
             <table class="roundbox pad5">
                 <tr>
                     <td colspan="2" nowrap>
-                        <h2><a href="/Organization/Index/@Model.meeting.OrganizationId">@Model.meeting.Organization.OrganizationName</a> <span style="font-size: 12px">@Model.meeting.MeetingDate.FormatDateTm()</span></h2>
+                        <h2><a href="/Organization/@Model.meeting.OrganizationId">@Model.meeting.Organization.OrganizationName</a> <span style="font-size: 12px">@Model.meeting.MeetingDate.FormatDateTm()</span></h2>
                     </td>
                 </tr>
                 @if (User.IsInRole("Attendance"))
@@ -159,7 +158,7 @@ This will allow you to mark them as members.
                                         }
                                         else
                                         {
-                                            <a id="addregistered" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=registered" class="bt hidden">Add Registered</a>
+                                            <a id="addregistered" href="/SearchAdd/@Model.meeting.MeetingId?type=registered" class="bt hidden">Add Registered</a>
                                         }
                                         @if (ViewExtensions2.UseNewLook())
                                         {
@@ -167,7 +166,7 @@ This will allow you to mark them as members.
                                         }
                                         else
                                         {
-                                            <a id="addvisitor" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=visitor" class="bt" title="shift-click to Join All Guests">Add Guests</a>
+                                            <a id="addvisitor" href="/SearchAdd/@Model.meeting.MeetingId?type=visitor" class="bt" title="shift-click to Join All Guests">Add Guests</a>
                                         }
                                     </td>
                                 </tr>
@@ -196,7 +195,7 @@ This will allow you to mark them as members.
                         <li><a href="/Meeting/AttendanceByGroups/@Model.meeting.MeetingId" target="_blank">AttendanceByGroups</a></li>
                         <li><a href="/Meeting/iPad/@Model.meeting.MeetingId">iPad Attendance</a></li>
                         <li><a href="/Meeting/tickets/@Model.meeting.MeetingId">Ticketing Attendance</a></li>
-                        <li><a href="/AddAttendeesFromTag/Index/@Model.meeting.MeetingId" class="addfromtag">Add Attendees From Tag</a></li>
+                        <li><a href="/AddAttendeesFromTag/@Model.meeting.MeetingId" class="addfromtag">Add Attendees From Tag</a></li>
                         <li><a id="addallguests" href="#">Add All Guests to Org</a></li>
                         <li class="header"><span>Convert to Search</span></li>
                         <li><a href="/Meeting/QueryAttendees/@Model.meeting.MeetingId">Attendees</a></li>
@@ -282,7 +281,7 @@ else
     <div>
         <b>This organization has @Model.org.MemberCount.ToString2("n0") members which is too large to display normally.</b>
     </div>
-    <a class="bt" href="/Meeting/Index/@Model.meeting.MeetingId?showlarge=true">Display Anyway</a>
+    <a class="bt" href="/Meeting/@Model.meeting.MeetingId?showlarge=true">Display Anyway</a>
 }
 <div id="visitorDialog" title="Add Guests">
     <iframe style="width: 100%; height: 99%; border-width: 0px;"></iframe>

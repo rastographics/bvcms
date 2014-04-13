@@ -9,9 +9,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix="Tags"), Route("{action}/{id?}")]
     public class TagsController : CmsStaffController
     {
-        [HttpGet]
+        [Route("~/Tags")]
         public ActionResult Index(string tag)
         {
             var m = new TagsModel();
@@ -73,7 +74,7 @@ namespace CmsWeb.Areas.Main.Controllers
             ViewBag.AddContact = "/Tags/AddContact/" + qid;
             ViewBag.AddTasks = "/Tags/AddTasks/" + qid;
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult ToggleTag(int id)
         {
             var t = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
@@ -114,13 +115,13 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.ExecuteCommand("delete dbo.TagPerson where Id = {0}", tag.Id);
             return Content("ok");
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult AddContact(Guid id)
         {
             var cid = CmsData.Contact.AddContact(id);
             return Content("/Contact/" + cid);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult AddTasks(Guid id)
         {
             return Content(Task.AddTasks(id).ToString());

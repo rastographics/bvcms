@@ -1,7 +1,7 @@
 ﻿$(function () {
     $('table.grid2').bind('mousedown', function (e) {
         if ($(e.target).hasClass("clickEdit")) {
-            $(e.target).editable("/Finance/Fund/EditOrder/", {
+            $(e.target).editable("/Fund/EditOrder/", {
                 tooltip: "Click to edit ...",
                 style: 'display: inline',
                 width: '60px',
@@ -11,7 +11,7 @@
             });
         }
         else if ($(e.target).hasClass("clickSelect")) {
-            $(e.target).editable("/Finance/Fund/EditStatus/", {
+            $(e.target).editable("/Fund/EditStatus/", {
                 tooltip: "Click to edit...",
                 data: " {'1':'Open','2':'Closed'}",
                 loadtype: "POST",
@@ -24,14 +24,14 @@
     $("a.sortable").click(function (ev) {
         ev.preventDefault();
         if ($("#status").val() == 2)
-            window.location = "/Finance/Fund?status=2&sort=" + $(this).text();
+            window.location = "/Fund?status=2&sort=" + $(this).text();
         else
-            window.location = "/Finance/Fund?sort=" + $(this).text();
+            window.location = "/Fund?sort=" + $(this).text();
     });
     $(".bt").button();
     $("form").submit(function (ev) {
         ev.preventDefault();
-        $.post("/Finance/Fund/Create", { fundid: $("#fundid").val() }, function (ret) {
+        $.post("/Fund/Create", { fundid: $("#fundid").val() }, function (ret) {
             if (ret.error)
                 $("#errormessage").text(ret.error);
             else 

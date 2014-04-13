@@ -10,7 +10,7 @@
                 $("#SaveQueryInfo").click(function (ev) {
                     ev.preventDefault();
                     var q = modal.serialize();
-                    $.post("/SavedQueryList/Update", q, function (ret) {
+                    $.post("/SavedQuery/Update", q, function (ret) {
                         $(rowid).replaceWith(ret);
                         modal.modal("hide");
                         modal.empty();
@@ -51,7 +51,7 @@
         name: 'public',
         url: function (params) {
             var d = new $.Deferred;
-            $.post("/SavedQueryList/PostPublic", { pk: params.pk, value: params.value[0] }, function(ret) {
+            $.post("/SavedQuery/PostPublic", { pk: params.pk, value: params.value[0] }, function(ret) {
                 d.resolve();
             });
             return d.promise();

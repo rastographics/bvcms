@@ -15,7 +15,7 @@
         <td>
 @if (User.IsInRole("ApplicationReview"))
 { 
-    @Html.ActionLink("Volunteer Application Review", "Index", "Volunteering", new { Id=Model.V.PeopleId }, null)
+    @Helper.AnchorLink("Volunteer Application Review", "/Volunteering/" + Model.V.PeopleId)
 } 
         </td>
     </tr>

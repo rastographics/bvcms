@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             ViewBag.Url = m2.URL;
             Session["gobackurl"] = m2.URL;
-            ViewBag.timeout = INT_timeout;
+            ViewBag.timeout = timeout;
             if(m2.UseBootstrap)
                 SetHeaders2(m2.Orgid ?? m2.masterorgid ?? 0);
             else

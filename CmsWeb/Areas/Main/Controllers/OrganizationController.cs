@@ -9,17 +9,16 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix= "Organization"), Route("{action}/{id?}")]
     [ValidateInput(false)]
     [SessionExpire]
     public class OrganizationController : CmsStaffController
     {
         const string needNotify = "WARNING: please add the notify persons on messages tab.";
-        public ActionResult Index(int? id)
+
+        [Route("~/Organization/{id:int}")]
+        public ActionResult Index(int id)
         {
-            //            if (ViewExtensions2.UseNewLook())
-            //                return Redirect("/Org/" + id);
-            if (!id.HasValue)
-                return Content("no org");
             if (Util2.CurrentOrgId != id)
             {
                 Util2.CurrentGroups = null;
@@ -27,7 +26,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 Util2.CurrentGroupsMode = 0;
             }
 
-            var m = new OrganizationModel(id.Value);
+            var m = new OrganizationModel(id);
 
             if (m.org == null)
                 return Content("organization not found");
@@ -55,7 +54,7 @@ namespace CmsWeb.Areas.Main.Controllers
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.org.FullName;
             ViewBag.selectmode = 0;
-            InitExportToolbar(id.Value, DbUtil.Db.QueryInCurrentOrg().QueryId, checkparent: true);
+            InitExportToolbar(id, DbUtil.Db.QueryInCurrentOrg().QueryId, checkparent: true);
             Session["ActiveOrganization"] = m.org.OrganizationName;
             return View(m);
         }
@@ -65,8 +64,9 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content("<h3 style='color:red'>{0}</h3>\n<a href='{1}'>{2}</a>"
                                     .Fmt(error, "javascript: history.go(-1)", "Go Back"));
         }
-        [Authorize(Roles = "Admin")]
 
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
@@ -98,7 +98,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     && m.OrganizationId == organization.OrganizationId);
 
             if (mt != null)
-                return Content("/Meeting/Index/" + mt.MeetingId);
+                return Content("/Meeting/" + mt.MeetingId);
 
             mt = new CmsData.Meeting
             {
@@ -113,7 +113,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.Meetings.InsertOnSubmit(mt);
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("Creating new meeting for {0}".Fmt(organization.OrganizationName));
-            return Content("/Meeting/Index/" + mt.MeetingId);
+            return Content("/Meeting/" + mt.MeetingId);
         }
         private void InitExportToolbar(int oid, Guid qid, bool checkparent = false)
         {
@@ -136,6 +136,7 @@ namespace CmsWeb.Areas.Main.Controllers
             ViewBag.OrganizationContext = true;
         }
 
+        [HttpPost]
         public ActionResult CurrMemberGrid(int id, int[] smallgrouplist, int? selectmode, string namefilter, string sgprefix)
         {
             ViewBag.OrgMemberContext = true;
@@ -687,7 +688,7 @@ namespace CmsWeb.Areas.Main.Controllers
             Util2.CurrentOrgId = id;
             var o = DbUtil.Db.LoadOrganizationById(id);
             Session["orgPickList"] = (o.OrgPickList ?? "").Split(',').Select(oo => oo.ToInt()).ToList();
-            return Redirect("/SearchOrgs/Index/" + id);
+            return Redirect("/SearchOrgs/" + id);
         }
         [HttpPost]
         public ActionResult UpdateNotifyIds(int id, int topid, string field)

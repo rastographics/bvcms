@@ -534,5 +534,5 @@ function RebindUserInfoGrid(from) {
     $("#memberDialog").dialog('close');
 }
 function AddSelected(ret) {
-    window.location = "/Merge?PeopleId1=" + $("#PeopleId").val() + "&PeopleId2=" + ret.pid;
+    window.location = "/Merge/{0}/{1}".format($("#PeopleId").val(), ret.pid);
 }

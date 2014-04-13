@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin,Finance")]
+    [RouteArea("Setup", AreaPrefix = "Lookup"), Route("{action}/{id?}")]
     public class LookupController : CmsStaffController
     {
         public class Row
@@ -20,6 +16,8 @@ namespace CmsWeb.Areas.Setup.Controllers
             public string Description { get; set; }
             public bool? Hardwired { get; set; }
         }
+        [Route("~/Lookups")]
+        [Route("~/Lookup/{id?}")]
         public ActionResult Index(string id)
         {
             if (!id.HasValue())
@@ -31,7 +29,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return View(q);
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Create(int? pk, string type)
         {
             if (!pk.HasValue)
@@ -40,7 +38,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return RedirectToAction("Index", new { id = type });
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ContentResult Edit(string id, string value)
         {
             var a = id.SplitStr(".");
@@ -56,7 +54,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Content(value);
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Delete(string id, string type)
         {
             try

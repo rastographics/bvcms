@@ -181,7 +181,7 @@
                         if (ret.startsWith("error"))
                             alert(ret);
                         else {
-                            window.location = "/Family/Index/" + $("#FamilyId").val();
+                            window.location = "/Family/" + $("#FamilyId").val();
                         }
                         $("#fieldname").val("");
                         $("#fieldvalue").val("");
@@ -202,7 +202,7 @@
                 if (ret.startsWith("error"))
                     alert(ret);
                 else {
-                    window.location = "/Family/Index/" + $("#FamilyId").val();
+                    window.location = "/Family/" + $("#FamilyId").val();
                 }
             });
         return false;

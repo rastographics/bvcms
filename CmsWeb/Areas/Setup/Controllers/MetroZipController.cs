@@ -10,6 +10,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin")]
+    [RouteArea("Setup", AreaPrefix = "MetroZips"), Route("{action=index}/{id?}")]
     public class MetroZipController : CmsStaffController
     {
         public ActionResult Index(string msg)

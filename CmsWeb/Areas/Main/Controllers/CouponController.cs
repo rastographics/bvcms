@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using UtilityExtensions;
 using CmsData;
@@ -12,8 +10,10 @@ using System.Web.UI;
 namespace CmsWeb.Areas.Main.Controllers
 {
     [Authorize(Roles="Coupon")]
+    [RouteArea("Main", AreaPrefix="Coupon"), Route("{action}/{id?}")]
     public class CouponController : CmsStaffController
     {
+        [Route("~/Coupons")]
         public ActionResult Index()
         {
             var m = new CouponModel();

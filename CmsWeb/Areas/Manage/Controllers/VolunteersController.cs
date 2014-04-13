@@ -21,6 +21,7 @@ using System.Text;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
+    [RouteArea("Manage", AreaPrefix= "Volunteers"), Route("{action}/{id?}")]
 	public class VolunteersController : CmsStaffController
 	{
 		[AcceptVerbs(HttpVerbs.Post)]
@@ -99,7 +100,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 								meeting.Organization.LeaderName);
 
 			TempData["body"] = body;
-			return Redirect("/Email/Index2/{0}?subj={1}&ishtml=true"
+			return Redirect("/Email/{0}?subj={1}&ishtml=true"
 				.Fmt(qb.Id, Server.UrlEncode(subject)));
 		}
 		[HttpGet]
@@ -109,7 +110,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			vs.ComposeMessage();
 			return View(vs);
 		}
-		[HttpGet]
+		[HttpGet, Route("Request0/{ticks:long}/{oid:int}/{limit:int}")]
 		public ActionResult Request0(long ticks, int oid, int limit)
 		{
 			var time = new DateTime(ticks); // ticks here is meeting time
@@ -118,9 +119,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 			vs.ComposeMessage();
 			return View("Request", vs);
 		}
-		[HttpPost]
+		[HttpPost, Route("Request/{ticks:long}/{mid:int}/{limit:int}")]
 		[ValidateInput(false)]
-		public new ActionResult Request(int mid, long ticks, int[] pids, string subject, string message, int limit, int? additional)
+		public new ActionResult Request(long ticks, int mid, int limit, int[] pids, string subject, string message, int? additional)
 		{
 			var m = new VolunteerRequestModel(mid, Util.UserPeopleId.Value, ticks)
 				{subject = subject, message = message, pids = pids, limit = limit };
@@ -134,7 +135,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             qb.Reset(DbUtil.Db);
             qb.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
             qb.Save(DbUtil.Db);
-            return Redirect("/Email/Index2/{0}?TemplateId=0&body={1} {2}&subj={1} {2}".Fmt(qb.Id, m.Organization.OrganizationName, m.MeetingDate.FormatDateTm()));
+            return Redirect("/Email/{0}?TemplateId=0&body={1} {2}&subj={1} {2}".Fmt(qb.Id, m.Organization.OrganizationName, m.MeetingDate.FormatDateTm()));
         }
 
 	}

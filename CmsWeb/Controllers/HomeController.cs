@@ -149,21 +149,6 @@ for v in q:
             return View();
         }
 
-        public ActionResult TestRegs()
-        {
-            foreach (var o in DbUtil.Db.Organizations)
-            {
-                try
-                {
-                    var rs = new Settings(o.RegSetting, DbUtil.Db, o.OrganizationId);
-                }
-                catch (Exception ex)
-                {
-                    return Content("bad org <a href=\"{0}{1}\">{2}</a>\n{3}".Fmt(Util.ServerLink("/RegSetting/Index/"), o.OrganizationId, o.OrganizationName, ex.Message));
-                }
-            }
-            return Content("ok");
-        }
         public ActionResult SwitchTag(string tag)
         {
             var m = new TagsModel { tag = tag };

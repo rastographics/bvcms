@@ -10,6 +10,7 @@ using Alias = System.Threading.Tasks;
 namespace CmsWeb.Areas.Manage.Controllers
 {
 	[Authorize(Roles = "Admin")]
+    [RouteArea("Manage", AreaPrefix= "UploadPeople"), Route("{action=index}")]
 	public class UploadPeopleController : CmsStaffController
 	{
 		[HttpGet]

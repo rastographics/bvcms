@@ -9,19 +9,19 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [HttpPost, Route("Person2/FamilyMembers/{id}")]
+        [HttpPost]
         public ActionResult FamilyMembers(int id)
         {
             var m = new FamilyModel(id);
             return View("Family/Members", m);
         }
-        [HttpPost, Route("Person2/RelatedFamilies/{id}")]
+        [HttpPost]
         public ActionResult RelatedFamilies(int id)
         {
             var m = new FamilyModel(id);
             return View("Family/Related", m);
         }
-        [HttpPost, Route("Person2/UpdateRelation/{id}/{id1}/{id2}")]
+        [HttpPost, Route("UpdateRelation/{id}/{id1}/{id2}")]
         public ActionResult UpdateRelation(int id, int id1, int id2, string value)
         {
             var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(rr => rr.FamilyId == id1 && rr.RelatedFamilyId == id2);
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.People.Controllers
             var m = new FamilyModel(id);
             return View("Family/Related", m);
         }
-        [HttpPost, Route("Person2/DeleteRelation/{id}/{id1}/{id2}")]
+        [HttpPost, Route("DeleteRelation/{id}/{id1}/{id2}")]
         public ActionResult DeleteRelation(int id, int id1, int id2)
         {
             var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(rf => rf.FamilyId == id1 && rf.RelatedFamilyId == id2);
@@ -39,14 +39,14 @@ namespace CmsWeb.Areas.People.Controllers
             var m = new FamilyModel(id);
             return View("Family/Related", m);
         }
-        [HttpPost, Route("Person2/RelatedFamilyEdit/{id}/{id1}/{id2}")]
+        [HttpPost, Route("RelatedFamilyEdit/{id}/{id1}/{id2}")]
         public ActionResult RelatedFamilyEdit(int id, int id1, int id2)
         {
             var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(rf => rf.FamilyId == id1 && rf.RelatedFamilyId == id2);
             ViewBag.Id = id;
             return View("Family/RelatedEdit", r);
         }
-        [HttpGet, Route("Person2/FamilyQuery/{id}")]
+        [HttpGet]
         public ActionResult FamilyQuery(int id)
         {
             var c = DbUtil.Db.ScratchPadCondition();
@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.People.Controllers
             c.Save(DbUtil.Db);
             return Redirect("/Query/" + c.Id);
         }
-        [HttpGet, Route("Person2/RelatedFamilyQuery/{id}")]
+        [HttpGet]
         public ActionResult RelatedFamilyQuery(int id)
         {
             var c = DbUtil.Db.ScratchPadCondition();
@@ -64,13 +64,13 @@ namespace CmsWeb.Areas.People.Controllers
             c.Save(DbUtil.Db);
             return Redirect("/Query/" + c.Id);
         }
-        [HttpPost, Route("Person2/FamilyPictureDialog/{id:int}")]
+        [HttpPost]
         public ActionResult FamilyPictureDialog(int id)
         {
             var m = new PersonModel(id);
             return View("Family/PictureDialog", m);
         }
-        [HttpPost, Route("Person2/UploadFamilyPicture/{id:int}")]
+        [HttpPost]
         public ActionResult UploadFamilyPicture(int id, HttpPostedFileBase picture)
         {
             if (picture == null) 
@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.People.Controllers
             family.UploadPicture(DbUtil.Db, picture.InputStream, id);
             return Redirect("/Person2/" + id);
         }
-        [HttpPost, Route("Person2/DeleteFamilyPicture/{id:int}")]
+        [HttpPost]
         public ActionResult DeleteFamilyPicture(int id)
         {
             var family = DbUtil.Db.LoadFamilyByPersonId(id);

@@ -10,9 +10,11 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    [RouteArea("Dialog", AreaPrefix= "SearchAdd"), Route("{action}/{id?}")]
     public class SearchAddController : CmsStaffController
     {
-        public ActionResult Index(int? id, string type, string from)
+        [Route("~/SearchAdd/{id:int}")]
+        public ActionResult Index(int id, string type, string from)
         {
             var m = new SearchModel { typeid = id, type = type, from = from };
             Organization org = null;

@@ -131,7 +131,7 @@ namespace CmsData
                     return CreateUserTag(emailqueueto);
 
                 case "{emailhref}":
-                    return Util.URLCombine(db.CmsHost, "Manage/Emails/View/" + emailqueueto.Id);
+                    return Util.URLCombine(db.CmsHost, "Emails/View/" + emailqueueto.Id);
 
                 case "{first}":
                     return p.PreferredName.Contains("?") || p.PreferredName.Contains("unknown", true) ? "" : p.PreferredName;

@@ -1,20 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using System.Web.Security;
 using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
-using System.Configuration;
-using System.Net.Mail;
-using System.Runtime.Serialization;
-using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using CmsWeb.Areas.Manage.Controllers;
 using CmsData.Codes;
 using CmsWeb.Code;
 
@@ -50,7 +42,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 			SetHeaders(pf.OrgId ?? 0);
 			ViewBag.Url = pf.Url;
-			ViewBag.timeout = INT_timeout;
+			ViewBag.timeout = timeout;
 
 			if ((pf.AmtToPay ?? 0) <= 0 && (pf.Donate ?? 0) <= 0)
 			{

@@ -1,10 +1,10 @@
-﻿@using CmsData.Registration
+﻿@using CmsData
+@using CmsData.Registration
 @using UtilityExtensions
-@using CmsData
-@model CmsData.OrganizationMember
+@model OrganizationMember
 @{ 
-    string comboid = "-" + Model.OrganizationId + "-" + Model.PeopleId;
-    Settings setting = new Settings(Model.Organization.RegSetting, DbUtil.Db, Model.OrganizationId);
+    var setting = new Settings(Model.Organization.RegSetting, DbUtil.Db, Model.OrganizationId);
+    
 }
 <table class="Design2" cellspacing="5">
     <tr>
@@ -91,9 +91,9 @@
     {
         <tr>
             <td colspan="2" class="right">
-                <a class="bt display" href="/OrgMemberDialog/Edit/@Model.OrganizationId?pid=@Model.PeopleId">Edit</a>
-                <a class="bt display" href="/OrgMemberDialog/Move/@Model.OrganizationId?pid=@Model.PeopleId">Move</a>
-                <a class="bt delete" href="/OrgMemberDialog/Drop/d@(comboid)">Drop</a></td>
+                <a class="bt display" href="/OrgMemberDialog/Edit/@Model.OrganizationId/@Model.PeopleId">Edit</a>
+                <a class="bt display" href="/OrgMemberDialog/Move/@Model.OrganizationId/@Model.PeopleId">Move</a>
+                <a class="bt delete" href="/OrgMemberDialog/Drop/@Model.OrganizationId/@Model.PeopleId">Drop</a></td>
         </tr>
     }
 </table>

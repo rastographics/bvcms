@@ -1,25 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Mail;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
-using System.Text.RegularExpressions;
-using System.Data.Linq;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
 	[Authorize(Roles="Edit")]
+    [RouteArea("Dialog", AreaPrefix = "AddOrganization")]
     public class AddOrganizationController : CmsStaffController
     {
+        [Route("~/AddOrganization")]
         public ActionResult Index()
         {
 			var m = new NewOrganizationModel(Util2.CurrentOrgId);
@@ -27,7 +17,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 			m.org.Location = "";
         	return View(m);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost, Route("Submit/{id:int}")]
         public ActionResult Submit(int id, NewOrganizationModel m)
         {
 			var org = DbUtil.Db.LoadOrganizationById(id);

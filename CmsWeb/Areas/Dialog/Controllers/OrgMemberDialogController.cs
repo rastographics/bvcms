@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using UtilityExtensions;
-using CmsWeb.Models;
 using CmsWeb.Models.OrganizationPage;
 using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    [RouteArea("Dialog", AreaPrefix= "OrgMemberDialog")]
     public class OrgMemberDialogController : CmsStaffController
     {
-        public ActionResult Index(int id, int pid, string from, string page)
+        [Route("~/OrgMemberDialog/{from}/{id:int}/{pid:int}")]
+        [Route("~/OrgMemberDialog/{id:int}/{pid:int}")]
+        public ActionResult Index(int id, int pid, string from = "na", string page = null)
         {
             var m = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == id && om.PeopleId == pid);
             ViewData["from"] = from;
@@ -23,18 +24,17 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return View(m);
 
         }
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult CheckBoxChanged(string id, bool ck)
+        [HttpPost, Route("CheckBoxChanged/{id:int}/{pid:int}/{sgid:int}")]
+        public ActionResult CheckBoxChanged(int id, int pid, int sgid, bool ck)
         {
-            var a = id.Split('-');
-            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == a[2].ToInt() && m.OrganizationId == a[1].ToInt());
+            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == id);
             if (om == null)
                 return Content("error");
             if (ck)
-                om.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = a[3].ToInt() });
+                om.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = sgid });
             else
             {
-                var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == a[3].ToInt());
+                var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgid);
 				if (mt == null)
 					return Content("not found");
                 DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
@@ -43,20 +43,20 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return Content("ok");
         }
         
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost, Route("Edit/{id:int}/{pid:int}")]
         public ActionResult Edit(int id, int pid)
         {
             ViewData["MemberTypes"] = CodeValueModel.ConvertToSelect(CodeValueModel.MemberTypeCodes(), "Id");
             var om = DbUtil.Db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == id);
             return View(om);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost, Route("Display/{id:int}/{pid:int}")]
         public ActionResult Display(int id, int pid)
         {
             var om = DbUtil.Db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == id);
             return View(om);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost, Route("Update/{id:int}/{pid:int}")]
         public ActionResult Update(int id, int pid)
         {
             var om = DbUtil.Db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == id);
@@ -76,11 +76,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
             }
             return View("Display", om);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult Drop(string id)
+        [HttpPost, Route("Drop/{id:int}/{pid:int}")]
+        public ActionResult Drop(int id, int pid)
         {
-            var a = id.Split('-');
-            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == a[2].ToInt() && m.OrganizationId == a[1].ToInt());
+            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == id);
             if (om != null)
             {
                 om.Drop(DbUtil.Db, addToHistory:true);
@@ -88,7 +87,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             }
             return Content("dropped");
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost, Route("Move/{id:int}/{pid:int}")]
         public ActionResult Move(int id, int pid)
         {
             var om = DbUtil.Db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == id);
@@ -106,21 +105,21 @@ namespace CmsWeb.Areas.Dialog.Controllers
                     select new OrgMove
                     {
                          OrgName = o.OrganizationName,
-                         OrgId = o.OrganizationId,
-                         id = "m-{0}-{1}-{2}".Fmt(id, pid, o.OrganizationId),
+                         toorg = o.OrganizationId,
+                         pid = pid,
+                         frorg = id,
                          Program = o.Division.Program.Name,
                          Division = o.Division.Name,
                          orgSchedule = o.OrgSchedules.First()
                     };
             return View(q.ToList());
         }
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult MoveSelect(string id)
+        [HttpPost, Route("MoveSelect/{frorg:int}/{toorg:int}/{pid:int}")]
+        public ActionResult MoveSelect(int frorg, int toorg, int pid)
         {
-            var a = id.Split('-');
-            var om1 = DbUtil.Db.OrganizationMembers.Single(m => m.PeopleId == a[2].ToInt() && m.OrganizationId == a[1].ToInt());
-            var om2 = CmsData.OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                a[3].ToInt(), om1.PeopleId, om1.MemberTypeId, DateTime.Now, om1.InactiveDate, om1.Pending ?? false);
+            var om1 = DbUtil.Db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == frorg);
+            var om2 = OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                toorg, om1.PeopleId, om1.MemberTypeId, DateTime.Now, om1.InactiveDate, om1.Pending ?? false);
 			DbUtil.Db.UpdateMainFellowship(om2.OrganizationId);
 			om2.EnrollmentDate = om1.EnrollmentDate;
 			if (om2.EnrollmentDate.Value.Date == DateTime.Today)
@@ -135,8 +134,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public class OrgMove
         {
             public string OrgName { get; set; }
-            public string id { get; set; }
-            public int OrgId { get; set; }
+            public int pid { get; set; }
+            public int frorg { get; set; }
+            public int toorg { get; set; }
             public string Program { get; set; }
             public string Division { get; set; }
             public OrgSchedule orgSchedule { get; set; }
@@ -145,7 +145,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 get
                 {
                     var si = new ScheduleInfo(orgSchedule);
-                    return "{0} ({1})|Program:{2}|Division: {3}|Schedule: {4}".Fmt(OrgName, OrgId, Program, Division, si.Display);
+                    return "{0} ({1})|Program:{2}|Division: {3}|Schedule: {4}".Fmt(OrgName, toorg, Program, Division, si.Display);
                 }
             }
         }

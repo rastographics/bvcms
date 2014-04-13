@@ -267,7 +267,7 @@ emailid={2}
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
                 return Content("sorry, registration has been closed");
 
-            var url = "/OnlineReg/Index/{0}?registertag={1}".Fmt(oid, id);
+            var url = "/OnlineReg/{0}?registertag={1}".Fmt(oid, id);
             if (gsid.HasValue)
                 url += "&gsid=" + gsid;
             if (showfamily == true)

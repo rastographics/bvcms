@@ -1,27 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using System.Web;
 using System.Web.Mvc;
-using CmsWeb.Areas.Reports.Models;
-using System.IO;
 using CmsData;
 using UtilityExtensions;
-using CmsWeb.Models;
-using System.Text;
-using System.Web.UI;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
 	[Authorize(Roles = "Edit")]
+    [RouteArea("Dialog", AreaPrefix= "DeleteMeeting"), Route("{action}/{id?}")]
 	public class DeleteMeetingController : CmsController
 	{
         [Authorize(Roles="Edit")]
+        [Route("~/DeleteMeeting/{id:int}")]
         public ActionResult Index(int id)
         {
             var mm = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == id);

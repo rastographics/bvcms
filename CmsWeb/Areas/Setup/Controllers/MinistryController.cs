@@ -10,6 +10,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin")]
+    [RouteArea("Setup", AreaPrefix = "Ministry"), Route("{action=index}/{id?}")]
     public class MinistryController : CmsStaffController
     {
         public ActionResult Index()

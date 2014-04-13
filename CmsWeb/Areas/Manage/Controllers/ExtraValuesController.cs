@@ -8,6 +8,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
+    [RouteArea("Manage", AreaPrefix= "Manage/ExtraValues"), Route("{action}/{id?}")]
     public class ExtraValuesController : CmsStaffController
     {
         [HttpPost, Route("Add2/{id:guid}")]

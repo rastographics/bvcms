@@ -36,8 +36,8 @@
                     <tr>
                         <td>
                             <input type="checkbox" mid="@a.MeetingId" pid="@a.PeopleId" @(a.AttendFlag ? "checked=checked" : "") class="atck" @(User.IsInRole("Admin") ? "" : "disabled=disabled") /></td>
-                        <td nowrap="nowrap"><a href="/Meeting/Index/@a.MeetingId">@a.MeetingDate.GetWeekNumber() @a.MeetingDate.Value.ToString("g") (@a.MeetingDate.Value.ToString("ddd"))</a></td>
-                        <td><a href="/Organization/Index/@a.OrganizationId">@a.OrganizationName</a></td>
+                        <td nowrap="nowrap"><a href="/Meeting/@a.MeetingId">@a.MeetingDate.GetWeekNumber() @a.MeetingDate.Value.ToString("g") (@a.MeetingDate.Value.ToString("ddd"))</a></td>
+                        <td><a href="/Organization/@a.OrganizationId">@a.OrganizationName</a></td>
                         <td>@a.MemberType</td>
                         <td>@a.AttendType</td>
                         <td>@a.OtherAttends</td>

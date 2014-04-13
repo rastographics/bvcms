@@ -10,7 +10,7 @@
 <table class="roundbox" cellspacing="5">
     <tr>
         <td colspan="2" nowrap>
-            <h2>@Model.meeting.Organization.OrganizationName <a href="/Meeting/Index/@Model.meeting.MeetingId"><span style="font-size: 12px">@Model.meeting.MeetingDate.FormatDateTm()</span></a></h2>
+            <h2>@Model.meeting.Organization.OrganizationName <a href="/Meeting/@Model.meeting.MeetingId"><span style="font-size: 12px">@Model.meeting.MeetingDate.FormatDateTm()</span></a></h2>
         </td>
     </tr>
     <tr>
@@ -74,7 +74,7 @@
             }
             else
             {
-                <a id="addvisitor" href="/SearchAdd/Index/@Model.meeting.MeetingId?type=visitor" class="bt">Add Guests</a>
+                <a id="addvisitor" href="/SearchAdd/@Model.meeting.MeetingId?type=visitor" class="bt">Add Guests</a>
             }
         </td>
     </tr>

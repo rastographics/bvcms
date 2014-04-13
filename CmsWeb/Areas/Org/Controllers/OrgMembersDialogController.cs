@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -10,7 +7,7 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
-    [RouteArea("Org", AreaPrefix = "")]
+    [RouteArea("Org", AreaPrefix = "NotUsedYet")]
 	public class OrgMembersDialogController : CmsStaffController
 	{
 		public ActionResult Index(int id, bool? inactives, bool? pendings, int? sg)

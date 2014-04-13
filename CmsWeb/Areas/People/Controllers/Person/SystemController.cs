@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [HttpPost, Route("Person2/Users/{id:int}")]
+        [HttpPost]
         public ActionResult Users(int id)
         {
             var q = from u in DbUtil.Db.Users
@@ -20,12 +20,12 @@ namespace CmsWeb.Areas.People.Controllers
                     select u;
             return View("System/Users", q);
         }
-        [HttpPost, Route("Person2/UserEdit/{userid:int?}"), Authorize(Roles = "Admin")]
-        public ActionResult UserEdit(int? userid)
+        [HttpPost, Authorize(Roles = "Admin")]
+        public ActionResult UserEdit(int? id)
         {
             User u = null;
-            if (userid.HasValue)
-                u = DbUtil.Db.Users.Single(us => us.UserId == userid);
+            if (id.HasValue)
+                u = DbUtil.Db.Users.Single(us => us.UserId == id);
             else
             {
                 u = CmsWeb.Models.AccountModel.AddUser(Util2.CurrentPeopleId);
@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View("System/UserEdit", u);
         }
 
-        [HttpPost, Route("Person2/UserUpdate/{id}"), Authorize(Roles = "Admin")]
+        [HttpPost, Authorize(Roles = "Admin")]
         public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, string[] role)
         {
             var user = DbUtil.Db.Users.Single(us => us.UserId == id);
@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View("System/Users", pp.Users.AsEnumerable());
         }
 
-        [HttpPost, Route("Person2/UserDelete/{id}"), Authorize(Roles = "Admin")]
+        [HttpPost, Authorize(Roles = "Admin")]
         public ActionResult UserDelete(int id)
         {
             var u = DbUtil.Db.Users.Single(us => us.UserId == id);
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View("System/Users", p.Users.AsEnumerable());
         }
 
-        [HttpGet, Route("Person2/Impersonate/{id}"), Authorize(Roles = "Admin")]
+        [HttpGet, Authorize(Roles = "Admin")]
         public ActionResult Impersonate(int id)
         {
             var user = DbUtil.Db.Users.SingleOrDefault(uu => uu.UserId == id);
@@ -88,21 +88,21 @@ namespace CmsWeb.Areas.People.Controllers
             return Redirect("/");
         }
 
-        [HttpPost, Route("Person2/Changes/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Changes/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult Changes(int id, int? page, int? size, string sort, string dir)
         {
             var m = new ChangesModel(id);
             m.Pager.Set("/Person2/Changes/" + id, page, size, sort, dir);
             return View("System/Changes", m);
         }
-        [HttpPost, Route("Person2/Reverse/{id:int}/{pf}/{field}")]
+        [HttpPost, Route("Reverse/{id:int}/{pf}/{field}")]
         public ActionResult Reverse(int id, string field, string pf, string value)
         {
             var m = new ChangesModel(id);
             m.Reverse(field, value, pf);
             return View("System/Changes", m);
         }
-        [HttpPost, Route("Person2/Duplicates/{id:int}")]
+        [HttpPost]
         public ActionResult Duplicates(int id)
         {
             var m = new DuplicatesModel(id);

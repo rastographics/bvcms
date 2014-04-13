@@ -8,7 +8,7 @@
             @(Model.PeopleId == null ? "select" : Model.PeopleId.ToString())
         </a>
         } else {
-        <a href="/SearchAdd/Index/@Model.ContributionId?type=contributor" class="pid">
+        <a href="/SearchAdd/@Model.ContributionId?type=contributor" class="pid">
             @(Model.PeopleId == null ? "select" : Model.PeopleId.ToString())
         </a>
         }

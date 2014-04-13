@@ -11,8 +11,10 @@ using CmsData.Codes;
 namespace CmsWeb.Areas.Dialog.Controllers
 {
 	[Authorize(Roles = "Edit")]
+    [RouteArea("Dialog", AreaPrefix= "AddToOrgFromTag"), Route("{action}/{id?}")]
 	public class AddToOrgFromTagController : CmsController
 	{
+        [Route("~/AddToOrgFromTag/{id:int}")]
 		public ActionResult Index(int id, bool pending = false, bool prospect = false)
 		{
 			ViewBag.tag = CmsWeb.Models.OrganizationPage.OrganizationModel.Tags();

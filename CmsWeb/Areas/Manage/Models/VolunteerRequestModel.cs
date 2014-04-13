@@ -161,7 +161,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 			meeting.AddEditExtra(Db, "TotalVolunteersNeeded", ((additional ?? 0) + limit).ToString());
             qb.Save(DbUtil.Db);
 
-			var reportlink = @"<a href=""{0}OnlineReg/RequestReport/{1}/{2}/{3}"">Volunteer Request Status Report</a>"
+			var reportlink = @"<a href=""{0}/VolunteerRequestReport/{1}/{2}/{3}"">Volunteer Request Status Report</a>"
 				.Fmt(Db.CmsHost, meeting.MeetingId, person.PeopleId, dt.Ticks);
 			var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
 			//list.Insert(0, person);

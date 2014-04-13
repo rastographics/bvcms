@@ -1,20 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Linq;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 using Dapper;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin,manageemails")]
+    [RouteArea("Setup", AreaPrefix = "UsersCanEmailFor"), Route("{action=index}/{id?}")]
     public class UsersCanEmailForController : CmsStaffController
     {
         public ActionResult Index()

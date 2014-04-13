@@ -16,6 +16,7 @@ using User = CmsData.User;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
+    [RouteArea("Manage", AreaPrefix= "Account"), Route("{action}/{id?}")]
     public class AccountController : CmsControllerNoHttps
     {
         [MyRequireHttps]
@@ -82,6 +83,7 @@ CKEditorFuncNum, baseurl + fn, error));
             return View();
         }
         [MyRequireHttps]
+        [Route("~/Logon")]
         public ActionResult LogOn()
         {
             if (!DbUtil.DatabaseExists())
@@ -120,6 +122,7 @@ CKEditorFuncNum, baseurl + fn, error));
         }
         [MyRequireHttps]
         [HttpPost]
+        [Route("~/Logon")]
         public ActionResult LogOn(string userName, string password, string returnUrl)
         {
             if (returnUrl.HasValue())

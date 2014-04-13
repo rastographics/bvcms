@@ -26,7 +26,7 @@ namespace CmsWeb
             routes.IgnoreRoute("Admin/{*pathInfo}");
             routes.IgnoreRoute("AppReview/{*pathInfo}");
             routes.IgnoreRoute("CustomErrors/{*pathInfo}");
-            routes.IgnoreRoute("Contributions/{*pathInfo}");
+            routes.IgnoreRoute("ContributionReports/{*pathInfo}");
             routes.IgnoreRoute("Report/{*pathInfo}");
             routes.IgnoreRoute("Dialog/{*pathInfo}");
             routes.IgnoreRoute("ckeditor/{*pathInfo}");
@@ -44,7 +44,7 @@ namespace CmsWeb
             routes.IgnoreRoute("{dir1}/{dir2}/{file}.css");
             routes.IgnoreRoute("elmah.axd");
 
-            routes.MapMvcAttributeRoutes();//Attribute Routing
+            routes.MapMvcAttributeRoutes();
             AreaRegistration.RegisterAllAreas();
             routes.RouteExistingFiles = false;
             routes.MapRoute(

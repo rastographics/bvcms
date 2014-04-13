@@ -11,7 +11,6 @@ using System.Linq;
 using System.Data.Linq;
 using System.Threading;
 using System.Web.Mvc;
-using Elmah;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
@@ -20,6 +19,7 @@ using CmsData;
 namespace CmsWeb.Areas.Main.Controllers
 {
     [SessionExpire]
+    [RouteArea("Main", AreaPrefix="QueryBuilder2"), Route("{action=index}/{id?}")]
     public class QueryBuilder2Controller : CmsStaffController
     {
         public ActionResult NewQuery()

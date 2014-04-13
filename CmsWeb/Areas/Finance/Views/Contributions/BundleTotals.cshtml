@@ -47,7 +47,7 @@
         @foreach (var t in Model.BundlesList())
         {
             <tr>
-                <td><a href="/Bundle/Index/@t.Id" target="bundle">@t.Id</a></td>
+                <td><a href="/Bundle/@t.Id" target="bundle">@t.Id</a></td>
                 <td>@t.Date.ToShortDateString()</td>
                 <td class="right">@t.Total.ToString("c")</td>
                 <td class="right">@t.Count.ToString("n0")</td>

@@ -11,12 +11,12 @@
             </a>
             <div class="dropdown2-menu has-tip">
                 <ul>
-                    <li><a href="/Email/Index2/@qid"> Individuals</a></li>
-                    <li><a href='/Email/Index2/@qid?parents=true'> Parents</a></li>
+                    <li><a href="/Email/@qid"> Individuals</a></li>
+                    <li><a href='/Email/@qid?parents=true'> Parents</a></li>
                     @if ((bool?)ViewBag.ParentOrgContext == true)
                     {
-                        <li><a href='/Email/Index2/@ViewBag.leadersqid'> Leaders under this org</a></li>
-                        <li><a href='/Email/Index2/@ViewBag.membersqid'> Members under this org</a></li>
+                        <li><a href='/Email/@ViewBag.leadersqid'> Leaders under this org</a></li>
+                        <li><a href='/Email/@ViewBag.membersqid'> Members under this org</a></li>
                     }
                 </ul>
             </div>
@@ -24,7 +24,7 @@
         @if (TwilioHelper.userSendSMS(Util.UserId))
         {
             <li>
-                <a href='/SMS/Options2/@qid'>
+                <a href='/SMS/Options/@qid'>
                     SMS
                 </a>
             </li>

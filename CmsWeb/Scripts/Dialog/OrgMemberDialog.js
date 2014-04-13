@@ -1,6 +1,7 @@
 ﻿$(function () {
     $(".ckbox").click(function (ev) {
-        $.post("/OrgMemberDialog/CheckBoxChanged/" + $(this).attr("id"), {
+        var e = $(this);
+        $.post("/OrgMemberDialog/CheckBoxChanged/{0}/{1}/{2}".format(e.data("id"), e.data("pid"), e.data("sgid")), {
             ck: $(this).is(":checked")
         });
         return true;

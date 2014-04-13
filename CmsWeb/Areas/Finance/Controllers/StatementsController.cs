@@ -13,15 +13,15 @@ using System.Text;
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Finance")]
+    [RouteArea("Finance", AreaPrefix= "Statements"), Route("{action}")]
     public class StatementsController : CmsController
     {
-        public ActionResult Index(string startswith)
+        [Route("~/Statements")]
+        public ActionResult Index()
         {
-            if (startswith.HasValue())
-                ViewBag.startswith = startswith;
             return View();
         }
-        [HttpPost]
+        [HttpPost, Route("Start")]
         public ActionResult ContributionStatements(bool? pdf, DateTime? fromDate, DateTime? endDate, string startswith, string sort, int? tagid)
         {
             if (!fromDate.HasValue || !endDate.HasValue)

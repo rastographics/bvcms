@@ -16,11 +16,11 @@
        <td><a href="@(Util.ResolveServerUrl("/OnlineReg/ConfirmTestXml"))/@i.ed.Id">@i.ed.Stamp.Value</a></td>
     @if (i.m.Orgid > 0 && i.m.org != null)
     {
-           <td><a href='/Organization/Index/@i.m.Orgid'>@i.m.org.OrganizationName</a></td>
+           <td><a href='/Organization/@i.m.Orgid'>@i.m.org.OrganizationName</a></td>
     }
     else if (i.m.masterorgid > 0)
     {
-           <td><a href='/Organization/Index/@i.m.masterorgid'>@i.m.masterorg.OrganizationName</a></td>
+           <td><a href='/Organization/@i.m.masterorgid'>@i.m.masterorg.OrganizationName</a></td>
     }
     else
     { 
@@ -35,7 +35,7 @@
         <td>Item @n</td>
         <td colspan="2">
             <a href="@(ViewExtensions2.CmsHost)Person2/@p.PeopleId">@p.FirstName @p.LastName</a><br />
-            <a href="@(ViewExtensions2.CmsHost)Organization/Index/@p.orgid">@(p.org != null ? p.org.OrganizationName : "na")</a><br/>
+            <a href="@(ViewExtensions2.CmsHost)Organization/@p.orgid">@(p.org != null ? p.org.OrganizationName : "na")</a><br/>
             @p.DateOfBirth (@p.age)<br/>
             @p.Phone.FmtFone()<br/>
             @p.EmailAddress<br/>

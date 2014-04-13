@@ -3,10 +3,10 @@
 @Html.Hidden("orgid")
 <div class="roundbox floatleft">
 <h2>Manage Child Organizations</h2>
-<h3>for <a href="/Organization/Index/@Model.org.OrganizationId">@Model.org.OrganizationName</a></h3>
+<h3>for <a href="/Organization/@Model.org.OrganizationId">@Model.org.OrganizationName</a></h3>
 @if(Model.parentorg != null)
 {
-@:Parent Org: <a href="/OrgChildren/Index/@Model.parentorg.OrganizationId">@Model.parentorg.OrganizationName</a>
+@:Parent Org: <a href="/OrgChildren/@Model.parentorg.OrganizationId">@Model.parentorg.OrganizationName</a>
 }
 Name: @Html.TextBox("namesearch", Model.namesearch, new { title = "OrganizationId, Location or part of Name (organization, leader, division)" })
 <a id="filter" href="#" class="bt">Refresh</a>

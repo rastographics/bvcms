@@ -6,10 +6,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
-    [RouteArea("Main", AreaPrefix = "")]
+    [RouteArea("Main", AreaPrefix= "Contact"), Route("{action}/{id?}"), Route("{action}/{cid:int}")]
     public class ContactController : CmsStaffController
     {
-        [HttpGet, Route("Contact/{id}")]
+        [Route("~/Contact/{id:int}")]
         public ActionResult Index(int id)
         {
             if (ViewExtensions2.UseNewLook())
@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(m);
         }
 
-        [HttpPost, Route("Contact/RemoveContactee/{cid:int}/{pid:int}")]
+        [HttpPost, Route("RemoveContactee/{cid:int}/{pid:int}")]
         public ActionResult RemoveContactee(int cid, int pid)
         {
             var m = new ContacteesModel(cid);
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content("ok");
 
         }
-        [HttpPost, Route("Contact/RemoveContactor/{cid:int}/{pid:int}")]
+        [HttpPost, Route("RemoveContactor/{cid:int}/{pid:int}")]
         public ActionResult RemoveContactor(int cid, int pid)
         {
             var m = new ContactorsModel(cid);
@@ -39,19 +39,19 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content("ok");
         }
 
-        [HttpPost, Route("Contact/Contactees/{cid:int}")]
+        [HttpPost]
         public ActionResult Contactees(int cid)
         {
             var m = new ContacteesModel(cid);
             return View(m);
         }
-        [HttpPost, Route("Contact/Contactors/{cid:int}")]
+        [HttpPost]
         public ActionResult Contactors(int cid)
         {
             var m = new ContactorsModel(cid);
             return View(m);
         }
-        [HttpPost, Route("Contact/ContactEdit/{cid:int}")]
+        [HttpPost]
         public ActionResult ContactEdit(int cid)
         {
             var m = new ContactModel(cid);
@@ -59,13 +59,13 @@ namespace CmsWeb.Areas.Main.Controllers
                 return View("ContactDisplay", m);
             return View(m);
         }
-        [HttpPost, Route("Contact/ContactDisplay/{cid:int}")]
+        [HttpPost]
         public ActionResult ContactDisplay(int cid)
         {
             var m = new ContactModel(cid);
             return View(m);
         }
-        [HttpPost, Route("Contact/ContactUpdate/{cid:int}")]
+        [HttpPost]
         public ActionResult ContactUpdate(int cid, ContactModel c)
         {
             if (!ModelState.IsValid)
@@ -73,20 +73,20 @@ namespace CmsWeb.Areas.Main.Controllers
             c.UpdateContact();
             return View("ContactDisplay", c);
         }
-        [HttpPost, Route("Contact/ContactDelete/{cid:int}")]
+        [HttpPost]
         public ActionResult ContactDelete(int cid)
         {
             ContactModel.DeleteContact(cid);
             return Redirect("/ContactSearch");
         }
-        [HttpPost, Route("Contact/NewTeamContact/{cid:int}")]
+        [HttpPost]
         public ActionResult NewTeamContact(int cid)
         {
             var m = new ContactModel(cid);
             var nid = m.AddNewTeamContact();
             return Redirect("/Contact/" + nid);
         }
-        [HttpPost, Route("Contact/AddTask/{cid:int}/{pid:int}")]
+        [HttpPost, Route("AddTask/{cid:int}/{pid:int}")]
         public ActionResult AddTask(int cid, int pid)
         {
             var m = new ContacteesModel(cid);

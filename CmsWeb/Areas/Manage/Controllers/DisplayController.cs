@@ -31,8 +31,10 @@ namespace CmsWeb.Areas.Manage.Controllers
 {
     [Authorize(Roles = "Admin,Design")]
     [ValidateInput(false)]
+    [RouteArea("Manage", AreaPrefix= "Display"), Route("{action}/{id?}")]
     public class DisplayController : CmsStaffController
     {
+        [Route("~/Display")]
         public ActionResult Index()
         {
             return View(new ContentModel());
@@ -187,7 +189,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View();
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult UpdateOrgContent(int id, bool? div, string what, string title, string html)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
@@ -211,7 +213,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     break;
             }
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Organization/Index/" + id);
+            return Redirect("/Organization/" + id);
         }
 
         public static byte[] CaptureWebPageBytes(string body, int width, int height)

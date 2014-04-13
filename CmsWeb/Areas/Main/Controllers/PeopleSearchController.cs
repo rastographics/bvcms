@@ -4,9 +4,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix="PeopleSearch"), Route("{action}")]
     public class PeopleSearchController : CmsController
     {
-        [HttpGet]
+        [HttpGet, Route("~/PeopleSearch/{name?}")]
         public ActionResult Index(string name)
         {
             var m = new PeopleSearchModel();
@@ -24,19 +25,15 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(m);
         }
         [HttpPost]
-        public ActionResult Results()
+        public ActionResult Results(PeopleSearchModel m)
         {
-            var m = new PeopleSearchModel();
-            UpdateModel(m);
             UpdateModel(m.m);
             Session["FindPeopleInfo"] = m.m;
             return View(m);
         }
         [HttpPost]
-        public ActionResult ConvertToQuery()
+        public ActionResult ConvertToQuery(PeopleSearchModel m)
         {
-            var m = new PeopleSearchModel();
-            UpdateModel(m);
             UpdateModel(m.m);
             Session["FindPeopleInfo"] = m.m;
             return Content(m.ConvertToSearch());

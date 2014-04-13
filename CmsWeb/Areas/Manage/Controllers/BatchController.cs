@@ -15,6 +15,7 @@ using Alias = System.Threading.Tasks;
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [ValidateInput(false)]
+    [RouteArea("Manage", AreaPrefix= "Batch"), Route("{action}/{id?}")]
     public class BatchController : CmsStaffAsyncController
     {
         [Authorize(Roles = "Admin")]

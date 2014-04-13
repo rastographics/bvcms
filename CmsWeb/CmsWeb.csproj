@@ -149,6 +149,9 @@
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
     </Reference>
+    <Reference Include="RouteDebugger">
+      <HintPath>..\packages\routedebugger.2.1.4.0\lib\net40\RouteDebugger.dll</HintPath>
+    </Reference>
     <Reference Include="SimpleRESTServices">
       <HintPath>..\packages\SimpleRESTServices.1.1.1.0\lib\net40\SimpleRESTServices.dll</HintPath>
     </Reference>
@@ -226,6 +229,7 @@
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgPrevFromTagController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Dialog\Models\SearchModel.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgia.cs">
       <SubType>Code</SubType>
@@ -290,10 +294,12 @@
     <Compile Include="Areas\Main\Models\Export\MissionTripSendersModel.cs" />
     <Compile Include="Areas\Main\Models\Export\MissionTripFundingModel.cs" />
     <Compile Include="Areas\Main\Models\Export\WorshipAttendanceModel.cs" />
-    <Compile Include="Areas\OnlineReg\OnlineRegAreaRegistration.cs" />
     <Compile Include="Areas\Org\Controllers\MissionTripEmailController.cs" />
     <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
     <Compile Include="Areas\Org\Models\MissionSupportModel.cs" />
+    <Compile Include="Areas\Public\AreaRegistration.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Areas\Public\Controllers\PersonInfo.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\BaseReturn.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileAttendee.cs" />
@@ -338,7 +344,6 @@
     <Compile Include="Areas\Dialog\Controllers\SearchOrgsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchDivisionsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\TransactionHistoryController.cs" />
-    <Compile Include="Areas\Dialog\DialogAreaRegistration.cs" />
     <Compile Include="Areas\Dialog\Models\OrganizationModel.cs" />
     <Compile Include="Areas\Dialog\Models\SearchOrgsModel.cs" />
     <Compile Include="Areas\Dialog\Models\SearchDivisionsModel.cs" />
@@ -349,10 +354,8 @@
     <Compile Include="Areas\Finance\Controllers\ContributionsController.cs" />
     <Compile Include="Areas\Finance\Controllers\FinanceReportsController.cs" />
     <Compile Include="Areas\Finance\Controllers\VaultController.cs" />
-    <Compile Include="Areas\Finance\FinanceAreaRegistration.cs" />
     <Compile Include="Areas\Finance\Models\ContributionSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\BundleModel.cs" />
-    <Compile Include="Areas\Main\AreaRegistration.cs" />
     <Compile Include="Areas\Main\Controllers\MemberDirectoryController.cs" />
     <Compile Include="Areas\Main\Controllers\PeopleSearchController.cs" />
     <Compile Include="Areas\Main\Controllers\MemberDocsController.cs" />
@@ -371,7 +374,6 @@
     <Compile Include="Areas\Main\Models\Email\EmailTemplatesModel.cs" />
     <Compile Include="Areas\Main\Models\Other\VolunteerModel.cs" />
     <Compile Include="Areas\Main\Models\Other\MemberDirectoryModel.cs" />
-    <Compile Include="Areas\Main\Models\Other\QuickSearchModel.cs" />
     <Compile Include="Areas\Main\Models\Person\MemberDocs.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundModel.cs" />
     <Compile Include="Areas\Reports\Models\MailingController.cs" />
@@ -538,7 +540,6 @@
     <Compile Include="Areas\Dialog\Controllers\OrgMembersDialogController.cs" />
     <Compile Include="Areas\Main\Controllers\OrgSearchController.cs" />
     <Compile Include="Areas\Finance\Controllers\PostBundleController.cs" />
-    <Compile Include="Areas\Main\Controllers\QuickSearchController.cs" />
     <Compile Include="Areas\Search\Controllers\SearchAddController.cs" />
     <Compile Include="Areas\Main\Controllers\OrganizationController.cs" />
     <Compile Include="Areas\Main\Controllers\PersonController.cs" />
@@ -568,7 +569,6 @@
     <Compile Include="Areas\Finance\Models\ContributionsExcelResult.cs" />
     <Compile Include="Areas\Main\Models\Person\FamilyModel.cs" />
     <Compile Include="Areas\Reports\Models\MeetingsModel.cs" />
-    <Compile Include="Areas\Manage\Controllers\RegSettingsController.cs" />
     <Compile Include="Areas\Manage\Models\TransactionsExcelResult.cs" />
     <Compile Include="Areas\Main\Models\Export\UpdatePeopleModel.cs" />
     <Compile Include="Areas\Public\Models\APITestModel.cs" />
@@ -632,11 +632,8 @@
     <Compile Include="Areas\Public\Models\SGMapModel.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModel.cs" />
     <Compile Include="Areas\Search\Controllers\QueryController.cs" />
-    <Compile Include="Areas\Search\Controllers\QuickController.cs" />
     <Compile Include="Areas\Search\Controllers\SavedQueryController.cs" />
-    <Compile Include="Areas\Search\Models\QuickSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
-    <Compile Include="Areas\Search\SearchAreaRegistration.cs" />
     <Compile Include="Areas\Setup\Controllers\RolesController.cs" />
     <Compile Include="Areas\Setup\Controllers\TwilioController.cs" />
     <Compile Include="Code\BundleModel.cs">
@@ -1405,6 +1402,10 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\ModelHidden.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SubmitNewButtons.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FinishedHeader.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Display.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Edit.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Move.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -1716,15 +1717,12 @@
     <Compile Include="Areas\Reports\Models\WeeklyAttendanceResult.cs">
     </Compile>
     <Compile Include="Areas\Reports\Models\FamilyResult.cs" />
-    <Compile Include="Areas\Manage\AreaRegistration.cs" />
     <Compile Include="Areas\Manage\Controllers\OrgMembersController.cs" />
     <Compile Include="Areas\Manage\Models\OrgMembersModel.cs" />
-    <Compile Include="Areas\Public\AreaRegistration.cs" />
     <Compile Include="Areas\Public\Controllers\OptOutController.cs" />
     <Compile Include="Areas\Public\Models\PaymentModel.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionController.cs" />
     <Compile Include="Code\CmsController.cs" />
-    <Compile Include="Areas\Setup\AreaRegistration.cs" />
     <Compile Include="Areas\Manage\Controllers\DisplayController.cs" />
     <Compile Include="Areas\Finance\Controllers\FundController.cs" />
     <Compile Include="Areas\Setup\Controllers\LookupController.cs" />
@@ -1736,42 +1734,42 @@
     <Compile Include="Areas\Setup\Controllers\SettingController.cs" />
     <Compile Include="Areas\Setup\Controllers\UsersCanEmailForController.cs" />
     <Compile Include="Areas\Setup\Models\PromotionModel.cs" />
-    <Compile Include="Contributions\Reports\TotalsByFundAgeRange.aspx.cs">
+    <Compile Include="ContributionReports\TotalsByFundAgeRange.aspx.cs">
       <DependentUpon>TotalsByFundAgeRange.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Contributions\Reports\TotalsByFundAgeRange.aspx.designer.cs">
+    <Compile Include="ContributionReports\TotalsByFundAgeRange.aspx.designer.cs">
       <DependentUpon>TotalsByFundAgeRange.aspx</DependentUpon>
     </Compile>
     <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Public\Controllers\TrackController.cs" />
     <Compile Include="Code\ViewExtensions.cs" />
-    <Compile Include="Contributions\Deposit.aspx.cs">
+    <Compile Include="ContributionReports\Deposit.aspx.cs">
       <DependentUpon>Deposit.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Contributions\Deposit.aspx.designer.cs">
+    <Compile Include="ContributionReports\Deposit.aspx.designer.cs">
       <DependentUpon>Deposit.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Contributions\Reports\JournalDetails.aspx.cs">
+    <Compile Include="ContributionReports\JournalDetails.aspx.cs">
       <DependentUpon>JournalDetails.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Contributions\Reports\JournalDetails.aspx.designer.cs">
+    <Compile Include="ContributionReports\JournalDetails.aspx.designer.cs">
       <DependentUpon>JournalDetails.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Contributions\Reports\Reports.Master.cs">
+    <Compile Include="ContributionReports\Reports.Master.cs">
       <DependentUpon>Reports.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Contributions\Reports\Reports.Master.designer.cs">
+    <Compile Include="ContributionReports\Reports.Master.designer.cs">
       <DependentUpon>Reports.Master</DependentUpon>
     </Compile>
-    <Compile Include="Contributions\Reports\TotalsByFundRange.aspx.cs">
+    <Compile Include="ContributionReports\TotalsByFundRange.aspx.cs">
       <DependentUpon>TotalsByFundRange.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Contributions\Reports\TotalsByFundRange.aspx.designer.cs">
+    <Compile Include="ContributionReports\TotalsByFundRange.aspx.designer.cs">
       <DependentUpon>TotalsByFundRange.aspx</DependentUpon>
     </Compile>
     <Compile Include="Areas\Manage\Controllers\AccountController.cs" />
@@ -1925,7 +1923,6 @@
     <Content Include="Scripts\js\HomeTest.js" />
     <Content Include="Scripts\Search\PeopleSearch.js" />
     <Content Include="Scripts\Admin\Users.js" />
-    <Content Include="Scripts\Search\QuickSearch.js" />
     <Content Include="Scripts\Meeting\meeting-ticket.js" />
     <Content Include="Scripts\Finance\TotalsByFund.js" />
     <Content Include="Scripts\Volunteer\ManageVolunteer.js" />
@@ -2024,7 +2021,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\GetVolSub.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EmailVolunteerSubs.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\VolSubReport.cshtml" />
-    <Content Include="Areas\Main\Views\QuickSearch\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Volunteers\ManageArea.cshtml" />
     <Content Include="Areas\Manage\Views\Volunteers\Request.cshtml" />
     <Content Include="Areas\Manage\Views\Volunteers\EmailVolunteerRequest.cshtml" />
@@ -2092,7 +2088,6 @@
     <Content Include="Areas\Search\Views\Query\Import.cshtml" />
     <Content Include="Areas\Search\Views\Query\Index.cshtml" />
     <Content Include="Areas\Search\Views\Query\Results.cshtml" />
-    <Content Include="Areas\Search\Views\Quick\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Index.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Results.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\Row.cshtml" />
@@ -2585,8 +2580,6 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\Test.cshtml">
     </Content>
-    <Content Include="Areas\Manage\Views\RegSettings\Index.cshtml">
-    </Content>
     <Content Include="Areas\Dialog\Views\TransactionHistory\Index.cshtml">
     </Content>
     <Content Include="Areas\Dialog\Views\TransactionHistory\History.cshtml">
@@ -2795,9 +2788,9 @@
     <Content Include="Scripts\jQuery\jquery.tooltip.min.js" />
     <Content Include="Content\images\loading.gif" />
     <Content Include="Content\images\navigation-shadow.png" />
-    <Content Include="Contributions\Deposit.aspx" />
-    <Content Include="Contributions\Reports\JournalDetails.aspx" />
-    <Content Include="Contributions\Reports\TotalsByFundRange.aspx" />
+    <Content Include="ContributionReports\Deposit.aspx" />
+    <Content Include="ContributionReports\JournalDetails.aspx" />
+    <Content Include="ContributionReports\TotalsByFundRange.aspx" />
     <Content Include="Content\images\1pix.gif" />
     <Content Include="Content\images\adobe.png" />
     <Content Include="Content\images\ajax-loader.gif" />
@@ -2846,9 +2839,9 @@
     <Content Include="Scripts\jQuery\jquery.cookie.js" />
     <Content Include="Content\images\star.png" />
     <Content Include="Scripts\jQuery\jquery.multiSelect.js" />
-    <Content Include="Contributions\Reports\TotalsByFundAgeRange.aspx" />
-    <Content Include="Contributions\Reports\Reports.Master" />
-    <Content Include="Contributions\Web.config" />
+    <Content Include="ContributionReports\TotalsByFundAgeRange.aspx" />
+    <Content Include="ContributionReports\Reports.Master" />
+    <Content Include="ContributionReports\Web.config" />
     <Content Include="Areas\Setup\Views\Web.config" />
     <Content Include="Areas\Public\Views\Web.config" />
     <Content Include="Areas\Manage\Views\Web.config" />
@@ -2873,7 +2866,6 @@
     <Content Include="Views\Shared\Site3b.Master" />
     <Content Include="Scripts\js\ExportToolBar.js" />
     <Content Include="Scripts\js\Task.js" />
-    <Content Include="Views\Shared\LogOnUserControl.ascx" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>

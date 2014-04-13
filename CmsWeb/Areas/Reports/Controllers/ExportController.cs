@@ -12,48 +12,48 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
-    [RouteArea("Reports", AreaPrefix = "")]
+    [RouteArea("Reports", AreaPrefix = "Export2"), Route("{action}/{id?}")]
     public class ExportController : CmsStaffController
     {
-        [HttpGet, Route("Export2/StatusFlags/{id:guid}")]
+        [HttpGet]
         public ActionResult StatusFlags(Guid id)
         {
             return new StatusFlagsExcelResult(id);
         }
 
-        [HttpGet, Route("Export2/ExtraValues/{id:guid}")]
+        [HttpGet]
         public ActionResult ExtraValues(Guid id)
         {
             return new ExtraValueExcelResult(id);
         }
-        [HttpGet, Route("Export2/WorshipAttendance/{id:guid}")]
+        [HttpGet]
         public ActionResult WorshipAttendance(Guid id)
         {
             return WorshipAttendanceModel.Attendance(id);
         }
 
         [Authorize(Roles = "Finance")]
-        [HttpPost, Route("Export2/Contributions/{id}")]
+        [HttpPost]
         public ActionResult Contributions(string id, ContributionsExcelResult m)
         {
             m.type = id;
             return m;
         }
         [Authorize(Roles = "Finance")]
-        [HttpPost, Route("Export2/GLExport")]
+        [HttpPost]
         public ActionResult GLExport(GLExportResult m)
         {
             return m;
         }
 
-        [HttpGet, Route("Export2/Excel/Groups")]
+        [HttpGet, Route("Excel/Groups")]
         public ActionResult ExcelGroups()
         {
             return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
         }
 
 
-        [HttpPost, Route("Export2/MeetingsForDateRange")]
+        [HttpPost]
         public ActionResult MeetingsForDateRange(DateTime dt1, DateTime dt2, OrgSearchModel m)
         {
             var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
@@ -84,15 +84,15 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new EpplusResult(ep, "MeetingsForDateRange.xlsx");
         }
 
-        [HttpPost, Route("Export2/MissionTripFunding")]
+        [HttpPost]
         public ActionResult MissionTripFunding(OrgSearchModel m)
         {
             return MissionTripFundingModel.Result(m);
         }
 
         [HttpGet]
-        [Route("Export2/Excel/{id:guid}")]
-        [Route("Export2/Excel/{format}/{id:guid}")]
+        [Route("Excel/{id:guid}")]
+        [Route("Excel/{format}/{id:guid}")]
         public ActionResult Excel(Guid id, string format, bool? titles, bool? useMailFlags)
         {
             var ctl = new MailingController {UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false};
@@ -139,7 +139,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return Content("no format");
         }
 
-        [HttpGet, Route("Export2/Csv/{id:guid}")]
+        [HttpGet]
         public ActionResult Csv(Guid id, string format, bool? sortzip, bool? titles, bool? useMailFlags)
         {
             var ctl = new MailingController {UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false};

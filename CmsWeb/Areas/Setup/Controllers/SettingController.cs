@@ -1,30 +1,23 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
 using UtilityExtensions;
-using CmsWeb.Models;
-using LumenWorks.Framework.IO.Csv;
-using System.IO;
-using System.Text;
-using System.Threading;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin")]
     [ValidateInput(false)]
+    [RouteArea("Setup", AreaPrefix = "Setting"), Route("{action}/{id?}")]
     public class SettingController : CmsStaffController
     {
+        [Route("~/Settings")]
         public ActionResult Index()
         {
             var m = DbUtil.Db.Settings.AsEnumerable();
             return View(m);
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Create(string id)
         {
             var m = new Setting { Id = id };
@@ -34,7 +27,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Redirect("/Setup/Setting/");
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ContentResult Edit(string id, string value)
         {
             DbUtil.Db.SetSetting(id, value);
@@ -44,7 +37,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return c;
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public EmptyResult Delete(string id)
         {
             id = id.Substring(1);
@@ -102,7 +95,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.PurgeAllPeopleInCampus(99);
             return Content(@"<a href=""/"">home</a><br/><h2>Done</h2>");
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ContentResult DeleteImage(string id)
         {
             var iid = id.Substring(1).ToInt();

@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Net;
-using System.Text;
-using System.IO;
-using CmsWeb.Models;
-using CmsData;
+﻿using System.Web.Mvc;
 using CmsData.Classes.QuickBooks;
-using UtilityExtensions;
 using DevDefined.OAuth.Framework;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
 	[Authorize(Roles = "Finance")]
+    [RouteArea("Finance", AreaPrefix= "QuickBooks"), Route("{action}/{id?}")]
 	public class QuickBooksController : Controller
 	{
+        [Route("~/QuickBooks")]
 		public ActionResult Index()
 		{
 			return View();

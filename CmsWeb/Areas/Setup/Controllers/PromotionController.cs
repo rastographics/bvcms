@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin")]
+    [RouteArea("Setup", AreaPrefix = "PromotionSetup"), Route("{action=index}/{id?}")]
     public class PromotionController : CmsStaffController
     {
         public ActionResult Index()
@@ -18,16 +15,16 @@ namespace CmsWeb.Areas.Setup.Controllers
             return View(m);
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Create()
         {
             var m = new Promotion();
             DbUtil.Db.Promotions.InsertOnSubmit(m);
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Setup/Promotion/");
+            return Redirect("/PromotionSetup/");
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ContentResult Edit(string id, string value)
         {
             var iid = id.Substring(1).ToInt();
@@ -48,7 +45,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return c;
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ContentResult EditDiv(string id, string value)
         {
             var iid = id.Substring(1).ToInt();
@@ -71,7 +68,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 c.Content = pro.ToDivision.Name;
             return c;
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public EmptyResult Delete(string id)
         {
             var iid = id.Substring(1).ToInt();
@@ -82,7 +79,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public JsonResult DivisionCodes(int id)
         {
             var q = from c in DbUtil.Db.Divisions
@@ -95,7 +92,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                     };
             return Json(q.ToDictionary(k => k.Code, v => v.Value));
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Promote(string id)
         {
             var iid = id.Substring(1).ToInt();

@@ -8,6 +8,7 @@ using CmsData;
 namespace CmsWeb.Areas.Finance.Controllers
 {
 	[Authorize(Roles = "Admin")]
+    [RouteArea("Finance", AreaPrefix= "Vault"), Route("{action}/{id?}")]
     public class VaultController : CmsController
     {
 		[HttpPost]

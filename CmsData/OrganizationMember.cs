@@ -310,28 +310,28 @@ namespace CmsData
             return totalPaid ?? 0;
         }
 
-//        public class SmallGroupItem
-//        {
-//            public MemberTag mt { get; set; }
-//            public int cnt { get; set; }
-//        }
-//        public IEnumerable<SmallGroupItem> SmallGroupList()
-//        {
-//            var sglist = (from mt in Organization.MemberTags
-//            let cnt = mt.OrgMemMemTags.Count()
-//            orderby mt.Name
-//            select new SmallGroupItem() { mt = mt, cnt = cnt}).ToList();
-//            return sglist;
-//        }
-//
-//        public bool HasSmallGroup(int id)
-//        {
-//            return OrgMemMemTags.Any(omt => omt.MemberTagId == id);
-//        }
-//
-//        public Registration.Settings RegSetting()
-//        {
-//            return new Settings(Organization.RegSetting, DbUtil.Db, OrganizationId);
-//        }
+        public class SmallGroupItem
+        {
+            public MemberTag mt { get; set; }
+            public int cnt { get; set; }
+        }
+        public IEnumerable<SmallGroupItem> SmallGroupList()
+        {
+            var sglist = (from mt in Organization.MemberTags
+            let cnt = mt.OrgMemMemTags.Count()
+            orderby mt.Name
+            select new SmallGroupItem() { mt = mt, cnt = cnt}).ToList();
+            return sglist;
+        }
+
+        public bool HasSmallGroup(int id)
+        {
+            return OrgMemMemTags.Any(omt => omt.MemberTagId == id);
+        }
+
+        public Registration.Settings RegSetting()
+        {
+            return new Settings(Organization.RegSetting, DbUtil.Db, OrganizationId);
+        }
     }
 }

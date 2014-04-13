@@ -3,8 +3,7 @@
 @{
     ViewBag.Title = "Send";
     Layout = ViewExtensions2.Layout();
-    var url = Model is Guid ? "/Email/Index2/" + Model : "/Email/Index/" + Model;
 }
 
 <h2>SMS Messages Sent</h2>
-<a href="@url?subj=@Server.UrlEncode(ViewBag.sTitle)&body=@Server.UrlEncode(ViewBag.sMessage)">Click Here</a> to send an e-mail to the same people.<br />
+<a href="/Email/@Model?subj=@Server.UrlEncode(ViewBag.sTitle)&body=@Server.UrlEncode(ViewBag.sMessage)">Click Here</a> to send an e-mail to the same people.<br />

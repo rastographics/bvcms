@@ -16,7 +16,7 @@
         });
     </script>
 }
-@Html.ActionLink("Back to List", "Index")
+@Helper.AnchorLink("Back to List", "/Emails")
 @{
     var ts = new TimeSpan(0);
     if (Model.queue.Sent.HasValue && Model.queue.Started.HasValue) {
@@ -41,15 +41,15 @@
                                        }))
     </td></tr>
 <tr><td>Unique Opens</td><td>@Model.queue.EmailResponses.Select(er => er.PeopleId).Distinct().Count()</td></tr>
-<tr><td>Link Tracking</td><td><a href="/Manage/Emails/Tracking/@Model.id">See Details</a></td></tr>
+<tr><td>Link Tracking</td><td><a href="/Emails/Tracking/@Model.id">See Details</a></td></tr>
 <tr><td>SendWhen</td><td>@Model.queue.SendWhen.FormatDateTm()</td></tr>
 <tr><td>Sent</td><td>@Model.queue.Sent.FormatDateTm()</td></tr>
 <tr><td>Queued</td><td>@Model.queue.Queued.FormatDateTm() 
-<tr><td>Email Content</td><td><a href="/Manage/Emails/SeeHtml/@Model.id">View HTML Source</a></td></tr>
-<tr><td>Query Recipients</td><td><a href="/Manage/Emails/ConvertToSearch/@Model.id">Convert to Search</a></td></tr>
+<tr><td>Email Content</td><td><a href="/Emails/SeeHtml/@Model.id">View HTML Source</a></td></tr>
+<tr><td>Query Recipients</td><td><a href="/Emails/ConvertToSearch/@Model.id">Convert to Search</a></td></tr>
 @if (Model.CanDelete())
 {
-    <a href="/Manage/Emails/DeleteQueued/@Model.queue.Id" class="bt">Delete</a>
+    <a href="/Emails/DeleteQueued/@Model.queue.Id" class="bt">Delete</a>
 }
     </td></tr>
 <tr><td>Started</td><td>@Model.queue.Started.FormatDateTm()</td></tr>
@@ -57,14 +57,14 @@
 </table>
 @if (Model.queue.PublicX ?? false)
 {
-    <p>@Helper.AnchorLink("View Email", "/Manage/Emails/View/" + Model.id)</p>
+    <p>@Helper.AnchorLink("View Email", "/Emails/View/" + Model.id)</p>
 }
 else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
 {
-    <a href="/Manage/Emails/MakePublic/@Model.queue.Id" class="bt">Make Public</a>
+    <a href="/Emails/MakePublic/@Model.queue.Id" class="bt">Make Public</a>
     if (Model.queue.Transactional == true)
     {
-        <a href="/Manage/Emails/Resend/@Model.queue.Id" class="bt">Resend</a>
+        <a href="/Emails/Resend/@Model.queue.Id" class="bt">Resend</a>
     }
 }
 <div class="red"><b>@TempData["message"]</b></div>
@@ -72,6 +72,6 @@ else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
 <div style="max-width: 600px">@Html.Raw(Model.queue.Body)</div>
 <hr />
 <h2>Recipients</h2>
-<form action="/Manage/Emails/Recipients/@Model.id" method="post">
+<form action="/Emails/Recipients/@Model.id" method="post">
 @{Html.RenderPartial("Recipients", Model);}
 </form>

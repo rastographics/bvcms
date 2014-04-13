@@ -9,14 +9,14 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [HttpPost, Route("Person2/Contributions/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Contributions/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult Contributions(int id, int? page, int? size, string sort, string dir)
         {
             var m = new ContributionsModel(id);
             m.Pager.Set("/Person2/Contributions/" + id, page, size, sort, dir);
             return View("Giving/Contributions", m);
         }
-        [HttpPost, Route("Person2/Statements/{id:int}")]
+        [HttpPost]
         public ActionResult Statements(int id)
         {
             if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
@@ -51,24 +51,24 @@ namespace CmsWeb.Areas.People.Controllers
             };
         }
 
-        [HttpGet, Route("Person2/ManageGiving")]
+        [HttpGet]
         public ActionResult ManageGiving()
         {
             int org = (from o in DbUtil.Db.Organizations
                 where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
                 select o.OrganizationId).FirstOrDefault();
             if (org > 0)
-                return Redirect("/OnlineReg/Index/" + org);
+                return Redirect("/OnlineReg/" + org);
             return new EmptyResult();
         }
-        [HttpGet, Route("Person2/OneTimeGift")]
+        [HttpGet]
         public ActionResult OneTimeGift()
         {
             int org = (from o in DbUtil.Db.Organizations
                 where o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving
                 select o.OrganizationId).FirstOrDefault();
             if (org > 0)
-                return Redirect("/OnlineReg/Index/" + org);
+                return Redirect("/OnlineReg/" + org);
             return new EmptyResult();
         }
     }

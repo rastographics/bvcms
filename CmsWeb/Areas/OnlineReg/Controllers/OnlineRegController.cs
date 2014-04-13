@@ -12,18 +12,13 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
-    [RouteArea("OnlineReg")]
     [ValidateInput(false)]
+    [RouteArea("OnlineReg", AreaPrefix = "OnlineReg"), Route("{action}/{id?}")]
     public partial class OnlineRegController : CmsController
     {
-#if DEBUG
-        private int INT_timeout = 1600000;
-#else
-        private int INT_timeout = DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
-#endif
-
-        // Main page
         [HttpGet]
+        [Route("~/OnlineReg/{id:int}")]
+        [Route("~/OnlineReg/Index/{id:int}")]
         public ActionResult Index(int? id, bool? testing, string email, bool? nologin, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid)
         {
             if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
@@ -370,7 +365,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                         DbUtil.Db.SubmitChanges();
                         ViewData["email"] = m.List[0].person.EmailAddress;
                         ViewData["orgname"] = m.org.OrganizationName;
-                        ViewData["timeout"] = INT_timeout;
+                        ViewData["timeout"] = timeout;
                         return View("ConfirmReregister");
                     }
                 }
@@ -441,7 +436,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     ViewData["email"] = m.List[0].person.EmailAddress;
                     ViewData["orgname"] = m.masterorg.OrganizationName;
                     ViewData["URL"] = m.URL;
-                    ViewData["timeout"] = INT_timeout;
+                    ViewData["timeout"] = timeout;
                     return View("ConfirmManageSub");
                 }
                 if (m.OnlinePledge())
@@ -453,7 +448,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     ViewData["email"] = m.List[0].person.EmailAddress;
                     ViewData["orgname"] = m.org.OrganizationName;
                     ViewData["URL"] = m.URL;
-                    ViewData["timeout"] = INT_timeout;
+                    ViewData["timeout"] = timeout;
                     SetHeaders(m);
                     return View("ConfirmManagePledge");
                 }
@@ -466,7 +461,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     ViewData["email"] = m.List[0].person.EmailAddress;
                     ViewData["orgname"] = m.org.OrganizationName;
                     ViewData["URL"] = m.URL;
-                    ViewData["timeout"] = INT_timeout;
+                    ViewData["timeout"] = timeout;
                     SetHeaders(m);
                     return View("ConfirmManageGiving");
                 }
@@ -610,12 +605,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                      {
                          Terms = m.Terms,
                          _URL = m.URL,
-                         _timeout = INT_timeout,
+                         _timeout = timeout,
                          PostbackURL = Util.ServerLink("/OnlineReg/Confirm/" + d.Id),
                      });
             }
 
-            ViewBag.timeout = INT_timeout;
+            ViewBag.timeout = timeout;
             ViewBag.Url = m.URL;
 
             var om =
@@ -702,5 +697,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return ErrorResult(m, ex, "In " + function + ex.Message);
             }
         }
+        private readonly int timeout = 1600000;
+        public OnlineRegController()
+        {
+            timeout = Util.IsDebug() ? 16000000 : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
+        }
+
     }
 }

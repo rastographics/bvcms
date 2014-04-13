@@ -16,10 +16,12 @@ using Dapper;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix="Email"), Route("{action}/{id?}")]
 	public class EmailController : CmsStaffController
 	{
 		[ValidateInput(false)]
-		public ActionResult Index2(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml)
+        [Route("~/Email/{id:guid}")]
+		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml)
 		{
 			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
 			if (!body.HasValue())

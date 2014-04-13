@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Codes;
 using CmsWeb.Areas.People.Models;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -10,7 +9,7 @@ using System.Web.Routing;
 
 namespace CmsWeb.Areas.People.Controllers
 {
-    [RouteArea("People", AreaPrefix = "")]
+    [RouteArea("People", AreaPrefix = "Person2"), Route("{action}/{id?}")]
     [ValidateInput(false)]
     [SessionExpire]
     public partial class PersonController : CmsStaffController
@@ -20,13 +19,13 @@ namespace CmsWeb.Areas.People.Controllers
             NoCheckRole = true;
             base.Initialize(requestContext);
         }
-        [HttpGet, Route("Person2/Current")]
+        [HttpGet]
         public ActionResult Current()
         {
             return Redirect("/Person2/" + Util2.CurrentPeopleId);
         }
 
-        [HttpGet, Route("Person2/User/{id:int}")]
+        [HttpGet, Route("User/{id:int}")]
         public ActionResult UserPerson(int? id)
         {
             var pid = (from p in DbUtil.Db.People
@@ -36,13 +35,11 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("no person");
             return Redirect("/Person2/" + pid);
         }
-        [HttpGet]
-        [Route("Person2/{id:int}")]
-        [Route("Index/{id:int}")]
+        [HttpGet, Route("~/Person2/{id:int}")]
         public ActionResult Index(int? id)
         {
             if (!ViewExtensions2.UseNewLook() && User.IsInRole("Access"))
-                return Redirect("/Person/Index/" + id);
+                return Redirect("/Person/" + id);
             if (!id.HasValue)
                 return Content("no id");
 
@@ -71,7 +68,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.AddTasks = "/Person2/AddTaskAbout/" + id;
         }
 
-        [HttpPost, Route("Person2/Tag/{id:int}")]
+        [HttpPost]
         public ActionResult Tag(int id, string tagname, bool? cleartagfirst)
         {
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
@@ -97,7 +94,7 @@ namespace CmsWeb.Areas.People.Controllers
             return new EmptyResult();
         }
 
-        [HttpPost, Route("Person2/InlineEdit/{id:int}")]
+        [HttpPost]
         public ActionResult InlineEdit(int id, int pk, string name, string value)
         {
             var m = new PersonModel(id);
@@ -111,7 +108,7 @@ namespace CmsWeb.Areas.People.Controllers
             return new EmptyResult();
         }
 
-        [HttpGet, Route("Person2/InlineCodes/{name}")]
+        [HttpGet, Route("InlineCodes/{name}")]
         public ActionResult InlineCodes(string name)
         {
             var q = from v in new List<string>()

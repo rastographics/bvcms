@@ -38,13 +38,13 @@
                     return false;
                 }
                 if (ui.item.id === -1)
-                    window.location = "/PeopleSearch?name=" + searchterm;
+                    window.location = "/PeopleSearch/" + searchterm;
                 else if (ui.item.id === -2)
                     window.location = "/QueryBuilder2/Main";
                 else if (ui.item.id === -3)
                     window.location = "/OrgSearch";
                 else
-                    window.location = (ui.item.isOrg ? "/Organization/Index/" : "/Person2/") + ui.item.id;
+                    window.location = (ui.item.isOrg ? "/Organization/" : "/Person2/") + ui.item.id;
                 return true;
             },
             focus: function (ev) {
@@ -129,5 +129,5 @@ function CloseAddDialog() {
 }
 function CloseAddOrgDialog(id) {
     $("#AddDialog").dialog("close");
-    window.location = "/Organization/Index/" + id;
+    window.location = "/Organization/" + id;
 }

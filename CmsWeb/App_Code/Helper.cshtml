@@ -1,13 +1,11 @@
-﻿@using CmsWeb.Models
-@using DocumentFormat.OpenXml.Drawing.Charts
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @helper SearchBuilderDropdown(bool onqb)
 {
     <div class="dropdown2-menu">
         <ul>
             <li>@AnchorLink("Last Search", "/QueryBuilder2/Main")</li>
             <li>@AnchorLink("New Search", "/QueryBuilder2/NewQuery")</li>
-            <li><a href="/SavedQuery2">Saved Searches</a></li>
+            <li><a href="/SavedQueries">Saved Searches</a></li>
             @if (onqb)
             {
                 <li>@JQueryIdLink("Save Search As", "ShowSaveQuery")</li>
@@ -16,22 +14,15 @@
 
     </div>
 }
-@helper AnchorLink(string text, string href, string target = null)
+@helper AnchorLink(string text, string href, string id = null, string target = null, string style = null)
 {
-    if (target.HasValue())
-    {
-        <a href="@href" target="@target">@text</a>
-    }
-    else
-    {
-        <a href="@href">@text</a>
-    }
+    <a href="@href" @(target.HasValue() ? "target=" + target : "") @(style.HasValue() ? "class=" + style : "")>@text</a>
 }
 @helper LiAnchorLink(string text, string url, bool display = true, string target = null)
 {
     if (display)
     {
-        <li>@Helper.AnchorLink(text, url, target)</li>
+        <li>@Helper.AnchorLink(text, url, target: target)</li>
     }
 }
 @helper LiHeader(string text, bool display = true)

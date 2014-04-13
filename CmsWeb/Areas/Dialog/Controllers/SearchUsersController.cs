@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsWeb.Models;
 using UtilityExtensions;
@@ -9,6 +6,7 @@ using CmsData;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    [RouteArea("Dialog", AreaPrefix= "SearchUsers"), Route("{action=index}/{id?}")]
     public class SearchUsersController : CmsStaffController
     {
         [HttpGet]

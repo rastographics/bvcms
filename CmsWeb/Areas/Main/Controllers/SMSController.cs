@@ -4,13 +4,16 @@ using CmsData.Classes.Twilio;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main")]
     public class SMSController : Controller
     {
-        public ActionResult Options2(Guid id )
+        [Route("~/Sms/Options/{id:Guid}")]
+        public ActionResult Options(Guid id )
         {
             return View("Options", id);
         }
-        public ActionResult Send2(Guid id, int iSendGroup, string sTitle, string sMessage)
+        [Route("~/Sms/Send/{id:Guid}")]
+        public ActionResult Send(Guid id, int iSendGroup, string sTitle, string sMessage)
         {
             TwilioHelper.QueueSMS(id, iSendGroup, sTitle, sMessage);
             ViewBag.sTitle = sTitle;

@@ -28,7 +28,7 @@
         }
     </script>
 }
-<h2>Attendance for <a href="/Organization/Index/@Model.OrgId">@Model.OrgName</a></h2>
+<h2>Attendance for <a href="/Organization/@Model.OrgId">@Model.OrgName</a></h2>
 <form action="/Reports/Attendance" method="POST">
     @Html.Hidden("OrgId")
     <div>

@@ -23,11 +23,11 @@
 	if (User.IsInRole("Access"))
 	{
 		<tr>
-			<td class="indent"><a href="/Organization/Index/@om.OrgId" title="@om.DivisionName">@om.Name</a></td>
+			<td class="indent"><a href="/Organization/@om.OrgId" title="@om.DivisionName">@om.Name</a></td>
 			<td>@om.EnrollDate.FormatDate()</td>
 			<td>@om.DropDate.FormatDate()</td>
 			<td><a target="_blank" 
-				   href="/TransactionHistory/Index/@om.PeopleId?oid=@om.OrgId">@om.MemberType</a></td>
+				   href="/TransactionHistory/@om.PeopleId/@om.OrgId">@om.MemberType</a></td>
 			<td>@(om.AttendPct.HasValue ? om.AttendPct.Value.ToString("N1") : "")</td>
 		</tr>
 	}

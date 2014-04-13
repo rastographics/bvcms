@@ -5,14 +5,14 @@
         @if (User.IsInRole("Edit"))
         {
             <li>@Helper.JQueryIdLink("Add New Organization", "addorg")</li>
-            @Helper.LiAnchorLink("Manage Org Members", "/Manage/OrgMembers/")
+            @Helper.LiAnchorLink("Manage Org Members", "/OrgMembers/")
         }
-        @Helper.LiAnchorLink("Coupons", "/Coupon/", User.IsInRole("Coupon"))
+        @Helper.LiAnchorLink("Coupons", "/Coupons/", User.IsInRole("Coupon"))
         @Helper.LiAnchorLink("Manage Promotion", "/Promotion/", User.IsInRole("Edit"))
         <li class="space"></li>
         @foreach (var o in Util2.MostRecentOrgs)
         {
-            @Helper.LiAnchorLink(o.Name, "/Organization/Index/" + o.Id)
+            @Helper.LiAnchorLink(o.Name, "/Organization/" + o.Id)
         }
     </ul>
 </li>

@@ -91,7 +91,7 @@ namespace CmsWeb.Models
 
             if (org.IsMissionTrip == true)
             {
-                paylink = Util.ResolveServerUrl("/OnlineReg/Index/{0}?goerid={1}".Fmt(Orgid, p0.PeopleId));
+                paylink = Util.ResolveServerUrl("/OnlineReg/{0}?goerid={1}".Fmt(Orgid, p0.PeopleId));
             }
             else
             {

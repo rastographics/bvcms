@@ -1,31 +1,29 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Data.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
 using UtilityExtensions;
-using System.Drawing;
 using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
+    [RouteArea("Setup", AreaPrefix = "Division"), Route("{action}/{id?}")]
     public class DivisionController : CmsStaffController
     {
         [Authorize(Roles = "Admin")]
+        [Route("~/Divisions")]
         public ActionResult Index()
         {
             var m = new DivisionModel();
             return View(m);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Results(DivisionModel m)
         {
             return View(m);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Create(DivisionModel m)
         {
             var d = new Division { Name = "New Division" };
@@ -67,7 +65,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 }
             return new EmptyResult();
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public EmptyResult Delete(string id)
         {
             var iid = id.Substring(1).ToInt();
@@ -90,7 +88,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             public string value;
             public string ChangeMain;
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult ToggleProg(int id, DivisionModel m)
         {
             var division = DbUtil.Db.Divisions.Single(d => d.Id == id);
@@ -100,7 +98,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             var di = m.DivisionItem(id).Single();
             return View("Row", di);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult MainProg(int id, DivisionModel m)
         {
             var division = DbUtil.Db.Divisions.Single(d => d.Id == id);

@@ -2,5 +2,5 @@
         <b><a id="orgpicklist" href="/Organization/OrgPickList/@Model.OrgId">Choose Organizations</a></b>
         @foreach (var o in Model.OrganizationsFromIdString(Model.org))
         {
-            <div><a href="/Organization/Index/@o.OrganizationId" target="otherorg">@o.OrganizationName</a></div>
+            <div><a href="/Organization/@o.OrganizationId" target="otherorg">@o.OrganizationName</a></div>
         }

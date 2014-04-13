@@ -10,8 +10,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix="Volunteering"), Route("{action}/{id?}")]
     public class VolunteeringController : Controller
     {
+        [Route("~/Volunteering/{id:int}")]
         public ActionResult Index(int id)
         {
             var vol = new VolunteerModel(id);
@@ -29,7 +31,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var m = new VolunteerModel(id);
             m.Update(processDate, statusId, comments, approvals);
-            return RedirectToAction("Index", "Volunteering", new {id = id});
+            return Redirect("/Volunteering/" + id);
         }
 
         [HttpPost]
@@ -96,7 +98,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("Uploading VolunteerApp for {0}".Fmt(vol.V.Person.Name));
 
-            return Redirect("/Volunteering/Index/" + vol.V.PeopleId);
+            return Redirect("/Volunteering/" + vol.V.PeopleId);
         }
 
         public ActionResult Delete(int id, int PeopleID)
@@ -110,14 +112,14 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.VolunteerForms.DeleteOnSubmit(form);
             DbUtil.Db.SubmitChanges();
 
-            return Redirect("/Volunteering/Index/" + PeopleID);
+            return Redirect("/Volunteering/" + PeopleID);
         }
 
 
         public ActionResult CreateCheck(int id, string code, int type, int label = 0)
         {
             ProtectMyMinistryHelper.create(id, code, type, label);
-            return Redirect("/Volunteering/Index/" + id);
+            return Redirect("/Volunteering/" + id);
         }
 
         public ActionResult EditCheck(int id, int label = 0)
@@ -130,7 +132,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             DbUtil.Db.SubmitChanges();
 
-            return Redirect("/Volunteering/Index/" + bc.PeopleID);
+            return Redirect("/Volunteering/" + bc.PeopleID);
         }
 
         public ActionResult DeleteCheck(int id)
@@ -146,7 +148,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.BackgroundChecks.DeleteOnSubmit(bc);
             DbUtil.Db.SubmitChanges();
 
-            return Redirect("/Volunteering/Index/" + iPeopleID);
+            return Redirect("/Volunteering/" + iPeopleID);
         }
 
         public ActionResult SubmitCheck(int id, int iPeopleID, string sSSN, string sDLN, string sUser = "", string sPassword = "", int iStateID = 0, string sPlusCounty = "", string sPlusState = "")
@@ -205,7 +207,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 DbUtil.Db.SubmitChanges();
             }
 
-            return Redirect("/Volunteering/Index/" + iPeopleID);
+            return Redirect("/Volunteering/" + iPeopleID);
         }
 
         public ActionResult DialogSubmit(int id)

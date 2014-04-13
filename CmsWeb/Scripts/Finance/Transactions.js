@@ -29,7 +29,7 @@
         if (f)
             q = f.serialize();
         $.blockUI();
-        $.post("/Manage/Transactions/List", q, function (ret) {
+        $.post("/Transactions/List", q, function (ret) {
             $('#Transactions').html(ret);
             $.preptable();
             $.unblockUI();
@@ -63,9 +63,9 @@
     $('body').on('click', '#export', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
-        f.attr("action", "/Manage/Transactions/Export");
+        f.attr("action", "/Transactions/Export");
         f.submit();
-        f.attr("action", "/Manage/Transactions/List");
+        f.attr("action", "/Transactions/List");
         return false;
     });
     $("body").on("click", 'a.voidcredit', function (ev) {

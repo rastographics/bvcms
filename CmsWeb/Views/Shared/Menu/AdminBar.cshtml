@@ -26,14 +26,14 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage</a>
                     <ul class="dropdown-menu">
-                        @Helper.LiAnchorLink("Activity Log", "/Manage/Users/LastActivity/", admin)
-                        @Helper.LiAnchorLink("Check-in Activity", "/Manage/CheckinTime/", admin || edit)
-                        @Helper.LiAnchorLink("Divisions", "/Setup/Division/", admin)
-                        @Helper.LiAnchorLink("Emails", "/Manage/Emails/", admin || manageemails)
-                        @Helper.LiAnchorLink("Programs", "/Setup/Program/", admin)
-                        @Helper.LiAnchorLink("SMS Messages", "/Manage/SMS/", admin)
-                        @Helper.LiAnchorLink("Transactions", "/Manage/Transactions/", admin || managetrans)
-                        @Helper.LiAnchorLink("Users", "/Manage/Users/", admin)
+                        @Helper.LiAnchorLink("Activity Log", "/Users/LastActivity/", admin)
+                        @Helper.LiAnchorLink("Check-in Activity", "/CheckinTimes/", admin || edit)
+                        @Helper.LiAnchorLink("Divisions", "/Divisions/", admin)
+                        @Helper.LiAnchorLink("Emails", "/Emails/", admin || manageemails)
+                        @Helper.LiAnchorLink("Programs", "/Programs/", admin)
+                        @Helper.LiAnchorLink("SMS Messages", "/SMS/List", admin)
+                        @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans)
+                        @Helper.LiAnchorLink("Users", "/Users/", admin)
                     </ul>
                 </li>
                 @if (finance)
@@ -42,15 +42,15 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Contributions</a>
                         <ul class="dropdown-menu">
                             @Helper.LiAnchorLink("Bundles", "/Bundles/")
-                            @Helper.LiAnchorLink("Search All", "/Finance/Contributions/")
+                            @Helper.LiAnchorLink("Search All", "/Contributions/")
                             <li class="header">Reports</li>
                             @Helper.LiAnchorLink("Statements (All)", "/Statements/", true, "_blank")
                             @Helper.LiAnchorLink("Totals by Fund", "/FinanceReports/TotalsByFund/")
                             @Helper.LiAnchorLink("Donor Totals by Range", "/FinanceReports/DonorTotalsByRange/")
-                            @Helper.LiAnchorLink("Totals by Fund Age Range", "/Contributions/Reports/TotalsByFundAgeRange.aspx", true, "_blank")
-                            @Helper.LiAnchorLink("Totals by Fund Age Range (pledges included)", "/Contributions/Reports/TotalsByFundAgeRange.aspx?pledged=both", true, "_blank")
-                            @Helper.LiAnchorLink("Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx", true, "_blank")
-                            @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", true, "_blank")
+                            @Helper.LiAnchorLink("Totals by Fund Age Range", "/ContributionReports/TotalsByFundAgeRange.aspx", true, "_blank")
+                            @Helper.LiAnchorLink("Totals by Fund Age Range (pledges included)", "/ContributionReports/TotalsByFundAgeRange.aspx?pledged=both", true, "_blank")
+                            @Helper.LiAnchorLink("Totals by Fund Range", "/ContributionReports/TotalsByFundRange.aspx", true, "_blank")
+                            @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/ContributionReports/TotalsByFundRange.aspx?pledged=true", true, "_blank")
                             @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport/")
                             @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManagedGiving/")
                             @Helper.LiAnchorLink("QuickBooks", "/QuickBooks/", quickbooks)
