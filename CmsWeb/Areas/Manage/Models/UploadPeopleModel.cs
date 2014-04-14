@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
@@ -188,9 +189,9 @@ namespace CmsWeb.Models
             var csv = new CsvReader(new StringReader(text), false, '\t');
             var list = csv.ToList();
 
-            var list0 = list.First().Select(kk => kk.ToLower()).ToList();
+            var list0 = list.First().Select(kk => kk).ToList();
             names = list0.ToDictionary(i => i.TrimEnd(),
-                                       i => list0.FindIndex(s => s == i));
+                                       i => list0.FindIndex(s => s == i), StringComparer.OrdinalIgnoreCase);
 
             if (names.ContainsKey("campus"))
             {
@@ -237,6 +238,8 @@ namespace CmsWeb.Models
         		"workphone", "email", "email2", "suffix", "middle", "joindate", "dropdate", "baptismdate", "weddingdate",
         		"memberstatus", "employer", "occupation",
         	};
+            var orgs = new Dictionary<string, int>();
+            var membertypes = new Dictionary<string, int>();
 
             foreach (var fam in q)
             {
@@ -391,13 +394,42 @@ namespace CmsWeb.Models
                     try
                     {
                         var nq = from name in names.Keys
-                                 where !standardnames.Contains(name)
+                                 where !standardnames.Contains(name, StringComparer.OrdinalIgnoreCase)
                                  select name;
                         foreach (var name in nq)
                         {
                             var b = name.Split('.');
                             if (name.EndsWith(".txt"))
                                 p.AddEditExtraData(b[0], a[names[name]].Trim());
+                            else if (name.EndsWith(".org"))
+                            {
+                                if (testing) 
+                                    continue;
+                                var d = a[names[name]].Trim().Trim();
+                                if (!d.HasValue()) 
+                                    continue;
+                                var oid = 0;
+                                if (orgs.ContainsKey(b[0]))
+                                    oid = orgs[b[0]];
+                                else
+                                {
+                                    var org = Db.Organizations.First();
+                                    var o = org.CloneOrg(Db);
+                                    o.OrganizationName = b[0].SplitUpperCaseToString();
+                                    oid = o.OrganizationId;
+                                    orgs.Add(b[0], oid);
+                                }
+                                var mtid = 0;
+                                if (membertypes.ContainsKey(d))
+                                    mtid = membertypes[d];
+                                else
+                                {
+                                    var mt = Organization.FetchOrCreateMemberType(Db, d);
+                                    mtid = mt.Id;
+                                    membertypes.Add(d, mtid);
+                                }
+                                OrganizationMember.InsertOrgMembers(Db, oid, p.PeopleId, mtid, DateTime.Today, null, false);
+                            }
                             else if (name.EndsWith(".dt"))
                             {
                                 var d = a[names[name]].Trim().ToDate();
@@ -420,7 +452,7 @@ namespace CmsWeb.Models
                         if (!testing)
                         {
                             p.AddEditExtraBool("InsertPeopleAdded", true);
-                            if(potentialdup)
+                            if (potentialdup)
                                 p.AddEditExtraBool("FoundDup", true);
                             Db.SubmitChanges();
                         }
