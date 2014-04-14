@@ -76,7 +76,8 @@ namespace CmsWeb.Models
                     {
                         Text = s.Description + amt,
                         Value = s.SmallGroup,
-                        Filled = s.IsSmallGroupFilled(GroupTags)
+                        Filled = s.IsSmallGroupFilled(GroupTags),
+                        Selected = s.SmallGroup == option[ask.UniqueId]
                     };
             var list = q.ToList();
             list.Insert(0, new SelectListItemFilled { Text = "(please select)", Value = "00" });

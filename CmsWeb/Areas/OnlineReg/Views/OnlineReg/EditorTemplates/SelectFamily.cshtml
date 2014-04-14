@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Models.OnlineRegPersonModel
-@Helper.OnlineRegHeaderRow("Select Family Member")
+@Helper.OnlineRegHeaderFullRow("Select Family Member")
 <div id="selectfamily" class="box">
     <table class="table">
         @foreach (var fm in Model.Parent.FamilyMembers())
@@ -10,6 +10,7 @@
                 </td>
                 <td>
                     @Html.ValidationMessage2("age-" + fm.PeopleId)
+                    @Html.ValidationMessage2("fammember-" + fm.PeopleId)
                 </td>
             </tr>
         }

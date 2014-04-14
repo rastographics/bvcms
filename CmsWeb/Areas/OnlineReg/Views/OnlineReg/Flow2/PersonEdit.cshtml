@@ -6,15 +6,15 @@
 {
     @Html.HiddenFor(m => m.guid)
     @Html.HiddenFor(m => m.FirstName)
-    @Html.HiddenFor(m => m.MiddleName)
     @Html.HiddenFor(m => m.LastName)
-    @Html.HiddenFor(m => m.Suffix)
     @Html.HiddenFor(m => m.EmailAddress)
     <address>
         @Html.Partial("Flow2/FinishedHeader", Model)
     </address>
     
     <div class="alert alert-info">Please provide additional information for a new profile</div>
+    @Html.EditorFor(m => m.MiddleName, new { classes = "narrow" })
+    @Html.EditorFor(m => m.Suffix, new { classes = "narrow" } )
     if (Model.RequiredDOB() && !Model.DateOfBirth.HasValue())
     {
         @Html.EditorFor(m => m.DateOfBirth)
@@ -31,6 +31,7 @@
     {
         @Html.HiddenFor(m => m.Phone)
     }
+    
     @Html.Partial("Flow2/AddressEdit", Model)
     @Html.Partial("Flow2/SubmitNewButtons", Model)
 }
@@ -38,9 +39,7 @@ else
 {
     @Html.HiddenFor(m => m.guid)
     @Html.EditorFor(m => m.FirstName)
-    @Html.EditorFor(m => m.MiddleName)
     @Html.EditorFor(m => m.LastName)
-    @Html.EditorFor(m => m.Suffix)
     @Html.EditorFor(m => m.DateOfBirth)
     @Html.EditorFor(m => m.Phone)
     @Html.EditorFor(m => m.EmailAddress)

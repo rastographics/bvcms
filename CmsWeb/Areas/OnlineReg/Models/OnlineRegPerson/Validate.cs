@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using CmsData;
 using CmsData.Registration;
+using DocumentFormat.OpenXml.EMMA;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData.Codes;
@@ -72,7 +73,8 @@ namespace CmsWeb.Models
                     return;
                 }
             var dobname = Parent.GetNameFor(mm => mm.List[i].DateOfBirth);
-            var foundname = Parent.GetNameFor(mm => mm.List[i].Found);
+            //var foundname = Parent.GetNameFor(mm => mm.List[i].Found);
+            var foundname = "fammember-" + PeopleId;
             if (!PeopleId.HasValue)
                 ValidBasic(ModelState);
             if (ComputesOrganizationByAge() && !birthday.HasValue)
@@ -273,7 +275,7 @@ Please call the church to resolve this before we can complete your registration.
                     if (ZipCode.HasValue())
                         addrok = true;
                     if (!addrok)
-                        ModelState.AddModelError("zip", "city/state required or zip required (or \"na\" in all)");
+                        ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ZipCode), "city/state required or zip required (or \"na\" in all)");
 
                     if (ModelState.IsValid && AddressLineOne.HasValue()
                         && (Country == "United States" || !Country.HasValue()))
@@ -283,7 +285,7 @@ Please call the church to resolve this before we can complete your registration.
                         {
                             if (r.found == false)
                             {
-                                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ZipCode), r.address + ", if your address will not validate, change the country to 'USA, Not Validated'");
+                                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ZipCode), r.address + ", to skip address check, Change the country to USA, Not Validated");
                                 return;
                             }
                             if (r.Line1 != AddressLineOne)
@@ -307,9 +309,13 @@ Please call the church to resolve this before we can complete your registration.
                 ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].married), "Please specify marital status");
 
             if (MemberOnly())
+            {
                 ModelState.AddModelError(foundname, "Sorry, must be a member of church");
+            }
             else if (org != null && setting.ValidateOrgIds.Count > 0)
+            {
                 ModelState.AddModelError(foundname, "Must be member of specified organization");
+            }
 
             IsValidForNew = ModelState.IsValid;
             IsValidForContinue = ModelState.IsValid;

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Contributions/Reports/Reports.Master"
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ContributionReports/Reports.Master"
     AutoEventWireup="true" CodeBehind="JournalDetails.aspx.cs" Inherits="CmsWeb.Contributions.Reports.JournalDetails" EnableEventValidation="false" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">

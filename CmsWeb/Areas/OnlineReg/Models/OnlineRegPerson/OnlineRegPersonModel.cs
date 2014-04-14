@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Data.Linq;
@@ -96,23 +97,53 @@ namespace CmsWeb.Models
         public int? married { get; set; }
         public bool IsFilled { get; set; }
         public string shirtsize { get; set; }
+
+        [DisplayName("Emergency Contact"), StringLength(100)]
         public string emcontact { get; set; }
+
+        [DisplayName("Emergency Phone"), StringLength(100)]
         public string emphone { get; set; }
+
+        [DisplayName("Insurance Carrier"), StringLength(100)]
         public string insurance { get; set; }
+
+        [DisplayName("Policy / Group #"), StringLength(100)]
         public string policy { get; set; }
+
+        [DisplayName("Family Physician"), StringLength(100)]
         public string doctor { get; set; }
+        [DisplayName("Physician Phone"), StringLength(15)]
         public string docphone { get; set; }
+
+        [DisplayName("Medical Issues"), StringLength(200)]
         public string medical { get; set; }
+
+        [DisplayName("Mother's Name (first last)"), StringLength(80)]
         public string mname { get; set; }
+        [DisplayName("Father's Name (first last)"), StringLength(80)]
         public string fname { get; set; }
+
         public bool memberus { get; set; }
         public bool otherchurch { get; set; }
+
+        [DisplayName("Interested in Coaching")]
         public bool? coaching { get; set; }
+
+        [DisplayName("Receive Text Messages")]
         public bool? sms { get; set; }
+
+        [DisplayName("Tylenol")]
         public bool? tylenol { get; set; }
+
+        [DisplayName("Advil")]
         public bool? advil { get; set; }
+
+        [DisplayName("Maalox")]
         public bool? maalox { get; set; }
+        
+        [DisplayName("Robitussin")]
         public bool? robitussin { get; set; }
+
         public bool? paydeposit { get; set; }
         public string request { get; set; }
         public string grade { get; set; }

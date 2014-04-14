@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Models.OnlineRegPersonModel
-@Helper.OnlineRegHeaderRow("Make a Selection")
+@Helper.OnlineRegHeaderFullRow("Make a Selection")
 <div>
     <select name="@Html.NameFor2(m => m.classid)">
         @foreach (var i in Model.Parent.Classes(Model.classid))

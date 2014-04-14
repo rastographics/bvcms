@@ -59,6 +59,8 @@
                 $.InstructionsShow();
                 if ($("#submitit").data("onlyoneallowed") == "true") {
                     f.submit();
+                } else {
+                    $('body, html').animate({scrollTop:$('form').offset().top}, 'fast');
                 }
             });
         });
@@ -113,7 +115,9 @@
         $.post($(this).attr('href'), q, function (ret) {
             if (ret == 'refresh')
                 location.reload();
-            $(f).html(ret);
+            $(f).html(ret).ready(function() {
+                $('body, html').animate({ scrollTop: $('form').offset().top }, 'fast');
+            });
         });
         return false;
     });

@@ -15,7 +15,7 @@
     // show a family list because logged in and more than one in family
     {
         @Html.EditorFor(m => m, "SelectFamily")
-        @Helper.OnlineRegHeaderRow("Or find another non-family member here")
+        @Helper.OnlineRegHeaderFullRow("Or find another non-family member here")
     }
     else
     {
@@ -69,7 +69,7 @@
         <div class="panel-body">
             @if (!Model.ShowAddress && Model.NotFoundText.HasValue())
             {
-                @Html.DivAlertBox(Model.NotFoundText, alerttype: "alert-info")
+                @Html.DivAlertBox(Model.NotFoundText)
             }
             @Html.Partial("Flow2/PersonMetaHidden", Model)
 

@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Personal/Edit", m);
         }
         [HttpPost]
-        public ActionResult Personalpdate(int id, BasicPersonInfo m)
+        public ActionResult PersonalUpdate(int id, BasicPersonInfo m)
         {
             m.UpdatePerson();
             DbUtil.LogActivity("Update Basic Info for: {0}".Fmt(m.person.Name));

@@ -1016,6 +1016,10 @@
     <Content Include="Content\css\chosen-sprite.png" />
     <Content Include="Content\css\chosen.min.css" />
     <Content Include="Content\css\datepicker.css" />
+    <Content Include="Content\css\Fixups3.css" />
+    <Content Include="Content\css\Fixups2 - Copy.min.css">
+      <DependentUpon>Fixups3.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\Fixups2.css" />
     <Content Include="Content\css\demo_page.css" />
     <Content Include="Content\css\demo_table.css" />
@@ -1113,6 +1117,8 @@
     <Content Include="Scripts\bundle.person.js" />
     <Content Include="Scripts\bundle.query2.js" />
     <Content Include="Scripts\bundle.taskpage.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jQuery\jquery-ui.effects.min.js" />
@@ -1376,8 +1382,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\DateTime.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Decimal.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\EmailAddress.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\HiddenCodeInfo.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\InlineCodeInfo.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Int32.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Password.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Phone.cshtml" />
@@ -1406,6 +1410,18 @@
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Edit.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Move.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\YesNo.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Dropdown.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskChurch.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskExtraQuestions.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskYesNoQuestions.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskDropdown.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskCheckboxes.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskCheckboxesMatrix.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskMenu.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\PayDepositOrFull.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\OnlineGiving.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Boolean.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

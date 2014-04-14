@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="TotalsByFundAgeRange.aspx.cs"
-    MasterPageFile="~/Contributions/Reports/Reports.Master" Inherits="CmsWeb.Reports.TotalsByFundAgeRange" EnableEventValidation="false" %>
+    MasterPageFile="~/ContributionReports/Reports.Master" Inherits="CmsWeb.Reports.TotalsByFundAgeRange" EnableEventValidation="false" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>

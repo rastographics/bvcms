@@ -1,0 +1,14 @@
+﻿@model bool?
+<div class="form-group">
+    @Html.Label("Payment", new { @class = "control-label col-sm-3 labelsize" })
+    <div class="col-sm-9">
+        <label class="radio-inline">
+            @Html.RadioButtonFor(m => m, true) Pay Deposit Only
+        </label>
+        <label class="radio-inline">
+            @Html.RadioButtonFor(m => m, false) Pay Full Amount
+        </label>
+        @Html.ValidationMessageFor(m => m)
+    </div>
+</div>
+

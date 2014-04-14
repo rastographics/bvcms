@@ -17,6 +17,7 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using CmsData;
 using CmsWeb.Code;
+using Elmah;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
@@ -43,26 +44,55 @@ namespace CmsWeb
     }
     public static class ViewExtensions2
     {
-        public static HtmlString DivValidationMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression)
+        public static MvcHtmlString DivValidationMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression)
         {
-            var msg = helper.ValidationMessageFor(expression).ToString();
-            if (msg.HasValue() && msg.Contains("field-validation-valid"))
+            try
+            {
+                var msg = helper.ValidationMessageFor(expression);
+                if (msg == null)
+                    return null;
+                var s = msg.ToString();
+                if (s.HasValue() && s.Contains("field-validation-valid"))
+                    return null;
+                if (!s.HasValue())
+                    return null;
+                var div = new TagBuilder("div");
+                div.AddCssClass("alert alert-danger");
+                div.InnerHtml = s;
+                return new MvcHtmlString(div.ToString());
+            }
+            catch (Exception ex)
+            {
+                var errorLog = ErrorLog.GetDefault(null);
+                errorLog.Log(new Error(ex));
                 return null;
-            var div = new TagBuilder("div");
-            div.AddCssClass("alert alert-danger");
-            div.InnerHtml = msg;
-            return new HtmlString(div.ToString());
+            }
         }
-        public static HtmlString DivValidationMessage(this HtmlHelper helper, string field)
+        public static MvcHtmlString DivValidationMessage(this HtmlHelper helper, string field)
         {
-            var msg = helper.ValidationMessage(field).ToString();
-            if (msg.HasValue() && msg.Contains("field-validation-valid"))
+            try
+            {
+                var msg = helper.ValidationMessage(field);
+                if (msg == null)
+                    return null;
+                var s = msg.ToString();
+                if (s.HasValue() && s.Contains("field-validation-valid"))
+                    return null;
+                if (@s.HasValue())
+                    return null;
+                var div = new TagBuilder("div");
+                div.AddCssClass("alert alert-danger");
+                div.InnerHtml = s;
+                return new MvcHtmlString(div.ToString());
+            }
+            catch (Exception ex)
+            {
+                var errorLog = ErrorLog.GetDefault(null);
+                errorLog.Log(new Error(ex));
                 return null;
-            var div = new TagBuilder("div");
-            div.AddCssClass("alert alert-danger");
-            div.InnerHtml = msg;
-            return new HtmlString(div.ToString());
+            }
         }
+        
         public static HtmlString DivAlertBox(this HtmlHelper helper, string msg, string alerttype = "alert-danger")
         {
             if (!msg.HasValue())
@@ -83,6 +113,10 @@ namespace CmsWeb
         public static string GetNameFor<M, P>(this M model, Expression<Func<M, P>> ex)
         {
             return ExpressionHelper.GetExpressionText(ex);
+        }
+        public static string GetIdFor<M, P>(this M model, Expression<Func<M, P>> ex)
+        {
+            return ExpressionHelper.GetExpressionText(ex).ToSuitableId();
         }
         public static string RegisterScript(this HtmlHelper helper, string scriptFileName)
         {
@@ -701,6 +735,7 @@ namespace CmsWeb
             return @"
 <link rel=""stylesheet"" href=""//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"">
 <link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css"">
+<link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
         }
         public static HtmlString FontAwesome()

@@ -104,11 +104,32 @@
         @text
     </a>
 }
-@helper OnlineRegHeaderRow(string text)
+@helper OnlineRegHeaderFullRow(string text)
 {
     <div class="form-group">
         <div class="col-sm-12">
             <h4 class="form-control-static">@text</h4>
+        </div>
+    </div>
+}
+@helper OnlineRegHeader(string text)
+{
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <p class="form-control-static">
+                <strong>@text</strong>
+            </p>
+        </div>
+    </div>
+
+}
+@helper OnlineRegInstruction(string text)
+{
+    <div class="form-group">
+        <div class="col-sm-12">
+            <p class="bg-info pad10">
+                <strong>@text</strong>
+            </p>
         </div>
     </div>
 }

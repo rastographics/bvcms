@@ -1,0 +1,31 @@
+﻿@using CmsData.Registration
+@using UtilityExtensions
+@model CmsWeb.Models.OnlineRegPersonModel
+@{
+    var ask = (AskMenu)ViewBag.ask;
+    var name = Html.NameFor2(m => m.MenuItem[ask.UniqueId]);
+}
+    var a = ask.list[i];
+<div class="form-group">
+    @Html.Label(ask.Label, new { @class = "control-label col-sm-3 labelsize" })
+    <div class="col-sm-9">
+        <table class="table">
+            <tr><td>Description</td><td># Items</td></tr>
+            @for (var i = 0; i < ask.list.Count; i++)
+            {
+                var item = ask.list[i];
+                <tr>
+                    <td>@item.Description </td>
+                    <td nowrap="nowrap">
+                        <input type="hidden" name="@(name)[@i].Key" value="@item.SmallGroup" />
+                        <input type="text" name="@(name)[@i].Value" value="@Model.MenuItemValue(ask.UniqueId, item.SmallGroup)" class="form-control narrow" />
+                        @if (item.Fee > 0)
+                        {
+                            @:at $@item.Fee.ToString2("N2")
+                    }
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

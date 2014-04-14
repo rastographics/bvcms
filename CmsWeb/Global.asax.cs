@@ -2,46 +2,25 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.Security;
 using CmsData;
-using CmsData.Registration;
 using CmsWeb.Code;
+using CmsWeb.Models;
 using UtilityExtensions;
-using CmsWeb;
-using System.Net.Mail;
-using System.Web.Configuration;
-using System.Net;
-using System.Text;
 using System.IO;
 using System.Threading;
 using System.Globalization;
-using CmsWeb.Areas.Manage.Controllers;
-using System.Web.Caching;
 using Elmah;
-using System.Web.Security;
-using Thinktecture.IdentityModel.Http.Cors.Mvc;
 
 namespace CmsWeb
 {
-    // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
-    // visit http://go.microsoft.com/?LinkId=9394801
-
     public class MvcApplication : System.Web.HttpApplication
     {
 
-        //        private void RegisterCors(MvcCorsConfiguration corsConfig)
-        //        {
-        //            corsConfig
-        //                .ForResources("APIMeta")
-        //                .AllowAllOrigins()
-        //                .AllowAllMethods()
-        //                .AllowCookies()
-        //                .AllowRequestHeaders("Content-Type", "Authorization");
-        //        }
         protected void Application_Start()
         {
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
@@ -49,7 +28,6 @@ namespace CmsWeb
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             RouteTable.Routes.RouteExistingFiles = true;
             HttpRuntime.Cache.Remove("BuildDate");
-            //            RegisterCors(MvcCorsConfiguration.Configuration);
 #if DEBUG
             //HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlProfiler.Initialize();
 #endif
@@ -73,8 +51,19 @@ namespace CmsWeb
                 if (1 == 1) // should be 1 == 1 (or just true) to run normally
                     Models.AccountModel.SetUserInfo(Util.UserName, Session);
                 else
-                    Models.AccountModel.SetUserInfo("trecord", Session);
+                    Models.AccountModel.SetUserInfo("david", Session);
             }
+#if DEBUG
+            else
+            {
+                var username = WebConfigurationManager.AppSettings["DebugUser"];
+                if (username.HasValue())
+                {
+                    AccountModel.SetUserInfo(username, Session);
+                    FormsAuthentication.SetAuthCookie(username, false);
+                }
+            }
+#endif
             Util.SysFromEmail = ConfigurationManager.AppSettings["sysfromemail"];
             Util.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Util.SessionStarting = true;

@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Public
         {
             var o = OrgContentInfo.Get(id);
             if (o == null || o.Inactive || !Util.UserPeopleId.HasValue || !o.CanEdit)
-                return Redirect("/OrgContent/Index/" + id);
+                return Redirect("/OrgContent/" + id);
             return View(o);
         }
         [HttpPost]
@@ -82,7 +82,7 @@ CKEditorFuncNum, oc.Id, error));
             var o = OrgContentInfo.Get(OrgId);
             o.Html = Html;
             ImageData.DbUtil.Db.SubmitChanges();
-            return Redirect("/OrgContent/Index/" + OrgId);
+            return Redirect("/OrgContent/" + OrgId);
         }
     }
 }

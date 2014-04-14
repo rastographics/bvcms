@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!shell.HasValue() && settings != null && settings.ContainsKey(id))
                 shell = DbUtil.Content(settings[id].Shell, null);
             if (!shell.HasValue())
-                shell = DbUtil.Content("ShellDefault", "");
+                shell = DbUtil.Content("ShellDefaultBs", "");
 
             if (shell.HasValue())
             {

@@ -58,7 +58,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             SetHeaders(m);
 
 #if DEBUG
-            m.username = "trecord";
+            //m.username = "trecord";
             m.testing = true;
 #else
             m.testing = testing;
@@ -226,6 +226,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult Register(int id, OnlineRegModel m)
         {
+            ModelState.Clear();
             m.History.Add("Register");
             int index = m.List.Count - 1;
             if (m.List[index].classid.HasValue)

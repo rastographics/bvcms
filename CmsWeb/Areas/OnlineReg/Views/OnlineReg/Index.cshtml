@@ -6,6 +6,9 @@
         : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Registration";
 }
+@section head
+{
+}
 @section scripts
 {
     <script type="text/javascript">
@@ -30,7 +33,7 @@
 
 @if (Model.UseBootstrap)
 {
-<div class="regform container">
+<div class="regform">
     <h3>@Model.Header</h3>
     @{var msg = Model.Filled();}
     @if (Model.NotAvailable())
