@@ -6,5 +6,6 @@
 <h2>Upload People</h2>
 <form method="POST" action="/UploadPeople/Upload">
     @Html.TextArea("text", ViewData["text"].ToString(), new { rows = "30", cols = "1000", wrap = "off", style = "width:90%" })<br />
+    @Html.CheckBox("noupdate") Inserts Only
     <input type="submit" class="bt" value="Submit" />
 </form> 

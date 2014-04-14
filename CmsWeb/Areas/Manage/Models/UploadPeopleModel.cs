@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using CmsData;
 using LumenWorks.Framework.IO.Csv;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -18,12 +19,14 @@ namespace CmsWeb.Models
         private CMSDataContext Db;
         private CMSDataContext Db2;
         private int PeopleId;
+        private bool noupdate;
 
-        public UploadPeopleModel(CMSDataContext Db, int PeopleId, string connectionstring)
+        public UploadPeopleModel(CMSDataContext Db, int PeopleId, bool noupdate, string connectionstring)
         {
             this.Db = Db;
             Db2 = new CMSDataContext(connectionstring);
             this.PeopleId = PeopleId;
+            this.noupdate = noupdate;
         }
 
         private void UpdateField(Family f, string[] a, string prop, string s)
@@ -264,6 +267,17 @@ namespace CmsWeb.Models
                     Person p = null;
                     var pid = Db.FindPerson3(first, last, dob, email, cell, homephone, null).FirstOrDefault();
 
+                    var potentialdup = false;
+                    if (noupdate && pid != null)
+                    {
+                        if (!testing)
+                        {
+                            var pd = Db.LoadPersonById(pid.PeopleId.Value);
+                            pd.AddEditExtraBool("FoundDup", true);
+                        }
+                        potentialdup = true;
+                        pid = null;
+                    }
                     if (pid != null) // found
                     {
                         p = Db.LoadPersonById(pid.PeopleId.Value);
@@ -299,7 +313,7 @@ namespace CmsWeb.Models
                             p.LogChanges(Db, psb, PeopleId);
                             p.Family.LogChanges(Db, fsb, p.PeopleId, PeopleId);
                             Db.SubmitChanges();
-                            Person.Tag(Db, p.PeopleId, "InsertPeopleUpdated", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                            p.AddEditExtraBool("InsertPeopleUpdated", true);
                         }
                     }
                     else // new person
@@ -405,7 +419,9 @@ namespace CmsWeb.Models
                         Db2.SubmitChanges();
                         if (!testing)
                         {
-                            Person.Tag(Db, p.PeopleId, "InsertPeopleAdded", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                            p.AddEditExtraBool("InsertPeopleAdded", true);
+                            if(potentialdup)
+                                p.AddEditExtraBool("FoundDup", true);
                             Db.SubmitChanges();
                         }
                     }

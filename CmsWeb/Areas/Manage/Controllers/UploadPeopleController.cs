@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Upload(string text)
+		public ActionResult Upload(string text, bool noupdate)
 		{
 			string host = Util.Host;
 			var runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			    Db.Host = host;
 				try
 				{
-					var m = new UploadPeopleModel(Db, pid ?? 0, cs);
+					var m = new UploadPeopleModel(Db, pid ?? 0, noupdate, cs);
 					m.DoUpload(text, testing: true);
 					Db.Dispose();
     				Db = new CMSDataContext(cs);
@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         			Db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
         			Db.SubmitChanges();
 
-					m = new UploadPeopleModel(Db, pid ?? 0, cs);
+					m = new UploadPeopleModel(Db, pid ?? 0, noupdate, cs);
 					m.DoUpload(text);
 				}
 				catch (Exception ex)
