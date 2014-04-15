@@ -2857,7 +2857,6 @@
     <Content Include="Scripts\jQuery\jquery.multiSelect.js" />
     <Content Include="ContributionReports\TotalsByFundAgeRange.aspx" />
     <Content Include="ContributionReports\Reports.Master" />
-    <Content Include="ContributionReports\Web.config" />
     <Content Include="Areas\Setup\Views\Web.config" />
     <Content Include="Areas\Public\Views\Web.config" />
     <Content Include="Areas\Manage\Views\Web.config" />

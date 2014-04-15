@@ -506,8 +506,8 @@ $(function () {
     };
     $("#NewMeetingDialog").dialog({
         autoOpen: false,
-        width: 488,
-        height: 450,
+        width: 560,
+        height: 550,
         modal: true
     });
     $('#RollsheetLink').live("click", function (ev) {

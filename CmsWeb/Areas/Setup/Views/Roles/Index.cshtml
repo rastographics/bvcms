@@ -7,7 +7,7 @@
 {
     <script type="text/javascript">
         $(function() {
-            $(".clickEdit").editable("/Setup/Roles/Edit/", {
+            $(".clickEdit").editable("/Roles/Edit/", {
                 indicator: "<img src='/images/loading.gif'>",
                 tooltip: "Click to edit...",
                 style: 'display: inline',
@@ -21,11 +21,11 @@
             });
             $("a.delete").click(function(ev) {
                 if (confirm("are you sure?"))
-                    $.post("/Setup/Roles/Delete/" + $(this).attr("id"), null, function(ret) {
+                    $.post("/Roles/Delete/" + $(this).attr("id"), null, function(ret) {
                         if (ret)
                             alert(ret);
                         else
-                            window.location = "/Setup/Roles/";
+                            window.location = "/Roles/";
                     });
             });
             $(".bt").button();

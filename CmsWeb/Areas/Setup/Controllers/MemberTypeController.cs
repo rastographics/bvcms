@@ -45,14 +45,14 @@ namespace CmsWeb.Areas.Setup.Controllers
             var m = new MemberType { Id = id.Value };
             DbUtil.Db.MemberTypes.InsertOnSubmit(m);
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Setup/MemberType/");
+            return Redirect("/MemberType/");
         }
         [HttpPost]
         public ActionResult Move(int fromid, int toid)
         {
             DbUtil.Db.ExecuteCommand("UPDATE dbo.OrganizationMembers SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
             DbUtil.Db.ExecuteCommand("UPDATE dbo.EnrollmentTransaction SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
-            return Redirect("/Setup/MemberType/");
+            return Redirect("/MemberType/");
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

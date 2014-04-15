@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.Public
 
             AddRoute(context, "MOBS");
             AddRoute(context, "SGMap");
+            AddRoute(context, "OrgContentStart", "OrgContent", "OrgContent/{id}", "Index");
             AddRoute(context, "OrgContent");
             AddRoute(context, "OptOut");
             AddRoute(context, "Track");
@@ -47,23 +48,23 @@ namespace CmsWeb.Areas.Public
             context.MapRoute(
                 "Public_default",
                 "Public/{controller}/{action}/{id}",
-                new { action = "Index", id = "" }
+                new { action = "Index", id = UrlParameter.Optional }
             );
         }
         private void AddRoute(AreaRegistrationContext context, string controller)
         {
             context.MapRoute(controller, controller + "/{action}/{id}",
-                new { controller = controller, action = "Index", id = "" });
+                new { controller = controller, action = "Index", id = UrlParameter.Optional });
         }
         private static void AddRoute(AreaRegistrationContext context, string name, string controller, string path)
         {
             context.MapRoute(name, path + "/{action}/{id}",
-                new { controller = controller, action = "Index", id = "" });
+                new { controller = controller, action = "Index", id = UrlParameter.Optional });
         }
         private static void AddRoute(AreaRegistrationContext context, string name, string controller, string path, string action)
         {
             context.MapRoute(name, path,
-                new { controller = controller, action = action, id = "" });
+                new { controller = controller, action = action, id = UrlParameter.Optional });
         }
     }
 }

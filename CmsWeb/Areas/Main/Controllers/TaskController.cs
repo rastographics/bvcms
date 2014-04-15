@@ -50,7 +50,9 @@ namespace CmsWeb.Areas.Main.Controllers
             return PartialView("Detail", tasks.FetchTask(id));
         }
 
-        [HttpPost, Route("Detail/{id:int}/Row/{rowid:int?}")]
+        [HttpPost]
+        [Route("Detail/{id:int}")]
+        [Route("Detail/{id:int}/Row/{rowid:int?}")]
         public ActionResult Detail(int id, int? rowid)
         {
             var tasks = new TaskModel();

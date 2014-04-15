@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 				rt.Completed = DateTime.Now;
 				Db.SubmitChanges();
             });
-            return Redirect("/Manage/Duplicates/Progress");
+            return Redirect("/Duplicates/Progress");
         }
         [HttpGet]
         public ActionResult Progress()

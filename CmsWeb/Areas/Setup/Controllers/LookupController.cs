@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             public bool? Hardwired { get; set; }
         }
         [Route("~/Lookups")]
-        [Route("~/Lookup/{id?}")]
+        [Route("~/Lookup/{id}")]
         public ActionResult Index(string id)
         {
             if (!id.HasValue())

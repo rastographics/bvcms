@@ -429,15 +429,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new QueryStatsResult();
         }
 
-        [HttpPost]
-        public ActionResult RallyRollsheet(Guid id, string org, string dt, int? meetingid, int? bygroup, string sgprefix,
+        public ActionResult RallyRollsheet(string org, string dt, int? meetingid, int? bygroup, string sgprefix,
             bool? altnames, string highlight, OrgSearchModel m)
         {
             DateTime? dt2 = dt.ToDate();
 
             return new RallyRollsheetResult
             {
-                qid = id,
                 orgid = org == "curr" ? Util2.CurrentOrgId : null,
                 groups = org == "curr" ? Util2.CurrentGroups : new[] { 0 },
                 meetingid = meetingid,

@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.Settings.InsertOnSubmit(m);
             DbUtil.Db.SubmitChanges();
             DbUtil.Db.SetSetting(id, null);
-            return Redirect("/Setup/Setting/");
+            return Redirect("/Setting/");
         }
 
         [HttpPost]

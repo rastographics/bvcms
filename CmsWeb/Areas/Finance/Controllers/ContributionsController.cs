@@ -31,6 +31,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var m = new ContributionSearchModel(api);
             return View(m);
         }
+        [Route("~/BundleTotals")]
         public ActionResult BundleTotals(int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype, 
             bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed")
         {

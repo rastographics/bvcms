@@ -8,9 +8,10 @@ using Dapper;
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin,manageemails")]
-    [RouteArea("Setup", AreaPrefix = "UsersCanEmailFor"), Route("{action=index}/{id?}")]
+    [RouteArea("Setup")]
     public class UsersCanEmailForController : CmsStaffController
     {
+        [Route("~/UsersCanEmailFor")]
         public ActionResult Index()
         {
             var q = from cf in DbUtil.Db.PeopleCanEmailFors
@@ -18,6 +19,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                     select cf;
             return View(q);
         }
+        [Route("~/PersonCanEmailForList/{id:int}")]
         public ActionResult PersonCanEmailForList(int id)
         {
             Response.NoCache();
@@ -39,6 +41,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpPost]
+        [Route("~/UpdatePersonCanEmailForList/{id:int}")]
         public ActionResult UpdatePersonCanEmailForList(int id, int? topid0)
         {
             var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);

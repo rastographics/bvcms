@@ -36,7 +36,7 @@
             $("a.promote").click(function (ev) {
                 if (confirm("are you sure?"))
                     $.post("/PromotionSetup/Promote/" + $(this).attr("id"), null, function (ret) {
-                        window.location = "/Setup/Promotion/";
+                        window.location = "/Promotion/";
                     });
                 return false;
             });

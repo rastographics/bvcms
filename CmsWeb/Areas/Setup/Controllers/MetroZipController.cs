@@ -25,12 +25,12 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             var zip = DbUtil.Db.Zips.SingleOrDefault(mz => mz.ZipCode == zipcode);
             if (zip != null)
-                return Content(Util.EndShowMessage("Zipcode already exists", "/Setup/MetroZip", "Go back"));
+                return Content(Util.EndShowMessage("Zipcode already exists", "/MetroZips", "Go back"));
 
             var m = new Zip { ZipCode = zipcode };
             DbUtil.Db.Zips.InsertOnSubmit(m);
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Setup/MetroZip/");
+            return Redirect("/MetroZips/");
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult UpdateMetroZips()
         {
             DbUtil.Db.UpdateResCodes();
-            return Redirect("/Setup/MetroZip?msg=Updated%20all%20Codes");
+            return Redirect("/MetroZip?msg=Updated%20all%20Codes");
         }
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult ResidentCodes()
