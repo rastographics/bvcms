@@ -87,6 +87,7 @@ namespace CmsWeb.Models
 			}
 		}
 
+		[NonSerialized]
 	    private Settings setting;
 		public Settings Setting
 		{

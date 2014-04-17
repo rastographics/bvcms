@@ -2,11 +2,9 @@ using System;
 using System.Linq;
 using CmsData;
 using CmsData.Registration;
-using DocumentFormat.OpenXml.EMMA;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData.Codes;
-using CmsWeb;
 
 namespace CmsWeb.Models
 {
@@ -324,6 +322,11 @@ Please call the church to resolve this before we can complete your registration.
         {
             var i = Index;
             if (Parent.SupportMissionTrip)
+            {
+                OtherOK = true;
+                return;
+            }
+            if (RecordFamilyAttendance())
             {
                 OtherOK = true;
                 return;

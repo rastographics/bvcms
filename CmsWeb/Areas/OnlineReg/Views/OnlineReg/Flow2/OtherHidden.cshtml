@@ -2,70 +2,116 @@
 @using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Models.OnlineRegPersonModel
-@{
+
+@if (Model.Parent.SupportMissionTrip)
+{
+    @Html.HiddenFor2(m => m.MissionTripGoerId)
+    @Html.HiddenFor2(m => m.MissionTripPray)
+    @Html.HiddenFor2(m => m.MissionTripSupportGoer)
+    @Html.HiddenFor2(m => m.MissionTripSupportGeneral)
+    @Html.HiddenFor2(m => m.MissionTripNoNoticeToGoer)
+    @Html.HiddenFor2(m => m.CreatingAccount)
+    return;
+}
+@if (Model.ManageSubscriptions() || Model.OnlinePledge())
+{
+    return;
+}
+@if (!Model.IsValidForExisting && !Model.IsValidForNew)
+{
+    return;
+}
+@if (Model.OnlineGiving())
+{
+    var funame = Html.NameFor(m => m.FundItem);
+    var fn = 0;
+    foreach (var i in Model.FundItemsChosen())
+    {
+        <input type="hidden" name="@(funame)[@fn].Key" value="@i.fundid" />
+        <input type="hidden" name="@(funame)[@(fn++)].Value" value="@i.amt" />
+        @Html.HiddenFor2(m => m.CreatingAccount)
+    }
+    return;
+}
+@if (Model.RecordFamilyAttendance())
+{
+    var name = Html.NameFor2(m => m.FamilyAttend);
+    var i = 0;
+    foreach (var fa in Model.FamilyAttend)
+    {
+        <input type="hidden" name="@(name)[@i].PeopleId" value="@fa.PeopleId" />
+        <input type="hidden" name="@(name)[@i].Attend" value="@fa.Attend.ToString()" />
+        <input type="hidden" name="@(name)[@i].Name" value="@fa.Name" />
+        <input type="hidden" name="@(name)[@i].Email" value="@fa.Email" />
+        <input type="hidden" name="@(name)[@i].Birthday" value="@fa.Birthday" />
+        <input type="hidden" name="@(name)[@i].GenderId" value="@fa.GenderId" />
+        <input type="hidden" name="@(name)[@(i++)].MaritalId" value="@fa.MaritalId" />
+        @Html.HiddenFor2(m => m.CreatingAccount)
+    }
+    return;
+}
+@if (Model.AnyOtherInfo())
+{
     var prefix = ViewData.TemplateInfo.HtmlFieldPrefix;
     var checkoxesAdded = false;
-}
-@if (!Model.Parent.SupportMissionTrip && !Model.ManageSubscriptions() && !Model.ChooseVolunteerTimes())
-{
     foreach (var ask in Model.setting.AskItems)
     {
         switch (ask.Type)
         {
             case "AskSize":
-                @Html.HiddenFor(m => m.shirtsize);
+                @Html.HiddenFor(m => m.shirtsize)
                 break;
             case "AskRequest":
-                @Html.HiddenFor(m => m.request);
+            @Html.HiddenFor(m => m.request)
                 break;
             case "AskEmContact":
-                @Html.HiddenFor(m => m.emcontact);
-                @Html.HiddenFor(m => m.emphone);
+            @Html.HiddenFor(m => m.emcontact)
+            @Html.HiddenFor(m => m.emphone)
                 break;
             case "AskInsurance":
-                @Html.HiddenFor(m => m.insurance);
-                @Html.HiddenFor(m => m.policy);
+            @Html.HiddenFor(m => m.insurance)
+            @Html.HiddenFor(m => m.policy)
                 break;
             case "AskDoctor":
-                @Html.HiddenFor(m => m.doctor);
-                @Html.HiddenFor(m => m.docphone);
+            @Html.HiddenFor(m => m.doctor)
+            @Html.HiddenFor(m => m.docphone)
                 break;
             case "AskAllergies":
                 var allergyname = Html.NameFor2(m => m.medical);
                 <input type="hidden" name="@allergyname" value="@Model.medical" />
                 break;
             case "AskTylenolEtc":
-                @Html.HiddenFor(m => m.tylenol)
-                @Html.HiddenFor(m => m.advil)
-                @Html.HiddenFor(m => m.maalox)
-                @Html.HiddenFor(m => m.robitussin)
+            @Html.HiddenFor(m => m.tylenol)
+            @Html.HiddenFor(m => m.advil)
+            @Html.HiddenFor(m => m.maalox)
+            @Html.HiddenFor(m => m.robitussin)
                 break;
             case "AskParents":
-                @Html.HiddenFor(m => m.mname)
-                @Html.HiddenFor(m => m.fname)
+            @Html.HiddenFor(m => m.mname)
+            @Html.HiddenFor(m => m.fname)
                 break;
             case "AnswersNotRequired":
-                @Html.HiddenFor(m => m.mname)
-                @Html.HiddenFor(m => m.fname)
+            @Html.HiddenFor(m => m.mname)
+            @Html.HiddenFor(m => m.fname)
                 break;
             case "AskSMS":
-                @Html.HiddenFor(m => m.sms)
+            @Html.HiddenFor(m => m.sms)
                 break;
             case "AskCoaching":
-                @Html.HiddenFor(m => m.coaching)
+            @Html.HiddenFor(m => m.coaching)
                 break;
             case "AskChurch":
-                @Html.HiddenFor(m => m.memberus)
-                @Html.HiddenFor(m => m.otherchurch)
+            @Html.HiddenFor(m => m.memberus)
+            @Html.HiddenFor(m => m.otherchurch)
                 break;
             case "AskTickets":
-                @Html.HiddenFor(m => m.ntickets)
+            @Html.HiddenFor(m => m.ntickets)
                 break;
             case "AskSuggestedFee":
-                @Html.HiddenFor(m => m.Suggestedfee)
+            @Html.HiddenFor(m => m.Suggestedfee)
                 break;
             case "AskDropdown":
-                var dd = ((AskDropdown) ask);
+                var dd = ((AskDropdown)ask);
                 var ddi = dd.SmallGroupChoice(Model.option);
                 if (ddi == null)
                 {
@@ -74,7 +120,7 @@
                 <input type="hidden" name="@(prefix).option" value="@ddi.SmallGroup" />
                 break;
             case "AskExtraQuestions":
-                var eq = (AskExtraQuestions) ask;
+                var eq = (AskExtraQuestions)ask;
                 var eqname = Html.NameFor2(m => m.ExtraQuestion);
                 for (int n = 0; n < eq.list.Count; n++)
                 {
@@ -84,9 +130,9 @@
                 }
                 break;
             case "AskYesNoQuestions":
-                for (int n = 0; n < ((AskYesNoQuestions) ask).list.Count; n++)
+                for (int n = 0; n < ((AskYesNoQuestions)ask).list.Count; n++)
                 {
-                    var a = ((AskYesNoQuestions) ask).list[n];
+                    var a = ((AskYesNoQuestions)ask).list[n];
                     <input type="hidden" name="@(prefix).YesNoQuestion[@n].Key" value="@a.SmallGroup" />
                     <input type="hidden" name="@(prefix).YesNoQuestion[@n].Value" value="@(Model.YesNoChecked(a.SmallGroup, true) ? "true" : "false")" />
                 }
@@ -103,7 +149,7 @@
                 }
                 break;
             case "AskMenu":
-                var mu = ((AskMenu) ask);
+                var mu = ((AskMenu)ask);
                 var mnuname = Html.NameFor2(m => m.MenuItem[ask.UniqueId]);
                 for (var n = 0; n < mu.list.Count; n++)
                 {
@@ -113,18 +159,8 @@
                 }
                 break;
             case "AskGradeOptions":
-                @Html.HiddenFor(m => m.gradeoption)
+            @Html.HiddenFor(m => m.gradeoption)
                 break;
-        }
-    }
-    if (Model.OnlineGiving())
-    {
-        var funame = Html.NameFor(m => m.FundItem);
-        int fn = 0;
-        foreach (var i in Model.FundItemsChosen())
-        {
-            <input type="hidden" name="@(funame)[@fn].Key" value="@i.fundid" />
-            <input type="hidden" name="@(funame)[@(fn++)].Value" value="@i.amt" />
         }
     }
     if (Model.setting.Deposit > 0)
@@ -132,12 +168,4 @@
         @Html.HiddenFor2(m => m.paydeposit)
     }
     @Html.HiddenFor2(m => m.CreatingAccount)
-}
-else // SupportMissionTrip
-{
-    @Html.HiddenFor2(m => m.MissionTripGoerId)
-    @Html.HiddenFor2(m => m.MissionTripPray)
-    @Html.HiddenFor2(m => m.MissionTripSupportGoer)
-    @Html.HiddenFor2(m => m.MissionTripSupportGeneral)
-    @Html.HiddenFor2(m => m.MissionTripNoNoticeToGoer)
 }

@@ -526,7 +526,9 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult Rollsheet(string org, string dt, int? meetingid, int? bygroup, string sgprefix,
+        [Route("Rollsheet")]
+        [Route("Rollsheet/{meetingid:int}")]
+        public ActionResult Rollsheet(int? meetingid, string org, string dt, int? bygroup, string sgprefix,
             bool? altnames, string highlight)
         {
             DateTime? dt2 = dt.ToDate();

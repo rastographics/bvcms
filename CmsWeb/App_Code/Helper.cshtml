@@ -16,7 +16,7 @@
 }
 @helper AnchorLink(string text, string href, string id = null, string target = null, string style = null)
 {
-    <a href="@href" @(target.HasValue() ? "target=" + target : "") @(style.HasValue() ? "class=" + style : "")>@text</a>
+    <a href="@href" @(target.HasValue() ? "target=" + target : "") @(id.HasValue() ? "id=" + id : "") @(style.HasValue() ? "class=" + style : "")>@text</a>
 }
 @helper LiAnchorLink(string text, string url, bool display = true, string target = null)
 {

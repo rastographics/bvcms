@@ -140,7 +140,7 @@ namespace CmsWeb.Models
 
         [DisplayName("Maalox")]
         public bool? maalox { get; set; }
-        
+
         [DisplayName("Robitussin")]
         public bool? robitussin { get; set; }
 
@@ -166,6 +166,7 @@ namespace CmsWeb.Models
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         public decimal? Suggestedfee { get; set; }
 
+        public List<FamilyAttendInfo> FamilyAttend { get; set; }
         public Dictionary<int, decimal?> FundItem { get; set; }
         public List<Dictionary<string, string>> ExtraQuestion { get; set; }
         public Dictionary<string, bool?> YesNoQuestion { get; set; }
@@ -193,11 +194,24 @@ namespace CmsWeb.Models
                         if (fu != null)
                             FundItem.Add(fu.Value.ToInt(), e.Value.ToDecimal());
                         break;
+                    case "FamilyAttend":
+                        var fa = new FamilyAttendInfo();
+                        fa.PeopleId = GetAttr(e, "PeopleId").ToInt2();
+                        fa.Attend = GetAttr(e, "Attend").ToBool();
+                        fa.Name = GetAttr(e, "Name");
+                        fa.Birthday = GetAttr(e, "Birthday");
+                        fa.Email = GetAttr(e, "Email");
+                        fa.MaritalId = GetAttr(e, "MaritalId").ToInt2();
+                        fa.GenderId = GetAttr(e, "GenderId").ToInt2();
+                        if (FamilyAttend == null)
+                            FamilyAttend = new List<FamilyAttendInfo>();
+                        FamilyAttend.Add(fa);
+                        break;
                     case "ExtraQuestion":
                         if (ExtraQuestion == null)
                             ExtraQuestion = new List<Dictionary<string, string>>();
                         var eqsetattr = e.Attribute("set");
-                        if(eqsetattr != null)
+                        if (eqsetattr != null)
                             eqset = eqsetattr.Value.ToInt();
                         if (ExtraQuestion.Count == eqset)
                             ExtraQuestion.Add(new Dictionary<string, string>());
@@ -226,7 +240,7 @@ namespace CmsWeb.Models
                         if (MenuItem == null)
                             MenuItem = new List<Dictionary<string, int?>>();
                         var menusetattr = e.Attribute("set");
-                        if(menusetattr != null)
+                        if (menusetattr != null)
                             menuset = menusetattr.Value.ToInt();
                         if (MenuItem.Count == menuset)
                             MenuItem.Add(new Dictionary<string, int?>());
@@ -241,11 +255,20 @@ namespace CmsWeb.Models
                     case "MissionTripGoerId":
                         MissionTripGoerId = e.Value.ToInt();
                         break;
+                    case "CreatingAccount":
+                        CreatingAccount = e.Value.ToBool();
+                        break;
                     default:
                         Util.SetPropertyFromText(this, TranslateName(name), e.Value);
                         break;
                 }
             }
+        }
+
+        private string GetAttr(XElement e, string name)
+        {
+            var a = e.Attribute(name);
+            return a != null ? a.Value : string.Empty;
         }
 
         public void WriteXml(XmlWriter writer)
@@ -268,8 +291,22 @@ namespace CmsWeb.Models
                                 w.End();
                             }
                         break;
+                    case "FamilyAttend":
+                        if (FamilyAttend != null && FamilyAttend.Count > 0)
+                            foreach (var f in FamilyAttend)
+                            {
+                                w.Start("FamilyAttend");
+                                w.Attr("PeopleId", f.PeopleId);
+                                w.Attr("Name", f.Name);
+                                w.Attr("Attend", f.Attend);
+                                w.Attr("Birthday", f.Birthday);
+                                w.Attr("GenderId", f.GenderId);
+                                w.Attr("MaritalId", f.MaritalId);
+                                w.End();
+                            }
+                        break;
                     case "ExtraQuestion":
-                        if(ExtraQuestion != null)
+                        if (ExtraQuestion != null)
                             for (var i = 0; i < ExtraQuestion.Count; i++)
                                 if (ExtraQuestion[i] != null && ExtraQuestion[i].Count > 0)
                                     foreach (var q in ExtraQuestion[i])
@@ -293,7 +330,7 @@ namespace CmsWeb.Models
                         break;
                     case "option":
                         if (option != null && option.Count > 0 && !optionsAdded)
-                            foreach(var o in option)
+                            foreach (var o in option)
                                 w.Add("option", o);
                         optionsAdded = true;
                         break;
@@ -304,7 +341,7 @@ namespace CmsWeb.Models
                         checkoxesAdded = true;
                         break;
                     case "MenuItem":
-                        if(MenuItem != null)
+                        if (MenuItem != null)
                             for (var i = 0; i < MenuItem.Count; i++)
                                 if (MenuItem[i] != null && MenuItem[i].Count > 0)
                                     foreach (var q in MenuItem[i])
@@ -317,31 +354,31 @@ namespace CmsWeb.Models
                                     }
                         break;
                     case "MissionTripPray":
-                        if(Parent.SupportMissionTrip)
+                        if (Parent.SupportMissionTrip)
                             w.Add(pi.Name, MissionTripPray);
                         break;
                     case "MissionTripGoerId":
-                        if(Parent.SupportMissionTrip)
+                        if (Parent.SupportMissionTrip)
                             w.Add(pi.Name, MissionTripGoerId);
                         break;
                     case "IsFilled":
-                        if(IsFilled)
+                        if (IsFilled)
                             w.Add(pi.Name, IsFilled);
                         break;
                     case "CreatingAccount":
-                        if(CreatingAccount)
+                        if (CreatingAccount)
                             w.Add(pi.Name, CreatingAccount);
                         break;
                     case "MissionTripNoNoticeToGoer":
-                        if(MissionTripNoNoticeToGoer)
+                        if (MissionTripNoNoticeToGoer)
                             w.Add(pi.Name, MissionTripNoNoticeToGoer);
                         break;
                     case "memberus":
-                        if(memberus)
+                        if (memberus)
                             w.Add(pi.Name, memberus);
                         break;
                     case "otherchurch":
-                        if(otherchurch)
+                        if (otherchurch)
                             w.Add(pi.Name, otherchurch);
                         break;
                     case "guid":
@@ -371,14 +408,14 @@ namespace CmsWeb.Models
             if (neqsets > 0 && ExtraQuestion == null)
             {
                 ExtraQuestion = new List<Dictionary<string, string>>();
-                for(var i = 0; i < neqsets; i++)
+                for (var i = 0; i < neqsets; i++)
                     ExtraQuestion.Add(new Dictionary<string, string>());
             }
             var nmi = setting.AskItems.Count(aa => aa.Type == "AskMenu");
             if (nmi > 0 && MenuItem == null)
             {
                 MenuItem = new List<Dictionary<string, int?>>();
-                for(var i = 0; i < nmi; i++)
+                for (var i = 0; i < nmi; i++)
                     MenuItem.Add(new Dictionary<string, int?>());
             }
 
@@ -523,8 +560,8 @@ namespace CmsWeb.Models
             person.SuffixCode = Suffix;
             person.MiddleName = MiddleName;
             person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
-//            if (person.Age >= 18)
-//                person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
+            //            if (person.Age >= 18)
+            //                person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
             person.CellPhone = Phone.GetDigits();
 
             DbUtil.Db.SubmitChanges();

@@ -12,9 +12,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 	public partial class OnlineRegController
 	{
 		[HttpGet]
-        [Route("RequestReport/{mid:int}/{pid:int}/{ticks:long}")]
-        [Route("~/VolunteerRequestReport/{mid:int}/{pid:int}/{ticks:long}")]
-		public ActionResult RequestReport(int mid, int pid, long ticks)
+        [Route("VolRequestReport/{mid:int}/{pid:int}/{ticks:long}")]
+		public ActionResult VolRequestReport(int mid, int pid, long ticks)
 		{
 			var vs = new VolunteerRequestModel(mid, pid, ticks);
 			SetHeaders(vs.org.OrganizationId);
@@ -22,7 +21,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		}
 
 		[HttpGet]
-        [Route("~/VolunteerRequestResponse/{ans}/{guid}")]
+        [Route("VolRequestResponse")]
+        [Route("VolRequestResponse/{ans}/{guid}")]
 		public ActionResult RequestResponse(string ans, string guid)
 		{
 			try
@@ -38,7 +38,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		}
 
 		[HttpGet]
-        [Route("~/GetVolSub/{aid:int}/{pid:int}")]
         [Route("GetVolSub/{aid:int}/{pid:int}")]
 		public ActionResult GetVolSub(int aid, int pid)
 		{
@@ -49,8 +48,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		}
 
         [HttpPost]
-        [Route("~/GetVolSub/{aid:int}/{pid:int}")]
-        [Route("~/OnlineReg/GetVolSub/{aid:int}/{pid:int}")]
 		[ValidateInput(false)]
 		public ActionResult GetVolSub(int aid, int pid, long ticks, int[] pids, string subject, string message)
 		{
@@ -64,8 +61,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			return Content("Emails are being sent, thank you.");
 		}
 
-        [Route("~/OnlineReg/VolSubReport/{aid:int}/{pid:int}/{ticks:long}")]
-        [Route("~/VolSubReport/{aid:int}/{pid:int}/{ticks:long}")]
+        [Route("VolSubReport/{aid:int}/{pid:int}/{ticks:long}")]
 		public ActionResult VolSubReport(int aid, int pid, long ticks)
 		{
 			var vs = new VolSubModel(aid, pid, ticks);
@@ -73,8 +69,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			return View(vs);
 		}
 
-        [Route("~/OnlineReg/ClaimVolSub/{ans}/{guid}")]
-        [Route("~/ClaimVolSub/{ans}/{guid}")]
+        [Route("ClaimVolSub/{ans}/{guid}")]
 		public ActionResult ClaimVolSub(string ans, string guid)
 		{
 			try
@@ -89,8 +84,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			}
 		}
 
-        [Route("~/OnlineReg/ManageVolunteer/{id}/{pid:int?}")]
-        [Route("~/ManageVolunteer/{id}/{pid:int?}")]
+        [Route("ManageVolunteer/{id}")]
+        [Route("ManageVolunteer/{id}/{pid:int}")]
 		public ActionResult ManageVolunteer(string id, int? pid)
 		{
 			if (!id.HasValue())

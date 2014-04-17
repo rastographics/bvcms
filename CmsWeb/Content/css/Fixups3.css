@@ -70,6 +70,9 @@ a.nounderline {
     text-decoration: none;
 }
 
+.font12px {
+    font-size: 12px;
+}
 .font14px {
     font-size: 14px;
 }

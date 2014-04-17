@@ -5,6 +5,32 @@
 {
     return;
 }
+@if (Model.RecordFamilyAttendance())
+{
+    <table class="table table-condensed font12px">
+        <thead>
+            <tr><td colspan="5"><strong>Attendees</strong></td></tr>
+        </thead>
+        @foreach (var m in Model.FamilyAttend.Where(m => m.Attend))
+        {
+            <tr>
+                @if (m.PeopleId != null)
+                {
+                    <td colspan="5">@m.Name @(m.Age.HasValue ? "({0})".Fmt(m.Age) : "")</td>
+                }
+                else
+                {
+                    <td>@m.Name</td>
+                    <td>@m.Email</td>
+                    <td>@m.Birthday</td>
+                    <td>@m.Gender</td>
+                    <td>@m.Marital</td>
+                }
+            </tr>
+        }
+    </table>
+            return;
+}
 <table class="table table-condensed">
     @foreach (var ask in Model.setting.AskItems)
     {

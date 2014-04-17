@@ -11,8 +11,8 @@
         <div class="checkbox">
             <label>
                 @Html.CheckBoxFor(m => m, Model) @ViewBag.text
-        </label>
+            </label>
+        </div>
+        @Html.ValidationMessageFor(m => m)
     </div>
-    @Html.ValidationMessageFor(m => m)
-</div>
 </div>

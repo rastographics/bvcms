@@ -70,6 +70,7 @@ namespace CmsData
                 if (InternalDb == null)
                 {
                     InternalDb = new CMSDataContext(Util.ConnectionString);
+                    InternalDb.CmsHost = Util.ServerLink();
                     InternalDb.CommandTimeout = 1200;
                 }
                 return InternalDb;

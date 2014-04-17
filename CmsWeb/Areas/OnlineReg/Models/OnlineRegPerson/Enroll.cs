@@ -14,7 +14,7 @@ namespace CmsWeb.Models
         public OrganizationMember Enroll(Transaction ti, string paylink, bool? testing, string others)
         {
             var om = OrganizationMember.InsertOrgMembers(DbUtil.Db, org.OrganizationId, person.PeopleId,
-                setting.AddAsProspect ? MemberTypeCode.Prospect : MemberTypeCode.Member, 
+                setting.AddAsProspect ? MemberTypeCode.Prospect : MemberTypeCode.Member,
                 DateTime.Now, null, false);
 
             var reg = person.RecRegs.SingleOrDefault();
@@ -28,6 +28,11 @@ namespace CmsWeb.Models
                 om.AddToGroup(DbUtil.Db, "Sender");
                 if (MissionTripPray || TotalAmount() > 0)
                     om.AddToGroup(DbUtil.Db, "Pray");
+                return om;
+            }
+            if (RecordFamilyAttendance())
+            {
+                RecordAllFamilyAttends(om);
                 return om;
             }
             om.Amount = TotalAmount();
@@ -83,7 +88,7 @@ namespace CmsWeb.Models
                     case "AskYesNoQuestions":
                         if (setting.TargetExtraValues == false)
                         {
-                            foreach (var yn in ((AskYesNoQuestions) ask).list)
+                            foreach (var yn in ((AskYesNoQuestions)ask).list)
                             {
                                 om.RemoveFromGroup(DbUtil.Db, "Yes:" + yn.SmallGroup);
                                 om.RemoveFromGroup(DbUtil.Db, "No:" + yn.SmallGroup);
@@ -98,16 +103,16 @@ namespace CmsWeb.Models
                     case "AskCheckboxes":
                         if (setting.TargetExtraValues)
                         {
-                            foreach (var ck in ((AskCheckboxes) ask).list)
+                            foreach (var ck in ((AskCheckboxes)ask).list)
                                 person.RemoveExtraValue(DbUtil.Db, ck.SmallGroup);
-                            foreach (var g in ((AskCheckboxes) ask).CheckboxItemsChosen(Checkbox))
+                            foreach (var g in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
                                 person.AddEditExtraValue(g.SmallGroup, "true");
                         }
                         else
                         {
-                            foreach (var ck in ((AskCheckboxes) ask).list)
+                            foreach (var ck in ((AskCheckboxes)ask).list)
                                 ck.RemoveFromSmallGroup(DbUtil.Db, om);
-                            foreach (var i in ((AskCheckboxes) ask).CheckboxItemsChosen(Checkbox))
+                            foreach (var i in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
                                 i.AddToSmallGroup(DbUtil.Db, om, PythonEvents);
                         }
                         break;
@@ -122,33 +127,33 @@ namespace CmsWeb.Models
                     case "AskMenu":
                         foreach (var i in MenuItem[ask.UniqueId])
                             om.AddToGroup(DbUtil.Db, i.Key, i.Value);
-                    {
-                        var menulabel = ((AskMenu) ask).Label;
-                        foreach (var i in ((AskMenu) ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
                         {
-                            om.AddToMemberData(menulabel);
-                            string desc;
-                            if (i.amt > 0)
-                                desc = "{0} {1} (at {2:N2})".Fmt(i.number, i.desc, i.amt);
-                            else
-                                desc = "{0} {1}".Fmt(i.number, i.desc);
-                            om.AddToMemberData(desc);
-                            menulabel = string.Empty;
+                            var menulabel = ((AskMenu)ask).Label;
+                            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
+                            {
+                                om.AddToMemberData(menulabel);
+                                string desc;
+                                if (i.amt > 0)
+                                    desc = "{0} {1} (at {2:N2})".Fmt(i.number, i.desc, i.amt);
+                                else
+                                    desc = "{0} {1}".Fmt(i.number, i.desc);
+                                om.AddToMemberData(desc);
+                                menulabel = string.Empty;
+                            }
                         }
-                    }
                         break;
                     case "AskDropdown":
                         if (setting.TargetExtraValues)
                         {
-                            foreach (var op in ((AskDropdown) ask).list)
+                            foreach (var op in ((AskDropdown)ask).list)
                                 person.RemoveExtraValue(DbUtil.Db, op.SmallGroup);
-                            person.AddEditExtraValue(((AskDropdown) ask).SmallGroupChoice(option).SmallGroup, "true");
+                            person.AddEditExtraValue(((AskDropdown)ask).SmallGroupChoice(option).SmallGroup, "true");
                         }
                         else
                         {
-                            foreach (var op in ((AskDropdown) ask).list)
+                            foreach (var op in ((AskDropdown)ask).list)
                                 op.RemoveFromSmallGroup(DbUtil.Db, om);
-                            ((AskDropdown) ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonEvents);
+                            ((AskDropdown)ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonEvents);
                         }
                         break;
                     case "AskGradeOptions":
@@ -180,9 +185,9 @@ namespace CmsWeb.Models
             if (setting.LinkGroupsFromOrgs.Count > 0)
             {
                 var q = from omt in DbUtil.Db.OrgMemMemTags
-                    where setting.LinkGroupsFromOrgs.Contains(omt.OrgId)
-                    where omt.PeopleId == om.PeopleId
-                    select omt.MemberTag.Name;
+                        where setting.LinkGroupsFromOrgs.Contains(omt.OrgId)
+                        where omt.PeopleId == om.PeopleId
+                        select omt.MemberTag.Name;
                 foreach (var name in q)
                     om.AddToGroup(DbUtil.Db, name);
             }
@@ -230,6 +235,64 @@ namespace CmsWeb.Models
             return om;
         }
 
+        private void RecordAllFamilyAttends(OrganizationMember om)
+        {
+            om.AddToGroup(DbUtil.Db, "Attended");
+            om.AddToGroup(DbUtil.Db, "Registered");
+            foreach (var fm in FamilyAttend)
+            {
+                if (fm.PeopleId == -1)
+                    continue;
+                Person pp = null;
+                OrganizationMember omm = null;
+                if (!fm.PeopleId.HasValue && fm.Attend)
+                {
+                    if (!fm.Name.HasValue())
+                        continue;
+                    string first, last;
+                    Util.NameSplit(fm.Name, out first, out last);
+                    if (!first.HasValue())
+                    {
+                        first = last;
+                        last = LastName;
+                    }
+                    Person uperson = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                    var p = new OnlineRegPersonModel()
+                    {
+                        FirstName = first,
+                        LastName = last,
+                        DateOfBirth = fm.Birthday,
+                        EmailAddress = fm.Email,
+                        gender = fm.GenderId,
+                        married = fm.MaritalId
+                    };
+                    p.AddPerson(uperson, org.EntryPointId ?? 0);
+                    pp = p.person;
+                    omm = OrganizationMember.InsertOrgMembers(DbUtil.Db, org.OrganizationId, pp.PeopleId,
+                        MemberTypeCode.Member, DateTime.Now, null, false);
+                }
+                else
+                {
+                    pp = DbUtil.Db.LoadPersonById(fm.PeopleId.Value);
+                    if (fm.Attend)
+                        omm = OrganizationMember.InsertOrgMembers(DbUtil.Db, org.OrganizationId, pp.PeopleId,
+                            MemberTypeCode.Member, DateTime.Now, null, false);
+                    else
+                    {
+                        omm = OrganizationMember.Load(DbUtil.Db, pp.PeopleId, org.OrganizationId);
+                        if (omm != null)
+                            omm.RemoveFromGroup(DbUtil.Db, "Attended");
+                    }
+                }
+                if (omm == null)
+                    continue;
+                if (fm.Attend)
+                    omm.AddToGroup(DbUtil.Db, "Attended");
+                if (!fm.PeopleId.HasValue)
+                    omm.AddToGroup(DbUtil.Db, "Added");
+            }
+        }
+
         public string PrepareSummaryText(Transaction ti)
         {
             var om = GetOrgMember();
@@ -242,10 +305,30 @@ namespace CmsWeb.Models
             if (Parent.SupportMissionTrip)
             {
                 var goer = DbUtil.Db.LoadPersonById(MissionTripGoerId ?? 0);
-                if(goer != null)
+                if (goer != null)
                     sb.AppendFormat("<tr><td>Support Mission Trip for:</td><td>{0}</td></tr>\n", goer.Name);
                 if (MissionTripSupportGeneral > 0)
                     sb.Append("<tr><td>Support Mission Trip:</td><td>Any other participiants</td></tr>\n");
+            }
+            else if (RecordFamilyAttendance())
+            {
+                foreach (var m in FamilyAttend.Where(m => m.Attend))
+                    if (m.PeopleId != null)
+                        sb.Append("<tr><td colspan=\"2\">{0}{1}</td></tr>\n"
+                            .Fmt(m.Name, (m.Age.HasValue ? " ({0})".Fmt(m.Age) : "")));
+                    else
+                    {
+                        sb.Append("<tr><td colspan=\"2\">{0}{1}".Fmt(m.Name, (m.Age.HasValue ? " ({0})".Fmt(m.Age) : "")));
+                        if (m.Email.HasValue())
+                            sb.Append(", {0}".Fmt(m.Email));
+                        if (m.Birthday.HasValue())
+                            sb.Append(", {0}".Fmt(m.Birthday));
+                        if (m.MaritalId.HasValue)
+                            sb.Append(", {0}".Fmt(m.Marital));
+                        if (m.GenderId.HasValue)
+                            sb.Append(", {0}".Fmt(m.Gender));
+                        sb.Append("</td></tr>\n");
+                    }
             }
             else
             {

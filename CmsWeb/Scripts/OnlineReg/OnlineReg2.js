@@ -12,6 +12,19 @@
             $("#age", f).text($.dodate(dateText));
         }
     };
+    $("#AddNewPerson").live("click", function (ev) {
+        ev.preventDefault();
+        var o = $("#newattend div.newattend").clone();
+        var i = $("#nextid").val();
+        var name = $("#familyattendname").val();
+        $(o).attr("id", i);
+        $(o).find('input').each(function() {
+            this.name = this.name.replace('{0}', name+'['+i+']');
+        });
+        $("#nextid").val(parseInt(i) + 1);
+        $("#added-people").append(o);
+        return false;
+    });
     //$("#dob").datepicker($.dpoptions);
     $.dodate = function (bd) {
         var re0 = /^(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])((19|20)?[0-9]{2})$/i;
@@ -186,4 +199,14 @@
     else
         $.idleTimer($.tmout);
 });
+
+function setElementName(elems, name) {
+  if ($.browser.msie === true){
+    $(elems).each(function() {
+      this.mergeAttributes(document.createElement("<input name='" + name + "'/>"), false);
+    });
+  } else {
+    $(elems).attr('name', name);
+  }
+}
 

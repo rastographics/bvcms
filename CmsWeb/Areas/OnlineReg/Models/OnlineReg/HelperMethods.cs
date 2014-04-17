@@ -139,6 +139,10 @@ namespace CmsWeb.Models
             return false;
         }
 
+        public bool RecordFamilyAttendance()
+        {
+            return org != null && org.RegistrationTypeId == RegistrationTypeCode.RecordFamilyAttendance;
+        }
         public bool ChoosingSlots()
         {
             if (org != null)

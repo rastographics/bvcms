@@ -13,7 +13,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
 	public partial class OnlineRegController
 	{
-
 		public ActionResult ManagePledge(string id)
 		{
 			if (!id.HasValue())
@@ -168,7 +167,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			if (!ModelState.IsValid)
 				return View(m);
 			TempData["managegiving"] = m;
-			return Redirect("ConfirmRecurringGiving");
+			return Redirect("/OnlineReg/ConfirmRecurringGiving");
 		}
 
 		private static void RemoveNonDigitsIfNecessary(ManageGivingModel m)
@@ -227,7 +226,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 			SetHeaders(m.orgid);
 			ViewBag.Title = "Online Recurring Giving";
-			var msg = m.Organization.GetExtra("ConfirmationDisplay");
+			var msg = m.Organization.GetExtra(DbUtil.Db, "ConfirmationDisplay");
 			if (!msg.HasValue())
 				msg = @"<p>Thank you {first}, for managing your recurring giving</p>
 <p>You should receive a confirmation email shortly.</p>";

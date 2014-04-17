@@ -739,6 +739,7 @@
     <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\da.js" />
     <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\de.js" />
     <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\el.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\en-gb.js" />
     <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\en.js" />
     <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\eo.js" />
     <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\es.js" />
@@ -784,6 +785,7 @@
     <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\uk.js" />
     <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\vi.js" />
     <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\zh-cn.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\zh.js" />
     <Content Include="ckeditor\plugins\a11yhelp\dialogs\lang\_translationstatus.txt" />
     <Content Include="ckeditor\plugins\about\dialogs\about.js" />
     <Content Include="ckeditor\plugins\about\dialogs\hidpi\logo_ckeditor.png" />
@@ -886,6 +888,7 @@
     <Content Include="ckeditor\plugins\specialchar\dialogs\lang\cy.js" />
     <Content Include="ckeditor\plugins\specialchar\dialogs\lang\de.js" />
     <Content Include="ckeditor\plugins\specialchar\dialogs\lang\el.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\en-gb.js" />
     <Content Include="ckeditor\plugins\specialchar\dialogs\lang\en.js" />
     <Content Include="ckeditor\plugins\specialchar\dialogs\lang\eo.js" />
     <Content Include="ckeditor\plugins\specialchar\dialogs\lang\es.js" />
@@ -922,6 +925,7 @@
     <Content Include="ckeditor\plugins\specialchar\dialogs\lang\uk.js" />
     <Content Include="ckeditor\plugins\specialchar\dialogs\lang\vi.js" />
     <Content Include="ckeditor\plugins\specialchar\dialogs\lang\zh-cn.js" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\lang\zh.js" />
     <Content Include="ckeditor\plugins\specialchar\dialogs\lang\_translationstatus.txt" />
     <Content Include="ckeditor\plugins\specialchar\dialogs\specialchar.js" />
     <Content Include="ckeditor\plugins\tabletools\dialogs\tableCell.js" />
@@ -943,6 +947,7 @@
     <Content Include="ckeditor\samples\appendto.html" />
     <Content Include="ckeditor\samples\assets\inlineall\logo.png" />
     <Content Include="ckeditor\samples\assets\outputxhtml\outputxhtml.css" />
+    <Content Include="ckeditor\samples\assets\posteddata.php" />
     <Content Include="ckeditor\samples\assets\sample.css" />
     <Content Include="ckeditor\samples\assets\sample.jpg" />
     <Content Include="ckeditor\samples\assets\uilanguages\languages.js" />
@@ -968,6 +973,7 @@
     <Content Include="ckeditor\samples\replacebycode.html" />
     <Content Include="ckeditor\samples\sample.css" />
     <Content Include="ckeditor\samples\sample.js" />
+    <Content Include="ckeditor\samples\sample_posteddata.php" />
     <Content Include="ckeditor\samples\tabindex.html" />
     <Content Include="ckeditor\samples\uicolor.html" />
     <Content Include="ckeditor\samples\uilanguages.html" />
@@ -1284,17 +1290,6 @@
     <Content Include="Areas\People\Views\Person\Family\PictureDialog.cshtml" />
     <Content Include="Areas\Main\Views\Organization\ProspectGrid.cshtml" />
     <Content Include="Areas\Public\Views\APITest\RunScript.cshtml" />
-    <Content Include="ckeditor\CHANGES.md" />
-    <Content Include="ckeditor\LICENSE.md" />
-    <Content Include="ckeditor\plugins\scayt\LICENSE.md" />
-    <Content Include="ckeditor\plugins\scayt\README.md" />
-    <Content Include="ckeditor\plugins\wsc\LICENSE.md" />
-    <Content Include="ckeditor\plugins\wsc\README.md" />
-    <Content Include="ckeditor\README.md" />
-    <Content Include="ckeditor\samples\assets\posteddata.php" />
-    <Content Include="ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
-    <Content Include="ckeditor\samples\sample_posteddata.php" />
-    <Content Include="ckeditor\skins\moono\readme.md" />
     <Content Include="Areas\Main\Views\QueryBuilder2\Conditions.cshtml" />
     <Content Include="Areas\Main\Views\QueryBuilder2\Main.cshtml" />
     <Content Include="Areas\Main\Views\QueryBuilder2\Results.cshtml" />
@@ -1420,8 +1415,20 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskCheckboxesMatrix.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskMenu.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\PayDepositOrFull.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\OnlineGiving.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\OnlineGiving.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Boolean.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\RecordFamilyAttendance.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmFamilyAttendance.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FamilyAttendTemplate.cshtml" />
+    <Content Include="ckeditor\CHANGES.md" />
+    <Content Include="ckeditor\LICENSE.md" />
+    <Content Include="ckeditor\plugins\scayt\LICENSE.md" />
+    <Content Include="ckeditor\plugins\scayt\README.md" />
+    <Content Include="ckeditor\plugins\wsc\LICENSE.md" />
+    <Content Include="ckeditor\plugins\wsc\README.md" />
+    <Content Include="ckeditor\README.md" />
+    <Content Include="ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
+    <Content Include="ckeditor\skins\moono\readme.md" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -2040,7 +2047,7 @@
     <Content Include="Areas\Manage\Views\Volunteers\ManageArea.cshtml" />
     <Content Include="Areas\Manage\Views\Volunteers\Request.cshtml" />
     <Content Include="Areas\Manage\Views\Volunteers\EmailVolunteerRequest.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestReport.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\VolRequestReport.cshtml" />
     <Content Include="Areas\Manage\Views\Users\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Users\Results.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\AskRequest.cshtml" />

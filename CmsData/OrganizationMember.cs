@@ -99,6 +99,14 @@ namespace CmsData
                     select om;
             return q.SingleOrDefault();
         }
+        public static OrganizationMember Load(CMSDataContext Db, int PeopleId, int OrgId)
+        {
+            var q = from om in Db.OrganizationMembers
+                    where om.PeopleId == PeopleId
+                    where om.Organization.OrganizationId == OrgId
+                    select om;
+            return q.SingleOrDefault();
+        }
 
         public bool ToggleGroup(CMSDataContext Db, int groupid)
         {

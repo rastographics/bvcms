@@ -766,7 +766,7 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content(value);
         }
         [HttpPost]
-        public ActionResult Reminders(int id, bool? emailall, string apiKey)
+        public ActionResult Reminders(int id, bool? emailall)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
             var m = new CmsData.API.APIOrganization(DbUtil.Db);

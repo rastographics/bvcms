@@ -524,7 +524,7 @@ namespace CmsData
                 list.Add(qs, ot);
             }
 
-            var url = Util.URLCombine(db.CmsHost, "/OnlineReg/RequestResponse?ans={0}&guid={1}".Fmt(d["ans"], ot.Id.ToCode()));
+            var url = Util.URLCombine(db.CmsHost, "/OnlineReg/VolRequestResponse/{0}/{1}".Fmt(d["ans"], ot.Id.ToCode()));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 

@@ -267,7 +267,7 @@ namespace CmsWeb.Areas.Org.Models
 
                 text = text.Replace("{salutation}", gs.Salutation, ignoreCase: true);
                 var qs = "OptOut/UnSubscribe/?gid=" + Util.EncryptForUrl("{0}".Fmt(gs.Id));
-                var url = Util.URLCombine(DbUtil.Db.CmsHost, qs);
+                var url = Util.ServerLink(qs);
                 var link = @"<a href=""{0}"">Unsubscribe</a>".Fmt(url);
                 text = text.Replace("{unsubscribe}", link, ignoreCase: true);
                 text = text.Replace("%7Bfromemail%7D", from.Address, ignoreCase: true);

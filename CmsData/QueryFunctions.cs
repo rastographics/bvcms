@@ -15,10 +15,12 @@ namespace CmsData
         {
             Db = new CMSDataContext("Data Source=.;Initial Catalog=CMS_bellevue;Integrated Security=True");
         }
+
         public QueryFunctions(CMSDataContext Db)
         {
             this.Db = Db;
         }
+
         public static string VitalStats(CMSDataContext Db)
         {
             var qf = new QueryFunctions(Db);
@@ -53,6 +55,7 @@ namespace CmsData
                 return "VitalStats script error: " + ex.Message;
             }
         }
+
         public static string RunScript(CMSDataContext db, string script)
         {
             if (!script.HasValue())
@@ -81,6 +84,7 @@ namespace CmsData
                 return "VitalStats script error: " + ex.Message;
             }
         }
+
         public int MeetingCount(int days, int progid, int divid, int orgid)
         {
             var dt = DateTime.Now.AddDays(-days);
@@ -92,6 +96,7 @@ namespace CmsData
                     select m;
             return q.Count();
         }
+
         public int NumPresent(int days, int progid, int divid, int orgid)
         {
             var dt = DateTime.Now.AddDays(-days);
@@ -104,6 +109,45 @@ namespace CmsData
             if (!q.Any())
                 return 0;
             return q.Sum(mm => mm.MaxCount ?? 0);
+        }
+
+        public int LastWeekAttendance(int progid, int divid, int starthour, int endhour)
+        {
+            var dt = LastSunday;
+            var dt1 = dt.AddHours(starthour);
+            var dt2 = dt.AddHours(endhour);
+
+            var q = from p in Db.Programs
+                where progid == 0 || p.Id == progid
+                from pd in p.ProgDivs
+                where divid == 0 || pd.DivId == divid
+                select (from dg in pd.Division.DivOrgs
+                    from m in dg.Organization.Meetings
+                    where m.MeetingDate >= dt1
+                    where m.MeetingDate < dt2
+                    select m.MaxCount).Sum() ?? 0;
+            return q.Sum();
+        }
+
+        private DateTime? lastSunday;
+        public DateTime LastSunday
+        {
+            get
+            {
+                if (lastSunday.HasValue)
+                    return lastSunday.Value;
+                var q = from m in DbUtil.Db.Meetings
+                        where m.MeetingDate.Value.Date.DayOfWeek == 0
+                        where m.MaxCount > 0
+                        where m.MeetingDate < Util.Now
+                        orderby m.MeetingDate descending
+                        select m.MeetingDate.Value.Date;
+                var dt = q.FirstOrDefault();
+                if (dt == DateTime.MinValue) //Sunday Date equal/before today
+                    dt = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+                lastSunday = dt;
+                return dt;
+            }
         }
 
         public int RegistrationCount(int days, int progid, int divid, int orgid)

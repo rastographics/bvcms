@@ -69,7 +69,7 @@
                                     @Helper.AnchorLink("Rollsheet ({0}/{1})".Fmt(t.Count, t.Limit), "/Reports/Rollsheet/" + t.MeetingId, target: "_blank")<br />
                                     @Helper.AnchorLink("Email", "/Volunteers/EmailSlot/" + t.MeetingId, target: "meeting")<br />
                                     @Helper.AnchorLink("Meeting", "/Meeting/" + t.MeetingId, target: "meeting")<br />
-                                    @Helper.AnchorLink("Request Volunteers", "/Volunteers/Request/{0}/{1}/{2}".Fmt(t.ticks, t.MeetingId, t.Limit), target: "_blank", style: "volreq")
+                                    @Helper.AnchorLink("Request Volunteers", "/Volunteers/Request/{0}/{1}".Fmt(t.MeetingId, t.Limit), target: "_blank", style: "volreq")
                                 }
                                 else
                                 {
@@ -140,7 +140,6 @@
             }
         </td>
     </tr>
-    }
 </table>
 @helper RegistrationLink(VolunteerCommitmentsModel.VolunteerInfo v)
 {

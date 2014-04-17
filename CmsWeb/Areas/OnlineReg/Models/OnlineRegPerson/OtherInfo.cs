@@ -1,14 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Xml.Serialization;
 using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 using System.Web.Mvc;
-using System.Text.RegularExpressions;
-using System.Runtime.Serialization;
 
 namespace CmsWeb.Models
 {
@@ -20,6 +15,16 @@ namespace CmsWeb.Models
             if (ExtraQuestion[set].ContainsKey(s))
                 return ExtraQuestion[set][s];
             return null;
+        }
+
+        public bool Attended(int id)
+        {
+            if (FamilyAttend == null) 
+                return false;
+            var a = FamilyAttend.SingleOrDefault(aa => aa.PeopleId == id);
+            if (a == null)
+                return false;
+            return a.Attend;
         }
 
         public bool YesNoChecked(string key, bool value)

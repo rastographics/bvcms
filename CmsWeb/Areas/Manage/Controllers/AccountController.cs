@@ -77,6 +77,7 @@ CKEditorFuncNum, baseurl + fn, error));
             return Content("error");
         }
 
+        [Route("~/Error")]
         public ActionResult Error(string e)
         {
             ViewBag.Message = e;

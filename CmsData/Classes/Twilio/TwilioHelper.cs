@@ -96,6 +96,7 @@ namespace CmsData.Classes.Twilio
         public static void ProcessQueue( int iNewListID )
         {
             string sHost = Util.Host;
+            string cmshost = Util.ServerLink();
             string sSID = getSID();
             string sToken = getToken();
             int iListID = iNewListID;
@@ -115,6 +116,7 @@ namespace CmsData.Classes.Twilio
                 {
                     var Db = new CMSDataContext(Util.GetConnectionString(sHost));
                     Db.Host = sHost;
+                    Db.CmsHost = cmshost;
 
                     var smsList = (from e in Db.SMSLists
                                    where e.Id == itListID

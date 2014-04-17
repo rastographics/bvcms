@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using CmsData;
 using CmsData.Registration;
-using CmsWeb.Areas.Manage.Controllers;
 using UtilityExtensions;
 using CmsWeb.Areas.Main.Models;
 using TaskAlias = System.Threading.Tasks.Task;
@@ -161,8 +160,9 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 			meeting.AddEditExtra(Db, "TotalVolunteersNeeded", ((additional ?? 0) + limit).ToString());
             qb.Save(DbUtil.Db);
 
-			var reportlink = @"<a href=""{0}/VolunteerRequestReport/{1}/{2}/{3}"">Volunteer Request Status Report</a>"
-				.Fmt(Db.CmsHost, meeting.MeetingId, person.PeopleId, dt.Ticks);
+		    var rurl = Util.ServerLink("/OnlineReg/VolRequestReport/{0}/{1}/{2}".Fmt(meeting.MeetingId, person.PeopleId, dt.Ticks));
+			var reportlink = @"<a href=""{0}"">Volunteer Request Status Report</a>"
+				.Fmt(rurl);
 			var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
 			//list.Insert(0, person);
 			Db.Email(person.FromEmail, list,
@@ -184,6 +184,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 
 			var eqid = m.CreateQueue(transactional: true);
 			string host = Util.Host;
+		    string cmshost = Util.ServerLink();
 			// save these from HttpContext to set again inside thread local storage
 			var useremail = Util.UserEmail;
 			var isinroleemailtest = HttpContext.Current.User.IsInRole("EmailTest");
@@ -195,6 +196,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 				{
 					var db = new CMSDataContext(Util.GetConnectionString(host));
 					db.Host = host;
+					db.CmsHost = cmshost;
 					// set these again inside thread local storage
 					Util.UserEmail = useremail;
 					Util.IsInRoleEmailTest = isinroleemailtest;
@@ -208,6 +210,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 
 					var db = new CMSDataContext(Util.GetConnectionString(host));
 					db.Host = host;
+					db.CmsHost = cmshost;
 					// set these again inside thread local storage
 					Util.UserEmail = useremail;
 					Util.IsInRoleEmailTest = isinroleemailtest;

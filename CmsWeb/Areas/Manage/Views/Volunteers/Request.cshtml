@@ -37,8 +37,7 @@
 <h2>@Model.org.OrganizationName</h2>
 <div>
 </div>
-@using (Html.BeginForm("Request", "Volunteers", "post"))
-{
+<form action="/Volunteers/Request" method="post">
     @Html.Hidden("mid", Model.meeting.MeetingId);
     @Html.Hidden("pid", Model.person.PeopleId);
     <input type="hidden" name="ticks" value="@Model.ticks"/>
@@ -73,4 +72,4 @@
     <div style="clear: both"></div>
     <hr />
     <input type="Submit" name="submit" value="Send Emails" />
-}
+</form>

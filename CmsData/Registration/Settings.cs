@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UtilityExtensions;
 using System.Text;
 
 namespace CmsData.Registration
 {
-	public class Settings
+    public class Settings
 	{
 		public List<Ask> AskItems { get; set; }
 		public bool AskVisible(string name)
@@ -654,7 +656,8 @@ namespace CmsData.Registration
 
 			return sb.ToString();
 		}
-		private void AddFees(StringBuilder sb)
+
+        private void AddFees(StringBuilder sb)
 		{
 			AddValueCk(0, sb, "Fee", Fee);
 			AddValueCk(0, sb, "Deposit", Deposit);
@@ -812,6 +815,5 @@ namespace CmsData.Registration
 				return new MasterOrgInfo();
 			return i;
 		}
-
     }
 }

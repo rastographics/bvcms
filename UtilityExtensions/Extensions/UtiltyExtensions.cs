@@ -335,10 +335,10 @@ namespace UtilityExtensions
             return ResolveServerUrl(serverUrl, false);
         }
 
-        public static string ServerLink(string path)
+        public static string ServerLink(string path = "")
         {
             var Request = HttpContext.Current.Request;
-            return Scheme() + "://" + Request.Url.Authority + path;
+            return URLCombine(Scheme() + "://" + Request.Url.Authority, path);
         }
 
         public static string Scheme()

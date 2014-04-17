@@ -1,24 +1,4 @@
 ﻿@model CmsWeb.Models.OnlineRegPersonModel
-@if (Model.whatfamily == 3)
-{
-    @Html.EditorFor(m => m.HomePhone)
-    @Html.EditorFor(m => m.AddressLineOne)
-    @Html.EditorFor(m => m.AddressLineTwo)
-    @Html.EditorFor(m => m.City)
-    @Html.EditorFor(m => m.State)
-    @Html.EditorFor(m => m.ZipCode)
-    @Html.EditorFor(m => m.Country)
-}
-else
-{
-    @Html.HiddenFor(m => m.AddressLineOne)
-    @Html.HiddenFor(m => m.AddressLineTwo)
-    @Html.HiddenFor(m => m.City)
-    @Html.HiddenFor(m => m.State)
-    @Html.HiddenFor(m => m.ZipCode)
-}
-@Html.HiddenFor(m => m.whatfamily)
-
 <div class="form-group">
     <label class="control-label col-sm-3">Gender</label>
     <div class="col-sm-9">
@@ -35,3 +15,21 @@ else
         <div>@Html.ValidationMessageFor(m => m.married)</div>
     </div>
 </div>
+@if (Model.whatfamily == 3)
+{
+    @Html.EditorFor(m => m.HomePhone)
+    @Html.EditorFor(m => m.AddressLineOne)
+    @Html.EditorFor(m => m.AddressLineTwo)
+@*    @Html.EditorFor(m => m.City)*@
+@*    @Html.EditorFor(m => m.State)*@
+    @Html.EditorFor(m => m.ZipCode)
+}
+else
+{
+    @Html.HiddenFor(m => m.AddressLineOne)
+    @Html.HiddenFor(m => m.AddressLineTwo)
+@*    @Html.HiddenFor(m => m.City)*@
+@*    @Html.HiddenFor(m => m.State)*@
+    @Html.HiddenFor(m => m.ZipCode)
+}
+@Html.HiddenFor(m => m.whatfamily)

@@ -20,14 +20,14 @@ namespace CmsData
 {
     public partial class CMSDataContext
     {
-        public string CmsHost
-        {
-            get
-            {
-                var h = ConfigurationManager.AppSettings["cmshost"];
-                return h.Replace("{church}", Host, ignoreCase: true);
-            }
-        }
+//        public string CmsHost
+//        {
+//            get
+//            {
+//                var h = ConfigurationManager.AppSettings["cmshost"];
+//                return h.Replace("{church}", Host, ignoreCase: true);
+//            }
+//        }
         public void Email(string from, Person p, string subject, string body)
         {
             Email(from, p, null, subject, body, false);

@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web;
-using System.Xml;
-using System.Xml.Serialization;
 using CmsData;
-using CmsData.Registration;
 using CmsWeb.Code;
 using UtilityExtensions;
 using System.Web.Mvc;
 using System.Text;
 using System.Net.Mail;
 using CmsData.Codes;
+using Settings = CmsData.Registration.Settings;
 
 namespace CmsWeb.Models
 {
     public partial class OnlineRegPersonModel
     {
         private Dictionary<int, Settings> _settings;
+
         public Dictionary<int, Settings> settings
         {
             get
@@ -36,6 +35,7 @@ namespace CmsWeb.Models
 
 
         private Settings _setting;
+
         public Settings setting
         {
             get
@@ -54,6 +54,7 @@ namespace CmsWeb.Models
                 return _setting;
             }
         }
+
         public int age
         {
             get
@@ -65,29 +66,33 @@ namespace CmsWeb.Models
                 return 0;
             }
         }
+
         [DisplayName("Gender")]
         public string genderdisplay
         {
             get { return gender == 1 ? "Male" : gender == 2 ? "Female" : "not specified"; }
         }
+
         [DisplayName("Marital")]
         public string marrieddisplay
         {
             get { return married == 10 ? "Single" : married == 20 ? "Married" : "not specified"; }
         }
+
         public IEnumerable<Organization> GetOrgsInDiv()
         {
             return from o in DbUtil.Db.Organizations
-                   where o.DivOrgs.Any(di => di.DivId == divid)
-                   select o;
+                where o.DivOrgs.Any(di => di.DivId == divid)
+                select o;
         }
+
         private bool RegistrationType(int typ)
         {
             if (divid == null)
                 return false;
             var q = from o in GetOrgsInDiv()
-                    where o.RegistrationTypeId == typ
-                    select o;
+                where o.RegistrationTypeId == typ
+                select o;
             return q.Any();
         }
 
@@ -97,32 +102,45 @@ namespace CmsWeb.Models
             // and we're not in create account mode nor in manage subscriptions mode
             return (Found.HasValue || IsNew) && !Parent.ManagingSubscriptions() && !IsCreateAccount();
         }
+
         public bool UserSelectsOrganization()
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2;
         }
+
         public bool ComputesOrganizationByAge()
         {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2;
+            return masterorgid.HasValue &&
+                   masterorg.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2;
         }
+
         public bool ManageSubscriptions()
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2;
         }
+
+        public bool RecordFamilyAttendance()
+        {
+            return org != null && org.RegistrationTypeId == RegistrationTypeCode.RecordFamilyAttendance;
+        }
+
         public bool ChooseVolunteerTimes()
         {
             return RegistrationType(RegistrationTypeCode.ChooseVolunteerTimes);
         }
+
         public bool ManageGiving()
         {
             return RegistrationType(RegistrationTypeCode.ManageGiving);
         }
+
         public bool OnlineGiving()
         {
             if (org != null)
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving;
             return false;
         }
+
         public bool IsSpecialScript()
         {
             if (org != null)
@@ -148,12 +166,14 @@ namespace CmsWeb.Models
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlinePledge;
             return false;
         }
+
         public bool NoReqBirthYear()
         {
             if (org != null)
                 return setting.NoReqBirthYear;
             return settings.Values.Any(o => o.NoReqBirthYear);
         }
+
         public bool MemberOnly()
         {
             if (org != null)
@@ -162,7 +182,9 @@ namespace CmsWeb.Models
                 return false;
             return settings.Values.Any(o => o.MemberOnly);
         }
+
         private CmsData.Organization _org;
+
         public CmsData.Organization org
         {
             get
@@ -184,7 +206,9 @@ namespace CmsWeb.Models
                 return _org;
             }
         }
+
         private CmsData.Organization _masterorg;
+
         public CmsData.Organization masterorg
         {
             get
@@ -210,6 +234,7 @@ namespace CmsWeb.Models
         }
 
         public string NoAppropriateOrgError;
+
         private Organization GetAppropriateOrg()
         {
             NoAppropriateOrgError = null;
@@ -221,14 +246,14 @@ namespace CmsWeb.Models
                 return null;
             var cklist = masterorg.OrgPickList.Split(',').Select(o => o.ToInt()).ToList();
             var q = from o in DbUtil.Db.Organizations
-                    where cklist.Contains(o.OrganizationId)
-                    where gender == null || o.GenderId == gender || (o.GenderId ?? 0) == 0
-                    select o;
+                where cklist.Contains(o.OrganizationId)
+                where gender == null || o.GenderId == gender || (o.GenderId ?? 0) == 0
+                select o;
             list = q.ToList();
             var q2 = from o in list
-                     where bestbirthdate >= o.BirthDayStart || o.BirthDayStart == null
-                     where bestbirthdate <= o.BirthDayEnd || o.BirthDayEnd == null
-                     select o;
+                where bestbirthdate >= o.BirthDayStart || o.BirthDayStart == null
+                where bestbirthdate <= o.BirthDayEnd || o.BirthDayEnd == null
+                select o;
             var oo = q2.FirstOrDefault();
 
             if (oo == null)
@@ -247,14 +272,17 @@ namespace CmsWeb.Models
                 oo = null;
             return oo;
         }
+
         public bool Finished()
         {
             return ShowDisplay() && OtherOK;
         }
+
         public bool NotFirst()
         {
             return Index > 0;
         }
+
         public bool ShowDisplay()
         {
             if (Found == true && IsValidForExisting)
@@ -265,6 +293,7 @@ namespace CmsWeb.Models
                 return IsValidForExisting;
             return IsNew && IsValidForNew;
         }
+
         public bool AnyOtherInfo()
         {
             if (org != null)
@@ -274,35 +303,42 @@ namespace CmsWeb.Models
                     return false;
             return settings.Values.Any(s => s.AskItems.Any() || s.Deposit > 0);
         }
-        public static void CheckNotifyDiffEmails(Person person, string fromemail, string regemail, string orgname, string phone)
+
+        public static void CheckNotifyDiffEmails(Person person, string fromemail, string regemail, string orgname,
+            string phone)
         {
             MailAddress ma = null;
-            try { ma = new MailAddress(regemail); }
-            catch (Exception) { }
+            try
+            {
+                ma = new MailAddress(regemail);
+            }
+            catch (Exception)
+            {
+            }
             if (ma != null)
             {
                 /* If one of the email addresses we have on record
                  * is the same as the email address given in registration
                  * then no problem, (not different) */
                 if (person.EmailAddress.HasValue() &&
-                        string.Compare(ma.Address, person.EmailAddress, StringComparison.OrdinalIgnoreCase) == 0)
+                    string.Compare(ma.Address, person.EmailAddress, StringComparison.OrdinalIgnoreCase) == 0)
                     return;
                 if (person.EmailAddress2.HasValue() &&
-                        String.Compare(ma.Address, person.EmailAddress2, StringComparison.OrdinalIgnoreCase) == 0)
+                    String.Compare(ma.Address, person.EmailAddress2, StringComparison.OrdinalIgnoreCase) == 0)
                     return;
                 /* So now we check to see if anybody in the famiy
                  * has the email address used in registration
                  * if so then that is OK too. */
                 var flist = from fm in person.Family.People
-                            where fm.PositionInFamilyId == PositionInFamily.PrimaryAdult
-                            select fm;
+                    where fm.PositionInFamilyId == PositionInFamily.PrimaryAdult
+                    select fm;
                 foreach (var fm in flist)
                 {
                     if (fm.EmailAddress.HasValue() &&
-                            string.Compare(ma.Address, fm.EmailAddress, StringComparison.OrdinalIgnoreCase) == 0)
+                        string.Compare(ma.Address, fm.EmailAddress, StringComparison.OrdinalIgnoreCase) == 0)
                         return;
                     if (fm.EmailAddress2.HasValue() &&
-                            string.Compare(ma.Address, fm.EmailAddress2, StringComparison.OrdinalIgnoreCase) == 0)
+                        string.Compare(ma.Address, fm.EmailAddress2, StringComparison.OrdinalIgnoreCase) == 0)
                         return;
                 }
             }
@@ -332,12 +368,14 @@ namespace CmsWeb.Models
                 DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(regemail), subj, msg, false);
             }
         }
+
         private static string trim(string s)
         {
             if (s != null)
                 return s.Trim();
             return s;
         }
+
         public OrganizationMember GetOrgMember()
         {
             if (org != null)
@@ -345,17 +383,50 @@ namespace CmsWeb.Models
                     m2.PeopleId == PeopleId && m2.OrganizationId == org.OrganizationId);
             return null;
         }
+
+        public void PopulateFamilyMemberAttends()
+        {
+            if (IsNew)
+            {
+                FamilyAttend = new List<FamilyAttendInfo>()
+                {
+                    new FamilyAttendInfo()
+                    {
+                        Name = "{0} {1}".Fmt(FirstName, LastName),
+                        PeopleId = -1,
+                        Attend = true
+                    }
+                };
+                return;
+            }
+            var q = from p in person.Family.People
+                let om =
+                    p.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == p.PeopleId && mm.OrganizationId == orgid)
+                let forceattend = p.PeopleId == PeopleId
+                orderby p.PositionInFamilyId, p.GenderId, p.Age descending
+                select new FamilyAttendInfo()
+                {
+                    PeopleId = p.PeopleId,
+                    Name = p.Name,
+                    Age = p.Age,
+                    Attend = (om != null && om.IsInGroup("Attended")) || forceattend
+                };
+            FamilyAttend = q.ToList();
+        }
+
         public IEnumerable<SelectListItem> StateCodes()
         {
             var cv = new CodeValueModel();
             return CodeValueModel.ConvertToSelect(cv.GetStateListUnknown(), "Code");
         }
+
         public IEnumerable<SelectListItem> Countries()
         {
             var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList(), null);
-            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
+            list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
             return list;
         }
+
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -380,20 +451,23 @@ namespace CmsWeb.Models
             }
             return sb.ToString();
         }
+
         public static SelectListItem[] Funds()
         {
             var q = from f in DbUtil.Db.ContributionFunds
-                    where f.FundStatusId == 1
-                    where f.OnlineSort > 0
-                    orderby f.OnlineSort
-                    select new SelectListItem
-                    {
-                        Text = "{0}".Fmt(f.FundName),
-                        Value = f.FundId.ToString()
-                    };
+                where f.FundStatusId == 1
+                where f.OnlineSort > 0
+                orderby f.OnlineSort
+                select new SelectListItem
+                {
+                    Text = "{0}".Fmt(f.FundName),
+                    Value = f.FundId.ToString()
+                };
             return q.ToArray();
         }
+
         private PythonEvents _pythonEvents;
+
         public PythonEvents PythonEvents
         {
             get { return _pythonEvents ?? (_pythonEvents = HttpContext.Current.Items["PythonEvents"] as PythonEvents); }
@@ -401,25 +475,40 @@ namespace CmsWeb.Models
 
         private Dictionary<string, string> NameLookup = new Dictionary<string, string>()
         {
-            { "first", "FirstName" },
-            { "middle", "MiddleName" },
-            { "last", "LastName" },
-            { "suffix", "Suffix" },
-            { "dob", "DateOfBirth" },
-            { "phone", "Phone" },
-            { "email", "EmailAddress" },
+            {"first", "FirstName"},
+            {"middle", "MiddleName"},
+            {"last", "LastName"},
+            {"suffix", "Suffix"},
+            {"dob", "DateOfBirth"},
+            {"phone", "Phone"},
+            {"email", "EmailAddress"},
 
-            { "homephone", "HomePhone" },
-            { "address", "AddressLineOne" },
-            { "address2", "AddressLineTwo" },
-            { "city", "City" },
-            { "state", "State" },
-            { "zip", "ZipCode" },
-            { "country", "Country" },
-        }; 
+            {"homephone", "HomePhone"},
+            {"address", "AddressLineOne"},
+            {"address2", "AddressLineTwo"},
+            {"city", "City"},
+            {"state", "State"},
+            {"zip", "ZipCode"},
+            {"country", "Country"},
+        };
+
         public string TranslateName(string name)
         {
             return NameLookup.ContainsKey(name) ? NameLookup[name] : name;
         }
+    }
+
+    public class FamilyAttendInfo
+    {
+        public int? PeopleId { get; set; }
+        public bool Attend { get; set; }
+        public string Name { get; set; }
+        public int? Age { get; set; }
+        public string Birthday { get; set; }
+        public string Email { get; set; }
+        public int? GenderId { get; set; }
+        public int? MaritalId { get; set; }
+        public string Gender { get { return GenderId == 1 ? "Male" : "Female"; } }
+        public string Marital { get { return MaritalId == 10 ? "Single" : "Married"; } }
     }
 }

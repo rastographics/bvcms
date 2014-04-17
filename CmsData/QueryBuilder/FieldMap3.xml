@@ -274,6 +274,12 @@
     <NewMemberClassStatusId Title="New Member Class Status" DisplayAs="NewMemberClassStatusId" Type="NullCode" DataSource="NewMemberClassStatusList" DataValueField="IdCode">
       Select New Member Class Status from the list.
     </NewMemberClassStatusId>
+    <OtherPreviousChurch Title="Former Church" Type="String">
+      Select a Comparison and enter all or part of a Previous Church name.
+    </OtherPreviousChurch>
+    <OtherNewChurch Title="New Church" Type="String">
+      Select a Comparison and enter all or part of a New Church name.
+    </OtherNewChurch>
     <LetterDateRequested Title="Letter Requested Date" Type="Date">
       Pick the date and the Comparison. Leave date blank for those without a Letter Requested Date.
     </LetterDateRequested>
@@ -326,7 +332,10 @@
     <MemberTypeAsOf Title="Member Type As Of" Type="Code" DisplayAs="MemberTypeAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="MemberTypeCodes" DataValueField="IdCode">
       Select Member Type from the list, pick a date range and select other options: Program/Division/Organization, Org Type.
     </MemberTypeAsOf>
-    <OrgJoinDate Title="Org Enrollment Date" Type="Date" DisplayAs="OrgJoinDate({0}, {1}, {2})" Params="Program,Division,Organization">
+    <FirstOrgJoinDate Title="First Org Enrollment Date" Type="Date" DisplayAs="FirstOrgEnrollmentDate({0}, {1}, {2})" Params="Program,Division,Organization">
+      Pick the Date and Comparison and select Program/Division/Organization.
+    </FirstOrgJoinDate>
+    <OrgJoinDate Title="Org Join Date" Type="Date" DisplayAs="OrgJoinDate({0}, {1}, {2})" Params="Program,Division,Organization">
       Pick the Date and Comparison and select Program/Division/Organization.
     </OrgJoinDate>
     <OrgJoinDateDaysAgo Title="Recent Org Join Date" Type="Integer" DisplayAs="RecentOrgJoinDate({0}, {1}, {2})" Params="Program,Division,Organization">
@@ -556,12 +565,6 @@
     <HasMyTag Title="Tagged with" Type="Bit" DisplayAs="HasMyTag({0})" DataValueField="IdCode" Params="Tags">
       Select Tag from the list.
     </HasMyTag>
-    <OtherPreviousChurch Title="Former Church" Type="String">
-      Select a Comparison and enter all or part of a Previous Church name.
-    </OtherPreviousChurch>
-    <OtherNewChurch Title="New Church" Type="String">
-      Select a Comparison and enter all or part of a New Church name.
-    </OtherNewChurch>
     <HasMemberDocs Title="Has Membership Documents" Type="Bit" DataValueField="IdCode">
       Specify True or False for those with uploaded Membership Documents.
     </HasMemberDocs>

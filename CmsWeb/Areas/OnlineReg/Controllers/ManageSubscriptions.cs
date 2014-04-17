@@ -13,7 +13,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
 	public partial class OnlineRegController
 	{
-
 		public ActionResult ManageSubscriptions(string id)
 		{
 			if (!id.HasValue())

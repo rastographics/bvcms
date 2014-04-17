@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			return Redirect("/Email/{0}?subj={1}&ishtml=true"
 				.Fmt(qb.Id, Server.UrlEncode(subject)));
 		}
-		[HttpGet]
+		[HttpGet, Route("Request/{mid:int}/{limit:int}")]
 		public new ActionResult Request(int mid, int limit)
 		{
 			var vs = new VolunteerRequestModel(mid, Util.UserPeopleId.Value) {limit = limit };
@@ -119,7 +119,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			vs.ComposeMessage();
 			return View("Request", vs);
 		}
-		[HttpPost, Route("Request/{ticks:long}/{mid:int}/{limit:int}")]
+		[HttpPost]
 		[ValidateInput(false)]
 		public new ActionResult Request(long ticks, int mid, int limit, int[] pids, string subject, string message, int? additional)
 		{

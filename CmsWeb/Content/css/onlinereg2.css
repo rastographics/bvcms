@@ -482,3 +482,8 @@ td.bottom, th.bottom
 {
     vertical-align: bottom;
 }*/
+div.newattend {
+    border: 1px solid lightgrey;
+    margin: 10px;
+    padding: 10px;
+}
