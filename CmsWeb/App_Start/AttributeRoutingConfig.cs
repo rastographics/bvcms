@@ -28,7 +28,6 @@ namespace CmsWeb
             routes.IgnoreRoute("CustomErrors/{*pathInfo}");
             routes.IgnoreRoute("ContributionReports/{*pathInfo}");
             routes.IgnoreRoute("Report/{*pathInfo}");
-            routes.IgnoreRoute("Dialog/{*pathInfo}");
             routes.IgnoreRoute("ckeditor/{*pathInfo}");
             routes.IgnoreRoute("StaffOnly/{*pathInfo}");
             routes.IgnoreRoute("images/{*pathInfo}");

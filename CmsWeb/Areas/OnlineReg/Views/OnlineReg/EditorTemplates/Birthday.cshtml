@@ -11,7 +11,7 @@
     @Html.LabelFor(m => m, new { @class="control-label"})
     <div class="controls">
         <div class="input-append date">
-            @Html.TextBoxFor2(m => m, true)
+            @Html.TextBoxFor(m => m, new { placeholder = "M/D/YY" })
             <span class="add-on"><i class="fa fa-calendar"></i></span>@Html.Raw(help)
         </div>
         @Html.ValidationMessageLabelFor(m => m)

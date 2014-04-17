@@ -273,7 +273,7 @@ Please call the church to resolve this before we can complete your registration.
                     if (ZipCode.HasValue())
                         addrok = true;
                     if (!addrok)
-                        ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ZipCode), "city/state required or zip required (or \"na\" in all)");
+                        ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ZipCode), "zip required (or \"na\")");
 
                     if (ModelState.IsValid && AddressLineOne.HasValue()
                         && (Country == "United States" || !Country.HasValue()))

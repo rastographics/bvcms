@@ -17,7 +17,7 @@
     @Html.EditorFor(m => m.Suffix, new { classes = "narrow" } )
     if (Model.RequiredDOB() && !Model.DateOfBirth.HasValue())
     {
-        @Html.EditorFor(m => m.DateOfBirth)
+        @Html.EditorFor(m => m.DateOfBirth, new { placeholder = "M/D/YY" })
     }
     else
     {
@@ -40,7 +40,7 @@ else
     @Html.HiddenFor(m => m.guid)
     @Html.EditorFor(m => m.FirstName)
     @Html.EditorFor(m => m.LastName)
-    @Html.EditorFor(m => m.DateOfBirth)
+    @Html.EditorFor(m => m.DateOfBirth, new { placeholder = "M/D/YY" })
     @Html.EditorFor(m => m.Phone)
     @Html.EditorFor(m => m.EmailAddress)
     @Html.Partial("Flow2/FindOrNewButtons", Model)
