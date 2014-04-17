@@ -20,7 +20,7 @@
         var f = $('#results').closest('form');
         var q = f.serialize();
         $.block();
-        $.post('/Finance/Contributions/Results', q, function (ret) {
+        $.post('/Contributions/Results', q, function (ret) {
             $('#results').replaceWith(ret);
             $.unblock();
         });
@@ -30,7 +30,7 @@
     });
     $("#export").click(function (ev) {
         var f = $(this).closest('form');
-        f.attr("action", "/Finance/Contributions/Export");
+        f.attr("action", "/Contributions/Export");
         f.submit();
     });
     $('.tip').tooltip({ showBody: "|" });

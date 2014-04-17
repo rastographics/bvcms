@@ -269,13 +269,13 @@
     };
     $("#failedemails a.unblock").live("click", function (ev) {
         if (confirm("are you sure?"))
-            $.post("/Manage/Emails/Unblock", { email: $(this).attr("email") }, function (ret) {
+            $.post("/Emails/Unblock", { email: $(this).attr("email") }, function (ret) {
                 $.growlUI("email unblocked", ret);
             });
     });
     $("#failedemails a.unspam").live("click", function (ev) {
         if (confirm("are you sure?"))
-            $.post("/Manage/Emails/Unspam", { email: $(this).attr("email") }, function (ret) {
+            $.post("/Emails/Unspam", { email: $(this).attr("email") }, function (ret) {
                 $.growlUI("email unspamed", ret);
             });
     });
@@ -292,7 +292,7 @@ function AddSelected(ret) {
             $("#family-div").loadWith('/Person2/FamilyMembers/' + ret.pid);
             break;
         case 'MergeTo':
-            window.location = "/Manage/Merge?PeopleId1=" + ret.pid + "&PeopleId2=" + ret.pid2;
+            window.location = "/Merge/{0}/{1}".format(ret.pid, ret.pid2);
             break;
     }
 }

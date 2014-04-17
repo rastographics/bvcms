@@ -1,6 +1,8 @@
 ﻿@model CmsWeb.Models.ManagePledgesModel
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Registration";
 }
 <div class="confirm">

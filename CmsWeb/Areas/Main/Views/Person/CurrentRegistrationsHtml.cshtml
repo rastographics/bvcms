@@ -2,7 +2,7 @@
 <ul id="CurrentRegistrations">
 @foreach(var v in Model)
 {
-	<li><a href="/OnlineReg/Index/@v.OrgId">@v.Name</a><br />
+	<li><a href="/OnlineReg/@v.OrgId">@v.Name</a><br />
         @v.Description
     </li>
 }

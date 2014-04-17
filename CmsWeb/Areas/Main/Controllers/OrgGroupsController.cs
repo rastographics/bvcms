@@ -8,8 +8,10 @@ using LumenWorks.Framework.IO.Csv;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix="OrgGroups"), Route("{action}/{id?}")]
     public class OrgGroupsController : CmsStaffController
     {
+        [Route("~/OrgGroups/{id:int}")]
         public ActionResult Index(int id)
         {
             var m = new OrgGroupsModel( id );

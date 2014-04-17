@@ -1,0 +1,61 @@
+﻿@using CmsData.Registration
+@model CmsWeb.Models.OnlineRegPersonModel
+@{
+    var ask = (AskCheckboxes)ViewBag.ask;
+    var name = Html.NameFor2(m => m.Checkbox);
+}
+<div class="form-group">
+    @Html.Label(ask.Label, new { @class = "control-label col-sm-3 labelsize" })
+    <div class="col-sm-9">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    @for (var n = 0; n < ask.Cols; n++)
+                    {
+                        var a = ask.list[n];
+                        if (a.SmallGroup == "nocheckbox")
+                        {
+                            <th>@Html.Raw(a.Description)</th>
+                        }
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (var n = ask.Cols ?? 1; n < ask.list.Count; n++)
+                {
+                    var a = ask.list[n];
+                    if (n % ask.Cols == 0)
+                    {
+                        @Html.Raw("<tr>")
+                    }
+                    if (a.SmallGroup == "nocheckbox")
+                    {
+                    <td>@Html.Raw(a.Description)</td>
+                    }
+                    else
+                    {
+                        if (a.SmallGroup != "comment")
+                        {
+                            if (a.IsSmallGroupFilled(Model.GroupTags))
+                            {
+                                <td><i>filled</i></td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="checkbox" value="@a.SmallGroup" name="@name"
+                                           @(Model.CheckboxChecked(a.SmallGroup) ? "checked='checked'" : "") />
+                                </td>
+                            }
+                        }
+                    }
+                    if (n % ask.Cols == ask.Cols - 1)
+                    {
+                        @Html.Raw("</tr>")
+                    }
+                }
+            </tbody>
+        </table>
+        <div>@Html.ValidationMessageFor(m => m.Checkbox[ask.UniqueId])</div>
+    </div>
+</div>

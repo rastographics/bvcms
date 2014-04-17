@@ -37,10 +37,10 @@
                 {
                 <tr class="master @oddrow">
                     <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
-                    <td><a href="/Organization/Index/@om.OrgId" class="reveal">@om.Name</a></td>
+                    <td><a href="/Organization/@om.OrgId" class="reveal">@om.Name</a></td>
                     <td>@om.EnrollDate.FormatDate()</td>
                     <td>@om.DropDate.FormatDate()</td>
-                    <td><a target="_blank" href="/TransactionHistory/Index/@om.PeopleId?oid=@om.OrgId">@om.MemberType</a></td>
+                    <td><a target="_blank" href="/TransactionHistory/@om.PeopleId/@om.OrgId">@om.MemberType</a></td>
                     <td>@(om.AttendPct > 0 ? om.AttendPct.Value.ToString("N1") : "")</td>
                 </tr>
                 <tr class="details @oddrow">

@@ -7,7 +7,7 @@
 {
     <script type="text/javascript">
         $(function() {
-            $(".clickEdit").editable("/Setup/Lookup/Edit/", {
+            $(".clickEdit").editable("/Lookup/Edit/", {
                 indicator: "<img src='/images/loading.gif'>",
                 tooltip: "Click to edit...",
                 style: 'display: inline',
@@ -17,11 +17,11 @@
             $("a.delete").click(function(ev) {
                 ev.preventDefault();
                 if (confirm("are you sure?"))
-                    $.post("/Setup/Lookup/Delete/" + $(this).attr("id"), { type: $('#type').val() }, function(ret) {
+                    $.post("/Lookup/Delete/" + $(this).attr("id"), { type: $('#type').val() }, function(ret) {
                         if (ret && ret.error)
                             alert(ret.error);
                         else
-                            window.location = "/Setup/Lookup/Index/" + $('#type').val();
+                            window.location = "/Lookup/" + $('#type').val();
                     });
             });
             $(".bt").button();

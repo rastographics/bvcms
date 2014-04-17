@@ -19,6 +19,7 @@ using CmsData;
 namespace CmsWeb.Areas.Main.Controllers
 {
     [ValidateInput(false)]
+    [RouteArea("Main", AreaPrefix = "Task"), Route("{action=List}/{id?}")]
     public class TaskController : CmsStaffController
     {
         public TaskController()
@@ -48,6 +49,10 @@ namespace CmsWeb.Areas.Main.Controllers
             tasks.AcceptTask(id);
             return PartialView("Detail", tasks.FetchTask(id));
         }
+
+        [HttpPost]
+        [Route("Detail/{id:int}")]
+        [Route("Detail/{id:int}/Row/{rowid:int?}")]
         public ActionResult Detail(int id, int? rowid)
         {
             var tasks = new TaskModel();

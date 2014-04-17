@@ -41,7 +41,7 @@ namespace CmsWeb.Models
             if (tag.HasValue())
             {
                 var a = tag.SplitStr(",", 2);
-                if(a.Length > 1)
+                if (a.Length > 1)
                     Util2.CurrentTag = a[1];
                 else
                     Util2.CurrentTag = tag;
@@ -242,6 +242,17 @@ namespace CmsWeb.Models
             if (!_count.HasValue)
                 _count = FetchPeople().Count();
             return _count.Value;
+        }
+
+        private int? currentTagId;
+        public int CurrentTagId
+        {
+            get
+            {
+                if (!currentTagId.HasValue)
+                    currentTagId = DbUtil.Db.TagCurrent().Id;
+                return currentTagId ?? 0;
+            }
         }
     }
 }

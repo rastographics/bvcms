@@ -1,17 +1,15 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin")]
+    [RouteArea("Setup", AreaPrefix = "Program"), Route("{action}/{id?}")]
     public class ProgramController : CmsStaffController
     {
+        [Route("~/Programs")]
         public ActionResult Index()
         {
             var m = from p in DbUtil.Db.Programs
@@ -20,17 +18,17 @@ namespace CmsWeb.Areas.Setup.Controllers
             return View(m);
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Create()
         {
             var p = new Program { Name = "new program" };
             DbUtil.Db.Programs.InsertOnSubmit(p);
             //p.Divisions.Add(new Division {  Name = "new division" });
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Setup/Program/");
+            return Redirect("/Programs/");
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ContentResult Edit(string id, string value)
         {
             var a = id.Split('.');
@@ -58,7 +56,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return c;
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Delete(string id)
         {
             id = id.Substring(1);

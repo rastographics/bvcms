@@ -153,12 +153,18 @@ namespace CmsData
                         q = from p in db.People
                             where !(from et in p.EnrollmentTransactions
                                     where et.TransactionTypeId == 1
+                                    && (Organization == 0 || et.OrganizationId == Organization)
+                                    && (Division == 0 || et.Organization.DivOrgs.Any(t => t.DivId == Division))
+                                    && (Program == 0 || et.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                                     select et).Any()
                             select p.PeopleId;
                     else
                         q = from p in db.People
                             where (from et in p.EnrollmentTransactions
                                    where et.TransactionTypeId == 1
+                                    && (Organization == 0 || et.OrganizationId == Organization)
+                                    && (Division == 0 || et.Organization.DivOrgs.Any(t => t.DivId == Division))
+                                    && (Program == 0 || et.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                                    select et.TransactionDate.Date).Min() == DateValue
                             select p.PeopleId;
                     break;
@@ -166,6 +172,9 @@ namespace CmsData
                     q = from p in db.People
                         where (from et in p.EnrollmentTransactions
                                where et.TransactionTypeId == 1
+                                    && (Organization == 0 || et.OrganizationId == Organization)
+                                    && (Division == 0 || et.Organization.DivOrgs.Any(t => t.DivId == Division))
+                                    && (Program == 0 || et.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                                select et.TransactionDate.Date).Min() > DateValue
                         select p.PeopleId;
                     break;
@@ -173,6 +182,9 @@ namespace CmsData
                     q = from p in db.People
                         where (from et in p.EnrollmentTransactions
                                where et.TransactionTypeId == 1
+                                    && (Organization == 0 || et.OrganizationId == Organization)
+                                    && (Division == 0 || et.Organization.DivOrgs.Any(t => t.DivId == Division))
+                                    && (Program == 0 || et.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                                select et.TransactionDate.Date).Min() >= DateValue
                         select p.PeopleId;
                     break;
@@ -180,6 +192,9 @@ namespace CmsData
                     q = from p in db.People
                         where (from et in p.EnrollmentTransactions
                                where et.TransactionTypeId == 1
+                                    && (Organization == 0 || et.OrganizationId == Organization)
+                                    && (Division == 0 || et.Organization.DivOrgs.Any(t => t.DivId == Division))
+                                    && (Program == 0 || et.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                                select et.TransactionDate.Date).Min() < DateValue
                         select p.PeopleId;
                     break;
@@ -187,6 +202,9 @@ namespace CmsData
                     q = from p in db.People
                         where (from et in p.EnrollmentTransactions
                                where et.TransactionTypeId == 1
+                                    && (Organization == 0 || et.OrganizationId == Organization)
+                                    && (Division == 0 || et.Organization.DivOrgs.Any(t => t.DivId == Division))
+                                    && (Program == 0 || et.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                                select et.TransactionDate.Date).Min() <= DateValue
                         select p.PeopleId;
                     break;
@@ -195,16 +213,23 @@ namespace CmsData
                         q = from p in db.People
                             where (from et in p.EnrollmentTransactions
                                    where et.TransactionTypeId == 1
+                                    && (Organization == 0 || et.OrganizationId == Organization)
+                                    && (Division == 0 || et.Organization.DivOrgs.Any(t => t.DivId == Division))
+                                    && (Program == 0 || et.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                                    select et).Any()
                             select p.PeopleId;
                     else
                         q = from p in db.People
                             where (from et in p.EnrollmentTransactions
                                    where et.TransactionTypeId == 1
+                                    && (Organization == 0 || et.OrganizationId == Organization)
+                                    && (Division == 0 || et.Organization.DivOrgs.Any(t => t.DivId == Division))
+                                    && (Program == 0 || et.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
                                    select et.TransactionDate.Date).Min() != DateValue
                             select p.PeopleId;
                     break;
             }
+
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);

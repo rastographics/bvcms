@@ -20,12 +20,12 @@
             <th colspan="6" class="left border-bottom">
                 @if (Model.OrgFilterId > 0)
                 {
-                    <div>Members of the <a href="/Organization/Index/@Model.OrgFilterId">@Model.OrgFilterName</a> (@Model.OrgFilterLeaderName) Class</div>
-                    <div>With @Model.ConsecutiveAbsentsThreshold or more consecutive absents on and before @Model.LastMeeting.FormatDate() in <a href="/Organization/Index/@Model.OrgId">@Model.OrganizationName</a></div>
+                    <div>Members of the <a href="/Organization/@Model.OrgFilterId">@Model.OrgFilterName</a> (@Model.OrgFilterLeaderName) Class</div>
+                    <div>With @Model.ConsecutiveAbsentsThreshold or more consecutive absents on and before @Model.LastMeeting.FormatDate() in <a href="/Organization/@Model.OrgId">@Model.OrganizationName</a></div>
                 }
                 else
                 {
-                    <div><a href="/Organization/Index/@Model.OrgId">@Model.OrganizationName</a> (@Model.OrganizationLeader) </div>
+                    <div><a href="/Organization/@Model.OrgId">@Model.OrganizationName</a> (@Model.OrganizationLeader) </div>
                     <div>Members with @Model.ConsecutiveAbsentsThreshold or more consecutive absents on and before @Model.LastMeeting.FormatDate()</div>
                 }
             </th>

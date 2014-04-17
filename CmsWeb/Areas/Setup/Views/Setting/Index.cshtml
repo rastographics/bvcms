@@ -7,7 +7,7 @@
 {
     <script type="text/javascript">
         $(function () {
-            $(".clickEdit").editable("/Setup/Setting/Edit", {
+            $(".clickEdit").editable("/Setting/Edit", {
                 indicator: "<img src='/images/loading.gif'>",
                 width: 400,
                 height: 22,
@@ -15,8 +15,8 @@
             });
             $("a.delete").click(function (ev) {
                 if (confirm("are you sure?"))
-                    $.post("/Setup/Setting/Delete/" + $(this).attr("id"), null, function (ret) {
-                        window.location = "/Setup/Setting/";
+                    $.post("/Setting/Delete/" + $(this).attr("id"), null, function (ret) {
+                        window.location = "/Setting/";
                     });
             });
             $(".bt").button();

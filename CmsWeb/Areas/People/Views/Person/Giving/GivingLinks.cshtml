@@ -1,8 +1,9 @@
 ﻿@using CmsData
+@using CmsWeb
 @using UtilityExtensions
 @{
-    var mid = DbUtil.Db.Setting("M_ID", "");
-    var giving = mid.Length > 0 || DbUtil.Db.Setting("OnlineGiving", "false").ToBool();
+    var mid = ViewExtensions2.DbSetting("M_ID", "");
+    var giving = mid.Length > 0 || ViewExtensions2.DbSetting("OnlineGiving", "false").ToBool();
         
 }
 <fieldset class="left-gutter margin-top">

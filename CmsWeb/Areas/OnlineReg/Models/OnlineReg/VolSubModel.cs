@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
-using CmsWeb.Areas.Manage.Controllers;
+using CmsData.Registration;
 using UtilityExtensions;
 using CmsWeb.Areas.Main.Models;
 using TaskAlias = System.Threading.Tasks.Task;
@@ -154,8 +154,8 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 			attend.Commitment = CmsData.Codes.AttendCommitmentCode.FindSub;
             qb.Save(DbUtil.Db);
 
-			var reportlink = @"<a href=""{0}OnlineReg/VolSubReport/{1}/{2}/{3}"">Substitute Status Report</a>"
-				.Fmt(Db.CmsHost, attend.AttendId, person.PeopleId, dt.Ticks);
+		    var rurl = Util.ServerLink("/OnlineReg/VolSubReport/{0}/{1}/{2}".Fmt(attend.AttendId, person.PeopleId, dt.Ticks));
+			var reportlink = @"<a href=""{0}"">Substitute Status Report</a>".Fmt(rurl);
 			var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
 			//list.Insert(0, person);
 			Db.Email(person.FromEmail, list,
@@ -177,6 +177,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 
 			var eqid = m.CreateQueue(transactional: true);
 			string host = Util.Host;
+		    string cmshost = Util.ServerLink();
 			// save these from HttpContext to set again inside thread local storage
 			var useremail = Util.UserEmail;
 			var isinroleemailtest = HttpContext.Current.User.IsInRole("EmailTest");
@@ -188,6 +189,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 				{
 					var db = new CMSDataContext(Util.GetConnectionString(host));
 					db.Host = host;
+				    db.CmsHost = cmshost;
 					// set these again inside thread local storage
 					Util.UserEmail = useremail;
 					Util.IsInRoleEmailTest = isinroleemailtest;
@@ -201,6 +203,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 
 					var db = new CMSDataContext(Util.GetConnectionString(host));
 					db.Host = host;
+                    db.CmsHost = cmshost;
 					// set these again inside thread local storage
 					Util.UserEmail = useremail;
 					Util.IsInRoleEmailTest = isinroleemailtest;
@@ -300,5 +303,20 @@ See you there!</p>".Fmt(r.Substitute.Name, r.Requestor.Name,
 					};
 			return q;
 		}
+	    private Settings setting;
+		public Settings Setting
+		{
+			get { return setting ?? (setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId)); }
+		}
+        private bool? usebootstrap;
+        public bool UseBootstrap
+        {
+            get
+            {
+                if (!usebootstrap.HasValue)
+                    usebootstrap = Setting.UseBootstrap;
+                return usebootstrap.Value;
+            }
+        }
 	}
 }

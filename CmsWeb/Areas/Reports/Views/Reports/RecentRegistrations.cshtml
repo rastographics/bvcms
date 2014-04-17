@@ -36,7 +36,7 @@
                 <td>@r.Dob</td>
                 <td class="right">@r.Cnt.ToString2("N0")</td>
                 <td>@((r.Completed ?? false) ? "YES" : "incomplete")</td>
-                <td><a href="/Organization/Index/@r.OrganizationId" target="detail">@r.OrganizationName</a></td>
+                <td><a href="/Organization/@r.OrganizationId" target="detail">@r.OrganizationName</a></td>
             </tr>
         }
     </tbody>

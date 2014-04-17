@@ -1,6 +1,4 @@
-﻿@using CmsData
-@using UtilityExtensions
-@model CmsWeb.Areas.Finance.Models.BundleModel
+﻿@model CmsWeb.Areas.Finance.Models.BundleModel
 <table id="bundle" cellspacing="5">
     <tr>
         <th>Bundle Status</th>
@@ -22,8 +20,7 @@
     </tr>
     <tr>
         <th>Bundle Type</th>
-        <td>@Html.DropDownListFor(m => m.Bundle.BundleHeaderTypeId, 
-                new SelectList(DbUtil.Db.BundleHeaderTypes, "Id", "Description", Model.Bundle.BundleHeaderTypeId))
+        <td>@Html.DropDownListFor(m => m.Bundle.BundleHeaderTypeId, Model.BundleHeaderList() )
         </td>
     </tr>
     <tr>
@@ -44,9 +41,7 @@
     </tr>
     <tr>
         <th>Default Fund</th>
-        <td>@Html.DropDownListFor(m => m.Bundle.FundId, 
-                new SelectList(DbUtil.Db.ContributionFunds.Where(ff => ff.FundStatusId == 1), 
-                    "FundId", "FundName", Model.Bundle.FundId))
+        <td>@Html.DropDownListFor(m => m.Bundle.FundId, Model.ContributionFundList()) 
         </td>
     </tr>
     <tr>

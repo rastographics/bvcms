@@ -9,7 +9,7 @@
 {
     @Fingerprint.Script("/Scripts/Finance/Transactions.js")
 }
-<form id="form" method="post" action="/Manage/Transactions/List">
+<form id="form" method="post" action="/Transactions/List">
 <div class="roundbox floatleft">
 <h2>Transactions</h2>
 <table cellspacing="5">
@@ -48,19 +48,19 @@
 	<tr><td class="right" colspan="4">
 			<a id="filter" href="#" class="submitbutton bt">Filter</a>
 			<a id="export" href="#" class="submitbutton bt">Export</a>
-			<a href="/Manage/Transactions" class="bt">Clear</a>
+			<a href="/Transactions" class="bt">Clear</a>
 		</td>
 	</tr>
 @if (Model.isSage)
 {
 	<tr>
-		<td class="right" colspan="4"><a href="/Manage/Transactions/Report" class="report">Reconcile Report</a></td>
+		<td class="right" colspan="4"><a href="/Transactions/Report" class="report">Reconcile Report</a></td>
 	</tr>
 	<tr>
-		<td class="right" colspan="4"><a href="/Manage/Transactions/ReportByDescription" class="report">Totals by Description</a></td>
+		<td class="right" colspan="4"><a href="/Transactions/ReportByDescription" class="report">Totals by Description</a></td>
 	</tr>
 	<tr>
-		<td class="right" colspan="4"><a href="/Manage/Transactions/ReportByBatchDescription" class="report">Totals by Batch/Description</a></td>
+		<td class="right" colspan="4"><a href="/Transactions/ReportByBatchDescription" class="report">Totals by Batch/Description</a></td>
 	</tr>
 }
 </table>

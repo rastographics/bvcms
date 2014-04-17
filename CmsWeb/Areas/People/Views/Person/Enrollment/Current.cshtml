@@ -37,7 +37,7 @@
                 {
                 <tr class="master @oddrow">
                     <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
-                    <td><a href="/Organization/Index/@om.OrgId">@om.Name</a></td>
+                    <td><a href="/Organization/@om.OrgId">@om.Name</a></td>
                     <td><a href="/Person2/@om.LeaderId">@om.LeaderName</a></td>
                     <td>@om.EnrollDate.FormatDate()</td>
                     <td><a class="membertype" href="/OrgMemberDialog2/Display/@om.OrgId/@om.PeopleId">
@@ -59,7 +59,7 @@
                             {
                                 @om.SchComma<strong>Schedule:</strong> <span>@om.Schedule</span>
                             }
-                            <div><a href="/OrgContent/Index/@om.OrgId">Members Page</a></div>
+                            <div><a href="/OrgContent/@om.OrgId">Members Page</a></div>
                         </div>
                     </td>
                 </tr>
@@ -70,11 +70,11 @@
                     <td class="indent">
                         @if (om.HasDirectory)
                         {
-                            <a title="@om.DivisionName" href="/MemberDirectory/Index/@om.OrgId">@om.Name</a>
+                            <a title="@om.DivisionName" href="/MemberDirectory/@om.OrgId">@om.Name</a>
                         }
                         else
                         {
-                            <a title="@om.DivisionName" href="/OrgContent/Index/@om.OrgId">@om.Name</a>
+                            <a title="@om.DivisionName" href="/OrgContent/@om.OrgId">@om.Name</a>
                         }
                     </td>
                     <td>@om.LeaderName</td>

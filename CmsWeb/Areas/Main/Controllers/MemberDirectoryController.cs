@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix="MemberDirectory"), Route("{action=index}")]
     public class MemberDirectoryController : CmsController
     {
+        [Route("~/MemberDirectory/{id:int}")]
         public ActionResult Index(int id)
         {
             if (DbUtil.Db.Organizations.Any(oo => oo.OrganizationId == id && oo.PublishDirectory > 0)

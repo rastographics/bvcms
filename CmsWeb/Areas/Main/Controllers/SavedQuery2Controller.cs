@@ -7,8 +7,10 @@ using CmsData;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix="SavedQuery2"), Route("{action}/{id?}")]
     public class SavedQuery2Controller : CmsStaffController
     {
+        [Route("~/SavedQueries")]
         public ActionResult Index()
         {
             if (ViewExtensions2.UseNewLook())

@@ -1,0 +1,11 @@
+﻿@model CmsWeb.Models.OnlineRegPersonModel
+@Helper.OnlineRegHeaderFullRow("Make a Selection")
+<div>
+    <select name="@Html.NameFor2(m => m.classid)">
+        @foreach (var i in Model.Parent.Classes(Model.classid))
+        {
+            <option value="@i.Id" @(i.selected ? "selected=selected" : "") @(i.filled ? "disabled=disabled" : "")>@i.Text</option>
+        }
+    </select>
+    @Html.DivValidationMessageFor(m => m.classid)
+</div>

@@ -176,5 +176,20 @@
         }
         return true;
     });
+    $.refreshenabled = false; // false until something happens
+    $(document).bind("idle.idleTimer", function () {
+        if ($.refreshenabled)
+            window.location.href = $.timeoutUrl;
+        else
+            $.idleTimer($.tmout);
+    });
+
+    if ($('input:text:not([value=""])').length == 0)
+        $(document).bind("keydown", function () {
+            $(document).unbind("keydown");
+            $.idleTimer($.tmout);
+        });
+    else
+        $.idleTimer($.tmout);
 });
 

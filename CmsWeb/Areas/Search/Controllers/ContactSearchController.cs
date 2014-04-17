@@ -1,17 +1,13 @@
 using System.Web.Mvc;
-using AttributeRouting;
-using AttributeRouting.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
-    [RouteArea("Search", AreaUrl = "ContactSearch2")]
+    [RouteArea("Search", AreaPrefix = "ContactSearch2"), Route("{action}/{id?}")]
     public class ContactSearchController : CmsStaffController
     {
-
-        [GET("ContactSearch2")]
+        [HttpGet, Route("~/ContactSearch2")]
         public ActionResult Index()
         {
             if (!ViewExtensions2.UseNewLook())
@@ -23,46 +19,46 @@ namespace CmsWeb.Areas.Search.Controllers
             m.GetFromSession();
             return View(m);
         }
-        [POST("ContactSearch2/Results/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("Results/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult Results(int? page, int? size, string sort, string dir, ContactSearchModel m)
         {
             m.Pager.Set("/ContactSearch2/Results", page, size, sort, dir);
             m.SaveToSession();
             return View(m);
         }
-        [POST("ContactSearch2/Clear")]
+        [HttpPost]
         public ActionResult Clear()
         {
             var m = new ContactSearchModel();
             m.ClearSession();
             return Redirect("/ContactSearch2");
         }
-        [POST("ContactSearch2/ConvertToQuery")]
+        [HttpPost]
         public ActionResult ConvertToQuery(ContactSearchModel m)
         {
             var gid = m.ConvertToQuery();
             return Redirect("/Query/{0}".Fmt(gid));
         }
-        [POST("ContactSearch2/ContactTypeQuery/{id:int}")]
+        [HttpPost]
         public ActionResult ContactTypeQuery(int id)
         {
             var gid = ContactSearchModel.ContactTypeQuery(id);
             return Redirect("/Query/{0}".Fmt(gid));
         }
-        [POST("ContactSearch2/ContactorSummary")]
+        [HttpPost]
         public ActionResult ContactorSummary(ContactSearchModel m)
         {
             var q = m.ContactorSummary();
             return View(q);
         }
-        [POST("ContactSearch2/ContactSummary")]
+        [HttpPost]
         public ActionResult ContactSummary(ContactSearchModel m)
         {
             var q = m.ContactSummary();
             return View(q);
         }
 
-        [POST("ContactSearch2/ContactTypeTotals")]
+        [HttpPost]
         public ActionResult ContactTypeTotals(ContactSearchModel m)
         {
             ViewBag.candelete = m.CanDeleteTotal();

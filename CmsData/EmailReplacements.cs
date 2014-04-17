@@ -134,7 +134,7 @@ namespace CmsData
                     return CreateUserTag(emailqueueto);
 
                 case "{emailhref}":
-                    return Util.URLCombine(db.CmsHost, "Manage/Emails/View/" + emailqueueto.Id);
+                    return Util.URLCombine(db.CmsHost, "Emails/View/" + emailqueueto.Id);
 
                 case "{first}":
                     return p.PreferredName.Contains("?") || p.PreferredName.Contains("unknown", true) ? "" : p.PreferredName;
@@ -542,7 +542,7 @@ namespace CmsData
                 list.Add(qs, ot);
             }
 
-            var url = Util.URLCombine(db.CmsHost, "/OnlineReg/RequestResponse?ans={0}&guid={1}".Fmt(d["ans"], ot.Id.ToCode()));
+            var url = Util.URLCombine(db.CmsHost, "/OnlineReg/VolRequestResponse/{0}/{1}".Fmt(d["ans"], ot.Id.ToCode()));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 

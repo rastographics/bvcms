@@ -24,6 +24,7 @@ namespace CmsData
         public bool OrgMembersOnly { get; set; }
         public bool OrgLeadersOnly { get; set; }
         public string Host { get; set; }
+        public string CmsHost { get; set; }
 
         public void CopySession()
         {

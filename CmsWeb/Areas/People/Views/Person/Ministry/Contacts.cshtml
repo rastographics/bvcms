@@ -23,7 +23,7 @@
             @foreach (var c in Model.ViewList())
             {
                 <tr>
-                    <td class="indent"><a href="/Contact/Index/@c.ContactId">@c.ContactDate.ToShortDateString()</a></td>
+                    <td class="indent"><a href="/Contact/@c.ContactId">@c.ContactDate.ToShortDateString()</a></td>
                     <td>@c.TypeOfContact</td>
                     <td>@c.ContactReason</td>
                     <td>@c.Contactor</td>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using CmsData;
 using System.Text;
+using CmsData.Registration;
 using UtilityExtensions;
 using System.Web.Mvc;
 using System.Xml.Linq;
@@ -153,11 +154,28 @@ namespace CmsWeb.Models
                 //DbUtil.Db.UpdateMainFellowship(id);
             }
         }
+        private Settings setting;
+        public Settings Setting
+        {
+            get
+            {
+                return setting ?? (setting = new Settings(masterorg.RegSetting, DbUtil.Db, masterorg.OrganizationId));
+            }
+        }
+        private bool? usebootstrap;
+        public bool UseBootstrap
+        {
+            get
+            {
+                if (!usebootstrap.HasValue)
+                    usebootstrap = Setting.UseBootstrap;
+                return usebootstrap.Value;
+            }
+        }
         public string Instructions
         {
             get
             {
-                var setting = OnlineRegModel.ParseSetting(masterorg.RegSetting, masterorg.OrganizationId);
                 return @"
 <div class=""instructions login"">{0}</div>
 <div class=""instructions select"">{1}</div>
@@ -166,13 +184,13 @@ namespace CmsWeb.Models
 <div class=""instructions special"">{4}</div>
 <div class=""instructions submit"">{5}</div>
 <div class=""instructions sorry"">{6}</div>
-".Fmt(setting.InstructionLogin,
-                     setting.InstructionSelect,
-                     setting.InstructionFind,
-                     setting.InstructionOptions,
-                     setting.InstructionSpecial,
-                     setting.InstructionSubmit,
-                     setting.InstructionSorry
+".Fmt(Setting.InstructionLogin,
+                     Setting.InstructionSelect,
+                     Setting.InstructionFind,
+                     Setting.InstructionOptions,
+                     Setting.InstructionSpecial,
+                     Setting.InstructionSubmit,
+                     Setting.InstructionSorry
                      );
             }
         }

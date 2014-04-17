@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     Misc2 = ti.Header,
                     Misc1 = ti.Name,
                     _URL = ti.URL,
-                    _timeout = INT_timeout,
+                    _timeout = timeout,
                     _datumid = ed.Id,
                 };
 
@@ -135,7 +135,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 "{0} paid {1:c} for {2}, balance of {3:c}\n({4})".Fmt(ti.Name, Amount, ti.Header, ti.AmountDue, names));
             ViewData["URL"] = ti.URL;
 
-            ViewData["timeout"] = INT_timeout;
+            ViewData["timeout"] = timeout;
             ViewData["Amount"] = Amount.ToString("c");
             ViewData["AmountDue"] = ti.AmountDue.ToString("c");
             ViewData["Desc"] = ti.Header;

@@ -5,7 +5,7 @@
         <ul>
             <li>@AnchorLink("Last Search", "/QueryBuilder2/Main")</li>
             <li>@AnchorLink("New Search", "/QueryBuilder2/NewQuery")</li>
-            <li><a href="/SavedQuery2">Saved Searches</a></li>
+            <li><a href="/SavedQueries">Saved Searches</a></li>
             @if (onqb)
             {
                 <li>@JQueryIdLink("Save Search As", "ShowSaveQuery")</li>
@@ -14,22 +14,15 @@
 
     </div>
 }
-@helper AnchorLink(string text, string href, string target = null)
+@helper AnchorLink(string text, string href, string id = null, string target = null, string style = null)
 {
-    if (target.HasValue())
-    {
-        <a href="@href" target="@target">@text</a>
-    }
-    else
-    {
-        <a href="@href">@text</a>
-    }
+    <a href="@href" @(target.HasValue() ? "target=" + target : "") @(id.HasValue() ? "id=" + id : "") @(style.HasValue() ? "class=" + style : "")>@text</a>
 }
 @helper LiAnchorLink(string text, string url, bool display = true, string target = null)
 {
     if (display)
     {
-        <li>@Helper.AnchorLink(text, url, target)</li>
+        <li>@Helper.AnchorLink(text, url, target: target)</li>
     }
 }
 @helper LiHeader(string text, bool display = true)
@@ -71,4 +64,72 @@
     {
         <a href="@href">@text</a>
     }
+}
+@helper OnlineRegSubmitButtonRow(string text, bool onlyoneallowed = false)
+{
+    <div class="form-group">
+        <div class="col-sm-12">
+            @Helper.OnlineRegSubmitButton(text, onlyoneallowed, style: "btn-primary pull-right")
+        </div>
+    </div>
+
+}
+@helper OnlineRegSubmitButton(string text, bool onlyoneallowed = false, string style = "btn-primary")
+{
+    <input type="submit" id="submitit" data-onlyoneallowed="@onlyoneallowed" class="btn @style" value="@text" />
+}
+@helper OnlineRegSubmitLinkRow(string url, string text, string style = "btn-primary")
+{
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <a href="@url" class="btn @style submitlink">
+                @text
+            </a>
+        </div>
+    </div>
+}
+
+@helper OnlineRegAjaxButtonRow(string url, string text, string style = "btn-primary", string id = "")
+{
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            @OnlineRegAjaxButton(url, text, style, id)
+        </div>
+    </div>
+}
+
+@helper OnlineRegAjaxButton(string url, string text, string style = "btn-primary", string id = "")
+{
+    <a @(id.HasValue() ? "id=" + id : "") href="@url" class="btn @style submitbutton ajax">
+        @text
+    </a>
+}
+@helper OnlineRegHeaderFullRow(string text)
+{
+    <div class="form-group">
+        <div class="col-sm-12">
+            <h4 class="form-control-static">@text</h4>
+        </div>
+    </div>
+}
+@helper OnlineRegHeader(string text)
+{
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <p class="form-control-static">
+                <strong>@text</strong>
+            </p>
+        </div>
+    </div>
+
+}
+@helper OnlineRegInstruction(string text)
+{
+    <div class="form-group">
+        <div class="col-sm-12">
+            <p class="bg-info pad10">
+                <strong>@text</strong>
+            </p>
+        </div>
+    </div>
 }

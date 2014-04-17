@@ -1,15 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 using CmsWeb.Models;
-using System.Web.Configuration;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 
 namespace CmsWeb.Areas.Public
 {
@@ -28,7 +21,7 @@ namespace CmsWeb.Areas.Public
         {
             var o = OrgContentInfo.Get(id);
             if (o == null || o.Inactive || !Util.UserPeopleId.HasValue || !o.CanEdit)
-                return Redirect("/OrgContent/Index/" + id);
+                return Redirect("/OrgContent/" + id);
             return View(o);
         }
         [HttpPost]
@@ -82,7 +75,7 @@ CKEditorFuncNum, oc.Id, error));
             var o = OrgContentInfo.Get(OrgId);
             o.Html = Html;
             ImageData.DbUtil.Db.SubmitChanges();
-            return Redirect("/OrgContent/Index/" + OrgId);
+            return Redirect("/OrgContent/" + OrgId);
         }
     }
 }

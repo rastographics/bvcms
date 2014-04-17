@@ -1,10 +1,8 @@
 ﻿@model CmsWeb.Models.OnlineRegModel
 @using UtilityExtensions
-@using CmsWeb
     <div style="background-color:Yellow">@Util.UrgentMessage</div>
 @Html.Raw(Model.Instructions)
 @Html.Partial("Flow/ModelHidden", Model)
-
 
 @* nobody registered yet *@
 @if (Model.DisplayLogin())

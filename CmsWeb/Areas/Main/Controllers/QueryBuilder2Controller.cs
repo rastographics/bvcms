@@ -5,11 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Data.Linq;
-using System.Threading;
 using System.Web.Mvc;
 using Elmah;
 using Newtonsoft.Json;
@@ -20,6 +16,7 @@ using CmsData;
 namespace CmsWeb.Areas.Main.Controllers
 {
     [SessionExpire]
+    [RouteArea("Main", AreaPrefix="QueryBuilder2"), Route("{action=index}/{id?}")]
     public class QueryBuilder2Controller : CmsStaffController
     {
         public ActionResult NewQuery()
@@ -177,7 +174,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var cb = new SqlConnectionStringBuilder(Util.ConnectionString);
             cb.ApplicationName = "qb";
             var starttime = DateTime.Now;
-#if DEBUG
+#if DEBUG2
             m.PopulateResults();
 #else
             try

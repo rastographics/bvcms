@@ -33,7 +33,7 @@
                         <td class="right">
                             @if (finance)
                             {
-                            <a href='/Finance/Contributions?id=@Model.PeopleId&year=@year.StartDate.Year'>@year.Amount.ToString("c")</a>
+                            <a href='/Contributions/@Model.PeopleId?year=@year.StartDate.Year'>@year.Amount.ToString("c")</a>
                             }
                             else
                             {

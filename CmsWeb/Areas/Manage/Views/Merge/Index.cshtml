@@ -11,7 +11,7 @@
 }
 <h2>
     Merge Controller</h2>
-<form method="post" action="/Manage/Merge/Run">
+<form method="post" action="/Merge/Run">
 @Html.HiddenFor(m => m.pi[0].PeopleId)
 @Html.HiddenFor(m => m.pi[1].PeopleId)
 <table class="@ViewExtensions2.GridClass">
@@ -54,7 +54,7 @@
             <td>
             </td>
             <td>
-                <a href="/Manage/Merge?PeopleId1=@Model.pi[1].PeopleId&PeopleId2=@Model.pi[0].PeopleId">
+                <a href="/Merge/@Model.pi[1].PeopleId/@Model.pi[0].PeopleId">
                     swap</a>
             </td>
         </tr>

@@ -10,8 +10,8 @@
     IQueryable<BackgroundCheck> credit = null;
     IQueryable<BackgroundCheckLabel> labels = null;
 
-    var labelEnabled = DbUtil.Db.Setting("EnableBackgroundLabels", "false") == "true";
-    var checkEnabled = DbUtil.Db.Setting("EnableBackgroundChecks", "false") == "true";
+    var labelEnabled = ViewExtensions2.DbSetting("EnableBackgroundLabels", "false") == "true";
+    var checkEnabled = ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true";
 
     var i = from e in DbUtil.Db.VolunteerForms
             where e.PeopleId == Model.V.PeopleId
@@ -78,7 +78,7 @@
     <input type="submit" class="bt" value="Edit" /></form>
 <br />
 <br />
-@if (DbUtil.Db.Setting("EnableBackgroundChecks", "false") == "true" && User.IsInRole("BackgroundCheck"))
+@if (ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true" && User.IsInRole("BackgroundCheck"))
 {
     <b>Volunteer Background Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">Create New</a>)<br />
     <table width="100%" style="border: thin solid #777777;">
@@ -175,7 +175,7 @@
     <br />
     <br />
 }
-@if (DbUtil.Db.Setting("EnableBackgroundChecks", "false") == "true" && User.IsInRole("CreditCheck"))
+@if (ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true" && User.IsInRole("CreditCheck"))
 {
     <b>Volunteer Credit Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">Create New</a>)<br />
     <table width="100%" style="border: thin solid #777777;">

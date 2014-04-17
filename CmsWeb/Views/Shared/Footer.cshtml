@@ -1,7 +1,7 @@
 ﻿<footer class="container">
     <p class="vcard ten columns alpha" style="text-align: center">
-        <span class="org">@DbUtil.Db.Setting("nameofchurch", "Name of Church")</span>
-        <span class="phone">@DbUtil.Db.Setting("ChurchPhone", "phone").FmtFone()</span>
+        <span class="org">@ViewExtensions2.DbSetting("nameofchurch", "Name of Church")</span>
+        <span class="phone">@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()</span>
         <span class="email">@DbUtil.AdminMail</span>
     </p>
 </footer>

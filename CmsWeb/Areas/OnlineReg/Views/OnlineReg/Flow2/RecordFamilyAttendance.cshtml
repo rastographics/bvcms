@@ -1,0 +1,48 @@
+﻿@using CmsWeb.Models
+@using UtilityExtensions
+@model OnlineRegPersonModel
+@{
+    var name = Html.NameFor2(m => m.FamilyAttend);
+    Model.PopulateFamilyMemberAttends();
+}
+<input type="hidden" id="nextid" value="@Model.FamilyAttend.Count" />
+<input type="hidden" id="familyattendname" value="@name" />
+<div class="form-group">
+    @Html.Label("Check each family member who is present", new { @class = "control-label col-sm-3 labelsize" })
+    <div class="col-sm-9">
+        @for (var i = 0; i < Model.FamilyAttend.Count; i++)
+        {
+            var m = Model.FamilyAttend[i];
+            <div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="@(name)[@i].Attend" value="true" @(m.Attend ? "checked='checked'" : "")
+                               @(m.PeopleId == Model.PeopleId || Model.IsNew ? "disabled='disabled'" : "") />
+                        <strong>@m.Name @(m.Age.HasValue ? "({0})".Fmt(m.Age) : "")</strong>
+                    </label>
+                </div>
+                @if (m.PeopleId == Model.PeopleId || Model.IsNew)
+                {
+                    <input type="hidden" value="true" name="@(name)[@i].Attend" />
+                }
+                else
+                {
+                    <input type="hidden" value="false" name="@(name)[@i].Attend" />
+                }
+                <input type="hidden" name="@(name)[@i].PeopleId" value="@m.PeopleId" />
+                <input type="hidden" name="@(name)[@i].Name" value="@m.Name" />
+                <input type="hidden" name="@(name)[@i].Age" value="@m.Age" />
+            </div>
+        }
+        @Html.ValidationMessageFor(m => m.otherchurch)
+    </div>
+</div>
+
+<div id="added-people">
+</div>
+<p>
+    Is there anyone else in your family that you would like to register?<br>
+    (To add a new name, select <strong>"Add"</strong>)
+</p>
+<p><button class="btn btn-success" id="AddNewPerson">+ Add</button></p>
+<p style="margin-top: 20px;">Once everyone is selected, select <strong>"Submit"</strong> to complete your registration!</p>

@@ -1,20 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
 using System.Web;
-using System.Xml.Serialization;
 using CmsData;
-using System.Web.Mvc;
-using System.Text;
-using System.Configuration;
 using CmsData.Registration;
 using UtilityExtensions;
-using System.Data.Linq.SqlClient;
-using System.Net.Mail;
 using System.Text.RegularExpressions;
-using System.Collections;
-using System.Runtime.Serialization;
 using CmsData.Codes;
 
 namespace CmsWeb.Models
@@ -146,6 +137,11 @@ namespace CmsWeb.Models
                 return q.Any();
             }
             return false;
+        }
+
+        public bool RecordFamilyAttendance()
+        {
+            return org != null && org.RegistrationTypeId == RegistrationTypeCode.RecordFamilyAttendance;
         }
         public bool ChoosingSlots()
         {
@@ -339,25 +335,27 @@ namespace CmsWeb.Models
                 if (masterorgid.HasValue)
                     if (settings.ContainsKey(masterorgid.Value))
                         return Util.PickFirst(settings[masterorgid.Value].Terms, "");
-                if (orgid.HasValue)
-                    if (settings.ContainsKey(orgid.Value))
+                if (Orgid.HasValue)
+                    if (settings.ContainsKey(Orgid.Value))
                         return Util.PickFirst(settings[org.OrganizationId].Terms, "");
                 return "";
             }
         }
+
         public OnlineRegPersonModel LoadExistingPerson(int id, int index)
         {
             var person = DbUtil.Db.LoadPersonById(id);
             var p = new OnlineRegPersonModel
             {
+                guid = Guid.NewGuid(),
                 index = index,
-                dob = person.DOB,
-                email = person.EmailAddress.HasValue() ? person.EmailAddress : user.EmailAddress,
-                first = person.PreferredName,
-                last = person.LastName,
+                DateOfBirth = person.DOB,
+                EmailAddress = person.EmailAddress.HasValue() ? person.EmailAddress : user.EmailAddress,
+                FirstName = person.PreferredName,
+                LastName = person.LastName,
                 PeopleId = id,
-                phone = Util.PickFirst(person.CellPhone, person.HomePhone),
-                orgid = orgid,
+                Phone = Util.PickFirst(person.CellPhone, person.HomePhone),
+                orgid = Orgid,
                 masterorgid = masterorgid,
                 classid = classid,
                 IsFamily = true,
@@ -377,51 +375,19 @@ namespace CmsWeb.Models
             }
             return p;
         }
-        //		public void SavePaymentInfo()
-        //		{
-        //            try
-        //            {
-        //                var gateway = OnlineRegModel.GetTransactionGateway();
-        //                if (gateway == "authorizenet")
-        //                {
-        //                    var au = new AuthorizeNet(DbUtil.Db, m.testing);
-        //                    au.AddUpdateCustomerProfile(m.pid,
-        //                        m.SemiEvery,
-        //                        m.Day1,
-        //                        m.Day2,
-        //                        m.EveryN,
-        //                        m.Period,
-        //                        m.StartWhen,
-        //                        m.StopWhen,
-        //                        m.Type,
-        //                        m.Cardnumber,
-        //                        m.Expires,
-        //                        m.Cardcode,
-        //                        m.Routing,
-        //                        m.Account,
-        //                        m.testing);
-        //                }
-        //                else if (gateway == "sage")
-        //                {
-        //                    var sg = new CmsData.SagePayments(DbUtil.Db, m.testing);
-        //                    sg.storeVault(m.pid, 
-        //                        m.SemiEvery,
-        //                        m.Day1,
-        //                        m.Day2,
-        //                        m.EveryN,
-        //                        m.Period,
-        //                        m.StartWhen,
-        //                        m.StopWhen,
-        //                        m.Type,
-        //                        m.Cardnumber,
-        //                        m.Expires,
-        //                        m.Cardcode,
-        //                        m.Routing,
-        //                        m.Account,
-        //                        m.testing);
-        //                }
-        //                else
-        //                    throw new Exception("ServiceU not supported");
-        //		}
+        private bool? usebootstrap;
+        public bool UseBootstrap
+        {
+            get
+            {
+                //return false;
+                if (!usebootstrap.HasValue)
+                    usebootstrap = org != null
+                        ? settings[org.OrganizationId].UseBootstrap
+                        : settings != null && settings.Values.Any(ss => ss.UseBootstrap);
+                return usebootstrap.Value;
+            }
+        }
+
     }
 }

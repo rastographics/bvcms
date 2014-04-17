@@ -10,8 +10,10 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Main.Controllers
 {
 	[Authorize(Roles="Admin,Membership")]
+    [RouteArea("Main", AreaPrefix="MemberDocs")]
 	public class MemberDocsController : CmsController
 	{
+        [Route("~/MemberDocs/{id:int}")]
 		public ActionResult Index(int id)
 		{
 			var m = new MemberDocs { PeopleId = id };
@@ -27,7 +29,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 			DbUtil.Db.MemberDocForms.DeleteOnSubmit(m);
 			DbUtil.Db.SubmitChanges();
-			return Content("/MemberDocs/Index/" + m.PeopleId);
+			return Content("/MemberDocs/" + m.PeopleId);
 		}
 		[HttpGet]
 		public ActionResult Image(int id, string size)

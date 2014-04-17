@@ -91,18 +91,18 @@ namespace CmsWeb.Models
 			}
             else
             {
-			    r.Email = p.email;
-			    r.Suffix = p.suffix;
-                r.First = p.first;
-                r.Middle = p.middle;
-                r.Last = p.last;
-                r.Suffix = p.suffix;
-                r.Phone = p.homephone ?? p.phone;
+			    r.Email = p.EmailAddress;
+			    r.Suffix = p.Suffix;
+                r.First = p.FirstName;
+                r.Middle = p.MiddleName;
+                r.Last = p.LastName;
+                r.Suffix = p.Suffix;
+                r.Phone = p.HomePhone ?? p.Phone;
             } 
 
             if (p.org != null && p.setting.AskVisible("AskParents"))
             {
-                p.suffix = "";
+                p.Suffix = "";
                 var a = (p.fname ?? p.mname ?? "").Trim().Split(' ');
                 if (a.Length > 1)
                 {
@@ -116,11 +116,11 @@ namespace CmsWeb.Models
             {
                 if (pp == null)
                 {
-                    r.Address = p.address.Truncate(50);
-                    r.City = p.city;
-                    r.State = p.state;
-                    r.Zip = p.zip;
-                    r.Phone = p.phone.FmtFone();
+                    r.Address = p.AddressLineOne.Truncate(50);
+                    r.City = p.City;
+                    r.State = p.State;
+                    r.Zip = p.ZipCode;
+                    r.Phone = p.Phone.FmtFone();
                 }
                 else
                 {

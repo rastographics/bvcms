@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
@@ -9,8 +7,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    [RouteArea("Dialog", AreaPrefix= "TransactionHistory"), Route("{action}/{id?}")]
     public class TransactionHistoryController : CmsStaffController
     {
+        [Route("~/TransactionHistory/{id:int}/{oid:int}")]
         public ActionResult Index(int id, int oid)
         {
             var m = new TransactionHistoryModel(id, oid);
@@ -27,6 +27,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             DbUtil.Db.SubmitChanges();
             return View("History", m.FetchHistory());
         }
+        [Route("DeleteAll/{orgid:int}/{peopleid:int}")]
         public ActionResult DeleteAll(int orgid, int peopleid)
         {
             var q = DbUtil.Db.EnrollmentTransactions.Where(tt => tt.OrganizationId == orgid && tt.PeopleId == peopleid);

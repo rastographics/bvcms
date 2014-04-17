@@ -150,12 +150,12 @@ namespace CmsWeb.Models
 
         public string BundleTotalsUrl(int? fundid = null, int? bundletypeid = null)
         {
-            return BuildUrl("/Finance/Contributions/BundleTotals", fundid, bundletypeid);
+            return BuildUrl("/BundleTotals", fundid, bundletypeid);
         }
 
         public string ContributionsUrl(int? fundid = null, int? bundletypeid = null)
         {
-            return BuildUrl("/Finance/Contributions", fundid, bundletypeid);
+            return BuildUrl("/Contributions", fundid, bundletypeid);
         }
         private string connector;
         private string BuildUrl(string baseurl, int? fundid, int? bundletypeid)

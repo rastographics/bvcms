@@ -9,9 +9,10 @@ using CmsData;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    [RouteArea("Dialog", AreaPrefix= "SearchDivisions"), Route("{action}/{id?}")]
     public class SearchDivisionsController : CmsStaffController
     {
-        [HttpGet]
+        [HttpGet, Route("~/SearchDivisions/{id:int}")]
         public ActionResult Index(int id, bool? singlemode, bool? ordered)
         {
             Response.NoCache();

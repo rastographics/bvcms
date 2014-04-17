@@ -7,7 +7,7 @@
     <h4>@Model.OrgName</h4>
 </div>
 <div class="modal-body">
-    <a href="/TransactionHistory/Index/@Model.PeopleId?oid=@Model.OrgId" target="_blank" 
+    <a href="/TransactionHistory/@Model.PeopleId/@Model.OrgId" target="_blank" 
             style="font-family: Courier New">Attendance</a>: @Model.AttendStr
     <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("UpdateOrgMember")'>help</a>
     <fieldset class="display">

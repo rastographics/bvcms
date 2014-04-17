@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
-using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 using System.Data.SqlClient;
 using System.Linq;
@@ -24,7 +22,7 @@ namespace CmsWeb.Controllers
             public string lastsearch { get; set; }
 	        public string cc { get; set; }
 	    }
-        [POST("Support/SendRequest")]
+        [HttpPost, Route("Support/SendRequest")]
         [ValidateInput(false)]
 		public ActionResult SendSupportRequest(SupportRequest req)
 		{
@@ -118,7 +116,7 @@ namespace CmsWeb.Controllers
 			return Content("OK");
 		}
 
-        [POST("Support/MyDataSendRequest")]
+        [HttpPost, Route("Support/MyDataSendRequest")]
         [ValidateInput(false)]
 		public ActionResult MyDataSendSupportRequest(SupportRequest req)
 		{

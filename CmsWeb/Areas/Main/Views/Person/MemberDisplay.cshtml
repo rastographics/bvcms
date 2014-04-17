@@ -141,7 +141,7 @@
 @if (User.IsInRole("Access"))
 {
     var extravalues = CmsWeb.Code.StandardExtraValues.GetExtraValues(Model.PeopleId, "MemberProfile").ToList();
-    <p id="memberdocs" style="display:none"><a href="/MemberDocs/Index/@Model.PeopleId">Membership Docs</a></p>
+    <p id="memberdocs" style="display:none"><a href="/MemberDocs/@Model.PeopleId">Membership Docs</a></p>
     if (extravalues.Any())
     {
         <table id="memberextras" class="@ViewExtensions2.GridClass">

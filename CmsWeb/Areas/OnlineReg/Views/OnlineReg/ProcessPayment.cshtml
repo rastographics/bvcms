@@ -1,7 +1,9 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Models.PaymentForm
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Registration";
 }
 @section scripts
@@ -33,8 +35,7 @@
 @if (ViewData.ContainsKey("Terms"))
 { 
     <a id="displayterms" title="click to display terms" href="#">Display Terms</a>
-    <div id="Terms" title="Terms of Agreement" class="modalPopup" style="display: none;
-                                                                                                        width: 400px; padding: 10px">
+    <div id="Terms" title="Terms of Agreement" class="modalPopup" style="display: none; width: 400px; padding: 10px">
         @Html.Raw(Model.Terms)</div>
     <p>
         @Html.CheckBox("IAgree")

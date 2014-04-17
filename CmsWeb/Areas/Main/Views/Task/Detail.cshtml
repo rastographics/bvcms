@@ -2,7 +2,7 @@
 @using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Models.TaskDetail
-@{var link = Server.UrlEncode(DbUtil.Db.CmsHost + "/Task/List/" + Model.Id + "#detail#select"); }
+@{var link = Server.UrlEncode(ViewExtensions2.CmsHost + "/Task/List/" + Model.Id + "#detail#select"); }
 <td colspan="7">
     <a name="detail"></a>
     <table class="Design2" style="border: 3px solid black">
@@ -39,7 +39,7 @@
                     }
                     else
                     {
-                        <a id="changeowner" href="/SearchAdd/Index/@Model.Id?type=taskowner">(transfer)</a>
+                        <a id="changeowner" href="/SearchAdd/@Model.Id?type=taskowner">(transfer)</a>
                     }
                 }
             </td>
@@ -59,7 +59,7 @@
                     }
                     else
                     {
-                        <a id="delegate" href="/SearchAdd/Index/@Model.Id?type=taskdelegate">@Model.ChangeCoOwner</a>
+                        <a id="delegate" href="/SearchAdd/@Model.Id?type=taskdelegate">@Model.ChangeCoOwner</a>
                     }
                 }
             </td>
@@ -110,7 +110,7 @@
                     }
                     else
                     {
-                        <a id="changeabout" href="/SearchAdd/Index/@Model.Id?type=taskabout">@Model.ChangeWho</a>
+                        <a id="changeabout" href="/SearchAdd/@Model.Id?type=taskabout">@Model.ChangeWho</a>
                     }
                 }
                 @if (Model.WhoId.HasValue)

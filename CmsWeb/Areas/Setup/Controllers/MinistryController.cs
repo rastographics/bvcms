@@ -10,6 +10,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin")]
+    [RouteArea("Setup", AreaPrefix = "Ministry"), Route("{action=index}/{id?}")]
     public class MinistryController : CmsStaffController
     {
         public ActionResult Index()
@@ -24,7 +25,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             var m = new Ministry { MinistryName = "NEW" };
             DbUtil.Db.Ministries.InsertOnSubmit(m);
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Setup/Ministry/");
+            return Redirect("/Ministry/");
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

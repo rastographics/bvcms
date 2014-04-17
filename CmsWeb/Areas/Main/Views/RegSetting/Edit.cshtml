@@ -15,9 +15,9 @@
     </script>
 }
 <h2>
-    Editing Registration Settings for <a href="/Organization/Index/@ViewData["OrganizationId"]">@ViewData["orgname"]</a></h2>
-<form action="/RegSetting/Update/@ViewData["OrganizationId"]" method="post">
-<a href="/RegSetting/Index/@ViewData["OrganizationId"]" class="bt">Cancel</a>
+    Editing Registration Settings for <a href="/Organization/@ViewData["OrganizationId"]">@ViewData["orgname"]</a></h2>
+<form action="/RegSettings/Update/@ViewData["OrganizationId"]" method="post">
+<a href="/RegSettings/@ViewData["OrganizationId"]" class="bt">Cancel</a>
 <input type="submit" class="bt blue" value="Save Changes" />
 <p style="color: red">@TempData["error"]</p>
 @Html.TextArea("text", new { rows = "40", style = "width:90%", wrap="off" })

@@ -82,7 +82,7 @@
                 <td class="right">@y.Count.ToString2("n0")
                 </td>
                 <td class="right">
-                    <a href='/Finance/Contributions?id=@y.PeopleId&year=@y.Year'>@y.Amount.ToString2("n")</a>
+                    <a href='/Contributions/@y.PeopleId?year=@y.Year'>@y.Amount.ToString2("n")</a>
                 </td>
             </tr>
         }

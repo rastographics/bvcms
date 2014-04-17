@@ -1,9 +1,8 @@
 ﻿@using CmsData.Registration
 @using UtilityExtensions
 @using CmsData
-@model CmsData.OrganizationMember
+@model OrganizationMember
 @{ 
-    string comboid = "-" + Model.OrganizationId + "-" + Model.PeopleId;
     Settings setting = new Settings(Model.Organization.RegSetting, DbUtil.Db, Model.OrganizationId);
 }
 
@@ -81,8 +80,8 @@
     </tr>
 <tr><td></td></tr>
     <tr><td colspan="2" class="right">
-            <a class="display bt" href="/OrgMemberDialog/Display/@Model.OrganizationId?pid=@Model.PeopleId">cancel</a>
-            <a href="/OrgMemberDialog/Update/@Model.OrganizationId?pid=@Model.PeopleId" class="submitbutton bt blue">Save Changes</a>
+            <a class="display bt" href="/OrgMemberDialog/Display/@Model.OrganizationId/@Model.PeopleId">cancel</a>
+            <a href="/OrgMemberDialog/Update/@Model.OrganizationId/@Model.PeopleId" class="submitbutton bt blue">Save Changes</a>
         </td>
     </tr>
 </table>

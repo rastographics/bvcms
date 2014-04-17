@@ -26,7 +26,7 @@
 		    <tr>
 		        <td>@u.userid</td>
 		        <td class="tip">@u.username</td>
-		        <td>@Html.ActionLink(@u.name, "Index", "Person", new { area = "Main", id = u.peopleid }, null) </td>
+		        <td>@Helper.AnchorLink(@u.name, "/Person2/" + u.peopleid) </td>
 		        <td>@u.online</td>
 		        <td>@u.email</td>
 		        <td>@u.activity.FormatDateTm()</td>

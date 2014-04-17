@@ -3,7 +3,7 @@
 @{ var o = Model; }
     <tr>
         <td class="tip" title="@o.ToolTip"><img src="/Content/images/group.png" /></td>
-        <td><a href="/Organization/Index/@o.Id">@o.OrganizationName</a></td>
+        <td><a href="/Organization/@o.Id">@o.OrganizationName</a></td>
         <td><a href="/Person2/@o.LeaderId">@o.LeaderName</a></td>
         <td class="right">@o.MemberCount</td>
         <td class="right"><span class="smallfont">@o.PrevMemberCount</span></td>

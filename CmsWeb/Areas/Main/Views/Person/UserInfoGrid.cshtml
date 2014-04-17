@@ -2,11 +2,14 @@
 @using UtilityExtensions
 @using CmsData
 @model CmsData.Person
+@{
+   var list = Model.GetUsers();
+}
 @if (User.IsInRole("Admin"))
 { 
 <a href="/Person/UserDialog" class="bt membertype">Add New User</a>
 } 
-@if (Model.Users.Count > 0)
+@if (list.Count > 0)
 { 
 <table class="@ViewExtensions2.GridClass">
 <thead>
@@ -20,7 +23,7 @@
     </tr>
 </thead>
 <tbody>
-    @foreach (var u in Model.Users)
+    @foreach (var u in list)
     { 
     <tr>
         @if (User.IsInRole("Admin"))

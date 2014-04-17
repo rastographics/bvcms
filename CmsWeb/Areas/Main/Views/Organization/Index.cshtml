@@ -1,5 +1,4 @@
-﻿@using CmsData
-@using CmsData.Codes
+﻿@using CmsData.Codes
 @using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Models.OrganizationPage.OrganizationModel
@@ -37,7 +36,7 @@
             <ul>
                 @if (User.IsInRole("ManageGroups"))
                 { 
-                    <li><a href="/OrgGroups/Index/@Model.OrganizationId">Group Member Management
+                    <li><a href="/OrgGroups/@Model.OrganizationId">Group Member Management
                     </a></li>
                 }
                 <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@o.OrganizationId" target="_blank">Recent Absents Report
@@ -46,9 +45,9 @@
                 </a></li>
                 <li><a id="AttendanceRpt" href="/Reports/Attendance/@o.OrganizationId">Attendance Percentages
                 </a></li>
-                <li><a href="/OrgContent/Index/@o.OrganizationId" target="_blank">Members Only Page
+                <li><a href="/OrgContent/@o.OrganizationId" target="_blank">Members Only Page
                 </a></li>
-                <li class="hideAlt"><a href="/RegSetting/Index/@o.OrganizationId">View Registration Document
+                <li class="hideAlt"><a href="/RegSettings/@o.OrganizationId">View Registration Document
                 </a></li>
                 <li><a id="tryreg" href="#">Try Registration</a> </li>
                 @if (Model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
@@ -70,7 +69,7 @@
                     <li><a id="sendreminders" href="/Organization/Reminders/@o.OrganizationId?emailall=true">Send Event Reminders
                     </a></li>
                     }
-                    <li><a href="/OrgChildren/Index/@Model.OrganizationId">Child Organization Management</a></li>
+                    <li><a href="/OrgChildren/@Model.OrganizationId">Child Organization Management</a></li>
                 }
                 @if (Model.org.IsMissionTrip == true && User.IsInRole("MissionGiving"))
                 {
@@ -81,7 +80,7 @@
                 {
                     <li><a id="deleteorg" href="/Organization/Delete/@o.OrganizationId">Delete Organization
                     </a></li>
-                    <li class="hideAlt"><a href="/RepairTransactions/Index/@o.OrganizationId" id="RepairTransactions">Repair Transactions
+                    <li class="hideAlt"><a href="/RepairTransactions/@o.OrganizationId" id="RepairTransactions">Repair Transactions
                     </a></li>
                 }
                 @if (User.IsInRole("ministrEspace"))
@@ -283,13 +282,13 @@
             <tr>
                 <td>
                     <p>
-                        Copy the following URL for the public registration link.
+                    Copy the following URL for the public registration link.
 					If you want to see exactly what the user sees,
 					You should use the link below in a different browser.
                     Or log out first, then use the link.
                     </p>
                     <blockquote>
-                        <a href="/OnlineReg/Index/@o.OrganizationId" target="blank">@UtilityExtensions.Util.ServerLink("/OnlineReg/Index/" + o.OrganizationId)</a>
+                        <a href="/OnlineReg/@o.OrganizationId" target="blank">@Util.ServerLink("/OnlineReg/" + o.OrganizationId)</a>
                     </blockquote>
                 </td>
             </tr>

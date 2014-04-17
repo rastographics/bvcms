@@ -8,16 +8,16 @@
     <script type="text/javascript">
         //id=elements_id&value=user_edited_content
         $(function() {
-            $(".clickEdit").editable("/Setup/MemberType/Edit/", {
+            $(".clickEdit").editable("/MemberType/Edit/", {
                 indicator: "<img src='/images/loading.gif'>",
                 tooltip: "Click to edit...",
                 style: 'display: inline',
                 width: '200px',
                 height: 25
             });
-            $(".clickSelect").editable("/Setup/MemberType/EditAttendType/", {
+            $(".clickSelect").editable("/MemberType/EditAttendType/", {
                 indicator: '<img src="/Content/images/loading.gif">',
-                loadurl: "/Setup/MemberType/AttendTypeCodes/",
+                loadurl: "/MemberType/AttendTypeCodes/",
                 loadtype: "POST",
                 type: "select",
                 submit: "OK",
@@ -26,11 +26,11 @@
             $("a.delete").click(function(ev) {
                 ev.preventDefault();
                 if (confirm("are you sure?"))
-                    $.post("/Setup/MemberType/Delete/" + $(this).attr("id"), null, function(ret) {
+                    $.post("/MemberType/Delete/" + $(this).attr("id"), null, function(ret) {
                         if (ret == "used")
                             alert("that member type is being used");
                         else
-                            window.location = "/Setup/MemberType/";
+                            window.location = "/MemberType/";
                     });
                 return false;
             });

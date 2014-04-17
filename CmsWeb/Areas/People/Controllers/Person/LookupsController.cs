@@ -1,15 +1,13 @@
 using System.Linq;
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
-using NPOI.HPSF;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [GET("Person2/Campuses")]
+        [HttpGet]
         public JsonResult Campuses()
         {
             Response.SetCacheMinutes(5);
@@ -19,7 +17,7 @@ namespace CmsWeb.Areas.People.Controllers
             list.Insert(0, new { value = 0, text = "(not specified)" });
             return Json(list.ToArray(), JsonRequestBehavior.AllowGet);
         }
-        [POST("Person2/Schools")]
+        [HttpPost]
         public JsonResult Schools(string query)
         {
             var qu = from p in DbUtil.Db.People
@@ -28,7 +26,7 @@ namespace CmsWeb.Areas.People.Controllers
                      select g.Key;
             return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
         }
-        [POST("Person2/Employers")]
+        [HttpPost]
         public JsonResult Employers(string query)
         {
             var qu = from p in DbUtil.Db.People
@@ -37,7 +35,7 @@ namespace CmsWeb.Areas.People.Controllers
                      select g.Key;
             return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
         }
-        [POST("Person2/Occupations")]
+        [HttpPost]
         public JsonResult Occupations(string query)
         {
             var qu = from p in DbUtil.Db.People
@@ -46,7 +44,7 @@ namespace CmsWeb.Areas.People.Controllers
                      select g.Key;
             return Json(qu.Take(10).ToArray(), JsonRequestBehavior.AllowGet);
         }
-        [POST("Person2/Churches")]
+        [HttpPost]
         public JsonResult Churches(string query)
         {
             var qu = from r in DbUtil.Db.ViewChurches

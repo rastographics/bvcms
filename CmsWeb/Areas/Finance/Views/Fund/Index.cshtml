@@ -12,11 +12,11 @@
 <p>
 @if(ViewBag.status == 1)
 {
-<a href="/Finance/Fund?status=2">view closed funds</a>
+<a href="/Fund?status=2">view closed funds</a>
 }
 else
 {
-<a href="/Finance/Fund">view open funds</a>
+<a href="/Fund">view open funds</a>
 }
 </p>
 @Html.Hidden("status")
@@ -37,7 +37,7 @@ else
 @foreach (var item in Model)
 { 
     <tr>
-        <td> <a href="/Finance/Fund/Edit/@item.FundId">Edit</a> </td>
+        <td> <a href="/Fund/Edit/@item.FundId">Edit</a> </td>
         <td> @item.FundId </td>
         <td> <span id="o@(item.FundId)" class="clickEdit">@(item.OnlineSort.HasValue ? item.OnlineSort.ToString() : "edit")</span> </td>
         @if (item.FundPledgeFlag)

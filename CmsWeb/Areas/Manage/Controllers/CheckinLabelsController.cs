@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [Authorize(Roles = "Admin")]
+    [RouteArea("Manage", AreaPrefix= "CheckinLabels"), Route("{action}/{id?}")]
     public class CheckinLabelsController : Controller
     {
+        [Route("~/CheckinLabels")]
+        [Route("~/CheckinLabels/{id:int}")]
         public ActionResult Index(int id = 0)
         {
             ViewBag.ID = id;
@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult Save(int id = 0, string labelFormat = "")
         {
             if( id == 0 || labelFormat.Length == 0 )
-                return new RedirectResult("/Manage/CheckinLabels");
+                return new RedirectResult("/CheckinLabels");
 
             var label = (from e in DbUtil.Db.LabelFormats
                          where e.Id == id
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 DbUtil.Db.SubmitChanges();
             }
 
-            return new RedirectResult("/Manage/CheckinLabels/Index/" + id);
+            return new RedirectResult("/CheckinLabels/" + id);
         }
     }
 }

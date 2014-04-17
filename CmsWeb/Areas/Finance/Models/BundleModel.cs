@@ -131,6 +131,17 @@ namespace CmsWeb.Areas.Finance.Models
             return q3;
         }
 
+        public IEnumerable<SelectListItem> BundleHeaderList()
+        {
+            return new SelectList(DbUtil.Db.BundleHeaderTypes, "Id", "Description", Bundle.BundleHeaderTypeId);
+        }
+        public IEnumerable<SelectListItem> ContributionFundList()
+        {
+            return new SelectList(DbUtil.Db.ContributionFunds.Where(ff => ff.FundStatusId == 1), "FundId", "FundName",
+                Bundle.FundId);
+        }
+
+
         public class ContributionInfo
         {
             public string Fund { get; set; }

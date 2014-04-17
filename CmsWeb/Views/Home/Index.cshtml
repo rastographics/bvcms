@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Home";
     Layout = ViewExtensions2.Layout();
-    var showtip = !DbUtil.Db.UserPreference("hide-tip-home", "false").ToBool();
+    var showtip = Model.ShowTip;
 }
 @section head
 {
@@ -59,7 +59,7 @@
                     pOrgType = my.OrgType;
                 <div class="drow section">@my.OrgType</div>
                 }
-                <div class="drow indent"><a href="/Organization/Index/@my.OrgId">@my.Name</a></div>
+                <div class="drow indent"><a href="/Organization/@my.OrgId">@my.Name</a></div>
             }
         </div>
     </div>
@@ -76,7 +76,7 @@
 <div style="margin-left: 1%; float: left;">&nbsp;</div>
 <div class="homebox roundbox">
     <div style="height: 50%">
-        <h2><a href="@DbUtil.Db.Setting("BlogAppUrl", "#")">BVCMS News</a></h2>
+        <h2><a href="@Model.BlogAppUrl">BVCMS News</a></h2>
         <div class="jscroll" style="height: 215px">
             @foreach (var ni in Model.BVCMSNews())
             {
@@ -88,7 +88,7 @@
         </div>
     </div>
     <div style="height: 50%">
-        <h2><a href="@DbUtil.Db.Setting("ChurchBlogUrl", "#")">Church News</a></h2>
+        <h2><a href="@Model.ChurchBlogUrl">Church News</a></h2>
         <div class="jscroll" style="height: 215px">
             @foreach (var ni in Model.ChurchNews())
             {

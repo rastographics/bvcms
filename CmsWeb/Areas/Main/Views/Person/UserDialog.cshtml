@@ -47,7 +47,7 @@
         </table>
         <hr />
         @{
-            var list = CmsData.User.AllRoles(DbUtil.Db).Select(rr => rr.RoleName).ToList();
+            var list = ViewExtensions2.AllRoles();
             var third = list.Count / 3;
             if (list.Count%3 > 0)
             {

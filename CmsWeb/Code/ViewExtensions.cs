@@ -15,14 +15,12 @@ using System.Text;
 using System.Collections;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
-using AttributeRouting.Helpers;
 using CmsData;
 using CmsWeb.Code;
-using iTextSharp.tool.xml.html;
+using Elmah;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
-using System.Configuration;
 using System.Web.Routing;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +35,74 @@ namespace CmsWeb
         Unordered,
         TableCell
     }
+    public static class ModelStateDictionaryExtensions
+    {
+        public static void SetModelValue(this ModelStateDictionary modelState, string key, object rawValue)
+        {
+            modelState.SetModelValue(key, new ValueProviderResult(rawValue, String.Empty, CultureInfo.InvariantCulture));
+        }
+    }
     public static class ViewExtensions2
     {
+        public static MvcHtmlString DivValidationMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression)
+        {
+            try
+            {
+                var msg = helper.ValidationMessageFor(expression);
+                if (msg == null)
+                    return null;
+                var s = msg.ToString();
+                if (s.HasValue() && s.Contains("field-validation-valid"))
+                    return null;
+                if (!s.HasValue())
+                    return null;
+                var div = new TagBuilder("div");
+                div.AddCssClass("alert alert-danger");
+                div.InnerHtml = s;
+                return new MvcHtmlString(div.ToString());
+            }
+            catch (Exception ex)
+            {
+                var errorLog = ErrorLog.GetDefault(null);
+                errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+        public static MvcHtmlString DivValidationMessage(this HtmlHelper helper, string field)
+        {
+            try
+            {
+                var msg = helper.ValidationMessage(field);
+                if (msg == null)
+                    return null;
+                var s = msg.ToString();
+                if (s.HasValue() && s.Contains("field-validation-valid"))
+                    return null;
+                if (@s.HasValue())
+                    return null;
+                var div = new TagBuilder("div");
+                div.AddCssClass("alert alert-danger");
+                div.InnerHtml = s;
+                return new MvcHtmlString(div.ToString());
+            }
+            catch (Exception ex)
+            {
+                var errorLog = ErrorLog.GetDefault(null);
+                errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+        
+        public static HtmlString DivAlertBox(this HtmlHelper helper, string msg, string alerttype = "alert-danger")
+        {
+            if (!msg.HasValue())
+                return null;
+            var div = new TagBuilder("div");
+            div.AddCssClass("alert");
+            div.AddCssClass(alerttype);
+            div.InnerHtml = msg;
+            return new HtmlString(div.ToString());
+        }
         public static MvcHtmlString PartialFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string partialViewName)
         {
             string name = ExpressionHelper.GetExpressionText(expression);
@@ -49,6 +113,10 @@ namespace CmsWeb
         public static string GetNameFor<M, P>(this M model, Expression<Func<M, P>> ex)
         {
             return ExpressionHelper.GetExpressionText(ex);
+        }
+        public static string GetIdFor<M, P>(this M model, Expression<Func<M, P>> ex)
+        {
+            return ExpressionHelper.GetExpressionText(ex).ToSuitableId();
         }
         public static string RegisterScript(this HtmlHelper helper, string scriptFileName)
         {
@@ -662,9 +730,17 @@ namespace CmsWeb
         {
             return Fingerprint.Css("/content/css/Fixups2.css");
         }
+        public static string OnlineReg2Css()
+        {
+            return @"
+<link rel=""stylesheet"" href=""//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"">
+<link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css"">
+<link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
+";
+        }
         public static HtmlString FontAwesome()
         {
-            return new HtmlString( "<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\n");
+            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\n");
         }
         public static HtmlString CKEditor()
         {
@@ -684,17 +760,63 @@ namespace CmsWeb
     <script> $.fn.jqdatepicker = $.fn.datepicker; </script>
 ");
         }
+        public static bool NewLook3()
+        {
+            return DbUtil.Db.UserPreference("newlook3", "false").ToBool();
+        }
+
         public static HtmlString Bootstrap()
         {
             return Fingerprint.Script("/Scripts/Bootstrap/bootstrap.js");
         }
+        public static HtmlString Bootstrap3()
+        {
+            return new HtmlString(@"
+<script src=""//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js""></script>
+");
+        }
 
         public static string Layout()
         {
+            int tID = 0;
             return (UseNewLook())
                 ? "~/Views/Shared/SiteLayout2c.cshtml"
                 : "~/Views/Shared/SiteLayout.cshtml";
 
+        }
+
+        public static string DbSetting(string name, string def)
+        {
+            return DbUtil.Db.Setting(name, def);
+        }
+
+        public static string CmsHost
+        {
+            get { return DbUtil.Db.CmsHost; }
+        }
+
+        public static IEnumerable<Person> PeopleFromPidString(string pids)
+        {
+            return from p in DbUtil.Db.PeopleFromPidString(pids)
+                   select p;
+        }
+
+        public static List<string> AllRoles()
+        {
+            return User.AllRoles(DbUtil.Db).Select(rr => rr.RoleName).ToList();
+        }
+        public static string StatusFlagsAll(int peopleId)
+        {
+            return DbUtil.Db.StatusFlagsAll(peopleId);
+        }
+
+        public static Content GetContent(int tId)
+        {
+            var t = from e in DbUtil.Db.Contents
+                    where e.Id == tId
+                    select e;
+            var c = t.FirstOrDefault();
+            return c;
         }
         public static bool CanNewLook()
         {

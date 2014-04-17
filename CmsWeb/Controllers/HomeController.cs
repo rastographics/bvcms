@@ -4,18 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Code;
-using DocumentFormat.OpenXml.Office2010.PowerPoint;
-using DocumentFormat.OpenXml.Vml.Spreadsheet;
-using iTextSharp.tool.xml.html;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
-using Novacode;
 
 namespace CmsWeb.Controllers
 {
@@ -135,13 +130,13 @@ for v in q:
             var q = HomeModel.Names(term).ToList();
             return Json(q, JsonRequestBehavior.AllowGet);
         }
-        [POST("FastSearch")]
+        [HttpPost, Route("FastSearch")]
         public ActionResult FastSearch(string q)
         {
             var qq = HomeModel.FastSearch(q).ToArray();
             return Content(JsonConvert.SerializeObject(qq));
         }
-        [GET("FastSearchPrefetch")]
+        [HttpGet, Route("FastSearchPrefetch")]
         public ActionResult FastSearchPrefetch()
         {
             Response.NoCache();
@@ -154,21 +149,6 @@ for v in q:
             return View();
         }
 
-        public ActionResult TestRegs()
-        {
-            foreach (var o in DbUtil.Db.Organizations)
-            {
-                try
-                {
-                    var rs = new Settings(o.RegSetting, DbUtil.Db, o.OrganizationId);
-                }
-                catch (Exception ex)
-                {
-                    return Content("bad org <a href=\"{0}{1}\">{2}</a>\n{3}".Fmt(Util.ServerLink("/RegSetting/Index/"), o.OrganizationId, o.OrganizationName, ex.Message));
-                }
-            }
-            return Content("ok");
-        }
         public ActionResult SwitchTag(string tag)
         {
             var m = new TagsModel { tag = tag };
@@ -178,13 +158,13 @@ for v in q:
             return Redirect("/");
         }
 
-        [GET("TestScript")]
+        [HttpGet, Route("TestScript")]
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript()
         {
             return View();
         }
-        [POST("TestScript")]
+        [HttpPost, Route("TestScript")]
         [ValidateInput(false)]
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript(string script)
@@ -192,12 +172,12 @@ for v in q:
             return Content(PythonEvents.RunScript(DbUtil.Db, script));
         }
 
-        [GET("Preferences")]
+        [HttpGet, Route("Preferences")]
         public ActionResult UserPreferences()
         {
             return View(DbUtil.Db.CurrentUser);
         }
-        [GET("Home/Support2")]
+        [HttpGet, Route("Home/Support2")]
         public ActionResult Support2(string helplink)
         {
             if (helplink.HasValue())
@@ -208,18 +188,18 @@ for v in q:
 
     public class Home2Controller : CmsController
     {
-        [GET("Home/MyDataSupport")]
+        [HttpGet, Route("Home/MyDataSupport")]
         public ActionResult MyDataSupport()
         {
             return View("../Home/MyDataSupport");
         }
-        [POST("HideTip")]
+        [HttpPost, Route("HideTip")]
         public ActionResult HideTip(string tip)
         {
             DbUtil.Db.SetUserPreference("hide-tip-" + tip, "true");
             return new EmptyResult();
         }
-        [GET("ResetTips")]
+        [HttpGet, Route("ResetTips")]
         public ActionResult ResetTips()
         {
             DbUtil.Db.ExecuteCommand("DELETE dbo.Preferences WHERE Preference LIKE 'hide-tip-%' AND UserId = {0}", Util.UserId);
@@ -232,21 +212,23 @@ for v in q:
                 return Redirect(Request.UrlReferrer.ToString());
             return Redirect("/");
         }
-        [GET("Person/TinyImage/{id}")]
-        [GET("Person2/TinyImage/{id}")]
-        [GET("TinyImage/{id}")]
+        [HttpGet]
+        [Route("Person/TinyImage/{id}")]
+        [Route("Person2/TinyImage/{id}")]
+        [Route("TinyImage/{id}")]
         public ActionResult TinyImage(int id)
         {
             return new PictureResult(id, portrait: true, tiny: true);
         }
-        [GET("Person/Image/{id:int}/{w:int?}/{h:int?}")]
-        [GET("Person2/Image/{id:int}/{w:int?}/{h:int?}")]
-        [GET("Image/{id:int}/{w:int?}/{h:int?}")]
+        [HttpGet]
+        [Route("Person/Image/{id:int}/{w:int?}/{h:int?}")]
+        [Route("Person2/Image/{id:int}/{w:int?}/{h:int?}")]
+        [Route("Image/{id:int}/{w:int?}/{h:int?}")]
         public ActionResult Image(int id, int? w, int? h, string mode)
         {
             return new PictureResult(id);
         }
-        [GET("ImageSized/{id:int}/{w:int}/{h:int}/{mode}")]
+        [HttpGet, Route("ImageSized/{id:int}/{w:int}/{h:int}/{mode}")]
         public ActionResult ImageSized(int id, int w, int h, string mode)
         {
             var p = DbUtil.Db.LoadPersonById(id);

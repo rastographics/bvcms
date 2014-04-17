@@ -7,7 +7,7 @@
 {
     <script type="text/javascript">
         $(function() {
-            $(".clickEdit").editable("/Setup/Program/Edit/", {
+            $(".clickEdit").editable("/Program/Edit/", {
                 indicator: "<img src='/images/loading.gif'>",
                 tooltip: "Click to edit...",
                 style: 'display: inline',
@@ -17,8 +17,8 @@
             });
             $("a.delete").click(function(ev) {
                 if (confirm("are you sure?"))
-                    $.post("/Setup/Program/Delete/" + $(this).attr("id"), null, function(ret) {
-                        window.location = "/Setup/Program/";
+                    $.post("/Program/Delete/" + $(this).attr("id"), null, function(ret) {
+                        window.location = "/Programs/";
                     });
             });
             $('.clickEdit').bind('keydown', function(event) {

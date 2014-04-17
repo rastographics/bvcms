@@ -20,6 +20,7 @@ namespace CmsWeb.Areas.Main.Controllers
 {
 	[ValidateInput(false)]
 	[SessionExpire]
+    [RouteArea("Main", AreaPrefix="Person"), Route("{action=index}/{id?}")]
 	public class PersonController : CmsStaffController
 	{
 		protected override void Initialize(RequestContext requestContext)
@@ -813,7 +814,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			return View(q);
 		}
         // the datetime arguments come across as sortable dates to make them universal for all cultures
-        [HttpGet]
+        [HttpGet, Route("ContributionStatement/{id:int}/{fr:datetime}/{to:datetime}")]
 		public ActionResult ContributionStatement(int id, DateTime fr, DateTime to)
 		{
             if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))

@@ -7,11 +7,11 @@
     ViewBag.Title = "Last Activity";
 }
     <div>
-		<form action="/Manage/Users/LastActivity" method="GET">@Html.TextBox("activity") <input id="filter" type="submit" name="activity" value="Search"/></form> 
+		<form action="/Users/LastActivity" method="GET">@Html.TextBox("activity") <input id="filter" type="submit" name="activity" value="Search"/></form> 
     <table class="@ViewExtensions2.GridClass" cellpadding="5">
         <tr>
             <td></td>
-            <td><a href="/Manage/Users/LastActivity">All</a></td>
+            <td><a href="/Users/LastActivity">All</a></td>
             <td nowrap="nowrap"></td>
             <td nowrap="nowrap">@DateTime.Now.ToString("M/d h:mm:ss tt")</td>
             <td></td>
@@ -33,7 +33,7 @@
                 var Machine = rd.GetString(4).ToLower();
                 <tr @(n % 2 == 0 ? "style='background-color: #eee'" : "" )>
                     <td>@Machine</td>
-                    <td nowrap="nowrap"><a href="/Manage/Users/LastActivity?userid=@UserId">@Name</a></td>
+                    <td nowrap="nowrap"><a href="/Users/LastActivity?userid=@UserId">@Name</a></td>
                     <td nowrap="nowrap">@Date.ToString("M/d h:mm:ss tt")</td>
                     <td>@Activity</td>
                 </tr>

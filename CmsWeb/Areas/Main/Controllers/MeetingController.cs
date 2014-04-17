@@ -12,13 +12,13 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix="Meeting"), Route("{action}/{id?}")]
     public class MeetingController : CmsStaffController
     {
-        public ActionResult Index(int? id, bool? showall, bool? sortbyname, bool? CurrentMembers, bool? showlarge)
+        [Route("~/Meeting/{id:int}")]
+        public ActionResult Index(int id, bool? showall, bool? sortbyname, bool? CurrentMembers, bool? showlarge)
         {
-            if (!id.HasValue)
-                return RedirectShowError("no id");
-            var m = new MeetingModel(id.Value)
+            var m = new MeetingModel(id)
             {
                 currmembers = CurrentMembers ?? false,
                 showall = showall == true,
@@ -419,7 +419,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 DbUtil.Db.SubmitChanges();
                 DbUtil.LogActivity("Created new meeting for {0}".Fmt(organization.OrganizationName));
             }
-            return Content("/Meeting/Index/{0}?showall=true".Fmt(newMtg.MeetingId));
+            return Content("/Meeting/{0}?showall=true".Fmt(newMtg.MeetingId));
         }
         public ActionResult QueryAttendees(int Id)
         {

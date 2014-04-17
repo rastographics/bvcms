@@ -1,24 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Threading;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
-using System.Text;
-using CmsWeb.Models.OrganizationPage;
-using System.Diagnostics;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
     [ValidateInput(false)]
+    [RouteArea("Main", AreaPrefix="RegSettings"), Route("{action=index}/{id?}")]
     public class RegSettingController : CmsStaffController
     {
-        [HttpGet]
+        [HttpGet, Route("~/RegSettings/{id:int}")]
         public ActionResult Index(int id)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
@@ -60,10 +54,10 @@ namespace CmsWeb.Areas.Main.Controllers
             {
                 TempData["error"] = ex.Message;
                 TempData["regsetting"] = text;
-                return Redirect("/RegSetting/Index/" + id);
+                return Redirect("/RegSettings/" + id);
             }
             DbUtil.Db.SubmitChanges();
-            return Redirect("/RegSetting/Index/" + id);
+            return Redirect("/RegSettings/" + id);
         }
         public ActionResult ConvertFromMdy(int id)
         {
@@ -75,7 +69,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var os = new Settings(m.ToString(), DbUtil.Db, id);
             m.org.RegSetting = os.ToString();
             DbUtil.Db.SubmitChanges();
-            return Redirect("/RegSetting/Index/" + id);
+            return Redirect("/RegSettings/" + id);
         }
         public ActionResult ConvertFromDmy(int id)
         {
@@ -87,7 +81,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var os = new Settings(m.ToString(), DbUtil.Db, id);
             m.org.RegSetting = os.ToString();
             DbUtil.Db.SubmitChanges();
-            return Redirect("/RegSetting/Index/" + id);
+            return Redirect("/RegSettings/" + id);
         }
     }
 }

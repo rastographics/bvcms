@@ -10,10 +10,10 @@ Count: <strong>@Model.Count()</strong>
     if (ViewExtensions2.UseNewLook()) {
     <a href="/SearchAdd2/Dialog/prospect/@Model.OrganizationId" class="searchadd bt">Add Prospects</a>
     } else {
-    <a href="/SearchAdd/Index/@Model.OrganizationId?type=prospect" class="memberdialog bt">add prospects</a>
+    <a href="/SearchAdd/@Model.OrganizationId?type=prospect" class="memberdialog bt">add prospects</a>
     }
-    <a href="/AddToOrgFromTag/Index/@Model.OrganizationId?prospect=true" title="Add Prospects From Tag" class="addfromtag bt">add from tag</a>
-    <a href="/OrgMembersDialog/Index/@Model.OrganizationId?prospects=true" title="Update Prospects" class="memberdialog bt">update</a>
+    <a href="/AddToOrgFromTag/@Model.OrganizationId?prospect=true" title="Add Prospects From Tag" class="addfromtag bt">add from tag</a>
+    <a href="/OrgMembersDialog/@Model.OrganizationId?prospects=true" title="Update Prospects" class="memberdialog bt">update</a>
 } 
 </p>
 @Html.Partial("MemberGrid", Model) 

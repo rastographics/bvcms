@@ -1,0 +1,38 @@
+﻿@using RestSharp.Extensions
+@model CmsWeb.Models.OnlineRegModel
+@{ var sendlinkmsg = "";}
+<div class="form-group">
+    <div class="col-sm-12">
+        <span class="pull-right">
+            @if (!Model.OnlyOneAllowed())
+            {
+                @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", "Register Someone Else")
+            }
+            @if (Model.ManagingSubscriptions())
+            {
+                @Helper.OnlineRegSubmitButton("Manage Subscriptions")
+            }
+            else if (Model.OnlinePledge())
+            {
+                @Helper.OnlineRegSubmitButton("Email me a link to manage my pledge")
+                sendlinkmsg = "This link will be sent to " + UtilityExtensions.Util.ObscureEmail(Model.last.person.EmailAddress);
+            }
+            else if (Model.IsCreateAccount())
+            {
+                @Helper.OnlineRegSubmitButton("Create Account")
+            }
+            else if (Model.ChoosingSlots() || Model.OnlineGiving() || Model.SupportMissionTrip)
+            {
+                @Helper.OnlineRegSubmitButton("Processing, Please Wait", onlyoneallowed: true, style: "btn-default")
+            }
+            else
+            {
+                @Helper.OnlineRegSubmitButton("Complete Registration", style: "btn-success")
+            }
+        </span>
+        @if (sendlinkmsg.HasValue())
+        {
+            <div class="alert alert-info">@sendlinkmsg</div>
+        }
+    </div>
+</div>

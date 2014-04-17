@@ -15,9 +15,9 @@
         { 
         <tr><td>@e.time.FormatDateTm()</td>
             <td><a href="/Person2/@e.peopleid">@e.name</a><br/>
-                <a href="/Manage/Emails/Failed/@e.peopleid">@e.email</a>
+                <a href="/Emails/Failed/@e.peopleid">@e.email</a>
             </td>
-            <td><a href="/Manage/Emails/Details/@e.emailid">@e.subject</a></td>
+            <td><a href="/Emails/Details/@e.emailid">@e.subject</a></td>
             <td>@e.eventx
             @if(e.type.HasValue())
 			{

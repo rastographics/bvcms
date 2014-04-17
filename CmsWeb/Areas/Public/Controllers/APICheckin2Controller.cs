@@ -270,11 +270,14 @@ namespace CmsWeb.Areas.Public.Controllers
         }
         public ActionResult Campuses()
         {
+#if DEBUG
+#else
             if (!Authenticate())
             {
                 DbUtil.LogActivity("checkin {0} not authenticated".Fmt(AccountModel.UserName2));
                 return Content("not authorized");
             }
+#endif
             DbUtil.LogActivity("checkin {0} authenticated".Fmt(AccountModel.UserName2));
             var q = from c in DbUtil.Db.Campus
                     where c.Organizations.Any(o => o.CanSelfCheckin == true)

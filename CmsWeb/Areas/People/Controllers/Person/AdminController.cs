@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 
@@ -9,7 +8,7 @@ namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [POST("Person2/Split/{id}"), Authorize(Roles = "Edit")]
+        [HttpPost, Authorize(Roles = "Edit")]
         public ActionResult Split(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
@@ -18,7 +17,7 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("/Person2/" + id);
         }
 
-        [POST("Person2/Delete/{id}"), Authorize(Roles = "Admin")]
+        [HttpPost, Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             Util.Auditing = false;
@@ -42,7 +41,7 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("/Person2/DeletedPerson");
         }
 
-        [GET("Person2/DeletedPerson")]
+        [HttpGet]
         public ActionResult DeletedPerson()
         {
             return View("Personal/DeletedPerson");

@@ -5,7 +5,7 @@
     });
     $("#back").click(function (ev) {
         ev.preventDefault();
-        location = "/Meeting/Index/" + $("#meetingid").val();
+        location = "/Meeting/" + $("#meetingid").val();
     });
     $("#abcsdialog a").click(function (ev) {
         ev.preventDefault();
@@ -22,7 +22,7 @@
         var v = $(this).val();
         $("div.ckline").hide();
         if (v === "back")
-            location = "/Meeting/Index/" + $("#meetingid").val();
+            location = "/Meeting/" + $("#meetingid").val();
         else if (v === "refresh")
             location.reload();
         else if (v === "all")

@@ -1,22 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Linq;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 using Dapper;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin,manageemails")]
+    [RouteArea("Setup")]
     public class UsersCanEmailForController : CmsStaffController
     {
+        [Route("~/UsersCanEmailFor")]
         public ActionResult Index()
         {
             var q = from cf in DbUtil.Db.PeopleCanEmailFors
@@ -24,6 +19,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                     select cf;
             return View(q);
         }
+        [Route("~/PersonCanEmailForList/{id:int}")]
         public ActionResult PersonCanEmailForList(int id)
         {
             Response.NoCache();
@@ -45,6 +41,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpPost]
+        [Route("~/UpdatePersonCanEmailForList/{id:int}")]
         public ActionResult UpdatePersonCanEmailForList(int id, int? topid0)
         {
             var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);

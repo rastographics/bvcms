@@ -8,7 +8,7 @@
     Layout = ViewExtensions2.Layout();
     const int WRAP_COUNT = 3;
     var wrapAt = WRAP_COUNT;
-    var url = Model.queryid is Guid ? "/Email/Index2/" + Model.queryid : "/Email/Index/" + Model.queryid;
+    var url = "/Email/" + Model.queryid;
 }
 @section scripts
 {

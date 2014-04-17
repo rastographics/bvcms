@@ -30,7 +30,7 @@
                 if (User.IsInRole("Access"))
                 {
                 <tr>
-                    <td><a href="/Organization/Index/@om.OrgId" title="@om.DivisionName">@om.Name</a></td>
+                    <td><a href="/Organization/@om.OrgId" title="@om.DivisionName">@om.Name</a></td>
                     <td>@om.EnrollDate.FormatDate()</td>
                     <td><a class="membertype" href="/OrgMemberDialog2/Display/@om.OrgId/@om.PeopleId">
                         @om.MemberType</a></td>

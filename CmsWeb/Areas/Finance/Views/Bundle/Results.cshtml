@@ -26,7 +26,7 @@
         <tr>
             <td><span class="@(c.ReversedReturned ? "red" : "")">@c.Status</span></td>
             <td>@c.Date.FormatDate()</td>
-            <td><a href="/Finance/Contributions?id=@c.PeopleId">@c.Name</a></td>
+            <td><a href="/Contributions/@c.PeopleId">@c.Name</a></td>
             <td class="right">@c.Amount.ToString2("N2")</td>
             <td>@c.Type</td>
             <td>@c.Fund</td>
