@@ -10,8 +10,10 @@ using System.Net;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using System.Xml;
 using CmsWeb.Areas.Search.Models;
+using Elmah;
 using UtilityExtensions;
 using CmsData;
 using CmsWeb.Code;
@@ -29,10 +31,22 @@ namespace CmsWeb.Areas.Search.Controllers
                 return Redirect("/QueryBuilder2/Main/" + id);
             ViewBag.Title = "QueryBuilder";
             var m = new QueryModel(id);
-            m.Pager.Set("/Query/Results/");
+            return ViewQuery(m);
+        }
+        [HttpGet, Route("~/Query/{name}")]
+        public ActionResult NamedQuery(string name)
+        {
+            ViewBag.Title = "QueryBuilder";
+            var id = DbUtil.Db.QueryIdByName(name);
+            var m = new QueryModel(id);
+            return ViewQuery(m);
+        }
 
+        private ActionResult ViewQuery(QueryModel m)
+        {
+            m.Pager.Set("/Query/Results/");
             InitToolbar(m);
-            var newsearchid = (Guid?)TempData["newsearch"];
+            var newsearchid = (Guid?) TempData["newsearch"];
             if (m.TopClause.NewMatchAnyId.HasValue)
                 newsearchid = m.TopClause.NewMatchAnyId;
             if (newsearchid.HasValue)
@@ -45,7 +59,7 @@ namespace CmsWeb.Areas.Search.Controllers
             foreach (var c in m.TopClause.AllConditions)
                 sb.AppendLine(c.Key.ToString());
             ViewBag.ConditionList = sb.ToString();
-            return View(m);
+            return View("Index", m);
         }
 
         private void InitToolbar(QueryModel m)
@@ -62,7 +76,12 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Cut(QueryModel m)
         {
-            m.Cut();
+            try { m.Cut(); }
+            catch (Exception ex)
+            {
+                var errorLog = ErrorLog.GetDefault(null);
+                errorLog.Log(new Error(ex));
+            }
             return View("Conditions", m);
         }
         [HttpPost]
@@ -263,7 +282,7 @@ namespace CmsWeb.Areas.Search.Controllers
             DbUtil.Db.SetUserPreference("QueryAutoRun", setting ? "true": "false");
             return Content(setting.ToString().ToLower());
         }
-        [HttpPost, Route("TagAll/{tagname}/{cleartagfirst:bool?}")]
+        [HttpPost]
         public ContentResult TagAll(string tagname, bool? cleartagfirst, QueryModel m)
         {
             if (!tagname.HasValue())

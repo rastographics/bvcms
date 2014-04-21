@@ -27,8 +27,9 @@ div.instructions {
     display: none;
 }
 
-div.regform {
-    max-width: 600px;
+body > div.container {
+    margin: 0 auto;
+    max-width: 700px;
 }
 /*hody, html {
     font-family: Verdana, Arial, Helvetica, sans-serif;

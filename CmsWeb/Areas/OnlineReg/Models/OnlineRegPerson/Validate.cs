@@ -155,7 +155,7 @@ Please call the church to resolve this before we can complete your account.<br /
                         {
                             IsValidForContinue = true;
                         }
-                        else if (om != null && setting.AllowReRegister == false
+                        else if (om != null && setting.AllowReRegister == false && !Util.IsDebug()
                             && om.Organization.RegistrationTypeId != RegistrationTypeCode.ChooseVolunteerTimes
                             && !Parent.SupportMissionTrip)
                         {
@@ -284,6 +284,7 @@ Please call the church to resolve this before we can complete your registration.
                             if (r.found == false)
                             {
                                 ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ZipCode), r.address + ", to skip address check, Change the country to USA, Not Validated");
+                                ShowCountry = true;
                                 return;
                             }
                             if (r.Line1 != AddressLineOne)

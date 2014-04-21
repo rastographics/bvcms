@@ -17,7 +17,7 @@ using System.Net.Mail;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-    [RouteArea("Manage", AreaPrefix= "Emails"), Route("{action}/{id?}")]
+    [RouteArea("Manage"), Route("~/Manage/Emails/{action}/{id?}")]
 	public class EmailsController : CmsController
 	{
         [Route("~/Emails")]
@@ -37,6 +37,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 			return View("Index", m);
 		}
 
+        [Route("~/Emails/Details/{id:int}")]
+        [Route("~/Manage/Emails/Details/{id:int}")]
 		public ActionResult Details(int id, string filter)
 		{
 			var m = new EmailModel { id = id, filter = filter ?? "All" };
@@ -125,7 +127,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 					Db.SubmitChanges();
 				}
 			});
-			return Redirect("/Emails/Details/" + id);
+			return Redirect("/Manage/Emails/Details/" + id);
 		}
 		public ActionResult DeleteQueued(int id)
 		{
@@ -133,7 +135,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (m.queue.Sent.HasValue || !m.queue.SendWhen.HasValue || !m.CanDelete())
 				return Redirect("/");
 		    DeleteEmail(id);
-		    return Redirect("/Emails");
+		    return Redirect("/Manage/Emails");
 		}
 
 	    private static void DeleteEmail(int id)
@@ -155,7 +157,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (!m.CanDelete())
 				return Redirect("/");
 		    DeleteEmail(id);
-			return Redirect("/Emails");
+			return Redirect("/Manage/Emails");
 		}
 		public ActionResult Resend(int id)
 		{
@@ -179,7 +181,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 				return Redirect("/");
 			email.PublicX = true;
 			DbUtil.Db.SubmitChanges();
-            return Redirect("/Emails/View/" + id);
+            return Redirect("/EmailView/" + id);
 		}
 		[HttpPost]
 		public ActionResult Recipients(int id, string filter)
@@ -188,12 +190,18 @@ namespace CmsWeb.Areas.Manage.Controllers
 			UpdateModel(m.Pager);
 			return View(m);
 		}
-		[HttpPost]
+
 		public ActionResult List(EmailsModel m)
 		{
 			UpdateModel(m.Pager);
 			return View(m);
 		}
+
+        public new ActionResult View(string id)
+        {
+            return Redirect("/EmailView/" + id);
+        }
+        [Route("~/Emails/Failed/{id?}")]
 		public ActionResult Failed(int? id, string email)
 		{
 			var isadmin = User.IsInRole("Admin");
@@ -286,11 +294,11 @@ namespace CmsWeb.Areas.Manage.Controllers
 		}
 	}
 
-    [RouteArea("Manage", AreaPrefix= "Emails")]
-	public class EmailsViewController : CmsControllerNoHttps
+    [RouteArea("Manage")]
+	public class EmailViewController : CmsControllerNoHttps
 	{
+        [Route("~/EmailView/{id}")]
         [Route("~/Emails/View/{id}")]
-        [Route("~/ViewEmail/{id}")]
 		public new ActionResult View(string id)
 		{
 		    var iid = id.ToInt();

@@ -1261,7 +1261,7 @@
     <Content Include="Areas\People\Views\Contact\Contactors.cshtml" />
     <Content Include="Areas\People\Views\Contact\Index.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Users.cshtml" />
-    <Content Include="Areas\Manage\Views\EmailsView\View.cshtml" />
+    <Content Include="Areas\Manage\Views\EmailView\View.cshtml" />
     <Content Include="Views\ExtraValue\Standard.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Summary.cshtml" />

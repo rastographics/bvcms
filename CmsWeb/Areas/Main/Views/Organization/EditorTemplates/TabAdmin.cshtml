@@ -123,12 +123,6 @@
     </span> @Html.CheckBox("AllowReRegister", Model.AllowReRegister)
 </li>
 <li>
-    <span class="keyword big tip" title="UseBootstrap
-        |Use Bootstrap shell">
-        UseBootstrap:
-    </span> @Html.CheckBox("UseBootstrap", Model.UseBootstrap)
-</li>
-<li>
     <span class="keyword big tip" title="GroupToJoin
         |Joins registrant to another organization at the same time">
         GroupToJoin:
@@ -154,6 +148,13 @@
         |(stored in Special Content)">
         Shell<text>:</text>
     </span> @Html.TextBox("Shell", Model.Shell)
+</li>
+<li>
+    <span class="keyword big tip" title="UseBootstrap
+        |Use Bootstrap shell">
+        UseBootstrap:
+    </span> @Html.CheckBox("UseBootstrap", Model.UseBootstrap)
+    <div>(this is still experimental and undocumented, does not work with existing shells)</div>
 </li>
 <li>
     <span class="keyword big tip" title="Special Script

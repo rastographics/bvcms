@@ -191,7 +191,7 @@ namespace CmsWeb.Models
             }
             else if (orgid == null)
                 return;
-            else
+            else if (org != null)
                 list[orgid.Value] = new Settings(org.RegSetting, DbUtil.Db, orgid.Value);
 //            if (HttpContext.Current.Items.Contains("RegSettings"))
 //                return;
@@ -310,7 +310,6 @@ namespace CmsWeb.Models
                 {
                     new OnlineRegPersonModel
                         {
-                            guid = Guid.NewGuid(),
                             orgid = Orgid,
                             masterorgid = masterorgid,
                             LoggedIn = false,

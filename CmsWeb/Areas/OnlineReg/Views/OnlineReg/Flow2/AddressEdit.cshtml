@@ -23,6 +23,10 @@
 @*    @Html.EditorFor(m => m.City)*@
 @*    @Html.EditorFor(m => m.State)*@
     @Html.EditorFor(m => m.ZipCode)
+    if (Model.ShowCountry)
+    {
+        @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries() })
+    }
 }
 else
 {

@@ -220,7 +220,7 @@ namespace CmsData
 
             if (body.Contains("http://publiclink", ignoreCase: true))
             {
-                var link = Util.URLCombine(CmsHost, "/Emails/View/" + emailqueue.Id);
+                var link = Util.URLCombine(CmsHost, "/EmailView/" + emailqueue.Id);
                 var re = new Regex("http://publiclink", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
                 emailqueue.Body = re.Replace(body, link);
             }

@@ -11,13 +11,13 @@
         $(function() {
             $("a.unblock").click(function(ev) {
                 if (confirm("are you sure?"))
-                    $.post("/Emails/Unblock", { email: $(this).attr("email") }, function(ret) {
+                    $.post("/Manage/Emails/Unblock", { email: $(this).attr("email") }, function(ret) {
                         $.growlUI("email unblocked", ret);
                     });
             });
             $("a.unspam").click(function(ev) {
                 if (confirm("are you sure?"))
-                    $.post("/Emails/Unspam", { email: $(this).attr("email") }, function(ret) {
+                    $.post("/Manage/Emails/Unspam", { email: $(this).attr("email") }, function(ret) {
                         $.growlUI("email unspamed", ret);
                     });
             });
@@ -30,8 +30,8 @@
     {
         <tr><td>@e.time.FormatDateTm()</td>
             <td><a href="/Person2/@e.peopleid">@e.name</a></td>
-            <td><a href="/Emails/Failed/@e.peopleid">@e.email</a></td>
-            <td><a href="/Emails/Details/@e.emailid">@e.subject</a></td>
+            <td><a href="/Manage/Emails/Failed/@e.peopleid">@e.email</a></td>
+            <td><a href="/Manage/Emails/Details/@e.emailid">@e.subject</a></td>
             <td>@e.eventx</td>
             <td>@e.type</td>
             <td>@e.reason</td>

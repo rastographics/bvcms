@@ -62,85 +62,85 @@
                         new { items = Model.ShirtSizes(), label = ((AskSize)ask).Label })
                 break;
             case "AskRequest":
-            @Html.EditorFor(m => m.request,
+                @Html.EditorFor(m => m.request,
                         new { label = Util.PickFirst(((AskRequest)ask).Label, "Request") })
                 break;
             case "AskHeader":
-            @Helper.OnlineRegHeader(((AskHeader)ask).Label)
+                @Helper.OnlineRegHeader(((AskHeader)ask).Label)
                 break;
             case "AskInstruction":
-            @Helper.OnlineRegInstruction(((AskInstruction)ask).Label)
+                @Helper.OnlineRegInstruction(((AskInstruction)ask).Label)
                 break;
             case "AskEmContact":
-            @Html.EditorFor(m => m.emcontact)
-            @Html.EditorFor(m => m.emphone)
+                @Html.EditorFor(m => m.emcontact)
+                @Html.EditorFor(m => m.emphone)
                 break;
             case "AskInsurance":
-            @Html.EditorFor(m => m.insurance)
-            @Html.EditorFor(m => m.policy)
+                @Html.EditorFor(m => m.insurance)
+                @Html.EditorFor(m => m.policy)
                 break;
             case "AskDoctor":
-            @Html.EditorFor(m => m.doctor)
-            @Html.EditorFor(m => m.docphone)
+                @Html.EditorFor(m => m.doctor)
+                @Html.EditorFor(m => m.docphone)
                 break;
             case "AskAllergies":
-            @Html.EditorFor(m => m.medical, "TextArea",
+                @Html.EditorFor(m => m.medical, "TextArea",
                         new { help = "Leave blank if none" })
                 break;
             case "AskTylenolEtc":
-            @Helper.OnlineRegHeader("May we give your child?")
-            @Html.EditorFor(m => m.tylenol, "YesNo")
-            @Html.EditorFor(m => m.advil, "YesNo")
-            @Html.EditorFor(m => m.maalox, "YesNo")
-            @Html.EditorFor(m => m.robitussin, "YesNo")
+                @Helper.OnlineRegHeader("May we give your child?")
+                @Html.EditorFor(m => m.tylenol, "YesNo")
+                @Html.EditorFor(m => m.advil, "YesNo")
+                @Html.EditorFor(m => m.maalox, "YesNo")
+                @Html.EditorFor(m => m.robitussin, "YesNo")
                 break;
             case "AskParents":
-            @Html.EditorFor(m => m.mname)
-            @Html.EditorFor(m => m.fname)
+                @Html.EditorFor(m => m.mname)
+                @Html.EditorFor(m => m.fname)
                 break;
             case "AskSMS":
-            @Html.EditorFor(m => m.sms, "YesNo")
+                @Html.EditorFor(m => m.sms, "YesNo")
                 break;
             case "AskCoaching":
-            @Html.EditorFor(m => m.coaching, "YesNo")
+                @Html.EditorFor(m => m.coaching, "YesNo")
                 break;
             case "AskChurch":
-            @Html.EditorFor(m => m, "AskChurch")
+                @Html.EditorFor(m => m, "AskChurch")
                 break;
             case "AskTickets":
-            @Html.EditorFor(m => m.ntickets,
+                @Html.EditorFor(m => m.ntickets,
                         new { label = ((AskTickets)ask).Label })
                 break;
             case "AskSuggestedFee":
-            @Html.EditorFor(m => m.Suggestedfee,
+                @Html.EditorFor(m => m.Suggestedfee,
                         new { label = Util.PickFirst(((AskSuggestedFee)ask).Label, "Suggested Fee") })
                 break;
             case "AskExtraQuestions":
-            @Html.EditorFor(m => m, "AskExtraQuestions", new { ask })
+                @Html.EditorFor(m => m, "AskExtraQuestions", new { ask })
                 break;
             case "AskYesNoQuestions":
-            @Html.EditorFor(m => m, "AskYesNoQuestions", new { ask })
+                @Html.EditorFor(m => m, "AskYesNoQuestions", new { ask })
                 break;
             case "AskDropdown":
-            @Html.EditorFor(m => m.option[ask.UniqueId], "AskDropdown",
+                @Html.EditorFor(m => m.option[ask.UniqueId], "AskDropdown",
                         new { items = Model.DropdownList(ask), label = ((AskDropdown)ask).Label })
                 break;
             case "AskCheckboxes":
-            @(((AskCheckboxes)ask).Cols > 1
+                @(((AskCheckboxes)ask).Cols > 1
                           ? Html.EditorFor(m => m, "AskCheckboxesMatrix", new { ask })
                           : Html.EditorFor(m => m, "AskCheckboxes", new { ask }))
                 break;
             case "AskMenu":
-            @Html.EditorFor(m => m, "AskMenu", new { ask })
+                @Html.EditorFor(m => m, "AskMenu", new { ask })
                 break;
             case "AskGradeOptions":
-            @Html.EditorFor(m => m.gradeoption, "Dropdown",
-                        new { items = Model.GradeOptions(ask), label = ((AskSize)ask).Label })
+                @Html.EditorFor(m => m.gradeoption, "Dropdown",
+                        new { items = Model.GradeOptions(ask), label = ((AskGradeOptions)ask).Label })
                 break;
             case "AnswersNotRequired":
                 break;
             default:
-            @Helper.OnlineRegHeader(ask.Type)
+                @Helper.OnlineRegHeader(ask.Type)
                 break;
         }
     }

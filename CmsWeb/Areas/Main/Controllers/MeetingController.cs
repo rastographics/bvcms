@@ -387,7 +387,7 @@ namespace CmsWeb.Areas.Main.Controllers
             if (organization == null)
                 return Content("error:Bad Orgid ({0})".Fmt(id));
 
-            var re = new Regex(@"\A(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])([0-9]{2})([01][0-9])([0-5][0-9])\Z");
+            var re = new Regex(@"\A(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])([0-9]{2})([012][0-9])([0-5][0-9])\Z");
             if (!re.IsMatch(a[2]))
                 return Content("error:Bad Date and Time ({0})".Fmt(id));
             var g = re.Match(a[2]);

@@ -21,7 +21,6 @@ namespace CmsWeb.Models
     [Serializable]
     public partial class OnlineRegPersonModel : IXmlSerializable
     {
-        public Guid? guid { get; set; }
         public int? orgid { get; set; }
         public int? masterorgid { get; set; }
         public int? divid { get; set; }
@@ -33,6 +32,7 @@ namespace CmsWeb.Models
         public bool LoggedIn { get; set; }
         public bool IsValidForExisting { get; set; }
         public bool ShowAddress { get; set; }
+        public bool ShowCountry { get; set; }
         public bool CreatingAccount { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -91,6 +91,7 @@ namespace CmsWeb.Models
         public string AddressLineTwo { get; set; }
         public string City { get; set; }
         public string State { get; set; }
+        [DisplayName("Postal Code")]
         public string ZipCode { get; set; }
         public string Country { get; set; }
         public int? gender { get; set; }
@@ -381,8 +382,6 @@ namespace CmsWeb.Models
                         if (otherchurch)
                             w.Add(pi.Name, otherchurch);
                         break;
-                    case "guid":
-                        break;
                     default:
                         w.Add(pi.Name, pi.GetValue(this, null));
                         break;
@@ -429,19 +428,7 @@ namespace CmsWeb.Models
 
         public OnlineRegModel Parent;
 
-        internal int? index;
-        public int Index
-        {
-            get
-            {
-                if (!index.HasValue)
-                    index = Parent.List.FindIndex(p => p.guid == guid);
-                if (index == -1)
-                    index = null;
-                return index ?? 0;
-            }
-        }
-
+        public int Index { get; set; }
 
         public bool LastItem()
         {

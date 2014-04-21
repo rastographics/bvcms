@@ -347,8 +347,6 @@ namespace CmsWeb.Models
             var person = DbUtil.Db.LoadPersonById(id);
             var p = new OnlineRegPersonModel
             {
-                guid = Guid.NewGuid(),
-                index = index,
                 DateOfBirth = person.DOB,
                 EmailAddress = person.EmailAddress.HasValue() ? person.EmailAddress : user.EmailAddress,
                 FirstName = person.PreferredName,
@@ -375,6 +373,29 @@ namespace CmsWeb.Models
             }
             return p;
         }
+
+        internal string email;
+        public string GetThankYouMessage()
+        {
+            var def = DbUtil.Db.ContentHtml("OnlineRegThanks", Resource1.OnlineRegModel_ThankYouMessage);
+
+            if (masterorg != null)
+            {
+                var setting1 = new Settings();
+                if (settings.ContainsKey(masterorg.OrganizationId))
+                    setting1 = settings[masterorg.OrganizationId];
+                var setting2 = setting1;
+                if (last != null && last.org != null && settings.ContainsKey(last.org.OrganizationId))
+                    setting1 = settings[last.org.OrganizationId];
+                return Util.PickFirst(setting1.ThankYouMessage, setting2.ThankYouMessage, def);
+            }
+            var setting = new Settings();
+            if (settings.ContainsKey(org.OrganizationId))
+                setting = settings[org.OrganizationId];
+            var msg = Util.PickFirst(setting.ThankYouMessage, def);
+            msg = msg.Replace("{org}", Header).Replace("{email}", Util.ObscureEmail(email)).Replace("{url}", URL);
+            return msg;
+        }
         private bool? usebootstrap;
         public bool UseBootstrap
         {
@@ -388,6 +409,5 @@ namespace CmsWeb.Models
                 return usebootstrap.Value;
             }
         }
-
     }
 }

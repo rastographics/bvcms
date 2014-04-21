@@ -54,12 +54,12 @@
                 <span title="sent">@i.queue.Sent.FormatDateTm()</span>
             }
         </td>
-        <td> <a href="/Emails/SentBy/@i.queue.QueuedBy">@i.queue.FromName</a> </td>
+        <td> <a href="/Manage/Emails/SentBy/@i.queue.QueuedBy">@i.queue.FromName</a> </td>
         <td> @i.queue.FromAddr </td>
         <td> @i.count </td>
         <td> @i.nuopens </td>
         <td>
-            <a href="/Emails/Details/@i.queue.Id">@i.queue.Subject</a>
+            <a href="/Manage/Emails/Details/@i.queue.Id">@i.queue.Subject</a>
         </td>
     </tr>
 }

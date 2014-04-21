@@ -32,16 +32,16 @@
         function GotoPage(pg) {
             var q = $('#form').formSerialize2();
             q = q.appendQuery("Page=" + pg);
-            $.navigate("/Emails", q);
+            $.navigate("/Manage/Emails/List", q);
         }
 
         function SetPageSize(sz) {
             var q = $('#form').formSerialize2();
             q = q.appendQuery("PageSize=" + sz);
-            $.navigate("/Emails", q);
+            $.navigate("/Manage/Emails/List", q);
         }
     </script>
 }
-<form id="form" method="post" action="/Emails/List">
+<form id="form" method="post" action="/Manage/Emails/List">
 @{Html.RenderPartial("List", Model);}
 </form>

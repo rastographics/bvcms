@@ -9,7 +9,6 @@ using System.Web.Routing;
 using System.Web.Security;
 using CmsData;
 using CmsWeb.Code;
-using CmsWeb.Models;
 using UtilityExtensions;
 using System.IO;
 using System.Threading;
@@ -53,17 +52,6 @@ namespace CmsWeb
                 else
                     Models.AccountModel.SetUserInfo("david", Session);
             }
-#if DEBUG
-            else
-            {
-                var username = WebConfigurationManager.AppSettings["DebugUser"];
-                if (username.HasValue())
-                {
-                    AccountModel.SetUserInfo(username, Session);
-                    FormsAuthentication.SetAuthCookie(username, false);
-                }
-            }
-#endif
             Util.SysFromEmail = ConfigurationManager.AppSettings["sysfromemail"];
             Util.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Util.SessionStarting = true;

@@ -295,6 +295,21 @@ namespace CmsWeb {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 
+        ///    &lt;h2&gt;Transaction Completed&lt;/h2&gt;
+        ///    &lt;p style=&apos;color: Black&apos;&gt;
+        ///        Thank you, your transaction is complete for {org}.
+        ///        You should receive a confirmation email at {email} shortly.&lt;br /&gt;&lt;br /&gt;
+        ///    &lt;/p&gt;
+        ///    &lt;p style=&apos;color: Blue&apos;&gt;&lt;a href=&apos;{url}&apos;&gt;Start a New Transaction&lt;/a&gt;&lt;/p&gt;.
+        /// </summary>
+        internal static string OnlineRegModel_ThankYouMessage {
+            get {
+                return ResourceManager.GetString("OnlineRegModel_ThankYouMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;{name},&lt;/p&gt;
         ///&lt;p&gt;You have been assigned to {org} in room {room}. The leader&apos;s name is {leader}.&lt;/p&gt;
         ///&lt;p&gt;Please call {phone} if you have any questions.&lt;/p&gt;

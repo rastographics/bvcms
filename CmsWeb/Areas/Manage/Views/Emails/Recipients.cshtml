@@ -9,7 +9,7 @@
 <tbody>
 @foreach(var p in Model.Recipients())
 {
-<tr><td><a href="/Emails/SentTo/@p.peopleid">@p.name</a></td>
+<tr><td><a href="/Manage/Emails/SentTo/@p.peopleid">@p.name</a></td>
     <td>@p.address</td>
     <td>@p.nopens</td></tr>    
 }

@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using UtilityExtensions;
 using CmsData;
-using System.Web.Mvc;
 using System.Data.Linq.SqlClient;
 using CmsData.Codes;
 using System.Xml.Linq;
@@ -16,7 +13,7 @@ namespace CmsWeb.Models
     {
         public string GetNextPrintJobs(string kiosks)
         {
-            var a = kiosks.Replace(" ", "").Split(',');
+            var a = (kiosks ?? "unknown").Replace(" ", "").Split(',');
             var q = from d in DbUtil.Db.PrintJobs
                     where a.Contains(d.Id)
                     orderby d.Stamp
