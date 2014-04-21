@@ -1,25 +1,23 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using AttributeRouting;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Search.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
 {
-    [RouteArea("Search", AreaUrl = "SearchAdd2")]
+    [RouteArea("Search", AreaPrefix = "")]
     public class SearchAddController : CmsStaffController
     {
-        [POST("SearchAdd2/Dialog/{type}/{typeid?}")]
+        [HttpPost, Route("SearchAdd2/Dialog/{type}/{typeid?}")]
         public ActionResult Dialog(string type, string typeid)
         {
             var m = new SearchAddModel(type, typeid);
             return View("SearchPerson", m);
         }
 
-        [POST("SearchAdd2/Results/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("SearchAdd2/Results/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult Results(int? page, int? size, string sort, string dir, SearchAddModel m)
         {
             DbUtil.Db.SetNoLock();
@@ -28,7 +26,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return View(m);
         }
 
-        [POST("SearchAdd2/ResultsFamily/{page?}/{size?}/{sort?}/{dir?}")]
+        [HttpPost, Route("SearchAdd2/ResultsFamily/{page?}/{size?}/{sort?}/{dir?}")]
         public ActionResult ResultsFamily(int? page, int? size, string sort, string dir, SearchAddModel m)
         {
             DbUtil.Db.SetNoLock();
@@ -37,14 +35,14 @@ namespace CmsWeb.Areas.Search.Controllers
             return View(m);
         }
 
-        [POST("SearchAdd2/SearchPerson")]
+        [HttpPost, Route("SearchAdd2/SearchPerson")]
         public ActionResult SearchPerson(SearchAddModel m)
         {
             ModelState.Clear();
             return View(m);
         }
 
-        [POST("SearchAdd2/SearchFamily")]
+        [HttpPost, Route("SearchAdd2/SearchFamily")]
         public ActionResult SearchFamily(SearchAddModel m)
         {
             string first, last;
@@ -54,7 +52,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return View(m);
         }
 
-        [POST("SearchAdd2/CancelPerson/{id}")]
+        [HttpPost, Route("SearchAdd2/CancelPerson/{id}")]
         public ActionResult CancelPerson(int id, SearchAddModel m)
         {
             m.PendingList.RemoveAt(id);
@@ -63,7 +61,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 return View("List", m);
             return View("SearchPerson", m);
         }
-        [POST("SearchAdd2/CancelSearch")]
+        [HttpPost, Route("SearchAdd2/CancelSearch")]
         public ActionResult CancelSearch(SearchAddModel m)
         {
             if (m.PendingList.Count > 0)
@@ -71,7 +69,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return View("SearchPerson", m);
         }
 
-        [POST("SearchAdd2/Select/{id}")]
+        [HttpPost, Route("SearchAdd2/Select/{id}")]
         public ActionResult Select(int id, SearchAddModel m)
         {
             if (m.PendingList.Any(li => li.PeopleId == id))
@@ -84,7 +82,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return View("List", m);
         }
 
-        [POST("SearchAdd2/NewPerson/{familyid}")]
+        [HttpPost, Route("SearchAdd2/NewPerson/{familyid}")]
         public ActionResult NewPerson(int familyid, SearchAddModel m)
         {
             if (familyid == 0 && string.Compare(m.AddContext, "family", StringComparison.OrdinalIgnoreCase) == 0)
@@ -96,7 +94,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return View(m);
         }
 
-        [POST("SearchAdd2/AddNewPerson/{noCheckDuplicate?}")]
+        [HttpPost, Route("SearchAdd2/AddNewPerson/{noCheckDuplicate?}")]
         public ActionResult AddNewPerson(string noCheckDuplicate, SearchAddModel m)
         {
             var p = m.PendingList[m.PendingList.Count - 1];
@@ -110,7 +108,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return View("List", m);
         }
 
-        [POST("SearchAdd2/AddNewAddress/{NoCheck?}")]
+        [HttpPost, Route("SearchAdd2/AddNewAddress/{NoCheck?}")]
         public ActionResult AddNewAddress(SearchAddModel m, string noCheck)
         {
             var p = m.PendingList[m.PendingList.Count - 1];
@@ -126,7 +124,7 @@ namespace CmsWeb.Areas.Search.Controllers
             return View("List", m);
         }
 
-        [POST("SearchAdd2/CommitAdd")]
+        [HttpPost, Route("SearchAdd2/CommitAdd")]
         public ActionResult CommitAdd(SearchAddModel m)
         {
             var ret = m.CommitAdd();

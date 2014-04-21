@@ -79,7 +79,7 @@ namespace CmsWeb.Models
 <div>
 {0}<br />
 {1:ddd h:mm tt}<br />
-<a target='smallgroup' href='{2}OnlineReg/Index/{3}'>More Information</a>
+<a target='smallgroup' href='{2}OnlineReg/{3}'>More Information</a>
 </div>";
             return from i in qlist
                    where i.gc.Latitude != 0

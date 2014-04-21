@@ -12,13 +12,13 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix="Meeting"), Route("{action}/{id?}")]
     public class MeetingController : CmsStaffController
     {
-        public ActionResult Index(int? id, bool? showall, bool? sortbyname, bool? CurrentMembers, bool? showlarge)
+        [Route("~/Meeting/{id:int}")]
+        public ActionResult Index(int id, bool? showall, bool? sortbyname, bool? CurrentMembers, bool? showlarge)
         {
-            if (!id.HasValue)
-                return RedirectShowError("no id");
-            var m = new MeetingModel(id.Value)
+            var m = new MeetingModel(id)
             {
                 currmembers = CurrentMembers ?? false,
                 showall = showall == true,
@@ -387,7 +387,7 @@ namespace CmsWeb.Areas.Main.Controllers
             if (organization == null)
                 return Content("error:Bad Orgid ({0})".Fmt(id));
 
-            var re = new Regex(@"\A(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])([0-9]{2})([01][0-9])([0-5][0-9])\Z");
+            var re = new Regex(@"\A(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])([0-9]{2})([012][0-9])([0-5][0-9])\Z");
             if (!re.IsMatch(a[2]))
                 return Content("error:Bad Date and Time ({0})".Fmt(id));
             var g = re.Match(a[2]);
@@ -419,7 +419,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 DbUtil.Db.SubmitChanges();
                 DbUtil.LogActivity("Created new meeting for {0}".Fmt(organization.OrganizationName));
             }
-            return Content("/Meeting/Index/{0}?showall=true".Fmt(newMtg.MeetingId));
+            return Content("/Meeting/{0}?showall=true".Fmt(newMtg.MeetingId));
         }
         public ActionResult QueryAttendees(int Id)
         {

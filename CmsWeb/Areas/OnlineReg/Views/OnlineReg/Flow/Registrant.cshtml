@@ -5,7 +5,7 @@
     and it is not finished and not the first one
 *@
 @{
-    var index = Model.Index();
+    var index = Model.Index;
     var selectfamily = Model.Parent.UserPeopleId.HasValue && Model.Parent.FamilyMembers().Any();
 }
 @if (Model.LastItem() && !Model.Finished() && index > 0)
@@ -114,7 +114,7 @@
                 @if (Model.Finished())
                 {
                     <div class="personheader">
-                        @(Model.first + " " + Model.last)
+                        @(Model.FirstName + " " + Model.LastName)
                         <span class="blue" style="font-size: 80%">(<a class="toggle" href="#">Details</a>)</span>
                     </div>
                 }

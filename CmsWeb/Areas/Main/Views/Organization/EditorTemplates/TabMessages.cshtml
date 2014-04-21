@@ -75,7 +75,14 @@
         |Good for giving them a link to join a waiting list.">
         Sorry:</span>
         @Html.EditorFor(m => m.InstructionSorry, "Html")
-        </li>
+      </li>
+      <li>
+        <span class="keyword2 tip" title="Thanks
+        |This is displayed when you complete the registration
+        |If left blank, the default will be used">
+        Thanks:</span>
+        @Html.EditorFor(m => m.ThankYouMessage, "Html")
+      </li>
     </ul>
   </li>
   <li>

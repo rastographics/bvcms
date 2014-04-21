@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
@@ -212,12 +211,12 @@ namespace CmsWeb.Areas.Public.Controllers
 			DbUtil.LogActivity("APIPerson Update");
             return Content(new APIPerson(DbUtil.Db).UpdatePersonXml(xml), "text/xml");
         }
-        [GET("Portrait/{id:int?}/{w:int?}/{h:int?}")]
+        [HttpGet, Route("Portrait/{id:int?}/{w:int?}/{h:int?}")]
         public ActionResult Portrait(int? id, int? w, int? h)
         {
             return new PictureResult(id ?? 0, w, h, portrait: true);
         }
-        [GET("FamilyPortrait/{id:int?}/{w:int?}/{h:int?}")]
+        [HttpGet, Route("FamilyPortrait/{id:int?}/{w:int?}/{h:int?}")]
         public ActionResult FamilyPortrait(int? id, int? w, int? h)
         {
             return new PictureResult(id ?? 0, w, h, portrait: false);

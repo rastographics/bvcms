@@ -1,7 +1,7 @@
 ﻿@using UtilityExtensions
 @using CmsWeb
 @model CmsWeb.Models.OnlineRegPersonModel
-@{ var index = Model.Index(); }
+@{ var index = Model.Index; }
 <tr>
     <td class="right" colspan="2">
         @Html.Required()
@@ -15,9 +15,9 @@
             First Name:</label>
     </td>
     <td>
-        @Html.TextBoxFor(m => m.first, new { @class = "wide" })
+        @Html.TextBoxFor(m => m.FirstName, new { @class = "wide" })
         <div>
-            @Html.ValidationMessageFor(m => m.first)</div>
+            @Html.ValidationMessageFor(m => m.FirstName)</div>
     </td>
 </tr>
 <tr>
@@ -27,7 +27,7 @@
             Middle Initial:</label>
     </td>
     <td>
-        @Html.TextBoxFor(m => m.middle, new { @class = "wide" })
+        @Html.TextBoxFor(m => m.MiddleName, new { @class = "wide" })
     </td>
 </tr>
 <tr>
@@ -37,9 +37,9 @@
             Last Name:</label>
     </td>
     <td>
-        @Html.TextBoxFor(m => m.last, new { @class = "wide" })
+        @Html.TextBoxFor(m => m.LastName, new { @class = "wide" })
         <div>
-            @Html.ValidationMessageFor(m => m.last)</div>
+            @Html.ValidationMessageFor(m => m.LastName)</div>
     </td>
 </tr>
 <tr>
@@ -49,7 +49,7 @@
             Suffix:</label>
     </td>
     <td>
-        @Html.TextBoxFor(m => m.suffix, new { @class = "short" })
+        @Html.TextBoxFor(m => m.Suffix, new { @class = "short" })
     </td>
 </tr>
 <tr>
@@ -58,13 +58,13 @@
         <label for="dob">
             Birthdate:</label>
     </td>
-    <td>@Html.TextBox3("dob", Html.NameFor2(m => m.dob), Model.dob, new { @class = "dob" })
+    <td>@Html.TextBox3("dob", Html.NameFor2(m => m.DateOfBirth), Model.DateOfBirth, new { @class = "dob" })
         @if (Model.LoggedIn)
         {
             @:(<span id="age">@Model.age</span>)
         }
         <div>
-            @Html.ValidationMessageFor(m => m.dob)</div>
+            @Html.ValidationMessageFor(m => m.DateOfBirth)</div>
     </td>
 </tr>
 <tr>
@@ -83,9 +83,9 @@ else
 } 
     </td>
     <td>
-        @Html.TextBoxFor(m => m.phone, new { @class = "wide" })
+        @Html.TextBoxFor(m => m.Phone, new { @class = "wide" })
         <div>
-            @Html.ValidationMessageFor(m => m.phone)</div>
+            @Html.ValidationMessageFor(m => m.Phone)</div>
     </td>
 </tr>
 <tr>
@@ -95,9 +95,9 @@ else
             Email:</label>
     </td>
     <td>
-        @Html.TextBoxFor(m => m.email, new { @class = "wide" })
+        @Html.TextBoxFor(m => m.EmailAddress, new { @class = "wide" })
         <div>
-            @Html.ValidationMessageFor(m => m.email)</div>
+            @Html.ValidationMessageFor(m => m.EmailAddress)</div>
     </td>
 </tr>
 @* show the address fields *@

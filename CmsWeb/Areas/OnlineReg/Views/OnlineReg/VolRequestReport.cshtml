@@ -1,0 +1,49 @@
+﻿@model CmsWeb.Models.VolunteerRequestModel
+@using UtilityExtensions
+@{
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg.cshtml"
+        : "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = "Volunteer Request Report";
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Volunteer/ManageVolunteer.js")
+}
+@section head
+{
+<style type="text/css">
+.item
+{
+    float: left;
+    width: 13.3em;
+    margin: 0 2em 0 0;
+    border-right: 1px solid #eee;
+    padding: 0 0 5px 0;
+}
+</style>
+}
+<h2>@Model.org.OrganizationName</h2>
+<h3>@Model.person.Name on @Model.meeting.MeetingDate.ToString2("MMM d, yyyy") at @Model.meeting.MeetingDate.ToString2("h:mm tt")</h3>
+<div>
+<table class="@ViewExtensions2.GridClass">
+<thead>
+    <tr>
+        <th>Substitute</th>
+        <th>Response</th>
+        <th>Responded</th>
+    </tr>
+</thead>
+<tbody>
+@foreach (var r in Model.VolRequests())
+{
+    <tr>
+        <td>@r.VolName</td>
+        <td>@r.Requested.ToString("g")</td>
+        <td>@r.Responded.ToString2("g")</td>
+        <td>@r.CanVolDisplay</td>
+    </tr>
+}
+</tbody>
+</table>
+</div>

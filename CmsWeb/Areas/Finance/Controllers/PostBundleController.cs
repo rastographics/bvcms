@@ -14,11 +14,13 @@ namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Finance")]
     [ValidateInput(false)]
+    [RouteArea("Finance", AreaPrefix= "PostBundle"), Route("{action}/{id?}")]
     public class PostBundleController : CmsStaffController
     {
-        public ActionResult Index(int? id)
+        [Route("~/PostBundle/{id:int}")]
+        public ActionResult Index(int id)
         {
-            var m = new PostBundleModel(id ?? 0);
+            var m = new PostBundleModel(id);
             if (m.bundle == null)
                 return Content("no bundle " + m.id);
             if (m.bundle.BundleStatusId == BundleStatusCode.Closed)
@@ -126,7 +128,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var id = BatchImportContributions.BatchProcess(s, date, fundid, fromFile);
 
             if (id.HasValue)
-                return Redirect("/PostBundle/Index/" + id);
+                return Redirect("/PostBundle/" + id);
 
             return RedirectToAction("Batch");
         }

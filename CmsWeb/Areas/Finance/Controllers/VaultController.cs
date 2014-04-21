@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using CmsData;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
 	[Authorize(Roles = "Admin")]
+    [RouteArea("Finance", AreaPrefix= "Vault"), Route("{action}/{id?}")]
     public class VaultController : CmsController
     {
 		[HttpPost]

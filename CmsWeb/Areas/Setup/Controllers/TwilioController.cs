@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
+    [RouteArea("Setup", AreaPrefix = "Twilio"), Route("{action}/{id?}")]
     public class TwilioController : CmsStaffController
     {
+        [Route("~/Twilio")]
         public ActionResult Index( int activeTab = 0 )
         {
             ViewBag.Tab = activeTab;
@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SMSGroupMembers.InsertOnSubmit(n);
             DbUtil.Db.SubmitChanges();
 
-            return RedirectToAction("Index");
+            return Redirect("/Twilio");
         }
 
         public ActionResult UserRemove(int id)

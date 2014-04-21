@@ -129,7 +129,7 @@ namespace CmsWeb.Models
         }
         public string ContactUrl
         {
-            get { return (ViewExtensions2.UseNewLook() ? "/Contact2/" : "/Contact/Index/") + CompletedContactId; }
+            get { return (ViewExtensions2.UseNewLook() ? "/Contact2/" : "/Contact/") + CompletedContactId; }
         }
 
         public string WhoAddress

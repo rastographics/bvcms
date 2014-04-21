@@ -3,11 +3,11 @@
 @Html.Raw((string)ViewData["top"])
 @RenderSection("head", false)
 @RenderBody()
-@Html.Raw((string)ViewData["bottom"])
 @ViewExtensions2.jQuery()
 @ViewExtensions2.jQueryUI()
 @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
 @RenderSection("scripts", false)
+@Html.Raw((string)ViewData["bottom"])
 }
 else
 {

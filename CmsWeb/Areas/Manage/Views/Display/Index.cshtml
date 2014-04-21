@@ -101,7 +101,7 @@
   { 
 		<tr>
 			<td>
-				@Html.ActionLink(item.Name, "ContentEdit", new { id = item.Id }) - @item.Title
+                @Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id) - @item.Title
 			</td>
 		</tr>
   }
@@ -117,7 +117,7 @@
   {
 		<tr>
 			<td>
-				@Html.ActionLink(item.Name, "ContentEdit", new { id = item.Id })
+                @Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)
 			</td>
 		</tr>
   }
@@ -170,7 +170,7 @@
 		        <tr>
 			        <td>
 				        <input draft="yes" type="checkbox" name="draftID" value="@item.id" />
-                        <b>@Html.ActionLink(item.name.HasValue() ? item.name : "notnamed", "ContentEdit", new { id = item.id })</b><br />
+                        <b>@Helper.AnchorLink(item.name.HasValue() ? item.name : "notnamed", "/Display/ContentEdit/" + item.id)</b><br />
                         <span style="padding-left:3em; font-size:0.8em">
                         @item.created.FormatDate()
                         - @item.owner

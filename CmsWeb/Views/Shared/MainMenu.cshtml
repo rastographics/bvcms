@@ -19,25 +19,25 @@
             </a>
             <div class="dropdown2-menu">
                 <ul>
-                    <li>@Html.ActionLink("Search", "Index", "PeopleSearch", new { Area = "Main" }, null)</li>
-                    @if (DbUtil.Db.Setting("MenuAddPeople", "true") == "true")
+                    @Helper.LiAnchorLink("Search", "/PeopleSearch")
+                    @if (ViewExtensions2.DbSetting("MenuAddPeople", "true") == "true")
                     {
                         <li>@Helper.JQueryIdLink("Add People", "addpeople")</li>
                     }
                     else
                     {
-                        <li>@Helper.AnchorLink("Add People", "http://www.bvcms.com/doc/AddPeopleContext", "_blank")</li>
+                        @Helper.LiAnchorLink("Add People", "http://www.bvcms.com/doc/AddPeopleContext", target:"_blank")
                     }
-                    <li>@Html.ActionLink("Manage Tags", "Index", "Tags", new { Area = "Main" }, null)</li>
-                    <li>@Html.ActionLink("Tasks", "List", "Task", new { Area = "Main" }, null)</li>
-                    <li>@Html.ActionLink("Contacts", "Index", "ContactSearch", new { Area = "Main" }, null)</li>
+                    @Helper.LiAnchorLink("Manage Tags", "/Tags")
+                    @Helper.LiAnchorLink("Tasks", "/Task/List")
+                    @Helper.LiAnchorLink("Contacts", "/ContactSearch")
                     <li class="header"><span>Most Recent People</span></li>
                     @foreach (var p in Util2.MostRecentPeople)
                     {
-                        <li>@Html.ActionLink(p.Name ?? "unknown", "Index", "Person", new { Id = p.Id, Area = "Main" }, null)</li>
+                        @Helper.LiAnchorLink(p.Name ?? "unknown", "/Person/" + p.Id)
                     }
                     <li class="divider"></li>
-                    <li>@Html.ActionLink(Util.UserFullName, "Index", "Person", new { Id = Util.UserPeopleId, Area = "Main" }, null)</li>
+                    @Helper.LiAnchorLink(Util.UserFullName, "/Person/" + Util.UserPeopleId)
                 </ul>
             </div>
         </li>
@@ -47,21 +47,20 @@
             </a>
             <div class="dropdown2-menu">
                 <ul>
-                    <li>@Html.ActionLink("Search", "Index", "OrgSearch", new { Area = "Main" }, null)</li>
+                    @Helper.LiAnchorLink("Search", "/OrgSearch")
                     @if (User.IsInRole("Edit"))
                     {
                         <li>@Helper.JQueryIdLink("Add Organization", "addorg")</li>
-                        <li>@Html.ActionLink("Org Members Management", "Index", "OrgMembers", new { Area = "Manage" }, null)</li>
+                        @Helper.LiAnchorLink("Org Members Management", "/OrgMembers")
                     }
                     @if (User.IsInRole("Coupon"))
                     {
-                        <li>@Html.ActionLink("Coupons", "Index", "Coupon", new { Area = "Main" }, null)</li>
+                        @Helper.LiAnchorLink("Coupons", "/Coupons/")
                     }
-                    <li><a href="/OrgSearch">Enrollment Control Report (moved to OrgSearch) </a></li>
                     <li class="header"><span>Most Recent Orgs</span></li>
                     @foreach (var o in Util2.MostRecentOrgs)
                     {
-                        <li>@Html.ActionLink(o.Name, "Index", "Organization", new { Id = o.Id, Area = "Main" }, null)</li>
+                        @Helper.LiAnchorLink(o.Name, "/Organization/" + o.Id)
                     }
                 </ul>
             </div>
@@ -72,25 +71,25 @@
             </a>
             <div class="dropdown2-menu">
                 <ul>
-                    <li>@Helper.AnchorLink("Vital Stats", "/Reports/VitalStats")</li>
-                    <li>@Helper.AnchorLink("Week at a Glance", "/Reports/ChurchAttendance", "_blank")</li>
-                    <li>@Helper.AnchorLink("Average Week at a Glance", "/Reports/ChurchAttendance2", "_blank")</li>
-                    @if (DbUtil.Db.Setting("Bellevue", "false") == "true")
+                    @Helper.LiAnchorLink("Vital Stats", "/Reports/VitalStats")
+                    @Helper.LiAnchorLink("Week at a Glance", "/Reports/ChurchAttendance", target: "_blank")
+                    @Helper.LiAnchorLink("Average Week at a Glance", "/Reports/ChurchAttendance2", target: "_blank")
+                    @if (ViewExtensions2.DbSetting("Bellevue", "false") == "true")
                     {
-                        <li>@Helper.AnchorLink("Church Attendance Summary", "/Report/ChurchAttendanceSummaryRpt.aspx", "_blank")</li>
+                        @Helper.LiAnchorLink("Church Attendance Summary", "/Report/ChurchAttendanceSummaryRpt.aspx", target: "_blank")
                     }
-                    <li>@Helper.AnchorLink("Weekly Decisions", "/Reports/WeeklyDecisions")</li>
-                    <li>@Helper.AnchorLink("Decision Summary", "/Reports/Decisions")</li>
-                    <li>@Helper.AnchorLink("First Time Attenders", "/Home/NthTimeAttenders/1")</li>
-                    <li>@Helper.AnchorLink("Second Time Attenders", "/Home/NthTimeAttenders/2")</li>
-                    <li>@Helper.AnchorLink("Third Time Attenders", "/Home/NthTimeAttenders/3")</li>
-                    <li>@Helper.AnchorLink("Extra Value Codes", "/Reports/ExtraValues")</li>
-                    <li>@Helper.AnchorLink("Extra Value Data", "/Reports/ExtraValueData")</li>
+                    @Helper.LiAnchorLink("Weekly Decisions", "/Reports/WeeklyDecisions")
+                    @Helper.LiAnchorLink("Decision Summary", "/Reports/Decisions")
+                    @Helper.LiAnchorLink("First Time Attenders", "/Home/NthTimeAttenders/1")
+                    @Helper.LiAnchorLink("Second Time Attenders", "/Home/NthTimeAttenders/2")
+                    @Helper.LiAnchorLink("Third Time Attenders", "/Home/NthTimeAttenders/3")
+                    @Helper.LiAnchorLink("Extra Value Codes", "/Reports/ExtraValues")
+                    @Helper.LiAnchorLink("Extra Value Data", "/Reports/ExtraValueData")
                     @if (admin)
                     {
                         <li class="header"><span>Admins</span></li>
-                        <li>@Helper.AnchorLink("Recent Registrations", "/Reports/RecentRegistrations?days=90&orgid=0")</li>
-                        <li>@Helper.AnchorLink("Recent Registration Summary", "/Reports/RegistrationSummary?days=90")</li>
+                        @Helper.LiAnchorLink("Recent Registrations", "/Reports/RecentRegistrations?days=90&orgid=0")
+                        @Helper.LiAnchorLink("Recent Registration Summary", "/Reports/RegistrationSummary?days=90")
                     }
                 </ul>
             </div>
@@ -109,23 +108,23 @@
                 </a>
                 <div class="dropdown2-menu">
                     <ul>
-                        <li>@Html.ActionLink("Bundles", "Index", "Bundles", new { Area = "Finance" }, null)</li>
+                        @Helper.LiAnchorLink("Bundles", "/Bundles")
                         <li class="divider"></li>
-                        <li>@Html.ActionLink("Search", "Index", "Contributions", new { Area = "Finance" }, null)</li>
+                        @Helper.LiAnchorLink("Search", "/Contributions")
                         <li class="header"><span>Reports</span></li>
-                        <li>@Html.ActionLink("Statements (All)", "Index", "Statements", new { Area = "Finance" }, new { target = "_blank" })</li>
-                        <li>@Html.ActionLink("Totals by Fund", "TotalsByFund", "FinanceReports", new { Area = "Finance" }, null)</li>
-                        <li>@Html.ActionLink("Donor Totals by Range", "DonorTotalsByRange", "FinanceReports", new { Area = "Finance" }, null)</li>
-                        <li>@Helper.AnchorLink("Totals by Fund Age Range", "/Contributions/Reports/TotalsByFundAgeRange.aspx", "_blank")</li>
-                        <li>@Helper.AnchorLink("Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx", "_blank")</li>
-                        <li>@Helper.AnchorLink("Pledge Totals by Fund Range", "/Contributions/Reports/TotalsByFundRange.aspx?pledged=true", "_blank")</li>
-                        <li>@Html.ActionLink("Pledge Report", "PledgeReport", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
-                        <li>@Html.ActionLink("Managed Giving", "ManagedGiving", "FinanceReports", new { Area = "Finance" }, new { target = "_blank" })</li>
+                        @Helper.LiAnchorLink("Statements (Batch)", "/Statements")
+                        @Helper.LiAnchorLink("Totals by Fund", "/FinanceReports/TotalsByFund", target: "_blank")
+                        @Helper.LiAnchorLink("Donor Totals by Range", "/FinanceReports/DonorTotalsByRange", target: "_blank")
+                        @Helper.LiAnchorLink("Totals by Fund Age Range", "/ContributionReports/TotalsByFundAgeRange.aspx", target: "_blank")
+                        @Helper.LiAnchorLink("Totals by Fund Range", "/ContributionReports/TotalsByFundRange.aspx", target: "_blank")
+                        @Helper.LiAnchorLink("Pledge Totals by Fund Range", "/ContributionReports/TotalsByFundRange.aspx?pledged=true", target: "_blank")
+                        @Helper.LiAnchorLink("Pledge Report", "/FinanceReports/PledgeReport", target: "_blank")
+                        @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManagedGiving", target: "_blank")
                         <li class="divider"></li>
-                        <li>@Html.ActionLink("Fund Management", "Index", "Fund", new { Area = "Finance" }, null)</li>
-                        @if (DbUtil.Db.Setting("ShowQuickBooksMenu", "false") == "true")
+                        @Helper.LiAnchorLink("Fund Management", "/Funds")
+                        @if (ViewExtensions2.DbSetting("ShowQuickBooksMenu", "false") == "true")
                         {
-                            <li>@Html.ActionLink("QuickBooks", "Index", "QuickBooks", new { Area = "Finance" }, null)</li>
+                            @Helper.LiAnchorLink("QuickBooks", "/QuickBooks")
                         }
                     </ul>
                 </div>
@@ -141,48 +140,47 @@
                     <ul>
                         @if (admin)
                         {
-                            <li>@Html.ActionLink("Users", "Index", "Users", new { Area = "Manage" }, null)</li>
-                            <li>@Html.ActionLink("Programs", "Index", "Program", new { Area = "Setup" }, null)</li>
-                            <li>@Html.ActionLink("Divisions", "Index", "Division", new { Area = "Setup" }, null)</li>
-                            <li>@Html.ActionLink("Settings", "Index", "Setting", new { Area = "Setup" }, null)</li>
-                            <li>@Html.ActionLink("Metro Zips", "Index", "MetroZip", new { Area = "Setup" }, null)</li>
+                            @Helper.LiAnchorLink("Users", "/Users")
+                            @Helper.LiAnchorLink("Programs", "/Programs")
+                            @Helper.LiAnchorLink("Divisions", "/Divisions")
+                            @Helper.LiAnchorLink("Settings", "/Setting")
+                            @Helper.LiAnchorLink("Metro Zips", "/MetroZips")
                         }
                         @if (admin && TwilioHelper.getSID().Length > 0 && TwilioHelper.getToken().Length > 0)
                         {
-                            <li><a href="/Setup/Twilio/">Twilio Management
-                            </a></li>
+                            @Helper.LiAnchorLink("Twilio Management", "/Twilio")
                         }
                         @if (admin || design)
                         {
-                            <li>@Html.ActionLink("Special Content", "Index", "Display", new { Area = "Manage" }, null)</li>
+                            @Helper.LiAnchorLink("Special Content", "/Display")
                         }
                         @if (admin || managetrans)
                         {
-                            <li>@Html.ActionLink("Transactions", "Index", "Transactions", new { Area = "Manage" }, null)</li>
+                            @Helper.LiAnchorLink("Transactions", "/Transactions")
                         }
                         @if (admin || edit)
                         {
-                            <li>@Html.ActionLink("Check-in Activity", "Index", "CheckinTime", new { Area = "Manage" }, null)</li>
+                            @Helper.LiAnchorLink("Check-in Activity", "/CheckinTimes")
                         }
                         @if (admin || manageemails)
                         {
-                            <li>@Html.ActionLink("Emails", "Index", "Emails", new { Area = "Manage" }, null)</li>
-                            <li>@Html.ActionLink("UsersCanEmailFor", "Index", "UsersCanEmailFor", new { Area = "Setup" }, null)</li>
+                            @Helper.LiAnchorLink("Emails", "/Emails")
+                            @Helper.LiAnchorLink("Users Can Email For", "/UsersCanEmailFor")
                         }
                         @if (admin)
                         {
-                            <li>@Html.ActionLink("SMS Messages", "Index", "SMS", new { Area = "Manage" }, null)</li>
+                            @Helper.LiAnchorLink("SMS Messages", "/SMS/List")
                         }
                         @if (admin || finance)
                         {
-                            <li>@Html.ActionLink("Lookups", "Index", "Lookup", new { Area = "Setup", id = "" }, null)</li>
+                            @Helper.LiAnchorLink("Lookups", "/Lookups")
                         }
                         @if (admin)
                         {
-                            <li>@Html.ActionLink("Check-in Labels", "Index", "CheckinLabels", new { Area = "Manage" }, null)</li>
-                            <li>@Html.ActionLink("Update for a Tag", "UpdateFields", "Batch", new { Area = "Manage" }, null)</li>
-                            <li>@Html.ActionLink("Update Status Flags", "UpdateStatusFlags", "Batch", new { Area = "Manage" }, null)</li>
-                            <li>@Html.ActionLink("Tag PeopleIds", "TagPeopleIds", "Batch", new { Area = "Manage" }, null)</li>
+                            @Helper.LiAnchorLink("Check-in Labels", "/CheckinLabels")
+                            @Helper.LiAnchorLink("Update for a Tag", "/Batch/UpdateFields")
+                            @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags")
+                            @Helper.LiAnchorLink("Tag PeopleIds", "/Batch/TagPeopleIds")
                         }
                     </ul>
                 </div>

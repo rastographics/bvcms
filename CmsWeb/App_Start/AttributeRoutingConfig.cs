@@ -1,30 +1,56 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 using System.Web.Routing;
-using AttributeRouting.Web.Mvc;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(CmsWeb.AttributeRoutingConfig), "Start")]
-
-namespace CmsWeb 
+namespace CmsWeb
 {
-    public static class AttributeRoutingConfig
-	{
-		public static void RegisterRoutes(RouteCollection routes) 
-		{    
-			// See http://github.com/mccalltd/AttributeRouting/wiki for more options.
-			// To debug routes locally using the built in ASP.NET development server, go to /routes.axd
+    public class RouteConfig
+    {
+        public static void RegisterRoutes(RouteCollection routes)
+        {
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.IgnoreRoute("healthcheck.txt");
+            routes.IgnoreRoute("Demo/{*pathInfo}");
+            routes.IgnoreRoute("index.html");
+            routes.IgnoreRoute("{myWebForms}.aspx/{*pathInfo}");
+            routes.IgnoreRoute("{myWebForms}.ashx/{*pathInfo}");
+            routes.IgnoreRoute("{myWebForms}.asmx/{*pathInfo}");
+            routes.IgnoreRoute("{myWebForms}.js/{*pathInfo}");
+            routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
+            routes.IgnoreRoute("*/pagerror.gif");
+            routes.IgnoreRoute("*/refresh.gif");
+            routes.IgnoreRoute("{name}.png");
+            routes.IgnoreRoute("Admin/{*pathInfo}");
+            routes.IgnoreRoute("AppReview/{*pathInfo}");
+            routes.IgnoreRoute("CustomErrors/{*pathInfo}");
+            routes.IgnoreRoute("ContributionReports/{*pathInfo}");
+            routes.IgnoreRoute("Report/{*pathInfo}");
+            routes.IgnoreRoute("ckeditor/{*pathInfo}");
+            routes.IgnoreRoute("StaffOnly/{*pathInfo}");
+            routes.IgnoreRoute("images/{*pathInfo}");
+            routes.IgnoreRoute("App_Themes/{*pathInfo}");
+            routes.IgnoreRoute("Content/{*pathInfo}");
+            routes.IgnoreRoute("Errors/{*pathInfo}");
+            routes.IgnoreRoute("demos/{*pathInfo}");
+            routes.IgnoreRoute("Scripts/{*pathInfo}");
+            routes.IgnoreRoute("Upload/{*pathInfo}");
+            routes.IgnoreRoute("{myWebPage}.htm");
+            routes.IgnoreRoute("{myReport}.rdlc");
+            routes.IgnoreRoute("{dir1}/{dir2}/{file}.js");
+            routes.IgnoreRoute("{dir1}/{dir2}/{file}.css");
+            routes.IgnoreRoute("elmah.axd");
 
-		    try
-		    {
-    			routes.MapAttributeRoutes();
-		    }
-		    catch (NullReferenceException)
-		    {
-		    }
-		}
-
-        public static void Start() 
-		{
-            RegisterRoutes(RouteTable.Routes);
+            routes.MapMvcAttributeRoutes();
+            AreaRegistration.RegisterAllAreas();
+            routes.RouteExistingFiles = false;
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+            );
         }
     }
 }

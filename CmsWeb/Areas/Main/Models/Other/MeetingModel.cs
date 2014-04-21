@@ -35,6 +35,12 @@ namespace CmsWeb.Models
             meeting = i.m;
             org = i.org;
         }
+
+        public string RegularMeetingHeadCountSetting()
+        {
+            return DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
+        }
+
         public IEnumerable<RollsheetModel.AttendInfo> Attends(bool sorted = false)
         {
             return RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers);

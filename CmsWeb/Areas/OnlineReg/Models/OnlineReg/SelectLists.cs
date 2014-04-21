@@ -1,19 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using CmsData;
-using System.Web.Mvc;
-using System.Text;
-using System.Configuration;
 using UtilityExtensions;
-using System.Data.Linq.SqlClient;
-using System.Net.Mail;
-using System.Text.RegularExpressions;
-using System.Collections;
-using System.Runtime.Serialization;
-using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
@@ -95,22 +84,5 @@ namespace CmsWeb.Models
 
             return o.OrganizationName + lead + dt + loc;
         }
-
-//
-//        public List<SelectListItem> ShirtSizes()
-//        {
-//            var q = from ss in DbUtil.Db.ShirtSizes
-//                    orderby ss.Id
-//                    select new SelectListItem
-//                    {
-//                        Value = ss.Code,
-//                        Text = ss.Description
-//                    };
-//            var list = q.ToList();
-//            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
-//            if (org != null && settings[orgid.Value].AllowLastYearShirt == true)
-//                list.Add(new SelectListItem { Value = "lastyear", Text = "Use shirt from last year" });
-//            return list;
-//        }
     }
 }

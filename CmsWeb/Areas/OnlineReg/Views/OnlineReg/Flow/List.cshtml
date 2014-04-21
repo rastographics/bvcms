@@ -1,10 +1,8 @@
 ﻿@model CmsWeb.Models.OnlineRegModel
 @using UtilityExtensions
-@using CmsWeb
     <div style="background-color:Yellow">@Util.UrgentMessage</div>
 @Html.Raw(Model.Instructions)
 @Html.Partial("Flow/ModelHidden", Model)
-
 
 @* nobody registered yet *@
 @if (Model.DisplayLogin())
@@ -21,7 +19,8 @@ else
 		}
 		@* show each registrant, including the one being worked on *@
 		@for (var i = 0; i < Model.List.Count; i++)
-		{ 
+		{
+		    Model.List[i].Index = i;
 			var viewdata = new ViewDataDictionary(ViewData)
                 { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "List[" + i + "]" } };
 			@Html.Partial("Flow/Registrant", Model.List[i], viewdata) 

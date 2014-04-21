@@ -102,14 +102,14 @@
         }
         else
         {
-            <td><a href="/Meeting/Index/@m.MeetingId">@m.Time.FormatDateTm()</a></td>
+            <td><a href="/Meeting/@m.MeetingId">@m.Time.FormatDateTm()</a></td>
             <td class="right">@m.HeadCount.ToStringNoZero()</td>
             <td class="right">@m.Attended</td>
         }
             <td class="right">@(m.OtherAttends > 0 ? "*" : "")</td>
             <td class="right">@m.Guests.ToStringNoZero()</td>
             <td> <span title="@m.Program">@m.Division</span> </td>
-            <td style="color: @(m.Inactive?"#555":"inherit")"> <a title="@m.Tracking" href="/Organization/Index/@m.OrganizationId">@m.Organization</a> </td>
+            <td style="color: @(m.Inactive?"#555":"inherit")"> <a title="@m.Tracking" href="/Organization/@m.OrganizationId">@m.Organization</a> </td>
             <td>@m.Leader</td>
             <td>@m.Description</td>
         </tr>

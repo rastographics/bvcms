@@ -6,12 +6,8 @@
 @{
 	ViewBag.Title = "Compose";
     Layout = ViewExtensions2.Layout();
-	int tID = ViewBag.templateID;	
-
-	var t = from e in DbUtil.Db.Contents
-			  where e.Id == tID
-			  select e;
-    var c = t.FirstOrDefault();
+    int tid = ViewBag.TemplateID;
+    var c = ViewExtensions2.GetContent(tid);
 }
 @section head
 {

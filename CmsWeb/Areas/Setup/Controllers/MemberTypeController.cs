@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin")]
+    [RouteArea("Setup", AreaPrefix = "MemberType"), Route("{action=index}/{id?}")]
     public class MemberTypeController : CmsStaffController
     {
         public MemberTypeController()
@@ -48,14 +45,14 @@ namespace CmsWeb.Areas.Setup.Controllers
             var m = new MemberType { Id = id.Value };
             DbUtil.Db.MemberTypes.InsertOnSubmit(m);
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Setup/MemberType/");
+            return Redirect("/MemberType/");
         }
         [HttpPost]
         public ActionResult Move(int fromid, int toid)
         {
             DbUtil.Db.ExecuteCommand("UPDATE dbo.OrganizationMembers SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
             DbUtil.Db.ExecuteCommand("UPDATE dbo.EnrollmentTransaction SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
-            return Redirect("/Setup/MemberType/");
+            return Redirect("/MemberType/");
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

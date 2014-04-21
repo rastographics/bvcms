@@ -40,14 +40,15 @@ namespace UtilityExtensions
             }
             else
             {
-                msg.From = From;
-                if (SysFromEmail.HasValue())
-                {
-                    var sysmail = new MailAddress(SysFromEmail);
-                    if (From.Host != sysmail.Host)
-                        msg.Sender = sysmail;
+			msg.From = From;
+			if (SysFromEmail.HasValue())
+			{
+				var sysmail = new MailAddress(SysFromEmail);
+				if (From.Host != sysmail.Host)
+					msg.Sender = sysmail;
                 }
             }
+
             msg.Headers.Add("X-SMTPAPI",
                         "{{\"unique_args\":{{\"host\":\"{0}\",\"mailid\":\"{1}\",\"pid\":\"{2}\"}}}}"
                         .Fmt(CmsHost, id, pid));

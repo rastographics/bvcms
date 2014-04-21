@@ -1,0 +1,40 @@
+﻿@using CmsData.Registration
+@using UtilityExtensions
+@model CmsWeb.Models.OnlineRegPersonModel
+@{
+    var ask = (AskCheckboxes)ViewBag.ask;
+    var name = Html.NameFor2(m => m.Checkbox);
+}
+<div class="form-group">
+    @Html.Label(ask.Label, new { @class = "control-label col-sm-3 labelsize" })
+    <div class="col-sm-9">
+        @foreach (var a in ask.list)
+        {
+            var filled = a.IsSmallGroupFilled(Model.GroupTags);
+            if (a.SmallGroup == "nocheckbox")
+            {
+                <div>@Html.Raw(a.Description)</div>
+            }
+            else
+            {
+                if (a.SmallGroup != "comment")
+                {
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" value="@a.SmallGroup" name="@name" @(filled ? "disabled='disabled'" : "")
+                                   @(Model.CheckboxChecked(a.SmallGroup) ? "checked='checked'" : "") />
+                            <span @(filled ? " class=strike" : "")>
+                                @Html.Raw(a.Description)
+                            </span>
+                            @if (a.Fee > 0)
+                            {
+                                @:&nbsp;($@a.Fee.ToString2("N2"))
+                         }
+                        </label>
+                    </div>
+                }
+            }
+        }
+        <div>@Html.ValidationMessageFor(m => m.Checkbox[ask.UniqueId])</div>
+    </div>
+</div>

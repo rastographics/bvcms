@@ -32,13 +32,13 @@
         function GotoPage(pg) {
             var q = $('#form').formSerialize2();
             q = q.appendQuery("Page=" + pg);
-            $.navigate("/Manage/Emails", q);
+            $.navigate("/Manage/Emails/List", q);
         }
 
         function SetPageSize(sz) {
             var q = $('#form').formSerialize2();
             q = q.appendQuery("PageSize=" + sz);
-            $.navigate("/Manage/Emails", q);
+            $.navigate("/Manage/Emails/List", q);
         }
     </script>
 }

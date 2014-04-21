@@ -20,14 +20,14 @@ namespace CmsData
 {
     public partial class CMSDataContext
     {
-        public string CmsHost
-        {
-            get
-            {
-                var h = ConfigurationManager.AppSettings["cmshost"];
-                return h.Replace("{church}", Host, ignoreCase: true);
-            }
-        }
+//        public string CmsHost
+//        {
+//            get
+//            {
+//                var h = ConfigurationManager.AppSettings["cmshost"];
+//                return h.Replace("{church}", Host, ignoreCase: true);
+//            }
+//        }
         public void Email(string from, Person p, string subject, string body)
         {
             Email(from, p, null, subject, body, false);
@@ -220,7 +220,7 @@ namespace CmsData
 
             if (body.Contains("http://publiclink", ignoreCase: true))
             {
-                var link = Util.URLCombine(CmsHost, "/Manage/Emails/View/" + emailqueue.Id);
+                var link = Util.URLCombine(CmsHost, "/EmailView/" + emailqueue.Id);
                 var re = new Regex("http://publiclink", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
                 emailqueue.Body = re.Replace(body, link);
             }
@@ -424,7 +424,7 @@ namespace CmsData
             {
                 var from = new MailAddress(From, FromName);
                 string subj = "sent emails: " + subject;
-                var uri = new Uri(new Uri(CmsHost), "/Manage/Emails/Details/" + id);
+                var uri = new Uri(new Uri(CmsHost), "/Emails/Details/" + id);
                 string body = @"<a href=""{0}"">{1} emails sent</a>".Fmt(uri, count);
                 var sysFromEmail = Util.SysFromEmail;
 

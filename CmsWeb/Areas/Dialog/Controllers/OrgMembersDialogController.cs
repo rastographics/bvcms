@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -10,8 +7,10 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    [RouteArea("Dialog", AreaPrefix= "OrgMembersDialog"), Route("{action}")]
 	public class OrgMembersDialogController : CmsStaffController
 	{
+        [Route("~/OrgMembersDialog/{id:int}")]
 		public ActionResult Index(int id, bool? inactives, bool? pendings, bool? prospects, int? sg)
 		{
 			var m = new OrgMembersDialogModel

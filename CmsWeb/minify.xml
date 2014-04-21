@@ -4,6 +4,7 @@
  <Target Name="Minify">
     <ItemGroup>
       <!-- Single files, listed in order of dependency -->
+      
       <new2css Include="Content/css/normalize.css"/>
       <new2css Include="Content/css/bvcms.css"/>
       <new2css Include="Content/bootstrap-modal/css/bootstrap-modal.css"/>

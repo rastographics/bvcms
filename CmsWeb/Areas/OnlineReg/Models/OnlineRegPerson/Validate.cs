@@ -5,7 +5,6 @@ using CmsData.Registration;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData.Codes;
-using CmsWeb;
 
 namespace CmsWeb.Models
 {
@@ -14,50 +13,50 @@ namespace CmsWeb.Models
         public bool IsValidForContinue { get; set; }
         private void ValidateBirthdayRange(ModelStateDictionary ModelState)
         {
-            var i = Index();
+            var i = Index;
             if (org != null)
                 if (!birthday.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
-                    ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].dob), "birthday required");
+                    ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].DateOfBirth), "birthday required");
                 else if (birthday.HasValue)
                 {
                     if ((org.BirthDayStart.HasValue && birthday < org.BirthDayStart)
                         || (org.BirthDayEnd.HasValue && birthday > org.BirthDayEnd))
-                        ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].dob), "birthday outside age allowed range");
+                        ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].DateOfBirth), "birthday outside age allowed range");
                 }
         }
         private void ValidBasic(ModelStateDictionary ModelState)
         {
-            var i = Index();
-            if (!first.HasValue())
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].first), "first name required");
-            if (!last.HasValue())
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].last), "last name required");
+            var i = Index;
+            if (!FirstName.HasValue())
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].FirstName), "first name required");
+            if (!LastName.HasValue())
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].LastName), "last name required");
 
             var mindate = DateTime.Parse("1/1/1753");
             int n = 0;
             if (birthday.HasValue && birthday < mindate)
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].dob), "invalid date");
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].DateOfBirth), "invalid date");
             if (birthday.HasValue && birthday > mindate)
                 n++;
-            if (Util.ValidEmail(email))
+            if (Util.ValidEmail(EmailAddress))
                 n++;
-            var d = phone.GetDigits().Length;
-            if (phone.HasValue() && d >= 10)
+            var d = Phone.GetDigits().Length;
+            if (Phone.HasValue() && d >= 10)
                 n++;
             if (d > 20)
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].phone), "too many digits in phone");
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].Phone), "too many digits in phone");
 
             if (n == 0)
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].dob), "we require one of valid birthdate, email or phone to find your record");
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].DateOfBirth), "we require one of valid birthdate, email or phone to find your record");
 
-            if (!Util.ValidEmail(email))
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].email), "valid email required");
-            if (phone.HasValue() && d < 10)
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].phone), "10+ digits required");
+            if (!Util.ValidEmail(EmailAddress))
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].EmailAddress), "valid email required");
+            if (Phone.HasValue() && d < 10)
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].Phone), "10+ digits required");
         }
         public void ValidateModelForFind(ModelStateDictionary ModelState, OnlineRegModel m, bool selectfromfamily = false)
         {
-            var i = Index();
+            var i = Index;
             IsValidForContinue = true; // true till proven false
             if (UserSelectsOrganization())
                 if ((classid ?? 0) == 0)
@@ -71,8 +70,9 @@ namespace CmsWeb.Models
                     IsValidForExisting = ModelState.IsValid;
                     return;
                 }
-            var dobname = Parent.GetNameFor(mm => mm.List[i].dob);
-            var foundname = Parent.GetNameFor(mm => mm.List[i].Found);
+            var dobname = Parent.GetNameFor(mm => mm.List[i].DateOfBirth);
+            //var foundname = Parent.GetNameFor(mm => mm.List[i].Found);
+            var foundname = "fammember-" + PeopleId;
             if (!PeopleId.HasValue)
                 ValidBasic(ModelState);
             if (ComputesOrganizationByAge() && !birthday.HasValue)
@@ -80,17 +80,17 @@ namespace CmsWeb.Models
             var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
             if (orgid == Util.CreateAccountCode && age < minage)
                 ModelState.AddModelError(dobname, "must be {0} to create account".Fmt(minage));
-            if (!IsFamily && (!email.HasValue() || !Util.ValidEmail(email)))
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].email), "Please specify a valid email address.");
+            if (!IsFamily && (!EmailAddress.HasValue() || !Util.ValidEmail(EmailAddress)))
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].EmailAddress), "Please specify a valid email address.");
             if (ModelState.IsValid)
             {
                 Found = person != null;
                 if (count == 1)
                 {
-                    address = person.PrimaryAddress;
-                    city = person.PrimaryCity;
-                    state = person.PrimaryState;
-                    zip = person.PrimaryZip;
+                    AddressLineOne = person.PrimaryAddress;
+                    City = person.PrimaryCity;
+                    State = person.PrimaryState;
+                    ZipCode = person.PrimaryZip;
                     gender = person.GenderId;
                     married = person.MaritalStatusId == 2 ? 2 : 1;
 
@@ -103,7 +103,8 @@ namespace CmsWeb.Models
                         ))
                     {
                         ModelState.AddModelError(foundname, "No Email Address on record");
-                        NotFoundText = @"We have found your record but we have no email address for you.<br/>
+                        NotFoundText = @"<strong>No Email Address on Record</strong><br/>
+We have found your record but we have no email address for you.<br/>
 This means that we cannot proceed until we have that to protect your data.<br/>
 Please call the church to resolve this before we can complete your information.";
                         IsValidForContinue = false;
@@ -120,6 +121,8 @@ Please call the church to resolve this before we can complete your information."
                     else if (MemberOnly() && person.MemberStatusId != MemberStatusCode.Member)
                     {
                         ModelState.AddModelError(foundname, "Sorry, must be a member of church");
+                        if(setting.UseBootstrap)
+                            NotFoundText = @"<strong>Sorry, must be a member of this church</strong>";
                         IsValidForContinue = false;
                     }
                     else if (org != null)
@@ -152,11 +155,14 @@ Please call the church to resolve this before we can complete your account.<br /
                         {
                             IsValidForContinue = true;
                         }
-                        else if (om != null && setting.AllowReRegister == false
+                        else if (om != null && setting.AllowReRegister == false && !Util.IsDebug()
                             && om.Organization.RegistrationTypeId != RegistrationTypeCode.ChooseVolunteerTimes
                             && !Parent.SupportMissionTrip)
                         {
                             ModelState.AddModelError(foundname, "This person is already registered");
+                            if(setting.UseBootstrap)
+                                NotFoundText = @"<strong>This person is already registered</strong>";
+                            CancelText = "Regiser a different person";
                             IsValidForContinue = false;
                         }
                         else if (setting.ValidateOrgIds.Count > 0)
@@ -166,27 +172,35 @@ Please call the church to resolve this before we can complete your account.<br /
                                 if (!person.OrganizationMembers.Any(mm => reqmemberids.Contains(mm.OrganizationId)))
                                 {
                                     ModelState.AddModelError(foundname, "Must be member of specified organization");
+                                    if(setting.UseBootstrap)
+                                        NotFoundText = @"<strong>Must be a member of specified organization to register</strong>";
                                     IsValidForContinue = false;
                                 }
                             var reqnomemberids = setting.ValidateOrgIds.Where(ii => ii < 0).ToList();
                             if (reqnomemberids.Count > 0)
                                 if (person.OrganizationMembers.Any(mm => reqnomemberids.Contains(-mm.OrganizationId)))
                                 {
-                                    ModelState.AddModelError(foundname, "Must be not be member of specified organization");
+                                    ModelState.AddModelError(foundname, "Must not be a member of specified organization");
+                                    if(setting.UseBootstrap)
+                                        NotFoundText = @"<strong>Must not be a member of specified organization to register</strong>";
                                     IsValidForContinue = false;
                                 }
                         }
                     }
                     if (m.List.Count(ii => ii.PeopleId == PeopleId) > 1)
                     {
-                        ModelState.AddModelError(foundname, "Person already in Pending Registrations");
+                        ModelState.AddModelError(foundname, "Person already in Pending Registration");
+                        CancelText = "Regiser a different person";
+                        if(setting.UseBootstrap)
+                            NotFoundText = @"<strong>Person already in Pending Registration</strong>";
                         IsValidForContinue = false;
                     }
                 }
                 else if (count > 1)
                 {
                     ModelState.AddModelError(foundname, "More than one match, sorry");
-                    NotFoundText = @"We have found more than one record that matches your information
+                    NotFoundText = @"<strong>MORE THAN ONE MATCH</strong><br />
+We have found more than one record that matches your information
 This is an unexpected error and we don't know which one is you.
 Please call the church to resolve this before we can complete your registration.";
                     IsValidForContinue = false;
@@ -194,10 +208,12 @@ Please call the church to resolve this before we can complete your registration.
                 else if (count == 0)
                 {
                     ModelState.AddModelError(foundname, "record not found");
-                    NotFoundText =
-@"The first and last name in addition to either birthday, email, or phone,
-must match a record in the system.
-Please search with a different email, phone, or birthday.";
+                    NotFoundText = @" <strong>RECORD NOT FOUND</strong><br />
+                            We were not able to find you in our database. Please check the information you entered.
+                            <ul>
+                                <li>If everything looks good, select ""New Profile""</li>
+                                <li>If you make a correction, select ""Search Again""</li>
+                            </ul>";
                 }
             }
             ValidateBirthdayRange(ModelState);
@@ -206,13 +222,13 @@ Please search with a different email, phone, or birthday.";
         public bool IsValidForNew { get; set; }
         internal void ValidateModelForNew(ModelStateDictionary ModelState)
         {
-            var i = Index();
-            var dobname = Parent.GetNameFor(mm => mm.List[i].dob);
+            var i = Index;
+            var dobname = Parent.GetNameFor(mm => mm.List[i].DateOfBirth);
             var foundname = Parent.GetNameFor(mm => mm.List[i].Found);
             var isnewfamily = whatfamily == 3;
             ValidBasic(ModelState);
             DateTime dt;
-            if (RequiredDOB() && dob.HasValue() && !Util.BirthDateValid(bmon, bday, byear, out dt))
+            if (RequiredDOB() && DateOfBirth.HasValue() && !Util.BirthDateValid(bmon, bday, byear, out dt))
                 ModelState.AddModelError(dobname, "birthday invalid");
             else if (!birthday.HasValue && RequiredDOB())
                 ModelState.AddModelError(dobname, "birthday required");
@@ -232,69 +248,55 @@ Please search with a different email, phone, or birthday.";
 
             ValidateBirthdayRange(ModelState);
             int n = 0;
-            if (phone.HasValue() && phone.GetDigits().Length >= 10)
+            if (Phone.HasValue() && Phone.GetDigits().Length >= 10)
                 n++;
-            if (ShowAddress && homephone.HasValue() && homephone.GetDigits().Length >= 10)
+            if (ShowAddress && HomePhone.HasValue() && HomePhone.GetDigits().Length >= 10)
                 n++;
 
             if (RequiredPhone() && n == 0)
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].phone), "cell or home phone required");
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].Phone), "cell or home phone required");
 
-            if (homephone.HasValue() && homephone.GetDigits().Length > 20)
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].homephone), "homephone too long");
+            if (HomePhone.HasValue() && HomePhone.GetDigits().Length > 20)
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].HomePhone), "homephone too long");
 
-            if (email.HasValue())
-                email = email.Trim();
-            if (!email.HasValue() || !Util.ValidEmail(email))
-                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].email), "Please specify a valid email address.");
+            if (EmailAddress.HasValue())
+                EmailAddress = EmailAddress.Trim();
+            if (!EmailAddress.HasValue() || !Util.ValidEmail(EmailAddress))
+                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].EmailAddress), "Please specify a valid email address.");
             if (isnewfamily)
             {
-                if (!address.HasValue() && RequiredAddr())
-                    ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].address), "address required.");
-                if (RequiredZip() && address.HasValue())
+                if (!AddressLineOne.HasValue() && RequiredAddr())
+                    ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].AddressLineOne), "address required.");
+                if (RequiredZip() && AddressLineOne.HasValue())
                 {
-                    var addrok = city.HasValue() && state.HasValue();
-                    if (zip.HasValue())
+                    var addrok = City.HasValue() && State.HasValue();
+                    if (ZipCode.HasValue())
                         addrok = true;
                     if (!addrok)
-                        ModelState.AddModelError("zip", "city/state required or zip required (or \"na\" in all)");
+                        ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ZipCode), "zip required (or \"na\")");
 
-                    if (ModelState.IsValid && address.HasValue()
-                        && (country == "United States" || !country.HasValue()))
+                    if (ModelState.IsValid && AddressLineOne.HasValue()
+                        && (Country == "United States" || !Country.HasValue()))
                     {
-                        var r = AddressVerify.LookupAddress(address, address2, city, state, zip);
+                        var r = AddressVerify.LookupAddress(AddressLineOne, AddressLineTwo, City, State, ZipCode);
                         if (r.Line1 != "error")
                         {
                             if (r.found == false)
                             {
-                                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].zip), r.address + ", if your address will not validate, change the country to 'USA, Not Validated'");
+                                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ZipCode), r.address + ", to skip address check, Change the country to USA, Not Validated");
+                                ShowCountry = true;
                                 return;
                             }
-                            if (r.Line1 != address)
-                            {
-                                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].address), "address changed from '{0}'".Fmt(address));
-                                address = r.Line1;
-                            }
-                            if (r.Line2 != (address2 ?? ""))
-                            {
-                                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].address2), "address2 changed from '{0}'".Fmt(address2));
-                                address2 = r.Line2;
-                            }
-                            if (r.City != (city ?? ""))
-                            {
-                                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].city), "city changed from '{0}'".Fmt(city));
-                                city = r.City;
-                            }
-                            if (r.State != (state ?? ""))
-                            {
-                                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].state), "state changed from '{0}'".Fmt(state));
-                                state = r.State;
-                            }
-                            if (r.Zip != (zip ?? ""))
-                            {
-                                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].zip), "zip changed from '{0}'".Fmt(zip));
-                                zip = r.Zip;
-                            }
+                            if (r.Line1 != AddressLineOne)
+                                AddressLineOne = r.Line1;
+                            if (r.Line2 != (AddressLineTwo ?? ""))
+                                AddressLineTwo = r.Line2;
+                            if (r.City != (City ?? ""))
+                                City = r.City;
+                            if (r.State != (State ?? ""))
+                                State = r.State;
+                            if (r.Zip != (ZipCode ?? ""))
+                                ZipCode = r.Zip;
                         }
                     }
                 }
@@ -306,16 +308,26 @@ Please search with a different email, phone, or birthday.";
                 ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].married), "Please specify marital status");
 
             if (MemberOnly())
+            {
                 ModelState.AddModelError(foundname, "Sorry, must be a member of church");
+            }
             else if (org != null && setting.ValidateOrgIds.Count > 0)
+            {
                 ModelState.AddModelError(foundname, "Must be member of specified organization");
+            }
 
             IsValidForNew = ModelState.IsValid;
+            IsValidForContinue = ModelState.IsValid;
         }
         public void ValidateModelForOther(ModelStateDictionary modelState)
         {
-            var i = Index();
+            var i = Index;
             if (Parent.SupportMissionTrip)
+            {
+                OtherOK = true;
+                return;
+            }
+            if (RecordFamilyAttendance())
             {
                 OtherOK = true;
                 return;

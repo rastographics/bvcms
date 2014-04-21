@@ -1,0 +1,16 @@
+﻿@model CmsWeb.Models.OnlineRegPersonModel
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        <span class="pull-right">
+            @if (Model.ManageSubscriptions()) // allow submit here for manage subscriptions
+            {
+                if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsMissionTrip())
+                {
+                    // only allow adults to create an account
+                    <label>Create Account (optional) @Html.CheckBoxFor(m => m.CreatingAccount)</label>
+                }
+            }
+            @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitNew/" + Model.Index, "Submit New Profile")
+        </span>
+    </div>
+</div>

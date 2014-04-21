@@ -1,11 +1,7 @@
 ﻿@model CmsWeb.Models.OnlineRegPersonModel
-@using CmsData
-@using CmsData.Registration
-@using CmsWeb
-@using UtilityExtensions
 @{
-    var index = Model.Index();
-    var goer = DbUtil.Db.LoadPersonById(Model.Parent.GoerId ?? 0);
+    var index = Model.Index;
+    var goer = Model.Parent.GetGoer();
     var name = goer != null ? goer.Name : "selected participant";
 }
 

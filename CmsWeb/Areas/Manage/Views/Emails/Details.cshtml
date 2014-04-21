@@ -16,7 +16,7 @@
         });
     </script>
 }
-@Html.ActionLink("Back to List", "Index")
+@Helper.AnchorLink("Back to List", "/Emails")
 @{
     var ts = new TimeSpan(0);
     if (Model.queue.Sent.HasValue && Model.queue.Started.HasValue) {
@@ -57,7 +57,7 @@
 </table>
 @if (Model.queue.PublicX ?? false)
 {
-    <p>@Helper.AnchorLink("View Email", "/Manage/Emails/View/" + Model.id)</p>
+    <p>@Helper.AnchorLink("View Email", "/EmailView/" + Model.id)</p>
 }
 else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
 {

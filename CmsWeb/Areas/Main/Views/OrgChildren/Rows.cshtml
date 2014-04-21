@@ -1,6 +1,4 @@
 ﻿@model CmsWeb.Models.OrgChildrenModel
-@using AttributeRouting.Helpers
-@using UtilityExtensions
 @foreach(var o in Model.FetchOrgList())
 { 
     // Parent is purple, isOther is pink
@@ -26,15 +24,15 @@ else
 		<td class="tip" title="@o.ToolTip">
 @if (o.isOther)
 {
-            <a href="/OrgChildren/Index/@o.ParentId">@o.Name</a>
+            <a href="/OrgChildren/@o.ParentId">@o.Name</a>
 }
 else
 {
-            <a href="/OrgChildren/Index/@o.Id">@o.Name</a>
+            <a href="/OrgChildren/@o.Id">@o.Name</a>
 }
         </td>
         <td>@o.Leader</td>
         <td>@o.Location</td>
-        <td><a href="/OrgChildren/Index/@o.ParentId">@o.ParentName</a></td>
+        <td><a href="/OrgChildren/@o.ParentId">@o.ParentName</a></td>
 	</tr>
 }

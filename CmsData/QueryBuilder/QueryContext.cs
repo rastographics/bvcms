@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UtilityExtensions;
-using Dapper;
 
 namespace CmsData
 {
@@ -191,6 +187,21 @@ namespace CmsData
             c.PreviousName = i.Name;
             c.Save(this);
             return c;
+        }
+        public Guid QueryIdByName(string name)
+        {
+            var i = (from existing in Queries
+                     where existing.Name == name
+                     select existing).FirstOrDefault();
+            if (i != null)
+                return i.QueryId;
+
+            var qb = ScratchPadCondition();
+            qb.Reset(this);
+            var nc = qb.AddNewClause();
+            qb.Description = Util.ScratchPad2;
+            qb.Save(DbUtil.Db);
+            return qb.Id;
         }
     }
 }

@@ -12,7 +12,7 @@
 
     <p>
         <label for="UserId">Add New Person who can Email for others:</label>
-        <a href="/Setup/UsersCanEmailFor/PersonCanEmailForList/0" class="bt editcanemail">Select People</a>
+        <a href="/PersonCanEmailForList/0" class="bt editcanemail">Select People</a>
     </p>
 <p><i>Note, on the users screen, the top person in list is the person who will be able to email on behalf of others in the list</i></p>
 <br/>
@@ -27,7 +27,7 @@
     { 
         <tr>
             <td>
-                <a class="editcanemail" href="/Setup/UsersCanEmailFor/PersonCanEmailForList/@item.CanEmail">@item.PersonCanEmail.Name</a>
+                <a class="editcanemail" href="/PersonCanEmailForList/@item.CanEmail">@item.PersonCanEmail.Name</a>
             </td>
             <td>
                 @item.OnBehalfOfPerson.Name

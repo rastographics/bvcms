@@ -26,7 +26,7 @@
 }
 <br />
 <b>Sending to @(count) @( count == 1 ? "person" : "people" )</b>
-<form action="/SMS/Send2/@Model" method="post">
+<form action="/SMS/Send/@Model" method="post">
     @Html.DropDownList( "iSendGroup", new SelectList( groups, "ID", "Name" ) )<br />
     <br />
     <b>Title:</b><br />

@@ -1,8 +1,9 @@
 ﻿@model CmsWeb.Areas.Search.Models.QueryModel
 @using CmsData
+@using CmsWeb
 @using UtilityExtensions
 @{
-    var useemployer = DbUtil.Db.Setting("UseEmployerNotTeacher", "false") == "true";
+    var useemployer = ViewExtensions2.DbSetting("UseEmployerNotTeacher", "false") == "true";
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
 <form class="non-modal ajax">

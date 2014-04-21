@@ -25,13 +25,13 @@
     if (User.IsInRole("Access"))
     {
     <tr>
-        <td class="indent"><a href="/Organization/Index/@om.OrgId" title="@om.DivisionName|@om.OrgType" class="tooltip">@om.Name</a></td>
+        <td class="indent"><a href="/Organization/@om.OrgId" title="@om.DivisionName|@om.OrgType" class="tooltip">@om.Name</a></td>
         <td>@om.Location</td>
         <td><a href="/Person2/@om.LeaderId">@om.LeaderName</a></td>
         <td>@om.Schedule</td>
-        <td><a href="/OrgContent/Index/@om.OrgId">@om.EnrollDate.FormatDate()</a></td>
+        <td><a href="/OrgContent/@om.OrgId">@om.EnrollDate.FormatDate()</a></td>
         <td><a class="membertype" pid="@om.PeopleId" oid="@om.OrgId" 
-            href="/OrgMemberDialog/Index/@om.OrgId?pid=@om.PeopleId&from=na">
+            href="/OrgMemberDialog/@om.OrgId/@om.PeopleId">
             @om.MemberType</a></td>
         <td>@(om.AttendPct > 0 ? om.AttendPct.Value.ToString("N1") : "")</td>
     </tr>
@@ -42,11 +42,11 @@
         <td class="indent">
             @if (om.HasDirectory)
             {
-                <a title="@om.DivisionName" href="/MemberDirectory/Index/@om.OrgId">@om.Name</a>
+                <a title="@om.DivisionName" href="/MemberDirectory/@om.OrgId">@om.Name</a>
             }
             else
             {
-                <a title="@om.DivisionName" href="/OrgContent/Index/@om.OrgId">@om.Name</a>
+                <a title="@om.DivisionName" href="/OrgContent/@om.OrgId">@om.Name</a>
             }
         </td>
     <td>@om.Location</td>

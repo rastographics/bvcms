@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 using System.IO;
 using System.Web.Configuration;
@@ -16,6 +17,7 @@ using User = CmsData.User;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
+    [RouteArea("Manage", AreaPrefix = "Account"), Route("{action}/{id?}")]
     public class AccountController : CmsControllerNoHttps
     {
         [MyRequireHttps]
@@ -76,12 +78,14 @@ CKEditorFuncNum, baseurl + fn, error));
             return Content("error");
         }
 
+        [Route("~/Error")]
         public ActionResult Error(string e)
         {
             ViewBag.Message = e;
             return View();
         }
         [MyRequireHttps]
+        [Route("~/Logon")]
         public ActionResult LogOn()
         {
             if (!DbUtil.DatabaseExists())
@@ -101,25 +105,29 @@ CKEditorFuncNum, baseurl + fn, error));
                 return Redirect("/");
             }
 
-            if (!User.Identity.IsAuthenticated)
-            {
-#if DEBUG
-                var username = WebConfigurationManager.AppSettings["DebugUser"];
-                if (username.HasValue())
-                {
-                    AccountModel.SetUserInfo(username, Session);
-                    FormsAuthentication.SetAuthCookie(username, false);
-                    var returnUrl = Request.QueryString["returnUrl"];
-                    if(!DbUtil.Db.UserPreference("UseNewLookForSure").HasValue())
-                        DbUtil.Db.SetUserPreference("UseNewLookForSure", "true");
-                    return Redirect(returnUrl.HasValue() ? returnUrl : "/");
-                }
-#endif
-            }
             return View();
         }
+
+        public static bool TryImpersonate()
+        {
+            if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+                return false;
+            if (!Util.IsDebug())
+                return false;
+            if(!WebConfigurationManager.AppSettings["TryImpersonate"].ToBool())
+                return false;
+            var username = WebConfigurationManager.AppSettings["DebugUser"];
+            if (!username.HasValue())
+                return false;
+            var session = System.Web.HttpContext.Current.Session;
+            AccountModel.SetUserInfo(username, session);
+            FormsAuthentication.SetAuthCookie(username, false);
+            return true;
+        }
+
         [MyRequireHttps]
         [HttpPost]
+        [Route("~/Logon")]
         public ActionResult LogOn(string userName, string password, string returnUrl)
         {
             if (returnUrl.HasValue())
@@ -145,7 +153,7 @@ CKEditorFuncNum, baseurl + fn, error));
             if (!returnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person2/" + Util.UserPeopleId);
-            if(!DbUtil.Db.UserPreference("UseNewLookForSure").HasValue())
+            if (!DbUtil.Db.UserPreference("UseNewLookForSure").HasValue())
                 DbUtil.Db.SetUserPreference("UseNewLookForSure", "true");
             if (returnUrl.HasValue())
                 return Redirect(returnUrl);

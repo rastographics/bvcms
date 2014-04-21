@@ -21,7 +21,7 @@
 {
     @Fingerprint.Script("/Scripts/Search/PeopleSearch.js")
 }
-<form id="peoplesearch" method="post" action="/PeopleSearch/Index">
+<form id="peoplesearch" method="post" action="/PeopleSearch">
 <table id="searchvalues" class="roundbox pad5">
 <tr><td colspan="4"><h2>People Search</h2></td></tr>
     <tr>
@@ -65,7 +65,7 @@
     <tr>
         <th class="right"> Date of Birth: </th>
         <td> @Html.TextBox("birthdate", Model.m.birthdate, new { title = "YYYY or MM or MM/DD or MM/DD/YY" })</td>
-    @if (DbUtil.Db.Setting("UseStatusFlags", "false").ToBool())
+    @if (ViewExtensions2.DbSetting("UseStatusFlags", "false").ToBool())
     {
         <th> Status Flags: </th>
         <td>

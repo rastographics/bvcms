@@ -1,23 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Web;
-using System.Web.Configuration;
-using System.Web.Routing;
+using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Models;
 using Dapper;
 using OfficeOpenXml;
-using Org.BouncyCastle.OpenSsl;
 using UtilityExtensions;
 using CmsData;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using System.Web.UI;
 using System.Collections;
-using System.IO;
 
 namespace CmsWeb
 {
@@ -54,6 +49,16 @@ namespace CmsWeb
                 filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
                 filterContext.ActionDescriptor.ActionName);
             DbUtil.Db.UpdateLastActivity(Util.UserId);
+            if (AccountController.TryImpersonate())
+            {
+                var returnUrl = Request.QueryString["returnUrl"];
+                if (!DbUtil.Db.UserPreference("UseNewLookForSure").HasValue())
+                    DbUtil.Db.SetUserPreference("UseNewLookForSure", "true");
+                filterContext.Result = Redirect(returnUrl.HasValue() 
+                    ? returnUrl 
+                    : Request.RawUrl);
+            }
+
         }
         public string AuthenticateDeveloper(bool log = false, string addrole = "")
         {

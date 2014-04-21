@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Web;
 using CmsData;
+using NPOI.SS.Formula.Functions;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -67,6 +68,8 @@ namespace CmsWeb.Areas.Search.Models
             get
             {
                 var gid = SelectedId ?? Guid.Empty;
+                if (!TopClause.AllConditions.ContainsKey(gid))
+                    throw (new Exception("selected gid: " + gid.ToString() + " Not found"));
                 return TopClause.AllConditions[gid];
             }
         }

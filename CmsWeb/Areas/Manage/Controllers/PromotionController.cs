@@ -1,16 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
-using CmsData;
 using CmsWeb.Models;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
+    [RouteArea("Manage", AreaPrefix= "Promotion"), Route("{action=index}/{id?}")]
     public class PromotionController : CmsStaffController
     {
         public ActionResult Index()

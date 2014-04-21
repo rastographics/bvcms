@@ -1,0 +1,39 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Models.OnlineRegPersonModel
+@if ((Model.classid ?? 0) > 0)
+{
+    <tr>
+        <td>Chosen Class:</td>
+        <td>@Model.org.OrganizationName</td>
+    </tr>
+}
+<div>
+    <div class="col-sm-12">
+        <address>
+            @Html.Partial("Flow2/FinishedHeader", Model)
+            @if (Model.ShowAddress)
+            {
+                <br />@Model.marrieddisplay @:&nbsp; @Model.genderdisplay<br />
+                <br />@Model.AddressLineOne
+                if (Model.AddressLineTwo.HasValue())
+                {
+                    <br />@Model.AddressLineTwo
+                }
+                <br />@Util.FormatCSZ(Model.City, Model.State, Model.ZipCode)
+                if (Model.Country != "United States")
+                {
+                    <br />@Model.Country
+                }
+            }
+        </address>
+    </div>
+</div>
+@if (Model.OtherOK)
+{
+    @Html.Partial("Flow2/OtherHidden", Model)
+    @Html.Partial("Flow2/OtherDisplay", Model)
+}
+else
+{
+    @Html.Partial("Flow2/OtherEdit", Model)
+}

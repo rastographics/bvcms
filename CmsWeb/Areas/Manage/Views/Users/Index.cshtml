@@ -13,7 +13,7 @@
 {
     <link href="/Content/styles/jquery.multiSelect.css" rel="stylesheet" type="text/css" />
 }
-<form id="usersearch" method="post" action="/Manage/Users/Index">
+<form id="usersearch" method="post" action="/Users">
 	<table class="roundbox" cellspacing="5">
 		<tr><td colspan="2">
     		<h2>Users</h2>
@@ -22,7 +22,7 @@
 		<tr><td class="right">Roles:</td><td>@Html.ListBoxFor(x => x.Role, Model.Roles(), new { style = "display: none" })</td></tr>
 	    <tr><td class="right" colspan="2">
 	            <a id="clear" href="#" class="bt">Clear</a>
-	            <a id="search" href="/Manage/Users/Results" class="submitbutton bt blue">Search</a>
+	            <a id="search" href="/Users/Results" class="submitbutton bt blue">Search</a>
 	        </td>
 	    </tr>
 	</table>

@@ -45,9 +45,9 @@
                         @c.Status
                     }
                 </td>
-                <td><a href="/Finance/Contributions?id=@c.PeopleId">@c.Name</a></td>
+                <td><a href="/Contributions/@c.PeopleId">@c.Name</a></td>
                 <td>@c.ContributionDate.ToShortDateString()</td>
-                <td class="right"><a href="/Bundle/Index/@c.BundleId">@c.ContributionAmount.ToString("N2")</a></td>
+                <td class="right"><a href="/Bundle/@c.BundleId">@c.ContributionAmount.ToString("N2")</a></td>
                 <td>
                     @if (retrev)
                     {
@@ -64,8 +64,8 @@
                 <td>
                 @if (Model.SearchInfo.PeopleId.HasValue && !retrev && recorded)
                 {
-                    <a class="submitit" href="/Finance/Contributions/Return/@c.ContributionId">return</a>
-                    <a class="submitit" href="/Finance/Contributions/Reverse/@c.ContributionId">reverse</a>
+                    <a class="submitit" href="/Contributions/Return/@c.ContributionId">return</a>
+                    <a class="submitit" href="/Contributions/Reverse/@c.ContributionId">reverse</a>
                 }
                 </td>
             </tr>

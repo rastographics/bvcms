@@ -1,0 +1,14 @@
+﻿@model string
+@{
+    const string labelclasses = "control-label col-sm-3 labelsize";
+    var items = ViewBag.items as List<SelectListItem>;
+}
+<div class="form-group">
+    @(ViewBag.label != null
+        ? Html.Label(ViewBag.label as string, new {@class = labelclasses }) 
+        : Html.LabelFor(m => m, new {@class = labelclasses }))
+    <div class="col-sm-9">
+        @Html.DropDownListFor(m => m, items, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m)
+    </div>
+</div>

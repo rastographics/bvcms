@@ -1,0 +1,14 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Models.OnlineRegPersonModel
+
+@Model.FirstName&nbsp;@Model.LastName
+@if (Model.ShowCancelButton())
+{
+    @Helper.OnlineRegAjaxButton("/OnlineReg/Cancel/" + Model.Index, Model.CancelText, style: "btn-xs btn-warning pull-right")
+}
+<br /><abbr>DOB:</abbr> @Model.DateOfBirth @Html.Raw(Model.LoggedIn ? "(<span>{0}</span>)".Fmt(Model.age) : "")
+@if (Model.Phone.HasValue())
+{
+    <br /><abbr title="Phone">P:</abbr> @Model.Phone
+}
+<br />@Model.EmailAddress

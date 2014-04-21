@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Data.Linq;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
@@ -13,8 +9,10 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Finance")]
+    [RouteArea("Finance", AreaPrefix= "Bundle"), Route("{action}/{id?}")]
     public class BundleController : CmsStaffController
     {
+        [Route("~/Bundle/{id:int}")]
         public ActionResult Index(int id, bool? create)
         {
             var m = new BundleModel(id);

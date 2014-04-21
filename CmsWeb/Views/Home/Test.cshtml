@@ -24,9 +24,9 @@
         }
         else
         {
-            <td style="color: blue"><a href='/OnlineReg/Index/@o.OrganizationId'>register</a></td>
+            <td style="color: blue"><a href='/OnlineReg/@o.OrganizationId'>register</a></td>
         }
-        <td><a href='/Organization/Index/@o.OrganizationId'>@o.OrganizationName</a></td>
+        <td><a href='/Organization/@o.OrganizationId'>@o.OrganizationName</a></td>
     </tr>
         try
         {
@@ -48,7 +48,7 @@
             <tr>
                 <td colspan="4"></td>
                 <td>
-                    &nbsp;<a href="/RegSetting/Index/@o.OrganizationId" style="color: red">@ex.Message</a>
+                    &nbsp;<a href="/RegSettings/@o.OrganizationId" style="color: red">@ex.Message</a>
                 </td>
             </tr>
         }

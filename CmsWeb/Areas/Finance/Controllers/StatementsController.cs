@@ -7,21 +7,20 @@ using System.Web.Mvc;
 using CmsWeb.Areas.Finance.Models.Report;
 using CmsData;
 using UtilityExtensions;
-using System.Web.Configuration;
 using System.Text;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Finance")]
+    [RouteArea("Finance", AreaPrefix= "Statements"), Route("{action}")]
     public class StatementsController : CmsController
     {
-        public ActionResult Index(string startswith)
+        [Route("~/Statements")]
+        public ActionResult Index()
         {
-            if (startswith.HasValue())
-                ViewBag.startswith = startswith;
             return View();
         }
-        [HttpPost]
+        [HttpPost, Route("Start")]
         public ActionResult ContributionStatements(bool? pdf, DateTime? fromDate, DateTime? endDate, string startswith, string sort, int? tagid)
         {
             if (!fromDate.HasValue || !endDate.HasValue)
@@ -38,6 +37,8 @@ namespace CmsWeb.Areas.Finance.Controllers
             DbUtil.Db.SubmitChanges();
             var cul = DbUtil.Db.Setting("Culture", "en-US");
             var host = Util.Host;
+            var cmshost = Util.ServerLink();
+
             var output = Output(pdf);
             if (tagid == 0)
                 tagid = null;
@@ -47,7 +48,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Thread.CurrentThread.Priority = ThreadPriority.Lowest;
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
-                var m = new ContributionStatementsExtract(host, fromDate.Value, endDate.Value, pdf ?? false, output, startswith, sort, tagid);
+                var m = new ContributionStatementsExtract(host, cmshost, fromDate.Value, endDate.Value, pdf ?? false, output, startswith, sort, tagid);
                 m.DoWork();
             });
             return Redirect("/Statements/Progress");

@@ -32,17 +32,17 @@
         @foreach(var o in Model)
         {
             <tr>
-                <td><a href="/OrgSearch/Index?progid=@o.ProgId">
+                <td><a href="/OrgSearch/@o.ProgId">
                         <span class="@(o.Program == prevprog ? "dim" : "")">@o.Program</span>
                     </a>
                 </td>
-                <td><a href="/OrgSearch/Index?progid=@(o.ProgId)&div=@o.DivId">
+                <td><a href="/OrgSearch/@(o.ProgId)/@o.DivId">
                         <span class="@(o.Division == prevdiv ? "dim" : "")">@o.Division</span>
                     </a>
                 </td>
                 <td>@o.Members</td>
                 <td>@o.Previous</td>
-                <td><a href="/Organization/Index/@o.OrgId">
+                <td><a href="/Organization/@o.OrgId">
                         @(o.Organization.HasValue() ? o.Organization : "noname")
                     </a>
                 </td>

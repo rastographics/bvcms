@@ -2,7 +2,9 @@
 @using UtilityExtensions
 @using CmsWeb
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Email Volunteer Subs";
 }
 @section scripts
@@ -36,8 +38,7 @@
 <h2>@Model.org.OrganizationName</h2>
 <div>
 </div>
-@using (Html.BeginForm("EmailVolunteerSubs"))
-{
+<form action="/OnlineReg/GetVolSub" method="post">
     @Html.Hidden("aid", Model.attend.AttendId);
     @Html.Hidden("pid", Model.attend.PeopleId);
     <input type="hidden" name="ticks" value="@Model.ticks"/>
@@ -66,4 +67,4 @@
     <div style="clear: both"></div>
     <hr />
     <input type="Submit" name="submit" value="Send Emails" />
-}
+</form>

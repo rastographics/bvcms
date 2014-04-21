@@ -37,10 +37,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			}
 #endif
 			var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti);
+
 			SetHeaders(pf.OrgId ?? 0);
 
 			ViewBag.Url = pf.Url;
-			ViewBag.timeout = INT_timeout;
+			ViewBag.timeout = timeout;
 			if (OnlineRegModel.GetTransactionGateway() != "serviceu")
 				return View("ProcessPayment", pf);
 			ViewBag.TranId = ti.Id;
@@ -135,7 +136,7 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
     			ti = PaymentForm.CreateTransaction(DbUtil.Db, ti, Amount);
 			ConfirmDuePaidTransaction(ti, TransactionID, sendmail: true);
 			SetHeaders(ti.OrgId ?? 0);
-			ViewData["timeout"] = INT_timeout;
+			ViewData["timeout"] = timeout;
 			ViewData["Url"] = ti.Url;
 			return View(ti);
 		}

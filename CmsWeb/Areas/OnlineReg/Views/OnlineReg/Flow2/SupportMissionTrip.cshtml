@@ -1,0 +1,56 @@
+﻿@model CmsWeb.Models.OnlineRegPersonModel
+@using CmsData
+@using UtilityExtensions
+@{
+    var goer = DbUtil.Db.LoadPersonById(Model.Parent.GoerId ?? 0);
+    var name = goer != null ? goer.Name : "selected participant";
+}
+
+@if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount())
+{
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript())
+            {
+                <div class="checkbox">
+                    <label>
+                        @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
+                    </label>
+                </div>
+            }
+        </div>
+    </div>
+}
+@if (goer == null)
+{
+    <div class="form-group">
+        @Html.Label("Choose Participant", new { @class = "control-label col-sm-3 labelsize" })
+        <div class="col-sm-9">
+            @Html.DropDownListFor(m => m.MissionTripGoerId, Model.MissionTripGoers())
+        </div>
+    </div>
+}
+@Html.EditorFor(m => m.MissionTripSupportGoer, new { label = "Your gift to support " + name })
+@Html.EditorFor(m => m.MissionTripNoNoticeToGoer,
+    new { label = "If you don't want {0} to be notified of your gift, check this box.".Fmt(name) })
+@Html.EditorFor(m => m.MissionTripSupportGeneral,
+    new
+    {
+        label = "Your gift to support other Mission Trips",
+        help = "note: these will show as two separate contributions"
+    })
+@Html.EditorFor(m => m.MissionTripPray, new { label = "I will pray for the trip" })
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+        @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript())
+        {
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
+                </label>
+            </div>
+        }
+        @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitOtherInfo/" + @Model.Index, "Submit", style: "btn-primary pull-right")
+        @Html.DivValidationMessage("Form")
+    </div>
+</div>

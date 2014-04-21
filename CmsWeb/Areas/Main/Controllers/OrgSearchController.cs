@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using CmsWeb.Models;
 using CmsData;
 using UtilityExtensions;
@@ -12,6 +13,7 @@ using System.Text.RegularExpressions;
 namespace CmsWeb.Areas.Main.Controllers
 {
     [SessionExpire]
+    [RouteArea("Main", AreaPrefix="OrgSearch"), Route("{action=index}/{id?}")]
     public class OrgSearchController : CmsStaffController
     {
         [Serializable]
@@ -27,6 +29,8 @@ namespace CmsWeb.Areas.Main.Controllers
             public int? OnlineReg { get; set; }
         }
         private const string STR_OrgSearch = "OrgSearch2";
+
+        [Route("~/OrgSearch/{progid:int?}/{div:int?}")]
         public ActionResult Index(int? div, int? progid)
         {
             Response.NoCache();
@@ -254,7 +258,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 DbUtil.Db.SubmitChanges();
                 DbUtil.LogActivity("Creating new meeting for {0}".Fmt(dt));
             }
-            return Redirect("/Meeting/Index/{0}?showall=true".Fmt(newMtg.MeetingId));
+            return Redirect("/Meeting/{0}?showall=true".Fmt(newMtg.MeetingId));
         }
 
         [HttpPost]

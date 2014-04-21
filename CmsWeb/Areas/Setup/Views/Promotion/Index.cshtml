@@ -8,17 +8,17 @@
     <script type="text/javascript">
         //id=elements_id&value=user_edited_content
         $(function () {
-            $(".clickEdit").editable("/Setup/Promotion/Edit/", {
+            $(".clickEdit").editable("/PromotionSetup/Edit/", {
                 indicator: "<img src='/images/loading.gif'>",
                 tooltip: "Click to edit...",
                 style: 'display: inline',
                 width: '200px',
                 height: 25
             });
-            $(".clickSelect").editable("/Setup/Promotion/EditDiv/", {
+            $(".clickSelect").editable("/PromotionSetup/EditDiv/", {
                 indicator: '<img src="/Content/images/loading.gif">',
                 loadtype: 'post',
-                loadurl: "/Setup/Promotion/DivisionCodes/",
+                loadurl: "/PromotionSetup/DivisionCodes/",
                 loaddata: function () {
                     return { id: $('#Programs').val() };
                 },
@@ -28,15 +28,15 @@
             });
             $("a.delete").click(function (ev) {
                 if (confirm("are you sure?"))
-                    $.post("/Setup/Promotion/Delete/" + $(this).attr("id"), null, function (ret) {
-                        window.location = "/Setup/Promotion/";
+                    $.post("/PromotionSetup/Delete/" + $(this).attr("id"), null, function (ret) {
+                        window.location = "/PromotionSetup/";
                     });
                 return false;
             });
             $("a.promote").click(function (ev) {
                 if (confirm("are you sure?"))
-                    $.post("/Setup/Promotion/Promote/" + $(this).attr("id"), null, function (ret) {
-                        window.location = "/Setup/Promotion/";
+                    $.post("/PromotionSetup/Promote/" + $(this).attr("id"), null, function (ret) {
+                        window.location = "/Promotion/";
                     });
                 return false;
             });

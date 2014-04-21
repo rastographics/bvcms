@@ -16,6 +16,9 @@ namespace CmsData
         private const string RegisterLinkRe = "<a[^>]*?href=\"https{0,1}://registerlink2{0,1}/{0,1}\"[^>]*>.*?</a>";
         private readonly Regex registerLinkRe = new Regex(RegisterLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
+        private const string RegisterTagRe = "(?:<|&lt;)registertag[^>]*(?:>|&gt;).+?(?:<|&lt;)/registertag(?:>|&gt;)";
+        private readonly Regex registerTagRe = new Regex(RegisterTagRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
         private const string RsvpLinkRe = "<a[^>]*?href=\"https{0,1}://rsvplink/{0,1}\"[^>]*>.*?</a>";
         private readonly Regex rsvpLinkRe = new Regex(RsvpLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
@@ -46,7 +49,7 @@ namespace CmsData
             if (text == null)
                 text = "(no content)";
             stringlist = Regex.Split(text,
-                @"({{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7})".Fmt(RegisterLinkRe, RsvpLinkRe, SendLinkRe, SupportLinkRe, VolReqLinkRe, VolReqLinkRe, VolSubLinkRe, VoteLinkRe),
+                @"({{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8})".Fmt(RegisterLinkRe, RegisterTagRe, RsvpLinkRe, SendLinkRe, SupportLinkRe, VolReqLinkRe, VolReqLinkRe, VolSubLinkRe, VoteLinkRe),
                 RegexOptions.IgnoreCase | RegexOptions.Multiline);
         }
 
@@ -100,7 +103,7 @@ namespace CmsData
                     return p.PrimaryAddress;
 
                 case "{address2}":
-                    if(p.PrimaryAddress2.HasValue())
+                    if (p.PrimaryAddress2.HasValue())
                         return "<br>" + p.PrimaryAddress2;
                     return "";
 
@@ -131,7 +134,7 @@ namespace CmsData
                     return CreateUserTag(emailqueueto);
 
                 case "{emailhref}":
-                    return Util.URLCombine(db.CmsHost, "Manage/Emails/View/" + emailqueueto.Id);
+                    return Util.URLCombine(db.CmsHost, "/EmailView/" + emailqueueto.Id);
 
                 case "{first}":
                     return p.PreferredName.Contains("?") || p.PreferredName.Contains("unknown", true) ? "" : p.PreferredName;
@@ -188,6 +191,9 @@ namespace CmsData
 
                     if (registerLinkRe.IsMatch(code))
                         return RegisterLink(code, emailqueueto);
+
+                    if (registerTagRe.IsMatch(code))
+                        return RegisterTag(code, emailqueueto);
 
                     if (rsvpLinkRe.IsMatch(code))
                         return RsvpLink(code, emailqueueto);
@@ -342,6 +348,18 @@ namespace CmsData
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
+        private string RegisterTag(string code, EmailQueueTo emailqueueto)
+        {
+            var doc = new HtmlDocument();
+            if (code.Contains("&lt;"))
+                code = HttpUtility.HtmlDecode(code);
+            doc.LoadHtml(code);
+            HtmlNode ele = doc.DocumentNode.FirstChild;
+            string inside = ele.InnerHtml;
+            var id = ele.Id.ToInt();
+            string url = RegisterLinkUrl(db, id, emailqueueto.PeopleId, emailqueueto.Id, "registerlink");
+            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+        }
         private string RsvpLink(string code, EmailQueueTo emailqueueto)
         {
             //<a dir="ltr" href="http://rsvplink" id="798" rel="meetingid" title="This is a message">test</a>
@@ -524,7 +542,7 @@ namespace CmsData
                 list.Add(qs, ot);
             }
 
-            var url = Util.URLCombine(db.CmsHost, "/OnlineReg/RequestResponse?ans={0}&guid={1}".Fmt(d["ans"], ot.Id.ToCode()));
+            var url = Util.URLCombine(db.CmsHost, "/OnlineReg/VolRequestResponse/{0}/{1}".Fmt(d["ans"], ot.Id.ToCode()));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 

@@ -92,7 +92,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == coupon);
             if (c == null)
                 return Json(new { error = "coupon not found" });
-            if (m.orgid != c.OrgId)
+            if (m.Orgid != c.OrgId)
                 return Json(new { error = "coupon org not match" });
             if (DateTime.Now.Subtract(c.Created).TotalHours > 24)
                 return Json(new { error = "coupon expired" });

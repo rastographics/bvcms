@@ -8,8 +8,10 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Admin,Finance")]
+    [RouteArea("Finance", AreaPrefix= "Fund"), Route("{action}/{id?}")]
     public class FundController : CmsStaffController
     {
+        [Route("~/Funds")]
         public ActionResult Index(string sort, int? status)
         {
         	var m = from f in DbUtil.Db.ContributionFunds 
@@ -80,7 +82,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 };
                 DbUtil.Db.ContributionFunds.InsertOnSubmit(f);
                 DbUtil.Db.SubmitChanges();
-				return Json(new {edit = "/Finance/Fund/Edit/" + id});
+				return Json(new {edit = "/Fund/Edit/" + id});
             }
             catch(Exception ex)
             {
@@ -103,7 +105,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             DbUtil.Db.SubmitChanges();
             return RedirectToAction("Index");
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Update(int FundId)
         {
             var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == FundId);
@@ -116,7 +118,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
             return View("Edit", fund);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ContentResult EditOrder(string id, int? value)
         {
             var iid = id.Substring(1).ToInt();
@@ -125,7 +127,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             DbUtil.Db.SubmitChanges();
             return Content(value.ToString());
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ContentResult EditStatus(string id, int value)
         {
             var iid = id.Substring(1).ToInt();

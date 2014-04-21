@@ -24,7 +24,7 @@
         $("input[name='Commit']").removeAttr("disabled");
     });
     $("#volunteer").change(function () {
-        window.location = "/OnlineReg/ManageVolunteer/" + $("#OrgId").val() + "?pid=" + $(this).val();
+        window.location = "/OnlineReg/ManageVolunteer/" + $("#OrgId").val() + "/" + $(this).val();
     });
     var lastChecked = null;
     $("[name='Commit']").click(function (e) {

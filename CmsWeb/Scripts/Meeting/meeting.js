@@ -158,9 +158,9 @@
     });
     $('#currmembers').change(function () {
         if ($(this).is(':checked'))
-            window.location = "/Meeting/Index/" + $("#meetingid").val() + "?CurrentMembers=true";
+            window.location = "/Meeting/" + $("#meetingid").val() + "?CurrentMembers=true";
         else
-            window.location = "/Meeting/Index/" + $("#meetingid").val();
+            window.location = "/Meeting/" + $("#meetingid").val();
     });
     $('#editing').change(function () {
         if ($(this).is(':checked')) {

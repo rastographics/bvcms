@@ -1,20 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using System.Web.Security;
 using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
-using System.Configuration;
-using System.Net.Mail;
-using System.Runtime.Serialization;
-using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using CmsWeb.Areas.Manage.Controllers;
 using CmsData.Codes;
 using CmsWeb.Code;
 
@@ -50,7 +42,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 			SetHeaders(pf.OrgId ?? 0);
 			ViewBag.Url = pf.Url;
-			ViewBag.timeout = INT_timeout;
+			ViewBag.timeout = timeout;
 
 			if ((pf.AmtToPay ?? 0) <= 0 && (pf.Donate ?? 0) <= 0)
 			{
@@ -127,7 +119,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				        TempData["error"] = confirm.Substring(6);
 				        return Redirect("/Error");
 				    }
-				    return View(confirm);
+				    return View(confirm, m);
 				}
 
 			    ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);
@@ -415,11 +407,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				m.UseCoupon(t.TransactionId, t.Amt ?? 0);
 			}
 			if (m.IsCreateAccount() || m.ManagingSubscriptions())
-				ViewData["email"] = m.List[0].person.EmailAddress;
+				m.email = m.List[0].person.EmailAddress;
 			else
-				ViewData["email"] = m.List[0].email;
+				m.email = m.List[0].EmailAddress;
+		    ViewData["email"] = m.email;
 
-            if(m.masterorgid.HasValue && m.orgid.HasValue && !m.settings[m.orgid.Value].Subject.HasValue())
+            if(m.masterorgid.HasValue && m.Orgid.HasValue && !m.settings[m.Orgid.Value].Subject.HasValue())
     		    ViewData["orgname"] = m.masterorg.OrganizationName;
             else
     		    ViewData["orgname"] = m.org != null ? m.org.OrganizationName : m.masterorg.OrganizationName;
@@ -449,10 +442,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				return Content("no pending confirmation found");
 
 			var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
-			var confirm = ConfirmTransaction(m, transactionId, ed);
-            if (confirm.StartsWith("error"))
+			var confirm2 = ConfirmTransaction(m, transactionId, ed);
+            if (confirm2.StartsWith("error"))
             {
-                TempData["error"] = confirm.Substring(5);
+                TempData["error"] = confirm2.Substring(5);
                 return Redirect("/Error");
             }
             ViewBag.Url = m.URL;
@@ -461,7 +454,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			DbUtil.Db.SubmitChanges();
 
 			SetHeaders(m);
-			return View(confirm, m);
+			return View(confirm2, m);
 		}
 	}
 }

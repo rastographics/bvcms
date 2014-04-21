@@ -1,12 +1,10 @@
-﻿@using UtilityExtensions
-@using CmsData
-@using CmsData.Classes.MinistrESpace;
+﻿@using CmsData.Classes.MinistrESpace;
 @model CmsData.Organization
 @{
     var isedit = User.IsInRole("Edit");
     var msh = new MinistrESpaceHelper();
 }
-    @foreach (var c in Model.OrganizationExtras.OrderBy(pp => pp.Field))
+    @foreach (var c in Model.GetOrganizationExtras())
     {
     <tr>
     @if (isedit)

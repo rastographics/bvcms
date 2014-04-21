@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Finance.Models;
@@ -10,6 +7,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Finance")]
+    [RouteArea("Finance", AreaPrefix= "Bundles"), Route("{action=index}")]
     public class BundlesController : CmsStaffController
     {
         public ActionResult Index()
@@ -41,7 +39,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             DbUtil.Db.BundleHeaders.InsertOnSubmit(b);
             DbUtil.Db.SubmitChanges();
             TempData["createbundle"] = true;
-            return Redirect("/Bundle/Index/" + b.BundleHeaderId);
+            return Redirect("/Bundle/" + b.BundleHeaderId);
         }
     }
 }

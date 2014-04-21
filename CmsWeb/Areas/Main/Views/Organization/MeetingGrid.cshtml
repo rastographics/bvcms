@@ -24,7 +24,7 @@
 @foreach(var m in Model.Meetings())
 { 
 <tr>
-    <td><a href="/Meeting/Index/@m.MeetingId">@m.MeetingDate.FormatDate()</a></td>
+    <td><a href="/Meeting/@m.MeetingId">@m.MeetingDate.FormatDate()</a></td>
     <td>@m.MeetingDate.ToString2("t")</td>
     <td>@m.HeadCount.ToStringNoZero()</td>
     <td>@m.NumPresent</td>
@@ -34,7 +34,7 @@
     <td>
     @if (User.IsInRole("Attendance"))
     {
-        <a href="/DeleteMeeting/Index/@m.MeetingId" class="delmeeting"><img border="0" src="/Content/images/delete.gif" /></a>
+        <a href="/DeleteMeeting/@m.MeetingId" class="delmeeting"><img border="0" src="/Content/images/delete.gif" /></a>
     }
     </td>
 </tr>

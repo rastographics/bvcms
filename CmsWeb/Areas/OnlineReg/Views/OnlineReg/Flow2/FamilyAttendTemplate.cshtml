@@ -1,0 +1,53 @@
+﻿<div id="newattend" style="display:none">
+    <div class="newattend">
+        <div class="form-group">
+            <label class="control-label col-sm-3 labelsize">Attended</label>
+            <div class="col-sm-9">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="true" name="{0}.Attend" checked="checked" />
+                    </label>
+                </div>
+                <input type="hidden" value="false" name="{0}.Attend" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3 labelsize">Name</label>
+            <div class="col-sm-9">
+                <input type="text" name="{0}.Name" class="form-control" placeholder="First [Last]" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3 labelsize">Email</label>
+            <div class="col-sm-9">
+                <input type="text" name="{0}.Email" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3 labelsize">Birthday</label>
+            <div class="col-sm-9">
+                <input type="text" name="{0}.Birthday" class="form-control" placeholder="M/D/YY" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <label class="radio-inline">
+                    <input type="radio" name="{0}.GenderId" value="1" /> Male
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="{0}.GenderId" value="2" /> Female
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <label class="radio-inline">
+                    <input type="radio" name="{0}.MaritalId" value="10" /> Single
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="{0}.MaritalId" value="20" /> Married
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

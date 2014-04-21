@@ -9,7 +9,7 @@ Count: <strong>@Model.Count()</strong>
 
 @if(User.IsInRole("Developer"))
 { 
-<a href="/AddToOrgPrevFromTag/Index/@Model.OrganizationId" class="addprevfromtag bt" title="Add Previous Members From Tag">add from tag</a>
+<a href="/AddToOrgPrevFromTag/@Model.OrganizationId" class="addprevfromtag bt" title="Add Previous Members From Tag">add from tag</a>
 } 
 Show Previous Prospects:@Html.CheckBox("ShowProspects")
 </p>
@@ -36,8 +36,9 @@ Show Previous Prospects:@Html.CheckBox("ShowProspects")
 { 
 <tr>
     <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@om.PeopleId">@om.Name</a></td>
-    <td><a href="/TransactionHistory/Index/@om.PeopleId?oid=@Model.OrganizationId" target="_blank">
-        @om.MemberType</a></td>
+    <td><a href="/TransactionHistory/@om.PeopleId/@Model.OrganizationId" target="_blank">
+            @om.MemberType
+        </a></td>
     <td>@om.MemberStatus<br />
         @om.Age - @om.BirthDate
     </td>

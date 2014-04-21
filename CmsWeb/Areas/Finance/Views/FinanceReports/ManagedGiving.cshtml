@@ -12,8 +12,11 @@
         $(function() {
             $("a.delete").click(function(ev) {
                 ev.preventDefault();
+                var href = this.href;
                 if (confirm("are you sure?")) {
-                    $.post($(this).attr("href"), {}, function(ret) {
+                    debugger;
+                    $.post(href, {}, function (ret) {
+                        debugger;
                         window.location = "/FinanceReports/ManagedGiving";
                     });
                 }
@@ -49,7 +52,7 @@
 			<td>@(rg.SemiEvery == "S" ? rg.Day1.ToString() : "")</td>
 			<td>@(rg.SemiEvery == "S" ? rg.Day2.ToString() : "")</td>
 			<td>
-                <a class="delete" href="/Finance/Vault/DeleteVaultData/@rg.PeopleId"><img src="/Content/images/delete.gif" /></a></td>
+                <a class="delete" href="/Vault/DeleteVaultData/@rg.PeopleId"><img src="/Content/images/delete.gif" /></a></td>
 		</tr>
 	}
 	</tbody>

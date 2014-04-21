@@ -23,7 +23,7 @@ pre {
 }
 @Html.Hidden("FamilyId", Model.familyid)
 <table class="roundbox" cellspacing="5">
-    <tr><td><h2>The @((Model.Family.HeadOfHousehold ?? Model.Family.People.First()).Name) Family</h2></td></tr>
+    <tr><td><h2>The @Model.FamilyName() Family</h2></td></tr>
     <tr><td>
         <table cellspacing="5">
         <tr><td>
@@ -65,7 +65,7 @@ pre {
     </td></tr>
     <tr><td class="right">
         <a href="/Family/QuerySearch/@Model.familyid" class="bt">Convert to Search</a>
-        <a id="AddMembers2" title="Add Family Member" href="/SearchAdd/Index/@Model.familyid?type=family" class="bt">Add Member(s)</a>
+        <a id="AddMembers2" title="Add Family Member" href="/SearchAdd/@Model.familyid?type=family" class="bt">Add Member(s)</a>
         </td>
     </tr>
     <tr><td colspan="2">
@@ -87,7 +87,7 @@ pre {
         </table>
     </td></tr>
     <tr><td class="right">
-        <a id="AddRelatedFamily2" title="Add related family" href="/SearchAdd/Index/@Model.familyid?type=relatedfamily" class="bt">Add Related Family</a>
+        <a id="AddRelatedFamily2" title="Add related family" href="/SearchAdd/@Model.familyid?type=relatedfamily" class="bt">Add Related Family</a>
         </td>
     </tr>
 </table>

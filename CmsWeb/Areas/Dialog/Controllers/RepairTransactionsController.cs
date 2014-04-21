@@ -1,25 +1,16 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using CmsWeb.Areas.Reports.Models;
-using System.IO;
 using CmsData;
 using UtilityExtensions;
-using CmsWeb.Models;
-using System.Text;
-using System.Web.UI;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
 	[Authorize(Roles = "Edit")]
+    [RouteArea("Dialog", AreaPrefix= "RepairTransactions"), Route("{action}/{id}")]
 	public class RepairTransactionsController : CmsController
 	{
         [Authorize(Roles="Admin")]
+        [Route("~/RepairTransactions/{id:int}")]
         public ActionResult Index(int id)
         {
 			var host = Util.Host;

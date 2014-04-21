@@ -14,7 +14,7 @@
         var f = $('#results');
         var q = f.serialize();
         $.block();
-        $.post("/finance/bundles/results", q, function(ret) {
+        $.post("/bundles/results", q, function(ret) {
             $('#results').html(ret).ready(function() {
                 $('#results > table > tbody > tr:even').addClass('alt');
                 $(".tip").tooltip({ showBody: "|", showURL: false });

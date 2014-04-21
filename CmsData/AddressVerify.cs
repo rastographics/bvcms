@@ -65,6 +65,8 @@ namespace CmsData
 				var ret = (AddressResult)serializer.Deserialize(reader);
 			    if (ret.found == null)
 			        ret.found = false;
+			    if (ret.found == true && ret.error.HasValue())
+			        ret.found = false;
 				return ret;
 			}
 			catch (Exception)

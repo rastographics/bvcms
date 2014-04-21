@@ -16,10 +16,12 @@ using Dapper;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix="Email"), Route("{action}/{id?}")]
 	public class EmailController : CmsStaffController
 	{
 		[ValidateInput(false)]
-		public ActionResult Index2(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml)
+        [Route("~/Email/{id:guid}")]
+		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml)
 		{
 			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
 			if (!body.HasValue())
@@ -163,6 +165,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			// save these from HttpContext to set again inside thread local storage
 			var useremail = Util.UserEmail;
 			var isinroleemailtest = User.IsInRole("EmailTest");
+		    var cmshost = Util.ServerLink();
 
 			System.Threading.Tasks.Task.Factory.StartNew(() =>
 			{
@@ -171,6 +174,7 @@ namespace CmsWeb.Areas.Main.Controllers
 				{
 					var Db = new CMSDataContext(Util.GetConnectionString(host));
 					Db.Host = host;
+				    Db.CmsHost = cmshost;
 					var cul = Db.Setting("Culture", "en-US");
 					Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
 					Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -187,6 +191,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 					var Db = new CMSDataContext(Util.GetConnectionString(host));
 					Db.Host = host;
+				    Db.CmsHost = cmshost;
 					var equeue = Db.EmailQueues.Single(ee => ee.Id == id);
 					equeue.Error = ex.Message.Truncate(200);
 					Db.SubmitChanges();

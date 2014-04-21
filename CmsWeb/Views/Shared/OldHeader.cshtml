@@ -30,7 +30,7 @@
                                     <li><a id="cleartag" href="#">Empty Active Tag</a></li>
                                     <li><a href="/Tags">Manage Active Tag</a></li>
                                     <li><a href="/Home/TargetPerson/@targetperson.ToString()">Target Person Tab is @(targetperson ? "ON" : "OFF")</a></li>
-                                    @Helper.LiAnchorLink("Activity Log", "/Manage/Users/LastActivity", User.IsInRole("Admin"))
+                                    @Helper.LiAnchorLink("Activity Log", "/Users/LastActivity", User.IsInRole("Admin"))
                                     @Helper.LiAnchorLink("Use New Look", "/APITest/UseNewLook", ViewExtensions2.CanNewLook())
                                 </ul>
                             </div>

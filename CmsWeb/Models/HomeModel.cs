@@ -435,7 +435,6 @@ namespace CmsWeb.Models
                         }).Take(3).ToList();
             list.InsertRange(0, new List<SearchInfo22>() 
             {
-                //new SearchInfo22() { url = "/PeopleSearch?name=%QUERY", line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
                 new SearchInfo22() { url = "/Query", line1 = "Last Search" }, 
@@ -562,7 +561,7 @@ namespace CmsWeb.Models
                      orderby o.OrganizationName
                      select new SearchInfo22()
                                 {
-                                    url = "/Organization/Index/" + o.OrganizationId,
+                                    url = "/Organization/" + o.OrganizationId,
                                     line1 = o.OrganizationName,
                                     line2 = o.Division.Name,
                                 };
@@ -577,11 +576,27 @@ namespace CmsWeb.Models
                 list[list.Count - 1].addmargin = true;
             list.AddRange(new List<SearchInfo22>() 
             {
-                new SearchInfo22() { url = "/PeopleSearch?name={0}".Fmt(text), line1 = "Find Person"  }, 
+                new SearchInfo22() { url = "/PeopleSearch/{0}".Fmt(text), line1 = "Find Person"  }, 
                 new SearchInfo22() { url = "/Query", line1 = "Search Builder" }, 
                 new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
             });
             return list;
+        }
+
+        public string ChurchBlogUrl
+        {
+            get { return DbUtil.Db.Setting("ChurchBlogUrl", "#"); }
+        }
+        public bool ShowTip
+        {
+            get
+            {
+                return !DbUtil.Db.UserPreference("hide-tip-home", "false").ToBool();
+            }
+        }
+        public string BlogAppUrl
+        {
+            get { return DbUtil.Db.Setting("BlogAppUrl", "#"); }
         }
     }
 }

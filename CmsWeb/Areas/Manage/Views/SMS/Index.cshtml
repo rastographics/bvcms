@@ -40,7 +40,7 @@
         };
     </script>
 }
-<form id="form" method="post" action="/Manage/SMS/Index">
+<form id="form" method="post" action="/SMS/List">
 <div class="roundbox floatleft">
 <h2>SMS Messages</h2>
 <table cellspacing="5">
@@ -55,7 +55,7 @@
 <tr>
     <td align="right" colspan="2">
         <a href="#" class="submitbutton bt">Filter</a>
-        <a href="/Manage/Emails" class="bt">Clear</a>
+        <a href="/Emails" class="bt">Clear</a>
     </td>
 </tr>
 </table>
@@ -93,7 +93,7 @@
             @i.SentNone
         </td>
         <td align="center">
-            <a href="/Manage/SMS/Details/@i.Id">Details</a>
+            <a href="/SMS/Details/@i.Id">Details</a>
         </td>
     </tr>
 }

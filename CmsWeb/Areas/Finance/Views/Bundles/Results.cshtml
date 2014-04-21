@@ -28,20 +28,20 @@
     @foreach (var b in Model.Bundles())
     {
 		<tr>
-		    <td><a href="/Bundle/Index/@b.BundleId">@b.BundleId</a></td>
+		    <td><a href="/Bundle/@b.BundleId">@b.BundleId</a></td>
 		    <td><a href="/PostBundle/FundTotals/@b.BundleId">@b.HeaderType</a></td>
-    		<td><a href="/Contributions/Deposit.aspx?dt=@b.DepositDate.FormatDate()">@b.DepositDate.FormatDate()</a></td>
+    		<td><a href="/ContributionReports/Deposit.aspx?dt=@b.DepositDate.FormatDate()">@b.DepositDate.FormatDate()</a></td>
 		    <td>@b.PostingDate.FormatDate()</td>
 		    <td class="right">@b.TotalBundle.ToString2("N2")</td>
 		    <td class="right tip" 
 		        title="Items|total tax ded:@(((b.TotalItems ?? 0) - (b.TotalNonTaxDed ?? 0)).ToString("N2"))|total non taxded:@b.TotalNonTaxDed.ToString2("N2")">
-		        <a href="/Bundle/Index/@b.BundleId">@b.TotalItems.ToString2("N2")</a>
+		        <a href="/Bundle/@b.BundleId">@b.TotalItems.ToString2("N2")</a>
 		    </td>
 		    <td><small>@(b.TotalNonTaxDed > 0 ? "*" : "")</small></td>
             <td>@b.ItemCount.ToString("n0")</td>
         @if (b.Status == "Open")
         {
-            <td><a href="/PostBundle/Index/@b.BundleId" title="click to edit">@b.Status</a></td>
+            <td><a href="/PostBundle/@b.BundleId" title="click to edit">@b.Status</a></td>
         }
         else
         {

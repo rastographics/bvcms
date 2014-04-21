@@ -1,0 +1,24 @@
+﻿@using CmsWeb.Models
+@model OnlineRegPersonModel
+@{
+    var id = ((int)(ViewBag.which));
+    string text = "you should not see this";
+    switch (id)
+    {
+        case OnlineRegPersonModel.MyFamily:
+            text = "Add to My Family";
+            break;
+        case OnlineRegPersonModel.PreviousFamily:
+            text = "Add to Previous Family";
+            break;
+        case OnlineRegPersonModel.NewFamily:
+            text = "Add to New Family";
+            break;
+
+    }
+}
+<div class="radio">
+    <label>
+        @Html.RadioButtonFor(m => m.whatfamily, id.ToString()) @text
+    </label>
+</div>

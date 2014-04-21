@@ -1,6 +1,8 @@
 ﻿@model CmsWeb.Models.ManagePledgesModel
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
+    Layout = Model.Setting.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Registration";
 }
 @section scripts
@@ -34,7 +36,7 @@
         <table>
             <tr>
                 <td>
-                    @Html.Raw(Model.setting.InstructionOptions)</td>
+                    @Html.Raw(Model.Setting.InstructionOptions)</td>
             </tr>
         </table>
         <table cellpadding="5">

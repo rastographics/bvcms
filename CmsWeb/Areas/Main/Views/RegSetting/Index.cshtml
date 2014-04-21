@@ -1,29 +1,15 @@
 ﻿@using System.Text
 @using CmsWeb
-@using UtilityExtensions
 @{
     ViewBag.Title = "RegSetting";
     Layout = ViewExtensions2.Layout();
 }
-@section scripts
-{
-    <script type="text/javascript">
-        $(function() {
-            $(".bt").button();
-            $("#editgui").click(function(ev) {
-                ev.preventDefault();
-                $("form").attr("action", '/RegSetting/EditGui/@(ViewData["OrganizationId"])');
-                $("form").submit();
-            });
-        });
-    </script>
-}
-<h2>Registration Settings for <a href="/Organization/Index/@ViewData["OrganizationId"]">@ViewData["orgname"]</a></h2>
+<h2>Registration Settings for <a href="/Organization/@ViewData["OrganizationId"]">@ViewData["orgname"]</a></h2>
 <h4 style="color:Red">The main editor for these is now located under the Settings tab on the Organization Page</h4>
-<form action="/RegSetting/Edit/@ViewData["OrganizationId"]" method="post">
+<form action="/RegSettings/Edit/@ViewData["OrganizationId"]" method="post">
     <input id="edit" type="submit" class="bt" value="Edit Text" />
-    <a href="/RegSetting/ConvertFromMdy/@ViewBag.OrganizationId" class="bt">Convert From MDY</a>
-    <a href="/RegSetting/ConvertFromDmy/@ViewBag.OrganizationId" class="bt">Convert From DMY</a>
+    <a href="/RegSettings/ConvertFromMdy/@ViewBag.OrganizationId" class="bt">Convert From MDY</a>
+    <a href="/RegSettings/ConvertFromDmy/@ViewBag.OrganizationId" class="bt">Convert From DMY</a>
 @{ var lines = (string[])ViewData["lines"]; }
 <input type="hidden" name="regsetting" value="@ViewData["regsetting"]" />
 </form>

@@ -414,9 +414,9 @@ namespace CmsData
                 ev.Data = value;
         }
 
-        public string GetExtra(string field)
+        public string GetExtra(CMSDataContext Db, string field)
         {
-            var oev = OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.Field == field);
+            var oev = Db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.Field == field);
             if (oev == null)
                 return null;
             return oev.Data;
@@ -481,5 +481,9 @@ namespace CmsData
                 regLimitCount = db.OrganizationMemberCount2(OrganizationId) ?? 0;
             return regLimitCount.Value;
         }
+	    public IEnumerable<OrganizationExtra> GetOrganizationExtras()
+	    {
+	        return OrganizationExtras.OrderBy(pp => pp.Field);
+	    }
     }
 }

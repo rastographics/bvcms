@@ -4,6 +4,6 @@
 @foreach (var i in Model)
 {
     // Id1 and Id2 are swapped now so that the newer record will be merged to the older record by default
-    <li><a href="/Manage/Merge?PeopleId1=@i.d.Id2&PeopleId2=@i.d.Id1" target="merge">@i.name (@i.d.Id2, @i.d.Id1)</a> @(i.notdup?"not a duplicate":"")</li>    
+    <li><a href="/Merge/@i.d.Id2/@i.d.Id1" target="merge">@i.name (@i.d.Id2, @i.d.Id1)</a> @(i.notdup?"not a duplicate":"")</li>    
 }
 </ol>

@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UtilityExtensions;
 using System.Text;
 
 namespace CmsData.Registration
 {
-	public class Settings
+    public class Settings
 	{
 		public List<Ask> AskItems { get; set; }
 		public bool AskVisible(string name)
@@ -69,6 +71,7 @@ namespace CmsData.Registration
 		public string InstructionSubmit { get; set; }
 		public string InstructionSorry { get; set; }
 		public string InstructionAll { get; set; }
+		public string ThankYouMessage { get; set; }
 
 		public OrgFees OrgFees { get; set; }
 		public List<AgeGroup> AgeGroups { get; set; }
@@ -531,6 +534,9 @@ namespace CmsData.Registration
 					case Parser.RegKeywords.Sorry:
 						InstructionSorry = parser.GetString();
 						break;
+					case Parser.RegKeywords.Thanks:
+						ThankYouMessage = parser.GetString();
+						break;
 					case Parser.RegKeywords.Body:
 						InstructionAll = parser.GetString();
 						break;
@@ -654,7 +660,8 @@ namespace CmsData.Registration
 
 			return sb.ToString();
 		}
-		private void AddFees(StringBuilder sb)
+
+        private void AddFees(StringBuilder sb)
 		{
 			AddValueCk(0, sb, "Fee", Fee);
 			AddValueCk(0, sb, "Deposit", Deposit);
@@ -733,6 +740,7 @@ namespace CmsData.Registration
 			AddSingleOrMultiLine(1, sb, "Special", InstructionSpecial);
 			AddSingleOrMultiLine(1, sb, "Submit", InstructionSubmit);
 			AddSingleOrMultiLine(1, sb, "Sorry", InstructionSorry);
+			AddSingleOrMultiLine(1, sb, "Thanks", ThankYouMessage);
 		}
 		private void AddTerms(StringBuilder sb)
 		{
@@ -812,6 +820,5 @@ namespace CmsData.Registration
 				return new MasterOrgInfo();
 			return i;
 		}
-
     }
 }

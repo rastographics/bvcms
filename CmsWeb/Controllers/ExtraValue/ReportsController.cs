@@ -1,6 +1,5 @@
 using System;
 using System.Web.Mvc;
-using AttributeRouting.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Models.ExtraValues;
@@ -9,7 +8,7 @@ namespace CmsWeb.Controllers
 {
     public partial class ExtraValueController
     {
-        [GET("ExtraValue/Summary")]
+        [HttpGet, Route("ExtraValue/Summary")]
         public ActionResult Summary()
         {
             if (!ViewExtensions2.UseNewLook())
@@ -20,7 +19,7 @@ namespace CmsWeb.Controllers
             return View("Reports/Summary", m);
         }
 
-        [GET("ExtraValue/Grid/{id}")]
+        [HttpGet, Route("ExtraValue/Grid/{id}")]
         public ActionResult Grid(Guid id, string sort)
         {
             var rdr = ReportsModel.GridReader(id, sort);
@@ -28,7 +27,7 @@ namespace CmsWeb.Controllers
             return View("Reports/Grid", rdr);
         }
 
-        [GET("ExtraValue/Grid2/{id}")]
+        [HttpGet, Route("ExtraValue/Grid2/{id}")]
         public ActionResult Grid2(Guid id, string sort)
         {
             var rdr = ReportsModel.Grid2Reader(id, sort);
@@ -36,28 +35,28 @@ namespace CmsWeb.Controllers
             return View("Reports/Grid2", rdr);
         }
 
-        [GET("ExtraValue/QueryCodes")]
+        [HttpGet, Route("ExtraValue/QueryCodes")]
         public ActionResult QueryCodes(string field, string value)
         {
             var c = ReportsModel.QueryCodesCondition(field, value);
             return Redirect("/Query/" + c.Id);
         }
 
-        [GET("ExtraValue/QueryData")]
+        [HttpGet, Route("ExtraValue/QueryData")]
         public ActionResult QueryData(string field, string type)
         {
             var cc = ReportsModel.QueryDataCondition(field, type);
             return Redirect("/Query/" + cc.Id);
         }
 
-        [POST("ExtraValue/DeleteAll")]
+        [HttpPost, Route("ExtraValue/DeleteAll")]
         public ActionResult DeleteAll(string field, string type, string value)
         {
             var ret = ReportsModel.DeleteAll(field, type, value);
             return Content(ret);
         }
 
-        [POST("ExtraValue/RenameAll")]
+        [HttpPost, Route("ExtraValue/RenameAll")]
         public ActionResult RenameAll(string field, string newname )
         {
             ReportsModel.RenameAll(field, newname);

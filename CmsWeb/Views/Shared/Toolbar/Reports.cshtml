@@ -1,6 +1,6 @@
 ﻿@{
     var qid = ViewBag.queryid;
-    var wid = DbUtil.Db.Setting("WorshipId", "0").ToInt();
+    var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
 }
 <ul class="dropdown-menu dropdown-div-reports">
     <li>

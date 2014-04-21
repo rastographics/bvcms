@@ -142,7 +142,7 @@ namespace CmsData
                 foreach (var p in Db.FinancePeople())
                     Util.SendMsg(systemEmail, Db.CmsHost, Util.TryGetMailAddress(adminEmail),
                         "Recurring Giving Failed on " + Db.CmsHost,
-                        "<a href='{0}Manage/Transactions/Index/{2}'>message: {1}, tranid:{2}</a>".Fmt(Db.CmsHost, ret.Message, t.Id),
+                        "<a href='{0}Transactions/{2}'>message: {1}, tranid:{2}</a>".Fmt(Db.CmsHost, ret.Message, t.Id),
                         Util.ToMailAddressList(p.EmailAddress), 0, null);
             }
             return 1;

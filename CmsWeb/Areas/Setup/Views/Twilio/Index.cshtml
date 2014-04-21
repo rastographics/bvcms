@@ -36,7 +36,7 @@
     </script>
 }
 <br />
-<center><a href="#" dialogurl="/Setup/Twilio/Dialog?name=GroupDialog" dialogtitle="Create New Group" class="bt">New Group</a></center><br />
+<center><a href="#" dialogurl="/Twilio/Dialog?name=GroupDialog" dialogtitle="Create New Group" class="bt">New Group</a></center><br />
 <table width="100%">
 <tr>
 
@@ -53,9 +53,9 @@
     <td width="25%" valign="top">
         <div style="border:1px solid black; border-radius:7px; margin:1%;">
             <div style="border-radius:7px 7px 0 0; border-bottom:1px solid black; background-color:#E4E2D5; padding:5px;">
-                <b><a href="#" dialogurl="/Setup/Twilio/Dialog/@(item.Id)?name=GroupDialog" dialogtitle="Edit Group">@item.Name</a></b>
+                <b><a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=GroupDialog" dialogtitle="Edit Group">@item.Name</a></b>
                 <div style="float:right;">
-                    (<a href="#" dialogurl="/Setup/Twilio/Dialog/@(item.Id)?name=RemoveDialog" dialogtitle="Remove Group">Remove</a>)
+                    (<a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=RemoveDialog" dialogtitle="Remove Group">Remove</a>)
                 </div>
             </div>
             <div style="padding:5px;">
@@ -69,14 +69,14 @@
                     <tr>
                         <td><b>Numbers</b></td>
                         <td align="right">
-                            <a href="#" dialogurl="/Setup/Twilio/Dialog/@(item.Id)?name=NumberDialog" dialogtitle="Add New Number">Add</a>
+                            <a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=NumberDialog" dialogtitle="Add New Number">Add</a>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2" style="padding-left:10px;">
                             @foreach (var number in numbers)
                             {
-                                @number.Number @:(<a href="/Setup/Twilio/NumberRemove/@number.Id">Remove</a>)<br />
+                                @number.Number @:(<a href="/Twilio/NumberRemove/@number.Id">Remove</a>)<br />
                             }
                             &nbsp;<br />
                         </td>
@@ -84,14 +84,14 @@
                     <tr>
                         <td><b>Users</b></td>
                         <td align="right">
-                            <a href="#" dialogurl="/Setup/Twilio/Dialog/@(item.Id)?name=UserDialog" dialogtitle="Add New User">Add</a>
+                            <a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=UserDialog" dialogtitle="Add New User">Add</a>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2" style="padding-left:10px;">
                             @foreach (var person in people)
                             {
-                                @person.User.Name @:(<a href="/Setup/Twilio/UserRemove/@person.Id">Remove</a>)<br />
+                                @person.User.Name @:(<a href="/Twilio/UserRemove/@person.Id">Remove</a>)<br />
                             }
                             &nbsp;<br />
                         </td>

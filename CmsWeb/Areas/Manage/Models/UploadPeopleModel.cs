@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using CmsData;
 using LumenWorks.Framework.IO.Csv;
+using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -18,12 +20,14 @@ namespace CmsWeb.Models
         private CMSDataContext Db;
         private CMSDataContext Db2;
         private int PeopleId;
+        private bool noupdate;
 
-        public UploadPeopleModel(CMSDataContext Db, int PeopleId, string connectionstring)
+        public UploadPeopleModel(CMSDataContext Db, int PeopleId, bool noupdate, string connectionstring)
         {
             this.Db = Db;
             Db2 = new CMSDataContext(connectionstring);
             this.PeopleId = PeopleId;
+            this.noupdate = noupdate;
         }
 
         private void UpdateField(Family f, string[] a, string prop, string s)
@@ -185,9 +189,9 @@ namespace CmsWeb.Models
             var csv = new CsvReader(new StringReader(text), false, '\t');
             var list = csv.ToList();
 
-            var list0 = list.First().Select(kk => kk.ToLower()).ToList();
+            var list0 = list.First().Select(kk => kk).ToList();
             names = list0.ToDictionary(i => i.TrimEnd(),
-                                       i => list0.FindIndex(s => s == i));
+                                       i => list0.FindIndex(s => s == i), StringComparer.OrdinalIgnoreCase);
 
             if (names.ContainsKey("campus"))
             {
@@ -234,6 +238,8 @@ namespace CmsWeb.Models
         		"workphone", "email", "email2", "suffix", "middle", "joindate", "dropdate", "baptismdate", "weddingdate",
         		"memberstatus", "employer", "occupation",
         	};
+            var orgs = new Dictionary<string, int>();
+            var membertypes = new Dictionary<string, int>();
 
             foreach (var fam in q)
             {
@@ -264,6 +270,17 @@ namespace CmsWeb.Models
                     Person p = null;
                     var pid = Db.FindPerson3(first, last, dob, email, cell, homephone, null).FirstOrDefault();
 
+                    var potentialdup = false;
+                    if (noupdate && pid != null)
+                    {
+                        if (!testing)
+                        {
+                            var pd = Db.LoadPersonById(pid.PeopleId.Value);
+                            pd.AddEditExtraBool("FoundDup", true);
+                        }
+                        potentialdup = true;
+                        pid = null;
+                    }
                     if (pid != null) // found
                     {
                         p = Db.LoadPersonById(pid.PeopleId.Value);
@@ -299,7 +316,7 @@ namespace CmsWeb.Models
                             p.LogChanges(Db, psb, PeopleId);
                             p.Family.LogChanges(Db, fsb, p.PeopleId, PeopleId);
                             Db.SubmitChanges();
-                            Person.Tag(Db, p.PeopleId, "InsertPeopleUpdated", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                            p.AddEditExtraBool("InsertPeopleUpdated", true);
                         }
                     }
                     else // new person
@@ -377,13 +394,42 @@ namespace CmsWeb.Models
                     try
                     {
                         var nq = from name in names.Keys
-                                 where !standardnames.Contains(name)
+                                 where !standardnames.Contains(name, StringComparer.OrdinalIgnoreCase)
                                  select name;
                         foreach (var name in nq)
                         {
                             var b = name.Split('.');
                             if (name.EndsWith(".txt"))
                                 p.AddEditExtraData(b[0], a[names[name]].Trim());
+                            else if (name.EndsWith(".org"))
+                            {
+                                if (testing) 
+                                    continue;
+                                var d = a[names[name]].Trim().Trim();
+                                if (!d.HasValue()) 
+                                    continue;
+                                var oid = 0;
+                                if (orgs.ContainsKey(b[0]))
+                                    oid = orgs[b[0]];
+                                else
+                                {
+                                    var org = Db.Organizations.First();
+                                    var o = org.CloneOrg(Db);
+                                    o.OrganizationName = b[0].SplitUpperCaseToString();
+                                    oid = o.OrganizationId;
+                                    orgs.Add(b[0], oid);
+                                }
+                                var mtid = 0;
+                                if (membertypes.ContainsKey(d))
+                                    mtid = membertypes[d];
+                                else
+                                {
+                                    var mt = Organization.FetchOrCreateMemberType(Db, d);
+                                    mtid = mt.Id;
+                                    membertypes.Add(d, mtid);
+                                }
+                                OrganizationMember.InsertOrgMembers(Db, oid, p.PeopleId, mtid, DateTime.Today, null, false);
+                            }
                             else if (name.EndsWith(".dt"))
                             {
                                 var d = a[names[name]].Trim().ToDate();
@@ -405,7 +451,9 @@ namespace CmsWeb.Models
                         Db2.SubmitChanges();
                         if (!testing)
                         {
-                            Person.Tag(Db, p.PeopleId, "InsertPeopleAdded", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                            p.AddEditExtraBool("InsertPeopleAdded", true);
+                            if (potentialdup)
+                                p.AddEditExtraBool("FoundDup", true);
                             Db.SubmitChanges();
                         }
                     }

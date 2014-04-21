@@ -1,0 +1,18 @@
+﻿@model bool?
+@{
+    const string labelclasses = "control-label col-sm-3 labelsize";
+}
+<div class="form-group">
+    @(ViewBag.label != null
+        ? Html.Label(ViewBag.label as string, new { @class = labelclasses })
+        : Html.LabelFor(m => m, new { @class = labelclasses }))
+    <div class="col-sm-9">
+        <label class="radio-inline">
+            @Html.RadioButtonFor(m => m, true) Yes
+        </label>
+        <label class="radio-inline">
+            @Html.RadioButtonFor(m => m, false) No
+        </label>
+        @Html.ValidationMessageFor(m => m)
+    </div>
+</div>

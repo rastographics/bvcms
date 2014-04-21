@@ -81,7 +81,7 @@
     |Used to add a (1234) to the end of the OrgName passed to the payment processor">
     AccountingCode:</span> @Html.TextBox("AccountingCode", Model.AccountingCode)
 </li>
-@if (DbUtil.Db.Setting("ShowExtraValueFeeName", "false").ToBool())
+@if (ViewExtensions2.DbSetting("ShowExtraValueFeeName", "false").ToBool())
 {
     <li><span class="keyword big tip" title="ExtraValueFeeName
     |The fee will be taken from this Extra Value field">

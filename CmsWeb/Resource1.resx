@@ -298,4 +298,13 @@ FontSizeEmail: 9
 	FontSizeEmail: 5.5
 }</value>
   </data>
+  <data name="OnlineRegModel_ThankYouMessage" xml:space="preserve">
+    <value>
+    &lt;h2&gt;Transaction Completed&lt;/h2&gt;
+    &lt;p style='color: Black'&gt;
+        Thank you, your transaction is complete for {org}.
+        You should receive a confirmation email at {email} shortly.&lt;br /&gt;&lt;br /&gt;
+    &lt;/p&gt;
+    &lt;p style='color: Blue'&gt;&lt;a href='{url}'&gt;Start a New Transaction&lt;/a&gt;&lt;/p&gt;</value>
+  </data>
 </root>

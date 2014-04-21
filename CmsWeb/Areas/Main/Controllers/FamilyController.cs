@@ -1,27 +1,20 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
-using System.Text;
 using CmsWeb.Models.PersonPage;
-using CmsWeb.Models;
-using System.Diagnostics;
-using System.Web.Routing;
-using System.Threading;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
     [ValidateInput(false)]
+    [RouteArea("Main", AreaPrefix="Family"), Route("{action}/{id?}")]
     public class FamilyController : CmsStaffController
     {
-        public ActionResult Index(int? id)
+        [Route("~/Family/{id:int}")]
+        public ActionResult Index(int id)
         {
-            if (!id.HasValue)
-                return Content("no id");
-            var m = new FamilyModel { familyid = id.Value };
+            var m = new FamilyModel { familyid = id };
 			if (m.Family == null)
 				return Content("no family");
             return View(m);

@@ -1,5 +1,5 @@
 ﻿@{
-    var menuaddpeople = DbUtil.Db.Setting("MenuAddPeople", "true") == "true" || Util.IsDebug();
+    var menuaddpeople = ViewExtensions2.DbSetting("MenuAddPeople", "true") == "true" || Util.IsDebug();
     var isperson2 = HttpContext.Current.Request.Url.PathAndQuery.Contains("Person2", ignoreCase: true);
 }
 

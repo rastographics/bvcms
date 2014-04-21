@@ -1,7 +1,7 @@
 ﻿@model CmsWeb.Models.DivisionInfo
 <tr>
     <td class="tip" title="@Model.ToolTip"><img src="/Content/images/group.png" /></td>
-    <td><a href="/OrgSearch/Index/?div=@Model.Id&progid=@Model.ProgId">@Model.Id</a></td>
+    <td><a href="/OrgSearch/@Model.ProgId/@Model.Id">@Model.Id</a></td>
     <td>
         <span id='n@(Model.Id)' 
             class='clickEdit'>@Model.Name</span>
@@ -15,8 +15,8 @@
         <span id='z@(Model.Id)' 
             class='yesno'>@Model.NoDisplayZero</span>
     </td>
-    <td><a href="/Setup/Division/ToggleProg/@Model.Id" class="taguntag" title="Add to/Remove from Target Program">@Model.Tag</a></td>
-    <td><a href="/Setup/Division/MainProg/@Model.Id" class="mainprog" title="Make Target Main Program">@(Model.ChangeMain == true ? "Make Main" : "")</a></td>
+    <td><a href="/Division/ToggleProg/@Model.Id" class="taguntag" title="Add to/Remove from Target Program">@Model.Tag</a></td>
+    <td><a href="/Division/MainProg/@Model.Id" class="mainprog" title="Make Target Main Program">@(Model.ChangeMain == true ? "Make Main" : "")</a></td>
     <td>
 @if (Model.CanDelete)
 { 

@@ -13,9 +13,12 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [Authorize(Roles="Edit, ManageTransactions")]
+    [RouteArea("Manage", AreaPrefix = "Transactions"), Route("{action}/{id?}")]
     public class TransactionsController : CmsStaffController
     {
         [HttpGet]
+        [Route("~/Transactions")]
+        [Route("~/Transactions/{id:int}")]
         public ActionResult Index(int? id)
         {
             var m = new TransactionsModel(id);

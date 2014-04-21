@@ -1,37 +1,23 @@
-﻿@using CmsData
+﻿@model CmsWeb.Models.OnlineRegModel
 @using UtilityExtensions
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
-    ViewBag.Title = "Online Transaction";
-    var churchWebSite = DbUtil.Db.Setting("ChurchWebSite", "");
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
+    ViewBag.Title = "Online Registration";
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/onlinereg/onlinereg.js")
     <script type="text/javascript">
-        $(function() {
-            $(document).bind("idle.idleTimer", function() {
-                window.location.href = '@ViewBag.Url';
-            });
-            var tmout = parseInt('@ViewBag.timeout');
-
-            $(document).bind("keydown", function() {
-                $(document).unbind("keydown");
-                $.idleTimer(tmout);
-            });
-            $.idleTimer(tmout);
-        });
+        $.dateFormat = '@Util.jQueryDateFormat';
+        $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
+        $.tmout = parseInt('@ViewBag.timeout');
     </script>
+    @(Model.UseBootstrap
+        ? @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
+        : @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
 }
+
 <div class="confirm">
-    <h2>Transaction Completed</h2>
-    <p style="color: Black">
-        Thank you, your transaction is complete for @ViewData["orgname"].  
-        You should receive a confirmation email at @ViewData["email"] shortly.<br /><br />
-        @if (churchWebSite.HasValue())
-        {
-            <a href="@churchWebSite">Return to Church Website</a>
-        }
-    </p>
-	<p style="color: Blue"><a href='@ViewBag.Url'>Start a New Transaction</a></p>
+    @Html.Raw(Model.GetThankYouMessage())
 </div>

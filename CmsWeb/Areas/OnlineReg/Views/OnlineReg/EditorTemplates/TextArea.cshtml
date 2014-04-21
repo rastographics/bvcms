@@ -1,0 +1,25 @@
+﻿@using UtilityExtensions
+@model string
+@{
+    var d = new Dictionary<string, object>();
+    d.Add("class", "form-control");
+    if (((string)ViewBag.placeholder).HasValue())
+    {
+        d.Add("placeholder", ((string)ViewBag.placeholder));
+    }
+    const string labelclasses = "control-label col-sm-3 labelsize";
+}
+<div class="form-group">
+    @(ViewBag.label != null
+        ? Html.Label(ViewBag.label as string, new { @class = labelclasses })
+        : Html.LabelFor(m => m, new { @class = labelclasses }))
+    <div class="col-sm-9">
+        @Html.TextAreaFor(m => m, d)
+        @if (ViewBag.help != null)
+        {
+            <p class="help-block">@ViewBag.help</p>
+        }
+        @Html.ValidationMessageFor(m => m)
+    </div>
+</div>
+

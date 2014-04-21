@@ -1,0 +1,45 @@
+﻿@using CmsWeb.Models
+@using UtilityExtensions
+@model OnlineRegPersonModel
+
+@if (Model.ShowAddress)
+{
+    @Html.HiddenFor(m => m.FirstName)
+    @Html.HiddenFor(m => m.LastName)
+    @Html.HiddenFor(m => m.EmailAddress)
+    <address>
+        @Html.Partial("Flow2/FinishedHeader", Model)
+    </address>
+    
+    <div class="alert alert-info">Please provide additional information for a new profile</div>
+    @Html.EditorFor(m => m.MiddleName, new { classes = "narrow" })
+    @Html.EditorFor(m => m.Suffix, new { classes = "narrow" } )
+    if (Model.RequiredDOB() && !Model.DateOfBirth.HasValue())
+    {
+        @Html.EditorFor(m => m.DateOfBirth, new { placeholder = "M/D/YY" })
+    }
+    else
+    {
+        @Html.HiddenFor(m => m.DateOfBirth)
+    }
+    if (Model.RequiredPhone() && !Model.Phone.HasValue())
+    {
+        @Html.EditorFor(m => m.Phone)
+    }
+    else
+    {
+        @Html.HiddenFor(m => m.Phone)
+    }
+    
+    @Html.Partial("Flow2/AddressEdit", Model)
+    @Html.Partial("Flow2/SubmitNewButtons", Model)
+}
+else
+{
+    @Html.EditorFor(m => m.FirstName)
+    @Html.EditorFor(m => m.LastName)
+    @Html.EditorFor(m => m.DateOfBirth, new { placeholder = "M/D/YY" })
+    @Html.EditorFor(m => m.Phone)
+    @Html.EditorFor(m => m.EmailAddress)
+    @Html.Partial("Flow2/FindOrNewButtons", Model)
+}

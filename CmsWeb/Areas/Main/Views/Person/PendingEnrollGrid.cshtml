@@ -18,13 +18,13 @@
     foreach (var om in Model.PendingEnrollments())
     { 
     <tr>
-    <td><a href="/Organization/Index/@om.OrgId" title="@om.DivisionName">@om.Name</a></td>
+    <td><a href="/Organization/@om.OrgId" title="@om.DivisionName">@om.Name</a></td>
     <td>@om.Location</td>
     <td><a href="/Person2/@om.LeaderId">@om.LeaderName</a></td>
     <td>@om.Schedule</td>
     <td>@om.EnrollDate.FormatDate()</td>
     <td><a class="membertype" pid="@om.PeopleId" oid="@om.OrgId" 
-        href="/OrgMemberDialog/Index/@om.OrgId?pid=@om.PeopleId&from=na">@om.MemberType</a></td>
+        href="/OrgMemberDialog/@om.OrgId/@om.PeopleId">@om.MemberType</a></td>
     </tr>
     }
 }

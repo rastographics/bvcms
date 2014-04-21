@@ -2,11 +2,9 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Registration;
 using CmsWeb.Models;
 using UtilityExtensions;
 using System.Collections.Generic;
-using CmsData.Codes;
 using CmsWeb.Models.OrganizationPage;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -14,7 +12,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 	public partial class OnlineRegController
 	{
 		[HttpGet]
-		public ActionResult RequestReport(int mid, int pid, long ticks)
+        [Route("VolRequestReport/{mid:int}/{pid:int}/{ticks:long}")]
+		public ActionResult VolRequestReport(int mid, int pid, long ticks)
 		{
 			var vs = new VolunteerRequestModel(mid, pid, ticks);
 			SetHeaders(vs.org.OrganizationId);
@@ -22,6 +21,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		}
 
 		[HttpGet]
+        [Route("VolRequestResponse")]
+        [Route("VolRequestResponse/{ans}/{guid}")]
 		public ActionResult RequestResponse(string ans, string guid)
 		{
 			try
@@ -37,6 +38,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		}
 
 		[HttpGet]
+        [Route("GetVolSub/{aid:int}/{pid:int}")]
 		public ActionResult GetVolSub(int aid, int pid)
 		{
 			var vs = new VolSubModel(aid, pid);
@@ -45,7 +47,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			return View(vs);
 		}
 
-		[HttpPost]
+        [HttpPost]
 		[ValidateInput(false)]
 		public ActionResult GetVolSub(int aid, int pid, long ticks, int[] pids, string subject, string message)
 		{
@@ -59,6 +61,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			return Content("Emails are being sent, thank you.");
 		}
 
+        [Route("VolSubReport/{aid:int}/{pid:int}/{ticks:long}")]
 		public ActionResult VolSubReport(int aid, int pid, long ticks)
 		{
 			var vs = new VolSubModel(aid, pid, ticks);
@@ -66,6 +69,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			return View(vs);
 		}
 
+        [Route("ClaimVolSub/{ans}/{guid}")]
 		public ActionResult ClaimVolSub(string ans, string guid)
 		{
 			try
@@ -80,6 +84,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			}
 		}
 
+        [Route("ManageVolunteer/{id}")]
+        [Route("ManageVolunteer/{id}/{pid:int}")]
 		public ActionResult ManageVolunteer(string id, int? pid)
 		{
 			if (!id.HasValue())
@@ -135,7 +141,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				var staff = Staff[0];
 
 				var summary = m.Summary(this);
-				var text = Util.PickFirst(m.setting.Body, "confirmation email body not found");
+				var text = Util.PickFirst(m.Setting.Body, "confirmation email body not found");
 				text = text.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
 				text = text.Replace("{name}", m.Person.Name, ignoreCase: true);
 				text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
@@ -145,7 +151,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				text = text.Replace("{contactemail}", staff.EmailAddress, ignoreCase: true);
 				text = text.Replace("{contactphone}", m.Org.PhoneNumber.FmtFone(), ignoreCase: true);
 				text = text.Replace("{details}", summary, ignoreCase: true);
-				DbUtil.Db.Email(staff.FromEmail, m.Person, m.setting.Subject, text);
+				DbUtil.Db.Email(staff.FromEmail, m.Person, m.Setting.Subject, text);
 
 				DbUtil.Db.Email(m.Person.FromEmail, Staff, "Volunteer Commitments managed", @"{0} managed volunteer commitments to {1}<br/>
 The following Committments:<br/>

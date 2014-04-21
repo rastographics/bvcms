@@ -24,9 +24,9 @@
             <tr>
                 <td>@r.Dt1.FormatDate()</td>
                 <td>@r.Dt2.FormatDate()</td>
-                <td class="right"><a href="/Organization/Index/@r.OrganizationId">@r.Cnt.ToString2("N0")</a></td>
+                <td class="right"><a href="/Organization/@r.OrganizationId">@r.Cnt.ToString2("N0")</a></td>
                 <td>@((r.Completed ?? false) ? "YES" : "incomplete")</td>
-                <td><a href="/OnlineReg/Index/@r.OrganizationId" target="detail">@r.OrganizationName</a></td>
+                <td><a href="/OnlineReg/@r.OrganizationId" target="detail">@r.OrganizationName</a></td>
             </tr>
         }
     </tbody>

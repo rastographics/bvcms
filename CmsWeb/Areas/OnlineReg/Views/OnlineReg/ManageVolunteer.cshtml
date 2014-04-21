@@ -1,6 +1,8 @@
 ﻿@model CmsWeb.Models.VolunteerModel 
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
+    Layout = Model.Setting.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Registration";
 }
 @section scripts
@@ -19,7 +21,7 @@
 }
 @if (Model.IsLeader)
 {
-<h2><a href="/Organization/Index/@Model.OrgId">@Model.Org.OrganizationName</a></h2>
+<h2><a href="/Organization/@Model.OrgId">@Model.Org.OrganizationName</a></h2>
 <h4><a href="/Volunteers/Calendar/@Model.OrgId" target="calendar">View Calendar</a></h4><br />
 @*<p>Select Volunteer: @Html.DropDownList("volunteer", Model.Volunteers())</p>*@
 }

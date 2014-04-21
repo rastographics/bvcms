@@ -15,7 +15,7 @@
         }
         var f = $('#progform');
         var q = f.serialize();
-        $.post("/Setup/Division/Create/", q, function(ret) {
+        $.post("/Division/Create/", q, function(ret) {
             $('#results > tbody').append(ret);
             $.fmtTable();
         });
@@ -74,8 +74,8 @@
     $("body").on("click", 'a.delete', function (ev) {
         ev.preventDefault();
         if (confirm("are you sure?"))
-            $.post("/Setup/Division/Delete/" + $(this).attr("id"), null, function(ret) {
-                window.location = "/Setup/Division/";
+            $.post("/Division/Delete/" + $(this).attr("id"), null, function(ret) {
+                window.location = "/Divisions/";
             });
         return false;
     });
@@ -93,7 +93,7 @@
         var f = $('#progform');
         var q = f.serialize();
         $.block();
-        $.post("/Setup/Division/Results", q, function(ret) {
+        $.post("/Division/Results", q, function(ret) {
             $('#results').replaceWith(ret).ready(function() {
                 $.fmtTable();
                 $.unblock();
@@ -104,8 +104,8 @@
     $.fmtTable = function() {
         $("#results td.tip").tooltip({ showBody: "|" });
         $("#results tbody tr:even").attr("style", "background-color:#ddd");
-        $("span.clickEdit").editable("/Setup/Division/Edit/", $.editableOptions);
-        $('span.yesno').editable('/Setup/Division/Edit', {
+        $("span.clickEdit").editable("/Division/Edit/", $.editableOptions);
+        $('span.yesno').editable('/Division/Edit', {
             type: 'checkbox',
             onblur: 'ignore',
             submit: 'OK'

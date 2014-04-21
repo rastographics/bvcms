@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
+using System.Web.Routing;
 using CmsData.API;
 using CmsWeb.Models;
 using ContributionSearchModel = CmsWeb.Models.ContributionSearchModel;
@@ -7,8 +8,10 @@ using ContributionSearchModel = CmsWeb.Models.ContributionSearchModel;
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Finance")]
+    [RouteArea("Finance", AreaPrefix= "Contributions"), Route("{action}/{id?}")]
     public class ContributionsController : CmsStaffController
     {
+        [Route("~/Contributions/{id:int?}")]
         public ActionResult Index(int? id, int? year, int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype, 
             bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed")
         {
@@ -28,6 +31,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var m = new ContributionSearchModel(api);
             return View(m);
         }
+        [Route("~/BundleTotals")]
         public ActionResult BundleTotals(int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype, 
             bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed")
         {

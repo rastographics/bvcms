@@ -8,6 +8,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
+    [RouteArea("Main", AreaPrefix= "ContactSearch"), Route("{action=index}/{id?}")]
 	public class ContactSearchController : CmsStaffController
 	{
 		[Serializable]
@@ -24,6 +25,7 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
 		private const string STR_ContactSearch = "ContactSearch";
 
+        [Route("~/ContactSearch")]
 		public ActionResult Index()
 		{
             if (ViewExtensions2.UseNewLook())

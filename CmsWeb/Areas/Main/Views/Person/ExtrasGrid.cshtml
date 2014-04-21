@@ -28,5 +28,5 @@
 <div>
     <hr/>
     <h4>Status Flags</h4>
-    @Html.Raw(DbUtil.Db.StatusFlagsAll(Model.PeopleId).Replace(",", "<br/>\n"))
+    @Html.Raw(ViewExtensions2.StatusFlagsAll(Model.PeopleId).Replace(",", "<br/>\n"))
 </div>

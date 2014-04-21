@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
@@ -11,9 +6,10 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [Authorize(Roles="Edit")]
+    [RouteArea("Manage", AreaPrefix= "OrgMembers"), Route("{action=index}/{id?}")]
     public class OrgMembersController : CmsStaffController
     {
-        [AcceptVerbs(HttpVerbs.Get)]
+        [HttpGet]
         public ActionResult Index()
         {
             var m = new OrgMembersModel();
@@ -21,7 +17,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(m);
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult Move()
         {
             var m = new OrgMembersModel();
@@ -29,7 +25,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             m.Move();
             return View("List", m);
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult EmailNotices()
         {
             var m = new OrgMembersModel();
@@ -44,7 +40,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return new OrgMembersModel.OrgExcelResult(id);
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
+        [HttpPost]
         public ActionResult List()
         {
             var m = new OrgMembersModel();

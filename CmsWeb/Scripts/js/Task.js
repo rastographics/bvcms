@@ -98,7 +98,7 @@
                 return;
             case 'delegate':
                 var d = $('#dialogbox');
-                $('iframe', d).attr("src", "/SearchAdd/Index/1?type=taskdelegate2");
+                $('iframe', d).attr("src", "/SearchAdd/1?type=taskdelegate2");
                 d.dialog("option", "title", "Delegate tasks");
                 d.dialog("open");
                 return;

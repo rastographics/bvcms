@@ -1,0 +1,18 @@
+﻿@using CmsWeb.Models
+@model OnlineRegPersonModel
+<div class="form-group">
+    @Html.Label((Model.setting.AskVisible("AskParents") ? "Parent's Church" : "Church"), new { @class = "control-label col-sm-3 labelsize" })
+    <div class="col-sm-9">
+        <div class="checkbox">
+            <label>
+                @Html.CheckBoxFor(m => m.memberus) Member of this Church
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                @Html.CheckBoxFor(m => m.otherchurch) Active in another local church
+            </label>
+        </div>
+        @Html.ValidationMessageFor(m => m.otherchurch)
+    </div>
+</div>
