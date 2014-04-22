@@ -71,8 +71,9 @@ namespace CmsWeb.Models
                     return;
                 }
             var dobname = Parent.GetNameFor(mm => mm.List[i].DateOfBirth);
-            //var foundname = Parent.GetNameFor(mm => mm.List[i].Found);
-            var foundname = "fammember-" + PeopleId;
+            var foundname = Parent.GetNameFor(mm => mm.List[i].Found);
+            if (IsFamily)
+                foundname = "fammember-" + PeopleId;
             if (!PeopleId.HasValue)
                 ValidBasic(ModelState);
             if (ComputesOrganizationByAge() && !birthday.HasValue)
@@ -155,7 +156,7 @@ Please call the church to resolve this before we can complete your account.<br /
                         {
                             IsValidForContinue = true;
                         }
-                        else if (om != null && setting.AllowReRegister == false && !Util.IsDebug()
+                        else if (om != null && setting.AllowReRegister == false 
                             && om.Organization.RegistrationTypeId != RegistrationTypeCode.ChooseVolunteerTimes
                             && !Parent.SupportMissionTrip)
                         {
