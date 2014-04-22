@@ -355,7 +355,7 @@ namespace CmsData.API
                     orderby g.Key
                     select new ContributionInfo
                     {
-                        ContributionAmount = g.Sum(z => z.ContributionAmount.Value),
+                        ContributionAmount = g.Sum(z => z.ContributionAmount ?? 0),
                         Fund = g.Key,
                     };
 
