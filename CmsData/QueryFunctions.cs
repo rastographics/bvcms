@@ -9,16 +9,16 @@ namespace CmsData
 {
     public class QueryFunctions
     {
-        private CMSDataContext Db;
+        private CMSDataContext db;
 
-        public QueryFunctions()
+        public QueryFunctions(string dbname = "bellevue")
         {
-            Db = new CMSDataContext("Data Source=.;Initial Catalog=CMS_bellevue;Integrated Security=True");
+            db = new CMSDataContext("Data Source=.;Initial Catalog=CMS_{0};Integrated Security=True".Fmt(dbname));
         }
 
         public QueryFunctions(CMSDataContext Db)
         {
-            this.Db = Db;
+            this.db = Db;
         }
 
         public static string VitalStats(CMSDataContext Db)
@@ -88,7 +88,7 @@ namespace CmsData
         public int MeetingCount(int days, int progid, int divid, int orgid)
         {
             var dt = DateTime.Now.AddDays(-days);
-            var q = from m in Db.Meetings
+            var q = from m in db.Meetings
                     where m.MeetingDate >= dt
                     where orgid == 0 || m.OrganizationId == orgid
                     where divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid)
@@ -100,7 +100,7 @@ namespace CmsData
         public int NumPresent(int days, int progid, int divid, int orgid)
         {
             var dt = DateTime.Now.AddDays(-days);
-            var q = from m in Db.Meetings
+            var q = from m in db.Meetings
                     where m.MeetingDate >= dt
                     where orgid == 0 || m.OrganizationId == orgid
                     where divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid)
@@ -117,7 +117,7 @@ namespace CmsData
             var dt1 = dt.AddHours(starthour);
             var dt2 = dt.AddHours(endhour);
 
-            var q = from p in Db.Programs
+            var q = from p in db.Programs
                 where progid == 0 || p.Id == progid
                 from pd in p.ProgDivs
                 where divid == 0 || pd.DivId == divid
@@ -153,7 +153,7 @@ namespace CmsData
         public int RegistrationCount(int days, int progid, int divid, int orgid)
         {
             var dt = DateTime.Now.AddDays(-days);
-            var q = from m in Db.OrganizationMembers
+            var q = from m in db.OrganizationMembers
                     where m.EnrollmentDate >= dt
                     where m.Organization.RegistrationTypeId > 0
                     where orgid == 0 || m.OrganizationId == orgid
@@ -178,7 +178,7 @@ namespace CmsData
         }
         public int QueryCount(string s)
         {
-            var qb = Db.PeopleQuery2(s);
+            var qb = db.PeopleQuery2(s);
             if (qb == null)
                 return 0;
             return qb.Count();
@@ -187,7 +187,7 @@ namespace CmsData
         public int StatusCount(string s)
         {
             var statusflags = s.Split(',');
-            var q = from p in Db.People
+            var q = from p in db.People
                     let ac = p.Tags.Count(tt => statusflags.Contains(tt.Tag.Name))
                     where ac == statusflags.Length
                     select p;
@@ -207,7 +207,7 @@ namespace CmsData
             var dt1 = DateTime.Now.AddDays(-days1);
             var dt2 = DateTime.Now.AddDays(-days2);
             var typs = new int[] { 6, 7 };
-            var q = from c in Db.Contributions
+            var q = from c in db.Contributions
                     where c.ContributionDate >= dt1
                     where days2 == 0 || c.ContributionDate <= dt2
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
@@ -232,7 +232,7 @@ namespace CmsData
             var dt1 = DateTime.Now.AddDays(-days1);
             var dt2 = DateTime.Now.AddDays(-days2);
             var typs = new int[] { 6, 7 };
-            var q = from c in Db.Contributions
+            var q = from c in db.Contributions
                     where c.ContributionDate >= dt1
                     where days2 == 0 || c.ContributionDate <= dt2
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
@@ -257,7 +257,7 @@ namespace CmsData
 
             var dt = DateTime.Now.AddDays(-days);
             var typs = new int[] { 6, 7 };
-            var q = from c in Db.Contributions
+            var q = from c in db.Contributions
                     where c.ContributionDate >= dt
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
                     where c.ContributionAmount > 0

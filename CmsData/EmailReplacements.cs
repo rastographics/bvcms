@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
-using System.Net.Mime;
 using System.Text.RegularExpressions;
 using System.Web;
 using CmsData.Codes;
@@ -133,6 +132,9 @@ namespace CmsData
                 case "{createaccount}":
                     return CreateUserTag(emailqueueto);
 
+                case "{cmshost}":
+                    return db.CmsHost.TrimEnd('/');
+
                 case "{emailhref}":
                     return Util.URLCombine(db.CmsHost, "/EmailView/" + emailqueueto.Id);
 
@@ -153,6 +155,11 @@ namespace CmsData
 
                 case "{occupation}":
                     return p.OccupationOther;
+
+                case "{orgname}":
+                    return
+                        db.Organizations.Where(oo => oo.OrganizationId == db.CurrentOrgId)
+                            .Select(oo => oo.OrganizationName).SingleOrDefault();
 
                 case "{paylink}":
                     if (pi != null && pi.PayLink.HasValue())
@@ -201,6 +208,9 @@ namespace CmsData
                     if (sendLinkRe.IsMatch(code))
                         return SendLink(code, emailqueueto);
 
+                    if(code.StartsWith("{orgextra:", StringComparison.OrdinalIgnoreCase))
+                        return OrgExtra(code, emailqueueto);
+
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
 
@@ -241,6 +251,20 @@ namespace CmsData
             if (om != null)
                 om.AddToGroup(db, @group);
             return "";
+        }
+
+        const string OrgExtraRe = @"\{orgextra:(?<field>[^\]]*)\}";
+        readonly Regex orgExtraRe = new Regex(OrgExtraRe, RegexOptions.Singleline);
+        private string OrgExtra(string code, EmailQueueTo emailqueueto)
+        {
+            var match = orgExtraRe.Match(code);
+            if (!match.Success || !emailqueueto.OrgId.HasValue)
+                return code;
+            var field = match.Groups["field"].Value;
+            var ev = db.OrganizationExtras.SingleOrDefault(ee => ee.Field == field && ee.OrganizationId == db.CurrentOrgId);
+            if (ev == null || !ev.Data.HasValue())
+                return null;
+            return ev.Data;
         }
 
         private string CreateUserTag(EmailQueueTo emailqueueto)

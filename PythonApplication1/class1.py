@@ -7,6 +7,8 @@ import clr
 clr.AddReferenceByName("CmsData")
 from CmsData import QueryFunctions
 
+
+
 class VitalStats(object):
     def Run(self, m):
         days = 7

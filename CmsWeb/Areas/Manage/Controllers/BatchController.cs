@@ -15,7 +15,7 @@ using Alias = System.Threading.Tasks;
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [ValidateInput(false)]
-    [RouteArea("Manage", AreaPrefix= "Batch"), Route("{action}/{id?}")]
+    [RouteArea("Manage", AreaPrefix = "Batch"), Route("{action}/{id?}")]
     public class BatchController : CmsStaffAsyncController
     {
         [Authorize(Roles = "Admin")]
@@ -262,21 +262,12 @@ namespace CmsWeb.Areas.Manage.Controllers
                             o.RollSheetVisitorWks = a[c] == "0" ? (int?)null : a[c].ToInt2();
                             break;
 
-							  default:
-									 string name = names[c].Trim();
-									 string value = a[c].Trim();
-
-									 if (value.Length > 0)
-									 {
-										 var x = o.OrganizationExtras.Where(e => e.Field == name).SingleOrDefault();
-
-										 if (x == null)
-											 o.OrganizationExtras.Add(new OrganizationExtra() { Field = name, Data = value });
-										 else
-											 x.Data = value;
-									 }
-
-									 break;
+                        default:
+                            string name = names[c].Trim();
+                            string value = a[c].Trim();
+                            if (value.HasValue())
+                                o.AddEditExtraData(name, value);
+                            break;
                     }
                 DbUtil.Db.SubmitChanges();
             }
@@ -729,8 +720,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             var a = emails.SplitLines();
             var q = from p in DbUtil.Db.People
-                where a.Contains(p.EmailAddress) || a.Contains(p.EmailAddress2)
-                select p.PeopleId;
+                    where a.Contains(p.EmailAddress) || a.Contains(p.EmailAddress2)
+                    select p.PeopleId;
             foreach (var pid in q.Distinct())
                 Person.Tag(DbUtil.Db, pid, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             DbUtil.Db.SubmitChanges();
@@ -781,8 +772,8 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult TestScript()
         {
 #if DEBUG
-ViewBag.Script =
-@"
+            ViewBag.Script =
+            @"
 model.TestEmail = True
 model.EmailContent( 
 	'RecentMovedOutOfTown',

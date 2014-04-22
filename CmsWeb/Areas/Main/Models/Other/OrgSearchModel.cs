@@ -74,6 +74,7 @@ namespace CmsWeb.Models
                         RegClosed = o.RegistrationClosed ?? false,
                         RegTypeId = o.RegistrationTypeId,
                         ProgramName = o.Division.Program.Name,
+                        ProgramId = o.Division.ProgId,
                         DivisionId = o.DivisionId,
                         DivisionName = o.Division.Name,
                         Divisions = string.Join(",", o.DivOrgs.Select(d => d.Division.Name).ToArray()),
@@ -704,6 +705,7 @@ namespace CmsWeb.Models
                 get { return RegistrationTypeCode.Lookup(RegTypeId ?? 0); }
             }
             public string ProgramName { get; set; }
+            public int? ProgramId { get; set; }
             public int? DivisionId { get; set; }
             public string DivisionName { get; set; }
             public string Divisions { get; set; }
@@ -722,19 +724,29 @@ namespace CmsWeb.Models
             {
                 get
                 {
-                    return "{0} ({1})|Program:{2}|Division: {3} ({4})|Leader: {5}|First Meeting: {6}|Last Meeting: {7}|Schedule: {8}|Location: {9}|Divisions: {10}".Fmt(
-                               OrganizationName,
-                               Id,
-                               ProgramName,
-                               DivisionName,
-                               DivisionId,
-                               LeaderName,
-                               FirstMeetingDate,
-                               LastMeetingDate,
-                               Schedule,
-                               Location,
-                               Divisions
-                               );
+                    return 
+@"{0} ({1})|
+Program: {2} ({3})|
+Division: {4} ({5})|
+Leader: {6}|
+First Meeting: {7}|
+Last Meeting: {8}|
+Schedule: {9}|
+Location: {10}|
+Divisions: {11}".Fmt(
+                    OrganizationName,
+                    Id,
+                    ProgramName,
+                    ProgramId,
+                    DivisionName,
+                    DivisionId,
+                    LeaderName,
+                    FirstMeetingDate,
+                    LastMeetingDate,
+                    Schedule,
+                    Location,
+                    Divisions
+                    );
                 }
             }
         }
