@@ -21,59 +21,71 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (CmsWeb.Models.AccountModel.AuthenticateMobile()) return null;
 			else
 			{
-				return BaseReturn.createErrorReturn("You are not authorized!");
+				return BaseMessage.createErrorReturn("You are not authorized!");
 			}
 		}
 
-		public ActionResult CheckLogin()
+		public ActionResult CheckLogin(string data)
 		{
 			var authError = Authenticate();
 			if (authError != null) return authError;
 
-			BaseReturn br = new BaseReturn();
+			// Check to see if type matches
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_LOGIN)
+				return BaseMessage.createTypeErrorReturn();
+
+			// Everything is in order, start the return
+			BaseMessage br = new BaseMessage();
 			br.error = 0;
 			br.id = Util.UserPeopleId ?? 0;
-
-			List<MobilePerson> mp = new List<MobilePerson>();
 
 			var person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == Util.UserPeopleId);
 
 			if (person != null)
 			{
-				mp.Add(new MobilePerson().populate(person));
-				br.data = JsonConvert.SerializeObject(mp);
 				br.count = 1;
+
+				if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
+				{
+					br.data = JsonConvert.SerializeObject(new MobilePerson().populate(person));
+				}
+				else
+				{
+					List<MobilePerson> mp = new List<MobilePerson>();
+					mp.Add(new MobilePerson().populate(person));
+					br.data = JsonConvert.SerializeObject(mp);
+				}
 			}
 
 			return br;
 		}
 
-		public ActionResult SearchPeople(string data)
+		public ActionResult FetchPeople(string data)
 		{
 			// Authenticate first
 			var authError = Authenticate();
 			if (authError != null) return authError;
 
 			// Check to see if type matches
-			BaseReturn dataIn = BaseReturn.createFromString(data);
-			if (dataIn.type != BaseReturn.API_TYPE_PEOPLE_SEARCH)
-				return BaseReturn.createTypeErrorReturn();
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_PEOPLE_SEARCH)
+				return BaseMessage.createTypeErrorReturn();
 
 			// Everything is in order, start the return
 			MobilePostSearch mps = JsonConvert.DeserializeObject<MobilePostSearch>(dataIn.data);
 
-			BaseReturn br = new BaseReturn();
-			
+			BaseMessage br = new BaseMessage();
 
 			var m = new CmsWeb.Models.iPhone.SearchModel(mps.name, mps.comm, mps.addr);
 
 			br.error = 0;
-			br.type = BaseReturn.API_TYPE_PEOPLE_SEARCH;
+			br.type = BaseMessage.API_TYPE_PEOPLE_SEARCH;
 			br.count = m.Count;
 
 			switch (dataIn.device)
 			{
-				case BaseReturn.API_DEVICE_ANDROID:
+				case BaseMessage.API_DEVICE_ANDROID:
 					{
 						Dictionary<int, MobilePerson> mpl = new Dictionary<int, MobilePerson>();
 
@@ -89,7 +101,7 @@ namespace CmsWeb.Areas.Public.Controllers
 						break;
 					}
 
-				case BaseReturn.API_DEVICE_IOS:
+				case BaseMessage.API_DEVICE_IOS:
 					{
 						List<MobilePerson> mp = new List<MobilePerson>();
 
@@ -115,15 +127,14 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (authError != null) return authError;
 
 			// Check to see if type matches
-			BaseReturn dataIn = BaseReturn.createFromString(data);
-			if (dataIn.type != BaseReturn.API_TYPE_PERSON_REFRESH)
-				return BaseReturn.createTypeErrorReturn();
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_PERSON_REFRESH)
+				return BaseMessage.createTypeErrorReturn();
 
 			// Everything is in order, start the return
 			MobilePostFetchPerson mpfs = JsonConvert.DeserializeObject<MobilePostFetchPerson>(dataIn.data);
 
-			BaseReturn br = new BaseReturn();
-			List<MobilePerson> mp = new List<MobilePerson>();
+			BaseMessage br = new BaseMessage();
 
 			var person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == mpfs.id);
 
@@ -135,12 +146,19 @@ namespace CmsWeb.Areas.Public.Controllers
 			}
 
 			br.error = 0;
-			br.type = BaseReturn.API_TYPE_PERSON_REFRESH;
+			br.type = BaseMessage.API_TYPE_PERSON_REFRESH;
 			br.count = 1;
 
-			mp.Add(new MobilePerson().populate(person));
-
-			br.data = JsonConvert.SerializeObject(mp);
+			if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
+			{
+				br.data = JsonConvert.SerializeObject(new MobilePerson().populate(person));
+			}
+			else
+			{
+				List<MobilePerson> mp = new List<MobilePerson>();
+				mp.Add(new MobilePerson().populate(person));
+				br.data = JsonConvert.SerializeObject(mp);
+			}
 
 			return br;
 		}
@@ -152,18 +170,18 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (authError != null) return authError;
 
 			// Check to see if type matches
-			BaseReturn dataIn = BaseReturn.createFromString(data);
-			if (dataIn.type != BaseReturn.API_TYPE_PERSON_IMAGE_REFRESH)
-				return BaseReturn.createTypeErrorReturn();
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_PERSON_IMAGE_REFRESH)
+				return BaseMessage.createTypeErrorReturn();
 
 			// Everything is in order, start the return
 			MobilePostFetchImage mpfi = JsonConvert.DeserializeObject<MobilePostFetchImage>(dataIn.data);
 
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 			if (mpfi.id == 0) return br.setData("The ID for the person cannot be set to zero");
 
 			br.data = "The picture was not found.";
-			br.type = BaseReturn.API_TYPE_PERSON_IMAGE_REFRESH;
+			br.type = BaseMessage.API_TYPE_PERSON_IMAGE_REFRESH;
 
 			var person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == mpfi.id);
 
@@ -209,14 +227,14 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (authError != null) return authError;
 
 			// Check to see if type matches
-			BaseReturn dataIn = BaseReturn.createFromString(data);
-			if (dataIn.type != BaseReturn.API_TYPE_PERSON_IMAGE_ADD)
-				return BaseReturn.createTypeErrorReturn();
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_PERSON_IMAGE_ADD)
+				return BaseMessage.createTypeErrorReturn();
 
 			// Everything is in order, start the return
 			MobilePostSaveImage mpsi = JsonConvert.DeserializeObject<MobilePostSaveImage>(dataIn.data);
 
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 
 			var imageBytes = Convert.FromBase64String(mpsi.image);
 
@@ -256,13 +274,17 @@ namespace CmsWeb.Areas.Public.Controllers
 			return br;
 		}
 
-		public ActionResult Organizations()
+		public ActionResult FetchOrgs(string data)
 		{
 			var authError = Authenticate();
 			if (authError != null) return authError;
 
 			if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
-				return BaseReturn.createErrorReturn("Attendance roles is required to take attendance for organizations");
+				return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
+
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_ORG_REFRESH)
+				return BaseMessage.createTypeErrorReturn();
 
 			var pid = Util.UserPeopleId;
 			var oids = DbUtil.Db.GetLeaderOrgIds(pid);
@@ -305,11 +327,11 @@ namespace CmsWeb.Areas.Public.Controllers
 							  day = sc.SchedDay ?? 0
 						  };
 
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 			List<MobileOrganization> mo = new List<MobileOrganization>();
 
 			br.error = 0;
-			br.type = BaseReturn.API_TYPE_ORG_REFRESH;
+			br.type = BaseMessage.API_TYPE_ORG_REFRESH;
 			br.count = orgs.Count();
 
 			foreach (var item in orgs)
@@ -321,7 +343,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			return br;
 		}
 
-		public ActionResult RollList(string data)
+		public ActionResult FetchOrgRollList(string data)
 		{
 			// Authenticate first
 			var authError = Authenticate();
@@ -329,12 +351,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			// Check Role
 			if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
-				return BaseReturn.createErrorReturn("Attendance roles is required to take attendance for organizations");
+				return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
 
 			// Check to see if type matches
-			BaseReturn dataIn = BaseReturn.createFromString(data);
-			if (dataIn.type != BaseReturn.API_TYPE_ORG_ROLL_REFRESH)
-				return BaseReturn.createTypeErrorReturn();
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_ORG_ROLL_REFRESH)
+				return BaseMessage.createTypeErrorReturn();
 
 			// Everything is in order, start the return
 			MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
@@ -342,12 +364,12 @@ namespace CmsWeb.Areas.Public.Controllers
 			var meeting = Meeting.FetchOrCreateMeeting(DbUtil.Db, mprl.id, mprl.datetime);
 			var people = RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value);
 
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 			List<MobileAttendee> ma = new List<MobileAttendee>();
 
 			br.id = meeting.MeetingId;
 			br.error = 0;
-			br.type = BaseReturn.API_TYPE_ORG_ROLL_REFRESH;
+			br.type = BaseMessage.API_TYPE_ORG_ROLL_REFRESH;
 			br.count = people.Count();
 
 			foreach (var person in people)
@@ -367,12 +389,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			// Check Role
 			if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
-				return BaseReturn.createErrorReturn("Attendance roles is required to take attendance for organizations");
+				return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
 
 			// Check to see if type matches
-			BaseReturn dataIn = BaseReturn.createFromString(data);
-			if (dataIn.type != BaseReturn.API_TYPE_ORG_RECORD_ATTEND)
-				return BaseReturn.createTypeErrorReturn();
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_ORG_RECORD_ATTEND)
+				return BaseMessage.createTypeErrorReturn();
 
 			// Everything is in order, start the return
 			MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
@@ -404,11 +426,11 @@ namespace CmsWeb.Areas.Public.Controllers
 			DbUtil.Db.UpdateMeetingCounters(mpa.orgID);
 			DbUtil.LogActivity("Mobile RecAtt o:{0} p:{1} u:{2} a:{3}".Fmt(meeting.OrganizationId, mpa.peopleID, Util.UserPeopleId, mpa.present));
 
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 
 			br.error = 0;
 			br.count = 1;
-			br.type = BaseReturn.API_TYPE_ORG_RECORD_ATTEND;
+			br.type = BaseMessage.API_TYPE_ORG_RECORD_ATTEND;
 
 			return br;
 		}
@@ -421,12 +443,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			// Check Role
 			if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
-				return BaseReturn.createErrorReturn("Attendance role is required to take attendance for organizations.");
+				return BaseMessage.createErrorReturn("Attendance role is required to take attendance for organizations.");
 
 			// Check to see if type matches
-			BaseReturn dataIn = BaseReturn.createFromString(data);
-			if (dataIn.type != BaseReturn.API_TYPE_PERSON_ADD)
-				return BaseReturn.createTypeErrorReturn();
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_PERSON_ADD)
+				return BaseMessage.createTypeErrorReturn();
 
 			// Everything is in order, start the return
 			MobilePostAddPerson mpap = JsonConvert.DeserializeObject<MobilePostAddPerson>(dataIn.data);
@@ -525,12 +547,12 @@ namespace CmsWeb.Areas.Public.Controllers
 				DbUtil.Db.UpdateMeetingCounters(mpap.visitMeeting);
 			}
 
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 
 			br.error = 0;
 			br.id = p.PeopleId;
 			br.count = 1;
-			br.type = BaseReturn.API_TYPE_PERSON_ADD;
+			br.type = BaseMessage.API_TYPE_PERSON_ADD;
 
 			return br;
 		}
