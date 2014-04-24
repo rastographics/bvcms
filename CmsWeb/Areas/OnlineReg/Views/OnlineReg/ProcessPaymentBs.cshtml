@@ -1,0 +1,58 @@
+﻿@model CmsWeb.Models.PaymentForm
+<div class="regform">
+    <h2>
+        Payment Processing</h2>
+@if (ViewData.ContainsKey("Terms"))
+{ 
+    <a id="displayterms" title="click to display terms" href="#">Display Terms</a>
+    <div id="Terms" title="Terms of Agreement" class="modalPopup" style="display: none; width: 400px; padding: 10px">
+        @Html.Raw(Model.Terms)</div>
+    <p>
+        @Html.CheckBox("IAgree")
+        I agree to the above terms and conditions.</p>
+    <p>
+        You must agree to the terms above for you or your minor child before you can continue.</p>
+} 
+    <form action="/onlinereg/ProcessPayment" method="post" class="form-horizontal">
+        @Html.HiddenFor(m => m.DatumId)
+        @Html.HiddenFor(m => m.TranId)
+        @Html.HiddenFor(m => m.Url)
+        @Html.HiddenFor(m => m.Description)
+        @Html.HiddenFor(m => m.FormId)
+        @Html.HiddenFor(m => m.Email)
+        @Html.HiddenFor(m => m.Amtdue)
+        @Html.HiddenFor(m => m.testing)
+        @Html.HiddenFor(m => m.OrgId)
+        @Html.HiddenFor(m => m.OriginalId)
+        @Html.HiddenFor(m => m.PayBalance)
+        @Html.HiddenFor(m => m.AllowCoupon)
+        @Html.HiddenFor(m => m.IsLoggedIn)
+        @Html.HiddenFor(m => m.FinanceOnly)
+        @Html.HiddenFor(m => m.AskDonation)
+        @Html.HiddenFor(m => m.Donate)
+        @Html.HiddenFor(m => m.NoCreditCardsAllowed)
+        @Html.HiddenFor(m => m.Type)
+
+        @Html.EditorFor(m => m.First)
+        @Html.EditorFor(m => m.MiddleInitial, new { classes = "narrow" })
+        @Html.EditorFor(m => m.Last)
+        @Html.EditorFor(m => m.Suffix, new { classes = "narrow" })
+        @Html.EditorFor(m => m.Address)
+        @Html.EditorFor(m => m.Zip)
+        @Html.EditorFor(m => m.Phone)
+        @Html.EditorFor(m => m.Email)
+        @Html.EditorFor(m => m.AmtToPay, new { classes = "narrow" })
+        @Html.EditorFor(m => m.CreditCard)
+        @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+        @Html.EditorFor(m => m.CCV, new { classes = "narrow" })
+        @Html.EditorFor(m => m.Routing)
+        @Html.EditorFor(m => m.Account)
+        @Html.EditorFor(m => m.SavePayInfo)
+        @Helper.OnlineRegSubmitButtonRow("Make Payment", onlyoneallowed: true )
+        @if (Model.AllowCoupon)
+        {
+            @Html.EditorFor(m => m.Coupon)
+            @Helper.OnlineRegAjaxButtonRow("/OnlineReg/ApplyCoupon", "Apply Coupon", style:"btn-success")
+        }
+    </form>
+</div>
