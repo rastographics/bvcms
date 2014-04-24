@@ -23,6 +23,10 @@ namespace CmsWeb.Models
 
             var specialcases = new List<string>() { "https://bellevue.bvcms.com", "https://northmobile.bvcms.com" };
 
+            if (text.Substring(0, 200).Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
+                using (var csv = new CsvReader(new StringReader(text), true))
+                    return BatchProcessJackHenry(csv, date, fundid);
+
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
                 case "fcchudson":
@@ -92,11 +96,14 @@ namespace CmsWeb.Models
         {
             public DateTime? date { get; set; }
             public string batch { get; set; }
+            public int peopleid { get; set; }
             public string routing { get; set; }
             public string account { get; set; }
             public string checkno { get; set; }
             public string amount { get; set; }
             public string type { get; set; }
+            public int row { get; set; }
+            public bool valid { get; set; }
         }
         private static BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null)
         {
@@ -159,6 +166,28 @@ namespace CmsWeb.Models
             if (pid != null)
                 bd.Contribution.PeopleId = pid;
             bd.Contribution.BankAccount = eac;
+            return bd;
+        }
+        private static BundleDetail AddContributionDetail(DateTime date, int fundid,
+            string amount, string checkno, string routing, int peopleid)
+        {
+            var bd = new BundleDetail
+                {
+                    CreatedBy = Util.UserId,
+                    CreatedDate = DateTime.Now,
+                };
+            bd.Contribution = new Contribution
+                {
+                    CreatedBy = Util.UserId,
+                    CreatedDate = DateTime.Now,
+                    ContributionDate = date,
+                    FundId = fundid,
+                    ContributionStatusId = 0,
+                    ContributionTypeId = ContributionTypeCode.CheckCash,
+                };
+            bd.Contribution.ContributionAmount = amount.GetAmount();
+            bd.Contribution.CheckNo = checkno;
+            bd.Contribution.PeopleId = peopleid;
             return bd;
         }
 
