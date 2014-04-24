@@ -49,7 +49,8 @@ namespace CmsWeb.Areas.Search.Models
             FieldType.NullBit,
             FieldType.Code,
             FieldType.NullCode,
-            FieldType.CodeStr
+            FieldType.CodeStr,
+            FieldType.DateField
         };
         private List<FieldType> integertypes = new List<FieldType>() 
         { 

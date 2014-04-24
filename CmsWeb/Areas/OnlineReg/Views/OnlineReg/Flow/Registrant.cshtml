@@ -157,7 +157,7 @@
                     else if (!Model.Parent.IsEnded())
                     {
                         // Already found, display only
-                        if (Model.IsFamily)
+                        if (Model.IsFamily && Model.IsValidForContinue)
                         {
                             @Html.Partial("Flow/PersonDisplay", Model)
                         }

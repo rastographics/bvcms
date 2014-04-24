@@ -21,7 +21,7 @@ namespace CmsWeb.Models
             var q = from m in family
                     join r in list on m.PeopleId equals r.PeopleId into j
                     from r in j.DefaultIfEmpty()
-                    where r == null
+                    where r == null || r.IsValidForContinue == false
                     orderby m.PeopleId == user.Family.HeadOfHouseholdId ? 1 :
                             m.PeopleId == user.Family.HeadOfHouseholdSpouseId ? 2 :
                             3, m.Age descending, m.Name2

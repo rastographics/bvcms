@@ -20,6 +20,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 			return View();
 		}
 		[HttpPost]
+        [Route("~/AddAttendeesFromTag/Start")]
 		public ActionResult Start(int tag, int meetingid, bool addasmembers)
 		{
 			var runningtotals = new AddToOrgFromTagRun

@@ -243,6 +243,7 @@
     <Compile Include="Areas\Finance\Models\BatchImport\Ebcfamily.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Areas\Finance\Models\BatchImport\JackHenryImport.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\FbcFayetteville.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1429,6 +1430,7 @@
     <Content Include="ckeditor\README.md" />
     <Content Include="ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
     <Content Include="ckeditor\skins\moono\readme.md" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ProcessPaymentBs.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

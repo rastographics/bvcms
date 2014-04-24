@@ -8,7 +8,7 @@
         <div class="col-sm-offset-3 col-sm-9">
             @Helper.OnlineRegAjaxButton("/OnlineReg/Login/", "Login", id: "loginbt", style: "btn-primary pull-right")
             @Helper.OnlineRegAjaxButton("/OnlineReg/NoLogin", "Register without logging in", style: "btn-link")
-            @Helper.OnlineRegAjaxButton("/Account/ForgotPassword/", "Forgot Password?", style: "btn-link")
+            <a href="/Account/ForgotPassword/" class="btn btn-link">Forgot Password?</a>
         </div>
     </div>
 </div>
