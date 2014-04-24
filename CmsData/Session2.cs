@@ -43,7 +43,7 @@ namespace CmsData
             var h = ConfigurationManager.AppSettings["cmshost"];
             if(h.HasValue())
                 return h.Replace("{church}", Host, ignoreCase: true);
-            return "";
+            throw (new Exception("No URL for Server in ServerLink"));
         }
 
         public void CopySession()
