@@ -94,7 +94,7 @@ namespace UtilityExtensions
         public static List<MailAddress> SendErrorsTo()
         {
             var a = ConfigurationManager.AppSettings["senderrorsto"];
-            return EmailAddressListFromString(a);
+            return EmailAddressListFromString(a.HasValue() ? a : "david@bvcms.com");
         }
         public static List<MailAddress> EmailAddressListFromString(string addresses)
         {
@@ -110,6 +110,8 @@ namespace UtilityExtensions
                 address = address.Trim();
             try
             {
+                if (!address.HasValue())
+                    return null;
                 var ma = new MailAddress(address);
                 if (ValidEmail(ma.Address))
                     return ma;
@@ -237,7 +239,7 @@ namespace UtilityExtensions
                     if (HttpContext.Current.Session != null)
                         if (HttpContext.Current.Session[STR_SysFromEmail] != null)
                             tag = HttpContext.Current.Session[STR_SysFromEmail].ToString();
-                return tag;
+                return tag.HasValue() ? tag : "david@bvcms.com";
             }
             set
             {

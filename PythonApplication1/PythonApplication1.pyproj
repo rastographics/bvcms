@@ -6,11 +6,16 @@
     <ProjectGuid>{019a33ac-25a8-4df1-b6bb-72d4180d30fc}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>Program.py</StartupFile>
-    <SearchPath>C:\Users\David\Documents\BellevueProject\BellevueHg\CmsWeb\;C:\Users\David\Documents\BellevueProject\BellevueHg\UtilityExtensions\obj\Debug\</SearchPath>
+    <SearchPath>C:\Users\David\Documents\BellevueProject\BellevueHg\CmsWeb\;C:\Users\David\Documents\BellevueProject\BellevueHg\UtilityExtensions\obj\Debug\;..\CmsData\bin\Debug</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <AssemblyName>PythonApplication1</AssemblyName>
     <Name>PythonApplication1</Name>
     <RootNamespace>PythonApplication1</RootNamespace>
+    <LaunchProvider>IronPython (.NET) launcher</LaunchProvider>
+    <CommandLineArguments />
+    <InterpreterPath />
+    <DebugStdLib>False</DebugStdLib>
+    <InterpreterArguments />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,5 +29,12 @@
     <Compile Include="class2.py" />
     <Compile Include="class1.py" />
     <Compile Include="Program.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CmsData\CmsData.csproj">
+      <Name>CmsData</Name>
+      <Project>{98aee43c-4226-49e7-bd46-c1a85467eced}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
 </Project>

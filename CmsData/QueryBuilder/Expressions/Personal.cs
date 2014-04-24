@@ -41,20 +41,30 @@ namespace CmsData
         internal Expression WeddingDate()
         {
             Expression<Func<Person, bool>> pred = p => false; // default
-            DateTime weddingdate;
-            if (DateTime.TryParse(TextValue, out weddingdate))
-                if (Regex.IsMatch(TextValue, @"\d+/\d+/\d+"))
-                    pred = p => p.WeddingDate == weddingdate;
-                else
-                    pred = p => p.WeddingDate.Value.Day == weddingdate.Day && p.WeddingDate.Value.Month == weddingdate.Month;
+            if (!TextValue.HasValue())
+            {
+                pred = p => p.WeddingDate == null;
+            }
             else
             {
-                int y;
-                if (int.TryParse(TextValue, out y))
-                    if (y <= 12 && y > 0)
-                        pred = p => p.WeddingDate.Value.Month == y;
+                DateTime weddingdate;
+                if (DateTime.TryParse(TextValue, out weddingdate))
+                    if (Regex.IsMatch(TextValue, @"\d+/\d+/\d+"))
+                        pred = p => p.WeddingDate == weddingdate;
                     else
-                        pred = p => p.WeddingDate.Value.Year == y;
+                        pred =
+                            p =>
+                                p.WeddingDate.Value.Day == weddingdate.Day &&
+                                p.WeddingDate.Value.Month == weddingdate.Month;
+                else
+                {
+                    int y;
+                    if (int.TryParse(TextValue, out y))
+                        if (y <= 12 && y > 0)
+                            pred = p => p.WeddingDate.Value.Month == y;
+                        else
+                            pred = p => p.WeddingDate.Value.Year == y;
+                }
             }
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)

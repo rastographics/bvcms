@@ -9,6 +9,7 @@ namespace CmsWeb.Areas.Main.Controllers
     public class MemberDirectoryController : CmsController
     {
         [Route("~/MemberDirectory/{id:int}")]
+        [Route("~/MemberDirectory/Index/{id:int}")]
         public ActionResult Index(int id)
         {
             if (DbUtil.Db.Organizations.Any(oo => oo.OrganizationId == id && oo.PublishDirectory > 0)

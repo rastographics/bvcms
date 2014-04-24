@@ -73,7 +73,8 @@
                 if ($("#submitit").data("onlyoneallowed") == "true") {
                     f.submit();
                 } else {
-                    $('body, html').animate({scrollTop:$('div.panel:last-child').offset().top}, 'fast');
+                    if($('div.panel:last-child').length > 0)
+                        $('body, html').animate({scrollTop:$('div.panel:last-child').offset().top}, 'fast');
                 }
             });
         });

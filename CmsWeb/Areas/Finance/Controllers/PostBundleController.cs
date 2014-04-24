@@ -125,12 +125,17 @@ namespace CmsWeb.Areas.Finance.Controllers
             else
                 s = text;
 
-            var id = BatchImportContributions.BatchProcess(s, date, fundid, fromFile);
-
-            if (id.HasValue)
-                return Redirect("/PostBundle/" + id);
-
-            return RedirectToAction("Batch");
+            try
+            {
+                var id = BatchImportContributions.BatchProcess(s, date, fundid, fromFile);
+                if (id.HasValue)
+                    return Redirect("/PostBundle/" + id);
+                return RedirectToAction("Batch");
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
         }
 
         [HttpPost]

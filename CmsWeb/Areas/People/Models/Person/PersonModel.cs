@@ -129,7 +129,7 @@ namespace CmsWeb.Areas.People.Models
 
             string statusflags;
             if (isvalid)
-                statusflags = string.Join(", ", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
+                statusflags = string.Join(",", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
                                                 where s.RoleName == null || HttpContext.Current.User.IsInRole(s.RoleName)
                                                 select s.Name);
             else

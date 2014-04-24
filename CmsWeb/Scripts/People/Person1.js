@@ -269,13 +269,13 @@
     };
     $("#failedemails a.unblock").live("click", function (ev) {
         if (confirm("are you sure?"))
-            $.post("/Emails/Unblock", { email: $(this).attr("email") }, function (ret) {
+            $.post("/Manage/Emails/Unblock", { email: $(this).attr("email") }, function (ret) {
                 $.growlUI("email unblocked", ret);
             });
     });
     $("#failedemails a.unspam").live("click", function (ev) {
         if (confirm("are you sure?"))
-            $.post("/Emails/Unspam", { email: $(this).attr("email") }, function (ret) {
+            $.post("/Manage/Emails/Unspam", { email: $(this).attr("email") }, function (ret) {
                 $.growlUI("email unspamed", ret);
             });
     });

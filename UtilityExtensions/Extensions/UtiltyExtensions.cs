@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Configuration;
 using System.IO;
+using System.Web.Configuration;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -337,8 +338,15 @@ namespace UtilityExtensions
 
         public static string ServerLink(string path = "")
         {
-            var Request = HttpContext.Current.Request;
-            return URLCombine(Scheme() + "://" + Request.Url.Authority, path);
+            if (HttpContext.Current != null)
+            {
+                var Request = HttpContext.Current.Request;
+                return URLCombine(Scheme() + "://" + Request.Url.Authority, path);
+            }
+            var h = ConfigurationManager.AppSettings["cmshost"];
+            if(h.HasValue())
+                return h.Replace("{church}", Host, ignoreCase: true);
+            return "";
         }
 
         public static string Scheme()

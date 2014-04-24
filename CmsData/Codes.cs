@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using UtilityExtensions;
 
 namespace CmsData.Codes
 {
@@ -179,6 +180,8 @@ namespace CmsData.Codes
             yield return new KeyValuePair<int, string>(ChooseVolunteerTimes, "Choose Volunteer Times");
             yield return new KeyValuePair<int, string>(RecordFamilyAttendance, "Record Family Attendance");
             yield return new KeyValuePair<int, string>(SpecialJavascript, "Special Script");
+            if(Util.IsDebug())
+                yield return new KeyValuePair<int, string>(CreateAccount, "Create Account");
         }
         public static string Lookup(int? id)
         {
