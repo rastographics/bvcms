@@ -490,7 +490,7 @@ Total Fee paid for this registration session: {4:C}<br/>
 
             var Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
             p.SendOneTimeLink(Staff.First().FromEmail,
-                Util.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
+                DbUtil.Db.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
         }
         public void ConfirmManageSubscriptions()
         {
@@ -511,7 +511,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             var Staff = DbUtil.Db.StaffPeopleForOrg(masterorgid.Value);
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
-                Util.ServerLink("/OnlineReg/ManageSubscriptions/"), "Manage Your Subscriptions", message);
+                DbUtil.Db.ServerLink("/OnlineReg/ManageSubscriptions/"), "Manage Your Subscriptions", message);
         }
         public void ConfirmPickSlots()
         {
@@ -533,7 +533,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
-                Util.ServerLink("/OnlineReg/ManageVolunteer/"), "Manage Your Volunteer Commitments", message);
+                DbUtil.Db.ServerLink("/OnlineReg/ManageVolunteer/"), "Manage Your Volunteer Commitments", message);
         }
         public void ConfirmManagePledge()
         {
@@ -554,7 +554,7 @@ Total Fee paid for this registration session: {4:C}<br/>
 
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
-                Util.ServerLink("/OnlineReg/ManagePledge/"), c.Title, c.Body);
+                DbUtil.Db.ServerLink("/OnlineReg/ManagePledge/"), c.Title, c.Body);
         }
         public void ConfirmManageGiving()
         {
@@ -575,7 +575,7 @@ Total Fee paid for this registration session: {4:C}<br/>
 
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
-                Util.ServerLink("/OnlineReg/ManageGiving/"), c.Title, c.Body);
+                DbUtil.Db.ServerLink("/OnlineReg/ManageGiving/"), c.Title, c.Body);
         }
         public int GetEntryPoint()
         {

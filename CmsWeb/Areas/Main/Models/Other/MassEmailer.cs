@@ -28,7 +28,6 @@ namespace CmsWeb.Areas.Main.Models
         public DateTime? Schedule { get; set; }
         public bool PublicViewable { get; set; }
 
-        public string CmsHost { get; set; }
         public string Host { get; set; }
         public Session2 session2 { get; set; }
 

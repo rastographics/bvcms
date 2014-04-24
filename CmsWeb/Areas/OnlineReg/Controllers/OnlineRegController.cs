@@ -414,7 +414,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             d.Data = Util.Serialize<OnlineRegModel>(m);
             DbUtil.Db.ExtraDatas.InsertOnSubmit(d);
             DbUtil.Db.SubmitChanges();
-            var ex2 = new Exception("{0}, {2}".Fmt(errorDisplay, d.Id, Util.ServerLink("/OnlineReg/RegPeople/") + d.Id), ex);
+            var ex2 = new Exception("{0}, {2}".Fmt(errorDisplay, d.Id, DbUtil.Db.ServerLink("/OnlineReg/RegPeople/") + d.Id), ex);
             ErrorSignal.FromCurrentContext().Raise(ex2);
             TempData["error"] = errorDisplay;
             return Content("/Error/");
@@ -620,7 +620,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                          Terms = m.Terms,
                          _URL = m.URL,
                          _timeout = timeout,
-                         PostbackURL = Util.ServerLink("/OnlineReg/Confirm/" + d.Id),
+                         PostbackURL = DbUtil.Db.ServerLink("/OnlineReg/Confirm/" + d.Id),
                      });
             }
 

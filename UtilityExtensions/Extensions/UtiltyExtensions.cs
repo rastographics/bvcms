@@ -336,19 +336,6 @@ namespace UtilityExtensions
             return ResolveServerUrl(serverUrl, false);
         }
 
-        public static string ServerLink(string path = "")
-        {
-            if (HttpContext.Current != null)
-            {
-                var Request = HttpContext.Current.Request;
-                return URLCombine(Scheme() + "://" + Request.Url.Authority, path);
-            }
-            var h = ConfigurationManager.AppSettings["cmshost"];
-            if(h.HasValue())
-                return h.Replace("{church}", Host, ignoreCase: true);
-            return "";
-        }
-
         public static string Scheme()
         {
             var Request = HttpContext.Current.Request;

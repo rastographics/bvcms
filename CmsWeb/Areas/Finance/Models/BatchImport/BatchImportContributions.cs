@@ -23,7 +23,7 @@ namespace CmsWeb.Models
 
             var specialcases = new List<string>() { "https://bellevue.bvcms.com", "https://northmobile.bvcms.com" };
 
-            if (text.Substring(0, 200).Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
+            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessJackHenry(csv, date, fundid);
 

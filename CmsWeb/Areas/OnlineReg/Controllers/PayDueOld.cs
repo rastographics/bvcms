@@ -1,19 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
-using System.Configuration;
-using System.Net.Mail;
-using System.Runtime.Serialization;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using CmsWeb.Areas.Manage.Controllers;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -43,7 +34,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     State = ti.State,
                     PostalCode = ti.Zip,
                     testing = ti.testing,
-                    PostbackURL = Util.ServerLink("/OnlineReg/Confirm2/" + id),
+                    PostbackURL = DbUtil.Db.ServerLink("/OnlineReg/Confirm2/" + id),
                     Misc2 = ti.Header,
                     Misc1 = ti.Name,
                     _URL = ti.URL,

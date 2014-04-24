@@ -92,7 +92,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 		public ActionResult SendNow(int id)
 		{
 			string host = Util.Host;
-		    var cmshost = Util.ServerLink();
 			// save these from HttpContext to set again inside thread local storage
 			var useremail = Util.UserEmail;
 			var isinroleemailtest = User.IsInRole("EmailTest");
@@ -104,7 +103,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 				{
 					var Db = new CMSDataContext(Util.GetConnectionString(host));
 					Db.Host = host;
-				    Db.CmsHost = cmshost;
 					var cul = Db.Setting("Culture", "en-US");
 					Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
 					Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -121,7 +119,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 
 					var Db = new CMSDataContext(Util.GetConnectionString(host));
 					Db.Host = host;
-				    Db.CmsHost = cmshost;
 					var equeue = Db.EmailQueues.Single(ee => ee.Id == id);
 					equeue.Error = ex.Message.Truncate(200);
 					Db.SubmitChanges();

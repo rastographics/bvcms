@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using System.Text;
 using System.Web;
 using UtilityExtensions;
-using System.Collections;
-using System.Web.SessionState;
 using System.Web.Caching;
 
 namespace CmsData
@@ -24,7 +22,29 @@ namespace CmsData
         public bool OrgMembersOnly { get; set; }
         public bool OrgLeadersOnly { get; set; }
         public string Host { get; set; }
-        public string CmsHost { get; set; }
+        private string cmshost;
+        public string CmsHost
+        {
+            get
+            {
+                if (cmshost.HasValue())
+                    return cmshost;
+                return cmshost = ServerLink();
+            }
+            set { cmshost = value; }
+        }
+        public string ServerLink(string path = "")
+        {
+            if (HttpContext.Current != null)
+            {
+                var Request = HttpContext.Current.Request;
+                return Util.URLCombine(Util.Scheme() + "://" + Request.Url.Authority, path);
+            }
+            var h = ConfigurationManager.AppSettings["cmshost"];
+            if(h.HasValue())
+                return h.Replace("{church}", Host, ignoreCase: true);
+            return "";
+        }
 
         public void CopySession()
         {
