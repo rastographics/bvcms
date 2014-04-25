@@ -1,19 +1,22 @@
-﻿@model CmsWeb.Models.PaymentForm
+﻿@using RestSharp.Extensions
+@model CmsWeb.Models.PaymentForm
 <div class="regform">
-    <h2>
-        Payment Processing</h2>
-@if (ViewData.ContainsKey("Terms"))
-{ 
-    <a id="displayterms" title="click to display terms" href="#">Display Terms</a>
-    <div id="Terms" title="Terms of Agreement" class="modalPopup" style="display: none; width: 400px; padding: 10px">
-        @Html.Raw(Model.Terms)</div>
-    <p>
-        @Html.CheckBox("IAgree")
-        I agree to the above terms and conditions.</p>
-    <p>
-        You must agree to the terms above for you or your minor child before you can continue.</p>
-} 
-    <form action="/onlinereg/ProcessPayment" method="post" class="form-horizontal">
+    <h2>Payment Processing</h2>
+    @if (Model.Terms.HasValue())
+    {
+        <p>
+            @Html.CheckBox("IAgree")
+            I agree to the terms and conditions.
+            <small class="showform">Uncheck the agreement box to display the terms again.</small>
+        </p>
+        <div id="Terms" title="Terms of Agreement">
+            <p>
+                You must agree to the terms below for you or your minor child before you can complete your registration.
+            </p>
+            @Html.Raw(Model.Terms)
+        </div>
+    }
+    <form class="showform form-horizontal" action="/onlinereg/ProcessPayment" method="post">
         @Html.HiddenFor(m => m.DatumId)
         @Html.HiddenFor(m => m.TranId)
         @Html.HiddenFor(m => m.Url)
@@ -48,11 +51,41 @@
         @Html.EditorFor(m => m.Routing)
         @Html.EditorFor(m => m.Account)
         @Html.EditorFor(m => m.SavePayInfo)
-        @Helper.OnlineRegSubmitButtonRow("Make Payment", onlyoneallowed: true )
+        @Helper.OnlineRegSubmitButtonRow("Make Payment", onlyoneallowed: true)
+        @Html.ValidationMessage("form")
         @if (Model.AllowCoupon)
         {
             @Html.EditorFor(m => m.Coupon)
-            @Helper.OnlineRegAjaxButtonRow("/OnlineReg/ApplyCoupon", "Apply Coupon", style:"btn-success")
+            @Helper.OnlineRegAjaxButtonRow("/OnlineReg/ApplyCoupon", "Apply Coupon", id: "ApplyCoupon", style: "btn-success")
         }
+        <div class="right red" id="errormessage"></div>
     </form>
 </div>
+<div id="findid" style="display:none">
+    <h2>Card Identification #</h2>
+    <table width="100%">
+        <tr>
+            <td><h3>American Express</h3></td>
+            <td><img src="/Content/images/amex.jpg" alt="amex" /></td>
+        </tr>
+        <tr>
+            <td><h3>Visa</h3></td>
+            <td><img src="/Content/images/visa.jpg" alt="visa" /></td>
+        </tr>
+        <tr>
+            <td><h3>MasterCard</h3></td>
+            <td><img src="/Content/images/mastercard.jpg" alt="mastercard" /></td>
+        </tr>
+        <tr>
+            <td><h3>Discover</h3></td>
+            <td><img src="/Content/images/discovercard.jpg" alt="discover" /></td>
+        </tr>
+    </table>
+</div>
+<div id="findacct" style="display:none">
+    <h2>Bank Routing # / Account #</h2>
+    <p>Look at the numbers on the bottom of your check</p>
+    <div>
+        <img src="https://a1d932c175f6f84ca65d-434e90644472f15e2ba76cac2f5de424.ssl.cf2.rackcdn.com/check.png" alt="check" />
+    </div>
+</div> 

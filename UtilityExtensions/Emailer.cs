@@ -28,9 +28,9 @@ namespace UtilityExtensions
             var senderrorsto = ConfigurationManager.AppSettings["senderrorsto"];
             var msg = new MailMessage();
             if (From == null)
-                From = Util.FirstAddress(senderrorsto);
-
-            if (From.Host == "yahoo.com" || to.Any(ee => ee.Host == "yahoo.com"))
+                From = FirstAddress(senderrorsto);
+            var problemDomains = new List<string> { "yahoo.com", "aol.com" };
+            if (problemDomains.Any(dd => From.Host == dd || to.Any(ee => ee.Host == dd)))
             {
                 if (!SysFromEmail.HasValue())
                     SysFromEmail = "mailer@bvcms.com";
@@ -40,12 +40,12 @@ namespace UtilityExtensions
             }
             else
             {
-			msg.From = From;
-			if (SysFromEmail.HasValue())
-			{
-				var sysmail = new MailAddress(SysFromEmail);
-				if (From.Host != sysmail.Host)
-					msg.Sender = sysmail;
+                msg.From = From;
+                if (SysFromEmail.HasValue())
+                {
+                    var sysmail = new MailAddress(SysFromEmail);
+                    if (From.Host != sysmail.Host)
+                        msg.Sender = sysmail;
                 }
             }
 

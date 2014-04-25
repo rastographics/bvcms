@@ -1144,6 +1144,7 @@
     <Content Include="Scripts\js\ExtraValueSummary.js" />
     <Content Include="Scripts\js\TestScript.js" />
     <Content Include="Scripts\OnlineReg\OnlineReg2.js" />
+    <Content Include="Scripts\OnlineReg\OnlineRegPayment2.js" />
     <Content Include="Scripts\People\mydatatour.js" />
     <Content Include="Scripts\People\persontour.js" />
     <Content Include="Scripts\js\RegSetting2.js" />
@@ -1431,6 +1432,8 @@
     <Content Include="ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
     <Content Include="ckeditor\skins\moono\readme.md" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ProcessPaymentBs.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\TermsBs.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ProcessPaymentNonBs.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
