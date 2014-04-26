@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.PaymentForm
+﻿@using UtilityExtensions
+@model CmsWeb.Models.PaymentForm
 <div class="regform" style="width:500px">
     <h2>
         Payment Processing
@@ -115,7 +116,7 @@
                     <td>Card Number</td>
                     <td>
                         @Html.TextBox("pf.CreditCard", Model.CreditCard, Model.Autocomplete())
-                        <div>@Html.ValidationMessage("Cardnumber")</div>
+                        <div>@Html.ValidationMessage("CreditCard")</div>
                     </td>
                 </tr>
                 <tr class="Card">
@@ -132,7 +133,7 @@
                     </td>
                     <td>
                         @Html.TextBox("pf.CCV", Model.MaskedCCV, Model.Autocomplete())
-                        <div>@Html.ValidationMessage("Cardcode")</div>
+                        <div>@Html.ValidationMessage("CCV")</div>
                     </td>
                 </tr>
             }
@@ -160,7 +161,7 @@
             {
                 <tr>
                     <td></td>
-                    <td>@Html.CheckBox("pf.SavePayInfo", Model.SavePayInfo == true)Save Payment Information?</td>
+                    <td>@Html.CheckBox("pf.SavePayInfo", Model.SavePayInfo)Save Payment Information?</td>
                 </tr>
             }
             <tr>

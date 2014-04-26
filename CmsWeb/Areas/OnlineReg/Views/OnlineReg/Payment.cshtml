@@ -50,7 +50,7 @@
     @Html.Hidden("Amount", Model.AmtToPay) 
     <input type="hidden" name="OrgID" value="@ServiceUOrgID"/>
     <input type="hidden" name="OrgAccountID" value="@ServiceUOrgAccountID"/>
-    @Html.Hidden("PostbackURL", Util.ServerLink("/OnlineReg/Confirm/" + Model.DatumId))
+    @Html.Hidden("PostbackURL", DbUtil.Db.ServerLink("/OnlineReg/Confirm/" + Model.DatumId))
     @Html.Hidden("NameOnAccount", Model.FullName())
     @Html.Hidden("Address", Model.Address)
     @Html.Hidden("City", Model.City)

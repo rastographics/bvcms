@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using UtilityExtensions;
 using System.Text;
 
@@ -54,9 +52,13 @@ namespace CmsData.Registration
 		public string GroupToJoin { get; set; }
 		public bool GiveOrgMembAccess { get; set; }
 	    public bool AddAsProspect { get; set; }
-	    public bool UseBootstrap { get; set; }
 
-		public string DonationFund()
+        public bool UseBootstrap
+        {
+            get { return org != null && (org.UseBootstrap ?? false); }
+        }
+
+        public string DonationFund()
 		{
 			return (from f in Db.ContributionFunds
 					where f.FundId == DonationFundId
@@ -274,7 +276,7 @@ namespace CmsData.Registration
 					AddAsProspect = parser.GetBool();
 					break;
 				case Parser.RegKeywords.UseBootstrap:
-					UseBootstrap = parser.GetBool();
+					parser.GetBool();
 					break;
 				case Parser.RegKeywords.LinkGroupsFromOrgs:
 					LinkGroupsFromOrgs = (from i in parser.curr.value.Split(',')
@@ -645,7 +647,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "GroupToJoin", GroupToJoin);
 			AddValueCk(0, sb, "GiveOrgMembAccess", GiveOrgMembAccess);
 			AddValueCk(0, sb, "AddAsProspect", AddAsProspect);
-			AddValueCk(0, sb, "UseBootstrap", UseBootstrap);
+			//AddValueCk(0, sb, "UseBootstrap", UseBootstrap);
 			AddValueCk(0, sb, "NoReqBirthYear", NoReqBirthYear);
 			AddValueCk(0, sb, "NotReqDOB", NotReqDOB);
 			AddValueCk(0, sb, "NotReqAddr", NotReqAddr);

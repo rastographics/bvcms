@@ -538,7 +538,7 @@ namespace CmsWeb.Models
             else
                 f = p.Family;
 
-            var position = DbUtil.Db.ComputePositionInFamily(age, MaritalStatusCode.Single, f.FamilyId) ?? 10;
+            var position = DbUtil.Db.ComputePositionInFamily(age, false, f.FamilyId) ?? 10;
             _Person = Person.Add(f, position,
                 null, FirstName.Trim(), null, LastName.Trim(), DateOfBirth, married == 20, gender ?? 0,
                     OriginCode.Enrollment, entrypoint);

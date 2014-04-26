@@ -56,12 +56,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				if (pf.Type == "B")
 					Payments.ValidateBankAccountInfo(ModelState, pf.Routing, pf.Account);
 				if (pf.Type == "C")
-					Payments.ValidateCreditCardInfo(ModelState, pf.CreditCard, pf.Expires, pf.CCV);
+					Payments.ValidateCreditCardInfo(ModelState, pf);
 				
 				if (!ModelState.IsValid)
 					return View("ProcessPayment", pf);
 
-				if (pf.IsLoggedIn == true && pf.SavePayInfo == true)
+				if (pf.IsLoggedIn == true && pf.SavePayInfo)
 				{
 					var gateway = OnlineRegModel.GetTransactionGateway();
 					if (gateway == "authorizenet")
@@ -95,7 +95,28 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 						throw new Exception("ServiceU not supported");
 
 				}
-				var ti = ProcessPaymentTransaction(m, pf);
+			    if (pf.UseBootstrap)
+			    {
+			        var r = AddressVerify.LookupAddress(pf.Address, "", "", "", pf.Zip);
+			        if (r.Line1 != "error")
+			        {
+			            if (r.found == false)
+			            {
+			                ModelState.AddModelError("Zip",
+			                    r.address + ", to skip address check, Change the country to USA, Not Validated");
+        					return View("ProcessPayment", pf);
+			            }
+			            if (r.Line1 != pf.Address)
+			                pf.Address = r.Line1;
+			            if (r.City != (pf.City ?? ""))
+			                pf.City = r.City;
+			            if (r.State != (pf.State ?? ""))
+			                pf.State = r.State;
+			            if (r.Zip != (pf.Zip ?? ""))
+			                pf.Zip = r.Zip;
+			        }
+			    }
+			    var ti = ProcessPaymentTransaction(m, pf);
 
 				if (ti.Approved == false)
 				{
@@ -160,7 +181,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			TransactionResponse tinfo;
 			var gateway = OnlineRegModel.GetTransactionGateway();
 			if (gateway == "authorizenet")
-				if (pf.SavePayInfo == true)
+				if (pf.SavePayInfo)
 				{
 					var anet = new AuthorizeNet(DbUtil.Db, pf.testing);
 					tinfo = anet.createCustomerProfileTransactionRequest(
@@ -188,7 +209,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 							pf.Address, pf.City, pf.State, pf.Zip,
 							pf.testing);
 			else if (gateway == "sage")
-				if (pf.SavePayInfo == true)
+				if (pf.SavePayInfo)
 				{
 					var sage = new SagePayments(DbUtil.Db, pf.testing);
 					tinfo = sage.createVaultTransactionRequest(

@@ -401,11 +401,10 @@ namespace CmsWeb.Models
         {
             get
             {
-                //return false;
                 if (!usebootstrap.HasValue)
                     usebootstrap = org != null
-                        ? settings[org.OrganizationId].UseBootstrap
-                        : settings != null && settings.Values.Any(ss => ss.UseBootstrap);
+                        ? org.UseBootstrap ?? false
+                        : masterorg != null && (masterorg.UseBootstrap ?? false);
                 return usebootstrap.Value;
             }
         }

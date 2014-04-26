@@ -1,4 +1,5 @@
-﻿@using RestSharp.Extensions
+﻿@using CmsWeb
+@using UtilityExtensions
 @model CmsWeb.Models.PaymentForm
 <div class="regform">
     <h2>Payment Processing</h2>
@@ -16,9 +17,12 @@
             @Html.Raw(Model.Terms)
         </div>
     }
-    <form class="showform form-horizontal" action="/onlinereg/ProcessPayment" method="post">
+    <form class="showform form-horizontal" action="/OnlineReg/ProcessPayment" method="post">
+        @Html.DivValidationMessage("form")
+        @Html.ValidationSummary()
         @Html.HiddenFor(m => m.DatumId)
         @Html.HiddenFor(m => m.TranId)
+        @Html.HiddenFor(m => m.UseBootstrap)
         @Html.HiddenFor(m => m.Url)
         @Html.HiddenFor(m => m.Description)
         @Html.HiddenFor(m => m.FormId)
@@ -44,21 +48,53 @@
         @Html.EditorFor(m => m.Zip)
         @Html.EditorFor(m => m.Phone)
         @Html.EditorFor(m => m.Email)
-        @Html.EditorFor(m => m.AmtToPay, new { classes = "narrow" })
-        @Html.EditorFor(m => m.CreditCard)
-        @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
-        @Html.EditorFor(m => m.CCV, new { classes = "narrow" })
-        @Html.EditorFor(m => m.Routing)
-        @Html.EditorFor(m => m.Account)
-        @Html.EditorFor(m => m.SavePayInfo)
+        @Html.DisplayFor(m => m.AmtToPay)
+        @Html.HiddenFor(m => m.AmtToPay)
+        @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
+        {
+            <div class="form-group">
+                @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
+                <div class="col-sm-9">
+                    <label class="radio-inline">
+                        <input type="radio" name="Type" value="C" @(Model.Type == "C" ? "checked='checked'" : "") />Debit/Credit Card
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="Type" value="B" @(Model.Type == "B" ? "checked='checked'" : "") /> Bank Account
+                    </label>
+                    @Html.Hidden("allowcc", "true")
+                </div>
+            </div>
+        }
+        @if (Model.NoCreditCardsAllowed == false)
+        {
+            <div class="Card">
+                @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff })
+                @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+                @Html.EditorFor(m => m.CCV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+            </div>
+        }
+        @if (Model.NoEChecksAllowed == false)
+        {
+            <div class="Bank">
+                @Html.EditorFor(m => m.Routing)
+                @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
+            </div>
+        }
+        @if (Model.IsLoggedIn == true && CmsWeb.Models.OnlineRegModel.GetTransactionGateway() == "sage")
+        {
+            @Html.EditorFor(m => m.SavePayInfo, "Boolean")
+        }
         @Helper.OnlineRegSubmitButtonRow("Make Payment", onlyoneallowed: true)
-        @Html.ValidationMessage("form")
         @if (Model.AllowCoupon)
         {
             @Html.EditorFor(m => m.Coupon)
             @Helper.OnlineRegAjaxButtonRow("/OnlineReg/ApplyCoupon", "Apply Coupon", id: "ApplyCoupon", style: "btn-success")
+            <div class="form-group" id="formerror">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <div class="alert alert-danger field-validation-error" id="errormessage"></div>
+                </div>
+            </div>
         }
-        <div class="right red" id="errormessage"></div>
     </form>
 </div>
 <div id="findid" style="display:none">

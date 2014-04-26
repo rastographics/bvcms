@@ -20,6 +20,7 @@
 @if (Model.OnlineGiving())
 {
     @Html.Partial("Flow2/OnlineGiving", Model)
+    @SubmitButton()
     return;
 }
 @if (Model.IsSpecialScript())

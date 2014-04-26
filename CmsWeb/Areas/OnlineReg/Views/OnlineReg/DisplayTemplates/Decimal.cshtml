@@ -1,8 +1,8 @@
 ﻿@using UtilityExtensions
 @model decimal?
-<div class="control-group">
-    @Html.LabelFor(m => m, new { @class="control-label"})
-    <div class="controls">
-        <p>@Model.ToString2("N2")</p>
+<div class="form-group">
+    @Html.LabelFor(m => m, new { @class="control-label col-sm-3"})
+    <div class="col-sm-9">
+        <p class="form-control-static">@Model.ToString2("N2")</p>
     </div>
 </div>

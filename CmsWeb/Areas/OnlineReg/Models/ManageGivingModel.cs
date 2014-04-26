@@ -178,7 +178,8 @@ namespace CmsWeb.Models
 		public void ValidateModel(ModelStateDictionary ModelState)
 		{
 			if (Type == "C")
-				Payments.ValidateCreditCardInfo(ModelState, Cardnumber, Expires, Cardcode);
+				Payments.ValidateCreditCardInfo(ModelState, 
+                    new PaymentForm { CreditCard = Cardnumber, Expires = Expires, CCV = Cardcode, SavePayInfo = true});
 			else if (Type == "B")
 				Payments.ValidateBankAccountInfo(ModelState, Routing, Account);
 			else

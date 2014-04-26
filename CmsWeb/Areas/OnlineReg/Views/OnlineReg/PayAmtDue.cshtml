@@ -28,7 +28,7 @@
 <form action="https://public.serviceu.com/transaction/pay.asp" method="post">
     @Html.Hidden("OrgID", ServiceUOrgID)
     @Html.Hidden("OrgAccountID", ServiceUOrgAccountID)
-    @Html.Hidden("PostbackURL", Util.ServerLink("/OnlineReg/ConfirmDuePaid/" + Model.TranId))
+    @Html.Hidden("PostbackURL", DbUtil.Db.ServerLink("/OnlineReg/ConfirmDuePaid/" + Model.TranId))
     @Html.Hidden("NameOnAccount", Model.FullName()) 
     @Html.Hidden("Address", Model.Address)
     @Html.Hidden("City", Model.City)

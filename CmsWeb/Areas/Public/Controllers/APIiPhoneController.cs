@@ -121,7 +121,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (m.goesby == "(Null)")
                 m.goesby = null;
 
-            var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), m.marital, f.FamilyId) ?? 10;
+            var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), m.marital == 20, f.FamilyId) ?? 10;
 
             var p = Person.Add(f, position,
                 null, Trim(m.first), Trim(m.goesby), Trim(m.last), m.dob, false, m.gender,

@@ -159,6 +159,8 @@ namespace CmsData
 		
 		private string _GiftNotifyIds;
 		
+		private bool? _UseBootstrap;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -418,6 +420,9 @@ namespace CmsData
 		
 		partial void OnGiftNotifyIdsChanging(string value);
 		partial void OnGiftNotifyIdsChanged();
+		
+		partial void OnUseBootstrapChanging(bool? value);
+		partial void OnUseBootstrapChanged();
 		
     #endregion
 		public Organization()
@@ -2044,6 +2049,28 @@ namespace CmsData
 					this._GiftNotifyIds = value;
 					this.SendPropertyChanged("GiftNotifyIds");
 					this.OnGiftNotifyIdsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="UseBootstrap", UpdateCheck=UpdateCheck.Never, Storage="_UseBootstrap", DbType="bit")]
+		public bool? UseBootstrap
+		{
+			get { return this._UseBootstrap; }
+
+			set
+			{
+				if (this._UseBootstrap != value)
+				{
+				
+                    this.OnUseBootstrapChanging(value);
+					this.SendPropertyChanging();
+					this._UseBootstrap = value;
+					this.SendPropertyChanged("UseBootstrap");
+					this.OnUseBootstrapChanged();
 				}
 
 			}

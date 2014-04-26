@@ -260,7 +260,7 @@ namespace CmsWeb.Models
             if (goesby != null)
                 goesby = goesby.Trim();
 
-            var position = DbUtil.Db.ComputePositionInFamily(age ?? -1, MaritalStatusCode.Single, FamilyId) ?? 10;
+            var position = DbUtil.Db.ComputePositionInFamily(age ?? -1, false, FamilyId) ?? 10;
 
             _Person = Person.Add(f, position,
                                  null, first.Trim(), goesby, last.Trim(), dob, false, gender,

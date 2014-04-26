@@ -2400,6 +2400,17 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.PersonStatusFlags", IsComposable = true)]
+		public IQueryable< View.PersonStatusFlag > PersonStatusFlags(
+            [Parameter(DbType="int")] int? tagid
+            )
+		{
+			return this.CreateMethodCallQuery< View.PersonStatusFlag>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                tagid
+                );
+		}
+
 		[Function(Name="dbo.PledgeFulfillment", IsComposable = true)]
 		public IQueryable< View.PledgeFulfillment > PledgeFulfillment(
             [Parameter(DbType="int")] int? fundid
@@ -3709,14 +3720,14 @@ namespace CmsData
 		[return: Parameter(DbType = "int")]
 		public int? ComputePositionInFamily(
             [Parameter(Name = "age", DbType="int")] int? age,
-            [Parameter(Name = "marital", DbType="int")] int? marital,
+            [Parameter(Name = "married", DbType="bit")] bool? married,
             [Parameter(Name = "fid", DbType="int")] int? fid
             )
 		{
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 age,
-                marital,
+                married,
                 fid
                 ).ReturnValue));
 		}

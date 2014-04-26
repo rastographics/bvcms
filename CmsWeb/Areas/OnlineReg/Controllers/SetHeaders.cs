@@ -48,6 +48,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             Settings setting = null;
             var org = DbUtil.Db.LoadOrganizationById(id);
+            if (org != null && org.UseBootstrap == true)
+            {
+                SetHeaders2(id);
+                return;
+            }
             var shell = "";
             if ((settings == null || !settings.ContainsKey(id)) && org != null)
             {

@@ -52,7 +52,7 @@ namespace CmsWeb.Models
         public bool? FinanceOnly { get; set; }
         public bool? IsLoggedIn { get; set; }
         public bool? CanSave { get; set; }
-        public bool? SavePayInfo { get; set; }
+        public bool SavePayInfo { get; set; }
         public bool? IsGiving { get; set; }
         public bool NoCreditCardsAllowed { get; set; }
         private bool? _noEChecksAllowed;
@@ -276,22 +276,28 @@ namespace CmsWeb.Models
         }
         public object Autocomplete(bool small = false)
         {
-            string auto;
-#if DEBUG
-            auto = "on";
-#else
-			auto = "off";
-#endif
             if (small)
                 return new
                 {
-                    AUTOCOMPLETE = auto,
+                    AUTOCOMPLETE = AutocompleteOnOff,
                     @class = "short"
                 };
             return new
             {
-                AUTOCOMPLETE = auto,
+                AUTOCOMPLETE = AutocompleteOnOff,
             };
+        }
+
+        public string AutocompleteOnOff
+        {
+            get
+            {
+#if DEBUG
+                return "on";
+#else
+    			return "off";
+#endif
+            }
         }
     }
 }
