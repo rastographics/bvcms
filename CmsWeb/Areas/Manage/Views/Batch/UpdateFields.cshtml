@@ -1,45 +1,45 @@
-﻿@using CmsWeb
-@model CmsWeb.Models.UpdateFieldsModel
+﻿@model CmsWeb.Models.UpdateFieldsModel
 @{
-    ViewBag.Title = "Update Fields for Tag";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Update Fields from a Tag/Query";
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
 }
-<h2>Update Fields for Tag</h2>
-<h4>@ViewData["success"]</h4>
-<form method="post" action="/Batch/UpdateFields/Run">
-<table>
-<tr><td><b>Tag:</b></td><td><b>Field:</b></td></tr>
-<tr><td>@Html.DropDownList("Tag", Model.Tags())</td>
-    <td>@Html.DropDownList("Field", Model.Fields())</td></tr>
-<tr><td class="right"><b>New Value:</b>@Html.TextBox("NewValue")</td><td></td></tr>
-<tr><td></td><td><input type="submit" class="bt" value="Run" /></td></tr>
-</table>
-</form>
-
-@{Html.RenderPartial("LookupData", Model.TitleItems());}
-
-<blockquote>
-<hr />
-<table>
-    <tr><th colspan="2" class="left">Grade</th></tr>
-    <tr><td><b>Code</b></td><td><b>Description</b></td></tr>
-    <tr><td>-1</td><td>Pre K</td></tr>
-    <tr><td>&nbsp;0</td><td>Kindergarten</td></tr>
-    <tr><td>1-12</td><td>Grade</td></tr>
-    <tr><td>13</td><td>Freshman</td></tr>
-    <tr><td>14</td><td>Sophmore</td></tr>
-    <tr><td>15</td><td>Junior</td></tr>
-    <tr><td>16</td><td>Senior</td></tr>
-    <tr><td>99</td><td>Special Class</td></tr>
-    <tr><td>YYYY</td><td>Graduation Year</td></tr>
-    <tr><td>+1</td><td>Add 1 to the Grade</td></tr>
-</table>
-<hr />
-    <table>
-        <tr><th colspan="2" class="left">ReceiveSMS</th></tr>
-        <tr><td><b>Code</b></td><td><b>Description</b></td></tr>
-        <tr><td>true</td><td>Yes, Receive SMS Text messages</td></tr>
-        <tr><td>false</td><td>No, Do not Receive SMS Text messages</td></tr>
-    </table>
-    <hr/>
-</blockquote>
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Admin/UpdateFields.js")
+}
+<div class="container">
+    <div class="table not-wide">
+        <form class="form form-horizontal" method="post" action="/Batch/UpdateFieldsRun">
+            <fieldset>
+                <legend>Update Fields from a Tag/Query</legend>
+                @Html.EditorFor(m => m.Tag, "Dropdown", new { items = Model.Tags() })
+                @Html.HiddenFor(m => m.Count)
+                <div class="control-group @(Model.Count.HasValue ? "" : "hide")">
+                    <label class="control-label"></label>
+                    <div class="controls">
+                        <p class="alert alert-danger" id="count">@Model.Count records will be updated</p>
+                    </div>
+                </div>
+                @Html.EditorFor(m => m.Field, "Dropdown", new { items = Model.Fields() })
+                @Html.EditorFor(m => m.NewValue)
+                <div class="control-group">
+                    <label class="control-label"></label>
+                    <div class="controls">
+                        <input type="submit" class="btn btn-primary" value="Run Update" />
+                    </div>
+                </div>
+                @if (ViewBag.success != null)
+                {
+                    <div class="alert alert-success">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      @ViewBag.success
+                    </div>
+                }
+            </fieldset>
+        </form>
+    </div>
+    @foreach (var ti in Model.FetchTitleItems())
+    {
+        @Html.Partial("LookupTable", ti)
+    }
+</div>
