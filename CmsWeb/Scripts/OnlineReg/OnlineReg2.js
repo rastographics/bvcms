@@ -70,7 +70,7 @@
             }
             $(f).html(ret).ready(function () {
                 $.InstructionsShow();
-                if ($("#submitit").data("onlyoneallowed") == "true") {
+                if ($("#submitit").data("onlyoneallowed").toLowerCase() === "true") {
                     f.submit();
                 } else {
                     if($('div.panel:last-child').length > 0)

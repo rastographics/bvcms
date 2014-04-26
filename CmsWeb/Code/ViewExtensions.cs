@@ -78,7 +78,7 @@ namespace CmsWeb
                 var s = msg.ToString();
                 if (s.HasValue() && s.Contains("field-validation-valid"))
                     return null;
-                if (@s.HasValue())
+                if (!s.HasValue())
                     return null;
                 var div = new TagBuilder("div");
                 div.AddCssClass("alert alert-danger");
@@ -744,19 +744,19 @@ namespace CmsWeb
         }
         public static HtmlString CKEditor()
         {
-            return new HtmlString("<script src=\"/ckeditor/ckeditor.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.3.2/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
         public static HtmlString jQuery()
         {
-            return new HtmlString("<script src=\"//code.jquery.com/jquery-1.10.2.min.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>\n");
         }
         public static HtmlString jQueryUICss()
         {
-            return new HtmlString("<link href=\"//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.min.css\" rel=\"stylesheet\" />\n");
+            return new HtmlString("<link rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css\" />\n");
         }
         public static HtmlString jQueryUI()
         {
-            return new HtmlString(@"<script src=""//code.jquery.com/ui/1.10.3/jquery-ui.min.js"" type=""text/javascript""></script>
+            return new HtmlString(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js""></script>
     <script> $.fn.jqdatepicker = $.fn.datepicker; </script>
 ");
         }
@@ -778,11 +778,9 @@ namespace CmsWeb
 
         public static string Layout()
         {
-            int tID = 0;
             return (UseNewLook())
                 ? "~/Views/Shared/SiteLayout2c.cshtml"
                 : "~/Views/Shared/SiteLayout.cshtml";
-
         }
 
         public static string DbSetting(string name, string def)

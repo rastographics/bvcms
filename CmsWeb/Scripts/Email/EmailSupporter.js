@@ -91,8 +91,7 @@
         autoParagraph: false,
         fullPage: false,
         allowedContent: true,
-        filebrowserUploadUrl: '/Account/CKEditorUpload/',
-        filebrowserImageUploadUrl: '/Account/CKEditorUpload/'
+        customConfig: '/scripts/js/ckeditorconfig.js'
     });
 
     $("a.save").click(function () {

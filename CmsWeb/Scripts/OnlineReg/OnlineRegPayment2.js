@@ -5,23 +5,26 @@ $(function () {
         ev.preventDefault();
         return false;
     });
-    $("a.submitbutton, a.submitlink, input.submitbutton.ajax").click(function (ev) {
+    $("#formerror").hide();
+    $("a.submitbutton, a.submitlink").click(function (ev) {
         ev.preventDefault();
         if (!agreeterms) {
             alert("must agree to terms");
             return false;
         }
         var f = $(this).closest('form');
+        var href = this.href;
         var q = f.serialize();
-        $.post($(this).attr('href'), q, function (ret) {
+        $.post(href, q, function (ret) {
             if (ret.error) {
+                $("#formerror").show();
                 $('#errormessage').text(ret.error);
             } else if (ret.amt && ret.amt > 0) {
-                $('#errormessage').text('');
+                $("#formerror").hide();
                 $('#amt').text(ret.amt);
-                $('#pf_AmtToPay').val(ret.tiamt);
-                $('#pf_Amtdue').val(ret.amtdue);
-                $('#pf_Coupon').val('');
+                $('#AmtToPay').val(ret.tiamt);
+                $('#Amtdue').val(ret.amtdue);
+                $('#Coupon').val('');
                 $('td.coupon').html(ret.msg);
             } else {
                 window.location = ret.confirm;
@@ -65,11 +68,13 @@ $(function () {
             alert("must agree to terms");
             return false;
         }
-        if (!$("#Submit").val())
+        if (!$("#submitit").val())
             return false;
-        if ($("form").valid())
-            $("#Submit").attr("disabled", "disabled");
-        return true;
+        if ($("form").valid()) {
+            $("#submitit").attr("disabled", "disabled");
+            return true;
+        }
+        return false;
     });
 
     if ($('#IAgree').attr("id")) {
@@ -95,37 +100,40 @@ $(function () {
             $(".Card").show();
         else if (v === 'B')
             $(".Bank").show();
-        $("#Submit").attr("disabled", "true");
+        $("#submitit").attr("disabled", "true");
         $.EnableSubmit();
+        if ($("#Type").val()) {
+            $("#submitit").removeAttr("disabled");
+        }
+    };
+    $.EnableSubmit = function () {
     };
     $("body").on("change", 'input[name=Type]', function () {
         var v = $("input[name=Type]:checked").val();
-        $("#pf_Type").val(v);
+        $("#Type").val(v);
         $.ShowPaymentInfo(v);
     });
     if ($("#allowcc").val()) {
-        $.ShowPaymentInfo($("#pf_Type").val()); // initial setting
+        $.ShowPaymentInfo($("#Type").val()); // initial setting
     }
     $.validator.setDefaults({
         highlight: function (input) {
-            $(input).addClass("ui-state-highlight");
+            $(input).addClass("input-validation-error");
         },
         unhighlight: function (input) {
-            $(input).removeClass("ui-state-highlight");
+            $(input).removeClass("input-validation-error");
         }
     });
     // validate signup form on keyup and submit
     $("form").validate({
         rules: {
-            "pf.First": { required: true, maxlength: 50 },
-            "pf.MiddleInitial": { maxlength: 1},
-            "pf.Last": { required: true, maxlength: 50 },
-            "pf.Suffix": { maxlength: 10 },
-            "pf.Address": { required: true, maxlength: 50 },
-            "pf.City": { required: true, maxlength: 50 },
-            "pf.State": { required: true, maxlength: 4 },
-            "pf.Zip": { required: true, maxlength: 15 },
-            "pf.Phone": { maxlength: 50 }
+            "First": { required: true, maxlength: 50 },
+            "MiddleInitial": { maxlength: 1},
+            "Last": { required: true, maxlength: 50 },
+            "Suffix": { maxlength: 10 },
+            "Address": { required: true, maxlength: 50 },
+            "Zip": { required: true, maxlength: 15 },
+            "Phone": { maxlength: 50 }
         },
         errorPlacement: function(error, element) {
             if (element.hasClass("clearField")) {
@@ -134,7 +142,8 @@ $(function () {
             else {
                 error.insertAfter(element);
             }
-        }
+        },
+        errorClass: "field-validation-error"
     });
 
 });
