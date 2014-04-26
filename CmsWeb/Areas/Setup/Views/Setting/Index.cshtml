@@ -16,7 +16,7 @@
             $("a.delete").click(function (ev) {
                 if (confirm("are you sure?"))
                     $.post("/Setting/Delete/" + $(this).attr("id"), null, function (ret) {
-                        window.location = "/Setting/";
+                        window.location = "/Settings/";
                     });
             });
             $(".bt").button();
