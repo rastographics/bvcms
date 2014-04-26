@@ -29,7 +29,7 @@ namespace UtilityExtensions
             var msg = new MailMessage();
             if (From == null)
                 From = FirstAddress(senderrorsto);
-            var problemDomains = new List<string> { "yahoo.com", "aol.com" };
+            var problemDomains = (ConfigurationManager.AppSettings["ProblemDomainsForEmail"] ?? "").Split(',');
             if (problemDomains.Any(dd => From.Host == dd || to.Any(ee => ee.Host == dd)))
             {
                 if (!SysFromEmail.HasValue())
