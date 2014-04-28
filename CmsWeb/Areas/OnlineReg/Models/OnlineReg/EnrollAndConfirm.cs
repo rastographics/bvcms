@@ -535,7 +535,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                 Staff.First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManageVolunteer/"), "Manage Your Volunteer Commitments", message);
         }
-        public void ConfirmManagePledge()
+        public void SendLinkForPledge()
         {
             var p = List[0];
             if (p.IsNew)
@@ -556,7 +556,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManagePledge/"), c.Title, c.Body);
         }
-        public void ConfirmManageGiving()
+        public void SendLinkToManageGiving()
         {
             var p = List[0];
             if (p.IsNew)

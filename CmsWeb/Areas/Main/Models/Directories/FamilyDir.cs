@@ -102,7 +102,6 @@ namespace CmsWeb.Areas.Main.Models.Directories
             GenerateDocumentSettingsPart1Content(documentSettingsPart1);
 
             documentSettingsPart1.AddExternalRelationship("http://schemas.openxmlformats.org/officeDocument/2006/relationships/attachedTemplate", new System.Uri("file:///D:\\Downloads\\FamilyMergeDoc%20(2).dotx", System.UriKind.Absolute), "rId1");
-            SetPackageProperties(document);
         }
 
         // Generates content of extendedFilePropertiesPart1.
@@ -2057,13 +2056,5 @@ namespace CmsWeb.Areas.Main.Models.Directories
             documentSettingsPart1.Settings = settings1;
         }
 
-        private void SetPackageProperties(OpenXmlPackage document)
-        {
-            document.PackageProperties.Creator = "David";
-            document.PackageProperties.Revision = "1";
-            document.PackageProperties.Created = System.Xml.XmlConvert.ToDateTime("2012-05-12T23:17:00Z", System.Xml.XmlDateTimeSerializationMode.RoundtripKind);
-            document.PackageProperties.Modified = System.Xml.XmlConvert.ToDateTime("2012-05-12T23:18:00Z", System.Xml.XmlDateTimeSerializationMode.RoundtripKind);
-            document.PackageProperties.LastModifiedBy = "David";
-        }
 	}
 }

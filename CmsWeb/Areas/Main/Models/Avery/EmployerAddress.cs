@@ -69,7 +69,6 @@ namespace CmsWeb.Areas.Main.Models.Avery
 			WebSettingsPart webSettingsPart1 = mainDocumentPart1.AddNewPart<WebSettingsPart>("rId4");
 			GenerateWebSettingsPart1Content(webSettingsPart1);
 
-			SetPackageProperties(document);
 		}
 
 		// Generates content of extendedFilePropertiesPart1.
@@ -1876,15 +1875,6 @@ namespace CmsWeb.Areas.Main.Models.Avery
 			webSettings1.Append(allowPNG1);
 
 			webSettingsPart1.WebSettings = webSettings1;
-		}
-
-		private void SetPackageProperties(OpenXmlPackage document)
-		{
-			document.PackageProperties.Creator = "David";
-			document.PackageProperties.Revision = "1";
-			document.PackageProperties.Created = System.Xml.XmlConvert.ToDateTime("2012-05-19T23:53:00Z", System.Xml.XmlDateTimeSerializationMode.RoundtripKind);
-			document.PackageProperties.Modified = System.Xml.XmlConvert.ToDateTime("2012-05-19T23:54:00Z", System.Xml.XmlDateTimeSerializationMode.RoundtripKind);
-			document.PackageProperties.LastModifiedBy = "David";
 		}
 
 

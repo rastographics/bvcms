@@ -82,7 +82,7 @@ namespace CmsWeb.Controllers
 						email.ReplyToList.Add(addcc);
 						ccAddrs.Add(addcc);
 					}
-					catch (FormatException fe) {}
+					catch (FormatException) {}
 				}
 			}
 			email.IsBodyHtml = true;

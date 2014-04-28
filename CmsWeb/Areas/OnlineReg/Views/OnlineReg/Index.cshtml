@@ -14,7 +14,7 @@
     <script type="text/javascript">
         $.dateFormat = '@Util.jQueryDateFormat';
         $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
-        $.tmout = parseInt('@ViewBag.timeout');
+        $.tmout = parseInt('@Model.TimeOut');
     </script>
     @(Model.UseBootstrap 
         ? @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")

@@ -12,7 +12,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             ViewBag.Url = m2.URL;
             Session["gobackurl"] = m2.URL;
-            ViewBag.timeout = timeout;
             if(m2.UseBootstrap)
                 SetHeaders2(m2.Orgid ?? m2.masterorgid ?? 0);
             else
@@ -25,10 +24,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if ((settings == null || !settings.ContainsKey(id)) && org != null)
             {
                 var setting = OnlineRegModel.ParseSetting(org.RegSetting, id);
-                shell = DbUtil.Content(setting.Shell, null);
+                shell = DbUtil.Content(setting.ShellBs, null);
             }
             if (!shell.HasValue() && settings != null && settings.ContainsKey(id))
-                shell = DbUtil.Content(settings[id].Shell, null);
+                shell = DbUtil.Content(settings[id].ShellBs, null);
             if (!shell.HasValue())
                 shell = DbUtil.Content("ShellDefaultBs", "");
 

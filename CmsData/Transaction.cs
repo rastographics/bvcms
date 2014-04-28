@@ -1,19 +1,14 @@
-using System;
 using UtilityExtensions;
-using System.Data.Linq;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace CmsData
 {
     public partial class Transaction
     {
-    	public bool CanCredit
+    	public bool CanCredit(CMSDataContext db)
     	{
-    		get
-    		{
 				if (!Util.IsSage.HasValue)
-					Util.IsSage = DbUtil.Db.Setting("TransactionGateway", "").ToLower() == "sage";
+					Util.IsSage = db.Setting("TransactionGateway", "").ToLower() == "sage";
     			return Approved == true 
     			       && Util.IsSage.Value
     			       && Voided != true
@@ -22,23 +17,19 @@ namespace CmsData
     			       && TransactionId.HasValue()
 					   && Batchtyp == "eft" || Batchtyp == "bankcard"
 					   && Amt > 0;
-    		}
     	}
-    	public bool CanVoid
+    	public bool CanVoid(CMSDataContext db)
     	{
-    		get
-    		{
 				if (!Util.IsSage.HasValue)
-					Util.IsSage = DbUtil.Db.Setting("TransactionGateway", "").ToLower() == "sage";
+					Util.IsSage = db.Setting("TransactionGateway", "").ToLower() == "sage";
     			return Approved == true 
-					 && !CanCredit
+					 && !CanCredit(db)
     			       && Util.IsSage.Value
     			       && Voided != true
     			       && Credited != true
     			       && (Coupon ?? false) == false
     			       && TransactionId.HasValue()
 					   && Amt > 0;
-    		}
     	}
 		public int FirstTransactionPeopleId()
 		{
@@ -60,6 +51,25 @@ namespace CmsData
                     return s;
                 }
                 return Name;
+            }
+        }
+
+        private bool? usebootstrap;
+        public bool UseBootstrap(CMSDataContext db)
+        {
+            if (usebootstrap.HasValue)
+                return usebootstrap.Value;
+            var org = db.LoadOrganizationById(OrgId);
+            return (usebootstrap = org.UseBootstrap) ?? false;
+        }
+        private int? timeOut;
+        public int TimeOut
+        {
+            get
+            {
+                if (!timeOut.HasValue)
+                    timeOut = Util.IsDebug() ? 16000000 : 180000;
+                return timeOut.Value;
             }
         }
     }

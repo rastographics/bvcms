@@ -100,22 +100,29 @@ $(function () {
             $(".Card").show();
         else if (v === 'B')
             $(".Bank").show();
-        $("#submitit").attr("disabled", "true");
-        $.EnableSubmit();
-        if ($("#Type").val()) {
-            $("#submitit").removeAttr("disabled");
-        }
     };
-    $.EnableSubmit = function () {
+    $.ShowPeriodInfo = function (v) {
+        $(".everyPeriod").hide();
+        $(".twiceMonthly").hide();
+        if (v === 'S')
+            $(".twiceMonthly").show();
+        else if (v === 'E')
+            $(".everyPeriod").show();
     };
     $("body").on("change", 'input[name=Type]', function () {
         var v = $("input[name=Type]:checked").val();
         $("#Type").val(v);
         $.ShowPaymentInfo(v);
     });
+    $("body").on("change", 'input[name=SemiEvery]', function () {
+        var v = $("input[name=SemiEvery]:checked").val();
+        $("#SemiEvery").val(v);
+        $.ShowPeriodInfo(v);
+    });
     if ($("#allowcc").val()) {
-        $.ShowPaymentInfo($("#Type").val()); // initial setting
+        $.ShowPaymentInfo($("input[name=Type]:checked").val());
     }
+    $.ShowPeriodInfo($("input[name=SemiEvery]:checked").val());
     $.validator.setDefaults({
         highlight: function (input) {
             $(input).addClass("input-validation-error");

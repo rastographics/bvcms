@@ -1,0 +1,53 @@
+﻿@model CmsWeb.Models.PaymentModel
+@{
+    Layout = "~/Views/Shared/onlinereg.cshtml";
+    ViewBag.Title = "Online Registration";
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/onlinereg/onlineregpayment.js")
+    <script type="text/javascript">
+        $(function () {
+            $(document).bind("idle.idleTimer", function () {
+                window.location.href = '@Model._URL';
+            });
+            var tmout = parseInt('@Model._timeout');
+            $.idleTimer(tmout);
+        });
+    </script>
+}
+<h2>Payment Processing</h2>
+<form action="https://public.serviceu.com/transaction/pay.asp" method="post">
+    @Html.HiddenFor(m => m.OrgID)
+    @Html.HiddenFor(m => m.OrgAccountID)
+    @Html.HiddenFor(m => m.PostbackURL)
+    @Html.HiddenFor(m => m.NameOnAccount)")
+    @Html.HiddenFor(m => m.Address)")
+    @Html.HiddenFor(m => m.City)
+    @Html.HiddenFor(m => m.State)
+    @Html.HiddenFor(m => m.PostalCode)
+    @Html.HiddenFor(m => m.Phone)
+    @Html.HiddenFor(m => m.Email)
+    @Html.HiddenFor(m => m.Misc1)
+    @Html.HiddenFor(m => m.Misc2)
+    @Html.HiddenFor(m => m.Misc3)
+    @Html.HiddenFor(m => m.Misc4)
+    <p>
+        When you click the 'Make Payment' button button will be redirected to ServiceU.com to process your credit card payment of @Model.Amount.ToString("C").
+        After you are finished there, you will be redirected back here to get your confirmation.
+        Your information will not be committed until you complete the transaction on the next page.
+    </p>
+    <p>
+        @Html.TextBox("Amount", Model.Amount.ToString("f2"))
+        <input type="submit" name="Submit" value="Make Payment" />
+    </p>
+</form>
+<form>
+    @Html.Hidden("Amount")
+    <p>If you have a coupon, please enter that number here and click the button below it:</p>
+    <input id="Coupon" name="Coupon" type="text" value="" autocomplete="off" />
+    <input type="button" href="/OnlineReg/PayWithCouponOld/@Model._datumid" class="submitbutton ajax"
+           value="Pay with coupon" />
+    <span style="color:Red" id="validatecoupon"></span>
+</form>
+

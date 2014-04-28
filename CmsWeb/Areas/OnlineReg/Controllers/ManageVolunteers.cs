@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		{
 			var vs = new VolunteerRequestModel(mid, pid, ticks);
 			SetHeaders(vs.org.OrganizationId);
-			return View(vs);
+			return View("ManageVolunteer/VolRequestReport", vs);
 		}
 
 		[HttpGet]
@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			var vs = new VolSubModel(aid, pid);
 			SetHeaders(vs.org.OrganizationId);
 			vs.ComposeMessage();
-			return View(vs);
+			return View("ManageVolunteer/GetVolSub", vs);
 		}
 
         [HttpPost]
@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		{
 			var vs = new VolSubModel(aid, pid, ticks);
 			SetHeaders(vs.org.OrganizationId);
-			return View(vs);
+			return View("ManageVolunteer/VolSubReport", vs);
 		}
 
         [Route("ClaimVolSub/{ans}/{guid}")]
@@ -127,7 +127,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 			SetHeaders(id.ToInt());
 			DbUtil.LogActivity("Pick Slots: {0} ({1})".Fmt(m.Org.OrganizationName, m.Person.Name));
-			return View(m);
+			return View("ManageVolunteer/PickSlots", m);
 		}
 
 		[HttpPost]
@@ -160,8 +160,8 @@ The following Committments:<br/>
 			ViewData["Organization"] = m.Org.OrganizationName;
 			SetHeaders(m.OrgId);
 			if (m.IsLeader)
-				return View("ManageVolunteer", m);
-			return View(m);
+				return View("ManageVolunteer/PickSlots", m);
+			return View("ManageVolunteer/ConfirmVolunteerSlots", m);
 		}
 
 	}

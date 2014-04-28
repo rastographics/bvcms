@@ -15,6 +15,7 @@ namespace CmsData.Registration
 		public decimal? Deposit { get; set; }
 		public string Title { get; set; }
 		public string Shell { get; set; }
+		public string ShellBs { get; set; }
 		public decimal? Fee { get; set; }
 		public decimal? ExtraFee { get; set; }
 		public decimal? MaximumFee { get; set; }
@@ -321,6 +322,9 @@ namespace CmsData.Registration
 					break;
 				case Parser.RegKeywords.Shell:
 					Shell = parser.GetString();
+					break;
+				case Parser.RegKeywords.ShellBs:
+					ShellBs = parser.GetString();
 					break;
 				case Parser.RegKeywords.Fee:
 					Fee = parser.GetDecimal();
@@ -639,6 +643,7 @@ namespace CmsData.Registration
 
 			AddValueCk(0, sb, "ValidateOrgs", ValidateOrgs);
 			AddValueCk(0, sb, "Shell", Shell);
+			AddValueCk(0, sb, "ShellBs", ShellBs);
 			AddValueCk(0, sb, "SpecialScript", SpecialScript);
 			AddValueCk(0, sb, "AllowOnlyOne", AllowOnlyOne);
 			AddValueCk(0, sb, "TargetExtraValues", TargetExtraValues);

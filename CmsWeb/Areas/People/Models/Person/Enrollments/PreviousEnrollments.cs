@@ -86,7 +86,6 @@ namespace CmsWeb.Areas.People.Models
                         orderby om.Organization.OrganizationType.Code ?? "z", om.Organization.OrganizationName
                         select om;
             }
-            return q;
         }
     }
 }

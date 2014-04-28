@@ -47,10 +47,7 @@ namespace CmsWeb
                     return;
 #endif
                 }
-                if (1 == 1) // should be 1 == 1 (or just true) to run normally
-                    Models.AccountModel.SetUserInfo(Util.UserName, Session);
-                else
-                    Models.AccountModel.SetUserInfo("david", Session);
+                Models.AccountModel.SetUserInfo(Util.UserName, Session);
             }
             Util.SysFromEmail = ConfigurationManager.AppSettings["sysfromemail"];
             Util.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();

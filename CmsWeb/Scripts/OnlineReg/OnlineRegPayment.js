@@ -19,9 +19,9 @@ $(function () {
             } else if (ret.amt && ret.amt > 0) {
                 $('#validatecoupon').text('');
                 $('#amt').text(ret.amt);
-                $('#pf_AmtToPay').val(ret.tiamt);
-                $('#pf_Amtdue').val(ret.amtdue);
-                $('#pf_Coupon').val('');
+                $('#AmtToPay').val(ret.tiamt);
+                $('#Amtdue').val(ret.amtdue);
+                $('#Coupon').val('');
                 $('td.coupon').html(ret.msg);
             } else {
                 window.location = ret.confirm;
@@ -47,7 +47,7 @@ $(function () {
 	        }
 	    });
 	});
-    $('#pf_Coupon').showPassword();
+    $('#Coupon').showPassword();
 
     $('#findidclick').click(function (ev) {
         ev.preventDefault();
@@ -69,6 +69,7 @@ $(function () {
             return false;
         if ($("form").valid())
             $("#Submit").attr("disabled", "disabled");
+        var q = $("form").serialize();
         return true;
     });
 
@@ -107,18 +108,19 @@ $(function () {
         $.EnableSubmit();
     };
     $.EnableSubmit = function () {
-        if ($("#pf_Type").val() && agreeterms) {
+        var v = $("input[name=Type]:checked").val();
+        if (v && agreeterms) {
             $("#Submit").removeAttr("disabled");
             $("a.submitbutton").removeAttr("disabled");
         }
     };
     $("body").on("change", 'input[name=Type]', function () {
         var v = $("input[name=Type]:checked").val();
-        $("#pf_Type").val(v);
         $.ShowPaymentInfo(v);
     });
     if ($("#allowcc").val()) {
-        $.ShowPaymentInfo($("#pf_Type").val()); // initial setting
+        var v = $("input[name=Type]:checked").val();
+        $.ShowPaymentInfo(v); // initial setting
     }
     $.validator.setDefaults({
         highlight: function (input) {
@@ -131,15 +133,15 @@ $(function () {
     // validate signup form on keyup and submit
     $("form").validate({
         rules: {
-            "pf.First": { required: true, maxlength: 50 },
-            "pf.MiddleInitial": { maxlength: 1},
-            "pf.Last": { required: true, maxlength: 50 },
-            "pf.Suffix": { maxlength: 10 },
-            "pf.Address": { required: true, maxlength: 50 },
-            "pf.City": { required: true, maxlength: 50 },
-            "pf.State": { required: true, maxlength: 4 },
-            "pf.Zip": { required: true, maxlength: 15 },
-            "pf.Phone": { maxlength: 50 }
+            "First": { required: true, maxlength: 50 },
+            "MiddleInitial": { maxlength: 1},
+            "Last": { required: true, maxlength: 50 },
+            "Suffix": { maxlength: 10 },
+            "Address": { required: true, maxlength: 50 },
+            "City": { required: true, maxlength: 50 },
+            "State": { required: true, maxlength: 4 },
+            "Zip": { required: true, maxlength: 15 },
+            "Phone": { maxlength: 50 }
         },
         errorPlacement: function(error, element) {
             if (element.hasClass("clearField")) {

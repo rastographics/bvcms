@@ -1,0 +1,17 @@
+﻿@model CmsWeb.Models.TransactionInfo
+@{
+    Layout = "~/Views/Shared/onlinereg.cshtml";
+    ViewBag.Title = "Online Registration";
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/onlinereg/onlinereg.js")
+}
+<div class="confirm">
+    <h2>Transaction Completed</h2>
+    <p>
+        Thank you for your payment of @ViewBag.Amount for @Model.Header.<br />
+        Your balance is @Model.AmountDue.ToString("c").<br />
+        You should receive a confirmation email shortly.
+    </p>
+</div>

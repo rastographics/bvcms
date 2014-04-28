@@ -95,7 +95,7 @@
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
+      <HintPath>..\packages\openxml.sdk.25.1.0.0\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="DocX, Version=1.0.1.13, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -293,6 +293,18 @@
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Main\Controllers\QueryBuilder2Controller.cs" />
+    <Compile Include="Areas\Main\Models\Avery\AverySpacerCell173.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Areas\Main\Models\Avery\EmployerAddress.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Areas\Main\Models\Avery\EmployerAddressCell.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Areas\Main\Models\Avery\EmployerAddressRow.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Areas\Main\Models\Directories\CompactPictureDir.cs" />
     <Compile Include="Areas\Main\Models\Export\ExcelExportModel.cs" />
     <Compile Include="Areas\Main\Models\Export\ExcelHelper.cs" />
@@ -366,10 +378,6 @@
     <Compile Include="Areas\Main\Controllers\MemberDocsController.cs" />
     <Compile Include="Areas\Main\Controllers\SMSController.cs" />
     <Compile Include="Areas\Main\Controllers\VolunteeringController.cs" />
-    <Compile Include="Areas\Main\Models\Avery\AverySpacerCell173.cs" />
-    <Compile Include="Areas\Main\Models\Avery\EmployerAddress.cs" />
-    <Compile Include="Areas\Main\Models\Avery\EmployerAddressCell.cs" />
-    <Compile Include="Areas\Main\Models\Avery\EmployerAddressRow.cs" />
     <Compile Include="Areas\Main\Models\Directories\CompactDir.cs" />
     <Compile Include="Areas\Main\Models\Directories\CompactRow.cs" />
     <Compile Include="Areas\Main\Models\Directories\PictureDir.cs" />
@@ -1086,9 +1094,21 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\RecordFamilyAttendance.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmFamilyAttendance.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FamilyAttendTemplate.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ProcessPaymentBs.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ProcessPaymentNonBs.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment\Bootstrap\Process.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment\OldUI\Process.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Dropdown.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\Bootstrap\OneTimeLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\Bootstrap\Setup.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\OldUI\OneTimeLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\OldUI\Setup.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\Bootstrap\OneTimeLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\Bootstrap\Index.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\Confirm.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\OldUI\OneTimeLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\OldUI\Index.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\OneTimeLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\Index.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\EmptyRow.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -1634,11 +1654,11 @@
     <Content Include="Scripts\Admin\TransactionHistory.js" />
     <Content Include="Scripts\Finance\Transactions.js" />
     <Content Include="Scripts\Dialog\UserDialog.js" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\Setup.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmManageGiving.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\OneTimeLink.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmRecurringGiving.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\Confirm.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\TimeSlot.cshtml">
     </Content>
@@ -1650,7 +1670,7 @@
     </Content>
     <Content Include="Areas\Manage\Views\Account\LinkUsed.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\PickSlots.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Person\VolunteerDisplay.cshtml">
     </Content>
@@ -1672,7 +1692,7 @@
     </Content>
     <Content Include="Areas\People\Views\Person\Profile\Membership\Documents.cshtml" />
     <Content Include="Areas\Main\Views\Person\EditorTemplates\Field.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\VolunteerSlotsSummary.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\VolunteerSlotsSummary.cshtml" />
     <Content Include="Areas\Main\Views\Person\CurrentRegistrations.cshtml" />
     <Content Include="Areas\Manage\Views\UploadPeople\Progress.cshtml" />
     <Content Include="Areas\Manage\Views\UploadPeople\Index.cshtml" />
@@ -1685,7 +1705,7 @@
     <Content Include="Areas\Finance\Views\Contributions\Results.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Current.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Failed.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving2.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\EmailConfirmation.cshtml" />
     <Content Include="ConnectionStrings.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1701,13 +1721,13 @@
     <Content Include="Areas\Finance\Views\FinanceReports\ManagedGiving.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\ManageGiving2.cshtml" />
     <Content Include="Areas\Setup\Views\Roles\Index.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\GetVolSub.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EmailVolunteerSubs.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\VolSubReport.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\GetVolSub.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\EmailVolunteerSubs.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\VolSubReport.cshtml" />
     <Content Include="Areas\Manage\Views\Volunteers\ManageArea.cshtml" />
     <Content Include="Areas\Manage\Views\Volunteers\Request.cshtml" />
     <Content Include="Areas\Manage\Views\Volunteers\EmailVolunteerRequest.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\VolRequestReport.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\VolRequestReport.cshtml" />
     <Content Include="Areas\Manage\Views\Users\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Users\Results.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\AskRequest.cshtml" />
@@ -1731,7 +1751,7 @@
     <Content Include="Areas\Main\Views\Volunteering\DialogType.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\Edit.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\Index.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\VolunteerSlots.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\VolunteerSlots.cshtml" />
     <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Index.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -2147,33 +2167,31 @@
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Confirm.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Confirm2.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue\OldConfirm.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmAccount.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmDuePaid.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue\Confirm.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmManageSub.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageSubscriptions\OneTimeLink.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmVolunteerSlots.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\ConfirmVolunteerSlots.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmSubscriptions.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageSubscriptions\Confirm.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmTest.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Index.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageSubscriptions.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageSubscriptions\Choose.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\NoLeague.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue\Process.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment\ServiceU.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue\ServiceU.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment2.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ProcessPayment.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment\Process.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Terms.cshtml">
     </Content>
@@ -2276,12 +2294,6 @@
     <Content Include="Areas\Main\Views\OrgSearch\Row.cshtml">
     </Content>
     <Content Include="Areas\Reports\Views\Reports\Meetings.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmManagePledge.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmPledge.cshtml">
     </Content>
     <Content Include="Areas\Reports\Views\Reports\VitalStats.cshtml">
     </Content>

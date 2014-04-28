@@ -20,13 +20,15 @@ namespace CmsWeb.Models
                 settings = new Dictionary<int, Settings>();
                 HttpContext.Current.Items.Add("RegSettings", settings);
             }
-            var o = new Organization { OrganizationId = Util.CreateAccountCode, OrganizationName = "My Data" };
+            var o = new Organization {OrganizationId = Util.CreateAccountCode, OrganizationName = "My Data"};
             o.RegistrationTypeId = RegistrationTypeCode.CreateAccount;
             if (!settings.ContainsKey(Util.CreateAccountCode))
                 settings.Add(Util.CreateAccountCode, ParseSetting("AllowOnlyOne: true", Util.CreateAccountCode));
             return o;
         }
+
         private Dictionary<int, Settings> _settings;
+
         public Dictionary<int, Settings> settings
         {
             get
@@ -41,10 +43,12 @@ namespace CmsWeb.Models
                 return _settings;
             }
         }
+
         public bool DisplayLogin()
         {
             return (List.Count == 0 && !UserPeopleId.HasValue && nologin == false);
         }
+
         public string LoginName
         {
             get
@@ -54,10 +58,12 @@ namespace CmsWeb.Models
                 return "anonymous";
             }
         }
+
         public string MeetingTime
         {
             get { return meeting().MeetingDate.ToString2("f"); }
         }
+
         public OnlineRegPersonModel last
         {
             get
@@ -67,26 +73,31 @@ namespace CmsWeb.Models
                 return null;
             }
         }
+
         public string qtesting
         {
             get { return testing == true ? "?testing=true" : ""; }
         }
+
         public bool IsCreateAccount()
         {
             if (org != null)
                 return org.RegistrationTypeId == RegistrationTypeCode.CreateAccount;
             return false;
         }
+
         public bool IsEnded()
         {
             return IsEnded(masterorg) || IsEnded(org);
         }
+
         private bool IsEnded(Organization o)
         {
             if (o != null)
                 return o.ClassFilled == true;
             return false;
         }
+
         private bool Filled(Organization o)
         {
             if (o != null)
@@ -94,6 +105,7 @@ namespace CmsWeb.Models
                     return true;
             return false;
         }
+
         public string Filled()
         {
             return Filled(masterorg) || Filled(org) ? "registration is full" : "";
@@ -114,26 +126,28 @@ namespace CmsWeb.Models
                    || dt < (org.RegStart ?? dt1)
                    || dt > (org.RegEnd ?? dt2);
         }
+
         public bool UserSelectsOrganization()
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2;
         }
+
         public bool OnlyOneAllowed()
         {
             if (org != null)
             {
                 var setting = settings[org.OrganizationId];
                 return org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes
-                    || org.RegistrationTypeId == RegistrationTypeCode.CreateAccount
-                    || setting.AllowOnlyOne || setting.AskVisible("AskTickets")
-                    || setting.GiveOrgMembAccess
-                    || SupportMissionTrip;
+                       || org.RegistrationTypeId == RegistrationTypeCode.CreateAccount
+                       || setting.AllowOnlyOne || setting.AskVisible("AskTickets")
+                       || setting.GiveOrgMembAccess
+                       || SupportMissionTrip;
             }
             if (settings != null)
             {
                 var q = from o in settings.Values
-                        where o.AllowOnlyOne || o.AskVisible("AskTickets")
-                        select o;
+                    where o.AllowOnlyOne || o.AskVisible("AskTickets")
+                    select o;
                 return q.Any();
             }
             return false;
@@ -143,40 +157,47 @@ namespace CmsWeb.Models
         {
             return org != null && org.RegistrationTypeId == RegistrationTypeCode.RecordFamilyAttendance;
         }
+
         public bool ChoosingSlots()
         {
             if (org != null)
                 return org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes;
             return false;
         }
+
         public bool ManagingSubscriptions()
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2;
         }
+
         public bool OnlinePledge()
         {
             if (org != null)
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlinePledge;
             return false;
         }
+
         public bool ManageGiving()
         {
             if (org != null)
                 return org.RegistrationTypeId == RegistrationTypeCode.ManageGiving;
             return false;
         }
+
         public bool OnlineGiving()
         {
             if (org != null)
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving;
             return false;
         }
+
         public bool NoCreditCardsAllowed()
         {
             if (org != null)
                 return org.NoCreditCards == true;
             return List.Any(p => p.org.NoCreditCards == true);
         }
+
         public bool AskDonation()
         {
             if (org != null)
@@ -185,12 +206,14 @@ namespace CmsWeb.Models
                 return false;
             return settings.Values.Any(o => o.AskDonation);
         }
+
         public string DonationLabel()
         {
             if (org != null)
                 return settings[org.OrganizationId].DonationLabel;
             return settings.Values.First(o => o.AskDonation).DonationLabel;
         }
+
         public string Header
         {
             get
@@ -210,6 +233,7 @@ namespace CmsWeb.Models
                 return org.OrganizationName;
             }
         }
+
         public string DescriptionForPayment
         {
             get
@@ -248,6 +272,7 @@ namespace CmsWeb.Models
                 return org.OrganizationName;
             }
         }
+
         public string Instructions
         {
             get
@@ -268,12 +293,12 @@ namespace CmsWeb.Models
 <div class=""instructions submit"">{4}</div>
 <div class=""instructions sorry"">{5}</div>
 ".Fmt(Util.PickFirst(setting1.InstructionLogin, setting2.InstructionLogin),
-                         Util.PickFirst(setting1.InstructionSelect, setting2.InstructionSelect),
-                         Util.PickFirst(setting1.InstructionFind, setting2.InstructionFind),
-                         Util.PickFirst(setting1.InstructionOptions, setting2.InstructionOptions),
-                         Util.PickFirst(setting1.InstructionSubmit, setting2.InstructionSubmit),
-                         Util.PickFirst(setting1.InstructionSorry, setting2.InstructionSorry)
-                         );
+                        Util.PickFirst(setting1.InstructionSelect, setting2.InstructionSelect),
+                        Util.PickFirst(setting1.InstructionFind, setting2.InstructionFind),
+                        Util.PickFirst(setting1.InstructionOptions, setting2.InstructionOptions),
+                        Util.PickFirst(setting1.InstructionSubmit, setting2.InstructionSubmit),
+                        Util.PickFirst(setting1.InstructionSorry, setting2.InstructionSorry)
+                        );
                 }
                 var setting = new Settings();
                 if (settings.ContainsKey(org.OrganizationId))
@@ -282,12 +307,12 @@ namespace CmsWeb.Models
                     if (setting.InstructionAll.ToString().HasValue())
                         return setting.InstructionAll.ToString();
                 var v = "{0}{1}{2}{3}{4}{5}".Fmt(
-                                        setting.InstructionLogin,
-                                        setting.InstructionSelect,
-                                        setting.InstructionFind,
-                                        setting.InstructionOptions,
-                                        setting.InstructionSubmit,
-                                        setting.InstructionSorry);
+                    setting.InstructionLogin,
+                    setting.InstructionSelect,
+                    setting.InstructionFind,
+                    setting.InstructionOptions,
+                    setting.InstructionSubmit,
+                    setting.InstructionSorry);
                 string ins = null;
                 if (v.HasValue())
                     ins = @"<div class=""instructions login"">{0}</div>
@@ -296,18 +321,19 @@ namespace CmsWeb.Models
 <div class=""instructions options"">{3}</div>
 <div class=""instructions submit"">{4}</div>
 <div class=""instructions sorry"">{5}</div>".Fmt(
-                                        setting.InstructionLogin,
-                                        setting.InstructionSelect,
-                                        setting.InstructionFind,
-                                        setting.InstructionOptions,
-                                        setting.InstructionSubmit,
-                                        setting.InstructionSorry
-                                        );
+                        setting.InstructionLogin,
+                        setting.InstructionSelect,
+                        setting.InstructionFind,
+                        setting.InstructionOptions,
+                        setting.InstructionSubmit,
+                        setting.InstructionSorry
+                        );
                 if (ins.Contains("{ev:", ignoreCase: true))
                     ins = DoReplaceForExtraValueCode(ins, last.person);
                 return ins + "\n";
             }
         }
+
         public static string DoReplaceForExtraValueCode(string text, Person p)
         {
             const string RE = @"{ev:(?<name>.+?)}";
@@ -375,10 +401,12 @@ namespace CmsWeb.Models
         }
 
         internal string email;
+
         public string GetThankYouMessage()
         {
             var def = DbUtil.Db.ContentHtml("OnlineRegThanks", Resource1.OnlineRegModel_ThankYouMessage);
 
+            string msg = null;
             if (masterorg != null)
             {
                 var setting1 = new Settings();
@@ -387,16 +415,21 @@ namespace CmsWeb.Models
                 var setting2 = setting1;
                 if (last != null && last.org != null && settings.ContainsKey(last.org.OrganizationId))
                     setting1 = settings[last.org.OrganizationId];
-                return Util.PickFirst(setting1.ThankYouMessage, setting2.ThankYouMessage, def);
+                msg = Util.PickFirst(setting1.ThankYouMessage, setting2.ThankYouMessage, def);
             }
-            var setting = new Settings();
-            if (settings.ContainsKey(org.OrganizationId))
-                setting = settings[org.OrganizationId];
-            var msg = Util.PickFirst(setting.ThankYouMessage, def);
+            else
+            {
+                var setting = new Settings();
+                if (settings.ContainsKey(org.OrganizationId))
+                    setting = settings[org.OrganizationId];
+                msg = Util.PickFirst(setting.ThankYouMessage, def);
+            }
             msg = msg.Replace("{org}", Header).Replace("{email}", Util.ObscureEmail(email)).Replace("{url}", URL);
             return msg;
         }
+
         private bool? usebootstrap;
+
         public bool UseBootstrap
         {
             get
@@ -406,6 +439,17 @@ namespace CmsWeb.Models
                         ? org.UseBootstrap ?? false
                         : masterorg != null && (masterorg.UseBootstrap ?? false);
                 return usebootstrap.Value;
+            }
+        }
+
+        private int? timeOut;
+        public int TimeOut
+        {
+            get
+            {
+                if(!timeOut.HasValue)
+                    timeOut = Util.IsDebug() ? 16000000 : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
+                return timeOut.Value;
             }
         }
     }

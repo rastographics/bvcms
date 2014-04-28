@@ -52,7 +52,6 @@ namespace CmsWeb
         }
         protected override void OnPreRender(EventArgs e)
         {
-            const string getimage = "/Image/{0}";
             base.OnPreRender(e);
             switch (HiddenField1.Value)
             {

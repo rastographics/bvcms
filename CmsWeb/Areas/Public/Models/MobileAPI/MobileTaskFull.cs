@@ -53,7 +53,7 @@ namespace CmsWeb.MobileAPI
 		public string project = "";
 		public string location = "";
 
-		public MobileTaskFull populate(CmsData.Task t)
+		public new MobileTaskFull populate(CmsData.Task t)
 		{
 			base.populate(t);
 

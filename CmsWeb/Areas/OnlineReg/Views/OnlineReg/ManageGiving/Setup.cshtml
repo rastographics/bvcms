@@ -1,0 +1,97 @@
+﻿@model CmsWeb.Models.ManageGivingModel
+@using UtilityExtensions
+@{
+    Layout = Model.Setting.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
+    ViewBag.Title = "Online Registration";
+}
+@section scripts
+{
+    @Fingerprint.Script(Model.UseBootstrap 
+        ? "/Scripts/onlinereg/onlineregpayment2.js" 
+        : "/Scripts/onlinereg/onlineregpayment.js")
+    @if (!Model.UseBootstrap)
+    {
+        <script type="text/javascript">
+            $.dateFormat = '@Util.jQueryDateFormat';
+            $(function () {
+                $.datepicker.setDefaults({
+                    dateFormat: $.dateFormat,
+                    changeMonth: true,
+                    changeYear: true,
+                    yearRange: "-95:+5",
+                    showOn: "button",
+                    buttonImage: "/Content/images/calendar.gif",
+                    buttonImageOnly: true
+                });
+                $(".datepicker").jqdatepicker();
+                $('#findidclick').click(function (ev) {
+                    ev.preventDefault();
+                    $("#findid").dialog({ width: 400 });
+                    return false;
+                });
+                $('#findacctclick').click(function (ev) {
+                    ev.preventDefault();
+                    $("#findacct").dialog({ width: 450 });
+                    return false;
+                });
+            });
+        </script>
+
+    }
+    <script type="text/javascript">
+        $(function () {
+            $("form").submit(function () {
+                $("#submitit").attr("disabled", "disabled");
+            });
+        });
+    </script>
+}
+@(Model.UseBootstrap
+    ? Html.Partial("ManageGiving/Bootstrap/Setup", Model)
+    : Html.Partial("ManageGiving/OldUI/Setup", Model))
+
+@if (!Model.UseBootstrap)
+{
+    @section head
+    {
+        <style>
+            #namefields th {
+                color: #AAA;
+                text-align: left;
+                font-size: 70%;
+            }
+
+            div.section label {
+                display: inline-block;
+                font-weight: bold;
+                line-height: 1.8;
+                min-height: 30px;
+            }
+
+            div.paymentinfo p label {
+                width: 10em;
+                font-weight: normal;
+            }
+
+            div.accountinfo p label {
+                width: 7em;
+                font-weight: normal;
+                min-height: 0;
+                line-height: 1.1;
+            }
+
+            div.section div, div.section table {
+                margin-left: 1em;
+            }
+
+            #namefields {
+                border-collapse: collapse;
+                display: inline-table;
+                margin-left: 0;
+                margin-bottom: .5em;
+            }
+        </style>
+    }
+}

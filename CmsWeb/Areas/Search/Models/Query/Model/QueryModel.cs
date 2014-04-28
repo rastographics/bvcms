@@ -20,7 +20,6 @@ namespace CmsWeb.Areas.Search.Models
 
         private string conditionName;
         private FieldClass2 fieldMap;
-        private List<SelectListItem> tagData;
 
         public Guid? SelectedId { get; set; }
         public string CodeIdValue { get; set; }

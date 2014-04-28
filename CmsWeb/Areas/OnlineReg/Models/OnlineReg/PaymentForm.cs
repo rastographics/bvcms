@@ -21,13 +21,11 @@ namespace CmsWeb.Models
         public string Type { get; set; }
         public bool AskDonation { get; set; }
         public bool AllowCoupon { get; set; }
-        public string Url { get; set; }
-        public int timeout { get; set; }
         public string Terms { get; set; }
         public int DatumId { get; set; }
         public Guid FormId { get; set; }
         public bool UseBootstrap { get; set; }
-        //public string Name { get; set; }
+        public string URL { get; set; }
         public string FullName()
         {
             string n;
@@ -38,6 +36,16 @@ namespace CmsWeb.Models
             if (Suffix.HasValue())
                 n = n + " " + Suffix;
             return n;
+        }
+        private int? timeOut;
+        public int TimeOut
+        {
+            get
+            {
+                if(!timeOut.HasValue)
+                    timeOut = Util.IsDebug() ? 16000000 : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
+                return timeOut.Value;
+            }
         }
 
         public string First { get; set; }
@@ -97,7 +105,7 @@ namespace CmsWeb.Models
                          Testing = testing,
                          Description = Description,
                          OrgId = OrgId,
-                         Url = Url,
+                         Url = URL,
                          TransactionGateway = OnlineRegModel.GetTransactionGateway(),
                          Address = Address.Truncate(50),
                          City = City,
@@ -125,6 +133,7 @@ namespace CmsWeb.Models
                 pi = new PaymentInfo();
             var pf = new PaymentForm
                      {
+                         URL = ti.Url,
                          PayBalance = true,
                          AmtToPay = ti.Amtdue ?? 0,
                          Amtdue = ti.Amtdue ?? 0,
@@ -145,7 +154,6 @@ namespace CmsWeb.Models
                          City = ti.City,
                          State = ti.State,
                          Zip = ti.Zip,
-                         timeout = 6000000,
                          testing = ti.Testing ?? false,
                          TranId = ti.Id,
 #if DEBUG2
@@ -194,7 +202,7 @@ namespace CmsWeb.Models
                 Suffix = r.Suffix,
                 IsLoggedIn = m.UserPeopleId.HasValue,
                 OrgId = m.List[0].orgid,
-                Url = m.URL,
+                URL = m.URL,
                 testing = m.testing ?? false,
                 Terms = m.Terms,
                 Address = r.Address,

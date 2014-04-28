@@ -1,0 +1,9 @@
+﻿@model CmsWeb.Models.OnlineRegModel
+@{
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
+}
+@(Model.UseBootstrap
+    ? Html.Partial("ManageGiving/Bootstrap/OneTimeLink", Model)
+    : Html.Partial("ManageGiving/OldUI/OneTimeLink", Model))

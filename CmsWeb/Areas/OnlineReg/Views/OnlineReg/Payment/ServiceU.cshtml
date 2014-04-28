@@ -1,11 +1,8 @@
 ﻿@using UtilityExtensions
-@using CmsWeb
 @using CmsData
 @model CmsWeb.Models.PaymentForm
 @{
-    Layout = Model.UseBootstrap
-        ? "~/Views/Shared/onlinereg.cshtml"
-        : "~/Views/Shared/onlinereg2.cshtml";
+    Layout = "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Registration";
     var ServiceUOrgID = (Model.testing) ? ViewExtensions2.DbSetting("ServiceUOrgIDTest", "0") : ViewExtensions2.DbSetting("ServiceUOrgID", "0");
     var ServiceUOrgAccountID = (Model.testing) ? ViewExtensions2.DbSetting("ServiceUOrgAccountIDTest", "0") : ViewExtensions2.DbSetting("ServiceUOrgAccountID", "0");
@@ -16,9 +13,9 @@
     <script type="text/javascript">
         $(function() {
             $(document).bind("idle.idleTimer", function() {
-                window.location.href = '@ViewBag.Url';
+                window.location.href = '@Model.URL';
             });
-            var tmout = parseInt('@ViewBag.timeout');
+            var tmout = parseInt('@Model.TimeOut');
             $.idleTimer(tmout);
         });
     </script>

@@ -144,7 +144,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
                 {
                     TempData["mg"] = m.UserPeopleId;
-                    return Redirect("/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid));
+                    return ManageGiving(m.Orgid.ToString(), m.testing);
+                    //return Redirect("/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid));
                 }
                 if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.OnlinePledge)
                 {
@@ -378,10 +379,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     {
                         m.ConfirmReregister();
                         DbUtil.Db.SubmitChanges();
-                        ViewData["email"] = m.List[0].person.EmailAddress;
-                        ViewData["orgname"] = m.org.OrganizationName;
-                        ViewData["timeout"] = timeout;
-                        return View("ConfirmReregister");
+                        return View("ConfirmReregister", m);
                     }
                 }
             }
@@ -445,40 +443,24 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     p.IsNew = true;
                     m.ConfirmManageSubscriptions();
-                    ViewData["ManagingSubscriptions"] = true;
-                    ViewData["CreatedAccount"] = m.List[0].CreatingAccount;
                     DbUtil.Db.SubmitChanges();
-                    ViewData["email"] = m.List[0].person.EmailAddress;
-                    ViewData["orgname"] = m.masterorg.OrganizationName;
-                    ViewData["URL"] = m.URL;
-                    ViewData["timeout"] = timeout;
-                    return View("ConfirmManageSub");
+                    return View("ManageSubscriptions/OneTimeLink", m);
                 }
                 if (m.OnlinePledge())
                 {
                     p.IsNew = true;
-                    m.ConfirmManagePledge();
-                    ViewData["CreatedAccount"] = m.List[0].CreatingAccount;
+                    m.SendLinkForPledge();
                     DbUtil.Db.SubmitChanges();
-                    ViewData["email"] = m.List[0].person.EmailAddress;
-                    ViewData["orgname"] = m.org.OrganizationName;
-                    ViewData["URL"] = m.URL;
-                    ViewData["timeout"] = timeout;
                     SetHeaders(m);
-                    return View("ConfirmManagePledge");
+                    return View("ManagePledge/OneTimeLink", m);
                 }
                 if (m.ManageGiving())
                 {
                     p.IsNew = true;
-                    m.ConfirmManageGiving();
-                    ViewData["CreatedAccount"] = m.List[0].CreatingAccount;
+                    m.SendLinkToManageGiving();
                     DbUtil.Db.SubmitChanges();
-                    ViewData["email"] = m.List[0].person.EmailAddress;
-                    ViewData["orgname"] = m.org.OrganizationName;
-                    ViewData["URL"] = m.URL;
-                    ViewData["timeout"] = timeout;
                     SetHeaders(m);
-                    return View("ConfirmManageGiving");
+                    return View("ManageGiving/OneTimeLink", m);
                 }
                 if (p.ComputesOrganizationByAge())
                 {
@@ -508,6 +490,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             //    p.OtherOK = ModelState.IsValid;
             return FlowList(m, "SubmitNew");
         }
+
         [HttpPost]
         public ActionResult SubmitOtherInfo(int id, OnlineRegModel m)
         {
@@ -619,31 +602,24 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                      {
                          Terms = m.Terms,
                          _URL = m.URL,
-                         _timeout = timeout,
                          PostbackURL = DbUtil.Db.ServerLink("/OnlineReg/Confirm/" + d.Id),
                      });
             }
-
-            ViewBag.timeout = timeout;
-            ViewBag.Url = m.URL;
 
             var om =
                  DbUtil.Db.OrganizationMembers.SingleOrDefault(
                       mm => mm.OrganizationId == m.Orgid && mm.PeopleId == m.List[0].PeopleId);
             m.ParseSettings();
 
-            if (om != null && m.settings[m.Orgid.Value].AllowReRegister == false && !m.SupportMissionTrip)
-            {
+            if (om != null && m.settings[om.OrganizationId].AllowReRegister == false && !m.SupportMissionTrip)
                 return Content("You are already registered it appears");
-            }
-
 
             var pf = PaymentForm.CreatePaymentForm(m);
             pf.DatumId = d.Id;
             pf.FormId = Guid.NewGuid();
             if (OnlineRegModel.GetTransactionGateway() == "serviceu")
-                return View("Payment", pf);
-            return View("ProcessPayment", pf);
+                return View("Payment/ServiceU", pf);
+            return View("Payment/Process", pf);
         }
         [HttpPost]
         public JsonResult CityState(string id)
@@ -710,11 +686,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 return ErrorResult(m, ex, "In " + function + ex.Message);
             }
-        }
-        private readonly int timeout = 1600000;
-        public OnlineRegController()
-        {
-            timeout = Util.IsDebug() ? 16000000 : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
         }
 
     }

@@ -1,7 +1,7 @@
 ﻿@model string
 @{
     const string labelclasses = "control-label col-sm-3 labelsize";
-    var items = ViewBag.items as List<SelectListItem>;
+    var items = (IEnumerable<SelectListItem>)ViewBag.items;
 }
 <div class="form-group">
     @(ViewBag.label != null

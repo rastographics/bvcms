@@ -239,6 +239,7 @@ namespace CmsData.Registration
         public enum RegKeywords
         {
             Shell,
+            ShellBs,
             Fee,
             AskSuggestedFee,
             Deposit,
