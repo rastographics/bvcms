@@ -29,24 +29,24 @@ $(function () {
         });
         return false;
     });
-	$('.clearField').each(function () {
+    $('.clearField').each(function () {
         if ($(this).val() == '') {
             $(this).val($(this).attr('default'));
             $(this).addClass('text-label');
         }
-	    $(this).focus(function () {
-	        if (this.value == $(this).attr('default')) {
-	            this.value = '';
-	            $(this).removeClass('text-label');
-	        }
-	    });
-	    $(this).blur(function () {
-	        if (this.value == '') {
-	            this.value = $(this).attr('default');
-	            $(this).addClass('text-label');
-	        }
-	    });
-	});
+        $(this).focus(function () {
+            if (this.value == $(this).attr('default')) {
+                this.value = '';
+                $(this).removeClass('text-label');
+            }
+        });
+        $(this).blur(function () {
+            if (this.value == '') {
+                this.value = $(this).attr('default');
+                $(this).addClass('text-label');
+            }
+        });
+    });
     $('#Coupon').showPassword();
 
     $('#findidclick').click(function (ev) {
@@ -65,11 +65,10 @@ $(function () {
             alert("must agree to terms");
             return false;
         }
-        if (!$("#Submit").val())
+        if (!$("#submitit").val())
             return false;
         if ($("form").valid())
-            $("#Submit").attr("disabled", "disabled");
-        var q = $("form").serialize();
+            $("#submitit").attr("disabled", "disabled");
         return true;
     });
 
@@ -79,7 +78,7 @@ $(function () {
     });
 
     if ($('#IAgree').attr("id")) {
-        $("#Submit").attr("disabled", "disabled");
+        $("#submitit").attr("disabled", "disabled");
         $("a.submitbutton").attr("disabled", "disabled");
         $("#ApplyCoupon").attr("disabled", "disabled");
         agreeterms = false;
@@ -104,13 +103,13 @@ $(function () {
             $(".Card").show();
         else if (v === 'B')
             $(".Bank").show();
-        $("#Submit").attr("disabled", "true");
+        $("#submitit").attr("disabled", "true");
         $.EnableSubmit();
     };
     $.EnableSubmit = function () {
         var v = $("input[name=Type]:checked").val();
         if (v && agreeterms) {
-            $("#Submit").removeAttr("disabled");
+            $("#submitit").removeAttr("disabled");
             $("a.submitbutton").removeAttr("disabled");
         }
     };
@@ -134,7 +133,7 @@ $(function () {
     $("form").validate({
         rules: {
             "First": { required: true, maxlength: 50 },
-            "MiddleInitial": { maxlength: 1},
+            "MiddleInitial": { maxlength: 1 },
             "Last": { required: true, maxlength: 50 },
             "Suffix": { maxlength: 10 },
             "Address": { required: true, maxlength: 50 },
@@ -143,7 +142,7 @@ $(function () {
             "Zip": { required: true, maxlength: 15 },
             "Phone": { maxlength: 50 }
         },
-        errorPlacement: function(error, element) {
+        errorPlacement: function (error, element) {
             if (element.hasClass("clearField")) {
                 $("#errorName").append(error);
             }
@@ -152,6 +151,5 @@ $(function () {
             }
         }
     });
-
 });
 

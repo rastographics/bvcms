@@ -1,37 +1,46 @@
-﻿@model CmsWeb.Models.PaymentForm
+﻿@using UtilityExtensions
+@model CmsWeb.Models.PaymentForm
 @{
-    Layout = Model.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Registration";
-}
-@section head
-{
-    <style>
-        #namefields th {
-            color: #AAA;
-            text-align: left;
-            font-size: 70%;
+    if (Model.UseBootstrap)
+    {
+        Layout = "~/Views/Shared/onlinereg2.cshtml";
+        @section scripts
+    {
+            <script src="~/Scripts/Bootstrap/bootstrap-datepicker.js"></script>
+            <script type="text/javascript">
+                $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+            </script>
+            @Fingerprint.Script("/Scripts/onlinereg/onlineregpayment2.js")
         }
-    </style>
+        @Html.Partial("Payment/Bootstrap/Process", Model)
+    }
+    else
+    {
+        Layout = "~/Views/Shared/onlinereg.cshtml";
+        @section head
+        {
+            <style>
+                #namefields th {
+                    color: #AAA;
+                    text-align: left;
+                    font-size: 70%;
+                }
+            </style>
+        }
+        @section scripts
+        {
+            @Fingerprint.Script("/Scripts/onlinereg/onlineregpayment.js")
+            <script type="text/javascript">
+                $(function () {
+                    $(document).bind("idle.idleTimer", function () {
+                        window.location.href = '@Model.URL';
+                    });
+                    var tmout = parseInt('@Model.TimeOut');
+                    //$.idleTimer(tmout);
+                });
+            </script>
+        }
+        @Html.Partial("Payment/OldUI/Process", Model)
+    }
 }
-
-@section scripts
-{
-    @Fingerprint.Script(Model.UseBootstrap
-        ? "/Scripts/onlinereg/onlineregpayment2.js"
-        : "/Scripts/onlinereg/onlineregpayment.js")
-    <script type="text/javascript">
-        $(function () {
-            $(document).bind("idle.idleTimer", function () {
-                window.location.href = '@Model.URL';
-            });
-            var tmout = parseInt('@Model.TimeOut');
-            //$.idleTimer(tmout);
-        });
-    </script>
-}
-
-@(Model.UseBootstrap 
-    ? Html.Partial("Payment/Bootstrap/Process", Model) 
-    : Html.Partial("Payment/OldUI/Process", Model))

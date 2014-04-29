@@ -1,6 +1,12 @@
 ﻿function noBack() { window.history.forward(); }
 $(function () {
     noBack();
+    $("div.date input").datepicker({
+        autoclose: true,
+        orientation: "auto",
+        forceParse: false,
+        format: $.dtoptions.format
+    });
     $("#applydonation").click(function (ev) {
         ev.preventDefault();
         return false;
@@ -50,7 +56,7 @@ $(function () {
 	        }
 	    });
 	});
-    $('#pf_Coupon').showPassword();
+    $('#Coupon').showPassword();
 
     $('#findidclick').click(function (ev) {
         ev.preventDefault();
@@ -111,7 +117,6 @@ $(function () {
     };
     $("body").on("change", 'input[name=Type]', function () {
         var v = $("input[name=Type]:checked").val();
-        $("#Type").val(v);
         $.ShowPaymentInfo(v);
     });
     $("body").on("change", 'input[name=SemiEvery]', function () {

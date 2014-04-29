@@ -47,7 +47,7 @@
     </p>
     <p>
     @Html.TextBox("Amount", (Model.AmtToPay ?? 0).ToString("f2"))
-    <input type="submit" id="Submit" name="Submit" value="Make Payment" /></p>
+    <input type="submit" id="submitit" name="Submit" value="Make Payment" /></p>
 </form>
     <p>If you have a coupon, please enter that number here and click the button below it:</p>
 <form action="https://public.serviceu.com/transaction/pay.asp" method="post">

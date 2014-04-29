@@ -1,59 +1,29 @@
 ﻿@model CmsWeb.Models.ManageGivingModel
 @using UtilityExtensions
 @{
-    Layout = Model.Setting.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
     ViewBag.Title = "Online Registration";
 }
-@section scripts
+@if (Model.UseBootstrap)
 {
-    @Fingerprint.Script(Model.UseBootstrap 
-        ? "/Scripts/onlinereg/onlineregpayment2.js" 
-        : "/Scripts/onlinereg/onlineregpayment.js")
-    @if (!Model.UseBootstrap)
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    @section head
     {
-        <script type="text/javascript">
-            $.dateFormat = '@Util.jQueryDateFormat';
-            $(function () {
-                $.datepicker.setDefaults({
-                    dateFormat: $.dateFormat,
-                    changeMonth: true,
-                    changeYear: true,
-                    yearRange: "-95:+5",
-                    showOn: "button",
-                    buttonImage: "/Content/images/calendar.gif",
-                    buttonImageOnly: true
-                });
-                $(".datepicker").jqdatepicker();
-                $('#findidclick').click(function (ev) {
-                    ev.preventDefault();
-                    $("#findid").dialog({ width: 400 });
-                    return false;
-                });
-                $('#findacctclick').click(function (ev) {
-                    ev.preventDefault();
-                    $("#findacct").dialog({ width: 450 });
-                    return false;
-                });
-            });
-        </script>
-
+        <link href="~/Content/css/datepicker3.css" rel="stylesheet" />
     }
-    <script type="text/javascript">
-        $(function () {
-            $("form").submit(function () {
-                $("#submitit").attr("disabled", "disabled");
-            });
-        });
-    </script>
+    @section scripts
+    {
+        <script src="~/Scripts/Bootstrap/bootstrap-datepicker.js"></script>
+        <script type="text/javascript">
+            $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+        </script>
+        @Fingerprint.Script("/Scripts/onlinereg/OnlineReg2.js")
+        @Fingerprint.Script("/Scripts/onlinereg/onlineregpayment2.js")
+    }
+    @Html.Partial("ManageGiving/Bootstrap/Setup", Model)
 }
-@(Model.UseBootstrap
-    ? Html.Partial("ManageGiving/Bootstrap/Setup", Model)
-    : Html.Partial("ManageGiving/OldUI/Setup", Model))
-
-@if (!Model.UseBootstrap)
+else
 {
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
     @section head
     {
         <style>
@@ -94,4 +64,35 @@
             }
         </style>
     }
+    @section scripts
+    {
+        <script type="text/javascript">
+            $.dateFormat = '@Util.jQueryDateFormat';
+            $(function () {
+                $.datepicker.setDefaults({
+                    dateFormat: $.dateFormat,
+                    changeMonth: true,
+                    changeYear: true,
+                    yearRange: "-95:+5",
+                    showOn: "button",
+                    buttonImage: "/Content/images/calendar.gif",
+                    buttonImageOnly: true
+                });
+                $(".datepicker").jqdatepicker();
+                $('#findidclick').click(function (ev) {
+                    ev.preventDefault();
+                    $("#findid").dialog({ width: 400 });
+                    return false;
+                });
+                $('#findacctclick').click(function (ev) {
+                    ev.preventDefault();
+                    $("#findacct").dialog({ width: 450 });
+                    return false;
+                });
+            });
+        </script>
+        @Fingerprint.Script("/Scripts/onlinereg/OnlineReg.js")
+        @Fingerprint.Script("/Scripts/onlinereg/onlineregpayment.js")
+    }
+    @Html.Partial("ManageGiving/OldUI/Setup", Model)
 }

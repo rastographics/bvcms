@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             SetHeaders(pf.OrgId ?? 0);
 
             if (OnlineRegModel.GetTransactionGateway() != "serviceu")
-                return View("PayAmtDue/Process", pf);
+                return View("Payment/Process", pf);
             ViewBag.TranId = ti.Id;
             var pm = new PaymentModel
             {

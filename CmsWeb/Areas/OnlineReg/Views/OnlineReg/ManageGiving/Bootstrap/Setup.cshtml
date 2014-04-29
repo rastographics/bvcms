@@ -74,7 +74,7 @@
             <div class="everyPeriod">
                 @Html.EditorFor(m => m.EveryN, new { @class = "narrow" })
                 @Html.EditorFor(m => m.Period, "Dropdown", new { items = Model.PeriodOptions() })
-                @Html.EditorFor(m => m.StartWhen)
+                @Html.EditorFor(m => m.StartWhen, new { placeholder = "MM/DD/YY" })
             </div>
         </div>
 

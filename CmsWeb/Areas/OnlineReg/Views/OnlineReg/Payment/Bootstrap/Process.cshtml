@@ -1,4 +1,5 @@
 ﻿@using CmsWeb
+@using DocumentFormat.OpenXml.Wordprocessing
 @using UtilityExtensions
 @model CmsWeb.Models.PaymentForm
 <div class="regform">
@@ -18,8 +19,21 @@
         </div>
     }
     <form class="showform form-horizontal" action="/OnlineReg/ProcessPayment" method="post">
-        @Html.DivValidationMessage("form")
         @Html.ValidationSummary()
+        <div class="form-group" style="font-size: 1.5em;">
+            @Html.LabelFor(m => m.AmtToPay, new { @class="control-label col-sm-3"})
+            <div class="col-sm-9">
+                @if (Model.PayBalance)
+                {
+                    @Html.EditorFor(m => m.AmtToPay)
+                }
+                else
+                {
+                    <p class="form-control-static">@Model.AmtToPay.ToString2("C")</p>
+                    @Html.HiddenFor(m => m.AmtToPay)
+                }
+            </div>
+        </div>
         @Html.HiddenFor(m => m.DatumId)
         @Html.HiddenFor(m => m.TranId)
         @Html.HiddenFor(m => m.UseBootstrap)
@@ -40,51 +54,59 @@
         @Html.HiddenFor(m => m.NoCreditCardsAllowed)
         @Html.HiddenFor(m => m.Type)
 
-        @Html.EditorFor(m => m.First)
-        @Html.EditorFor(m => m.MiddleInitial, new { classes = "narrow" })
-        @Html.EditorFor(m => m.Last)
-        @Html.EditorFor(m => m.Suffix, new { classes = "narrow" })
-        @Html.EditorFor(m => m.Address)
-        @Html.EditorFor(m => m.Zip)
-        @Html.EditorFor(m => m.Phone)
-        @Html.EditorFor(m => m.Email)
-        @Html.DisplayFor(m => m.AmtToPay)
-        @Html.HiddenFor(m => m.AmtToPay)
-        @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
-        {
-            <div class="form-group">
-                @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
-                <div class="col-sm-9">
-                    <label class="radio-inline">
-                        <input type="radio" name="Type" value="C" @(Model.Type == "C" ? "checked='checked'" : "") />Debit/Credit Card
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" name="Type" value="B" @(Model.Type == "B" ? "checked='checked'" : "") /> Bank Account
-                    </label>
-                    @Html.Hidden("allowcc", "true")
+        <div class="well">
+            @Html.EditorFor(m => m.First)
+            @Html.EditorFor(m => m.MiddleInitial, new { classes = "narrow" })
+            @Html.EditorFor(m => m.Last)
+            @Html.EditorFor(m => m.Suffix, new { classes = "narrow" })
+            @Html.EditorFor(m => m.Address)
+            @Html.EditorFor(m => m.Zip)
+            @Html.EditorFor(m => m.Phone)
+            @Html.EditorFor(m => m.Email)
+        </div>
+        <div class="well">
+            @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
+            {
+                <div class="form-group">
+                    @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
+                    <div class="col-sm-9">
+                        <label class="radio-inline">
+                            <input type="radio" name="Type" value="C" @(Model.Type == "C" ? "checked='checked'" : "") />Debit/Credit Card
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="Type" value="B" @(Model.Type == "B" ? "checked='checked'" : "") /> Bank Account
+                        </label>
+                        @Html.Hidden("allowcc", "true")
+                    </div>
                 </div>
+            }
+            @if (Model.NoCreditCardsAllowed == false)
+            {
+                <div class="Card">
+                    @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff })
+                    @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+                    @Html.EditorFor(m => m.CCV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+                </div>
+            }
+            @if (Model.NoEChecksAllowed == false)
+            {
+                <div class="Bank">
+                    @Html.EditorFor(m => m.Routing)
+                    @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <span class="pull-right">
+                    @if (Model.IsLoggedIn == true && CmsWeb.Models.OnlineRegModel.GetTransactionGateway() == "sage")
+                    {
+                        <span style="margin-right: 2em;">Save Pay Info @Html.CheckBoxFor(m => m.SavePayInfo)</span>
+                    }
+                    @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true)
+                </span>
             </div>
-        }
-        @if (Model.NoCreditCardsAllowed == false)
-        {
-            <div class="Card">
-                @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff })
-                @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
-                @Html.EditorFor(m => m.CCV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
-            </div>
-        }
-        @if (Model.NoEChecksAllowed == false)
-        {
-            <div class="Bank">
-                @Html.EditorFor(m => m.Routing)
-                @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
-            </div>
-        }
-        @if (Model.IsLoggedIn == true && CmsWeb.Models.OnlineRegModel.GetTransactionGateway() == "sage")
-        {
-            @Html.EditorFor(m => m.SavePayInfo, "Boolean")
-        }
-        @Helper.OnlineRegSubmitButtonRow("Make Payment", onlyoneallowed: true)
+        </div>
         @if (Model.AllowCoupon)
         {
             @Html.EditorFor(m => m.Coupon)

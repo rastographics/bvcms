@@ -1,197 +1,198 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Models.PaymentForm
-<div class="regform" style="width:500px">
-    <h2>
-        Payment Processing
-    </h2>
-    @if (ViewData.ContainsKey("Terms"))
-    {
-        <a id="displayterms" title="click to display terms" href="#">Display Terms</a>
-        <div id="Terms" title="Terms of Agreement" class="modalPopup" style="display: none; width: 400px; padding: 10px">
-            @Html.Raw(Model.Terms)
-        </div>
-        <p>
-            @Html.CheckBox("IAgree")
-            I agree to the above terms and conditions.
-        </p>
-        <p>
-            You must agree to the terms above for you or your minor child before you can continue.
-        </p>
-    }
-    <form action="/onlinereg/ProcessPayment" method="post">
-        @Html.HiddenFor(m => m.DatumId)
-        @Html.HiddenFor(m => m.TranId)
-        @Html.HiddenFor(m => m.URL)
-        @Html.HiddenFor(m => m.Description)
-        @Html.HiddenFor(m => m.FormId)
-        @Html.HiddenFor(m => m.Amtdue)
-        @Html.HiddenFor(m => m.testing)
-        @Html.HiddenFor(m => m.OrgId)
-        @Html.HiddenFor(m => m.OriginalId)
-        @Html.HiddenFor(m => m.PayBalance)
-        @Html.HiddenFor(m => m.AllowCoupon)
-        @Html.HiddenFor(m => m.IsLoggedIn)
-        @Html.HiddenFor(m => m.FinanceOnly)
-        @Html.HiddenFor(m => m.AskDonation)
-        @Html.HiddenFor(m => m.Donate)
-        @Html.HiddenFor(m => m.NoCreditCardsAllowed)
-        <table>
-            <colgroup>
-                <col style="text-align: right;white-space:nowrap;padding-right:10px" />
-                <col />
-            </colgroup>
-            <tr>
-                <td>Name</td>
-                <td nowrap="nowrap">
-                    <table id="namefields">
-                        <tr><th>First</th><th>MI</th><th>Last</th><th>Suffix</th></tr>
-                        <tr>
-                            <td>@Html.TextBoxFor(m => m.First, new { @class = "short" })</td>
-                            <td>@Html.TextBoxFor(m => m.MiddleInitial, new { @class = "shorter" })</td>
-                            <td>@Html.TextBoxFor(m => m.Last, new { @class = "short" })</td>
-                            <td>@Html.TextBoxFor(m => m.Suffix, new { @class = "shorter" })</td>
-                        </tr>
-                    </table>
-                    <div id="errorName"></div>
-                </td>
-            </tr>
-            <tr>
-                <td>Address</td>
-                <td>@Html.TextBoxFor(m => m.Address, new { @class = "wide" })</td>
-            </tr>
-            <tr>
-                <td>City</td>
-                <td>@Html.TextBoxFor(m => m.City, new { @class = "wide" })</td>
-            </tr>
-            <tr>
-                <td>State</td>
-                <td> @Html.TextBoxFor(m => m.State, new { @class = "short" })</td>
-            </tr>
-            <tr>
-                <td>Zip</td>
-                <td> @Html.TextBoxFor(m => m.Zip, new { @class = "wide" })</td>
-            </tr>
-            <tr>
-                <td>Phone</td>
-                <td>@Html.TextBoxFor(m => m.Phone, new { @class = "wide" })</td>
-            </tr>
-            <tr>
-                <td>Email</td>
-                <td>@Html.TextBoxFor(m => m.Email, new { @class = "wide" })</td>
-            </tr>
-            @if (Model.PayBalance)
-            {
+    <div class="regform" style="width:500px">
+        <h2>
+            Payment Processing
+        </h2>
+        @if (ViewData.ContainsKey("Terms"))
+        {
+            <a id="displayterms" title="click to display terms" href="#">Display Terms</a>
+            <div id="Terms" title="Terms of Agreement" class="modalPopup" style="display: none; width: 400px; padding: 10px">
+                @Html.Raw(Model.Terms)
+            </div>
+            <p>
+                @Html.CheckBox("IAgree")
+                I agree to the above terms and conditions.
+            </p>
+            <p>
+                You must agree to the terms above for you or your minor child before you can continue.
+            </p>
+        }
+        <form action="/onlinereg/ProcessPayment" method="post">
+            @Html.Hidden("DatumId", Model.DatumId)
+            @Html.Hidden("TranId", Model.TranId)
+            @Html.Hidden("URL", Model.URL)
+            @Html.Hidden("Description", Model.Description)
+            @Html.Hidden("FormId", Model.FormId)
+            @Html.Hidden("Email", Model.Email)
+            @Html.Hidden("Amtdue", Model.Amtdue)
+            @Html.Hidden("testing", Model.testing)
+            @Html.Hidden("OrgId", Model.OrgId)
+            @Html.Hidden("OriginalId", Model.OriginalId)
+            @Html.Hidden("PayBalance", Model.PayBalance)
+            @Html.Hidden("AllowCoupon", Model.AllowCoupon)
+            @Html.Hidden("IsLoggedIn", Model.IsLoggedIn)
+            @Html.Hidden("FinanceOnly", Model.FinanceOnly)
+            @Html.Hidden("AskDonation", Model.AskDonation)
+            @Html.Hidden("Donate", Model.Donate)
+            @Html.Hidden("NoCreditCardsAllowed", Model.NoCreditCardsAllowed)
+            <table>
+                <colgroup>
+                    <col style="text-align: right;white-space:nowrap;padding-right:10px" />
+                    <col />
+                </colgroup>
                 <tr>
-                    <td>Enter amount to pay</td>
-                    <td>@Html.TextBoxFor(m => m.AmtToPay.ToString2("f2"), Model.Autocomplete(small: true))</td>
-                </tr>
-            }
-            else
-            {
-                <tr>
-                    <td>Total Amount</td>
-                    <td>
-                        <span id="amt" class="right">@Model.AmtToPay.ToString2("N2")</span>
-                        @Html.HiddenFor(m => m.AmtToPay)
+                    <td>Name</td>
+                    <td nowrap="nowrap">
+                        <table id="namefields">
+                            <tr><th>First</th><th>MI</th><th>Last</th><th>Suffix</th></tr>
+                            <tr>
+                                <td>@Html.TextBox("First", Model.First, new { @class = "short" })</td>
+                                <td>@Html.TextBox("MiddleInitial", Model.MiddleInitial, new { @class = "shorter" })</td>
+                                <td>@Html.TextBox("Last", Model.Last, new { @class = "short" })</td>
+                                <td>@Html.TextBox("Suffix", Model.Suffix, new { @class = "shorter" })</td>
+                            </tr>
+                        </table>
+                        <div id="errorName"></div>
                     </td>
                 </tr>
-            }
+                <tr>
+                    <td>Address</td>
+                    <td>@Html.TextBox("Address", Model.Address, new { @class = "wide" })</td>
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td>@Html.TextBox("City", Model.City, new { @class = "wide" })</td>
+                </tr>
+                <tr>
+                    <td>State</td>
+                    <td> @Html.TextBox("State", Model.State, new { @class = "short" })</td>
+                </tr>
+                <tr>
+                    <td>Zip</td>
+                    <td> @Html.TextBox("Zip", Model.Zip, new { @class = "wide" })</td>
+                </tr>
+                <tr>
+                    <td>Phone</td>
+                    <td>@Html.TextBox("Phone", Model.Phone, new { @class = "wide" })</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>@Html.TextBox("Emails", Model.Email, new { @class = "wide" })</td>
+                </tr>
+                @if (Model.PayBalance)
+                {
+                    <tr>
+                        <td>Enter amount to pay</td>
+                        <td>@Html.TextBox("AmtToPay", Model.AmtToPay.ToString2("f2"), Model.Autocomplete(small: true))</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>Total Amount</td>
+                        <td>
+                            <span id="amt" class="right">@Model.AmtToPay.ToString2("N2")</span>
+                            @Html.Hidden("AmtToPay", Model.AmtToPay)
+                        </td>
+                    </tr>
+                }
 
-            @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
-            {
-                <tr>
-                    <td>Payment Type</td>
-                    <td>
-                        @Html.RadioButton("Type", "C", Model.Type == "C")Debit/Credit Card
-                        @Html.RadioButton("Type", "B", Model.Type == "B")Bank Account
-                        @Html.Hidden("allowcc", "true")
-                    </td>
-                </tr>
-            }
-            @if (Model.NoCreditCardsAllowed == false)
-            {
-                <tr class="Card">
-                    <td>Card Number</td>
-                    <td>
-                        @Html.TextBoxFor(m => m.CreditCard, Model.Autocomplete())
-                        <div>@Html.ValidationMessageFor(m => m.CreditCard)</div>
-                    </td>
-                </tr>
-                <tr class="Card">
-                    <td>Expires</td>
-                    <td>
-                        @Html.TextBoxFor(m => m.Expires, Model.Autocomplete(small: true)) MMYY
-                        <div>@Html.ValidationMessageFor(m => m.Expires)</div>
-                    </td>
-                </tr>
-                <tr class="Card">
-                    <td>
-                        Card Code<br />
-                        <a id="findidclick" href="#"><span style="font-size: 65%">How to find your card code</span></a>
-                    </td>
-                    <td>
-                        @Html.TextBox("CCV", Model.MaskedCCV, Model.Autocomplete())
-                        <div>@Html.ValidationMessageFor(m => m.CCV)</div>
-                    </td>
-                </tr>
-            }
-            @if (Model.NoEChecksAllowed == false)
-            {
-                <tr class="Bank">
-                    <td>
-                        Routing Number<br />
-                        <a id="findacctclick" href="#"><span style="font-size: 65%">Find your bank routing/account?</span></a>
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(m => m.Routing, Model.Autocomplete())
-                        <div>@Html.ValidationMessageFor(m => m.Routing)</div>
-                    </td>
-                </tr>
-                <tr class="Bank">
-                    <td>Account Number</td>
-                    <td>
-                        @Html.TextBoxFor(m => m.Account, Model.Autocomplete())
-                        <div>@Html.ValidationMessageFor(m => m.Account)</div>
-                    </td>
-                </tr>
-            }
-            @if (Model.IsLoggedIn == true && CmsWeb.Models.OnlineRegModel.GetTransactionGateway() == "sage")
-            {
-                <tr>
-                    <td></td>
-                    <td>@Html.CheckBoxFor(m => m.SavePayInfo)Save Payment Information?</td>
-                </tr>
-            }
-            <tr>
-                <td></td>
-                <td height="40">
-                    <input id="Submit" type="submit" name="Submit" class="submitbutton" value="Make Payment" />
-                    <div class="column">@Html.ValidationMessage("form")</div>
-                </td>
-            </tr>
-            <tr><td colspan="2">&nbsp;</td></tr>
-            @if (Model.AllowCoupon)
-            {
-                <tr>
-                    <td>
-                        Coupon Code<br />
-                        (if you have one)
-                    </td>
-                    <td>
-                        <input id="Coupon" name="Coupon" type="text" autocomplete="off" data-typetoggle='#showpassword' value="@Model.Coupon" />
-                    </td>
-                </tr>
+                @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
+                {
+                    <tr>
+                        <td>Payment Type</td>
+                        <td>
+                            @Html.RadioButton("Type", "C", Model.Type == "C")Debit/Credit Card
+                            @Html.RadioButton("Type", "B", Model.Type == "B")Bank Account
+                            @Html.Hidden("allowcc", "true")
+                        </td>
+                    </tr>
+                }
+                @if (Model.NoCreditCardsAllowed == false)
+                {
+                    <tr class="Card">
+                        <td>Card Number</td>
+                        <td>
+                            @Html.TextBox("CreditCard", Model.CreditCard, Model.Autocomplete())
+                            <div>@Html.ValidationMessage("CreditCard")</div>
+                        </td>
+                    </tr>
+                    <tr class="Card">
+                        <td>Expires</td>
+                        <td>
+                            @Html.TextBox("Expires", Model.Expires, Model.Autocomplete(small: true)) MMYY
+                            <div>@Html.ValidationMessage("Expires")</div>
+                        </td>
+                    </tr>
+                    <tr class="Card">
+                        <td>
+                            Card Code<br />
+                            <a id="findidclick" href="#"><span style="font-size: 65%">How to find your card code</span></a>
+                        </td>
+                        <td>
+                            @Html.TextBox("CCV", Model.MaskedCCV, Model.Autocomplete())
+                            <div>@Html.ValidationMessage("CCV")</div>
+                        </td>
+                    </tr>
+                }
+                @if (Model.NoEChecksAllowed == false)
+                {
+                    <tr class="Bank">
+                        <td>
+                            Routing Number<br />
+                            <a id="findacctclick" href="#"><span style="font-size: 65%">Find your bank routing/account?</span></a>
+                        </td>
+                        <td>
+                            @Html.TextBox("Routing", Model.Routing, Model.Autocomplete())
+                            <div>@Html.ValidationMessage("Routing")</div>
+                        </td>
+                    </tr>
+                    <tr class="Bank">
+                        <td>Account Number</td>
+                        <td>
+                            @Html.TextBox("Account", Model.Account, Model.Autocomplete())
+                            <div>@Html.ValidationMessage("Account")</div>
+                        </td>
+                    </tr>
+                }
+                @if (Model.IsLoggedIn == true && CmsWeb.Models.OnlineRegModel.GetTransactionGateway() == "sage")
+                {
+                    <tr>
+                        <td></td>
+                        <td>@Html.CheckBox("SavePayInfo", Model.SavePayInfo == true)Save Payment Information?</td>
+                    </tr>
+                }
                 <tr>
                     <td></td>
-                    <td class="coupon">
-                        <input id="ApplyCoupon" type="button" href="/OnlineReg/ApplyCoupon" class="submitbutton ajax" value="Apply Coupon" />
-                        <div class="right red" id="validatecoupon"></div>
+                    <td height="40">
+                        <input id="submitit" type="submit" name="Submit" class="submitbutton" value="Make Payment" />
+                        <div class="column">@Html.ValidationMessage("form")</div>
                     </td>
                 </tr>
-            }
-        </table>
-    </form>
-</div>
+                <tr><td colspan="2">&nbsp;</td></tr>
+                @if (Model.AllowCoupon)
+                {
+                    <tr>
+                        <td>
+                            Coupon Code<br />
+                            (if you have one)
+                        </td>
+                        <td>
+                            <input id="Coupon" name="Coupon" type="text" autocomplete="off" data-typetoggle='#showpassword' value="@Model.Coupon" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="coupon">
+                            <input id="ApplyCoupon" type="button" href="/OnlineReg/ApplyCoupon" class="submitbutton ajax" value="Apply Coupon" />
+                            <div class="right red" id="validatecoupon"></div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </form>
+    </div>
 <div id="findid" style="display:none">
     <h2>Card Identification #</h2>
     <table width="100%">

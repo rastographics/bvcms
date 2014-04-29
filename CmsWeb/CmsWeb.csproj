@@ -693,6 +693,7 @@
     <Content Include="Content\css\chosen-sprite.png" />
     <Content Include="Content\css\chosen.min.css" />
     <Content Include="Content\css\datepicker.css" />
+    <Content Include="Content\css\datepicker3.css" />
     <Content Include="Content\css\Fixups3.css" />
     <Content Include="Content\css\Fixups2 - Copy.min.css">
       <DependentUpon>Fixups3.css</DependentUpon>
