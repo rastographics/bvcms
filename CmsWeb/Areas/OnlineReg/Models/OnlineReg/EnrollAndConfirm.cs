@@ -95,7 +95,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.Id.ToString()));
+                var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.OriginalId.ToString()));
                 paylink = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
             }
 
@@ -209,15 +209,18 @@ namespace CmsWeb.Models
                         if (!gs.SupporterId.HasValue)
                             gs.SupporterId = p.PeopleId;
                     }
-                    p.person.PostUnattendedContribution(DbUtil.Db,
-                        p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
-                        "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid));
-                    // send notices
-                    if (!p.MissionTripNoNoticeToGoer)
+                    if (!(ti.Coupon ?? false))
                     {
-                        var goer = DbUtil.Db.LoadPersonById(goerid.Value);
-                        Db.Email(NotifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
-                            "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value, ti.FullName));
+                        p.person.PostUnattendedContribution(DbUtil.Db,
+                            p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
+                            "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid));
+                        // send notices
+                        if (!p.MissionTripNoNoticeToGoer)
+                        {
+                            var goer = DbUtil.Db.LoadPersonById(goerid.Value);
+                            Db.Email(NotifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
+                                "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value, ti.FullName));
+                        }
                     }
                 }
                 if (p.MissionTripSupportGeneral > 0)
@@ -230,9 +233,12 @@ namespace CmsWeb.Models
                             OrgId = p.orgid.Value,
                             SupporterId = p.PeopleId.Value
                         });
-                    p.person.PostUnattendedContribution(DbUtil.Db,
-                        p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
-                        "SupportMissionTrip: org={0}".Fmt(p.orgid));
+                    if (!(ti.Coupon ?? false))
+                    {
+                        p.person.PostUnattendedContribution(DbUtil.Db,
+                            p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
+                            "SupportMissionTrip: org={0}".Fmt(p.orgid));
+                    }
                 }
                 var notifyids = Db.NotifyIds(org.OrganizationId, org.GiftNotifyIds);
                 Db.Email(NotifyIds[0].FromEmail, notifyids, org.OrganizationName + "-donation",
