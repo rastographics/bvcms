@@ -429,7 +429,7 @@
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailScheduled.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIListController.cs" />
-    <Compile Include="Areas\Public\Models\MobileAPI\BaseReturn.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\BaseMessage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileAttendee.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileContact.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCountry.cs" />
