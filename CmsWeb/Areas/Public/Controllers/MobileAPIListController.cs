@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (CmsWeb.Models.AccountModel.AuthenticateMobile()) return null;
 			else
 			{
-				return BaseReturn.createErrorReturn("You are not authorized!");
+				return BaseMessage.createErrorReturn("You are not authorized!");
 			}
 		}
 
@@ -28,11 +28,11 @@ namespace CmsWeb.Areas.Public.Controllers
 								  orderby e.Id
 								  select e).ToList();
 
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 			List<MobileCountry> ma = new List<MobileCountry>();
 
 			br.error = 0;
-			br.type = BaseReturn.API_TYPE_SYSTEM_COUNTRIES;
+			br.type = BaseMessage.API_TYPE_SYSTEM_COUNTRIES;
 			br.count = countries.Count();
 
 			foreach (var country in countries)
@@ -54,11 +54,11 @@ namespace CmsWeb.Areas.Public.Controllers
 							  orderby e.StateCode
 							  select e).ToList();
 
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 			List<MobileState> ma = new List<MobileState>();
 
 			br.error = 0;
-			br.type = BaseReturn.API_TYPE_SYSTEM_STATES;
+			br.type = BaseMessage.API_TYPE_SYSTEM_STATES;
 			br.count = states.Count();
 
 			foreach (var state in states)
@@ -80,11 +80,11 @@ namespace CmsWeb.Areas.Public.Controllers
 								 orderby e.Id
 								 select e).ToList();
 
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 			List<MobileMaritalStatus> ma = new List<MobileMaritalStatus>();
 
 			br.error = 0;
-			br.type = BaseReturn.API_TYPE_SYSTEM_MARITAL_STATUSES;
+			br.type = BaseMessage.API_TYPE_SYSTEM_MARITAL_STATUSES;
 			br.count = statuses.Count();
 
 			foreach (var status in statuses)

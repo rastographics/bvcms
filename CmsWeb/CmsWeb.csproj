@@ -443,6 +443,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostAttend.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostFetchImage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostFetchPerson.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostJoinOrg.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSaveImage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSearch.cs" />
