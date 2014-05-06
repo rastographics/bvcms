@@ -149,8 +149,6 @@ namespace CmsData
 		
 		private bool _IsRecreationTeam;
 		
-		private DateTime? _VisitorDate;
-		
 		private bool? _NotWeekly;
 		
 		private bool? _IsMissionTrip;
@@ -158,6 +156,8 @@ namespace CmsData
 		private bool? _NoCreditCards;
 		
 		private string _GiftNotifyIds;
+		
+		private DateTime? _VisitorDate;
 		
 		private bool? _UseBootstrap;
 		
@@ -406,9 +406,6 @@ namespace CmsData
 		partial void OnIsRecreationTeamChanging(bool value);
 		partial void OnIsRecreationTeamChanged();
 		
-		partial void OnVisitorDateChanging(DateTime? value);
-		partial void OnVisitorDateChanged();
-		
 		partial void OnNotWeeklyChanging(bool? value);
 		partial void OnNotWeeklyChanged();
 		
@@ -420,6 +417,9 @@ namespace CmsData
 		
 		partial void OnGiftNotifyIdsChanging(string value);
 		partial void OnGiftNotifyIdsChanged();
+		
+		partial void OnVisitorDateChanging(DateTime? value);
+		partial void OnVisitorDateChanged();
 		
 		partial void OnUseBootstrapChanging(bool? value);
 		partial void OnUseBootstrapChanged();
@@ -1946,28 +1946,6 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="VisitorDate", UpdateCheck=UpdateCheck.Never, Storage="_VisitorDate", DbType="datetime", IsDbGenerated=true)]
-		public DateTime? VisitorDate
-		{
-			get { return this._VisitorDate; }
-
-			set
-			{
-				if (this._VisitorDate != value)
-				{
-				
-                    this.OnVisitorDateChanging(value);
-					this.SendPropertyChanging();
-					this._VisitorDate = value;
-					this.SendPropertyChanged("VisitorDate");
-					this.OnVisitorDateChanged();
-				}
-
-			}
-
-		}
-
-		
 		[Column(Name="NotWeekly", UpdateCheck=UpdateCheck.Never, Storage="_NotWeekly", DbType="bit")]
 		public bool? NotWeekly
 		{
@@ -2049,6 +2027,28 @@ namespace CmsData
 					this._GiftNotifyIds = value;
 					this.SendPropertyChanged("GiftNotifyIds");
 					this.OnGiftNotifyIdsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="VisitorDate", UpdateCheck=UpdateCheck.Never, Storage="_VisitorDate", DbType="datetime", IsDbGenerated=true)]
+		public DateTime? VisitorDate
+		{
+			get { return this._VisitorDate; }
+
+			set
+			{
+				if (this._VisitorDate != value)
+				{
+				
+                    this.OnVisitorDateChanging(value);
+					this.SendPropertyChanging();
+					this._VisitorDate = value;
+					this.SendPropertyChanged("VisitorDate");
+					this.OnVisitorDateChanged();
 				}
 
 			}

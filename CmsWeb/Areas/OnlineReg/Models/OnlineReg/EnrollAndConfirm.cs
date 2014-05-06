@@ -87,7 +87,7 @@ namespace CmsWeb.Models
             ti.Emails = Util.EmailAddressListToString(elist);
             ti.Participants = participants.ToString();
             ti.TransactionDate = DateTime.Now;
-            ti.TransactionPeople.AddRange(pids2);
+            ti.OriginalTransaction.TransactionPeople.AddRange(pids2);
 
             if (org.IsMissionTrip == true)
             {
@@ -120,7 +120,7 @@ namespace CmsWeb.Models
 </td></tr>", i + 1, p.PrepareSummaryText(ti));
 
                 om.RegisterEmail = p.EmailAddress;
-                om.TranId = ti.Id;
+                om.TranId = ti.OriginalId;
                 if (p.setting.GiveOrgMembAccess == true)
                 {
                     if (p.person.Users.Count() == 0)
@@ -209,7 +209,7 @@ namespace CmsWeb.Models
                         if (!gs.SupporterId.HasValue)
                             gs.SupporterId = p.PeopleId;
                     }
-                    if (!(ti.Coupon ?? false))
+                    if (!ti.TransactionId.StartsWith("Coupon"))
                     {
                         p.person.PostUnattendedContribution(DbUtil.Db,
                             p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
@@ -219,7 +219,8 @@ namespace CmsWeb.Models
                         {
                             var goer = DbUtil.Db.LoadPersonById(goerid.Value);
                             Db.Email(NotifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
-                                "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value, ti.FullName));
+                                "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value,
+                                    Transaction.FullName(ti)));
                         }
                     }
                 }
@@ -233,7 +234,7 @@ namespace CmsWeb.Models
                             OrgId = p.orgid.Value,
                             SupporterId = p.PeopleId.Value
                         });
-                    if (!(ti.Coupon ?? false))
+                    if (!ti.TransactionId.StartsWith("Coupon"))
                     {
                         p.person.PostUnattendedContribution(DbUtil.Db,
                             p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
@@ -242,7 +243,7 @@ namespace CmsWeb.Models
                 }
                 var notifyids = Db.NotifyIds(org.OrganizationId, org.GiftNotifyIds);
                 Db.Email(NotifyIds[0].FromEmail, notifyids, org.OrganizationName + "-donation",
-                    "${0:N2} donation received from {1}".Fmt(ti.Amt, ti.FullName));
+                    "${0:N2} donation received from {1}".Fmt(ti.Amt, Transaction.FullName(ti)));
 
                 var senderSubject = os.SenderSubject ?? "NO SUBJECT SET";
                 var senderBody = os.SenderBody ?? "NO SENDEREMAIL MESSAGE HAS BEEN SET";
@@ -296,7 +297,7 @@ namespace CmsWeb.Models
                 message = message.Replace("{donation}", ti.Donate.ToString2("N2"));
                 // send donation confirmations
                 Db.Email(NotifyIds[0].FromEmail, NotifyIds, subject + "-donation",
-                    "${0:N2} donation received from {1}".Fmt(ti.Donate, ti.FullName));
+                    "${0:N2} donation received from {1}".Fmt(ti.Donate, Transaction.FullName(ti)));
             }
             else
                 message = re.Replace(message, "");

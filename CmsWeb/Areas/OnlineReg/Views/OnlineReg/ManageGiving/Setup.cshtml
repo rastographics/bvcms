@@ -8,11 +8,11 @@
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     @section head
     {
-        <link href="~/Content/css/datepicker3.css" rel="stylesheet" />
+        @Fingerprint.Css("/Content/css/datepicker3.css")
     }
     @section scripts
     {
-        <script src="~/Scripts/Bootstrap/bootstrap-datepicker.js"></script>
+        @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-datepicker.js")
         <script type="text/javascript">
             $.dtoptions = { format: '@Util.jQueryDateFormat2' };
         </script>
@@ -23,7 +23,7 @@
 }
 else
 {
-    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    Layout = "~/Views/Shared/onlinereg.cshtml";
     @section head
     {
         <style>

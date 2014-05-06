@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CmsData.Registration;
+using Community.CsharpSqlite;
+using IronPython.Modules;
 using UtilityExtensions;
 using System.Web;
 using System.Data.SqlClient;
@@ -266,6 +268,7 @@ namespace CmsData
             var ti = qq.FirstOrDefault();
             if (ti == null)
                 return null;
+//todo: consider TransactionSummary
             var ti2 = new Transaction
                 {
                     Amt = amt,
@@ -291,29 +294,36 @@ namespace CmsData
                 };
             return ti2;
         }
+
+        private decimal? amountDue;
         public Decimal? AmountDue(CMSDataContext Db)
         {
+            if (amountDue.HasValue)
+                return amountDue;
             if (Organization.IsMissionTrip == true)
-                return Amount - TotalPaid(Db);
-            var qq = from t in Db.Transactions
-                     where t.OriginalTransaction.TransactionPeople.Any(pp => pp.PeopleId == PeopleId)
-                     where t.OriginalTransaction.OrgId == OrganizationId
-                     orderby t.Id descending
-                     select t;
-            var tt = qq.FirstOrDefault();
-            if (tt == null)
-                return null;
-            return tt.Amtdue;
-        }
+                return amountDue = Amount - TotalPaid(Db);
 
+            var qq = from t in DbUtil.Db.ViewTransactionSummaries
+                where t.RegId == TranId && t.PeopleId == PeopleId
+                select t;
+            var tt = qq.SingleOrDefault();
+            return tt == null ? 0 : tt.IndDue;
+        }
         private decimal? totalPaid;
         public Decimal TotalPaid(CMSDataContext Db)
         {
-            if (!totalPaid.HasValue)
-            {
-                if (Organization.IsMissionTrip != true)
-                    return AmountPaid ?? 0;
+            if (totalPaid.HasValue)
+                return totalPaid.Value;
+
+            if (Organization.IsMissionTrip == true)
                 totalPaid = Db.TotalPaid(OrganizationId, PeopleId);
+            else
+            {
+                var qq = from t in DbUtil.Db.ViewTransactionSummaries
+                    where t.RegId == TranId && t.PeopleId == PeopleId
+                    select t;
+                var tt = qq.SingleOrDefault();
+                totalPaid = tt == null ? 0 : tt.IndPaid;
             }
             return totalPaid ?? 0;
         }
@@ -326,9 +336,9 @@ namespace CmsData
         public IEnumerable<SmallGroupItem> SmallGroupList()
         {
             var sglist = (from mt in Organization.MemberTags
-            let cnt = mt.OrgMemMemTags.Count()
-            orderby mt.Name
-            select new SmallGroupItem() { mt = mt, cnt = cnt}).ToList();
+                          let cnt = mt.OrgMemMemTags.Count()
+                          orderby mt.Name
+                          select new SmallGroupItem() { mt = mt, cnt = cnt }).ToList();
             return sglist;
         }
 

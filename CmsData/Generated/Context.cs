@@ -1671,6 +1671,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.MemberDatum> ViewMemberDatas
+	    {
+		    get { return this.GetTable< View.MemberDatum>(); }
+
+	    }
+
 	    public Table< View.MissionTripTotal> ViewMissionTripTotals
 	    {
 		    get { return this.GetTable< View.MissionTripTotal>(); }
@@ -1725,9 +1731,39 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.StatusFlagColumn> ViewStatusFlagColumns
+	    {
+		    get { return this.GetTable< View.StatusFlagColumn>(); }
+
+	    }
+
 	    public Table< View.StatusFlagList> ViewStatusFlagLists
 	    {
 		    get { return this.GetTable< View.StatusFlagList>(); }
+
+	    }
+
+	    public Table< View.StatusFlagNamesRole> ViewStatusFlagNamesRoles
+	    {
+		    get { return this.GetTable< View.StatusFlagNamesRole>(); }
+
+	    }
+
+	    public Table< View.TransactionBalance> ViewTransactionBalances
+	    {
+		    get { return this.GetTable< View.TransactionBalance>(); }
+
+	    }
+
+	    public Table< View.TransactionList> ViewTransactionLists
+	    {
+		    get { return this.GetTable< View.TransactionList>(); }
+
+	    }
+
+	    public Table< View.TransactionSummary> ViewTransactionSummaries
+	    {
+		    get { return this.GetTable< View.TransactionSummary>(); }
 
 	    }
 
@@ -2754,6 +2790,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.FamilyMakeup", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string FamilyMakeup(
+            [Parameter(Name = "fid", DbType="int")] int? fid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fid
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.AddressMatch", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? AddressMatch(
@@ -2794,6 +2842,22 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.ComputePositionInFamily", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? ComputePositionInFamily(
+            [Parameter(Name = "age", DbType="int")] int? age,
+            [Parameter(Name = "married", DbType="bit")] bool? married,
+            [Parameter(Name = "fid", DbType="int")] int? fid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                age,
+                married,
+                fid
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.GetTodaysMeetingHour", IsComposable = true)]
 		[return: Parameter(DbType = "datetime")]
 		public DateTime? GetTodaysMeetingHour(
@@ -2821,20 +2885,6 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 thisday
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.TotalPaid", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? TotalPaid(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                pid
                 ).ReturnValue));
 		}
 
@@ -3678,18 +3728,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.FamilyMakeup", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string FamilyMakeup(
-            [Parameter(Name = "fid", DbType="int")] int? fid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                fid
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.GetPeopleIdFromACS", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? GetPeopleIdFromACS(
@@ -3713,22 +3751,6 @@ namespace CmsData
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.ComputePositionInFamily", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? ComputePositionInFamily(
-            [Parameter(Name = "age", DbType="int")] int? age,
-            [Parameter(Name = "married", DbType="bit")] bool? married,
-            [Parameter(Name = "fid", DbType="int")] int? fid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                age,
-                married,
-                fid
                 ).ReturnValue));
 		}
 
@@ -3914,6 +3936,20 @@ namespace CmsData
 		{
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.TotalPaid", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? TotalPaid(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
                 pid
                 ).ReturnValue));
 		}

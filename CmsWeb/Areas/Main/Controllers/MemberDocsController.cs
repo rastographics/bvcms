@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			return Content("/MemberDocs/" + m.PeopleId);
 		}
 		[HttpGet]
+        [Route("~/MemberDocs/Image/{id:int}")]
 		public ActionResult Image(int id, string size)
 		{
 			var mdf = DbUtil.Db.MemberDocForms.SingleOrDefault(ff => ff.Id == id);

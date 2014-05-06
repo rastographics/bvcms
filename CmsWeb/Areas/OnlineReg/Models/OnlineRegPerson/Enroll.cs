@@ -36,7 +36,12 @@ namespace CmsWeb.Models
                 return om;
             }
             om.Amount = TotalAmount();
-            om.AmountPaid = ti.Amt;
+            //om.AmountPaid = ti.Amt;
+//            if (ti.Id != ti.OriginalId)
+//            {
+//                var ti0 = DbUtil.Db.Transactions.Single(tt => tt.Id == ti.OriginalId);
+//                om.AmountPaid += ti0.Amt;
+//            }
             foreach (var ask in setting.AskItems)
             {
                 switch (ask.Type)

@@ -89,11 +89,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                     if (om != null)
                     {
-                        var due = (om.Amount - om.AmountPaid) ?? 0;
+                        var due = (om.Amount - om.TotalPaid(DbUtil.Db)) ?? 0;
                         var pay = amt;
                         if (pay > due)
                             pay = due;
-                        om.AmountPaid += pay;
+                        //om.AmountPaid += pay;
 
                         string tstamp = Util.Now.ToString("MMM d yyyy h:mm tt");
                         om.AddToMemberData(tstamp);

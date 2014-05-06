@@ -389,8 +389,14 @@
     <Compile Include="Generated\Number.cs" />
     <Compile Include="Generated\Views\AttendCredit.cs" />
     <Compile Include="Generated\Views\ChangeLogDetail.cs" />
+    <Compile Include="Generated\Views\MemberDatum.cs" />
     <Compile Include="Generated\Views\MissionTripTotal.cs" />
+    <Compile Include="Generated\Views\StatusFlagColumn.cs" />
     <Compile Include="Generated\Views\StatusFlagList.cs" />
+    <Compile Include="Generated\Views\StatusFlagNamesRole.cs" />
+    <Compile Include="Generated\Views\TransactionBalance.cs" />
+    <Compile Include="Generated\Views\TransactionList.cs" />
+    <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="ITableWithExtraValues.cs" />
     <Compile Include="Query.cs" />
     <Compile Include="QueryBuilder\CategoryClass2.cs" />

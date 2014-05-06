@@ -1,0 +1,14 @@
+﻿@model string
+@{
+    var text = ((string)ViewBag.text);
+    if (!text.HasValue())
+    {
+        text = Model;
+    }
+}
+<div class="control-group">
+    @Html.LabelFor(m => m, new { @class="control-label"})
+    <div class="controls">
+        <p><a href="@Model" target="transactions">@text</a></p>
+    </div>
+</div>

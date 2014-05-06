@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -47,7 +47,7 @@ namespace CmsWeb.Models
 			isSage = OnlineRegModel.GetTransactionGateway() == "sage";
 			admin = HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("ManageTransactions");
 		}
-		public IEnumerable<Transaction> Transactions()
+		public IEnumerable<TransactionList> Transactions()
 		{
 			var q0 = ApplySort();
 			q0 = q0.Skip(Pager.StartRow).Take(Pager.PageSize);
@@ -69,16 +69,16 @@ namespace CmsWeb.Models
 					group t by 1 into g
 					select new TotalTransaction()
 					{
-						Amt = g.Sum(tt => tt.Amt ?? 0),
-						Amtdue = g.Sum(tt => tt.Amtdue ?? 0),
+						Amt = g.Sum(tt => tt.Payment ?? 0),
+						Amtdue = g.Sum(tt => tt.TotDue ?? 0),
 						Donate = g.Sum(tt => tt.Donate ?? 0),
                         Count = g.Count()
 					};
 			return q.FirstOrDefault();
 		}
 
-		private IQueryable<Transaction> _transactions;
-		private IQueryable<Transaction> FetchTransactions()
+		private IQueryable<TransactionList> _transactions;
+		private IQueryable<TransactionList> FetchTransactions()
 		{
 			if (_transactions != null)
 				return _transactions;
@@ -89,7 +89,7 @@ namespace CmsWeb.Models
             var hasfirst = first.HasValue();
 			var nameid = name.ToInt();
 			_transactions
-			   = from t in DbUtil.Db.Transactions
+			   = from t in DbUtil.Db.ViewTransactionLists
 				 let donate = t.Donate ?? 0
 				 where t.Amt > gtamount || gtamount == null
 				 where t.Amt <= ltamount || ltamount == null
@@ -304,7 +304,7 @@ namespace CmsWeb.Models
 			    DbUtil.Db.SubmitChanges();
 			}
 		}
-		public IQueryable<Transaction> ApplySort()
+		public IQueryable<TransactionList> ApplySort()
 		{
 			var q = FetchTransactions();
 			if (Pager.Direction == "asc")
@@ -347,7 +347,7 @@ namespace CmsWeb.Models
 						break;
 					case "Due":
 						q = from t in q
-							orderby t.Amtdue, t.TransactionDate descending
+							orderby t.TotDue, t.TransactionDate descending
 							select t;
 						break;
 				}
@@ -391,7 +391,7 @@ namespace CmsWeb.Models
 						break;
 					case "Due":
 						q = from t in q
-							orderby t.Amtdue descending, t.TransactionDate
+							orderby t.TotDue descending, t.TransactionDate
 							select t;
 						break;
 				}
@@ -412,18 +412,18 @@ namespace CmsWeb.Models
 					 BatchDate = t.Batch.FormatDate(),
 					 t.Batchtyp,
 					 t.Batchref,
-					 RegAmt = (t.Amt ?? 0) - (t.Donate ?? 0),
+                     RegAmt = t.Amt ?? 0,
 					 Donate = t.Donate ?? 0,
 					 TotalAmt = t.Amt ?? 0,
-					 Amtdue = t.Amtdue ?? 0,
+					 Amtdue = t.TotDue ?? 0,
 					 t.Description,
-					 t.Message,
-					 t.FullName,
-					 t.Address,
-					 t.City,
-					 t.State,
-					 t.Zip,
-					 t.Fund
+                     t.Message,
+                     FullName = Transaction.FullName(t),
+                     t.Address,
+                     t.City,
+                     t.State,
+                     t.Zip,
+                     t.Fund
 				 };
 			return q2;
 		}

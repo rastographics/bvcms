@@ -89,7 +89,7 @@
                 if (ret.substring(5, 0) == "error")
                     alert(ret);
                 else {
-                    $(f).html(ret);
+                    $("#Transactions").html(ret);
                     $.preptable();
                 }
             });
@@ -122,7 +122,7 @@
             if (ret.substring(5, 0) == "error")
                 alert(ret);
             else {
-                $(f).html(ret);
+                $("#Transactions").html(ret);
                 $.preptable();
             }
         });

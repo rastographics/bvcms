@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using UtilityExtensions;
 using CmsWeb.Models.OrganizationPage;
 using CmsData.Codes;
@@ -810,6 +812,24 @@ namespace CmsWeb.Areas.Main.Controllers
             }
             DbUtil.Db.SubmitChanges();
             return RedirectToAction("Index", "Organization", new { id = id });
+        }
+
+        public ActionResult ReGenPaylinks(int id)
+        {
+            var org = DbUtil.Db.LoadOrganizationById(id);
+            var q = from om in org.OrganizationMembers
+                select om;
+
+            foreach (var om in q)
+            {
+                if (!om.TranId.HasValue) continue;
+                var estr = HttpUtility.UrlEncode(Util.Encrypt(om.TranId.ToString()));
+                var link = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
+                om.PayLink = link;
+            }
+            DbUtil.Db .SubmitChanges();
+            return View(org);
+
         }
     }
 }

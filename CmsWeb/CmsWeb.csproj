@@ -1110,6 +1110,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\OneTimeLink.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\EmptyRow.cshtml" />
+    <Content Include="Areas\Main\Views\Organization\ReGenPaylinks.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -1582,6 +1583,7 @@
     <Content Include="Views\Home\TestScript.cshtml" />
     <Content Include="Views\Shared\OnlineReg2.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\Info.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Hyperlink.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

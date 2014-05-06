@@ -72,12 +72,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetHeaders(m);
 
-#if DEBUG
-            //m.username = "trecord";
-            m.testing = true;
-#else
-            m.testing = testing;
-#endif
+            m.testing = testing == true || DbUtil.Db.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
+
             if (Util.ValidEmail(email) || login != true)
                 m.nologin = true;
 
@@ -616,7 +612,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var pf = PaymentForm.CreatePaymentForm(m);
             pf.DatumId = d.Id;
-            pf.FormId = Guid.NewGuid();
             if (OnlineRegModel.GetTransactionGateway() == "serviceu")
                 return View("Payment/ServiceU", pf);
             return View("Payment/Process", pf);

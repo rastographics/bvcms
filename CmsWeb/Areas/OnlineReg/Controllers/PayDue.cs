@@ -42,6 +42,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (OnlineRegModel.GetTransactionGateway() != "serviceu")
                 return View("Payment/Process", pf);
+
+
             ViewBag.TranId = ti.Id;
             var pm = new PaymentModel
             {
@@ -92,7 +94,7 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
                         var due = om.Amount - om.TotalPaid(Db);
                         if (pay > due)
                             pay = due;
-                        om.AmountPaid += pay;
+                        //om.AmountPaid += pay;
                     }
 
                     var sb = new StringBuilder();
@@ -119,6 +121,7 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
 
             var pid = ti.FirstTransactionPeopleId();
             var p0 = Db.LoadPersonById(pid);
+//todo: should we be sending to all TransactionPeople?
             if (sendmail)
             {
                 if (p0 == null)
@@ -131,7 +134,8 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
                     Db.Email(p0.FromEmail,
                         Db.PeopleFromPidString(org.NotifyIds),
                         "payment received for " + ti.Description,
-                        "{0} paid {1:c} for {2}, balance of {3:c}\n({4})".Fmt(ti.FullName, ti.Amt, ti.Description, ti.Amtdue, names));
+                        "{0} paid {1:c} for {2}, balance of {3:c}\n({4})".Fmt(
+                            Transaction.FullName(ti), ti.Amt, ti.Description, ti.Amtdue, names));
                 }
             }
         }

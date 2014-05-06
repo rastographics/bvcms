@@ -16,9 +16,9 @@ namespace CmsWeb.Areas.Reports.Controllers
     public class ExportController : CmsStaffController
     {
         [HttpGet]
-        public ActionResult StatusFlags(Guid id)
-        {
-            return new StatusFlagsExcelResult(id);
+        public ActionResult StatusFlags(Guid id, string flags = "")
+        { // ?flags=F35,F03,F01,F04
+            return new StatusFlagsExcelResult(id, flags);
         }
 
         [HttpGet]

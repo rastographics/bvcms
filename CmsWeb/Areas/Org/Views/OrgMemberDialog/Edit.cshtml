@@ -36,7 +36,7 @@
         @if (Model.Organization.RegistrationTypeId > 0)
         {
             @Html.EditorFor(m => m.Amount)
-            @Html.EditorFor(m => m.AmountPaid)
+            @Html.DisplayFor(m => m.AmountPaidTransactions)
             @Html.DisplayFor(m => m.AmountDue)
             if (Model.AmountDue > 0)
             {

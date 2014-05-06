@@ -324,6 +324,9 @@ table.grid tr:nth-child(1) {
             var routeData = filterContext.RouteData;
             var ts = (DateTime.Now - start_time);
             var duration = ts.TotalSeconds;
+            string querystring = "";
+            if(filterContext.HttpContext.Request.Url != null)
+                querystring = filterContext.HttpContext.Request.Url.Query;
             var method = filterContext.HttpContext.Request.HttpMethod;
             var controller = (string)routeData.Values["controller"];
             var action = (string)routeData.Values["action"];
@@ -345,6 +348,7 @@ table.grid tr:nth-child(1) {
                     cmd.Parameters.AddWithValue("action", action);
                     cmd.Parameters.AddWithValue("userid", userid);
                     cmd.Parameters.AddWithValue("id", id);
+                    cmd.Parameters.AddWithValue("qs", querystring.Truncate(100));
                     if (userid.HasValue())
                         cmd.Parameters.AddWithValue("newui", ViewExtensions2.UseNewLook());
                     else

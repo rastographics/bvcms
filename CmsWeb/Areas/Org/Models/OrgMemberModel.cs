@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Org.Models
             om = i.mm;
             this.CopyPropertiesFrom(om);
             Name = i.Name;
-            AmountPaid = om.TotalPaid(DbUtil.Db);
+            AmountPaidTransactions = om.TotalPaid(DbUtil.Db);
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
@@ -87,12 +87,21 @@ namespace CmsWeb.Areas.Org.Models
         [DisplayName("Total Amount")]
         public decimal? Amount { get; set; }
 
+//        [DisplayName("Amount Paid Manually")]
+//        public decimal? AmountPaid { get; set; }
+        
         [DisplayName("Amount Paid")]
-        public decimal? AmountPaid { get; set; }
+        public decimal? AmountPaidTransactions { get; set; }
 
         public decimal? AmountDue { get { return om.AmountDue(DbUtil.Db); } }
 
+        [NoUpdate]
         public string PayLink { get; set; }
+
+        public string TransactionsLink 
+        {
+            get { return "/Transactions/" + om.TranId; }
+        }
 
         public string ShirtSize { get; set; }
 

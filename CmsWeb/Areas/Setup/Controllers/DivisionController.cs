@@ -66,16 +66,15 @@ namespace CmsWeb.Areas.Setup.Controllers
             return new EmptyResult();
         }
         [HttpPost]
-        public EmptyResult Delete(string id)
+        public EmptyResult Delete(int id)
         {
-            var iid = id.Substring(1).ToInt();
-            var div = DbUtil.Db.Divisions.SingleOrDefault(m => m.Id == iid);
+            var div = DbUtil.Db.Divisions.SingleOrDefault(m => m.Id == id);
             if (div == null)
                 return new EmptyResult();
             DbUtil.Db.ProgDivs.DeleteAllOnSubmit(
-                DbUtil.Db.ProgDivs.Where(di => di.DivId == iid));
+                DbUtil.Db.ProgDivs.Where(di => di.DivId == id));
             DbUtil.Db.DivOrgs.DeleteAllOnSubmit(
-                DbUtil.Db.DivOrgs.Where(di => di.DivId == iid));
+                DbUtil.Db.DivOrgs.Where(di => di.DivId == id));
             foreach (var o in div.Organizations)
                 o.DivisionId = null;
             DbUtil.Db.Divisions.DeleteOnSubmit(div);

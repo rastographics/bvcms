@@ -31,6 +31,7 @@ namespace CmsData
                 where !m.OrgMemMemTags.Any() || cg[0] != -1
                 where m.MemberTypeId != MemberTypeCode.InActive
                 where (m.Pending ?? false) == false
+//todo: Use TransactionSummary
                 where (from t in db.Transactions
                        where t.OriginalTransaction.TransactionPeople.Any(pp => pp.PeopleId == p.PeopleId)
                        where t.OriginalTransaction.OrgId == db.CurrentOrgId0

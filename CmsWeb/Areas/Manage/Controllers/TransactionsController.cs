@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
-using System.Web.UI.WebControls;
 using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
@@ -156,7 +151,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 <tr><td>Date</td><td>{6}</td></tr>
 <tr><td>TranIds</td><td>Org: {7} {8}, Curr: {9} {10}</td></tr>
 <tr><td>User</td><td>{11}</td></tr>
-</table>".Fmt(t.FullName, t.Emails, t.Address, t.Phone,
+</table>".Fmt(Transaction.FullName(t), t.Emails, t.Address, t.Phone,
 		 t.Description, 
 		 -amt,
 		 t.TransactionDate.Value.FormatDateTm(),
@@ -219,7 +214,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 <tr><td>Amount</td><td>{5:N2}</td></tr>
 <tr><td>Date</td><td>{6}</td></tr>
 <tr><td>TranIds</td><td>Org: {7} {8}, Curr: {9} {10}</td></tr>
-</table>".Fmt(t.FullName, t.Emails, t.Address, t.Phone,
+</table>".Fmt(Transaction.FullName(t), t.Emails, t.Address, t.Phone,
 		 t.Description, 
 		 t.Amt,
 		 t.TransactionDate.Value.FormatDateTm(),

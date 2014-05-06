@@ -123,6 +123,15 @@ namespace CmsWeb.Models
                 ti.OriginalId = ti.Id;
             return ti;
         }
+        public static Decimal? AmountDueTrans(CMSDataContext Db, int? tranid)
+        {
+            var qq = from t in DbUtil.Db.ViewTransactionSummaries
+                where t.RegId == tranid
+                select t;
+            var tt = qq.FirstOrDefault();
+            return tt == null ? 0 : tt.TotDue;
+        }
+
         public static PaymentForm CreatePaymentFormForBalanceDue(Transaction ti)
         {
             PaymentInfo pi = null;
@@ -131,18 +140,21 @@ namespace CmsWeb.Models
                 pi = ti.Person.PaymentInfos.FirstOrDefault();
             if (pi == null)
                 pi = new PaymentInfo();
+
+            var amtdue = AmountDueTrans(DbUtil.Db, ti.OriginalId);
             var pf = new PaymentForm
                      {
                          URL = ti.Url,
                          PayBalance = true,
-                         AmtToPay = ti.Amtdue ?? 0,
-                         Amtdue = ti.Amtdue ?? 0,
+                         AmtToPay = amtdue,
+                         Amtdue = amtdue ?? 0,
                          AllowCoupon = true,
                          AskDonation = false,
                          Description = ti.Description,
                          OrgId = ti.OrgId,
                          OriginalId = ti.OriginalId,
                          Email = Util.FirstAddress(ti.Emails).Address,
+                         FormId = Guid.NewGuid(),
 
                          First = ti.First,
                          MiddleInitial = ti.MiddleInitial.Truncate(1) ?? "",
@@ -188,6 +200,7 @@ namespace CmsWeb.Models
 
             var pf = new PaymentForm
             {
+                FormId = Guid.NewGuid(),
                 AmtToPay = m.PayAmount() + (m.donation ?? 0),
                 AskDonation = m.AskDonation(),
                 AllowCoupon = !m.OnlineGiving(),

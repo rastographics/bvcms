@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 #if DEBUG
 #else
-            if(m != null && m.History.Contains("ProcessPayment"))
+            if(m != null && m.History.Contains("ProcessPayment") && !pf.PayBalance)
 					return Content("Already submitted");                    
 #endif
 

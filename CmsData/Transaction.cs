@@ -1,3 +1,5 @@
+using CmsData.Registration;
+using CmsData.View;
 using UtilityExtensions;
 using System.Linq;
 
@@ -35,23 +37,26 @@ namespace CmsData
 		{
 			return OriginalTransaction.TransactionPeople.Select(pp => pp.PeopleId).FirstOrDefault();
 		}
-        public string FullName
+
+        public static string FullName(Transaction t)
         {
-            get
-            {
-                var s = "";
-                if (Last.HasValue())
-                {
-                    if (MiddleInitial.HasValue())
-                        s = "{0} {1} {2}".Fmt(First, MiddleInitial, Last);
-                    else
-                        s = "{0} {1}".Fmt(First, Last);
-                    if (Suffix.HasValue())
-                        s = s + ", " + Suffix;
-                    return s;
-                }
-                return Name;
-            }
+            return FullName(t.First, t.Last, t.MiddleInitial, t.Suffix, t.Name);
+        }
+        public static string FullName(TransactionList t)
+        {
+            return FullName(t.First, t.Last, t.MiddleInitial, t.Suffix, t.Name);
+        }
+        private static string FullName(string first, string last, string mi, string suffix, string name)
+        {
+            var s = "";
+            if (!last.HasValue()) 
+                return name;
+            s = mi.HasValue() 
+                ? "{0} {1} {2}".Fmt(first, mi, last) 
+                : "{0} {1}".Fmt(first, last);
+            if (suffix.HasValue())
+                s = s + ", " + suffix;
+            return s;
         }
 
         private bool? usebootstrap;
