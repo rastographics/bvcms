@@ -1,19 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
-using System.Configuration;
-using System.Net.Mail;
-using System.Runtime.Serialization;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using CmsWeb.Areas.Manage.Controllers;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -43,16 +34,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     State = ti.State,
                     PostalCode = ti.Zip,
                     testing = ti.testing,
-                    PostbackURL = Util.ServerLink("/OnlineReg/Confirm2/" + id),
+                    PostbackURL = DbUtil.Db.ServerLink("/OnlineReg/ConfirmServiceU/" + id),
                     Misc2 = ti.Header,
                     Misc1 = ti.Name,
                     _URL = ti.URL,
-                    _timeout = timeout,
+                    _timeout = new PaymentForm().TimeOut,
                     _datumid = ed.Id,
                 };
 
                 SetHeaders(ti.orgid);
-                return View("Payment2", pm);
+                return View("PayAmtDue/ServiceU", pm);
             }
             catch (Exception ex)
             {
@@ -98,11 +89,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                     if (om != null)
                     {
-                        var due = (om.Amount - om.AmountPaid) ?? 0;
+                        var due = (om.Amount - om.TotalPaid(DbUtil.Db)) ?? 0;
                         var pay = amt;
                         if (pay > due)
                             pay = due;
-                        om.AmountPaid += pay;
+                        //om.AmountPaid += pay;
 
                         string tstamp = Util.Now.ToString("MMM d yyyy h:mm tt");
                         om.AddToMemberData(tstamp);
@@ -133,16 +124,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 Db.PeopleFromPidString(org.NotifyIds), 
                 "payment received for " + ti.Header, 
                 "{0} paid {1:c} for {2}, balance of {3:c}\n({4})".Fmt(ti.Name, Amount, ti.Header, ti.AmountDue, names));
-            ViewData["URL"] = ti.URL;
 
-            ViewData["timeout"] = timeout;
-            ViewData["Amount"] = Amount.ToString("c");
-            ViewData["AmountDue"] = ti.AmountDue.ToString("c");
-            ViewData["Desc"] = ti.Header;
-            ViewData["Email"] = ti.Email;
-
+            ViewBag.Amount = Amount.ToString("c");
             SetHeaders(ti.orgid);
-            return View("Confirm2");
+            return View("PayAmtDue/OldConfirm", ti);
         }
     }
 }

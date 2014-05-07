@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			}
 			SetHeaders(id.ToInt());
 			DbUtil.LogActivity("Manage Subs: {0} ({1})".Fmt(m.Description(), m.person.Name));
-			return View(m);
+			return View("ManageSubscriptions/Choose", m);
 		}
 
 		[AcceptVerbs(HttpVerbs.Post)]
@@ -58,7 +58,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             @"{0} managed subscriptions to {1}<br/>{2}".Fmt(m.person.Name, m.Description(), m.Summary));
 
 			SetHeaders(m.masterorgid.Value);
-			return View(m);
+			return View("ManageSubscriptions/Confirm", m);
 		}
 	}
 }

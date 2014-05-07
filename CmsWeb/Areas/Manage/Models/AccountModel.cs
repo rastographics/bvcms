@@ -304,7 +304,7 @@ namespace CmsWeb.Models
             body = body.Replace("{username}", user.Username);
             user.ResetPasswordCode = Guid.NewGuid();
             user.ResetPasswordExpires = DateTime.Now.AddHours(DbUtil.Db.Setting("ResetPasswordExpiresHours", "24").ToInt());
-            var link = Util.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode.ToString());
+            var link = DbUtil.Db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode.ToString());
             body = body.Replace("{link}", link);
             DbUtil.Db.SubmitChanges();
             DbUtil.Db.EmailRedacted(DbUtil.AdminMail, user.Person, "New user welcome", body);
@@ -343,7 +343,7 @@ namespace CmsWeb.Models
                     };
                     DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
                     DbUtil.Db.SubmitChanges();
-                    var url = Util.ServerLink("/Account/CreateAccount/{0}".Fmt(ot.Id.ToCode()));
+                    var url = DbUtil.Db.ServerLink("/Account/CreateAccount/{0}".Fmt(ot.Id.ToCode()));
                     var message = DbUtil.Db.ContentHtml("ForgotPasswordReset", Resource1.AccountModel_ForgotPasswordReset);
                     message = message.Replace("{name}", p.Name);
                     message = message.Replace("{first}", p.PreferredName);
@@ -376,7 +376,7 @@ namespace CmsWeb.Models
                     Util.AddGoodAddress(addrlist, user.EmailAddress);
                     user.ResetPasswordCode = Guid.NewGuid();
                     user.ResetPasswordExpires = DateTime.Now.AddHours(DbUtil.Db.Setting("ResetPasswordExpiresHours", "24").ToInt());
-                    var link = Util.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode.ToString());
+                    var link = DbUtil.Db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode.ToString());
                     sb.AppendFormat(@"{0}, <a href=""{1}"">{2}</a><br>", user.Name, link, user.Username);
                     DbUtil.Db.SubmitChanges();
                 }

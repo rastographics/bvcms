@@ -1,0 +1,69 @@
+﻿@model CmsWeb.Models.VolSubModel
+@using UtilityExtensions
+@using CmsWeb
+@{
+    Layout = Model.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
+    ViewBag.Title = "Email Volunteer Subs";
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Volunteer/ManageVolunteer.js")
+    @ViewExtensions2.CKEditor()
+    <script type="text/javascript">
+        $(function() {
+            CKEDITOR.replace('message', {
+                height: 400,
+                fullPage: false,
+                allowedContent: true,
+                customConfig: '/scripts/js/ckeditorconfig.js'
+            });
+        });
+    </script>
+}
+@section head
+{
+    <style type="text/css">
+        .item {
+            float: left;
+            width: 13.3em;
+            margin: 0 2em 0 0;
+            border-right: 1px solid #eee;
+            padding: 0 0 5px 0;
+        }
+    </style>
+}
+<h2>@Model.org.OrganizationName</h2>
+<div>
+</div>
+<form action="/OnlineReg/GetVolSub" method="post">
+    @Html.Hidden("aid", Model.attend.AttendId);
+    @Html.Hidden("pid", Model.attend.PeopleId);
+    <input type="hidden" name="ticks" value="@Model.ticks"/>
+    <p>
+        <label>Subject:</label>
+        @Html.TextBox("subject", Model.subject, new { style = "width:90%" })
+    </p>
+    <p>
+        <label>Body:</label>
+        @Html.TextArea("message", Model.message, new { @class = "editor", rows = "7", cols = "15" })
+    </p>
+    <hr />
+    <div>
+        <input id="SelectAll" type="checkbox" />
+        Select All
+    </div>
+    <div class="wrapper">
+        @foreach (var p in Model.FetchPotentialSubs())
+        {
+            <div class="item">
+                <input type="checkbox" name="pids" value="@p.PeopleId" />
+                <span title="@p.Email">@p.Name</span>
+            </div>
+        }
+    </div>
+    <div style="clear: both"></div>
+    <hr />
+    <input type="Submit" name="submit" value="Send Emails" />
+</form>

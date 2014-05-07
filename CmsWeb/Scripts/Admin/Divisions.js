@@ -73,8 +73,9 @@
     });
     $("body").on("click", 'a.delete', function (ev) {
         ev.preventDefault();
+        var pk = $(this).data("pk");
         if (confirm("are you sure?"))
-            $.post("/Division/Delete/" + $(this).attr("id"), null, function(ret) {
+            $.post("/Division/Delete/" + pk, function(ret) {
                 window.location = "/Divisions/";
             });
         return false;

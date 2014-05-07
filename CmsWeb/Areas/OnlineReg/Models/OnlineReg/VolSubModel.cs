@@ -154,7 +154,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 			attend.Commitment = CmsData.Codes.AttendCommitmentCode.FindSub;
             qb.Save(DbUtil.Db);
 
-		    var rurl = Util.ServerLink("/OnlineReg/VolSubReport/{0}/{1}/{2}".Fmt(attend.AttendId, person.PeopleId, dt.Ticks));
+		    var rurl = DbUtil.Db.ServerLink("/OnlineReg/VolSubReport/{0}/{1}/{2}".Fmt(attend.AttendId, person.PeopleId, dt.Ticks));
 			var reportlink = @"<a href=""{0}"">Substitute Status Report</a>".Fmt(rurl);
 			var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
 			//list.Insert(0, person);
@@ -177,7 +177,6 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 
 			var eqid = m.CreateQueue(transactional: true);
 			string host = Util.Host;
-		    string cmshost = Util.ServerLink();
 			// save these from HttpContext to set again inside thread local storage
 			var useremail = Util.UserEmail;
 			var isinroleemailtest = HttpContext.Current.User.IsInRole("EmailTest");
@@ -189,7 +188,6 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 				{
 					var db = new CMSDataContext(Util.GetConnectionString(host));
 					db.Host = host;
-				    db.CmsHost = cmshost;
 					// set these again inside thread local storage
 					Util.UserEmail = useremail;
 					Util.IsInRoleEmailTest = isinroleemailtest;
@@ -203,7 +201,6 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 
 					var db = new CMSDataContext(Util.GetConnectionString(host));
 					db.Host = host;
-                    db.CmsHost = cmshost;
 					// set these again inside thread local storage
 					Util.UserEmail = useremail;
 					Util.IsInRoleEmailTest = isinroleemailtest;

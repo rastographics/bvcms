@@ -21,13 +21,11 @@ namespace CmsWeb.Models
         public string Type { get; set; }
         public bool AskDonation { get; set; }
         public bool AllowCoupon { get; set; }
-        public string Url { get; set; }
-        public int timeout { get; set; }
         public string Terms { get; set; }
         public int DatumId { get; set; }
         public Guid FormId { get; set; }
         public bool UseBootstrap { get; set; }
-        //public string Name { get; set; }
+        public string URL { get; set; }
         public string FullName()
         {
             string n;
@@ -38,6 +36,16 @@ namespace CmsWeb.Models
             if (Suffix.HasValue())
                 n = n + " " + Suffix;
             return n;
+        }
+        private int? timeOut;
+        public int TimeOut
+        {
+            get
+            {
+                if(!timeOut.HasValue)
+                    timeOut = Util.IsDebug() ? 16000000 : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
+                return timeOut.Value;
+            }
         }
 
         public string First { get; set; }
@@ -52,7 +60,7 @@ namespace CmsWeb.Models
         public bool? FinanceOnly { get; set; }
         public bool? IsLoggedIn { get; set; }
         public bool? CanSave { get; set; }
-        public bool? SavePayInfo { get; set; }
+        public bool SavePayInfo { get; set; }
         public bool? IsGiving { get; set; }
         public bool NoCreditCardsAllowed { get; set; }
         private bool? _noEChecksAllowed;
@@ -97,7 +105,7 @@ namespace CmsWeb.Models
                          Testing = testing,
                          Description = Description,
                          OrgId = OrgId,
-                         Url = Url,
+                         Url = URL,
                          TransactionGateway = OnlineRegModel.GetTransactionGateway(),
                          Address = Address.Truncate(50),
                          City = City,
@@ -115,6 +123,15 @@ namespace CmsWeb.Models
                 ti.OriginalId = ti.Id;
             return ti;
         }
+        public static Decimal? AmountDueTrans(CMSDataContext Db, int? tranid)
+        {
+            var qq = from t in DbUtil.Db.ViewTransactionSummaries
+                where t.RegId == tranid
+                select t;
+            var tt = qq.FirstOrDefault();
+            return tt == null ? 0 : tt.TotDue;
+        }
+
         public static PaymentForm CreatePaymentFormForBalanceDue(Transaction ti)
         {
             PaymentInfo pi = null;
@@ -123,17 +140,21 @@ namespace CmsWeb.Models
                 pi = ti.Person.PaymentInfos.FirstOrDefault();
             if (pi == null)
                 pi = new PaymentInfo();
+
+            var amtdue = AmountDueTrans(DbUtil.Db, ti.OriginalId);
             var pf = new PaymentForm
                      {
+                         URL = ti.Url,
                          PayBalance = true,
-                         AmtToPay = ti.Amtdue ?? 0,
-                         Amtdue = ti.Amtdue ?? 0,
+                         AmtToPay = amtdue,
+                         Amtdue = amtdue ?? 0,
                          AllowCoupon = true,
                          AskDonation = false,
                          Description = ti.Description,
                          OrgId = ti.OrgId,
                          OriginalId = ti.OriginalId,
                          Email = Util.FirstAddress(ti.Emails).Address,
+                         FormId = Guid.NewGuid(),
 
                          First = ti.First,
                          MiddleInitial = ti.MiddleInitial.Truncate(1) ?? "",
@@ -145,7 +166,6 @@ namespace CmsWeb.Models
                          City = ti.City,
                          State = ti.State,
                          Zip = ti.Zip,
-                         timeout = 6000000,
                          testing = ti.Testing ?? false,
                          TranId = ti.Id,
 #if DEBUG2
@@ -180,6 +200,7 @@ namespace CmsWeb.Models
 
             var pf = new PaymentForm
             {
+                FormId = Guid.NewGuid(),
                 AmtToPay = m.PayAmount() + (m.donation ?? 0),
                 AskDonation = m.AskDonation(),
                 AllowCoupon = !m.OnlineGiving(),
@@ -194,7 +215,7 @@ namespace CmsWeb.Models
                 Suffix = r.Suffix,
                 IsLoggedIn = m.UserPeopleId.HasValue,
                 OrgId = m.List[0].orgid,
-                Url = m.URL,
+                URL = m.URL,
                 testing = m.testing ?? false,
                 Terms = m.Terms,
                 Address = r.Address,
@@ -276,22 +297,28 @@ namespace CmsWeb.Models
         }
         public object Autocomplete(bool small = false)
         {
-            string auto;
-#if DEBUG
-            auto = "on";
-#else
-			auto = "off";
-#endif
             if (small)
                 return new
                 {
-                    AUTOCOMPLETE = auto,
+                    AUTOCOMPLETE = AutocompleteOnOff,
                     @class = "short"
                 };
             return new
             {
-                AUTOCOMPLETE = auto,
+                AUTOCOMPLETE = AutocompleteOnOff,
             };
+        }
+
+        public string AutocompleteOnOff
+        {
+            get
+            {
+#if DEBUG
+                return "on";
+#else
+    			return "off";
+#endif
+            }
         }
     }
 }

@@ -97,7 +97,6 @@ namespace CmsWeb.Models
             ws.Cells[r, c++].Value = "FamilyId";
             ws.Cells[r, c].Value = "ImageUrl";
             r++;
-            var maxwid = 0.0;
             foreach (var ep in q)
             {
                 c = 1;

@@ -1,37 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Code
 {
     public class Payments
     {
-        public static void ValidateCreditCardInfo(ModelStateDictionary ModelState, string Cardnumber, string Expires, string Cardcode)
+        public static void ValidateCreditCardInfo(ModelStateDictionary ModelState, PaymentForm pf)
         {
-            if (!ValidateCard(Cardnumber))
-                ModelState.AddModelError("Cardnumber", "invalid card number");
-            if (!Expires.HasValue())
+            if (pf.SavePayInfo && pf.CreditCard.StartsWith("X"))
+                return;
+            if (!ValidateCard(pf.CreditCard, pf.SavePayInfo))
+                ModelState.AddModelError("CreditCard", "invalid card number");
+            if (!pf.Expires.HasValue())
             {
                 ModelState.AddModelError("Expires", "need expiration date");
                 return;
             }
 
-            var exp = DbUtil.NormalizeExpires(Expires);
+            var exp = DbUtil.NormalizeExpires(pf.Expires);
             if (exp == null)
                 ModelState.AddModelError("Expires", "invalid expiration date (MMYY)");
-            if (!Cardcode.HasValue())
+            if (!pf.CCV.HasValue())
             {
-                ModelState.AddModelError("Cardcode", "need Cardcode");
+                ModelState.AddModelError("CCV", "need Cardcode");
                 return;
             }
-            var ccvlen = Cardcode.GetDigits().Length;
+            var ccvlen = pf.CCV.GetDigits().Length;
             if (ccvlen < 3 || ccvlen > 4)
-                ModelState.AddModelError("Cardcode", "invalid Cardcode");
+                ModelState.AddModelError("CCV", "invalid Cardcode");
         }
         public static void ValidateBankAccountInfo(ModelStateDictionary ModelState, string Routing, string Account)
         {
@@ -65,11 +63,11 @@ namespace CmsWeb.Code
             return false;
         }
 
-        public static bool ValidateCard(string s)
+        public static bool ValidateCard(string s, bool savedCard)
         {
             if (!s.HasValue())
                 return false;
-            if (s.StartsWith("X"))
+            if (s.StartsWith("X") && savedCard)
                 return true;
             var number = new int[16];
             int len = 0;

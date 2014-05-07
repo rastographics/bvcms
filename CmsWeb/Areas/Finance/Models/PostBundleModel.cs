@@ -200,13 +200,9 @@ namespace CmsWeb.Models
 
         public class RecentContribution
         {
-            internal decimal? Amount;
-            internal DateTime? DateGiven;
-            internal string CheckNo;
-            public override string ToString()
-            {
-                return "<tr><td class='right'>{0}</td><td class='center nowrap'>&nbsp;{1}</td><td>&nbsp;{2}</td></tr>".Fmt(Amount.ToString2("N2"), DateGiven.ToSortableDate(), CheckNo);
-            }
+            public decimal? Amount;
+            public DateTime? DateGiven;
+            public string CheckNo;
         }
 
         public class NamesInfo
@@ -214,7 +210,7 @@ namespace CmsWeb.Models
             public string Name { get; set; }
             public string Addr { get; set; }
             public int Pid { get; set; }
-            internal List<RecentContribution> recent { get; set; }
+            internal List<PostBundleModel.RecentContribution> recent { get; set; }
             internal string spouse { get; set; }
 
             public string Spouse
@@ -230,13 +226,14 @@ namespace CmsWeb.Models
             {
                 get
                 {
-                    if (recent != null)
-                    {
-                        var s = string.Join("\n", recent);
-                        if (s.HasValue())
-                            return "<table style='margin-left:2em'>{0}</table>".Fmt(s);
-                    }
-                    return "";
+                    if (recent == null) 
+                        return "";
+                    const string row =
+                        "<tr><td class='right'>{0}</td><td class='center nowrap'>&nbsp;{1}</td><td>&nbsp;{2}</td></tr>";
+                    var list = from rr in recent
+                        select row.Fmt(rr.Amount.ToString2("N2"), rr.DateGiven.ToSortableDate(), rr.CheckNo);
+                    var s = string.Join("\n", list);
+                    return s.HasValue() ? "<table style='margin-left:2em'>{0}</table>".Fmt(s) : "";
                 }
             }
         }

@@ -1,8 +1,7 @@
 ﻿$(function () {
     CKEDITOR.replace('editor', {
         height: 200,
-        filebrowserUploadUrl: '/Account/CKEditorUpload/',
-        filebrowserImageUploadUrl: '/Account/CKEditorUpload/' 
+        customConfig: '/scripts/js/ckeditorconfig.js'
     });
     $("body").on("click", 'ul.enablesort div.newitem > a', function (ev) {
         if (!$(this).attr("href"))

@@ -1,7 +1,4 @@
-using System;
-using System.Configuration;
 using System.Linq;
-using System.Net;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
@@ -81,6 +78,7 @@ namespace CmsWeb.Areas.People.Controllers
             if (user.Roles.Contains("Finance") && !User.IsInRole("Finance"))
                 return Content("cannot impersonate finance");
             Session.Remove("CurrentTag");
+            Session.Remove("preferences");
             FormsAuthentication.SetAuthCookie(user.Username, false);
             CmsWeb.Models.AccountModel.SetUserInfo(user.Username, Session);
             Util.UserPeopleId = user.PeopleId;

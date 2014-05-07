@@ -87,7 +87,7 @@ namespace CmsWeb.Models
             ti.Emails = Util.EmailAddressListToString(elist);
             ti.Participants = participants.ToString();
             ti.TransactionDate = DateTime.Now;
-            ti.TransactionPeople.AddRange(pids2);
+            ti.OriginalTransaction.TransactionPeople.AddRange(pids2);
 
             if (org.IsMissionTrip == true)
             {
@@ -95,7 +95,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.Id.ToString()));
+                var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.OriginalId.ToString()));
                 paylink = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
             }
 
@@ -120,7 +120,7 @@ namespace CmsWeb.Models
 </td></tr>", i + 1, p.PrepareSummaryText(ti));
 
                 om.RegisterEmail = p.EmailAddress;
-                om.TranId = ti.Id;
+                om.TranId = ti.OriginalId;
                 if (p.setting.GiveOrgMembAccess == true)
                 {
                     if (p.person.Users.Count() == 0)
@@ -209,15 +209,19 @@ namespace CmsWeb.Models
                         if (!gs.SupporterId.HasValue)
                             gs.SupporterId = p.PeopleId;
                     }
-                    p.person.PostUnattendedContribution(DbUtil.Db,
-                        p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
-                        "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid));
-                    // send notices
-                    if (!p.MissionTripNoNoticeToGoer)
+                    if (!ti.TransactionId.StartsWith("Coupon"))
                     {
-                        var goer = DbUtil.Db.LoadPersonById(goerid.Value);
-                        Db.Email(NotifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
-                            "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value, ti.FullName));
+                        p.person.PostUnattendedContribution(DbUtil.Db,
+                            p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
+                            "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid));
+                        // send notices
+                        if (!p.MissionTripNoNoticeToGoer)
+                        {
+                            var goer = DbUtil.Db.LoadPersonById(goerid.Value);
+                            Db.Email(NotifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
+                                "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value,
+                                    Transaction.FullName(ti)));
+                        }
                     }
                 }
                 if (p.MissionTripSupportGeneral > 0)
@@ -230,13 +234,16 @@ namespace CmsWeb.Models
                             OrgId = p.orgid.Value,
                             SupporterId = p.PeopleId.Value
                         });
-                    p.person.PostUnattendedContribution(DbUtil.Db,
-                        p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
-                        "SupportMissionTrip: org={0}".Fmt(p.orgid));
+                    if (!ti.TransactionId.StartsWith("Coupon"))
+                    {
+                        p.person.PostUnattendedContribution(DbUtil.Db,
+                            p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
+                            "SupportMissionTrip: org={0}".Fmt(p.orgid));
+                    }
                 }
                 var notifyids = Db.NotifyIds(org.OrganizationId, org.GiftNotifyIds);
                 Db.Email(NotifyIds[0].FromEmail, notifyids, org.OrganizationName + "-donation",
-                    "${0:N2} donation received from {1}".Fmt(ti.Amt, ti.FullName));
+                    "${0:N2} donation received from {1}".Fmt(ti.Amt, Transaction.FullName(ti)));
 
                 var senderSubject = os.SenderSubject ?? "NO SUBJECT SET";
                 var senderBody = os.SenderBody ?? "NO SENDEREMAIL MESSAGE HAS BEEN SET";
@@ -290,7 +297,7 @@ namespace CmsWeb.Models
                 message = message.Replace("{donation}", ti.Donate.ToString2("N2"));
                 // send donation confirmations
                 Db.Email(NotifyIds[0].FromEmail, NotifyIds, subject + "-donation",
-                    "${0:N2} donation received from {1}".Fmt(ti.Donate, ti.FullName));
+                    "${0:N2} donation received from {1}".Fmt(ti.Donate, Transaction.FullName(ti)));
             }
             else
                 message = re.Replace(message, "");
@@ -490,7 +497,7 @@ Total Fee paid for this registration session: {4:C}<br/>
 
             var Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
             p.SendOneTimeLink(Staff.First().FromEmail,
-                Util.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
+                DbUtil.Db.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
         }
         public void ConfirmManageSubscriptions()
         {
@@ -511,7 +518,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             var Staff = DbUtil.Db.StaffPeopleForOrg(masterorgid.Value);
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
-                Util.ServerLink("/OnlineReg/ManageSubscriptions/"), "Manage Your Subscriptions", message);
+                DbUtil.Db.ServerLink("/OnlineReg/ManageSubscriptions/"), "Manage Your Subscriptions", message);
         }
         public void ConfirmPickSlots()
         {
@@ -533,9 +540,9 @@ Total Fee paid for this registration session: {4:C}<br/>
             Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
-                Util.ServerLink("/OnlineReg/ManageVolunteer/"), "Manage Your Volunteer Commitments", message);
+                DbUtil.Db.ServerLink("/OnlineReg/ManageVolunteer/"), "Manage Your Volunteer Commitments", message);
         }
-        public void ConfirmManagePledge()
+        public void SendLinkForPledge()
         {
             var p = List[0];
             if (p.IsNew)
@@ -554,9 +561,9 @@ Total Fee paid for this registration session: {4:C}<br/>
 
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
-                Util.ServerLink("/OnlineReg/ManagePledge/"), c.Title, c.Body);
+                DbUtil.Db.ServerLink("/OnlineReg/ManagePledge/"), c.Title, c.Body);
         }
-        public void ConfirmManageGiving()
+        public void SendLinkToManageGiving()
         {
             var p = List[0];
             if (p.IsNew)
@@ -575,7 +582,7 @@ Total Fee paid for this registration session: {4:C}<br/>
 
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
-                Util.ServerLink("/OnlineReg/ManageGiving/"), c.Title, c.Body);
+                DbUtil.Db.ServerLink("/OnlineReg/ManageGiving/"), c.Title, c.Body);
         }
         public int GetEntryPoint()
         {

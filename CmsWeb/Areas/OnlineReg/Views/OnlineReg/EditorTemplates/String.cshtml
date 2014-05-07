@@ -5,6 +5,10 @@
     {
         d.Add("placeholder", ((string)ViewBag.placeholder));
     }
+    if (ViewBag.autocomplete != null)
+    {
+        d.Add("AUTOCOMPLETE", ViewBag.autocomplete);
+    }
     const string labelclasses = "control-label col-sm-3 labelsize";
 }
 <div class="form-group">

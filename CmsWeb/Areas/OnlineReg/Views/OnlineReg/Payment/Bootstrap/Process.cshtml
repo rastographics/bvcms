@@ -1,0 +1,148 @@
+﻿@using CmsWeb
+@using DocumentFormat.OpenXml.Wordprocessing
+@using UtilityExtensions
+@model CmsWeb.Models.PaymentForm
+<div class="regform">
+    <h2>Payment Processing</h2>
+    @if (Model.Terms.HasValue())
+    {
+        <p>
+            @Html.CheckBox("IAgree")
+            I agree to the terms and conditions.
+            <small class="showform">Uncheck the agreement box to display the terms again.</small>
+        </p>
+        <div id="Terms" title="Terms of Agreement">
+            <p>
+                You must agree to the terms below for you or your minor child before you can complete your registration.
+            </p>
+            @Html.Raw(Model.Terms)
+        </div>
+    }
+    <form class="showform form-horizontal" action="/OnlineReg/ProcessPayment" method="post">
+        @Html.ValidationSummary()
+        <div class="form-group" style="font-size: 1.5em;">
+            @Html.LabelFor(m => m.AmtToPay, new { @class="control-label col-sm-3"})
+            <div class="col-sm-9">
+                @if (Model.PayBalance)
+                {
+                    @Html.EditorFor(m => m.AmtToPay)
+                }
+                else
+                {
+                    <p class="form-control-static">@Model.AmtToPay.ToString2("C")</p>
+                    @Html.HiddenFor(m => m.AmtToPay)
+                }
+            </div>
+        </div>
+        @Html.HiddenFor(m => m.DatumId)
+        @Html.HiddenFor(m => m.TranId)
+        @Html.HiddenFor(m => m.UseBootstrap)
+        @Html.HiddenFor(m => m.URL)
+        @Html.HiddenFor(m => m.Description)
+        @Html.HiddenFor(m => m.FormId)
+        @Html.HiddenFor(m => m.Email)
+        @Html.HiddenFor(m => m.Amtdue)
+        @Html.HiddenFor(m => m.testing)
+        @Html.HiddenFor(m => m.OrgId)
+        @Html.HiddenFor(m => m.OriginalId)
+        @Html.HiddenFor(m => m.PayBalance)
+        @Html.HiddenFor(m => m.AllowCoupon)
+        @Html.HiddenFor(m => m.IsLoggedIn)
+        @Html.HiddenFor(m => m.FinanceOnly)
+        @Html.HiddenFor(m => m.AskDonation)
+        @Html.HiddenFor(m => m.Donate)
+        @Html.HiddenFor(m => m.NoCreditCardsAllowed)
+
+        <div class="well">
+            @Html.EditorFor(m => m.First)
+            @Html.EditorFor(m => m.MiddleInitial, new { classes = "narrow" })
+            @Html.EditorFor(m => m.Last)
+            @Html.EditorFor(m => m.Suffix, new { classes = "narrow" })
+            @Html.EditorFor(m => m.Address)
+            @Html.EditorFor(m => m.Zip)
+            @Html.EditorFor(m => m.Phone)
+            @Html.EditorFor(m => m.Email)
+        </div>
+        <div class="well">
+            @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
+            {
+                <div class="form-group">
+                    @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
+                    <div class="col-sm-9">
+                        <label class="radio-inline">
+                            <input type="radio" name="Type" value="C" @(Model.Type == "C" ? "checked='checked'" : "") />Debit/Credit Card
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="Type" value="B" @(Model.Type == "B" ? "checked='checked'" : "") /> Bank Account
+                        </label>
+                        @Html.Hidden("allowcc", "true")
+                    </div>
+                </div>
+            }
+            @if (Model.NoCreditCardsAllowed == false)
+            {
+                <div class="Card">
+                    @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff })
+                    @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+                    @Html.EditorFor(m => m.CCV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+                </div>
+            }
+            @if (Model.NoEChecksAllowed == false)
+            {
+                <div class="Bank">
+                    @Html.EditorFor(m => m.Routing)
+                    @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <span class="pull-right">
+                    @if (Model.IsLoggedIn == true && CmsWeb.Models.OnlineRegModel.GetTransactionGateway() == "sage")
+                    {
+                        <span style="margin-right: 2em;">Save Pay Info @Html.CheckBoxFor(m => m.SavePayInfo)</span>
+                    }
+                    @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true)
+                </span>
+            </div>
+        </div>
+        @if (Model.AllowCoupon)
+        {
+            @Html.EditorFor(m => m.Coupon)
+            @Helper.OnlineRegAjaxButtonRow("/OnlineReg/ApplyCoupon", "Apply Coupon", id: "ApplyCoupon", style: "btn-success")
+            <div class="form-group" id="formerror">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <div class="alert alert-danger field-validation-error" id="errormessage"></div>
+                </div>
+            </div>
+        }
+    </form>
+</div>
+<div id="findid" style="display:none">
+    <h2>Card Identification #</h2>
+    <table width="100%">
+        <tr>
+            <td><h3>American Express</h3></td>
+            <td><img src="/Content/images/amex.jpg" alt="amex" /></td>
+        </tr>
+        <tr>
+            <td><h3>Visa</h3></td>
+            <td><img src="/Content/images/visa.jpg" alt="visa" /></td>
+        </tr>
+        <tr>
+            <td><h3>MasterCard</h3></td>
+            <td><img src="/Content/images/mastercard.jpg" alt="mastercard" /></td>
+        </tr>
+        <tr>
+            <td><h3>Discover</h3></td>
+            <td><img src="/Content/images/discovercard.jpg" alt="discover" /></td>
+        </tr>
+    </table>
+</div>
+<div id="findacct" style="display:none">
+    <h2>Bank Routing # / Account #</h2>
+    <p>Look at the numbers on the bottom of your check</p>
+    <div>
+        <img src="https://a1d932c175f6f84ca65d-434e90644472f15e2ba76cac2f5de424.ssl.cf2.rackcdn.com/check.png" alt="check" />
+    </div>
+</div> 

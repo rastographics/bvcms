@@ -271,6 +271,7 @@ namespace CmsWeb.Models
             var q2 = from p in q
                      let om = Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == Util2.CurrentOrgId && om.PeopleId == p.PeopleId)
                      let recreg = p.RecRegs.FirstOrDefault()
+// todo: use TransactionSummary instead
                      let bal = (from t in Db.Transactions
                                 where t.OriginalTransaction.TransactionPeople.Any(pp => pp.PeopleId == p.PeopleId)
                                 where t.OriginalTransaction.OrgId == Util2.CurrentOrgId

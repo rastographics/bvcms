@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -47,7 +48,7 @@ namespace CmsWeb.Models
         public string ImageUrl()
         {
             return ImageId.HasValue
-                ? Util.ServerLink("/Portrait/{0}/160/200".Fmt(ImageId))
+                ? DbUtil.Db.ServerLink("/Portrait/{0}/160/200".Fmt(ImageId))
                 : "";
         }
     }

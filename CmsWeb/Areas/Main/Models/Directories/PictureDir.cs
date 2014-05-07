@@ -183,7 +183,6 @@ namespace CmsWeb.Areas.Main.Models.Directories
 			ThemePart themePart1 = mainDocumentPart1.AddNewPart<ThemePart>("rId14");
 			GenerateThemePart1Content(themePart1);
 
-			SetPackageProperties(document);
 		}
 
 		// Generates content of extendedFilePropertiesPart1.
@@ -5275,18 +5274,5 @@ namespace CmsWeb.Areas.Main.Models.Directories
 			themePart1.Theme = theme1;
 		}
 
-		private void SetPackageProperties(OpenXmlPackage document)
-		{
-			document.PackageProperties.Creator = "David";
-			document.PackageProperties.Title = "";
-			document.PackageProperties.Revision = "3";
-			document.PackageProperties.Created = System.Xml.XmlConvert.ToDateTime("2012-05-13T15:07:00Z",
-			                                                                      System.Xml.XmlDateTimeSerializationMode.
-			                                                                      	RoundtripKind);
-			document.PackageProperties.Modified = System.Xml.XmlConvert.ToDateTime("2012-05-13T15:13:00Z",
-			                                                                       System.Xml.XmlDateTimeSerializationMode.
-			                                                                       	RoundtripKind);
-			document.PackageProperties.LastModifiedBy = "David";
-		}
 	}
 }

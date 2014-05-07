@@ -42,14 +42,16 @@
                     {
                         @Html.DisplayFor(m => m.Tickets)
                     }
-                    @if (Model.Amount.HasValue || Model.AmountPaid.HasValue)
+                    @if (Model.Amount.HasValue || Model.AmountPaidTransactions.HasValue) // || Model.AmountPaid.HasValue)
                     {
                         @Html.DisplayFor(m => m.Amount)
-                        @Html.DisplayFor(m => m.AmountPaid)
+                        @Html.DisplayFor(m => m.AmountPaidTransactions)
                         @Html.DisplayFor(m => m.AmountDue)
+                        @Html.DisplayFor(m => m.TransactionsLink, "Hyperlink",
+                            new { text = "View Transactions" })
                         if (Model.AmountDue > 0)
                         {
-                            @Html.DisplayFor(m => m.PayLink)
+                            @Html.DisplayFor(m => m.PayLink, "Hyperlink", new { text = "paylink" })
                         }
                     }
                     @if (Model.Setting.AskVisible("AskSize"))
@@ -58,6 +60,7 @@
                     }
                     @Html.DisplayFor(m => m.UserData, "TextArea", new { AddClass = "scroll150" })
                 </fieldset>
+
             </div>
             <div class="tab-pane" id="membergroups">
                 <div class="well">

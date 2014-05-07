@@ -21,15 +21,11 @@ namespace CmsData
             var cs = db.Connection.ConnectionString;
             db.Dispose();
             db = new CMSDataContext(cs);
-            if (!db.CmsHost.HasValue())
-                db.CmsHost = Util.ServerLink();
         }
 
         public PythonEvents(CMSDataContext db, string classname, string script)
         {
             this.db = db;
-            if (!db.CmsHost.HasValue())
-                db.CmsHost = Util.ServerLink();
             var engine = Python.CreateEngine();
             var sc = engine.CreateScriptSourceFromString(script);
 
@@ -44,13 +40,10 @@ namespace CmsData
         public PythonEvents(CMSDataContext db)
         {
             this.db = db;
-            if (!db.CmsHost.HasValue())
-                db.CmsHost = Util.ServerLink();
         }
         public PythonEvents(string dbname = "bellevue")
         {
             db = new CMSDataContext("Data Source=.;Initial Catalog=CMS_{0};Integrated Security=True".Fmt(dbname));
-            db.CmsHost = Util.ServerLink();
         }
 
         public static string RunScript(CMSDataContext db, string script)
@@ -108,7 +101,6 @@ namespace CmsData
         public bool TestEmail { get; set; }
         public bool Transactional { get; set; }
         public int CurrentOrgId { get; set; }
-        public string CmsHost { set { db.CmsHost = value; } }
         public bool SmtpDebug { set { Util.SmtpDebug = value; } }
 
         public void Email2(Guid qid, int queuedBy, string fromAddr, string fromName, string subject, string body)

@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using UtilityExtensions;
 using System.Text;
 
@@ -17,6 +15,7 @@ namespace CmsData.Registration
 		public decimal? Deposit { get; set; }
 		public string Title { get; set; }
 		public string Shell { get; set; }
+		public string ShellBs { get; set; }
 		public decimal? Fee { get; set; }
 		public decimal? ExtraFee { get; set; }
 		public decimal? MaximumFee { get; set; }
@@ -54,9 +53,13 @@ namespace CmsData.Registration
 		public string GroupToJoin { get; set; }
 		public bool GiveOrgMembAccess { get; set; }
 	    public bool AddAsProspect { get; set; }
-	    public bool UseBootstrap { get; set; }
 
-		public string DonationFund()
+        public bool UseBootstrap
+        {
+            get { return org != null && (org.UseBootstrap ?? false); }
+        }
+
+        public string DonationFund()
 		{
 			return (from f in Db.ContributionFunds
 					where f.FundId == DonationFundId
@@ -274,7 +277,7 @@ namespace CmsData.Registration
 					AddAsProspect = parser.GetBool();
 					break;
 				case Parser.RegKeywords.UseBootstrap:
-					UseBootstrap = parser.GetBool();
+					parser.GetBool();
 					break;
 				case Parser.RegKeywords.LinkGroupsFromOrgs:
 					LinkGroupsFromOrgs = (from i in parser.curr.value.Split(',')
@@ -319,6 +322,9 @@ namespace CmsData.Registration
 					break;
 				case Parser.RegKeywords.Shell:
 					Shell = parser.GetString();
+					break;
+				case Parser.RegKeywords.ShellBs:
+					ShellBs = parser.GetString();
 					break;
 				case Parser.RegKeywords.Fee:
 					Fee = parser.GetDecimal();
@@ -637,6 +643,7 @@ namespace CmsData.Registration
 
 			AddValueCk(0, sb, "ValidateOrgs", ValidateOrgs);
 			AddValueCk(0, sb, "Shell", Shell);
+			AddValueCk(0, sb, "ShellBs", ShellBs);
 			AddValueCk(0, sb, "SpecialScript", SpecialScript);
 			AddValueCk(0, sb, "AllowOnlyOne", AllowOnlyOne);
 			AddValueCk(0, sb, "TargetExtraValues", TargetExtraValues);
@@ -645,7 +652,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "GroupToJoin", GroupToJoin);
 			AddValueCk(0, sb, "GiveOrgMembAccess", GiveOrgMembAccess);
 			AddValueCk(0, sb, "AddAsProspect", AddAsProspect);
-			AddValueCk(0, sb, "UseBootstrap", UseBootstrap);
+			//AddValueCk(0, sb, "UseBootstrap", UseBootstrap);
 			AddValueCk(0, sb, "NoReqBirthYear", NoReqBirthYear);
 			AddValueCk(0, sb, "NotReqDOB", NotReqDOB);
 			AddValueCk(0, sb, "NotReqAddr", NotReqAddr);

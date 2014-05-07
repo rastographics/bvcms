@@ -1,0 +1,74 @@
+﻿@using UtilityExtensions
+@using CmsData
+@model CmsWeb.Models.PaymentForm
+@{
+    Layout = "~/Views/Shared/onlinereg.cshtml";
+    ViewBag.Title = "Online Registration";
+    var ServiceUOrgID = (Model.testing) ? ViewExtensions2.DbSetting("ServiceUOrgIDTest", "0") : ViewExtensions2.DbSetting("ServiceUOrgID", "0");
+    var ServiceUOrgAccountID = (Model.testing) ? ViewExtensions2.DbSetting("ServiceUOrgAccountIDTest", "0") : ViewExtensions2.DbSetting("ServiceUOrgAccountID", "0");
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/onlinereg/onlineregpayment.js")
+    <script type="text/javascript">
+        $(function() {
+            $(document).bind("idle.idleTimer", function() {
+                window.location.href = '@Model.URL';
+            });
+            var tmout = parseInt('@Model.TimeOut');
+            $.idleTimer(tmout);
+        });
+    </script>
+}
+    <h2>
+        Payment Processing</h2>
+@if (Model.Terms.HasValue())
+{ 
+    <a id="displayterms" title="click to display terms" href="#">Display Terms</a>
+    <div id="Terms" title="Terms of Agreement" class="modalPopup" style="display: none;
+        width: 400px; padding: 10px">
+        @Html.Raw(Model.Terms)</div>
+    <p>
+        @Html.CheckBox("IAgree")
+        I agree to the above terms and conditions.</p>
+    <p>
+        You must agree to the terms above for you or your minor child before you can continue.</p>
+} 
+    <p>
+        When you click the 'Make Payment' button you will be redirected to ServiceU.com
+        to process your payment of the amount shown below.
+        After you are finished there, you will be redirected
+        back here to get your confirmation. Your information will not be committed until
+        you complete the transaction on the next page.
+    </p>
+    @Html.Hidden("pf_Type", "ServiceU")
+    <form action="https://public.serviceu.com/transaction/pay.asp" method="post">
+    Amount: @Model.AmtToPay.ToString2("N2")
+    @Html.Hidden("Amount", Model.AmtToPay) 
+    <input type="hidden" name="OrgID" value="@ServiceUOrgID"/>
+    <input type="hidden" name="OrgAccountID" value="@ServiceUOrgAccountID"/>
+    @Html.Hidden("PostbackURL", DbUtil.Db.ServerLink("/OnlineReg/Confirm/" + Model.DatumId))
+    @Html.Hidden("NameOnAccount", Model.FullName())
+    @Html.Hidden("Address", Model.Address)
+    @Html.Hidden("City", Model.City)
+    @Html.Hidden("State", Model.State)
+    @Html.Hidden("PostalCode", Model.Zip)
+    @Html.Hidden("Phone", Model.Phone)
+    @Html.Hidden("Email", Model.Email)
+    @Html.Hidden("Misc1", Model.FullName())
+    @Html.Hidden("Misc2", Model.Description)
+    @Html.Hidden("Misc3")
+    @Html.Hidden("Misc4")
+
+    <p>
+        <input id="Submit" type="submit" name="Submit" value="Make Payment" /></p>
+    </form>
+    <form action="/OnlineReg/PayWithCoupon" method="post">
+    <p>
+        If you have received a Coupon, please enter that number here and click
+        the button below it:</p>
+    <input id="Coupon" name="Coupon" type="text" value="@Model.Coupon" autocomplete="off"  /> <br />
+    <input type="button" href="/OnlineReg/PayWithCoupon/@Model.DatumId" class="submitbutton ajax" 
+        value="Pay with coupon" />
+    <span style="color: Red" id="validatecoupon"></span>
+    </form>

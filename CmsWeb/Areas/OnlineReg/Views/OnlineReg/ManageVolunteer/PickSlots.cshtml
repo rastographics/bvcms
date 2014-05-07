@@ -1,0 +1,40 @@
+﻿@model CmsWeb.Models.VolunteerModel 
+@{
+    Layout = Model.Setting.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
+    ViewBag.Title = "Online Registration";
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Volunteer/ManageVolunteer.js")
+}
+@section head
+{
+<style type="text/css">
+    .wk-1 { background-color: #B1ECB1; }
+    .wk-2 { background-color: #E0E0FF; } 
+    .wk-3 { background-color: #FFE1E1; }
+    .wk-4 { background-color: #FFFFDB; }
+    .wk-5 { background-color: #E1E1E1; }
+</style>
+}
+@if (Model.IsLeader)
+{
+<h2><a href="/Organization/@Model.OrgId">@Model.Org.OrganizationName</a></h2>
+<h4><a href="/Volunteers/Calendar/@Model.OrgId" target="calendar">View Calendar</a></h4><br />
+@*<p>Select Volunteer: @Html.DropDownList("volunteer", Model.Volunteers())</p>*@
+}
+else
+{
+<h2>@Model.Org.OrganizationName</h2>
+}
+<h3>Volunteer Commitment Times for @Model.Person.Name &lt;@Model.Person.EmailAddress&gt;</h3>
+<div>@Html.Raw(Model.Instructions)</div>
+<div>You can sort by Week of Month, or by Date (default). Just click the column headings.</div>
+<div>Note: (# needed shown in parentheses)</div>
+@using (Html.BeginForm("ConfirmVolunteerSlots", "OnlineReg"))
+{
+    @Html.Partial("ManageVolunteer/PickSlots", Model)
+}
+

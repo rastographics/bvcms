@@ -20,7 +20,7 @@
     <td>
 @if (Model.CanDelete)
 { 
-        <a id='x@(Model.Id)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
+        <a data-pk='@Model.Id' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
 } 
     </td>
 </tr>

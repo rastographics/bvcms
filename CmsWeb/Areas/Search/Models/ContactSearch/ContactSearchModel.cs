@@ -196,11 +196,6 @@ namespace CmsWeb.Areas.Search.Models
                     return from c in q
                            orderby c.ContactId descending
                            select c;
-                default:
-                case "Date desc":
-                    return from c in q
-                           orderby c.ContactDate descending
-                           select c;
                 case "Reason desc":
                     return from c in q
                            orderby c.ContactReasonId descending, c.ContactDate descending
@@ -209,8 +204,12 @@ namespace CmsWeb.Areas.Search.Models
                     return from c in q
                            orderby c.ContactTypeId descending, c.ContactDate descending
                            select c;
+                case "Date desc":
+                default:
+                    return from c in q
+                           orderby c.ContactDate descending
+                           select c;
             }
-            return q;
         }
 
         public override IEnumerable<ContactInfo> DefineViewList(IQueryable<CmsData.Contact> q)

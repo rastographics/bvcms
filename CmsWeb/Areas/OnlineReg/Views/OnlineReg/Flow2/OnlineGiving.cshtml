@@ -21,7 +21,7 @@
                         <td class="right">@i.Text</td>
                         <td>
                             <input type="hidden" name="@(funame)[@n].Key" value="@i.Value" />
-                            <input type="text" name="@(funame)[@n].Value" value="@amt" class="form-control narrow" />
+                            <input type="text" name="@(funame)[@n].Value" value="@amt" class="form-control narrow sum" />
                             <div>@Html.ValidationMessageFor(m => m.FundItem[n])</div>
                         </td>
                     </tr>

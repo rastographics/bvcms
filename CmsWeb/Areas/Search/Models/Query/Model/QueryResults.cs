@@ -21,7 +21,6 @@ namespace CmsWeb.Areas.Search.Models
             {
                 if(topclause != null) 
                     return topclause;
-                Condition tc;
                 if(QueryId == null)
                     topclause =  Db.FetchLastQuery();
                 else

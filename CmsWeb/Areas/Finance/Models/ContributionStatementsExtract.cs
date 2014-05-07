@@ -17,7 +17,6 @@ namespace CmsWeb.Areas.Finance.Models.Report
 		public bool PDF { get; set; }
 		public string OutputFile { get; set; }
 		public string Host { get; set; }
-		public string CmsHost { get; set; }
 		public int LastSet { get; set; }
 		public string StartsWith { get; set; }
 		public string Sort { get; set; }
@@ -27,13 +26,12 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public bool showCheckNo { get; set; }
         public bool showNotes { get; set; }
 
-		public ContributionStatementsExtract(string Host, string CmsHost, DateTime fd, DateTime td, bool PDF, string OutputFile, string startswith = null, string sort = null, int? tagid = null)
+		public ContributionStatementsExtract(string Host, DateTime fd, DateTime td, bool PDF, string OutputFile, string startswith = null, string sort = null, int? tagid = null)
 		{
 			this.fd = fd;
 			this.td = td;
 			this.PDF = PDF;
 			this.Host = Host;
-		    this.CmsHost = CmsHost;
 			this.OutputFile = OutputFile;
 		    TagId = tagid;
 		    StartsWith = startswith;
@@ -45,7 +43,6 @@ namespace CmsWeb.Areas.Finance.Models.Report
 		{
 			Db = new CMSDataContext(Util.GetConnectionString(Host));
 			Db.Host = Host;
-		    Db.CmsHost = CmsHost;
 			Db.CommandTimeout = 1200;
 
 			var noaddressok = Db.Setting("RequireAddressOnStatement", "true") == "false";

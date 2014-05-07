@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.Main.Models.Directories
 			Response.ContentType = "application/vnd.ms-word";
 			Response.AddHeader("Content-Disposition", "attachment;filename=CMSCompactDir.docx");
 			var ms = new MemoryStream();
-			using (var package = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document))
+            using (var package = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document))
 			{
 				CreateParts(package);
 			}
@@ -113,7 +113,6 @@ namespace CmsWeb.Areas.Main.Models.Directories
 			GenerateWebSettingsPart1Content(webSettingsPart1);
 
 			mainDocumentPart1.AddHyperlinkRelationship(new System.Uri("mailto:jane@gmail.com", System.UriKind.Absolute), true, "rId5");
-			SetPackageProperties(document);
 		}
 
 		// Generates content of extendedFilePropertiesPart1.
@@ -1778,15 +1777,6 @@ namespace CmsWeb.Areas.Main.Models.Directories
 			webSettings1.Append(allowPNG1);
 
 			webSettingsPart1.WebSettings = webSettings1;
-		}
-
-		private void SetPackageProperties(OpenXmlPackage document)
-		{
-			document.PackageProperties.Creator = "David";
-			document.PackageProperties.Revision = "7";
-			document.PackageProperties.Created = System.Xml.XmlConvert.ToDateTime("2012-10-06T15:15:00Z", System.Xml.XmlDateTimeSerializationMode.RoundtripKind);
-			document.PackageProperties.Modified = System.Xml.XmlConvert.ToDateTime("2012-10-06T17:57:00Z", System.Xml.XmlDateTimeSerializationMode.RoundtripKind);
-			document.PackageProperties.LastModifiedBy = "David";
 		}
 
 		// Generates content of mainDocumentPart1.

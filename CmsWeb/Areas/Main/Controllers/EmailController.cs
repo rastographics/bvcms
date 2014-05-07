@@ -36,7 +36,6 @@ namespace CmsWeb.Areas.Main.Controllers
 					DbUtil.LogActivity("Emailing people");
 
 					var m = new MassEmailer(id, parents);
-					m.CmsHost = DbUtil.Db.CmsHost;
 					m.Host = Util.Host;
 
 					ViewBag.templateID = templateID;
@@ -49,7 +48,6 @@ namespace CmsWeb.Areas.Main.Controllers
 			DbUtil.LogActivity("Emailing people");
 
 			var me = new MassEmailer(id, parents);
-			me.CmsHost = DbUtil.Db.CmsHost;
 			me.Host = Util.Host;
 
 			if (body.HasValue())
@@ -102,7 +100,6 @@ namespace CmsWeb.Areas.Main.Controllers
 							{
 								TagId = tagId,
 								wantParents = wantParents,
-								CmsHost = DbUtil.Db.CmsHost,
 								Host = Util.Host,
 								Subject = subject,
 							};
@@ -165,7 +162,6 @@ namespace CmsWeb.Areas.Main.Controllers
 			// save these from HttpContext to set again inside thread local storage
 			var useremail = Util.UserEmail;
 			var isinroleemailtest = User.IsInRole("EmailTest");
-		    var cmshost = Util.ServerLink();
 
 			System.Threading.Tasks.Task.Factory.StartNew(() =>
 			{
@@ -174,7 +170,6 @@ namespace CmsWeb.Areas.Main.Controllers
 				{
 					var Db = new CMSDataContext(Util.GetConnectionString(host));
 					Db.Host = host;
-				    Db.CmsHost = cmshost;
 					var cul = Db.Setting("Culture", "en-US");
 					Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
 					Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -191,7 +186,6 @@ namespace CmsWeb.Areas.Main.Controllers
 
 					var Db = new CMSDataContext(Util.GetConnectionString(host));
 					Db.Host = host;
-				    Db.CmsHost = cmshost;
 					var equeue = Db.EmailQueues.Single(ee => ee.Id == id);
 					equeue.Error = ex.Message.Truncate(200);
 					Db.SubmitChanges();

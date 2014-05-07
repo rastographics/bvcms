@@ -16,8 +16,7 @@
         height: 400,
         allowedContent: true,
         fullPage: fullPage,
-        filebrowserUploadUrl: '/Account/CKEditorUpload/',
-        filebrowserImageUploadUrl: '/Account/CKEditorUpload/'
+        customConfig: "/scripts/js/ckeditorconfig.js"
     });
     $("#fullpage").change(function () {
         if (confirm("reload page?")) {

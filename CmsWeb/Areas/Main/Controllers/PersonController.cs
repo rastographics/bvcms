@@ -104,6 +104,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			if (user.Roles.Contains("Finance") && !User.IsInRole("Finance"))
 				return Content("cannot impersonate finance");
             Session.Remove("CurrentTag");
+            Session.Remove("preferences");
 			FormsAuthentication.SetAuthCookie(id, false);
 			AccountModel.SetUserInfo(id, Session);
 			Util.UserPeopleId = user.PeopleId;

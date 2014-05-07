@@ -116,8 +116,9 @@
     });
     $("form.ajax a.membertype").live("click", function (ev) {
         ev.preventDefault();
+        var href = this.href;
         $("#member-dialog").css({ 'margin-top': '', 'top': '' })
-            .load($(this).attr("href"), {}, function () {
+            .load(href, {}, function () {
                 $(this).modal("show");
                 $(this).on('hidden', function () {
                     $(this).empty();

@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Public.Controllers
 //                else
 //                    position = PositionInFamily.SecondaryAdult;
 
-            var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), MaritalStatusCode.Single, id) ?? 10;
+            var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), false, id) ?? 10;
             var p = Person.Add(f, position,
                 null, m.first, m.goesby, m.last, m.dob, false, m.gender,
                     OriginCode.Visit, null);

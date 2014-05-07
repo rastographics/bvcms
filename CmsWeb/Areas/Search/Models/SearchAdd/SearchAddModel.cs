@@ -203,11 +203,11 @@ namespace CmsWeb.Areas.Search.Models
                 case "relatedfamily":
                     return AddRelatedFamilys(iid, OriginCode.NewFamilyMember);
                 case "org":
-                    return AddOrgMembers(iid, false, OriginCode.Enrollment);
+                    return AddOrgMembers(iid, OriginCode.Enrollment);
                 case "pending":
-                    return AddOrgMembers(iid, true, OriginCode.Enrollment);
+                    return AddOrgMembers(iid, OriginCode.Enrollment, pending: true);
                 case "prospect":
-                    return AddOrgMembers(iid, true, OriginCode.Enrollment, membertypeid: MemberTypeCode.Prospect);
+                    return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.Prospect);
                 case "visitor":
                     return AddVisitors(iid, OriginCode.Visit);
                 case "registered":
@@ -359,7 +359,7 @@ namespace CmsWeb.Areas.Search.Models
             DbUtil.Db.SubmitChanges();
             return new ReturnResult { pid = PendingList[0].PeopleId, from = AddContext };
         }
-        private ReturnResult  AddOrgMembers(int id, bool pending, int origin, int membertypeid = MemberTypeCode.Member)
+        private ReturnResult  AddOrgMembers(int id, int origin, int membertypeid = MemberTypeCode.Member, bool pending = false )
         {
             string message = null;
             if (id > 0)

@@ -1,11 +1,32 @@
-﻿@using CmsWeb.Models
-@model TitleItems
-<hr />
-<table>
-    <tr><th colspan="2" class="left">@Model.title</th></tr>
-    <tr><td><b>Code</b></td><td><b>Description</b></td></tr>
-@foreach (var i in Model.items)
-{
-    <tr><td>@i.Id</td><td>@i.Value</td></tr>
-}
-</table>
+﻿@using CmsWeb
+@using CmsWeb.Models
+@using RestSharp.Extensions
+@model UpdateFieldsModel.TitleItems
+<div class="inline align-top left-gutter well">
+    <fieldset>
+        <legend>
+            @Model.title
+            @if (Model.Instructions.HasValue())
+            {
+            <small><br/>@Model.Instructions</small>
+            }
+        </legend>
+        <table class="@ViewExtensions2.GridClass">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in Model.items)
+                {
+                    <tr>
+                        <td>@(Model.UseCode ? i.Code : i.Id.ToString())</td>
+                        <td>@i.Value</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </fieldset>
+</div>

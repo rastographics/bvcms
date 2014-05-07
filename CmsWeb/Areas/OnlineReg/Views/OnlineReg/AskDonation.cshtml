@@ -14,7 +14,7 @@
             $(document).bind("idle.idleTimer", function() {
                 window.location.href = '@Model.URL';
             });
-            var tmout = parseInt('@ViewData["timeout"]');
+            var tmout = parseInt('@Model.TimeOut');
 
             if ($('input:text[value!=""]').length == 0)
                 $(document).bind("keydown", function() {

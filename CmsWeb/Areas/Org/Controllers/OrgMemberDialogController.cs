@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
@@ -15,7 +14,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Display(int oid, int pid)
         {
             var m = new OrgMemberModel(oid, pid);
-            return View(m);
+            return View("Display", m);
         }
         [HttpPost, Route("OrgMemberDialog2/SmallGroupChecked/{oid:int}/{pid:int}/{sgtagid:int}")]
         public ActionResult SmallGroupChecked(int oid, int pid, int sgtagid, bool ck)

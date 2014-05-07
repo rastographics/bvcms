@@ -150,10 +150,17 @@
     </span> @Html.TextBox("Shell", Model.Shell)
 </li>
 <li>
+    <span class="keyword big tip" title="Bootstrap Shell
+        |Enter the name of the HTML shell for this registration
+        |(stored in Special Content)">
+        Bootstrap Shell<text>:</text>
+    </span> @Html.TextBox("ShellBs", Model.ShellBs)
+</li>
+<li>
     <span class="keyword big tip" title="UseBootstrap
         |Use Bootstrap shell">
         UseBootstrap:
-    </span> @Html.CheckBox("UseBootstrap", Model.UseBootstrap)
+    </span> @Html.CheckBox("org.UseBootstrap", Model.org.UseBootstrap)
     <div>(this is still experimental and undocumented, does not work with existing shells)</div>
 </li>
 <li>

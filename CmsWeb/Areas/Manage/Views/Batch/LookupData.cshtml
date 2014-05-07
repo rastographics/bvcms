@@ -1,9 +1,0 @@
-﻿@using CmsWeb.Models
-@model IEnumerable<TitleItems>
-<h2>Lookup Data</h2>
-<blockquote>
-    @foreach(var ti in Model) 
-    {
-         Html.RenderPartial("LookupTable", ti);
-    }
-</blockquote>

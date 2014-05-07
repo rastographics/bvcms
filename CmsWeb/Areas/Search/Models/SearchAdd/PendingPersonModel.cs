@@ -161,7 +161,7 @@ namespace CmsWeb.Areas.Search.Models
 //                    position = PositionInFamily.PrimaryAdult;
 //                else
 //                    position = PositionInFamily.SecondaryAdult;
-            var position = DbUtil.Db.ComputePositionInFamily(Age ?? -1, MaritalStatusCode.Single, FamilyId) ?? 10;
+            var position = DbUtil.Db.ComputePositionInFamily(Age ?? -1, false, FamilyId) ?? 10;
 
 
             FirstName = FirstName.Trim();

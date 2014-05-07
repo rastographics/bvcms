@@ -168,7 +168,7 @@ namespace CmsData
         public List<Person> NotifyIds(int orgid, string ids)
         {
             var org = LoadOrganizationById(orgid);
-            var a = ids.Split(',').Select(ss => ss.ToInt()).ToArray();
+            var a = (ids ?? "").Split(',').Select(ss => ss.ToInt()).ToArray();
             var q2 = from p in People
                      where a.Contains(p.PeopleId)
                      orderby p.PeopleId == a.FirstOrDefault() descending

@@ -25,7 +25,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 		public ActionResult Upload(string text, bool noupdate)
 		{
 			string host = Util.Host;
-			string cmshost = Util.ServerLink();
 			var runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
 			DbUtil.Db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
 			DbUtil.Db.SubmitChanges();
@@ -37,7 +36,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 				Thread.CurrentThread.Priority = ThreadPriority.Lowest;
 				var Db = new CMSDataContext(cs);
 			    Db.Host = host;
-			    Db.CmsHost = cmshost;
 				try
 				{
 					var m = new UploadPeopleModel(Db, pid ?? 0, noupdate, cs);
@@ -45,7 +43,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 					Db.Dispose();
     				Db = new CMSDataContext(cs);
     			    Db.Host = host;
-    			    Db.CmsHost = cmshost;
 
         			runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
         			Db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
@@ -59,7 +56,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 					Db.Dispose();
     				Db = new CMSDataContext(cs);
     			    Db.Host = host;
-    			    Db.CmsHost = cmshost;
 
 				    var q = from r in Db.UploadPeopleRuns
 				            where r.Id == Db.UploadPeopleRuns.Max(rr => rr.Id)

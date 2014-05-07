@@ -170,6 +170,7 @@ namespace CmsData
                 om2.Request = om.Request;
                 om2.Grade = om.Grade;
                 om2.Amount = om.Amount;
+                om2.TranId = om.TranId;
                 om2.AmountPaid = om.AmountPaid;
                 om2.PayLink = om.PayLink;
                 om2.Moved = om.Moved;

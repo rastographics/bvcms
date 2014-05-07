@@ -1,0 +1,13 @@
+﻿@model string
+@{
+    var items = ViewBag.items as List<SelectListItem>;
+}
+<div class="control-group">
+    @(ViewBag.label != null
+        ? Html.Label(ViewBag.label as string, new {@class = "control-label" }) 
+        : Html.LabelFor(m => m, new {@class = "control-label" }))
+    <div class="controls">
+        @Html.DropDownListFor(m => m, items, new { @class = "form-control" })
+        @Html.ValidationMessageLabelFor(m => m)
+    </div>
+</div>

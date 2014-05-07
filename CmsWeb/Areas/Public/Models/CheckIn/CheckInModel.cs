@@ -31,6 +31,8 @@ namespace CmsWeb.Models
         }
         public void SavePrintJob(string kiosk, string xml)
         {
+            if (!kiosk.HasValue())
+                return;
             var d = new PrintJob { Id = kiosk.Replace(" ", ""), Data = xml, Stamp = DateTime.Now };
             DbUtil.Db.PrintJobs.InsertOnSubmit(d);
             DbUtil.Db.SubmitChanges();

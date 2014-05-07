@@ -1,0 +1,127 @@
+﻿@model CmsWeb.Models.ManageGivingModel
+@using CmsWeb
+@using UtilityExtensions
+@{
+    var funame = Html.NameFor2(m => m.FundItem);
+    decimal? tot = null;
+    var funds = CmsWeb.Models.OnlineRegPersonModel.Funds();
+}
+<div class="regform">
+    <h2>@Model.Organization.OrganizationName</h2>
+    <div>@Html.Raw(Model.Instructions)</div>
+    <h4>for @Model.person.Name &lt;@Model.person.EmailAddress&gt;</h4>
+    @Html.ValidationSummary()
+    <form method="post" class="form-horizontal" action="/OnlineReg/ManageGiving">
+        @Html.Hidden("specialedit", 0)
+        @Html.Hidden("pid", Model.pid)
+        @Html.Hidden("orgid", Model.orgid)
+
+        <div class="well">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Enter amounts for every fund you wish to give to</label>
+                <div class="col-sm-9">
+                    <table class="table table-nonfluid table-condensed">
+                        <tbody>
+                            @for (var n = 0; n < funds.Length; n++)
+                            {
+                                var i = funds[n];
+                                var amt = Model.FundItemValue(i.Value.ToInt());
+                                if (amt.HasValue)
+                                {
+                                    tot = (tot ?? 0) + amt;
+                                }
+                                <tr>
+                                    <td class="right">@i.Text</td>
+                                    <td>
+                                        <input type="hidden" name="@(funame)[@n].Key" value="@i.Value" />
+                                        <input type="text" name="@(funame)[@n].Value" value="@amt.ToString2("N2")" class="form-control narrow sum" />
+                                        <div>@Html.ValidationMessageFor(m => m.FundItem[n])</div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="right">Total</td>
+                                <td class="right"><span id="total">@tot.ToString2("N2")</span></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="well">
+            <div class="form-group">
+                <label class="control-label col-sm-3">Payment Frequency</label>
+                <div class="col-sm-9">
+                    <label class="radio-inline">
+                        <input type="radio" name="SemiEvery" value="S" @(Model.SemiEvery == "S" ? "checked='checked'" : "") />
+                        Twice Monthly
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="SemiEvery" value="E" @(Model.SemiEvery == "E" ? "checked='checked'" : "") />
+                        Recurring periodically
+                    </label>
+                    <div>@Html.ValidationMessageFor(m => m.SemiEvery)</div>
+                </div>
+            </div>
+            <div class="twiceMonthly">
+                @Html.EditorFor(m => m.Day1, new { @class = "narrow" })
+                @Html.EditorFor(m => m.Day2, new { @class = "narrow" })
+                @Html.Partial("Flow2/EmptyRow");
+            </div>
+            <div class="everyPeriod">
+                @Html.EditorFor(m => m.EveryN, new { @class = "narrow" })
+                @Html.EditorFor(m => m.Period, "Dropdown", new { items = Model.PeriodOptions() })
+                @Html.EditorFor(m => m.StartWhen, new { placeholder = "MM/DD/YY" })
+            </div>
+        </div>
+
+        <div class="well">
+            @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
+            {
+                <div class="form-group">
+                    @Html.Label("Payment Information", new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-9">
+                        <label class="radio-inline">
+                            <input type="radio" name="Type" value="C" @(Model.Type == "C" ? "checked='checked'" : "") />Debit/Credit Card
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="Type" value="B" @(Model.Type == "B" ? "checked='checked'" : "") /> Bank Account
+                        </label>
+                        @Html.Hidden("allowcc", "true")
+                    </div>
+                </div>
+            }
+            @if (Model.NoCreditCardsAllowed == false)
+            {
+                <div class="Card paymentinfo">
+                    @Html.EditorFor(m => m.Cardnumber, new { autocomplete = Model.AutocompleteOnOff })
+                    @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+                    @Html.EditorFor(m => m.Cardcode, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+                </div>
+            }
+            @if (Model.NoEChecksAllowed == false)
+            {
+                <div class="Bank paymentinfo">
+                    @Html.EditorFor(m => m.Routing)
+                    @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
+                    @Html.Partial("Flow2/EmptyRow")
+                </div>
+            }
+        </div>
+
+        <div class="well">
+            @Html.EditorFor(m => m.FirstName)
+            @Html.EditorFor(m => m.Middle, new { classes = "narrow" })
+            @Html.EditorFor(m => m.LastName)
+            @Html.EditorFor(m => m.Suffix, new { classes = "narrow" })
+            @Html.EditorFor(m => m.Address)
+            @Html.EditorFor(m => m.Zip)
+            @Html.EditorFor(m => m.Phone)
+        </div>
+        @Helper.OnlineRegSubmitButtonRow("Submit")
+        @Html.DivValidationMessage("form")
+    </form>
+</div>

@@ -1,6 +1,6 @@
-﻿@using CmsData.Codes
+﻿@using CmsData
+@using CmsData.Codes
 @using CmsWeb
-@using UtilityExtensions
 @model CmsWeb.Models.OrganizationPage.OrganizationModel
 @{
     Layout = ViewExtensions2.Layout();
@@ -288,7 +288,7 @@
                     Or log out first, then use the link.
                     </p>
                     <blockquote>
-                        <a href="/OnlineReg/@o.OrganizationId" target="blank">@Util.ServerLink("/OnlineReg/" + o.OrganizationId)</a>
+                        <a href="/OnlineReg/@o.OrganizationId" target="blank">@DbUtil.Db.ServerLink("/OnlineReg/" + o.OrganizationId)</a>
                     </blockquote>
                 </td>
             </tr>

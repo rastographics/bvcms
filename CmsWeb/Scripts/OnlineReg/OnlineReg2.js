@@ -1,17 +1,4 @@
 ﻿$(function () {
-    $.dpoptions = {
-        dateFormat: $.dateFormat,
-        changeMonth: true,
-        changeYear: true,
-        yearRange: "-95:+0",
-        showOn: "button",
-        buttonImage: "/Content/images/calendar.gif",
-        buttonImageOnly: true,
-        onSelect: function (dateText, inst) {
-            var f = $(this).closest('form');
-            $("#age", f).text($.dodate(dateText));
-        }
-    };
     $("#AddNewPerson").live("click", function (ev) {
         ev.preventDefault();
         var o = $("#newattend div.newattend").clone();
@@ -70,7 +57,7 @@
             }
             $(f).html(ret).ready(function () {
                 $.InstructionsShow();
-                if ($("#submitit").data("onlyoneallowed") == "true") {
+                if ($("#submitit").data("onlyoneallowed").toLowerCase() === "true") {
                     f.submit();
                 } else {
                     if($('div.panel:last-child').length > 0)

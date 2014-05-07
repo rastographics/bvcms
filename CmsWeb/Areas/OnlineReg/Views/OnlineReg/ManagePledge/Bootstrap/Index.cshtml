@@ -1,0 +1,88 @@
+﻿@model CmsWeb.Models.ManagePledgesModel
+@{
+    Layout = Model.Setting.UseBootstrap
+        ? "~/Views/Shared/onlinereg2.cshtml"
+        : "~/Views/Shared/onlinereg.cshtml";
+    ViewBag.Title = "Online Registration";
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $("#confirm").validate({
+                rules: {
+                    "pledge": {
+                        number: true,
+                        required: true,
+                        min: 10
+                    }
+                },
+                errorLabelContainer: "#messageBox",
+                wrapper: "div",
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+}
+<h2>@Model.Organization.OrganizationName</h2>
+<h4>Pledge Information for @Model.person.Name &lt;@Model.person.EmailAddress&gt;</h4>
+@using (Html.BeginForm("ConfirmPledge", "OnlineReg", new { Area = "OnlineReg" }, FormMethod.Post, new { id = "confirm" }))
+{
+    @Html.Hidden("pid", Model.pid)
+    @Html.Hidden("orgid", Model.orgid)
+    <blockquote>
+        <table>
+            <tr>
+                <td>
+                    @Html.Raw(Model.Setting.InstructionOptions)</td>
+            </tr>
+        </table>
+        <table cellpadding="5">
+            @{
+    var pi = Model.GetPledgeInfo();
+    if (pi.Pledged > 0)
+    {
+                <tr>
+                    <td>Pledged to date:</td>
+                    <td class="right">$@pi.Pledged.ToString("N2")</td>
+                    <td></td>
+                </tr>
+    }
+    if (pi.Given > 0)
+    {
+                <tr>
+                    <td>Given to date:</td>
+                    <td class="right">$@pi.Given.ToString("N2")</td>
+                    <td></td>
+                </tr>
+    }
+                <tr>
+                    <td>
+                        @if (pi.Pledged > 0)
+                        {
+                            @:My Additional Pledge Amount
+                        }
+                        else
+                        {
+                            @:My Pledge Amount
+                        }
+                    </td>
+                    <td>@Html.TextBox("pledge", Model.pledge, new { @class = "short" })</td>
+                    <td>
+                        <div id="messageBox"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input id="submitit" type="submit" class="submitbutton" value='Submit' />
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        </table>
+    </blockquote>
+}
+

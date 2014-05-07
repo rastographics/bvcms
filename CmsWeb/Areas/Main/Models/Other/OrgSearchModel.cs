@@ -146,11 +146,9 @@ namespace CmsWeb.Models
                      let p = om.Person
                      let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                      let recreg = p.RecRegs.FirstOrDefault()
-                     let bal = (from t in Db.Transactions
-                                where t.OriginalTransaction.TransactionPeople.Any(pp => pp.PeopleId == p.PeopleId)
-                                where t.OriginalTransaction.OrgId == o.OrganizationId
-                                orderby t.Id descending
-                                select t.Amtdue).FirstOrDefault()
+                     let tbal = (from t in Db.ViewTransactionSummaries
+                                where t.RegId == om.TranId
+                                select t).FirstOrDefault()
                      select new OrgMemberInfoClass
                      {
                          OrganizationId = o.OrganizationId,
@@ -162,9 +160,9 @@ namespace CmsWeb.Models
                          Grade = p.Grade.ToString(),
                          ShirtSize = om.ShirtSize,
                          Request = om.Request,
-                         Amount = om.Amount ?? 0,
-                         AmountPaid = om.TotalPaid(Db),
-                         HasBalance = bal != null && bal > 0,
+                         Amount = tbal != null ? tbal.IndAmt ?? 0 : 0,
+                         AmountPaid = tbal != null ? tbal.IndPaid ?? 0 : 0,
+                         HasBalance = tbal != null && tbal.IndDue > 0,
                          Groups = string.Join(",", om.OrgMemMemTags.Select(mt => mt.MemberTag.Name)),
                          Email = p.EmailAddress,
                          HomePhone = p.HomePhone.FmtFone(),
@@ -668,7 +666,7 @@ namespace CmsWeb.Models
                 foreach (var m in meetings)
                 {
                     string orgname = Organization.FormatOrgName(m.OrganizationName, m.LeaderName, m.Location);
-                    sb.AppendFormat("<a href='{0}Meeting/{1}'>{2} - {3}</a><br/>\n",
+                    sb.AppendFormat("<a href='{0}/Meeting/{1}'>{2} - {3}</a><br/>\n",
                                     DbUtil.Db.CmsHost, m.MeetingId, orgname, m.Lastmeeting.FormatDateTm());
                     sb2.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2:g}</td></tr>\n",
                                      leader.Name, orgname, m.Lastmeeting.FormatDateTm());

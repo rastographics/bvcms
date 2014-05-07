@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using System.Threading;
+using DocumentFormat.OpenXml.EMMA;
 using UtilityExtensions;
 using System.Text;
 using CmsData;
@@ -411,161 +412,36 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return Redirect("/");
         }
+
+        [HttpGet]
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateFields() // UpdateForATag
         {
             var m = new UpdateFieldsModel();
-            if (Request.HttpMethod.ToUpper() == "GET")
-            {
-                var success = (string)TempData["success"];
-                if (success.HasValue())
-                    ViewData["success"] = success;
-                ViewData["text"] = "";
-                return View(m);
-            }
-            UpdateModel(m);
-            var a = m.Tag.SplitStr(":", 2);
-            if (a.Length > 1)
-                a[1] = a[1].TrimStart();
-            IQueryable<Person> q = null;
-            if (a[0] == "last query")
-            {
-                var id = DbUtil.Db.FetchLastQuery().Id;
-                q = DbUtil.Db.PeopleQuery(id);
-            }
-            else if (a[0] == "tag")
-            {
-                var b = a[1].SplitStr(":", 2);
-                var tag = DbUtil.Db.TagById(b[0].ToInt());
-                q = tag.People(DbUtil.Db);
-            }
-            else if (a[0] == "exval")
-            {
-                var b = a[1].SplitStr(":", 2);
-                q = from e in DbUtil.Db.PeopleExtras
-                    where e.Field == b[0]
-                    where e.StrValue == b[1]
-                    select e.Person;
-            }
-            foreach (var p in q)
-            {
-                switch (m.Field)
-                {
-                    case "Member Status":
-                        p.MemberStatusId = m.NewValue.ToInt();
-                        break;
-                    case "Drop All Memberships":
-                        p.DropMemberships(DbUtil.Db);
-                        break;
-                    case "Deceased Date":
-                        p.DeceasedDate = m.NewValue.ToDate();
-                        break;
-                    case "New Member Class":
-                        p.NewMemberClassStatusId = m.NewValue.ToInt2();
-                        break;
-                    case "Drop Type":
-                        p.DropCodeId = m.NewValue.ToInt();
-                        break;
-                    case "Baptism Status":
-                        p.BaptismStatusId = m.NewValue.ToInt2();
-                        break;
-                    case "Baptism Type":
-                        p.BaptismTypeId = m.NewValue.ToInt2();
-                        break;
-                    case "Join Type":
-                        p.JoinCodeId = m.NewValue.ToInt();
-                        break;
-                    case "Campus":
-                        p.CampusId = m.NewValue.ToInt2();
-                        break;
-                    case "Marital Status":
-                        p.MaritalStatusId = m.NewValue.ToInt();
-                        break;
-                    case "Family Position":
-                        p.PositionInFamilyId = m.NewValue.ToInt();
-                        break;
-                    case "Entry Point":
-                        p.EntryPointId = m.NewValue.ToInt2();
-                        break;
-                    case "Gender":
-                        p.GenderId = m.NewValue.ToInt();
-                        break;
-                    case "Occupation":
-                        p.OccupationOther = m.NewValue;
-                        break;
-                    case "School":
-                        p.SchoolOther = m.NewValue;
-                        break;
-                    case "Employer":
-                        p.EmployerOther = m.NewValue;
-                        break;
-                    case "Grade":
-                        if (m.NewValue == "+1")
-                            p.Grade = p.Grade + 1;
-                        else
-                            p.Grade = m.NewValue.ToInt2();
-                        break;
-                    case "Statement Options":
-                        p.ContributionOptionsId = m.NewValue.ToInt2();
-                        break;
-                    case "Envelope Options":
-                        p.EnvelopeOptionsId = m.NewValue.ToInt2();
-                        break;
-                    case "Approval Codes":
-                        {
-                            var i = p.Volunteers.SingleOrDefault();
-                            if (i == null)
-                            {
-                                i = new Volunteer { PeopleId = p.PeopleId };
-                                DbUtil.Db.Volunteers.InsertOnSubmit(i);
-                                DbUtil.Db.SubmitChanges();
-                            }
+            var success = (string)TempData["success"];
+            if (success.HasValue())
+                ViewData["success"] = success;
+            ViewData["text"] = "";
+            return View(m);
+        }
 
-                            var code = m.NewValue.ToInt();
-                            var app = (from v in DbUtil.Db.VoluteerApprovalIds
-                                       where v.ApprovalId == Math.Abs(code)
-                                       where v.PeopleId == p.PeopleId
-                                       select v).SingleOrDefault();
-                            if (code < 0)
-                            {
-                                if (app != null)
-                                    DbUtil.Db.VoluteerApprovalIds.DeleteOnSubmit(app);
-                            }
-                            else if (code > 0)
-                            {
-                                if (app == null)
-                                    p.VoluteerApprovalIds.Add(new VoluteerApprovalId { ApprovalId = code, });
-                            }
-                            else if (code == 0)
-                            {
-                                DbUtil.Db.VoluteerApprovalIds.DeleteAllOnSubmit(p.VoluteerApprovalIds);
-                            }
-                        }
-                        break;
-                    case "Background Check Date":
-                        {
-                            var i = p.Volunteers.SingleOrDefault();
-                            if (i == null)
-                            {
-                                i = new Volunteer { PeopleId = p.PeopleId };
-                                DbUtil.Db.Volunteers.InsertOnSubmit(i);
-                                DbUtil.Db.SubmitChanges();
-                            }
-                            i.ProcessedDate = m.NewValue.ToDate();
-                        }
-                        break;
-                    case "Title":
-                        p.TitleCode = m.NewValue;
-                        break;
-                    case "ReceiveSMS":
-                        p.ReceiveSMS = m.NewValue.ToBool();
-                        break;
-                }
-                DbUtil.Db.SubmitChanges();
-            }
-            TempData["success"] = m.Field + " Updated";
+        [HttpPost]
+        public ActionResult UpdateFieldsRun(UpdateFieldsModel m)
+        {
+            m.Run(ModelState);
+            if (!ModelState.IsValid)
+                return View("UpdateFields", m);
+
+            TempData["success"] = "{0} updated with the value '{1}' for {2} records ".Fmt(m.Field, m.NewValue, m.Count);
             return RedirectToAction("UpdateFields");
         }
+        [HttpPost]
+        public ActionResult UpdateFieldsCount(UpdateFieldsModel m)
+        {
+            var q = m.People();
+            return Content(q.Count().ToString());
+        }
+
         [Authorize(Roles = "Admin")]
         public ActionResult UpdatePeople()
         {
@@ -588,11 +464,6 @@ namespace CmsWeb.Areas.Manage.Controllers
                 System.IO.File.Delete(path);
             }
             return Content("<div>done <a href='/'>go home</a><div>");
-        }
-        [Authorize(Roles = "Admin")]
-        public ActionResult LookupDataPage()
-        {
-            return View(new UpdateFieldsModel().TitleItems());
         }
 
         [Authorize(Roles = "Admin")]
