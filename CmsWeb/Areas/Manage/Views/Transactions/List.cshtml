@@ -104,7 +104,7 @@
                 <td class="right">@t.Donate.ToString2("N")</td>
             }
             <td>
-                @if (true)//(t.CanVoid ?? true)
+                @if (t.CanVoid ?? true)
                 {
                     <a class="voidcredit bt @noadmin"
                        href='/Transactions/CreditVoid/@t.Id?type=Void'>Void</a>

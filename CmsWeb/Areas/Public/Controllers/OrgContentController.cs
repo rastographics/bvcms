@@ -70,12 +70,12 @@ CKEditorFuncNum, oc.Id, error));
         }
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Update(int OrgId, string Html)
+        public ActionResult Update(int id, string Html)
         {
-            var o = OrgContentInfo.Get(OrgId);
+            var o = OrgContentInfo.Get(id);
             o.Html = Html;
             ImageData.DbUtil.Db.SubmitChanges();
-            return Redirect("/OrgContent/" + OrgId);
+            return Redirect("/OrgContent/" + id);
         }
     }
 }

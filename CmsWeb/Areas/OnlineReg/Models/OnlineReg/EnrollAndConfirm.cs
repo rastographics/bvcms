@@ -270,9 +270,12 @@ namespace CmsWeb.Models
                         OrgId = p.orgid.Value,
                         SupporterId = p.PeopleId.Value
                     });
-                p.person.PostUnattendedContribution(DbUtil.Db,
-                    ti.Amt.Value, p.setting.DonationFundId,
-                    "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId));
+                if (!ti.TransactionId.StartsWith("Coupon"))
+                {
+                    p.person.PostUnattendedContribution(DbUtil.Db,
+                        ti.Amt.Value, p.setting.DonationFundId,
+                        "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId));
+                }
             }
             else if (ti.Donate > 0)
             {
@@ -284,10 +287,13 @@ namespace CmsWeb.Models
                     p.person.PrimaryCity,
                     p.person.PrimaryState,
                     p.person.PrimaryZip);
-                p.person.PostUnattendedContribution(DbUtil.Db,
-                    ti.Donate.Value,
-                    p.setting.DonationFundId,
-                    desc);
+                if (!ti.TransactionId.StartsWith("Coupon"))
+                {
+                    p.person.PostUnattendedContribution(DbUtil.Db,
+                        ti.Donate.Value,
+                        p.setting.DonationFundId,
+                        desc);
+                }
                 var ma = re.Match(message);
                 if (ma.Success)
                 {
