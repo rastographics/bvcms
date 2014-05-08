@@ -7,8 +7,9 @@ using System.Web.Mvc;
 
 namespace CmsWeb.MobileAPI
 {
-	public class BaseReturn : ActionResult
+	public class BaseMessage : ActionResult
 	{
+		public int device = API_DEVICE_UNKNOWN;
 		public int error = 1;
 		public int type = 0;
 		public int count = 0;
@@ -21,29 +22,29 @@ namespace CmsWeb.MobileAPI
 			context.HttpContext.Response.Output.Write(JsonConvert.SerializeObject(this));
 		}
 
-		public static BaseReturn createErrorReturn(string sErrorMessage)
+		public static BaseMessage createErrorReturn(string sErrorMessage)
 		{
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 			br.data = sErrorMessage;
 
 			return br;
 		}
 
-		public static BaseReturn createTypeErrorReturn()
+		public static BaseMessage createTypeErrorReturn()
 		{
-			BaseReturn br = new BaseReturn();
+			BaseMessage br = new BaseMessage();
 			br.data = "ERROR: Type mis-match in API call.";
 
 			return br;
 		}
 
-		public static BaseReturn createFromString(string sJSON)
+		public static BaseMessage createFromString(string sJSON)
 		{
-			BaseReturn br = JsonConvert.DeserializeObject<BaseReturn>(sJSON);
+			BaseMessage br = JsonConvert.DeserializeObject<BaseMessage>(sJSON);
 			return br;
 		}
 
-		public BaseReturn setData(string newData)
+		public BaseMessage setData(string newData)
 		{
 			data = newData;
 			return this;
@@ -56,7 +57,16 @@ namespace CmsWeb.MobileAPI
 		}
 		*/
 
+		// API Device Numbers
+		public const int API_DEVICE_UNKNOWN = 0;
+		public const int API_DEVICE_IOS = 1;
+		public const int API_DEVICE_ANDROID = 2;
+
+
 		// API Type Numbers
+		// 9000's - Handshake
+		public const int API_TYPE_LOGIN = 9001;
+
 		// 10000's - People = 11000's - Read / 12000's Write
 		// People Read
 		public const int API_TYPE_PEOPLE_SEARCH = 11001;
