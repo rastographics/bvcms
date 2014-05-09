@@ -64,10 +64,14 @@
             @Html.EditorFor(m => m.Email)
         </div>
         <div class="well">
-            @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
+            @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
+            {
+                @Html.Hidden("Type", Model.Type)
+            }
+            else
             {
                 <div class="form-group">
-                    @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
+                    @Html.Label("Payment Type", new {@class = "control-label col-sm-3 labelsize"})
                     <div class="col-sm-9">
                         <label class="radio-inline">
                             <input type="radio" name="Type" value="C" @(Model.Type == "C" ? "checked='checked'" : "") />Debit/Credit Card
