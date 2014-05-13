@@ -12,6 +12,7 @@ using CmsWeb.Models;
 using Novacode;
 using UtilityExtensions;
 using Newtonsoft.Json;
+using Formatting = Novacode.Formatting;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -38,6 +39,29 @@ namespace CmsWeb.Areas.Reports.Models
             public double MarginTop { get; set; }
             public double MarginBottom { get; set; }
             public int PicWidthPixels { get; set; }
+
+            public Formatting namebold
+            {
+                get
+                {
+                    return new Formatting {Size = FontSizeName, Bold = true};
+                }
+            }
+            public Formatting emailsmall
+            {
+                get
+                {
+                    return new Formatting {Size = FontSizeEmail};
+                }
+            }
+            public Formatting font
+            {
+                get
+                {
+                    return new Formatting {Size = FontSize};
+                }
+            }
+
         }
         public CompactPictureDir(Guid id, string parameters)
         {
@@ -124,15 +148,16 @@ namespace CmsWeb.Areas.Reports.Models
             c = rr.Cells[col];
             //c.RemoveParagraphAt(0);
 
-            c.Paragraphs[0].InsertText("{0}, {1}".Fmt(p.LastName, p.FirstName));
-            c.Paragraphs[0].FontSize(pa.FontSizeName).Bold();
-            c.InsertParagraph(p.Email).FontSize(pa.FontSizeEmail);
+            c.Paragraphs[0].InsertText("{0}, {1}".Fmt(p.LastName, p.FirstName), false, pa.namebold);
+
+            c.InsertParagraph(p.Email, false, pa.emailsmall);
+
             if (p.BirthDate.HasValue())
-                c.InsertParagraph("BD {0}".Fmt(p.BirthDay)).FontSize(pa.FontSize);
+                c.InsertParagraph("BD {0}".Fmt(p.BirthDay), false, pa.font);
             if (p.Spouse.HasValue())
-                c.InsertParagraph("Spouse: {0}".Fmt(p.Spouse)).FontSize(pa.FontSize);
+                c.InsertParagraph("Spouse: {0}".Fmt(p.Spouse), false, pa.font);
             if (p.Children.HasValue())
-                c.InsertParagraph("Kids: {0}".Fmt(p.Children)).FontSize(pa.FontSize);
+                c.InsertParagraph("Kids: {0}".Fmt(p.Children), false, pa.font);
             col++;
             return col;
         }
