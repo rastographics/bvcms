@@ -75,7 +75,7 @@
 }
 @helper OnlineRegSubmitButton(string text, bool onlyoneallowed = false, string style = "btn-primary")
 {
-    <input type="submit" id="submitit" data-onlyoneallowed="@onlyoneallowed" class="btn @style" value="@text" />
+    <input type="submit" id="submitit" @(onlyoneallowed ? "data-onlyoneallowed=true" : "") class="btn @style" value="@text" />
 }
 @helper OnlineRegSubmitLinkRow(string url, string text, string style = "btn-primary")
 {

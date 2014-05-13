@@ -67,6 +67,7 @@
     </div>
     <div id="collapse@(Model.Index)" class="panel-collapse collapse @(Model.Finished() ? "" : "in")">
         <div class="panel-body">
+            @Html.ValidationSummary()
             @if (!Model.ShowAddress && Model.NotFoundText.HasValue())
             {
                 @Html.DivAlertBox(Model.NotFoundText)
@@ -81,10 +82,10 @@
             else
             {
                 if (!Model.Parent.IsEnded())
-                // Show next person to register, because still taking registrations
+                    // Show next person to register, because still taking registrations
                 {
                     if (Model.IsFamily)
-                    // Already found, display only
+                        // Already found, display only
                     {
                         @Html.Partial("Flow2/PersonHidden", Model)
                         @Html.Partial("Flow2/PersonDisplay", Model)

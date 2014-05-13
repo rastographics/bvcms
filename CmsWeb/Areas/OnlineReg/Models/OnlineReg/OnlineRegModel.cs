@@ -314,9 +314,9 @@ namespace CmsWeb.Models
                             masterorgid = masterorgid,
                             LoggedIn = false,
 #if DEBUG
-                            FirstName = "David",
-                            LastName = "Roll", // + DateTime.Now.Millisecond,
-                            DateOfBirth = "5/30/52",
+                            FirstName = "FouryearOldprek",
+                            LastName = "Child", // + DateTime.Now.Millisecond,
+                            DateOfBirth = "10/1/08",
                             EmailAddress = "david@bvcms.com",
                             Phone = "",
 #endif

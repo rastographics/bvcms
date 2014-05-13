@@ -5,6 +5,7 @@ using System.Web.Security;
 using CmsData;
 using CmsData.Registration;
 using CmsWeb.Models;
+using DocumentFormat.OpenXml.EMMA;
 using Elmah;
 using UtilityExtensions;
 using System.Collections.Generic;
@@ -599,6 +600,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                          Terms = m.Terms,
                          _URL = m.URL,
                          PostbackURL = DbUtil.Db.ServerLink("/OnlineReg/Confirm/" + d.Id),
+                         _timeout = m.TimeOut
                      });
             }
 
@@ -614,6 +616,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             pf.DatumId = d.Id;
             if (OnlineRegModel.GetTransactionGateway() == "serviceu")
                 return View("Payment/ServiceU", pf);
+            ModelState.Clear();
             return View("Payment/Process", pf);
         }
         [HttpPost]
