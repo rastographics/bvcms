@@ -8,7 +8,7 @@
 {
     @ViewExtensions2.CKEditor()
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             CKEDITOR.replace('Html', {
                 height: 400,
                 fullPage: false,
@@ -19,16 +19,17 @@
     </script>
 }
 <h2>
-    Edit</h2>
-@using (Html.BeginForm("Update", "OrgContent", FormMethod.Post))
-{ 
+    Edit
+</h2>
+<form action="/OrgContent/Update/@Model.OrgId" method="POST">
     <div class="blogbody">
         <h2 class="title">
-            <a href="/OrgContent/@Model.OrgId">@Model.OrgName</a></h2>
+            <a href="/OrgContent/@Model.OrgId">@Model.OrgName</a>
+        </h2>
         <hr />
-        @Html.Hidden("OrgId")
-        <div>@Html.TextArea("Html", new { @class = "editor", rows = "26", style = "width:90%" })
+        <div>
+            @Html.TextArea("Html", new { @class = "editor", rows = "26", style = "width:90%" })
         </div>
         <input type="submit" value="Post" />
     </div>
-}
+</form>

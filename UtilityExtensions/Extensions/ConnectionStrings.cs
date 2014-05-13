@@ -55,7 +55,8 @@ namespace UtilityExtensions
         {
             var cs = ConnectionStringSettings(host) ?? ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-            cb.DataSource = cb.DataSource ?? DbServer;
+            if (string.IsNullOrEmpty(cb.DataSource))
+                cb.DataSource = DbServer;
             var a = host.SplitStr(".:");
             cb.InitialCatalog = "CMS_{0}".Fmt(a[0]);
             return cb.ConnectionString;
@@ -64,8 +65,9 @@ namespace UtilityExtensions
         {
             var cs = ConnectionStringSettings(db) ?? ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            if (string.IsNullOrEmpty(cb.DataSource))
+                cb.DataSource = DbServer;
             cb.InitialCatalog = db;
-            cb.DataSource = cb.DataSource ?? DbServer;
             return cb.ConnectionString;
         }
 
@@ -93,7 +95,8 @@ namespace UtilityExtensions
 
                 var cs = ConnectionStringSettings(Host);
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-                cb.DataSource = cb.DataSource ?? DbServer;
+                if (string.IsNullOrEmpty(cb.DataSource))
+                    cb.DataSource = DbServer;
                 cb.InitialCatalog = "CMS_{0}".Fmt(Host);
                 return cb.ConnectionString;
             }
@@ -111,7 +114,8 @@ namespace UtilityExtensions
                 var cs = ConnectionStringSettings(Host);
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
                 var a = Host.SplitStr(".:");
-                cb.DataSource = cb.DataSource ?? DbServer;
+                if (string.IsNullOrEmpty(cb.DataSource))
+                    cb.DataSource = DbServer;
                 cb.InitialCatalog = "CMSi_{0}".Fmt(a[0]);
                 return cb.ConnectionString;
             }

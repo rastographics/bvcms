@@ -107,8 +107,12 @@ $(function () {
         $.EnableSubmit();
     };
     $.EnableSubmit = function () {
-        var v = $("input[name=Type]:checked").val();
-        if (v && agreeterms) {
+        var vv;
+        if ($("input[name='Type'][type=hidden]"))
+            vv = $("input[name='Type']").val();
+        else
+            vv = $("input[name=Type]:checked").val();
+        if (vv && agreeterms) {
             $("#submitit").removeAttr("disabled");
             $("a.submitbutton").removeAttr("disabled");
         }

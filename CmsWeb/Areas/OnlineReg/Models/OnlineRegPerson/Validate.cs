@@ -161,7 +161,7 @@ Please call the church to resolve this before we can complete your account.<br /
                             && !Parent.SupportMissionTrip)
                         {
                             ModelState.AddModelError(foundname, "This person is already registered");
-                            if(setting.UseBootstrap)
+                            if(setting.UseBootstrap || Parent.UseBootstrap)
                                 NotFoundText = @"<strong>This person is already registered</strong>";
                             CancelText = "Regiser a different person";
                             IsValidForContinue = false;

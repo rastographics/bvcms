@@ -334,14 +334,14 @@ namespace CmsWeb.Areas.Dialog.Controllers
                         if (fm != null)
                             continue; // already a member of this family
 
-                        if (i.person.Age < 18)
-                            i.person.PositionInFamilyId = PositionInFamily.Child;
-                        else if (i.family.People.Count(per =>
-                                    per.PositionInFamilyId == PositionInFamily.PrimaryAdult)
-                                    < 2)
-                            i.person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
-                        else
-                            i.person.PositionInFamilyId = PositionInFamily.SecondaryAdult;
+//                        if (i.person.Age < 18)
+//                            i.person.PositionInFamilyId = PositionInFamily.Child;
+//                        else if (i.family.People.Count(per =>
+//                                    per.PositionInFamilyId == PositionInFamily.PrimaryAdult)
+//                                    < 2)
+//                            i.person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
+//                        else
+//                            i.person.PositionInFamilyId = PositionInFamily.SecondaryAdult;
                         i.family.People.Add(i.person); // add selected person to target family
                     }
                 }
