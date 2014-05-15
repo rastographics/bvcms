@@ -153,10 +153,10 @@ namespace CmsData
         }
         public static string StandardExtraValues2(CMSDataContext db, bool forceread = false)
         {
-            if(forceread)
+            if (forceread)
                 return db.ContentText("StandardExtraValues2", "<Views />");
             var s = HttpRuntime.Cache[db.Host + "StandardExtraValues2"] as string;
-            if (s != null) 
+            if (s != null)
                 return s;
             s = db.ContentText("StandardExtraValues2", "<Views />");
             HttpRuntime.Cache.Insert(db.Host + "StandardExtraValues2", s, null,
@@ -309,43 +309,70 @@ namespace CmsData
             else
                 Util.SetProperty(obj, field, value);
         }
-        public static void CreateDatabase()
+        public static string CreateDatabase()
         {
-            var Server = HttpContext.Current.Server;
-            HttpRuntime.Cache.Remove(Util.Host + "-DatabaseExists");
-            string cs = Util.GetConnectionString2("master");
-            RunScripts(cs, "create database CMS_" + Util.Host);
-            var needimage = !CheckDatabaseExists("CMSi_" + Util.Host);
-            if (needimage)
-                RunScripts(cs, "create database CMSi_" + Util.Host);
-            var needelmah = !DbUtil.CheckDatabaseExists("Elmah");
-            if (needelmah)
-                RunScripts(cs, "create database Elmah");
-            var path = Server.MapPath("/");
-            RunScripts(Util.ConnectionString, Util.Host == "testdb"
-                    ? File.ReadAllText(path + @"..\SqlScripts\BuildTestDatabase.sql")
-                    : File.ReadAllText(path + @"..\SqlScripts\BuildStarterDatabase.sql"));
-            RunScripts(Util.ConnectionString, File.ReadAllText(path + @"..\SqlScripts\InsertZipCodes.sql"));
-            if (needimage)
-                RunScripts(Util.ConnectionStringImage, File.ReadAllText(path + @"..\SqlScripts\BuildImageDatabase.sql"));
-            if (needelmah)
-                RunScripts(Util.GetConnectionString2("Elmah"), File.ReadAllText(path + @"..\SqlScripts\BuildElmahDb.sql"));
+            try
+            {
+                var Server = HttpContext.Current.Server;
+                var path = Server.MapPath("/");
+                HttpRuntime.Cache.Remove(Util.Host + "-DatabaseExists");
+                string cs = Util.GetConnectionString2("master");
+                RunScripts(cs, "create database CMS_" + Util.Host);
+                if (!CheckDatabaseExists("CMSi_" + Util.Host))
+                {
+                    RunScripts(cs, "create database CMSi_" + Util.Host);
+                    RunScripts(Util.ConnectionStringImage,
+                        File.ReadAllText(path + @"..\SqlScripts\BuildImageDatabase.sql"));
+                }
+                if (!CheckDatabaseExists("Elmah"))
+                {
+                    RunScripts(cs, "create database Elmah");
+                    RunScripts(Util.GetConnectionString2("Elmah"),
+                        File.ReadAllText(path + @"..\SqlScripts\BuildElmahDb.sql"));
+                }
+
+                using (var cn = new SqlConnection(Util.ConnectionString))
+                {
+                    cn.Open();
+                    var scripts = File.ReadAllLines(path + @"..\SqlScripts\allscripts.txt");
+                    foreach (var fn in scripts)
+                    {
+                        var script = File.ReadAllText(path + @"..\SqlScripts\BuildDb\" + fn);
+                        RunScripts(cn, script);
+                    }
+                    string datascript = null;
+                    datascript = Util.Host == "testdb"
+                        ? File.ReadAllText(path + @"..\SqlScripts\BuildDb\datascriptTest.sql")
+                        : File.ReadAllText(path + @"..\SqlScripts\BuildDb\datascriptStarter.sql");
+                    RunScripts(cn, datascript);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            return null;
         }
 
         private static void RunScripts(string cs, string script)
         {
-            using (var cn = new SqlConnection(cs))
+            using(var cn = new SqlConnection(cs))
             {
                 cn.Open();
-                var cmd = new SqlCommand { Connection = cn };
-                var scripts = Regex.Split(script, "\r\nGO\r\n", RegexOptions.Multiline);
-                foreach (var s in scripts)
-                    if(s.HasValue())
-                    { 
-                        cmd.CommandText = s;
-                        cmd.ExecuteNonQuery();
-                    }
+                RunScripts(cn, script);
             }
+        }
+        private static void RunScripts(SqlConnection cn, string script)
+        {
+            var cmd = new SqlCommand { Connection = cn };
+            var scripts = Regex.Split(script, "\r\nGO\r\n", RegexOptions.Multiline);
+            foreach (var s in scripts)
+                if (s.HasValue())
+                {
+                    cmd.CommandText = s;
+                    cmd.ExecuteNonQuery();
+                }
         }
         public static DateTime? NormalizeExpires(string expires)
         {

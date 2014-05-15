@@ -1,0 +1,12 @@
+CREATE TABLE [dbo].[LabelFormats]
+(
+[Id] [int] NOT NULL IDENTITY(1, 1),
+[Name] [nvarchar] (30) NOT NULL CONSTRAINT [DF_LabelFormats_Name] DEFAULT (''),
+[Size] [int] NOT NULL CONSTRAINT [DF_LabelFormats_Size] DEFAULT ((0)),
+[Format] [text] NOT NULL CONSTRAINT [DF_LabelFormats_Format] DEFAULT ('')
+)
+GO
+IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
+GO
+IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+GO
