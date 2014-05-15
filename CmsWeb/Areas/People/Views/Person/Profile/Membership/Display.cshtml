@@ -1,4 +1,5 @@
 ﻿@using CmsData.Codes
+@using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.MemberInfo
 @{
@@ -9,7 +10,7 @@
     };
 }
 <form class="form ajax form-horizontal span12 margin-top" method="post" data-init="Editable">
-     <div class="row-fluid display">
+    <div class="row-fluid display">
         <fieldset class="left-gutter">
             <legend>Member Profile @FormAction()</legend>
             <div class="inline align-top">
@@ -65,7 +66,7 @@
                     @Html.DisplayFor(m => m.LetterDateReceived)
                     @if (User.IsInRole("Access"))
                     {
-                    @Html.DisplayFor(m => m.LetterStatusNotes)
+                        @Html.DisplayFor(m => m.LetterStatusNotes)
                     }
                 </div>
             </div>
@@ -74,14 +75,29 @@
     </div>
 </form>
 
+@if (User.IsInRole("Access"))
+{
+    <table class="@ViewExtensions2.GridClass">
+        <thead>
+            <tr><td>Status Flag</td><td>Name</td></tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.StatusFlags())
+            {
+                <tr><td>@s.Flag</td><td>@s.Name @s.Role</td></tr>
+            }
+        </tbody>
+    </table>
+}
+
 @helper FormAction()
 {
     if (User.IsInRole("Membership"))
-    { 
+    {
         <span class="pull-right">
             @if (Model.MemberStatus.Value.ToInt() == MemberStatusCode.JustAdded)
             {
-            <a href="/Person2/JustAddedNotMember/@Model.PeopleId" class="btn ajax">Set Just Added to Not Member</a>
+                <a href="/Person2/JustAddedNotMember/@Model.PeopleId" class="btn ajax">Set Just Added to Not Member</a>
             }
             <a href="/Person2/MembershipEdit/@Model.PeopleId" class="edit-basic btn ajax">Edit Membership</a>
         </span>

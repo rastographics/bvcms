@@ -43,8 +43,8 @@ JOIN
 			CAST(p.Grade AS nvarchar(10)) AS Grade,
 			om.ShirtSize,
 			om.Request,
-			ISNULL(om.Amount, 0) AS Amount,
-			ISNULL(om.AmountPaid, 0) AS AmountPaid,
+			ISNULL(ts.IndAmt, 0) AS Amount,
+			ISNULL(ts.IndPaid, 0) AS AmountPaid,
 			p.EmailAddress AS Email,
 			mas.Description AS Marital,
 			dbo.FmtPhone(p.HomePhone) AS HomePhone,
@@ -65,10 +65,11 @@ JOIN
 			p.PeopleId
 	from People p
 	JOIN dbo.OrganizationMembers om ON p.PeopleId = om.PeopleId
-	JOIN lookup.Gender g ON p.GenderId = g.Id
-	JOIN lookup.MemberStatus ms ON p.MemberStatusId = ms.Id
-	JOIN lookup.MaritalStatus mas ON p.MaritalStatusId = mas.Id
-	JOIN lookup.MemberType mt ON om.MemberTypeId = mt.Id
+	LEFT JOIN lookup.Gender g ON p.GenderId = g.Id
+	LEFT JOIN lookup.MemberStatus ms ON p.MemberStatusId = ms.Id
+	LEFT JOIN lookup.MaritalStatus mas ON p.MaritalStatusId = mas.Id
+	LEFT JOIN lookup.MemberType mt ON om.MemberTypeId = mt.Id
+	LEFT JOIN dbo.TransactionSummary ts ON ts.OrganizationId = om.OrganizationId AND ts.PeopleId = om.PeopleId
 	WHERE om.OrganizationId = ' + CAST(@oid AS nvarchar(10)) + '
 	AND (''' + @gid + ''' = ''0'' OR EXISTS(SELECT NULL FROM dbo.OrgMemMemTags 
 			WHERE OrgId = ' + CAST(@oid AS nvarchar(10)) + ' 
