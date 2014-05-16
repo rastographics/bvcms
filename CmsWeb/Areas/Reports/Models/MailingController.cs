@@ -179,7 +179,7 @@ namespace CmsWeb.Models
                 q1 = from p in q
                      // exclude wife who has a husband who is already in the list
                      where !(p.GenderId == 2 && p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId))
-                     where (p.BadAddressFlag ?? false) == false
+                     where (p.PrimaryBadAddrFlag ?? 0) == 0
                      where p.DoNotMailFlag == false
                      select p;
             else
@@ -192,7 +192,7 @@ namespace CmsWeb.Models
         public static IQueryable<Person> FilterMailFlags(IQueryable<Person> q)
         {
             var q1 = from p in q
-                     where (p.BadAddressFlag ?? false) == false
+                     where (p.PrimaryBadAddrFlag ?? 0) == 0
                      where p.DoNotMailFlag == false
                      select p;
             return q1;

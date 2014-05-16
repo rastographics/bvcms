@@ -120,11 +120,11 @@ namespace CmsWeb.Models
                 return masterorg.RegistrationClosed == true
                        || masterorg.OrganizationStatusId == OrgStatusCode.Inactive
                        || dt < (masterorg.RegStart ?? dt1)
-                       || dt > (masterorg.RegEnd ?? dt2);
+                       || (dt > (masterorg.RegEnd ?? dt2) && !GoerSupporterId.HasValue);
             return org.RegistrationClosed == true
                    || org.OrganizationStatusId == OrgStatusCode.Inactive
                    || dt < (org.RegStart ?? dt1)
-                   || dt > (org.RegEnd ?? dt2);
+                   || (dt > (org.RegEnd ?? dt2) && !GoerSupporterId.HasValue);
         }
 
         public bool UserSelectsOrganization()

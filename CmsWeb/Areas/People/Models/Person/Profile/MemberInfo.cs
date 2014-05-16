@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using System.Data.Linq;
+using CmsData.View;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -146,19 +149,13 @@ namespace CmsWeb.Areas.People.Models
             return ret;
         }
 
-        public List<string[]> StatusFlags()
+        public List<AllStatusFlag> StatusFlags()
         {
-            var q1 = (from f in DbUtil.Db.StatusFlags()
-                      select f).ToList();
-            var q2 = (from t in DbUtil.Db.TagPeople
-                      where t.PeopleId == PeopleId
-                      where t.Tag.TypeId == 100
-                      select t.Tag.Name).ToList();
-            var q = from t in q2
-                    join f in q1 on t equals f[0]
-                    select f;
-            var list = q.ToList();
-            return list;
+            return (from s in DbUtil.Db.ViewAllStatusFlags.ToList()
+                    where s.Role == null || HttpContext.Current.User.IsInRole(s.Role)
+                    where s.PeopleId == PeopleId
+                    orderby s.Flag
+                    select s).ToList();
         }
     }
 }

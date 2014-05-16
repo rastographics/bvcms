@@ -448,7 +448,7 @@
     <GuestAsOf Title="Guest As Of" Type="Bit" DisplayAs="GuestAsOf({0}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division" DataValueField="IdCode">
       Choose a starting date/time and ending date/time, then pick a Program/Division/Organization
     </GuestAsOf>
-    <AttendedAsOf Title="Attended As Of" Type="Bit" DisplayAs="AttendedAsOf({0}, {1}, {2}, {3})" Params="StartDate,EndDate,Program,Division" DataValueField="IdCode">
+    <AttendedAsOf Title="Attended As Of" Type="Bit" DisplayAs="AttendedAsOf({0}, {1}, {2}, {3}, {4})" Params="StartDate,EndDate,Program,Division,Organization" DataValueField="IdCode">
       Choose a starting date/time and ending date/time, then pick a Program/Division/Organization
     </AttendedAsOf>
     <CheckInByDate Title="Building Check-In Count History" DisplayAs="CheckInByDate({0:d}, {1:d})" Type="Integer" Params="StartDate,EndDate">
@@ -501,7 +501,10 @@
     <RecentFirstTimeGiver Title="Recent First Time Giver" Type="Bit" DisplayAs="RecentFirstTimeGiver({0},{1})" Params="Days,Quarters" QuartersLabel="Fund Id (or blank for all)" DataValueField="IdCode">
       Enter a number of days to look back, enter a Fund ID (or leave blank for all funds) and specify True or False.
     </RecentFirstTimeGiver>
-    <IsTopGiver Title="Recent Top Giver" Type="Bit" DisplayAs="RecentTopGiver({0},{1})" Params="Days,Quarters" QuartersLabel="Top number" DataValueField="IdCode">
+    <IsRecentGiver Title="Recent Giver" Type="Bit" DisplayAs="RecentGiver({0})" Params="Days" DataValueField="IdCode">
+      Enter a number of days to look back and specify True or False.
+    </IsRecentGiver>
+    <IsTopGiver Title="Recent Top Giver" Type="Bit" DisplayAs="RecentGiver({0},{1})" Params="Days,Quarters" QuartersLabel="Top number" DataValueField="IdCode">
       Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False.
     </IsTopGiver>
     <IsTopPledger Title="Recent Top Pledger" Type="Bit" DisplayAs="RecentTopPledger({0},{1})" Params="Days,Quarters" QuartersLabel="Top number" DataValueField="IdCode">

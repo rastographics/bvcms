@@ -40,12 +40,8 @@ namespace CmsWeb
             {
                 if (!DbUtil.DatabaseExists())
                 {
-#if DEBUG
-                    DbUtil.CreateDatabase();
-#else
                     Response.Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
                     return;
-#endif
                 }
                 Models.AccountModel.SetUserInfo(Util.UserName, Session);
             }
@@ -62,7 +58,7 @@ namespace CmsWeb
             {
                 var cn = new SqlConnection(cs.ConnectionString);
                 cn.Open();
-                var cmd = new SqlCommand("LogBrowser", cn) {CommandType = CommandType.StoredProcedure};
+                var cmd = new SqlCommand("LogBrowser", cn) { CommandType = CommandType.StoredProcedure };
                 cmd.Parameters.AddWithValue("browser", Request.Browser.Type);
                 cmd.Parameters.AddWithValue("who", Util.UserName);
                 cmd.Parameters.AddWithValue("host", Util.Host);
@@ -85,13 +81,17 @@ namespace CmsWeb
             if (!DbUtil.DatabaseExists())
             {
 #if DEBUG
-                DbUtil.CreateDatabase();
+                var ret = DbUtil.CreateDatabase();
+                if (ret.HasValue())
+                {
+                    HttpContext.Current.Items["error"] = ret;
+                    Response.Redirect("/Errors/Error.aspx");
+                }
 #else
                 Response.Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
-                return;
 #endif
+                return;
             }
-
             Util.AdminMail = DbUtil.Db.Setting("AdminMail", "");
 
             var cul = DbUtil.Db.Setting("Culture", "en-US");

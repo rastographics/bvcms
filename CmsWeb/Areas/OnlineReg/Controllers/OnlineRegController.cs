@@ -22,21 +22,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("~/OnlineReg/Index/{id:int}")]
         public ActionResult Index(int? id, bool? testing, string email, bool? nologin, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid)
         {
-            if (Util.IsDebug())
-            {
-                var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.OrganizationId == 89924
-                    select om;
-                foreach (var om in q)
-                    om.Drop(DbUtil.Db, addToHistory: false);
-                    //        DbUtil.Db.PurgePerson(om.PeopleId);
-                var dr = DbUtil.Db.People.SingleOrDefault(mm => mm.Name == "David Roll");
-                if(dr != null)
-                    foreach(var mm in dr.Family.People)
-                        if(mm.PeopleId != dr.PeopleId)
-                            DbUtil.Db.PurgePerson(mm.PeopleId);
-                DbUtil.Db.SubmitChanges();
-            }
+//            if (Util.IsDebug())
+//            {
+//                var q = from om in DbUtil.Db.OrganizationMembers
+//                    where om.OrganizationId == 89924
+//                    select om;
+//                foreach (var om in q)
+//                    om.Drop(DbUtil.Db, addToHistory: false);
+//                    //        DbUtil.Db.PurgePerson(om.PeopleId);
+//                var dr = DbUtil.Db.People.SingleOrDefault(mm => mm.Name == "David Roll");
+//                if(dr != null)
+//                    foreach(var mm in dr.Family.People)
+//                        if(mm.PeopleId != dr.PeopleId)
+//                            DbUtil.Db.PurgePerson(mm.PeopleId);
+//                DbUtil.Db.SubmitChanges();
+//            }
             if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
                 return Content("Site is disabled for maintenance, check back later");
             Util.NoCache(Response);

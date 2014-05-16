@@ -4,9 +4,14 @@ namespace CmsWeb.Controllers
 {
     public class DialogController : Controller
     {
-        public ActionResult ChooseFormat()
+        public class Options
         {
-            return View();
+            public bool useMailFlags { get; set; }
+        }
+        public ActionResult ChooseFormat(string id)
+        {
+            var m = new Options() {useMailFlags = id == "useMailFlags"};
+            return View(m);
         }
 
         public ActionResult TagAll()

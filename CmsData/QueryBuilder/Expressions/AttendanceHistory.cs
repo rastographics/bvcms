@@ -48,7 +48,7 @@ namespace CmsData
         private Expression AttendedAsOf(bool guestonly)
         {
             var tf = CodeIds == "1"; 
-            var q = db.AttendedAsOf(Program, Division, null, StartDate, EndDate, guestonly).Select(p => p.PeopleId);
+            var q = db.AttendedAsOf(Program, Division, Organization, StartDate, EndDate, guestonly).Select(p => p.PeopleId);
             Expression<Func<Person, bool>> pred;
             if (op == CompareType.Equal ^ tf)
                 pred = p => !q.Contains(p.PeopleId);

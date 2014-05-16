@@ -104,6 +104,7 @@ namespace CmsData
         IsPendingMemberOf,
         IsMemberOf,
         IsProspectOf,
+        IsRecentGiver,
         IsTopGiver,
         IsTopPledger,
         IsUser,

@@ -1605,6 +1605,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.AllStatusFlag> ViewAllStatusFlags
+	    {
+		    get { return this.GetTable< View.AllStatusFlag>(); }
+
+	    }
+
 	    public Table< View.AttendCredit> ViewAttendCredits
 	    {
 		    get { return this.GetTable< View.AttendCredit>(); }

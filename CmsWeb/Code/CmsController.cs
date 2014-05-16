@@ -341,7 +341,7 @@ table.grid tr:nth-child(1) {
                 {
                     var cn = new SqlConnection(cs.ConnectionString);
                     cn.Open();
-                    var cmd = new SqlCommand("LogRequest", cn) { CommandType = CommandType.StoredProcedure };
+                    var cmd = new SqlCommand("LogRequest2", cn) { CommandType = CommandType.StoredProcedure };
                     cmd.Parameters.AddWithValue("dbname", dbname);
                     cmd.Parameters.AddWithValue("method", method);
                     cmd.Parameters.AddWithValue("controller", controller);
@@ -349,10 +349,7 @@ table.grid tr:nth-child(1) {
                     cmd.Parameters.AddWithValue("userid", userid);
                     cmd.Parameters.AddWithValue("id", id);
                     cmd.Parameters.AddWithValue("qs", querystring.Truncate(100));
-                    if (userid.HasValue())
-                        cmd.Parameters.AddWithValue("newui", ViewExtensions2.UseNewLook());
-                    else
-                        cmd.Parameters.AddWithValue("newui", false);
+                    cmd.Parameters.AddWithValue("newui", userid.HasValue() && ViewExtensions2.UseNewLook());
                     cmd.ExecuteNonQuery();
                     cn.Close();
                 }

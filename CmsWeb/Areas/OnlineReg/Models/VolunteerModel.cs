@@ -214,7 +214,7 @@ namespace CmsWeb.Models
 					where i.Checked
 					select i;
 			return !q.Any() ? "no commitments"
-				: ViewExtensions2.RenderPartialViewToString(controller, "VolunteerSlotsSummary", q);
+				: ViewExtensions2.RenderPartialViewToString(controller, "ManageVolunteer/VolunteerSlotsSummary", q);
 		}
 		public string Instructions
 		{

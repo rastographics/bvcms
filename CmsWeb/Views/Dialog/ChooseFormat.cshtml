@@ -53,7 +53,7 @@
                     Include Phone
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="UseMailFlags" value="true" />
+                    <input type="checkbox" name="UseMailFlags" value="true" @(Model.useMailFlags == true ? "checked=checked" : "") />
                     Use Mail Flags
                 </label>
                 <div class="control-group">
