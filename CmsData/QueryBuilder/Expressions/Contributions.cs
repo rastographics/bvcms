@@ -7,6 +7,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using IronPython.Modules;
 using UtilityExtensions;
 using CmsData.Codes;
@@ -84,6 +85,38 @@ namespace CmsData
             }
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
+        public Expression IsRecentGiver()
+        {
+            if (!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
+            var tf = CodeIds == "1";
+            var now = DateTime.Now;
+            var dt = now.AddDays(-Days);
+            IQueryable<int> q = null;
+
+            q = from c in db.Contributions2(dt, now, 0, false, false, true)
+                where c.Amount > 0
+                group c by c.CreditGiverId.Value into g
+                where g.Any()
+                select g.Key;
+            var tag1 = db.PopulateTemporaryTag(q);
+
+            q = from c in db.Contributions2(dt, now, 0, false, false, true)
+                where c.Amount > 0
+                where c.SpouseId != null
+                group c by c.SpouseId.Value
+                into g where g.Any()
+                select g.Key;
+            var tag2 = db.PopulateTemporaryTag(q);
+
+            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
+                ? p.Tags.Any(t => t.Id == tag1.Id || t.Id == tag2.Id)
+                : !p.Tags.Any(t => t.Id == tag1.Id || t.Id == tag2.Id);
+
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
