@@ -233,13 +233,30 @@ namespace CmsWeb.Areas.People.Models
             DbUtil.Db.SubmitChanges();
 
             if (!HttpContext.Current.User.IsInRole("Access"))
+            {
+                changes.AddRange(fsb);
                 if (changes.Count > 0)
                 {
                     DbUtil.Db.EmailRedacted(p.FromEmail, DbUtil.Db.GetNewPeopleManagers(),
                         "Basic Person Info Changed on " + Util.Host,
-                        "{0} changed the following information for {1} ({2}):<br />\n<table>{3}</table>"
-                        .Fmt(Util.UserName, FirstName + " " + LastName, PeopleId, changes));
+                        "{0} changed the following information for {1} ({2}):<br />\n"
+                            .Fmt(Util.UserName, FirstName + " " + LastName, PeopleId)
+                        + ChangeTable(changes));
                 }
+            }
+        }
+
+        private static string ChangeTable(IEnumerable<ChangeDetail> changes)
+        {
+            var sb = new StringBuilder();
+            sb.Append("<table cellspacing='5'>\n");
+            sb.Append("<tr><td><b>Field</b></td><td><b>Before</b></td><td><b>After</b></td></tr>\n");
+            foreach (var c in changes)
+            {
+                sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
+            }
+            sb.Append("</table>");
+            return sb.ToString();
         }
     }
 }
