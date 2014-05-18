@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using System.Web.Mvc;
-using Microsoft.IdentityModel.Protocols.WSTrust;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.PersonPage
