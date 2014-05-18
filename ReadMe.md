@@ -7,6 +7,11 @@
 
 BVCMS Developer Quick Start Guide
 ---
+Copyright (c) 2008-2014 Bellevue Baptist Church 
+Licensed under the GNU General Public License (GPL v2)
+you may not use this code except in compliance with the License.
+You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+
 ### Install Development Tools
 1. **[Visual Studio Express 2012][IDE]**
 1. **[SQL Server Express 2012 SP1][SQL]**
