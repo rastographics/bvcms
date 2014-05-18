@@ -47,22 +47,22 @@ namespace CmsWeb.Models
                 if (p.BirthDate.HasValue)
                     row.CreateCell(c++).SetCellValue(p.BirthDate.Value);
                 else
-                    row.CreateCell(c++, NPOI.SS.UserModel.CellType.BLANK);
+                    row.CreateCell(c++, NPOI.SS.UserModel.CellType.Blank);
                 if (p.Anniversary.HasValue)
                     row.CreateCell(c++).SetCellValue(p.Anniversary.Value);
                 else
-                    row.CreateCell(c++, NPOI.SS.UserModel.CellType.BLANK);
+                    row.CreateCell(c++, NPOI.SS.UserModel.CellType.Blank);
                 if (p.Joined.HasValue)
                     row.CreateCell(c++).SetCellValue(p.Joined.Value);
                 else
-                    row.CreateCell(c++, NPOI.SS.UserModel.CellType.BLANK);
+                    row.CreateCell(c++, NPOI.SS.UserModel.CellType.Blank);
                 row.CreateCell(c++).SetCellValue(p.Cell);
                 row.CreateCell(c++).SetCellValue(p.Work);
                 row.CreateCell(c++).SetCellValue(p.Member);
                 if (p.Grade.HasValue)
                     row.CreateCell(c++).SetCellValue(p.Grade.Value);
                 else
-                    row.CreateCell(c++, NPOI.SS.UserModel.CellType.BLANK);
+                    row.CreateCell(c++, NPOI.SS.UserModel.CellType.Blank);
                 row.CreateCell(c++).SetCellValue(p.Marital);
                 row.CreateCell(c++).SetCellValue(p.FamilyPos);
                 row.CreateCell(c++).SetCellValue(p.AltName);
@@ -73,7 +73,7 @@ namespace CmsWeb.Models
                 if (p.Deceased.HasValue)
                     row.CreateCell(c++).SetCellValue(p.Deceased.Value);
                 else
-                    row.CreateCell(c++, NPOI.SS.UserModel.CellType.BLANK);
+                    row.CreateCell(c++, NPOI.SS.UserModel.CellType.Blank);
             }
             var Response = context.HttpContext.Response;
             Response.Buffer = true;
