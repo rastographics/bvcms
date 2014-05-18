@@ -12,7 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using CmsData.Codes;
-using Community.CsharpSqlite;
 using Intuit.Ipp.Data.Qbd;
 using IronPython.Modules;
 using UtilityExtensions;
