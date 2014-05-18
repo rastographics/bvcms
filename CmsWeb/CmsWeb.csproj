@@ -86,14 +86,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin">
-      <HintPath>..\packages\AjaxMin.5.9.5229.26438\lib\net40\AjaxMin.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Antlr3.Runtime">
-      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Dapper">
       <HintPath>..\packages\Dapper.1.25\lib\net45\Dapper.dll</HintPath>
       <Private>True</Private>
@@ -118,93 +110,17 @@
       <HintPath>..\packages\DotNetOpenAuth.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNetOpenAuth.Core.UI">
-      <HintPath>..\packages\DotNetOpenAuth.Core.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.Core.UI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.InfoCard">
-      <HintPath>..\packages\DotNetOpenAuth.InfoCard.4.3.4.13329\lib\net45-full\DotNetOpenAuth.InfoCard.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.InfoCard.UI">
-      <HintPath>..\packages\DotNetOpenAuth.InfoCard.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.InfoCard.UI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="DotNetOpenAuth.OAuth">
       <HintPath>..\packages\DotNetOpenAuth.OAuth.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth.Common">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth.Common.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth.Consumer">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth.Consumer.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth.Consumer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth.ServiceProvider">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth.ServiceProvider.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth.ServiceProvider.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2.AuthorizationServer">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.AuthorizationServer.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.AuthorizationServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2.Client">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Client.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.Client.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2.Client.UI">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Client.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.Client.UI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2.ClientAuthorization">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.ClientAuthorization.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.ClientAuthorization.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2.ResourceServer">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.ResourceServer.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.ResourceServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="DotNetOpenAuth.OpenId">
       <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OpenId.Provider">
-      <HintPath>..\packages\DotNetOpenAuth.OpenId.Provider.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.Provider.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OpenId.Provider.UI">
-      <HintPath>..\packages\DotNetOpenAuth.OpenId.Provider.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.Provider.UI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="DotNetOpenAuth.OpenId.RelyingParty">
       <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.RelyingParty.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty.UI">
-      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.RelyingParty.UI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OpenId.UI">
-      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.UI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OpenIdInfoCard.UI">
-      <HintPath>..\packages\DotNetOpenAuth.OpenIdInfoCard.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenIdInfoCard.UI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OpenIdOAuth">
-      <HintPath>..\packages\DotNetOpenAuth.OpenIdOAuth.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenIdOAuth.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EcmaScript.NET, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\YUICompressor.NET.MSBuild.2.4.0.0\lib\NET20\EcmaScript.NET.dll</HintPath>
     </Reference>
     <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -212,14 +128,6 @@
     </Reference>
     <Reference Include="EPPlus">
       <HintPath>..\packages\EPPlus.3.1.3.3\lib\net35\EPPlus.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\packages\NPOI.2.0.6\lib\net40\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ImageResizer">
-      <HintPath>..\packages\ImageResizer.3.4.3\lib\ImageResizer.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="itextsharp">
       <HintPath>..\packages\iTextSharp.5.5.0\lib\itextsharp.dll</HintPath>
@@ -233,38 +141,19 @@
       <HintPath>..\packages\jQuery.Validation.Unobtrusive.Native.MVC4.1.1.0.0\lib\net40\jQuery.Validation.Unobtrusive.Native.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="LumenWorks.Framework.IO">
       <HintPath>..\packages\LumenWorks.Framework.IO.3.8.0\lib\net20\LumenWorks.Framework.IO.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.IdentityModel">
-      <HintPath>..\packages\Microsoft.IdentityModel.6.1.7600.16394\lib\net35\Microsoft.IdentityModel.dll</HintPath>
-    </Reference>
     <Reference Include="MoreLinq">
       <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="NPOI">
       <HintPath>..\packages\NPOI.2.0.6\lib\net40\NPOI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NPOI.OOXML">
-      <HintPath>..\packages\NPOI.2.0.6\lib\net40\NPOI.OOXML.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NPOI.OpenXml4Net">
-      <HintPath>..\packages\NPOI.2.0.6\lib\net40\NPOI.OpenXml4Net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NPOI.OpenXmlFormats">
-      <HintPath>..\packages\NPOI.2.0.6\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="openstacknet, Version=1.3.0.0, Culture=neutral, PublicKeyToken=8965cea5c205d3a3, processorArchitecture=MSIL">
@@ -274,9 +163,6 @@
     <Reference Include="PresentationCore" />
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="RouteDebugger">
-      <HintPath>..\packages\routedebugger.2.1.4.0\lib\net40\RouteDebugger.dll</HintPath>
     </Reference>
     <Reference Include="SimpleRESTServices, Version=1.3.0.0, Culture=neutral, PublicKeyToken=8965cea5c205d3a3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -289,19 +175,6 @@
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Linq" />
-    <Reference Include="System.IdentityModel" />
-    <Reference Include="System.IdentityModel.Services" />
-    <Reference Include="System.IdentityModel.Tokens.Jwt">
-      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.1.0.0\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http.Extensions">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.22\lib\net45\System.Net.Http.Extensions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Net.Http.Primitives">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.22\lib\net45\System.Net.Http.Primitives.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -312,23 +185,9 @@
     <Reference Include="System.Web.Abstractions">
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Helpers">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.Helpers.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Web.Mvc">
       <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.2\lib\net45\System.Web.Mvc.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Web.Optimization">
-      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Web.Razor">
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.2\lib\net45\System.Web.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Routing">
@@ -338,10 +197,6 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.WebPages.Deployment">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Web.WebPages.Razor">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
       <Private>True</Private>
@@ -349,17 +204,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Thinktecture.IdentityModel">
       <HintPath>..\packages\Thinktecture.IdentityModel.3.6.1\lib\net45\Thinktecture.IdentityModel.dll</HintPath>
-    </Reference>
-    <Reference Include="WebActivator">
-      <HintPath>..\packages\WebActivator.1.0.0.0\lib\WebActivator.dll</HintPath>
-    </Reference>
-    <Reference Include="WebGrease">
-      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="Yahoo.Yui.Compressor, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">

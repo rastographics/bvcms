@@ -9,7 +9,6 @@ using System;
 using System.Linq;
 using System.Web;
 using CmsWeb.Code;
-using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
@@ -29,11 +28,13 @@ namespace CmsWeb.Models
                 "(not specified)",
                 "Approval Codes",
                 "Background Check Date",
+                "Bad Address Flag",
                 "Baptism Status",
                 "Baptism Type",
                 "Campus",
                 "Deceased Date",
                 "Decision Type",
+                "Do Not Mail",
                 "Drop Type",
                 "Drop All Memberships",
                 "Employer",
@@ -68,7 +69,7 @@ namespace CmsWeb.Models
                 tg.Insert(0, new SelectListItem { Text = "last query" });
             tg.Insert(0, new SelectListItem { Text = "(not specified)" });
             var sel = tg.SingleOrDefault(mm => mm.Text == Tag);
-            if(sel != null)
+            if (sel != null)
                 sel.Selected = true;
             return tg.ToList();
         }
@@ -80,9 +81,11 @@ namespace CmsWeb.Models
                 new TitleItems { title = "Approval Codes", Instructions = "(negative to remove, 0 to remove all)", items = Model.VolunteerCodes() },
                 new TitleItems { title = "Baptism Status Codes", items = Model.BaptismStatusList() },
                 new TitleItems { title = "Baptism Type Codes", items = Model.BaptismTypeList() },
+                new TitleItems { title = "Bad Address Flag", items = BadAddressFlag(), UseCode = true },
                 new TitleItems { title = "Campus Codes", items = Model.AllCampuses() },
                 new TitleItems { title = "Contribution Statement Options", items = Model.EnvelopeOptionList() },
                 new TitleItems { title = "Decision Type Codes", items = Model.DecisionTypeList() },
+                new TitleItems { title = "Do Not Mail", items = DoNotMail(), UseCode = true },
                 new TitleItems { title = "Drop Type Codes", items = Model.DropTypeList() },
                 new TitleItems { title = "Envelope Options", items = Model.EnvelopeOptionList() },
                 new TitleItems { title = "Entry Point Codes", items = Model.EntryPoints() },
@@ -144,12 +147,21 @@ namespace CmsWeb.Models
                 model.AddModelError("Tag", "Select a tag/query");
                 return;
             }
-            if(Field == "(not specified)")
+            if (Field == "(not specified)")
                 model.AddModelError("Field", "Select a Field");
 
             if (!model.IsValid)
                 return;
 
+            if (Field == "Bad Address Flag")
+            {
+                foreach (var f in q.Select(p => p.Family))
+                {
+                    f.BadAddressFlag = NewValue.ToBool();
+                    DbUtil.Db.SubmitChanges();
+                }
+                return;
+            }
             foreach (var p in q)
             {
                 switch (Field)
@@ -175,6 +187,9 @@ namespace CmsWeb.Models
                         break;
                     case "Decision Type":
                         p.DecisionTypeId = NewValue.ToInt2();
+                        break;
+                    case "Do Not Mail":
+                        p.DoNotMailFlag = NewValue.ToBool();
                         break;
                     case "Drop All Memberships":
                         p.DropMemberships(DbUtil.Db);
@@ -328,6 +343,22 @@ namespace CmsWeb.Models
 				{
 					new CodeValueItem { Code = "true", Value = "Yes, Receive SMS Text messages" },
 					new CodeValueItem { Code = "false", Value = "No, Do not Receive SMS Text messages" },
+				};
+        }
+        public static List<CodeValueItem> BadAddressFlag()
+        {
+            return new List<CodeValueItem> 
+				{
+					new CodeValueItem { Code = "true", Value = "Yes, Address is Bad" },
+					new CodeValueItem { Code = "false", Value = "No, Address is Good" },
+				};
+        }
+        public static List<CodeValueItem> DoNotMail()
+        {
+            return new List<CodeValueItem> 
+				{
+					new CodeValueItem { Code = "true", Value = "Yes, Do Not Mail" },
+					new CodeValueItem { Code = "false", Value = "No, OK To Mail" },
 				};
         }
     }
