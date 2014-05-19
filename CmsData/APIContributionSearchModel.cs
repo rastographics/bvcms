@@ -127,7 +127,9 @@ namespace CmsData.API
                              Pledge = c.PledgeFlag ?? false,
                              PeopleId = c.PeopleId ?? 0,
                              Description = c.ContributionDesc,
-                             CheckNo = c.CheckNo
+                             CheckNo = c.CheckNo,
+                             FamilyId = c.Person.FamilyId,
+                             MemberStatus = c.Person.MemberStatus.Description
                          };
             return q2;
         }
