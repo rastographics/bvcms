@@ -49,11 +49,14 @@ namespace CmsData
             return b;
         }
 
-        public static CheckDatabaseResult CheckDatabaseExists(string name)
+        public static CheckDatabaseResult CheckDatabaseExists(string name, bool nocache = false)
         {
-            var r1 = HttpRuntime.Cache[Util.Host + "-CheckDatabaseResult"];
-            if (r1 != null)
-                return (CheckDatabaseResult) r1;
+            if (nocache == false)
+            {
+                var r1 = HttpRuntime.Cache[Util.Host + "-CheckDatabaseResult"];
+                if (r1 != null)
+                    return (CheckDatabaseResult) r1;
+            }
 
             using (var cn = new SqlConnection(Util.GetConnectionString2("master", 3)))
             {
@@ -71,8 +74,11 @@ namespace CmsData
                 {
                     ret = CheckDatabaseResult.ServerNotFound;
                 }
-                HttpRuntime.Cache.Insert(Util.Host + "-CheckDatabaseResult", ret, null,
-                    DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                if (nocache == false)
+                {
+                    HttpRuntime.Cache.Insert(Util.Host + "-CheckDatabaseResult", ret, null,
+                        DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                }
                 return ret;
             }
         }
