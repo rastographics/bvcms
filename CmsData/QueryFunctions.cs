@@ -97,6 +97,17 @@ namespace CmsData
             return q.Count();
         }
 
+        public int AttendMemberTypeCountAsOf(DateTime startdt, DateTime enddt, string membertypes, int progid, int divid, int orgid)
+        {
+            enddt = enddt.AddHours(24);
+            return db.AttendMemberTypeAsOf(startdt, enddt, progid, divid, orgid, membertypes).Count();
+        }
+        public int AttendCountAsOf(DateTime startdt, DateTime enddt, bool guestonly, int progid, int divid, int orgid)
+        {
+            enddt = enddt.AddHours(24);
+            return db.AttendedAsOf(progid, divid, orgid, startdt, enddt, guestonly).Count();
+        }
+
         public int NumPresent(int days, int progid, int divid, int orgid)
         {
             var dt = DateTime.Now.AddDays(-days);
