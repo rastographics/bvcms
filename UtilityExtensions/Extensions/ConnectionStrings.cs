@@ -61,10 +61,12 @@ namespace UtilityExtensions
             cb.InitialCatalog = "CMS_{0}".Fmt(a[0]);
             return cb.ConnectionString;
         }
-        public static string GetConnectionString2(string db)
+        public static string GetConnectionString2(string db, int? timeout = null)
         {
             var cs = ConnectionStringSettings(db) ?? ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            if (timeout.HasValue)
+                cb.ConnectTimeout = timeout.Value;
             if (string.IsNullOrEmpty(cb.DataSource))
                 cb.DataSource = DbServer;
             cb.InitialCatalog = db;

@@ -30,36 +30,53 @@ namespace CmsData
                 HttpContext.Current.Items[CMSDbKEY] = value;
             }
         }
+        public enum CheckDatabaseResult
+        {
+            DatabaseExists,
+            DatabaseDoesNotExist,
+            ServerNotFound
+        }
         public static bool DatabaseExists()
         {
             var exists = (bool?)HttpRuntime.Cache[Util.Host + "-DatabaseExists"];
             if (exists.HasValue)
                 return exists.Value;
 
-            var r = CheckDatabaseExists("CMS_" + Util.Host);
-            HttpRuntime.Cache.Insert(Util.Host + "-DatabaseExists", r, null,
+            var r = CheckDatabaseExists(Util.Host);
+            var b = CheckDatabaseResult.DatabaseExists == r;
+            HttpRuntime.Cache.Insert(Util.Host + "-DatabaseExists", b, null,
                 DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
-            return r;
+            return b;
         }
 
-        public static bool CheckDatabaseExists(string name)
+        public static CheckDatabaseResult CheckDatabaseExists(string name)
         {
-            using (var cn = new SqlConnection(Util.GetConnectionString2("master")))
+            var r1 = HttpRuntime.Cache[Util.Host + "-CheckDatabaseResult"];
+            if (r1 != null)
+                return (CheckDatabaseResult) r1;
+
+            using (var cn = new SqlConnection(Util.GetConnectionString2("master", 3)))
             {
+                var ret = CheckDatabaseResult.DatabaseExists;
                 try
                 {
                     cn.Open();
                     var cmd = new SqlCommand(
-                            "SELECT CAST(CASE WHEN EXISTS(SELECT NULL FROM sys.databases WHERE name = '"
+                            "SELECT CAST(CASE WHEN EXISTS(SELECT NULL FROM sys.databases WHERE name = 'CMS_"
                             + name + "') THEN 1 ELSE 0 END AS BIT)", cn);
-                    return (bool)cmd.ExecuteScalar();
+                    var b = (bool)cmd.ExecuteScalar();
+                    ret = b ? CheckDatabaseResult.DatabaseExists : CheckDatabaseResult.DatabaseDoesNotExist;
                 }
                 catch (Exception)
                 {
-                    return false;
+                    ret = CheckDatabaseResult.ServerNotFound;
                 }
+                HttpRuntime.Cache.Insert(Util.Host + "-CheckDatabaseResult", ret, null,
+                    DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                return ret;
             }
         }
+
 
         public static CMSDataContext Db
         {
@@ -318,13 +335,13 @@ namespace CmsData
                 HttpRuntime.Cache.Remove(Util.Host + "-DatabaseExists");
                 string cs = Util.GetConnectionString2("master");
                 RunScripts(cs, "create database CMS_" + Util.Host);
-                if (!CheckDatabaseExists("CMSi_" + Util.Host))
+                if (CheckDatabaseExists("CMSi_" + Util.Host) == CheckDatabaseResult.DatabaseDoesNotExist)
                 {
                     RunScripts(cs, "create database CMSi_" + Util.Host);
                     RunScripts(Util.ConnectionStringImage,
                         File.ReadAllText(path + @"..\SqlScripts\BuildImageDatabase.sql"));
                 }
-                if (!CheckDatabaseExists("Elmah"))
+                if (CheckDatabaseExists("Elmah") == CheckDatabaseResult.DatabaseDoesNotExist)
                 {
                     RunScripts(cs, "create database Elmah");
                     RunScripts(Util.GetConnectionString2("Elmah"),
