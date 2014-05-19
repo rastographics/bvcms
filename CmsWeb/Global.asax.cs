@@ -81,6 +81,12 @@ namespace CmsWeb
             if (!DbUtil.DatabaseExists())
             {
 #if DEBUG
+                var r = DbUtil.CheckDatabaseExists(Util.Host);
+                if (r == DbUtil.CheckDatabaseResult.ServerNotFound)
+                {
+                    Response.Redirect("/Errors/DatabaseServerNotFound.aspx?server=" + Util.DbServer);
+                    return;
+                }
                 var ret = DbUtil.CreateDatabase();
                 if (ret.HasValue())
                 {

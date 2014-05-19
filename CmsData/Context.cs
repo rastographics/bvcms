@@ -7,7 +7,6 @@
 using System;
 using System.Data.Common;
 using System.Linq;
-using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
 using UtilityExtensions;
 using System.Web;
 using System.Data.Linq.Mapping;

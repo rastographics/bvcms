@@ -88,8 +88,16 @@ CKEditorFuncNum, baseurl + fn, error));
         [Route("~/Logon")]
         public ActionResult LogOn()
         {
-            if (!DbUtil.DatabaseExists())
-                return Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
+            var ret = DbUtil.CheckDatabaseExists(Util.Host);
+            switch (ret)
+            {
+                case DbUtil.CheckDatabaseResult.DatabaseExists:
+                    break;
+                case DbUtil.CheckDatabaseResult.DatabaseDoesNotExist:
+                    return Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
+                case DbUtil.CheckDatabaseResult.ServerNotFound:
+                    return Redirect("/Errors/DatabaseServerNotFound.aspx?server=" + Util.DbServer);
+            }
 
             if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
                 return Content("Site is disabled, contact {0} for help".Fmt(Util.SendErrorsTo()[0].Address));

@@ -468,5 +468,7 @@ namespace CmsData.API
             }
         }
         public bool NonTaxDed { get; set; }
+        public int FamilyId { get; set; }
+        public string MemberStatus { get; set; }
     }
 }

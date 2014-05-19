@@ -7,7 +7,6 @@ using System.Web;
 using UtilityExtensions;
 using Intuit.Ipp.Core;
 using Intuit.Ipp.Security;
-using Intuit.Ipp.Services;
 using Intuit.Ipp.Data.Qbo;
 
 namespace CmsData.Classes.QuickBooks

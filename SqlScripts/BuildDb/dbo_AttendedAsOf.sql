@@ -18,7 +18,7 @@ RETURN
 			WHERE AttendanceFlag = 1
 			AND (ISNULL(@guestonly, 0) = 0 OR AttendanceTypeId IN (50, 60))
 			AND a.MeetingDate >= @dt1
-			AND a.MeetingDate <= @dt2
+			AND a.MeetingDate < @dt2
 			AND (ISNULL(@org, 0) = 0 OR m.OrganizationId = @org)
 			AND (ISNULL(@divid, 0) = 0 
 					OR EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = m.OrganizationId AND DivId = @divid))

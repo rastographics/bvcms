@@ -11,11 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityExtensions", "Utilit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageData", "ImageData\ImageData.csproj", "{512DA381-E81B-4121-B978-FC850EC88353}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C181983F-025D-4DF9-9A52-0BA9E60A7CD7}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{2F5AFEE8-D44F-4D81-BC89-4E17A3180C58}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmsCheckin", "CmsCheckin\CmsCheckin.csproj", "{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}"

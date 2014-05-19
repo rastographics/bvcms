@@ -12,7 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using CmsData.Codes;
-using Community.CsharpSqlite;
 using Intuit.Ipp.Data.Qbd;
 using IronPython.Modules;
 using UtilityExtensions;
@@ -128,7 +127,9 @@ namespace CmsData.API
                              Pledge = c.PledgeFlag ?? false,
                              PeopleId = c.PeopleId ?? 0,
                              Description = c.ContributionDesc,
-                             CheckNo = c.CheckNo
+                             CheckNo = c.CheckNo,
+                             FamilyId = c.Person.FamilyId,
+                             MemberStatus = c.Person.MemberStatus.Description
                          };
             return q2;
         }
