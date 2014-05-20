@@ -44,6 +44,10 @@ namespace UtilityExtensions
                 return h.Replace("{church}", Host, ignoreCase: true);
             }
         }
+        public static string CmsHost
+        {
+            get { return "CMS_" + Host; }
+        }
         public static bool IsHosted
         {
             get

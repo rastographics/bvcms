@@ -775,6 +775,8 @@
     <Content Include="Content\css\normalize.css" />
     <Content Include="Content\images\saf-bg.png" />
     <Content Include="Content\images\saf.png" />
+    <Content Include="Errors\DatabaseCreationError.aspx" />
+    <Content Include="Errors\DatabaseNotInitialized.aspx" />
     <Content Include="Errors\DatabaseServerNotFound.aspx" />
     <Content Include="minify.xml">
       <SubType>Designer</SubType>
