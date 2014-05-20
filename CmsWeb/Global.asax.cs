@@ -38,7 +38,7 @@ namespace CmsWeb
                 return;
             if (User.Identity.IsAuthenticated)
             {
-                if (!DbUtil.DatabaseExists())
+                if (!DbUtil.CmsDatabaseExists())
                 {
                     Response.Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
                     return;
@@ -78,7 +78,7 @@ namespace CmsWeb
                 Response.Redirect("/Errors/AppOffline.htm");
                 return;
             }
-            if (!DbUtil.DatabaseExists())
+            if (!DbUtil.CmsDatabaseExists())
             {
 #if DEBUG
                 var r = DbUtil.CheckDatabaseExists(Util.Host);
@@ -90,15 +90,22 @@ namespace CmsWeb
                 var ret = DbUtil.CreateDatabase();
                 if (ret.HasValue())
                 {
-                    HttpContext.Current.Items["error"] = ret;
-                    Response.Redirect("/Errors/Error.aspx");
+                    Response.Redirect("/Errors/DatabaseCreationError.aspx?error=" + HttpUtility.UrlEncode(ret));
+                    return;
                 }
 #else
                 Response.Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
-#endif
                 return;
+#endif
             }
-            Util.AdminMail = DbUtil.Db.Setting("AdminMail", "");
+            try
+            {
+                Util.AdminMail = DbUtil.Db.Setting("AdminMail", "");
+            }
+            catch (SqlException)
+            {
+                Response.Redirect("/Errors/DatabaseNotInitialized.aspx?dbname=" + Util.Host);
+            }
 
             var cul = DbUtil.Db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);

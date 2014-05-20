@@ -30,52 +30,6 @@ namespace CmsData
                 HttpContext.Current.Items[CMSDbKEY] = value;
             }
         }
-        public enum CheckDatabaseResult
-        {
-            DatabaseExists,
-            DatabaseDoesNotExist,
-            ServerNotFound
-        }
-        public static bool DatabaseExists()
-        {
-            var exists = (bool?)HttpRuntime.Cache[Util.Host + "-DatabaseExists"];
-            if (exists.HasValue)
-                return exists.Value;
-
-            var r = CheckDatabaseExists(Util.Host);
-            var b = CheckDatabaseResult.DatabaseExists == r;
-            HttpRuntime.Cache.Insert(Util.Host + "-DatabaseExists", b, null,
-                DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
-            return b;
-        }
-
-        public static CheckDatabaseResult CheckDatabaseExists(string name)
-        {
-            var r1 = HttpRuntime.Cache[Util.Host + "-CheckDatabaseResult"];
-            if (r1 != null)
-                return (CheckDatabaseResult) r1;
-
-            using (var cn = new SqlConnection(Util.GetConnectionString2("master", 3)))
-            {
-                var ret = CheckDatabaseResult.DatabaseExists;
-                try
-                {
-                    cn.Open();
-                    var cmd = new SqlCommand(
-                            "SELECT CAST(CASE WHEN EXISTS(SELECT NULL FROM sys.databases WHERE name = 'CMS_"
-                            + name + "') THEN 1 ELSE 0 END AS BIT)", cn);
-                    var b = (bool)cmd.ExecuteScalar();
-                    ret = b ? CheckDatabaseResult.DatabaseExists : CheckDatabaseResult.DatabaseDoesNotExist;
-                }
-                catch (Exception)
-                {
-                    ret = CheckDatabaseResult.ServerNotFound;
-                }
-                HttpRuntime.Cache.Insert(Util.Host + "-CheckDatabaseResult", ret, null,
-                    DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
-                return ret;
-            }
-        }
 
 
         public static CMSDataContext Db
@@ -325,71 +279,6 @@ namespace CmsData
                 Util.SetPropertyFromText(obj, field, s);
             else
                 Util.SetProperty(obj, field, value);
-        }
-        public static string CreateDatabase()
-        {
-            try
-            {
-                var Server = HttpContext.Current.Server;
-                var path = Server.MapPath("/");
-                HttpRuntime.Cache.Remove(Util.Host + "-DatabaseExists");
-                string cs = Util.GetConnectionString2("master");
-                RunScripts(cs, "create database CMS_" + Util.Host);
-                if (CheckDatabaseExists("CMSi_" + Util.Host) == CheckDatabaseResult.DatabaseDoesNotExist)
-                {
-                    RunScripts(cs, "create database CMSi_" + Util.Host);
-                    RunScripts(Util.ConnectionStringImage,
-                        File.ReadAllText(path + @"..\SqlScripts\BuildImageDatabase.sql"));
-                }
-                if (CheckDatabaseExists("Elmah") == CheckDatabaseResult.DatabaseDoesNotExist)
-                {
-                    RunScripts(cs, "create database Elmah");
-                    RunScripts(Util.GetConnectionString2("Elmah"),
-                        File.ReadAllText(path + @"..\SqlScripts\BuildElmahDb.sql"));
-                }
-
-                using (var cn = new SqlConnection(Util.ConnectionString))
-                {
-                    cn.Open();
-                    var scripts = File.ReadAllLines(path + @"..\SqlScripts\allscripts.txt");
-                    foreach (var fn in scripts)
-                    {
-                        var script = File.ReadAllText(path + @"..\SqlScripts\BuildDb\" + fn);
-                        RunScripts(cn, script);
-                    }
-                    string datascript = null;
-                    datascript = Util.Host == "testdb"
-                        ? File.ReadAllText(path + @"..\SqlScripts\BuildDb\datascriptTest.sql")
-                        : File.ReadAllText(path + @"..\SqlScripts\BuildDb\datascriptStarter.sql");
-                    RunScripts(cn, datascript);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-            return null;
-        }
-
-        private static void RunScripts(string cs, string script)
-        {
-            using(var cn = new SqlConnection(cs))
-            {
-                cn.Open();
-                RunScripts(cn, script);
-            }
-        }
-        private static void RunScripts(SqlConnection cn, string script)
-        {
-            var cmd = new SqlCommand { Connection = cn };
-            var scripts = Regex.Split(script, "\r\nGO\r\n", RegexOptions.Multiline);
-            foreach (var s in scripts)
-                if (s.HasValue())
-                {
-                    cmd.CommandText = s;
-                    cmd.ExecuteNonQuery();
-                }
         }
         public static DateTime? NormalizeExpires(string expires)
         {

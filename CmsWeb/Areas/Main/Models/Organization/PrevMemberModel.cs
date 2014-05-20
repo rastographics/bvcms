@@ -80,7 +80,7 @@ namespace CmsWeb.Models.OrganizationPage
             var tagownerid = Util2.CurrentTagOwnerId;
             var q2 = from om in q
                      let p = om.Person
-                     let att = om.Person.Attends.Where(a => a.OrganizationId == om.OrganizationId).Max(a => a.MeetingDate)
+                     let att = om.Person.Attends.Where(a => a.OrganizationId == om.OrganizationId && a.AttendanceFlag).Max(a => a.MeetingDate)
                      select new PersonMemberInfo
                      {
                          PeopleId = p.PeopleId,

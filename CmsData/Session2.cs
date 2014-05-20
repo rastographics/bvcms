@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using UtilityExtensions;
@@ -103,6 +104,10 @@ namespace CmsData
                         StringComparer.OrdinalIgnoreCase);
 					HttpRuntime.Cache.Insert(Host + "Setting", list, null,
 						DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);
+                }
+                catch (SqlException ex)
+                {
+                    throw;
                 }
                 catch (Exception)
                 {
