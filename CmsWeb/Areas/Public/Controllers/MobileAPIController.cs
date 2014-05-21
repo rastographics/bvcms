@@ -11,6 +11,9 @@ using UtilityExtensions;
 using Newtonsoft.Json;
 using CmsWeb.Models;
 using CmsData.Codes;
+using System.Text.RegularExpressions;
+using System.Text;
+using CmsData.Registration;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -35,28 +38,34 @@ namespace CmsWeb.Areas.Public.Controllers
 			if (dataIn.type != BaseMessage.API_TYPE_LOGIN)
 				return BaseMessage.createTypeErrorReturn();
 
+			var givingOrg = (from e in DbUtil.Db.Organizations
+								 where e.RegistrationTypeId == 8
+								 select e).FirstOrDefault();
+
+			var roles = from r in DbUtil.Db.UserRoles
+							where r.UserId == Util.UserId
+							orderby r.Role.RoleName
+							select new MobileRole
+							{
+								id = r.RoleId,
+								name = r.Role.RoleName
+							};
+
+			MobileSettings ms = new MobileSettings();
+
+			ms.peopleID = Util.UserPeopleId ?? 0;
+			ms.userID = Util.UserId;
+
+			ms.givingEnabled = DbUtil.Db.Setting("EnableMobileGiving", "true") == "true" ? 1 : 0;
+			ms.givingAllowCC = DbUtil.Db.Setting("NoCreditCardGiving", "false") == "false" ? 1 : 0;
+			ms.givingOrgID = givingOrg != null ? givingOrg.OrganizationId : 0;
+			ms.roles = roles.ToList();
+
 			// Everything is in order, start the return
 			BaseMessage br = new BaseMessage();
 			br.error = 0;
 			br.id = Util.UserPeopleId ?? 0;
-
-			var person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == Util.UserPeopleId);
-
-			if (person != null)
-			{
-				br.count = 1;
-
-				if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
-				{
-					br.data = JsonConvert.SerializeObject(new MobilePerson().populate(person));
-				}
-				else
-				{
-					List<MobilePerson> mp = new List<MobilePerson>();
-					mp.Add(new MobilePerson().populate(person));
-					br.data = JsonConvert.SerializeObject(mp);
-				}
-			}
+			br.data = JsonConvert.SerializeObject(ms);
 
 			return br;
 		}
@@ -598,217 +607,232 @@ namespace CmsWeb.Areas.Public.Controllers
 			return br;
 		}
 
-		/*
-		public ActionResult TaskList(int ID)
+
+		public ActionResult FetchPaymentStatus(string data)
 		{
+			// Authenticate first
 			var authError = Authenticate();
 			if (authError != null) return authError;
 
-			BaseReturn br = new BaseReturn();
-			List<MobileTask> mt = new List<MobileTask>();
+			// Check to see if type matches
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_PERSON_PAYMENT_INFO)
+				return BaseMessage.createTypeErrorReturn();
 
-			var list = from e in DbUtil.Db.Tasks
-						  where e.OwnerId == ID
-						  select e;
+			// Everything is in order, start the return
+			BaseMessage br = new BaseMessage();
+			br.error = 0;
+			br.type = BaseMessage.API_TYPE_PERSON_PAYMENT_INFO;
 
-			br.type = 101;
+			var payInfo = (from e in DbUtil.Db.PaymentInfos
+								where e.PeopleId == Util.UserPeopleId
+								select e).FirstOrDefault();
 
-			if (list != null)
+			if( payInfo != null )
 			{
-				br.count = list.Count();
+				List<MobilePaymentInfo> mpi = new List<MobilePaymentInfo>();
 
-				foreach (var item in list)
+				if (payInfo.SageBankGuid != null)
 				{
-					mt.Add(new MobileTask().populate(item));
+					mpi.Add(new MobilePaymentInfo().populate(payInfo, MobilePaymentInfo.TYPE_BANK_ACCOUNT));
+					br.count++;
 				}
 
-				br.data = JSONHelper.JsonSerializer<List<MobileTask>>(mt);
-			}
-			else
-			{
-				br.error = 1;
-			}
-
-			return br;
-		}
-
-		public ActionResult TaskItem(int ID)
-		{
-			var authError = Authenticate();
-			if (authError != null) return authError;
-
-			BaseReturn br = new BaseReturn();
-			MobileTask mt = new MobileTask();
-
-			var item = (from e in DbUtil.Db.Tasks
-							where e.Id == ID
-							select e).SingleOrDefault();
-
-			br.type = 102;
-
-			if (item != null)
-			{
-				br.count = 1;
-
-				mt.populate(item);
-				br.data = JSONHelper.JsonSerializer<MobileTask>(mt);
-			}
-			else
-			{
-				br.error = 1;
-			}
-
-			return br;
-		}
-
-		public ActionResult TaskBoxList(int ID)
-		{
-			var authError = Authenticate();
-			if (authError != null) return authError;
-
-			BaseReturn br = new BaseReturn();
-			List<MobileTaskBox> mtb = new List<MobileTaskBox>();
-
-			var list = from e in DbUtil.Db.TaskLists
-						  where e.CreatedBy == ID
-						  select e;
-
-			br.type = 103;
-
-			if (list != null)
-			{
-				br.count = list.Count();
-
-				foreach (var item in list)
+				if (payInfo.SageCardGuid != null)
 				{
-					mtb.Add(new MobileTaskBox().populate(item));
+					mpi.Add(new MobilePaymentInfo().populate(payInfo, MobilePaymentInfo.TYPE_CREDIT_CARD));
+					br.count++;
 				}
 
-				br.data = JSONHelper.JsonSerializer<List<MobileTaskBox>>(mtb);
+				br.data = JsonConvert.SerializeObject(mpi);
 			}
-			else
-			{
-				br.error = 1;
-			}
-
+			
 			return br;
 		}
 
-		public ActionResult TaskBoxItem(int ID)
+		public ActionResult processGiving( string data )
 		{
+			// Authenticate first
 			var authError = Authenticate();
 			if (authError != null) return authError;
 
-			BaseReturn br = new BaseReturn();
-			MobileTaskBox mtb = new MobileTaskBox();
+			// Check to see if type matches
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_GIVING_GIVE)
+				return BaseMessage.createTypeErrorReturn();
 
-			var item = (from e in DbUtil.Db.TaskLists
-							where e.CreatedBy == ID
-							select e).SingleOrDefault();
+			// Everything is in order, start the return
+			MobilePostTransaction mpt = JsonConvert.DeserializeObject<MobilePostTransaction>(dataIn.data);
 
-			br.type = 104;
+			if (mpt.amount == 0 || mpt.paymentType == 0 || mpt.peopleID == 0)
+				return BaseMessage.createErrorReturn("Missing information!");
 
-			if (item != null)
+			Transaction ti = createTransaction(mpt);
+
+			if( ti != null && ti.Id > 0 )
 			{
-				br.count = 1;
+				SagePayments sp = new SagePayments( DbUtil.Db, false );
+				TransactionResponse tr = null;
 
-				mtb.populate(item);
-				br.data = JSONHelper.JsonSerializer<MobileTaskBox>(mtb);
+				switch( mpt.paymentType )
+				{
+					case MobilePostTransaction.TYPE_BANK_ACCOUNT:
+						tr = sp.createVaultTransactionRequest(mpt.peopleID, mpt.amount, mpt.description, ti.Id, "B");
+						break;
+
+					case MobilePostTransaction.TYPE_CREDIT_CARD:
+						tr = sp.createVaultTransactionRequest(mpt.peopleID, mpt.amount, mpt.description, ti.Id, "C");
+						break;
+				}
+
+				// Build return
+				BaseMessage br = new BaseMessage();
+				br.type = BaseMessage.API_TYPE_GIVING_GIVE;
+
+				if (tr != null && tr.Approved)
+				{
+					br.error = 0;
+					br.id = mpt.transactionID = ti.Id;
+
+					sendConfirmation(mpt);
+				}
+				else
+				{
+					DbUtil.Db.Transactions.DeleteOnSubmit(ti);
+					DbUtil.Db.SubmitChanges();
+
+					br.error = 1;
+					br.data = tr.Message;
+				}
+
+				return br;
 			}
 			else
 			{
-				br.error = 1;
+				return BaseMessage.createErrorReturn("Transaction creation failed!");
 			}
-
-			return br;
 		}
 
-		public ActionResult TaskStatusList()
+		public Transaction createTransaction( MobilePostTransaction mpt )
 		{
-			var authError = Authenticate();
-			if (authError != null) return authError;
+			var ti = new Transaction();
 
-			BaseReturn br = new BaseReturn();
-			List<MobileTaskStatus> ls = new List<MobileTaskStatus>();
+			ti.First = mpt.first;
+			ti.MiddleInitial = mpt.middle;
+			ti.Last = mpt.last;
+			ti.Suffix = mpt.suffix;
+			ti.Amt = mpt.amount;
+			ti.Emails = mpt.email;
+			ti.Description = mpt.description;
+			ti.OrgId = mpt.orgID;
+			ti.Address = mpt.address;
+			ti.City = mpt.city;
+			ti.State = mpt.state;
+			ti.Zip = mpt.zip;
+			ti.Phone = mpt.phone;
+			ti.TransactionDate = mpt.date;
 
-			br.type = 105;
+			DbUtil.Db.Transactions.InsertOnSubmit(ti);
+			DbUtil.Db.SubmitChanges();
 
-			var s = from e in DbUtil.Db.TaskStatuses
-					  select e;
+			ti.OriginalId = ti.Id;
 
-			foreach (var item in s)
-			{
-				ls.Add(new MobileTaskStatus().populate(item));
-			}
+			DbUtil.Db.SubmitChanges();
 
-			br.count = s.Count();
-			br.data = JSONHelper.JsonSerializer<List<MobileTaskStatus>>(ls);
-
-			return br;
+			return ti;
 		}
 
-		[ValidateInput(false)]
-		public ActionResult TaskCreate(string type, string data) // Type 1001
+		public void sendConfirmation(MobilePostTransaction mpt)
 		{
-			var authError = Authenticate();
-			if (authError != null) return authError;
+			var person = DbUtil.Db.LoadPersonById(mpt.peopleID);
+			var staff = DbUtil.Db.StaffPeopleForOrg(mpt.orgID)[0];
 
-			BaseReturn br = new BaseReturn();
-			br.type = 1001;
+			var org = DbUtil.Db.LoadOrganizationById(mpt.orgID);
+			var settings = new Settings(org.RegSetting, DbUtil.Db, mpt.orgID);
 
-			MobileTask mt = JSONHelper.JsonDeserialize<MobileTask>(data);
-			if (mt != null) br.id = mt.addToDB();
-			else
+
+			var text = settings.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
+			text = text.Replace("{amt}", (mpt.amount).ToString("N2"));
+			text = text.Replace("{date}", DateTime.Today.ToShortDateString());
+			text = text.Replace("{tranid}", mpt.transactionID.ToString());
+			text = text.Replace("{name}", person.Name);
+			text = text.Replace("{account}", "");
+			text = text.Replace("{email}", person.EmailAddress);
+			text = text.Replace("{phone}", person.HomePhone.FmtFone());
+			text = text.Replace("{contact}", staff.Name);
+			text = text.Replace("{contactemail}", staff.EmailAddress);
+			text = text.Replace("{contactphone}", org.PhoneNumber.FmtFone());
+
+			/*
+			var text = p.setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
+			text = text.Replace("{amt}", (t.Amt ?? 0).ToString("N2"));
+			text = text.Replace("{date}", DateTime.Today.ToShortDateString());
+			text = text.Replace("{tranid}", t.Id.ToString());
+			text = text.Replace("{name}", p.person.Name);
+			text = text.Replace("{account}", "");
+			text = text.Replace("{email}", p.person.EmailAddress);
+			text = text.Replace("{phone}", p.person.HomePhone.FmtFone());
+			text = text.Replace("{contact}", staff.Name);
+			text = text.Replace("{contactemail}", staff.EmailAddress);
+			text = text.Replace("{contactphone}", p.org.PhoneNumber.FmtFone());
+
+			var re = new Regex(@"(?<b>.*?)<!--ITEM\sROW\sSTART-->(?<row>.*?)\s*<!--ITEM\sROW\sEND-->(?<e>.*)", RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
+			var match = re.Match(text);
+			var b = match.Groups["b"].Value;
+			var row = match.Groups["row"].Value.Replace("{funditem}", "{0}").Replace("{itemamt}", "{1:N2}");
+			var e = match.Groups["e"].Value;
+			var sb = new StringBuilder(b);
+
+			var desc = "{0}; {1}; {2}".Fmt(
+					  p.person.Name,
+					  p.person.PrimaryAddress,
+					  p.person.PrimaryZip);
+			foreach (var g in p.FundItemsChosen())
 			{
-				br.error = 1;
-				br.data = "Task was not created.";
+				if (g.amt > 0)
+				{
+					sb.AppendFormat(row, g.desc, g.amt);
+					p.person.PostUnattendedContribution(DbUtil.Db,
+																	g.amt,
+																	g.fundid,
+																	desc);
+				}
 			}
+			t.Financeonly = true;
+			if (t.Donate > 0)
+			{
+				var fundname = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == p.setting.DonationFundId).FundName;
+				sb.AppendFormat(row, fundname, t.Donate);
+				t.Fund = p.setting.DonationFund();
+				p.person.PostUnattendedContribution(DbUtil.Db,
+					 t.Donate.Value,
+					 p.setting.DonationFundId,
+					 desc);
+			}
+			sb.Append(e);
+			if (!t.TransactionId.HasValue())
+			{
+				t.TransactionId = TransactionID;
+				if (m.testing == true && !t.TransactionId.Contains("(testing)"))
+					t.TransactionId += "(testing)";
+			}
+			var contributionemail = (from ex in p.person.PeopleExtras
+											 where ex.Field == "ContributionEmail"
+											 select ex.Data).SingleOrDefault();
+			if (contributionemail.HasValue())
+				contributionemail = (contributionemail ?? "").Trim();
+			if (!Util.ValidEmail(contributionemail))
+				contributionemail = p.person.FromEmail;
 
-			return br;
+			Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId)),
+				 p.setting.Subject, sb.ToString(),
+				 Util.EmailAddressListFromString(contributionemail), 0, p.PeopleId);
+			DbUtil.Db.Email(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
+				 "online giving contribution received",
+				 "see contribution records for {0} ({1})".Fmt(p.person.Name, p.PeopleId));
+			if (p.CreatingAccount == true)
+				p.CreateAccount();
+			*/
 		}
-
-		[ValidateInput(false)]
-		public ActionResult TaskUpdate(string type, string data) // Type 1002
-		{
-			var authError = Authenticate();
-			if (authError != null) return authError;
-
-			BaseReturn br = new BaseReturn();
-			br.type = 1002;
-
-			MobileTask mt = JSONHelper.JsonDeserialize<MobileTask>(data);
-
-			var t = from e in DbUtil.Db.Tasks
-					  where e.Id == mt.id
-					  select e;
-
-			if (t != null)
-			{
-				var task = t.Single();
-
-				if (mt.updateDue > 0) task.Due = mt.due;
-				if (mt.statusID > 0) task.StatusId = mt.statusID;
-				if (mt.priority > 0) task.Priority = mt.priority;
-				if (mt.notes.Length > 0) task.Notes = mt.notes;
-				if (mt.description.Length > 0) task.Description = mt.description;
-				if (mt.ownerID > 0) task.OwnerId = mt.ownerID;
-				if (mt.boxID > 0) task.ListId = mt.boxID;
-				if (mt.aboutID > 0) task.WhoId = mt.aboutID;
-				if (mt.delegatedID > 0) task.CoOwnerId = mt.delegatedID;
-				if (mt.notes.Length > 0) task.Notes = mt.notes;
-
-				DbUtil.Db.SubmitChanges();
-
-				br.data = "Task updated.";
-			}
-			else
-			{
-				br.error = 1;
-				br.data = "Task not found.";
-			}
-
-			return br;
-		}
-		*/
 	}
 }

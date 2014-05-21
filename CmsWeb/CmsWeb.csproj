@@ -24,7 +24,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FC942D51-94B5-456B-9683-0BA000A1EAF4}</ProjectGuid>
-    <ProjectTypeGuids>{E3E379DF-F4C6-4180-9B81-6769533ABE47};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CmsWeb</RootNamespace>
@@ -323,10 +323,15 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileContact.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCountry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFamilyMember.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileFund.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileMaritalStatus.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileOrganization.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobilePaymentInfo.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonAddress.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileRole.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileSettings.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileState.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostTransaction.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostAddPerson.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostAttend.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostFetchImage.cs" />
@@ -335,6 +340,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSaveImage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSearch.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostTransactionItem.cs" />
     <Compile Include="Areas\Reports\Models\AveryAddressWordResult.cs" />
     <Compile Include="Areas\Reports\Models\QueryStatsResult.cs" />
     <Compile Include="Areas\Main\Controllers\SavedQuery2Controller.cs" />
