@@ -11,11 +11,16 @@ namespace CmsWeb.Areas.Search.Models
 {
     public partial class QueryModel : QueryResults
     {
-        private static List<CodeValueItem> BitCodes =
+        private static readonly List<CodeValueItem> BitCodes =
             new List<CodeValueItem>
             {
                 new CodeValueItem {Id = 1, Value = "True", Code = "T"},
                 new CodeValueItem {Id = 0, Value = "False", Code = "F"},
+            };
+        private static readonly List<CodeValueItem> EqualBitCodes =
+            new List<CodeValueItem>
+            {
+                new CodeValueItem {Id = 1, Value = "True", Code = "T"},
             };
 
         private string conditionName;

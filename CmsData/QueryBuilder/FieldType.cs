@@ -19,6 +19,7 @@ namespace CmsData
         DateSimple,
         Bit,
         NullBit,
+        EqualBit,
         Code,
         NullCode,
         CodeStr,

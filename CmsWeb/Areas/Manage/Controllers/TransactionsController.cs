@@ -72,7 +72,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 			return Content(count.ToString());
 		}
 		[HttpPost]
-		[Authorize(Roles = "Finance")]
+        //[Authorize(Roles = "ManageTransactions,Finance")]
+        [Authorize(Roles = "ManageTransactions")]
 		public ActionResult CreditVoid(int id, string type, decimal? amt, TransactionsModel m)
 		{
 			var t = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);

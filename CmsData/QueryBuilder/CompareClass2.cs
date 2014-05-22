@@ -8,9 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
-using System.Text;
 using System.Xml.Linq;
-using System.Linq.Expressions;
 using System.Web;
 using System.Web.Caching;
 
@@ -24,10 +22,10 @@ namespace CmsData
         internal string ToString(Condition c)
         {
             string fld = c.FieldInfo.Display(c);
-            if (c.ConditionName == "MatchAnything")
-                return fld;
             switch (FieldType)
             {
+                case FieldType.EqualBit:
+                    return fld;
                 case FieldType.NullBit:
                 case FieldType.Bit:
                 case FieldType.Code:

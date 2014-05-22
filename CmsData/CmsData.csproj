@@ -369,6 +369,7 @@
     <Compile Include="Generated\Functions\AttendCntHistory.cs" />
     <Compile Include="Generated\Functions\AttendDaysAfterNthVisitAsOf.cs" />
     <Compile Include="Generated\Functions\AttendedAsOf.cs" />
+    <Compile Include="Generated\Functions\CheckinByDate.cs" />
     <Compile Include="Generated\Functions\MeetingsDataForDateRange.cs" />
     <Compile Include="Generated\Functions\MembersWhoAttendedOrg.cs" />
     <Compile Include="Generated\Functions\PersonStatusFlag.cs" />
@@ -387,8 +388,10 @@
     <Compile Include="Generated\Views\AllStatusFlag.cs" />
     <Compile Include="Generated\Views\AttendCredit.cs" />
     <Compile Include="Generated\Views\ChangeLogDetail.cs" />
+    <Compile Include="Generated\Views\HeadOrSpouseWithEmail.cs" />
     <Compile Include="Generated\Views\MemberDatum.cs" />
     <Compile Include="Generated\Views\MissionTripTotal.cs" />
+    <Compile Include="Generated\Views\SpouseOrHeadWithEmail.cs" />
     <Compile Include="Generated\Views\StatusFlagColumn.cs" />
     <Compile Include="Generated\Views\StatusFlagList.cs" />
     <Compile Include="Generated\Views\StatusFlagNamesRole.cs" />

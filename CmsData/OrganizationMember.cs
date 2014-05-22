@@ -5,12 +5,9 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using CmsData.Registration;
-using IronPython.Modules;
 using UtilityExtensions;
 using System.Web;
 using System.Data.SqlClient;
@@ -259,38 +256,30 @@ namespace CmsData
 
         public Transaction AddTransaction(CMSDataContext Db, decimal amt, string reason)
         {
-            var qq = from t in Db.Transactions
-                     where t.OriginalTransaction.TransactionPeople.Any(pp => pp.PeopleId == PeopleId)
-                     where t.OriginalTransaction.OrgId == OrganizationId
-                     orderby t.Id descending
-                     select t;
-            var ti = qq.FirstOrDefault();
+            var ti = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
             if (ti == null)
-                return null;
-//todo: consider TransactionSummary
+            {
+                ti = (from t in Db.Transactions
+                      where t.OriginalTransaction.TransactionPeople.Any(pp => pp.PeopleId == PeopleId)
+                      where t.OriginalTransaction.OrgId == OrganizationId
+                      orderby t.Id descending
+                      select t).FirstOrDefault();
+                if (ti != null)
+                    TranId = ti.Id;
+            }
+
             var ti2 = new Transaction
                 {
                     Amt = amt,
-                    Amtdue = ti.Amtdue - amt,
-                    Name = ti.Name,
-                    First = ti.First,
-                    MiddleInitial = ti.MiddleInitial,
-                    Last = ti.Last,
-                    Suffix = ti.Suffix,
                     TransactionId = "{0} ({1})".Fmt(reason, Util.UserPeopleId ?? Util.UserId1),
-                    Address = ti.Address,
-                    City = ti.City,
-                    State = ti.State,
-                    Zip = ti.Zip,
-                    Testing = ti.Testing,
                     Description = ti.Description,
                     Url = ti.Url,
-                    Emails = ti.Emails,
                     TransactionDate = DateTime.Now,
-                    OrgId = ti.OrgId,
-                    Financeonly = ti.Financeonly,
-                    OriginalId = ti.OriginalId ?? ti.Id // links all the transactions together
+                    OrgId = OrganizationId
                 };
+
+            ti2.OriginalId = ti.Id;
+
             return ti2;
         }
 
@@ -303,8 +292,8 @@ namespace CmsData
                 return amountDue = Amount - TotalPaid(Db);
 
             var qq = from t in DbUtil.Db.ViewTransactionSummaries
-                where t.RegId == TranId && t.PeopleId == PeopleId
-                select t;
+                     where t.RegId == TranId && t.PeopleId == PeopleId
+                     select t;
             var tt = qq.SingleOrDefault();
             return tt == null ? 0 : tt.IndDue;
         }
@@ -319,8 +308,8 @@ namespace CmsData
             else
             {
                 var qq = from t in DbUtil.Db.ViewTransactionSummaries
-                    where t.RegId == TranId && t.PeopleId == PeopleId
-                    select t;
+                         where t.RegId == TranId && t.PeopleId == PeopleId
+                         select t;
                 var tt = qq.SingleOrDefault();
                 totalPaid = tt == null ? 0 : tt.IndPaid;
             }
