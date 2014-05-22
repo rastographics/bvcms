@@ -299,6 +299,10 @@ namespace CmsWeb.Models
                 organizations = from o in organizations
                                 where o.RegistrationTypeId > 0
                                 select o;
+            else if (OnlineReg == 98)
+                organizations = from o in organizations
+                                where o.RegistrationTypeId > 0 && o.IsMissionTrip == true
+                                select o;
             else if (OnlineReg > 0)
                 organizations = from o in organizations
                                 where o.RegistrationTypeId == OnlineReg
@@ -608,6 +612,11 @@ namespace CmsWeb.Models
             {
                 Value = "-1",
                 Text = "(not specified)",
+            });
+            list.Add(new SelectListItem
+            {
+                Value = "98",
+                Text = "Mission Trip",
             });
             return list;
         }
