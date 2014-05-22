@@ -146,40 +146,42 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 ViewData["text"] = "";
                 return View();
-            }
-            var lines = text.Split('\n');
-            var names = lines[0].Split('\t');
+            } 
+            var csv = new CsvReader(new StringReader(text), hasHeaders: true, delimiter: '\t');
+            var cols = csv.GetFieldHeaders();
 
-            for (var i = 1; i < lines.Length; i++)
+            while (csv.ReadNextRecord())
             {
-                var a = lines[i].Split('\t');
-                var oid = a[0].ToInt();
+                var oid = csv[0].ToInt();
                 var o = DbUtil.Db.LoadOrganizationById(oid);
-                for (var c = 1; c < a.Length; c++)
-                    switch (names[c].Trim())
+                for (var c = 1; c < csv.FieldCount; c++)
+                {
+                    var val = csv[c].Trim();
+                    var name = cols[c].Trim();
+                    switch (name)
                     {
                         case "Campus":
-                            if (a[c].TrimEnd().AllDigits())
+                            if (val.AllDigits())
                             {
-                                o.CampusId = a[c].ToInt();
+                                o.CampusId = val.ToInt();
                                 if (o.CampusId == 0)
                                     o.CampusId = null;
                             }
                             break;
                         case "CanSelfCheckin":
-                            o.CanSelfCheckin = a[c].ToBool2();
+                            o.CanSelfCheckin = val.ToBool2();
                             break;
                         case "RegStart":
-                            o.RegStart = a[c].ToDate();
+                            o.RegStart = val.ToDate();
                             break;
                         case "RegEnd":
-                            o.RegEnd = a[c].ToDate();
+                            o.RegEnd = val.ToDate();
                             break;
                         case "Schedule":
-                            if (a[c].HasValue() && a[c] != "None")
+                            if (val.HasValue() && val.NotEqual("None"))
                             {
                                 var sc = o.OrgSchedules.FirstOrDefault();
-                                var scin = Organization.ParseSchedule(a[c].TrimEnd());
+                                var scin = Organization.ParseSchedule(val);
                                 if (sc != null)
                                 {
                                     sc.SchedDay = scin.SchedDay;
@@ -188,89 +190,90 @@ namespace CmsWeb.Areas.Manage.Controllers
                                 else
                                     o.OrgSchedules.Add(scin);
                             }
+                            if (val.Equal("None"))
+                                DbUtil.Db.OrgSchedules.DeleteAllOnSubmit(o.OrgSchedules);
                             break;
                         case "BirthDayStart":
-                            o.BirthDayStart = a[c].ToDate();
+                            o.BirthDayStart = val.ToDate();
                             break;
                         case "BirthDayEnd":
-                            o.BirthDayEnd = a[c].ToDate();
+                            o.BirthDayEnd = val.ToDate();
                             break;
                         case "EntryPoint":
-                            if (a[c].TrimEnd().AllDigits())
+                            if (val.AllDigits())
                             {
-                                var id = a[c].ToInt();
+                                var id = val.ToInt();
                                 if (id > 0)
                                     o.EntryPointId = id;
                             }
                             break;
                         case "LeaderType":
-                            if (a[c].TrimEnd().AllDigits())
+                            if (val.AllDigits())
                             {
-                                var id = a[c].ToInt();
+                                var id = val.ToInt();
                                 if (id > 0)
                                     o.LeaderMemberTypeId = id;
                             }
                             break;
                         case "SecurityType":
-                            o.SecurityTypeId = string.Compare(a[c], "LeadersOnly", true) == 0 ? 2 : string.Compare(a[c], "UnShared", true) == 0 ? 3 : 0;
+                            o.SecurityTypeId = val.Equal("LeadersOnly") ? 2 : val.Equal("UnShared") ? 3 : 0;
                             break;
                         case "FirstMeeting":
-                            o.FirstMeetingDate = a[c].ToDate();
+                            o.FirstMeetingDate = val.ToDate();
                             break;
                         case "Gender":
-                            o.GenderId = a[c] == "Male" ? (int?)1 : a[c] == "Female" ? (int?)2 : null;
+                            o.GenderId = val.Equal("Male") ? (int?) 1 : val.Equal("Female") ? (int?) 2 : null;
                             break;
                         case "GradeAgeStart":
-                            o.GradeAgeStart = a[c].ToInt2();
+                            o.GradeAgeStart = val.ToInt2();
                             break;
                         case "MainFellowshipOrg":
-                            o.IsBibleFellowshipOrg = a[c].ToBool2();
+                            o.IsBibleFellowshipOrg = val.ToBool2();
                             break;
                         case "LastDayBeforeExtra":
-                            o.LastDayBeforeExtra = a[c].ToDate();
+                            o.LastDayBeforeExtra = val.ToDate();
                             break;
                         case "LastMeeting":
-                            o.LastMeetingDate = a[c].ToDate();
+                            o.LastMeetingDate = val.ToDate();
                             break;
                         case "Limit":
-                            o.Limit = a[c].ToInt2();
+                            o.Limit = val.ToInt2();
                             break;
                         case "Location":
-                            o.Location = a[c];
+                            o.Location = val;
                             break;
                         case "Name":
-                            o.OrganizationName = a[c];
+                            o.OrganizationName = val;
                             break;
                         case "NoSecurityLabel":
-                            o.NoSecurityLabel = a[c].ToBool2();
+                            o.NoSecurityLabel = val.ToBool2();
                             break;
                         case "NumCheckInLabels":
-                            o.NumCheckInLabels = a[c].ToInt2();
+                            o.NumCheckInLabels = val.ToInt2();
                             break;
                         case "NumWorkerCheckInLabels":
-                            o.NumWorkerCheckInLabels = a[c].ToInt2();
+                            o.NumWorkerCheckInLabels = val.ToInt2();
                             break;
                         case "OnLineCatalogSort":
-                            o.OnLineCatalogSort = a[c] == "0" ? (int?)null : a[c].ToInt2();
+                            o.OnLineCatalogSort = val == "0" ? (int?) null : val.ToInt2();
                             break;
                         case "OrganizationStatusId":
-                            o.OrganizationStatusId = a[c].ToInt();
+                            o.OrganizationStatusId = val.ToInt();
                             break;
                         case "PhoneNumber":
-                            o.PhoneNumber = a[c];
+                            o.PhoneNumber = val;
                             break;
                         case "RollSheetVisitorWks":
-                            o.RollSheetVisitorWks = a[c] == "0" ? (int?)null : a[c].ToInt2();
+                            o.RollSheetVisitorWks = val == "0" ? (int?) null : val.ToInt2();
                             break;
 
                         default:
-                            string name = names[c].Trim();
-                            string value = a[c].Trim();
-                            if (value.HasValue())
-                                o.AddEditExtraData(name, value);
+                            if (val.HasValue())
+                                o.AddEditExtraData(name, val);
                             break;
                     }
-                DbUtil.Db.SubmitChanges();
+                    DbUtil.Db.SubmitChanges();
+                }
             }
             return Redirect("/");
         }
