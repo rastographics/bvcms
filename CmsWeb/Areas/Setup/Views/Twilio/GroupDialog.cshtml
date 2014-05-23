@@ -18,7 +18,7 @@
 </head>
 <body>
     <center>
-	    <form action="@( groupID > 0 ? "/Twilio/GroupUpdate" : "/Setup/Twilio/GroupCreate" )" method="post">
+	    <form action="@( groupID > 0 ? "/Twilio/GroupUpdate" : "/Twilio/GroupCreate" )" method="post">
             <input type="hidden" name="id" value="@groupID" />
 	        <table cellspacing="10">
 	        <tr>
