@@ -39,8 +39,8 @@ namespace CmsWeb.Areas.Public.Controllers
 				return BaseMessage.createTypeErrorReturn();
 
 			var givingOrg = (from e in DbUtil.Db.Organizations
-								 where e.RegistrationTypeId == 8
-								 select e).FirstOrDefault();
+								  where e.RegistrationTypeId == 8
+								  select e).FirstOrDefault();
 
 			var roles = from r in DbUtil.Db.UserRoles
 							where r.UserId == Util.UserId
@@ -409,7 +409,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
 			var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mpa.orgID && m.MeetingDate == mpa.datetime);
-			
+
 			if (meeting == null)
 			{
 				meeting = new CmsData.Meeting
@@ -443,7 +443,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			return br;
 		}
-		
+
 		public ActionResult AddPerson(string data)
 		{
 			// Authenticate first
@@ -475,7 +475,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			p.LastName = mpap.lastName;
 			p.Name = "";
 
-			if( mpap.goesBy.Length > 0)
+			if (mpap.goesBy.Length > 0)
 				p.NickName = mpap.goesBy;
 
 			if (mpap.birthday != null)
@@ -492,13 +492,13 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			if (mpap.familyID > 0)
 			{
-				f = DbUtil.Db.Families.First( fam => fam.FamilyId == mpap.familyID);
+				f = DbUtil.Db.Families.First(fam => fam.FamilyId == mpap.familyID);
 			}
 			else
 			{
 				f = new Family();
 
-				if( mpap.homePhone.Length > 0 )
+				if (mpap.homePhone.Length > 0)
 					f.HomePhone = mpap.homePhone;
 
 				if (mpap.address.Length > 0)
@@ -551,7 +551,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			DbUtil.Db.SubmitChanges();
 
-			if( mpap.visitMeeting > 0 )
+			if (mpap.visitMeeting > 0)
 			{
 				var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == mpap.visitMeeting);
 				Attend.RecordAttendance(p.PeopleId, mpap.visitMeeting, true);
@@ -628,7 +628,7 @@ namespace CmsWeb.Areas.Public.Controllers
 								where e.PeopleId == Util.UserPeopleId
 								select e).FirstOrDefault();
 
-			if( payInfo != null )
+			if (payInfo != null)
 			{
 				List<MobilePaymentInfo> mpi = new List<MobilePaymentInfo>();
 
@@ -646,11 +646,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
 				br.data = JsonConvert.SerializeObject(mpi);
 			}
-			
+
 			return br;
 		}
 
-		public ActionResult processGiving( string data )
+		public ActionResult processGiving(string data)
 		{
 			// Authenticate first
 			var authError = Authenticate();
@@ -669,12 +669,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			Transaction ti = createTransaction(mpt);
 
-			if( ti != null && ti.Id > 0 )
+			if (ti != null && ti.Id > 0)
 			{
-				SagePayments sp = new SagePayments( DbUtil.Db, false );
+				SagePayments sp = new SagePayments(DbUtil.Db, false);
 				TransactionResponse tr = null;
 
-				switch( mpt.paymentType )
+				switch (mpt.paymentType)
 				{
 					case MobilePostTransaction.TYPE_BANK_ACCOUNT:
 						tr = sp.createVaultTransactionRequest(mpt.peopleID, mpt.amount, mpt.description, ti.Id, "B");
@@ -713,7 +713,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			}
 		}
 
-		public Transaction createTransaction( MobilePostTransaction mpt )
+		public Transaction createTransaction(MobilePostTransaction mpt)
 		{
 			var ti = new Transaction();
 
@@ -750,7 +750,6 @@ namespace CmsWeb.Areas.Public.Controllers
 			var org = DbUtil.Db.LoadOrganizationById(mpt.orgID);
 			var settings = new Settings(org.RegSetting, DbUtil.Db, mpt.orgID);
 
-
 			var text = settings.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
 			text = text.Replace("{amt}", (mpt.amount).ToString("N2"));
 			text = text.Replace("{date}", DateTime.Today.ToShortDateString());
@@ -763,19 +762,6 @@ namespace CmsWeb.Areas.Public.Controllers
 			text = text.Replace("{contactemail}", staff.EmailAddress);
 			text = text.Replace("{contactphone}", org.PhoneNumber.FmtFone());
 
-			/*
-			var text = p.setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
-			text = text.Replace("{amt}", (t.Amt ?? 0).ToString("N2"));
-			text = text.Replace("{date}", DateTime.Today.ToShortDateString());
-			text = text.Replace("{tranid}", t.Id.ToString());
-			text = text.Replace("{name}", p.person.Name);
-			text = text.Replace("{account}", "");
-			text = text.Replace("{email}", p.person.EmailAddress);
-			text = text.Replace("{phone}", p.person.HomePhone.FmtFone());
-			text = text.Replace("{contact}", staff.Name);
-			text = text.Replace("{contactemail}", staff.EmailAddress);
-			text = text.Replace("{contactphone}", p.org.PhoneNumber.FmtFone());
-
 			var re = new Regex(@"(?<b>.*?)<!--ITEM\sROW\sSTART-->(?<row>.*?)\s*<!--ITEM\sROW\sEND-->(?<e>.*)", RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
 			var match = re.Match(text);
 			var b = match.Groups["b"].Value;
@@ -783,21 +769,32 @@ namespace CmsWeb.Areas.Public.Controllers
 			var e = match.Groups["e"].Value;
 			var sb = new StringBuilder(b);
 
-			var desc = "{0}; {1}; {2}".Fmt(
-					  p.person.Name,
-					  p.person.PrimaryAddress,
-					  p.person.PrimaryZip);
-			foreach (var g in p.FundItemsChosen())
+			var desc = "{0}; {1}; {2}".Fmt(person.Name, person.PrimaryAddress, person.PrimaryZip);
+
+			foreach (var item in mpt.items)
 			{
-				if (g.amt > 0)
-				{
-					sb.AppendFormat(row, g.desc, g.amt);
-					p.person.PostUnattendedContribution(DbUtil.Db,
-																	g.amt,
-																	g.fundid,
-																	desc);
-				}
+				sb.AppendFormat(row, item.name, item.amount);
+				person.PostUnattendedContribution(DbUtil.Db, item.amount, item.id, desc);
 			}
+
+			var contributionemail = (from ex in person.PeopleExtras
+											 where ex.Field == "ContributionEmail"
+											 select ex.Data).SingleOrDefault();
+
+			if (contributionemail.HasValue())
+				contributionemail = (contributionemail ?? "").Trim();
+			if (!Util.ValidEmail(contributionemail))
+				contributionemail = person.FromEmail;
+
+			Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(mpt.orgID)),
+				 settings.Subject, sb.ToString(),
+				 Util.EmailAddressListFromString(contributionemail), 0, person.PeopleId);
+
+			DbUtil.Db.Email(contributionemail, DbUtil.Db.StaffPeopleForOrg(mpt.orgID),
+				 "Online giving contribution received",
+				 "See contribution records for {0} ({1})".Fmt(person.Name, person.PeopleId));
+
+			/*
 			t.Financeonly = true;
 			if (t.Donate > 0)
 			{
@@ -816,22 +813,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				if (m.testing == true && !t.TransactionId.Contains("(testing)"))
 					t.TransactionId += "(testing)";
 			}
-			var contributionemail = (from ex in p.person.PeopleExtras
-											 where ex.Field == "ContributionEmail"
-											 select ex.Data).SingleOrDefault();
-			if (contributionemail.HasValue())
-				contributionemail = (contributionemail ?? "").Trim();
-			if (!Util.ValidEmail(contributionemail))
-				contributionemail = p.person.FromEmail;
-
-			Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId)),
-				 p.setting.Subject, sb.ToString(),
-				 Util.EmailAddressListFromString(contributionemail), 0, p.PeopleId);
-			DbUtil.Db.Email(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
-				 "online giving contribution received",
-				 "see contribution records for {0} ({1})".Fmt(p.person.Name, p.PeopleId));
-			if (p.CreatingAccount == true)
-				p.CreateAccount();
+			p.CreateAccount();
 			*/
 		}
 	}

@@ -8,6 +8,7 @@ namespace CmsWeb.MobileAPI
 	public class MobilePostTransactionItem
 	{
 		public int id;
+		public string name;
 		public decimal amount;
 	}
 }
