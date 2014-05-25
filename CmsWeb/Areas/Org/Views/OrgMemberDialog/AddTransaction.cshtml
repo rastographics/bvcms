@@ -1,0 +1,18 @@
+﻿@model CmsWeb.Areas.Org.Models.OrgMemberTransactionModel
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h4>@Model.OrgName</h4>
+    <h5>Adding Transaction for @Model.Name</h5>
+</div>
+<div class="modal-body">
+    @Html.HiddenFor(m => m.OrgId)
+    @Html.HiddenFor(m => m.PeopleId)
+    @(Model.TransactionSummary == null
+        ? Html.EditorFor(m => m.Amount, new { label = "Total Fee" })
+        : Html.DisplayFor(m => m.TransactionSummary.TotDue, new { label = "Balance Due" }))
+    @Html.EditorFor(m => m.Payment, new { help = "> 0 to reduce balance, < 0 to increase balance" })
+</div>
+<div class="modal-footer">
+    <a href="/OrgMemberDialog2/Display/@Model.OrgId/@Model.PeopleId" class="btn ajax">Cancel</a>
+    <a id="add-mission-support" href="/OrgMemberDialog2/PostTransaction/@Model.OrgId/@Model.PeopleId" class="btn ajax btn-primary">Add Transaction</a>
+</div>

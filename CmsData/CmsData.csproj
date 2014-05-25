@@ -337,10 +337,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChangeDetail.cs" />
+    <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
-    <Compile Include="Attend.cs" />
-    <Compile Include="AuthorizeNet.cs" />
+    <Compile Include="Meetings\Attend.cs" />
+    <Compile Include="Finance\AuthorizeNet.cs" />
     <Compile Include="Batch\ExpressionVisitor.cs" />
     <Compile Include="Batch\LinqToSqlExtensions.cs" />
     <Compile Include="Classes\ExtraValues\Value.cs" />
@@ -350,21 +350,21 @@
     <Compile Include="Classes\QuickBooks\QBAccount.cs" />
     <Compile Include="Classes\QuickBooks\QBJournalEntryLine.cs" />
     <Compile Include="Classes\SmallGroupFinder\SmallGroupFinder.cs" />
-    <Compile Include="CMSMembershipProvider.cs" />
-    <Compile Include="CMSRoleProvider.cs" />
-    <Compile Include="Codes.cs" />
-    <Compile Include="Contact.cs" />
-    <Compile Include="ActivityLog.cs" />
-    <Compile Include="APIFunctions.cs" />
-    <Compile Include="APIOrganization.cs" />
-    <Compile Include="APIMeeting.cs" />
-    <Compile Include="APIPerson.cs" />
-    <Compile Include="APIContribution.cs" />
-    <Compile Include="BundleHeader.cs" />
-    <Compile Include="CheckinFamilyMember.cs" />
-    <Compile Include="APIContributionSearchModel.cs" />
-    <Compile Include="CreateDatabase.cs" />
-    <Compile Include="EmailReplacements.cs" />
+    <Compile Include="DbUtil\CMSMembershipProvider.cs" />
+    <Compile Include="DbUtil\CMSRoleProvider.cs" />
+    <Compile Include="DbUtil\Codes.cs" />
+    <Compile Include="Extensions\Contact.cs" />
+    <Compile Include="Extensions\ActivityLog.cs" />
+    <Compile Include="API\APIFunctions.cs" />
+    <Compile Include="API\APIOrganization.cs" />
+    <Compile Include="API\APIMeeting.cs" />
+    <Compile Include="API\APIPerson.cs" />
+    <Compile Include="API\APIContribution.cs" />
+    <Compile Include="Finance\BundleHeader.cs" />
+    <Compile Include="DbUtil\CheckinFamilyMember.cs" />
+    <Compile Include="API\APIContributionSearchModel.cs" />
+    <Compile Include="DbUtil\CreateDatabase.cs" />
+    <Compile Include="Email\EmailReplacements.cs" />
     <Compile Include="Generated\Functions\AttendanceTypeAsOf.cs" />
     <Compile Include="Generated\Functions\AttendCntHistory.cs" />
     <Compile Include="Generated\Functions\AttendDaysAfterNthVisitAsOf.cs" />
@@ -398,8 +398,8 @@
     <Compile Include="Generated\Views\TransactionBalance.cs" />
     <Compile Include="Generated\Views\TransactionList.cs" />
     <Compile Include="Generated\Views\TransactionSummary.cs" />
-    <Compile Include="ITableWithExtraValues.cs" />
-    <Compile Include="Query.cs" />
+    <Compile Include="DbUtil\ITableWithExtraValues.cs" />
+    <Compile Include="QueryBuilder\Query.cs" />
     <Compile Include="QueryBuilder\CategoryClass2.cs" />
     <Compile Include="QueryBuilder\CompareClass2.cs" />
     <Compile Include="QueryBuilder\FieldClass2.cs" />
@@ -407,7 +407,7 @@
     <Compile Include="QueryBuilder\QueryContext.cs" />
     <Compile Include="QueryBuilder\SerializeJson.cs" />
     <Compile Include="QueryBuilder\Serialize2.cs" />
-    <Compile Include="Content.cs" />
+    <Compile Include="Extensions\Content.cs" />
     <Compile Include="Generated\ActivityOld.cs" />
     <Compile Include="Generated\BuildingAccessType.cs" />
     <Compile Include="Generated\CheckInAccessType.cs" />
@@ -435,7 +435,7 @@
     <Compile Include="Generated\VoluteerApprovalId.cs" />
     <Compile Include="Classes\QuickBooks\QBDHelper.cs" />
     <Compile Include="Classes\QuickBooks\QBOHelper.cs" />
-    <Compile Include="Picture.cs" />
+    <Compile Include="Extensions\Picture.cs" />
     <Compile Include="QueryBuilder\GetExpression.cs" />
     <Compile Include="QueryBuilder\Expressions\Admin.cs" />
     <Compile Include="QueryBuilder\Expressions\Membership.cs" />
@@ -452,8 +452,8 @@
     <Compile Include="QueryBuilder\Expressions\CurrentOrg.cs" />
     <Compile Include="QueryBuilder\Expressions\EnrollmentsHistory.cs" />
     <Compile Include="QueryBuilder\Expressions\Enrollments.cs" />
-    <Compile Include="Volunteer.cs" />
-    <Compile Include="FamilyExtra.cs" />
+    <Compile Include="Extensions\Volunteer.cs" />
+    <Compile Include="Extensions\FamilyExtra.cs" />
     <Compile Include="Generated\BackgroundCheck.cs" />
     <Compile Include="Generated\BackgroundCheckLabel.cs" />
     <Compile Include="Generated\BackgroundCheckMVRCode.cs" />
@@ -483,9 +483,9 @@
     <Compile Include="Generated\SubRequest.cs" />
     <Compile Include="Generated\Views\MasterOrg.cs" />
     <Compile Include="Generated\Views\PickListOrgs2.cs" />
-    <Compile Include="Meeting.cs" />
+    <Compile Include="Meetings\Meeting.cs" />
     <Compile Include="Classes\ProtectMyMinistry\ProtectMyMinistryHelper.cs" />
-    <Compile Include="PythonEvents.cs" />
+    <Compile Include="API\PythonEvents.cs" />
     <Compile Include="Generated\AddToOrgFromTagRun.cs" />
     <Compile Include="Generated\CheckedBatch.cs" />
     <Compile Include="Generated\CheckInActivity.cs" />
@@ -503,8 +503,8 @@
     <Compile Include="Generated\RepairTransactionsRun.cs" />
     <Compile Include="Generated\UploadPeopleRun.cs" />
     <Compile Include="Generated\Views\PickListOrg.cs" />
-    <Compile Include="ManagedGiving.cs" />
-    <Compile Include="Dynamic.cs" />
+    <Compile Include="Finance\ManagedGiving.cs" />
+    <Compile Include="DbUtil\Dynamic.cs" />
     <Compile Include="Classes\QuickBooks\QuickBooksHelper.cs" />
     <Compile Include="Registration\Ask.cs" />
     <Compile Include="Registration\AskRequest.cs" />
@@ -524,8 +524,8 @@
     <Compile Include="Registration\OrgFees.cs" />
     <Compile Include="Registration\Parser.cs" />
     <Compile Include="Registration\AskYesNoQuestions.cs" />
-    <Compile Include="SagePayments.cs" />
-    <Compile Include="TransactionResponse.cs" />
+    <Compile Include="Finance\SagePayments.cs" />
+    <Compile Include="Finance\TransactionResponse.cs" />
     <Compile Include="Classes\Twilio\TwilioHelper.cs" />
     <Compile Include="Generated\ChangeDetail.cs" />
     <Compile Include="Generated\Duplicate.cs" />
@@ -534,7 +534,7 @@
     <Compile Include="Generated\OrganizationExtra.cs" />
     <Compile Include="Generated\PrintJob.cs" />
     <Compile Include="Generated\RecurringAmount.cs" />
-    <Compile Include="QueryFunctions.cs" />
+    <Compile Include="API\QueryFunctions.cs" />
     <Compile Include="Generated\AttendCredit.cs" />
     <Compile Include="Generated\Contact.cs" />
     <Compile Include="Generated\ContactReason.cs" />
@@ -550,10 +550,10 @@
     <Compile Include="Generated\OrgSchedule.cs" />
     <Compile Include="Generated\QueryStat.cs" />
     <Compile Include="Registration\Settings.cs" />
-    <Compile Include="Transaction.cs" />
-    <Compile Include="Division.cs" />
-    <Compile Include="Coupon.cs" />
-    <Compile Include="Emailer.cs" />
+    <Compile Include="Finance\Transaction.cs" />
+    <Compile Include="Extensions\Division.cs" />
+    <Compile Include="Finance\Coupon.cs" />
+    <Compile Include="Email\Emailer.cs" />
     <Compile Include="Generated\ChangeLog.cs" />
     <Compile Include="Generated\Coupon.cs" />
     <Compile Include="Generated\EmailQueue.cs" />
@@ -574,8 +574,8 @@
     <Compile Include="Generated\Views\ActivityAll.cs" />
     <Compile Include="Generated\Views\DiscActivityLog.cs" />
     <Compile Include="Generated\Views\RandNumber.cs" />
-    <Compile Include="MemberRules.cs" />
-    <Compile Include="EmailOptOut.cs" />
+    <Compile Include="API\MemberRules.cs" />
+    <Compile Include="Email\EmailOptOut.cs" />
     <Compile Include="Generated\Address.cs" />
     <Compile Include="Generated\EmailLog.cs" />
     <Compile Include="Generated\EmailOptOut.cs" />
@@ -583,13 +583,13 @@
     <Compile Include="Generated\Views\Church.cs" />
     <Compile Include="Generated\Views\Sproc.cs" />
     <Compile Include="Generated\Views\Trigger.cs" />
-    <Compile Include="PeopleExtra.cs" />
+    <Compile Include="Extensions\PeopleExtra.cs" />
     <Compile Include="Generated\PeopleExtra.cs" />
     <Compile Include="Generated\Views\ContributionsView.cs" />
     <Compile Include="Generated\VolunteerCode.cs" />
-    <Compile Include="RecReg.cs" />
-    <Compile Include="Session.cs" />
-    <Compile Include="Session2.cs" />
+    <Compile Include="Extensions\RecReg.cs" />
+    <Compile Include="DbUtil\Session.cs" />
+    <Compile Include="DbUtil\Session2.cs" />
     <Compile Include="Generated\Campu.cs" />
     <Compile Include="Generated\CardIdentifier.cs" />
     <Compile Include="Generated\CheckInTime.cs" />
@@ -603,7 +603,7 @@
     <Compile Include="Generated\Views\PodcastSummary.cs" />
     <Compile Include="Generated\Views\UserList.cs" />
     <Compile Include="Generated\Word.cs" />
-    <Compile Include="MembershipService.cs" />
+    <Compile Include="DbUtil\MembershipService.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -649,7 +649,7 @@
     <Compile Include="Generated\VolInterestInterestCode.cs" />
     <Compile Include="Generated\Zip.cs" />
     <Compile Include="Generated\ZipCode.cs" />
-    <Compile Include="IndividualContribution.cs" />
+    <Compile Include="Finance\IndividualContribution.cs" />
     <Compile Include="Generated\Attend.cs" />
     <Compile Include="Generated\BundleHeaderType.cs" />
     <Compile Include="Generated\BundleStatusType.cs" />
@@ -659,11 +659,11 @@
     <Compile Include="Generated\TaskList.cs" />
     <Compile Include="Generated\TaskListOwner.cs" />
     <Compile Include="Generated\TaskStatus.cs" />
-    <Compile Include="OrganizationMember.cs" />
-    <Compile Include="Task.cs" />
+    <Compile Include="Organization\OrganizationMember.cs" />
+    <Compile Include="Extensions\Task.cs" />
     <Compile Include="Generated\Task.cs" />
-    <Compile Include="DbUtil.cs" />
-    <Compile Include="Family.cs" />
+    <Compile Include="DbUtil\DbUtil.cs" />
+    <Compile Include="Extensions\Family.cs" />
     <Compile Include="Generated\BaptismStatus.cs" />
     <Compile Include="Generated\BaptismType.cs" />
     <Compile Include="Generated\Contactee.cs" />
@@ -680,7 +680,7 @@
     <Compile Include="Generated\VolApplicationStatus.cs" />
     <Compile Include="Generated\Volunteer.cs" />
     <Compile Include="Generated\VolunteerForm.cs" />
-    <Compile Include="User.cs" />
+    <Compile Include="Extensions\User.cs" />
     <Compile Include="Generated\Role.cs" />
     <Compile Include="Generated\UserRole.cs" />
     <Compile Include="Generated\Audit.cs" />
@@ -688,7 +688,7 @@
     <Compile Include="Generated\GeoCode.cs" />
     <Compile Include="Generated\Picture.cs" />
     <Compile Include="Generated\ZipCodeBoundary.cs" />
-    <Compile Include="Organization.cs" />
+    <Compile Include="Organization\Organization.cs" />
     <Compile Include="Generated\Tag.cs" />
     <Compile Include="Generated\TagPerson.cs" />
     <Compile Include="Generated\TagType.cs" />
@@ -700,8 +700,8 @@
     <Compile Include="Generated\Functions\OrganizationsByDiv.cs" />
     <Compile Include="Generated\Functions\OrganizationsByPerson.cs" />
     <Compile Include="Generated\Functions\PrevOrganizationsByPerson.cs" />
-    <Compile Include="Person.cs" />
-    <Compile Include="Context.cs" />
+    <Compile Include="Extensions\Person.cs" />
+    <Compile Include="DbUtil\Context.cs" />
     <Compile Include="Generated\AddressType.cs" />
     <Compile Include="Generated\Application.cs" />
     <Compile Include="Generated\ApplicationPrereq.cs" />
@@ -739,8 +739,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryBuilder\FieldType.cs" />
     <Compile Include="QueryBuilder\QueryType.cs" />
-    <Compile Include="Tag.cs" />
-    <Compile Include="APIWriter.cs" />
+    <Compile Include="Extensions\Tag.cs" />
+    <Compile Include="API\APIWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -801,6 +801,7 @@
       <Name>UtilityExtensions</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

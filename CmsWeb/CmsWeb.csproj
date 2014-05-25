@@ -316,6 +316,7 @@
     <Compile Include="Areas\Main\Models\Export\MissionTripFundingModel.cs" />
     <Compile Include="Areas\Main\Models\Export\WorshipAttendanceModel.cs" />
     <Compile Include="Areas\Org\Controllers\MissionTripEmailController.cs" />
+    <Compile Include="Areas\Org\Models\OrgMemberTransactionModel.cs" />
     <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
     <Compile Include="Areas\Org\Models\MissionSupportModel.cs" />
     <Compile Include="Areas\Public\AreaRegistration.cs">
@@ -805,12 +806,6 @@
     <Content Include="Scripts\bundle.person.js" />
     <Content Include="Scripts\bundle.query2.js" />
     <Content Include="Scripts\bundle.taskpage.js" />
-    <None Include="Scripts\jquery-1.4.4-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.4.4.js" />
-    <Content Include="Scripts\jquery-1.4.4.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jQuery\jquery-ui.effects.min.js" />
@@ -1125,6 +1120,8 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\EmptyRow.cshtml" />
     <Content Include="Areas\Main\Views\Organization\ReGenPaylinks.cshtml" />
     <Content Include="packages.config" />
+    <Content Include="Areas\Org\Views\OrgMemberDialog\AddTransaction.cshtml" />
+    <Content Include="Areas\Org\Views\OrgMemberDialog\AddTransactionDone.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web;
 using CmsData;
 using CmsData.Registration;
 using CmsWeb.Code;
@@ -16,6 +17,7 @@ namespace CmsWeb.Areas.Org.Models
         public CmsData.Organization Organization;
         public List<OrgMemMemTag> OrgMemMemTags;
         public bool IsMissionTrip;
+        public CmsData.View.TransactionSummary TransactionSummary;
 
         public OrgMemberModel()
         {
@@ -27,31 +29,44 @@ namespace CmsWeb.Areas.Org.Models
             PeopleId = pid;
             Populate();
         }
+
         private void Populate()
         {
             var i = (from mm in DbUtil.Db.OrganizationMembers
-                     where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
-                     select new
-                         {
-                             mm,
-                             mm.Person.Name,
-                             mm.Organization.OrganizationName,
-                             mm.Organization.RegSetting,
-                             mm.Organization,
-                             mm.OrgMemMemTags,
-                             mm.Organization.IsMissionTrip
-                         }).SingleOrDefault();
+                where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
+                select new
+                {
+                    mm,
+                    mm.Person.Name,
+                    mm.Organization.OrganizationName,
+                    mm.Organization.RegSetting,
+                    mm.Organization,
+                    mm.OrgMemMemTags,
+                    mm.Organization.IsMissionTrip,
+                    ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId)
+                }).SingleOrDefault();
             if (i == null)
                 throw new Exception("missing OrgMember at oid={0}, pid={0}".Fmt(OrgId, PeopleId));
             om = i.mm;
+            TransactionSummary = i.ts;
             this.CopyPropertiesFrom(om);
             Name = i.Name;
-            AmountPaidTransactions = om.TotalPaid(DbUtil.Db);
+
+            if (TransactionSummary != null)
+            {
+                AmountPaidTransactions = IsMissionTrip
+                    ? om.TotalPaid(DbUtil.Db)
+                    : TransactionSummary.IndPaid;
+                AmountDue = IsMissionTrip
+                    ? om.AmountDue(DbUtil.Db)
+                    : TransactionSummary.IndDue;
+            }
+
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
             IsMissionTrip = i.IsMissionTrip ?? false;
-            Setting = new Settings(i.RegSetting, DbUtil.Db, OrgId.Value);
+            Setting = new Settings(i.RegSetting, DbUtil.Db, OrgId ?? 0);
         }
 
 
@@ -78,7 +93,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public string RegisterEmail { get; set; }
 
-        public string Request  { get; set; }
+        public string Request { get; set; }
 
         public int? Grade { get; set; }
 
@@ -89,16 +104,14 @@ namespace CmsWeb.Areas.Org.Models
 
 //        [DisplayName("Amount Paid Manually")]
 //        public decimal? AmountPaid { get; set; }
-        
+
         [DisplayName("Amount Paid")]
         public decimal? AmountPaidTransactions { get; set; }
 
-        public decimal? AmountDue { get { return om.AmountDue(DbUtil.Db); } }
+        [DisplayName("Amount Due")]
+        public decimal? AmountDue { get; set; }
 
-        [NoUpdate]
-        public string PayLink { get; set; }
-
-        public string TransactionsLink 
+        public string TransactionsLink
         {
             get { return "/Transactions/" + om.TranId; }
         }
@@ -114,6 +127,11 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesTo(om);
             DbUtil.Db.SubmitChanges();
             Populate();
+        }
+
+        public string PayLink
+        {
+            get { return om.PayLink2(); }
         }
     }
 }

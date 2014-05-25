@@ -254,12 +254,12 @@ namespace CmsData
             }
         }
 
-        public Transaction AddTransaction(CMSDataContext Db, decimal amt, string reason)
+        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, decimal? amount = null)
         {
-            var ti = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
+            var ti = db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
             if (ti == null)
             {
-                ti = (from t in Db.Transactions
+                ti = (from t in db.Transactions
                       where t.OriginalTransaction.TransactionPeople.Any(pp => pp.PeopleId == PeopleId)
                       where t.OriginalTransaction.OrgId == OrganizationId
                       orderby t.Id descending
@@ -270,15 +270,34 @@ namespace CmsData
 
             var ti2 = new Transaction
                 {
-                    Amt = amt,
                     TransactionId = "{0} ({1})".Fmt(reason, Util.UserPeopleId ?? Util.UserId1),
-                    Description = ti.Description,
-                    Url = ti.Url,
+                    Description = Organization.OrganizationName,
                     TransactionDate = DateTime.Now,
-                    OrgId = OrganizationId
+                    OrgId = OrganizationId,
+                    Name = Person.Name,
+                    First = Person.PreferredName,
+                    Last = Person.LastName,
+                    MiddleInitial = Person.MiddleName.Truncate(1),
+                    Suffix = Person.SuffixCode,
+                    Address = Person.PrimaryAddress,
+                    City = Person.PrimaryCity,
+                    State = Person.PrimaryState,
+                    Zip = Person.PrimaryZip,
+                    LoginPeopleId = Util.UserPeopleId,
+                    Approved = true,
+                    Amt = payment,
+                    Amtdue = (amount ?? payment) - payment
                 };
 
-            ti2.OriginalId = ti.Id;
+            db.Transactions.InsertOnSubmit(ti2);
+            db.SubmitChanges();
+            if (TranId == null)
+            {
+                TranId = ti2.Id;
+                ti2.TransactionPeople.Add(new TransactionPerson { PeopleId = PeopleId, OrgId = OrganizationId, Amt = amount });
+            }
+            ti2.OriginalId = TranId;
+            db.SubmitChanges();
 
             return ti2;
         }
@@ -303,16 +322,7 @@ namespace CmsData
             if (totalPaid.HasValue)
                 return totalPaid.Value;
 
-            if (Organization.IsMissionTrip == true)
-                totalPaid = Db.TotalPaid(OrganizationId, PeopleId);
-            else
-            {
-                var qq = from t in DbUtil.Db.ViewTransactionSummaries
-                         where t.RegId == TranId && t.PeopleId == PeopleId
-                         select t;
-                var tt = qq.SingleOrDefault();
-                totalPaid = tt == null ? 0 : tt.IndPaid;
-            }
+            totalPaid = Db.TotalPaid(OrganizationId, PeopleId);
             return totalPaid ?? 0;
         }
 
@@ -338,6 +348,14 @@ namespace CmsData
         public Registration.Settings RegSetting()
         {
             return new Settings(Organization.RegSetting, DbUtil.Db, OrganizationId);
+        }
+
+        public string PayLink2()
+        {
+            if(!TranId.HasValue)
+                return null;
+            var estr = HttpUtility.UrlEncode(Util.Encrypt(TranId.ToString()));
+            return DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
         }
     }
 }
