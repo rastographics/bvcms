@@ -56,6 +56,17 @@ namespace CmsData.Classes.Transnational
 			}
 		}
 
+		public TransactionResponse getTransactionRespose()
+		{
+			return new TransactionResponse
+			{
+				Approved = response == RESPONSE_APPROVED,
+				AuthCode = authcode,
+				Message = getErrorMessage(),
+				TransactionId = transactionid
+			};
+		}
+
 
 		// --- FIELDS ---
 		public const string FIELD_RESPONSE = "response";
@@ -167,7 +178,7 @@ namespace CmsData.Classes.Transnational
 		public const string CVV_NOT_CERTIFIED = "U";
 		// --- END CVV_RESPOSE_CODES ---
 
-		public const Dictionary<int, string> errorMessages = new Dictionary<int, string>() {
+		public Dictionary<int, string> errorMessages = new Dictionary<int, string>() {
 			{ ERROR_NONE, "Transaction was approved" },
 			{ ERROR_DECLINED, "Transaction was declined" },
 			{ ERROR_DO_NOT_HONOR, "Do not honor" },

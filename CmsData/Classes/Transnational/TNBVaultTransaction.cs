@@ -4,7 +4,7 @@
 	{
 		public TNBVaultTransaction()
 		{
-			setDemoUserPass();
+			setUserPass();
 		}
 
 		public void setVaultID(int value)

@@ -368,10 +368,13 @@
     <Compile Include="Classes\Transnational\TNBTransactionSaleCC.cs" />
     <Compile Include="Classes\Transnational\TNBTransactionUpdate.cs" />
     <Compile Include="Classes\Transnational\TNBTransactionVoid.cs" />
-    <Compile Include="Classes\Transnational\TNBVaultACH.cs" />
-    <Compile Include="Classes\Transnational\TNBVaultCC.cs" />
+    <Compile Include="Classes\Transnational\TNBVaultAddACH.cs" />
+    <Compile Include="Classes\Transnational\TNBVaultAddCC.cs" />
     <Compile Include="Classes\Transnational\TNBVaultBase.cs" />
+    <Compile Include="Classes\Transnational\TNBVaultDelete.cs" />
     <Compile Include="Classes\Transnational\TNBVaultTransaction.cs" />
+    <Compile Include="Classes\Transnational\TNBVaultUpdateACH.cs" />
+    <Compile Include="Classes\Transnational\TNBVaultUpdateCC.cs" />
     <Compile Include="CMSMembershipProvider.cs" />
     <Compile Include="CMSRoleProvider.cs" />
     <Compile Include="Codes.cs" />

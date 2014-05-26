@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace CmsData.Classes.Transnational
 {
-	class TNBTransactionSaleACH : TNBTransactionBase
+	class TNBVaultAddACH : TNBVaultBase
 	{
-		public TNBTransactionSaleACH()
+		public TNBVaultAddACH()
 		{
-			setDemoUserPass();
+			setUserPass();
 
-			nvc.Add(FIELD_TYPE, TYPE_SALE);
+			nvc.Add(FIELD_FUNCTION, VALUE_FUNCTION_ADD_CUSTOMER);
 		}
 
 		public void setACHName(string value)
@@ -30,11 +30,6 @@ namespace CmsData.Classes.Transnational
 			nvc.Add(FIELD_ACH_ROUTING, value);
 		}
 
-		public void setAmount(string value)
-		{
-			nvc.Add(FIELD_AMOUNT, value);
-		}
-
 		public void setFirstName(string value)
 		{
 			nvc.Add(FIELD_FIRST_NAME, value);
@@ -48,11 +43,6 @@ namespace CmsData.Classes.Transnational
 		public void setAddress(string value)
 		{
 			nvc.Add(FIELD_ADDRESS1, value);
-		}
-
-		public void setAddress2(string value)
-		{
-			nvc.Add(FIELD_ADDRESS2, value);
 		}
 
 		public void setCity(string value)
@@ -83,11 +73,6 @@ namespace CmsData.Classes.Transnational
 		public void setEMail(string value)
 		{
 			nvc.Add(FIELD_EMAIL, value);
-		}
-
-		public void setIPAddress(string value)
-		{
-			nvc.Add(FIELD_IP, value);
 		}
 	}
 }

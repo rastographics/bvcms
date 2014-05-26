@@ -9,57 +9,22 @@ namespace CmsData.Classes.Transnational
 {
 	class TNBVaultBase
 	{
+		private const bool testing = true;
+
 		protected NameValueCollection nvc = new NameValueCollection();
 
-		protected void setDemoUserPass()
+		protected void setUserPass()
 		{
-			nvc.Add(FIELD_USERNAME, "demo");
-			nvc.Add(FIELD_PASSWORD, "password");
-		}
-
-		public void setFirstName( string value )
-		{
-			nvc.Add(FIELD_FIRST_NAME, value);
-		}
-
-		public void setLastName(string value)
-		{
-			nvc.Add(FIELD_LAST_NAME, value);
-		}
-
-		public void setAddress(string value)
-		{
-			nvc.Add(FIELD_ADDRESS1, value);
-		}
-
-		public void setCity(string value)
-		{
-			nvc.Add(FIELD_CITY, value);
-		}
-
-		public void setState(string value)
-		{
-			nvc.Add(FIELD_STATE, value);
-		}
-
-		public void setZip(string value)
-		{
-			nvc.Add(FIELD_ZIP, value);
-		}
-
-		public void setCountry(string value)
-		{
-			nvc.Add(FIELD_COUNTRY, value);
-		}
-
-		public void setPhone(string value)
-		{
-			nvc.Add(FIELD_PHONE, value);
-		}
-
-		public void setEMail(string value)
-		{
-			nvc.Add(FIELD_EMAIL, value);
+			if (testing)
+			{
+				nvc.Add(FIELD_USERNAME, "demo");
+				nvc.Add(FIELD_PASSWORD, "password");
+			}
+			else
+			{
+				nvc.Add(FIELD_USERNAME, DbUtil.Db.Setting("TNBUsername", ""));
+				nvc.Add(FIELD_PASSWORD, DbUtil.Db.Setting("TNBPassword", ""));
+			}
 		}
 
 		public NameValueCollection getPostValues()
