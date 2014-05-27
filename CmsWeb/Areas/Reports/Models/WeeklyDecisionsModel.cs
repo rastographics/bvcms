@@ -375,9 +375,7 @@ namespace CmsWeb.Areas.Reports.Models
                     break;
             }
             cc.Save(DbUtil.Db);
-            if (ViewExtensions2.UseNewLook())
-                return "/Query/" + cc.Id;
-            return "/QueryBuilder2/Main/" + cc.Id;
+            return "/Query/" + cc.Id;
         }
 
         public SelectList CampusList()

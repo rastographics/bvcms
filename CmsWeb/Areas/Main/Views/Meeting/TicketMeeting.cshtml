@@ -68,14 +68,7 @@
         <td colspan="2">
             @Html.CheckBox("requireMember")Require Org Member |
 			@Html.CheckBox("requireRegistered")Require Registered
-            @if (ViewExtensions2.UseNewLook())
-            {
-                <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="bt searchadd" title="Click to Add Guests to Meeting">Add Guests</a>
-            }
-            else
-            {
-                <a id="addvisitor" href="/SearchAdd/@Model.meeting.MeetingId?type=visitor" class="bt">Add Guests</a>
-            }
+            <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="bt searchadd" title="Click to Add Guests to Meeting">Add Guests</a>
         </td>
     </tr>
 </table>

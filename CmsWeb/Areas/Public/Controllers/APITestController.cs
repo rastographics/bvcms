@@ -48,29 +48,6 @@ namespace CmsWeb.Areas.Public.Controllers
 			var init = (string)Session["APIinit"];
 			return Content(APIFunctions.TestAPI(init, script, args));
 		}
-        public ActionResult UseNewLook(int? id)
-        {
-            if(id.HasValue)
-                DbUtil.Db.SetUserPreference(id.Value, "UseNewLookForSure", true);
-            else
-                DbUtil.Db.SetUserPreference("UseNewLookForSure", true);
-
-            if(Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.ToString());
-            return Redirect("/");
-        }
-        public ActionResult UseOldLook(int? id)
-        {
-            if(id.HasValue)
-                DbUtil.Db.SetUserPreference(id.Value, "UseNewLookForSure", false);
-            else
-                DbUtil.Db.SetUserPreference("UseNewLookForSure", false);
-
-            if(Request.UrlReferrer != null)
-                return Redirect(Request.UrlReferrer.ToString());
-            return Redirect("/");
-        }
-
         [Authorize(Roles = "Finance")]
         public ActionResult TurnFinanceOn()
         {

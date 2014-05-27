@@ -96,17 +96,17 @@ namespace CmsWeb.Areas.Main.Controllers
             model.AddList(ListName);
             return View("TabsOptions", model);
         }
-        public ActionResult SearchContact(int? id)
-        {
-            var m = new SearchContactModel();
-            UpdateModel<ISearchContactFormBindable>(m);
-            if (id.HasValue)
-            {
-                m.Page = id;
-                return PartialView("SearchContactRows", m);
-            }
-            return PartialView(m);
-        }
+//        public ActionResult SearchContact(int? id)
+//        {
+//            var m = new SearchContactModel();
+//            UpdateModel<ISearchContactFormBindable>(m);
+//            if (id.HasValue)
+//            {
+//                m.Page = id;
+//                return PartialView("SearchContactRows", m);
+//            }
+//            return PartialView(m);
+//        }
         [HttpPost]
         public ActionResult AddSourceContact(int id, int contactid)
         {

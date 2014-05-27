@@ -33,14 +33,7 @@
                 <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link">@Model.Owner</a>
                 @if (Model.IsOwner)
                 {
-                    if (ViewExtensions2.UseNewLook())
-                    {
-                        <a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd">(transfer)</a>
-                    }
-                    else
-                    {
-                        <a id="changeowner" href="/SearchAdd/@Model.Id?type=taskowner">(transfer)</a>
-                    }
+                    <a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd">(transfer)</a>
                 }
             </td>
         </tr>
@@ -53,14 +46,7 @@
                 }
                 @if (Model.IsOwner)
                 {
-                    if (ViewExtensions2.UseNewLook())
-                    {
-                        <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">@Model.ChangeCoOwner</a>
-                    }
-                    else
-                    {
-                        <a id="delegate" href="/SearchAdd/@Model.Id?type=taskdelegate">@Model.ChangeCoOwner</a>
-                    }
+                    <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">@Model.ChangeCoOwner</a>
                 }
             </td>
         </tr>
@@ -104,14 +90,7 @@
                 }
                 @if (Model.IsAnOwner)
                 {
-                    if (ViewExtensions2.UseNewLook())
-                    {
-                        <a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd">@Model.ChangeWho</a>
-                    }
-                    else
-                    {
-                        <a id="changeabout" href="/SearchAdd/@Model.Id?type=taskabout">@Model.ChangeWho</a>
-                    }
+                    <a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd">@Model.ChangeWho</a>
                 }
                 @if (Model.WhoId.HasValue)
                 {

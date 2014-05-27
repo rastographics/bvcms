@@ -10,8 +10,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpGet, Route("~/ContactSearch2")]
         public ActionResult Index()
         {
-            if (!ViewExtensions2.UseNewLook())
-                return Redirect("/ContactSearch");
             Response.NoCache();
             var m = new ContactSearchModel();
             m.Pager.Set("/ContactSearch2/Results");

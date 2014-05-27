@@ -52,8 +52,6 @@ namespace CmsWeb
             if (AccountController.TryImpersonate())
             {
                 var returnUrl = Request.QueryString["returnUrl"];
-                if (!DbUtil.Db.UserPreference("UseNewLookForSure").HasValue())
-                    DbUtil.Db.SetUserPreference("UseNewLookForSure", "true");
                 filterContext.Result = Redirect(returnUrl.HasValue() 
                     ? returnUrl 
                     : Request.RawUrl);
@@ -349,7 +347,7 @@ table.grid tr:nth-child(1) {
                     cmd.Parameters.AddWithValue("userid", userid);
                     cmd.Parameters.AddWithValue("id", id);
                     cmd.Parameters.AddWithValue("qs", querystring.Truncate(100));
-                    cmd.Parameters.AddWithValue("newui", userid.HasValue() && ViewExtensions2.UseNewLook());
+                    cmd.Parameters.AddWithValue("newui", userid.HasValue());
                     cmd.ExecuteNonQuery();
                     cn.Close();
                 }

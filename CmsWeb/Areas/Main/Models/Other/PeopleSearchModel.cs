@@ -352,6 +352,14 @@ namespace CmsWeb.Models
             return _count.Value;
         }
 
+        private static string IdCode(object items, int id)
+        {
+            var list = items as IEnumerable<CodeValueItem>;
+            var ret = (from v in list
+                       where v.Id == id
+                       select v.IdCode).Single();
+            return ret;
+        }
         public string ConvertToSearch()
         {
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -359,7 +367,7 @@ namespace CmsWeb.Models
 
             if (m.memberstatus > 0)
                 cc.AddNewClause(QueryType.MemberStatusId, CompareType.Equal,
-                                QueryModel2.IdCode(cv.MemberStatusCodes(), m.memberstatus));
+                                IdCode(cv.MemberStatusCodes(), m.memberstatus));
 
             if (m.name.HasValue())
             {
@@ -445,25 +453,23 @@ namespace CmsWeb.Models
             }
             if (m.campus > 0)
                 cc.AddNewClause(QueryType.CampusId, CompareType.Equal,
-                                QueryModel2.IdCode(cv.AllCampuses(), m.campus));
+                                IdCode(cv.AllCampuses(), m.campus));
             else if (m.campus == -1)
                 cc.AddNewClause(QueryType.CampusId, CompareType.IsNull,
-                                QueryModel2.IdCode(cv.AllCampuses(), m.campus));
+                                IdCode(cv.AllCampuses(), m.campus));
             if (m.gender != 99)
                 cc.AddNewClause(QueryType.GenderId, CompareType.Equal,
-                                QueryModel2.IdCode(cv.GenderCodes(), m.gender));
+                                IdCode(cv.GenderCodes(), m.gender));
             if (m.marital != 99)
                 cc.AddNewClause(QueryType.MaritalStatusId, CompareType.Equal,
-                                QueryModel2.IdCode(cv.MaritalStatusCodes(), m.marital));
+                                IdCode(cv.MaritalStatusCodes(), m.marital));
             if(m.statusflags != null)
                 foreach (var f in m.statusflags)
                     cc.AddNewClause(QueryType.StatusFlag, CompareType.Equal, f);
             cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
 
             cc.Save(DbUtil.Db);
-            if(ViewExtensions2.UseNewLook())
-                return "/Query/" + cc.Id;
-            return "/Querybuilder2/Main/" + cc.Id;
+            return "/Query/" + cc.Id;
         }
 
         public static Person FindPerson(string first, string last, DateTime? DOB, string email, string phone, out int count)

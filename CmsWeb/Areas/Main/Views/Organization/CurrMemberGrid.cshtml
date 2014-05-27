@@ -10,11 +10,7 @@
     <a class="filtergroupslink bt" href="#" title="filter by name or group">Filter @(Html.Raw(Model.isFiltered ? "<span style='color:red'>(filtered)</span>" : ""))</a>
     @if (User.IsInRole("Edit"))
     {
-        if (ViewExtensions2.UseNewLook()) {
         <a href="/SearchAdd2/Dialog/org/@Model.OrganizationId" class="searchadd bt">Add People</a>
-        } else {
-        <a href="/SearchAdd/@Model.OrganizationId?type=org" class="addmembers bt">add members</a>
-        }
         <a href="/AddToOrgFromTag/@Model.OrganizationId" class="addfromtag bt" title="Add Members From Tag">add from tag</a>
         <a id="currMembersUpdate" href="/OrgMembersDialog/@Model.OrganizationId" title="Update Members" class="memberdialog bt">update members</a>
     }

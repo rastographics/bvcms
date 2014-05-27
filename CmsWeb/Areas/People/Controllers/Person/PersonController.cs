@@ -38,8 +38,6 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("~/Person2/{id:int}")]
         public ActionResult Index(int? id)
         {
-            if (!ViewExtensions2.UseNewLook() && User.IsInRole("Access"))
-                return Redirect("/Person/" + id);
             if (!id.HasValue)
                 return Content("no id");
 

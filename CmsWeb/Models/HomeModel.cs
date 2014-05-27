@@ -25,13 +25,13 @@ namespace CmsWeb.Models
 {
     public class HomeModel
     {
-        public string UserUrl { get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person2/") + Util.UserPeopleId; } }
+        public string UserUrl { get { return "/Person2/" + Util.UserPeopleId; } }
         public class BirthdayInfo
         {
             public DateTime Birthday { get; set; }
             public string Name { get; set; }
             public int PeopleId { get; set; }
-            public string Url { get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person2/") + PeopleId; } }
+            public string Url { get { return "/Person2/" + PeopleId; } }
         }
         public IEnumerable<BirthdayInfo> Birthdays()
         {
@@ -252,9 +252,6 @@ namespace CmsWeb.Models
             if (up == null)
                 return new List<MySavedQueryInfo>();
 
-            var url = ViewExtensions2.UseNewLook()
-                ? "/Query/"
-                : "/QueryBuilder2/Main/";
             return from c in DbUtil.Db.Queries
                    where c.Owner == Util.UserName
                    where c.Name != Util.ScratchPad2
@@ -262,7 +259,7 @@ namespace CmsWeb.Models
                    select new MySavedQueryInfo
                    {
                        Name = c.Name,
-                       Url = url + c.QueryId
+                       Url = "/Query/" + c.QueryId
                    };
         }
         public class TaskInfo
@@ -271,7 +268,7 @@ namespace CmsWeb.Models
             public int PeopleId { get; set; }
             public string Who { get; set; }
             public string Description { get; set; }
-            public string Url { get { return (ViewExtensions2.UseNewLook() ? "/Person2/" : "/Person2/") + PeopleId; } }
+            public string Url { get { return "/Person2/" + PeopleId; } }
         }
         public IEnumerable<TaskInfo> Tasks()
         {

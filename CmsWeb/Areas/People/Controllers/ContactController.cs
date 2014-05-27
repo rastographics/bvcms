@@ -9,8 +9,6 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("~/Contact2/{cid}")]
         public ActionResult Index(int cid)
         {
-            if (!ViewExtensions2.UseNewLook())
-                return Redirect("/Contact/" + cid);
             var m = new ContactModel(cid);
             if (m.contact == null)
                 return Content("contact is private or does not exist");

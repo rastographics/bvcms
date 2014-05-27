@@ -11,8 +11,6 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("ExtraValue/Summary")]
         public ActionResult Summary()
         {
-            if (!ViewExtensions2.UseNewLook())
-                return Redirect("/Reports/ExtraValues");
             var m = ReportsModel.CodeSummary();
             var c = DbUtil.Db.Content("StandardExtraValues2", "<Views />", ContentTypeCode.TypeText);
             ViewBag.EvSpecId = c.Id;

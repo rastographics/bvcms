@@ -18,21 +18,6 @@
     @ViewExtensions2.CKEditor()
     @Fingerprint.Script("/Scripts/js/Support2.js")
 }
-@if (ViewExtensions2.CanNewLook())
-{
-    if (ViewExtensions2.UseNewLook())
-    {
-        <div style="text-align: right">
-            <a class="bt" href="/APITest/UseOldLook">Use Old Look</a>
-        </div>
-    }
-    else
-    {
-        <div style="text-align: right">
-            <a class="bt" href="/APITest/UseNewLook">Use New Look</a>
-        </div>
-    }
-}
 <form id="requestform">
     <table id="needhelp" class="center roundbox grid">
         <tr> <td colspan="3"> <h2>Need help using this software?</h2> </td></tr>

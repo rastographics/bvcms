@@ -55,11 +55,6 @@
         <div>
             User Created: @Model.CreationDate.FormatDateTm()
             <div class="pull-right inline">
-                @if (User.IsInRole("Developer"))
-                {
-                    <a href="/APITest/UseNewLook/@Model.UserId" class="btn btn-mini">Use New Look</a>
-                    <a href="/APITest/UseOldLook/@Model.UserId" class="btn btn-mini">Use Old Look</a>
-                }
                 <a href="/Person2/Impersonate/@Model.UserId" class="btn btn-warning">Impersonate User</a>
                 <a href="/Person2/UserDelete/@Model.UserId" class="btn btn-danger ajax" data-confirm="Are you sure you want to remove User @Model.Username?">Delete User</a>
                 <a href="/Person2/UserUpdate/@Model.UserId" class="btn btn-primary validate ajax">Save</a>

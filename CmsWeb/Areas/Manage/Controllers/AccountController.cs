@@ -159,8 +159,6 @@ CKEditorFuncNum, baseurl + fn, error));
             if (!returnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person2/" + Util.UserPeopleId);
-            if (!DbUtil.Db.UserPreference("UseNewLookForSure").HasValue())
-                DbUtil.Db.SetUserPreference("UseNewLookForSure", "true");
             if (returnUrl.HasValue())
                 return Redirect(returnUrl);
             return Redirect("/");

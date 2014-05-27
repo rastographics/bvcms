@@ -161,20 +161,6 @@ namespace CmsData
                     HttpContext.Current.Session[STR_VisitLookbackDays] = value;
             }
         }
-        public const string STR_NewLook = "NewLook";
-        public static bool NewLook
-        {
-            get
-            {
-                return (bool)GetSessionObj(STR_NewLook, false);
-            }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_NewLook] = value;
-            }
-        }
-
         [Serializable]
         public class MostRecentItem
         {
