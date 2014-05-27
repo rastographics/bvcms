@@ -324,10 +324,19 @@
     </Compile>
     <Compile Include="Areas\Public\Controllers\PersonInfo.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\BaseMessage.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileAttendee.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileContact.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileCountry.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileFamilyMember.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileMaritalStatus.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileOrganization.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonAddress.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileState.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostAddPerson.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostAttend.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostFetchImage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostFetchPerson.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostJoinOrg.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSaveImage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSearch.cs" />
@@ -2624,7 +2633,7 @@
           <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>888</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:5000</IISUrl>
+          <IISUrl>http://localhost:8888</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

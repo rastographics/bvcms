@@ -459,13 +459,12 @@ namespace CmsWeb.Areas.Public.Controllers
 			p.CreatedDate = Util.Now;
 			p.CreatedBy = Util.UserId;
 
-			//Db.People.InsertOnSubmit(p);
-
 			p.MemberStatusId = MemberStatusCode.JustAdded;
 			p.AddressTypeId = 10;
 
 			p.FirstName = mpap.firstName;
 			p.LastName = mpap.lastName;
+			p.Name = "";
 
 			if( mpap.goesBy.Length > 0)
 				p.NickName = mpap.goesBy;
@@ -484,7 +483,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			if (mpap.familyID > 0)
 			{
-				f = DbUtil.Db.Families.First(fam => fam.People.Any(pp => pp.PeopleId == mpap.familyID));
+				f = DbUtil.Db.Families.First( fam => fam.FamilyId == mpap.familyID);
 			}
 			else
 			{
@@ -507,6 +506,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
 				if (mpap.zipcode.Length > 0)
 					f.ZipCode = mpap.zipcode;
+
+				if (mpap.country.Length > 0)
+					f.CountryName = mpap.country;
 
 				DbUtil.Db.Families.InsertOnSubmit(f);
 			}
@@ -553,6 +555,45 @@ namespace CmsWeb.Areas.Public.Controllers
 			br.id = p.PeopleId;
 			br.count = 1;
 			br.type = BaseMessage.API_TYPE_PERSON_ADD;
+
+			return br;
+		}
+
+		public ActionResult JoinOrg(string data)
+		{
+			// Authenticate first
+			var authError = Authenticate();
+			if (authError != null) return authError;
+
+			// Check Role
+			if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
+				return BaseMessage.createErrorReturn("Attendance role is required to take attendance for organizations.");
+
+			// Check to see if type matches
+			BaseMessage dataIn = BaseMessage.createFromString(data);
+			if (dataIn.type != BaseMessage.API_TYPE_ORG_JOIN)
+				return BaseMessage.createTypeErrorReturn();
+
+			// Everything is in order, start the return
+			MobilePostJoinOrg mpjo = JsonConvert.DeserializeObject<MobilePostJoinOrg>(dataIn.data);
+
+			var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == mpjo.peopleID && m.OrganizationId == mpjo.orgID);
+
+			if (om != null)
+			{
+				if (mpjo.join)
+					om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Now, null, false);
+				else
+					om.Drop(DbUtil.Db, addToHistory: true);
+			}
+
+			DbUtil.Db.SubmitChanges();
+
+			BaseMessage br = new BaseMessage();
+
+			br.error = 0;
+			br.count = 1;
+			br.type = BaseMessage.API_TYPE_ORG_JOIN;
 
 			return br;
 		}

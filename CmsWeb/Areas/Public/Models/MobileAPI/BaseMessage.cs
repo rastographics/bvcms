@@ -9,11 +9,15 @@ namespace CmsWeb.MobileAPI
 {
 	public class BaseMessage : ActionResult
 	{
+		public int version = 0;
 		public int device = API_DEVICE_UNKNOWN;
-		public int error = 1;
+
 		public int type = 0;
+		public int error = 1;
 		public int count = 0;
+
 		public int id = 0;
+
 		public string data = "";
 
 		public override void ExecuteResult(ControllerContext context)
@@ -82,6 +86,7 @@ namespace CmsWeb.MobileAPI
 		public const int API_TYPE_ORG_ROLL_REFRESH = 21002;
 		// Org Write
 		public const int API_TYPE_ORG_RECORD_ATTEND = 22001;
+		public const int API_TYPE_ORG_JOIN = 22002;
 		
 		// 90000's - System = 91000's - Read / 92000's Write
 		// System Read

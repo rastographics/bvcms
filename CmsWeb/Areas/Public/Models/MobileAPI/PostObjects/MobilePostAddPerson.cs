@@ -30,7 +30,7 @@ namespace CmsWeb.MobileAPI
 		public string state = "";
 		public string zipcode = "";
 
-		public int country = 1;
+		public string country = "";
 
 		public int visitMeeting = 0;
 
