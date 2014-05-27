@@ -76,6 +76,7 @@ namespace CmsWeb.MobileAPI
 		public const int API_TYPE_PEOPLE_SEARCH = 11001;
 		public const int API_TYPE_PERSON_REFRESH = 11002;
 		public const int API_TYPE_PERSON_IMAGE_REFRESH = 11003;
+		public const int API_TYPE_PERSON_PAYMENT_INFO = 11004;
 		// People Write
 		public const int API_TYPE_PERSON_ADD = 12001;
 		public const int API_TYPE_PERSON_IMAGE_ADD = 12002;
@@ -87,12 +88,19 @@ namespace CmsWeb.MobileAPI
 		// Org Write
 		public const int API_TYPE_ORG_RECORD_ATTEND = 22001;
 		public const int API_TYPE_ORG_JOIN = 22002;
+
+		// 30000's - Giving = 31000's - Read / 32000's Write
+		// Giving Read
+		// public const int API_TYPE_GIVING = 31001;
+		// Giving Write
+		public const int API_TYPE_GIVING_GIVE = 32001;
 		
 		// 90000's - System = 91000's - Read / 92000's Write
 		// System Read
 		public const int API_TYPE_SYSTEM_MARITAL_STATUSES = 91001;
 		public const int API_TYPE_SYSTEM_STATES = 91002;
 		public const int API_TYPE_SYSTEM_COUNTRIES = 91003;
+		public const int API_TYPE_SYSTEM_GIVING_FUNDS = 91004;
 		// System Write
 	}
 }
