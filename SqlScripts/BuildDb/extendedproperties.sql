@@ -139,7 +139,7 @@ IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
 IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
 GO
-EXEC sp_addextendedproperty N'ReturnType', N'TopGiver', 'SCHEMA', N'dbo', 'PROCEDURE', N'TopPledgers', NULL, NULL
+EXEC sp_addextendedproperty N'ReturnType', N'TopGiver', 'SCHEMA', N'dbo', 'PROCEDURE', N'TopGivers', NULL, NULL
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
@@ -151,7 +151,7 @@ IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
 IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
 GO
-EXEC sp_addextendedproperty N'ReturnType', N'TopGiver', 'SCHEMA', N'dbo', 'PROCEDURE', N'TopGivers', NULL, NULL
+EXEC sp_addextendedproperty N'ReturnType', N'TopGiver', 'SCHEMA', N'dbo', 'PROCEDURE', N'TopPledgers', NULL, NULL
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
