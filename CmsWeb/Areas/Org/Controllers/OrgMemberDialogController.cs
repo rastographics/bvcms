@@ -130,6 +130,5 @@ namespace CmsWeb.Areas.Org.Controllers
             m.PostTransaction();
             return View("AddTransactionDone", m);
         }
-
     }
 }

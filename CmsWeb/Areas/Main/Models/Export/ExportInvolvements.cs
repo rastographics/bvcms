@@ -271,12 +271,9 @@ namespace CmsWeb.Models
             var q2 = from p in q
                      let om = Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == Util2.CurrentOrgId && om.PeopleId == p.PeopleId)
                      let recreg = p.RecRegs.FirstOrDefault()
-// todo: use TransactionSummary instead
-                     let bal = (from t in Db.Transactions
-                                where t.OriginalTransaction.TransactionPeople.Any(pp => pp.PeopleId == p.PeopleId)
-                                where t.OriginalTransaction.OrgId == Util2.CurrentOrgId
-                                orderby t.Id descending
-                                select t.Amtdue).FirstOrDefault()
+                     let ts = (from t in Db.ViewTransactionSummaries
+                               where t.RegId == om.TranId
+                               select t).FirstOrDefault()
                      select new ExportInvolvements.MemberInfoClass
                      {
                          FirstName = p.PreferredName,
@@ -285,9 +282,10 @@ namespace CmsWeb.Models
                          Grade = om.Grade.ToString(),
                          ShirtSize = om.ShirtSize,
                          Request = om.Request,
-                         Amount = om.Amount ?? 0,
+                         Amount = ts != null ? ts.IndAmt ?? 0 : 0,
                          AmountPaid = om.TotalPaid(Db),
-                         HasBalance = bal != null && bal > 0,
+                         //AmountPaid = ts != null ? ts.IndAmt ?? 0 : 0,
+                         HasBalance = ts != null && ts.IndDue > 0,
                          Groups = string.Join(",", om.OrgMemMemTags.Select(mt => mt.MemberTag.Name)),
                          Email = p.EmailAddress,
                          HomePhone = p.HomePhone.FmtFone(),

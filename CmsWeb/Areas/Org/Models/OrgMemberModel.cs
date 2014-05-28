@@ -113,7 +113,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public string TransactionsLink
         {
-            get { return "/Transactions/" + om.TranId; }
+            get { return om.TranId.HasValue ? "/Transactions/" + om.TranId : null; }
         }
 
         public string ShirtSize { get; set; }

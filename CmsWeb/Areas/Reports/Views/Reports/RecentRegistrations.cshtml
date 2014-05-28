@@ -24,13 +24,18 @@
         @foreach (var r in Model)
         {
             <tr>
-                <td class="nowrap"><a href="/OnlineReg/ConfirmTestXml/@r.Id" target="detail">@r.Stamp.FormatDateTm()</a></td>
+                <td class="nowrap"><a href="/OnlineReg/RegPeople/@r.Id" target="detail">@r.Stamp.FormatDateTm()</a></td>
                 <td>
                     @r.First.Truncate(20) @r.Last.Truncate(20)
                     <div>
-                        <a href="/Person2/@r.PeopleId" target="detail">
-                            @(r.PeopleId != null ? r.Name : "anonymous")
-                        </a>
+                        @if (r.PeopleId.HasValue)
+                        {
+                            <a href="/Person2/@r.PeopleId" target="detail"> @r.Name </a>
+                        }
+                        else
+                        {
+                            <text>anonymous</text>
+                        }
                     </div>
                 </td>
                 <td>@r.Dob</td>
