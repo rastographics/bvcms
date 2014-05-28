@@ -11,32 +11,20 @@
         }
     </script>
 
-    @if (ViewExtensions2.UseNewLook())
-    {
-        @ViewExtensions2.NewStyles()
-        @ViewExtensions2.jQueryUICss()
-        @Fingerprint.Css("/content/styles/siteblue.css")
-        @ViewExtensions2.OldStyles()
-        @ViewExtensions2.FontAwesome()
-        @Fingerprint.Css("/content/css/Fixups2.css")
-        @ViewExtensions2.jQuery()
-        @ViewExtensions2.Bootstrap()
-        @ViewExtensions2.jQueryUI()
-        @Fingerprint.Script("/Scripts/bundle.main2c.js")
-        @Html.Partial("DatePickerDefaults")
-        <script>
-            $.dtoptions = { format: '@Util.jQueryDateFormat2' };
-        </script>
-    }
-    else
-    {
-        @ViewExtensions2.jQueryUICss()
-        @Fingerprint.Css("/content/styles/site.css")
-        @ViewExtensions2.OldStyles()
-        @ViewExtensions2.jQuery()
-        @ViewExtensions2.jQueryUI()
-        @Fingerprint.Script("/Scripts/bundle.main.js")
-    }
+    @ViewExtensions2.NewStyles()
+    @ViewExtensions2.jQueryUICss()
+    @Fingerprint.Css("/content/styles/siteblue.css")
+    @ViewExtensions2.OldStyles()
+    @ViewExtensions2.FontAwesome()
+    @Fingerprint.Css("/content/css/Fixups2.css")
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.Bootstrap()
+    @ViewExtensions2.jQueryUI()
+    @Fingerprint.Script("/Scripts/bundle.main2c.js")
+    @Html.Partial("DatePickerDefaults")
+    <script>
+        $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+    </script>
     @Fingerprint.Script("/Scripts/Dialog/SearchDivisions.js")
 </head>
 <body style="padding-top: 0;">

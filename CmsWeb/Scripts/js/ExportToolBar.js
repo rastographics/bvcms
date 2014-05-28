@@ -18,6 +18,7 @@
         ev.preventDefault();
         $('div.dropdown2-menu').hide();
         var d = $("#ChooseFormat");
+        $("#UseMailFlags").prop('checked', $(this).hasClass("UseMailFlags"));
         d.dialog("open");
 
         var sep = ev.target.href.search(/\?/) == -1 ? "?" : "&";

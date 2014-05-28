@@ -35,6 +35,7 @@ namespace CmsWeb.Models
 
             while (csv.ReadNextRecord())
             {
+                
                 if (!csv[12].Contains("Check"))
                     continue;
                 var bd = new CmsData.BundleDetail
@@ -87,7 +88,7 @@ namespace CmsWeb.Models
                             var m = re.Match(csv[c]);
                             rt = m.Groups["rt"].Value;
                             ac = m.Groups["ac"].Value;
-                            bd.Contribution.CheckNo = m.Groups["ck"].Value;
+                            bd.Contribution.CheckNo = m.Groups["ck"].Value.Truncate(20);
                             break;
                     }
                 }

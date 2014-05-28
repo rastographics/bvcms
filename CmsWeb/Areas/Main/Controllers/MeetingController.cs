@@ -427,9 +427,7 @@ namespace CmsWeb.Areas.Main.Controllers
             cc.Reset(DbUtil.Db);
             cc.AddNewClause(QueryType.MeetingId, CompareType.Equal, Id);
             cc.Save(DbUtil.Db);
-            return ViewExtensions2.UseNewLook() 
-                ? Redirect("/Query/" + cc.Id) 
-                : Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
+            return Redirect("/Query/" + cc.Id);
         }
         public ActionResult QueryVisitors(int Id)
         {
@@ -443,9 +441,7 @@ namespace CmsWeb.Areas.Main.Controllers
             c.Division = m.Organization.DivisionId ?? 0;
             c.Organization = m.OrganizationId;
             cc.Save(DbUtil.Db);
-            if (ViewExtensions2.UseNewLook())
-                return Redirect("/Query/" + cc.Id);
-            return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
+            return Redirect("/Query/" + cc.Id);
         }
         public ActionResult QueryAbsents(int Id)
         {
@@ -459,9 +455,7 @@ namespace CmsWeb.Areas.Main.Controllers
             c.Division = m.Organization.DivisionId ?? 0;
             c.Organization = m.OrganizationId;
             cc.Save(DbUtil.Db);
-            if (ViewExtensions2.UseNewLook())
-                return Redirect("/Query/" + cc.Id);
-            return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
+            return Redirect("/Query/" + cc.Id);
         }
         public ActionResult QueryRegistered(int Id, string type)
         {
@@ -487,9 +481,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     break;
             }
             cc.Save(DbUtil.Db);
-            if (ViewExtensions2.UseNewLook())
-                return Redirect("/Query/" + cc.Id);
-            return Redirect("/QueryBuilder2/Main/{0}".Fmt(cc.Id));
+            return Redirect("/Query/" + cc.Id);
         }
         public class ttt
         {

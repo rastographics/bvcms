@@ -13,8 +13,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpGet, Route("~/SavedQueryList")]
         public ActionResult Index()
         {
-            if (!ViewExtensions2.UseNewLook())
-                return Redirect("/SavedQuery");
             var m = new SavedQueryModel { OnlyMine = DbUtil.Db.UserPreference("SavedQueryOnlyMine", "false").ToBool() };
             m.Pager.Set("/SavedQuery/Results", 1, null, "Last Run", "desc");
             return View(m);

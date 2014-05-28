@@ -123,31 +123,30 @@ namespace CmsWeb.Models
                 ti.OriginalId = ti.Id;
             return ti;
         }
-        public static Decimal? AmountDueTrans(CMSDataContext Db, int? tranid)
+        public static decimal AmountDueTrans(CMSDataContext db, Transaction ti)
         {
-            var qq = from t in DbUtil.Db.ViewTransactionSummaries
-                where t.RegId == tranid
-                select t;
-            var tt = qq.FirstOrDefault();
-            return tt == null ? 0 : tt.TotDue;
+            if (ti == null)
+                return 0;
+            var qq = from t in db.ViewTransactionSummaries
+                where t.RegId == ti.OriginalId
+                select t.TotDue;
+            return qq.FirstOrDefault() ?? 0;
         }
 
-        public static PaymentForm CreatePaymentFormForBalanceDue(Transaction ti)
+        public static PaymentForm CreatePaymentFormForBalanceDue(Transaction ti, decimal amtdue)
         {
             PaymentInfo pi = null;
-            if (ti.Person != null && string.Equals(OnlineRegModel.GetTransactionGateway(),
-                        "Sage", StringComparison.InvariantCultureIgnoreCase))
+            if (ti.Person != null && OnlineRegModel.GetTransactionGateway().Equal("sage"))
                 pi = ti.Person.PaymentInfos.FirstOrDefault();
             if (pi == null)
                 pi = new PaymentInfo();
 
-            var amtdue = AmountDueTrans(DbUtil.Db, ti.OriginalId);
             var pf = new PaymentForm
                      {
                          URL = ti.Url,
                          PayBalance = true,
                          AmtToPay = amtdue,
-                         Amtdue = amtdue ?? 0,
+                         Amtdue = 0,
                          AllowCoupon = true,
                          AskDonation = false,
                          Description = ti.Description,

@@ -21,26 +21,6 @@
       <stylecss Include="Content/styles/jquery.tooltip.css"/>
 <!--      <stylecss Include="Content/styles/Support.css"/>-->
 
-      <main Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
-      <main Include="Scripts/jQuery/jquery.cookie.js"/>
-      <main Include="Scripts/jQuery/jquery.blockUI.js"/>
-      <main Include="Scripts/jQuery/jquery.mousewheel.js"/>
-      <main Include="Scripts/jQuery/jquery.jscrollpane.js"/>
-      <main Include="Scripts/jQuery/jquery.jeditable.js"/>
-      <main Include="Scripts/jQuery/jquery.validate.js"/>
-      <main Include="Scripts/jQuery/jquery.multiSelect.js"/>
-      <main Include="Scripts/jQuery/jquery.sortElements.js"/>
-      <main Include="Scripts/jQuery/jquery.textarea.js"/>
-      <main Include="Scripts/jQuery/jquery.tooltip.js"/>
-      <main Include="Scripts/jQuery/jquery.transpose.js"/>
-<!--      <main Include="Scripts/jQuery/jquery.ui.touch-punch.js"/>-->
-      <main Include="Scripts/chosen/chosen.jquery.js"/>
-      <main Include="Scripts/js/dropdown.js"/>
-      <main Include="Scripts/js/Pager.js"/>
-      <main Include="Scripts/js/ExportToolBar.js"/>
-      <main Include="Scripts/js/headermenu.js"/>
-<!--      <main Include="Scripts/js/Support.js"/>-->
-
       <main2 Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
       <main2 Include="Scripts/Bootstrap/bootstrap-modalmanager.js"/>
       <main2 Include="Scripts/Bootstrap/bootstrap-modal.js"/>
@@ -136,7 +116,6 @@
     <CssCompressorTask SourceFiles="@(new2css)" OutputFile="Content\css\bundle.new2css.css" />
     <CssCompressorTask SourceFiles="@(stylecss)" OutputFile="Content\styles\bundle.stylecss.css" />
    
-    <JavascriptCompressorTask SourceFiles="@(main)" OutputFile="Scripts\bundle.main.js" />
     <JavascriptCompressorTask SourceFiles="@(main2)" OutputFile="Scripts\bundle.main2.js" />
     <JavascriptCompressorTask SourceFiles="@(main2c)" OutputFile="Scripts\bundle.main2c.js" />
     <JavascriptCompressorTask SourceFiles="@(onlineregister)" OutputFile="Scripts\bundle.onlineregister.js" />

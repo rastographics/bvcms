@@ -5,6 +5,9 @@
 
 
 
+
+
+
 CREATE VIEW [dbo].[TransactionSummary]
 AS
 SELECT
@@ -16,8 +19,8 @@ SELECT
 	,TotalAmt
 	,TotPaid
 	,(TotalAmt - TotPaid) TotDue
-	,(IndPctC * TotPaid) IndPaid
-	,(IndPctC * (TotalAmt - TotPaid)) IndDue
+	,CONVERT(MONEY, (IndPctC * TotPaid)) IndPaid
+	,CONVERT(MONEY, (IndPctC * (TotalAmt - TotPaid))) IndDue
 	,NumPeople
 	,isdeposit
 	,iscoupon
@@ -27,7 +30,7 @@ FROM (
 	SELECT 
 		ot.TransactionDate TranDate
 		,tp.Amt IndAmt
-		,tp.Amt / NULLIF((SELECT SUM(Amt) 
+		,CONVERT(FLOAT,tp.Amt) / NULLIF((SELECT SUM(Amt) 
 							FROM dbo.TransactionPeople 
 							WHERE Id = om.TranId), 0)
 			IndPctC
@@ -37,11 +40,11 @@ FROM (
 					AND Amt < 0), 0) 
 			+ ot.amt + ot.amtdue 
 			TotalAmt
-		,(SELECT SUM(amt - ISNULL(donate, 0)) 
+		,ISNULL((SELECT SUM(amt - ISNULL(donate, 0)) 
 			FROM dbo.[Transaction] 
 			WHERE OriginalId = om.TranId 
 			AND (Approved = 1 OR TransactionId LIKE 'Coupon%')
-			AND Amt > 0) 
+			AND Amt > 0), 0) 
 			TotPaid
 		,(SELECT COUNT(*) 
 			FROM dbo.TransactionPeople t 
@@ -65,6 +68,9 @@ FROM (
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrganizationId
 ) tt
 WHERE (iscoupon = 1 OR isapproved = 1) AND TotalAmt > 0
+
+
+
 
 
 

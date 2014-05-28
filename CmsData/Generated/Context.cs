@@ -1665,6 +1665,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.HeadOrSpouseWithEmail> ViewHeadOrSpouseWithEmails
+	    {
+		    get { return this.GetTable< View.HeadOrSpouseWithEmail>(); }
+
+	    }
+
 	    public Table< View.LastName> ViewLastNames
 	    {
 		    get { return this.GetTable< View.LastName>(); }
@@ -1728,6 +1734,12 @@ namespace CmsData
 	    public Table< View.RandNumber> ViewRandNumbers
 	    {
 		    get { return this.GetTable< View.RandNumber>(); }
+
+	    }
+
+	    public Table< View.SpouseOrHeadWithEmail> ViewSpouseOrHeadWithEmails
+	    {
+		    get { return this.GetTable< View.SpouseOrHeadWithEmail>(); }
 
 	    }
 
@@ -1913,6 +1925,17 @@ namespace CmsData
                 divid,
                 orgid,
                 ids
+                );
+		}
+
+		[Function(Name="dbo.CheckinByDate", IsComposable = true)]
+		public IQueryable< View.CheckinByDate > CheckinByDate(
+            [Parameter(DbType="datetime")] DateTime? dt
+            )
+		{
+			return this.CreateMethodCallQuery< View.CheckinByDate>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                dt
                 );
 		}
 
@@ -3590,6 +3613,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.IsValidEmail", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? IsValidEmail(
+            [Parameter(Name = "addr", DbType="nvarchar")] string addr
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                addr
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.LastMemberTypeInTrans", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? LastMemberTypeInTrans(
@@ -3601,6 +3636,20 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.RegexMatch", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string RegexMatch(
+            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
+            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                subject,
+                pattern
                 ).ReturnValue));
 		}
 
@@ -3837,18 +3886,6 @@ namespace CmsData
                 pid,
                 days,
                 fundid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.IsValidEmail", IsComposable = true)]
-		[return: Parameter(DbType = "bit")]
-		public bool? IsValidEmail(
-            [Parameter(Name = "addr", DbType="nvarchar")] string addr
-            )
-		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                addr
                 ).ReturnValue));
 		}
 

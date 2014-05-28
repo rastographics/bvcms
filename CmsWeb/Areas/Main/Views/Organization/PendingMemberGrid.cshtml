@@ -7,11 +7,7 @@ Count: <strong>@Model.Count()</strong>
 <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
 @if(User.IsInRole("Edit"))
 { 
-    if (ViewExtensions2.UseNewLook()) {
     <a href="/SearchAdd2/Dialog/pending/@Model.OrganizationId" class="searchadd bt">Add Pending Members</a>
-    } else {
-    <a href="/SearchAdd/@Model.OrganizationId?type=pending" class="memberdialog bt">add pending members</a>
-    }
     <a href="/AddToOrgFromTag/@Model.OrganizationId?pending=true" title="Add Pendings From Tag" class="addfromtag bt">add from tag</a>
     <a href="/OrgMembersDialog/@Model.OrganizationId?pendings=true" title="Update Pending Members" class="memberdialog bt">update pending members</a>
  } 

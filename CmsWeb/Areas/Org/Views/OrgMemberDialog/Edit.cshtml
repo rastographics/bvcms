@@ -33,16 +33,6 @@
         {
             @Html.EditorFor(m => m.Tickets)
         }
-        @if (Model.Organization.RegistrationTypeId > 0)
-        {
-            @Html.EditorFor(m => m.Amount)
-            @Html.DisplayFor(m => m.AmountPaidTransactions)
-            @Html.DisplayFor(m => m.AmountDue)
-            if (Model.AmountDue > 0)
-            {
-            @Html.DisplayFor(m => m.PayLink)
-            }
-        }
         @if (Model.Setting.AskVisible("AskSize"))
         {
             @Html.EditorFor(m => m.ShirtSize)

@@ -1,4 +1,6 @@
 ﻿@using CmsData
+@using CmsWeb
+@using NPOI.SS.Formula.Functions
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.OrgMemberModel
 <div class="modal-header">
@@ -11,6 +13,7 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#memberdata" data-toggle="tab">Member Data</a></li>
             <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
+            <li><a href="#membernotes" data-toggle="tab">Notes</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="memberdata">
@@ -42,23 +45,44 @@
                     {
                         @Html.DisplayFor(m => m.Tickets)
                     }
-                    @if (Model.Amount.HasValue || Model.AmountPaidTransactions.HasValue) // || Model.AmountPaid.HasValue)
+                    @if (Model.TransactionsLink.HasValue())
                     {
-                        @Html.DisplayFor(m => m.Amount)
-                        @Html.DisplayFor(m => m.AmountPaidTransactions)
-                        @Html.DisplayFor(m => m.AmountDue)
-                        @Html.DisplayFor(m => m.TransactionsLink, "Hyperlink",
-                            new { text = "View Transactions" })
-                        if (Model.AmountDue > 0)
-                        {
-                            @Html.DisplayFor(m => m.PayLink, "Hyperlink", new { text = "paylink" })
-                        }
+                        <div class="control-group">
+                            <label class="control-label">Fees</label>
+                            <div class="controls">
+                                @if (Model.TransactionSummary != null)
+                                {
+                                    <table class="table table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>Total Fee</th>
+                                                <th>Amount Paid</th>
+                                                <th>Amount Due</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td> @Model.TransactionSummary.IndAmt.ToString2("c") </td>
+                                                <td> @Model.AmountPaidTransactions.ToString2("c") </td>
+                                                <td> @Model.AmountDue.ToString2("c") </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                }
+                                <p>
+                                    <a href="@Model.TransactionsLink" target="transactions">View Transactions</a>
+                                    @if (Model.AmountDue > 0)
+                                    {
+                                        <a href="@Model.PayLink" style="margin-left: 2em;" target="_blank">PayLink</a>
+                                    }
+                                </p>
+                            </div>
+                        </div>
                     }
                     @if (Model.Setting.AskVisible("AskSize"))
                     {
                         @Html.DisplayFor(m => m.ShirtSize)
                     }
-                    @Html.DisplayFor(m => m.UserData, "TextArea", new { AddClass = "scroll150" })
                 </fieldset>
 
             </div>
@@ -81,15 +105,28 @@
                     }
                 </div>
             </div>
+            <div id="membernotes" class="tab-pane">
+                @Html.DisplayFor(m => m.UserData, "TextArea", new { AddClass = "scroll150" })
+            </div>
         </div>
     </div>
 </div>
 <div class="modal-footer">
     <a href="#" class="btn" data-dismiss="modal">Close</a>
-    @if (Model.IsMissionTrip)
-    {
-    <a href="/OrgMemberDialog2/MissionSupport/@Model.OrgId/@Model.PeopleId" class="btn btn-success ajax">Add Mission Trip Support</a>
-    }
+    <div class="btn-group">
+        <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">Transaction <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="/OrgMemberDialog2/AddTransaction/@Model.OrgId/@Model.PeopleId" class="ajax">Add Transaction</a>
+            </li>
+            @if (Model.IsMissionTrip)
+            {
+                <li>
+                    <a href="/OrgMemberDialog2/MissionSupport/@Model.OrgId/@Model.PeopleId" class="ajax">Add Mission Trip Support</a>
+                </li>
+            }
+        </ul>
+    </div>
     <a id="dropmember" href="/OrgMemberDialog2/Drop/@Model.OrgId/@Model.PeopleId" class="btn btn-danger">Drop</a>
     <a href="/OrgMemberDialog2/Move/@Model.OrgId/@Model.PeopleId" class="btn btn-warning ajax">Move</a>
     <a href="/OrgMemberDialog2/Edit/@Model.OrgId/@Model.PeopleId" class="btn btn-primary ajax">Edit</a>

@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			return Content(count.ToString());
 		}
 		[HttpPost]
-		[Authorize(Roles = "Finance")]
+        [Authorize(Roles = "ManageTransactions,Finance")]
 		public ActionResult CreditVoid(int id, string type, decimal? amt, TransactionsModel m)
 		{
 			var t = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
@@ -163,7 +163,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			return View("List", m);
 		}
 		[HttpPost]
-		[Authorize(Roles = "Finance")]
+        [Authorize(Roles = "ManageTransactions,Finance")]
 		public ActionResult Adjust(int id, decimal amt, string desc, TransactionsModel m)
 		{
 			var qq = from tt in DbUtil.Db.Transactions

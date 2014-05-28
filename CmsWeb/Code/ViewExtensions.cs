@@ -760,10 +760,6 @@ namespace CmsWeb
     <script> $.fn.jqdatepicker = $.fn.datepicker; </script>
 ");
         }
-        public static bool NewLook3()
-        {
-            return DbUtil.Db.UserPreference("newlook3", "false").ToBool();
-        }
 
         public static HtmlString Bootstrap()
         {
@@ -778,9 +774,7 @@ namespace CmsWeb
 
         public static string Layout()
         {
-            return (UseNewLook())
-                ? "~/Views/Shared/SiteLayout2c.cshtml"
-                : "~/Views/Shared/SiteLayout.cshtml";
+            return "~/Views/Shared/SiteLayout2c.cshtml";
         }
 
         public static string DbSetting(string name, string def)
@@ -816,22 +810,10 @@ namespace CmsWeb
             var c = t.FirstOrDefault();
             return c;
         }
-        public static bool CanNewLook()
-        {
-            return true;
-            //return HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("NewLook");
-        }
-        public static bool UseNewLook()
-        {
-            return DbUtil.Db.UserPreference("UseNewLookForSure", "true").ToBool();
-        }
 
         public static string GridClass
         {
-            get
-            {
-                return UseNewLook() ? "table table-condensed table-striped not-wide grid2" : "grid table-striped grid2";
-            }
+            get { return "table table-condensed table-striped not-wide grid2"; }
         }
 
         public static CollectionItemNamePrefixScope BeginCollectionItem<TModel>(this HtmlHelper<TModel> html, string collectionName)

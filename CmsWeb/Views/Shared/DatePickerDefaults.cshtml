@@ -1,7 +1,3 @@
-@{
-    var newlook = ViewExtensions2.NewLook3();
-    var imgsrc = newlook ? "/Content/img/calendar.png" : "/Content/images/calendar.gif";
-}
 <script type="text/javascript">
     $(function () {
         $.validator.methods.number = function(value, element) {
@@ -17,7 +13,7 @@
             changeYear: true,
             yearRange: "-95:+5",
             showOn: "button",
-            buttonImage: "@imgsrc",
+            buttonImage: "/Content/img/calendar.png",
             buttonImageOnly: true,
             buttonText: 'Pick a date'
         });

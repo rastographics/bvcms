@@ -130,9 +130,7 @@ namespace CmsWeb.Areas.Reports.Models
             c.StartDate = Dt1;
             c.EndDate = Dt2;
             cc.Save(DbUtil.Db);
-            if(ViewExtensions2.UseNewLook())
-                return "/Query/" + cc.Id;
-            return "/QueryBuilder2/Main/" + cc.Id;
+            return "/Query/" + cc.Id;
         }
     }
     public class MeetingInfo

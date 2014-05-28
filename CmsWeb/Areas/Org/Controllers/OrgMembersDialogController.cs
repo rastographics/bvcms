@@ -54,8 +54,6 @@ namespace CmsWeb.Areas.Org.Controllers
 					if (m.EnrollmentDate.HasValue)
 						om.EnrollmentDate = m.EnrollmentDate;
 					om.Pending = m.Pending;
-					if (m.addpmt.HasValue)
-						om.AddTransaction(Db, m.addpmt ?? 0, m.addpmtreason);
 					if (m.MemTypeOriginal)
 					{
 						var et = (from e in Db.EnrollmentTransactions

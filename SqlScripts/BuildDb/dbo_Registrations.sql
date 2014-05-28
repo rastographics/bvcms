@@ -18,9 +18,12 @@ SELECT
 	,o.OrganizationName 
 	,pu.PeopleId
 	,pu.Name
-	,xdata.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/dob[1]', 'varchar(50)') dob
-	,xdata.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/first[1]', 'varchar(50)') [first]
-	,xdata.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/last[1]', 'varchar(50)') [last]
+	,ISNULL(xdata.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/dob[1]', 'varchar(50)'),
+		xdata.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/DateOfBirth[1]', 'varchar(50)')) [dob]
+	,ISNULL(xdata.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/first[1]', 'varchar(50)'),
+		xdata.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/FirstName[1]', 'varchar(50)')) [first]
+	,ISNULL(xdata.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/last[1]', 'varchar(50)'),
+		xdata.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/LastName[1]', 'varchar(50)')) [last]
 	,xdata.value('count(/OnlineRegModel/List/OnlineRegPersonModel)', 'int') cnt
 	,tt.completed
 FROM 

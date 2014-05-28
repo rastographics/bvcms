@@ -23,7 +23,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                      select t;
             var ti = qq.FirstOrDefault();
 
-            if (ti == null || ti.Amtdue == 0)
+            var amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
+            if (amtdue == 0)
                 return Content("no outstanding transaction");
 
 #if DEBUG
@@ -36,7 +37,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ti.State = "TN";
             }
 #endif
-            var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti);
+            var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, amtdue);
 
             SetHeaders(pf.OrgId ?? 0);
 

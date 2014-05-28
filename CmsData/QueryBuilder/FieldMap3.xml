@@ -168,6 +168,12 @@
     <HasInvalidEmailAddress Title="Has Invalid Email Address" Type="Bit" DisplayAs="HasInvalidEmailAddress" DataValueField="IdCode">
       Select True or False. Looks at both 1st and 2nd email addresses, whether active or not.
     </HasInvalidEmailAddress>
+    <HeadOrSpouseWithEmail Title="Head Or Spouse With Email" Type="EqualBit" DataValueField="IdCode">
+      Pick Head with Email or Spouse if Head has no email or nothing
+    </HeadOrSpouseWithEmail>
+    <SpouseOrHeadWithEmail Title="Spouse Or Head With Email" Type="EqualBit" DataValueField="IdCode">
+      Pick Spouse with Email or Head if no Spouse or Spouse has no email or nothing
+    </SpouseOrHeadWithEmail>
     <SpouseHasEmail Title="Spouse has Email" Type="Bit" DataValueField="IdCode">
       Select True or False. Indicates Spouse Has an Email Address
     </SpouseHasEmail>
@@ -636,7 +642,7 @@
     <PeopleIds Title="Has One Of PeopleIds" Type="StringEqual">
       Enter People ID numbers separated by a comma.
     </PeopleIds>
-    <MatchAnything Title="Select Condition" Type="Bit" DisplayAs="Select Condition" DataValueField="IdCode">
+    <MatchAnything Title="Select Condition" Type="EqualBit" DisplayAs="Select Condition" DataValueField="IdCode">
       This condition is always true (used internally).
     </MatchAnything>
     <HasOptoutsForEmail Title="Has Email Optouts for address" Type="StringEqual" DisplayAs="HasOptoutsForEmail({0:d})" Params="EndDate">

@@ -6,21 +6,15 @@
 }
 @section head
 {
-    @if (ViewExtensions2.UseNewLook())
-    {
-        @Fingerprint.Css("/Content/css/bootstrap-tour.css")
-    }
+    @Fingerprint.Css("/Content/css/bootstrap-tour.css")
 }
 @section scripts
 {
-    @if (ViewExtensions2.UseNewLook())
+    @if (showtip)
     {
-        if (showtip)
-        {
-            @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-tour.js")
-            @Fingerprint.Script("/Scripts/jQuery/jquery.smoothscroll.js")
-            @Fingerprint.Script("/Scripts/js/hometour.js")
-        }
+        @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-tour.js")
+        @Fingerprint.Script("/Scripts/jQuery/jquery.smoothscroll.js")
+        @Fingerprint.Script("/Scripts/js/hometour.js")
     }
     <script type="text/javascript">
         $(document).ready(function () {
@@ -57,7 +51,7 @@
                 if (my.OrgType != pOrgType)
                 {
                     pOrgType = my.OrgType;
-                <div class="drow section">@my.OrgType</div>
+                    <div class="drow section">@my.OrgType</div>
                 }
                 <div class="drow indent"><a href="/Organization/@my.OrgId">@my.Name</a></div>
             }
@@ -81,7 +75,7 @@
             @foreach (var ni in Model.BVCMSNews())
             {
                 var days = (int)Math.Ceiling(DateTime.Now.Subtract(ni.Published).TotalDays);
-                <div class="drow @(days < 8 ? "isnew" + days : "")" >
+                <div class="drow @(days < 8 ? "isnew" + days : "")">
                     <a href="@ni.Url" target="news">@ni.Title</a>
                 </div>
             }
@@ -93,7 +87,7 @@
             @foreach (var ni in Model.ChurchNews())
             {
                 var days = (int)Math.Ceiling(DateTime.Now.Subtract(ni.Published).TotalDays);
-                <div class="drow @(days < 8 ? "isnew" + days : "")" >
+                <div class="drow @(days < 8 ? "isnew" + days : "")">
                     <a href="@ni.Url" target="news">@ni.Title</a>
                 </div>
             }

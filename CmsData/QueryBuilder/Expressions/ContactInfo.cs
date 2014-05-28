@@ -5,8 +5,11 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Community.CsharpSqlite;
+using IronPython.Modules;
 
 namespace CmsData
 {
@@ -32,6 +35,23 @@ namespace CmsData
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
+            return expr;
+        }
+
+        internal Expression SpouseOrHeadWithEmail()
+        {
+            var q = db.ViewSpouseOrHeadWithEmails.Select(p => p.PeopleId);
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
+        internal Expression HeadOrSpouseWithEmail()
+        {
+            var q = db.ViewHeadOrSpouseWithEmails.Select(p => p.PeopleId.Value);
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
     }

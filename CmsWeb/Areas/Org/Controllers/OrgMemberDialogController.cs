@@ -6,7 +6,7 @@ using CmsWeb.Areas.Org.Models;
 using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Org.Controllers
-{    
+{
     [RouteArea("Org", AreaPrefix = "")]
     public class OrgMemberDialogController : CmsStaffController
     {
@@ -27,8 +27,8 @@ namespace CmsWeb.Areas.Org.Controllers
             else
             {
                 var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgtagid);
-				if (mt == null)
-					return Content("not found");
+                if (mt == null)
+                    return Content("not found");
                 DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
             }
             DbUtil.Db.SubmitChanges();
@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == oid);
             if (om != null)
             {
-                om.Drop(DbUtil.Db, addToHistory:true);
+                om.Drop(DbUtil.Db, addToHistory: true);
                 DbUtil.Db.SubmitChanges();
             }
             return Content("dropped");
@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost, Route("OrgMemberDialog2/Move/{oid:int}/{pid:int}")]
         public ActionResult Move(int oid, int pid)
         {
-            var mm = new OrgMemberMoveModel {OrgId = oid, PeopleId = pid};
+            var mm = new OrgMemberMoveModel { OrgId = oid, PeopleId = pid };
             mm.Pager.SetWithPageOnly("/OrgMemberDialog2/MoveResults", 1);
             return View(mm);
         }
@@ -85,14 +85,14 @@ namespace CmsWeb.Areas.Org.Controllers
             var om1 = DbUtil.Db.OrganizationMembers.Single(m => m.PeopleId == pid && m.OrganizationId == oid);
             var om2 = CmsData.OrganizationMember.InsertOrgMembers(DbUtil.Db,
                 toid, om1.PeopleId, om1.MemberTypeId, DateTime.Now, om1.InactiveDate, om1.Pending ?? false);
-			DbUtil.Db.UpdateMainFellowship(om2.OrganizationId);
-			om2.EnrollmentDate = om1.EnrollmentDate;
-			if (om2.EnrollmentDate.Value.Date == DateTime.Today)
-				om2.EnrollmentDate = DateTime.Today; // force it to be midnight, so you can check them in.
+            DbUtil.Db.UpdateMainFellowship(om2.OrganizationId);
+            om2.EnrollmentDate = om1.EnrollmentDate;
+            if (om2.EnrollmentDate.Value.Date == DateTime.Today)
+                om2.EnrollmentDate = DateTime.Today; // force it to be midnight, so you can check them in.
             om2.Request = om1.Request;
             om2.Amount = om1.Amount;
             om2.UserData = om1.UserData;
-            om1.Drop(DbUtil.Db, addToHistory:true);
+            om1.Drop(DbUtil.Db, addToHistory: true);
             DbUtil.Db.SubmitChanges();
             return Content("moved");
         }
@@ -102,8 +102,8 @@ namespace CmsWeb.Areas.Org.Controllers
         }
         [HttpPost, Route("OrgMemberDialog2/MissionSupport/{oid}/{pid}")]
         public ActionResult MissionSupport(int oid, int pid)
-        {            
-            var m = new MissionSupportModel {OrgId = oid, PeopleId = pid};
+        {
+            var m = new MissionSupportModel { OrgId = oid, PeopleId = pid };
             return View(m);
         }
         [HttpPost, Route("OrgMemberDialog2/AddMissionSupport/{oid}/{pid}")]
@@ -112,6 +112,23 @@ namespace CmsWeb.Areas.Org.Controllers
             m.PostContribution();
             return View("MissionSupportDone", m);
         }
-
+        [HttpPost, Route("OrgMemberDialog2/AddTransaction/{oid}/{pid}")]
+        public ActionResult AddTransaction(int oid, int pid)
+        {
+            var m = new OrgMemberTransactionModel { OrgId = oid, PeopleId = pid };
+            return View(m);
+        }
+        [HttpPost, Route("OrgMemberDialog2/PostTransaction/{oid}/{pid}")]
+        public ActionResult PostTransaction(int oid, int pid, OrgMemberTransactionModel m)
+        {
+            if (m.TransactionSummary != null && (m.Payment ?? 0) == 0)
+                ModelState.AddModelError("Payment", "must have non zero value");
+            if (m.TransactionSummary == null && (m.Amount ?? 0) == 0 && (m.Payment ?? 0) == 0)
+                ModelState.AddModelError("Payment", "must be > 0");
+            if (!ModelState.IsValid)
+                return View("AddTransaction", m);
+            m.PostTransaction();
+            return View("AddTransactionDone", m);
+        }
     }
 }

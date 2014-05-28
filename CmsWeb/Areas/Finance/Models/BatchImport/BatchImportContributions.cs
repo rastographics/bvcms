@@ -21,8 +21,6 @@ namespace CmsWeb.Models
         {
             var defaulthost = DbUtil.Db.Setting("DefaultHost", "");
 
-            var specialcases = new List<string>() { "https://bellevue.bvcms.com", "https://northmobile.bvcms.com" };
-
             if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessJackHenry(csv, date, fundid);
@@ -67,8 +65,11 @@ namespace CmsWeb.Models
                     return BatchProcessDiscoverCrosspoint(text, date, fundid);
             }
             if (text.Substring(0, 40).Contains("Report Date,Report Requestor"))
+            {
+                DbUtil.LogActivity("BatchProcessRegions");
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessRegions(csv, date, fundid);
+            }
 
             if (text.StartsWith("From MICR :"))
                 return BatchProcessMagTek(text, date);

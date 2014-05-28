@@ -22,6 +22,8 @@ namespace CmsWeb.Areas.Search.Models
                 case FieldType.Bit:
                 case FieldType.NullBit:
                     return ConvertToSelect(BitCodes, fieldMap.DataValueField);
+                case FieldType.EqualBit:
+                    return ConvertToSelect(EqualBitCodes, fieldMap.DataValueField);
                 case FieldType.Code:
                 case FieldType.NullCode:
                 case FieldType.CodeStr:

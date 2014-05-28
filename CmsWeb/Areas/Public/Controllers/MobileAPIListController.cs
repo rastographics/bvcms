@@ -95,5 +95,29 @@ namespace CmsWeb.Areas.Public.Controllers
 			br.data = JsonConvert.SerializeObject(ma);
 			return br;
 		}
+
+		public ActionResult fetchGivingFunds()
+		{
+			var funds = (from f in DbUtil.Db.ContributionFunds
+							 where f.FundStatusId == 1
+							 where f.OnlineSort > 0
+							 orderby f.OnlineSort
+							 select f).ToList();
+
+			BaseMessage br = new BaseMessage();
+			List<MobileFund> ma = new List<MobileFund>();
+
+			br.error = 0;
+			br.type = BaseMessage.API_TYPE_SYSTEM_GIVING_FUNDS;
+			br.count = funds.Count();
+
+			foreach (var fund in funds)
+			{
+				ma.Add(new MobileFund().populate(fund));
+			}
+
+			br.data = JsonConvert.SerializeObject(ma);
+			return br;
+		}
 	}
 }

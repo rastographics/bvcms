@@ -14,10 +14,7 @@
 {
     @ViewExtensions2.CKEditor()
     @Fingerprint.Script("/Scripts/bundle.org.js")
-    @if (ViewExtensions2.UseNewLook())
-    {
     @Fingerprint.Script("/Scripts/Org/OrgMemberDialog2.js")
-    }
 }
 @{ CmsData.Organization o = Model.org; }
 @Html.Hidden("refreshed", "no")

@@ -77,9 +77,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             cc.Reset(DbUtil.Db);
 		    cc.AddNewClause(QueryType.EmailRecipient, CompareType.Equal, id);
             cc.Save(DbUtil.Db);
-            return ViewExtensions2.UseNewLook() 
-                ? Redirect("/Query/" + cc.Id) 
-                : Redirect("/Querybuilder2/Main/" + cc.Id);
+		    return Redirect("/Query/" + cc.Id);
 		}
 
         public ActionResult Tracking(int id)

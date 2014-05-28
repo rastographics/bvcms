@@ -5,11 +5,9 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
-using NPOI.SS.Formula.Functions;
 using UtilityExtensions;
 using System.IO;
 using System.Web.Configuration;
-using System.Data.SqlClient;
 using CmsWeb.Models;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
@@ -161,8 +159,6 @@ CKEditorFuncNum, baseurl + fn, error));
             if (!returnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person2/" + Util.UserPeopleId);
-            if (!DbUtil.Db.UserPreference("UseNewLookForSure").HasValue())
-                DbUtil.Db.SetUserPreference("UseNewLookForSure", "true");
             if (returnUrl.HasValue())
                 return Redirect(returnUrl);
             return Redirect("/");

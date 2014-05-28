@@ -43,9 +43,7 @@ namespace CmsWeb.Controllers
             var qb = DbUtil.Db.ScratchPadCondition();
             qb.Reset(DbUtil.Db);
             qb.Save(DbUtil.Db);
-            return Redirect(ViewExtensions2.UseNewLook()
-                ? "/Query"
-                : "/QueryBuilder2/Main");
+            return Redirect("/Query");
         }
         public ActionResult Test()
         {
@@ -69,10 +67,7 @@ for v in q:
             var name = "VisitNumber-" + id;
             var q = DbUtil.Db.Queries.FirstOrDefault(qq => qq.Owner == "System" && qq.Name == name);
             if (q != null)
-                return Redirect(
-                    ViewExtensions2.UseNewLook()
-                        ? "/Query/" + q.QueryId
-                        : "/QueryBuilder2/Main/" + q.QueryId);
+                return Redirect("/Query/" + q.QueryId);
 
             const CompareType comp = CompareType.Equal;
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -105,10 +100,7 @@ for v in q:
             cc.Description = name;
             cc.Save(DbUtil.Db, owner: "System");
             TempData["autorun"] = true;
-            return Redirect(
-                ViewExtensions2.UseNewLook()
-                    ? "/Query/" + cc.Id
-                    : "/QueryBuilder2/Main/" + cc.Id);
+            return Redirect("/Query/" + cc.Id);
         }
         [Authorize(Roles = "Admin")]
         public ActionResult ActiveRecords()
