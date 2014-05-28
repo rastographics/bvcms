@@ -3,6 +3,11 @@
 @using NPOI.SS.Formula.Functions
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.OrgMemberModel
+@{
+    var managetransactions = User.IsInRole("ManageTransactions");
+    var admin = User.IsInRole("Admin");
+    var missiongiving = User.IsInRole("MissionGiving");
+}
 <div class="modal-header">
     <a class="close" data-dismiss="modal">x</a>
     <h4>@Model.OrgName</h4>
@@ -70,7 +75,10 @@
                                     </table>
                                 }
                                 <p>
-                                    <a href="@Model.TransactionsLink" target="transactions">View Transactions</a>
+                                    @if (admin || managetransactions)
+                                    {
+                                        <a href="@Model.TransactionsLink" target="transactions">View Transactions</a>
+                                    }
                                     @if (Model.AmountDue > 0)
                                     {
                                         <a href="@Model.PayLink" style="margin-left: 2em;" target="_blank">PayLink</a>
@@ -113,6 +121,8 @@
 </div>
 <div class="modal-footer">
     <a href="#" class="btn" data-dismiss="modal">Close</a>
+    @if (managetransactions || admin || missiongiving)
+    {
     <div class="btn-group">
         <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">Transaction <span class="caret"></span></button>
         <ul class="dropdown-menu">
@@ -127,6 +137,7 @@
             }
         </ul>
     </div>
+    }
     <a id="dropmember" href="/OrgMemberDialog2/Drop/@Model.OrgId/@Model.PeopleId" class="btn btn-danger">Drop</a>
     <a href="/OrgMemberDialog2/Move/@Model.OrgId/@Model.PeopleId" class="btn btn-warning ajax">Move</a>
     <a href="/OrgMemberDialog2/Edit/@Model.OrgId/@Model.PeopleId" class="btn btn-primary ajax">Edit</a>
