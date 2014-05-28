@@ -647,7 +647,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult AddContact(Guid id)
         {
             var cid = CmsData.Contact.AddContact(id);
-            return Content("/Contact/" + cid);
+            return Content("/Contact2/" + cid);
         }
         [HttpPost]
         public ActionResult AddTasks(Guid id)
