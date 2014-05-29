@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
@@ -50,6 +51,29 @@ namespace CmsWeb.Areas.People.Controllers
                 singleStatement = true,
             };
         }
+        // the datetime arguments come across as sortable dates to make them universal for all cultures
+        [HttpGet, Route("ContributionStatement/{id:int}/{fr:datetime}/{to:datetime}")]
+		public ActionResult ContributionStatement(int id, DateTime fr, DateTime to)
+		{
+            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
+				return Content("No permission to view statement");
+			var p = DbUtil.Db.LoadPersonById(id);
+			if (p == null)
+				return Content("Invalid Id");
+
+			DbUtil.LogActivity("Contribution Statement for ({0})".Fmt(id));
+
+			return new Finance.Models.Report.ContributionStatementResult 
+			{ 
+				PeopleId = id, 
+				FromDate = fr,
+				ToDate = to,
+				typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult && p.ContributionOptionsId == EnvelopeOptionCode.Joint ? 2 : 1,
+				noaddressok = true,
+				useMinAmt = false,
+                singleStatement = true,
+			};
+		}
 
         [HttpGet]
         public ActionResult ManageGiving()

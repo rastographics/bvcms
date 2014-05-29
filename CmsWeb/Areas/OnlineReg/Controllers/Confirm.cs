@@ -151,6 +151,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
 
                 ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);
+                
                 return View("PayAmtDue/Confirm", ti);
             }
             catch (Exception ex)

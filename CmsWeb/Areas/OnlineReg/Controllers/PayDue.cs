@@ -96,6 +96,7 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
                         if (pay > due)
                             pay = due;
                         //om.AmountPaid += pay;
+                        ti.Amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
                     }
 
                     var sb = new StringBuilder();

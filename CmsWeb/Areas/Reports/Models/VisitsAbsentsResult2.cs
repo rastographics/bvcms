@@ -297,7 +297,11 @@ namespace CmsWeb.Areas.Reports.Models
                 var cname = "unknown";
                 if (pc.madeby != null)
                     cname = pc.madeby.Name;
-                string ctype = cts.Single(ct => ct.Id == pc.contact.ContactTypeId).Value;
+                var ctyp = cts.SingleOrDefault(ct => ct.Id == pc.contact.ContactTypeId);
+                string ctype = null;
+                if (ctyp != null)
+                    ctype = ctyp.Value;
+
                 string comments = null;
                 if (pc.contact.Comments.HasValue())
                     comments = pc.contact.Comments.Replace("\r\n\r\n", "\r\n");
