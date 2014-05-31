@@ -72,6 +72,8 @@ You may obtain a copy of the License at http://bvcms.codeplex.com/license
 	
 	Default Password: **bvcms**
 
+1. After successfully logging in, you should set your admin password immediately because the bvcms password is a one-time use password and will no longer work.
+
 ### Using BVCMS
 
 For addition information on how to use BVCMS, please see the **[BVCMS Documentation][DOC]**.
