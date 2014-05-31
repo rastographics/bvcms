@@ -276,10 +276,12 @@ namespace CmsData.API
             var q = from c in Db.Contributions
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionTypeId != ContributionTypeCode.GiftInKind
+                    where !Codes.ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
                     where c.ContributionDate >= fromDate && c.ContributionDate.Value.Date <= toDate.Date
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
                     where c.ContributionFund.NonTaxDeductible == true || ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
+                    where (c.PledgeFlag ?? false) == false
                     orderby c.ContributionDate
                     select new ContributionInfo
                     {
@@ -312,7 +314,10 @@ namespace CmsData.API
                      group p by p.FundId into g
                      select new { FundId = g.Key, Fund = g.First().ContributionFund.FundName, Total = g.Sum(p => p.ContributionAmount) };
             var qc = from c in Db.Contributions
-                     where !PledgeExcludes.Contains(c.ContributionTypeId)
+                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                     where c.ContributionTypeId != ContributionTypeCode.GiftInKind
+                     where !Codes.ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                     where c.ContributionStatusId == ContributionStatusCode.Recorded
                      where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
                      where c.ContributionTypeId != ContributionTypeCode.Pledge
                      where c.ContributionStatusId != ContributionStatusCode.Reversed
@@ -468,7 +473,7 @@ namespace CmsData.API
             }
         }
         public bool NonTaxDed { get; set; }
-        public int FamilyId { get; set; }
+        public int? FamilyId { get; set; }
         public string MemberStatus { get; set; }
     }
 }

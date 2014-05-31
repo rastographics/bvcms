@@ -308,7 +308,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ContentResult AddContact(QueryModel m)
         {
             var cid = Contact.AddContact(m.TopClause.Id);
-            return Content("/Contact/" + cid);
+            return Content("/Contact2/" + cid);
         }
         [HttpPost]
         public ActionResult AddTasks(QueryModel m)

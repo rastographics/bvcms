@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Org.Models
                     mm.Organization,
                     mm.OrgMemMemTags,
                     mm.Organization.IsMissionTrip,
-                    ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId)
+                    ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId)
                 }).SingleOrDefault();
             if (i == null)
                 throw new Exception("missing OrgMember at oid={0}, pid={0}".Fmt(OrgId, PeopleId));

@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var Db = DbUtil.Db;
             var org = Db.LoadOrganizationById(ti.OrgId);
             ti.TransactionId = TransactionID;
-            if (ti.Testing == true)
+            if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))
                 ti.TransactionId += "(testing)";
 
             var amt = ti.Amt;
@@ -96,6 +96,7 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
                         if (pay > due)
                             pay = due;
                         //om.AmountPaid += pay;
+                        ti.Amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
                     }
 
                     var sb = new StringBuilder();

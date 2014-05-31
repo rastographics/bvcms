@@ -350,8 +350,8 @@
     <Compile Include="Classes\QuickBooks\QBAccount.cs" />
     <Compile Include="Classes\QuickBooks\QBJournalEntryLine.cs" />
     <Compile Include="Classes\SmallGroupFinder\SmallGroupFinder.cs" />
-    <Compile Include="DbUtil\CMSMembershipProvider.cs" />
-    <Compile Include="DbUtil\CMSRoleProvider.cs" />
+    <Compile Include="CMSMembershipProvider.cs" />
+    <Compile Include="CMSRoleProvider.cs" />
     <Compile Include="DbUtil\Codes.cs" />
     <Compile Include="Extensions\Contact.cs" />
     <Compile Include="Extensions\ActivityLog.cs" />

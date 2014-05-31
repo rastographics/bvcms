@@ -237,7 +237,6 @@
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgPrevFromTagController.cs" />
-    <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
     <Compile Include="Areas\Dialog\Models\SearchModel.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgia.cs">
       <SubType>Code</SubType>
@@ -1054,10 +1053,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\ModelHidden.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SubmitNewButtons.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FinishedHeader.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Display.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Edit.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Index.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Move.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\YesNo.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Dropdown.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskChurch.cshtml" />

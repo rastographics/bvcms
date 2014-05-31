@@ -94,7 +94,7 @@ namespace CmsWeb.Models
 				 where t.Amt > gtamount || gtamount == null
 				 where t.Amt <= ltamount || ltamount == null
 				 where description == null || t.Description.Contains(description)
-				 where (t.Testing ?? false) == testtransactions
+				 where nameid > 0 || ((t.Testing ?? false) == testtransactions)
 				 where apprtransactions == (t.Moneytran == true) || !apprtransactions
 				 where (nocoupons && !t.TransactionId.Contains("Coupon")) || !nocoupons
 				 where (t.Financeonly ?? false) == false || finance

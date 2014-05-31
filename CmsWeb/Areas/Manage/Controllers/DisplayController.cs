@@ -28,6 +28,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     public class DisplayController : CmsStaffController
     {
         [Route("~/Display")]
+        [Route("~/Manage/Display")]
         public ActionResult Index()
         {
             return View(new ContentModel());
