@@ -6,7 +6,8 @@
         $.validator.methods.date = function (value, element) {
             return this.optional(element) || /@Util.jQueryDateValidation/.test(value);
         };
-        $.dateFormat = '@Util.jQueryDateFormat';
+        $.dateFormat = '@Util.jQueryDateFormat';    
+        $.dtoptions = { format: '@Util.jQueryDateFormat' };
         $.datepicker.setDefaults({
             dateFormat: $.dateFormat,
             changeMonth: true,

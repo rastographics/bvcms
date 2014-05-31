@@ -12,7 +12,11 @@
     @RenderSection("head", required: false)
     @ViewExtensions2.jQuery()
     @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/bundle.main.js")
+    @Fingerprint.Script("/Scripts/jQuery/jquery-migrate-1.1.1.js")
+    @Fingerprint.Script("/Scripts/jQuery/jquery.blockUI.js")
+    @Fingerprint.Script("/Scripts/jQuery/jquery.validate.js")
+    @Fingerprint.Script("/Scripts/js/ExportToolBar.js")
+
     @Html.Partial("DatePickerDefaults")
     @RenderSection("scripts", required: false)
 </head>
