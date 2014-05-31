@@ -375,8 +375,8 @@ AmountDue: {4:C}<br/>
             }
 
             ti.TransactionDate = DateTime.Now;
-
             var pids = pids2.Select(pp => pp.PeopleId);
+            ti.OriginalTransaction.TransactionPeople.AddRange(pids2);
 
             for (var i = 0; i < List.Count; i++)
             {
@@ -390,6 +390,7 @@ AmountDue: {4:C}<br/>
 
                 var om = p.Enroll(ti, null, testing, others);
                 om.RegisterEmail = p.EmailAddress;
+                om.TranId = ti.OriginalId;
 
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
                 if (grouptojoin > 0)

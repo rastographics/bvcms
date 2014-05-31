@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Org.Models
         private void Populate()
         {
             var q = from mm in DbUtil.Db.OrganizationMembers
-                    let ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId)
+                    let ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == mm.PeopleId)
                     where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
                     select new
                     {

@@ -256,7 +256,7 @@ namespace CmsData
 
         public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, decimal? amount = null)
         {
-            var ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == TranId);
+            var ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == TranId && tt.PeopleId == PeopleId);
             var ti = db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
             if (ti == null)
             {

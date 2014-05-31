@@ -36,6 +36,8 @@ namespace CmsWeb.Areas.People.Controllers
             return Redirect("/Person2/" + pid);
         }
         [HttpGet, Route("~/Person2/{id:int}")]
+        [Route("~/Person/Index/{id:int}")]
+        [Route("~/Person/{id:int}")]
         public ActionResult Index(int? id)
         {
             if (!id.HasValue)

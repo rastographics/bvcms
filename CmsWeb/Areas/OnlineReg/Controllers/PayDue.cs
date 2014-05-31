@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var Db = DbUtil.Db;
             var org = Db.LoadOrganizationById(ti.OrgId);
             ti.TransactionId = TransactionID;
-            if (ti.Testing == true)
+            if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))
                 ti.TransactionId += "(testing)";
 
             var amt = ti.Amt;
