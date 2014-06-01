@@ -151,7 +151,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
 
                 ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);
-                
+
                 return View("PayAmtDue/Confirm", ti);
             }
             catch (Exception ex)
@@ -340,6 +340,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                         p.person.PostUnattendedContribution(DbUtil.Db, g.amt, g.fundid, desc, tranid: t.Id);
                     }
                 }
+                t.TransactionPeople.Add(new TransactionPerson
+                {
+                    PeopleId = p.person.PeopleId,
+                    Amt = t.Amt,
+                    OrgId = m.Orgid,
+                });
                 t.Financeonly = true;
                 if (t.Donate > 0)
                 {

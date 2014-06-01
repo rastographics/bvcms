@@ -117,6 +117,11 @@ namespace CmsData
                         Person.PostUnattendedContribution(Db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
                 }
                 var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
+                t.TransactionPeople.Add(new TransactionPerson
+                {
+                    PeopleId = Person.PeopleId,
+                    Amt = tot,
+                });
                 NextDate = FindNextDate(DateTime.Today.AddDays(1));
                 Db.SubmitChanges();
                 if (tot > 0)

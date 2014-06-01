@@ -1,7 +1,9 @@
-using CmsData.Registration;
+using System;
+using System.Linq;
 using CmsData.View;
 using UtilityExtensions;
-using System.Linq;
+using System.Collections.Generic;
+using System.Data;
 
 namespace CmsData
 {
@@ -76,6 +78,33 @@ namespace CmsData
                     timeOut = Util.IsDebug() ? 16000000 : 180000;
                 return timeOut.Value;
             }
+        }
+        public static void ResolvePrevDaysVirtualCheckRejects(CMSDataContext db, DateTime dt)
+        {
+            var gateway = db.Setting("TransactionGateway", "");
+            if (gateway != "sage")
+                return;
+            var sage = new SagePayments(db, false);
+            var ds = sage.VirtualCheckRejects(dt);
+            var items = from r in ds.Tables[0].AsEnumerable()
+                            let rejectdt = r["reject_date"].ToDate() ?? DateTime.MinValue
+                            where rejectdt > DateTime.MinValue
+                        select new
+                        {
+                            rejectdt,
+                            trantype = r["trantype"],
+                            amt = r["rejedt_amount"].ToString().ToDecimal(),
+                            tranid = r["customer_number"].ToInt(),
+                            rejectcode = r["reject_code"].ToString(),
+                            message = r["correction_info"].ToString(),
+                        };
+            /* 
+             * Create a new transaction to reverse the original 
+             * If the transaction was for online giving or recurring giving, then reverse the contribution. 
+             * If the transaction contained an extra donation, then reverse that contribution. 
+             * Send an email to the payor. 
+             * Send an email notification to the online notify list for the associated organization
+             */
         }
     }
 }

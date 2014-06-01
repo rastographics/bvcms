@@ -317,6 +317,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -339,6 +340,7 @@
   <ItemGroup>
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
+    <Compile Include="Generated\Views\DonorProfileList.cs" />
     <Compile Include="Meetings\Attend.cs" />
     <Compile Include="Finance\AuthorizeNet.cs" />
     <Compile Include="Batch\ExpressionVisitor.cs" />
