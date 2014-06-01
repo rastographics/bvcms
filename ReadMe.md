@@ -7,6 +7,10 @@
 
 BVCMS Developer Quick Start Guide
 ---
+Copyright (c) 2008-2014 Bellevue Baptist Church 
+Licensed under the GNU General Public License (GPL v2)
+you may not use this code except in compliance with the License.
+You may obtain a copy of the License at http://bvcms.codeplex.com/license 
 ### Install Development Tools
 1. **[Visual Studio Express 2012][IDE]**
 1. **[SQL Server Express 2012 SP1][SQL]**
@@ -46,7 +50,8 @@ BVCMS Developer Quick Start Guide
 
 1. Edit **Web.config** under **CmsWeb** root directory
 
-	In the appSettings section, configure the **dbserver** and **host** values to point to your server and the name of your database (without the CMS_). These two values will become part of your connection string.
+	- In the appSettings section, configure the **dbserver** and **host** values to point to your server and the name of your database (without the CMS_). These two values will become part of your connection string.
+	- In the mailSettings, configure the pickupDirectoryLocation to a directory on your development machine (for testing purposes).
 
 1. Right-click on **CMSWeb** and select **Set as StartUp Project**
 
@@ -66,6 +71,7 @@ BVCMS Developer Quick Start Guide
 	
 	Default Password: **bvcms**
 
+1. After successfully logging in, you should set your admin password immediately because the bvcms password is a one-time use password and will no longer work.
 ### Using BVCMS
 
 For addition information on how to use BVCMS, please see the **[BVCMS Documentation][DOC]**.
