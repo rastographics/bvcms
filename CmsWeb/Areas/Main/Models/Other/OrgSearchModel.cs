@@ -281,9 +281,17 @@ namespace CmsWeb.Models
                 organizations = from o in organizations
                                 where o.OrganizationTypeId == TypeId
                                 select o;
-            else if (TypeId == -1)
+            else if (TypeId == OrgType.NoOrgType)
                 organizations = from o in organizations
                                 where o.OrganizationTypeId == null
+                                select o;
+            else if (TypeId == OrgType.MainFellowship)
+                organizations = from o in organizations
+                                where o.IsBibleFellowshipOrg == true
+                                select o;
+            else if (TypeId == OrgType.NotMainFellowship)
+                organizations = from o in organizations
+                                where (o.IsBibleFellowshipOrg ?? false) == false
                                 select o;
 
             if (CampusId > 0)
@@ -579,6 +587,13 @@ namespace CmsWeb.Models
             });
             return list;
         }
+
+        public class OrgType
+        {
+            public const int MainFellowship = -3;
+            public const int NotMainFellowship = -2;
+            public const int NoOrgType = -1;
+        }
         public IEnumerable<SelectListItem> OrgTypes()
         {
             var q = from t in DbUtil.Db.OrganizationTypes
@@ -589,7 +604,9 @@ namespace CmsWeb.Models
                         Text = t.Description
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Text = "(None)", Value = "-1", });
+            list.Insert(0, new SelectListItem { Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString() });
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
