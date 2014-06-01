@@ -114,10 +114,7 @@ namespace CmsData
                 foreach (var a in q)
                 {
                     if (a.ContributionFund.FundStatusId == 1 && a.Amt > 0)
-                        Person.PostUnattendedContribution(Db,
-                            a.Amt ?? 0,
-                            a.FundId,
-                            "Recurring Giving", pledge: false);
+                        Person.PostUnattendedContribution(Db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
                 }
                 var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
                 NextDate = FindNextDate(DateTime.Today.AddDays(1));

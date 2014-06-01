@@ -1647,6 +1647,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.DonorProfileList> ViewDonorProfileLists
+	    {
+		    get { return this.GetTable< View.DonorProfileList>(); }
+
+	    }
+
 	    public Table< View.FirstName> ViewFirstNames
 	    {
 		    get { return this.GetTable< View.FirstName>(); }
@@ -3215,6 +3221,20 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.RegexMatch", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string RegexMatch(
+            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
+            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                subject,
+                pattern
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.PrimaryCity", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string PrimaryCity(
@@ -3236,6 +3256,18 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.IsValidEmail", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? IsValidEmail(
+            [Parameter(Name = "addr", DbType="nvarchar")] string addr
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                addr
                 ).ReturnValue));
 		}
 
@@ -3613,18 +3645,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.IsValidEmail", IsComposable = true)]
-		[return: Parameter(DbType = "bit")]
-		public bool? IsValidEmail(
-            [Parameter(Name = "addr", DbType="nvarchar")] string addr
-            )
-		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                addr
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.LastMemberTypeInTrans", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? LastMemberTypeInTrans(
@@ -3636,20 +3656,6 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.RegexMatch", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string RegexMatch(
-            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
-            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                subject,
-                pattern
                 ).ReturnValue));
 		}
 

@@ -1256,7 +1256,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var pi = PaymentInfos.SingleOrDefault();
             return pi;
         }
-        public Contribution PostUnattendedContribution(CMSDataContext Db, decimal Amt, int? Fund, string Description, bool pledge = false, int? typecode = null)
+        public Contribution PostUnattendedContribution(CMSDataContext Db, decimal Amt, int? Fund, string Description, bool pledge = false, int? typecode = null, int? tranid = null)
         {
             if (!typecode.HasValue)
             {
@@ -1332,6 +1332,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ContributionStatusId = 0,
                 ContributionTypeId = typid,
                 ContributionDesc = Description,
+                TranId = tranid
             };
             bundle.BundleDetails.Add(bd);
             Db.SubmitChanges();

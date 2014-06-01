@@ -482,5 +482,39 @@ namespace CmsData
 			ds.ReadXml(new StringReader(ret));
 			return ds;
 		}
+		public DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt)
+		{
+			var wc = new WebClient();
+			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/";
+			var coll = new NameValueCollection();
+			coll["M_ID"] = login;
+			coll["M_KEY"] = key;
+		    coll["START_DATE"] = "";
+		    coll["END_DATE"] = "";
+
+			const string method = "VIEW_VIRTUAL_CHECK_REJECTS_BY_DATE";
+
+			var b = wc.UploadValues(method, "POST", coll);
+			var ret = Encoding.ASCII.GetString(b);
+			var ds = new DataSet();
+			ds.ReadXml(new StringReader(ret));
+			return ds;
+		}
+		public DataSet VirtualCheckRejects(DateTime rejectdate)
+		{
+			var wc = new WebClient {BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/"};
+		    var coll = new NameValueCollection();
+			coll["M_ID"] = login;
+			coll["M_KEY"] = key;
+		    coll["REJECT_DATE"] = rejectdate.ToShortDateString();
+
+			const string method = "VIEW_VIRTUAL_CHECK_REJECTS";
+
+			var b = wc.UploadValues(method, "POST", coll);
+			var ret = Encoding.ASCII.GetString(b);
+			var ds = new DataSet();
+			ds.ReadXml(new StringReader(ret));
+			return ds;
+		}
 	}
 }

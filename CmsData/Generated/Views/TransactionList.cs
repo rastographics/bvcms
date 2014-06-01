@@ -100,6 +100,8 @@ namespace CmsData.View
 		
 		private string _Suffix;
 		
+		private int? _ContributionId;
+		
 		private int _BalancesId;
 		
 		private decimal? _BegBal;
@@ -830,6 +832,23 @@ namespace CmsData.View
 			{
 				if (this._Suffix != value)
 					this._Suffix = value;
+			}
+
+		}
+
+		
+		[Column(Name="ContributionId", Storage="_ContributionId", DbType="int")]
+		public int? ContributionId
+		{
+			get
+			{
+				return this._ContributionId;
+			}
+
+			set
+			{
+				if (this._ContributionId != value)
+					this._ContributionId = value;
 			}
 
 		}

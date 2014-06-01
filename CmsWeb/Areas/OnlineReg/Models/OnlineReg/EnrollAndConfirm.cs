@@ -213,7 +213,7 @@ namespace CmsWeb.Models
                     {
                         p.person.PostUnattendedContribution(DbUtil.Db,
                             p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
-                            "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid));
+                            "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid), tranid: ti.Id);
                         // send notices
                         if (!p.MissionTripNoNoticeToGoer)
                         {
@@ -238,7 +238,7 @@ namespace CmsWeb.Models
                     {
                         p.person.PostUnattendedContribution(DbUtil.Db,
                             p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
-                            "SupportMissionTrip: org={0}".Fmt(p.orgid));
+                            "SupportMissionTrip: org={0}".Fmt(p.orgid), tranid: ti.Id);
                     }
                 }
                 var notifyids = Db.NotifyIds(org.OrganizationId, org.GiftNotifyIds);
@@ -274,7 +274,7 @@ namespace CmsWeb.Models
                 {
                     p.person.PostUnattendedContribution(DbUtil.Db,
                         ti.Amt.Value, p.setting.DonationFundId,
-                        "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId));
+                        "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId), tranid: ti.Id);
                 }
             }
             else if (ti.Donate > 0)
@@ -288,12 +288,7 @@ namespace CmsWeb.Models
                     p.person.PrimaryState,
                     p.person.PrimaryZip);
                 if (!ti.TransactionId.StartsWith("Coupon"))
-                {
-                    p.person.PostUnattendedContribution(DbUtil.Db,
-                        ti.Donate.Value,
-                        p.setting.DonationFundId,
-                        desc);
-                }
+                    p.person.PostUnattendedContribution(DbUtil.Db, ti.Donate.Value, p.setting.DonationFundId, desc, tranid: ti.Id);
                 var ma = re.Match(message);
                 if (ma.Success)
                 {

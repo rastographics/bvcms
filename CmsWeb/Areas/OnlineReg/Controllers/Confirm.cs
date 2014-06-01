@@ -337,10 +337,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     if (g.amt > 0)
                     {
                         sb.AppendFormat(row, g.desc, g.amt);
-                        p.person.PostUnattendedContribution(DbUtil.Db,
-                                                            g.amt,
-                                                            g.fundid,
-                                                            desc);
+                        p.person.PostUnattendedContribution(DbUtil.Db, g.amt, g.fundid, desc, tranid: t.Id);
                     }
                 }
                 t.Financeonly = true;
@@ -349,10 +346,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     var fundname = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == p.setting.DonationFundId).FundName;
                     sb.AppendFormat(row, fundname, t.Donate);
                     t.Fund = p.setting.DonationFund();
-                    p.person.PostUnattendedContribution(DbUtil.Db,
-                        t.Donate.Value,
-                        p.setting.DonationFundId,
-                        desc);
+                    p.person.PostUnattendedContribution(DbUtil.Db, t.Donate ?? 0, p.setting.DonationFundId, desc, tranid: t.Id);
                 }
                 sb.Append(e);
                 if (!t.TransactionId.HasValue())

@@ -28,7 +28,7 @@ namespace CmsData.View
 		
 		private decimal? _TotalAmt;
 		
-		private decimal? _TotPaid;
+		private decimal _TotPaid;
 		
 		private decimal? _TotDue;
 		
@@ -153,8 +153,8 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="TotPaid", Storage="_TotPaid", DbType="money")]
-		public decimal? TotPaid
+		[Column(Name="TotPaid", Storage="_TotPaid", DbType="money NOT NULL")]
+		public decimal TotPaid
 		{
 			get
 			{
