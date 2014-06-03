@@ -481,6 +481,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             catch (Exception ex)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                 TempData["error"] = ex.Message;
                 return Redirect("/Error");
             }

@@ -472,7 +472,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="emphone", UpdateCheck=UpdateCheck.Never, Storage="_Emphone", DbType="nvarchar(15)")]
+		[Column(Name="emphone", UpdateCheck=UpdateCheck.Never, Storage="_Emphone", DbType="nvarchar(50)")]
 		public string Emphone
 		{
 			get { return this._Emphone; }
@@ -516,7 +516,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="docphone", UpdateCheck=UpdateCheck.Never, Storage="_Docphone", DbType="nvarchar(15)")]
+		[Column(Name="docphone", UpdateCheck=UpdateCheck.Never, Storage="_Docphone", DbType="nvarchar(50)")]
 		public string Docphone
 		{
 			get { return this._Docphone; }

@@ -40,7 +40,7 @@ namespace CmsData
 
         internal Expression SpouseOrHeadWithEmail()
         {
-            var q = db.ViewSpouseOrHeadWithEmails.Select(p => p.PeopleId);
+            var q = db.ViewSpouseOrHeadWithEmails.Select(p => p.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
