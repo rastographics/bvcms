@@ -293,6 +293,10 @@ namespace CmsWeb.Models
                 organizations = from o in organizations
                                 where (o.IsBibleFellowshipOrg ?? false) == false
                                 select o;
+            else if (TypeId == OrgType.SuspendedCheckin)
+                organizations = from o in organizations
+                                where (o.SuspendCheckin ?? false)
+                                select o;
 
             if (CampusId > 0)
                 organizations = from o in organizations
@@ -590,6 +594,7 @@ namespace CmsWeb.Models
 
         public class OrgType
         {
+            public const int SuspendedCheckin = -4;
             public const int MainFellowship = -3;
             public const int NotMainFellowship = -2;
             public const int NoOrgType = -1;
@@ -604,6 +609,7 @@ namespace CmsWeb.Models
                         Text = t.Description
                     };
             var list = q.ToList();
+            list.Insert(0, new SelectListItem { Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString() });
             list.Insert(0, new SelectListItem { Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString() });
             list.Insert(0, new SelectListItem { Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString() });
             list.Insert(0, new SelectListItem { Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString() });
