@@ -11,14 +11,5 @@ namespace CmsWeb.MobileAPI
 
 		public string code = "";
 		public string description = "";
-
-		public MobileCountry populate(CmsData.Country country)
-		{
-			id = country.Id;
-			code = country.Code;
-			description = country.Description;
-
-			return this;
-		}
 	}
 }
