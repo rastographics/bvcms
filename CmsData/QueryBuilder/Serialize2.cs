@@ -128,6 +128,8 @@ namespace CmsData
                 w.WriteAttributeString("Tags", Tags);
             if (Schedule > 0)
                 w.WriteAttributeString("Schedule", Schedule.ToString());
+            if (Campus > 0)
+                w.WriteAttributeString("Campus", Campus.ToString());
             if (ConditionName != "FamilyHasChildrenAged")
                 Age = null;
             if (Age.HasValue)
@@ -170,6 +172,7 @@ namespace CmsData
                 Quarters = Attribute(r, "Quarters"),
                 Tags = Attribute(r, "Tags"),
                 Schedule = Attribute(r, "Schedule").ToInt(),
+                Campus = Attribute(r, "Campus").ToInt(),
                 Age = Attribute(r, "Age").ToInt2(),
                 Owner = Attribute(r, "Owner"),
                 SavedQuery = Attribute(r, "SavedQueryIdDesc"),

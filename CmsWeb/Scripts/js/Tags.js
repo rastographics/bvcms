@@ -75,9 +75,12 @@
         var q = f.serialize();
         $.post($('#refresh').attr('href'), q, function (ret) {
             $('#results').replaceWith(ret).ready(function () {
+                var curtag = $("#actag").val();
                 $('#results > tbody > tr:even').addClass('alt');
-                $("#activetag").text($("#actag").val());
-                $("#tagalltagname").val($("#actag").val());
+                $("#activetag").text(curtag);
+                $("#current-tag1").text(curtag);
+                $("#current-tag2").text(curtag);
+                $("#tagalltagname").val(curtag);
                 $("#sharecount").text($("#shcnt").val());
                 //$('.dropdown').hoverIntent(dropdownshow, dropdownhide);
             });
