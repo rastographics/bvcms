@@ -8,7 +8,7 @@ INSERT INTO @Cols SELECT Value FROM dbo.Split(@nodisplaycols, '|')
 DECLARE @sql nvarchar(MAX) = 'select * from (SELECT PeopleId, (SELECT p2.Name FROM dbo.People p2 WHERE p2.PeopleId = p.PeopleId) FullName'
 
 SELECT @sql = 
-      @sql + ',ISNULL((SELECT TOP 1 pe.StrValue FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND pe.Field = ''' +  CAST(Field as nvarchar(100)) + '''),'''') [' + CAST(Field AS nvarchar(100)) + ']'
+      @sql + ',ISNULL((SELECT TOP 1 pe.StrValue FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND pe.Field = ''' +  REPLACE(CAST(Field as nvarchar(100)),'''','''''') + '''),'''') [' + REPLACE(CAST(Field as nvarchar(100)),'''','''''') + ']'
 FROM dbo.PeopleExtra pe 
 JOIN dbo.People p ON pe.PeopleId = p.PeopleId
 WHERE EXISTS(SELECT NULL FROM dbo.TagPerson tp WHERE tp.Id = @tagid AND tp.PeopleId = p.PeopleId)
@@ -18,7 +18,7 @@ GROUP BY pe.Field
 
 SELECT @sql = 
       @sql + ',
-ISNULL((SELECT TOP 1 pe.Data FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND pe.Field = ''' +  CAST(Field as nvarchar(100)) + '''),'''') [' + CAST(Field AS nvarchar(100)) + ']'
+ISNULL((SELECT TOP 1 pe.Data FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND pe.Field = ''' +  REPLACE(CAST(Field as nvarchar(100)),'''','''''') + '''),'''') [' + REPLACE(CAST(Field as nvarchar(100)),'''','''''') + ']'
       FROM dbo.PeopleExtra pe 
 JOIN dbo.People p ON pe.PeopleId = p.PeopleId
 WHERE EXISTS(SELECT NULL FROM dbo.TagPerson tp WHERE tp.Id = @tagid AND tp.PeopleId = p.PeopleId)
@@ -28,7 +28,7 @@ GROUP BY pe.Field
 
 SELECT @sql = 
       @sql + ',
-ISNULL((SELECT TOP 1 CONVERT(nvarchar, pe.DateValue, 111) FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND pe.Field = ''' +  CAST(Field as nvarchar(100)) + '''),'''') [' + CAST(Field AS nvarchar(100)) + ']'
+ISNULL((SELECT TOP 1 CONVERT(nvarchar, pe.DateValue, 111) FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND pe.Field = ''' +  REPLACE(CAST(Field as nvarchar(100)),'''','''''') + '''),'''') [' + REPLACE(CAST(Field as nvarchar(100)),'''','''''') + ']'
             FROM dbo.PeopleExtra pe 
 JOIN dbo.People p ON pe.PeopleId = p.PeopleId
 WHERE EXISTS(SELECT NULL FROM dbo.TagPerson tp WHERE tp.Id = @tagid AND tp.PeopleId = p.PeopleId)
@@ -38,7 +38,7 @@ GROUP BY pe.Field
 
 SELECT @sql = 
       @sql + ',
-ISNULL((SELECT TOP 1 CONVERT(nvarchar, pe.IntValue) FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND pe.Field = ''' +  CAST(Field as nvarchar(100)) + '''),'''') [' + CAST(Field AS nvarchar(100)) + ']'
+ISNULL((SELECT TOP 1 CONVERT(nvarchar, pe.IntValue) FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND pe.Field = ''' +  REPLACE(CAST(Field as nvarchar(100)),'''','''''') + '''),'''') [' + CAST(Field AS nvarchar(100)) + ']'
       FROM dbo.PeopleExtra pe 
 JOIN dbo.People p ON pe.PeopleId = p.PeopleId
 WHERE EXISTS(SELECT NULL FROM dbo.TagPerson tp WHERE tp.Id = @tagid AND tp.PeopleId = p.PeopleId)
@@ -48,7 +48,7 @@ GROUP BY pe.Field
 
 SELECT @sql = 
       @sql + ',
-ISNULL((SELECT TOP 1 CONVERT(nvarchar, pe.BitValue) FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND pe.Field = ''' +  CAST(Field as nvarchar(100)) + '''),'''') [' + CAST(Field AS nvarchar(100)) + ']'
+ISNULL((SELECT TOP 1 CONVERT(nvarchar, pe.BitValue) FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND pe.Field = ''' +  REPLACE(CAST(Field as nvarchar(100)),'''', '''''') + '''),'''') [' + CAST(Field AS nvarchar(100)) + ']'
       FROM dbo.PeopleExtra pe 
 JOIN dbo.People p ON pe.PeopleId = p.PeopleId
 WHERE EXISTS(SELECT NULL FROM dbo.TagPerson tp WHERE tp.Id = @tagid AND tp.PeopleId = p.PeopleId)

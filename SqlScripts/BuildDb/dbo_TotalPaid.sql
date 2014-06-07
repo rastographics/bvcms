@@ -1,5 +1,3 @@
-
-
 CREATE FUNCTION [dbo].[TotalPaid](@oid int, @pid int) 
 RETURNS int
 AS
@@ -19,12 +17,10 @@ BEGIN
 		AND OrgId = @oid
 		AND ISNULL(InActive, 0) = 0
 	ELSE
-		SELECT @c = IndPaid FROM dbo.TransactionSummary WHERE RegId = @tranid
+		SELECT @c = IndPaid FROM dbo.TransactionSummary WHERE RegId = @tranid AND PeopleId = @pid
 
 	RETURN @c
 END
-
-
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
