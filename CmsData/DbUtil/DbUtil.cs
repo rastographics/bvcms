@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Web;
 using UtilityExtensions;
@@ -297,5 +298,37 @@ namespace CmsData
                 return null;
             return dt;
         }
+
+	    public class SupportPerson
+	    {
+	        public int id { get; set; }
+	        public string name { get; set; }
+	        public string email { get; set; }
+	    }
+        public static List<SupportPerson> Supporters(string supporters)
+        {
+            var ss = supporters.Split(',').Select(s => s.Split(':'));
+            return ss.Select(a => new SupportPerson
+            {
+                id = a[1].ToInt(), 
+                name = a[0].Trim(), 
+                email = a[2].Trim()
+            }).ToList();
+        }
+	    public static string SupporterName(string ss, int n)
+	    {
+	        var sc = Supporters(ss);
+	        return sc[n].name;
+	    }
+	    public static string SupporterName(string ss, string email)
+	    {
+	        var sc = Supporters(ss);
+	        return sc.Single(ee => ee.email == email).name;
+	    }
+	    public static SupportPerson SupporterPerson(string ss, string email)
+	    {
+	        var sc = Supporters(ss);
+	        return sc.Single(ee => ee.email == email);
+	    }
     }
 }

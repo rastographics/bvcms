@@ -30,7 +30,7 @@ namespace CmsData
             DbUtil.Db.SubmitChanges();
             return c.ContactId;
         }
-        public static Contact AddContact(CMSDataContext Db, int pid, DateTime? date, string comments)
+        public static Contact AddContact(CMSDataContext Db, int contacteeid, DateTime? date, string comments, int? contactmakerid = null)
         {
             var c = new Contact 
 			{ 
@@ -39,7 +39,9 @@ namespace CmsData
 	            CreatedDate = DateTime.Now,
 				Comments = comments
 			};
-            c.contactees.Add(new Contactee { PeopleId = pid });
+            c.contactees.Add(new Contactee { PeopleId = contacteeid });
+            if(contactmakerid.HasValue)
+                c.contactsMakers.Add(new Contactor { PeopleId = contactmakerid.Value });
             Db.Contacts.InsertOnSubmit(c);
             Db.SubmitChanges();
 			return c;

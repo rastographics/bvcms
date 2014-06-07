@@ -208,8 +208,11 @@ namespace CmsData
                     if (sendLinkRe.IsMatch(code))
                         return SendLink(code, emailqueueto);
 
-                    if(code.StartsWith("{orgextra:", StringComparison.OrdinalIgnoreCase))
+                    if (code.StartsWith("{orgextra:", StringComparison.OrdinalIgnoreCase))
                         return OrgExtra(code, emailqueueto);
+
+                    if (code.StartsWith("{orgmember:", StringComparison.OrdinalIgnoreCase))
+                        return OrgMember(code, emailqueueto);
 
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
@@ -265,6 +268,36 @@ namespace CmsData
             if (ev == null || !ev.Data.HasValue())
                 return null;
             return ev.Data;
+        }
+
+        const string OrgMemberRe = @"{orgmember:(?<type>.*?),(?<divid>.*?)}";
+        readonly Regex orgMemberRe = new Regex(OrgMemberRe, RegexOptions.Singleline);
+        private string OrgMember(string code, EmailQueueTo emailqueueto)
+        {
+            var match = orgMemberRe.Match(code);
+            if (!match.Success)
+                return code;
+            var divid = match.Groups["divid"].Value.ToInt();
+            var type = match.Groups["type"].Value;
+            var org = (from om in db.OrganizationMembers
+                       where om.PeopleId == emailqueueto.PeopleId
+                       where om.Organization.DivOrgs.Any(dd => dd.DivId == divid)
+                       select om.Organization).FirstOrDefault();
+
+            if (org == null)
+                return "?";
+
+            switch (type)
+            {
+                case "location":
+                    return org.Location;
+                case "orgname":
+                case "name":
+                    return org.OrganizationName;
+                case "leader":
+                    return org.LeaderName;
+            }
+            return code;
         }
 
         private string CreateUserTag(EmailQueueTo emailqueueto)
@@ -673,6 +706,15 @@ namespace CmsData
             "http://volreqlink", 
             "http://sendlink", 
             "http://sendlink2", 
+            "https://votelink", 
+            "https://registerlink", 
+            "https://registerlink2", 
+            "https://supportlink", 
+            "https://rsvplink", 
+            "https://volsublink", 
+            "https://volreqlink", 
+            "https://sendlink", 
+            "https://sendlink2", 
             "{emailhref}" 
         };
         public static bool IsSpecialLink(string link)

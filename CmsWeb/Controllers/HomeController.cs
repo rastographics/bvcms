@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -174,6 +175,9 @@ for v in q:
         {
             if (helplink.HasValue())
                 TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
+            
+            if (!SupportRequestModel.CanSupport)
+                ViewBag.NoSupport = "true";
             return View();
         }
     }

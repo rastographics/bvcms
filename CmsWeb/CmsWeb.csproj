@@ -890,7 +890,6 @@
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Display.cshtml" />
-    <Content Include="Scripts\Search\QueryBuilder2.js" />
     <Content Include="Scripts\Search\SavedQuery2.js" />
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
@@ -1326,6 +1325,7 @@
     <Compile Include="Code\Word2Pdf.cs" />
     <Compile Include="Areas\Finance\Controllers\QuickBooksController.cs" />
     <Compile Include="Controllers\SupportController.cs" />
+    <Compile Include="Models\SupportRequestModel.cs" />
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailsModel.cs" />
