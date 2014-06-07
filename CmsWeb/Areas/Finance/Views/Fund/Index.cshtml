@@ -12,11 +12,11 @@
 <p>
 @if(ViewBag.status == 1)
 {
-<a href="/Fund?status=2">view closed funds</a>
+<a href="/Funds?status=2">view closed funds</a>
 }
 else
 {
-<a href="/Fund">view open funds</a>
+<a href="/Funds">view open funds</a>
 }
 </p>
 @Html.Hidden("status")

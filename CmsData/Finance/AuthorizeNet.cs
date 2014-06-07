@@ -337,7 +337,7 @@ namespace CmsData
 			var x = getResponse(request.ToString());
 
 			var resp = x.Descendants(ns + "directResponse").First().Value;
-			var a = resp.Split('|');
+			var a = resp.Split(',');
 			var tr = new TransactionResponse
 			{
 				Approved = a[0] == "1",

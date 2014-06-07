@@ -139,6 +139,7 @@ namespace CmsWeb.Models
                 var setting = settings[org.OrganizationId];
                 return org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes
                        || org.RegistrationTypeId == RegistrationTypeCode.CreateAccount
+                       || org.IsMissionTrip == true
                        || setting.AllowOnlyOne || setting.AskVisible("AskTickets")
                        || setting.GiveOrgMembAccess
                        || SupportMissionTrip;

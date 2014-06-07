@@ -111,7 +111,7 @@ namespace CmsWeb.Models
                             foreach (var ck in ((AskCheckboxes)ask).list)
                                 person.RemoveExtraValue(DbUtil.Db, ck.SmallGroup);
                             foreach (var g in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
-                                person.AddEditExtraValue(g.SmallGroup, "true");
+                                person.AddEditExtraBool(g.SmallGroup, true);
                         }
                         else
                         {

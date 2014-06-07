@@ -77,7 +77,7 @@ namespace CmsWeb.Models
                         ProgramId = o.Division.ProgId,
                         DivisionId = o.DivisionId,
                         DivisionName = o.Division.Name,
-                        Divisions = string.Join(",", o.DivOrgs.Select(d => d.Division.Name).ToArray()),
+                        Divisions = string.Join(",", o.DivOrgs.Select(d => "{0} ({1})".Fmt(d.Division.Name, d.DivId)).ToArray()),
                         FirstMeetingDate = o.FirstMeetingDate.FormatDate(),
                         LastMeetingDate = o.LastMeetingDate.FormatDate(),
                         Schedule = DbUtil.Db.GetScheduleDesc(sc.MeetingTime),

@@ -198,8 +198,10 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpPost]
-        public ActionResult EnrollmentControl(bool? excel, EnrollmentControlModel m)
+        public ActionResult EnrollmentControl(bool? excel, bool? usecurrenttag, EnrollmentControlModel m)
         {
+            if (usecurrenttag == true)
+                m.usecurrenttag = true;
             if (excel != true)
                 return new EnrollmentControlResult { model = m };
 
