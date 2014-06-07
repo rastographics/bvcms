@@ -134,8 +134,8 @@ namespace CmsWeb.Models
 
         public IEnumerable<TaskListInfo> FetchTaskLists()
         {
-            Task.GetRequiredTaskList(STR_InBox, PeopleId);
-            Task.GetRequiredTaskList("Personal", PeopleId);
+            Task.GetRequiredTaskList(DbUtil.Db, STR_InBox, PeopleId);
+            Task.GetRequiredTaskList(DbUtil.Db, "Personal", PeopleId);
             return from t in DbUtil.Db.TaskLists
                    where t.TaskListOwners.Any(tlo => tlo.PeopleId == PeopleId) || t.CreatedBy == PeopleId
                    orderby t.Name
@@ -711,13 +711,13 @@ namespace CmsWeb.Models
             var list = Db.TaskLists.Single(tl => tl.Id == id);
             if (list.Name == STR_InBox) // can't delete inbox
                 return;
-            var inbox = Task.GetRequiredTaskList(STR_InBox, PeopleId);
+            var inbox = Task.GetRequiredTaskList(DbUtil.Db, STR_InBox, PeopleId);
             var q = Db.Tasks.Where(t => t.ListId == id);
             foreach (var t in q)
             {
                 if (t.CoOwnerId.HasValue && t.CoListId == id)
                 {
-                    var cinbox = Task.GetRequiredTaskList(STR_InBox, t.CoOwnerId.Value);
+                    var cinbox = Task.GetRequiredTaskList(DbUtil.Db, STR_InBox, t.CoOwnerId.Value);
                     cinbox.CoTasks.Add(t);
                 }
                 inbox.Tasks.Add(t);
@@ -741,7 +741,7 @@ namespace CmsWeb.Models
 
         public static int InBoxId(int pid)
         {
-            return Task.GetRequiredTaskList(STR_InBox, pid).Id;
+            return Task.GetRequiredTaskList(DbUtil.Db, STR_InBox, pid).Id;
         }
         public int AddTask(int pid, int listid, string text)
         {

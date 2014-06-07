@@ -581,7 +581,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                         && HttpContext.Current.User.IsInRole("Access")
                         && !HttpContext.Current.User.IsInRole("OrgMembersOnly")
                         && !HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
-                    Task.AddNewPerson(p.PeopleId);
+                    Task.AddNewPerson(Db, p.PeopleId);
                 else
                     Db.Email(Util.SysFromEmail, Db.GetNewPeopleManagers(),
                             "Just Added Person on " + Db.Host, "{0} ({1})".Fmt(p.Name, p.PeopleId));
@@ -1414,7 +1414,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 OwnerId = AssignTo,
                 Description = description,
                 ForceCompleteWContact = true,
-                ListId = Task.GetRequiredTaskList("InBox", AssignTo).Id,
+                ListId = Task.GetRequiredTaskList(Db, "InBox", AssignTo).Id,
                 StatusId = TaskStatusCode.Active,
             };
             TasksAboutPerson.Add(t);

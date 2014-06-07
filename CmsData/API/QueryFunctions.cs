@@ -147,7 +147,7 @@ namespace CmsData
             {
                 if (lastSunday.HasValue)
                     return lastSunday.Value;
-                var q = from m in DbUtil.Db.Meetings
+                var q = from m in db.Meetings
                         where m.MeetingDate.Value.Date.DayOfWeek == 0
                         where m.MaxCount > 0
                         where m.MeetingDate < Util.Now

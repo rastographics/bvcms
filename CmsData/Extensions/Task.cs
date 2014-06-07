@@ -14,9 +14,8 @@ namespace CmsData
         {
             CreatedOn = Util.Now;
         }
-        public static TaskList GetRequiredTaskList(string name, int pid)
+        public static TaskList GetRequiredTaskList(CMSDataContext Db, string name, int pid)
         {
-            var Db = DbUtil.Db;
             var list = Db.TaskLists.SingleOrDefault(tl => tl.CreatedBy == pid && tl.Name == name);
             if (list == null)
             {
@@ -26,13 +25,12 @@ namespace CmsData
             }
             return list;
         }
-        public static void AddNewPerson(int newpersonid)
+        public static void AddNewPerson(CMSDataContext Db, int newpersonid)
         {
-            var Db = DbUtil.Db;
             var NewPeopleManagerId = Db.NewPeopleManagerId;
             var task = new Task
             {
-                ListId = Task.GetRequiredTaskList("InBox", NewPeopleManagerId).Id,
+                ListId = Task.GetRequiredTaskList(Db, "InBox", NewPeopleManagerId).Id,
                 OwnerId = NewPeopleManagerId,
                 Description = "New Person Data Entry",
                 WhoId = newpersonid,
@@ -41,14 +39,14 @@ namespace CmsData
             if (Util.UserPeopleId.HasValue && Util.UserPeopleId.Value != NewPeopleManagerId)
             {
                 task.CoOwnerId = Util.UserPeopleId.Value;
-                task.CoListId = Task.GetRequiredTaskList("InBox", Util.UserPeopleId.Value).Id;
+                task.CoListId = Task.GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id;
             }
             Db.Tasks.InsertOnSubmit(task);
             Db.SubmitChanges();
         }
-        public static int AddTasks(Guid qid)
+        public static int AddTasks(CMSDataContext Db, Guid qid)
         {
-            var q = DbUtil.Db.PeopleQuery(qid);
+            var q = Db.PeopleQuery(qid);
             int qCount = q.Count();
             if (qCount > 100)
                 return qCount;
@@ -56,7 +54,7 @@ namespace CmsData
             {
                 var t = new Task
                 {
-                    ListId = Task.GetRequiredTaskList("InBox", Util.UserPeopleId.Value).Id,
+                    ListId = Task.GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id,
                     OwnerId = Util.UserPeopleId.Value,
                     Description = "Please Contact",
                     ForceCompleteWContact = true,

@@ -653,7 +653,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult AddTasks(Guid id)
         {
             var c = new ContentResult();
-            c.Content = Task.AddTasks(id).ToString();
+            c.Content = Task.AddTasks(DbUtil.Db, id).ToString();
             return c;
         }
         public ActionResult NotifyIds(int id, string field)

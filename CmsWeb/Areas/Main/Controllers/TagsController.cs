@@ -124,7 +124,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult AddTasks(Guid id)
         {
-            return Content(Task.AddTasks(id).ToString());
+            return Content(Task.AddTasks(DbUtil.Db, id).ToString());
         }
         public ActionResult SharedTags()
         {
