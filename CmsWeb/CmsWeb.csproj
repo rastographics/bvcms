@@ -1087,6 +1087,7 @@
     <Content Include="packages.config" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddTransaction.cshtml" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddTransactionDone.cshtml" />
+    <Content Include="Areas\Manage\Views\Display\EditScript.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -1536,6 +1537,7 @@
     <Content Include="Views\Shared\OnlineReg2.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\Info.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Hyperlink.cshtml" />
+    <Content Include="Views\Home\RunScript.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
+using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Code;
+using Dapper;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
@@ -163,6 +166,18 @@ for v in q:
         public ActionResult TestScript(string script)
         {
             return Content(PythonEvents.RunScript(DbUtil.Db, script));
+        }
+        [HttpGet, Route("~/RunScript/{name}")]
+        public ActionResult RunScript(string name)
+        {
+            var content = DbUtil.Content(name);
+            if (content == null)
+                return Content("no content");
+            var cn = new SqlConnection(Util.ConnectionStringReadOnly);
+            cn.Open();
+            var rd = cn.ExecuteReader(content.Body);
+            ViewData["name"] = name;
+            return View(rd);
         }
 
         [HttpGet, Route("~/Preferences")]

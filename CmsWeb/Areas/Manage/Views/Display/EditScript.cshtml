@@ -1,0 +1,60 @@
+﻿@using CmsWeb
+@model CmsData.Content
+@{
+    Layout = ViewExtensions2.Layout();
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $(".bt").button();
+            $("#delete").click(function(ev) {
+                ev.preventDefault();
+                if (confirm("Are you sure you want to delete this entry?")) {
+                    $.post("/Display/ContentDelete", { id: "@Model.Id" }, function() {
+                        window.location = "/Manage/Display/";
+                    });
+                }
+            });
+            $("#run").click(function(ev) {
+                ev.preventDefault();
+                $.post("/Display/RunScript", { body: $("#body").val() }, function(ret) {
+                    $("#results").html(ret);
+                });
+            });
+            $("textarea").tabby();
+        });
+    </script>
+}
+@section head
+{
+    <style>
+        textarea {
+            font-family: Courier New;
+        }
+        #results { margin-top: 2em; }
+    </style>
+}
+@using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
+{
+    <div class="blogbody">
+        <h2 class="title">@Model.Name</h2>
+        <a href="/Display">Menu of Content</a>
+        <hr />
+        @Html.Hidden("id")
+        @Html.Hidden("name")
+        @Html.Hidden("title")
+        <div>
+            <textarea id="body" name="body" cols="80" rows="40" wrap='off' spellcheck="false" style="width:99%">@Html.Raw(@Model.Body)</textarea>
+        </div>
+        <br />
+        @if (User.IsInRole("Admin"))
+        {
+        <input type="submit" class="bt" value="Save" /> @:&nbsp;&nbsp;
+        }
+        <a id="cancel" href='/Manage/Display' class="bt">Cancel</a>
+        <a id="delete" href='#'><img src="/Content/images/delete.gif" /></a> &nbsp;&nbsp;
+        <a id="run" href="#" class="bt">Run Script</a>
+    </div>
+    <div id="results"></div>
+}

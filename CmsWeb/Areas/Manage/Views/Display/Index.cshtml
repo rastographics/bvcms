@@ -90,6 +90,7 @@
 		<li><a href="#t2">Text Content</a></li>
 		<li><a href="#t3">Email Templates</a></li>
 		<li><a href="#t4">Saved Drafts</a></li>
+		<li><a href="#t5">Scripts</a></li>
 	</ul>
 	<div id="t1"> <!-- HTML Files -->
 		<center><a href="#" newtype="0" newmessage="Create New HTML File" class="bt">New HTML File</a></center>
@@ -182,6 +183,22 @@
                 }
 		    </table>
         </form>
+	</div>
+	<div id="t5"> <!-- Saved Drafts -->
+		<center><a href="#" newtype="4" newmessage="Create New Text File" class="bt">New Text File</a></center>
+		<table class="@ViewExtensions2.GridClass" cellpadding="4">
+		<tr>
+			<td><b>Name</b></td>
+		</tr>
+		@foreach (var item in Model.fetchScriptFiles())
+  {
+		<tr>
+			<td>
+                @Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)
+			</td>
+		</tr>
+  }
+		</table>
 	</div>
 </div>
 <div id="askName" style="display:none">

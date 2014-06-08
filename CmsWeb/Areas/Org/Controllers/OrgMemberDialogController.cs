@@ -89,6 +89,8 @@ namespace CmsWeb.Areas.Org.Controllers
             om2.EnrollmentDate = om1.EnrollmentDate;
             if (om2.EnrollmentDate.Value.Date == DateTime.Today)
                 om2.EnrollmentDate = DateTime.Today; // force it to be midnight, so you can check them in.
+            om2.TranId = om1.TranId;
+            om2.ShirtSize = om1.ShirtSize;
             om2.Request = om1.Request;
             om2.Amount = om1.Amount;
             om2.UserData = om1.UserData;

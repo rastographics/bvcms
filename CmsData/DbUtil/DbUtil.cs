@@ -51,6 +51,13 @@ namespace CmsData
                 InternalDb = value;
             }
         }
+        public static CMSDataContext DbReadOnly
+        {
+            get
+            {
+                return new CMSDataContext(Util.ConnectionStringReadOnly);
+            }
+        }
         public static void LogActivity(string activity, string name = null, int? orgid = null, int? pid = null)
         {
             var db = new CMSDataContext(Util.ConnectionString);

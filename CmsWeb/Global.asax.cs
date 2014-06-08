@@ -132,22 +132,20 @@ namespace CmsWeb
 
         public void ErrorLog_Filtering(object sender, ExceptionFilterEventArgs e)
         {
-            Filter(e);
+            var ex = e.Exception.GetBaseException();
+            if (ex is FileNotFoundException || ex is HttpRequestValidationException)
+                e.Dismiss();
         }
 
         public void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)
-        {
-            Filter(e);
-        }
-
-        private void Filter(ExceptionFilterEventArgs e)
         {
             var ex = e.Exception.GetBaseException();
             var httpex = ex as HttpException;
 
             if (httpex != null)
             {
-                if (httpex.GetHttpCode() == 404)
+                var status = httpex.GetHttpCode();
+                if (status == 400 || status == 404)
                     e.Dismiss();
                 else if (httpex.Message.Contains("The remote host closed the connection"))
                     e.Dismiss();

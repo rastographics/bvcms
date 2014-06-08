@@ -22,7 +22,7 @@ namespace CmsData
             if(EndDate.HasValue)
                 enddt = EndDate.Value.AddHours(24);
             Expression<Func<Person, bool>> pred = p =>
-                db.AttendMemberTypeAsOf(StartDate, enddt, Program, Division, Organization, ids)
+                db.AttendMemberTypeAsOf(StartDate, enddt, Program, Division, Organization, ids, null)
                 .Select(a => a.PeopleId).Contains(p.PeopleId);
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)

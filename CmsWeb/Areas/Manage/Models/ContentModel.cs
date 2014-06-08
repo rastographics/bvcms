@@ -25,6 +25,13 @@ namespace CmsWeb.Models
 					 orderby c.Name
 					 select c;
 		}
+		public IQueryable<Content> fetchScriptFiles()
+		{
+			return from c in DbUtil.Db.Contents
+					 where c.TypeID == ContentTypeCode.TypeScript
+					 orderby c.Name
+					 select c;
+		}
 
 		public IQueryable<Content> fetchEmailTemplates()
 		{
