@@ -1647,6 +1647,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.DonorProfileList> ViewDonorProfileLists
+	    {
+		    get { return this.GetTable< View.DonorProfileList>(); }
+
+	    }
+
 	    public Table< View.FirstName> ViewFirstNames
 	    {
 		    get { return this.GetTable< View.FirstName>(); }
@@ -1914,7 +1920,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? progid,
             [Parameter(DbType="int")] int? divid,
             [Parameter(DbType="int")] int? orgid,
-            [Parameter(DbType="nvarchar")] string ids
+            [Parameter(DbType="nvarchar")] string ids,
+            [Parameter(DbType="nvarchar")] string notids
             )
 		{
 			return this.CreateMethodCallQuery< View.AttendMemberTypeAsOf>(this, 
@@ -1924,7 +1931,8 @@ namespace CmsData
                 progid,
                 divid,
                 orgid,
-                ids
+                ids,
+                notids
                 );
 		}
 
@@ -3601,15 +3609,17 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.UserRoleList", IsComposable = true)]
+		[Function(Name="dbo.RegexMatch", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
-		public string UserRoleList(
-            [Parameter(Name = "uid", DbType="int")] int? uid
+		public string RegexMatch(
+            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
+            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
             )
 		{
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                uid
+                subject,
+                pattern
                 ).ReturnValue));
 		}
 
@@ -3625,6 +3635,32 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.UserRoleList", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string UserRoleList(
+            [Parameter(Name = "uid", DbType="int")] int? uid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                uid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.AllRegexMatchs", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string AllRegexMatchs(
+            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
+            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                subject,
+                pattern
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.LastMemberTypeInTrans", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? LastMemberTypeInTrans(
@@ -3636,20 +3672,6 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.RegexMatch", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string RegexMatch(
-            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
-            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                subject,
-                pattern
                 ).ReturnValue));
 		}
 

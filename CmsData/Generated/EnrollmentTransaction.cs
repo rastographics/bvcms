@@ -47,6 +47,26 @@ namespace CmsData
 		
 		private bool? _Pending;
 		
+		private DateTime? _InactiveDate;
+		
+		private string _UserData;
+		
+		private string _Request;
+		
+		private string _ShirtSize;
+		
+		private int? _Grade;
+		
+		private int? _Tickets;
+		
+		private string _RegisterEmail;
+		
+		private int? _TranId;
+		
+		private int _Score;
+		
+		private string _SmallGroups;
+		
    		
    		private EntitySet< EnrollmentTransaction> _DescTransactions;
 		
@@ -110,6 +130,36 @@ namespace CmsData
 		
 		partial void OnPendingChanging(bool? value);
 		partial void OnPendingChanged();
+		
+		partial void OnInactiveDateChanging(DateTime? value);
+		partial void OnInactiveDateChanged();
+		
+		partial void OnUserDataChanging(string value);
+		partial void OnUserDataChanged();
+		
+		partial void OnRequestChanging(string value);
+		partial void OnRequestChanged();
+		
+		partial void OnShirtSizeChanging(string value);
+		partial void OnShirtSizeChanged();
+		
+		partial void OnGradeChanging(int? value);
+		partial void OnGradeChanged();
+		
+		partial void OnTicketsChanging(int? value);
+		partial void OnTicketsChanged();
+		
+		partial void OnRegisterEmailChanging(string value);
+		partial void OnRegisterEmailChanged();
+		
+		partial void OnTranIdChanging(int? value);
+		partial void OnTranIdChanged();
+		
+		partial void OnScoreChanging(int value);
+		partial void OnScoreChanged();
+		
+		partial void OnSmallGroupsChanging(string value);
+		partial void OnSmallGroupsChanged();
 		
     #endregion
 		public EnrollmentTransaction()
@@ -467,6 +517,226 @@ namespace CmsData
 					this._Pending = value;
 					this.SendPropertyChanged("Pending");
 					this.OnPendingChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="InactiveDate", UpdateCheck=UpdateCheck.Never, Storage="_InactiveDate", DbType="datetime")]
+		public DateTime? InactiveDate
+		{
+			get { return this._InactiveDate; }
+
+			set
+			{
+				if (this._InactiveDate != value)
+				{
+				
+                    this.OnInactiveDateChanging(value);
+					this.SendPropertyChanging();
+					this._InactiveDate = value;
+					this.SendPropertyChanged("InactiveDate");
+					this.OnInactiveDateChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="UserData", UpdateCheck=UpdateCheck.Never, Storage="_UserData", DbType="nvarchar")]
+		public string UserData
+		{
+			get { return this._UserData; }
+
+			set
+			{
+				if (this._UserData != value)
+				{
+				
+                    this.OnUserDataChanging(value);
+					this.SendPropertyChanging();
+					this._UserData = value;
+					this.SendPropertyChanged("UserData");
+					this.OnUserDataChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Request", UpdateCheck=UpdateCheck.Never, Storage="_Request", DbType="nvarchar(140)")]
+		public string Request
+		{
+			get { return this._Request; }
+
+			set
+			{
+				if (this._Request != value)
+				{
+				
+                    this.OnRequestChanging(value);
+					this.SendPropertyChanging();
+					this._Request = value;
+					this.SendPropertyChanged("Request");
+					this.OnRequestChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ShirtSize", UpdateCheck=UpdateCheck.Never, Storage="_ShirtSize", DbType="nvarchar(20)")]
+		public string ShirtSize
+		{
+			get { return this._ShirtSize; }
+
+			set
+			{
+				if (this._ShirtSize != value)
+				{
+				
+                    this.OnShirtSizeChanging(value);
+					this.SendPropertyChanging();
+					this._ShirtSize = value;
+					this.SendPropertyChanged("ShirtSize");
+					this.OnShirtSizeChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Grade", UpdateCheck=UpdateCheck.Never, Storage="_Grade", DbType="int")]
+		public int? Grade
+		{
+			get { return this._Grade; }
+
+			set
+			{
+				if (this._Grade != value)
+				{
+				
+                    this.OnGradeChanging(value);
+					this.SendPropertyChanging();
+					this._Grade = value;
+					this.SendPropertyChanged("Grade");
+					this.OnGradeChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Tickets", UpdateCheck=UpdateCheck.Never, Storage="_Tickets", DbType="int")]
+		public int? Tickets
+		{
+			get { return this._Tickets; }
+
+			set
+			{
+				if (this._Tickets != value)
+				{
+				
+                    this.OnTicketsChanging(value);
+					this.SendPropertyChanging();
+					this._Tickets = value;
+					this.SendPropertyChanged("Tickets");
+					this.OnTicketsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="RegisterEmail", UpdateCheck=UpdateCheck.Never, Storage="_RegisterEmail", DbType="nvarchar(80)")]
+		public string RegisterEmail
+		{
+			get { return this._RegisterEmail; }
+
+			set
+			{
+				if (this._RegisterEmail != value)
+				{
+				
+                    this.OnRegisterEmailChanging(value);
+					this.SendPropertyChanging();
+					this._RegisterEmail = value;
+					this.SendPropertyChanged("RegisterEmail");
+					this.OnRegisterEmailChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="TranId", UpdateCheck=UpdateCheck.Never, Storage="_TranId", DbType="int")]
+		public int? TranId
+		{
+			get { return this._TranId; }
+
+			set
+			{
+				if (this._TranId != value)
+				{
+				
+                    this.OnTranIdChanging(value);
+					this.SendPropertyChanging();
+					this._TranId = value;
+					this.SendPropertyChanged("TranId");
+					this.OnTranIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Score", UpdateCheck=UpdateCheck.Never, Storage="_Score", DbType="int NOT NULL")]
+		public int Score
+		{
+			get { return this._Score; }
+
+			set
+			{
+				if (this._Score != value)
+				{
+				
+                    this.OnScoreChanging(value);
+					this.SendPropertyChanging();
+					this._Score = value;
+					this.SendPropertyChanged("Score");
+					this.OnScoreChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SmallGroups", UpdateCheck=UpdateCheck.Never, Storage="_SmallGroups", DbType="nvarchar(500)")]
+		public string SmallGroups
+		{
+			get { return this._SmallGroups; }
+
+			set
+			{
+				if (this._SmallGroups != value)
+				{
+				
+                    this.OnSmallGroupsChanging(value);
+					this.SendPropertyChanging();
+					this._SmallGroups = value;
+					this.SendPropertyChanged("SmallGroups");
+					this.OnSmallGroupsChanged();
 				}
 
 			}

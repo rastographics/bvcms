@@ -38,11 +38,14 @@
                 <input id="csearch" type="submit" class="bt green" value="Search Documentation" style="width:20em" />
             </td>
         </tr>
+        @if (ViewBag.NoSupport == null)
+        {
         <tr>
             <td><b>Step 3.</b></td>
             <td>If you still need help ...</td>
             <td> <input id="contactsupport" type="button" class="bt blue" value="Contact Support" style="width:20em" /> </td>
         </tr>
+        }
     </table>
     <table class="center" width="800">
         <tr>
@@ -90,9 +93,12 @@
                         CC: <input type="text" id="cc" name="cc" size="60" />
                         <select name="urgency" id="urgency">
                             <option value="0" selected="">--Select Urgency</option>
-                            <option>No Rush. This can wait until tomorrow</option>
-                            <option>I just need an answer before tomorrow morning</option>
-                            <option>Urgent, I need an answer ASAP</option>
+                            <option value="3">No Rush. This can wait until tomorrow</option>
+                            @if (DateTime.Now.TimeOfDay.TotalHours < 16.5)
+                            {
+                            <option value="2">I need an answer before the end of the day</option>
+                            }
+                            <option value="1">Urgent, I need an answer ASAP</option>
                         </select>
                         <input id="sendSupport" type="button" class="bt blue" value="Submit Request">
                     </p>

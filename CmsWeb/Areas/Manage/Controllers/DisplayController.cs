@@ -5,10 +5,17 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
+using System.Text;
 using System.Web.Mvc;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Windows.Forms;
 using CmsData;
 using CmsData.Codes;
+using Dapper;
 using UtilityExtensions;
 using CmsWeb.Models;
 // Used for pulling image from service
@@ -19,12 +26,13 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using CmsWeb.Code;
+using Encoder = System.Drawing.Imaging.Encoder;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [Authorize(Roles = "Admin,Design")]
     [ValidateInput(false)]
-    [RouteArea("Manage", AreaPrefix= "Display"), Route("{action}/{id?}")]
+    [RouteArea("Manage", AreaPrefix = "Display"), Route("{action}/{id?}")]
     public class DisplayController : CmsStaffController
     {
         [Route("~/Display")]
@@ -63,7 +71,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        public ActionResult ContentUpdate(int id, string name, string title, string body, int? roleid)
+        public ActionResult ContentUpdate(int id, string name, string title, string body, int? roleid, string stayaftersave = null)
         {
             var content = DbUtil.ContentFromID(id);
             content.Name = name;
@@ -75,31 +83,31 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
             {
-//                switch (sRenderType)
-//                {
-//                    case "Local":// Uses local server resources 
-//                    case "true":
-                        var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
-                        var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
-                        if(ii == null)
-                            content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
-//                        break;
-//
-//                    case "Service": // Used to send HTML to another server for offloaded processing
-//                        var coll = new NameValueCollection();
-//                        coll.Add("sHTML", body.Replace("\r", "").Replace("\n", "").Replace("\t", ""));
-//
-//                        var wc = new WebClient();
-//                        var resp = wc.UploadValues(ConfigurationManager.AppSettings["CreateThumbnailService"], "POST",
-//                            coll);
-//
-//                        ii = ImageData.DbUtil.Db.Images.FirstOrDefault(i => i.Id == content.ThumbID);
-//                        if (ii != null) 
-//                            ImageData.Image.UpdateImageFromBits(content.ThumbID, resp);
-//                        else 
-//                            content.ThumbID = ImageData.Image.NewImageFromBits(resp).Id;
-//                        break;
-//                }
+                //                switch (sRenderType)
+                //                {
+                //                    case "Local":// Uses local server resources 
+                //                    case "true":
+                var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
+                var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
+                if (ii == null)
+                    content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
+                //                        break;
+                //
+                //                    case "Service": // Used to send HTML to another server for offloaded processing
+                //                        var coll = new NameValueCollection();
+                //                        coll.Add("sHTML", body.Replace("\r", "").Replace("\n", "").Replace("\t", ""));
+                //
+                //                        var wc = new WebClient();
+                //                        var resp = wc.UploadValues(ConfigurationManager.AppSettings["CreateThumbnailService"], "POST",
+                //                            coll);
+                //
+                //                        ii = ImageData.DbUtil.Db.Images.FirstOrDefault(i => i.Id == content.ThumbID);
+                //                        if (ii != null) 
+                //                            ImageData.Image.UpdateImageFromBits(content.ThumbID, resp);
+                //                        else 
+                //                            content.ThumbID = ImageData.Image.NewImageFromBits(resp).Id;
+                //                        break;
+                //                }
                 content.DateCreated = DateTime.Now;
             }
             DbUtil.Db.SubmitChanges();
@@ -116,6 +124,9 @@ namespace CmsWeb.Areas.Manage.Controllers
                         return Content(Util.EndShowMessage(ex.InnerException.Message, "javascript: history.go(-1)", "Go Back to Repair"));
                 }
             }
+
+            if (stayaftersave == "true")
+                return RedirectEdit(content);
 
             return RedirectToAction("Index");
         }
@@ -144,6 +155,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 
                 case ContentTypeCode.TypeText:
                     return View("EditText", cContent);
+
+                case ContentTypeCode.TypeScript:
+                    return View("EditScript", cContent);
 
                 case ContentTypeCode.TypeEmailTemplate:
                 case ContentTypeCode.TypeSavedDraft:
@@ -183,6 +197,15 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult RunScript(string body, string parameter)
+        {
+            var cn = new SqlConnection(Util.ConnectionStringReadOnly);
+            cn.Open();
+            var script = "DECLARE @p1 VARCHAR(100) = '{0}'\n{1}\n".Fmt(parameter, body);
+            var rd = cn.ExecuteReader(script);
+            return new GridResult(rd);
+        }
         [HttpPost]
         public ActionResult UpdateOrgContent(int id, bool? div, string what, string title, string html)
         {
@@ -324,4 +347,44 @@ namespace CmsWeb.Areas.Manage.Controllers
             return null;
         }
     }
+    public class GridResult : ActionResult
+    {
+        private readonly IDataReader rd;
+        public GridResult(IDataReader rd)
+        {
+            this.rd = rd;
+        }
+
+        public static HtmlTable HtmlTable(IDataReader rd)
+        {
+            var t = new HtmlTable();
+            t.Attributes.Add("class", "table not-wide");
+            var h = new HtmlTableRow();
+            for (var i = 0; i < rd.FieldCount; i++)
+                h.Cells.Add(new HtmlTableCell {InnerText = rd.GetName(i)});
+            t.Rows.Add(h);
+            while (rd.Read())
+            {
+                var r = new HtmlTableRow();
+                for (var i = 0; i < rd.FieldCount; i++)
+                    r.Cells.Add(new HtmlTableCell() { InnerText = rd[i].ToString() });
+                t.Rows.Add(r);
+            }
+            return t;
+        }
+        public override void ExecuteResult(ControllerContext context)
+        {
+            var t = HtmlTable(rd);
+            t.RenderControl(new HtmlTextWriter(context.HttpContext.Response.Output));
+        }
+
+        public static string Table(IDataReader rd)
+        {
+            var t = HtmlTable(rd);
+            var sb = new StringBuilder();
+            t.RenderControl(new HtmlTextWriter(new StringWriter(sb)));
+            return sb.ToString();
+        }
+    }
+
 }

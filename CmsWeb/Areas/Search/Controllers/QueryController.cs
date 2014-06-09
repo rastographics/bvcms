@@ -313,7 +313,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult AddTasks(QueryModel m)
         {
-            return Content(Task.AddTasks(m.TopClause.Id).ToString());
+            return Content(Task.AddTasks(DbUtil.Db, m.TopClause.Id).ToString());
         }
 
         public ActionResult Export()

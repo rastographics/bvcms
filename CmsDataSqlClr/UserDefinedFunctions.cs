@@ -4,6 +4,7 @@
 // </copyright>
 //------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
@@ -30,6 +31,27 @@ public partial class UserDefinedFunctions
         try
         {
             return Regex.Match(subject.Value, pattern.Value, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled).Value;
+        }
+        catch (Exception ex)
+        {
+            SqlContext.Pipe.Send("Error searching Pattern " + ex.Message);
+            return "";
+        }
+    }
+    [SqlFunction]
+    public static SqlString AllRegexMatchs(SqlString subject, SqlString pattern)
+    {
+        try
+        {
+            var list = new List<string>();
+            var re = new Regex(pattern.Value);
+            var match = re.Match(subject.Value);
+            while (match.Success)
+            {
+                list.Add(match.Value);
+                match = match.NextMatch();
+            }
+            return string.Join("<br>\n", list);
         }
         catch (Exception ex)
         {

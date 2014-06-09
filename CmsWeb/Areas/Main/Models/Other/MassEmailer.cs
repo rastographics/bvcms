@@ -29,7 +29,6 @@ namespace CmsWeb.Areas.Main.Models
         public bool PublicViewable { get; set; }
 
         public string Host { get; set; }
-        public Session2 session2 { get; set; }
 
         public MassEmailer()
         {

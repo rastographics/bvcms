@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
+using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Code;
+using Dapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
@@ -163,6 +168,19 @@ for v in q:
         {
             return Content(PythonEvents.RunScript(DbUtil.Db, script));
         }
+        [HttpGet, Route("~/RunScript/{name}/{parameter?}")]
+        public ActionResult RunScript(string name, string parameter = null)
+        {
+            var content = DbUtil.Content(name);
+            if (content == null)
+                return Content("no content");
+            var cn = new SqlConnection(Util.ConnectionStringReadOnly);
+            cn.Open();
+            var script = "DECLARE @p1 VARCHAR(100) = '{0}'\n{1}\n".Fmt(parameter, content.Body);
+            var rd = cn.ExecuteReader(script);
+            ViewData["name"] = name;
+            return View(rd);
+        }
 
         [HttpGet, Route("~/Preferences")]
         public ActionResult UserPreferences()
@@ -174,6 +192,9 @@ for v in q:
         {
             if (helplink.HasValue())
                 TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
+            
+            if (!SupportRequestModel.CanSupport)
+                ViewBag.NoSupport = "true";
             return View();
         }
     }

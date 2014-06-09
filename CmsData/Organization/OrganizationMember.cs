@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CmsData.API;
 using CmsData.Registration;
 using UtilityExtensions;
 using System.Web;
@@ -18,61 +19,76 @@ namespace CmsData
     {
         private const string STR_MeetingsToUpdate = "MeetingsToUpdate";
 
-        public EnrollmentTransaction Drop(CMSDataContext Db, bool addToHistory)
+        public EnrollmentTransaction Drop(CMSDataContext db, bool addToHistory)
         {
-            return Drop(Db, Util.Now, addToHistory);
+            return Drop(db, Util.Now, addToHistory);
         }
 
-        public EnrollmentTransaction Drop(CMSDataContext Db, DateTime dropdate, bool addToHistory)
+        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate, bool addToHistory)
         {
-            Db.SubmitChanges();
-            int ntries = 2;
+            db.SubmitChanges();
+            //            int ntries = 2;
             while (true)
             {
-                try
-                {
-                    var q = from o in Db.Organizations
-                            where o.OrganizationId == OrganizationId
-                            let count = Db.Attends.Count(a => a.PeopleId == PeopleId
-                                                              && a.OrganizationId == OrganizationId
-                                                              && (a.MeetingDate < DateTime.Today || a.AttendanceFlag == true))
-                            select new { count, Organization.DaysToIgnoreHistory };
-                    var i = q.Single();
-                    if (!EnrollmentDate.HasValue)
-                        EnrollmentDate = CreatedDate;
-                    var droptrans = new EnrollmentTransaction
-                                    {
-                                        OrganizationId = OrganizationId,
-                                        PeopleId = PeopleId,
-                                        MemberTypeId = MemberTypeId,
-                                        OrganizationName = Organization.OrganizationName,
-                                        TransactionDate = dropdate,
-                                        TransactionTypeId = 5,
-                                        // drop
-                                        CreatedBy = Util.UserId1,
-                                        CreatedDate = Util.Now,
-                                        Pending = Pending,
-                                        AttendancePercentage = AttendPct,
-                                    };
-                    Db.EnrollmentTransactions.InsertOnSubmit(droptrans);
-                    Db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
-                    Db.OrganizationMembers.DeleteOnSubmit(this);
-                    Db.ExecuteCommand("DELETE FROM dbo.SubRequest WHERE EXISTS(SELECT NULL FROM Attend a WHERE a.AttendId = AttendId AND a.OrganizationId = {0} AND a.MeetingDate > {1} AND a.PeopleId = {2})", OrganizationId, Util.Now, PeopleId);
-                    Db.ExecuteCommand("DELETE dbo.Attend WHERE OrganizationId = {0} AND MeetingDate > {1} AND PeopleId = {2} AND ISNULL(Commitment, 1) = 1", OrganizationId, Util.Now, PeopleId);
-                    Db.ExecuteCommand("UPDATE dbo.GoerSenderAmounts SET InActive = 1 WHERE OrgId = {0} AND (GoerId = {1} OR SupporterId = {1})", OrganizationId, PeopleId);
-                    return droptrans;
-                }
-                catch (SqlException ex)
-                {
-                    if (ex.Number == 1205)
-                        if (--ntries > 0)
-                        {
-                            Db.Dispose();
-                            System.Threading.Thread.Sleep(500);
-                            continue;
-                        }
-                    throw;
-                }
+                //                try
+                //                {
+                var q = from o in db.Organizations
+                        where o.OrganizationId == OrganizationId
+                        let count = db.Attends.Count(a => a.PeopleId == PeopleId
+                                                          && a.OrganizationId == OrganizationId
+                                                          && (a.MeetingDate < DateTime.Today || a.AttendanceFlag == true))
+                        select new { count, Organization.DaysToIgnoreHistory };
+                var i = q.Single();
+                if (!EnrollmentDate.HasValue)
+                    EnrollmentDate = CreatedDate;
+                var sglist = (from mt in db.OrgMemMemTags
+                    where mt.PeopleId == PeopleId
+                    where mt.OrgId == OrganizationId
+                    select mt.MemberTag.Name
+                    ).ToList();
+                var droptrans = new EnrollmentTransaction
+                                {
+                                    OrganizationId = OrganizationId,
+                                    PeopleId = PeopleId,
+                                    MemberTypeId = MemberTypeId,
+                                    OrganizationName = Organization.OrganizationName,
+                                    TransactionDate = dropdate,
+                                    TransactionTypeId = 5,
+                                    // drop
+                                    CreatedBy = Util.UserId1,
+                                    CreatedDate = Util.Now,
+                                    Pending = Pending,
+                                    AttendancePercentage = AttendPct,
+                                    InactiveDate = InactiveDate,
+                                    UserData = UserData,
+                                    Request = Request,
+                                    ShirtSize = ShirtSize,
+                                    Grade = Grade,
+                                    Tickets = Tickets,
+                                    RegisterEmail = RegisterEmail,
+                                    Score = Score,
+                                    SmallGroups = string.Join("\n", sglist)
+                                };
+
+                db.EnrollmentTransactions.InsertOnSubmit(droptrans);
+                db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
+                db.OrganizationMembers.DeleteOnSubmit(this);
+                db.ExecuteCommand("DELETE FROM dbo.SubRequest WHERE EXISTS(SELECT NULL FROM Attend a WHERE a.AttendId = AttendId AND a.OrganizationId = {0} AND a.MeetingDate > {1} AND a.PeopleId = {2})", OrganizationId, Util.Now, PeopleId);
+                db.ExecuteCommand("DELETE dbo.Attend WHERE OrganizationId = {0} AND MeetingDate > {1} AND PeopleId = {2} AND ISNULL(Commitment, 1) = 1", OrganizationId, Util.Now, PeopleId);
+                db.ExecuteCommand("UPDATE dbo.GoerSenderAmounts SET InActive = 1 WHERE OrgId = {0} AND (GoerId = {1} OR SupporterId = {1})", OrganizationId, PeopleId);
+                return droptrans;
+                //                }
+                //                catch (SqlException ex)
+                //                {
+                //                    if (ex.Number == 1205)
+                //                        if (--ntries > 0)
+                //                        {
+                //                            Db.Dispose();
+                //                            System.Threading.Thread.Sleep(500);
+                //                            continue;
+                //                        }
+                //                    throw;
+                //                }
             }
         }
 
@@ -296,7 +312,7 @@ namespace CmsData
             {
                 TranId = ti2.Id;
                 ti2.TransactionPeople.Add(new TransactionPerson { PeopleId = PeopleId, OrgId = OrganizationId, Amt = amount });
-                if(ti != null)
+                if (ti != null)
                     ti.OriginalId = ti.Id;
             }
             ti2.OriginalId = TranId;
@@ -355,7 +371,7 @@ namespace CmsData
 
         public string PayLink2()
         {
-            if(!TranId.HasValue)
+            if (!TranId.HasValue)
                 return null;
             var estr = HttpUtility.UrlEncode(Util.Encrypt(TranId.ToString()));
             return DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);

@@ -5,14 +5,9 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
 using CmsData;
-using CmsData.Codes;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.IO;
 using LumenWorks.Framework.IO.Csv;
 
 namespace CmsWeb.Models
@@ -33,6 +28,12 @@ namespace CmsWeb.Models
                 var account = csv[19];
                 var amount = csv[20];
                 var checkno = csv[24];
+                if (!checkno.HasValue() && account.Count(c => c == ' ') == 1)
+                {
+                    var a = account.Split(' ');
+                    account = a[1];
+                    checkno = a[0];
+                }
 
                 if (excludecol)
                 {

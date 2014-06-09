@@ -581,7 +581,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                         && HttpContext.Current.User.IsInRole("Access")
                         && !HttpContext.Current.User.IsInRole("OrgMembersOnly")
                         && !HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
-                    Task.AddNewPerson(p.PeopleId);
+                    Task.AddNewPerson(Db, p.PeopleId);
                 else
                     Db.Email(Util.SysFromEmail, Db.GetNewPeopleManagers(),
                             "Just Added Person on " + Db.Host, "{0} ({1})".Fmt(p.Name, p.PeopleId));
@@ -1256,7 +1256,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var pi = PaymentInfos.SingleOrDefault();
             return pi;
         }
-        public Contribution PostUnattendedContribution(CMSDataContext Db, decimal Amt, int? Fund, string Description, bool pledge = false, int? typecode = null)
+        public Contribution PostUnattendedContribution(CMSDataContext Db, decimal Amt, int? Fund, string Description, bool pledge = false, int? typecode = null, int? tranid = null)
         {
             if (!typecode.HasValue)
             {
@@ -1332,6 +1332,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ContributionStatusId = 0,
                 ContributionTypeId = typid,
                 ContributionDesc = Description,
+                TranId = tranid
             };
             bundle.BundleDetails.Add(bd);
             Db.SubmitChanges();
@@ -1413,7 +1414,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 OwnerId = AssignTo,
                 Description = description,
                 ForceCompleteWContact = true,
-                ListId = Task.GetRequiredTaskList("InBox", AssignTo).Id,
+                ListId = Task.GetRequiredTaskList(Db, "InBox", AssignTo).Id,
                 StatusId = TaskStatusCode.Active,
             };
             TasksAboutPerson.Add(t);

@@ -16,7 +16,7 @@ $(function () {
         $.post($(this).attr('href'), q, function (ret) {
             if (ret.error) {
                 $('#validatecoupon').text(ret.error);
-            } else if (ret.amt && ret.amt > 0) {
+            } else if (ret.tiamt > 0) {
                 $('#validatecoupon').text('');
                 $('#amt').text(ret.amt);
                 $('#AmtToPay').val(ret.tiamt);

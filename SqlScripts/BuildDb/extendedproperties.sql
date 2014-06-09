@@ -157,6 +157,13 @@ IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
 IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
 GO
+PRINT N'Altering permissions on [dbo].[Contribution]'
+GO
+DENY SELECT ON  [dbo].[Contribution] TO [ro]
+DENY INSERT ON  [dbo].[Contribution] TO [ro]
+DENY DELETE ON  [dbo].[Contribution] TO [ro]
+DENY UPDATE ON  [dbo].[Contribution] TO [ro]
+GO
 IF EXISTS (SELECT * FROM #tmpErrors) ROLLBACK TRANSACTION
 GO
 IF @@TRANCOUNT>0 BEGIN

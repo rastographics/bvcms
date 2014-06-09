@@ -112,6 +112,22 @@ namespace UtilityExtensions
                     HttpContext.Current.Session[STR_ConnectionString] = value;
             }
         }
+        public static string ConnectionStringReadOnly
+        {
+            get
+            {
+                var cs = ConnectionStringSettings(Host);
+                var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+                if (string.IsNullOrEmpty(cb.DataSource))
+                    cb.DataSource = DbServer;
+                cb.InitialCatalog = "CMS_{0}".Fmt(Host);
+                cb.IntegratedSecurity = false;
+                cb.UserID = "ro";
+                cb.Password = ConfigurationManager.AppSettings["readonlypassword"];
+                return cb.ConnectionString;
+            }
+        }
+
 
         public static string ConnectionStringImage
         {

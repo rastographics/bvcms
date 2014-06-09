@@ -1,5 +1,8 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
+@{
+    var prewrap = Model.Ministry.ToString() == "BVCMS Support" ? "" : "pre-wrap";
+}
 <form class="form ajax form-horizontal w120" method="post">
     <fieldset>
         <legend>Contact 
@@ -30,7 +33,7 @@
         @if (Model.CanViewComments)
         {
             <div class="w120 margin-top">
-                @Html.DisplayFor(m => m.Comments, "TextArea")
+                @Html.DisplayFor(m => m.Comments, "TextArea", new { prewrap })
             </div>
             <div class="right">
                 <a id="delete" class="btn btn-danger submit" data-confirm="Are you sure you want to delete this contact?" href="/Contact2/ContactDelete/@Model.ContactId">Delete</a>

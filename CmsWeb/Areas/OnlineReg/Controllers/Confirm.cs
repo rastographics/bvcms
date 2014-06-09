@@ -151,7 +151,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
 
                 ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);
-                
+
                 return View("PayAmtDue/Confirm", ti);
             }
             catch (Exception ex)
@@ -337,22 +337,22 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     if (g.amt > 0)
                     {
                         sb.AppendFormat(row, g.desc, g.amt);
-                        p.person.PostUnattendedContribution(DbUtil.Db,
-                                                            g.amt,
-                                                            g.fundid,
-                                                            desc);
+                        p.person.PostUnattendedContribution(DbUtil.Db, g.amt, g.fundid, desc, tranid: t.Id);
                     }
                 }
+                t.TransactionPeople.Add(new TransactionPerson
+                {
+                    PeopleId = p.person.PeopleId,
+                    Amt = t.Amt,
+                    OrgId = m.Orgid,
+                });
                 t.Financeonly = true;
                 if (t.Donate > 0)
                 {
                     var fundname = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == p.setting.DonationFundId).FundName;
                     sb.AppendFormat(row, fundname, t.Donate);
                     t.Fund = p.setting.DonationFund();
-                    p.person.PostUnattendedContribution(DbUtil.Db,
-                        t.Donate.Value,
-                        p.setting.DonationFundId,
-                        desc);
+                    p.person.PostUnattendedContribution(DbUtil.Db, t.Donate ?? 0, p.setting.DonationFundId, desc, tranid: t.Id);
                 }
                 sb.Append(e);
                 if (!t.TransactionId.HasValue())
@@ -481,6 +481,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             catch (Exception ex)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                 TempData["error"] = ex.Message;
                 return Redirect("/Error");
             }

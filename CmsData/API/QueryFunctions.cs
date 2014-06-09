@@ -97,10 +97,10 @@ namespace CmsData
             return q.Count();
         }
 
-        public int AttendMemberTypeCountAsOf(DateTime startdt, DateTime enddt, string membertypes, int progid, int divid, int orgid)
+        public int AttendMemberTypeCountAsOf(DateTime startdt, DateTime enddt, string membertypes, string notmembertypes, int progid, int divid, int orgid)
         {
             enddt = enddt.AddHours(24);
-            return db.AttendMemberTypeAsOf(startdt, enddt, progid, divid, orgid, membertypes).Count();
+            return db.AttendMemberTypeAsOf(startdt, enddt, progid, divid, orgid, membertypes, notmembertypes).Count();
         }
         public int AttendCountAsOf(DateTime startdt, DateTime enddt, bool guestonly, int progid, int divid, int orgid)
         {
@@ -147,7 +147,7 @@ namespace CmsData
             {
                 if (lastSunday.HasValue)
                     return lastSunday.Value;
-                var q = from m in DbUtil.Db.Meetings
+                var q = from m in db.Meetings
                         where m.MeetingDate.Value.Date.DayOfWeek == 0
                         where m.MaxCount > 0
                         where m.MeetingDate < Util.Now

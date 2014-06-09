@@ -1,0 +1,22 @@
+﻿@model System.Data.IDataReader
+@using CmsWeb 
+@using CmsWeb.Areas.Manage.Controllers
+@{
+    ViewBag.Title = "Test Script";
+    Layout = ViewExtensions2.Layout();
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/js/TestScript.js")
+}
+@section head
+{
+    <style>
+        textarea {
+            font-family: Courier New;
+        }
+    </style>
+}
+
+<h2>Run Script @ViewBag.Name</h2>
+@Html.Raw(GridResult.Table(Model))

@@ -24,9 +24,9 @@
     $("a.sortable").click(function (ev) {
         ev.preventDefault();
         if ($("#status").val() == 2)
-            window.location = "/Fund?status=2&sort=" + $(this).text();
+            window.location = "/Funds?status=2&sort=" + $(this).text();
         else
-            window.location = "/Fund?sort=" + $(this).text();
+            window.location = "/Funds?sort=" + $(this).text();
     });
     $(".bt").button();
     $("form").submit(function (ev) {

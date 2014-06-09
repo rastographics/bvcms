@@ -332,8 +332,8 @@ namespace CmsData.API
 						u.UpdatePerson(e);
 						break;
 				}
-			p.LogChanges(DbUtil.Db, u.sb);
-			p.Family.LogChanges(DbUtil.Db, u.fsb, p.PeopleId, Util.UserPeopleId.Value);
+			p.LogChanges(Db, u.sb);
+			p.Family.LogChanges(Db, u.fsb, p.PeopleId, Util.UserPeopleId.Value);
 			Db.SubmitChanges();
 			return "<Success />";
 		}

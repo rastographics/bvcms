@@ -88,7 +88,6 @@ namespace CmsData
                 ret = anet.createCustomerProfileTransactionRequest(PeopleId, total ?? 0, "Recurring Giving", t.Id);
             else
                 ret = sage.createVaultTransactionRequest(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredtype);
-            t.TransactionPeople.Add(new TransactionPerson { PeopleId = PeopleId, Amt = total });
 
             t.Message = ret.Message;
             t.AuthCode = ret.AuthCode;
@@ -114,12 +113,14 @@ namespace CmsData
                 foreach (var a in q)
                 {
                     if (a.ContributionFund.FundStatusId == 1 && a.Amt > 0)
-                        Person.PostUnattendedContribution(Db,
-                            a.Amt ?? 0,
-                            a.FundId,
-                            "Recurring Giving", pledge: false);
+                        Person.PostUnattendedContribution(Db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
                 }
                 var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
+                t.TransactionPeople.Add(new TransactionPerson
+                {
+                    PeopleId = Person.PeopleId,
+                    Amt = tot,
+                });
                 NextDate = FindNextDate(DateTime.Today.AddDays(1));
                 Db.SubmitChanges();
                 if (tot > 0)

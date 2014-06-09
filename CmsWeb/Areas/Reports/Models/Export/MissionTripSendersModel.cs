@@ -63,6 +63,7 @@ namespace CmsWeb.Models
             ws.Cells["A2"].LoadFromCollection(list);
             var range = ws.Cells[1, 1, count + 1, cols.Length];
             var table = ws.Tables.Add(range, "Trips");
+            table.ShowFilter = false;
             for (var i = 0; i < cols.Length; i++)
             {
                 var col = i + 1;

@@ -10,17 +10,19 @@ CREATE FUNCTION [dbo].[AttendMemberTypeAsOf]
 	@progid INT,
 	@divid INT,
 	@orgid INT,
-	@ids nvarchar(4000)
+	@ids nvarchar(4000),
+	@notids NVARCHAR(4000)
 )
-RETURNS @t TABLE ( PeopleId INT )
+RETURNS @t TABLE ( PeopleId INT, MemberTypeId INT, MemberType VARCHAR(100) )
 AS
 BEGIN
-	INSERT INTO @t (PeopleId) SELECT p.PeopleId FROM dbo.People p
-	WHERE EXISTS (
-		SELECT NULL FROM dbo.Attend a
-		WHERE a.PeopleId = p.PeopleId
-		AND a.MemberTypeId IN (SELECT id FROM CsvTable(@ids))
-		AND a.AttendanceFlag = 1
+	INSERT INTO @t (PeopleId, MemberTypeId, MemberType) 
+		SELECT PeopleId, MemberTypeId, mt.Description
+		FROM dbo.Attend a
+		JOIN lookup.MemberType mt ON mt.Id = a.MemberTypeId
+		WHERE a.AttendanceFlag = 1
+		AND (a.MemberTypeId IN (SELECT id FROM CsvTable(@ids)) OR @ids IS NULL OR @ids = '')
+		AND a.MemberTypeId NOT IN (SELECT id FROM CsvTable(@notids))
 		AND a.MeetingDate >= @from
 		AND a.MeetingDate < @to
 		AND (a.OrganizationId = @orgid OR @orgid = 0)
@@ -32,7 +34,6 @@ BEGIN
 				AND EXISTS(SELECT NULL FROM Division d
 						WHERE d2.DivId = d.Id
 						AND d.ProgId = @progid)) OR @progid = 0)
-		)
 	RETURN
 END
 GO

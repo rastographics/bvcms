@@ -272,8 +272,8 @@ namespace CmsWeb.Models
                      let om = Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == Util2.CurrentOrgId && om.PeopleId == p.PeopleId)
                      let recreg = p.RecRegs.FirstOrDefault()
                      let ts = (from t in Db.ViewTransactionSummaries
-                               where t.RegId == om.TranId
-                               select t).FirstOrDefault()
+                               where t.RegId == om.TranId && t.PeopleId == om.PeopleId
+                               select t).SingleOrDefault()
                      select new ExportInvolvements.MemberInfoClass
                      {
                          FirstName = p.PreferredName,

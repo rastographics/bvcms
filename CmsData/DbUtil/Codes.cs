@@ -31,6 +31,7 @@ namespace CmsData.Codes
         public const int TypeText = 1;
         public const int TypeEmailTemplate = 2;
         public const int TypeSavedDraft = 3;
+        public const int TypeScript = 4;
     }
     public static class MemberStatusCode
     {

@@ -53,6 +53,8 @@ namespace CmsData
 		
 		private int? _QBSyncID;
 		
+		private int? _TranId;
+		
    		
    		private EntitySet< BundleDetail> _BundleDetails;
 		
@@ -127,6 +129,9 @@ namespace CmsData
 		
 		partial void OnQBSyncIDChanging(int? value);
 		partial void OnQBSyncIDChanged();
+		
+		partial void OnTranIdChanging(int? value);
+		partial void OnTranIdChanged();
 		
     #endregion
 		public Contribution()
@@ -555,6 +560,28 @@ namespace CmsData
 					this._QBSyncID = value;
 					this.SendPropertyChanged("QBSyncID");
 					this.OnQBSyncIDChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="TranId", UpdateCheck=UpdateCheck.Never, Storage="_TranId", DbType="int")]
+		public int? TranId
+		{
+			get { return this._TranId; }
+
+			set
+			{
+				if (this._TranId != value)
+				{
+				
+                    this.OnTranIdChanging(value);
+					this.SendPropertyChanging();
+					this._TranId = value;
+					this.SendPropertyChanged("TranId");
+					this.OnTranIdChanged();
 				}
 
 			}

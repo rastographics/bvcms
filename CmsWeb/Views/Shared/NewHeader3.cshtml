@@ -49,10 +49,10 @@
                 </div>
                 <div id="tagstop" class="nav-drop btn-group">
                     <a href="#" class="btn dropdown-toggle" style="display: inline-block" data-toggle="dropdown">
-                        <i class="fa fa-tag outsideCurrentTag"></i><span class="currentTag username"><i class="fa fa-tag"></i> @Util2.CurrentTagName</span> <span class="caret"></span>
+                        <i class="fa fa-tag outsideCurrentTag"></i><span class="currentTag username"><i class="fa fa-tag"></i> <span id="current-tag1">@Util2.CurrentTagName</span></span> <span class="caret"></span>
                     </a>
                     <ul id="tagdropdown" class="dropdown-menu pull-right">
-                        <li><a href="/Tags"><b><i>@Util2.CurrentTagName</i></b></a></li>
+                        <li><a href="/Tags"><b><i id="current-tag2">@Util2.CurrentTagName</i></b></a></li>
                         <li><a id="cleartag" href="/Tags/ClearTag"><i>Empty Active Tag</i></a></li>
                         <li class="space"></li>
                         @foreach (var t in CodeValueModel.UserTags())

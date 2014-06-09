@@ -14,7 +14,17 @@ CREATE TABLE [dbo].[EnrollmentTransaction]
 [AttendancePercentage] [real] NULL,
 [NextTranChangeDate] [datetime] NULL,
 [EnrollmentTransactionId] [int] NULL,
-[Pending] [bit] NULL
+[Pending] [bit] NULL,
+[InactiveDate] [datetime] NULL,
+[UserData] [nvarchar] (max) NULL,
+[Request] [nvarchar] (140) NULL,
+[ShirtSize] [nvarchar] (20) NULL,
+[Grade] [int] NULL,
+[Tickets] [int] NULL,
+[RegisterEmail] [nvarchar] (80) NULL,
+[TranId] [int] NULL,
+[Score] [int] NOT NULL CONSTRAINT [DF_EnrollmentTransaction_Score] DEFAULT ((0)),
+[SmallGroups] [nvarchar] (500) NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

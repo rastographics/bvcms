@@ -251,7 +251,7 @@ class LoginInfo(object):
         {
             try
             {
-                var q = from p in DbUtil.Db.People
+                var q = from p in Db.People
                         where p.FamilyId == familyid
                         select p;
                 var w = new APIWriter();

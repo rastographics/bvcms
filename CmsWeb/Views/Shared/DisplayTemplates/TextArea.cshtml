@@ -1,5 +1,8 @@
 ﻿@model string
+@{
+    var prewrap = ViewBag.prewrap ?? "pre-wrap";
+}
 <div class="control-group">
     @Html.LabelFor(m => m, new { @class="control-label"})
-    <div class="controls display pre-wrap well @ViewBag.AddClass">@Model</div>
+    <div class="controls display @prewrap well @ViewBag.AddClass">@Html.Raw(Model)</div>
 </div>

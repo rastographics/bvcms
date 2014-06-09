@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             cc.Reset(DbUtil.Db);
             cc.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
             cc.Save(DbUtil.Db);
-            return Redirect("/QueryBuilder2/Main/" + cc.Id);
+            return Redirect("/Query/" + cc.Id);
         }
         [HttpGet, Route("QueryDataFields")]
         public ActionResult QueryDataFields(string field, string type)
@@ -102,7 +102,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     break;
             }
             cc.Save(DbUtil.Db);
-            return Redirect("/QueryBuilder2/Main/" + cc.Id);
+            return Redirect("/Query/" + cc.Id);
         }
     }
 }

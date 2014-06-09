@@ -198,8 +198,10 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpPost]
-        public ActionResult EnrollmentControl(bool? excel, EnrollmentControlModel m)
+        public ActionResult EnrollmentControl(bool? excel, bool? usecurrenttag, EnrollmentControlModel m)
         {
+            if (usecurrenttag == true)
+                m.usecurrenttag = true;
             if (excel != true)
                 return new EnrollmentControlResult { model = m };
 
@@ -629,10 +631,10 @@ namespace CmsWeb.Areas.Reports.Controllers
             var count = q.Count();
             var ep = new ExcelPackage();
             var ws = ep.Workbook.Worksheets.Add("Sheet1");
-            //ws.SetExcelHeader("PeopleId", "Name", "Age", "MainFellowship", "OrgId", "Teacher", "1+ Attendance Per Week Across All Groups", "AttendPct", "Count", "FirstDate", "LastDate");
             ws.Cells["A2"].LoadFromCollection(q);
             var range = ws.Cells[1, 1, count + 1, cols.Length];
             var table = ws.Tables.Add(range, "Attends");
+            table.ShowFilter = false;
             for (var i = 0; i < cols.Length; i++)
             {
                 var col = i + 1;

@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult StatusFlags(Guid id, string flags = "")
         { // ?flags=F35,F03,F01,F04
-            return new StatusFlagsExcelResult(id, flags);
+            return StatusFlagsExportModel.StatisFlagsList(id, flags);
         }
 
         [HttpGet]
@@ -30,6 +30,11 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult WorshipAttendance(Guid id)
         {
             return WorshipAttendanceModel.Attendance(id);
+        }
+        [HttpGet]
+        public ActionResult MembershipInfo(Guid id)
+        {
+            return MembershipExportModel.MembershipInfoList(id);
         }
 
         [Authorize(Roles = "Finance")]
@@ -51,7 +56,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
         }
-
 
         [HttpPost]
         public ActionResult MeetingsForDateRange(DateTime dt1, DateTime dt2, OrgSearchModel m)
@@ -127,10 +131,6 @@ namespace CmsWeb.Areas.Reports.Controllers
                     return new ExcelResult(ExportInvolvements.PromoList(id, maxExcelRows));
                 case "IndividualPicture":
                     return ExcelExportModel.Result(id);
-//                case "IndividualPicture2":
-//                    Response.ContentType = "application/vnd.ms-excel";
-//                    Response.AddHeader("content-disposition", "attachment;filename=pictures.xls");
-//                    return View("Picture", ExportPeople.FetchExcelListPics(id, maxExcelRows));
                 case "FamilyMembers":
                     Response.ContentType = "application/vnd.ms-excel";
                     Response.AddHeader("content-disposition", "attachment;filename=familymembers.xls");

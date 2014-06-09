@@ -299,6 +299,7 @@ namespace CmsWeb.Models
                 tom.RegisterEmail = om.RegisterEmail;
                 tom.MemberTypeId = om.MemberTypeId;
                 tom.ShirtSize = om.ShirtSize;
+                tom.TranId = om.TranId;
                 tom.Tickets = om.Tickets;
                 foreach (var s in sg)
                     tom.AddToGroup(DbUtil.Db, s);
