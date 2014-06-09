@@ -127,6 +127,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 		public ActionResult DeleteQueued(int id)
 		{
 			var m = new EmailModel { id = id };
+		    if (m.queue == null)
+		        return Redirect("/Manage/Emails");
             if (m.queue.Sent.HasValue || !m.queue.SendWhen.HasValue || !m.CanDelete())
 				return Redirect("/");
 		    DeleteEmail(id);

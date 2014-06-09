@@ -88,7 +88,6 @@ namespace CmsData
                 ret = anet.createCustomerProfileTransactionRequest(PeopleId, total ?? 0, "Recurring Giving", t.Id);
             else
                 ret = sage.createVaultTransactionRequest(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredtype);
-            t.TransactionPeople.Add(new TransactionPerson { PeopleId = PeopleId, Amt = total });
 
             t.Message = ret.Message;
             t.AuthCode = ret.AuthCode;

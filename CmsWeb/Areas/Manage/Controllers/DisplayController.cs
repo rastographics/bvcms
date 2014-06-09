@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        public ActionResult ContentUpdate(int id, string name, string title, string body, int? roleid)
+        public ActionResult ContentUpdate(int id, string name, string title, string body, int? roleid, string stayaftersave = null)
         {
             var content = DbUtil.ContentFromID(id);
             content.Name = name;
@@ -124,6 +124,9 @@ namespace CmsWeb.Areas.Manage.Controllers
                         return Content(Util.EndShowMessage(ex.InnerException.Message, "javascript: history.go(-1)", "Go Back to Repair"));
                 }
             }
+
+            if (stayaftersave == "true")
+                return RedirectEdit(content);
 
             return RedirectToAction("Index");
         }
@@ -195,11 +198,12 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        public ActionResult RunScript(string body)
+        public ActionResult RunScript(string body, string parameter)
         {
             var cn = new SqlConnection(Util.ConnectionStringReadOnly);
             cn.Open();
-            var rd = cn.ExecuteReader(body);
+            var script = "DECLARE @p1 VARCHAR(100) = '{0}'\n{1}\n".Fmt(parameter, body);
+            var rd = cn.ExecuteReader(script);
             return new GridResult(rd);
         }
         [HttpPost]

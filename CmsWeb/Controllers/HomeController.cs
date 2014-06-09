@@ -12,6 +12,7 @@ using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Code;
 using Dapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
@@ -167,15 +168,16 @@ for v in q:
         {
             return Content(PythonEvents.RunScript(DbUtil.Db, script));
         }
-        [HttpGet, Route("~/RunScript/{name}")]
-        public ActionResult RunScript(string name)
+        [HttpGet, Route("~/RunScript/{name}/{parameter?}")]
+        public ActionResult RunScript(string name, string parameter = null)
         {
             var content = DbUtil.Content(name);
             if (content == null)
                 return Content("no content");
             var cn = new SqlConnection(Util.ConnectionStringReadOnly);
             cn.Open();
-            var rd = cn.ExecuteReader(content.Body);
+            var script = "DECLARE @p1 VARCHAR(100) = '{0}'\n{1}\n".Fmt(parameter, content.Body);
+            var rd = cn.ExecuteReader(script);
             ViewData["name"] = name;
             return View(rd);
         }

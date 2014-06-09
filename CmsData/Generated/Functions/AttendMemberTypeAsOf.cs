@@ -18,6 +18,10 @@ namespace CmsData.View
 		
 		private int? _PeopleId;
 		
+		private int? _MemberTypeId;
+		
+		private string _MemberType;
+		
 		
 		public AttendMemberTypeAsOf()
 		{
@@ -37,6 +41,40 @@ namespace CmsData.View
 			{
 				if (this._PeopleId != value)
 					this._PeopleId = value;
+			}
+
+		}
+
+		
+		[Column(Name="MemberTypeId", Storage="_MemberTypeId", DbType="int")]
+		public int? MemberTypeId
+		{
+			get
+			{
+				return this._MemberTypeId;
+			}
+
+			set
+			{
+				if (this._MemberTypeId != value)
+					this._MemberTypeId = value;
+			}
+
+		}
+
+		
+		[Column(Name="MemberType", Storage="_MemberType", DbType="varchar(100)")]
+		public string MemberType
+		{
+			get
+			{
+				return this._MemberType;
+			}
+
+			set
+			{
+				if (this._MemberType != value)
+					this._MemberType = value;
 			}
 
 		}

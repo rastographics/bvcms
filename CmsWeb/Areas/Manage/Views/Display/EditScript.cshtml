@@ -18,7 +18,7 @@
             });
             $("#run").click(function(ev) {
                 ev.preventDefault();
-                $.post("/Display/RunScript", { body: $("#body").val() }, function(ret) {
+                $.post("/Display/RunScript", { body: $("#body").val(), parameter: $("#parameter").val() }, function(ret) {
                     $("#results").html(ret);
                 });
             });
@@ -41,6 +41,7 @@
         <h2 class="title">@Model.Name</h2>
         <a href="/Display">Menu of Content</a>
         <hr />
+        @Html.Hidden("stayaftersave", "true")
         @Html.Hidden("id")
         @Html.Hidden("name")
         @Html.Hidden("title")
@@ -55,6 +56,7 @@
         <a id="cancel" href='/Manage/Display' class="bt">Cancel</a>
         <a id="delete" href='#'><img src="/Content/images/delete.gif" /></a> &nbsp;&nbsp;
         <a id="run" href="#" class="bt">Run Script</a>
+        Parameter: <input id="parameter" type="text" />
     </div>
     <div id="results"></div>
 }
