@@ -58,12 +58,14 @@ namespace CmsData
         {
             var pi = emailqueueto.OrgId.HasValue
                 ? (from m in db.OrganizationMembers
+                   let ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == m.TranId && tt.PeopleId == m.PeopleId)
                    where m.PeopleId == emailqueueto.PeopleId && m.OrganizationId == emailqueueto.OrgId
                    select new PayInfo
                    {
-                       PayLink = m.PayLink,
-                       Amount = m.Amount,
-                       AmountPaid = db.TotalPaid(emailqueueto.OrgId, emailqueueto.PeopleId),
+                       PayLink = m.PayLink2(db),
+                       Amount = ts.IndAmt,
+                       AmountPaid = ts.IndPaid,
+                       AmountDue = ts.IndDue,
                        RegisterMail = m.RegisterEmail
                    }).SingleOrDefault()
                 : null;
@@ -90,7 +92,8 @@ namespace CmsData
         {
             public string PayLink { get; set; }
             public decimal? Amount { get; set; }
-            public int? AmountPaid { get; set; }
+            public decimal? AmountPaid { get; set; }
+            public decimal? AmountDue { get; set; }
             public string RegisterMail { get; set; }
         }
 
@@ -108,7 +111,17 @@ namespace CmsData
 
                 case "{amtdue}":
                     if (pi != null)
-                        return (pi.Amount - pi.AmountPaid).ToString2("c");
+                        return pi.AmountDue.ToString2("c");
+                    break;
+
+                case "{amtpaid}":
+                    if (pi != null)
+                        return pi.AmountPaid.ToString2("c");
+                    break;
+
+                case "{amount}":
+                    if (pi != null)
+                        return pi.Amount.ToString2("c");
                     break;
 
                 case "{barcode}":
