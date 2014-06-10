@@ -1,5 +1,5 @@
 ﻿@using CmsWeb.Areas.Reports.Models
-@model CmsWeb.Models.OrgSearchModel
+@model IEnumerable<EnrollmentControlModel.MemberInfo>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,29 +13,14 @@
 </head>
 <body>
     <div data-role="page" id="foo">
-
         <div data-role="header">
             <h4>Enrollment Control</h4>
         </div>
-        <div data-role="content">
-            <p>When you click the button below, you will be taken to the search page.</p>
-            <p>Tap on that page to display the keyboard. Then type the first letter of the last name you are searching for. The list will be filtered.</p>
-            <p>Once you type the letter, the keyboard will disappear and your list will be filtered. Just tap again to do another search.</p>
-            <p>(Note: if the keyboard keeps disappearing, just click up in the text box and type your letter.)</p>
-            <p><a href="#searchpage" data-role="button">Get started!</a></p>
-        </div>
-        <div data-role="footer">
-            <h4>Brought to you by BVCMS</h4>
-        </div>
-    </div>
-    <div data-role="page" id="searchpage">
         <div data-role="content" class="ui-content" role="main">
             <ul data-role="listview" class="ui-listview">
-                <li id="search" class="ui-li ui-li-static ui-btn-u-c">
-                    <input type="text" /></li>
-                @foreach (var a in EnrollmentControlModel.List(Model))
+                @foreach (var a in Model)
                 {
-                    <li class="ui-li ui-li-static ui-btn-up-c ckline @a.Name[0]">
+                    <li class="ui-li ui-li-static ui-btn-up-c">
                         <div class="ui-grid-b">
                             <div class="ui-block-a" style="width: 40%">@a.Name</div>
                             <div class="ui-block-b" style="width: 25%">@a.Location</div>

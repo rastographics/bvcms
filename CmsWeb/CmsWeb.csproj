@@ -1088,6 +1088,8 @@
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddTransaction.cshtml" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddTransactionDone.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditScript.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2a.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2b.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />

@@ -17,11 +17,11 @@
         var newsort = $(this).text();
         var oldsort = $("#Sort").val();
         $("#Sort").val(newsort);
-        var dir = $("#Direction").val();
+        var dir = $("#Pager_Direction").val();
         if (oldsort == newsort && dir == 'asc')
-            $("#Direction").val('desc');
+            $("#Pager_Direction").val('desc');
         else
-            $("#Direction").val('asc');
+            $("#Pager_Direction").val('asc');
         $.reloadmeetings();
     });
     $("a.submit").click(function(ev) {

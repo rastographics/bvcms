@@ -14,7 +14,7 @@
 <thead>
     <tr><td colspan="10">
 <div>Count: @Model.Count()</div>
- @Html.Partial("Pager2", Model) 
+ @Html.Partial("Pager2", Model.Pager) 
     </td></tr>
 @if ((Model.OnlineReg ?? -1) <= 0)
 {
@@ -83,7 +83,7 @@ else
 }
 </tbody>
     <tr><td colspan="10">
- @Html.Partial("Pager2", Model) 
+ @Html.Partial("Pager2", Model.Pager) 
     </td></tr>
 </table>
 

@@ -131,7 +131,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public string PayLink
         {
-            get { return om.PayLink2(); }
+            get { return om.PayLink2(DbUtil.Db); }
         }
     }
 }

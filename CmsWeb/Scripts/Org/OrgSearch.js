@@ -466,7 +466,7 @@
         //            $.growlUI("error", 'must choose program');
         //            return false;
         //        }
-        $("#orgsearchform").attr("action", "/Reports/EnrollmentControl2");
+        $("#orgsearchform").attr("action", "/Reports/EnrollmentControl2a");
         $("#orgsearchform").submit();
         return false;
     });

@@ -5,6 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
+using CmsWeb.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using UtilityExtensions;
@@ -14,7 +15,9 @@ namespace CmsWeb.Areas.Reports.Models
 {
     public class EnrollmentControlResult : ActionResult
     {
-        public EnrollmentControlModel model { get; set; }
+        public bool UseCurrentTag { get; set; }
+
+        public OrgSearchModel OrgSearch { get; set; }
 
         public override void ExecuteResult(ControllerContext context)
         {
@@ -27,13 +30,12 @@ namespace CmsWeb.Areas.Reports.Models
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);
 
             string scheduletext = String.Empty;
-            var sdt = CmsData.Organization.GetDateFromScheduleId(model.ScheduleId ?? 0);
+            var sdt = CmsData.Organization.GetDateFromScheduleId(OrgSearch.ScheduleId ?? 0);
             if (sdt.HasValue)
                 scheduletext = sdt.Value.ToString("dddd h:mm tt");
 
             var headtext = "Enrollment Control Report {0}".Fmt(scheduletext);
             w.PageEvent = new HeadFoot(headtext);
-
 
             var boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8);
 
@@ -50,7 +52,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.AddCell(new Phrase("Location", boldfont));
             t.AddCell(new Phrase("Member Type", boldfont));
 
-            foreach (var m in model.list())
+            foreach (var m in EnrollmentControlModel.List(OrgSearch, usecurrenttag:UseCurrentTag))
             {
                 t.AddCell(new Phrase(m.Name, font));
                 t.AddCell(new Phrase(m.Organization, font));

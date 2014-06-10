@@ -31,6 +31,6 @@
 }
 </div>
 <div style="clear:both"></div>
-@Html.Hidden("Page")
-@Html.Hidden("Sort")
-@Html.Hidden("Direction")
+@Html.HiddenFor(m => m.Page)
+@Html.HiddenFor(m => m.Sort)
+@Html.HiddenFor(m => m.Direction)

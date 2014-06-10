@@ -68,7 +68,7 @@ Your recipient list has been saved in a tag, so you can run queries in other tab
 			<input type="button" id="Send" value="Send" class="bt" /><br />
 			<br />
 			@if( c.TypeID == ContentTypeCode.TypeSavedDraft ) {
-				@:Keep Draft:<input type="checkbox" name="keepdraft" /><br />
+				@:Keep Draft:<input type="checkbox" name="keepdraft" checked="checked" /><br />
 			}
 			@if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
 			{ 
