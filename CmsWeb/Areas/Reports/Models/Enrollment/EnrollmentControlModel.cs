@@ -62,8 +62,7 @@ SELECT na FROM (
 	WHERE EXISTS(SELECT NULL 
 				FROM dbo.DivOrg dd
 				JOIN dbo.ProgDiv pp ON pp.DivId = dd.DivId
-				WHERE OrgId = o.OrganizationId
-				AND pp.ProgId = 125)
+				WHERE OrgId = o.OrganizationId)
 ) tt
 GROUP BY na
 ORDER BY na
