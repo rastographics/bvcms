@@ -237,5 +237,48 @@ namespace CmsData
                 ResetDb();
             }
         }
+        public void UpdateCampus(string savedQuery, string campus)
+        {
+            var id = db.FetchOrCreateCampusId(campus);
+            var q = db.PeopleQuery2(savedQuery);
+            foreach (var p in q)
+            {
+                p.CampusId = id;
+                db.SubmitChanges();
+                db.Dispose();
+            }
+        }
+        public void UpdateMemberStatus(string savedQuery, string status)
+        {
+            var id = Person.FetchOrCreateMemberStatus(db, status);
+            var q = db.PeopleQuery2(savedQuery);
+            foreach (var p in q)
+            {
+                p.UpdateValue("MemberStatusId", id);
+                db.SubmitChanges();
+                db.Dispose();
+            }
+        }
+        public void UpdateNewMemberClassStatus(string savedQuery, string status)
+        {
+            var id = Person.FetchOrCreateNewMemberClassStatus(db, status);
+            var q = db.PeopleQuery2(savedQuery);
+            foreach (var p in q)
+            {
+                p.UpdateValue("NewMemberClassStatusId", id);
+                db.SubmitChanges();
+                db.Dispose();
+            }
+        }
+        public void UpdateNewMemberClassDate(string savedQuery, DateTime dt)
+        {
+            var q = db.PeopleQuery2(savedQuery);
+            foreach (var p in q)
+            {
+                p.NewMemberClassDate = dt;
+                db.SubmitChanges();
+                db.Dispose();
+            }
+        }
     }
 }

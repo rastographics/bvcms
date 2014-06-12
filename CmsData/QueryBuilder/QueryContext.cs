@@ -74,6 +74,10 @@ namespace CmsData
             }
             return qb;
         }
+        public Query MatchNothing()
+        {
+            return StandardQuery("MatchNothing", QueryType.MatchNothing);
+        }
         public Query QueryIsCurrentPerson()
         {
             return StandardQuery("IsCurrentPerson", QueryType.IsCurrentPerson);

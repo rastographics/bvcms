@@ -166,6 +166,7 @@ for v in q:
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript(string script)
         {
+
             return Content(PythonEvents.RunScript(DbUtil.Db, script));
         }
         [HttpGet, Route("~/RunScript/{name}/{parameter?}")]

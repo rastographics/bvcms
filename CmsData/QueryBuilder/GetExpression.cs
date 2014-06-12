@@ -93,6 +93,7 @@ namespace CmsData
                 { QueryType.LeadersUnderCurrentOrg, LeadersUnderCurrentOrg },
                 { QueryType.MadeContactTypeAsOf, MadeContactTypeAsOf },
                 { QueryType.MatchAnything, MatchAnything },
+                { QueryType.MatchNothing, MatchNothing },
                 { QueryType.MedicalLength, MedicalLength },
                 { QueryType.MeetingId, MeetingId },
                 { QueryType.MembersUnderCurrentOrg, MembersUnderCurrentOrg },

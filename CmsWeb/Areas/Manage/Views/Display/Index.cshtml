@@ -90,7 +90,8 @@
 		<li><a href="#t2">Text Content</a></li>
 		<li><a href="#t3">Email Templates</a></li>
 		<li><a href="#t4">Saved Drafts</a></li>
-		<li><a href="#t5">Scripts</a></li>
+		<li><a href="#t5">Sql Scripts</a></li>
+		<li><a href="#t6">Python Scripts</a></li>
 	</ul>
 	<div id="t1"> <!-- HTML Files -->
 		<center><a href="#" newtype="0" newmessage="Create New HTML File" class="bt">New HTML File</a></center>
@@ -184,13 +185,29 @@
 		    </table>
         </form>
 	</div>
-	<div id="t5"> <!-- Saved Drafts -->
-		<center><a href="#" newtype="4" newmessage="Create New Text File" class="bt">New Text File</a></center>
+	<div id="t5"> <!-- Sql Scripts -->
+		<center><a href="#" newtype="4" newmessage="Create New Sql Script File" class="bt">New Sql Script File</a></center>
 		<table class="@ViewExtensions2.GridClass" cellpadding="4">
 		<tr>
 			<td><b>Name</b></td>
 		</tr>
-		@foreach (var item in Model.fetchScriptFiles())
+		@foreach (var item in Model.fetchSqlScriptFiles())
+  {
+		<tr>
+			<td>
+                @Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)
+			</td>
+		</tr>
+  }
+		</table>
+	</div>
+	<div id="t6"> <!-- Python Scripts -->
+		<center><a href="#" newtype="5" newmessage="Create New Python Script File" class="bt">New Python Script File</a></center>
+		<table class="@ViewExtensions2.GridClass" cellpadding="4">
+		<tr>
+			<td><b>Name</b></td>
+		</tr>
+		@foreach (var item in Model.fetchPythonScriptFiles())
   {
 		<tr>
 			<td>
