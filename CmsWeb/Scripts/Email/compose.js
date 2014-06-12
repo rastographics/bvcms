@@ -54,7 +54,7 @@
         dimOn();
         $("#popupeditor").show().center();
     };
-    $('div[bvedit]').bind('click', $.hClick).addClass("ti");
+    $('div[bvedit],div.bvedit').bind('click', $.hClick).addClass("ti");
     $("#progress").dialog(
         {
             autoOpen: false,
@@ -151,7 +151,7 @@
         dup.attr("bvrepeatadd", "");
         dup.removeAttr("bvrepeat");
         dup.mouseenter($.hAddHoverIn).mouseleave($.hHoverOut);
-        $('div[bvedit]').bind('click', $.hClick).addClass("ti");
+        $('div[bvedit],div.bvedit').bind('click', $.hClick).addClass("ti");
     };
 
     $.hHoverIn = function (ev) {
@@ -164,13 +164,13 @@
     };
     $.clearTemplateClass = function () {
         $.removeButtons();
-        $("div[bvedit]").removeClass();
-        $("div[bveditadd]").removeClass();
+        $("div[bvedit],div.bvedit").removeClass("ti");
+        $("div[bveditadd],div.bveditadd").removeClass("ti");
     };
 
     $.addTemplateClass = function () {
-        $("div[bveditadd]").addClass("ti");
-        $("div[bvedit]").addClass("ti");
+        $("div[bveditadd],div.bveditadd").addClass("ti");
+        $("div[bvedit],div.bvedit").addClass("ti");
     };
 
     $.hHoverOut = function (ev) {

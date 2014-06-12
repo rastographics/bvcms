@@ -248,7 +248,7 @@ namespace CmsData
             SubmitChanges();
             return emailqueue;
         }
-        public EmailQueue CreateQueueForSupporters(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, IQueryable<GoerSupporter> list, bool publicViewable)
+        public EmailQueue CreateQueueForSupporters(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, List<GoerSupporter> list, bool publicViewable)
         {
             var emailqueue = new EmailQueue
             {
