@@ -31,7 +31,9 @@ namespace CmsWeb.Models
                                 {
                                     org = m.Organization,
                                     m,
-                                }).Single();
+                                }).SingleOrDefault();
+            if (i == null)
+                return;
             meeting = i.m;
             org = i.org;
         }

@@ -568,6 +568,12 @@ $(function () {
         $("tr.forMeeting").show();
         $("tr.forRollsheet").hide();
         var d = $("#NewMeetingDialog");
+
+        var a = $("#ScheduleListNext").val().split(',');
+        $("#PrevMeetingDate").val(a[0]);
+        $("#NewMeetingTime").val(a[1]);
+        $("#AttendCreditList").val(a[2]);
+
         d.dialog("option", "buttons", {
             "Ok": function () {
                 var dt = $.GetPrevMeetingDateTime();

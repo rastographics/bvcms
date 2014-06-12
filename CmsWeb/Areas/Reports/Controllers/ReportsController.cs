@@ -253,6 +253,8 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult EnrollmentControl2a(string json)
         {
             var m = OrgSearchModel.DecodedJson(json);
+            if (m == null)
+                return RedirectShowError("must start with orgsearch");
             return View(m);
         }
         [HttpGet, Route("EnrollmentControl2b/{na}"), ValidateInput(false)]
