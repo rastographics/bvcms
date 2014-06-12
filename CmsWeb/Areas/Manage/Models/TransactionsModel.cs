@@ -70,8 +70,8 @@ namespace CmsWeb.Models
                     group t by 1 into g
                     select new TotalTransaction()
                     {
-                        Amt = g.Sum(tt => tt.Payment ?? 0),
-                        Amtdue = g.Sum(tt => tt.TotDue ?? 0),
+                        Amt = g.Sum(tt => tt.Amt ?? 0),
+                        Amtdue = g.Sum(tt => tt.Amtdue ?? 0),
                         Donate = g.Sum(tt => tt.Donate ?? 0),
                         Count = g.Count()
                     };

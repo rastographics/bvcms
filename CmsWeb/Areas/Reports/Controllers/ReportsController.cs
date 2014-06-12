@@ -203,7 +203,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (excel != true)
                 return new EnrollmentControlResult { OrgSearch = m, UseCurrentTag = usecurrenttag ?? false };
 
-            var d = from p in EnrollmentControlModel.List(m)
+            var d = from p in EnrollmentControlModel.List(m, usecurrenttag: usecurrenttag ?? false)
                     orderby p.Name
                     select p;
             var workbook = new HSSFWorkbook(); // todo: Convert all Excel exports to this approach

@@ -569,10 +569,13 @@ $(function () {
         $("tr.forRollsheet").hide();
         var d = $("#NewMeetingDialog");
 
-        var a = $("#ScheduleListNext").val().split(',');
-        $("#PrevMeetingDate").val(a[0]);
-        $("#NewMeetingTime").val(a[1]);
-        $("#AttendCreditList").val(a[2]);
+        var sch = $("#ScheduleListNext").val();
+        if (sch) {
+            var a = sch.split(',');
+            $("#PrevMeetingDate").val(a[0]);
+            $("#NewMeetingTime").val(a[1]);
+            $("#AttendCreditList").val(a[2]);
+        }
 
         d.dialog("option", "buttons", {
             "Ok": function () {
@@ -603,11 +606,11 @@ $(function () {
         $("#NewMeetingTime").val(a[1]);
         $("#AttendCreditList").val(a[2]);
     });
-    $.GetPrevMeetingDateTime = function() {
+    $.GetPrevMeetingDateTime = function () {
         var d = $('#PrevMeetingDate').val();
         return $.GetMeetingDateTime(d);
     };
-    $.GetNextMeetingDateTime = function() {
+    $.GetNextMeetingDateTime = function () {
         var d = $('#NextMeetingDate').val();
         return $.GetMeetingDateTime(d);
     };

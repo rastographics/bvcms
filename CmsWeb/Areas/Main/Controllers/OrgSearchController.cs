@@ -64,6 +64,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult Results(OrgSearchModel m)
         {
+            UpdateModel(m.Pager);
             SaveToSession(m);
             return View(m);
         }
