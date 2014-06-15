@@ -42,9 +42,9 @@ namespace CmsData
                 if (!EnrollmentDate.HasValue)
                     EnrollmentDate = CreatedDate;
                 var sglist = (from mt in db.OrgMemMemTags
-                    where mt.PeopleId == PeopleId
-                    where mt.OrgId == OrganizationId
-                    select mt.MemberTag.Name
+                              where mt.PeopleId == PeopleId
+                              where mt.OrgId == OrganizationId
+                              select mt.MemberTag.Name
                     ).ToList();
                 var droptrans = new EnrollmentTransaction
                                 {

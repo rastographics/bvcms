@@ -97,10 +97,7 @@
             case '-':
                 return;
             case 'delegate':
-                var d = $('#dialogbox');
-                $('iframe', d).attr("src", "/SearchAdd/1?type=taskdelegate2");
-                d.dialog("option", "title", "Delegate tasks");
-                d.dialog("open");
+                $("#delegateall").click();
                 return;
             case 'sharelist':
                 $.growlUI("error", "not implemented yet");
@@ -287,16 +284,15 @@ $.fn.initPager = function() {
     return this;
 };
 function AddSelected(ret) {
+    if (ret.how === "addselected2")
+        return AddSelected2(ret);
     ActOnPerson(ret.url, ret.pid);
 }
 function AddSelected2(ret) {
     var ai = $(".actionitem:checked").getCheckboxVal().join(",");
     var qs = "items=" + ai;
-    $.block();
     $.post('/Task/DelegateAll/' + ret.pid, qs, function (ret) {
-        $('#tasks > tbody').html(ret).ready(stripeList);
-        $('#dialogbox').dialog("close");
-        $.unblock();
+        $('#tasks > tbody').html(ret);
     });
 }
     var GotoPage = function(pg) {

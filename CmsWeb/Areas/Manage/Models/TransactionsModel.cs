@@ -186,7 +186,7 @@ namespace CmsWeb.Models
                     {
                         count = g.Count(),
                         Description = g.Key,
-                        Total = g.Sum(gg => gg.Amt ?? 0)
+                        Total = g.Sum(gg => (gg.Amt ?? 0) - (gg.Donate ?? 0))
                     };
             return q;
         }
@@ -203,7 +203,7 @@ namespace CmsWeb.Models
                         BatchRef = f.Batchref,
                         BatchType = f.Batchtyp,
                         Description = f.Description,
-                        Total = g.Sum(gg => gg.Amt ?? 0)
+                        Total = g.Sum(gg => (gg.Amt ?? 0) - (gg.Donate ?? 0))
                     };
             return q;
         }
@@ -413,7 +413,7 @@ namespace CmsWeb.Models
                      BatchDate = t.Batch.FormatDate(),
                      t.Batchtyp,
                      t.Batchref,
-                     RegAmt = t.Amt ?? 0,
+                     RegAmt = (t.Amt ?? 0) - (t.Donate ?? 0),
                      Donate = t.Donate ?? 0,
                      TotalAmt = t.Amt ?? 0,
                      Amtdue = t.TotDue ?? 0,

@@ -21,14 +21,17 @@
 			<td class="right">Total</td>
 		</tr>
 	</thead>
-   <tbody>
-		@foreach (var r in Model.FetchTransactionsByDescription())
-		{
-			<tr>
-				<td><a href="#" class="filterbatchdesc">@r.Description</a></td>
-				<td class="right">@r.count</td>
-				<td class="right">@r.Total.ToString("N2")</td>
-			</tr>
-		}
-	</tbody>
+        <tbody>
+            @foreach (var r in Model.FetchTransactionsByDescription())
+            {
+                <tr>
+                    <td><a href="#" class="filterbatchdesc">@r.Description</a></td>
+                    <td class="right">@r.count</td>
+                    <td class="right">@r.Total.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr><td colspan="3"><i>Totals do not include Extra Donation amounts if any</i></td></tr>
+        </tfoot>
     } 
