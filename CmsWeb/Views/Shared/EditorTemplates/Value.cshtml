@@ -1,0 +1,40 @@
+﻿@model CmsWeb.Models.ExtraValues.Value
+@if (Model.UserCanView(DbUtil.Db))
+{
+    <tr>
+        @if (Model.Type == "Header")
+        {
+            <td colspan="2"><h4>@Html.Raw(Model.Name)</h4></td>
+        }
+        else
+        {
+            <td class="nowrap"><span class="pad-left">@Model.DisplayName</span></td>
+            if (Model.UserCanEdit())
+            {
+                var dv = Model.DataValue;
+                var ds = Model.DataSource;
+                <td class="width100">
+                    <a href="#"
+                       data-pk="@Model.Id"
+                       data-name="@Model.DataName"
+                       class="@Model.EditableClass"
+                       data-url="@Model.EditUrl"
+                       @if (dv.HasValue()) { <text> data-value="@dv" </text>    }
+                       @if (ds.HasValue()) {  <text> data-source="@ds" </text>   }>
+                        <span>@Html.Raw(Model)</span>
+                    </a>
+                </td>
+            }
+            else
+            {
+                <td>@Html.Raw(Model)</td>
+            }
+            if (!Model.Standard && Model.UserCanEdit())
+            {
+                <td>
+                    <a href="@Model.DeleteUrl" class="ajax" data-confirm="Are you sure?"><i class="fa fa-times"></i></a>
+                </td>
+            }
+        }
+    </tr>
+}
