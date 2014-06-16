@@ -171,7 +171,7 @@ namespace CmsData
             const string pattern = @"\Aperson=(\d+)\z";
             if (Regex.IsMatch(name, pattern))
             {
-                var pid = Regex.Match(name, pattern, RegexOptions.IgnoreCase).Groups[0].Value.ToInt();
+                var pid = Regex.Match(name, pattern, RegexOptions.IgnoreCase).Groups[1].Value.ToInt();
                 return People.Where(pp => pp.PeopleId == pid);
             }
 

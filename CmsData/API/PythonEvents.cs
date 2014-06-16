@@ -243,9 +243,10 @@ namespace CmsData
             var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
             {
-                p.CampusId = id;
+                p.UpdateValue("CampusId", id);
+                p.LogChanges(db);
                 db.SubmitChanges();
-                db.Dispose();
+                ResetDb();
             }
         }
         public void UpdateMemberStatus(string savedQuery, string status)
@@ -255,8 +256,9 @@ namespace CmsData
             foreach (var p in q)
             {
                 p.UpdateValue("MemberStatusId", id);
+                p.LogChanges(db);
                 db.SubmitChanges();
-                db.Dispose();
+                ResetDb();
             }
         }
         public void UpdateNewMemberClassStatus(string savedQuery, string status)
@@ -266,8 +268,9 @@ namespace CmsData
             foreach (var p in q)
             {
                 p.UpdateValue("NewMemberClassStatusId", id);
+                p.LogChanges(db);
                 db.SubmitChanges();
-                db.Dispose();
+                ResetDb();
             }
         }
         public void UpdateNewMemberClassDate(string savedQuery, DateTime dt)
@@ -275,9 +278,21 @@ namespace CmsData
             var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
             {
-                p.NewMemberClassDate = dt;
+                p.UpdateValue("NewMemberClassDate", dt);
+                p.LogChanges(db);
                 db.SubmitChanges();
-                db.Dispose();
+                ResetDb();
+            }
+        }
+        public void AddMembersToOrg(string savedQuery, int OrgId)
+        {
+            var q = db.PeopleQuery2(savedQuery);
+            var dt = DateTime.Now;
+            foreach (var p in q)
+            {
+                OrganizationMember.InsertOrgMembers(db, OrgId, p.PeopleId, MemberTypeCode.Member, dt, null, false);
+                db.SubmitChanges();
+                ResetDb();
             }
         }
     }
