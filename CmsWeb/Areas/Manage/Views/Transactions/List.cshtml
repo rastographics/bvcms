@@ -11,11 +11,11 @@
             <td class="right" colspan="2"><strong>Count: @tt.Count.ToString("N0")</strong></td>
             <td class="right" colspan="4"><strong>Total: </strong></td>
             <td class="right">@((tt.Amt - tt.Donate).ToString("N"))</td>
+            <td class="right">@tt.Amtdue.ToString("N")</td>
             @if (Model.finance)
             {
                 <td class="right">@tt.Donate.ToString("N")</td>
             }
-            <td class="right">@tt.Amtdue.ToString("N")</td>
             <td colspan="2"></td>
         </tr>
         <tr><td colspan="10"><hr /></td></tr>

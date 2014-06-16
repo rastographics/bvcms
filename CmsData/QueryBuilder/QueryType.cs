@@ -120,6 +120,7 @@ namespace CmsData
         LetterDateRequested,
         MaidenName,
         MatchAnything,
+        MatchNothing,
         MedicalLength,
         MeetingId,
         MadeContactTypeAsOf,

@@ -162,8 +162,6 @@ namespace CmsWeb.Models
         private string CreateDibs(int requestID)
         {
             string diblink = DibLink;
-            if (DbUtil.Db.Host == "test")
-                diblink = DibLink.Replace("hope", "test");
             var dibLinks = supportPeople.Select(s =>
                 "<a href='{0}'>{1}</a>".Fmt(diblink.Fmt(requestID, s.id), s.name)
                 ).ToList();

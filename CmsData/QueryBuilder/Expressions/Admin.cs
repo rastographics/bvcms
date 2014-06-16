@@ -109,6 +109,11 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p => true;
             return Expression.Invoke(pred, parm);
         }
+        internal Expression MatchNothing()
+        {
+            Expression<Func<Person, bool>> pred = p => false;
+            return Expression.Invoke(pred, parm);
+        }
         internal Expression HasEmailOptout()
         {
             var email = TextValue;

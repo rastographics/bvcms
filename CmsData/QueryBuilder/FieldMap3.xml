@@ -645,6 +645,9 @@
     <MatchAnything Title="Select Condition" Type="EqualBit" DisplayAs="Select Condition" DataValueField="IdCode">
       This condition is always true (used internally).
     </MatchAnything>
+    <MatchNothing Title="Match Nothing" Type="EqualBit" DataValueField="IdCode">
+      This condition is always false (used internally).
+    </MatchNothing>
     <HasOptoutsForEmail Title="Has Email Optouts for address" Type="StringEqual" DisplayAs="HasOptoutsForEmail({0:d})" Params="EndDate">
       Enter email address (leave value blank for any optout address) and pick an end date for those who opted out before that date (or leave date blank).
     </HasOptoutsForEmail>

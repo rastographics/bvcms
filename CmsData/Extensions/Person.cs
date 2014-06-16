@@ -1376,15 +1376,27 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public static int FetchOrCreateDecisionType(CMSDataContext Db, string type)
         {
-            var bt = Db.DecisionTypes.SingleOrDefault(m => m.Description == type);
-            if (bt == null)
+            var dt = Db.DecisionTypes.SingleOrDefault(m => m.Description == type);
+            if (dt == null)
             {
                 var max = Db.DecisionTypes.Max(mm => mm.Id) + 10;
-                bt = new DecisionType() { Id = max, Code = "d" + max, Description = type };
-                Db.DecisionTypes.InsertOnSubmit(bt);
+                dt = new DecisionType() { Id = max, Code = "d" + max, Description = type };
+                Db.DecisionTypes.InsertOnSubmit(dt);
                 Db.SubmitChanges();
             }
-            return bt.Id;
+            return dt.Id;
+        }
+        public static int FetchOrCreateNewMemberClassStatus(CMSDataContext db, string type)
+        {
+            var i = db.NewMemberClassStatuses.SingleOrDefault(m => m.Description == type);
+            if (i == null)
+            {
+                var max = db.NewMemberClassStatuses.Max(mm => mm.Id) + 10;
+                i = new NewMemberClassStatus() { Id = max, Code = "NM" + max, Description = type };
+                db.NewMemberClassStatuses.InsertOnSubmit(i);
+                db.SubmitChanges();
+            }
+            return i.Id;
         }
         public static Campu FetchOrCreateCampus(CMSDataContext Db, string campus)
         {

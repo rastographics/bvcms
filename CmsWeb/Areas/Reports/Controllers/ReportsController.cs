@@ -198,16 +198,14 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpPost]
-        public ActionResult EnrollmentControl(bool? excel, bool? usecurrenttag, EnrollmentControlModel m)
+        public ActionResult EnrollmentControl(bool? excel, bool? usecurrenttag, OrgSearchModel m)
         {
-            if (usecurrenttag == true)
-                m.usecurrenttag = true;
             if (excel != true)
-                return new EnrollmentControlResult { model = m };
+                return new EnrollmentControlResult { OrgSearch = m, UseCurrentTag = usecurrenttag ?? false };
 
-            IOrderedEnumerable<EnrollmentControlModel.MemberInfo> d = from p in m.list()
-                                                                      orderby p.Name
-                                                                      select p;
+            var d = from p in EnrollmentControlModel.List(m, usecurrenttag: usecurrenttag ?? false)
+                    orderby p.Name
+                    select p;
             var workbook = new HSSFWorkbook(); // todo: Convert all Excel exports to this approach
             ISheet sheet = workbook.CreateSheet("EnrollmentControl");
             int rowIndex = 0;
@@ -242,9 +240,28 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpPost]
-        public ActionResult EnrollmentControl2(EnrollmentControlModel m)
+        public ActionResult EnrollmentControl2(OrgSearchModel m)
         {
             return View(m);
+        }
+        [HttpPost]
+        public ActionResult EnrollmentControl2a(OrgSearchModel m)
+        {
+            return View(m);
+        }
+        [HttpGet, ValidateInput(false)]
+        public ActionResult EnrollmentControl2a(string json)
+        {
+            var m = OrgSearchModel.DecodedJson(json);
+            if (m == null)
+                return RedirectShowError("must start with orgsearch");
+            return View(m);
+        }
+        [HttpGet, Route("EnrollmentControl2b/{na}"), ValidateInput(false)]
+        public ActionResult EnrollmentControl2b(string na, string j)
+        {
+            var m = OrgSearchModel.DecodedJson(j);
+            return View(EnrollmentControlModel.List(m, na));
         }
 
         [HttpGet]

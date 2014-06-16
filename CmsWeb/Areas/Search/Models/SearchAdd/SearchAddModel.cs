@@ -224,7 +224,7 @@ namespace CmsWeb.Areas.Search.Models
                     break;
                 case "taskdelegate2":
                     if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected2", url = "/Task/Action/", pid = PendingList[0].PeopleId, from = AddContext };
+                        return new ReturnResult { close = true, how = "addselected2", url = "/Task/Action/1", pid = PendingList[0].PeopleId, from = AddContext };
                     break;
                 case "taskabout":
                     if (PendingList.Count > 0)

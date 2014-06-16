@@ -941,7 +941,7 @@
     <Content Include="Areas\People\Views\Person\Profile\Comments\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\UploadDocument.cshtml" />
-    <Content Include="Views\ExtraValue\EditorTemplates\Value.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Value.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
@@ -1087,7 +1087,10 @@
     <Content Include="packages.config" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddTransaction.cshtml" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddTransactionDone.cshtml" />
-    <Content Include="Areas\Manage\Views\Display\EditScript.cshtml" />
+    <Content Include="Areas\Manage\Views\Display\EditSqlScript.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2a.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2b.cshtml" />
+    <Content Include="Areas\Manage\Views\Display\EditPythonScript.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -1514,7 +1517,7 @@
     <Content Include="Views\Shared\EditorTemplates\Phone.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditorTemplates\DropDown.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InlineCodeInfo.cshtml" />
-    <Content Include="Views\ExtraValue\DisplayTemplates\Value.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Value.cshtml" />
     <Content Include="Views\ExtraValue\NewStandard.cshtml" />
     <Content Include="Views\ExtraValue\ListStandard.cshtml" />
     <Content Include="Views\ExtraValue\Entry.cshtml" />

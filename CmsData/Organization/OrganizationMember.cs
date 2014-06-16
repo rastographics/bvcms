@@ -42,9 +42,9 @@ namespace CmsData
                 if (!EnrollmentDate.HasValue)
                     EnrollmentDate = CreatedDate;
                 var sglist = (from mt in db.OrgMemMemTags
-                    where mt.PeopleId == PeopleId
-                    where mt.OrgId == OrganizationId
-                    select mt.MemberTag.Name
+                              where mt.PeopleId == PeopleId
+                              where mt.OrgId == OrganizationId
+                              select mt.MemberTag.Name
                     ).ToList();
                 var droptrans = new EnrollmentTransaction
                                 {
@@ -369,12 +369,12 @@ namespace CmsData
             return new Settings(Organization.RegSetting, DbUtil.Db, OrganizationId);
         }
 
-        public string PayLink2()
+        public string PayLink2(CMSDataContext db)
         {
             if (!TranId.HasValue)
                 return null;
             var estr = HttpUtility.UrlEncode(Util.Encrypt(TranId.ToString()));
-            return DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
+            return db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
         }
     }
 }

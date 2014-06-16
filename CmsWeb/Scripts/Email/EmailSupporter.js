@@ -111,7 +111,7 @@
         dimOn();
         $("#popupeditor").show().center();
     };
-    $('div[bvedit]').bind('click', $.hClick).addClass("ti");
+    $('div.bvedit').bind('click', $.hClick).addClass("ti");
 
     $(".send").click(function () {
         $('#Body').val($("#tempateBody").html());
@@ -159,11 +159,11 @@
     };
     $.clearTemplateClass = function () {
         $.removeButtons();
-        $("div[bvedit]").removeClass();
+        $("div.bvedit").removeClass("ti");
     };
 
     $.addTemplateClass = function () {
-        $("div[bvedit]").addClass("ti");
+        $("div.bvedit").addClass("ti");
     };
 
     $.hHoverOut = function (ev) {

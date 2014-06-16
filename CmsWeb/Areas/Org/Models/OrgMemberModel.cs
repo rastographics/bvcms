@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Org.Models
                     ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId)
                 }).SingleOrDefault();
             if (i == null)
-                throw new Exception("missing OrgMember at oid={0}, pid={0}".Fmt(OrgId, PeopleId));
+                throw new Exception("missing OrgMember at oid={0}, pid={1}".Fmt(OrgId, PeopleId));
             om = i.mm;
             TransactionSummary = i.ts;
             this.CopyPropertiesFrom(om);
@@ -131,7 +131,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public string PayLink
         {
-            get { return om.PayLink2(); }
+            get { return om.PayLink2(DbUtil.Db); }
         }
     }
 }

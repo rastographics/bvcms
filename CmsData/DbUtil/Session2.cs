@@ -41,7 +41,7 @@ namespace CmsData
                 var Request = HttpContext.Current.Request;
                 return Util.URLCombine(Util.Scheme() + "://" + Request.Url.Authority, path);
             }
-            var h = ConfigurationManager.AppSettings["cmshost"];
+            var h = ConfigurationManager.AppSettings["cmshost"] + path;
             if(h.HasValue())
                 return h.Replace("{church}", Host, ignoreCase: true);
             throw (new Exception("No URL for Server in ServerLink"));

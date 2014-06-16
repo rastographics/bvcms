@@ -16,8 +16,8 @@ namespace CmsWeb.Areas.Reports.Models
 
         public MeetingsModel()
         {
-            Direction = "asc";
-            Sort = "--Attendance--";
+            Pager.Direction = "asc";
+            Pager.Sort = "--Attendance--";
             NoZero = true;
         }
 
@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             TotalGuests = attends.Select(pp => pp.PeopleId).Distinct().Count();
 
-            switch (Sort)
+            switch (Pager.Sort)
             {
                 case "Recorded":
                     return from m in list

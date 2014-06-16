@@ -156,8 +156,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                 case ContentTypeCode.TypeText:
                     return View("EditText", cContent);
 
-                case ContentTypeCode.TypeScript:
-                    return View("EditScript", cContent);
+                case ContentTypeCode.TypeSqlScript:
+                    return View("EditSqlScript", cContent);
+
+                case ContentTypeCode.TypePythonScript:
+                    return View("EditPythonScript", cContent);
 
                 case ContentTypeCode.TypeEmailTemplate:
                 case ContentTypeCode.TypeSavedDraft:
@@ -198,13 +201,18 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        public ActionResult RunScript(string body, string parameter)
+        public ActionResult RunSqlScript(string body, string parameter)
         {
             var cn = new SqlConnection(Util.ConnectionStringReadOnly);
             cn.Open();
             var script = "DECLARE @p1 VARCHAR(100) = '{0}'\n{1}\n".Fmt(parameter, body);
             var rd = cn.ExecuteReader(script);
             return new GridResult(rd);
+        }
+        [HttpPost]
+        public ActionResult RunPythonScript(string body)
+        {
+            return Content(PythonEvents.RunScript(DbUtil.Db, body));
         }
         [HttpPost]
         public ActionResult UpdateOrgContent(int id, bool? div, string what, string title, string html)

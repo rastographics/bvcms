@@ -8,8 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using CmsData.View;
 using CmsWeb.Areas.Main.Controllers;
+using Newtonsoft.Json;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
@@ -18,7 +20,8 @@ using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
-    public class OrgSearchModel : PagerModel2
+
+    public class OrgSearchModel
     {
         public string Name { get; set; }
         public int? ProgramId { get; set; }
@@ -35,10 +38,14 @@ namespace CmsWeb.Models
         public bool? ParentOrg { get; set; }
         public bool FromWeekAtAGlance { get; set; }
 
+        [JsonIgnore]
+        public PagerModel2 Pager { get; set; }
+
         public OrgSearchModel()
         {
             StatusId = OrgStatusCode.Active;
-            GetCount = Count;
+            Pager = new PagerModel2();
+            Pager.GetCount = Count;
         }
         public Division Division()
         {
@@ -52,7 +59,7 @@ namespace CmsWeb.Models
             organizations = FetchOrgs();
             if (!_count.HasValue)
                 _count = organizations.Count();
-            organizations = ApplySort(organizations).Skip(StartRow).Take(PageSize);
+            organizations = ApplySort(organizations).Skip(Pager.StartRow).Take(Pager.PageSize);
             return OrganizationList(organizations, TagProgramId, TagDiv);
         }
         public static IEnumerable<OrganizationInfo> OrganizationList(IQueryable<CmsData.Organization> query, int? TagProgramId, int? TagDiv)
@@ -338,8 +345,8 @@ namespace CmsWeb.Models
         }
         public IQueryable<CmsData.Organization> ApplySort(IQueryable<CmsData.Organization> query)
         {
-            if (Direction == "asc")
-                switch (Sort)
+            if (Pager.Direction == "asc")
+                switch (Pager.Sort)
                 {
                     case "ID":
                         query = from o in query
@@ -413,7 +420,7 @@ namespace CmsWeb.Models
                         break;
                 }
             else
-                switch (Sort)
+                switch (Pager.Sort)
                 {
                     case "ID":
                         query = from o in query
@@ -792,6 +799,16 @@ Divisions: {11}".Fmt(
             public DateTime? MeetingTime { get; set; }
             public string Schedule { get { return "{0:ddd h:mm tt}".Fmt(MeetingTime); } }
             public string Location { get; set; }
+        }
+
+        public string EncodedJson()
+        {
+            var s = HttpUtility.UrlEncode(Util.Encrypt(JsonConvert.SerializeObject(this)));
+            return s;
+        }
+        public static OrgSearchModel DecodedJson(string parameter)
+        {
+            return JsonConvert.DeserializeObject<OrgSearchModel>(HttpUtility.UrlDecode(Util.Decrypt(parameter)));
         }
     }
 }

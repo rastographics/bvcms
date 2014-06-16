@@ -472,7 +472,7 @@ namespace CmsData
             var c = AddNewClause();
             c.SetQueryType(type);
             c.SetComparisonType(op);
-            if (type == QueryType.MatchAnything)
+            if (type == QueryType.MatchAnything || type == QueryType.MatchNothing)
             {
                 c.CodeIdValue = "1,true";
                 return c;

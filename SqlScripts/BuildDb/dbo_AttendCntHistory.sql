@@ -1,4 +1,4 @@
-CREATE FUNCTION [dbo].AttendCntHistory( 
+CREATE FUNCTION [dbo].[AttendCntHistory]( 
 	@progid INT,
 	@divid INT,
 	@org INT,
@@ -19,8 +19,13 @@ RETURN
 			WHERE 1 = 1
 			AND  AttendanceFlag = 1
 			AND a.PeopleId = p.PeopleId
-			AND a.MeetingDate > @start
-			AND (@sched = 0 OR CAST(a.MeetingDate AS TIME) = (SELECT CAST(SchedTime AS TIME) FROM dbo.OrgSchedule WHERE ScheduleId = @sched))
+			AND a.MeetingDate >= @start
+			AND a.MeetingDate < DATEADD(day, 1, @end)
+			AND (@sched = 0
+				OR (
+					CAST(a.MeetingDate AS TIME) = CAST(CAST((@sched % 10000) / 100 AS VARCHAR) + ':' + CAST((@sched % 10000) % 100 AS VARCHAR) AS TIME) 
+					AND ((@sched / 10000) = 11 OR DATEPART(weekday, a.MeetingDate) = (@sched / 10000))
+				))
 			AND (ISNULL(@org, 0) = 0 OR m.OrganizationId = @org)
 			AND (ISNULL(@divid, 0) = 0 
 					OR EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = m.OrganizationId AND DivId = @divid))

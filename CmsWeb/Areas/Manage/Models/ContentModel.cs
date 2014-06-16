@@ -25,10 +25,17 @@ namespace CmsWeb.Models
 					 orderby c.Name
 					 select c;
 		}
-		public IQueryable<Content> fetchScriptFiles()
+		public IQueryable<Content> fetchSqlScriptFiles()
 		{
 			return from c in DbUtil.Db.Contents
-					 where c.TypeID == ContentTypeCode.TypeScript
+					 where c.TypeID == ContentTypeCode.TypeSqlScript
+					 orderby c.Name
+					 select c;
+		}
+		public IQueryable<Content> fetchPythonScriptFiles()
+		{
+			return from c in DbUtil.Db.Contents
+					 where c.TypeID == ContentTypeCode.TypePythonScript
 					 orderby c.Name
 					 select c;
 		}

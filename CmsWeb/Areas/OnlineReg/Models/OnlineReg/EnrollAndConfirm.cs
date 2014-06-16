@@ -251,6 +251,7 @@ namespace CmsWeb.Models
                 senderBody = senderBody.Replace("{phone}", org.PhoneNumber.FmtFone7());
                 senderBody = senderBody.Replace("{paid}", ti.Amt.ToString2("c"));
 
+                ti.Description = "Mission Trip Giving";
                 Db.Email(notifyids[0].FromEmail, p.person, elist, senderSubject, senderBody, false);
                 Db.SubmitChanges();
                 return;
@@ -275,6 +276,7 @@ namespace CmsWeb.Models
                     p.person.PostUnattendedContribution(DbUtil.Db,
                         ti.Amt.Value, p.setting.DonationFundId,
                         "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId), tranid: ti.Id);
+                    ti.Description = "Mission Trip Giving";
                 }
             }
             else if (ti.Donate > 0)

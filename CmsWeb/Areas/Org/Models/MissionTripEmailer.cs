@@ -213,7 +213,21 @@ namespace CmsWeb.Areas.Org.Models
             var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
             try
             {
-                DbUtil.Db.Email(p.EmailAddress, p, null, Subject, Body, false);
+                DbUtil.Db.CopySession();
+                var from = new MailAddress(p.EmailAddress ?? p.EmailAddress2, p.Name);
+                DbUtil.Db.CurrentOrgId = OrgId;
+                var gs = new GoerSupporter()
+                {
+                    Created = DateTime.Now,
+                    Goer = p,
+                    Supporter = p,
+                    SupporterId = p.PeopleId,
+                    GoerId = p.PeopleId
+                };
+                var plist = new List<GoerSupporter> { gs };
+                DbUtil.Db.SubmitChanges();
+                var emailQueue = DbUtil.Db.CreateQueueForSupporters(p.PeopleId, from, Subject, Body, null, plist, false);
+                DbUtil.Db.SendPeopleEmail(emailQueue.Id);
             }
             catch (Exception ex)
             {
@@ -237,9 +251,9 @@ namespace CmsWeb.Areas.Org.Models
             var elist = (from g in glist
                          where g.SupporterId == null
                          select g).ToList();
-            var plist = from g in glist
-                        where g.SupporterId != null
-                        select g;
+            var plist = (from g in glist
+                         where g.SupporterId != null
+                         select g).ToList();
 
             if (plist.Any())
             {

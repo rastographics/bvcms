@@ -35,5 +35,14 @@ namespace CmsData.ExtraValue
             var user = HttpContext.Current.User;
             return user.IsInRole("Edit");
         }
+
+        public string DisplayName
+        {
+            get
+            {
+                var a = Name.SplitStr(":", 2);
+                return a.Length > 1 ? a[1] : Name;
+            }
+        }
     }
 }

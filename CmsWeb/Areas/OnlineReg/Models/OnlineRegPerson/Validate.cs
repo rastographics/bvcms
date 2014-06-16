@@ -11,9 +11,8 @@ namespace CmsWeb.Models
     public partial class OnlineRegPersonModel
     {
         public bool IsValidForContinue { get; set; }
-        private void ValidateBirthdayRange(ModelStateDictionary ModelState)
+        private void ValidateBirthdayRange(ModelStateDictionary ModelState, int i)
         {
-            var i = Index;
             if (org != null)
                 if (!birthday.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
                     ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].DateOfBirth), "birthday required");
@@ -24,9 +23,8 @@ namespace CmsWeb.Models
                         ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].DateOfBirth), "birthday outside age allowed range");
                 }
         }
-        private void ValidBasic(ModelStateDictionary ModelState)
+        private void ValidBasic(ModelStateDictionary ModelState, int i)
         {
-            var i = Index;
             if (!FirstName.HasValue())
                 ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].FirstName), "first name required");
             if (!LastName.HasValue())
@@ -54,9 +52,8 @@ namespace CmsWeb.Models
             if (Phone.HasValue() && d < 10)
                 ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].Phone), "10+ digits required");
         }
-        public void ValidateModelForFind(ModelStateDictionary ModelState, OnlineRegModel m, bool selectfromfamily = false)
+        public void ValidateModelForFind(ModelStateDictionary ModelState, OnlineRegModel m, int i, bool selectfromfamily = false)
         {
-            var i = Index;
             IsValidForContinue = true; // true till proven false
             if (UserSelectsOrganization())
                 if ((classid ?? 0) == 0)
@@ -75,7 +72,7 @@ namespace CmsWeb.Models
             if (IsFamily)
                 foundname = "fammember-" + PeopleId;
             if (!PeopleId.HasValue)
-                ValidBasic(ModelState);
+                ValidBasic(ModelState, i);
             if (ComputesOrganizationByAge() && !birthday.HasValue)
                 ModelState.AddModelError(dobname, "birthday required");
             var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
@@ -217,17 +214,16 @@ Please call the church to resolve this before we can complete your registration.
                             </ul>";
                 }
             }
-            ValidateBirthdayRange(ModelState);
+            ValidateBirthdayRange(ModelState, i);
             IsValidForExisting = ModelState.IsValid;
         }
         public bool IsValidForNew { get; set; }
-        internal void ValidateModelForNew(ModelStateDictionary ModelState)
+        internal void ValidateModelForNew(ModelStateDictionary ModelState, int i)
         {
-            var i = Index;
             var dobname = Parent.GetNameFor(mm => mm.List[i].DateOfBirth);
             var foundname = Parent.GetNameFor(mm => mm.List[i].Found);
             var isnewfamily = whatfamily == 3;
-            ValidBasic(ModelState);
+            ValidBasic(ModelState, i);
             DateTime dt;
             if (RequiredDOB() && DateOfBirth.HasValue() && !Util.BirthDateValid(bmon, bday, byear, out dt))
                 ModelState.AddModelError(dobname, "birthday invalid");
@@ -247,7 +243,7 @@ Please call the church to resolve this before we can complete your registration.
             if (ComputesOrganizationByAge() && GetAppropriateOrg() == null)
                 ModelState.AddModelError(dobname, NoAppropriateOrgError);
 
-            ValidateBirthdayRange(ModelState);
+            ValidateBirthdayRange(ModelState, i);
             int n = 0;
             if (Phone.HasValue() && Phone.GetDigits().Length >= 10)
                 n++;
@@ -320,9 +316,8 @@ Please call the church to resolve this before we can complete your registration.
             IsValidForNew = ModelState.IsValid;
             IsValidForContinue = ModelState.IsValid;
         }
-        public void ValidateModelForOther(ModelStateDictionary modelState)
+        public void ValidateModelForOther(ModelStateDictionary modelState, int i)
         {
-            var i = Index;
             if (Parent.SupportMissionTrip)
             {
                 OtherOK = true;

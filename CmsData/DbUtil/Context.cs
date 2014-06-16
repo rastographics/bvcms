@@ -168,9 +168,16 @@ namespace CmsData
 
         public IQueryable<Person> PeopleQuery2(string name)
         {
+            const string pattern = @"\Aperson=(\d+)\z";
+            if (Regex.IsMatch(name, pattern))
+            {
+                var pid = Regex.Match(name, pattern, RegexOptions.IgnoreCase).Groups[1].Value.ToInt();
+                return People.Where(pp => pp.PeopleId == pid);
+            }
+
             var qB = Queries.FirstOrDefault(cc => cc.Name == name);
             if (qB == null)
-                return null;
+                qB = MatchNothing();
             var c = qB.ToClause();
             var q = People.Where(c.Predicate(this));
             if (c.ParentsOf)

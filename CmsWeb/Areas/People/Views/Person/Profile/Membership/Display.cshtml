@@ -1,5 +1,7 @@
-﻿@using CmsData.Codes
+﻿@using CmsData
+@using CmsData.Codes
 @using CmsWeb
+@using CmsWeb.Models.ExtraValues
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.MemberInfo
 @{
@@ -8,8 +10,11 @@
         url = "/Person2/InlineEdit/" + Model.PeopleId,
         source = "/Person2/InlineCodes/"
     };
+    var evmodel = new ExtraValueModel(Model.PeopleId, "People", "Membership");
+    var ExtraMembershipDataLabel = DbUtil.Db.Setting("ExtraMembershipDataLabel", "Extra Membership Data");
+    var NewMemberClassLabel = DbUtil.Db.Setting("NewMemberClassLabel", "New Member Class");
 }
-<form class="form ajax form-horizontal span12 margin-top" method="post" data-init="Editable">
+<form class="form ajax form-horizontal span12 margin-top" method="post" data-init="Editable" data-init2="ExtraEditable">
     <div class="row-fluid display">
         <fieldset class="left-gutter">
             <legend>Member Profile @FormAction()</legend>
@@ -40,7 +45,7 @@
                     @Html.DisplayFor(m => m.BaptismSchedDate)
                 </div>
                 <div class="well">
-                    <p><b>New Member Class</b></p>
+                    <p><b>@NewMemberClassLabel</b></p>
                     @Html.DisplayFor(m => m.NewMemberClassStatus)
                     @Html.DisplayFor(m => m.NewMemberClassDate)
                 </div>
@@ -71,24 +76,42 @@
                 </div>
             </div>
             <div class="margin-bottom">@FormAction()</div>
+            <div class="legend">
+                @ExtraMembershipDataLabel
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@evmodel.Table/Membership/@evmodel.Id"><i class="fa fa-plus"></i></a>
+                    <a class="extravalue nounderline font14px edit pad-left dark" href="/ExtraValue/ListStandard/@evmodel.Table/Membership/@evmodel.Id?title=Edit+Membership+Extra+Vaues"><i class="fa fa-pencil"></i></a>
+                }
+            </div>
+            <a href="#" class="pull-right ajax-refresh"><i class="fa fa-refresh"></i></a>
+            <table class="table not-wide">
+                <tbody>
+                    @foreach (var f in evmodel.GetExtraValues())
+                    {
+                        @Html.EditorFor(m => f)
+                    }
+                </tbody>
+            </table>
         </fieldset>
     </div>
+    <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@evmodel.Table/Membership/@evmodel.Id" />
+    @if (User.IsInRole("Access"))
+    {
+        <table class="@ViewExtensions2.GridClass">
+            <thead>
+                <tr><td>Status Flag</td><td>Name</td></tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model.StatusFlags())
+                {
+                    <tr><td>@s.Flag</td><td>@s.Name @s.Role</td></tr>
+                }
+            </tbody>
+        </table>
+    }
 </form>
 
-@if (User.IsInRole("Access"))
-{
-    <table class="@ViewExtensions2.GridClass">
-        <thead>
-            <tr><td>Status Flag</td><td>Name</td></tr>
-        </thead>
-        <tbody>
-            @foreach (var s in Model.StatusFlags())
-            {
-                <tr><td>@s.Flag</td><td>@s.Name @s.Role</td></tr>
-            }
-        </tbody>
-    </table>
-}
 
 @helper FormAction()
 {

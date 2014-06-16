@@ -70,8 +70,8 @@ namespace CmsWeb.Models
                     group t by 1 into g
                     select new TotalTransaction()
                     {
-                        Amt = g.Sum(tt => tt.Payment ?? 0),
-                        Amtdue = g.Sum(tt => tt.TotDue ?? 0),
+                        Amt = g.Sum(tt => tt.Amt ?? 0),
+                        Amtdue = g.Sum(tt => tt.Amtdue ?? 0),
                         Donate = g.Sum(tt => tt.Donate ?? 0),
                         Count = g.Count()
                     };
@@ -186,7 +186,7 @@ namespace CmsWeb.Models
                     {
                         count = g.Count(),
                         Description = g.Key,
-                        Total = g.Sum(gg => gg.Amt ?? 0)
+                        Total = g.Sum(gg => (gg.Amt ?? 0) - (gg.Donate ?? 0))
                     };
             return q;
         }
@@ -203,7 +203,7 @@ namespace CmsWeb.Models
                         BatchRef = f.Batchref,
                         BatchType = f.Batchtyp,
                         Description = f.Description,
-                        Total = g.Sum(gg => gg.Amt ?? 0)
+                        Total = g.Sum(gg => (gg.Amt ?? 0) - (gg.Donate ?? 0))
                     };
             return q;
         }
@@ -413,7 +413,7 @@ namespace CmsWeb.Models
                      BatchDate = t.Batch.FormatDate(),
                      t.Batchtyp,
                      t.Batchref,
-                     RegAmt = t.Amt ?? 0,
+                     RegAmt = (t.Amt ?? 0) - (t.Donate ?? 0),
                      Donate = t.Donate ?? 0,
                      TotalAmt = t.Amt ?? 0,
                      Amtdue = t.TotDue ?? 0,

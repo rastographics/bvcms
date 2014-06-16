@@ -40,6 +40,9 @@
                         if ($form.data("init")) {
                             $.InitFunctions[$form.data("init")]();
                         }
+                        if ($form.data("init2")) {
+                            $.InitFunctions[$form.data("init2")]();
+                        }
                     });
                 }
             });
@@ -114,6 +117,9 @@
                             $.AttachFormElements();
                             if ($form.data("init"))
                                 $.InitFunctions[$form.data("init")]();
+                            if ($form.data("init2")) {
+                                $.InitFunctions[$form.data("init2")]();
+                            }
                             if (a.data("callback"))
                                 $.InitFunctions[a.data("callback")]();
                         });

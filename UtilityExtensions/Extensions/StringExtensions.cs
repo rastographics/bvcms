@@ -227,5 +227,17 @@ namespace UtilityExtensions
             }
             return result;
         }
+        public static string Encode64(this string s)
+        {
+            var b = Encoding.ASCII.GetBytes(s);
+            var r = Convert.ToBase64String(b);
+            return r;
+        }
+        public static string Decode64(this string s)
+        {
+            var b = Convert.FromBase64String(s);
+            var r = Encoding.ASCII.GetString(b);
+            return r;
+        }
     }
 }
