@@ -569,7 +569,7 @@ $(function () {
         $("tr.forRollsheet").hide();
         var d = $("#NewMeetingDialog");
 
-        var sch = $("#ScheduleListNext").val();
+        var sch = $("#ScheduleListPrev").val();
         if (sch) {
             var a = sch.split(',');
             $("#PrevMeetingDate").val(a[0]);

@@ -66,6 +66,27 @@ namespace CmsData
             var s = sr.ReadToEnd();
             return s;
         }
+        public string CallScript(string scriptname)
+        {
+            var script = db.Content(scriptname);
+            var engine = Python.CreateEngine();
+            var ms = new MemoryStream();
+            var sw = new StreamWriter(ms);
+            engine.Runtime.IO.SetOutput(ms, sw);
+            engine.Runtime.IO.SetErrorOutput(ms, sw);
+            var sc = engine.CreateScriptSourceFromString(script.Body);
+            var code = sc.Compile();
+            var scope = engine.CreateScope();
+            var pe = new PythonEvents(db);
+            scope.SetVariable("model", pe);
+            var qf = new QueryFunctions(db);
+            scope.SetVariable("q", qf);
+            code.Execute(scope);
+            ms.Position = 0;
+            var sr = new StreamReader(ms);
+            var s = sr.ReadToEnd();
+            return s;
+        }
 
         // List of api functions to call from Python
 
