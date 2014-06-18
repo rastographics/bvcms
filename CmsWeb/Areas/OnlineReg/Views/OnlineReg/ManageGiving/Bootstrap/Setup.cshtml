@@ -94,6 +94,14 @@
                     </div>
                 </div>
             }
+            else if (Model.NoCreditCardsAllowed)
+            {
+                @Html.Hidden("Type", "B");
+            }
+            else
+            {
+                @Html.Hidden("Type", "C");
+            }
             @if (Model.NoCreditCardsAllowed == false)
             {
                 <div class="Card paymentinfo">

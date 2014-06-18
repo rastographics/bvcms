@@ -133,7 +133,7 @@ namespace CmsWeb.Models
                                 <b>Last Search:</b> {2}<br>
                                 <b>Claim:</b> {3}<br>
                                 <a href='{4}'>Manage Support</a><br><br>
-                                ", roles, ccto, lastsearch, CreateDibs(id), ManageLink.Fmt(id));
+                                ", roles, ccto, lastsearch, CreateDibs(id), ManageLink);
             }
             sb.Append(body);
 
