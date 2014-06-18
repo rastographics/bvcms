@@ -168,11 +168,11 @@ namespace CmsData
 
         public IQueryable<Person> PeopleQuery2(string name)
         {
-            const string pattern = @"\Aperson=(\d+)\z";
+            const string pattern = @"\Apeopleid=([\d,]*)\z";
             if (Regex.IsMatch(name, pattern))
             {
-                var pid = Regex.Match(name, pattern, RegexOptions.IgnoreCase).Groups[1].Value.ToInt();
-                return People.Where(pp => pp.PeopleId == pid);
+                var pids = Regex.Match(name, pattern, RegexOptions.IgnoreCase).Groups[1].Value.Split(',').Select(tt => tt.ToInt());
+                return People.Where(pp => pids.Contains(pp.PeopleId));
             }
 
             var qB = Queries.FirstOrDefault(cc => cc.Name == name);

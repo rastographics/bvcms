@@ -13,7 +13,7 @@ namespace CmsData.ExtraValue
         [XmlAttribute] public string Type { get; set; }
         [XmlAttribute] public string VisibilityRoles { get; set; }
 
-        [XmlElement("Code")] 
+        [XmlElement("Code")]
         public List<string> Codes { get; set; }
 
         [XmlIgnore] public int Order;
@@ -36,13 +36,5 @@ namespace CmsData.ExtraValue
             return user.IsInRole("Edit");
         }
 
-        public string DisplayName
-        {
-            get
-            {
-                var a = Name.SplitStr(":", 2);
-                return a.Length > 1 ? a[1] : Name;
-            }
-        }
     }
 }

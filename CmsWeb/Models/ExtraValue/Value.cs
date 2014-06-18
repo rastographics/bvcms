@@ -155,5 +155,14 @@ namespace CmsWeb.Models.ExtraValues
             }
             return "";
         }
+        public string DisplayName
+        {
+            get { return NoPrefix(Name); }
+        }
+        public static string NoPrefix(string s)
+        {
+            var a = s.SplitStr(":", 2);
+            return a.Length > 1 ? a[1] : s;
+        }
     }
 }
