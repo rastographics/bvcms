@@ -352,7 +352,7 @@
     <Compile Include="Areas\Reports\Models\Export\CsvResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelFamilyMember.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelPic.cs" />
-    <Compile Include="Areas\Reports\Models\Export\OrgsMembersExcelResult.cs" />
+    <Compile Include="Areas\Reports\Models\Export\OrgsMembersExcelModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\CheckinControlModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\CheckinControlResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\WeeklyAttendanceModel.cs" />

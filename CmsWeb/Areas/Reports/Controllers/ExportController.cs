@@ -56,6 +56,11 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
         }
+        [HttpGet, Route("Excel/OrgMembers")]
+        public ActionResult ExcelOrgMembers()
+        {
+            return OrgsMembersExcelModel.Export(Util2.CurrentOrgId ?? 0);
+        }
 
         [HttpPost]
         public ActionResult MeetingsForDateRange(DateTime dt1, DateTime dt2, OrgSearchModel m)
@@ -125,8 +130,6 @@ namespace CmsWeb.Areas.Reports.Controllers
                     return new ExcelResult(ExportInvolvements.ChurchList(id, maxExcelRows));
                 case "Attend":
                     return new ExcelResult(ExportInvolvements.AttendList(id, maxExcelRows));
-                case "Organization":
-                    return new ExcelResult(ExportInvolvements.OrgMemberList(id));
                 case "Promotion":
                     return new ExcelResult(ExportInvolvements.PromoList(id, maxExcelRows));
                 case "IndividualPicture":

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CmsData;
+using CmsData.View;
 using UtilityExtensions;
 using System.Collections;
 using System.Data.SqlClient;
@@ -225,89 +226,35 @@ namespace CmsWeb.Models
                 get
                 {
                     var sb = new StringBuilder();
-                    if (_memberInfoRaw.HasValue())
-                        sb.Append(_memberInfoRaw.Replace("\n", "<br/>"));
-                    if (_fname.HasValue())
-                        sb.AppendFormat("Father: {0}<br/>", _fname);
-                    if (_mname.HasValue())
-                        sb.AppendFormat("Mother: {0}<br/>", _mname);
+                    if (MemberInfoRaw.HasValue())
+                        sb.Append(MemberInfoRaw.Replace("\n", "<br/>"));
+                    if (Fname.HasValue())
+                        sb.AppendFormat("Father: {0}<br/>", Fname);
+                    if (Mname.HasValue())
+                        sb.AppendFormat("Mother: {0}<br/>", Mname);
                     return sb.ToString();
                 }
             }
 
-            private string _memberInfoRaw;
-
-            public string MemberInfoRaw
-            {
-                set { _memberInfoRaw = value; }
-            }
+            public string MemberInfoRaw;
 
             public string InactiveDate { get; set; }
             public string Medical { get; set; }
             public int PeopleId { get; set; }
             public string EnrollDate { get; set; }
             public string Groups { get; set; }
-            private string _fname;
 
-            public string Fname
-            {
-                set { _fname = value; }
-            }
+            public string Fname;
 
-            private string _mname;
-
-            public string Mname
-            {
-                set { _mname = value; }
-            }
+            public string Mname;
 
             public string Tickets { get; set; }
         }
 
-        public static IEnumerable<ExportInvolvements.MemberInfoClass> OrgMemberList(Guid queryid)
+        public static IEnumerable<CurrOrgMember> OrgMemberList(int orgid)
         {
             var Db = DbUtil.Db;
-            var q = Db.PeopleQuery(queryid);
-            var q2 = from p in q
-                     let om = Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == Util2.CurrentOrgId && om.PeopleId == p.PeopleId)
-                     let recreg = p.RecRegs.FirstOrDefault()
-                     let ts = (from t in Db.ViewTransactionSummaries
-                               where t.RegId == om.TranId && t.PeopleId == om.PeopleId
-                               select t).SingleOrDefault()
-                     select new ExportInvolvements.MemberInfoClass
-                     {
-                         FirstName = p.PreferredName,
-                         LastName = p.LastName,
-                         Gender = p.Gender.Code,
-                         Grade = om.Grade.ToString(),
-                         ShirtSize = om.ShirtSize,
-                         Request = om.Request,
-                         Amount = ts != null ? ts.IndAmt ?? 0 : 0,
-                         AmountPaid = om.TotalPaid(Db),
-                         //AmountPaid = ts != null ? ts.IndAmt ?? 0 : 0,
-                         HasBalance = ts != null && ts.IndDue > 0,
-                         Groups = string.Join(",", om.OrgMemMemTags.Select(mt => mt.MemberTag.Name)),
-                         Email = p.EmailAddress,
-                         HomePhone = p.HomePhone.FmtFone(),
-                         CellPhone = p.CellPhone.FmtFone(),
-                         WorkPhone = p.WorkPhone.FmtFone(),
-                         Age = p.Age.ToString(),
-                         BirthDate = Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay),
-                         JoinDate = p.JoinDate.FormatDate(),
-                         MemberStatus = p.MemberStatus.Description,
-                         School = p.SchoolOther,
-                         LastAttend = om.LastAttended.ToString(),
-                         AttendPct = om.AttendPct.ToString(),
-                         AttendStr = om.AttendStr,
-                         MemberType = om.MemberType.Description,
-                         MemberInfoRaw = om.UserData,
-                         InactiveDate = om.InactiveDate.FormatDate(),
-                         Medical = recreg.MedicalDescription,
-                         PeopleId = p.PeopleId,
-                         EnrollDate = om.EnrollmentDate.FormatDate(),
-                         Tickets = om.Tickets.ToString(),
-                     };
-            return q2;
+            return Db.CurrOrgMembers(orgid.ToString());
         }
         public static IEnumerable PromoList(Guid queryid, int maximumRows)
         {

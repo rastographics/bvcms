@@ -43,13 +43,10 @@
                     <li><a href='/Export2/Excel/Library/@qid' title="For Atrium Library Import">Excel Library</a></li>
                     <li><a href='/Export2/StatusFlags/@qid' title="StatusFlags in Columns">Status Flags Export</a></li>
                     <li><a href='/Export2/ExtraValues/@qid' title="ExtraValues in Columns">Extra Values Export</a></li>
-                    @if ((bool?)ViewBag.OrganizationContext == true)
+                    @if ((bool?)ViewBag.OrgMemberContext == true)
                     {
-                        <li><a href='/Export2/Excel/Organization/@qid' title="Includes Org Member info">Member Export</a></li>
-                        if ((bool?)ViewBag.OrgMemberContext == true)
-                        {
-                            <li><a href='/Export2/Excel/Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
-                        }
+                        <li><a href='/Export2/Excel/OrgMembers' title="Includes Org Member info">Member Export</a></li>
+                        <li><a href='/Export2/Excel/Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
                         <li><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
                     }
                 </ul>
