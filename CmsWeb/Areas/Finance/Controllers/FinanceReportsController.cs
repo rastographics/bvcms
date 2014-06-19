@@ -167,7 +167,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var table = ws.Tables.Add(range, "Pledges");
             table.ShowTotal = true;
             table.ShowFilter = false;
-            table.TableStyle = TableStyles.Medium14;
+            table.TableStyle = TableStyles.Light9;
 
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
 

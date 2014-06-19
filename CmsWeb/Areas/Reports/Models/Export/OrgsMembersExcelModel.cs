@@ -1,9 +1,11 @@
 using System.Reflection;
 using CmsData.View;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using OfficeOpenXml;
 using System.Linq;
 using OfficeOpenXml.Style;
+using TableStyles = OfficeOpenXml.Table.TableStyles;
 
 namespace CmsWeb.Models
 {
@@ -37,6 +39,7 @@ namespace CmsWeb.Models
             var range = ws.Cells[1, 1, count + 1, cols.Length];
             var table = ws.Tables.Add(range, "Members");
             table.ShowFilter = false;
+            table.TableStyle = TableStyles.Light9;
             int userdatacol = 1;
             int groupcol = 1;
             for (var i = 0; i < cols.Length; i++)

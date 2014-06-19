@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
 using UtilityExtensions;
 using CmsData;
 
@@ -63,6 +64,7 @@ WHERE tp.Id = @p1", cn);
             var count = dt.Rows.Count;
             var range = ws.Cells[1, 1, count + 1, dt.Columns.Count];
             var table = ws.Tables.Add(range, "Members");
+            table.TableStyle = TableStyles.Light9;
             table.ShowFilter = false;
             for (var i = 0; i < dt.Columns.Count; i++)
             {
