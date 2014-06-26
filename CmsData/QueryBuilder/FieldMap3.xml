@@ -335,6 +335,9 @@
     <WasMemberAsOf Title="Was Member As Of" Type="Bit" DisplayAs="WasMemberAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataValueField="IdCode">
       Pick the date range and select Program/Division/ Organization, Org Type.
     </WasMemberAsOf>
+    <WasRecentMemberOf Title="Was Recent Member Of" Type="Bit" DisplayAs="WasRecentMemberOf({0}, {1}, {2}, {3}, {4})" Params="Days,Program,Division,Organization,OrgType" DataValueField="IdCode">
+      Pick the number of days to look back and select Program/Division/ Organization, Org Type.
+    </WasRecentMemberOf>
     <MemberTypeAsOf Title="Member Type As Of" Type="Code" DisplayAs="MemberTypeAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataSource="MemberTypeCodes" DataValueField="IdCode">
       Select Member Type from the list, pick a date range and select other options: Program/Division/Organization, Org Type.
     </MemberTypeAsOf>
