@@ -18,6 +18,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
 using UtilityExtensions;
 using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
 
@@ -651,6 +652,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             ws.Cells["A2"].LoadFromCollection(q);
             var range = ws.Cells[1, 1, count + 1, cols.Length];
             var table = ws.Tables.Add(range, "Attends");
+            table.TableStyle = TableStyles.Light9;
             table.ShowFilter = false;
             for (var i = 0; i < cols.Length; i++)
             {

@@ -22,8 +22,11 @@ namespace CmsWeb.Models
             var defaulthost = DbUtil.Db.Setting("DefaultHost", "");
 
             if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
-                using (var csv = new CsvReader(new StringReader(text), true))
+                using (var csv = new CsvReader(new StringReader(text), hasHeaders:true))
                     return BatchProcessJackHenry(csv, date, fundid);
+            if (text.Substring(0, Math.Min(text.Length, 300)).Contains("textbox32,textbox30,textbox26,textbox22,textbox10,textbox7,DepositStatus,textbox3,SourceLocation,textbox4,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,Account_1,RoutingNumber,AnalysisStatus,IsOverridden"))
+                using (var csv = new CsvReader(new StringReader(text), hasHeaders:true))
+                    return BatchProcessMetropolitan(csv, date, fundid);
 
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {

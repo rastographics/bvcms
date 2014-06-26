@@ -144,54 +144,11 @@ namespace CmsWeb.Models
             public string Organization { get; set; }
             public string Schedule { get; set; }
         }
-        public IEnumerable<OrgMemberInfoClass> OrgsMemberList()
+        public IEnumerable<CurrOrgMember> OrgsMemberList()
         {
             var q = FetchOrgs();
             var Db = DbUtil.Db;
-            var q2 = from o in q
-                     from om in o.OrganizationMembers
-                     let p = om.Person
-                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                     let recreg = p.RecRegs.FirstOrDefault()
-                     let tbal = (from t in Db.ViewTransactionSummaries
-                                where t.RegId == om.TranId
-                                select t).FirstOrDefault()
-                     select new OrgMemberInfoClass
-                     {
-                         OrganizationId = o.OrganizationId,
-                         Organization = o.OrganizationName,
-                         Schedule = Db.GetScheduleDesc(sc.MeetingTime),
-                         FirstName = p.PreferredName,
-                         LastName = p.LastName,
-                         Gender = p.Gender.Code,
-                         Grade = p.Grade.ToString(),
-                         ShirtSize = om.ShirtSize,
-                         Request = om.Request,
-                         Amount = tbal != null ? tbal.IndAmt ?? 0 : 0,
-                         AmountPaid = tbal != null ? tbal.IndPaid ?? 0 : 0,
-                         HasBalance = tbal != null && tbal.IndDue > 0,
-                         Groups = string.Join(",", om.OrgMemMemTags.Select(mt => mt.MemberTag.Name)),
-                         Email = p.EmailAddress,
-                         HomePhone = p.HomePhone.FmtFone(),
-                         CellPhone = p.CellPhone.FmtFone(),
-                         WorkPhone = p.WorkPhone.FmtFone(),
-                         Age = p.Age.ToString(),
-                         BirthDate = Util.FormatBirthday(p.BirthYear, p.BirthMonth, p.BirthDay),
-                         JoinDate = p.JoinDate.FormatDate(),
-                         MemberStatus = p.MemberStatus.Description,
-                         School = p.SchoolOther,
-                         LastAttend = om.LastAttended.ToString(),
-                         AttendPct = om.AttendPct.ToString(),
-                         AttendStr = om.AttendStr,
-                         MemberType = om.MemberType.Description,
-                         MemberInfoRaw = om.UserData,
-                         InactiveDate = om.InactiveDate.FormatDate(),
-                         Medical = recreg.MedicalDescription,
-                         PeopleId = p.PeopleId,
-                         EnrollDate = om.EnrollmentDate.FormatDate(),
-                         Tickets = om.Tickets.ToString(),
-                     };
-            return q2;
+            return Db.CurrOrgMembers(string.Join(",", q.OrderBy(mm => mm.OrganizationName).Select(mm => mm.OrganizationId)));
         }
 
         private int TagSubDiv(string s)

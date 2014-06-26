@@ -180,7 +180,7 @@ namespace CmsWeb.Models.ExtraValues
                     select new 
                     { 
                         value = c, 
-                        text = c 
+                        text = Value.NoPrefix(c) 
                     };
             return JsonConvert.SerializeObject(q.ToArray());
         }

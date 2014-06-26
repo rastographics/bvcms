@@ -174,6 +174,10 @@ namespace CmsData
                         db.Organizations.Where(oo => oo.OrganizationId == db.CurrentOrgId)
                             .Select(oo => oo.OrganizationName).SingleOrDefault();
 
+                case "{orgmembercount}":
+                    return
+                        db.OrganizationMembers.Count(om => om.OrganizationId == db.CurrentOrgId).ToString();
+
                 case "{paylink}":
                     if (pi != null && pi.PayLink.HasValue())
                         return "<a href=\"{0}\">payment link</a>".Fmt(pi.PayLink);

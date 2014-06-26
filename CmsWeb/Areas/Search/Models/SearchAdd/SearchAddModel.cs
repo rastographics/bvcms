@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Search.Models
                     case "menu":
                         return "Add to Database";
                     case "mergeto":
-                        return "Merge to Another";
+                        return "Merge Duplicate Into";
                     case "addtotag":
                         return "Add to Tag";
                     case "family":

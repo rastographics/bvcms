@@ -8,9 +8,9 @@ SELECT
 	,IndAmt
 	,TotalAmt
 	,TotPaid
-	,(TotalAmt - TotPaid) TotDue
+	,(TotalAmt - TotPaid - Donation) TotDue
 	,CONVERT(MONEY, (IndPctC * TotPaid)) IndPaid
-	,CONVERT(MONEY, (IndPctC * (TotalAmt - TotPaid))) IndDue
+	,CONVERT(MONEY, (IndPctC * (TotalAmt - TotPaid - Donation))) IndDue
 	,NumPeople
 	,isdeposit
 	,iscoupon

@@ -40,6 +40,29 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression WasRecentMemberOf()
+        {
+            var tf = CodeIds == "1";
+            var now = DateTime.Now;
+            var dt = now.AddDays(-Days).Date;
+            Expression<Func<Person, bool>> pred = p => (
+                from et in p.EnrollmentTransactions
+                where et.TransactionTypeId <= 3 // things that start a change
+                where et.TransactionStatus == false
+                where et.MemberTypeId != MemberTypeCode.Prospect
+                where (et.Pending ?? false) == false
+                where (et.NextTranChangeDate ?? now) >= dt // transaction ends >= looked for start
+                where (OrgType ?? 0) == 0 || et.Organization.OrganizationTypeId == OrgType
+                where Organization == 0 || et.OrganizationId == Organization
+                where Division == 0 || et.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                where Program == 0 || et.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                select et
+                ).Any();
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression MemberTypeAsOf()
         {
             var end = EndDate.HasValue ? EndDate.Value.AddDays(1) : StartDate.Value.AddDays(1);

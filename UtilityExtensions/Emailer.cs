@@ -62,7 +62,9 @@ namespace UtilityExtensions
             msg.Subject = subject;
             var addrs = string.Join(", ", to.Select(tt => tt.ToString()));
             var BadEmailLink = "";
-            if (msg.To.Count == 0)
+            if (msg.To.Count == 0 && to.Any(tt => tt.Host == "nowhere.name"))
+                return;
+            if(msg.To.Count == 0)
             {
                 msg.AddAddr(msg.From);
                 msg.AddAddr(Util.FirstAddress(senderrorsto));

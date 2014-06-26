@@ -305,6 +305,7 @@ namespace CmsWeb.Models
             else
                 message = re.Replace(message, "");
 
+            Db.CurrentOrgId = Orgid;
             // send confirmations
             if (subject != "DO NOT SEND")
                 Db.Email(NotifyIds[0].FromEmail, p0, elist,

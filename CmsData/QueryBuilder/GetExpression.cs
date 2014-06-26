@@ -164,6 +164,7 @@ namespace CmsData
                 { QueryType.VolunteerApprovalCode, VolunteerApprovalCode },
                 { QueryType.VolunteerProcessedDateMonthsAgo, VolunteerProcessedDateMonthsAgo },
                 { QueryType.WasMemberAsOf, WasMemberAsOf },
+                { QueryType.WasRecentMemberOf, WasRecentMemberOf },
                 { QueryType.WeddingDate, WeddingDate },
                 { QueryType.WidowedDate, WidowedDate },
             };

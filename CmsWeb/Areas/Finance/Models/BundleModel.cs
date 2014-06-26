@@ -27,7 +27,15 @@ namespace CmsWeb.Areas.Finance.Models
             get { return Bundle != null && Bundle.BundleStatusId == BundleStatusCode.Open; }
             set { Bundle.BundleStatusId = value ? BundleStatusCode.Open : BundleStatusCode.Closed; }
         }
-        public bool IsAdmin { get { return HttpContext.Current.User.IsInRole("Admin"); } }
+
+        public bool IsAdmin
+        {
+            get 
+            { 
+                return HttpContext.Current.User.IsInRole("Admin") 
+                    || HttpContext.Current.User.IsInRole("FinanceAdmin"); 
+            }
+        }
         public bool CanEdit { get { return IsOpen || IsAdmin; } } 
         public bool CanChangeStatus
         {

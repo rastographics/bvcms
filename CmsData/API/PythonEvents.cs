@@ -66,6 +66,27 @@ namespace CmsData
             var s = sr.ReadToEnd();
             return s;
         }
+        public string CallScript(string scriptname)
+        {
+            var script = db.Content(scriptname);
+            var engine = Python.CreateEngine();
+            var ms = new MemoryStream();
+            var sw = new StreamWriter(ms);
+            engine.Runtime.IO.SetOutput(ms, sw);
+            engine.Runtime.IO.SetErrorOutput(ms, sw);
+            var sc = engine.CreateScriptSourceFromString(script.Body);
+            var code = sc.Compile();
+            var scope = engine.CreateScope();
+            var pe = new PythonEvents(db);
+            scope.SetVariable("model", pe);
+            var qf = new QueryFunctions(db);
+            scope.SetVariable("q", qf);
+            code.Execute(scope);
+            ms.Position = 0;
+            var sr = new StreamReader(ms);
+            var s = sr.ReadToEnd();
+            return s;
+        }
 
         // List of api functions to call from Python
 
@@ -106,7 +127,10 @@ namespace CmsData
         public void Email2(Guid qid, int queuedBy, string fromAddr, string fromName, string subject, string body)
         {
             var q = db.PeopleQuery(qid);
-
+            Email2(q, queuedBy, fromAddr, fromName, subject, body);
+        }
+        private void Email2(IQueryable<Person> q, int queuedBy, string fromAddr, string fromName, string subject, string body)
+        {
             var from = new MailAddress(fromAddr, fromName);
             q = from p in q
                 where p.EmailAddress != null
@@ -123,6 +147,7 @@ namespace CmsData
             emailqueue.Transactional = Transactional;
             db.SendPeopleEmail(emailqueue.Id);
         }
+
         public void EmailContent2(Guid qid, int queuedBy, string fromAddr, string fromName, string contentName)
         {
             var c = db.Content(contentName);
@@ -140,10 +165,10 @@ namespace CmsData
 
         public void Email(string savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string body)
         {
-            var qB = db.Queries.FirstOrDefault(c => c.Name == savedQuery);
-            if (qB == null)
+            var q = db.PeopleQuery2(savedQuery);
+            if (q == null)
                 return;
-            Email2(qB.QueryId, queuedBy, fromAddr, fromName, subject, body);
+            Email2(q, queuedBy, fromAddr, fromName, subject, body);
         }
         public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string contentName)
         {
@@ -187,7 +212,7 @@ namespace CmsData
             return q.ToList();
         }
 
-        public void AddxtraValueCode(string savedQuery, string name, string text)
+        public void AddExtraValueCode(string savedQuery, string name, string text)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
@@ -246,7 +271,6 @@ namespace CmsData
                 p.UpdateValue("CampusId", id);
                 p.LogChanges(db);
                 db.SubmitChanges();
-                ResetDb();
             }
         }
         public void UpdateMemberStatus(string savedQuery, string status)
@@ -255,10 +279,10 @@ namespace CmsData
             var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
             {
+                var psb = new List<ChangeDetail>();
                 p.UpdateValue("MemberStatusId", id);
-                p.LogChanges(db);
+                p.LogChanges(db, psb);
                 db.SubmitChanges();
-                ResetDb();
             }
         }
         public void UpdateNewMemberClassStatus(string savedQuery, string status)
@@ -267,10 +291,10 @@ namespace CmsData
             var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
             {
+                var psb = new List<ChangeDetail>();
                 p.UpdateValue("NewMemberClassStatusId", id);
-                p.LogChanges(db);
+                p.LogChanges(db, psb);
                 db.SubmitChanges();
-                ResetDb();
             }
         }
         public void UpdateNewMemberClassDate(string savedQuery, DateTime dt)
@@ -281,7 +305,6 @@ namespace CmsData
                 p.UpdateValue("NewMemberClassDate", dt);
                 p.LogChanges(db);
                 db.SubmitChanges();
-                ResetDb();
             }
         }
         public void AddMembersToOrg(string savedQuery, int OrgId)
@@ -292,7 +315,6 @@ namespace CmsData
             {
                 OrganizationMember.InsertOrgMembers(db, OrgId, p.PeopleId, MemberTypeCode.Member, dt, null, false);
                 db.SubmitChanges();
-                ResetDb();
             }
         }
     }

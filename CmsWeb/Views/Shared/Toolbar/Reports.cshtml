@@ -13,13 +13,10 @@
                 <li><a href='/Export2/Excel/AllFamily/@qid'>Family</a></li>
                 <li><a href='/Export2/Excel/IndividualPicture/@qid'>Pictures</a></li>
                 @* <li><a href='/Export/UpdatePeople/@qid' title="For Doing a Mass Update">Excel Update</a></li> *@
-                @if ((bool?)ViewBag.OrganizationContext == true)
+                @if ((bool?)ViewBag.OrgMemberContext == true)
                 { 
                     <li><a href='/Export2/Excel/Organization/@qid' title="Includes Org Member info">Member Export</a></li>
-                    if ((bool?)ViewBag.OrgMemberContext == true)
-                    { 
                     <li><a href='/Export2/Excel/Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
-                    } 
                     <li><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
                 }
                 <li><a href='/Export2/ExtraValues/@qid'>Extra Values</a></li>

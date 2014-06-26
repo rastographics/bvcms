@@ -4,6 +4,7 @@ using System.Linq;
 using CmsData;
 using CmsData.View;
 using OfficeOpenXml;
+using OfficeOpenXml.Table;
 
 namespace CmsWeb.Models
 {
@@ -36,6 +37,7 @@ namespace CmsWeb.Models
             ws.Cells["A2"].LoadFromCollection(q);
             var range = ws.Cells[1, 1, count + 1, cols.Length];
             var table = ws.Tables.Add(range, "Trips");
+            table.TableStyle = TableStyles.Light9;
             table.ShowFilter = false;
             for (var i = 0; i < cols.Length; i++)
             {

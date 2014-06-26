@@ -215,6 +215,7 @@ namespace CmsData
         VolunteerProcessedDateMonthsAgo,
         VisitNumber,
         WasMemberAsOf,
+        WasRecentMemberOf,
         WeddingDate,
         WidowedDate,
         WorkPhone,

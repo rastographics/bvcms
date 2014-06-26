@@ -9,7 +9,7 @@ CREATE TABLE [dbo].[Meetings]
 [NumVstMembers] [int] NOT NULL CONSTRAINT [DF__MEETINGS___NUM_V__5027A6DA] DEFAULT ((0)),
 [NumRepeatVst] [int] NOT NULL CONSTRAINT [DF__MEETINGS___NUM_R__511BCB13] DEFAULT ((0)),
 [NumNewVisit] [int] NOT NULL CONSTRAINT [DF__MEETINGS___NUM_N__520FEF4C] DEFAULT ((0)),
-[Location] [nvarchar] (40) NULL,
+[Location] [nvarchar] (200) NULL,
 [MeetingDate] [datetime] NULL,
 [GroupMeetingFlag] [bit] NOT NULL CONSTRAINT [DF__MEETINGS___GROUP__5AA5354D] DEFAULT ((0)),
 [Description] [nvarchar] (100) NULL,

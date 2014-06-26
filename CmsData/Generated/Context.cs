@@ -2117,6 +2117,17 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.CurrOrgMembers", IsComposable = true)]
+		public IQueryable< View.CurrOrgMember > CurrOrgMembers(
+            [Parameter(DbType="varchar")] string orgs
+            )
+		{
+			return this.CreateMethodCallQuery< View.CurrOrgMember>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgs
+                );
+		}
+
 		[Function(Name="dbo.FindPerson", IsComposable = true)]
 		public IQueryable< View.FindPerson > FindPerson(
             [Parameter(DbType="nvarchar")] string first,
@@ -2470,6 +2481,35 @@ namespace CmsData
                 orgid,
                 meetingdt,
                 NoCurrentMembers
+                );
+		}
+
+		[Function(Name="dbo.PeopleIdsFromOrgSearch", IsComposable = true)]
+		public IQueryable< View.PeopleIdsFromOrgSearch > PeopleIdsFromOrgSearch(
+            [Parameter(DbType="nvarchar")] string name,
+            [Parameter(DbType="int")] int? prog,
+            [Parameter(DbType="int")] int? div,
+            [Parameter(DbType="int")] int? type,
+            [Parameter(DbType="int")] int? campus,
+            [Parameter(DbType="int")] int? sched,
+            [Parameter(DbType="int")] int? status,
+            [Parameter(DbType="int")] int? onlinereg,
+            [Parameter(DbType="bit")] bool? mainfellowship,
+            [Parameter(DbType="bit")] bool? parentorg
+            )
+		{
+			return this.CreateMethodCallQuery< View.PeopleIdsFromOrgSearch>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                name,
+                prog,
+                div,
+                type,
+                campus,
+                sched,
+                status,
+                onlinereg,
+                mainfellowship,
+                parentorg
                 );
 		}
 

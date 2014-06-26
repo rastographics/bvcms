@@ -129,7 +129,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult ExportMembersExcel(OrgSearchModel m)
         {
-            return new OrgsMembersExcelResult(m);
+            return OrgsMembersExcelModel.Export(m);
         }
         private void SaveToSession(OrgSearchModel m)
         {
