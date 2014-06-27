@@ -15,64 +15,100 @@ namespace CmsData.Classes.Transnational
 			nvc.Add(FIELD_FUNCTION, VALUE_FUNCTION_ADD_CUSTOMER);
 		}
 
-		public void setACHName(string value)
+		public string ACHName
 		{
-			nvc.Add(FIELD_ACH_NAME, value);
+			set
+			{
+				nvc.Add(FIELD_ACH_NAME, value);
+			}
 		}
 
-		public void setACHAccount(string value)
+		public string ACHAccount
 		{
-			nvc.Add(FIELD_ACH_ACCOUNT, value);
+			set
+			{
+				nvc.Add(FIELD_ACH_ACCOUNT, value);
+			}
 		}
 
-		public void setACHRouting(string value)
+		public string ACHRouting
 		{
-			nvc.Add(FIELD_ACH_ROUTING, value);
+			set
+			{
+				nvc.Add(FIELD_ACH_ROUTING, value);
+			}
 		}
 
-		public void setFirstName(string value)
+		public string FirstName
 		{
-			nvc.Add(FIELD_FIRST_NAME, value);
+			set
+			{
+				nvc.Add(FIELD_FIRST_NAME, value);
+			}
 		}
 
-		public void setLastName(string value)
+		public string LastName
 		{
-			nvc.Add(FIELD_LAST_NAME, value);
+			set
+			{
+				nvc.Add(FIELD_LAST_NAME, value);
+			}
 		}
 
-		public void setAddress(string value)
+		public string Address
 		{
-			nvc.Add(FIELD_ADDRESS1, value);
+			set
+			{
+				nvc.Add(FIELD_ADDRESS1, value);
+			}
 		}
 
-		public void setCity(string value)
+		public string City
 		{
-			nvc.Add(FIELD_CITY, value);
+			set
+			{
+				nvc.Add(FIELD_CITY, value);
+			}
 		}
 
-		public void setState(string value)
+		public string State
 		{
-			nvc.Add(FIELD_STATE, value);
+			set
+			{
+				nvc.Add(FIELD_STATE, value);
+			}
 		}
 
-		public void setZip(string value)
+		public string Zip
 		{
-			nvc.Add(FIELD_ZIP, value);
+			set
+			{
+				nvc.Add(FIELD_ZIP, value);
+			}
 		}
 
-		public void setCountry(string value)
+		public string Country
 		{
-			nvc.Add(FIELD_COUNTRY, value);
+			set
+			{
+				nvc.Add(FIELD_COUNTRY, value);
+			}
 		}
 
-		public void setPhone(string value)
+		public string Phone
 		{
-			nvc.Add(FIELD_PHONE, value);
+			set
+			{
+				nvc.Add(FIELD_PHONE, value);
+			}
 		}
 
-		public void setEMail(string value)
+		public string EMail
 		{
-			nvc.Add(FIELD_EMAIL, value);
+			set
+			{
+				nvc.Add(FIELD_EMAIL, value);
+			}
 		}
 	}
 }

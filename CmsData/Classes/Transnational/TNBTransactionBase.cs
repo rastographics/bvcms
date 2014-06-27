@@ -9,12 +9,22 @@ namespace CmsData.Classes.Transnational
 {
 	class TNBTransactionBase
 	{
+		private const bool testing = true;
+
 		protected NameValueCollection nvc = new NameValueCollection();
 
 		protected void setDemoUserPass()
 		{
-			nvc.Add(FIELD_USERNAME, "demo");
-			nvc.Add(FIELD_PASSWORD, "password");
+			if (testing)
+			{
+				nvc.Add(FIELD_USERNAME, "demo");
+				nvc.Add(FIELD_PASSWORD, "password");
+			}
+			else
+			{
+				nvc.Add(FIELD_USERNAME, DbUtil.Db.Setting("TNBUsername", ""));
+				nvc.Add(FIELD_PASSWORD, DbUtil.Db.Setting("TNBPassword", ""));
+			}
 		}
 
 		public NameValueCollection getPostValues()

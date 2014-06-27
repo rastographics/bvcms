@@ -15,14 +15,20 @@ namespace CmsData.Classes.Transnational
 			nvc.Add(FIELD_TYPE, TYPE_REFUND);
 		}
 
-		public void setTransactionID(string value)
+		public string TransactionID
 		{
-			nvc.Add(FIELD_TRANSACTION_ID, value);
+			set
+			{
+				nvc.Add(FIELD_TRANSACTION_ID, value);
+			}
 		}
 
-		public void setAmount(string value)
+		public string Amount
 		{
-			nvc.Add(FIELD_AMOUNT, value);
+			set
+			{
+				nvc.Add(FIELD_AMOUNT, value);
+			}
 		}
 	}
 }

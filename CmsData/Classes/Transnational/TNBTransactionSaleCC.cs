@@ -15,79 +15,124 @@ namespace CmsData.Classes.Transnational
 			nvc.Add(FIELD_TYPE, TYPE_SALE);
 		}
 
-		public void setCCNumber(string value)
+		public string CCNumber
 		{
-			nvc.Add(FIELD_CC_NUMBER, value);
+			set
+			{
+				nvc.Add(FIELD_CC_NUMBER, value);
+			}
 		}
 
-		public void setCCExp(string value)
+		public string CCExp
 		{
-			nvc.Add(FIELD_CC_EXP, value);
+			set
+			{
+				nvc.Add(FIELD_CC_EXP, value);
+			}
 		}
 
-		public void setCCCVV(string value)
+		public string CCCVV
 		{
-			nvc.Add(FIELD_CC_CVV, value);
+			set
+			{
+				nvc.Add(FIELD_CC_CVV, value);
+			}
 		}
 
-		public void setAmount(string value)
+		public string Amount
 		{
-			nvc.Add(FIELD_AMOUNT, value);
+			set
+			{
+				nvc.Add(FIELD_AMOUNT, value);
+			}
 		}
 
-		public void setFirstName(string value)
+		public string FirstName
 		{
-			nvc.Add(FIELD_FIRST_NAME, value);
+			set
+			{
+				nvc.Add(FIELD_FIRST_NAME, value);
+			}
 		}
 
-		public void setLastName(string value)
+		public string LastName
 		{
-			nvc.Add(FIELD_LAST_NAME, value);
+			set
+			{
+				nvc.Add(FIELD_LAST_NAME, value);
+			}
 		}
 
-		public void setAddress(string value)
+		public string Address
 		{
-			nvc.Add(FIELD_ADDRESS1, value);
+			set
+			{
+				nvc.Add(FIELD_ADDRESS1, value);
+			}
 		}
 
-		public void setAddress2(string value)
+		public string Address2
 		{
-			nvc.Add(FIELD_ADDRESS2, value);
+			set
+			{
+				nvc.Add(FIELD_ADDRESS2, value);
+			}
 		}
 
-		public void setCity(string value)
+		public string City
 		{
-			nvc.Add(FIELD_CITY, value);
+			set
+			{
+				nvc.Add(FIELD_CITY, value);
+			}
 		}
 
-		public void setState(string value)
+		public string State
 		{
-			nvc.Add(FIELD_STATE, value);
+			set
+			{
+				nvc.Add(FIELD_STATE, value);
+			}
 		}
 
-		public void setZip(string value)
+		public string Zip
 		{
-			nvc.Add(FIELD_ZIP, value);
+			set
+			{
+				nvc.Add(FIELD_ZIP, value);
+			}
 		}
 
-		public void setCountry(string value)
+		public string Country
 		{
-			nvc.Add(FIELD_COUNTRY, value);
+			set
+			{
+				nvc.Add(FIELD_COUNTRY, value);
+			}
 		}
 
-		public void setPhone(string value)
+		public string Phone
 		{
-			nvc.Add(FIELD_PHONE, value);
+			set
+			{
+				nvc.Add(FIELD_PHONE, value);
+			}
 		}
 
-		public void setEMail(string value)
+		public string EMail
 		{
-			nvc.Add(FIELD_EMAIL, value);
+			set
+			{
+				nvc.Add(FIELD_EMAIL, value);
+			}
 		}
 
-		public void setIPAddress(string value)
+		public string IPAddress
 		{
-			nvc.Add(FIELD_IP, value);
+			set
+			{
+				nvc.Add(FIELD_IP, value);
+			}
 		}
 	}
 }
