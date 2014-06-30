@@ -13,7 +13,7 @@ namespace CmsData.Classes.Transnational
 
 		protected NameValueCollection nvc = new NameValueCollection();
 
-		protected void setDemoUserPass()
+		protected void setUserPass()
 		{
 			if (testing)
 			{

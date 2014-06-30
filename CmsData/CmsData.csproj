@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -222,7 +222,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dapper">
-      <HintPath>..\packages\Dapper.1.13\lib\net45\Dapper.dll</HintPath>
+      <HintPath>..\packages\Dapper.1.25\lib\net45\Dapper.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="DDay.iCal">
       <HintPath>..\packages\DDay.iCal.1.0.2.575\lib\DDay.iCal.dll</HintPath>
@@ -359,7 +360,6 @@
     <Compile Include="Classes\Transnational\TNBTransactionBase.cs" />
     <Compile Include="Classes\Transnational\TNBHelper.cs" />
     <Compile Include="Classes\Transnational\TNBResponse.cs" />
-    <Compile Include="Classes\Transnational\TNBTransaction.cs" />
     <Compile Include="Classes\Transnational\TNBTransactionCapture.cs" />
     <Compile Include="Classes\Transnational\TNBTransactionCreditACH.cs" />
     <Compile Include="Classes\Transnational\TNBTransactionCreditCC.cs" />
