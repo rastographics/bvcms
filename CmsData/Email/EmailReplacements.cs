@@ -179,7 +179,7 @@ namespace CmsData
 
                 case "{paylink}":
                     if (pi != null && pi.PayLink.HasValue())
-                        return "<a href=\"{0}\">payment link</a>".Fmt(pi.PayLink);
+                        return "<a href=\"{0}\">Click this link to make a payment and view your balance.</a>".Fmt(pi.PayLink);
                     break;
 
                 case "{peopleid}":
