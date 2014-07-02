@@ -15,8 +15,8 @@
     $("a.sortable").click(function (ev) {
         ev.preventDefault();
         var newsort = $(this).text();
-        var oldsort = $("#Sort").val();
-        $("#Sort").val(newsort);
+        var oldsort = $("#Pager_Sort").val();
+        $("#Pager_Sort").val(newsort);
         var dir = $("#Pager_Direction").val();
         if (oldsort == newsort && dir == 'asc')
             $("#Pager_Direction").val('desc');
