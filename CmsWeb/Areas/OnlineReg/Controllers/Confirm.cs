@@ -96,7 +96,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (pf.UseBootstrap)
                 {
                     var r = AddressVerify.LookupAddress(pf.Address, "", "", "", pf.Zip);
-                    if (r.Line1 != "error")
+                    var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == pf.Zip.Zip5());
+                    if (z != null && !z.State.HasValue())
+                    {
+                        pf.State = r.State = z.State;
+                        pf.City = r.City = z.City;
+                    }
+                    if (r.Line1 != "error" && r.Line1.HasValue())
                     {
                         if (r.found == false)
                         {
