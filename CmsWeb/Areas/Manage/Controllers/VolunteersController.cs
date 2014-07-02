@@ -89,6 +89,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             qb.Save(DbUtil.Db);
 
 			var meeting = DbUtil.Db.Meetings.Single(m => m.MeetingId == id);
+            DbUtil.Db.CurrentOrgId = meeting.OrganizationId;
 			var subject = "{0} Reminder".Fmt(meeting.Organization.OrganizationName);
 			var body =
 @"<blockquote><table>

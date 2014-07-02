@@ -47,9 +47,8 @@ namespace CmsData
             this.from = from;
             if (text == null)
                 text = "(no content)";
-            stringlist = Regex.Split(text,
-                @"({{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8})".Fmt(RegisterLinkRe, RegisterTagRe, RsvpLinkRe, SendLinkRe, SupportLinkRe, VolReqLinkRe, VolReqLinkRe, VolSubLinkRe, VoteLinkRe),
-                RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            string pattern = @"({{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8})".Fmt(RegisterLinkRe, RegisterTagRe, RsvpLinkRe, SendLinkRe, SupportLinkRe, VolReqLinkRe, VolReqLinkRe, VolSubLinkRe, VoteLinkRe);
+            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
 
         public List<MailAddress> ListAddresses { get; set; }
