@@ -262,6 +262,9 @@ namespace CmsWeb.Areas.Manage.Controllers
                         case "PhoneNumber":
                             o.PhoneNumber = val;
                             break;
+                        case "Description":
+                            o.Description = val;
+                            break;
                         case "RollSheetVisitorWks":
                             o.RollSheetVisitorWks = val == "0" ? (int?) null : val.ToInt2();
                             break;
