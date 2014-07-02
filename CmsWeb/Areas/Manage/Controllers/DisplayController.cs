@@ -378,6 +378,14 @@ namespace CmsWeb.Areas.Manage.Controllers
                     r.Cells.Add(new HtmlTableCell() { InnerText = rd[i].ToString() });
                 t.Rows.Add(r);
             }
+            var tc = new HtmlTableCell
+            {
+                ColSpan = rd.FieldCount, 
+                InnerText = "Count = {0} rows".Fmt(t.Rows.Count - 1)
+            };
+            var tr = new HtmlTableRow();
+            tr.Cells.Add(tc);
+            t.Rows.Add(tr);
             return t;
         }
         public override void ExecuteResult(ControllerContext context)

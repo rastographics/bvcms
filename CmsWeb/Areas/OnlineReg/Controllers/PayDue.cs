@@ -128,11 +128,14 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
             {
                 if (p0 == null)
                     Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(Db.StaffEmailForOrg(org.OrganizationId)),
-                        "Payment confirmation", "Thank you for paying {0:c} for {1}.<br/>Your balance is {2:c}<br/>{3}".Fmt(ti.Amt, ti.Description, ti.Amtdue, names), Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), 0, pid);
+                        "Payment confirmation", "Thank you for paying {0:c} for {1}.<br/>Your balance is {2:c}<br/>{3}".Fmt(
+                                ti.Amt, ti.Description, ti.Amtdue, names), 
+                        Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), 0, pid);
                 else
                 {
-                    Db.Email(Db.StaffEmailForOrg(org.OrganizationId),
-                        p0, Util.ToMailAddressList(ti.Emails), "Payment confirmation", "Thank you for paying {0:c} for {1}.<br/>Your balance is {2:c}<br/>{3}".Fmt(ti.Amt, ti.Description, ti.Amtdue, names), false);
+                    Db.Email(Db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails), 
+                        "Payment confirmation", "Thank you for paying {0:c} for {1}.<br/>Your balance is {2:c}<br/>{3}".Fmt(
+                                ti.Amt, ti.Description, ti.Amtdue, names), false);
                     Db.Email(p0.FromEmail,
                         Db.PeopleFromPidString(org.NotifyIds),
                         "payment received for " + ti.Description,

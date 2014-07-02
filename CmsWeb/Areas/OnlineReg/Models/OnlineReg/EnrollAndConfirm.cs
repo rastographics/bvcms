@@ -368,7 +368,7 @@ AmountDue: {4:C}<br/>
                 {
                     PeopleId = p.PeopleId.Value,
                     Amt = p.TotalAmount(),
-                    OrgId = Orgid,
+                    OrgId = p.orgid,
                 });
             }
 
@@ -451,6 +451,7 @@ AmountDue: {4:C}<br/>
                 message = message.Replace("{paid}", p.TotalAmount().ToString("c"));
                 message = message.Replace("{sessiontotal}", amtpaid.ToString("c"));
                 message = message.Replace("{participants}", details);
+                Db.CurrentOrgId = p.orgid;
 
                 // send confirmations
                 if (emailSubject != "DO NOT SEND")
