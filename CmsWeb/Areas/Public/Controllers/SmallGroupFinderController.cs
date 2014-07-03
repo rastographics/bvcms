@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using CmsWeb.Areas.Public.Models;
 using System.Linq;
 using CmsData;
+using System.Web;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -28,15 +29,35 @@ namespace CmsWeb.Areas.Public.Controllers
 			}
 			else
 			{
-				Dictionary<string, string> post = new Dictionary<string, string>();
+				var search = new Dictionary<string, SearchItem>();
 
-				foreach (string item in Request.Form)
+				var encoded = Request.Form.ToString();
+
+				foreach (string item in encoded.Split('&'))
 				{
-					if (item.StartsWith("SGF:"))
-						post.Add(item, Request[item]);
+					if (item.StartsWith("SGF"))
+					{
+						var parts = item.Split('=');
+
+						if (parts.Count() == 2)
+						{
+							parts[0] = HttpUtility.UrlDecode(parts[0]);
+							parts[1] = HttpUtility.UrlDecode(parts[1]);
+
+							if (search.ContainsKey(parts[0]))
+							{
+								search[parts[0]].values.Add(parts[1]);
+								search[parts[0]].parse = true;
+							}
+							else
+							{
+								search.Add(parts[0], new SearchItem() { name = parts[0], values = { parts[1] } });
+							}
+						}
+					}
 				}
 
-				sgfm.setSearch(post);
+				sgfm.setSearch(search);
 			}
 
 			if (sgfm.hasShell())
