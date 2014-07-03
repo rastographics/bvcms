@@ -10,14 +10,17 @@ namespace CmsData.Classes.Transnational
 	{
 		public TNBTransactionUpdate()
 		{
-			setDemoUserPass();
+			setUserPass();
 
 			nvc.Add(FIELD_TYPE, TYPE_UPDATE);
 		}
 
-		public void setTransactionID(string value)
+		public string TransactionID
 		{
-			nvc.Add(FIELD_TRANSACTION_ID, value);
+			set
+			{
+				nvc.Add(FIELD_TRANSACTION_ID, value);
+			}
 		}
 	}
 }

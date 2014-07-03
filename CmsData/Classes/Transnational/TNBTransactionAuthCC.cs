@@ -10,7 +10,7 @@ namespace CmsData.Classes.Transnational
 	{
 		public TNBTransactionAuthCC()
 		{
-			setDemoUserPass();
+			setUserPass();
 
 			nvc.Add(FIELD_TYPE, TYPE_AUTH);
 		}

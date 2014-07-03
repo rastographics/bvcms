@@ -13,9 +13,7 @@ namespace CmsData.Classes.Transnational
 
 		public static void test()
 		{
-			TNBVaultAddCC addCC = new TNBVaultAddCC();
-			addCC.setCCExp("10/10");
-			addCC.setCCNumber("4111111111111111");
+			TNBVaultAddCC addCC = new TNBVaultAddCC() { CCExp = "10/10", CCNumber = "4111111111111111" };
 
 			TNBResponse tr = VaultTransaction(addCC);
 

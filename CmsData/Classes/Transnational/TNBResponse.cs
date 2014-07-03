@@ -56,7 +56,7 @@ namespace CmsData.Classes.Transnational
 			}
 		}
 
-		public TransactionResponse getTransactionRespose()
+		public TransactionResponse getTransactionResponse()
 		{
 			return new TransactionResponse
 			{

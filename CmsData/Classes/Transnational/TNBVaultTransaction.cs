@@ -7,14 +7,20 @@
 			setUserPass();
 		}
 
-		public void setVaultID(int value)
+		public string VaultID
 		{
-			nvc.Add(FIELD_VAULT_ID, value.ToString());
+			set
+			{
+				nvc.Add(FIELD_VAULT_ID, value.ToString());
+			}
 		}
 
-		public void setAmount(string value)
+		public string Amount
 		{
-			nvc.Add(FIELD_AMOUNT, value);
+			set
+			{
+				nvc.Add(FIELD_AMOUNT, value);
+			}
 		}
 	}
 }
