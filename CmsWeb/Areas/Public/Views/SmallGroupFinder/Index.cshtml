@@ -67,6 +67,9 @@
         .submit {
             padding-top:10px;
         }
+        select {
+          width: 12em;
+        }
     </style>
 </head>
 <body>
@@ -97,7 +100,7 @@
                                             <select name="@f.name">
                                             @foreach( var item in fi )
                                             {
-                                                <option @(Model.IsSelectedValue( f.name, item.value ) ? "selected" : "")>@item.value</option>
+                                                <option @(Model.IsSelectedValue( f.name, item.value ) ? "selected" : "") value="@item.value">@item.value</option>
                                             }
                                             </select>
                                         </td>
