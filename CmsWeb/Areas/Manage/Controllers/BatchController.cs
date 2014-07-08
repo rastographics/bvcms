@@ -270,8 +270,12 @@ namespace CmsWeb.Areas.Manage.Controllers
                             break;
 
                         default:
-                            if (val.HasValue())
-                                o.AddEditExtraData(name, val);
+                            if(name.EndsWith(".ev"))
+                                if (val.HasValue())
+                                {
+                                    var a = name.Substring(0, name.Length - 3);
+                                    o.AddEditExtraData(name, val);
+                                }
                             break;
                     }
                     DbUtil.Db.SubmitChanges();

@@ -389,7 +389,7 @@ namespace CmsData
                     select p;
                 return q;
             }
-            return CMSRoleProvider.provider.GetAdmins();
+            return null;
         }
         private User _currentuser;
         public User CurrentUser

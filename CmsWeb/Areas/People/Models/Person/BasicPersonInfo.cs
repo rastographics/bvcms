@@ -237,11 +237,13 @@ namespace CmsWeb.Areas.People.Models
                 changes.AddRange(fsb);
                 if (changes.Count > 0)
                 {
-                    DbUtil.Db.EmailRedacted(p.FromEmail, DbUtil.Db.GetNewPeopleManagers(),
-                        "Basic Person Info Changed on " + Util.Host,
-                        "{0} changed the following information for {1} ({2}):<br />\n"
-                            .Fmt(Util.UserName, FirstName + " " + LastName, PeopleId)
-                        + ChangeTable(changes));
+                    var np = DbUtil.Db.GetNewPeopleManagers();
+                    if(np != null)
+                        DbUtil.Db.EmailRedacted(p.FromEmail, np,
+                            "Basic Person Info Changed on " + Util.Host,
+                            "{0} changed the following information for {1} ({2}):<br />\n"
+                                .Fmt(Util.UserName, FirstName + " " + LastName, PeopleId)
+                            + ChangeTable(changes));
                 }
             }
         }
