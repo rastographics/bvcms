@@ -9,101 +9,103 @@ using CmsData;
 
 namespace CmsWeb.Models
 {
-    public class FindResult : ActionResult
-    {
-        int fid;
-        string building;
-        string querybit;
+	public class FindResult : ActionResult
+	{
+		int fid;
+		string building;
+		string querybit;
 
 		public FindResult(int fid, string building, string querybit)
-        {
-            this.fid = fid;
-            this.building = building;
-            this.querybit = querybit;
-        }
-        public override void ExecuteResult(ControllerContext context)
-        {
-            context.HttpContext.Response.ContentType = "text/xml";
-            var settings = new XmlWriterSettings();
-            settings.Encoding = new System.Text.UTF8Encoding(false);
-            settings.Indent = true;
+		{
+			this.fid = fid;
+			this.building = building;
+			this.querybit = querybit;
+		}
+		public override void ExecuteResult(ControllerContext context)
+		{
+			context.HttpContext.Response.ContentType = "text/xml";
+			var settings = new XmlWriterSettings();
+			settings.Encoding = new System.Text.UTF8Encoding(false);
+			settings.Indent = true;
 
-            using (var w = XmlWriter.Create(context.HttpContext.Response.OutputStream, settings))
-            {
-                w.WriteStartElement("Family");
-                var q =
-                    from p in DbUtil.Db.People
-                    let notes = p.PeopleExtras.SingleOrDefault(ee => ee.Field == building + "-notes").Data
-                    let accessflag = p.PeopleExtras.SingleOrDefault(ea => ea.Field == building + "-access").StrValue
-                    where p.FamilyId == fid
-                    where p.DeceasedDate == null
-                    orderby p.PositionInFamilyId, p.PositionInFamilyId == 10 ? p.Gender.Code : "U", p.Age
-                    select new
-                    {
-                        Id = p.PeopleId,
-                        Position = p.PositionInFamilyId,
-                        First = p.FirstName,
-                        Last = p.LastName,
-                        dob = p.DOB,
-                        Age = p.Age ?? 0,
-                        Gender = p.Gender.Code,
+			using (var w = XmlWriter.Create(context.HttpContext.Response.OutputStream, settings))
+			{
+				w.WriteStartElement("Family");
 
-                        goesby = p.NickName,
-                        email = p.EmailAddress,
-                        addr = p.Family.AddressLineOne,
-                        zip = p.Family.ZipCode,
-                        home = p.Family.HomePhone,
-                        cell = p.CellPhone,
-                        marital = p.MaritalStatusId,
-                        gender = p.GenderId,
-                        grade = p.Grade,
-                        HasPicture = p.PictureId != null,
-                        MemberStatus = p.MemberStatus.Code,
-                        MemberStatusId = p.MemberStatus.Id.ToString(),
-                        notes,
-                        access = accessflag == "false" ? "restricted" : p.Tags.Any( t => t.Tag.Name == querybit ).ToString().ToLower()
-                    };
+				var people = from p in DbUtil.Db.People
+								 where p.FamilyId == fid
+								 where p.DeceasedDate == null
+								 orderby p.PositionInFamilyId, p.PositionInFamilyId == 10 ? p.Gender.Code : "U", p.Age
+								 select p;
 
-                w.WriteAttributeString("familyid", fid.ToString());
+				w.WriteAttributeString("familyid", fid.ToString());
 
-                foreach (var c in q)
-                {
-                    w.WriteStartElement("member");
-                    w.WriteAttributeString("id", c.Id.ToString());
-                    w.WriteAttributeString("first", c.First);
-                    w.WriteAttributeString("last", c.Last);
-                    w.WriteAttributeString("gender", c.gender.ToString());
-                    w.WriteAttributeString("age", c.Age.ToString());
+				foreach (var c in people)
+				{
+					var allowAccess = "false";
+					var accessExtraValue = c.PeopleExtras.SingleOrDefault(ea => ea.Field == building + "-access");
+					var accessFlag = accessExtraValue != null ? accessExtraValue.StrValue : "";
 
-                    w.WriteAttributeString("email", c.email);
-                    w.WriteAttributeString("dob", c.dob);
-                    w.WriteAttributeString("goesby", c.goesby);
-                    w.WriteAttributeString("addr", c.addr);
-                    w.WriteAttributeString("zip", c.zip);
-                    w.WriteAttributeString("home", c.home);
-                    w.WriteAttributeString("cell", c.cell);
-                    w.WriteAttributeString("marital", c.marital.ToString());
-                    w.WriteAttributeString("grade", c.grade.ToString());
-                    w.WriteAttributeString("haspicture", c.HasPicture.ToString());
-                    w.WriteAttributeString("memberstatus", c.MemberStatus);
-                    w.WriteAttributeString("memberstatusid", c.MemberStatusId);
-                    w.WriteAttributeString("access", c.access);
+					if (accessFlag == "false")
+					{
+						allowAccess = "restricted";
+					}
+					else if (c.Tags.Any(t => t.Tag.Name == querybit) == false)
+					{
+						allowAccess = "false";
+					}
+					else
+					{
+						var lastCheckInTime = c.CheckInTimes.OrderByDescending(la => la.CheckInTimeX).FirstOrDefault();
 
-                    int visits = (from e in DbUtil.Db.CheckInTimes
-                                  where e.PeopleId == c.Id
-                                  where e.Location == building
-                                  where e.AccessTypeID == 2
-                                  select e).Count();
+						if (lastCheckInTime != null && lastCheckInTime.CheckInTimeX.Value.AddHours(5) > DateTime.Now)
+						{
+							allowAccess = "timer";
+						}
+						else
+						{
+							allowAccess = "true";
+						}
+					}
 
-                    w.WriteAttributeString("visitcount", visits.ToString());
+					w.WriteStartElement("member");
+					w.WriteAttributeString("id", c.PeopleId.ToString());
+					w.WriteAttributeString("first", c.FirstName);
+					w.WriteAttributeString("last", c.LastName);
+					w.WriteAttributeString("gender", c.Gender.ToString());
+					w.WriteAttributeString("age", c.Age.ToString());
 
-                    if (c.notes.HasValue())
-                        w.WriteString(c.notes);
+					w.WriteAttributeString("email", c.EmailAddress);
+					w.WriteAttributeString("dob", c.DOB);
+					w.WriteAttributeString("goesby", c.NickName);
+					w.WriteAttributeString("addr", c.Family.AddressLineOne);
+					w.WriteAttributeString("zip", c.Family.ZipCode);
+					w.WriteAttributeString("home", c.Family.HomePhone);
+					w.WriteAttributeString("cell", c.CellPhone);
+					w.WriteAttributeString("marital", c.MaritalStatusId.ToString());
+					w.WriteAttributeString("grade", c.Grade.ToString());
+					w.WriteAttributeString("haspicture", (c.PictureId != null).ToString());
+					w.WriteAttributeString("memberstatus", c.MemberStatus.Code);
+					w.WriteAttributeString("memberstatusid", c.MemberStatus.Id.ToString());
+					w.WriteAttributeString("access", allowAccess);
 
-                    w.WriteEndElement();
-                }
-                w.WriteEndElement();
-            }
-        }
-    }
+					int visits = (from e in DbUtil.Db.CheckInTimes
+									  where e.PeopleId == c.PeopleId
+									  where e.Location == building
+									  where e.AccessTypeID == 2
+									  select e).Count();
+
+					w.WriteAttributeString("visitcount", visits.ToString());
+
+					var notes = c.PeopleExtras.SingleOrDefault(ee => ee.Field == building + "-notes");
+
+					if (notes != null && notes.Data.HasValue())
+						w.WriteString(notes.Data);
+
+					w.WriteEndElement();
+				}
+				w.WriteEndElement();
+			}
+		}
+	}
 }

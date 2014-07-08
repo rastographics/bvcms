@@ -87,6 +87,29 @@ namespace CmsWeb.Models
 
 				foreach (var c in q)
 				{
+					var parents = "";
+
+					if (c.Position == 30)
+					{
+						var child = (from e in DbUtil.Db.People
+										 where e.PeopleId == c.Id
+										 select e).SingleOrDefault();
+
+						if (child.Family.HeadOfHouseholdId != null)
+						{
+							parents = child.Family.HeadOfHousehold.FirstName;
+
+							if (child.Family.HeadOfHouseholdSpouseId != null)
+							{
+								parents += " & " + child.Family.HeadOfHouseholdSpouse.FirstName;
+							}
+						}
+						else if (child.Family.HeadOfHouseholdSpouseId != null)
+						{
+							parents = child.Family.HeadOfHouseholdSpouse.FirstName;
+						}
+					}
+
 					double hoursBeforeClassStarts = 0;
 					if (c.Hour.HasValue)
 					{
@@ -138,6 +161,8 @@ namespace CmsWeb.Models
 					x.Attr("emphone", c.Emphone);
 					x.Attr("activeother", c.Activeother.ToString());
 					x.Attr("haspicture", c.HasPicture.ToString());
+
+					x.Attr("parents", parents);
 
 					x.End();
 				}
