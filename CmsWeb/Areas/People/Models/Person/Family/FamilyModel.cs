@@ -59,6 +59,7 @@ namespace CmsWeb.Areas.People.Models
                             m.FamilyPosition.Description,
                          SpouseIndicator = m.PeopleId == Person.SpouseId ? "*" : "&nbsp;",
                          Email = m.EmailAddress,
+                         isDeceased = m.Deceased,
                          MemberStatus = m.MemberStatus.Description
                      };
             var q3 = q2.ToList();

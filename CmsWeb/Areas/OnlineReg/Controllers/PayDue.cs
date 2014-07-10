@@ -83,21 +83,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     var om = Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == ti.OrgId && m.PeopleId == pi.PeopleId);
                     if (om == null)
                         continue;
+                    DbUtil.Db.SubmitChanges();
                     var pay = amt;
                     if (org.IsMissionTrip == true)
-                    {
                         Db.ExecuteCommand(@"
 INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created ) VALUES  ( {0}, {1}, {1}, {2}, {3} )",
                              org.OrganizationId, p.PeopleId, pay, DateTime.Now);
-                    }
                     else
-                    {
-                        var due = om.Amount - om.TotalPaid(Db);
-                        if (pay > due)
-                            pay = due;
-                        //om.AmountPaid += pay;
                         ti.Amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
-                    }
 
                     var sb = new StringBuilder();
                     sb.AppendFormat("{0:g} ----------\n", Util.Now);

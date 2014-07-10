@@ -1,4 +1,5 @@
 ﻿@using CmsWeb.Areas.People.Models
+@using RestSharp.Extensions
 @model FamilyModel
 <div id="family-div">
     <div class="sidebar_title group">
@@ -21,8 +22,9 @@
         <ul id="family_members" class="nav nav-stacked nav-tabs">
             @foreach (var m in Model.ViewList())
             {
-                var active = m.Id == Model.Person.PeopleId ? "class=active" : "";
-                <li @active>
+                var active = m.Id == Model.Person.PeopleId ? "active" : "";
+                var ifdeceased = !active.HasValue() && m.isDeceased ? "alert alert-danger" : "";
+                <li class="@active @ifdeceased">
                     <a href="/Person2/@m.Id">
                         <div class="headshot" style="background-image:url(@m.Pictures.ThumbUrl);"></div>
                         <span class="name">@m.Name @Html.Raw(m.SpouseIndicator)</span>
