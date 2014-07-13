@@ -303,10 +303,13 @@ namespace CmsData
             if (org == null)
                 return "?";
 
-            switch (type)
+            switch (type.ToLower())
             {
                 case "location":
                     return org.Location;
+                case "pendinglocation":
+                case "pendingloc":
+                    return org.PendingLoc;
                 case "orgname":
                 case "name":
                     return org.OrganizationName;
