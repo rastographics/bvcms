@@ -15,9 +15,12 @@ namespace CmsData.Classes.Transnational
 			nvc.Add( FIELD_FUNCTION, VALUE_FUNCTION_DELETE_CUSTOMER );
 		}
 
-		public void setVaultID(string value)
+		public string VaultID
 		{
-			nvc.Add(FIELD_VAULT_ID, value);
+			set
+			{
+				nvc.Add(FIELD_VAULT_ID, value);
+			}
 		}
 	}
 }

@@ -9,28 +9,23 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult Index()
         {
             var m = new PromotionModel();
-            UpdateModel(m);
             return View(m);
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult AssignPending()
+        [HttpPost]
+        public ActionResult AssignPending(PromotionModel m)
         {
-            var m = new PromotionModel();
-            UpdateModel(m);
             m.AssignPending();
             return RedirectToAction("Index");
         }
-        public ActionResult List()
+        [HttpPost]
+        public ActionResult List(PromotionModel m)
         {
-            var m = new PromotionModel();
-            UpdateModel(m);
-            return PartialView("List", m);
+            return View("List", m);
         }
-        public ActionResult Export()
+        [HttpPost]
+        public ActionResult Export(PromotionModel m)
         {
-            var m = new PromotionModel();
-            UpdateModel(m);
             return new ExcelResult(m.Export(), "promotion.xls");
         }
     }

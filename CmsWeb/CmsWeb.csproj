@@ -809,6 +809,7 @@
     <Content Include="Scripts\js\ion.sound.min.js" />
     <Content Include="Scripts\js\MyDataSupport.js" />
     <Content Include="Scripts\Email\EmailSupporter.js" />
+    <Content Include="Scripts\js\Promotion.js" />
     <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
     <Content Include="Scripts\js\TestScript.js" />

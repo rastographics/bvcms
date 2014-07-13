@@ -341,10 +341,12 @@ namespace CmsWeb.Areas.People.Models
                         sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
                     foreach (var c in fsb)
                         sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
-                    DbUtil.Db.EmailRedacted(p.FromEmail, DbUtil.Db.GetNewPeopleManagers(),
-                        "Address Info Changed",
-                        "{0} changed the following information:<br />\n<table>{1}</table>"
-                            .Fmt(Util.UserName, sb));
+                    var np = DbUtil.Db.GetNewPeopleManagers();
+                    if(np != null)
+                        DbUtil.Db.EmailRedacted(p.FromEmail, np,
+                            "Address Info Changed",
+                            "{0} changed the following information:<br />\n<table>{1}</table>"
+                                .Fmt(Util.UserName, sb));
                 }
         }
 

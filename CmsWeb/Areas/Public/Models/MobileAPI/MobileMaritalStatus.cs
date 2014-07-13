@@ -10,14 +10,5 @@ namespace CmsWeb.MobileAPI
 		public int id = 0;
 		public string code = "";
 		public string description = "";
-
-		public MobileMaritalStatus populate(CmsData.MaritalStatus status)
-		{
-			id = status.Id;
-			code = status.Code;
-			description = status.Description;
-			
-			return this;
-		}
 	}
 }

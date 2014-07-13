@@ -10,13 +10,5 @@ namespace CmsWeb.MobileAPI
 	{
 		public int id;
 		public string name;
-
-		public MobileFund populate(ContributionFund cf)
-		{
-			id = cf.FundId;
-			name = cf.FundName;
-
-			return this;
-		}
 	}
 }

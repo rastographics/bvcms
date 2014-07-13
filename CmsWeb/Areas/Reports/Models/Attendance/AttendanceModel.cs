@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.Reports.Models
             var q = from a in DbUtil.Db.Attends
                     where a.OrganizationId == orgid
                     where a.PeopleId == pid
-                    where a.MeetingDate > start && a.MeetingDate <= end
+                    where a.MeetingDate >= start && a.MeetingDate <= end
                     orderby a.MeetingDate.Date descending
                     select new
                     {

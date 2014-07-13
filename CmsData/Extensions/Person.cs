@@ -577,14 +577,18 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (SendNotices)
             {
                 if (Util.UserPeopleId.HasValue
-                        && Util.UserPeopleId.Value != Db.NewPeopleManagerId
-                        && HttpContext.Current.User.IsInRole("Access")
-                        && !HttpContext.Current.User.IsInRole("OrgMembersOnly")
-                        && !HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
+                    && Util.UserPeopleId.Value != Db.NewPeopleManagerId
+                    && HttpContext.Current.User.IsInRole("Access")
+                    && !HttpContext.Current.User.IsInRole("OrgMembersOnly")
+                    && !HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
                     Task.AddNewPerson(Db, p.PeopleId);
                 else
-                    Db.Email(Util.SysFromEmail, Db.GetNewPeopleManagers(),
+                {
+                    var np = Db.GetNewPeopleManagers();
+                    if(np != null)
+                        Db.Email(Util.SysFromEmail, np,
                             "Just Added Person on " + Db.Host, "{0} ({1})".Fmt(p.Name, p.PeopleId));
+                }
             }
             return p;
         }

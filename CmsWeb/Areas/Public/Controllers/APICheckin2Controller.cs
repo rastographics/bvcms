@@ -245,10 +245,12 @@ namespace CmsWeb.Areas.Public.Controllers
                     sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
                 foreach (var c in fsb)
                     sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
-                DbUtil.Db.EmailRedacted(p.FromEmail, DbUtil.Db.GetNewPeopleManagers(),
-                    "Basic Person Info Changed during checkin on " + Util.Host,
-                    "{0} changed the following information for {1} ({2}):<br />\n<table>{3}</table>"
-                    .Fmt(Util.UserName, p.PreferredName, p.LastName, sb.ToString()));
+                var np = DbUtil.Db.GetNewPeopleManagers();
+                if(np != null)
+                    DbUtil.Db.EmailRedacted(p.FromEmail, np,
+                        "Basic Person Info Changed during checkin on " + Util.Host,
+                        "{0} changed the following information for {1} ({2}):<br />\n<table>{3}</table>"
+                        .Fmt(Util.UserName, p.PreferredName, p.LastName, sb.ToString()));
             }
         }
         private void UpdateField(List<ChangeDetail> fsb, Family f, string prop, string value)

@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Public.Models
 		public const string SHOW_ALL = "-- All --";
 
 		SmallGroupFinder sgf;
-		Dictionary<string, string> search;
+		Dictionary<string, SearchItem> search;
 		List<int> divList = new List<int>();
 
 		string sTemplate;
@@ -64,18 +64,16 @@ namespace CmsWeb.Areas.Public.Models
 			{
 				foreach (var entry in search)
 				{
-					if (entry.Value.Contains(","))
+					if (entry.Value.parse)
 					{
-						var valueArray = entry.Value.Split(',');
-
-						foreach (var value in valueArray)
+						foreach (var value in entry.Value.values)
 						{
 							sShell = sShell.Replace("[" + entry.Key + ":" + value + "]", "checked=\"checked\"");
 						}
 					}
 					else
 					{
-						sShell = sShell.Replace("[" + entry.Key + ":" + entry.Value + "]", "checked=\"checked\"");
+						sShell = sShell.Replace("[" + entry.Key + ":" + entry.Value.values[0] + "]", "checked=\"checked\"");
 					}
 				}
 
@@ -85,11 +83,12 @@ namespace CmsWeb.Areas.Public.Models
 			return sShell;
 		}
 
-		public void setSearch(Dictionary<string, string> newserach)
+		public void setSearch(Dictionary<string, SearchItem> newserach)
 		{
 			search = newserach;
 		}
 
+		/*
 		public void setDefaultSearch()
 		{
 			search = new Dictionary<string, string>();
@@ -100,6 +99,7 @@ namespace CmsWeb.Areas.Public.Models
 					search.Add(item.name, item.lockedvalue);
 			}
 		}
+		*/
 
 		public bool IsSelectedValue(string key, string value)
 		{
@@ -107,7 +107,7 @@ namespace CmsWeb.Areas.Public.Models
 
 			if (search.ContainsKey(key))
 			{
-				if (search[key] == value)
+				if (search[key].values.Contains(value))
 					return true;
 				else
 					return false;
@@ -204,20 +204,18 @@ namespace CmsWeb.Areas.Public.Models
 
 			foreach (var filter in search)
 			{
-				if (filter.Value == SHOW_ALL) continue;
+				if (filter.Value.values.Contains(SHOW_ALL)) continue;
 
-				if (filter.Value.Contains(","))
+				if (filter.Value.parse)
 				{
-					var valueArray = filter.Value.Split(',');
-
 					orgs = from g in orgs
-							 where g.OrganizationExtras.Any(oe => oe.Field == filter.Key && valueArray.Contains(oe.Data))
+							 where g.OrganizationExtras.Any(oe => oe.Field == filter.Key && filter.Value.values.Contains(oe.Data))
 							 select g;
 				}
 				else
 				{
 					orgs = from g in orgs
-							 where g.OrganizationExtras.Any(oe => oe.Field == filter.Key && oe.Data == filter.Value)
+							 where g.OrganizationExtras.Any(oe => oe.Field == filter.Key && oe.Data == filter.Value.values[0])
 							 select g;
 				}
 			}
@@ -338,5 +336,13 @@ namespace CmsWeb.Areas.Public.Models
 					values[extra.Field] = extra.Data;
 			}
 		}
+	}
+
+	public class SearchItem
+	{
+		public string name = "";
+		public List<string> values = new List<string>();
+
+		public bool parse = false;
 	}
 }
