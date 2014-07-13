@@ -320,7 +320,7 @@ Please call the church to resolve this before we can complete your registration.
         {
             if (Parent.SupportMissionTrip)
             {
-                OtherOK = true;
+                OtherOK = modelState.IsValid;
                 return;
             }
             if (RecordFamilyAttendance())

@@ -21,7 +21,8 @@
 }
     <tr>
         <td>Your gift to support @name</td>
-        <td>@Html.TextBoxFor(m => m.MissionTripSupportGoer)</td>
+        <td>@Html.TextBoxFor(m => m.MissionTripSupportGoer)
+            <div>@Html.ValidationMessageFor(m => m.MissionTripSupportGoer)</div>
     </tr>
     <tr>
         <td>If you don't want @name to be notified of your gift, check this box.</td>
@@ -32,6 +33,7 @@
         <td>
             @Html.TextBoxFor(m => m.MissionTripSupportGeneral)<br />
             (note: these will show as two separate contributions)
+            <div>@Html.ValidationMessageFor(m => m.MissionTripSupportGeneral)</div>
     </td>
     </tr>
     <tr>
