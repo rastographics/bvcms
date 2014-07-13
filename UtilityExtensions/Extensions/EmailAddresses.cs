@@ -135,8 +135,8 @@ namespace UtilityExtensions
         {
             if (!email.HasValue())
                 return false;
-            var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,4}\b\b(?!\w)$", RegexOptions.IgnoreCase);
-            var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,4}$", RegexOptions.IgnoreCase);
+            var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,5}\b\b(?!\w)$", RegexOptions.IgnoreCase);
+            var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,5}$", RegexOptions.IgnoreCase);
             var a = email.SplitStr(",;");
             foreach (var m in a)
             {
