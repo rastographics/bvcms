@@ -156,6 +156,9 @@ namespace CmsData
                 case "{fromemail}":
                     return from.Address;
 
+                case "{homephone}":
+                    return p.HomePhone.HasValue() ? p.HomePhone.FmtFone() : "no homephone on record";
+
                 case "{last}":
                     return p.LastName;
 
@@ -234,7 +237,7 @@ namespace CmsData
                         return SmallGroup(code, emailqueueto);
 
                     if (code.StartsWith("{smallgroups", StringComparison.OrdinalIgnoreCase))
-                        return SmallGroups(code, emailqueueto); ;
+                        return SmallGroups(code, emailqueueto); 
 
                     if (supportLinkRe.IsMatch(code))
                         return SupportLink(code, emailqueueto);
