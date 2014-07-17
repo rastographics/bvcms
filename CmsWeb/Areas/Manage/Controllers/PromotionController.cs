@@ -6,10 +6,17 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix= "Promotion"), Route("{action=index}/{id?}")]
     public class PromotionController : CmsStaffController
     {
+        [HttpGet]
         public ActionResult Index()
         {
             var m = new PromotionModel();
             return View(m);
+        }
+        [HttpGet]
+        [Route("~/Promotion/Reload")]
+        public ActionResult Reload(PromotionModel m)
+        {
+            return Redirect("/Promotion");
         }
 
         [HttpPost]

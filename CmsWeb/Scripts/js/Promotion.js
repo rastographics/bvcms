@@ -1,10 +1,5 @@
 ﻿$(function () {
     $(".bt").button();
-    $('#PromotionId').change($.RefreshPage);
-    $('#ScheduleId').change($.RefreshPage);
-    $('#FilterUnassigned').click($.RefreshPage);
-    $('#NormalMembersOnly').click($.RefreshPage);
-    $('input.check').live("click", $.UpdateTotals);
     $('#Promotions > thead a.sortable').click(function (ev) {
         ev.preventDefault();
         var newsort = $(this).text();
@@ -43,9 +38,9 @@
     $('#tpmed').text((tmed / ttotal * 100).toFixed(0) + '%');
     $('#tplow').text((tlow / ttotal * 100).toFixed(0) + '%');
 
-    $.RefreshPage = function() {
+    $.RefreshPage = function () {
         var q = $('#form').serialize();
-        $.navigate("/Promotion", q);
+        $.navigate("/Promotion/Reload", q);
     }
 
     $.RefreshList = function () {
@@ -77,5 +72,11 @@
         $('#plow').text((low / total * 100).toFixed(0) + '%');
     }
     $.UpdateTotals();
+
+    $('#PromotionId').change($.RefreshPage);
+    $('#ScheduleId').change($.RefreshPage);
+    $('#FilterUnassigned').click($.RefreshPage);
+    $('#NormalMembersOnly').click($.RefreshPage);
+    $('input.check').live("click", $.UpdateTotals);
 });
 

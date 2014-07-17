@@ -275,7 +275,8 @@ namespace CmsData.API
         {
             var q = from c in Db.Contributions
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                    where c.ContributionTypeId != ContributionTypeCode.GiftInKind
+                    where c.ContributionTypeId != ContributionTypeCode.GiftInKind                    
+                    where c.ContributionTypeId != ContributionTypeCode.Pledge
                     where !Codes.ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
                     where c.ContributionDate >= fromDate && c.ContributionDate.Value.Date <= toDate.Date
