@@ -301,7 +301,7 @@
     };
     $("a.help").live("click", function (ev) {
         ev.preventDefault();
-        var href = "//www.bvcms.com/DocDialog/" + $(this).data("name");
+        var href = "http://docs.bvcms.com/SearchBuilder/" + $(this).data("name") + ".html";
         if (href.endsWith('-'))
             href = href + $("#ConditionName").val();
         $("#helpcontent iframe").attr("src", href).ready(function () {
