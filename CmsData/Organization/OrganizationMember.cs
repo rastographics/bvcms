@@ -318,6 +318,11 @@ namespace CmsData
             ti2.OriginalId = TranId;
             db.SubmitChanges();
 
+//            if (Organization.IsMissionTrip == true)
+//            {
+//                var settings = new Settings(Organization.RegSetting, db, OrganizationId);
+//            }
+
             return ti2;
         }
 

@@ -52,6 +52,7 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesFrom(om);
             Name = i.Name;
 
+            IsMissionTrip = i.IsMissionTrip ?? false;
             if (TransactionSummary != null)
             {
                 AmountPaidTransactions = IsMissionTrip
@@ -65,7 +66,6 @@ namespace CmsWeb.Areas.Org.Models
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
-            IsMissionTrip = i.IsMissionTrip ?? false;
             Setting = new Settings(i.RegSetting, DbUtil.Db, OrgId ?? 0);
         }
 

@@ -299,15 +299,15 @@
         url += (url.match(/\?/) ? "&" : "?") + data;
         window.location = url;
     };
-    $("a.help").live("click", function (ev) {
-        ev.preventDefault();
-        var href = "http://docs.bvcms.com/SearchBuilder/" + $(this).data("name") + ".html";
-        if (href.endsWith('-'))
-            href = href + $("#ConditionName").val();
-        $("#helpcontent iframe").attr("src", href).ready(function () {
-            $("#QueryConditionHelp").modal("show");
-        });
-    });
+//    $("a.help").live("click", function (ev) {
+//        ev.preventDefault();
+//        var href = "https://bvcms.github.io/SearchBuilder/" + $(this).data("name") + ".html";
+//        if (href.endsWith('-'))
+//            href = href + $("#ConditionName").val();
+//        $("#helpcontent iframe").attr("src", href).ready(function () {
+//            $("#QueryConditionHelp").modal("show");
+//        });
+//    });
     if ($("#NewSearchId").val()) {
         liedit = $("li[data-qid='" + $("#NewSearchId").val() + "']");
         $EditCondition({ isnew: true });

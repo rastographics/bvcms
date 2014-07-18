@@ -27,6 +27,16 @@ namespace CmsWeb.Models
                     select t;
             return q.ToList();
         }
+
+        public static decimal TotalDue(int? pid, int? oid)
+        {
+            var tt = (from t in DbUtil.Db.ViewMissionTripTotals
+                    where t.PeopleId == pid && t.OrganizationId == oid
+                    select t).SingleOrDefault();
+            if (tt == null)
+                return 0;
+            return tt.Due ?? 0;
+        }
         public static EpplusResult Result(OrgSearchModel m)
         {
             var q = List(m);
