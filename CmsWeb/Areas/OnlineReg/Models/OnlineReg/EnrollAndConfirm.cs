@@ -121,24 +121,6 @@ namespace CmsWeb.Models
 
                 om.RegisterEmail = p.EmailAddress;
                 om.TranId = ti.OriginalId;
-                if (p.setting.GiveOrgMembAccess == true)
-                {
-                    if (p.person.Users.Count() == 0)
-                    {
-                        p.IsNew = false;
-                        var u = p.CreateAccount();
-                        if (u != null)
-                        {
-                            var list = u.Roles.ToList();
-                            if (!list.Contains("Access"))
-                                list.Add("Access");
-                            if (!list.Contains("OrgMembersOnly"))
-                                list.Add("OrgMembersOnly");
-                            u.SetRoles(Db, list.ToArray(), false);
-                        }
-                    }
-                    Db.SubmitChanges();
-                }
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
                 if (grouptojoin > 0)
                 {
@@ -151,8 +133,8 @@ namespace CmsWeb.Models
                     p.fromemail,
                     p.org.OrganizationName,
                     p.org.PhoneNumber);
-                    if (p.IsCreateAccount() && p.setting.GiveOrgMembAccess == false)
-                        p.CreateAccount();
+                if (p.IsCreateAccount())
+                    p.CreateAccount();
             }
             details.Append("\n</table>\n");
             Db.SubmitChanges();

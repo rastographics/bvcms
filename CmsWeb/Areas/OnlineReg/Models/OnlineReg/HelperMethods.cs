@@ -141,7 +141,6 @@ namespace CmsWeb.Models
                        || org.RegistrationTypeId == RegistrationTypeCode.CreateAccount
                        || org.IsMissionTrip == true
                        || setting.AllowOnlyOne || setting.AskVisible("AskTickets")
-                       || setting.GiveOrgMembAccess
                        || SupportMissionTrip;
             }
             if (settings != null)
