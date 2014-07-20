@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Org.Models
                         mm.Person.Name,
                         mm.Organization.OrganizationName,
                         om = mm,
-                        mt = mm.Organization.IsMissionTrip == true,
+                        mt = mm.Organization.IsMissionTrip ?? false,
                         ts
                     };
             var i = q.SingleOrDefault();
