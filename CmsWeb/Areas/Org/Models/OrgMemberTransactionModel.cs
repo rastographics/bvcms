@@ -65,6 +65,8 @@ namespace CmsWeb.Areas.Org.Models
         public decimal? Amount { get; set; }
         public decimal? Payment { get; set; }
         public bool AdjustFee { get; set; }
+        [StringLength(100)]
+        public string Description { get; set; }
 
         internal void PostTransaction()
         {
@@ -91,7 +93,7 @@ namespace CmsWeb.Areas.Org.Models
                     DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(gs);
                 }
             }
-            om.AddTransaction(DbUtil.Db, reason, Payment ?? 0, Amount, AdjustFee);
+            om.AddTransaction(DbUtil.Db, reason, Payment ?? 0, Description, Amount, AdjustFee);
         }
     }
 }

@@ -10,6 +10,7 @@
     @Html.HiddenFor(m => m.AdjustFee)
     @Html.DisplayFor(m => m.TransactionSummary.TotalAmt, new { label = "Total Fee" })
     @Html.EditorFor(m => m.Payment, new { label = "Fee Adjustment", help = "a negative number increases balance" })
+    @Html.EditorFor(m => m.Description)
 </div>
 <div class="modal-footer">
     <a href="/OrgMemberDialog2/Display/@Model.OrgId/@Model.PeopleId" class="btn ajax">Cancel</a>

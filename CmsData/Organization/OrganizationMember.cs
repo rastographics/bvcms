@@ -270,7 +270,7 @@ namespace CmsData
             }
         }
 
-        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, decimal? amount = null, bool? AdjustFee = false)
+        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, string description, decimal? amount = null, bool? AdjustFee = false)
         {
             var ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == TranId && tt.PeopleId == PeopleId);
             var ti = db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
@@ -305,6 +305,7 @@ namespace CmsData
                     Amt = payment,
                     Amtdue = (amount ?? payment) - payment,
                     AdjustFee = AdjustFee,
+                    Message = description
                 };
 
             db.Transactions.InsertOnSubmit(ti2);

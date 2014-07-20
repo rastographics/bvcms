@@ -1581,7 +1581,7 @@
     <Content Include="Content\images\sfs_icon_facebook.png" />
     <Content Include="Content\images\Up-down.png" />
     <Content Include="Content\images\visa.jpg" />
-    <Content Include="iTextAsian.dll" />
+    <Content Include="Content\iTextAsian.dll" />
     <Content Include="Scripts\Volunteer\Calendar.js" />
     <Content Include="Scripts\js\CheckinActivity.js" />
     <Content Include="Scripts\Search\ContactSearch.js" />

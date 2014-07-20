@@ -259,7 +259,7 @@ namespace CmsWeb.Areas.Reports.Models
             pageSetStarted = true;
 //            if (altnames == true)
 //            {
-//                BaseFont.AddToResourceSearch(HttpContext.Current.Server.MapPath("/iTextAsian.dll"));
+//                BaseFont.AddToResourceSearch(HttpContext.Current.Server.MapPath("/Content/iTextAsian.dll"));
 //                var bfchina = BaseFont.CreateFont("MHei-Medium",
 //                    "UniCNS-UCS2-H", BaseFont.EMBEDDED);
 //                china = new Font(bfchina, 12, Font.NORMAL);

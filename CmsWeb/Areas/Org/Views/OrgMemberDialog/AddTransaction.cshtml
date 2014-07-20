@@ -11,6 +11,7 @@
         ? Html.EditorFor(m => m.Amount, new { label = "Total Fee" })
         : Html.DisplayFor(m => m.Due, new { label = "Balance Due" }))
     @Html.EditorFor(m => m.Payment, new { help = "a negative number increases balance" })
+    @Html.EditorFor(m => m.Description)
 </div>
 <div class="modal-footer">
     <a href="/OrgMemberDialog2/Display/@Model.OrgId/@Model.PeopleId" class="btn ajax">Cancel</a>
