@@ -121,7 +121,7 @@ namespace CmsWeb.Models.OrganizationPage
                 else
                     members = from om in members
                                let p = om.Person
-                               where p.LastName.StartsWith(Last)
+                               where p.LastName.StartsWith(Last) || p.PeopleId == Last.ToInt()
                                select om;
             }
             if (SgPrefix.HasValue())

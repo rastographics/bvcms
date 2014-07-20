@@ -51,7 +51,7 @@ public partial class UserDefinedFunctions
                 list.Add(match.Value);
                 match = match.NextMatch();
             }
-            return string.Join("<br>\n", list);
+            return string.Join("<br>\n", list.ToArray());
         }
         catch (Exception ex)
         {

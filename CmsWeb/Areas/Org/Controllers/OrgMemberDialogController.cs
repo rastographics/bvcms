@@ -120,6 +120,12 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new OrgMemberTransactionModel { OrgId = oid, PeopleId = pid };
             return View(m);
         }
+        [HttpPost, Route("OrgMemberDialog2/AddFeeAdjustment/{oid}/{pid}")]
+        public ActionResult AddFeeAdjustment(int oid, int pid)
+        {
+            var m = new OrgMemberTransactionModel { OrgId = oid, PeopleId = pid, AdjustFee = true};
+            return View(m);
+        }
         [HttpPost, Route("OrgMemberDialog2/PostTransaction/{oid}/{pid}")]
         public ActionResult PostTransaction(int oid, int pid, OrgMemberTransactionModel m)
         {

@@ -474,6 +474,10 @@ namespace CmsData
         partial void UpdateRecurringAmount(RecurringAmount instance);
         partial void DeleteRecurringAmount(RecurringAmount instance);
         
+        partial void InsertRegistrationDatum(RegistrationDatum instance);
+        partial void UpdateRegistrationDatum(RegistrationDatum instance);
+        partial void DeleteRegistrationDatum(RegistrationDatum instance);
+        
         partial void InsertRelatedFamily(RelatedFamily instance);
         partial void UpdateRelatedFamily(RelatedFamily instance);
         partial void DeleteRelatedFamily(RelatedFamily instance);
@@ -1356,6 +1360,12 @@ namespace CmsData
 
 		}
 
+		public Table< RegistrationDatum> RegistrationDatas
+		{
+			get	{ return this.GetTable< RegistrationDatum>(); }
+
+		}
+
 		public Table< RelatedFamily> RelatedFamilies
 		{
 			get	{ return this.GetTable< RelatedFamily>(); }
@@ -1740,6 +1750,12 @@ namespace CmsData
 	    public Table< View.RandNumber> ViewRandNumbers
 	    {
 		    get { return this.GetTable< View.RandNumber>(); }
+
+	    }
+
+	    public Table< View.RegistrationList> ViewRegistrationLists
+	    {
+		    get { return this.GetTable< View.RegistrationList>(); }
 
 	    }
 

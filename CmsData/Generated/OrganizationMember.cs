@@ -67,6 +67,8 @@ namespace CmsData
 		
 		private int _Score;
 		
+		private int? _DatumId;
+		
    		
    		private EntitySet< OrgMemMemTag> _OrgMemMemTags;
 		
@@ -160,6 +162,9 @@ namespace CmsData
 		
 		partial void OnScoreChanging(int value);
 		partial void OnScoreChanged();
+		
+		partial void OnDatumIdChanging(int? value);
+		partial void OnDatumIdChanged();
 		
     #endregion
 		public OrganizationMember()
@@ -737,6 +742,28 @@ namespace CmsData
 					this._Score = value;
 					this.SendPropertyChanged("Score");
 					this.OnScoreChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="DatumId", UpdateCheck=UpdateCheck.Never, Storage="_DatumId", DbType="int")]
+		public int? DatumId
+		{
+			get { return this._DatumId; }
+
+			set
+			{
+				if (this._DatumId != value)
+				{
+				
+                    this.OnDatumIdChanging(value);
+					this.SendPropertyChanging();
+					this._DatumId = value;
+					this.SendPropertyChanged("DatumId");
+					this.OnDatumIdChanged();
 				}
 
 			}

@@ -13,7 +13,13 @@ namespace CmsWeb.Models
         public decimal AmountToPay()
         {
             if (paydeposit == true && setting.Deposit.HasValue && setting.Deposit > 0)
-                return setting.Deposit.Value + (setting.IncludeOtherFeesWithDeposit ? TotalOther() : 0);
+            {
+                var regulardeposit = setting.Deposit.Value;
+                var evdep = person.GetExtra("Deposit-" + orgid);
+                if (evdep.HasValue())
+                    regulardeposit = evdep.ToDecimal() ?? 0;
+                return regulardeposit + (setting.IncludeOtherFeesWithDeposit ? TotalOther() : 0);
+            }
             return Parent.SupportMissionTrip 
                 ? TotalOther() 
                 : TotalAmount();

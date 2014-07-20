@@ -1,6 +1,4 @@
 ﻿@using CmsData
-@using CmsWeb
-@using NPOI.SS.Formula.Functions
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.OrgMemberModel
 @{
@@ -129,6 +127,12 @@
             <li>
                 <a href="/OrgMemberDialog2/AddTransaction/@Model.OrgId/@Model.PeopleId" class="ajax">Add Transaction</a>
             </li>
+            @if(Model.TransactionSummary != null)
+            {
+            <li>
+                <a href="/OrgMemberDialog2/AddFeeAdjustment/@Model.OrgId/@Model.PeopleId" class="ajax">Make Fee Adjustment</a>
+            </li> 
+            }
             @if (Model.IsMissionTrip)
             {
                 <li>

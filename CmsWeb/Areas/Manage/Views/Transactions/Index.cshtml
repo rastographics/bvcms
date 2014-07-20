@@ -1,79 +1,88 @@
 ﻿@using CmsWeb;
-@using CmsWeb.Models
 @model CmsWeb.Models.TransactionsModel
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "Transactions";
+  Layout = ViewExtensions2.Layout();
+  ViewBag.Title = "Transactions";
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Finance/Transactions.js")
+  @Fingerprint.Script("/Scripts/Finance/Transactions.js")
 }
 <form id="form" method="post" action="/Transactions/List">
-<div class="roundbox floatleft">
-<h2>Transactions</h2>
-<table cellspacing="5">
-	<tr><td class="right">Description:</td>
+  <div class="roundbox floatleft">
+    <h2>Transactions</h2>
+    <table cellspacing="5">
+      <tr>
+        <td class="right">Description:</td>
         <td>@Html.TextBox("description")</td>
-		<td class="right">Test Transactions:</td>
+        <td class="right">Test Transactions:</td>
         <td>@Html.CheckBox("testtransactions")</td>
-    </tr>
-	<tr><td class="right" colspan="3">Only Approved Transactions:</td>
+      </tr>
+      <tr>
+        <td class="right" colspan="3">Only Approved Transactions:</td>
         <td>@Html.CheckBox("apprtransactions")</td>
-    </tr>
-	<tr><td class="right" colspan="3">No Coupons:</td>
+      </tr>
+      <tr>
+        <td class="right" colspan="3">No Coupons:</td>
         <td>@Html.CheckBox("nocoupons")</td>
-    </tr>
-	<tr><td class="right">Name:</td>
-		<td>@Html.TextBox("name")</td>
-		<td></td>
-		<td>
-@if (Model.isSage)
-{
-        	@:Use Batch Dates: @Html.CheckBox("usebatchdates")
+      </tr>
+      <tr>
+        <td class="right">Name:</td>
+        <td>@Html.TextBox("name")</td>
+        <td></td>
+        <td>
+          @if (Model.isSage)
+          {
+            @:Use Batch Dates: @Html.CheckBox("usebatchdates")
 }
-		</td>
-    </tr>
-	<tr><td class="right">&gt; Amount:</td>
-		<td>@Html.TextBox("gtamount")</td>
-		<td class="right">Start Date:</td>
-		<td>@Html.DatePicker("startdt")</td>
-	</tr>
-	<tr>
-		<td class="right">&lt;= Amount:</td>
-		<td>@Html.TextBox("ltamount")</td>
-		<td class="right">End Date:</td>
-		<td>@Html.DatePicker("enddt")</td>
-	</tr>
-	<tr><td class="right" colspan="4">
-			<a id="filter" href="#" class="submitbutton bt">Filter</a>
-			<a id="export" href="#" class="submitbutton bt">Export</a>
-			<a href="/Transactions" class="bt">Clear</a>
-		</td>
-	</tr>
-@if (Model.isSage)
-{
-	<tr>
-		<td class="right" colspan="4"><a href="/Transactions/Report" class="report">Reconcile Report</a></td>
-	</tr>
-	<tr>
-		<td class="right" colspan="4"><a href="/Transactions/ReportByDescription" class="report">Totals by Description</a></td>
-	</tr>
-	<tr>
-		<td class="right" colspan="4"><a href="/Transactions/ReportByBatchDescription" class="report">Totals by Batch/Description</a></td>
-	</tr>
-}
-</table>
-</div>
-<div class="floatclear"></div>
-<table id="Transactions" class="@ViewExtensions2.GridClass" cellpadding="4">
-@{Html.RenderPartial("List", Model);}
-</table>
+        </td>
+      </tr>
+      <tr>
+        <td class="right">&gt; Amount:</td>
+        <td>@Html.TextBox("gtamount")</td>
+        <td class="right">Start Date:</td>
+        <td>@Html.DatePicker("startdt")</td>
+      </tr>
+      <tr>
+        <td class="right">&lt;= Amount:</td>
+        <td>@Html.TextBox("ltamount")</td>
+        <td class="right">End Date:</td>
+        <td>@Html.DatePicker("enddt")</td>
+      </tr>
+      <tr>
+        <td class="right" colspan="4">
+          <a id="filter" href="#" class="submitbutton bt">Filter</a>
+          <a id="export" href="#" class="submitbutton bt">Export</a>
+          <a href="/Transactions" class="bt">Clear</a>
+        </td>
+      </tr>
+      @if (Model.isSage)
+      {
+        <tr>
+          <td class="right" colspan="4"><a href="/Transactions/Report" class="report">Reconcile Report</a></td>
+        </tr>
+        <tr>
+          <td class="right" colspan="4"><a href="/Transactions/ReportByDescription" class="report">Totals by Description</a></td>
+        </tr>
+        <tr>
+          <td class="right" colspan="4"><a href="/Transactions/ReportByBatchDescription" class="report">Totals by Batch/Description</a></td>
+        </tr>
+      }
+    </table>
+  </div>
+  <div class="floatclear"></div>
+  <table id="Transactions" class="@ViewExtensions2.GridClass" cellpadding="4">
+    @Html.Partial("List", Model)
+  </table>
+  @if (Model.GoerId > 0 || Model.SenderId > 0)
+  {
+    @Html.Partial("GoerSupporters", Model)
+  }
 </form>
 <div id="AdjustForm" style="display:none">
-    <p><label>Amount:</label><input id="amt" type="text" /></p>
-    <p><label>Description:</label><input id="desc" type="text" /></p>
-    <input type="button" id="post" value="Post Transaction" /> 
-    <input type="button" id="cancel" value="Cancel" /> 
-    <input type="hidden" id="voidurl" />
+  <p><label>Amount:</label><input id="amt" type="text" /></p>
+  <p><label>Description:</label><input id="desc" type="text" /></p>
+  <input type="button" id="post" value="Post Transaction" />
+  <input type="button" id="cancel" value="Cancel" />
+  <input type="hidden" id="voidurl" />
 </div>

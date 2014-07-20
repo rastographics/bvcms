@@ -270,7 +270,7 @@ namespace CmsData
             }
         }
 
-        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, decimal? amount = null)
+        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, decimal? amount = null, bool? AdjustFee = false)
         {
             var ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == TranId && tt.PeopleId == PeopleId);
             var ti = db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
@@ -303,7 +303,8 @@ namespace CmsData
                     LoginPeopleId = Util.UserPeopleId,
                     Approved = true,
                     Amt = payment,
-                    Amtdue = (amount ?? payment) - payment
+                    Amtdue = (amount ?? payment) - payment,
+                    AdjustFee = AdjustFee,
                 };
 
             db.Transactions.InsertOnSubmit(ti2);
@@ -331,14 +332,14 @@ namespace CmsData
         {
             if (amountDue.HasValue)
                 return amountDue;
-            if (Organization.IsMissionTrip == true)
-                return amountDue = Amount - TotalPaid(Db);
 
             var qq = from t in DbUtil.Db.ViewTransactionSummaries
                      where t.RegId == TranId && t.PeopleId == PeopleId
                      select t;
             var tt = qq.SingleOrDefault();
-            return tt == null ? 0 : tt.IndDue;
+            if (Organization.IsMissionTrip == false)
+                return amountDue = (tt == null ? 0 : tt.IndDue);
+            return amountDue = (tt == null ? 0 : tt.IndAmt) - TotalPaid(Db);
         }
         private decimal? totalPaid;
         public Decimal TotalPaid(CMSDataContext Db)
