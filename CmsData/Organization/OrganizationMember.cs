@@ -6,6 +6,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using CmsData.API;
 using CmsData.Registration;
@@ -320,10 +321,10 @@ namespace CmsData
             ti2.OriginalId = TranId;
             db.SubmitChanges();
 
-//            if (Organization.IsMissionTrip == true)
-//            {
-//                var settings = new Settings(Organization.RegSetting, db, OrganizationId);
-//            }
+            //            if (Organization.IsMissionTrip == true)
+            //            {
+            //                var settings = new Settings(Organization.RegSetting, db, OrganizationId);
+            //            }
 
             return ti2;
         }
@@ -334,13 +335,13 @@ namespace CmsData
             if (amountDue.HasValue)
                 return amountDue;
 
-            var qq = from t in DbUtil.Db.ViewTransactionSummaries
+            var qq = from t in Db.ViewTransactionSummaries
                      where t.RegId == TranId && t.PeopleId == PeopleId
                      select t;
             var tt = qq.SingleOrDefault();
-            if (Organization.IsMissionTrip == false)
-                return amountDue = (tt == null ? 0 : tt.IndDue);
-            return amountDue = (tt == null ? 0 : tt.IndAmt) - TotalPaid(Db);
+            if (Organization.IsMissionTrip == true)
+                return amountDue = (tt == null ? 0 : tt.IndAmt) - TotalPaid(Db);
+            return amountDue = (tt == null ? 0 : tt.IndDue);
         }
         private decimal? totalPaid;
         public Decimal TotalPaid(CMSDataContext Db)

@@ -6,6 +6,7 @@ Count: <strong>@Model.Count()</strong>
 <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
 @if(User.IsInRole("Edit"))
 { 
+<a href="/SearchAdd2/Dialog/inactive/@Model.OrganizationId" class="searchadd bt">@(Model.Org.IsMissionTrip == true ? "Add Sender" : "Add Inactive Members")</a>
 <a href="/OrgMembersDialog/@Model.OrganizationId?inactives=true" title="Update Inactive Members" class="memberdialog bt">update</a>
 } 
 </p>

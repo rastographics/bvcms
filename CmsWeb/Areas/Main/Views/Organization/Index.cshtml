@@ -93,7 +93,7 @@
 <div id="main-tab" style="display: none">
     <ul class="ui-tabs-nav">
         <li><a href="#Members-tab"><span>Members</span></a></li>
-        <li><a id="inactive-link" href="#Inactive-tab"><span>Inactive</span></a></li>
+        <li><a id="inactive-link" href="#Inactive-tab"><span>@(Model.org.IsMissionTrip == true ? "Senders" : "Inactive")</span></a></li>
         <li><a id="pending-link" href="#Pending-tab"><span>Pending</span></a></li>
         <li><a id="priors-link" href="#Priors-tab"><span>Previous</span></a></li>
         <li><a id="prospects-link" href="#Prospects-tab"><span>Prospects</span></a></li>

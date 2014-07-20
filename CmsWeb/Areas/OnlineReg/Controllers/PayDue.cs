@@ -23,6 +23,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                      select t;
             var ti = qq.FirstOrDefault();
 
+            var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
             var amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
             if (amtdue == 0)
                 return Content("no outstanding transaction");

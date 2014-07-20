@@ -131,8 +131,8 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             if (m.TransactionSummary != null && (m.Payment ?? 0) == 0)
                 ModelState.AddModelError("Payment", "must have non zero value");
-            if (m.TransactionSummary == null && (m.Amount ?? 0) == 0 && (m.Payment ?? 0) == 0)
-                ModelState.AddModelError("Payment", "must be > 0");
+            if (m.TransactionSummary == null && (m.Amount ?? 0) == 0) 
+                ModelState.AddModelError("Amount", "Initial Fee Must be > 0");
             if (!ModelState.IsValid)
                 return View("AddTransaction", m);
             m.PostTransaction();
