@@ -572,11 +572,11 @@ namespace CmsWeb.Areas.Reports.Controllers
         private ActionResult RunExtraValuesGrid(Guid id, string sort, bool alternate)
         {
             string[] roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            XDocument xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues.xml", "<Fields/>"));
-            IEnumerable<string> fields = (from ff in xml.Root.Elements("Field")
+            XDocument xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues2", "<Fields/>"));
+            IEnumerable<string> fields = (from ff in xml.Root.Descendants("Value")
                                           let vroles = ff.Attribute("VisibilityRoles")
                                           where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
-                                          select ff.Attribute("name").Value);
+                                          select ff.Attribute("Name").Value);
             string nodisplaycols = string.Join("|", fields);
 
             Tag tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);

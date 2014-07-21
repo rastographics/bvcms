@@ -307,11 +307,11 @@ namespace CmsWeb.Models
         public static IEnumerable ExportExtraValues(Guid qid)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues.xml", "<Fields/>"));
-            var fields = (from ff in xml.Root.Elements("Field")
+            var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues2", "<Fields/>"));
+            var fields = (from ff in xml.Root.Descendants("Value")
                           let vroles = ff.Attribute("VisibilityRoles")
                           where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
-                          select ff.Attribute("name").Value);
+                          select ff.Attribute("Name").Value);
             var nodisplaycols = string.Join("|", fields);
 
             var tag = DbUtil.Db.PopulateSpecialTag(qid, DbUtil.TagTypeId_ExtraValues);
