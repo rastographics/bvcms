@@ -139,8 +139,8 @@ namespace CmsWeb.Areas.Reports.Models
             var c = rr.Cells[col];
             var img = ImageData.Image.ImageFromId(p.ImageId);
             if (img != null)
-                using (var os = img.ResizeToStream(200, 300, "crop"))
-                {
+                using (var os = img.ResizeToStream(200, 300, "max"))
+                {                   
                     var pic = dd.AddImage(os).CreatePicture((pa.PicWidthPixels * 1.5).ToInt(), pa.PicWidthPixels);
                     c.Paragraphs[0].InsertPicture(pic);
                 }
