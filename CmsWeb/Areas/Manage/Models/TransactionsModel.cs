@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -34,10 +35,15 @@ namespace CmsWeb.Models
         public bool isSage { get; set; }
         public bool finance { get; set; }
         public bool admin { get; set; }
+        public int? GoerId { get; set; } // for mission trip supporters of this goer
+        public int? SenderId { get; set; } // for mission trip goers of this supporter
+
         public TransactionsModel(int? tranid)
             : this()
         {
             this.name = tranid.ToString();
+            if (!tranid.HasValue)
+                GoerId = null;
         }
         public TransactionsModel()
         {
@@ -427,6 +433,51 @@ namespace CmsWeb.Models
                      t.Fund
                  };
             return q2;
+        }
+
+        public class SupporterInfo
+        {
+            public GoerSenderAmount gs { get; set; }
+            public string Name { get; set; }
+            public int PeopleId { get; set; }
+        }
+        public IQueryable<SupporterInfo> Supporters()
+        {
+            return from gs in DbUtil.Db.GoerSenderAmounts
+                   where gs.GoerId == GoerId
+                   where gs.SupporterId != gs.GoerId
+                   let p = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
+                   orderby gs.Created descending
+                   select new SupporterInfo()
+                   {
+                       gs = gs,
+                       Name = p.Name,
+                       PeopleId = p.PeopleId
+                   };
+        }
+
+        public IQueryable<GoerSenderAmount> SelfSupports()
+        {
+            return from gs in DbUtil.Db.GoerSenderAmounts
+                   where gs.GoerId == GoerId
+                   where gs.SupporterId == gs.GoerId
+                   orderby gs.Created descending
+                   select gs;
+        }
+
+        public IQueryable<SupporterInfo> SupportOthers()
+        {
+            return from gs in DbUtil.Db.GoerSenderAmounts
+                   where gs.SupporterId == SenderId
+                   where gs.SupporterId != gs.GoerId
+                   let p = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
+                   orderby gs.Created descending
+                   select new SupporterInfo()
+                   {
+                       gs = gs,
+                       PeopleId = p.PeopleId,
+                       Name = p.Name
+                   };
         }
     }
 }

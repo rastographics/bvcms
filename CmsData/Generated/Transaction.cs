@@ -101,6 +101,8 @@ namespace CmsData
 		
 		private string _Suffix;
 		
+		private bool? _AdjustFee;
+		
    		
    		private EntitySet< OrganizationMember> _OrganizationMembers;
 		
@@ -245,6 +247,9 @@ namespace CmsData
 		
 		partial void OnSuffixChanging(string value);
 		partial void OnSuffixChanged();
+		
+		partial void OnAdjustFeeChanging(bool? value);
+		partial void OnAdjustFeeChanged();
 		
     #endregion
 		public Transaction()
@@ -1190,6 +1195,28 @@ namespace CmsData
 					this._Suffix = value;
 					this.SendPropertyChanged("Suffix");
 					this.OnSuffixChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="AdjustFee", UpdateCheck=UpdateCheck.Never, Storage="_AdjustFee", DbType="bit")]
+		public bool? AdjustFee
+		{
+			get { return this._AdjustFee; }
+
+			set
+			{
+				if (this._AdjustFee != value)
+				{
+				
+                    this.OnAdjustFeeChanging(value);
+					this.SendPropertyChanging();
+					this._AdjustFee = value;
+					this.SendPropertyChanged("AdjustFee");
+					this.OnAdjustFeeChanged();
 				}
 
 			}

@@ -120,13 +120,19 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new OrgMemberTransactionModel { OrgId = oid, PeopleId = pid };
             return View(m);
         }
+        [HttpPost, Route("OrgMemberDialog2/AddFeeAdjustment/{oid}/{pid}")]
+        public ActionResult AddFeeAdjustment(int oid, int pid)
+        {
+            var m = new OrgMemberTransactionModel { OrgId = oid, PeopleId = pid, AdjustFee = true};
+            return View(m);
+        }
         [HttpPost, Route("OrgMemberDialog2/PostTransaction/{oid}/{pid}")]
         public ActionResult PostTransaction(int oid, int pid, OrgMemberTransactionModel m)
         {
             if (m.TransactionSummary != null && (m.Payment ?? 0) == 0)
                 ModelState.AddModelError("Payment", "must have non zero value");
-            if (m.TransactionSummary == null && (m.Amount ?? 0) == 0 && (m.Payment ?? 0) == 0)
-                ModelState.AddModelError("Payment", "must be > 0");
+            if (m.TransactionSummary == null && (m.Amount ?? 0) == 0) 
+                ModelState.AddModelError("Amount", "Initial Fee Must be > 0");
             if (!ModelState.IsValid)
                 return View("AddTransaction", m);
             m.PostTransaction();

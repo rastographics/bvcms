@@ -93,7 +93,7 @@
 <div id="main-tab" style="display: none">
     <ul class="ui-tabs-nav">
         <li><a href="#Members-tab"><span>Members</span></a></li>
-        <li><a id="inactive-link" href="#Inactive-tab"><span>Inactive</span></a></li>
+        <li><a id="inactive-link" href="#Inactive-tab"><span>@(Model.org.IsMissionTrip == true ? "Senders" : "Inactive")</span></a></li>
         <li><a id="pending-link" href="#Pending-tab"><span>Pending</span></a></li>
         <li><a id="priors-link" href="#Priors-tab"><span>Previous</span></a></li>
         <li><a id="prospects-link" href="#Prospects-tab"><span>Prospects</span></a></li>
@@ -301,7 +301,7 @@
             </div>
             <div>
                 First and last name or just last name. You can put just the first few letters of
-            each. <i class="blue">(the name filter does not work with green toolbar functions)</i>
+            each. PeopleId works too. <i class="blue">(the name filter does not work with blue toolbar functions)</i>
             </div>
             <input id="namefilter" name="namefilter" type="text" />
             <hr />

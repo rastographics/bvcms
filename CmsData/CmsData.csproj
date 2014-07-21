@@ -363,7 +363,9 @@
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
+    <Compile Include="Generated\RegistrationDatum.cs" />
     <Compile Include="Generated\Views\DonorProfileList.cs" />
+    <Compile Include="Generated\Views\RegistrationList.cs" />
     <Compile Include="Meetings\Attend.cs" />
     <Compile Include="Finance\AuthorizeNet.cs" />
     <Compile Include="Batch\ExpressionVisitor.cs" />

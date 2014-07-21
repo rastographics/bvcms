@@ -52,6 +52,7 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesFrom(om);
             Name = i.Name;
 
+            IsMissionTrip = i.IsMissionTrip ?? false;
             if (TransactionSummary != null)
             {
                 AmountPaidTransactions = IsMissionTrip
@@ -65,7 +66,6 @@ namespace CmsWeb.Areas.Org.Models
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
-            IsMissionTrip = i.IsMissionTrip ?? false;
             Setting = new Settings(i.RegSetting, DbUtil.Db, OrgId ?? 0);
         }
 
@@ -113,7 +113,22 @@ namespace CmsWeb.Areas.Org.Models
 
         public string TransactionsLink
         {
-            get { return om.TranId.HasValue ? "/Transactions/" + om.TranId : null; }
+            get
+            {
+                if (!IsMissionTrip) 
+                    return om.TranId.HasValue ? "/Transactions/{0}".Fmt(om.TranId) : null;
+
+                if(om.IsInGroup("Goer") && om.IsInGroup("Sender"))
+                    return om.TranId.HasValue ? "/Transactions/{0}?goerid={1}&senderid={1}".Fmt(om.TranId, om.PeopleId) : null;
+
+                if(om.IsInGroup("Goer"))
+                    return om.TranId.HasValue ? "/Transactions/{0}?goerid={1}".Fmt(om.TranId, om.PeopleId) : null;
+
+                if (om.IsInGroup("Sender"))
+                    return "/Transactions/{0}?senderid={1}".Fmt(0, om.PeopleId);
+
+                return om.TranId.HasValue ? "/Transactions/{0}".Fmt(om.TranId) : null;
+            }
         }
 
         public string ShirtSize { get; set; }

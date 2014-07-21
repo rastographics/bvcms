@@ -6,6 +6,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using CmsData.API;
 using CmsData.Registration;
@@ -270,7 +271,7 @@ namespace CmsData
             }
         }
 
-        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, decimal? amount = null)
+        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, string description, decimal? amount = null, bool? AdjustFee = false)
         {
             var ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == TranId && tt.PeopleId == PeopleId);
             var ti = db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
@@ -303,7 +304,9 @@ namespace CmsData
                     LoginPeopleId = Util.UserPeopleId,
                     Approved = true,
                     Amt = payment,
-                    Amtdue = (amount ?? payment) - payment
+                    Amtdue = (amount ?? payment) - payment,
+                    AdjustFee = AdjustFee,
+                    Message = description
                 };
 
             db.Transactions.InsertOnSubmit(ti2);
@@ -318,6 +321,11 @@ namespace CmsData
             ti2.OriginalId = TranId;
             db.SubmitChanges();
 
+            //            if (Organization.IsMissionTrip == true)
+            //            {
+            //                var settings = new Settings(Organization.RegSetting, db, OrganizationId);
+            //            }
+
             return ti2;
         }
 
@@ -326,14 +334,14 @@ namespace CmsData
         {
             if (amountDue.HasValue)
                 return amountDue;
-            if (Organization.IsMissionTrip == true)
-                return amountDue = Amount - TotalPaid(Db);
 
-            var qq = from t in DbUtil.Db.ViewTransactionSummaries
+            var qq = from t in Db.ViewTransactionSummaries
                      where t.RegId == TranId && t.PeopleId == PeopleId
                      select t;
             var tt = qq.SingleOrDefault();
-            return tt == null ? 0 : tt.IndDue;
+            if (Organization.IsMissionTrip == true)
+                return amountDue = (tt == null ? 0 : tt.IndAmt) - TotalPaid(Db);
+            return amountDue = (tt == null ? 0 : tt.IndDue);
         }
         private decimal? totalPaid;
         public Decimal TotalPaid(CMSDataContext Db)

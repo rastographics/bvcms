@@ -42,7 +42,7 @@ namespace CmsWeb.Models
         {
             get
             {
-                if(!timeOut.HasValue)
+                if (!timeOut.HasValue)
                     timeOut = Util.IsDebug() ? 16000000 : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
                 return timeOut.Value;
             }
@@ -123,14 +123,17 @@ namespace CmsWeb.Models
                 ti.OriginalId = ti.Id;
             return ti;
         }
-        public static decimal AmountDueTrans(CMSDataContext db, Transaction ti)
+        public static Decimal AmountDueTrans(CMSDataContext db, Transaction ti)
         {
-            if (ti == null)
+            var org = db.LoadOrganizationById(ti.OrgId);
+            var tt = (from t in db.ViewTransactionSummaries
+                          where t.RegId == ti.OriginalId
+                          select t).SingleOrDefault();
+            if (tt == null)
                 return 0;
-            var qq = from t in db.ViewTransactionSummaries
-                where t.RegId == ti.OriginalId
-                select t.TotDue;
-            return qq.FirstOrDefault() ?? 0;
+            if (org.IsMissionTrip ?? false)
+                return (tt.IndAmt ?? 0) - (db.TotalPaid(tt.OrganizationId, tt.PeopleId) ?? 0);
+            return tt.TotDue ?? 0;
         }
 
         public static PaymentForm CreatePaymentFormForBalanceDue(Transaction ti, decimal amtdue)
@@ -186,9 +189,9 @@ namespace CmsWeb.Models
 #endif
                      };
             pf.Type = pf.NoEChecksAllowed ? "C" : "";
-		    var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
-		    var setting = new CmsData.Registration.Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
-		    pf.UseBootstrap = setting.UseBootstrap;
+            var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
+            var setting = new CmsData.Registration.Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+            pf.UseBootstrap = setting.UseBootstrap;
             return pf;
         }
         public static PaymentForm CreatePaymentForm(OnlineRegModel m)

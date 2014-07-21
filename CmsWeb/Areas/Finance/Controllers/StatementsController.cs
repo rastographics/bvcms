@@ -93,6 +93,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var r = DbUtil.Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
             return View(r);
         }
+        [HttpGet, Route("~/Statements/Download/{id:int?}")]
         public ActionResult Download(int? id, bool? PDF = true)
         {
             string output = Output(PDF);

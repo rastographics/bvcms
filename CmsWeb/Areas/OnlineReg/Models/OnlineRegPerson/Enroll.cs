@@ -13,9 +13,11 @@ namespace CmsWeb.Models
     {
         public OrganizationMember Enroll(Transaction ti, string paylink, bool? testing, string others)
         {
+            var membertype = MemberTypeCode.Member;
+            if (setting.AddAsProspect)
+                membertype = MemberTypeCode.Prospect;
             var om = OrganizationMember.InsertOrgMembers(DbUtil.Db, org.OrganizationId, person.PeopleId,
-                setting.AddAsProspect ? MemberTypeCode.Prospect : MemberTypeCode.Member,
-                DateTime.Now, null, false);
+                membertype, DateTime.Now, null, false);
 
             var reg = person.RecRegs.SingleOrDefault();
             if (reg == null)
@@ -25,6 +27,8 @@ namespace CmsWeb.Models
             }
             if (Parent.SupportMissionTrip)
             {
+                if (!om.IsInGroup("Goer"))
+                    om.MemberTypeId = MemberTypeCode.InActive;
                 om.AddToGroup(DbUtil.Db, "Sender");
                 if (MissionTripPray || TotalAmount() > 0)
                     om.AddToGroup(DbUtil.Db, "Pray");

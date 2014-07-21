@@ -1,0 +1,83 @@
+﻿@using CmsWeb
+@using CmsData
+@using UtilityExtensions;
+@model CmsWeb.Models.TransactionsModel
+@{
+  var qsg = Model.Supporters();
+  var qss = Model.SelfSupports();
+  var qso = Model.SupportOthers();
+}
+
+@if (qsg.Any())
+{
+<h4>Supporters</h4>
+  <table id="Supporters" class="@ViewExtensions2.GridClass" cellpadding="4">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Supporter</th>
+        <th>Amount</th>
+        <th>Notice</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var ss in qsg)
+      {
+        <tr>
+          <td>@ss.gs.Created.FormatDate()</td>
+          <td><a href="/Person2/@ss.PeopleId">@ss.Name</a></td>
+          <td>@ss.gs.Amount.ToString2("N2")</td>
+          <td>@(ss.gs.NoNoticeToGoer == true ? "no notice" : "sent")</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+@if (qss.Any())
+{
+<h4>Self Support</h4>
+  <table id="GoerIsSupporter" class="@ViewExtensions2.GridClass" cellpadding="4">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var gg in qss)
+      {
+        <tr>
+          <td>@gg.Created.FormatDate()</td>
+          <td>@gg.Amount.ToString2("N2")</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+@if (qso.Any())
+{
+<h4>Supporting Others</h4>
+  <table id="SupporterOfOthers" class="@ViewExtensions2.GridClass" cellpadding="4">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Goer</th>
+        <th>Amount</th>
+        <th>Notice</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var gg in qso)
+      {
+        <tr>
+          <td>@gg.gs.Created.FormatDate()</td>
+          <td><a href="/Person2/@gg.PeopleId">@gg.Name</a></td>
+          <td>@gg.gs.Amount.ToString2("N2")</td>
+          <td>@(gg.gs.NoNoticeToGoer == true ? "no notice" : "sent")</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

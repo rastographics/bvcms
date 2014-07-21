@@ -46,6 +46,10 @@ namespace CmsWeb.Areas.Search.Models
                         return "Add as Prospect of Organization";
                     case "pending":
                         return "Add as Pending Member of Organization";
+                    case "inactive":
+                        if(org == null)
+                            org = DbUtil.Db.LoadOrganizationById(PrimaryKeyForContextType.ToInt());
+                        return "Add as {0}".Fmt(org.IsMissionTrip == true ? "Sender of Mission Trip" : "Inactive Member of Organization");
                     case "visitor":
                         return "Add as Visitor to Meeting";
                     case "registered":
@@ -68,6 +72,7 @@ namespace CmsWeb.Areas.Search.Models
         public int? EntryPointId { get; set; }
         public int? CampusId { get; set; }
         public int Index { get; set; }
+        private Organization org;
 
         public SearchAddModel()
         {
@@ -78,7 +83,6 @@ namespace CmsWeb.Areas.Search.Models
         {
             AddContext = context;
             PrimaryKeyForContextType = contextid;
-            Organization org = null;
             CampusId = null;
             switch (AddContext.ToLower())
             {
@@ -99,6 +103,7 @@ namespace CmsWeb.Areas.Search.Models
                 case "org":
                 case "pending":
                 case "prospect":
+                case "inactive":
                     org = DbUtil.Db.LoadOrganizationById(contextid.ToInt());
                     CampusId = org.CampusId;
                     EntryPointId = org.EntryPointId ?? 0;
@@ -206,6 +211,8 @@ namespace CmsWeb.Areas.Search.Models
                     return AddOrgMembers(iid, OriginCode.Enrollment);
                 case "pending":
                     return AddOrgMembers(iid, OriginCode.Enrollment, pending: true);
+                case "inactive":
+                    return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.InActive);
                 case "prospect":
                     return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.Prospect);
                 case "visitor":
@@ -386,8 +393,10 @@ namespace CmsWeb.Areas.Search.Models
                 foreach (var p in PendingList)
                 {
                     AddPerson(p, PendingList, origin, EntryPointId);
-                    OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                    var om = OrganizationMember.InsertOrgMembers(DbUtil.Db,
                         id, p.PeopleId.Value, membertypeid, Util.Now, null, pending);
+                    if (membertypeid == MemberTypeCode.InActive && org.IsMissionTrip == true)
+                        om.AddToGroup(DbUtil.Db, "Sender");
                 }
                 DbUtil.Db.SubmitChanges();
 				DbUtil.Db.UpdateMainFellowship(id);

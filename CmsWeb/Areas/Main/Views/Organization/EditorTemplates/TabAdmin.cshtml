@@ -128,13 +128,7 @@
         GroupToJoin:
     </span> @Html.TextBox("GroupToJoin", Model.GroupToJoin)
 </li>
-<li>
-    <span class="keyword big tip" title="GiveOrgMembAccess
-        |Gives the person OrgMemberOnly role when creating an account">
-        GiveOrgMembAccess:
-    </span> @Html.CheckBox("GiveOrgMembAccess", Model.GiveOrgMembAccess)
-    <div><i><br />These relax requirements when checked, (good for when you need only a name and email address)</i></div>
-</li>
+<li><i>These relax requirements when checked, (good for when you need only a name and email address)</i></li>
 <li> <span class="keyword big">NoReqBirthYear:</span> @Html.CheckBox("NoReqBirthYear", Model.NoReqBirthYear) </li>
 <li> <span class="keyword big">NotReqDOB:</span> @Html.CheckBox("NotReqDOB", Model.NotReqDOB) </li>
 <li> <span class="keyword big">NotReqAddr:</span> @Html.CheckBox("NotReqAddr", Model.NotReqAddr) </li>
@@ -146,14 +140,14 @@
     <span class="keyword big tip" title="Shell
         |Enter the name of the HTML shell for this registration
         |(stored in Special Content)">
-        Shell<text>:</text>
+        Shell:
     </span> @Html.TextBox("Shell", Model.Shell)
 </li>
 <li>
     <span class="keyword big tip" title="Bootstrap Shell
         |Enter the name of the HTML shell for this registration
         |(stored in Special Content)">
-        Bootstrap Shell<text>:</text>
+        Bootstrap Shell:
     </span> @Html.TextBox("ShellBs", Model.ShellBs)
 </li>
 <li>
@@ -168,7 +162,7 @@
         |Enter the name of the HTML/Script file for this registration
         |Only works with the Special Script type of registration
         |(stored in Special Content)">
-        Special Script<text>:</text>
+        Special Script:
     </span> @Html.TextBox("SpecialScript", Model.SpecialScript)
 </li>
 <li>

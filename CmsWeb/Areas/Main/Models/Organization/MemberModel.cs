@@ -19,6 +19,7 @@ namespace CmsWeb.Models.OrganizationPage
             Prospect,
         }
         public int? OrganizationId { get; set; }
+        public Organization Org { get; set; }
         private int[] Groups;
         private int GroupsMode;
         private GroupSelect Select;
@@ -29,6 +30,7 @@ namespace CmsWeb.Models.OrganizationPage
         public MemberModel(int? id, GroupSelect select, string name, string sgprefix = "")
         {
             OrganizationId = id;
+            Org = DbUtil.Db.LoadOrganizationById(id);
             if (Util2.CurrentGroups != null && @select == GroupSelect.Active)
             {
                 Groups = Util2.CurrentGroups;
@@ -121,7 +123,7 @@ namespace CmsWeb.Models.OrganizationPage
                 else
                     members = from om in members
                                let p = om.Person
-                               where p.LastName.StartsWith(Last)
+                               where p.LastName.StartsWith(Last) || p.PeopleId == Last.ToInt()
                                select om;
             }
             if (SgPrefix.HasValue())

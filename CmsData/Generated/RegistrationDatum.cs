@@ -10,8 +10,8 @@ using System.ComponentModel;
 
 namespace CmsData
 {
-	[Table(Name="dbo.ExtraData")]
-	public partial class ExtraDatum : INotifyPropertyChanging, INotifyPropertyChanged
+	[Table(Name="dbo.RegistrationData")]
+	public partial class RegistrationDatum : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
@@ -32,8 +32,6 @@ namespace CmsData
 		private bool? _Abandoned;
 		
    		
-   		private EntitySet< Contribution> _Contributions;
-		
     	
 	#endregion
 	
@@ -64,10 +62,8 @@ namespace CmsData
 		partial void OnAbandonedChanged();
 		
     #endregion
-		public ExtraDatum()
+		public RegistrationDatum()
 		{
-			
-			this._Contributions = new EntitySet< Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
 			
 			
 			OnCreated();
@@ -98,7 +94,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Data", UpdateCheck=UpdateCheck.Never, Storage="_Data", DbType="nvarchar")]
+		[Column(Name="Data", UpdateCheck=UpdateCheck.Never, Storage="_Data", DbType="xml")]
 		public string Data
 		{
 			get { return this._Data; }
@@ -234,16 +230,6 @@ namespace CmsData
         
     #region Foreign Key Tables
    		
-   		[Association(Name="FK_Contribution_ExtraData", Storage="_Contributions", OtherKey="ExtraDataId")]
-   		public EntitySet< Contribution> Contributions
-   		{
-   		    get { return this._Contributions; }
-
-			set	{ this._Contributions.Assign(value); }
-
-   		}
-
-		
 	#endregion
 	
 	#region Foreign Keys
@@ -265,19 +251,6 @@ namespace CmsData
 		}
 
    		
-		private void attach_Contributions(Contribution entity)
-		{
-			this.SendPropertyChanging();
-			entity.ExtraDatum = this;
-		}
-
-		private void detach_Contributions(Contribution entity)
-		{
-			this.SendPropertyChanging();
-			entity.ExtraDatum = null;
-		}
-
-		
 	}
 
 }

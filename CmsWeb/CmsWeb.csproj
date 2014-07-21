@@ -1093,6 +1093,8 @@
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2a.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2b.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditPythonScript.cshtml" />
+    <Content Include="Areas\Org\Views\OrgMemberDialog\AddFeeAdjustment.cshtml" />
+    <Content Include="Areas\Manage\Views\Transactions\GoerSupporters.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -1579,7 +1581,7 @@
     <Content Include="Content\images\sfs_icon_facebook.png" />
     <Content Include="Content\images\Up-down.png" />
     <Content Include="Content\images\visa.jpg" />
-    <Content Include="iTextAsian.dll" />
+    <Content Include="Content\iTextAsian.dll" />
     <Content Include="Scripts\Volunteer\Calendar.js" />
     <Content Include="Scripts\js\CheckinActivity.js" />
     <Content Include="Scripts\Search\ContactSearch.js" />

@@ -100,6 +100,8 @@ namespace CmsData.View
 		
 		private string _Suffix;
 		
+		private bool? _AdjustFee;
+		
 		private int _BalancesId;
 		
 		private decimal? _BegBal;
@@ -830,6 +832,23 @@ namespace CmsData.View
 			{
 				if (this._Suffix != value)
 					this._Suffix = value;
+			}
+
+		}
+
+		
+		[Column(Name="AdjustFee", Storage="_AdjustFee", DbType="bit")]
+		public bool? AdjustFee
+		{
+			get
+			{
+				return this._AdjustFee;
+			}
+
+			set
+			{
+				if (this._AdjustFee != value)
+					this._AdjustFee = value;
 			}
 
 		}

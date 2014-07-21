@@ -2,15 +2,14 @@
 <div class="modal-header">
     <a class="close" data-dismiss="modal">x</a>
     <h4>@Model.OrgName</h4>
-    <h5>Adding Transaction for @Model.Name</h5>
+    <h5>Adding Fee Adjustment for @Model.Name</h5>
 </div>
 <div class="modal-body">
     @Html.HiddenFor(m => m.OrgId)
     @Html.HiddenFor(m => m.PeopleId)
-    @(Model.TransactionSummary == null
-        ? Html.EditorFor(m => m.Amount, new { label = "Total Fee" })
-        : Html.DisplayFor(m => m.Due, new { label = "Balance Due" }))
-    @Html.EditorFor(m => m.Payment, new { help = "a negative number increases balance" })
+    @Html.HiddenFor(m => m.AdjustFee)
+    @Html.DisplayFor(m => m.TransactionSummary.TotalAmt, new { label = "Total Fee" })
+    @Html.EditorFor(m => m.Payment, new { label = "Fee Adjustment", help = "a negative number increases balance" })
     @Html.EditorFor(m => m.Description)
 </div>
 <div class="modal-footer">
