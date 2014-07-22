@@ -128,7 +128,7 @@ namespace CmsWeb.Models
             var org = db.LoadOrganizationById(ti.OrgId);
             var tt = (from t in db.ViewTransactionSummaries
                           where t.RegId == ti.OriginalId
-                          select t).SingleOrDefault();
+                          select t).FirstOrDefault();
             if (tt == null)
                 return 0;
             if (org.IsMissionTrip ?? false)
