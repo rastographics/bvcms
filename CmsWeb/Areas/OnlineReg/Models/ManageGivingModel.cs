@@ -16,6 +16,7 @@ namespace CmsWeb.Models
     {
         public int pid { get; set; }
         public int orgid { get; set; }
+        [DisplayName("Start On or After")]
         public DateTime? StartWhen { get; set; }
         public DateTime? StopWhen { get; set; }
         public string SemiEvery { get; set; }

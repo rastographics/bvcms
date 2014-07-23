@@ -325,16 +325,17 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.TopClause.SendToWriter(w);
             return new EmptyResult();
         }
-        [HttpGet]
+        [HttpGet, Route("~/Query/Import")]
         public ActionResult Import()
         {
             return View();
         }
-        [HttpPost]
+        [HttpPost, Route("~/Query/Import")]
         [ValidateInput(false)]
         public ActionResult Import(string text, string name)
         {
             var ret = Condition.Import(text, name, newGuids: true);
+            ret.Save(DbUtil.Db);
             return Redirect("/Query/" + ret.Id);
         }
     }
