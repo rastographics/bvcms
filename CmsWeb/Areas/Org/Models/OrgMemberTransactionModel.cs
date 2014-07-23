@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.Org.Models
                     om.AddToGroup(DbUtil.Db, "Goer");
                     om.Amount = Amount;
                 }
-                if (AdjustFee == false)
+                if (AdjustFee == false && Payment > 0)
                 {
                     var gs = new GoerSenderAmount
                     {
