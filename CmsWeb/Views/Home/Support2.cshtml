@@ -20,23 +20,28 @@
 }
 <form id="requestform">
     <table id="needhelp" class="center roundbox grid">
-        <tr> <td colspan="3"> <h2>Need help using this software?</h2> </td></tr>
+      <tr> <td colspan="3"> <h2>Need help using this software?</h2> </td></tr>
         <tr>
             <td> <b>Step 1.</b> </td>
             <td>
                 Read the help article
             </td>
             <td>
+                <span class="font18px"><a href="http://docs.bvcms.com">Documentation Home Page</a></span><br/>
                 <a href="@helplink" target="_blank" style="color:#08c;width:20em">Context Sensitive Help Article</a>
             </td>
         </tr>
         <tr>
             <td valign="top"><b>Step 2.</b></td>
             <td valign="top">Search documentation</td>
-            <td>
-                <input type="text" id="cse-search-input-box-id" size="25" autocomplete="off" style="width:20em" /><br />
-                <input id="csearch" type="submit" class="bt green" value="Search Documentation" style="width:20em" />
-            </td>
+          <td>
+            <p style="max-width: 500px">Note that the following uses a Google Custom Search Engine, 
+            which may be a bit out of date until the documentation settles down. 
+              Usually Google is a smarter search engine, but for now it may be better to use the help pages builtin search. 
+              Just click the main Documentation Home Page link above and use the search there.</p>
+            <input type="text" id="cse-search-input-box-id" size="25" autocomplete="off" style="width:20em" /><br />
+            <input id="csearch" type="submit" class="bt green" value="Search Documentation" style="width:20em" />
+          </td>
         </tr>
         @if (ViewBag.NoSupport == null)
         {

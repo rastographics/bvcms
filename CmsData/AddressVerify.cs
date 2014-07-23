@@ -67,6 +67,8 @@ namespace CmsData
 			        ret.found = false;
 			    if (ret.found == true && ret.error.HasValue())
 			        ret.found = false;
+			    if (ret.error == "unauthorized")
+			        ret.Line1 = "error";
 				return ret;
 			}
 			catch (Exception)

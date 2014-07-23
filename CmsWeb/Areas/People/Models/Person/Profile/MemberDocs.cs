@@ -10,6 +10,7 @@ namespace CmsWeb.Areas.People.Models
         public int Id { get; set; }
         public DateTime? DocDate { get; set; }
         public int? ThumbId { get; set; }
+        public int? LargeId { get; set; }
         public int? Docid { get; set; }
         public string Uploader { get; set; }
         public bool? IsDocument { get; set; }
@@ -22,7 +23,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (IsDocument == true)
                     return "/Image/" + Docid;
-                return "/MemberDocs/Image/" + Id;
+                return "/Image/" + LargeId;
             }
         }
 
@@ -47,6 +48,7 @@ namespace CmsWeb.Areas.People.Models
                        DocDate = f.DocDate,
                        Id = f.Id,
                        ThumbId = f.SmallId,
+                       LargeId = f.LargeId,
                        Docid = f.MediumId,
                        IsDocument = f.IsDocument,
                        Name = f.Person.Name,

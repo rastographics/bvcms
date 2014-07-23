@@ -274,7 +274,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                                 if (val.HasValue())
                                 {
                                     var a = name.Substring(0, name.Length - 3);
-                                    o.AddEditExtraData(name, val);
+                                    o.AddEditExtraData(a, val);
                                 }
                             break;
                     }
