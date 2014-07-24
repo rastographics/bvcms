@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.Linq.SqlClient;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using UtilityExtensions;
 using System.Linq.Expressions;
 namespace CmsData
@@ -23,11 +20,46 @@ namespace CmsData
         public string TextValue { get; set; }
         public DateTime? DateValue { get; set; }
         public string CodeIdValue { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+
+        private DateTime? startDate;
+        public DateTime? StartDate
+        {
+            get
+            {
+                if(db != null)
+                    return db.QbStartDateOverride ?? startDate;
+                return startDate;
+            }
+            set { startDate = value; }
+        }
+
+        private DateTime? endDate;
+        public DateTime? EndDate
+        {
+            get
+            {
+                if(db != null)
+                    return db.QbEndDateOverride ?? endDate;
+                return endDate;
+            }
+            set { endDate = value; }
+        }
+
         public int Ministry { get; set; }
         public int Program { get; set; }
-        public int Division { get; set; }
+
+        private int division;
+        public int Division
+        {
+            get
+            {
+                if(db != null)
+                    return db.QbDivisionOverride ?? division;
+                return division;
+            }
+            set { division = value; }
+        }
+
         public int Organization { get; set; }
         public int Days { get; set; }
         public string Owner { get; set; }

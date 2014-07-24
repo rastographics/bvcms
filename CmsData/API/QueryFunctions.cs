@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Web.UI.WebControls;
 using UtilityExtensions;
 using IronPython.Hosting;
 using System.IO;
@@ -193,6 +194,29 @@ namespace CmsData
             if (qb == null)
                 return 0;
             return qb.Count();
+        }
+        public int QueryCount(string s, string division, string startdt, int days)
+        {
+            var start = DateTime.Parse(startdt);
+            var enddt = start.AddDays(days);
+            var divid = db.Divisions.Where(dd => dd.Name == division).Select(dd => dd.Id).SingleOrDefault();
+            db.QbStartDateOverride = start;
+            db.QbEndDateOverride = enddt;
+            db.QbDivisionOverride = divid;
+
+            try
+            {
+                var qb = db.PeopleQuery2(s);
+                if (qb == null)
+                    return 0;
+                return qb.Count();
+            }
+            finally
+            {
+                db.QbStartDateOverride = null;
+                db.QbEndDateOverride = null;
+                db.QbDivisionOverride = null;
+            }
         }
 
         public int StatusCount(string s)

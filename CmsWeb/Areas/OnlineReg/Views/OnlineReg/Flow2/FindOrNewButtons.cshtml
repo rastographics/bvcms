@@ -16,7 +16,7 @@ else // display the results of the find
         <div class="col-sm-offset-3 col-sm-9">
             <span class="pull-right">
                 @Helper.OnlineRegAjaxButton("/OnlineReg/PersonFind/" + Model.Index, "Search Again")
-                @if (Model.IsValidForContinue && !Model.MemberOnly() && Model.orgid != Util.CreateAccountCode /* && (Model.found ?? false) == false */)
+                @if (Model.IsValidForContinue && !Model.MemberOnly() && Model.orgid != Util.CreateAccountCode && (Model.Found ?? false) == false )
                 // Allow Add New Profile if valid data, not memberonly, not create account mode
                 {
                     @Helper.OnlineRegAjaxButton("/OnlineReg/ShowMoreInfo/" + Model.Index,

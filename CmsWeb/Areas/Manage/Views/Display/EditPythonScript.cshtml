@@ -46,7 +46,7 @@
         @Html.Hidden("name")
         @Html.Hidden("title")
         <div>
-            <textarea id="body" name="body" cols="80" rows="40" wrap='off' spellcheck="false" style="width:99%">@Html.Raw(@Model.Body)</textarea>
+            <textarea id="body" name="body" cols="80" rows="20" wrap='off' spellcheck="false" style="width:99%">@Html.Raw(@Model.Body)</textarea>
         </div>
         <br />
         @if (User.IsInRole("Admin"))
