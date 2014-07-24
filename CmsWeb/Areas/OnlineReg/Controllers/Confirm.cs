@@ -476,6 +476,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content("no pending confirmation found");
 
             var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+            if (m.List.Count == 0)
+                return Content("no registrants found");
             try
             {
                 var view = ConfirmTransaction(m, transactionId, ed);

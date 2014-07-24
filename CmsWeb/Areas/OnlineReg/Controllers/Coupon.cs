@@ -28,7 +28,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             string coupon = pf.Coupon.ToUpper().Replace(" ", "");
             string admincoupon = DbUtil.Db.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
             if (coupon == admincoupon)
-                return Json(new { confirm = "/onlinereg/Confirm/{0}?TransactionID=Coupon(Admin)".Fmt(pf.DatumId) });
+            {
+                var tic = pf.CreateTransaction(DbUtil.Db, pf.AmtToPay);
+                return Json( new { confirm = "/onlinereg/ConfirmDuePaid/{0}?TransactionID=Coupon({1})&Amount={2}".Fmt(tic.Id, Util.fmtcoupon(coupon), tic.Amt) });
+            }
 
             var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == coupon);
             if (c == null)
