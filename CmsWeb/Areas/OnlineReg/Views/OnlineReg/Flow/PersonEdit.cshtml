@@ -221,7 +221,7 @@ else
 		<input type="button" style="display: inline-block" href="/OnlineReg/PersonFind/@index" class="submitbutton ajax" 
 			   value="Search Again" />
         @* Allow Add New Profile if valid data, not a memberonly type registration and not in create account mode *@
-        @if (Model.IsValidForContinue && !Model.MemberOnly() && Model.orgid != Util.CreateAccountCode)
+        @if (Model.IsValidForContinue && !Model.MemberOnly() && Model.orgid != Util.CreateAccountCode /*&& (Model.Found ?? false) == false */)
         {
             @:or <input type="button" id="regnew" href="/OnlineReg/ShowMoreInfo/@index" class="submitbutton ajax" value="Add New Profile" />
 		} 
