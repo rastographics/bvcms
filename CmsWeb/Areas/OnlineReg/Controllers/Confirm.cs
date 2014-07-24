@@ -158,6 +158,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);
 
+                ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
                 return View("PayAmtDue/Confirm", ti);
             }
             catch (Exception ex)
