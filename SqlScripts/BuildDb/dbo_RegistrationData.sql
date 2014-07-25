@@ -1,7 +1,7 @@
-CREATE TABLE [dbo].[ExtraData]
+CREATE TABLE [dbo].[RegistrationData]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
-[Data] [nvarchar] (max) NULL,
+[Data] [xml] NULL,
 [Stamp] [datetime] NULL,
 [completed] [bit] NULL,
 [OrganizationId] [int] NULL,

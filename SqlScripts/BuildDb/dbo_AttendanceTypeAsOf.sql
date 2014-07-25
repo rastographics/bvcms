@@ -1,8 +1,3 @@
--- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
--- =============================================
 CREATE FUNCTION [dbo].[AttendanceTypeAsOf]
 (	
 	@from DATETIME,
@@ -33,9 +28,9 @@ BEGIN
 				AND d1.DivId = @divid) OR @divid = 0)
 		AND (EXISTS(SELECT NULL FROM DivOrg d2
 				WHERE d2.OrgId = a.OrganizationId
-				AND EXISTS(SELECT NULL FROM Division d
-						WHERE d2.DivId = d.Id
-						AND d.ProgId = @progid)) OR @progid = 0)
+				AND EXISTS(SELECT NULL FROM ProgDiv pd
+						WHERE d2.DivId = pd.DivId
+						AND pd.ProgId = @progid)) OR @progid = 0)
 		)
 	RETURN
 END

@@ -1,4 +1,5 @@
 
+
 CREATE VIEW [dbo].[MissionTripTotals] AS
 SELECT 
 	tt.OrganizationId,
@@ -17,16 +18,14 @@ FROM
 		p.PeopleId,
 		p.Name,
 		p.Name2 SortOrder,
-		om.Amount TripCost,
-		(	SELECT SUM(gsa.Amount)
-			FROM dbo.GoerSenderAmounts gsa
-			WHERE om.PeopleId = GoerId AND OrgId = om.OrganizationId AND ISNULL(InActive, 0) = 0
-		) Raised
+		ts.IndAmt TripCost,
+		dbo.TotalPaid(om.OrganizationId, om.PeopleId) Raised
 	FROM dbo.Organizations o
 	JOIN dbo.OrganizationMembers om ON om.OrganizationId = o.OrganizationId
 	JOIN dbo.OrgMemMemTags omm ON omm.OrgId = om.OrganizationId AND omm.PeopleId = om.PeopleId
 	JOIN dbo.MemberTags mt ON mt.Id = omm.MemberTagId AND mt.Name = 'Goer'
 	JOIN dbo.People p ON p.PeopleId = om.PeopleId
+	LEFT JOIN dbo.TransactionSummary ts ON ts.OrganizationId = om.OrganizationId AND ts.PeopleId = om.PeopleId
 	WHERE o.IsMissionTrip = 1
 	AND o.OrganizationStatusId = 30
 
@@ -65,6 +64,7 @@ FROM
 	FROM dbo.Organizations o
 	WHERE o.IsMissionTrip = 1 AND o.OrganizationStatusId = 30
 ) tt
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

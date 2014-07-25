@@ -24,7 +24,8 @@ CREATE TABLE [dbo].[OrganizationMembers]
 [AmountPaid] [money] NULL,
 [PayLink] [nvarchar] (100) NULL,
 [TranId] [int] NULL,
-[Score] [int] NOT NULL CONSTRAINT [DF_OrganizationMembers_Score] DEFAULT ((0))
+[Score] [int] NOT NULL CONSTRAINT [DF_OrganizationMembers_Score] DEFAULT ((0)),
+[DatumId] [int] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
