@@ -145,32 +145,15 @@ IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
 IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
 GO
-EXEC sp_addextendedproperty N'ReturnType', N'TopGiver', 'SCHEMA', N'dbo', 'PROCEDURE', N'TopGivers', NULL, NULL
-GO
-IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
-GO
 EXEC sp_addextendedproperty N'ReturnType', N'SecurityCode', 'SCHEMA', N'dbo', 'PROCEDURE', N'NextSecurityCode', NULL, NULL
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
 IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
 GO
-PRINT N'Altering permissions on [dbo].[Contribution]'
+EXEC sp_addextendedproperty N'ReturnType', N'TopGiver', 'SCHEMA', N'dbo', 'PROCEDURE', N'TopGivers', NULL, NULL
 GO
-DENY SELECT ON  [dbo].[Contribution] TO [ro]
-DENY INSERT ON  [dbo].[Contribution] TO [ro]
-DENY DELETE ON  [dbo].[Contribution] TO [ro]
-DENY UPDATE ON  [dbo].[Contribution] TO [ro]
+IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
-IF EXISTS (SELECT * FROM #tmpErrors) ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT>0 BEGIN
-PRINT 'The database update succeeded'
-COMMIT TRANSACTION
-END
-ELSE PRINT 'The database update failed'
-GO
-DROP TABLE #tmpErrors
+IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
 GO
