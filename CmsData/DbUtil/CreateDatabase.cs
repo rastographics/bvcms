@@ -106,10 +106,11 @@ namespace CmsData
                 using (var cn = new SqlConnection(Util.ConnectionString))
                 {
                     cn.Open();
-                    foreach(var f in Directory.EnumerateFiles(path + @"..\SqlScripts\BuildDb").OrderBy( ff => ff))
+                    var list = File.ReadAllLines(path + @"..\SqlScripts\allscripts.txt");
+                    foreach(var f in list)
                     {
                         fn = f;
-                        var script = File.ReadAllText(f);
+                        var script = File.ReadAllText(path + @"..\SqlScripts\BuildDb\" + f);
                         RunScripts(cn, script);
                     }
                     string datascript = null;
