@@ -117,11 +117,20 @@
     </span> @Html.CheckBox("AddAsProspect", Model.AddAsProspect)
 </li>
 <li>
-    <span class="keyword big tip" title="AllowReRegister
+  <span class="keyword big tip" title="AllowReRegister
         |Allows a person to be a member of Organization and register again.">
-        AllowReRegister:
-    </span> @Html.CheckBox("AllowReRegister", Model.AllowReRegister)
+    AllowReRegister:
+  </span> @Html.CheckBox("AllowReRegister", Model.AllowReRegister)
 </li>
+@if (User.IsInRole("Developer"))
+{
+<li>
+    <span class="keyword big tip" title="AllowSaveProgress
+        |Allows a person to leave the registration and come back to finish later">
+        AllowSaveProgress:
+    </span> @Html.CheckBox("AllowSaveProgress", Model.AllowSaveProgress)
+</li>
+}
 <li>
     <span class="keyword big tip" title="GroupToJoin
         |Joins registrant to another organization at the same time">

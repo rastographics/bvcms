@@ -16,6 +16,32 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     {
         //private string confirm;
 
+        [HttpPost]
+        public ActionResult SaveProgressPayment(int id)
+        {
+            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
+            if (ed != null)
+            {
+                var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                m.History.Add("saveprogress");
+                if (m.UserPeopleId == null)
+                    m.UserPeopleId = Util.UserPeopleId;
+                m.UpdateDatum();
+                return Json(new {confirm = "/OnlineReg/FinishLater/" + id});
+            }
+            return Json(new {confirm = "/OnlineReg/Unknown"});
+        }
+        [HttpGet]
+        public ActionResult FinishLater(int id)
+        {
+            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
+            if (ed != null)
+            {
+                var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                return View(m);
+            }
+            return View("Unknown");
+        }
         public ActionResult ProcessPayment(PaymentForm pf)
         {
 #if DEBUG
@@ -25,7 +51,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 					return Content("Already submitted");                    
 #endif
             OnlineRegModel m = null;
-            var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == pf.DatumId);
+            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == pf.DatumId);
             if (ed != null)
                 m = Util.DeSerialize<OnlineRegModel>(ed.Data);
 
@@ -278,7 +304,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Confirm,
             ConfirmAccount,
         }
-        private ConfirmEnum ConfirmTransaction(OnlineRegModel m, string TransactionID, ExtraDatum ed = null)
+        private ConfirmEnum ConfirmTransaction(OnlineRegModel m, string TransactionID)
         {
             m.ParseSettings();
             if (m.List.Count == 0)
@@ -289,18 +315,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var t = m.Transaction;
             if (t == null && !managingsubs && !choosingslots)
             {
+                m.History.Add("ConfirmTransaction");
+                m.UpdateDatum(completed: true);
                 var pf = PaymentForm.CreatePaymentForm(m);
-                if (ed != null)
-                    pf.DatumId = ed.Id;
                 t = pf.CreateTransaction(DbUtil.Db);
                 m.TranId = t.Id;
-                if (ed != null)
-                {
-                    m.History.Add("ConfirmTransaction");
-                    ed.Completed = true;
-                    ed.Data = Util.Serialize<OnlineRegModel>(m);
-                    DbUtil.Db.SubmitChanges();
-                }
             }
             if (t != null)
                 ViewBag.message = t.Message;
@@ -471,18 +490,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!transactionId.HasValue())
                 return Content("error no transaction");
 
-            var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == id);
-            if (ed == null || ed.Completed == true)
+            var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0);
+            if (m == null || m.Completed)
                 return Content("no pending confirmation found");
 
-            var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
             if (m.List.Count == 0)
                 return Content("no registrants found");
             try
             {
-                var view = ConfirmTransaction(m, transactionId, ed);
-                ed.Completed = true;
-                DbUtil.Db.SubmitChanges();
+                var view = ConfirmTransaction(m, transactionId);
+                m.UpdateDatum(completed: true);
                 SetHeaders(m);
                 if (view == ConfirmEnum.ConfirmAccount)
                     return View("ConfirmAccount", m);

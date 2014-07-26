@@ -249,6 +249,7 @@ namespace CmsData.Registration
             AllowOnlyOne,
             TargetExtraValues,
             AllowReRegister,
+            AllowSaveProgress,
             OrgMemberFees,
             AskTickets,
             AskRequest,

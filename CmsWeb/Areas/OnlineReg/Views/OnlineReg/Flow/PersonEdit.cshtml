@@ -12,19 +12,22 @@
     <td class="top" nowrap="nowrap" width="30%">
         @Html.Required()
         <label id="personedit" for="first">
-            First Name:</label>
+      First Name:
+    </label>
     </td>
     <td>
         @Html.TextBoxFor(m => m.FirstName, new { @class = "wide" })
         <div>
-            @Html.ValidationMessageFor(m => m.FirstName)</div>
+      @Html.ValidationMessageFor(m => m.FirstName)
+    </div>
     </td>
 </tr>
 <tr>
     <td class="top" nowrap="nowrap">
         @Html.NotRequired()
         <label for="middle">
-            Middle Initial:</label>
+      Middle Initial:
+    </label>
     </td>
     <td>
         @Html.TextBoxFor(m => m.MiddleName, new { @class = "wide" })
@@ -34,19 +37,22 @@
     <td class="top" nowrap="nowrap">
         @Html.Required()
         <label for="last">
-            Last Name:</label>
+      Last Name:
+    </label>
     </td>
     <td>
         @Html.TextBoxFor(m => m.LastName, new { @class = "wide" })
         <div>
-            @Html.ValidationMessageFor(m => m.LastName)</div>
+      @Html.ValidationMessageFor(m => m.LastName)
+    </div>
     </td>
 </tr>
 <tr>
     <td class="top" nowrap="nowrap">
         @Html.NotRequired()
         <label for="last">
-            Suffix:</label>
+      Suffix:
+    </label>
     </td>
     <td>
         @Html.TextBoxFor(m => m.Suffix, new { @class = "short" })
@@ -56,15 +62,18 @@
     <td class="top" nowrap="nowrap">
         @Html.IsRequired(Model.RequiredDOB())
         <label for="dob">
-            Birthdate:</label>
+      Birthdate:
+    </label>
     </td>
-    <td>@Html.TextBox3("dob", Html.NameFor2(m => m.DateOfBirth), Model.DateOfBirth, new { @class = "dob" })
+  <td>
+    @Html.TextBox3("dob", Html.NameFor2(m => m.DateOfBirth), Model.DateOfBirth, new { @class = "dob" })
         @if (Model.LoggedIn)
         {
             @:(<span id="age">@Model.age</span>)
         }
         <div>
-            @Html.ValidationMessageFor(m => m.DateOfBirth)</div>
+    @Html.ValidationMessageFor(m => m.DateOfBirth)
+  </div>
     </td>
 </tr>
 <tr>
@@ -85,19 +94,22 @@ else
     <td>
         @Html.TextBoxFor(m => m.Phone, new { @class = "wide" })
         <div>
-            @Html.ValidationMessageFor(m => m.Phone)</div>
+      @Html.ValidationMessageFor(m => m.Phone)
+    </div>
     </td>
 </tr>
 <tr>
     <td class="top" nowrap="nowrap">
         @Html.Required()
         <label for="email">
-            Email:</label>
+      Email:
+    </label>
     </td>
     <td>
         @Html.TextBoxFor(m => m.EmailAddress, new { @class = "wide" })
         <div>
-            @Html.ValidationMessageFor(m => m.EmailAddress)</div>
+      @Html.ValidationMessageFor(m => m.EmailAddress)
+    </div>
     </td>
 </tr>
 @* show the address fields *@
@@ -105,8 +117,7 @@ else
 {
     @Html.Partial("Flow/AddressEdit", Model)
 <tr>
-    <td>
-    </td>
+    <td></td>
     @* allow submit here for manage subscriptions *@
     @if (Model.ManageSubscriptions())
     {
@@ -116,8 +127,10 @@ else
         @* only allow adults to create an account *@
         @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsMissionTrip())
         {
-        <div>@Html.CheckBoxFor(m => m.CreatingAccount)
-        Create Account (optional)</div>
+          <div>
+            @Html.CheckBoxFor(m => m.CreatingAccount)
+          Create Account (optional)
+        </div>
         } 
     </td>
     }
@@ -145,8 +158,15 @@ else
             $("div.instructions.find").show();
         </script>
 *@
-        <input type="button" href="/OnlineReg/PersonFind/@index" class="submitbutton ajax"
+        <input type="button" href="/OnlineReg/PersonFind/@index" class="submitbutton ajax min-width15em"
             value="Find Profile" />
+        @if (Model.Parent.AllowSaveProgress())
+        {
+          <div>
+            <input type="button" href="/OnlineReg/SaveProgress/@index" class="submitbutton ajax min-width15em"
+                   value='Save Progress, Finish Later' />
+          </div>
+        }
     </td>
 </tr>
     }
@@ -156,9 +176,11 @@ else
 <tr>
 	<td colspan="2">
 		<div>
-			@Html.ValidationMessageFor(m => m.Found)</div>
+          @Html.ValidationMessageFor(m => m.Found)
+        </div>
 		<div>
-			@Html.Raw(Model.NotFoundText)</div>
+          @Html.Raw(Model.NotFoundText)
+        </div>
 	</td>
 </tr>
         // Show how to add this person (to family, previous, new) did not find them 
@@ -218,12 +240,12 @@ else
         } 
 <tr>
     <td colspan="2" class="right">
-		<input type="button" style="display: inline-block" href="/OnlineReg/PersonFind/@index" class="submitbutton ajax" 
+        <input type="button" style="display: inline-block" href="/OnlineReg/PersonFind/@index" class="submitbutton ajax min-width15em"
 			   value="Search Again" />
         @* Allow Add New Profile if valid data, not a memberonly type registration and not in create account mode *@
         @if (Model.IsValidForContinue && !Model.MemberOnly() && Model.orgid != Util.CreateAccountCode && (Model.Found ?? false) == false)
         {
-            @:or <input type="button" id="regnew" href="/OnlineReg/ShowMoreInfo/@index" class="submitbutton ajax" value="Add New Profile" />
+          @:or <input type="button" id="regnew" href="/OnlineReg/ShowMoreInfo/@index" class="submitbutton ajax min-width15em" value="Add New Profile" />
 		} 
         // display helpful message if an anonomous person is trying to create an account
         else if (Model.orgid == Util.CreateAccountCode)
@@ -231,8 +253,16 @@ else
         <p>
             Call the church if you think your record should be in the system. It may be that
             we are missing some information on your record that we need to identify you like
-            a phone number, date of birth or email address.</p>
+            a phone number, date of birth or email address.
+          </p>
         } 
+        @if (Model.Parent.AllowSaveProgress())
+        {
+          <div>
+            <input type="button" href="/OnlineReg/SaveProgress/@index" class="submitbutton ajax min-width15em"
+                   value='Save Progress, Finish Later' />
+          </div>
+        }
     </td>
 </tr>
     }

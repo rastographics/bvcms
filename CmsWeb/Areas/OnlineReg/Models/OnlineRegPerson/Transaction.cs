@@ -112,5 +112,15 @@ namespace CmsWeb.Models
             }
             return amt;
         }
+        public void CheckSetFee()
+        {
+            if (OnlineGiving() && setting.ExtraValueFeeName.HasValue())
+            {
+                var f = Funds().SingleOrDefault(ff => ff.Text == setting.ExtraValueFeeName);
+                var evamt = person.GetExtra(setting.ExtraValueFeeName).ToDecimal();
+                if (f != null && evamt > 0)
+                    FundItem[f.Value.ToInt()] = evamt;
+            }
+        }
     }
 }

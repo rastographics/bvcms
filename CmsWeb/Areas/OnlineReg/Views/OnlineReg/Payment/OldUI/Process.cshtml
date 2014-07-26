@@ -171,8 +171,14 @@
             <tr>
                 <td></td>
                 <td height="40">
-                    <input id="submitit" type="submit" name="Submit" class="submitbutton" value="Make Payment" />
+                    <input id="submitit" type="submit" name="Submit" class="submitbutton min-width15em" value="Make Payment" />
                     <div class="column">@Html.ValidationMessage("form")</div>
+                  @if (Model.AllowSaveProgress == true)
+                  {
+                    <div>
+                        <input type="button" href="/OnlineReg/SaveProgressPayment/@Model.DatumId" class="submitbutton ajax min-width15em" value="Save Progress, Finish Later" />
+                    </div>
+                  }
                 </td>
             </tr>
             <tr><td colspan="2">&nbsp;</td></tr>

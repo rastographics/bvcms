@@ -15,11 +15,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult ApplyCoupon(PaymentForm pf)
         {
 			OnlineRegModel m = null;
-			ExtraDatum ed = null;
             if (pf.PayBalance == false)
 			{
-                ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == pf.DatumId);
-				m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                m = OnlineRegModel.GetRegistrationFromDatum(pf.DatumId);
 				m.ParseSettings();
 			}
 
@@ -55,7 +53,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			{
                 m.History.Add("ApplyCoupon");
 			    m.TranId = ti.OriginalId;
-			    ed.Data = Util.Serialize<OnlineRegModel>(m);
+                m.UpdateDatum();
 			}
 			var tid = "Coupon({0:n2})".Fmt(Util.fmtcoupon(coupon));
 
@@ -85,8 +83,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (!Coupon.HasValue())
                 return Json(new { error = "empty coupon" });
-            var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == id);
-            var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+            var m = OnlineRegModel.GetRegistrationFromDatum(id);
             m.ParseSettings();
             string coupon = Coupon.ToUpper().Replace(" ", "");
             string admincoupon = DbUtil.Db.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");

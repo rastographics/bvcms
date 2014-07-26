@@ -1,5 +1,4 @@
 ﻿@using CmsWeb
-@using DocumentFormat.OpenXml.Wordprocessing
 @using UtilityExtensions
 @model CmsWeb.Models.PaymentForm
 <div class="regform">
@@ -100,14 +99,20 @@
             }
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-                <span class="pull-right">
+      <div class="col-sm-offset-3 col-sm-9 text-right">
+        <div>
                     @if (Model.IsLoggedIn == true && CmsWeb.Models.OnlineRegModel.GetTransactionGateway() == "sage")
                     {
-                        <span style="margin-right: 2em;">Save Pay Info @Html.CheckBoxFor(m => m.SavePayInfo)</span>
+            <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Pay Info</span>
                     }
-                    @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true)
-                </span>
+          @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
+        </div>
+        @if (Model.AllowSaveProgress == true)
+        {
+          <div>
+            @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgressPayment/" + Model.DatumId, "Save Progress, Finish Later", style: "btn-warning min-width15em")
+          </div>
+        }
             </div>
         </div>
         @if (Model.AllowCoupon)

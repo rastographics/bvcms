@@ -22,12 +22,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     {
         public class ConfirmTestInfo
         {
-            public ExtraDatum ed;
+            public RegistrationDatum ed;
             public OnlineRegModel m;
         }
         public class TransactionTestInfo
         {
-            public ExtraDatum ed;
+            public RegistrationDatum ed;
             public TransactionInfo ti;
         }
         private string EleVal(XElement r, string name)
@@ -40,9 +40,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult ConfirmTest(int? start, int? count)
         {
-            IEnumerable<ExtraDatum> q;
-            q = from ed in DbUtil.Db.ExtraDatas
-                where ed.Data.StartsWith("<?") && ed.Data.Contains("<OnlineRegModel")
+            IEnumerable<RegistrationDatum> q;
+            q = from ed in DbUtil.Db.RegistrationDatas
                 orderby ed.Stamp descending
                 select ed;
             var list = q.Skip(start ?? 0).Take(count ?? 200).ToList();
@@ -68,7 +67,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult ConfirmTestXml(int id)
         {
-            var ed = (from i in DbUtil.Db.ExtraDatas
+            var ed = (from i in DbUtil.Db.RegistrationDatas
                 where i.Id == id
                 select i).SingleOrDefault();
             if (ed == null)
@@ -79,7 +78,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Authorize(Roles = "ManageTransactions,Finance,Admin")]
         public ActionResult RegPeople(int id)
         {
-            var q = from i in DbUtil.Db.ExtraDatas
+            var q = from i in DbUtil.Db.RegistrationDatas
                     where i.Id == id
                     select i;
             if (!q.Any())
@@ -169,23 +168,5 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         //    }
         //    return View(q2);
         //}
-        [Authorize(Roles = "Admin")]
-        public ActionResult TransactionTest(int? id, int? count)
-        {
-            var q = from ed in DbUtil.Db.ExtraDatas
-                    where ed.Data.StartsWith("<TransactionInfo ")
-                    where ed.Id >= id
-                    orderby ed.Stamp descending
-                    select ed;
-            var list = q.Take(count ?? 1000).ToList();
-            var q2 = from ed in list
-                     let s = ed.Data.Replace("CMSWeb.Models", "CmsWeb.Models")
-                     select new TransactionTestInfo
-                     {
-                         ed = ed,
-                         ti = Util.DeSerialize<TransactionInfo>(s) as TransactionInfo
-                     };
-            return View(q2);
-        }
     }
 }

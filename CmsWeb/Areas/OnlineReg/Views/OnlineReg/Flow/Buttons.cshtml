@@ -1,39 +1,56 @@
 ﻿@model CmsWeb.Models.OnlineRegModel
-<div style="margin-top: 10px; text-align:right">
-@if (Model.ManagingSubscriptions())
-{ 
-    <input id="submitit" type="submit" class="submitbutton" 
-            value='Manage Subscriptions' />
-}
-@if (Model.OnlinePledge())
-{ 
-    <input id="submitit" type="submit" class="submitbutton" 
-            value='Email me a link to manage my pledge' />
+<div style="margin-top: 10px; text-align:right;float:right">
+  @if (!Model.OnlyOneAllowed())
+  {
+    <div>
+      <input type="submit" href="/OnlineReg/AddAnotherPerson/" class="submitbutton ajax min-width15em"
+             value="Register Someone Else" />
+    </div>
+  }
+  @if (Model.ManagingSubscriptions())
+  {
+    <div>
+    <input id="submitit" type="submit" class="submitbutton"
+           value='Manage Subscriptions' /></div>
+  }
+  @if (Model.OnlinePledge())
+  {
+    <div>
+      <input id="submitit" type="submit" class="submitbutton"
+             value='Email me a link to manage my pledge' /></div>
     <div>This link will be sent to @UtilityExtensions.Util.ObscureEmail(Model.last.person.EmailAddress)</div>
-}
-else if (Model.IsCreateAccount())
-{ 
-    <input id="submitit" type="submit" class="submitbutton" 
-            value='Create Account' />
-}
-else if (Model.ChoosingSlots())
-{ 
-    <input id="submitit" onlyoneallowed="true" type="submit" class="submitbutton" 
-            value='Processing, Please Wait...' />
-}
-else if (Model.OnlineGiving() || Model.SupportMissionTrip)
-{ 
-	<input id="submitit" onlyoneallowed="true" type="submit" class="submitbutton" 
-		   value='Processing, Please Wait...' />
-}
-else
-{ 
-    <input id="submitit" type="submit" class="submitbutton" 
-            value='Complete Registration' />
-}
-@if (!Model.OnlyOneAllowed())
-{ 
-    <input type="submit" href="/OnlineReg/AddAnotherPerson/" class="submitbutton ajax"
-            value="Add Other Registrations" />
-}
+  }
+  else if (Model.IsCreateAccount())
+  {
+    <div>
+    <input id="submitit" type="submit" class="submitbutton"
+           value='Create Account' /></div>
+  }
+  else if (Model.ChoosingSlots())
+  {
+    <div>
+    <input id="submitit" onlyoneallowed="true" type="submit" class="submitbutton"
+           value='Processing, Please Wait...' /></div>
+  }
+  else if (Model.OnlineGiving() || Model.SupportMissionTrip)
+  {
+    <div>
+    <input id="submitit" onlyoneallowed="true" type="submit" class="submitbutton"
+           value='Processing, Please Wait...' /></div>
+  }
+  else
+  {
+    <div>
+      <input id="submitit" type="submit" class="submitbutton min-width15em"
+             value='Complete Registration' />
+    </div>
+    if (Model.AllowSaveProgress())
+    {
+      <div>
+        <input type="submit" href="/OnlineReg/SaveProgress" class="submitbutton ajax min-width15em"
+               value='Save Progress, Finish Later' />
+      </div>
+    }
+  }
 </div>
+<div style="clear:both"></div>

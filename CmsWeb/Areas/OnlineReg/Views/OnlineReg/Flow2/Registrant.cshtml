@@ -7,6 +7,10 @@
 @if (!Model.ShowDisplay())
 // This is a header that will show above the last unfinished item
 {
+    if (Model.LastItem() && !Model.Finished() && Model.NotFirst())
+    {
+        @Helper.OnlineRegSubmitButtonRow("Complete Registration for the above people", style: "btn-mini btn-warning margin-top")
+    }
     if (Model.UserSelectsOrganization()) // show a select organization dropdown
     {
         @Html.EditorFor(m => m, "SelectClass")
@@ -32,10 +36,6 @@
             </div>
         }
     }
-}
-@if (Model.LastItem() && !Model.Finished() && Model.NotFirst())
-{
-    @Helper.OnlineRegSubmitButtonRow("Complete Registration for the above people")
 }
 <div class="panel panel-default">
     <div class="panel-heading">

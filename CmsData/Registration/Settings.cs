@@ -23,6 +23,7 @@ namespace CmsData.Registration
 		public bool AllowOnlyOne { get; set; }
 		public bool TargetExtraValues { get; set; }
 		public bool AllowReRegister { get; set; }
+		public bool AllowSaveProgress { get; set; }
 		public bool OtherFeesAddedToOrgFee { get; set; }
 		public bool IncludeOtherFeesWithDeposit { get; set; }
 		public string Subject { get; set; }
@@ -382,6 +383,9 @@ namespace CmsData.Registration
 				case Parser.RegKeywords.AllowReRegister:
 					AllowReRegister = parser.GetBool();
 					break;
+				case Parser.RegKeywords.AllowSaveProgress:
+					AllowSaveProgress = parser.GetBool();
+					break;
 				case Parser.RegKeywords.TargetExtraValues:
 					TargetExtraValues = parser.GetBool();
 					break;
@@ -647,10 +651,10 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "AllowOnlyOne", AllowOnlyOne);
 			AddValueCk(0, sb, "TargetExtraValues", TargetExtraValues);
 			AddValueCk(0, sb, "AllowReRegister", AllowReRegister);
+			AddValueCk(0, sb, "AllowSaveProgress", AllowSaveProgress);
 			AddValueCk(0, sb, "MemberOnly", MemberOnly);
 			AddValueCk(0, sb, "GroupToJoin", GroupToJoin);
 			AddValueCk(0, sb, "AddAsProspect", AddAsProspect);
-			//AddValueCk(0, sb, "UseBootstrap", UseBootstrap);
 			AddValueCk(0, sb, "NoReqBirthYear", NoReqBirthYear);
 			AddValueCk(0, sb, "NotReqDOB", NotReqDOB);
 			AddValueCk(0, sb, "NotReqAddr", NotReqAddr);

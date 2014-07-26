@@ -3,7 +3,19 @@
 @if (!Model.Found.HasValue)
 // we have not searched for the person yet, let them find their profile
 {
-    @Helper.OnlineRegAjaxButtonRow("/OnlineReg/PersonFind/" + Model.Index, "Find Profile", style: "btn-primary pull-right")
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+      <div class="pull-right">
+        @Helper.OnlineRegAjaxButton("/OnlineReg/PersonFind/" + Model.Index, "Find Profile", style: "btn-primary min-width15em")
+        @if (Model.Parent.AllowSaveProgress())
+        {
+          <div>
+            @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning pull-right min-width15em")
+          </div>
+        }
+      </div>
+    </div>
+  </div>
 }
 else // display the results of the find
 {
@@ -14,15 +26,23 @@ else // display the results of the find
     }
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
-            <span class="pull-right">
-                @Helper.OnlineRegAjaxButton("/OnlineReg/PersonFind/" + Model.Index, "Search Again")
+      <div class="pull-right">
+        @Helper.OnlineRegAjaxButton("/OnlineReg/PersonFind/" + Model.Index, "Search Again", style: "btn-primary min-width15em")
                 @if (Model.IsValidForContinue && !Model.MemberOnly() && Model.orgid != Util.CreateAccountCode && (Model.Found ?? false) == false )
                 // Allow Add New Profile if valid data, not memberonly, not create account mode
                 {
+          <div>
                     @Helper.OnlineRegAjaxButton("/OnlineReg/ShowMoreInfo/" + Model.Index,
-                        "New Profile", style: "btn-warning", id: "regnew")
+                      "New Profile", style: "btn-warning min-width15em", id: "regnew")
+          </div>
                 }
-            </span>
+        @if (Model.Parent.AllowSaveProgress())
+        {
+          <div>
+            @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")
+          </div>
+        }
+      </div>
             @if (!Model.IsValidForContinue && Model.orgid == Util.CreateAccountCode)
             // display helpful message if an anonomous person is trying to create an account
             {

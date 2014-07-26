@@ -406,7 +406,15 @@ namespace CmsWeb.Code
 				new CodeValueItem { Value = "Gift Bag Given" },
 			};
         }
-
+        public IEnumerable<CodeValueItem> YesNoAll()
+        {
+            return new List<CodeValueItem> 
+			{
+				new CodeValueItem { Value = "All" },
+				new CodeValueItem { Value = "Yes" },
+				new CodeValueItem { Value = "No" },
+			};
+        }
 
         public IEnumerable<CodeValueItem> ExtraValueTypeCodes()
         {

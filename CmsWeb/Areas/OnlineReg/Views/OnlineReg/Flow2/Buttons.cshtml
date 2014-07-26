@@ -6,7 +6,7 @@
         <span class="pull-right">
             @if (!Model.OnlyOneAllowed())
             {
-                @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", "Register Someone Else")
+                @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", "Register Someone Else", style: "btn-primary min-width15em")
             }
             @if (Model.ManagingSubscriptions())
             {
@@ -27,7 +27,11 @@
             }
             else
             {
-                @Helper.OnlineRegSubmitButton("Complete Registration", style: "btn-success")
+                @Helper.OnlineRegSubmitButton("Complete Registration", style: "btn-success min-width15em")
+                if (Model.AllowSaveProgress())
+                {
+                  @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")
+                }
             }
         </span>
         @if (sendlinkmsg.HasValue())

@@ -11,6 +11,7 @@ namespace CmsWeb.Models
     public partial class OnlineRegPersonModel
     {
         public bool IsValidForContinue { get; set; }
+        public bool IsValidForNew { get; set; }
         private void ValidateBirthdayRange(ModelStateDictionary ModelState, int i)
         {
             if (org != null)
@@ -217,8 +218,8 @@ Please call the church to resolve this before we can complete your registration.
             ValidateBirthdayRange(ModelState, i);
             IsValidForExisting = ModelState.IsValid;
         }
-        public bool IsValidForNew { get; set; }
-        internal void ValidateModelForNew(ModelStateDictionary ModelState, int i)
+
+        public void ValidateModelForNew(ModelStateDictionary ModelState, int i)
         {
             var dobname = Parent.GetNameFor(mm => mm.List[i].DateOfBirth);
             var foundname = Parent.GetNameFor(mm => mm.List[i].Found);
