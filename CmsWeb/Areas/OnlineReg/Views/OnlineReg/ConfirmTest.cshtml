@@ -2,68 +2,70 @@
 @using UtilityExtensions
 @model IEnumerable<CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController.ConfirmTestInfo>
 <html>
-<head><title>Registration History</title></head>
+<head>
+  <title>Registration History</title>
+</head>
 <body>
-<h2>Registration History</h2>
-@if (Model.Count() > 0)
-{
-<table border="1" cellpadding="2" cellspacing="0">
-<thead><tr><th>Id</th><th>Time</th><th>Header</th><th>User</th></tr></thead>
-  @foreach (var i in Model)
+  <h2>Registration History</h2>
+  @if (Model.Count() > 0)
   {
-   <tr>
-       <td>@i.ed.Id</td>
-       <td><a href="@(Util.ResolveServerUrl("/OnlineReg/ConfirmTestXml"))/@i.ed.Id">@i.ed.Stamp.Value</a></td>
-    @if (i.m.Orgid > 0 && i.m.org != null)
-    {
-           <td><a href='/Organization/@i.m.Orgid'>@i.m.org.OrganizationName</a></td>
-    }
-    else if (i.m.masterorgid > 0)
-    {
-           <td><a href='/Organization/@i.m.masterorgid'>@i.m.masterorg.OrganizationName</a></td>
-    }
-    else
-    { 
-        <td>na</td>
-    }
-       <td>@i.m.LoginName</td>
-   </tr>
-      for (var n = 0; n < i.m.List.Count; n++)
+    <table border="1" cellpadding="2" cellspacing="0">
+      <thead><tr><th>Id</th><th>Time</th><th>Header</th><th>User</th></tr></thead>
+      @foreach (var i in Model)
       {
-          var p = i.m.List[n]; 
-    <tr><td></td>
-        <td>Item @n</td>
-        <td colspan="2">
-            <a href="/Person2/@p.PeopleId">@p.FirstName @p.LastName</a><br />
-            <a href="/Organization/@p.orgid">@(p.org != null ? p.org.OrganizationName : "na")</a><br/>
-            @p.DateOfBirth (@p.age)<br/>
-            @p.Phone.FmtFone()<br/>
-            @p.EmailAddress<br/>
-        @if (p.person != null && p.person.EmailAddress == p.EmailAddress)
-        { 
-            @p.person.EmailAddress<br/>
+        <tr>
+          <td>@i.ed.Id</td>
+          <td><a href="@(Util.ResolveServerUrl("/OnlineReg/ConfirmTestXml"))/@i.ed.Id">@i.ed.Stamp.Value</a><br/>
+              @(i.ed.Completed == true ? "completed" : "incomplete")
+          </td>
+          @if (i.m.Orgid > 0 && i.m.org != null)
+          {
+            <td><a href='/Organization/@i.m.Orgid'>@i.m.org.OrganizationName</a></td>
+          }
+          else if (i.m.masterorgid > 0)
+          {
+            <td><a href='/Organization/@i.m.masterorgid'>@i.m.masterorg.OrganizationName</a></td>
+          }
+          else
+          {
+            <td>na</td>
+          }
+          <td>@i.m.LoginName</td>
+        </tr>
+        for (var n = 0; n < i.m.List.Count; n++)
+        {
+          var p = i.m.List[n];
+          <tr>
+            <td></td>
+            <td>Item @n</td>
+            <td colspan="2">
+              <a href="/Person2/@p.PeopleId">@p.FirstName @p.LastName</a><br />
+              <a href="/Organization/@p.orgid">@(p.org != null ? p.org.OrganizationName : "na")</a><br />
+              @p.DateOfBirth (@p.age)<br />
+              @p.Phone.FmtFone()<br />
+              @p.EmailAddress<br />
+              @if (p.person != null && p.person.EmailAddress != p.EmailAddress)
+              {
+                @p.person.EmailAddress<br />
+              }
+              @if (p.mname.HasValue())
+              {
+                @p.mname<br />
+              }
+              @if (p.fname.HasValue())
+              {
+                @p.fname<br />
+              }
+              @if (p.ShowAddress)
+              {
+                @(p.AddressLineOne)@:, @p.City<br />
+              }
+            </td>
+          </tr>
         }
-        @if (p.mname.HasValue())
-        { 
-            @p.mname<br/>
-        }
-        @if (p.fname.HasValue())
-        { 
-            @p.fname<br/>
-        }
-        @if (p.ShowAddress)
-        { 
-            @(p.AddressLineOne)@:, @p.City<br/>
-        }
-        </td>
-    </tr>
       }
+    </table>
   }
-</table>
-}
-else
-{ }
-
 
 </body>
 </html>

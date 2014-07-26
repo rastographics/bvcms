@@ -77,7 +77,14 @@
                 }
                 else
                 {
+                  if (t.DatumId > 0)
+                  {
                     <a href="/OnlineReg/RegPeople/@t.DatumId">@t.Description</a>
+                  }
+                  else
+                  {
+                    @t.Description
+                  }
                 }
             </td>
             <td>

@@ -451,21 +451,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             return View(m);
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public ActionResult RecentRegistrations(int? days, int? orgid, string sort)
-        {
-            IQueryable<Registration> q = from r in DbUtil.Db.Registrations(days ?? 90)
-                                         where (orgid ?? 0) == 0 || r.OrganizationId == orgid
-                                         select r;
-            if (!User.IsInRole("Finance"))
-                q = q.Where(rr => !rr.OrganizationName.Contains("Giving"));
-            q = sort == "Organization"
-                ? q.OrderBy(rr => rr.OrganizationName).ThenByDescending(rr => rr.Completed)
-                : q.OrderByDescending(rr => rr.Stamp);
-            return View(q);
-        }
-
         [HttpGet]
         public ActionResult Registration(Guid? id, int? oid)
         {

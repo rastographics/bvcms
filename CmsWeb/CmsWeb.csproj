@@ -726,6 +726,8 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\xml.css" />
+    <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
     <Content Include="Content\images\bvcms-logo-on-dark.png" />
     <Content Include="Content\images\computer_error.mp3" />
@@ -960,7 +962,6 @@
     <Content Include="Areas\Public\Views\APITest\RunScript.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\AnswersNotRequired.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\AskSMS.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\RecentRegistrations.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RegistrationSummary.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\GivingLinks.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactorSummary.cshtml" />

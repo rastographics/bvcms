@@ -500,8 +500,6 @@ namespace CmsWeb.Models
             if (ed.Completed == true || ed.Abandoned == true)
                 return null;
             var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
-            if (m.UserPeopleId == null)
-                return null;
             m.Datum = ed;
             m.DatumId = id;
             m.Completed = ed.Completed ?? false;

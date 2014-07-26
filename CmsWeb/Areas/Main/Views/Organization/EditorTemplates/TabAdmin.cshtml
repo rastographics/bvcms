@@ -1,4 +1,5 @@
 ﻿@model CmsData.Registration.Settings
+@using CmsData
 @using CmsData.Registration
 @using CmsWeb
 @using CmsWeb.Models.OrganizationPage
@@ -122,7 +123,7 @@
     AllowReRegister:
   </span> @Html.CheckBox("AllowReRegister", Model.AllowReRegister)
 </li>
-@if (User.IsInRole("Developer"))
+@if (DbUtil.Db.Setting("AllowSaveProgress", "false") == "true")
 {
 <li>
     <span class="keyword big tip" title="AllowSaveProgress
