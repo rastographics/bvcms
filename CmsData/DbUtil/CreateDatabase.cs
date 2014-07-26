@@ -6,6 +6,7 @@
  */
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using UtilityExtensions;
@@ -82,6 +83,7 @@ namespace CmsData
         }
         public static string CreateDatabase()
         {
+            string fn = null;
             try
             {
                 var Server = HttpContext.Current.Server;
@@ -104,16 +106,16 @@ namespace CmsData
                 using (var cn = new SqlConnection(Util.ConnectionString))
                 {
                     cn.Open();
-                    var scripts = File.ReadAllLines(path + @"..\SqlScripts\allscripts.txt");
-                    foreach (var fn in scripts)
+                    foreach(var f in Directory.EnumerateFiles(path + @"..\SqlScripts\BuildDb").OrderBy( ff => ff))
                     {
-                        var script = File.ReadAllText(path + @"..\SqlScripts\BuildDb\" + fn);
+                        fn = f;
+                        var script = File.ReadAllText(f);
                         RunScripts(cn, script);
                     }
                     string datascript = null;
                     datascript = Util.Host == "testdb"
-                        ? File.ReadAllText(path + @"..\SqlScripts\BuildDb\datascriptTest.sql")
-                        : File.ReadAllText(path + @"..\SqlScripts\BuildDb\datascriptStarter.sql");
+                        ? File.ReadAllText(path + @"..\SqlScripts\datascriptTest.sql")
+                        : File.ReadAllText(path + @"..\SqlScripts\datascriptStarter.sql");
                     RunScripts(cn, datascript);
                 }
                 HttpRuntime.Cache.Remove(Util.Host + "-DatabaseExists");
@@ -122,7 +124,7 @@ namespace CmsData
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return string.Format("error in {0}\n{1}", fn, ex.Message);
             }
             return null;
         }

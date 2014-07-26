@@ -485,3 +485,10 @@ tr.alt {
 div.instructions {
     display: none;
 }
+.min-width15em {
+    -moz-min-width: 15em;
+    -ms-min-width: 15em;
+    -o-min-width: 15em;
+    -webkit-min-width: 15em;
+    min-width: 15em;
+}

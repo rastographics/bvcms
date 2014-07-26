@@ -3,6 +3,8 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
+using CmsData.Registration;
 using CmsWeb.Models;
 using UtilityExtensions;
 
@@ -85,6 +87,22 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     if (om == null)
                         continue;
                     DbUtil.Db.SubmitChanges();
+                    if (org.IsMissionTrip == true)
+                    {
+                        DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                            new GoerSenderAmount 
+                            {
+                                Amount = ti.Amt,
+                                GoerId = pi.PeopleId,
+                                Created = DateTime.Now,
+                                OrgId = org.OrganizationId,
+                                SupporterId = pi.PeopleId,
+                            });
+                        var setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+                        var fund = setting.DonationFundId;
+                        p.PostUnattendedContribution(DbUtil.Db, ti.Amt ?? 0, fund, 
+                            "SupportMissionTrip: org={0}; goer={1}".Fmt(org.OrganizationId, pi.PeopleId), typecode: BundleTypeCode.Online);
+                    }
                     var pay = amt;
                     if (org.IsMissionTrip == true)
                         Db.ExecuteCommand(@"
@@ -154,6 +172,7 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
             if (OnlineRegModel.GetTransactionGateway() == "serviceu")
                 ti = PaymentForm.CreateTransaction(DbUtil.Db, ti, Amount);
             ConfirmDuePaidTransaction(ti, TransactionID, sendmail: true);
+            ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
             SetHeaders(ti.OrgId ?? 0);
             return View("PayAmtDue/Confirm", ti);
         }

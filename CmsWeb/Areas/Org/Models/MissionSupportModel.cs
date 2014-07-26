@@ -86,11 +86,12 @@ namespace CmsWeb.Areas.Org.Models
                 var fund = setting.DonationFundId;
                 if (AmountGoer > 0)
                 {
+                    var goerid = Goer.Value.ToInt();
                     DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
                         new GoerSenderAmount 
                         {
                             Amount = AmountGoer,
-                            GoerId = Goer.Value.ToInt(),
+                            GoerId = goerid,
                             Created = DateTime.Now,
                             OrgId = org.OrganizationId,
                             SupporterId = PeopleId ?? 0,
@@ -98,9 +99,15 @@ namespace CmsWeb.Areas.Org.Models
                     var c = person.PostUnattendedContribution(DbUtil.Db,
                         AmountGoer ?? 0, fund, 
                         "SupportMissionTrip: org={0}; goer={1}".Fmt(OrgId, Goer.Value), typecode: BundleTypeCode.ChecksAndCash);
-                    c.CheckNo = CheckNo;
+                    c.CheckNo = CheckNo.Truncate(20);
+                    if (PeopleId == goerid)
+                    {
+                        var om = DbUtil.Db.OrganizationMembers.Single(
+                                mm => mm.PeopleId == goerid && mm.OrganizationId == OrgId);
+                        om.AddTransaction(DbUtil.Db, "Payment", AmountGoer ?? 0, "Payment");
+                    }
                     // send notices
-                    var goer = DbUtil.Db.LoadPersonById(Goer.Value.ToInt());
+                    var goer = DbUtil.Db.LoadPersonById(goerid);
                     ToGoerName = "to " + goer.Name;
                     DbUtil.Db.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
                         "{0:C} donation received from {1}".Fmt(AmountGoer, person.Name));

@@ -6,7 +6,7 @@
         <span class="pull-right">
             @if (!Model.OnlyOneAllowed())
             {
-                @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", "Register Someone Else")
+                @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", "Register Someone Else", style: "btn-primary min-width15em")
             }
             @if (Model.ManagingSubscriptions())
             {
@@ -21,13 +21,17 @@
             {
                 @Helper.OnlineRegSubmitButton("Create Account")
             }
-            else if (Model.ChoosingSlots() || Model.OnlineGiving() || Model.SupportMissionTrip)
+            else if (Model.ChoosingSlots() || Model.OnlineGiving() || Model.SupportMissionTrip || Model.ManageGiving())
             {
                 @Helper.OnlineRegSubmitButton("Processing, Please Wait", onlyoneallowed: true, style: "btn-default")
             }
             else
             {
-                @Helper.OnlineRegSubmitButton("Complete Registration", style: "btn-success")
+                @Helper.OnlineRegSubmitButton("Complete Registration", style: "btn-success min-width15em")
+                if (Model.AllowSaveProgress())
+                {
+                  @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")
+                }
             }
         </span>
         @if (sendlinkmsg.HasValue())

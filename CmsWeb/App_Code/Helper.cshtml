@@ -50,11 +50,11 @@
         <a href="@href">@text</a>
     }
 }
-@helper OnlineRegSubmitButtonRow(string text, bool onlyoneallowed = false)
+@helper OnlineRegSubmitButtonRow(string text, bool onlyoneallowed = false, string style="")
 {
     <div class="form-group">
         <div class="col-sm-12">
-            @Helper.OnlineRegSubmitButton(text, onlyoneallowed, style: "btn-primary pull-right")
+            @Helper.OnlineRegSubmitButton(text, onlyoneallowed, style: "btn-primary pull-right " + style)
         </div>
     </div>
 }

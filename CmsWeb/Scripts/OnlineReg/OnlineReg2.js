@@ -186,6 +186,11 @@
         });
     else
         $.idleTimer($.tmout);
+    // if we are coming back to this page to continue a registration, 
+    // check to see if we should be on our way to the next step
+    if ($("#submitit").attr("onlyoneallowed") == "true" && $(".input-validation-error", $("#completeReg")).length === 0) {
+        $("#completeReg").submit();
+    }
 });
 
 function setElementName(elems, name) {

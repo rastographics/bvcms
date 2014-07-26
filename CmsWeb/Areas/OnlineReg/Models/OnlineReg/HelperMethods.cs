@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Xml.Serialization;
 using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
@@ -20,7 +21,7 @@ namespace CmsWeb.Models
                 settings = new Dictionary<int, Settings>();
                 HttpContext.Current.Items.Add("RegSettings", settings);
             }
-            var o = new Organization {OrganizationId = Util.CreateAccountCode, OrganizationName = "My Data"};
+            var o = new Organization { OrganizationId = Util.CreateAccountCode, OrganizationName = "My Data" };
             o.RegistrationTypeId = RegistrationTypeCode.CreateAccount;
             if (!settings.ContainsKey(Util.CreateAccountCode))
                 settings.Add(Util.CreateAccountCode, ParseSetting("AllowOnlyOne: true", Util.CreateAccountCode));
@@ -146,8 +147,8 @@ namespace CmsWeb.Models
             if (settings != null)
             {
                 var q = from o in settings.Values
-                    where o.AllowOnlyOne || o.AskVisible("AskTickets")
-                    select o;
+                        where o.AllowOnlyOne || o.AskVisible("AskTickets")
+                        select o;
                 return q.Any();
             }
             return false;
@@ -205,6 +206,14 @@ namespace CmsWeb.Models
             if (settings == null)
                 return false;
             return settings.Values.Any(o => o.AskDonation);
+        }
+        public bool AllowSaveProgress()
+        {
+            if (org != null)
+                return settings[org.OrganizationId].AllowSaveProgress;
+            if (settings == null)
+                return false;
+            return settings.Values.Any(o => o.AllowSaveProgress);
         }
 
         public string DonationLabel()
@@ -447,10 +456,70 @@ namespace CmsWeb.Models
         {
             get
             {
-                if(!timeOut.HasValue)
+                if (!timeOut.HasValue)
                     timeOut = Util.IsDebug() ? 16000000 : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
                 return timeOut.Value;
             }
+        }
+
+        public void UpdateDatum(bool completed = false, bool abandoned = false)
+        {
+            if (DatumId.HasValue)
+                Datum = DbUtil.Db.RegistrationDatas.Single(dd => dd.Id == DatumId);
+            else
+            {
+                Datum = new RegistrationDatum
+                {
+                    OrganizationId = masterorgid ?? orgid,
+                    UserPeopleId = UserPeopleId,
+                    Stamp = Util.Now
+                };
+                DbUtil.Db.RegistrationDatas.InsertOnSubmit(Datum);
+                DbUtil.Db.SubmitChanges();
+                DatumId = Datum.Id;
+            }
+            Datum.Data = Util.Serialize<OnlineRegModel>(this);
+            if (completed)
+                Datum.Completed = true;
+            if (abandoned)
+                Datum.Abandoned = true;
+            DbUtil.Db.SubmitChanges();
+        }
+
+        public bool Completed { get; set; }
+        public int? DatumId { get; set; }
+
+        [XmlIgnore]
+        public RegistrationDatum Datum { get; set; }
+
+        public static OnlineRegModel GetRegistrationFromDatum(int id)
+        {
+            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
+            if (ed == null)
+                return null;
+            if (ed.Completed == true || ed.Abandoned == true)
+                return null;
+            var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+            m.Datum = ed;
+            m.DatumId = id;
+            m.Completed = ed.Completed ?? false;
+            return m;
+        }
+
+        public OnlineRegModel GetExistingRegistration(int pid)
+        {
+            if (!AllowSaveProgress())
+                return null;
+            var ed = (from e in DbUtil.Db.RegistrationDatas
+                      where e.OrganizationId == (masterorgid ?? orgid)
+                      where e.UserPeopleId == pid
+                      where (e.Abandoned ?? false) == false
+                      where (e.Completed ?? false) == false
+                      orderby e.Stamp descending
+                      select e).FirstOrDefault();
+            return ed != null
+                ? GetRegistrationFromDatum(ed.Id)
+                : null;
         }
     }
 }

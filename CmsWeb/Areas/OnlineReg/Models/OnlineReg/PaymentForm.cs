@@ -61,6 +61,7 @@ namespace CmsWeb.Models
         public bool? IsLoggedIn { get; set; }
         public bool? CanSave { get; set; }
         public bool SavePayInfo { get; set; }
+        public bool? AllowSaveProgress { get; set; }
         public bool? IsGiving { get; set; }
         public bool NoCreditCardsAllowed { get; set; }
         private bool? _noEChecksAllowed;
@@ -244,6 +245,7 @@ namespace CmsWeb.Models
                 Type = r.payinfo.PreferredPaymentType,
 #endif
             };
+            pf.AllowSaveProgress = m.AllowSaveProgress();
             pf.NoCreditCardsAllowed = m.NoCreditCardsAllowed();
             pf.UseBootstrap = m.UseBootstrap;
             if (m.OnlineGiving())
@@ -262,6 +264,7 @@ namespace CmsWeb.Models
             else if (pf.NoEChecksAllowed)
                 pf.Type = "C"; // credit card only
             pf.Type = pf.NoEChecksAllowed ? "C" : pf.Type;
+            pf.DatumId = m.DatumId ?? 0;
             return pf;
         }
         public static Transaction CreateTransaction(CMSDataContext Db, Transaction t, decimal? amount)

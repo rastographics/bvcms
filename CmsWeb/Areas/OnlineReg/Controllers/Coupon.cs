@@ -15,11 +15,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult ApplyCoupon(PaymentForm pf)
         {
 			OnlineRegModel m = null;
-			ExtraDatum ed = null;
             if (pf.PayBalance == false)
 			{
-                ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == pf.DatumId);
-				m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                m = OnlineRegModel.GetRegistrationFromDatum(pf.DatumId);
 				m.ParseSettings();
 			}
 
@@ -28,7 +26,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             string coupon = pf.Coupon.ToUpper().Replace(" ", "");
             string admincoupon = DbUtil.Db.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
             if (coupon == admincoupon)
-                return Json(new { confirm = "/onlinereg/Confirm/{0}?TransactionID=Coupon(Admin)".Fmt(pf.DatumId) });
+            {
+                var tic = pf.CreateTransaction(DbUtil.Db, pf.AmtToPay);
+                return Json( new { confirm = "/onlinereg/ConfirmDuePaid/{0}?TransactionID=Coupon({1})&Amount={2}".Fmt(tic.Id, Util.fmtcoupon(coupon), tic.Amt) });
+            }
 
             var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == coupon);
             if (c == null)
@@ -52,7 +53,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			{
                 m.History.Add("ApplyCoupon");
 			    m.TranId = ti.OriginalId;
-			    ed.Data = Util.Serialize<OnlineRegModel>(m);
+                m.UpdateDatum();
 			}
 			var tid = "Coupon({0:n2})".Fmt(Util.fmtcoupon(coupon));
 
@@ -82,8 +83,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (!Coupon.HasValue())
                 return Json(new { error = "empty coupon" });
-            var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == id);
-            var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+            var m = OnlineRegModel.GetRegistrationFromDatum(id);
             m.ParseSettings();
             string coupon = Coupon.ToUpper().Replace(" ", "");
             string admincoupon = DbUtil.Db.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");

@@ -1,7 +1,7 @@
 ﻿@model CmsWeb.Models.OnlineRegPersonModel
 <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
-        <span class="pull-right">
+        <div class="pull-right">
             @if (Model.ManageSubscriptions()) // allow submit here for manage subscriptions
             {
                 if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsMissionTrip())
@@ -10,7 +10,13 @@
                     <label>Create Account (optional) @Html.CheckBoxFor(m => m.CreatingAccount)</label>
                 }
             }
-            @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitNew/" + Model.Index, "Submit New Profile")
-        </span>
+            @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitNew/" + Model.Index, "Submit New Profile", style: "btn-primary min-width15em")
+            @if (Model.Parent.AllowSaveProgress())
+            {
+              <div>
+                @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")
+              </div>
+            }
+        </div>
     </div>
 </div>

@@ -126,7 +126,6 @@ namespace CmsWeb.Models
             foreach (var pi in typeof (OnlineRegModel).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                                           .Where(vv => vv.CanRead && vv.CanWrite))
             {
-                Debug.WriteLine(pi.Name);
                 switch (pi.Name)
                 {
                     case "List":

@@ -1,0 +1,37 @@
+﻿@model CmsWeb.Areas.Search.Models.RegistrationSearchModel
+@{
+    ViewBag.Title = "Registration Search";
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Search/RegistrationSearch.js")
+}
+<div class="container">
+    <form id="form-registration-search" class="ajax form-horizontal w120" data-results="#results" method="post">
+        <div id="registration-search" class="border-bottom">
+            <fieldset>
+                <legend>Registration Search</legend>
+                <div class="row-fluid">
+                    <div class="inline">
+                        @Html.EditorFor(m => m.SearchParameters.Organization)
+                        @Html.EditorFor(m => m.SearchParameters.Registrant)
+                        @Html.EditorFor(m => m.SearchParameters.count)
+                        @Html.EditorFor(m => m.SearchParameters.StartDate)
+                        @Html.EditorFor(m => m.SearchParameters.EndDate)
+                    </div>
+                    <div class="inline align-top">
+                        @Html.EditorFor(m => m.SearchParameters.Complete)
+                        @Html.EditorFor(m => m.SearchParameters.Active)
+                        @Html.EditorFor(m => m.SearchParameters.Abandoned)
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <a class="btn margin-left submit" href="/RegistrationSearch/Clear">Clear</a>
+                    <a class="btn btn-primary ajax" href="/RegistrationSearch/Results">Search</a>
+                </div>
+            </fieldset>
+        </div>
+        @Html.Partial("Results", Model)
+    </form>
+</div>

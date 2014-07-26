@@ -22,6 +22,9 @@ namespace CmsData
         public int VisitLookbackDays { get; set; }
         public bool OrgMembersOnly { get; set; }
         public bool OrgLeadersOnly { get; set; }
+        public DateTime? QbStartDateOverride { get; set; }
+        public DateTime? QbEndDateOverride { get; set; }
+        public int? QbDivisionOverride { get; set; }
         public string Host { get; set; }
         private string cmshost;
         public string CmsHost

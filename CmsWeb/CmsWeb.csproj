@@ -435,6 +435,9 @@
     <Compile Include="Areas\People\Models\Person\Emails\EmailScheduled.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIListController.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\RecentAbsentsViewModel.cs" />
+    <Compile Include="Areas\Search\Controllers\RegistrationSearchController.cs" />
+    <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchInfo.cs" />
+    <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
     <Compile Include="Controllers\DialogController.cs" />
@@ -723,6 +726,8 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\xml.css" />
+    <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
     <Content Include="Content\images\bvcms-logo-on-dark.png" />
     <Content Include="Content\images\computer_error.mp3" />
@@ -892,6 +897,7 @@
     <Content Include="Areas\People\Views\Person\Profile\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Display.cshtml" />
+    <Content Include="Scripts\Search\RegistrationSearch.js" />
     <Content Include="Scripts\Search\SavedQuery2.js" />
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
@@ -956,7 +962,6 @@
     <Content Include="Areas\Public\Views\APITest\RunScript.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\AnswersNotRequired.cshtml" />
     <Content Include="Areas\Main\Views\Organization\EditorTemplates\AskSMS.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\RecentRegistrations.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RegistrationSummary.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\GivingLinks.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactorSummary.cshtml" />
@@ -1093,6 +1098,10 @@
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2a.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2b.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditPythonScript.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Existing.cshtml" />
+    <Content Include="Areas\Search\Views\RegistrationSearch\Index.cshtml" />
+    <Content Include="Areas\Search\Views\RegistrationSearch\Results.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\FinishLater.cshtml" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddFeeAdjustment.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\GoerSupporters.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />

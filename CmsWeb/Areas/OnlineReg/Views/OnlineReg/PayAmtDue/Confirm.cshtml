@@ -1,5 +1,5 @@
 ﻿@using CmsData
-@model CmsData.Transaction
+@model Transaction
 @{
     Layout = Model.UseBootstrap(DbUtil.Db)
         ? "~/Views/Shared/onlinereg2.cshtml"
@@ -9,8 +9,8 @@
 @section scripts
 {
     @(Model.UseBootstrap(DbUtil.Db) 
-        ? @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
-        : @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
+        ? Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
+        : Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
     <script type="text/javascript">
         $(function () {
             $(document).bind("idle.idleTimer", function () {
@@ -32,7 +32,7 @@
    <h2>Transaction Completed</h2>
     <p>
         Thank you for your payment of @Model.Amt.Value.ToString("N") for @Model.Description.<br />
-        Your balance is @Model.Amtdue.Value.ToString("N").<br/>
+        Your balance is @ViewBag.amtdue<br/>
         You should receive a confirmation email shortly.
     </p>
 </div>

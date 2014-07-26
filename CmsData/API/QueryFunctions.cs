@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Web.UI.WebControls;
 using UtilityExtensions;
 using IronPython.Hosting;
 using System.IO;
@@ -194,7 +195,92 @@ namespace CmsData
                 return 0;
             return qb.Count();
         }
+        public int QueryCountDivDateRange(string s, string division, string startdt, int days)
+        {
+            var start = DateTime.Parse(startdt);
+            var enddt = start.AddDays(days);
+            var divid = db.Divisions.Where(dd => dd.Name == division).Select(dd => dd.Id).SingleOrDefault();
+            db.QbStartDateOverride = start;
+            db.QbEndDateOverride = enddt;
+            db.QbDivisionOverride = divid;
 
+            try
+            {
+                var qb = db.PeopleQuery2(s);
+                if (qb == null)
+                    return 0;
+                return qb.Count();
+            }
+            finally
+            {
+                db.QbStartDateOverride = null;
+                db.QbEndDateOverride = null;
+                db.QbDivisionOverride = null;
+            }
+        }
+        public int QueryCountDivDate(string s, string division, string startdt)
+        {
+            var start = DateTime.Parse(startdt);
+            var divid = db.Divisions.Where(dd => dd.Name == division).Select(dd => dd.Id).SingleOrDefault();
+            db.QbStartDateOverride = start;
+            db.QbEndDateOverride = start;
+            db.QbDivisionOverride = divid;
+
+            try
+            {
+                var qb = db.PeopleQuery2(s);
+                if (qb == null)
+                    return 0;
+                return qb.Count();
+            }
+            finally
+            {
+                db.QbStartDateOverride = null;
+                db.QbEndDateOverride = null;
+                db.QbDivisionOverride = null;
+            }
+        }
+        public int QueryCountDateRange(string s, string startdt, int days)
+        {
+            var start = DateTime.Parse(startdt);
+            var enddt = start.AddDays(days);
+            db.QbStartDateOverride = start;
+            db.QbEndDateOverride = enddt;
+
+            try
+            {
+                var qb = db.PeopleQuery2(s);
+                if (qb == null)
+                    return 0;
+                return qb.Count();
+            }
+            finally
+            {
+                db.QbStartDateOverride = null;
+                db.QbEndDateOverride = null;
+                db.QbDivisionOverride = null;
+            }
+        }
+        public int QueryCountDate(string s, string startdt)
+        {
+            var start = DateTime.Parse(startdt);
+            db.QbStartDateOverride = start;
+            db.QbEndDateOverride = start;
+
+            try
+            {
+                var qb = db.PeopleQuery2(s);
+                if (qb == null)
+                    return 0;
+                return qb.Count();
+            }
+            finally
+            {
+                db.QbStartDateOverride = null;
+                db.QbEndDateOverride = null;
+                db.QbDivisionOverride = null;
+            }
+        }
         public int StatusCount(string s)
         {
             var statusflags = s.Split(',');

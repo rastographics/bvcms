@@ -155,7 +155,7 @@
 @helper SubmitButton()
 {
     <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
+        <div class="col-sm-offset-3 col-sm-9 text-right">
 
             @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount())
             {
@@ -165,8 +165,14 @@
                     </label>
                 </div>
             }
+            <div>
             @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitOtherInfo/" + @Model.Index, "Submit",
-                id: "otheredit", style: "btn-primary pull-right")
+                id: "otheredit", style: "btn-primary min-width15em")</div>
+            @if (Model.Parent.AllowSaveProgress())
+            {
+              <div>
+              @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")</div>
+            }
             @Html.DivValidationMessage("Form")
         </div>
     </div>
