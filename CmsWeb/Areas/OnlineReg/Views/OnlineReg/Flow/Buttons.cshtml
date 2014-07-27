@@ -26,13 +26,7 @@
     <input id="submitit" type="submit" class="submitbutton"
            value='Create Account' /></div>
   }
-  else if (Model.ChoosingSlots())
-  {
-    <div>
-    <input id="submitit" onlyoneallowed="true" type="submit" class="submitbutton"
-           value='Processing, Please Wait...' /></div>
-  }
-  else if (Model.OnlineGiving() || Model.SupportMissionTrip || Model.ManageGiving())
+  else if (Model.OnlyOneAllowed() || Model.OnlineGiving() || Model.SupportMissionTrip || Model.ManageGiving() || Model.ChoosingSlots())
   {
     <div>
     <input id="submitit" onlyoneallowed="true" type="submit" class="submitbutton"
@@ -40,10 +34,13 @@
   }
   else
   {
-    <div>
-      <input id="submitit" type="submit" class="submitbutton min-width15em"
-             value='Complete Registration' />
+    <div class="blue" style="display:table-cell;">
+      Please click this button<br/> 
+      to complete your registration
     </div>
+    <div style="display:table-cell;vertical-align: bottom;padding-left: 8px;">
+      <input id="submitit" type="submit" class="submitbutton min-width15em"
+             value='Complete Registration' /></div>
     if (Model.AllowSaveProgress())
     {
       <div>
