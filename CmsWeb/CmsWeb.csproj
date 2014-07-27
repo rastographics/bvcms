@@ -1104,6 +1104,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\FinishLater.cshtml" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddFeeAdjustment.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\GoerSupporters.cshtml" />
+    <Content Include="Areas\People\Views\Shared\EditorTemplates\Value.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
@@ -2448,7 +2449,6 @@
     <Folder Include="Areas\OnlineReg\Models\Payments\" />
     <Folder Include="Areas\OnlineReg\Views\Shared\" />
     <Folder Include="Areas\Org\Views\Shared\" />
-    <Folder Include="Areas\People\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />

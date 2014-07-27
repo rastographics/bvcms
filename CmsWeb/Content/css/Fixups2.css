@@ -680,6 +680,8 @@ fieldset.table, div.table {
 
 fieldset.cell, div.cell {
     display: table-cell;
+    vertical-align: top;
+    padding-top: 5px;
 }
 
 form.left-gutter,
@@ -835,7 +837,14 @@ div.height33 div.control-group {
     float: none !important;
 }
 
-.width140 div.controls {
+.width120 div.controls,
+.cell.width120
+{
+    width: 120px;
+}
+.width140 div.controls,
+.cell.width140
+{
     width: 140px;
 }
 
@@ -1259,4 +1268,7 @@ div.growlUI {
 div.scroll150 {
     height: 150px;
     overflow-y: scroll;
+}
+.bold {
+    font-weight: bold;
 }
