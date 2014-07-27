@@ -65,7 +65,7 @@ namespace UtilityExtensions
         {
             get
             {
-#if DEBUG
+#if DEBUG2
                 return DateTime.Now.Add(NowOffset);
 #else
                 return DateTime.Now;

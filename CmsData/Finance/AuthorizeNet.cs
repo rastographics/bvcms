@@ -23,7 +23,7 @@ namespace CmsData
 		CMSDataContext Db;
 		public AuthorizeNet(CMSDataContext Db, bool testing)
 		{
-#if DEBUG
+#if DEBUG2
 			testing = true;
 #endif
 			this.Db = Db;
