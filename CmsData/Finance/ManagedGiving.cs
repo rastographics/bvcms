@@ -13,7 +13,7 @@ namespace CmsData
     {
         public DateTime FindNextDate(DateTime ndt)
         {
-            if (ndt.Date == DateTime.Today)
+            if (ndt.Date == Util.Now.Date)
                 ndt = ndt.AddDays(1).Date;
             if (StartWhen.HasValue && ndt.Date < StartWhen)
                 ndt = StartWhen.Value;
@@ -121,7 +121,7 @@ namespace CmsData
                     PeopleId = Person.PeopleId,
                     Amt = tot,
                 });
-                NextDate = FindNextDate(DateTime.Today.AddDays(1));
+                NextDate = FindNextDate(Util.Now.Date.AddDays(1));
                 Db.SubmitChanges();
                 if (tot > 0)
                 {
@@ -155,13 +155,13 @@ namespace CmsData
             if (gateway.HasValue())
             {
                 var q = from rg in Db.ManagedGivings
-                        where rg.NextDate < DateTime.Today
+                        where rg.NextDate < Util.Now.Date
                         select rg;
                 foreach (var rg in q)
-                    rg.NextDate = rg.FindNextDate(DateTime.Today);
+                    rg.NextDate = rg.FindNextDate(Util.Now.Date);
 
                 var rgq = from rg in Db.ManagedGivings
-                          where rg.NextDate == DateTime.Today
+                          where rg.NextDate == Util.Now.Date
                           select new
                           {
                               rg,

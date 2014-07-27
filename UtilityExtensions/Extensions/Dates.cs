@@ -10,11 +10,14 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.IO;
 using System.Globalization;
+using System.Threading;
+using System.Web;
 
 namespace UtilityExtensions
 {
     public static partial class Util
     {
+        private const string STR_NOWOFFSET = "NOWOFFSET";
         public const int SignalNoYear = 1897;
         private static DateTime? GoodDate(DateTime? dt)
         {
@@ -60,7 +63,44 @@ namespace UtilityExtensions
         }
         public static DateTime Now
         {
-            get { return DateTime.Now; }
+            get
+            {
+#if DEBUG
+                return DateTime.Now.Add(NowOffset);
+#else
+                return DateTime.Now;
+#endif
+            }
+        }
+        public static TimeSpan NowOffset
+        {
+            get
+            {
+                var deb = TimeSpan.Zero;
+
+                if (HttpContext.Current != null)
+                {
+                    if (HttpContext.Current.Session != null)
+                        if (HttpContext.Current.Session[STR_SMTPDEBUG] != null)
+                            deb = (TimeSpan)HttpContext.Current.Session[STR_NOWOFFSET];
+                }
+                else
+                {
+                    var localDataStoreSlot = Thread.GetNamedDataSlot(STR_NOWOFFSET);
+                    deb = (TimeSpan)Thread.GetData(localDataStoreSlot);
+                }
+                return deb;
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                {
+                    if (HttpContext.Current.Session != null)
+                        HttpContext.Current.Session[STR_NOWOFFSET] = value;
+                }
+                else
+                    Thread.SetData(Thread.GetNamedDataSlot(STR_NOWOFFSET), value);
+            }
         }
         public static bool DateValid(string dt)
         {

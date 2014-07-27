@@ -9,7 +9,7 @@ namespace CmsWeb.Code
     {
         public static void ValidateCreditCardInfo(ModelStateDictionary ModelState, PaymentForm pf)
         {
-            if (pf.SavePayInfo && pf.CreditCard.StartsWith("X"))
+            if (pf.SavePayInfo && pf.CreditCard.HasValue() && pf.CreditCard.StartsWith("X"))
                 return;
             if (!ValidateCard(pf.CreditCard, pf.SavePayInfo))
                 ModelState.AddModelError("CreditCard", "invalid card number");
