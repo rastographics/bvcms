@@ -237,6 +237,7 @@ namespace CmsData.Codes
         public const int OnlinePledge = 5;
         public const int Pledge = 6;
         public const int GiftsInKind = 30;
+        public const int Stock = 32;
     }
     public class ContributionStatusCode
     {
@@ -258,11 +259,13 @@ namespace CmsData.Codes
         public const int Pledge = 8;
         public const int NonTaxDed = 9;
         public const int GiftInKind = 10;
+        public const int Stock = 20;
         public static int[] SpecialTypes = new int[]
         {
             ContributionTypeCode.GiftInKind,
             ContributionTypeCode.NonTaxDed,
-            ContributionTypeCode.Pledge
+            ContributionTypeCode.Pledge,
+            ContributionTypeCode.Stock,
         };
         public static int[] NonTaxTypes = new int[]
         {

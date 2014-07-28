@@ -60,7 +60,8 @@ namespace CmsWeb.Models
         {
             this.id = id;
             PLNT = bundle.BundleHeaderTypeId == BundleTypeCode.Pledge ? "PL" :
-                bundle.BundleHeaderTypeId == BundleTypeCode.GiftsInKind ? "GK" : "CN";
+                bundle.BundleHeaderTypeId == BundleTypeCode.GiftsInKind ? "GK" : 
+                bundle.BundleHeaderTypeId == BundleTypeCode.Stock ? "SK" : "CN";
         }
 
         public IEnumerable<ContributionInfo> FetchContributions(int? cid = null)
@@ -361,6 +362,9 @@ namespace CmsWeb.Models
                     case "GK":
                         type = ContributionTypeCode.GiftInKind;
                         break;
+                    case "SK":
+                        type = ContributionTypeCode.Stock;
+                        break;
                     default:
                         type = ContributionTypeCode.CheckCash;
                         break;
@@ -422,6 +426,9 @@ namespace CmsWeb.Models
                     break;
                 case "GK":
                     type = ContributionTypeCode.GiftInKind;
+                    break;
+                case "SK":
+                    type = ContributionTypeCode.Stock;
                     break;
                 default:
                     type = ContributionTypeCode.CheckCash;

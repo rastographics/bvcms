@@ -123,7 +123,7 @@
     AllowReRegister:
   </span> @Html.CheckBox("AllowReRegister", Model.AllowReRegister)
 </li>
-@if (DbUtil.Db.Setting("AllowSaveProgress", "false") == "true")
+@if (User.IsInRole("Developer"))
 {
 <li>
     <span class="keyword big tip" title="AllowSaveProgress

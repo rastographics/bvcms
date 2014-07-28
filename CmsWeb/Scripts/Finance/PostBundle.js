@@ -256,7 +256,7 @@
         if (!options.q) {
             var n = parseFloat($('#amt').val());
             var plnt = $("#entry .PLNT").text();
-            if (!n > 0 && plnt != 'GK') {
+            if (!n > 0 && plnt != 'GK' && plnt != 'SK') {
                 $.growlUI("Contribution", "Cannot post, No Amount");
                 return;
             }

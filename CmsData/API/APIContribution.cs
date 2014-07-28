@@ -275,7 +275,7 @@ namespace CmsData.API
         {
             var q = from c in Db.Contributions
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                    where c.ContributionTypeId != ContributionTypeCode.GiftInKind                    
+                    where c.ContributionTypeId != ContributionTypeCode.GiftInKind
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
                     where !Codes.ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
@@ -283,6 +283,28 @@ namespace CmsData.API
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
                     where c.ContributionFund.NonTaxDeductible == true || ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
                     where (c.PledgeFlag ?? false) == false
+                    orderby c.ContributionDate
+                    select new ContributionInfo
+                    {
+                        ContributionId = c.ContributionId,
+                        ContributionAmount = c.ContributionAmount ?? 0,
+                        ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
+                        Fund = c.ContributionFund.FundName,
+                        CheckNo = c.CheckNo,
+                        Name = c.Person.Name,
+                        Description = c.ContributionDesc
+                    };
+            return q;
+        }
+        public static IEnumerable<ContributionInfo> StockGifts(CMSDataContext Db, ContributorInfo ci, DateTime fromDate, DateTime toDate)
+        {
+            var q = from c in Db.Contributions
+                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                    where c.ContributionTypeId == ContributionTypeCode.Stock
+                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                    where c.ContributionStatusId == ContributionStatusCode.Recorded
+                    where c.ContributionDate >= fromDate && c.ContributionDate.Value.Date <= toDate.Date
+                    where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
                     orderby c.ContributionDate
                     select new ContributionInfo
                     {
@@ -346,6 +368,7 @@ namespace CmsData.API
                  ContributionTypeCode.ReturnedCheck,
                  ContributionTypeCode.Reversed,
                  ContributionTypeCode.GiftInKind,
+                 ContributionTypeCode.Stock,
                  ContributionTypeCode.NonTaxDed,
                  ContributionTypeCode.Pledge,
              };
