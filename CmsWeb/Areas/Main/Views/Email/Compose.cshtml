@@ -33,6 +33,7 @@ Your recipient list has been saved in a tag, so you can run queries in other tab
     @Html.Hidden("CmsHost")
     @Html.Hidden("Count", Model.Count)
     @Html.Hidden("wantParents", Model.wantParents)
+    @Html.Hidden("ccparents", Model.ccparents)
 	@Html.Hidden("roleid", c.RoleID)
 	<input type="hidden" name="saveid" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : c.Id )" />
 	<input type="hidden" id="body" name="body" />

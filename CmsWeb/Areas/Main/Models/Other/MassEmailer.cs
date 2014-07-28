@@ -21,6 +21,7 @@ namespace CmsWeb.Areas.Main.Models
 
         public int TagId { get; set; }
         public bool wantParents { get; set; }
+        public bool ccparents { get; set; }
         public string FromAddress { get; set; }
         public string FromName { get; set; }
         public string Subject { get; set; }
@@ -33,9 +34,10 @@ namespace CmsWeb.Areas.Main.Models
         public MassEmailer()
         {
         }
-        public MassEmailer(Guid id, bool? parents)
+        public MassEmailer(Guid id, bool? parents = null, bool? ccparents = null)
         {
             wantParents = parents ?? false;
+            this.ccparents = ccparents ?? false;
             var q = DbUtil.Db.PeopleQuery(id);
             var c = DbUtil.Db.LoadQueryById2((Guid)id);
             var cc = c.ToClause();
@@ -59,7 +61,9 @@ namespace CmsWeb.Areas.Main.Models
             var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable);
             if (emailqueue == null)
                 return 0;
+            emailqueue.CCParents = ccparents;
             emailqueue.Transactional = transactional;
+            DbUtil.Db.SubmitChanges();
             return emailqueue.Id;
         }
 

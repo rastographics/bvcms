@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.Main.Models
 	public class EmailTemplatesModel
 	{
 	    public bool wantparents { get; set; }
+	    public bool ccparents { get; set; }
 	    public Guid queryid { get; set; }
 		public IQueryable<Content> fetchTemplates()
 		{

@@ -251,6 +251,8 @@ namespace CmsData
 		
 		private string _Name;
 		
+		private bool? _ElectronicStatement;
+		
    		
    		private EntitySet< Contactee> _contactsHad;
 		
@@ -748,6 +750,9 @@ namespace CmsData
 		
 		partial void OnNameChanging(string value);
 		partial void OnNameChanged();
+		
+		partial void OnElectronicStatementChanging(bool? value);
+		partial void OnElectronicStatementChanged();
 		
     #endregion
 		public Person()
@@ -3528,6 +3533,28 @@ namespace CmsData
 					this._Name = value;
 					this.SendPropertyChanged("Name");
 					this.OnNameChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ElectronicStatement", UpdateCheck=UpdateCheck.Never, Storage="_ElectronicStatement", DbType="bit")]
+		public bool? ElectronicStatement
+		{
+			get { return this._ElectronicStatement; }
+
+			set
+			{
+				if (this._ElectronicStatement != value)
+				{
+				
+                    this.OnElectronicStatementChanging(value);
+					this.SendPropertyChanging();
+					this._ElectronicStatement = value;
+					this.SendPropertyChanged("ElectronicStatement");
+					this.OnElectronicStatementChanged();
 				}
 
 			}

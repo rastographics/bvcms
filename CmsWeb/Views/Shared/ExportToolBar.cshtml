@@ -1,156 +1,160 @@
 ﻿@using CmsData.Classes.Twilio
 @{
-    var qid = ViewBag.queryid;
-    var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
+  var qid = ViewBag.queryid;
+  var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
 }
 <div class="toolbar">
-    <ul horizontal-offset="-70">
-        <li>
-            <a href='#' class="trigger-dropdown">
-                Email <img src="/Content/images/dnarrow.png" />
-            </a>
-            <div class="dropdown2-menu has-tip">
-                <ul>
-                    <li><a href="/Email/@qid"> Individuals</a></li>
-                    <li><a href='/Email/@qid?parents=true'> Parents</a></li>
-                    @if ((bool?)ViewBag.ParentOrgContext == true)
-                    {
-                        <li><a href='/Email/@ViewBag.leadersqid'> Leaders under this org</a></li>
-                        <li><a href='/Email/@ViewBag.membersqid'> Members under this org</a></li>
-                    }
-                </ul>
-            </div>
-        </li>
-        @if (TwilioHelper.userSendSMS(Util.UserId))
-        {
-            <li>
-                <a href='/SMS/Options/@qid'>
-                    SMS
-                </a>
-            </li>
-        }
-        <li>
-            <a href='#' class="trigger-dropdown">
-                Export <img src="/Content/images/dnarrow.png" />
-            </a>
-            <div class="dropdown2-menu has-tip">
-                <ul>
-                    <li><a href='/Export2/Excel/@qid' class="ChooseFormat" title="For mail merge">Excel</a></li>
-                    <li><a href='/Export2/Excel/AllFamily/@qid' title="For mail merge">Excel Family</a></li>
-                    <li><a href='/Export2/Excel/IndividualPicture/@qid' title="For picture directory word merge">Excel Pictures</a></li>
-                    @* <li><a href='/Export2/UpdatePeople/@qid' title="For Doing a Mass Update">Excel Update</a></li> *@
-                    <li><a href='/Export2/Csv/@qid' class="ChooseFormat UseMailFlags" title="Comma separated values text file, opens in excel, for bulk mailings">Bulk (csv)</a></li>
-                    <li><a href='/Export2/Excel/Library/@qid' title="For Atrium Library Import">Excel Library</a></li>
-                    <li><a href='/Export2/StatusFlags/@qid' title="StatusFlags in Columns">Status Flags Export</a></li>
-                    <li><a href='/Export2/ExtraValues/@qid' title="ExtraValues in Columns">Extra Values Export</a></li>
-                    @if ((bool?)ViewBag.OrgMemberContext == true)
-                    {
-                        <li><a href='/Export2/Excel/OrgMembers' title="Includes Org Member info">Member Export</a></li>
-                        <li><a href='/Export2/Excel/Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
-                        <li><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
-                    }
-                </ul>
-            </div>
-        </li>
-        <li>
-            <a href='#' class="trigger-dropdown">
-                Reports <img src="/Content/images/dnarrow.png" />
-            </a>
-            <div class="dropdown2-menu has-tip">
-                <ul>
-                    <li><a href='/Reports/Prospect/@qid'>Inreach/Outreach</a></li>
-                    <li><a href='/Reports/Prospect/@qid?Form=true'>Inreach/Outreach with Form</a></li>
-                    @if ((bool?)ViewBag.OrganizationContext == true)
-                    {
-                        <li><a href='/Reports/Contacts/@qid?orgname=@ViewBag.orgname' title="Report for Robo-calling Contacts">Contact Report</a></li>
-                        <li class="hideAlt"><a href='/Reports/Contacts/@qid?sortAddress=true&orgname=@ViewBag.orgname'>Contact Report (by addr)</a></li>
-                    }
-                    else
-                    {
-                        <li><a href='/Reports/Contacts/@qid' title="Report for Robo-calling Contacts">Contact Report</a></li>
-                        <li class="hideAlt"><a href='/Reports/Contacts/@qid'>Contact Report (by addr)</a></li>
-                    }
-                    <li><a href='/Reports/WeeklyAttendance/@qid' title="General Attendance Stats">Weekly Attend</a></li>
-                    <li><a href='/Export2/Excel/Involvement/@qid' title="Personal, Contact and Enrollment Info">Involvement</a></li>
-                    <li><a href='/Reports/Family/@qid'>Family Report</a></li>
-                    <li><a href="/Reports/FamilyDirectory/@qid">Family Directory</a></li>
-                    <li><a href="/Reports/FamilyDirectoryCompact/@qid">Compact Directory</a></li>
-                    <li><a href="/Reports/PictureDirectory/@qid">Picture Directory</a></li>
-                    <li><a href="/Reports/CompactPictureDirectory/@qid">Compact Picture Directory</a></li>
-                    <li class="hideAlt"><a href="/Reports/CompactPictureDirectory2/@qid">Compact Picture Directory 2</a></li>
-                    @if ((bool?)ViewBag.OrganizationContext == true)
-                    {
-                        <li><a id="RollsheetLink" href='#' title="Rollsheet Report">Rollsheet Report</a></li>
-                        <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report">Rally Rollsheet</a></li>
-                        <li><a href='/Reports/Roster1/@qid?oid=@Util2.CurrentOrgId'>Roster</a></li>
-                        <li><a href='/Reports/Roster/@qid?oid=@Util2.CurrentOrgId'>Roster Extended</a></li>
-                        <li><a href='/Reports/Registration/@qid?oid=@Util2.CurrentOrgId'>Registration Report</a></li>
-                    }
-                    else
-                    {
-                        <li><a href='/Reports/Registration/@qid'>Registration Rpt</a></li>
-                    }
-                    <li><a href='/Export2/Excel/Attend/@qid' title="Contains attendance information for their class">Main Fellowship Att</a></li>
-                @if (wid > 0)
-                {
-                    <li><a href='/Export2/WorshipAttendance/@qid' title="Contains attendance information for worship">Worship Att</a></li>
-                }
-                    <li><a href='/Export2/Excel/Children/@qid' title="Contains emergency contact, who brought child info">Children</a></li>
-                    <li><a href='/Export2/Excel/Church/@qid' title="Contains other Church Info">Other Churches</a></li>
-                    <li><a href='/Export2/MembershipInfo/@qid'>Membership Info export</a></li>
-                </ul>
-            </div>
-        </li>
-        <li>
-            <a href='#' class="trigger-dropdown">
-                Labels <img src="/Content/images/dnarrow.png" />
-            </a>
-            <div class="dropdown2-menu has-tip">
-                <ul>
-                    <li><a href='/Reports/RollLabels/@qid' class="ChooseFormat UseMailFlags" title="Labels (pdf for Datamax label printer)">Roll Labels</a></li>
-                    <li><a href='/Reports/BarCodeLabels/@qid' title="Labels for Choir Attendance">Barcode Labels</a></li>
-                    <li><a href='/Reports/Avery/@qid' title="Avery Name Labels">Name Labels (with phones)</a></li>
-                    <li><a href='/Reports/NameLabels/@qid' title="Avery Name Labels (no phones)">Name Labels</a></li>
-                    <li><a href='/Reports/Avery3/@qid' title="Avery 3 Across Labels (person per row)">Avery Labels 3</a></li>
-                    <li><a href='/Reports/AveryAddress/@qid' class="ChooseFormat UseMailFlags" title="Address Labels">Avery Address</a></li>
-                    <li><a href='/Reports/AveryAddressWord/@qid' class="ChooseFormat UseMailFlags" title="Address Labels">Avery Addr (word)</a></li>
-                    <li><a href="/Reports/EmployerAddress/@qid">Avery Employer</a></li>
-                </ul>
-            </div>
-        </li>
-        <li>
-            <a href='#' class="trigger-dropdown">
-                Tag <img src="/Content/images/dnarrow.png" />
-            </a>
-            <div class="dropdown2-menu has-tip">
-                <ul>
-                    <li><a id="TagAll" href='@ViewBag.TagAction'>Add All</a></li>
-                    <li><a id="UnTagAll" href='@ViewBag.UnTagAction'>Remove All</a></li>
-                </ul>
-            </div>
-        </li>
-        <li>
-            <a href='#' class="trigger-dropdown">
-                Other <img src="/Content/images/dnarrow.png" />
-            </a>
-            <div class="dropdown2-menu has-tip">
-                <ul>
-                    <li><a id="AddContact" href='@ViewBag.AddContact'>Add Contact</a></li>
-                    <li><a id="AddTasks" href='@ViewBag.AddTasks'>Add Tasks</a></li>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li><a href='/Manage/ExtraValues/Add2/@qid' class="ChooseExtraValues">Add Extra Values</a></li>
-                        <li><a href='/Manage/ExtraValues/Delete2/@qid' class="ChooseExtraValues">Delete Extra Values</a></li>
-                        <li><a href="/Reports/ExtraValuesGrid2/@qid">Extra Values Grid</a></li>
-                    }
-                    @if (User.IsInRole("Developer"))
-                    {
-                        <li><a href="/Reports/ExtraValuesGrid2/@qid?alternate=true" class="hideAlt">Extra Values Grid2</a></li>
-                    }
-                    <li><a href='/Task/NotesExcel2/@qid'>Export Task Notes</a></li>
-                </ul>
-            </div>
-        </li>
-    </ul>
+  <ul horizontal-offset="-70">
+    <li>
+      <a href='#' class="trigger-dropdown">
+        Email <img src="/Content/images/dnarrow.png" />
+      </a>
+      <div class="dropdown2-menu has-tip">
+        <ul>
+          <li><a href="/Email/@qid"> Individuals</a></li>
+          <li><a href='/Email/@qid?parents=true'> Parents</a></li>
+          @if (User.IsInRole("Developer"))
+          {
+            <li><a href='/Email/@qid?ccparents=true'> Child with Parents CC'd</a></li>
+          }
+          @if ((bool?)ViewBag.ParentOrgContext == true)
+          {
+            <li><a href='/Email/@ViewBag.leadersqid'> Leaders under this org</a></li>
+            <li><a href='/Email/@ViewBag.membersqid'> Members under this org</a></li>
+          }
+        </ul>
+      </div>
+    </li>
+    @if (TwilioHelper.userSendSMS(Util.UserId))
+    {
+      <li>
+        <a href='/SMS/Options/@qid'>
+          SMS
+        </a>
+      </li>
+    }
+    <li>
+      <a href='#' class="trigger-dropdown">
+        Export <img src="/Content/images/dnarrow.png" />
+      </a>
+      <div class="dropdown2-menu has-tip">
+        <ul>
+          <li><a href='/Export2/Excel/@qid' class="ChooseFormat" title="For mail merge">Excel</a></li>
+          <li><a href='/Export2/Excel/AllFamily/@qid' title="For mail merge">Excel Family</a></li>
+          <li><a href='/Export2/Excel/IndividualPicture/@qid' title="For picture directory word merge">Excel Pictures</a></li>
+          @* <li><a href='/Export2/UpdatePeople/@qid' title="For Doing a Mass Update">Excel Update</a></li> *@
+          <li><a href='/Export2/Csv/@qid' class="ChooseFormat UseMailFlags" title="Comma separated values text file, opens in excel, for bulk mailings">Bulk (csv)</a></li>
+          <li><a href='/Export2/Excel/Library/@qid' title="For Atrium Library Import">Excel Library</a></li>
+          <li><a href='/Export2/StatusFlags/@qid' title="StatusFlags in Columns">Status Flags Export</a></li>
+          <li><a href='/Export2/ExtraValues/@qid' title="ExtraValues in Columns">Extra Values Export</a></li>
+          @if ((bool?)ViewBag.OrgMemberContext == true)
+          {
+            <li><a href='/Export2/Excel/OrgMembers' title="Includes Org Member info">Member Export</a></li>
+            <li><a href='/Export2/Excel/Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
+            <li><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
+          }
+        </ul>
+      </div>
+    </li>
+    <li>
+      <a href='#' class="trigger-dropdown">
+        Reports <img src="/Content/images/dnarrow.png" />
+      </a>
+      <div class="dropdown2-menu has-tip">
+        <ul>
+          <li><a href='/Reports/Prospect/@qid'>Inreach/Outreach</a></li>
+          <li><a href='/Reports/Prospect/@qid?Form=true'>Inreach/Outreach with Form</a></li>
+          @if ((bool?)ViewBag.OrganizationContext == true)
+          {
+            <li><a href='/Reports/Contacts/@qid?orgname=@ViewBag.orgname' title="Report for Robo-calling Contacts">Contact Report</a></li>
+            <li class="hideAlt"><a href='/Reports/Contacts/@qid?sortAddress=true&orgname=@ViewBag.orgname'>Contact Report (by addr)</a></li>
+          }
+          else
+          {
+            <li><a href='/Reports/Contacts/@qid' title="Report for Robo-calling Contacts">Contact Report</a></li>
+            <li class="hideAlt"><a href='/Reports/Contacts/@qid'>Contact Report (by addr)</a></li>
+          }
+          <li><a href='/Reports/WeeklyAttendance/@qid' title="General Attendance Stats">Weekly Attend</a></li>
+          <li><a href='/Export2/Excel/Involvement/@qid' title="Personal, Contact and Enrollment Info">Involvement</a></li>
+          <li><a href='/Reports/Family/@qid'>Family Report</a></li>
+          <li><a href="/Reports/FamilyDirectory/@qid">Family Directory</a></li>
+          <li><a href="/Reports/FamilyDirectoryCompact/@qid">Compact Directory</a></li>
+          <li><a href="/Reports/PictureDirectory/@qid">Picture Directory</a></li>
+          <li><a href="/Reports/CompactPictureDirectory/@qid">Compact Picture Directory</a></li>
+          <li class="hideAlt"><a href="/Reports/CompactPictureDirectory2/@qid">Compact Picture Directory 2</a></li>
+          @if ((bool?)ViewBag.OrganizationContext == true)
+          {
+            <li><a id="RollsheetLink" href='#' title="Rollsheet Report">Rollsheet Report</a></li>
+            <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report">Rally Rollsheet</a></li>
+            <li><a href='/Reports/Roster1/@qid?oid=@Util2.CurrentOrgId'>Roster</a></li>
+            <li><a href='/Reports/Roster/@qid?oid=@Util2.CurrentOrgId'>Roster Extended</a></li>
+            <li><a href='/Reports/Registration/@qid?oid=@Util2.CurrentOrgId'>Registration Report</a></li>
+          }
+          else
+          {
+            <li><a href='/Reports/Registration/@qid'>Registration Rpt</a></li>
+          }
+          <li><a href='/Export2/Excel/Attend/@qid' title="Contains attendance information for their class">Main Fellowship Att</a></li>
+          @if (wid > 0)
+          {
+            <li><a href='/Export2/WorshipAttendance/@qid' title="Contains attendance information for worship">Worship Att</a></li>
+          }
+          <li><a href='/Export2/Excel/Children/@qid' title="Contains emergency contact, who brought child info">Children</a></li>
+          <li><a href='/Export2/Excel/Church/@qid' title="Contains other Church Info">Other Churches</a></li>
+          <li><a href='/Export2/MembershipInfo/@qid'>Membership Info export</a></li>
+        </ul>
+      </div>
+    </li>
+    <li>
+      <a href='#' class="trigger-dropdown">
+        Labels <img src="/Content/images/dnarrow.png" />
+      </a>
+      <div class="dropdown2-menu has-tip">
+        <ul>
+          <li><a href='/Reports/RollLabels/@qid' class="ChooseFormat UseMailFlags" title="Labels (pdf for Datamax label printer)">Roll Labels</a></li>
+          <li><a href='/Reports/BarCodeLabels/@qid' title="Labels for Choir Attendance">Barcode Labels</a></li>
+          <li><a href='/Reports/Avery/@qid' title="Avery Name Labels">Name Labels (with phones)</a></li>
+          <li><a href='/Reports/NameLabels/@qid' title="Avery Name Labels (no phones)">Name Labels</a></li>
+          <li><a href='/Reports/Avery3/@qid' title="Avery 3 Across Labels (person per row)">Avery Labels 3</a></li>
+          <li><a href='/Reports/AveryAddress/@qid' class="ChooseFormat UseMailFlags" title="Address Labels">Avery Address</a></li>
+          <li><a href='/Reports/AveryAddressWord/@qid' class="ChooseFormat UseMailFlags" title="Address Labels">Avery Addr (word)</a></li>
+          <li><a href="/Reports/EmployerAddress/@qid">Avery Employer</a></li>
+        </ul>
+      </div>
+    </li>
+    <li>
+      <a href='#' class="trigger-dropdown">
+        Tag <img src="/Content/images/dnarrow.png" />
+      </a>
+      <div class="dropdown2-menu has-tip">
+        <ul>
+          <li><a id="TagAll" href='@ViewBag.TagAction'>Add All</a></li>
+          <li><a id="UnTagAll" href='@ViewBag.UnTagAction'>Remove All</a></li>
+        </ul>
+      </div>
+    </li>
+    <li>
+      <a href='#' class="trigger-dropdown">
+        Other <img src="/Content/images/dnarrow.png" />
+      </a>
+      <div class="dropdown2-menu has-tip">
+        <ul>
+          <li><a id="AddContact" href='@ViewBag.AddContact'>Add Contact</a></li>
+          <li><a id="AddTasks" href='@ViewBag.AddTasks'>Add Tasks</a></li>
+          @if (User.IsInRole("Admin"))
+          {
+            <li><a href='/Manage/ExtraValues/Add2/@qid' class="ChooseExtraValues">Add Extra Values</a></li>
+            <li><a href='/Manage/ExtraValues/Delete2/@qid' class="ChooseExtraValues">Delete Extra Values</a></li>
+            <li><a href="/Reports/ExtraValuesGrid2/@qid">Extra Values Grid</a></li>
+          }
+          @if (User.IsInRole("Developer"))
+          {
+            <li><a href="/Reports/ExtraValuesGrid2/@qid?alternate=true" class="hideAlt">Extra Values Grid2</a></li>
+          }
+          <li><a href='/Task/NotesExcel2/@qid'>Export Task Notes</a></li>
+        </ul>
+      </div>
+    </li>
+  </ul>
 </div>
 

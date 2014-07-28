@@ -69,7 +69,8 @@ namespace CmsData
                    }).SingleOrDefault()
                 : null;
 
-            var aa = db.GetAddressList(p);
+            var cc = emailqueueto.EmailQueue.CCParents ?? false;
+            var aa = db.GetAddressList(p, cc);
 
             if (emailqueueto.AddEmail.HasValue())
                 foreach (string ad in emailqueueto.AddEmail.SplitStr(","))

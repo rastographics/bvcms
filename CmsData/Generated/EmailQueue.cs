@@ -45,6 +45,8 @@ namespace CmsData
 		
 		private string _Error;
 		
+		private bool? _CCParents;
+		
    		
    		private EntitySet< EmailLink> _EmailLinks;
 		
@@ -103,6 +105,9 @@ namespace CmsData
 		
 		partial void OnErrorChanging(string value);
 		partial void OnErrorChanged();
+		
+		partial void OnCCParentsChanging(bool? value);
+		partial void OnCCParentsChanged();
 		
     #endregion
 		public EmailQueue()
@@ -427,6 +432,28 @@ namespace CmsData
 					this._Error = value;
 					this.SendPropertyChanged("Error");
 					this.OnErrorChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="CCParents", UpdateCheck=UpdateCheck.Never, Storage="_CCParents", DbType="bit")]
+		public bool? CCParents
+		{
+			get { return this._CCParents; }
+
+			set
+			{
+				if (this._CCParents != value)
+				{
+				
+                    this.OnCCParentsChanging(value);
+					this.SendPropertyChanging();
+					this._CCParents = value;
+					this.SendPropertyChanged("CCParents");
+					this.OnCCParentsChanged();
 				}
 
 			}

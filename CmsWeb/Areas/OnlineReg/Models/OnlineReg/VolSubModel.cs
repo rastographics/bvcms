@@ -167,7 +167,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 </blockquote>".Fmt(person.Name, attend.MeetingDate, reportlink));
 
 			// Email subs
-			var m = new MassEmailer(qb.Id, null);
+			var m = new MassEmailer(qb.Id);
 			m.Subject = subject;
 			m.Body = message;
 

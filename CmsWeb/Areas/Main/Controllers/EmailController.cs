@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData.Codes;
 using CmsWeb.Areas.Main.Models;
-using CmsWeb.Areas.Manage.Controllers;
 using UtilityExtensions;
 using CmsData;
 using Elmah;
@@ -21,7 +18,7 @@ namespace CmsWeb.Areas.Main.Controllers
 	{
 		[ValidateInput(false)]
         [Route("~/Email/{id:guid}")]
-		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml)
+		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents)
 		{
 			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
 			if (!body.HasValue())
@@ -35,7 +32,7 @@ namespace CmsWeb.Areas.Main.Controllers
 				{
 					DbUtil.LogActivity("Emailing people");
 
-					var m = new MassEmailer(id, parents);
+					var m = new MassEmailer(id, parents, ccparents);
 					m.Host = Util.Host;
 
 					ViewBag.templateID = templateID;
@@ -47,7 +44,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 			DbUtil.LogActivity("Emailing people");
 
-			var me = new MassEmailer(id, parents);
+			var me = new MassEmailer(id, parents, ccparents);
 			me.Host = Util.Host;
 
 			if (body.HasValue())

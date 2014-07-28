@@ -84,10 +84,7 @@
                               @Html.RadioButton("PLNT", "CN")Tax Deductible 
                               @Html.RadioButton("PLNT", "PL")Pledge 
                               @Html.RadioButton("PLNT", "NT")Non Tax Ded 
-                              @if (User.IsInRole("Developer"))
-                              {
-                                @Html.RadioButton("PLNT", "SK")<text>Stock</text>
-                              }
+                              @Html.RadioButton("PLNT", "SK")Stock
                               @Html.RadioButton("PLNT", "GK")Gift In Kind
                             </td>
                         </tr>

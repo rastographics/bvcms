@@ -174,7 +174,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 </blockquote>".Fmt(person.Name, meeting.MeetingDate, reportlink));
 
 			// Email subs
-			var m = new MassEmailer(qb.Id, null);
+			var m = new MassEmailer(qb.Id);
 			m.Subject = subject;
 			m.Body = message;
 

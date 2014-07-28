@@ -330,13 +330,21 @@ namespace CmsData
                 throw;
             }
         }
-        public List<MailAddress> GetAddressList(Person p)
+        public List<MailAddress> GetAddressList(Person p, bool ccparents = false)
         {
-            return GetAddressList(p, null);
+            var aa = GetAddressList2(p);
+            if (ccparents)
+            {
+                aa.AddRange(GetAddressList2(p.Family.HeadOfHousehold));
+                aa.AddRange(GetAddressList2(p.Family.HeadOfHouseholdSpouse));
+            }
+            return aa;
         }
-        public List<MailAddress> GetAddressList(Person p, string regemail)
+        public List<MailAddress> GetAddressList2(Person p, string regemail = null)
         {
             var aa = new List<MailAddress>();
+            if (p == null)
+                return aa;
             if (p.SendEmailAddress1 ?? true)
                 Util.AddGoodAddress(aa, p.FromEmail);
             if (p.SendEmailAddress2 ?? false)
