@@ -12,14 +12,15 @@ RETURN
 SELECT MIN(stamp) dt1, MAX(stamp) dt2, COUNT(*) cnt, o.OrganizationId, o.OrganizationName, completed FROM 
 (
 	SELECT 
-		CONVERT(XML, Data) xdata
-		, d.Stamp
-		, d.completed
-	FROM dbo.ExtraData d
+		 d.Data
+		,d.Stamp
+		,d.completed
+		,d.OrganizationId
+	FROM dbo.RegistrationData d
 	WHERE Stamp > DATEADD(dd, -@days, GETDATE())
-	AND Data LIKE '%<item>CompleteRegistration<%'
+	AND completed = 1
 ) tt
-JOIN dbo.Organizations o ON  xdata.value('(/OnlineRegModel/orgid)[1]', 'int') = o.OrganizationId
+JOIN dbo.Organizations o ON tt.OrganizationId = o.OrganizationId
 WHERE o.OrganizationId IS NOT NULL
 GROUP BY o.OrganizationId, o.OrganizationName, tt.completed
 )

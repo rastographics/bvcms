@@ -116,7 +116,8 @@ CREATE TABLE [dbo].[People]
 [HashNum] AS (checksum([FirstName]+[LastName])),
 [PreferredName] AS (case when [Nickname]<>'' then [nickname] else [FirstName] end),
 [Name2] AS ((([LastName]+', ')+case when [Nickname]<>'' then [nickname] else [FirstName] end)+case when len([SuffixCode])>(0) then ', '+[SuffixCode] else '' end),
-[Name] AS (((case when [Nickname]<>'' then [nickname] else isnull([FirstName],'') end+' ')+[LastName])+case when len([SuffixCode])>(0) then ', '+[SuffixCode] else '' end)
+[Name] AS (((case when [Nickname]<>'' then [nickname] else isnull([FirstName],'') end+' ')+[LastName])+case when len([SuffixCode])>(0) then ', '+[SuffixCode] else '' end),
+[ElectronicStatement] [bit] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
