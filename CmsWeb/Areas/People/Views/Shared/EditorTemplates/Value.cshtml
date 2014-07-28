@@ -21,6 +21,7 @@
                        data-pk="@Model.Id"
                        data-name="@Model.DataName"
                        class="@Model.EditableClass"
+                       data-inputclass="@(Model.Type == "Text2" ? "width500" : "input-large")"
                        data-url="@Model.EditUrl"
                        @if (dv.HasValue()) { <text> data-value="@dv" </text>    }
                        @if (ds.HasValue()) {  <text> data-source="@ds" </text>   }

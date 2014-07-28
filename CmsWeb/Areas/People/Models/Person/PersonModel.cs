@@ -242,5 +242,12 @@ namespace CmsWeb.Areas.People.Models
                 }
             DbUtil.Db.SubmitChanges();
         }
+
+        internal void UpdateElectronicStatement(bool tf)
+        {
+            Person.UpdateValue("ElectronicStatement", tf);
+            Person.LogChanges(DbUtil.Db);
+            DbUtil.Db.SubmitChanges();
+        }
     }
 }

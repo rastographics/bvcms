@@ -251,6 +251,7 @@
     SetProfileEditable();
     $.InitFunctions.Editable = function () {
         $("a.editable").editable();
+        $("a.editable-bit").editable({ type: 'checklist', mode: 'inline', source: { 'True': 'True' }, emptytext: 'False' });
     };
     $('a.click-pencil').live("click", function (e) {
         e.stopPropagation();

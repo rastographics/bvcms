@@ -24,13 +24,19 @@
                     <p><b>Statement/Envelope Options</b></p>
                     @if (User.IsInRole("Membership") || Model.person.CanUserSeeGiving)
                     {
-@*                      @Html.EditorFor(m => m.ElectronicDelivery, "InlineBoolean", editable)*@
+                      if(User.IsInRole("Developer"))
+                      {
+                        @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable) 
+                      }
                       @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
                       @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
                     }
                     else
                     {
-@*                      @Html.DisplayFor(m => m.ElectronicDelivery)*@
+                      if (User.IsInRole("Developer"))
+                      {
+                        @Html.DisplayFor(m => m.ElectronicStatement)
+                      }
                       @Html.DisplayFor(m => m.ContributionOptions)
                       @Html.DisplayFor(m => m.EnvelopeOptions)
                     }

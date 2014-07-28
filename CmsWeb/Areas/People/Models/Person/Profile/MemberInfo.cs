@@ -26,8 +26,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Statement Type")]
         public CodeInfo ContributionOptions { get; set; }
 
-        [DisplayName("Statement Delivery")]
-        public bool ElectronicDelivery { get; set; }
+        [DisplayName("Electronic Only")]
+        public bool ElectronicStatement { get; set; }
 
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
