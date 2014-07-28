@@ -1555,6 +1555,7 @@
     <Content Include="Areas\Manage\Views\Batch\Info.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Hyperlink.cshtml" />
     <Content Include="Views\Home\RunScript.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\InlineBoolean.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

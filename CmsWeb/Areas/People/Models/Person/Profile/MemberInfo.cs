@@ -23,8 +23,11 @@ namespace CmsWeb.Areas.People.Models
 
         #region Contributions --------------------------------------------------
 
-        [DisplayName("Statement Option")]
+        [DisplayName("Statement Type")]
         public CodeInfo ContributionOptions { get; set; }
+
+        [DisplayName("Statement Delivery")]
+        public bool ElectronicDelivery { get; set; }
 
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }

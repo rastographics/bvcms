@@ -251,6 +251,7 @@ namespace CmsData.API
             var q = from c in Db.Contributions
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionTypeId != ContributionTypeCode.GiftInKind
+                    where c.ContributionTypeId != ContributionTypeCode.Stock
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
                     where c.ContributionDate >= fromDate && c.ContributionDate.Value.Date <= toDate.Date
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
@@ -275,6 +276,7 @@ namespace CmsData.API
         {
             var q = from c in Db.Contributions
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                    where c.ContributionTypeId != ContributionTypeCode.Stock
                     where c.ContributionTypeId != ContributionTypeCode.GiftInKind
                     where c.ContributionTypeId != ContributionTypeCode.Pledge
                     where !Codes.ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
