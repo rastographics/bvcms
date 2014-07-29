@@ -330,7 +330,7 @@ namespace CmsWeb.Models
                 DbUtil.Db.Email(from.EmailAddress, to, 
                             "Task Updated by " + from.Name,
                             "{0} ({3})<br />\n{1}<br />\n{2}".Fmt(
-                            TaskLink(task.Description, task.Id), task.AboutName, sb.ToString(), task.Priority));
+                            TaskLink(task.Description, task.Id), PeopleLink(task.AboutName, task.WhoId), sb.ToString(), task.Priority));
             }
         }
         public class IncompleteTask
@@ -388,6 +388,10 @@ namespace CmsWeb.Models
         private static string TaskLink(string text, int id)
         {
             return "<a href='{0}{1}'>{2}</a>".Fmt(DbUtil.Db.CmsHost, TaskLink0(id), text);
+        }
+        private static string PeopleLink(string text, int? id)
+        {
+            return "<a href='{0}/Person2/{1}'>{2}</a>".Fmt(DbUtil.Db.CmsHost, id, text);
         }
 
         public static void ChangeTask(StringBuilder sb, Task task, string field, object value)
