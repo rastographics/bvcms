@@ -7,6 +7,8 @@ using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Models;
 using Dapper;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
 using UtilityExtensions;
 using CmsData;
 using System.Web.Mvc;

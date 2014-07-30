@@ -201,49 +201,7 @@ for v in q:
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var script = "DECLARE @p1 VARCHAR(100) = '{0}'\n{1}\n".Fmt(parameter, content.Body);
-            var rd = cn.ExecuteReader(script);
-
-            var ep = new ExcelPackage();
-            var ws = ep.Workbook.Worksheets.Add("Sheet1");
-
-            var dt = new DataTable();
-            dt.Load(rd);
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            var count = dt.Rows.Count;
-            var range = ws.Cells[1, 1, count + 1, dt.Columns.Count];
-            var table = ws.Tables.Add(range, "Members");
-            table.TableStyle = TableStyles.Light9;
-            table.ShowFilter = false;
-            for (var i = 0; i < dt.Columns.Count; i++)
-            {
-                var col = i + 1;
-                var name = dt.Columns[i].ColumnName;
-                var type = dt.Columns[i].DataType;
-                table.Columns[i].Name = name;
-                var colrange = ws.Cells[1, col, count + 2, col];
-
-                if(!name.ToLower().EndsWith("id") && type == typeof(int))
-                {
-                    colrange.Style.Numberformat.Format = "#,##0";
-                    colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                    ws.Column(col).Width = 8;
-                } 
-                else if (type == typeof (decimal))
-                {
-                    colrange.Style.Numberformat.Format = "#,##0";
-                    colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                    ws.Column(col).Width = 12;
-                }
-                else if(type == typeof(DateTime))
-                {
-                    colrange.Style.Numberformat.Format = "mm-dd-yy";
-                    colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                    ws.Column(col).Width = 12;
-                }
-                
-            }
-            ws.Cells[ws.Dimension.Address].AutoFitColumns();
-            return new EpplusResult(ep, "RunScript.xlsx");
+            return cn.ExecuteReader(script).ToExcel("RunScript.xlsx");
         }
 
         [HttpGet, Route("~/Preferences")]

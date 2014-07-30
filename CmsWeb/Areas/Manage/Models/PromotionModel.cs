@@ -1,18 +1,25 @@
-using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using CmsData;
+using MoreLinq;
 using UtilityExtensions;
 using System.Web.Mvc;
-using System.Collections;
 using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
     public class PromotionModel
     {
+        public PromotionModel()
+        {
+            
+        }
+        public PromotionModel(int id)
+            :this()
+        {
+            PromotionId = id;
+        }
         private int? _PromotionId;
         public int? PromotionId
         {
@@ -263,7 +270,7 @@ namespace CmsWeb.Models
             }
 			DbUtil.Db.UpdateMainFellowship(t.OrganizationId);
         }
-        public IEnumerable Export()
+        public DataTable Export()
         {
             var fromdiv = Promotion.FromDivId;
             var todiv = Promotion.ToDivId;
@@ -308,7 +315,7 @@ namespace CmsWeb.Models
                         AttendPct = om.AttendPct.ToString2("N1"),
                         om.AttendStr
 					};
-            return q;
+            return q.ToDataTable();
         }
         public IEnumerable<SelectListItem> Promotions()
         {

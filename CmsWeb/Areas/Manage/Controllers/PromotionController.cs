@@ -1,5 +1,11 @@
+using System;
+using System.Data;
 using System.Web.Mvc;
+using CmsData;
 using CmsWeb.Models;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -30,10 +36,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             return View("List", m);
         }
-        [HttpPost]
-        public ActionResult Export(PromotionModel m)
+        [HttpGet]
+        public ActionResult Export(int id)
         {
-            return new ExcelResult(m.Export(), "promotion.xls");
+            return new PromotionModel(id).Export().ToExcel("promotion.xlsx");
         }
+
     }
 }
