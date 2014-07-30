@@ -33,6 +33,8 @@ namespace CmsData
 		
 		private int? _GoerSupportId;
 		
+		private bool? _CCOnly;
+		
    		
     	
 		private EntityRef< EmailQueue> _EmailQueue;
@@ -69,6 +71,9 @@ namespace CmsData
 		
 		partial void OnGoerSupportIdChanging(int? value);
 		partial void OnGoerSupportIdChanged();
+		
+		partial void OnCCOnlyChanging(bool? value);
+		partial void OnCCOnlyChanged();
 		
     #endregion
 		public EmailQueueTo()
@@ -260,6 +265,28 @@ namespace CmsData
 					this._GoerSupportId = value;
 					this.SendPropertyChanged("GoerSupportId");
 					this.OnGoerSupportIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="CCOnly", UpdateCheck=UpdateCheck.Never, Storage="_CCOnly", DbType="bit")]
+		public bool? CCOnly
+		{
+			get { return this._CCOnly; }
+
+			set
+			{
+				if (this._CCOnly != value)
+				{
+				
+                    this.OnCCOnlyChanging(value);
+					this.SendPropertyChanging();
+					this._CCOnly = value;
+					this.SendPropertyChanged("CCOnly");
+					this.OnCCOnlyChanged();
 				}
 
 			}

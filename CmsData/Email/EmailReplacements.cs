@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.UI;
 using CmsData.Codes;
 using HtmlAgilityPack;
 using UtilityExtensions;
@@ -52,6 +53,7 @@ namespace CmsData
         }
 
         public List<MailAddress> ListAddresses { get; set; }
+        public List<int> CcIdList { get; set; }
 
         public string DoReplacements(Person p, EmailQueueTo emailqueueto)
         {
@@ -69,8 +71,18 @@ namespace CmsData
                    }).SingleOrDefault()
                 : null;
 
-            var cc = emailqueueto.EmailQueue.CCParents ?? false;
-            var aa = db.GetAddressList(p, cc);
+            var aa = db.GetAddressList(p);
+            if (emailqueueto.EmailQueue.CCParents ?? false)
+            {
+                if(CcIdList == null)
+                    CcIdList = new List<int>();
+                var cclist = db.GetCcList(p);
+                foreach (var pp in cclist)
+                {
+                    aa.AddRange(db.GetAddressList(pp));
+                    CcIdList.Add(pp.PeopleId);
+                }
+            }
 
             if (emailqueueto.AddEmail.HasValue())
                 foreach (string ad in emailqueueto.AddEmail.SplitStr(","))

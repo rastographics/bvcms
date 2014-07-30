@@ -330,17 +330,16 @@ namespace CmsData
                 throw;
             }
         }
-        public List<MailAddress> GetAddressList(Person p, bool ccparents = false)
+        public List<Person> GetCcList(Person p)
         {
-            var aa = GetAddressList2(p);
-            if (ccparents)
-            {
-                aa.AddRange(GetAddressList2(p.Family.HeadOfHousehold));
-                aa.AddRange(GetAddressList2(p.Family.HeadOfHouseholdSpouse));
-            }
-            return aa;
+            var li = new List<Person>();
+            if (p.PeopleId != p.Family.HeadOfHouseholdId && p.Family.HeadOfHouseholdId.HasValue)
+                li.Add(p.Family.HeadOfHousehold);
+            if (p.PeopleId != p.Family.HeadOfHouseholdSpouseId && p.Family.HeadOfHouseholdSpouseId.HasValue)
+                li.Add(p.Family.HeadOfHouseholdSpouse);
+            return li;
         }
-        public List<MailAddress> GetAddressList2(Person p, string regemail = null)
+        public List<MailAddress> GetAddressList(Person p, string regemail = null)
         {
             var aa = new List<MailAddress>();
             if (p == null)
@@ -376,6 +375,7 @@ namespace CmsData
             var q = from To in EmailQueueTos
                     where To.Id == emailqueue.Id
                     where To.Sent == null
+                    where (To.CCOnly ?? false) == false
                     orderby To.PeopleId
                     select To;
             foreach (var To in q)
@@ -413,6 +413,21 @@ namespace CmsData
                 }
 #endif
             }
+            if (emailqueue.CCParents == true)
+            {
+                var tos = emailqueue.EmailQueueTos.Select(ee => ee.PeopleId).ToList();
+                var cclist = from pid in m.CcIdList
+                    where tos.All(ee => ee != pid)
+                    select new EmailQueueTo()
+                    {
+                        PeopleId = pid,
+                        Id = emailqueue.Id,
+                        Sent = DateTime.Now,
+                        CCOnly = true
+                    };
+                emailqueue.EmailQueueTos.AddRange(cclist);
+            }
+
             emailqueue.Sent = DateTime.Now;
             if (emailqueue.Redacted ?? false)
                 emailqueue.Body = "redacted";
