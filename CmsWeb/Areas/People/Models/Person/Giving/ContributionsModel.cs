@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.People.Models
         public override IQueryable<Contribution> DefineModelList()
         {
             var q = from c in DbUtil.Db.Contributions
-                    where c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && person.ContributionOptionsId == EnvelopeOptionCode.Joint)
+                    where c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && person.ContributionOptionsId == StatementOptionCode.Joint)
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
                     select c;

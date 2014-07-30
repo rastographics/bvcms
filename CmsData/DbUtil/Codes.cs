@@ -95,7 +95,7 @@ namespace CmsData.Codes
         public const int NonResponse = 30;
         public const int Complete = 40;
     }
-    public static class EnvelopeOptionCode
+    public static class StatementOptionCode
     {
         public const int None = 9;
         public const int Individual = 1;

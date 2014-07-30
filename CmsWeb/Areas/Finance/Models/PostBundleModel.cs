@@ -186,8 +186,8 @@ namespace CmsWeb.Models
                      let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                      let spouse = DbUtil.Db.People.SingleOrDefault(ss =>
                          ss.PeopleId == p.SpouseId
-                         && ss.ContributionOptionsId == EnvelopeOptionCode.Joint
-                         && p.ContributionOptionsId == EnvelopeOptionCode.Joint)
+                         && ss.ContributionOptionsId == StatementOptionCode.Joint
+                         && p.ContributionOptionsId == StatementOptionCode.Joint)
                      orderby p.Name2
                      select new NamesInfo()
                                 {
@@ -247,8 +247,8 @@ namespace CmsWeb.Models
                      let age = p.Age.HasValue ? " (" + p.Age + ")" : ""
                      let spouse = DbUtil.Db.People.SingleOrDefault(ss => 
                          ss.PeopleId == p.SpouseId 
-                         && ss.ContributionOptionsId == EnvelopeOptionCode.Joint 
-                         && p.ContributionOptionsId == EnvelopeOptionCode.Joint)
+                         && ss.ContributionOptionsId == StatementOptionCode.Joint 
+                         && p.ContributionOptionsId == StatementOptionCode.Joint)
                      orderby p.Name2
                      select new NamesInfo()
                                 {

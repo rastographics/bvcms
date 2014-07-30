@@ -225,17 +225,17 @@ namespace CmsWeb.Areas.People.Models
             Person.LogChanges(DbUtil.Db);
             var sp = DbUtil.Db.LoadPersonById(Person.SpouseId ?? 0);
             if (sp != null)
-                if (option == EnvelopeOptionCode.Joint || option == EnvelopeOptionCode.Individual)
+                if (option == StatementOptionCode.Joint || option == StatementOptionCode.Individual)
                 {
                     sp.UpdateValue(name, option);
                     sp.LogChanges(DbUtil.Db);
                 }
-                else if (name == "ContributionOptionsId" && sp.ContributionOptionsId == EnvelopeOptionCode.Joint)
+                else if (name == "ContributionOptionsId" && sp.ContributionOptionsId == StatementOptionCode.Joint)
                 {
                     sp.UpdateValue(name, null);
                     sp.LogChanges(DbUtil.Db);
                 }
-                else if (name == "EnvelopeOptionsId" && sp.EnvelopeOptionsId == EnvelopeOptionCode.Joint)
+                else if (name == "EnvelopeOptionsId" && sp.EnvelopeOptionsId == StatementOptionCode.Joint)
                 {
                     sp.UpdateValue(name, null);
                     sp.LogChanges(DbUtil.Db);

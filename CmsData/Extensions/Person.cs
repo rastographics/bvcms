@@ -962,7 +962,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                                         || (HttpContext.Current.User.IsInRole("Finance") && ((string)HttpContext.Current.Session["testnofinance"]) != "true")
                                         || (PositionInFamilyId == PositionInFamily.PrimaryAdult
                                             && Family.People.Any(m => m.PeopleId == Util.UserPeopleId)
-                                            && ContributionOptionsId == EnvelopeOptionCode.Joint);
+                                            && ContributionOptionsId == StatementOptionCode.Joint);
                 return canUserSeeGiving.Value;
             }
         }
@@ -1560,8 +1560,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (p.SpouseId == id)
                 {
                     var sp = Db.LoadPersonById(id);
-                    if (p.ContributionOptionsId == EnvelopeOptionCode.Joint &&
-                        sp.ContributionOptionsId == EnvelopeOptionCode.Joint)
+                    if (p.ContributionOptionsId == StatementOptionCode.Joint &&
+                        sp.ContributionOptionsId == StatementOptionCode.Joint)
                         canview = true;
                 }
             }

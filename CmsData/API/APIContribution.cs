@@ -147,25 +147,30 @@ namespace CmsData.API
                     return GetInfo(familylist);
             }
 
+            const int NOTSPEC = 0;
+            const int NONE = StatementOptionCode.None;
+            const int JOINT = StatementOptionCode.Joint;
+            const int INDIV = StatementOptionCode.Individual;
+
             if (MinAmt > 0)
                 q = from p in q
-                    let option = (p.ContributionOptionsId ?? 0) == 0
-                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                    let option = (p.ContributionOptionsId ?? NOTSPEC) == NOTSPEC
+                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? NOTSPEC) != INDIV ? JOINT : INDIV)
                             : p.ContributionOptionsId
-                    where option != 9 || noaddressok
-                    where (option == 1 && (p.Amount > MinAmt))
-                            || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > MinAmt))
+                    where option != NONE || noaddressok
+                    where (option == INDIV && (p.Amount > MinAmt))
+                            || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > MinAmt))
                     select p;
             else
                 q = from p in q
                     let option =
-                        (p.ContributionOptionsId ?? 0) == 0
-                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != 1 ? 2 : 1)
+                        (p.ContributionOptionsId ?? NOTSPEC) == NOTSPEC
+                            ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != INDIV ? JOINT : INDIV)
                             : p.ContributionOptionsId
-                    where option != 9 || noaddressok
+                    where option != NONE || noaddressok
                     where
-                        (option == 1 && (p.Amount > 0 || p.GiftInKind == true))  // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
-                        || (option == 2 && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > 0 || p.GiftInKind == true))
+                        (option == INDIV && (p.Amount > 0 || p.GiftInKind == true))  // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
+                        || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > 0 || p.GiftInKind == true))
                     select p;
 
             IEnumerable<ContributorInfo> q2 = null;

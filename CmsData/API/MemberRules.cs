@@ -262,16 +262,16 @@ namespace CmsData
                 {
                     spouse.MaritalStatusId = MaritalStatusCode.Widowed;
                     if (spouse.EnvelopeOptionsId.HasValue)
-                        if (spouse.EnvelopeOptionsId != EnvelopeOptionCode.None)
-                            spouse.EnvelopeOptionsId = EnvelopeOptionCode.Individual;
-                    spouse.ContributionOptionsId = EnvelopeOptionCode.Individual;
+                        if (spouse.EnvelopeOptionsId != StatementOptionCode.None)
+                            spouse.EnvelopeOptionsId = StatementOptionCode.Individual;
+                    spouse.ContributionOptionsId = StatementOptionCode.Individual;
                 }
 
                 if (spouse.MemberStatusId == MemberStatusCode.Member)
-                    if (spouse.EnvelopeOptionsId == EnvelopeOptionCode.Joint)
-                        spouse.EnvelopeOptionsId = EnvelopeOptionCode.Individual;
+                    if (spouse.EnvelopeOptionsId == StatementOptionCode.Joint)
+                        spouse.EnvelopeOptionsId = StatementOptionCode.Individual;
             }
-            EnvelopeOptionsId = EnvelopeOptionCode.None;
+            EnvelopeOptionsId = StatementOptionCode.None;
 
             DropAllMemberships(Db);
         }

@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.People.Controllers
 				PeopleId = id, 
 				FromDate = fr,
 				ToDate = to,
-				typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult && p.ContributionOptionsId == EnvelopeOptionCode.Joint ? 2 : 1,
+				typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult && p.ContributionOptionsId == StatementOptionCode.Joint ? 2 : 1,
 				noaddressok = true,
 				useMinAmt = false,
                 singleStatement = true,
