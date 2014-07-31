@@ -20,14 +20,14 @@ namespace CmsData
 {
     public partial class CMSDataContext
     {
-//        public string CmsHost
-//        {
-//            get
-//            {
-//                var h = ConfigurationManager.AppSettings["cmshost"];
-//                return h.Replace("{church}", Host, ignoreCase: true);
-//            }
-//        }
+        //        public string CmsHost
+        //        {
+        //            get
+        //            {
+        //                var h = ConfigurationManager.AppSettings["cmshost"];
+        //                return h.Replace("{church}", Host, ignoreCase: true);
+        //            }
+        //        }
         public void Email(string from, Person p, string subject, string body)
         {
             Email(from, p, null, subject, body, false);
@@ -174,7 +174,7 @@ namespace CmsData
                      orderby p.PeopleId == a.FirstOrDefault() descending
                      select p;
             var list = q2.ToList();
-            if(list.Count == 0)
+            if (list.Count == 0)
                 return AdminPeople();
             return list;
         }
@@ -186,11 +186,11 @@ namespace CmsData
             var p = q.FirstOrDefault() ?? CMSRoleProvider.provider.GetAdmins().First();
             return p;
         }
-        public EmailQueue CreateQueue(MailAddress From, string subject, string body, DateTime? schedule, int tagId, bool publicViewable)
+        public EmailQueue CreateQueue(MailAddress From, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, bool? ccParents = null)
         {
-            return CreateQueue(Util.UserPeopleId, From, subject, body, schedule, tagId, publicViewable);
+            return CreateQueue(Util.UserPeopleId, From, subject, body, schedule, tagId, publicViewable, ccParents: ccParents);
         }
-        public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, int? goerSupporterId = null)
+        public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, int? goerSupporterId = null, bool? ccParents = null)
         {
             var tag = TagById(tagId);
             if (tag == null)
@@ -207,6 +207,7 @@ namespace CmsData
                 QueuedBy = queuedBy,
                 Transactional = false,
                 PublicX = publicViewable,
+                CCParents = ccParents
             };
             EmailQueues.InsertOnSubmit(emailqueue);
             SubmitChanges();
@@ -227,7 +228,23 @@ namespace CmsData
 
             var q = tag.People(this);
 
-            var q2 = from p in q.Distinct()
+            IQueryable<int> q2 = null;
+            if (emailqueue.CCParents == true)
+                q2 = from p in q.Distinct()
+                     where (p.EmailAddress ?? "") != ""
+                         || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
+                         || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
+                     where (p.SendEmailAddress1 ?? true)
+                         || (p.SendEmailAddress2 ?? false)
+                         || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
+                         || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
+                         || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
+                         || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
+                     where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
+                     orderby p.PeopleId
+                     select p.PeopleId;
+            else
+                q2 = from p in q.Distinct()
                      where p.EmailAddress != null
                      where p.EmailAddress != ""
                      where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
@@ -385,18 +402,18 @@ namespace CmsData
                 try
                 {
 #endif
-                    var p = LoadPersonById(To.PeopleId);
-                    var text = m.DoReplacements(p, To);
-                    var aa = m.ListAddresses;
+                var p = LoadPersonById(To.PeopleId);
+                var text = m.DoReplacements(p, To);
+                var aa = m.ListAddresses;
 
-                    if (Setting("sendemail", "true") != "false")
-                    {
-                        Util.SendMsg(sysFromEmail, CmsHost, from,
-                            emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId);
-                        To.Sent = DateTime.Now;
+                if (Setting("sendemail", "true") != "false")
+                {
+                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                        emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId);
+                    To.Sent = DateTime.Now;
 
-                        SubmitChanges();
-                    }
+                    SubmitChanges();
+                }
 #if DEBUG
 #else
                 }
@@ -417,14 +434,14 @@ namespace CmsData
             {
                 var tos = emailqueue.EmailQueueTos.Select(ee => ee.PeopleId).ToList();
                 var cclist = from pid in m.CcIdList
-                    where tos.All(ee => ee != pid)
-                    select new EmailQueueTo()
-                    {
-                        PeopleId = pid,
-                        Id = emailqueue.Id,
-                        Sent = DateTime.Now,
-                        CCOnly = true
-                    };
+                             where tos.All(ee => ee != pid)
+                             select new EmailQueueTo()
+                             {
+                                 PeopleId = pid,
+                                 Id = emailqueue.Id,
+                                 Sent = DateTime.Now,
+                                 CCOnly = true
+                             };
                 emailqueue.EmailQueueTos.AddRange(cclist);
             }
 

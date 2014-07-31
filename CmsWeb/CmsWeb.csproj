@@ -310,7 +310,6 @@
     </Compile>
     <Compile Include="Areas\Reports\Models\Directories\CompactPictureDir.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelExportModel.cs" />
-    <Compile Include="Areas\Reports\Models\Export\ExcelHelper.cs" />
     <Compile Include="Areas\Reports\Models\Export\MissionTripSendersModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\MissionTripFundingModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\MembershipExportModel.cs" />

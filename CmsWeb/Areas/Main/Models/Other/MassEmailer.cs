@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Main.Models
 
         public int TagId { get; set; }
         public bool wantParents { get; set; }
-        public bool ccparents { get; set; }
+        public bool CcParents { get; set; }
         public string FromAddress { get; set; }
         public string FromName { get; set; }
         public string Subject { get; set; }
@@ -37,18 +37,31 @@ namespace CmsWeb.Areas.Main.Models
         public MassEmailer(Guid id, bool? parents = null, bool? ccparents = null)
         {
             wantParents = parents ?? false;
-            this.ccparents = ccparents ?? false;
+            CcParents = ccparents ?? false;
             var q = DbUtil.Db.PeopleQuery(id);
-            var c = DbUtil.Db.LoadQueryById2((Guid)id);
+            var c = DbUtil.Db.LoadQueryById2(id);
             var cc = c.ToClause();
             if (!cc.ParentsOf && wantParents)
                 q = DbUtil.Db.PersonQueryParents(q);
 
-            q = from p in q
-                where p.EmailAddress != null
-                where p.EmailAddress != ""
-                where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
-                select p;
+            if(CcParents)
+                q = from p in q
+                    where (p.EmailAddress ?? "") != "" 
+                        || (p.Family.HeadOfHousehold.EmailAddress ?? "") != "" 
+                        || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
+                    where (p.SendEmailAddress1 ?? true) 
+                        || (p.SendEmailAddress2 ?? false)
+                        || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
+                        || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
+                        || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
+                        || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
+                    select p;
+            else
+                q = from p in q
+                    where p.EmailAddress != null
+                    where p.EmailAddress != ""
+                    where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                    select p;
             Count = q.Count();
             var tag = DbUtil.Db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
             TagId = tag.Id;
@@ -58,10 +71,9 @@ namespace CmsWeb.Areas.Main.Models
         {
             var From = new MailAddress(FromAddress, FromName);
             DbUtil.Db.CopySession();
-            var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable);
+            var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents);
             if (emailqueue == null)
                 return 0;
-            emailqueue.CCParents = ccparents;
             emailqueue.Transactional = transactional;
             DbUtil.Db.SubmitChanges();
             return emailqueue.Id;

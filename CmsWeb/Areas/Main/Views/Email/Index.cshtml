@@ -61,7 +61,7 @@ You can include a file, image, mp3 or whatever you like in your email.
    @Html.Hidden("CmsHost")
    @Html.Hidden("Count", Model.Count)
    @Html.Hidden("wantParents", Model.wantParents)
-   @Html.Hidden("ccparents", Model.ccparents)
+   @Html.Hidden("ccparents", Model.CcParents)
    	<p>Number of Emails: @Model.Count @ViewData["parentsof"] 
 		<em style="display:inline-block"><span style="color: blue;font-size: 120%;">Please Note</span>: 
         Your recipient list has been saved in a tag, so you can run queries in other tabs. But you should not compose two emails simultaneously as one will overwrite the other.</em></p>
