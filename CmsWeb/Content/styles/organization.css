@@ -182,3 +182,12 @@ textarea.html
 .btn-group.btn-page-actions {
     margin-top: 0;
 }
+#orginfoform {
+    width: auto;
+}
+#org_OrganizationName {
+    width: 90%;
+}
+#profile-header {
+    border-top: 5px solid #45a5f4;
+}
