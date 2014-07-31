@@ -310,6 +310,7 @@
     </Compile>
     <Compile Include="Areas\Reports\Models\Directories\CompactPictureDir.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelExportModel.cs" />
+    <Compile Include="Areas\Reports\Models\Export\ExcelResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\MissionTripSendersModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\MissionTripFundingModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\MembershipExportModel.cs" />
@@ -572,7 +573,7 @@
     <Compile Include="Areas\Public\Models\CheckIn\BinaryResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExportPeople.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExportInvolvements.cs" />
-    <Compile Include="Areas\Reports\Models\Export\InvovementInfo.cs" />
+    <Compile Include="Areas\Reports\Models\Export\InvolvementInfo.cs" />
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Main\Models\Organization\ScheduleInfo.cs" />
     <Compile Include="Areas\Main\Models\Other\MeetingModel.cs" />

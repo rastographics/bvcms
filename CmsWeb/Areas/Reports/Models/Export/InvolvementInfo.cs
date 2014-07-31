@@ -6,7 +6,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class InvovementInfo
+    public class InvolvementInfo
     {
         public string Info
         {
