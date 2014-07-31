@@ -20,7 +20,7 @@ namespace CmsWeb.Models
             public decimal? Pct { get; set; }
             public string Leader { get; set; }
         }
-        public static EpplusResult InvolvementList(Guid queryid)
+        public static IEnumerable<InvolvementInfo> InvolvementList(Guid queryid)
         {
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);
@@ -28,7 +28,7 @@ namespace CmsWeb.Models
                      orderby p.LastName, p.FirstName
                      let spouse = Db.People.SingleOrDefault(w => p.SpouseId == w.PeopleId)
                      let om = p.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == p.BibleFellowshipClassId)
-                     select new InvovementInfo
+                     select new InvolvementInfo
                      {
                          PeopleId = p.PeopleId,
                          Addr = p.PrimaryAddress,
@@ -67,7 +67,7 @@ namespace CmsWeb.Models
                          Campus = p.Campu.Description,
                          CampusDate = Db.LastChanged(p.PeopleId, "CampusId").FormatDate(),
                      };
-            return q2.ToDataTable().ToExcel("InvolvementList.xlsx");
+            return q2;
         }
         public static EpplusResult ChildrenList(Guid queryid, int maximumRows)
         {

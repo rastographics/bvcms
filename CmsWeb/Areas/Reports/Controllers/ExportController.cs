@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 case "CouplesBoth":
                     return ctl.FetchExcelCouplesBoth(id, maxExcelRows);
                 case "Involvement":
-                    return ExportInvolvements.InvolvementList(id);
+                    return new ExcelResult(ExportInvolvements.InvolvementList(id), "Involvements.xls");
                 case "Children":
                     return ExportInvolvements.ChildrenList(id, maxExcelRows);
                 case "Church":
