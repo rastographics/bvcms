@@ -75,6 +75,7 @@
       <main2c Include="Scripts/Bootstrap/typeahead.js"/>
       <main2c Include="Scripts/Search/SearchTypeahead.js"/>
       <main2c Include="Scripts/js/form-ajax.js"/>
+      <main2c Include="Scripts/js/ExtraValue.js"/>
       <main2c Include="Scripts/js/ExportToolBar2.js"/>
       <main2c Include="Scripts/js/headermenu2.js"/>
       <main2c Include="Scripts/Search/SearchAdd.js"/>
