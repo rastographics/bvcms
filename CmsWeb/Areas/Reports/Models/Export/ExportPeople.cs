@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Collections;
 using System.Xml.Linq;
 using CmsData;
+using MoreLinq;
 using UtilityExtensions;
 using System.Data.SqlClient;
 
@@ -12,7 +14,7 @@ namespace CmsWeb.Models
 {
     public class ExportPeople
     {
-        public static IEnumerable FetchExcelLibraryList(Guid queryid)
+        public static DataTable FetchExcelLibraryList(Guid queryid)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -36,9 +38,9 @@ namespace CmsWeb.Models
                         MemberStatus = p.MemberStatus.Description,
                         Married = p.MaritalStatus.Description,
                     };
-            return q;
+            return q.ToDataTable();
         }
-        public static IEnumerable FetchExcelList(Guid queryid, int maximumRows, bool useMailFlags)
+        public static DataTable FetchExcelList(Guid queryid, int maximumRows, bool useMailFlags)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -84,7 +86,7 @@ namespace CmsWeb.Models
                         Campus = p.Campu == null ? "" : p.Campu.Description,
                         DecisionDate = p.DecisionDate.FormatDate()
                     };
-            return q.Take(maximumRows);
+            return q.Take(maximumRows).ToDataTable();
         }
         public static IEnumerable DonorDetails(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed)

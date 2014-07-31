@@ -202,7 +202,7 @@ namespace CmsWeb
     {
         private ExcelPackage pkg;
         private string fn;
-        public EpplusResult(ExcelPackage pkg, string fn)
+        public EpplusResult(ExcelPackage pkg, string fn = "People.xlsx")
         {
             this.pkg = pkg;
             this.fn = fn;
