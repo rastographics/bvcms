@@ -10,29 +10,28 @@ namespace CmsWeb.Models.OrganizationPage
 {
     public class VisitorModel
     {
-        private Guid queryid;
         public int OrganizationId { get; set; }
         public PagerModel2 Pager { get; set; }
-        private string NameFilter;
-        public VisitorModel(int id, Guid qid, string name)
+        private readonly string nameFilter;
+        public VisitorModel(int id, string name)
         {
             OrganizationId = id;
-            queryid = qid;
+            Util2.CurrentOrgId = id;
             Pager = new PagerModel2(Count);
             Pager.Direction = "asc";
             Pager.Sort = "Name";
-            NameFilter = name;
+            nameFilter = name;
         }
         private IQueryable<Person> _visitors;
         private IQueryable<Person> FetchVisitors()
         {
             if (_visitors == null)
             {
-                _visitors = DbUtil.Db.PeopleQuery(queryid);
-                if (NameFilter.HasValue())
+                _visitors = DbUtil.Db.PeopleQuery(DbUtil.Db.QueryVisitedCurrentOrg().QueryId);
+                if (nameFilter.HasValue())
                 {
                     string First, Last;
-                    Util.NameSplit(NameFilter, out First, out Last);
+                    Util.NameSplit(nameFilter, out First, out Last);
                     if (First.HasValue())
                         _visitors = from p in _visitors
                                     where p.LastName.StartsWith(Last)
@@ -48,7 +47,7 @@ namespace CmsWeb.Models.OrganizationPage
         }
         public bool isFiltered
         {
-            get { return NameFilter.HasValue(); }
+            get { return nameFilter.HasValue(); }
         }
         int? _count;
         public int Count()

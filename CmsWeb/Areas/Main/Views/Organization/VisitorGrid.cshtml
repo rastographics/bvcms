@@ -2,10 +2,9 @@
 @using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Models.OrganizationPage.VisitorModel
-@Html.Partial("ExportToolBar") 
-&nbsp;<div style="clear: both"></div>
+@Html.Hidden("visitor-qid", (Guid?)ViewBag.queryid)
 <p style="margin-bottom:5px">
-Count: <strong>@Model.Count()</strong>
+Count: <strong id="visitor-count">@Model.Count()</strong>
 <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a></p>
 <table id="MemberGrid" class="@ViewExtensions2.GridClass" cellpadding="4">
 <thead>

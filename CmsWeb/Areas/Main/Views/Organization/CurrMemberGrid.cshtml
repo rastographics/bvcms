@@ -1,12 +1,11 @@
 ﻿@using CmsWeb
 @model CmsWeb.Models.OrganizationPage.MemberModel
 @{ ViewData["OrgMemberContext"] = true;
-@Html.Partial("Toolbar/Toolbar")
    ViewData["OrgMemberContext"] = false;
 }
-&nbsp;<div style="clear: both"></div>
+@Html.Hidden("current-qid", (Guid?)ViewBag.queryid)
 <p>
-    Count: <strong>@Model.Count()</strong>&nbsp;&nbsp;
+    Count: <strong id="current-count">@Model.Count()</strong>&nbsp;&nbsp;
     <a class="filtergroupslink bt" href="#" title="filter by name or group">Filter @(Html.Raw(Model.isFiltered ? "<span style='color:red'>(filtered)</span>" : ""))</a>
     @if (User.IsInRole("Edit"))
     {

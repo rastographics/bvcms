@@ -179,3 +179,6 @@ textarea.html
 #QuestionList, #QuestionList ul {
     list-style-type: none;
 }
+.btn-group.btn-page-actions {
+    margin-top: 0;
+}

@@ -10,7 +10,7 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
-    [RouteArea("Main", AreaPrefix= "Organization"), Route("{action}/{id?}")]
+    [RouteArea("Main", AreaPrefix = "Organization"), Route("{action}/{id?}")]
     [ValidateInput(false)]
     [SessionExpire]
     public class OrganizationController : CmsStaffController
@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.Main.Controllers
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.org.FullName;
             ViewBag.selectmode = 0;
-            InitExportToolbar(id, DbUtil.Db.QueryInCurrentOrg().QueryId, checkparent: true);
+            InitExportToolbar(id);
             Session["ActiveOrganization"] = m.org.OrganizationName;
             return View(m);
         }
@@ -116,25 +116,26 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.LogActivity("Creating new meeting for {0}".Fmt(organization.OrganizationName));
             return Content("/Meeting/" + mt.MeetingId);
         }
-        private void InitExportToolbar(int oid, Guid qid, bool checkparent = false)
+        private void InitExportToolbar(int oid)
         {
-            Util2.CurrentOrgId = oid;
-            if (checkparent)
-            {
-                var isParent = DbUtil.Db.Organizations.Any(oo => oo.ParentOrgId == oid);
-                if (isParent)
-                {
-                    ViewBag.ParentOrgContext = true;
-                    ViewBag.leadersqid = DbUtil.Db.QueryLeadersUnderCurrentOrg().QueryId;
-                    ViewBag.membersqid = DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId;
-                }
-            }
+            var qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
             ViewBag.queryid = qid;
-            ViewBag.TagAction = "/Organization/TagAll/{0}".Fmt(qid);
-            ViewBag.UnTagAction = "/Organization/UnTagAll/{0}".Fmt(qid);
+            ViewBag.currentQid = qid;
+            ViewBag.previousQid = DbUtil.Db.QueryPreviousCurrentOrg().QueryId;
+            ViewBag.visitedQid = DbUtil.Db.QueryVisitedCurrentOrg().QueryId;
+            ViewBag.pendingQid = DbUtil.Db.QueryPendingCurrentOrg().QueryId;
+            ViewBag.inactiveQid = DbUtil.Db.QueryInactiveCurrentOrg().QueryId;
+            ViewBag.prospectsQid = DbUtil.Db.QueryProspectCurrentOrg().QueryId;
+            ViewBag.TagAction = "/Organization/TagAll/" + qid;
+            ViewBag.UnTagAction = "/Organization/UnTagAll/" + qid;
             ViewBag.AddContact = "/Organization/AddContact/" + qid;
             ViewBag.AddTasks = "/Organization/AddTasks/" + qid;
             ViewBag.OrganizationContext = true;
+            if (!DbUtil.Db.Organizations.Any(oo => oo.ParentOrgId == oid)) 
+                return;
+            ViewBag.ParentOrgContext = true;
+            ViewBag.leadersqid = DbUtil.Db.QueryLeadersUnderCurrentOrg().QueryId;
+            ViewBag.membersqid = DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId;
         }
 
         [HttpPost]
@@ -144,7 +145,6 @@ namespace CmsWeb.Areas.Main.Controllers
             Util2.CurrentGroups = smallgrouplist;
             Util2.CurrentGroupsPrefix = sgprefix;
             Util2.CurrentGroupsMode = selectmode ?? 0;
-            InitExportToolbar(id, DbUtil.Db.QueryInCurrentOrg().QueryId, checkparent: true);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Members";
             var m = new MemberModel(id, MemberModel.GroupSelect.Active, namefilter, sgprefix);
             UpdateModel(m.Pager);
@@ -153,7 +153,6 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult PrevMemberGrid(int id, string namefilter, bool? ShowProspects)
         {
-            InitExportToolbar(id, DbUtil.Db.QueryPreviousCurrentOrg().QueryId);
             var m = new PrevMemberModel(id, namefilter) { ShowProspects = ShowProspects ?? false };
             UpdateModel(m.Pager);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Previous Members";
@@ -163,9 +162,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult VisitorGrid(int id, string namefilter)
         {
-            var qid = DbUtil.Db.QueryVisitedCurrentOrg().QueryId;
-            InitExportToolbar(id, qid);
-            var m = new VisitorModel(id, qid, namefilter);
+            var m = new VisitorModel(id, namefilter);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Guests";
             UpdateModel(m.Pager);
             DbUtil.LogActivity("Viewing Visitors for {0}".Fmt(Session["ActiveOrganization"]));
@@ -174,7 +171,6 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult PendingMemberGrid(int id, string namefilter)
         {
-            InitExportToolbar(id, DbUtil.Db.QueryPendingCurrentOrg().QueryId);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Pending Members";
             var m = new MemberModel(id, MemberModel.GroupSelect.Pending, namefilter);
             UpdateModel(m.Pager);
@@ -183,7 +179,6 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult InactiveMemberGrid(int id, string namefilter)
         {
-            InitExportToolbar(id, DbUtil.Db.QueryInactiveCurrentOrg().QueryId);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Inactive Members";
             var m = new MemberModel(id, MemberModel.GroupSelect.Inactive, namefilter);
             UpdateModel(m.Pager);
@@ -193,7 +188,6 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult ProspectGrid(int id, string namefilter)
         {
-            InitExportToolbar(id, DbUtil.Db.QueryProspectCurrentOrg().QueryId);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Prospects";
             var m = new MemberModel(id, MemberModel.GroupSelect.Prospect, namefilter);
             UpdateModel(m.Pager);
@@ -817,7 +811,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
             var q = from om in org.OrganizationMembers
-                select om;
+                    select om;
 
             foreach (var om in q)
             {
@@ -826,7 +820,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 var link = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
                 om.PayLink = link;
             }
-            DbUtil.Db .SubmitChanges();
+            DbUtil.Db.SubmitChanges();
             return View(org);
 
         }

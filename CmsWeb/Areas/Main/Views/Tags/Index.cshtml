@@ -2,38 +2,52 @@
 @using CmsWeb
 @model TagsModel
 @{
-	ViewBag.Title = "Tags";
-	Layout = ViewExtensions2.Layout();
+  ViewBag.Title = "Tags";
+  Layout = ViewExtensions2.Layout();
+}
+@section head
+{
+  <style>
+    .btn-group.btn-page-actions {
+        margin-top: 0;
+    }
+  </style>
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Dialog/SearchUsers.js")
-    @Fingerprint.Script("/Scripts/js/Tags.js")
+  @Fingerprint.Script("/Scripts/Dialog/SearchUsers.js")
+  @Fingerprint.Script("/Scripts/js/Tags.js")
 }
 <form id="managetags" method="post" action="/Tags">
-    <div class="roundbox floatleft">
-        <h2>Tag List</h2>
-        <table cellspacing="5">
-            <tr>
-                <th class="right"> Change Active Tag: </th>
-                <td>@Html.Partial("Tags")&nbsp;&nbsp;
-                    <a id="delete" href="/Tags/Delete" confirm="are you sure?" class="bt">Delete Tag</a></td>
-            </tr>
-            <tr>
-                <th class="right top"> New Tag Name:</th>
-                <td> @Html.TextBox("tagname", Model.tagname, new { title="no colon characters" }) </td>
-            </tr>
-            <tr>
-                <td class="top" class="right" colspan="2">
-                    <a id="ShareLink" href="/Tags/SharedTags" data-target="#usersDialog" class="bt">Shared with <span id="sharecount">@Model.SharedCount()</span> users</a>
-                    <a id="makenew" class="bt" href="#">Make New Tag</a>
-                    <a id="rename" class="bt" href="#">Rename Tag</a>
-                    <a id="refresh" class="bt" href="/Tags/Results">Refresh</a>
-                    <div>@Html.ValidationMessage("name")</div></td>
-            </tr>
-        </table>
+  <div class="row-fluid">
+    <div class="span8" id="profile-header">
+      <h3>Tag List</h3>
+      <table class="table table-condensed">
+        <tr>
+          <th class="right"> Change Active Tag: </th>
+          <td>
+            @Html.Partial("Tags")&nbsp;&nbsp;
+            <a id="delete" href="/Tags/Delete" confirm="are you sure?" class="bt">Delete Tag</a>
+          </td>
+        </tr>
+        <tr>
+          <th class="right top"> New Tag Name:</th>
+          <td> @Html.TextBox("tagname", Model.tagname, new { title = "no colon characters" }) </td>
+        </tr>
+        <tr>
+          <td class="top" class="right" colspan="2">
+            <a id="ShareLink" href="/Tags/SharedTags" data-target="#usersDialog" class="bt">Shared with <span id="sharecount">@Model.SharedCount()</span> users</a>
+            <a id="makenew" class="bt" href="#">Make New Tag</a>
+            <a id="rename" class="bt" href="#">Rename Tag</a>
+            <a id="refresh" class="bt" href="/Tags/Results">Refresh</a>
+            <div>@Html.ValidationMessage("name")</div>
+          </td>
+        </tr>
+      </table>
     </div>
-    <div class="floatclear"></div>
-@Html.Partial("ExportToolBar")
-    @Html.Partial("Results", Model)
+    <div class="span4">
+      @Html.Partial("Toolbar/Toolbar")
+    </div>
+  </div>
+  @Html.Partial("Results", Model)
 </form>

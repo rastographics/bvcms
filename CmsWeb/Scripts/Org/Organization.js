@@ -9,7 +9,41 @@
 };
 $(function () {
     $("#Settings-tab").tabs();
-    $("#main-tab").tabs();
+    $("#main-tab").tabs({
+      activate: function(event, ui) {
+        var qid = "";
+        switch (ui.newTab[0].innerText) {
+            case "Members":
+                qid = $("#currentQid").val();
+                break;
+            case "Previous":
+                qid = $("#previousQid").val();
+                break;
+            case "Pending":
+                qid = $("#pendingQid").val();
+                break;
+            case "Inactive":
+            case "Senders":
+                qid = $("#inactiveQid").val();
+                break;
+            case "Prospects":
+                qid = $("#prospectsQid").val();
+                break;
+            case "Guests":
+                qid = $("#visitedQid").val();
+                break;
+        }
+        if (qid) {
+            $("#bluetoolbarstop").show();
+            $("#bluetoolbarstop a").each(function() {
+                $(this).attr("href", this.href.replace(/(.*\/)([^\/?]*)(\?[^?]*)?$/mg, "$1" + qid + "$3"));
+            });
+        }
+        else {
+            $("#bluetoolbarstop").hide();
+        }
+      }
+    });
     $("#main-tab").show();
     $('#deleteorg').click(function (ev) {
         ev.preventDefault();

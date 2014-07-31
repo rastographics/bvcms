@@ -1,9 +1,8 @@
 ﻿@using CmsWeb
 @model CmsWeb.Models.OrganizationPage.MemberModel
-@Html.Partial("ExportToolBar") 
-&nbsp;<div style="clear: both"></div>
+@Html.Hidden("pending-qid", (Guid?)ViewBag.queryid)
 <p>
-Count: <strong>@Model.Count()</strong>
+Count: <strong id="pending-count">@Model.Count()</strong>
 <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
 @if(User.IsInRole("Edit"))
 { 

@@ -14,6 +14,7 @@ namespace CmsWeb.Models.OrganizationPage
         public PagerModel2 Pager { get; set; }
         public PrevMemberModel(int id, string name)
         {
+            Util2.CurrentOrgId = id;
             OrganizationId = id;
             Pager = new PagerModel2(Count);
             Pager.Direction = "asc";

@@ -3,8 +3,8 @@
 @using CmsData
 @model CmsWeb.Models.OrganizationPage.OrganizationModel
 @{ var o = Model.org; }
-<h2>@Model.org.OrganizationName@(Model.org.LeaderId.HasValue ? "," : "") <span style="font-size:12px">@Model.org.LeaderName</span></h2>
-<table cellspacing="5" width="100%">
+<h4>@Model.org.OrganizationName@(Model.org.LeaderId.HasValue ? "," : "") <span style="font-size:12px">@Model.org.LeaderName</span></h4>
+<table cellspacing="5" class="table-condensed">
     <tr>
         <th class="right">Name:</th>
         <td colspan="2">@o.OrganizationName</td> 

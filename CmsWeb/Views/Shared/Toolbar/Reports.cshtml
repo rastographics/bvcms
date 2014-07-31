@@ -16,7 +16,7 @@
                 @if ((bool?)ViewBag.OrgMemberContext == true)
                 { 
                     <li><a href='/Export2/Excel/Organization/@qid' title="Includes Org Member info">Member Export</a></li>
-                    <li><a href='/Export2/Excel/Groups' title="Includes Org Member and Small Group columns">Groups Export</a></li>
+                    <li><a href='/Export2/Excel/Groups/@qid' title="Includes Org Member and Small Group columns">Groups Export</a></li>
                     <li><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
                 }
                 <li><a href='/Export2/ExtraValues/@qid'>Extra Values</a></li>
@@ -85,7 +85,6 @@
                 <li><a target="_blank" href='/Reports/BarCodeLabels/@qid'>Barcode / Name</a></li>
                 <li><a target="_blank" href='/Reports/NameLabels/@qid'>Name</a></li>
                 <li><a target="_blank" href='/Reports/Avery/@qid'>Name (with Phone Number)</a></li>
-                <li>@*<a href='/Reports/Avery3/@qid' title="Avery 3 Across Labels (person per row)">Avery Labels 3</a>*@</li>
             </ul>
         </div>
     </li>

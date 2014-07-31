@@ -1,10 +1,9 @@
 ﻿@using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Models.OrganizationPage.PrevMemberModel
-@Html.Partial("Toolbar/Toolbar")
-&nbsp;<div style="clear: both"></div>
+@Html.Hidden("previous-qid", (Guid?)ViewBag.queryid)
 <p style="margin-bottom:5px">
-Count: <strong>@Model.Count()</strong>
+Count: <strong id="previous-count">@Model.Count()</strong>
     <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
 
 @if(User.IsInRole("Developer"))

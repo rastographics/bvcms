@@ -29,6 +29,7 @@ namespace CmsWeb.Models.OrganizationPage
         public PagerModel2 Pager { get; set; }
         public MemberModel(int? id, GroupSelect select, string name, string sgprefix = "")
         {
+            Util2.CurrentOrgId = id;
             OrganizationId = id;
             Org = DbUtil.Db.LoadOrganizationById(id);
             if (Util2.CurrentGroups != null && @select == GroupSelect.Active)
