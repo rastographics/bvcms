@@ -18,13 +18,13 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult StatusFlags(Guid id, string flags = "")
         { // ?flags=F35,F03,F01,F04
-            return StatusFlagsExportModel.StatisFlagsList(id, flags);
+            return StatusFlagsExportModel.StatusFlagsList(id, flags);
         }
 
         [HttpGet]
         public ActionResult ExtraValues(Guid id)
         {
-            return new ExtraValueExcelResult(id);
+            return ExtraValueExcelResult.ExtraValueExcel(id);
         }
         [HttpGet]
         public ActionResult WorshipAttendance(Guid id)
@@ -41,8 +41,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult Contributions(string id, ContributionsExcelResult m)
         {
-            m.type = id;
-            return m;
+            return m.ToExcel(id);
         }
         [Authorize(Roles = "Finance")]
         [HttpPost]
@@ -54,7 +53,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet, Route("Excel/Groups")]
         public ActionResult ExcelGroups()
         {
-            return new ExcelResult(ExportInvolvements.OrgMemberListGroups());
+            return ExportInvolvements.OrgMemberListGroups();
         }
         [HttpGet, Route("Excel/OrgMembers")]
         public ActionResult ExcelOrgMembers()
@@ -111,33 +110,31 @@ namespace CmsWeb.Areas.Reports.Controllers
                 case "GroupAddress":
                     return ExportPeople.FetchExcelList(id, maxExcelRows, useMailFlags ?? false).ToExcel();
                 case "Library":
-                    return ExportPeople.FetchExcelLibraryList(id).ToExcel();
+                    return ExportPeople.FetchExcelLibraryList(id);
                 case "AllFamily":
-                    return new ExcelResult(ExportPeople.FetchExcelListFamily(id));
+                    return ExportPeople.FetchExcelListFamily(id);
                 case "Family":
-                    return new ExcelResult(ctl.FetchExcelFamily(id, maxExcelRows));
+                    return ctl.FetchExcelFamily(id, maxExcelRows);
                 case "ParentsOf":
-                    return new ExcelResult(ctl.FetchExcelParents(id, maxExcelRows));
+                    return ctl.FetchExcelParents(id, maxExcelRows);
                 case "CouplesEither":
-                    return new ExcelResult(ctl.FetchExcelCouplesEither(id, maxExcelRows));
+                    return ctl.FetchExcelCouplesEither(id, maxExcelRows);
                 case "CouplesBoth":
-                    return new ExcelResult(ctl.FetchExcelCouplesBoth(id, maxExcelRows));
+                    return ctl.FetchExcelCouplesBoth(id, maxExcelRows);
                 case "Involvement":
-                    return new ExcelResult(ExportInvolvements.InvolvementList(id));
+                    return ExportInvolvements.InvolvementList(id);
                 case "Children":
-                    return new ExcelResult(ExportInvolvements.ChildrenList(id, maxExcelRows));
+                    return ExportInvolvements.ChildrenList(id, maxExcelRows);
                 case "Church":
-                    return new ExcelResult(ExportInvolvements.ChurchList(id, maxExcelRows));
+                    return ExportInvolvements.ChurchList(id, maxExcelRows);
                 case "Attend":
-                    return new ExcelResult(ExportInvolvements.AttendList(id, maxExcelRows));
+                    return ExportInvolvements.AttendList(id, maxExcelRows);
                 case "Promotion":
-                    return new ExcelResult(ExportInvolvements.PromoList(id, maxExcelRows));
+                    return ExportInvolvements.PromoList(id, maxExcelRows);
                 case "IndividualPicture":
                     return ExcelExportModel.Result(id);
                 case "FamilyMembers":
-                    Response.ContentType = "application/vnd.ms-excel";
-                    Response.AddHeader("content-disposition", "attachment;filename=familymembers.xls");
-                    return View("FamilyMembers", ExportPeople.FetchExcelListFamilyMembers(id));
+                    return ExportPeople.FetchExcelListFamilyMembers(id);
             }
             return Content("no format");
         }

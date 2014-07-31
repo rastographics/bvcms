@@ -48,29 +48,8 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult List(string submit, CouponModel m)
         {
             if (submit == "Excel")
-                return new CouponExcelResult(m);
+                return m.Coupons2().ToExcel("Coupons.xlsx");
             return View(m);
-        }
-    }
-    public class CouponExcelResult : ActionResult
-    {
-        private CouponModel m;
-        public CouponExcelResult(CouponModel m)
-        {
-            this.m = m;
-        }
-        public override void ExecuteResult(ControllerContext context)
-        {
-            var Response = context.HttpContext.Response;
-            Response.Buffer = true;
-            Response.ContentType = "application/vnd.ms-excel";
-            Response.AddHeader("Content-Disposition", "attachment;filename=CMSOrganizations.xls");
-            Response.Charset = "";
-            var d = m.Coupons2();
-            var dg = new DataGrid();
-            dg.DataSource = d;
-            dg.DataBind();
-            dg.RenderControl(new HtmlTextWriter(Response.Output));
         }
     }
 }

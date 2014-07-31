@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var m = new OrgMembersModel();
             UpdateModel(m);
-            return new OrgMembersModel.OrgExcelResult(id);
+            return m.ToExcel(id);
         }
 
         [HttpPost]

@@ -61,9 +61,9 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 		[HttpPost]
 		public ActionResult Export(TransactionsModel m)
-        {
-            return new TransactionsExcelResult(m);
-        }
+		{
+		    return m.ToExcel();
+		}
 		[HttpGet]
 		[Authorize(Roles = "Finance")]
 		public ActionResult RunRecurringGiving()

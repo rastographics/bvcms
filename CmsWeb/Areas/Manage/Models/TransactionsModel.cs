@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using CmsData;
 using CmsData.View;
+using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -405,7 +406,7 @@ namespace CmsWeb.Models
 
             return q;
         }
-        public IQueryable ExportTransactions()
+        public DataTable ExportTransactions()
         {
             var q = FetchTransactions();
 
@@ -432,7 +433,7 @@ namespace CmsWeb.Models
                      t.Zip,
                      t.Fund
                  };
-            return q2;
+            return q2.ToDataTable();
         }
 
         public class SupporterInfo
@@ -478,6 +479,11 @@ namespace CmsWeb.Models
                        PeopleId = p.PeopleId,
                        Name = p.Name
                    };
+        }
+
+        public EpplusResult ToExcel()
+        {
+            return ExportTransactions().ToExcel("Transactions.xlsx");
         }
     }
 }

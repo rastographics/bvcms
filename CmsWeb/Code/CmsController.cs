@@ -7,14 +7,9 @@ using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Models;
 using Dapper;
 using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
 using UtilityExtensions;
 using CmsData;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
-using System.Web.UI;
-using System.Collections;
 
 namespace CmsWeb
 {
@@ -202,7 +197,7 @@ namespace CmsWeb
     {
         private ExcelPackage pkg;
         private string fn;
-        public EpplusResult(ExcelPackage pkg, string fn = "People.xlsx")
+        public EpplusResult(ExcelPackage pkg, string fn)
         {
             this.pkg = pkg;
             this.fn = fn;
@@ -216,68 +211,6 @@ namespace CmsWeb
         }
     }
 
-    public class DataGridResult : ActionResult
-    {
-        DataGrid dg;
-        bool excel;
-        public DataGridResult(IEnumerable list, bool excel = false)
-        {
-            dg = new DataGrid();
-            dg.DataSource = list;
-            this.excel = excel;
-        }
-        public override void ExecuteResult(ControllerContext context)
-        {
-            var Response = context.HttpContext.Response;
-
-            if (excel)
-            {
-                Response.Buffer = true;
-                Response.ContentType = "application/vnd.ms-excel";
-                Response.AddHeader("Content-Disposition", "attachment;filename=CMSPeople.xls");
-            }
-            Response.Charset = "";
-            Response.Write(@"
-<html>
-<head>
-<style>
-body, html {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 12px;
-    color: #222;
-}
-table, tbody, tfoot, thead, tr, th, td {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-}
-table.grid {
-    border-collapse: collapse;
-    text-align: left;
-}
-    table.grid td {
-        padding: 5px;
-    }
-table.grid > tbody > tr:nth-child(odd) {
-    background-color: #eee;
-}
-table.grid tr:nth-child(1) {
-    border-bottom: 2px solid #555;
-    font-weight: bold;
-    color: #555;
-}
-</style>
-</head>
-<body>
-");
-            dg.CssClass = @"grid";
-            dg.DataBind();
-            dg.RenderControl(new HtmlTextWriter(Response.Output));
-            Response.Write("</body></head>");
-        }
-    }
     public class MyRequireHttpsAttribute : RequireHttpsAttribute
     {
         public override void OnAuthorization(AuthorizationContext filterContext)

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Ajax;
+using MoreLinq;
 using UtilityExtensions;
 using System.Web.Routing;
 using CmsWeb;
@@ -214,7 +215,17 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (!id.HasValue)
                 return Content("no query");
-            return new TaskNotesExcelResult(id.Value);
+            var q = DbUtil.Db.PeopleQuery(id.Value);
+            var q2 = from p in q
+                     let t = p.TasksAboutPerson.OrderByDescending(t => t.CreatedOn).FirstOrDefault(t => t.Notes != null)
+                     where t != null
+                     select new
+                     {
+                         p.Name,
+                         t.Notes,
+                         t.CreatedOn
+                     };
+            return q2.ToDataTable().ToExcel("TaskNotes.xlsx");
         }
 
     }
