@@ -4,7 +4,7 @@
 @model CmsWeb.Models.OrganizationPage.OrganizationModel
 @{ var o = Model.org; }
 <h4>@Model.org.OrganizationName@(Model.org.LeaderId.HasValue ? "," : "") <span style="font-size:12px">@Model.org.LeaderName</span></h4>
-<table cellspacing="5" class="table-condensed">
+<table class="table table-condensed not-wide">
     <tr>
         <th class="right">Name:</th>
         <td colspan="2">@o.OrganizationName</td> 
