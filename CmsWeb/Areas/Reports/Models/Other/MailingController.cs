@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using CmsData;
+using MoreLinq;
 using UtilityExtensions;
 using System.Collections;
 
@@ -274,7 +275,7 @@ namespace CmsWeb.Models
             return query;
         }
 
-        public IEnumerable FetchExcelCouplesBoth(Guid QueryId, int maximumRows)
+        public EpplusResult FetchExcelCouplesBoth(Guid QueryId, int maximumRows)
         {
             var q = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
             var q1 = EliminateCoupleDoublets(q);
@@ -304,10 +305,10 @@ namespace CmsWeb.Models
                          MemberStatus = p.MemberStatus.Description,
                          Employer = p.EmployerOther,
                      };
-            return q2.Take(maximumRows);
+            return q2.Take(maximumRows).ToDataTable().ToExcel("CouplesBoth.xlsx");
         }
 
-        public IEnumerable FetchExcelCouplesEither(Guid QueryId, int maximumRows)
+        public EpplusResult FetchExcelCouplesEither(Guid QueryId, int maximumRows)
         {
             var q = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
             var q1 = EliminateCoupleDoublets(q);
@@ -338,10 +339,10 @@ namespace CmsWeb.Models
                          CellPhone = p.CellPhone.FmtFone(),
                          WorkPhone = p.WorkPhone.FmtFone(),
                      };
-            return q2.Take(maximumRows);
+            return q2.Take(maximumRows).ToDataTable().ToExcel("CouplesEither.xlsx");
         }
 
-        public IEnumerable FetchExcelFamily(Guid QueryId, int maximumRows)
+        public EpplusResult FetchExcelFamily(Guid QueryId, int maximumRows)
         {
             var qp = DbUtil.Db.PeopleQuery(QueryId);
 
@@ -373,10 +374,10 @@ namespace CmsWeb.Models
                         Zip = h.PrimaryZip,
                         Email = h.EmailAddress,
                         SpouseEmail = spouse.EmailAddress
-                    }).Take(maximumRows);
+                    }).Take(maximumRows).ToDataTable().ToExcel("Families.xlsx");
         }
 
-        public IEnumerable FetchExcelParents(Guid QueryId, int maximumRows)
+        public EpplusResult FetchExcelParents(Guid QueryId, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(QueryId);
             if (UseMailFlags)
@@ -401,7 +402,7 @@ namespace CmsWeb.Models
                                 : p.Family.HeadOfHouseholdSpouse.EmailAddress)
                             : p.EmailAddress)
                      };
-            return q2.Take(maximumRows);
+            return q2.Take(maximumRows).ToDataTable().ToExcel("Parents.xlsx");
         }
         public class TaggedPersonInfo : PersonInfo
         {

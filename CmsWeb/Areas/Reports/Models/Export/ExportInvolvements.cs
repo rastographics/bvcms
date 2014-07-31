@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using CmsData;
 using CmsData.View;
+using MoreLinq;
 using UtilityExtensions;
 using System.Collections;
 using System.Data.SqlClient;
@@ -18,7 +20,7 @@ namespace CmsWeb.Models
             public decimal? Pct { get; set; }
             public string Leader { get; set; }
         }
-        public static IEnumerable<InvovementInfo> InvolvementList(Guid queryid)
+        public static EpplusResult InvolvementList(Guid queryid)
         {
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);
@@ -65,9 +67,9 @@ namespace CmsWeb.Models
                          Campus = p.Campu.Description,
                          CampusDate = Db.LastChanged(p.PeopleId, "CampusId").FormatDate(),
                      };
-            return q2;
+            return q2.ToDataTable().ToExcel("InvolvementList.xlsx");
         }
-        public static IEnumerable ChildrenList(Guid queryid, int maximumRows)
+        public static EpplusResult ChildrenList(Guid queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
@@ -98,9 +100,9 @@ namespace CmsWeb.Models
                          EmPhone = rr.Emphone,
                          Medical = rr.MedicalDescription
                      };
-            return q2.Take(maximumRows);
+            return q2.Take(maximumRows).ToDataTable().ToExcel("ChildrenList.xlsx");
         }
-        public static IEnumerable ChurchList(Guid queryid, int maximumRows)
+        public static EpplusResult ChurchList(Guid queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
@@ -133,9 +135,9 @@ namespace CmsWeb.Models
                          PrevChurch = p.OtherPreviousChurch,
                          Resident = rescode,
                      };
-            return q2.Take(maximumRows);
+            return q2.Take(maximumRows).ToDataTable().ToExcel("ChurchList.xlsx");
         }
-        public static IEnumerable AttendList(Guid queryid, int maximumRows)
+        public static EpplusResult AttendList(Guid queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
@@ -169,7 +171,7 @@ namespace CmsWeb.Models
                          AttendPct = bfm.AttendPct.ToString(),
                          AttendStr = bfm.AttendStr,
                      };
-            return q2.Take(maximumRows);
+            return q2.Take(maximumRows).ToDataTable().ToExcel("AttendList.xlsx");
         }
 
         //        public static IEnumerable OrgMemberList2(int qid)
@@ -185,7 +187,7 @@ namespace CmsWeb.Models
 //            var q3 = q2.Select("new(p.PreferredName,p.LastName,om.AttendStr,om.AmountPaid)");
 //            return q3;
 //        }
-        public static IEnumerable OrgMemberListGroups()
+        public static EpplusResult OrgMemberListGroups()
         {
             var Db = DbUtil.Db;
             var gids = string.Join(",", Util2.CurrentGroups);
@@ -193,7 +195,7 @@ namespace CmsWeb.Models
                 "dbo.OrgMembers {0}, '{1}'".Fmt(Util2.CurrentOrgId, gids));
             cmd.Connection = new SqlConnection(Util.ConnectionString);
             cmd.Connection.Open();
-            return cmd.ExecuteReader();
+            return cmd.ExecuteReader().ToExcel("OrgMemberGroups.xlsx");
         }
 
         public class MemberInfoClass
@@ -256,7 +258,7 @@ namespace CmsWeb.Models
             var Db = DbUtil.Db;
             return Db.CurrOrgMembers(orgid.ToString());
         }
-        public static IEnumerable PromoList(Guid queryid, int maximumRows)
+        public static EpplusResult PromoList(Guid queryid, int maximumRows)
         {
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);
@@ -286,7 +288,7 @@ namespace CmsWeb.Models
                          CellPhone1 = p.Family.HeadOfHousehold.CellPhone.FmtFone(),
                          CellPhone2 = p.Family.HeadOfHouseholdSpouse.CellPhone.FmtFone(),
                      };
-            return q2.Take(maximumRows);
+            return q2.Take(maximumRows).ToDataTable().ToExcel("PromotionList.xlsx");
         }
     }
 }

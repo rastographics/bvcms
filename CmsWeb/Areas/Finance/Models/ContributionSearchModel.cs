@@ -11,6 +11,7 @@ using System.Linq;
 using CmsData.API;
 using CmsData.Codes;
 using CmsWeb.Code;
+using MoreLinq;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
@@ -65,10 +66,10 @@ namespace CmsWeb.Models
             q = ApplySort(q).Skip(StartRow).Take(PageSize);
             return api.ContributionsList(q);
         }
-        public IEnumerable<ContributionInfo> ContributionsListAll()
+        public EpplusResult ContributionsListAllExcel()
         {
             var q = api.FetchContributions();
-            return api.ContributionsList(q);
+            return api.ContributionsList(q).ToDataTable().ToExcel("Contributions.xlsx");
         }
 
         public IQueryable<Contribution> ApplySort(IQueryable<Contribution> q)

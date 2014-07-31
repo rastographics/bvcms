@@ -6,12 +6,14 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Data.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using CmsData.Registration;
+using MoreLinq;
 using UtilityExtensions;
 using System.Text;
 using CmsData;
@@ -86,7 +88,7 @@ namespace CmsWeb.Models
                      };
             return q2.Take(200);
         }
-        public IEnumerable<CouponInfo2> Coupons2()
+        public DataTable Coupons2()
         {
         	var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
             var q = from c in DbUtil.Db.Coupons
@@ -134,7 +136,7 @@ namespace CmsWeb.Models
                          UserName = c.User.Name,
                          RegAmt = c.RegAmount ?? 0
                      };
-            return q2.Take(200);
+            return q2.Take(200).ToDataTable();
         }
 		public List<SelectListItem> OnlineRegs()
 		{

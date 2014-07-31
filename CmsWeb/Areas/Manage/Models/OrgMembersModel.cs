@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
+using MoreLinq;
 using UtilityExtensions;
 using System.Web.Mvc;
 using System.Text;
@@ -112,9 +113,9 @@ namespace CmsWeb.Models
         }
         public IEnumerable<SelectListItem> Organizations()
         {
-        	var roles = DbUtil.Db.CurrentRoles();
+            var roles = DbUtil.Db.CurrentRoles();
             var q = from o in DbUtil.Db.Organizations
-        	        where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where o.DivOrgs.Any(di => di.DivId == DivId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     orderby o.OrganizationName
@@ -131,9 +132,9 @@ namespace CmsWeb.Models
         public IEnumerable<SelectListItem> Organizations2()
         {
             var member = MemberTypeCode.Member;
-        	var roles = DbUtil.Db.CurrentRoles();
+            var roles = DbUtil.Db.CurrentRoles();
             var q = from o in DbUtil.Db.Organizations
-        	        where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where o.DivOrgs.Any(di => di.DivId == DivId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     orderby o.OrganizationName
@@ -154,7 +155,7 @@ namespace CmsWeb.Models
         {
             if (_members == null)
             {
-                var glist = new int[] {};
+                var glist = new int[] { };
                 if (Grades.HasValue())
                     glist = (from g in (Grades ?? "").Split(',')
                              select g.ToInt()).ToArray();
@@ -305,10 +306,10 @@ namespace CmsWeb.Models
                     tom.AddToGroup(DbUtil.Db, s);
                 if (om.OrganizationId != tom.OrganizationId)
                     tom.Moved = true;
-                om.Drop(DbUtil.Db, addToHistory:true);
+                om.Drop(DbUtil.Db, addToHistory: true);
                 DbUtil.Db.SubmitChanges();
             }
-			DbUtil.Db.UpdateMainFellowship(TargetId);
+            DbUtil.Db.UpdateMainFellowship(TargetId);
         }
         public int MovedCount()
         {
@@ -371,13 +372,13 @@ namespace CmsWeb.Models
                 {
                     if (i.RegisterEmail.HasValue())
                     {
-                        Db.Email(Db.CurrentUser.Person.FromEmail, 
+                        Db.Email(Db.CurrentUser.Person.FromEmail,
                             i.om.Person, Util.ToMailAddressList(i.RegisterEmail),
                             subj, msg, false);
                         sb.AppendFormat("\"{0}\" [{1}]R ({2}): {3}\r\n".Fmt(i.Name, i.FromEmail, i.PeopleId, i.Location));
                         i.om.Moved = false;
                     }
-                
+
                     var flist = (from fm in i.om.Person.Family.People
                                  where fm.EmailAddress != null && fm.EmailAddress != ""
                                  where fm.EmailAddress != i.RegisterEmail
@@ -392,8 +393,8 @@ namespace CmsWeb.Models
                 }
             }
             sb.Append("</pre>\n");
-            Db.Email(Db.CurrentUser.Person.FromEmail, 
-                Db.PeopleFromPidString(onlineorg.NotifyIds), 
+            Db.Email(Db.CurrentUser.Person.FromEmail,
+                Db.PeopleFromPidString(onlineorg.NotifyIds),
                 "room notices sent to:", sb.ToString());
             Db.SubmitChanges();
         }
@@ -416,33 +417,17 @@ namespace CmsWeb.Models
                 get { return isChecked ? "checked='checked'" : ""; }
             }
         }
-        public class OrgExcelResult : ActionResult
+        public EpplusResult ToExcel(int oid)
         {
-            private int oid;
-            public OrgExcelResult(int oid)
-            {
-                this.oid = oid;
-            }
-            public override void ExecuteResult(ControllerContext context)
-            {
-                var Response = context.HttpContext.Response;
-                Response.Buffer = true;
-                Response.ContentType = "application/vnd.ms-excel";
-                Response.AddHeader("Content-Disposition", "attachment;filename=CMSOrganizations.xls");
-                Response.Charset = "";
-                var d = from om in DbUtil.Db.OrganizationMembers
-                        where om.OrganizationId == oid
-                        select new
-                        {
-                            om.PeopleId,
-                            om.OrganizationId,
-                            Groups = string.Join(",", om.OrgMemMemTags.Select(mt => mt.MemberTag.Name).ToArray()),
-                        };
-                var dg = new DataGrid();
-                dg.DataSource = d;
-                dg.DataBind();
-                dg.RenderControl(new HtmlTextWriter(Response.Output));
-            }
+            var d = from om in DbUtil.Db.OrganizationMembers
+                    where om.OrganizationId == oid
+                    select new
+                    {
+                        om.PeopleId,
+                        om.OrganizationId,
+                        Groups = string.Join(",", om.OrgMemMemTags.Select(mt => mt.MemberTag.Name).ToArray()),
+                    };
+            return d.ToDataTable().ToExcel("OrgMembers.xlsx");
         }
     }
 }

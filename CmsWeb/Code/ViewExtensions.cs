@@ -825,7 +825,7 @@ namespace CmsWeb
             return dt.ToExcel(filename);
         }
 
-        public static EpplusResult ToExcel(this DataTable dt, string filename)
+        public static EpplusResult ToExcel(this DataTable dt, string filename = "People.xlsx")
         {
             var ep = new ExcelPackage();
             var ws = ep.Workbook.Worksheets.Add("Sheet1");

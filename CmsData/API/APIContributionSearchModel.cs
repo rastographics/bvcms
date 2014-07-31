@@ -104,7 +104,7 @@ namespace CmsData.API
             return sw.ToString();
         }
 
-        public IEnumerable<ContributionInfo> ContributionsList(IQueryable<Contribution> query)
+        public IQueryable<ContributionInfo> ContributionsList(IQueryable<Contribution> query)
         {
             var q2 = from c in query
                      let bd = c.BundleDetails.FirstOrDefault()

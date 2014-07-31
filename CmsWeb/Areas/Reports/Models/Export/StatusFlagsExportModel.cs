@@ -14,7 +14,7 @@ namespace CmsWeb.Models
 {
     public class StatusFlagsExportModel
     {
-        public static EpplusResult StatisFlagsList(Guid qid, string flags)
+        public static EpplusResult StatusFlagsList(Guid qid, string flags)
         {
             var collist = from ss in DbUtil.Db.ViewStatusFlagNamesRoles.ToList()
                           where ss.Role == null || HttpContext.Current.User.IsInRole(ss.Role)

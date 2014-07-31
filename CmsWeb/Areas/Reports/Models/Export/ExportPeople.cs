@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using System.Web;
-using System.Collections;
 using System.Xml.Linq;
 using CmsData;
+using MoreLinq;
 using UtilityExtensions;
 using System.Data.SqlClient;
 
@@ -12,7 +12,7 @@ namespace CmsWeb.Models
 {
     public class ExportPeople
     {
-        public static IEnumerable FetchExcelLibraryList(Guid queryid)
+        public static EpplusResult FetchExcelLibraryList(Guid queryid)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -36,9 +36,9 @@ namespace CmsWeb.Models
                         MemberStatus = p.MemberStatus.Description,
                         Married = p.MaritalStatus.Description,
                     };
-            return q;
+            return q.ToDataTable().ToExcel("LibraryList.xlsx");
         }
-        public static IEnumerable FetchExcelList(Guid queryid, int maximumRows, bool useMailFlags)
+        public static DataTable FetchExcelList(Guid queryid, int maximumRows, bool useMailFlags)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -84,9 +84,9 @@ namespace CmsWeb.Models
                         Campus = p.Campu == null ? "" : p.Campu.Description,
                         DecisionDate = p.DecisionDate.FormatDate()
                     };
-            return q.Take(maximumRows);
+            return q.Take(maximumRows).ToDataTable();
         }
-        public static IEnumerable DonorDetails(DateTime startdt, DateTime enddt,
+        public static DataTable DonorDetails(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed)
         {
             var q = from c in DbUtil.Db.Contributions2(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed)
@@ -112,9 +112,9 @@ namespace CmsWeb.Models
                         c.BundleType,
                         c.BundleStatus,
                     };
-            return q;
+            return q.ToDataTable();
         }
-        public static IEnumerable ExcelDonorTotals(DateTime startdt, DateTime enddt,
+        public static DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
             int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed)
         {
             var q2 = from r in DbUtil.Db.GetTotalContributionsDonor2(startdt, enddt, campusid, nontaxdeductible, includeUnclosed)
@@ -129,9 +129,9 @@ namespace CmsWeb.Models
                          MainFellowship = r.MainFellowship ?? "",
                          MemberStatus = r.MemberStatus ?? "",
                      };
-            return q2;
+            return q2.ToDataTable();
         }
-        public static IEnumerable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
+        public static DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed)
         {
             var q2 = from r in DbUtil.Db.GetTotalContributions3(startdt, enddt, campusid, nontaxdeductible, includeUnclosed)
@@ -148,10 +148,10 @@ namespace CmsWeb.Models
                          r.MainFellowship,
                          r.MemberStatus,
                      };
-            return q2;
+            return q2.ToDataTable();
         }
 
-        public static IEnumerable<ExcelFamilyMember> FetchExcelListFamilyMembers(Guid qid)
+        public static EpplusResult FetchExcelListFamilyMembers(Guid qid)
         {
             var q = DbUtil.Db.PeopleQuery(qid);
             var q2 = from pp in q
@@ -193,9 +193,9 @@ namespace CmsWeb.Models
                          FellowshipClass = (om == null ? "" : om.Organization.OrganizationName),
                          AltName = p.AltName,
                      };
-            return q2;
+            return q2.ToDataTable().ToExcel("ListFamilyMembers.xlsx");
         }
-        public static IEnumerable FetchExcelListFamily(Guid queryid)
+        public static EpplusResult FetchExcelListFamily(Guid queryid)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -222,9 +222,9 @@ namespace CmsWeb.Models
                         Email = p.EmailAddress,
                         SpouseEmail = spouse.EmailAddress,
                     };
-            return q;
+            return q.ToDataTable().ToExcel("FamilyList.xlsx");
         }
-        public static IEnumerable FetchExcelListFamily2(Guid queryid)
+        public static EpplusResult FetchExcelListFamily2(Guid queryid)
         {
             var Db = DbUtil.Db;
             var query = Db.PeopleQuery(queryid);
@@ -262,7 +262,7 @@ namespace CmsWeb.Models
                         Grade = p.Grade.ToString(),
                         AttendPctBF = (om == null ? 0 : om.AttendPct == null ? 0 : om.AttendPct.Value),
                     };
-            return q;
+            return q.ToDataTable().ToExcel("ListFamily2.xlsx");
         }
 
         public static IEnumerable<ExcelPic> FetchExcelListPics(Guid queryid, int maximumRows)
@@ -304,7 +304,7 @@ namespace CmsWeb.Models
                     };
             return q.Take(maximumRows);
         }
-        public static IEnumerable ExportExtraValues(Guid qid)
+        public static EpplusResult ExportExtraValues(Guid qid)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
             var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues2", "<Fields/>"));
@@ -322,7 +322,7 @@ namespace CmsWeb.Models
             cmd.Parameters.AddWithValue("@p3", nodisplaycols);
             cmd.Connection = new SqlConnection(Util.ConnectionString);
             cmd.Connection.Open();
-            return cmd.ExecuteReader();
+            return cmd.ExecuteReader().ToExcel("ExtraValues.xlsx");
         }
     }
 }

@@ -359,7 +359,6 @@
     <Compile Include="Areas\Reports\Models\Other\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Reports\Models\Enrollment\EnrollmentControlModel.cs" />
     <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
-    <Compile Include="Areas\Reports\Models\Export\ExcelResult.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OtherRegistrations.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
@@ -582,7 +581,6 @@
     <Compile Include="Areas\Main\Models\Other\PeopleSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\ContributionsExcelResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\MeetingsModel.cs" />
-    <Compile Include="Areas\Manage\Models\TransactionsExcelResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\UpdatePeopleModel.cs" />
     <Compile Include="Areas\Public\Models\APITestModel.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\FindResult.cs" />
@@ -608,9 +606,7 @@
     <Compile Include="Areas\Main\Models\Other\MassEmailer.cs" />
     <Compile Include="Areas\Main\Models\Other\OrgSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\PostBundleModel.cs" />
-    <Compile Include="Areas\Reports\Models\Export\TaskNotesExcelResult.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponModel.cs" />
-    <Compile Include="Areas\Reports\Models\Export\OrgExcelResult.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\SearchAddModel.cs" />
     <Compile Include="Areas\Dialog\Models\SearchPersonModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\AttendanceDetailModel.cs" />

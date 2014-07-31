@@ -124,12 +124,12 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult ExportExcel(OrgSearchModel m)
         {
-            return new OrgExcelResult(m);
+            return m.OrganizationExcelList();
         }
         [HttpPost]
         public ActionResult ExportMembersExcel(OrgSearchModel m)
         {
-            return OrgsMembersExcelModel.Export(m);
+            return m.OrgsMemberList();
         }
         private void SaveToSession(OrgSearchModel m)
         {

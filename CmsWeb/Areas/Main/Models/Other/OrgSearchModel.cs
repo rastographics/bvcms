@@ -11,6 +11,7 @@ using System.Text;
 using System.Web;
 using CmsData.View;
 using CmsWeb.Areas.Main.Controllers;
+using MoreLinq;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using System.Web.Mvc;
@@ -97,7 +98,7 @@ namespace CmsWeb.Models
                     };
             return q;
         }
-        public IEnumerable OrganizationExcelList()
+        public EpplusResult OrganizationExcelList()
         {
             var q = FetchOrgs();
             var q2 = from o in q
@@ -136,7 +137,7 @@ namespace CmsWeb.Models
                          LeaderType = lt == null ? "" : lt.Description,
                          o.OrganizationStatusId,
                      };
-            return q2;
+            return q2.ToDataTable().ToExcel("Organizations.xlsx");
         }
         public class OrgMemberInfoClass : ExportInvolvements.MemberInfoClass
         {
@@ -144,11 +145,11 @@ namespace CmsWeb.Models
             public string Organization { get; set; }
             public string Schedule { get; set; }
         }
-        public IEnumerable<CurrOrgMember> OrgsMemberList()
+        public EpplusResult OrgsMemberList()
         {
             var q = FetchOrgs();
-            var Db = DbUtil.Db;
-            return Db.CurrOrgMembers(string.Join(",", q.OrderBy(mm => mm.OrganizationName).Select(mm => mm.OrganizationId)));
+            return DbUtil.Db.CurrOrgMembers(string.Join(",", q.OrderBy(mm => mm.OrganizationName).Select(mm => mm.OrganizationId)))
+                .ToDataTable().ToExcel("OrgsMembers.xlsx");
         }
 
         private int TagSubDiv(string s)

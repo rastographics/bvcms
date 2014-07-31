@@ -11,17 +11,6 @@ namespace CmsWeb.Models
 {
     public class OrgsMembersExcelModel
     {
-        public static EpplusResult Export(OrgSearchModel m)
-        {
-            var q = m.OrgsMemberList();
-
-            var cols = typeof(CurrOrgMember).GetProperties();
-            var count = q.Count();
-            var ep = new ExcelPackage();
-            var ws = ep.Workbook.Worksheets.Add("Sheet1");
-            ws.Cells["A2"].LoadFromCollection(q);
-            return FormatResult(ws, count, cols, ep);
-        }
         public static EpplusResult Export(int id)
         {
             var q = ExportInvolvements.OrgMemberList(id);
