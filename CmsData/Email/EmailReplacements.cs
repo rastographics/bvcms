@@ -53,7 +53,6 @@ namespace CmsData
         }
 
         public List<MailAddress> ListAddresses { get; set; }
-        public List<int> CcIdList { get; set; }
 
         public string DoReplacements(Person p, EmailQueueTo emailqueueto)
         {
@@ -73,16 +72,7 @@ namespace CmsData
 
             var aa = db.GetAddressList(p);
             if (emailqueueto.EmailQueue.CCParents ?? false)
-            {
-                if(CcIdList == null)
-                    CcIdList = new List<int>();
-                var cclist = db.GetCcList(p);
-                foreach (var pp in cclist)
-                {
-                    aa.AddRange(db.GetAddressList(pp));
-                    CcIdList.Add(pp.PeopleId);
-                }
-            }
+                aa.AddRange(db.GetCcList(p, emailqueueto));
 
             if (emailqueueto.AddEmail.HasValue())
                 foreach (string ad in emailqueueto.AddEmail.SplitStr(","))

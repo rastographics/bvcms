@@ -12,7 +12,11 @@ namespace CmsWeb.Areas.People.Models
             var q = from e in DbUtil.Db.EmailQueues
                     where e.Sent != null
                     where !(e.Transactional ?? false)
-                    where e.EmailQueueTos.Any(ee => ee.PeopleId == person.PeopleId)
+                    where e.EmailQueueTos.Any(ee => 
+                        ee.PeopleId == person.PeopleId
+                        || ee.Parent1 == person.PeopleId
+                        || ee.Parent2 == person.PeopleId
+                        )
                     where e.QueuedBy != person.PeopleId
                     where e.FromAddr != (person.EmailAddress ?? "")
                     where e.FromAddr != (person.EmailAddress2 ?? "")

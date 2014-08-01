@@ -33,7 +33,9 @@ namespace CmsData
 		
 		private int? _GoerSupportId;
 		
-		private bool? _CCOnly;
+		private int? _Parent1;
+		
+		private int? _Parent2;
 		
    		
     	
@@ -72,8 +74,11 @@ namespace CmsData
 		partial void OnGoerSupportIdChanging(int? value);
 		partial void OnGoerSupportIdChanged();
 		
-		partial void OnCCOnlyChanging(bool? value);
-		partial void OnCCOnlyChanged();
+		partial void OnParent1Changing(int? value);
+		partial void OnParent1Changed();
+		
+		partial void OnParent2Changing(int? value);
+		partial void OnParent2Changed();
 		
     #endregion
 		public EmailQueueTo()
@@ -272,21 +277,43 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="CCOnly", UpdateCheck=UpdateCheck.Never, Storage="_CCOnly", DbType="bit")]
-		public bool? CCOnly
+		[Column(Name="Parent1", UpdateCheck=UpdateCheck.Never, Storage="_Parent1", DbType="int")]
+		public int? Parent1
 		{
-			get { return this._CCOnly; }
+			get { return this._Parent1; }
 
 			set
 			{
-				if (this._CCOnly != value)
+				if (this._Parent1 != value)
 				{
 				
-                    this.OnCCOnlyChanging(value);
+                    this.OnParent1Changing(value);
 					this.SendPropertyChanging();
-					this._CCOnly = value;
-					this.SendPropertyChanged("CCOnly");
-					this.OnCCOnlyChanged();
+					this._Parent1 = value;
+					this.SendPropertyChanged("Parent1");
+					this.OnParent1Changed();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Parent2", UpdateCheck=UpdateCheck.Never, Storage="_Parent2", DbType="int")]
+		public int? Parent2
+		{
+			get { return this._Parent2; }
+
+			set
+			{
+				if (this._Parent2 != value)
+				{
+				
+                    this.OnParent2Changing(value);
+					this.SendPropertyChanging();
+					this._Parent2 = value;
+					this.SendPropertyChanged("Parent2");
+					this.OnParent2Changed();
 				}
 
 			}

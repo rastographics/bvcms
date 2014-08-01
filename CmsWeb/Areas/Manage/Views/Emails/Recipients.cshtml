@@ -4,14 +4,29 @@
 @Html.Hidden("filter")
 <table class="@ViewExtensions2.GridClass">
 <thead>
-<tr><th>Name</th><th>Address</th><th>Opens</th></tr>
+  <tr>
+    <th>Name</th>
+    <th>Address</th><th>Opens</th>
+    @if (Model.queue.CCParents == true)
+    {
+    <th>Parent1</th>
+    <th>Parent2</th>
+    }
+  </tr>
 </thead>
 <tbody>
 @foreach(var p in Model.Recipients())
 {
-<tr><td><a href="/Manage/Emails/SentTo/@p.peopleid">@p.name</a></td>
+  <tr>
+    <td><a href="/Manage/Emails/SentTo/@p.peopleid">@p.name</a></td>
     <td>@p.address</td>
-    <td>@p.nopens</td></tr>    
+    <td>@p.nopens</td>
+    @if (Model.queue.CCParents == true)
+    {
+      <td>@p.parent1name</td>
+      <td>@p.parent2name</td>
+    }
+  </tr>    
 }
 </tbody>
 </table>

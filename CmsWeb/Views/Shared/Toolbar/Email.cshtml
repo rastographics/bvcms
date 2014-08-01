@@ -4,10 +4,7 @@
   <li class="header">Email</li>
   <li><a href='/Email/@ViewBag.queryid'>Individuals</a></li>
   <li><a href='/Email/@ViewBag.queryid?parents=true'>Parents</a></li>
-  @if (User.IsInRole("Developer"))
-  {
-    <li><a href='/Email/@ViewBag.queryid?ccparents=true'> Child with Parents CC'd</a></li>
-  }
+  <li><a href='/Email/@ViewBag.queryid?ccparents=true'> Child with Parents CC'd</a></li>
   @if ((bool?)ViewBag.ParentOrgContext == true)
   {
     <li><a href='/Email/@ViewBag.leadersqid'>Leaders under this org</a></li>
