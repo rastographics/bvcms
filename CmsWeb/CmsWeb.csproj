@@ -690,15 +690,9 @@
     <Content Include="Content\css\datepicker.css" />
     <Content Include="Content\css\datepicker3.css" />
     <Content Include="Content\css\Fixups3.css" />
-    <Content Include="Content\css\Fixups2 - Copy.min.css">
-      <DependentUpon>Fixups3.css</DependentUpon>
-    </Content>
     <Content Include="Content\css\Fixups2.css" />
     <Content Include="Content\css\demo_page.css" />
     <Content Include="Content\css\demo_table.css" />
-    <Content Include="Content\css\Fixups2.min.css">
-      <DependentUpon>Fixups2.css</DependentUpon>
-    </Content>
     <Content Include="Content\css\give.css" />
     <Content Include="Content\css\images\ajax-loader.gif" />
     <Content Include="Content\css\img\ajax-loader.gif" />

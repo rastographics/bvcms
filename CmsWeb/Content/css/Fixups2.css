@@ -424,7 +424,7 @@ i.outsideCurrentTag {
 span.currentTag {
     display: inline-block;
     overflow: hidden;
-    max-width: 150px;
+    max-width: 140px;
     -moz-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
     -o-text-overflow: ellipsis;

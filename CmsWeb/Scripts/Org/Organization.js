@@ -9,18 +9,23 @@
 };
 $(function () {
     $("#Settings-tab").tabs();
+    $("li.pending-list").hide();
     $("#main-tab").tabs({
       activate: function(event, ui) {
-        var qid = "";
+          var qid = "";
+          $("li.orgcontext").hide();
+
         switch (ui.newTab[0].innerText) {
             case "Members":
                 qid = $("#currentQid").val();
+                $("li.current-list").show();
                 break;
             case "Previous":
                 qid = $("#previousQid").val();
                 break;
             case "Pending":
                 qid = $("#pendingQid").val();
+                $("li.pending-list").show();
                 break;
             case "Inactive":
             case "Senders":

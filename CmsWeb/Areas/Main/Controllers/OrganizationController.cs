@@ -118,6 +118,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
         private void InitExportToolbar(int oid)
         {
+            ViewBag.oid = oid;
             var qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
             ViewBag.queryid = qid;
             ViewBag.currentQid = qid;

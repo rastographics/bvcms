@@ -50,17 +50,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             return m;
         }
 
-        [HttpGet, Route("Excel/Groups")]
-        public ActionResult ExcelGroups()
-        {
-            return ExportInvolvements.OrgMemberListGroups();
-        }
-        [HttpGet, Route("Excel/OrgMembers")]
-        public ActionResult ExcelOrgMembers()
-        {
-            return OrgsMembersExcelModel.Export(Util2.CurrentOrgId ?? 0);
-        }
-
         [HttpPost]
         public ActionResult MeetingsForDateRange(DateTime dt1, DateTime dt2, OrgSearchModel m)
         {
@@ -135,6 +124,10 @@ namespace CmsWeb.Areas.Reports.Controllers
                     return ExcelExportModel.Result(id);
                 case "FamilyMembers":
                     return ExportPeople.FetchExcelListFamilyMembers(id);
+                case "OrgMembers":
+                    return OrgsMembersExcelModel.Export(Util2.CurrentOrgId ?? 0);
+                case "Groups":
+                    return ExportInvolvements.OrgMemberListGroups();
             }
             return Content("no format");
         }

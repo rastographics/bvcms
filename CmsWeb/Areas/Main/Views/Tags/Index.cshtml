@@ -11,6 +11,9 @@
     .btn-group.btn-page-actions {
         margin-top: 0;
     }
+    #profile-header {
+        border-top: 5px solid #45a5f4;
+    }
   </style>
 }
 @section scripts
@@ -19,31 +22,33 @@
   @Fingerprint.Script("/Scripts/js/Tags.js")
 }
 <form id="managetags" method="post" action="/Tags">
-  <div class="row-fluid">
-    <div class="span8" id="profile-header">
-      <h4>Manage Tags</h4>
-      <table class="table table-condensed not-wide">
-        <tr>
-          <th class="right"> Change Active Tag: </th>
-          <td>
-            @Html.Partial("Tags")&nbsp;&nbsp;
-            <a id="delete" href="/Tags/Delete" confirm="are you sure?" class="bt">Delete Tag</a>
-          </td>
-        </tr>
-        <tr>
-          <th class="right top"> New Tag Name:</th>
-          <td> @Html.TextBox("tagname", Model.tagname, new { title = "no colon characters" }) </td>
-        </tr>
-        <tr>
-          <td class="top" class="right" colspan="2">
-            <a id="ShareLink" href="/Tags/SharedTags" data-target="#usersDialog" class="bt">Shared with <span id="sharecount">@Model.SharedCount()</span> users</a>
-            <a id="makenew" class="bt" href="#">Make New Tag</a>
-            <a id="rename" class="bt" href="#">Rename Tag</a>
-            <a id="refresh" class="bt" href="/Tags/Results">Refresh</a>
-            <div>@Html.ValidationMessage("name")</div>
-          </td>
-        </tr>
-      </table>
+  <div class="row-fluid" id="profile-header">
+    <div class="span8">
+      <div class="roundbox table not-wide">
+        <h2>Manage Tags</h2>
+        <table class="table table-condensed not-wide">
+          <tr>
+            <th class="right"> Change Active Tag: </th>
+            <td>
+              @Html.Partial("Tags")&nbsp;&nbsp;
+              <a id="delete" href="/Tags/Delete" confirm="are you sure?" class="bt">Delete Tag</a>
+            </td>
+          </tr>
+          <tr>
+            <th class="right top"> New Tag Name:</th>
+            <td> @Html.TextBox("tagname", Model.tagname, new { title = "no colon characters" }) </td>
+          </tr>
+          <tr>
+            <td class="top" class="right" colspan="2">
+              <a id="ShareLink" href="/Tags/SharedTags" data-target="#usersDialog" class="bt">Shared with <span id="sharecount">@Model.SharedCount()</span> users</a>
+              <a id="makenew" class="bt" href="#">Make New Tag</a>
+              <a id="rename" class="bt" href="#">Rename Tag</a>
+              <a id="refresh" class="bt" href="/Tags/Results">Refresh</a>
+              <div>@Html.ValidationMessage("name")</div>
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
     <div class="span4">
       @Html.Partial("Toolbar/Toolbar")
