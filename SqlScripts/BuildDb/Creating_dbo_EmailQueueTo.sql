@@ -7,7 +7,9 @@ CREATE TABLE [dbo].[EmailQueueTo]
 [AddEmail] [nvarchar] (max) NULL,
 [guid] [uniqueidentifier] NULL,
 [messageid] [nvarchar] (100) NULL,
-[GoerSupportId] [int] NULL
+[GoerSupportId] [int] NULL,
+[Parent1] [int] NULL,
+[Parent2] [int] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
