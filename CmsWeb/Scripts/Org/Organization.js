@@ -10,6 +10,7 @@
 $(function () {
     $("#Settings-tab").tabs();
     $("li.pending-list").hide();
+    $("li.current-list").show();
     $("#main-tab").tabs({
       activate: function(event, ui) {
           var qid = "";

@@ -19,13 +19,13 @@
 
         @if (((bool?)ViewBag.OrganizationContext) == true)
         {
-          <li class="header current-list pending-list orgcontext"><br />Organization Context</li>
+          <li class="header current-list pending-list orgcontext">Organization Context</li>
           <li class="current-list orgcontext"><a href='/Export2/Excel/OrgMembers/@qid' title="Includes Org Member info">Member Export</a></li>
           <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' title="Includes Org Member and Small Group columns">Groups Export</a></li>
           <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
         }
         
-        <li class="header"><br />Other Exports</li>
+        <li class="header">Other Exports</li>
         <li><a href='/Export2/Excel/Attend/@qid'>Attendance (Main Fellowship)</a></li>
         <li><a href='/Export2/Excel/Children/@qid'>Children</a></li>
         <li><a href='/Export2/Excel/Involvement/@qid'>Involvement</a></li>
@@ -55,7 +55,7 @@
         <li><a href='/Reports/WeeklyAttendance/@qid' target="_blank" title="General Attendance Stats">Weekly Attend</a></li>
         @if ((bool?)ViewBag.OrganizationContext == true)
         {
-          <li class="header"><br />Organization Context</li>
+          <li class="header">Organization Context</li>
           <li><a id="RollsheetLink" href='#' title="Rollsheet Report">Rollsheet Report</a></li>
           <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report">Rally Rollsheet</a></li>
           <li><a href='/Reports/Roster1/@qid?oid=@oid' target="report">Roster Report</a></li>
@@ -67,7 +67,7 @@
           <li><a href='/Reports/Registration/@qid' target="_blank">Registration Rpt</a></li>
         }
 
-        <li class="header"><br />Directories</li>
+        <li class="header">Directories</li>
         <li><a href="/Reports/FamilyDirectoryCompact/@qid">Compact Directory</a></li>
         <li><a href="/Reports/FamilyDirectory/@qid">Family Directory</a></li>
         <li><a href="/Reports/PictureDirectory/@qid">Picture Directory</a></li>
@@ -82,7 +82,7 @@
         <li><a target="_blank" href="/Reports/EmployerAddress/@qid">Employer</a></li>
         <li><a href='/Reports/RollLabels/@qid' class="dialog-options" data-target="/Dialog/ChooseFormat/useMailFlags">Continous Roll Labels</a></li>
 
-        <li class="header"><br />Other Labels </li>
+        <li class="header">Other Labels </li>
         <li><a target="_blank" href='/Reports/BarCodeLabels/@qid'>Barcode / Name</a></li>
         <li><a target="_blank" href='/Reports/NameLabels/@qid'>Name</a></li>
         <li><a target="_blank" href='/Reports/Avery/@qid'>Name (with Phone Number)</a></li>

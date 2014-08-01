@@ -269,7 +269,7 @@ ul.typeahead li.active a,
 
 ul.dropdown-div-reports {
     margin-left: -470px;
-    width: 600px;
+    width: 650px;
 }
 
 ul.dropdown-div-gear {
@@ -280,6 +280,9 @@ ul.dropdown-div-gear {
 .dropdown-div-gear.onecolumn {
     margin-left: -100px;
     width: auto;
+}
+.btn-group > .btn, .btn-group > .dropdown-menu, .btn-group > .popover {
+font-size: 12px;
 }
 
 
