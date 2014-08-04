@@ -423,8 +423,9 @@ namespace CmsWeb.Models
                 case "StatusId":
                     if (task.StatusId != (int)value)
                     {
-                        sb.AppendFormat("Status changed from {0:g} to {1:g}<br />\n",
-                            task.StatusId, value);
+                        var dict = DbUtil.Db.TaskStatuses.AsEnumerable().ToDictionary(ts => ts.Id, ts => ts.Description);
+                        sb.AppendFormat("Task Status changed from {0} to {1}<br />\n",
+                            dict[task.StatusId ?? 10], dict[(int)value]);
                         if ((int)value == TaskStatusCode.Complete)
                             task.CompletedOn = Util.Now;
                         else

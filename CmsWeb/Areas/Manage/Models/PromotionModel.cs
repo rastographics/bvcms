@@ -323,7 +323,7 @@ namespace CmsWeb.Models
                     orderby p.Sort, p.Description
                     select new SelectListItem
                     {
-                        Text = p.Description,
+                        Text = "{0} - {1}".Fmt(p.Sort, p.Description),
                         Value = p.Id.ToString(),
                     };
             var list = q.ToList();
