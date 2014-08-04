@@ -1,6 +1,6 @@
 <!--- HTML Links --->
 [GHW]: http://windows.github.com/ "GitHub for Windows"
-[DOC]: http://www.bvcms.com/doc "BVCMS Documentation"
+[DOC]: http://docs.bvcms.com "BVCMS Documentation"
 [IDE]: http://www.visualstudio.com/en-us/downloads/
 [SQL]: http://msdn.microsoft.com/en-us/evalcenter/hh230763.aspx
 [WEB]: http://visualstudiogallery.msdn.microsoft.com/56633663-6799-41d7-9df7-0f2a504ca361
