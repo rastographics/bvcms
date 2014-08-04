@@ -360,6 +360,7 @@ namespace CmsWeb.Models
                     where o.DivOrgs.Any(dd => dd.DivId == todiv)
                     where sc.ScheduleId == ScheduleId || ScheduleId == 0
                     where o.OrganizationStatusId == OrgStatusCode.Active
+                    where sc != null
                     orderby o.OrganizationName
                     let pt = o.OrganizationMembers.FirstOrDefault(om2 =>
                         om2.Pending == true

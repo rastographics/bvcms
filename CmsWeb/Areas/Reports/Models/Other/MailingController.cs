@@ -160,7 +160,7 @@ namespace CmsWeb.Models
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip,
-                         LabelName = (p.PositionInFamilyId == 30 ? ("Parents Of " + p.Name) : UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name),
+                         LabelName = (p.PositionInFamilyId == 30 ? ("Parents of " + p.Name) : UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name),
                          Name = p.Name,
                          LastName = p.LastName,
                          CellPhone = p.CellPhone,
@@ -387,7 +387,7 @@ namespace CmsWeb.Models
                      let hohemail = p.Family.HeadOfHousehold.EmailAddress
                      select new
                      {
-                         LabelName = (p.PositionInFamilyId == 30 ? ("Parents Of " + p.Name) : p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name),
+                         LabelName = (p.PositionInFamilyId == 30 ? ("Parents of " + p.Name) : p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name),
                          Name = p.Name,
                          LastName = p.LastName,
                          Address = p.PrimaryAddress,
