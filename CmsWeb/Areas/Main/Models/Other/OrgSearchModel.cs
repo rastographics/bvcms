@@ -199,17 +199,17 @@ namespace CmsWeb.Models
                 {
                     var loc = Name.GetDigits();
                     organizations = from o in organizations
-                        where o.Location == loc
-                        select o;
+                                    where o.Location == loc
+                                    select o;
                 }
                 else
                     organizations = from o in organizations
-                        where o.OrganizationName.Contains(Name)
-                              || o.LeaderName.Contains(Name)
-                              || o.Location == Name
-                              || o.PendingLoc == Name
-                              || o.DivOrgs.Any(t => t.Division.Name.Contains(Name))
-                        select o;
+                                    where o.OrganizationName.Contains(Name)
+                                          || o.LeaderName.Contains(Name)
+                                          || o.Location == Name
+                                          || o.PendingLoc == Name
+                                          || o.DivOrgs.Any(t => t.Division.Name.Contains(Name))
+                                    select o;
             }
             if (DivisionId > 0)
                 organizations = from o in organizations
@@ -218,7 +218,7 @@ namespace CmsWeb.Models
             else if (ProgramId > 0)
                 if (FromWeekAtAGlance)
                     organizations = from o in organizations
-                                    where o.DivOrgs.Any(d => d.Division.ProgDivs.Any(p => p.ProgId == ProgramId 
+                                    where o.DivOrgs.Any(d => d.Division.ProgDivs.Any(p => p.ProgId == ProgramId
                                         && p.Division.ReportLine > 0))
                                     || (o.Division.ProgId == ProgramId && o.Division.ReportLine > 0)
                                     select o;
@@ -719,7 +719,7 @@ namespace CmsWeb.Models
             {
                 get
                 {
-                    return 
+                    return
 @"{0} ({1})|
 Program: {2} ({3})|
 Division: {4} ({5})|
@@ -767,6 +767,36 @@ Divisions: {11}".Fmt(
         public static OrgSearchModel DecodedJson(string parameter)
         {
             return JsonConvert.DeserializeObject<OrgSearchModel>(HttpUtility.UrlDecode(Util.Decrypt(parameter)));
+        }
+
+        public string ConvertToSearch()
+        {
+            var q = FetchOrgs();
+            if (q.Count() > 40)
+                return "Error: Reduce # orgs to less than 40";
+
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+
+            //            {
+            //                var c = cc.AddNewClause(QueryType.IsMemberOf, CompareType.Equal, "1,T");
+            //                if (ProgramId.HasValue)
+            //                    c.Program = ProgramId.Value;
+            //                if (DivisionId.HasValue)
+            //                    c.Division = DivisionId.Value;
+            //            }
+            cc.SetComparisonType(CompareType.AnyTrue);
+            foreach (var o in q)
+            {
+                if (o.Division == null || !o.Division.ProgId.HasValue)
+                    continue;
+                var c = cc.AddNewClause(QueryType.IsMemberOf, CompareType.Equal, "1,T");
+                c.Program = o.Division.ProgId.Value;
+                c.Division = o.Division.Id;
+                c.Organization = o.OrganizationId;
+            }
+            cc.Save(DbUtil.Db);
+            return "/Query/" + cc.Id;
         }
     }
 }

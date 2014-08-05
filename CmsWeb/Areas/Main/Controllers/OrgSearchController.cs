@@ -300,5 +300,12 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(q.OrderBy(oo => oo.Program).ThenBy(oo => oo.Division).ThenBy(oo => oo.Organization));
         }
 
+        public ActionResult ConvertToSearch(OrgSearchModel m)
+        {
+            var s = m.ConvertToSearch();
+            return s.StartsWith("Error") 
+                ? RedirectShowError(s) 
+                : Redirect(m.ConvertToSearch());
+        }
     }
 }
