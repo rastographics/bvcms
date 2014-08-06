@@ -1,6 +1,5 @@
 using System;
 using CmsWeb.Code;
-using NPOI.SS.Formula.Functions;
 
 namespace CmsWeb.Areas.Search.Models
 {

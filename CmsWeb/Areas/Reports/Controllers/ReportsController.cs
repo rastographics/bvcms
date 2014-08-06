@@ -14,8 +14,7 @@ using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using Dapper;
-using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
+using MoreLinq;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
@@ -204,40 +203,10 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (excel != true)
                 return new EnrollmentControlResult { OrgSearch = m, UseCurrentTag = usecurrenttag ?? false };
 
-            var d = from p in EnrollmentControlModel.List(m, usecurrenttag: usecurrenttag ?? false)
+            var d = (from p in EnrollmentControlModel.List(m, usecurrenttag: usecurrenttag ?? false)
                     orderby p.Name
-                    select p;
-            var workbook = new HSSFWorkbook(); // todo: Convert all Excel exports to this approach
-            ISheet sheet = workbook.CreateSheet("EnrollmentControl");
-            int rowIndex = 0;
-            IRow row = sheet.CreateRow(rowIndex);
-            row.CreateCell(0).SetCellValue("PeopleId");
-            row.CreateCell(1).SetCellValue("Name");
-            row.CreateCell(2).SetCellValue("Organization");
-            row.CreateCell(3).SetCellValue("Location");
-            row.CreateCell(4).SetCellValue("MemberType");
-            rowIndex++;
-            sheet.DisplayRowColHeadings = true;
-
-            foreach (EnrollmentControlModel.MemberInfo i in d)
-            {
-                row = sheet.CreateRow(rowIndex);
-                row.CreateCell(0).SetCellValue(i.Id);
-                row.CreateCell(1).SetCellValue(i.Name);
-                row.CreateCell(2).SetCellValue(i.Organization);
-                row.CreateCell(3).SetCellValue(i.Location);
-                row.CreateCell(4).SetCellValue(i.MemberType);
-                rowIndex++;
-            }
-            sheet.AutoSizeColumn(0);
-            sheet.AutoSizeColumn(1);
-            sheet.AutoSizeColumn(2);
-            sheet.AutoSizeColumn(3);
-            sheet.AutoSizeColumn(4);
-            string saveAsFileName = string.Format("EnrollmentControl-{0:d}.xls", DateTime.Now);
-            var ms = new MemoryStream();
-            workbook.Write(ms);
-            return File(ms.ToArray(), "application/vnd.ms-excel", "attachment;filename=" + saveAsFileName);
+                    select p).ToDataTable();
+            return d.ToExcel("EnrollmentControl.xlsx");
         }
 
         [HttpPost]

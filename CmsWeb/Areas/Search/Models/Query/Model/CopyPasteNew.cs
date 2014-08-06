@@ -3,7 +3,6 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Web;
 using CmsData;
-using NPOI.SS.Formula.Functions;
 
 namespace CmsWeb.Areas.Search.Models
 {

@@ -451,29 +451,29 @@ namespace CmsWeb.Areas.Manage.Controllers
             return Content(q.Count().ToString());
         }
 
-        [Authorize(Roles = "Admin")]
-        public ActionResult UpdatePeople()
-        {
-            if (Request.HttpMethod.ToUpper() == "GET")
-            {
-                ViewData["text"] = "";
-                return View();
-            }
-            var file = Request.Files[0];
-            if (file.ContentLength == 0)
-                return Content("empty file");
-            var path = Server.MapPath("/Upload/" + Guid.NewGuid().ToCode() + ".xls");
-            file.SaveAs(path);
-            try
-            {
-                UpdatePeopleModel.UpdatePeople(path, Util.Host, Util.UserPeopleId.Value);
-            }
-            finally
-            {
-                System.IO.File.Delete(path);
-            }
-            return Content("<div>done <a href='/'>go home</a><div>");
-        }
+//        [Authorize(Roles = "Admin")]
+//        public ActionResult UpdatePeople()
+//        {
+//            if (Request.HttpMethod.ToUpper() == "GET")
+//            {
+//                ViewData["text"] = "";
+//                return View();
+//            }
+//            var file = Request.Files[0];
+//            if (file.ContentLength == 0)
+//                return Content("empty file");
+//            var path = Server.MapPath("/Upload/" + Guid.NewGuid().ToCode() + ".xls");
+//            file.SaveAs(path);
+//            try
+//            {
+//                UpdatePeopleModel.UpdatePeople(path, Util.Host, Util.UserPeopleId.Value);
+//            }
+//            finally
+//            {
+//                System.IO.File.Delete(path);
+//            }
+//            return Content("<div>done <a href='/'>go home</a><div>");
+//        }
 
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateStatusFlags()
