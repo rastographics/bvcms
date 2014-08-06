@@ -1103,7 +1103,7 @@ namespace CmsData
             clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
             clause.Days = 365;
             cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
-            qb = cc.justloadedquery;
+            qb = cc.JustLoadedQuery;
             cc.Description = name;
             cc.Save(this, owner: "public");
             FromActiveRecords = true;

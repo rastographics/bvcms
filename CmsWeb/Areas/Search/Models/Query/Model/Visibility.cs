@@ -23,6 +23,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool ScheduleVisible { get { return fieldMap.HasParam("Schedule"); } }
         public bool CampusVisible { get { return fieldMap.HasParam("Campus"); } }
         public bool OrgTypeVisible { get { return fieldMap.HasParam("OrgType"); } }
+        public bool OrgType2Visible { get { return fieldMap.HasParam("OrgType2"); } }
         public bool DaysVisible { get { return fieldMap.HasParam("Days"); } }
         public bool AgeVisible { get { return fieldMap.HasParam("Age"); } }
         public bool SavedQueryVisible { get { return fieldMap.HasParam("SavedQueryIdDesc"); } }
@@ -30,6 +31,9 @@ namespace CmsWeb.Areas.Search.Models
         public bool QuartersVisible { get { return fieldMap.HasParam("Quarters"); } }
         public bool TagsVisible { get { return fieldMap.HasParam("Tags"); } }
         public bool PmmLabelsVisible { get { return fieldMap.HasParam("PmmLabels"); } }
+        public bool OrgNameVisible { get { return fieldMap.HasParam("OrgName"); } }
+        public bool OrgStatusVisible { get { return fieldMap.HasParam("OrgStatus"); } }
+        public bool OnlineRegVisible { get { return fieldMap.HasParam("OnlineReg"); } }
 
         public bool AutoRun
         {

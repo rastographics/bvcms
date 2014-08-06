@@ -439,7 +439,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 status = m.StatusId,
                 onlinereg = m.OnlineReg,
                 mainfellowship = m.MainFellowship,
-                parentorg = m.ParentOrg
+                parentorg = m.TypeId == OrgSearchModel.OrgType.ParentOrg
             }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
             return View(q);
         }

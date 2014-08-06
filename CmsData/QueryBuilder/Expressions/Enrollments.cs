@@ -301,5 +301,16 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression OrgSearchMember()
+        {
+            var q = db.PeopleIdsFromOrgSearch(OrgName, Program, Division, OrgType2, Campus, Schedule, OrgStatus,
+                OnlineReg, null, null);
+            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

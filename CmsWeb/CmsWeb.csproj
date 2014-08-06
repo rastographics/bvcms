@@ -735,22 +735,7 @@
     <Content Include="Content\img\loading.gif" />
     <Content Include="Content\css\jquery.dialog2.css" />
     <Content Include="Content\styles\bundle.stylecss.css" />
-    <Content Include="Content\styles\Dialog.min.css">
-      <DependentUpon>Dialog.css</DependentUpon>
-    </Content>
-    <Content Include="Content\styles\jquery-ui-1.10.0.custom.min.css">
-      <DependentUpon>jquery-ui-1.10.0.custom.css</DependentUpon>
-    </Content>
-    <Content Include="Content\styles\person.min.css">
-      <DependentUpon>person.css</DependentUpon>
-    </Content>
-    <Content Include="Content\styles\Site.min.css">
-      <DependentUpon>Site.css</DependentUpon>
-    </Content>
     <Content Include="Content\styles\Siteblue.css" />
-    <Content Include="Content\styles\Siteblue.min.css">
-      <DependentUpon>Siteblue.css</DependentUpon>
-    </Content>
     <Content Include="Content\styles\Support.css" />
     <Content Include="Content\images\chosen-sprite.png" />
     <Content Include="Content\css\chosen.css" />

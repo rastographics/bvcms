@@ -110,6 +110,7 @@ namespace CmsData
                 { QueryType.OrgJoinDate, OrgJoinDate },
                 { QueryType.OrgJoinDateCompare, OrgJoinDateCompare },
                 { QueryType.OrgJoinDateDaysAgo, OrgJoinDateDaysAgo },
+                { QueryType.OrgSearchMember, OrgSearchMember },
                 { QueryType.PendingCurrentOrg, PendingCurrentOrg },
                 { QueryType.PeopleExtra, PeopleExtra },
                 { QueryType.PeopleExtraData, PeopleExtraData },

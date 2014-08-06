@@ -2,6 +2,7 @@
 @model CmsWeb.Areas.Search.Models.QueryModel
 @{
     var cats = Model.FieldCategories().ToList();
+    var devel = User.IsInRole("Developer");
 }
 <div id="QueryConditionSelect" class='modal fade hide' data-width='900'>
     <div class="modal-header">
@@ -27,8 +28,8 @@
                         <dl class="dl-horizontal">
                             <dt class="FieldLink">Choose a Condition</dt>
                             <dd><b>Click these for more help on a condition</b></dd>
-                            @foreach (var p in c.Fields)
-                            { 
+                            @foreach (var p in c.Fields.Where(cc => devel || cc.Name != "OrgSearchMember"))
+                            {
                                 <dt class="FieldLink"><a id='@p.Name' href="#">@p.Title</a></dt>
                                 <dd>
                                     <a class="help" href="http://docs.bvcms.com/SearchBuilder/QB-@(p.Name).html" target="help">@p.Description</a>

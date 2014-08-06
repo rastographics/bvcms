@@ -123,7 +123,7 @@ form.form-horizontal.onecol .control-group {
 }
 */
 
-tbody td a, tbody td a:visited {
+table.table tbody td a, table.table tbody td a:visited {
     color: #08c;
 }
 

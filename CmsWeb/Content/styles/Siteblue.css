@@ -139,15 +139,15 @@ td.noborder, th.noborder {
     vertical-align: middle;
 }
 
-a, a:visited, a:focus {
+/*a, a:visited, a:focus {
     text-decoration: none;
     color: #3E553B;
-}
+}*/
 
-    a:hover, a:active {
+    /*a:hover, a:active {
         text-decoration: underline;
         color: #3E553B;
-    }
+    }*/
 
 .grid a, .grid a:visited {
     text-decoration: none;
@@ -158,7 +158,7 @@ a, a:visited, a:focus {
         text-decoration: underline;
         color: #08c;
     }
-.table td a, .table td a:visited {
+/*.table td a, .table td a:visited {
     text-decoration: none;
     color: #08c;
 }
@@ -166,7 +166,7 @@ a, a:visited, a:focus {
     .table td a:hover, .table td a:active {
         text-decoration: underline;
         color: #08c;
-    }
+    }*/
 
 #main {
     margin-top: 8px;
@@ -218,6 +218,9 @@ div.homebox {
         margin-top: .6em;
         margin-bottom: 6px;
         font-size: 160%;
+    }
+    .roundbox h2 > a {
+        color: #666;
     }
 
     .roundbox h3 {

@@ -74,8 +74,12 @@ namespace CmsData
         public int? Age { get; set; }
         public int? Campus { get; set; }
         public int? OrgType { get; set; }
+        public int? OrgType2 { get; set; }
+        public string OrgName { get; set; }
+        public int? OrgStatus { get; set; }
+        public int? OnlineReg { get; set; }
         public Guid? NewMatchAnyId;
-        internal Query justloadedquery;
+        internal Query JustLoadedQuery;
 
         #endregion
 
@@ -446,10 +450,10 @@ namespace CmsData
         }
         public void IncrementLastRun()
         {
-            if (justloadedquery == null)
+            if (JustLoadedQuery == null)
                 return;
-            justloadedquery.RunCount++;
-            justloadedquery.LastRun = DateTime.Now;
+            JustLoadedQuery.RunCount++;
+            JustLoadedQuery.LastRun = DateTime.Now;
         }
 
         public Condition AddNewGroupClause()

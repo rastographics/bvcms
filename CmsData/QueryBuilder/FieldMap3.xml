@@ -300,6 +300,9 @@
     <IsMemberOf Title="Is Member Of" Type="Bit" DisplayAs="IsMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
       Select Program/Division/Organization from the list for current members.
     </IsMemberOf>
+    <OrgSearchMember Title="OrgSearch Member" Type="Bit" DisplayAs="OrgSearchMember({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7})" Params="OrgName,OrgStatus,OnlineReg,OrgType2,Schedule,Campus,Program,Division" DataValueField="IdCode">
+      Select Program/Division/Organization from the list for current members.
+    </OrgSearchMember>
     <IsInactiveMemberOf Title="Is Inactive Member Of" Type="Bit" DisplayAs="IsInactiveMember({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
       Select Program/Division/Organization from the list and specify True or False.
     </IsInactiveMemberOf>

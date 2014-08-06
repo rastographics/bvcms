@@ -136,6 +136,14 @@ namespace CmsData
                 w.WriteAttributeString("Age", Age.ToString());
             if (SavedQuery.HasValue())
                 w.WriteAttributeString("SavedQueryIdDesc", SavedQuery);
+            if (OnlineReg.HasValue)
+                w.WriteAttributeString("OnlineReg", OnlineReg.ToString());
+            if (OrgStatus.HasValue)
+                w.WriteAttributeString("OrgStatus", OrgStatus.ToString());
+            if (OrgType2.HasValue)
+                w.WriteAttributeString("OrgType2", OrgType2.ToString());
+            if (OrgName.HasValue())
+                w.WriteAttributeString("OrgName", OrgName);
         }
         public static Condition Import(string text, string name = null, bool newGuids = false, Guid? topguid = null)
         {
@@ -176,6 +184,10 @@ namespace CmsData
                 Age = Attribute(r, "Age").ToInt2(),
                 Owner = Attribute(r, "Owner"),
                 SavedQuery = Attribute(r, "SavedQueryIdDesc"),
+                OrgName = Attribute(r, "OrgName"),
+                OrgStatus = Attribute(r, "OrgStatus").ToInt(),
+                OnlineReg = Attribute(r, "OnlineReg").ToInt(),
+                OrgType2 = Attribute(r, "OrgType2").ToInt(),
                 AllConditions = allClauses
             };
             if (c.ConditionName != "FamilyHasChildrenAged")

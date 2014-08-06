@@ -76,8 +76,8 @@ ORDER BY na
                 sched = m.ScheduleId,
                 status = m.StatusId,
                 onlinereg = m.OnlineReg,
-                mainfellowship = m.MainFellowship,
-                parentorg = m.ParentOrg
+                mainfellowship = m.TypeId == OrgSearchModel.OrgType.MainFellowship,
+                parentorg = m.TypeId == OrgSearchModel.OrgType.ParentOrg
             });
             return q2.ToList();
         }

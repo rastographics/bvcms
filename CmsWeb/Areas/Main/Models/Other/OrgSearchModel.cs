@@ -16,7 +16,6 @@ using Newtonsoft.Json;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
-using System.Collections;
 using CmsData.Codes;
 
 namespace CmsWeb.Models
@@ -36,7 +35,6 @@ namespace CmsWeb.Models
         public string tagstr { get; set; }
         public int? OnlineReg { get; set; }
         public bool? MainFellowship { get; set; }
-        public bool? ParentOrg { get; set; }
         public bool FromWeekAtAGlance { get; set; }
 
         [JsonIgnore]
@@ -262,6 +260,15 @@ namespace CmsWeb.Models
                 organizations = from o in organizations
                                 where (o.SuspendCheckin ?? false)
                                 select o;
+            else if (TypeId == OrgType.ParentOrg)
+                organizations = from o in organizations
+                                where o.ChildOrgs.Any()
+                                select o;
+            else if (TypeId == OrgType.ChildOrg)
+                organizations = from o in organizations
+                                where o.ParentOrgId != null
+                                select o;
+
 
             if (CampusId > 0)
                 organizations = from o in organizations
@@ -287,16 +294,6 @@ namespace CmsWeb.Models
             else if (OnlineReg == 0)
                 organizations = from o in organizations
                                 where (o.RegistrationTypeId ?? 0) == 0
-                                select o;
-
-            if (MainFellowship == true)
-                organizations = from o in organizations
-                                where o.IsBibleFellowshipOrg == true
-                                select o;
-
-            if (ParentOrg == true)
-                organizations = from o in organizations
-                                where o.ChildOrgs.Any()
                                 select o;
 
             return organizations;
@@ -460,7 +457,7 @@ namespace CmsWeb.Models
             return query;
         }
 
-        public IEnumerable<SelectListItem> StatusIds()
+        public static IEnumerable<SelectListItem> StatusIds()
         {
             var q = from s in DbUtil.Db.OrganizationStatuses
                     select new SelectListItem
@@ -559,12 +556,14 @@ namespace CmsWeb.Models
 
         public class OrgType
         {
+            public const int ChildOrg = -6;
+            public const int ParentOrg = -5;
             public const int SuspendedCheckin = -4;
             public const int MainFellowship = -3;
             public const int NotMainFellowship = -2;
             public const int NoOrgType = -1;
         }
-        public IEnumerable<SelectListItem> OrgTypes()
+        public static IEnumerable<SelectListItem> OrgTypes()
         {
             var q = from t in DbUtil.Db.OrganizationTypes
                     orderby t.Code
@@ -577,12 +576,14 @@ namespace CmsWeb.Models
             list.Insert(0, new SelectListItem { Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString() });
             list.Insert(0, new SelectListItem { Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString() });
             list.Insert(0, new SelectListItem { Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Parent Org", Value = OrgType.ParentOrg.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Child Org", Value = OrgType.ChildOrg.ToString() });
             list.Insert(0, new SelectListItem { Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString() });
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
 
-        public IEnumerable<SelectListItem> RegistrationTypeIds()
+        public static IEnumerable<SelectListItem> RegistrationTypeIds()
         {
             var q = from o in CmsData.Codes.RegistrationTypeCode.GetCodePairs()
                     select new SelectListItem
@@ -771,30 +772,26 @@ Divisions: {11}".Fmt(
 
         public string ConvertToSearch()
         {
-            var q = FetchOrgs();
-            if (q.Count() > 40)
-                return "Error: Reduce # orgs to less than 40";
-
             var cc = DbUtil.Db.ScratchPadCondition();
             cc.Reset(DbUtil.Db);
+            var c = cc.AddNewClause(QueryType.OrgSearchMember, CompareType.Equal, "1,T");
+            if(Name.HasValue())
+                c.OrgName = Name;
+            if (ProgramId != 0) 
+                c.Program = ProgramId ?? 0;
+            if (DivisionId != 0)
+                c.Division = DivisionId ?? 0;
+            if (StatusId != 0)
+                c.OrgStatus = StatusId ?? 0;
+            if (TypeId != 0)
+                c.OrgType2 = TypeId ?? 0;
+            if (CampusId != 0)
+                c.Campus = CampusId ?? 0;
+            if (ScheduleId != 0)
+                c.Schedule = ScheduleId ?? 0;
+            if (OnlineReg != 0)
+                c.OnlineReg = OnlineReg ?? 0;
 
-            //            {
-            //                var c = cc.AddNewClause(QueryType.IsMemberOf, CompareType.Equal, "1,T");
-            //                if (ProgramId.HasValue)
-            //                    c.Program = ProgramId.Value;
-            //                if (DivisionId.HasValue)
-            //                    c.Division = DivisionId.Value;
-            //            }
-            cc.SetComparisonType(CompareType.AnyTrue);
-            foreach (var o in q)
-            {
-                if (o.Division == null || !o.Division.ProgId.HasValue)
-                    continue;
-                var c = cc.AddNewClause(QueryType.IsMemberOf, CompareType.Equal, "1,T");
-                c.Program = o.Division.ProgId.Value;
-                c.Division = o.Division.Id;
-                c.Organization = o.OrganizationId;
-            }
             cc.Save(DbUtil.Db);
             return "/Query/" + cc.Id;
         }

@@ -43,7 +43,7 @@ namespace CmsData
                 c = query.ToClause();
             }
             c.Id = query.QueryId; // force these to match
-            c.justloadedquery = query;
+            c.JustLoadedQuery = query;
             return c;
         }
         public Condition StandardQuery(string name)
@@ -171,7 +171,7 @@ namespace CmsData
             else
                 c = q.ToClause();
             c.Id = q.QueryId; // force these to match
-            c.justloadedquery = q;
+            c.JustLoadedQuery = q;
             c.Description = q.Name;
             return c;
         }
@@ -184,7 +184,7 @@ namespace CmsData
             i.LastRun = DateTime.Now;
             if (i.Name == Util.ScratchPad2)
                 return i.ToClause();
-            var q = ScratchPadCondition().justloadedquery;
+            var q = ScratchPadCondition().JustLoadedQuery;
             q.Text = i.Text;
             var c = Condition.Import(i.Text, i.Name, newGuids: true, topguid: q.QueryId);
             c.Description = Util.ScratchPad2;

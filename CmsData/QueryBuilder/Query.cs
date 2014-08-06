@@ -11,7 +11,7 @@ namespace CmsData
         public Condition ToClause()
         {
             var c = Condition.Import(Text);
-            c.justloadedquery = this;
+            c.JustLoadedQuery = this;
             c.Description = Name;
             return c;
         }
