@@ -6,7 +6,6 @@
 {
     <div id='TopNotice'>@Html.Raw(DbUtil.TopNotice())</div>
 }
-@if (Request.Browser.Type == "IE7")
-{
-    <div id="urgentNotice">You are running IE7. This application requires IE8+, Firefox, Chrome or Safari</div>
-}
+<!--[if lte IE 9]>
+    <div id="urgentNotice">You are running IE9 or less. This application requires IE10+, Firefox, Chrome or Safari</div>
+<![endif]-->

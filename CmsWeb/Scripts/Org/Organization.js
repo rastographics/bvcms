@@ -16,7 +16,7 @@ $(function () {
           var qid = "";
           $("li.orgcontext").hide();
 
-        switch (ui.newTab[0].innerText) {
+        switch ($(ui.newTab[0]).text()) {
             case "Members":
                 qid = $("#currentQid").val();
                 $("li.current-list").show();
@@ -58,8 +58,7 @@ $(function () {
             $.block("deleting org");
             $.post(href, null, function (ret) {
                 if (ret != "ok") {
-                    $.block(ret);
-                    $('.blockOverlay').attr('title', 'Click to unblock').click($.unblock);
+                    window.location = ret;
                 }
                 else {
                     $.block("org deleted");

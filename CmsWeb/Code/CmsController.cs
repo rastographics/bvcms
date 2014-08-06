@@ -119,11 +119,14 @@ namespace CmsWeb
                 filterContext.ActionDescriptor.ActionName);
             DbUtil.Db.UpdateLastActivity(Util.UserId);
         }
+        public static string ErrorUrl(string message)
+        {
+            return "/Home/ShowError/?error={0}&url={1}".Fmt(System.Web.HttpContext.Current.Server.UrlEncode(message),
+                System.Web.HttpContext.Current.Request.Url.OriginalString);
+        }
         public ActionResult RedirectShowError(string message)
         {
-            return new RedirectResult(
-                "/Home/ShowError/?error={0}&url={1}".Fmt(Server.UrlEncode(message),
-                Request.Url.OriginalString));
+            return new RedirectResult(ErrorUrl(message));
         }
     }
     [CMSLog]
