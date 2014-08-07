@@ -108,13 +108,24 @@
             <li><a href="/Reports/MissionTripFunding/@Model.OrganizationId">Mission Trip Funding</a></li>
             <li><a href="/Reports/MissionTripSenders/@Model.OrganizationId">Mission Trip Senders Export</a></li>
           }
-          @if (User.IsInRole("Admin"))
+          @if (User.IsInRole("Delete"))
           {
             <li>
               <a id="deleteorg" href="/Organization/Delete/@o.OrganizationId">
                 Delete Organization
               </a>
             </li>
+          }
+          else
+          {
+            <li>
+              <a href="http://docs.bvcms.com/Administrative/Delete.html" target="_blank">
+                Delete Organization
+              </a>
+            </li>
+          }
+          @if (User.IsInRole("Admin"))
+          {
             <li class="hideAlt">
               <a href="/RepairTransactions/@o.OrganizationId" id="RepairTransactions">
                 Repair Transactions

@@ -66,12 +66,10 @@ namespace CmsWeb.Areas.Main.Controllers
                                     .Fmt(error, "javascript: history.go(-1)", "Go Back"));
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Delete")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            if (!User.IsInRole("Developer"))
-                return Content(ErrorUrl("You do not have the necessary priveleges to delete an organization, contact support@bvcms.com"));
             var org = DbUtil.Db.LoadOrganizationById(id);
             if (org == null)
                 return Content("error, bad orgid");

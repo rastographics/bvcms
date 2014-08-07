@@ -17,11 +17,9 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("/Person2/" + id);
         }
 
-        [HttpPost, Authorize(Roles = "Admin")]
+        [HttpPost, Authorize(Roles = "Delete")]
         public ActionResult Delete(int id)
         {
-            if (!User.IsInRole("Developer"))
-                return Content(ErrorUrl("You do not have the necessary priveleges to delete a person, contact support@bvcms.com"));
             Util.Auditing = false;
             var person = DbUtil.Db.LoadPersonById(id);
             if (person == null)

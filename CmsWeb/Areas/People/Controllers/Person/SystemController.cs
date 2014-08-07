@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.People.Controllers
                 }
                 user.Username = u;
             }
-            user.SetRoles(DbUtil.Db, role, User.IsInRole("Finance"));
+            user.SetRoles(DbUtil.Db, role);
             if (p.HasValue())
                 user.ChangePassword(p);
             DbUtil.Db.SubmitChanges();

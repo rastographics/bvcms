@@ -13,6 +13,7 @@ namespace CmsData
         {
             return Roles.Any(ro => ro == role);
         }
+
         public bool IsOnLine
         {
             get
@@ -22,11 +23,17 @@ namespace CmsData
                 return LastActivityDate > compareTime && LastActivityDate != CreationDate;
             }
         }
-        public string BestName { get { return PeopleId.HasValue ? Name2 : Username; } }
+
+        public string BestName
+        {
+            get { return PeopleId.HasValue ? Name2 : Username; }
+        }
+
         public string[] Roles
         {
             get { return UserRoles.Select(ur => ur.Role.RoleName).ToArray(); }
         }
+
         public static IEnumerable<Role> AllRoles(CMSDataContext Db)
         {
             var roles = Db.Roles.ToList();
@@ -70,7 +77,8 @@ namespace CmsData
 //            }
             return roles.OrderBy(rr => rr.RoleName == "NEW" ? 1 : 0).ThenBy(rr => rr.RoleName);
         }
-        public void SetRoles(CMSDataContext Db, string[] value, bool InFinance)
+
+        public void SetRoles(CMSDataContext Db, string[] value)
         {
             if (value == null)
             {
@@ -78,25 +86,23 @@ namespace CmsData
                 return;
             }
             var qdelete = from r in UserRoles
-                          where !value.Contains(r.Role.RoleName)
-                          where r.Role.RoleName != "Finance" || InFinance
-                          select r;
+                where !value.Contains(r.Role.RoleName)
+                select r;
             Db.UserRoles.DeleteAllOnSubmit(qdelete);
 
             var q = from s in value
-                    join r in UserRoles on s equals r.Role.RoleName into g
-                    from t in g.DefaultIfEmpty()
-                    where t == null
-                    select s;
+                join r in UserRoles on s equals r.Role.RoleName into g
+                from t in g.DefaultIfEmpty()
+                where t == null
+                select s;
 
             foreach (var s in q)
             {
-                if (s == "Finance" && !InFinance)
-                    continue;
                 var role = Db.Roles.Single(r => r.RoleName == s);
-                UserRoles.Add(new UserRole { Role = role });
+                UserRoles.Add(new UserRole {Role = role});
             }
         }
+
         public void ChangePassword(string newpassword)
         {
             CMSMembershipProvider.provider.AdminOverride = true;
@@ -108,6 +114,18 @@ namespace CmsData
             TempPassword = newpassword;
             CMSMembershipProvider.provider.AdminOverride = false;
         }
+
         public string PasswordSetOnly { get; set; }
+
+        public bool CanAssign(CMSDataContext db, string role)
+        {
+            if (role == "Finance" && !db.CurrentUser.InRole("Finance") && !db.CurrentUser.InRole("Admin"))
+                return false;
+            if (role == "Developer" && !db.CurrentUser.InRole("Developer"))
+                return false;
+            if (role == "Delete" && !db.CurrentUser.InRole("Developer"))
+                return false;
+            return db.CurrentUser.InRole("Admin");
+        }
     }
 }
