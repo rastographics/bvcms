@@ -1291,7 +1291,6 @@
     <Content Include="Scripts\jQuery\jquery.joyride-1.0.5.js" />
     <Content Include="Scripts\js\tutorial.js" />
     <Compile Include="Code\UnallowedCodeAttribute.cs" />
-    <Compile Include="Code\Word2Pdf.cs" />
     <Compile Include="Areas\Finance\Controllers\QuickBooksController.cs" />
     <Compile Include="Controllers\SupportController.cs" />
     <Compile Include="Models\SupportRequestModel.cs" />

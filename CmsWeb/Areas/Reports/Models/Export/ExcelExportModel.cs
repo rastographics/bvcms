@@ -1,14 +1,93 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using CmsData;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
 using UtilityExtensions;
+using Color = System.Drawing.Color;
+using TableStyles = OfficeOpenXml.Table.TableStyles;
 
 namespace CmsWeb.Models
 {
     public static class ExcelExportModel
     {
+        public static EpplusResult ToExcel(this IDataReader rd, string filename = null, bool useTable = false)
+        {
+            var dt = new DataTable();
+            dt.Load(rd);
+            return dt.ToExcel(filename, useTable);
+        }
+
+        public static EpplusResult ToExcel(this DataTable dt, string filename = "People.xlsx", bool useTable = false)
+        {
+            var ep = new ExcelPackage();
+            var sheetname = System.IO.Path.GetFileNameWithoutExtension(filename);
+            var ws = ep.Workbook.Worksheets.Add(sheetname);
+            ws.Cells["A1"].LoadFromDataTable(dt, true);
+            var count = dt.Rows.Count;
+            using (var header = ws.Cells[1, 1, 1, dt.Columns.Count]) 
+            {
+                header.Style.Font.Bold = true;
+                header.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                header.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(91, 154, 212));
+                header.Style.Font.Color.SetColor(Color.White);
+            }
+
+            ExcelTable table = null;
+            if (useTable)
+            {
+    			var range = ws.Cells[1, 1, count + 1, dt.Columns.Count];
+                table = ws.Tables.Add(range, sheetname);
+                table.TableStyle = TableStyles.Light9;
+                table.ShowFilter = false;
+            }
+			
+            for (var i = 0; i < dt.Columns.Count; i++)
+            {
+                var col = i + 1;
+                var name = dt.Columns[i].ColumnName;
+                var type = dt.Columns[i].DataType;
+
+                if(table != null)
+                    table.Columns[i].Name = name;
+
+                var colrange = ws.Cells[1, col, count + 2, col];
+
+                if (!name.ToLower().EndsWith("id") && type == typeof (int))
+                {
+                    colrange.Style.Numberformat.Format = "#,##0";
+                    colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    colrange.AutoFitColumns();
+                }
+                else if (type == typeof (decimal))
+                {
+                    colrange.Style.Numberformat.Format = "#,##0";
+                    colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    colrange.AutoFitColumns();
+                }
+                else if (type == typeof (DateTime))
+                {
+                    if (name.EndsWith("Time")) 
+                    {
+                        colrange.Style.Numberformat.Format = "m/d/yy h:mm AM/PM";
+                        ws.Column(col).Width = 16;
+                    }
+                    else 
+                    {
+                        colrange.Style.Numberformat.Format = "m/d/yy";
+                        ws.Column(col).Width = 12;
+                    }
+                    colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                }
+                else
+                    colrange.AutoFitColumns();
+            }
+            return new EpplusResult(ep, filename);
+        }
+
         public static List<ExcelPic> List(Guid queryid)
         {
             var Db = DbUtil.Db;
@@ -144,35 +223,5 @@ namespace CmsWeb.Models
 //                AddImage(ws, r++, 1, ep.GetImage());
             return new EpplusResult(excelpackage, "people-imageurl.xlsx");
         }
-//        private static void AddImage(ExcelWorksheet ws, int r, int c, ImageData.Image i)
-//        {
-//            if (i == null)
-//                return;
-//            var img = i.GetBitmap(160, 200);
-//            var pic = ws.Drawings.AddPicture("img_" + i.Id, img);
-//            pic.From.Column = c - 1;
-//            pic.From.Row = r - 1;
-//            pic.From.ColumnOff = ExcelHelper.Pixel2MTU(1);
-//            pic.From.RowOff = ExcelHelper.Pixel2MTU(1);
-//            pic.SetSize(img.Width, img.Height);
-//        }
-//
-//        class XY
-//        {
-//            public double X { get; set; }
-//            public double Y { get; set; }
-//        }
-//        private static XY ImgRowHeight(ExcelWorksheet ws, ImageData.Image i)
-//        {
-//            if (i == null)
-//                return null;
-//            var img = i.GetBitmap(160, 200);
-//            var xy = new XY
-//            {
-//                Y = ExcelHelper.Pixel2RowHeight(img.Height + 2),
-//                X = ExcelHelper.Pixel2ColumnWidth(ws, img.Width)
-//            };
-//            return xy;
-//        }
     }
 }

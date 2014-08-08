@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Reports.Models
             this.dt2 = dt2;
             Model = model;
         }
-        public IEnumerable<MeetingRow> FetchMeetings()
+        public IQueryable<MeetingRow> FetchMeetings()
         {
             var orgs = Model.FetchOrgs();
             var q = from m in DbUtil.Db.Meetings
@@ -48,39 +48,25 @@ namespace CmsWeb.Areas.Reports.Models
                         OutTowners = m.NumOutTown ?? 0
                     };
 
-            var q2 = from m in q.ToList()
+            var q2 = from m in q
                      select new MeetingRow
                      {
-                         MeetingId = m.MeetingId,
                          OrgName = m.OrgName,
                          Leader = m.Leader,
-                         date = m.date.ToString("g"),
-                         OrgId = m.OrgId.ToString(),
+                         DateTime = m.date,
                          Present = m.Present,
                          Visitors = m.Visitors,
                          OutTowners = m.OutTowners
                      };
-            var list = q2.ToList();
-            var t = new MeetingRow
-            {
-                OrgName = "Total",
-                Leader = string.Empty,
-                date = "",
-                OrgId = "",
-                Present = list.Sum(i => i.Present),
-                Visitors = list.Sum(i => i.Visitors),
-                OutTowners = list.Sum(i => i.OutTowners)
-            };
-            list.Add(t);
-            return list;
+            return q2;
         }
         public class MeetingRow
         {
-            public int MeetingId { get; set; }
+//            public int MeetingId { get; set; }
             public string OrgName { get; set; }
             public string Leader { get; set; }
-            public string date { get; set; }
-            public string OrgId { get; set; }
+            public DateTime DateTime { get; set; }
+//            public string OrgId { get; set; }
             public int Present { get; set; }
             public int Visitors { get; set; }
             public int OutTowners { get; set; }

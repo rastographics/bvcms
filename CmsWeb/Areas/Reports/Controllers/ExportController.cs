@@ -5,8 +5,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Models;
 using Dapper;
+using MoreLinq;
 using OfficeOpenXml;
 using UtilityExtensions;
 
@@ -79,6 +81,17 @@ namespace CmsWeb.Areas.Reports.Controllers
             }
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
             return new EpplusResult(ep, "MeetingsForDateRange.xlsx");
+        }
+        [HttpPost]
+        public ActionResult MeetingsAttendance(DateTime? dt1, DateTime? dt2, OrgSearchModel m)
+        {
+            var dt = ChurchAttendanceModel.MostRecentAttendedSunday();
+            if (!dt1.HasValue)
+                dt1 = new DateTime(dt.Year, 1, 1);
+            if (!dt2.HasValue)
+                dt2 = dt;
+            var m2 = new AttendanceDetailModel(dt1.Value, dt2, m);
+            return m2.FetchMeetings().ToDataTable().ToExcel("MeetingsExport.xlsx");
         }
 
         [HttpPost]
