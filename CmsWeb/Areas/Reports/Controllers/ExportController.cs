@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Models;
 using Dapper;

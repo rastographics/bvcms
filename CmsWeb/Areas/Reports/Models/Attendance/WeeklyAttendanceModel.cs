@@ -8,7 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsWeb.Models;
+using CmsWeb.Areas.Org.Models;
 using CmsData;
 using UtilityExtensions;
 
