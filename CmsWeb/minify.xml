@@ -70,7 +70,6 @@
       <main2c Include="Scripts/chosen/chosen.jquery.js"/>
       <main2c Include="Scripts/js/Pager.js"/>
       <main2c Include="Scripts/js/header.js"/>
-      <main2c Include="Scripts/js/dropdown.js"/>
       <main2c Include="Scripts/js/headermenu1c.js"/>
       <main2c Include="Scripts/Bootstrap/typeahead.js"/>
       <main2c Include="Scripts/Search/SearchTypeahead.js"/>

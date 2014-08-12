@@ -13,40 +13,50 @@ $(function () {
     $("li.current-list").show();
     $("#main-tab").tabs({
       activate: function(event, ui) {
-          var qid = "";
-          $("li.orgcontext").hide();
+        var qid = "";
 
         switch ($(ui.newTab[0]).text()) {
             case "Members":
                 qid = $("#currentQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
                 $("li.current-list").show();
                 break;
             case "Previous":
                 qid = $("#previousQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.orgcontext").hide();
                 break;
             case "Pending":
                 qid = $("#pendingQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.orgcontext").hide();;
                 $("li.pending-list").show();
                 break;
             case "Inactive":
             case "Senders":
                 qid = $("#inactiveQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.orgcontext").hide();
                 break;
             case "Prospects":
                 qid = $("#prospectsQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.orgcontext").hide();
                 break;
             case "Guests":
                 qid = $("#visitedQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.orgcontext").hide();
+                break;
+            case "Settings":
+            case "Meetings":
+                $("#bluetoolbarstop li > a.qid").parent().addClass("hidy");
                 break;
         }
         if (qid) {
-            $("#bluetoolbarstop").show();
-            $("#bluetoolbarstop a").each(function() {
+            $("#bluetoolbarstop a.qid").each(function() {
                 $(this).attr("href", this.href.replace(/(.*\/)([^\/?]*)(\?[^?]*)?$/mg, "$1" + qid + "$3"));
             });
-        }
-        else {
-            $("#bluetoolbarstop").hide();
         }
       }
     });
@@ -465,7 +475,6 @@ $(function () {
         q = q + '&' + ff.serialize();
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
-                $("a.trigger-dropdown", f).dropdown2();
                 $('.bt').button();
                 $(".datepicker").jqdatepicker();
             });

@@ -1,0 +1,14 @@
+﻿<ul class="dropdown-menu dropdown-div-gear onecolumn">
+  <li class="header"><span>Operations</span></li>
+  <li><a href="/AddAttendeesFromTag/@Model.meeting.MeetingId" class="addfromtag">Add Attendees From Tag</a></li>
+  <li><a id="addallguests" href="#">Add All Guests to Org</a></li>
+
+  <li class="header"><span>Convert to Search</span></li>
+  <li><a href="/Meeting/QueryAttendees/@Model.meeting.MeetingId">Attendees</a></li>
+  <li><a href="/Meeting/QueryVisitors/@Model.meeting.MeetingId">Guests</a></li>
+  <li><a href="/Meeting/QueryAbsents/@Model.meeting.MeetingId">Absentees</a></li>
+  <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Registered">Registered</a></li>
+  <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Attends">Registered Attendances</a></li>
+  <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=Absents">Registered Absentees</a></li>
+  <li><a href="/Meeting/QueryRegistered/@Model.meeting.MeetingId?type=UnregisteredAttends">UnRegistered Attendances</a></li>
+</ul>

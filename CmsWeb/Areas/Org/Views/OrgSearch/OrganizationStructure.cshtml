@@ -1,0 +1,57 @@
+﻿@using CmsWeb
+@using UtilityExtensions
+@model IEnumerable<CmsData.View.OrganizationStructure>
+@{
+    ViewBag.Title = "Organization Structure";
+    Layout = ViewExtensions2.Layout();
+    var prevprog = "";
+    var prevdiv = "";
+}
+@section head
+{
+    <style>
+        .dim {
+            color: #bbb;
+        }
+    </style>
+}
+<h2>@ViewBag.Title</h2>
+<div>
+    <table class="@ViewExtensions2.GridClass" cellpadding="4">
+        <thead>
+            <tr>
+                <td>Program</td>
+                <td>Division</td>
+                <td>Members</td>
+                <td>Previous</td>
+                <td>Organization</td>
+                <td>Status</td>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach(var o in Model)
+        {
+            <tr>
+                <td><a href="/OrgSearch/@o.ProgId">
+                        <span class="@(o.Program == prevprog ? "dim" : "")">@o.Program</span>
+                    </a>
+                </td>
+                <td><a href="/OrgSearch/@(o.ProgId)/@o.DivId">
+                        <span class="@(o.Division == prevdiv ? "dim" : "")">@o.Division</span>
+                    </a>
+                </td>
+                <td>@o.Members</td>
+                <td>@o.Previous</td>
+                <td><a href="/Organization/@o.OrgId">
+                        @(o.Organization.HasValue() ? o.Organization : "noname")
+                    </a>
+                </td>
+                <td>@o.OrgStatus</td>
+            </tr>
+            prevdiv = o.Division;
+            prevprog = o.Program;
+        }
+        </tbody>
+    </table>
+
+</div>

@@ -126,7 +126,7 @@ namespace CmsData
                 w.WriteAttributeString("Quarters", Quarters);
             if (Tags.HasValue())
                 w.WriteAttributeString("Tags", Tags);
-            if (Schedule > 0)
+            if (Schedule != 0)
                 w.WriteAttributeString("Schedule", Schedule.ToString());
             if (Campus > 0)
                 w.WriteAttributeString("Campus", Campus.ToString());

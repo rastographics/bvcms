@@ -19,6 +19,7 @@ using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 using UtilityExtensions;
 using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
+using MeetingsModel = CmsWeb.Areas.Reports.Models.MeetingsModel;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {

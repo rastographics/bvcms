@@ -6,8 +6,6 @@
         $("input:text").val("");
         $("#ProgramId,#CampusId,#ScheduleId,#TypeId").val(0);
         $("#OnlineReg").val(-1);
-        $("#MainFellowship")[0].checked = false;
-        $("#ParentOrg")[0].checked = false;
         $.post('/OrgSearch/DivisionIds/0', null, function (ret) {
             $('#DivisionId').html(ret);
         });

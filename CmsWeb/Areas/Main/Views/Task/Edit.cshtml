@@ -21,9 +21,9 @@
                 <th>Owner</th>
                 <td>
                     <a href="mailto:@(Model.OwnerEmail)?subject=@(Model.Description)&body=@Server.UrlEncode(ViewExtensions2.CmsHost + "/Task/List/" + Model.Id + "#detail#select")">@Model.Owner</a>
-@if (Model.IsOwner) 
-{ 
-                    <a id="changeowner" href="/SearchAdd/@Model.Id?type=taskowner">(transfer)</a>
+@if (Model.IsOwner)
+{
+                    <a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd">(transfer)</a>
 } 
                 </td>
             </tr>
@@ -36,7 +36,7 @@
 } 
 @if (Model.IsOwner)
 {
-                    <a id="delegate" href="/SearchAdd/@(Model.Id)?type=taskdelegate">@(Model.ChangeCoOwner)</a>
+                    <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">@Model.ChangeCoOwner</a>
                     @Html.CheckBox("ForceCompleteWContact") <text>Complete With Contact</text>
 }
                 </td>

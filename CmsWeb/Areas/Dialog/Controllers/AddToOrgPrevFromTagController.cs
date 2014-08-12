@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -17,7 +18,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [Route("~/AddToOrgPrevFromTag/{id:int}")]
 		public ActionResult Index(int id)
 		{
-			ViewBag.tag = CmsWeb.Models.OrganizationPage.OrganizationModel.Tags();
+			ViewBag.tag = OrganizationModel.Tags();
 			var o = DbUtil.Db.LoadOrganizationById(id);
 			ViewBag.orgid = id;
 			ViewBag.orgname = o.OrganizationName;

@@ -12,7 +12,7 @@
             {
                 <tr>
                     <td class="nowrap">
-                        @if (User.IsInRole("Admin"))
+                        @if ((User.IsInRole("Admin") && !u.InRole("Developer")) || User.IsInRole("Developer"))
                         {
                             <a class="ajax click-pencil" href="/Person2/UserEdit/@u.UserId"><span>@u.Username</span></a>
                         }

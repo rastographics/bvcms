@@ -1,0 +1,80 @@
+﻿@model CmsWeb.Areas.Org.Models.OrgGroupsModel
+@using CmsWeb
+@{
+    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "OrgGroups";
+}           
+@section head
+{
+<style>
+    td.wide100 * 
+    {
+        width: 98%;
+    }
+
+    #scoreTracker {
+        position:fixed;
+        top:-1px;
+        right:225px;
+        width:200px;
+        background-color: #F8F8F8;
+        border: 1px solid #808183;
+        border-radius: 0 0 10px 10px;
+        padding: 1%;
+    }
+</style>
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Org/OrgGroups.js")
+}
+<form id="groupsform" action="/OrgGroups/Update" method="post">
+@Html.Partial("Form", Model)
+</form>
+@if( Model.isRecreationTeam ) {
+<div id="scoreTracker" style="display:none; text-align:center;">
+    <div>
+        <b>Team Score</b>
+        <hr />
+    </div>
+    <table>
+        <tr>
+            <td width="40%" class="right"><span id="playerCount">0</span></td>
+            <td class="left"> &nbsp; Players</td>
+        </tr>
+        <tr>
+            <td class="right"><span id="lastScore">0</span></td>
+            <td class="left"> &nbsp; Last Score</td>
+        </tr>
+        <tr>
+            <td class="right"><span id="avgScore">0</span></td>
+            <td class="left"> &nbsp; Average Score</td>
+        </tr>
+        <tr>
+            <td class="right"><span id="totalScore">0</span></td>
+            <td class="left"> &nbsp; Total Score</td>
+        </tr>
+    </table>
+    <input id="swapPlayers" type="button" class="bt" style="margin-top:7px; display:none;" value="Swap Players" />
+</div>
+<div id="scoreUploadDialog" style="display:none;">
+    <form id="scoreUploadForm">
+        <input type="hidden" name="orgID" value="@Model.orgid" />
+        <table>
+            <tr>
+                <td colspan="2">
+                    <textarea id="scoreUploadData" name="data" cols="80" rows="30"></textarea><br />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="button" class="bt" id="scoreUploadSubmit" value="Upload" />
+                </td>
+                <td class="right">
+                    <input type="button" class="bt" id="scoreUploadDismiss" value="Cancel" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+}

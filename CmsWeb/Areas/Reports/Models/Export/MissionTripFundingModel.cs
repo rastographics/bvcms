@@ -44,6 +44,11 @@ namespace CmsWeb.Models
             var count = q.Count;
             var ep = new ExcelPackage();
             var ws = ep.Workbook.Worksheets.Add("Sheet1");
+            if (count == 0)
+            {
+                ws.Cells["A1"].Value = "nothing to report";
+                return new EpplusResult(ep, "MissionTripFunding.xlsx");
+            }
             ws.Cells["A2"].LoadFromCollection(q);
             var range = ws.Cells[1, 1, count + 1, cols.Length];
             var table = ws.Tables.Add(range, "Trips");

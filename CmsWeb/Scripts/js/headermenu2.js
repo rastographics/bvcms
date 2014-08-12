@@ -80,6 +80,14 @@
     $.fn.alert = function (message) {
         this.html('<div class="alert"><a class="close" data-dismiss="alert">×</a><span>' + message + '</span></div>');
     };
+    $('button.dropdown-toggle').click(function (e) {
+        $("li.hideAlt").hide();
+    });
+    $(document).keydown(function (e) {
+        if (e.keyCode == 17 && $("ul.dropdown-menu").is(':visible')) {
+            $("li.hideAlt").not(".hidy").show();
+        }
+    });
 });
 
 function dimOff() {

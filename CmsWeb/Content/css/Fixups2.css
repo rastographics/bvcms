@@ -1281,3 +1281,9 @@ div.scroll150 {
 .width500 {
     width: 500px !important;
 }
+ul.dropdown-menu li.hideAlt > a {
+   color: rgb(197, 0, 0); 
+}
+ul.dropdown-menu li.hideAlt > a:hover {
+    color: #fff;
+}

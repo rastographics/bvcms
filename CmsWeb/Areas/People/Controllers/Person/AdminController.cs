@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Org.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -21,11 +22,17 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult Delete(int id)
         {
             Util.Auditing = false;
-            var person = DbUtil.Db.LoadPersonById(id);
-            if (person == null)
-                return Content("error, bad peopleid");
+            var i = (from person in DbUtil.Db.People
+                     where person.PeopleId == id
+                     let devel = person.Users.Any(uu => uu.UserRoles.Any(rr => rr.Role.RoleName == "Developer"))
+                     select new { person, devel }).SingleOrDefault();
+            if (i == null)
+                return Content(ErrorUrl("bad peopleid"));
 
-            var p = person.Family.People.FirstOrDefault(m => m.PeopleId != id);
+            if (i.devel && !User.IsInRole("Developer"))
+                return Content(ErrorUrl("cannot delete a developer"));
+
+            var p = i.person.Family.People.FirstOrDefault(m => m.PeopleId != id);
             if (p != null)
             {
                 Util2.CurrentPeopleId = p.PeopleId;
@@ -37,7 +44,7 @@ namespace CmsWeb.Areas.People.Controllers
                 Session.Remove("ActivePerson");
             }
             DbUtil.Db.PurgePerson(id);
-            DbUtil.LogActivity("Deleted Record {0}".Fmt(person.PeopleId));
+            DbUtil.LogActivity("Deleted Record {0} ({1})".Fmt(i.person.Name, i.person.PeopleId));
             return Content("/Person2/DeletedPerson");
         }
 

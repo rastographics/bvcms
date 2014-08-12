@@ -1,0 +1,94 @@
+﻿@using CmsWeb
+@using CmsWeb.Code
+@using CmsWeb.Models
+@using UtilityExtensions
+@model PeopleSearchModel
+@{
+	ViewBag.Title = "People Search";
+    Layout = ViewExtensions2.Layout();
+}
+@section head 
+{
+    <link href="/Content/styles/jquery.multiSelect.css" rel="stylesheet" type="text/css" />
+    <style>
+        #statusflags {
+            width: 275px;
+        }
+    </style>
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Search/PeopleSearch.js")
+}
+<form id="peoplesearch" method="post" action="/PeopleSearch">
+<table id="searchvalues" class="roundbox pad5">
+<tr><td colspan="4"><h2>People Search</h2></td></tr>
+    <tr>
+        <td colspan="2">
+            <div style="margin-left: 2em; color:brown">
+                <small>
+                    Search names using starting letters of <strong>First</strong>&lt;space&gt;<strong>Last</strong><br />
+                    or just <strong>Last</strong> or <strong>First</strong>&lt;space&gt; for first name match only
+                </small>
+            </div>
+        </td>
+        <th class="right"> Campus: </th>
+        <td style="min-width:10em">
+            @Html.DropDownList("campus", Model.Campuses())
+        </td>
+    </tr>
+	<tr>
+		<th class="right"> Name/ID#: </th>
+        <td>
+            @Html.TextBox("name", Model.m.name)
+        </td>
+        <th class="right"> Member: </th>
+        <td>
+            @Html.DropDownList("memberstatus", Model.MemberStatusCodes())
+        </td>
+	</tr>
+	<tr>
+		<th class="right"> Email/Phone: </th>
+		<td> @Html.TextBox("communication", Model.m.communication, new { title = "Any part of any phone or email" })</td>
+        <th class="right"> Gender: </th>
+        <td> @Html.DropDownList("gender", Model.GenderCodes()) </td>
+	</tr>
+	<tr>
+		<th class="right"> Address: </th>
+	    <td> @Html.TextBox("address", Model.m.address, new { title = "Any part of the address, city or zip" })</td>
+        <th class="right"> Married: </th>
+        <td> @Html.DropDownList("marital", Model.MaritalCodes())</td>
+
+
+	</tr>
+    <tr>
+        <th class="right"> Date of Birth: </th>
+        <td> @Html.TextBox("birthdate", Model.m.birthdate, new { title = "YYYY or MM or MM/DD or MM/DD/YY" })</td>
+    @if (ViewExtensions2.DbSetting("UseStatusFlags", "false").ToBool())
+    {
+        <th> Status Flags: </th>
+        <td>
+            @Html.DropDownList("statusflags", new SelectList(CodeValueModel.StatusFlags(), "Code", "Value"), new {multiple = "multiple"})
+        </td>
+    }
+    else
+    {
+        <td></td><td></td>
+    }
+    </tr>
+    <tr>
+@*        <th class="right"> </th>
+        <td></td>*@
+    </tr>
+	<tr>
+	  <td colspan="2" class="bottom"><b>Total Count: <span id="totalcount">@Model.Count().ToString("N0")</span></b></td>
+	  <td nowrap colspan="2"><br>
+		  <a id="convert" href="/PeopleSearch/ConvertToQuery" class="btn btn-info">Convert to Search Builder</a>
+		  <a id="clear" href="#" class="btn">Clear</a>
+		  <a href="/PeopleSearch/Results" id="search" class="btn btn-primary formlink">Search</a>
+	  </td>
+	</tr>
+</table>
+@Html.Partial("Results", Model)
+</form>
+<p> <a id="targetpeople" href="#">toggle link target</a> </p>

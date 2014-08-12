@@ -56,10 +56,15 @@ namespace CmsWeb.Models
         private static EpplusResult Result(IEnumerable<MissionTripSendInfo> q)
         {
             var list = q.ToList();
-            var cols = typeof(MissionTripSendInfo).GetProperties();
             var count = list.Count;
+            var cols = typeof(MissionTripSendInfo).GetProperties();
             var ep = new ExcelPackage();
             var ws = ep.Workbook.Worksheets.Add("Sheet1");
+            if (count == 0)
+            {
+                ws.Cells["A1"].Value = "nothing to report";
+                return new EpplusResult(ep, "MissionTripSenders.xlsx");
+            }
             ws.Cells["A2"].LoadFromCollection(list);
             var range = ws.Cells[1, 1, count + 1, cols.Length];
             var table = ws.Tables.Add(range, "Trips");

@@ -1,0 +1,31 @@
+﻿@using CmsWeb
+@using UtilityExtensions
+@model IQueryable<CmsWeb.Areas.Org.Controllers.MeetingController.ttt>
+  @{
+    ViewBag.Title = "Attendance By Groups";
+    Layout = ViewExtensions2.Layout();
+  }
+  <table cellpadding="5" class="@ViewExtensions2.GridClass">
+    <thead>
+      <tr><td>Attended</td><td>SmallGroup</td><td>Name</td></tr>
+    </thead>
+    <tbody>
+      @{
+        var prev = "";
+        var n = 0;
+        foreach (var i in Model)
+        {
+          var next = i.Attended + i.SmallGroup;
+          if (prev.HasValue() && prev != next)
+          {
+            <tr><td colspan="2" class="right">Total:</td><td>@n.ToString("N0")</td></tr>
+            n = 0;
+          }
+          n++;
+          <tr><td>@i.Attended</td><td>@i.SmallGroup</td><td>@i.Name</td></tr>
+          prev = next;
+        }
+      }
+      <tr><td colspan="2" class="right">Total:</td><td>@n.ToString("N0")</td></tr>
+    </tbody>
+  </table>

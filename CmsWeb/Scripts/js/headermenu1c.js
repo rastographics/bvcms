@@ -1,6 +1,4 @@
 ﻿$(document).ready(function () {
-    $("a.trigger-dropdown").dropdown2();
-
     $('#AddDialog').dialog({
         bgiframe: true,
         autoOpen: false,
