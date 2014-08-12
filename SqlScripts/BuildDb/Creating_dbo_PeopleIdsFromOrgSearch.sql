@@ -10,36 +10,41 @@ CREATE FUNCTION [dbo].[PeopleIdsFromOrgSearch]
 	,@onlinereg INT
 	,@mainfellowship BIT
 	,@parentorg BIT
-)
+)--OrgName,OrgStatus,OnlineReg,OrgType,Schedule,Campus,Program,Division,Organization
 RETURNS TABLE 
 AS
 RETURN 
 (
-	SELECT  PeopleId
+	SELECT DISTINCT  PeopleId
 	FROM Organizations o 
 	JOIN dbo.OrganizationMembers om ON om.OrganizationId = o.OrganizationId
 	WHERE (@name IS NULL OR o.OrganizationName LIKE '%' + @name + '%')
 	
 	AND (ISNULL(@prog, 0) = 0
 		OR EXISTS(SELECT NULL 
-					FROM dbo.DivOrg dd
-					JOIN dbo.Division di ON dd.DivId = di.Id
-					JOIN dbo.ProgDiv pp ON di.Id = pp.DivId
-					WHERE dd.OrgId = o.OrganizationId AND pp.ProgId = @prog))
+					FROM dbo.DivOrg di
+					JOIN dbo.ProgDiv pp ON pp.DivId = di.DivId
+					WHERE di.OrgId = o.OrganizationId AND pp.ProgId = @prog))
 					
 	AND (ISNULL(@div, 0) = 0
 		OR EXISTS(SELECT NULL 
 					FROM dbo.DivOrg dd
 					WHERE dd.OrgId = o.OrganizationId AND dd.DivId = @div))
 					
-	AND (ISNULL(@type, 0) = 0 OR o.OrganizationTypeId = @type)
-	
+	AND (ISNULL(@type, 0) = 0 
+			OR o.OrganizationTypeId = @type
+			OR (@type = -1 AND o.OrganizationTypeId IS NULL)
+			OR (@type = -2 AND ISNULL(o.IsBibleFellowshipOrg, 0) = 0)
+			OR (@type = -3 AND o.IsBibleFellowshipOrg = 1)
+			OR (@type = -4 AND o.SuspendCheckin = 1)
+			OR (@type = -5 AND EXISTS(SELECT NULL FROM dbo.Organizations WHERE ParentOrgId = o.OrganizationId))
+			OR (@type = -6 AND o.ParentOrgId > 0))
+
 	AND (ISNULL(@campus, 0) = 0 OR o.CampusId = @campus)
 	
 	AND (ISNULL(@sched, 0) = 0
-		OR EXISTS(SELECT NULL 
-					FROM dbo.OrgSchedule os 
-					WHERE os.OrganizationId = o.OrganizationId AND os.ScheduleId = @sched))
+		OR (@sched = -1 AND NOT EXISTS(SELECT NULL FROM dbo.OrgSchedule WHERE OrganizationId = o.OrganizationId))
+		OR EXISTS(SELECT NULL FROM dbo.OrgSchedule WHERE OrganizationId = o.OrganizationId AND ScheduleId = @sched))
 					
 	AND (ISNULL(@status, 0) = 0 OR o.OrganizationStatusId = @status)
 	
@@ -49,10 +54,6 @@ RETURN
 		  OR @onlinereg = -1
 		  OR @onlinereg IS NULL
 		)
-	AND (ISNULL(@mainfellowship, 0) = 0 OR (@mainfellowship = 1 AND o.IsBibleFellowshipOrg = 1))
-	
-	AND (ISNULL(@parentorg, 0) = 0 
-		OR (ISNULL(@parentorg, 0) = 1 AND EXISTS(SELECT NULL FROM dbo.Organizations co WHERE co.ParentOrgId = o.OrganizationId)))
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
