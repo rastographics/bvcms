@@ -28,14 +28,6 @@
         @if (edit)
         {
           <li><a href="/Organization/CopySettings/@oid">Copy Settings</a></li>
-          if (o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
-          {
-            <li><a id="sendreminders" href="/Organization/Reminders/@oid">Send Volunteer Reminders</a></li>
-          }
-          else
-          {
-            <li><a id="sendreminders" href="/Organization/Reminders/@oid">Send Event Reminders</a></li>
-          }
           <li><a href="/OrgChildren/@oid">Child Organization Management</a></li>
         }
         @if (o.IsMissionTrip == true && User.IsInRole("MissionGiving"))
