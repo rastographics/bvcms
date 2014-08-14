@@ -13,6 +13,7 @@
             window.location.reload();
         }
     });
+    $("a.trigger-dropdown").dropdown2();
     $('body').on("click", 'a.addfromtag', function (e) {
         e.preventDefault();
         var d = $('#AddFromTag');

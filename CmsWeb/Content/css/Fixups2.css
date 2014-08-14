@@ -281,8 +281,9 @@ ul.dropdown-div-gear {
     margin-left: -100px;
     width: auto;
 }
+
 .btn-group > .btn, .btn-group > .dropdown-menu, .btn-group > .popover {
-font-size: 12px;
+    font-size: 12px;
 }
 
 
@@ -841,13 +842,12 @@ div.height33 div.control-group {
 }
 
 .width120 div.controls,
-.cell.width120
-{
+.cell.width120 {
     width: 120px;
 }
+
 .width140 div.controls,
-.cell.width140
-{
+.cell.width140 {
     width: 140px;
 }
 
@@ -1135,6 +1135,7 @@ div.logo {
     .form-horizontal .width280 .controls {
         margin-left: 110px;
     }
+
     .maxWidthMedium {
         max-width: 22em;
     }
@@ -1272,18 +1273,49 @@ div.scroll150 {
     height: 150px;
     overflow-y: scroll;
 }
+
 .bold {
     font-weight: bold;
 }
+
 .width400 {
     width: 400px !important;
 }
+
 .width500 {
     width: 500px !important;
 }
+
 ul.dropdown-menu li.hideAlt > a {
-   color: rgb(197, 0, 0); 
+    color: rgb(197, 0, 0);
 }
-ul.dropdown-menu li.hideAlt > a:hover {
+
+    ul.dropdown-menu li.hideAlt > a:hover {
+        color: #fff;
+    }
+
+#bluetoolbarstop .dropdown-menu li > a {
+    color: #00A227;
+}
+#bluetoolbarstop .dropdown-menu li > a:hover {
+    color: #cfffcb;
+}
+
+#bluetoolbarstop .dropdown-menu li > a.qid {
+    color: #08c;
+}
+
+#bluetoolbarstop .dropdown-menu li > a.qid:hover {
     color: #fff;
+}
+#bluetoolbarstop > div.btn-group > ul > li > div.row {
+    margin-left: auto;
+}
+#bluetoolbarstop i a {
+    color: #00A227;
+    font-style: normal;
+}
+#bluetoolbarstop i a.qid {
+    color: #08c;
+    font-style: normal;
 }

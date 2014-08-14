@@ -11,6 +11,7 @@ $(function () {
     $("#Settings-tab").tabs();
     $("li.pending-list").hide();
     $("li.current-list").show();
+    $("a.trigger-dropdown").dropdown2();
     $("#main-tab").tabs({
       activate: function(event, ui) {
         var qid = "";

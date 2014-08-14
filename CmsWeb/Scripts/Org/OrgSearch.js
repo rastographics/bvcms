@@ -1,6 +1,7 @@
 ﻿$(function () {
     $('#Name').focus();
     $(".bt").button();
+    $("a.trigger-dropdown").dropdown2();
     $("#clear").click(function (ev) {
         ev.preventDefault();
         $("input:text").val("");
