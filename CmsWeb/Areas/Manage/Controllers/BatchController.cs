@@ -702,7 +702,7 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
             try
             {
                 var script = DbUtil.Db.Content(id);
-                var pe = new PythonEvents(DbUtil.Db, id, script.Body);
+                var pe = new PythonEvents(Util.ConnectionString, id, script.Body);
                 pe.instance.Run();
             }
             catch (Exception e)

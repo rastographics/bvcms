@@ -1560,8 +1560,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (p.SpouseId == id)
                 {
                     var sp = Db.LoadPersonById(id);
-                    if (p.ContributionOptionsId == StatementOptionCode.Joint &&
-                        sp.ContributionOptionsId == StatementOptionCode.Joint)
+                    if ((p.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint &&
+                        (sp.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
                         canview = true;
                 }
             }

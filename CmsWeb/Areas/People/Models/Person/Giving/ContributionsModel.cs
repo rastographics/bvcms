@@ -33,7 +33,8 @@ namespace CmsWeb.Areas.People.Models
         public override IQueryable<Contribution> DefineModelList()
         {
             var q = from c in DbUtil.Db.Contributions
-                    where c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && person.ContributionOptionsId == StatementOptionCode.Joint)
+                    where c.PeopleId == person.PeopleId 
+                        || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
                     select c;
@@ -119,8 +120,10 @@ namespace CmsWeb.Areas.People.Models
 
         public static IEnumerable<StatementInfo> Statements(int id)
         {
+            var person = DbUtil.Db.LoadPersonById(id);
             return from c in DbUtil.Db.Contributions2(new DateTime(1900,1,1), new DateTime(3000, 12, 31), 0, false, null, true)
-                   where c.PeopleId == id
+                   where c.PeopleId == person.PeopleId
+                        || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
                    group c by c.DateX.Value.Year into g
                    orderby g.Key descending 
                    select new StatementInfo()

@@ -72,7 +72,6 @@
       <main2c Include="Scripts/js/header.js"/>
       <main2c Include="Scripts/js/dropdown.js"/>
       <main2c Include="Scripts/js/headermenu1c.js"/>
-      <main2c Include="Scripts/js/dropdown2.js"/>
       <main2c Include="Scripts/Bootstrap/typeahead.js"/>
       <main2c Include="Scripts/Search/SearchTypeahead.js"/>
       <main2c Include="Scripts/js/form-ajax.js"/>

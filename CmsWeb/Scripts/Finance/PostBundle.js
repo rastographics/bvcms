@@ -41,6 +41,7 @@
     $("#name").focus(function () {
         $.enteredname = $(this).val();
     });
+    $("a.trigger-dropdown").dropdown2();
     $("#name").autocomplete({
         appendTo: "#SearchResults2",
         autoFocus: true,

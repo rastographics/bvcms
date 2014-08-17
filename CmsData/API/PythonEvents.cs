@@ -23,9 +23,9 @@ namespace CmsData
             db = new CMSDataContext(cs);
         }
 
-        public PythonEvents(CMSDataContext db, string classname, string script)
+        public PythonEvents(string connectionString, string classname, string script)
         {
-            this.db = db;
+            db = new CMSDataContext(connectionString);
             var engine = Python.CreateEngine();
             var sc = engine.CreateScriptSourceFromString(script);
 
@@ -201,8 +201,8 @@ namespace CmsData
             c.Reset(db);
             var mtlist = memberTypes.Split(',');
             var mts = string.Join(";", from mt in db.MemberTypes
-                where mtlist.Contains(mt.Description)
-                select "{0},{1}".Fmt(mt.Id, mt.Code));
+                                       where mtlist.Contains(mt.Description)
+                                       select "{0},{1}".Fmt(mt.Id, mt.Code));
             var clause = c.AddNewClause(QueryType.MemberTypeCodes, CompareType.OneOf, mts);
             clause.Program = progid;
             clause.Division = divid;
@@ -214,8 +214,9 @@ namespace CmsData
         public List<int> OrganizationIds(int progid, int divid)
         {
             var q = from o in db.Organizations
-                where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
-                select o.OrganizationId;
+                    where progid == 0 || o.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
+                    where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
+                    select o.OrganizationId;
             return q.ToList();
         }
 
@@ -226,8 +227,13 @@ namespace CmsData
             {
                 Person.AddEditExtraValue(db, pid, name, text);
                 db.SubmitChanges();
-                db.Dispose();
+                ResetDb();
             }
+        }
+        public void AddExtraValueCode(int pid, string name, string text)
+        {
+            Person.AddEditExtraValue(db, pid, name, text);
+            db.SubmitChanges();
         }
         public void AddExtraValueText(string savedQuery, string name, string text)
         {
@@ -239,6 +245,11 @@ namespace CmsData
                 ResetDb();
             }
         }
+        public void AddExtraValueText(int pid, string name, string text)
+        {
+            Person.AddEditExtraData(db, pid, name, text);
+            db.SubmitChanges();
+        }
         public void AddExtraValueDate(string savedQuery, string name, DateTime dt)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
@@ -248,6 +259,11 @@ namespace CmsData
                 db.SubmitChanges();
                 ResetDb();
             }
+        }
+        public void AddExtraValueDate(int pid, string name, DateTime dt)
+        {
+            Person.AddEditExtraDate(db, pid, name, dt);
+            db.SubmitChanges();
         }
         public void AddExtraValueInt(string savedQuery, string name, int n)
         {
@@ -259,6 +275,11 @@ namespace CmsData
                 ResetDb();
             }
         }
+        public void AddExtraValueInt(int pid, string name, int n)
+        {
+            Person.AddEditExtraInt(db, pid, name, n);
+            db.SubmitChanges();
+        }
         public void AddExtraValueBool(string savedQuery, string name, bool b)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
@@ -268,6 +289,11 @@ namespace CmsData
                 db.SubmitChanges();
                 ResetDb();
             }
+        }
+        public void AddExtraValueBool(int pid, string name, bool b)
+        {
+            Person.AddEditExtraBool(db, pid, name, b);
+            db.SubmitChanges();
         }
         public void UpdateCampus(string savedQuery, string campus)
         {
@@ -280,17 +306,24 @@ namespace CmsData
                 db.SubmitChanges();
             }
         }
+        public void UpdateCampus(int pid, string campus)
+        {
+            UpdateMemberStatus("peopleid=" + pid, campus);
+        }
         public void UpdateMemberStatus(string savedQuery, string status)
         {
             var id = Person.FetchOrCreateMemberStatus(db, status);
             var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
             {
-                var psb = new List<ChangeDetail>();
                 p.UpdateValue("MemberStatusId", id);
-                p.LogChanges(db, psb);
+                p.LogChanges(db);
                 db.SubmitChanges();
             }
+        }
+        public void UpdateMemberStatus(int pid, string status)
+        {
+            UpdateMemberStatus("peopleid=" + pid, status);
         }
         public void UpdateNewMemberClassStatus(string savedQuery, string status)
         {
@@ -298,12 +331,17 @@ namespace CmsData
             var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
             {
-                var psb = new List<ChangeDetail>();
                 p.UpdateValue("NewMemberClassStatusId", id);
-                p.LogChanges(db, psb);
+                p.LogChanges(db);
                 db.SubmitChanges();
             }
         }
+
+        public void UpdateNewMemberClassStatus(int pid, string status)
+        {
+            UpdateNewMemberClassStatus("peopleid=" + pid, status);
+        }
+
         public void UpdateNewMemberClassDate(string savedQuery, DateTime dt)
         {
             var q = db.PeopleQuery2(savedQuery);
@@ -314,6 +352,10 @@ namespace CmsData
                 db.SubmitChanges();
             }
         }
+        public void UpdateNewMemberClassDate(int pid, DateTime dt)
+        {
+            UpdateNewMemberClassDate("peopleid=" + pid, dt);
+        }
         public void AddMembersToOrg(string savedQuery, int OrgId)
         {
             var q = db.PeopleQuery2(savedQuery);
@@ -323,6 +365,10 @@ namespace CmsData
                 OrganizationMember.InsertOrgMembers(db, OrgId, p.PeopleId, MemberTypeCode.Member, dt, null, false);
                 db.SubmitChanges();
             }
+        }
+        public void AddMemberToOrg(int pid, int OrgId)
+        {
+            AddMembersToOrg("peopleid=" + pid, OrgId);
         }
     }
 }

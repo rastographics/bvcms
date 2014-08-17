@@ -516,7 +516,7 @@
     <IsRecentGiver Title="Recent Giver" Type="Bit" DisplayAs="RecentGiver({0})" Params="Days" DataValueField="IdCode">
       Enter a number of days to look back and specify True or False.
     </IsRecentGiver>
-    <IsTopGiver Title="Recent Top Giver" Type="Bit" DisplayAs="RecentGiver({0},{1})" Params="Days,Quarters" QuartersLabel="Top number" DataValueField="IdCode">
+    <IsTopGiver Title="Recent Top Giver" Type="Bit" DisplayAs="RecentTopGiver({0},{1})" Params="Days,Quarters" QuartersLabel="Top number" DataValueField="IdCode">
       Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False.
     </IsTopGiver>
     <IsTopPledger Title="Recent Top Pledger" Type="Bit" DisplayAs="RecentTopPledger({0},{1})" Params="Days,Quarters" QuartersLabel="Top number" DataValueField="IdCode">

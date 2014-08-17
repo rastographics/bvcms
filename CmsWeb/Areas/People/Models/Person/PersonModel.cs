@@ -221,13 +221,16 @@ namespace CmsWeb.Areas.People.Models
         internal void UpdateEnvelopeOption(string name, int option)
         {
             name = name + "Id";
-            Person.UpdateValue(name, option);
+            int? opt = option;
+            if (opt == 0)
+                opt = null;
+            Person.UpdateValue(name, opt);
             Person.LogChanges(DbUtil.Db);
             var sp = DbUtil.Db.LoadPersonById(Person.SpouseId ?? 0);
             if (sp != null)
-                if (option == StatementOptionCode.Joint || option == StatementOptionCode.Individual)
+                if (opt == StatementOptionCode.Joint || opt == StatementOptionCode.Individual)
                 {
-                    sp.UpdateValue(name, option);
+                    sp.UpdateValue(name, opt);
                     sp.LogChanges(DbUtil.Db);
                 }
                 else if (name == "ContributionOptionsId" && sp.ContributionOptionsId == StatementOptionCode.Joint)

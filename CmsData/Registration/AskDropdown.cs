@@ -138,10 +138,7 @@ namespace CmsData.Registration
 				if (om == null)
 					return;
 				if (pe != null)
-				{
 					pe.instance.AddToSmallGroup(SmallGroup, om);
-					om.Person.LogChanges(Db, om.PeopleId);
-				}
 				om.AddToGroup(Db, SmallGroup);
 				if (MeetingTime.HasValue)
 					Attend.MarkRegistered(Db, om.OrganizationId, om.PeopleId, MeetingTime.Value, 1);

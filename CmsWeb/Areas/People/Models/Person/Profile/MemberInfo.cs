@@ -4,12 +4,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
 using CmsData;
 using System.Data.Linq;
 using CmsData.View;
 using CmsWeb.Code;
-using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -23,19 +21,19 @@ namespace CmsWeb.Areas.People.Models
 
         #region Contributions --------------------------------------------------
 
-        [DisplayName("Statement Type")]
+        [DisplayName("Statement Type"), TrackChanges]
         public CodeInfo ContributionOptions { get; set; }
 
-        [DisplayName("Electronic Only")]
+        [DisplayName("Electronic Only"), TrackChanges]
         public bool ElectronicStatement { get; set; }
 
-        [DisplayName("Envelope Option")]
+        [DisplayName("Envelope Option"), TrackChanges]
         public CodeInfo EnvelopeOptions { get; set; }
 
         #endregion
         #region Decision --------------------------------------------------
 
-        [DisplayName("Type")]
+        [DisplayName("Type"), TrackChanges]
         public CodeInfo DecisionType { get; set; }
 
         [DisplayName("Date")]
@@ -44,10 +42,10 @@ namespace CmsWeb.Areas.People.Models
         #endregion
         #region Baptism --------------------------------------------------
 
-        [DisplayName("Status")]
+        [DisplayName("Status"), TrackChanges]
         public CodeInfo BaptismStatus { get; set; }
 
-        [DisplayName("Type")]
+        [DisplayName("Type"), TrackChanges]
         public CodeInfo BaptismType { get; set; }
 
         [DisplayName("Date")]
@@ -59,7 +57,7 @@ namespace CmsWeb.Areas.People.Models
         #endregion
         #region Drop --------------------------------------------------
 
-        [DisplayName("Type"), FieldInfo(IdField = "DropCodeId")]
+        [DisplayName("Type"), FieldInfo(IdField = "DropCodeId"), TrackChanges]
         public CodeInfo DropType { get; set; }
 
         [DisplayName("Date")]
@@ -71,7 +69,7 @@ namespace CmsWeb.Areas.People.Models
         #endregion
         #region New Member Class --------------------------------------------------
 
-        [DisplayName("Status")]
+        [DisplayName("Status"), TrackChanges]
         public CodeInfo NewMemberClassStatus { get; set; }
 
         [DisplayName("Date")]
@@ -83,7 +81,7 @@ namespace CmsWeb.Areas.People.Models
         [TrackChanges]
         public CodeInfo MemberStatus { get; set; }
 
-        [DisplayName("How Joined"), FieldInfo(IdField = "JoinCodeId")]
+        [DisplayName("How Joined"), FieldInfo(IdField = "JoinCodeId"), TrackChanges]
         public CodeInfo JoinType { get; set; }
 
         public DateTime? JoinDate { get; set; }

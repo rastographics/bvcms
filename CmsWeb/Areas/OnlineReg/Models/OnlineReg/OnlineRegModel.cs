@@ -203,7 +203,7 @@ namespace CmsWeb.Models
                 {
                     try
                     {
-                        var pe = new PythonEvents(DbUtil.Db, "RegisterEvent", script.Body);
+                        var pe = new PythonEvents(Util.ConnectionString, "RegisterEvent", script.Body);
                         HttpContext.Current.Items["PythonEvents"] = pe;
                     }
                     catch (Exception ex)

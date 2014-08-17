@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
         public ActionResult Statement(int id, string fr, string to)
         {
-            if (Util.UserPeopleId != id && !User.IsInRole("Finance"))
+            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
                 return Content("No permission to view statement");
             var p = DbUtil.Db.LoadPersonById(id);
             if (p == null)
@@ -61,14 +61,21 @@ namespace CmsWeb.Areas.People.Controllers
 			if (p == null)
 				return Content("Invalid Id");
 
+            if (p.PeopleId == p.Family.HeadOfHouseholdSpouseId)
+                p = p.Family.HeadOfHousehold;
+
 			DbUtil.LogActivity("Contribution Statement for ({0})".Fmt(id));
 
 			return new Finance.Models.Report.ContributionStatementResult 
 			{ 
-				PeopleId = id, 
+				PeopleId = p.PeopleId, 
 				FromDate = fr,
 				ToDate = to,
-				typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult && p.ContributionOptionsId == StatementOptionCode.Joint ? 2 : 1,
+				typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult 
+                    && (p.ContributionOptionsId ?? (p.SpouseId > 0 
+                                                    ? StatementOptionCode.Joint 
+                                                    : StatementOptionCode.Individual)) 
+                                                    == StatementOptionCode.Joint ? 2 : 1,
 				noaddressok = true,
 				useMinAmt = false,
                 singleStatement = true,
