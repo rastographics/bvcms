@@ -134,5 +134,29 @@ namespace CmsData.Classes.Transnational
 				nvc.Add(FIELD_IP, value);
 			}
 		}
+
+		public string OrderID
+		{
+			set
+			{
+				nvc.Add(FIELD_ORDER_ID, value);
+			}
+		}
+
+		public string OrderDescription
+		{
+			set
+			{
+				nvc.Add(FIELD_ORDER_DESCRIPTION, value);
+			}
+		}
+
+		public string PONumber
+		{
+			set
+			{
+				nvc.Add(FIELD_PO_NUMBER, value);
+			}
+		}
 	}
 }
