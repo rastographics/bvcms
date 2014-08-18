@@ -217,6 +217,7 @@ namespace CmsData
                 db.SubmitChanges();
                 TrySubmit(db, "Attends (meetingid:{0})".Fmt(a.MeetingId));
             }
+            db.AttendUpdateN(targetid, 10);
 
             foreach (var c in this.Contributions)
                 c.PeopleId = targetid;

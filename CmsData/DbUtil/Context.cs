@@ -944,6 +944,12 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), i1, i2);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.AttendUpdateN")]
+        public int AttendUpdateN([Parameter(DbType = "Int")] int pid, [Parameter(DbType = "Int")] int max)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, max);
+            return ((int)(result.ReturnValue));
+        }
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)
         {
             if (orgmustexist)

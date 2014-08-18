@@ -50,7 +50,8 @@
     $.hClick = function (e) {
         currentDiv = this;
         $.removeButtons();
-        CKEDITOR.instances['htmleditor'].setData($(this).html());
+        if($(this).html() !== "Click here to edit content")
+            CKEDITOR.instances['htmleditor'].setData($(this).html());
         dimOn();
         $("#popupeditor").show().center();
     };
