@@ -139,44 +139,32 @@ namespace CmsWeb.Areas.Public.Controllers
             var psb = new List<ChangeDetail>();
             var fsb = new List<ChangeDetail>();
             var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == m.zip.Zip5());
-            if (!m.home.HasValue() && m.cell.HasValue())
-                m.home = m.cell;
 
-            var keys = Request.Form.AllKeys.ToList();
+				if (!m.home.HasValue() && m.cell.HasValue())
+					m.home = m.cell;
 
-            if (keys.Contains("home"))
-                p.Family.UpdateValue(fsb, "HomePhone", m.home.GetDigits());
-            if (keys.Contains("addr"))
-                p.Family.UpdateValue(fsb, "AddressLineOne", m.addr);
-            if (keys.Contains("zip"))
-            {
-                p.Family.UpdateValue(fsb, "CityName", z != null ? z.City : null);
-                p.Family.UpdateValue(fsb, "StateCode", z != null ? z.State : null);
-                p.Family.UpdateValue(fsb, "ZipCode", m.zip);
-                var rc = DbUtil.Db.FindResCode(m.zip, null);
-                p.Family.UpdateValue(fsb, "ResCodeId", rc.ToString());
-            }
-            if (keys.Contains("goesby"))
-                p.UpdateValue(psb, "NickName", Trim(m.goesby));
-            if (keys.Contains("first"))
-                p.UpdateValue(psb, "FirstName", Trim(m.first));
-            if (keys.Contains("last"))
-                p.UpdateValue(psb, "LastName", Trim(m.last));
-            if (keys.Contains("dob"))
-            {
-                DateTime dt;
-                DateTime.TryParse(m.dob, out dt);
-                if (p.BirthDate != dt)
-                    p.UpdateValue(psb, "DOB", m.dob);
-            }
-            if (keys.Contains("email"))
-                p.UpdateValue(psb, "EmailAddress", Trim(m.email));
-            if (keys.Contains("cell"))
-                p.UpdateValue(psb, "CellPhone", m.cell.GetDigits());
-            if (keys.Contains("marital"))
-                p.UpdateValue(psb, "MaritalStatusId", m.marital);
-            if (keys.Contains("gender"))
-                p.UpdateValue(psb, "GenderId", m.gender);
+				if (m.home.HasValue())
+					p.Family.UpdateValue(fsb, "HomePhone", m.home.GetDigits());
+
+				if (m.addr.HasValue())
+					p.Family.UpdateValue(fsb, "AddressLineOne", m.addr);
+
+				if (m.zip.HasValue())
+				{
+					p.Family.UpdateValue(fsb, "CityName", z != null ? z.City : null);
+					p.Family.UpdateValue(fsb, "StateCode", z != null ? z.State : null);
+					p.Family.UpdateValue(fsb, "ZipCode", m.zip);
+					var rc = DbUtil.Db.FindResCode(m.zip, null);
+					p.Family.UpdateValue(fsb, "ResCodeId", rc.ToString());
+				}
+
+				if (m.email.HasValue())
+					p.UpdateValue(psb, "EmailAddress", Trim(m.email));
+
+				if (m.cell.HasValue())
+					p.UpdateValue(psb, "CellPhone", m.cell.GetDigits());
+
+				p.UpdateValue(psb, "MaritalStatusId", m.marital);
 
             p.LogChanges(DbUtil.Db, psb);
             p.Family.LogChanges(DbUtil.Db, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
