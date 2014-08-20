@@ -20,8 +20,8 @@
     @Html.EditorFor(m => m.HomePhone)
     @Html.EditorFor(m => m.AddressLineOne)
     @Html.EditorFor(m => m.AddressLineTwo)
-@*    @Html.EditorFor(m => m.City)*@
-@*    @Html.EditorFor(m => m.State)*@
+    @Html.EditorFor(m => m.City)
+    @Html.EditorFor(m => m.State)
     @Html.EditorFor(m => m.ZipCode)
     if (Model.ShowCountry)
     {
@@ -32,8 +32,8 @@ else
 {
     @Html.HiddenFor(m => m.AddressLineOne)
     @Html.HiddenFor(m => m.AddressLineTwo)
-@*    @Html.HiddenFor(m => m.City)*@
-@*    @Html.HiddenFor(m => m.State)*@
+    @Html.HiddenFor(m => m.City)
+    @Html.HiddenFor(m => m.State)
     @Html.HiddenFor(m => m.ZipCode)
 }
 @Html.HiddenFor(m => m.whatfamily)

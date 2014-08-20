@@ -90,6 +90,7 @@ namespace CmsWeb.Models
         public string AddressLineOne { get; set; }
         public string AddressLineTwo { get; set; }
         public string City { get; set; }
+        [DisplayName("State Abbr")]
         public string State { get; set; }
         [DisplayName("Postal Code")]
         public string ZipCode { get; set; }
