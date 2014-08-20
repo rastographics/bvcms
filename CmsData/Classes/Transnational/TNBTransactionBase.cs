@@ -52,6 +52,9 @@ namespace CmsData.Classes.Transnational
 		public const string FIELD_AMOUNT = "amount";
 
 		public const string FIELD_IP = "ipaddress";
+		public const string FIELD_ORDER_ID = "orderid";
+		public const string FIELD_ORDER_DESCRIPTION = "orderdescription";
+		public const string FIELD_PO_NUMBER = "ponumber";
 
 		public const string FIELD_FIRST_NAME = "first_name";
 		public const string FIELD_LAST_NAME = "last_name";
