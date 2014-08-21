@@ -330,14 +330,6 @@ namespace CmsWeb.Models
         public void SendMovedNotices()
         {
             var Db = DbUtil.Db;
-            var q0 = from o in Db.Organizations
-                     where o.DivOrgs.Any(di => di.DivId == DivId)
-                     where o.NotifyIds.Length > 0
-                     where o.RegistrationTypeId > 0
-                     select o;
-            var onlineorg = q0.FirstOrDefault();
-            if (onlineorg == null)
-                return;
 
             var q = from om in Db.OrganizationMembers
                     where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
@@ -393,9 +385,22 @@ namespace CmsWeb.Models
                 }
             }
             sb.Append("</pre>\n");
-            Db.Email(Db.CurrentUser.Person.FromEmail,
-                Db.PeopleFromPidString(onlineorg.NotifyIds),
-                "room notices sent to:", sb.ToString());
+
+            var q0 = from o in Db.Organizations
+                     where o.DivOrgs.Any(di => di.DivId == DivId)
+                     where o.NotifyIds.Length > 0
+                     where o.RegistrationTypeId > 0
+                     select o;
+            var onlineorg = q0.FirstOrDefault();
+
+            if (onlineorg == null)
+                Db.Email(Db.CurrentUser.Person.FromEmail,
+                    Db.CurrentUserPerson,
+                    "room notices sent to:", sb.ToString());
+            else
+                Db.Email(Db.CurrentUser.Person.FromEmail,
+                    Db.PeopleFromPidString(onlineorg.NotifyIds),
+                    "room notices sent to:", sb.ToString());
             Db.SubmitChanges();
         }
 
