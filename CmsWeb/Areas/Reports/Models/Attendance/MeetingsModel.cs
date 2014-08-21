@@ -30,8 +30,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public IEnumerable<MeetingInfo> MeetingsForDate()
         {
-            if (FromWeekAtAGlance)
-                StatusId = null;
+            StatusId = null;
             var q = FetchOrgs();
             var list = (from o in q
                         join m in DbUtil.Db.Meetings on o.OrganizationId equals m.OrganizationId into mr
