@@ -10,7 +10,7 @@
                     <label>Create Account (optional) @Html.CheckBoxFor(m => m.CreatingAccount)</label>
                 }
             }
-            @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitNew/" + Model.Index, "Submit New Profile", style: "btn-primary min-width15em")
+            @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitNew/" + Model.Index, "Submit Information", style: "btn-primary min-width15em")
             @if (Model.Parent.AllowSaveProgress())
             {
               <div>
