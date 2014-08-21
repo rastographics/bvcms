@@ -27,15 +27,18 @@ namespace CmsWeb.Models
             if (text.Substring(0, Math.Min(text.Length, 300)).Contains("textbox32,textbox30,textbox26,textbox22,textbox10,textbox7,DepositStatus,textbox3,SourceLocation,textbox4,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,Account_1,RoutingNumber,AnalysisStatus,IsOverridden"))
                 using (var csv = new CsvReader(new StringReader(text), hasHeaders:true))
                     return BatchProcessMetropolitan(csv, date, fundid);
+            if(text.Substring(0, Math.Min(text.Length, 200)).Contains("Deposit Date,Account Number,Check Number,Check Amount,Routing Number"))
+                using (var csv = new CsvReader(new StringReader(text), true))
+                    return BatchProcessRedeemer(csv, date, fundid);
+            if(text.Substring(0, Math.Min(text.Length, 200)).Contains("Id,Date,Name,Donor Address,Donor City,Donor State,Donor Zip,Donor Id,Donor Email,Gross Amount,Net Amount,Fee,Number,Keyword,Status"))
+                using (var csv = new CsvReader(new StringReader(text), true))
+                    return BatchProcessKindred(csv, date, fundid);
 
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
                 case "fcchudson":
                     using (var csv = new CsvReader(new StringReader(text), true, '\t'))
                         return BatchProcessFcchudson(csv, date, fundid);
-                case "redeemer":
-                    using (var csv = new CsvReader(new StringReader(text), true))
-                        return BatchProcessRedeemer(csv, date, fundid);
                 case "fbcfayetteville":
                     using (var csv = new CsvReader(new StringReader(text), true))
                         return BatchProcessFbcFayetteville(csv, date, fundid);
