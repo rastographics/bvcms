@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (shell.HasValue())
             {
                 var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
-                var t = re.Match(shell).Groups[1].Value.Replace("<!--FORM CSS-->", ViewExtensions2.OnlineReg2Css());
+                var t = re.Match(shell).Groups[1].Value.Replace("<!--FORM CSS-->", ViewExtensions2.Bootstrap3Css());
                 ViewBag.hasshell = true;
                 ViewBag.top = t;
                 var b = re.Match(shell).Groups[2].Value;

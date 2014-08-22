@@ -12,20 +12,19 @@ using CmsWeb.Models;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
 using User = CmsData.User;
+using System.ComponentModel.DataAnnotations;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [RouteArea("Manage", AreaPrefix = "Account"), Route("{action}/{id?}")]
     public class AccountController : CmsControllerNoHttps
     {
-        [MyRequireHttps]
-        [HttpPost]
+        [HttpPost, MyRequireHttps]
         public ActionResult KeepAlive()
         {
             return Content("alive");
         }
-        [MyRequireHttps]
-        [HttpPost]
+        [HttpPost, MyRequireHttps]
         public ActionResult CKEditorUpload(string CKEditorFuncNum)
         {
             var m = new AccountModel();
@@ -82,8 +81,9 @@ CKEditorFuncNum, baseurl + fn, error));
             ViewBag.Message = e;
             return View();
         }
-        [MyRequireHttps]
+
         [Route("~/Logon")]
+        [MyRequireHttps]
         public ActionResult LogOn()
         {
             var ret = DbUtil.CheckDatabaseExists(Util.Host);
@@ -131,22 +131,21 @@ CKEditorFuncNum, baseurl + fn, error));
             return true;
         }
 
-        [MyRequireHttps]
-        [HttpPost]
         [Route("~/Logon")]
-        public ActionResult LogOn(string userName, string password, string returnUrl)
+        [HttpPost, MyRequireHttps]
+        public ActionResult LogOn(AccountInfo m)
         {
-            if (returnUrl.HasValue())
+            if (m.ReturnUrl.HasValue())
             {
-                var lc = returnUrl.ToLower();
+                var lc = m.ReturnUrl.ToLower();
                 if (lc.StartsWith("/default.aspx") || lc.StartsWith("/login.aspx"))
-                    returnUrl = "/";
+                    m.ReturnUrl = "/";
             }
 
-            if (!userName.HasValue())
+            if (!m.UsernameOrEmail.HasValue())
                 return View();
 
-            var ret = AccountModel.AuthenticateLogon(userName, password, Session, Request);
+            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request);
             if (ret is string)
             {
                 ModelState.AddModelError("login", ret.ToString());
@@ -156,11 +155,11 @@ CKEditorFuncNum, baseurl + fn, error));
 
             if (user.MustChangePassword)
                 return Redirect("/Account/ChangePassword");
-            if (!returnUrl.HasValue())
+            if (!m.ReturnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person2/" + Util.UserPeopleId);
-            if (returnUrl.HasValue())
-                return Redirect(returnUrl);
+            if (m.ReturnUrl.HasValue())
+                return Redirect(m.ReturnUrl);
             return Redirect("/");
         }
         [MyRequireHttps]
@@ -206,17 +205,28 @@ CKEditorFuncNum, baseurl + fn, error));
             return RedirectToAction("RequestUsername");
 
         }
-        [MyRequireHttps]
-        public ActionResult ForgotPassword(string username)
+
+        public class AccountInfo
         {
-            if (Request.HttpMethod.ToUpper() == "GET")
-                return View();
-            if (!username.HasValue())
-                ModelState.AddModelError("username", "user name required");
+            [Required]
+            public string UsernameOrEmail { get; set; }
+            public string Password { get; set; }
+            public string ReturnUrl { get; set; }
+        }
+
+        [HttpGet, MyRequireHttps]
+        public ActionResult ForgotPassword()
+        {
+            var m = new AccountInfo();
+            return View(m);
+        }
+
+        [HttpPost, MyRequireHttps]
+        public ActionResult ForgotPassword(AccountInfo m)
+        {
             if (!ModelState.IsValid)
-                return View();
-            var email = AccountModel.ForgotPassword(username);
-            TempData["email"] = email;
+                return View(m);
+            AccountModel.ForgotPassword(m.UsernameOrEmail);
 
             return RedirectToAction("RequestPassword");
         }

@@ -1,17 +1,20 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link href="/Content/styles/Site3.css?v=1" rel="stylesheet" type="text/css" />
-    @RenderSection("head", required: false)
+  <title>@ViewBag.Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  @Html.Raw(ViewExtensions2.Bootstrap3Css())
+  @RenderSection("head", false)
 </head>
 <body>
-<div class="page">
-<div id="main">
-@RenderBody()
-</div>
-</div>
+  @Html.Raw((string)ViewBag.top)
+  <div class="container">
+    @RenderBody()
+  </div>
+  @Html.Raw((string)ViewBag.bottom)
+  @ViewExtensions2.jQuery()
+  @ViewExtensions2.Bootstrap3()
+  @RenderSection("scripts", false)
 </body>
 </html>
-            
+

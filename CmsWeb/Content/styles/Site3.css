@@ -543,4 +543,10 @@ a.submitbutton,a.button,a.submitbutton:hover,a.submitbutton:active {
 	border-color: Gray;
 	padding: 10px;
 }
+.red {
+    color: red;
+}
+.maxwidth400 {
+    max-width: 400px;
+}
 

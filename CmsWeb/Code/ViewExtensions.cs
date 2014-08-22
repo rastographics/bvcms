@@ -730,10 +730,10 @@ namespace CmsWeb
         {
             return Fingerprint.Css("/content/css/Fixups2.css");
         }
-        public static string OnlineReg2Css()
+        public static string Bootstrap3Css()
         {
             return @"
-<link rel=""stylesheet"" href=""//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"">
+<link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"">
 <link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css"">
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
@@ -768,7 +768,7 @@ namespace CmsWeb
         public static HtmlString Bootstrap3()
         {
             return new HtmlString(@"
-<script src=""//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js""></script>
+<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js""></script>
 ");
         }
 
