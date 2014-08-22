@@ -62,7 +62,12 @@ namespace CmsWeb.Areas.People.Controllers
 				return Content("Invalid Id");
 
             if (p.PeopleId == p.Family.HeadOfHouseholdSpouseId)
-                p = p.Family.HeadOfHousehold;
+            {
+                var hh = DbUtil.Db.LoadPersonById(p.Family.HeadOfHouseholdId ?? 0);
+                if((hh.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
+                    && (p.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
+                    p = p.Family.HeadOfHousehold;
+            }
 
 			DbUtil.LogActivity("Contribution Statement for ({0})".Fmt(id));
 
