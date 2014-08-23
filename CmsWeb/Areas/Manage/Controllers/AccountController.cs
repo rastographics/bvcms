@@ -84,7 +84,7 @@ CKEditorFuncNum, baseurl + fn, error));
 
         [Route("~/Logon")]
         [MyRequireHttps]
-        public ActionResult LogOn()
+        public ActionResult LogOn(string returnUrl)
         {
             var ret = DbUtil.CheckDatabaseExists(Util.Host);
             switch (ret)
@@ -105,13 +105,13 @@ CKEditorFuncNum, baseurl + fn, error));
             {
                 FormsAuthentication.SetAuthCookie(user, false);
                 AccountModel.SetUserInfo(user, Session);
-                var returnUrl = Request.QueryString["returnUrl"];
                 if (returnUrl.HasValue())
                     return Redirect(returnUrl);
                 return Redirect("/");
             }
 
-            return View();
+            var m = new AccountInfo { ReturnUrl = returnUrl };
+            return View(m);
         }
 
         public static bool TryImpersonate()
@@ -143,13 +143,13 @@ CKEditorFuncNum, baseurl + fn, error));
             }
 
             if (!m.UsernameOrEmail.HasValue())
-                return View();
+                return View(m);
 
             var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request);
             if (ret is string)
             {
-                ModelState.AddModelError("login", ret.ToString());
-                return View();
+                ViewBag.error = ret.ToString();
+                return View(m);
             }
             var user = ret as User;
 

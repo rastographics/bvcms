@@ -12,7 +12,10 @@ namespace CmsWeb.Code
             if (pf.SavePayInfo && pf.CreditCard.HasValue() && pf.CreditCard.StartsWith("X"))
                 return;
             if (!ValidateCard(pf.CreditCard, pf.SavePayInfo))
+            {
                 ModelState.AddModelError("CreditCard", "invalid card number");
+                ModelState.AddModelError("Cardnumber", "invalid card number");
+            }
             if (!pf.Expires.HasValue())
             {
                 ModelState.AddModelError("Expires", "need expiration date");

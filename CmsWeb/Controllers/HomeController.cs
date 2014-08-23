@@ -61,7 +61,7 @@ q = model.ChangedAddresses()
 for v in q:
     print 'Hi {} {}, \nI noticed you have moved to {}\n'.format(v.FirstName, v.LastName, v.PrimaryCity)
 ";
-            var ret = PythonEvents.RunScript(DbUtil.Db, s);
+            var ret = PythonEvents.RunScript(Util.ConnectionString, s);
             return Content("<pre>{0}</pre>".Fmt(ret));
         }
         public ActionResult RecordTest(int id, string v)
@@ -171,7 +171,7 @@ for v in q:
         public ActionResult TestScript(string script)
         {
 
-            return Content(PythonEvents.RunScript(DbUtil.Db, script));
+            return Content(PythonEvents.RunScript(Util.ConnectionString, script));
         }
         [HttpGet, Route("~/RunScript/{name}/{parameter?}")]
         public ActionResult RunScript(string name, string parameter = null)

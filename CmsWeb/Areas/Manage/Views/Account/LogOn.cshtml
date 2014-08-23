@@ -23,6 +23,7 @@
       </div>
       <div class="panel-body">
         <form class="form-horizontal" action="/Logon" role="form" method="POST">
+          @Html.Hidden("ReturnUrl", Model.ReturnUrl)
           <div class="form-group">
             <label for="inputEmail" class="col-sm-3 control-label">
               Username or Email
@@ -37,6 +38,10 @@
             </label>
             <div class="col-sm-9">
               <input id="inputPassword" type="password" class="form-control" name="Password" placeholder="Password" required=required />
+              @if (ViewBag.error != null)
+              {
+                <div class="alert alert-danger">@ViewBag.error</div>
+              }
             </div>
           </div>
           <div class="form-group last">

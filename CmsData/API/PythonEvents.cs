@@ -33,20 +33,18 @@ namespace CmsData
             var scope = engine.CreateScope();
             scope.SetVariable("model", this);
             code.Execute(scope);
+            db.SubmitChanges();
 
             dynamic Event = scope.GetVariable(classname);
             instance = Event();
         }
-        public PythonEvents(CMSDataContext db)
+
+        public PythonEvents(string connectionString)
         {
-            this.db = db;
-        }
-        public PythonEvents(string dbname = "bellevue")
-        {
-            db = new CMSDataContext("Data Source=.;Initial Catalog=CMS_{0};Integrated Security=True".Fmt(dbname));
+            db = new CMSDataContext(connectionString);
         }
 
-        public static string RunScript(CMSDataContext db, string script)
+        public static string RunScript(string cs, string script)
         {
             var engine = Python.CreateEngine();
             var ms = new MemoryStream();
@@ -58,11 +56,12 @@ namespace CmsData
             {
                 var code = sc.Compile();
                 var scope = engine.CreateScope();
-                var pe = new PythonEvents(db);
+                var pe = new PythonEvents(cs);
                 scope.SetVariable("model", pe);
-                var qf = new QueryFunctions(db);
+                var qf = new QueryFunctions(pe.db);
                 scope.SetVariable("q", qf);
                 code.Execute(scope);
+                pe.db.SubmitChanges();
                 ms.Position = 0;
                 var sr = new StreamReader(ms);
                 var s = sr.ReadToEnd();
@@ -84,11 +83,12 @@ namespace CmsData
             var sc = engine.CreateScriptSourceFromString(script.Body);
             var code = sc.Compile();
             var scope = engine.CreateScope();
-            var pe = new PythonEvents(db);
+            var pe = new PythonEvents(db.Connection.ConnectionString);
             scope.SetVariable("model", pe);
-            var qf = new QueryFunctions(db);
+            var qf = new QueryFunctions(pe.db);
             scope.SetVariable("q", qf);
             code.Execute(scope);
+            pe.db.SubmitChanges();
             ms.Position = 0;
             var sr = new StreamReader(ms);
             var s = sr.ReadToEnd();

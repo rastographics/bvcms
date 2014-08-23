@@ -668,7 +668,7 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
         public ActionResult RunTestScript(string script)
         {
             Util.IsInRoleEmailTest = true;
-            var ret = PythonEvents.RunScript(DbUtil.Db, script);
+            var ret = PythonEvents.RunScript(Util.ConnectionString, script);
             return Content(ret);
         }
         [HttpGet]
@@ -718,7 +718,7 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
             try
             {
                 var script = DbUtil.Db.Content(id);
-                PythonEvents.RunScript(DbUtil.Db, script.Body);
+                PythonEvents.RunScript(Util.ConnectionString, script.Body);
             }
             catch (Exception e)
             {
