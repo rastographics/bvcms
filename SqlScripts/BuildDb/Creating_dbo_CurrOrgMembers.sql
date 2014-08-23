@@ -1,4 +1,3 @@
-
 CREATE FUNCTION [dbo].[CurrOrgMembers]
 (
 	@orgs VARCHAR(MAX)
@@ -50,7 +49,7 @@ BEGIN
 	p.PreferredName FirstName,
 	p.LastName,
 	g.Code Gender,
-	om.Grade,
+	p.Grade,
 	om.ShirtSize,
 	om.Request,
 	ISNULL(ts.IndAmt, 0) Amount,

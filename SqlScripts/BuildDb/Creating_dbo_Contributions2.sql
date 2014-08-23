@@ -72,12 +72,13 @@ FROM dbo.Contribution c
 	LEFT JOIN dbo.People sp ON sp.PeopleId = p.SpouseId
 WHERE 1 = 1
 	AND c.ContributionTypeId NOT IN (6,7) -- no reversed or returned
+	-- @nontaxded = 1 = only nontax, @nontaxded = 0 = only taxded, @nontaxded = null = either
 	AND ((CASE WHEN c.ContributionTypeId = 9 THEN 1 ELSE ISNULL(f.NonTaxDeductible, 0) END) = @nontaxded OR @nontaxded IS NULL)
     AND c.ContributionStatusId = 0 -- recorded
     --AND ((CASE WHEN c.ContributionTypeId = 8 THEN 1 ELSE 0 END) = @pledges OR @pledges IS NULL)
     AND c.ContributionDate >= @fd AND c.ContributionDate < DATEADD(hh, 24, @td)
 	AND (h.BundleStatusId = 0 OR @includeUnclosed = 1)
-    AND (@campusid = 0 OR p.CampusId = @campusid)
+    AND (@campusid = 0 OR p.CampusId = @campusid) -- campusid = 0 = all
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
