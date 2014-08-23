@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     try
                     {
-                        var pe = new PythonEvents(Util.ConnectionString, "RegisterEvent", script.Body);
+                        var pe = new PythonEvents(Util.Host, "RegisterEvent", script.Body);
                         pe.instance.AddToSmallGroup(smallgroup, omb);
                     }
                     catch (Exception)

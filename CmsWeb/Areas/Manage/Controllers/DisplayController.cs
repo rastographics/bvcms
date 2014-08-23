@@ -212,7 +212,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult RunPythonScript(string body)
         {
-            return Content(PythonEvents.RunScript(Util.ConnectionString, body));
+            return Content(PythonEvents.RunScript(Util.Host, body));
         }
         [HttpPost]
         public ActionResult UpdateOrgContent(int id, bool? div, string what, string title, string html)
