@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
@@ -24,7 +25,7 @@ namespace CmsWeb.Areas.Reports.Models
             this.dt2 = dt2;
             Model = model;
         }
-        public IQueryable<MeetingRow> FetchMeetings()
+        public List<MeetingRow> FetchMeetings()
         {
             var orgs = Model.FetchOrgs();
             var q = from m in DbUtil.Db.Meetings
@@ -56,7 +57,17 @@ namespace CmsWeb.Areas.Reports.Models
                          Visitors = m.Visitors,
                          OutTowners = m.OutTowners
                      };
-            return q2;
+            var list = q2.ToList();
+            var t = new MeetingRow
+            {
+                OrgName = "Total",
+                Leader = string.Empty,
+                Present = list.Sum(i => i.Present),
+                Visitors = list.Sum(i => i.Visitors),
+                OutTowners = list.Sum(i => i.OutTowners)
+            };
+            list.Add(t);
+            return list;
         }
         public class MeetingRow
         {

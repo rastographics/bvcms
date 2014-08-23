@@ -290,11 +290,15 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult MeetingsForMonth(DateTime dt1, OrgSearchModel m)
         {
             var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
-            var cn = new SqlConnection(Util.ConnectionString);
-            cn.Open();
             ViewBag.Month = dt1.ToString("MMMM yyyy");
             dt1 = new DateTime(dt1.Year, dt1.Month, 1);
             var dt2 = dt1.AddMonths(1).AddDays(-1);
+            var hasmeetings = DbUtil.Db.MeetingsDataForDateRange(orgs, dt1, dt2).AsEnumerable().Any();
+            if (!hasmeetings)
+                return RedirectShowError("No meetings to show");
+
+            var cn = new SqlConnection(Util.ConnectionString);
+            cn.Open();
             var q = cn.Query("MeetingsForDateRange", new
             {
                 orgs,
