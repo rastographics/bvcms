@@ -30,7 +30,7 @@ namespace CmsWeb.Models
             }
             switch (type)
             {
-                case "donorfundtotals.xlsx":
+                case "donorfundtotals":
     				return ExportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles)
                         .ToExcel("DonorFundTotals");
                 case "donortotals":

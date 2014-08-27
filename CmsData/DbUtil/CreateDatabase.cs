@@ -93,14 +93,16 @@ namespace CmsData
                 if (!DatabaseExists("CMSi_" + Util.Host))
                 {
                     RunScripts(cs, "create database CMSi_" + Util.Host);
+                    fn = "BuildImageDatabase.sql";
                     RunScripts(Util.ConnectionStringImage,
-                        File.ReadAllText(path + @"..\SqlScripts\BuildImageDatabase.sql"));
+                        File.ReadAllText(path + @"..\SqlScripts\" + fn));
                 }
                 if (!DatabaseExists("Elmah"))
                 {
                     RunScripts(cs, "create database Elmah");
+                    fn = "BuildElmahDb.sql";
                     RunScripts(Util.GetConnectionString2("Elmah"),
-                        File.ReadAllText(path + @"..\SqlScripts\BuildElmahDb.sql"));
+                        File.ReadAllText(path + @"..\SqlScripts\" + fn));
                 }
 
                 using (var cn = new SqlConnection(Util.ConnectionString))
@@ -113,10 +115,11 @@ namespace CmsData
                         var script = File.ReadAllText(path + @"..\SqlScripts\BuildDb\" + f);
                         RunScripts(cn, script);
                     }
+                    fn = Util.Host == "testdb"
+                        ? "datascriptTest.sql"
+                        : "datascriptStarter.sql";
                     string datascript = null;
-                    datascript = Util.Host == "testdb"
-                        ? File.ReadAllText(path + @"..\SqlScripts\datascriptTest.sql")
-                        : File.ReadAllText(path + @"..\SqlScripts\datascriptStarter.sql");
+                    datascript = File.ReadAllText(path + @"..\SqlScripts\" + fn);
                     RunScripts(cn, datascript);
                 }
                 HttpRuntime.Cache.Remove(Util.Host + "-DatabaseExists");
@@ -141,7 +144,7 @@ namespace CmsData
         private static void RunScripts(SqlConnection cn, string script)
         {
             var cmd = new SqlCommand { Connection = cn };
-            var scripts = Regex.Split(script, "\r\nGO\r\n", RegexOptions.Multiline);
+            var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline);
             foreach (var s in scripts)
                 if (s.HasValue())
                 {
