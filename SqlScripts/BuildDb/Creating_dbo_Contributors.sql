@@ -36,7 +36,8 @@ RETURN
 				FROM Contribution c 
 				JOIN dbo.ContributionFund f ON c.FundId = f.FundId
 				WHERE c.PeopleId = p.PeopleId
-				AND (ISNULL(f.NonTaxDeductible, 0) = 0 OR c.ContributionTypeId = 9)
+				AND ISNULL(f.NonTaxDeductible, 0) = 0
+				AND (EXISTS(SELECT NULL FROM dbo.Setting WHERE Id = 'DisplayNonTaxOnStatement' AND Setting = 'true') OR c.ContributionTypeId <> 9)
 				AND c.ContributionStatusId = 0
 				AND c.ContributionTypeId NOT IN (6,7)
 				AND c.ContributionDate >= @fd
