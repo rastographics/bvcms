@@ -164,7 +164,7 @@ Please call the church to resolve this before we can complete your account.<br /
                             CancelText = "Regiser a different person";
                             IsValidForContinue = false;
                         }
-                        else if (setting.ValidateOrgIds.Count > 0)
+                        else if (setting.ValidateOrgIds.Count > 0 && !Parent.SupportMissionTrip)
                         {
                             var reqmemberids = setting.ValidateOrgIds.Where(ii => ii > 0).ToList();
                             if (reqmemberids.Count > 0)

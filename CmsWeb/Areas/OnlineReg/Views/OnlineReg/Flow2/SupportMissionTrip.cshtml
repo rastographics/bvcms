@@ -5,22 +5,6 @@
     var goer = DbUtil.Db.LoadPersonById(Model.Parent.GoerId ?? 0);
     var name = goer != null ? goer.Name : "selected participant";
 }
-
-@if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount())
-{
-    <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-            @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript())
-            {
-                <div class="checkbox">
-                    <label>
-                        @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
-                    </label>
-                </div>
-            }
-        </div>
-    </div>
-}
 @if (goer == null)
 {
     <div class="form-group">
