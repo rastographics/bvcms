@@ -319,6 +319,17 @@ namespace CmsWeb.Models
                     select om;
             return q.Count();
         }
+        public void ResetMoved()
+        {
+            var q = from om in DbUtil.Db.OrganizationMembers
+                    where om.Organization.DivOrgs.Any(di => di.DivId == DivId)
+                    where om.Moved == true
+                    select om;
+            DbUtil.Db.ExecuteCommand(@"
+UPDATE dbo.OrganizationMembers
+SET Moved = NULL
+WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId = {0})", DivId);
+        }
         public int AllCount()
         {
             var q = from om in DbUtil.Db.OrganizationMembers

@@ -51,5 +51,13 @@ namespace CmsWeb.Areas.Manage.Controllers
             DbUtil.Db.SetNoLock();
             return View(m);
         }
+        [HttpPost]
+        public ActionResult ResetMoved()
+        {
+            var m = new OrgMembersModel();
+            UpdateModel(m);
+            m.ResetMoved();
+            return View("List", m);
+        }
     }
 }
