@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CmsData.Classes.Transnational
 {
-	class TNBVaultAddACH : TNBVaultBase
+	public class TNBVaultAddACH : TNBVaultBase
 	{
 		public TNBVaultAddACH()
 		{

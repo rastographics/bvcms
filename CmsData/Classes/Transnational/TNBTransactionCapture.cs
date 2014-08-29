@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CmsData.Classes.Transnational
 {
-	class TNBTransactionCapture : TNBTransactionBase
+	public class TNBTransactionCapture : TNBTransactionBase
 	{
 		public TNBTransactionCapture()
 		{

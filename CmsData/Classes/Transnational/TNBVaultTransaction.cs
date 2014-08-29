@@ -1,6 +1,6 @@
 ﻿namespace CmsData.Classes.Transnational
 {
-	class TNBVaultTransaction : TNBVaultBase
+	public class TNBVaultTransaction : TNBVaultBase
 	{
 		public TNBVaultTransaction()
 		{

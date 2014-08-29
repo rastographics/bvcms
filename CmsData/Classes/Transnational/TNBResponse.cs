@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CmsData.Classes.Transnational
 {
-	class TNBResponse
+	public class TNBResponse
 	{
 		public int response = 0;
 		public int response_code = ERROR_NONE;

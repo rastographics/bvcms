@@ -6,7 +6,7 @@ using System.Web;
 
 namespace CmsData.Classes.Transnational
 {
-	class TNBHelper
+	public class TNBHelper
 	{
 		//public const string URL = "https://secure.nmi.com/api/transact.php";
 		public const string URL = "https://secure.tnbcigateway.com/api/transact.php";

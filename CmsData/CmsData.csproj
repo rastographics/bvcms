@@ -361,6 +361,7 @@
     <Compile Include="Classes\Transnational\TNBVaultUpdateCC.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
+    <Compile Include="Finance\Transnational.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />

@@ -78,6 +78,19 @@
         });
         return false;
     });
+    $("#ResetMoved").live("click", function (e) {
+        e.preventDefault();
+        var f = $("#form");
+        var q = f.serialize();
+        $.post("/OrgMembers/ResetMoved", q, function (ret) {
+            $(f).html(ret).ready(function () {
+                $.growlUI("Moved Status Reset", "done");
+                $(".bt").button();
+                $("#manage select").css("width", "100%");
+            });
+        });
+        return false;
+    });
     $("#form").submit(function () {
         return false;
     });

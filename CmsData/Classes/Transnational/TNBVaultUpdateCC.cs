@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CmsData.Classes.Transnational
 {
-	class TNBVaultUpdateCC : TNBVaultAddCC
+	public class TNBVaultUpdateCC : TNBVaultAddCC
 	{
 		public TNBVaultUpdateCC()
 		{

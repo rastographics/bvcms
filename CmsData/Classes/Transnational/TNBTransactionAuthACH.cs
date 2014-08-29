@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CmsData.Classes.Transnational
 {
-	class TNBTransactionAuthACH : TNBTransactionSaleACH
+	public class TNBTransactionAuthACH : TNBTransactionSaleACH
 	{
 		public TNBTransactionAuthACH()
 		{

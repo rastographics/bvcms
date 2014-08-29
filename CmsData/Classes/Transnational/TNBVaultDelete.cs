@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CmsData.Classes.Transnational
 {
-	class TNBVaultDelete : TNBVaultBase
+	public class TNBVaultDelete : TNBVaultBase
 	{
 		public TNBVaultDelete()
 		{

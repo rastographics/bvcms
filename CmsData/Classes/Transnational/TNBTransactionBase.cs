@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace CmsData.Classes.Transnational
 {
-	class TNBTransactionBase
+	public class TNBTransactionBase
 	{
-		private const bool testing = true;
+        public bool testing { get; set;  }
 
 		protected NameValueCollection nvc = new NameValueCollection();
 

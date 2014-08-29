@@ -309,7 +309,7 @@ Please call the church to resolve this before we can complete your registration.
             {
                 ModelState.AddModelError(foundname, "Sorry, must be a member of church");
             }
-            else if (org != null && setting.ValidateOrgIds.Count > 0)
+            else if (org != null && setting.ValidateOrgIds.Count > 0 && !Parent.SupportMissionTrip)
             {
                 ModelState.AddModelError(foundname, "Must be member of specified organization");
             }

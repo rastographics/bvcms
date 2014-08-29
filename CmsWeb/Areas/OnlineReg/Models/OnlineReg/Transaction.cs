@@ -307,23 +307,6 @@ namespace CmsWeb.Models
                 email, first, last, addr, city, state, zip, phone);
             return resp;
         }
-//        public static TransactionResponse PostTransactionTnb(
-//            string card, string ccv, string expdate,
-//            decimal amt, int tranid, string description,
-//            int PeopleId, string email, string first, string middle, string last, string suffix,
-//            string addr, string city, string state, string zip, string phone,
-//            bool testing)
-//        {
-//            var tnb = new TNBTransactionSaleCC()
-//            {
-//                CCNumber = "",
-//            };
-//            return TNBHelper.Transaction(tnb).getTransactionRespose();
-////            var t = new SagePayments(DbUtil.Db, testing);
-////            var resp = t.createTransactionRequest(PeopleId, amt, card, expdate, description, tranid, ccv,
-////                email, first, last, addr, city, state, zip, phone);
-////            return resp;
-//        }
         public static TransactionResponse PostVirtualCheckTransactionSage(
             string routing, string acct,
             decimal amt, int tranid, string description,
@@ -334,6 +317,31 @@ namespace CmsWeb.Models
             var t = new SagePayments(DbUtil.Db, testing);
             var resp = t.createCheckTransactionRequest(PeopleId, amt, routing, acct, description, tranid,
                 email, first, middle, last, suffix, addr, city, state, zip, phone);
+            return resp;
+        }
+        public static TransactionResponse PostTransactionTnb(
+            string card, string ccv, string expdate,
+            decimal amt, int tranid, string description,
+            int PeopleId, string email, string first, string middle, string last, string suffix,
+            string addr, string city, string state, string zip, string phone,
+            bool testing)
+        {
+            var t = new Transnational(DbUtil.Db, testing);
+            var resp = t.createTransactionRequest(PeopleId, amt, card, expdate, description, tranid, ccv, email,
+                first, last, addr, city, state, zip, phone);
+            return resp;
+        }
+        public static TransactionResponse PostVirtualCheckTransactionTnb(
+            string routing, string acct,
+            decimal amt, int tranid, string description,
+            int PeopleId, string email, string first, string middle, string last, string suffix,
+            string addr, string city, string state, string zip, string phone,
+            bool testing)
+        {
+            var t = new Transnational(DbUtil.Db, testing);
+            var resp = t.createCheckTransactionRequest(PeopleId, amt, routing, acct, description, tranid, email,
+                first, middle, last, suffix, addr,
+                city, state, zip, phone);
             return resp;
         }
     }

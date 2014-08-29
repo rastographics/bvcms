@@ -61,6 +61,10 @@ namespace CmsData
 		
 		private string _Phone;
 		
+		private int? _TbnBankVaultId;
+		
+		private int? _TbnCardVaultId;
+		
    		
     	
 		private EntityRef< Person> _Person;
@@ -137,6 +141,12 @@ namespace CmsData
 		
 		partial void OnPhoneChanging(string value);
 		partial void OnPhoneChanged();
+		
+		partial void OnTbnBankVaultIdChanging(int? value);
+		partial void OnTbnBankVaultIdChanged();
+		
+		partial void OnTbnCardVaultIdChanging(int? value);
+		partial void OnTbnCardVaultIdChanged();
 		
     #endregion
 		public PaymentInfo()
@@ -631,6 +641,50 @@ namespace CmsData
 					this._Phone = value;
 					this.SendPropertyChanged("Phone");
 					this.OnPhoneChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="TbnBankVaultId", UpdateCheck=UpdateCheck.Never, Storage="_TbnBankVaultId", DbType="int")]
+		public int? TbnBankVaultId
+		{
+			get { return this._TbnBankVaultId; }
+
+			set
+			{
+				if (this._TbnBankVaultId != value)
+				{
+				
+                    this.OnTbnBankVaultIdChanging(value);
+					this.SendPropertyChanging();
+					this._TbnBankVaultId = value;
+					this.SendPropertyChanged("TbnBankVaultId");
+					this.OnTbnBankVaultIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="TbnCardVaultId", UpdateCheck=UpdateCheck.Never, Storage="_TbnCardVaultId", DbType="int")]
+		public int? TbnCardVaultId
+		{
+			get { return this._TbnCardVaultId; }
+
+			set
+			{
+				if (this._TbnCardVaultId != value)
+				{
+				
+                    this.OnTbnCardVaultIdChanging(value);
+					this.SendPropertyChanging();
+					this._TbnCardVaultId = value;
+					this.SendPropertyChanged("TbnCardVaultId");
+					this.OnTbnCardVaultIdChanged();
 				}
 
 			}

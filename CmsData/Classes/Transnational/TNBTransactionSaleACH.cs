@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CmsData.Classes.Transnational
 {
-	class TNBTransactionSaleACH : TNBTransactionBase
+	public class TNBTransactionSaleACH : TNBTransactionBase
 	{
 		public TNBTransactionSaleACH()
 		{
@@ -132,6 +132,29 @@ namespace CmsData.Classes.Transnational
 			set
 			{
 				nvc.Add(FIELD_IP, value);
+			}
+		}
+		public string OrderID
+		{
+			set
+			{
+				nvc.Add(FIELD_ORDER_ID, value);
+			}
+		}
+
+		public string OrderDescription
+		{
+			set
+			{
+				nvc.Add(FIELD_ORDER_DESCRIPTION, value);
+			}
+		}
+
+		public string PONumber
+		{
+			set
+			{
+				nvc.Add(FIELD_PO_NUMBER, value);
 			}
 		}
 	}
