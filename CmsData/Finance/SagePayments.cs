@@ -1,32 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
-using System.Web;
 using UtilityExtensions;
 using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using System.IO;
-using System.Xml;
-using System.Xml.XPath;
 
 namespace CmsData
 {
-	public class SagePayments
+	internal class SagePayments : IGateway
 	{
-		string login;
-		string key;
-		CMSDataContext Db;
-		bool testing;
+	    readonly string login;
+	    readonly string key;
+	    readonly CMSDataContext db;
+	    readonly bool testing;
+
+        public string GatewayType { get { return "Sage"; } }
 
 		public SagePayments(CMSDataContext Db, bool testing)
 		{
 #if DEBUG2
             testing = true;
 #endif
-			this.Db = Db;
+			this.db = Db;
 			if (testing)
 			{
 				login = "287793447481";
@@ -51,11 +49,9 @@ namespace CmsData
 			}
 			return t;
 		}
-		public void storeVault(int PeopleId, 
-			string type, string cardnumber, string expires, string cardcode,
-			string routing, string account, bool giving)
+		public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
 		{
-			var p = Db.LoadPersonById(PeopleId);
+			var p = db.LoadPersonById(peopleId);
 			var pi = p.PaymentInfo();
 			if (pi == null)
 			{
@@ -132,7 +128,7 @@ namespace CmsData
 				pi.PreferredGivingType = type;
 			else
 				pi.PreferredPaymentType = type;
-			Db.SubmitChanges();
+			db.SubmitChanges();
 			//var sw =new StringWriter();
 			//ObjectDumper.Write(pi, 0, sw);
 
@@ -141,9 +137,9 @@ namespace CmsData
 			//	Db.CmsHost, p.PeopleId, p.Name, type, giving ? "giving" : "regular", sw.ToString()),
 			//	Util.ToMailAddressList("david@bvcms.com"), 0, null);
 		}
-		public void deleteVaultData(int PeopleId)
+		public void RemoveFromVault(int peopleId)
 		{
-			var p = Db.LoadPersonById(PeopleId);
+			var p = db.LoadPersonById(peopleId);
 			var pi = p.PaymentInfo();
 			if (pi == null)
 				return;
@@ -171,10 +167,10 @@ namespace CmsData
 			pi.MaskedCard = null;
 			pi.MaskedAccount = null;
 			pi.Ccv = null;
-			Db.SubmitChanges();
+			db.SubmitChanges();
 		}
 
-		public TransactionResponse voidTransactionRequest(string reference)
+		public TransactionResponse VoidCreditCardTransaction(string reference)
 		{
 			var wc = new WebClient();
 			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
@@ -194,7 +190,7 @@ namespace CmsData
 			};
 			return tr;
 		}
-		public TransactionResponse voidCheckRequest(string reference)
+		public TransactionResponse VoidCheckTransaction(string reference)
 		{
 			var wc = new WebClient();
 			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
@@ -215,7 +211,7 @@ namespace CmsData
 			return tr;
 		}
 
-		public TransactionResponse creditTransactionRequest(string reference, Decimal amt)
+		public TransactionResponse RefundCreditCard(string reference, Decimal amt)
 		{
 			var wc = new WebClient();
 			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
@@ -237,7 +233,7 @@ namespace CmsData
 			};
 			return tr;
 		}
-		public TransactionResponse creditCheckTransactionRequest(string reference, Decimal amt)
+		public TransactionResponse RefundCheck(string reference, Decimal amt)
 		{
 			var wc = new WebClient();
 			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
@@ -260,10 +256,7 @@ namespace CmsData
 			return tr;
 		}
 
-		public TransactionResponse createTransactionRequest(int PeopleId, decimal amt,
-			string cardnumber, string expires, string description, int tranid, string cardcode,
-			string email, string first, string last,
-			string addr, string city, string state, string zip, string phone)
+		public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
 		{
 			var wc = new WebClient();
 			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
@@ -281,7 +274,7 @@ namespace CmsData
 			coll["C_CARDNUMBER"] = cardnumber;
 			coll["C_EXP"] = expires;
 			coll["C_CVV"] = cardcode;
-			coll["T_CUSTOMER_NUMBER"] = PeopleId.ToString();
+			coll["T_CUSTOMER_NUMBER"] = peopleId.ToString();
 			coll["T_ORDERNUM"] = tranid.ToString();
 			coll["C_TELEPHONE"] = phone;
 			AddShipping(coll);
@@ -298,10 +291,7 @@ namespace CmsData
 			};
 			return tr;
 		}
-		public TransactionResponse createCheckTransactionRequest(int PeopleId, decimal amt,
-			string routing, string acct, string description, int tranid,
-			string email, string first, string middle, string last, string suffix,
-			string addr, string city, string state, string zip, string phone)
+		public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string city, string state, string zip, string phone)
 		{
 			try
 			{
@@ -311,7 +301,7 @@ namespace CmsData
 				var coll = new NameValueCollection();
 				coll["M_ID"] = login;
 				coll["M_KEY"] = key;
-				coll["C_ORIGINATOR_ID"] = Db.Setting("SageOriginatorId", ""); // 1031360711, 1031412710
+				coll["C_ORIGINATOR_ID"] = db.Setting("SageOriginatorId", ""); // 1031360711, 1031412710
 				coll["C_FIRST_NAME"] = first;
 			    coll["C_MIDDLE_INITIAL"] = middle.Truncate(1) ?? "";
 				coll["C_LAST_NAME"] = last;
@@ -347,9 +337,9 @@ namespace CmsData
 				return new TransactionResponse { Approved = false, Message = ex.Message, };
 			}
 		}
-		public TransactionResponse createVaultTransactionRequest(int PeopleId, decimal amt, string description, int tranid, string type)
+		public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
 		{
-			var p = Db.LoadPersonById(PeopleId);
+			var p = db.LoadPersonById(peopleId);
 			var pi = p.PaymentInfo();
 			if (pi == null)
 				return new TransactionResponse 
@@ -369,7 +359,7 @@ namespace CmsData
 				coll["M_KEY"] = key;
 				var guid = pi.SageBankGuid.ToString().Replace("-", "");
 				coll["GUID"] = guid;
-				coll["C_ORIGINATOR_ID"] = Db.Setting("SageOriginatorId", "");
+				coll["C_ORIGINATOR_ID"] = db.Setting("SageOriginatorId", "");
 				coll["C_FIRST_NAME"] = pi.FirstName ?? p.FirstName;
 			    coll["C_MIDDLE_INITIAL"] = (pi.MiddleInitial ?? p.MiddleName).Truncate(1) ?? "";
 				coll["C_LAST_NAME"] = pi.LastName ?? p.LastName;
@@ -439,7 +429,7 @@ namespace CmsData
 			coll["C_SHIP_STATE"] = "";
 			coll["C_SHIP_COUNTRY"] = "";
 		}
-		public DataSet SettledBatchSummary(DateTime start, DateTime end, bool IncludeCreditCard, bool IncludeVirtualCheck)
+		public DataSet SettledBatchSummary(DateTime start, DateTime end, bool includeCreditCard, bool includeVirtualCheck)
 		{
 			var wc = new WebClient();
 			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/";
@@ -448,8 +438,8 @@ namespace CmsData
 			coll["M_KEY"] = key;
 			coll["START_DATE"] = start.ToShortDateString();
 			coll["END_DATE"] = end.ToShortDateString();
-			coll["INCLUDE_BANKCARD"] = IncludeCreditCard.ToString();
-			coll["INCLUDE_VIRTUAL_CHECK"] = IncludeVirtualCheck.ToString();
+			coll["INCLUDE_BANKCARD"] = includeCreditCard.ToString();
+			coll["INCLUDE_VIRTUAL_CHECK"] = includeVirtualCheck.ToString();
 
 			var b = wc.UploadValues("VIEW_SETTLED_BATCH_SUMMARY", "POST", coll);
 			var ret = Encoding.ASCII.GetString(b);
@@ -516,5 +506,20 @@ namespace CmsData
 			ds.ReadXml(new StringReader(ret));
 			return ds;
 		}
+
+        public bool CanVoidRefund
+        {
+            get { return true; }
+        }
+
+        public bool CanGetSettlementDates
+        {
+            get { return true; }
+        }
+
+        public bool CanGetBounces
+        {
+            get { return true; }
+        }
 	}
 }

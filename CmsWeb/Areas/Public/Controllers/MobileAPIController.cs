@@ -671,19 +671,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			if (ti != null && ti.Id > 0)
 			{
-				SagePayments sp = new SagePayments(DbUtil.Db, false);
-				TransactionResponse tr = null;
-
-				switch (mpt.paymentType)
-				{
-					case MobilePostTransaction.TYPE_BANK_ACCOUNT:
-						tr = sp.createVaultTransactionRequest(mpt.peopleID, mpt.amount, mpt.description, ti.Id, "B");
-						break;
-
-					case MobilePostTransaction.TYPE_CREDIT_CARD:
-						tr = sp.createVaultTransactionRequest(mpt.peopleID, mpt.amount, mpt.description, ti.Id, "C");
-						break;
-				}
+			    var gateway = DbUtil.Db.Gateway();
+			    var bc = mpt.paymentType == MobilePostTransaction.TYPE_BANK_ACCOUNT ? "B" : "C";
+				var tr = gateway.PayWithVault(mpt.peopleID, mpt.amount, mpt.description, ti.Id, bc);
 
 				// Build return
 				BaseMessage br = new BaseMessage();

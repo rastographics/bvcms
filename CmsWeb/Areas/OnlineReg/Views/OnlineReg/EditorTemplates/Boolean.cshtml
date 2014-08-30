@@ -1,18 +1,23 @@
 ﻿@model bool
 @{
-    var d = new Dictionary<string, object> { { "class", "form-control" } };
-    const string labelclasses = "control-label col-sm-3 labelsize";
+  var d = new Dictionary<string, object> { { "class", "form-control" } };
+  const string labelclasses = "control-label col-sm-3 labelsize";
 }
 <div class="form-group">
-    @(ViewBag.label != null
-        ? Html.Label(ViewBag.label as string, new { @class = labelclasses })
-        : Html.LabelFor(m => m, new { @class = labelclasses }))
-    <div class="col-sm-9">
-        <div class="checkbox">
-            <label>
-                @Html.CheckBoxFor(m => m) @ViewBag.text
-            </label>
-        </div>
-        @Html.ValidationMessageFor(m => m)
+  @if (ViewBag.label != null)
+  {
+    <label class="@labelclasses">@ViewBag.label</label>
+  }
+  else
+  {
+    @Html.LabelFor(m => m, new { @class = labelclasses })
+  }
+  <div class="col-sm-9">
+    <div class="checkbox">
+      <label>
+        @Html.CheckBoxFor(m => m) @ViewBag.text
+      </label>
     </div>
+    @Html.ValidationMessageFor(m => m)
+  </div>
 </div>

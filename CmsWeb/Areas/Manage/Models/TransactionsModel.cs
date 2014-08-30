@@ -217,10 +217,10 @@ namespace CmsWeb.Models
 
         private void CheckBatchDates(DateTime start, DateTime end)
         {
-            if (OnlineRegModel.GetTransactionGateway() != "sage")
+            var gw = DbUtil.Db.Gateway();
+            if (!gw.CanGetSettlementDates)
                 return;
-            var sage = new SagePayments(DbUtil.Db, false);
-            var bds = sage.SettledBatchSummary(start, end, true, true);
+            var bds = gw.SettledBatchSummary(start, end, true, true);
             var batches = from batch in bds.Tables[0].AsEnumerable()
                           select new
                           {
@@ -233,7 +233,7 @@ namespace CmsWeb.Models
                 if (DbUtil.Db.CheckedBatches.Any(tt => tt.BatchRef == batch.reference))
                     continue;
 
-                var ds = sage.SettledBatchListing(batch.reference, batch.type);
+                var ds = gw.SettledBatchListing(batch.reference, batch.type);
 
                 var items = from r in ds.Tables[0].AsEnumerable()
                             select new

@@ -291,8 +291,8 @@ namespace CmsWeb.Models
                 ModelState.AddModelError("StartWhen", "StartDate must have a value");
             else if (StartWhen <= DateTime.Today)
                 ModelState.AddModelError("StartWhen", "StartDate must occur after today");
-//            else if (StopWhen.HasValue && StopWhen <= StartWhen)
-//                ModelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
+            //            else if (StopWhen.HasValue && StopWhen <= StartWhen)
+            //                ModelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
 
             if (!FirstName.HasValue())
                 ModelState.AddModelError("FirstName", "needs name");
@@ -314,32 +314,8 @@ namespace CmsWeb.Models
         }
         public void Update()
         {
-            var gateway = OnlineRegModel.GetTransactionGateway();
-            if (gateway == "authorizenet")
-            {
-                var au = new AuthorizeNet(DbUtil.Db, testing);
-                au.AddUpdateCustomerProfile(pid,
-                    Type,
-                    Cardnumber,
-                    Expires,
-                    Cardcode,
-                    Routing,
-                    Account);
-            }
-            else if (gateway == "sage")
-            {
-                var sg = new SagePayments(DbUtil.Db, testing);
-                sg.storeVault(pid,
-                    Type,
-                    Cardnumber,
-                    Expires,
-                    Cardcode,
-                    Routing,
-                    Account,
-                    giving: true);
-            }
-            else
-                throw new Exception("ServiceU not supported");
+            var gw = DbUtil.Db.Gateway(testing);
+            gw.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
 
             var mg = person.ManagedGiving();
             if (mg == null)

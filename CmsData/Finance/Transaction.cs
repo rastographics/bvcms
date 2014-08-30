@@ -9,36 +9,34 @@ namespace CmsData
 {
     public partial class Transaction
     {
-    	public bool CanCredit(CMSDataContext db)
-    	{
-				if (!Util.IsSage.HasValue)
-					Util.IsSage = db.Setting("TransactionGateway", "").ToLower() == "sage";
-    			return Approved == true 
-    			       && Util.IsSage.Value
-    			       && Voided != true
-    			       && Credited != true
-    			       && (Coupon ?? false) == false
-    			       && TransactionId.HasValue()
-					   && Batchtyp == "eft" || Batchtyp == "bankcard"
-					   && Amt > 0;
-    	}
-    	public bool CanVoid(CMSDataContext db)
-    	{
-				if (!Util.IsSage.HasValue)
-					Util.IsSage = db.Setting("TransactionGateway", "").ToLower() == "sage";
-    			return Approved == true 
-					 && !CanCredit(db)
-    			       && Util.IsSage.Value
-    			       && Voided != true
-    			       && Credited != true
-    			       && (Coupon ?? false) == false
-    			       && TransactionId.HasValue()
-					   && Amt > 0;
-    	}
-		public int FirstTransactionPeopleId()
-		{
-			return OriginalTransaction.TransactionPeople.Select(pp => pp.PeopleId).FirstOrDefault();
-		}
+        public bool CanCredit(CMSDataContext db)
+        {
+            return db.Gateway().CanVoidRefund
+                && Approved == true
+                && Util.IsSage.Value
+                && Voided != true
+                && Credited != true
+                && (Coupon ?? false) == false
+                && TransactionId.HasValue()
+                && Batchtyp == "eft" || Batchtyp == "bankcard"
+                && Amt > 0;
+        }
+        public bool CanVoid(CMSDataContext db)
+        {
+            return db.Gateway().CanVoidRefund
+                && Approved == true
+                && !CanCredit(db)
+                && Util.IsSage.Value
+                && Voided != true
+                && Credited != true
+                && (Coupon ?? false) == false
+                && TransactionId.HasValue()
+                && Amt > 0;
+        }
+        public int FirstTransactionPeopleId()
+        {
+            return OriginalTransaction.TransactionPeople.Select(pp => pp.PeopleId).FirstOrDefault();
+        }
 
         public static string FullName(Transaction t)
         {
@@ -51,10 +49,10 @@ namespace CmsData
         private static string FullName(string first, string last, string mi, string suffix, string name)
         {
             var s = "";
-            if (!last.HasValue()) 
+            if (!last.HasValue())
                 return name;
-            s = mi.HasValue() 
-                ? "{0} {1} {2}".Fmt(first, mi, last) 
+            s = mi.HasValue()
+                ? "{0} {1} {2}".Fmt(first, mi, last)
                 : "{0} {1}".Fmt(first, last);
             if (suffix.HasValue())
                 s = s + ", " + suffix;
@@ -81,14 +79,11 @@ namespace CmsData
         }
         public static void ResolvePrevDaysVirtualCheckRejects(CMSDataContext db, DateTime dt)
         {
-            var gateway = db.Setting("TransactionGateway", "");
-            if (gateway != "sage")
-                return;
-            var sage = new SagePayments(db, false);
-            var ds = sage.VirtualCheckRejects(dt);
+            var gw = DbUtil.Db.Gateway();
+            var ds = gw.VirtualCheckRejects(dt);
             var items = from r in ds.Tables[0].AsEnumerable()
-                            let rejectdt = r["reject_date"].ToDate() ?? DateTime.MinValue
-                            where rejectdt > DateTime.MinValue
+                        let rejectdt = r["reject_date"].ToDate() ?? DateTime.MinValue
+                        where rejectdt > DateTime.MinValue
                         select new
                         {
                             rejectdt,

@@ -1,37 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data;
-using System.Linq;
-using System.Web;
 using CmsData.Classes.Transnational;
-using UtilityExtensions;
-using System.Net;
-using System.Text;
-using System.Xml.Linq;
-using System.IO;
-using System.Xml;
-using System.Xml.XPath;
 
 namespace CmsData
 {
-    public class Transnational
+    internal class Transnational : IGateway
     {
         readonly string login;
         readonly string key;
         CMSDataContext db;
         readonly bool testing;
 
+        public string GatewayType { get { return "Transnational"; } }
+
         public Transnational(CMSDataContext db, bool testing)
         {
             this.db = db;
             this.testing = testing;
         }
-        public void storeVault(int PeopleId,
-            string type, string cardnumber, string expires, string cardcode,
-            string routing, string account, bool giving)
+        public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
         {
-            var p = db.LoadPersonById(PeopleId);
+            var p = db.LoadPersonById(peopleId);
             var pi = p.PaymentInfo();
             if (pi == null)
             {
@@ -142,9 +131,9 @@ namespace CmsData
                 }
             }
         }
-        public void deleteVaultData(int PeopleId)
+        public void RemoveFromVault(int peopleId)
         {
-            var p = db.LoadPersonById(PeopleId);
+            var p = db.LoadPersonById(peopleId);
             var pi = p.PaymentInfo();
             if (pi == null)
                 return;
@@ -176,7 +165,7 @@ namespace CmsData
             db.SubmitChanges();
         }
 
-        public TransactionResponse voidTransactionRequest(string reference)
+        public TransactionResponse VoidCreditCardTransaction(string reference)
         {
             var t = new TNBTransactionVoid()
             {
@@ -186,12 +175,12 @@ namespace CmsData
             var resp = TNBHelper.Transaction(t).getTransactionResponse();
             return resp;
         }
-        public TransactionResponse voidCheckRequest(string reference)
+        public TransactionResponse VoidCheckTransaction(string reference)
         {
-            return voidTransactionRequest(reference);
+            return VoidCreditCardTransaction(reference);
         }
 
-        public TransactionResponse creditTransactionRequest(string reference, Decimal amt)
+        public TransactionResponse RefundCreditCard(string reference, Decimal amt)
         {
             var t = new TNBTransactionRefund()
             {
@@ -202,7 +191,7 @@ namespace CmsData
             var resp = TNBHelper.Transaction(t).getTransactionResponse();
             return resp;
         }
-        public TransactionResponse creditCheckTransactionRequest(string reference, Decimal amt)
+        public TransactionResponse RefundCheck(string reference, Decimal amt)
         {
             var t = new TNBTransactionRefund()
             {
@@ -214,10 +203,7 @@ namespace CmsData
             return resp;
         }
 
-        public TransactionResponse createTransactionRequest(int PeopleId, decimal amt,
-            string cardnumber, string expires, string description, int tranid, string cardcode,
-            string email, string first, string last,
-            string addr, string city, string state, string zip, string phone)
+        public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
         {
             var tnb = new TNBTransactionSaleCC()
             {
@@ -226,7 +212,7 @@ namespace CmsData
                 CCCVV = cardcode,
                 CCExp = expires,
                 Amount = amt.ToString(),
-                PONumber = PeopleId.ToString(),
+                PONumber = peopleId.ToString(),
                 OrderDescription = description,
                 OrderID = tranid.ToString(),
                 EMail = email,
@@ -240,10 +226,7 @@ namespace CmsData
             };
             return TNBHelper.Transaction(tnb).getTransactionResponse();
         }
-        public TransactionResponse createCheckTransactionRequest(int PeopleId, decimal amt,
-            string routing, string acct, string description, int tranid,
-            string email, string first, string middle, string last, string suffix,
-            string addr, string city, string state, string zip, string phone)
+        public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string city, string state, string zip, string phone)
         {
             var tnb = new TNBTransactionSaleACH()
             {
@@ -259,7 +242,7 @@ namespace CmsData
                 State = state,
                 Zip = zip,
                 Phone = phone,
-                PONumber = PeopleId.ToString(),
+                PONumber = peopleId.ToString(),
                 OrderID = tranid.ToString(),
                 OrderDescription = description
             };
@@ -268,9 +251,9 @@ namespace CmsData
 
             return TNBHelper.Transaction(tnb).getTransactionResponse();
         }
-        public TransactionResponse createVaultTransactionRequest(int PeopleId, decimal amt, string description, int tranid, string type)
+        public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
         {
-            var p = db.LoadPersonById(PeopleId);
+            var p = db.LoadPersonById(peopleId);
             var pi = p.PaymentInfo();
             if (pi == null)
                 return new TransactionResponse
@@ -287,7 +270,7 @@ namespace CmsData
             var resp = TNBHelper.VaultTransaction(t).getTransactionResponse();
             return resp;
         }
-        public DataSet SettledBatchSummary(DateTime start, DateTime end, bool IncludeCreditCard, bool IncludeVirtualCheck)
+        public DataSet SettledBatchSummary(DateTime start, DateTime end, bool includeCreditCard, bool includeVirtualCheck)
         {
             return null;
         }
@@ -302,6 +285,22 @@ namespace CmsData
         public DataSet VirtualCheckRejects(DateTime rejectdate)
         {
             return null;
+        }
+
+
+        public bool CanVoidRefund
+        {
+            get { return true; }
+        }
+
+        public bool CanGetSettlementDates
+        {
+            get { return false; }
+        }
+
+        public bool CanGetBounces
+        {
+            get { return false; }
         }
     }
 }

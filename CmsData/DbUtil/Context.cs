@@ -1121,5 +1121,20 @@ namespace CmsData
 
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
+
+        public IGateway Gateway(bool testing = false)
+        {
+            var type = Setting("TransactionGateway", "not specified");
+            switch (type.ToLower())
+            {
+                case "sage":
+                    return new SagePayments(this, testing);
+                case "authorizenet":
+                    return new AuthorizeNet(this, testing);
+                case "transnational":
+                    return new Transnational(this, testing);
+            }
+            throw new Exception("unknown gateway " + type);
+        }
     }
 }
