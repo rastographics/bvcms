@@ -119,6 +119,9 @@ namespace UtilityExtensions
         {
             if (o == null || o == DBNull.Value)
                 return 0;
+            var s = o as string;
+            if (s != null)
+                return s.ToInt();
             return (int)o.ChangeType(typeof(int));
         }
         public static decimal? ToDecimal(this string s)

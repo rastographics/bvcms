@@ -99,7 +99,7 @@ namespace CmsWeb.Models
                     return false;
             }
             UserName2 = user.Username;
-            SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags:false);
+            SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
             if (checkorgmembersonly)
                 if (!Util2.OrgMembersOnly && roleProvider.IsUserInRole(username, "OrgMembersOnly"))
                 {
@@ -309,9 +309,10 @@ namespace CmsWeb.Models
             DbUtil.Db.SubmitChanges();
             DbUtil.Db.EmailRedacted(DbUtil.AdminMail, user.Person, "New user welcome", body);
         }
-        public static string ForgotPassword(string username)
+        public static void ForgotPassword(string username)
         {
             // first find a user with the email address or username
+            string msg = null;
 
             username = username.Trim();
             var q = DbUtil.Db.Users.Where(uu =>
@@ -319,8 +320,7 @@ namespace CmsWeb.Models
                 uu.Person.EmailAddress == username ||
                 uu.Person.EmailAddress2 == username
                 );
-            var list = q.ToList();
-            if (list.Count == 0)
+            if (!q.Any())
             {
                 // could not find a user to match
                 // so we look for a person without an account, to match the email address
@@ -330,66 +330,63 @@ namespace CmsWeb.Models
                          where uu.EmailAddress == username || uu.EmailAddress2 == username
                          where uu.Age == null || uu.Age >= minage
                          select uu;
-                if (q2.Count() == 1)
+                if (q2.Any())
                 {
-                    // we found a person, not a user
-                    // we will compose an email for them to create an account
-                    var p = q2.Single();
-
-                    var ot = new OneTimeLink
+                    // we found person(s), not a user
+                    // we will compose an email for each of them to create an account
+                    foreach (var p in q2)
                     {
-                        Id = Guid.NewGuid(),
-                        Querystring = p.PeopleId.ToString()
-                    };
-                    DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-                    DbUtil.Db.SubmitChanges();
-                    var url = DbUtil.Db.ServerLink("/Account/CreateAccount/{0}".Fmt(ot.Id.ToCode()));
-                    var message = DbUtil.Db.ContentHtml("ForgotPasswordReset", Resource1.AccountModel_ForgotPasswordReset);
-                    message = message.Replace("{name}", p.Name);
-                    message = message.Replace("{first}", p.PreferredName);
-                    message = message.Replace("{email}", username);
-                    message = message.Replace("{resetlink}", url);
-                    Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],
-                        DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
-                        "bvcms new password link", message, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2), 0, null);
-                    return Util.ObscureEmail(p.EmailAddress ?? p.EmailAddress2);
+                        var ot = new OneTimeLink
+                        {
+                            Id = Guid.NewGuid(),
+                            Querystring = p.PeopleId.ToString()
+                        };
+                        DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
+                        DbUtil.Db.SubmitChanges();
+                        var url = DbUtil.Db.ServerLink("/Account/CreateAccount/{0}".Fmt(ot.Id.ToCode()));
+                        msg = DbUtil.Db.ContentHtml("ForgotPasswordReset", Resource1.AccountModel_ForgotPasswordReset);
+                        msg = msg.Replace("{name}", p.Name);
+                        msg = msg.Replace("{first}", p.PreferredName);
+                        msg = msg.Replace("{email}", username);
+                        msg = msg.Replace("{resetlink}", url);
+                        Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],
+                            DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
+                            "bvcms new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2), 0, null);
+                    }
+                    return;
                 }
-                if (Util.ValidEmail(username)) // did not find their email address, let them know this 
-                {
-                    var message = DbUtil.Db.ContentHtml("ForgotPasswordBadEmail", Resource1.AccountModel_ForgotPasswordBadEmail);
-                    message = message.Replace("{email}", username);
-                    Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],
-                        DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
-                        "Forgot password request for " + DbUtil.Db.Setting("NameOfChurch", "bvcms"),
-                        message, Util.ToMailAddressList(username), 0, null);
-                    return Util.ObscureEmail(username);
-                }
-                return null;
-            }
-            else // we found a user with the email or username
-            {
-                // so now we send the users who match the username or email a set of links to all their usernames
-                var sb = new StringBuilder();
-                var addrlist = new List<MailAddress>();
-                foreach (var user in list)
-                {
-                    Util.AddGoodAddress(addrlist, user.EmailAddress);
-                    user.ResetPasswordCode = Guid.NewGuid();
-                    user.ResetPasswordExpires = DateTime.Now.AddHours(DbUtil.Db.Setting("ResetPasswordExpiresHours", "24").ToInt());
-                    var link = DbUtil.Db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode.ToString());
-                    sb.AppendFormat(@"{0}, <a href=""{1}"">{2}</a><br>", user.Name, link, user.Username);
-                    DbUtil.Db.SubmitChanges();
-                }
-                var message = DbUtil.Db.ContentHtml("ForgotPasswordReset2", Resource1.AccountModel_ForgotPasswordReset2);
-                message = message.Replace("{email}", username);
-                message = message.Replace("{resetlink}", sb.ToString());
+                if (!Util.ValidEmail(username)) 
+                    return;
+
+                msg = DbUtil.Db.ContentHtml("ForgotPasswordBadEmail", Resource1.AccountModel_ForgotPasswordBadEmail);
+                msg = msg.Replace("{email}", username);
                 Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],
                     DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
-                    "bvcms password reset link", message, addrlist, 0, null);
-                if(addrlist.Count > 0)
-                    return Util.ObscureEmail(addrlist[0].Address);
-                return "no email address";
+                    "Forgot password request for " + DbUtil.Db.Setting("NameOfChurch", "bvcms"),
+                    msg, Util.ToMailAddressList(username), 0, null);
+                return;
             }
+
+            // we found users who match,
+            // so now we send the users who match the username or email a set of links to all their usernames
+
+            var sb = new StringBuilder();
+            var addrlist = new List<MailAddress>();
+            foreach (var user in q)
+            {
+                Util.AddGoodAddress(addrlist, user.EmailAddress);
+                user.ResetPasswordCode = Guid.NewGuid();
+                user.ResetPasswordExpires = DateTime.Now.AddHours(DbUtil.Db.Setting("ResetPasswordExpiresHours", "24").ToInt());
+                var link = DbUtil.Db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode.ToString());
+                sb.AppendFormat(@"{0}, <a href=""{1}"">{2}</a><br>", user.Name, link, user.Username);
+                DbUtil.Db.SubmitChanges();
+            }
+            msg = DbUtil.Db.ContentHtml("ForgotPasswordReset2", Resource1.AccountModel_ForgotPasswordReset2);
+            msg = msg.Replace("{email}", username);
+            msg = msg.Replace("{resetlink}", sb.ToString());
+            Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],
+                DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
+                "bvcms password reset link", msg, addrlist, 0, null);
         }
     }
 }
