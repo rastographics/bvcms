@@ -66,6 +66,8 @@ namespace CmsData.View
 		
 		private string _HouseName;
 		
+		private bool _ElectronicStatement;
+		
 		
 		public Contributor()
 		{
@@ -493,6 +495,23 @@ namespace CmsData.View
 			{
 				if (this._HouseName != value)
 					this._HouseName = value;
+			}
+
+		}
+
+		
+		[Column(Name="ElectronicStatement", Storage="_ElectronicStatement", DbType="bit NOT NULL")]
+		public bool ElectronicStatement
+		{
+			get
+			{
+				return this._ElectronicStatement;
+			}
+
+			set
+			{
+				if (this._ElectronicStatement != value)
+					this._ElectronicStatement = value;
 			}
 
 		}

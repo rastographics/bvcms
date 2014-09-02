@@ -101,7 +101,7 @@ namespace CmsData.API
 
         public static IEnumerable<ContributorInfo> contributors(CMSDataContext Db,
             DateTime fromDate, DateTime toDate, int PeopleId, int? SpouseId, int FamilyId, bool noaddressok, bool useMinAmt,
-            string startswith = null, string sort = null, bool singleStatement = false, int? tagid = null)
+            string startswith = null, string sort = null, bool singleStatement = false, int? tagid = null, bool excludeelectronic = false)
         {
             var MinAmt = Db.Setting("MinContributionAmount", "5").ToDecimal();
             if (!useMinAmt)
@@ -160,6 +160,7 @@ namespace CmsData.API
                     where option != NONE || noaddressok
                     where (option == INDIV && (p.Amount > MinAmt))
                             || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > MinAmt))
+                    where p.ElectronicStatement == false || excludeelectronic == false
                     select p;
             else
                 q = from p in q
@@ -168,6 +169,7 @@ namespace CmsData.API
                             ? (p.SpouseId > 0 && (p.SpouseContributionOptionsId ?? 0) != INDIV ? JOINT : INDIV)
                             : p.ContributionOptionsId
                     where option != NONE || noaddressok
+                    where p.ElectronicStatement == false || excludeelectronic == false
                     where
                         (option == INDIV && (p.Amount > 0 || p.GiftInKind == true))  // GiftInKind = NonTaxDeductible Fund or Pledge OR GiftInkind
                         || (option == JOINT && p.HohFlag == 1 && ((p.Amount + p.SpouseAmount) > 0 || p.GiftInKind == true))

@@ -592,5 +592,14 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
+        internal Expression WantsElectronicStatement()
+        {
+            var tf = CodeIds == "1";
+            Expression<Func<Person, bool>> pred = p => p.ElectronicStatement == true;
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

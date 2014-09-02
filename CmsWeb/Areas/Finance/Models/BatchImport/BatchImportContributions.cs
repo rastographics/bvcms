@@ -20,7 +20,9 @@ namespace CmsWeb.Models
         public static int? BatchProcess(string text, DateTime date, int? fundid, bool fromFile)
         {
             var defaulthost = DbUtil.Db.Setting("DefaultHost", "");
-
+            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Amount,Account,Serial,RoutingNumber,TransmissionDate,DepositTotal"))
+                using (var csv = new CsvReader(new StringReader(text), hasHeaders:true))
+                    return BatchProcessHollyCreek(csv, date, fundid);
             if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
                 using (var csv = new CsvReader(new StringReader(text), hasHeaders:true))
                     return BatchProcessJackHenry(csv, date, fundid);

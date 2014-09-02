@@ -528,6 +528,9 @@
     <CcExpiration Title="Credit Card Expire Days" Type="Bit" DisplayAs="CCExpiration({0})" Params="Days" DataValueField="IdCode">
       Specify True or False for those with Managed Giving.
     </CcExpiration>
+    <WantsElectronicStatement Title="Wants Electronic Statement" Type="Bit" DisplayAs="WantsElectronicStatement" DataValueField="IdCode">
+      Specify True or False for those wanting Electronic Statements
+    </WantsElectronicStatement>
     <RecentBundleType Title="Recent Contributions In BundleType" Type="Code" DisplayAs="RecentBundleType({0})" Params="Days" DataSource="BundleHeaderTypes" DataValueField="IdCode">
       Must have Finance role for this to work.
     </RecentBundleType >

@@ -215,6 +215,7 @@ namespace CmsData
         VolAppStatusCode,
         VolunteerProcessedDateMonthsAgo,
         VisitNumber,
+        WantsElectronicStatement,
         WasMemberAsOf,
         WasRecentMemberOf,
         WeddingDate,
