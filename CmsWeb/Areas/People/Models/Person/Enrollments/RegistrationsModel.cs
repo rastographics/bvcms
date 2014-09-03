@@ -30,6 +30,8 @@ namespace CmsWeb.Areas.People.Models
             person = DbUtil.Db.LoadPersonById(id);
             var rr = person.SetRecReg();
             this.CopyPropertiesFrom(rr);
+            CustodyIssue = person.CustodyIssue ?? false;
+            OkTransport = person.OkTransport ?? false;
         }
         public RegistrationsModel() { }
 
