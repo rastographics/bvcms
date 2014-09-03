@@ -34,6 +34,9 @@ BEGIN
 		WHERE QueuedBy = @pid
 
 		DELETE dbo.EmailQueue WHERE QueuedBy = @pid;
+
+		DELETE dbo.GoerSupporter WHERE SupporterId = @pid OR GoerId = @pid
+		DELETE dbo.GoerSenderAmounts WHERE SupporterId = @pid OR GoerId = @pid
 		
 		UPDATE dbo.ActivityLog
 		SET PeopleId = NULL

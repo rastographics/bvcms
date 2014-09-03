@@ -164,6 +164,7 @@ namespace CmsData
                 { QueryType.VolAppStatusCode, VolAppStatusCode },
                 { QueryType.VolunteerApprovalCode, VolunteerApprovalCode },
                 { QueryType.VolunteerProcessedDateMonthsAgo, VolunteerProcessedDateMonthsAgo },
+                { QueryType.WantsElectronicStatement, WantsElectronicStatement },
                 { QueryType.WasMemberAsOf, WasMemberAsOf },
                 { QueryType.WasRecentMemberOf, WasRecentMemberOf },
                 { QueryType.WeddingDate, WeddingDate },

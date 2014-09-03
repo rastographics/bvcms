@@ -21,12 +21,13 @@ namespace CmsWeb.Areas.Finance.Models.Report
 		public string StartsWith { get; set; }
 		public string Sort { get; set; }
         public int? TagId { get; set; }
+	    public bool ExcludeElectronic { get; set; }
 
         // For extended report
         public bool showCheckNo { get; set; }
         public bool showNotes { get; set; }
 
-		public ContributionStatementsExtract(string Host, DateTime fd, DateTime td, bool PDF, string OutputFile, string startswith = null, string sort = null, int? tagid = null)
+		public ContributionStatementsExtract(string Host, DateTime fd, DateTime td, bool PDF, string OutputFile, string startswith, string sort, int? tagid, bool excludeelectronic)
 		{
 			this.fd = fd;
 			this.td = td;
@@ -36,6 +37,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
 		    TagId = tagid;
 		    StartsWith = startswith;
 		    Sort = sort;
+		    ExcludeElectronic = excludeelectronic;
 		}
 
 		public CMSDataContext Db { get; set; }
@@ -48,8 +50,9 @@ namespace CmsWeb.Areas.Finance.Models.Report
 			var noaddressok = Db.Setting("RequireAddressOnStatement", "true") == "false";
             showCheckNo = Db.Setting("RequireCheckNoOnStatement", "false").ToLower() == "true";
             showNotes = Db.Setting("RequireNotesOnStatement", "false").ToLower() == "true";
+            const bool UseMinAmt = true;
 
-		    var qc = APIContribution.contributors(Db, fd, td, 0, 0, 0, noaddressok, useMinAmt: true, startswith: StartsWith, sort: Sort, tagid: TagId);
+		    var qc = APIContribution.contributors(Db, fd, td, 0, 0, 0, noaddressok, UseMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);
 			var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
 			runningtotals.Count = qc.Count();
 			Db.SubmitChanges();

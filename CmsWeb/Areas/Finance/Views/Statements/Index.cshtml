@@ -23,6 +23,10 @@
             <td>@Html.CheckBox("PDF", true) (otherwise, text extract) </td>
         </tr>
         <tr>
+            <th>Exclude Electronic Only: </th>
+            <td>@Html.CheckBox("ExcludeElectronic", false)</td>
+        </tr>
+        <tr>
             <th>StartsWith: </th>
             <td>@Html.TextBox("startswith") (lastname starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow) </td>
         </tr>
