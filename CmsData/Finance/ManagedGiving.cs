@@ -145,6 +145,7 @@ namespace CmsData
             {
                 var q = from rg in Db.ManagedGivings
                         where rg.NextDate < Util.Now.Date
+                        //where rg.PeopleId == 819918
                         select rg;
                 foreach (var rg in q)
                     rg.NextDate = rg.FindNextDate(Util.Now.Date);

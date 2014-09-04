@@ -66,7 +66,7 @@ namespace UtilityExtensions
             get
             {
 #if DEBUG2
-                return DateTime.Now.Add(NowOffset);
+                return DateTime.Parse("9/15/14 4:30 AM");
 #else
                 return DateTime.Now;
 #endif
