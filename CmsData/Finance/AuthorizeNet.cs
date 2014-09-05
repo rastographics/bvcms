@@ -26,7 +26,7 @@ namespace CmsData
 
         public AuthorizeNet(CMSDataContext Db, bool testing)
         {
-            this.testing = testing;
+            this.testing = testing || Db.Setting("GatewayTesting", "false").ToLower() == "true";
 
             this.db = Db;
             if (testing)

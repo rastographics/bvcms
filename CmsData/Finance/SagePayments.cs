@@ -19,12 +19,10 @@ namespace CmsData
 
         public string GatewayType { get { return "Sage"; } }
 
-		public SagePayments(CMSDataContext Db, bool testing)
+		public SagePayments(CMSDataContext db, bool testing)
 		{
-#if DEBUG2
-            testing = true;
-#endif
-			this.db = Db;
+			this.db = db;
+            this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
 			if (testing)
 			{
 				login = "287793447481";
@@ -32,8 +30,8 @@ namespace CmsData
 			}
 			else
 			{
-				login = Db.Setting("M_id", "");
-				key = Db.Setting("M_key", "");
+				login = db.Setting("M_id", "");
+				key = db.Setting("M_key", "");
 			}
 			this.testing = testing;
 		}

@@ -16,7 +16,7 @@ namespace CmsData
         public Transnational(CMSDataContext db, bool testing)
         {
             this.db = db;
-            this.testing = testing;
+            this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
         }
         public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
         {
