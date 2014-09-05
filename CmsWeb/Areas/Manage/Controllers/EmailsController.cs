@@ -128,11 +128,11 @@ namespace CmsWeb.Areas.Manage.Controllers
 		{
 			var m = new EmailModel { id = id };
 		    if (m.queue == null)
-		        return Redirect("/Manage/Emails");
+		        return Redirect("/Emails");
             if (m.queue.Sent.HasValue || !m.queue.SendWhen.HasValue || !m.CanDelete())
 				return Redirect("/");
 		    DeleteEmail(id);
-		    return Redirect("/Manage/Emails");
+		    return Redirect("/Emails");
 		}
 
 	    private static void DeleteEmail(int id)
@@ -154,7 +154,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (!m.CanDelete())
 				return Redirect("/");
 		    DeleteEmail(id);
-			return Redirect("/Manage/Emails");
+			return Redirect("/Emails");
 		}
 		public ActionResult Resend(int id)
 		{
