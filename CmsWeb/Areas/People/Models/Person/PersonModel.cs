@@ -220,37 +220,45 @@ namespace CmsWeb.Areas.People.Models
 
         internal void UpdateEnvelopeOption(string name, int option)
         {
+            var db = DbUtil.Db;
             name = name + "Id";
             int? opt = option;
             if (opt == 0)
                 opt = null;
             Person.UpdateValue(name, opt);
-            Person.LogChanges(DbUtil.Db);
-            var sp = DbUtil.Db.LoadPersonById(Person.SpouseId ?? 0);
+            Person.LogChanges(db);
+            var sp = db.LoadPersonById(Person.SpouseId ?? 0);
             if (sp != null)
                 if (opt == StatementOptionCode.Joint || opt == StatementOptionCode.Individual)
                 {
                     sp.UpdateValue(name, opt);
-                    sp.LogChanges(DbUtil.Db);
+                    sp.LogChanges(db);
                 }
                 else if (name == "ContributionOptionsId" && sp.ContributionOptionsId == StatementOptionCode.Joint)
                 {
                     sp.UpdateValue(name, null);
-                    sp.LogChanges(DbUtil.Db);
+                    sp.LogChanges(db);
                 }
                 else if (name == "EnvelopeOptionsId" && sp.EnvelopeOptionsId == StatementOptionCode.Joint)
                 {
                     sp.UpdateValue(name, null);
-                    sp.LogChanges(DbUtil.Db);
+                    sp.LogChanges(db);
                 }
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
 
         internal void UpdateElectronicStatement(bool tf)
         {
+            var db = DbUtil.Db;
             Person.UpdateValue("ElectronicStatement", tf);
-            Person.LogChanges(DbUtil.Db);
-            DbUtil.Db.SubmitChanges();
+            var sp = db.LoadPersonById(Person.SpouseId ?? 0);
+            if (sp != null && Person.ContributionOptionsId == StatementOptionCode.Joint)
+            {
+                sp.UpdateValue("ElectronicStatement", tf);
+                sp.LogChanges(db);
+            }
+            Person.LogChanges(db);
+            db.SubmitChanges();
         }
     }
 }

@@ -313,6 +313,7 @@ namespace CmsWeb.Models
         {
             // first find a user with the email address or username
             string msg = null;
+            var path = new StringBuilder();
 
             username = username.Trim();
             var q = DbUtil.Db.Users.Where(uu =>
@@ -322,6 +323,7 @@ namespace CmsWeb.Models
                 );
             if (!q.Any())
             {
+                path.Append("u0");
                 // could not find a user to match
                 // so we look for a person without an account, to match the email address
 
@@ -332,6 +334,7 @@ namespace CmsWeb.Models
                          select uu;
                 if (q2.Any())
                 {
+                    path.Append("p+");
                     // we found person(s), not a user
                     // we will compose an email for each of them to create an account
                     foreach (var p in q2)
@@ -353,10 +356,16 @@ namespace CmsWeb.Models
                             DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
                             "bvcms new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2), 0, null);
                     }
+                    DbUtil.LogActivity("ForgotPassword ('{0}', {1})".Fmt(username, path));
                     return;
                 }
-                if (!Util.ValidEmail(username)) 
+                path.Append("p0");
+                if (!Util.ValidEmail(username))
+                {
+                    DbUtil.LogActivity("ForgotPassword ('{0}', {1})".Fmt(username, path));
                     return;
+                }
+                path.Append("n0");
 
                 msg = DbUtil.Db.ContentHtml("ForgotPasswordBadEmail", Resource1.AccountModel_ForgotPasswordBadEmail);
                 msg = msg.Replace("{email}", username);
@@ -364,8 +373,10 @@ namespace CmsWeb.Models
                     DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
                     "Forgot password request for " + DbUtil.Db.Setting("NameOfChurch", "bvcms"),
                     msg, Util.ToMailAddressList(username), 0, null);
+                DbUtil.LogActivity("ForgotPassword ('{0}', {1})".Fmt(username, path));
                 return;
             }
+            path.Append("u+");
 
             // we found users who match,
             // so now we send the users who match the username or email a set of links to all their usernames
@@ -387,6 +398,7 @@ namespace CmsWeb.Models
             Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],
                 DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
                 "bvcms password reset link", msg, addrlist, 0, null);
+            DbUtil.LogActivity("ForgotPassword ('{0}', {1})".Fmt(username, path));
         }
     }
 }

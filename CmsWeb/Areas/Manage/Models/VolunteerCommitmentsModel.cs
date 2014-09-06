@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
 using CmsData.Registration;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
-using System.Web.Mvc;
-using CmsData.Codes;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.Manage.Models
 {
 	public class VolunteerCommitmentsModel
 	{
@@ -29,7 +29,7 @@ namespace CmsWeb.Models
 				}
 			}
 		}
-		public IEnumerable<DateTime> times;
+//		public IEnumerable<DateTime> times;
 		public string OrgName { get; set; }
 		public int OrgId { get; set; }
 		public bool IsLeader { get; set; }
@@ -76,14 +76,16 @@ namespace CmsWeb.Models
 					};
 			return q;
 		}
+		public List<TimeSlots.TimeSlot> TimeSlots { get; set; }
 		public DragDropInfo ddinfo { get; set; }
 		public VolunteerCommitmentsModel(int id)
 		{
 			OrgName = (from o in DbUtil.Db.Organizations where o.OrganizationId == id select o.OrganizationName).Single();
 			OrgId = id;
-			times = from ts in Regsettings.TimeSlots.list
-					orderby ts.Time
-					select ts.Datetime(Sunday);
+//			times = from ts in Regsettings.TimeSlots.list
+//					orderby ts.DayOfWeek, ts.Time
+//					select ts.Datetime(Sunday);
+		    TimeSlots = Regsettings.TimeSlots.list;
 
 			IsLeader = OrganizationModel.VolunteerLeaderInOrg(id);
 		}

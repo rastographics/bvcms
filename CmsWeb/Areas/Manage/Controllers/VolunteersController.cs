@@ -10,6 +10,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Ajax;
+using CmsWeb.Areas.Manage.Models;
 using UtilityExtensions;
 using System.Web.Routing;
 using CmsWeb;

@@ -37,10 +37,10 @@
 <div>
 </div>
 <form action="/Volunteers/Request" method="post">
-    @Html.Hidden("mid", Model.meeting.MeetingId);
-    @Html.Hidden("pid", Model.person.PeopleId);
+    @Html.Hidden("mid", Model.meeting.MeetingId)
+    @Html.Hidden("pid", Model.person.PeopleId)
     <input type="hidden" name="ticks" value="@Model.ticks"/>
-    @Html.Hidden("limit", Model.limit);
+    @Html.Hidden("limit", Model.limit)
     <p>
         <label>Current Limit:</label>@Model.limit</p>
     <p>
