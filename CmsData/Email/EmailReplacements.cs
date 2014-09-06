@@ -19,7 +19,7 @@ namespace CmsData
         private const string RegisterTagRe = "(?:<|&lt;)registertag[^>]*(?:>|&gt;).+?(?:<|&lt;)/registertag(?:>|&gt;)";
         private readonly Regex registerTagRe = new Regex(RegisterTagRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-        private const string RsvpLinkRe = "<a[^>]*?href=\"https{0,1}://rsvplink/{0,1}\"[^>]*>.*?</a>";
+        private const string RsvpLinkRe = "<a[^>]*?href=\"https{0,1}://(rsvplink|regretslink)/{0,1}\"[^>]*>.*?</a>";
         private readonly Regex rsvpLinkRe = new Regex(RsvpLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private const string SendLinkRe = "<a[^>]*?href=\"https{0,1}://sendlink2{0,1}/{0,1}\"[^>]*>.*?</a>";
@@ -442,6 +442,7 @@ namespace CmsData
             string url = RegisterLinkUrl(db, id, emailqueueto.PeopleId, emailqueueto.Id, "registerlink");
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
+
         private string RsvpLink(string code, EmailQueueTo emailqueueto)
         {
             //<a dir="ltr" href="http://rsvplink" id="798" rel="meetingid" title="This is a message">test</a>
@@ -484,6 +485,11 @@ namespace CmsData
             }
             string url = Util.URLCombine(db.CmsHost, "/OnlineReg/RsvpLinkSg/{0}?confirm={1}&message={2}"
                                                       .Fmt(ot.Id.ToCode(), confirm, HttpUtility.UrlEncode(msg)));
+
+            var href = d["href"];
+            if (href.Contains("regretslink", ignoreCase: true))
+                url = url + "&regrets=true";
+
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
@@ -723,23 +729,35 @@ namespace CmsData
         private static List<string> SPECIAL_FORMATS = new List<string>() 
         { 
             "http://votelink", 
-            "http://registerlink", 
-            "http://registerlink2", 
-            "http://supportlink", 
-            "http://rsvplink", 
-            "http://volsublink", 
-            "http://volreqlink", 
-            "http://sendlink", 
-            "http://sendlink2", 
             "https://votelink", 
+
+            "http://registerlink", 
             "https://registerlink", 
+
+            "http://registerlink2", 
             "https://registerlink2", 
+
+            "http://supportlink", 
             "https://supportlink", 
+
+            "http://rsvplink", 
             "https://rsvplink", 
+
+            "http://regretslink", 
+            "https://regretslink", 
+
+            "http://volsublink", 
             "https://volsublink", 
+
+            "http://volreqlink", 
             "https://volreqlink", 
+
+            "http://sendlink", 
             "https://sendlink", 
+
+            "http://sendlink2", 
             "https://sendlink2", 
+
             "{emailhref}" 
         };
         public static bool IsSpecialLink(string link)

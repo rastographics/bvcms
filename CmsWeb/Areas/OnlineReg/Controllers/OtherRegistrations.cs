@@ -156,7 +156,7 @@ emailid={2}
 </pre>".Fmt(oid, pid, emailid));
         }
 
-        public ActionResult RsvpLinkSg(string id, string message, bool? confirm)
+        public ActionResult RsvpLinkSg(string id, string message, bool? confirm, bool regrets = false)
         {
             if (!id.HasValue())
                 return Content("bad link");
@@ -176,6 +176,18 @@ emailid={2}
             var pid = a[1].ToInt();
             var emailid = a[2].ToInt();
             var smallgroup = a[3];
+            if (meetingid == 0 && a[0].EndsWith(".next"))
+            {
+                var orgid = a[0].Split('.')[0].ToInt();
+                var nextmeet = (from mm in DbUtil.Db.Meetings
+                                where mm.OrganizationId == orgid
+                                where mm.MeetingDate > DateTime.Now
+                                orderby mm.MeetingDate
+                                select mm).FirstOrDefault();
+                if (nextmeet == null)
+                    return Content("no meeting");
+                meetingid = nextmeet.MeetingId;
+            }
             var q = (from pp in DbUtil.Db.People
                      where pp.PeopleId == pid
                      let meeting = DbUtil.Db.Meetings.SingleOrDefault(mm => mm.MeetingId == meetingid)
@@ -199,7 +211,7 @@ emailid={2}
 
             ot.Used = true;
             DbUtil.Db.SubmitChanges();
-            Attend.MarkRegistered(DbUtil.Db, pid, meetingid, 1);
+            Attend.MarkRegistered(DbUtil.Db, pid, meetingid, regrets ? AttendCommitmentCode.Regrets : AttendCommitmentCode.Attending);
             DbUtil.LogActivity("Rsvplink: {0}".Fmt(q.org.OrganizationName));
             var setting = new Settings(q.org.RegSetting, DbUtil.Db, q.meeting.OrganizationId);
 
@@ -246,7 +258,7 @@ emailid={2}
             var pid = a[1].ToInt();
             var linktype = a.Length > 3 ? a[3].Split(',') : "".Split(',');
             int? gsid = null;
-            if (linktype[0].Equal("supportlink")  && linktype.Length > 1)
+            if (linktype[0].Equal("supportlink") && linktype.Length > 1)
                 gsid = linktype[1].ToInt();
 
             var q = (from pp in DbUtil.Db.People
