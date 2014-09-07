@@ -15,6 +15,12 @@
     <span>@Html.DropDownList("org.RegistrationTypeId", OrganizationModel.RegistrationTypes())</span>
 </li>
 <li>
+    <span class="keyword big tip" title="Registration Title
+        |Leave blank to use the name of the organization">
+        Registration Title:
+    </span> @Html.TextBox("Title", Model.Title ?? Model.org.OrganizationName)
+</li>
+<li>
     <span class="keyword big tip" title="Class Filled
         |You should use this when you want your organization
         |to display the 'sorry' message

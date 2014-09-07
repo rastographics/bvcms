@@ -644,6 +644,7 @@ namespace CmsData.Registration
 			AddInstructions(sb);
 			AddTerms(sb);
 
+			AddValueCk(0, sb, "Title", Title);
 			AddValueCk(0, sb, "ValidateOrgs", ValidateOrgs);
 			AddValueCk(0, sb, "Shell", Shell);
 			AddValueCk(0, sb, "ShellBs", ShellBs);
