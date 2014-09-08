@@ -1,23 +1,12 @@
-using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Registration;
-using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.People.Models;
-using CmsWeb.Code;
 using Dapper;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
 using UtilityExtensions;
 using CmsWeb.Models;
 
@@ -56,13 +45,9 @@ namespace CmsWeb.Controllers
         }
         public ActionResult Test()
         {
-            var s = @"
-q = model.ChangedAddresses()
-for v in q:
-    print 'Hi {} {}, \nI noticed you have moved to {}\n'.format(v.FirstName, v.LastName, v.PrimaryCity)
-";
-            var ret = PythonEvents.RunScript(Util.Host, s);
-            return Content("<pre>{0}</pre>".Fmt(ret));
+            var au = DbUtil.Db.Gateway() as CmsData.AuthorizeNet2;
+            au.fixup();
+            return new EmptyResult();
         }
         public ActionResult RecordTest(int id, string v)
         {

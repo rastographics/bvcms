@@ -70,8 +70,7 @@ namespace CmsWeb.Models
             get
             {
                 if (!_noEChecksAllowed.HasValue)
-                    _noEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed", "false") == "true"
-                            || OnlineRegModel.GetTransactionGateway() != "sage";
+                    _noEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed", "false") == "true";
                 return _noEChecksAllowed.Value;
             }
         }

@@ -1128,13 +1128,19 @@ namespace CmsData
             switch (type.ToLower())
             {
                 case "sage":
-                    return new SagePayments(this, testing);
+                    if(Setting("M_ID", "").Length > 0)
+                        return new SagePayments(this, testing);
+                    break;
                 case "authorizenet":
-                    return new AuthorizeNet(this, testing);
+                    if(Setting("x_login", "").Length > 0)
+                        return new AuthorizeNet2(this, testing);
+                    break;
                 case "transnational":
-                    return new Transnational(this, testing);
+                    if (Setting("TNBUsername", "").Length > 0)
+                        return new Transnational(this, testing);
+                    break;
             }
-            throw new Exception("unknown gateway " + type);
+            return null;
         }
     }
 }

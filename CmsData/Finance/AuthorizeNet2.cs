@@ -8,10 +8,11 @@ using System.Text;
 using System.Xml.Linq;
 using System.IO;
 using System.Xml;
+using AuthorizeNet;
 
 namespace CmsData
 {
-    internal class AuthorizeNet : IGateway
+    public class AuthorizeNet2 : IGateway
     {
         readonly XNamespace ns = "AnetApi/xml/v1/schema/AnetApiSchema.xsd";
         const string produrl = "https://api.authorize.net/xml/v1/request.api";
@@ -24,7 +25,7 @@ namespace CmsData
 
         public string GatewayType { get { return "AuthorizeNet"; } }
 
-        public AuthorizeNet(CMSDataContext Db, bool testing)
+        public AuthorizeNet2(CMSDataContext Db, bool testing)
         {
             this.testing = testing || Db.Setting("GatewayTesting", "false").ToLower() == "true";
 
@@ -62,11 +63,39 @@ namespace CmsData
             }
         }
 
+        public void fixup()
+        {
+            var r = getCustomerProfileIds();
+            var ids = r.Descendants(ns + "numericString").Select(v => v.Value.ToInt()).ToList();
+            foreach (var id in ids)
+            {
+                if(db.PaymentInfos.All(pp => pp.AuNetCustId != id))
+                    deleteCustomerProfile(id);
+            }
+        }
+
+        public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
+        {
+            AddUpdateCustomerProfile(peopleId, type, cardnumber, DbUtil.NormalizeExpires(expires).ToString2("MMyy"), cardcode, routing, account, giving);
+        }
+
+        public void RemoveFromVault(int peopleId)
+        {
+            var p = db.LoadPersonById(peopleId);
+            var pi = p.PaymentInfo();
+            if (pi == null)
+                return;
+            deleteCustomerProfile(pi.AuNetCustId);
+			pi.SageCardGuid = null;
+			pi.SageBankGuid = null;
+			pi.MaskedCard = null;
+			pi.MaskedAccount = null;
+			pi.Ccv = null;
+			db.SubmitChanges();
+        }
+
         private void AddUpdateCustomerProfile(int PeopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
         {
-            var exp = expires;
-            if (exp.HasValue())
-                exp = "20" + expires.Substring(2, 2) + "-" + expires.Substring(0, 2);
             var p = db.LoadPersonById(PeopleId);
             var pi = p.PaymentInfo();
             if (pi == null)
@@ -76,91 +105,40 @@ namespace CmsData
             }
             if (pi.AuNetCustId == null) // create a new profilein Authorize.NET CIM
             {
-                XDocument request = null;
-                if (type == "B")
+                var target = new CustomerGateway(login, key);
+                var cust = target.CreateCustomer(p.EmailAddress, p.Name, pi.AuNetCustId.ToString());
+                pi.AuNetCustId = cust.ID.ToInt();
+                var address = new AuthorizeNet.Address()
                 {
-                    request = new XDocument(new XDeclaration("1.0", "utf-8", null),
-                        Element("createCustomerProfileRequest",
-                            Element("merchantAuthentication",
-                                Element("name", login),
-                                Element("transactionKey", key)
-                                ),
-                            Element("profile",
-                                Element("merchantCustomerId", PeopleId),
-                                Element("email", p.EmailAddress),
-                                Element("paymentProfiles",
-                                    Element("billTo",
-                                        Element("firstName", p.FirstName),
-                                        Element("lastName", p.LastName),
-                                        Element("address", p.PrimaryAddress),
-                                        Element("city", p.PrimaryCity),
-                                        Element("state", p.PrimaryState),
-                                        Element("zip", p.PrimaryZip),
-                                        Element("phoneNumber", p.HomePhone)
-                                        ),
-                                    Element("payment",
-                                        Element("bankAccount",
-                                            Element("routingNumber", routing),
-                                            Element("accountNumber", account),
-                                            Element("nameOnAccount", p.Name)
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        );
-                }
-                else
+                    City = p.PrimaryCity,
+                    First = p.FirstName,
+                    Last = p.LastName,
+                    ID = p.PeopleId.ToString(),
+                    Phone = p.HomePhone ?? p.CellPhone,
+                    State = p.PrimaryState,
+                    Street = p.PrimaryAddress,
+                    Zip = p.PrimaryZip,
+                };
+                if (type == "B") // new vault bank account
                 {
-                    request = new XDocument(new XDeclaration("1.0", "utf-8", null),
-                    Element("createCustomerProfileRequest",
-                        Element("merchantAuthentication",
-                            Element("name", login),
-                            Element("transactionKey", key)
-                            ),
-                        Element("profile",
-                            Element("merchantCustomerId", PeopleId),
-                            Element("email", p.EmailAddress),
-                            Element("paymentProfiles",
-                                Element("billTo",
-                                    Element("firstName", p.FirstName),
-                                    Element("lastName", p.LastName),
-                                    Element("address", p.PrimaryAddress),
-                                    Element("city", p.PrimaryCity),
-                                    Element("state", p.PrimaryState),
-                                    Element("zip", p.PrimaryZip),
-                                    Element("phoneNumber", p.HomePhone)
-                                    ),
-                                Element("payment",
-                                    Element("creditCard",
-                                        Element("cardNumber", cardnumber),
-                                        Element("expirationDate", exp),
-                                        Element("cardCode", cardcode)
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    );
+                    var bankaccount = new AuthorizeNet.BankAccount()
+                    {
+                        accountNumber = account,
+                        routingNumber = routing,
+                        accountType = BankAccountType.Checking,
+                        nameOnAccount = p.Name
+                    };
+                    var resp = target.AddECheckBankAccount(cust.ProfileID, bankaccount, address);
                 }
-                var s = request.ToString();
-                var x = getResponse(s);
-                var id = x.Descendants(ns + "customerProfileId").First().Value.ToInt();
-                var pid = x.Descendants(ns + "customerPaymentProfileIdList")
-                            .Descendants(ns + "numericString").First().Value.ToInt();
-                pi.AuNetCustId = id;
-                pi.AuNetCustPayId = pid;
+                else // new vault credit card
+                {
+                    var exyear = expires.Substring(2, 2).ToInt();
+                    var exmonth = expires.Substring(0, 2).ToInt();
+                    var resp = target.AddCreditCard(cust.ProfileID, cardnumber, exmonth, exyear, cardcode, address);
+                }
             }
-            else
+            else // update existing
             {
-                if (account.HasValue() && account.StartsWith("X"))
-                {
-                    var xe = getCustomerPaymentProfile(PeopleId);
-                    var xba = xe.Descendants(ns + "bankAccount").Single();
-                    routing = xba.Element(ns + "routingNumber").Value;
-                    account = xba.Element(ns + "accountNumber").Value;
-                }
-
                 var request = new XDocument(new XDeclaration("1.0", "utf-8", null),
                     Element("updateCustomerProfileRequest",
                         Element("merchantAuthentication",
@@ -175,7 +153,14 @@ namespace CmsData
                     )
                 );
                 var x = getResponse(request.ToString());
-                if (type == "B")
+                if (type == "B") // update bank account
+                {
+                    var bankaccountElement = Element("bankAccount", Element("nameOnAccount", p.Name));
+                    if (!routing.StartsWith("X"))
+                        bankaccountElement.Add(Element("routingNumber", routing));
+                    if (!account.StartsWith("X"))
+                        bankaccountElement.Add(Element("accountNumber", account));
+
                     request = new XDocument(new XDeclaration("1.0", "utf-8", null),
                         Element("updateCustomerPaymentProfileRequest",
                             Element("merchantAuthentication",
@@ -193,18 +178,21 @@ namespace CmsData
                                     Element("zip", p.PrimaryZip),
                                     Element("phoneNumber", p.HomePhone)
                                     ),
-                                Element("payment",
-                                    Element("bankAccount",
-                                        Element("routingNumber", routing),
-                                        Element("accountNumber", account),
-                                        Element("nameOnAccount", p.Name)
-                                        )
-                                    ),
+                                Element("payment", bankaccountElement),
                                 Element("customerPaymentProfileId", pi.AuNetCustPayId)
+                                )
                             )
-                        )
-                    );
-                else
+                        );
+                    x = getResponse(request.ToString());
+                }
+                else // update credit card
+                {
+                    var creditcardElement = Element("creditCard", Element("expirationDate", exp));
+                    if (!cardcode.StartsWith("X"))
+                        creditcardElement.Add(Element("cardCode", cardnumber));
+                    if (!cardnumber.StartsWith("X"))
+                        creditcardElement.Add(Element("cardNumber", cardnumber));
+
                     request = new XDocument(new XDeclaration("1.0", "utf-8", null),
                         Element("updateCustomerPaymentProfileRequest",
                             Element("merchantAuthentication",
@@ -222,18 +210,13 @@ namespace CmsData
                                     Element("zip", p.PrimaryZip),
                                     Element("phoneNumber", p.HomePhone)
                                     ),
-                                Element("payment",
-                                    Element("creditCard",
-                                        Element("cardNumber", cardnumber),
-                                        Element("expirationDate", exp),
-                                        Element("cardCode", cardcode)
-                                        )
-                                    ),
+                                Element("payment", creditcardElement),
                                 Element("customerPaymentProfileId", pi.AuNetCustPayId)
+                                )
                             )
-                        )
-                    );
-                x = getResponse(request.ToString());
+                        );
+                    x = getResponse(request.ToString());
+                }
             }
 			if (giving)
 				pi.PreferredGivingType = type;
@@ -245,7 +228,7 @@ namespace CmsData
             pi.Expires = expires;
             db.SubmitChanges();
         }
-        private string getCustomerProfileIds()
+        private XDocument getCustomerProfileIds()
         {
             var request = new XDocument(new XDeclaration("1.0", "utf-8", null),
                 Element("getCustomerProfileIdsRequest",
@@ -256,7 +239,7 @@ namespace CmsData
                     )
                 );
             var x = getResponse(request.ToString());
-            return x.ToString();
+            return x;
         }
         private XDocument getCustomerPaymentProfile(int PeopleId)
         {
@@ -274,16 +257,15 @@ namespace CmsData
             var x = getResponse(request.ToString());
             return x;
         }
-        private string getCustomerProfile(int PeopleId)
+        private string getCustomerProfile(int custid)//int PeopleId)
         {
-            var au = db.PaymentInfos.Single(pp => pp.PeopleId == PeopleId);
             var request = new XDocument(new XDeclaration("1.0", "utf-8", null),
                 Element("getCustomerProfileRequest",
                     Element("merchantAuthentication",
                         Element("name", login),
                         Element("transactionKey", key)
                         ),
-                    Element("customerProfileId", au.AuNetCustId)
+                    Element("customerProfileId", custid)
                 )
             );
             var x = getResponse(request.ToString());
@@ -336,22 +318,28 @@ namespace CmsData
 
             var x = getResponse(request.ToString());
             var resp = x.Descendants(ns + "transactionResponse").First();
+            if (resp == null)
+                throw new Exception("no response");
             var tr = new TransactionResponse
             {
-                Approved = resp.Element(ns + "responseCode").Value == "1",
-                AuthCode = resp.Element(ns + "authCode").Value,
-                Message = resp.Descendants(ns + "message").First().Element(ns + "description").Value,
-                TransactionId = resp.Element(ns + "transId").Value
+                Approved = ElementValue(resp, "responseCode") == "1",
+                AuthCode = ElementValue(resp, "authCode"),
+                Message = ElementValue(FirstElement(resp, "message"), "description"),
+                TransactionId = ElementValue(resp, "transId")
             };
             return tr;
         }
-
-        public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
+        private XElement FirstElement(XContainer e, string v)
         {
-            AddUpdateCustomerProfile(peopleId, type, cardnumber, DbUtil.NormalizeExpires(expires).ToString2("MMyy"), cardcode, routing, account, giving);
+            return e.Descendants(ns + v).First();
+        }
+        private string ElementValue(XContainer e, string v)
+        {
+            var r = e.Element(ns + v);
+            return r != null ? r.Value : "";
         }
 
-        public void RemoveFromVault(int peopleId)
+        private string deleteCustomerProfile(int? custid)
         {
             var request = new XDocument(new XDeclaration("1.0", "utf-8", null),
                 Element("deleteCustomerProfileRequest",
@@ -359,10 +347,11 @@ namespace CmsData
                         Element("name", login),
                         Element("transactionKey", key)
                         ),
-                    Element("customerProfileId", peopleId)
+                    Element("customerProfileId", custid)
                 )
             );
             var x = getResponse(request.ToString());
+            return x.ToString();
         }
 
         public TransactionResponse VoidCreditCardTransaction(string reference)
@@ -387,73 +376,73 @@ namespace CmsData
 
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
         {
-            string url0 = "https://secure.authorize.net/gateway/transact.dll";
-            if (testing)
-                url0 = "https://test.authorize.net/gateway/transact.dll";
-
-
-            var p = new Dictionary<string, string>();
-            p["x_delim_data"] = "TRUE";
-            p["x_delim_char"] = "|";
-            p["x_relay_response"] = "FALSE";
-            p["x_type"] = "AUTH_CAPTURE";
-            p["x_method"] = "CC";
-
-            if (testing)
-            {
-                p["x_login"] = "9t8Pqzs4CW3S";
-                p["x_tran_key"] = "9j33v58nuZB865WR";
-            }
-            else
-            {
-                p["x_login"] = DbUtil.Db.Setting("x_login", "");
-                p["x_tran_key"] = DbUtil.Db.Setting("x_tran_key", "");
-            }
-
-            p["x_card_num"] = cardnumber;
-            p["x_card_code"] = cardcode;
-            p["x_exp_date"] = expires;
-            p["x_amount"] = amt.ToString();
-            p["x_description"] = description;
-            p["x_invoice_num"] = tranid.ToString();
-            p["x_cust_id"] = peopleId.ToString();
-            p["x_first_name"] = first;
-            p["x_last_name"] = last;
-            p["x_address"] = addr;
-            p["x_city"] = city;
-            p["x_state"] = state;
-            p["x_zip"] = zip;
-            p["x_email"] = email;
-
-            var sb = new StringBuilder();
-            foreach (var kv in p)
-                sb.AppendFormat("{0}={1}&", kv.Key, HttpUtility.UrlEncode(kv.Value));
-            sb.Length = sb.Length - 1;
-
-            var wc = new WebClient();
-            var req = WebRequest.Create(url0);
-            req.Method = "POST";
-            req.ContentLength = sb.Length;
-            req.ContentType = "application/x-www-form-urlencoded";
-
-            var sw = new StreamWriter(req.GetRequestStream());
-            sw.Write(sb.ToString());
-            sw.Close();
-
-            var r = req.GetResponse();
-            using (var rs = new StreamReader(r.GetResponseStream()))
-            {
-                var resp = rs.ReadToEnd();
-                rs.Close();
-                var a = resp.Split('|');
-                return new TransactionResponse
-                {
-                    Approved = a[0] == "1",
-                    Message = a[3],
-                    AuthCode = a[4],
-                    TransactionId = a[6]
-                };
-            }
+//            string url0 = "https://secure.authorize.net/gateway/transact.dll";
+//            if (testing)
+//                url0 = "https://test.authorize.net/gateway/transact.dll";
+//
+//
+//            var p = new Dictionary<string, string>();
+//            p["x_delim_data"] = "TRUE";
+//            p["x_delim_char"] = "|";
+//            p["x_relay_response"] = "FALSE";
+//            p["x_type"] = "AUTH_CAPTURE";
+//            p["x_method"] = "CC";
+//
+//            if (testing)
+//            {
+//                p["x_login"] = "9t8Pqzs4CW3S";
+//                p["x_tran_key"] = "9j33v58nuZB865WR";
+//            }
+//            else
+//            {
+//                p["x_login"] = DbUtil.Db.Setting("x_login", "");
+//                p["x_tran_key"] = DbUtil.Db.Setting("x_tran_key", "");
+//            }
+//
+//            p["x_card_num"] = cardnumber;
+//            p["x_card_code"] = cardcode;
+//            p["x_exp_date"] = expires;
+//            p["x_amount"] = amt.ToString();
+//            p["x_description"] = description;
+//            p["x_invoice_num"] = tranid.ToString();
+//            p["x_cust_id"] = peopleId.ToString();
+//            p["x_first_name"] = first;
+//            p["x_last_name"] = last;
+//            p["x_address"] = addr;
+//            p["x_city"] = city;
+//            p["x_state"] = state;
+//            p["x_zip"] = zip;
+//            p["x_email"] = email;
+//
+//            var sb = new StringBuilder();
+//            foreach (var kv in p)
+//                sb.AppendFormat("{0}={1}&", kv.Key, HttpUtility.UrlEncode(kv.Value));
+//            sb.Length = sb.Length - 1;
+//
+//            var wc = new WebClient();
+//            var req = WebRequest.Create(url0);
+//            req.Method = "POST";
+//            req.ContentLength = sb.Length;
+//            req.ContentType = "application/x-www-form-urlencoded";
+//
+//            var sw = new StreamWriter(req.GetRequestStream());
+//            sw.Write(sb.ToString());
+//            sw.Close();
+//
+//            var r = req.GetResponse();
+//            using (var rs = new StreamReader(r.GetResponseStream()))
+//            {
+//                var resp = rs.ReadToEnd();
+//                rs.Close();
+//                var a = resp.Split('|');
+//                return new TransactionResponse
+//                {
+//                    Approved = a[0] == "1",
+//                    Message = a[3],
+//                    AuthCode = a[4],
+//                    TransactionId = a[6]
+//                };
+//            }
         }
 
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string city, string state, string zip, string phone)

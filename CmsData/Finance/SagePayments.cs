@@ -63,49 +63,52 @@ namespace CmsData
 			coll["M_KEY"] = key;
 
 			XElement resp = null;
-			if (type == "C")
+			if (type == "C") // creditcard
 			{
-				coll["CARDNUMBER"] = cardnumber;
-				coll["EXPIRATION_DATE"] = expires;
 
-				if (pi.SageCardGuid == null)
+				if (pi.SageCardGuid == null) // new
 				{
+    				coll["CARDNUMBER"] = cardnumber;
+    				coll["EXPIRATION_DATE"] = expires;
 					var b = wc.UploadValues("INSERT_CREDIT_CARD_DATA", "POST", coll);
 					var ret = Encoding.ASCII.GetString(b);
 					resp = getResponse(ret);
 					pi.SageCardGuid = Guid.Parse(resp.Element("GUID").Value);
 				}
-				else
+				else // update existing
 				{
 					coll["GUID"] = pi.SageCardGuid.ToString().Replace("-", "");
 					if (!cardnumber.StartsWith("X"))
 					{
+        				coll["CARDNUMBER"] = cardnumber;
+        				coll["EXPIRATION_DATE"] = expires;
 						var b = wc.UploadValues("UPDATE_CREDIT_CARD_DATA", "POST", coll);
 						var ret = Encoding.ASCII.GetString(b);
 						resp = getResponse(ret);
 					}
 					else
 					{
+        				coll["EXPIRATION_DATE"] = expires;
 						var b = wc.UploadValues("UPDATE_CREDIT_CARD_EXPIRATION_DATE", "POST", coll);
 						var ret = Encoding.ASCII.GetString(b);
 						resp = getResponse(ret);
 					}
 				}
 			}
-			else
+			else // bank account
 			{
 				coll["ROUTING_NUMBER"] = routing; // 064000020
 				coll["ACCOUNT_NUMBER"] = account; // my account number
 				coll["C_ACCT_TYPE"] = "DDA";
 
-				if (pi.SageBankGuid == null)
+				if (pi.SageBankGuid == null) // new
 				{
 					var b = wc.UploadValues("INSERT_VIRTUAL_CHECK_DATA", "POST", coll);
 					var ret = Encoding.ASCII.GetString(b);
 					resp = getResponse(ret);
 					pi.SageBankGuid = Guid.Parse(resp.Element("GUID").Value);
 				}
-				else
+				else // update existing
 				{
 					if (!account.StartsWith("X"))
 					{

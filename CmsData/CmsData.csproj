@@ -221,6 +221,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AuthorizeNet">
+      <HintPath>..\packages\AuthorizeNet.1.8.2\lib\AuthorizeNet.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper, Version=1.34.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Dapper.1.34\lib\net45\Dapper.dll</HintPath>
@@ -369,7 +372,7 @@
     <Compile Include="Generated\Views\DonorProfileList.cs" />
     <Compile Include="Generated\Views\RegistrationList.cs" />
     <Compile Include="Meetings\Attend.cs" />
-    <Compile Include="Finance\AuthorizeNet.cs" />
+    <Compile Include="Finance\AuthorizeNet2.cs" />
     <Compile Include="Batch\ExpressionVisitor.cs" />
     <Compile Include="Batch\LinqToSqlExtensions.cs" />
     <Compile Include="Classes\ExtraValues\Value.cs" />
