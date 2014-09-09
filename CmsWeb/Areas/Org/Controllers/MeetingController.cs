@@ -463,8 +463,16 @@ namespace CmsWeb.Areas.Org.Controllers
             cc.Reset(DbUtil.Db);
             switch (type)
             {
-                case "Registered":
+                case "Attending":
                     cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);
+                    break;
+                case "Regrets":
+                    cc.AddNewClause(QueryType.CommitmentForMeetingId, CompareType.Equal, AttendCommitmentCode.Regrets + ",RG")
+                        .Quarters = m.MeetingId.ToString();
+                    break;
+                case "NotRegistered":
+                    cc.AddNewClause(QueryType.HasCommitmentForMeetingId, CompareType.Equal, "0,F")
+                        .Quarters = m.MeetingId.ToString();
                     break;
                 case "Attends":
                     cc.AddNewClause(QueryType.RegisteredForMeetingId, CompareType.Equal, m.MeetingId);

@@ -469,6 +469,18 @@
 	  <CheckInByActivity Title="Building Check-In By Activity" Type="CodeStr" DataSource="Activities">
 		  Searches by Building Activity
 	  </CheckInByActivity>
+    <MeetingId Type="Integer">
+      For internal use, but you can enter a Meeting ID number for those who attended.
+    </MeetingId>
+    <RegisteredForMeetingId Type="Integer">
+      For internal use, but you can enter a Meeting ID number for those who are registered to attend.
+    </RegisteredForMeetingId>
+    <CommitmentForMeetingId Type="Code" DisplayAs="CommitmentForMeetingId({0})" Params="Quarters" QuartersLabel="MeetingId" DataSource="AttendCommitmentCodes" DataValueField="IdCode">
+      For internal use, shows those for the specified commitment type for the specified meeting (attending, regrets, etc.)
+    </CommitmentForMeetingId>
+    <HasCommitmentForMeetingId Type="Bit" DisplayAs="HasCommitmentForMeetingId({0})" Params="Quarters" QuartersLabel="MeetingId" DataValueField="IdCode">
+      For internal use, shows those who have a commitment for the specified meeting (attending, regrets, etc.)
+    </HasCommitmentForMeetingId>
   </AttendanceHistory>
   <Contributions TopMessage="Must have Finance role in order to get results for searches relating to actual contributions.">
     <EnvelopeOptionsId Title="Envelope Options" Type="NullCode" DataSource="EnvelopeOptionList" DataValueField="IdCode">
@@ -660,12 +672,6 @@
     <HasOptoutsForEmail Title="Has Email Optouts for address" Type="StringEqual" DisplayAs="HasOptoutsForEmail({0:d})" Params="EndDate">
       Enter email address (leave value blank for any optout address) and pick an end date for those who opted out before that date (or leave date blank).
     </HasOptoutsForEmail>
-    <MeetingId Type="Integer">
-      For internal use, but you can enter a Meeting ID number for those who attended.
-    </MeetingId>
-    <RegisteredForMeetingId Type="Integer">
-      For internal use, but you can enter a Meeting ID number for those who are registered to attend.
-    </RegisteredForMeetingId>
     <PeopleId Type="Integer">
       For internal use, but you can enter a People ID number.
     </PeopleId>

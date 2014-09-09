@@ -7,6 +7,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsData
@@ -219,6 +220,66 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
 
+        }
+        internal Expression MeetingId()
+        {
+            var meetingid = TextValue.ToInt();
+            Expression<Func<Person, bool>> pred = p =>
+                p.Attends.Any(a =>
+                    (a.AttendanceFlag == true)
+                    && a.MeetingId == meetingid
+                    );
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression RegisteredForMeetingId()
+        {
+            var meetingid = TextValue.ToInt();
+            Expression<Func<Person, bool>> pred = p =>
+                p.Attends.Any(a =>
+                    (a.Commitment == AttendCommitmentCode.Attending
+                    || a.Commitment == AttendCommitmentCode.Substitute
+                    || a.Commitment == AttendCommitmentCode.FindSub)
+                    && a.MeetingId == meetingid
+                    );
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression CommitmentForMeetingId()
+        {
+            var meetingid = Quarters.ToInt();
+            Expression<Func<Person, bool>> pred = p => p.Attends.Any(a =>
+                a.MeetingId == meetingid && CodeIntIds.Contains(a.Commitment ?? 99)); 
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression HasCommitmentForMeetingId()
+        {
+            var tf = CodeIds == "1";
+            var meetingid = Quarters.ToInt();
+
+            Expression<Func<Person, bool>> pred = null;
+            if (op == CompareType.Equal ^ tf) // true means not committed
+                pred = p => p.Attends.Any(a => a.MeetingId == meetingid && a.Commitment == null); // not committed 
+            else
+                pred = p => p.Attends.Any(a => a.MeetingId == meetingid && a.Commitment != null); // committed
+
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+
+            /* Truth Table
+             * 
+             * 1 ^ 1 = 0    EQ ^ T = F = Committed
+             * 0 ^ 1 = 1    EQ ^ F = T = NotCommitted
+             * 1 ^ 0 = 1    NE ^ T = T = NotCommitted
+             * 0 ^ 0 = 0    NE ^ F = F = Committed
+             */
         }
     }
 }

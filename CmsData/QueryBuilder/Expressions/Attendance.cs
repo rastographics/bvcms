@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using UtilityExtensions;
+using CmsData.Codes;
 
 namespace CmsData
 {
