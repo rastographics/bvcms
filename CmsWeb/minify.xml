@@ -30,11 +30,10 @@
       <main2 Include="Scripts/jQuery/jquery.cookie.js"/>
       <main2 Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2 Include="Scripts/jQuery/jquery.mousewheel.js"/>
-      <main2 Include="Scripts/jQuery/jquery.validate.js"/>
+      <main2 Include="Scripts/jquery.validate.js"/>
       <main2 Include="Scripts/jQuery/jquery.sortElements.js"/>
       <main2 Include="Scripts/jQuery/jquery.textarea.js"/>
       <main2 Include="Scripts/jQuery/jquery.tooltip.js"/>
-      <main2 Include="Scripts/jQuery/jquery.validate.js"/>
       <main2 Include="Scripts/jquery/jquery.hiddenposition.1.1.js"/>
 <!--      <main2 Include="Scripts/jQuery/jquery.ui.touch-punch.js"/>-->
       <main2 Include="Scripts/chosen/chosen.jquery.js"/>
@@ -57,11 +56,10 @@
       <main2c Include="Scripts/jQuery/jquery.cookie.js"/>
       <main2c Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2c Include="Scripts/jQuery/jquery.mousewheel.js"/>
-      <main2c Include="Scripts/jQuery/jquery.validate.js"/>
+      <main2c Include="Scripts/jquery.validate.js"/>
       <main2c Include="Scripts/jQuery/jquery.sortElements.js"/>
       <main2c Include="Scripts/jQuery/jquery.textarea.js"/>
       <main2c Include="Scripts/jQuery/jquery.tooltip.js"/>
-      <main2c Include="Scripts/jQuery/jquery.validate.js"/>
       <main2c Include="Scripts/jQuery/jquery.jscrollpane.js"/>
       <main2c Include="Scripts/jQuery/jquery.jeditable.js"/>
       <main2c Include="Scripts/jQuery/jquery.multiSelect.js"/>
@@ -82,7 +80,7 @@
 <!--      <main2c Include="Scripts/js/Support.js"/>-->
 
       <onlineregister Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
-      <onlineregister Include="Scripts/jQuery/jquery.validate.js"/>
+      <onlineregister Include="Scripts/jquery.validate.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.idle-timer.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.blockUI.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>
