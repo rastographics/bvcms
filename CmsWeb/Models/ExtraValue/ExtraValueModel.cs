@@ -202,8 +202,6 @@ namespace CmsWeb.Models.ExtraValues
             var record = TableObject();
             if (record == null)
                 return;
-            if (value == null)
-                value = HttpContext.Current.Request.Form["value[]"] ?? "";
             switch (type)
             {
                 case "Code":
@@ -238,6 +236,7 @@ namespace CmsWeb.Models.ExtraValues
                 case "Bits":
                     {
                         var existingBits = ExtraValueBits(name);
+                        value = HttpContext.Current.Request.Form["value[]"] ?? "";
                         var newCheckedBits = value.Split(',');
                         foreach (var currentBit in existingBits)
                         {
