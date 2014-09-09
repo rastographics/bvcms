@@ -1,42 +1,67 @@
-﻿@using RestSharp.Extensions
+﻿@using UtilityExtensions
 @model CmsWeb.Models.OnlineRegModel
-@{ var sendlinkmsg = "";}
+@{
+  var sendlinkmsg = "";
+  var specialcase = Model.ManagingSubscriptions() ? "subscription"
+      : Model.OnlinePledge() ? "pledge"
+        : Model.IsCreateAccount() ? "account"
+          : Model.OnlyOneAllowed() ? "onlyone"
+            : string.Empty;
+}
 <div class="form-group">
-    <div class="col-sm-12">
-        <span class="pull-right">
-            @if (!Model.OnlyOneAllowed())
-            {
-                @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", "Register Someone Else", style: "btn-primary min-width15em")
-            }
-            @if (Model.ManagingSubscriptions())
-            {
-                @Helper.OnlineRegSubmitButton("Manage Subscriptions")
-            }
-            else if (Model.OnlinePledge())
-            {
-                @Helper.OnlineRegSubmitButton("Email me a link to manage my pledge")
-                sendlinkmsg = "This link will be sent to " + UtilityExtensions.Util.ObscureEmail(Model.last.person.EmailAddress);
-            }
-            else if (Model.IsCreateAccount())
-            {
-                @Helper.OnlineRegSubmitButton("Create Account")
-            }
-            else if (Model.ChoosingSlots() || Model.OnlineGiving() || Model.SupportMissionTrip || Model.ManageGiving())
-            {
-                @Helper.OnlineRegSubmitButton("Processing, Please Wait", onlyoneallowed: true, style: "btn-default")
-            }
-            else
-            {
-                @Helper.OnlineRegSubmitButton("Complete Registration", style: "btn-success min-width15em")
-                if (Model.AllowSaveProgress())
-                {
-                  @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")
-                }
-            }
-        </span>
-        @if (sendlinkmsg.HasValue())
-        {
-            <div class="alert alert-info">@sendlinkmsg</div>
-        }
-    </div>
+  <div class="col-sm-12">
+@*    @if (!specialcase.HasValue())*@
+@*    {*@
+@*      var fees = Model.TotalAmount();*@
+@*      <div class="alert-block alert-info">*@
+@*        <h4>You are almost done!</h4>*@
+@*        You can add additional people to your registration if you want.*@
+@*        @if (fees > 0)*@
+@*        {*@
+@*          <text>*@
+@*            You will be able to make your payment after clicking the Complete Registration button.*@
+@*          </text>*@
+@*        }*@
+@*        else*@
+@*        {*@
+@*          <text>*@
+@*            Click the Complete Registration button to finalize your registration.*@
+@*          </text>*@
+@*        }*@
+@*      </div>*@
+@*    }*@
+    <span class="pull-right">
+      @if (!Model.OnlyOneAllowed())
+      {
+        @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", "Register Someone Else", style: "btn-primary min-width15em")
+      }
+      @switch (specialcase)
+      {
+        case "subscription":
+          @Helper.OnlineRegSubmitButton("Manage Subscriptions")
+          break;
+        case "pledge":
+        @Helper.OnlineRegSubmitButton("Email me a link to manage my pledge")
+          sendlinkmsg = "This link will be sent to " + UtilityExtensions.Util.ObscureEmail(Model.last.person.EmailAddress);
+          break;
+        case "account":
+        @Helper.OnlineRegSubmitButton("Create Account")
+          break;
+        case "onlyone":
+        @Helper.OnlineRegSubmitButton("Processing, Please Wait", onlyoneallowed: true, style: "btn-default")
+          break;
+        default:
+        @Helper.OnlineRegSubmitButton("Complete Registration", style: "btn-success min-width15em")
+          if (Model.AllowSaveProgress())
+          {
+            @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")
+          }
+          break;
+      }
+    </span>
+    @if (sendlinkmsg.HasValue())
+    {
+      <div class="alert alert-info">@sendlinkmsg</div>
+    }
+  </div>
 </div>
