@@ -83,6 +83,21 @@ namespace UtilityExtensions
                 HttpContext.Current.Items[STR_IsSage] = value;
             }
         }
+        private const string STR_Culture = "Culture";
+        public static string Culture
+        {
+            get
+            {
+                if (HttpContext.Current != null)
+                    if (HttpContext.Current.Items[STR_Culture] != null)
+                        return (string)HttpContext.Current.Items[STR_Culture];
+                return null;
+            }
+            set
+            {
+                HttpContext.Current.Items[STR_Culture] = value;
+            }
+        }
         public static string jQueryDateFormat
         {
             get

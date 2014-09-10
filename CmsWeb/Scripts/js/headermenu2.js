@@ -52,7 +52,11 @@
         url += (url.match(/\?/) ? "&" : "?") + data;
         window.location = url;
     };
+    $.validator.methods.date = function (value, element) {
+        return this.optional(element) || Globalize.parseDate(value, $.dtoptions.format, $.dtoptions.cul);
+    }
     $.DateValid = function (d, growl) {
+
         var reDate = /^(0?[1-9]|1[012])[\/-](0?[1-9]|[12][0-9]|3[01])[\/-]((19|20)?[0-9]{2})$/i;
         if ($.dtoptions.format.startsWith('d'))
             reDate = /^(0?[1-9]|[12][0-9]|3[01])[\/-](0?[1-9]|1[012])[\/-]((19|20)?[0-9]{2})$/i;
