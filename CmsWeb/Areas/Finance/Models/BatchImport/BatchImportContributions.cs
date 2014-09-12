@@ -113,6 +113,7 @@ namespace CmsWeb.Models
             public string type { get; set; }
             public int row { get; set; }
             public bool valid { get; set; }
+            public string description { get; set; }
         }
         private static BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null)
         {
