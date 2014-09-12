@@ -57,11 +57,11 @@ namespace CmsData
         private Expression AttendedAsOf(bool guestonly)
         {
             var tf = CodeIds == "1";
-            DateTime? enddt = null;
+            var enddt = EndDate;
             if (!EndDate.HasValue && StartDate.HasValue)
                     enddt = StartDate.Value.AddHours(24);
-            if(EndDate.HasValue)
-                enddt = EndDate.Value.AddHours(24);
+            if(enddt.HasValue && enddt.Value.TimeOfDay.Ticks == 0)
+                enddt = enddt.Value.AddHours(24);
             var q = db.AttendedAsOf(Program, Division, Organization, StartDate, enddt, guestonly).Select(p => p.PeopleId);
             Expression<Func<Person, bool>> pred;
             if (op == CompareType.Equal ^ tf)
