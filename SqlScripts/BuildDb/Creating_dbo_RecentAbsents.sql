@@ -26,6 +26,11 @@ SELECT
 		 AND aa.OrganizationId = tt.OrganizationId 
 		 AND aa.AttendanceFlag = 1) 
 	lastmeeting,
+		(SELECT MAX(MeetingDate) 
+		 FROM dbo.Attend aa 
+		 WHERE aa.OrganizationId = tt.OrganizationId 
+		 AND aa.AttendanceFlag = 1) 
+	mostrecentmeeting,
 	m.MeetingId,
 	ConsecutiveAbsentsThreshold
 FROM

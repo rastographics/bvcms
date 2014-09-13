@@ -36,6 +36,8 @@ namespace CmsData.View
 		
 		private DateTime? _Lastmeeting;
 		
+		private DateTime? _Mostrecentmeeting;
+		
 		private int _MeetingId;
 		
 		private int? _ConsecutiveAbsentsThreshold;
@@ -64,7 +66,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="varchar(100) NOT NULL")]
+		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
 		public string OrganizationName
 		{
 			get
@@ -81,7 +83,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="LeaderName", Storage="_LeaderName", DbType="varchar(50)")]
+		[Column(Name="LeaderName", Storage="_LeaderName", DbType="nvarchar(50)")]
 		public string LeaderName
 		{
 			get
@@ -132,7 +134,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Name2", Storage="_Name2", DbType="varchar(139)")]
+		[Column(Name="Name2", Storage="_Name2", DbType="nvarchar(139)")]
 		public string Name2
 		{
 			get
@@ -149,7 +151,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="HomePhone", Storage="_HomePhone", DbType="varchar(20)")]
+		[Column(Name="HomePhone", Storage="_HomePhone", DbType="nvarchar(20)")]
 		public string HomePhone
 		{
 			get
@@ -166,7 +168,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="CellPhone", Storage="_CellPhone", DbType="varchar(20)")]
+		[Column(Name="CellPhone", Storage="_CellPhone", DbType="nvarchar(20)")]
 		public string CellPhone
 		{
 			get
@@ -183,7 +185,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="EmailAddress", Storage="_EmailAddress", DbType="varchar(150)")]
+		[Column(Name="EmailAddress", Storage="_EmailAddress", DbType="nvarchar(150)")]
 		public string EmailAddress
 		{
 			get
@@ -212,6 +214,23 @@ namespace CmsData.View
 			{
 				if (this._Lastmeeting != value)
 					this._Lastmeeting = value;
+			}
+
+		}
+
+		
+		[Column(Name="mostrecentmeeting", Storage="_Mostrecentmeeting", DbType="datetime")]
+		public DateTime? Mostrecentmeeting
+		{
+			get
+			{
+				return this._Mostrecentmeeting;
+			}
+
+			set
+			{
+				if (this._Mostrecentmeeting != value)
+					this._Mostrecentmeeting = value;
 			}
 
 		}

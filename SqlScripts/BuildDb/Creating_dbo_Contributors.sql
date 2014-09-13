@@ -77,7 +77,8 @@ RETURN
 			) AS SpouseAmount,
 			p.CampusId,
 			(SELECT LastName FROM dbo.People WHERE PeopleId = f.HeadOfHouseholdId
-			) AS HouseName
+			) AS HouseName,
+			ISNULL(p.ElectronicStatement, 0) ElectronicStatement
 			
 	from People p
 	JOIN dbo.Families f ON p.FamilyId = f.FamilyId
