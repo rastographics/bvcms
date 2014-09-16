@@ -150,6 +150,10 @@ namespace CmsData
                 throw new Exception("bad date: " + dt);
             return dt2.Value.Sunday();
         }
+        public DateTime SundayForWeek(int year, int week)
+        {
+            return Util.SundayForWeek(year, week);
+        }
 
         public bool TestEmail { get; set; }
         public bool Transactional { get; set; }

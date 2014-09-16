@@ -157,8 +157,14 @@ namespace UtilityExtensions
         public static int GetWeekNumber(this DateTime dt)
         {
             var cc = CultureInfo.CurrentCulture;
-            int wk = cc.Calendar.GetWeekOfYear(dt, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
+            int wk = cc.Calendar.GetWeekOfYear(dt, CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday);
             return wk;
+        }
+        public static DateTime SundayForWeek(int year, int weekNum)
+        {
+            var firstSunday = Sunday(1, year);
+            var result = firstSunday.AddDays((weekNum-1) * 7);
+            return result;
         }
 
         public static IEnumerable<DateTime> DaysOfMonth(DateTime dt)
