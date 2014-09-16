@@ -166,8 +166,15 @@ namespace CmsData
             return q;
         }
 
+        public IQueryable<Person> PeopleQuery2(object name)
+        {
+            return PeopleQuery2(name.ToString());
+        }
+
         public IQueryable<Person> PeopleQuery2(string name)
         {
+            if (name.AllDigits())
+                name = "peopleid=" + name;
             const string pattern = @"\Apeopleid=([\d,]*)\z";
             if (Regex.IsMatch(name, pattern))
             {

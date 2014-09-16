@@ -129,6 +129,28 @@ namespace CmsData
         public int DayOfWeek { get { return DateTime.Today.DayOfWeek.ToInt(); } }
         public DateTime DateTime { get { return DateTime.Now; } }
 
+        public DateTime DateAddDays(object dt, int days)
+        {
+            var dt2 = dt.ToDate();
+            if (dt2 == null)
+                throw new Exception("bad date: " + dt);
+            return dt2.Value.AddDays(days);
+        }
+        public int WeekNumber(object dt)
+        {
+            var dt2 = dt.ToDate();
+            if (dt2 == null)
+                throw new Exception("bad date: " + dt);
+            return dt2.Value.GetWeekNumber();
+        }
+        public DateTime SundayForDate(object dt)
+        {
+            var dt2 = dt.ToDate();
+            if (dt2 == null)
+                throw new Exception("bad date: " + dt);
+            return dt2.Value.Sunday();
+        }
+
         public bool TestEmail { get; set; }
         public bool Transactional { get; set; }
         public int CurrentOrgId { get; set; }
@@ -173,7 +195,7 @@ namespace CmsData
             Email2(qid, queuedBy, fromAddr, fromAddr, subject, c.Body);
         }
 
-        public void Email(string savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string body)
+        public void Email(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string body)
         {
             var q = db.PeopleQuery2(savedQuery);
             if (q == null)
@@ -223,7 +245,7 @@ namespace CmsData
             return q.ToList();
         }
 
-        public void AddExtraValueCode(string savedQuery, string name, string text)
+        public void AddExtraValueCode(object savedQuery, string name, string text)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
@@ -233,12 +255,7 @@ namespace CmsData
                 ResetDb();
             }
         }
-        public void AddExtraValueCode(int pid, string name, string text)
-        {
-            Person.AddEditExtraValue(db, pid, name, text);
-            db.SubmitChanges();
-        }
-        public void AddExtraValueText(string savedQuery, string name, string text)
+        public void AddExtraValueText(object savedQuery, string name, string text)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
@@ -248,27 +265,18 @@ namespace CmsData
                 ResetDb();
             }
         }
-        public void AddExtraValueText(int pid, string name, string text)
-        {
-            Person.AddEditExtraData(db, pid, name, text);
-            db.SubmitChanges();
-        }
-        public void AddExtraValueDate(string savedQuery, string name, DateTime dt)
+        public void AddExtraValueDate(object savedQuery, string name, object dt)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            var dt2 = dt.ToDate();
             foreach (var pid in list)
             {
-                Person.AddEditExtraDate(db, pid, name, dt);
+                Person.AddEditExtraDate(db, pid, name, dt2);
                 db.SubmitChanges();
                 ResetDb();
             }
         }
-        public void AddExtraValueDate(int pid, string name, DateTime dt)
-        {
-            Person.AddEditExtraDate(db, pid, name, dt);
-            db.SubmitChanges();
-        }
-        public void AddExtraValueInt(string savedQuery, string name, int n)
+        public void AddExtraValueInt(object savedQuery, string name, int n)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
@@ -278,12 +286,7 @@ namespace CmsData
                 ResetDb();
             }
         }
-        public void AddExtraValueInt(int pid, string name, int n)
-        {
-            Person.AddEditExtraInt(db, pid, name, n);
-            db.SubmitChanges();
-        }
-        public void AddExtraValueBool(string savedQuery, string name, bool b)
+        public void AddExtraValueBool(object savedQuery, string name, bool b)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
             foreach (var pid in list)
@@ -293,14 +296,9 @@ namespace CmsData
                 ResetDb();
             }
         }
-        public void AddExtraValueBool(int pid, string name, bool b)
+        public void UpdateCampus(object savedQuery, string campus)
         {
-            Person.AddEditExtraBool(db, pid, name, b);
-            db.SubmitChanges();
-        }
-        public void UpdateCampus(string savedQuery, string campus)
-        {
-            var id = db.FetchOrCreateCampusId(campus);
+			var id = db.FetchOrCreateCampusId(campus);
             var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
             {
@@ -309,14 +307,10 @@ namespace CmsData
                 db.SubmitChanges();
             }
         }
-        public void UpdateCampus(int pid, string campus)
+        public void UpdateMemberStatus(object savedQuery, string status)
         {
-            UpdateMemberStatus("peopleid=" + pid, campus);
-        }
-        public void UpdateMemberStatus(string savedQuery, string status)
-        {
-            var id = Person.FetchOrCreateMemberStatus(db, status);
-            var q = db.PeopleQuery2(savedQuery);
+			var id = Person.FetchOrCreateMemberStatus(db, status);
+			var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
             {
                 p.UpdateValue("MemberStatusId", id);
@@ -324,11 +318,7 @@ namespace CmsData
                 db.SubmitChanges();
             }
         }
-        public void UpdateMemberStatus(int pid, string status)
-        {
-            UpdateMemberStatus("peopleid=" + pid, status);
-        }
-        public void UpdateNewMemberClassStatus(string savedQuery, string status)
+        public void UpdateNewMemberClassStatus(object savedQuery, string status)
         {
             var id = Person.FetchOrCreateNewMemberClassStatus(db, status);
             var q = db.PeopleQuery2(savedQuery);
@@ -340,12 +330,7 @@ namespace CmsData
             }
         }
 
-        public void UpdateNewMemberClassStatus(int pid, string status)
-        {
-            UpdateNewMemberClassStatus("peopleid=" + pid, status);
-        }
-
-        public void UpdateNewMemberClassDate(string savedQuery, DateTime dt)
+        public void UpdateNewMemberClassDate(object savedQuery, object dt)
         {
             var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
@@ -355,11 +340,7 @@ namespace CmsData
                 db.SubmitChanges();
             }
         }
-        public void UpdateNewMemberClassDate(int pid, DateTime dt)
-        {
-            UpdateNewMemberClassDate("peopleid=" + pid, dt);
-        }
-        public void AddMembersToOrg(string savedQuery, int OrgId)
+        public void AddMembersToOrg(object savedQuery, int OrgId)
         {
             var q = db.PeopleQuery2(savedQuery);
             var dt = DateTime.Now;

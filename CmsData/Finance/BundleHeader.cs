@@ -30,5 +30,18 @@ namespace CmsData
             FundIdChanged = true;
         }
         public bool FundIdChanged { get; private set; }
+
+        public static int FetchOrCreateBundleType(CMSDataContext Db, string type)
+        {
+            var bt = Db.BundleHeaderTypes.SingleOrDefault(m => m.Description == type);
+            if (bt == null)
+            {
+                var max = Db.BundleHeaderTypes.Max(mm => mm.Id) + 1;
+                bt = new BundleHeaderType { Id = max, Code = "M" + max, Description = type };
+                Db.BundleHeaderTypes.InsertOnSubmit(bt);
+                Db.SubmitChanges();
+            }
+            return bt.Id;
+        }
     }
 }
