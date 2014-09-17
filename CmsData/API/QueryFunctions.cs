@@ -122,6 +122,24 @@ namespace CmsData
                 return 0;
             return q.Sum(mm => mm.MaxCount ?? 0);
         }
+        public int NumPresentDateRange(int progid, int divid, int orgid, object startdt, int days)
+        {
+            var start = startdt.ToDate();
+            if (start == null)
+                throw new Exception("bad date: " + startdt);
+            var enddt = start.Value.AddDays(days);
+
+            var q = from m in db.Meetings
+                    where m.MeetingDate >= start
+                    where m.MeetingDate <= enddt
+                    where orgid == 0 || m.OrganizationId == orgid
+                    where divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid)
+                    where progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid))
+                    select m;
+            if (!q.Any())
+                return 0;
+            return q.Sum(mm => mm.MaxCount ?? 0);
+        }
 
         public int LastWeekAttendance(int progid, int divid, int starthour, int endhour)
         {
@@ -195,10 +213,12 @@ namespace CmsData
                 return 0;
             return qb.Count();
         }
-        public int QueryCountDivDateRange(string s, string division, string startdt, int days)
+        public int QueryCountDivDateRange(string s, string division, object startdt, int days)
         {
-            var start = DateTime.Parse(startdt);
-            var enddt = start.AddDays(days);
+            var start = startdt.ToDate();
+            if (start == null)
+                throw new Exception("bad date: " + startdt);
+            var enddt = start.Value.AddDays(days);
             var divid = db.Divisions.Where(dd => dd.Name == division).Select(dd => dd.Id).SingleOrDefault();
             db.QbStartDateOverride = start;
             db.QbEndDateOverride = enddt;
@@ -218,9 +238,11 @@ namespace CmsData
                 db.QbDivisionOverride = null;
             }
         }
-        public int QueryCountDivDate(string s, string division, string startdt)
+        public int QueryCountDivDate(string s, string division, object startdt)
         {
-            var start = DateTime.Parse(startdt);
+            var start = startdt.ToDate();
+            if (start == null)
+                throw new Exception("bad date: " + startdt);
             var divid = db.Divisions.Where(dd => dd.Name == division).Select(dd => dd.Id).SingleOrDefault();
             db.QbStartDateOverride = start;
             db.QbEndDateOverride = start;
@@ -240,10 +262,12 @@ namespace CmsData
                 db.QbDivisionOverride = null;
             }
         }
-        public int QueryCountDateRange(string s, string startdt, int days)
+        public int QueryCountDateRange(string s, object startdt, int days)
         {
-            var start = DateTime.Parse(startdt);
-            var enddt = start.AddDays(days);
+            var start = startdt.ToDate();
+            if (start == null)
+                throw new Exception("bad date: " + startdt);
+            var enddt = start.Value.AddDays(days);
             db.QbStartDateOverride = start;
             db.QbEndDateOverride = enddt;
 
@@ -261,10 +285,12 @@ namespace CmsData
                 db.QbDivisionOverride = null;
             }
         }
-        public int MeetingCountDateHours(int progid, int divid, int orgid, string startdt, int hours)
+        public int MeetingCountDateHours(int progid, int divid, int orgid, object startdt, int hours)
         {
-            var start = DateTime.Parse(startdt);
-            var enddt = start.AddHours(hours);
+            var start = startdt.ToDate();
+            if (start == null)
+                throw new Exception("bad date: " + startdt);
+            var enddt = start.Value.AddHours(hours);
             var q = from m in db.Meetings
                     where m.MeetingDate >= start
                     where orgid == 0 || m.OrganizationId == orgid
@@ -273,10 +299,12 @@ namespace CmsData
                     select m;
             return q.Count();
         }
-        public int DecisionCountDateRange(string decisiontype , string startdt, int days)
+        public int DecisionCountDateRange(string decisiontype , object startdt, int days)
         {
-            var start = DateTime.Parse(startdt);
-            var enddt = start.AddDays(days);
+            var start = startdt.ToDate();
+            if (start == null)
+                throw new Exception("bad date: " + startdt);
+            var enddt = start.Value.AddDays(days);
             var a = decisiontype.Split(',');
             var q = from p in db.People
                     where p.DecisionDate >= start
@@ -305,9 +333,11 @@ namespace CmsData
             var q = db.AttendanceTypeAsOf(start, enddt, progid, divid, orgid, 0, ids);
             return q.Count();
         }
-        public int QueryCountDate(string s, string startdt)
+        public int QueryCountDate(string s, object startdt)
         {
-            var start = DateTime.Parse(startdt);
+            var start = startdt.ToDate();
+            if (start == null)
+                throw new Exception("bad date: " + startdt);
             db.QbStartDateOverride = start;
             db.QbEndDateOverride = start;
 

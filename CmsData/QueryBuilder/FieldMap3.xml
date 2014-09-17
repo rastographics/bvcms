@@ -522,6 +522,9 @@
     <RecentHasIndContributions Title="Recent Has Individual Contributions" Type="Bit" DataValueField="IdCode" DisplayAs="RecentHasIndContributions({0})" Params="Days">
       Enter a number of days to look back and specify True or False.
     </RecentHasIndContributions>
+    <HadIndContributions Title="Had Individual Contributions" Type="Bit" DataValueField="IdCode" DisplayAs="HadIndContributions({0},{1})" Params="StartDate,EndDate">
+      Individual Had Contributions during Date Range
+    </HadIndContributions>
     <RecentFirstTimeGiver Title="Recent First Time Giver" Type="Bit" DisplayAs="RecentFirstTimeGiver({0},{1})" Params="Days,Quarters" QuartersLabel="Fund Id (or blank for all)" DataValueField="IdCode">
       Enter a number of days to look back, enter a Fund ID (or leave blank for all funds) and specify True or False.
     </RecentFirstTimeGiver>

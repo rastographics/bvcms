@@ -75,6 +75,7 @@ namespace CmsData
         Grade,
         Group,
         GuestAsOf,
+        HadIndContributions,
         HasBalanceInCurrentOrg,
         HasCommitmentForMeetingId,
         HasContacts,

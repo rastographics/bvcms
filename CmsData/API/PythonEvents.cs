@@ -154,6 +154,20 @@ namespace CmsData
         {
             return Util.SundayForWeek(year, week);
         }
+        public DateTime MostRecentAttendedSunday(int progid)
+        {
+            var q = from m in db.Meetings
+                    where m.MeetingDate.Value.Date.DayOfWeek == 0
+                    where m.MaxCount > 0
+                    where progid == 0 || m.Organization.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
+                    where m.MeetingDate < Util.Now
+                    orderby m.MeetingDate descending
+                    select m.MeetingDate.Value.Date;
+            var dt = q.FirstOrDefault();
+            if (dt == DateTime.MinValue) //Sunday Date equal/before today
+                dt = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+            return dt;
+        }
 
         public bool TestEmail { get; set; }
         public bool Transactional { get; set; }

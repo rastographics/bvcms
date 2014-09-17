@@ -126,7 +126,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.DefaultCell.Padding = 5;
             pageEvents.StartPageSet("Family Report: {0:d}".Fmt(dt));
             t.AddCell(new Phrase("Name (id)\nAddress/Contact info", boldfont));
-            t.AddCell(new Phrase("Birthday (age, gender)\nMember (Other Church)", boldfont));
+            t.AddCell(new Phrase("Birthday (age, gender)\nMember", boldfont));
             t.AddCell(new Phrase("Position in Family\nPrimary Class", boldfont));
             return t;
         }
@@ -155,7 +155,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             var c2 = new Phrase("{0} ({1}, {2})\n".Fmt(p.DOB, p.Age,
                 p.GenderId == 1 ? "M" : p.GenderId == 2 ? "F" : "U"), font);
-            c2.Add(new Chunk("{0} ({1})".Fmt(cv.MemberStatusCodes().ItemValue(p.MemberStatusId), "?"), font));
+            c2.Add(new Chunk(cv.MemberStatusCodes().ItemValue(p.MemberStatusId), font));
             t.AddCell(c2);
 
 

@@ -58,6 +58,7 @@ namespace CmsData
                 { QueryType.FamilyHasChildrenAged3, FamilyHasChildrenAged3 },
                 { QueryType.FirstOrgJoinDate, FirstOrgJoinDate },
                 { QueryType.GuestAsOf, GuestAttendedAsOf },
+                { QueryType.HadIndContributions, HadIndContributions },
                 { QueryType.HasBalanceInCurrentOrg, HasBalanceInCurrentOrg },
                 { QueryType.HasCommitmentForMeetingId, HasCommitmentForMeetingId },
                 { QueryType.HasContacts, HasContacts },
