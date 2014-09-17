@@ -97,9 +97,12 @@ namespace CmsWeb.Controllers
             return Redirect("/Query/" + cc.Id);
         }
         [Authorize(Roles = "Admin")]
-        public ActionResult ActiveRecords()
+        public ActionResult ActiveRecords(DateTime? dt)
         {
-            TempData["ActiveRecords"] = DbUtil.Db.ActiveRecords();
+            if(dt.HasValue)
+                TempData["ActiveRecords"] = DbUtil.Db.ActiveRecords0(dt.Value);
+            else
+                TempData["ActiveRecords"] = DbUtil.Db.ActiveRecords();
             return View("Support2");
         }
         public ActionResult TargetPerson(bool id)

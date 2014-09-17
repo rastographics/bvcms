@@ -153,6 +153,7 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("School"), NoTrack, StringLength(100)]
         public string SchoolOther { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:g}")]
         public int? Grade { get; set; }
 
         [DisplayName("Primary Email"), FieldInfo(CheckboxField = "SendEmailAddress1")]

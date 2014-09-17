@@ -187,10 +187,10 @@
             $.cookie('lasttab', id);
         }
     });
-    $.validator.addMethod("ValidDate", function (value, element, params) {
-        var v = $.DateValid(value);
-        return this.optional(element) || v;
-    }, "Please enter valid date");
+//    $.validator.addMethod("ValidDate", function (value, element, params) {
+//        var v = $.DateValid(value);
+//        return this.optional(element) || v;
+//    }, "Please enter valid date");
     $('#future').live("click", function (ev) {
         ev.preventDefault();
         var d = $(this).closest('div.loaded');

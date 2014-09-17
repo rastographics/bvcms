@@ -464,6 +464,22 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression HadIndContributions()
+        {
+            var tf = CodeIds == "1";
+            if (!db.FromActiveRecords && !db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
+            Expression<Func<Person, bool>> pred = p =>
+                           p.Contributions.Any(cc => cc.ContributionDate > StartDate
+                               && cc.ContributionDate <= EndDate
+                               && cc.ContributionAmount > 0 
+                               && !ContributionTypeCode.ReturnedReversedTypes.Contains(cc.ContributionTypeId));
+            Expression expr = Expression.Invoke(pred, parm);
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression RecentBundleType()
         {
             if (!db.FromBatch)

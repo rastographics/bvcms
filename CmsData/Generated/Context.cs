@@ -4005,6 +4005,20 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.IsSmallGroupLeaderOnly", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? IsSmallGroupLeaderOnly(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.GetAttendType", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? GetAttendType(

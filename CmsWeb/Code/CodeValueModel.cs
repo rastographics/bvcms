@@ -65,6 +65,15 @@ namespace CmsWeb.Code
             return q.ToList();
         }
 
+        public static IEnumerable<CodeValueItem> AttendCommitmentCodes()
+        {
+            yield return new CodeValueItem{ Id = AttendCommitmentCode.Attending, Code = "AT", Value = "Attending" };
+            yield return new CodeValueItem{ Id = AttendCommitmentCode.FindSub, Code = "FS", Value = "Find Sub" };
+            yield return new CodeValueItem{ Id = AttendCommitmentCode.SubFound, Code = "SF", Value = "Sub Found" };
+            yield return new CodeValueItem{ Id = AttendCommitmentCode.Substitute, Code = "SB", Value = "Substitute" };
+            yield return new CodeValueItem{ Id = AttendCommitmentCode.Regrets, Code = "RG", Value = "Regrets" };
+        }
+
         public static IEnumerable<CodeValueItem> AttendCredits()
         {
             return from ms in DbUtil.Db.AttendCredits

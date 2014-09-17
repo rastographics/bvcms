@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
@@ -44,6 +45,14 @@ namespace CmsWeb.Areas.Org.Controllers
                 var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(m.org.OrganizationId))
                     return NotAllowed("You must be a leader of this organization", m.org.OrganizationName);
+                var sgleader = DbUtil.Db.IsSmallGroupLeaderOnly(id, Util.UserPeopleId);
+                if (sgleader.HasValue)
+                {
+                    Util2.CurrentGroups = new []{ sgleader.Value };
+                    Util2.CurrentGroupsMode = 0;
+                    m.MemberModel = new MemberModel(id, MemberModel.GroupSelect.Active, "", "");
+                    //.m.MemberModel = new MemberModel(id, )
+                }
             }
             if (m.org.LimitToRole.HasValue())
                 if (!User.IsInRole(m.org.LimitToRole))

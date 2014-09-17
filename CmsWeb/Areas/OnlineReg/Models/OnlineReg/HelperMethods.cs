@@ -134,14 +134,18 @@ namespace CmsWeb.Models
         }
 
         public bool OnlyOneAllowed()
-        {
+        { 
             if (org != null)
             {
                 var setting = settings[org.OrganizationId];
                 return org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes
                        || org.RegistrationTypeId == RegistrationTypeCode.CreateAccount
                        || org.IsMissionTrip == true
-                       || setting.AllowOnlyOne || setting.AskVisible("AskTickets")
+                       || setting.AllowOnlyOne 
+                       || setting.AskVisible("AskTickets")
+                       || ChoosingSlots() 
+                       || OnlineGiving() 
+                       || ManageGiving()
                        || SupportMissionTrip;
             }
             if (settings != null)

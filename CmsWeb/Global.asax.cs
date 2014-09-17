@@ -108,6 +108,7 @@ namespace CmsWeb
             }
 
             var cul = DbUtil.Db.Setting("Culture", "en-US");
+            Util.Culture = cul;
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
         }

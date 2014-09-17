@@ -36,7 +36,7 @@ WHERE ac.OrganizationId = @orgid
 							  WHERE Attended = 1 
 							  AND a.PeopleId = PeopleId
 							  GROUP BY PeopleId)
-		 AND EXISTS(SELECT NULL FROM #t WHERE Attended = 1 AND WeekDate = a.WeekDate)
+		 --AND EXISTS(SELECT NULL FROM #t WHERE Attended = 1 AND WeekDate = a.WeekDate)
 		 GROUP BY PeopleId
 	    ) tt1
 	JOIN OrganizationMembers om ON @orgid = om.OrganizationId AND tt1.PeopleId = om.PeopleId

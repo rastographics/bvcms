@@ -90,6 +90,7 @@ namespace CmsWeb.Models.ExtraValues
             ExtraValueType = new CodeInfo(f.Type, "ExtraValueType");
             ExtraValueName = name;
             ExtraValueTable = table;
+            VisibilityRoles = f.VisibilityRoles;
             var codes = string.Join("\n", f.Codes);
             switch (ExtraValueType.Value)
             {

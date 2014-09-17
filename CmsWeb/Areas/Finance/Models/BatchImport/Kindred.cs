@@ -34,7 +34,9 @@ namespace CmsWeb.Models
                         date = csv[1].ToDate(),
                         account = csv[7],
                         amount = csv[9],
-                        
+                        checkno = csv[12],
+                        description= "{0}; {1}, {2}, {3} {4}; {5}".Fmt(
+                            csv[2], csv[3], csv[4], csv[5], csv[6], csv[8]),
                     });
             var q = from r in list
                     select r;
@@ -45,9 +47,8 @@ namespace CmsWeb.Models
                     dt = r.date.Value;
                 if (bh == null)
                     bh = GetBundleHeader(dt.Date, DateTime.Now);
-                var bd = AddContributionDetail(dt, fund, r.amount, csv[12], "", r.account);
-                bd.Contribution.ContributionDesc = "{0}; {1}, {2}, {3} {4}; {5}".Fmt(
-                    csv[2], csv[3], csv[4], csv[5], csv[6], csv[8]);
+                var bd = AddContributionDetail(dt, fund, r.amount, r.checkno, "", r.account);
+                bd.Contribution.ContributionDesc = r.description;
                 bh.BundleDetails.Add(bd);
             }
             if (bh == null)

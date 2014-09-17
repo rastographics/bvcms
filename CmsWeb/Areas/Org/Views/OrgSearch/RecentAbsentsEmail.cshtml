@@ -8,12 +8,12 @@
     <h2>Recent Absents</h2>
     <hr/>
     <a href="@Util.ResolveServerUrl("/Organization/" + item.OrganizationId)">@item.OrganizationName</a> @:(@item.LeaderName)<br/>
-    <span>Members with @(item.ConsecutiveAbsentsThreshold ?? 2) or more consecutive absents on and before</span> @item.Lastmeeting.Value.ToShortDateString()
+    <span>Members with @(item.ConsecutiveAbsentsThreshold ?? 2) or more consecutive absents on and before</span> @item.Mostrecentmeeting.Value.ToShortDateString()
     <hr/>
     foreach (var p in Model)
     {
     <p>
-        <a href="@Util.ResolveServerUrl("/Person2/" + p.PeopleId)" target="person">@p.Name2</a> <span>(@p.Consecutive times absent)</span>
+        <a href="@Util.ResolveServerUrl("/Person2/" + p.PeopleId)" target="person">@p.Name2</a> <span>(@p.Consecutive times absent, Last Attend: @p.Lastmeeting.Value.ToShortDateString())</span>
         @if (p.HomePhone.HasValue())
         {
             <br/>

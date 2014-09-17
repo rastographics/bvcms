@@ -7,8 +7,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using CmsData.Codes;
-using System.Data.Linq;
 using UtilityExtensions;
 
 namespace CmsData
@@ -123,34 +121,6 @@ namespace CmsData
                  where EndDate == null || (oo.DateX >= EndDate)
                  select oo).Any();
             Expression expr = Expression.Invoke(pred, parm);
-            return expr;
-        }
-        internal Expression MeetingId()
-        {
-            var meetingid = TextValue.ToInt();
-            Expression<Func<Person, bool>> pred = p =>
-                p.Attends.Any(a =>
-                    (a.AttendanceFlag == true)
-                    && a.MeetingId == meetingid
-                    );
-            Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual)
-                expr = Expression.Not(expr);
-            return expr;
-        }
-        internal Expression RegisteredForMeetingId()
-        {
-            var meetingid = TextValue.ToInt();
-            Expression<Func<Person, bool>> pred = p =>
-                p.Attends.Any(a =>
-                    (a.Commitment == AttendCommitmentCode.Attending
-                    || a.Commitment == AttendCommitmentCode.Substitute
-                    || a.Commitment == AttendCommitmentCode.FindSub)
-                    && a.MeetingId == meetingid
-                    );
-            Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual)
-                expr = Expression.Not(expr);
             return expr;
         }
 

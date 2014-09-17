@@ -1,3 +1,8 @@
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
 CREATE FUNCTION [dbo].[AttendanceTypeAsOf]
 (	
 	@from DATETIME,
@@ -8,10 +13,11 @@ CREATE FUNCTION [dbo].[AttendanceTypeAsOf]
 	@orgtype INT,
 	@ids nvarchar(4000)
 )
-RETURNS @t TABLE ( PeopleId INT )
+RETURNS TABLE 
 AS
-BEGIN
-	INSERT INTO @t (PeopleId) SELECT p.PeopleId FROM dbo.People p
+RETURN 
+(
+	SELECT p.PeopleId FROM dbo.People p
 	WHERE EXISTS (
 		SELECT NULL FROM dbo.Attend a
 		JOIN dbo.Meetings m ON m.MeetingId = a.MeetingId
@@ -32,8 +38,7 @@ BEGIN
 						WHERE d2.DivId = pd.DivId
 						AND pd.ProgId = @progid)) OR @progid = 0)
 		)
-	RETURN
-END
+)
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
