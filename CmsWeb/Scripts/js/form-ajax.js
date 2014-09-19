@@ -25,7 +25,13 @@
         $('form.ajax a.editable').editable();
     };
     $("ul.nav-tabs a.ajax,a.ajax.ui-tabs-anchor").live("click", function (event) {
-        var state = $(this).attr("href") || $(this).data("target");
+        var $this = $(this);
+        var alreadyClicked = $this.data('clicked');
+        if (alreadyClicked) {
+            return false;
+        }
+        $this.data('clicked', true);
+        var state = $this.attr("href") || $this.data("target");
         var d = $(state);
         var url = d.data("link");
         if (!d.hasClass("loaded"))

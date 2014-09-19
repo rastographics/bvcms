@@ -20,9 +20,15 @@
     });
     $("#search-add a.commit").live("click", function (ev) {
         ev.preventDefault();
-        var f = $(this).closest("form");
+        var $this = $(this);
+        var alreadyClicked = $this.data('clicked');
+        if (alreadyClicked) {
+            return false;
+        }
+        $this.data('clicked', true);
+        var f = $this.closest("form");
         var q = f.serialize();
-        var loc = $(this).attr("href");
+        var loc = $this.attr("href");
         $.post(loc, q, function (ret) {
             f.modal("hide");
             if (ret.message)
