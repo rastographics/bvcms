@@ -314,6 +314,9 @@ namespace CmsWeb.Models
         }
         public void Update()
         {
+            var pi = person.PaymentInfo();
+            if (Cardnumber.Contains("X"))
+                Cardnumber = pi.Ccv;
             var gateway = OnlineRegModel.GetTransactionGateway();
             if (gateway == "authorizenet")
             {
@@ -356,7 +359,6 @@ namespace CmsWeb.Models
             mg.StopWhen = StopWhen;
             mg.NextDate = mg.FindNextDate(DateTime.Today);
 
-            var pi = person.PaymentInfo();
             pi.FirstName = FirstName.Truncate(50);
             pi.MiddleInitial = Middle.Truncate(10);
             pi.LastName = LastName.Truncate(50);
