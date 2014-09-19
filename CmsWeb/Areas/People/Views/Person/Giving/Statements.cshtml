@@ -53,6 +53,7 @@
         </div>
         <div class="inline left-gutter align-top well">
             <p><b>Statement/Envelope Options</b></p>
+            @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable) 
             @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
             @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
         </div>

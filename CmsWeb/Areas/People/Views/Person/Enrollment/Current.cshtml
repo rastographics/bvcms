@@ -59,7 +59,13 @@
                             {
                                 @om.SchComma<strong>Schedule:</strong> <span>@om.Schedule</span>
                             }
-                            <div><a href="/OrgContent/@om.OrgId">Members Page</a></div>
+                <div>
+                  <a href="/OrgContent/@om.OrgId">Members Page</a>
+                  @if (om.HasDirectory)
+                  {
+                    <a title="@om.DivisionName" href="/MemberDirectory/@om.OrgId">Online Directory</a>
+                  }
+                </div>
                         </div>
                     </td>
                 </tr>
