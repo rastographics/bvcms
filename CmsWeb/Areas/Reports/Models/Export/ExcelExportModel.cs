@@ -24,6 +24,18 @@ namespace CmsWeb.Models
         public static EpplusResult ToExcel(this DataTable dt, string filename = "People.xlsx", bool useTable = false)
         {
             var ep = new ExcelPackage();
+            ep.AddSheet(dt, filename, useTable);
+            return new EpplusResult(ep, filename);
+        }
+
+        public static void AddSheet(this ExcelPackage ep, IDataReader rd, string filename = "People.xlsx", bool useTable = false)
+        {
+            var dt = new DataTable();
+            dt.Load(rd);
+            ep.AddSheet(dt, filename, useTable);
+        }
+        public static void AddSheet(this ExcelPackage ep, DataTable dt, string filename = "People.xlsx", bool useTable = false)
+        {
             var sheetname = System.IO.Path.GetFileNameWithoutExtension(filename);
             var ws = ep.Workbook.Worksheets.Add(sheetname);
             ws.Cells["A1"].LoadFromDataTable(dt, true);
@@ -85,7 +97,6 @@ namespace CmsWeb.Models
                 else
                     colrange.AutoFitColumns();
             }
-            return new EpplusResult(ep, filename);
         }
 
         public static List<ExcelPic> List(Guid queryid)

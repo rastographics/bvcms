@@ -1,0 +1,22 @@
+﻿@model CmsWeb.Models.DonorTotalSummaryOptionsModel
+<form id="donorTotalSummaryOptions" class="dialog-options modal fade hide validate" target="_blank" method="GET">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h3>Donor Total Summary Options</h3>
+  </div>
+    <div class="modal-body">
+        <div class="row-fluid">
+          <div class="span12">
+            @Html.EditorFor(m => m.StartDate)
+            @Html.EditorFor(m => m.NumberOfYears)
+            @Html.EditorFor(m => m.Fund)
+            @Html.EditorFor(m => m.Campus)
+            @Html.EditorFor(m => m.MinimumMedianTotal)
+          </div>
+        </div>
+        <div class="modal-footer">
+            <a class="btn" data-dismiss="modal">Close</a>
+            <input type="submit" class="btn btn-primary" value="OK" />
+        </div>
+    </div>
+</form>

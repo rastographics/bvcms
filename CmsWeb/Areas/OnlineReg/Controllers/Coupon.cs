@@ -18,6 +18,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (pf.PayBalance == false)
 			{
                 m = OnlineRegModel.GetRegistrationFromDatum(pf.DatumId);
+			    if (m == null)
+			        return Json(new { error = "coupon not find your registration" });
 				m.ParseSettings();
 			}
 

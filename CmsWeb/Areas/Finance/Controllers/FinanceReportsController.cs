@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Finance.Models.Report;
 using CmsData;
 using CmsData.Classes.QuickBooks;
+using CmsWeb.Code;
+using Dapper;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
@@ -14,7 +18,7 @@ using TableStyles = OfficeOpenXml.Table.TableStyles;
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Finance")]
-    [RouteArea("Finance", AreaPrefix= "FinanceReports"), Route("{action}/{id?}")]
+    [RouteArea("Finance", AreaPrefix = "FinanceReports"), Route("{action}/{id?}")]
     public class FinanceReportsController : CmsStaffController
     {
         public ActionResult ContributionYears(int id)
@@ -35,6 +39,48 @@ namespace CmsWeb.Areas.Finance.Controllers
             };
         }
 
+        private DynamicParameters DonorTotalSummaryParameters(DonorTotalSummaryOptionsModel m, bool useMedianMin = false)
+        {
+            var p = new DynamicParameters();
+            p.Add("@enddt", m.StartDate);
+            p.Add("@years", m.NumberOfYears);
+            if(useMedianMin)
+                p.Add("@medianMin", m.MinimumMedianTotal);
+            p.Add("@fund", m.Fund.Value.ToInt());
+            p.Add("@campus", m.Campus.Value.ToInt());
+            return p;
+        }
+        [HttpGet]
+        public EpplusResult DonorTotalSummary(DonorTotalSummaryOptionsModel m)
+        {
+            var ep = new ExcelPackage();
+            var cn = new SqlConnection(Util.ConnectionString);
+
+            var rd = cn.ExecuteReader("dbo.DonorTotalSummary", DonorTotalSummaryParameters(m, useMedianMin: true), commandType: CommandType.StoredProcedure);
+            ep.AddSheet(rd, "MemberNon");
+
+            rd = cn.ExecuteReader("dbo.DonorTotalSummaryBySize", DonorTotalSummaryParameters(m), commandType: CommandType.StoredProcedure);
+            ep.AddSheet(rd, "BySize");
+
+            rd = cn.ExecuteReader("dbo.DonorTotalSummaryByAge", DonorTotalSummaryParameters(m), commandType: CommandType.StoredProcedure);
+            ep.AddSheet(rd, "ByAge");
+
+            return new EpplusResult(ep, "DonorTotalSummary.xlsx");
+        }
+
+        [HttpGet]
+        public ActionResult DonorTotalSummaryOptions()
+        {
+            var m = new DonorTotalSummaryOptionsModel
+            {
+                StartDate = DateTime.Today,
+                NumberOfYears = 5,
+                MinimumMedianTotal = 100,
+                Campus = new CodeInfo("Campus0"),
+                Fund = new CodeInfo("Fund"),
+            };
+            return View(m);
+        }
         [HttpGet]
         public ActionResult DonorTotalsByRange()
         {
