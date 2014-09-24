@@ -56,13 +56,13 @@ namespace CmsWeb.Areas.Finance.Controllers
             var ep = new ExcelPackage();
             var cn = new SqlConnection(Util.ConnectionString);
 
-            var rd = cn.ExecuteReader("dbo.DonorTotalSummary", DonorTotalSummaryParameters(m, useMedianMin: true), commandType: CommandType.StoredProcedure);
+            var rd = cn.ExecuteReader("dbo.DonorTotalSummary", DonorTotalSummaryParameters(m, useMedianMin: true), commandType: CommandType.StoredProcedure, commandTimeout: 1200);
             ep.AddSheet(rd, "MemberNon");
 
-            rd = cn.ExecuteReader("dbo.DonorTotalSummaryBySize", DonorTotalSummaryParameters(m), commandType: CommandType.StoredProcedure);
+            rd = cn.ExecuteReader("dbo.DonorTotalSummaryBySize", DonorTotalSummaryParameters(m), commandType: CommandType.StoredProcedure, commandTimeout: 1200);
             ep.AddSheet(rd, "BySize");
 
-            rd = cn.ExecuteReader("dbo.DonorTotalSummaryByAge", DonorTotalSummaryParameters(m), commandType: CommandType.StoredProcedure);
+            rd = cn.ExecuteReader("dbo.DonorTotalSummaryByAge", DonorTotalSummaryParameters(m), commandType: CommandType.StoredProcedure, commandTimeout: 1200);
             ep.AddSheet(rd, "ByAge");
 
             return new EpplusResult(ep, "DonorTotalSummary.xlsx");

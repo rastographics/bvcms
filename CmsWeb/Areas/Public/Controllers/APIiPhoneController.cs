@@ -56,9 +56,10 @@ namespace CmsWeb.Areas.Public.Controllers
         }
         public ActionResult Organizations()
         {
-			if (!AccountModel.AuthenticateMobile())
+			if (!AccountModel.AuthenticateMobile(checkorgmembersonly: true))
                 return Content("not authorized");
 			Response.NoCache();
+            DbUtil.LogActivity("iPhone Organizations");
 			if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
                 return new OrgResult(null);
             return new OrgResult(Util.UserPeopleId);
