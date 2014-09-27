@@ -114,7 +114,7 @@ namespace CmsWeb.Areas.People.Models
                          Type = ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId)
                               ? c.ContributionType.Description
                               : !online
-                                  ? c.ContributionDesc
+                                  ? c.ContributionType.Description
                                   : c.ContributionDesc == "Recurring Giving"
                                       ? c.ContributionDesc
                                       : "Online",

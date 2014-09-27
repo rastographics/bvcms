@@ -161,27 +161,9 @@ namespace CmsWeb.Areas.Search.Models
         public static string AddRelatedFamily(int peopleid, int relatedPersonId)
         {
             var p = DbUtil.Db.LoadPersonById(peopleid);
-            var p2 = DbUtil.Db.LoadPersonById(relatedPersonId);
-            var rf = DbUtil.Db.RelatedFamilies.SingleOrDefault(r =>
-                (r.FamilyId == p.FamilyId && r.RelatedFamilyId == p2.FamilyId)
-                || (r.FamilyId == p2.FamilyId && r.RelatedFamilyId == p.FamilyId)
-                );
-            if (rf == null)
-            {
-                rf = new RelatedFamily
-                {
-                    FamilyId = p.FamilyId,
-                    RelatedFamilyId = p2.FamilyId,
-                    FamilyRelationshipDesc = "",
-                    CreatedBy = Util.UserId1,
-                    CreatedDate = Util.Now,
-                };
-                DbUtil.Db.RelatedFamilies.InsertOnSubmit(rf);
-                DbUtil.Db.SubmitChanges();
-            }
+            var rf = p.AddRelated(DbUtil.Db, relatedPersonId);
             return "#rf-{0}-{1}".Fmt(rf.FamilyId, rf.RelatedFamilyId);
         }
-
 
         internal void AddExisting(int id)
         {
