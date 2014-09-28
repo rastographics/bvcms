@@ -127,6 +127,13 @@ namespace CmsWeb.Areas.Manage.Controllers
 		{
 			var m = new VolunteerRequestModel(mid, Util.UserPeopleId.Value, ticks)
 				{subject = subject, message = message, pids = pids, limit = limit };
+
+		    if (pids == null || pids.Length == 0)
+		    {
+		        ViewBag.Error = "Please select some recipients";
+		        return View("Request", m);
+		    }
+
 			m.SendEmails(additional ?? 0);
 			return Content("Emails are being sent, thank you.");
 		}

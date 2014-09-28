@@ -1,0 +1,11 @@
+CREATE TYPE [dbo].[DonorTotalsTable] AS TABLE
+(
+[tot] [money] NULL,
+[cnt] [int] NULL,
+[attr] [int] NULL
+)
+GO
+IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
+GO
+IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+GO

@@ -1542,9 +1542,33 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 ZipCode = PrimaryZip,
                 HomePhone = Family.HomePhone
             };
+            var oldf = this.FamilyId;
             f.People.Add(this);
             db.Families.InsertOnSubmit(f);
             db.SubmitChanges();
+        }
+
+        public RelatedFamily AddRelated(CMSDataContext db, int pid)
+        {
+            var p2 = db.LoadPersonById(pid);
+            var rf = db.RelatedFamilies.SingleOrDefault(r =>
+                (r.FamilyId == FamilyId && r.RelatedFamilyId == p2.FamilyId)
+                || (r.FamilyId == p2.FamilyId && r.RelatedFamilyId == FamilyId)
+                );
+            if (rf == null)
+            {
+                rf = new RelatedFamily
+                {
+                    FamilyId = FamilyId,
+                    RelatedFamilyId = p2.FamilyId,
+                    FamilyRelationshipDesc = "",
+                    CreatedBy = Util.UserId1,
+                    CreatedDate = Util.Now,
+                };
+                db.RelatedFamilies.InsertOnSubmit(rf);
+                db.SubmitChanges();
+            }
+            return rf;
         }
 
         public static void TryExtraValueIntegrity(CMSDataContext Db, string type, string newfield, List<string> BitCodes)

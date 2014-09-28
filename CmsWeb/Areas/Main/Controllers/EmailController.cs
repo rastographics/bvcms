@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.Main.Controllers
 				cn.Open();
 				cn.Execute("delete from dbo.Content where id in @ids", new { ids = draftId });
 			}
-			return RedirectToAction("Index2", new { id = queryid, parents });
+			return RedirectToAction("Index", new { id = queryid, parents });
 		}
 
 		[HttpPost]

@@ -39,6 +39,7 @@ namespace CmsWeb.Models
                 "Drop All Memberships",
                 "Employer",
                 "Entry Point",
+                "Electronic Statement",
                 "Envelope Options",
                 "Family Position",
                 "Gender",
@@ -84,6 +85,7 @@ namespace CmsWeb.Models
                 new TitleItems { title = "Bad Address Flag", items = BadAddressFlag(), UseCode = true },
                 new TitleItems { title = "Campus Codes", items = Model.AllCampuses() },
                 new TitleItems { title = "Contribution Statement Options", items = Model.EnvelopeOptionList() },
+                new TitleItems { title = "Electronic Statement", items = ElectronicStatement(), UseCode = true },
                 new TitleItems { title = "Decision Type Codes", items = Model.DecisionTypeList() },
                 new TitleItems { title = "Do Not Mail", items = DoNotMail(), UseCode = true },
                 new TitleItems { title = "Drop Type Codes", items = Model.DropTypeList() },
@@ -239,6 +241,9 @@ namespace CmsWeb.Models
                     case "Statement Options":
                         p.ContributionOptionsId = NewValue.ToInt2();
                         break;
+                    case "Electronic Statement":
+                        p.ElectronicStatement = NewValue.ToBool2();
+                        break;
                     case "Title":
                         p.TitleCode = NewValue;
                         break;
@@ -359,6 +364,14 @@ namespace CmsWeb.Models
 				{
 					new CodeValueItem { Code = "true", Value = "Yes, Do Not Mail" },
 					new CodeValueItem { Code = "false", Value = "No, OK To Mail" },
+				};
+        }
+        public static List<CodeValueItem> ElectronicStatement()
+        {
+            return new List<CodeValueItem> 
+				{
+					new CodeValueItem { Code = "true", Value = "Yes, Only Electronic Statements" },
+					new CodeValueItem { Code = "false", Value = "No, Paper Statements" },
 				};
         }
     }

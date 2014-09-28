@@ -380,6 +380,8 @@ namespace CmsWeb.Code
                    };
         }
         public IEnumerable<CodeValueItem> CampusList() { return AllCampusesNo(); }
+        public IEnumerable<CodeValueItem> FundList() { return Funds(); }
+        public IEnumerable<CodeValueItem> Campus0List() { return AllCampuses0(); }
         public IEnumerable<CodeValueItem> ContactReasonList() { return ContactReasonCodes().AddNotSpecified(); }
         public IEnumerable<CodeValueItem> ContactTypeList() { return ContactTypeCodes().AddNotSpecified(); }
         public IEnumerable<CodeValueItem> CountryList() { return GetCountryList(); }

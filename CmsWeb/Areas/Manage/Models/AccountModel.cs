@@ -100,17 +100,18 @@ namespace CmsWeb.Models
             }
             UserName2 = user.Username;
             SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
-            if (checkorgmembersonly)
-                if (!Util2.OrgMembersOnly && roleProvider.IsUserInRole(username, "OrgMembersOnly"))
-                {
-                    Util2.OrgMembersOnly = true;
-                    DbUtil.Db.SetOrgMembersOnly();
-                }
-                else if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(username, "OrgLeadersOnly"))
+            DbUtil.LogActivity("iphone auth " + user.Username);
+            if (checkorgmembersonly && !Util2.OrgLeadersOnlyChecked)
+            {
+                DbUtil.LogActivity("iphone leadersonly check " + user.Username);
+                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(username, "OrgLeadersOnly"))
                 {
                     Util2.OrgLeadersOnly = true;
                     DbUtil.Db.SetOrgLeadersOnly();
+                    DbUtil.LogActivity("SetOrgLeadersOnly");
                 }
+                Util2.OrgLeadersOnlyChecked = true;
+            }
             return true;
         }
 
