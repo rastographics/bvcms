@@ -41,6 +41,12 @@
     @Html.Hidden("pid", Model.person.PeopleId)
     <input type="hidden" name="ticks" value="@Model.ticks"/>
     @Html.Hidden("limit", Model.limit)
+    @if (ViewBag.Error != null)
+    {
+      <div class="red">
+        <b>@ViewBag.Error</b>
+      </div>
+    }
     <p>
         <label>Current Limit:</label>@Model.limit</p>
     <p>
