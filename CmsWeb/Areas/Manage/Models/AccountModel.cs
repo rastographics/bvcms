@@ -100,7 +100,6 @@ namespace CmsWeb.Models
             }
             UserName2 = user.Username;
             SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
-            DbUtil.LogActivity("iphone auth " + user.Username);
             if (checkorgmembersonly && !Util2.OrgLeadersOnlyChecked)
             {
                 DbUtil.LogActivity("iphone leadersonly check " + user.Username);

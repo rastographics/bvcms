@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using AuthorizeNet.APICore;
 using UtilityExtensions;
 using System.Net;
 using System.Text;
@@ -139,6 +140,12 @@ namespace CmsData
             }
             else // update existing
             {
+//                var target = new CustomerGateway(login, key);
+//                var c1 = target.GetCustomer(pi.AuNetCustId.ToString());
+//                var p1 = c1.PaymentProfiles[0];
+//                target.UpdatePaymentProfile(pi.AuNetCustPayId.ToString(), p1);
+//
+//                target.UpdatePaymentProfile(pi.AuNetCustId.ToString(), );
                 var request = new XDocument(new XDeclaration("1.0", "utf-8", null),
                     Element("updateCustomerProfileRequest",
                         Element("merchantAuthentication",
@@ -187,7 +194,7 @@ namespace CmsData
                 }
                 else // update credit card
                 {
-                    var creditcardElement = Element("creditCard", Element("expirationDate", exp));
+                    var creditcardElement = Element("creditCard", Element("expirationDate", expires));
                     if (!cardcode.StartsWith("X"))
                         creditcardElement.Add(Element("cardCode", cardnumber));
                     if (!cardnumber.StartsWith("X"))
@@ -376,73 +383,73 @@ namespace CmsData
 
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
         {
-//            string url0 = "https://secure.authorize.net/gateway/transact.dll";
-//            if (testing)
-//                url0 = "https://test.authorize.net/gateway/transact.dll";
-//
-//
-//            var p = new Dictionary<string, string>();
-//            p["x_delim_data"] = "TRUE";
-//            p["x_delim_char"] = "|";
-//            p["x_relay_response"] = "FALSE";
-//            p["x_type"] = "AUTH_CAPTURE";
-//            p["x_method"] = "CC";
-//
-//            if (testing)
-//            {
-//                p["x_login"] = "9t8Pqzs4CW3S";
-//                p["x_tran_key"] = "9j33v58nuZB865WR";
-//            }
-//            else
-//            {
-//                p["x_login"] = DbUtil.Db.Setting("x_login", "");
-//                p["x_tran_key"] = DbUtil.Db.Setting("x_tran_key", "");
-//            }
-//
-//            p["x_card_num"] = cardnumber;
-//            p["x_card_code"] = cardcode;
-//            p["x_exp_date"] = expires;
-//            p["x_amount"] = amt.ToString();
-//            p["x_description"] = description;
-//            p["x_invoice_num"] = tranid.ToString();
-//            p["x_cust_id"] = peopleId.ToString();
-//            p["x_first_name"] = first;
-//            p["x_last_name"] = last;
-//            p["x_address"] = addr;
-//            p["x_city"] = city;
-//            p["x_state"] = state;
-//            p["x_zip"] = zip;
-//            p["x_email"] = email;
-//
-//            var sb = new StringBuilder();
-//            foreach (var kv in p)
-//                sb.AppendFormat("{0}={1}&", kv.Key, HttpUtility.UrlEncode(kv.Value));
-//            sb.Length = sb.Length - 1;
-//
-//            var wc = new WebClient();
-//            var req = WebRequest.Create(url0);
-//            req.Method = "POST";
-//            req.ContentLength = sb.Length;
-//            req.ContentType = "application/x-www-form-urlencoded";
-//
-//            var sw = new StreamWriter(req.GetRequestStream());
-//            sw.Write(sb.ToString());
-//            sw.Close();
-//
-//            var r = req.GetResponse();
-//            using (var rs = new StreamReader(r.GetResponseStream()))
-//            {
-//                var resp = rs.ReadToEnd();
-//                rs.Close();
-//                var a = resp.Split('|');
-//                return new TransactionResponse
-//                {
-//                    Approved = a[0] == "1",
-//                    Message = a[3],
-//                    AuthCode = a[4],
-//                    TransactionId = a[6]
-//                };
-//            }
+            string url0 = "https://secure.authorize.net/gateway/transact.dll";
+            if (testing)
+                url0 = "https://test.authorize.net/gateway/transact.dll";
+
+
+            var p = new Dictionary<string, string>();
+            p["x_delim_data"] = "TRUE";
+            p["x_delim_char"] = "|";
+            p["x_relay_response"] = "FALSE";
+            p["x_type"] = "AUTH_CAPTURE";
+            p["x_method"] = "CC";
+
+            if (testing)
+            {
+                p["x_login"] = login;
+                p["x_tran_key"] = key;
+            }
+            else
+            {
+                p["x_login"] = DbUtil.Db.Setting("x_login", "");
+                p["x_tran_key"] = DbUtil.Db.Setting("x_tran_key", "");
+            }
+
+            p["x_card_num"] = cardnumber;
+            p["x_card_code"] = cardcode;
+            p["x_exp_date"] = expires;
+            p["x_amount"] = amt.ToString();
+            p["x_description"] = description;
+            p["x_invoice_num"] = tranid.ToString();
+            p["x_cust_id"] = peopleId.ToString();
+            p["x_first_name"] = first;
+            p["x_last_name"] = last;
+            p["x_address"] = addr;
+            p["x_city"] = city;
+            p["x_state"] = state;
+            p["x_zip"] = zip;
+            p["x_email"] = email;
+
+            var sb = new StringBuilder();
+            foreach (var kv in p)
+                sb.AppendFormat("{0}={1}&", kv.Key, HttpUtility.UrlEncode(kv.Value));
+            sb.Length = sb.Length - 1;
+
+            var wc = new WebClient();
+            var req = WebRequest.Create(url0);
+            req.Method = "POST";
+            req.ContentLength = sb.Length;
+            req.ContentType = "application/x-www-form-urlencoded";
+
+            var sw = new StreamWriter(req.GetRequestStream());
+            sw.Write(sb.ToString());
+            sw.Close();
+
+            var r = req.GetResponse();
+            using (var rs = new StreamReader(r.GetResponseStream()))
+            {
+                var resp = rs.ReadToEnd();
+                rs.Close();
+                var a = resp.Split('|');
+                return new TransactionResponse
+                {
+                    Approved = a[0] == "1",
+                    Message = a[3],
+                    AuthCode = a[4],
+                    TransactionId = a[6]
+                };
+            }
         }
 
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string city, string state, string zip, string phone)

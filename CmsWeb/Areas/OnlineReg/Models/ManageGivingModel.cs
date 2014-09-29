@@ -314,6 +314,10 @@ namespace CmsWeb.Models
         }
         public void Update()
         {
+            var pi = person.PaymentInfo();
+            if (Cardnumber.HasValue() && Cardnumber.Contains("X"))
+                Cardnumber = pi.Ccv;
+
             var gw = DbUtil.Db.Gateway(testing);
             gw.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
 
@@ -332,7 +336,6 @@ namespace CmsWeb.Models
             mg.StopWhen = StopWhen;
             mg.NextDate = mg.FindNextDate(DateTime.Today);
 
-            var pi = person.PaymentInfo();
             pi.FirstName = FirstName.Truncate(50);
             pi.MiddleInitial = Middle.Truncate(10);
             pi.LastName = LastName.Truncate(50);
