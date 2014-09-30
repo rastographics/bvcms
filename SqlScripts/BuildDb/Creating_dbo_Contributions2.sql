@@ -1,4 +1,3 @@
-
 CREATE FUNCTION [dbo].[Contributions2]
 (
 	@fd DATETIME, 
@@ -18,8 +17,8 @@ SELECT
     c.ContributionDate AS Date,
     
     CASE WHEN fa.HeadOfHouseholdId = sp.PeopleId
-			AND sp.ContributionOptionsId = 2
-			AND p.ContributionOptionsId = 2
+			AND ISNULL(sp.ContributionOptionsId, CASE WHEN sp.MaritalStatusId = 20 THEN 2 ELSE 1 END) = 2
+			AND ISNULL(p.ContributionOptionsId, CASE WHEN p.MaritalStatusId = 20 THEN 2 ELSE 1 END) = 2
 		THEN sp.PeopleId 
 		ELSE c.PeopleId 
 	END AS CreditGiverId,
