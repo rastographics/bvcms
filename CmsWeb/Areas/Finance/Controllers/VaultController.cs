@@ -15,7 +15,13 @@ namespace CmsWeb.Areas.Finance.Controllers
 		    var db = DbUtil.Db;
 		    var gw = db.Gateway();
 
-            gw.RemoveFromVault(id);
+		    try
+		    {
+                gw.RemoveFromVault(id);
+		    }
+		    catch (Exception)
+		    {
+		    }
 
 		    var p = db.LoadPersonById(id);
 			db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);

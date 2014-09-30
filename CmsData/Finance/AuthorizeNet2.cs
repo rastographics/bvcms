@@ -31,7 +31,7 @@ namespace CmsData
             this.testing = testing || Db.Setting("GatewayTesting", "false").ToLower() == "true";
 
             this.db = Db;
-            if (testing)
+            if (this.testing)
             {
                 login = "9t8Pqzs4CW3S";
                 key = "9j33v58nuZB865WR";
@@ -77,6 +77,8 @@ namespace CmsData
 
         public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
         {
+            var x = getCustomerProfileIds();
+
             AddUpdateCustomerProfile(peopleId, type, cardnumber, DbUtil.NormalizeExpires(expires).ToString2("MMyy"), cardcode, routing, account, giving);
         }
 
@@ -108,7 +110,7 @@ namespace CmsData
             {
                 var target = new CustomerGateway(login, key);
                 var cust = target.CreateCustomer(p.EmailAddress, p.Name, pi.AuNetCustId.ToString());
-                pi.AuNetCustId = cust.ID.ToInt();
+                pi.AuNetCustId = cust.ProfileID.ToInt();
                 var address = new AuthorizeNet.Address()
                 {
                     City = p.PrimaryCity,
