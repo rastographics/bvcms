@@ -13,18 +13,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult VoteLinkSg(string id, string message, bool? confirm)
         {
             if (!id.HasValue())
-                return Content("bad link");
+                return Message("bad link");
 
             var guid = id.ToGuid();
             if (guid == null)
-                return Content("invalid link");
+                return Message("invalid link");
             var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
             if (ot == null)
-                return Content("invalid link");
+                return Message("invalid link");
             if (ot.Used)
-                return Content("link used");
+                return Message("link used");
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
-                return Content("link expired");
+                return Message("link expired");
             var a = ot.Querystring.SplitStr(",", 5);
             var oid = a[0].ToInt();
             var pid = a[1].ToInt();
@@ -38,20 +38,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                      select new { p = pp, org = org, om = om }).Single();
 
             if (q.org == null)
-                return Content("org missing, bad link");
+                return Message("org missing, bad link");
 
             if ((q.org.RegistrationTypeId ?? RegistrationTypeCode.None) == RegistrationTypeCode.None)
-                return Content("votelink is no longer active");
+                return Message("votelink is no longer active");
 
             if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
-                return Content("sorry, maximum limit has been reached");
+                return Message("sorry, maximum limit has been reached");
 
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
-                return Content("sorry, registration has been closed");
+                return Message("sorry, registration has been closed");
 
             var setting = new Settings(q.org.RegSetting, DbUtil.Db, oid);
             if (IsSmallGroupFilled(setting, oid, smallgroup))
-                return Content("sorry, maximum limit has been reached for " + smallgroup);
+                return Message("sorry, maximum limit has been reached for " + smallgroup);
 
             var omb = q.om;
             omb = OrganizationMember.InsertOrgMembers(DbUtil.Db,
@@ -102,24 +102,24 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                           "{0} has registered for {1}<br>{2}<br>(from votelink)".Fmt(q.p.Name, q.org.OrganizationName, smallgroup));
             }
 
-            return Content(message);
+            return Message(message);
         }
 
         public ActionResult TestVoteLink(string id, string smallgroup, string message, bool? confirm)
         {
             if (!id.HasValue())
-                return Content("bad link");
+                return Message("bad link");
 
             var guid = id.ToGuid();
             if (guid == null)
-                return Content("not a guid");
+                return Message("not a guid");
             var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
             if (ot == null)
-                return Content("cannot find link");
+                return Message("cannot find link");
             if (ot.Used)
-                return Content("link used");
+                return Message("link used");
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
-                return Content("link expired");
+                return Message("link expired");
             var a = ot.Querystring.SplitStr(",", 5);
             var oid = a[0].ToInt();
             var pid = a[1].ToInt();
@@ -133,22 +133,22 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                      let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == oid && oo.PeopleId == pid)
                      select new { p = pp, org, om }).SingleOrDefault();
             if (q == null)
-                return Content("peopleid {0} not found".Fmt(pid));
+                return Message("peopleid {0} not found".Fmt(pid));
 
             if (q.org == null)
-                return Content("no org " + oid);
+                return Message("no org " + oid);
 
             if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
-                return Content("sorry, maximum limit has been reached");
+                return Message("sorry, maximum limit has been reached");
 
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
-                return Content("sorry, registration has been closed");
+                return Message("sorry, registration has been closed");
 
             var setting = new Settings(q.org.RegSetting, DbUtil.Db, oid);
             if (IsSmallGroupFilled(setting, oid, smallgroup))
-                return Content("sorry, maximum limit has been reached for " + smallgroup);
+                return Message("sorry, maximum limit has been reached for " + smallgroup);
 
-            return Content(@"<pre>
+            return Message(@"<pre>
 looks ok
 oid={0}
 pid={1}
@@ -159,18 +159,18 @@ emailid={2}
         public ActionResult RsvpLinkSg(string id, string message, bool? confirm, bool regrets = false)
         {
             if (!id.HasValue())
-                return Content("bad link");
+                return Message("bad link");
 
             var guid = id.ToGuid();
             if (guid == null)
-                return Content("invalid link");
+                return Message("invalid link");
             var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
             if (ot == null)
-                return Content("invalid link");
+                return Message("invalid link");
             if (ot.Used)
-                return Content("link used");
+                return Message("link used");
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
-                return Content("link expired");
+                return Message("link expired");
             var a = ot.Querystring.SplitStr(",", 4);
             var meetingid = a[0].ToInt();
             var pid = a[1].ToInt();
@@ -185,7 +185,7 @@ emailid={2}
                                 orderby mm.MeetingDate
                                 select mm).FirstOrDefault();
                 if (nextmeet == null)
-                    return Content("no meeting");
+                    return Message("no meeting");
                 meetingid = nextmeet.MeetingId;
             }
             var q = (from pp in DbUtil.Db.People
@@ -195,13 +195,13 @@ emailid={2}
                      select new { p = pp, org, meeting }).Single();
 
             if (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive)
-                return Content("sorry, registration has been closed");
+                return Message("sorry, registration has been closed");
 
             if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
-                return Content("rsvp is no longer available");
+                return Message("rsvp is no longer available");
 
             if (q.org.Limit <= q.meeting.Attends.Count(aa => aa.Commitment == 1))
-                return Content("sorry, maximum limit has been reached");
+                return Message("sorry, maximum limit has been reached");
             var omb = OrganizationMember.InsertOrgMembers(DbUtil.Db,
                                               q.meeting.OrganizationId, pid, MemberTypeCode.Member, DateTime.Now, null, false);
             if (smallgroup.HasValue())
@@ -228,31 +228,30 @@ emailid={2}
                           q.org.OrganizationName,
                           "{0} has registered for {1}<br>{2}".Fmt(q.p.Name, q.org.OrganizationName, q.meeting.MeetingDate.ToString2("f")));
             }
-            return Content(message);
-
+            return Message(message);
         }
 
         [ValidateInput(false)]
         public ActionResult RegisterLink(string id, bool? showfamily)
         {
             if (!id.HasValue())
-                return Content("bad link");
+                return Message("bad link");
             if (!Request.Browser.Cookies)
-                return Content(Request.UserAgent + "<br>Your browser must support cookies");
+                return Message(Request.UserAgent + "<br>Your browser must support cookies");
 
             var guid = id.ToGuid();
             if (guid == null)
-                return Content("invalid link");
+                return Message("invalid link");
             var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
             if (ot == null)
-                return Content("invalid link");
+                return Message("invalid link");
 #if DEBUG
 #else
             if (ot.Used)
-                return Content("link used");
+                return Message("link used");
 #endif
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
-                return Content("link expired");
+                return Message("link expired");
             var a = ot.Querystring.SplitStr(",", 4);
             var oid = a[0].ToInt();
             var pid = a[1].ToInt();
@@ -268,13 +267,13 @@ emailid={2}
                      select new { p = pp, org = org, om = om }).Single();
 
             if (q.org == null)
-                return Content("org missing, bad link");
+                return Message("org missing, bad link");
 
             if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
-                return Content("sorry, maximum limit has been reached");
+                return Message("sorry, maximum limit has been reached");
 
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
-                return Content("sorry, registration has been closed");
+                return Message("sorry, registration has been closed");
 
             var url = "/OnlineReg/{0}?registertag={1}".Fmt(oid, id);
             if (gsid.HasValue)
@@ -288,18 +287,18 @@ emailid={2}
         public ActionResult SendLink(string id)
         {
             if (!id.HasValue())
-                return Content("bad link");
+                return Message("bad link");
 
             var guid = id.ToGuid();
             if (guid == null)
-                return Content("invalid link");
+                return Message("invalid link");
             var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
             if (ot == null)
-                return Content("invalid link");
+                return Message("invalid link");
             if (ot.Used)
-                return Content("link used");
+                return Message("link used");
             if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
-                return Content("link expired");
+                return Message("link expired");
             var a = ot.Querystring.SplitStr(",", 4);
             var orgid = a[0].ToInt();
             var pid = a[1].ToInt();
@@ -311,10 +310,10 @@ emailid={2}
                      select new { p = pp, org }).Single();
 
             if (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive)
-                return Content("sorry, registration has been closed");
+                return Message("sorry, registration has been closed");
 
             if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
-                return Content("sorry, registration is no longer available");
+                return Message("sorry, registration is no longer available");
 
             ot.Used = true;
             DbUtil.Db.SubmitChanges();
@@ -329,7 +328,7 @@ or contact the church if you need help.</p>"
 
             DbUtil.Db.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation
 
-            return Content("Thank you, {0}, we just sent an email to {1} with your link...".Fmt(q.p.PreferredName, Util.ObscureEmail(q.p.EmailAddress)));
+            return Message("Thank you, {0}, we just sent an email to {1} with your link...".Fmt(q.p.PreferredName, Util.ObscureEmail(q.p.EmailAddress)));
         }
 
         private bool IsSmallGroupFilled(Settings setting, int orgid, string sg)

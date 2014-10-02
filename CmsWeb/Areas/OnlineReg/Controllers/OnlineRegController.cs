@@ -40,20 +40,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content("Site is disabled for maintenance, check back later");
             Response.NoCache();
             if (!id.HasValue)
-                return Content("no organization");
+                return Message("no organization");
             var m = new OnlineRegModel { Orgid = id };
             if (m.org == null && m.masterorg == null)
-                return Content("invalid registration");
+                return Message("invalid registration");
 
             if (m.masterorg != null)
             {
                 if (!OnlineRegModel.UserSelectClasses(m.masterorg).Any())
-                    return Content("no classes available on this org");
+                    return Message("no classes available on this org");
             }
             else if (m.org != null)
             {
                 if ((m.org.RegistrationTypeId ?? 0) == RegistrationTypeCode.None)
-                    return Content("no registration allowed on this org");
+                    return Message("no registration allowed on this org");
                 if (m.org.IsMissionTrip == true)
                 {
                     if (gsid.HasValue)
@@ -91,17 +91,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 var guid = registertag.ToGuid();
                 if (guid == null)
-                    return Content("invalid link");
+                    return Message("invalid link");
                 var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
                 if (ot == null)
-                    return Content("invalid link");
+                    return Message("invalid link");
 #if DEBUG
 #else
                 if (ot.Used)
-                    return Content("link used");
+                    return Message("link used");
 #endif
                 if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
-                    return Content("link expired");
+                    return Message("link expired");
                 var a = ot.Querystring.Split(',');
                 pid = a[1].ToInt();
                 m.registertag = registertag;
@@ -565,7 +565,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             if (m.List.Count == 0)
-                return Content("Can't find any registrants");
+                return Message("Can't find any registrants");
 
             RemoveLastRegistrantIfEmpty(m);
 
@@ -602,7 +602,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.ParseSettings();
 
             if (om != null && m.settings[om.OrganizationId].AllowReRegister == false && !m.SupportMissionTrip)
-                return Content("You are already registered it appears");
+                return Message("You are already registered it appears");
 
             var pf = PaymentForm.CreatePaymentForm(m);
             if (OnlineRegModel.GetTransactionGateway() == "serviceu")
@@ -682,7 +682,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)
-                return Content("no existing registration available");
+                return Message("no existing registration available");
             var n = m.List.Count - 1;
             m.List[n].ValidateModelForOther(ModelState, n);
             m.History.Add("continue");
@@ -694,10 +694,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var pid = (int)TempData["er"];
             if (pid == 0)
-                return Content("not logged in");
+                return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)
-                return Content("no existing registration available");
+                return Message("no existing registration available");
             m.History.Add("startover");
             m.UpdateDatum(abandoned: true);
             return Redirect(m.URL);
@@ -709,19 +709,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if(m.UserPeopleId == null)
                 m.UserPeopleId = Util.UserPeopleId;
             m.UpdateDatum();
-            return Content("We have saved your progress, an email with a link to finish this registration will come to you shortly.");
+            return Message("We have saved your progress, an email with a link to finish this registration will come to you shortly.");
         }
         [HttpGet]
         public ActionResult Existing(int id)
         {
             var pid = (int)TempData["er"];
             if (pid == 0)
-                return Content("not logged in");
+                return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)
-                return Content("no existing registration available");
+                return Message("no existing registration available");
             if (m.UserPeopleId != m.Datum.UserPeopleId)
-                return Content("incorrect user");
+                return Message("incorrect user");
             TempData["er"] = pid;
             return View(m);
         }

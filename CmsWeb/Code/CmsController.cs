@@ -86,6 +86,10 @@ namespace CmsWeb
             }
             return "!API no Authorization Header";
         }
+        public ViewResult Message(string text)
+        {
+            return View("Message", model: text);
+        }
     }
     [CMSLog]
     [MyRequireHttps]
@@ -127,6 +131,10 @@ namespace CmsWeb
         public ActionResult RedirectShowError(string message)
         {
             return new RedirectResult(ErrorUrl(message));
+        }
+        public ViewResult Message(string text)
+        {
+            return View("Message", model: text);
         }
     }
     [CMSLog]
