@@ -66,7 +66,7 @@
     <WidowedDate Title="Widowed Date" Type="Date">
       Pick a date with a comparison.
     </WidowedDate>
-    <TitleCode Title="Title" Type="CodeStr" DataSource="TitleCodes" DataValueField="Code">
+    <TitleCode Title="Title" Type="String" >
       Select Title from list.
     </TitleCode>
     <EmailAddress Title="Email" Type="String">

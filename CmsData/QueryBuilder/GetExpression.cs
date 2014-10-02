@@ -190,23 +190,23 @@ namespace CmsData
                     if (op == CompareType.IsNull || op == CompareType.IsNotNull)
                         return CompareConstant(ConditionName, -1);
                     return CompareConstant(ConditionName, IsMultiple ? (object)CodeIntIds : (object)CodeIds.ToInt());
-                case QueryType.PrimaryAddress:
-                case QueryType.PrimaryAddress2:
-                case QueryType.PrimaryZip:
-                case QueryType.PrimaryCountry:
-                case QueryType.PrimaryCity:
-                case QueryType.FirstName:
-                case QueryType.MiddleName:
-                case QueryType.MaidenName:
-                case QueryType.NickName:
-                case QueryType.CellPhone:
-                case QueryType.WorkPhone:
-                case QueryType.HomePhone:
-                case QueryType.EmailAddress:
-                case QueryType.EmailAddress2:
-                    if (op == CompareType.IsNull || op == CompareType.IsNotNull)
-                        return CompareConstant(ConditionName, null);
-                    return CompareStringConstant(ConditionName, TextValue ?? "");
+//                case QueryType.PrimaryAddress:
+//                case QueryType.PrimaryAddress2:
+//                case QueryType.PrimaryZip:
+//                case QueryType.PrimaryCountry:
+//                case QueryType.PrimaryCity:
+//                case QueryType.FirstName:
+//                case QueryType.MiddleName:
+//                case QueryType.MaidenName:
+//                case QueryType.NickName:
+//                case QueryType.CellPhone:
+//                case QueryType.WorkPhone:
+//                case QueryType.HomePhone:
+//                case QueryType.EmailAddress:
+//                case QueryType.EmailAddress2:
+//                    if (op == CompareType.IsNull || op == CompareType.IsNotNull)
+//                        return CompareConstant(ConditionName, null);
+//                    return CompareStringConstant(ConditionName, TextValue ?? "");
                 default:
                     if (op == CompareType.IsNull || op == CompareType.IsNotNull)
                         return CompareConstant(ConditionName, null);
@@ -217,7 +217,7 @@ namespace CmsData
                         case FieldType.Code: return CompareConstant(ConditionName, IsMultiple ? (object)CodeIntIds : (object)CodeIds.ToInt());
                         case FieldType.NullCode: return CompareCodeConstant(ConditionName, IsMultiple ? (object)CodeIntIds : (object)CodeIds.ToInt());
                         case FieldType.CodeStr: return CompareConstant(ConditionName, IsMultiple ? (object)CodeStrIds : (object)CodeIdValue);
-                        case FieldType.String: return CompareConstant(ConditionName, TextValue);
+                        case FieldType.String: return CompareStringConstant(ConditionName, TextValue ?? "");
                         case FieldType.Number:
                         case FieldType.NullNumber: return CompareConstant(ConditionName, decimal.Parse(TextValue));
                         case FieldType.Integer:
