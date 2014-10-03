@@ -313,9 +313,9 @@ namespace CmsWeb.Models
                             masterorgid = masterorgid,
                             LoggedIn = false,
 #if DEBUG
-                            FirstName = "FouryearOldprek",
-                            LastName = "Child", // + DateTime.Now.Millisecond,
-                            DateOfBirth = "10/1/08",
+                            FirstName = "David",
+                            LastName = "Carroll", // + DateTime.Now.Millisecond,
+                            DateOfBirth = "5/30/52",
                             EmailAddress = "david@bvcms.com",
                             Phone = "",
 #endif
@@ -331,5 +331,9 @@ namespace CmsWeb.Models
             set { history = value; }
         }
 
+        public void HistoryAdd(string s)
+        {
+            History.Add("{0} {1:g}".Fmt(s, DateTime.Now));
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (ed != null)
             {
                 var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
-                m.History.Add("saveprogress");
+                m.HistoryAdd("saveprogress");
                 if (m.UserPeopleId == null)
                     m.UserPeopleId = Util.UserPeopleId;
                 m.UpdateDatum();
@@ -172,7 +172,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (m != null)
                 {
                     m.TranId = ti.Id;
-                    m.History.Add("ProcessPayment");
+                    m.HistoryAdd("ProcessPayment");
                     ed.Data = Util.Serialize<OnlineRegModel>(m);
                     ed.Completed = true;
                     DbUtil.Db.SubmitChanges();
@@ -331,7 +331,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var t = m.Transaction;
             if (t == null && !managingsubs && !choosingslots)
             {
-                m.History.Add("ConfirmTransaction");
+                m.HistoryAdd("ConfirmTransaction");
                 m.UpdateDatum(completed: true);
                 var pf = PaymentForm.CreatePaymentForm(m);
                 t = pf.CreateTransaction(DbUtil.Db);

@@ -21,21 +21,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("~/OnlineReg/Index/{id:int}")]
         public ActionResult Index(int? id, bool? testing, string email, bool? nologin, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid)
         {
-//            if (Util.IsDebug())
-//            {
-//                var q = from om in DbUtil.Db.OrganizationMembers
-//                    where om.OrganizationId == 89924
-//                    select om;
-//                foreach (var om in q)
-//                    om.Drop(DbUtil.Db, addToHistory: false);
-//                    //        DbUtil.Db.PurgePerson(om.PeopleId);
+            if (Util.IsDebug())
+            {
+                var q = from om in DbUtil.Db.OrganizationMembers
+                        where om.OrganizationId == 89539 && om.PeopleId == 828612
+                        select om;
+                foreach (var om in q)
+                    om.Drop(DbUtil.Db, addToHistory: false);
+                //        DbUtil.Db.PurgePerson(om.PeopleId);
 //                var dr = DbUtil.Db.People.SingleOrDefault(mm => mm.Name == "David Roll");
-//                if(dr != null)
-//                    foreach(var mm in dr.Family.People)
-//                        if(mm.PeopleId != dr.PeopleId)
+//                if (dr != null)
+//                    foreach (var mm in dr.Family.People)
+//                        if (mm.PeopleId != dr.PeopleId)
 //                            DbUtil.Db.PurgePerson(mm.PeopleId);
-//                DbUtil.Db.SubmitChanges();
-//            }
+                DbUtil.Db.SubmitChanges();
+            }
             if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
                 return Content("Site is disabled for maintenance, check back later");
             Response.NoCache();
@@ -167,13 +167,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     if (p.Found == true)
                         p.FillPriorInfo();
                     p.CheckSetFee();
-                    m.History.Add("index, pid={0}, !showfamily, p.org, found=true".Fmt(pid));
+                    m.HistoryAdd("index, pid={0}, !showfamily, p.org, found=true".Fmt(pid));
                     return View(m);
                 }
-                m.History.Add("index, pid=" + pid);
+                m.HistoryAdd("index, pid=" + pid);
                 return View(m);
             }
-            m.History.Add("index");
+            m.HistoryAdd("index");
             return View(m);
         }
         // authenticate user
@@ -223,7 +223,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.UserSelectsOrganization())
                 m.List[0].ValidateModelForFind(ModelState, m, 0);
             m.List[0].LoggedIn = true;
-            m.History.Add("login");
+            m.HistoryAdd("login");
             return FlowList(m, "Login");
         }
         // Register without logging in
@@ -232,13 +232,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             m.nologin = true;
             m.CreateList();
-            m.History.Add("nologin");
+            m.HistoryAdd("nologin");
             return FlowList(m, "NoLogin");
         }
         [HttpPost]
         public ActionResult YesLogin(OnlineRegModel m)
         {
-            m.History.Add("yeslogin");
+            m.HistoryAdd("yeslogin");
             m.nologin = false;
             m.List = new List<OnlineRegPersonModel>();
 #if DEBUG
@@ -250,7 +250,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Register(int id, OnlineRegModel m)
         {
             ModelState.Clear();
-            m.History.Add("Register");
+            m.HistoryAdd("Register");
             int index = m.List.Count - 1;
             if (m.List[index].classid.HasValue)
                 m.classid = m.List[index].classid;
@@ -283,7 +283,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult Cancel(int id, OnlineRegModel m)
         {
-            m.History.Add("Cancel id=" + id);
+            m.HistoryAdd("Cancel id=" + id);
             m.List.RemoveAt(id);
             if (m.List.Count == 0)
                 m.List.Add(new OnlineRegPersonModel
@@ -303,7 +303,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult ShowMoreInfo(int id, OnlineRegModel m)
         {
-            m.History.Add("ShowMoreInfo id=" + id);
+            m.HistoryAdd("ShowMoreInfo id=" + id);
             DbUtil.Db.SetNoLock();
             var p = m.List[id];
             p.ValidateModelForFind(ModelState, m, id);
@@ -356,7 +356,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult PersonFind(int id, OnlineRegModel m)
         {
-            m.History.Add("PersonFind id=" + id);
+            m.HistoryAdd("PersonFind id=" + id);
 
             if (id >= m.List.Count)
                 return FlowList(m, "PersonFind");
@@ -425,7 +425,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult SubmitNew(int id, OnlineRegModel m)
         {
             ModelState.Clear();
-            m.History.Add("SubmitNew id=" + id);
+            m.HistoryAdd("SubmitNew id=" + id);
             var p = m.List[id];
             p.ValidateModelForNew(ModelState, id);
 
@@ -486,7 +486,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult SubmitOtherInfo(int id, OnlineRegModel m)
         {
-            m.History.Add("SubmitOtherInfo id=" + id);
+            m.HistoryAdd("SubmitOtherInfo id=" + id);
             if (m.List.Count <= id)
                 return Content("<p style='color:red'>error: cannot find person on submit other info</p>");
             m.List[id].ValidateModelForOther(ModelState, id);
@@ -495,7 +495,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult AddAnotherPerson(OnlineRegModel m)
         {
-            m.History.Add("AddAnotherPerson");
+            m.HistoryAdd("AddAnotherPerson");
             m.ParseSettings();
             if (!ModelState.IsValid)
                 return FlowList(m, "AddAnotherPerson");
@@ -529,7 +529,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult AskDonation(OnlineRegModel m)
         {
-            m.History.Add("AskDonation");
+            m.HistoryAdd("AskDonation");
             if (m.List.Count == 0)
                 return Content("Can't find any registrants");
             RemoveLastRegistrantIfEmpty(m);
@@ -548,7 +548,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult CompleteRegistration(OnlineRegModel m)
         {
-            m.History.Add("CompleteRegistration");
+            m.HistoryAdd("CompleteRegistration");
 
             if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
             {
@@ -685,7 +685,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("no existing registration available");
             var n = m.List.Count - 1;
             m.List[n].ValidateModelForOther(ModelState, n);
-            m.History.Add("continue");
+            m.HistoryAdd("continue");
             m.UpdateDatum();
             return View("Index", m);
         }
@@ -698,14 +698,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)
                 return Message("no existing registration available");
-            m.History.Add("startover");
+            m.HistoryAdd("startover");
             m.UpdateDatum(abandoned: true);
             return Redirect(m.URL);
         }
         [HttpPost]
         public ActionResult SaveProgress(OnlineRegModel m)
         {
-            m.History.Add("saveprogress");
+            m.HistoryAdd("saveprogress");
             if(m.UserPeopleId == null)
                 m.UserPeopleId = Util.UserPeopleId;
             m.UpdateDatum();
