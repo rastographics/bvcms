@@ -133,7 +133,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                         throw new Exception("ServiceU not supported");
 
                 }
-                if (pf.UseBootstrap)
+                if (pf.UseBootstrap && pf.AddressChecked < 2)
                 {
                     var r = AddressVerify.LookupAddress(pf.Address, "", "", "", pf.Zip);
                     var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == pf.Zip.Zip5());
@@ -146,8 +146,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     {
                         if (r.found == false)
                         {
+                            ModelState.Clear(); // so the form will bind to the object again
+                            pf.AddressChecked++;
                             ModelState.AddModelError("Zip",
-                                r.address + ", to skip address check, Change the country to USA, Not Validated");
+                                "Address not found: " + r.address);
                             return View("Payment/Process", pf);
                         }
                         if (r.Line1 != pf.Address)
