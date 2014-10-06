@@ -548,6 +548,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult CompleteRegistration(OnlineRegModel m)
         {
+            TempData["onlineregmodel"] = Util.Serialize<OnlineRegModel>(m);
+            return Redirect("/OnlineReg/CompleteRegistration");
+        }
+        [HttpGet]
+        public ActionResult CompleteRegistration()
+        {
+            var s = (string) TempData["onlineregmodel"];
+            if (s == null)
+                return Message("Registration cannot be completed after a page refresh.");
+            var m = Util.DeSerialize<OnlineRegModel>(s);
+
             m.HistoryAdd("CompleteRegistration");
 
             if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
