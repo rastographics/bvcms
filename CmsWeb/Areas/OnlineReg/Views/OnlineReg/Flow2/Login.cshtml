@@ -1,7 +1,7 @@
 ﻿@model CmsWeb.Models.OnlineRegModel
 @{ Model.ShowLoginInstructions = true; }
 <div class="well">
-    @Html.EditorFor(m => m.username, new { placeholder = "Enter Username or email address on record" })
+    @Html.EditorFor(m => m.username, new { placeholder = "Enter username or email address on record" })
     @Html.EditorFor(m => m.password, "password")
     @Html.DivValidationMessage("authentication")
     <div class="form-group">

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -68,7 +69,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     }
                 }
             }
-            m.URL = Request.Url.OriginalString;
+            if (Request.Url != null) m.URL = Request.Url.OriginalString;
 
             SetHeaders(m);
 
@@ -195,6 +196,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 TempData["er"] = m.UserPeopleId = Util.UserPeopleId;
                 return Content("/OnlineReg/Existing/" + existingRegistration.DatumId);
             }
+            Debug.Assert(Util.UserPeopleId != null, "Util.UserPeopleId != null");
 
             m.CreateList();
             m.UserPeopleId = Util.UserPeopleId;
@@ -219,6 +221,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 TempData["mg"] = Util.UserPeopleId;
                 return Content("/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid));
             }
+            if (m.OnlineGiving())
+                return Register(Util.UserPeopleId.Value, m);
 
             if (m.UserSelectsOrganization())
                 m.List[0].ValidateModelForFind(ModelState, m, 0);

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Data.Linq;
@@ -63,6 +65,7 @@ namespace CmsWeb.Models
         }
 
         public int? classid { get; set; }
+        [DisplayName("Username")]
         public string username { get; set; }
         public bool nologin { get; set; }
         public decimal? donation { get; set; }
@@ -86,6 +89,7 @@ namespace CmsWeb.Models
         }
 
         [XmlIgnore]
+        [DisplayName("Password")]
         public string password { get; set; }
 
         public XmlSchema GetSchema()
