@@ -71,11 +71,11 @@ namespace CmsData
 			XElement resp = null;
 			if (type == "C")
 			{
-				coll["CARDNUMBER"] = cardnumber;
 				coll["EXPIRATION_DATE"] = expires;
 
 				if (pi.SageCardGuid == null)
 				{
+    				coll["CARDNUMBER"] = cardnumber;
 					var b = wc.UploadValues("INSERT_CREDIT_CARD_DATA", "POST", coll);
 					var ret = Encoding.ASCII.GetString(b);
 					resp = getResponse(ret);
@@ -86,6 +86,7 @@ namespace CmsData
 					coll["GUID"] = pi.SageCardGuid.ToString().Replace("-", "");
 					if (!cardnumber.StartsWith("X"))
 					{
+        				coll["CARDNUMBER"] = cardnumber;
 						var b = wc.UploadValues("UPDATE_CREDIT_CARD_DATA", "POST", coll);
 						var ret = Encoding.ASCII.GetString(b);
 						resp = getResponse(ret);

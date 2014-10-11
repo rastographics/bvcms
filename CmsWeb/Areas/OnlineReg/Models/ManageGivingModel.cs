@@ -315,8 +315,8 @@ namespace CmsWeb.Models
         public void Update()
         {
             var pi = person.PaymentInfo();
-            if (Cardnumber.HasValue() && Cardnumber.Contains("X"))
-                Cardnumber = pi.Ccv;
+            if (Cardcode.HasValue() && Cardcode.Contains("X"))
+                Cardcode = pi.Ccv;
             var gateway = OnlineRegModel.GetTransactionGateway();
             if (gateway == "authorizenet")
             {
@@ -374,11 +374,7 @@ namespace CmsWeb.Models
             pi.Zip = Zip.Truncate(15);
             pi.Phone = Phone.Truncate(25);
 
-            var q = from ra in DbUtil.Db.RecurringAmounts
-                    where ra.PeopleId == pid
-                    select ra;
-            DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(q);
-            DbUtil.Db.SubmitChanges();
+            DbUtil.Db.ExecuteCommand("DELETE dbo.RecurringAmounts WHERE PeopleId = {0}", pid);
             foreach (var c in FundItemsChosen())
             {
                 var ra = new RecurringAmount

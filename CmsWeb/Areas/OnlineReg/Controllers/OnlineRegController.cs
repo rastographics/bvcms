@@ -30,11 +30,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 foreach (var om in q)
                     om.Drop(DbUtil.Db, addToHistory: false);
                 //        DbUtil.Db.PurgePerson(om.PeopleId);
-//                var dr = DbUtil.Db.People.SingleOrDefault(mm => mm.Name == "David Roll");
-//                if (dr != null)
-//                    foreach (var mm in dr.Family.People)
-//                        if (mm.PeopleId != dr.PeopleId)
-//                            DbUtil.Db.PurgePerson(mm.PeopleId);
+                //                var dr = DbUtil.Db.People.SingleOrDefault(mm => mm.Name == "David Roll");
+                //                if (dr != null)
+                //                    foreach (var mm in dr.Family.People)
+                //                        if (mm.PeopleId != dr.PeopleId)
+                //                            DbUtil.Db.PurgePerson(mm.PeopleId);
                 DbUtil.Db.SubmitChanges();
             }
             if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
@@ -552,13 +552,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult CompleteRegistration(OnlineRegModel m)
         {
+            if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
+                m.List[0].SpecialTest = SpecialRegModel.ParseResults(Request.Form);
             TempData["onlineregmodel"] = Util.Serialize<OnlineRegModel>(m);
             return Redirect("/OnlineReg/CompleteRegistration");
         }
         [HttpGet]
         public ActionResult CompleteRegistration()
         {
-            var s = (string) TempData["onlineregmodel"];
+            var s = (string)TempData["onlineregmodel"];
             if (s == null)
                 return Message("Registration cannot be completed after a page refresh.");
             var m = Util.DeSerialize<OnlineRegModel>(s);
@@ -567,7 +569,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
             {
-                SpecialRegModel.ParseResults(m.Orgid ?? 0, m.List[0].PeopleId ?? 0, Request.Form);
+                var p = m.List[0];
+                if (p.IsNew)
+                    p.AddPerson(null, p.org.EntryPointId ?? 0);
+                SpecialRegModel.SaveResults(m.Orgid ?? 0, m.List[0].PeopleId ?? 0, m.List[0].SpecialTest);
                 return View("SpecialRegistrationResults");
             }
 
@@ -721,7 +726,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult SaveProgress(OnlineRegModel m)
         {
             m.HistoryAdd("saveprogress");
-            if(m.UserPeopleId == null)
+            if (m.UserPeopleId == null)
                 m.UserPeopleId = Util.UserPeopleId;
             m.UpdateDatum();
             return Message("We have saved your progress, an email with a link to finish this registration will come to you shortly.");
