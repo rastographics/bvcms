@@ -45,9 +45,10 @@ namespace CmsData
         }
         internal Expression VolunteerProcessedDateMonthsAgo()
         {
+            var dt = DateTime.Parse("1/1/1900");
             var months = TextValue.ToInt();
             Expression<Func<Person, int?>> pred = p =>
-                SqlMethods.DateDiffMonth(p.Volunteers.Max(v => v.ProcessedDate), Util.Now);
+                SqlMethods.DateDiffMonth(p.Volunteers.Max(v => v.ProcessedDate) ?? dt, Util.Now);
             Expression left = Expression.Invoke(pred, parm);
             var right = Expression.Constant(months, typeof(int?));
             return Compare(parm, left, op, right);

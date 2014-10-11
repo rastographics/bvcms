@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (ed != null)
             {
                 var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
-                m.History.Add("saveprogress");
+                m.HistoryAdd("saveprogress");
                 if (m.UserPeopleId == null)
                     m.UserPeopleId = Util.UserPeopleId;
                 m.UpdateDatum();
@@ -99,7 +99,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                                       pf.IsGiving == true);
 
                 }
-                if (pf.UseBootstrap)
+                if (pf.UseBootstrap && pf.AddressChecked < 2)
                 {
                     var r = AddressVerify.LookupAddress(pf.Address, "", "", "", pf.Zip);
                     var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == pf.Zip.Zip5());
@@ -112,8 +112,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     {
                         if (r.found == false)
                         {
+                            ModelState.Clear(); // so the form will bind to the object again
+                            pf.AddressChecked++;
                             ModelState.AddModelError("Zip",
-                                r.address + ", to skip address check, Change the country to USA, Not Validated");
+                                "Address not found: " + r.address);
                             return View("Payment/Process", pf);
                         }
                         if (r.Line1 != pf.Address)
@@ -136,7 +138,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (m != null)
                 {
                     m.TranId = ti.Id;
-                    m.History.Add("ProcessPayment");
+                    m.HistoryAdd("ProcessPayment");
                     ed.Data = Util.Serialize<OnlineRegModel>(m);
                     ed.Completed = true;
                     DbUtil.Db.SubmitChanges();
@@ -247,7 +249,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var t = m.Transaction;
             if (t == null && !managingsubs && !choosingslots)
             {
-                m.History.Add("ConfirmTransaction");
+                m.HistoryAdd("ConfirmTransaction");
                 m.UpdateDatum(completed: true);
                 var pf = PaymentForm.CreatePaymentForm(m);
                 t = pf.CreateTransaction(DbUtil.Db);

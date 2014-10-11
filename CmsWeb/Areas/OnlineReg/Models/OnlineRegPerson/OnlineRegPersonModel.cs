@@ -13,6 +13,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData;
 using CmsData.API;
+using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -170,6 +171,7 @@ namespace CmsWeb.Models
 
         public List<FamilyAttendInfo> FamilyAttend { get; set; }
         public Dictionary<int, decimal?> FundItem { get; set; }
+        public Dictionary<string, string> SpecialTest { get; set; }
         public List<Dictionary<string, string>> ExtraQuestion { get; set; }
         public Dictionary<string, bool?> YesNoQuestion { get; set; }
         public List<string> option { get; set; }
@@ -181,6 +183,7 @@ namespace CmsWeb.Models
             var s = reader.ReadOuterXml();
             var x = XDocument.Parse(s);
             if (x.Root == null) return;
+
 
             var eqset = 0;
             var menuset = 0;
@@ -260,6 +263,13 @@ namespace CmsWeb.Models
                     case "CreatingAccount":
                         CreatingAccount = e.Value.ToBool();
                         break;
+                    case "SpecialTest":
+                        if (SpecialTest == null)
+                            SpecialTest = new Dictionary<string, string>(); 
+                        var key = e.Attribute("key");
+                        if (key != null)
+                            SpecialTest.Add(key.Value, e.Value);
+                        break;
                     default:
                         Util.SetPropertyFromText(this, TranslateName(name), e.Value);
                         break;
@@ -278,11 +288,22 @@ namespace CmsWeb.Models
             var optionsAdded = false;
             var checkoxesAdded = false;
             var w = new APIWriter(writer);
+
             foreach (PropertyInfo pi in typeof(OnlineRegPersonModel).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(vv => vv.CanRead && vv.CanWrite))
             {
                 switch (pi.Name)
                 {
+                    case "SpecialTest":
+                        if (SpecialTest != null)
+                            foreach (var d in SpecialTest)
+                            {
+                                w.Start("SpecialTest");
+                                w.Attr("key", d.Key);
+                                w.AddText(d.Value);
+                                w.End();
+                            }
+                        break;
                     case "FundItem":
                         if (FundItem != null && FundItem.Count > 0)
                             foreach (var f in FundItem.Where(ff => ff.Value > 0))

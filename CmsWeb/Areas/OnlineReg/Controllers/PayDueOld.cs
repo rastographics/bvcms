@@ -13,11 +13,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult PayDue(string q)
         {
             if (!q.HasValue())
-                return Content("unknown");
+                return Message("unknown");
             var id = Util.Decrypt(q);
             var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == id.ToInt());
             if (ed == null)
-                return Content("no outstanding transaction");
+                return Message("no outstanding transaction");
             PaymentModel pm = null;
             try
             {
@@ -56,11 +56,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!id.HasValue)
                 return View("Unknown");
             if (!TransactionID.HasValue())
-                return Content("error no transaction");
+                return Message("error no transaction");
 
             var ed = Db.ExtraDatas.SingleOrDefault(e => e.Id == id);
             if (ed == null)
-                return Content("no pending transaction found");
+                return Message("no pending transaction found");
 
             var ti = Util.DeSerialize<TransactionInfo>(ed.Data.Replace("CMSWeb.Models", "CmsWeb.Models"));
             var org = Db.LoadOrganizationById(ti.orgid);

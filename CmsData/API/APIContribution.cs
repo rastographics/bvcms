@@ -404,7 +404,7 @@ namespace CmsData.API
         {
             var q = from c in Db.Contributions
                     where c.PeopleId == ci.PeopleId || (ci.Joint && c.PeopleId == ci.SpouseID)
-                    where c.ContributionTypeId == ContributionTypeCode.GiftInKind
+                    where c.ContributionTypeId == ContributionTypeCode.GiftInKind || c.ContributionTypeId == ContributionTypeCode.Stock
                     where c.ContributionStatusId.Value != ContributionStatusCode.Reversed
                     where c.ContributionDate >= fromDate
                     where c.ContributionDate <= toDate

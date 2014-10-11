@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult PayAmtDue(string q)
         {
             if (!q.HasValue())
-                return Content("unknown");
+                return Message("unknown");
             var id = Util.Decrypt(q).ToInt2();
             var qq = from t in DbUtil.Db.Transactions
                      where t.OriginalId == id || t.Id == id
@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
             var amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
             if (amtdue == 0)
-                return Content("no outstanding transaction");
+                return Message("no outstanding transaction");
 
 #if DEBUG
             ti.Testing = true;
@@ -161,11 +161,11 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
             if (!id.HasValue)
                 return View("Unknown");
             if (!TransactionID.HasValue())
-                return Content("error no transaction");
+                return Message("error no transaction");
 
             var ti = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
             if (ti == null)
-                return Content("no pending transaction");
+                return Message("no pending transaction");
 #if DEBUG
             ti.Testing = true;
 #endif
@@ -179,11 +179,11 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
         public ActionResult PayDueTest(string q)
         {
             if (!q.HasValue())
-                return Content("unknown");
+                return Message("unknown");
             var id = Util.Decrypt(q);
             var ed = DbUtil.Db.ExtraDatas.SingleOrDefault(e => e.Id == id.ToInt());
             if (ed == null)
-                return Content("no outstanding transaction");
+                return Message("no outstanding transaction");
             return Content(ed.Data);
         }
     }

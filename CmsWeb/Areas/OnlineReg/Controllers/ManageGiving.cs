@@ -81,8 +81,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			SetHeaders(m.orgid);
 			m.ValidateModel(ModelState);
 			if (!ModelState.IsValid)
+            {
+		        m.total = 0;
+		        foreach (var ff in m.FundItemsChosen())
+		            m.total += ff.amt;
 				return View("ManageGiving/Setup", m);
-			try
+			}
+            try
 			{
 				m.Update();
 			}
@@ -90,8 +95,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			{
 				ModelState.AddModelError("form", ex.Message);
 			}
-			if (!ModelState.IsValid)
+		    if (!ModelState.IsValid)
 				return View("ManageGiving/Setup", m);
+
 			TempData["managegiving"] = m;
 			return Redirect("/OnlineReg/ConfirmRecurringGiving");
 		}

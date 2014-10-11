@@ -29,8 +29,8 @@ BEGIN
 	DECLARE @n INT = 0
 	WHILE (@n < @years)
 	BEGIN
-		DECLARE @td DATETIME = DATEADD(yy, -@n, @enddt)
-		DECLARE @fd DATETIME = DATEADD(yy, -1, @td)
+		DECLARE @td DATETIME = DATEADD(yy, -@n, CONVERT(DATE, @enddt))
+		DECLARE @fd DATETIME = DATEADD(dd, 1, DATEADD(yy, -1, @td))
 
 		DELETE @t
 		INSERT INTO @t

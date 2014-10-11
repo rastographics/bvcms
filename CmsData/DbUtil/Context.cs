@@ -1092,6 +1092,7 @@ namespace CmsData
                 fund = new ContributionFund
                 {
                     FundName = Description,
+                    FundDescription = Description,
                     FundId = nextfundid,
                     CreatedBy = 1,
                     CreatedDate = DateTime.Now,

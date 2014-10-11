@@ -18,7 +18,9 @@
         <td>Last Name</td>
         <td>@Model.LastName @Html.ValidationMessage("find")</td>
     </tr>
-}
+} 
+@if (Model.RequiredDOB())
+{
     <tr>
         <td>Date of Birth</td>
         <td>@Model.DateOfBirth 
@@ -28,6 +30,7 @@
             }
             <div>@Html.ValidationMessageFor(m => m.DateOfBirth)</div></td>
     </tr>
+}
     <tr>
         <td>Phone</td>
         <td>@Model.Phone.FmtFone()</td>

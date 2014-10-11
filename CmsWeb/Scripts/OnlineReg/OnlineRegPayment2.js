@@ -31,7 +31,9 @@ $(function () {
                 $('#AmtToPay').val(ret.tiamt);
                 $('#Amtdue').val(ret.amtdue);
                 $('#Coupon').val('');
-                $('td.coupon').html(ret.msg);
+                $("#form-msg").show();
+                $('#coupon-msg').html(ret.msg);
+                $('#ApplyCoupon').hide();
             } else {
                 window.location = ret.confirm;
             }

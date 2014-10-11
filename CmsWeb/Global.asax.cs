@@ -48,6 +48,7 @@ namespace CmsWeb
             Util.SysFromEmail = ConfigurationManager.AppSettings["sysfromemail"];
             Util.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Util.SessionStarting = true;
+
             LogBrowser();
         }
 

@@ -290,8 +290,8 @@ namespace CmsWeb.Models
                 ModelState.AddModelError("StartWhen", "StartDate must have a value");
             else if (StartWhen <= DateTime.Today)
                 ModelState.AddModelError("StartWhen", "StartDate must occur after today");
-            //            else if (StopWhen.HasValue && StopWhen <= StartWhen)
-            //                ModelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
+//            else if (StopWhen.HasValue && StopWhen <= StartWhen)
+//                ModelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
 
             if (!FirstName.HasValue())
                 ModelState.AddModelError("FirstName", "needs name");
@@ -314,11 +314,34 @@ namespace CmsWeb.Models
         public void Update()
         {
             var pi = person.PaymentInfo();
-            if (Cardnumber.HasValue() && Cardnumber.Contains("X"))
-                Cardnumber = pi.Ccv;
-
-            var gw = DbUtil.Db.Gateway(testing);
-            gw.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
+            if (Cardcode.HasValue() && Cardcode.Contains("X"))
+                Cardcode = pi.Ccv;
+            var gateway = OnlineRegModel.GetTransactionGateway();
+            if (gateway == "authorizenet")
+            {
+                var au = new AuthorizeNet(DbUtil.Db, testing);
+                au.AddUpdateCustomerProfile(pid,
+                    Type,
+                    Cardnumber,
+                    Expires,
+                    Cardcode,
+                    Routing,
+                    Account);
+            }
+            else if (gateway == "sage")
+            {
+                var sg = new SagePayments(DbUtil.Db, testing);
+                sg.storeVault(pid,
+                    Type,
+                    Cardnumber,
+                    Expires,
+                    Cardcode,
+                    Routing,
+                    Account,
+                    giving: true);
+            }
+            else
+                throw new Exception("ServiceU not supported");
 
             var mg = person.ManagedGiving();
             if (mg == null)
@@ -345,11 +368,7 @@ namespace CmsWeb.Models
             pi.Zip = Zip.Truncate(15);
             pi.Phone = Phone.Truncate(25);
 
-            var q = from ra in DbUtil.Db.RecurringAmounts
-                    where ra.PeopleId == pid
-                    select ra;
-            DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(q);
-            DbUtil.Db.SubmitChanges();
+            DbUtil.Db.ExecuteCommand("DELETE dbo.RecurringAmounts WHERE PeopleId = {0}", pid);
             foreach (var c in FundItemsChosen())
             {
                 var ra = new RecurringAmount

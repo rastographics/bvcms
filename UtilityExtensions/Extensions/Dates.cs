@@ -65,41 +65,11 @@ namespace UtilityExtensions
         {
             get
             {
-#if DEBUG2
-                return DateTime.Parse("9/15/14 4:30 AM");
+#if DEBUG
+                return DateTime.Now.Add(new TimeSpan(3, 5, 5, 0));
 #else
                 return DateTime.Now;
 #endif
-            }
-        }
-        public static TimeSpan NowOffset
-        {
-            get
-            {
-                var deb = TimeSpan.Zero;
-
-                if (HttpContext.Current != null)
-                {
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_SMTPDEBUG] != null)
-                            deb = (TimeSpan)HttpContext.Current.Session[STR_NOWOFFSET];
-                }
-                else
-                {
-                    var localDataStoreSlot = Thread.GetNamedDataSlot(STR_NOWOFFSET);
-                    deb = (TimeSpan)Thread.GetData(localDataStoreSlot);
-                }
-                return deb;
-            }
-            set
-            {
-                if (HttpContext.Current != null)
-                {
-                    if (HttpContext.Current.Session != null)
-                        HttpContext.Current.Session[STR_NOWOFFSET] = value;
-                }
-                else
-                    Thread.SetData(Thread.GetNamedDataSlot(STR_NOWOFFSET), value);
             }
         }
         public static bool DateValid(string dt)
