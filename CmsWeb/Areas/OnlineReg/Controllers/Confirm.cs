@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     var gateway = OnlineRegModel.GetTransactionGateway();
                     if (gateway == "authorizenet")
                     {
-                        var au = new AuthorizeNet(DbUtil.Db, m.testing ?? false);
+                        var au = new AuthorizeNet2(DbUtil.Db, m.testing ?? false);
                         if ((pf.Type == "B" && !pf.Routing.StartsWith("X") && !pf.Account.StartsWith("X"))
                             || (pf.Type == "C" && !pf.CreditCard.StartsWith("X")))
                             au.AddUpdateCustomerProfile(m.UserPeopleId.Value,
@@ -99,7 +99,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                                 DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
                                 pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
                                 pf.Routing,
-                                pf.Account);
+                                pf.Account,
+                                pf.IsGiving == true);
                     }
                     else if (gateway == "sage")
                     {
@@ -240,7 +241,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (gateway == "authorizenet")
                 if (pf.SavePayInfo)
                 {
-                    var anet = new AuthorizeNet(DbUtil.Db, pf.testing);
+                    var anet = new AuthorizeNet2(DbUtil.Db, pf.testing);
                     tinfo = anet.createCustomerProfileTransactionRequest(
                         pid ?? 0,
                         pf.AmtToPay ?? 0,

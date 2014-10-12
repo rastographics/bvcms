@@ -320,14 +320,15 @@ namespace CmsWeb.Models
             var gateway = OnlineRegModel.GetTransactionGateway();
             if (gateway == "authorizenet")
             {
-                var au = new AuthorizeNet(DbUtil.Db, testing);
+                var au = new AuthorizeNet2(DbUtil.Db, testing);
                 au.AddUpdateCustomerProfile(pid,
                     Type,
                     Cardnumber,
                     Expires,
                     Cardcode,
                     Routing,
-                    Account);
+                    Account,
+                    giving: true);
             }
             else if (gateway == "sage")
             {

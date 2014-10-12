@@ -45,10 +45,10 @@ namespace CmsData
         public int DoGiving(CMSDataContext Db)
         {
             var gateway = Db.Setting("TransactionGateway", "");
-            AuthorizeNet anet = null;
+            AuthorizeNet2 anet = null;
             SagePayments sage = null;
             if (gateway == "AuthorizeNet")
-                anet = new AuthorizeNet(Db, testing: false);
+                anet = new AuthorizeNet2(Db, testing: false);
             else if (gateway == "Sage")
                 sage = new SagePayments(Db, testing: false);
             else
