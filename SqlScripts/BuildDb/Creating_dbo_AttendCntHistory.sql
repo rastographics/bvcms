@@ -1,3 +1,5 @@
+
+
 CREATE FUNCTION [dbo].[AttendCntHistory]( 
 	@progid INT,
 	@divid INT,
@@ -20,7 +22,7 @@ RETURN
 			AND  AttendanceFlag = 1
 			AND a.PeopleId = p.PeopleId
 			AND a.MeetingDate >= @start
-			AND a.MeetingDate < DATEADD(day, 1, @end)
+			AND a.MeetingDate < DATEADD(dd, 1, @end)
 			AND (@sched = 0
 				OR (
 					CAST(a.MeetingDate AS TIME) = CAST(CAST((@sched % 10000) / 100 AS VARCHAR) + ':' + CAST((@sched % 10000) % 100 AS VARCHAR) AS TIME) 
@@ -35,6 +37,8 @@ RETURN
 		) Cnt
 	FROM dbo.People p
 )
+
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

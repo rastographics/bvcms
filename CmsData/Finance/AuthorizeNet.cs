@@ -19,6 +19,7 @@ namespace CmsData
 		const string produrl = "https://api.authorize.net/xml/v1/request.api";
 		const string testurl = "https://apitest.authorize.net/xml/v1/request.api";
 		string url;
+	    private ServiceMode mode;
 		string login;
 		string key;
 		CMSDataContext Db;
@@ -32,12 +33,14 @@ namespace CmsData
 			{
 				login = "9t8Pqzs4CW3S";
 				key = "9j33v58nuZB865WR";
+			    mode = ServiceMode.Test;
 				url = testurl;
 			}
 			else
 			{
 				login = Db.Setting("x_login", "");
 				key = Db.Setting("x_tran_key", "");
+			    mode = ServiceMode.Live;
 				url = produrl;
 			}
 		}
@@ -419,7 +422,7 @@ namespace CmsData
             }
             if (pi.AuNetCustId == null) // create a new profilein Authorize.NET CIM
             {
-                var target = new CustomerGateway(login, key);
+                var target = new CustomerGateway(login, key, mode);
                 var cust = target.CreateCustomer(p.EmailAddress, p.Name, PeopleId.ToString());
                 pi.AuNetCustId = cust.ProfileID.ToInt();
                 var address = new AuthorizeNet.Address()

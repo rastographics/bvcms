@@ -6,7 +6,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div style="text-align: center; font-size: 110%">
         <h1>
-            <asp:Label ID="Label1" runat="server" Text="Totals by Age Range for Fund"></asp:Label></h1>
+            <asp:Label ID="Label1" runat="server" Text="Totals by Age Range"></asp:Label></h1>
         <table style="font-size: 110%; text-align: left">
                 <tr>
                     <td style="text-align: right">
@@ -20,16 +20,6 @@
                             &nbsp;
                         </td>
                 </tr>
-            <tr>
-                <td style="text-align: right">
-                    Fund:
-                </td>
-                <td>
-                    <asp:DropDownList ID="Fund" runat="server" DataSourceID="ODSFunds" DataTextField="Value"
-                        DataValueField="Id">
-                    </asp:DropDownList>
-                </td>
-            </tr>
             <tr>
                 <td style="text-align: right">
                     From Date:
@@ -68,22 +58,22 @@
                     <td class="left">
                         <asp:Label ID="RangeLabel" runat="server" Text='<%# Eval("Range") %>' />
                     </td>
-                    <td class="right">
+                    <td style="text-align: right">
                         <asp:Label ID="CountLabel" runat="server" Text='<%# Eval("DonorCount", "{0:n0}") %>' />
                     </td>
-                    <td class="right">
+                    <td style="text-align: right">
                         <asp:Label ID="Label3" runat="server" Text='<%# Eval("Count", "{0:n0}") %>' />
                     </td>
-                    <td class="right">
+                    <td style="text-align: right">
                         <asp:Label ID="PctCount" runat="server" Text='<%# Eval("PctCount", "{0:n1}") %>' />
                     </td>
-                    <td class="right">
+                    <td style="text-align: right">
                         <asp:Label ID="Label1" runat="server" Text='<%# Eval("Total", "{0:n0}") %>' />
                     </td>
-                    <td class="right">
+                    <td style="text-align: right">
                         <asp:Label ID="Label2" runat="server" Text='<%# Eval("PctTotal", "{0:n1}") %>' />
                     </td>
-                    <td class="right">
+                    <td style="text-align: right">
                         <asp:Label ID="Label4" runat="server" Text='<%# Eval("Average", "{0:n0}") %>' />
                     </td>
                 </tr>
@@ -103,22 +93,22 @@
                         <th id="Th1" class="left" runat="server">
                             Range
                         </th>
-                        <th id="Th2" class="right" runat="server">
+                        <th id="Th2" style="text-align: right" runat="server">
                             Donors
                         </th>
-                        <th id="Th6" class="right" runat="server">
+                        <th id="Th6" style="text-align: right" runat="server">
                             Count
                         </th>
-                        <th id="Th3" class="right" runat="server">
+                        <th id="Th3" style="text-align: right" runat="server">
                             %
                         </th>
-                        <th id="Th4" class="right" runat="server">
+                        <th id="Th4" style="text-align: right" runat="server">
                             Amount
                         </th>
-                        <th id="Th5" class="right" runat="server">
+                        <th id="Th5" style="text-align: right" runat="server">
                             %
                         </th>
-                        <th id="Th7" class="right" runat="server">
+                        <th id="Th7" style="text-align: right" runat="server">
                             Average
                         </th>
                     </tr>
@@ -128,19 +118,19 @@
                         <th class="left">
                             <asp:Label ID="RangeLabel" runat="server" Text='Total' />
                         </th>
-                        <th class="right">
+                        <th style="text-align: right">
                             <asp:Label ID="DonorCount" runat="server" />
                         </th>
-                        <th class="right">
+                        <th style="text-align: right">
                             <asp:Label ID="Count" runat="server" />
                         </th>
-                        <th class="right">
+                        <th style="text-align: right">
                             <asp:Label ID="PctCount" runat="server" Text='100.0' />
                         </th>
-                        <th class="right">
+                        <th style="text-align: right">
                             <asp:Label ID="Total" runat="server" />
                         </th>
-                        <th class="right">
+                        <th style="text-align: right">
                             <asp:Label ID="Label2" runat="server" Text='100.0' />
                         </th>
                     </tr>
@@ -152,7 +142,7 @@
         TypeName="CmsWeb.Models.BundleModel" OnObjectCreated="ObjectDataSource1_ObjectCreated"
         OldValuesParameterFormatString="original_{0}">
         <SelectParameters>
-            <asp:ControlParameter Name="fundid" ControlID="Fund" PropertyName="SelectedValue"
+            <asp:QueryStringParameter Name="fundid" QueryStringField="fund" DefaultValue=""
                 Type="Int32" />
             <asp:ControlParameter Name="dt1" ControlID="FromDate" Type="DateTime" />
             <asp:ControlParameter Name="dt2" ControlID="ToDate" Type="DateTime" />

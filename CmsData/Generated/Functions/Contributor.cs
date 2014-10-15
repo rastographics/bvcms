@@ -50,6 +50,8 @@ namespace CmsData.View
 		
 		private decimal _Amount;
 		
+		private int _GiftCount;
+		
 		private bool? _GiftInKind;
 		
 		private string _SpouseName;
@@ -359,6 +361,23 @@ namespace CmsData.View
 			{
 				if (this._Amount != value)
 					this._Amount = value;
+			}
+
+		}
+
+		
+		[Column(Name="GiftCount", Storage="_GiftCount", DbType="int NOT NULL")]
+		public int GiftCount
+		{
+			get
+			{
+				return this._GiftCount;
+			}
+
+			set
+			{
+				if (this._GiftCount != value)
+					this._GiftCount = value;
 			}
 
 		}

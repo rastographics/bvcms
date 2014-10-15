@@ -376,6 +376,7 @@ namespace CmsWeb.Models
             pi.Phone = Phone.Truncate(25);
 
             DbUtil.Db.ExecuteCommand("DELETE dbo.RecurringAmounts WHERE PeopleId = {0}", pid);
+            person.RecurringAmounts.Clear();
             foreach (var c in FundItemsChosen())
             {
                 var ra = new RecurringAmount
