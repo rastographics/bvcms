@@ -314,7 +314,7 @@ namespace CmsData
             if (ts == null)
             {
                 TranId = ti2.Id;
-                ti2.TransactionPeople.Add(new TransactionPerson { PeopleId = PeopleId, OrgId = OrganizationId, Amt = amount });
+                ti2.TransactionPeople.Add(new TransactionPerson { PeopleId = PeopleId, OrgId = OrganizationId, Amt = amount ?? payment });
                 if (ti != null)
                     ti.OriginalId = ti.Id;
             }
