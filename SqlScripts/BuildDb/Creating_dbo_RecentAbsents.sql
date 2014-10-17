@@ -56,7 +56,7 @@ JOIN OrganizationMembers om ON om.PeopleId = tt.PeopleId AND om.OrganizationId =
 JOIN dbo.People p ON tt.PeopleId = p.PeopleId
 JOIN lookup.MemberType mt ON om.MemberTypeId = mt.Id
 JOIN lookup.AttendType at ON at.Id = mt.AttendanceTypeId
-WHERE consecutive > ISNULL(ConsecutiveAbsentsThreshold, 2)
+WHERE consecutive >= ISNULL(ConsecutiveAbsentsThreshold, 2)
 AND m.MeetingDate IS NOT NULL
 AND at.Id NOT IN (70, 100) --inservice and homebound
 AND om.MemberTypeId != 230 --inactive

@@ -90,13 +90,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     var gw = DbUtil.Db.Gateway(m.testing ?? false);
                     if ((pf.Type == "B" && !pf.Routing.StartsWith("X") && !pf.Account.StartsWith("X")) || (pf.Type == "C" && !pf.CreditCard.StartsWith("X")))
                         gw.StoreInVault(m.UserPeopleId ?? 0,
-                                      pf.Type,
-                                      pf.CreditCard,
-                                      DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                                      pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
-                                      pf.Routing,
-                                      pf.Account,
-                                      pf.IsGiving == true);
+                                pf.Type,
+                                pf.CreditCard,
+                                DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
+                                pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
+                                pf.Routing,
+                                          pf.Account,
+                                          pf.IsGiving == true);
 
                 }
                 if (pf.UseBootstrap && pf.AddressChecked < 2)
@@ -204,15 +204,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             TransactionResponse tinfo;
             var gw = DbUtil.Db.Gateway(pf.testing);
 
-            if (pf.SavePayInfo)
+                if (pf.SavePayInfo)
                 tinfo = gw.PayWithVault(pid ?? 0, pf.AmtToPay ?? 0, pf.Description, ti.Id, pf.Type);
-            else
-                if (pf.Type == "B")
+                else
+                    if (pf.Type == "B")
                     tinfo = gw.PayWithCheck(pid ?? 0, pf.AmtToPay ?? 0, pf.Routing, pf.Account, pf.Description, ti.Id,
                         pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
-                else
+                    else
                     tinfo = gw.PayWithCreditCard(pid ?? 0, pf.AmtToPay ?? 0, pf.CreditCard, 
-                        DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
+                            DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
                         pf.Description, ti.Id,
                         pf.CCV, pf.Email, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
 

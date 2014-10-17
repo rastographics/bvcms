@@ -145,7 +145,10 @@ namespace UtilityExtensions
                     return false;
                 var path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
-                return File.Exists(path);
+                var exists = File.Exists(path);
+                if (exists)
+                    return true;
+                return File.Exists(HttpContext.Current.Server.MapPath("~/AppOffline.txt"));
             }
         }
 

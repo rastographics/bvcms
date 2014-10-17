@@ -24,6 +24,7 @@ namespace CmsWeb.Models
         public bool Pledges { get; set; }
         public bool IncUnclosedBundles { get; set; }
         public bool IncludeBundleType { get; set; }
+        public bool NonTaxDeductible { get; set; }
 
         public TotalsByFundModel()
         {
@@ -100,7 +101,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<GetTotalContributionsRange> TotalsByRange()
         {
-            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, TaxDedNonTax == "NonTaxDed", IncUnclosedBundles)
+            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)null : false, IncUnclosedBundles)
                         orderby r.Range
                         select r).ToList();
             RangeTotal = new GetTotalContributionsRange

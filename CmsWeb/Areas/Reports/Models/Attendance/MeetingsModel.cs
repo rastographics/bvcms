@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
 
 namespace CmsWeb.Areas.Reports.Models
@@ -30,7 +31,6 @@ namespace CmsWeb.Areas.Reports.Models
 
         public IEnumerable<MeetingInfo> MeetingsForDate()
         {
-            StatusId = null;
             var q = FetchOrgs();
             var list = (from o in q
                         join m in DbUtil.Db.Meetings on o.OrganizationId equals m.OrganizationId into mr
@@ -55,6 +55,8 @@ namespace CmsWeb.Areas.Reports.Models
                             OtherAttends = m.NumOtherAttends,
                             Inactive = o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Inactive
                         }).ToList();
+            if (NoZero == false)
+                list = list.Where(m => m.Inactive == false).ToList();
 
             MeetingsCount = list.Count(a => a.Attended > 0);
             TotalAttends = list.Sum(m => m.Attended ?? 0);

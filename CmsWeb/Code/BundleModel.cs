@@ -78,70 +78,59 @@ namespace CmsWeb.Models
         };
         public string Range
         {
-            get 
+            get
             {
                 return RangeLabels[RangeId - 1];
             }
         }
         public int RangeId { get; set; }
-        public int? Count { get; set; }
-        public int? DonorCount { get; set; }
-        public decimal? PctCount { get; set; }
-        private decimal? total;
-        public decimal? Total
-        {
-            get { return total.HasValue ? total : (decimal?)0.0; }
-            set { total = value; }
-        }
+        public int Count { get; set; }
+        public int DonorCount { get; set; }
+        public decimal PctCount { get; set; }
+        public decimal Total { get; set; }
         public decimal PctTotal { get; set; }
         public decimal? Average
         {
-            get { return total.Value / DonorCount; }
+            get { return Total / DonorCount; }
         }
     }
     public class AgeRangeInfo
     {
-        string[] RangeLabels = new string[] 
-        { 
-            "0", 
-            "1 - 10", 
-            "11 - 20",
-            "21 - 30",
-            "31 - 40",
-            "41 - 50",
-            "51 - 60",
-            "61 - 70",
-            "71 - 80",
-            "81 - 90",
-            "91 - 100",
-            "101 - 110",
-            "111 - 120",
-            "121 - 130",
-            "131 - 140",
-            "141 - 150",
-        };
-        public string Range
-        {
-            get
-            {
-                if (RangeId >= 0 && RangeId <= 15)
-                    return RangeLabels[RangeId];
-                return "0";
-            }
-        }
-        public int RangeId { get; set; }
-        public int? Count { get; set; }
-        public int? DonorCount { get; set; }
-        public decimal? PctCount { get; set; }
-        private decimal? total;
-        public decimal? Total
-        {
-            get { return total.HasValue ? total : (decimal?)0.0; }
-            set { total = value; }
-        }
+        //        string[] RangeLabels = new string[] 
+        //        { 
+        //            "0", 
+        //            "1 - 10", 
+        //            "11 - 20",
+        //            "21 - 30",
+        //            "31 - 40",
+        //            "41 - 50",
+        //            "51 - 60",
+        //            "61 - 70",
+        //            "71 - 80",
+        //            "81 - 90",
+        //            "91 - 100",
+        //            "101 - 110",
+        //            "111 - 120",
+        //            "121 - 130",
+        //            "131 - 140",
+        //            "141 - 150",
+        //        };
+        public string Range { get; set; }
+        //        {
+        //            get
+        //            {
+        //                if (RangeId >= 0 && RangeId <= 15)
+        //                    return RangeLabels[RangeId];
+        //                return "0";
+        //            }
+        //        }
+        public int Count { get; set; }
+        public int DonorCount { get; set; }
+        public decimal PctCount { get; set; }
+        public decimal Total { get; set; }
         public decimal? Average
         {
-            get { return total.Value / DonorCount; }
+            get { return Total / DonorCount; }
         }
         public decimal PctTotal { get; set; }
     }
@@ -252,7 +241,7 @@ namespace CmsWeb.Models
                         Status = d.Contribution.ContributionStatus.Description,
                         Name = d.Contribution.Person.Name2,
                         Description = d.Contribution.ContributionDesc,
-						CheckNo = d.Contribution.CheckNo,
+                        CheckNo = d.Contribution.CheckNo,
                     };
             return q;
         }
@@ -651,7 +640,7 @@ namespace CmsWeb.Models
                     select new RangeInfo
                     {
                         RangeId = g.Key.Value,
-                        Total = g.Sum(t => t.ContributionAmount),
+                        Total = g.Sum(t => t.ContributionAmount) ?? 0,
                         Count = g.Count(),
                         DonorCount = (from d in g
                                       group d by d.PeopleId into gd
@@ -671,75 +660,94 @@ namespace CmsWeb.Models
                          Count = r.Count,
                          DonorCount = r.DonorCount,
                          PctCount = (decimal)r.Count / RangeTotal.Count * 100,
-                         PctTotal = r.Total.Value / RangeTotal.Total.Value * 100,
+                         PctTotal = r.Total / RangeTotal.Total * 100,
                      };
             return q2;
         }
         [DataObjectMethod(DataObjectMethodType.Select, false)]
         public IEnumerable<AgeRangeInfo> TotalsByFundAgeRange(int fundid, DateTime dt1, DateTime dt2, string Pledges, int CampusId)
         {
-            var q0 = from c in DbUtil.Db.Contributions
-                     where dt1 <= c.ContributionDate.Value.Date
-                     where c.ContributionDate.Value.Date <= dt2
-                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                     where c.FundId == fundid || fundid == 0
-                     where CampusId == 0 || c.Person.CampusId == CampusId
-                     select c;
-            switch (Pledges)
-            {
-                case "true":
-                    q0 = from c in q0
-                         where c.ContributionTypeId == ContributionTypeCode.Pledge
-                         select c;
-                    break;
-                case "false":
-                    q0 = from c in q0
-                         where c.ContributionStatusId == ContributionStatusCode.Recorded
-                         where c.ContributionTypeId != ContributionTypeCode.Pledge
-//                         where c.PostingDate != null
-                         select c;
-                    break;
-                case "both":
-                    q0 = from c in q0
-                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionStatusId == ContributionStatusCode.Recorded)
-                                || c.ContributionTypeId == ContributionTypeCode.Pledge
-                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.PostingDate != null)
-                                || c.ContributionTypeId == ContributionTypeCode.Pledge
-                         select c;
-                    break;
-            }
-
-            var q = from c in q0
-                    let age = c.Person.Age ?? 0
-                    let agerange = age == 0 ? 0 : (age / 10) + 1
-                    group c by agerange into g
-                    orderby g.Key
-                    select new AgeRangeInfo
-                    {
-                        RangeId = g.Key,
-                        Total = g.Sum(t => t.ContributionAmount),
-                        Count = g.Count(),
-                        DonorCount = (from d in g
-                                      group d by d.PeopleId into gd
-                                      select gd).Count()
-                    };
+            var list1 = (from r in DbUtil.Db.GetTotalContributionsAgeRange(dt1, dt2, CampusId, null, true)
+                         select new AgeRangeInfo()
+                         {
+                             Range = r.Range,
+                             Total = r.Total ?? 0,
+                             Count = r.Count ?? 0,
+                             DonorCount = r.DonorCount ?? 0,
+                         }).ToList();
             RangeTotal = new RangeInfo
-            {
-                Count = q.Sum(t => t.Count),
-                Total = q.Sum(t => t.Total),
-                DonorCount = (from c in q0 group c by c.PeopleId into g select g).Count()
-            };
-            var q2 = from r in q
-                     select new AgeRangeInfo
-                     {
-                         RangeId = r.RangeId,
-                         Total = r.Total,
-                         Count = r.Count,
-                         DonorCount = r.DonorCount,
-                         PctCount = (decimal)r.Count / RangeTotal.Count * 100,
-                         PctTotal = r.Total.Value / RangeTotal.Total.Value * 100,
-                     };
-            return q2;
+                             {
+                                 Count = list1.Sum(t => t.Count),
+                                 Total = list1.Sum(t => t.Total),
+                                 DonorCount = list1.Sum(t => t.DonorCount)
+                             };
+            var list = (from r in list1
+                        select new AgeRangeInfo()
+                        {
+                            Range = r.Range,
+                            Total = r.Total,
+                            Count = r.Count,
+                            DonorCount = r.DonorCount,
+                            PctCount = (decimal)r.Count / RangeTotal.Count * 100,
+                            PctTotal = r.Total / RangeTotal.Total * 100
+                        }).ToList();
+            return list;
+            //            var q0 = from c in DbUtil.Db.Contributions
+            //                     where dt1 <= c.ContributionDate.Value.Date
+            //                     where c.ContributionDate.Value.Date <= dt2
+            //                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+            //                     where c.FundId == fundid || fundid == 0
+            //                     where CampusId == 0 || c.Person.CampusId == CampusId
+            //                     select c;
+            //            switch (Pledges)
+            //            {
+            //                case "true":
+            //                    q0 = from c in q0
+            //                         where c.ContributionTypeId == ContributionTypeCode.Pledge
+            //                         select c;
+            //                    break;
+            //                case "false":
+            //                    q0 = from c in q0
+            //                         where c.ContributionStatusId == ContributionStatusCode.Recorded
+            //                         where c.ContributionTypeId != ContributionTypeCode.Pledge
+            ////                         where c.PostingDate != null
+            //                         select c;
+            //                    break;
+            //                case "both":
+            //                    q0 = from c in q0
+            //                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionStatusId == ContributionStatusCode.Recorded)
+            //                                || c.ContributionTypeId == ContributionTypeCode.Pledge
+            //                         where (c.ContributionTypeId != ContributionTypeCode.Pledge && c.PostingDate != null)
+            //                                || c.ContributionTypeId == ContributionTypeCode.Pledge
+            //                         select c;
+            //                    break;
+            //            }
+            //
+            //            var q = from c in q0
+            //                    let age = c.Person.Age ?? 0
+            //                    let agerange = age == 0 ? 0 : (age / 10) + 1
+            //                    group c by agerange into g
+            //                    orderby g.Key
+            //                    select new AgeRangeInfo
+            //                    {
+            //                        RangeId = g.Key,
+            //                        Total = g.Sum(t => t.ContributionAmount),
+            //                        Count = g.Count(),
+            //                        DonorCount = (from d in g
+            //                                      group d by d.PeopleId into gd
+            //                                      select gd).Count()
+            //                    };
+            //            var q2 = from r in q
+            //                     select new AgeRangeInfo
+            //                     {
+            //                         RangeId = r.RangeId,
+            //                         Total = r.Total,
+            //                         Count = r.Count,
+            //                         DonorCount = r.DonorCount,
+            //                         PctCount = (decimal)r.Count / RangeTotal.Count * 100,
+            //                         PctTotal = r.Total.Value / RangeTotal.Total.Value * 100,
+            //                     };
+            //            return q2;
         }
         public class JournalInfo
         {

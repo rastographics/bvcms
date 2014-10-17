@@ -1,3 +1,4 @@
+
 CREATE FUNCTION [dbo].[RecentAttendInDaysByCount]( 
 	@progid INT,
 	@divid INT,
@@ -17,7 +18,8 @@ RETURN
 			WHERE 1 = 1
 			AND  AttendanceFlag = 1
 			AND a.PeopleId = p.PeopleId
-			AND a.MeetingDate > DATEADD(dd, -@days, GETDATE())
+			AND a.MeetingDate >= DATEADD(dd, -@days, GETDATE())
+			AND a.MeetingDate < GETDATE()
 			AND (@orgtype = 0 OR o.OrganizationTypeId = @orgtype)
 			AND (ISNULL(@org, 0) = 0 OR m.OrganizationId = @org)
 			AND (ISNULL(@divid, 0) = 0 

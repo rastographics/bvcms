@@ -368,6 +368,8 @@
     <Compile Include="Finance\IGateway.cs" />
     <Compile Include="Finance\Transnational.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
+    <Compile Include="Generated\Functions\GenRange.cs" />
+    <Compile Include="Generated\Functions\GetTotalContributionsAgeRange.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />
     <Compile Include="Generated\Views\DonorProfileList.cs" />

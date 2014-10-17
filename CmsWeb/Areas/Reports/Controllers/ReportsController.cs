@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using CmsData;
+using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
@@ -273,7 +274,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult Meetings(DateTime dt1, DateTime dt2, int? programid, int? divisionid)
         {
-            var m = new MeetingsModel() { Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid };
+            var m = new MeetingsModel() { Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid, StatusId = OrgStatusCode.Active};
             return View(m);
         }
         [HttpPost]

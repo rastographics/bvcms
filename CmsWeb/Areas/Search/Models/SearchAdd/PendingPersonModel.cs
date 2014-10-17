@@ -161,6 +161,7 @@ namespace CmsWeb.Areas.Search.Models
                                  originid, entrypointid);
 
             this.CopyPropertiesTo(Person);
+            Person.CellPhone = CellPhone.GetDigits();
 
             if (campusid == 0)
                 campusid = null;
@@ -188,7 +189,7 @@ namespace CmsWeb.Areas.Search.Models
             }
             var f = Family;
             AddressInfo = new AddressInfo(f.AddressLineOne, f.AddressLineTwo, f.CityName, f.StateCode, f.ZipCode, f.CountryName);
-            HomePhone = f.HomePhone;
+            HomePhone = f.HomePhone.GetDigits();
         }
 
         public string CityStateZip

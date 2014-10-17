@@ -512,49 +512,6 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <br />
 &nbsp;</p>
 ', '2013-09-09 23:32:14.270', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (68, N'StandardExtraValues.xml', N'StandardExtraValues.xml', N'<Fields>
-	<Field name="InterviewStatus" location="MemberProfile" type="Code">
-		<Codes>
-			<string>NotScheduled</string>
-			<string>Scheduled</string>
-			<string>Completed</string>
-		</Codes>
-	</Field>
-	<Field name="InterviewDate" location="MemberProfile" type="Date" />
-	<Field name="InterviewComments" location="MemberProfile" type="Data" VisibilityRoles="Elder,Membership" />
-	<Field name="CorrespondenceMethod" type="Code">
-		<Codes>
-			<string>Email</string>
-			<string>Mail</string>
-			<string>Both</string>
-			<string>Neither</string>
-		</Codes>
-	</Field>
-	<Field name="EELevel" type="Int" />
-	<Field name="CounselingNotes" type="Data" location="MemberProfile" VisibilityRoles="Counselor" />
-	<Field name="Spiritual Gifts" type="Bits" location="MemberProfile">
-		<Codes>
-			<string>SG:exhortation</string>
-			<string>SG:giving</string>
-			<string>SG:leadership</string>
-			<string>SG:mercy</string>
-			<string>SG:teaching</string>
-			<string>SG:administration</string>
-			<string>SG:discernment</string>
-			<string>SG:faith</string>
-			<string>SG:healing</string>
-			<string>SG:helps</string>
-			<string>SG:knowledge</string>
-			<string>SG:miracles</string>
-			<string>SG:tongues</string>
-			<string>SG:wisdom</string>
-			<string>SG:evangelism</string>
-			<string>SG:prophecy</string>
-			<string>SG:hospitality</string>
-		</Codes>
-	</Field>
-</Fields>
-', '2012-02-29 21:47:04.463', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (69, N'Empty Template', N'Empty Template', N'<html>
 <body>
 <div bvedit style="max-width:600px;">Click here to edit content</div>
@@ -1305,7 +1262,16 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 ', '2014-03-01 18:22:36.030', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (76, N'NoGivingSetupMessage', N'NoGivingSetupMessage', N'
         <p class="alert alert-block alert-info">Sorry, it appears that your church has not set up online giving through BVCMS.</p>', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (77, N'StandardExtraValues2', N'StandardExtraValues2', N'<Views />', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (77, N'StandardExtraValues2', N'StandardExtraValues2', N'<?xml version="1.0" encoding="utf-16"?>
+<Views>
+  <View Table="People" Location="Entry">
+    <Value Name="IC:InfoCard" Type="Bits">
+      <Code>IC:PleaseVisit</Code>
+      <Code>IC:InterestedInJoining</Code>
+      <Code>IC:SendInfoReBecomingAChristian</Code>
+    </Value>
+  </View>
+</Views>', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (79, N'OrgMembersModel_SendMovedNotices', N'SendMovedNotices', N'<p><span style="font-size: 13px; line-height: 1.6em;">This is to notify you that {name} has</span><span style="font-size: 13px; line-height: 1.6em;">&nbsp;the following room assignment:</span></p>
 
 <p style="margin-left: 40px;"><span style="font-size: 13px; line-height: 1.6em;">The <strong>class</strong> is&nbsp;{org}.</span></p>
@@ -1405,8 +1371,8 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 </Condition>', 'System', '2014-08-20 09:23:21.693', '2014-08-20 09:23:21.693', 'ProspectCurrentOrg', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('8887f5f6-8bd2-4612-9c51-88f9943fc91c', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="8887f5f6-8bd2-4612-9c51-88f9943fc91c" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad" OnlineReg="0" OrgStatus="0" OrgType2="0">
-  <Condition Id="70ecdb3f-f1ab-4145-998b-391dd4ea8711" Order="2" Field="RecentVisitNumber" Comparison="Equal" CodeIdValue="1,T" Days="30" Quarters="1" OnlineReg="0" OrgStatus="0" OrgType2="0" />
-</Condition>', 'karenw', '2014-05-18 09:02:11.793', '2014-09-17 21:23:50.230', 'scratchpad', 0, 1, NULL)
+  <Condition Id="777e0d07-f596-45a0-9afd-604568c622ae" Order="2" Field="PeopleExtra" Comparison="Equal" />
+</Condition>', 'karenw', '2014-05-18 09:02:11.793', '2014-10-02 08:54:46.890', 'scratchpad', 0, 7, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('b6f066bb-840c-4c46-9d9f-acbbe6128289', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="b6f066bb-840c-4c46-9d9f-acbbe6128289" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad">
   <Condition Id="06b3a649-ee95-4658-8540-67f08696ba36" Order="2" Field="RecentNewVisitCount" Comparison="Greater" TextValue="0" Days="7" Quarters="365" />
@@ -1429,8 +1395,8 @@ INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [na
 </Condition>', 'System', '2014-08-20 09:23:21.677', '2014-08-20 09:23:21.677', 'VisitedCurrentOrg', 0, 0, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('3facca1e-a661-4bbd-92b0-dd3b8c1f3cda', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="3facca1e-a661-4bbd-92b0-dd3b8c1f3cda" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad" OnlineReg="0" OrgStatus="0" OrgType2="0">
-  <Condition Id="2e5ff67f-5f97-4e03-8a9e-d4aea639e300" Order="2" Field="RecentNewVisitCount" Comparison="Greater" TextValue="0" Days="7" Quarters="365" OnlineReg="0" OrgStatus="0" OrgType2="0" />
-</Condition>', 'karenw', '2014-05-18 09:01:03.390', '2014-09-17 21:21:35.547', 'scratchpad', 0, 0, NULL)
+  <Condition Id="b8e6a757-5c77-4d5c-9522-57bc42b6c4b7" Order="2" Field="HasPeopleExtraField" Comparison="Equal" />
+</Condition>', 'karenw', '2014-05-18 09:01:03.390', '2014-10-02 08:53:11.410', 'scratchpad', 0, 6, NULL)
 INSERT INTO [dbo].[Query] ([QueryId], [text], [owner], [created], [lastRun], [name], [ispublic], [runCount], [CopiedFrom]) VALUES ('4ae2791c-c52f-41fb-b762-dfd74efda9ac', '<?xml version="1.0" encoding="utf-16"?>
 <Condition Id="4ae2791c-c52f-41fb-b762-dfd74efda9ac" Order="0" Field="Group" Comparison="AllTrue" Description="scratchpad" PreviousName="scratchpad">
   <Condition Id="5f9da255-70b1-4a63-b522-2b115080bc09" Order="2" Field="RecentVisitNumber" Comparison="Equal" CodeIdValue="1,T" Days="30" Quarters="1" />
@@ -2700,7 +2666,7 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 27)
 SET IDENTITY_INSERT [dbo].[Users] ON
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2014-08-28 13:45:47.147', NULL, '2014-08-28 10:00:30.863', '2009-05-05 22:46:43.890', 0, '2014-08-19 15:14:45.350', 2, '2014-09-02 11:02:39.610', 0, NULL, NULL, NULL, 0, N'starterdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2014-08-20 15:14:20.247')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2014-01-24 10:37:24.863', '2014-01-24 10:36:52.857', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2014-09-17 21:51:11.313', '2014-09-17 20:47:25.023', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2014-10-11 16:55:11.963', '2014-10-11 16:27:41.620', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (4, 1, N'Admin2', N'', N'/n6kxFe/HZKBXI52fl8Gkpk71Q0=', NULL, NULL, 1, '2014-08-22 21:00:35.113', NULL, '2014-08-22 21:00:35.113', '2014-08-22 21:00:35.113', 0, '2014-08-22 21:00:35.113', 0, '2014-08-22 21:00:35.113', 0, '2014-08-22 21:00:35.113', NULL, NULL, 0, NULL, NULL, N'The Admin', N'Admin, The', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF
 INSERT INTO [dbo].[Volunteer] ([PeopleId], [StatusId], [ProcessedDate], [Standard], [Children], [Leader], [Comments]) VALUES (3, NULL, NULL, 0, 0, 0, NULL)
