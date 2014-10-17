@@ -265,7 +265,7 @@ namespace CmsWeb.Models
             switch (sortExpression)
             {
                 case "Name":
-                    return query.OrderBy(mi => mi.LastName);
+                    return query.OrderBy(mi => mi.Name2);
                 case "Zip":
                     return query.OrderBy(mi => mi.Zip);
                 //break;
