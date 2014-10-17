@@ -127,6 +127,8 @@ CKEditorFuncNum, baseurl + fn, error));
                 return false;
             var session = System.Web.HttpContext.Current.Session;
             AccountModel.SetUserInfo(username, session);
+            if (Util.UserId == 0)
+                return false;
             FormsAuthentication.SetAuthCookie(username, false);
             return true;
         }

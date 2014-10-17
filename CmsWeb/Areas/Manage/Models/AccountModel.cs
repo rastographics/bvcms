@@ -253,7 +253,9 @@ namespace CmsWeb.Models
         {
             var i = (from u in DbUtil.Db.Users
                      where u.Username == username
-                     select new { u, u.Person.PreferredName }).Single();
+                     select new { u, u.Person.PreferredName }).SingleOrDefault();
+            if (i == null)
+                return null;
             //var u = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
             if (i.u != null)
             {

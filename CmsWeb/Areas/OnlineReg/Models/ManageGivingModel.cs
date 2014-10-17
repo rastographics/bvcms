@@ -291,8 +291,8 @@ namespace CmsWeb.Models
                 ModelState.AddModelError("StartWhen", "StartDate must have a value");
             else if (StartWhen <= DateTime.Today)
                 ModelState.AddModelError("StartWhen", "StartDate must occur after today");
-//            else if (StopWhen.HasValue && StopWhen <= StartWhen)
-//                ModelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
+            //            else if (StopWhen.HasValue && StopWhen <= StartWhen)
+            //                ModelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
 
             if (!FirstName.HasValue())
                 ModelState.AddModelError("FirstName", "needs name");
@@ -314,9 +314,13 @@ namespace CmsWeb.Models
         }
         public void Update()
         {
-            var pi = person.PaymentInfo();
             if (Cardcode.HasValue() && Cardcode.Contains("X"))
-                Cardcode = pi.Ccv;
+            {
+                var payinfo = person.PaymentInfo();
+                if (payinfo == null)
+                    throw new Exception("X not allowed in CVV");
+                Cardcode = payinfo.Ccv;
+            }
             var gateway = OnlineRegModel.GetTransactionGateway();
             if (gateway == "authorizenet")
             {
@@ -360,10 +364,11 @@ namespace CmsWeb.Models
             mg.StopWhen = StopWhen;
             mg.NextDate = mg.FindNextDate(DateTime.Today);
 
+            var pi = person.PaymentInfo();
             if (pi == null)
             {
-        		pi = new PaymentInfo();
-        		person.PaymentInfos.Add(pi);
+                pi = new PaymentInfo();
+                person.PaymentInfos.Add(pi);
             }
             pi.FirstName = FirstName.Truncate(50);
             pi.MiddleInitial = Middle.Truncate(10);
@@ -375,18 +380,10 @@ namespace CmsWeb.Models
             pi.Zip = Zip.Truncate(15);
             pi.Phone = Phone.Truncate(25);
 
-            DbUtil.Db.ExecuteCommand("DELETE dbo.RecurringAmounts WHERE PeopleId = {0}", pid);
-            person.RecurringAmounts.Clear();
-            foreach (var c in FundItemsChosen())
-            {
-                var ra = new RecurringAmount
-                {
-                    PeopleId = pid,
-                    FundId = c.fundid,
-                    Amt = c.amt
-                };
-                DbUtil.Db.RecurringAmounts.InsertOnSubmit(ra);
-            }
+            DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(person.RecurringAmounts);
+            DbUtil.Db.SubmitChanges();
+
+            person.RecurringAmounts.AddRange(FundItemsChosen().Select(c => new RecurringAmount { FundId = c.fundid, Amt = c.amt } ));
             DbUtil.Db.SubmitChanges();
         }
 
