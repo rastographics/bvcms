@@ -23,7 +23,8 @@ CREATE TABLE [dbo].[PaymentInfo]
 [Zip] [nvarchar] (15) NULL,
 [Phone] [nvarchar] (25) NULL,
 [TbnBankVaultId] [int] NULL,
-[TbnCardVaultId] [int] NULL
+[TbnCardVaultId] [int] NULL,
+[AuNetCustPayBankId] [int] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
