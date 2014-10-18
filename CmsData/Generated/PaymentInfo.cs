@@ -65,6 +65,8 @@ namespace CmsData
 		
 		private int? _TbnCardVaultId;
 		
+		private int? _AuNetCustPayBankId;
+		
    		
     	
 		private EntityRef< Person> _Person;
@@ -147,6 +149,9 @@ namespace CmsData
 		
 		partial void OnTbnCardVaultIdChanging(int? value);
 		partial void OnTbnCardVaultIdChanged();
+		
+		partial void OnAuNetCustPayBankIdChanging(int? value);
+		partial void OnAuNetCustPayBankIdChanged();
 		
     #endregion
 		public PaymentInfo()
@@ -685,6 +690,28 @@ namespace CmsData
 					this._TbnCardVaultId = value;
 					this.SendPropertyChanged("TbnCardVaultId");
 					this.OnTbnCardVaultIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="AuNetCustPayBankId", UpdateCheck=UpdateCheck.Never, Storage="_AuNetCustPayBankId", DbType="int")]
+		public int? AuNetCustPayBankId
+		{
+			get { return this._AuNetCustPayBankId; }
+
+			set
+			{
+				if (this._AuNetCustPayBankId != value)
+				{
+				
+                    this.OnAuNetCustPayBankIdChanging(value);
+					this.SendPropertyChanging();
+					this._AuNetCustPayBankId = value;
+					this.SendPropertyChanged("AuNetCustPayBankId");
+					this.OnAuNetCustPayBankIdChanged();
 				}
 
 			}

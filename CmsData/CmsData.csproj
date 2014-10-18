@@ -364,7 +364,6 @@
     <Compile Include="Classes\Transnational\TNBVaultUpdateCC.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
-    <Compile Include="Finance\AuthorizeNet.cs" />
     <Compile Include="Finance\IGateway.cs" />
     <Compile Include="Finance\Transnational.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />

@@ -24,6 +24,9 @@ namespace CmsData
         readonly bool testing;
         readonly CMSDataContext db;
 
+        private bool IsLive = false;
+        private ServiceMode ServiceMode { get { return IsLive ? ServiceMode.Live : ServiceMode.Test; } }
+
         public string GatewayType { get { return "AuthorizeNet"; } }
 
         public AuthorizeNet2(CMSDataContext Db, bool testing)
@@ -35,13 +38,13 @@ namespace CmsData
             {
                 login = "9t8Pqzs4CW3S";
                 key = "9j33v58nuZB865WR";
-                url = testurl;
+                IsLive = false;
             }
             else
             {
                 login = Db.Setting("x_login", "");
                 key = Db.Setting("x_tran_key", "");
-                url = produrl;
+                IsLive = true;
             }
         }
         private XDocument getResponse(string request)
@@ -70,17 +73,87 @@ namespace CmsData
             var ids = r.Descendants(ns + "numericString").Select(v => v.Value.ToInt()).ToList();
             foreach (var id in ids)
             {
-                if(db.PaymentInfos.All(pp => pp.AuNetCustId != id))
+                if (db.PaymentInfos.All(pp => pp.AuNetCustId != id))
                     deleteCustomerProfile(id);
             }
         }
 
-        public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
+        public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode,
+            string routing, string account, bool giving)
         {
-            var x = getCustomerProfileIds();
+            //    //AddUpdateCustomerProfile(peopleId, type, cardnumber, DbUtil.NormalizeExpires(expires).ToString2("MMyy"), cardcode, routing, account, giving);
+            var p = db.LoadPersonById(peopleId);
+            var billToAddress = new AuthorizeNet.Address
+            {
+                City = p.PrimaryCity,
+                First = p.FirstName,
+                Last = p.LastName,
+                State = p.PrimaryState,
+                Zip = p.PrimaryZip,
+                Phone = p.HomePhone ?? p.CellPhone,
+                Street = p.PrimaryAddress
+            };
 
-            AddUpdateCustomerProfile(peopleId, type, cardnumber, DbUtil.NormalizeExpires(expires).ToString2("MMyy"), cardcode, routing, account, giving);
+            Customer customer;
+
+            //var customerIds = CustomerGateway.GetCustomerIDs();
+            var pi = p.PaymentInfo();
+            if (pi == null)
+            {
+                pi = new PaymentInfo();
+                p.PaymentInfos.Add(pi);
+            }
+            pi.AuNetCustPayBankId = 0; // this is the new field, ran dbmlbuilder
+
+            //    if (pi.AuNetCustId == null) // create a new profilein Authorize.NET CIM
+            //    {
+            //        // NOTE: this can throw an error if the email address already exists...
+            //        // TODO: Authorize.net needs to release a new Nuget package, because they don't have a clean way to pass in customer ID (aka PeopleId) yet... the latest code has a parameter for this, though
+            //        //       - we could call UpdateCustomer after the fact to do this if we wanted to
+            //        customer = CustomerGateway.CreateCustomer(p.EmailAddress, p.Name);
+            //        customer.ID = peopleId.ToString();
+            //    }
+
+            //    var vaultId = customer.ProfileID;
+            //    var vaultPaymentId = SaveCreditCardToProfile(args.VaultPaymentId, args, customer, billToAddress);
+
+            //    return new CreateVaultResult
+            //    {
+            //        VaultId = vaultId,
+            //        VaultPaymentId = vaultPaymentId
+            //    };
+            //}
         }
+
+        //// NOTE: this can throw an error if the credit card number already exists...
+        //private string SaveCreditCardToProfile(string vaultPaymentId, CreateVaultArgs args, Customer customer, Address billToAddress)
+        //{
+        //    var foundPaymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == vaultPaymentId);
+
+        //    // if they already have a matching payment ID, just return it because it already exists...
+        //    // TODO: alternatively, we could call Update here and save the changes...
+        //    if (foundPaymentProfile == null)
+        //    {
+        //        var paymentProfileId = CustomerGateway.AddCreditCard(customer.ProfileID, args.CardNumber,
+        //            Convert.ToInt32(args.ExpirationMonth), Convert.ToInt32(args.ExpirationYear), args.CardCode,
+        //            billToAddress);
+
+        //        Console.WriteLine("AddCreditCard PaymentProfileID {0}", paymentProfileId);
+        //        vaultPaymentId = paymentProfileId;
+        //    }
+        //    else
+        //    {
+        //        foundPaymentProfile.CardNumber = args.CardNumber;
+        //        foundPaymentProfile.CardExpiration = args.ExpirationDate;
+        //        foundPaymentProfile.CardCode = args.CardCode;
+        //        foundPaymentProfile.BillingAddress = billToAddress;
+
+        //        var isSaved = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, foundPaymentProfile);
+        //    }
+
+        //    return vaultPaymentId;
+        //}
+
 
         public void RemoveFromVault(int peopleId)
         {
@@ -89,12 +162,12 @@ namespace CmsData
             if (pi == null)
                 return;
             deleteCustomerProfile(pi.AuNetCustId);
-			pi.SageCardGuid = null;
-			pi.SageBankGuid = null;
-			pi.MaskedCard = null;
-			pi.MaskedAccount = null;
-			pi.Ccv = null;
-			db.SubmitChanges();
+            pi.SageCardGuid = null;
+            pi.SageBankGuid = null;
+            pi.MaskedCard = null;
+            pi.MaskedAccount = null;
+            pi.Ccv = null;
+            db.SubmitChanges();
         }
 
         private void AddUpdateCustomerProfile(int PeopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
@@ -142,12 +215,12 @@ namespace CmsData
             }
             else // update existing
             {
-//                var target = new CustomerGateway(login, key);
-//                var c1 = target.GetCustomer(pi.AuNetCustId.ToString());
-//                var p1 = c1.PaymentProfiles[0];
-//                target.UpdatePaymentProfile(pi.AuNetCustPayId.ToString(), p1);
-//
-//                target.UpdatePaymentProfile(pi.AuNetCustId.ToString(), );
+                //                var target = new CustomerGateway(login, key);
+                //                var c1 = target.GetCustomer(pi.AuNetCustId.ToString());
+                //                var p1 = c1.PaymentProfiles[0];
+                //                target.UpdatePaymentProfile(pi.AuNetCustPayId.ToString(), p1);
+                //
+                //                target.UpdatePaymentProfile(pi.AuNetCustId.ToString(), );
                 var request = new XDocument(new XDeclaration("1.0", "utf-8", null),
                     Element("updateCustomerProfileRequest",
                         Element("merchantAuthentication",
@@ -227,10 +300,10 @@ namespace CmsData
                     x = getResponse(request.ToString());
                 }
             }
-			if (giving)
-				pi.PreferredGivingType = type;
-			else
-				pi.PreferredPaymentType = type;
+            if (giving)
+                pi.PreferredGivingType = type;
+            else
+                pi.PreferredPaymentType = type;
             pi.MaskedAccount = Util.MaskAccount(account);
             pi.MaskedCard = Util.MaskCC(cardnumber);
             pi.Ccv = cardcode;
@@ -602,6 +675,44 @@ namespace CmsData
         public bool CanGetBounces
         {
             get { return false; }
+        }
+        private AuthorizeNet.IGateway _gateway;
+        private AuthorizeNet.IGateway Gateway
+        {
+            get
+            {
+                if (_gateway == null)
+                    _gateway = new Gateway(login, key, !IsLive);
+                return _gateway;
+            }
+        }
+
+        private ICustomerGateway _customerGateway;
+        /// <summary>
+        /// For "vault"-like functionality
+        /// </summary>
+        private ICustomerGateway CustomerGateway
+        {
+            get
+            {
+                if (_customerGateway == null)
+                    _customerGateway = new CustomerGateway(login, key, ServiceMode);
+                return _customerGateway;
+            }
+        }
+
+        private IReportingGateway _reportingGateway;
+        /// <summary>
+        /// For batches, settlement, etc.
+        /// </summary>
+        private IReportingGateway ReportingGateway
+        {
+            get
+            {
+                if (_reportingGateway == null)
+                    _reportingGateway = new ReportingGateway(login, key, ServiceMode);
+                return _reportingGateway;
+            }
         }
     }
 }

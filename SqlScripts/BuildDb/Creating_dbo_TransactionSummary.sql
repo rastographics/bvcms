@@ -26,12 +26,12 @@ FROM (
 	SELECT 
 		ot.TransactionDate TranDate
 
-		,CONVERT(FLOAT,tp.Amt) 
+		,ISNULL(CONVERT(FLOAT,tp.Amt) 
 			/ NULLIF((SELECT SUM(Amt) 
 					FROM dbo.TransactionPeople tp2
 					JOIN dbo.OrganizationMembers om2 
 					ON om2.PeopleId = tp2.PeopleId AND om2.OrganizationId = tp2.OrgId
-					WHERE Id = om.TranId), 0)
+					WHERE Id = om.TranId), 0), 0)
 			IndPctC
 
 		,-ISNULL((SELECT SUM(Amt - ISNULL(donate, 0)) 
