@@ -329,6 +329,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSearch.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostTransactionItem.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AveryAddressWordResult.cs" />
+    <Compile Include="Areas\Reports\Models\Other\CustomReportsModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\QueryStatsResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\CsvResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelFamilyMember.cs" />

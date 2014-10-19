@@ -365,6 +365,7 @@
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Finance\Transnational.cs" />
+    <Compile Include="Generated\CustomColumn.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
     <Compile Include="Generated\Functions\GenRange.cs" />
     <Compile Include="Generated\Functions\GetTotalContributionsAgeRange.cs" />

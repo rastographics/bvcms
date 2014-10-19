@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
+using System.Xml;
 using System.Xml.Linq;
 using CmsData;
 using CmsData.Codes;
@@ -205,8 +206,8 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return new EnrollmentControlResult { OrgSearch = m, UseCurrentTag = usecurrenttag ?? false };
 
             var d = (from p in EnrollmentControlModel.List(m, usecurrenttag: usecurrenttag ?? false)
-                    orderby p.Name
-                    select p).ToDataTable();
+                     orderby p.Name
+                     select p).ToDataTable();
             return d.ToExcel("EnrollmentControl.xlsx");
         }
 
@@ -274,7 +275,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult Meetings(DateTime dt1, DateTime dt2, int? programid, int? divisionid)
         {
-            var m = new MeetingsModel() { Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid, StatusId = OrgStatusCode.Active};
+            var m = new MeetingsModel() { Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid, StatusId = OrgStatusCode.Active };
             return View(m);
         }
         [HttpPost]
@@ -550,6 +551,54 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (alternate)
                 return View("ExtraValuesGrid2", rdr);
             return View("ExtraValuesGrid", rdr);
+        }
+
+        [HttpGet]
+        [Route("Custom/{report}/{id?}")]
+        public ActionResult CustomReport(Guid id, string report)
+        {
+            try
+            {
+                return CustomReportsModel.Result(DbUtil.Db, id, report);
+            }
+            catch (Exception ex)
+            {
+                return Message(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("CustomSql/{report}/{id?}")]
+        public ActionResult CustomReportSql(Guid id, string report)
+        {
+            try
+            {
+                return Content("<pre style='font-family:monospace'>{0}\n</pre>".Fmt(
+                    CustomReportsModel.Sql(DbUtil.Db, id, report)));
+            }
+            catch (Exception ex)
+            {
+                return Message(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("CustomColumns")]
+        public ActionResult CustomColumns()
+        {
+            try
+            {
+                Response.ContentType = "text/plain";
+                var settings = new XmlWriterSettings { Indent = true, Encoding = new System.Text.UTF8Encoding(false) };
+                using (var w = XmlWriter.Create(Response.OutputStream, settings))
+                {
+                    CustomReportsModel.StandardColumns(DbUtil.Db, w);
+                    w.Flush();
+                }
+                return new EmptyResult();
+            }
+            catch (Exception ex)
+            {
+                return Message(ex.Message);
+            }
         }
 
         [HttpPost]
