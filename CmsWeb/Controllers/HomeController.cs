@@ -54,16 +54,30 @@ namespace CmsWeb.Controllers
             qb.Save(DbUtil.Db);
             return Redirect("/Query");
         }
+//        public ActionResult Test()
+//        {
+//            var s = @"
+//q = model.ChangedAddresses()
+//for v in q:
+//    print 'Hi {} {}, \nI noticed you have moved to {}\n'.format(v.FirstName, v.LastName, v.PrimaryCity)
+//";
+//            var ret = PythonEvents.RunScript(Util.Host, s);
+//            return Content("<pre>{0}</pre>".Fmt(ret));
+//        }
+#if DEBUG
         public ActionResult Test()
         {
-            var s = @"
-q = model.ChangedAddresses()
-for v in q:
-    print 'Hi {} {}, \nI noticed you have moved to {}\n'.format(v.FirstName, v.LastName, v.PrimaryCity)
-";
-            var ret = PythonEvents.RunScript(Util.Host, s);
-            return Content("<pre>{0}</pre>".Fmt(ret));
+            var p = DbUtil.Db.LoadPersonById(828612);
+
+            Util.Now = DateTime.Parse("10/22/14 10:15 PM");
+            p.PostUnattendedContribution(DbUtil.Db, 101m, 1, "test1");
+            Util.Now = DateTime.Parse("10/24/14 10:16 PM");
+            p.PostUnattendedContribution(DbUtil.Db, 102m, 1, "test2");
+            Util.Now = DateTime.Parse("10/27/14 10:17 PM");
+            p.PostUnattendedContribution(DbUtil.Db, 103m, 1, "test3");
+            return Content("done");
         }
+#endif
         public ActionResult RecordTest(int id, string v)
         {
             var o = DbUtil.Db.LoadOrganizationById(id);

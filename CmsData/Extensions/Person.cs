@@ -1270,18 +1270,49 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     typecode = BundleTypeCode.OnlinePledge;
             }
 
-            var now = DateTime.Now;
-            var d = Util.Now.Date;
-            var q = from b in Db.BundleHeaders
-                    where b.BundleHeaderTypeId == typecode
-                    where b.BundleStatusId == BundleStatusCode.Open
-                    where b.ContributionDate >= d
-                    where b.ContributionDate < now
-                    where b.ContributionDate.Year == now.Year
-                    where b.ContributionDate.Month == now.Month
-                    orderby b.ContributionDate descending
-                    select b;
-            var bundle = q.FirstOrDefault();
+            var now = Util.Now;
+            var d = now.Date;
+            BundleHeader bundle = null;
+
+            var spec = Db.Setting("OnlineContributionBundleDayTime", "");
+            if (spec.HasValue())
+            {
+                var a = spec.SplitStr(" ", 2);
+                try
+                {
+                    var next = DateTime.Parse(now.ToShortDateString() + " " + a[1]);
+                    var dow = Enum.Parse(typeof(DayOfWeek), a[0], ignoreCase: true);
+                    next = next.Sunday().Add(next.TimeOfDay).AddDays(dow.ToInt());
+                    if(now > next)
+                    	next = next.AddDays(7);
+                    var prev = next.AddDays(-7);
+                    var q = from b in Db.BundleHeaders
+                            where b.BundleHeaderTypeId == typecode
+                            where b.BundleStatusId == BundleStatusCode.Open
+                            where b.ContributionDate >= prev
+                            where b.ContributionDate < next
+                            orderby b.ContributionDate descending
+                            select b;
+                    bundle = q.FirstOrDefault();
+                }
+                catch (Exception)
+                {
+                    spec = "";
+                }
+            }
+            if(!spec.HasValue())
+            {
+                var q = from b in Db.BundleHeaders
+                        where b.BundleHeaderTypeId == typecode
+                        where b.BundleStatusId == BundleStatusCode.Open
+                        where b.ContributionDate >= d
+                        where b.ContributionDate < now
+                        where b.ContributionDate.Year == now.Year
+                        where b.ContributionDate.Month == now.Month
+                        orderby b.ContributionDate descending
+                        select b;
+                bundle = q.FirstOrDefault();
+            }
             if (bundle == null)
             {
                 bundle = new BundleHeader
