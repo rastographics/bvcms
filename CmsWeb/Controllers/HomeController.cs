@@ -44,12 +44,6 @@ namespace CmsWeb.Controllers
             qb.Save(DbUtil.Db);
             return Redirect("/Query");
         }
-        public ActionResult Test()
-        {
-            var au = DbUtil.Db.Gateway() as CmsData.AuthorizeNet2;
-            au.fixup();
-            return new EmptyResult();
-        }
         public ActionResult RecordTest(int id, string v)
         {
             var o = DbUtil.Db.LoadOrganizationById(id);

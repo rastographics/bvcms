@@ -47,7 +47,7 @@ namespace CmsData
 			}
 			return t;
 		}
-		public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
+		public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
 		{
 			var p = db.LoadPersonById(peopleId);
 			var pi = p.PaymentInfo();
@@ -69,7 +69,7 @@ namespace CmsData
 
 				if (pi.SageCardGuid == null) // new
 				{
-    				coll["CARDNUMBER"] = cardnumber;
+    				coll["CARDNUMBER"] = cardNumber;
 					var b = wc.UploadValues("INSERT_CREDIT_CARD_DATA", "POST", coll);
 					var ret = Encoding.ASCII.GetString(b);
 					resp = getResponse(ret);
@@ -78,9 +78,9 @@ namespace CmsData
 				else // update existing
 				{
 					coll["GUID"] = pi.SageCardGuid.ToString().Replace("-", "");
-					if (!cardnumber.StartsWith("X"))
+					if (!cardNumber.StartsWith("X"))
 					{
-        				coll["CARDNUMBER"] = cardnumber;
+        				coll["CARDNUMBER"] = cardNumber;
 						var b = wc.UploadValues("UPDATE_CREDIT_CARD_DATA", "POST", coll);
 						var ret = Encoding.ASCII.GetString(b);
 						resp = getResponse(ret);
@@ -120,8 +120,8 @@ namespace CmsData
 			}
 			pi.MaskedAccount = Util.MaskAccount(account);
 			pi.Routing = Util.Mask(new StringBuilder(routing), 2);
-			pi.MaskedCard = Util.MaskCC(cardnumber);
-			pi.Ccv = cardcode;
+			pi.MaskedCard = Util.MaskCC(cardNumber);
+			pi.Ccv = cardCode;
 			pi.Expires = expires;
 			pi.Testing = testing;
 			if (giving)

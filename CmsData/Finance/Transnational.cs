@@ -18,7 +18,7 @@ namespace CmsData
             this.db = db;
             this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
         }
-        public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
+        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
         {
             var p = db.LoadPersonById(peopleId);
             var pi = p.PaymentInfo();
@@ -35,7 +35,7 @@ namespace CmsData
                     var t = new TNBVaultAddCC()
                     {
                         testing = testing,
-                        CCNumber = cardnumber,
+                        CCNumber = cardNumber,
                         CCExp = expires,
 
                         Address = p.PrimaryAddress,
@@ -51,7 +51,7 @@ namespace CmsData
                 }
                 else // update
                 {
-                    if (!cardnumber.StartsWith("X"))
+                    if (!cardNumber.StartsWith("X"))
                     {
                         // Update Card and expiration date
 
@@ -59,7 +59,7 @@ namespace CmsData
                         {
                             testing = testing,
                             VaultID = pi.TbnCardVaultId.ToString(),
-                            CCNumber = cardnumber,
+                            CCNumber = cardNumber,
                             CCExp = expires,
 
                             Address = p.PrimaryAddress,

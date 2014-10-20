@@ -11,7 +11,7 @@ namespace CmsData
         bool CanGetSettlementDates { get;}
         bool CanGetBounces { get;}
 
-        void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving);
+        void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving);
         void RemoveFromVault(int peopleId);
         TransactionResponse VoidCreditCardTransaction(string reference);
         TransactionResponse VoidCheckTransaction(string reference);

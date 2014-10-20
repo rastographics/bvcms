@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AuthorizeNet.APICore;
+using Community.CsharpSqlite;
 using UtilityExtensions;
 using System.Net;
 using System.Text;
@@ -67,21 +68,11 @@ namespace CmsData
             }
         }
 
-        public void fixup()
-        {
-            var r = getCustomerProfileIds();
-            var ids = r.Descendants(ns + "numericString").Select(v => v.Value.ToInt()).ToList();
-            foreach (var id in ids)
-            {
-                if (db.PaymentInfos.All(pp => pp.AuNetCustId != id))
-                    deleteCustomerProfile(id);
-            }
-        }
-
-        public void StoreInVault(int peopleId, string type, string cardnumber, string expires, string cardcode,
+        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode,
             string routing, string account, bool giving)
         {
-            //    //AddUpdateCustomerProfile(peopleId, type, cardnumber, DbUtil.NormalizeExpires(expires).ToString2("MMyy"), cardcode, routing, account, giving);
+            var expiredt = DbUtil.NormalizeExpires(expires).Value;
+
             var p = db.LoadPersonById(peopleId);
             var billToAddress = new AuthorizeNet.Address
             {
@@ -94,7 +85,7 @@ namespace CmsData
                 Street = p.PrimaryAddress
             };
 
-            Customer customer;
+            Customer customer = null;
 
             //var customerIds = CustomerGateway.GetCustomerIDs();
             var pi = p.PaymentInfo();
@@ -103,56 +94,85 @@ namespace CmsData
                 pi = new PaymentInfo();
                 p.PaymentInfos.Add(pi);
             }
-            pi.AuNetCustPayBankId = 0; // this is the new field, ran dbmlbuilder
 
-            //    if (pi.AuNetCustId == null) // create a new profilein Authorize.NET CIM
-            //    {
-            //        // NOTE: this can throw an error if the email address already exists...
-            //        // TODO: Authorize.net needs to release a new Nuget package, because they don't have a clean way to pass in customer ID (aka PeopleId) yet... the latest code has a parameter for this, though
-            //        //       - we could call UpdateCustomer after the fact to do this if we wanted to
-            //        customer = CustomerGateway.CreateCustomer(p.EmailAddress, p.Name);
-            //        customer.ID = peopleId.ToString();
-            //    }
+            if (pi.AuNetCustId == null) // create a new profilein Authorize.NET CIM
+            {
+                // NOTE: this can throw an error if the email address already exists...
+                // TODO: Authorize.net needs to release a new Nuget package, because they don't have a clean way to pass in customer ID (aka PeopleId) yet... the latest code has a parameter for this, though
+                //       - we could call UpdateCustomer after the fact to do this if we wanted to
+                customer = CustomerGateway.CreateCustomer(p.EmailAddress, p.Name);
+                customer.ID = peopleId.ToString();
 
-            //    var vaultId = customer.ProfileID;
-            //    var vaultPaymentId = SaveCreditCardToProfile(args.VaultPaymentId, args, customer, billToAddress);
+                // we only have to do this because we set the ID property and we want that saved...
+                CustomerGateway.UpdateCustomer(customer);
+            }
 
-            //    return new CreateVaultResult
-            //    {
-            //        VaultId = vaultId,
-            //        VaultPaymentId = vaultPaymentId
-            //    };
-            //}
+            if (type == "B")
+                SaveECheckToProfile(routing, account, pi, customer, billToAddress);
+            else if (type == "C")
+                SaveCreditCardToProfile(cardNumber, cardCode, expiredt, pi, customer, billToAddress);
+            else
+                throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
+
+            db.SubmitChanges();
         }
 
-        //// NOTE: this can throw an error if the credit card number already exists...
-        //private string SaveCreditCardToProfile(string vaultPaymentId, CreateVaultArgs args, Customer customer, Address billToAddress)
-        //{
-        //    var foundPaymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == vaultPaymentId);
+        private void SaveECheckToProfile(string routing, string account, PaymentInfo pi, Customer customer, AuthorizeNet.Address billToAddress)
+        {
+            var foundPaymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == pi.AuNetCustPayBankId.ToString());
 
-        //    // if they already have a matching payment ID, just return it because it already exists...
-        //    // TODO: alternatively, we could call Update here and save the changes...
-        //    if (foundPaymentProfile == null)
-        //    {
-        //        var paymentProfileId = CustomerGateway.AddCreditCard(customer.ProfileID, args.CardNumber,
-        //            Convert.ToInt32(args.ExpirationMonth), Convert.ToInt32(args.ExpirationYear), args.CardCode,
-        //            billToAddress);
+            var bankAccount = new BankAccount
+            {
+                accountNumber = account,
+                routingNumber = routing,
+                accountType = BankAccountType.Checking,
+                nameOnAccount = customer.Description
+            };
 
-        //        Console.WriteLine("AddCreditCard PaymentProfileID {0}", paymentProfileId);
-        //        vaultPaymentId = paymentProfileId;
-        //    }
-        //    else
-        //    {
-        //        foundPaymentProfile.CardNumber = args.CardNumber;
-        //        foundPaymentProfile.CardExpiration = args.ExpirationDate;
-        //        foundPaymentProfile.CardCode = args.CardCode;
-        //        foundPaymentProfile.BillingAddress = billToAddress;
+            if (foundPaymentProfile == null)
+            {
+                var paymentProfileId = CustomerGateway.AddECheckBankAccount(customer.ProfileID, bankAccount, billToAddress);
 
-        //        var isSaved = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, foundPaymentProfile);
-        //    }
+                pi.AuNetCustPayBankId = paymentProfileId.ToInt();
+            }
+            else
+            {
+                foundPaymentProfile.eCheckBankAccount = bankAccount;
+                foundPaymentProfile.BillingAddress = billToAddress;
 
-        //    return vaultPaymentId;
-        //}
+                var isSaved = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, foundPaymentProfile);
+                if (!isSaved)
+                    throw new Exception("UpdatePaymentProfile failed to save credit card for {0}".Fmt(pi.PeopleId));
+            }
+        }
+
+        // NOTE: this can throw an error if the credit card number already exists...
+        private void SaveCreditCardToProfile(string cardNumber, string cardCode, DateTime expires, PaymentInfo pi, Customer customer, AuthorizeNet.Address billToAddress)
+        {
+            var foundPaymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == pi.AuNetCustPayId.ToString());
+
+            if (foundPaymentProfile == null)
+            {
+                var paymentProfileId = CustomerGateway.AddCreditCard(customer.ProfileID, cardNumber,
+                    expires.Month, expires.Year, cardCode, billToAddress);
+
+                pi.AuNetCustPayId = paymentProfileId.ToInt();
+            }
+            else
+            {
+                if (!cardNumber.StartsWith("X"))
+                {
+                    foundPaymentProfile.CardNumber = cardNumber;
+                    foundPaymentProfile.CardCode = cardCode;
+                }
+                foundPaymentProfile.CardExpiration = expires.ToString("MMyy");
+                foundPaymentProfile.BillingAddress = billToAddress;
+
+                var isSaved = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, foundPaymentProfile);
+                if (!isSaved)
+                    throw new Exception("UpdatePaymentProfile failed to save echeck for {0}".Fmt(pi.PeopleId));
+            }
+        }
 
 
         public void RemoveFromVault(int peopleId)
@@ -161,13 +181,23 @@ namespace CmsData
             var pi = p.PaymentInfo();
             if (pi == null)
                 return;
-            deleteCustomerProfile(pi.AuNetCustId);
-            pi.SageCardGuid = null;
-            pi.SageBankGuid = null;
-            pi.MaskedCard = null;
-            pi.MaskedAccount = null;
-            pi.Ccv = null;
-            db.SubmitChanges();
+
+            if (CustomerGateway.DeleteCustomer(pi.AuNetCustId.ToString()))
+            {
+                pi.SageCardGuid = null;
+                pi.SageBankGuid = null;
+                pi.MaskedCard = null;
+                pi.MaskedAccount = null;
+                pi.Ccv = null;
+                pi.AuNetCustId = null;
+                pi.AuNetCustPayId = null;
+                pi.AuNetCustPayBankId = null;
+                db.SubmitChanges();
+            }
+            else
+            {
+                throw new Exception("Failed to delete customer {0}".Fmt(peopleId));
+            }
         }
 
         private void AddUpdateCustomerProfile(int PeopleId, string type, string cardnumber, string expires, string cardcode, string routing, string account, bool giving)
@@ -419,21 +449,6 @@ namespace CmsData
         {
             var r = e.Element(ns + v);
             return r != null ? r.Value : "";
-        }
-
-        private string deleteCustomerProfile(int? custid)
-        {
-            var request = new XDocument(new XDeclaration("1.0", "utf-8", null),
-                Element("deleteCustomerProfileRequest",
-                    Element("merchantAuthentication",
-                        Element("name", login),
-                        Element("transactionKey", key)
-                        ),
-                    Element("customerProfileId", custid)
-                )
-            );
-            var x = getResponse(request.ToString());
-            return x.ToString();
         }
 
         public TransactionResponse VoidCreditCardTransaction(string reference)
