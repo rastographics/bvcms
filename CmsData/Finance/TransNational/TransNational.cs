@@ -2,9 +2,9 @@
 using System.Data;
 using CmsData.Classes.Transnational;
 
-namespace CmsData
+namespace CmsData.Finance.TransNational
 {
-    internal class Transnational : IGateway
+    internal class TransNational : IGateway
     {
         readonly string login;
         readonly string key;
@@ -13,7 +13,7 @@ namespace CmsData
 
         public string GatewayType { get { return "Transnational"; } }
 
-        public Transnational(CMSDataContext db, bool testing)
+        public TransNational(CMSDataContext db, bool testing)
         {
             this.db = db;
             this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";

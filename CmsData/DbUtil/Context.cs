@@ -7,6 +7,7 @@
 using System;
 using System.Data.Common;
 using System.Linq;
+using CmsData.Finance.TransNational;
 using UtilityExtensions;
 using System.Web;
 using System.Data.Linq.Mapping;
@@ -1164,7 +1165,7 @@ namespace CmsData
                     break;
                 case "transnational":
                     if (Setting("TNBUsername", "").Length > 0)
-                        return new Transnational(this, testing);
+                        return new TransNational(this, testing);
                     break;
             }
             return null;
