@@ -30,8 +30,8 @@ namespace CmsData.Finance
             }
             else
             {
-                userName = db.Setting("x_login", "");
-                password = db.Setting("x_tran_key", "");
+                userName = db.Setting("TNBUsername", "");
+                password = db.Setting("TNBPassword", "");
             }
         }
 
