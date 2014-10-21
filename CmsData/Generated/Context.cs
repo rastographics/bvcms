@@ -186,6 +186,10 @@ namespace CmsData
         partial void UpdateCoupon(Coupon instance);
         partial void DeleteCoupon(Coupon instance);
         
+        partial void InsertCustomColumn(CustomColumn instance);
+        partial void UpdateCustomColumn(CustomColumn instance);
+        partial void DeleteCustomColumn(CustomColumn instance);
+        
         partial void InsertDecisionType(DecisionType instance);
         partial void UpdateDecisionType(DecisionType instance);
         partial void DeleteDecisionType(DecisionType instance);
@@ -925,6 +929,12 @@ namespace CmsData
 		public Table< Coupon> Coupons
 		{
 			get	{ return this.GetTable< Coupon>(); }
+
+		}
+
+		public Table< CustomColumn> CustomColumns
+		{
+			get	{ return this.GetTable< CustomColumn>(); }
 
 		}
 
@@ -4020,6 +4030,22 @@ namespace CmsData
 		{
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod()))
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DOB", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string Dob(
+            [Parameter(Name = "m", DbType="int")] int? m,
+            [Parameter(Name = "d", DbType="int")] int? d,
+            [Parameter(Name = "y", DbType="int")] int? y
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                m,
+                d,
+                y
                 ).ReturnValue));
 		}
 

@@ -112,7 +112,7 @@ namespace CmsWeb.Areas.Reports.Models
                     c.InsertParagraph(p.Address);
                     if (p.Address2.HasValue())
                         c.InsertParagraph(p.Address2);
-                    c.InsertParagraph(p.CityStateZip);
+                    c.InsertParagraph(p.CSZ);
 
                     col += 2;
                     if (col == 6)

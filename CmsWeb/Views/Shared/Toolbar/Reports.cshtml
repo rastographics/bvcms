@@ -1,7 +1,9 @@
-﻿@{
+﻿@using CmsWeb.Areas.Reports.Models
+@{
   var qid = ViewBag.queryid;
   var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
   var oid = ViewBag.oid;
+  var custom = CustomReportsModel.ReportList(DbUtil.Db).ToList();
 }
 <ul class="dropdown-menu dropdown-div-reports">
   <li>
@@ -99,6 +101,15 @@
           <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@oid" target="_blank">Recent Absents Report</a></li>
           <li><a id="RecentAttendRpt" href="/Reports/PastAttendee/@oid" target="_blank">Recent Attendance Report</a></li>
           <li><a id="AttendanceRpt" href="/Reports/Attendance/@oid">Attendance Percentages</a></li>
+        }
+        @if (custom.Count > 0)
+        {
+          <li class="header">Custom Reports (beta)</li>
+          foreach (var r in custom)
+          {
+            <li><a target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a></li>
+            <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
+          }
         }
       </ul>
     </div>

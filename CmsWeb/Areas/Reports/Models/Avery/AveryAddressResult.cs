@@ -117,7 +117,7 @@ namespace CmsWeb.Areas.Reports.Models
                     ph.AddLine(m.LabelName, font);
                 ph.AddLine(m.Address, font);
                 ph.AddLine(m.Address2, font);
-                ph.AddLine(m.CityStateZip, font);
+                ph.AddLine(m.CSZ, font);
                 c.AddElement(ph);
                 if (usephone)
                 {

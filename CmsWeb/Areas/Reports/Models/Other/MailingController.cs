@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using CmsData;
+using CmsData.View;
 using MoreLinq;
 using UtilityExtensions;
 using System.Collections;
@@ -25,13 +26,13 @@ namespace CmsWeb.Models
             var q = DbUtil.Db.PeopleQuery(QueryId);
             if (UseMailFlags)
                 q = FilterMailFlags(q);
+            q = ApplySort(q, sortExpression);
             var q2 = from p in q
                      where p.DeceasedDate == null
                      select new MailingInfo
                      {
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
-                         CityStateZip = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip,
@@ -42,7 +43,6 @@ namespace CmsWeb.Models
                          CellPhone = p.CellPhone,
                          HomePhone = p.HomePhone,
                      };
-            q2 = ApplySort(q2, sortExpression);
             return q2;
         }
         public IEnumerable<MailingInfo> GroupByAddress(Guid QueryId)
@@ -60,7 +60,6 @@ namespace CmsWeb.Models
                      {
                          Address = one.PrimaryAddress,
                          Address2 = one.PrimaryAddress2,
-                         CityStateZip = Util.FormatCSZ4(one.PrimaryCity, one.PrimaryState, one.PrimaryZip),
                          City = one.PrimaryCity,
                          State = one.PrimaryState,
                          Zip = one.PrimaryZip,
@@ -89,7 +88,6 @@ namespace CmsWeb.Models
                      {
                          Address = h.PrimaryAddress,
                          Address2 = h.PrimaryAddress2,
-                         CityStateZip = Util.FormatCSZ4(h.PrimaryCity, h.PrimaryState, h.PrimaryZip),
                          City = h.PrimaryCity,
                          State = h.PrimaryState,
                          Zip = h.PrimaryZip,
@@ -124,7 +122,6 @@ namespace CmsWeb.Models
                      {
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
-                         CityStateZip = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip,
@@ -156,7 +153,6 @@ namespace CmsWeb.Models
                      {
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
-                         CityStateZip = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip,
@@ -209,7 +205,6 @@ namespace CmsWeb.Models
                      {
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
-                         CityStateZip = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip,
@@ -240,7 +235,6 @@ namespace CmsWeb.Models
                      {
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
-                         CityStateZip = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip,
@@ -268,6 +262,20 @@ namespace CmsWeb.Models
                     return query.OrderBy(mi => mi.Name2);
                 case "Zip":
                     return query.OrderBy(mi => mi.Zip);
+                //break;
+                default:
+                    break;
+            }
+            return query;
+        }
+        public IQueryable<Person> ApplySort(IQueryable<Person> query, string sortExpression)
+        {
+            switch (sortExpression)
+            {
+                case "Name":
+                    return query.OrderBy(mi => mi.Name2);
+                case "Zip":
+                    return query.OrderBy(mi => mi.PrimaryZip);
                 //break;
                 default:
                     break;
@@ -416,6 +424,14 @@ namespace CmsWeb.Models
             public string City { get; set; }
             public string State { get; set; }
             public string Zip { get; set; }
+
+            public string CSZ
+            {
+                get
+                {
+                    return Util.FormatCSZ4(City, State, Zip);
+                } 
+            }
         }
         public class PersonInfo
         {

@@ -61,16 +61,25 @@ namespace UtilityExtensions
                 age--;
             return age;
         }
+        private const string STR_DateTimeNow = "DateTimeNow";
         public static DateTime Now
         {
             get
             {
 #if DEBUG
-                return DateTime.Now.Add(new TimeSpan(3, 5, 5, 0));
+                //return DateTime.Now.Add(new TimeSpan(3, 5, 5, 0));
+                var o = HttpRuntime.Cache[STR_DateTimeNow];
+                return o != null ? (DateTime) o : DateTime.Now;
 #else
                 return DateTime.Now;
 #endif
             }
+#if DEBUG
+            set
+            {
+                HttpRuntime.Cache[STR_DateTimeNow] = value;
+            }
+#endif
         }
         public static bool DateValid(string dt)
         {

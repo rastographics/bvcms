@@ -44,6 +44,30 @@ namespace CmsWeb.Controllers
             qb.Save(DbUtil.Db);
             return Redirect("/Query");
         }
+//        public ActionResult Test()
+//        {
+//            var s = @"
+//q = model.ChangedAddresses()
+//for v in q:
+//    print 'Hi {} {}, \nI noticed you have moved to {}\n'.format(v.FirstName, v.LastName, v.PrimaryCity)
+//";
+//            var ret = PythonEvents.RunScript(Util.Host, s);
+//            return Content("<pre>{0}</pre>".Fmt(ret));
+//        }
+#if DEBUG
+        public ActionResult Test()
+        {
+            var p = DbUtil.Db.LoadPersonById(828612);
+
+            Util.Now = DateTime.Parse("10/22/14 10:15 PM");
+            p.PostUnattendedContribution(DbUtil.Db, 101m, 1, "test1");
+            Util.Now = DateTime.Parse("10/24/14 10:16 PM");
+            p.PostUnattendedContribution(DbUtil.Db, 102m, 1, "test2");
+            Util.Now = DateTime.Parse("10/27/14 10:17 PM");
+            p.PostUnattendedContribution(DbUtil.Db, 103m, 1, "test3");
+            return Content("done");
+        }
+#endif
         public ActionResult RecordTest(int id, string v)
         {
             var o = DbUtil.Db.LoadOrganizationById(id);
@@ -156,6 +180,18 @@ namespace CmsWeb.Controllers
 
             return Content(PythonEvents.RunScript(Util.Host, script));
         }
+
+        private string RunScriptSql(CMSDataContext Db, string parameter, string body)
+        {
+            var declareqtagid = "";
+            if (body.Contains("@qtagid"))
+            {
+                var id = Db.FetchLastQuery().Id;
+                var tag = Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                declareqtagid = "DECLARE @qtagid INT = {0}\n".Fmt(tag.Id);
+            }
+            return "{0}DECLARE @p1 VARCHAR(100) = '{1}' {2}".Fmt(declareqtagid, parameter, body);
+        }
         [HttpGet, Route("~/RunScript/{name}/{parameter?}")]
         public ActionResult RunScript(string name, string parameter = null)
         {
@@ -167,7 +203,7 @@ namespace CmsWeb.Controllers
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             cn.Open();
-            var script = "DECLARE @p1 VARCHAR(100) = '{0}'\n{1}\n".Fmt(parameter, content.Body);
+            var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
             var rd = cn.ExecuteReader(script);
             ViewData["name"] = name;
             return View(rd);
@@ -182,7 +218,7 @@ namespace CmsWeb.Controllers
                 ? Util.ConnectionString
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
-            var script = "DECLARE @p1 VARCHAR(100) = '{0}'\n{1}\n".Fmt(parameter, content.Body);
+            var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
             return cn.ExecuteReader(script).ToExcel("RunScript.xlsx");
         }
 
