@@ -394,7 +394,7 @@
     <Compile Include="Finance\TransNational\Internal\Vault\UpdateCreditCardVaultRequest.cs" />
     <Compile Include="Finance\TransNational\Internal\Vault\VaultRequest.cs" />
     <Compile Include="Finance\TransNational\Internal\Vault\VaultResponse.cs" />
-    <Compile Include="Finance\TransNational\TransNational.cs" />
+    <Compile Include="Finance\TransNational\TransNationalGateway.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
     <Compile Include="Generated\Functions\GenRange.cs" />
     <Compile Include="Generated\Functions\GetTotalContributionsAgeRange.cs" />

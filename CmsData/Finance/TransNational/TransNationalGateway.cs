@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using CmsData.Finance.TransNational.Internal.Core;
+﻿using CmsData.Finance.TransNational.Internal.Core;
 using CmsData.Finance.TransNational.Internal.Transaction.Refund;
 using CmsData.Finance.TransNational.Internal.Transaction.Sale;
 using CmsData.Finance.TransNational.Internal.Transaction.Void;
 using CmsData.Finance.TransNational.Internal.Vault;
-using CmsData.Finance.TransNational.Internal.Query;
 using System;
 using System.Data;
 using System.Globalization;
@@ -12,16 +10,15 @@ using UtilityExtensions;
 
 namespace CmsData.Finance.TransNational
 {
-    internal class TransNational : IGateway
+    internal class TransNationalGateway : IGateway
     {
         readonly string userName;
         readonly string password;
         CMSDataContext db;
         readonly bool testing;
-
         public string GatewayType { get { return "Transnational"; } }
 
-        public TransNational(CMSDataContext db, bool testing)
+        public TransNationalGateway(CMSDataContext db, bool testing)
         {
             this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
             this.db = db;
@@ -37,6 +34,7 @@ namespace CmsData.Finance.TransNational
                 password = db.Setting("x_tran_key", "");
             }
         }
+
         public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
@@ -259,7 +257,6 @@ namespace CmsData.Finance.TransNational
 
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
         {
-            // missing po number!!!!
             var creditCardSaleRequest = new CreditCardSaleRequest(userName,
                                                                   password,
                                                                   new CreditCard
@@ -280,9 +277,10 @@ namespace CmsData.Finance.TransNational
                                                                           Phone = phone
                                                                       }
                                                                   },
-                                                                  amt, 
-                                                                  tranid.ToString(CultureInfo.InvariantCulture), 
-                                                                  description);
+                                                                  amt,
+                                                                  tranid.ToString(CultureInfo.InvariantCulture),
+                                                                  description,
+                                                                  peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = creditCardSaleRequest.Execute();
 
@@ -294,20 +292,31 @@ namespace CmsData.Finance.TransNational
                 TransactionId = response.TransactionId
             };
         }
+
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string city, string state, string zip, string phone)
         {
-            // missing po number and billing address.
             var achSaleRequest = new AchSaleRequest(userName,
                                                     password,
                                                     new Ach
                                                     {
                                                         NameOnAccount = string.Format("{0} {1}", first, last),
                                                         AccountNumber = acct,
-                                                        RoutingNumber = routing
+                                                        RoutingNumber = routing,
+                                                        BillingAddress = new BillingAddress
+                                                        {
+                                                            Address1 = addr,
+                                                            City = city,
+                                                            State = state,
+                                                            Zip = zip,
+                                                            Country = "USA",
+                                                            Email = email,
+                                                            Phone = phone
+                                                        }
                                                     },
                                                     amt,
                                                     tranid.ToString(CultureInfo.InvariantCulture),
-                                                    description);
+                                                    description,
+                                                    peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = achSaleRequest.Execute();
 
@@ -319,6 +328,7 @@ namespace CmsData.Finance.TransNational
                 TransactionId = response.TransactionId
             };
         }
+
         public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
         {
             var person = db.LoadPersonById(peopleId);
@@ -331,18 +341,21 @@ namespace CmsData.Finance.TransNational
                 };
 
             if (type == "C") // credit card
-                return ChargeCreditCardVault(paymentInfo.TbnCardVaultId.GetValueOrDefault(), amt);
+                return ChargeCreditCardVault(paymentInfo.TbnCardVaultId.GetValueOrDefault(), peopleId, amt, tranid, description);
             else // bank account
-                return ChargeAchVault(paymentInfo.TbnBankVaultId.GetValueOrDefault(), amt);
+                return ChargeAchVault(paymentInfo.TbnBankVaultId.GetValueOrDefault(), peopleId, amt, tranid, description);
 
         }
 
-        private TransactionResponse ChargeCreditCardVault(int vaultId, decimal amount)
+        private TransactionResponse ChargeCreditCardVault(int vaultId, int peopleId, decimal amount, int tranid, string description)
         {
             var creditCardVaultSaleRequest = new CreditCardVaultSaleRequest(userName,
                                                                             password,
                                                                             vaultId.ToString(CultureInfo.InvariantCulture),
-                                                                            amount);
+                                                                            amount,
+                                                                            tranid.ToString(CultureInfo.InvariantCulture),
+                                                                            description,
+                                                                            peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = creditCardVaultSaleRequest.Execute();
 
@@ -355,12 +368,15 @@ namespace CmsData.Finance.TransNational
             };
         }
 
-        private TransactionResponse ChargeAchVault(int vaultId, decimal amount)
+        private TransactionResponse ChargeAchVault(int vaultId, int peopleId, decimal amount, int tranid, string description)
         {
             var achVaultSaleRequest = new AchVaultSaleRequest(userName,
                                                               password,
                                                               vaultId.ToString(CultureInfo.InvariantCulture),
-                                                              amount);
+                                                              amount,
+                                                              tranid.ToString(CultureInfo.InvariantCulture),
+                                                              description,
+                                                              peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = achVaultSaleRequest.Execute();
 

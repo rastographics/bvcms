@@ -1165,7 +1165,7 @@ namespace CmsData
                     break;
                 case "transnational":
                     if (Setting("TNBUsername", "").Length > 0)
-                        return new TransNational(this, testing);
+                        return new TransNationalGateway(this, testing);
                     break;
             }
             return null;
