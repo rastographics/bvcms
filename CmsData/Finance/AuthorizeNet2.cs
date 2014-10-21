@@ -281,7 +281,12 @@ namespace CmsData
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
 
-            var response = CustomerGateway.AuthorizeAndCapture(paymentInfo.AuNetCustId.ToString(), paymentProfileId, amt);
+            var order = new Order(paymentInfo.AuNetCustId.ToString(), paymentProfileId, null)
+            {
+                Description = description,
+                Amount = amt
+            };
+            var response = CustomerGateway.AuthorizeAndCapture(order);
 
             return new TransactionResponse
             {
