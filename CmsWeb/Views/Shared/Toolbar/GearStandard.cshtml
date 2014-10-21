@@ -1,5 +1,5 @@
 ﻿@{
-    var admin = User.IsInRole("Admin");
+    var edit = User.IsInRole("Edit");
     var developer = User.IsInRole("Developer");
 }
 <li class="header">Tags</li>
@@ -11,7 +11,7 @@
 <li><a id="AddTasks" href='@ViewBag.AddTasks' class="qid">Add Tasks</a></li>
 <li><a href='/Task/NotesExcel2/@ViewBag.queryid' class="qid">Export Task Notes</a></li>
 
-@if (admin)
+@if (edit)
 {
     <li class="header">Extra Values</li>
     <li><a href="/ExtraValue/NewAdhocFromQuery/@ViewBag.queryid" class="adhoc-extravalue qid" title="Add Extra Value">Add Extra Values</a></li>
