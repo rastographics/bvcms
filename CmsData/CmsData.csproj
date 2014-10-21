@@ -403,7 +403,7 @@
     <Compile Include="Generated\Views\DonorProfileList.cs" />
     <Compile Include="Generated\Views\RegistrationList.cs" />
     <Compile Include="Meetings\Attend.cs" />
-    <Compile Include="Finance\AuthorizeNet2.cs" />
+    <Compile Include="Finance\AuthorizeNetGateway.cs" />
     <Compile Include="Batch\ExpressionVisitor.cs" />
     <Compile Include="Batch\LinqToSqlExtensions.cs" />
     <Compile Include="Classes\ExtraValues\Value.cs" />
@@ -587,7 +587,7 @@
     <Compile Include="Registration\OrgFees.cs" />
     <Compile Include="Registration\Parser.cs" />
     <Compile Include="Registration\AskYesNoQuestions.cs" />
-    <Compile Include="Finance\SagePayments.cs" />
+    <Compile Include="Finance\SageGateway.cs" />
     <Compile Include="Finance\TransactionResponse.cs" />
     <Compile Include="Classes\Twilio\TwilioHelper.cs" />
     <Compile Include="Generated\ChangeDetail.cs" />

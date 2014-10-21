@@ -5,7 +5,7 @@ using AuthorizeNet;
 
 namespace CmsData
 {
-    public class AuthorizeNet2 : IGateway
+    public class AuthorizeNetGateway : IGateway
     {
         private readonly string _login;
         private readonly string _key;
@@ -17,7 +17,7 @@ namespace CmsData
 
         public string GatewayType { get { return "AuthorizeNet"; } }
 
-        public AuthorizeNet2(CMSDataContext Db, bool testing)
+        public AuthorizeNetGateway(CMSDataContext Db, bool testing)
         {
             _testing = testing || Db.Setting("GatewayTesting", "false").ToLower() == "true";
 
