@@ -10,6 +10,8 @@ namespace CmsData.Finance.TransNational.Internal.Core
 
         public string RoutingNumber { get; set; }
 
+        public BillingAddress BillingAddress { get; set; }
+
         internal void SetAchData(NameValueCollection data)
         {
             data["checkname"] = NameOnAccount;
@@ -17,6 +19,7 @@ namespace CmsData.Finance.TransNational.Internal.Core
             data["checkaba"] = RoutingNumber;
             data["account_holder_type"] = "personal";
             data["account_type"] = "checking";
+            BillingAddress.SetBillingAddressData(data);
         }
     }
 }

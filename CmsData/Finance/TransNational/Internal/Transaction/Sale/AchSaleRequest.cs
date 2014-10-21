@@ -24,5 +24,11 @@ namespace CmsData.Finance.TransNational.Internal.Transaction.Sale
         {
             Data["orderdescription"] = orderDescription;
         }
+
+        public AchSaleRequest(string userName, string password, Ach ach, decimal amount, string orderId, string orderDescription, string poNumber)
+            : this(userName, password, ach, amount, orderId, orderDescription)
+        {
+            Data["ponumber"] = poNumber;
+        }
     }
 }

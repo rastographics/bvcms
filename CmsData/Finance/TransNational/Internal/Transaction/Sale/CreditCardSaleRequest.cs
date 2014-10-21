@@ -24,5 +24,11 @@ namespace CmsData.Finance.TransNational.Internal.Transaction.Sale
         {
             Data["orderdescription"] = orderDescription;
         }
+
+        public CreditCardSaleRequest(string userName, string password, CreditCard creditCard, decimal amount, string orderId, string orderDescription, string poNumber)
+            : this(userName, password, creditCard, amount, orderId, orderDescription)
+        {
+            Data["ponumber"] = poNumber;
+        }
     }
 }
