@@ -7,6 +7,7 @@
 using System;
 using System.Data.Common;
 using System.Linq;
+using CmsData.Finance;
 using UtilityExtensions;
 using System.Web;
 using System.Data.Linq.Mapping;
@@ -1156,15 +1157,15 @@ namespace CmsData
             {
                 case "sage":
                     if(Setting("M_ID", "").Length > 0)
-                        return new SagePayments(this, testing);
+                        return new SageGateway(this, testing);
                     break;
                 case "authorizenet":
                     if(Setting("x_login", "").Length > 0)
-                        return new AuthorizeNet2(this, testing);
+                        return new AuthorizeNetGateway(this, testing);
                     break;
                 case "transnational":
                     if (Setting("TNBUsername", "").Length > 0)
-                        return new Transnational(this, testing);
+                        return new TransNationalGateway(this, testing);
                     break;
             }
             return null;

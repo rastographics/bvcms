@@ -10,7 +10,7 @@ using System.IO;
 
 namespace CmsData
 {
-	internal class SagePayments : IGateway
+	internal class SageGateway : IGateway
 	{
 	    readonly string login;
 	    readonly string key;
@@ -19,7 +19,7 @@ namespace CmsData
 
         public string GatewayType { get { return "Sage"; } }
 
-		public SagePayments(CMSDataContext db, bool testing)
+		public SageGateway(CMSDataContext db, bool testing)
 		{
 			this.db = db;
             this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
