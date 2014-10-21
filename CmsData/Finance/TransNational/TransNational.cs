@@ -1,8 +1,10 @@
-﻿using CmsData.Finance.TransNational.Internal.Core;
+﻿using System.Collections.Generic;
+using CmsData.Finance.TransNational.Internal.Core;
 using CmsData.Finance.TransNational.Internal.Transaction.Refund;
 using CmsData.Finance.TransNational.Internal.Transaction.Sale;
 using CmsData.Finance.TransNational.Internal.Transaction.Void;
 using CmsData.Finance.TransNational.Internal.Vault;
+using CmsData.Finance.TransNational.Internal.Query;
 using System;
 using System.Data;
 using System.Globalization;
@@ -373,6 +375,16 @@ namespace CmsData.Finance.TransNational
 
         public DataSet SettledBatchSummary(DateTime start, DateTime end, bool includeCreditCard, bool includeVirtualCheck)
         {
+            //var queryRequest = new QueryRequest(userName,
+            //                                    password,
+            //                                    DateTime.Now.AddDays(-14),
+            //                                    DateTime.Now,
+            //                                    new List<Internal.Query.Condition> { Internal.Query.Condition.Complete },
+            //                                    new List<ActionType> { ActionType.Settle });
+
+            //var response = queryRequest.Execute();
+
+
             return null;
         }
 
@@ -383,6 +395,16 @@ namespace CmsData.Finance.TransNational
 
         public DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt)
         {
+            //var queryRequest = new QueryRequest(userName,
+            //                                    password,
+            //                                    startdt,
+            //                                    enddt,
+            //                                    new List<Internal.Query.Condition> { Internal.Query.Condition.Failed },
+            //                                    new List<TransactionType> { TransactionType.Ach },
+            //                                    new List<ActionType> { ActionType.CheckReturn, ActionType.CheckLateReturn });
+
+            //var response = queryRequest.Execute();
+
             return null;
         }
 
