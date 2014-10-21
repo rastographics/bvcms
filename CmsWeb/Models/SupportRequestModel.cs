@@ -91,24 +91,28 @@ namespace CmsWeb.Models
         private MailMessage CreateRequest(string prefix, string toaddress)
         {
             var who = Util.UserFullName + " <" + Util.UserEmail + ">";
-            var cn = new SqlConnection(cs.ConnectionString);
-            cn.Open();
-
-            var id = cn.Query<int>(SupportInsert, new
-            {
-                c = DateTime.Now,
-                w = who,
-                h = Util.Host,
-                u = urgency,
-                r = body,
-                whoid = Util.UserPeopleId,
-            }).Single();
-
+            int id = 0;
             var subject = prefix + (urgency.HasValue() ? " {0}: ".Fmt(urgency) : ": ")
-                + "{0} @ {1} [{2}]".Fmt(Util.UserFullName, DbUtil.Db.Host, id);
-            cn.Execute(SupportUpdate, new { subject, id });
-            cn.Close();
+                          + "{0} @ {1}".Fmt(Util.UserFullName, DbUtil.Db.Host);
+            if(cs != null)
+            {
+                var cn = new SqlConnection(cs.ConnectionString);
+                cn.Open();
 
+                id = cn.Query<int>(SupportInsert, new
+                {
+                    c = DateTime.Now,
+                    w = who,
+                    h = Util.Host,
+                    u = urgency,
+                    r = body,
+                    whoid = Util.UserPeopleId,
+                }).Single();
+                subject += "{0} [{1}]".Fmt(subject, id);
+
+                cn.Execute(SupportUpdate, new { subject, id });
+                cn.Close();
+            }
             const string @from = "support-system@bvcms.com";
 
             var sb = new StringBuilder();
@@ -131,9 +135,9 @@ namespace CmsWeb.Models
                 sb.AppendFormat(@"<b>Roles:</b> {0}<br>
                                 <b>CC:</b> {1}<br>
                                 <b>Last Search:</b> {2}<br>
-                                <b>Claim:</b> {3}<br>
-                                <a href='{4}'>Manage Support</a><br><br>
-                                ", roles, ccto, lastsearch, CreateDibs(id), ManageLink);
+                                <b>Claim:</b> <a href='{3}'>Manage Support</a>
+                                {4}
+                                ", roles, ccto, lastsearch, ManageLink, CreateDibs(id));
             }
             sb.Append(body);
 
@@ -165,7 +169,20 @@ namespace CmsWeb.Models
             var dibLinks = supportPeople.Select(s =>
                 "<a href='{0}'>{1}</a>".Fmt(diblink.Fmt(requestID, s.id), s.name)
                 ).ToList();
-            return string.Join(" - ", dibLinks);
+            var sb = new StringBuilder("<br><table cellpadding=5>\n");
+            var closetr = "";
+            for(var i = 0;i<dibLinks.Count;i++)
+            {
+                var a = dibLinks[i];
+                if (i%4 == 0)
+                {
+                    sb.Append("{0}<tr>".Fmt(closetr));
+                    closetr = "</tr>";
+                }
+                sb.AppendFormat("<td>{0}</td>", a);
+            }
+            sb.Append("</tr></table>");
+            return sb.ToString();
         }
     }
 }
