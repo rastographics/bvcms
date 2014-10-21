@@ -89,7 +89,7 @@ namespace CmsData.Finance.TransNational
                                                                                         City = person.PrimaryCity,
                                                                                         State = person.PrimaryState,
                                                                                         Zip = person.PrimaryZip,
-                                                                                        Country = person.PrimaryCountry ?? "USA",
+                                                                                        Country = person.PrimaryCountry ?? "US",
                                                                                         Email = person.EmailAddress,
                                                                                         Phone = person.HomePhone ?? person.CellPhone
                                                                                     }
@@ -119,7 +119,7 @@ namespace CmsData.Finance.TransNational
                                                                                         City = person.PrimaryCity,
                                                                                         State = person.PrimaryState,
                                                                                         Zip = person.PrimaryZip,
-                                                                                        Country = person.PrimaryCountry ?? "USA",
+                                                                                        Country = person.PrimaryCountry ?? "US",
                                                                                         Email = person.EmailAddress,
                                                                                         Phone = person.HomePhone ?? person.CellPhone
                                                                                     }
@@ -272,7 +272,7 @@ namespace CmsData.Finance.TransNational
                                                                           City = city,
                                                                           State = state,
                                                                           Zip = zip,
-                                                                          Country = "USA",
+                                                                          Country = "US",
                                                                           Email = email,
                                                                           Phone = phone
                                                                       }
@@ -308,7 +308,7 @@ namespace CmsData.Finance.TransNational
                                                             City = city,
                                                             State = state,
                                                             Zip = zip,
-                                                            Country = "USA",
+                                                            Country = "US",
                                                             Email = email,
                                                             Phone = phone
                                                         }
