@@ -7,8 +7,8 @@ namespace CmsData
 {
     public class AuthorizeNet2 : IGateway
     {
-        private readonly string login;
-        private readonly string key;
+        private readonly string _login;
+        private readonly string _key;
         private readonly bool _testing;
         private readonly CMSDataContext db;
 
@@ -21,16 +21,16 @@ namespace CmsData
         {
             _testing = testing || Db.Setting("GatewayTesting", "false").ToLower() == "true";
 
-            this.db = Db;
+            db = Db;
             if (_testing)
             {
-                login = "9t8Pqzs4CW3S";
-                key = "9j33v58nuZB865WR";
+                _login = "9t8Pqzs4CW3S";
+                _key = "9j33v58nuZB865WR";
             }
             else
             {
-                login = Db.Setting("x_login", "");
-                key = Db.Setting("x_tran_key", "");
+                _login = Db.Setting("x_login", "");
+                _key = Db.Setting("x_tran_key", "");
             }
         }
 
@@ -41,35 +41,35 @@ namespace CmsData
             if (normalizeExpires == null)
                 throw new ArgumentException("Can't normalize date {0}".Fmt(expires), "expires");
 
-            var expiredt = normalizeExpires.Value;
+            var expiredDate = normalizeExpires.Value;
 
-            var p = db.LoadPersonById(peopleId);
+            var person = db.LoadPersonById(peopleId);
             var billToAddress = new AuthorizeNet.Address
             {
-                City = p.PrimaryCity,
-                First = p.FirstName,
-                Last = p.LastName,
-                State = p.PrimaryState,
-                Zip = p.PrimaryZip,
-                Phone = p.HomePhone ?? p.CellPhone,
-                Street = p.PrimaryAddress
+                City = person.PrimaryCity,
+                First = person.FirstName,
+                Last = person.LastName,
+                State = person.PrimaryState,
+                Zip = person.PrimaryZip,
+                Phone = person.HomePhone ?? person.CellPhone,
+                Street = person.PrimaryAddress
             };
 
             Customer customer = null;
 
-            var pi = p.PaymentInfo();
-            if (pi == null)
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo == null)
             {
-                pi = new PaymentInfo();
-                p.PaymentInfos.Add(pi);
+                paymentInfo = new PaymentInfo();
+                person.PaymentInfos.Add(paymentInfo);
             }
 
-            if (pi.AuNetCustId == null) // create a new profilein Authorize.NET CIM
+            if (paymentInfo.AuNetCustId == null) // create a new profilein Authorize.NET CIM
             {
                 // NOTE: this can throw an error if the email address already exists...
                 // TODO: Authorize.net needs to release a new Nuget package, because they don't have a clean way to pass in customer ID (aka PeopleId) yet... the latest code has a parameter for this, though
                 //       - we could call UpdateCustomer after the fact to do this if we wanted to
-                customer = CustomerGateway.CreateCustomer(p.EmailAddress, p.Name);
+                customer = CustomerGateway.CreateCustomer(person.EmailAddress, person.Name);
                 customer.ID = peopleId.ToString();
 
                 // we only have to do this because we set the ID property and we want that saved...
@@ -77,18 +77,18 @@ namespace CmsData
             }
 
             if (type == "B")
-                SaveECheckToProfile(routing, account, pi, customer, billToAddress);
+                SaveECheckToProfile(routing, account, paymentInfo, customer, billToAddress);
             else if (type == "C")
-                SaveCreditCardToProfile(cardNumber, cardCode, expiredt, pi, customer, billToAddress);
+                SaveCreditCardToProfile(cardNumber, cardCode, expiredDate, paymentInfo, customer, billToAddress);
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
 
             db.SubmitChanges();
         }
 
-        private void SaveECheckToProfile(string routing, string account, PaymentInfo pi, Customer customer, AuthorizeNet.Address billToAddress)
+        private void SaveECheckToProfile(string routingNumber, string accountNumber, PaymentInfo paymentInfo, Customer customer, AuthorizeNet.Address billToAddress)
         {
-            var foundPaymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == pi.AuNetCustPayBankId.ToString());
+            var foundPaymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == paymentInfo.AuNetCustPayBankId.ToString());
 
             var bankAccount = new BankAccount
             {
@@ -96,16 +96,16 @@ namespace CmsData
                 nameOnAccount = customer.Description
             };
 
-            if (!account.StartsWith("X"))
-                bankAccount.accountNumber = account;
+            if (!accountNumber.StartsWith("X"))
+                bankAccount.accountNumber = accountNumber;
 
-            if (!routing.StartsWith("X"))
-                bankAccount.routingNumber = routing;
+            if (!routingNumber.StartsWith("X"))
+                bankAccount.routingNumber = routingNumber;
 
             if (foundPaymentProfile == null)
             {
                 var paymentProfileId = CustomerGateway.AddECheckBankAccount(customer.ProfileID, bankAccount, billToAddress);
-                pi.AuNetCustPayBankId = paymentProfileId.ToInt();
+                paymentInfo.AuNetCustPayBankId = paymentProfileId.ToInt();
             }
             else
             {
@@ -114,21 +114,21 @@ namespace CmsData
 
                 var isSaved = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, foundPaymentProfile);
                 if (!isSaved)
-                    throw new Exception("UpdatePaymentProfile failed to save credit card for {0}".Fmt(pi.PeopleId));
+                    throw new Exception("UpdatePaymentProfile failed to save credit card for {0}".Fmt(paymentInfo.PeopleId));
             }
         }
 
         // NOTE: this can throw an error if the credit card number already exists...
-        private void SaveCreditCardToProfile(string cardNumber, string cardCode, DateTime expires, PaymentInfo pi, Customer customer, AuthorizeNet.Address billToAddress)
+        private void SaveCreditCardToProfile(string cardNumber, string cardCode, DateTime expires, PaymentInfo paymentInfo, Customer customer, AuthorizeNet.Address billToAddress)
         {
-            var foundPaymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == pi.AuNetCustPayId.ToString());
+            var foundPaymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == paymentInfo.AuNetCustPayId.ToString());
 
             if (foundPaymentProfile == null)
             {
                 var paymentProfileId = CustomerGateway.AddCreditCard(customer.ProfileID, cardNumber,
                     expires.Month, expires.Year, cardCode, billToAddress);
 
-                pi.AuNetCustPayId = paymentProfileId.ToInt();
+                paymentInfo.AuNetCustPayId = paymentProfileId.ToInt();
             }
             else
             {
@@ -143,27 +143,27 @@ namespace CmsData
 
                 var isSaved = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, foundPaymentProfile);
                 if (!isSaved)
-                    throw new Exception("UpdatePaymentProfile failed to save echeck for {0}".Fmt(pi.PeopleId));
+                    throw new Exception("UpdatePaymentProfile failed to save echeck for {0}".Fmt(paymentInfo.PeopleId));
             }
         }
 
         public void RemoveFromVault(int peopleId)
         {
-            var p = db.LoadPersonById(peopleId);
-            var pi = p.PaymentInfo();
-            if (pi == null)
+            var person = db.LoadPersonById(peopleId);
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo == null)
                 return;
 
-            if (CustomerGateway.DeleteCustomer(pi.AuNetCustId.ToString()))
+            if (CustomerGateway.DeleteCustomer(paymentInfo.AuNetCustId.ToString()))
             {
-                pi.SageCardGuid = null;
-                pi.SageBankGuid = null;
-                pi.MaskedCard = null;
-                pi.MaskedAccount = null;
-                pi.Ccv = null;
-                pi.AuNetCustId = null;
-                pi.AuNetCustPayId = null;
-                pi.AuNetCustPayBankId = null;
+                paymentInfo.SageCardGuid = null;
+                paymentInfo.SageBankGuid = null;
+                paymentInfo.MaskedCard = null;
+                paymentInfo.MaskedAccount = null;
+                paymentInfo.Ccv = null;
+                paymentInfo.AuNetCustId = null;
+                paymentInfo.AuNetCustPayId = null;
+                paymentInfo.AuNetCustPayBankId = null;
                 db.SubmitChanges();
             }
             else
@@ -265,8 +265,8 @@ namespace CmsData
 
         public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
         {
-            var pi = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
-            if (pi == null)
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            if (paymentInfo == null)
                 return new TransactionResponse
                 {
                     Approved = false,
@@ -275,13 +275,13 @@ namespace CmsData
 
             string paymentProfileId;
             if (type == "B")
-                paymentProfileId = pi.AuNetCustPayBankId.ToString();
+                paymentProfileId = paymentInfo.AuNetCustPayBankId.ToString();
             else if (type == "C")
-                paymentProfileId = pi.AuNetCustPayId.ToString();
+                paymentProfileId = paymentInfo.AuNetCustPayId.ToString();
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
 
-            var response = CustomerGateway.AuthorizeAndCapture(pi.AuNetCustId.ToString(), paymentProfileId, amt);
+            var response = CustomerGateway.AuthorizeAndCapture(paymentInfo.AuNetCustId.ToString(), paymentProfileId, amt);
 
             return new TransactionResponse
             {
@@ -314,7 +314,7 @@ namespace CmsData
 
         public bool CanVoidRefund
         {
-            get { return false; }
+            get { return true; }
         }
 
         public bool CanGetSettlementDates
@@ -332,7 +332,7 @@ namespace CmsData
             get
             {
                 if (_gateway == null)
-                    _gateway = new Gateway(login, key, !IsLive);
+                    _gateway = new Gateway(_login, _key, !IsLive);
                 return _gateway;
             }
         }
@@ -346,7 +346,7 @@ namespace CmsData
             get
             {
                 if (_customerGateway == null)
-                    _customerGateway = new CustomerGateway(login, key, ServiceMode);
+                    _customerGateway = new CustomerGateway(_login, _key, ServiceMode);
                 return _customerGateway;
             }
         }
@@ -360,7 +360,7 @@ namespace CmsData
             get
             {
                 if (_reportingGateway == null)
-                    _reportingGateway = new ReportingGateway(login, key, ServiceMode);
+                    _reportingGateway = new ReportingGateway(_login, _key, ServiceMode);
                 return _reportingGateway;
             }
         }
