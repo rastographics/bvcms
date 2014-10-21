@@ -15,7 +15,6 @@ using System.Collections;
 using System.Runtime.Serialization;
 using System.Net;
 using System.IO;
-using CmsData.Classes.Transnational;
 
 namespace CmsWeb.Models
 {
