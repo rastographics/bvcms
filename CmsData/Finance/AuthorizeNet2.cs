@@ -251,6 +251,7 @@ namespace CmsData
             request.City = city;  // hopefully will be resolved with https://github.com/AuthorizeNet/sdk-dotnet/pull/41
             request.Phone = phone;
             request.Email = email;
+            request.InvoiceNum = tranid.ToString();
 
             var response = Gateway.Send(request);
 
@@ -284,7 +285,8 @@ namespace CmsData
             var order = new Order(paymentInfo.AuNetCustId.ToString(), paymentProfileId, null)
             {
                 Description = description,
-                Amount = amt
+                Amount = amt,
+                InvoiceNumber = tranid.ToString()
             };
             var response = CustomerGateway.AuthorizeAndCapture(order);
 
