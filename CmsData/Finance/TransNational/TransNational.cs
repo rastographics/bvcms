@@ -1,8 +1,8 @@
-﻿using CmsData.Finance.TransNational.Native.Core;
-using CmsData.Finance.TransNational.Native.Transaction.Refund;
-using CmsData.Finance.TransNational.Native.Transaction.Sale;
-using CmsData.Finance.TransNational.Native.Transaction.Void;
-using CmsData.Finance.TransNational.Native.Vault;
+﻿using CmsData.Finance.TransNational.Internal.Core;
+using CmsData.Finance.TransNational.Internal.Transaction.Refund;
+using CmsData.Finance.TransNational.Internal.Transaction.Sale;
+using CmsData.Finance.TransNational.Internal.Transaction.Void;
+using CmsData.Finance.TransNational.Internal.Vault;
 using System;
 using System.Data;
 using System.Globalization;
