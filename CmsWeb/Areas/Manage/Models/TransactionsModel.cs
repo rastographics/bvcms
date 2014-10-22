@@ -33,7 +33,6 @@ namespace CmsWeb.Models
                 _count = FetchTransactions().Count();
             return _count.Value;
         }
-        public bool isSage { get; set; }
         public bool finance { get; set; }
         public bool admin { get; set; }
         public int? GoerId { get; set; } // for mission trip supporters of this goer
@@ -52,7 +51,6 @@ namespace CmsWeb.Models
             Pager.Sort = "Date";
             Pager.Direction = "desc";
             finance = HttpContext.Current.User.IsInRole("Finance");
-            isSage = OnlineRegModel.GetTransactionGateway() == "sage";
             admin = HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("ManageTransactions");
         }
         public IEnumerable<TransactionList> Transactions()

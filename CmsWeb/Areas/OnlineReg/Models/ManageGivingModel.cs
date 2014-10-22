@@ -320,7 +320,7 @@ namespace CmsWeb.Models
                     throw new Exception("X not allowed in CVV");
                 Cardcode = payinfo.Ccv;
             }
-            var gateway = DbUtil.Db.Gateway(testing);
+            var gateway = DbUtil.Db.Gateway();
             gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
 
             var mg = person.ManagedGiving();

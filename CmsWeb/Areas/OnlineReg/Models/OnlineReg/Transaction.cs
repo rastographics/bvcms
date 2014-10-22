@@ -64,7 +64,7 @@ namespace CmsWeb.Models
 			var pp = p.person;
             var r = new TransactionInfo();
 
-			if (user != null && GetTransactionGateway() == "sage" && pp != null)
+			if (user != null && pp != null)
 				r.payinfo = pp.PaymentInfos.FirstOrDefault();
 			if (r.payinfo == null)
 				r.payinfo = new PaymentInfo { MaskedAccount = "", MaskedCard = "" };

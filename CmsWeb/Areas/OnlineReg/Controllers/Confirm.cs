@@ -87,7 +87,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 if (m != null && pf.IsLoggedIn == true && pf.SavePayInfo)
                 {
-                    var gw = DbUtil.Db.Gateway(m.testing ?? false);
+                    var gw = DbUtil.Db.Gateway();
                     if ((pf.Type == "B" && !pf.Routing.StartsWith("X") && !pf.Account.StartsWith("X")) || (pf.Type == "C" && !pf.CreditCard.StartsWith("X")))
                         gw.StoreInVault(m.UserPeopleId ?? 0,
                                 pf.Type,
@@ -202,7 +202,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     pid = pds.Single().PeopleId.Value;
             }
             TransactionResponse tinfo;
-            var gw = DbUtil.Db.Gateway(pf.testing);
+            var gw = DbUtil.Db.Gateway();
 
                 if (pf.SavePayInfo)
                 tinfo = gw.PayWithVault(pid ?? 0, pf.AmtToPay ?? 0, pf.Description, ti.Id, pf.Type);
