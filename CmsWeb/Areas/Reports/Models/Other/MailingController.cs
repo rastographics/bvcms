@@ -250,7 +250,6 @@ namespace CmsWeb.Models
                          HomePhone = p.HomePhone,
                          PeopleId = p.PeopleId
                      };
-            q2 = ApplySort(q2, sortExpression);
             return q2;
         }
 
@@ -259,7 +258,7 @@ namespace CmsWeb.Models
             switch (sortExpression)
             {
                 case "Name":
-                    return query.OrderBy(mi => mi.Name2);
+                    return query.OrderBy(mi => mi.LastName);
                 case "Zip":
                     return query.OrderBy(mi => mi.Zip);
                 //break;
@@ -273,7 +272,7 @@ namespace CmsWeb.Models
             switch (sortExpression)
             {
                 case "Name":
-                    return query.OrderBy(mi => mi.Name2);
+                    return query.OrderBy(mi => mi.LastName);
                 case "Zip":
                     return query.OrderBy(mi => mi.PrimaryZip);
                 //break;
