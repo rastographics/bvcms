@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Globalization;
+using System.Text;
 using CmsData.Finance.TransNational.Core;
 using CmsData.Finance.TransNational.Transaction.Refund;
 using CmsData.Finance.TransNational.Transaction.Sale;
@@ -71,6 +72,18 @@ namespace CmsData.Finance
                         UpdateAchVault(paymentInfo.TbnBankVaultId.GetValueOrDefault(), person, account, routing);
                 }
             }
+
+            paymentInfo.MaskedAccount = Util.MaskAccount(account);
+            paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+            paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+            paymentInfo.Ccv = cardCode;  // TODO: shouldn't need to store this
+            paymentInfo.Expires = expires;
+            paymentInfo.Testing = testing;
+            if (giving)
+                paymentInfo.PreferredGivingType = type;
+            else
+                paymentInfo.PreferredPaymentType = type;
+            db.SubmitChanges();
         }
 
         private int CreateCreditCardVault(Person person, string cardNumber, string expiration)
