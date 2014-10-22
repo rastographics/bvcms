@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using UtilityExtensions;
 using AuthorizeNet;
 
@@ -82,6 +83,17 @@ namespace CmsData
                 SaveCreditCardToProfile(cardNumber, cardCode, expiredDate, paymentInfo, customer, billToAddress);
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
+
+			paymentInfo.MaskedAccount = Util.MaskAccount(account);
+			paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+			paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+			paymentInfo.Ccv = cardCode;
+			paymentInfo.Expires = expires;
+			paymentInfo.Testing = _testing;
+			if (giving)
+				paymentInfo.PreferredGivingType = type;
+			else
+				paymentInfo.PreferredPaymentType = type;
 
             db.SubmitChanges();
         }
