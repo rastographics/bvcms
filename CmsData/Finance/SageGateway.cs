@@ -368,7 +368,7 @@ namespace CmsData
 				coll["C_CITY"] = pi.City ?? p.PrimaryCity;
 				coll["C_STATE"] = pi.State ?? p.PrimaryState;
 				coll["C_ZIP"] = pi.Zip ?? p.PrimaryZip;
-				coll["C_COUNTRY"] = p.PrimaryCountry;
+				coll["C_COUNTRY"] = string.Empty;
 				coll["C_EMAIL"] = p.EmailAddress;
 				coll["T_AMT"] = amt.ToString("n2");
 				coll["T_ORDERNUM"] = tranid.ToString();
@@ -394,7 +394,7 @@ namespace CmsData
 				coll["C_CITY"] = pi.City ?? p.PrimaryCity;
 				coll["C_STATE"] = pi.State ?? p.PrimaryState;
 				coll["C_ZIP"] = pi.Zip ?? p.PrimaryZip;
-				coll["C_COUNTRY"] = p.PrimaryCountry;
+				coll["C_COUNTRY"] = string.Empty;
 				coll["C_EMAIL"] = p.EmailAddress;
 				coll["T_AMT"] = amt.ToString("n2");
 				coll["T_ORDERNUM"] = tranid.ToString();
