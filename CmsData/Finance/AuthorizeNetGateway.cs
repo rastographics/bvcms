@@ -25,8 +25,8 @@ namespace CmsData
             db = Db;
             if (_testing)
             {
-                _login = "9t8Pqzs4CW3S";
-                _key = "9j33v58nuZB865WR";
+                _login = "4q2w5BD5";
+                _key = "9wE4j7M372ehz6Fy";
             }
             else
             {
