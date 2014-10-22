@@ -17,7 +17,7 @@ namespace CmsData.Finance
         readonly string password;
         CMSDataContext db;
         readonly bool testing;
-        public string GatewayType { get { return "Transnational"; } }
+        public string GatewayType { get { return "TransNational"; } }
 
         public TransNationalGateway(CMSDataContext db, bool testing)
         {
