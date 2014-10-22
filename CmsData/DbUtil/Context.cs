@@ -1150,22 +1150,22 @@ namespace CmsData
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway()
+        public IGateway Gateway(bool testing = false)
         {
             var type = Setting("TransactionGateway", "not specified");
             switch (type.ToLower())
             {
                 case "sage":
                     if(Setting("M_ID", "").Length > 0)
-                        return new SageGateway(this);
+                        return new SageGateway(this, testing);
                     break;
                 case "authorizenet":
                     if(Setting("x_login", "").Length > 0)
-                        return new AuthorizeNetGateway(this);
+                        return new AuthorizeNetGateway(this, testing);
                     break;
                 case "transnational":
                     if (Setting("TNBUsername", "").Length > 0)
-                        return new TransNationalGateway(this);
+                        return new TransNationalGateway(this, testing);
                     break;
             }
             return null;

@@ -18,9 +18,9 @@ namespace CmsData
 
         public string GatewayType { get { return "AuthorizeNet"; } }
 
-        public AuthorizeNetGateway(CMSDataContext Db)
+        public AuthorizeNetGateway(CMSDataContext Db, bool testing)
         {
-            _testing = Db.Setting("GatewayTesting", "false").ToLower() == "true";
+            _testing = testing || Db.Setting("GatewayTesting", "false").ToLower() == "true";
 
             db = Db;
             if (_testing)

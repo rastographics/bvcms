@@ -23,9 +23,9 @@ namespace CmsData.Finance
             get { return "TransNational"; }
         }
 
-        public TransNationalGateway(CMSDataContext db)
+        public TransNationalGateway(CMSDataContext db, bool testing)
         {
-            this.testing = db.Setting("GatewayTesting", "false").ToLower() == "true";
+            this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
             this.db = db;
 
             if (this.testing)

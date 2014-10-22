@@ -19,10 +19,10 @@ namespace CmsData
 
         public string GatewayType { get { return "Sage"; } }
 
-		public SageGateway(CMSDataContext db)
+		public SageGateway(CMSDataContext db, bool testing)
 		{
 			this.db = db;
-            this.testing = db.Setting("GatewayTesting", "false").ToLower() == "true";
+            this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
 			if (testing)
 			{
 				login = "287793447481";

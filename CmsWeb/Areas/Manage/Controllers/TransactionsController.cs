@@ -83,7 +83,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 					 orderby tt.Id descending
 					 select tt;
 			var t0 = qq.First();
-		    var gw = DbUtil.Db.Gateway();
+		    var gw = DbUtil.Db.Gateway(t.Testing ?? false);
 			TransactionResponse resp = null;
 			var re = t.TransactionId;
 			if (re.Contains("(testing"))
