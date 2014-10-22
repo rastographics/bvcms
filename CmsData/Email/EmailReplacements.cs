@@ -191,7 +191,7 @@ namespace CmsData
                 case "{peopleid}":
                     return p.PeopleId.ToString();
 
-                case "{saluation}":
+                case "{salutation}":
                     return db.GoerSupporters.Where(ee => ee.Id == emailqueueto.GoerSupportId).Select(ee => ee.Salutation).SingleOrDefault();
 
                 case "{state}":
