@@ -26,7 +26,9 @@ namespace CmsData.Finance.TransNational.Core
                 data["cvv"] = CardCode;
             
             SetCreditCardExpirationData(data, Expiration);
-            BillingAddress.SetBillingAddressData(data);
+
+            if (BillingAddress != null)
+                BillingAddress.SetBillingAddressData(data);
         }
 
         internal static void SetCreditCardExpirationData(NameValueCollection data, string expiration)

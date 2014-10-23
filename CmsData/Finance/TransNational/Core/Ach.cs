@@ -19,7 +19,9 @@ namespace CmsData.Finance.TransNational.Core
             data["checkaba"] = RoutingNumber;
             data["account_holder_type"] = "personal";
             data["account_type"] = "checking";
-            BillingAddress.SetBillingAddressData(data);
+
+            if (BillingAddress != null)
+                BillingAddress.SetBillingAddressData(data);
         }
     }
 }
