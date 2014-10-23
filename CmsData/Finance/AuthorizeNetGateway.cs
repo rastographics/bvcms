@@ -80,6 +80,10 @@ namespace CmsData
 
                 paymentInfo.AuNetCustId = customer.ProfileID.ToInt();
             }
+            else
+            {
+                customer = CustomerGateway.GetCustomer(paymentInfo.AuNetCustId.ToString());
+            }
 
             if (type == "B")
                 SaveECheckToProfile(routing, account, paymentInfo, customer, billToAddress);
@@ -151,7 +155,7 @@ namespace CmsData
                 if (!cardNumber.StartsWith("X"))
                     foundPaymentProfile.CardNumber = cardNumber;
 
-                if (!cardCode.StartsWith("X"))
+                if (cardCode != null && !cardCode.StartsWith("X"))
                     foundPaymentProfile.CardCode = cardCode;
 
                 foundPaymentProfile.CardExpiration = expires.ToString("MMyy");
