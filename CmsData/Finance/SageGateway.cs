@@ -1,7 +1,15 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Globalization;
 using System.Linq;
+using CmsData.API;
+using CmsData.Finance.Sage.Core;
+using CmsData.Finance.Sage.Transaction.Refund;
+using CmsData.Finance.Sage.Transaction.Sale;
+using CmsData.Finance.Sage.Transaction.Void;
+using CmsData.Finance.Sage.Vault;
 using UtilityExtensions;
 using System.Net;
 using System.Text;
@@ -12,10 +20,11 @@ namespace CmsData
 {
 	internal class SageGateway : IGateway
 	{
-	    readonly string login;
-	    readonly string key;
-	    readonly CMSDataContext db;
-	    readonly bool testing;
+	    private readonly string id;
+	    private readonly string key;
+	    private readonly string originatorId;
+	    private readonly CMSDataContext db;
+	    private readonly bool testing;
 
         public string GatewayType { get { return "Sage"; } }
 
@@ -25,416 +34,373 @@ namespace CmsData
             this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
 			if (testing)
 			{
-				login = "287793447481";
-				key = "S4S3N4D2W1D9";
+                id = "856423594649";
+                key = "M5Q4C9P2T4N5";
+                originatorId = "1111111111";
 			}
 			else
 			{
-				login = db.Setting("M_id", "");
+				id = db.Setting("M_id", "");
 				key = db.Setting("M_key", "");
+                originatorId = db.Setting("SageOriginatorId", "");
 			}
 			this.testing = testing;
 		}
-		private XElement getResponse(string xml)
-		{
-			var x = XDocument.Parse(xml);
-			var t = x.Descendants("Table1").First();
-			var success = t.Element("SUCCESS");
-			if (success != null && success.Value.ToLower() == "false")
-			{
-				var message = t.Element("MESSAGE").Value;
-				throw new Exception(message);
-			}
-			return t;
-		}
+		
 		public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
 		{
-			var p = db.LoadPersonById(peopleId);
-			var pi = p.PaymentInfo();
-			if (pi == null)
+			var person = db.LoadPersonById(peopleId);
+			var paymentInfo = person.PaymentInfo();
+			if (paymentInfo == null)
 			{
-				pi = new PaymentInfo();
-				p.PaymentInfos.Add(pi);
+				paymentInfo = new PaymentInfo();
+				person.PaymentInfos.Add(paymentInfo);
 			}
-			var wc = new WebClient();
-			wc.BaseAddress = "https://www.sagepayments.net/web_services/wsVault/wsVault.asmx/";
-			var coll = new NameValueCollection();
-			coll["M_ID"] = login;
-			coll["M_KEY"] = key;
 
-			XElement resp = null;
-			if (type == "C") // creditcard
-			{
-				coll["EXPIRATION_DATE"] = expires;
+            if (type == "C") // credit card
+            {
+                if (paymentInfo.SageCardGuid == null) // create new vault.
+                    paymentInfo.SageCardGuid = CreateCreditCardVault(person, cardNumber, expires);
+                else
+                {
+                    // update existing vault.
+                    // check for updating the entire card or only expiration.
+                    if (!cardNumber.StartsWith("X"))
+                        UpdateCreditCardVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person, cardNumber, expires);
+                    else
+                        UpdateCreditCardVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person, expires);
+                }
+            }
+            else // bank account
+            {
+                if (paymentInfo.SageBankGuid == null) // create new vault
+                    paymentInfo.SageBankGuid = CreateAchVault(person, account, routing);
+                else
+                {
+                    // we can only update the ach account if there is a full account number.
+                    if (!account.StartsWith("X"))
+                        UpdateAchVault(paymentInfo.SageBankGuid.GetValueOrDefault(), person, account, routing);
+                }
+            }
 
-				if (pi.SageCardGuid == null) // new
-				{
-    				coll["CARDNUMBER"] = cardNumber;
-					var b = wc.UploadValues("INSERT_CREDIT_CARD_DATA", "POST", coll);
-					var ret = Encoding.ASCII.GetString(b);
-					resp = getResponse(ret);
-					pi.SageCardGuid = Guid.Parse(resp.Element("GUID").Value);
-				}
-				else // update existing
-				{
-					coll["GUID"] = pi.SageCardGuid.ToString().Replace("-", "");
-					if (!cardNumber.StartsWith("X"))
-					{
-        				coll["CARDNUMBER"] = cardNumber;
-						var b = wc.UploadValues("UPDATE_CREDIT_CARD_DATA", "POST", coll);
-						var ret = Encoding.ASCII.GetString(b);
-						resp = getResponse(ret);
-					}
-					else
-					{
-        				coll["EXPIRATION_DATE"] = expires;
-						var b = wc.UploadValues("UPDATE_CREDIT_CARD_EXPIRATION_DATE", "POST", coll);
-						var ret = Encoding.ASCII.GetString(b);
-						resp = getResponse(ret);
-					}
-				}
-			}
-			else // bank account
-			{
-				coll["ROUTING_NUMBER"] = routing; // 064000020
-				coll["ACCOUNT_NUMBER"] = account; // my account number
-				coll["C_ACCT_TYPE"] = "DDA";
-
-				if (pi.SageBankGuid == null) // new
-				{
-					var b = wc.UploadValues("INSERT_VIRTUAL_CHECK_DATA", "POST", coll);
-					var ret = Encoding.ASCII.GetString(b);
-					resp = getResponse(ret);
-					pi.SageBankGuid = Guid.Parse(resp.Element("GUID").Value);
-				}
-				else // update existing
-				{
-					if (!account.StartsWith("X"))
-					{
-						coll["GUID"] = pi.SageBankGuid.ToString().Replace("-", "");
-						var b = wc.UploadValues("UPDATE_VIRTUAL_CHECK_DATA", "POST", coll);
-						var ret = Encoding.ASCII.GetString(b);
-						resp = getResponse(ret);
-					}
-				}
-			}
-			pi.MaskedAccount = Util.MaskAccount(account);
-			pi.Routing = Util.Mask(new StringBuilder(routing), 2);
-			pi.MaskedCard = Util.MaskCC(cardNumber);
-			pi.Ccv = cardCode;
-			pi.Expires = expires;
-			pi.Testing = testing;
+            paymentInfo.MaskedAccount = Util.MaskAccount(account);
+			paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+			paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+			paymentInfo.Ccv = cardCode;
+			paymentInfo.Expires = expires;
+			paymentInfo.Testing = testing;
 			if (giving)
-				pi.PreferredGivingType = type;
+				paymentInfo.PreferredGivingType = type;
 			else
-				pi.PreferredPaymentType = type;
+				paymentInfo.PreferredPaymentType = type;
 			db.SubmitChanges();
-			//var sw =new StringWriter();
-			//ObjectDumper.Write(pi, 0, sw);
-
-			//Util.SendMsg(DbUtil.AdminMail, Db.CmsHost, Util.TryGetMailAddress("david@bvcms.com"), "Sage Vault",
-			//	"<a href='{0}{1}'>{2}</a><br>{3},{4}<br><pre>{5}</pre>".Fmt(
-			//	Db.CmsHost, p.PeopleId, p.Name, type, giving ? "giving" : "regular", sw.ToString()),
-			//	Util.ToMailAddressList("david@bvcms.com"), 0, null);
 		}
+        
+        private Guid CreateCreditCardVault(Person person, string cardNumber, string expiration)
+        {
+            var createCreditCardVaultRequest = new CreateCreditCardVaultRequest(id, key, expiration, cardNumber);
+
+            var response = createCreditCardVaultRequest.Execute();
+            if (!response.Success)
+                throw new Exception(
+                    "Sage failed to create the credit card for people id: {0}".Fmt(person.PeopleId));
+
+            return response.VaultGuid;
+        }
+
+        private void UpdateCreditCardVault(Guid vaultGuid, Person person, string cardNumber, string expiration)
+        {
+            var updateCreditCardVaultRequest = new UpdateCreditCardVaultRequest(id,
+                                                                                key,
+                                                                                vaultGuid,
+                                                                                expiration,
+                                                                                cardNumber);
+
+            var response = updateCreditCardVaultRequest.Execute();
+            if (!response.Success)
+                throw new Exception(
+                    "Sage failed to update the credit card for people id: {0}".Fmt(person.PeopleId));
+        }
+
+        private void UpdateCreditCardVault(Guid vaultGuid, Person person, string expiration)
+        {
+            var updateCreditCardVaultRequest = new UpdateCreditCardVaultRequest(id, key, vaultGuid, expiration);
+
+            var response = updateCreditCardVaultRequest.Execute();
+            if (!response.Success)
+                throw new Exception(
+                    "Sage failed to update the credit card expiration date for people id: {0}".Fmt(
+                        person.PeopleId));
+        }
+
+        private Guid CreateAchVault(Person person, string accountNumber, string routingNumber)
+        {
+            var createAchVaultRequest = new CreateAchVaultRequest(id, key, accountNumber, routingNumber);
+
+            var response = createAchVaultRequest.Execute();
+            if (!response.Success)
+                throw new Exception(
+                    "Sage failed to create the ach account for people id: {0}".Fmt(person.PeopleId));
+
+            return response.VaultGuid;
+        }
+
+        private void UpdateAchVault(Guid vaultGuid, Person person, string accountNumber, string routingNumber)
+        {
+            var updateAchVaultRequest = new UpdateAchVaultRequest(id, key, vaultGuid, accountNumber, routingNumber);
+
+            var response = updateAchVaultRequest.Execute();
+            if (!response.Success)
+                throw new Exception(
+                    "Sage failed to update the ach account for people id: {0}".Fmt(person.PeopleId));
+        }
+        
 		public void RemoveFromVault(int peopleId)
 		{
-			var p = db.LoadPersonById(peopleId);
-			var pi = p.PaymentInfo();
-			if (pi == null)
-				return;
-			var wc = new WebClient();
-			wc.BaseAddress = "https://www.sagepayments.net/web_services/wsVault/wsVault.asmx/";
-			var coll = new NameValueCollection();
-			coll["M_ID"] = login; // 779966396962
-			coll["M_KEY"] = key; // T7N8I1M1F7L9
+            var person = db.LoadPersonById(peopleId);
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo == null)
+                return;
 
-			if (pi.SageCardGuid.HasValue)
-			{
-				coll["GUID"] = pi.SageCardGuid.ToString().Replace("-", "");
-				var b = wc.UploadValues("DELETE_DATA", "POST", coll);
-				var ret = Encoding.ASCII.GetString(b);
-			}
-			if (pi.SageBankGuid.HasValue)
-			{
-				coll["GUID"] = pi.SageBankGuid.ToString().Replace("-", "");
-				var b = wc.UploadValues("DELETE_DATA", "POST", coll);
-				var ret = Encoding.ASCII.GetString(b);
-			}
+            if (paymentInfo.TbnCardVaultId.HasValue)
+                DeleteVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person);
 
-			pi.SageCardGuid = null;
-			pi.SageBankGuid = null;
-			pi.MaskedCard = null;
-			pi.MaskedAccount = null;
-			pi.Ccv = null;
-			db.SubmitChanges();
+            if (paymentInfo.TbnBankVaultId.HasValue)
+                DeleteVault(paymentInfo.SageBankGuid.GetValueOrDefault(), person);
+
+            // clear out local record and save changes.
+            paymentInfo.SageCardGuid = null;
+            paymentInfo.SageBankGuid = null;
+            paymentInfo.MaskedCard = null;
+            paymentInfo.MaskedAccount = null;
+            paymentInfo.Ccv = null;
+            db.SubmitChanges();
 		}
+
+        private void DeleteVault(Guid vaultGuid, Person person)
+        {
+            var deleteVaultRequest = new DeleteVaultRequest(id, key, vaultGuid);
+
+            var success = deleteVaultRequest.Execute();
+            if (!success)
+                throw new Exception("Sage failed to delete the vault for people id: {0}".Fmt(person.PeopleId));
+        }
 
 		public TransactionResponse VoidCreditCardTransaction(string reference)
 		{
-			var wc = new WebClient();
-			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
-			var coll = new NameValueCollection();
-			coll["M_ID"] = login;
-			coll["M_KEY"] = key;
-			coll["T_REFERENCE"] = reference;
-			var b = wc.UploadValues("BANKCARD_VOID", "POST", coll);
-			var ret = Encoding.ASCII.GetString(b);
-			var resp = getResponse(ret);
-			var tr = new TransactionResponse
-			{
-				Approved = resp.Element("APPROVAL_INDICATOR").Value == "A",
-				AuthCode = resp.Element("CODE").Value,
-				Message = resp.Element("MESSAGE").Value,
-				TransactionId = resp.Element("REFERENCE").Value
-			};
-			return tr;
+            var voidRequest = new CreditCardVoidRequest(id, key, reference);
+            var response = voidRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
 		}
+
 		public TransactionResponse VoidCheckTransaction(string reference)
 		{
-			var wc = new WebClient();
-			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
-			var coll = new NameValueCollection();
-			coll["M_ID"] = login;
-			coll["M_KEY"] = key;
-			coll["T_REFERENCE"] = reference;
-            var b = wc.UploadValues("VIRTUAL_CHECK_VOID", "POST", coll);
-			var ret = Encoding.ASCII.GetString(b);
-			var resp = getResponse(ret);
-			var tr = new TransactionResponse
-			{
-				Approved = resp.Element("APPROVAL_INDICATOR").Value == "A",
-				AuthCode = resp.Element("CODE").Value,
-				Message = resp.Element("MESSAGE").Value,
-				TransactionId = resp.Element("REFERENCE").Value
-			};
-			return tr;
+            var voidRequest = new AchVoidRequest(id, key, reference);
+            var response = voidRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
 		}
 
 		public TransactionResponse RefundCreditCard(string reference, Decimal amt)
 		{
-			var wc = new WebClient();
-			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
-			var coll = new NameValueCollection();
-			coll["M_ID"] = login;
-			coll["M_KEY"] = key;
-			coll["T_REFERENCE"] = reference;
-			coll["T_AMT"] = amt.ToString("n2");
+            var refundRequest = new CreditCardRefundRequest(id, key, reference, amt);
+            var response = refundRequest.Execute();
 
-			var b = wc.UploadValues("BANKCARD_CREDIT", "POST", coll);
-			var ret = Encoding.ASCII.GetString(b);
-			var resp = getResponse(ret);
-			var tr = new TransactionResponse
-			{
-				Approved = resp.Element("APPROVAL_INDICATOR").Value == "A",
-				AuthCode = resp.Element("CODE").Value,
-				Message = resp.Element("MESSAGE").Value,
-				TransactionId = resp.Element("REFERENCE").Value
-			};
-			return tr;
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
 		}
+
 		public TransactionResponse RefundCheck(string reference, Decimal amt)
 		{
-			var wc = new WebClient();
-			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
-			var coll = new NameValueCollection();
-			coll["M_ID"] = login;
-			coll["M_KEY"] = key;
-			coll["T_REFERENCE"] = reference;
-			coll["T_AMT"] = amt.ToString("n2");
+            var refundRequest = new AchRefundRequest(id, key, reference, amt);
+            var response = refundRequest.Execute();
 
-			var b = wc.UploadValues("VIRTUAL_CHECK_CREDIT_BY_REFERENCE", "POST", coll);
-			var ret = Encoding.ASCII.GetString(b);
-			var resp = getResponse(ret);
-			var tr = new TransactionResponse
-			{
-				Approved = resp.Element("APPROVAL_INDICATOR").Value == "A",
-				AuthCode = resp.Element("CODE").Value,
-				Message = resp.Element("MESSAGE").Value,
-				TransactionId = resp.Element("REFERENCE").Value
-			};
-			return tr;
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
 		}
 
 		public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
 		{
-			var wc = new WebClient();
-			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
-			var coll = new NameValueCollection();
-			coll["M_ID"] = login;
-			coll["M_KEY"] = key;
-			coll["T_AMT"] = amt.ToString("n2");
-			coll["C_NAME"] = first + " " + last;
-			coll["C_ADDRESS"] = addr;
-			coll["C_CITY"] = city;
-			coll["C_STATE"] = state;
-			coll["C_ZIP"] = zip;
-			coll["C_COUNTRY"] = "";
-			coll["C_EMAIL"] = email;
-			coll["C_CARDNUMBER"] = cardnumber;
-			coll["C_EXP"] = expires;
-			coll["C_CVV"] = cardcode;
-			coll["T_CUSTOMER_NUMBER"] = peopleId.ToString();
-			coll["T_ORDERNUM"] = tranid.ToString();
-			coll["C_TELEPHONE"] = phone;
-			AddShipping(coll);
+		    var creditCardSaleRequest = new CreditCardSaleRequest(
+                id,
+		        key,
+		        new CreditCard
+		        {
+		            NameOnCard = "{0} {1}".Fmt(first, last),
+		            CardNumber = cardnumber,
+		            Expiration = expires,
+		            CardCode = cardcode,
+		            BillingAddress = new BillingAddress
+		            {
+		                Address1 = addr,
+		                City = city,
+		                State = state,
+		                Zip = zip,
+		                Email = email,
+		                Phone = phone
+		            }
+		        },
+		        amt,
+		        tranid.ToString(CultureInfo.InvariantCulture),
+		        peopleId.ToString(CultureInfo.InvariantCulture));
 
-			var b = wc.UploadValues("BANKCARD_SALE", "POST", coll);
-			var ret = Encoding.ASCII.GetString(b);
-			var resp = getResponse(ret);
-			var tr = new TransactionResponse
-			{
-				Approved = resp.Element("APPROVAL_INDICATOR").Value == "A",
-				AuthCode = resp.Element("CODE").Value,
-				Message = resp.Element("MESSAGE").Value,
-				TransactionId = resp.Element("REFERENCE").Value
-			};
-			return tr;
+            var response = creditCardSaleRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
 		}
+
 		public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string city, string state, string zip, string phone)
 		{
-			try
-			{
+		    var achSaleRequest = new AchSaleRequest(id,
+		        key,
+		        originatorId,
+		        new Ach
+		        {
+		            FirstName = first,
+		            MiddleInitial = middle.Truncate(1) ?? "",
+		            LastName = last,
+		            Suffix = suffix,
+		            AccountNumber = acct,
+		            RoutingNumber = routing,
+		            BillingAddress = new BillingAddress
+		            {
+		                Address1 = addr,
+		                City = city,
+		                State = state,
+		                Zip = zip,
+		                Email = email,
+		                Phone = phone
+		            }
 
-				var wc = new WebClient();
-				wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/transaction_processing.asmx/";
-				var coll = new NameValueCollection();
-				coll["M_ID"] = login;
-				coll["M_KEY"] = key;
-				coll["C_ORIGINATOR_ID"] = db.Setting("SageOriginatorId", ""); // 1031360711, 1031412710
-				coll["C_FIRST_NAME"] = first;
-			    coll["C_MIDDLE_INITIAL"] = middle.Truncate(1) ?? "";
-				coll["C_LAST_NAME"] = last;
-				coll["C_SUFFIX"] = suffix;
-				coll["C_ADDRESS"] = addr;
-				coll["C_CITY"] = city;
-				coll["C_STATE"] = state;
-				coll["C_ZIP"] = zip;
-				coll["C_COUNTRY"] = "";
-				coll["C_EMAIL"] = email;
-				coll["C_RTE"] = routing;
-				coll["C_ACCT"] = acct;
-				coll["C_ACCT_TYPE"] = "DDA";
-				coll["T_AMT"] = amt.ToString("n2");
-				coll["T_ORDERNUM"] = tranid.ToString();
-				coll["C_TELEPHONE"] = phone;
-				AddShipping(coll);
+		        },
+		        amt,
+		        tranid.ToString(CultureInfo.InvariantCulture));
 
-				var b = wc.UploadValues("VIRTUAL_CHECK_PPD_SALE", "POST", coll);
-				var ret = Encoding.ASCII.GetString(b);
-				var resp = getResponse(ret);
-				var tr = new TransactionResponse
-				{
-					Approved = resp.Element("APPROVAL_INDICATOR").Value == "A",
-					AuthCode = resp.Element("CODE").Value,
-					Message = resp.Element("MESSAGE").Value,
-					TransactionId = resp.Element("REFERENCE").Value
-				};
-				return tr;
-			}
-			catch (Exception ex)
-			{
-				return new TransactionResponse { Approved = false, Message = ex.Message, };
-			}
+            var response = achSaleRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
 		}
-		public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
+
+        public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
 		{
-			var p = db.LoadPersonById(peopleId);
-			var pi = p.PaymentInfo();
-			if (pi == null)
-				return new TransactionResponse 
-				{ 
-					Approved = false,
-					Message = "missing payment info",
-				};
+            var person = db.LoadPersonById(peopleId);
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo == null)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
 
-			XElement resp = null;
-			if ((type ?? "B") == "B" && pi.SageBankGuid.HasValue) // Bank Account (check)
-			{
-				var wc = new WebClient();
-				wc.BaseAddress = "https://www.sagepayments.net/web_services/wsVault/wsVaultVirtualCheck.asmx/";
-				var coll = new NameValueCollection();
+            if (type == "C") // credit card
+                return ChargeCreditCardVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person, paymentInfo, amt, tranid);
+            else // bank account
+                return ChargeAchVault(paymentInfo.SageBankGuid.GetValueOrDefault(), person, paymentInfo, amt, tranid);
 
-				coll["M_ID"] = login;
-				coll["M_KEY"] = key;
-				var guid = pi.SageBankGuid.ToString().Replace("-", "");
-				coll["GUID"] = guid;
-				coll["C_ORIGINATOR_ID"] = db.Setting("SageOriginatorId", "");
-				coll["C_FIRST_NAME"] = pi.FirstName ?? p.FirstName;
-			    coll["C_MIDDLE_INITIAL"] = (pi.MiddleInitial ?? p.MiddleName).Truncate(1) ?? "";
-				coll["C_LAST_NAME"] = pi.LastName ?? p.LastName;
-				coll["C_SUFFIX"] = pi.Suffix ?? p.SuffixCode;
-				coll["C_ADDRESS"] = pi.Address ?? p.PrimaryAddress;
-				coll["C_CITY"] = pi.City ?? p.PrimaryCity;
-				coll["C_STATE"] = pi.State ?? p.PrimaryState;
-				coll["C_ZIP"] = pi.Zip ?? p.PrimaryZip;
-				coll["C_COUNTRY"] = string.Empty;
-				coll["C_EMAIL"] = p.EmailAddress;
-				coll["T_AMT"] = amt.ToString("n2");
-				coll["T_ORDERNUM"] = tranid.ToString();
-				coll["C_TELEPHONE"] = pi.Phone;
-				AddShipping(coll);
-
-				var b = wc.UploadValues("VIRTUAL_CHECK_PPD_SALE", "POST", coll);
-				var ret = Encoding.ASCII.GetString(b);
-				resp = getResponse(ret);
-			}
-			else
-			{
-				var wc = new WebClient();
-				wc.BaseAddress = "https://www.sagepayments.net/web_services/wsVault/wsVaultBankcard.asmx/";
-				var coll = new NameValueCollection();
-
-				coll["M_ID"] = login;
-				coll["M_KEY"] = key;
-				var guid = pi.SageCardGuid.ToString().Replace("-", "");
-				coll["GUID"] = guid;
-                coll["C_NAME"] = (pi.FirstName ?? p.FirstName) + (pi.MiddleInitial ?? p.MiddleName).Truncate(1) + (p.LastName ?? pi.LastName);
-				coll["C_ADDRESS"] = pi.Address ?? p.PrimaryAddress;
-				coll["C_CITY"] = pi.City ?? p.PrimaryCity;
-				coll["C_STATE"] = pi.State ?? p.PrimaryState;
-				coll["C_ZIP"] = pi.Zip ?? p.PrimaryZip;
-				coll["C_COUNTRY"] = string.Empty;
-				coll["C_EMAIL"] = p.EmailAddress;
-				coll["T_AMT"] = amt.ToString("n2");
-				coll["T_ORDERNUM"] = tranid.ToString();
-				coll["C_TELEPHONE"] = p.HomePhone;
-			    coll["T_CUSTOMER_NUMBER"] = p.PeopleId.ToString();
-				coll["C_CVV"] = pi.Ccv;
-				AddShipping(coll);
-
-				var b = wc.UploadValues("VAULT_BANKCARD_SALE_CVV", "POST", coll);
-				var ret = Encoding.ASCII.GetString(b);
-				resp = getResponse(ret);
-			}
-			var tr = new TransactionResponse
-			{
-				Approved = resp.Element("APPROVAL_INDICATOR").Value == "A",
-				AuthCode = resp.Element("CODE").Value,
-				Message = resp.Element("MESSAGE").Value,
-				TransactionId = resp.Element("REFERENCE").Value
-			};
-			return tr;
 		}
-		private void AddShipping(NameValueCollection coll)
-		{
-			// these not needed
-			coll["T_SHIPPING"] = "";
-			coll["T_TAX"] = "";
-			coll["C_FAX"] = "";
-			coll["C_SHIP_NAME"] = "";
-			coll["C_SHIP_CITY"] = "";
-			coll["C_SHIP_ADDRESS"] = "";
-			coll["C_SHIP_ZIP"] = "";
-			coll["C_SHIP_STATE"] = "";
-			coll["C_SHIP_COUNTRY"] = "";
-		}
+
+        private TransactionResponse ChargeCreditCardVault(Guid vaultGuid, Person person, PaymentInfo paymentInfo, decimal amount, int tranid)
+        {
+            var creditCardVaultSaleRequest = new CreditCardVaultSaleRequest(id,
+                key,
+                vaultGuid,
+                "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
+                new BillingAddress
+                {
+                    Address1 = paymentInfo.Address ?? person.PrimaryAddress,
+                    City = paymentInfo.City ?? person.PrimaryCity,
+                    State = paymentInfo.State ?? person.PrimaryState,
+                    Zip = paymentInfo.Zip ?? person.PrimaryZip,
+                    Email = person.EmailAddress,
+                    Phone = paymentInfo.Phone ?? person.HomePhone
+                },
+                amount, tranid.ToString(CultureInfo.InvariantCulture),
+                person.PeopleId.ToString(CultureInfo.InvariantCulture));
+
+            var response = creditCardVaultSaleRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
+        }
+
+        private TransactionResponse ChargeAchVault(Guid vaultGuid, Person person, PaymentInfo paymentInfo, decimal amount, int tranid)
+        {
+            var achVaultSaleRequest = new AchVaultSaleRequest(id,
+                key,
+                originatorId,
+                vaultGuid,
+                paymentInfo.FirstName ?? person.FirstName,
+                (paymentInfo.MiddleInitial ?? person.MiddleName).Truncate(1) ?? "",
+                paymentInfo.LastName ?? person.LastName,
+                paymentInfo.Suffix ?? person.SuffixCode,
+                new BillingAddress
+                {
+                    Address1 = paymentInfo.Address ?? person.PrimaryAddress,
+                    City = paymentInfo.City ?? person.PrimaryCity,
+                    State = paymentInfo.State ?? person.PrimaryState,
+                    Zip = paymentInfo.Zip ?? person.PrimaryZip,
+                    Email = person.EmailAddress,
+                    Phone = paymentInfo.Phone ?? person.HomePhone
+                },
+                amount, tranid.ToString(CultureInfo.InvariantCulture));
+
+            var response = achVaultSaleRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
+        }
+
 		public DataSet SettledBatchSummary(DateTime start, DateTime end, bool includeCreditCard, bool includeVirtualCheck)
 		{
 			var wc = new WebClient();
 			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/";
 			var coll = new NameValueCollection();
-			coll["M_ID"] = login;
+			coll["M_ID"] = id;
 			coll["M_KEY"] = key;
 			coll["START_DATE"] = start.ToShortDateString();
 			coll["END_DATE"] = end.ToShortDateString();
@@ -447,12 +413,13 @@ namespace CmsData
 			ds.ReadXml(new StringReader(ret));
 			return ds;
 		}
+
 		public DataSet SettledBatchListing(string batchref, string type)
 		{
 			var wc = new WebClient();
 			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/";
 			var coll = new NameValueCollection();
-			coll["M_ID"] = login;
+			coll["M_ID"] = id;
 			coll["M_KEY"] = key;
 			coll["BATCH_REFERENCE"] = batchref;
 
@@ -472,12 +439,13 @@ namespace CmsData
 			ds.ReadXml(new StringReader(ret));
 			return ds;
 		}
+
 		public DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt)
 		{
 			var wc = new WebClient();
 			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/";
 			var coll = new NameValueCollection();
-			coll["M_ID"] = login;
+			coll["M_ID"] = id;
 			coll["M_KEY"] = key;
 		    coll["START_DATE"] = "";
 		    coll["END_DATE"] = "";
@@ -490,11 +458,12 @@ namespace CmsData
 			ds.ReadXml(new StringReader(ret));
 			return ds;
 		}
+
 		public DataSet VirtualCheckRejects(DateTime rejectdate)
 		{
 			var wc = new WebClient {BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/"};
 		    var coll = new NameValueCollection();
-			coll["M_ID"] = login;
+			coll["M_ID"] = id;
 			coll["M_KEY"] = key;
 		    coll["REJECT_DATE"] = rejectdate.ToShortDateString();
 
