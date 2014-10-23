@@ -74,7 +74,11 @@ namespace CmsData
                 customer.ID = peopleId.ToString();
 
                 // we only have to do this because we set the ID property and we want that saved...
-                CustomerGateway.UpdateCustomer(customer);
+                var isSaved = CustomerGateway.UpdateCustomer(customer);
+                if (!isSaved)
+                    throw new Exception("UpdateCustoemr failed to save for {0}".Fmt(peopleId));
+
+                paymentInfo.AuNetCustId = customer.ProfileID.ToInt();
             }
 
             if (type == "B")
