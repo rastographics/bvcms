@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult UpdateMetroZips()
         {
             DbUtil.Db.UpdateResCodes();
-            return Redirect("/MetroZip?msg=Updated%20all%20Codes");
+            return Redirect("/MetroZips?msg=Updated%20all%20Codes");
         }
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult ResidentCodes()
