@@ -16,7 +16,6 @@ namespace CmsData.Finance
         private readonly string userName;
         private readonly string password;
         private CMSDataContext db;
-        private readonly bool testing;
 
         public string GatewayType
         {
@@ -25,10 +24,9 @@ namespace CmsData.Finance
 
         public TransNationalGateway(CMSDataContext db, bool testing)
         {
-            this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
             this.db = db;
 
-            if (this.testing)
+            if(testing || db.Setting("GatewayTesting", "false").ToLower() == "true")
             {
                 userName = "faithbased";
                 password = "bprogram2";

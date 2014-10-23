@@ -10,20 +10,18 @@ namespace CmsData
     {
         private readonly string _login;
         private readonly string _key;
-        private readonly bool _testing;
         private readonly CMSDataContext db;
 
-        private bool IsLive { get { return !_testing; } }
+        private bool IsLive { get; set; }
         private ServiceMode ServiceMode { get { return IsLive ? ServiceMode.Live : ServiceMode.Test; } }
 
         public string GatewayType { get { return "AuthorizeNet"; } }
 
         public AuthorizeNetGateway(CMSDataContext Db, bool testing)
         {
-            _testing = testing || Db.Setting("GatewayTesting", "false").ToLower() == "true";
-
             db = Db;
-            if (_testing)
+            IsLive = testing || Db.Setting("GatewayTesting", "false").ToLower() == "true";
+            if(!IsLive)
             {
                 _login = "4q2w5BD5";
                 _key = "9wE4j7M372ehz6Fy";

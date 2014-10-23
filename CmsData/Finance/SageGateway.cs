@@ -24,15 +24,14 @@ namespace CmsData
 	    private readonly string key;
 	    private readonly string originatorId;
 	    private readonly CMSDataContext db;
-	    private readonly bool testing;
 
         public string GatewayType { get { return "Sage"; } }
 
 		public SageGateway(CMSDataContext db, bool testing)
 		{
 			this.db = db;
-            this.testing = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
-			if (testing)
+		    var gatewayTesting = db.Setting("GatewayTesting", "false").ToLower() == "true";
+			if (testing || gatewayTesting)
 			{
                 id = "856423594649";
                 key = "M5Q4C9P2T4N5";
@@ -44,7 +43,6 @@ namespace CmsData
 				key = db.Setting("M_key", "");
                 originatorId = db.Setting("SageOriginatorId", "");
 			}
-			this.testing = testing;
 		}
 		
 		public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
@@ -161,10 +159,10 @@ namespace CmsData
             if (paymentInfo == null)
                 return;
 
-            if (paymentInfo.TbnCardVaultId.HasValue)
+            if (paymentInfo.SageCardGuid.HasValue)
                 DeleteVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person);
 
-            if (paymentInfo.TbnBankVaultId.HasValue)
+            if (paymentInfo.SageBankGuid.HasValue)
                 DeleteVault(paymentInfo.SageBankGuid.GetValueOrDefault(), person);
 
             // clear out local record and save changes.

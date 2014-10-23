@@ -13,7 +13,6 @@ namespace CmsData
         {
             return db.Gateway().CanVoidRefund
                 && Approved == true
-                && Util.IsSage.Value
                 && Voided != true
                 && Credited != true
                 && (Coupon ?? false) == false
@@ -26,7 +25,6 @@ namespace CmsData
             return db.Gateway().CanVoidRefund
                 && Approved == true
                 && !CanCredit(db)
-                && Util.IsSage.Value
                 && Voided != true
                 && Credited != true
                 && (Coupon ?? false) == false

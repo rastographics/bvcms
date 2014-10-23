@@ -26,10 +26,7 @@
         <th><a href="#" class="sortable">Appr</a></th>
         <th>
             <a href="#" class="sortable">Tran Date</a>
-            @if (Model.isSage)
-            {
-                <br /><a href="#" class="sortable">Batch Date</a>
-            }
+            <br /><a href="#" class="sortable">Batch Date</a>
         </th>
         <th><a href="#" class="sortable">Description</a></th>
         <th><a href="#" class="sortable">Name</a></th>
@@ -65,10 +62,7 @@
             </td>
             <td nowrap="nowrap">
                 @t.TransactionDate.FormatDateTm()
-                @if (Model.isSage)
-                {
-                    <div class="tip filterbatch" title="Click to filter|@t.Batchtyp|@t.Batchref">@t.Batch.FormatDate()</div>
-                }
+                <div class="tip filterbatch" title="Click to filter|@t.Batchtyp|@t.Batchref">@t.Batch.FormatDate()</div>
             </td>
             <td>
                 @if (t.Fromsage == true)

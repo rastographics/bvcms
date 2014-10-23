@@ -68,21 +68,6 @@ namespace UtilityExtensions
             var patt = new Regex("[^0-9]");
             return !(patt.IsMatch(str));
         }
-        private const string STR_IsSage = "IsSage";
-        public static bool? IsSage
-        {
-            get
-            {
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Items[STR_IsSage] != null)
-                        return (bool)HttpContext.Current.Items[STR_IsSage];
-                return null;
-            }
-            set
-            {
-                HttpContext.Current.Items[STR_IsSage] = value;
-            }
-        }
         private const string STR_Culture = "Culture";
         public static string Culture
         {
