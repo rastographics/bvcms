@@ -1,4 +1,4 @@
-namespace CmsData
+namespace CmsData.Finance
 {
     public class TransactionResponse
     {

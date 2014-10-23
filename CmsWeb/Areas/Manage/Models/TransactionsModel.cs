@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Finance;
 using CmsData.View;
 using MoreLinq;
 using UtilityExtensions;
@@ -218,90 +219,92 @@ namespace CmsWeb.Models
             var gw = DbUtil.Db.Gateway();
             if (!gw.CanGetSettlementDates)
                 return;
-            var bds = gw.SettledBatchSummary(start, end, true, true);
-            var batches = from batch in bds.Tables[0].AsEnumerable()
-                          select new
+
+            var bds = gw.SettledBatchSummary(start, end);
+            var batches = from batch in bds.Batches
+                          select new Batch
                           {
-                              date = batch["date"].ToDate().Value.AddHours(4),
-                              reference = batch["reference"].ToString(),
-                              type = batch["type"].ToString()
+                              SettledDate = batch.SettledDate.AddHours(4),      // NOTE: MO> why are we adding 4 hours here?
+                              BatchId = batch.BatchId,
+                              Type = batch.Type
                           };
+
             foreach (var batch in batches)
             {
-                if (DbUtil.Db.CheckedBatches.Any(tt => tt.BatchRef == batch.reference))
+                if (DbUtil.Db.CheckedBatches.Any(tt => tt.BatchRef == batch.BatchId))
                     continue;
 
-                var ds = gw.SettledBatchListing(batch.reference, batch.type);
+                //var ds = gw.SettledBatchListing(batch.Reference, batch.Type);
 
-                var items = from r in ds.Tables[0].AsEnumerable()
+                var items = from r in batch.Transactions
                             select new
                             {
-                                settled = r["settle_date"].ToDate().Value.AddHours(4),
-                                tranid = r["order_number"],
-                                reference = r["reference"].ToString(),
-                                approved = r["approved"].ToString().ToBool(),
-                                name = r["name"].ToString(),
-                                message = r["message"].ToString(),
-                                amount = r["total_amount"].ToString(),
-                                date = r["date"].ToDate(),
-                                type = r["transaction_code"].ToInt()
+                                Settled = batch.SettledDate,   // already bumped by 4 hours (see above note)
+                                Tranid = r.TransactionId,
+                                Reference = r.Reference,
+                                Approved = true,               // TODO: verify this is always true
+                                Name = r.Name,
+                                Message = "",                  // TODO: verify this is always "Approved"
+                                Amount = r.Amount,
+                                Date = r.Date,
+                                Type = 0                       // TOOD: what was this? ... r["transaction_code"].ToInt()     6 is used as "credit" down below... maybe a sage thing?
                             };
-                var settlelist = items.ToDictionary(ii => ii.reference, ii => ii);
+                var settlelist = items.ToDictionary(ii => ii.Reference, ii => ii);
 
                 var q = from t in DbUtil.Db.Transactions
                         where settlelist.Keys.Contains(t.TransactionId)
                         where t.Approved == true
                         select t;
-                var tlist = q.ToDictionary(ii => ii.TransactionId, ii => ii); // transactions that are found in setteled list;
+                var tlist = q.ToDictionary(ii => ii.TransactionId, ii => ii); // transactions that are found in settled list;
                 var q2 = from st in settlelist
                          where !tlist.Keys.Contains(st.Key)
                          select st.Value;
-                var notbefore = DateTime.Parse("6/1/12");
+
+                var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
                 foreach (var st in q2)
                 {
-                    var t = DbUtil.Db.Transactions.SingleOrDefault(j => j.TransactionId == st.reference && st.date >= notbefore);
+                    var t = DbUtil.Db.Transactions.SingleOrDefault(j => j.TransactionId == st.Reference && st.Date >= notbefore);
                     string first, last;
-                    Util.NameSplit(st.name, out first, out last);
+                    Util.NameSplit(st.Name, out first, out last);
                     var tt = new Transaction
                     {
-                        Name = st.name,
+                        Name = st.Name,
                         First = first,
                         Last = last,
-                        TransactionId = st.reference,
-                        Amt = st.amount.ToDecimal(),
-                        Approved = st.approved,
-                        Message = st.message,
-                        TransactionDate = st.date,
+                        TransactionId = st.Reference,
+                        Amt = st.Amount,
+                        Approved = st.Approved,
+                        Message = st.Message,
+                        TransactionDate = st.Date,
                         TransactionGateway = "sage",
-                        Settled = st.settled,
-                        Batch = batch.date,
-                        Batchref = batch.reference,
-                        Batchtyp = batch.type,
+                        Settled = st.Settled,
+                        Batch = batch.SettledDate,
+                        Batchref = batch.BatchId,
+                        Batchtyp = batch.Type,
                         OriginalId = t != null ? (t.OriginalId ?? t.Id) : (int?)null,
                         Fromsage = true,
-                        Description = t != null ? t.Description : "no description from sage, id=" + st.tranid,
+                        Description = t != null ? t.Description : "no description from sage, id=" + st.Tranid,
                     };
-                    if (st.type == 6) // credit transaction
+
+                    if (st.Type == 6) // credit transaction
                         tt.Amt = -tt.Amt;
                     DbUtil.Db.Transactions.InsertOnSubmit(tt);
                 }
 
-                foreach (var t in q)
+                foreach (var t in q.Where(t => settlelist.ContainsKey(t.TransactionId)))
                 {
-                    if (!settlelist.ContainsKey(t.TransactionId))
-                        continue;
-                    t.Batch = batch.date;
-                    t.Batchref = batch.reference;
-                    t.Batchtyp = batch.type;
-                    t.Settled = settlelist[t.TransactionId].settled;
+                    t.Batch = batch.SettledDate;
+                    t.Batchref = batch.BatchId;
+                    t.Batchtyp = batch.Type;
+                    t.Settled = settlelist[t.TransactionId].Settled;
                 }
-                var cb = DbUtil.Db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.reference);
+                var cb = DbUtil.Db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.BatchId);
                 if (cb == null)
                 {
                     DbUtil.Db.CheckedBatches.InsertOnSubmit(
-                        new CheckedBatch()
+                        new CheckedBatch
                         {
-                            BatchRef = batch.reference,
+                            BatchRef = batch.BatchId,
                             CheckedX = DateTime.Now
                         });
                 }
@@ -310,6 +313,7 @@ namespace CmsWeb.Models
                 DbUtil.Db.SubmitChanges();
             }
         }
+
         public IQueryable<TransactionList> ApplySort()
         {
             var q = FetchTransactions();
