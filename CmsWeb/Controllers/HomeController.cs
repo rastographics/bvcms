@@ -187,7 +187,6 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript(string script)
         {
-
             return Content(PythonEvents.RunScript(Util.Host, script));
         }
 
@@ -223,7 +222,7 @@ namespace CmsWeb.Controllers
         {
             var content = DbUtil.Content(scriptname);
             if (content == null)
-                return Content("no content");
+                return Message("no content");
             var cs = User.IsInRole("Finance")
                 ? Util.ConnectionString
                 : Util.ConnectionStringReadOnly;
@@ -232,6 +231,15 @@ namespace CmsWeb.Controllers
             return cn.ExecuteReader(script).ToExcel("RunScript.xlsx");
         }
 
+        [HttpGet, Route("~/PyScript/{name}")]
+        public ActionResult PyScript(string name)
+        {
+            var content = DbUtil.Content(name);
+            if (content == null)
+                return Message("no script");
+            var pe = new PythonEvents(DbUtil.Db, content.Body);
+            return View(pe);
+        }
         [HttpGet, Route("~/Preferences")]
         public ActionResult UserPreferences()
         {

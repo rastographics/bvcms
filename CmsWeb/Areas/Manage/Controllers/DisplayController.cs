@@ -210,9 +210,12 @@ namespace CmsWeb.Areas.Manage.Controllers
             return new GridResult(rd);
         }
         [HttpPost]
-        public ActionResult RunPythonScript(string body)
+        public ActionResult SavePythonScript(string name, string body)
         {
-            return Content(PythonEvents.RunScript(Util.Host, body));
+            var content = DbUtil.Content(name);
+            content.Body = body;
+            DbUtil.Db.SubmitChanges();
+            return new EmptyResult();
         }
         [HttpPost]
         public ActionResult UpdateOrgContent(int id, bool? div, string what, string title, string html)

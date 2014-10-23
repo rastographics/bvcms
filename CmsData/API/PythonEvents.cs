@@ -47,6 +47,36 @@ namespace CmsData
             db.Host = dbname;
         }
 
+        public string Script { get; set; } // set this in the python code for javascript on the output page
+        public string Header { get; set; } // set this in the python code for output page
+        public string Output { get; set; } // this is set automatically for the output page
+
+        public PythonEvents(CMSDataContext db, string script)
+        {
+            var engine = Python.CreateEngine();
+            var ms = new MemoryStream();
+            var sw = new StreamWriter(ms);
+            engine.Runtime.IO.SetOutput(ms, sw);
+            engine.Runtime.IO.SetErrorOutput(ms, sw);
+            var sc = engine.CreateScriptSourceFromString(script);
+            try
+            {
+                var code = sc.Compile();
+                var scope = engine.CreateScope();
+                scope.SetVariable("model", this);
+                var qf = new QueryFunctions(db);
+                scope.SetVariable("q", qf);
+                code.Execute(scope);
+                ms.Position = 0;
+                var sr = new StreamReader(ms);
+                Output = sr.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                Output = ex.Message;
+            }
+        }
+
         public static string RunScript(string dbname, string script)
         {
             var engine = Python.CreateEngine();
@@ -75,6 +105,35 @@ namespace CmsData
                 return ex.Message;
             }
         }
+
+        public string RunScript(string script)
+        {
+            var engine = Python.CreateEngine();
+            var ms = new MemoryStream();
+            var sw = new StreamWriter(ms);
+            engine.Runtime.IO.SetOutput(ms, sw);
+            engine.Runtime.IO.SetErrorOutput(ms, sw);
+            var sc = engine.CreateScriptSourceFromString(script);
+            try
+            {
+                var code = sc.Compile();
+                var scope = engine.CreateScope();
+                scope.SetVariable("model", this);
+                var qf = new QueryFunctions(db);
+                scope.SetVariable("q", qf);
+                code.Execute(scope);
+                db.SubmitChanges();
+                ms.Position = 0;
+                var sr = new StreamReader(ms);
+                var s = sr.ReadToEnd();
+                return s;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
         public string CallScript(string scriptname)
         {
             var script = db.Content(scriptname);
@@ -108,14 +167,17 @@ namespace CmsData
                 "TASK: " + description,
                 Task.TaskLink(db, description, t.Id) + "<br/>" + p.Name);
         }
+
         public void JoinOrg(int orgId, Person p)
         {
             OrganizationMember.InsertOrgMembers(db, orgId, p.PeopleId, 220, DateTime.Now, null, false);
         }
+
         public void UpdateField(Person p, string field, object value)
         {
             p.UpdateValue(field, value);
         }
+
         public void EmailReminders(int orgId)
         {
             var org = db.LoadOrganizationById(orgId);
@@ -126,8 +188,15 @@ namespace CmsData
                 m.SendEventReminders(orgId);
         }
 
-        public int DayOfWeek { get { return DateTime.Today.DayOfWeek.ToInt(); } }
-        public DateTime DateTime { get { return DateTime.Now; } }
+        public int DayOfWeek
+        {
+            get { return DateTime.Today.DayOfWeek.ToInt(); }
+        }
+
+        public DateTime DateTime
+        {
+            get { return DateTime.Now; }
+        }
 
         public DateTime DateAddDays(object dt, int days)
         {
@@ -136,6 +205,7 @@ namespace CmsData
                 throw new Exception("bad date: " + dt);
             return dt2.Value.AddDays(days);
         }
+
         public int WeekNumber(object dt)
         {
             var dt2 = dt.ToDate();
@@ -143,6 +213,7 @@ namespace CmsData
                 throw new Exception("bad date: " + dt);
             return dt2.Value.GetWeekNumber();
         }
+
         public DateTime SundayForDate(object dt)
         {
             var dt2 = dt.ToDate();
@@ -150,36 +221,45 @@ namespace CmsData
                 throw new Exception("bad date: " + dt);
             return dt2.Value.Sunday();
         }
+
         public DateTime SundayForWeek(int year, int week)
         {
             return Util.SundayForWeek(year, week);
         }
+
         public DateTime MostRecentAttendedSunday(int progid)
         {
             var q = from m in db.Meetings
-                    where m.MeetingDate.Value.Date.DayOfWeek == 0
-                    where m.MaxCount > 0
-                    where progid == 0 || m.Organization.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
-                    where m.MeetingDate < Util.Now
-                    orderby m.MeetingDate descending
-                    select m.MeetingDate.Value.Date;
+                where m.MeetingDate.Value.Date.DayOfWeek == 0
+                where m.MaxCount > 0
+                where
+                    progid == 0 || m.Organization.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
+                where m.MeetingDate < Util.Now
+                orderby m.MeetingDate descending
+                select m.MeetingDate.Value.Date;
             var dt = q.FirstOrDefault();
             if (dt == DateTime.MinValue) //Sunday Date equal/before today
-                dt = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+                dt = DateTime.Today.AddDays(-(int) DateTime.Today.DayOfWeek);
             return dt;
         }
 
         public bool TestEmail { get; set; }
         public bool Transactional { get; set; }
         public int CurrentOrgId { get; set; }
-        public bool SmtpDebug { set { Util.SmtpDebug = value; } }
+
+        public bool SmtpDebug
+        {
+            set { Util.SmtpDebug = value; }
+        }
 
         public void Email2(Guid qid, int queuedBy, string fromAddr, string fromName, string subject, string body)
         {
             var q = db.PeopleQuery(qid);
             Email2(q, queuedBy, fromAddr, fromName, subject, body);
         }
-        private void Email2(IQueryable<Person> q, int queuedBy, string fromAddr, string fromName, string subject, string body)
+
+        private void Email2(IQueryable<Person> q, int queuedBy, string fromAddr, string fromName, string subject,
+            string body)
         {
             var from = new MailAddress(fromAddr, fromName);
             q = from p in q
@@ -205,7 +285,9 @@ namespace CmsData
                 return;
             Email2(qid, queuedBy, fromAddr, fromName, c.Title, c.Body);
         }
-        public void EmailContent2(Guid qid, int queuedBy, string fromAddr, string fromName, string subject, string contentName)
+
+        public void EmailContent2(Guid qid, int queuedBy, string fromAddr, string fromName, string subject,
+            string contentName)
         {
             var c = db.Content(contentName);
             if (c == null)
@@ -220,6 +302,7 @@ namespace CmsData
                 return;
             Email2(q, queuedBy, fromAddr, fromName, subject, body);
         }
+
         public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string contentName)
         {
             var c = db.Content(contentName);
@@ -227,7 +310,9 @@ namespace CmsData
                 return;
             EmailContent(savedQuery, queuedBy, fromAddr, fromName, c.Title, contentName);
         }
-        public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName)
+
+        public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string subject,
+            string contentName)
         {
             var c = db.Content(contentName);
             if (c == null)
@@ -244,8 +329,8 @@ namespace CmsData
             c.Reset(db);
             var mtlist = memberTypes.Split(',');
             var mts = string.Join(";", from mt in db.MemberTypes
-                                       where mtlist.Contains(mt.Description)
-                                       select "{0},{1}".Fmt(mt.Id, mt.Code));
+                where mtlist.Contains(mt.Description)
+                select "{0},{1}".Fmt(mt.Id, mt.Code));
             var clause = c.AddNewClause(QueryType.MemberTypeCodes, CompareType.OneOf, mts);
             clause.Program = progid;
             clause.Division = divid;
@@ -257,9 +342,9 @@ namespace CmsData
         public List<int> OrganizationIds(int progid, int divid)
         {
             var q = from o in db.Organizations
-                    where progid == 0 || o.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
-                    where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
-                    select o.OrganizationId;
+                where progid == 0 || o.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
+                where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
+                select o.OrganizationId;
             return q.ToList();
         }
 
@@ -273,6 +358,7 @@ namespace CmsData
                 ResetDb();
             }
         }
+
         public void AddExtraValueText(object savedQuery, string name, string text)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
@@ -283,6 +369,7 @@ namespace CmsData
                 ResetDb();
             }
         }
+
         public void AddExtraValueDate(object savedQuery, string name, object dt)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
@@ -294,6 +381,7 @@ namespace CmsData
                 ResetDb();
             }
         }
+
         public void AddExtraValueInt(object savedQuery, string name, int n)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
@@ -304,6 +392,7 @@ namespace CmsData
                 ResetDb();
             }
         }
+
         public void AddExtraValueBool(object savedQuery, string name, bool b)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
@@ -314,9 +403,10 @@ namespace CmsData
                 ResetDb();
             }
         }
+
         public void UpdateCampus(object savedQuery, string campus)
         {
-			var id = db.FetchOrCreateCampusId(campus);
+            var id = db.FetchOrCreateCampusId(campus);
             var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
             {
@@ -325,10 +415,11 @@ namespace CmsData
                 db.SubmitChanges();
             }
         }
+
         public void UpdateMemberStatus(object savedQuery, string status)
         {
-			var id = Person.FetchOrCreateMemberStatus(db, status);
-			var q = db.PeopleQuery2(savedQuery);
+            var id = Person.FetchOrCreateMemberStatus(db, status);
+            var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
             {
                 p.UpdateValue("MemberStatusId", id);
@@ -336,6 +427,7 @@ namespace CmsData
                 db.SubmitChanges();
             }
         }
+
         public void UpdateNewMemberClassStatus(object savedQuery, string status)
         {
             var id = Person.FetchOrCreateNewMemberClassStatus(db, status);
@@ -358,6 +450,7 @@ namespace CmsData
                 db.SubmitChanges();
             }
         }
+
         public void AddMembersToOrg(object savedQuery, int OrgId)
         {
             var q = db.PeopleQuery2(savedQuery);
@@ -368,6 +461,7 @@ namespace CmsData
                 db.SubmitChanges();
             }
         }
+
         public void AddMemberToOrg(int pid, int OrgId)
         {
             AddMembersToOrg("peopleid=" + pid, OrgId);
