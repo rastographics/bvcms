@@ -5,21 +5,23 @@ namespace CmsData.Finance.TransNational.Vault
 {
     internal class UpdateAchVaultRequest : VaultRequest
     {
-        public UpdateAchVaultRequest(string userName, string password, string vaultId, Ach ach) 
+        private UpdateAchVaultRequest(string userName, string password, string vaultId)
             : base(userName, password)
         {
             Data["customer_vault"] = "update_customer";
             Data["customer_vault_id"] = vaultId;
             Data["method"] = "check";
+        }
+
+        public UpdateAchVaultRequest(string userName, string password, string vaultId, Ach ach) 
+            : this(userName, password, vaultId)
+        {
             ach.SetAchData(Data);
         }
 
         public UpdateAchVaultRequest(string userName, string password, string vaultId, string nameOnAccount, BillingAddress billingAddress) 
-            : base(userName, password)
+            : this(userName, password, vaultId)
         {
-            Data["customer_vault"] = "update_customer";
-            Data["customer_vault_id"] = vaultId;
-            Data["method"] = "check";
             Data["checkname"] = nameOnAccount;
             billingAddress.SetBillingAddressData(Data);
         }
