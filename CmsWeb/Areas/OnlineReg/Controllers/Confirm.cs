@@ -88,15 +88,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (m != null && pf.IsLoggedIn == true && pf.SavePayInfo)
                 {
                     var gw = DbUtil.Db.Gateway(m.testing ?? false);
-                    if ((pf.Type == "B" && !pf.Routing.StartsWith("X") && !pf.Account.StartsWith("X")) || (pf.Type == "C" && !pf.CreditCard.StartsWith("X")))
-                        gw.StoreInVault(m.UserPeopleId ?? 0,
-                                pf.Type,
-                                pf.CreditCard,
-                                DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                                pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
-                                pf.Routing,
-                                          pf.Account,
-                                          pf.IsGiving == true);
+                    gw.StoreInVault(m.UserPeopleId ?? 0,
+                            pf.Type,
+                            pf.CreditCard,
+                            DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
+                            pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
+                            pf.Routing,
+                                      pf.Account,
+                                      pf.IsGiving == true);
 
                 }
                 if (pf.UseBootstrap && pf.AddressChecked < 2)
