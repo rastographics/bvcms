@@ -88,7 +88,6 @@ namespace CmsData
 			paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
 			paymentInfo.Ccv = cardCode;
 			paymentInfo.Expires = expires;
-			paymentInfo.Testing = testing;
 			if (giving)
 				paymentInfo.PreferredGivingType = type;
 			else

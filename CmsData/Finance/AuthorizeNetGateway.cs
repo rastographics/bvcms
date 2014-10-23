@@ -73,11 +73,6 @@ namespace CmsData
                 customer = CustomerGateway.CreateCustomer(person.EmailAddress, person.Name);
                 customer.ID = peopleId.ToString();
 
-                // we only have to do this because we set the ID property and we want that saved...
-                var isSaved = CustomerGateway.UpdateCustomer(customer);
-                if (!isSaved)
-                    throw new Exception("UpdateCustoemr failed to save for {0}".Fmt(peopleId));
-
                 paymentInfo.AuNetCustId = customer.ProfileID.ToInt();
             }
             else
@@ -85,10 +80,15 @@ namespace CmsData
                 customer = CustomerGateway.GetCustomer(paymentInfo.AuNetCustId.ToString());
             }
 
+            customer.BillingAddress = billToAddress;
+            var isSaved = CustomerGateway.UpdateCustomer(customer);
+            if (!isSaved)
+                throw new Exception("UpdateCustoemr failed to save for {0}".Fmt(peopleId));
+
             if (type == "B")
-                SaveECheckToProfile(routing, account, paymentInfo, customer, billToAddress);
+                SaveECheckToProfile(routing, account, paymentInfo, customer);
             else if (type == "C")
-                SaveCreditCardToProfile(cardNumber, cardCode, expiredDate, paymentInfo, customer, billToAddress);
+                SaveCreditCardToProfile(cardNumber, cardCode, expiredDate, paymentInfo, customer);
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
 
@@ -97,7 +97,6 @@ namespace CmsData
 			paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
 			paymentInfo.Ccv = cardCode;
 			paymentInfo.Expires = expires;
-			paymentInfo.Testing = _testing;
 			if (giving)
 				paymentInfo.PreferredGivingType = type;
 			else
@@ -106,31 +105,29 @@ namespace CmsData
             db.SubmitChanges();
         }
 
-        private void SaveECheckToProfile(string routingNumber, string accountNumber, PaymentInfo paymentInfo, Customer customer, AuthorizeNet.Address billToAddress)
+        private void SaveECheckToProfile(string routingNumber, string accountNumber, PaymentInfo paymentInfo, Customer customer)
         {
+            if (accountNumber.StartsWith("X"))
+                return;
+
             var foundPaymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == paymentInfo.AuNetCustPayBankId.ToString());
 
             var bankAccount = new BankAccount
             {
                 accountType = BankAccountType.Checking,
-                nameOnAccount = customer.Description
+                nameOnAccount = customer.Description,
+                accountNumber = accountNumber,
+                routingNumber = routingNumber
             };
-
-            if (!accountNumber.StartsWith("X"))
-                bankAccount.accountNumber = accountNumber;
-
-            if (!routingNumber.StartsWith("X"))
-                bankAccount.routingNumber = routingNumber;
 
             if (foundPaymentProfile == null)
             {
-                var paymentProfileId = CustomerGateway.AddECheckBankAccount(customer.ProfileID, bankAccount, billToAddress);
+                var paymentProfileId = CustomerGateway.AddECheckBankAccount(customer.ProfileID, BankAccountType.Checking, routingNumber, accountNumber, customer.Description);
                 paymentInfo.AuNetCustPayBankId = paymentProfileId.ToInt();
             }
             else
             {
                 foundPaymentProfile.eCheckBankAccount = bankAccount;
-                foundPaymentProfile.BillingAddress = billToAddress;
 
                 var isSaved = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, foundPaymentProfile);
                 if (!isSaved)
@@ -138,15 +135,14 @@ namespace CmsData
             }
         }
 
-        // NOTE: this can throw an error if the credit card number already exists...
-        private void SaveCreditCardToProfile(string cardNumber, string cardCode, DateTime expires, PaymentInfo paymentInfo, Customer customer, AuthorizeNet.Address billToAddress)
+        private void SaveCreditCardToProfile(string cardNumber, string cardCode, DateTime expires, PaymentInfo paymentInfo, Customer customer)
         {
             var foundPaymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == paymentInfo.AuNetCustPayId.ToString());
 
             if (foundPaymentProfile == null)
             {
                 var paymentProfileId = CustomerGateway.AddCreditCard(customer.ProfileID, cardNumber,
-                    expires.Month, expires.Year, cardCode, billToAddress);
+                    expires.Month, expires.Year, cardCode);
 
                 paymentInfo.AuNetCustPayId = paymentProfileId.ToInt();
             }
@@ -159,7 +155,6 @@ namespace CmsData
                     foundPaymentProfile.CardCode = cardCode;
 
                 foundPaymentProfile.CardExpiration = expires.ToString("MMyy");
-                foundPaymentProfile.BillingAddress = billToAddress;
 
                 var isSaved = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, foundPaymentProfile);
                 if (!isSaved)

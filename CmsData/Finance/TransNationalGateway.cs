@@ -75,6 +75,8 @@ namespace CmsData.Finance
                     // we can only update the ach account if there is a full account number.
                     if (!account.StartsWith("X"))
                         UpdateAchVault(paymentInfo.TbnBankVaultId.GetValueOrDefault(), person, account, routing);
+                    else
+                        UpdateAchVault(paymentInfo.TbnBankVaultId.GetValueOrDefault(), person);
                 }
             }
 
@@ -83,7 +85,6 @@ namespace CmsData.Finance
             paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
             paymentInfo.Ccv = cardCode; // TODO: shouldn't need to store this
             paymentInfo.Expires = expires;
-            paymentInfo.Testing = testing;
             if (giving)
                 paymentInfo.PreferredGivingType = type;
             else
@@ -191,6 +192,29 @@ namespace CmsData.Finance
                     "TransNational failed to create the ach account for people id: {0}".Fmt(person.PeopleId));
 
             return response.VaultId.ToInt();
+        }
+
+        private void UpdateAchVault(int vaultId, Person person)
+        {
+            var updateAchVaultRequest = new UpdateAchVaultRequest(
+                userName,
+                password,
+                vaultId.ToString(CultureInfo.InvariantCulture),
+                person.Name,
+                new BillingAddress
+                {
+                    Address1 = person.PrimaryAddress,
+                    City = person.PrimaryCity,
+                    State = person.PrimaryState,
+                    Zip = person.PrimaryZip,
+                    Email = person.EmailAddress,
+                    Phone = person.HomePhone ?? person.CellPhone
+                });
+
+            var response = updateAchVaultRequest.Execute();
+            if (response.ResponseStatus != ResponseStatus.Approved)
+                throw new Exception(
+                    "TransNational failed to update the ach account for people id: {0}".Fmt(person.PeopleId));
         }
 
         private void UpdateAchVault(int vaultId, Person person, string accountNumber, string routingNumber)
