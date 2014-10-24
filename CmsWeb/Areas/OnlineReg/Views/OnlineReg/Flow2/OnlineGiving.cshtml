@@ -2,7 +2,7 @@
 @model CmsWeb.Models.OnlineRegPersonModel
 @{
     var funame = Html.NameFor2(m => m.FundItem);
-    var funds = CmsWeb.Models.OnlineRegPersonModel.Funds();
+    var funds = CmsWeb.Models.OnlineRegPersonModel.FundList();
     decimal? tot = null;
 }
 <div class="form-group">
