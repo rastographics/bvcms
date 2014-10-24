@@ -388,7 +388,7 @@ namespace CmsData.Finance
             };
         }
 
-		public BatchResponse SettledBatchSummary(DateTime start, DateTime end)
+		public BatchResponse GetBatchSummary(DateTime start, DateTime end)
 		{
 			var wc = new WebClient();
 			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/";
@@ -406,7 +406,7 @@ namespace CmsData.Finance
 			ds.ReadXml(new StringReader(ret));
 
             // TODO: IMPLEMENT BRIAN PLEASE?
-            return new BatchResponse(new Batch[] {});
+            return new BatchResponse(new BatchTransaction[] {});
 		}
 
 		public DataSet SettledBatchListing(string batchref, string type)

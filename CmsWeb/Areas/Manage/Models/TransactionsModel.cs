@@ -216,102 +216,111 @@ namespace CmsWeb.Models
 
         private void CheckBatchDates(DateTime start, DateTime end)
         {
-            var gw = DbUtil.Db.Gateway();
-            if (!gw.CanGetSettlementDates)
+            var gateway = DbUtil.Db.Gateway();
+            if (!gateway.CanGetSettlementDates)
                 return;
 
-            var bds = gw.SettledBatchSummary(start, end);
-            var batches = from batch in bds.Batches
-                          select new Batch
-                          {
-                              SettledDate = batch.SettledDate.AddHours(4), // SAGE NOTE: was date of the batch (creation?) *recorded      // NOTE: MO> why are we adding 4 hours here?
-                              BatchId = batch.BatchId, // SAGE NOTE:  was batch reference *recorded
-                              Type = batch.Type // SAGE NOTE:  was overall batch type eft(ach) vs bankcard (creditcard) *recorded
-                          };
+            var response = gateway.GetBatchSummary(start, end);
 
-            foreach (var batch in batches)
+            // first filter out batches that we have already imported or updated.
+            var unMatchedBatchTransactions = response.BatchTransactions.Where(transaction => !DbUtil.Db.CheckedBatches.Any(tt => tt.BatchRef == transaction.BatchReference)).ToList();
+            
+            // key it by transaction reference.
+            var unMatchedKeyedByReference = unMatchedBatchTransactions.ToDictionary(ii => ii.Reference, ii => ii);
+
+            // next let's get all the approved matching transactions in our transaction table.
+            var approvedMatchingTransactions = from transaction in DbUtil.Db.Transactions
+                                               where unMatchedKeyedByReference.Keys.Contains(transaction.TransactionId)
+                                               where transaction.Approved == true
+                                               select transaction;
+
+            // next key the matching approved transactions that came from our transaction table by the transaction id (reference).
+            var approvedMatchingTransactionsKeyedByTransactionId = approvedMatchingTransactions.ToDictionary(ii => ii.TransactionId, ii => ii); // transactions that are found in settled list;
+
+            // finally let's get a list of all transactions that need to be imported, which we don't already have.
+            var transactionsToImport = from st in unMatchedKeyedByReference
+                                       where !approvedMatchingTransactionsKeyedByTransactionId.Keys.Contains(st.Key)
+                                       select st.Value;
+
+            var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
+
+            // spin through each transaction that needs importing and insert them to the transaction table.
+            foreach (var transactionToImport in transactionsToImport)
             {
-                if (DbUtil.Db.CheckedBatches.Any(tt => tt.BatchRef == batch.BatchId))
-                    continue;
+                // get the original transaction.
+                var originalTransaction = DbUtil.Db.Transactions.SingleOrDefault(j => j.TransactionId == transactionToImport.Reference && transactionToImport.TransactionDate >= notbefore);
 
-                //var ds = gw.SettledBatchListing(batch.Reference, batch.Type);
+                // get the first and last name.
+                string first, last;
+                Util.NameSplit(transactionToImport.Name, out first, out last);
 
-                var items = from r in batch.Transactions
-                            select new
-                            {
-                                Settled = batch.SettledDate,  // SAGE NOTE: was transaction settle date  *recorded   // already bumped by 4 hours (see above note)
-                                Tranid = r.TransactionId,  // SAGE NOTE:  was our transaction id  *recorded as part of desc.
-                                Reference = r.Reference,  // SAGE NOTE:  was sage's transaction id (generated)  *recorded
-                                Approved = true, // SAGE NOTE:  was transaction approval flag, how could this ever be non-approved???  *recorded  // TODO: verify this is always true
-                                Name = r.Name,  // SAGE NOTE:  was name on card or name on account.  *recorded
-                                Message = "",   // SAGE NOTE:  was message from sage "ACCEPTED".  *recorded  // TODO: verify this is always "ACCEPTED"
-                                Amount = r.Amount, // SAGE NOTE:  was transaction amount.  *recorded
-                                Date = r.Date, // SAGE NOTE:  was date of the transaction.  *recorded
-                                Type = 0   // SAGE NOTE:  was sage transaction type code 1, 6 etc...  *used to determine credit (-amt).  // TODO: what was this? ... r["transaction_code"].ToInt()     6 is used as "credit" down below... maybe a sage thing?
-                            };
-                var settlelist = items.ToDictionary(ii => ii.Reference, ii => ii);
+                // get the settlement date, however we are not exactly sure why we add four hours to the settlement date.
+                // we think it is to handle all timezones and push to the next day??
+                var settlementDate = AdjustSettlementDateForAllTimeZones(transactionToImport.SettledDate);
 
-                var q = from t in DbUtil.Db.Transactions
-                        where settlelist.Keys.Contains(t.TransactionId)
-                        where t.Approved == true
-                        select t;
-                var tlist = q.ToDictionary(ii => ii.TransactionId, ii => ii); // transactions that are found in settled list;
-                var q2 = from st in settlelist
-                         where !tlist.Keys.Contains(st.Key)
-                         select st.Value;
-
-                var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
-                foreach (var st in q2)
+                // insert the transaction record.
+                DbUtil.Db.Transactions.InsertOnSubmit(new Transaction
                 {
-                    var t = DbUtil.Db.Transactions.SingleOrDefault(j => j.TransactionId == st.Reference && st.Date >= notbefore);
-                    string first, last;
-                    Util.NameSplit(st.Name, out first, out last);
-                    var tt = new Transaction
-                    {
-                        Name = st.Name,
-                        First = first,
-                        Last = last,
-                        TransactionId = st.Reference,
-                        Amt = st.Amount,
-                        Approved = st.Approved,
-                        Message = st.Message,
-                        TransactionDate = st.Date,
-                        TransactionGateway = "sage",
-                        Settled = st.Settled,
-                        Batch = batch.SettledDate,
-                        Batchref = batch.BatchId,
-                        Batchtyp = batch.Type,
-                        OriginalId = t != null ? (t.OriginalId ?? t.Id) : (int?)null,
-                        Fromsage = true,
-                        Description = t != null ? t.Description : "no description from sage, id=" + st.Tranid,
-                    };
+                    Name = transactionToImport.Name,
+                    First = first,
+                    Last = last,
+                    TransactionId = transactionToImport.Reference,
+                    Amt = transactionToImport.TransactionType == TransactionType.Credit || 
+                          transactionToImport.TransactionType == TransactionType.Refund
+                            ? -transactionToImport.Amount 
+                            : transactionToImport.Amount,
+                    Approved = transactionToImport.Approved,
+                    Message = transactionToImport.Message,
+                    TransactionDate = transactionToImport.TransactionDate,
+                    TransactionGateway = gateway.GatewayType,
+                    Settled = settlementDate,
+                    Batch = settlementDate,  // this date now reflect the same date as the settlement date.
+                    Batchref = transactionToImport.BatchReference,
+                    Batchtyp = transactionToImport.PaymentMethodType == PaymentMethodType.Ach ? "eft" : "bankcard",
+                    OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?)null,
+                    Fromsage = true,
+                    Description = originalTransaction != null ? originalTransaction.Description : "no description from {0}, id={1}".Fmt(gateway.GatewayType, transactionToImport.TransactionId)
+                });
+            }
 
-                    if (st.Type == 6) // credit transaction
-                        tt.Amt = -tt.Amt;
-                    DbUtil.Db.Transactions.InsertOnSubmit(tt);
-                }
+            // next update existing transactions with new batch data.
+            foreach (var existingTransaction in approvedMatchingTransactions.Where(t => unMatchedKeyedByReference.ContainsKey(t.TransactionId)))
+            {
+                // first get the matching batch transaction.
+                var batchTransaction = unMatchedKeyedByReference[existingTransaction.TransactionId];
 
-                foreach (var t in q.Where(t => settlelist.ContainsKey(t.TransactionId)))
-                {
-                    t.Batch = batch.SettledDate;
-                    t.Batchref = batch.BatchId;
-                    t.Batchtyp = batch.Type;
-                    t.Settled = settlelist[t.TransactionId].Settled;
-                }
-                var cb = DbUtil.Db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.BatchId);
+                // get the settlement date, however we are not exactly sure why we add four hours to the settlement date.
+                var settlementDate = AdjustSettlementDateForAllTimeZones(batchTransaction.SettledDate);
+
+                existingTransaction.Batch = settlementDate;  // this date now reflect the same date as the settlement date.
+                existingTransaction.Batchref = batchTransaction.BatchReference;
+                existingTransaction.Batchtyp = batchTransaction.PaymentMethodType == PaymentMethodType.Ach ? "eft" : "bankcard";
+                existingTransaction.Settled = settlementDate;
+            }
+
+            // finally we need to mark these batches as completed.
+            foreach (var batch in unMatchedBatchTransactions.DistinctBy(x => x.BatchReference))
+            {
+                var cb = DbUtil.Db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.BatchReference);
                 if (cb == null)
                 {
                     DbUtil.Db.CheckedBatches.InsertOnSubmit(
                         new CheckedBatch
                         {
-                            BatchRef = batch.BatchId,
+                            BatchRef = batch.BatchReference,
                             CheckedX = DateTime.Now
                         });
                 }
                 else
                     cb.CheckedX = DateTime.Now;
-                DbUtil.Db.SubmitChanges();
             }
+            
+            DbUtil.Db.SubmitChanges();
+        }
+
+        private static DateTime AdjustSettlementDateForAllTimeZones(DateTime settlementDate)
+        {
+            return settlementDate.AddHours(4);
         }
 
         public IQueryable<TransactionList> ApplySort()

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using AuthorizeNet;
+using AuthorizeNet.APICore;
 using UtilityExtensions;
+using UtilityExtensions.Extensions;
 
 namespace CmsData.Finance
 {
@@ -313,40 +315,62 @@ namespace CmsData.Finance
             };
         }
 
-        public BatchResponse SettledBatchSummary(DateTime start, DateTime end)
+        public BatchResponse GetBatchSummary(DateTime start, DateTime end)
         {
-            var batchList = new List<Batch>();
+            var batchTransactions = new List<BatchTransaction>();
 
             foreach (var batch in ReportingGateway.GetSettledBatchList(start, end, includeStats: true))
             {
-                var response = new Batch
-                {
-                    BatchId = batch.ID,
-                    SettledDate = batch.SettledOn,
-                    Type = batch.PaymentMethod
-                };
-
                 foreach (var transaction in ReportingGateway.GetTransactionList(batch.ID))
                 {
-                    response.Transactions.Add(new BatchTransaction
+                    batchTransactions.Add(new BatchTransaction
                     {
                         TransactionId = transaction.InvoiceNumber.ToInt(),
                         Reference = transaction.TransactionID,
+                        BatchReference = batch.ID,
+                        TransactionType = GetTransactionType(transaction.Status),
+                        PaymentMethodType = GetPaymentMethodType(batch.PaymentMethod),
                         Name = "{0} {1}".Fmt(transaction.FirstName, transaction.LastName),
                         Amount = transaction.SettleAmount,
-                        Date = transaction.DateSubmitted
+                        Approved = transaction.BatchSettlementState == "settledSuccessfully",
+                        Message = "Approved",
+                        TransactionDate = transaction.DateSubmitted,
+                        SettledDate = transaction.BatchSettledOn
                     });
                 }
-
-                batchList.Add(response);
             }
 
-            return new BatchResponse(batchList);
+            return new BatchResponse(batchTransactions);
         }
 
-        public System.Data.DataSet SettledBatchListing(string batchref, string type)
+        private static PaymentMethodType GetPaymentMethodType(string paymentMethod)
         {
-            throw new NotImplementedException();
+            var pm = paymentMethod.ParseEnum<paymentMethodEnum>();
+            switch (pm)
+            {
+                case paymentMethodEnum.creditCard:
+                    return PaymentMethodType.CreditCard;
+                case paymentMethodEnum.eCheck:
+                    return PaymentMethodType.Ach;
+                default:
+                    return PaymentMethodType.Unknown;
+            }
+        }
+
+        private static TransactionType GetTransactionType(string transactionStatus)
+        {
+            var transType = transactionStatus.ParseEnum<transactionStatusEnum>();
+            switch (transType)
+            {
+                case transactionStatusEnum.chargeback:
+                case transactionStatusEnum.refundPendingSettlement:
+                case transactionStatusEnum.refundSettledSuccessfully:
+                case transactionStatusEnum.returnedItem:
+                     return TransactionType.Refund;
+                default:
+                    return TransactionType.Charge;
+
+            }
         }
 
         public System.Data.DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt)

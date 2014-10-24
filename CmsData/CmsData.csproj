@@ -344,7 +344,9 @@
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Finance\BatchResponse.cs" />
+    <Compile Include="Finance\BatchTransaction.cs" />
     <Compile Include="Finance\IGateway.cs" />
+    <Compile Include="Finance\PaymentMethodType.cs" />
     <Compile Include="Finance\Sage\Core\Ach.cs" />
     <Compile Include="Finance\Sage\Core\Address.cs" />
     <Compile Include="Finance\Sage\Core\ApprovalIndicator.cs" />
@@ -377,6 +379,7 @@
     <Compile Include="Finance\Sage\Vault\UpdateCreditCardVaultRequest.cs" />
     <Compile Include="Finance\Sage\Vault\VaultRequest.cs" />
     <Compile Include="Finance\Sage\Vault\VaultResponse.cs" />
+    <Compile Include="Finance\TransactionType.cs" />
     <Compile Include="Finance\TransNationalGateway.cs" />
     <Compile Include="Finance\TransNational\Core\Ach.cs" />
     <Compile Include="Finance\TransNational\Core\Address.cs" />
