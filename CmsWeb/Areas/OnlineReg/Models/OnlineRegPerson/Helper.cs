@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 using CmsData;
 using CmsWeb.Code;
@@ -452,7 +453,16 @@ namespace CmsWeb.Models
             return sb.ToString();
         }
 
-        public static SelectListItem[] Funds()
+        public SelectListItem[] Funds()
+        {
+            if (Parent.OnlineGiving() && !Parent.AskDonation() && setting.DonationFundId.HasValue)
+            {
+                var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId );
+                return new [] { new SelectListItem() { Text = fund.FundName, Value = fund.FundId.ToString() }};
+            }
+            return FundList();
+        }
+        public static SelectListItem[] FundList()
         {
             var q = from f in DbUtil.Db.ContributionFunds
                 where f.FundStatusId == 1
