@@ -234,10 +234,24 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/PyScript/{name}")]
         public ActionResult PyScript(string name)
         {
+//            var q = new QueryFunctions(DbUtil.Db);
+//            var s = q.SqlNameCountArray("test", @"
+//SELECT ms.Description Name, COUNT(*) Cnt
+//FROM dbo.People p
+//JOIN lookup.MemberStatus ms ON ms.Id = p.MemberStatusId
+//GROUP BY ms.Description
+//");
+//            Response.ContentType = "text/plain";
+//            return Content(s);
+
             var content = DbUtil.Content(name);
             if (content == null)
                 return Message("no script");
-            var pe = new PythonEvents(DbUtil.Db, content.Body);
+            var script = content.Body;
+#if DEBUG
+            script = System.IO.File.ReadAllText(Server.MapPath("/chart.py"));
+#endif
+            var pe = new PythonEvents(DbUtil.Db, script);
             return View(pe);
         }
         [HttpGet, Route("~/Preferences")]
