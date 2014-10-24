@@ -1,5 +1,4 @@
-﻿
-using CmsData.Finance.TransNational.Core;
+﻿using CmsData.Finance.TransNational.Core;
 
 namespace CmsData.Finance.TransNational.Vault
 {

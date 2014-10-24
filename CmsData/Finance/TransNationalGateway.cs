@@ -13,8 +13,8 @@ namespace CmsData.Finance
 {
     internal class TransNationalGateway : IGateway
     {
-        private readonly string userName;
-        private readonly string password;
+        private readonly string _userName;
+        private readonly string _password;
         private CMSDataContext db;
 
         public string GatewayType
@@ -28,13 +28,13 @@ namespace CmsData.Finance
 
             if(testing || db.Setting("GatewayTesting", "false").ToLower() == "true")
             {
-                userName = "faithbased";
-                password = "bprogram2";
+                _userName = "faithbased";
+                _password = "bprogram2";
             }
             else
             {
-                userName = db.Setting("TNBUsername", "");
-                password = db.Setting("TNBPassword", "");
+                _userName = db.Setting("TNBUsername", "");
+                _password = db.Setting("TNBPassword", "");
             }
         }
 
@@ -93,8 +93,8 @@ namespace CmsData.Finance
         private int CreateCreditCardVault(Person person, string cardNumber, string expiration)
         {
             var createCreditCardVaultRequest = new CreateCreditCardVaultRequest(
-                userName,
-                password,
+                _userName,
+                _password,
                 new CreditCard
                 {
                     FirstName = person.FirstName,
@@ -123,8 +123,8 @@ namespace CmsData.Finance
         private void UpdateCreditCardVault(int vaultId, Person person, string cardNumber, string expiration)
         {
             var updateCreditCardVaultRequest = new UpdateCreditCardVaultRequest(
-                userName,
-                password,
+                _userName,
+                _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 new CreditCard
                 {
@@ -152,8 +152,8 @@ namespace CmsData.Finance
         private void UpdateCreditCardVault(int vaultId, Person person, string expiration)
         {
             var updateCreditCardVaultRequest = new UpdateCreditCardVaultRequest(
-                userName, 
-                password,
+                _userName, 
+                _password,
                 vaultId.ToString(CultureInfo.InvariantCulture), expiration);
 
             var response = updateCreditCardVaultRequest.Execute();
@@ -166,8 +166,8 @@ namespace CmsData.Finance
         private int CreateAchVault(Person person, string accountNumber, string routingNumber)
         {
             var createAchVaultRequest = new CreateAchVaultRequest(
-                userName,
-                password,
+                _userName,
+                _password,
                 new Ach
                 {
                     NameOnAccount = person.Name,
@@ -195,8 +195,8 @@ namespace CmsData.Finance
         private void UpdateAchVault(int vaultId, Person person)
         {
             var updateAchVaultRequest = new UpdateAchVaultRequest(
-                userName,
-                password,
+                _userName,
+                _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 person.Name,
                 new BillingAddress
@@ -218,8 +218,8 @@ namespace CmsData.Finance
         private void UpdateAchVault(int vaultId, Person person, string accountNumber, string routingNumber)
         {
             var updateAchVaultRequest = new UpdateAchVaultRequest(
-                userName,
-                password,
+                _userName,
+                _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 new Ach
                 {
@@ -268,8 +268,8 @@ namespace CmsData.Finance
         private void DeleteVault(int vaultId, Person person)
         {
             var deleteVaultRequest = new DeleteVaultRequest(
-                userName, 
-                password,
+                _userName, 
+                _password,
                 vaultId.ToString(CultureInfo.InvariantCulture));
 
             var response = deleteVaultRequest.Execute();
@@ -289,7 +289,7 @@ namespace CmsData.Finance
 
         private TransactionResponse Void(string reference)
         {
-            var voidRequest = new VoidRequest(userName, password, reference);
+            var voidRequest = new VoidRequest(_userName, _password, reference);
             var response = voidRequest.Execute();
 
             return new TransactionResponse
@@ -313,7 +313,7 @@ namespace CmsData.Finance
 
         private TransactionResponse Refund(string reference, Decimal amount)
         {
-            var refundRequest = new RefundRequest(userName, password, reference, amount);
+            var refundRequest = new RefundRequest(_userName, _password, reference, amount);
             var response = refundRequest.Execute();
 
             return new TransactionResponse
@@ -330,8 +330,8 @@ namespace CmsData.Finance
             string city, string state, string zip, string phone)
         {
             var creditCardSaleRequest = new CreditCardSaleRequest(
-                userName,
-                password,
+                _userName,
+                _password,
                 new CreditCard
                 {
                     FirstName = first,
@@ -370,8 +370,8 @@ namespace CmsData.Finance
             string addr, string city, string state, string zip, string phone)
         {
             var achSaleRequest = new AchSaleRequest(
-                userName,
-                password,
+                _userName,
+                _password,
                 new Ach
                 {
                     NameOnAccount = string.Format("{0} {1}", first, last),
@@ -426,8 +426,8 @@ namespace CmsData.Finance
             string description)
         {
             var creditCardVaultSaleRequest = new CreditCardVaultSaleRequest(
-                userName,
-                password,
+                _userName,
+                _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 amount,
                 tranid.ToString(CultureInfo.InvariantCulture),
@@ -449,8 +449,8 @@ namespace CmsData.Finance
             string description)
         {
             var achVaultSaleRequest = new AchVaultSaleRequest(
-                userName,
-                password,
+                _userName,
+                _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 amount,
                 tranid.ToString(CultureInfo.InvariantCulture),
@@ -468,8 +468,7 @@ namespace CmsData.Finance
             };
         }
 
-        public DataSet SettledBatchSummary(DateTime start, DateTime end, bool includeCreditCard,
-            bool includeVirtualCheck)
+        public BatchResponse SettledBatchSummary(DateTime start, DateTime end)
         {
             //var queryRequest = new QueryRequest(userName,
             //                                    password,

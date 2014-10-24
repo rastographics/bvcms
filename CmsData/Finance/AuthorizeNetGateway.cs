@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UtilityExtensions;
 using AuthorizeNet;
+using UtilityExtensions;
 
-namespace CmsData
+namespace CmsData.Finance
 {
     public class AuthorizeNetGateway : IGateway
     {
@@ -17,10 +18,10 @@ namespace CmsData
 
         public string GatewayType { get { return "AuthorizeNet"; } }
 
-        public AuthorizeNetGateway(CMSDataContext Db, bool testing)
+        public AuthorizeNetGateway(CMSDataContext db, bool testing)
         {
-            db = Db;
-            IsLive = testing || Db.Setting("GatewayTesting", "false").ToLower() == "true";
+            this.db = db;
+            IsLive = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
             if(!IsLive)
             {
                 _login = "4q2w5BD5";
@@ -28,8 +29,8 @@ namespace CmsData
             }
             else
             {
-                _login = Db.Setting("x_login", "");
-                _key = Db.Setting("x_tran_key", "");
+                _login = db.Setting("x_login", "");
+                _key = db.Setting("x_tran_key", "");
             }
         }
 
@@ -312,9 +313,35 @@ namespace CmsData
             };
         }
 
-        public System.Data.DataSet SettledBatchSummary(DateTime start, DateTime end, bool includeCreditCard, bool includeVirtualCheck)
+        public BatchResponse SettledBatchSummary(DateTime start, DateTime end)
         {
-            throw new NotImplementedException();
+            var batchList = new List<Batch>();
+
+            foreach (var batch in ReportingGateway.GetSettledBatchList(start, end, includeStats: true))
+            {
+                var response = new Batch
+                {
+                    BatchId = batch.ID,
+                    SettledDate = batch.SettledOn,
+                    Type = batch.PaymentMethod
+                };
+
+                foreach (var transaction in ReportingGateway.GetTransactionList(batch.ID))
+                {
+                    response.Transactions.Add(new BatchTransaction
+                    {
+                        TransactionId = transaction.InvoiceNumber.ToInt(),
+                        Reference = transaction.TransactionID,
+                        Name = "{0} {1}".Fmt(transaction.FirstName, transaction.LastName),
+                        Amount = transaction.SettleAmount,
+                        Date = transaction.DateSubmitted
+                    });
+                }
+
+                batchList.Add(response);
+            }
+
+            return new BatchResponse(batchList);
         }
 
         public System.Data.DataSet SettledBatchListing(string batchref, string type)

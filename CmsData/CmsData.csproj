@@ -343,6 +343,7 @@
   <ItemGroup>
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
+    <Compile Include="Finance\BatchResponse.cs" />
     <Compile Include="Finance\IGateway.cs" />
     <Compile Include="Finance\Sage\Core\Ach.cs" />
     <Compile Include="Finance\Sage\Core\Address.cs" />
