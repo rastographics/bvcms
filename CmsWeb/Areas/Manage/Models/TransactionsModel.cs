@@ -224,9 +224,9 @@ namespace CmsWeb.Models
             var batches = from batch in bds.Batches
                           select new Batch
                           {
-                              SettledDate = batch.SettledDate.AddHours(4),      // NOTE: MO> why are we adding 4 hours here?
-                              BatchId = batch.BatchId,
-                              Type = batch.Type
+                              SettledDate = batch.SettledDate.AddHours(4), // SAGE NOTE: was date of the batch (creation?) *recorded      // NOTE: MO> why are we adding 4 hours here?
+                              BatchId = batch.BatchId, // SAGE NOTE:  was batch reference *recorded
+                              Type = batch.Type // SAGE NOTE:  was overall batch type eft(ach) vs bankcard (creditcard) *recorded
                           };
 
             foreach (var batch in batches)
@@ -239,15 +239,15 @@ namespace CmsWeb.Models
                 var items = from r in batch.Transactions
                             select new
                             {
-                                Settled = batch.SettledDate,   // already bumped by 4 hours (see above note)
-                                Tranid = r.TransactionId,
-                                Reference = r.Reference,
-                                Approved = true,               // TODO: verify this is always true
-                                Name = r.Name,
-                                Message = "",                  // TODO: verify this is always "Approved"
-                                Amount = r.Amount,
-                                Date = r.Date,
-                                Type = 0                       // TOOD: what was this? ... r["transaction_code"].ToInt()     6 is used as "credit" down below... maybe a sage thing?
+                                Settled = batch.SettledDate,  // SAGE NOTE: was transaction settle date  *recorded   // already bumped by 4 hours (see above note)
+                                Tranid = r.TransactionId,  // SAGE NOTE:  was our transaction id  *recorded as part of desc.
+                                Reference = r.Reference,  // SAGE NOTE:  was sage's transaction id (generated)  *recorded
+                                Approved = true, // SAGE NOTE:  was transaction approval flag, how could this ever be non-approved???  *recorded  // TODO: verify this is always true
+                                Name = r.Name,  // SAGE NOTE:  was name on card or name on account.  *recorded
+                                Message = "",   // SAGE NOTE:  was message from sage "ACCEPTED".  *recorded  // TODO: verify this is always "ACCEPTED"
+                                Amount = r.Amount, // SAGE NOTE:  was transaction amount.  *recorded
+                                Date = r.Date, // SAGE NOTE:  was date of the transaction.  *recorded
+                                Type = 0   // SAGE NOTE:  was sage transaction type code 1, 6 etc...  *used to determine credit (-amt).  // TODO: what was this? ... r["transaction_code"].ToInt()     6 is used as "credit" down below... maybe a sage thing?
                             };
                 var settlelist = items.ToDictionary(ii => ii.Reference, ii => ii);
 
