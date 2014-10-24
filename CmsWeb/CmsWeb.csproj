@@ -754,6 +754,7 @@
     <Content Include="Scripts\bundle.person.js" />
     <Content Include="Scripts\bundle.query2.js" />
     <Content Include="Scripts\bundle.taskpage.js" />
+    <Content Include="chart.py" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
@@ -915,6 +916,7 @@
     <Content Include="Areas\People\Views\Person\Profile\Comments\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\MemberNotes\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\UploadDocument.cshtml" />
+    <Content Include="Views\Home\RunScript.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Value.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
@@ -1530,10 +1532,10 @@
     <Content Include="Views\Shared\OnlineReg2.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\Info.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Hyperlink.cshtml" />
-    <Content Include="Views\Home\RunScript.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InlineBoolean.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
     <Content Include="Views\Shared\Message.cshtml" />
+    <Content Include="Views\Home\PyScript.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

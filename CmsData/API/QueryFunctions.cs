@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.UI.WebControls;
+using Community.CsharpSqlite;
+using Dapper;
 using UtilityExtensions;
 using IronPython.Hosting;
 using System.IO;
@@ -212,6 +216,41 @@ namespace CmsData
             if (qb == null)
                 return 0;
             return qb.Count();
+        }
+
+        public class NameValuePair
+        {
+            public string Name { get; set; }
+            public int Value { get; set; }
+            public override string ToString()
+            {
+                return "  ['{0}', {1}]".Fmt(Name, Value);
+            }
+        }
+        public string SqlNameCountArray(string title, string sql)
+        {
+//            var qb = db.PeopleQuery2(s);
+//            if (qb == null)
+//                return 0;
+            var cs = db.CurrentUser.InRole("Finance")
+                ? Util.ConnectionString
+                : Util.ConnectionStringReadOnly;
+            var cn = new SqlConnection(cs);
+            cn.Open();
+            string declareqtagid = null;
+            if(sql.Contains("@qtagid"))
+            {
+                var id = db.FetchLastQuery().Id;
+                var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                declareqtagid = "DECLARE @qtagid INT = {0}\n".Fmt(tag.Id);
+            }
+            sql = "{0}{1}".Fmt(declareqtagid, sql);
+            var q = cn.Query(sql);
+            var list = q.Select(rr => new NameValuePair() { Name = rr.Name, Value = rr.Cnt }).ToList();
+            return @"[
+  ['{0}', 'Count'],
+{1}
+]".Fmt(title, string.Join(",\n", list));
         }
         public int QueryCountDivDateRange(string s, string division, object startdt, int days)
         {

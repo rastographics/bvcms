@@ -378,7 +378,7 @@
 @if (Model.OnlineGiving())
 {
     var funame = Html.NameFor2(m => m.FundItem);
-    var funds = CmsWeb.Models.OnlineRegPersonModel.Funds();
+    var funds = Model.Funds();
     decimal? tot = null;
     <tr><td colspan="2"><table class="@ViewExtensions2.GridClass" cellpadding="2">
     @for (var n = 0; n < funds.Length; n++)

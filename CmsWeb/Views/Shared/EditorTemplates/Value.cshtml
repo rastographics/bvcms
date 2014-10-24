@@ -21,7 +21,7 @@
                        data-url="@Model.EditUrl"
                        @if (dv.HasValue()) { <text> data-value="@dv" </text>    }
                        @if (ds.HasValue()) {  <text> data-source="@ds" </text>   }>
-                        <span>@Html.Raw(Model)</span>
+                        @Html.Raw(Model)
                     </a>
                 </td>
             }

@@ -108,7 +108,7 @@ namespace CmsWeb.Models
                     r = body,
                     whoid = Util.UserPeopleId,
                 }).Single();
-                subject += "{0} [{1}]".Fmt(subject, id);
+                subject += " [{0}]".Fmt(id);
 
                 cn.Execute(SupportUpdate, new { subject, id });
                 cn.Close();

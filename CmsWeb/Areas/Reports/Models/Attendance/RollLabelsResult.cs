@@ -7,19 +7,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using CmsWeb.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.IO;
-using System.Collections;
-using CmsData;
 using UtilityExtensions;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using System.Diagnostics;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -82,7 +74,7 @@ namespace CmsWeb.Areas.Reports.Models
             }
             AddLabel(document, "=========", Util.UserName, "{0} labels printed".Fmt(q.Count()), "{0:g}".Fmt(DateTime.Now), String.Empty);
             foreach (var m in q)
-                AddLabel(document, m.LabelName, m.Address, m.Address2, m.CityStateZip, Util.PickFirst(m.CellPhone.FmtFone("C "), m.HomePhone.FmtFone("H ")));
+                AddLabel(document, m.LabelName, m.Address, m.Address2, m.CSZ, Util.PickFirst(m.CellPhone.FmtFone("C "), m.HomePhone.FmtFone("H ")));
 
             document.Close();
         }

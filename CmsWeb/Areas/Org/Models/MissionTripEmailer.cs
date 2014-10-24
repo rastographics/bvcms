@@ -280,6 +280,7 @@ namespace CmsWeb.Areas.Org.Models
                 //var aa = DbUtil.Db.DoReplacements(ref text, goer, null);
 
                 text = text.Replace("{salutation}", gs.Salutation, ignoreCase: true);
+                text = text.Replace("{track}", "", ignoreCase: true);
                 var qs = "OptOut/UnSubscribe/?gid=" + Util.EncryptForUrl("{0}".Fmt(gs.Id));
                 var url = DbUtil.Db.ServerLink(qs);
                 var link = @"<a href=""{0}"">Unsubscribe</a>".Fmt(url);

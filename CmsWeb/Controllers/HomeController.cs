@@ -177,7 +177,6 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript(string script)
         {
-
             return Content(PythonEvents.RunScript(Util.Host, script));
         }
 
@@ -213,7 +212,7 @@ namespace CmsWeb.Controllers
         {
             var content = DbUtil.Content(scriptname);
             if (content == null)
-                return Content("no content");
+                return Message("no content");
             var cs = User.IsInRole("Finance")
                 ? Util.ConnectionString
                 : Util.ConnectionStringReadOnly;
@@ -222,6 +221,29 @@ namespace CmsWeb.Controllers
             return cn.ExecuteReader(script).ToExcel("RunScript.xlsx");
         }
 
+        [HttpGet, Route("~/PyScript/{name}")]
+        public ActionResult PyScript(string name)
+        {
+//            var q = new QueryFunctions(DbUtil.Db);
+//            var s = q.SqlNameCountArray("test", @"
+//SELECT ms.Description Name, COUNT(*) Cnt
+//FROM dbo.People p
+//JOIN lookup.MemberStatus ms ON ms.Id = p.MemberStatusId
+//GROUP BY ms.Description
+//");
+//            Response.ContentType = "text/plain";
+//            return Content(s);
+
+            var content = DbUtil.Content(name);
+            if (content == null)
+                return Message("no script");
+            var script = content.Body;
+#if DEBUG
+            script = System.IO.File.ReadAllText(Server.MapPath("/chart.py"));
+#endif
+            var pe = new PythonEvents(DbUtil.Db, script);
+            return View(pe);
+        }
         [HttpGet, Route("~/Preferences")]
         public ActionResult UserPreferences()
         {

@@ -161,7 +161,7 @@ Please call the church to resolve this before we can complete your account.<br /
                             ModelState.AddModelError(foundname, "This person is already registered");
                             if(setting.UseBootstrap || Parent.UseBootstrap)
                                 NotFoundText = @"<strong>This person is already registered</strong>";
-                            CancelText = "Regiser a different person";
+                            CancelText = "Register a different person";
                             IsValidForContinue = false;
                         }
                         else if (setting.ValidateOrgIds.Count > 0 && !Parent.SupportMissionTrip)
@@ -189,7 +189,7 @@ Please call the church to resolve this before we can complete your account.<br /
                     if (m.List.Count(ii => ii.PeopleId == PeopleId) > 1)
                     {
                         ModelState.AddModelError(foundname, "Person already in Pending Registration");
-                        CancelText = "Regiser a different person";
+                        CancelText = "Register a different person";
                         if(setting.UseBootstrap)
                             NotFoundText = @"<strong>Person already in Pending Registration</strong>";
                         IsValidForContinue = false;

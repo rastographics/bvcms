@@ -153,7 +153,7 @@ namespace CmsWeb.Models
             }
             else if (Setting.ExtraValueFeeName.HasValue())
             {
-                var f = CmsWeb.Models.OnlineRegPersonModel.Funds().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
+                var f = CmsWeb.Models.OnlineRegPersonModel.FundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
                 // reasonable defaults
                 Period = "M";
                 SemiEvery = "E";
@@ -373,7 +373,7 @@ namespace CmsWeb.Models
         {
             if (FundItem == null)
                 return new List<FundItemChosen>();
-            var items = OnlineRegPersonModel.Funds();
+            var items = OnlineRegPersonModel.FundList();
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue
