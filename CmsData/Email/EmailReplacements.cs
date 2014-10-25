@@ -206,7 +206,9 @@ namespace CmsData
                     return DateTime.Today.ToShortDateString();
 
                 case "{title}":
-                    return p.TitleCode;
+                    if (p.TitleCode.HasValue())
+                        return p.TitleCode;
+                    return p.ComputeTitle();
 
                 case "{track}":
                     return emailqueueto.Guid.HasValue ? "<img src=\"{0}\" />".Fmt(Util.URLCombine(db.CmsHost, "/Track/Key/" + emailqueueto.Guid.Value.GuidToQuerystring())) : "";
