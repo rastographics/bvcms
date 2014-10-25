@@ -315,7 +315,7 @@ namespace CmsData.Finance
             };
         }
 
-        public BatchResponse GetBatchSummary(DateTime start, DateTime end)
+        public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
             var batchTransactions = new List<BatchTransaction>();
 
@@ -329,11 +329,11 @@ namespace CmsData.Finance
                         Reference = transaction.TransactionID,
                         BatchReference = batch.ID,
                         TransactionType = GetTransactionType(transaction.Status),
-                        PaymentMethodType = GetPaymentMethodType(batch.PaymentMethod),
+                        PaymentMethodType = GetBatchType(batch.PaymentMethod),
                         Name = "{0} {1}".Fmt(transaction.FirstName, transaction.LastName),
                         Amount = transaction.SettleAmount,
-                        Approved = transaction.BatchSettlementState == "settledSuccessfully",
-                        Message = "Approved",
+                        Approved = IsApproved(transaction.BatchSettlementState),
+                        Message = transaction.BatchSettlementState.ToUpper(),
                         TransactionDate = transaction.DateSubmitted,
                         SettledDate = transaction.BatchSettledOn
                     });
@@ -343,17 +343,17 @@ namespace CmsData.Finance
             return new BatchResponse(batchTransactions);
         }
 
-        private static PaymentMethodType GetPaymentMethodType(string paymentMethod)
+        private static BatchType GetBatchType(string paymentMethod)
         {
             var pm = paymentMethod.ParseEnum<paymentMethodEnum>();
             switch (pm)
             {
                 case paymentMethodEnum.creditCard:
-                    return PaymentMethodType.CreditCard;
+                    return BatchType.CreditCard;
                 case paymentMethodEnum.eCheck:
-                    return PaymentMethodType.Ach;
+                    return BatchType.Ach;
                 default:
-                    return PaymentMethodType.Unknown;
+                    return BatchType.Unknown;
             }
         }
 
@@ -371,6 +371,11 @@ namespace CmsData.Finance
                     return TransactionType.Charge;
 
             }
+        }
+
+        private static bool IsApproved(string batchSettlementState)
+        {
+            return batchSettlementState.ParseEnum<settlementStateEnum>() == settlementStateEnum.settledSuccessfully;
         }
 
         public System.Data.DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt)

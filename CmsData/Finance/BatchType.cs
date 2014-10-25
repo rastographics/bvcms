@@ -1,6 +1,6 @@
 ﻿namespace CmsData.Finance
 {
-    public enum PaymentMethodType
+    public enum BatchType
     {
         Unknown,
         CreditCard,

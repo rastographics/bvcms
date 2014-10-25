@@ -346,7 +346,7 @@
     <Compile Include="Finance\BatchResponse.cs" />
     <Compile Include="Finance\BatchTransaction.cs" />
     <Compile Include="Finance\IGateway.cs" />
-    <Compile Include="Finance\PaymentMethodType.cs" />
+    <Compile Include="Finance\BatchType.cs" />
     <Compile Include="Finance\Sage\Core\Ach.cs" />
     <Compile Include="Finance\Sage\Core\Address.cs" />
     <Compile Include="Finance\Sage\Core\ApprovalIndicator.cs" />
@@ -355,11 +355,15 @@
     <Compile Include="Finance\Sage\Core\Request.cs" />
     <Compile Include="Finance\Sage\Core\Response.cs" />
     <Compile Include="Finance\Sage\Report\AchSettledBatchListingRequest.cs" />
+    <Compile Include="Finance\Sage\Report\Batch.cs" />
     <Compile Include="Finance\Sage\Report\CreditCardSettledBatchListingRequest.cs" />
-    <Compile Include="Finance\Sage\Report\PaymentMethodType.cs" />
+    <Compile Include="Finance\Sage\Report\BatchType.cs" />
     <Compile Include="Finance\Sage\Report\ReportRequest.cs" />
+    <Compile Include="Finance\Sage\Report\SettledBatchListingResponse.cs" />
     <Compile Include="Finance\Sage\Report\SettledBatchSummaryRequest.cs" />
     <Compile Include="Finance\Sage\Report\SettledBatchSummaryResponse.cs" />
+    <Compile Include="Finance\Sage\Report\Transaction.cs" />
+    <Compile Include="Finance\Sage\Report\TransactionType.cs" />
     <Compile Include="Finance\Sage\Report\VirtualCheckRejectsRequest.cs" />
     <Compile Include="Finance\Sage\Report\VirtualCheckRejectsResponse.cs" />
     <Compile Include="Finance\Sage\Transaction\Refund\AchRefundRequest.cs" />

@@ -468,7 +468,7 @@ namespace CmsData.Finance
             };
         }
 
-        public BatchResponse GetBatchSummary(DateTime start, DateTime end)
+        public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
             //var queryRequest = new QueryRequest(userName,
             //                                    password,

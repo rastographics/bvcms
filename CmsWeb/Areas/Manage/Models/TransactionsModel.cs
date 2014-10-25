@@ -220,66 +220,66 @@ namespace CmsWeb.Models
             if (!gateway.CanGetSettlementDates)
                 return;
 
-            var response = gateway.GetBatchSummary(start, end);
+            var response = gateway.GetBatchDetails(start, end);
 
-            // first filter out batches that we have already imported or updated.
+            // first filter out batches that we have already been updated or inserted.
             var unMatchedBatchTransactions = response.BatchTransactions.Where(transaction => !DbUtil.Db.CheckedBatches.Any(tt => tt.BatchRef == transaction.BatchReference)).ToList();
             
             // key it by transaction reference.
-            var unMatchedKeyedByReference = unMatchedBatchTransactions.ToDictionary(ii => ii.Reference, ii => ii);
+            var unMatchedKeyedByReference = unMatchedBatchTransactions.ToDictionary(x => x.Reference, x => x);
 
-            // next let's get all the approved matching transactions in our transaction table.
+            // next let's get all the approved matching transactions from our transaction table by transaction id (reference).
             var approvedMatchingTransactions = from transaction in DbUtil.Db.Transactions
                                                where unMatchedKeyedByReference.Keys.Contains(transaction.TransactionId)
                                                where transaction.Approved == true
                                                select transaction;
 
             // next key the matching approved transactions that came from our transaction table by the transaction id (reference).
-            var approvedMatchingTransactionsKeyedByTransactionId = approvedMatchingTransactions.ToDictionary(ii => ii.TransactionId, ii => ii); // transactions that are found in settled list;
+            var approvedMatchingTransactionsKeyedByTransactionId = approvedMatchingTransactions.ToDictionary(x => x.TransactionId, x => x); 
 
-            // finally let's get a list of all transactions that need to be imported, which we don't already have.
-            var transactionsToImport = from st in unMatchedKeyedByReference
-                                       where !approvedMatchingTransactionsKeyedByTransactionId.Keys.Contains(st.Key)
-                                       select st.Value;
+            // finally let's get a list of all transactions that need to be inserted, which we don't already have.
+            var transactionsToInsert = from transaction in unMatchedKeyedByReference
+                                       where !approvedMatchingTransactionsKeyedByTransactionId.Keys.Contains(transaction.Key)
+                                       select transaction.Value;
 
             var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
 
-            // spin through each transaction that needs importing and insert them to the transaction table.
-            foreach (var transactionToImport in transactionsToImport)
+            // spin through each transaction and insert them to the transaction table.
+            foreach (var transactionToInsert in transactionsToInsert)
             {
                 // get the original transaction.
-                var originalTransaction = DbUtil.Db.Transactions.SingleOrDefault(j => j.TransactionId == transactionToImport.Reference && transactionToImport.TransactionDate >= notbefore);
+                var originalTransaction = DbUtil.Db.Transactions.SingleOrDefault(t => t.TransactionId == transactionToInsert.Reference && transactionToInsert.TransactionDate >= notbefore);
 
                 // get the first and last name.
                 string first, last;
-                Util.NameSplit(transactionToImport.Name, out first, out last);
+                Util.NameSplit(transactionToInsert.Name, out first, out last);
 
                 // get the settlement date, however we are not exactly sure why we add four hours to the settlement date.
                 // we think it is to handle all timezones and push to the next day??
-                var settlementDate = AdjustSettlementDateForAllTimeZones(transactionToImport.SettledDate);
+                var settlementDate = AdjustSettlementDateForAllTimeZones(transactionToInsert.SettledDate);
 
                 // insert the transaction record.
                 DbUtil.Db.Transactions.InsertOnSubmit(new Transaction
                 {
-                    Name = transactionToImport.Name,
+                    Name = transactionToInsert.Name,
                     First = first,
                     Last = last,
-                    TransactionId = transactionToImport.Reference,
-                    Amt = transactionToImport.TransactionType == TransactionType.Credit || 
-                          transactionToImport.TransactionType == TransactionType.Refund
-                            ? -transactionToImport.Amount 
-                            : transactionToImport.Amount,
-                    Approved = transactionToImport.Approved,
-                    Message = transactionToImport.Message,
-                    TransactionDate = transactionToImport.TransactionDate,
+                    TransactionId = transactionToInsert.Reference,
+                    Amt = transactionToInsert.TransactionType == TransactionType.Credit || 
+                          transactionToInsert.TransactionType == TransactionType.Refund
+                            ? -transactionToInsert.Amount 
+                            : transactionToInsert.Amount,
+                    Approved = transactionToInsert.Approved,
+                    Message = transactionToInsert.Message,
+                    TransactionDate = transactionToInsert.TransactionDate,
                     TransactionGateway = gateway.GatewayType,
                     Settled = settlementDate,
-                    Batch = settlementDate,  // this date now reflect the same date as the settlement date.
-                    Batchref = transactionToImport.BatchReference,
-                    Batchtyp = transactionToImport.PaymentMethodType == PaymentMethodType.Ach ? "eft" : "bankcard",
+                    Batch = settlementDate,  // this date now will be the same as the settlement date.
+                    Batchref = transactionToInsert.BatchReference,
+                    Batchtyp = transactionToInsert.PaymentMethodType == BatchType.Ach ? "eft" : "bankcard",
                     OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?)null,
                     Fromsage = true,
-                    Description = originalTransaction != null ? originalTransaction.Description : "no description from {0}, id={1}".Fmt(gateway.GatewayType, transactionToImport.TransactionId)
+                    Description = originalTransaction != null ? originalTransaction.Description : "no description from {0}, id={1}".Fmt(gateway.GatewayType, transactionToInsert.TransactionId)
                 });
             }
 
@@ -289,20 +289,20 @@ namespace CmsWeb.Models
                 // first get the matching batch transaction.
                 var batchTransaction = unMatchedKeyedByReference[existingTransaction.TransactionId];
 
-                // get the settlement date, however we are not exactly sure why we add four hours to the settlement date.
+                // get the adjusted settlement date
                 var settlementDate = AdjustSettlementDateForAllTimeZones(batchTransaction.SettledDate);
 
-                existingTransaction.Batch = settlementDate;  // this date now reflect the same date as the settlement date.
+                existingTransaction.Batch = settlementDate;  // this date now will be the same as the settlement date.
                 existingTransaction.Batchref = batchTransaction.BatchReference;
-                existingTransaction.Batchtyp = batchTransaction.PaymentMethodType == PaymentMethodType.Ach ? "eft" : "bankcard";
+                existingTransaction.Batchtyp = batchTransaction.PaymentMethodType == BatchType.Ach ? "eft" : "bankcard";
                 existingTransaction.Settled = settlementDate;
             }
 
             // finally we need to mark these batches as completed.
             foreach (var batch in unMatchedBatchTransactions.DistinctBy(x => x.BatchReference))
             {
-                var cb = DbUtil.Db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.BatchReference);
-                if (cb == null)
+                var checkedBatch = DbUtil.Db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.BatchReference);
+                if (checkedBatch == null)
                 {
                     DbUtil.Db.CheckedBatches.InsertOnSubmit(
                         new CheckedBatch
@@ -312,12 +312,18 @@ namespace CmsWeb.Models
                         });
                 }
                 else
-                    cb.CheckedX = DateTime.Now;
+                    checkedBatch.CheckedX = DateTime.Now;
             }
             
             DbUtil.Db.SubmitChanges();
         }
 
+        /// <summary>
+        /// we are not exactly sure why we add four hours to the settlement date
+        /// we think it is to handle all timezones and push to the next day??
+        /// </summary>
+        /// <param name="settlementDate"></param>
+        /// <returns></returns>
         private static DateTime AdjustSettlementDateForAllTimeZones(DateTime settlementDate)
         {
             return settlementDate.AddHours(4);
