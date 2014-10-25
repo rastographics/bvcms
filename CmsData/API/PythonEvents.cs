@@ -59,22 +59,15 @@ namespace CmsData
             engine.Runtime.IO.SetOutput(ms, sw);
             engine.Runtime.IO.SetErrorOutput(ms, sw);
             var sc = engine.CreateScriptSourceFromString(script);
-            try
-            {
-                var code = sc.Compile();
-                var scope = engine.CreateScope();
-                scope.SetVariable("model", this);
-                var qf = new QueryFunctions(db);
-                scope.SetVariable("q", qf);
-                code.Execute(scope);
-                ms.Position = 0;
-                var sr = new StreamReader(ms);
-                Output = sr.ReadToEnd();
-            }
-            catch (Exception ex)
-            {
-                Output = ex.Message;
-            }
+            var code = sc.Compile();
+            var scope = engine.CreateScope();
+            scope.SetVariable("model", this);
+            var qf = new QueryFunctions(db);
+            scope.SetVariable("q", qf);
+            code.Execute(scope);
+            ms.Position = 0;
+            var sr = new StreamReader(ms);
+            Output = sr.ReadToEnd();
         }
 
         public static string RunScript(string dbname, string script)

@@ -40,6 +40,7 @@ namespace CmsWeb.Controllers
             var m = new HomeModel();
             return View(m);
         }
+
         [ValidateInput(false)]
         public ActionResult ShowError(string error, string url)
         {
@@ -47,6 +48,7 @@ namespace CmsWeb.Controllers
             ViewData["url"] = url;
             return View();
         }
+
         public ActionResult NewQuery()
         {
             var qb = DbUtil.Db.ScratchPadCondition();
@@ -54,6 +56,7 @@ namespace CmsWeb.Controllers
             qb.Save(DbUtil.Db);
             return Redirect("/Query");
         }
+
 //        public ActionResult Test()
 //        {
 //            var s = @"
@@ -78,6 +81,7 @@ namespace CmsWeb.Controllers
             return Content("done");
         }
 #endif
+
         public ActionResult RecordTest(int id, string v)
         {
             var o = DbUtil.Db.LoadOrganizationById(id);
@@ -85,6 +89,7 @@ namespace CmsWeb.Controllers
             DbUtil.Db.SubmitChanges();
             return Content(v);
         }
+
         public ActionResult NthTimeAttenders(int id)
         {
             var name = "VisitNumber-" + id;
@@ -125,15 +130,17 @@ namespace CmsWeb.Controllers
             TempData["autorun"] = true;
             return Redirect("/Query/" + cc.Id);
         }
+
         [Authorize(Roles = "Admin")]
         public ActionResult ActiveRecords(DateTime? dt)
         {
-            if(dt.HasValue)
+            if (dt.HasValue)
                 TempData["ActiveRecords"] = DbUtil.Db.ActiveRecords0(dt.Value);
             else
                 TempData["ActiveRecords"] = DbUtil.Db.ActiveRecords();
             return View("Support2");
         }
+
         public ActionResult TargetPerson(bool id)
         {
             DbUtil.Db.SetUserPreference("TargetLinkPeople", id ? "false" : "true");
@@ -148,12 +155,14 @@ namespace CmsWeb.Controllers
             var q = HomeModel.Names(term).ToList();
             return Json(q, JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost, Route("~/FastSearch")]
         public ActionResult FastSearch(string q)
         {
             var qq = HomeModel.FastSearch(q).ToArray();
             return Content(JsonConvert.SerializeObject(qq));
         }
+
         [HttpGet, Route("~/FastSearchPrefetch")]
         public ActionResult FastSearchPrefetch()
         {
@@ -169,7 +178,7 @@ namespace CmsWeb.Controllers
 
         public ActionResult SwitchTag(string tag)
         {
-            var m = new TagsModel { tag = tag };
+            var m = new TagsModel {tag = tag};
             m.SetCurrentTag();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.ToString());
@@ -182,6 +191,7 @@ namespace CmsWeb.Controllers
         {
             return View();
         }
+
         [HttpPost, Route("~/TestScript")]
         [ValidateInput(false)]
         [Authorize(Roles = "Developer")]
@@ -201,6 +211,7 @@ namespace CmsWeb.Controllers
             }
             return "{0}DECLARE @p1 VARCHAR(100) = '{1}' {2}".Fmt(declareqtagid, parameter, body);
         }
+
         [HttpGet, Route("~/RunScript/{name}/{parameter?}")]
         public ActionResult RunScript(string name, string parameter = null)
         {
@@ -217,6 +228,7 @@ namespace CmsWeb.Controllers
             ViewData["name"] = name;
             return View(rd);
         }
+
         [HttpGet, Route("~/RunScriptExcel/{scriptname}/{parameter?}")]
         public ActionResult RunScriptExcel(string scriptname, string parameter = null)
         {
@@ -234,37 +246,46 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/PyScript/{name}")]
         public ActionResult PyScript(string name)
         {
-//            var q = new QueryFunctions(DbUtil.Db);
-//            var s = q.SqlNameCountArray("test", @"
+            try
+            {
+//                var q = new QueryFunctions(DbUtil.Db);
+//                var s = q.SqlNameCountArray("test", @"
 //SELECT ms.Description Name, COUNT(*) Cnt
 //FROM dbo.People p
 //JOIN lookup.MemberStatus ms ON ms.Id = p.MemberStatusId
 //GROUP BY ms.Description
 //");
-//            Response.ContentType = "text/plain";
-//            return Content(s);
+//                Response.ContentType = "text/plain";
+//                return Content(s);
 
-            var content = DbUtil.Content(name);
-            if (content == null)
-                return Message("no script");
-            var script = content.Body;
 #if DEBUG
-            script = System.IO.File.ReadAllText(Server.MapPath("/chart.py"));
+                var script = System.IO.File.ReadAllText(Server.MapPath("/chart.py"));
+#else
+                var script = DbUtil.Content(name, "");
 #endif
-            var pe = new PythonEvents(DbUtil.Db, script);
-            return View(pe);
+                if (!script.HasValue())
+                    return Message("no script named " + name);
+                var pe = new PythonEvents(DbUtil.Db, script);
+                return View(pe);
+            }
+            catch (Exception ex)
+            {
+                return Message(ex.Message);
+            }
         }
+
         [HttpGet, Route("~/Preferences")]
         public ActionResult UserPreferences()
         {
             return View(DbUtil.Db.CurrentUser);
         }
+
         [HttpGet, Route("~/Home/Support2")]
         public ActionResult Support2(string helplink)
         {
             if (helplink.HasValue())
                 TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
-            
+
             if (!SupportRequestModel.CanSupport)
                 ViewBag.NoSupport = "true";
             return View();
@@ -278,16 +299,19 @@ namespace CmsWeb.Controllers
         {
             return View("../Home/MyDataSupport");
         }
+
         [HttpPost, Route("~/HideTip")]
         public ActionResult HideTip(string tip)
         {
             DbUtil.Db.SetUserPreference("hide-tip-" + tip, "true");
             return new EmptyResult();
         }
+
         [HttpGet, Route("~/ResetTips")]
         public ActionResult ResetTips()
         {
-            DbUtil.Db.ExecuteCommand("DELETE dbo.Preferences WHERE Preference LIKE 'hide-tip-%' AND UserId = {0}", Util.UserId);
+            DbUtil.Db.ExecuteCommand("DELETE dbo.Preferences WHERE Preference LIKE 'hide-tip-%' AND UserId = {0}",
+                Util.UserId);
             var d = Session["preferences"] as Dictionary<string, string>;
             var keys = d.Keys.Where(kk => kk.StartsWith("hide-tip-")).ToList();
             foreach (var k in keys)
@@ -297,6 +321,7 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.ToString());
             return Redirect("/");
         }
+
         [HttpGet]
         [Route("~/Person/TinyImage/{id}")]
         [Route("~/Person2/TinyImage/{id}")]
@@ -305,6 +330,7 @@ namespace CmsWeb.Controllers
         {
             return new PictureResult(id, portrait: true, tiny: true);
         }
+
         [HttpGet]
         [Route("~/Person/Image/{id:int}/{w:int?}/{h:int?}")]
         [Route("~/Person2/Image/{id:int}/{w:int?}/{h:int?}")]
@@ -313,6 +339,7 @@ namespace CmsWeb.Controllers
         {
             return new PictureResult(id);
         }
+
         [HttpGet, Route("~/ImageSized/{id:int}/{w:int}/{h:int}/{mode}")]
         public ActionResult ImageSized(int id, int w, int h, string mode)
         {
