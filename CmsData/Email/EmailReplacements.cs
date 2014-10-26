@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.UI;
 using CmsData.Codes;
 using HtmlAgilityPack;
 using UtilityExtensions;
@@ -785,6 +784,13 @@ namespace CmsData
             if (showfamily)
                 url += "?showfamily=true";
             return url;
+        }
+
+        public static string CreateRegisterLink(int? orgid, string text)
+        {
+            if(!orgid.HasValue)
+                throw new ArgumentException("null not allowed on GetRegisterLink", "orgid");
+            return "<a href=\"http://registerlink\" lang=\"{0}\">{1}</a>".Fmt(orgid, text);
         }
     }
 }
