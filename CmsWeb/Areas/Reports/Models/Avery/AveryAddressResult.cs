@@ -113,11 +113,18 @@ namespace CmsWeb.Areas.Reports.Models
                 var ph = new Paragraph();
                 if (format == "GroupAddress")
                     ph.AddLine(m.LabelName + " " + m.LastName, font);
+                else if ((format == "CouplesEither" || format == "CouplesBoth") && m.CoupleName.HasValue())
+                    ph.AddLine(m.CoupleName, font);
                 else
                     ph.AddLine(m.LabelName, font);
-                ph.AddLine(m.Address, font);
-                ph.AddLine(m.Address2, font);
-                ph.AddLine(m.CSZ, font);
+                if (m.MailingAddress.HasValue())
+                    ph.AddLine(m.MailingAddress.Trim(), font); 
+                else
+                {
+                    ph.AddLine(m.Address, font);
+                    ph.AddLine(m.Address2, font);
+                    ph.AddLine(m.CSZ, font);
+                }
                 c.AddElement(ph);
                 if (usephone)
                 {

@@ -167,9 +167,9 @@ namespace CmsWeb.Areas.Reports.Controllers
                 case "ParentsOf":
                     return new CsvResult(ctl.FetchParentsOfList(sort, id));
                 case "CouplesEither":
-                    return new CsvResult(ctl.FetchCouplesEitherList(sort, id));
+                    return new CsvResult(ctl.FetchCouplesEitherList(sort, id), couples: true);
                 case "CouplesBoth":
-                    return new CsvResult(ctl.FetchCouplesBothList(sort, id));
+                    return new CsvResult(ctl.FetchCouplesBothList(sort, id), couples: true);
             }
             return Content("no format");
 

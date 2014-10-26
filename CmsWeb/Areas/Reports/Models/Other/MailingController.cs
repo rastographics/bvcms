@@ -28,16 +28,18 @@ namespace CmsWeb.Models
                 q = FilterMailFlags(q);
             q = ApplySort(q, sortExpression);
             var q2 = from p in q
+                     let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
                      where p.DeceasedDate == null
                      select new MailingInfo
                      {
+                         MailingAddress = altaddr,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip,
                          LabelName = UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name,
-                         Name = p.Name,
+                         Name2 = p.Name2,
                          LastName = p.LastName,
                          PeopleId = p.PeopleId,
                          CellPhone = p.CellPhone,
@@ -54,18 +56,20 @@ namespace CmsWeb.Models
                      where p.DeceasedDate == null
                      group p by p.FamilyId into g
                      let one = g.First().Family.HeadOfHousehold
+                     let altaddr = one.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == one.FamilyId && ee.Field == "MailingAddress").Data
                      let last = one.LastName
                      orderby one.ZipCode
                      select new MailingInfo
                      {
+                         MailingAddress = altaddr,
                          Address = one.PrimaryAddress,
                          Address2 = one.PrimaryAddress2,
                          City = one.PrimaryCity,
                          State = one.PrimaryState,
                          Zip = one.PrimaryZip,
                          LabelName = Regex.Replace(string.Join(", ", g.Select(vv => vv.PreferredName)), "(.*)(,)([^,]*$)", "$1 &$3", RegexOptions.IgnoreCase),
-                         Name = one.Name,
                          LastName = one.LastName,
+                         Name2 = one.Name2,
                          CellPhone = "",
                          HomePhone = one.HomePhone,
                      };
@@ -83,9 +87,11 @@ namespace CmsWeb.Models
                 q = FilterMailFlags(q);
             var q2 = from h in q
                      let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == h.SpouseId)
+                     let altaddr = h.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == h.FamilyId && ee.Field == "MailingAddress").Data
                      where h.DeceasedDate == null
                      select new MailingInfo
                      {
+                         MailingAddress = altaddr,
                          Address = h.PrimaryAddress,
                          Address2 = h.PrimaryAddress2,
                          City = h.PrimaryCity,
@@ -98,8 +104,8 @@ namespace CmsWeb.Models
                                       h.Family.CoupleFlag == 3 ? ("The " + h.Name + " Family") :
                                       h.Family.CoupleFlag == 4 ? (h.Name + " & Family") :
                                       UseTitles ? (h.TitleCode != null ? h.TitleCode + " " + h.Name : h.Name) : h.Name),
-                         Name = h.Name,
                          LastName = h.LastName,
+                         Name2 = h.Name2,
                          CellPhone = h.CellPhone,
                          HomePhone = h.HomePhone,
                          PeopleId = h.PeopleId
@@ -117,17 +123,19 @@ namespace CmsWeb.Models
                      from p in g.First().Family.People
                      where p.DeceasedDate == null
                      let famname = g.First().Family.People.Single(hh => hh.PeopleId == hh.Family.HeadOfHouseholdId).LastName
+                     let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
                      orderby famname, p.FamilyId, p.PositionInFamilyId, p.GenderId
                      select new MailingInfo
                      {
+                         MailingAddress = altaddr,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip,
                          LabelName = (UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name),
-                         Name = p.Name,
                          LastName = p.LastName,
+                         Name2 = p.Name2,
                          CellPhone = p.CellPhone,
                          HomePhone = p.HomePhone,
                          PeopleId = p.PeopleId
@@ -149,16 +157,18 @@ namespace CmsWeb.Models
                 q = FilterMailFlags(q);
             var q2 = from p in q
                      where p.DeceasedDate == null
+                     let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
                      select new MailingInfo
                      {
+                         MailingAddress = altaddr,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip,
                          LabelName = (p.PositionInFamilyId == 30 ? ("Parents of " + p.Name) : UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name),
-                         Name = p.Name,
                          LastName = p.LastName,
+                         Name2 = p.Name2,
                          CellPhone = p.CellPhone,
                          HomePhone = p.HomePhone,
                          PeopleId = p.PeopleId
@@ -201,8 +211,12 @@ namespace CmsWeb.Models
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
                      let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                     let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
+                     let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                      select new MailingInfo
                      {
+                         MailingAddress = altaddr,
+                         CoupleName = altcouple,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
@@ -214,8 +228,8 @@ namespace CmsWeb.Models
                                              : (p.PreferredName + " and " + spouse.PreferredName + " " + p.LastName + (p.SuffixCode.Length > 0 ? ", " + p.SuffixCode : ""))) :
                                  (UseTitles ? (spouse.TitleCode != null ? spouse.TitleCode + " and Mrs. " + spouse.Name : "Mr. and Mrs. " + spouse.Name)
                                              : (spouse.PreferredName + " and " + p.PreferredName + " " + spouse.LastName + (spouse.SuffixCode.Length > 0 ? ", " + spouse.SuffixCode : ""))))),
-                         Name = p.Name,
                          LastName = p.LastName,
+                         Name2 = p.Name2,
                          CellPhone = p.CellPhone,
                          HomePhone = p.HomePhone,
                          PeopleId = p.PeopleId
@@ -230,9 +244,13 @@ namespace CmsWeb.Models
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
                      // get spouse if in the query
+                     let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
+                     let altcouple = p.Family.FamilyExtras.FirstOrDefault(ee => ee.FamilyId == p.PeopleId && ee.Field == "CoupleName" && p.SpouseId != null).Data
                      let spouse = q.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
                      select new MailingInfo
                      {
+                         MailingAddress = altaddr,
+                         CoupleName = altcouple,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
@@ -244,8 +262,8 @@ namespace CmsWeb.Models
                                              : (p.PreferredName + " and " + spouse.PreferredName + " " + p.LastName + (p.SuffixCode.Length > 0 ? ", " + p.SuffixCode : ""))) :
                                  (UseTitles ? (spouse.TitleCode != null ? spouse.TitleCode + " and Mrs. " + spouse.Name : "Mr. and Mrs. " + spouse.Name)
                                              : (spouse.PreferredName + " and " + p.PreferredName + " " + spouse.LastName + (spouse.SuffixCode.Length > 0 ? ", " + spouse.SuffixCode : ""))))),
-                         Name = p.Name,
                          LastName = p.LastName,
+                         Name2 = p.Name2,
                          CellPhone = p.CellPhone,
                          HomePhone = p.HomePhone,
                          PeopleId = p.PeopleId
@@ -258,7 +276,7 @@ namespace CmsWeb.Models
             switch (sortExpression)
             {
                 case "Name":
-                    return query.OrderBy(mi => mi.LastName);
+                    return query.OrderBy(mi => mi.Name2);
                 case "Zip":
                     return query.OrderBy(mi => mi.Zip);
                 //break;
@@ -272,7 +290,7 @@ namespace CmsWeb.Models
             switch (sortExpression)
             {
                 case "Name":
-                    return query.OrderBy(mi => mi.LastName);
+                    return query.OrderBy(mi => mi.Name2);
                 case "Zip":
                     return query.OrderBy(mi => mi.PrimaryZip);
                 //break;
@@ -416,21 +434,26 @@ namespace CmsWeb.Models
             public bool HasTag { get; set; }
         }
 
-        public class MailingInfo : TaggedPersonInfo
+        public class MailingInfo 
         {
-            public String LabelName { get; set; }
-            public String LastName { get; set; }
+            public int PeopleId { get; set; }
+            public string LabelName { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Name2 { get; set; }
+            public string Address { get; set; }
+            public string Address2 { get; set; }
             public string City { get; set; }
             public string State { get; set; }
             public string Zip { get; set; }
-
             public string CSZ
             {
-                get
-                {
-                    return Util.FormatCSZ4(City, State, Zip);
-                } 
+                get { return Util.FormatCSZ4(City, State, Zip); } 
             }
+            public string CellPhone { get; set; }
+            public string HomePhone { get; set; }
+            public string CoupleName { get; set; }
+            public string MailingAddress { get; set; }
         }
         public class PersonInfo
         {
