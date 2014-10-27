@@ -178,14 +178,12 @@ namespace CmsData.Finance
 
             if (CustomerGateway.DeleteCustomer(paymentInfo.AuNetCustId.ToString()))
             {
-                paymentInfo.SageCardGuid = null;
-                paymentInfo.SageBankGuid = null;
-                paymentInfo.MaskedCard = null;
-                paymentInfo.MaskedAccount = null;
-                paymentInfo.Ccv = null;
                 paymentInfo.AuNetCustId = null;
                 paymentInfo.AuNetCustPayId = null;
                 paymentInfo.AuNetCustPayBankId = null;
+                paymentInfo.MaskedCard = null;
+                paymentInfo.MaskedAccount = null;
+                paymentInfo.Ccv = null;
                 db.SubmitChanges();
             }
             else
