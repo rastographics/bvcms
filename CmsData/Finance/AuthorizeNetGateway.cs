@@ -24,7 +24,7 @@ namespace CmsData.Finance
         {
             this.db = db;
             IsLive = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
-            if(!IsLive)
+            if (!IsLive)
             {
                 _login = "4q2w5BD5";
                 _key = "9wE4j7M372ehz6Fy";
@@ -33,6 +33,12 @@ namespace CmsData.Finance
             {
                 _login = db.Setting("x_login", "");
                 _key = db.Setting("x_tran_key", "");
+
+                if (string.IsNullOrWhiteSpace(_login))
+                    throw new Exception("x_login setting not found, which is required for Authorize.net.");
+                        
+                if (string.IsNullOrWhiteSpace(_key))
+                    throw new Exception("x_tran_key setting not found, which is required for Authorize.net.");
             }
         }
 

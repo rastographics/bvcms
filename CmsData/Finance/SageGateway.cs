@@ -38,8 +38,14 @@ namespace CmsData.Finance
 			}
 			else
 			{
-				_id = db.Setting("M_id", "");
-				_key = db.Setting("M_key", "");
+				_id = db.Setting("M_ID", "");
+				_key = db.Setting("M_KEY", "");
+
+                if (string.IsNullOrWhiteSpace(_id))
+                    throw new Exception("M_ID setting not found, which is required for Sage.");
+                if (string.IsNullOrWhiteSpace(_key))
+                    throw new Exception("M_KEY setting not found, which is required for Sage.");
+
                 _originatorId = db.Setting("SageOriginatorId", "");
 			}
 		}

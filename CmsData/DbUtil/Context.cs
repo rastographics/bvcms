@@ -1156,22 +1156,13 @@ namespace CmsData
             switch (type.ToLower())
             {
                 case "sage":
-                    if (Setting("M_ID", "").Length > 0)
-                        return new SageGateway(this, testing);
-
-                    throw new Exception("M_ID setting now found, which is required for Sage.");
+                    return new SageGateway(this, testing);
 
                 case "authorizenet":
-                    if (Setting("x_login", "").Length > 0)
-                        return new AuthorizeNetGateway(this, testing);
-
-                    throw new Exception("x_login setting now found, which is required for AuthorizeNet.");
+                    return new AuthorizeNetGateway(this, testing);
 
                 case "transnational":
-                    if (Setting("TNBUsername", "").Length > 0)
-                        return new TransNationalGateway(this, testing);
-
-                    throw new Exception("TNBUsername setting now found, which is required for TransNational.");
+                    return new TransNationalGateway(this, testing);
             }
 
             throw new Exception("Gateway ({0}) is not supported.".Fmt(type));
