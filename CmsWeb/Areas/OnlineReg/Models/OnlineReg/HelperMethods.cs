@@ -213,6 +213,8 @@ namespace CmsWeb.Models
         }
         public bool AllowSaveProgress()
         {
+            if (UserPeopleId == null)
+                return false;
             if (org != null)
                 return settings[org.OrganizationId].AllowSaveProgress;
             if (settings == null)
@@ -469,7 +471,10 @@ namespace CmsWeb.Models
         public void UpdateDatum(bool completed = false, bool abandoned = false)
         {
             if (DatumId.HasValue)
+            {
                 Datum = DbUtil.Db.RegistrationDatas.Single(dd => dd.Id == DatumId);
+                Datum.UserPeopleId = UserPeopleId;
+            }
             else
             {
                 Datum = new RegistrationDatum

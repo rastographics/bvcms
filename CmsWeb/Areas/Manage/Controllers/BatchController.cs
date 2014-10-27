@@ -312,6 +312,16 @@ namespace CmsWeb.Areas.Manage.Controllers
             var q = m.People();
             return Content(q.Count().ToString());
         }
+        [HttpPost]
+        public ActionResult UpdateWarning(UpdateFieldsModel m)
+        {
+            if(m.Field == "Drop All Memberships")
+                return Content(@"
+Important, the Drop All Memberships will make all the people previous members 
+of every organization they are a member of.
+There is no Undo button");
+            return new EmptyResult();
+        }
 
 //        [Authorize(Roles = "Admin")]
 //        public ActionResult UpdatePeople()

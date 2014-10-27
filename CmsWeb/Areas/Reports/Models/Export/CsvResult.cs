@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -8,9 +10,11 @@ namespace CmsWeb.Models
     {
         public IEnumerable<MailingController.MailingInfo> Data { get; set; }
         public string FileName { get; set; }
+        private bool couples;
 
-        public CsvResult(IEnumerable<MailingController.MailingInfo> data, string file = "cmspeople.csv")
+        public CsvResult(IEnumerable<MailingController.MailingInfo> data, string file = "cmspeople.csv", bool couples = false)
         {
+            this.couples = couples;
             Data = data;
             FileName = file;
         }
@@ -22,9 +26,27 @@ namespace CmsWeb.Models
             r.ContentType = "text/plain";
             r.AddHeader("Content-Disposition", "attachment;filename=" + FileName);
             r.Charset = "";
+            var re = new Regex(@"(?<line1>.*)\n((?<line2>.*)\n){0,1}(?<city>.*),\s(?<state>[a-z]*)\s*(?<zip>.*)", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
             foreach (var mi in Data)
-                r.Write(string.Format("\"{0}\",\"{1}\",\"{2}\",\"{3}\",\"{4}\",{5},{6}\r\n",
-                    mi.LabelName, mi.Address, mi.Address2, mi.City, mi.State, mi.Zip.FmtZip(), mi.PeopleId));
+            {
+                var label = mi.LabelName;
+                if (couples && mi.CoupleName.HasValue())
+                    label = mi.CoupleName;
+                if (mi.MailingAddress.HasValue() && re.IsMatch(mi.MailingAddress))
+                {
+                    var m = re.Match(mi.MailingAddress);
+                    var line1 = m.Groups["line1"].Value;
+                    var line2 = m.Groups["line2"].Value;
+                    var city = m.Groups["city"].Value;
+                    var state = m.Groups["state"].Value;
+                    var zip = m.Groups["zip"].Value;
+                    r.Write("\"{0}\",\"{1}\",\"{2}\",\"{3}\",\"{4}\",{5},{6}\r\n".Fmt(
+                        label, line1, line2, city, state, zip, mi.PeopleId));
+                }
+                else
+                    r.Write("\"{0}\",\"{1}\",\"{2}\",\"{3}\",\"{4}\",{5},{6}\r\n".Fmt(
+                        label, mi.Address, mi.Address2, mi.City, mi.State, mi.Zip.FmtZip(), mi.PeopleId));
+            }
         }
     }
 }

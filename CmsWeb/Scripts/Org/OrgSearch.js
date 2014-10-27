@@ -347,14 +347,17 @@
     $('#PasteSettings').click(function (ev) {
         ev.preventDefault();
         hideDropdowns();
-        if (!confirm("Are you sure you want to replace all these settings?"))
-            return false;
-        var f = $('form');
-        var q = f.serialize();
-        $.post(this.href, q, function (ret) {
-            $.growlUI("Completed", "Settings Replaced");
+        var href = this.href;
+        var q = $("#orgsearchform").serialize();
+        $.post("/OrgSearch/Count", q, function(cnt) {
+            bootbox.confirm("Are you sure you want do replace settings on " + cnt + " organizations? There is no undo button.", function(result) {
+                if (result) {
+                    $.post(href, q, function () {
+                        $.growlUI("Completed", "Settings Replaced");
+                    });
+                }
+            });
         });
-        return false;
     });
     $('#RepairTransactions').click(function (ev) {
         ev.preventDefault();

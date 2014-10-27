@@ -114,7 +114,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (pid > 0)
             {
-                //m.List = new List<OnlineRegPersonModel>();
                 m.UserPeopleId = pid;
                 var existingRegistration = m.GetExistingRegistration(pid);
                 if (existingRegistration != null)
@@ -148,7 +147,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     TempData["mg"] = m.UserPeopleId;
                     return ManageGiving(m.Orgid.ToString(), m.testing);
-                    //return Redirect("/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid));
                 }
                 if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.OnlinePledge)
                 {
@@ -704,7 +702,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m == null)
                 return Message("no existing registration available");
             var n = m.List.Count - 1;
-            m.List[n].ValidateModelForOther(ModelState, n);
             m.HistoryAdd("continue");
             m.UpdateDatum();
             return View("Index", m);
@@ -729,7 +726,22 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.UserPeopleId == null)
                 m.UserPeopleId = Util.UserPeopleId;
             m.UpdateDatum();
-            return Message("We have saved your progress, an email with a link to finish this registration will come to you shortly.");
+            var p = m.UserPeopleId.HasValue ? DbUtil.Db.LoadPersonById(m.UserPeopleId.Value) : m.List[0].person;
+
+            if(p == null)
+                return Content("We have not found your record yet, cannot save progress, sorry");
+            if(m.Orgid == null)
+                return Content("Registration is not far enough along to save, sorry.");
+
+            var registerLink = EmailReplacements.CreateRegisterLink(m.Orgid, "Resume registration for {0}".Fmt(m.Header));
+            var msg = "<p>Hi {first},</p>\n<p>Here is your link to continue your registration:</p>\n" + registerLink;
+            var notifyids = DbUtil.Db.NotifyIds(m.Orgid.Value, m.org.NotifyIds);
+            DbUtil.Db.Email(notifyids[0].FromEmail, p, "Continue your registration for {0}".Fmt(m.Header), msg);
+
+            /* We use Content as an ActionResult instead of Message because we want plain text sent back
+             * This is an HttpPost ajax call and will have a SiteLayout wrapping this.
+             */
+            return Content("We have saved your progress, an email with a link to finish this registration will come to you shortly.");
         }
         [HttpGet]
         public ActionResult Existing(int id)

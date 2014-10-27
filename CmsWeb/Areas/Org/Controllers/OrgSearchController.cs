@@ -196,6 +196,11 @@ namespace CmsWeb.Areas.Org.Controllers
             return View("Row", o);
         }
         [HttpPost]
+        public ActionResult Count(OrgSearchModel m)
+        {
+            return Content(m.FetchOrgs().Count().ToString());
+        }
+        [HttpPost]
         public ActionResult PasteSettings(OrgSearchModel m)
         {
             var frorg = (int)Session["OrgCopySettings"];

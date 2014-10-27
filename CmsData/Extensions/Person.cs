@@ -803,13 +803,20 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public void FixTitle()
         {
+            if (TitleCode.HasValue())
+                return;
+            TitleCode = ComputeTitle();
+        }
+        public string ComputeTitle()
+        {
             if (GenderId == 1)
-                TitleCode = "Mr.";
-            else if (GenderId == 2)
+                return "Mr.";
+            if (GenderId == 2)
                 if (MaritalStatusId == 20 || MaritalStatusId == 50)
-                    TitleCode = "Mrs.";
+                    return "Mrs.";
                 else
-                    TitleCode = "Ms.";
+                    return "Ms.";
+            return null;
         }
         public string OptOutKey(string FromEmail)
         {

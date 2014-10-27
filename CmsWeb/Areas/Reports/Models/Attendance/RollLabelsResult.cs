@@ -7,11 +7,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using CmsWeb.Models;
+using DocumentFormat.OpenXml.Vml;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using UtilityExtensions;
 using System.Web.Mvc;
+using Rectangle = iTextSharp.text.Rectangle;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -72,13 +75,29 @@ namespace CmsWeb.Areas.Reports.Models
                     q = ctl.FetchCouplesBothList(sort, qid);
                     break;
             }
-            AddLabel(document, "=========", Util.UserName, "{0} labels printed".Fmt(q.Count()), "{0:g}".Fmt(DateTime.Now), String.Empty);
+            AddLabel(document, "=========", "{0}\n{1},{2:g}".Fmt(Util.UserName, q.Count(), DateTime.Now), String.Empty);
             foreach (var m in q)
-                AddLabel(document, m.LabelName, m.Address, m.Address2, m.CSZ, Util.PickFirst(m.CellPhone.FmtFone("C "), m.HomePhone.FmtFone("H ")));
-
+            {
+                var label = m.LabelName;
+                if (m.CoupleName.HasValue() && format.StartsWith("Couples"))
+                    label = m.CoupleName;
+                var address = "";
+                if (m.MailingAddress.HasValue())
+                    address = m.MailingAddress;
+                else
+                {
+                    var sb = new StringBuilder(m.Address);
+                    if (m.Address2.HasValue())
+                        sb.AppendFormat("\n{0}", m.Address2);
+                    sb.AppendFormat("\n{0}", m.CSZ);
+                    address = sb.ToString();
+                }
+                AddLabel(document, label, address, Util.PickFirst(m.CellPhone.FmtFone("C "), m.HomePhone.FmtFone("H ")));
+            }
             document.Close();
         }
-        public void AddLabel(Document d, string name, string addr, string addr2, string csz, string phone)
+
+        public void AddLabel(Document d, string name, string address, string phone)
         {
             var t2 = new PdfPTable(1);
             t2.WidthPercentage = 100f;
@@ -105,20 +124,12 @@ namespace CmsWeb.Areas.Reports.Models
             else
                 t2.AddCell(c2);
 
-            var cc = new PdfPCell(new Phrase(addr, font));
-            cc.Border = PdfPCell.NO_BORDER;
-            t2.AddCell(cc);
-
-            if (addr2.HasValue())
+            foreach (var line in address.SplitLines())
             {
-                cc = new PdfPCell(new Phrase(addr2, font));
+                var cc = new PdfPCell(new Phrase(line, font));
                 cc.Border = PdfPCell.NO_BORDER;
                 t2.AddCell(cc);
             }
-
-            cc = new PdfPCell(new Phrase(csz, font));
-            cc.Border = PdfPCell.NO_BORDER;
-            t2.AddCell(cc);
 
             d.Add(t2);
             d.NewPage();

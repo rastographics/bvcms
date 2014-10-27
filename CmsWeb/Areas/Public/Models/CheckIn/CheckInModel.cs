@@ -84,6 +84,7 @@ namespace CmsWeb.Models
         }
         public List<CmsData.View.CheckinFamilyMember> FamilyMembers(int id, int campus, int thisday)
         {
+            DbUtil.LogActivity("CheckinFamily({0},{1},{2})".Fmt(id, campus, thisday));
             var list = (from a in DbUtil.Db.CheckinFamilyMembers(id, campus, thisday).ToList()
                         orderby a.Position, a.Position == 10 ? a.Gender : "U", a.Age
                         select a).ToList();
