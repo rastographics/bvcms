@@ -395,13 +395,14 @@ namespace CmsData.Finance
 
         public bool CanGetSettlementDates
         {
-            get { return false; }
+            get { return true; }
         }
 
         public bool CanGetBounces
         {
             get { return false; }
         }
+
         private AuthorizeNet.IGateway _gateway;
         private AuthorizeNet.IGateway Gateway
         {
