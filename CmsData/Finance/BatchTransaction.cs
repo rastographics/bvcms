@@ -21,7 +21,7 @@ namespace CmsData.Finance
 
         public TransactionType TransactionType { get; set; }
 
-        public BatchType PaymentMethodType { get; set; }
+        public BatchType BatchType { get; set; }
 
         public string Name { get; set; }
 

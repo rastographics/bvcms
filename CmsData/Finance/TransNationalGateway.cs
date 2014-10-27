@@ -1,8 +1,13 @@
 ﻿using System;
+using System.CodeDom;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Web.Configuration;
 using CmsData.Finance.TransNational.Core;
+using CmsData.Finance.TransNational.Query;
 using CmsData.Finance.TransNational.Transaction.Refund;
 using CmsData.Finance.TransNational.Transaction.Sale;
 using CmsData.Finance.TransNational.Transaction.Void;
@@ -470,17 +475,93 @@ namespace CmsData.Finance
 
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
-            //var queryRequest = new QueryRequest(userName,
-            //                                    password,
-            //                                    DateTime.Now.AddDays(-14),
-            //                                    DateTime.Now,
-            //                                    new List<Internal.Query.Condition> { Internal.Query.Condition.Complete },
-            //                                    new List<ActionType> { ActionType.Settle });
+            var batchTransactions = new List<BatchTransaction>();
 
-            //var response = queryRequest.Execute();
+            // settled sale, capture, credit & refund transactions.
+            var queryRequest = new QueryRequest(
+                _userName,
+                _password,
+                start,
+                end,
+                new List<TransNational.Query.Condition> {TransNational.Query.Condition.Complete},
+                new List<ActionType> {ActionType.Settle, ActionType.Sale, ActionType.Capture, ActionType.Credit, ActionType.Refund}); // these action types are all OR statements!
 
+            var response = queryRequest.Execute();
 
-            return null;
+            BuildBatchTransactionsList(response.Transactions, ActionType.Sale, batchTransactions);
+            BuildBatchTransactionsList(response.Transactions, ActionType.Capture, batchTransactions);
+            BuildBatchTransactionsList(response.Transactions, ActionType.Credit, batchTransactions);
+            BuildBatchTransactionsList(response.Transactions, ActionType.Refund, batchTransactions);
+
+            return new BatchResponse(batchTransactions);
+        }
+
+        private void BuildBatchTransactionsList(IEnumerable<TransNational.Query.Transaction> transactions, ActionType originalActionType, List<BatchTransaction> batchTransactions)
+        {
+            var transactionList = transactions.Where(t => t.Actions.Any(a => a.ActionType == originalActionType));
+
+            foreach (var transaction in transactionList)
+            {
+                var originalAction = transaction.Actions.FirstOrDefault(a => a.ActionType == originalActionType);
+                var settleAction = transaction.Actions.FirstOrDefault(a => a.ActionType == ActionType.Settle);
+
+                if (originalAction != null && settleAction != null)
+                {
+                    if (!batchTransactions.Any(b => b.TransactionId == transaction.OrderId.ToInt()))
+                    {
+                        batchTransactions.Add(new BatchTransaction
+                        {
+                            TransactionId = transaction.OrderId.ToInt(),
+                            Reference = transaction.TransactionId,
+                            BatchReference = settleAction.BatchId,
+                            TransactionType = GetTransactionType(originalActionType),
+                            BatchType = GetBatchType(transaction.TransactionType),
+                            Name = transaction.Name,
+                            Amount = settleAction.Amount,
+                            Approved = originalAction.Success,
+                            Message = originalAction.ResponseText,
+                            TransactionDate = originalAction.Date,
+                            SettledDate = settleAction.Date
+                        });
+                    }
+                }
+            }
+            
+        }
+
+        private TransactionType GetTransactionType(ActionType actionType)
+        {
+            switch (actionType)
+            {
+                case ActionType.Sale:
+                case ActionType.Capture:
+                    return TransactionType.Charge;
+                case ActionType.Credit:
+                    return TransactionType.Credit;
+                case ActionType.Refund:
+                    return TransactionType.Refund;
+                default:
+                    return TransactionType.Unknown;
+            }
+        }
+
+        /// <summary>
+        /// TransNational calls their payment method type transaction type
+        /// so that's what we use to figure out the batch type.
+        /// </summary>
+        /// <param name="transactionType"></param>
+        /// <returns></returns>
+        private BatchType GetBatchType(TransNational.Query.TransactionType transactionType)
+        {
+            switch (transactionType)
+            {
+                case TransNational.Query.TransactionType.CreditCard:
+                    return BatchType.CreditCard;
+                case TransNational.Query.TransactionType.Ach:
+                    return BatchType.Ach;
+                default:
+                    return BatchType.Unknown;
+            }
         }
 
         public DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt)

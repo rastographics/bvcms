@@ -1,4 +1,10 @@
-﻿using System;
+﻿using CmsData.Finance.Sage.Core;
+using CmsData.Finance.Sage.Report;
+using CmsData.Finance.Sage.Transaction.Refund;
+using CmsData.Finance.Sage.Transaction.Sale;
+using CmsData.Finance.Sage.Transaction.Void;
+using CmsData.Finance.Sage.Vault;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
@@ -7,14 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using CmsData.Finance.Sage.Core;
-using CmsData.Finance.Sage.Report;
-using CmsData.Finance.Sage.Transaction.Refund;
-using CmsData.Finance.Sage.Transaction.Sale;
-using CmsData.Finance.Sage.Transaction.Void;
-using CmsData.Finance.Sage.Vault;
-using IronPython.Modules;
-using IronPython.Runtime;
 using UtilityExtensions;
 
 namespace CmsData.Finance
@@ -423,7 +421,7 @@ namespace CmsData.Finance
                         Reference = transaction.Reference,
                         BatchReference = batch.Reference,
                         TransactionType = GetTransactionType(transaction.TransactionType),
-                        PaymentMethodType = GetBatchType(batch.Type),
+                        BatchType = GetBatchType(batch.Type),
                         Name = transaction.Name,
                         Amount = transaction.TotalAmount,
                         Approved = transaction.Approved,

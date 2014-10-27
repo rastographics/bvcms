@@ -329,7 +329,7 @@ namespace CmsData.Finance
                         Reference = transaction.TransactionID,
                         BatchReference = batch.ID,
                         TransactionType = GetTransactionType(transaction.Status),
-                        PaymentMethodType = GetBatchType(batch.PaymentMethod),
+                        BatchType = GetBatchType(batch.PaymentMethod),
                         Name = "{0} {1}".Fmt(transaction.FirstName, transaction.LastName),
                         Amount = transaction.SettleAmount,
                         Approved = IsApproved(transaction.BatchSettlementState),

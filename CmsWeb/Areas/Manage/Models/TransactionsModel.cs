@@ -276,7 +276,7 @@ namespace CmsWeb.Models
                     Settled = settlementDate,
                     Batch = settlementDate,  // this date now will be the same as the settlement date.
                     Batchref = transactionToInsert.BatchReference,
-                    Batchtyp = transactionToInsert.PaymentMethodType == BatchType.Ach ? "eft" : "bankcard",
+                    Batchtyp = transactionToInsert.BatchType == BatchType.Ach ? "eft" : "bankcard",
                     OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?)null,
                     Fromsage = true,
                     Description = originalTransaction != null ? originalTransaction.Description : "no description from {0}, id={1}".Fmt(gateway.GatewayType, transactionToInsert.TransactionId)
@@ -294,7 +294,7 @@ namespace CmsWeb.Models
 
                 existingTransaction.Batch = settlementDate;  // this date now will be the same as the settlement date.
                 existingTransaction.Batchref = batchTransaction.BatchReference;
-                existingTransaction.Batchtyp = batchTransaction.PaymentMethodType == BatchType.Ach ? "eft" : "bankcard";
+                existingTransaction.Batchtyp = batchTransaction.BatchType == BatchType.Ach ? "eft" : "bankcard";
                 existingTransaction.Settled = settlementDate;
             }
 
