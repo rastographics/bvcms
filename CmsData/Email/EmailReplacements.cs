@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.UI;
 using CmsData.Codes;
 using HtmlAgilityPack;
 using UtilityExtensions;
@@ -206,7 +205,9 @@ namespace CmsData
                     return DateTime.Today.ToShortDateString();
 
                 case "{title}":
-                    return p.TitleCode;
+                    if (p.TitleCode.HasValue())
+                        return p.TitleCode;
+                    return p.ComputeTitle();
 
                 case "{track}":
                     return emailqueueto.Guid.HasValue ? "<img src=\"{0}\" />".Fmt(Util.URLCombine(db.CmsHost, "/Track/Key/" + emailqueueto.Guid.Value.GuidToQuerystring())) : "";
@@ -783,6 +784,13 @@ namespace CmsData
             if (showfamily)
                 url += "?showfamily=true";
             return url;
+        }
+
+        public static string CreateRegisterLink(int? orgid, string text)
+        {
+            if(!orgid.HasValue)
+                throw new ArgumentException("null not allowed on GetRegisterLink", "orgid");
+            return "<a href=\"http://registerlink\" lang=\"{0}\">{1}</a>".Fmt(orgid, text);
         }
     }
 }

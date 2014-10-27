@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web.UI.WebControls;
-using Community.CsharpSqlite;
 using Dapper;
 using UtilityExtensions;
 using IronPython.Hosting;
@@ -233,7 +230,7 @@ namespace CmsData
 //            if (qb == null)
 //                return 0;
             var cs = db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionString
+                ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             cn.Open();
@@ -247,10 +244,13 @@ namespace CmsData
             sql = "{0}{1}".Fmt(declareqtagid, sql);
             var q = cn.Query(sql);
             var list = q.Select(rr => new NameValuePair() { Name = rr.Name, Value = rr.Cnt }).ToList();
+            if (list.Count == 0)
+                return @"[ ['No Data', 'Count'], ['Dummy Value 1', 1], ['Dummy Value 2', 2], ['Dummy Value 3', 3], ]";
             return @"[
   ['{0}', 'Count'],
 {1}
 ]".Fmt(title, string.Join(",\n", list));
+
         }
         public int QueryCountDivDateRange(string s, string division, object startdt, int days)
         {

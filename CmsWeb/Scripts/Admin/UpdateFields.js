@@ -10,5 +10,26 @@
         });
         return false;
     });
+    $("#Field").change(function(ev) {
+        ev.preventDefault();
+        var f = $(this).closest("form");
+        var q = f.serialize();
+        $.post("/Batch/UpdateWarning/", q, function (ret) {
+            $("#warning").text(ret);
+            if(ret)
+                $("#warning").show();
+            else 
+                $("#warning").hide();
+        });
+        return false;
+    });
+    $("#uform").submit(function (ev) {
+        ev.preventDefault();
+        var f = this;
+        bootbox.confirm("Are you sure you want do this? There is no undo button.", function (result) {
+            if (result)
+                f.submit();
+        });
+    });
 });
 

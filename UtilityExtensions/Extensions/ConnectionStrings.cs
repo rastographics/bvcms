@@ -112,20 +112,25 @@ namespace UtilityExtensions
                     HttpContext.Current.Session[STR_ConnectionString] = value;
             }
         }
+        private static string ReadOnlyConnectionString(bool finance = false)
+        {
+            var cs = ConnectionStringSettings(Host);
+            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            if (string.IsNullOrEmpty(cb.DataSource))
+                cb.DataSource = DbServer;
+            cb.InitialCatalog = "CMS_{0}".Fmt(Host);
+            cb.IntegratedSecurity = false;
+            cb.UserID = (finance ? "ro-{0}-finance" : "ro-{0}").Fmt(cb.InitialCatalog);
+            cb.Password = ConfigurationManager.AppSettings["readonlypassword"];
+            return cb.ConnectionString;
+        }
         public static string ConnectionStringReadOnly
         {
-            get
-            {
-                var cs = ConnectionStringSettings(Host);
-                var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-                if (string.IsNullOrEmpty(cb.DataSource))
-                    cb.DataSource = DbServer;
-                cb.InitialCatalog = "CMS_{0}".Fmt(Host);
-                cb.IntegratedSecurity = false;
-                cb.UserID = "ro";
-                cb.Password = ConfigurationManager.AppSettings["readonlypassword"];
-                return cb.ConnectionString;
-            }
+            get { return ReadOnlyConnectionString(); }
+        }
+        public static string ConnectionStringReadOnlyFinance
+        {
+            get { return ReadOnlyConnectionString(finance: true); }
         }
 
 

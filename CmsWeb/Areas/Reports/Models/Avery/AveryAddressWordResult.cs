@@ -105,14 +105,24 @@ namespace CmsWeb.Areas.Reports.Models
                             col++;
                     }
                     var c = tt.Rows[row].Cells[col];
+
                     if (format == "GroupAddress")
                         c.Paragraphs[0].InsertText(p.LabelName + " " + p.LastName);
+                    else if ((format == "CouplesEither" || format == "CouplesBoth") && p.CoupleName.HasValue())
+                        c.Paragraphs[0].InsertText(p.CoupleName);
                     else
                         c.Paragraphs[0].InsertText(p.LabelName);
-                    c.InsertParagraph(p.Address);
-                    if (p.Address2.HasValue())
-                        c.InsertParagraph(p.Address2);
-                    c.InsertParagraph(p.CSZ);
+
+
+                    if (p.MailingAddress.HasValue())
+                        c.InsertParagraph(p.MailingAddress.Trim());
+                    else
+                    {
+                        c.InsertParagraph(p.Address);
+                        if (p.Address2.HasValue())
+                            c.InsertParagraph(p.Address2);
+                        c.InsertParagraph(p.CSZ);
+                    }
 
                     col += 2;
                     if (col == 6)
