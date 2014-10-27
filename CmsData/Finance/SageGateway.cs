@@ -439,7 +439,8 @@ namespace CmsData.Finance
         {
             switch (transactionType)
             {
-                case Sage.Report.TransactionType.Charge:
+                case Sage.Report.TransactionType.Sale:
+                case Sage.Report.TransactionType.ForceAuthSale:
                     return TransactionType.Charge;
                 case Sage.Report.TransactionType.Credit:
                     return TransactionType.Refund;

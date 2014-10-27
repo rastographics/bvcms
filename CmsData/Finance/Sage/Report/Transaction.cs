@@ -41,7 +41,13 @@ namespace CmsData.Finance.Sage.Report
             switch (transactionCode)
             {
                 case "1":
-                    return TransactionType.Charge;
+                    return TransactionType.Sale;
+                case "2":
+                    return TransactionType.AuthOnly;
+                case "3":
+                    return TransactionType.ForceAuthSale;
+                case "4":
+                    return TransactionType.Void;
                 case "6":
                     return TransactionType.Credit;
                 default:
