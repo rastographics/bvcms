@@ -115,6 +115,7 @@
     <Compile Include="Emailer.cs" />
     <Compile Include="EnDeCrypt.cs" />
     <Compile Include="Extensions\ConnectionStrings.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\User.cs" />
     <Compile Include="Extensions\Dates.cs" />
     <Compile Include="Extensions\Validation.cs" />
@@ -126,7 +127,7 @@
     <Compile Include="ObjectDumper.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\ObjectUtilities.cs" />
-    <Compile Include="Extensions\UtiltyExtensions.cs" />
+    <Compile Include="Extensions\UtilityExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

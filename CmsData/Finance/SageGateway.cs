@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using CmsData.Finance.Sage.Core;
+using CmsData.Finance.Sage.Report;
 using CmsData.Finance.Sage.Transaction.Refund;
 using CmsData.Finance.Sage.Transaction.Sale;
 using CmsData.Finance.Sage.Transaction.Void;
 using CmsData.Finance.Sage.Vault;
+using IronPython.Modules;
+using IronPython.Runtime;
 using UtilityExtensions;
 
 namespace CmsData.Finance
@@ -388,52 +393,75 @@ namespace CmsData.Finance
             };
         }
 
-		public BatchResponse SettledBatchSummary(DateTime start, DateTime end)
+		public BatchResponse GetBatchDetails(DateTime start, DateTime end)
 		{
-			var wc = new WebClient();
-			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/";
-			var coll = new NameValueCollection();
-			coll["M_ID"] = _id;
-			coll["M_KEY"] = _key;
-			coll["START_DATE"] = start.ToShortDateString();
-			coll["END_DATE"] = end.ToShortDateString();
-			coll["INCLUDE_BANKCARD"] = "true";
-			coll["INCLUDE_VIRTUAL_CHECK"] = "true";
+		    var batchTransactions = new List<BatchTransaction>();
+            var settledBatchSummaryRequest = new SettledBatchSummaryRequest(_id, _key, start, end, true, true);
+            var settledBatchResponse = settledBatchSummaryRequest.Execute();
 
-			var b = wc.UploadValues("VIEW_SETTLED_BATCH_SUMMARY", "POST", coll);
-			var ret = Encoding.ASCII.GetString(b);
-			var ds = new DataSet();
-			ds.ReadXml(new StringReader(ret));
+            foreach (var batch in settledBatchResponse.Batches)
+            {
+                var transactions = new List<Sage.Report.Transaction>();
+                if (batch.Type == Sage.Report.BatchType.CreditCard)
+                {
+                    var creditCardSettledBatchListingRequest = new CreditCardSettledBatchListingRequest(_id, _key, batch.Reference);
+                    var creditCardSettledBatchListingResponse = creditCardSettledBatchListingRequest.Execute();
+                    transactions = creditCardSettledBatchListingResponse.Transactions.ToList();
+                }
+                else if (batch.Type == Sage.Report.BatchType.Ach)
+                {
+                    var achSettledBatchListingRequest = new AchSettledBatchListingRequest(_id, _key, batch.Reference);
+                    var achSettledBatchListingResponse = achSettledBatchListingRequest.Execute();
+                    transactions = achSettledBatchListingResponse.Transactions.ToList();
+                }
 
-            // TODO: IMPLEMENT BRIAN PLEASE?
-            return new BatchResponse(new Batch[] {});
+                foreach (var transaction in transactions)
+                {
+                    batchTransactions.Add(new BatchTransaction
+                    {
+                        TransactionId = transaction.OrderNumber.ToInt(),
+                        Reference = transaction.Reference,
+                        BatchReference = batch.Reference,
+                        TransactionType = GetTransactionType(transaction.TransactionType),
+                        PaymentMethodType = GetBatchType(batch.Type),
+                        Name = transaction.Name,
+                        Amount = transaction.TotalAmount,
+                        Approved = transaction.Approved,
+                        Message = transaction.Message,
+                        TransactionDate = transaction.Date,
+                        SettledDate = transaction.SettleDate
+                    });
+                }
+            }
+
+            return new BatchResponse(batchTransactions);
 		}
 
-		public DataSet SettledBatchListing(string batchref, string type)
-		{
-			var wc = new WebClient();
-			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/";
-			var coll = new NameValueCollection();
-			coll["M_ID"] = _id;
-			coll["M_KEY"] = _key;
-			coll["BATCH_REFERENCE"] = batchref;
+        private static TransactionType GetTransactionType(Sage.Report.TransactionType transactionType) 
+        {
+            switch (transactionType)
+            {
+                case Sage.Report.TransactionType.Charge:
+                    return TransactionType.Charge;
+                case Sage.Report.TransactionType.Credit:
+                    return TransactionType.Refund;
+                default:
+                    return TransactionType.Unknown;
+            }    
+	    }
 
-			string method = null;
-			switch (type)
-			{
-				case "eft":
-					method = "VIEW_VIRTUAL_CHECK_SETTLED_BATCH_LISTING";
-					break;
-				case "bankcard":
-					method = "VIEW_BANKCARD_SETTLED_BATCH_LISTING";
-					break;
-			}
-			var b = wc.UploadValues(method, "POST", coll);
-			var ret = Encoding.ASCII.GetString(b);
-			var ds = new DataSet();
-			ds.ReadXml(new StringReader(ret));
-			return ds;
-		}
+        private static BatchType GetBatchType(Sage.Report.BatchType batchType)
+        {
+            switch (batchType)
+            {
+                case Sage.Report.BatchType.CreditCard:
+                    return BatchType.CreditCard;
+                case Sage.Report.BatchType.Ach:
+                    return BatchType.Ach;
+                default:
+                    return BatchType.Unknown;
+            }
+        }
 
 		public DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt)
 		{

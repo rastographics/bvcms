@@ -468,7 +468,7 @@ namespace CmsData.Finance
             };
         }
 
-        public BatchResponse SettledBatchSummary(DateTime start, DateTime end)
+        public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
             //var queryRequest = new QueryRequest(userName,
             //                                    password,
@@ -480,11 +480,6 @@ namespace CmsData.Finance
             //var response = queryRequest.Execute();
 
 
-            return null;
-        }
-
-        public DataSet SettledBatchListing(string batchref, string type)
-        {
             return null;
         }
 

@@ -8,5 +8,11 @@ namespace CmsData.Finance.Sage.Report
         {
             Data["BATCH_REFERENCE"] = batchReference;
         }
+
+        public new SettledBatchListingResponse Execute()
+        {
+            var xmlResponse = base.Execute();
+            return new SettledBatchListingResponse(xmlResponse);
+        }
     }
 }
