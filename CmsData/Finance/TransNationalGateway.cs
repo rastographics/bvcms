@@ -593,7 +593,7 @@ namespace CmsData.Finance
 
         public bool CanGetSettlementDates
         {
-            get { return false; }
+            get { return true; }
         }
 
         public bool CanGetBounces
