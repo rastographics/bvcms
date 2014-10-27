@@ -484,7 +484,7 @@ namespace CmsData.Finance
                 start,
                 end,
                 new List<TransNational.Query.Condition> {TransNational.Query.Condition.Complete},
-                new List<ActionType> {ActionType.Settle, ActionType.Sale, ActionType.Capture, ActionType.Credit, ActionType.Refund}); // these action types are all OR statements!
+                new List<ActionType> {ActionType.Settle, ActionType.Sale, ActionType.Capture, ActionType.Credit, ActionType.Refund}); 
 
             var response = queryRequest.Execute();
 
@@ -505,9 +505,11 @@ namespace CmsData.Finance
                 var originalAction = transaction.Actions.FirstOrDefault(a => a.ActionType == originalActionType);
                 var settleAction = transaction.Actions.FirstOrDefault(a => a.ActionType == ActionType.Settle);
 
+                // need to make sure that both the settle action and the original action (sale, capture, credit or refund) are present before proceeding.
                 if (originalAction != null && settleAction != null)
                 {
-                    if (!batchTransactions.Any(b => b.TransactionId == transaction.OrderId.ToInt()))
+                    // prevent adding the same batch transaction more than once.
+                    if (batchTransactions.All(b => b.TransactionId != transaction.OrderId.ToInt()))
                     {
                         batchTransactions.Add(new BatchTransaction
                         {
