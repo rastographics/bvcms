@@ -1,7 +1,4 @@
-DENY SELECT ON  [dbo].[Contribution] TO [ro]
-DENY INSERT ON  [dbo].[Contribution] TO [ro]
-DENY DELETE ON  [dbo].[Contribution] TO [ro]
-DENY UPDATE ON  [dbo].[Contribution] TO [ro]
+DENY SELECT ON  [dbo].[Contribution] TO [ro-CMS_StarterDb]
 GO
 IF EXISTS (SELECT * FROM #tmpErrors) ROLLBACK TRANSACTION
 GO

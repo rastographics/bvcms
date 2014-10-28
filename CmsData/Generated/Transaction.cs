@@ -103,6 +103,12 @@ namespace CmsData
 		
 		private bool? _AdjustFee;
 		
+		private string _LastFourCC;
+		
+		private string _LastFourACH;
+		
+		private string _PaymentType;
+		
    		
    		private EntitySet< OrganizationMember> _OrganizationMembers;
 		
@@ -250,6 +256,15 @@ namespace CmsData
 		
 		partial void OnAdjustFeeChanging(bool? value);
 		partial void OnAdjustFeeChanged();
+		
+		partial void OnLastFourCCChanging(string value);
+		partial void OnLastFourCCChanged();
+		
+		partial void OnLastFourACHChanging(string value);
+		partial void OnLastFourACHChanged();
+		
+		partial void OnPaymentTypeChanging(string value);
+		partial void OnPaymentTypeChanged();
 		
     #endregion
 		public Transaction()
@@ -1217,6 +1232,72 @@ namespace CmsData
 					this._AdjustFee = value;
 					this.SendPropertyChanged("AdjustFee");
 					this.OnAdjustFeeChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="LastFourCC", UpdateCheck=UpdateCheck.Never, Storage="_LastFourCC", DbType="nvarchar(4)")]
+		public string LastFourCC
+		{
+			get { return this._LastFourCC; }
+
+			set
+			{
+				if (this._LastFourCC != value)
+				{
+				
+                    this.OnLastFourCCChanging(value);
+					this.SendPropertyChanging();
+					this._LastFourCC = value;
+					this.SendPropertyChanged("LastFourCC");
+					this.OnLastFourCCChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="LastFourACH", UpdateCheck=UpdateCheck.Never, Storage="_LastFourACH", DbType="nvarchar(4)")]
+		public string LastFourACH
+		{
+			get { return this._LastFourACH; }
+
+			set
+			{
+				if (this._LastFourACH != value)
+				{
+				
+                    this.OnLastFourACHChanging(value);
+					this.SendPropertyChanging();
+					this._LastFourACH = value;
+					this.SendPropertyChanged("LastFourACH");
+					this.OnLastFourACHChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="PaymentType", UpdateCheck=UpdateCheck.Never, Storage="_PaymentType", DbType="nvarchar(1)")]
+		public string PaymentType
+		{
+			get { return this._PaymentType; }
+
+			set
+			{
+				if (this._PaymentType != value)
+				{
+				
+                    this.OnPaymentTypeChanging(value);
+					this.SendPropertyChanging();
+					this._PaymentType = value;
+					this.SendPropertyChanged("PaymentType");
+					this.OnPaymentTypeChanged();
 				}
 
 			}

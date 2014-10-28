@@ -42,7 +42,10 @@ CREATE TABLE [dbo].[Transaction]
 [MiddleInitial] [nvarchar] (1) NULL,
 [Last] [nvarchar] (50) NULL,
 [Suffix] [nvarchar] (10) NULL,
-[AdjustFee] [bit] NULL
+[AdjustFee] [bit] NULL,
+[LastFourCC] [nvarchar] (4) NULL,
+[LastFourACH] [nvarchar] (4) NULL,
+[PaymentType] [nvarchar] (1) NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
