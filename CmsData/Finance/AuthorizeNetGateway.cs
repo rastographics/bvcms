@@ -336,10 +336,10 @@ namespace CmsData.Finance
                         BatchType = GetBatchType(batch.PaymentMethod),
                         Name = "{0} {1}".Fmt(transaction.FirstName, transaction.LastName),
                         Amount = transaction.SettleAmount,
-                        Approved = IsApproved(transaction.BatchSettlementState),
-                        Message = transaction.BatchSettlementState.ToUpper(),
+                        Approved = IsApproved(batch.State),
+                        Message = batch.State.ToUpper(),
                         TransactionDate = transaction.DateSubmitted,
-                        SettledDate = transaction.BatchSettledOn
+                        SettledDate = batch.SettledOn
                     });
                 }
             }
