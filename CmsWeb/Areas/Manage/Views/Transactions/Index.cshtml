@@ -31,10 +31,7 @@
         <td>@Html.TextBox("name")</td>
         <td></td>
         <td>
-          @if (Model.isSage)
-          {
-            @:Use Batch Dates: @Html.CheckBox("usebatchdates")
-}
+            Use Batch Dates: @Html.CheckBox("usebatchdates")
         </td>
       </tr>
       <tr>
@@ -56,8 +53,6 @@
           <a href="/Transactions" class="bt">Clear</a>
         </td>
       </tr>
-      @if (Model.isSage)
-      {
         <tr>
           <td class="right" colspan="4"><a href="/Transactions/Report" class="report">Reconcile Report</a></td>
         </tr>
@@ -67,7 +62,6 @@
         <tr>
           <td class="right" colspan="4"><a href="/Transactions/ReportByBatchDescription" class="report">Totals by Batch/Description</a></td>
         </tr>
-      }
     </table>
   </div>
   <div class="floatclear"></div>

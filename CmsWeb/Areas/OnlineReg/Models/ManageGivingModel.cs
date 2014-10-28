@@ -116,8 +116,7 @@ namespace CmsWeb.Models
             testing = true;
 #endif
             NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
-            NoEChecksAllowed = OnlineRegModel.GetTransactionGateway() != "sage";
-
+            NoEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed ", "false").ToBool();
         }
 
         public ManageGivingModel(int pid, int orgid = 0)
@@ -126,8 +125,7 @@ namespace CmsWeb.Models
             this.pid = pid;
             this.orgid = orgid;
             var rg = person.ManagedGiving();
-            var pi = person.PaymentInfo();
-            if (rg != null && pi != null)
+            if (rg != null)
             {
                 SemiEvery = rg.SemiEvery;
                 StartWhen = rg.StartWhen;
@@ -138,19 +136,8 @@ namespace CmsWeb.Models
                 Period = rg.Period;
                 foreach (var ra in person.RecurringAmounts.AsEnumerable())
                     FundItem.Add(ra.FundId, ra.Amt);
-                Cardnumber = pi.MaskedCard;
-                Account = pi.MaskedAccount;
-                Expires = pi.Expires;
-                Cardcode = Util.Mask(new StringBuilder(pi.Ccv), 0);
-                Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
+                
                 NextDate = rg.NextDate;
-                NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
-                Type = pi.PreferredGivingType;
-                if (NoCreditCardsAllowed)
-                    Type = "B"; // bank account only
-                else if (NoEChecksAllowed)
-                    Type = "C"; // credit card only
-                Type = NoEChecksAllowed ? "C" : Type;
             }
             else if (Setting.ExtraValueFeeName.HasValue())
             {
@@ -163,8 +150,26 @@ namespace CmsWeb.Models
                 if (f != null && evamt > 0)
                     FundItem.Add(f.Value.ToInt(), evamt);
             }
+
+            var pi = person.PaymentInfo();
             if (pi == null)
                 pi = new PaymentInfo();
+            else
+            {
+                Cardnumber = pi.MaskedCard;
+                Account = pi.MaskedAccount;
+                Expires = pi.Expires;
+                Cardcode = Util.Mask(new StringBuilder(pi.Ccv), 0);
+                Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
+                NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
+                Type = pi.PreferredGivingType;
+                if (NoCreditCardsAllowed)
+                    Type = "B"; // bank account only
+                else if (NoEChecksAllowed)
+                    Type = "C"; // credit card only
+                Type = NoEChecksAllowed ? "C" : Type;
+            }
+            
             FirstName = pi.FirstName ?? person.FirstName;
             Middle = (pi.MiddleInitial ?? person.MiddleName).Truncate(1);
             LastName = pi.LastName ?? person.LastName;
@@ -321,33 +326,8 @@ namespace CmsWeb.Models
                     throw new Exception("X not allowed in CVV");
                 Cardcode = payinfo.Ccv;
             }
-            var gateway = OnlineRegModel.GetTransactionGateway();
-            if (gateway == "authorizenet")
-            {
-                var au = new AuthorizeNet2(DbUtil.Db, testing);
-                au.AddUpdateCustomerProfile(pid,
-                    Type,
-                    Cardnumber,
-                    Expires,
-                    Cardcode,
-                    Routing,
-                    Account,
-                    giving: true);
-            }
-            else if (gateway == "sage")
-            {
-                var sg = new SagePayments(DbUtil.Db, testing);
-                sg.storeVault(pid,
-                    Type,
-                    Cardnumber,
-                    Expires,
-                    Cardcode,
-                    Routing,
-                    Account,
-                    giving: true);
-            }
-            else
-                throw new Exception("ServiceU not supported");
+            var gateway = DbUtil.Db.Gateway(testing);
+            gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
 
             var mg = person.ManagedGiving();
             if (mg == null)
@@ -383,7 +363,7 @@ namespace CmsWeb.Models
             DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(person.RecurringAmounts);
             DbUtil.Db.SubmitChanges();
 
-            person.RecurringAmounts.AddRange(FundItemsChosen().Select(c => new RecurringAmount { FundId = c.fundid, Amt = c.amt } ));
+            person.RecurringAmounts.AddRange(FundItemsChosen().Select(c => new RecurringAmount { FundId = c.fundid, Amt = c.amt }));
             DbUtil.Db.SubmitChanges();
         }
 

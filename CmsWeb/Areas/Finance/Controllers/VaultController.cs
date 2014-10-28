@@ -1,5 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using CmsData;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
@@ -10,17 +12,26 @@ namespace CmsWeb.Areas.Finance.Controllers
 		[HttpPost]
 		public ActionResult DeleteVaultData(int id)
 		{
-			var sage = new SagePayments(DbUtil.Db, testing: true);
-			sage.deleteVaultData(id);
-			var p = DbUtil.Db.LoadPersonById(id);
-			DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);
+		    var db = DbUtil.Db;
+		    var gw = db.Gateway();
+
+		    try
+		    {
+                gw.RemoveFromVault(id);
+		    }
+		    catch (Exception)
+		    {
+		    }
+
+		    var p = db.LoadPersonById(id);
+			db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);
 			var mg = p.ManagedGiving();
 			if (mg != null)
-				DbUtil.Db.ManagedGivings.DeleteOnSubmit(mg);
+				db.ManagedGivings.DeleteOnSubmit(mg);
 			var pi = p.PaymentInfo();
 			if (pi != null)
-				DbUtil.Db.PaymentInfos.DeleteOnSubmit(pi);
-			DbUtil.Db.SubmitChanges();
+				db.PaymentInfos.DeleteOnSubmit(pi);
+			db.SubmitChanges();
 			return Content("ok");
 		}
 

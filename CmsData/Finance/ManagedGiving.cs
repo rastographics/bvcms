@@ -1,9 +1,6 @@
 using System;
-using System.IO;
-using System.Web;
-using System.ComponentModel;
 using System.Linq;
-using System.Collections.Generic;
+using CmsData.Finance;
 using CmsData.Properties;
 using UtilityExtensions;
 
@@ -42,20 +39,12 @@ namespace CmsData
                 return dt;
             }
         }
-        public int DoGiving(CMSDataContext Db)
+        public int DoGiving(CMSDataContext db)
         {
-            var gateway = Db.Setting("TransactionGateway", "");
-            AuthorizeNet2 anet = null;
-            SagePayments sage = null;
-            if (gateway == "AuthorizeNet")
-                anet = new AuthorizeNet2(Db, testing: false);
-            else if (gateway == "Sage")
-                sage = new SagePayments(Db, testing: false);
-            else
-                return 0;
+            var gw = db.Gateway();
 
             TransactionResponse ret = null;
-            var total = (from a in Db.RecurringAmounts
+            var total = (from a in db.RecurringAmounts
                          where a.PeopleId == PeopleId
                          where a.ContributionFund.FundStatusId == 1
                          select a.Amt).Sum();
@@ -63,7 +52,7 @@ namespace CmsData
             if (!total.HasValue || total == 0)
                 return 0;
 
-            var preferredtype = (from pi in Db.PaymentInfos
+            var preferredtype = (from pi in db.PaymentInfos
                                  where pi.PeopleId == PeopleId
                                  select pi.PreferredGivingType).Single();
 
@@ -78,22 +67,19 @@ namespace CmsData
                 Amt = total,
                 Description = "Recurring Giving",
                 Testing = false,
-                TransactionGateway = gateway,
+                TransactionGateway = gw.GatewayType,
                 Financeonly = true
             };
-            Db.Transactions.InsertOnSubmit(t);
-            Db.SubmitChanges();
+            db.Transactions.InsertOnSubmit(t);
+            db.SubmitChanges();
 
-            if (gateway == "AuthorizeNet")
-                ret = anet.createCustomerProfileTransactionRequest(PeopleId, total ?? 0, "Recurring Giving", t.Id);
-            else
-                ret = sage.createVaultTransactionRequest(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredtype);
+            ret = gw.PayWithVault(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredtype);
 
             t.Message = ret.Message;
             t.AuthCode = ret.AuthCode;
             t.Approved = ret.Approved;
             t.TransactionId = ret.TransactionId;
-            var systemEmail = Db.Setting("SystemEmailAddress", "mailer@bvcms.com");
+            var systemEmail = db.Setting("SystemEmailAddress", "mailer@bvcms.com");
 
             var contributionemail = (from ex in Person.PeopleExtras
                                      where ex.Field == "ContributionEmail"
@@ -102,18 +88,18 @@ namespace CmsData
                 contributionemail = contributionemail.Trim();
             if (!Util.ValidEmail(contributionemail))
                 contributionemail = Person.FromEmail;
-            var gift = Db.Setting("NameForPayment", "gift");
-            var church = Db.Setting("NameOfChurch", Db.CmsHost);
+            var gift = db.Setting("NameForPayment", "gift");
+            var church = db.Setting("NameOfChurch", db.CmsHost);
             if (ret.Approved)
             {
-                var q = from a in Db.RecurringAmounts
+                var q = from a in db.RecurringAmounts
                         where a.PeopleId == PeopleId
                         select a;
 
                 foreach (var a in q)
                 {
                     if (a.ContributionFund.FundStatusId == 1 && a.Amt > 0)
-                        Person.PostUnattendedContribution(Db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
+                        Person.PostUnattendedContribution(db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
                 }
                 var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
                 t.TransactionPeople.Add(new TransactionPerson
@@ -122,10 +108,10 @@ namespace CmsData
                     Amt = tot,
                 });
                 NextDate = FindNextDate(Util.Now.Date.AddDays(1));
-                Db.SubmitChanges();
+                db.SubmitChanges();
                 if (tot > 0)
                 {
-                    Util.SendMsg(systemEmail, Db.CmsHost, Util.TryGetMailAddress(contributionemail),
+                    Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(contributionemail),
                                  "Recurring {0} for {1}".Fmt(gift, church),
                                  "Your payment of ${0:N2} was processed this morning.".Fmt(tot),
                                  Util.ToMailAddressList(contributionemail), 0, null);
@@ -133,17 +119,17 @@ namespace CmsData
             }
             else
             {
-                Db.SubmitChanges();
-                var failedGivingMessage = Db.ContentHtml("FailedGivingMessage", Resources.ManagedGiving_FailedGivingMessage);
-                var adminEmail = Db.Setting("AdminMail", systemEmail);
-                Util.SendMsg(systemEmail, Db.CmsHost, Util.TryGetMailAddress(contributionemail),
+                db.SubmitChanges();
+                var failedGivingMessage = db.ContentHtml("FailedGivingMessage", Resources.ManagedGiving_FailedGivingMessage);
+                var adminEmail = db.Setting("AdminMail", systemEmail);
+                Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(contributionemail),
                         "Recurring {0} failed for {1}".Fmt(gift, church),
                         failedGivingMessage.Replace("{first}", Person.PreferredName),
                         Util.ToMailAddressList(contributionemail), 0, null);
-                foreach (var p in Db.FinancePeople())
-                    Util.SendMsg(systemEmail, Db.CmsHost, Util.TryGetMailAddress(adminEmail),
-                        "Recurring Giving Failed on " + Db.CmsHost,
-                        "<a href='{0}Transactions/{2}'>message: {1}, tranid:{2}</a>".Fmt(Db.CmsHost, ret.Message, t.Id),
+                foreach (var p in db.FinancePeople())
+                    Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(adminEmail),
+                        "Recurring Giving Failed on " + db.CmsHost,
+                        "<a href='{0}Transactions/{2}'>message: {1}, tranid:{2}</a>".Fmt(db.CmsHost, ret.Message, t.Id),
                         Util.ToMailAddressList(p.EmailAddress), 0, null);
             }
             return 1;
@@ -156,6 +142,7 @@ namespace CmsData
             {
                 var q = from rg in Db.ManagedGivings
                         where rg.NextDate < Util.Now.Date
+                        //where rg.PeopleId == 819918
                         select rg;
                 foreach (var rg in q)
                     rg.NextDate = rg.FindNextDate(Util.Now.Date);

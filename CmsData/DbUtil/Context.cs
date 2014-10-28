@@ -7,6 +7,7 @@
 using System;
 using System.Data.Common;
 using System.Linq;
+using CmsData.Finance;
 using UtilityExtensions;
 using System.Web;
 using System.Data.Linq.Mapping;
@@ -1148,5 +1149,23 @@ namespace CmsData
 
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
+
+        public IGateway Gateway(bool testing = false)
+        {
+            var type = Setting("TransactionGateway", "not specified");
+            switch (type.ToLower())
+            {
+                case "sage":
+                    return new SageGateway(this, testing);
+
+                case "authorizenet":
+                    return new AuthorizeNetGateway(this, testing);
+
+                case "transnational":
+                    return new TransNationalGateway(this, testing);
+            }
+
+            throw new Exception("Gateway ({0}) is not supported.".Fmt(type));
+        }
     }
 }

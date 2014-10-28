@@ -70,8 +70,7 @@ namespace CmsWeb.Models
             get
             {
                 if (!_noEChecksAllowed.HasValue)
-                    _noEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed", "false") == "true"
-                            || OnlineRegModel.GetTransactionGateway() != "sage";
+                    _noEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed", "false") == "true";
                 return _noEChecksAllowed.Value;
             }
         }
@@ -141,7 +140,7 @@ namespace CmsWeb.Models
         public static PaymentForm CreatePaymentFormForBalanceDue(Transaction ti, decimal amtdue)
         {
             PaymentInfo pi = null;
-            if (ti.Person != null && OnlineRegModel.GetTransactionGateway().Equal("sage"))
+            if (ti.Person != null)
                 pi = ti.Person.PaymentInfos.FirstOrDefault();
             if (pi == null)
                 pi = new PaymentInfo();

@@ -2,9 +2,7 @@
 @using CmsWeb
 @using UtilityExtensions
 @{
-    var mid = ViewExtensions2.DbSetting("M_ID", "");
-    var giving = mid.Length > 0 || ViewExtensions2.DbSetting("OnlineGiving", "false").ToBool();
-        
+    var giving = DbUtil.Db.Gateway() != null && ViewExtensions2.DbSetting("OnlineGiving", "true").ToBool();
 }
 <fieldset class="left-gutter margin-top">
     <legend>Online Giving</legend>

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Finance;
 using CmsWeb.Models;
 using UtilityExtensions;
 
@@ -83,16 +84,16 @@ namespace CmsWeb.Areas.Manage.Controllers
 					 orderby tt.Id descending
 					 select tt;
 			var t0 = qq.First();
-			var sage = new SagePayments(DbUtil.Db, t.Testing ?? false);
+		    var gw = DbUtil.Db.Gateway(t.Testing ?? false);
 			TransactionResponse resp = null;
 			var re = t.TransactionId;
 			if (re.Contains("(testing"))
 				re = re.Substring(0, re.IndexOf("(testing)"));
 			if (type == "Void")
 			{
-				resp = sage.voidTransactionRequest(re);
+				resp = gw.VoidCreditCardTransaction(re);
 			    if (!resp.Approved)
-			        resp = sage.voidCheckRequest(re);
+			        resp = gw.VoidCheckTransaction(re);
 			    if (resp.Approved)
 					t.Voided = true;
 				amt = t.Amt;
@@ -100,9 +101,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 			else
 			{
 				if (t.Batchtyp == "eft")
-					resp = sage.creditCheckTransactionRequest(re, amt ?? 0);
+					resp = gw.RefundCheck(re, amt ?? 0);
 				else if (t.Batchtyp == "bankcard")
-					resp = sage.creditTransactionRequest(re, amt ?? 0);
+					resp = gw.RefundCreditCard(re, amt ?? 0);
 				if (resp.Approved)
 					t.Credited = true;
 			}

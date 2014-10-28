@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
+using CmsData.Finance;
 using CmsWeb.Models;
 using UtilityExtensions;
 using System.Text;
@@ -85,53 +86,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (!ModelState.IsValid)
                     return View("Payment/Process", pf);
 
-                if (pf.IsLoggedIn == true && pf.SavePayInfo)
+                if (m != null && pf.IsLoggedIn == true && pf.SavePayInfo)
                 {
-                    var gateway = OnlineRegModel.GetTransactionGateway();
-                    if (gateway == "authorizenet")
-                    {
-                        var au = new AuthorizeNet2(DbUtil.Db, m.testing ?? false);
-                        if ((pf.Type == "B" && !pf.Routing.StartsWith("X") && !pf.Account.StartsWith("X"))
-                            || (pf.Type == "C" && !pf.CreditCard.StartsWith("X")))
-                            au.AddUpdateCustomerProfile(m.UserPeopleId.Value,
-                                pf.Type,
-                                pf.CreditCard,
-                                DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                                pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
-                                pf.Routing,
-                                pf.Account,
-                                pf.IsGiving == true);
-                    }
-                    else if (gateway == "sage")
-                    {
-                        var sg = new CmsData.SagePayments(DbUtil.Db, m.testing ?? false);
-                        if ((pf.Type == "B" && !pf.Routing.StartsWith("X") && !pf.Account.StartsWith("X"))
-                            || (pf.Type == "C" && !pf.CreditCard.StartsWith("X")))
-                            sg.storeVault(m.UserPeopleId.Value,
-                                          pf.Type,
-                                          pf.CreditCard,
-                                          DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                                          pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
-                                          pf.Routing,
-                                          pf.Account,
-                                          pf.IsGiving == true);
-                    }
-                    else if (gateway == "transnational")
-                    {
-                        var sg = new CmsData.Transnational(DbUtil.Db, m.testing ?? false);
-                        if ((pf.Type == "B" && !pf.Routing.StartsWith("X") && !pf.Account.StartsWith("X"))
-                            || (pf.Type == "C" && !pf.CreditCard.StartsWith("X")))
-                            sg.storeVault(m.UserPeopleId.Value,
-                                          pf.Type,
-                                          pf.CreditCard,
-                                          DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                                          pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
-                                          pf.Routing,
-                                          pf.Account,
-                                          pf.IsGiving == true);
-                    }
-                    else
-                        throw new Exception("ServiceU not supported");
+                    var gw = DbUtil.Db.Gateway(m.testing ?? false);
+                    gw.StoreInVault(m.UserPeopleId ?? 0,
+                            pf.Type,
+                            pf.CreditCard,
+                            DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
+                            pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
+                            pf.Routing,
+                                      pf.Account,
+                                      pf.IsGiving == true);
 
                 }
                 if (pf.UseBootstrap && pf.AddressChecked < 2)
@@ -237,67 +202,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     pid = pds.Single().PeopleId.Value;
             }
             TransactionResponse tinfo;
-            var gateway = OnlineRegModel.GetTransactionGateway();
-            if (gateway == "authorizenet")
-                if (pf.SavePayInfo)
-                {
-                    var anet = new AuthorizeNet2(DbUtil.Db, pf.testing);
-                    tinfo = anet.createCustomerProfileTransactionRequest(
-                        pid ?? 0,
-                        pf.AmtToPay ?? 0,
-                        pf.Description,
-                        pf.TranId ?? 0);
-                }
-                else
-                    if (pf.Type == "B")
-                        tinfo = OnlineRegModel.PostECheck(
-                            pf.Routing, pf.Account,
-                            pf.AmtToPay ?? 0,
-                            ti.Id, pf.Description,
-                            pid ?? 0, pf.First, pf.Last,
-                            pf.Address, pf.City, pf.State, pf.Zip,
-                            pf.testing);
-                    else
-                        tinfo = OnlineRegModel.PostTransaction(
-                            pf.CreditCard, pf.CCV,
-                            DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                            pf.AmtToPay ?? 0,
-                            ti.Id, pf.Description,
-                            pid ?? 0, pf.Email, pf.First, pf.Last,
-                            pf.Address, pf.City, pf.State, pf.Zip,
-                            pf.testing);
-            else if (gateway == "sage")
-                if (pf.SavePayInfo)
-                {
-                    var sage = new SagePayments(DbUtil.Db, pf.testing);
-                    tinfo = sage.createVaultTransactionRequest(
-                        pid ?? 0,
-                        pf.AmtToPay ?? 0,
-                        pf.Description,
-                        ti.Id,
-                        pf.Type);
-                }
-                else
-                    if (pf.Type == "B")
-                        tinfo = OnlineRegModel.PostVirtualCheckTransactionSage(
-                            pf.Routing, pf.Account,
-                            pf.AmtToPay ?? 0,
-                            ti.Id, pf.Description,
-                            pid ?? 0, pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix,
-                            pf.Address, pf.City, pf.State, pf.Zip, pf.Phone,
-                            pf.testing);
-                    else
-                        tinfo = OnlineRegModel.PostTransactionSage(
-                            pf.CreditCard, pf.CCV,
-                            DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                            pf.AmtToPay ?? 0,
-                            ti.Id, pf.Description,
-                            pid ?? 0, pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix,
-                            pf.Address, pf.City, pf.State, pf.Zip, pf.Phone,
-                            pf.testing);
+            var gw = DbUtil.Db.Gateway(pf.testing);
 
-            else
-                throw new Exception("unknown gateway " + gateway);
+                if (pf.SavePayInfo)
+                tinfo = gw.PayWithVault(pid ?? 0, pf.AmtToPay ?? 0, pf.Description, ti.Id, pf.Type);
+                else
+                    if (pf.Type == "B")
+                    tinfo = gw.PayWithCheck(pid ?? 0, pf.AmtToPay ?? 0, pf.Routing, pf.Account, pf.Description, ti.Id,
+                        pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+                    else
+                    tinfo = gw.PayWithCreditCard(pid ?? 0, pf.AmtToPay ?? 0, pf.CreditCard, 
+                            DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
+                        pf.Description, ti.Id,
+                        pf.CCV, pf.Email, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
 
             ti.TransactionId = tinfo.TransactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))
