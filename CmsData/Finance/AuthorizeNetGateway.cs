@@ -87,7 +87,12 @@ namespace CmsData.Finance
                 throw new Exception("UpdateCustoemr failed to save for {0}".Fmt(peopleId));
 
             if (type == "B")
+            {
                 SaveECheckToProfile(routing, account, paymentInfo, customer);
+
+                paymentInfo.MaskedAccount = Util.MaskAccount(account);
+                paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+            }
             else if (type == "C")
             {
                 var normalizeExpires = DbUtil.NormalizeExpires(expires);
@@ -97,15 +102,14 @@ namespace CmsData.Finance
                 var expiredDate = normalizeExpires.Value;
 
                 SaveCreditCardToProfile(cardNumber, cardCode, expiredDate, paymentInfo, customer);
+
+                paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+                paymentInfo.Ccv = cardCode;
+                paymentInfo.Expires = expires;
             }
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
 
-			paymentInfo.MaskedAccount = Util.MaskAccount(account);
-			paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
-			paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-			paymentInfo.Ccv = cardCode;
-			paymentInfo.Expires = expires;
 			if (giving)
 				paymentInfo.PreferredGivingType = type;
 			else

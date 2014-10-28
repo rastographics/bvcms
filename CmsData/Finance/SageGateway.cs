@@ -73,8 +73,12 @@ namespace CmsData.Finance
                     else
                         UpdateCreditCardVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person, expires);
                 }
+
+                paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+                paymentInfo.Ccv = cardCode;
+                paymentInfo.Expires = expires;
             }
-            else // bank account
+            else if (type == "B") // bank account
             {
                 if (paymentInfo.SageBankGuid == null) // create new vault
                     paymentInfo.SageBankGuid = CreateAchVault(person, account, routing);
@@ -84,13 +88,13 @@ namespace CmsData.Finance
                     if (!account.StartsWith("X"))
                         UpdateAchVault(paymentInfo.SageBankGuid.GetValueOrDefault(), person, account, routing);
                 }
-            }
 
-            paymentInfo.MaskedAccount = Util.MaskAccount(account);
-			paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
-			paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-			paymentInfo.Ccv = cardCode;
-			paymentInfo.Expires = expires;
+                paymentInfo.MaskedAccount = Util.MaskAccount(account);
+                paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+            }
+            else
+                throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
+
 			if (giving)
 				paymentInfo.PreferredGivingType = type;
 			else

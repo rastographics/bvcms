@@ -73,8 +73,12 @@ namespace CmsData.Finance
                     else
                         UpdateCreditCardVault(paymentInfo.TbnCardVaultId.GetValueOrDefault(), person, expires);
                 }
+
+                paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+                paymentInfo.Ccv = cardCode; // TODO: shouldn't need to store this
+                paymentInfo.Expires = expires;
             }
-            else // bank account
+            else if (type == "B") // bank account
             {
                 if (paymentInfo.TbnBankVaultId == null) // create new vault
                     paymentInfo.TbnBankVaultId = CreateAchVault(person, account, routing);
@@ -86,13 +90,13 @@ namespace CmsData.Finance
                     else
                         UpdateAchVault(paymentInfo.TbnBankVaultId.GetValueOrDefault(), person);
                 }
-            }
 
-            paymentInfo.MaskedAccount = Util.MaskAccount(account);
-            paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
-            paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-            paymentInfo.Ccv = cardCode; // TODO: shouldn't need to store this
-            paymentInfo.Expires = expires;
+                paymentInfo.MaskedAccount = Util.MaskAccount(account);
+                paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+            }
+            else
+                throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
+
             if (giving)
                 paymentInfo.PreferredGivingType = type;
             else
