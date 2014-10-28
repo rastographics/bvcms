@@ -23,7 +23,7 @@ namespace CmsData.Finance
         public AuthorizeNetGateway(CMSDataContext db, bool testing)
         {
             this.db = db;
-            IsLive = testing || db.Setting("GatewayTesting", "false").ToLower() == "true";
+            IsLive = !(testing || db.Setting("GatewayTesting", "false").ToLower() == "true");
             if (!IsLive)
             {
                 _login = "4q2w5BD5";
