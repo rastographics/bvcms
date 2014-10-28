@@ -129,7 +129,7 @@ namespace CmsWeb.Areas.Reports.Models
             var list = db.CustomColumns.OrderBy(cc => cc.Ord).ToList();
             var dict = new Dictionary<string, CustomColumn>();
             var w = new APIWriter(writer);
-            w.Start("CustomReports").Start("Report").Attr("name", "AllColumns");
+            w.Start("Report").Attr("name", "YourReportNameGoesHere");
             foreach (var c in list)
             {
                 if (c.Column == "StatusFlag")
@@ -164,7 +164,7 @@ namespace CmsWeb.Areas.Reports.Models
                     .Attr("name", "StatusFlag")
                     .End();
             }
-            w.End().End();
+            w.End();
         }
     }
 }
