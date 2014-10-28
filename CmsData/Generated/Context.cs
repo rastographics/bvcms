@@ -2863,6 +2863,22 @@ namespace CmsData
     #endregion
 	#region Scalar Functions
 		
+		[Function(Name="dbo.DonorTotalUnitsSize", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalUnitsSize(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "min", DbType="int")] int? min,
+            [Parameter(Name = "max", DbType="int")] int? max
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                min,
+                max
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.AttendItem", IsComposable = true)]
 		[return: Parameter(DbType = "datetime")]
 		public DateTime? AttendItem(
@@ -2893,6 +2909,22 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.DonorTotalGiftsAttrRange", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalGiftsAttrRange(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "min", DbType="int")] int? min,
+            [Parameter(Name = "max", DbType="int")] int? max
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                min,
+                max
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.LastActive", IsComposable = true)]
 		[return: Parameter(DbType = "datetime")]
 		public DateTime? LastActive(
@@ -2920,6 +2952,22 @@ namespace CmsData
                 dt1,
                 dt2,
                 fundid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DonorTotalUnitsAttrRange", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? DonorTotalUnitsAttrRange(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "min", DbType="int")] int? min,
+            [Parameter(Name = "max", DbType="int")] int? max
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                min,
+                max
                 ).ReturnValue));
 		}
 
@@ -3277,17 +3325,19 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.DonorTotalUnits", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? DonorTotalUnits(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "attr", DbType="int")] int? attr
+		[Function(Name="dbo.DOB", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string Dob(
+            [Parameter(Name = "m", DbType="int")] int? m,
+            [Parameter(Name = "d", DbType="int")] int? d,
+            [Parameter(Name = "y", DbType="int")] int? y
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                attr
+                m,
+                d,
+                y
                 ).ReturnValue));
 		}
 
@@ -3300,20 +3350,6 @@ namespace CmsData
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 familyid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DonorTotalGifts", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalGifts(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "attr", DbType="int")] int? attr
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                attr
                 ).ReturnValue));
 		}
 
@@ -3344,36 +3380,6 @@ namespace CmsData
                 oid,
                 tid,
                 typeid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DonorTotalMean", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalMean(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "attr", DbType="int")] int? attr
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                attr
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DonorTotalMedian", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalMedian(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "attr", DbType="int")] int? attr,
-            [Parameter(Name = "threshold", DbType="money")] decimal? threshold
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                attr,
-                threshold
                 ).ReturnValue));
 		}
 
@@ -3413,22 +3419,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.DonorTotalGiftsSize", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalGiftsSize(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "min", DbType="int")] int? min,
-            [Parameter(Name = "max", DbType="int")] int? max
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                min,
-                max
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.SpouseId", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? SpouseId(
@@ -3438,22 +3428,6 @@ namespace CmsData
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 peopleid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DonorTotalUnitsSize", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalUnitsSize(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "min", DbType="int")] int? min,
-            [Parameter(Name = "max", DbType="int")] int? max
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                min,
-                max
                 ).ReturnValue));
 		}
 
@@ -3677,22 +3651,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.DonorTotalGiftsAttrRange", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalGiftsAttrRange(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "min", DbType="int")] int? min,
-            [Parameter(Name = "max", DbType="int")] int? max
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                min,
-                max
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.EnrollmentTransactionId", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? EnrollmentTransactionId(
@@ -3708,22 +3666,6 @@ namespace CmsData
                 oid,
                 tdt,
                 ttid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DonorTotalUnitsAttrRange", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? DonorTotalUnitsAttrRange(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "min", DbType="int")] int? min,
-            [Parameter(Name = "max", DbType="int")] int? max
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                min,
-                max
                 ).ReturnValue));
 		}
 
@@ -4033,22 +3975,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.DOB", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string Dob(
-            [Parameter(Name = "m", DbType="int")] int? m,
-            [Parameter(Name = "d", DbType="int")] int? d,
-            [Parameter(Name = "y", DbType="int")] int? y
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                m,
-                d,
-                y
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.GetPeopleIdFromACS", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? GetPeopleIdFromACS(
@@ -4301,6 +4227,48 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.DonorTotalUnits", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? DonorTotalUnits(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "attr", DbType="int")] int? attr
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                attr
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DonorTotalGifts", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalGifts(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "attr", DbType="int")] int? attr
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                attr
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DonorTotalMean", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalMean(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "attr", DbType="int")] int? attr
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                attr
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.SpaceToNull", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string SpaceToNull(
@@ -4326,6 +4294,22 @@ namespace CmsData
                 pid,
                 days,
                 fundid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DonorTotalMedian", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalMedian(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "attr", DbType="int")] int? attr,
+            [Parameter(Name = "threshold", DbType="money")] decimal? threshold
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                attr,
+                threshold
                 ).ReturnValue));
 		}
 
@@ -4378,6 +4362,22 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DonorTotalGiftsSize", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalGiftsSize(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "min", DbType="int")] int? min,
+            [Parameter(Name = "max", DbType="int")] int? max
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                min,
+                max
                 ).ReturnValue));
 		}
 
