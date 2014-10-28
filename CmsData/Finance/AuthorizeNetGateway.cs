@@ -45,12 +45,6 @@ namespace CmsData.Finance
         public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode,
             string routing, string account, bool giving)
         {
-            var normalizeExpires = DbUtil.NormalizeExpires(expires);
-            if (normalizeExpires == null)
-                throw new ArgumentException("Can't normalize date {0}".Fmt(expires), "expires");
-
-            var expiredDate = normalizeExpires.Value;
-
             var person = db.LoadPersonById(peopleId);
             var billToAddress = new AuthorizeNet.Address
             {
@@ -63,7 +57,7 @@ namespace CmsData.Finance
                 Street = person.PrimaryAddress
             };
 
-            Customer customer = null;
+            Customer customer;
 
             var paymentInfo = person.PaymentInfo();
             if (paymentInfo == null)
@@ -95,7 +89,15 @@ namespace CmsData.Finance
             if (type == "B")
                 SaveECheckToProfile(routing, account, paymentInfo, customer);
             else if (type == "C")
+            {
+                var normalizeExpires = DbUtil.NormalizeExpires(expires);
+                if (normalizeExpires == null)
+                    throw new ArgumentException("Can't normalize date {0}".Fmt(expires), "expires");
+
+                var expiredDate = normalizeExpires.Value;
+
                 SaveCreditCardToProfile(cardNumber, cardCode, expiredDate, paymentInfo, customer);
+            }
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
 
