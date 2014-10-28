@@ -22,6 +22,7 @@ using OfficeOpenXml.Table;
 using UtilityExtensions;
 using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
 using MeetingsModel = CmsWeb.Areas.Reports.Models.MeetingsModel;
+using System.Text;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
@@ -587,12 +588,22 @@ namespace CmsWeb.Areas.Reports.Controllers
             try
             {
                 Response.ContentType = "text/plain";
-                var settings = new XmlWriterSettings { Indent = true, Encoding = new System.Text.UTF8Encoding(false) };
-                using (var w = XmlWriter.Create(Response.OutputStream, settings))
+                var settings = new XmlWriterSettings
+                {
+                    Indent = true,
+                    ConformanceLevel = ConformanceLevel.Fragment,
+                    OmitXmlDeclaration = true
+                };
+                var sb = new StringBuilder();
+                using (var w = XmlWriter.Create(sb, settings))
                 {
                     CustomReportsModel.StandardColumns(DbUtil.Db, w);
                     w.Flush();
                 }
+                var s = sb.ToString();
+                foreach (var line in s.SplitLines())
+                    Response.Write("  {0}\n".Fmt(line));
+                Response.Write("\n");
                 return new EmptyResult();
             }
             catch (Exception ex)

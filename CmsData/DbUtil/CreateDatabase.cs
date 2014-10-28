@@ -69,14 +69,19 @@ namespace CmsData
                     var b = DatabaseExists(cn, name);
                     ret = b ? CheckDatabaseResult.DatabaseExists : CheckDatabaseResult.DatabaseDoesNotExist;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    ret = CheckDatabaseResult.ServerNotFound;
+                    if (ex.Message.StartsWith("A network-related"))
+                        ret = CheckDatabaseResult.ServerNotFound;
+                    else
+                        throw;
                 }
                 if (nocache == false)
                 {
                     HttpRuntime.Cache.Insert(Util.Host + "-CheckDatabaseResult", ret, null,
-                        DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                        ret == CheckDatabaseResult.DatabaseExists
+                            ? DateTime.Now.AddSeconds(60)
+                            : DateTime.Now.AddSeconds(5), Cache.NoSlidingExpiration);
                 }
                 return ret;
             }

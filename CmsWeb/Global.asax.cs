@@ -38,9 +38,11 @@ namespace CmsWeb
                 return;
             if (User.Identity.IsAuthenticated)
             {
-                if (!DbUtil.CmsDatabaseExists())
+                var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
+                var redirect = ViewExtensions2.DatabaseErrorUrl(r);
+                if (redirect != null)
                 {
-                    Response.Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
+                    Response.Redirect(redirect);
                     return;
                 }
                 Models.AccountModel.SetUserInfo(Util.UserName, Session);
@@ -79,26 +81,30 @@ namespace CmsWeb
                 Response.Redirect("/Errors/AppOffline.htm");
                 return;
             }
-            if (!DbUtil.CmsDatabaseExists())
-            {
+            var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
+            var redirect = ViewExtensions2.DatabaseErrorUrl(r);
 #if DEBUG
-                var r = DbUtil.CheckDatabaseExists(Util.Host);
-                if (r == DbUtil.CheckDatabaseResult.ServerNotFound)
-                {
-                    Response.Redirect("/Errors/DatabaseServerNotFound.aspx?server=" + Util.DbServer);
-                    return;
-                }
+            if (r == DbUtil.CheckDatabaseResult.ServerNotFound)
+            {
+                Response.Redirect(redirect);
+                return;
+            }
+            if (r == DbUtil.CheckDatabaseResult.DatabaseDoesNotExist)
+            {
                 var ret = DbUtil.CreateDatabase();
                 if (ret.HasValue())
                 {
                     Response.Redirect("/Errors/DatabaseCreationError.aspx?error=" + HttpUtility.UrlEncode(ret));
                     return;
                 }
-#else
-                Response.Redirect("/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host);
-                return;
-#endif
             }
+#else
+            if (redirect != null)
+            {
+                Response.Redirect(redirect);
+                return;
+            }
+#endif
             try
             {
                 Util.AdminMail = DbUtil.Db.Setting("AdminMail", "");
