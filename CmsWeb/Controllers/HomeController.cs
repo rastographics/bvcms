@@ -258,7 +258,7 @@ namespace CmsWeb.Controllers
 //                Response.ContentType = "text/plain";
 //                return Content(s);
 
-#if DEBUG
+#if DEBUG2
                 var script = System.IO.File.ReadAllText(Server.MapPath("/chart.py"));
 #else
                 var script = DbUtil.Content(name, "");
