@@ -815,6 +815,19 @@ namespace CmsWeb
         {
             get { return "table table-condensed table-striped not-wide grid2"; }
         }
+        public static string DatabaseErrorUrl(DbUtil.CheckDatabaseResult ret)
+        {
+            switch (ret)
+            {
+                case DbUtil.CheckDatabaseResult.DatabaseDoesNotExist:
+                    return "/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host;
+                case DbUtil.CheckDatabaseResult.ServerNotFound:
+                    return "/Errors/DatabaseServerNotFound.aspx?server=" + Util.DbServer;
+                case DbUtil.CheckDatabaseResult.DatabaseExists:
+                    return null;
+            }
+            return null;
+        }
 
         public static CollectionItemNamePrefixScope BeginCollectionItem<TModel>(this HtmlHelper<TModel> html, string collectionName)
         {
