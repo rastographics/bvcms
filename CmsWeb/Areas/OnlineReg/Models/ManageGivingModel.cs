@@ -125,8 +125,7 @@ namespace CmsWeb.Models
             this.pid = pid;
             this.orgid = orgid;
             var rg = person.ManagedGiving();
-            var pi = person.PaymentInfo();
-            if (rg != null && pi != null)
+            if (rg != null)
             {
                 SemiEvery = rg.SemiEvery;
                 StartWhen = rg.StartWhen;
@@ -137,19 +136,8 @@ namespace CmsWeb.Models
                 Period = rg.Period;
                 foreach (var ra in person.RecurringAmounts.AsEnumerable())
                     FundItem.Add(ra.FundId, ra.Amt);
-                Cardnumber = pi.MaskedCard;
-                Account = pi.MaskedAccount;
-                Expires = pi.Expires;
-                Cardcode = Util.Mask(new StringBuilder(pi.Ccv), 0);
-                Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
+                
                 NextDate = rg.NextDate;
-                NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
-                Type = pi.PreferredGivingType;
-                if (NoCreditCardsAllowed)
-                    Type = "B"; // bank account only
-                else if (NoEChecksAllowed)
-                    Type = "C"; // credit card only
-                Type = NoEChecksAllowed ? "C" : Type;
             }
             else if (Setting.ExtraValueFeeName.HasValue())
             {
@@ -162,8 +150,26 @@ namespace CmsWeb.Models
                 if (f != null && evamt > 0)
                     FundItem.Add(f.Value.ToInt(), evamt);
             }
+
+            var pi = person.PaymentInfo();
             if (pi == null)
                 pi = new PaymentInfo();
+            else
+            {
+                Cardnumber = pi.MaskedCard;
+                Account = pi.MaskedAccount;
+                Expires = pi.Expires;
+                Cardcode = Util.Mask(new StringBuilder(pi.Ccv), 0);
+                Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
+                NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
+                Type = pi.PreferredGivingType;
+                if (NoCreditCardsAllowed)
+                    Type = "B"; // bank account only
+                else if (NoEChecksAllowed)
+                    Type = "C"; // credit card only
+                Type = NoEChecksAllowed ? "C" : Type;
+            }
+            
             FirstName = pi.FirstName ?? person.FirstName;
             Middle = (pi.MiddleInitial ?? person.MiddleName).Truncate(1);
             LastName = pi.LastName ?? person.LastName;
