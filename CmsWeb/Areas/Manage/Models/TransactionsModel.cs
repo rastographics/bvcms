@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -284,41 +283,38 @@ namespace CmsWeb.Models
             }
 
             // next update existing transactions with new batch data if there are any.
-            if (approvedMatchingTransactions.Any())
+            foreach (var existingTransaction in approvedMatchingTransactions)
             {
-                foreach (var existingTransaction in approvedMatchingTransactions.Where(t => unMatchedKeyedByReference.ContainsKey(t.TransactionId)))
-                {
-                    // first get the matching batch transaction.
-                    var batchTransaction = unMatchedKeyedByReference[existingTransaction.TransactionId];
+                if (unMatchedKeyedByReference.ContainsKey(existingTransaction.TransactionId))
+                    continue;
 
-                    // get the adjusted settlement date
-                    var settlementDate = AdjustSettlementDateForAllTimeZones(batchTransaction.SettledDate);
+                // first get the matching batch transaction.
+                var batchTransaction = unMatchedKeyedByReference[existingTransaction.TransactionId];
 
-                    existingTransaction.Batch = settlementDate;  // this date now will be the same as the settlement date.
-                    existingTransaction.Batchref = batchTransaction.BatchReference;
-                    existingTransaction.Batchtyp = batchTransaction.BatchType == BatchType.Ach ? "eft" : "bankcard";
-                    existingTransaction.Settled = settlementDate;
-                }
+                // get the adjusted settlement date
+                var settlementDate = AdjustSettlementDateForAllTimeZones(batchTransaction.SettledDate);
+
+                existingTransaction.Batch = settlementDate;  // this date now will be the same as the settlement date.
+                existingTransaction.Batchref = batchTransaction.BatchReference;
+                existingTransaction.Batchtyp = batchTransaction.BatchType == BatchType.Ach ? "eft" : "bankcard";
+                existingTransaction.Settled = settlementDate;
             }
 
             // finally we need to mark these batches as completed if there are any.
-            if (unMatchedBatchTransactions.Any())
+            foreach (var batch in unMatchedBatchTransactions.DistinctBy(x => x.BatchReference))
             {
-                foreach (var batch in unMatchedBatchTransactions.DistinctBy(x => x.BatchReference))
+                var checkedBatch = DbUtil.Db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.BatchReference);
+                if (checkedBatch == null)
                 {
-                    var checkedBatch = DbUtil.Db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.BatchReference);
-                    if (checkedBatch == null)
-                    {
-                        DbUtil.Db.CheckedBatches.InsertOnSubmit(
-                            new CheckedBatch
-                            {
-                                BatchRef = batch.BatchReference,
-                                CheckedX = DateTime.Now
-                            });
-                    }
-                    else
-                        checkedBatch.CheckedX = DateTime.Now;
+                    DbUtil.Db.CheckedBatches.InsertOnSubmit(
+                        new CheckedBatch
+                        {
+                            BatchRef = batch.BatchReference,
+                            CheckedX = DateTime.Now
+                        });
                 }
+                else
+                    checkedBatch.CheckedX = DateTime.Now;
             }
             
             DbUtil.Db.SubmitChanges();
