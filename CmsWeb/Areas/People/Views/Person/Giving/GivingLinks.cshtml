@@ -2,7 +2,7 @@
 @using CmsWeb
 @using UtilityExtensions
 @{
-    var giving = DbUtil.Db.Gateway() != null && ViewExtensions2.DbSetting("OnlineGiving", "true").ToBool();
+    var giving = ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && ViewExtensions2.DbSetting("OnlineGiving", "true").ToBool();
 }
 <fieldset class="left-gutter margin-top">
     <legend>Online Giving</legend>
