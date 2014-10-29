@@ -1,5 +1,6 @@
-﻿@using CmsWeb
-@model CmsWeb.Models.ManageGivingModel
+﻿@model CmsWeb.Models.ManageGivingModel
+@using CmsWeb
+@using CmsData.Finance
 @{
     ViewBag.Title = "ManagedGiving";
     Layout = ViewExtensions2.Layout();
@@ -61,14 +62,14 @@
 <tr>
     <td class="right">Pay From:</td>
     <td>
-    @if (Model.Type == "C")
+    @if (Model.Type == PaymentType.CreditCard)
     {
         @:Debit/Credit Card # @Model.Cardnumber<br />
         @:Expires @Model.Expires
     }
     else
     {
-		@:Bank Routing # @Model.Routing<br >
+        @:Bank Routing # @Model.Routing<br >
         @:Bank Account # @Model.Account
     }
     </td>

@@ -60,7 +60,7 @@ namespace CmsData.Finance
 				person.PaymentInfos.Add(paymentInfo);
 			}
 
-            if (type == "C") // credit card
+            if (type == PaymentType.CreditCard)
             {
                 if (paymentInfo.SageCardGuid == null) // create new vault.
                     paymentInfo.SageCardGuid = CreateCreditCardVault(person, cardNumber, expires);
@@ -78,7 +78,7 @@ namespace CmsData.Finance
                 paymentInfo.Ccv = cardCode;
                 paymentInfo.Expires = expires;
             }
-            else if (type == "B") // bank account
+            else if (type == PaymentType.Ach)
             {
                 if (paymentInfo.SageBankGuid == null) // create new vault
                     paymentInfo.SageBankGuid = CreateAchVault(person, account, routing);
@@ -220,7 +220,7 @@ namespace CmsData.Finance
             };
 		}
 
-		public TransactionResponse RefundCreditCard(string reference, Decimal amt)
+		public TransactionResponse RefundCreditCard(string reference, Decimal amt, string lastDigits = "")
 		{
             var refundRequest = new CreditCardRefundRequest(_id, _key, reference, amt);
             var response = refundRequest.Execute();
@@ -234,7 +234,7 @@ namespace CmsData.Finance
             };
 		}
 
-		public TransactionResponse RefundCheck(string reference, Decimal amt)
+		public TransactionResponse RefundCheck(string reference, Decimal amt, string lastDigits = "")
 		{
             var refundRequest = new AchRefundRequest(_id, _key, reference, amt);
             var response = refundRequest.Execute();
@@ -333,7 +333,7 @@ namespace CmsData.Finance
                     Message = "missing payment info",
                 };
 
-            if (type == "C") // credit card
+            if (type == PaymentType.CreditCard) // credit card
                 return ChargeCreditCardVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person, paymentInfo, amt, tranid);
             else // bank account
                 return ChargeAchVault(paymentInfo.SageBankGuid.GetValueOrDefault(), person, paymentInfo, amt, tranid);
@@ -437,7 +437,8 @@ namespace CmsData.Finance
                         Approved = transaction.Approved,
                         Message = transaction.Message,
                         TransactionDate = transaction.Date,
-                        SettledDate = transaction.SettleDate
+                        SettledDate = transaction.SettleDate,
+                        LastDigits = transaction.LastDigits
                     });
                 }
             }

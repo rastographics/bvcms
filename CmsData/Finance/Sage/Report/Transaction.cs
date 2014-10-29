@@ -23,6 +23,8 @@ namespace CmsData.Finance.Sage.Report
 
         public DateTime SettleDate { get; private set; }
 
+        public string LastDigits { get; set; }
+
         public Transaction(XElement data)
         {
             Reference = data.Element("reference").Value.Trim();
@@ -34,6 +36,13 @@ namespace CmsData.Finance.Sage.Report
             Message = data.Element("message").Value.Trim();
             Date = DateTime.Parse(data.Element("date").Value);
             SettleDate = DateTime.Parse(data.Element("settle_date").Value);
+
+            var cardNumberElement = data.Element("cardnumber");
+            var acctElement = data.Element("acct");
+            if (cardNumberElement != null)
+                LastDigits = cardNumberElement.Value;
+            else if (acctElement != null)
+                LastDigits = acctElement.Value;
         }
 
         private TransactionType GetTransactionType(string transactionCode)

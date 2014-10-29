@@ -78,9 +78,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             try
             {
-                if (pf.Type == "B")
+                if (pf.Type == PaymentType.Ach)
                     Payments.ValidateBankAccountInfo(ModelState, pf.Routing, pf.Account);
-                if (pf.Type == "C")
+                if (pf.Type == PaymentType.CreditCard)
                     Payments.ValidateCreditCardInfo(ModelState, pf);
 
                 if (!ModelState.IsValid)
@@ -207,7 +207,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (pf.SavePayInfo)
                 tinfo = gw.PayWithVault(pid ?? 0, pf.AmtToPay ?? 0, pf.Description, ti.Id, pf.Type);
                 else
-                    if (pf.Type == "B")
+                    if (pf.Type == PaymentType.Ach)
                     tinfo = gw.PayWithCheck(pid ?? 0, pf.AmtToPay ?? 0, pf.Routing, pf.Account, pf.Description, ti.Id,
                         pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
                     else

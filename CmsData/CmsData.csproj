@@ -347,6 +347,7 @@
     <Compile Include="Finance\BatchTransaction.cs" />
     <Compile Include="Finance\IGateway.cs" />
     <Compile Include="Finance\BatchType.cs" />
+    <Compile Include="Finance\PaymentType.cs" />
     <Compile Include="Finance\Sage\Core\Ach.cs" />
     <Compile Include="Finance\Sage\Core\Address.cs" />
     <Compile Include="Finance\Sage\Core\ApprovalIndicator.cs" />

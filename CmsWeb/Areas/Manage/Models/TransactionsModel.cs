@@ -278,7 +278,10 @@ namespace CmsWeb.Models
                     Batchtyp = transactionToInsert.BatchType == BatchType.Ach ? "eft" : "bankcard",
                     OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?)null,
                     Fromsage = true,
-                    Description = originalTransaction != null ? originalTransaction.Description : "no description from {0}, id={1}".Fmt(gateway.GatewayType, transactionToInsert.TransactionId)
+                    Description = originalTransaction != null ? originalTransaction.Description : "no description from {0}, id={1}".Fmt(gateway.GatewayType, transactionToInsert.TransactionId),
+                    PaymentType = transactionToInsert.BatchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard,
+                    LastFourCC = transactionToInsert.BatchType == BatchType.CreditCard ? transactionToInsert.LastDigits : null,
+                    LastFourACH = transactionToInsert.BatchType == BatchType.Ach ? transactionToInsert.LastDigits : null
                 });
             }
 

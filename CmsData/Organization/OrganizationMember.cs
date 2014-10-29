@@ -306,7 +306,7 @@ namespace CmsData
                     Amt = payment,
                     Amtdue = (amount ?? payment) - payment,
                     AdjustFee = adjustFee,
-                    Message = description
+                    Message = description,
                 };
 
             db.Transactions.InsertOnSubmit(ti2);

@@ -34,5 +34,10 @@ namespace CmsData.Finance
         public DateTime TransactionDate { get; set; }
         
         public DateTime SettledDate { get; set; }
+
+        /// <summary>
+        /// The last four digits of either the card number or the ACH account number.
+        /// </summary>
+        public string LastDigits { get; set; }
     }
 }

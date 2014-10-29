@@ -263,6 +263,8 @@ namespace UtilityExtensions
         /// </summary>
         public static string Last(this string source, int stringLength)
         {
+            if (string.IsNullOrEmpty(source))
+                return string.Empty;
             if (stringLength >= source.Length)
                 return source;
             return source.Substring(source.Length - stringLength);
