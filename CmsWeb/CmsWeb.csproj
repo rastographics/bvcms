@@ -1326,7 +1326,6 @@
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailsModel.cs" />
-    <Compile Include="Areas\Manage\Models\TransactionModel.cs" />
     <Compile Include="Areas\Manage\Models\TransactionsModel.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ConfirmTest.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageVolunteers.cs" />
