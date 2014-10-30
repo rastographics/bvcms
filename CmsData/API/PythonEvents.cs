@@ -51,7 +51,7 @@ namespace CmsData
         public string Header { get; set; } // set this in the python code for output page
         public string Output { get; set; } // this is set automatically for the output page
 
-        public PythonEvents(CMSDataContext db, string script)
+        public PythonEvents(string dbname, string script)
         {
             var engine = Python.CreateEngine();
             var ms = new MemoryStream();
@@ -61,10 +61,13 @@ namespace CmsData
             var sc = engine.CreateScriptSourceFromString(script);
             var code = sc.Compile();
             var scope = engine.CreateScope();
+            db = new CMSDataContext(Util.GetConnectionString(dbname));
+            db.Host = dbname;
             scope.SetVariable("model", this);
             var qf = new QueryFunctions(db);
             scope.SetVariable("q", qf);
             code.Execute(scope);
+            db.SubmitChanges();
             ms.Position = 0;
             var sr = new StreamReader(ms);
             Output = sr.ReadToEnd();

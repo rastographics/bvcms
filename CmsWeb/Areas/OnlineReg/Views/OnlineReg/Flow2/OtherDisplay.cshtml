@@ -51,7 +51,7 @@
             case "AskHeader":
             <tr>
                 <td></td>
-                <td><strong>@(((AskHeader)ask).Label)</strong></td>
+                <td><strong>@Html.Raw(((AskHeader)ask).Label)</strong></td>
             </tr>
                 break;
             case "AskInstruction":
