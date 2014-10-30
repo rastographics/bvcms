@@ -255,7 +255,7 @@ namespace CmsWeb.Controllers
 #endif
                 if (!script.HasValue())
                     return Message("no script named " + name);
-                var pe = new PythonEvents(DbUtil.Db, script);
+                var pe = new PythonEvents(Util.Host, script);
                 return View(pe);
             }
             catch (Exception ex)

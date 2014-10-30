@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -15,8 +16,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
-        //private string confirm;
-
         [HttpPost]
         public ActionResult SaveProgressPayment(int id)
         {
@@ -28,9 +27,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (m.UserPeopleId == null)
                     m.UserPeopleId = Util.UserPeopleId;
                 m.UpdateDatum();
-                return Json(new {confirm = "/OnlineReg/FinishLater/" + id});
+                return Json(new { confirm = "/OnlineReg/FinishLater/" + id });
             }
-            return Json(new {confirm = "/OnlineReg/Unknown"});
+            return Json(new { confirm = "/OnlineReg/Unknown" });
         }
         [HttpGet]
         public ActionResult FinishLater(int id)
@@ -39,6 +38,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (ed != null)
             {
                 var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+
+                var registerLink = EmailReplacements.CreateRegisterLink(m.Orgid, "Resume registration for {0}".Fmt(m.Header));
+                var msg = "<p>Hi {first},</p>\n<p>Here is the link to continue your registration:</p>\n" + registerLink;
+                Debug.Assert(m.Orgid != null, "m.Orgid != null");
+                var notifyids = DbUtil.Db.NotifyIds(m.Orgid.Value, m.org.NotifyIds);
+                var p = m.UserPeopleId.HasValue ? DbUtil.Db.LoadPersonById(m.UserPeopleId.Value) : m.List[0].person;
+                DbUtil.Db.Email(notifyids[0].FromEmail, p, "Continue your registration for {0}".Fmt(m.Header), msg);
+
+                /* We use Content as an ActionResult instead of Message because we want plain text sent back
+                 * This is an HttpPost ajax call and will have a SiteLayout wrapping this.
+                 */
+                //return Content("We have saved your progress. An email with a link to finish this registration will come to you shortly.");
+
                 return View(m);
             }
             return View("Unknown");
@@ -204,17 +216,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             TransactionResponse tinfo;
             var gw = DbUtil.Db.Gateway(pf.testing);
 
-                if (pf.SavePayInfo)
+            if (pf.SavePayInfo)
                 tinfo = gw.PayWithVault(pid ?? 0, pf.AmtToPay ?? 0, pf.Description, ti.Id, pf.Type);
-                else
-                    if (pf.Type == PaymentType.Ach)
+            else
+            {
+                if (pf.Type == PaymentType.Ach)
                     tinfo = gw.PayWithCheck(pid ?? 0, pf.AmtToPay ?? 0, pf.Routing, pf.Account, pf.Description, ti.Id,
-                        pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
-                    else
-                    tinfo = gw.PayWithCreditCard(pid ?? 0, pf.AmtToPay ?? 0, pf.CreditCard, 
-                            DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
+                        pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip,
+                        pf.Phone);
+                else
+                    tinfo = gw.PayWithCreditCard(pid ?? 0, pf.AmtToPay ?? 0, pf.CreditCard,
+                        DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
                         pf.Description, ti.Id,
                         pf.CCV, pf.Email, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+            }
 
             ti.TransactionId = tinfo.TransactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))

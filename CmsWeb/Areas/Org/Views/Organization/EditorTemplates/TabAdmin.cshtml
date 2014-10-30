@@ -126,15 +126,12 @@
     AllowReRegister:
   </span> @Html.CheckBox("AllowReRegister", Model.AllowReRegister)
 </li>
-@if (User.IsInRole("Developer"))
-{
 <li>
     <span class="keyword big tip" title="AllowSaveProgress
         |Allows a person to leave the registration and come back to finish later">
         AllowSaveProgress:
     </span> @Html.CheckBox("AllowSaveProgress", Model.AllowSaveProgress)
 </li>
-}
 <li>
     <span class="keyword big tip" title="GroupToJoin
         |Joins registrant to another organization at the same time">

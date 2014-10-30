@@ -704,6 +704,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var n = m.List.Count - 1;
             m.HistoryAdd("continue");
             m.UpdateDatum();
+            SetHeaders(m);
             return View("Index", m);
         }
         [HttpGet]
@@ -734,14 +735,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content("Registration is not far enough along to save, sorry.");
 
             var registerLink = EmailReplacements.CreateRegisterLink(m.Orgid, "Resume registration for {0}".Fmt(m.Header));
-            var msg = "<p>Hi {first},</p>\n<p>Here is your link to continue your registration:</p>\n" + registerLink;
+            var msg = "<p>Hi {first},</p>\n<p>Here is the link to continue your registration:</p>\n" + registerLink;
             var notifyids = DbUtil.Db.NotifyIds(m.Orgid.Value, m.org.NotifyIds);
             DbUtil.Db.Email(notifyids[0].FromEmail, p, "Continue your registration for {0}".Fmt(m.Header), msg);
 
             /* We use Content as an ActionResult instead of Message because we want plain text sent back
              * This is an HttpPost ajax call and will have a SiteLayout wrapping this.
              */
-            return Content("We have saved your progress, an email with a link to finish this registration will come to you shortly.");
+            return Content("We have saved your progress. An email with a link to finish this registration will come to you shortly.");
         }
         [HttpGet]
         public ActionResult Existing(int id)

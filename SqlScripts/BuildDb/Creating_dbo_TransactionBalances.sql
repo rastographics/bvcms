@@ -44,13 +44,11 @@ FROM (
 				AND ISNULL(t.coupon, 0) = 0
 				AND LEN(t.TransactionId) > 0
 				AND t.amt > 0
-				AND LOWER(t.TransactionGateway) = 'sage'
 				THEN 1 ELSE 0 END)
 			CanVoid
 
 	FROM dbo.[Transaction] t
 ) tt
-
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
