@@ -98,19 +98,19 @@ namespace CmsWeb.Areas.Reports.Models
                     var desc = (string)c.Attribute("description");
                     if (!desc.HasValue())
                         desc = flags[flag].Name;
-                    sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, desc);
+                    sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(desc));
                 }
                 else if (name.StartsWith("ExtraValue") && Regex.IsMatch(name, @"\AExtraValue(Code|Date|Text|Int|Bit)\z"))
                 {
                     var field = (string)c.Attribute("field");
                     if (!field.HasValue())
                         throw new Exception("missing field on column " + cc.Column);
-                    var sel = cc.Select.Replace("{field}", field);
-                    sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, field);
+                    var sel = cc.Select.Replace("{field}", DblQuotes(field));
+                    sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(field));
                 }
                 else
                 {
-                    sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, cc.Select, cc.Column);
+                    sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, cc.Select, DblQuotes(cc.Column));
                     if (cc.JoinTable.HasValue())
                         if (!joins.Contains(cc.JoinTable))
                             joins.Add(cc.JoinTable);
@@ -123,6 +123,11 @@ namespace CmsWeb.Areas.Reports.Models
             sb.AppendLine("JOIN dbo.TagPerson tp ON tp.PeopleId = p.PeopleId");
             sb.AppendLine("WHERE tp.Id = @tagId\n");
             return sb.ToString();
+        }
+
+        public static string DblQuotes(string s)
+        {
+            return s.Replace("'", "''");
         }
         public static void StandardColumns(CMSDataContext db, XmlWriter writer)
         {

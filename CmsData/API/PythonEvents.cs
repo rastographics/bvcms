@@ -18,9 +18,10 @@ namespace CmsData
         {
             if (db == null)
                 return;
-            var cs = db.Connection.ConnectionString;
+            var dbname = db.Host;
             db.Dispose();
-            db = new CMSDataContext(cs);
+            db = new CMSDataContext(Util.GetConnectionString(dbname));
+            db.Host = dbname;
         }
 
         public PythonEvents(string dbname, string classname, string script)
