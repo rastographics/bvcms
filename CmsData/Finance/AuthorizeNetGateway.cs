@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using AuthorizeNet;
@@ -383,19 +384,32 @@ namespace CmsData.Finance
             }
         }
 
+        public ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end)
+        {
+            var returnedChecks = new List<ReturnedCheck>();
+            foreach (var transaction in ReportingGateway.GetTransactionList(start, end).Where(t => t.HasReturnedItems == NullableBooleanEnum.True))
+            {
+                // we only get the first one, because I can't think of a reason there would ever be more than one.
+                var returnedItem = transaction.ReturnedItems.FirstOrDefault();
+                if (returnedItem != null)
+                {
+                    returnedChecks.Add(new ReturnedCheck
+                    {
+                        TransactionId = transaction.InvoiceNumber.ToInt(),
+                        Name = "{0} {1}".Fmt(transaction.FirstName, transaction.LastName),
+                        RejectCode = returnedItem.code,
+                        RejectAmount = transaction.RequestedAmount, // another guess here on amount, I'm really not sure about this field.
+                        RejectDate = returnedItem.dateLocal
+                    });
+                }
+            }
+
+            return new ReturnedChecksResponse(returnedChecks);
+        }
+
         private static bool IsApproved(string batchSettlementState)
         {
             return batchSettlementState.ParseEnum<settlementStateEnum>() == settlementStateEnum.settledSuccessfully;
-        }
-
-        public System.Data.DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt)
-        {
-            throw new NotImplementedException();
-        }
-
-        public System.Data.DataSet VirtualCheckRejects(DateTime rejectdate)
-        {
-            throw new NotImplementedException();
         }
 
         public bool CanVoidRefund

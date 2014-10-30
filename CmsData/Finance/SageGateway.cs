@@ -445,7 +445,7 @@ namespace CmsData.Finance
             return new BatchResponse(batchTransactions);
 		}
 
-        private static TransactionType GetTransactionType(Sage.Report.TransactionType transactionType) 
+	    private static TransactionType GetTransactionType(Sage.Report.TransactionType transactionType) 
         {
             switch (transactionType)
             {
@@ -472,43 +472,28 @@ namespace CmsData.Finance
             }
         }
 
-		public DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt)
-		{
-			var wc = new WebClient();
-			wc.BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/";
-			var coll = new NameValueCollection();
-			coll["M_ID"] = _id;
-			coll["M_KEY"] = _key;
-		    coll["START_DATE"] = "";
-		    coll["END_DATE"] = "";
+        public ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end)
+        {
+            var returnedChecks = new List<ReturnedCheck>();
+            var virtualCheckRejectsRequest = new VirtualCheckRejectsRequest(_id, _key, start, end);
+            var response = virtualCheckRejectsRequest.Execute();
 
-			const string method = "VIEW_VIRTUAL_CHECK_REJECTS_BY_DATE";
+            foreach (var returnedCheck in response.ReturnedChecks)
+            {
+                returnedChecks.Add(new ReturnedCheck
+                {
+                    TransactionId = returnedCheck.CustomerNumber.ToInt(),
+                    Name = returnedCheck.CustomerName,
+                    RejectCode = returnedCheck.RejectCode,
+                    RejectAmount = returnedCheck.RejectAmount,
+                    RejectDate = returnedCheck.RejectDate
+                });
+            }
 
-			var b = wc.UploadValues(method, "POST", coll);
-			var ret = Encoding.ASCII.GetString(b);
-			var ds = new DataSet();
-			ds.ReadXml(new StringReader(ret));
-			return ds;
-		}
+            return new ReturnedChecksResponse(returnedChecks);
+        }
 
-		public DataSet VirtualCheckRejects(DateTime rejectdate)
-		{
-			var wc = new WebClient {BaseAddress = "https://www.sagepayments.net/web_services/vterm_extensions/reporting.asmx/"};
-		    var coll = new NameValueCollection();
-			coll["M_ID"] = _id;
-			coll["M_KEY"] = _key;
-		    coll["REJECT_DATE"] = rejectdate.ToShortDateString();
-
-			const string method = "VIEW_VIRTUAL_CHECK_REJECTS";
-
-			var b = wc.UploadValues(method, "POST", coll);
-			var ret = Encoding.ASCII.GetString(b);
-			var ds = new DataSet();
-			ds.ReadXml(new StringReader(ret));
-			return ds;
-		}
-
-        public bool CanVoidRefund
+		public bool CanVoidRefund
         {
             get { return true; }
         }

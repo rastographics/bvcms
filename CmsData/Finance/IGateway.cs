@@ -22,7 +22,6 @@ namespace CmsData
         TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string city, string state, string zip, string phone);
         TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type);
         BatchResponse GetBatchDetails(DateTime start, DateTime end);
-        DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt);
-        DataSet VirtualCheckRejects(DateTime rejectdate);
+        ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end);
     }
 }

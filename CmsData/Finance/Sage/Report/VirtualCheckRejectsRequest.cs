@@ -11,7 +11,7 @@ namespace CmsData.Finance.Sage.Report
         }
 
         public VirtualCheckRejectsRequest(string id, string key, DateTime startDate, DateTime endDate)
-            : base(id, key, "VIEW_VIRTUAL_CHECK_REJECTS")
+            : base(id, key, "VIEW_VIRTUAL_CHECK_REJECTS_BY_DATE")
         {
             Data["START_DATE"] = startDate.ToShortDateString();
             Data["END_DATE"] = endDate.ToShortDateString();
