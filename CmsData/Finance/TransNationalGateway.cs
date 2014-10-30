@@ -1,11 +1,9 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Web.Configuration;
 using CmsData.Finance.TransNational.Core;
 using CmsData.Finance.TransNational.Query;
 using CmsData.Finance.TransNational.Transaction.Refund;
@@ -59,7 +57,7 @@ namespace CmsData.Finance
                 person.PaymentInfos.Add(paymentInfo);
             }
 
-            if (type == "C") // credit card
+            if (type == PaymentType.CreditCard)
             {
                 if (paymentInfo.TbnCardVaultId == null) // create new vault.
                     paymentInfo.TbnCardVaultId = CreateCreditCardVault(person, cardNumber, expires);
@@ -78,7 +76,7 @@ namespace CmsData.Finance
                 paymentInfo.Ccv = cardCode; // TODO: shouldn't need to store this
                 paymentInfo.Expires = expires;
             }
-            else if (type == "B") // bank account
+            else if (type == PaymentType.Ach)
             {
                 if (paymentInfo.TbnBankVaultId == null) // create new vault
                     paymentInfo.TbnBankVaultId = CreateAchVault(person, account, routing);
@@ -315,12 +313,12 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse RefundCreditCard(string reference, Decimal amt)
+        public TransactionResponse RefundCreditCard(string reference, Decimal amt, string lastDigits = "")
         {
             return Refund(reference, amt);
         }
 
-        public TransactionResponse RefundCheck(string reference, Decimal amt)
+        public TransactionResponse RefundCheck(string reference, Decimal amt, string lastDigits = "")
         {
             return Refund(reference, amt);
         }
@@ -428,7 +426,7 @@ namespace CmsData.Finance
                     Message = "missing payment info",
                 };
 
-            if (type == "C") // credit card
+            if (type == PaymentType.CreditCard) // credit card
                 return ChargeCreditCardVault(paymentInfo.TbnCardVaultId.GetValueOrDefault(), peopleId, amt, tranid,
                     description);
             else // bank account
@@ -532,7 +530,8 @@ namespace CmsData.Finance
                             Approved = originalAction.Success,
                             Message = originalAction.ResponseText,
                             TransactionDate = originalAction.Date,
-                            SettledDate = settleAction.Date
+                            SettledDate = settleAction.Date,
+                            LastDigits = transaction.LastDigits
                         });
                     }
                 }

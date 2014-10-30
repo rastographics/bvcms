@@ -271,7 +271,7 @@ namespace CmsData
             }
         }
 
-        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, string description, decimal? amount = null, bool? AdjustFee = false)
+        public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, string description, decimal? amount = null, bool? adjustFee = false)
         {
             var ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == TranId && tt.PeopleId == PeopleId);
             var ti = db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
@@ -305,8 +305,8 @@ namespace CmsData
                     Approved = true,
                     Amt = payment,
                     Amtdue = (amount ?? payment) - payment,
-                    AdjustFee = AdjustFee,
-                    Message = description
+                    AdjustFee = adjustFee,
+                    Message = description,
                 };
 
             db.Transactions.InsertOnSubmit(ti2);
@@ -330,7 +330,7 @@ namespace CmsData
         }
 
         private decimal? amountDue;
-        public Decimal? AmountDue(CMSDataContext Db)
+        public decimal? AmountDue(CMSDataContext Db)
         {
             if (amountDue.HasValue)
                 return amountDue;
@@ -343,8 +343,9 @@ namespace CmsData
                 return amountDue = (tt == null ? 0 : tt.IndAmt) - TotalPaid(Db);
             return amountDue = (tt == null ? 0 : tt.IndDue);
         }
+
         private decimal? totalPaid;
-        public Decimal TotalPaid(CMSDataContext Db)
+        public decimal TotalPaid(CMSDataContext Db)
         {
             if (totalPaid.HasValue)
                 return totalPaid.Value;

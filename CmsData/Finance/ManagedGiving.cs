@@ -52,9 +52,8 @@ namespace CmsData
             if (!total.HasValue || total == 0)
                 return 0;
 
-            var preferredtype = (from pi in db.PaymentInfos
-                                 where pi.PeopleId == PeopleId
-                                 select pi.PreferredGivingType).Single();
+            var paymentInfo = db.PaymentInfos.Single(x => x.PeopleId == PeopleId);
+            var preferredType = paymentInfo.PreferredGivingType;
 
             var t = new Transaction
             {
@@ -68,12 +67,16 @@ namespace CmsData
                 Description = "Recurring Giving",
                 Testing = false,
                 TransactionGateway = gw.GatewayType,
-                Financeonly = true
+                Financeonly = true,
+                PaymentType = preferredType,
+                LastFourCC = preferredType == PaymentType.CreditCard ? paymentInfo.MaskedCard.Last(4) : null,
+                LastFourACH = preferredType == PaymentType.Ach ? paymentInfo.MaskedAccount.Last(4) : null
             };
+
             db.Transactions.InsertOnSubmit(t);
             db.SubmitChanges();
 
-            ret = gw.PayWithVault(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredtype);
+            ret = gw.PayWithVault(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredType);
 
             t.Message = ret.Message;
             t.AuthCode = ret.AuthCode;

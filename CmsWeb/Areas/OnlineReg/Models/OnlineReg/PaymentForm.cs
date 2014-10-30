@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text;
 using CmsData;
+using CmsData.Finance;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -18,6 +19,10 @@ namespace CmsWeb.Models
         public string CCV { get; set; }
         public string Routing { get; set; }
         public string Account { get; set; }
+
+        /// <summary>
+        /// "B" for e-check and "C" for credit card, see PaymentType
+        /// </summary>
         public string Type { get; set; }
         public bool AskDonation { get; set; }
         public bool AllowCoupon { get; set; }
@@ -75,7 +80,6 @@ namespace CmsWeb.Models
             }
         }
 
-
         public string Email { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
@@ -116,8 +120,12 @@ namespace CmsWeb.Models
                          Phone = Phone.Truncate(20),
                          OriginalId = OriginalId,
                          Financeonly = FinanceOnly,
-                         TransactionDate = DateTime.Now
+                         TransactionDate = DateTime.Now,
+                         PaymentType = Type,
+                         LastFourCC = Type == PaymentType.CreditCard ? CreditCard.Last(4) : null,
+                         LastFourACH = Type == PaymentType.Ach ? Account.Last(4) : null
                      };
+
             Db.Transactions.InsertOnSubmit(ti);
             Db.SubmitChanges();
             if (OriginalId == null) // first transaction
@@ -189,7 +197,7 @@ namespace CmsWeb.Models
                             || (pi.MaskedCard != null && pi.MaskedCard.StartsWith("X")),
 #endif
                      };
-            pf.Type = pf.NoEChecksAllowed ? "C" : "";
+            pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : "";
             var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
             var setting = new CmsData.Registration.Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
             pf.UseBootstrap = setting.UseBootstrap;
@@ -260,13 +268,14 @@ namespace CmsWeb.Models
                 pf.FinanceOnly = true;
             }
             if (pf.NoCreditCardsAllowed)
-                pf.Type = "B"; // bank account only
+                pf.Type = PaymentType.Ach; // bank account only
             else if (pf.NoEChecksAllowed)
-                pf.Type = "C"; // credit card only
-            pf.Type = pf.NoEChecksAllowed ? "C" : pf.Type;
+                pf.Type = PaymentType.CreditCard; // credit card only
+            pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : pf.Type;
             pf.DatumId = m.DatumId ?? 0;
             return pf;
         }
+
         public static Transaction CreateTransaction(CMSDataContext Db, Transaction t, decimal? amount)
         {
             var amtdue = t.Amtdue != null ? t.Amtdue - (amount ?? 0) : null;
@@ -295,11 +304,15 @@ namespace CmsWeb.Models
                          OriginalId = t.OriginalId ?? t.Id,
                          Financeonly = t.Financeonly,
                          TransactionDate = DateTime.Now,
+                         PaymentType = t.PaymentType,
+                         LastFourCC = t.LastFourCC,
+                         LastFourACH = t.LastFourACH
                      };
             Db.Transactions.InsertOnSubmit(ti);
             Db.SubmitChanges();
             return ti;
         }
+
         public object Autocomplete(bool small = false)
         {
             if (small)

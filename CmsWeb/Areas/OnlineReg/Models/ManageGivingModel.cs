@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using CmsData;
 using System.Text;
+using CmsData.Finance;
 using CmsData.Registration;
 using UtilityExtensions;
 using System.Web.Mvc;
@@ -164,10 +165,10 @@ namespace CmsWeb.Models
                 NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
                 Type = pi.PreferredGivingType;
                 if (NoCreditCardsAllowed)
-                    Type = "B"; // bank account only
+                    Type = PaymentType.Ach; // bank account only
                 else if (NoEChecksAllowed)
-                    Type = "C"; // credit card only
-                Type = NoEChecksAllowed ? "C" : Type;
+                    Type = PaymentType.CreditCard; // credit card only
+                Type = NoEChecksAllowed ? PaymentType.CreditCard : Type;
             }
             
             FirstName = pi.FirstName ?? person.FirstName;
@@ -262,7 +263,7 @@ namespace CmsWeb.Models
                     Routing = Routing.GetDigits();
             }
 
-            if (Type == "C")
+            if (Type == PaymentType.CreditCard)
                 Payments.ValidateCreditCardInfo(ModelState,
                     new PaymentForm
                     {
@@ -272,7 +273,7 @@ namespace CmsWeb.Models
                             Cardcode,
                         SavePayInfo = true
                     });
-            else if (Type == "B")
+            else if (Type == PaymentType.Ach)
                 Payments.ValidateBankAccountInfo(ModelState, Routing, Account);
             else
                 ModelState.AddModelError("Type", "Must select Bank Account or Credit Card");

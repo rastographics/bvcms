@@ -24,7 +24,6 @@
     <UpgradeBackupLocation />
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
     <PublishUrl>C:\Users\Steven\Documents\bvcms\CmsCheckin-ClickOnce-Beta\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>

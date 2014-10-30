@@ -85,16 +85,16 @@ namespace CmsData.Finance
             customer.BillingAddress = billToAddress;
             var isSaved = CustomerGateway.UpdateCustomer(customer);
             if (!isSaved)
-                throw new Exception("UpdateCustoemr failed to save for {0}".Fmt(peopleId));
+                throw new Exception("UpdateCustomer failed to save for {0}".Fmt(peopleId));
 
-            if (type == "B")
+            if (type == PaymentType.Ach)
             {
                 SaveECheckToProfile(routing, account, paymentInfo, customer);
 
                 paymentInfo.MaskedAccount = Util.MaskAccount(account);
                 paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
             }
-            else if (type == "C")
+            else if (type == PaymentType.CreditCard)
             {
                 var normalizeExpires = DbUtil.NormalizeExpires(expires);
                 if (normalizeExpires == null)
@@ -223,20 +223,29 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse RefundCreditCard(string reference, decimal amt)
+        public TransactionResponse RefundCreditCard(string reference, decimal amt, string lastDigits = "")
         {
-            return RefundRequest(reference, amt);
+            if (string.IsNullOrWhiteSpace(lastDigits))
+                throw new ArgumentException("Last four of credit card number are required for refunds against Authorize.net", "lastDigits");
+
+            var req = new CreditRequest(reference, amt, lastDigits);
+            var response = Gateway.Send(req);
+
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
         }
 
-        public TransactionResponse RefundCheck(string reference, decimal amt)
+        public TransactionResponse RefundCheck(string reference, decimal amt, string lastDigits = "")
         {
-            return RefundRequest(reference, amt);
-        }
+            if (string.IsNullOrWhiteSpace(lastDigits))
+                throw new ArgumentException("Last four of bank account number are required for refunds against Authorize.net", "lastDigits");
 
-        private TransactionResponse RefundRequest(string reference, decimal amt)
-        {
-            // TODO: test passing in an empty string for card number... hopefully it will work as a refund (as opposed to a credit) when no card number is passed
-            var req = new CreditRequest(reference, amt, string.Empty);
+            var req = new EcheckCreditRequest(reference, amt, lastDigits);
             var response = Gateway.Send(req);
 
             return new TransactionResponse
@@ -302,9 +311,9 @@ namespace CmsData.Finance
                 };
 
             string paymentProfileId;
-            if (type == "B")
+            if (type == PaymentType.Ach)
                 paymentProfileId = paymentInfo.AuNetCustPayBankId.ToString();
-            else if (type == "C")
+            else if (type == PaymentType.CreditCard)
                 paymentProfileId = paymentInfo.AuNetCustPayId.ToString();
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
@@ -334,7 +343,7 @@ namespace CmsData.Finance
             {
                 foreach (var transaction in ReportingGateway.GetTransactionList(batch.ID))
                 {
-                    batchTransactions.Add(new BatchTransaction
+                    var batchTransaction = new BatchTransaction
                     {
                         TransactionId = transaction.InvoiceNumber.ToInt(),
                         Reference = transaction.TransactionID,
@@ -346,8 +355,14 @@ namespace CmsData.Finance
                         Approved = IsApproved(batch.State),
                         Message = batch.State.ToUpper(),
                         TransactionDate = transaction.DateSubmitted,
-                        SettledDate = batch.SettledOn
-                    });
+                        SettledDate = batch.SettledOn,
+                        LastDigits = transaction.CardNumber.Last(4)
+                    };
+
+                    if (transaction.eCheckBankAccount != null && !string.IsNullOrWhiteSpace(transaction.eCheckBankAccount.accountNumber))
+                        batchTransaction.LastDigits = transaction.eCheckBankAccount.accountNumber.Last(4);
+
+                    batchTransactions.Add(batchTransaction);
                 }
             }
 
