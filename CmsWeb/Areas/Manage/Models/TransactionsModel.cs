@@ -222,7 +222,15 @@ namespace CmsWeb.Models
             var response = gateway.GetBatchDetails(start, end);
 
             // first filter out batches that we have already been updated or inserted.
-            var unMatchedBatchTransactions = response.BatchTransactions.Where(transaction => !DbUtil.Db.CheckedBatches.Any(tt => tt.BatchRef == transaction.BatchReference)).ToList();
+            var allBatchReferences = (from batchTran in response.BatchTransactions
+                                      select batchTran.BatchReference).Distinct();
+
+            // now find unmatched batch references
+            var unmatchedBatchReferences = allBatchReferences.Where(br => !DbUtil.Db.CheckedBatches.Any(tt => tt.BatchRef == br)).ToList();
+
+            // given unmatched batch references, get the matched batch transactions again
+            var unMatchedBatchTransactions =
+                response.BatchTransactions.Where(x => unmatchedBatchReferences.Contains(x.BatchReference)).ToList();
             
             // key it by transaction reference.
             var unMatchedKeyedByReference = unMatchedBatchTransactions.ToDictionary(x => x.Reference, x => x);
@@ -288,7 +296,7 @@ namespace CmsWeb.Models
             // next update existing transactions with new batch data if there are any.
             foreach (var existingTransaction in approvedMatchingTransactions)
             {
-                if (unMatchedKeyedByReference.ContainsKey(existingTransaction.TransactionId))
+                if (!unMatchedKeyedByReference.ContainsKey(existingTransaction.TransactionId))
                     continue;
 
                 // first get the matching batch transaction.
