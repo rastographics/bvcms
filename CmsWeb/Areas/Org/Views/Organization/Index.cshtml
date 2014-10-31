@@ -6,7 +6,6 @@
   ViewBag.Title = "Organization";
   ViewBag.OrgMemberContext = true;
   var o = Model.org;
-  var orgsettingrole = User.IsInRole("OrgSettings");
 }
 @section head
 {
@@ -46,10 +45,7 @@
     <li><a id="priors-link" href="#Priors-tab"><span>Previous</span></a></li>
     <li><a id="prospects-link" href="#Prospects-tab"><span>Prospects</span></a></li>
     <li><a id="visitors-link" href="#Visitors-tab"><span>Guests</span></a></li>
-    @if (orgsettingrole)
-    {
     <li><a href="#Settings-tab"><span>Settings</span></a></li>
-    }
     <li><a id="meetings-link" href="#Meetings-tab"><span>Meetings</span></a></li>
   </ul>
   <div id="Members-tab">
@@ -77,94 +73,91 @@
       @Html.Hidden("future", false)
     </form>
   </div>
-  @if (orgsettingrole)
-  {
-    <div id="Settings-tab" style="display: none">
-      <ul>
-        <li><a href="#SettingsOrg"><span>General</span></a></li>
-        <li><a href="#SettingsMeetings"><span>Attendance</span></a></li>
-        <li><a href="#OnlineRegAdmin"><span>Registration</span></a></li>
-        <li><a href="#OnlineRegFees"><span>Fees</span></a></li>
-        <li><a href="#OnlineRegQuestions"><span>Questions</span></a></li>
-        <li><a href="#OnlineRegMessages"><span>Messages</span></a></li>
-        <li><a href="#ExtraValues"><span>Extra Values</span></a></li>
-      </ul>
-      <div id="SettingsOrg" class="settings">
-        <p>
-          <i>Hover over the labels to get help</i>
-        </p>
-        <form class="DisplayEdit" action="">
-          @Html.Partial("SettingsOrg", Model)
-        </form>
-      </div>
-      <div id="SettingsMeetings" class="settings">
-        <p>
-          <i>Hover over the labels to get help</i>
-        </p>
-        <form class="DisplayEdit" action="">
-          @Html.Partial("SettingsMeetings", Model)
-        </form>
-      </div>
-      <div id="OnlineRegAdmin" class="settings">
-        <p>
-          <i>Hover over the labels to get help</i>
-        </p>
-        <form class="DisplayEdit" action="">
-          @Html.Partial("OnlineRegAdmin", Model.RegSettings)
-        </form>
-      </div>
-      <div id="OnlineRegFees" class="settings">
-        <p>
-          <i>Hover over the labels to get help</i>
-        </p>
-        <form class="DisplayEdit" action="">
-          @Html.Partial("OnlineRegFees", Model.RegSettings)
-        </form>
-      </div>
-      <div id="OnlineRegQuestions" class="settings">
-        <p>
-          <i>Hover over the labels to get help.</i>
-        </p>
-        <form class="DisplayEdit" action="">
-          @Html.Partial("OnlineRegQuestions", Model.RegSettings)
-        </form>
-      </div>
-      <div id="OnlineRegMessages" class="settings no0">
-        <p>
-          <i>Hover over the labels to get help</i>
-        </p>
-        <form class="DisplayEdit" action="">
-          @Html.Partial("OnlineRegMessages", Model.RegSettings)
-        </form>
-      </div>
-      @*        <div class="tab-pane settings" id="ExtraValues" data-link="/ExtraValue/Display/Organization/Standard/@Model.OrganizationId"></div>*@
-      <div id="ExtraValues" class="settings">
-        <table id="extras" class="@ViewExtensions2.GridClass">
-          <thead>
-            <tr>
-              <td>
-                Field
-              </td>
-              <td>
-                Value
-              </td>
-              <td>
-                @if (User.IsInRole("Edit"))
-              {
-              <a id="newextravalue" href="#">
-                <img src="/Content/images/plus1.png" />
-              </a>
-              }
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            @Html.Partial("ExtrasGrid", Model.org)
-          </tbody>
-        </table>
-      </div>
+  <div id="Settings-tab" style="display: none">
+    <ul>
+      <li><a href="#SettingsOrg"><span>General</span></a></li>
+      <li><a href="#SettingsMeetings"><span>Attendance</span></a></li>
+      <li><a href="#OnlineRegAdmin"><span>Registration</span></a></li>
+      <li><a href="#OnlineRegFees"><span>Fees</span></a></li>
+      <li><a href="#OnlineRegQuestions"><span>Questions</span></a></li>
+      <li><a href="#OnlineRegMessages"><span>Messages</span></a></li>
+      <li><a href="#ExtraValues"><span>Extra Values</span></a></li>
+    </ul>
+    <div id="SettingsOrg" class="settings">
+      <p>
+        <i>Hover over the labels to get help</i>
+      </p>
+      <form class="DisplayEdit" action="">
+        @Html.Partial("SettingsOrg", Model)
+      </form>
     </div>
-  }
+    <div id="SettingsMeetings" class="settings">
+      <p>
+        <i>Hover over the labels to get help</i>
+      </p>
+      <form class="DisplayEdit" action="">
+        @Html.Partial("SettingsMeetings", Model)
+      </form>
+    </div>
+    <div id="OnlineRegAdmin" class="settings">
+      <p>
+        <i>Hover over the labels to get help</i>
+      </p>
+      <form class="DisplayEdit" action="">
+        @Html.Partial("OnlineRegAdmin", Model.RegSettings)
+      </form>
+    </div>
+    <div id="OnlineRegFees" class="settings">
+      <p>
+        <i>Hover over the labels to get help</i>
+      </p>
+      <form class="DisplayEdit" action="">
+        @Html.Partial("OnlineRegFees", Model.RegSettings)
+      </form>
+    </div>
+    <div id="OnlineRegQuestions" class="settings">
+      <p>
+        <i>Hover over the labels to get help.</i>
+      </p>
+      <form class="DisplayEdit" action="">
+        @Html.Partial("OnlineRegQuestions", Model.RegSettings)
+      </form>
+    </div>
+    <div id="OnlineRegMessages" class="settings no0">
+      <p>
+        <i>Hover over the labels to get help</i>
+      </p>
+      <form class="DisplayEdit" action="">
+        @Html.Partial("OnlineRegMessages", Model.RegSettings)
+      </form>
+    </div>
+    @*        <div class="tab-pane settings" id="ExtraValues" data-link="/ExtraValue/Display/Organization/Standard/@Model.OrganizationId"></div>*@
+    <div id="ExtraValues" class="settings">
+      <table id="extras" class="@ViewExtensions2.GridClass">
+        <thead>
+          <tr>
+            <td>
+              Field
+            </td>
+            <td>
+              Value
+            </td>
+            <td>
+              @if (User.IsInRole("Edit"))
+              {
+                <a id="newextravalue" href="#">
+                  <img src="/Content/images/plus1.png" />
+                </a>
+              }
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          @Html.Partial("ExtrasGrid", Model.org)
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 <div id="dialogHolder"></div>
 @section PopupsPlaceholder

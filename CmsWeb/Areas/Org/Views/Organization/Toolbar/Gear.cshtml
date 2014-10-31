@@ -2,7 +2,6 @@
 @using CmsWeb.Areas.Org.Models
 @{
   var admin = User.IsInRole("Admin");
-  var orgsettings = User.IsInRole("OrgSettings");
   var edit = User.IsInRole("Edit");
   var delete = User.IsInRole("Delete");
   var manager = User.IsInRole("ManageGroups");
@@ -26,12 +25,9 @@
         {
           <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar">Volunteer Calendar</a></li>
         }
-        @if (orgsettings)
-        {
-          <li><a href="/Organization/CopySettings/@oid">Copy Settings</a></li>
-        }
         @if (edit)
         {
+          <li><a href="/Organization/CopySettings/@oid">Copy Settings</a></li>
           <li><a href="/OrgChildren/@oid">Child Organization Management</a></li>
         }
         @if (o.IsMissionTrip == true && User.IsInRole("MissionGiving"))
