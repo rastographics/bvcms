@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 try
                 {
-                    StandardExtraValues.GetExtraValues();
+                    CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People");
                 }
                 catch (InvalidOperationException ex)
                 {

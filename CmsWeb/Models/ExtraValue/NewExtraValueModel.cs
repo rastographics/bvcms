@@ -327,8 +327,8 @@ Option 2
 
         public void ConvertToStandard(string name)
         {
-            var oldfields = StandardExtraValues.GetExtraValues().ToList();
-            StandardExtraValues.Field bits = null;
+//            var oldfields = StandardExtraValues.GetExtraValues().ToList();
+            var oldfields = CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People");
             ExtraValue ev = null;
             List<string> codes = null;
             var v = new CmsData.ExtraValue.Value { Name = name };
@@ -339,17 +339,18 @@ Option 2
                           where vv.Field == name
                           select new ExtraValue(vv, null)).First();
 
-                    bits = oldfields.SingleOrDefault(ff => ff.Codes.Contains(name));
+                    //StandardExtraValues.Field bits = null;
+                    var bits = oldfields.SingleOrDefault(ff => ff.Codes.Contains(name));
                     if (bits != null)
                     {
                         codes = bits.Codes;
                         ev.Type = "Bits";
-                        v.Name = bits.name;
+                        v.Name = bits.Name;
                         v.VisibilityRoles = bits.VisibilityRoles;
                     }
                     else
                     {
-                        var f = oldfields.SingleOrDefault(ff => ff.name == name);
+                        var f = oldfields.SingleOrDefault(ff => ff.Name == name);
                         if (f != null)
                             v.VisibilityRoles = f.VisibilityRoles;
                         if (ev.Type == "Code")

@@ -10,7 +10,9 @@ using System.Xml.Linq;
 using CmsData;
 using CmsData.API;
 using CmsData.View;
+using CmsWeb.Code;
 using CmsWeb.Models;
+using CmsWeb.Models.ExtraValues;
 using Dapper;
 using UtilityExtensions;
 
@@ -139,7 +141,11 @@ namespace CmsWeb.Areas.Reports.Models
                 else
                     w.Start("Column").Attr("name", c.Column).End();
             }
+            var protectedevs = from value in CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People")
+                         where value.VisibilityRoles.HasValue()
+                         select value.Name;
             var q = from ev in db.PeopleExtras
+                    where !protectedevs.Contains(ev.Field)
                     group ev by new { ev.Field, ev.Type } into g
                     orderby g.Key.Field
                     select g.Key;
