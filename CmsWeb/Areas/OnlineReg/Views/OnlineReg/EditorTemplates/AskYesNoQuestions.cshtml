@@ -1,23 +1,23 @@
 ﻿@using CmsData.Registration
 @model CmsWeb.Models.OnlineRegPersonModel
 @{
-    var ask = (AskYesNoQuestions)ViewBag.ask;
-    var name = Html.NameFor2(m => m.YesNoQuestion);
+  var ask = (AskYesNoQuestions)ViewBag.ask;
+  var name = Html.NameFor2(m => m.YesNoQuestion);
 }
 @for (var i = 0; i < ask.list.Count; i++)
 {
-    var a = ask.list[i];
-    <div class="form-group">
-        @Html.Label(a.Question, new { @class = "control-label col-sm-3 labelsize" })
-        <div class="col-sm-9">
-            <input type="hidden" name="@(name)[@i].Key" value="@a.SmallGroup" />
-            <label class="radio-inline">
-                <input type="radio" name="@(name)[@i].Value" value="true" @(Model.YesNoChecked(a.SmallGroup, true) ? "checked='checked'" : "") /> Yes
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="@(name)[@i].Value" value="false" @(Model.YesNoChecked(a.SmallGroup, false) ? "checked='checked'" : "") /> No
-            </label>
-            <div>@Html.ValidationMessageFor(m => m.YesNoQuestion[a.SmallGroup])</div>
-        </div>
+  var a = ask.list[i];
+  <div class="form-group">
+    <label class="control-label col-sm-3 labelsize">@a.Question</label>
+    <div class="col-sm-9">
+      <input type="hidden" name="@(name)[@i].Key" value="@a.SmallGroup" />
+      <label class="radio-inline">
+        <input type="radio" name="@(name)[@i].Value" value="true" @(Model.YesNoChecked(a.SmallGroup, true) ? "checked='checked'" : "") /> Yes
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name="@(name)[@i].Value" value="false" @(Model.YesNoChecked(a.SmallGroup, false) ? "checked='checked'" : "") /> No
+      </label>
+      <div>@Html.ValidationMessageFor(m => m.YesNoQuestion[a.SmallGroup])</div>
     </div>
+  </div>
 }

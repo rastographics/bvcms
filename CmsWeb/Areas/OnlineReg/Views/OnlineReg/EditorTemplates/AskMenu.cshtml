@@ -6,7 +6,7 @@
     var name = Html.NameFor2(m => m.MenuItem[ask.UniqueId]);
 }
 <div class="form-group">
-    @Html.Label(ask.Label, new { @class = "control-label col-sm-3 labelsize" })
+    <label class="control-label col-sm-3 labelsize">@ask.Label</label>
     <div class="col-sm-9">
         <table class="table">
             <tr><td>Description</td><td># Items</td></tr>
