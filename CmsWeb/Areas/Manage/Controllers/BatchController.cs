@@ -315,11 +315,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult UpdateWarning(UpdateFieldsModel m)
         {
-            if(m.Field == "Drop All Memberships")
+            if(m.Field == "Drop All Enrollments")
                 return Content(@"
-Important, the Drop All Memberships will make all the people previous members 
-of every organization they are a member of.
-There is no Undo button");
+Important! Drop All Enrollments will make all the selected people previous members
+of every organization in which they are enrolled.
+There is no Undo button.");
             return new EmptyResult();
         }
 
