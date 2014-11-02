@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.Reports.Models
                 var sb2 = new StringBuilder();
                 using (var w = XmlWriter.Create(sb2, settings))
                 {
-                    StandardColumns(db, w);
+                    StandardColumns(db, w, includeRoot: true);
                     w.Flush();
                 }
                 body = sb2.ToString();
@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.Reports.Models
             if (xdoc.Root == null)
                 throw new Exception("missing xml root");
             var r = (from e in xdoc.Root.Elements("Report")
-                     where (string)e.Attribute("name") == report
+                     where (string)e.Attribute("name") == report || report == "AllColumns"
                      select e).SingleOrDefault();
             if (r == null)
                 throw new Exception("no report");
@@ -126,11 +126,13 @@ namespace CmsWeb.Areas.Reports.Models
             sb.AppendLine("WHERE tp.Id = @tagId\n");
             return sb.ToString();
         }
-        public static void StandardColumns(CMSDataContext db, XmlWriter writer)
+        public static void StandardColumns(CMSDataContext db, XmlWriter writer, bool includeRoot = false)
         {
             var list = db.CustomColumns.OrderBy(cc => cc.Ord).ToList();
             var dict = new Dictionary<string, CustomColumn>();
             var w = new APIWriter(writer);
+            if (includeRoot)
+                w.Start("CustomReports");
             w.Start("Report").Attr("name", "YourReportNameGoesHere");
             foreach (var c in list)
             {
@@ -171,6 +173,8 @@ namespace CmsWeb.Areas.Reports.Models
                     .End();
             }
             w.End();
+            if (includeRoot)
+                w.End();
         }
     }
 }
