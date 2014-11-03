@@ -39,10 +39,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
 
-                var registerLink = EmailReplacements.CreateRegisterLink(m.Orgid, "Resume registration for {0}".Fmt(m.Header));
+                var registerLink = EmailReplacements.CreateRegisterLink(m.masterorgid ?? m.Orgid, "Resume registration for {0}".Fmt(m.Header));
                 var msg = "<p>Hi {first},</p>\n<p>Here is the link to continue your registration:</p>\n" + registerLink;
-                Debug.Assert(m.Orgid != null, "m.Orgid != null");
-                var notifyids = DbUtil.Db.NotifyIds(m.Orgid.Value, m.org.NotifyIds);
+                Debug.Assert((m.masterorgid ?? m.Orgid) != null, "m.Orgid != null");
+                var notifyids = DbUtil.Db.NotifyIds((m.masterorgid ?? m.Orgid).Value, (m.masterorg ?? m.org).NotifyIds);
                 var p = m.UserPeopleId.HasValue ? DbUtil.Db.LoadPersonById(m.UserPeopleId.Value) : m.List[0].person;
                 DbUtil.Db.Email(notifyids[0].FromEmail, p, "Continue your registration for {0}".Fmt(m.Header), msg);
 

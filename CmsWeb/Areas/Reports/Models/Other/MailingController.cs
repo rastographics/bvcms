@@ -306,6 +306,8 @@ namespace CmsWeb.Models
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
                      // get spouse if in the query
+                     let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
+                     let altcouple = p.Family.FamilyExtras.FirstOrDefault(ee => ee.FamilyId == p.PeopleId && ee.Field == "CoupleName" && p.SpouseId != null).Data
                      let spouse = q.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
                      select new
                      {
