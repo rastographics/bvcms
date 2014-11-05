@@ -212,6 +212,13 @@ namespace UtilityExtensions
         {
             return GetBuildDate().FormatDateTm();
         }
+
+        public static DateTime GetNextDayOfWeek(this DateTime start, DayOfWeek nextDayOfWeek)
+        {
+            var daysToAdd = ((int) nextDayOfWeek - (int) start.DayOfWeek + 7) % 7;
+            return start.AddDays(daysToAdd);
+        }
+
         private static DateTime GetBuildDate()
         {
             string filePath = System.Reflection.Assembly.GetCallingAssembly().Location;
