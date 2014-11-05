@@ -45,7 +45,7 @@
           </div>
           <div>
             @Html.RadioButton("SemiEvery", "E")Every
-            @Html.TextBox("EveryN", null, new { @class = "shorter" })
+            @Html.DropDownList("EveryN", Model.EveryNOptions(), new { @class = "shorter"})
             @Html.DropDownList("Period", Model.PeriodOptions())
           </div>
           <div>@Html.ValidationMessageFor(m => m.SemiEvery)</div>

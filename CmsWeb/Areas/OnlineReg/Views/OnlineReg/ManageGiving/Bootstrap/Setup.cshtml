@@ -75,6 +75,11 @@
                 @Html.HiddenFor(m => m.Period)
             </div>
             @Html.EditorFor(m => m.StartWhen, new { placeholder = "MM/DD/YYYY" })
+            <div class="form-group">
+                <div class="col-sm-9 col-sm-offset-3">
+                    <span id="SummaryText"></span>
+                </div>
+            </div>
         </div>
 
         <div class="well">

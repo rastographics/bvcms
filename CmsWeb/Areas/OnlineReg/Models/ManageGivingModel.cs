@@ -129,6 +129,7 @@ namespace CmsWeb.Models
             var rg = person.ManagedGiving();
             if (rg != null)
             {
+                RepeatPattern = rg.SemiEvery != "S" ? rg.Period : rg.SemiEvery;
                 SemiEvery = rg.SemiEvery;
                 StartWhen = rg.StartWhen;
                 StopWhen = null; //rg.StopWhen;
@@ -145,6 +146,7 @@ namespace CmsWeb.Models
             {
                 var f = CmsWeb.Models.OnlineRegPersonModel.FundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
                 // reasonable defaults
+                RepeatPattern = "M";
                 Period = "M";
                 SemiEvery = "E";
                 EveryN = 1;
