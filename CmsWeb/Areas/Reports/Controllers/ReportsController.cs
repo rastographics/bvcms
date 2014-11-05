@@ -414,7 +414,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 sched = m.ScheduleId,
                 status = m.StatusId,
                 onlinereg = m.OnlineReg,
-                mainfellowship = m.MainFellowship,
+                mainfelowship = m.TypeId == OrgSearchModel.OrgType.MainFellowship,
                 parentorg = m.TypeId == OrgSearchModel.OrgType.ParentOrg
             }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
             return View(q);
