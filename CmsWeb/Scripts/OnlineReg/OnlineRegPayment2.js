@@ -109,27 +109,46 @@ $(function () {
         else if (v === 'B')
             $(".Bank").show();
     };
+    $.SetRepeatPatternText = function(v) {
+        if (v === 'M') {
+            $("#RepeatPatternText").text(" month(s)");
+        }
+        else
+            $("#RepeatPatternText").text(" week(s)");
+    };
     $.ShowPeriodInfo = function (v) {
         $(".everyPeriod").hide();
         $(".twiceMonthly").hide();
         if (v === 'S')
             $(".twiceMonthly").show();
-        else if (v === 'E')
+        else {
             $(".everyPeriod").show();
+            $.SetRepeatPatternText(v);
+            $("#Period").val(v);
+        }
+    };
+    $.SetSemiEvery = function(v) {
+        if (v != 'S') {
+            $("#SemiEvery").val('E');
+        } else {
+            $("#SemiEvery").val('S');
+        }
     };
     $("body").on("change", 'input[name=Type]', function () {
         var v = $("input[name=Type]:checked").val();
         $.ShowPaymentInfo(v);
     });
-    $("body").on("change", 'input[name=SemiEvery]', function () {
-        var v = $("input[name=SemiEvery]:checked").val();
-        $("#SemiEvery").val(v);
+    $("body").on("change", 'select[name=RepeatPattern]', function () {
+        var v = $("select[name=RepeatPattern]").val();
+        $.SetSemiEvery(v);
         $.ShowPeriodInfo(v);
     });
     if ($("#allowcc").val()) {
         $.ShowPaymentInfo($("input[name=Type]:checked").val());
     }
-    $.ShowPeriodInfo($("input[name=SemiEvery]:checked").val());
+    var repeatPattern = $("select[name=RepeatPattern]").val();
+    $.SetSemiEvery(repeatPattern);
+    $.ShowPeriodInfo(repeatPattern);
     $.validator.setDefaults({
         highlight: function (input) {
             $(input).addClass("input-validation-error");

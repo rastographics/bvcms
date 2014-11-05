@@ -17,15 +17,16 @@ namespace CmsWeb.Models
     {
         public int pid { get; set; }
         public int orgid { get; set; }
+        public string RepeatPattern { get; set; }
         [DisplayName("Start On or After")]
         public DateTime? StartWhen { get; set; }
         public DateTime? StopWhen { get; set; }
         public string SemiEvery { get; set; }
-        [DisplayName("Day1 of Month")]
+        [DisplayName("Day 1 of Month")]
         public int? Day1 { get; set; }
-        [DisplayName("Day2 of Month")]
+        [DisplayName("Day 2 of Month")]
         public int? Day2 { get; set; }
-        [DisplayName("Recurring every")]
+        [DisplayName("Repeat every")]
         public int? EveryN { get; set; }
         public string Period { get; set; }
         public string Type { get; set; }
@@ -445,11 +446,60 @@ namespace CmsWeb.Models
                 {"W", "Week(s)"},
             }, "Key", "Value");
         }
+
+        public SelectList RepeatPatternOptions()
+        {
+            return new SelectList(new Dictionary<string, string>
+            {
+                {"M", "Monthly"},
+                {"S", "Twice a Month"},
+                {"W", "Weekly"}
+            }, "Key", "Value");
+        }
+
+        public SelectList EveryNOptions()
+        {
+            return new SelectList(new Dictionary<string, string>
+            {
+                {"1", "1"},
+                {"2", "2"},
+                {"3", "3"},
+                {"4", "4"},
+                {"5", "5"},
+                {"6", "6"},
+                {"7", "7"},
+                {"8", "8"},
+                {"9", "9"},
+                {"10", "10"},
+                {"11", "11"},
+                {"12", "12"},
+                {"13", "13"},
+                {"14", "14"},
+                {"15", "15"},
+                {"16", "16"},
+                {"17", "17"},
+                {"18", "18"},
+                {"19", "19"},
+                {"20", "20"},
+                {"21", "21"},
+                {"22", "22"},
+                {"23", "23"},
+                {"24", "24"},
+                {"25", "25"},
+                {"26", "26"},
+                {"27", "27"},
+                {"28", "28"},
+                {"29", "29"},
+                {"30", "30"},
+            }, "Key", "Value");
+        }
+
         private string GetThankYouMessage(string def)
         {
             var msg = Util.PickFirst(setting.ThankYouMessage, def);
             return msg;
         }
+
         public string AutocompleteOnOff
         {
             get
