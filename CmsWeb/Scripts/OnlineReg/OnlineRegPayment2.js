@@ -101,6 +101,34 @@ $(function () {
             agreeterms = false;
         }
     });
+    $.SetSummaryText = function () {
+        var pattern = $("#RepeatPattern").val();
+        var everyN = $("#EveryN").val();
+        var day1 = $("#Day1").val();
+        var day2 = $("#Day2").val();
+        var startOn = $("#StartWhen").val();
+
+        var summary = "";
+        if (pattern === "S") {
+            if (day1.length > 0 && day2.length > 0)
+                summary = "Twice a month on day " + day1 + " and day " + day2;
+        } else {
+            var patternText = "";
+            if (pattern === "M") {
+                patternText = "month";
+            } else {
+                patternText = "week";
+            }
+            if (everyN > 1) {
+                summary = "Every " + everyN + " " + patternText + "s";
+            } else {
+                summary = "Every " + everyN + " " + patternText;
+            }
+        }
+        if (startOn.length > 0)
+        summary += " starting on or after " + startOn;
+        $("#SummaryText").text(summary);
+    };
     $.ShowPaymentInfo = function (v) {
         $(".Card").hide();
         $(".Bank").hide();
@@ -109,27 +137,61 @@ $(function () {
         else if (v === 'B')
             $(".Bank").show();
     };
+    $.SetRepeatPatternText = function(v) {
+        if (v === 'M') {
+            $("#RepeatPatternText").text(" month(s)");
+        }
+        else
+            $("#RepeatPatternText").text(" week(s)");
+    };
     $.ShowPeriodInfo = function (v) {
         $(".everyPeriod").hide();
         $(".twiceMonthly").hide();
         if (v === 'S')
             $(".twiceMonthly").show();
-        else if (v === 'E')
+        else {
             $(".everyPeriod").show();
+            $.SetRepeatPatternText(v);
+            $("#Period").val(v);
+        }
+    };
+    $.SetSemiEvery = function(v) {
+        if (v != 'S') {
+            $("#SemiEvery").val('E');
+        } else {
+            $("#SemiEvery").val('S');
+        }
     };
     $("body").on("change", 'input[name=Type]', function () {
         var v = $("input[name=Type]:checked").val();
         $.ShowPaymentInfo(v);
     });
-    $("body").on("change", 'input[name=SemiEvery]', function () {
-        var v = $("input[name=SemiEvery]:checked").val();
-        $("#SemiEvery").val(v);
+    $("body").on("change", 'select[name=RepeatPattern]', function () {
+        var v = $("select[name=RepeatPattern]").val();
+        $.SetSemiEvery(v);
         $.ShowPeriodInfo(v);
+        $.SetSummaryText();
     });
+    $("body").on("change", 'select[name=EveryN]', function () {
+        $.SetSummaryText();
+    });
+    $("body").on("change", 'input[name=Day1]', function () {
+        $.SetSummaryText();
+    });
+    $("body").on("change", 'input[name=Day2]', function () {
+        $.SetSummaryText();
+    });
+    $("body").on("change", 'input[name=StartWhen]', function () {
+        $.SetSummaryText();
+    });
+    
     if ($("#allowcc").val()) {
         $.ShowPaymentInfo($("input[name=Type]:checked").val());
     }
-    $.ShowPeriodInfo($("input[name=SemiEvery]:checked").val());
+    var repeatPattern = $("select[name=RepeatPattern]").val();
+    $.SetSemiEvery(repeatPattern);
+    $.ShowPeriodInfo(repeatPattern);
+    $.SetSummaryText();
     $.validator.setDefaults({
         highlight: function (input) {
             $(input).addClass("input-validation-error");

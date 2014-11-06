@@ -23,10 +23,10 @@
             Data["orderdescription"] = orderDescription;
         }
 
-        public CreditCardVaultSaleRequest(string userName, string password, string vaultId, decimal amount, string orderId, string orderDescription, string poNumber)
+        public CreditCardVaultSaleRequest(string userName, string password, string vaultId, decimal amount, string orderId, string orderDescription, string customerId)
             : this(userName, password, vaultId, amount, orderId, orderDescription)
         {
-            Data["ponumber"] = poNumber;
+            Data["customer_id"] = customerId;
         }
     }
 }
