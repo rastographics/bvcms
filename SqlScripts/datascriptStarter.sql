@@ -1294,7 +1294,31 @@ You may try a different email address, or contact the church.</p>
 <p>Thanks,<br />
 The BVCMS Team</p>
 ', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (81, N'CustomReports', N'CustomReports', N'', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (81, N'CustomReports', N'CustomReports', N'<CustomReports>
+  <Report name="Email">
+    <Column name="Email" />
+  </Report>  
+  <Report name="Student and Parents">
+    <Column name="PeopleId" />
+    <Column name="GoesBy" />
+    <Column name="Last" />
+    <Column name="BirthDate" />
+    <Column name="Age" />
+    <Column name="Home" />
+    <Column name="Cell" />
+    <Column name="Work" />
+    <Column name="Email" />
+    <Column name="Father" />
+    <Column name="FatherEmail" />
+    <Column name="FatherCell" />
+    <Column name="Mother" />
+    <Column name="MotherEmail" />
+    <Column name="MotherCell" />
+    <Column name="FamilyId" />
+  </Report>
+
+</CustomReports>
+', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Content] OFF
 INSERT INTO [dbo].[ContributionFund] ([FundId], [CreatedBy], [CreatedDate], [FundName], [FundDescription], [FundStatusId], [FundTypeId], [FundPledgeFlag], [FundAccountCode], [FundIncomeDept], [FundIncomeAccount], [FundIncomeFund], [FundCashDept], [FundCashAccount], [FundCashFund], [OnlineSort], [NonTaxDeductible], [QBIncomeAccount], [QBAssetAccount]) VALUES (1, 1, '2010-10-30 15:36:12.533', N'General Operation', N'General Operation', 1, 1, 0, NULL, N'0', N'0', N'0', N'0', N'0', N'0', 1, NULL, 0, 0)
 INSERT INTO [dbo].[ContributionFund] ([FundId], [CreatedBy], [CreatedDate], [FundName], [FundDescription], [FundStatusId], [FundTypeId], [FundPledgeFlag], [FundAccountCode], [FundIncomeDept], [FundIncomeAccount], [FundIncomeFund], [FundCashDept], [FundCashAccount], [FundCashFund], [OnlineSort], [NonTaxDeductible], [QBIncomeAccount], [QBAssetAccount]) VALUES (2, 3, '2011-09-27 15:37:43.453', N'Pledge', N'Pledge', 1, 1, 1, NULL, N'0', N'0', N'0', N'0', N'0', N'0', 2, 0, 0, 0)
@@ -1342,16 +1366,16 @@ INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUE
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Employer', 66, 'p.EmployerOther', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('EntryPoint', 61, 'ep.Description', 'LEFT JOIN lookup.EntryPoint ep ON ep.Id = p.EntryPointId')
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('EnvelopeOption', 49, 'eopt.Description', 'LEFT JOIN lookup.EnvelopeOption eopt ON eopt.Id = p.EnvelopeOptionsId')
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ExtraValueBit', 103, '(SELECT BitValue FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND Field = ''{field}'')', NULL)
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ExtraValueCode', 99, '(SELECT StrValue FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND Field = ''{field}'')', NULL)
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ExtraValueDate', 100, '(SELECT DateValue FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND Field = ''{field}'')', NULL)
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ExtraValueInt', 102, '(SELECT IntValue FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND Field = ''{field}'')', NULL)
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ExtraValueText', 101, '(SELECT Data FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND Field = ''{field}'')', NULL)
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ExtraValueBit', 205, '(SELECT BitValue FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND Field = ''{field}'')', NULL)
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ExtraValueCode', 201, '(SELECT StrValue FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND Field = ''{field}'')', NULL)
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ExtraValueDate', 202, '(SELECT DateValue FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND Field = ''{field}'')', NULL)
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ExtraValueInt', 204, '(SELECT IntValue FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND Field = ''{field}'')', NULL)
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('ExtraValueText', 203, '(SELECT Data FROM dbo.PeopleExtra pe WHERE pe.PeopleId = p.PeopleId AND Field = ''{field}'')', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('FamilyId', 2, 'p.FamilyId', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('FamilyPosition', 21, 'fp.Description', 'LEFT JOIN lookup.FamilyPosition fp ON fp.Id = p.PositionInFamilyId')
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Father', 104, 'fa.Name', 'LEFT JOIN dbo.People fa ON fa.FamilyId = p.FamilyId AND fa.GenderId = 1 AND fa.PositionInFamilyId = 10 AND p.PeopleId <> fa.PeopleId')
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('FatherCell', 106, 'dbo.FmtPhone(fa.CellPhone)', 'LEFT JOIN dbo.People fa ON fa.FamilyId = p.FamilyId AND fa.GenderId = 1 AND fa.PositionInFamilyId = 10 AND p.PeopleId <> fa.PeopleId')
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('FatherEmail', 105, 'fa.EmailAddress', 'LEFT JOIN dbo.People fa ON fa.FamilyId = p.FamilyId AND fa.GenderId = 1 AND fa.PositionInFamilyId = 10 AND p.PeopleId <> fa.PeopleId')
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Father', 98, 'fa.Name', 'LEFT JOIN dbo.People fa ON fa.FamilyId = p.FamilyId AND fa.GenderId = 1 AND fa.PositionInFamilyId = 10 AND p.PeopleId <> fa.PeopleId AND p.PositionInFamilyId not in (10,20)')
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('FatherCell', 100, 'dbo.FmtPhone(fa.CellPhone)', 'LEFT JOIN dbo.People fa ON fa.FamilyId = p.FamilyId AND fa.GenderId = 1 AND fa.PositionInFamilyId = 10 AND p.PeopleId <> fa.PeopleId AND p.PositionInFamilyId not in (10,20)')
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('FatherEmail', 99, 'fa.EmailAddress', 'LEFT JOIN dbo.People fa ON fa.FamilyId = p.FamilyId AND fa.GenderId = 1 AND fa.PositionInFamilyId = 10 AND p.PeopleId <> fa.PeopleId AND p.PositionInFamilyId not in (10,20)')
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('First', 3, 'p.FirstName', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('FormerName', 8, 'p.MaidenName', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Gender', 19, 'g.Description', 'LEFT JOIN lookup.Gender g ON g.Id = p.GenderId')
@@ -1374,9 +1398,9 @@ INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUE
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('MembershipNotes', 59, 'p.LetterStatusNotes', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('MemberStatus', 52, 'ms.Description', 'LEFT JOIN lookup.MemberStatus ms ON ms.Id = p.MemberStatusId')
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Middle', 6, 'p.MiddleName', NULL)
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Mother', 107, 'mo.Name', 'LEFT JOIN dbo.People mo ON mo.FamilyId = p.FamilyId AND mo.GenderId = 2 AND mo.PositionInFamilyId = 10 AND p.PeopleId <> mo.PeopleId')
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('MotherCell', 109, 'dbo.FmtPhone(mo.Cellphone)', 'LEFT JOIN dbo.People mo ON mo.FamilyId = p.FamilyId AND mo.GenderId = 2 AND mo.PositionInFamilyId = 10 AND p.PeopleId <> mo.PeopleId')
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('MotherEmail', 108, 'mo.EmailAddress', 'LEFT JOIN dbo.People mo ON mo.FamilyId = p.FamilyId AND mo.GenderId = 2 AND mo.PositionInFamilyId = 10 AND p.PeopleId <> mo.PeopleId')
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Mother', 101, 'mo.Name', 'LEFT JOIN dbo.People mo ON mo.FamilyId = p.FamilyId AND mo.GenderId = 2 AND mo.PositionInFamilyId = 10 AND p.PeopleId <> mo.PeopleId AND p.PositionInFamilyId not in (10,20)')
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('MotherCell', 103, 'dbo.FmtPhone(mo.Cellphone)', 'LEFT JOIN dbo.People mo ON mo.FamilyId = p.FamilyId AND mo.GenderId = 2 AND mo.PositionInFamilyId = 10 AND p.PeopleId <> mo.PeopleId AND p.PositionInFamilyId not in (10,20)')
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('MotherEmail', 102, 'mo.EmailAddress', 'LEFT JOIN dbo.People mo ON mo.FamilyId = p.FamilyId AND mo.GenderId = 2 AND mo.PositionInFamilyId = 10 AND p.PeopleId <> mo.PeopleId AND p.PositionInFamilyId not in (10,20)')
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Name', 11, 'p.Name', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Name2', 12, 'p.Name2', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('NewChurch', 64, 'p.OtherNewChurch', NULL)
@@ -1399,7 +1423,7 @@ INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUE
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('SpouseId', 17, 'p.SpouseId', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('State', 71, 'p.PrimaryState', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('StatementOption', 50, 'copt.Description', 'LEFT JOIN lookup.EnvelopeOption copt ON copt.Id = p.ContributionOptionsId')
-INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('StatusFlag', 98, 'CAST(CASE WHEN EXISTS(SELECT NULL FROM dbo.Tag t JOIN dbo.TagPerson tp ON tp.Id = t.Id WHERE tp.PeopleId = p.PeopleId AND t.Name = ''{flag}'' AND t.TypeId = 100) THEN 1 ELSE NULL END AS BIT)', NULL)
+INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('StatusFlag', 200, 'CAST(CASE WHEN EXISTS(SELECT NULL FROM dbo.Tag t JOIN dbo.TagPerson tp ON tp.Id = t.Id WHERE tp.PeopleId = p.PeopleId AND t.Name = ''{flag}'' AND t.TypeId = 100) THEN 1 ELSE NULL END AS BIT)', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Suffix', 13, 'p.SuffixCode', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('TextingOK', 29, 'p.ReceiveSMS', NULL)
 INSERT INTO [dbo].[CustomColumns] ([Column], [Ord], [Select], [JoinTable]) VALUES ('Title', 12, 'p.TitleCode', NULL)
@@ -1547,7 +1571,6 @@ INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (24, N'Desi
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (25, N'ManageGroups', 1)
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (26, N'MissionGiving', 1)
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (27, N'Delete', 1)
-INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (28, N'OrgSettings', 1)
 SET IDENTITY_INSERT [dbo].[Roles] OFF
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminCoupon', N'YourPasswordGoesHere')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminMail', N'david@bvcms.com')
@@ -2740,7 +2763,6 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 5)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 6)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 8)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 9)
-INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (1, 28)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (2, 1)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (2, 2)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (2, 3)
@@ -2752,7 +2774,6 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (2, 9)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (2, 11)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (2, 12)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (2, 25)
-INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (2, 28)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 1)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 2)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 3)
@@ -2765,7 +2786,6 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 11)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 12)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 15)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 25)
-INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 28)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 1)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 2)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 3)
@@ -2777,7 +2797,6 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 9)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 25)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 26)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 27)
-INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 28)
 SET IDENTITY_INSERT [dbo].[Users] ON
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2014-10-24 13:35:58.380', NULL, '2014-10-16 15:43:30.003', '2009-05-05 22:46:43.890', 0, '2014-10-16 15:43:29.923', 1, '2014-10-24 13:35:08.587', 0, NULL, NULL, NULL, 1, N'starterdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2014-10-17 15:42:49.050')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2014-01-24 10:37:24.863', '2014-01-24 10:36:52.857', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')

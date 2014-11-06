@@ -3,20 +3,18 @@ CREATE PROCEDURE [dbo].[RecentAbsentsSP2]
 	 @name nvarchar(100)
 	,@prog INT
 	,@div INT 
-	,@type INT 
 	,@campus INT
 	,@sched INT 
 	,@status INT
 	,@onlinereg INT
-	,@mainfellowship BIT
-	,@parentorg BIT
+	,@orgtypeid INT
 )
 AS
 BEGIN
 
 SET NOCOUNT ON
 
-DECLARE @to TABLE (orgid INT PRIMARY KEY, cathreshhold INT, orgname nvarchar(100), leader nvarchar(70))
+DECLARE @to TABLE (orgid INT PRIMARY KEY, cathreshhold INT, orgname NVARCHAR(100), leader NVARCHAR(70))
 
 INSERT @to
 SELECT  OrganizationId, ConsecutiveAbsentsThreshold, OrganizationName, LeaderName
@@ -35,8 +33,6 @@ FROM Organizations o
 					FROM dbo.DivOrg dd
 					WHERE dd.OrgId = o.OrganizationId AND dd.DivId = @div))
 					
-	AND (ISNULL(@type, 0) = 0 OR o.OrganizationTypeId = @type)
-	
 	AND (ISNULL(@campus, 0) = 0 OR o.CampusId = @campus)
 	
 	AND (ISNULL(@sched, 0) = 0
@@ -51,10 +47,18 @@ FROM Organizations o
 		  OR (@onlinereg > 0 AND ISNULL(o.RegistrationTypeId, 0) = @onlinereg) 
 		  OR @onlinereg = -1
 		)
-	AND (@mainfellowship = 0 OR (@mainfellowship = 1 AND o.IsBibleFellowshipOrg = 1))
-	
-	AND (@parentorg = 0 
-		OR (ISNULL(@parentorg, 0) = 1 AND EXISTS(SELECT NULL FROM dbo.Organizations co WHERE co.ParentOrgId = o.OrganizationId)))
+        
+	AND (CASE 
+			WHEN @orgtypeid = 0 THEN 1
+			WHEN @orgtypeid > 0 AND o.OrganizationTypeId = @orgtypeid THEN 1
+			WHEN @orgtypeid = -1 AND o.OrganizationTypeId IS NULL THEN 1
+			WHEN @orgtypeid = -3 AND o.IsBibleFellowshipOrg = 1 THEN 1
+			WHEN @orgtypeid = -2 AND ISNULL(o.IsBibleFellowshipOrg, 0) = 0 THEN 1
+			WHEN @orgtypeid = -4 AND o.SuspendCheckin = 1 THEN 1
+			WHEN @orgtypeid = -5 AND EXISTS(SELECT NULL FROM Organizations co WHERE co.ParentOrgId = o.OrganizationId) THEN 1
+			WHEN @orgtypeid = -6 AND o.ParentOrgId > 0 THEN 1
+			ELSE 0
+		 END) = 1
 
 CREATE TABLE #t (
 	OrganizationId INT,
