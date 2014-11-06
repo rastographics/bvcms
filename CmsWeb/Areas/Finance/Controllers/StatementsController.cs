@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(r);
         }
         [HttpGet, Route("~/Statements/Download/{id:int?}")]
-        public ActionResult Download(int? id, bool? PDF = true)
+        public ActionResult Download(int? id)
         {
             string output = Output();
             string fn = output;
