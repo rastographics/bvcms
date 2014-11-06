@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View();
         }
         [HttpPost, Route("Start")]
-        public ActionResult ContributionStatements(bool? pdf, DateTime? fromDate, DateTime? endDate, string startswith, string sort, int? tagid, bool excludeelectronic)
+        public ActionResult ContributionStatements(DateTime? fromDate, DateTime? endDate, string startswith, string sort, int? tagid, bool excludeelectronic)
         {
             if (!fromDate.HasValue || !endDate.HasValue)
                 return Content("<h3>Must have a Startdate and Enddate</h3>");
@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var cul = DbUtil.Db.Setting("Culture", "en-US");
             var host = Util.Host;
 
-            var output = Output(pdf);
+            var output = Output();
             if (tagid == 0)
                 tagid = null;
 
@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Thread.CurrentThread.Priority = ThreadPriority.Lowest;
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
-                var m = new ContributionStatementsExtract(host, fromDate.Value, endDate.Value, pdf ?? false, output, startswith, sort, tagid, excludeelectronic);
+                var m = new ContributionStatementsExtract(host, fromDate.Value, endDate.Value, output, startswith, sort, tagid, excludeelectronic);
                 m.DoWork();
             });
             return Redirect("/Statements/Progress");
@@ -56,13 +56,10 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             return Content(result);
         }
-        private string Output(bool? pdf)
+        private string Output()
         {
             string output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
-            if (pdf == true)
-                output = output + "/Statements/contributions_{0}.pdf".Fmt(Util.Host);
-            else
-                output = output + "/Statements/contributions_{0}.txt".Fmt(Util.Host);
+            output = output + "/Statements/contributions_{0}.pdf".Fmt(Util.Host);
             return output;
         }
         [HttpPost]
@@ -96,7 +93,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpGet, Route("~/Statements/Download/{id:int?}")]
         public ActionResult Download(int? id, bool? PDF = true)
         {
-            string output = Output(PDF);
+            string output = Output();
             string fn = output;
             if (id.HasValue)
                 fn = ContributionStatementsExtract.Output(output, id.Value);

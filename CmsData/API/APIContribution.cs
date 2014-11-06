@@ -5,6 +5,7 @@ using System.Data.Linq.SqlClient;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml.Serialization;
 using CmsData.Codes;
 using UtilityExtensions;
@@ -192,11 +193,7 @@ namespace CmsData.API
                      select new ContributorInfo
                      {
                          Name = name,
-                         Address1 = p.PrimaryAddress,
-                         Address2 = p.PrimaryAddress2,
-                         City = p.PrimaryCity,
-                         State = p.PrimaryState,
-                         Zip = p.PrimaryZip,
+                         MailingAddress = MailingAddress(p),
                          PeopleId = p.PeopleId,
                          SpouseID = p.SpouseId,
                          DeacesedDate = p.DeceasedDate,
@@ -235,11 +232,7 @@ namespace CmsData.API
                      select new ContributorInfo
                      {
                          Name = name,
-                         Address1 = p.PrimaryAddress,
-                         Address2 = p.PrimaryAddress2,
-                         City = p.PrimaryCity,
-                         State = p.PrimaryState,
-                         Zip = p.PrimaryZip,
+                         MailingAddress = MailingAddress(p),
                          PeopleId = p.PeopleId,
                          SpouseID = p.SpouseId,
                          DeacesedDate = p.DeceasedDate,
@@ -251,6 +244,18 @@ namespace CmsData.API
                          CampusId = p.CampusId,
                      };
             return q2;
+        }
+
+        private static string MailingAddress(View.Contributor c)
+        {
+            if (c.MailingAddress.HasValue())
+                return c.MailingAddress;
+            var sb = new StringBuilder();
+            sb.AppendLine(c.PrimaryAddress);
+            if (c.PrimaryAddress2.HasValue())
+                sb.AppendLine(c.PrimaryAddress2);
+            sb.AppendLine(Util.FormatCSZ4(c.PrimaryCity, c.PrimaryState, c.PrimaryZip));
+            return sb.ToString();
         }
 
         public static IEnumerable<ContributionInfo> contributions(CMSDataContext Db, ContributorInfo ci, DateTime fromDate, DateTime toDate)
@@ -459,16 +464,17 @@ namespace CmsData.API
     public class ContributorInfo
     {
         public string Name { get; set; }
-        public string Address1 { get; set; }
-        public string Address2 { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Zip { get; set; }
+        public string MailingAddress { get; set; }
+//        public string Address1 { get; set; }
+//        public string Address2 { get; set; }
+//        public string City { get; set; }
+//        public string State { get; set; }
+//        public string Zip { get; set; }
         public int PeopleId { get; set; }
         public int? SpouseID { get; set; }
         public int FamilyId { get; set; }
         public DateTime? DeacesedDate { get; set; }
-        public string CityStateZip { get { return UtilityExtensions.Util.FormatCSZ4(City, State, Zip); } }
+//        public string CityStateZip { get { return UtilityExtensions.Util.FormatCSZ4(City, State, Zip); } }
         public int hohInd { get; set; }
         public int FamilyPositionId { get; set; }
         public int? Age { get; set; }
