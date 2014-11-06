@@ -156,11 +156,12 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
                 }
             }
         }
-        public ActionResult ConfirmDuePaid(int? id, string TransactionID, decimal Amount)
+
+        public ActionResult ConfirmDuePaid(int? id, string transactionId, decimal amount)
         {
             if (!id.HasValue)
                 return View("Unknown");
-            if (!TransactionID.HasValue())
+            if (!transactionId.HasValue())
                 return Message("error no transaction");
 
             var ti = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
@@ -170,12 +171,13 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
             ti.Testing = true;
 #endif
             if (OnlineRegModel.GetTransactionGateway() == "serviceu")
-                ti = PaymentForm.CreateTransaction(DbUtil.Db, ti, Amount);
-            ConfirmDuePaidTransaction(ti, TransactionID, sendmail: true);
+                ti = PaymentForm.CreateTransaction(DbUtil.Db, ti, amount);
+            ConfirmDuePaidTransaction(ti, transactionId, sendmail: true);
             ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
             SetHeaders(ti.OrgId ?? 0);
             return View("PayAmtDue/Confirm", ti);
         }
+
         public ActionResult PayDueTest(string q)
         {
             if (!q.HasValue())

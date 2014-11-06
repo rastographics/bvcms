@@ -25,10 +25,10 @@ namespace CmsData.Finance.TransNational.Transaction.Sale
             Data["orderdescription"] = orderDescription;
         }
 
-        public CreditCardSaleRequest(string userName, string password, CreditCard creditCard, decimal amount, string orderId, string orderDescription, string poNumber)
+        public CreditCardSaleRequest(string userName, string password, CreditCard creditCard, decimal amount, string orderId, string orderDescription, string customerId)
             : this(userName, password, creditCard, amount, orderId, orderDescription)
         {
-            Data["ponumber"] = poNumber;
+            Data["customer_id"] = customerId;
         }
     }
 }

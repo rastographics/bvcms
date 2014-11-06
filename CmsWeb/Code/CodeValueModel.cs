@@ -736,13 +736,14 @@ namespace CmsWeb.Code
         }
         public static IEnumerable<CodeValueItem> StatusFlags()
         {
-            return from ms in DbUtil.Db.ViewStatusFlagLists.ToList()
+            var sf = from ms in DbUtil.Db.ViewStatusFlagLists.ToList()
                    where ms.RoleName == null || HttpContext.Current.User.IsInRole(ms.RoleName)
                    select new CodeValueItem
                    {
                        Code = ms.Flag,
                        Value = ms.Name
                    };
+            return sf.OrderBy(ss => ss.Value);
         }
 
         public IEnumerable<CodeValueItem> Schedules()

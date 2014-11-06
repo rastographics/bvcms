@@ -6,7 +6,7 @@
     var name = Html.NameFor2(m => m.Checkbox);
 }
 <div class="form-group">
-    @Html.Label(ask.Label, new { @class = "control-label col-sm-3 labelsize" })
+    <label class="control-label col-sm-3 labelsize">@ask.Label</label>
     <div class="col-sm-9">
         @foreach (var a in ask.list)
         {

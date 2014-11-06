@@ -99,9 +99,10 @@ namespace CmsWeb.Models
 
         public bool ShowCancelButton()
         {
+            if (Parent.OnlyOneAllowed() || Parent.OnlineGiving() || Parent.ManagingSubscriptions() || IsCreateAccount())
+                return false;
             // Show the Cancel link because we have either found the record or this is a new record
-            // and we're not in create account mode nor in manage subscriptions mode
-            return (Found.HasValue || IsNew) && !Parent.ManagingSubscriptions() && !IsCreateAccount();
+            return Found.HasValue || IsNew;
         }
 
         public bool UserSelectsOrganization()

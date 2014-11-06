@@ -28,9 +28,9 @@ namespace CmsWeb.Areas.Search.Models
                 case FieldType.NullCode:
                 case FieldType.CodeStr:
                     if (fieldMap.DataSource == "ExtraValues")
-                        return SelectedList(StandardExtraValues.ExtraValueCodes());
+                        return SelectedList(ExtraValueCodes());
                     if (fieldMap.DataSource == "FamilyExtraValues")
-                        return SelectedList(StandardExtraValues.FamilyExtraValueCodes());
+                        return SelectedList(FamilyExtraValueCodes());
                     if (fieldMap.DataSource == "Campuses")
                         return SelectedList(Campuses());
                     return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
@@ -38,6 +38,48 @@ namespace CmsWeb.Areas.Search.Models
                     return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
             }
             return null;
+        }
+        public static List<SelectListItem> ExtraValueCodes()
+        {
+            var q = from e in DbUtil.Db.PeopleExtras
+                    where e.StrValue != null || e.BitValue != null
+                    group e by new { e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0") }
+                        into g
+                        select g.Key;
+            var list = q.ToList();
+
+            var ev = CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People");
+            var q2 = from e in list
+                     let f = ev.SingleOrDefault(ff => ff.Name == e.Field)
+                     where f == null || f.UserCanView(DbUtil.Db)
+                     orderby e.Field, e.val
+                     select new SelectListItem()
+                            {
+                                Text = e.Field + ":" + e.val,
+                                Value = e.Field + ":" + e.val,
+                            };
+            return q2.ToList();
+        }
+        public static List<SelectListItem> FamilyExtraValueCodes()
+        {
+            var q = from e in DbUtil.Db.FamilyExtras
+                    where e.StrValue != null || e.BitValue != null
+                    group e by new { e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0") }
+                        into g
+                        select g.Key;
+            var list = q.ToList();
+
+            var ev = CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "Family");
+            var q2 = from e in list
+                     let f = ev.SingleOrDefault(ff => ff.Name == e.Field)
+                     where f == null || f.UserCanView(DbUtil.Db)
+                     orderby e.Field, e.val
+                     select new SelectListItem()
+                            {
+                                Text = e.Field + ":" + e.val,
+                                Value = e.Field + ":" + e.val,
+                            };
+            return q2.ToList();
         }
 
         private IEnumerable<SelectListItem> SelectedList(IEnumerable<SelectListItem> items)

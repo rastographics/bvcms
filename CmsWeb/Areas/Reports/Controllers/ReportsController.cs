@@ -409,13 +409,11 @@ namespace CmsWeb.Areas.Reports.Controllers
                 name = m.Name,
                 prog = m.ProgramId,
                 div = m.DivisionId,
-                type = m.TypeId,
                 campus = m.CampusId,
                 sched = m.ScheduleId,
                 status = m.StatusId,
                 onlinereg = m.OnlineReg,
-                mainfellowship = m.MainFellowship,
-                parentorg = m.TypeId == OrgSearchModel.OrgType.ParentOrg
+                orgtypeid = m.TypeId
             }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
             return View(q);
         }

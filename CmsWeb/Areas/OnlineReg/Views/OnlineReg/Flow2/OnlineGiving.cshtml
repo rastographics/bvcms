@@ -2,37 +2,44 @@
 @model CmsWeb.Models.OnlineRegPersonModel
 @{
     var funame = Html.NameFor2(m => m.FundItem);
-    var funds = CmsWeb.Models.OnlineRegPersonModel.FundList();
+    var funds = Model.Funds();
     decimal? tot = null;
 }
 <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
         <table class="table table-nonfluid table-condensed">
-            <tbody>
-                @for (var n = 0; n < funds.Length; n++)
-                {
-                    var i = funds[n];
-                    var amt = Model.FundItemValue(i.Value.ToInt());
-                    if (amt.HasValue)
-                    {
-                        tot = (tot ?? 0) + amt;
-                    }
-                    <tr>
-                        <td class="right">@i.Text</td>
-                        <td>
-                            <input type="hidden" name="@(funame)[@n].Key" value="@i.Value" />
-                            <input type="text" name="@(funame)[@n].Value" value="@amt" class="form-control narrow sum" />
-                            <div>@Html.ValidationMessageFor(m => m.FundItem[n])</div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
+          <tbody>
+            @for (var n = 0; n < funds.Length; n++)
+            {
+              var i = funds[n];
+              var amt = Model.FundItemValue(i.Value.ToInt());
+              if (amt.HasValue)
+              {
+                tot = (tot ?? 0) + amt;
+              }
+              <tr>
+                <td class="right">@i.Text</td>
+                <td>
+                  <input type="hidden" name="@(funame)[@n].Key" value="@i.Value" />
+                  <input type="text" name="@(funame)[@n].Value" value="@amt" class="form-control narrow sum" />
+                  <div>@Html.ValidationMessageFor(m => m.FundItem[n])</div>
+                </td>
+              </tr>
+            }
+          </tbody>
+          @if (funds.Length == 1)
+          {
+            @Html.Hidden("total", tot);
+          }
+          else
+          {
             <tfoot>
                 <tr>
                     <td class="right">Total</td>
                     <td class="right"><span id="total">@tot.ToString2("N2")</span></td>
                 </tr>
             </tfoot>
+          }
         </table>
     </div>
 </div>

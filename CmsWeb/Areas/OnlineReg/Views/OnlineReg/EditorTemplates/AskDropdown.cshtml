@@ -1,18 +1,19 @@
 ﻿@using CmsWeb.Models
 @model string
 @{
-    var name = Html.NameFor2(m => m);
-    var items = (IEnumerable<OnlineRegPersonModel.SelectListItemFilled>)ViewBag.items;
+  var label = ViewBag.label as string;
+  var name = Html.NameFor2(m => m);
+  var items = (IEnumerable<OnlineRegPersonModel.SelectListItemFilled>)ViewBag.items;
 }
 <div class="form-group">
-    @Html.Label(ViewBag.label as string, new { @class = "control-label col-sm-3 labelsize" })
-    <div class="col-sm-9">
-        <select name="@name" class="form-control">
-            @foreach (var i in items)
-            {
-                <option value="@i.Value" @(i.Selected ? "selected=selected" : "") @(i.Filled ? "disabled=disabled" : "")>@i.Text</option>
-            }
-        </select>
-        @Html.ValidationMessageFor(m => m)
-    </div>
+  <label class="control-label col-sm-3 labelsize">@label</label>
+  <div class="col-sm-9">
+    <select name="@name" class="form-control">
+      @foreach (var i in items)
+      {
+        <option value="@i.Value" @(i.Selected ? "selected=selected" : "") @(i.Filled ? "disabled=disabled" : "")>@i.Text</option>
+      }
+    </select>
+    @Html.ValidationMessageFor(m => m)
+  </div>
 </div>
