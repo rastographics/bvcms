@@ -131,7 +131,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             return s.Replace("'", "''");
         }
-        public static void StandardColumns(CMSDataContext db, XmlWriter writer)
+        public static void StandardColumns(CMSDataContext db, XmlWriter writer, bool includeRoot = true)
         {
             var list = db.CustomColumns.OrderBy(cc => cc.Ord).ToList();
             var dict = new Dictionary<string, CustomColumn>();
