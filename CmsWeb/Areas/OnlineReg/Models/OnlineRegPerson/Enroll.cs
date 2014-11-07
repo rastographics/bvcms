@@ -133,6 +133,14 @@ namespace CmsWeb.Models
                                 else
                                     om.AddToMemberData("{0}: {1}".Fmt(g.Key, g.Value));
                         break;
+                    case "AskText":
+                        foreach (var g in Text[ask.UniqueId])
+                            if (g.Value.HasValue())
+                                if (setting.TargetExtraValues)
+                                    person.AddEditExtraData(g.Key, g.Value);
+                                else
+                                    om.AddToMemberData("{0}: {1}".Fmt(g.Key, g.Value));
+                        break;
                     case "AskMenu":
                         foreach (var i in MenuItem[ask.UniqueId])
                             om.AddToGroup(DbUtil.Db, i.Key, i.Value);
@@ -444,6 +452,11 @@ namespace CmsWeb.Models
                                 if (a.Value.HasValue())
                                     sb.AppendFormat("<tr><td>{0}:</td><td>{1}</td></tr>\n".Fmt(a.Key, a.Value));
                             break;
+                        case "AskText":
+                            foreach (var a in Text[ask.UniqueId])
+                                if (a.Value.HasValue())
+                                    sb.AppendFormat("<tr><td>{0}:</td><td>{1}</td></tr>\n".Fmt(a.Key, a.Value));
+                            break;
                         case "AskGradeOptions":
                             sb.AppendFormat("<tr><td>GradeOption:</td><td>{0}</td></tr>\n",
                                             GradeOptions(ask).SingleOrDefault(s => s.Value == (gradeoption ?? "00")).Text);
@@ -572,6 +585,30 @@ namespace CmsWeb.Models
                                          select li.Substring(q.Question.Length + 2)).FirstOrDefault();
                                 if (v.HasValue())
                                     eq[q.Question] = v;
+                            }
+                        }
+                        break;
+                    case "AskText":
+                        if (Text == null)
+                            Text = new List<Dictionary<string, string>>();
+                        var tx = new Dictionary<string, string>();
+                        Text.Add(tx);
+                        lines = (om.UserData ?? "").Split('\n');
+                        foreach (var q in ((AskExtraQuestions)ask).list)
+                        {
+                            if (setting.TargetExtraValues)
+                            {
+                                var v = person.GetExtra(q.Question);
+                                if (v.HasValue())
+                                    tx[q.Question] = v;
+                            }
+                            else
+                            {
+                                var v = (from li in lines
+                                         where li.StartsWith(q.Question + ": ")
+                                         select li.Substring(q.Question.Length + 2)).FirstOrDefault();
+                                if (v.HasValue())
+                                    tx[q.Question] = v;
                             }
                         }
                         break;

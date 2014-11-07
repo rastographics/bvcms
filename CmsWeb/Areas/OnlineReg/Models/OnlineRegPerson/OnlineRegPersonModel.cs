@@ -173,6 +173,7 @@ namespace CmsWeb.Models
         public Dictionary<int, decimal?> FundItem { get; set; }
         public Dictionary<string, string> SpecialTest { get; set; }
         public List<Dictionary<string, string>> ExtraQuestion { get; set; }
+        public List<Dictionary<string, string>> Text { get; set; }
         public Dictionary<string, bool?> YesNoQuestion { get; set; }
         public List<string> option { get; set; }
         public List<string> Checkbox { get; set; }
@@ -431,6 +432,13 @@ namespace CmsWeb.Models
                 ExtraQuestion = new List<Dictionary<string, string>>();
                 for (var i = 0; i < neqsets; i++)
                     ExtraQuestion.Add(new Dictionary<string, string>());
+            }
+            var ntxsets = setting.AskItems.Count(aa => aa.Type == "AskText");
+            if (ntxsets > 0 && Text == null)
+            {
+                Text = new List<Dictionary<string, string>>();
+                for (var i = 0; i < neqsets; i++)
+                    Text.Add(new Dictionary<string, string>());
             }
             var nmi = setting.AskItems.Count(aa => aa.Type == "AskMenu");
             if (nmi > 0 && MenuItem == null)

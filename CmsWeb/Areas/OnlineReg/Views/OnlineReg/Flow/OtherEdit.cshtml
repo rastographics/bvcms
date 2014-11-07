@@ -203,6 +203,21 @@
     			</tr>
     		}
             break;
+        case "AskText":
+            var tx = ((AskText) ask);
+            var txname = Html.NameFor2(m => m.Text);
+    		for (int i = 0; i < tx.list.Count; i++)
+    		{
+    			var a = tx.list[i];
+    			<tr>
+    				<td><div class="wraparound">@a.Question</div></td>
+    				<td><input type="hidden" name="@(txname)[@tx.UniqueId][@i].Key" value="@a.Question" />
+    					<input type="text" name="@(txname)[@tx.UniqueId][@i].Value" value="@Model.TextValue(tx.UniqueId, a.Question)" class="wide" />
+    					<div>@Html.ValidationMessageFor(m => m.Text[tx.UniqueId][a.Question])</div>
+    				</td>
+    			</tr>
+    		}
+            break;
         case "AskYesNoQuestions":
         var ynqname = Html.NameFor2(m => m.YesNoQuestion);
         for (int n = 0; n < ((AskYesNoQuestions)ask).list.Count; n++)

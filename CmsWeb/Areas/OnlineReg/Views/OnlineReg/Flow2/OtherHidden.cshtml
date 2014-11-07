@@ -129,6 +129,16 @@
                     <input type="hidden" name="@(eqname)[@eq.UniqueId][@n].Value" value="@Model.ExtraQuestionValue(eq.UniqueId, a.Question)" />
                 }
                 break;
+            case "AskText":
+                var tx = (AskText)ask;
+                var txname = Html.NameFor2(m => m.Text);
+                for (int n = 0; n < tx.list.Count; n++)
+                {
+                    var a = eq.list[n];
+                    <input type="hidden" name="@(txname)[@tx.UniqueId][@n].Key" value="@a.Question" />
+                    <input type="hidden" name="@(txname)[@tx.UniqueId][@n].Value" value="@Model.TextValue(tx.UniqueId, a.Question)" />
+                }
+                break;
             case "AskYesNoQuestions":
                 for (int n = 0; n < ((AskYesNoQuestions)ask).list.Count; n++)
                 {
