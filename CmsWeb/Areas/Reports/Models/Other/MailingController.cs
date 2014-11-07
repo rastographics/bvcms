@@ -47,7 +47,7 @@ namespace CmsWeb.Models
                      };
             return q2;
         }
-        public IEnumerable<MailingInfo> GroupByAddress(Guid QueryId)
+        public IEnumerable<MailingInfo> GroupByAddress(string sortExpression, Guid QueryId)
         {
             var q = DbUtil.Db.PeopleQuery(QueryId);
             if (UseMailFlags)
@@ -73,6 +73,7 @@ namespace CmsWeb.Models
                          CellPhone = "",
                          HomePhone = one.HomePhone,
                      };
+            q2 = ApplySort(q2, sortExpression);
             return q2;
         }
 
