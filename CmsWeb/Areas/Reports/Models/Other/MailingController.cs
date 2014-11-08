@@ -269,6 +269,7 @@ namespace CmsWeb.Models
                          HomePhone = p.HomePhone,
                          PeopleId = p.PeopleId
                      };
+            q2 = ApplySort(q2, sortExpression);
             return q2;
         }
 
