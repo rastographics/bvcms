@@ -426,9 +426,9 @@ Please call the church to resolve this before we can complete your registration.
                             for (int n = 0; n < tx.list.Count; n++)
                             {
                                 var a = tx.list[n];
-                                if (ExtraQuestion == null || !ExtraQuestion[tx.UniqueId].ContainsKey(a.Question) ||
-                                    !ExtraQuestion[tx.UniqueId][a.Question].HasValue())
-                                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ExtraQuestion[tx.UniqueId][a.Question]), "please give some answer");
+                                if (Text == null || !Text[tx.UniqueId].ContainsKey(a.Question) ||
+                                    !Text[tx.UniqueId][a.Question].HasValue())
+                                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].Text[tx.UniqueId][a.Question]), "please give some answer");
                             }
                         break;
                     case "AskCheckboxes":

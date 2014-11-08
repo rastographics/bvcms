@@ -134,7 +134,7 @@
                 var txname = Html.NameFor2(m => m.Text);
                 for (int n = 0; n < tx.list.Count; n++)
                 {
-                    var a = eq.list[n];
+                    var a = tx.list[n];
                     <input type="hidden" name="@(txname)[@tx.UniqueId][@n].Key" value="@a.Question" />
                     <input type="hidden" name="@(txname)[@tx.UniqueId][@n].Value" value="@Model.TextValue(tx.UniqueId, a.Question)" />
                 }

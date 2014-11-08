@@ -26,17 +26,17 @@ namespace CmsData.Registration
 		}
 		public static AskText Parse(Parser parser)
 		{
-			var eq = new AskText();
+			var tx = new AskText();
 			parser.lineno++;
 			if (parser.curr.indent == 0)
-				return eq;
+				return tx;
 			var startindent = parser.curr.indent;
 			while (parser.curr.indent == startindent)
 			{
 				var q = AskExtraQuestions.ExtraQuestion.Parse(parser, startindent);
-				eq.list.Add(q);
+				tx.list.Add(q);
 			}
-			return eq;
+			return tx;
 		}
 	}
 }

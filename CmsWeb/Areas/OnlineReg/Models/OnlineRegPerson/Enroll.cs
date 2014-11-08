@@ -594,7 +594,7 @@ namespace CmsWeb.Models
                         var tx = new Dictionary<string, string>();
                         Text.Add(tx);
                         lines = (om.UserData ?? "").Split('\n');
-                        foreach (var q in ((AskExtraQuestions)ask).list)
+                        foreach (var q in ((AskText)ask).list)
                         {
                             if (setting.TargetExtraValues)
                             {
