@@ -225,6 +225,18 @@ namespace CmsWeb.Models
                         if (eq != null)
                             ExtraQuestion[eqset].Add(eq.Value, e.Value);
                         break;
+                    case "Text":
+                        if (Text == null)
+                            Text = new List<Dictionary<string, string>>();
+                        var txsetattr = e.Attribute("set");
+                        if (txsetattr != null)
+                            eqset = txsetattr.Value.ToInt();
+                        if (Text.Count == eqset)
+                            Text.Add(new Dictionary<string, string>());
+                        var tx = e.Attribute("question");
+                        if (tx != null)
+                            Text[eqset].Add(tx.Value, e.Value);
+                        break;
                     case "YesNoQuestion":
                         if (YesNoQuestion == null)
                             YesNoQuestion = new Dictionary<string, bool?>();
@@ -336,6 +348,19 @@ namespace CmsWeb.Models
                                     foreach (var q in ExtraQuestion[i])
                                     {
                                         w.Start("ExtraQuestion");
+                                        w.Attr("set", i);
+                                        w.Attr("question", q.Key);
+                                        w.AddText(q.Value);
+                                        w.End();
+                                    }
+                        break;
+                    case "Text":
+                        if (Text != null)
+                            for (var i = 0; i < Text.Count; i++)
+                                if (Text[i] != null && Text[i].Count > 0)
+                                    foreach (var q in Text[i])
+                                    {
+                                        w.Start("Text");
                                         w.Attr("set", i);
                                         w.Attr("question", q.Key);
                                         w.AddText(q.Value);

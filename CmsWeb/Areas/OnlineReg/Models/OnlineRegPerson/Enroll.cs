@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsData.Registration;
+using DocumentFormat.OpenXml.Vml;
 using UtilityExtensions;
 using System.Text;
 using CmsData.Codes;
@@ -139,7 +140,12 @@ namespace CmsWeb.Models
                                 if (setting.TargetExtraValues)
                                     person.AddEditExtraData(g.Key, g.Value);
                                 else
-                                    om.AddToMemberData("{0}: {1}".Fmt(g.Key, g.Value));
+                                {
+                                    om.AddToMemberData("{0}:".Fmt(g.Key)); 
+                                    var lines = g.Value.SplitLines();
+                                    foreach(var line in lines)
+                                        om.AddToMemberData("\t{0}".Fmt(line));
+                                }
                         break;
                     case "AskMenu":
                         foreach (var i in MenuItem[ask.UniqueId])
@@ -604,11 +610,19 @@ namespace CmsWeb.Models
                             }
                             else
                             {
-                                var v = (from li in lines
-                                         where li.StartsWith(q.Question + ": ")
-                                         select li.Substring(q.Question.Length + 2)).FirstOrDefault();
-                                if (v.HasValue())
-                                    tx[q.Question] = v;
+                                var sb = new StringBuilder();
+                                var i = 0;
+                                for(; i < lines.Length;i++)
+                                    if (lines[i] == q.Question + ":")
+                                        break;
+                                for (i++; i < lines.Length; i++)
+                                {
+                                    if (lines[i].Length == 0 || lines[i][0] != '\t')
+                                        break;
+                                    sb.AppendLine(lines[i].Substring(1));
+                                }
+                                if (sb.Length > 0)
+                                    tx[q.Question] = sb.ToString();
                             }
                         }
                         break;
