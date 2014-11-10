@@ -88,6 +88,18 @@ namespace CmsData
 
             return string.Join("", texta);
         }
+        public string DoReplacements(Person p)
+        {
+            var aa = db.GetAddressList(p);
+
+            ListAddresses = aa.DistinctEmails();
+
+            var texta = new List<string>(stringlist);
+            for (var i = 1; i < texta.Count; i += 2)
+                texta[i] = DoReplaceCode(texta[i], p);
+
+            return string.Join("", texta);
+        }
 
         private class PayInfo
         {
@@ -98,7 +110,7 @@ namespace CmsData
             public string RegisterMail { get; set; }
         }
 
-        private string DoReplaceCode(string code, Person p, PayInfo pi, EmailQueueTo emailqueueto)
+        private string DoReplaceCode(string code, Person p, PayInfo pi = null, EmailQueueTo emailqueueto = null)
         {
             switch (code.ToLower())
             {
@@ -126,7 +138,7 @@ namespace CmsData
                     break;
 
                 case "{barcode}":
-                    return string.Format("<img src='{0}' />", Util.URLCombine(db.CmsHost, "/Track/Barcode/" + emailqueueto.PeopleId));
+                    return string.Format("<img src='{0}' />", Util.URLCombine(db.CmsHost, "/Track/Barcode/" + p.PeopleId));
 
                 case "{campus}":
                     return p.CampusId != null ? p.Campu.Description : "No Campus Specified";
@@ -144,13 +156,17 @@ namespace CmsData
                     return p.PrimaryCountry;
 
                 case "{createaccount}":
-                    return CreateUserTag(emailqueueto);
+                    if(emailqueueto != null)
+                        return CreateUserTag(emailqueueto);
+                    break;
 
                 case "{cmshost}":
                     return db.CmsHost.TrimEnd('/');
 
                 case "{emailhref}":
-                    return Util.URLCombine(db.CmsHost, "/EmailView/" + emailqueueto.Id);
+                    if(emailqueueto != null)
+                        return Util.URLCombine(db.CmsHost, "/EmailView/" + emailqueueto.Id);
+                    break;
 
                 case "{first}":
                     return p.PreferredName.Contains("?") || p.PreferredName.Contains("unknown", true) ? "" : p.PreferredName;
@@ -168,7 +184,9 @@ namespace CmsData
                     return p.Name.Contains("?") || p.Name.Contains("unknown", true) ? "" : p.Name;
 
                 case "{nextmeetingtime}":
-                    return NextMeetingDate(code, emailqueueto);
+                    if(emailqueueto != null)
+                        return NextMeetingDate(code, emailqueueto);
+                    break;
 
                 case "{occupation}":
                     return p.OccupationOther;
@@ -191,7 +209,9 @@ namespace CmsData
                     return p.PeopleId.ToString();
 
                 case "{salutation}":
-                    return db.GoerSupporters.Where(ee => ee.Id == emailqueueto.GoerSupportId).Select(ee => ee.Salutation).SingleOrDefault();
+                    if (emailqueueto != null)
+                        return db.GoerSupporters.Where(ee => ee.Id == emailqueueto.GoerSupportId).Select(ee => ee.Salutation).SingleOrDefault();
+                    break;
 
                 case "{state}":
                     return p.PrimaryState;
@@ -210,12 +230,19 @@ namespace CmsData
                     return p.ComputeTitle();
 
                 case "{track}":
-                    return emailqueueto.Guid.HasValue ? "<img src=\"{0}\" />".Fmt(Util.URLCombine(db.CmsHost, "/Track/Key/" + emailqueueto.Guid.Value.GuidToQuerystring())) : "";
+                    if (emailqueueto != null)
+                        return emailqueueto.Guid.HasValue ? "<img src=\"{0}\" />".Fmt(Util.URLCombine(db.CmsHost, "/Track/Key/" + emailqueueto.Guid.Value.GuidToQuerystring())) : "";
+                    break;
 
                 case "{unsubscribe}":
-                    return UnSubscribeLink(emailqueueto);
+                    if (emailqueueto != null)
+                        return UnSubscribeLink(emailqueueto);
+                    break;
 
                 default:
+                    if (emailqueueto == null)
+                        return code;
+
                     if (code.StartsWith("{addsmallgroup:", StringComparison.OrdinalIgnoreCase))
                         return AddSmallGroup(code, emailqueueto);
 
