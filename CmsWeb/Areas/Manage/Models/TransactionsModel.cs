@@ -213,7 +213,6 @@ namespace CmsWeb.Models
             return q;
         }
 
-        
         private void CheckBatchDates(DateTime start, DateTime end)
         {
             var gateway = DbUtil.Db.Gateway();
