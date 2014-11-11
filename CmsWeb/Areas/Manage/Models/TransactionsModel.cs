@@ -309,6 +309,9 @@ namespace CmsWeb.Models
                 existingTransaction.Batchref = batchTransaction.BatchReference;
                 existingTransaction.Batchtyp = batchTransaction.BatchType == BatchType.Ach ? "eft" : "bankcard";
                 existingTransaction.Settled = settlementDate;
+                existingTransaction.PaymentType = batchTransaction.BatchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard;
+                existingTransaction.LastFourCC = batchTransaction.BatchType == BatchType.CreditCard ? batchTransaction.LastDigits : null;
+                existingTransaction.LastFourACH = batchTransaction.BatchType == BatchType.Ach ? batchTransaction.LastDigits : null;
             }
 
             // finally we need to mark these batches as completed if there are any.

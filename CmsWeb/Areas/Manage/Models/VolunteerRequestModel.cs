@@ -100,12 +100,12 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 
 			subject = "Volunteer request for {0}".Fmt(org.OrganizationName);
 		    message = DbUtil.Db.ContentHtml("VolunteerRequest", Resource1.VolunteerRequestModel_ComposeMessage_Body);
-		    message = message.Replace("{org}", org.OrganizationName);
-            message = message.Replace("{meetingdate}", meeting.MeetingDate.ToString2("dddd, MMM d"));
-            message = message.Replace("{meetingtime}", meeting.MeetingDate.ToString2("h:mm tt"));
-            message = message.Replace("{yeslink}", yeslink);
-            message = message.Replace("{nolink}", nolink);
-            message = message.Replace("{sendername}", person.Name);
+		    message = message.Replace("{org}", org.OrganizationName)
+		        .Replace("{meetingdate}", meeting.MeetingDate.ToString2("dddd, MMM d"))
+		        .Replace("{meetingtime}", meeting.MeetingDate.ToString2("h:mm tt"))
+		        .Replace("{yeslink}", yeslink)
+		        .Replace("{nolink}", nolink)
+		        .Replace("{sendername}", person.Name);
 		}
 		public string DisplayMessage { get; set; }
 		public string Error { get; set; }

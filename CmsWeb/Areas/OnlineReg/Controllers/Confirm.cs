@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mail;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
@@ -289,7 +290,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 text = text.Replace("{amt}", (t.Amt ?? 0).ToString("N2"));
                 text = text.Replace("{date}", DateTime.Today.ToShortDateString());
                 text = text.Replace("{tranid}", t.Id.ToString());
-                text = text.Replace("{name}", p.person.Name);
+                //text = text.Replace("{name}", p.person.Name);
                 text = text.Replace("{account}", "");
                 text = text.Replace("{email}", p.person.EmailAddress);
                 text = text.Replace("{phone}", p.person.HomePhone.FmtFone());
@@ -344,8 +345,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (!Util.ValidEmail(contributionemail))
                     contributionemail = p.person.FromEmail;
 
-                Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId)),
-                    p.setting.Subject, sb.ToString(),
+
+                var body = sb.ToString();
+                var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId));
+                var mm = new EmailReplacements(DbUtil.Db, body, from );
+                body = mm.DoReplacements(p.person);
+
+                Util.SendMsg(Util.SysFromEmail, Util.Host, from, p.setting.Subject, body,
                     Util.EmailAddressListFromString(contributionemail), 0, p.PeopleId);
                 DbUtil.Db.Email(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
                     "online giving contribution received",

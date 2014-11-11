@@ -70,6 +70,8 @@ namespace CmsData.View
 		
 		private bool _ElectronicStatement;
 		
+		private string _MailingAddress;
+		
 		
 		public Contributor()
 		{
@@ -531,6 +533,23 @@ namespace CmsData.View
 			{
 				if (this._ElectronicStatement != value)
 					this._ElectronicStatement = value;
+			}
+
+		}
+
+		
+		[Column(Name="MailingAddress", Storage="_MailingAddress", DbType="nvarchar")]
+		public string MailingAddress
+		{
+			get
+			{
+				return this._MailingAddress;
+			}
+
+			set
+			{
+				if (this._MailingAddress != value)
+					this._MailingAddress = value;
 			}
 
 		}
