@@ -426,6 +426,7 @@
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
+    <Compile Include="Framework\CmsViewEngine.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraInfo.cs" />
     <Compile Include="Models\ExtraValue\ReportsModel.cs" />
