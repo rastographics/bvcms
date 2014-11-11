@@ -352,20 +352,20 @@ namespace CmsWeb.Models
             if (person.EmailAddress.HasValue() || person.EmailAddress2.HasValue())
             {
                 var msg = DbUtil.Db.ContentHtml("DiffEmailMessage", Resource1.DiffEmailMessage);
-                msg = msg.Replace("{name}", person.Name, ignoreCase: true);
-                msg = msg.Replace("{first}", person.PreferredName, ignoreCase: true);
-                msg = msg.Replace("{org}", orgname, ignoreCase: true);
-                msg = msg.Replace("{phone}", phone, ignoreCase: true);
+                msg = msg.Replace("{name}", person.Name, ignoreCase: true)
+                    .Replace("{first}", person.PreferredName, ignoreCase: true)
+                    .Replace("{org}", orgname, ignoreCase: true)
+                    .Replace("{phone}", phone, ignoreCase: true);
                 var subj = "{0}, different email address than one on record".Fmt(orgname);
                 DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(regemail), subj, msg, false);
             }
             else
             {
                 var msg = DbUtil.Db.ContentHtml("NoEmailMessage", Resource1.NoEmailMessage);
-                msg = msg.Replace("{name}", person.Name);
-                msg = msg.Replace("{first}", person.PreferredName, ignoreCase: true);
-                msg = msg.Replace("{org}", orgname, ignoreCase: true);
-                msg = msg.Replace("{phone}", phone.FmtFone(), ignoreCase: true);
+                msg = msg.Replace("{name}", person.Name)
+                    .Replace("{first}", person.PreferredName, ignoreCase: true)
+                    .Replace("{org}", orgname, ignoreCase: true)
+                    .Replace("{phone}", phone.FmtFone(), ignoreCase: true);
                 var subj = "{0}, no email on your record".Fmt(orgname);
                 DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(regemail), subj, msg, false);
             }

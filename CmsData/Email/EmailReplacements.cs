@@ -192,6 +192,7 @@ namespace CmsData
                     return p.OccupationOther;
 
                 case "{orgname}":
+                case "{org}":
                     return
                         db.Organizations.Where(oo => oo.OrganizationId == db.CurrentOrgId)
                             .Select(oo => oo.OrganizationName).SingleOrDefault();

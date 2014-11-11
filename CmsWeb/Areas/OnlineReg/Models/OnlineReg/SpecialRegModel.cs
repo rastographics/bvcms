@@ -54,15 +54,15 @@ namespace CmsWeb.Models
 
             subject = subject.Replace("{org}", org.OrganizationName);
 
-            body = body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
-            body = body.Replace("{name}", person.Name, ignoreCase: true);
-            body = body.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
-            body = body.Replace("{email}", person.EmailAddress, ignoreCase: true);
-            body = body.Replace("{phone}", person.HomePhone.FmtFone(), ignoreCase: true);
-            body = body.Replace("{contact}", staff.Name, ignoreCase: true);
-            body = body.Replace("{contactemail}", staff.EmailAddress, ignoreCase: true);
-            body = body.Replace("{contactphone}", org.PhoneNumber.FmtFone(), ignoreCase: true);
-            body = body.Replace("{details}", summary.ToString(), ignoreCase: true);
+            body = body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true)
+                .Replace("{name}", person.Name, ignoreCase: true)
+                .Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true)
+                .Replace("{email}", person.EmailAddress, ignoreCase: true)
+                .Replace("{phone}", person.HomePhone.FmtFone(), ignoreCase: true)
+                .Replace("{contact}", staff.Name, ignoreCase: true)
+                .Replace("{contactemail}", staff.EmailAddress, ignoreCase: true)
+                .Replace("{contactphone}", org.PhoneNumber.FmtFone(), ignoreCase: true)
+                .Replace("{details}", summary.ToString(), ignoreCase: true);
 
             DbUtil.Db.Email(staff.FromEmail, person, subject, body);
             DbUtil.Db.Email(person.FromEmail, staff, "Registration completed for {0}".Fmt(org.OrganizationName), "{0} completed {1}<br/><br/>{2}".Fmt(person.Name, org.OrganizationName, summary));
