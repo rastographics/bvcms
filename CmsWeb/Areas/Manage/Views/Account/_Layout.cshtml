@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="@Url.Content("~/Content/touchpoint/images/favicon.png")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TouchPoint Software</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="@Url.Content("~/Content/touchpoint/bootstrap/css/bootstrap.min.css")" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="@Url.Content("~/Content/touchpoint/css/account.css")" rel="stylesheet">
+</head>
+<body class="theme-default page-signin-alt">
+    <div class="signin-header">
+        <a href="index.html" class="logo">
+            <div class="demo-logo bg-primary"><img src="@Url.Content("~/Content/touchpoint/images/logo.png")" alt="" style="margin-top: -8px;"></div>
+        </a>
+    </div>
+    @RenderBody()
+    <div id="footer" class="container-fluid hidden-xs">
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            &copy; 2014 TouchPoint Software, LLC.&nbsp;&nbsp;<a href="#">Privacy Policy</a>&nbsp;&nbsp;<a href="#">Email Updates</a>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="pull-right social">
+                <a title="TouchPoint on Facebook" href="http://www.facebook.com/TouchPointSoftware" class="facebook" target="_blank">Facebook</a>
+                <a title="TouchPoint on Twitter" href="http://www.twitter.com/TouchPointSoftware" class="twitter" target="_blank">Twitter</a>
+            </div>
+        </div>
+    </div>
+    <div id="footer" class="container-fluid visible-xs-block">
+        <div class="col-xs-12">
+            &copy; 2014 TouchPoint Software, LLC.&nbsp;&nbsp;<a href="#">Privacy Policy</a>&nbsp;&nbsp;<a href="#">Email Updates</a>
+        </div>
+        <div class="col-xs-12">
+            <div class="social">
+                <a title="TouchPoint on Facebook" href="http://www.facebook.com/TouchPointSoftware" class="facebook" target="_blank">Facebook</a>
+                <a title="TouchPoint on Twitter" href="http://www.twitter.com/TouchPointSoftware" class="twitter" target="_blank">Twitter</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+﻿html {
+    min-height: 100%;
+    position: relative;
+}
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    padding-top: 0;
+    text-align: center;
+}
+.theme-default {
+     background: #f6f6f6;
+}
+.page-signin-alt {
+     padding-bottom: 40px;
+}
+.page-signin-alt .signin-header {
+    padding-left: 0;
+    text-align: center;
+}
+.page-signin-alt .signin-header {
+    -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .05), 0 1px 0 rgba(0, 0, 0, .05);
+    background: #fff;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, .05), 0 1px 0 rgba(0, 0, 0, .05);
+    padding: 16px 0 16px 0;
+    position: relative;
+}
+.page-signin-alt .signin-header .btn {
+    position: absolute;
+    right: 16px;
+    top: 12px;
+}
+.page-signin-alt .signin-header .logo {
+    -webkit-transition: all .3s;
+    color: #555;
+    font-size: 16px;
+    height: 24px;
+    line-height: 24px;
+    opacity: 1;
+    transition: all .3s;
+    width: 24px;
+}
+.page-signin-alt .signin-header .demo-logo {
+    display: inline-block;
+    height: 24px;
+    line-height: 24px;
+}
+.theme-default .bg-primary, .theme-default .bg-primary a, 
+.theme-default .bg-primary a:focus, .theme-default .bg-primary:active, 
+.theme-default .bg-primary:focus, .theme-default .bg-primary:hover {
+     color: #fff;
+}
+.page-signin-alt .form-header {
+    font-size: 22px;
+    font-weight: 300;
+    margin: 40px 0;
+    text-align: center;
+}
+.theme-default .bordered, .theme-default .panel, 
+.theme-default .table, .theme-default hr {
+     border-color: #e2e2e2;
+}
+.page-signin-alt .panel {
+    margin: 0 auto;
+    padding: 27px;
+    width: 360px;
+}
+.panel, .panel-default {
+    -webkit-box-shadow: none;
+    border-color: #e4e4e4;
+    box-shadow: none;
+    margin-bottom: 22px;
+    position: relative;
+}
+.page-signin-alt .signin-password {
+     position: relative;
+}
+.page-signin-alt .signin-password input {
+     padding-right: 70px;
+}
+.page-signin-alt .signin-password .forgot {
+    background: #f1f1f1;
+    border-radius: 2px;
+    color: #555;
+    font-size: 12px;
+    line-height: 25px;
+    padding: 0 7px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+.page-signin-alt .signin-with {
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    width: 360px;
+}
+.page-signin-alt .signin-with .header {
+    font-size: 16px;
+    font-weight: 300;
+    margin: 0 0 20px;
+    text-align: center;
+}
+.page-signin-alt .signin-with .header a {
+     text-decoration: underline;
+}
+#footer {
+    background-color: #64676C;
+    border-top: thin solid #999;
+    bottom: 0;
+    color: #fff;
+    font-size: 11px;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 20px;
+    position: absolute;
+    text-align: left;
+    width: 100%;
+}
+#footer a {
+    color: #fff !important;
+    text-decoration: underline;
+}
+.social a.facebook {
+    background: url(../images/facebook.png) no-repeat 0 0;
+    width: 60px;
+}
+.social a.facebook, .social a.twitter {
+    overflow: hidden;
+    text-indent: 101%;
+}
+.social a {
+    float: left;
+    margin-right: 1em;
+}
+.social a.twitter {
+    background: url(../images/twitter.png) no-repeat 0 0;
+    width: 80px;
+}
+#footer.visible-xs-block {
+     padding-top: 12px;
+}

@@ -695,6 +695,16 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\touchpoint\bootstrap-sweetalert\css\sweet-alert.css" />
+    <Content Include="Content\touchpoint\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\touchpoint\css\account.css" />
+    <Content Include="Content\touchpoint\css\main.css" />
+    <Content Include="Content\touchpoint\images\facebook.png" />
+    <Content Include="Content\touchpoint\images\favicon.png" />
+    <Content Include="Content\touchpoint\images\logo.png" />
+    <Content Include="Content\touchpoint\images\logo_sm.png" />
+    <Content Include="Content\touchpoint\images\twitter.png" />
     <Content Include="Content\xml.css" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
@@ -753,6 +763,10 @@
     <Content Include="Scripts\bundle.query2.js" />
     <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="chart.py" />
+    <Content Include="Areas\Manage\Views\Account\_Layout.cshtml" />
+    <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.woff" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
@@ -866,6 +880,7 @@
     <Content Include="Scripts\Search\SavedQuery2.js" />
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
+    <Content Include="Scripts\touchpoint\bootstrap-sweetalert\sweet-alert.min.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
