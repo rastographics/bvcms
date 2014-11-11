@@ -75,22 +75,25 @@ namespace CmsData
                 return timeOut.Value;
             }
         }
-        public static void ResolvePrevDaysVirtualCheckRejects(CMSDataContext db, DateTime dt)
+        public static void ResolvePrevDaysVirtualCheckRejects(CMSDataContext db, DateTime start, DateTime end)
         {
-            var gw = DbUtil.Db.Gateway();
-            var ds = gw.VirtualCheckRejects(dt);
-            var items = from r in ds.Tables[0].AsEnumerable()
-                        let rejectdt = r["reject_date"].ToDate() ?? DateTime.MinValue
-                        where rejectdt > DateTime.MinValue
-                        select new
-                        {
-                            rejectdt,
-                            trantype = r["trantype"],
-                            amt = r["rejedt_amount"].ToString().ToDecimal(),
-                            tranid = r["customer_number"].ToInt(),
-                            rejectcode = r["reject_code"].ToString(),
-                            message = r["correction_info"].ToString(),
-                        };
+            var gateway = DbUtil.Db.Gateway();
+            var response = gateway.GetReturnedChecks(start, end);
+
+
+            //var ds = gw.VirtualCheckRejects(dt);
+            //var items = from r in ds.Tables[0].AsEnumerable()
+            //            let rejectdt = r["reject_date"].ToDate() ?? DateTime.MinValue
+            //            where rejectdt > DateTime.MinValue
+            //            select new
+            //            {
+            //                rejectdt,
+            //                trantype = r["trantype"],
+            //                amt = r["rejedt_amount"].ToString().ToDecimal(),
+            //                tranid = r["customer_number"].ToInt(),
+            //                rejectcode = r["reject_code"].ToString(),
+            //                message = r["correction_info"].ToString(),
+            //            };
             /* 
              * Create a new transaction to reverse the original 
              * If the transaction was for online giving or recurring giving, then reverse the contribution. 

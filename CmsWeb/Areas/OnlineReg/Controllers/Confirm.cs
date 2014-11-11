@@ -16,8 +16,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
-        //private string confirm;
-
         [HttpPost]
         public ActionResult SaveProgressPayment(int id)
         {
@@ -41,10 +39,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
 
-                var registerLink = EmailReplacements.CreateRegisterLink(m.Orgid, "Resume registration for {0}".Fmt(m.Header));
+                var registerLink = EmailReplacements.CreateRegisterLink(m.masterorgid ?? m.Orgid, "Resume registration for {0}".Fmt(m.Header));
                 var msg = "<p>Hi {first},</p>\n<p>Here is the link to continue your registration:</p>\n" + registerLink;
-                Debug.Assert(m.Orgid != null, "m.Orgid != null");
-                var notifyids = DbUtil.Db.NotifyIds(m.Orgid.Value, m.org.NotifyIds);
+                Debug.Assert((m.masterorgid ?? m.Orgid) != null, "m.Orgid != null");
+                var notifyids = DbUtil.Db.NotifyIds((m.masterorgid ?? m.Orgid).Value, (m.masterorg ?? m.org).NotifyIds);
                 var p = m.UserPeopleId.HasValue ? DbUtil.Db.LoadPersonById(m.UserPeopleId.Value) : m.List[0].person;
                 DbUtil.Db.Email(notifyids[0].FromEmail, p, "Continue your registration for {0}".Fmt(m.Header), msg);
 
@@ -92,9 +90,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             try
             {
-                if (pf.Type == "B")
+                if (pf.Type == PaymentType.Ach)
                     Payments.ValidateBankAccountInfo(ModelState, pf.Routing, pf.Account);
-                if (pf.Type == "C")
+                if (pf.Type == PaymentType.CreditCard)
                     Payments.ValidateCreditCardInfo(ModelState, pf);
 
                 if (!ModelState.IsValid)
@@ -221,14 +219,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (pf.SavePayInfo)
                 tinfo = gw.PayWithVault(pid ?? 0, pf.AmtToPay ?? 0, pf.Description, ti.Id, pf.Type);
             else
-                if (pf.Type == "B")
+            {
+                if (pf.Type == PaymentType.Ach)
                     tinfo = gw.PayWithCheck(pid ?? 0, pf.AmtToPay ?? 0, pf.Routing, pf.Account, pf.Description, ti.Id,
-                        pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+                        pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip,
+                        pf.Phone);
                 else
                     tinfo = gw.PayWithCreditCard(pid ?? 0, pf.AmtToPay ?? 0, pf.CreditCard,
-                            DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
+                        DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
                         pf.Description, ti.Id,
                         pf.CCV, pf.Email, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+            }
 
             ti.TransactionId = tinfo.TransactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))

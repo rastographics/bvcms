@@ -5,7 +5,6 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
@@ -635,7 +634,6 @@
     <Compile Include="Code\Payments.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
-    <Compile Include="Code\StandardExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />
@@ -1326,7 +1324,6 @@
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailsModel.cs" />
-    <Compile Include="Areas\Manage\Models\TransactionModel.cs" />
     <Compile Include="Areas\Manage\Models\TransactionsModel.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ConfirmTest.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageVolunteers.cs" />

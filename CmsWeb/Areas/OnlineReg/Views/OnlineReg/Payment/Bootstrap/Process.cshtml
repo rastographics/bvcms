@@ -1,4 +1,5 @@
-﻿@using CmsWeb
+﻿@using CmsData.Finance
+@using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Models.PaymentForm
 <div class="regform">
@@ -76,10 +77,10 @@
           @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
                     <div class="col-sm-9">
                         <label class="radio-inline">
-                            <input type="radio" name="Type" value="C" @(Model.Type == "C" ? "checked='checked'" : "") />Debit/Credit Card
+                            <input type="radio" name="Type" value="@PaymentType.CreditCard" @(Model.Type == PaymentType.CreditCard ? "checked='checked'" : "") />Debit/Credit Card
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="Type" value="B" @(Model.Type == "B" ? "checked='checked'" : "") /> Bank Account
+                            <input type="radio" name="Type" value="@PaymentType.Ach" @(Model.Type == PaymentType.Ach ? "checked='checked'" : "") /> Bank Account
                         </label>
                         @Html.Hidden("allowcc", "true")
                     </div>
@@ -106,7 +107,7 @@
         <div>
           @if (Model.IsLoggedIn == true)
                     {
-            <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Pay Info</span>
+            <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
                     }
           @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
         </div>

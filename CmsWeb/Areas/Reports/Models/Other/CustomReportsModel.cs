@@ -10,7 +10,9 @@ using System.Xml.Linq;
 using CmsData;
 using CmsData.API;
 using CmsData.View;
+using CmsWeb.Code;
 using CmsWeb.Models;
+using CmsWeb.Models.ExtraValues;
 using Dapper;
 using UtilityExtensions;
 
@@ -58,7 +60,7 @@ namespace CmsWeb.Areas.Reports.Models
                 var sb2 = new StringBuilder();
                 using (var w = XmlWriter.Create(sb2, settings))
                 {
-                    StandardColumns(db, w);
+                    StandardColumns(db, w, includeRoot: true);
                     w.Flush();
                 }
                 body = sb2.ToString();
@@ -69,7 +71,7 @@ namespace CmsWeb.Areas.Reports.Models
             if (xdoc.Root == null)
                 throw new Exception("missing xml root");
             var r = (from e in xdoc.Root.Elements("Report")
-                     where (string)e.Attribute("name") == report
+                     where (string)e.Attribute("name") == report || report == "AllColumns"
                      select e).SingleOrDefault();
             if (r == null)
                 throw new Exception("no report");
@@ -129,11 +131,13 @@ namespace CmsWeb.Areas.Reports.Models
         {
             return s.Replace("'", "''");
         }
-        public static void StandardColumns(CMSDataContext db, XmlWriter writer)
+        public static void StandardColumns(CMSDataContext db, XmlWriter writer, bool includeRoot = true)
         {
             var list = db.CustomColumns.OrderBy(cc => cc.Ord).ToList();
             var dict = new Dictionary<string, CustomColumn>();
             var w = new APIWriter(writer);
+            if (includeRoot)
+                w.Start("CustomReports");
             w.Start("Report").Attr("name", "YourReportNameGoesHere");
             foreach (var c in list)
             {
@@ -144,7 +148,11 @@ namespace CmsWeb.Areas.Reports.Models
                 else
                     w.Start("Column").Attr("name", c.Column).End();
             }
+            var protectedevs = from value in CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People")
+                         where value.VisibilityRoles.HasValue()
+                         select value.Name;
             var q = from ev in db.PeopleExtras
+                    where !protectedevs.Contains(ev.Field)
                     group ev by new { ev.Field, ev.Type } into g
                     orderby g.Key.Field
                     select g.Key;
@@ -170,6 +178,8 @@ namespace CmsWeb.Areas.Reports.Models
                     .End();
             }
             w.End();
+            if (includeRoot)
+                w.End();
         }
     }
 }

@@ -36,7 +36,7 @@ namespace CmsWeb.Models
                 "Decision Type",
                 "Do Not Mail",
                 "Drop Type",
-                "Drop All Memberships",
+                "Drop All Enrollments",
                 "Employer",
                 "Entry Point",
                 "Electronic Statement",
@@ -193,7 +193,7 @@ namespace CmsWeb.Models
                     case "Do Not Mail":
                         p.DoNotMailFlag = NewValue.ToBool();
                         break;
-                    case "Drop All Memberships":
+                    case "Drop All Enrollments":
                         p.DropMemberships(DbUtil.Db);
                         break;
                     case "Drop Type":

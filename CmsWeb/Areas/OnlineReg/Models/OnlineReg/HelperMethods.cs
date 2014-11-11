@@ -519,7 +519,10 @@ namespace CmsWeb.Models
         {
             if (!AllowSaveProgress())
                 return null;
+            var dt30 = DateTime.Now.AddDays(-30);
             var ed = (from e in DbUtil.Db.RegistrationDatas
+                      let o = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == (masterorgid ?? orgid))
+                      where e.Stamp > (o.RegStart ?? dt30)
                       where e.OrganizationId == (masterorgid ?? orgid)
                       where e.UserPeopleId == pid
                       where (e.Abandoned ?? false) == false

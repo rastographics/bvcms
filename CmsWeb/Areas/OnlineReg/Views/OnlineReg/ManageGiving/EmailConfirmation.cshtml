@@ -1,4 +1,5 @@
 ﻿@model CmsWeb.Models.ManageGivingModel
+@using CmsData.Finance;
 <table cellpadding="4" style="font-family: Sans-Serif">
 <tr>
     <td class="right">Give to Funds:</td>
@@ -51,7 +52,7 @@
 <tr>
     <td class="right">Pay From:</td>
     <td>
-    @if (Model.Type == "C")
+    @if (Model.Type == PaymentType.CreditCard)
     {
         @:Debit/Credit Card # @UtilityExtensions.Util.MaskCC(Model.Cardnumber)<br />
         @:Expires @Model.Expires

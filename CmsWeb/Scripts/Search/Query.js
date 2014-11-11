@@ -344,6 +344,7 @@ function RefreshList() {
             $('#results').html(ret);
             $("#results").removeClass("faded-results");
             $('#people tbody tr:even').addClass('alt');
+            $("li.hideAlt").hide();
             $('#people thead a.sortable').click(function (ev) {
                 var newsort = $(this).text();
                 var oldsort = $("#Sort").val();

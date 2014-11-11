@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using AuthorizeNet;
@@ -84,16 +85,16 @@ namespace CmsData.Finance
             customer.BillingAddress = billToAddress;
             var isSaved = CustomerGateway.UpdateCustomer(customer);
             if (!isSaved)
-                throw new Exception("UpdateCustoemr failed to save for {0}".Fmt(peopleId));
+                throw new Exception("UpdateCustomer failed to save for {0}".Fmt(peopleId));
 
-            if (type == "B")
+            if (type == PaymentType.Ach)
             {
                 SaveECheckToProfile(routing, account, paymentInfo, customer);
 
                 paymentInfo.MaskedAccount = Util.MaskAccount(account);
                 paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
             }
-            else if (type == "C")
+            else if (type == PaymentType.CreditCard)
             {
                 var normalizeExpires = DbUtil.NormalizeExpires(expires);
                 if (normalizeExpires == null)
@@ -222,20 +223,29 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse RefundCreditCard(string reference, decimal amt)
+        public TransactionResponse RefundCreditCard(string reference, decimal amt, string lastDigits = "")
         {
-            return RefundRequest(reference, amt);
+            if (string.IsNullOrWhiteSpace(lastDigits))
+                throw new ArgumentException("Last four of credit card number are required for refunds against Authorize.net", "lastDigits");
+
+            var req = new CreditRequest(reference, amt, lastDigits);
+            var response = Gateway.Send(req);
+
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
         }
 
-        public TransactionResponse RefundCheck(string reference, decimal amt)
+        public TransactionResponse RefundCheck(string reference, decimal amt, string lastDigits = "")
         {
-            return RefundRequest(reference, amt);
-        }
+            if (string.IsNullOrWhiteSpace(lastDigits))
+                throw new ArgumentException("Last four of bank account number are required for refunds against Authorize.net", "lastDigits");
 
-        private TransactionResponse RefundRequest(string reference, decimal amt)
-        {
-            // TODO: test passing in an empty string for card number... hopefully it will work as a refund (as opposed to a credit) when no card number is passed
-            var req = new CreditRequest(reference, amt, string.Empty);
+            var req = new EcheckCreditRequest(reference, amt, lastDigits);
             var response = Gateway.Send(req);
 
             return new TransactionResponse
@@ -301,9 +311,9 @@ namespace CmsData.Finance
                 };
 
             string paymentProfileId;
-            if (type == "B")
+            if (type == PaymentType.Ach)
                 paymentProfileId = paymentInfo.AuNetCustPayBankId.ToString();
-            else if (type == "C")
+            else if (type == PaymentType.CreditCard)
                 paymentProfileId = paymentInfo.AuNetCustPayId.ToString();
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
@@ -333,7 +343,7 @@ namespace CmsData.Finance
             {
                 foreach (var transaction in ReportingGateway.GetTransactionList(batch.ID))
                 {
-                    batchTransactions.Add(new BatchTransaction
+                    var batchTransaction = new BatchTransaction
                     {
                         TransactionId = transaction.InvoiceNumber.ToInt(),
                         Reference = transaction.TransactionID,
@@ -345,8 +355,14 @@ namespace CmsData.Finance
                         Approved = IsApproved(batch.State),
                         Message = batch.State.ToUpper(),
                         TransactionDate = transaction.DateSubmitted,
-                        SettledDate = batch.SettledOn
-                    });
+                        SettledDate = batch.SettledOn,
+                        LastDigits = transaction.CardNumber.Last(4)
+                    };
+
+                    if (transaction.eCheckBankAccount != null && !string.IsNullOrWhiteSpace(transaction.eCheckBankAccount.accountNumber))
+                        batchTransaction.LastDigits = transaction.eCheckBankAccount.accountNumber.Last(4);
+
+                    batchTransactions.Add(batchTransaction);
                 }
             }
 
@@ -383,19 +399,32 @@ namespace CmsData.Finance
             }
         }
 
+        public ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end)
+        {
+            var returnedChecks = new List<ReturnedCheck>();
+            foreach (var transaction in ReportingGateway.GetTransactionList(start, end).Where(t => t.HasReturnedItems == NullableBooleanEnum.True))
+            {
+                // we only get the first one, because I can't think of a reason there would ever be more than one.
+                var returnedItem = transaction.ReturnedItems.FirstOrDefault();
+                if (returnedItem != null)
+                {
+                    returnedChecks.Add(new ReturnedCheck
+                    {
+                        TransactionId = transaction.InvoiceNumber.ToInt(),
+                        Name = "{0} {1}".Fmt(transaction.FirstName, transaction.LastName),
+                        RejectCode = returnedItem.code,
+                        RejectAmount = transaction.RequestedAmount, // another guess here on amount, I'm really not sure about this field.
+                        RejectDate = returnedItem.dateLocal
+                    });
+                }
+            }
+
+            return new ReturnedChecksResponse(returnedChecks);
+        }
+
         private static bool IsApproved(string batchSettlementState)
         {
             return batchSettlementState.ParseEnum<settlementStateEnum>() == settlementStateEnum.settledSuccessfully;
-        }
-
-        public System.Data.DataSet VirtualCheckRejects(DateTime startdt, DateTime enddt)
-        {
-            throw new NotImplementedException();
-        }
-
-        public System.Data.DataSet VirtualCheckRejects(DateTime rejectdate)
-        {
-            throw new NotImplementedException();
         }
 
         public bool CanVoidRefund

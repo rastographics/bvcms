@@ -343,10 +343,13 @@
   <ItemGroup>
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
+    <Compile Include="Finance\ReturnedCheck.cs" />
+    <Compile Include="Finance\ReturnedChecksResponse.cs" />
     <Compile Include="Finance\BatchResponse.cs" />
     <Compile Include="Finance\BatchTransaction.cs" />
     <Compile Include="Finance\IGateway.cs" />
     <Compile Include="Finance\BatchType.cs" />
+    <Compile Include="Finance\PaymentType.cs" />
     <Compile Include="Finance\Sage\Core\Ach.cs" />
     <Compile Include="Finance\Sage\Core\Address.cs" />
     <Compile Include="Finance\Sage\Core\ApprovalIndicator.cs" />
@@ -359,6 +362,7 @@
     <Compile Include="Finance\Sage\Report\CreditCardSettledBatchListingRequest.cs" />
     <Compile Include="Finance\Sage\Report\BatchType.cs" />
     <Compile Include="Finance\Sage\Report\ReportRequest.cs" />
+    <Compile Include="Finance\Sage\Report\ReturnedCheck.cs" />
     <Compile Include="Finance\Sage\Report\SettledBatchListingResponse.cs" />
     <Compile Include="Finance\Sage\Report\SettledBatchSummaryRequest.cs" />
     <Compile Include="Finance\Sage\Report\SettledBatchSummaryResponse.cs" />
