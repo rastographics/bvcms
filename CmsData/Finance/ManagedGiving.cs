@@ -47,6 +47,7 @@ namespace CmsData
             var total = (from a in db.RecurringAmounts
                          where a.PeopleId == PeopleId
                          where a.ContributionFund.FundStatusId == 1
+                         where a.ContributionFund.OnlineSort != null
                          select a.Amt).Sum();
 
             if (!total.HasValue || total == 0)
@@ -101,7 +102,7 @@ namespace CmsData
 
                 foreach (var a in q)
                 {
-                    if (a.ContributionFund.FundStatusId == 1 && a.Amt > 0)
+                    if (a.ContributionFund.FundStatusId == 1 && a.ContributionFund.OnlineSort != null && a.Amt > 0)
                         Person.PostUnattendedContribution(db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
                 }
                 var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
