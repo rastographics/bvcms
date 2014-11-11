@@ -439,7 +439,9 @@ namespace CmsWeb.Models
                     setting = settings[org.OrganizationId];
                 msg = Util.PickFirst(setting.ThankYouMessage, def);
             }
-            msg = msg.Replace("{org}", Header).Replace("{email}", Util.ObscureEmail(email)).Replace("{url}", URL);
+            msg = msg.Replace("{org}", Header)
+                .Replace("{email}", Util.ObscureEmail(email))
+                .Replace("{url}", URL);
             return msg;
         }
 

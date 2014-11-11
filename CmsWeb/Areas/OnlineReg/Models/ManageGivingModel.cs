@@ -193,7 +193,7 @@ namespace CmsWeb.Models
 
             var staff = DbUtil.Db.StaffPeopleForOrg(orgid)[0];
             var text = Setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
-            text = text.Replace("{name}", person.Name, ignoreCase: true);
+//            text = text.Replace("{name}", person.Name, ignoreCase: true);
             text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
             text = text.Replace("{email}", person.EmailAddress, ignoreCase: true);
             text = text.Replace("{phone}", person.HomePhone.FmtFone(), ignoreCase: true);
@@ -208,9 +208,14 @@ namespace CmsWeb.Models
                                      select ex.Data).SingleOrDefault();
             if (!Util.ValidEmail(contributionemail))
                 contributionemail = person.FromEmail;
-            Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(orgid)),
-                Setting.Subject, text,
+
+            var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(orgid));
+            var mm = new EmailReplacements(DbUtil.Db, text, from);
+            text = mm.DoReplacements(person);
+
+            Util.SendMsg(Util.SysFromEmail, Util.Host, from, Setting.Subject, text,
                 Util.EmailAddressListFromString(contributionemail), 0, pid);
+
             Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(contributionemail),
                 "Managed Giving",
                 "Managed giving for {0} ({1})".Fmt(person.Name, pid),

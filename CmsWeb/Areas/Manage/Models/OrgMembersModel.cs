@@ -5,8 +5,6 @@ using MoreLinq;
 using UtilityExtensions;
 using System.Web.Mvc;
 using System.Text;
-using System.Web.UI.WebControls;
-using System.Web.UI;
 using CmsData.Codes;
 
 namespace CmsWeb.Models
@@ -364,12 +362,12 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             {
                 string subj = "{0} room assignment".Fmt(i.OrganizationName);
                 var msg = DbUtil.Db.ContentHtml("OrgMembersModel_SendMovedNotices", Resource1.OrgMembersModel_SendMovedNotices);
-                msg = msg.Replace("{name}", i.Name);
-                msg = msg.Replace("{org}", i.OrganizationName);
-                msg = msg.Replace("{room}", i.Location);
-                msg = msg.Replace("{leader}", i.LeaderName);
-                msg = msg.Replace("{phone}", Util.PickFirst(i.PhoneNumber.FmtFone(), DbUtil.Db.Setting("ChurchPhone", "ChurchPhone")));
-                msg = msg.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "NameOfChurch"));
+                msg = msg.Replace("{name}", i.Name)
+                    .Replace("{org}", i.OrganizationName)
+                    .Replace("{room}", i.Location)
+                    .Replace("{leader}", i.LeaderName)
+                    .Replace("{phone}", Util.PickFirst(i.PhoneNumber.FmtFone(), DbUtil.Db.Setting("ChurchPhone", "ChurchPhone")))
+                    .Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "NameOfChurch"));
 
                 if (i.om.Moved == true || EmailAllNotices)
                 {

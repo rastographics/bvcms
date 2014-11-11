@@ -94,12 +94,12 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 
 			subject = "Volunteer substitute request for {0}".Fmt(org.OrganizationName);
             message = DbUtil.Db.ContentHtml("VolunteerSubRequest", Resource1.VolSubModel_ComposeMessage_Body);
-		    message = message.Replace("{org}", org.OrganizationName);
-            message = message.Replace("{meetingdate}", attend.MeetingDate.ToString("dddd, MMM d"));
-            message = message.Replace("{meetingtime}", attend.MeetingDate.ToString("h:mm tt"));
-            message = message.Replace("{yeslink}", yeslink);
-            message = message.Replace("{nolink}", nolink);
-            message = message.Replace("{sendername}", person.Name);
+		    message = message.Replace("{org}", org.OrganizationName)
+		        .Replace("{meetingdate}", attend.MeetingDate.ToString("dddd, MMM d"))
+		        .Replace("{meetingtime}", attend.MeetingDate.ToString("h:mm tt"))
+		        .Replace("{yeslink}", yeslink)
+		        .Replace("{nolink}", nolink)
+		        .Replace("{sendername}", person.Name);
 		}
 		public string DisplayMessage { get; set; }
 		public string Error { get; set; }

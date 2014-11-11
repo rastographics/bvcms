@@ -156,12 +156,12 @@ namespace CmsWeb.Models
             message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p0, DivisionName, org.OrganizationName, Location, message);
             subject = subject.Replace("{org}", org.OrganizationName);
 
-            message = message.Replace("{phone}", org.PhoneNumber.FmtFone7());
-            message = message.Replace("{tickets}", List[0].ntickets.ToString());
-            message = message.Replace("{details}", details.ToString());
-            message = message.Replace("{paid}", amtpaid.ToString("c"));
-            message = message.Replace("{sessiontotal}", amtpaid.ToString("c"));
-            message = message.Replace("{participants}", details.ToString());
+            message = message.Replace("{phone}", org.PhoneNumber.FmtFone7())
+                .Replace("{tickets}", List[0].ntickets.ToString())
+                .Replace("{details}", details.ToString())
+                .Replace("{paid}", amtpaid.ToString("c"))
+                .Replace("{sessiontotal}", amtpaid.ToString("c"))
+                .Replace("{participants}", details.ToString());
             if (amtdue > 0)
                 message = message.Replace("{paylink}", "<a href='{0}'>Click this link to make a payment on your balance of {1:C}</a>.".Fmt(paylink, amtdue));
             else
@@ -481,7 +481,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             var p = List[0];
             var message = DbUtil.Db.ContentHtml("ReregisterLinkEmail", @"Hi {name},
 <p>Here is your <a href=""{url}"">MANAGE REGISTRATION</a> link to manage {orgname}. This link will work only once. Creating an account will allow you to do this again without having to email the link.</p>");
-            message = message.Replace("{orgname}", Header);
+            message = message.Replace("{orgname}", Header).Replace("{org}", Header);
 
             var Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
             p.SendOneTimeLink(Staff.First().FromEmail,
