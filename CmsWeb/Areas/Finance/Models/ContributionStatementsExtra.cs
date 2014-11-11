@@ -139,10 +139,8 @@ p { font-size: 11px; }
 				a.DefaultCell.Indent = 25f;
 				a.DefaultCell.Border = Rectangle.NO_BORDER;
 				a.AddCell(new Phrase(ci.Name, font));
-				a.AddCell(new Phrase(ci.Address1, font));
-				if (ci.Address2.HasValue())
-					a.AddCell(new Phrase(ci.Address2, font));
-				a.AddCell(new Phrase(ci.CityStateZip, font));
+                foreach(var line in ci.MailingAddress.SplitLines())
+    			    a.AddCell(new Phrase(line, font));
 				cell = new PdfPCell(a) { Border = Rectangle.NO_BORDER };
 				//cell.FixedHeight = 72f * 1.0625f;
 				ae.AddCell(cell);

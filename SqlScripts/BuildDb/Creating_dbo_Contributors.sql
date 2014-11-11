@@ -89,7 +89,8 @@ RETURN
 			p.CampusId,
 			(SELECT LastName FROM dbo.People WHERE PeopleId = f.HeadOfHouseholdId
 			) AS HouseName,
-			ISNULL(p.ElectronicStatement, 0) ElectronicStatement
+			ISNULL(p.ElectronicStatement, 0) ElectronicStatement,
+			(SELECT Data FROM dbo.FamilyExtra WHERE Field = 'MailingAddress' AND FamilyId = f.FamilyId) MailingAddress
 			
 	from People p
 	JOIN dbo.Families f ON p.FamilyId = f.FamilyId
@@ -105,6 +106,7 @@ RETURN
 	AND (@fid = 0 OR @fid = p.FamilyId)
 	AND (@tagid IS NULL OR EXISTS(SELECT NULL FROM TagPerson WHERE Id = @tagid AND PeopleId IN (p.PeopleId, sp.PeopleId)))
 )
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
