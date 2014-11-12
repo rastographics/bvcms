@@ -24,10 +24,10 @@ namespace CmsData.Finance.TransNational.Transaction.Sale
             Data["orderdescription"] = orderDescription;
         }
 
-        public AchVaultSaleRequest(string userName, string password, string vaultId, decimal amount, string orderId, string orderDescription, string customerId)
+        public AchVaultSaleRequest(string userName, string password, string vaultId, decimal amount, string orderId, string orderDescription, string poNumber)
             : this(userName, password, vaultId, amount, orderId, orderDescription)
         {
-            Data["customer_id"] = customerId;
+            Data["ponumber"] = poNumber;
         }
     }
 }
