@@ -966,11 +966,16 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             get
             {
                 if (!canUserSeeGiving.HasValue)
-                    canUserSeeGiving = Util.UserPeopleId == PeopleId
-                                        || (HttpContext.Current.User.IsInRole("Finance") && ((string)HttpContext.Current.Session["testnofinance"]) != "true")
-                                        || (PositionInFamilyId == PositionInFamily.PrimaryAdult
-                                            && Family.People.Any(m => m.PeopleId == Util.UserPeopleId)
-                                            && ContributionOptionsId == StatementOptionCode.Joint);
+                {
+                    var sameperson = Util.UserPeopleId == PeopleId;
+                    var infinance = HttpContext.Current.User.IsInRole("Finance")
+                                    && ((string) HttpContext.Current.Session["testnofinance"]) != "true";
+                    var ishead = (new int?[] {
+                        Family.HeadOfHouseholdId,
+                        Family.HeadOfHouseholdSpouseId } )
+                        .Contains(Util.UserPeopleId);
+                    canUserSeeGiving = sameperson || infinance || ishead;
+                }
                 return canUserSeeGiving.Value;
             }
         }
