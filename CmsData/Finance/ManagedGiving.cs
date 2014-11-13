@@ -79,10 +79,7 @@ namespace CmsData
             db.SubmitChanges();
 
 
-            if (false)
-                ret = gw.PayWithVault(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredType);
-            else
-                ret = new TransactionResponse() {Approved = true, Message = "success"};
+            ret = gw.PayWithVault(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredType);
 
             t.Message = ret.Message;
             t.AuthCode = ret.AuthCode;
@@ -105,12 +102,11 @@ namespace CmsData
             var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
             if (ret.Approved)
             {
-                if(false)
-                    foreach (var a in q)
-                    {
-                        if (a.ContributionFund.FundStatusId == 1 && a.ContributionFund.OnlineSort != null && a.Amt > 0)
-                            Person.PostUnattendedContribution(db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
-                    }
+                foreach (var a in q)
+                {
+                    if (a.ContributionFund.FundStatusId == 1 && a.ContributionFund.OnlineSort != null && a.Amt > 0)
+                        Person.PostUnattendedContribution(db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
+                }
 
                 t.TransactionPeople.Add(new TransactionPerson
                 {
@@ -161,7 +157,6 @@ Please contact the Finance office at the church." };
         }
         public static int DoAllGiving(CMSDataContext Db)
         {
-            Util.Now = DateTime.Parse("11/12/2014");
             var gateway = Db.Setting("TransactionGateway", "");
             int count = 0;
             if (gateway.HasValue())
