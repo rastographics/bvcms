@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Web;
 using CmsData.Finance;
 using CmsData.Properties;
 using UtilityExtensions;
@@ -77,6 +78,7 @@ namespace CmsData
             db.Transactions.InsertOnSubmit(t);
             db.SubmitChanges();
 
+
             ret = gw.PayWithVault(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredType);
 
             t.Message = ret.Message;
@@ -94,18 +96,18 @@ namespace CmsData
                 contributionemail = Person.FromEmail;
             var gift = db.Setting("NameForPayment", "gift");
             var church = db.Setting("NameOfChurch", db.CmsHost);
+            var q = from a in db.RecurringAmounts
+                    where a.PeopleId == PeopleId
+                    select a;
+            var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
             if (ret.Approved)
             {
-                var q = from a in db.RecurringAmounts
-                        where a.PeopleId == PeopleId
-                        select a;
-
                 foreach (var a in q)
                 {
                     if (a.ContributionFund.FundStatusId == 1 && a.ContributionFund.OnlineSort != null && a.Amt > 0)
                         Person.PostUnattendedContribution(db, a.Amt ?? 0, a.FundId, "Recurring Giving", tranid: t.Id);
                 }
-                var tot = q.Where(aa => aa.ContributionFund.FundStatusId == 1).Sum(aa => aa.Amt);
+
                 t.TransactionPeople.Add(new TransactionPerson
                 {
                     PeopleId = Person.PeopleId,
@@ -115,20 +117,35 @@ namespace CmsData
                 db.SubmitChanges();
                 if (tot > 0)
                 {
-                    Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(contributionemail),
-                                 "Recurring {0} for {1}".Fmt(gift, church),
-                                 "Your payment of ${0:N2} was processed this morning.".Fmt(tot),
+                    var msg = db.Content("RecurringGiftNotice") ?? new Content 
+                              { Title = "Recurring {0} for {{church}}".Fmt(gift), 
+                                Body = "Your payment of {total} was processed this morning." };
+                    var subject = msg.Title.Replace("{church}", church);
+                    var body = msg.Body.Replace("{total}", "${0:N2}".Fmt(tot));
+                    var from = Util.TryGetMailAddress(contributionemail);
+                    var m = new EmailReplacements(db, body, from);
+                    body = m.DoReplacements(Person);
+                    Util.SendMsg(systemEmail, db.CmsHost, from, subject, body,
                                  Util.ToMailAddressList(contributionemail), 0, null);
                 }
             }
             else
             {
                 db.SubmitChanges();
-                var failedGivingMessage = db.ContentHtml("FailedGivingMessage", Resources.ManagedGiving_FailedGivingMessage);
+                var msg = db.Content("RecurringGiftFailedNotice") ?? new Content 
+                          { Title = "Recurring {0} for {{church}} did not succeed".Fmt(gift), 
+                            Body = @"Your payment of {total} failed to process this morning.<br>
+The message was '{message}'.
+Please contact the Finance office at the church." };
+                var subject = msg.Title.Replace("{church}", church);
+                var body = msg.Body.Replace("{total}", "${0:N2}".Fmt(tot))
+                    .Replace("{message}", ret.Message);
+                var from = Util.TryGetMailAddress(contributionemail);
+                var m = new EmailReplacements(db, body, from);
+                body = m.DoReplacements(Person);
+
                 var adminEmail = db.Setting("AdminMail", systemEmail);
-                Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(contributionemail),
-                        "Recurring {0} failed for {1}".Fmt(gift, church),
-                        failedGivingMessage.Replace("{first}", Person.PreferredName),
+                Util.SendMsg(systemEmail, db.CmsHost, from, subject, body,
                         Util.ToMailAddressList(contributionemail), 0, null);
                 foreach (var p in db.FinancePeople())
                     Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(adminEmail),
