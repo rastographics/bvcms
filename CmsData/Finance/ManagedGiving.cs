@@ -150,7 +150,7 @@ Please contact the Finance office at the church." };
                 foreach (var p in db.FinancePeople())
                     Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(adminEmail),
                         "Recurring Giving Failed on " + db.CmsHost,
-                        "<a href='{0}Transactions/{2}'>message: {1}, tranid:{2}</a>".Fmt(db.CmsHost, ret.Message, t.Id),
+                        "<a href='{0}/Transactions/{2}'>message: {1}, tranid:{2}</a>".Fmt(db.CmsHost, ret.Message, t.Id),
                         Util.ToMailAddressList(p.EmailAddress), 0, null);
             }
             return 1;
