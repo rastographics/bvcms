@@ -22,6 +22,7 @@ namespace CmsWeb.Models
     [Serializable]
     public partial class OnlineRegModel : IXmlSerializable
     {
+        public bool InMobileAppMode { get; set; }
         public bool? testing { get; set; }
         public string URL { get; set; }
         private int? _masterorgid;

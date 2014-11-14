@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         [Route("~/OnlineReg/{id:int}")]
         [Route("~/OnlineReg/Index/{id:int}")]
-        public ActionResult Index(int? id, bool? testing, string email, bool? nologin, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid)
+        public ActionResult Index(int? id, bool? testing, string email, bool? nologin, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
         {
             if (Util.IsDebug())
             {
@@ -42,7 +42,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
             if (!id.HasValue)
                 return Message("no organization");
-            var m = new OnlineRegModel { Orgid = id };
+            var m = new OnlineRegModel
+            {
+                Orgid = id, 
+                InMobileAppMode = !string.IsNullOrWhiteSpace(source)
+            };
             if (m.org == null && m.masterorg == null)
                 return Message("invalid registration");
 

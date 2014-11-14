@@ -44,30 +44,40 @@
 
 @if (Model.UseBootstrap)
 {
-<div class="regform">
-    <h3>@Model.Header</h3>
-    @{var msg = Model.Filled();}
-    @if (Model.NotAvailable())
-    {
-        <h4 id="sorry">Sorry, Registration is not available at this time</h4>
-        @Html.Raw(Util.PickFirst(Model.Instructions, ""))
-    }
-    else if (msg.HasValue())
-    {
-        <h4 id="sorry">Sorry, @msg</h4>
-        @Html.Raw(Util.PickFirst(Model.Instructions, ""))
-    }
-    else
-    {
-        <form id="completeReg" class="DisplayEdit form-horizontal" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
-            @Html.Partial("Flow2/List", Model)
-        </form>
-        if (Model.RecordFamilyAttendance())
+    <div class="regform">
+        @if (Model.InMobileAppMode)
         {
-            @Html.Partial("Flow2/FamilyAttendTemplate")     
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <div class="navbar-header" style="padding-top:5px;">
+                        <a class="btn btn-default" href="bvcmsapp://">Back</a>
+                    </div>
+                </div>
+            </nav>
         }
-    }
-</div>
+        <h3>@Model.Header</h3>
+        @{var msg = Model.Filled();}
+        @if (Model.NotAvailable())
+        {
+            <h4 id="sorry">Sorry, Registration is not available at this time</h4>
+            @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+        }
+        else if (msg.HasValue())
+        {
+            <h4 id="sorry">Sorry, @msg</h4>
+            @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+        }
+        else
+        {
+            <form id="completeReg" class="DisplayEdit form-horizontal" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
+                @Html.Partial("Flow2/List", Model)
+            </form>
+            if (Model.RecordFamilyAttendance())
+            {
+                @Html.Partial("Flow2/FamilyAttendTemplate")     
+            }
+        }
+    </div>
 }
 else
 {
