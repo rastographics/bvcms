@@ -1,7 +1,11 @@
 ﻿@using CmsData.Finance
 @using CmsWeb
+@using CmsWeb.Models
 @using UtilityExtensions
 @model CmsWeb.Models.PaymentForm
+@{
+  var anet = OnlineRegModel.GetTransactionGateway().Equal("AuthorizeNet");
+}
 <div class="regform">
     <h2>Payment Processing</h2>
     @if (Model.Terms.HasValue())
@@ -105,7 +109,7 @@
         <div class="form-group">
       <div class="col-sm-offset-3 col-sm-9 text-right">
         <div>
-          @if (Model.IsLoggedIn == true)
+          @if (Model.IsLoggedIn == true && !anet)
                     {
             <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
                     }
