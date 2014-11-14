@@ -10,6 +10,7 @@ namespace CmsData.Finance.TransNational.Vault
         {
             Data["customer_vault"] = "add_customer";
             Data["method"] = "check";
+            Data["sec_code"] = "WEB";
             ach.SetAchData(Data);
         }
     }
