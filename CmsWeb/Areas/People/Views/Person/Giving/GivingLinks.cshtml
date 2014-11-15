@@ -1,10 +1,8 @@
 ﻿@using CmsData
-@using CmsWeb
-@using CmsWeb.Models
 @using UtilityExtensions
 @{
     var giving = ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && ViewExtensions2.DbSetting("OnlineGiving", "true").ToBool();
-    var anet = OnlineRegModel.GetTransactionGateway().Equal("AuthorizeNet");
+    var VaultDisabled = DbUtil.Db.Setting("VaultDisabled", "false") == "true";
 }
 <fieldset class="left-gutter margin-top">
     <legend>Online Giving</legend>
@@ -17,7 +15,7 @@
     {
         <div class="row-fluid">
           <div class="span6">
-            @if (!anet)
+            @if (!VaultDisabled)
             {
             <a href="/Person2/ManageGiving" class="btn btn-primary">Manage Your Recurring Giving</a>
             }
