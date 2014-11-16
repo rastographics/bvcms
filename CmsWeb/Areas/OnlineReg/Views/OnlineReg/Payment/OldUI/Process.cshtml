@@ -1,6 +1,10 @@
 ﻿@using CmsData.Finance
+@using CmsWeb.Models
 @using UtilityExtensions
 @model CmsWeb.Models.PaymentForm
+@{
+  var anet = OnlineRegModel.GetTransactionGateway().Equal("AuthorizeNet");
+}
 <div class="regform" style="width:500px">
     <h2>
         Payment Processing
@@ -162,7 +166,7 @@
                     </td>
                 </tr>
             }
-            @if (Model.IsLoggedIn == true)
+            @if (Model.IsLoggedIn == true && !anet)
             {
                 <tr>
                     <td></td>

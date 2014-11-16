@@ -1,8 +1,10 @@
 ﻿@using CmsData
 @using CmsWeb
+@using CmsWeb.Models
 @using UtilityExtensions
 @{
     var giving = ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && ViewExtensions2.DbSetting("OnlineGiving", "true").ToBool();
+    var anet = OnlineRegModel.GetTransactionGateway().Equal("AuthorizeNet");
 }
 <fieldset class="left-gutter margin-top">
     <legend>Online Giving</legend>
@@ -14,9 +16,12 @@
     else
     {
         <div class="row-fluid">
-            <div class="span6">
-                <a href="/Person2/ManageGiving" class="btn btn-primary">Manage Your Recurring Giving</a>
-            </div>
+          <div class="span6">
+            @if (!anet)
+            {
+            <a href="/Person2/ManageGiving" class="btn btn-primary">Manage Your Recurring Giving</a>
+            }
+          </div>
             <div class="span6">
                 <a href="/Person2/OneTimeGift" class="btn btn-primary">Make a One Time Gift</a>
             </div>

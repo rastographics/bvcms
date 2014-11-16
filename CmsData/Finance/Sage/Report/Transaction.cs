@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Xml.Linq;
+using UtilityExtensions;
 
 namespace CmsData.Finance.Sage.Report
 {
@@ -40,9 +42,9 @@ namespace CmsData.Finance.Sage.Report
             var cardNumberElement = data.Element("cardnumber");
             var acctElement = data.Element("acct");
             if (cardNumberElement != null)
-                LastDigits = cardNumberElement.Value;
+                LastDigits = cardNumberElement.Value.Last(4);
             else if (acctElement != null)
-                LastDigits = acctElement.Value;
+                LastDigits = acctElement.Value.Last(4);
         }
 
         private TransactionType GetTransactionType(string transactionCode)

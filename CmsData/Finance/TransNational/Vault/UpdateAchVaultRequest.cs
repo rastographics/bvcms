@@ -9,6 +9,7 @@ namespace CmsData.Finance.TransNational.Vault
         {
             Data["customer_vault"] = "update_customer";
             Data["customer_vault_id"] = vaultId;
+            Data["sec_code"] = "WEB";
             Data["method"] = "check";
         }
 

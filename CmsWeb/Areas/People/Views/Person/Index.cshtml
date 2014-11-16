@@ -57,7 +57,7 @@
                             {
                                 <li id="ministrystop"><a href="#ministry" data-toggle="tab">Ministry</a></li> 
                             }
-                            @if (!User.IsInRole("Access"))
+                            @if (!User.IsInRole("Access") && Model.Person.CanUserSeeGiving)
                             {
                                 <li id="givingstop"><a href="#giving" data-toggle="tab">Giving</a></li> 
                             }

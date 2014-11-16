@@ -156,7 +156,7 @@ namespace CmsData.Finance
             if (foundPaymentProfile == null)
             {
                 var paymentProfileId = CustomerGateway.AddCreditCard(customer.ProfileID, cardNumber,
-                    expires.Month, expires.Year, cardCode);
+                    expires.Month, expires.Year, cardCode, customer.BillingAddress);
 
                 paymentInfo.AuNetCustPayId = paymentProfileId.ToInt();
             }
