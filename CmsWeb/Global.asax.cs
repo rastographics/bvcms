@@ -9,6 +9,7 @@ using System.Web.Routing;
 using System.Web.Security;
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Framework;
 using UtilityExtensions;
 using System.IO;
 using System.Threading;
@@ -27,6 +28,8 @@ namespace CmsWeb
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             RouteTable.Routes.RouteExistingFiles = true;
             HttpRuntime.Cache.Remove("BuildDate");
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new CmsViewEngine(true));
 #if DEBUG
             //HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlProfiler.Initialize();
 #endif

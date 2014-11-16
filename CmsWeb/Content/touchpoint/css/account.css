@@ -1,144 +1,173 @@
 ﻿html {
-    min-height: 100%;
     position: relative;
+    min-height: 100%;
 }
+
 body {
+    text-align: center;
+    padding-top: 0;
     /* Margin bottom by footer height */
     margin-bottom: 60px;
-    padding-top: 0;
-    text-align: center;
 }
+
 .theme-default {
-     background: #f6f6f6;
+    background: #f6f6f6;
 }
+
 .page-signin-alt {
-     padding-bottom: 40px;
+    padding-bottom: 40px;
 }
+
 .page-signin-alt .signin-header {
     padding-left: 0;
     text-align: center;
 }
+
 .page-signin-alt .signin-header {
-    -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .05), 0 1px 0 rgba(0, 0, 0, .05);
     background: #fff;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, .05), 0 1px 0 rgba(0, 0, 0, .05);
     padding: 16px 0 16px 0;
     position: relative;
+    -webkit-box-shadow: 0 2px 2px rgba(0,0,0,.05),0 1px 0 rgba(0,0,0,.05);
+    box-shadow: 0 2px 2px rgba(0,0,0,.05),0 1px 0 rgba(0,0,0,.05);
 }
+
 .page-signin-alt .signin-header .btn {
     position: absolute;
     right: 16px;
     top: 12px;
 }
+
 .page-signin-alt .signin-header .logo {
-    -webkit-transition: all .3s;
     color: #555;
     font-size: 16px;
     height: 24px;
     line-height: 24px;
-    opacity: 1;
-    transition: all .3s;
     width: 24px;
+    opacity: 1;
+    -webkit-transition: all .3s;
+    transition: all .3s;
 }
+
 .page-signin-alt .signin-header .demo-logo {
     display: inline-block;
     height: 24px;
     line-height: 24px;
 }
-.theme-default .bg-primary, .theme-default .bg-primary a, 
-.theme-default .bg-primary a:focus, .theme-default .bg-primary:active, 
-.theme-default .bg-primary:focus, .theme-default .bg-primary:hover {
-     color: #fff;
+
+.theme-default .bg-primary, .theme-default .bg-primary a, .theme-default .bg-primary a:focus, .theme-default .bg-primary:active, .theme-default .bg-primary:focus, .theme-default .bg-primary:hover {
+    color: #fff;
 }
+
 .page-signin-alt .form-header {
     font-size: 22px;
     font-weight: 300;
-    margin: 40px 0;
     text-align: center;
+    margin: 40px 0;
 }
-.theme-default .bordered, .theme-default .panel, 
-.theme-default .table, .theme-default hr {
-     border-color: #e2e2e2;
+
+.theme-default .bordered, .theme-default .panel, .theme-default .table, .theme-default hr {
+    border-color: #e2e2e2;
 }
+
 .page-signin-alt .panel {
+    width: 360px;
     margin: 0 auto;
     padding: 27px;
-    width: 360px;
 }
+
 .panel, .panel-default {
-    -webkit-box-shadow: none;
     border-color: #e4e4e4;
-    box-shadow: none;
     margin-bottom: 22px;
     position: relative;
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
+
 .page-signin-alt .signin-password {
-     position: relative;
+    position: relative;
 }
+
 .page-signin-alt .signin-password input {
-     padding-right: 70px;
+    padding-right: 70px;
 }
+
 .page-signin-alt .signin-password .forgot {
-    background: #f1f1f1;
-    border-radius: 2px;
-    color: #555;
-    font-size: 12px;
-    line-height: 25px;
-    padding: 0 7px;
     position: absolute;
     right: 10px;
     top: 10px;
+    color: #555;
+    background: #f1f1f1;
+    border-radius: 2px;
+    line-height: 25px;
+    padding: 0 7px;
+    font-size: 12px;
 }
+
 .page-signin-alt .signin-with {
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
     width: 360px;
+    padding: 20px;
+    margin: 0 auto;
+    text-align: center;
 }
+
 .page-signin-alt .signin-with .header {
     font-size: 16px;
     font-weight: 300;
-    margin: 0 0 20px;
     text-align: center;
+    margin: 0 0 20px;
 }
+
 .page-signin-alt .signin-with .header a {
-     text-decoration: underline;
+    text-decoration: underline;
 }
+
+.page-signin-alt .alert {
+    width: 360px;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
 #footer {
+    text-align: left;
     background-color: #64676C;
-    border-top: thin solid #999;
+    position: absolute;
     bottom: 0;
-    color: #fff;
-    font-size: 11px;
+    width: 100%;
     /* Set the fixed height of the footer here */
     height: 60px;
+    color: #fff;
+    font-size: 11px;
+    padding-top: 20px;
     padding-left: 0;
     padding-right: 0;
-    padding-top: 20px;
-    position: absolute;
-    text-align: left;
-    width: 100%;
+    border-top: thin solid #999;
 }
+
 #footer a {
     color: #fff !important;
     text-decoration: underline;
 }
+
 .social a.facebook {
-    background: url(../images/facebook.png) no-repeat 0 0;
     width: 60px;
+    background: url(facebook.png) no-repeat 0 0;
 }
+
 .social a.facebook, .social a.twitter {
-    overflow: hidden;
     text-indent: 101%;
+    overflow: hidden;
 }
+
 .social a {
     float: left;
     margin-right: 1em;
 }
+
 .social a.twitter {
-    background: url(../images/twitter.png) no-repeat 0 0;
     width: 80px;
+    background: url(twitter.png) no-repeat 0 0;
 }
+
 #footer.visible-xs-block {
-     padding-top: 12px;
+    padding-top: 12px;
 }

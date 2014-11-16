@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TouchPoint Software</title>
+    <title>@ViewBag.Title</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="@Url.Content("~/Content/touchpoint/bootstrap/css/bootstrap.min.css")" rel="stylesheet">
@@ -16,11 +16,12 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="@Url.Content("~/Content/touchpoint/css/account.css")" rel="stylesheet">
+    @RenderSection("Head", false)
 </head>
 <body class="theme-default page-signin-alt">
     <div class="signin-header">
         <a href="index.html" class="logo">
-            <div class="demo-logo bg-primary"><img src="@Url.Content("~/Content/touchpoint/images/logo.png")" alt="" style="margin-top: -8px;"></div>
+            <div class="demo-logo"><img src="@Url.Content("~/Content/touchpoint/images/logo.png")" alt="" style="margin-top: -8px;"></div>
         </a>
     </div>
     @RenderBody()
@@ -48,5 +49,6 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    @RenderSection("Scripts", false)
 </body>
 </html>
