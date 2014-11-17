@@ -158,11 +158,10 @@ Please contact the Finance office at the church." };
         {
             var tempgateway = db.Setting("TemporaryGateway", "");
 
-            if (!(new[] {"Sage", "Transnational"}).Contains(tempgateway))
+            if (!tempgateway.HasValue())
                 return db.Gateway();
 
             var gateway = db.Setting("TranactionGateway", "");
-
             switch (gateway) // Check to see if standard gateway is set up
             {
                 case "Sage":
