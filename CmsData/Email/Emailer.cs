@@ -124,12 +124,14 @@ namespace CmsData
         }
         public List<Person> RecurringGivingNotifyPersons()
         {
-            var notifyids = (from o in Organizations
-                             where o.RegistrationTypeId > RegistrationTypeCode.ManageGiving 
-                             select o.NotifyIds).SingleOrDefault();
-            if(notifyids.HasValue())
-                return PeopleFromPidString(notifyids).ToList();
-
+            if (Setting("SendRecurringGiftFailureNoticesToFinanceUsers", "false") == "false")
+            {
+                var notifyids = (from o in Organizations
+                                 where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving 
+                                 select o.NotifyIds).SingleOrDefault();
+                if(notifyids.HasValue())
+                    return PeopleFromPidString(notifyids).ToList();
+            }
             return (from u in Users
                     where u.UserRoles.Any(ur => ur.Role.RoleName == "Finance")
                     select u.Person).ToList();

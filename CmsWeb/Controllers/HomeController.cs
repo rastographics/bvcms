@@ -58,9 +58,11 @@ namespace CmsWeb.Controllers
 //            return Content("<pre>{0}</pre>".Fmt(ret));
 //        }
 #if DEBUG
+        [HttpGet, Route("~/Test")]
         public ActionResult Test()
         {
-            var q = DbUtil.Db.PeopleFromPidString("828612,819918,333,1078427", "Finance").Select(mm => mm.Name);
+            var q = DbUtil.Db.RecurringGivingNotifyPersons();
+            //var q = DbUtil.Db.PeopleFromPidString("828612,819918,333,1078427", "Finance").Select(mm => mm.Name);
             return Content(string.Join(",", q));
         }
 #endif

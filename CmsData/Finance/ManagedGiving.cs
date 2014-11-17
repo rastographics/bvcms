@@ -42,9 +42,6 @@ namespace CmsData
         }
         public int DoGiving(CMSDataContext db)
         {
-            var gw = db.Gateway();
-
-            TransactionResponse ret = null;
             var total = (from a in db.RecurringAmounts
                          where a.PeopleId == PeopleId
                          where a.ContributionFund.FundStatusId == 1
@@ -56,6 +53,8 @@ namespace CmsData
 
             var paymentInfo = db.PaymentInfos.Single(x => x.PeopleId == PeopleId);
             var preferredType = paymentInfo.PreferredGivingType;
+
+            var gw = GetGateway(db, paymentInfo);
 
             var t = new Transaction
             {
@@ -78,8 +77,7 @@ namespace CmsData
             db.Transactions.InsertOnSubmit(t);
             db.SubmitChanges();
 
-
-            ret = gw.PayWithVault(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredType);
+            var ret = gw.PayWithVault(PeopleId, total ?? 0, "Recurring Giving", t.Id, preferredType);
 
             t.Message = ret.Message;
             t.AuthCode = ret.AuthCode;
@@ -154,6 +152,31 @@ Please contact the Finance office at the church." };
                         Util.ToMailAddressList(p.EmailAddress), 0, null);
             }
             return 1;
+        }
+
+        private IGateway GetGateway(CMSDataContext db, PaymentInfo pi)
+        {
+            var tempgateway = db.Setting("TemporaryGateway", "");
+
+            if (!(new[] {"Sage", "Transnational"}).Contains(tempgateway))
+                return db.Gateway();
+
+            var gateway = db.Setting("TranactionGateway", "");
+
+            switch (gateway) // Check to see if standard gateway is set up
+            {
+                case "Sage":
+                    if (pi.PreferredGivingType == "B" && pi.SageBankGuid.HasValue)
+                        if (pi.PreferredGivingType == "C" && pi.SageCardGuid.HasValue)
+                            return db.Gateway();
+                    break;
+                case "Transnational":
+                    if (pi.PreferredGivingType == "B" && pi.TbnBankVaultId.HasValue)
+                        if (pi.PreferredGivingType == "C" && pi.TbnCardVaultId.HasValue)
+                            return db.Gateway();
+                    break;
+            }
+            return db.Gateway(usegateway: tempgateway);
         }
         public static int DoAllGiving(CMSDataContext Db)
         {
