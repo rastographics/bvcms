@@ -67,6 +67,8 @@ namespace CmsWeb.Areas.Org.Models
             var q = from o in query
                     join v in DbUtil.Db.ViewPreviousMemberCounts on o.OrganizationId equals v.OrganizationId into j
                     from v in j.DefaultIfEmpty()
+                    join r in DbUtil.Db.ViewProspectCounts on o.OrganizationId equals r.OrganizationId into g
+                    from r in g.DefaultIfEmpty()
                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                     select new OrganizationInfo
                     {
@@ -77,6 +79,7 @@ namespace CmsWeb.Areas.Org.Models
                         LeaderId = o.LeaderId,
                         MemberCount = o.MemberCount,
                         PrevMemberCount = v.Prevcount ?? 0,
+                        ProspectCount = r.Prospectcount ?? 0,
                         ClassFilled = o.ClassFilled ?? false,
                         RegClosed = o.RegistrationClosed ?? false,
                         RegTypeId = o.RegistrationTypeId,
@@ -693,6 +696,7 @@ namespace CmsWeb.Areas.Org.Models
             public string LeaderName { get; set; }
             public int? LeaderId { get; set; }
             public int? MemberCount { get; set; }
+            public int ProspectCount { get; set; }
             public int PrevMemberCount { get; set; }
             public bool ClassFilled { get; set; }
             public bool RegClosed { get; set; }

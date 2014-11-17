@@ -98,9 +98,9 @@ namespace CmsWeb.Models
 
 	        var pi = GetPledgeInfo();
 	        var body = Setting.Body;
-	        body = body.Replace("{amt}", pi.Pledged.ToString("N2"), ignoreCase: true);
-	        body = body.Replace("{org}", Organization.OrganizationName, ignoreCase: true);
-	        body = body.Replace("{first}", person.PreferredName, ignoreCase: true);
+	        body = body.Replace("{amt}", pi.Pledged.ToString("N2"), ignoreCase: true)
+	            .Replace("{org}", Organization.OrganizationName, ignoreCase: true)
+	            .Replace("{first}", person.PreferredName, ignoreCase: true);
 	        DbUtil.Db.EmailRedacted(staff[0].FromEmail, person, Setting.Subject, body);
 
 	        DbUtil.Db.Email(person.FromEmail, staff, "Online Pledge",

@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.Reports.Models
                     q = ctl.FetchIndividualList(sort, id);
                     break;
                 case "GroupAddress":
-                    q = ctl.GroupByAddress(id);
+                    q = ctl.GroupByAddress(sort, id);
                     break;
                 case "Family":
                 case "FamilyMembers":

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.ServiceModel.Channels;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -10,9 +9,7 @@ using System.Xml.Linq;
 using CmsData;
 using CmsData.API;
 using CmsData.View;
-using CmsWeb.Code;
 using CmsWeb.Models;
-using CmsWeb.Models.ExtraValues;
 using Dapper;
 using UtilityExtensions;
 
@@ -81,9 +78,11 @@ namespace CmsWeb.Areas.Reports.Models
             Dictionary<string, StatusFlagList> flags = null;
             var comma = "";
             var joins = new List<string>();
-            foreach (var c in r.Elements("Column"))
+            foreach (var e in r.Elements("Column"))
             {
-                var name = (string)c.Attribute("name");
+                if ((string)e.Attribute("disabled") == "true")
+                    continue;
+                var name = (string)e.Attribute("name");
                 if (!d.ContainsKey(name))
                     throw new Exception("missing column named '{0}'".Fmt(name));
                 var cc = d[name];
@@ -91,20 +90,20 @@ namespace CmsWeb.Areas.Reports.Models
                 {
                     if (flags == null)
                         flags = db.ViewStatusFlagLists.Where(ff => ff.RoleName == null).ToDictionary(ff => ff.Flag, ff => ff);
-                    var flag = (string)c.Attribute("flag");
+                    var flag = (string)e.Attribute("flag");
                     if (!flag.HasValue())
                         throw new Exception("missing flag on column " + cc.Column);
                     if (!flags.ContainsKey(flag))
                         throw new Exception("missing flag '{0}' on column {1}".Fmt(flag, cc.Column));
                     var sel = cc.Select.Replace("{flag}", flag);
-                    var desc = (string)c.Attribute("description");
+                    var desc = (string)e.Attribute("description");
                     if (!desc.HasValue())
                         desc = flags[flag].Name;
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(desc));
                 }
                 else if (name.StartsWith("ExtraValue") && Regex.IsMatch(name, @"\AExtraValue(Code|Date|Text|Int|Bit)\z"))
                 {
-                    var field = (string)c.Attribute("field");
+                    var field = (string)e.Attribute("field");
                     if (!field.HasValue())
                         throw new Exception("missing field on column " + cc.Column);
                     var sel = cc.Select.Replace("{field}", DblQuotes(field));
@@ -151,6 +150,8 @@ namespace CmsWeb.Areas.Reports.Models
             var protectedevs = from value in CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People")
                          where value.VisibilityRoles.HasValue()
                          select value.Name;
+            var standards = (from value in CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People")
+                             select value.Name).ToList();
             var q = from ev in db.PeopleExtras
                     where !protectedevs.Contains(ev.Field)
                     group ev by new { ev.Field, ev.Type } into g
@@ -160,10 +161,11 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 if (!Regex.IsMatch(ev.Type, @"Code|Date|Text|Int|Bit"))
                     continue;
-                w.Start("Column")
-                    .Attr("field", ev.Field)
-                    .Attr("name", "ExtraValue" + ev.Type)
-                    .End();
+                w.Start("Column");
+                w.Attr("field", ev.Field).Attr("name", "ExtraValue" + ev.Type);
+                if (!standards.Contains(ev.Field))
+                    w.Attr("disabled", "true");
+                w.End();
             }
             var q2 = from f in db.ViewStatusFlagLists
                      where f.RoleName == null

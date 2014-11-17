@@ -66,7 +66,7 @@ namespace UtilityExtensions
         {
             get
             {
-#if DEBUG
+#if DEBUG2
                 //return DateTime.Now.Add(new TimeSpan(3, 5, 5, 0));
                 var o = HttpRuntime.Cache[STR_DateTimeNow];
                 return o != null ? (DateTime) o : DateTime.Now;

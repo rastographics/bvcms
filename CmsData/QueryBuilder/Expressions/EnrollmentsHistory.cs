@@ -63,6 +63,23 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression IsPreviousMemberOf()
+        {
+            var tf = CodeIds == "1";
+            Expression<Func<Person, bool>> pred = p => (
+                from et in p.EnrollmentTransactions
+                where et.TransactionTypeId == 1
+                where !p.OrganizationMembers.Any(mm => mm.OrganizationId == et.OrganizationId && mm.PeopleId == et.PeopleId)
+                where Organization == 0 || et.OrganizationId == Organization
+                where Division == 0 || et.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                where Program == 0 || et.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                select et
+                ).Any();
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression MemberTypeAsOf()
         {
             var end = EndDate.HasValue ? EndDate.Value.AddDays(1) : StartDate.Value.AddDays(1);

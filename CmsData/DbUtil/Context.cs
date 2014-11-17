@@ -1150,9 +1150,12 @@ namespace CmsData
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false)
+        public IGateway Gateway(bool testing = false, string usegateway = null)
         {
             var type = Setting("TransactionGateway", "not specified");
+            if (usegateway != null)
+                type = usegateway;
+
             switch (type.ToLower())
             {
                 case "sage":

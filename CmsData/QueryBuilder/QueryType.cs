@@ -106,6 +106,7 @@ namespace CmsData
         IsHeadOfHousehold,
         IsInactiveMemberOf,
         IsPendingMemberOf,
+        IsPreviousMemberOf,
         IsMemberOf,
         IsProspectOf,
         IsRecentGiver,

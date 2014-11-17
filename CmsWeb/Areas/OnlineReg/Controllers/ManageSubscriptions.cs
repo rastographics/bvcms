@@ -47,7 +47,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			var Staff = DbUtil.Db.StaffPeopleForOrg(m.masterorgid.Value);
 
 		    var msg = DbUtil.Db.ContentHtml("ConfirmSubscriptions", Resource1.ConfirmSubscriptions);
-		    msg = msg.Replace("{org}", m.Description()).Replace("{details}", m.Summary);
+		    var orgname = m.Description();
+		    msg = msg.Replace("{org}", orgname).Replace("{details}", m.Summary);
 			DbUtil.Db.Email(Staff.First().FromEmail, m.person, "Subscription Confirmation", msg);
 
 			DbUtil.Db.Email(m.person.FromEmail, Staff, "Subscriptions managed", 

@@ -77,6 +77,10 @@ namespace CmsWeb.Areas.Search.Models
                     return from p in q
                         orderby p.EmailAddress, p.LastName, p.FirstName, p.PeopleId
                         select p;
+                case "Age":
+                    return from p in q
+                        orderby p.Age
+                        select p;
                 case "DOB":
                     return from p in q
                         orderby p.BirthMonth, p.BirthDay, p.LastName, p.FirstName
@@ -109,6 +113,10 @@ namespace CmsWeb.Areas.Search.Models
                     return from p in q
                         orderby p.EmailAddress descending, p.LastName descending, p.FirstName descending,
                             p.PeopleId descending
+                        select p;
+                case "Age desc":
+                    return from p in q
+                        orderby p.Age descending 
                         select p;
                 case "DOB desc":
                     return from p in q
