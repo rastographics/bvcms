@@ -156,7 +156,7 @@ ul.pagination>li>span.separator:hover{
 
 .social a.facebook {
   width: 60px;
-  background: url(facebook.png) no-repeat 0 0;
+  background: url(../images/facebook.png) no-repeat 0 0;
 }
 .social a.facebook, .social a.twitter, .social a.touchpoint {
   text-indent: 101%;
@@ -168,12 +168,12 @@ ul.pagination>li>span.separator:hover{
 }
 .social a.twitter {
   width: 80px;
-  background: url(twitter.png) no-repeat 0 0;
+  background: url(../images/twitter.png) no-repeat 0 0;
 }
 .social a.touchpoint {
   width: 162px;
   height: 20px;
-  background: url(poweredby.png) no-repeat 0 0;
+  background: url(../images/poweredby.png) no-repeat 0 0;
 }
 #footer.visible-xs-block{
   padding-top: 12px;

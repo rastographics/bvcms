@@ -150,7 +150,7 @@ body {
 
 .social a.facebook {
     width: 60px;
-    background: url(facebook.png) no-repeat 0 0;
+    background: url(../images/facebook.png) no-repeat 0 0;
 }
 
 .social a.facebook, .social a.twitter {
@@ -165,7 +165,7 @@ body {
 
 .social a.twitter {
     width: 80px;
-    background: url(twitter.png) no-repeat 0 0;
+    background: url(../images/twitter.png) no-repeat 0 0;
 }
 
 #footer.visible-xs-block {

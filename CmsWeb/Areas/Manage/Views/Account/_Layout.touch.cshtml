@@ -16,7 +16,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="@Url.Content("~/Content/touchpoint/css/account.css")" rel="stylesheet">
-    @RenderSection("Head", false)
+    @RenderSection("head", false)
 </head>
 <body class="theme-default page-signin-alt">
     <div class="signin-header">
@@ -49,6 +49,11 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    @RenderSection("Scripts", false)
+    <script>
+        $(document).ready(function () {
+            $('input:text').first().focus();
+        });
+    </script>
+    @RenderSection("scripts", false)
 </body>
 </html>

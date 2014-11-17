@@ -772,6 +772,7 @@
     <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\Manage\Views\Account\LogOn.touch.cshtml" />
     <Content Include="Areas\Manage\Views\Account\ForgotPassword.touch.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\RequestPassword.touch.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
