@@ -894,5 +894,98 @@ namespace CmsWeb
                 _templateInfo.HtmlFieldPrefix = _previousPrefix;
             }
         }
+
+        public static MvcHtmlString ValidationSummaryBootstrap(this HtmlHelper helper, bool closeable)
+        {
+            # region Equivalent view markup
+
+
+            // var errors = ViewData.ModelState.SelectMany(x => x.Value.Errors.Select(y => y.ErrorMessage));
+            //
+            // if (errors.Count() > 0)
+            // {
+            //     <div class="alert alert-danger alert-block alert-dismissable">
+            //         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            //         <strong>Validation error!</strong> Please fix the errors listed below and try again.
+            //         <ul>
+            //             @foreach (var error in errors)
+            //             {
+            //                 <li class="text-error">@error</li>
+            //             }
+            //         </ul>
+            //     </div>
+            // }
+
+
+            # endregion
+
+
+            var errors = helper.ViewContext.ViewData.ModelState.SelectMany(state => state.Value.Errors.Select(error => error.ErrorMessage));
+
+            var errorCount = errors.Count();
+
+            var div = new TagBuilder("div");
+            if (errorCount == 0)
+            {
+                div.AddCssClass("validation-summary-valid");
+                div.MergeAttribute("data-valmsg-summary", "true");
+
+                if (closeable)
+                {
+                    div.AddCssClass("alert-dismissable");
+                }
+
+                var ul = new TagBuilder("ul");
+                var li = new TagBuilder("li");
+                li.MergeAttribute("style", "display:none;");
+                ul.InnerHtml += li.ToString();
+                div.InnerHtml += ul.ToString();
+                return new MvcHtmlString(div.ToString());
+            }
+
+            div.AddCssClass("validation-summary-errors");
+            div.MergeAttribute("data-valmsg-summary", "true");
+            div.AddCssClass("alert");
+            div.AddCssClass("alert-danger");
+
+            div.AddCssClass("alert-block");
+
+            if (closeable)
+            {
+                div.AddCssClass("alert-dismissable");
+
+                var button = new TagBuilder("button");
+                button.AddCssClass("close");
+                button.MergeAttribute("type", "button");
+                button.MergeAttribute("data-dismiss", "alert");
+                button.MergeAttribute("aria-hidden", "true");
+                button.InnerHtml = "&times;";
+                div.InnerHtml += button.ToString();
+            }
+
+            div.InnerHtml += "<strong>Validation error!</strong> Please fix the errors listed below and try again.";
+
+            if (errorCount > 0)
+            {
+                var ul = new TagBuilder("ul");
+
+                foreach (var error in errors)
+                {
+                    var li = new TagBuilder("li");
+                    li.SetInnerText(error);
+                    ul.InnerHtml += li.ToString();
+                }
+
+                div.InnerHtml += ul.ToString();
+            }
+
+            return new MvcHtmlString(div.ToString());
+        }
+        
+        public static MvcHtmlString ValidationSummaryBootstrap(this HtmlHelper helper)
+        {
+            return ValidationSummaryBootstrap(helper, true);
+        }
+
     }
 }

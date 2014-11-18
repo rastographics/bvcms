@@ -766,13 +766,10 @@
     <Content Include="Scripts\bundle.query2.js" />
     <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="chart.py" />
-    <Content Include="Areas\Manage\Views\Account\_Layout.touch.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\_Layout.cshtml" />
     <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.eot" />
     <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.woff" />
-    <Content Include="Areas\Manage\Views\Account\LogOn.touch.cshtml" />
-    <Content Include="Areas\Manage\Views\Account\ForgotPassword.touch.cshtml" />
-    <Content Include="Areas\Manage\Views\Account\RequestPassword.touch.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />

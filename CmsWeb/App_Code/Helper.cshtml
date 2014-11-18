@@ -1,9 +1,11 @@
 ﻿@using System.Web.Mvc
 @using UtilityExtensions
+
 @helper AnchorLink(string text, string href, string id = null, string target = null, string style = null)
 {
     <a href="@href" @(target.HasValue() ? "target=" + target : "") @(id.HasValue() ? "id=" + id : "") @(style.HasValue() ? "class=" + style : "")>@text</a>
 }
+
 @helper LiAnchorLink(string text, string url, bool display = true, string target = null)
 {
     if (display)
@@ -11,6 +13,7 @@
         <li>@Helper.AnchorLink(text, url, target: target)</li>
     }
 }
+
 @helper LiHeader(string text, bool display = true)
 {
     if (display)
@@ -25,14 +28,17 @@
         }
     }
 }
+
 @helper JQueryIdLink(string text, string id)
 {
     <a id="@id" href="#">@text</a>
 }
+
 @helper JQueryIdLink(string text, string id, string data)
 {
     <a id="@id" data-item="@data">@text</a>
 }
+
 @helper LiJQueryIdLink(string text, string id, bool display = true)
 {
     if (display)
@@ -40,6 +46,7 @@
         <li><a id="@id" href="#">@text</a></li>
     }
 }
+
 @helper ButtonLink(string text, string href, string target = null)
 {
     if (target.HasValue())
@@ -51,6 +58,7 @@
         <a href="@href">@text</a>
     }
 }
+
 @helper OnlineRegSubmitButtonRow(string text, bool onlyoneallowed = false, string style="")
 {
     <div class="form-group">
@@ -59,10 +67,12 @@
         </div>
     </div>
 }
+
 @helper OnlineRegSubmitButton(string text, bool onlyoneallowed = false, string style = "btn-primary")
 {
     <input type="submit" id="submitit" @(onlyoneallowed ? "data-onlyoneallowed=true" : "") class="btn @style" value="@text" />
 }
+
 @helper OnlineRegSubmitLinkRow(string url, string text, string style = "btn-primary")
 {
     <div class="form-group">
@@ -89,6 +99,7 @@
         @text
     </a>
 }
+
 @helper OnlineRegHeaderFullRow(string text)
 {
     <div class="form-group">
@@ -97,6 +108,7 @@
         </div>
     </div>
 }
+
 @helper OnlineRegHeader(string text)
 {
     <div class="form-group">
@@ -108,6 +120,7 @@
     </div>
 
 }
+
 @helper OnlineRegInstruction(string text)
 {
     <div class="form-group">

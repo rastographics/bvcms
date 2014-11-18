@@ -125,6 +125,7 @@ body {
     width: 360px;
     margin: auto;
     margin-bottom: 20px;
+    text-align: left !important;
 }
 
 #footer {
