@@ -10,20 +10,17 @@ body {
     margin-bottom: 60px;
 }
 
-.theme-default {
+.account {
     background: #f6f6f6;
-}
-
-.page-signin-alt {
     padding-bottom: 40px;
 }
 
-.page-signin-alt .signin-header {
+.account .account-header {
     padding-left: 0;
     text-align: center;
 }
 
-.page-signin-alt .signin-header {
+.account .account-header {
     background: #fff;
     padding: 16px 0 16px 0;
     position: relative;
@@ -31,13 +28,13 @@ body {
     box-shadow: 0 2px 2px rgba(0,0,0,.05),0 1px 0 rgba(0,0,0,.05);
 }
 
-.page-signin-alt .signin-header .btn {
+.account .account-header .btn {
     position: absolute;
     right: 16px;
     top: 12px;
 }
 
-.page-signin-alt .signin-header .logo {
+.account .account-header .logo {
     color: #555;
     font-size: 16px;
     height: 24px;
@@ -48,28 +45,24 @@ body {
     transition: all .3s;
 }
 
-.page-signin-alt .signin-header .demo-logo {
+.account .account-header .demo-logo {
     display: inline-block;
     height: 24px;
     line-height: 24px;
 }
 
-.theme-default .bg-primary, .theme-default .bg-primary a, .theme-default .bg-primary a:focus, .theme-default .bg-primary:active, .theme-default .bg-primary:focus, .theme-default .bg-primary:hover {
-    color: #fff;
-}
-
-.page-signin-alt .form-header {
+.account .form-header {
     font-size: 22px;
     font-weight: 300;
     text-align: center;
     margin: 40px 0;
 }
 
-.theme-default .bordered, .theme-default .panel, .theme-default .table, .theme-default hr {
+.account .bordered, .account .panel, .account .table, .account hr {
     border-color: #e2e2e2;
 }
 
-.page-signin-alt .panel {
+.account .panel {
     max-width: 360px;
     margin: 0 auto;
     padding: 27px;
@@ -83,15 +76,15 @@ body {
     box-shadow: none;
 }
 
-.page-signin-alt .signin-password {
+.account .signin-password {
     position: relative;
 }
 
-.page-signin-alt .signin-password input {
+.account .signin-password input {
     padding-right: 70px;
 }
 
-.page-signin-alt .signin-password .forgot {
+.account .signin-password .forgot {
     position: absolute;
     right: 10px;
     top: 10px;
@@ -103,25 +96,25 @@ body {
     font-size: 12px;
 }
 
-.page-signin-alt .signin-with {
+.account .signin-with {
     max-width: 360px;
     padding: 20px;
     margin: 0 auto;
     text-align: center;
 }
 
-.page-signin-alt .signin-with .header {
+.account .signin-with .header {
     font-size: 16px;
     font-weight: 300;
     text-align: center;
     margin: 0 0 20px;
 }
 
-.page-signin-alt .signin-with .header a {
+.account .signin-with .header a {
     text-decoration: underline;
 }
 
-.page-signin-alt .alert {
+.account .alert {
     width: 360px;
     margin: auto;
     margin-bottom: 20px;
