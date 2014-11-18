@@ -179,6 +179,7 @@ namespace CmsData
         {
             var org = db.LoadOrganizationById(orgId);
             var m = new API.APIOrganization(db);
+            Util.IsInRoleEmailTest = TestEmail;
             if (org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
                 m.SendVolunteerReminders(orgId, false);
             else
