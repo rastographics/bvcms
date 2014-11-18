@@ -142,33 +142,10 @@ body {
     padding-left: 0;
     padding-right: 0;
     border-top: thin solid #999;
+    padding-left: 15px;
 }
 
 #footer a {
     color: #fff !important;
     text-decoration: underline;
-}
-
-.social a.facebook {
-    width: 60px;
-    background: url(../images/facebook.png) no-repeat 0 0;
-}
-
-.social a.facebook, .social a.twitter {
-    text-indent: 101%;
-    overflow: hidden;
-}
-
-.social a {
-    float: left;
-    margin-right: 1em;
-}
-
-.social a.twitter {
-    width: 80px;
-    background: url(../images/twitter.png) no-repeat 0 0;
-}
-
-#footer.visible-xs-block {
-    padding-top: 12px;
 }

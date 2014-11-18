@@ -701,13 +701,11 @@
     <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.svg" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\main.css" />
-    <Content Include="Content\touchpoint\images\facebook.png" />
     <Content Include="Content\touchpoint\images\favicon.png" />
     <Content Include="Content\touchpoint\images\female.png" />
     <Content Include="Content\touchpoint\images\logo.png" />
     <Content Include="Content\touchpoint\images\logo_sm.png" />
     <Content Include="Content\touchpoint\images\male.png" />
-    <Content Include="Content\touchpoint\images\twitter.png" />
     <Content Include="Content\xml.css" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
