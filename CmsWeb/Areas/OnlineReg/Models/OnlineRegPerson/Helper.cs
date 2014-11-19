@@ -466,16 +466,32 @@ namespace CmsWeb.Models
 
         public static SelectListItem[] FundList()
         {
-            var q = from f in DbUtil.Db.ContributionFunds
-                    where f.FundStatusId == 1
-                    where f.OnlineSort > 0
-                    orderby f.OnlineSort
+            return (from f in GetAllOnlineFunds()
+                    where (f.OnlineSort > 0 && f.OnlineSort < 100)
                     select new SelectListItem
                     {
                         Text = "{0}".Fmt(f.FundName),
                         Value = f.FundId.ToString()
-                    };
-            return q.ToArray();
+                    }).ToArray();
+        }
+
+        public static SelectListItem[] SpecialFundList()
+        {
+            return (from f in GetAllOnlineFunds()
+                    where f.OnlineSort > 100
+                    select new SelectListItem
+                    {
+                        Text = "{0}".Fmt(f.FundName),
+                        Value = f.FundId.ToString()
+                    }).ToArray();
+        }
+
+        private static IQueryable<ContributionFund> GetAllOnlineFunds()
+        {
+            return from f in DbUtil.Db.ContributionFunds
+                   where f.FundStatusId == 1
+                   orderby f.OnlineSort
+                   select f;
         }
 
         private PythonEvents _pythonEvents;
