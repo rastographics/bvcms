@@ -1549,6 +1549,13 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
     <Content Include="Views\Shared\Message.cshtml" />
     <Content Include="Views\Home\PyScript.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\NavBar.cshtml" />
+    <Content Include="Views\Shared\Menu\People.touch.cshtml" />
+    <Content Include="Views\Shared\Menu\Organization.touch.cshtml" />
+    <Content Include="Views\Shared\Menu\Reports.touch.cshtml" />
+    <Content Include="Views\Shared\Menu\Admin.touch.cshtml" />
+    <Content Include="Views\Shared\Menu\Help.touch.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,0 +1,32 @@
+﻿@{
+    var menuaddpeople = ViewExtensions2.DbSetting("MenuAddPeople", "true") == "true" || Util.IsDebug();
+}
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">People <span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        <li><a href="/PeopleSearch">Find</a></li>
+        <li><a href="/Query">Advanced Search</a></li>
+        @if (menuaddpeople)
+        {
+            <li><a href="/SearchAdd2/Dialog/Menu" class="searchadd">Add People</a></li>
+        }
+        @Helper.LiAnchorLink("Add People", "http://docs.bvcms.com/SearchAdd/AddPeopleContext.html", !menuaddpeople, "_blank")
+        @Helper.LiAnchorLink("Manage Tags", "/Tags/")
+        @Helper.LiAnchorLink("Tasks", "/Task/List/")
+        @Helper.LiAnchorLink("Contacts", "/ContactSearch2/")
+        @{
+            var recentPeople = Util2.MostRecentPeople;
+        }
+        @if (recentPeople.Any())
+        {
+            <li class="divider"></li>
+            <li class="dropdown-header">Recent</li>
+            foreach (var p in Util2.MostRecentPeople)
+            {
+                @Helper.LiAnchorLink(p.Name, "/Person2/" + p.Id)
+            }
+        }
+        <li class="divider"></li>
+        @Helper.LiAnchorLink(Util.UserFullName, "/Person2/" + Util.UserPeopleId)
+    </ul>
+</li>

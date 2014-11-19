@@ -13,14 +13,6 @@ body {
 .logo{
   padding-right: 10px;
 }
-
-#news ul {
-  max-height: 215px; 
-  overflow-y:scroll;
-}
-#news ul li a {
-  text-decoration: underline;
-}
 #me {
   padding-bottom: 13px;
 }

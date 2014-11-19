@@ -1,118 +1,201 @@
 ﻿@model CmsWeb.Models.HomeModel
 @{
     ViewBag.Title = "Home";
-    Layout = ViewExtensions2.Layout();
-    var showtip = Model.ShowTip;
+    Layout = "../Shared/_Layout.cshtml";
 }
 @section head
 {
-    @Fingerprint.Css("/Content/css/bootstrap-tour.css")
+    <style>
+        ul.list-group {
+            max-height: 215px;
+            overflow-y: scroll;
+        }
+
+        ul.list-group li a {
+            text-decoration: underline;
+        }
+
+        ul.list-group li.section {
+            font-weight: bold;
+        }
+
+        ul.list-group li.indent {
+            padding-left: 25px;
+        }
+    </style>
 }
-@section scripts
-{
-    @if (showtip)
-    {
-        @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-tour.js")
-        @Fingerprint.Script("/Scripts/jQuery/jquery.smoothscroll.js")
-        @Fingerprint.Script("/Scripts/js/hometour.js")
-    }
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.jscroll').each(function () {
-                $(this).jScrollPane({
-                    showArrows: true,
-                    verticalGutter: 5
-                });
-                var api = $(this).data('jsp');
-                $(window).bind('resize', function () {
-                    api.reinitialise();
-                });
-            });
-            $('div.jscroll div.drow:even').addClass('alt');
-        });
-    </script>
-}
-<div class="homebox roundbox">
-    <div style="height: 33%;">
-        <h2 id="bdays"><a href="Tags?tag=TrackBirthdays">Birthdays</a></h2>
-        <div class="jscroll" style="height: 130px">
-            @foreach (var bi in Model.Birthdays())
+<div class="row">
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><a href="Tags?tag=TrackBirthdays">Birthdays</a></h3>
+            </div>
+            @{
+                var birthdays = Model.Birthdays().ToList();
+            }
+            @if (birthdays.Any())
             {
-                <div class="drow"><a href="@bi.Url">@bi.Name (@bi.Birthday.ToString("m"))</a></div>
+                <ul class="list-group">
+                    @foreach (var birthday in birthdays)
+                    {
+                        <li class="list-group-item"><a href="@birthday.Url">@birthday.Name (@birthday.Birthday.ToString("m"))</a></li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div class="panel-body"></div>
+            }
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><a href="@Model.UserUrl">My Involvement</a></h3>
+            </div>
+            @{
+                var involvements = Model.MyInvolvements().ToList();
+                var currentOrgType = "Other";
+            }
+            @if (involvements.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var involvement in involvements)
+                    {
+                        if (involvement.OrgType != currentOrgType)
+                        {
+                            currentOrgType = involvement.OrgType;
+                            <li class="list-group-item section">@involvement.OrgType</li>
+                        }
+                        <li class="list-group-item indent"><a href="/Organization/@involvement.OrgId">@involvement.Name</a></li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div class="panel-body"></div>
+            }
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><a href="/Query">My Searches</a></h3>
+            </div>
+            @{
+                var searches = Model.MyQueries().ToList();
+            }
+            @if (searches.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var search in searches)
+                    {
+                        <li class="list-group-item"><a href="@search.Url">@search.Name</a></li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div class="panel-body"></div>
             }
         </div>
     </div>
-    <div style="height: 33%;">
-        <h2><a href="@Model.UserUrl">My Involvement</a></h2>
-        <div class="jscroll" style="height: 130px">
-            @{ var pOrgType = "Other"; }
-            @foreach (var my in Model.MyInvolvements())
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><a href="@Model.BlogAppUrl">TouchPoint News</a></h3>
+            </div>
+            @{
+                var touchPointNews = Model.BVCMSNews().ToList();
+            }
+            @if (touchPointNews.Any())
             {
-                if (my.OrgType != pOrgType)
-                {
-                    pOrgType = my.OrgType;
-                    <div class="drow section">@my.OrgType</div>
-                }
-                <div class="drow indent"><a href="/Organization/@my.OrgId">@my.Name</a></div>
+                <ul class="list-group">
+                    @foreach (var article in touchPointNews)
+                    {
+                        var daysOld = (int)Math.Ceiling(DateTime.Now.Subtract(article.Published).TotalDays);
+                        <li class="list-group-item">
+                            <a href="@article.Url" target="news">@article.Title</a>
+                            @if (daysOld < 8)
+                            {
+                                <span class="label label-danger pull-right">New</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div class="panel-body"></div>
+            }
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><a href="@Model.ChurchBlogUrl">Church News</a></h3>
+            </div>
+            @{
+                var churchNews = Model.ChurchNews().ToList();
+            }
+            @if (churchNews.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var article in churchNews)
+                    {
+                        var daysOld = (int)Math.Ceiling(DateTime.Now.Subtract(article.Published).TotalDays);
+                        <li class="list-group-item">
+                            <a href="@article.Url" target="news">@article.Title</a>
+                            @if (daysOld < 8)
+                            {
+                                <span class="label label-danger pull-right">New</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div class="panel-body"></div>
             }
         </div>
     </div>
-    <div style="height: 34%;">
-        <h2><a href="/Query">My Searches</a></h2>
-        <div class="jscroll" style="height: 130px">
-            @foreach (var q in Model.MyQueries())
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><a href="/Tags">My Tags</a></h3>
+            </div>
+            @{
+                var tags = Model.Tags().ToList();
+            }
+            @if (tags.Any())
             {
-                <div class="drow"><a href="@q.Url">@q.Name</a></div>
+                <ul class="list-group">
+                    @foreach (var tag in tags)
+                    {
+                        <li class="list-group-item"><a href="/Tags?tag=@Server.UrlEncode(tag.Code)">@tag.Value</a></li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div class="panel-body"></div>
+            }
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><a href="/Task/List">My Tasks</a></h3>
+            </div>
+            @{
+                var tasks = Model.Tasks().ToList();
+            }
+            @if (tasks.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var task in tasks)
+                    {
+                        <li class="list-group-item"><a href="/Task/List/@task.TaskId#Detail">@task.Description</a> (<a href="@task.Url">@task.Who</a>)</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div class="panel-body"></div>
             }
         </div>
     </div>
 </div>
-<div style="margin-left: 1%; float: left;">&nbsp;</div>
-<div class="homebox roundbox">
-    <div style="height: 50%">
-        <h2><a href="@Model.BlogAppUrl">BVCMS News</a></h2>
-        <div class="jscroll" style="height: 215px">
-            @foreach (var ni in Model.BVCMSNews())
-            {
-                var days = (int)Math.Ceiling(DateTime.Now.Subtract(ni.Published).TotalDays);
-                <div class="drow @(days < 8 ? "isnew" + days : "")">
-                    <a href="@ni.Url" target="news">@ni.Title</a>
-                </div>
-            }
-        </div>
-    </div>
-    <div style="height: 50%">
-        <h2><a href="@Model.ChurchBlogUrl">Church News</a></h2>
-        <div class="jscroll" style="height: 215px">
-            @foreach (var ni in Model.ChurchNews())
-            {
-                var days = (int)Math.Ceiling(DateTime.Now.Subtract(ni.Published).TotalDays);
-                <div class="drow @(days < 8 ? "isnew" + days : "")">
-                    <a href="@ni.Url" target="news">@ni.Title</a>
-                </div>
-            }
-        </div>
-    </div>
-</div>
-<div style="margin-left: 1%; float: left;">&nbsp;</div>
-<div class="homebox roundbox">
-    <div style="height: 50%">
-        <h2 id="tags"><a href="/Tags">My Tags</a></h2>
-        <div class="jscroll" style="height: 215px">
-            @foreach (var t in Model.Tags())
-            {
-                <div class="drow"><a href="/Tags?tag=@Server.UrlEncode(t.Code)">@t.Value</a></div>
-            }
-        </div>
-    </div>
-    <div style="height: 50%">
-        <h2 id="tasks"><a href="/Task/List">My Tasks</a></h2>
-        <div class="jscroll" style="height: 215px">
-            @foreach (var t in Model.Tasks())
-            {
-                <div class="drow"><a href="/Task/List/@t.TaskId#Detail">@t.Description</a> (<a href="@t.Url">@t.Who</a>)</div>
-            }
-        </div>
-    </div>
-</div>
-<div style="clear: both"></div>
