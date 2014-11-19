@@ -87,6 +87,7 @@ namespace CmsData
                 { QueryType.IsInactiveMemberOf, IsInactiveMemberOf },
                 { QueryType.IsMemberOf, IsMemberOf },
                 { QueryType.IsPendingMemberOf, IsPendingMemberOf },
+                { QueryType.IsPreviousMemberOf, IsPreviousMemberOf },
                 { QueryType.IsProspectOf, IsProspectOf },
                 { QueryType.IsRecentGiver, IsRecentGiver },
                 { QueryType.IsTopGiver, IsTopGiver },

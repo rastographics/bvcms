@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Finance;
 using CmsWeb.Areas.People.Models;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -22,6 +23,8 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet]
         public ActionResult Current()
         {
+            var gw = new AuthorizeNetGateway(DbUtil.Db, false);
+            gw.RemoveFromVault(2);
             return Redirect("/Person2/" + Util2.CurrentPeopleId);
         }
 

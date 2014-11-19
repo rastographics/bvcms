@@ -58,17 +58,12 @@ namespace CmsWeb.Controllers
 //            return Content("<pre>{0}</pre>".Fmt(ret));
 //        }
 #if DEBUG
+        [HttpGet, Route("~/Test")]
         public ActionResult Test()
         {
-            var p = DbUtil.Db.LoadPersonById(828612);
-
-            Util.Now = DateTime.Parse("10/22/14 10:15 PM");
-            p.PostUnattendedContribution(DbUtil.Db, 101m, 1, "test1");
-            Util.Now = DateTime.Parse("10/24/14 10:16 PM");
-            p.PostUnattendedContribution(DbUtil.Db, 102m, 1, "test2");
-            Util.Now = DateTime.Parse("10/27/14 10:17 PM");
-            p.PostUnattendedContribution(DbUtil.Db, 103m, 1, "test3");
-            return Content("done");
+            var q = DbUtil.Db.RecurringGivingNotifyPersons();
+            //var q = DbUtil.Db.PeopleFromPidString("828612,819918,333,1078427", "Finance").Select(mm => mm.Name);
+            return Content(string.Join(",", q));
         }
 #endif
 

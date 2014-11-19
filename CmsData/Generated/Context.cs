@@ -1757,6 +1757,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.ProspectCount> ViewProspectCounts
+	    {
+		    get { return this.GetTable< View.ProspectCount>(); }
+
+	    }
+
 	    public Table< View.RandNumber> ViewRandNumbers
 	    {
 		    get { return this.GetTable< View.RandNumber>(); }

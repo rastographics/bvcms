@@ -6,6 +6,7 @@
  */
 using System;
 using System.Net.Mail;
+using CmsData.Codes;
 using UtilityExtensions;
 using System.Linq;
 using System.Configuration;
@@ -94,10 +95,11 @@ namespace CmsData
             var aa = PersonListToMailAddressList(li);
             Email(from, li[0], aa, subject, body, redacted: true);
         }
-        public IEnumerable<Person> PeopleFromPidString(string pidstring)
+        public IEnumerable<Person> PeopleFromPidString(string pidstring, string role = null)
         {
             var a = pidstring.SplitStr(",").Select(ss => ss.ToInt()).ToArray();
             var q = from p in People
+                    where role == null || p.Users.Any(uu => uu.UserRoles.Any(ur => ur.Role.RoleName == role))
                     where a.Contains(p.PeopleId)
                     orderby p.PeopleId == a[0] descending
                     select p;
@@ -119,6 +121,20 @@ namespace CmsData
                     where u.UserRoles.Any(ur => ur.Role.RoleName == "Finance")
                     select u.Person;
             return q.ToList();
+        }
+        public List<Person> RecurringGivingNotifyPersons()
+        {
+            if (Setting("SendRecurringGiftFailureNoticesToFinanceUsers", "false") == "false")
+            {
+                var notifyids = (from o in Organizations
+                                 where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving 
+                                 select o.NotifyIds).SingleOrDefault();
+                if(notifyids.HasValue())
+                    return PeopleFromPidString(notifyids).ToList();
+            }
+            return (from u in Users
+                    where u.UserRoles.Any(ur => ur.Role.RoleName == "Finance")
+                    select u.Person).ToList();
         }
         public string StaffEmailForOrg(int orgid)
         {
