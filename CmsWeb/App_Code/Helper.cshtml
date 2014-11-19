@@ -14,6 +14,23 @@
     }
 }
 
+@helper LiAnchorLink(string text, string icon, string url)
+{
+    <li>
+        <a href="@url">
+            @if (!string.IsNullOrWhiteSpace(icon))
+            {
+                <i class="@icon"></i><span>&nbsp;&nbsp;@text</span>
+            }
+            else
+            {
+                @text
+            }
+        </a>
+    </li>
+
+}
+
 @helper LiHeader(string text, bool display = true)
 {
     if (display)

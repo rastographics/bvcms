@@ -48,11 +48,11 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me"><img src="me.jpg" class="img-responsive img-circle">&nbsp;&nbsp;<span class="visible-lg-inline visible-xs-inline">@Util.UserFullName</span> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Change Password</a></li>
+                            @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
+                            @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
                             <li><a href="#"><i class="dropdown-icon fa fa-cog"></i>&nbsp;&nbsp;Settings</a></li>
                             <li class="divider"></li>
-                            <li><a href="signin.html"><i class="dropdown-icon fa fa-power-off"></i>&nbsp;&nbsp;Log Out</a></li>
+                            @Helper.LiAnchorLink("Log Out", "dropdown-icon fa fa-power-off", "/Account/LogOff/")
                         </ul>
                     </li>
                     <li>@Html.Partial("Menu/Help")</li>
