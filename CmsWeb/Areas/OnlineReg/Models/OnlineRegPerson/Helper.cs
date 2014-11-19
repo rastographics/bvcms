@@ -444,24 +444,38 @@ namespace CmsWeb.Models
 
         public SelectListItem[] Funds()
         {
-            var shouldPullSpecificFund = Parent.OnlineGiving()
-                                         && !Parent.AskDonation()
-                                         && setting.DonationFundId.HasValue;
-
-            if (shouldPullSpecificFund)
-            {
-                var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId);
-                return new[]
-                {
-                    new SelectListItem
-                    {
-                        Text = fund.FundName,
-                        Value = fund.FundId.ToString()
-                    }
-                };
-            }
+            if (ShouldPullSpecificFund())
+                return ReturnContributionForSetting();
 
             return FundList();
+        }
+
+        public SelectListItem[] SpecialFunds()
+        {
+            if (ShouldPullSpecificFund())
+                return ReturnContributionForSetting();
+
+            return SpecialFundList();
+        }
+
+        private SelectListItem[] ReturnContributionForSetting()
+        {
+            var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId);
+            return new[]
+            {
+                new SelectListItem
+                {
+                    Text = fund.FundName,
+                    Value = fund.FundId.ToString()
+                }
+            };
+        }
+
+        private bool ShouldPullSpecificFund()
+        {
+            return Parent.OnlineGiving()
+                   && !Parent.AskDonation()
+                   && setting.DonationFundId.HasValue;
         }
 
         public static SelectListItem[] FundList()
