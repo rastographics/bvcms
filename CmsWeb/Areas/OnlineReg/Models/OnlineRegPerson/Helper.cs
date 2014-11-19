@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Web;
 using CmsData;
 using CmsWeb.Code;
@@ -18,7 +17,6 @@ namespace CmsWeb.Models
     public partial class OnlineRegPersonModel
     {
         private Dictionary<int, Settings> _settings;
-
         public Dictionary<int, Settings> settings
         {
             get
@@ -36,7 +34,6 @@ namespace CmsWeb.Models
 
 
         private Settings _setting;
-
         public Settings setting
         {
             get
@@ -69,13 +66,13 @@ namespace CmsWeb.Models
         }
 
         [DisplayName("Gender")]
-        public string genderdisplay
+        public string GenderDisplay
         {
             get { return gender == 1 ? "Male" : gender == 2 ? "Female" : "not specified"; }
         }
 
         [DisplayName("Marital")]
-        public string marrieddisplay
+        public string MarriedDisplay
         {
             get { return married == 10 ? "Single" : married == 20 ? "Married" : "not specified"; }
         }
@@ -179,14 +176,13 @@ namespace CmsWeb.Models
         public bool MemberOnly()
         {
             if (org != null)
-                return setting.MemberOnly == true;
+                return setting.MemberOnly;
             if (divid == null)
                 return false;
             return settings.Values.Any(o => o.MemberOnly);
         }
 
         private CmsData.Organization _org;
-
         public CmsData.Organization org
         {
             get
@@ -210,7 +206,6 @@ namespace CmsWeb.Models
         }
 
         private CmsData.Organization _masterorg;
-
         public CmsData.Organization masterorg
         {
             get
@@ -248,14 +243,14 @@ namespace CmsWeb.Models
                 return null;
             var cklist = masterorg.OrgPickList.Split(',').Select(o => o.ToInt()).ToList();
             var q = from o in DbUtil.Db.Organizations
-                where cklist.Contains(o.OrganizationId)
-                where gender == null || o.GenderId == gender || (o.GenderId ?? 0) == 0
-                select o;
+                    where cklist.Contains(o.OrganizationId)
+                    where gender == null || o.GenderId == gender || (o.GenderId ?? 0) == 0
+                    select o;
             list = q.ToList();
             var q2 = from o in list
-                where bestbirthdate >= o.BirthDayStart || o.BirthDayStart == null
-                where bestbirthdate <= o.BirthDayEnd || o.BirthDayEnd == null
-                select o;
+                     where bestbirthdate >= o.BirthDayStart || o.BirthDayStart == null
+                     where bestbirthdate <= o.BirthDayEnd || o.BirthDayEnd == null
+                     select o;
             var oo = q2.FirstOrDefault();
 
             if (oo == null)
@@ -332,8 +327,8 @@ namespace CmsWeb.Models
                  * has the email address used in registration
                  * if so then that is OK too. */
                 var flist = from fm in person.Family.People
-                    where fm.PositionInFamilyId == PositionInFamily.PrimaryAdult
-                    select fm;
+                            where fm.PositionInFamilyId == PositionInFamily.PrimaryAdult
+                            select fm;
                 foreach (var fm in flist)
                 {
                     if (fm.EmailAddress.HasValue() &&
@@ -369,13 +364,6 @@ namespace CmsWeb.Models
                 var subj = "{0}, no email on your record".Fmt(orgname);
                 DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(regemail), subj, msg, false);
             }
-        }
-
-        private static string trim(string s)
-        {
-            if (s != null)
-                return s.Trim();
-            return s;
         }
 
         public OrganizationMember GetOrgMember()
@@ -449,42 +437,54 @@ namespace CmsWeb.Models
                     FirstName, LastName, gender, married,
                     DateOfBirth, age, Phone.FmtFone(), EmailAddress));
                 if (ShowAddress)
-                    sb.AppendFormat("&nbsp;&nbsp;{0}; {1}<br />\n", this.AddressLineOne, City);
+                    sb.AppendFormat("&nbsp;&nbsp;{0}; {1}<br />\n", AddressLineOne, City);
             }
             return sb.ToString();
         }
 
         public SelectListItem[] Funds()
         {
-            if (Parent.OnlineGiving() && !Parent.AskDonation() && setting.DonationFundId.HasValue)
+            var shouldPullSpecificFund = Parent.OnlineGiving()
+                                         && !Parent.AskDonation()
+                                         && setting.DonationFundId.HasValue;
+
+            if (shouldPullSpecificFund)
             {
-                var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId );
-                return new [] { new SelectListItem() { Text = fund.FundName, Value = fund.FundId.ToString() }};
+                var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId);
+                return new[]
+                {
+                    new SelectListItem
+                    {
+                        Text = fund.FundName,
+                        Value = fund.FundId.ToString()
+                    }
+                };
             }
+
             return FundList();
         }
+
         public static SelectListItem[] FundList()
         {
             var q = from f in DbUtil.Db.ContributionFunds
-                where f.FundStatusId == 1
-                where f.OnlineSort > 0
-                orderby f.OnlineSort
-                select new SelectListItem
-                {
-                    Text = "{0}".Fmt(f.FundName),
-                    Value = f.FundId.ToString()
-                };
+                    where f.FundStatusId == 1
+                    where f.OnlineSort > 0
+                    orderby f.OnlineSort
+                    select new SelectListItem
+                    {
+                        Text = "{0}".Fmt(f.FundName),
+                        Value = f.FundId.ToString()
+                    };
             return q.ToArray();
         }
 
         private PythonEvents _pythonEvents;
-
         public PythonEvents PythonEvents
         {
             get { return _pythonEvents ?? (_pythonEvents = HttpContext.Current.Items["PythonEvents"] as PythonEvents); }
         }
 
-        private Dictionary<string, string> NameLookup = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> NameLookup = new Dictionary<string, string>()
         {
             {"first", "FirstName"},
             {"middle", "MiddleName"},
