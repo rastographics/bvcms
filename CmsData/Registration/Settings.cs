@@ -210,6 +210,9 @@ namespace CmsData.Registration
 				case Parser.RegKeywords.ExtraQuestions:
 					AskItems.Add(AskExtraQuestions.Parse(parser));
 					break;
+				case Parser.RegKeywords.Text:
+					AskItems.Add(AskText.Parse(parser));
+					break;
 				case Parser.RegKeywords.Checkboxes:
 				case Parser.RegKeywords.Checkboxes2:
 					AskItems.Add(AskCheckboxes.Parse(parser));

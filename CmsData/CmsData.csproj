@@ -595,6 +595,7 @@
     <Compile Include="DbUtil\Dynamic.cs" />
     <Compile Include="Classes\QuickBooks\QuickBooksHelper.cs" />
     <Compile Include="Registration\Ask.cs" />
+    <Compile Include="Registration\AskText.cs" />
     <Compile Include="Registration\AskRequest.cs" />
     <Compile Include="Registration\AskSize.cs">
       <SubType>Code</SubType>

@@ -16,6 +16,12 @@ namespace CmsWeb.Models
                 return ExtraQuestion[set][s];
             return null;
         }
+        public string TextValue(int set, string s)
+        {
+            if (Text[set].ContainsKey(s))
+                return Text[set][s];
+            return null;
+        }
 
         public bool Attended(int id)
         {

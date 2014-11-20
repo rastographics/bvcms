@@ -28,6 +28,10 @@ namespace CmsData.View
 		
 		private int? _Previous;
 		
+		private int? _Vistors;
+		
+		private int? _Meetings;
+		
 		private int _ProgId;
 		
 		private int _DivId;
@@ -138,6 +142,40 @@ namespace CmsData.View
 			{
 				if (this._Previous != value)
 					this._Previous = value;
+			}
+
+		}
+
+		
+		[Column(Name="Vistors", Storage="_Vistors", DbType="int")]
+		public int? Vistors
+		{
+			get
+			{
+				return this._Vistors;
+			}
+
+			set
+			{
+				if (this._Vistors != value)
+					this._Vistors = value;
+			}
+
+		}
+
+		
+		[Column(Name="Meetings", Storage="_Meetings", DbType="int")]
+		public int? Meetings
+		{
+			get
+			{
+				return this._Meetings;
+			}
+
+			set
+			{
+				if (this._Meetings != value)
+					this._Meetings = value;
 			}
 
 		}

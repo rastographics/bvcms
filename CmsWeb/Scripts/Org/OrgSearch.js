@@ -350,7 +350,7 @@
         var href = this.href;
         var q = $("#orgsearchform").serialize();
         $.post("/OrgSearch/Count", q, function(cnt) {
-            bootbox.confirm("Are you sure you want do replace settings on " + cnt + " organizations? There is no undo button.", function(result) {
+            bootbox.confirm("Are you sure you want to replace settings on " + cnt + " organizations? There is no undo button.", function(result) {
                 if (result) {
                     $.post(href, q, function () {
                         $.growlUI("Completed", "Settings Replaced");

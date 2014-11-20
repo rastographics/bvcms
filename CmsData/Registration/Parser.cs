@@ -262,6 +262,7 @@ namespace CmsData.Registration
             ShirtSizes,
             YesNoQuestions,
             ExtraQuestions,
+            Text,
             MenuItems,
             ValidateOrgs,
             MemberOnly,
@@ -354,7 +355,7 @@ namespace CmsData.Registration
             OtherFeesAdded,
             AskOptions,
             AskMedical,
-            Thanks
+            Thanks,
         }
 	}
 }
