@@ -498,6 +498,11 @@ namespace CmsWeb.Areas.Org.Controllers
             return View("EditorTemplates/ExtraQuestion", new AskExtraQuestions.ExtraQuestion { Name = id });
         }
         [HttpPost]
+        public ActionResult NewText(string id)
+        {
+            return View("EditorTemplates/Text", new AskExtraQuestions.ExtraQuestion { Name = id });
+        }
+        [HttpPost]
         public ActionResult NewOrgFee(string id)
         {
             return View("EditorTemplates/OrgFee", new OrgFees.OrgFee { Name = id });
@@ -552,6 +557,8 @@ namespace CmsWeb.Areas.Org.Controllers
                     return View(template, new AskYesNoQuestions() { Name = id });
                 case "AskExtraQuestions":
                     return View(template, new AskExtraQuestions() { Name = id });
+                case "AskText":
+                    return View(template, new AskText() { Name = id });
                 case "AskGradeOptions":
                     return View(template, new AskGradeOptions() { Name = id });
             }

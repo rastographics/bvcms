@@ -5,427 +5,484 @@
 @{ var index = Model.Index; }
 @if (Model.AnyOtherInfo())
 {
-    if (index > 0 && Model.NeedsCopyFromPrevious())
-    {
-        <tr>
-            <td colspan="2" class="right"><a href="#" id="copy">copy from previous</a></td>
-        </tr>
-    }
+  if (index > 0 && Model.NeedsCopyFromPrevious())
+  {
+    <tr>
+      <td colspan="2" class="right"><a href="#" id="copy">copy from previous</a></td>
+    </tr>
+  }
 }
-@foreach(var ask in Model.setting.AskItems)
+@foreach (var ask in Model.setting.AskItems)
 {
-	switch (ask.Type)
-    {
-        case "AskSize":
-        <tr>
-            <td>@Html.Raw(((AskSize)ask).Label)</td>
-			<td>@Html.DropDownListFor(m => m.shirtsize, Model.ShirtSizes())
-				<div>@Html.ValidationMessageFor(m => m.shirtsize)</div>
-			</td>
-        </tr>
-            break;
-        case "AskRequest":
-        <tr>
-			<td>@Html.Raw(((AskRequest)ask).Label)</td>
-            <td>@Html.TextBoxFor(m => m.request, new {maxlength = "100", @class = "wide"})
-                <div>@Html.ValidationMessageFor(m => m.request)</div></td>
-        </tr>
-            break;
-        case "AskHeader":
-        <tr>
-            <td colspan="2"><h4>@Html.Raw(((AskHeader)ask).Label)</h4></td>
-        </tr>
-            break;
-        case "AskInstruction":
-        <tr>
-            <td colspan="2"><i style="margin-left: 1em; display:inline-block;">@Html.Raw(((AskInstruction)ask).Label)</i></td>
-        </tr>
-            break;
-        case "AskEmContact":
-        <tr>
-            <td>Emergency Contact</td>
-            <td>@Html.TextBoxFor(m => m.emcontact, new {maxlength = "100", @class = "wide"})
-                <div>@Html.ValidationMessageFor(m => m.emcontact)</div></td>
-        </tr>
-        <tr>
-            <td>Emergency Phone</td>
-            <td>@Html.TextBoxFor(m => m.emphone, new {maxlength = "15", @class = "wide"})
-                <div>@Html.ValidationMessageFor(m => m.emphone)</div></td>
-        </tr>
-            break;
-        case "AskInsurance":
-        <tr>
-            <td>Health Insurance Carrier</td>
-            <td>@Html.TextBoxFor(m => m.insurance, new {maxlength = "100", @class = "wide"})
-                <div>@Html.ValidationMessageFor(m => m.insurance)</div></td>
-        </tr>
-        <tr>
-            <td>Policy/Group#</td>
-            <td>@Html.TextBoxFor(m => m.policy, new {maxlength = "100", @class = "wide"})
-                <div>@Html.ValidationMessageFor(m => m.policy)</div></td>
-        </tr>
-            break;
-        case "AskDoctor":
-        <tr>
-            <td>Family Physician Name</td>
-            <td>@Html.TextBoxFor(m => m.doctor, new {maxlength = "100", @class = "wide"})
-                <div>@Html.ValidationMessageFor(m => m.doctor)</div></td>
-        </tr>
-        <tr>
-            <td>Family Physician Phone</td>
-            <td>@Html.TextBoxFor(m => m.docphone, new {maxlength = "15", @class = "wide"})
-                <div>@Html.ValidationMessageFor(m => m.docphone)</div></td>
-        </tr>
-            break;
-        case "AskAllergies":
-        <tr>
-            <td>Allergies or<br />Medical Problems</td>
-            <td>@Html.TextAreaFor(m => m.medical)
-                <div class="red"> Leave blank if none</div></td>
-        </tr>
-            break;
-        case "AskTylenolEtc":
-            var tylenolname = Html.NameFor(m => m.tylenol);
-            var advilname = Html.NameFor(m => m.advil);
-            var maaloxname = Html.NameFor(m => m.maalox);
-            var robiname = Html.NameFor(m => m.robitussin);
-        <tr>
-            <td>May we give your child</td>
-            <td>
-                <table>
-                    <tr>
-                        <td>Tylenol?:</td>
-                        <td nowrap>
-                            <input type="radio" name="@tylenolname" value="true" @(Model.tylenol == true ? "checked='checked'" : "") /> Yes
-                            <input type="radio" name="@tylenolname" value="false" @(Model.tylenol == false ? "checked='checked'" : "") /> No
-                            <div>@Html.ValidationMessageFor(m => m.tylenol)</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Advil?:</td>
-                        <td nowrap>
-                            <input type="radio" name="@advilname" value="true" @(Model.advil == true ? "checked='checked'" : "") /> Yes
-                            <input type="radio" name="@advilname" value="false" @(Model.advil == false ? "checked='checked'" : "") /> No
-                            <div>@Html.ValidationMessageFor(m => m.advil)</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Maalox?:</td>
-                        <td nowrap>
-                            <input type="radio" name="@maaloxname" value="true" @(Model.maalox == true ? "checked='checked'" : "") /> Yes
-                            <input type="radio" name="@maaloxname" value="false" @(Model.maalox == false ? "checked='checked'" : "") /> No
-                            <div>@Html.ValidationMessageFor(m => m.maalox)</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Robitussin?:</td>
-                        <td nowrap>
-                            <input type="radio" name="@robiname" value="true" @(Model.robitussin == true ? "checked='checked'" : "") /> Yes
-                            <input type="radio" name="@robiname" value="false" @(Model.robitussin == false ? "checked='checked'" : "") /> No
-                            <div>@Html.ValidationMessageFor(m => m.robitussin)</div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-            break;
-        case "AskParents":
-        <tr>
-            <td>Mother's Name (first last)</td>
-            <td>@Html.TextBoxFor(m => m.mname, new {maxlength = "80", @class = "wide"})
-                <div>@Html.ValidationMessageFor(m => m.mname)</div></td>
-        </tr>
-        <tr>
-            <td>Father's Name (first last)</td>
-            <td>@Html.TextBoxFor(m => m.fname, new {maxlength = "80", @class = "wide"})
-                <div>@Html.ValidationMessageFor(m => m.fname)</div></td>
-        </tr>
-            break;
-        case "AskSMS":
-            var smsname = Html.NameFor2(m => m.sms);
-        <tr>
-            <td>Opt-in to receive Text Messages (SMS)</td>
-            <td>
-                <input type="radio" name="@smsname" value="true" @(Model.sms == true ? "checked='checked'" : "") /> Yes
-                <input type="radio" name="@smsname" value="false" @(Model.sms == false ? "checked='checked'" : "") /> No
-                    <div>@Html.ValidationMessageFor(m => m.sms)</div>
-            </td>
-        </tr>
-            break;
-        case "AskCoaching":
-            var coachingname = Html.NameFor2(m => m.coaching);
-        <tr>
-            <td>Interested in Coaching?</td>
-            <td>
-                <input type="radio" name="@coachingname" value="true" @(Model.coaching == true ? "checked='checked'" : "") /> Yes
-                <input type="radio" name="@coachingname" value="false" @(Model.coaching == false ? "checked='checked'" : "") /> No
-                    <div>@Html.ValidationMessageFor(m => m.coaching)</div>
-            </td>
-        </tr>
-            break;
-        case "AskChurch":
-        <tr>
-            <td>@(Model.setting.AskVisible("AskParents") ? "Parent's Church" : "Church")</td>
-            <td><table cellspacing="2">
-                    <tr><td>@Html.CheckBoxFor(m => m.memberus)</td><td>Member of this Church</td></tr>
-                    <tr><td>@Html.CheckBoxFor(m => m.otherchurch)</td><td>Active in another Local Church</td></tr>
-                </table>
-                <div>@Html.ValidationMessageFor(m => m.otherchurch)</div>
-            </td>
-        </tr>
-            break;
-        case "AskTickets":
-        <tr>
-            <td>@Html.Raw(((AskTickets)ask).Label)</td>
-            <td>@Html.TextBoxFor(m => m.ntickets, new {@class = "short"})
-                <div>@Html.ValidationMessageFor(m => m.ntickets)</div></td>
-        </tr>
-            break;
-        case "AskSuggestedFee":
-        <tr>
-            <td>@Util.PickFirst(((AskSuggestedFee)ask).Label, "Suggested Fee")</td>
-            <td>@Html.TextBoxFor(m => m.Suggestedfee, new { @class = "short" })
-                <div>@Html.ValidationMessageFor(m => m.Suggestedfee)</div></td>
-        </tr>
-            break;
-        case "AskExtraQuestions":
-            var eq = ((AskExtraQuestions) ask);
-            var eqname = Html.NameFor2(m => m.ExtraQuestion);
-    		for (int i = 0; i < eq.list.Count; i++)
-    		{
-    			var a = eq.list[i];
-    			<tr>
-    				<td><div class="wraparound">@a.Question</div></td>
-    				<td><input type="hidden" name="@(eqname)[@eq.UniqueId][@i].Key" value="@a.Question" />
-    					<input type="text" name="@(eqname)[@eq.UniqueId][@i].Value" value="@Model.ExtraQuestionValue(eq.UniqueId, a.Question)" class="wide" />
-    					<div>@Html.ValidationMessageFor(m => m.ExtraQuestion[eq.UniqueId][a.Question])</div>
-    				</td>
-    			</tr>
-    		}
-            break;
-        case "AskYesNoQuestions":
-        var ynqname = Html.NameFor2(m => m.YesNoQuestion);
-        for (int n = 0; n < ((AskYesNoQuestions)ask).list.Count; n++)
-        {
-            var a = ((AskYesNoQuestions)ask).list[n];
-			<tr>
-                <td><div class="wraparound">@a.Question</div></td>
-                <td><input type="hidden" name="@(ynqname)[@n].Key" value="@a.SmallGroup" />
-                    <input type="radio" name="@(ynqname)[@n].Value" value="true" @(Model.YesNoChecked(a.SmallGroup, true) ? "checked='checked'" : "") /> Yes
-                    <input type="radio" name="@(ynqname)[@n].Value" value="false" @(Model.YesNoChecked(a.SmallGroup, false) ? "checked='checked'" : "") /> No
-					<div>@Html.ValidationMessageFor(m => m.YesNoQuestion[a.SmallGroup])</div>
-				</td>
-			</tr>
-        }
-            break;
-        case "AskDropdown":
-            var dd = ((AskDropdown) ask);
-            var ddname = Html.NameFor2(m => m.option);
-			<tr>
-				<td><div class="wraparound">@(dd.Label)</div></td>
-				<td>@Html.DropDownList4("", ddname, Model.DropdownList(ask), Model.option[dd.UniqueId], "options")
-					<div>@Html.ValidationMessageFor(m => m.option[dd.UniqueId])</div>
-				</td>
-			</tr>
-            break;
-        case "AskCheckboxes":
-            var cb = ((AskCheckboxes)ask);
-            if (cb.Cols > 1)
-            {
+  switch (ask.Type)
+  {
+    case "AskSize":
+      <tr>
+        <td>@Html.Raw(((AskSize)ask).Label)</td>
+        <td>
+          @Html.DropDownListFor(m => m.shirtsize, Model.ShirtSizes())
+        <div>@Html.ValidationMessageFor(m => m.shirtsize)</div>
+      </td>
+    </tr>
+      break;
+    case "AskRequest":
+    <tr>
+      <td>@Html.Raw(((AskRequest)ask).Label)</td>
+      <td>
+        @Html.TextBoxFor(m => m.request, new { maxlength = "100", @class = "wide" })
+      <div>@Html.ValidationMessageFor(m => m.request)</div>
+    </td>
+  </tr>
+      break;
+    case "AskHeader":
+    <tr>
+      <td colspan="2"><h4>@Html.Raw(((AskHeader)ask).Label)</h4></td>
+    </tr>
+      break;
+    case "AskInstruction":
+    <tr>
+      <td colspan="2"><i style="margin-left: 1em; display:inline-block;">@Html.Raw(((AskInstruction)ask).Label)</i></td>
+    </tr>
+      break;
+    case "AskEmContact":
+    <tr>
+      <td>Emergency Contact</td>
+      <td>
+        @Html.TextBoxFor(m => m.emcontact, new { maxlength = "100", @class = "wide" })
+      <div>@Html.ValidationMessageFor(m => m.emcontact)</div>
+    </td>
+  </tr>
+  <tr>
+    <td>Emergency Phone</td>
+    <td>
+      @Html.TextBoxFor(m => m.emphone, new { maxlength = "15", @class = "wide" })
+    <div>@Html.ValidationMessageFor(m => m.emphone)</div>
+  </td>
+</tr>
+      break;
+    case "AskInsurance":
+    <tr>
+      <td>Health Insurance Carrier</td>
+      <td>
+        @Html.TextBoxFor(m => m.insurance, new { maxlength = "100", @class = "wide" })
+      <div>@Html.ValidationMessageFor(m => m.insurance)</div>
+    </td>
+  </tr>
+  <tr>
+    <td>Policy/Group#</td>
+    <td>
+      @Html.TextBoxFor(m => m.policy, new { maxlength = "100", @class = "wide" })
+    <div>@Html.ValidationMessageFor(m => m.policy)</div>
+  </td>
+</tr>
+      break;
+    case "AskDoctor":
+    <tr>
+      <td>Family Physician Name</td>
+      <td>
+        @Html.TextBoxFor(m => m.doctor, new { maxlength = "100", @class = "wide" })
+      <div>@Html.ValidationMessageFor(m => m.doctor)</div>
+    </td>
+  </tr>
+  <tr>
+    <td>Family Physician Phone</td>
+    <td>
+      @Html.TextBoxFor(m => m.docphone, new { maxlength = "15", @class = "wide" })
+    <div>@Html.ValidationMessageFor(m => m.docphone)</div>
+  </td>
+</tr>
+      break;
+    case "AskAllergies":
+    <tr>
+      <td>Allergies or<br />Medical Problems</td>
+      <td>
+        @Html.TextAreaFor(m => m.medical)
+      <div class="red"> Leave blank if none</div>
+    </td>
+  </tr>
+      break;
+    case "AskTylenolEtc":
+      var tylenolname = Html.NameFor(m => m.tylenol);
+      var advilname = Html.NameFor(m => m.advil);
+      var maaloxname = Html.NameFor(m => m.maalox);
+      var robiname = Html.NameFor(m => m.robitussin);
+      <tr>
+        <td>May we give your child</td>
+        <td>
+          <table>
             <tr>
-            <td style="padding: 3px" colspan="2" class="center">
-                <div>@cb.Label</div>
-                <table class="checkboxes grid table-striped">
-                    <thead>
-                        <tr>
-                            @for (var n = 0; n < cb.Cols; n++)
-                            {
-                                var a = cb.list[n];
-                                if (a.SmallGroup == "nocheckbox")
-                                {
-                                <th>@Html.Raw(a.Description)</th>
-                                }
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @for (var n = cb.Cols.Value; n < cb.list.Count; n++)
+              <td>Tylenol?:</td>
+              <td nowrap>
+                <input type="radio" name="@tylenolname" value="true" @(Model.tylenol == true ? "checked='checked'" : "") /> Yes
+                <input type="radio" name="@tylenolname" value="false" @(Model.tylenol == false ? "checked='checked'" : "") /> No
+                <div>@Html.ValidationMessageFor(m => m.tylenol)</div>
+              </td>
+            </tr>
+            <tr>
+              <td>Advil?:</td>
+              <td nowrap>
+                <input type="radio" name="@advilname" value="true" @(Model.advil == true ? "checked='checked'" : "") /> Yes
+                <input type="radio" name="@advilname" value="false" @(Model.advil == false ? "checked='checked'" : "") /> No
+                <div>@Html.ValidationMessageFor(m => m.advil)</div>
+              </td>
+            </tr>
+            <tr>
+              <td>Maalox?:</td>
+              <td nowrap>
+                <input type="radio" name="@maaloxname" value="true" @(Model.maalox == true ? "checked='checked'" : "") /> Yes
+                <input type="radio" name="@maaloxname" value="false" @(Model.maalox == false ? "checked='checked'" : "") /> No
+                <div>@Html.ValidationMessageFor(m => m.maalox)</div>
+              </td>
+            </tr>
+            <tr>
+              <td>Robitussin?:</td>
+              <td nowrap>
+                <input type="radio" name="@robiname" value="true" @(Model.robitussin == true ? "checked='checked'" : "") /> Yes
+                <input type="radio" name="@robiname" value="false" @(Model.robitussin == false ? "checked='checked'" : "") /> No
+                <div>@Html.ValidationMessageFor(m => m.robitussin)</div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      break;
+    case "AskParents":
+    <tr>
+      <td>Mother's Name (first last)</td>
+      <td>
+        @Html.TextBoxFor(m => m.mname, new { maxlength = "80", @class = "wide" })
+      <div>@Html.ValidationMessageFor(m => m.mname)</div>
+    </td>
+  </tr>
+  <tr>
+    <td>Father's Name (first last)</td>
+    <td>
+      @Html.TextBoxFor(m => m.fname, new { maxlength = "80", @class = "wide" })
+    <div>@Html.ValidationMessageFor(m => m.fname)</div>
+  </td>
+</tr>
+      break;
+    case "AskSMS":
+      var smsname = Html.NameFor2(m => m.sms);
+      <tr>
+        <td>Opt-in to receive Text Messages (SMS)</td>
+        <td>
+          <input type="radio" name="@smsname" value="true" @(Model.sms == true ? "checked='checked'" : "") /> Yes
+          <input type="radio" name="@smsname" value="false" @(Model.sms == false ? "checked='checked'" : "") /> No
+          <div>@Html.ValidationMessageFor(m => m.sms)</div>
+        </td>
+      </tr>
+      break;
+    case "AskCoaching":
+      var coachingname = Html.NameFor2(m => m.coaching);
+      <tr>
+        <td>Interested in Coaching?</td>
+        <td>
+          <input type="radio" name="@coachingname" value="true" @(Model.coaching == true ? "checked='checked'" : "") /> Yes
+          <input type="radio" name="@coachingname" value="false" @(Model.coaching == false ? "checked='checked'" : "") /> No
+          <div>@Html.ValidationMessageFor(m => m.coaching)</div>
+        </td>
+      </tr>
+      break;
+    case "AskChurch":
+    <tr>
+      <td>@(Model.setting.AskVisible("AskParents") ? "Parent's Church" : "Church")</td>
+      <td>
+        <table cellspacing="2">
+          <tr><td>@Html.CheckBoxFor(m => m.memberus)</td><td>Member of this Church</td></tr>
+          <tr><td>@Html.CheckBoxFor(m => m.otherchurch)</td><td>Active in another Local Church</td></tr>
+        </table>
+        <div>@Html.ValidationMessageFor(m => m.otherchurch)</div>
+      </td>
+    </tr>
+      break;
+    case "AskTickets":
+    <tr>
+      <td>@Html.Raw(((AskTickets)ask).Label)</td>
+      <td>
+        @Html.TextBoxFor(m => m.ntickets, new { @class = "short" })
+      <div>@Html.ValidationMessageFor(m => m.ntickets)</div>
+    </td>
+  </tr>
+      break;
+    case "AskSuggestedFee":
+    <tr>
+      <td>@Util.PickFirst(((AskSuggestedFee)ask).Label, "Suggested Fee")</td>
+      <td>
+        @Html.TextBoxFor(m => m.Suggestedfee, new { @class = "short" })
+      <div>@Html.ValidationMessageFor(m => m.Suggestedfee)</div>
+    </td>
+  </tr>
+      break;
+    case "AskExtraQuestions":
+      var eq = ((AskExtraQuestions)ask);
+      var eqname = Html.NameFor2(m => m.ExtraQuestion);
+      for (int i = 0; i < eq.list.Count; i++)
+      {
+        var a = eq.list[i];
+        <tr>
+          <td><div class="wraparound">@a.Question</div></td>
+          <td>
+            <input type="hidden" name="@(eqname)[@eq.UniqueId][@i].Key" value="@a.Question" />
+            <input type="text" name="@(eqname)[@eq.UniqueId][@i].Value" value="@Model.ExtraQuestionValue(eq.UniqueId, a.Question)" class="wide" />
+            <div>@Html.ValidationMessageFor(m => m.ExtraQuestion[eq.UniqueId][a.Question])</div>
+          </td>
+        </tr>
+      }
+      break;
+    case "AskText":
+      var tx = ((AskText)ask);
+      var txname = Html.NameFor2(m => m.Text);
+      for (int i = 0; i < tx.list.Count; i++)
+      {
+        var a = tx.list[i];
+        <tr>
+          <td><div class="wraparound">@a.Question</div></td>
+          <td>
+            <input type="hidden" name="@(txname)[@tx.UniqueId][@i].Key" value="@a.Question" />
+            <textarea name="@(txname)[@tx.UniqueId][@i].Value" class="wide">
+              @Model.TextValue(tx.UniqueId, a.Question)
+            </textarea>
+            <div>@Html.ValidationMessageFor(m => m.Text[tx.UniqueId][a.Question])</div>
+          </td>
+        </tr>
+      }
+      break;
+    case "AskYesNoQuestions":
+      var ynqname = Html.NameFor2(m => m.YesNoQuestion);
+      for (int n = 0; n < ((AskYesNoQuestions)ask).list.Count; n++)
+      {
+        var a = ((AskYesNoQuestions)ask).list[n];
+        <tr>
+          <td><div class="wraparound">@a.Question</div></td>
+          <td>
+            <input type="hidden" name="@(ynqname)[@n].Key" value="@a.SmallGroup" />
+            <input type="radio" name="@(ynqname)[@n].Value" value="true" @(Model.YesNoChecked(a.SmallGroup, true) ? "checked='checked'" : "") /> Yes
+            <input type="radio" name="@(ynqname)[@n].Value" value="false" @(Model.YesNoChecked(a.SmallGroup, false) ? "checked='checked'" : "") /> No
+            <div>@Html.ValidationMessageFor(m => m.YesNoQuestion[a.SmallGroup])</div>
+          </td>
+        </tr>
+      }
+      break;
+    case "AskDropdown":
+      var dd = ((AskDropdown)ask);
+      var ddname = Html.NameFor2(m => m.option);
+      <tr>
+        <td><div class="wraparound">@(dd.Label)</div></td>
+        <td>
+          @Html.DropDownList4("", ddname, Model.DropdownList(ask), Model.option[dd.UniqueId], "options")
+        <div>@Html.ValidationMessageFor(m => m.option[dd.UniqueId])</div>
+      </td>
+    </tr>
+      break;
+    case "AskCheckboxes":
+      var cb = ((AskCheckboxes)ask);
+      if (cb.Cols > 1)
+      {
+        <tr>
+          <td style="padding: 3px" colspan="2" class="center">
+            <div>@cb.Label</div>
+            <table class="checkboxes grid table-striped">
+              <thead>
+                <tr>
+                  @for (var n = 0; n < cb.Cols; n++)
+                  {
+                    var a = cb.list[n];
+                    if (a.SmallGroup == "nocheckbox")
                     {
-                        var a = cb.list[n];
-                        if (n%cb.Cols == 0)
-                        {
-                            @Html.Raw("<tr>")
-                        }
-                        if (a.SmallGroup == "nocheckbox")
-                        {
-                            <td>@Html.Raw(a.Description)</td>
-                        }
-                        else if(a.SmallGroup != "comment")
-                        {
-                            if (a.IsSmallGroupFilled(Model.GroupTags))
-                            {
-                            <td><i>filled</i></td>
-                            }
-                            else
-                            {
-                            <td><input type="checkbox" value="@a.SmallGroup" name="@Html.NameFor2(m => m.Checkbox)" @(Model.CheckboxChecked(a.SmallGroup) ? "checked='checked'" : "") /></td>
-                            }
-                        }
-                        if (n%cb.Cols == cb.Cols - 1)
-                        {
-                            @Html.Raw("</tr>")
-                        }
+                      <th>@Html.Raw(a.Description)</th>
                     }
-                    </tbody>
-                </table>
-				<div>@Html.ValidationMessageFor(m => m.Checkbox[ask.UniqueId])</div>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (var n = cb.Cols.Value; n < cb.list.Count; n++)
+                {
+                  var a = cb.list[n];
+                  if (n % cb.Cols == 0)
+                  {
+                    @Html.Raw("<tr>")
+                  }
+                  if (a.SmallGroup == "nocheckbox")
+                  {
+                  <td>@Html.Raw(a.Description)</td>
+                  }
+                  else if (a.SmallGroup != "comment")
+                  {
+                    if (a.IsSmallGroupFilled(Model.GroupTags))
+                    {
+                      <td><i>filled</i></td>
+                    }
+                    else
+                    {
+                      <td><input type="checkbox" value="@a.SmallGroup" name="@Html.NameFor2(m => m.Checkbox)" @(Model.CheckboxChecked(a.SmallGroup) ? "checked='checked'" : "") /></td>
+                    }
+                  }
+                  if (n % cb.Cols == cb.Cols - 1)
+                  {
+                    @Html.Raw("</tr>")
+                  }
+                }
+                </tbody>
+              </table>
+              <div>@Html.ValidationMessageFor(m => m.Checkbox[ask.UniqueId])</div>
             </td>
-            </tr>
-            }
-            else
-            {
-            <tr>
-            <td class="top"><div class="wraparound">@cb.Label</div></td>
-            <td style="padding: 3px">
-				<table>
-					@for(var n = 0; n< cb.list.Count; n++)
-					{
-                        var a = cb.list[n];
-                        var filled = a.IsSmallGroupFilled(Model.GroupTags);
-				        if (a.SmallGroup == "nocheckbox")
-				        {
-				            <tr><td></td><td>@Html.Raw(a.Description)</td></tr>
-				        }
-				        else if (a.SmallGroup != "comment")
-				        {
-				            <tr><td class="top">
-				                    <input type="checkbox" value="@a.SmallGroup" name="@Html.NameFor2(m => m.Checkbox)" @(filled ? "disabled='disabled'" : "") @(Model.CheckboxChecked(a.SmallGroup) ? "checked='checked'" : "") />
-				                </td>
-				                <td>
-				                    <span@(filled ? " class=strike" : "")>@Html.Raw(a.Description)</span>
-				                    @if (a.Fee > 0)
-				                    {
-				                        @:&nbsp;($@a.Fee.ToString2("N2"))
+          </tr>
+      }
+      else
+      {
+        <tr>
+          <td class="top"><div class="wraparound">@cb.Label</div></td>
+          <td style="padding: 3px">
+            <table>
+              @for (var n = 0; n < cb.list.Count; n++)
+              {
+                var a = cb.list[n];
+                var filled = a.IsSmallGroupFilled(Model.GroupTags);
+                if (a.SmallGroup == "nocheckbox")
+                {
+                  <tr><td></td><td>@Html.Raw(a.Description)</td></tr>
+                }
+                else if (a.SmallGroup != "comment")
+                {
+                  <tr>
+                    <td class="top">
+                      <input type="checkbox" value="@a.SmallGroup" name="@Html.NameFor2(m => m.Checkbox)" @(filled ? "disabled='disabled'" : "") @(Model.CheckboxChecked(a.SmallGroup) ? "checked='checked'" : "") />
+                    </td>
+                    <td>
+                      <span@(filled ? " class=strike" : "")>
+                        @Html.Raw(a.Description)</span>
+                      @if (a.Fee > 0)
+                      {
+                        @:&nbsp;($@a.Fee.ToString2("N2"))
 				                    }
-				                </td>
-				            </tr>
-				        }
-					}
-				</table>
-				<div>@Html.ValidationMessageFor(m => m.Checkbox[ask.UniqueId])</div>
-            </td>
-            </tr>
-            }
-            break;
-        case "AskMenu":
-            var mu = ((AskMenu)ask);
-            var mnuname = Html.NameFor2(m => m.MenuItem[ask.UniqueId]);
-        <tr>
-		<td><strong>@(mu.Label)</strong></td>
-		<td>
-			<table cellpadding="2">
-				<tr><td>Description</td><td># Items</td></tr>
-				@for (var n = 0; n < mu.list.Count; n++)
-				{
-					var i = mu.list[n];
-					<tr>
-						<td>@i.Description </td>
-                        <td nowrap="nowrap">
-                            <input type="hidden" name="@(mnuname)[@n].Key" value="@i.SmallGroup"/>
-    						<input type="text" name="@(mnuname)[@n].Value"  value="@Model.MenuItemValue(ask.UniqueId, i.SmallGroup)" class="short"/>
-						@if (i.Fee > 0)
-						{
-							<text> at $@i.Fee.ToString2("N2")</text>
-						}
-                        </td>
-					</tr>
-				}
-			</table>
-		</td>
-		</tr>
-            break;
-        case "AskGradeOptions":
-        <tr>
-            <td>@(((AskGradeOptions)ask).Label)</td>
-			<td>@Html.DropDownListFor(m => m.gradeoption, Model.GradeOptions(ask))
-				<div>@Html.ValidationMessageFor(m => m.gradeoption)</div>
-			</td>
+                  </td>
+                </tr>
+                }
+              }
+            </table>
+            <div>@Html.ValidationMessageFor(m => m.Checkbox[ask.UniqueId])</div>
+          </td>
         </tr>
+      }
+      break;
+    case "AskMenu":
+      var mu = ((AskMenu)ask);
+      var mnuname = Html.NameFor2(m => m.MenuItem[ask.UniqueId]);
+      <tr>
+        <td><strong>@(mu.Label)</strong></td>
+        <td>
+          <table cellpadding="2">
+            <tr><td>Description</td><td># Items</td></tr>
+            @for (var n = 0; n < mu.list.Count; n++)
+            {
+              var i = mu.list[n];
+              <tr>
+                <td>@i.Description </td>
+                <td nowrap="nowrap">
+                  <input type="hidden" name="@(mnuname)[@n].Key" value="@i.SmallGroup" />
+                  <input type="text" name="@(mnuname)[@n].Value" value="@Model.MenuItemValue(ask.UniqueId, i.SmallGroup)" class="short" />
+                  @if (i.Fee > 0)
+                  {
+                    <text> at $@i.Fee.ToString2("N2")</text>
+                  }
+                </td>
+              </tr>
+            }
+          </table>
+        </td>
+      </tr>
             break;
-        case "AnswersNotRequired":
+    case "AskGradeOptions":
+    <tr>
+      <td>@(((AskGradeOptions)ask).Label)</td>
+      <td>
+        @Html.DropDownListFor(m => m.gradeoption, Model.GradeOptions(ask))
+      <div>@Html.ValidationMessageFor(m => m.gradeoption)</div>
+    </td>
+  </tr>
             break;
-        default:
-         <tr><td></td><td>@ask.Type</td></tr>
+    case "AnswersNotRequired":
             break;
-    }
+    default:
+    <tr><td></td><td>@ask.Type</td></tr>
+            break;
+  }
 }
 @if (Model.setting.Deposit > 0 && (Model.TotalAmount() > 0 || Model.setting.OtherFeesAddedToOrgFee))
-{ 
-    <tr>
-        <td>Payment</td>
-        <td>@Html.RadioButtonFor(m => m.paydeposit, true) Pay Deposit Only<br />
-            @Html.RadioButtonFor(m => m.paydeposit, false) Pay Full Amount
-            <div>@Html.ValidationMessageFor(m => m.paydeposit)</div></td>
-    </tr>
+{
+  <tr>
+    <td>Payment</td>
+    <td>
+      @Html.RadioButtonFor(m => m.paydeposit, true) Pay Deposit Only<br />
+    @Html.RadioButtonFor(m => m.paydeposit, false) Pay Full Amount
+    <div>@Html.ValidationMessageFor(m => m.paydeposit)</div>
+  </td>
+</tr>
 }
 @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript())
-{ 
-   <tr>
-        <td></td>
-        <td>@Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)</td>
-   </tr>
+{
+  <tr>
+    <td></td>
+    <td>@Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)</td>
+  </tr>
 }
 @if (Model.OnlineGiving())
 {
-    var funame = Html.NameFor2(m => m.FundItem);
-    var funds = Model.Funds();
-    decimal? tot = null;
-    <tr><td colspan="2"><table class="@ViewExtensions2.GridClass" cellpadding="2">
-    @for (var n = 0; n < funds.Length; n++)
-    {
-        var i = funds[n];
-        var amt = Model.FundItemValue(i.Value.ToInt());
-        if (amt.HasValue)
+  var funame = Html.NameFor2(m => m.FundItem);
+  var funds = Model.Funds();
+  decimal? tot = null;
+  <tr>
+    <td colspan="2">
+      <table class="@ViewExtensions2.GridClass" cellpadding="2">
+        @for (var n = 0; n < funds.Length; n++)
         {
+          var i = funds[n];
+          var amt = Model.FundItemValue(i.Value.ToInt());
+          if (amt.HasValue)
+          {
             tot = (tot ?? 0) + amt;
-        }
-        <tr>
+          }
+          <tr>
             <td>@i.Text</td>
-			<td><input type="hidden" name="@(funame)[@n].Key" value="@i.Value" />
-				<input type="text" name="@(funame)[@n].Value" value="@amt" class="short sum" />
-				<div>@Html.ValidationMessageFor(m => m.FundItem[n])</div>
-			</td>
-        </tr>
-    }
+            <td>
+              <input type="hidden" name="@(funame)[@n].Key" value="@i.Value" />
+              <input type="text" name="@(funame)[@n].Value" value="@amt" class="short sum" />
+              <div>@Html.ValidationMessageFor(m => m.FundItem[n])</div>
+            </td>
+          </tr>
+        }
         <tr class="alt">
-            <td>Total</td>
-            <td><span id="total">@tot.ToString2("N2")</span></td>
+          <td>Total</td>
+          <td><span id="total">@tot.ToString2("N2")</span></td>
         </tr>
-    </table></td>
-    </tr>
+      </table>
+    </td>
+  </tr>
 }
 
-@if( Model.IsSpecialScript() )
+@if (Model.IsSpecialScript())
 {
-	<tr>
-		<td colspan="2">
-			@Html.Raw( Model.GetSpecialScript() )
-		</td>
-	</tr>
+  <tr>
+    <td colspan="2">
+      @Html.Raw(Model.GetSpecialScript())
+    </td>
+  </tr>
 }
 else
 {
-	<tr><td class="right" colspan="2">
-		    <input type="button" id="otheredit" href="/OnlineReg/SubmitOtherInfo/@index" class="submitbutton ajax min-width15em" 
-		           value="Submit" />
-    @if (Model.Parent.AllowSaveProgress())
-    {
-      <div>
-        <input type="button" href="/OnlineReg/SaveProgress/@index" class="submitbutton ajax min-width15em" 
-               value='Save Progress, Finish Later' />
-      </div>
-    }
-		    <div class="formerror">@Html.ValidationMessage( "Form" )</div>
-	    </td>
-	</tr>
+  <tr>
+    <td class="right" colspan="2">
+      <input type="button" id="otheredit" href="/OnlineReg/SubmitOtherInfo/@index" class="submitbutton ajax min-width15em"
+             value="Submit" />
+      @if (Model.Parent.AllowSaveProgress())
+      {
+        <div>
+          <input type="button" href="/OnlineReg/SaveProgress/@index" class="submitbutton ajax min-width15em"
+                 value='Save Progress, Finish Later' />
+        </div>
+      }
+      <div class="formerror">@Html.ValidationMessage("Form")</div>
+    </td>
+  </tr>
 }
