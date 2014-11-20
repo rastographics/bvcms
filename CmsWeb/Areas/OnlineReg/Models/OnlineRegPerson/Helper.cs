@@ -450,6 +450,14 @@ namespace CmsWeb.Models
             return FundList();
         }
 
+        public SelectListItem[] AllFunds()
+        {
+            if (ShouldPullSpecificFund())
+                return ReturnContributionForSetting();
+
+            return FullFundList();
+        }
+
         public SelectListItem[] SpecialFunds()
         {
             if (ShouldPullSpecificFund())
@@ -478,10 +486,21 @@ namespace CmsWeb.Models
                    && setting.DonationFundId.HasValue;
         }
 
+        public static SelectListItem[] FullFundList()
+        {
+            return (from f in GetAllOnlineFunds()
+                    where (f.OnlineSort > 0)
+                    select new SelectListItem
+                    {
+                        Text = "{0}".Fmt(f.FundName),
+                        Value = f.FundId.ToString()
+                    }).ToArray();
+        }
+
         public static SelectListItem[] FundList()
         {
             return (from f in GetAllOnlineFunds()
-                    where (f.OnlineSort > 0 && f.OnlineSort < 100)
+                    where (f.OnlineSort > 0 && f.OnlineSort <= 100)
                     select new SelectListItem
                     {
                         Text = "{0}".Fmt(f.FundName),

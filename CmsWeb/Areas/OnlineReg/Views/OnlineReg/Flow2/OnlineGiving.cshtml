@@ -3,11 +3,12 @@
 @{
     var funame = Html.NameFor2(m => m.FundItem);
     var funds = Model.Funds();
+    var specialFunds = Model.SpecialFunds();
     decimal? tot = 0;
 }
 <div class="form-group">
     <div class="col-sm-12">
-        <table class="table">
+        <table class="table" id="funds">
             <thead>
                 <tr>
                     <th>Funds</th>
@@ -19,7 +20,10 @@
                 </tr>
             </thead>
             <tbody>
-                @for (var n = 0; n < funds.Length; n++)
+                @{
+                    int n;
+                }
+                @for (n = 0; n < funds.Length; n++)
                 {
                     var i = funds[n];
                     var amt = Model.FundItemValue(i.Value.ToInt());
@@ -29,47 +33,89 @@
                     }
                     <tr>
                         <td>@i.Text</td>
-                        <td>
+                        <td style="width:100px;">
                             <div class="pull-right">
                                 <input type="hidden" name="@(funame)[@n].Key" value="@i.Value" />
                                 <input type="text" name="@(funame)[@n].Value" value="@amt" class="form-control narrow sum" />
-                                <div>@Html.ValidationMessageFor(m => m.FundItem[n])</div>
                             </div>
                         </td>
                     </tr>
                 }
             </tbody>
-        </table>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Special Giving Funds</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <select class="form-control" id="e1">
-                            <option></option>
-                            <option value="AL">Alabamasdasdfadfadsfasdf</option>
-                            <option value="WY">Wyomingasfasdfasdfasdfasdfasdfadsf</option>
-                        </select>
-                    </td>
-                </tr>
-            </tbody>
-            @if (funds.Length == 1)
+            @if (!specialFunds.Any())
             {
-                @Html.Hidden("total", tot)
+                if (funds.Length == 1)
+                {
+                    @Html.Hidden("total", tot)
+                }
+                else
+                {
+                    <tfoot>
+                        <tr>
+                            <td><h4 class="pull-right">TOTAL:</h4></td>
+                            <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">$<span id="total">@tot.ToString2("N2")</span></h2></td>
+                        </tr>
+                    </tfoot>
+                }
             }
-            else
-            {
+        </table>
+        @if (specialFunds.Any())
+        {
+            <table class="table" id="special-funds">
+                <thead>
+                    <tr>
+                        <th colspan="3">Special Giving Funds</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var sn = n + 1;
+                    }
+                    @for (n = 0; n < specialFunds.Length; n++)
+                    {
+                        sn = sn + n;
+                        var i = specialFunds[n];
+                        var amt = Model.FundItemValue(i.Value.ToInt());
+                        if (amt.HasValue)
+                        {
+                            tot = (tot ?? 0) + amt;
+                            <tr id="@i.Value">
+                                <td>@i.Text</td>
+                                <td style="width:100px;">
+                                    <div class="pull-right">
+                                        <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value" />
+                                        <input type="text" name="@(funame)[@sn].Value" value="@amt" class="form-control narrow sum" />
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
                 <tfoot>
                     <tr>
-                        <td><h4 class="pull-right">TOTAL</h4></td>
-                        <td><h2 class="pull-right" style="margin: 0;">$<span id="total">@tot.ToString2("N2")</span></h2></td>
+                        <td colspan="3">
+                            <select class="form-control" id="special-funds-list">
+                                <option></option>
+                                @foreach (var fund in specialFunds)
+                                {
+                                    <option value="@fund.Value">@fund.Text</option>
+                                }
+                            </select>
+                        </td>
                     </tr>
+                    @if (funds.Length == 1)
+                    {
+                        @Html.Hidden("total", tot)
+                    }
+                    else
+                    {
+                    <tr>
+                        <td colspan="2"><h4 class="pull-right">TOTAL:</h4></td>
+                        <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">$<span id="total">@tot.ToString2("N2")</span></h2></td>
+                    </tr>
+                    }
                 </tfoot>
-            }
-        </table>
+            </table>
+        }
     </div>
 </div>

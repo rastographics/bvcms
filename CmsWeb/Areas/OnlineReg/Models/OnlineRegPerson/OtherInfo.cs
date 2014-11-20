@@ -98,7 +98,7 @@ namespace CmsWeb.Models
         {
             if (FundItem == null)
                 return new List<FundItemChosen>();
-            var items = Funds();
+            var items = AllFunds();
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue
