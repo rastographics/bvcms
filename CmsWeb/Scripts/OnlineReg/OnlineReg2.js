@@ -196,18 +196,22 @@
     }
 
     // special giving funds
+    function getFundPrefix() {
+        var prefix = '';
+        if (typeof specialGivingFundsPrefix !== "undefined") {
+            prefix = specialGivingFundsPrefix + '.';
+        }
+        return prefix;
+    }
+
     function addFundRow(id, text) {
         var rowId = '#special-funds tbody tr#' + id;
         if ($(rowId).length) {
             // only set focus to existing row.
             $(rowId).find('input:text').focus();
         } else {
-            var prefix = '';
-            if (typeof specialGivingFundsPrefix !== "undefined") {
-                prefix = specialGivingFundsPrefix + '.';
-            }
             var i = $('#funds tbody tr').length + $('#special-funds tbody tr').length;
-            var fundIndexer = prefix + 'FundItem[' + i + ']';
+            var fundIndexer = getFundPrefix() + 'FundItem[' + i + ']';
             var inputKey = fundIndexer + '.Key';
             var inputValue = fundIndexer + '.Value';
             $('#special-funds > tbody:last').append('<tr id="' + id + '"><td style="width: 10px;"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o"></span></a></td><td>' + text + '</td><td><div class="pull-right"><input type="hidden" name="' + inputKey + '" value="' + id + '"><input name="' + inputValue + '" type="text" class="form-control narrow sum"/></div></td></tr>');
@@ -229,6 +233,16 @@
     $(document).on("click", "a.remove-fund", function (e) {
         e.preventDefault();
         $(this).closest('tr').remove();
+        var startingIndex = $('#funds tbody tr').length;
+        var prefix = getFundPrefix();
+        _($('#special-funds tbody tr')).each(function(item, index) {
+            var fundIndex = startingIndex + index;
+            var fundIndexer = prefix + 'FundItem[' + fundIndex + ']';
+            var inputKey = fundIndexer + '.Key';
+            var inputValue = fundIndexer + '.Value';
+            $('input', item)[0].name = inputKey;
+            $('input', item)[1].name = inputValue;
+        });
         updateTotal();
     });
 });

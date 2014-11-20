@@ -7,6 +7,7 @@
     @ViewExtensions2.jQuery()
     @ViewExtensions2.Bootstrap3()
     @ViewExtensions2.FontAwesome()
+    @ViewExtensions2.LoDash()
     @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
     @RenderSection("scripts", false)
 }
@@ -29,6 +30,7 @@ else
         @Html.Raw((string)ViewBag.bottom)
         @ViewExtensions2.jQuery()
         @ViewExtensions2.Bootstrap3()
+        @ViewExtensions2.LoDash()
         @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
         @RenderSection("scripts", false)
     </body>
