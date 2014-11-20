@@ -225,8 +225,10 @@
             $("#orgsearchform").attr("action", "/Reports/RallyRollsheet" + args);
         else
             $("#orgsearchform").attr("action", "/Reports/Rollsheet" + args);
+        $("#orgsearchform").attr("target","_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
+        $.hideDropdowns();
         return false;
     });
     $('#newmeetings').click(function (ev) {
@@ -384,6 +386,7 @@
         $("#orgsearchform").attr("target", "_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
+        $.hideDropdowns();
         return false;
     });
     $('body').on('click', 'a.taguntag', function (ev) {
