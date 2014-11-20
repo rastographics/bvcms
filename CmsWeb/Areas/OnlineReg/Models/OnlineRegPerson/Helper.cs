@@ -479,7 +479,7 @@ namespace CmsWeb.Models
             };
         }
 
-        private bool ShouldPullSpecificFund()
+        public bool ShouldPullSpecificFund()
         {
             return Parent.OnlineGiving()
                    && !Parent.AskDonation()
@@ -500,7 +500,7 @@ namespace CmsWeb.Models
         public static SelectListItem[] FundList()
         {
             return (from f in GetAllOnlineFunds()
-                    where (f.OnlineSort > 0 && f.OnlineSort <= 100)
+                    where (f.OnlineSort > 0 && f.OnlineSort <= 99)
                     select new SelectListItem
                     {
                         Text = "{0}".Fmt(f.FundName),
@@ -511,7 +511,7 @@ namespace CmsWeb.Models
         public static SelectListItem[] SpecialFundList()
         {
             return (from f in GetAllOnlineFunds()
-                    where f.OnlineSort > 100
+                    where f.OnlineSort > 99
                     select new SelectListItem
                     {
                         Text = "{0}".Fmt(f.FundName),

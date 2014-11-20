@@ -4,6 +4,7 @@
     var funame = Html.NameFor2(m => m.FundItem);
     var funds = Model.Funds();
     var specialFunds = Model.SpecialFunds();
+    var displaySpecialGivingFunds = specialFunds.Any() && !Model.ShouldPullSpecificFund();
     decimal? tot = 0;
 }
 <div class="form-group">
@@ -36,13 +37,13 @@
                         <td style="width:100px;">
                             <div class="pull-right">
                                 <input type="hidden" name="@(funame)[@n].Key" value="@i.Value" />
-                                <input type="text" name="@(funame)[@n].Value" value="@amt" class="form-control narrow sum" />
+                                <input type="text" name="@(funame)[@n].Value" value="@amt.ToString2("N2")" class="form-control narrow sum" />
                             </div>
                         </td>
                     </tr>
                 }
             </tbody>
-            @if (!specialFunds.Any())
+            @if (!displaySpecialGivingFunds)
             {
                 if (funds.Length == 1)
                 {
@@ -59,7 +60,7 @@
                 }
             }
         </table>
-        @if (specialFunds.Any())
+        @if (displaySpecialGivingFunds)
         {
             <table class="table" id="special-funds">
                 <thead>
@@ -80,11 +81,12 @@
                         {
                             tot = (tot ?? 0) + amt;
                             <tr id="@i.Value">
+                                <td style="width: 10px;"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o"></span></a></td>
                                 <td>@i.Text</td>
                                 <td style="width:100px;">
                                     <div class="pull-right">
                                         <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value" />
-                                        <input type="text" name="@(funame)[@sn].Value" value="@amt" class="form-control narrow sum" />
+                                        <input type="text" name="@(funame)[@sn].Value" value="@amt.ToString2("N2")" class="form-control narrow sum" />
                                     </div>
                                 </td>
                             </tr>
@@ -103,7 +105,7 @@
                             </select>
                         </td>
                     </tr>
-                    @if (funds.Length == 1)
+                    @if (funds.Length == 0 && specialFunds.Length == 1)
                     {
                         @Html.Hidden("total", tot)
                     }

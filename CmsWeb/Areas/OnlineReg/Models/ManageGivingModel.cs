@@ -388,7 +388,7 @@ namespace CmsWeb.Models
         {
             if (FundItem == null)
                 return new List<FundItemChosen>();
-            var items = OnlineRegPersonModel.FundList();
+            var items = OnlineRegPersonModel.FullFundList();
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue

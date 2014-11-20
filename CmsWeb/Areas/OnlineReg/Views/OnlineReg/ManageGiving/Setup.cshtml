@@ -9,6 +9,8 @@
     @section head
     {
         @Fingerprint.Css("/Content/css/datepicker3.css")
+        @Fingerprint.Css("/Content/select2-3.5.2/select2.css")
+        @Fingerprint.Css("/Content/select2-3.5.2/select2-bootstrap.css")
     }
     @section scripts
     {
@@ -18,6 +20,7 @@
         </script>
         @Fingerprint.Script("/Scripts/onlinereg/OnlineReg2.js")
         @Fingerprint.Script("/Scripts/onlinereg/onlineregpayment2.js")
+        @Fingerprint.Script("/Scripts/select2-3.5.2/select2.min.js")
     }
     @Html.Partial("ManageGiving/Bootstrap/Setup", Model)
 }
