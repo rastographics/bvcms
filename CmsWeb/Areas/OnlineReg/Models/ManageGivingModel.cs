@@ -110,6 +110,12 @@ namespace CmsWeb.Models
 
         public bool NoCreditCardsAllowed { get; set; }
         public bool NoEChecksAllowed { get; set; }
+
+        public string SpecialGivingFundsHeader
+        {
+            get { return DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds"); }
+        }
+
         public ManageGivingModel()
         {
             HeadingLabel = DbUtil.Db.Setting("ManageGivingHeaderLabel", "Giving Opportunities");

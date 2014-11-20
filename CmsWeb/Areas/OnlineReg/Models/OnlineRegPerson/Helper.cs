@@ -77,6 +77,11 @@ namespace CmsWeb.Models
             get { return married == 10 ? "Single" : married == 20 ? "Married" : "not specified"; }
         }
 
+        public string SpecialGivingFundsHeader
+        {
+            get { return DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds"); }
+        }
+
         public IEnumerable<Organization> GetOrgsInDiv()
         {
             return from o in DbUtil.Db.Organizations
@@ -556,6 +561,7 @@ namespace CmsWeb.Models
         {
             return NameLookup.ContainsKey(name) ? NameLookup[name] : name;
         }
+
     }
 
     public class FamilyAttendInfo

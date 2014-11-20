@@ -218,7 +218,7 @@
     $('input:text').first().focus();
 
     $('#special-funds-list').select2({
-        placeholder: 'Select a Special Fund'
+        placeholder: 'Select a Fund'
     });
     
     $('#special-funds-list').on('change', function (e) {
