@@ -462,7 +462,7 @@ namespace CmsWeb.Models
             if (ntxsets > 0 && Text == null)
             {
                 Text = new List<Dictionary<string, string>>();
-                for (var i = 0; i < neqsets; i++)
+                for (var i = 0; i < ntxsets; i++)
                     Text.Add(new Dictionary<string, string>());
             }
             var nmi = setting.AskItems.Count(aa => aa.Type == "AskMenu");
