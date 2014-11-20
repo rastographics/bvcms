@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #else
 			if (Session["FormId"] != null)
 				if ((Guid)Session["FormId"] == pf.FormId)
-					return Content("Already submitted");                    
+					return Message("Already submitted");                    
 #endif
             OnlineRegModel m = null;
             var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == pf.DatumId);
@@ -74,6 +74,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if(m != null && m.History.Contains("ProcessPayment") && !pf.PayBalance)
 					return Content("Already submitted");                    
 #endif
+            if (m != null && m.OnlineGiving())
+            {
+                var prevoustransaction =
+                    (from t in DbUtil.Db.Transactions
+                     where t.Amt == pf.AmtToPay
+                     where t.OrgId == m.Orgid
+                     where t.TransactionDate > DateTime.Now.AddMinutes(-60)
+                     where DbUtil.Db.Contributions.Any(cc => cc.PeopleId == m.List[0].PeopleId && cc.TranId == t.Id)
+                     select t).FirstOrDefault();
+                if (prevoustransaction != null)
+                    return Message("You have already submitted a gift in this amount a short while ago. Please let us know if you saw an error and what the message said.");                    
+            }
 
             if (pf.AmtToPay < 0) pf.AmtToPay = 0;
             if (pf.Donate < 0) pf.Donate = 0;
