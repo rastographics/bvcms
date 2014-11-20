@@ -595,7 +595,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 var sb = new StringBuilder();
                 using (var w = XmlWriter.Create(sb, settings))
                 {
-                    CustomReportsModel.StandardColumns(DbUtil.Db, w);
+                    CustomReportsModel.StandardColumns(DbUtil.Db, w, includeRoot: false);
                     w.Flush();
                 }
                 var s = sb.ToString();
