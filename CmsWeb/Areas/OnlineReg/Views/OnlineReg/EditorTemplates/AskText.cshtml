@@ -1,0 +1,18 @@
+﻿@using CmsData.Registration
+@model CmsWeb.Models.OnlineRegPersonModel
+@{
+  var ask = (AskText)ViewBag.ask;
+  var name = Html.NameFor2(m => m.Text[ask.UniqueId]);
+}
+@for (var i = 0; i < ask.list.Count; i++)
+{
+  var a = ask.list[i];
+  <div class="form-group">
+    <label class="control-label col-sm-3 labelsize">@a.Question</label>
+    <div class="col-sm-9">
+      <input type="hidden" name="@(name)[@i].Key" value="@a.Question" />
+      <textarea rows="4" name="@(name)[@i].Value" class="form-control">@Model.TextValue(ask.UniqueId, a.Question)</textarea>
+      <div>@Html.ValidationMessageFor(m => m.Text[ask.UniqueId][a.Question])</div>
+    </div>
+  </div>
+}

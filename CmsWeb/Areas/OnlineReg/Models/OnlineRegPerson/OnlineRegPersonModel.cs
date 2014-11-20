@@ -173,6 +173,7 @@ namespace CmsWeb.Models
         public Dictionary<int, decimal?> FundItem { get; set; }
         public Dictionary<string, string> SpecialTest { get; set; }
         public List<Dictionary<string, string>> ExtraQuestion { get; set; }
+        public List<Dictionary<string, string>> Text { get; set; }
         public Dictionary<string, bool?> YesNoQuestion { get; set; }
         public List<string> option { get; set; }
         public List<string> Checkbox { get; set; }
@@ -223,6 +224,18 @@ namespace CmsWeb.Models
                         var eq = e.Attribute("question");
                         if (eq != null)
                             ExtraQuestion[eqset].Add(eq.Value, e.Value);
+                        break;
+                    case "Text":
+                        if (Text == null)
+                            Text = new List<Dictionary<string, string>>();
+                        var txsetattr = e.Attribute("set");
+                        if (txsetattr != null)
+                            eqset = txsetattr.Value.ToInt();
+                        if (Text.Count == eqset)
+                            Text.Add(new Dictionary<string, string>());
+                        var tx = e.Attribute("question");
+                        if (tx != null)
+                            Text[eqset].Add(tx.Value, e.Value);
                         break;
                     case "YesNoQuestion":
                         if (YesNoQuestion == null)
@@ -341,6 +354,19 @@ namespace CmsWeb.Models
                                         w.End();
                                     }
                         break;
+                    case "Text":
+                        if (Text != null)
+                            for (var i = 0; i < Text.Count; i++)
+                                if (Text[i] != null && Text[i].Count > 0)
+                                    foreach (var q in Text[i])
+                                    {
+                                        w.Start("Text");
+                                        w.Attr("set", i);
+                                        w.Attr("question", q.Key);
+                                        w.AddText(q.Value);
+                                        w.End();
+                                    }
+                        break;
                     case "YesNoQuestion":
                         if (YesNoQuestion != null && YesNoQuestion.Count > 0)
                             foreach (var q in YesNoQuestion)
@@ -431,6 +457,13 @@ namespace CmsWeb.Models
                 ExtraQuestion = new List<Dictionary<string, string>>();
                 for (var i = 0; i < neqsets; i++)
                     ExtraQuestion.Add(new Dictionary<string, string>());
+            }
+            var ntxsets = setting.AskItems.Count(aa => aa.Type == "AskText");
+            if (ntxsets > 0 && Text == null)
+            {
+                Text = new List<Dictionary<string, string>>();
+                for (var i = 0; i < ntxsets; i++)
+                    Text.Add(new Dictionary<string, string>());
             }
             var nmi = setting.AskItems.Count(aa => aa.Type == "AskMenu");
             if (nmi > 0 && MenuItem == null)

@@ -420,6 +420,17 @@ Please call the church to resolve this before we can complete your registration.
                                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ExtraQuestion[eq.UniqueId][a.Question]), "please give some answer");
                             }
                         break;
+                    case "AskText":
+                        var tx = (AskText)ask;
+                        if (setting.AskVisible("AnswersNotRequired") == false)
+                            for (int n = 0; n < tx.list.Count; n++)
+                            {
+                                var a = tx.list[n];
+                                if (Text == null || !Text[tx.UniqueId].ContainsKey(a.Question) ||
+                                    !Text[tx.UniqueId][a.Question].HasValue())
+                                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].Text[tx.UniqueId][a.Question]), "please give some answer");
+                            }
+                        break;
                     case "AskCheckboxes":
                         string namecb = Parent.GetNameFor(mm => mm.List[i].Checkbox[ask.UniqueId]);
                         var cb = ((AskCheckboxes)ask);

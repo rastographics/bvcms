@@ -119,12 +119,12 @@ namespace CmsData
 
         public bool CanAssign(CMSDataContext db, string role)
         {
-            if (role == "Finance" && !db.CurrentUser.InRole("Finance") && !db.CurrentUser.InRole("Admin"))
-                return false;
-            if (role == "Developer" && !db.CurrentUser.InRole("Developer"))
-                return false;
-            if (role == "Delete" && !db.CurrentUser.InRole("Developer"))
-                return false;
+            if (role == "Finance" || role == "FinanceAdmin")
+                return db.CurrentUser.InRole("Finance") && db.CurrentUser.InRole("Admin");
+            if (role == "Developer")
+                return db.CurrentUser.InRole("Developer");
+            if (role == "Delete")
+                return db.CurrentUser.InRole("Developer");
             return db.CurrentUser.InRole("Admin");
         }
     }

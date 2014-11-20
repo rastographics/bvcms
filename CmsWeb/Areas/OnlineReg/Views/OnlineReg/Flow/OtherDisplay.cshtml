@@ -129,6 +129,16 @@
         </tr>
             }
             break;
+        case "AskText":
+            var tx = (AskText)ask;
+            foreach (var a in tx.list)
+            {
+        <tr>
+            <td><div class="wraparound">@a.Question</div></td>
+            <td> @Model.ExtraQuestion[tx.UniqueId][a.Question]</td>
+        </tr>
+            }
+            break;
         case "AskYesNoQuestions":
             foreach (var a in ((AskYesNoQuestions)ask).list)
             {
