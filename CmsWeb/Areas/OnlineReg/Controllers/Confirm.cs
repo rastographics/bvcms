@@ -184,6 +184,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     }
                     catch (Exception ex)
                     {
+                        Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                         TempData["error"] = ex.Message;
                         return Redirect("/Error");
                     }
@@ -196,6 +197,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             catch (Exception ex)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                 ModelState.AddModelError("form", ex.Message);
                 return View("Payment/Process", pf);
             }
