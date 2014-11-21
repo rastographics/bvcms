@@ -289,9 +289,9 @@ namespace CmsWeb.Models
             //                modelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
 
             if (!FirstName.HasValue())
-                modelState.AddModelError("FirstName", "needs name");
+                modelState.AddModelError("FirstName", "Needs first name");
             if (!LastName.HasValue())
-                modelState.AddModelError("LastName", "needs name");
+                modelState.AddModelError("LastName", "Needs last name");
             if (!Address.HasValue())
                 modelState.AddModelError("Address", "Needs address");
             if (!City.HasValue())

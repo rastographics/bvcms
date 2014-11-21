@@ -108,6 +108,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (pf.Type == PaymentType.CreditCard)
                     Payments.ValidateCreditCardInfo(ModelState, pf);
 
+                if (!pf.First.HasValue())
+                    ModelState.AddModelError("First", "Needs first name");
+                if (!pf.Last.HasValue())
+                    ModelState.AddModelError("Last", "Needs last name");
+                if (!pf.Address.HasValue())
+                    ModelState.AddModelError("Address", "Needs address");
+                if (!pf.City.HasValue())
+                    ModelState.AddModelError("City", "Needs city");
+                if (!pf.State.HasValue())
+                    ModelState.AddModelError("State", "Needs state");
+                if (!pf.Zip.HasValue())
+                    ModelState.AddModelError("Zip", "Needs zip");
+                
                 if (!ModelState.IsValid)
                     return View("Payment/Process", pf);
 
