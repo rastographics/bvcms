@@ -88,15 +88,15 @@
             $("#fillout").hide();
             $("div.instructions.find").show();
         }
-        else if ($("#otheredit").attr("id"))
+        else if ($("#otheredit").attr("id")) {
             $("div.instructions.options").show();
-        else if ($("#specialedit").attr("id"))
+            initializeSpecialFunds();
+        } else if ($("#specialedit").attr("id"))
             $("div.instructions.special").show();
         else if ($("#username").attr("id")) {
             $("#username").focus();
             $("div.instructions.login").show();
-        }
-        else if ($("#submitit").attr("id"))
+        } else if ($("#submitit").attr("id"))
             $("div.instructions.submit").show();
         else if ($("#sorry").attr("id"))
             $("div.instructions.sorry").show();
@@ -219,32 +219,36 @@
         }
     }
 
-    $('input:text').first().focus();
+    function initializeSpecialFunds() {
+        $('input:text').first().focus();
 
-    $('#special-funds-list').select2({
-        placeholder: 'Select a Fund'
-    });
-    
-    $('#special-funds-list').on('change', function (e) {
-        addFundRow(e.added.id, e.added.text);
-        $('#special-funds-list').select2('val', '');
-    });
-
-    $(document).on("click", "a.remove-fund", function (e) {
-        e.preventDefault();
-        $(this).closest('tr').remove();
-        var startingIndex = $('#funds tbody tr').length;
-        var prefix = getFundPrefix();
-        _($('#special-funds tbody tr')).each(function(item, index) {
-            var fundIndex = startingIndex + index;
-            var fundIndexer = prefix + 'FundItem[' + fundIndex + ']';
-            var inputKey = fundIndexer + '.Key';
-            var inputValue = fundIndexer + '.Value';
-            $('input', item)[0].name = inputKey;
-            $('input', item)[1].name = inputValue;
+        $('#special-funds-list').select2({
+            placeholder: 'Select a Fund'
         });
-        updateTotal();
-    });
+
+        $('#special-funds-list').on('change', function (e) {
+            addFundRow(e.added.id, e.added.text);
+            $('#special-funds-list').select2('val', '');
+        });
+
+        $(document).on("click", "a.remove-fund", function (e) {
+            e.preventDefault();
+            $(this).closest('tr').remove();
+            var startingIndex = $('#funds tbody tr').length;
+            var prefix = getFundPrefix();
+            _($('#special-funds tbody tr')).each(function (item, index) {
+                var fundIndex = startingIndex + index;
+                var fundIndexer = prefix + 'FundItem[' + fundIndex + ']';
+                var inputKey = fundIndexer + '.Key';
+                var inputValue = fundIndexer + '.Value';
+                $('input', item)[0].name = inputKey;
+                $('input', item)[1].name = inputValue;
+            });
+            updateTotal();
+        });
+    }
+
+    
 });
 
 function setElementName(elems, name) {
