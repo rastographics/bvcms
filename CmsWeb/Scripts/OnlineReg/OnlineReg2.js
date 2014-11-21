@@ -208,15 +208,25 @@
         var rowId = '#special-funds tbody tr#' + id;
         if ($(rowId).length) {
             // only set focus to existing row.
-            $(rowId).find('input:text').focus();
+            setDelayedFocus($(rowId).find('input:text'));
         } else {
             var i = $('#funds tbody tr').length + $('#special-funds tbody tr').length;
             var fundIndexer = getFundPrefix() + 'FundItem[' + i + ']';
             var inputKey = fundIndexer + '.Key';
             var inputValue = fundIndexer + '.Value';
             $('#special-funds > tbody:last').append('<tr id="' + id + '"><td style="width: 10px;"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o"></span></a></td><td>' + text + '</td><td><div class="pull-right"><input type="hidden" name="' + inputKey + '" value="' + id + '"><input name="' + inputValue + '" type="text" class="form-control narrow sum"/></div></td></tr>');
-            $('input[name="' + inputValue + '"]').focus();
+
+            setDelayedFocus($('input[name="' + inputValue + '"]'));
         }
+
+    }
+
+    function setDelayedFocus($element) {
+        // set focus after 200 milliseconds.
+        var timeoutId = window.setTimeout(function () {
+            $element.focus();
+            window.clearTimeout(timeoutId);
+        }, 200);
     }
 
     function initializeSpecialFunds() {
