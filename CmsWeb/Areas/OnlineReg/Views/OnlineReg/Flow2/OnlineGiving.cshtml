@@ -70,15 +70,17 @@
                 </thead>
                 <tbody>
                     @{
-                        var sn = n + 1;
+                        var sn = n;
+                        var index = 0;
                     }
                     @for (n = 0; n < specialFunds.Length; n++)
                     {
-                        sn = sn + n;
                         var i = specialFunds[n];
                         var amt = Model.FundItemValue(i.Value.ToInt());
                         if (amt.HasValue)
                         {
+                            sn = sn + index;
+                            index++;
                             tot = (tot ?? 0) + amt;
                             <tr id="@i.Value">
                                 <td style="width: 10px;"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o"></span></a></td>
