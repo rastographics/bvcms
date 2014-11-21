@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ti.TransactionId += "(testing)";
 
             var amt = ti.Amt;
-            foreach (var pi in ti.OriginalTransaction.TransactionPeople)
+            foreach (var pi in ti.OriginalTrans.TransactionPeople)
             {
                 var p = Db.LoadPersonById(pi.PeopleId);
                 if (p != null)
@@ -131,7 +131,7 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
                         "Cannot find {0} ({1}), payment due completed of {2:c} but no record".Fmt(pi.Person.Name, pi.PeopleId, pi.Amt));
             }
             Db.SubmitChanges();
-            var names = string.Join(", ", ti.OriginalTransaction.TransactionPeople.Select(i => i.Person.Name).ToArray());
+            var names = string.Join(", ", ti.OriginalTrans.TransactionPeople.Select(i => i.Person.Name).ToArray());
 
             var pid = ti.FirstTransactionPeopleId();
             var p0 = Db.LoadPersonById(pid);

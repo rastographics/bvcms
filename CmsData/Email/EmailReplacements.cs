@@ -187,6 +187,10 @@ namespace CmsData
                     if(emailqueueto != null)
                         return NextMeetingDate(code, emailqueueto);
                     break;
+                case "{nextmeetingtime0}":
+                    if(emailqueueto != null)
+                        return NextMeetingDate0(code, emailqueueto);
+                    break;
 
                 case "{occupation}":
                     return p.OccupationOther;
@@ -425,6 +429,19 @@ namespace CmsData
                       where aa.MeetingDate > DateTime.Now
                       orderby aa.MeetingDate
                       select aa.MeetingDate).FirstOrDefault();
+            return mt == DateTime.MinValue ? "none" : mt.ToString("g");
+        }
+
+        private string NextMeetingDate0(string code, EmailQueueTo emailqueueto)
+        {
+            if (!emailqueueto.OrgId.HasValue)
+                return code;
+
+            var mt = (from mm in db.Meetings
+                      where mm.OrganizationId == emailqueueto.OrgId
+                      where mm.MeetingDate > DateTime.Now
+                      orderby mm.MeetingDate
+                      select mm.MeetingDate).FirstOrDefault() ?? DateTime.MinValue;
             return mt == DateTime.MinValue ? "none" : mt.ToString("g");
         }
 
