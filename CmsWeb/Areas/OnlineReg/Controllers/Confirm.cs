@@ -111,19 +111,29 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (!ModelState.IsValid)
                     return View("Payment/Process", pf);
 
-                if (m != null && pf.IsLoggedIn == true && pf.SavePayInfo)
+                if (m != null && pf.IsLoggedIn.GetValueOrDefault() && pf.SavePayInfo)
                 {
+                    var person = DbUtil.Db.LoadPersonById(m.UserPeopleId ?? 0);
+                    var pi = person.PaymentInfo();
+                    if (pi == null)
+                    {
+                        pi = new PaymentInfo();
+                        person.PaymentInfos.Add(pi);
+                    }
+                    pi.SetBillingAddress(pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+
                     var gw = DbUtil.Db.Gateway(m.testing ?? false);
                     gw.StoreInVault(m.UserPeopleId ?? 0,
                             pf.Type,
                             pf.CreditCard,
                             DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
                             pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
-                            pf.Routing,
-                                      pf.Account,
-                                      pf.IsGiving == true);
+                            pf.Routing, 
+                            pf.Account,
+                            pf.IsGiving.GetValueOrDefault());
 
                 }
+
                 if (pf.UseBootstrap && pf.AddressChecked < 2)
                 {
                     var r = AddressVerify.LookupAddress(pf.Address, "", "", "", pf.Zip);

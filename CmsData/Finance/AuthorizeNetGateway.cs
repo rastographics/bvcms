@@ -47,25 +47,25 @@ namespace CmsData.Finance
             string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
-            var billToAddress = new AuthorizeNet.Address
-            {
-                City = person.PrimaryCity,
-                First = person.FirstName,
-                Last = person.LastName,
-                State = person.PrimaryState,
-                Zip = person.PrimaryZip,
-                Phone = person.HomePhone ?? person.CellPhone,
-                Street = person.PrimaryAddress
-            };
-
-            Customer customer;
-
             var paymentInfo = person.PaymentInfo();
             if (paymentInfo == null)
             {
                 paymentInfo = new PaymentInfo();
                 person.PaymentInfos.Add(paymentInfo);
             }
+
+            var billToAddress = new AuthorizeNet.Address
+            {
+                First = person.FirstName,
+                Last = person.LastName,
+                Street = paymentInfo.Address ?? person.PrimaryAddress,
+                City = paymentInfo.City ?? person.PrimaryCity,
+                State = paymentInfo.State ?? person.PrimaryState,
+                Zip = paymentInfo.Zip ?? person.PrimaryZip,
+                Phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone
+            };
+
+            Customer customer;
 
             if (paymentInfo.AuNetCustId == null) // create a new profilein Authorize.NET CIM
             {
