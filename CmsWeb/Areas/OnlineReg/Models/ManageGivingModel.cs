@@ -150,7 +150,7 @@ namespace CmsWeb.Models
             }
             else if (Setting.ExtraValueFeeName.HasValue())
             {
-                var f = CmsWeb.Models.OnlineRegPersonModel.FundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
+                var f = CmsWeb.Models.OnlineRegPersonModel.FullFundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
                 // reasonable defaults
                 RepeatPattern = "M";
                 Period = "M";
