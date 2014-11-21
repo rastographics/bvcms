@@ -307,4 +307,7 @@ FontSizeEmail: 9
     &lt;/p&gt;
     &lt;p style='color: Blue'&gt;&lt;a href='{url}'&gt;Start a New Transaction&lt;/a&gt;&lt;/p&gt;</value>
   </data>
+  <data name="CustomColumns" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>CustomColumns.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>

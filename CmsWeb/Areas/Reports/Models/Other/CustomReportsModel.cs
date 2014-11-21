@@ -17,7 +17,12 @@ namespace CmsWeb.Areas.Reports.Models
 {
     public class CustomReportsModel
     {
-        public static IEnumerable<string> ReportList(CMSDataContext db)
+        private CustomColumnsModel mc;
+        public CustomReportsModel()
+        {
+            mc = new CustomColumnsModel();
+        }
+        public IEnumerable<string> ReportList(CMSDataContext db)
         {
             var list = new List<string>();
             var body = db.ContentText("CustomReports", "");
@@ -39,7 +44,7 @@ namespace CmsWeb.Areas.Reports.Models
             return list;
         }
 
-        public static EpplusResult Result(CMSDataContext db, Guid id, string report)
+        public EpplusResult Result(CMSDataContext db, Guid id, string report)
         {
             var cs = db.CurrentUser.InRole("Finance")
                 ? Util.ConnectionString
@@ -48,7 +53,7 @@ namespace CmsWeb.Areas.Reports.Models
             var sql = Sql(db, id, report);
             return cn.ExecuteReader(sql).ToExcel(report + ".xlsx");
         }
-        public static string Sql(CMSDataContext db, Guid id, string report)
+        public string Sql(CMSDataContext db, Guid id, string report)
         {
             var body = db.ContentText("CustomReports", "");
             if (report == "AllColumns")
@@ -74,7 +79,7 @@ namespace CmsWeb.Areas.Reports.Models
                 throw new Exception("no report");
             var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
             var sb = new StringBuilder("DECLARE @tagId INT = {0}\nSELECT\n".Fmt(tag.Id));
-            var d = db.CustomColumns.ToDictionary(cc => cc.Column, cc => cc);
+
             Dictionary<string, StatusFlagList> flags = null;
             var comma = "";
             var joins = new List<string>();
@@ -82,10 +87,10 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 if ((string)e.Attribute("disabled") == "true")
                     continue;
-                var name = (string)e.Attribute("name");
-                if (!d.ContainsKey(name))
+                var name = e.Attribute("name").Value;
+                if (!mc.Columns.ContainsKey(name))
                     throw new Exception("missing column named '{0}'".Fmt(name));
-                var cc = d[name];
+                var cc = mc.Columns[name];
                 if (name == "StatusFlag")
                 {
                     if (flags == null)
@@ -112,15 +117,15 @@ namespace CmsWeb.Areas.Reports.Models
                 else
                 {
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, cc.Select, DblQuotes(cc.Column));
-                    if (cc.JoinTable.HasValue())
-                        if (!joins.Contains(cc.JoinTable))
-                            joins.Add(cc.JoinTable);
+                    if (cc.Join.HasValue())
+                        if (!joins.Contains(cc.Join))
+                            joins.Add(cc.Join);
                 }
                 comma = ",";
             }
             sb.AppendLine("FROM dbo.People p");
             foreach (var j in joins)
-                sb.AppendLine(j);
+                sb.AppendLine(mc.Joins[j]);
             sb.AppendLine("JOIN dbo.TagPerson tp ON tp.PeopleId = p.PeopleId");
             sb.AppendLine("WHERE tp.Id = @tagId\n");
             return sb.ToString();
@@ -130,15 +135,15 @@ namespace CmsWeb.Areas.Reports.Models
         {
             return s.Replace("'", "''");
         }
-        public static void StandardColumns(CMSDataContext db, XmlWriter writer, bool includeRoot = true)
+        public void StandardColumns(CMSDataContext db, XmlWriter writer, bool includeRoot = true)
         {
-            var list = db.CustomColumns.OrderBy(cc => cc.Ord).ToList();
             var dict = new Dictionary<string, CustomColumn>();
+  
             var w = new APIWriter(writer);
             if (includeRoot)
                 w.Start("CustomReports");
             w.Start("Report").Attr("name", "YourReportNameGoesHere");
-            foreach (var c in list)
+            foreach (var c in mc.Columns.Values)
             {
                 if (c.Column == "StatusFlag")
                     dict.Add(c.Column, c);

@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CustomColumns>
+  <Joins>
+    <join name="g">
+      LEFT JOIN lookup.Gender g ON g.Id = p.GenderId
+    </join>
+    <join name="mars">
+      LEFT JOIN lookup.MaritalStatus mars ON mars.Id = p.MaritalStatusId
+    </join>
+    <join name="fp">
+      LEFT JOIN lookup.FamilyPosition fp ON fp.Id = p.PositionInFamilyId
+    </join>
+    <join name="rr">
+      left join dbo.recreg rr on rr.peopleid = p.peopleid
+    </join>
+    <join name="mo">
+      left join dbo.people mo on mo.familyid = p.familyid and mo.genderid = 2 and mo.positioninfamilyid = 10 and p.peopleid &lt;> mo.peopleid and p.positioninfamilyid not in (10,20)
+    </join>
+    <join name="fa">
+      left join dbo.people fa on fa.familyid = p.familyid and fa.genderid = 1 and fa.positioninfamilyid = 10 and p.peopleid &lt;> fa.peopleid and p.positioninfamilyid not in (10,20)
+    </join>
+    <join name="bs">
+      left join lookup.baptismstatus bs on bs.id = p.baptismstatusid
+    </join>
+    <join name="bt">
+      left join lookup.baptismtype bt on bt.id = p.baptismtypeid
+    </join>
+    <join name="dt">
+      left join lookup.decisiontype dt on dt.id = p.decisiontypeid
+    </join>
+    <join name="jt">
+      left join lookup.jointype jt on jt.id = p.joincodeid
+    </join>
+    <join name="cp">
+      left join lookup.campus cp on cp.id = p.campusid
+    </join>
+    <join name="drt">
+      left join lookup.droptype drt on drt.id = p.dropcodeid
+    </join>
+    <join name="eopt">
+      left join lookup.envelopeoption eopt on eopt.id = p.envelopeoptionsid
+    </join>
+    <join name="copt">
+      left join lookup.envelopeoption copt on copt.id = p.contributionoptionsid
+    </join>
+    <join name="ms">
+      left join lookup.memberstatus ms on ms.id = p.memberstatusid
+    </join>
+    <join name="nmcs">
+      left join lookup.newmemberclassstatus nmcs on nmcs.id = p.newmemberclassstatusid
+    </join>
+    <join name="lts">
+      left join lookup.memberletterstatus lts on lts.id = p.letterstatusid
+    </join>
+    <join name="ep">
+      left join lookup.entrypoint ep on ep.id = p.entrypointid
+    </join>
+    <join name="ori">
+      left join lookup.origin ori on ori.id = p.originid
+    </join>
+    <join name="ip">
+      left join lookup.interestpoint ip on ip.id = p.interestpointid
+    </join>
+    <join name="rc">
+      left join lookup.residentcode rc on rc.id = p.primaryrescode
+    </join>
+  </Joins>
+  <Columns>
+    <column name="PeopleId">p.peopleid</column>
+    <column name="FamilyId">p.familyid</column>
+    <column name="First">p.firstname</column>
+    <column name="Nick">p.nickname</column>
+    <column name="GoesBy">p.preferredname</column>
+    <column name="Middle">p.middlename</column>
+    <column name="Last">p.lastname</column>
+    <column name="FormerName">p.maidenname</column>
+    <column name="Altname">p.altname</column>
+    <column name="Name">p.name</column>
+    <column name="Name2">p.name2</column>
+    <column name="Title">p.titlecode</column>
+    <column name="Suffix">p.suffixcode</column>
+    <column name="BirthDate">dbo.dob(p.birthmonth, p.birthday, p.birthyear)</column>
+    <column name="Age">p.age</column>
+    <column name="Wedding">p.weddingdate</column>
+    <column name="SpouseId">p.spouseid</column>
+    <column name="Deceased">p.deceaseddate</column>
+    <column name="Gender" join="g"> g.description </column>
+    <column name="MaritalStatus" join="mars"> mars.description </column>
+    <column name="FamilyPosition" join="fp"> fp.description </column>
+    <column name="Home">dbo.fmtphone(p.homephone)</column>
+    <column name="Cell">dbo.fmtphone(p.cellphone)</column>
+    <column name="Work">dbo.fmtphone(p.workphone)</column>
+    <column name="Email">p.emailaddress</column>
+    <column name="Email2">p.emailaddress2</column>
+    <column name="EmailActive">p.sendemailaddress1</column>
+    <column name="Email2Active">p.sendemailaddress2</column>
+    <column name="TextingOK">p.receivesms</column>
+    <column name="DoNotCall">p.donotcallflag</column>
+    <column name="DoNotMail">p.donotmailflag</column>
+    <column name="DoNotVisit">p.donotvisitflag</column>
+    <column name="DoNotPublishPhones">p.donotpublishphones</column>
+    <column name="TransportOK" join="rr">p.oktransport</column>
+    <column name="CustodyIssue">p.custodyissue</column>
+    <column name="Grade">p.grade</column>
+    <column name="MemberAny">p.memberanychurch</column>
+    <column name="BaptismStatus" join="bs">bs.description</column>
+    <column name="BaptismType" join="bt">bt.description</column>
+    <column name="BaptismScheduled">p.baptismscheddate</column>
+    <column name="BaptiseDt">p.baptismdate</column>
+    <column name="Decision" join="dt">dt.description	</column>
+    <column name="DecisionDt">p.decisiondate</column>
+    <column name="JoinType" join="jt">jt.description	</column>
+    <column name="JoinDt">p.joindate</column>
+    <column name="Campus" join="cp">cp.description	</column>
+    <column name="DropType" join="drt">drt.description	</column>
+    <column name="DropDt">p.dropdate</column>
+    <column name="EnvelopeOption" join="eopt">eopt.description	</column>
+    <column name="StatementOption" join="copt">copt.description	</column>
+    <column name="ElectronicStatement">p.electronicstatement</column>
+    <column name="MemberStatus" join="ms">ms.description	</column>
+    <column name="GeneralComments">p.comments</column>
+    <column name="NewmemberStatus" join="nmcs">nmcs.description	</column>
+    <column name="NewmemberClassDt">p.newmemberclassdate</column>
+    <column name="LetterStatus" join="lts">lts.description	</column>
+    <column name="LetterRequestDt">p.letterdaterequested</column>
+    <column name="LetterReceivedDt">p.letterdatereceived</column>
+    <column name="MembershipNotes">p.letterstatusnotes</column>
+    <column name="OriginPoint" join="ori">ori.description	</column>
+    <column name="EntryPoint" join="ep">ep.description	</column>
+    <column name="InterestPoint" join="ip">ip.description	</column>
+    <column name="PrevChurch">p.otherpreviouschurch</column>
+    <column name="NewChurch">p.othernewchurch</column>
+    <column name="Occupation">p.occupationother</column>
+    <column name="Employer">p.employerother</column>
+    <column name="School">p.schoolother</column>
+    <column name="Addr">p.primaryaddress</column>
+    <column name="Addr2">p.primaryaddress2</column>
+    <column name="City">p.primarycity</column>
+    <column name="State">p.primarystate</column>
+    <column name="Zip">p.primaryzip</column>
+    <column name="Country">p.primarycountry</column>
+    <column name="Badaddr">p.primarybadaddrflag</column>
+    <column name="ResidentcOde" join="rc">rc.description	</column>
+    <column name="CreatedDt">p.createddate</column>
+    <column name="CreatedBy">
+      (
+        select name 
+        from users u 
+        where u.userid = p.createdby
+      )
+    </column>
+    <column name="Advil" join="rr">rr.advil</column>
+    <column name="Tylenol" join="rr">rr.tylenol</column>
+    <column name="Robitussin" join="rr">rr.robitussin</column>
+    <column name="Maalox" join="rr">rr.maalox</column>
+    <column name="Doctor" join="rr">rr.doctor</column>
+    <column name="DocPhone" join="rr">rr.docphone</column>
+    <column name="RegEmail" join="rr">rr.email</column>
+    <column name="EmergContact" join="rr">rr.emcontact</column>
+    <column name="EmergPhone" join="rr">rr.emphone</column>
+    <column name="RegFather" join="rr">rr.fname</column>
+    <column name="RegMother" join="rr">rr.mname</column>
+    <column name="Insurance" join="rr">rr.insurance</column>
+    <column name="Policy" join="rr">rr.policy</column>
+    <column name="Allergy" join="rr">rr.medicaldescription</column>
+    <column name="ShirtSize" join="rr">rr.shirtsize</column>
+    <column name="RegCoaching" join="rr">rr.coaching</column>
+    <column name="ActiveOtherChurch" join="rr">rr.activeinanotherchurch</column>
+    <column name="LeaderName">dbo.organizationleadername(p.biblefellowshipclassid)</column>
+    <column name="UserId">
+      (
+        select top 1 userid 
+        from dbo.users u 
+        where u.peopleid = p.peopleid order by userid
+      )	
+    </column>
+    <column name="UserName">
+      (
+        select top 1 username 
+        from dbo.users u 
+        where u.peopleid = p.peopleid 
+        order by userid
+      )	
+    </column>
+    <column name="Father" join="fa"> fa.name </column>
+    <column name="FatherEmail" join="fa"> fa.emailaddress </column>
+    <column name="FatherCell" join="fa"> dbo.fmtphone(fa.cellphone) </column>
+    <column name="Mother" join="mo"> mo.name </column>
+    <column name="MotherEmail" join="mo"> mo.emailaddress </column>
+    <column name="MotherCell" join="mo"> dbo.fmtphone(mo.cellphone) </column>
+    <column name="StatusFlag">
+      cast ( 
+        case when exists(
+            select null 
+            from dbo.tag t 
+            join dbo.tagperson tp on tp.id = t.id 
+            where tp.peopleid = p.peopleid 
+            and t.name = '{flag}' 
+            and t.typeid = 100
+          ) then 1 else null end 
+        as bit )
+    </column>
+    <column name="ExtraValueCode">
+      (
+        select strvalue 
+        from dbo.peopleextra pe 
+        where pe.peopleid = p.peopleid and field = '{field}'
+      )
+    </column>
+    <column name="ExtraValueDate">
+      (
+        select datevalue 
+        from dbo.peopleextra pe 
+        where pe.peopleid = p.peopleid and field = '{field}'
+      )
+    </column>
+    <column name="ExtraValueText">
+      (
+        select data 
+        from dbo.peopleextra pe 
+        where pe.peopleid = p.peopleid and field = '{field}'
+      )
+    </column>
+    <column name="ExtraValueInt">
+      (
+        select intvalue 
+        from dbo.peopleextra pe 
+        where pe.peopleid = p.peopleid and field = '{field}'
+      )
+    </column>
+    <column name="ExtraValueBit">
+      (
+        select bitvalue 
+        from dbo.peopleextra pe 
+        where pe.peopleid = p.peopleid and field = '{field}'
+      )
+     </column>
+    <!--<column name="SmallGroup">
+      dbo.InSmallGroup({orgid}, p.PeopleId, '{field}')
+    </column>-->
+  </Columns>
+</CustomColumns>

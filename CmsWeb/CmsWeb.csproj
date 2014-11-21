@@ -329,6 +329,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSearch.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostTransactionItem.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AveryAddressWordResult.cs" />
+    <Compile Include="Areas\Reports\Models\Other\CustomColumnsModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\CustomReportsModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\QueryStatsResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\CsvResult.cs" />
@@ -721,6 +722,9 @@
     <Content Include="Content\css\normalize.css" />
     <Content Include="Content\images\saf-bg.png" />
     <Content Include="Content\images\saf.png" />
+    <Content Include="CustomColumns.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Errors\DatabaseCreationError.aspx" />
     <Content Include="Errors\DatabaseNotInitialized.aspx" />
     <Content Include="Errors\DatabaseServerNotFound.aspx" />

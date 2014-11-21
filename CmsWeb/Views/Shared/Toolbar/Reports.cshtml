@@ -3,7 +3,7 @@
   var qid = ViewBag.queryid;
   var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
   var oid = ViewBag.oid;
-  var custom = CustomReportsModel.ReportList(DbUtil.Db).ToList();
+  var custom = (new CustomReportsModel()).ReportList(DbUtil.Db).ToList();
 }
 <ul class="dropdown-menu dropdown-div-reports">
   <li>
