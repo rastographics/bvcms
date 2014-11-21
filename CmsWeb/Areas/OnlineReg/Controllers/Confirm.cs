@@ -134,35 +134,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 }
 
-                if (pf.UseBootstrap && pf.AddressChecked < 2)
-                {
-                    var r = AddressVerify.LookupAddress(pf.Address, "", "", "", pf.Zip);
-                    var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == pf.Zip.Zip5());
-                    if (z != null && !z.State.HasValue())
-                    {
-                        pf.State = r.State = z.State;
-                        pf.City = r.City = z.City;
-                    }
-                    if (r.Line1 != "error" && r.Line1.HasValue())
-                    {
-                        if (r.found == false)
-                        {
-                            ModelState.Clear(); // so the form will bind to the object again
-                            pf.AddressChecked++;
-                            ModelState.AddModelError("Zip",
-                                "Address not found: " + r.address);
-                            return View("Payment/Process", pf);
-                        }
-                        if (r.Line1 != pf.Address)
-                            pf.Address = r.Line1;
-                        if (r.City != (pf.City ?? ""))
-                            pf.City = r.City;
-                        if (r.State != (pf.State ?? ""))
-                            pf.State = r.State;
-                        if (r.Zip != (pf.Zip ?? ""))
-                            pf.Zip = r.Zip;
-                    }
-                }
                 var ti = ProcessPaymentTransaction(m, pf);
 
                 if (ti.Approved == false)

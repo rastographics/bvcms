@@ -235,28 +235,8 @@ namespace CmsWeb.Models
 
         public string ThankYouMessage { get; set; }
 
-        public void ValidateModel(ModelStateDictionary ModelState)
+        public void ValidateModel(ModelStateDictionary modelState)
         {
-            if (UseBootstrap)
-            {
-                var r = AddressVerify.LookupAddress(Address, "", "", "", Zip);
-                if (r.Line1 != "error")
-                {
-                    if (r.found == false)
-                    {
-                        ModelState.AddModelError("Zip",
-                            r.address + ", to skip address check, Change the country to USA, Not Validated");
-                    }
-                    if (r.Line1 != Address)
-                        Address = r.Line1;
-                    if (r.City != (City ?? ""))
-                        City = r.City;
-                    if (r.State != (State ?? ""))
-                        State = r.State;
-                    if (r.Zip != (Zip ?? ""))
-                        Zip = r.Zip;
-                }
-            }
             bool dorouting = false;
             bool doaccount = Account.HasValue() && !Account.StartsWith("X");
 
@@ -272,7 +252,7 @@ namespace CmsWeb.Models
             }
 
             if (Type == PaymentType.CreditCard)
-                Payments.ValidateCreditCardInfo(ModelState,
+                Payments.ValidateCreditCardInfo(modelState,
                     new PaymentForm
                     {
                         CreditCard = Cardnumber,
@@ -282,49 +262,46 @@ namespace CmsWeb.Models
                         SavePayInfo = true
                     });
             else if (Type == PaymentType.Ach)
-                Payments.ValidateBankAccountInfo(ModelState, Routing, Account);
+                Payments.ValidateBankAccountInfo(modelState, Routing, Account);
             else
-                ModelState.AddModelError("Type", "Must select Bank Account or Credit Card");
+                modelState.AddModelError("Type", "Must select Bank Account or Credit Card");
             if (SemiEvery == "S")
             {
                 if (!Day1.HasValue || !Day2.HasValue)
-                    ModelState.AddModelError("Day2", "Both Days must have values");
+                    modelState.AddModelError("Day2", "Both Days must have values");
                 else if (Day2 > 31)
-                    ModelState.AddModelError("Day2", "Day2 must be 31 or less");
+                    modelState.AddModelError("Day2", "Day2 must be 31 or less");
                 else if (Day1 >= Day2)
-                    ModelState.AddModelError("Day1", "Day1 must be less than Day2");
+                    modelState.AddModelError("Day1", "Day1 must be less than Day2");
             }
             else if (SemiEvery == "E")
             {
                 if (!EveryN.HasValue || EveryN < 1)
-                    ModelState.AddModelError("EveryN", "Days must be > 0");
+                    modelState.AddModelError("EveryN", "Days must be > 0");
             }
             else
-                ModelState.AddModelError("SemiEvery", "Must Choose Payment Frequency");
+                modelState.AddModelError("SemiEvery", "Must Choose Payment Frequency");
             if (!StartWhen.HasValue)
-                ModelState.AddModelError("StartWhen", "StartDate must have a value");
+                modelState.AddModelError("StartWhen", "StartDate must have a value");
             else if (StartWhen <= DateTime.Today)
-                ModelState.AddModelError("StartWhen", "StartDate must occur after today");
+                modelState.AddModelError("StartWhen", "StartDate must occur after today");
             //            else if (StopWhen.HasValue && StopWhen <= StartWhen)
-            //                ModelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
+            //                modelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
 
             if (!FirstName.HasValue())
-                ModelState.AddModelError("FirstName", "needs name");
+                modelState.AddModelError("FirstName", "needs name");
             if (!LastName.HasValue())
-                ModelState.AddModelError("LastName", "needs name");
+                modelState.AddModelError("LastName", "needs name");
             if (!Address.HasValue())
-                ModelState.AddModelError("Address", "Needs address");
-            if (!UseBootstrap)
-            {
-                if (!City.HasValue())
-                    ModelState.AddModelError("City", "Needs city");
-                if (!State.HasValue())
-                    ModelState.AddModelError("State", "Needs state");
-            }
+                modelState.AddModelError("Address", "Needs address");
+            if (!City.HasValue())
+                modelState.AddModelError("City", "Needs city");
+            if (!State.HasValue())
+                modelState.AddModelError("State", "Needs state");
             if (!Zip.HasValue())
-                ModelState.AddModelError("Zip", "Needs zip");
+                modelState.AddModelError("Zip", "Needs zip");
             if (!Phone.HasValue())
-                ModelState.AddModelError("Phone", "Needs phone");
+                modelState.AddModelError("Phone", "Needs phone");
         }
         public void Update()
         {

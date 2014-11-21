@@ -272,31 +272,6 @@ Please call the church to resolve this before we can complete your registration.
                         addrok = true;
                     if (!addrok)
                         ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ZipCode), "zip required (or \"na\")");
-
-                    if (ModelState.IsValid && AddressLineOne.HasValue()
-                        && (Country == "United States" || !Country.HasValue()))
-                    {
-                        var r = AddressVerify.LookupAddress(AddressLineOne, AddressLineTwo, City, State, ZipCode);
-                        if (r.Line1 != "error")
-                        {
-                            if (r.found == false)
-                            {
-                                ModelState.AddModelError(Parent.GetNameFor(mm => mm.List[i].ZipCode), r.address + ", to skip address check, Change the country to USA, Not Validated");
-                                ShowCountry = true;
-                                return;
-                            }
-                            if (r.Line1 != AddressLineOne)
-                                AddressLineOne = r.Line1;
-                            if (r.Line2 != (AddressLineTwo ?? ""))
-                                AddressLineTwo = r.Line2;
-                            if (r.City != (City ?? ""))
-                                City = r.City;
-                            if (r.State != (State ?? ""))
-                                State = r.State;
-                            if (r.Zip != (ZipCode ?? ""))
-                                ZipCode = r.Zip;
-                        }
-                    }
                 }
             }
 
