@@ -11,6 +11,7 @@ using CmsData.API;
 using CmsData.View;
 using CmsWeb.Models;
 using Dapper;
+using DocumentFormat.OpenXml.Math;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
@@ -18,9 +19,15 @@ namespace CmsWeb.Areas.Reports.Models
     public class CustomReportsModel
     {
         private CustomColumnsModel mc;
+        private int? orgid;
         public CustomReportsModel()
         {
             mc = new CustomColumnsModel();
+        }
+        public CustomReportsModel(int? orgid)
+            : this()
+        {
+            this.orgid = orgid;
         }
         public IEnumerable<string> ReportList(CMSDataContext db)
         {
@@ -88,14 +95,12 @@ namespace CmsWeb.Areas.Reports.Models
                 if ((string)e.Attribute("disabled") == "true")
                     continue;
                 var name = e.Attribute("name").Value;
-                if (!mc.Columns.ContainsKey(name))
-                    throw new Exception("missing column named '{0}'".Fmt(name));
-                var cc = mc.Columns[name];
                 if (name == "StatusFlag")
                 {
+                    var cc = mc.SpecialColumns[name];
                     if (flags == null)
                         flags = db.ViewStatusFlagLists.Where(ff => ff.RoleName == null).ToDictionary(ff => ff.Flag, ff => ff);
-                    var flag = (string)e.Attribute("flag");
+                    var flag = (string) e.Attribute("flag");
                     if (!flag.HasValue())
                         throw new Exception("missing flag on column " + cc.Column);
                     if (!flags.ContainsKey(flag))
@@ -104,10 +109,25 @@ namespace CmsWeb.Areas.Reports.Models
                     var desc = (string)e.Attribute("description");
                     if (!desc.HasValue())
                         desc = flags[flag].Name;
+                    sel = sel.Replace("{desc}", desc);
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(desc));
+                }
+                else if (name == "SmallGroup")
+                {
+                    var cc = mc.SpecialColumns[name];
+                    var oid = (string) e.Attribute("orgid");
+                    if(!oid.HasValue())
+                        throw new Exception("missing orgid on column " + cc.Column);
+                    var sel = cc.Select.Replace("{orgid}", oid);
+                    var smallgroup = (string)e.Attribute("smallgroup");
+                    if(!smallgroup.HasValue())
+                        throw new Exception("missing smallgroup on column " + cc.Column);
+                    sel = sel.Replace("{smallgroup}", smallgroup);
+                    sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(smallgroup));
                 }
                 else if (name.StartsWith("ExtraValue") && Regex.IsMatch(name, @"\AExtraValue(Code|Date|Text|Int|Bit)\z"))
                 {
+                    var cc = mc.SpecialColumns[name];
                     var field = (string)e.Attribute("field");
                     if (!field.HasValue())
                         throw new Exception("missing field on column " + cc.Column);
@@ -116,6 +136,9 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 else
                 {
+                    if (!mc.Columns.ContainsKey(name))
+                        throw new Exception("missing column named '{0}'".Fmt(name));
+                    var cc = mc.Columns[name];
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, cc.Select, DblQuotes(cc.Column));
                     if (cc.Join.HasValue())
                         if (!joins.Contains(cc.Join))
@@ -137,32 +160,25 @@ namespace CmsWeb.Areas.Reports.Models
         }
         public void StandardColumns(CMSDataContext db, XmlWriter writer, bool includeRoot = true)
         {
-            var dict = new Dictionary<string, CustomColumn>();
-  
             var w = new APIWriter(writer);
             if (includeRoot)
                 w.Start("CustomReports");
             w.Start("Report").Attr("name", "YourReportNameGoesHere");
             foreach (var c in mc.Columns.Values)
-            {
-                if (c.Column == "StatusFlag")
-                    dict.Add(c.Column, c);
-                else if (c.Column.StartsWith("ExtraValue"))
-                    dict.Add(c.Column, c);
-                else
-                    w.Start("Column").Attr("name", c.Column).End();
-            }
+                w.Start("Column").Attr("name", c.Column).End();
+
             var protectedevs = from value in CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People")
-                         where value.VisibilityRoles.HasValue()
-                         select value.Name;
+                               where value.VisibilityRoles.HasValue()
+                               select value.Name;
             var standards = (from value in CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People")
                              select value.Name).ToList();
-            var q = from ev in db.PeopleExtras
-                    where !protectedevs.Contains(ev.Field)
-                    group ev by new { ev.Field, ev.Type } into g
-                    orderby g.Key.Field
-                    select g.Key;
-            foreach (var ev in q)
+
+            var extravalues = from ev in db.PeopleExtras
+                              where !protectedevs.Contains(ev.Field)
+                              group ev by new { ev.Field, ev.Type } into g
+                              orderby g.Key.Field
+                              select g.Key;
+            foreach (var ev in extravalues)
             {
                 if (!Regex.IsMatch(ev.Type, @"Code|Date|Text|Int|Bit"))
                     continue;
@@ -172,16 +188,28 @@ namespace CmsWeb.Areas.Reports.Models
                     w.Attr("disabled", "true");
                 w.End();
             }
-            var q2 = from f in db.ViewStatusFlagLists
-                     where f.RoleName == null
-                     orderby f.Name
-                     select f;
-            foreach (var f in q2)
+            var statusflags = from f in db.ViewStatusFlagLists
+                              where f.RoleName == null
+                              orderby f.Name
+                              select f;
+            foreach (var f in statusflags)
             {
                 w.Start("Column")
                     .Attr("description", f.Name)
                     .Attr("flag", f.Flag)
                     .Attr("name", "StatusFlag")
+                    .End();
+            }
+            var smallgroups = from sg in db.MemberTags
+                              where sg.OrgId == orgid
+                              orderby sg.Name
+                              select sg;
+            foreach (var sg in smallgroups)
+            {
+                w.Start("Column")
+                    .Attr("smallgroup", sg.Name)
+                    .Attr("orgid", orgid)
+                    .Attr("name", "SmallGroup")
                     .End();
             }
             w.End();

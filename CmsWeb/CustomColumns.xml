@@ -188,17 +188,17 @@
     <column name="Mother" join="mo"> mo.name </column>
     <column name="MotherEmail" join="mo"> mo.emailaddress </column>
     <column name="MotherCell" join="mo"> dbo.fmtphone(mo.cellphone) </column>
+  </Columns>
+  <SpecialColumns>
     <column name="StatusFlag">
-      cast ( 
-        case when exists(
-            select null 
-            from dbo.tag t 
-            join dbo.tagperson tp on tp.id = t.id 
-            where tp.peopleid = p.peopleid 
-            and t.name = '{flag}' 
-            and t.typeid = 100
-          ) then 1 else null end 
-        as bit )
+      (
+        select '{desc}'
+        from dbo.tag t 
+        join dbo.tagperson tp on tp.id = t.id 
+        where tp.peopleid = p.peopleid 
+        and t.name = '{flag}' 
+        and t.typeid = 100
+      )
     </column>
     <column name="ExtraValueCode">
       (
@@ -235,8 +235,8 @@
         where pe.peopleid = p.peopleid and field = '{field}'
       )
      </column>
-    <!--<column name="SmallGroup">
-      dbo.InSmallGroup({orgid}, p.PeopleId, '{field}')
-    </column>-->
-  </Columns>
+    <column name="SmallGroup">
+      dbo.InSmallGroup({orgid}, p.PeopleId, '{smallgroup}')
+    </column>
+  </SpecialColumns>
 </CustomColumns>

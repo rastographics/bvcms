@@ -584,8 +584,8 @@ namespace CmsWeb.Areas.Reports.Controllers
             }
         }
         [HttpGet]
-        [Route("CustomColumns")]
-        public ActionResult CustomColumns()
+        [Route("CustomColumns/{orgid?}")]
+        public ActionResult CustomColumns(int? orgid)
         {
             try
             {
@@ -599,7 +599,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 var sb = new StringBuilder();
                 using (var w = XmlWriter.Create(sb, settings))
                 {
-                    var m = new CustomReportsModel();
+                    var m = new CustomReportsModel(orgid);
                     m.StandardColumns(DbUtil.Db, w, includeRoot: false);
                     w.Flush();
                 }
