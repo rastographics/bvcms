@@ -40,6 +40,8 @@ namespace CmsWeb.Areas.Reports.Models
                     return list;
                 var q = from e in xdoc.Root.Elements("Report")
                         let r = (string)e.Attribute("name")
+                        let oid = ((string)e.Attribute("showOnOrgId")).ToInt()
+                        where oid == 0 || oid == orgid
                         where r != null
                         where r != "AllColumns"
                         select r;
@@ -164,6 +166,8 @@ namespace CmsWeb.Areas.Reports.Models
             if (includeRoot)
                 w.Start("CustomReports");
             w.Start("Report").Attr("name", "YourReportNameGoesHere");
+            if (orgid.HasValue)
+                w.Attr("showOnOrgId", orgid);
             foreach (var c in mc.Columns.Values)
                 w.Start("Column").Attr("name", c.Column).End();
 
