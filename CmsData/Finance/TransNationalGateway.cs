@@ -60,16 +60,15 @@ namespace CmsData.Finance
             if (type == PaymentType.CreditCard)
             {
                 if (paymentInfo.TbnCardVaultId == null) // create new vault.
-                    paymentInfo.TbnCardVaultId = CreateCreditCardVault(person, cardNumber, expires);
+                    paymentInfo.TbnCardVaultId = CreateCreditCardVault(person, paymentInfo, cardNumber, expires);
                 else
                 {
                     // update existing vault.
                     // check for updating the entire card or only expiration.
                     if (!cardNumber.StartsWith("X"))
-                        UpdateCreditCardVault(paymentInfo.TbnCardVaultId.GetValueOrDefault(), person, cardNumber,
-                            expires);
+                        UpdateCreditCardVault(person, paymentInfo, cardNumber, expires);
                     else
-                        UpdateCreditCardVault(paymentInfo.TbnCardVaultId.GetValueOrDefault(), person, expires);
+                        UpdateCreditCardVault(person, paymentInfo, expires);
                 }
 
                 paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
@@ -79,14 +78,14 @@ namespace CmsData.Finance
             else if (type == PaymentType.Ach)
             {
                 if (paymentInfo.TbnBankVaultId == null) // create new vault
-                    paymentInfo.TbnBankVaultId = CreateAchVault(person, account, routing);
+                    paymentInfo.TbnBankVaultId = CreateAchVault(person, paymentInfo, account, routing);
                 else
                 {
                     // we can only update the ach account if there is a full account number.
                     if (!account.StartsWith("X"))
-                        UpdateAchVault(paymentInfo.TbnBankVaultId.GetValueOrDefault(), person, account, routing);
+                        UpdateAchVault(person, paymentInfo, account, routing);
                     else
-                        UpdateAchVault(paymentInfo.TbnBankVaultId.GetValueOrDefault(), person);
+                        UpdateAchVault(person, paymentInfo);
                 }
 
                 paymentInfo.MaskedAccount = Util.MaskAccount(account);
@@ -102,7 +101,7 @@ namespace CmsData.Finance
             db.SubmitChanges();
         }
 
-        private int CreateCreditCardVault(Person person, string cardNumber, string expiration)
+        private int CreateCreditCardVault(Person person, PaymentInfo paymentInfo, string cardNumber, string expiration)
         {
             var createCreditCardVaultRequest = new CreateCreditCardVaultRequest(
                 _userName,
@@ -115,12 +114,12 @@ namespace CmsData.Finance
                     Expiration = expiration,
                     BillingAddress = new BillingAddress
                     {
-                        Address1 = person.PrimaryAddress,
-                        City = person.PrimaryCity,
-                        State = person.PrimaryState,
-                        Zip = person.PrimaryZip,
+                        Address1 = paymentInfo.Address ?? person.PrimaryAddress,
+                        City = paymentInfo.City ?? person.PrimaryCity,
+                        State = paymentInfo.State ?? person.PrimaryState,
+                        Zip = paymentInfo.Zip ?? person.PrimaryZip,
                         Email = person.EmailAddress,
-                        Phone = person.HomePhone ?? person.CellPhone
+                        Phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone
                     }
                 });
 
@@ -132,8 +131,10 @@ namespace CmsData.Finance
             return response.VaultId.ToInt();
         }
 
-        private void UpdateCreditCardVault(int vaultId, Person person, string cardNumber, string expiration)
+        private void UpdateCreditCardVault(Person person, PaymentInfo paymentInfo, string cardNumber, string expiration)
         {
+            var vaultId = paymentInfo.TbnCardVaultId.GetValueOrDefault();
+
             var updateCreditCardVaultRequest = new UpdateCreditCardVaultRequest(
                 _userName,
                 _password,
@@ -146,12 +147,12 @@ namespace CmsData.Finance
                     Expiration = expiration,
                     BillingAddress = new BillingAddress
                     {
-                        Address1 = person.PrimaryAddress,
-                        City = person.PrimaryCity,
-                        State = person.PrimaryState,
-                        Zip = person.PrimaryZip,
+                        Address1 = paymentInfo.Address ?? person.PrimaryAddress,
+                        City = paymentInfo.City ?? person.PrimaryCity,
+                        State = paymentInfo.State ?? person.PrimaryState,
+                        Zip = paymentInfo.Zip ?? person.PrimaryZip,
                         Email = person.EmailAddress,
-                        Phone = person.HomePhone ?? person.CellPhone
+                        Phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone
                     }
                 });
 
@@ -161,12 +162,24 @@ namespace CmsData.Finance
                     "TransNational failed to update the credit card for people id: {0}".Fmt(person.PeopleId));
         }
 
-        private void UpdateCreditCardVault(int vaultId, Person person, string expiration)
+        private void UpdateCreditCardVault(Person person, PaymentInfo paymentInfo, string expiration)
         {
+            var vaultId = paymentInfo.TbnCardVaultId.GetValueOrDefault();
+
             var updateCreditCardVaultRequest = new UpdateCreditCardVaultRequest(
                 _userName, 
                 _password,
-                vaultId.ToString(CultureInfo.InvariantCulture), expiration);
+                vaultId.ToString(CultureInfo.InvariantCulture),
+                expiration,
+                new BillingAddress
+                {
+                    Address1 = paymentInfo.Address ?? person.PrimaryAddress,
+                    City = paymentInfo.City ?? person.PrimaryCity,
+                    State = paymentInfo.State ?? person.PrimaryState,
+                    Zip = paymentInfo.Zip ?? person.PrimaryZip,
+                    Email = person.EmailAddress,
+                    Phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone
+                });
 
             var response = updateCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
@@ -175,7 +188,7 @@ namespace CmsData.Finance
                         person.PeopleId));
         }
 
-        private int CreateAchVault(Person person, string accountNumber, string routingNumber)
+        private int CreateAchVault(Person person, PaymentInfo paymentInfo, string accountNumber, string routingNumber)
         {
             var createAchVaultRequest = new CreateAchVaultRequest(
                 _userName,
@@ -187,12 +200,12 @@ namespace CmsData.Finance
                     RoutingNumber = routingNumber,
                     BillingAddress = new BillingAddress
                     {
-                        Address1 = person.PrimaryAddress,
-                        City = person.PrimaryCity,
-                        State = person.PrimaryState,
-                        Zip = person.PrimaryZip,
+                        Address1 = paymentInfo.Address ?? person.PrimaryAddress,
+                        City = paymentInfo.City ?? person.PrimaryCity,
+                        State = paymentInfo.State ?? person.PrimaryState,
+                        Zip = paymentInfo.Zip ?? person.PrimaryZip,
                         Email = person.EmailAddress,
-                        Phone = person.HomePhone ?? person.CellPhone
+                        Phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone
                     }
                 });
 
@@ -204,8 +217,10 @@ namespace CmsData.Finance
             return response.VaultId.ToInt();
         }
 
-        private void UpdateAchVault(int vaultId, Person person)
+        private void UpdateAchVault(Person person, PaymentInfo paymentInfo)
         {
+            var vaultId = paymentInfo.TbnBankVaultId.GetValueOrDefault();
+
             var updateAchVaultRequest = new UpdateAchVaultRequest(
                 _userName,
                 _password,
@@ -213,12 +228,12 @@ namespace CmsData.Finance
                 person.Name,
                 new BillingAddress
                 {
-                    Address1 = person.PrimaryAddress,
-                    City = person.PrimaryCity,
-                    State = person.PrimaryState,
-                    Zip = person.PrimaryZip,
+                    Address1 = paymentInfo.Address ?? person.PrimaryAddress,
+                    City = paymentInfo.City ?? person.PrimaryCity,
+                    State = paymentInfo.State ?? person.PrimaryState,
+                    Zip = paymentInfo.Zip ?? person.PrimaryZip,
                     Email = person.EmailAddress,
-                    Phone = person.HomePhone ?? person.CellPhone
+                    Phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone
                 });
 
             var response = updateAchVaultRequest.Execute();
@@ -227,8 +242,10 @@ namespace CmsData.Finance
                     "TransNational failed to update the ach account for people id: {0}".Fmt(person.PeopleId));
         }
 
-        private void UpdateAchVault(int vaultId, Person person, string accountNumber, string routingNumber)
+        private void UpdateAchVault(Person person, PaymentInfo paymentInfo, string accountNumber, string routingNumber)
         {
+            var vaultId = paymentInfo.TbnBankVaultId.GetValueOrDefault();
+
             var updateAchVaultRequest = new UpdateAchVaultRequest(
                 _userName,
                 _password,
@@ -240,12 +257,12 @@ namespace CmsData.Finance
                     RoutingNumber = routingNumber,
                     BillingAddress = new BillingAddress
                     {
-                        Address1 = person.PrimaryAddress,
-                        City = person.PrimaryCity,
-                        State = person.PrimaryState,
-                        Zip = person.PrimaryZip,
+                        Address1 = paymentInfo.Address ?? person.PrimaryAddress,
+                        City = paymentInfo.City ?? person.PrimaryCity,
+                        State = paymentInfo.State ?? person.PrimaryState,
+                        Zip = paymentInfo.Zip ?? person.PrimaryZip,
                         Email = person.EmailAddress,
-                        Phone = person.HomePhone ?? person.CellPhone
+                        Phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone
                     }
                 });
 

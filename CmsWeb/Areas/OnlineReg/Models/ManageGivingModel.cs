@@ -335,8 +335,6 @@ namespace CmsWeb.Models
                     throw new Exception("X not allowed in CVV");
                 Cardcode = payinfo.Ccv;
             }
-            var gateway = DbUtil.Db.Gateway(testing);
-            gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
 
             var mg = person.ManagedGiving();
             if (mg == null)
@@ -359,15 +357,10 @@ namespace CmsWeb.Models
                 pi = new PaymentInfo();
                 person.PaymentInfos.Add(pi);
             }
-            pi.FirstName = FirstName.Truncate(50);
-            pi.MiddleInitial = Middle.Truncate(10);
-            pi.LastName = LastName.Truncate(50);
-            pi.Suffix = Suffix.Truncate(10);
-            pi.Address = Address.Truncate(50);
-            pi.City = City.Truncate(50);
-            pi.State = State.Truncate(10);
-            pi.Zip = Zip.Truncate(15);
-            pi.Phone = Phone.Truncate(25);
+            pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, City, State, Zip, Phone);
+
+            var gateway = DbUtil.Db.Gateway(testing);
+            gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
 
             DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(person.RecurringAmounts);
             DbUtil.Db.SubmitChanges();
