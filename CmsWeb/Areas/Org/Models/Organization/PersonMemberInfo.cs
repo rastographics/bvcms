@@ -71,6 +71,9 @@ namespace CmsWeb.Areas.Org.Models
         public DateTime? InactiveDate { get; set; }
         public decimal? AttendPct { get; set; }
         public DateTime? LastAttended { get; set; }
+        public int LastMeetingId { get; set; }
+        public int LastAttendId { get; set; }
+        public bool GuestHidden { get; set; }
         public bool HasTag { get; set; }
         public MemberModel.GroupSelect FromTab { get; set; }
         public DateTime? Joined { get; set; }

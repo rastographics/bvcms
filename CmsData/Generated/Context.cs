@@ -2445,6 +2445,21 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.GuestList", IsComposable = true)]
+		public IQueryable< View.GuestList > GuestList(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="datetime")] DateTime? since,
+            [Parameter(DbType="bit")] bool? showHidden
+            )
+		{
+			return this.CreateMethodCallQuery< View.GuestList>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                since,
+                showHidden
+                );
+		}
+
 		[Function(Name="dbo.LastMeetings", IsComposable = true)]
 		public IQueryable< View.LastMeeting > LastMeetings(
             [Parameter(DbType="int")] int? orgid,
@@ -3906,6 +3921,22 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 DateX
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.InSmallGroup", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string InSmallGroup(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "sg", DbType="varchar")] string sg
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid,
+                sg
                 ).ReturnValue));
 		}
 

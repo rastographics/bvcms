@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsData.Codes;
+using CmsData.View;
 using UtilityExtensions;
 using CmsWeb.Models;
 
@@ -12,7 +13,8 @@ namespace CmsWeb.Areas.Org.Models
         public int OrganizationId { get; set; }
         public PagerModel2 Pager { get; set; }
         private readonly string nameFilter;
-        public VisitorModel(int id, string name)
+        private bool showHidden { get; set; }
+        public VisitorModel(int id, string name, bool showHidden)
         {
             OrganizationId = id;
             Util2.CurrentOrgId = id;
@@ -20,29 +22,39 @@ namespace CmsWeb.Areas.Org.Models
             Pager.Direction = "asc";
             Pager.Sort = "Name";
             nameFilter = name;
+            this.showHidden = showHidden;
         }
-        private IQueryable<Person> _visitors;
+
+        private IQueryable<Person> visitors;
+        private Dictionary<int, GuestList> guestlist;
+
         private IQueryable<Person> FetchVisitors()
         {
-            if (_visitors == null)
+            if (visitors == null)
             {
-                _visitors = DbUtil.Db.PeopleQuery(DbUtil.Db.QueryVisitedCurrentOrg().QueryId);
+                var mindt = Util.Now.AddDays(-Util2.VisitLookbackDays).Date;
+                guestlist = DbUtil.Db.GuestList(Util2.CurrentOrgId, mindt, showHidden).ToDictionary(gg => gg.PeopleId, gg => gg);
+                //visitors = DbUtil.Db.PeopleQuery(DbUtil.Db.QueryVisitedCurrentOrg().QueryId);
+                visitors = from p in DbUtil.Db.People
+                           join g in DbUtil.Db.GuestList(Util2.CurrentOrgId, mindt, showHidden) on p.PeopleId equals g.PeopleId
+                           select p;
+                        
                 if (nameFilter.HasValue())
                 {
                     string First, Last;
                     Util.NameSplit(nameFilter, out First, out Last);
                     if (First.HasValue())
-                        _visitors = from p in _visitors
+                        visitors = from p in visitors
                                     where p.LastName.StartsWith(Last)
                                     where p.FirstName.StartsWith(First) || p.NickName.StartsWith(First)
                                     select p;
                     else
-                        _visitors = from p in _visitors
+                        visitors = from p in visitors
                                     where p.LastName.StartsWith(Last)
                                     select p;
                 }
             }
-            return _visitors;
+            return visitors;
         }
         public bool isFiltered
         {
@@ -62,6 +74,7 @@ namespace CmsWeb.Areas.Org.Models
             var tagownerid = Util2.CurrentTagOwnerId;
             var q2 = from p in q
                      let prospect = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == p.PeopleId && mm.OrganizationId == OrganizationId && mm.MemberTypeId == MemberTypeCode.Prospect)
+                     let guest = guestlist[p.PeopleId]
                      select new PersonMemberInfo
                      {
                          PeopleId = p.PeopleId,
@@ -84,9 +97,12 @@ namespace CmsWeb.Areas.Org.Models
                          BFTeacher = p.BFClass.LeaderName,
                          BFTeacherId = p.BFClass.LeaderId,
                          Age = p.Age.ToString(),
-                         LastAttended = DbUtil.Db.LastAttended(OrganizationId, p.PeopleId),
+                         LastAttended = guest.MeetingDate,
+                         LastMeetingId = guest.MeetingId,
+                         LastAttendId = guest.AttendId,
+                         GuestHidden = guest.Hidden,
                          HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
-                         MemberTypeId = prospect != null ? 311 : 0
+                         MemberTypeId = prospect != null ? MemberTypeCode.Prospect : 0
                      };
             return q2;
         }

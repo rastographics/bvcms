@@ -66,7 +66,9 @@
     <form action="/Organization/ProspectGrid/@Model.OrganizationId" method="post"></form>
   </div>
   <div id="Visitors-tab">
-    <form action="/Organization/VisitorGrid/@Model.OrganizationId" method="post"></form>
+    <form action="/Organization/VisitorGrid/@Model.OrganizationId" method="post">
+      @Html.Hidden("showHidden", false)
+    </form>
   </div>
   <div id="Meetings-tab">
     <form action="/Organization/MeetingGrid/@Model.OrganizationId" method="post">

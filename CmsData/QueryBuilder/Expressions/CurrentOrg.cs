@@ -154,30 +154,11 @@ namespace CmsData
         {
             var tf = CodeIds == "1";
             var mindt = Util.Now.AddDays(-db.VisitLookbackDays).Date;
-            var ids = new int[]
-            {
-                AttendTypeCode.NewVisitor,
-                AttendTypeCode.RecentVisitor,
-                AttendTypeCode.VisitingMember
-            };
-            Expression<Func<Person, bool>> pred = p => (
-                from a in p.Attends
-                where a.AttendanceFlag
-                where a.MeetingDate >= mindt
-                let dt = a.Meeting.Organization.FirstMeetingDate
-                where dt == null || a.MeetingDate >= dt
-                where a.MeetingDate > db.LastDrop(a.OrganizationId, a.PeopleId)
-                where ids.Contains(a.AttendanceTypeId.Value)
-                where a.OrganizationId == db.CurrentOrgId0
-                select a
-                ).Any() && !(
-                    from m in p.OrganizationMembers
-                    where m.OrganizationId == db.CurrentOrgId0
-                    where (m.Pending ?? false) == false
-                    where (m.MemberTypeId != MemberTypeCode.Prospect)
-                    select m
-                    ).Any();
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+
+            var q = db.GuestList(db.CurrentOrgId0, mindt, showHidden: false);
+            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;

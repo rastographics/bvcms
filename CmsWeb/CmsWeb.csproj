@@ -756,6 +756,9 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
+    <Content Include="Scripts\Bootstrap\bootbox.min.js.map">
+      <DependentUpon>bootbox.min.js</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />

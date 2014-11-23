@@ -408,6 +408,13 @@ $(function () {
             $(".bt", f).button();
         });
     });
+    $("#showHidden").live('click', function () {
+        var f = $(this).closest('form');
+        var q = f.serialize();
+        $.post($(f).attr("action"), q, function (ret) {
+            $(f).html(ret);
+        });
+    });
     $("#ShowProspects").live('click', function () {
         var f = $(this).closest('form');
         var q = f.serialize();
@@ -680,13 +687,17 @@ $(function () {
     };
     $('a.joinlink').live('click', function (ev) {
         ev.preventDefault();
-        $.post($(this)[0].href,
-            function (ret) {
-                if (ret == "ok")
-                    RebindMemberGrids();
-                else
-                    alert(ret);
-            });
+        var a = $(this);
+        bootbox.confirm(a.attr("confirm"), function (result) {
+            if (result) {
+                $.post(a[0].href, function (ret) {
+                    if (ret == "ok")
+                        RebindMemberGrids();
+                    else
+                        alert(ret);
+                });
+            }
+        });
         return false;
     });
     $('#divisionsDialog').dialog({

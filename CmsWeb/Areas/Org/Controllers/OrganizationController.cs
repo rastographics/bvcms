@@ -171,9 +171,9 @@ namespace CmsWeb.Areas.Org.Controllers
             return View(m);
         }
         [HttpPost]
-        public ActionResult VisitorGrid(int id, string namefilter)
+        public ActionResult VisitorGrid(int id, string namefilter, bool showHidden)
         {
-            var m = new VisitorModel(id, namefilter);
+            var m = new VisitorModel(id, namefilter, showHidden);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Guests";
             UpdateModel(m.Pager);
             DbUtil.LogActivity("Viewing Visitors for {0}".Fmt(Session["ActiveOrganization"]));
@@ -616,6 +616,17 @@ namespace CmsWeb.Areas.Org.Controllers
                 oid, pid, MemberTypeCode.Prospect,
                 DateTime.Now, null, false);
             DbUtil.LogActivity("Adding Prospect {0}({1})".Fmt(org.OrganizationName, pid));
+            return Content("ok");
+        }
+        [HttpPost, Route("ShowVisitor/{oid:int}/{pid:int}/{aid:int}/{show}")]
+        public ActionResult ShowVisitor(int oid, int pid, int aid, string show)
+        {
+            var attend = DbUtil.Db.Attends.SingleOrDefault(aa => aa.AttendId == aid);
+            if(attend == null)
+                return Content("attendance not found");
+            attend.NoShow = show.Equal("hide");
+            DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("ShowVisitor {0},{1},{2},{3}".Fmt(oid, pid, aid, show));
             return Content("ok");
         }
 
