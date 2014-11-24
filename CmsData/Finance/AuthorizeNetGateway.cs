@@ -56,8 +56,8 @@ namespace CmsData.Finance
 
             var billToAddress = new AuthorizeNet.Address
             {
-                First = person.FirstName,
-                Last = person.LastName,
+                First = paymentInfo.FirstName ?? person.FirstName,
+                Last = paymentInfo.LastName ?? person.LastName,
                 Street = paymentInfo.Address ?? person.PrimaryAddress,
                 City = paymentInfo.City ?? person.PrimaryCity,
                 State = paymentInfo.State ?? person.PrimaryState,
@@ -257,6 +257,30 @@ namespace CmsData.Finance
             };
         }
 
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
+            int tranid, string cardcode, string email, string first, string last, string addr, string city, string state,
+            string zip, string phone)
+        {
+            var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
+
+            request.AddCustomer(peopleId.ToString(), first, last, addr, state, zip);
+            request.City = city; // hopefully will be resolved with https://github.com/AuthorizeNet/sdk-dotnet/pull/41
+            request.CardCode = cardcode;
+            request.Phone = phone;
+            request.Email = email;
+            request.InvoiceNum = tranid.ToString();
+
+            var response = Gateway.Send(request);
+
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
+        }
+
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
         {
             var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: true);
@@ -290,6 +314,35 @@ namespace CmsData.Finance
             request.InvoiceNum = tranid.ToString();
 
             var response = Gateway.Send(request);
+
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
+        }
+
+        public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
+        {
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            if (paymentInfo == null || !paymentInfo.AuNetCustPayId.HasValue)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+            
+            var paymentProfileId = paymentInfo.AuNetCustPayId.ToString();
+
+            var order = new Order(paymentInfo.AuNetCustId.ToString(), paymentProfileId, null)
+            {
+                Description = description,
+                Amount = amt,
+                InvoiceNumber = tranid.ToString()
+            };
+            var response = CustomerGateway.Authorize(order);
 
             return new TransactionResponse
             {
