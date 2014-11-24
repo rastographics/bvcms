@@ -109,8 +109,8 @@ namespace CmsData.Finance
                 _password,
                 new CreditCard
                 {
-                    FirstName = person.FirstName,
-                    LastName = person.LastName,
+                    FirstName = paymentInfo.FirstName ?? person.FirstName,
+                    LastName = paymentInfo.LastName ?? person.LastName,
                     CardNumber = cardNumber,
                     Expiration = expiration,
                     BillingAddress = new BillingAddress
@@ -142,8 +142,8 @@ namespace CmsData.Finance
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 new CreditCard
                 {
-                    FirstName = person.FirstName,
-                    LastName = person.LastName,
+                    FirstName = paymentInfo.FirstName ?? person.FirstName,
+                    LastName = paymentInfo.LastName ?? person.LastName,
                     CardNumber = cardNumber,
                     Expiration = expiration,
                     BillingAddress = new BillingAddress
@@ -172,6 +172,8 @@ namespace CmsData.Finance
                 _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 expiration,
+                paymentInfo.FirstName ?? person.FirstName,
+                paymentInfo.LastName ?? person.LastName,
                 new BillingAddress
                 {
                     Address1 = paymentInfo.Address ?? person.PrimaryAddress,
@@ -196,7 +198,7 @@ namespace CmsData.Finance
                 _password,
                 new Ach
                 {
-                    NameOnAccount = person.Name,
+                    NameOnAccount = "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
                     AccountNumber = accountNumber,
                     RoutingNumber = routingNumber,
                     BillingAddress = new BillingAddress
@@ -226,7 +228,7 @@ namespace CmsData.Finance
                 _userName,
                 _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
-                person.Name,
+                "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
                 new BillingAddress
                 {
                     Address1 = paymentInfo.Address ?? person.PrimaryAddress,
@@ -253,7 +255,7 @@ namespace CmsData.Finance
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 new Ach
                 {
-                    NameOnAccount = person.Name,
+                    NameOnAccount = "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
                     AccountNumber = accountNumber,
                     RoutingNumber = routingNumber,
                     BillingAddress = new BillingAddress

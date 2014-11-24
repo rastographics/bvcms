@@ -56,8 +56,8 @@ namespace CmsData.Finance
 
             var billToAddress = new AuthorizeNet.Address
             {
-                First = person.FirstName,
-                Last = person.LastName,
+                First = paymentInfo.FirstName ?? person.FirstName,
+                Last = paymentInfo.LastName ?? person.LastName,
                 Street = paymentInfo.Address ?? person.PrimaryAddress,
                 City = paymentInfo.City ?? person.PrimaryCity,
                 State = paymentInfo.State ?? person.PrimaryState,
@@ -72,7 +72,7 @@ namespace CmsData.Finance
                 // NOTE: this can throw an error if the email address already exists...
                 // TODO: Authorize.net needs to release a new Nuget package, because they don't have a clean way to pass in customer ID (aka PeopleId) yet... the latest code has a parameter for this, though
                 //       - we could call UpdateCustomer after the fact to do this if we wanted to
-                customer = CustomerGateway.CreateCustomer(person.EmailAddress, person.Name);
+                customer = CustomerGateway.CreateCustomer(person.EmailAddress, "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName));
                 customer.ID = peopleId.ToString();
 
                 paymentInfo.AuNetCustId = customer.ProfileID.ToInt();
