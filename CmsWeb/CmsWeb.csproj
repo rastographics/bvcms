@@ -696,6 +696,11 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\select2-3.5.2\select2-bootstrap.css" />
+    <Content Include="Content\select2-3.5.2\select2-spinner.gif" />
+    <Content Include="Content\select2-3.5.2\select2.css" />
+    <Content Include="Content\select2-3.5.2\select2.png" />
+    <Content Include="Content\select2-3.5.2\select2x2.png" />
     <Content Include="Content\xml.css" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
@@ -873,6 +878,7 @@
     <Content Include="Scripts\Search\SavedQuery2.js" />
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
+    <Content Include="Scripts\select2-3.5.2\select2.min.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />

@@ -6,6 +6,8 @@
     @Html.Raw((string)ViewBag.bottom)
     @ViewExtensions2.jQuery()
     @ViewExtensions2.Bootstrap3()
+    @ViewExtensions2.FontAwesome()
+    @ViewExtensions2.LoDash()
     @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
     @RenderSection("scripts", false)
 }
@@ -17,6 +19,7 @@ else
         <title>Online Registration</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
         @Html.Raw(ViewExtensions2.Bootstrap3Css())
+        @ViewExtensions2.FontAwesome()
         @RenderSection("head", false)
     </head>
     <body>
@@ -27,6 +30,7 @@ else
         @Html.Raw((string)ViewBag.bottom)
         @ViewExtensions2.jQuery()
         @ViewExtensions2.Bootstrap3()
+        @ViewExtensions2.LoDash()
         @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
         @RenderSection("scripts", false)
     </body>
