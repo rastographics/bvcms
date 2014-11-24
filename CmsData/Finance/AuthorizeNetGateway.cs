@@ -72,7 +72,7 @@ namespace CmsData.Finance
                 // NOTE: this can throw an error if the email address already exists...
                 // TODO: Authorize.net needs to release a new Nuget package, because they don't have a clean way to pass in customer ID (aka PeopleId) yet... the latest code has a parameter for this, though
                 //       - we could call UpdateCustomer after the fact to do this if we wanted to
-                customer = CustomerGateway.CreateCustomer(person.EmailAddress, "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName));
+                customer = CustomerGateway.CreateCustomer(person.EmailAddress, person.Name);
                 customer.ID = peopleId.ToString();
 
                 paymentInfo.AuNetCustId = customer.ProfileID.ToInt();
@@ -263,7 +263,7 @@ namespace CmsData.Finance
         {
             var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
 
-            request.AddCustomer(peopleId.ToString(), first, last, addr, state, zip);  //TODO: should we always do this, even when it's an auth???
+            request.AddCustomer(peopleId.ToString(), first, last, addr, state, zip);
             request.City = city; // hopefully will be resolved with https://github.com/AuthorizeNet/sdk-dotnet/pull/41
             request.CardCode = cardcode;
             request.Phone = phone;
@@ -327,19 +327,13 @@ namespace CmsData.Finance
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
         {
             var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
-            if (paymentInfo == null)
+            if (paymentInfo == null || !paymentInfo.AuNetCustPayId.HasValue)
                 return new TransactionResponse
                 {
                     Approved = false,
                     Message = "missing payment info",
                 };
-            if (!paymentInfo.AuNetCustPayId.HasValue)
-                return new TransactionResponse
-                {
-                    Approved = false,
-                    Message = "missing payment info",
-                };
-
+            
             var paymentProfileId = paymentInfo.AuNetCustPayId.ToString();
 
             var order = new Order(paymentInfo.AuNetCustId.ToString(), paymentProfileId, null)

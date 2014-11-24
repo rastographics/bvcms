@@ -365,19 +365,13 @@ namespace CmsData.Finance
 	    {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo();
-            if (paymentInfo == null)
+            if (paymentInfo == null || !paymentInfo.SageCardGuid.HasValue)
                 return new TransactionResponse
                 {
                     Approved = false,
                     Message = "missing payment info",
                 };
-	        if (!paymentInfo.SageCardGuid.HasValue)
-                return new TransactionResponse
-                {
-                    Approved = false,
-                    Message = "missing payment info",
-                };
-
+	       
             var creditCardVaultAuthRequest = new CreditCardVaultAuthRequest(_id,
                 _key,
                 paymentInfo.SageCardGuid.GetValueOrDefault(),
