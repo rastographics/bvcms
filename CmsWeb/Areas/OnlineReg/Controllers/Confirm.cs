@@ -108,6 +108,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (pf.Type == PaymentType.CreditCard)
                     Payments.ValidateCreditCardInfo(ModelState, pf);
 
+                if (!pf.First.HasValue())
+                    ModelState.AddModelError("First", "Needs first name");
+                if (!pf.Last.HasValue())
+                    ModelState.AddModelError("Last", "Needs last name");
+                if (!pf.Address.HasValue())
+                    ModelState.AddModelError("Address", "Needs address");
+                if (!pf.City.HasValue())
+                    ModelState.AddModelError("City", "Needs city");
+                if (!pf.State.HasValue())
+                    ModelState.AddModelError("State", "Needs state");
+                if (!pf.Zip.HasValue())
+                    ModelState.AddModelError("Zip", "Needs zip");
+                
                 if (!ModelState.IsValid)
                     return View("Payment/Process", pf);
 
@@ -134,35 +147,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 }
 
-                if (pf.UseBootstrap && pf.AddressChecked < 2)
-                {
-                    var r = AddressVerify.LookupAddress(pf.Address, "", "", "", pf.Zip);
-                    var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == pf.Zip.Zip5());
-                    if (z != null && !z.State.HasValue())
-                    {
-                        pf.State = r.State = z.State;
-                        pf.City = r.City = z.City;
-                    }
-                    if (r.Line1 != "error" && r.Line1.HasValue())
-                    {
-                        if (r.found == false)
-                        {
-                            ModelState.Clear(); // so the form will bind to the object again
-                            pf.AddressChecked++;
-                            ModelState.AddModelError("Zip",
-                                "Address not found: " + r.address);
-                            return View("Payment/Process", pf);
-                        }
-                        if (r.Line1 != pf.Address)
-                            pf.Address = r.Line1;
-                        if (r.City != (pf.City ?? ""))
-                            pf.City = r.City;
-                        if (r.State != (pf.State ?? ""))
-                            pf.State = r.State;
-                        if (r.Zip != (pf.Zip ?? ""))
-                            pf.Zip = r.Zip;
-                    }
-                }
                 var ti = ProcessPaymentTransaction(m, pf);
 
                 if (ti.Approved == false)

@@ -79,14 +79,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		public ActionResult ManageGiving(ManageGivingModel m)
 		{
 			SetHeaders(m.orgid);
-			m.ValidateModel(ModelState);
-			if (!ModelState.IsValid)
-            {
-		        m.total = 0;
-		        foreach (var ff in m.FundItemsChosen())
-		            m.total += ff.amt;
-				return View("ManageGiving/Setup", m);
-			}
+
+            // only validate if the amounts are greater than zero.
+		    if (m.FundItemsChosen().Sum(f => f.amt) > 0)
+		    {
+                m.ValidateModel(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    m.total = 0;
+                    foreach (var ff in m.FundItemsChosen())
+                        m.total += ff.amt;
+                    return View("ManageGiving/Setup", m);
+                }
+		    }
+            
             try
 			{
 				m.Update();

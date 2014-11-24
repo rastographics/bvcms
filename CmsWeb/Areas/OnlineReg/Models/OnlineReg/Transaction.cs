@@ -114,11 +114,11 @@ namespace CmsWeb.Models
                 }
                 else
                 {
-                    r.Address = pp.PrimaryAddress.Truncate(50);
-                    r.City = pp.PrimaryCity;
-                    r.State = pp.PrimaryState;
-                    r.Zip = pp.PrimaryZip;
-                    r.Phone = Util.PickFirst(pp.HomePhone, pp.CellPhone).FmtFone();
+                    r.Address = r.payinfo.Address ?? pp.PrimaryAddress.Truncate(50);
+                    r.City = r.payinfo.City ?? pp.PrimaryCity;
+                    r.State = r.payinfo.State ?? pp.PrimaryState;
+                    r.Zip = r.payinfo.Zip ?? pp.PrimaryZip;
+                    r.Phone = Util.PickFirst(r.payinfo.Phone, pp.HomePhone, pp.CellPhone).FmtFone();
                 }
             }
             return r;

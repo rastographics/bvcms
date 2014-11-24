@@ -85,7 +85,6 @@ namespace CmsWeb.Models
         public string City { get; set; }
         public string State { get; set; }
         public string Zip { get; set; }
-        public int AddressChecked { get; set; }
         public string Phone { get; set; }
         public int? TranId { get; set; }
 

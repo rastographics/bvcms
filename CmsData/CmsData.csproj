@@ -373,6 +373,8 @@
     <Compile Include="Finance\Sage\Report\VirtualCheckRejectsResponse.cs" />
     <Compile Include="Finance\Sage\Transaction\Refund\AchRefundRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Refund\CreditCardRefundRequest.cs" />
+    <Compile Include="Finance\Sage\Transaction\Auth\CreditCardAuthRequest.cs" />
+    <Compile Include="Finance\Sage\Transaction\Auth\CreditCardVaultAuthRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Sale\AchSaleRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Sale\AchVaultSaleRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Sale\CreditCardSaleRequest.cs" />
@@ -405,6 +407,8 @@
     <Compile Include="Finance\TransNational\Query\Transaction.cs" />
     <Compile Include="Finance\TransNational\Query\TransactionType.cs" />
     <Compile Include="Finance\TransNational\Transaction\Refund\RefundRequest.cs" />
+    <Compile Include="Finance\TransNational\Transaction\Auth\CreditCardAuthRequest.cs" />
+    <Compile Include="Finance\TransNational\Transaction\Auth\CreditCardVaultAuthRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Sale\AchSaleRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Sale\AchVaultSaleRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Sale\CreditCardSaleRequest.cs" />
