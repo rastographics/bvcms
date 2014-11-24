@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 {
                     Util2.CurrentGroups = new []{ sgleader.Value };
                     Util2.CurrentGroupsMode = 0;
-                    m.MemberModel = new MemberModel(id, MemberModel.GroupSelect.Active, "", "");
+                    m.MemberModel = new MemberModel(id, GroupSelectCode.Member, "", "");
                     //.m.MemberModel = new MemberModel(id, )
                 }
             }
@@ -157,7 +157,7 @@ namespace CmsWeb.Areas.Org.Controllers
             Util2.CurrentGroupsPrefix = sgprefix;
             Util2.CurrentGroupsMode = selectmode ?? 0;
             ViewBag.orgname = Session["ActiveOrganization"] + " - Members";
-            var m = new MemberModel(id, MemberModel.GroupSelect.Active, namefilter, sgprefix);
+            var m = new MemberModel(id, GroupSelectCode.Member, namefilter, sgprefix);
             UpdateModel(m.Pager);
             return View(m);
         }
@@ -183,7 +183,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult PendingMemberGrid(int id, string namefilter)
         {
             ViewBag.orgname = Session["ActiveOrganization"] + " - Pending Members";
-            var m = new MemberModel(id, MemberModel.GroupSelect.Pending, namefilter);
+            var m = new MemberModel(id, GroupSelectCode.Pending, namefilter);
             UpdateModel(m.Pager);
             return View(m);
         }
@@ -191,7 +191,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult InactiveMemberGrid(int id, string namefilter)
         {
             ViewBag.orgname = Session["ActiveOrganization"] + " - Inactive Members";
-            var m = new MemberModel(id, MemberModel.GroupSelect.Inactive, namefilter);
+            var m = new MemberModel(id, GroupSelectCode.Inactive, namefilter);
             UpdateModel(m.Pager);
             DbUtil.LogActivity("Viewing Inactive for {0}".Fmt(Session["ActiveOrganization"]));
             return View(m);
@@ -200,7 +200,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult ProspectGrid(int id, string namefilter)
         {
             ViewBag.orgname = Session["ActiveOrganization"] + " - Prospects";
-            var m = new MemberModel(id, MemberModel.GroupSelect.Prospect, namefilter);
+            var m = new MemberModel(id, GroupSelectCode.Prospect, namefilter);
             UpdateModel(m.Pager);
             DbUtil.LogActivity("Viewing Prospects for {0}".Fmt(Session["ActiveOrganization"]));
             return View(m);

@@ -34,7 +34,6 @@ namespace CmsWeb.Areas.Org.Models
             {
                 var mindt = Util.Now.AddDays(-Util2.VisitLookbackDays).Date;
                 guestlist = DbUtil.Db.GuestList(Util2.CurrentOrgId, mindt, showHidden).ToDictionary(gg => gg.PeopleId, gg => gg);
-                //visitors = DbUtil.Db.PeopleQuery(DbUtil.Db.QueryVisitedCurrentOrg().QueryId);
                 visitors = from p in DbUtil.Db.People
                            join g in DbUtil.Db.GuestList(Util2.CurrentOrgId, mindt, showHidden) on p.PeopleId equals g.PeopleId
                            select p;

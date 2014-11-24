@@ -2533,6 +2533,40 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.OrgMember", IsComposable = true)]
+		public IQueryable< View.OrgMember > OrgMember(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="int")] int? grouptype,
+            [Parameter(DbType="varchar")] string first,
+            [Parameter(DbType="varchar")] string last,
+            [Parameter(DbType="varchar")] string sgprefix,
+            [Parameter(DbType="varchar")] string groups,
+            [Parameter(DbType="int")] int? groupsmode
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgMember>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                grouptype,
+                first,
+                last,
+                sgprefix,
+                groups,
+                groupsmode
+                );
+		}
+
+		[Function(Name="dbo.OrgMemberInfo", IsComposable = true)]
+		public IQueryable< View.OrgMemberInfo > OrgMemberInfo(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgMemberInfo>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
 		[Function(Name="dbo.OrgMembersAsOfDate", IsComposable = true)]
 		public IQueryable< View.OrgMembersAsOfDate > OrgMembersAsOfDate(
             [Parameter(DbType="int")] int? orgid,

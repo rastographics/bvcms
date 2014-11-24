@@ -1,5 +1,5 @@
-ALTER TABLE [dbo].[CheckInTimes] ADD CONSTRAINT [Guests__GuestOf] FOREIGN KEY ([GuestOfId]) REFERENCES [dbo].[CheckInTimes] ([Id])
 ALTER TABLE [dbo].[CheckInTimes] ADD CONSTRAINT [FK_CheckInTimes_People] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
+ALTER TABLE [dbo].[CheckInTimes] ADD CONSTRAINT [Guests__GuestOf] FOREIGN KEY ([GuestOfId]) REFERENCES [dbo].[CheckInTimes] ([Id])
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

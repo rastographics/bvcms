@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.Org.Models
     		    Schedule = schedules[0].Display;
             else
                 Schedule = "None";
-			MemberModel = new MemberModel(id, MemberModel.GroupSelect.Active, String.Empty);
+			MemberModel = new MemberModel(id, GroupSelectCode.Member, String.Empty);
 
 			IsVolunteerLeader = VolunteerLeaderInOrg(OrganizationId);
 		}

@@ -30,11 +30,11 @@
         <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@om.PeopleId">@om.Name</a></td>
         <td>
           <a href="/Organization/Join/@Model.OrganizationId/@om.PeopleId" class="joinlink"
-             confirm="Make this person a Member of this Org?">Join Org</a>
+             confirm="Make @om.Name a Member of this Org?">Join Org</a>
           @if (om.MemberTypeId != MemberTypeCode.Prospect)
           {
             <br /><a href="/Organization/AddProspect/@Model.OrganizationId/@om.PeopleId" class="joinlink"
-                     confirm="Make this person a Prospect of this Org?">Add as Prospect</a>
+                     confirm="Make @om.Name a Prospect of this Org?">Add as Prospect</a>
           }
         </td>
         <td>

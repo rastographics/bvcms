@@ -71,11 +71,11 @@ namespace CmsWeb.Areas.Org.Models
         public DateTime? InactiveDate { get; set; }
         public decimal? AttendPct { get; set; }
         public DateTime? LastAttended { get; set; }
-        public int LastMeetingId { get; set; }
-        public int LastAttendId { get; set; }
+        public int? LastMeetingId { get; set; }
+        public int? LastAttendId { get; set; }
         public bool GuestHidden { get; set; }
         public bool HasTag { get; set; }
-        public MemberModel.GroupSelect FromTab { get; set; }
+        public int FromTab { get; set; }
         public DateTime? Joined { get; set; }
         public DateTime? Dropped { get; set; }
         private enum PhoneType
@@ -96,5 +96,9 @@ namespace CmsWeb.Areas.Org.Models
         {
             get { return _Phones; }
         }
+//        public DateTime? LastContactDt { get; set; }
+//        public int? LastContactId { get; set; }
+//        public DateTime? TaskAboutDt { get; set; }
+//        public int? TaskAboutId { get; set; }
     }
 }

@@ -250,6 +250,13 @@ namespace CmsData.Codes
         public const int Open = 1;
         public const int Closed = 2;
     }
+    public class GroupSelectCode
+    {
+        public const int Member = 10;
+        public const int Inactive = 20;
+        public const int Pending = 30;
+        public const int Prospect = 40;
+    }
     public class ContributionTypeCode
     {
         public const int CheckCash = 1;
