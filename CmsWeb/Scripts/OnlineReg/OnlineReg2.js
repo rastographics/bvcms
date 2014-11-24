@@ -258,7 +258,9 @@
         });
     }
 
-    
+    $(document).ready(function () {
+        initializeSpecialFunds();
+    });
 });
 
 function setElementName(elems, name) {
