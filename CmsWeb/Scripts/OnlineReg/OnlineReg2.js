@@ -82,8 +82,9 @@
     };
     $.InstructionsShow = function () {
         $("div.instructions").hide();
-        if ($("#selectfamily").attr("id"))
+        if ($("#selectfamily").attr("id")) {
             $("div.instructions.select").show();
+        }
         else if ($("#personedit").attr("id")) {
             $("#fillout").hide();
             $("div.instructions.find").show();
@@ -91,15 +92,21 @@
         else if ($("#otheredit").attr("id")) {
             $("div.instructions.options").show();
             initializeSpecialFunds();
-        } else if ($("#specialedit").attr("id"))
+        }
+        else if ($("#specialedit").attr("id")) {
             $("div.instructions.special").show();
+        }
         else if ($("#username").attr("id")) {
             $("#username").focus();
             $("div.instructions.login").show();
-        } else if ($("#submitit").attr("id"))
+        }
+        else if ($("#submitit").attr("id")) {
             $("div.instructions.submit").show();
-        else if ($("#sorry").attr("id"))
+        }
+        else if ($("#sorry").attr("id")) {
             $("div.instructions.sorry").show();
+        }
+
         if ($("#allowcc").val())
             $.ShowPaymentInfo();
     };
@@ -189,6 +196,7 @@
         });
     else
         $.idleTimer($.tmout);
+
     // if we are coming back to this page to continue a registration, 
     // check to see if we should be on our way to the next step
     if ($("#submitit").attr("onlyoneallowed") == "true" && $(".input-validation-error", $("#completeReg")).length === 0) {
@@ -218,7 +226,6 @@
 
             setDelayedFocus($('input[name="' + inputValue + '"]'));
         }
-
     }
 
     function setDelayedFocus($element) {
@@ -258,8 +265,15 @@
         });
     }
 
-    $(document).ready(function () {
-        initializeSpecialFunds();
+    initializeSpecialFunds();
+
+    $('#stop-manage-giving').click(function(e) {
+        e.preventDefault();
+        if (confirm("This will cancel your recurring giving and stop all payments. Are you sure?")) {
+            $.post('/OnlineReg/RemoveManagedGiving/', { orgId: $('#orgid').val() }).then(function(data) {
+                window.location.href = data.Url;
+            });
+        }
     });
 });
 
@@ -272,4 +286,3 @@ function setElementName(elems, name) {
     $(elems).attr('name', name);
   }
 }
-
