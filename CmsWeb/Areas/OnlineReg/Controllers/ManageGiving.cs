@@ -135,9 +135,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		}
 
 	    [HttpPost]
-	    public ActionResult RemoveManagedGiving(int orgId)
+	    public ActionResult RemoveManagedGiving(int peopleId, int orgId)
 	    {
-	        var peopleId = Util.UserPeopleId ?? 0;
 	        var manageGiving = new ManageGivingModel(peopleId, orgId);
             manageGiving.CancelManagedGiving(peopleId);
 	        manageGiving.ThankYouMessage = "Your recurring giving has been stopped.";

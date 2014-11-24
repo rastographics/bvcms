@@ -270,7 +270,11 @@
     $('#stop-manage-giving').click(function(e) {
         e.preventDefault();
         if (confirm("This will cancel your recurring giving and stop all payments. Are you sure?")) {
-            $.post('/OnlineReg/RemoveManagedGiving/', { orgId: $('#orgid').val() }).then(function(data) {
+            var postData = {
+                peopleId: $('#pid').val(),
+                orgId: $('#orgid').val()
+            };
+            $.post('/OnlineReg/RemoveManagedGiving/', postData).then(function(data) {
                 window.location.href = data.Url;
             });
         }
