@@ -305,44 +305,81 @@ namespace CmsWeb.Models
         }
         public void Update()
         {
-            if (Cardcode.HasValue() && Cardcode.Contains("X"))
+            // first check for total amount greater than zero.
+            // if so we skip everything except updating the amounts.
+            var chosenFunds = FundItemsChosen().ToList();
+            if (chosenFunds.Sum(f => f.amt) > 0)
             {
-                var payinfo = person.PaymentInfo();
-                if (payinfo == null)
-                    throw new Exception("X not allowed in CVV");
-                Cardcode = payinfo.Ccv;
-            }
+                if (Cardcode.HasValue() && Cardcode.Contains("X"))
+                {
+                    var payinfo = person.PaymentInfo();
+                    if (payinfo == null)
+                        throw new Exception("X not allowed in CVV");
+                    Cardcode = payinfo.Ccv;
+                }
 
-            var mg = person.ManagedGiving();
-            if (mg == null)
-            {
-                mg = new ManagedGiving();
-                person.ManagedGivings.Add(mg);
-            }
-            mg.SemiEvery = SemiEvery;
-            mg.Day1 = Day1;
-            mg.Day2 = Day2;
-            mg.EveryN = EveryN;
-            mg.Period = Period;
-            mg.StartWhen = StartWhen;
-            mg.StopWhen = StopWhen;
-            mg.NextDate = mg.FindNextDate(DateTime.Today);
+                var pi = person.PaymentInfo();
+                if (pi == null)
+                {
+                    pi = new PaymentInfo();
+                    person.PaymentInfos.Add(pi);
+                }
+                pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, City, State, Zip, Phone);
 
-            var pi = person.PaymentInfo();
-            if (pi == null)
-            {
-                pi = new PaymentInfo();
-                person.PaymentInfos.Add(pi);
-            }
-            pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, City, State, Zip, Phone);
+                // first need to do a $1 auth if it's a credit card and throw any errors we get back
+                // from the gateway.
+                var vaultSaved = false;
+                var gateway = DbUtil.Db.Gateway(testing);
+                if (Type == PaymentType.CreditCard)
+                {
+                    // perform $1 auth.  
+                    // need to randomize the $1 amount because some gateways will reject same auth amount
+                    // subsequent times per user.
+                    var random = new Random();
+                    var dollarAmt = (decimal)random.Next(100, 199) / 100;
 
-            var gateway = DbUtil.Db.Gateway(testing);
-            gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
+                    TransactionResponse transactionResponse;
+                    if (Cardnumber.StartsWith("X"))
+                    {
+                        // store payment method in the gateway vault first before doing the auth.
+                        gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
+                        vaultSaved = true;
+                        transactionResponse = gateway.AuthCreditCardVault(pid, dollarAmt, "Recurring Giving Auth", 0);
+                    }
+                    else
+                        transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, Cardnumber, Expires,
+                                                                     "Recurring Giving Auth", 0, Cardcode, string.Empty,
+                                                                     FirstName, LastName, Address, City, State, Zip, Phone);
+
+                    if (!transactionResponse.Approved)
+                        throw new Exception(transactionResponse.Message);
+                }
+
+                // store payment method in the gateway vault if not already saved.
+                if (!vaultSaved)
+                    gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
+
+                // save all the managed giving data.
+                var mg = person.ManagedGiving();
+                if (mg == null)
+                {
+                    mg = new ManagedGiving();
+                    person.ManagedGivings.Add(mg);
+                }
+                mg.SemiEvery = SemiEvery;
+                mg.Day1 = Day1;
+                mg.Day2 = Day2;
+                mg.EveryN = EveryN;
+                mg.Period = Period;
+                mg.StartWhen = StartWhen;
+                mg.StopWhen = StopWhen;
+                mg.NextDate = mg.FindNextDate(DateTime.Today);
+            }
 
             DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(person.RecurringAmounts);
             DbUtil.Db.SubmitChanges();
 
-            person.RecurringAmounts.AddRange(FundItemsChosen().Select(c => new RecurringAmount { FundId = c.fundid, Amt = c.amt }));
+            person.RecurringAmounts.AddRange(chosenFunds.Select(c => new RecurringAmount { FundId = c.fundid, Amt = c.amt }));
             DbUtil.Db.SubmitChanges();
         }
 
