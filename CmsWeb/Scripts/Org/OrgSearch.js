@@ -225,8 +225,10 @@
             $("#orgsearchform").attr("action", "/Reports/RallyRollsheet" + args);
         else
             $("#orgsearchform").attr("action", "/Reports/Rollsheet" + args);
+        $("#orgsearchform").attr("target","_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
+        $.hideDropdowns();
         return false;
     });
     $('#newmeetings').click(function (ev) {
@@ -350,7 +352,7 @@
         var href = this.href;
         var q = $("#orgsearchform").serialize();
         $.post("/OrgSearch/Count", q, function(cnt) {
-            bootbox.confirm("Are you sure you want do replace settings on " + cnt + " organizations? There is no undo button.", function(result) {
+            bootbox.confirm("Are you sure you want to replace settings on " + cnt + " organizations? There is no undo button.", function(result) {
                 if (result) {
                     $.post(href, q, function () {
                         $.growlUI("Completed", "Settings Replaced");
@@ -384,6 +386,7 @@
         $("#orgsearchform").attr("target", "_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
+        $.hideDropdowns();
         return false;
     });
     $('body').on('click', 'a.taguntag', function (ev) {

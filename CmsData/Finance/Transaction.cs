@@ -31,9 +31,13 @@ namespace CmsData
                 && TransactionId.HasValue()
                 && Amt > 0;
         }
+        public Transaction OriginalTrans
+        {
+         get { return OriginalTransaction ?? this;}
+        }
         public int FirstTransactionPeopleId()
         {
-            return OriginalTransaction.TransactionPeople.Select(pp => pp.PeopleId).FirstOrDefault();
+            return OriginalTrans.TransactionPeople.Select(pp => pp.PeopleId).FirstOrDefault();
         }
 
         public static string FullName(Transaction t)

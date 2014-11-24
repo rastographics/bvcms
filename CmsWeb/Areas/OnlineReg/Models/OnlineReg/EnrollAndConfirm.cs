@@ -87,7 +87,7 @@ namespace CmsWeb.Models
             ti.Emails = Util.EmailAddressListToString(elist);
             ti.Participants = participants.ToString();
             ti.TransactionDate = DateTime.Now;
-            ti.OriginalTransaction.TransactionPeople.AddRange(pids2);
+            ti.OriginalTrans.TransactionPeople.AddRange(pids2);
 
             if (org.IsMissionTrip == true)
             {
@@ -356,7 +356,7 @@ AmountDue: {4:C}<br/>
 
             ti.TransactionDate = DateTime.Now;
             var pids = pids2.Select(pp => pp.PeopleId);
-            ti.OriginalTransaction.TransactionPeople.AddRange(pids2);
+            ti.OriginalTrans.TransactionPeople.AddRange(pids2);
 
             for (var i = 0; i < List.Count; i++)
             {

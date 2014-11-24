@@ -16,6 +16,12 @@ namespace CmsWeb.Models
                 return ExtraQuestion[set][s];
             return null;
         }
+        public string TextValue(int set, string s)
+        {
+            if (Text[set].ContainsKey(s))
+                return Text[set][s];
+            return null;
+        }
 
         public bool Attended(int id)
         {
@@ -98,7 +104,7 @@ namespace CmsWeb.Models
         {
             if (FundItem == null)
                 return new List<FundItemChosen>();
-            var items = Funds();
+            var items = AllFunds();
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue

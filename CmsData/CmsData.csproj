@@ -343,6 +343,7 @@
   <ItemGroup>
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
+    <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Finance\ReturnedCheck.cs" />
     <Compile Include="Finance\ReturnedChecksResponse.cs" />
     <Compile Include="Finance\BatchResponse.cs" />
@@ -372,6 +373,8 @@
     <Compile Include="Finance\Sage\Report\VirtualCheckRejectsResponse.cs" />
     <Compile Include="Finance\Sage\Transaction\Refund\AchRefundRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Refund\CreditCardRefundRequest.cs" />
+    <Compile Include="Finance\Sage\Transaction\Auth\CreditCardAuthRequest.cs" />
+    <Compile Include="Finance\Sage\Transaction\Auth\CreditCardVaultAuthRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Sale\AchSaleRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Sale\AchVaultSaleRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Sale\CreditCardSaleRequest.cs" />
@@ -404,6 +407,8 @@
     <Compile Include="Finance\TransNational\Query\Transaction.cs" />
     <Compile Include="Finance\TransNational\Query\TransactionType.cs" />
     <Compile Include="Finance\TransNational\Transaction\Refund\RefundRequest.cs" />
+    <Compile Include="Finance\TransNational\Transaction\Auth\CreditCardAuthRequest.cs" />
+    <Compile Include="Finance\TransNational\Transaction\Auth\CreditCardVaultAuthRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Sale\AchSaleRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Sale\AchVaultSaleRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Sale\CreditCardSaleRequest.cs" />
@@ -595,6 +600,7 @@
     <Compile Include="DbUtil\Dynamic.cs" />
     <Compile Include="Classes\QuickBooks\QuickBooksHelper.cs" />
     <Compile Include="Registration\Ask.cs" />
+    <Compile Include="Registration\AskText.cs" />
     <Compile Include="Registration\AskRequest.cs" />
     <Compile Include="Registration\AskSize.cs">
       <SubType>Code</SubType>

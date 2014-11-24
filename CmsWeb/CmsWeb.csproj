@@ -329,6 +329,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSearch.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostTransactionItem.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AveryAddressWordResult.cs" />
+    <Compile Include="Areas\Reports\Models\Other\CustomColumnsModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\CustomReportsModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\QueryStatsResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\CsvResult.cs" />
@@ -706,6 +707,11 @@
     <Content Include="Content\touchpoint\images\logo.png" />
     <Content Include="Content\touchpoint\images\logo_sm.png" />
     <Content Include="Content\touchpoint\images\male.png" />
+    <Content Include="Content\select2-3.5.2\select2-bootstrap.css" />
+    <Content Include="Content\select2-3.5.2\select2-spinner.gif" />
+    <Content Include="Content\select2-3.5.2\select2.css" />
+    <Content Include="Content\select2-3.5.2\select2.png" />
+    <Content Include="Content\select2-3.5.2\select2x2.png" />
     <Content Include="Content\xml.css" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
@@ -732,6 +738,9 @@
     <Content Include="Content\css\normalize.css" />
     <Content Include="Content\images\saf-bg.png" />
     <Content Include="Content\images\saf.png" />
+    <Content Include="CustomColumns.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Errors\DatabaseCreationError.aspx" />
     <Content Include="Errors\DatabaseNotInitialized.aspx" />
     <Content Include="Errors\DatabaseServerNotFound.aspx" />
@@ -768,6 +777,9 @@
     <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.eot" />
     <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.woff" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskText.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
@@ -882,6 +894,7 @@
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
     <Content Include="Scripts\touchpoint\bootstrap-sweetalert\sweet-alert.min.js" />
+    <Content Include="Scripts\select2-3.5.2\select2.min.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />

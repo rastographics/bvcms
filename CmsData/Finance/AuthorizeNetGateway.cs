@@ -47,25 +47,25 @@ namespace CmsData.Finance
             string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
-            var billToAddress = new AuthorizeNet.Address
-            {
-                City = person.PrimaryCity,
-                First = person.FirstName,
-                Last = person.LastName,
-                State = person.PrimaryState,
-                Zip = person.PrimaryZip,
-                Phone = person.HomePhone ?? person.CellPhone,
-                Street = person.PrimaryAddress
-            };
-
-            Customer customer;
-
             var paymentInfo = person.PaymentInfo();
             if (paymentInfo == null)
             {
                 paymentInfo = new PaymentInfo();
                 person.PaymentInfos.Add(paymentInfo);
             }
+
+            var billToAddress = new AuthorizeNet.Address
+            {
+                First = paymentInfo.FirstName ?? person.FirstName,
+                Last = paymentInfo.LastName ?? person.LastName,
+                Street = paymentInfo.Address ?? person.PrimaryAddress,
+                City = paymentInfo.City ?? person.PrimaryCity,
+                State = paymentInfo.State ?? person.PrimaryState,
+                Zip = paymentInfo.Zip ?? person.PrimaryZip,
+                Phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone
+            };
+
+            Customer customer;
 
             if (paymentInfo.AuNetCustId == null) // create a new profilein Authorize.NET CIM
             {
@@ -257,6 +257,30 @@ namespace CmsData.Finance
             };
         }
 
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
+            int tranid, string cardcode, string email, string first, string last, string addr, string city, string state,
+            string zip, string phone)
+        {
+            var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
+
+            request.AddCustomer(peopleId.ToString(), first, last, addr, state, zip);
+            request.City = city; // hopefully will be resolved with https://github.com/AuthorizeNet/sdk-dotnet/pull/41
+            request.CardCode = cardcode;
+            request.Phone = phone;
+            request.Email = email;
+            request.InvoiceNum = tranid.ToString();
+
+            var response = Gateway.Send(request);
+
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
+        }
+
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
         {
             var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: true);
@@ -290,6 +314,35 @@ namespace CmsData.Finance
             request.InvoiceNum = tranid.ToString();
 
             var response = Gateway.Send(request);
+
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
+        }
+
+        public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
+        {
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            if (paymentInfo == null || !paymentInfo.AuNetCustPayId.HasValue)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+            
+            var paymentProfileId = paymentInfo.AuNetCustPayId.ToString();
+
+            var order = new Order(paymentInfo.AuNetCustId.ToString(), paymentProfileId, null)
+            {
+                Description = description,
+                Amount = amt,
+                InvoiceNumber = tranid.ToString()
+            };
+            var response = CustomerGateway.Authorize(order);
 
             return new TransactionResponse
             {
