@@ -58,7 +58,7 @@
           @{ var showhide = om.GuestHidden ? "Show" : "Hide"; }
           <a href="/Meeting/@om.LastMeetingId">@om.LastAttended.FormatDate()</a><br />
           <a href="/Organization/ShowVisitor/@Model.OrganizationId/@om.PeopleId/@om.LastAttendId/@showhide" class="joinlink"
-             confirm="@showhide @om.Name on this Org?">@showhide</a>
+             confirm="@showhide @om.Name as a Guest for this Org until next visit?">@showhide</a>
         </td>
       <td>
         <a pid='@om.PeopleId' title="Add to/Remove from Active Tag" class="taguntag" href="#">@(om.HasTag ? "Remove" : "Add")</a>
