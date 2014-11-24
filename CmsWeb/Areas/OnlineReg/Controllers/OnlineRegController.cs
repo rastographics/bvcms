@@ -445,7 +445,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     p.IsNew = true;
                     m.SendLinkForPledge();
                     DbUtil.Db.SubmitChanges();
-                    SetHeaders(m);
+                    if(!m.UseBootstrap)
+                        SetHeaders(m);
                     return View("ManagePledge/OneTimeLink", m);
                 }
                 if (m.ManageGiving())
@@ -453,7 +454,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     p.IsNew = true;
                     m.SendLinkToManageGiving();
                     DbUtil.Db.SubmitChanges();
-                    SetHeaders(m);
+                    if(!m.UseBootstrap)
+                        SetHeaders(m);
                     return View("ManageGiving/OneTimeLink", m);
                 }
                 if (p.ComputesOrganizationByAge())
