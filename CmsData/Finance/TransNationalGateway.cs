@@ -7,6 +7,7 @@ using System.Text;
 using CmsData.Finance.TransNational.Core;
 using CmsData.Finance.TransNational.Query;
 using CmsData.Finance.TransNational.Transaction.Refund;
+using CmsData.Finance.TransNational.Transaction.Auth;
 using CmsData.Finance.TransNational.Transaction.Sale;
 using CmsData.Finance.TransNational.Transaction.Void;
 using CmsData.Finance.TransNational.Vault;
@@ -354,6 +355,46 @@ namespace CmsData.Finance
             };
         }
 
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
+            int tranid, string cardcode, string email, string first, string last, string addr, string city, string state,
+            string zip, string phone)
+        {
+            var creditCardAuthRequest = new CreditCardAuthRequest(
+                _userName,
+                _password,
+                new CreditCard
+                {
+                    FirstName = first,
+                    LastName = last,
+                    CardNumber = cardnumber,
+                    Expiration = expires,
+                    CardCode = cardcode,
+                    BillingAddress = new BillingAddress
+                    {
+                        Address1 = addr,
+                        City = city,
+                        State = state,
+                        Zip = zip,
+                        Email = email,
+                        Phone = phone
+                    }
+                },
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                description,
+                peopleId.ToString(CultureInfo.InvariantCulture));
+
+            var response = creditCardAuthRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ResponseStatus == ResponseStatus.Approved,
+                AuthCode = response.AuthCode,
+                Message = response.ResponseText,
+                TransactionId = response.TransactionId
+            };
+        }
+
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires,
             string description, int tranid, string cardcode, string email, string first, string last, string addr,
             string city, string state, string zip, string phone)
@@ -422,6 +463,45 @@ namespace CmsData.Finance
                 peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = achSaleRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ResponseStatus == ResponseStatus.Approved,
+                AuthCode = response.AuthCode,
+                Message = response.ResponseText,
+                TransactionId = response.TransactionId
+            };
+        }
+
+        public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
+        {
+            var person = db.LoadPersonById(peopleId);
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo == null)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+            if (!paymentInfo.TbnCardVaultId.HasValue)
+            {
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+            }
+
+            var creditCardVaultAuthRequest = new CreditCardVaultAuthRequest(
+                _userName,
+                _password,
+                paymentInfo.TbnCardVaultId.GetValueOrDefault().ToString(CultureInfo.InvariantCulture),
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                description,
+                peopleId.ToString(CultureInfo.InvariantCulture));
+
+            var response = creditCardVaultAuthRequest.Execute();
 
             return new TransactionResponse
             {
