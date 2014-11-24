@@ -110,6 +110,12 @@ namespace CmsWeb.Models
 
         public bool NoCreditCardsAllowed { get; set; }
         public bool NoEChecksAllowed { get; set; }
+
+        public string SpecialGivingFundsHeader
+        {
+            get { return DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds"); }
+        }
+
         public ManageGivingModel()
         {
             HeadingLabel = DbUtil.Db.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
@@ -144,7 +150,7 @@ namespace CmsWeb.Models
             }
             else if (Setting.ExtraValueFeeName.HasValue())
             {
-                var f = CmsWeb.Models.OnlineRegPersonModel.FundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
+                var f = CmsWeb.Models.OnlineRegPersonModel.FullFundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
                 // reasonable defaults
                 RepeatPattern = "M";
                 Period = "M";
@@ -381,7 +387,7 @@ namespace CmsWeb.Models
         {
             if (FundItem == null)
                 return new List<FundItemChosen>();
-            var items = OnlineRegPersonModel.FundList();
+            var items = OnlineRegPersonModel.FullFundList();
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue

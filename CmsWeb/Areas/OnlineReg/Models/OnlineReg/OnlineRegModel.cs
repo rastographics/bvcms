@@ -26,6 +26,11 @@ namespace CmsWeb.Models
         public string URL { get; set; }
         private int? _masterorgid;
 
+        public bool DisplaySpecialFunds
+        {
+            get { return UseBootstrap && (OnlineGiving() || ManageGiving()); }
+        }
+
         public int? masterorgid
         {
             get { return _masterorgid; }

@@ -77,11 +77,6 @@ namespace CmsWeb.Models
             get { return married == 10 ? "Single" : married == 20 ? "Married" : "not specified"; }
         }
 
-        public string SpecialGivingFundsHeader
-        {
-            get { return DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds"); }
-        }
-
         public IEnumerable<Organization> GetOrgsInDiv()
         {
             return from o in DbUtil.Db.Organizations
@@ -449,63 +444,30 @@ namespace CmsWeb.Models
 
         public SelectListItem[] Funds()
         {
-            if (ShouldPullSpecificFund())
-                return ReturnContributionForSetting();
+            var shouldPullSpecificFund = Parent.OnlineGiving()
+                                         && !Parent.AskDonation()
+                                         && setting.DonationFundId.HasValue;
+
+            if (shouldPullSpecificFund)
+            {
+                var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId);
+                return new[]
+                {
+                    new SelectListItem
+                    {
+                        Text = fund.FundName,
+                        Value = fund.FundId.ToString()
+                    }
+                };
+            }
 
             return FundList();
-        }
-
-        public SelectListItem[] AllFunds()
-        {
-            if (ShouldPullSpecificFund())
-                return ReturnContributionForSetting();
-
-            return FullFundList();
-        }
-
-        public SelectListItem[] SpecialFunds()
-        {
-            if (ShouldPullSpecificFund())
-                return ReturnContributionForSetting();
-
-            return SpecialFundList();
-        }
-
-        private SelectListItem[] ReturnContributionForSetting()
-        {
-            var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId);
-            return new[]
-            {
-                new SelectListItem
-                {
-                    Text = fund.FundName,
-                    Value = fund.FundId.ToString()
-                }
-            };
-        }
-
-        public bool ShouldPullSpecificFund()
-        {
-            return Parent.OnlineGiving()
-                   && !Parent.AskDonation()
-                   && setting.DonationFundId.HasValue;
-        }
-
-        public static SelectListItem[] FullFundList()
-        {
-            return (from f in GetAllOnlineFunds()
-                    where (f.OnlineSort > 0)
-                    select new SelectListItem
-                    {
-                        Text = "{0}".Fmt(f.FundName),
-                        Value = f.FundId.ToString()
-                    }).ToArray();
         }
 
         public static SelectListItem[] FundList()
         {
             return (from f in GetAllOnlineFunds()
-                    where (f.OnlineSort > 0 && f.OnlineSort <= 99)
+                    where (f.OnlineSort > 0 && f.OnlineSort < 100)
                     select new SelectListItem
                     {
                         Text = "{0}".Fmt(f.FundName),
@@ -516,7 +478,11 @@ namespace CmsWeb.Models
         public static SelectListItem[] SpecialFundList()
         {
             return (from f in GetAllOnlineFunds()
-                    where f.OnlineSort > 99
+<<<<<<< HEAD
+                    where f.OnlineSort > 100
+=======
+                    where f.OnlineSort >= 100
+>>>>>>> 30b6630ebd4116627fef2366d5831b0d891af29b
                     select new SelectListItem
                     {
                         Text = "{0}".Fmt(f.FundName),
@@ -561,7 +527,6 @@ namespace CmsWeb.Models
         {
             return NameLookup.ContainsKey(name) ? NameLookup[name] : name;
         }
-
     }
 
     public class FamilyAttendInfo

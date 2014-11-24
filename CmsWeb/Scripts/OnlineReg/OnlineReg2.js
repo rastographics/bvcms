@@ -88,15 +88,15 @@
             $("#fillout").hide();
             $("div.instructions.find").show();
         }
-        else if ($("#otheredit").attr("id"))
+        else if ($("#otheredit").attr("id")) {
             $("div.instructions.options").show();
-        else if ($("#specialedit").attr("id"))
+            initializeSpecialFunds();
+        } else if ($("#specialedit").attr("id"))
             $("div.instructions.special").show();
         else if ($("#username").attr("id")) {
             $("#username").focus();
             $("div.instructions.login").show();
-        }
-        else if ($("#submitit").attr("id"))
+        } else if ($("#submitit").attr("id"))
             $("div.instructions.submit").show();
         else if ($("#sorry").attr("id"))
             $("div.instructions.sorry").show();
@@ -152,8 +152,8 @@
 //        e.preventDefault();
 //        $(this).closest('div').nextAll('div').slideToggle();
 //        return false;
-//    });
-    $("input.sum").live("change", function () {
+    //    });
+    function updateTotal() {
         var sum = 0;
         $("input.sum").each(function () {
             if (!isNaN(this.value) && this.value.length != 0) {
@@ -161,6 +161,9 @@
             }
         });
         $("#total").html(sum.toFixed(2));
+    }
+    $("input.sum").live("change", function () {
+        updateTotal();
     });
     $("input[name=Type]").live("change", $.ShowPaymentInfo);
 
@@ -191,6 +194,71 @@
     if ($("#submitit").attr("onlyoneallowed") == "true" && $(".input-validation-error", $("#completeReg")).length === 0) {
         $("#completeReg").submit();
     }
+
+    // special giving funds
+    function getFundPrefix() {
+        var prefix = '';
+        if (typeof specialGivingFundsPrefix !== "undefined") {
+            prefix = specialGivingFundsPrefix + '.';
+        }
+        return prefix;
+    }
+
+    function addFundRow(id, text) {
+        var rowId = '#special-funds tbody tr#' + id;
+        if ($(rowId).length) {
+            // only set focus to existing row.
+            setDelayedFocus($(rowId).find('input:text'));
+        } else {
+            var i = $('#funds tbody tr').length + $('#special-funds tbody tr').length;
+            var fundIndexer = getFundPrefix() + 'FundItem[' + i + ']';
+            var inputKey = fundIndexer + '.Key';
+            var inputValue = fundIndexer + '.Value';
+            $('#special-funds > tbody:last').append('<tr id="' + id + '"><td style="width: 10px;"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o"></span></a></td><td>' + text + '</td><td><div class="pull-right"><input type="hidden" name="' + inputKey + '" value="' + id + '"><input name="' + inputValue + '" type="text" class="form-control narrow sum"/></div></td></tr>');
+
+            setDelayedFocus($('input[name="' + inputValue + '"]'));
+        }
+
+    }
+
+    function setDelayedFocus($element) {
+        // set focus after 200 milliseconds.
+        var timeoutId = window.setTimeout(function () {
+            $element.focus();
+            window.clearTimeout(timeoutId);
+        }, 200);
+    }
+
+    function initializeSpecialFunds() {
+        $('input:text').first().focus();
+
+        $('#special-funds-list').select2({
+            placeholder: 'Select a Fund'
+        });
+
+        $('#special-funds-list').on('change', function (e) {
+            addFundRow(e.added.id, e.added.text);
+            $('#special-funds-list').select2('val', '');
+        });
+
+        $(document).on("click", "a.remove-fund", function (e) {
+            e.preventDefault();
+            $(this).closest('tr').remove();
+            var startingIndex = $('#funds tbody tr').length;
+            var prefix = getFundPrefix();
+            _($('#special-funds tbody tr')).each(function (item, index) {
+                var fundIndex = startingIndex + index;
+                var fundIndexer = prefix + 'FundItem[' + fundIndex + ']';
+                var inputKey = fundIndexer + '.Key';
+                var inputValue = fundIndexer + '.Value';
+                $('input', item)[0].name = inputKey;
+                $('input', item)[1].name = inputValue;
+            });
+            updateTotal();
+        });
+    }
+
+    
 });
 
 function setElementName(elems, name) {

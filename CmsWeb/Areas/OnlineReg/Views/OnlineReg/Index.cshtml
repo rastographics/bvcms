@@ -8,6 +8,11 @@
 }
 @section head
 {
+    @if (Model.DisplaySpecialFunds)
+    {
+        @Fingerprint.Css("/Content/select2-3.5.2/select2.css")
+        @Fingerprint.Css("/Content/select2-3.5.2/select2-bootstrap.css")
+    }
 }
 @section scripts
 {
@@ -15,10 +20,16 @@
         $.dateFormat = '@Util.jQueryDateFormat';
         $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
         $.tmout = parseInt('@Model.TimeOut');
+        var specialGivingFundsPrefix = "List[0]";
     </script>
     @(Model.UseBootstrap 
         ? @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
-        : @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
+          : @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
+    
+    @if (Model.DisplaySpecialFunds)
+    {
+        @Fingerprint.Script("/Scripts/select2-3.5.2/select2.min.js")
+    }
 }
 <noscript>
     <style type="text/css">

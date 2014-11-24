@@ -285,18 +285,16 @@ namespace UtilityExtensions
             return "<h3 style='color:red'>{0}</h3>\n<a href='{1}'>{2}</a>".Fmt(message, href, text);
         }
 
-        public static void NoCache(this HttpResponse Response)
+        public static void NoCache(this HttpResponse response)
         {
-            Response.Cache.SetExpires(DateTime.Now.AddDays(-1));
-            Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            Response.Cache.SetValidUntilExpires(false);
+            NoCache(new HttpResponseWrapper(response));
         }
 
-        public static void NoCache(this HttpResponseBase Response)
+        public static void NoCache(this HttpResponseBase response)
         {
-            Response.Cache.SetExpires(DateTime.Now.AddDays(-1));
-            Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            Response.Cache.SetValidUntilExpires(false);
+            response.Cache.SetExpires(DateTime.Now.AddDays(-1));
+            response.Cache.SetCacheability(HttpCacheability.NoCache);
+            response.Cache.SetValidUntilExpires(false);
         }
 
         public static void SetCacheMinutes(this HttpResponseBase Response, int minutes)

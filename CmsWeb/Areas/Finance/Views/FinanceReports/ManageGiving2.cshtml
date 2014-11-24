@@ -14,7 +14,7 @@
     <td class="right">Give to Funds:</td>
     <td>
         <table class="@ViewExtensions2.GridClass">
-@{ var funds = CmsWeb.Models.OnlineRegPersonModel.FundList(); }
+@{ var funds = CmsWeb.Models.OnlineRegPersonModel.FullFundList(); }
 @for (var n = 0; n < funds.Length; n++)
 {
     var i = funds[n];
