@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using CmsData;
 using System.Text;
+using System.Web.Mvc;
+using CmsData;
 using CmsData.Finance;
 using CmsData.Registration;
-using UtilityExtensions;
-using System.Web.Mvc;
 using CmsWeb.Code;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -18,22 +18,30 @@ namespace CmsWeb.Models
         public int pid { get; set; }
         public int orgid { get; set; }
         public string RepeatPattern { get; set; }
+
         [DisplayName("Start On or After")]
         public DateTime? StartWhen { get; set; }
+
         public DateTime? StopWhen { get; set; }
         public string SemiEvery { get; set; }
+
         [DisplayName("Day 1 of Month")]
         public int? Day1 { get; set; }
+
         [DisplayName("Day 2 of Month")]
         public int? Day2 { get; set; }
+
         [DisplayName("Repeat every")]
         public int? EveryN { get; set; }
+
         public string Period { get; set; }
         public string Type { get; set; }
         public string Cardnumber { get; set; }
         public DateTime? NextDate { get; set; }
+
         [DisplayName("Expires (MMYY)")]
         public string Expires { get; set; }
+
         public string Cardcode { get; set; }
         public string Routing { get; set; }
         public string Account { get; set; }
@@ -50,12 +58,11 @@ namespace CmsWeb.Models
         public string Zip { get; set; }
         public string Phone { get; set; }
 
-        private Dictionary<int, decimal?> _FundItem = new Dictionary<int, decimal?>();
-
+        private Dictionary<int, decimal?> _fundItem = new Dictionary<int, decimal?>();
         public Dictionary<int, decimal?> FundItem
         {
-            get { return _FundItem; }
-            set { _FundItem = value; }
+            get { return _fundItem; }
+            set { _fundItem = value; }
         }
 
         public decimal? FundItemValue(int n)
@@ -66,21 +73,19 @@ namespace CmsWeb.Models
         }
 
         [NonSerialized]
-        private Person _Person;
-
+        private Person _person;
         public Person person
         {
             get
             {
-                if (_Person == null)
-                    _Person = DbUtil.Db.LoadPersonById(pid);
-                return _Person;
+                if (_person == null)
+                    _person = DbUtil.Db.LoadPersonById(pid);
+                return _person;
             }
         }
 
         [NonSerialized]
         private Organization _organization;
-
         public Organization Organization
         {
             get
@@ -92,19 +97,20 @@ namespace CmsWeb.Models
         }
 
         [NonSerialized]
-        private Settings setting;
+        private Settings _setting;
         public Settings Setting
         {
-            get { return setting ?? (setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid)); }
+            get { return _setting ?? (_setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid)); }
         }
-        private bool? usebootstrap;
+
+        private bool? _usebootstrap;
         public bool UseBootstrap
         {
             get
             {
-                if (!usebootstrap.HasValue)
-                    usebootstrap = Setting.UseBootstrap;
-                return usebootstrap.Value;
+                if (!_usebootstrap.HasValue)
+                    _usebootstrap = Setting.UseBootstrap;
+                return _usebootstrap.Value;
             }
         }
 
@@ -114,6 +120,11 @@ namespace CmsWeb.Models
         public string SpecialGivingFundsHeader
         {
             get { return DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds"); }
+        }
+
+        public bool HasManagedGiving
+        {
+            get { return person.ManagedGiving() != null; }
         }
 
         public ManageGivingModel()
@@ -145,12 +156,12 @@ namespace CmsWeb.Models
                 Period = rg.Period;
                 foreach (var ra in person.RecurringAmounts.AsEnumerable())
                     FundItem.Add(ra.FundId, ra.Amt);
-                
+
                 NextDate = rg.NextDate;
             }
             else if (Setting.ExtraValueFeeName.HasValue())
             {
-                var f = CmsWeb.Models.OnlineRegPersonModel.FullFundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
+                var f = OnlineRegPersonModel.FullFundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
                 // reasonable defaults
                 RepeatPattern = "M";
                 Period = "M";
@@ -179,7 +190,7 @@ namespace CmsWeb.Models
                     Type = PaymentType.CreditCard; // credit card only
                 Type = NoEChecksAllowed ? PaymentType.CreditCard : Type;
             }
-            
+
             FirstName = pi.FirstName ?? person.FirstName;
             Middle = (pi.MiddleInitial ?? person.MiddleName).Truncate(1);
             LastName = pi.LastName ?? person.LastName;
@@ -243,8 +254,8 @@ namespace CmsWeb.Models
 
         public void ValidateModel(ModelStateDictionary modelState)
         {
-            bool dorouting = false;
-            bool doaccount = Account.HasValue() && !Account.StartsWith("X");
+            var dorouting = false;
+            var doaccount = Account.HasValue() && !Account.StartsWith("X");
 
             if (Routing.HasValue() && !Routing.StartsWith("X"))
                 dorouting = true;
@@ -271,6 +282,7 @@ namespace CmsWeb.Models
                 Payments.ValidateBankAccountInfo(modelState, Routing, Account);
             else
                 modelState.AddModelError("Type", "Must select Bank Account or Credit Card");
+
             if (SemiEvery == "S")
             {
                 if (!Day1.HasValue || !Day2.HasValue)
@@ -287,6 +299,7 @@ namespace CmsWeb.Models
             }
             else
                 modelState.AddModelError("SemiEvery", "Must Choose Payment Frequency");
+
             if (!StartWhen.HasValue)
                 modelState.AddModelError("StartWhen", "StartDate must have a value");
             else if (StartWhen <= DateTime.Today)
@@ -309,6 +322,7 @@ namespace CmsWeb.Models
             if (!Phone.HasValue())
                 modelState.AddModelError("Phone", "Needs phone");
         }
+
         public void Update()
         {
             // first check for total amount greater than zero.
@@ -338,7 +352,7 @@ namespace CmsWeb.Models
                 var gateway = DbUtil.Db.Gateway(testing);
                 if (Type == PaymentType.CreditCard)
                 {
-                    // perform $1 auth.  
+                    // perform $1 auth.
                     // need to randomize the $1 amount because some gateways will reject same auth amount
                     // subsequent times per user.
                     var random = new Random();
@@ -389,7 +403,6 @@ namespace CmsWeb.Models
             DbUtil.Db.SubmitChanges();
         }
 
-
         public class FundItemChosen
         {
             public string desc { get; set; }
@@ -405,7 +418,7 @@ namespace CmsWeb.Models
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue
-                    select new FundItemChosen { fundid = m.Value.ToInt(), desc = m.Text, amt = i.Value.Value };
+                    select new FundItemChosen {fundid = m.Value.ToInt(), desc = m.Text, amt = i.Value.Value};
             return q;
         }
 
@@ -419,7 +432,7 @@ namespace CmsWeb.Models
             get
             {
 #if DEBUG
-                return new { AUTOCOMPLETE = "on" };
+                return new {AUTOCOMPLETE = "on"};
 #else
                 return new { AUTOCOMPLETE = "off" };
 #endif
@@ -441,17 +454,18 @@ namespace CmsWeb.Models
 <div class=""instructions sorry"">{6}</div>
 "
                         .Fmt(Setting.InstructionLogin,
-                             Setting.InstructionSelect,
-                             Setting.InstructionFind,
-                             Setting.InstructionOptions,
-                             Setting.InstructionSubmit,
-                             Setting.InstructionSpecial,
-                             Setting.InstructionSorry
+                            Setting.InstructionSelect,
+                            Setting.InstructionFind,
+                            Setting.InstructionOptions,
+                            Setting.InstructionSubmit,
+                            Setting.InstructionSpecial,
+                            Setting.InstructionSorry
                         );
                 ins = OnlineRegModel.DoReplaceForExtraValueCode(ins, person);
                 return ins;
             }
         }
+
         public SelectList PeriodOptions()
         {
             if (UseBootstrap)
@@ -516,16 +530,29 @@ namespace CmsWeb.Models
 
         private string GetThankYouMessage(string def)
         {
-            var msg = Util.PickFirst(setting.ThankYouMessage, def);
+            var msg = Util.PickFirst(_setting.ThankYouMessage, def);
             return msg;
         }
 
         public string AutocompleteOnOff
         {
-            get
-            {
-                return Util.IsDebug() ? "on" : "off";
-            }
+            get { return Util.IsDebug() ? "on" : "off"; }
+        }
+
+        public bool ManagedGivingStopped { get; private set; }
+
+        public void CancelManagedGiving(int peopleId)
+        {
+		    var p = DbUtil.Db.LoadPersonById(peopleId);
+			DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);
+
+			var mg = p.ManagedGiving();
+			if (mg != null)
+				DbUtil.Db.ManagedGivings.DeleteOnSubmit(mg);
+
+			DbUtil.Db.SubmitChanges();
+
+            ManagedGivingStopped = true;
         }
     }
 }

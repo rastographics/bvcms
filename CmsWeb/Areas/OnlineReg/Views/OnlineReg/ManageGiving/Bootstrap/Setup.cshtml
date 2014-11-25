@@ -83,8 +83,8 @@
                             </thead>
                             <tbody>
                                 @{
-                                    var sn = n;
-                                    var index = 0;
+                        var sn = n;
+                        var index = 0;
                                 }
                                 @for (n = 0; n < specialFunds.Length; n++)
                                 {
@@ -120,12 +120,12 @@
                                         </select>
                                     </td>
                                 </tr>
-                               @if (funds.Length == 0 && specialFunds.Length == 1)
-                               {
+                                @if (funds.Length == 0 && specialFunds.Length == 1)
+                                {
                                     @Html.Hidden("total", tot)
-                               }
-                               else
-                               {
+                                }
+                                else
+                                {
                                     <tr>
                                         <td colspan="2"><h4 class="pull-right">TOTAL:</h4></td>
                                         <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">$<span id="total">@tot.ToString2("N2")</span></h2></td>
@@ -141,7 +141,7 @@
             <div class="form-group">
                 <label class="control-label col-sm-3">Repeats</label>
                 <div class="col-sm-9">
-                    @Html.DropDownListFor(m => m.RepeatPattern, Model.RepeatPatternOptions(), new { @class = "form-control"})
+                    @Html.DropDownListFor(m => m.RepeatPattern, Model.RepeatPatternOptions(), new { @class = "form-control" })
                     @Html.HiddenFor(m => m.SemiEvery)
                     <div>@Html.ValidationMessageFor(m => m.SemiEvery)</div>
                 </div>
@@ -154,7 +154,7 @@
                 <div class="form-group">
                     @Html.LabelFor(m => m.EveryN, new { @class = "control-label col-sm-3 labelsize" })
                     <div class="col-sm-9">
-                        @Html.DropDownListFor(m => m.EveryN, Model.EveryNOptions(), new { @class = "form-control narrow", style = "display: inline;" })<span id="RepeatPatternText"> month(s)</span>  
+                        @Html.DropDownListFor(m => m.EveryN, Model.EveryNOptions(), new { @class = "form-control narrow", style = "display: inline;" })<span id="RepeatPatternText"> month(s)</span>
                     </div>
                 </div>
                 @Html.HiddenFor(m => m.Period)
@@ -220,7 +220,17 @@
             @Html.EditorFor(m => m.Zip)
             @Html.EditorFor(m => m.Phone)
         </div>
-        @Helper.OnlineRegSubmitButtonRow("Submit")
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    @if (Model.HasManagedGiving)
+                    {
+                        <button id="stop-manage-giving" class="btn btn-danger">Stop Recurring Giving</button>
+                    }
+                    <input type="submit" id="submitit" class="btn btn-primary" value="Submit">
+                </div>
+            </div>
+        </div>
         @Html.DivValidationMessage("form")
     </form>
 </div>
