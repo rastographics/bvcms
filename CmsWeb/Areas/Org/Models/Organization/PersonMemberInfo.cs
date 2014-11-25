@@ -96,9 +96,9 @@ namespace CmsWeb.Areas.Org.Models
         {
             get { return _Phones; }
         }
-//        public DateTime? LastContactDt { get; set; }
-//        public int? LastContactId { get; set; }
-//        public DateTime? TaskAboutDt { get; set; }
-//        public int? TaskAboutId { get; set; }
+        public DateTime? LastContactDt { get; set; }
+        public int? LastContactId { get; set; }
+        public DateTime? TaskAboutDt { get; set; }
+        public int? TaskAboutId { get; set; }
     }
 }

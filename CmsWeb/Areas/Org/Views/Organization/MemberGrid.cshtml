@@ -51,7 +51,7 @@
         </td>
         <td>
           <a href="">@om.AttendPct.ToString2("N1")%</a>
-          @*@if (om.LastContactDt.HasValue)
+          @if (om.LastContactDt.HasValue)
           {
             <br/><a href="/Contact2/@om.LastContactId" target="contact">@om.LastContactDt.FormatDate2()</a>
           }
@@ -62,7 +62,7 @@
           @if (om.TaskAboutId.HasValue)
           {
             <br/><a href="/Task/@om.TaskAboutId" target="contact" title="@om.TaskAboutDt.FormatDate2()">Task</a> @:Task
-          }*@
+          }
         </td>
         <td>
           @om.Joined.FormatDate2()<br />

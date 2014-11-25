@@ -100,11 +100,9 @@ namespace CmsWeb.Areas.Org.Models
             var q0 = ApplySort();
             q0 = q0.Skip(Pager.StartRow).Take(Pager.PageSize);
 
-            var groupinfo = DbUtil.Db.OrgMemberInfo(OrganizationId).ToDictionary(mm => mm.PeopleId, mm => mm);
-
             var tagownerid = Util2.CurrentTagOwnerId;
             var q = from om in q0
-                    let info = groupinfo[om.PeopleId]
+                    join info in DbUtil.Db.OrgMemberInfo(OrganizationId) on om.PeopleId equals info.PeopleId
                     let p = om.Person
                     select new PersonMemberInfo
                     {
@@ -133,12 +131,12 @@ namespace CmsWeb.Areas.Org.Models
                         MemberTypeId = om.MemberTypeId,
                         InactiveDate = om.InactiveDate,
                         AttendPct = om.AttendPct,
-                        LastAttended = info.LastAttendedDt,
+                        LastAttended = info.LastAttendDt,
                         LastMeetingId = info.LastMeetingId,
-//                        LastContactDt = info.ContactDate,
-//                        LastContactId = info.ContactId,
-//                        TaskAboutDt = info.TaskAboutDt,
-//                        TaskAboutId = info.TaskAboutId,
+                        LastContactDt = info.ContactReceived,
+                        LastContactId = info.ContacteeId,
+                        TaskAboutDt = info.TaskAboutDt,
+                        TaskAboutId = info.TaskAboutId,
                         HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
                         Joined = om.EnrollmentDate,
                     };

@@ -22,17 +22,17 @@ RETURN
 	  OR (@grouptype = 30 /* Pending */ AND om.Pending = 1)
 	  OR (@grouptype = 40 /* Prospect */ AND om.MemberTypeId = 311) -- prospect
 	)
-	AND (ISNULL(LEN(@first), 0) = 0 OR (p.FirstName LIKE @first + '%' OR p.NickName LIKE @first + '%'))
-	AND (ISNULL(LEN(@last), 0) = 0 OR p.LastName LIKE @last + '%' OR p.PeopleId = CONVERT(INT, @last))
+	AND (ISNULL(LEN(@first), 0) = 0 OR (p.FirstName LIKE (@first + '%') OR p.NickName LIKE (@first + '%')))
+	AND (ISNULL(LEN(@last), 0) = 0 OR p.LastName LIKE (@last + '%') OR p.PeopleId = TRY_CONVERT(INT, @last))
 	AND (ISNULL(LEN(@sgprefix), 0) = 0 OR NOT EXISTS(SELECT NULL 
 		FROM dbo.OrgMemMemTags omt 
 		JOIN dbo.MemberTags mt ON mt.Id = omt.MemberTagId
-		WHERE EXISTS(SELECT NULL FROM split(@sgprefix, ',') pf WHERE pf.Value LIKE '-%' AND mt.Name LIKE SUBSTRING(pf.Value, 2, 50) + '%'))
+		WHERE EXISTS(SELECT NULL FROM split(@sgprefix, ',') pf WHERE pf.Value LIKE '-%' AND mt.Name LIKE (SUBSTRING(pf.Value, 2, 50) + '%')))
 	)
 	AND (ISNULL(LEN(@sgprefix), 0) = 0 OR EXISTS(SELECT NULL 
 		FROM dbo.OrgMemMemTags omt 
 		JOIN dbo.MemberTags mt ON mt.Id = omt.MemberTagId
-		WHERE EXISTS(SELECT NULL FROM split(@sgprefix, ',') pf WHERE pf.value NOT LIKE '-%' AND mt.Name LIKE pf.Value + '%'))
+		WHERE EXISTS(SELECT NULL FROM split(@sgprefix, ',') pf WHERE pf.value NOT LIKE '-%' AND mt.Name LIKE (pf.Value + '%')))
 	)
 
 	-- Match Any of @groups

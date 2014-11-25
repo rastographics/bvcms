@@ -1,4 +1,5 @@
-﻿@using CmsData.Codes
+﻿@using System.ServiceModel.Channels
+@using CmsData.Codes
 @using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.VisitorModel
@@ -6,7 +7,7 @@
 <p style="margin-bottom:5px">
   Count: <strong id="visitor-count">@Model.Count()</strong>
   <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
-  @Html.CheckBox("showHidden") Show Hidden Guests 
+  @Html.CheckBox("showHidden") Show Hidden Guests
 </p>
 <table id="MemberGrid" class="@ViewExtensions2.GridClass" cellpadding="4">
   <thead>
@@ -39,31 +40,38 @@
         </td>
         <td>
           @om.MemberStatus<br />
-        @om.Age - @om.BirthDate
-      </td>
-      <td>
-        <a href="http://www.google.com/maps?q=@om.Address,@om.CityStateZip" target="_blank">
-          @om.Address
-        </a><br />
-        @om.CityStateZip
-      </td>
-      <td>
-        @foreach (var ph in om.Phones)
-        {
-          @ph<br />
-        }
-        <a href="mailto:@om.Name <@om.EmailAddress>">@om.EmailAddress</a>
-      </td>
-        <td>
-          @{ var showhide = om.GuestHidden ? "Show" : "Hide"; }
-          <a href="/Meeting/@om.LastMeetingId">@om.LastAttended.FormatDate()</a><br />
-          <a href="/Organization/ShowVisitor/@Model.OrganizationId/@om.PeopleId/@om.LastAttendId/@showhide" class="joinlink"
-             confirm="@showhide @om.Name as a Guest for this Org until next visit?">@showhide</a>
+          @om.Age - @om.BirthDate
         </td>
-      <td>
-        <a pid='@om.PeopleId' title="Add to/Remove from Active Tag" class="taguntag" href="#">@(om.HasTag ? "Remove" : "Add")</a>
-      </td>
-    </tr>
+        <td>
+          <a href="http://www.google.com/maps?q=@om.Address,@om.CityStateZip" target="_blank">
+            @om.Address
+          </a><br />
+          @om.CityStateZip
+        </td>
+        <td>
+          @foreach (var ph in om.Phones)
+          {
+            @ph<br />
+          }
+          <a href="mailto:@om.Name <@om.EmailAddress>">@om.EmailAddress</a>
+        </td>
+        <td>
+          <a href="/Meeting/@om.LastMeetingId">@om.LastAttended.FormatDate()</a><br />
+          @if (om.GuestHidden)
+          {
+            <a href="/Organization/ShowVisitor/@Model.OrganizationId/@om.PeopleId/@om.LastAttendId/Show" class="joinlink"
+               confirm="Show @om.Name as a Guest for this Org?">Show</a>
+          }
+          else
+          {
+            <a href="/Organization/ShowVisitor/@Model.OrganizationId/@om.PeopleId/@om.LastAttendId/Hide" class="joinlink"
+               confirm="Hide @om.Name as a Guest for this Org until next visit?">Show</a>
+          }
+          </td>
+          <td>
+            <a pid='@om.PeopleId' title="Add to/Remove from Active Tag" class="taguntag" href="#">@(om.HasTag ? "Remove" : "Add")</a>
+          </td>
+        </tr>
     }
   </tbody>
 </table>
