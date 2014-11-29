@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
@@ -13,48 +14,33 @@ namespace CmsWeb.Areas.Org.Models
         public int OrganizationId { get; set; }
         public PagerModel2 Pager { get; set; }
         private readonly string nameFilter;
-        private bool showHidden { get; set; }
-        public VisitorModel(int id, string name, bool showHidden)
+        private bool showHiddenGuests { get; set; }
+        private string first;
+        private string last;
+
+        public VisitorModel(int id, CurrentOrg currorg)
         {
             OrganizationId = id;
-            Util2.CurrentOrgId = id;
             Pager = new PagerModel2(Count);
             Pager.Direction = "asc";
             Pager.Sort = "Name";
-            nameFilter = name;
-            this.showHidden = showHidden;
+            nameFilter = currorg.NameFilter;
+            showHiddenGuests = currorg.ShowHidden;
         }
 
         private IQueryable<Person> visitors;
-        private Dictionary<int, GuestList> guestlist;
 
         private IQueryable<Person> FetchVisitors()
         {
-            if (visitors == null)
-            {
-                var mindt = Util.Now.AddDays(-Util2.VisitLookbackDays).Date;
-                guestlist = DbUtil.Db.GuestList(Util2.CurrentOrgId, mindt, showHidden).ToDictionary(gg => gg.PeopleId, gg => gg);
-                visitors = from p in DbUtil.Db.People
-                           join g in DbUtil.Db.GuestList(Util2.CurrentOrgId, mindt, showHidden) on p.PeopleId equals g.PeopleId
-                           select p;
-                        
-                if (nameFilter.HasValue())
-                {
-                    string First, Last;
-                    Util.NameSplit(nameFilter, out First, out Last);
-                    if (First.HasValue())
-                        visitors = from p in visitors
-                                    where p.LastName.StartsWith(Last)
-                                    where p.FirstName.StartsWith(First) || p.NickName.StartsWith(First)
-                                    select p;
-                    else
-                        visitors = from p in visitors
-                                    where p.LastName.StartsWith(Last)
-                                    select p;
-                }
-            }
-            return visitors;
+            var mindt = Util.Now.AddDays(-Util2.VisitLookbackDays).Date;
+            Util.NameSplit(nameFilter, out first, out last);
+            return visitors ??
+                (visitors = from p in DbUtil.Db.People
+                            join g in DbUtil.Db.GuestList(OrganizationId, mindt, showHiddenGuests, first, last) 
+                                on p.PeopleId equals g.PeopleId
+                            select p);
         }
+
         public bool isFiltered
         {
             get { return nameFilter.HasValue(); }
@@ -72,8 +58,7 @@ namespace CmsWeb.Areas.Org.Models
             q = q.Skip(Pager.StartRow).Take(Pager.PageSize);
             var tagownerid = Util2.CurrentTagOwnerId;
             var q2 = from p in q
-                     let prospect = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == p.PeopleId && mm.OrganizationId == OrganizationId && mm.MemberTypeId == MemberTypeCode.Prospect)
-                     let guest = guestlist[p.PeopleId]
+                     join g in DbUtil.Db.GuestList2(OrganizationId) on p.PeopleId equals g.PeopleId
                      select new PersonMemberInfo
                      {
                          PeopleId = p.PeopleId,
@@ -96,12 +81,10 @@ namespace CmsWeb.Areas.Org.Models
                          BFTeacher = p.BFClass.LeaderName,
                          BFTeacherId = p.BFClass.LeaderId,
                          Age = p.Age.ToString(),
-                         LastAttended = guest.MeetingDate,
-                         LastMeetingId = guest.MeetingId,
-                         LastAttendId = guest.AttendId,
-                         GuestHidden = guest.Hidden,
+                         LastAttended = g.LastAttendDt,
+                         Hidden = g.Hidden,
                          HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
-                         MemberTypeId = prospect != null ? MemberTypeCode.Prospect : 0
+                         MemberTypeId = g.MemberTypeId ?? 0
                      };
             return q2;
         }

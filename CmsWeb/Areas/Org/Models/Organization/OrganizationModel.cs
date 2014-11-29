@@ -20,12 +20,12 @@ namespace CmsWeb.Areas.Org.Models
 		public List<ScheduleInfo> schedules { get; set; }
 		public string Schedule { get; set; }
 		public bool IsVolunteerLeader { get; set; }
-		public OrganizationModel(int? id)
+		public OrganizationModel(int id)
 		{
-			OrganizationId = id;
+		    OrganizationId = id;
 			var q = from o in DbUtil.Db.Organizations
 					let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-					where o.OrganizationId == id
+					where o.OrganizationId == OrganizationId
 					select new
 					{
 						o,
@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.Org.Models
     		    Schedule = schedules[0].Display;
             else
                 Schedule = "None";
-			MemberModel = new MemberModel(id, GroupSelectCode.Member, String.Empty);
+			MemberModel = new MemberModel(GroupSelectCode.Member);
 
 			IsVolunteerLeader = VolunteerLeaderInOrg(OrganizationId);
 		}

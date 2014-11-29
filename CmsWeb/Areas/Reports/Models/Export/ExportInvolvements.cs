@@ -190,9 +190,9 @@ namespace CmsWeb.Models
         public static EpplusResult OrgMemberListGroups()
         {
             var Db = DbUtil.Db;
-            var gids = string.Join(",", Util2.CurrentGroups);
+            var gids = string.Join(",", DbUtil.Db.CurrentOrg.Groups);
             var cmd = new SqlCommand(
-                "dbo.OrgMembers {0}, '{1}'".Fmt(Util2.CurrentOrgId, gids));
+                "dbo.OrgMembers {0}, '{1}'".Fmt(DbUtil.Db.CurrentOrg.Id, gids));
             cmd.Connection = new SqlConnection(Util.ConnectionString);
             cmd.Connection.Open();
             return cmd.ExecuteReader().ToExcel("OrgMemberGroups.xlsx");
@@ -263,7 +263,7 @@ namespace CmsWeb.Models
             var Db = DbUtil.Db;
             var q = Db.PeopleQuery(queryid);
             var q2 = from p in q
-                     let bfm = Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == Util2.CurrentOrgId && om.PeopleId == p.PeopleId)
+                     let bfm = Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == DbUtil.Db.CurrentOrg.Id && om.PeopleId == p.PeopleId)
                      let sc = bfm.Organization.OrgSchedules.FirstOrDefault() // SCHED
                      let tm = sc.SchedTime.Value
                      select new

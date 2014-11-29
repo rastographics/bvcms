@@ -215,7 +215,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 DbUtil.Db.CopySession();
                 var from = new MailAddress(p.EmailAddress ?? p.EmailAddress2, p.Name);
-                DbUtil.Db.CurrentOrgId = OrgId;
+                DbUtil.Db.CurrentOrg.Id = OrgId;
                 var gs = new GoerSupporter()
                 {
                     Created = DateTime.Now,
@@ -259,7 +259,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 DbUtil.Db.CopySession();
                 var from = new MailAddress(p.EmailAddress ?? p.EmailAddress2, p.Name);
-                DbUtil.Db.CurrentOrgId = OrgId;
+                DbUtil.Db.CurrentOrg.Id = OrgId;
                 var emailQueue = DbUtil.Db.CreateQueueForSupporters(p.PeopleId, from, Subject, Body, null, plist, false);
                 DbUtil.Db.SendPeopleEmail(emailQueue.Id);
             }

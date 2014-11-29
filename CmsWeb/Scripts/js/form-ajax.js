@@ -4,7 +4,7 @@
             minLength: 3,
             remote: {
                 url: "test",
-                beforeSend: function(jqXhr, settings) {
+                beforeSend: function (jqXhr, settings) {
                     $.SetLoadingIndicator();
                 },
                 replace: function (url, uriEncodedQuery) {
@@ -64,7 +64,7 @@
         event.preventDefault();
         var t = $(this);
         if (t.data("confirm"))
-            bootbox.confirm(t.data("confirm"), function(ret) {
+            bootbox.confirm(t.data("confirm"), function (ret) {
                 if (ret == true)
                     $.formAjaxSubmit(t);
             });
@@ -72,7 +72,7 @@
             $.formAjaxSubmit(t);
         return false;
     });
-    $.formAjaxSubmit = function(a) {
+    $.formAjaxSubmit = function (a) {
         var $form = a.closest("form.ajax");
         $form.attr("action", a[0].href);
         $form.submit();
@@ -82,7 +82,7 @@
         event.preventDefault();
         var t = $(this);
         if (t.data("confirm"))
-            bootbox.confirm(t.data("confirm"), function(ret) {
+            bootbox.confirm(t.data("confirm"), function (ret) {
                 if (ret == true)
                     $.formAjaxClick(t);
             });
@@ -104,7 +104,7 @@
                 url: url,
                 data: data,
                 success: function (ret, status) {
-                    if(a.data("redirect"))
+                    if (a.data("redirect"))
                         window.location = ret;
                     else if ($form.hasClass("modal")) {
                         $form.html(ret).ready(function () {
@@ -153,9 +153,13 @@
             $loadingcount--;
             if ($loadingcount === 0)
                 $("#loading-indicator").hide();
-        }
+        },
+//        error: function () {
+//            $("#loading-indicator").hide();
+//            alert("error in ajax");
+//        },
     });
-    $.SetLoadingIndicator = function() {
+    $.SetLoadingIndicator = function () {
         $("#loading-indicator").css({
             'position': 'absolute',
             'left': $(window).width() / 2,
@@ -164,6 +168,6 @@
         }).show();
         $loadingcount++;
     };
-    if(!$.InitFunctions)
+    if (!$.InitFunctions)
         $.InitFunctions = {};
 });

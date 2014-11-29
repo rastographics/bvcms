@@ -14,34 +14,37 @@ namespace CmsWeb.Areas.Org.Models
     {
         public int? OrganizationId { get; set; }
         public Organization Org { get; set; }
-        private int[] Groups;
-        private int GroupsMode;
-        private int GroupSelect;
-        private string NameFilter;
-        private string SgPrefix;
+        public int GroupSelect { get; set; }
+        public bool ShowHiddenProspects { get; set; }
+
+        private int[] groups;
+        private int groupsMode;
+        private string nameFilter;
+        private string sgPrefix;
 
         public PagerModel2 Pager { get; set; }
-        public MemberModel(int? id, int select, string name, string sgprefix = "")
+        public MemberModel(int select)
         {
-            Util2.CurrentOrgId = id;
-            OrganizationId = id;
-            Org = DbUtil.Db.LoadOrganizationById(id);
-            if (Util2.CurrentGroups != null && @select == GroupSelectCode.Member)
+            var currorg = DbUtil.Db.CurrentOrg;
+            OrganizationId = currorg.Id;
+            Org = DbUtil.Db.LoadOrganizationById(currorg.Id);
+            if (currorg.Groups != null)
             {
-                Groups = Util2.CurrentGroups;
-                GroupsMode = Util2.CurrentGroupsMode;
+                groups = currorg.Groups;
+                groupsMode = currorg.GroupsMode;
             }
             else // No Filter
             {
-                Groups = new int[] { 0 };
-                GroupsMode = 0;
+                groups = new int[] { 0 };
+                groupsMode = 0;
             }
             GroupSelect = select;
             Pager = new PagerModel2(Count);
             Pager.Direction = "asc";
             Pager.Sort = "Name";
-            NameFilter = name;
-            SgPrefix = sgprefix;
+            nameFilter = currorg.NameFilter;
+            sgPrefix = currorg.SgPrefix;
+            ShowHiddenProspects = currorg.ShowHidden;
         }
         public IEnumerable<SelectListItem> SmallGroups()
         {
@@ -60,7 +63,7 @@ namespace CmsWeb.Areas.Org.Models
         }
         public bool isFiltered
         {
-            get { return Util2.CurrentGroups[0] != 0 || NameFilter.HasValue() || SgPrefix.HasValue(); }
+            get { return groups[0] != 0 || nameFilter.HasValue() || sgPrefix.HasValue(); }
         }
 
         private IQueryable<OrganizationMember> members;
@@ -70,20 +73,13 @@ namespace CmsWeb.Areas.Org.Models
                 return members;
 
             string First = null, Last = null;
-            if (NameFilter.HasValue())
-                Util.NameSplit(NameFilter, out First, out Last);
+            if (nameFilter.HasValue())
+                Util.NameSplit(nameFilter, out First, out Last);
 
-            var groups = string.Join(",", Groups);
+            var groups = string.Join(",", this.groups);
             members = from om in DbUtil.Db.OrganizationMembers
                 where om.OrganizationId == OrganizationId
-                where DbUtil.Db.OrgMember(OrganizationId, GroupSelect, First, Last, SgPrefix, groups, GroupsMode).Any(mm => mm.PeopleId == om.PeopleId)
-//                let gc = om.OrgMemMemTags.Count(mt => Groups.Contains(mt.MemberTagId))
-//                // for Match Any
-//                where gc > 0 || Groups[0] <= 0 || GroupsMode == 1
-//                // for Match All
-//                where gc == Groups.Length || Groups[0] <= 0 || GroupsMode == 0
-//                // for Match No SmallGroup assigned
-//                where om.OrgMemMemTags.Count() == 0 || Groups[0] != -1
+                where DbUtil.Db.OrgMember(OrganizationId, GroupSelect, First, Last, sgPrefix, ShowHiddenProspects).Any(mm => mm.PeopleId == om.PeopleId)
                 select om;
 
             return members;
@@ -102,7 +98,6 @@ namespace CmsWeb.Areas.Org.Models
 
             var tagownerid = Util2.CurrentTagOwnerId;
             var q = from om in q0
-                    join info in DbUtil.Db.OrgMemberInfo(OrganizationId) on om.PeopleId equals info.PeopleId
                     let p = om.Person
                     select new PersonMemberInfo
                     {
@@ -131,14 +126,10 @@ namespace CmsWeb.Areas.Org.Models
                         MemberTypeId = om.MemberTypeId,
                         InactiveDate = om.InactiveDate,
                         AttendPct = om.AttendPct,
-                        LastAttended = info.LastAttendDt,
-                        LastMeetingId = info.LastMeetingId,
-                        LastContactDt = info.ContactReceived,
-                        LastContactId = info.ContacteeId,
-                        TaskAboutDt = info.TaskAboutDt,
-                        TaskAboutId = info.TaskAboutId,
+                        LastAttended = om.LastAttended,
                         HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
                         Joined = om.EnrollmentDate,
+                        Hidden = om.Hidden ?? false
                     };
             return q;
         }

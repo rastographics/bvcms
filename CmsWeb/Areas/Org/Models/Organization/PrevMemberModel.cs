@@ -9,19 +9,16 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class PrevMemberModel
     {
-        public int OrganizationId { get; set; }
+        public int? OrganizationId { get; set; }
         public PagerModel2 Pager { get; set; }
-        public PrevMemberModel(int id, string name)
+        public PrevMemberModel()
         {
-            Util2.CurrentOrgId = id;
-            OrganizationId = id;
-            Pager = new PagerModel2(Count);
-            Pager.Direction = "asc";
-            Pager.Sort = "Name";
-            nameFilter = name;
+            currorg = DbUtil.Db.CurrentOrg;
+            OrganizationId = currorg.Id;
+            Pager = new PagerModel2(Count) {Direction = "asc", Sort = "Name"};
         }
         public bool ShowProspects { get; set; }
-        private readonly string nameFilter;
+        private CurrentOrg currorg;
         private IQueryable<EnrollmentTransaction> enrollments;
         private IQueryable<EnrollmentTransaction> FetchPrevMembers()
         {
@@ -43,20 +40,18 @@ namespace CmsWeb.Areas.Org.Models
                                where etd.Person.OrganizationMembers.All(om => om.OrganizationId != OrganizationId)
                                select etd;
 
-                if (nameFilter.HasValue())
+                if (currorg.NameFilter.HasValue())
                 {
-                    string first, last;
-                    Util.NameSplit(nameFilter, out first, out last);
-                    if (first.HasValue())
+                    if (currorg.First.HasValue())
                         enrollments = from om in enrollments
                                        let p = om.Person
-                                       where p.LastName.StartsWith(last)
-                                       where p.FirstName.StartsWith(first) || p.NickName.StartsWith(first)
+                                       where p.LastName.StartsWith(currorg.First)
+                                       where p.FirstName.StartsWith(currorg.First) || p.NickName.StartsWith(currorg.First)
                                        select om;
                     else
                         enrollments = from om in enrollments
                                        let p = om.Person
-                                       where p.LastName.StartsWith(last)
+                                       where p.LastName.StartsWith(currorg.Last)
                                        select om;
                 }
             }
@@ -64,7 +59,7 @@ namespace CmsWeb.Areas.Org.Models
         }
         public bool isFiltered
         {
-            get { return nameFilter.HasValue(); }
+            get { return currorg.NameFilter.HasValue(); }
         }
         int? _count;
         public int Count()

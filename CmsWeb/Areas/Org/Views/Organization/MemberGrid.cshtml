@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using CmsData.Codes
 @using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MemberModel
@@ -51,6 +52,7 @@
         </td>
         <td>
           <a href="">@om.AttendPct.ToString2("N1")%</a>
+@*
           @if (om.LastContactDt.HasValue)
           {
             <br/><a href="/Contact2/@om.LastContactId" target="contact">@om.LastContactDt.FormatDate2()</a>
@@ -63,12 +65,26 @@
           {
             <br/><a href="/Task/@om.TaskAboutId" target="contact" title="@om.TaskAboutDt.FormatDate2()">Task</a> @:Task
           }
+*@
         </td>
         <td>
           @om.Joined.FormatDate2()<br />
           @if (om.LastAttended.HasValue)
           {
-            <a href="/Meeting/@om.LastMeetingId">@om.LastAttended.FormatDate2()</a>
+            <a href="/Organization/GotoMeetingForDate/@Model.OrganizationId/@om.LastAttended.Value.Ticks">@om.LastAttended.FormatDate2()</a><br/>
+          }
+          @if (Model.GroupSelect == GroupSelectCode.Prospect)
+          {
+            if (om.Hidden)
+            {
+              <a href="/Organization/ShowProspect/@Model.OrganizationId/@om.PeopleId/Show" class="joinlink"
+                 confirm="Show @om.Name in Prospect List for this Org?">Show</a>
+            }
+            else
+            {
+              <a href="/Organization/ShowProspect/@Model.OrganizationId/@om.PeopleId/Hide" class="joinlink"
+                 confirm="Hide @om.Name on Prospect List for this Org?">Hide</a>
+            }
           }
         </td>
         <td>

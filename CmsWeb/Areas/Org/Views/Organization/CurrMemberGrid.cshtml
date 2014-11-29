@@ -4,15 +4,34 @@
    ViewData["OrgMemberContext"] = false;
 }
 @Html.Hidden("current-qid", (Guid?)ViewBag.queryid)
-<p>
+<div>
     Count: <strong id="current-count">@Model.Count()</strong>&nbsp;&nbsp;
-    <a class="filtergroupslink bt" href="#" title="filter by name or group">Filter @(Html.Raw(Model.isFiltered ? "<span style='color:red'>(filtered)</span>" : ""))</a>
     @if (User.IsInRole("Edit"))
     {
-        <a href="/SearchAdd2/Dialog/org/@Model.OrganizationId" class="searchadd bt">Add People</a>
-        <a href="/AddToOrgFromTag/@Model.OrganizationId" class="addfromtag bt" title="Add Members From Tag">add from tag</a>
-        <a id="currMembersUpdate" href="/OrgMembersDialog/@Model.OrganizationId" title="Update Members" class="memberdialog bt">update members</a>
+        <a href="/SearchAdd2/Dialog/org/@Model.OrganizationId" class="searchadd btn btn-default">Add People</a>
+        <a href="/AddToOrgFromTag/@Model.OrganizationId" class="addfromtag btn btn-success" title="Add Members From Tag">add from tag</a>
+        <a id="currMembersUpdate" href="/OrgMembersDialog/@Model.OrganizationId" title="Update Members" class="memberdialog btn btn-success">update members</a>
     }
-</p>
+  <div class="filter">
+    <form class="form-inline">
+      Filter <input type="text" class="input-small tip" name="nameFilter" placeholder="Name Filter" 
+             title="Name Filter|
+        First and last name or just last name.|
+        You can put just the first few letters of each.|
+        PeopleId works too." />
+      <input type="text" class="input-small tip" name="sgprefix" placeholder="SmallGroup Filter" 
+             title="SmallGroup Prefix|
+        Match a smallgroup name.
+        You can just use the first few letters of a smallgroup.|
+        Lead with - to exclude.|
+        Comma separate for multiple smallgroups.
+        NONE to find no smallgroups assigned.
+        ALL: to match all." />
+      @Html.CheckBox("showHidden", new { @class = "showHidden" }) Show Hidden Guests
+      <a class="filtergroupslink btn btn-primary" href="#" title="filter by name or group">Filter @(Html.Raw(Model.isFiltered ? "<span style='color:red'>(filtered)</span>" : ""))</a>
+      <a class="clearfilter btn btn-default" href="#">Clear</a>
+    </form>
+  </div>
+</div>
 @Html.Partial("MemberGrid", Model)
 

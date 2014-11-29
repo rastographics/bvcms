@@ -7,6 +7,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using DevDefined.OAuth.Consumer;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -17,26 +18,19 @@ namespace CmsData
         internal Expression HasBalanceInCurrentOrg()
         {
             var tf = CodeIds == "1";
-            var cg = db.CurrentGroups.ToArray();
-            var cgmode = db.CurrentGroupsMode;
-            Expression<Func<Person, bool>> pred = p => (
-                from m in p.OrganizationMembers
-                where m.OrganizationId == db.CurrentOrgId0
-                let gc = m.OrgMemMemTags.Count(mt => cg.Contains(mt.MemberTagId))
-                // for Match Any
-                where gc > 0 || cg[0] <= 0 || cgmode == 1
-                // for Match All
-                where gc == cg.Length || cg[0] <= 0 || cgmode == 0
-                // for Match No SmallGroup assigned
-                where !m.OrgMemMemTags.Any() || cg[0] != -1
-                where m.MemberTypeId != MemberTypeCode.InActive
-                where (m.Pending ?? false) == false
-                where (from t in db.ViewTransactionSummaries
-                       where t.PeopleId == p.PeopleId
-                       where t.OrganizationId == db.CurrentOrgId0
-                       orderby t.RegId descending
-                       select t.IndDue).FirstOrDefault() > 0
-                select m).Any();
+            string first, last;
+            Util.NameSplit(db.CurrentOrg.NameFilter, out first, out last);
+            var co = db.CurrentOrg;
+            Expression<Func<Person, bool>> pred = p =>
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, first, last, co.SgPrefix, co.ShowHidden)
+                    .Select(gg => gg.PeopleId)
+                    .Contains(p.PeopleId)
+                && (from t in db.ViewTransactionSummaries
+                    where t.PeopleId == p.PeopleId
+                    where t.OrganizationId == db.CurrentOrgId0
+                    orderby t.RegId descending
+                    select t.IndDue).FirstOrDefault() > 0;
+
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
@@ -45,52 +39,13 @@ namespace CmsData
         internal Expression InCurrentOrg()
         {
             var tf = CodeIds == "1";
-            var cg = db.CurrentGroups.ToArray();
-            var cgmode = db.CurrentGroupsMode;
-            Expression<Func<Person, bool>> pred = p => (
-                from m in p.OrganizationMembers
-                where m.OrganizationId == db.CurrentOrgId0
-                let gc = m.OrgMemMemTags.Count(mt => cg.Contains(mt.MemberTagId))
-                // for Match Any
-                where gc > 0 || cg[0] <= 0 || cgmode == 1
-                // for Match All
-                where gc == cg.Length || cg[0] <= 0 || cgmode == 0
-                // for Match No SmallGroup assigned
-                where !m.OrgMemMemTags.Any() || cg[0] != -1
-                where m.MemberTypeId != MemberTypeCode.InActive
-                where m.MemberTypeId != MemberTypeCode.Prospect
-                where (m.Pending ?? false) == false
-                select m
-                ).Any();
+            var co = db.CurrentOrg;
+            Expression<Func<Person, bool>> pred = p =>
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, co.First, co.Last, co.SgPrefix, co.ShowHidden)
+                    .Select(gg => gg.PeopleId)
+                    .Contains(p.PeopleId);
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (db.CurrentGroupsPrefix.HasValue())
-            {
-                var aa = db.CurrentGroupsPrefix.Split(',');
-                foreach (var sg in aa)
-                {
-                    Expression<Func<Person, bool>> pred2 = null;
-                    if (sg.StartsWith("-"))
-                    {
-                        var g = sg.Substring(1);
-                        pred2 = p => (from om in p.OrganizationMembers
-                                      where om.OrganizationId == db.CurrentOrgId0
-                                      where om.OrgMemMemTags.All(
-                                          mm => !mm.MemberTag.Name.StartsWith(g))
-                                      select om).Any();
-                    }
-                    else
-                    {
-                        pred2 = p => (from om in p.OrganizationMembers
-                                      where om.OrganizationId == db.CurrentOrgId0
-                                      where om.OrgMemMemTags.Any(
-                                          mm => mm.MemberTag.Name.StartsWith(sg))
-                                      select om).Any();
-                    }
-                    var expr1 = Expression.Invoke(pred2, parm);
-                    expr = Expression.And(expr1, expr);
-                }
-            }
 
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
@@ -99,10 +54,11 @@ namespace CmsData
         internal Expression InactiveCurrentOrg()
         {
             var tf = CodeIds == "1";
+            var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                p.OrganizationMembers.Any(m =>
-                    m.OrganizationId == db.CurrentOrgId0
-                    && m.MemberTypeId == MemberTypeCode.InActive);
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Inactive, co.First, co.Last, co.SgPrefix, co.ShowHidden)
+                    .Select(gg => gg.PeopleId)
+                    .Contains(p.PeopleId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
@@ -110,11 +66,13 @@ namespace CmsData
         }
         internal Expression ProspectCurrentOrg()
         {
+            var cg = string.Join(",", db.CurrentOrg.Groups);
             var tf = CodeIds == "1";
+            var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                p.OrganizationMembers.Any(m =>
-                    m.OrganizationId == db.CurrentOrgId0
-                    && m.MemberTypeId == MemberTypeCode.Prospect);
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Prospect, co.First, co.Last, co.SgPrefix, co.ShowHidden)
+                    .Select(gg => gg.PeopleId)
+                    .Contains(p.PeopleId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
@@ -123,10 +81,11 @@ namespace CmsData
         internal Expression PendingCurrentOrg()
         {
             var tf = CodeIds == "1";
+            var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                p.OrganizationMembers.Any(m =>
-                    m.OrganizationId == db.CurrentOrgId0
-                    && (m.Pending ?? false) == true);
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Pending, co.First, co.Last, co.SgPrefix, co.ShowHidden)
+                    .Select(gg => gg.PeopleId)
+                    .Contains(p.PeopleId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
@@ -155,7 +114,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             var mindt = Util.Now.AddDays(-db.VisitLookbackDays).Date;
 
-            var q = db.GuestList(db.CurrentOrgId0, mindt, showHidden: false);
+            var q = db.GuestList(db.CurrentOrgId0, mindt, db.CurrentOrg.ShowHidden, null, null);
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);

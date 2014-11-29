@@ -1715,6 +1715,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.MinistryInfo> ViewMinistryInfos
+	    {
+		    get { return this.GetTable< View.MinistryInfo>(); }
+
+	    }
+
 	    public Table< View.MissionTripTotal> ViewMissionTripTotals
 	    {
 		    get { return this.GetTable< View.MissionTripTotal>(); }
@@ -2449,14 +2455,29 @@ namespace CmsData
 		public IQueryable< View.GuestList > GuestList(
             [Parameter(DbType="int")] int? oid,
             [Parameter(DbType="datetime")] DateTime? since,
-            [Parameter(DbType="bit")] bool? showHidden
+            [Parameter(DbType="bit")] bool? showHidden,
+            [Parameter(DbType="varchar")] string first,
+            [Parameter(DbType="varchar")] string last
             )
 		{
 			return this.CreateMethodCallQuery< View.GuestList>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 since,
-                showHidden
+                showHidden,
+                first,
+                last
+                );
+		}
+
+		[Function(Name="dbo.GuestList2", IsComposable = true)]
+		public IQueryable< View.GuestList2 > GuestList2(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.GuestList2>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
                 );
 		}
 
@@ -2539,9 +2560,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? grouptype,
             [Parameter(DbType="varchar")] string first,
             [Parameter(DbType="varchar")] string last,
-            [Parameter(DbType="varchar")] string sgprefix,
-            [Parameter(DbType="varchar")] string groups,
-            [Parameter(DbType="int")] int? groupsmode
+            [Parameter(DbType="varchar")] string sgfilter,
+            [Parameter(DbType="bit")] bool? showhidden
             )
 		{
 			return this.CreateMethodCallQuery< View.OrgMember>(this, 
@@ -2550,20 +2570,8 @@ namespace CmsData
                 grouptype,
                 first,
                 last,
-                sgprefix,
-                groups,
-                groupsmode
-                );
-		}
-
-		[Function(Name="dbo.OrgMemberInfo", IsComposable = true)]
-		public IQueryable< View.OrgMemberInfo > OrgMemberInfo(
-            [Parameter(DbType="int")] int? oid
-            )
-		{
-			return this.CreateMethodCallQuery< View.OrgMemberInfo>(this, 
-			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid
+                sgfilter,
+                showhidden
                 );
 		}
 
@@ -3462,6 +3470,22 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.InSmallGroup", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string InSmallGroup(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "sg", DbType="varchar")] string sg
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid,
+                sg
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.BibleFellowshipClassId", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? BibleFellowshipClassId(
@@ -3955,22 +3979,6 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 DateX
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.InSmallGroup", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string InSmallGroup(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "sg", DbType="varchar")] string sg
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                pid,
-                sg
                 ).ReturnValue));
 		}
 

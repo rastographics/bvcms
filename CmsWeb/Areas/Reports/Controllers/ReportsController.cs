@@ -150,7 +150,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult ClassList(string org, OrgSearchModel m)
         {
-            return new ClassListResult(m) { orgid = org == "curr" ? Util2.CurrentOrgId : null };
+            return new ClassListResult(m) { orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null };
         }
 
         [HttpGet]
@@ -350,7 +350,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult OrgLeaders(string org, OrgSearchModel m)
         {
-            return new OrgLeadersResult(m) { orgid = org == "curr" ? Util2.CurrentOrgId : null };
+            return new OrgLeadersResult(m) { orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null };
         }
 
         [HttpGet]
@@ -388,8 +388,8 @@ namespace CmsWeb.Areas.Reports.Controllers
 
             return new RallyRollsheetResult
             {
-                orgid = org == "curr" ? Util2.CurrentOrgId : null,
-                groups = org == "curr" ? Util2.CurrentGroups : new[] { 0 },
+                orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null,
+                groups = org == "curr" ? DbUtil.Db.CurrentOrg.Groups : new[] { 0 },
                 meetingid = meetingid,
                 bygroup = bygroup.HasValue,
                 sgprefix = sgprefix,
@@ -469,8 +469,8 @@ namespace CmsWeb.Areas.Reports.Controllers
             DateTime? dt2 = dt.ToDate();
             return new RollsheetResult
             {
-                orgid = org == "curr" ? Util2.CurrentOrgId : null,
-                groups = org == "curr" ? Util2.CurrentGroups : new[] { 0 },
+                orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null,
+                groups = org == "curr" ? DbUtil.Db.CurrentOrg.Groups : new[] { 0 },
                 meetingid = meetingid,
                 bygroup = bygroup.HasValue,
                 sgprefix = sgprefix,
@@ -619,7 +619,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult ShirtSizes(string org, OrgSearchModel m)
         {
-            int? orgid = org == "curr" ? Util2.CurrentOrgId : null;
+            int? orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null;
             IQueryable<Organization> orgs = m.FetchOrgs();
             IQueryable<ShirtSizeInfo> q = from om in DbUtil.Db.OrganizationMembers
                                           join o in orgs on om.OrganizationId equals o.OrganizationId

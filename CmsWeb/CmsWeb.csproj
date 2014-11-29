@@ -647,6 +647,8 @@
     <Content Include="Areas\Reports\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\bootstrap-editable.css" />
     <Content Include="Content\css\bootstrap-multiselect.css" />
     <Content Include="Content\css\bootstrap-multiselect.min.css">
@@ -695,6 +697,7 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\xml.css" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
@@ -724,12 +727,15 @@
     <Content Include="Errors\DatabaseCreationError.aspx" />
     <Content Include="Errors\DatabaseNotInitialized.aspx" />
     <Content Include="Errors\DatabaseServerNotFound.aspx" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="HtmlPage1.html" />
     <Content Include="HtmlPage2.html" />
     <Content Include="minify.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Scripts\Admin\UpdateFields.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Bootstrap\bootbox.js" />
     <Content Include="Scripts\Bootstrap\bootbox.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-ajax.js" />
@@ -759,6 +765,10 @@
     <Content Include="Scripts\Bootstrap\bootbox.min.js.map">
       <DependentUpon>bootbox.min.js</DependentUpon>
     </Content>
+    <Content Include="Areas\Org\Views\Organization\FilterForm.cshtml" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
@@ -801,6 +811,7 @@
     <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
     <Content Include="Scripts\js\TestScript.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\OnlineReg\OnlineReg2.js" />
     <Content Include="Scripts\OnlineReg\OnlineRegPayment2.js" />
     <Content Include="Scripts\People\mydatatour.js" />

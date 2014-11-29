@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using IronPython.Modules;
 using UtilityExtensions;
 using System.Web.Caching;
 
@@ -11,14 +12,20 @@ namespace CmsData
 {
     public partial class CMSDataContext
     {
-        public int? CurrentOrgId { get; set; }
-        public int CurrentOrgId0 { get { return CurrentOrgId ?? 0; } }
-        public int[] CurrentGroups { get; set; }
-        public string CurrentGroupsPrefix { get; set; }
-        public int CurrentGroupsMode { get; set; }
+        private CurrentOrg currentOrg;
+        public CurrentOrg CurrentOrg
+        {
+            get { return currentOrg ?? (currentOrg = Util2.CurrentOrganization);}
+            set
+            {
+                Util2.CurrentOrganization = value;
+                currentOrg = value;
+            }
+        }
+        public int CurrentOrgId0 { get { return (CurrentOrg ?? new CurrentOrg()).Id ?? 0; } }
         public int CurrentPeopleId { get; set; }
-        public int? CurrentTagOwnerId { get; set; }
         public string CurrentTagName { get; set; }
+        public int? CurrentTagOwnerId { get; set; }
         public int VisitLookbackDays { get; set; }
         public bool OrgMembersOnly { get; set; }
         public bool OrgLeadersOnly { get; set; }
@@ -54,12 +61,7 @@ namespace CmsData
         {
             if (HttpContext.Current != null && HttpContext.Current.Session != null)
             {
-                CurrentOrgId = Util2.CurrentOrgId;
-                CurrentGroups = Util2.CurrentGroups;
-                CurrentGroupsPrefix = Util2.CurrentGroupsPrefix;
-                CurrentGroupsMode = Util2.CurrentGroupsMode;
-                CurrentPeopleId = Util2.CurrentPeopleId;
-                CurrentTagOwnerId = Util2.CurrentTagOwnerId;
+                CurrentOrg = Util2.CurrentOrganization;
                 CurrentTagName = Util2.CurrentTagName;
                 OrgMembersOnly = Util2.OrgMembersOnly;
                 OrgLeadersOnly = Util2.OrgLeadersOnly;
@@ -129,5 +131,57 @@ namespace CmsData
             if (setting != null)
                 Settings.DeleteOnSubmit(setting);
         }
+    }
+
+    public class CurrentOrg
+    {
+        public CurrentOrg()
+        {
+        }
+        public CurrentOrg(int id)
+        {
+            Id = id;
+        }
+        public int? Id { get; set; }
+        public int[] Groups { get; set; }
+        public string JoinedGroups
+        {
+            get
+            {
+                if(Groups != null)
+                    return string.Join(",", Groups);
+                return "0";
+            }
+        }
+        public string GroupsPrefix { get; set; }
+        public string NameFilter { get; set; }
+
+        private string first;
+        public string First
+        {
+            get
+            {
+                if (first != null)
+                    return first;
+                if (NameFilter.HasValue())
+                    Util.NameSplit(NameFilter, out first, out last);
+                return first;
+            }
+        }
+        private string last;
+        public string Last
+        {
+            get
+            {
+                if (last != null)
+                    return last;
+                if (NameFilter.HasValue())
+                    Util.NameSplit(NameFilter, out first, out last);
+                return last;
+            }
+        }
+        public string SgPrefix { get; set; }
+        public int GroupsMode { get; set; }
+        public bool ShowHidden { get; set; }
     }
 }

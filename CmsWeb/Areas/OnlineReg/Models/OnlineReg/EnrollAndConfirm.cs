@@ -287,7 +287,7 @@ namespace CmsWeb.Models
             else
                 message = re.Replace(message, "");
 
-            Db.CurrentOrgId = Orgid;
+            Db.CurrentOrg.Id = Orgid;
             // send confirmations
             if (subject != "DO NOT SEND")
                 Db.Email(NotifyIds[0].FromEmail, p0, elist,
@@ -433,7 +433,7 @@ AmountDue: {4:C}<br/>
                 message = message.Replace("{paid}", p.TotalAmount().ToString("c"));
                 message = message.Replace("{sessiontotal}", amtpaid.ToString("c"));
                 message = message.Replace("{participants}", details);
-                Db.CurrentOrgId = p.orgid;
+                Db.CurrentOrg.Id = p.orgid;
 
                 // send confirmations
                 if (emailSubject != "DO NOT SEND")

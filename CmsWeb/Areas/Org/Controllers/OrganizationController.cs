@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
@@ -18,15 +17,11 @@ namespace CmsWeb.Areas.Org.Controllers
     {
         const string needNotify = "WARNING: please add the notify persons on messages tab.";
 
-        [Route("~/Organization/{id:int}")]
+        [HttpGet, Route("~/Organization/{id:int}")]
         public ActionResult Index(int id)
         {
-            if (Util2.CurrentOrgId != id)
-            {
-                Util2.CurrentGroups = null;
-                Util2.CurrentGroupsPrefix = null;
-                Util2.CurrentGroupsMode = 0;
-            }
+            var db = DbUtil.Db;
+            db.CurrentOrg = new CurrentOrg(id);
 
             var m = new OrganizationModel(id);
 
@@ -48,10 +43,8 @@ namespace CmsWeb.Areas.Org.Controllers
                 var sgleader = DbUtil.Db.IsSmallGroupLeaderOnly(id, Util.UserPeopleId);
                 if (sgleader.HasValue)
                 {
-                    Util2.CurrentGroups = new []{ sgleader.Value };
-                    Util2.CurrentGroupsMode = 0;
-                    m.MemberModel = new MemberModel(id, GroupSelectCode.Member, "", "");
-                    //.m.MemberModel = new MemberModel(id, )
+                    db.CurrentOrg.Groups = new []{ sgleader.Value };
+                    db.CurrentOrg.GroupsMode = 0;
                 }
             }
             if (m.org.LimitToRole.HasValue())
@@ -60,7 +53,6 @@ namespace CmsWeb.Areas.Org.Controllers
 
             DbUtil.LogActivity("Viewing Organization ({0})".Fmt(m.org.OrganizationName), m.org.OrganizationName, orgid: id);
 
-            Util2.CurrentOrgId = m.org.OrganizationId;
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.org.FullName;
             ViewBag.model = m;
@@ -87,10 +79,11 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Content("Cannot delete first org");
             if (!org.PurgeOrg(DbUtil.Db))
                 return Content("error, not deleted");
-            Util2.CurrentOrgId = 0;
-            Util2.CurrentGroups = null;
-            Util2.CurrentGroupsPrefix = null;
-            Util2.CurrentGroupsMode = 0;
+            var currorg = Util2.CurrentOrganization;
+            currorg.Id = 0;
+            currorg.Groups = null;
+            currorg.GroupsPrefix = null;
+            currorg.GroupsMode = 0;
             DbUtil.LogActivity("Delete Org {0}".Fmt(Session["ActiveOrganization"]));
             Session.Remove("ActiveOrganization");
             return Content("ok");
@@ -99,7 +92,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult NewMeeting(string d, string t, int AttendCredit, bool group)
         {
-            var organization = DbUtil.Db.LoadOrganizationById(Util2.CurrentOrgId);
+            var organization = DbUtil.Db.LoadOrganizationById(Util2.CurrentOrganization.Id);
             if (organization == null)
                 return Content("error: no org");
             DateTime dt;
@@ -150,60 +143,62 @@ namespace CmsWeb.Areas.Org.Controllers
         }
 
         [HttpPost]
-        public ActionResult CurrMemberGrid(int id, int[] smallgrouplist, int? selectmode, string namefilter, string sgprefix)
+        public ActionResult CurrMemberGrid(CurrentOrg currorg)
         {
-            ViewBag.OrgMemberContext = true;
-            Util2.CurrentGroups = smallgrouplist;
-            Util2.CurrentGroupsPrefix = sgprefix;
-            Util2.CurrentGroupsMode = selectmode ?? 0;
-            ViewBag.orgname = Session["ActiveOrganization"] + " - Members";
-            var m = new MemberModel(id, GroupSelectCode.Member, namefilter, sgprefix);
+            DbUtil.Db.CurrentOrg = currorg;
+            var m = new MemberModel(GroupSelectCode.Member);
             UpdateModel(m.Pager);
-            return View(m);
+            ViewBag.OrgMemberContext = true;
+            ViewBag.orgname = Session["ActiveOrganization"] + " - Members";
+            return PartialView(m);
         }
         [HttpPost]
-        public ActionResult PrevMemberGrid(int id, string namefilter, bool? ShowProspects)
+        public ActionResult PendingMemberGrid(CurrentOrg currorg)
         {
-            var m = new PrevMemberModel(id, namefilter) { ShowProspects = ShowProspects ?? false };
+            DbUtil.Db.CurrentOrg = currorg;
+            var m = new MemberModel(GroupSelectCode.Pending);
+            UpdateModel(m.Pager);
+            ViewBag.orgname = Session["ActiveOrganization"] + " - Pending Members";
+            return PartialView(m);
+        }
+        [HttpPost]
+        public ActionResult InactiveMemberGrid(CurrentOrg currorg)
+        {
+            DbUtil.Db.CurrentOrg = currorg;
+            var m = new MemberModel(GroupSelectCode.Inactive);
+            UpdateModel(m.Pager);
+            DbUtil.LogActivity("Viewing Inactive for {0}".Fmt(Session["ActiveOrganization"]));
+            ViewBag.orgname = Session["ActiveOrganization"] + " - Inactive Members";
+            return PartialView(m);
+        }
+        [HttpPost]
+        public ActionResult ProspectGrid(CurrentOrg currorg)
+        {
+            DbUtil.Db.CurrentOrg = currorg;
+            var m = new MemberModel(GroupSelectCode.Prospect);
+            UpdateModel(m.Pager);
+            DbUtil.LogActivity("Viewing Prospects for {0}".Fmt(Session["ActiveOrganization"]));
+            ViewBag.orgname = Session["ActiveOrganization"] + " - Prospects";
+            return PartialView(m);
+        }
+        [HttpPost]
+        public ActionResult PrevMemberGrid(CurrentOrg currorg)
+        {
+            DbUtil.Db.CurrentOrg = currorg;
+            var m = new PrevMemberModel();
             UpdateModel(m.Pager);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Previous Members";
             DbUtil.LogActivity("Viewing Prev Members for {0}".Fmt(Session["ActiveOrganization"]));
-            return View(m);
+            return PartialView(m);
         }
         [HttpPost]
-        public ActionResult VisitorGrid(int id, string namefilter, bool showHidden)
+        public ActionResult VisitorGrid(int id, CurrentOrg currorg)
         {
-            var m = new VisitorModel(id, namefilter, showHidden);
-            ViewBag.orgname = Session["ActiveOrganization"] + " - Guests";
+            var m = new VisitorModel(id, currorg);
             UpdateModel(m.Pager);
             DbUtil.LogActivity("Viewing Visitors for {0}".Fmt(Session["ActiveOrganization"]));
-            return View("VisitorGrid", m);
-        }
-        [HttpPost]
-        public ActionResult PendingMemberGrid(int id, string namefilter)
-        {
-            ViewBag.orgname = Session["ActiveOrganization"] + " - Pending Members";
-            var m = new MemberModel(id, GroupSelectCode.Pending, namefilter);
-            UpdateModel(m.Pager);
-            return View(m);
-        }
-        [HttpPost]
-        public ActionResult InactiveMemberGrid(int id, string namefilter)
-        {
-            ViewBag.orgname = Session["ActiveOrganization"] + " - Inactive Members";
-            var m = new MemberModel(id, GroupSelectCode.Inactive, namefilter);
-            UpdateModel(m.Pager);
-            DbUtil.LogActivity("Viewing Inactive for {0}".Fmt(Session["ActiveOrganization"]));
-            return View(m);
-        }
-        [HttpPost]
-        public ActionResult ProspectGrid(int id, string namefilter)
-        {
-            ViewBag.orgname = Session["ActiveOrganization"] + " - Prospects";
-            var m = new MemberModel(id, GroupSelectCode.Prospect, namefilter);
-            UpdateModel(m.Pager);
-            DbUtil.LogActivity("Viewing Prospects for {0}".Fmt(Session["ActiveOrganization"]));
-            return View(m);
+            ViewBag.orgname = Session["ActiveOrganization"] + " - Guests";
+            return PartialView(m);
         }
         [HttpPost]
         public ActionResult MeetingGrid(int id, bool future)
@@ -211,24 +206,25 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new MeetingsModel(id, future);
             UpdateModel(m.Pager);
             DbUtil.LogActivity("Viewing Meetings for {0}".Fmt(Session["ActiveOrganization"]));
-            return View(m);
+            return PartialView(m);
         }
 
         [HttpPost]
         public ActionResult SettingsOrg(int id)
         {
             var m = new OrganizationModel(id);
-            return View(m);
+            return PartialView(m);
         }
         [HttpPost]
         public ActionResult SettingsOrgEdit(int id)
         {
             var m = new OrganizationModel(id);
-            return View(m);
+            return PartialView(m);
         }
         [HttpPost]
         public ActionResult SettingsOrgUpdate(int id)
         {
+            //DbUtil.Db.CurrentOrg.CheckId(id);
             var m = new OrganizationModel(id);
             UpdateModel(m);
             if (!m.org.LimitToRole.HasValue())
@@ -240,20 +236,20 @@ namespace CmsWeb.Areas.Org.Controllers
                 DbUtil.Db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, m.org.OrgSchedules);
                 return View("SettingsOrg", m);
             }
-            return View("SettingsOrgEdit", m);
+            return PartialView("SettingsOrgEdit", m);
         }
 
         [HttpPost]
         public ActionResult SettingsMeetings(int id)
         {
             var m = new OrganizationModel(id);
-            return View(m);
+            return PartialView(m);
         }
         [HttpPost]
         public ActionResult SettingsMeetingsEdit(int id)
         {
             var m = new OrganizationModel(id);
-            return View(m);
+            return PartialView(m);
         }
         [HttpPost]
         public ActionResult SettingsMeetingsUpdate(int id)
@@ -265,8 +261,7 @@ namespace CmsWeb.Areas.Org.Controllers
             m.UpdateSchedules();
             DbUtil.Db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, m.org.OrgSchedules);
             DbUtil.LogActivity("Update SettingsMeetings {0}".Fmt(m.org.OrganizationName));
-            return View("SettingsMeetings", m);
-            //return View("SettingsMeetingsEdit", m);
+            return PartialView("SettingsMeetings", m);
         }
 
         [HttpPost]
@@ -279,20 +274,20 @@ namespace CmsWeb.Areas.Org.Controllers
                     SchedTime = DateTime.Parse("8:00 AM"),
                     AttendCreditId = 1
                 });
-            return View("EditorTemplates/ScheduleInfo", s);
+            return PartialView("EditorTemplates/ScheduleInfo", s);
         }
 
         [HttpPost]
         public ActionResult OrgInfo(int id)
         {
             var m = new OrganizationModel(id);
-            return View(m);
+            return PartialView(m);
         }
         [HttpPost]
         public ActionResult OrgInfoEdit(int id)
         {
             var m = new OrganizationModel(id);
-            return View(m);
+            return PartialView(m);
         }
         [HttpPost]
         public ActionResult OrgInfoUpdate(int id)
@@ -305,7 +300,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 m.org.OrganizationTypeId = null;
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("Update OrgInfo {0}".Fmt(m.org.OrganizationName));
-            return View("OrgInfo", m);
+            return PartialView("OrgInfo", m);
         }
 
         private static Settings GetRegSettings(int id)
@@ -317,13 +312,13 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult OnlineRegAdmin(int id)
         {
-            return View(GetRegSettings(id));
+            return PartialView(GetRegSettings(id));
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult OnlineRegAdminEdit(int id)
         {
-            return View(GetRegSettings(id));
+            return PartialView(GetRegSettings(id));
         }
         [HttpPost]
         public ActionResult OnlineRegAdminUpdate(int id)
@@ -342,12 +337,12 @@ namespace CmsWeb.Areas.Org.Controllers
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return View("OnlineRegAdmin", m);
+                return PartialView("OnlineRegAdmin", m);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Form", ex.Message);
-                return View("OnlineRegAdminEdit", m);
+                return PartialView("OnlineRegAdminEdit", m);
             }
         }
 
@@ -360,7 +355,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult OnlineRegQuestionsEdit(int id)
         {
-            return View(GetRegSettings(id));
+            return PartialView(GetRegSettings(id));
         }
         [HttpPost]
         public ActionResult OnlineRegQuestionsUpdate(int id)
@@ -384,7 +379,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return View("OnlineRegQuestions", m);
+                return PartialView("OnlineRegQuestions", m);
             }
             catch (Exception ex)
             {
@@ -397,13 +392,13 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult OnlineRegFees(int id)
         {
-            return View(GetRegSettings(id));
+            return PartialView(GetRegSettings(id));
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult OnlineRegFeesEdit(int id)
         {
-            return View(GetRegSettings(id));
+            return PartialView(GetRegSettings(id));
         }
         [HttpPost]
         public ActionResult OnlineRegFeesUpdate(int id)
@@ -419,25 +414,25 @@ namespace CmsWeb.Areas.Org.Controllers
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return View("OnlineRegFees", m);
+                return PartialView("OnlineRegFees", m);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Form", ex.Message);
-                return View("OnlineRegFeesEdit", m);
+                return PartialView("OnlineRegFeesEdit", m);
             }
         }
 
         [HttpPost]
         public ActionResult OnlineRegMessages(int id)
         {
-            return View(GetRegSettings(id));
+            return PartialView(GetRegSettings(id));
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult OnlineRegMessagesEdit(int id)
         {
-            return View(GetRegSettings(id));
+            return PartialView(GetRegSettings(id));
         }
         [HttpPost]
         public ActionResult OnlineRegMessagesUpdate(int id)
@@ -453,69 +448,69 @@ namespace CmsWeb.Areas.Org.Controllers
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return View("OnlineRegMessages", m);
+                return PartialView("OnlineRegMessages", m);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Form", ex.Message);
-                return View("OnlineRegMessagesEdit", m);
+                return PartialView("OnlineRegMessagesEdit", m);
             }
         }
 
         [HttpPost]
         public ActionResult NewMenuItem(string id)
         {
-            return View("EditorTemplates/MenuItem", new AskMenu.MenuItem { Name = id });
+            return PartialView("EditorTemplates/MenuItem", new AskMenu.MenuItem { Name = id });
         }
         [HttpPost]
         public ActionResult NewDropdownItem(string id)
         {
-            return View("EditorTemplates/DropdownItem", new AskDropdown.DropdownItem { Name = id });
+            return PartialView("EditorTemplates/DropdownItem", new AskDropdown.DropdownItem { Name = id });
         }
         [HttpPost]
         public ActionResult NewCheckbox(string id)
         {
-            return View("EditorTemplates/CheckboxItem", new AskCheckboxes.CheckboxItem { Name = id });
+            return PartialView("EditorTemplates/CheckboxItem", new AskCheckboxes.CheckboxItem { Name = id });
         }
         [HttpPost]
         public ActionResult NewGradeOption(string id)
         {
-            return View("EditorTemplates/GradeOption", new AskGradeOptions.GradeOption { Name = id });
+            return PartialView("EditorTemplates/GradeOption", new AskGradeOptions.GradeOption { Name = id });
         }
         [HttpPost]
         public ActionResult NewYesNoQuestion(string id)
         {
-            return View("EditorTemplates/YesNoQuestion", new AskYesNoQuestions.YesNoQuestion { Name = id });
+            return PartialView("EditorTemplates/YesNoQuestion", new AskYesNoQuestions.YesNoQuestion { Name = id });
         }
         [HttpPost]
         public ActionResult NewSize(string id)
         {
-            return View("EditorTemplates/Size", new AskSize.Size { Name = id });
+            return PartialView("EditorTemplates/Size", new AskSize.Size { Name = id });
         }
         [HttpPost]
         public ActionResult NewExtraQuestion(string id)
         {
-            return View("EditorTemplates/ExtraQuestion", new AskExtraQuestions.ExtraQuestion { Name = id });
+            return PartialView("EditorTemplates/ExtraQuestion", new AskExtraQuestions.ExtraQuestion { Name = id });
         }
         [HttpPost]
         public ActionResult NewText(string id)
         {
-            return View("EditorTemplates/Text", new AskExtraQuestions.ExtraQuestion { Name = id });
+            return PartialView("EditorTemplates/Text", new AskExtraQuestions.ExtraQuestion { Name = id });
         }
         [HttpPost]
         public ActionResult NewOrgFee(string id)
         {
-            return View("EditorTemplates/OrgFee", new OrgFees.OrgFee { Name = id });
+            return PartialView("EditorTemplates/OrgFee", new OrgFees.OrgFee { Name = id });
         }
         [HttpPost]
         public ActionResult NewAgeGroup()
         {
-            return View("EditorTemplates/AgeGroup", new Settings.AgeGroup());
+            return PartialView("EditorTemplates/AgeGroup", new Settings.AgeGroup());
         }
         [HttpPost]
         public ActionResult NewTimeSlot(string id)
         {
-            return View("EditorTemplates/TimeSlot", new TimeSlots.TimeSlot { Name = id });
+            return PartialView("EditorTemplates/TimeSlot", new TimeSlots.TimeSlot { Name = id });
         }
 
         [HttpPost]
@@ -534,33 +529,33 @@ namespace CmsWeb.Areas.Org.Controllers
                 case "AskParents":
                 case "AskCoaching":
                 case "AskChurch":
-                    return View(template, new Ask(type) { Name = id });
+                    return PartialView(template, new Ask(type) { Name = id });
                 case "AskCheckboxes":
-                    return View(template, new AskCheckboxes() { Name = id });
+                    return PartialView(template, new AskCheckboxes() { Name = id });
                 case "AskDropdown":
-                    return View(template, new AskDropdown() { Name = id });
+                    return PartialView(template, new AskDropdown() { Name = id });
                 case "AskMenu":
-                    return View(template, new AskMenu() { Name = id });
+                    return PartialView(template, new AskMenu() { Name = id });
                 case "AskSuggestedFee":
-                    return View(template, new AskSuggestedFee() { Name = id });
+                    return PartialView(template, new AskSuggestedFee() { Name = id });
                 case "AskSize":
-                    return View(template, new AskSize() { Name = id });
+                    return PartialView(template, new AskSize() { Name = id });
                 case "AskRequest":
-                    return View(template, new AskRequest() { Name = id });
+                    return PartialView(template, new AskRequest() { Name = id });
                 case "AskHeader":
-                    return View(template, new AskHeader() { Name = id });
+                    return PartialView(template, new AskHeader() { Name = id });
                 case "AskInstruction":
-                    return View(template, new AskInstruction() { Name = id });
+                    return PartialView(template, new AskInstruction() { Name = id });
                 case "AskTickets":
-                    return View(template, new AskTickets() { Name = id });
+                    return PartialView(template, new AskTickets() { Name = id });
                 case "AskYesNoQuestions":
-                    return View(template, new AskYesNoQuestions() { Name = id });
+                    return PartialView(template, new AskYesNoQuestions() { Name = id });
                 case "AskExtraQuestions":
-                    return View(template, new AskExtraQuestions() { Name = id });
+                    return PartialView(template, new AskExtraQuestions() { Name = id });
                 case "AskText":
-                    return View(template, new AskText() { Name = id });
+                    return PartialView(template, new AskText() { Name = id });
                 case "AskGradeOptions":
-                    return View(template, new AskGradeOptions() { Name = id });
+                    return PartialView(template, new AskGradeOptions() { Name = id });
             }
             return Content("unexpected type " + type);
         }
@@ -574,9 +569,9 @@ namespace CmsWeb.Areas.Org.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult CopySettings()
         {
-            if (Util.SessionTimedOut() || Util2.CurrentOrgId == 0)
+            if (Util.SessionTimedOut() || DbUtil.Db.CurrentOrg.Id == 0)
                 return Redirect("/");
-            Session["OrgCopySettings"] = Util2.CurrentOrgId;
+            Session["OrgCopySettings"] = DbUtil.Db.CurrentOrg.Id;
             return Redirect("/OrgSearch/");
         }
         [HttpPost, Route("Join/{oid:int}/{pid:int}")]
@@ -618,15 +613,27 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.LogActivity("Adding Prospect {0}({1})".Fmt(org.OrganizationName, pid));
             return Content("ok");
         }
-        [HttpPost, Route("ShowVisitor/{oid:int}/{pid:int}/{aid:int}/{show}")]
-        public ActionResult ShowVisitor(int oid, int pid, int aid, string show)
+        [HttpPost, Route("ShowVisitor/{oid:int}/{pid:int}/{ticks:long}/{show}")]
+        public ActionResult ShowVisitor(int oid, int pid, long ticks, string show)
         {
-            var attend = DbUtil.Db.Attends.SingleOrDefault(aa => aa.AttendId == aid);
+			var dt = new DateTime(ticks); // ticks here is meeting time
+            var attend = DbUtil.Db.Attends.SingleOrDefault(aa => aa.PeopleId == pid && aa.OrganizationId == oid && aa.MeetingDate == dt);
             if(attend == null)
                 return Content("attendance not found");
             attend.NoShow = show.Equal("hide");
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("ShowVisitor {0},{1},{2},{3}".Fmt(oid, pid, aid, show));
+            DbUtil.LogActivity("ShowVisitor {0},{1},{2},{3}".Fmt(oid, pid, attend.AttendId, show));
+            return Content("ok");
+        }
+        [HttpPost, Route("ShowProspect/{oid:int}/{pid:int}/{show}")]
+        public ActionResult ShowProspect(int oid, int pid, string show)
+        {
+            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(aa => aa.OrganizationId == oid && aa.PeopleId == pid);
+            if(om == null)
+                return Content("member not found");
+            om.Hidden = show.Equal("hide");
+            DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("ShowProspect {0},{1},{2}".Fmt(oid, pid, show));
             return Content("ok");
         }
 
@@ -685,7 +692,7 @@ namespace CmsWeb.Areas.Org.Controllers
             Response.NoCache();
             var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
-            Util2.CurrentOrgId = id;
+            DbUtil.Db.CurrentOrg.Id = id;
             DbUtil.Db.SubmitChanges();
             var o = DbUtil.Db.LoadOrganizationById(id);
             string notifyids = null;
@@ -709,7 +716,7 @@ namespace CmsWeb.Areas.Org.Controllers
             if (Util.SessionTimedOut())
                 return Content("<script type='text/javascript'>window.onload = function() { parent.location = '/'; }</script>");
             Response.NoCache();
-            Util2.CurrentOrgId = id;
+            DbUtil.Db.CurrentOrg.Id = id;
             var o = DbUtil.Db.LoadOrganizationById(id);
             Session["orgPickList"] = (o.OrgPickList ?? "").Split(',').Select(oo => oo.ToInt()).ToList();
             return Redirect("/SearchOrgs/" + id);
@@ -721,7 +728,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var selected_pids = (from p in t.People(DbUtil.Db)
                                  orderby p.PeopleId == topid ? "0" : "1"
                                  select p.PeopleId).ToArray();
-            var o = DbUtil.Db.LoadOrganizationById(Util2.CurrentOrgId);
+            var o = DbUtil.Db.LoadOrganizationById(id);
             var notifyids = string.Join(",", selected_pids);
             switch (field)
             {
@@ -745,12 +752,12 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult UpdateOrgIds(int id, string list)
         {
             var o = DbUtil.Db.LoadOrganizationById(id);
-            Util2.CurrentOrgId = id;
+            DbUtil.Db.CurrentOrg.Id = id;
             var m = new Settings(o.RegSetting, DbUtil.Db, id);
             m.org = o;
             o.OrgPickList = list;
             DbUtil.Db.SubmitChanges();
-            return View("OrgPickList2", m);
+            return PartialView("OrgPickList2", m);
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
@@ -766,17 +773,17 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 return Content("error: " + ex.Message);
             }
-            return View("ExtrasGrid", m.org);
+            return PartialView("ExtrasGrid", m.org);
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
-        public ViewResult DeleteExtra(int id, string field)
+        public ActionResult DeleteExtra(int id, string field)
         {
             var e = DbUtil.Db.OrganizationExtras.Single(ee => ee.OrganizationId == id && ee.Field == field);
             DbUtil.Db.OrganizationExtras.DeleteOnSubmit(e);
             DbUtil.Db.SubmitChanges();
             var m = new OrganizationModel(id);
-            return View("ExtrasGrid", m.org);
+            return PartialView("ExtrasGrid", m.org);
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
@@ -836,6 +843,20 @@ namespace CmsWeb.Areas.Org.Controllers
             return RedirectToAction("Index", "Organization", new { id = id });
         }
 
+        [Route("GotoMeetingForDate/{oid:int}/{ticks:long}")]
+        public ActionResult GotoMeetingForDate(int oid, long ticks)
+        {
+			var dt = new DateTime(ticks); // ticks here is meeting time
+            var q = from m in DbUtil.Db.Meetings
+                where m.OrganizationId == oid
+                where m.MeetingDate == dt
+                select m;
+            var meeting = q.FirstOrDefault();
+            if (meeting != null)
+                return Redirect("/Meeting/" + meeting.MeetingId);
+            return Message("no meeting at " + dt.FormatDateTm());
+        }
+
         public ActionResult ReGenPaylinks(int id)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
@@ -851,7 +872,6 @@ namespace CmsWeb.Areas.Org.Controllers
             }
             DbUtil.Db.SubmitChanges();
             return View(org);
-
         }
     }
 }

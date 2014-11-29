@@ -2,7 +2,8 @@
 @using CmsWeb
 @model CmsWeb.Areas.Org.Models.OrganizationModel
 @{
-  Layout = ViewExtensions2.Layout();
+  //Layout = ViewExtensions2.Layout();
+  Layout = "~/Views/Shared/SiteLayout2.cshtml";
   ViewBag.Title = "Organization";
   ViewBag.OrgMemberContext = true;
   var o = Model.org;
@@ -37,6 +38,26 @@
 @Html.Hidden("inactiveQid")
 @Html.Hidden("prospectsQid")
 
+<div id="tab-area" class="tabbable primary-tabs">
+  <ul class="nav nav-tabs">
+    <li><a href="#" data-target="#members" data-toggle="tab" class="active">Members</a></li>
+    <li>
+      <a href="#inactive" data-toggle="tab" class="active">
+        <span>@(Model.org.IsMissionTrip == true ? "Senders" : "Inactive")</span>
+      </a>
+    </li>
+    <li><a id="pending-link" href="#Pending-tab"><span>Pending</span></a></li>
+    <li><a id="priors-link" href="#Priors-tab"><span>Previous</span></a></li>
+    <li><a id="prospects-link" href="#Prospects-tab"><span>Prospects</span></a></li>
+    <li><a id="visitors-link" href="#Visitors-tab"><span>Guests</span></a></li>
+    <li><a href="#Settings-tab"><span>Settings</span></a></li>
+    <li><a id="meetings-link" href="#Meetings-tab"><span>Meetings</span></a></li>
+  </ul>
+  <div class="tab-content">
+  </div>
+</div>
+
+
 <div id="main-tab" style="display: none">
   <ul class="ui-tabs-nav">
     <li><a href="#Members-tab"><span>Members</span></a></li>
@@ -63,11 +84,13 @@
     <form action="/Organization/PrevMemberGrid/@Model.OrganizationId" method="post"></form>
   </div>
   <div id="Prospects-tab">
-    <form action="/Organization/ProspectGrid/@Model.OrganizationId" method="post"></form>
+    <form action="/Organization/ProspectGrid/@Model.OrganizationId" method="post">
+@*      @Html.Hidden("showHidden", false)*@
+    </form>
   </div>
   <div id="Visitors-tab">
     <form action="/Organization/VisitorGrid/@Model.OrganizationId" method="post">
-      @Html.Hidden("showHidden", false)
+@*      @Html.Hidden("showHidden", false)*@
     </form>
   </div>
   <div id="Meetings-tab">

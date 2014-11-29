@@ -652,7 +652,7 @@ namespace CmsData.API
         public void SendVolunteerReminders(int id, bool sendall)
         {
             var org = Db.LoadOrganizationById(id);
-            DbUtil.Db.CurrentOrgId = id;
+            DbUtil.Db.CurrentOrg.Id = id;
             var setting = new Registration.Settings(org.RegSetting, Db, org.OrganizationId);
             setting.org = org;
             var currmembers = (from om in org.OrganizationMembers
@@ -752,7 +752,7 @@ namespace CmsData.API
         public void SendEventReminders(int id)
         {
             var org = Db.LoadOrganizationById(id);
-            Db.CurrentOrgId = id;
+            Db.CurrentOrg.Id = id;
             var setting = new Settings(org.RegSetting, Db, org.OrganizationId) { org = org };
             var currmembers = from om in org.OrganizationMembers
                               where (om.Pending ?? false) == false

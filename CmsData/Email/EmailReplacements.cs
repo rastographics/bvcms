@@ -198,12 +198,12 @@ namespace CmsData
                 case "{orgname}":
                 case "{org}":
                     return
-                        db.Organizations.Where(oo => oo.OrganizationId == db.CurrentOrgId)
+                        db.Organizations.Where(oo => oo.OrganizationId == db.CurrentOrg.Id)
                             .Select(oo => oo.OrganizationName).SingleOrDefault();
 
                 case "{orgmembercount}":
                     return
-                        db.OrganizationMembers.Count(om => om.OrganizationId == db.CurrentOrgId).ToString();
+                        db.OrganizationMembers.Count(om => om.OrganizationId == db.CurrentOrg.Id).ToString();
 
                 case "{paylink}":
                     if (pi != null && pi.PayLink.HasValue())
@@ -322,7 +322,7 @@ namespace CmsData
             if (!match.Success || !emailqueueto.OrgId.HasValue)
                 return code;
             var field = match.Groups["field"].Value;
-            var ev = db.OrganizationExtras.SingleOrDefault(ee => ee.Field == field && ee.OrganizationId == db.CurrentOrgId);
+            var ev = db.OrganizationExtras.SingleOrDefault(ee => ee.Field == field && ee.OrganizationId == db.CurrentOrg.Id);
             if (ev == null || !ev.Data.HasValue())
                 return null;
             return ev.Data;

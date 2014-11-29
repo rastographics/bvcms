@@ -1,14 +1,25 @@
-﻿@using System.ServiceModel.Channels
-@using CmsData.Codes
-@using CmsWeb
+﻿@using CmsData.Codes
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.VisitorModel
 @Html.Hidden("visitor-qid", (Guid?)ViewBag.queryid)
-<p style="margin-bottom:5px">
+<div style="margin-bottom:5px">
   Count: <strong id="visitor-count">@Model.Count()</strong>
   <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
-  @Html.CheckBox("showHidden") Show Hidden Guests
-</p>
+  <div class="filter">
+  <form class="form-inline">
+    <input type="text" class="input-small tip" name="nameFilter" placeholder="Name Filter" 
+      title="Name Filter|
+        First and last name or just last name.|
+        You can put just the first few letters of each.|
+        PeopleId works too." />
+    <input type="text" class="input-small tip" name="sgprefix" placeholder="SmallGroup Filter" 
+      title="SmallGroup Prefix|
+        Match on the first few letters of a small group.|
+        Lead with - to eliminate. Comma separate for more." />
+    @Html.CheckBox("showHidden", new { @class = "showHidden" }) Show Hidden Guests
+  </form>
+  </div>
+</div>
 <table id="MemberGrid" class="@ViewExtensions2.GridClass" cellpadding="4">
   <thead>
     <tr>
@@ -25,53 +36,56 @@
     </tr>
   </thead>
   <tbody>
-    @foreach (var om in Model.Visitors())
+    @foreach (var v in Model.Visitors())
     {
       <tr>
-        <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@om.PeopleId">@om.Name</a></td>
+        <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@v.PeopleId">@v.Name</a></td>
         <td>
-          <a href="/Organization/Join/@Model.OrganizationId/@om.PeopleId" class="joinlink"
-             confirm="Make @om.Name a Member of this Org?">Join Org</a>
-          @if (om.MemberTypeId != MemberTypeCode.Prospect)
+          <a href="/Organization/Join/@Model.OrganizationId/@v.PeopleId" class="joinlink"
+             confirm="Make @v.Name a Member of this Org?">Join Org</a>
+          @if (v.MemberTypeId != MemberTypeCode.Prospect)
           {
-            <br /><a href="/Organization/AddProspect/@Model.OrganizationId/@om.PeopleId" class="joinlink"
-                     confirm="Make @om.Name a Prospect of this Org?">Add as Prospect</a>
+            <br /><a href="/Organization/AddProspect/@Model.OrganizationId/@v.PeopleId" class="joinlink"
+                     confirm="Make @v.Name a Prospect of this Org?">Add as Prospect</a>
           }
         </td>
         <td>
-          @om.MemberStatus<br />
-          @om.Age - @om.BirthDate
+          @v.MemberStatus<br />
+          @v.Age - @v.BirthDate
         </td>
         <td>
-          <a href="http://www.google.com/maps?q=@om.Address,@om.CityStateZip" target="_blank">
-            @om.Address
+          <a href="http://www.google.com/maps?q=@v.Address,@v.CityStateZip" target="_blank">
+            @v.Address
           </a><br />
-          @om.CityStateZip
+          @v.CityStateZip
         </td>
         <td>
-          @foreach (var ph in om.Phones)
+          @foreach (var ph in v.Phones)
           {
             @ph<br />
           }
-          <a href="mailto:@om.Name <@om.EmailAddress>">@om.EmailAddress</a>
+          <a href="mailto:@v.Name <@v.EmailAddress>">@v.EmailAddress</a>
         </td>
         <td>
-          <a href="/Meeting/@om.LastMeetingId">@om.LastAttended.FormatDate()</a><br />
-          @if (om.GuestHidden)
+          @if (v.LastAttended.HasValue)
           {
-            <a href="/Organization/ShowVisitor/@Model.OrganizationId/@om.PeopleId/@om.LastAttendId/Show" class="joinlink"
-               confirm="Show @om.Name as a Guest for this Org?">Show</a>
+            <a href="/Organization/GotoMeetingForDate/@Model.OrganizationId/@v.LastAttended.Value.Ticks">@v.LastAttended.FormatDate()</a><br />
+            if (v.Hidden)
+            {
+              <a href="/Organization/ShowVisitor/@Model.OrganizationId/@v.PeopleId/@v.LastAttended.Value.Ticks/Show" class="joinlink"
+                 confirm="Show @v.Name as a Guest for this Org?">Show</a>
+            }
+            else
+            {
+              <a href="/Organization/ShowVisitor/@Model.OrganizationId/@v.PeopleId/@v.LastAttended.Value.Ticks/Hide" class="joinlink"
+                 confirm="Hide @v.Name as a Guest for this Org until next visit?">Hide</a>
+            }
           }
-          else
-          {
-            <a href="/Organization/ShowVisitor/@Model.OrganizationId/@om.PeopleId/@om.LastAttendId/Hide" class="joinlink"
-               confirm="Hide @om.Name as a Guest for this Org until next visit?">Show</a>
-          }
-          </td>
-          <td>
-            <a pid='@om.PeopleId' title="Add to/Remove from Active Tag" class="taguntag" href="#">@(om.HasTag ? "Remove" : "Add")</a>
-          </td>
-        </tr>
+        </td>
+        <td>
+          <a pid='@v.PeopleId' title="Add to/Remove from Active Tag" class="taguntag" href="#">@(v.HasTag ? "Remove" : "Add")</a>
+        </td>
+      </tr>
     }
   </tbody>
 </table>

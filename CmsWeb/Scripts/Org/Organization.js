@@ -7,6 +7,28 @@
         location.reload();
     }
 };
+    $('a[data-toggle="tab"]').on('shown', function (e) {
+        e.preventDefault();
+        var tab = $(e.target).attr('href').replace("#", "#tab-");;
+        window.location.hash = tab;
+        $.cookie('lasttab', tab);
+        return false;
+    });
+    var lastTab = $.cookie('lasttab');
+    if (window.location.hash) {
+        lastTab = window.location.hash;
+    }
+    if (lastTab) {
+        var tlink = $("a[href='" + lastTab.replace("tab-", "") + "']");
+        var tabparent = tlink.closest("ul").data("tabparent");
+        if (tabparent) {
+            $("a[href='#" + tabparent + "']").click().tab("show");
+        }
+        if (tlink.attr("href") !== '#') {
+            $.cookie('lasttab', tlink.attr("href"));
+            tlink.click().tab("show");
+        }
+    }
 $(function () {
     $("#Settings-tab").tabs();
     $("li.pending-list").hide();
@@ -408,14 +430,7 @@ $(function () {
             $(".bt", f).button();
         });
     });
-    $("#showHidden").live('click', function () {
-        var f = $(this).closest('form');
-        var q = f.serialize();
-        $.post($(f).attr("action"), q, function (ret) {
-            $(f).html(ret);
-        });
-    });
-    $("#ShowProspects").live('click', function () {
+    $("input.showHidden").live('click', function () {
         var f = $(this).closest('form');
         var q = f.serialize();
         $.post($(f).attr("action"), q, function (ret) {
@@ -478,12 +493,13 @@ $(function () {
     });
 
     $.getTable = function (f) {
-        var q = q || f.serialize();
+        var q = f.serialize();
         var ff = $("#FilterGroups form");
         q = q + '&' + ff.serialize();
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
                 $('.bt').button();
+                $("select.tip,input.tip").tooltip({ opacity: 0, showBody: "|" });
                 $(".datepicker").jqdatepicker();
             });
         });
@@ -720,7 +736,8 @@ $(function () {
             });
         }
     });
-    $("#divisionlist").live("click", function (e) {
+    $("#divisionlist").live("" +
+        "click", function (e) {
         e.preventDefault();
         $('#divisionsDialog').dialog("open");
         var iframe = $("<iframe style='width: 100%; height: 99%; border-width: 0;'></iframe>").appendTo("#divisionsDialog");
