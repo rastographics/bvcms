@@ -22,19 +22,6 @@
 @if (Model.UseBootstrap)
 {
     <div class="regform">
-        @if (Model.InMobileAppMode)
-        {
-            <nav class="navbar navbar-default" role="navigation">
-                <div class="container-fluid">
-                    <div class="navbar-header hidden-xs" style="padding-top:5px;">
-                        <a href="@Model.MobileAppReturnUrl" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Return to App</a>
-                    </div>
-                    <div class="navbar-header hidden-sm hidden-md hidden-lg" style="padding-top:5px; padding-left: 15px;">
-                        <a class="btn btn-default" href="@Model.MobileAppReturnUrl"><i class="fa fa-arrow-circle-left"></i> Return to App</a>
-                    </div>
-                </div>
-            </nav>
-        }
         <h3>@Model.Header</h3>
         <h4>We found an existing registration for you.<br />
             Please choose one of the following</h4>

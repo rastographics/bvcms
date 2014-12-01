@@ -24,13 +24,18 @@ namespace CmsWeb.Models
     {
         private const string MOBILE_APP_RETURN_URL = "bvcmsapp://";
 
-        public bool InMobileAppMode
+        public static string Source
         {
-            get { return (bool) HttpContext.Current.Session["source"]; }
+            get { return (string) HttpContext.Current.Session["source"]; }
             set { HttpContext.Current.Session["source"] = value; }
         }
 
-        public string MobileAppReturnUrl
+        public static bool InMobileAppMode
+        {
+            get { return !string.IsNullOrWhiteSpace(Source); }
+        }
+
+        public static string MobileAppReturnUrl
         {
             get { return MOBILE_APP_RETURN_URL; }
         }

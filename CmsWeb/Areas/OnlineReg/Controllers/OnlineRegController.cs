@@ -17,6 +17,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     [RouteArea("OnlineReg", AreaPrefix = "OnlineReg"), Route("{action}/{id?}")]
     public partial class OnlineRegController : CmsController
     {
+        
         [HttpGet]
         [Route("~/OnlineReg/{id:int}")]
         [Route("~/OnlineReg/Index/{id:int}")]
@@ -42,11 +43,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
             if (!id.HasValue)
                 return Message("no organization");
+
+            OnlineRegModel.Source = source;
             var m = new OnlineRegModel()
             {
-                Orgid = id,
-                InMobileAppMode = !string.IsNullOrWhiteSpace(source)
+                Orgid = id
             };
+            
             if (m.org == null && m.masterorg == null)
                 return Message("invalid registration");
 
@@ -763,6 +766,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("incorrect user");
             TempData["er"] = pid;
             return View(m);
+        }
+
+        public ActionResult MobileAppMenu()
+        {
+            ViewBag.InMobileAppMode = OnlineRegModel.InMobileAppMode;
+            ViewBag.MobileAppReturnUrl = OnlineRegModel.MobileAppReturnUrl;
+            return PartialView();
         }
     }
 }

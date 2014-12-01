@@ -22,7 +22,7 @@ namespace CmsWeb.Models
     [Serializable]
     public partial class OnlineRegPersonModel : IXmlSerializable
     {
-        public bool InMobileAppMode { get { return Parent.InMobileAppMode; } }
+        public bool InMobileAppMode { get { return OnlineRegModel.InMobileAppMode; } }
         public int? orgid { get; set; }
         public int? masterorgid { get; set; }
         public int? divid { get; set; }
