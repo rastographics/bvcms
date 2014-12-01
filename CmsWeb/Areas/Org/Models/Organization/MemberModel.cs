@@ -1,50 +1,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
-using CmsData.View;
 using CmsWeb.Models;
-using DocumentFormat.OpenXml.EMMA;
 using UtilityExtensions;
 using System.Web.Mvc;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class MemberModel
+    public class MemberModel : CurrentOrg
     {
         public int? OrganizationId { get; set; }
         public Organization Org { get; set; }
         public int GroupSelect { get; set; }
-        public bool ShowHiddenProspects { get; set; }
-
-        private int[] groups;
-        private int groupsMode;
-        private string nameFilter;
-        private string sgPrefix;
 
         public PagerModel2 Pager { get; set; }
-        public MemberModel(int select)
+        public MemberModel(int select, PagerModel2 pager = null)
         {
-            var currorg = DbUtil.Db.CurrentOrg;
-            OrganizationId = currorg.Id;
-            Org = DbUtil.Db.LoadOrganizationById(currorg.Id);
-            if (currorg.Groups != null)
-            {
-                groups = currorg.Groups;
-                groupsMode = currorg.GroupsMode;
-            }
-            else // No Filter
-            {
-                groups = new int[] { 0 };
-                groupsMode = 0;
-            }
+            OrganizationId = Id;
+            Org = DbUtil.Db.LoadOrganizationById(Id);
             GroupSelect = select;
-            Pager = new PagerModel2(Count);
-            Pager.Direction = "asc";
-            Pager.Sort = "Name";
-            nameFilter = currorg.NameFilter;
-            sgPrefix = currorg.SgPrefix;
-            ShowHiddenProspects = currorg.ShowHidden;
+            Pager = pager ?? new PagerModel2() { Direction = "asc", Sort = "Name" };
+            Pager.GetCount = Count;
         }
         public IEnumerable<SelectListItem> SmallGroups()
         {
@@ -61,10 +37,6 @@ namespace CmsWeb.Areas.Org.Models
             list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return list;
         }
-        public bool isFiltered
-        {
-            get { return groups[0] != 0 || nameFilter.HasValue() || sgPrefix.HasValue(); }
-        }
 
         private IQueryable<OrganizationMember> members;
         private IQueryable<OrganizationMember> FetchMembers()
@@ -73,13 +45,12 @@ namespace CmsWeb.Areas.Org.Models
                 return members;
 
             string First = null, Last = null;
-            if (nameFilter.HasValue())
-                Util.NameSplit(nameFilter, out First, out Last);
+            if (NameFilter.HasValue())
+                Util.NameSplit(NameFilter, out First, out Last);
 
-            var groups = string.Join(",", this.groups);
             members = from om in DbUtil.Db.OrganizationMembers
                 where om.OrganizationId == OrganizationId
-                where DbUtil.Db.OrgMember(OrganizationId, GroupSelect, First, Last, sgPrefix, ShowHiddenProspects).Any(mm => mm.PeopleId == om.PeopleId)
+                where DbUtil.Db.OrgMember(OrganizationId, GroupSelect, First, Last, SgFilter, ShowHidden).Any(mm => mm.PeopleId == om.PeopleId)
                 select om;
 
             return members;

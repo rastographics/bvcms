@@ -22,7 +22,7 @@ namespace CmsData
             Util.NameSplit(db.CurrentOrg.NameFilter, out first, out last);
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, first, last, co.SgPrefix, co.ShowHidden)
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, first, last, co.SgFilter, co.ShowHidden)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId)
                 && (from t in db.ViewTransactionSummaries
@@ -41,7 +41,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, co.First, co.Last, co.SgPrefix, co.ShowHidden)
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, co.First, co.Last, co.SgFilter, co.ShowHidden)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
 
@@ -56,7 +56,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Inactive, co.First, co.Last, co.SgPrefix, co.ShowHidden)
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Inactive, co.First, co.Last, co.SgFilter, co.ShowHidden)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -66,11 +66,10 @@ namespace CmsData
         }
         internal Expression ProspectCurrentOrg()
         {
-            var cg = string.Join(",", db.CurrentOrg.Groups);
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Prospect, co.First, co.Last, co.SgPrefix, co.ShowHidden)
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Prospect, co.First, co.Last, co.SgFilter, co.ShowHidden)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -83,7 +82,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Pending, co.First, co.Last, co.SgPrefix, co.ShowHidden)
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Pending, co.First, co.Last, co.SgFilter, co.ShowHidden)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));

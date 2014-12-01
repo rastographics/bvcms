@@ -92,7 +92,6 @@
       <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.showpassword.js"/>
 
-<!--      <org Include="Scripts/jQuery/jquery-ui-timepicker-addon.js"/>-->
       <org Include="Scripts/Org/Organization.js"/>
       <org Include="Scripts/Dialog/SearchUsers.js"/>
       <org Include="Scripts/js/RegSetting.js"/>

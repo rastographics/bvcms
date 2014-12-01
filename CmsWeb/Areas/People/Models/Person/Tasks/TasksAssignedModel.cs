@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CmsData;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class TasksAssignedModel : TasksModel
     {
-        public TasksAssignedModel(int id) : base(id) { }
+        public TasksAssignedModel(int id, PagerModel2 pager) : base(id, pager) { }
 
         override public IQueryable<Task> DefineModelList()
         {

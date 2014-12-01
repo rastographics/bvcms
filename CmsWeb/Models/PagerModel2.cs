@@ -9,220 +9,253 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
-using Newtonsoft.Json;
 using UtilityExtensions;
-using System.Text;
 using CmsData;
 
 namespace CmsWeb.Models
 {
-	public class PagerModel2
-	{
-		public PagerModel2(CountDelegate count) : this()
-		{
-			GetCount = count;
-		}
-
-		public PagerModel2()
-		{
-			ShowPageSize = true;
-		}
-
-		public string URL { get; set; }
-		public string Sort { get; set; }
-		public string Direction { get; set; }
-
-		public string SortExpression
-		{
-			get
-			{
-				if (Direction == "asc")
-					return Sort;
-				return Sort + " " + Direction;
-			}
-		}
-
-		public delegate int CountDelegate();
-		public CountDelegate GetCount;
-		private int? _count;
-
-		private int count
-		{
-			get
-			{
-				if (!_count.HasValue)
-				{
-					_count = GetCount();
-					if (StartRow >= _count)
-						_Page = null;
-				}
-				return _count.Value;
-			}
-		}
-
-		public void setCountDelegate(CountDelegate count)
-		{
-			GetCount = new CountDelegate(count);
-		}
-
-		public bool ShowPageSize { get; set; }
-		public bool AllowSort { get; set; }
-		public int? pagesize;
-		private readonly int[] pagesizes = { 10, 25, 50, 100, 200 };
-
-		public int PageSize
-		{
-			get
-			{
-				if (pagesize.HasValue)
-					return pagesize.Value;
-				return DbUtil.Db.UserPreference("PageSize", "10").ToInt();
-			}
-			set
-			{
-                if(pagesizes.Contains(value))
-    				DbUtil.Db.SetUserPreference("PageSize", value);
-				pagesize = value;
-			}
-		}
-		private int? _Page;
-		public int? Page
-		{
-			get { return _Page ?? 1; }
-			set { _Page = value; }
-		}
-		public int LastPage()
-		{
-			return (int)Math.Ceiling(count / (double)PageSize);
-		}
-		public int StartRow
-		{
-			get { return (Page.Value - 1) * PageSize; }
-		}
-		public IEnumerable<SelectListItem> PageSizeList()
-		{
-			return pagesizes.Select(i => new SelectListItem { Text = i.ToString(), Selected = PageSize == i });
-		}
-		public IEnumerable<int> PageList()
-		{
-			for (var i = 1; i <= LastPage(); i++)
-			{
-				if (i > 1 && i < Page - 2)
-				{
-					i = Page.Value - 3;
-					yield return 0;
-				}
-				else if (i < LastPage() && i > Page + 2)
-				{
-					i = LastPage() - 1;
-					yield return 0;
-				}
-				else
-					yield return i;
-			}
-		}
-
-        internal void SetWithNoSort(string url, int? page, int ? size)
+    public class PagerModel2
+    {
+        public PagerModel2(CountDelegate count)
+            : this()
         {
-            AllowSort = false;
-            URL = url;
-            if(page.HasValue)
-                Page = page.Value;
-            if(size.HasValue)
-                PageSize = size.Value;
+            GetCount = count;
         }
-        internal void SetWithNoPageSize(string url, int? page, string sort, string dir)
+
+        public PagerModel2()
         {
-            ShowPageSize = false;
-            URL = url;
-            if(page.HasValue)
-                Page = page.Value;
-            if (sort.HasValue())
-                Sort = sort;
-            if (dir.HasValue())
-                Direction = dir;
+            ShowPageSize = true;
         }
-        internal void SetWithPageOnly(string url, int? page)
+
+//        public string URL
+//        {
+//            get
+//            {
+//                if (!_url.HasValue())
+//                    _url = "/{0}/{1}".Fmt(Controller(), Action());
+//                return _url;
+//            }
+//            set { _url = value; }
+//        }
+
+        public string Sort { get; set; }
+        public string Direction { get; set; }
+
+        public string SortExpression
         {
-            ShowPageSize = false;
-            AllowSort = false;
-            URL = url;
-            if(page.HasValue)
-                Page = page.Value;
-        }
-        // All
-        internal void Set(string url, int? page = 1, int? size = null, string sort = null, string dir = null)
-        {
-            AllowSort = true;
-            URL = url;
-            if(page.HasValue)
-                Page = page.Value;
-            if(size.HasValue)
-                PageSize = size.Value;
-            if (sort.HasValue())
-                Sort = sort;
-            if (dir.HasValue())
-                Direction = dir;
-        }
-        public HtmlString SortLink(string label)
-        {
-            var active = "";
-            var asc = " asc";
-            var dir = "asc";
-            if (label == Sort)
+            get
             {
-                active = " active";
-                if(Direction == "asc")
-                    asc = "";
-                dir = Direction == "asc" ? "desc" : "asc";
+                if (Direction == "asc")
+                    return Sort;
+                return Sort + " " + Direction;
             }
-            return new HtmlString("<a href='{0}/{1}/{2}/{3}/{4}' class='ajax{5}{6}'>{3}</a>"
-                .Fmt(URL, Page, PageSize, label, dir, active, asc));
         }
-        public HtmlString SortLink2(string label, string html)
+
+        public delegate int CountDelegate();
+        public CountDelegate GetCount;
+        private int? _count;
+
+        private int count
         {
-            var active = "";
-            var asc = " asc";
-            var dir = "asc";
-            if (label == Sort)
+            get
             {
-                active = " active";
-                if(Direction == "asc")
-                    asc = "";
-                dir = Direction == "asc" ? "desc" : "asc";
+                if (!_count.HasValue)
+                {
+                    _count = GetCount();
+                    if (StartRow >= _count)
+                        _Page = null;
+                }
+                return _count.Value;
             }
-            return new HtmlString("<a href='{0}/{1}/{2}/{3}/{4}' class='ajax{5}{6}'>{7}</a>"
-                .Fmt(URL, Page, PageSize, label, dir, active, asc, html));
         }
-        public HtmlString PageLink(string label, int? page, int? size = null)
+
+        public void setCountDelegate(CountDelegate count)
         {
-            if(ShowPageSize && AllowSort)
-                if(Sort.HasValue())
-                    return new HtmlString("<a href='{0}/{2}/{3}/{4}/{5}' class='ajax'>{1}</a>"
-                        .Fmt(URL, label, page ?? 1, size ?? PageSize, Sort ?? "na", Direction));
-                else
-                    return new HtmlString("<a href='{0}/{2}/{3}' class='ajax'>{1}</a>"
-                        .Fmt(URL, label, page ?? 1, size ?? PageSize));
-            if (ShowPageSize)
-                return new HtmlString("<a href='{0}/{2}/{3}' class='ajax'>{1}</a>"
-                    .Fmt(URL, label, page ?? 1, size ?? PageSize));
-            if (AllowSort)
-                if(Sort.HasValue())
-                    return new HtmlString("<a href='{0}/{2}/{3}/{4}' class='ajax'>{1}</a>"
-                        .Fmt(URL, label, page ?? 1, Sort ?? "na", Direction));
-                else
-                    return new HtmlString("<a href='{0}/{2}' class='ajax'>{1}</a>"
-                        .Fmt(URL, label, page ?? 1));
-            return new HtmlString("<a href='{0}/{2}' class='ajax'>{1}</a>"
-                .Fmt(URL, label, page ?? 1));
+            GetCount = new CountDelegate(count);
         }
+
+        public bool ShowPageSize { get; set; }
+        public bool AllowSort { get; set; }
+        public int? pagesize;
+        private readonly int[] pagesizes = { 10, 25, 50, 100, 200 };
+
+        public int PageSize
+        {
+            get
+            {
+                if (pagesize.HasValue)
+                    return pagesize.Value;
+                return DbUtil.Db.UserPreference("PageSize", "10").ToInt();
+            }
+            set
+            {
+                if (pagesizes.Contains(value))
+                    DbUtil.Db.SetUserPreference("PageSize", value);
+                pagesize = value;
+            }
+        }
+        private int? _Page;
+        private string _url;
+
+        public int? Page
+        {
+            get { return _Page ?? 1; }
+            set { _Page = value; }
+        }
+        public int LastPage()
+        {
+            return (int)Math.Ceiling(count / (double)PageSize);
+        }
+        public int StartRow
+        {
+            get { return (Page.Value - 1) * PageSize; }
+        }
+        public IEnumerable<SelectListItem> PageSizeList()
+        {
+            return pagesizes.Select(i => new SelectListItem { Text = i.ToString(), Selected = PageSize == i });
+        }
+        public IEnumerable<int> PageList()
+        {
+            for (var i = 1; i <= LastPage(); i++)
+            {
+                if (i > 1 && i < Page - 2)
+                {
+                    i = Page.Value - 3;
+                    yield return 0;
+                }
+                else if (i < LastPage() && i > Page + 2)
+                {
+                    i = LastPage() - 1;
+                    yield return 0;
+                }
+                else
+                    yield return i;
+            }
+        }
+
+//        internal void SetWithNoSort(string url, int? page, int? size)
+//        {
+//            AllowSort = false;
+//            URL = url;
+//            if (page.HasValue)
+//                Page = page.Value;
+//            if (size.HasValue)
+//                PageSize = size.Value;
+//        }
+//        internal void SetWithNoPageSize(string url, int? page, string sort, string dir)
+//        {
+//            ShowPageSize = false;
+//            URL = url;
+//            if (page.HasValue)
+//                Page = page.Value;
+//            if (sort.HasValue())
+//                Sort = sort;
+//            if (dir.HasValue())
+//                Direction = dir;
+//        }
+//        internal void SetWithPageOnly(string url, int? page)
+//        {
+//            ShowPageSize = false;
+//            AllowSort = false;
+//            URL = url;
+//            if (page.HasValue)
+//                Page = page.Value;
+//        }
+//        public string Controller()
+//        {
+//            var routeValues = HttpContext.Current.Request.RequestContext.RouteData.Values;
+//
+//            if (routeValues.ContainsKey("controller"))
+//                return (string)routeValues["controller"];
+//
+//            return string.Empty;
+//        }
+//
+//        public string Action()
+//        {
+//            var routeValues = HttpContext.Current.Request.RequestContext.RouteData.Values;
+//
+//            if (routeValues.ContainsKey("action"))
+//                return (string)routeValues["action"];
+//
+//            return string.Empty;
+//        }
+//        // All
+//        internal void Set(string url, int? page = 1, int? size = null, string sort = null, string dir = null)
+//        {
+//            URL = url;
+//            Set(page, size, sort, dir);
+//        }
+//        internal void Set(int? page = 1, int? size = null, string sort = null, string dir = null)
+//        {
+//            AllowSort = true;
+//            if (page.HasValue)
+//                Page = page.Value;
+//            if (size.HasValue)
+//                PageSize = size.Value;
+//            if (sort.HasValue())
+//                Sort = sort ?? "default";
+//            if (dir.HasValue())
+//                Direction = dir ?? "asc";
+//        }
+//        public HtmlString SortLink(string label)
+//        {
+//            var active = "";
+//            var asc = " asc";
+//            var dir = "asc";
+//            if (label == Sort)
+//            {
+//                active = " active";
+//                if (Direction == "asc")
+//                    asc = "";
+//                dir = Direction == "asc" ? "desc" : "asc";
+//            }
+//            return new HtmlString("<a href='{0}/{1}/{2}/{3}/{4}' class='ajax{5}{6}'>{3}</a>"
+//                .Fmt(URL, Page, PageSize, label, dir, active, asc));
+//        }
+//        public HtmlString SortLink2(string label, string html)
+//        {
+//            var active = "";
+//            var asc = " asc";
+//            var dir = "asc";
+//            if (label == Sort)
+//            {
+//                active = " active";
+//                if (Direction == "asc")
+//                    asc = "";
+//                dir = Direction == "asc" ? "desc" : "asc";
+//            }
+//            return new HtmlString("<a href='{0}/{1}/{2}/{3}/{4}' class='ajax{5}{6}'>{7}</a>"
+//                .Fmt(URL, Page, PageSize, label, dir, active, asc, html));
+//        }
+//        public HtmlString PageLink(string label, int? page, int? size = null)
+//        {
+//            if (ShowPageSize && AllowSort)
+//                if (Sort.HasValue())
+//                    return new HtmlString("<a href='{0}/{2}/{3}/{4}/{5}' class='ajax'>{1}</a>"
+//                        .Fmt(URL, label, page ?? 1, size ?? PageSize, Sort ?? "na", Direction));
+//                else
+//                    return new HtmlString("<a href='{0}/{2}/{3}' class='ajax'>{1}</a>"
+//                        .Fmt(URL, label, page ?? 1, size ?? PageSize));
+//            if (ShowPageSize)
+//                return new HtmlString("<a href='{0}/{2}/{3}' class='ajax'>{1}</a>"
+//                    .Fmt(URL, label, page ?? 1, size ?? PageSize));
+//            if (AllowSort)
+//                if (Sort.HasValue())
+//                    return new HtmlString("<a href='{0}/{2}/{3}/{4}' class='ajax'>{1}</a>"
+//                        .Fmt(URL, label, page ?? 1, Sort ?? "na", Direction));
+//                else
+//                    return new HtmlString("<a href='{0}/{2}' class='ajax'>{1}</a>"
+//                        .Fmt(URL, label, page ?? 1));
+//            return new HtmlString("<a href='{0}/{2}' class='ajax'>{1}</a>"
+//                .Fmt(URL, label, page ?? 1));
+//        }
         public HtmlString PageSizeItem(string label, int? page, int? size = null, bool? disable = null)
         {
             var disabled = "";
             if (disable == true)
                 disabled = " class='disabled'";
-            if(AllowSort)
+            if (AllowSort)
                 return new HtmlString("<li{6}><a href='{0}/{1}/{2}/{3}/{4}' class='ajax'>{5}</a></li>"
                     .Fmt(URL, page ?? 1, size ?? PageSize, Sort ?? "na", Direction, label, disabled));
             return new HtmlString("<li{4}><a href='{0}/{1}/{2}' class='ajax'>{3}</a></li>"

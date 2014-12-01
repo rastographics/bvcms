@@ -11,11 +11,11 @@ namespace CmsWeb.Areas.Org.Models
     {
         public int? OrganizationId { get; set; }
         public PagerModel2 Pager { get; set; }
-        public PrevMemberModel()
+        public PrevMemberModel(PagerModel2 pager = null)
         {
             currorg = DbUtil.Db.CurrentOrg;
             OrganizationId = currorg.Id;
-            Pager = new PagerModel2(Count) {Direction = "asc", Sort = "Name"};
+            Pager = pager ?? new PagerModel2() {Direction = "asc", Sort = "Name"};
         }
         public bool ShowProspects { get; set; }
         private CurrentOrg currorg;

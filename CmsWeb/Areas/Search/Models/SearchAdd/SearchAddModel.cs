@@ -11,6 +11,7 @@ using System.Text;
 using System.Web;
 using CmsData.Codes;
 using CmsWeb.Code;
+using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
 
@@ -74,12 +75,13 @@ namespace CmsWeb.Areas.Search.Models
         public int Index { get; set; }
         private Organization org;
 
-        public SearchAddModel()
+        public SearchAddModel(PagerModel2 pager = null)
+            : base(pager)
         {
             PendingList = new List<PendingPersonModel>();
         }
-        public SearchAddModel(string context, string contextid) 
-            : this()
+        public SearchAddModel(string context, string contextid, PagerModel2 pager = null) 
+            : this(pager)
         {
             AddContext = context;
             PrimaryKeyForContextType = contextid;

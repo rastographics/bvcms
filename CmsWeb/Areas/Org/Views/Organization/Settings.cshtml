@@ -1,0 +1,45 @@
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+<ul class="nav nav-tabs subnav" data-tabparent="Settings-Tab">
+  <li><a href="#SettingsOrg" class="ajax active" data-toggle="tab">General</a></li>
+  <li><a href="#SettingsMeetings" class="ajax" data-toggle="tab">Attendance</a></li>
+  <li><a href="#OnlineRegAdmin" class="ajax" data-toggle="tab">Registration</a></li>
+  <li><a href="#OnlineRegFees" class="ajax" data-toggle="tab">Fees</a></li>
+  <li><a href="#OnlineRegQuestions" class="ajax" data-toggle="tab">Questions</a></li>
+  <li><a href="#OnlineRegMessages" class="ajax" data-toggle="tab">Messages</a></li>
+  <li><a href="#ExtraValues" class="ajax" data-toggle="tab">Extra Values</a></li>
+</ul> 
+<div class="tab-content">
+  <div id="SettingsOrg" class="tab-pane settings" data-link="/Organization/SettingsOrg/@Model.OrganizationId">
+    @Html.Partial("SettingsOrg")
+  </div>
+  <div id="SettingsMeetings" class="tab-pane settings" data-link="/Organization/SettingsMeetings/@Model.OrganizationId"></div>
+  <div id="OnlineRegAdmin" class="tab-pane settings" data-link="/Organization/OnlineRegAdmin/@Model.OrganizationId"></div>
+  <div id="OnlineRegFees" class="tab-pane settings" data-link="/Organization/OnlineRegFees/@Model.OrganizationId"></div>
+  <div id="OnlineRegQuestions" class="tab-pane settings" data-link="/Organization/OnlineRegQuestions/@Model.OrganizationId"></div>
+  <div id="OnlineRegMessages" class="tab-pane settings no0" data-link="/Organization/OnlineRegMessages/@Model.OrganizationId"></div>
+  <div id="ExtraValues" class="tab-pane settings" data-link="/Organization/OnlineRegAdmin/@Model.OrganizationId">
+    <table id="extras" class="@ViewExtensions2.GridClass">
+      <thead>
+        <tr>
+          <td>
+            Field
+          </td>
+          <td>
+            Value
+          </td>
+          <td>
+            @if (User.IsInRole("Edit"))
+            {
+              <a id="newextravalue" href="#">
+                <img src="/Content/images/plus1.png" />
+              </a>
+            }
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        @Html.Partial("ExtrasGrid", Model.org)
+      </tbody>
+    </table>
+  </div>
+</div>

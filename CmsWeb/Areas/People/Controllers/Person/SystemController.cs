@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -86,11 +87,10 @@ namespace CmsWeb.Areas.People.Controllers
             return Redirect("/");
         }
 
-        [HttpPost, Route("Changes/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult Changes(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult Changes(int id, PagerModel2 pager)
         {
-            var m = new ChangesModel(id);
-            m.Pager.Set("/Person2/Changes/" + id, page, size, sort, dir);
+            var m = new ChangesModel(id, pager);
             return View("System/Changes", m);
         }
         [HttpPost, Route("Reverse/{id:int}/{pf}/{field}")]

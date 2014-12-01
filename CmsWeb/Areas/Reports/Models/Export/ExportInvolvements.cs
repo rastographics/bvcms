@@ -190,9 +190,8 @@ namespace CmsWeb.Models
         public static EpplusResult OrgMemberListGroups()
         {
             var Db = DbUtil.Db;
-            var gids = string.Join(",", DbUtil.Db.CurrentOrg.Groups);
             var cmd = new SqlCommand(
-                "dbo.OrgMembers {0}, '{1}'".Fmt(DbUtil.Db.CurrentOrg.Id, gids));
+                "dbo.OrgMembers {0}, '{1}'".Fmt(DbUtil.Db.CurrentOrg.Id, DbUtil.Db.CurrentOrg.SgFilter));
             cmd.Connection = new SqlConnection(Util.ConnectionString);
             cmd.Connection.Open();
             return cmd.ExecuteReader().ToExcel("OrgMemberGroups.xlsx");

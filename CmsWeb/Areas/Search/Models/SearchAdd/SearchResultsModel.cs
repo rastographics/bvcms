@@ -34,8 +34,8 @@ namespace CmsWeb.Areas.Search.Models
         private string[] usersOnlyContextTypes = { "taskdelegate", "taskowner", "taskdelegate2" };
         public bool UsersOnly { get { return usersOnlyContextTypes.Contains(AddContext.ToLower()); } }
 
-        public SearchResultsModel()
-            : base(null, null)
+        public SearchResultsModel(PagerModel2 pager)
+            : base(null, null, pager)
         {
             Pager.ShowPageSize = false;
         }

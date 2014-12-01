@@ -10,8 +10,8 @@ namespace CmsWeb.Areas.People.Models
         public CmsData.Person person;
         public string AddTask { get; set; }
 
-        protected TasksModel(int id)
-            : base("Completed", "desc")
+        protected TasksModel(int id, PagerModel2 pager)
+            : base("Completed", "desc", pager)
         {
             person = DbUtil.Db.LoadPersonById(id);
         }

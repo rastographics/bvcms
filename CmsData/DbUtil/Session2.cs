@@ -135,27 +135,24 @@ namespace CmsData
 
     public class CurrentOrg
     {
-        public CurrentOrg()
-        {
-        }
-        public CurrentOrg(int id)
-        {
-            Id = id;
-        }
         public int? Id { get; set; }
-        public int[] Groups { get; set; }
-        public string JoinedGroups
-        {
-            get
-            {
-                if(Groups != null)
-                    return string.Join(",", Groups);
-                return "0";
-            }
-        }
-        public string GroupsPrefix { get; set; }
         public string NameFilter { get; set; }
+        public string SgFilter { get; set; }
+        public bool ShowHidden { get; set; }
+        public bool ClearFilter { get; set; }
 
+        public bool isFiltered
+        {
+            get { return SgFilter.HasValue() || NameFilter.HasValue(); }
+        }
+        public void Clear()
+        {
+            first = null;
+            last = null;
+            SgFilter = null;
+            NameFilter = null;
+            ClearFilter = false;
+        }
         private string first;
         public string First
         {
@@ -180,8 +177,5 @@ namespace CmsData
                 return last;
             }
         }
-        public string SgPrefix { get; set; }
-        public int GroupsMode { get; set; }
-        public bool ShowHidden { get; set; }
     }
 }

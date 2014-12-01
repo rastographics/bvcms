@@ -211,3 +211,47 @@ textarea.html {
 li.hidy {
     display: none;
 }
+
+.primary-tabs .nav-tabs {
+  margin-bottom: 20px;
+}
+.primary-tabs .nav-tabs.subnav {
+  margin-top: 0;
+  border-color: #CCC;
+  background: #CDCDCD;
+  font-size: 90%;
+}
+.primary-tabs .nav-tabs.subnav > li > a {
+  color: #555;
+}
+.primary-tabs .nav-tabs.subnav > .active > a {
+  color: #333;
+  background-color: #FFF;
+}
+.primary-tabs .nav-tabs > li {
+  margin-bottom: -1px;
+}
+.primary-tabs .nav-tabs > li > a {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-right: 20px;
+  padding-left: 20px;
+  line-height: 1.5;
+  border-right: 1px solid #bdbdbd;
+  border-radius: 0px;
+  margin-right: 0;
+}
+.primary-tabs .nav-tabs > li > a:hover,
+.primary-tabs .nav-tabs > li > a:focus {
+  border-color: #fdfdfd #fdfdfd #dddddd;
+  border-right: 1px solid #bdbdbd;
+  border-radius: 0px;
+}
+.primary-tabs .nav-tabs > .active a,
+.primary-tabs .nav-tabs > .active a:hover,
+.primary-tabs .nav-tabs > .active a:focus {
+  color: #555555;
+  background-color: #dddddd;
+  cursor: default;
+  border-radius: 0px;
+}

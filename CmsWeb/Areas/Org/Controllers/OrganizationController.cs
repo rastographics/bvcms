@@ -2,9 +2,12 @@ using System;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using CmsData;
 using CmsData.Registration;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Models;
+using DocumentFormat.OpenXml.Spreadsheet;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -21,9 +24,10 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Index(int id)
         {
             var db = DbUtil.Db;
-            db.CurrentOrg = new CurrentOrg(id);
+            db.CurrentOrg = new CurrentOrg() { Id=id };
 
             var m = new OrganizationModel(id);
+            m.MemberModel.Pager.Set("/Organization/CurrMemberGrid");
 
             if (m.org == null)
                 return Content("organization not found");
@@ -40,12 +44,9 @@ namespace CmsWeb.Areas.Org.Controllers
                 var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(m.org.OrganizationId))
                     return NotAllowed("You must be a leader of this organization", m.org.OrganizationName);
-                var sgleader = DbUtil.Db.IsSmallGroupLeaderOnly(id, Util.UserPeopleId);
-                if (sgleader.HasValue)
-                {
-                    db.CurrentOrg.Groups = new []{ sgleader.Value };
-                    db.CurrentOrg.GroupsMode = 0;
-                }
+                var sgleader = DbUtil.Db.SmallGroupLeader(id, Util.UserPeopleId);
+                if (sgleader.HasValue())
+                    db.CurrentOrg.SgFilter = sgleader;
             }
             if (m.org.LimitToRole.HasValue())
                 if (!User.IsInRole(m.org.LimitToRole))
@@ -81,9 +82,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Content("error, not deleted");
             var currorg = Util2.CurrentOrganization;
             currorg.Id = 0;
-            currorg.Groups = null;
-            currorg.GroupsPrefix = null;
-            currorg.GroupsMode = 0;
+            currorg.SgFilter = null;
             DbUtil.LogActivity("Delete Org {0}".Fmt(Session["ActiveOrganization"]));
             Session.Remove("ActiveOrganization");
             return Content("ok");
@@ -143,70 +142,74 @@ namespace CmsWeb.Areas.Org.Controllers
         }
 
         [HttpPost]
-        public ActionResult CurrMemberGrid(CurrentOrg currorg)
+        public ActionResult CurrMemberGrid(CurrentOrg currorg, PagerModel2 pager, bool clearFilter)
         {
-            DbUtil.Db.CurrentOrg = currorg;
-            var m = new MemberModel(GroupSelectCode.Member);
-            UpdateModel(m.Pager);
+            if(clearFilter)
+                currorg.Clear();
+            //DbUtil.Db.CurrentOrg = currorg;
+            var m = new MemberModel(GroupSelectCode.Member, pager);
             ViewBag.OrgMemberContext = true;
             ViewBag.orgname = Session["ActiveOrganization"] + " - Members";
-            return PartialView(m);
+            return PartialView("Grids/Current",m);
         }
         [HttpPost]
-        public ActionResult PendingMemberGrid(CurrentOrg currorg)
+        public ActionResult PendingMemberGrid(CurrentOrg currorg, PagerModel2 pager, bool clearFilter)
         {
-            DbUtil.Db.CurrentOrg = currorg;
-            var m = new MemberModel(GroupSelectCode.Pending);
-            UpdateModel(m.Pager);
+            if(clearFilter)
+                currorg.Clear();
+            //DbUtil.Db.CurrentOrg = currorg;
+            var m = new MemberModel(GroupSelectCode.Pending, pager);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Pending Members";
-            return PartialView(m);
+            return PartialView("Grids/Pending", m);
         }
         [HttpPost]
-        public ActionResult InactiveMemberGrid(CurrentOrg currorg)
+        public ActionResult InactiveMemberGrid(CurrentOrg currorg, PagerModel2 pager, bool clearFilter)
         {
+            if(clearFilter)
+                currorg.Clear();
             DbUtil.Db.CurrentOrg = currorg;
-            var m = new MemberModel(GroupSelectCode.Inactive);
-            UpdateModel(m.Pager);
+            var m = new MemberModel(GroupSelectCode.Inactive, pager);
             DbUtil.LogActivity("Viewing Inactive for {0}".Fmt(Session["ActiveOrganization"]));
             ViewBag.orgname = Session["ActiveOrganization"] + " - Inactive Members";
-            return PartialView(m);
+            return PartialView("Grids/Inactive", m);
         }
         [HttpPost]
-        public ActionResult ProspectGrid(CurrentOrg currorg)
+        public ActionResult ProspectGrid(CurrentOrg currorg, PagerModel2 pager, bool clearFilter)
         {
+            if(clearFilter)
+                currorg.Clear();
             DbUtil.Db.CurrentOrg = currorg;
-            var m = new MemberModel(GroupSelectCode.Prospect);
-            UpdateModel(m.Pager);
+            var m = new MemberModel(GroupSelectCode.Prospect, pager);
             DbUtil.LogActivity("Viewing Prospects for {0}".Fmt(Session["ActiveOrganization"]));
             ViewBag.orgname = Session["ActiveOrganization"] + " - Prospects";
-            return PartialView(m);
+            return PartialView("Grids/Prospect", m);
         }
         [HttpPost]
-        public ActionResult PrevMemberGrid(CurrentOrg currorg)
+        public ActionResult PrevMemberGrid(CurrentOrg currorg, PagerModel2 pager, bool clearFilter)
         {
-            DbUtil.Db.CurrentOrg = currorg;
-            var m = new PrevMemberModel();
-            UpdateModel(m.Pager);
+            if(clearFilter)
+                currorg.Clear();
+            //DbUtil.Db.CurrentOrg = currorg;
+            var m = new PrevMemberModel(pager);
             ViewBag.orgname = Session["ActiveOrganization"] + " - Previous Members";
             DbUtil.LogActivity("Viewing Prev Members for {0}".Fmt(Session["ActiveOrganization"]));
-            return PartialView(m);
+            return PartialView("Grids/Previous", m);
         }
-        [HttpPost]
-        public ActionResult VisitorGrid(int id, CurrentOrg currorg)
+        [HttpPost, Route("VisitorGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
+        public ActionResult VisitorGrid(CurrentOrg currorg, PagerModel2 pager, bool clearfilter)
         {
-            var m = new VisitorModel(id, currorg);
-            UpdateModel(m.Pager);
+            var m = new VisitorModel(currorg, pager);
             DbUtil.LogActivity("Viewing Visitors for {0}".Fmt(Session["ActiveOrganization"]));
             ViewBag.orgname = Session["ActiveOrganization"] + " - Guests";
-            return PartialView(m);
+            return PartialView("Grids/Visitor", m);
         }
         [HttpPost]
-        public ActionResult MeetingGrid(int id, bool future)
+        public ActionResult MeetingGrid(int id, bool? future)
         {
-            var m = new MeetingsModel(id, future);
+            var m = new MeetingsModel(id, future ?? false);
             UpdateModel(m.Pager);
             DbUtil.LogActivity("Viewing Meetings for {0}".Fmt(Session["ActiveOrganization"]));
-            return PartialView(m);
+            return PartialView("Grids/Meeting", m);
         }
 
         [HttpPost]

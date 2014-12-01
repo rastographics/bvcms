@@ -18,7 +18,7 @@
 
     $.regsettingeditclick = function (f) {
         $(".tip", f).tooltip({ opacity: 0, showBody: "|" });
-        $("ul.enablesort.sort, ul.enablesort ul.sort", f).sortable();
+        //$("ul.enablesort.sort, ul.enablesort ul.sort", f).sortable();
         $("ul.noedit input", f).attr("disabled", "disabled");
         $("ul.noedit select", f).attr("disabled", "disabled");
         $("ul.noedit a", f).not('[target="otherorg"]').removeAttr("href");

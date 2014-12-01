@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Security.Cryptography;
 using CmsData;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class TasksAboutModel : TasksModel
     {
-        public TasksAboutModel(int id)
-            : base(id)
+        public TasksAboutModel(int id, PagerModel2 pager)
+            : base(id, pager)
         {
             AddTask = "/Person2/AddTaskAbout/" + id;
         }

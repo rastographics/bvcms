@@ -20,8 +20,10 @@ namespace CmsWeb.Areas.Org.Models
 		public List<ScheduleInfo> schedules { get; set; }
 		public string Schedule { get; set; }
 		public bool IsVolunteerLeader { get; set; }
+        public CurrentOrg CurrentOrg { get; set; }
 		public OrganizationModel(int id)
 		{
+		    CurrentOrg = DbUtil.Db.CurrentOrg;
 		    OrganizationId = id;
 			var q = from o in DbUtil.Db.Organizations
 					let sc = o.OrgSchedules.FirstOrDefault() // SCHED
@@ -107,7 +109,7 @@ namespace CmsWeb.Areas.Org.Models
 		public SelectList SchedulesPrev()
 		{
 			var q = new SelectList(schedules.OrderBy(cc => cc.Id), "ValuePrev", "Display");
-			return q;
+		    return q;
 		}
 		public SelectList SchedulesNext()
 		{

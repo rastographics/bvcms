@@ -2,30 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
-using CmsData.Codes;
-using CmsData.View;
 using UtilityExtensions;
 using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class VisitorModel
+    public class VisitorModel : CurrentOrg
     {
         public int OrganizationId { get; set; }
         public PagerModel2 Pager { get; set; }
-        private readonly string nameFilter;
-        private bool showHiddenGuests { get; set; }
-        private string first;
-        private string last;
 
-        public VisitorModel(int id, CurrentOrg currorg)
+        public VisitorModel(CurrentOrg currorg, PagerModel2 pager = null)
         {
-            OrganizationId = id;
-            Pager = new PagerModel2(Count);
-            Pager.Direction = "asc";
-            Pager.Sort = "Name";
-            nameFilter = currorg.NameFilter;
-            showHiddenGuests = currorg.ShowHidden;
+            if(!currorg.Id.HasValue)
+                throw new ArgumentException("missing currorg.Id");
+            OrganizationId = currorg.Id.Value;
+            Pager = pager ?? new PagerModel2() {Direction = "asc", Sort = "Name"};
+            Pager.GetCount = Count;
         }
 
         private IQueryable<Person> visitors;
@@ -33,17 +26,16 @@ namespace CmsWeb.Areas.Org.Models
         private IQueryable<Person> FetchVisitors()
         {
             var mindt = Util.Now.AddDays(-Util2.VisitLookbackDays).Date;
-            Util.NameSplit(nameFilter, out first, out last);
             return visitors ??
                 (visitors = from p in DbUtil.Db.People
-                            join g in DbUtil.Db.GuestList(OrganizationId, mindt, showHiddenGuests, first, last) 
+                            join g in DbUtil.Db.GuestList(OrganizationId, mindt, ShowHidden, First, Last) 
                                 on p.PeopleId equals g.PeopleId
                             select p);
         }
 
         public bool isFiltered
         {
-            get { return nameFilter.HasValue(); }
+            get { return NameFilter.HasValue(); }
         }
         int? _count;
         public int Count()

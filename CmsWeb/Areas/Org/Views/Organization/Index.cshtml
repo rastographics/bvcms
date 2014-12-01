@@ -11,176 +11,68 @@
 @section head
 {
   @Fingerprint.Css("/Content/styles/organization.css")
+  @Fingerprint.Css("/Content/css/bootstrap-datetimepicker.css")
 }
 @section scripts
 {
   @ViewExtensions2.CKEditor()
   @Fingerprint.Script("/Scripts/bundle.org.js")
-  @Fingerprint.Script("/Scripts/Org/OrgMemberDialog2.js")
+  @Fingerprint.Script("/Scripts/Bootstrap/orgOrgMemberDialog2.js")
+  @Fingerprint.Script("/Scripts/Org/bootstrap-datetimepicker.min.js")
 }
 @Html.Hidden("refreshed", "no")
 @Html.Hidden("OrganizationId")
-
-<div class="row-fluid" id="profile-header">
-  <div class="span8">
-    <form id="orginfoform" action="/Organization/OrgInfoUpdate/@Model.OrganizationId" class="DisplayEdit roundbox" method="post">
-      @Html.Partial("OrgInfo", Model)
-    </form>
-  </div>
-  <div class="span4">
-    @Html.Partial("Toolbar/Toolbar")
-  </div>
-</div>
 @Html.Hidden("currentQid")
 @Html.Hidden("previousQid")
 @Html.Hidden("visitedQid")
 @Html.Hidden("pendingQid")
 @Html.Hidden("inactiveQid")
 @Html.Hidden("prospectsQid")
-
-<div id="tab-area" class="tabbable primary-tabs">
-  <ul class="nav nav-tabs">
-    <li><a href="#" data-target="#members" data-toggle="tab" class="active">Members</a></li>
-    <li>
-      <a href="#inactive" data-toggle="tab" class="active">
-        <span>@(Model.org.IsMissionTrip == true ? "Senders" : "Inactive")</span>
-      </a>
-    </li>
-    <li><a id="pending-link" href="#Pending-tab"><span>Pending</span></a></li>
-    <li><a id="priors-link" href="#Priors-tab"><span>Previous</span></a></li>
-    <li><a id="prospects-link" href="#Prospects-tab"><span>Prospects</span></a></li>
-    <li><a id="visitors-link" href="#Visitors-tab"><span>Guests</span></a></li>
-    <li><a href="#Settings-tab"><span>Settings</span></a></li>
-    <li><a id="meetings-link" href="#Meetings-tab"><span>Meetings</span></a></li>
-  </ul>
-  <div class="tab-content">
-  </div>
-</div>
-
-
-<div id="main-tab" style="display: none">
-  <ul class="ui-tabs-nav">
-    <li><a href="#Members-tab"><span>Members</span></a></li>
-    <li><a id="inactive-link" href="#Inactive-tab"><span>@(Model.org.IsMissionTrip == true ? "Senders" : "Inactive")</span></a></li>
-    <li><a id="pending-link" href="#Pending-tab"><span>Pending</span></a></li>
-    <li><a id="priors-link" href="#Priors-tab"><span>Previous</span></a></li>
-    <li><a id="prospects-link" href="#Prospects-tab"><span>Prospects</span></a></li>
-    <li><a id="visitors-link" href="#Visitors-tab"><span>Guests</span></a></li>
-    <li><a href="#Settings-tab"><span>Settings</span></a></li>
-    <li><a id="meetings-link" href="#Meetings-tab"><span>Meetings</span></a></li>
-  </ul>
-  <div id="Members-tab">
-    <form action="/Organization/CurrMemberGrid/@Model.OrganizationId" method="post">
-      @Html.Partial("CurrMemberGrid", Model.MemberModel)
-    </form>
-  </div>
-  <div id="Inactive-tab">
-    <form action="/Organization/InactiveMemberGrid/@Model.OrganizationId" method="post"></form>
-  </div>
-  <div id="Pending-tab">
-    <form action="/Organization/PendingMemberGrid/@Model.OrganizationId" method="post"></form>
-  </div>
-  <div id="Priors-tab">
-    <form action="/Organization/PrevMemberGrid/@Model.OrganizationId" method="post"></form>
-  </div>
-  <div id="Prospects-tab">
-    <form action="/Organization/ProspectGrid/@Model.OrganizationId" method="post">
-@*      @Html.Hidden("showHidden", false)*@
-    </form>
-  </div>
-  <div id="Visitors-tab">
-    <form action="/Organization/VisitorGrid/@Model.OrganizationId" method="post">
-@*      @Html.Hidden("showHidden", false)*@
-    </form>
-  </div>
-  <div id="Meetings-tab">
-    <form action="/Organization/MeetingGrid/@Model.OrganizationId" method="post">
-      @Html.Hidden("future", false)
-    </form>
-  </div>
-  <div id="Settings-tab" style="display: none">
-    <ul>
-      <li><a href="#SettingsOrg"><span>General</span></a></li>
-      <li><a href="#SettingsMeetings"><span>Attendance</span></a></li>
-      <li><a href="#OnlineRegAdmin"><span>Registration</span></a></li>
-      <li><a href="#OnlineRegFees"><span>Fees</span></a></li>
-      <li><a href="#OnlineRegQuestions"><span>Questions</span></a></li>
-      <li><a href="#OnlineRegMessages"><span>Messages</span></a></li>
-      <li><a href="#ExtraValues"><span>Extra Values</span></a></li>
-    </ul>
-    <div id="SettingsOrg" class="settings">
-      <p>
-        <i>Hover over the labels to get help</i>
-      </p>
-      <form class="DisplayEdit" action="">
-        @Html.Partial("SettingsOrg", Model)
+<div class="container">
+  <div class="row-fluid" id="profile-header">
+    <div class="span8">
+      <form id="orginfoform" action="/Organization/OrgInfoUpdate/@Model.OrganizationId" class="DisplayEdit roundbox" method="post">
+        @Html.Partial("OrgInfo", Model)
       </form>
     </div>
-    <div id="SettingsMeetings" class="settings">
-      <p>
-        <i>Hover over the labels to get help</i>
-      </p>
-      <form class="DisplayEdit" action="">
-        @Html.Partial("SettingsMeetings", Model)
-      </form>
+    <div class="span4">
+      @Html.Partial("Toolbar/Toolbar")
     </div>
-    <div id="OnlineRegAdmin" class="settings">
-      <p>
-        <i>Hover over the labels to get help</i>
-      </p>
-      <form class="DisplayEdit" action="">
-        @Html.Partial("OnlineRegAdmin", Model.RegSettings)
-      </form>
+  </div>
+  <div class="row-fluid">
+    <div class="span12">
     </div>
-    <div id="OnlineRegFees" class="settings">
-      <p>
-        <i>Hover over the labels to get help</i>
-      </p>
-      <form class="DisplayEdit" action="">
-        @Html.Partial("OnlineRegFees", Model.RegSettings)
-      </form>
-    </div>
-    <div id="OnlineRegQuestions" class="settings">
-      <p>
-        <i>Hover over the labels to get help.</i>
-      </p>
-      <form class="DisplayEdit" action="">
-        @Html.Partial("OnlineRegQuestions", Model.RegSettings)
-      </form>
-    </div>
-    <div id="OnlineRegMessages" class="settings no0">
-      <p>
-        <i>Hover over the labels to get help</i>
-      </p>
-      <form class="DisplayEdit" action="">
-        @Html.Partial("OnlineRegMessages", Model.RegSettings)
-      </form>
-    </div>
-    @*        <div class="tab-pane settings" id="ExtraValues" data-link="/ExtraValue/Display/Organization/Standard/@Model.OrganizationId"></div>*@
-    <div id="ExtraValues" class="settings">
-      <table id="extras" class="@ViewExtensions2.GridClass">
-        <thead>
-          <tr>
-            <td>
-              Field
-            </td>
-            <td>
-              Value
-            </td>
-            <td>
-              @if (User.IsInRole("Edit"))
-              {
-                <a id="newextravalue" href="#">
-                  <img src="/Content/images/plus1.png" />
-                </a>
-              }
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-          @Html.Partial("ExtrasGrid", Model.org)
-        </tbody>
-      </table>
+    <div class="span12">
+      <div id="tab-area" class="tabbable primary-tabs">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#Members-tab" data-toggle="tab">Members</a></li>
+          <li>
+            <a href="#Inactive-tab" data-toggle="tab" class="ajax">
+              <span>@(Model.org.IsMissionTrip == true ? "Senders" : "Inactive")</span>
+            </a>
+          </li>
+          <li><a href="#Pending-tab" data-toggle="tab" class="ajax">Pending</a></li>
+          <li><a href="#Priors-tab" data-toggle="tab" class="ajax">Previous</a></li>
+          <li><a href="#Prospects-tab" data-toggle="tab" class="ajax">Prospects</a></li>
+          <li><a href="#Visitors-tab" data-toggle="tab" class="ajax">Guests</a></li>
+          <li><a href="#Settings-tab" data-toggle="tab" class="ajax">Settings</a></li>
+          <li><a href="#Meetings-tab" data-toggle="tab" class="ajax">Meetings</a></li>
+        </ul>
+        <div class="tab-content">
+          <div id="Members-tab" class="tab-pane active" data-link="/Organization/CurrMemberGrid/@Model.OrganizationId">
+            @Html.Partial("Grids/Current", Model.MemberModel)
+          </div>
+          <div id="Inactive-tab" class="tab-pane" data-link="/Organization/InactiveMemberGrid/@Model.OrganizationId"></div>
+          <div id="Pending-tab" class="tab-pane" data-link="/Organization/PendingMemberGrid/@Model.OrganizationId"></div>
+          <div id="Priors-tab" class="tab-pane" data-link="/Organization/PrevMemberGrid/@Model.OrganizationId"></div>
+          <div id="Prospects-tab" class="tab-pane" data-link="/Organization/ProspectGrid/@Model.OrganizationId"></div>
+          <div id="Visitors-tab" class="tab-pane" data-link="/Organization/VisitorGrid/@Model.OrganizationId"></div>
+          <div id="Settings-tab" class="tab-pane">
+            @Html.Partial("Settings", Model)
+          </div>
+          <div id="Meetings-tab" class="tab-pane" data-link="/Organization/MeetingGrid/@Model.OrganizationId"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

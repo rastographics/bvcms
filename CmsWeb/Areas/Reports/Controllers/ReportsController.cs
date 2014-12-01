@@ -13,6 +13,7 @@ using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Reports.Models;
+using CmsWeb.Controllers;
 using CmsWeb.Models;
 using Dapper;
 using MoreLinq;
@@ -389,7 +390,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new RallyRollsheetResult
             {
                 orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null,
-                groups = org == "curr" ? DbUtil.Db.CurrentOrg.Groups : new[] { 0 },
                 meetingid = meetingid,
                 bygroup = bygroup.HasValue,
                 sgprefix = sgprefix,
@@ -463,36 +463,22 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         [Route("Rollsheet")]
         [Route("Rollsheet/{meetingid:int}")]
-        public ActionResult Rollsheet(int? meetingid, string org, string dt, int? bygroup, string sgprefix,
-            bool? altnames, string highlight)
+        public ActionResult Rollsheet(int? meetingid, string org, DialogController.NewMeetingInfo mi)
         {
-            DateTime? dt2 = dt.ToDate();
             return new RollsheetResult
             {
                 orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null,
-                groups = org == "curr" ? DbUtil.Db.CurrentOrg.Groups : new[] { 0 },
                 meetingid = meetingid,
-                bygroup = bygroup.HasValue,
-                sgprefix = sgprefix,
-                dt = dt2,
-                altnames = altnames,
-                highlightsg = highlight,
+                RollsheetInfo = mi
             };
         }
         [HttpPost]
-        public ActionResult Rollsheet(string dt, int? bygroup, string sgprefix,
-            bool? altnames, string highlight, OrgSearchModel m)
+        public ActionResult Rollsheet(DialogController.NewMeetingInfo mi, OrgSearchModel m)
         {
-            DateTime? dt2 = dt.ToDate();
             return new RollsheetResult
             {
-                groups = new[] { 0 },
-                bygroup = bygroup.HasValue,
-                sgprefix = sgprefix,
-                dt = dt2,
-                altnames = altnames,
-                highlightsg = highlight,
-                Model = m
+                Model = m,
+                RollsheetInfo = mi
             };
         }
 

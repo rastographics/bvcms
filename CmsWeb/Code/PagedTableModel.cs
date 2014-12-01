@@ -8,9 +8,9 @@ namespace CmsWeb.Models
     public abstract class PagedTableModel<TModel, TView>
     {
         public PagerModel2 Pager { get; set; }
-        protected PagedTableModel(string defaultSort, string defaultDirection)
+        protected PagedTableModel(string defaultSort, string defaultDirection, PagerModel2 pager)
         {
-            Pager = new PagerModel2(Count) {Sort = defaultSort, Direction = defaultDirection};
+            Pager = pager ?? new PagerModel2(Count) {Sort = defaultSort, Direction = defaultDirection};
         }
         private int? count;
         public int Count()

@@ -3,24 +3,28 @@
 @using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MemberModel
-<table id="MemberGrid" class="@ViewExtensions2.GridClass" cellpadding="4">
+<div class="pagination pagination-mini">
+  @Html.Partial("Pager3", Model.Pager)
+  <a id="refresh-current" href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
+</div>
+<table id="MemberGrid" class="@ViewExtensions2.GridClass">
   <thead>
     <tr>
-      <th><br /><a href="#" class="sortable">Name</a></th>
-      <th><br /><a title="Sort by Organization Member Type" href="#" class="sortable">MemberType</a></th>
+      <th><br />@Model.Pager.SortLink("Name")</th>
+      <th><br />@Model.Pager.SortLink("MemberType")</th>
       <th class="left">
-        <a title="Sort by Church Member Status" href="#" class="sortable">Church</a><br />
-        <a href="#" class="sortable">Age</a> - <a title="Sort by Birthday" href="#" class="sortable">Bday</a>
+        @Model.Pager.SortLink("Church")<br />
+        @Model.Pager.SortLink("Age") - @Model.Pager.SortLink("Bday")
       </th>
-      <th><br /><a href="#" class="sortable">Primary Address</a></th>
+      <th><br />@Model.Pager.SortLink("Primary Address")</th>
       <th><br />Communication</th>
       <th>
-        <a href="#" class="sortable">% Att.</a>
-        <br/>Last Contact
+        @Model.Pager.SortLink("% Att.")
+        <br />Last Contact
       </th>
       <th>
-        <a href="#" class="sortable">Joined</a><br />
-        <a href="#" class="sortable">Last Att.</a>
+        @Model.Pager.SortLink("Joined")<br />
+        @Model.Pager.SortLink("Last Att.")
       </th>
       <th><br />Tag</th>
     </tr>
@@ -52,26 +56,26 @@
         </td>
         <td>
           <a href="">@om.AttendPct.ToString2("N1")%</a>
-@*
-          @if (om.LastContactDt.HasValue)
-          {
-            <br/><a href="/Contact2/@om.LastContactId" target="contact">@om.LastContactDt.FormatDate2()</a>
-          }
-          @if (om.TaskAboutId.HasValue)
-          {
-            <br/><a href="/Task/@om.TaskAboutId" target="contact" title="@om.TaskAboutDt.FormatDate2()">Task</a> @:Task
-          }
-          @if (om.TaskAboutId.HasValue)
-          {
-            <br/><a href="/Task/@om.TaskAboutId" target="contact" title="@om.TaskAboutDt.FormatDate2()">Task</a> @:Task
-          }
-*@
+          @*
+            @if (om.LastContactDt.HasValue)
+            {
+              <br/><a href="/Contact2/@om.LastContactId" target="contact">@om.LastContactDt.FormatDate2()</a>
+            }
+            @if (om.TaskAboutId.HasValue)
+            {
+              <br/><a href="/Task/@om.TaskAboutId" target="contact" title="@om.TaskAboutDt.FormatDate2()">Task</a> @:Task
+            }
+            @if (om.TaskAboutId.HasValue)
+            {
+              <br/><a href="/Task/@om.TaskAboutId" target="contact" title="@om.TaskAboutDt.FormatDate2()">Task</a> @:Task
+            }
+          *@
         </td>
         <td>
           @om.Joined.FormatDate2()<br />
           @if (om.LastAttended.HasValue)
           {
-            <a href="/Organization/GotoMeetingForDate/@Model.OrganizationId/@om.LastAttended.Value.Ticks">@om.LastAttended.FormatDate2()</a><br/>
+            <a href="/Organization/GotoMeetingForDate/@Model.OrganizationId/@om.LastAttended.Value.Ticks">@om.LastAttended.FormatDate2()</a><br />
           }
           @if (Model.GroupSelect == GroupSelectCode.Prospect)
           {
@@ -94,4 +98,8 @@
     }
   </tbody>
 </table>
-@Html.Partial("Pager2", Model.Pager)
+<div class="pagination pagination-mini">
+  @Html.Partial("Pager3", Model.Pager)
+  <a id="refresh-current" href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
+</div>
+

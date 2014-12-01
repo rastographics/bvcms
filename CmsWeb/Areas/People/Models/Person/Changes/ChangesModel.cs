@@ -10,10 +10,12 @@ namespace CmsWeb.Areas.People.Models
     public class ChangesModel : PagedTableModel<ChangeLogDetail, ChangeLogInfo>
     {
         public readonly Person person;
-        public ChangesModel(int id)
-            : base("Time", "desc")
+        public ChangesModel(int id, PagerModel2 pager = null)
+            : base("Time", "desc", pager)
         {
             person = DbUtil.Db.LoadPersonById(id);
+            if(pager != null)
+                Pager = pager;
         }
         public void Reverse(string field, string value, string pf)
         {
@@ -21,11 +23,11 @@ namespace CmsWeb.Areas.People.Models
             {
                 case "p":
                     person.UpdateValueFromText(field, value);
-                    person.LogChanges(DbUtil.Db, Util.UserPeopleId.Value);
+                    person.LogChanges(DbUtil.Db, Util.UserPeopleId ?? 0);
                     break;
                 case "f":
                     person.Family.UpdateValueFromText(field, value);
-                    person.Family.LogChanges(DbUtil.Db, person.PeopleId, Util.UserPeopleId.Value);
+                    person.Family.LogChanges(DbUtil.Db, person.PeopleId, Util.UserPeopleId ?? 0);
                     break;
             }
             DbUtil.Db.SubmitChanges();

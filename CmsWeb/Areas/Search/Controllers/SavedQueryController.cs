@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
 
@@ -14,13 +15,14 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index()
         {
             var m = new SavedQueryModel { OnlyMine = DbUtil.Db.UserPreference("SavedQueryOnlyMine", "false").ToBool() };
-            m.Pager.Set("/SavedQuery/Results", 1, null, "Last Run", "desc");
+            //m.Pager.Set("/SavedQuery/Results", 1, null, "Last Run", "desc");
             return View(m);
         }
-        [HttpPost, Route("Results/{page?}/{size?}/{sort=Last Run}/{dir=desc}")]
-        public ActionResult Results(int? page, int? size, string sort, string dir, SavedQueryModel m)
+        [HttpPost] //, Route("Results/{page?}/{size?}/{sort=Last Run}/{dir=desc}")]
+        public ActionResult Results(SavedQueryModel m, PagerModel2 pager)
         {
-            m.Pager.Set("/SavedQuery/Results", page, size, sort, dir);
+            //m.Pager.Set("/SavedQuery/Results", page, size, sort, dir);
+            m.Pager = pager;
             return View(m);
         }
         [HttpPost]

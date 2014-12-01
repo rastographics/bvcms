@@ -649,6 +649,7 @@
     </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\css\bootstrap-editable.css" />
     <Content Include="Content\css\bootstrap-multiselect.css" />
     <Content Include="Content\css\bootstrap-multiselect.min.css">
@@ -739,6 +740,7 @@
     <Content Include="Scripts\Bootstrap\bootbox.js" />
     <Content Include="Scripts\Bootstrap\bootbox.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-ajax.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\Bootstrap\notify.js" />
     <Content Include="Scripts\Bootstrap\renamedatepicker.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-datepicker.js" />
@@ -765,10 +767,10 @@
     <Content Include="Scripts\Bootstrap\bootbox.min.js.map">
       <DependentUpon>bootbox.min.js</DependentUpon>
     </Content>
-    <Content Include="Areas\Org\Views\Organization\FilterForm.cshtml" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Areas\Org\Views\Organization\Settings.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
@@ -941,7 +943,7 @@
     <Content Include="Areas\Finance\Views\Contributions\BundleTotals.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\PictureDialog.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\ProspectGrid.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Grids\Prospect.cshtml" />
     <Content Include="Areas\Public\Views\APITest\RunScript.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AnswersNotRequired.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSMS.cshtml" />
@@ -1550,6 +1552,8 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
     <Content Include="Views\Shared\Message.cshtml" />
     <Content Include="Views\Home\PyScript.cshtml" />
+    <Content Include="Views\Dialog\NewMeeting.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\datetimepicker.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1854,27 +1858,27 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\TagPeopleIds.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\CurrMemberGrid.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Grids\Current.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\InactiveMemberGrid.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Grids\Inactive.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\Index.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\MeetingGrid.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Grids\Meeting.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\MemberGrid.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Grids\Base.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\OrgInfo.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\OrgInfoEdit.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\PendingMemberGrid.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Grids\Pending.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\PrevMemberGrid.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Grids\Previous.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\SmallGroups.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\VisitorGrid.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Grids\Visitor.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\OrgGroups\Index.cshtml">
     </Content>

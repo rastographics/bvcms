@@ -3796,6 +3796,20 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.SmallGroupLeader", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string SmallGroupLeader(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.DayAndTime", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string DayAndTime(

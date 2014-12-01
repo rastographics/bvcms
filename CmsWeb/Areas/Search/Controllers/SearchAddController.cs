@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
@@ -17,20 +18,22 @@ namespace CmsWeb.Areas.Search.Controllers
             return View("SearchPerson", m);
         }
 
-        [HttpPost, Route("SearchAdd2/Results/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult Results(int? page, int? size, string sort, string dir, SearchAddModel m)
+        [HttpPost, Route("SearchAdd2/Results")]
+        public ActionResult Results(SearchAddModel m, PagerModel2 pager)
         {
             DbUtil.Db.SetNoLock();
-            m.Pager.Set("/SearchAdd2/Results", page ?? 1, size ?? 15, "na", "na");
+            //m.Pager.Set("/SearchAdd2/Results", page ?? 1, size ?? 15, "na", "na");
+            m.Pager = pager;
             ModelState.Clear();
             return View(m);
         }
 
-        [HttpPost, Route("SearchAdd2/ResultsFamily/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult ResultsFamily(int? page, int? size, string sort, string dir, SearchAddModel m)
+        [HttpPost, Route("SearchAdd2/ResultsFamily")]
+        public ActionResult ResultsFamily(SearchAddModel m, PagerModel2 pager)
         {
             DbUtil.Db.SetNoLock();
-            m.Pager.Set("/SearchAdd2/ResultsFamily", page ?? 1, size ?? 15, "na", "na");
+            m.Pager = pager;
+            //m.Pager.Set("/SearchAdd2/ResultsFamily", page ?? 1, size ?? 15, "na", "na");
             ModelState.Clear();
             return View(m);
         }
