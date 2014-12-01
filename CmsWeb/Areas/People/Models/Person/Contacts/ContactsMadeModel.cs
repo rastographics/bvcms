@@ -9,8 +9,8 @@ namespace CmsWeb.Areas.People.Models
 {
     public class ContactsMadeModel : ContactsModel
     {
-        public ContactsMadeModel(int id)
-            : base(id)
+        public ContactsMadeModel(int id, PagerModel2 pager)
+            : base(id, pager)
         {
             AddContact = "/Person2/AddContactMade/" + id;
             base.AddContactButton = "Add Contact Made By This Person";

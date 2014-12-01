@@ -11,8 +11,8 @@ namespace CmsWeb.Areas.People.Models
     {
         public Person person;
 
-        protected EmailModel(int id)
-            : base("Sent", "desc")
+        protected EmailModel(int id, PagerModel2 pager)
+            : base("Sent", "desc", pager)
         {
             person = DbUtil.Db.LoadPersonById(id);
         }

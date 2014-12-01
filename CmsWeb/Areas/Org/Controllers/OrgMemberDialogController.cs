@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Code;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -67,16 +68,15 @@ namespace CmsWeb.Areas.Org.Controllers
             return Content("dropped");
         }
         [HttpPost, Route("OrgMemberDialog2/Move/{oid:int}/{pid:int}")]
-        public ActionResult Move(int oid, int pid)
+        public ActionResult Move(int oid, int pid, PagerModel2 pager)
         {
-            var mm = new OrgMemberMoveModel { OrgId = oid, PeopleId = pid };
-            mm.Pager.SetWithPageOnly("/OrgMemberDialog2/MoveResults", 1);
+            var mm = new OrgMemberMoveModel(pager) { OrgId = oid, PeopleId = pid };
             return View(mm);
         }
         [HttpPost, Route("OrgMemberDialog2/MoveResults/{page}")]
-        public ActionResult MoveResults(int page, OrgMemberMoveModel m)
+        public ActionResult MoveResults(int page, OrgMemberMoveModel m, PagerModel2 pager)
         {
-            m.Pager.SetWithPageOnly("/OrgMemberDialog2/MoveResults", page);
+            m.Pager = pager;
             return View("Move", m);
         }
         [HttpPost, Route("OrgMemberDialog2/MoveSelect/{oid:int}/{pid:int}/{toid:int}")]

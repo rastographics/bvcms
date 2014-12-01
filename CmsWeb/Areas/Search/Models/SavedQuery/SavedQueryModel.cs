@@ -19,7 +19,8 @@ namespace CmsWeb.Areas.Search.Models
         public bool ScratchPadsOnly { get; set; }
         public bool StatusFlagsOnly { get; set; }
 
-        public SavedQueryModel(PagerModel2 pager) : base("", "", pager)
+        public SavedQueryModel(PagerModel2 pager = null) 
+            : base("", "", pager)
         {
             admin = Roles.IsUserInRole("Admin");
         }

@@ -13,15 +13,15 @@
       <a id="currMembersUpdate" href="/OrgMembersDialog/@Model.OrganizationId" title="Update Members" class="memberdialog btn btn-success">update members</a>
     }
       <div id="Filter" class="form-inline">
-        @Html.Hidden("Id", Model.CurrentOrg.Id)
+        @Html.Hidden("Id", Model.Id)
         <input type="text" class="form-control tip" id="nameFilterMembers"
-               name="nameFilter" placeholder="Name Filter" value="@Model.CurrentOrg.NameFilter"
+               name="nameFilter" placeholder="Name Filter" value="@Model.NameFilter"
                title="Name Filter
               First and last name or just last name.
               You can put just the first few letters of each.
               PeopleId works too.">
         <input type="text" class="form-control tip" id="sgFilterMembers"
-               name="sgFilter" placeholder="SmallGroup Filter" value="@Model.CurrentOrg.SgFilter"
+               name="sgFilter" placeholder="SmallGroup Filter" value="@Model.SgFilter"
                title="SmallGroup Filter
               Match a smallgroup name.
               You can just use the first few letters of a smallgroup.
@@ -33,7 +33,7 @@
           @Html.CheckBox("showHidden", new { @class = "showHidden" }) Show Hidden Guests
         </label>
         <button class="setfilter btn">
-          Filter @(Html.Raw(Model.CurrentOrg.isFiltered ? "<span style='color:red'>(filtered)</span>" : ""))
+          Filter @(Html.Raw(Model.isFiltered ? "<span style='color:red'>(filtered)</span>" : ""))
         </button>
         <button class="clearfilter btn" href="#">Clear</button>
         <input class="ClearFilter" name="ClearFilter" type="hidden" value="false" />

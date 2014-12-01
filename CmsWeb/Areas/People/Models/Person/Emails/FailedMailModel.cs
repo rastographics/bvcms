@@ -11,8 +11,8 @@ namespace CmsWeb.Areas.People.Models
         public readonly int PeopleId;
         public readonly string email;
         public readonly string email2;
-        public FailedMailModel(int id)
-            : base("Time", "desc")
+        public FailedMailModel(int id, PagerModel2 pager)
+            : base("Time", "desc", pager)
         {
             PeopleId = id;
             var i = (from p in DbUtil.Db.People

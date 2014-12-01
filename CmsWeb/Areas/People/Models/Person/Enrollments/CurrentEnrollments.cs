@@ -12,8 +12,8 @@ namespace CmsWeb.Areas.People.Models
     {
         private int PeopleId;
         public CmsData.Person person { get; set; }
-        public CurrentEnrollments(int id)
-            : base("", "")
+        public CurrentEnrollments(int id, PagerModel2 pager)
+            : base("", "", pager)
         {
             PeopleId = id;
             person = DbUtil.Db.LoadPersonById(id);

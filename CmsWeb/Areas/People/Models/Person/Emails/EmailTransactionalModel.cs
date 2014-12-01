@@ -1,11 +1,16 @@
 ﻿using System.Linq;
 using CmsData;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class EmailTransactionalModel : EmailModel
     {
-        public EmailTransactionalModel(int id) : base(id) { }
+        public EmailTransactionalModel(int id, PagerModel2 pager)
+            : base(id, pager)
+        {
+            
+        }
 
         public override IQueryable<EmailQueue> DefineModelList()
         {

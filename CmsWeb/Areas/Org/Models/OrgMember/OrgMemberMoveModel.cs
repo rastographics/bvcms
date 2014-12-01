@@ -25,7 +25,8 @@ namespace CmsWeb.Areas.Org.Models
             OrgName = i.OrganizationName;
         }
 
-        public OrgMemberMoveModel() : base("", "")
+        public OrgMemberMoveModel(PagerModel2 pager) 
+            : base("", "", pager)
         {
             Pager.pagesize = 10;
             Pager.ShowPageSize = false;

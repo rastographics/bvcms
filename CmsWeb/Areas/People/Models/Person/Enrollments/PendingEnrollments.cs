@@ -7,18 +7,17 @@ using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
-    public class PendingEnrollments : PagedTableModel<OrganizationMember, OrgMemberInfo>
+    public class PendingEnrollments
     {
         readonly int PeopleId;
         public CmsData.Person person { get; set; }
         public PendingEnrollments(int id)
-            : base("", "")
         {
             PeopleId = id;
             person = DbUtil.Db.LoadPersonById(id);
         }
 
-        public override IQueryable<OrganizationMember> DefineModelList()
+        public IQueryable<OrganizationMember> DefineModelList()
         {
             var roles = DbUtil.Db.CurrentRoles();
             return from o in DbUtil.Db.Organizations
@@ -28,12 +27,12 @@ namespace CmsWeb.Areas.People.Models
                    select om;
         }
 
-        public override IQueryable<OrganizationMember> DefineModelSort(IQueryable<OrganizationMember> q)
+        public IQueryable<OrganizationMember> DefineModelSort(IQueryable<OrganizationMember> q)
         {
             return q.OrderBy(m => m.Organization.OrganizationName);
         }
 
-        public override IEnumerable<OrgMemberInfo> DefineViewList(IQueryable<OrganizationMember> q)
+        public IEnumerable<OrgMemberInfo> DefineViewList(IQueryable<OrganizationMember> q)
         {
             return from om in q
                    let sc = om.Organization.OrgSchedules.FirstOrDefault() // SCHED

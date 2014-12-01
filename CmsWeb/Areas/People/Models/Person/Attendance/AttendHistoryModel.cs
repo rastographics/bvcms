@@ -11,8 +11,8 @@ namespace CmsWeb.Areas.People.Models
     public class PersonAttendHistoryModel : PagedTableModel<Attend, AttendInfo>
     {
         public readonly int PeopleId;
-        public PersonAttendHistoryModel(int id, bool future)
-            : base("Meeting", future ? "asc" : "desc")
+        public PersonAttendHistoryModel(int id, PagerModel2 pager, bool future)
+            : base("Meeting", future ? "asc" : "desc", pager)
         {
             PeopleId = id;
             Future = future;

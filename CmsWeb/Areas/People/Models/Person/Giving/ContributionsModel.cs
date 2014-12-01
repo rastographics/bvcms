@@ -23,8 +23,8 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
 
-        public ContributionsModel(int id)
-            : base("Date", "desc")
+        public ContributionsModel(int id, PagerModel2 pager = null)
+            : base("Date", "desc", pager)
         {
             PeopleId = id;
             person = DbUtil.Db.LoadPersonById(id);
@@ -136,8 +136,6 @@ namespace CmsWeb.Areas.People.Models
                        Amount = g.Sum(cc => cc.Amount ?? 0),
                        StartDate = new DateTime(g.Key, 1, 1),
                        EndDate = new DateTime(g.Key, 12, 31)
-                       //                       StartDate = g.Min(cc => cc.DateX.Value),
-                       //                       EndDate = g.Max(cc => cc.DateX.Value)
                    };
         }
     }

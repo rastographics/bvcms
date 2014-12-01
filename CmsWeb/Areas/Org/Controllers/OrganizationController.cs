@@ -27,7 +27,6 @@ namespace CmsWeb.Areas.Org.Controllers
             db.CurrentOrg = new CurrentOrg() { Id=id };
 
             var m = new OrganizationModel(id);
-            m.MemberModel.Pager.Set("/Organization/CurrMemberGrid");
 
             if (m.org == null)
                 return Content("organization not found");

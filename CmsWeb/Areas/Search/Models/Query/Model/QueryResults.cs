@@ -34,8 +34,8 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
-        public QueryResults()
-            : base("na", "asc")
+        public QueryResults(PagerModel2 pager)
+            : base("na", "asc", pager)
         {
             Db = DbUtil.Db;
         }

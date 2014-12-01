@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class ContactsReceivedModel : ContactsModel
     {
-        public ContactsReceivedModel(int id)
-            : base(id)
+        public ContactsReceivedModel(int id, PagerModel2 pager)
+            : base(id, pager)
         {
             AddContact = "/Person2/AddContactReceived/" + id;
             base.AddContactButton = "Add Contact Received By This Person";

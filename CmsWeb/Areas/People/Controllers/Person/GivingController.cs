@@ -4,17 +4,17 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [HttpPost, Route("Contributions/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult Contributions(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult Contributions(int id, PagerModel2 pager)
         {
-            var m = new ContributionsModel(id);
-            m.Pager.Set("/Person2/Contributions/" + id, page, size, sort, dir);
+            var m = new ContributionsModel(id, pager);
             return View("Giving/Contributions", m);
         }
         [HttpPost]

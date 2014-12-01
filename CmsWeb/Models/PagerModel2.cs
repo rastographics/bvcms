@@ -198,68 +198,48 @@ namespace CmsWeb.Models
 //            if (dir.HasValue())
 //                Direction = dir ?? "asc";
 //        }
-//        public HtmlString SortLink(string label)
-//        {
-//            var active = "";
-//            var asc = " asc";
-//            var dir = "asc";
-//            if (label == Sort)
-//            {
-//                active = " active";
-//                if (Direction == "asc")
-//                    asc = "";
-//                dir = Direction == "asc" ? "desc" : "asc";
-//            }
-//            return new HtmlString("<a href='{0}/{1}/{2}/{3}/{4}' class='ajax{5}{6}'>{3}</a>"
-//                .Fmt(URL, Page, PageSize, label, dir, active, asc));
-//        }
-//        public HtmlString SortLink2(string label, string html)
-//        {
-//            var active = "";
-//            var asc = " asc";
-//            var dir = "asc";
-//            if (label == Sort)
-//            {
-//                active = " active";
-//                if (Direction == "asc")
-//                    asc = "";
-//                dir = Direction == "asc" ? "desc" : "asc";
-//            }
-//            return new HtmlString("<a href='{0}/{1}/{2}/{3}/{4}' class='ajax{5}{6}'>{7}</a>"
-//                .Fmt(URL, Page, PageSize, label, dir, active, asc, html));
-//        }
-//        public HtmlString PageLink(string label, int? page, int? size = null)
-//        {
-//            if (ShowPageSize && AllowSort)
-//                if (Sort.HasValue())
-//                    return new HtmlString("<a href='{0}/{2}/{3}/{4}/{5}' class='ajax'>{1}</a>"
-//                        .Fmt(URL, label, page ?? 1, size ?? PageSize, Sort ?? "na", Direction));
-//                else
-//                    return new HtmlString("<a href='{0}/{2}/{3}' class='ajax'>{1}</a>"
-//                        .Fmt(URL, label, page ?? 1, size ?? PageSize));
-//            if (ShowPageSize)
-//                return new HtmlString("<a href='{0}/{2}/{3}' class='ajax'>{1}</a>"
-//                    .Fmt(URL, label, page ?? 1, size ?? PageSize));
-//            if (AllowSort)
-//                if (Sort.HasValue())
-//                    return new HtmlString("<a href='{0}/{2}/{3}/{4}' class='ajax'>{1}</a>"
-//                        .Fmt(URL, label, page ?? 1, Sort ?? "na", Direction));
-//                else
-//                    return new HtmlString("<a href='{0}/{2}' class='ajax'>{1}</a>"
-//                        .Fmt(URL, label, page ?? 1));
-//            return new HtmlString("<a href='{0}/{2}' class='ajax'>{1}</a>"
-//                .Fmt(URL, label, page ?? 1));
-//        }
-        public HtmlString PageSizeItem(string label, int? page, int? size = null, bool? disable = null)
+        public HtmlString SortLink(string sortlabel)
+        {
+            var active = "";
+            var asc = " asc";
+            var dir = "asc";
+            if (sortlabel == Sort)
+            {
+                active = " active";
+                if (Direction == "asc")
+                    asc = "";
+                dir = Direction == "asc" ? "desc" : "asc";
+            }
+            return new HtmlString("<a href='#' sortby='{0}' dir='{1}' class='ajax{2}{3}'>{0}</a>"
+                .Fmt(sortlabel, dir, active, asc));
+        }
+        public HtmlString SortLink2(string label, string html)
+        {
+            var active = "";
+            var asc = " asc";
+            var dir = "asc";
+            if (label == Sort)
+            {
+                active = " active";
+                if (Direction == "asc")
+                    asc = "";
+                dir = Direction == "asc" ? "desc" : "asc";
+            }
+            return new HtmlString("<a href='#' sortby='{0}' dir='{1}' class='ajax{2}{3}'>{4}</a>"
+                .Fmt(label, dir, active, asc, html));
+        }
+        public HtmlString PageLink(string label, int? page)
+        {
+            return new HtmlString("<a href='#' page='{1}' class='ajax'>{0}</a>"
+                .Fmt(label, page ?? 1));
+        }
+        public HtmlString PageSizeItem(string label, int? size = null, bool? disable = null)
         {
             var disabled = "";
             if (disable == true)
                 disabled = " class='disabled'";
-            if (AllowSort)
-                return new HtmlString("<li{6}><a href='{0}/{1}/{2}/{3}/{4}' class='ajax'>{5}</a></li>"
-                    .Fmt(URL, page ?? 1, size ?? PageSize, Sort ?? "na", Direction, label, disabled));
-            return new HtmlString("<li{4}><a href='{0}/{1}/{2}' class='ajax'>{3}</a></li>"
-                .Fmt(URL, page ?? 1, size ?? PageSize, label, disabled));
+            return new HtmlString("<li{2}><a href='#' size='{0}' class='pager ajax'>{1}</a></li>"
+                .Fmt(size ?? PageSize, label, disabled));
         }
         public string ShowCount()
         {

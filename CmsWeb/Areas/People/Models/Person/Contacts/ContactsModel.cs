@@ -9,8 +9,8 @@ namespace CmsWeb.Areas.People.Models
     {
         public Person person;
 
-        public ContactsModel(int id)
-            : base("Date", "desc")
+        public ContactsModel(int id, PagerModel2 pager)
+            : base("Date", "desc", pager)
         {
             person = DbUtil.Db.LoadPersonById(id);
         }

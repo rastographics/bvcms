@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -29,14 +31,15 @@ namespace CmsWeb.Areas.Search.Models
         public Guid? SelectedId { get; set; }
         public string CodeIdValue { get; set; }
 
-        public QueryModel()
+        public QueryModel(PagerModel2 pager = null)
+            :base(pager)
         {
             Db.SetUserPreference("NewCategories", "true");
             ConditionName = "Group";
         }
 
-        public QueryModel(Guid? id)
-            : this()
+        public QueryModel(Guid? id, PagerModel2 pager = null)
+            : this(pager)
         {
             QueryId = id;
             DbUtil.LogActivity("Running Query ({0})".Fmt(id));

@@ -20,8 +20,8 @@ namespace CmsWeb.Areas.Search.Models
     {
         public ContactSearchInfo SearchParameters { get; set; }
 
-        public ContactSearchModel()
-            : base("Date", "desc")
+        public ContactSearchModel(PagerModel2 pager = null)
+            : base("Date", "desc", pager)
         {
             SearchParameters = new ContactSearchInfo();
         }

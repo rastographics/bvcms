@@ -20,8 +20,8 @@ namespace CmsWeb.Areas.Search.Models
     {
         public RegistrationSearchInfo SearchParameters { get; set; }
 
-        public RegistrationSearchModel()
-            : base("Date", "desc")
+        public RegistrationSearchModel(PagerModel2 pager = null)
+            : base("Date", "desc", pager)
         {
             SearchParameters = new RegistrationSearchInfo();
         }

@@ -13,6 +13,8 @@ using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using System.Xml;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Models;
+using DocumentFormat.OpenXml.EMMA;
 using Elmah;
 using UtilityExtensions;
 using CmsData;
@@ -42,7 +44,6 @@ namespace CmsWeb.Areas.Search.Controllers
 
         private ActionResult ViewQuery(QueryModel m)
         {
-            m.Pager.Set("/Query/Results/");
             InitToolbar(m);
             var newsearchid = (Guid?) TempData["newsearch"];
             if (m.TopClause.NewMatchAnyId.HasValue)
@@ -232,10 +233,10 @@ namespace CmsWeb.Areas.Search.Controllers
             return Redirect("/Query/" + m.QueryId);
         }
 
-        [HttpPost, Route("Results/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult Results(int? page, int? size, string sort, string dir, QueryModel m)
+        [HttpPost]
+        public ActionResult Results(QueryModel m, PagerModel2 pager)
         {
-            m.Pager.Set("/Query/Results", page, size, sort, dir);
+            m.Pager = pager;
             var starttime = DateTime.Now;
             DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.TopClause.Id));
             InitToolbar(m);
