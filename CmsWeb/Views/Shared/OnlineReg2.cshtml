@@ -1,5 +1,6 @@
 @if ((bool?)ViewBag.hasshell == true)
 {
+    @Html.Action("MobileAppMenu", "OnlineReg")
     @Html.Raw((string)ViewBag.top)
     @RenderSection("head", false)
     @RenderBody()
