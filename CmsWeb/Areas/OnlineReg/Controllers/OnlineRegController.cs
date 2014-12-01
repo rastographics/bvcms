@@ -42,9 +42,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
             if (!id.HasValue)
                 return Message("no organization");
-            var m = new OnlineRegModel
+            var m = new OnlineRegModel()
             {
-                Orgid = id, 
+                Orgid = id,
                 InMobileAppMode = !string.IsNullOrWhiteSpace(source)
             };
             if (m.org == null && m.masterorg == null)

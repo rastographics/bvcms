@@ -22,7 +22,19 @@ namespace CmsWeb.Models
     [Serializable]
     public partial class OnlineRegModel : IXmlSerializable
     {
-        public bool InMobileAppMode { get; set; }
+        private const string MOBILE_APP_RETURN_URL = "bvcmsapp://";
+
+        public bool InMobileAppMode
+        {
+            get { return (bool) HttpContext.Current.Session["source"]; }
+            set { HttpContext.Current.Session["source"] = value; }
+        }
+
+        public string MobileAppReturnUrl
+        {
+            get { return MOBILE_APP_RETURN_URL; }
+        }
+
         public bool? testing { get; set; }
         public string URL { get; set; }
         private int? _masterorgid;

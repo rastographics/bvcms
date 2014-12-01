@@ -8,6 +8,19 @@
   var VaultDisabled = DbUtil.Db.Setting("VaultDisabled", "false") == "true";
 }
 <div class="regform">
+    @if (Model.InMobileAppMode)
+    {
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header hidden-xs" style="padding-top:5px;">
+                    <a href="@Model.MobileAppReturnUrl" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Return to App</a>
+                </div>
+                <div class="navbar-header hidden-sm hidden-md hidden-lg" style="padding-top:5px; padding-left: 15px;">
+                    <a class="btn btn-default" href="@Model.MobileAppReturnUrl"><i class="fa fa-arrow-circle-left"></i> Return to App</a>
+                </div>
+            </div>
+        </nav>
+    }
     <h2>Payment Processing</h2>
     @if (Model.Terms.HasValue())
     {
@@ -26,7 +39,7 @@
     <form class="showform form-horizontal" action="/OnlineReg/ProcessPayment" method="post">
         @Html.ValidationSummary()
         <div class="form-group" style="font-size: 1.5em;">
-      @Html.LabelFor(m => m.AmtToPay, new { @class = "control-label col-sm-3" })
+            @Html.LabelFor(m => m.AmtToPay, new { @class = "control-label col-sm-3" })
             <div class="col-sm-9">
                 @if (Model.PayBalance)
                 {
@@ -34,7 +47,7 @@
                 }
                 else
                 {
-          <p class="form-control-static" id="amt">@Model.AmtToPay.ToString2("C")</p>
+                    <p class="form-control-static" id="amt">@Model.AmtToPay.ToString2("C")</p>
                     @Html.HiddenFor(m => m.AmtToPay)
                 }
             </div>
@@ -78,7 +91,7 @@
             else
             {
                 <div class="form-group">
-          @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
+                    @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
                     <div class="col-sm-9">
                         <label class="radio-inline">
                             <input type="radio" name="Type" value="@PaymentType.CreditCard" @(Model.Type == PaymentType.CreditCard ? "checked='checked'" : "") />Debit/Credit Card
@@ -107,29 +120,29 @@
             }
         </div>
         <div class="form-group">
-      <div class="col-sm-offset-3 col-sm-9 text-right">
-        <div>
-          @if (Model.IsLoggedIn == true && !VaultDisabled)
+            <div class="col-sm-offset-3 col-sm-9 text-right">
+                <div>
+                    @if (Model.IsLoggedIn == true && !VaultDisabled)
                     {
-            <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
+                        <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
                     }
-          @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
-        </div>
-        @if (Model.AllowSaveProgress == true)
-        {
-          <div>
-            @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgressPayment/" + Model.DatumId, "Save Progress, Finish Later", style: "btn-warning min-width15em")
-          </div>
-        }
+                    @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
+                </div>
+                @if (Model.AllowSaveProgress == true)
+                {
+                    <div>
+                        @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgressPayment/" + Model.DatumId, "Save Progress, Finish Later", style: "btn-warning min-width15em")
+                    </div>
+                }
             </div>
         </div>
         @if (Model.AllowCoupon)
         {
             @Html.EditorFor(m => m.Coupon)
-      <div class="form-group" id="form-msg" style="display:none">
-        <div class="alert alert-info" id="coupon-msg">
-        </div>
-      </div>
+            <div class="form-group" id="form-msg" style="display:none">
+                <div class="alert alert-info" id="coupon-msg">
+                </div>
+            </div>
             @Helper.OnlineRegAjaxButtonRow("/OnlineReg/ApplyCoupon", "Apply Coupon", id: "ApplyCoupon", style: "btn-success")
             <div class="form-group" id="formerror">
                 <div class="col-sm-offset-3 col-sm-9">

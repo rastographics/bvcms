@@ -9,6 +9,8 @@ namespace CmsWeb.Models
 {
     public class PaymentForm
     {
+        public bool InMobileAppMode { get; set; }
+        public string MobileAppReturnUrl { get; set; }
         public decimal? AmtToPay { get; set; }
         public decimal? Donate { get; set; }
         public decimal Amtdue { get; set; }
@@ -255,6 +257,8 @@ namespace CmsWeb.Models
             pf.AllowSaveProgress = m.AllowSaveProgress();
             pf.NoCreditCardsAllowed = m.NoCreditCardsAllowed();
             pf.UseBootstrap = m.UseBootstrap;
+            pf.InMobileAppMode = m.InMobileAppMode;
+            pf.MobileAppReturnUrl = m.MobileAppReturnUrl;
             if (m.OnlineGiving())
             {
                 pf.NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();

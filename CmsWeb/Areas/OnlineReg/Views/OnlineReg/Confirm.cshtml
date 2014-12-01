@@ -18,6 +18,23 @@
         : @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
 }
 
+@if (Model.UseBootstrap && Model.InMobileAppMode)
+{
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header hidden-xs" style="padding-top:5px;">
+                <a href="@Model.MobileAppReturnUrl" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Return to App</a>
+            </div>
+            <div class="navbar-header hidden-sm hidden-md hidden-lg" style="padding-top:5px; padding-left: 15px;">
+                <a class="btn btn-default" href="@Model.MobileAppReturnUrl"><i class="fa fa-arrow-circle-left"></i> Return to App</a>
+            </div>
+        </div>
+    </nav>
+}
 <div class="confirm">
     @Html.Raw(Model.GetThankYouMessage())
+    @if (Model.UseBootstrap && Model.InMobileAppMode)
+    {
+        <a href="@Model.MobileAppReturnUrl" class="btn btn-primary">Return to Application</a>
+    }
 </div>
