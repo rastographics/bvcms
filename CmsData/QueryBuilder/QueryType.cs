@@ -80,6 +80,7 @@ namespace CmsData
         HasCommitmentForMeetingId,
         HasContacts,
         HasCurrentTag,
+        HasFailedEmails,
         HasFamilyExtraField,
         HasIncompleteTask,
         HasInvalidEmailAddress,

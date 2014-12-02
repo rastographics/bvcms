@@ -579,8 +579,10 @@ namespace CmsData
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
             var tf = CodeIds == "1";
+            var fundid = Quarters.ToInt2();
             Expression<Func<Person, bool>> pred = p => (from e in p.RecurringAmounts
                                                         where e.Amt > 0
+                                                        where fundid == null || fundid == e.FundId
                                                         select e).Any();
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
