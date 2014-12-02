@@ -14,17 +14,27 @@
     <li><a href="#failedemails" data-toggle="tab" class="ajax"><span>Failed</span></a></li>
 </ul>
 <div class="tab-content">
-    <div class="tab-pane" id="receivedemails" data-link="/Person2/ReceivedEmails/@Model.PeopleId"></div>
+  <div class="tab-pane" id="receivedemails" data-link="/Person2/ReceivedEmails">
+    @Helper.HiddenId("PeopleId", Model.PeopleId)
+  </div>
     @if (User.IsInRole("Access"))
     {
-        <div class="tab-pane" id="sentemails" data-link="/Person2/SentEmails/@Model.PeopleId"></div>
+      <div class="tab-pane" id="sentemails" data-link="/Person2/SentEmails">
+        @Helper.HiddenId("PeopleId", Model.PeopleId)
+      </div>
     }
-    <div class="tab-pane" id="transactional" data-link="/Person2/TransactionalEmails/@Model.PeopleId"></div>
+  <div class="tab-pane" id="transactional" data-link="/Person2/TransactionalEmails">
+    @Helper.HiddenId("PeopleId", Model.PeopleId)
+  </div>
     @if (User.IsInRole("Access"))
     {
-        <div class="tab-pane" id="scheduledemails" data-link="/Person2/ScheduledEmails/@Model.PeopleId"></div>
+      <div class="tab-pane" id="scheduledemails" data-link="/Person2/ScheduledEmails">
+        @Helper.HiddenId("PeopleId", Model.PeopleId)
+      </div>
     }
     <div class="tab-pane" id="optouts" data-link="/Person2/Optouts/@Model.PeopleId"></div>
-    <div class="tab-pane" id="failedemails" data-link="/Person2/FailedEmails/@Model.PeopleId"></div>
+  <div class="tab-pane" id="failedemails" data-link="/Person2/FailedEmails">
+    @Helper.HiddenId("PeopleId", Model.PeopleId)
+  </div>
 </div>
 

@@ -34,8 +34,8 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
-        public QueryResults(PagerModel2 pager)
-            : base("na", "asc", pager)
+        public QueryResults()
+            : base("na", "asc")
         {
             Db = DbUtil.Db;
         }
@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<Person> DefineModelSort(IQueryable<Person> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Name":
                     return from p in q

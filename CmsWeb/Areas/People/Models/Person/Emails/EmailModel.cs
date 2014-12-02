@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -9,12 +10,21 @@ namespace CmsWeb.Areas.People.Models
 {
     public abstract class EmailModel : PagedTableModel<EmailQueue, EmailRow>
     {
-        public Person person;
-
-        protected EmailModel(int id, PagerModel2 pager)
-            : base("Sent", "desc", pager)
+        public int? PeopleId { get; set; }
+        public Person Person
         {
-            person = DbUtil.Db.LoadPersonById(id);
+            get
+            {
+                if (_person == null && PeopleId.HasValue)
+                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                return _person;
+            }
+        }
+        private Person _person;
+
+        protected EmailModel()
+            : base("Sent", "desc")
+        {
         }
 
         internal IQueryable<EmailQueue> FilterForUser(IQueryable<EmailQueue> q)
@@ -51,7 +61,7 @@ namespace CmsWeb.Areas.People.Models
         }
         public override IQueryable<EmailQueue> DefineModelSort(IQueryable<EmailQueue> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Sent":
                     return from e in q

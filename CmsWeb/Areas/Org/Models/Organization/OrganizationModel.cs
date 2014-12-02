@@ -13,18 +13,18 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Models
 {
-	public class OrganizationModel
+	public class OrganizationModel : MemberModel
 	{
 		public CmsData.Organization org { get; set; }
-		public int? OrganizationId { get; set; }
 		public List<ScheduleInfo> schedules { get; set; }
 		public string Schedule { get; set; }
 		public bool IsVolunteerLeader { get; set; }
-        public CurrentOrg CurrentOrg { get; set; }
-		public OrganizationModel(int id)
+
+		public OrganizationModel() //int id)
 		{
-		    CurrentOrg = DbUtil.Db.CurrentOrg;
-		    OrganizationId = id;
+		    //CurrentOrg = DbUtil.Db.CurrentOrg;
+            this.CopyPropertiesFrom(DbUtil.Db.CurrentOrg);
+		    OrganizationId = Id;
 			var q = from o in DbUtil.Db.Organizations
 					let sc = o.OrgSchedules.FirstOrDefault() // SCHED
 					where o.OrganizationId == OrganizationId
@@ -42,13 +42,9 @@ namespace CmsWeb.Areas.Org.Models
 					orderby s.Id
 					select new ScheduleInfo(s);
 			schedules = u.ToList();
-            if(schedules.Count > 0)
-    		    Schedule = schedules[0].Display;
-            else
-                Schedule = "None";
-			MemberModel = new MemberModel(GroupSelectCode.Member);
+            Schedule = schedules.Count > 0 ? schedules[0].Display : "None";
 
-			IsVolunteerLeader = VolunteerLeaderInOrg(OrganizationId);
+		    IsVolunteerLeader = VolunteerLeaderInOrg(OrganizationId);
 		}
 		public static bool VolunteerLeaderInOrg(int? orgid)
 		{
@@ -65,7 +61,6 @@ namespace CmsWeb.Areas.Org.Models
 		        return false;
 		    return leaderorgs.Contains(orgid.Value);
 		}
-		public MemberModel MemberModel;
 
 		private CodeValueModel cv = new CodeValueModel();
 

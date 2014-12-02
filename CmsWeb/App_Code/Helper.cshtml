@@ -1,4 +1,5 @@
 ﻿@using System.Web.Mvc
+@using DocumentFormat.OpenXml.Drawing.Charts
 @using UtilityExtensions
 @helper AnchorLink(string text, string href, string id = null, string target = null, string style = null)
 {
@@ -117,4 +118,10 @@
             </p>
         </div>
     </div>
+}
+@helper HiddenId(string name, int? id)
+{
+  <form class="ajax">
+    <input type="hidden" name="@name" value="@id" />
+  </form>
 }

@@ -9,9 +9,8 @@ namespace CmsWeb.Areas.People.Controllers
     public partial class PersonController
     {
         [HttpPost]
-        public ActionResult ContactsMade(int id, PagerModel2 pager)
+        public ActionResult ContactsMade(ContactsMadeModel m)
         {
-            var m = new ContactsMadeModel(id, pager);
             return View("Ministry/Contacts", m);
         }
         [HttpPost]
@@ -42,9 +41,8 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("/Contact2/" + c.ContactId);
         }
         [HttpPost]
-        public ActionResult ContactsReceived(int id, PagerModel2 pager)
+        public ActionResult ContactsReceived(ContactsReceivedModel m)
         {
-            var m = new ContactsReceivedModel(id, pager);
             return View("Ministry/Contacts", m);
         }
         [HttpPost]
@@ -70,9 +68,8 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("/Contact2/{0}".Fmt(c.ContactId));
         }
         [HttpPost]
-        public ActionResult TasksAbout(int id, PagerModel2 pager)
+        public ActionResult TasksAbout(TasksAboutModel m)
         {
-            var m = new TasksAboutModel(id, pager);
             return View("Ministry/Tasks", m);
         }
         [HttpPost]
@@ -86,9 +83,8 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("/Task/List/{0}".Fmt(t.Id));
         }
         [HttpPost]
-        public ActionResult TasksAssigned(int id, PagerModel2 pager)
+        public ActionResult TasksAssigned(TasksAssignedModel m)
         {
-            var m = new TasksAssignedModel(id, pager);
             return View("Ministry/Tasks", m);
         }
         [HttpPost]

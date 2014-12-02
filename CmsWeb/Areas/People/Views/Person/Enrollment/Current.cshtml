@@ -6,16 +6,16 @@
 }
 <form class="non-modal ajax">
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
         <a id="refresh-current" href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
     </div>
     <table class="expanding table table-condensed table-hover">
         <thead>
             <tr>
-                <th>@Model.Pager.SortLink2("default", @"<i class=""fa fa-sort""></i>")</th>
-                <th>@Model.Pager.SortLink("Organization")</th>
+                <th>@Model.SortLink2("default", @"<i class=""fa fa-sort""></i>")</th>
+                <th>@Model.SortLink("Organization")</th>
                 <th>Leader</th>
-                <th>@Model.Pager.SortLink("Enroll Date")</th>
+                <th>@Model.SortLink("Enroll Date")</th>
                 <th>MemberType</th>
                 <th>AttendPct</th>
             </tr>
@@ -25,7 +25,7 @@
             {
                 rownum++;
                 var oddrow = rownum % 2 == 0 ? "oddrow" : "";
-                if (om.OrgType != pOrgType && Model.Pager.Sort == "default")
+                if (om.OrgType != pOrgType && Model.Sort == "default")
                 {
                     pOrgType = om.OrgType;
                 <tr class="section notshown">
@@ -94,7 +94,7 @@
         </tbody>
     </table>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
 </form>
 

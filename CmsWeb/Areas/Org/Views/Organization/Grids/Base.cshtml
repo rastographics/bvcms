@@ -4,33 +4,33 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MemberModel
 <div class="pagination pagination-mini">
-  @Html.Partial("Pager3", Model.Pager)
+  @Html.Partial("Pager3", Model)
   <a id="refresh-current" href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
 </div>
 <table id="MemberGrid" class="@ViewExtensions2.GridClass">
   <thead>
     <tr>
-      <th><br />@Model.Pager.SortLink("Name")</th>
-      <th><br />@Model.Pager.SortLink("MemberType")</th>
+      <th><br />@Model.SortLink("Name")</th>
+      <th><br />@Model.SortLink("MemberType")</th>
       <th class="left">
-        @Model.Pager.SortLink("Church")<br />
-        @Model.Pager.SortLink("Age") - @Model.Pager.SortLink("Bday")
+        @Model.SortLink("Church")<br />
+        @Model.SortLink("Age") - @Model.SortLink("Bday")
       </th>
-      <th><br />@Model.Pager.SortLink("Primary Address")</th>
+      <th><br />@Model.SortLink("Primary Address")</th>
       <th><br />Communication</th>
       <th>
-        @Model.Pager.SortLink("% Att.")
+        @Model.SortLink("% Att.")
         <br />Last Contact
       </th>
       <th>
-        @Model.Pager.SortLink("Joined")<br />
-        @Model.Pager.SortLink("Last Att.")
+        @Model.SortLink("Joined")<br />
+        @Model.SortLink("Last Att.")
       </th>
       <th><br />Tag</th>
     </tr>
   </thead>
   <tbody>
-    @foreach (var om in Model.Members())
+    @foreach (var om in Model.ViewList())
     {
       <tr>
         <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@om.PeopleId">@om.Name</a></td>
@@ -99,7 +99,7 @@
   </tbody>
 </table>
 <div class="pagination pagination-mini">
-  @Html.Partial("Pager3", Model.Pager)
+  @Html.Partial("Pager3", Model)
   <a id="refresh-current" href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
 </div>
 

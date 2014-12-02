@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,18 +9,28 @@ namespace CmsWeb.Areas.People.Models
 {
     public class FailedMailModel : PagedTableModel<EmailQueueToFail, FailedMailInfo>
     {
-        public readonly int PeopleId;
-        public readonly string email;
-        public readonly string email2;
-        public FailedMailModel(int id, PagerModel2 pager)
-            : base("Time", "desc", pager)
+        public int PeopleId
         {
-            PeopleId = id;
-            var i = (from p in DbUtil.Db.People
-                     where p.PeopleId == id
-                     select new { p.EmailAddress, p.EmailAddress2 }).Single();
-            email = i.EmailAddress;
-            email2 = i.EmailAddress2;
+            get { return peopleid; }
+            set
+            {
+                peopleid = value;
+                Person = DbUtil.Db.LoadPersonById(peopleid);
+                var i = (from p in DbUtil.Db.People
+                         where p.PeopleId == peopleid
+                         select new { p.EmailAddress, p.EmailAddress2 }).Single();
+                email = i.EmailAddress;
+                email2 = i.EmailAddress2;
+            }
+        }
+        private int peopleid;
+        public Person Person;
+
+        public string email;
+        public string email2;
+        public FailedMailModel()
+            : base("Time", "desc")
+        {
         }
         public override IQueryable<EmailQueueToFail> DefineModelList()
         {
@@ -54,7 +65,7 @@ namespace CmsWeb.Areas.People.Models
 
         public override IQueryable<EmailQueueToFail> DefineModelSort(IQueryable<EmailQueueToFail> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Time desc":
                 default:

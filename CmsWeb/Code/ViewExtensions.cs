@@ -388,6 +388,22 @@ namespace CmsWeb
                 tb.MergeAttribute("value", "");
             return new HtmlString(tb.ToString());
         }
+        public static HtmlString HiddenFor3<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression)
+        {
+            var tb = new TagBuilder("input");
+            tb.MergeAttribute("type", "hidden");
+            var name = ExpressionHelper.GetExpressionText(expression);
+            var v = htmlHelper.ViewData.Eval(name);
+            var prefix = htmlHelper.ViewData.TemplateInfo.HtmlFieldPrefix;
+            if (Util.HasValue(prefix))
+                name = prefix + "." + name;
+            tb.MergeAttribute("name", name);
+            if (v != null)
+                tb.MergeAttribute("value", v.ToString());
+            else
+                tb.MergeAttribute("value", "");
+            return new HtmlString(tb.ToString());
+        }
         public static HtmlString DatePicker(this HtmlHelper helper, string name)
         {
             var tb = new TagBuilder("input");

@@ -341,6 +341,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />

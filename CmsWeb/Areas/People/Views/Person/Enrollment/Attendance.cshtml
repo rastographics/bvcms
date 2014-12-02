@@ -15,16 +15,16 @@
             }
         </legend>
         <div class="pagination pagination-mini">
-            @Html.Partial("Pager3", Model.Pager)
+            @Html.Partial("Pager3", Model)
         </div>
         <table class="expanding table table-condensed table-hover">
             <thead>
                 <tr>
                     <th></th>
-                    <th>@Model.Pager.SortLink("Meeting")</th>
-                    <th>@Model.Pager.SortLink("Organization")</th>
-                    <th>@Model.Pager.SortLink("MemberType")</th>
-                    <th>@Model.Pager.SortLink("AttendType")</th>
+                    <th>@Model.SortLink("Meeting")</th>
+                    <th>@Model.SortLink("Organization")</th>
+                    <th>@Model.SortLink("MemberType")</th>
+                    <th>@Model.SortLink("AttendType")</th>
                     <th>OtherAttends</th>
                 </tr>
             </thead>
@@ -61,7 +61,7 @@
             </tbody>
         </table>
         <div class="pagination pagination-mini">
-            @Html.Partial("Pager3", Model.Pager)
+            @Html.Partial("Pager3", Model)
         </div>
     </fieldset>
 </form>

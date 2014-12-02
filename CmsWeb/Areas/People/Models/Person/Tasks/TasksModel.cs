@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsWeb.Models;
@@ -7,18 +8,28 @@ namespace CmsWeb.Areas.People.Models
 {
     public abstract class TasksModel : PagedTableModel<Task, TaskInfo>
     {
-        public CmsData.Person person;
+        public int? PeopleId { get; set; }
+        public Person Person
+        {
+            get
+            {
+                if (_person == null && PeopleId.HasValue)
+                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                return _person;
+            }
+        }
+        private Person _person;
+
         public string AddTask { get; set; }
 
-        protected TasksModel(int id, PagerModel2 pager)
-            : base("Completed", "desc", pager)
+        protected TasksModel()
+            : base("Completed", "desc")
         {
-            person = DbUtil.Db.LoadPersonById(id);
         }
 
         public override IQueryable<Task> DefineModelSort(IQueryable<Task> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Created":
                     return from t in q

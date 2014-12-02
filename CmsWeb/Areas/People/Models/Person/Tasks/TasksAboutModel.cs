@@ -8,15 +8,14 @@ namespace CmsWeb.Areas.People.Models
 {
     public class TasksAboutModel : TasksModel
     {
-        public TasksAboutModel(int id, PagerModel2 pager)
-            : base(id, pager)
+        public TasksAboutModel()
         {
-            AddTask = "/Person2/AddTaskAbout/" + id;
+            AddTask = "/Person2/AddTaskAbout/" + PeopleId;
         }
         public override IQueryable<Task> DefineModelList()
         {
             return from t in DbUtil.Db.Tasks
-                   where t.WhoId == person.PeopleId
+                   where t.WhoId == Person.PeopleId
                    select t;
         }
 

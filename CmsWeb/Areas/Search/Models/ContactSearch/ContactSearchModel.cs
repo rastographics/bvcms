@@ -20,8 +20,8 @@ namespace CmsWeb.Areas.Search.Models
     {
         public ContactSearchInfo SearchParameters { get; set; }
 
-        public ContactSearchModel(PagerModel2 pager = null)
-            : base("Date", "desc", pager)
+        public ContactSearchModel()
+            : base("Date", "desc")
         {
             SearchParameters = new ContactSearchInfo();
         }
@@ -174,7 +174,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<Contact> DefineModelSort(IQueryable<Contact> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "ID":
                     return from c in q

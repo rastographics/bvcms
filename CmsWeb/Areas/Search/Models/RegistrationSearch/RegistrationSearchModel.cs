@@ -20,8 +20,8 @@ namespace CmsWeb.Areas.Search.Models
     {
         public RegistrationSearchInfo SearchParameters { get; set; }
 
-        public RegistrationSearchModel(PagerModel2 pager = null)
-            : base("Date", "desc", pager)
+        public RegistrationSearchModel()
+            : base("Date", "desc")
         {
             SearchParameters = new RegistrationSearchInfo();
         }
@@ -145,7 +145,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<RegistrationList> DefineModelSort(IQueryable<RegistrationList> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Date":
                     return from r in q

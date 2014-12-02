@@ -60,17 +60,29 @@
         </ul>
         <div class="tab-content">
           <div id="Members-tab" class="tab-pane active" data-link="/Organization/CurrMemberGrid/@Model.OrganizationId">
-            @Html.Partial("Grids/Current", Model.MemberModel)
+            @Html.Partial("Grids/Current", Model)
           </div>
-          <div id="Inactive-tab" class="tab-pane" data-link="/Organization/InactiveMemberGrid/@Model.OrganizationId"></div>
-          <div id="Pending-tab" class="tab-pane" data-link="/Organization/PendingMemberGrid/@Model.OrganizationId"></div>
-          <div id="Priors-tab" class="tab-pane" data-link="/Organization/PrevMemberGrid/@Model.OrganizationId"></div>
-          <div id="Prospects-tab" class="tab-pane" data-link="/Organization/ProspectGrid/@Model.OrganizationId"></div>
-          <div id="Visitors-tab" class="tab-pane" data-link="/Organization/VisitorGrid/@Model.OrganizationId"></div>
+          <div id="Inactive-tab" class="tab-pane" data-link="/Organization/InactiveMemberGrid">
+            @Helper.HiddenId("Id", Model.OrganizationId)
+          </div>
+          <div id="Pending-tab" class="tab-pane" data-link="/Organization/PendingMemberGrid">
+            @Helper.HiddenId("Id", Model.OrganizationId)
+          </div>
+          <div id="Priors-tab" class="tab-pane" data-link="/Organization/PrevMemberGrid">
+            @Helper.HiddenId("Id", Model.OrganizationId)
+          </div>
+          <div id="Prospects-tab" class="tab-pane" data-link="/Organization/ProspectGrid">
+            @Helper.HiddenId("Id", Model.OrganizationId)
+          </div>
+          <div id="Visitors-tab" class="tab-pane" data-link="/Organization/VisitorGrid">
+            @Helper.HiddenId("Id", Model.OrganizationId)
+          </div>
           <div id="Settings-tab" class="tab-pane">
             @Html.Partial("Settings", Model)
           </div>
-          <div id="Meetings-tab" class="tab-pane" data-link="/Organization/MeetingGrid/@Model.OrganizationId"></div>
+          <div id="Meetings-tab" class="tab-pane" data-link="/Organization/MeetingGrid">
+            @Helper.HiddenId("Id", Model.OrganizationId)
+          </div>
         </div>
       </div>
     </div>
@@ -188,7 +200,7 @@
         (range) while you click. Select (not specified) to cancel the filter.
       </div>
       <select id="smallgrouplist" name="smallgrouplist" multiple="multiple" size="10">
-        @foreach (var s in Model.MemberModel.SmallGroups())
+        @foreach (var s in Model.SmallGroups())
         {
           <option @(s.Selected ? "selected='selected'" : "") value="@s.Value">@s.Text</option>
         }

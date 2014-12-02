@@ -3,17 +3,17 @@
 <div id="results">
     <div>Count: @Model.Count().ToString("n0")</div>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
     <table class="table table-condensed table-striped">
         <thead>
             <tr>
-              <th>@Model.Pager.SortLink("Date")</th>
+              <th>@Model.SortLink("Date")</th>
               <th>Registrant/User</th>
               <th>Birthday</th>
               <th class="right">Count</th>
               <th>Complete</th>
-              <th>@Model.Pager.SortLink("Organization")</th>
+              <th>@Model.SortLink("Organization")</th>
             </tr>
         </thead>
         <tbody>
@@ -43,6 +43,6 @@
         </tbody>
     </table>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
 </div>

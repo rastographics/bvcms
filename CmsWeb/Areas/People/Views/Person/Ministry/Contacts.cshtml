@@ -7,16 +7,16 @@
         </a>
     </p>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
     <table class="expanding table table-condensed table-hover">
         <thead>
             <tr>
-                <th>@Model.Pager.SortLink("Date")</th>
-                <th>@Model.Pager.SortLink("Type")</th>
-                <th>@Model.Pager.SortLink("Reason")</th>
-                <th>@Model.Pager.SortLink("Minister")</th>
-                <th>@Model.Pager.SortLink("Contactee")</th>
+                <th>@Model.SortLink("Date")</th>
+                <th>@Model.SortLink("Type")</th>
+                <th>@Model.SortLink("Reason")</th>
+                <th>@Model.SortLink("Minister")</th>
+                <th>@Model.SortLink("Contactee")</th>
             </tr>
         </thead>
         <tbody>
@@ -33,6 +33,6 @@
         </tbody>
     </table>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
 </form>

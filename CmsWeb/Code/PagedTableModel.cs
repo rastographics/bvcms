@@ -1,16 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CmsWeb.Areas.Dialog.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public abstract class PagedTableModel<TModel, TView>
+    public abstract class PagedTableModel<TModel, TView> : PagerModel2
     {
-        public PagerModel2 Pager { get; set; }
-        protected PagedTableModel(string defaultSort, string defaultDirection, PagerModel2 pager)
+        protected PagedTableModel(string defaultSort, string defaultDirection)
+           : this()
         {
-            Pager = pager ?? new PagerModel2(Count) {Sort = defaultSort, Direction = defaultDirection};
+            Sort = defaultSort;
+            Direction = defaultDirection;
+        }
+        protected PagedTableModel()
+        {
+            GetCount = Count;
         }
         private int? count;
         public int Count()
@@ -35,8 +41,10 @@ namespace CmsWeb.Models
         {
             var q = DefineModelSort(ModelList());
             if(q == null)
-                throw new Exception("sort not defined {0}".Fmt(Pager.SortExpression));
-            return q.Skip(Pager.StartRow).Take(Pager.PageSize);
+                throw new Exception("sort not defined {0}".Fmt(SortExpression));
+            if (PageSize == 0)
+                return q;
+            return q.Skip(StartRow).Take(PageSize);
         }
         public IEnumerable<TView> ViewList()
         {

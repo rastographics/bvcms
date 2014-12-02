@@ -46,9 +46,8 @@ namespace CmsWeb.Areas.People.Controllers
 		}
 
         [HttpPost]
-        public ActionResult FailedEmails(int id, PagerModel2 pager)
+        public ActionResult FailedEmails(FailedMailModel m)
         {
-            var m = new FailedMailModel(id, pager);
             return View("Emails/Failed", m);
         }
 		[HttpPost, Route("EmailUnblock"), Authorize(Roles = "Admin")]
@@ -68,27 +67,23 @@ namespace CmsWeb.Areas.People.Controllers
 			return Content(ret);
 		}
         [HttpPost]
-        public ActionResult ReceivedEmails(int id, PagerModel2 pager)
+        public ActionResult ReceivedEmails(EmailReceivedModel m)
         {
-            var m = new EmailReceivedModel(id, pager);
             return View("Emails/Emails", m);
         }
         [HttpPost]
-        public ActionResult SentEmails(int id, PagerModel2 pager)
+        public ActionResult SentEmails(EmailSentModel m)
         {
-            var m = new EmailSentModel(id, pager);
             return View("Emails/Emails", m);
         }
         [HttpPost]
-        public ActionResult ScheduledEmails(int id, PagerModel2 pager)
+        public ActionResult ScheduledEmails(EmailScheduledModel m)
         {
-            var m = new EmailScheduledModel(id, pager);
             return View("Emails/Emails", m);
         }
         [HttpPost]
-        public ActionResult TransactionalEmails(int id, PagerModel2 pager)
+        public ActionResult TransactionalEmails(EmailTransactionalModel m)
         {
-            var m = new EmailTransactionalModel(id, pager);
             return View("Emails/Emails", m);
         }
         [HttpGet, Route("ViewEmail/{emailid:int}")]

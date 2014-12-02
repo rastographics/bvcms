@@ -6,7 +6,7 @@ using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
-    public class FamilyModel
+    public class FamilyModel : PagedTableModel<CmsData.Person, FamilyMemberInfo>
     {
         public CmsData.Person Person;
         public FamilyModel(int id)
@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.People.Models
                 return family;
             }
         }
-        public IQueryable<CmsData.Person> DefineModelList()
+        override public IQueryable<CmsData.Person> DefineModelList()
         {
             var mindt = DateTime.Parse("1/1/1900");
             return from m in DbUtil.Db.People
@@ -36,12 +36,12 @@ namespace CmsWeb.Areas.People.Models
                    select m;
         }
 
-        public IQueryable<CmsData.Person> DefineModelSort(IQueryable<CmsData.Person> q)
+        override public IQueryable<CmsData.Person> DefineModelSort(IQueryable<CmsData.Person> q)
         {
             return q;
         }
 
-        public IEnumerable<FamilyMemberInfo> DefineViewList(IQueryable<CmsData.Person> q)
+        override public IEnumerable<FamilyMemberInfo> DefineViewList(IQueryable<CmsData.Person> q)
         {
             var q2 = from m in q
                      select new FamilyMemberInfo

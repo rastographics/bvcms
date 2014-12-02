@@ -2,89 +2,44 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
+using CmsWeb.Code;
 using UtilityExtensions;
 using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class VisitorModel : CurrentOrg
+    public class VisitorModel : PagedTableModel<Person, PersonMemberInfo>, ICurrentOrg
     {
         public int OrganizationId { get; set; }
-        public PagerModel2 Pager { get; set; }
 
-        public VisitorModel(CurrentOrg currorg, PagerModel2 pager = null)
+        public VisitorModel()//CurrentOrg currorg, PagerModel2 pager = null)
         {
-            if(!currorg.Id.HasValue)
+            this.CopyPropertiesFrom(DbUtil.Db.CurrentOrg);
+            if(!Id.HasValue)
                 throw new ArgumentException("missing currorg.Id");
-            OrganizationId = currorg.Id.Value;
-            Pager = pager ?? new PagerModel2() {Direction = "asc", Sort = "Name"};
-            Pager.GetCount = Count;
+            OrganizationId = Id.Value;
+//            Pager = pager ?? new PagerModel2() {Direction = "asc", Sort = "Name"};
+//            Pager.GetCount = Count;
         }
 
-        private IQueryable<Person> visitors;
-
-        private IQueryable<Person> FetchVisitors()
-        {
-            var mindt = Util.Now.AddDays(-Util2.VisitLookbackDays).Date;
-            return visitors ??
-                (visitors = from p in DbUtil.Db.People
-                            join g in DbUtil.Db.GuestList(OrganizationId, mindt, ShowHidden, First, Last) 
-                                on p.PeopleId equals g.PeopleId
-                            select p);
-        }
-
-        public bool isFiltered
+        public bool IsFiltered
         {
             get { return NameFilter.HasValue(); }
         }
-        int? _count;
-        public int Count()
+
+        public override IQueryable<Person> DefineModelList()
         {
-            if (!_count.HasValue)
-                _count = FetchVisitors().Count();
-            return _count.Value;
+            var mindt = Util.Now.AddDays(-Util2.VisitLookbackDays).Date;
+            return from p in DbUtil.Db.People
+                   join g in DbUtil.Db.GuestList(OrganizationId, mindt, ShowHidden, this.First(), this.Last())
+                       on p.PeopleId equals g.PeopleId
+                   select p;
         }
-        public IEnumerable<PersonMemberInfo> Visitors()
+
+        public override IQueryable<Person> DefineModelSort(IQueryable<Person> q)
         {
-            var q = ApplySort();
-            q = q.Skip(Pager.StartRow).Take(Pager.PageSize);
-            var tagownerid = Util2.CurrentTagOwnerId;
-            var q2 = from p in q
-                     join g in DbUtil.Db.GuestList2(OrganizationId) on p.PeopleId equals g.PeopleId
-                     select new PersonMemberInfo
-                     {
-                         PeopleId = p.PeopleId,
-                         Name = p.Name,
-                         Name2 = p.Name2,
-                         BirthDate = Util.FormatBirthday(
-                             p.BirthYear,
-                             p.BirthMonth,
-                             p.BirthDay),
-                         Address = p.PrimaryAddress,
-                         Address2 = p.PrimaryAddress2,
-                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
-                         EmailAddress = p.EmailAddress,
-                         PhonePref = p.PhonePrefId,
-                         HomePhone = p.HomePhone,
-                         CellPhone = p.CellPhone,
-                         WorkPhone = p.WorkPhone,
-                         MemberStatus = p.MemberStatus.Description,
-                         Email = p.EmailAddress,
-                         BFTeacher = p.BFClass.LeaderName,
-                         BFTeacherId = p.BFClass.LeaderId,
-                         Age = p.Age.ToString(),
-                         LastAttended = g.LastAttendDt,
-                         Hidden = g.Hidden,
-                         HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
-                         MemberTypeId = g.MemberTypeId ?? 0
-                     };
-            return q2;
-        }
-        public IQueryable<Person> ApplySort()
-        {
-            var q = FetchVisitors();
-            if (Pager.Direction == "asc")
-                switch (Pager.Sort)
+            if (Direction == "asc")
+                switch (Sort)
                 {
                     case "Name":
                         q = from p in q
@@ -125,7 +80,7 @@ namespace CmsWeb.Areas.Org.Models
                         break;
                 }
             else
-                switch (Pager.Sort)
+                switch (Sort)
                 {
                     case "Church":
                         q = from p in q
@@ -168,5 +123,46 @@ namespace CmsWeb.Areas.Org.Models
             return q;
         }
 
+        public override IEnumerable<PersonMemberInfo> DefineViewList(IQueryable<Person> q)
+        {
+            q = q.Skip(StartRow).Take(PageSize);
+            var tagownerid = Util2.CurrentTagOwnerId;
+            var q2 = from p in q
+                     join g in DbUtil.Db.GuestList2(OrganizationId) on p.PeopleId equals g.PeopleId
+                     select new PersonMemberInfo
+                     {
+                         PeopleId = p.PeopleId,
+                         Name = p.Name,
+                         Name2 = p.Name2,
+                         BirthDate = Util.FormatBirthday(
+                             p.BirthYear,
+                             p.BirthMonth,
+                             p.BirthDay),
+                         Address = p.PrimaryAddress,
+                         Address2 = p.PrimaryAddress2,
+                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
+                         EmailAddress = p.EmailAddress,
+                         PhonePref = p.PhonePrefId,
+                         HomePhone = p.HomePhone,
+                         CellPhone = p.CellPhone,
+                         WorkPhone = p.WorkPhone,
+                         MemberStatus = p.MemberStatus.Description,
+                         Email = p.EmailAddress,
+                         BFTeacher = p.BFClass.LeaderName,
+                         BFTeacherId = p.BFClass.LeaderId,
+                         Age = p.Age.ToString(),
+                         LastAttended = g.LastAttendDt,
+                         Hidden = g.Hidden,
+                         HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
+                         MemberTypeId = g.MemberTypeId ?? 0
+                     };
+            return q2;
+        }
+
+        public int? Id { get; set; }
+        public string NameFilter { get; set; }
+        public string SgFilter { get; set; }
+        public bool ShowHidden { get; set; }
+        public bool ClearFilter { get; set; }
     }
 }

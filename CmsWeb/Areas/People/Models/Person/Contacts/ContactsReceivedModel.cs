@@ -8,17 +8,16 @@ namespace CmsWeb.Areas.People.Models
 {
     public class ContactsReceivedModel : ContactsModel
     {
-        public ContactsReceivedModel(int id, PagerModel2 pager)
-            : base(id, pager)
+        public ContactsReceivedModel()
         {
-            AddContact = "/Person2/AddContactReceived/" + id;
+            AddContact = "/Person2/AddContactReceived/" + PeopleId;
             base.AddContactButton = "Add Contact Received By This Person";
         }
 
         override public IQueryable<Contact> DefineModelList()
         {
             return from c in FilteredModelList()
-                   where c.contactees.Any(p => p.PeopleId == person.PeopleId)
+                   where c.contactees.Any(p => p.PeopleId == PeopleId)
                    select c;
         }
 
@@ -26,7 +25,7 @@ namespace CmsWeb.Areas.People.Models
         {
             return from c in q
                    let contactor = c.contactsMakers.FirstOrDefault().person.Name
-                   let contactee = person.PreferredName
+                   let contactee = Person.PreferredName
                    let othercontactees = c.contactees.Count() > 1 ? " and others" : ""
                    let othercontactors = c.contactsMakers.Count() > 1 ? " and others" : ""
                    select new ContactInfo

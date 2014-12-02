@@ -1,26 +1,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
+using CmsWeb.Code;
 using CmsWeb.Models;
 using UtilityExtensions;
 using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class MemberModel : CurrentOrg
+    public class MemberModel : PagedTableModel<OrganizationMember, PersonMemberInfo>, ICurrentOrg
     {
         public int? OrganizationId { get; set; }
         public Organization Org { get; set; }
         public int GroupSelect { get; set; }
 
-        public PagerModel2 Pager { get; set; }
-        public MemberModel(int select, PagerModel2 pager = null)
+        public MemberModel()
+            : base("Name", "asc")
         {
+            if(ClearFilter)
+                this.ClearCurrentOrg();
+            this.CopyPropertiesFrom(DbUtil.Db.CurrentOrg);
             OrganizationId = Id;
             Org = DbUtil.Db.LoadOrganizationById(Id);
-            GroupSelect = select;
-            Pager = pager ?? new PagerModel2() { Direction = "asc", Sort = "Name" };
-            Pager.GetCount = Count;
+        }
+
+        public bool IsFiltered
+        {
+            get { return NameFilter.HasValue() || SgFilter.HasValue(); }
         }
         public IEnumerable<SelectListItem> SmallGroups()
         {
@@ -38,77 +44,18 @@ namespace CmsWeb.Areas.Org.Models
             return list;
         }
 
-        private IQueryable<OrganizationMember> members;
-        private IQueryable<OrganizationMember> FetchMembers()
+        public override IQueryable<OrganizationMember> DefineModelList()
         {
-            if (members != null) 
-                return members;
-
-            string First = null, Last = null;
-            if (NameFilter.HasValue())
-                Util.NameSplit(NameFilter, out First, out Last);
-
-            members = from om in DbUtil.Db.OrganizationMembers
-                where om.OrganizationId == OrganizationId
-                where DbUtil.Db.OrgMember(OrganizationId, GroupSelect, First, Last, SgFilter, ShowHidden).Any(mm => mm.PeopleId == om.PeopleId)
-                select om;
-
-            return members;
+            return from om in DbUtil.Db.OrganizationMembers
+                   where om.OrganizationId == OrganizationId
+                   where DbUtil.Db.OrgMember(OrganizationId, GroupSelect, this.First(), this.Last(), SgFilter, ShowHidden).Any(mm => mm.PeopleId == om.PeopleId)
+                   select om;
         }
-        int? _count;
-        public int Count()
-        {
-            if (!_count.HasValue)
-                _count = FetchMembers().Count();
-            return _count.Value;
-        }
-        public IEnumerable<PersonMemberInfo> Members()
-        {
-            var q0 = ApplySort();
-            q0 = q0.Skip(Pager.StartRow).Take(Pager.PageSize);
 
-            var tagownerid = Util2.CurrentTagOwnerId;
-            var q = from om in q0
-                    let p = om.Person
-                    select new PersonMemberInfo
-                    {
-                        PeopleId = p.PeopleId,
-                        Name = p.Name,
-                        Name2 = p.Name2,
-                        BirthDate = Util.FormatBirthday(
-                            p.BirthYear,
-                            p.BirthMonth,
-                            p.BirthDay),
-                        Address = p.PrimaryAddress,
-                        Address2 = p.PrimaryAddress2,
-                        CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
-                        EmailAddress = p.EmailAddress,
-                        PhonePref = p.PhonePrefId,
-                        HomePhone = p.HomePhone,
-                        CellPhone = p.CellPhone,
-                        WorkPhone = p.WorkPhone,
-                        MemberStatus = p.MemberStatus.Description,
-                        Email = p.EmailAddress,
-                        BFTeacher = p.BFClass.LeaderName,
-                        BFTeacherId = p.BFClass.LeaderId,
-                        Age = p.Age.ToString(),
-                        MemberTypeCode = om.MemberType.Code,
-                        MemberType = om.MemberType.Description,
-                        MemberTypeId = om.MemberTypeId,
-                        InactiveDate = om.InactiveDate,
-                        AttendPct = om.AttendPct,
-                        LastAttended = om.LastAttended,
-                        HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
-                        Joined = om.EnrollmentDate,
-                        Hidden = om.Hidden ?? false
-                    };
-            return q;
-        }
-        public IQueryable<OrganizationMember> ApplySort()
+        public override IQueryable<OrganizationMember> DefineModelSort(IQueryable<OrganizationMember> q)
         {
-            var q = FetchMembers();
-            if (Pager.Direction == "asc")
-                switch (Pager.Sort)
+            if (Direction == "asc")
+                switch (Sort)
                 {
                     case "Name":
                         q = from om in q
@@ -182,7 +129,7 @@ namespace CmsWeb.Areas.Org.Models
                         break;
                 }
             else
-                switch (Pager.Sort)
+                switch (Sort)
                 {
                     case "Church":
                         q = from om in q
@@ -257,5 +204,53 @@ namespace CmsWeb.Areas.Org.Models
                 }
             return q;
         }
+
+        public override IEnumerable<PersonMemberInfo> DefineViewList(IQueryable<OrganizationMember> q)
+        {
+            var q0 = q.Skip(StartRow).Take(PageSize);
+
+            var tagownerid = Util2.CurrentTagOwnerId;
+            var q1 = from om in q0
+                    let p = om.Person
+                    select new PersonMemberInfo
+                    {
+                        PeopleId = p.PeopleId,
+                        Name = p.Name,
+                        Name2 = p.Name2,
+                        BirthDate = Util.FormatBirthday(
+                            p.BirthYear,
+                            p.BirthMonth,
+                            p.BirthDay),
+                        Address = p.PrimaryAddress,
+                        Address2 = p.PrimaryAddress2,
+                        CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
+                        EmailAddress = p.EmailAddress,
+                        PhonePref = p.PhonePrefId,
+                        HomePhone = p.HomePhone,
+                        CellPhone = p.CellPhone,
+                        WorkPhone = p.WorkPhone,
+                        MemberStatus = p.MemberStatus.Description,
+                        Email = p.EmailAddress,
+                        BFTeacher = p.BFClass.LeaderName,
+                        BFTeacherId = p.BFClass.LeaderId,
+                        Age = p.Age.ToString(),
+                        MemberTypeCode = om.MemberType.Code,
+                        MemberType = om.MemberType.Description,
+                        MemberTypeId = om.MemberTypeId,
+                        InactiveDate = om.InactiveDate,
+                        AttendPct = om.AttendPct,
+                        LastAttended = om.LastAttended,
+                        HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
+                        Joined = om.EnrollmentDate,
+                        Hidden = om.Hidden ?? false
+                    };
+            return q1;
+        }
+
+        public int? Id { get; set; }
+        public string NameFilter { get; set; }
+        public string SgFilter { get; set; }
+        public bool ShowHidden { get; set; }
+        public bool ClearFilter { get; set; }
     }
 }

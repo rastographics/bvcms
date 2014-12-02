@@ -10,17 +10,17 @@
         </p>
     }
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
     <table class="expanding table table-condensed table-hover">
         <thead>
             <tr>
-                <th>@Model.Pager.SortLink("Created")</th>
-                <th>@Model.Pager.SortLink("Minister")</th>
-                <th>@Model.Pager.SortLink("Description")</th>
-                <th>@Model.Pager.SortLink("About")</th>
-                <th>@Model.Pager.SortLink("Due")</th>
-                <th>@Model.Pager.SortLink("Completed")</th>
+                <th>@Model.SortLink("Created")</th>
+                <th>@Model.SortLink("Minister")</th>
+                <th>@Model.SortLink("Description")</th>
+                <th>@Model.SortLink("About")</th>
+                <th>@Model.SortLink("Due")</th>
+                <th>@Model.SortLink("Completed")</th>
             </tr>
         </thead>
         <tbody>
@@ -38,6 +38,6 @@
         </tbody>
     </table>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
 </form>

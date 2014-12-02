@@ -29,7 +29,7 @@ namespace CmsWeb.Controllers
         }
         public ActionResult NewMeeting(int id, bool forMeeting)
         {
-            var oi = new OrganizationModel(id);
+            var oi = new OrganizationModel() { Id = id };
             var m = new NewMeetingInfo()
             {
                 Schedule = new CodeInfo(0, forMeeting ? oi.SchedulesPrev() : oi.SchedulesNext()),

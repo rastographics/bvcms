@@ -2,7 +2,7 @@
 @Html.Hidden("inactive-qid", (Guid?)ViewBag.queryid)
 <div style="margin-bottom:5px">
   Count: <strong id="inactive-count">@Model.Count()</strong>
-  <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
+  <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.IsFiltered ? "(filtered)" : "")</a>
   @if (User.IsInRole("Edit"))
   {
     <a href="/SearchAdd2/Dialog/inactive/@Model.OrganizationId" class="searchadd bt">@(Model.Org.IsMissionTrip == true ? "Add Sender" : "Add Inactive Members")</a>
@@ -25,7 +25,7 @@
               NONE to find no smallgroups assigned.
               ALL: to match all." />
     <button class="setfilter btn">
-      Filter @(Html.Raw(Model.isFiltered ? "<span style='color:red'>(filtered)</span>" : ""))
+      Filter @(Html.Raw(Model.IsFiltered ? "<span style='color:red'>(filtered)</span>" : ""))
     </button>
     <button class="clearfilter btn" href="#">Clear</button>
     <input class="ClearFilter" name="ClearFilter" type="hidden" value="false" />

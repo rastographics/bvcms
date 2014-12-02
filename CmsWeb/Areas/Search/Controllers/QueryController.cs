@@ -234,9 +234,8 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [HttpPost]
-        public ActionResult Results(QueryModel m, PagerModel2 pager)
+        public ActionResult Results(QueryModel m)
         {
-            m.Pager = pager;
             var starttime = DateTime.Now;
             DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.TopClause.Id));
             InitToolbar(m);

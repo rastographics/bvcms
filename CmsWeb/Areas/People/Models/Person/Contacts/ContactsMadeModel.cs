@@ -9,23 +9,22 @@ namespace CmsWeb.Areas.People.Models
 {
     public class ContactsMadeModel : ContactsModel
     {
-        public ContactsMadeModel(int id, PagerModel2 pager)
-            : base(id, pager)
+        public ContactsMadeModel()
         {
-            AddContact = "/Person2/AddContactMade/" + id;
+            AddContact = "/Person2/AddContactMade/" + PeopleId;
             base.AddContactButton = "Add Contact Made By This Person";
         }
         override public IQueryable<Contact> DefineModelList()
         {
             return from c in FilteredModelList()
-                   where c.contactsMakers.Any(p => p.PeopleId == person.PeopleId)
+                   where c.contactsMakers.Any(p => p.PeopleId == Person.PeopleId)
                    select c;
         }
 
         public override IEnumerable<ContactInfo> DefineViewList(IQueryable<Contact> q)
         {
             return from c in q
-                   let contactor = person.PreferredName
+                   let contactor = Person.PreferredName
                    let contactee = c.contactees.FirstOrDefault().person.Name
                    let othercontactors = c.contactsMakers.Count() > 1 ? " and others" : ""
                    let othercontactees = c.contactees.Count() > 1 ? " and others" : ""

@@ -75,13 +75,12 @@ namespace CmsWeb.Areas.Search.Models
         public int Index { get; set; }
         private Organization org;
 
-        public SearchAddModel(PagerModel2 pager = null)
-            : base(pager)
+        public SearchAddModel()
         {
             PendingList = new List<PendingPersonModel>();
         }
-        public SearchAddModel(string context, string contextid, PagerModel2 pager = null) 
-            : this(pager)
+        public SearchAddModel(string context, string contextid) 
+            : this()
         {
             AddContext = context;
             PrimaryKeyForContextType = contextid;

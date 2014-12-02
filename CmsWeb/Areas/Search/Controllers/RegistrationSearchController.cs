@@ -1,6 +1,5 @@
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
@@ -17,9 +16,8 @@ namespace CmsWeb.Areas.Search.Controllers
             return View(m);
         }
         [HttpPost]
-        public ActionResult Results(RegistrationSearchModel m, PagerModel2 pager)
+        public ActionResult Results(RegistrationSearchModel m)
         {
-            m.Pager = pager;
             m.SaveToSession();
             return View(m);
         }

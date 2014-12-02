@@ -5,6 +5,7 @@ using CmsData;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -68,15 +69,15 @@ namespace CmsWeb.Areas.Org.Controllers
             return Content("dropped");
         }
         [HttpPost, Route("OrgMemberDialog2/Move/{oid:int}/{pid:int}")]
-        public ActionResult Move(int oid, int pid, PagerModel2 pager)
+        public ActionResult Move(int oid, int pid)
         {
-            var mm = new OrgMemberMoveModel(pager) { OrgId = oid, PeopleId = pid };
+            var mm = new OrgMemberMoveModel { OrgId = oid, PeopleId = pid };
             return View(mm);
         }
         [HttpPost, Route("OrgMemberDialog2/MoveResults/{page}")]
-        public ActionResult MoveResults(int page, OrgMemberMoveModel m, PagerModel2 pager)
+        public ActionResult MoveResults(int page, OrgMemberMoveModel m)
         {
-            m.Pager = pager;
+            m.Page = page;
             return View("Move", m);
         }
         [HttpPost, Route("OrgMemberDialog2/MoveSelect/{oid:int}/{pid:int}/{toid:int}")]

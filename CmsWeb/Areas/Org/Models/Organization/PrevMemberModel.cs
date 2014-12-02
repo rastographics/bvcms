@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using AuthorizeNet.APICore;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Models;
@@ -7,113 +8,60 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class PrevMemberModel
+    public class PrevMemberModel : PagedTableModel<EnrollmentTransaction, PersonMemberInfo>, ICurrentOrg
     {
         public int? OrganizationId { get; set; }
-        public PagerModel2 Pager { get; set; }
-        public PrevMemberModel(PagerModel2 pager = null)
-        {
-            currorg = DbUtil.Db.CurrentOrg;
-            OrganizationId = currorg.Id;
-            Pager = pager ?? new PagerModel2() {Direction = "asc", Sort = "Name"};
-        }
-        public bool ShowProspects { get; set; }
-        private CurrentOrg currorg;
-        private IQueryable<EnrollmentTransaction> enrollments;
-        private IQueryable<EnrollmentTransaction> FetchPrevMembers()
-        {
-            if (enrollments == null)
-            {
-                enrollments = from etd in DbUtil.Db.EnrollmentTransactions
-                               let mdt = DbUtil.Db.EnrollmentTransactions.Where(m =>
-                                   m.PeopleId == etd.PeopleId
-                                   && m.OrganizationId == OrganizationId
-                                   && m.TransactionTypeId > 3
-                                   && m.TransactionStatus == false).Select(m => m.TransactionDate).Max()
-                               where etd.TransactionStatus == false
-                               where etd.TransactionDate == mdt
-                               where ShowProspects 
-                                    ? etd.MemberTypeId == MemberTypeCode.Prospect 
-                                    : etd.MemberTypeId != MemberTypeCode.Prospect
-                               where etd.OrganizationId == OrganizationId
-                               where etd.TransactionTypeId >= 4
-                               where etd.Person.OrganizationMembers.All(om => om.OrganizationId != OrganizationId)
-                               select etd;
 
-                if (currorg.NameFilter.HasValue())
-                {
-                    if (currorg.First.HasValue())
-                        enrollments = from om in enrollments
-                                       let p = om.Person
-                                       where p.LastName.StartsWith(currorg.First)
-                                       where p.FirstName.StartsWith(currorg.First) || p.NickName.StartsWith(currorg.First)
-                                       select om;
-                    else
-                        enrollments = from om in enrollments
-                                       let p = om.Person
-                                       where p.LastName.StartsWith(currorg.Last)
-                                       select om;
-                }
+        public PrevMemberModel()
+            :base("Name", "asc")
+        {
+            OrganizationId = Id;
+        }
+        public bool IsFiltered
+        {
+            get { return NameFilter.HasValue(); }
+        }
+
+        public override IQueryable<EnrollmentTransaction> DefineModelList()
+        {
+            var q = from etd in DbUtil.Db.EnrollmentTransactions
+                    let mdt = DbUtil.Db.EnrollmentTransactions.Where(m =>
+                        m.PeopleId == etd.PeopleId
+                        && m.OrganizationId == OrganizationId
+                        && m.TransactionTypeId > 3
+                        && m.TransactionStatus == false).Select(m => m.TransactionDate).Max()
+                    where etd.TransactionStatus == false
+                    where etd.TransactionDate == mdt
+                    where ShowHidden
+                         ? etd.MemberTypeId == MemberTypeCode.Prospect
+                         : etd.MemberTypeId != MemberTypeCode.Prospect
+                    where etd.OrganizationId == OrganizationId
+                    where etd.TransactionTypeId >= 4
+                    where etd.Person.OrganizationMembers.All(om => om.OrganizationId != OrganizationId)
+                    select etd;
+
+            if (NameFilter.HasValue())
+            {
+                var first = this.First();
+                if (first.HasValue())
+                    q = from om in q
+                        let p = om.Person
+                        where p.LastName.StartsWith(first)
+                        where p.FirstName.StartsWith(first) || p.NickName.StartsWith(first)
+                        select om;
+                else
+                    q = from om in q
+                        let p = om.Person
+                        where p.LastName.StartsWith(this.Last())
+                        select om;
             }
-            return enrollments;
+            return q;
         }
-        public bool isFiltered
+
+        public override IQueryable<EnrollmentTransaction> DefineModelSort(IQueryable<EnrollmentTransaction> q)
         {
-            get { return currorg.NameFilter.HasValue(); }
-        }
-        int? _count;
-        public int Count()
-        {
-            if (!_count.HasValue)
-                _count = FetchPrevMembers().Count();
-            return _count.Value;
-        }
-        public IEnumerable<PersonMemberInfo> PrevMembers()
-        {
-            var q = ApplySort();
-            q = q.Skip(Pager.StartRow).Take(Pager.PageSize);
-            var tagownerid = Util2.CurrentTagOwnerId;
-            var q2 = from om in q
-                     let p = om.Person
-                     let att = om.Person.Attends.Where(a => a.OrganizationId == om.OrganizationId && a.AttendanceFlag).Max(a => a.MeetingDate)
-                     select new PersonMemberInfo
-                     {
-                         PeopleId = p.PeopleId,
-                         Name = p.Name,
-                         Name2 = p.Name2,
-                         BirthDate = Util.FormatBirthday(
-                             p.BirthYear,
-                             p.BirthMonth,
-                             p.BirthDay),
-                         Address = p.PrimaryAddress,
-                         Address2 = p.PrimaryAddress2,
-                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
-                         EmailAddress = p.EmailAddress,
-                         PhonePref = p.PhonePrefId,
-                         HomePhone = p.HomePhone,
-                         CellPhone = p.CellPhone,
-                         WorkPhone = p.WorkPhone,
-                         MemberStatus = p.MemberStatus.Description,
-                         Email = p.EmailAddress,
-                         BFTeacher = p.BFClass.LeaderName,
-                         BFTeacherId = p.BFClass.LeaderId,
-                         Age = p.Age.ToString(),
-                         MemberTypeCode = om.MemberType.Code,
-                         MemberType = om.MemberType.Description,
-                         MemberTypeId = om.MemberTypeId,
-                         AttendPct = om.AttendancePercentage,
-                         LastAttended = att,
-                         Joined = om.EnrollmentDate,
-                         Dropped = om.TransactionDate,
-                         HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
-                     };
-            return q2;
-        }
-        public IQueryable<EnrollmentTransaction> ApplySort()
-        {
-            var q = FetchPrevMembers();
-            if (Pager.Direction == "asc")
-                switch (Pager.Sort)
+            if (Direction == "asc")
+                switch (Sort)
                 {
                     case "Name":
                         q = from om in q
@@ -186,7 +134,7 @@ namespace CmsWeb.Areas.Org.Models
                         break;
                 }
             else
-                switch (Pager.Sort)
+                switch (Sort)
                 {
                     case "Church":
                         q = from om in q
@@ -261,5 +209,51 @@ namespace CmsWeb.Areas.Org.Models
             return q;
         }
 
+        public override IEnumerable<PersonMemberInfo> DefineViewList(IQueryable<EnrollmentTransaction> q)
+        {
+            q = q.Skip(StartRow).Take(PageSize);
+            var tagownerid = Util2.CurrentTagOwnerId;
+            var q2 = from om in q
+                     let p = om.Person
+                     let att = om.Person.Attends.Where(a => a.OrganizationId == om.OrganizationId && a.AttendanceFlag).Max(a => a.MeetingDate)
+                     select new PersonMemberInfo
+                     {
+                         PeopleId = p.PeopleId,
+                         Name = p.Name,
+                         Name2 = p.Name2,
+                         BirthDate = Util.FormatBirthday(
+                             p.BirthYear,
+                             p.BirthMonth,
+                             p.BirthDay),
+                         Address = p.PrimaryAddress,
+                         Address2 = p.PrimaryAddress2,
+                         CityStateZip = Util.FormatCSZ(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
+                         EmailAddress = p.EmailAddress,
+                         PhonePref = p.PhonePrefId,
+                         HomePhone = p.HomePhone,
+                         CellPhone = p.CellPhone,
+                         WorkPhone = p.WorkPhone,
+                         MemberStatus = p.MemberStatus.Description,
+                         Email = p.EmailAddress,
+                         BFTeacher = p.BFClass.LeaderName,
+                         BFTeacherId = p.BFClass.LeaderId,
+                         Age = p.Age.ToString(),
+                         MemberTypeCode = om.MemberType.Code,
+                         MemberType = om.MemberType.Description,
+                         MemberTypeId = om.MemberTypeId,
+                         AttendPct = om.AttendancePercentage,
+                         LastAttended = att,
+                         Joined = om.EnrollmentDate,
+                         Dropped = om.TransactionDate,
+                         HasTag = p.Tags.Any(t => t.Tag.Name == Util2.CurrentTagName && t.Tag.PeopleId == tagownerid),
+                     };
+            return q2;
+        }
+
+        public int? Id { get; set; }
+        public string NameFilter { get; set; }
+        public string SgFilter { get; set; }
+        public bool ShowHidden { get; set; }
+        public bool ClearFilter { get; set; }
     }
 }

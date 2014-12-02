@@ -21,11 +21,9 @@ namespace CmsWeb.Areas.Search.Controllers
             //m.Pager.Set("/SavedQuery/Results", 1, null, "Last Run", "desc");
             return View(m);
         }
-        [HttpPost] //, Route("Results/{page?}/{size?}/{sort=Last Run}/{dir=desc}")]
-        public ActionResult Results(SavedQueryModel m, PagerModel2 pager)
+        [HttpPost]
+        public ActionResult Results(SavedQueryModel m)
         {
-            //m.Pager.Set("/SavedQuery/Results", page, size, sort, dir);
-            m.Pager = pager;
             return View(m);
         }
         [HttpPost]

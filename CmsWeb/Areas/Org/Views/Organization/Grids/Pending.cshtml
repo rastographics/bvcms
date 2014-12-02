@@ -2,7 +2,7 @@
 @Html.Hidden("pending-qid", (Guid?)ViewBag.queryid)
 <p>
 Count: <strong id="pending-count">@Model.Count()</strong>
-<a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
+<a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.IsFiltered ? "(filtered)" : "")</a>
 @if(User.IsInRole("Edit"))
 { 
     <a href="/SearchAdd2/Dialog/pending/@Model.OrganizationId" class="searchadd bt">Add Pending Members</a>

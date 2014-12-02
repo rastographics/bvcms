@@ -33,22 +33,28 @@
         $this.data('clicked', true);
         var state = $this.attr("href") || $this.data("target");
         var d = $(state);
+        var $form = d.find("form.ajax");
+        var postdata = $form.serialize();
         var url = d.data("link");
         if (!d.hasClass("loaded"))
             $.ajax({
                 type: 'POST',
                 url: url,
-                data: {},
+                data: postdata,
                 success: function (data, status) {
                     d.addClass("loaded");
                     d.html(data).ready(function () {
-                        var $form = d.find("form.ajax");
                         if ($form.data("init")) {
                             $.InitFunctions[$form.data("init")]();
                         }
                         if ($form.data("init2")) {
                             $.InitFunctions[$form.data("init2")]();
                         }
+                    });
+                },
+                error: function (data, status) {
+                    d.html(data.responseText).ready(function () {
+
                     });
                 }
             });

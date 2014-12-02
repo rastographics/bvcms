@@ -10,14 +10,18 @@ namespace CmsWeb.Areas.People.Models
 {
     public class CurrentEnrollments : PagedTableModel<OrganizationMember, OrgMemberInfo>
     {
-        private int PeopleId;
-        public CmsData.Person person { get; set; }
-        public CurrentEnrollments(int id, PagerModel2 pager)
-            : base("", "", pager)
+        public int? PeopleId { get; set; }
+        public Person Person
         {
-            PeopleId = id;
-            person = DbUtil.Db.LoadPersonById(id);
+            get
+            {
+                if (_person == null && PeopleId.HasValue)
+                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                return _person;
+            }
         }
+        private Person _person;
+
         override public IQueryable<OrganizationMember> DefineModelList()
         {
             var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly
@@ -36,7 +40,7 @@ namespace CmsWeb.Areas.People.Models
         }
         override public IQueryable<OrganizationMember> DefineModelSort(IQueryable<OrganizationMember> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Enroll Date":
                     return from om in q

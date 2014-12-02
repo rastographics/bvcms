@@ -6,68 +6,32 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class MeetingsModel
+    public class MeetingsModel : PagedTableModel<Meeting, MeetingInfo>
     {
-        private int OrgId;
-        public PagerModel2 Pager { get; set; }
-        public MeetingsModel(int id, bool future)
+        public int OrgId { get; set; }
+        public bool Future { get; set; }
+
+        public override IQueryable<Meeting> DefineModelList()
         {
-            OrgId = id;
-            this.future = future;
-            Pager = new PagerModel2(Count);
-        }
-        private readonly bool future; 
-        private IQueryable<Meeting> meetings;
-        private IQueryable<Meeting> FetchMeetings()
-        {
-            if (meetings == null)
-            {
-                var tzoffset = DbUtil.Db.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
-                var midnight = Util.Now.Date.AddDays(1).AddHours(tzoffset);
-                meetings = from m in DbUtil.Db.Meetings
-                            where m.OrganizationId == OrgId
-                            select m;
-                if (future)
-                    meetings = from m in meetings
-                                where m.MeetingDate >= midnight
-                                select m;
-                else
-                    meetings = from m in meetings
-                                where m.MeetingDate < midnight
-                                select m;
-            }
+            var tzoffset = DbUtil.Db.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
+            var midnight = Util.Now.Date.AddDays(1).AddHours(tzoffset);
+            var meetings = from m in DbUtil.Db.Meetings
+                           where m.OrganizationId == OrgId
+                           select m;
+            if (Future)
+                meetings = from m in meetings
+                           where m.MeetingDate >= midnight
+                           select m;
+            else
+                meetings = from m in meetings
+                           where m.MeetingDate < midnight
+                           select m;
             return meetings;
         }
-        int? _count;
-        public int Count()
+
+        public override IQueryable<Meeting> DefineModelSort(IQueryable<Meeting> q)
         {
-            if (!_count.HasValue)
-                _count = FetchMeetings().Count();
-            return _count.Value;
-        }
-        public IEnumerable<MeetingInfo> Meetings()
-        {
-            var q = ApplySort();
-            q = q.Skip(Pager.StartRow).Take(Pager.PageSize);
-            var q2 = from m in q
-                     let o = m.Organization
-                     select new MeetingInfo
-                     {
-                         MeetingId = m.MeetingId,
-                         OrganizationId = m.OrganizationId,
-                         MeetingDate = m.MeetingDate,
-                         Location = m.Location,
-                         NumPresent = m.NumPresent,
-                         HeadCount = m.HeadCount,
-                         NumVisitors = m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers,
-                         Description = m.Description
-                     };
-            return q2;
-        }
-        private IQueryable<CmsData.Meeting> ApplySort()
-        {
-            var q = FetchMeetings();
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 //case "Organization":
                 //    q = q.OrderBy(a => a.Meeting.Organization.OrganizationName).ThenByDescending(a => a.MeetingDate);
@@ -94,13 +58,31 @@ namespace CmsWeb.Areas.Org.Models
                 //    q = q.OrderByDescending(a => a.MeetingDate);
                 //    break;
                 default:
-                    if (future)
-                        q = q.OrderBy(m => m.MeetingDate);
-                    else
-                        q = q.OrderByDescending(m => m.MeetingDate);
+                    q = Future 
+                        ? q.OrderBy(m => m.MeetingDate) 
+                        : q.OrderByDescending(m => m.MeetingDate);
                     break;
             }
             return q;
+        }
+
+        public override IEnumerable<MeetingInfo> DefineViewList(IQueryable<Meeting> q)
+        {
+            q = q.Skip(StartRow).Take(PageSize);
+            var q2 = from m in q
+                     let o = m.Organization
+                     select new MeetingInfo
+                     {
+                         MeetingId = m.MeetingId,
+                         OrganizationId = m.OrganizationId,
+                         MeetingDate = m.MeetingDate,
+                         Location = m.Location,
+                         NumPresent = m.NumPresent,
+                         HeadCount = m.HeadCount,
+                         NumVisitors = m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers,
+                         Description = m.Description
+                     };
+            return q2;
         }
     }
 }

@@ -88,15 +88,13 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost]
-        public ActionResult Changes(int id, PagerModel2 pager)
+        public ActionResult Changes(ChangesModel m)
         {
-            var m = new ChangesModel(id, pager);
             return View("System/Changes", m);
         }
         [HttpPost, Route("Reverse/{id:int}/{pf}/{field}")]
-        public ActionResult Reverse(int id, string field, string pf, string value)
+        public ActionResult Reverse(string field, string pf, string value, ChangesModel m)
         {
-            var m = new ChangesModel(id);
             m.Reverse(field, value, pf);
             return View("System/Changes", m);
         }

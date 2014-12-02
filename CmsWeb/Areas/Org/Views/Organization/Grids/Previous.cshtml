@@ -4,7 +4,7 @@
 @Html.Hidden("previous-qid", (Guid?)ViewBag.queryid)
 <p style="margin-bottom:5px">
 Count: <strong id="previous-count">@Model.Count()</strong>
-    <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
+    <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.IsFiltered ? "(filtered)" : "")</a>
 
 @if(User.IsInRole("Developer"))
 { 
@@ -12,26 +12,26 @@ Count: <strong id="previous-count">@Model.Count()</strong>
 } 
 Show Previous Prospects:@Html.CheckBox("ShowProspects")
 </p>
-<table id="MemberGrid" class="@ViewExtensions2.GridClass" cellpadding="4">
+<table id="MemberGrid" class="@ViewExtensions2.GridClass">
 <thead>
 <tr>
-    <th><br /><a href="#" class="sortable">Name</a></th>
-    <th><br /><a title="Sort by Organization Member Type" href="#" class="sortable">MemberType</a></th>
+    <th><br />@Model.SortLink("Name")</th>
+    <th><br />@Model.SortLink("MemberType")</th>
     <th class="left">
-        <a title="Sort by Church Member Status" href="#" class="sortable">Church</a><br />
-        <a href="#" class="sortable">Age</a> - <a title="Sort by Birthday" href="#" class="sortable">Bday</a>
+        @Model.SortLink("Church")<br />
+        @Model.SortLink("Age") - @Model.SortLink("Bday")
     </th>
-    <th><br /><a href="#" class="sortable">Primary Address</a></th>
+    <th><br />@Model.SortLink("Primary Address")</th>
     <th><br />Communication</th>
-    <th><br /><a href="#" class="sortable">% Att.</a></th>
-    <th><a href="#" class="sortable">Dropped</a><br />
-        <a href="#" class="sortable">Last Att.</a>
+    <th><br />@Model.SortLink("% Att.")</th>
+    <th>@Model.SortLink("Dropped")<br />
+        @Model.SortLink("Last Att.")
     </th>
     <th><br />Tag</th>
 </tr>
 </thead>
 <tbody>
-@foreach(var om in Model.PrevMembers())
+@foreach(var om in Model.ViewList())
 { 
 <tr>
     <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@om.PeopleId">@om.Name</a></td>
@@ -66,4 +66,4 @@ Show Previous Prospects:@Html.CheckBox("ShowProspects")
 }
 </tbody>
 </table>
-@Html.Partial("Pager2", Model.Pager) 
+@Html.Partial("Pager3", Model) 

@@ -15,7 +15,7 @@
     @if (Model.Count() > 10)
     {
         <div class="pagination pagination-mini">
-            @Html.Partial("Pager3", Model.Pager)
+            @Html.Partial("Pager3", Model)
         </div>
     }
     @foreach (var o in Model.ViewList())
@@ -24,7 +24,7 @@
         <div class="pad-left"><i>@Html.Raw(o.Tip)</i></div>
     }
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
 </div>
 <div class="modal-footer">

@@ -18,9 +18,8 @@ namespace CmsWeb.Areas.Search.Controllers
             return View(m);
         }
         [HttpPost]
-        public ActionResult Results(ContactSearchModel m, PagerModel2 pager)
+        public ActionResult Results(ContactSearchModel m)
         {
-            m.Pager = pager;
             m.SaveToSession();
             return View(m);
         }

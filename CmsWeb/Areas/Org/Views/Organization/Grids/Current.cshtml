@@ -33,7 +33,7 @@
           @Html.CheckBox("showHidden", new { @class = "showHidden" }) Show Hidden Guests
         </label>
         <button class="setfilter btn">
-          Filter @(Html.Raw(Model.isFiltered ? "<span style='color:red'>(filtered)</span>" : ""))
+          Filter @(Html.Raw(Model.IsFiltered ? "<span style='color:red'>(filtered)</span>" : ""))
         </button>
         <button class="clearfilter btn" href="#">Clear</button>
         <input class="ClearFilter" name="ClearFilter" type="hidden" value="false" />

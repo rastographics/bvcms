@@ -41,7 +41,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, co.First, co.Last, co.SgFilter, co.ShowHidden)
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, co.First(), co.Last(), co.SgFilter, co.ShowHidden)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
 
@@ -56,7 +56,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Inactive, co.First, co.Last, co.SgFilter, co.ShowHidden)
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Inactive, co.First(), co.Last(), co.SgFilter, co.ShowHidden)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -69,7 +69,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Prospect, co.First, co.Last, co.SgFilter, co.ShowHidden)
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Prospect, co.First(), co.Last(), co.SgFilter, co.ShowHidden)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
@@ -82,7 +82,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Pending, co.First, co.Last, co.SgFilter, co.ShowHidden)
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Pending, co.First(), co.Last(), co.SgFilter, co.ShowHidden)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));

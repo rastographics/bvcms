@@ -19,21 +19,17 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [HttpPost, Route("SearchAdd2/Results")]
-        public ActionResult Results(SearchAddModel m, PagerModel2 pager)
+        public ActionResult Results(SearchAddModel m)
         {
             DbUtil.Db.SetNoLock();
-            //m.Pager.Set("/SearchAdd2/Results", page ?? 1, size ?? 15, "na", "na");
-            m.Pager = pager;
             ModelState.Clear();
             return View(m);
         }
 
         [HttpPost, Route("SearchAdd2/ResultsFamily")]
-        public ActionResult ResultsFamily(SearchAddModel m, PagerModel2 pager)
+        public ActionResult ResultsFamily(SearchAddModel m)
         {
             DbUtil.Db.SetNoLock();
-            m.Pager = pager;
-            //m.Pager.Set("/SearchAdd2/ResultsFamily", page ?? 1, size ?? 15, "na", "na");
             ModelState.Clear();
             return View(m);
         }

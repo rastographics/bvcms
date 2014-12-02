@@ -9,47 +9,41 @@ namespace CmsWeb.Areas.People.Controllers
     public partial class PersonController
     {
         [HttpPost]
-        public ActionResult EnrollGrid(int id, PagerModel2 pager)
+        public ActionResult EnrollGrid(CurrentEnrollments m)
         {
-            var m = new CurrentEnrollments(id, pager);
-            DbUtil.LogActivity("Viewing Enrollments for: {0}".Fmt(m.person.Name));
+            DbUtil.LogActivity("Viewing Enrollments for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Current", m);
         }
         [HttpPost]
-        public ActionResult PrevEnrollGrid(int id, PagerModel2 pager)
+        public ActionResult PrevEnrollGrid(PreviousEnrollments m)
         {
-            var m = new PreviousEnrollments(id, pager);
-            DbUtil.LogActivity("Viewing Prev Enrollments for: {0}".Fmt(m.person.Name));
+            DbUtil.LogActivity("Viewing Prev Enrollments for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Previous", m);
         }
-        [HttpPost, Route("PendingEnrollGrid/{id}")]
-        public ActionResult PendingEnrollGrid(int id)
+        [HttpPost]
+        public ActionResult PendingEnrollGrid(PendingEnrollments m)
         {
-            var m = new PendingEnrollments(id);
-            DbUtil.LogActivity("Viewing Pending Enrollments for: {0}".Fmt(m.person.Name));
+            DbUtil.LogActivity("Viewing Pending Enrollments for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Pending", m);
         }
         [HttpPost]
-        public ActionResult Attendance(int id, PagerModel2 pager)
+        public ActionResult Attendance(PersonAttendHistoryModel m)
         {
-            var m = new PersonAttendHistoryModel(id, pager, future: false);
             DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
-            UpdateModel(m.Pager);
             return View("Enrollment/Attendance", m);
         }
         [HttpPost]
-        public ActionResult AttendanceFuture(int id, PagerModel2 pager)
+        public ActionResult AttendanceFuture(PersonAttendHistoryModel m)
         {
-            var m = new PersonAttendHistoryModel(id, pager, future: true);
+            m.Future = true;
             DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
-            UpdateModel(m.Pager);
             return View("Enrollment/Attendance", m);
         }
         [HttpPost]
         public ActionResult Registrations(int id)
         {
             var m = new RegistrationsModel(id);
-            DbUtil.LogActivity("Viewing Registrations for: {0}".Fmt(m.person.Name));
+            DbUtil.LogActivity("Viewing Registrations for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Registrations", m);
         }
         [HttpPost]
@@ -62,7 +56,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult RegistrationsUpdate(RegistrationsModel m)
         {
             m.UpdateModel();
-            DbUtil.LogActivity("Updating Registrations for: {0}".Fmt(m.person.Name));
+            DbUtil.LogActivity("Updating Registrations for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Registrations", m);
         }
     }

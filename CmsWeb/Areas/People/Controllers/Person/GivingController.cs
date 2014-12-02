@@ -12,17 +12,15 @@ namespace CmsWeb.Areas.People.Controllers
     public partial class PersonController
     {
         [HttpPost]
-        public ActionResult Contributions(int id, PagerModel2 pager)
+        public ActionResult Contributions(ContributionsModel m)
         {
-            var m = new ContributionsModel(id, pager);
             return View("Giving/Contributions", m);
         }
         [HttpPost]
-        public ActionResult Statements(int id)
+        public ActionResult Statements(ContributionsModel m)
         {
-            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
+            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, m.PeopleId))
                 return Content("No permission to view statement");
-            var m = new ContributionsModel(id);
             return View("Giving/Statements", m);
         }
         public ActionResult Statement(int id, string fr, string to)
