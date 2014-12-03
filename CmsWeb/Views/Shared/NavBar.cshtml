@@ -50,7 +50,14 @@
                         <ul class="dropdown-menu">
                             @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
                             @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
-                            <li><a href="#"><i class="dropdown-icon fa fa-cog"></i>&nbsp;&nbsp;Settings</a></li>
+                            <li class="divider"></li>
+                            @Helper.LiAnchorLink("Target Person Tab is " + (targetperson ? "ON" : "OFF"), "/Home/TargetPerson/" + targetperson, access)
+                            @if (finance)
+                            {
+                                @Helper.LiAnchorLink("Turn finance off", "/APITest/TurnFinanceOff", !testnofinance)
+                                @Helper.LiAnchorLink("Turn finance on", "/APITest/TurnFinanceOn", testnofinance)
+                            }
+                            @Helper.LiAnchorLink("Reset Help tips", "/ResetTips")
                             <li class="divider"></li>
                             @Helper.LiAnchorLink("Log Out", "dropdown-icon fa fa-power-off", "/Account/LogOff/")
                         </ul>
