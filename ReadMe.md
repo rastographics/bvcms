@@ -4,6 +4,7 @@
 [IDE]: http://www.visualstudio.com/en-us/downloads/
 [SQL]: http://msdn.microsoft.com/en-us/evalcenter/hh230763.aspx
 [WEB]: http://visualstudiogallery.msdn.microsoft.com/56633663-6799-41d7-9df7-0f2a504ca361
+[RWM]: http://www.microsoft.com/en-us/download/details.aspx?id=7435
 
 BVCMS Developer Quick Start Guide
 ---
@@ -12,10 +13,11 @@ Licensed under the GNU General Public License (GPL v2)
 you may not use this code except in compliance with the License.
 see LICENSE file in this repository master branch
 
-### Install Development Tools
+### Install Development Tools and required libraries
 1. **[Visual Studio Express 2012][IDE]**
 1. **[SQL Server Express 2012 SP1][SQL]**
 1. **[GitHub for Windows][GHW]**
+1. **[Microsoft URL Rewrite Module 2.0 for IIS 7 (if not already installed)][RWM]**
 
 ### Clone the Source Code Repository
 

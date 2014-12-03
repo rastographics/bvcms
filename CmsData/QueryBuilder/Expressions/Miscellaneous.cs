@@ -184,5 +184,15 @@ namespace CmsData
             var right = Expression.Convert(Expression.Constant(len), left.Type);
             return Compare(left, right);
         }
+        internal Expression HasFailedEmails()
+        {
+            var tf = CodeIds == "1";
+            Expression<Func<Person, bool>> pred = p =>
+                db.EmailQueueToFails.Any(f => f.PeopleId == p.PeopleId && (f.Time >= StartDate || StartDate == null));
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

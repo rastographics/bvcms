@@ -63,6 +63,7 @@ namespace CmsData
                 { QueryType.HasCommitmentForMeetingId, HasCommitmentForMeetingId },
                 { QueryType.HasContacts, HasContacts },
                 { QueryType.HasCurrentTag, HasCurrentTag },
+                { QueryType.HasFailedEmails, HasFailedEmails },
                 { QueryType.HasIncompleteTask, HasIncompleteTask },
                 { QueryType.HasInvalidEmailAddress, HasInvalidEmailAddress },
                 { QueryType.HasLowerName, HasLowerName },
