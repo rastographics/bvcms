@@ -98,9 +98,25 @@
     });
     $.formAjaxClick = function (a, link) {
         var $form = a.closest("form.ajax");
-        var url = link || a.data("link");
-        if (typeof url === 'undefined')
-            url = a[0].href;
+        var $tab = $form.closest("div.tab-pane");
+        var ahref = a.attr("href");
+        if (ahref === '#')
+            ahref = null;
+        var url = link
+            || a.data("link")
+            || ahref
+            || $form[0].action
+            || $tab.data("link");
+
+        if (a.data("size"))
+            $("input[name='PageSize']", $form).val(a.data("size"));
+        if (a.data("page"))
+            $("input[name='Page']", $form).val(a.data("page"));
+        if (a.data("sortby"))
+            $("input[name='Sort']", $form).val(a.data("sortby"));
+        if (a.data("dir"))
+            $("input[name='Direction']", $form).val(a.data("dir"));
+
         var data = $form.serialize();
         if (data.length === 0)
             data = {};
@@ -138,8 +154,7 @@
                     }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(thrownError);
+                    $form.html(xhr.responseText);
                 }
             });
         }

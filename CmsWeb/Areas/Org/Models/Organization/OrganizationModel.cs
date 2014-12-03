@@ -25,6 +25,7 @@ namespace CmsWeb.Areas.Org.Models
 		    //CurrentOrg = DbUtil.Db.CurrentOrg;
             this.CopyPropertiesFrom(DbUtil.Db.CurrentOrg);
 		    OrganizationId = Id;
+            GroupSelect = GroupSelectCode.Member;
 			var q = from o in DbUtil.Db.Organizations
 					let sc = o.OrgSchedules.FirstOrDefault() // SCHED
 					where o.OrganizationId == OrganizationId

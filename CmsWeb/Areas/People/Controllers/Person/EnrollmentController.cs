@@ -40,16 +40,14 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Enrollment/Attendance", m);
         }
         [HttpPost]
-        public ActionResult Registrations(int id)
+        public ActionResult Registrations(RegistrationsModel m)
         {
-            var m = new RegistrationsModel(id);
             DbUtil.LogActivity("Viewing Registrations for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Registrations", m);
         }
         [HttpPost]
-        public ActionResult RegistrationsEdit(int id)
+        public ActionResult RegistrationsEdit(RegistrationsModel m)
         {
-            var m = new RegistrationsModel(id);
             return View("Enrollment/RegistrationsEdit", m);
         }
         [HttpPost]

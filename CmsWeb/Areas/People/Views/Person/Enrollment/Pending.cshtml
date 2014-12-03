@@ -4,54 +4,61 @@
     var list = Model.ViewList().ToList();
 }
 <form class="non-modal ajax">
-    <a id="refresh-pending" href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
-    <table class="expanding table table-condensed table-hover">
-        <thead>
-            <tr>
-                <th>Organization</th>
-                <th>Enroll Date</th>
-                <th>MemberType</th>
-                <th>Location</th>
-                <th>Leader</th>
-                <th>Schedule</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (!list.Any())
-            {
-                <tr>
-                    <td colspan="5" class="center">
-                        <h3>No Pending Enrollments</h3>
-                    </td>
-                </tr>
-            }
-            @foreach (var om in list)
-            {
-                if (User.IsInRole("Access"))
-                {
-                <tr>
-                    <td><a href="/Organization/@om.OrgId" title="@om.DivisionName">@om.Name</a></td>
-                    <td>@om.EnrollDate.FormatDate()</td>
-                    <td><a class="membertype" href="/OrgMemberDialog2/Display/@om.OrgId/@om.PeopleId">
-                        @om.MemberType</a></td>
-                    <td>@om.Location</td>
-                    <td><a href="/Person2/@om.LeaderId">@om.LeaderName</a></td>
-                    <td>@om.Schedule</td>
-                </tr>
-                }
-                else
-                {
-                <tr>
-                    <td><span title="@om.DivisionName">@om.Name</span></td>
-                    <td>@om.EnrollDate.FormatDate()</td>
-                    <td>@om.MemberType</td>
-                    <td>@om.Location</td>
-                    <td>@om.LeaderId">@om.LeaderName</td>
-                    <td>@om.Schedule</td>
-                </tr>
-                }
-            }
-        </tbody>
-    </table>
+  @Html.Partial("PagerHidden", Model)
+  @Html.HiddenFor2(m => m.PeopleId)
+  <a id="refresh-pending" href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
+  <table class="expanding table table-condensed table-hover">
+    <thead>
+      <tr>
+        <th>Organization</th>
+        <th>Enroll Date</th>
+        <th>MemberType</th>
+        <th>Location</th>
+        <th>Leader</th>
+        <th>Schedule</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (!list.Any())
+      {
+        <tr>
+          <td colspan="5" class="center">
+            <h3>No Pending Enrollments</h3>
+          </td>
+        </tr>
+      }
+      @foreach (var om in list)
+      {
+        if (User.IsInRole("Access"))
+        {
+          <tr>
+            <td><a href="/Organization/@om.OrgId" title="@om.DivisionName">@om.Name</a></td>
+            <td>@om.EnrollDate.FormatDate()</td>
+            <td>
+              <a class="membertype" href="/OrgMemberDialog2/Display/@om.OrgId/@om.PeopleId">
+                @om.MemberType
+              </a>
+            </td>
+            <td>@om.Location</td>
+            <td><a href="/Person2/@om.LeaderId">@om.LeaderName</a></td>
+            <td>@om.Schedule</td>
+          </tr>
+        }
+        else
+        {
+          <tr>
+            <td><span title="@om.DivisionName">@om.Name</span></td>
+            <td>@om.EnrollDate.FormatDate()</td>
+            <td>@om.MemberType</td>
+            <td>@om.Location</td>
+            <td>@om.LeaderId">@om.LeaderName</td>
+            <td>@om.Schedule</td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
 </form>
+
+
 

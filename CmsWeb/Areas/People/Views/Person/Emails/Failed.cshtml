@@ -1,40 +1,49 @@
 ﻿@model CmsWeb.Areas.People.Models.FailedMailModel
 @using UtilityExtensions
-<table class="table not-wide">
+<form class="non-modal ajax" method="post">
+  @Html.Partial("PagerHidden", Model)
+  @Html.HiddenFor2(m => m.PeopleId)
+  <div class="pagination pagination-mini">
+    @Html.Partial("Pager3", Model)
+  </div>
+  <table class="table not-wide">
     <thead>
-        <tr>
-            <th>@Model.SortLink("Time")</th>
-            <th>From/To</th>
-            <th>Subject</th>
-            <th>Event/Type</th>
-            <th>Reason</th>
-        </tr>
+      <tr>
+        <th>@Model.SortLink("Time")</th>
+        <th>From/To</th>
+        <th>Subject</th>
+        <th>Event/Type</th>
+        <th>Reason</th>
+      </tr>
     </thead>
     <tbody>
-        @foreach (var e in Model.ViewList())
-        { 
+      @foreach (var e in Model.ViewList())
+      { 
         <tr><td>@e.time.FormatDateTm()</td>
-            <td><a href="/Person2/@e.peopleid">@e.name</a><br/>
-                <a href="/Emails/Failed/@e.peopleid">@e.email</a>
-            </td>
-            <td><a href="/Emails/Details/@e.emailid">@e.subject</a></td>
-            <td>@e.eventx
+          <td><a href="/Person2/@e.peopleid">@e.name</a><br/>
+            <a href="/Emails/Failed/@e.peopleid">@e.email</a>
+          </td>
+          <td><a href="/Emails/Details/@e.emailid">@e.subject</a></td>
+          <td>@e.eventx
             @if(e.type.HasValue())
-			{
-			    <br/>@e.type
+            {
+              <br/>@e.type
             }
             @if(e.canunblock)
-			{
-			    <br /><a href="#" class="unblock" email="@e.email">unblock</a>
-			}
+            {
+              <br /><a href="#" class="unblock" email="@e.email">unblock</a>
+            }
             @if(e.canunspam)
-			{
-			    <br /><a href="#" class="unspam" email="@e.email">unspam</a>
-			}
-            </td>
-            <td>@e.reason</td>
+            {
+              <br /><a href="#" class="unspam" email="@e.email">unspam</a>
+            }
+          </td>
+          <td>@e.reason</td>
         </tr>
-        }
+      }
     </tbody>
-</table>
-
+  </table>
+  <div class="pagination pagination-mini">
+    @Html.Partial("Pager3", Model)
+  </div>
+</form>

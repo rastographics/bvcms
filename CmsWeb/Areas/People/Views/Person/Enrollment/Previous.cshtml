@@ -5,6 +5,8 @@
     var rownum = 0;
 }
 <form class="non-modal ajax">
+  @Html.Partial("PagerHidden", Model)
+  @Html.HiddenFor2(m => m.PeopleId)
     <div class="pagination pagination-mini">
         @Html.Partial("Pager3", Model)
         <a href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>

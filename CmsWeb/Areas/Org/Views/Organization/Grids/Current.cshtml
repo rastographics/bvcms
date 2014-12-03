@@ -2,7 +2,7 @@
 @{ ViewData["OrgMemberContext"] = true;
  ViewData["OrgMemberContext"] = false;
 }
-<form action="/Organization/CurrMemberGrid" class="form form-horizontal non-modal ajax span12 pad-left" method="post">
+<form class="form form-horizontal non-modal ajax span12 pad-left">
   @Html.Hidden("current-qid", (Guid?)ViewBag.queryid)
   <div>
     Count: <strong id="current-count">@Model.Count()</strong>&nbsp;&nbsp;

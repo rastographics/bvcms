@@ -1,6 +1,8 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonAttendHistoryModel
 @using UtilityExtensions
 <form class="non-modal ajax margin-top left-gutter">
+  @Html.Partial("PagerHidden", Model)
+  @Html.HiddenFor2(m => m.PeopleId)
     <fieldset>
         <legend>
             @if (Model.Future)

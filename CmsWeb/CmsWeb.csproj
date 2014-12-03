@@ -1554,6 +1554,7 @@
     <Content Include="Views\Home\PyScript.cshtml" />
     <Content Include="Views\Dialog\NewMeeting.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\datetimepicker.cshtml" />
+    <Content Include="Views\Shared\PagerHidden.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

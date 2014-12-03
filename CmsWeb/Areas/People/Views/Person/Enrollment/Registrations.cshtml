@@ -4,93 +4,94 @@
     var goerlist = Model.GoerList();
 }
 <form class="form form-horizontal margin-top ajax span12" method="post">
-    <fieldset class="left-gutter">
-        <legend>
-            Registration History
-            @FormActions()
-        </legend>
-        @if (goerlist.Count > 0)
+  @Html.HiddenFor2(m => m.PeopleId)
+  <fieldset class="left-gutter">
+    <legend>
+      Registration History
+      @FormActions()
+    </legend>
+    @if (goerlist.Count > 0)
+    {
+      <h4>Mission Trip Funding</h4>
+      <table class="table table-condensed not-wide">
+        <tr>
+          <th>Trip</th>
+          <th class="right">Cost</th>
+          <th class="right">Paid</th>
+          <th class="right">Balance</th>
+          <th></th>
+        </tr>
+        @foreach (var g in goerlist)
         {
-            <h4>Mission Trip Funding</h4>
-            <table class="table table-condensed not-wide">
-                <tr>
-                    <th>Trip</th>
-                    <th class="right">Cost</th>
-                    <th class="right">Paid</th>
-                    <th class="right">Balance</th>
-                    <th></th>
-                </tr>
-                @foreach (var g in goerlist)
-                {
-                    <tr>
-                        <td>
-                            @if (User.IsInRole("Access"))
-                            {
-                                <a href="/Organization/@g.Id">@g.Trip</a>
-                            }
-                            else
-                            {
-                                <span>@g.Trip</span>
-                            }
-                        </td>
-                        <td class="right">@g.Cost.ToString("C")</td>
-                        <td class="right">@g.Paid.ToString("C")</td>
-                        <td class="right">@((g.Cost - g.Paid).ToString("C"))</td>
-                        <td>
-                            @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
-                            {
-                            <a href="/MissionTripEmail/@g.Id/@Model.PeopleId">Email Supporters</a>
-                            }
-                        </td>
-                    </tr>
-                }
-            </table>
+          <tr>
+            <td>
+              @if (User.IsInRole("Access"))
+              {
+                <a href="/Organization/@g.Id">@g.Trip</a>
+              }
+              else
+              {
+                <span>@g.Trip</span>
+              }
+            </td>
+            <td class="right">@g.Cost.ToString("C")</td>
+            <td class="right">@g.Paid.ToString("C")</td>
+            <td class="right">@((g.Cost - g.Paid).ToString("C"))</td>
+            <td>
+              @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
+              {
+                <a href="/MissionTripEmail/@g.Id/@Model.PeopleId">Email Supporters</a>
+              }
+            </td>
+          </tr>
         }
-        <div class="inline display align-top width220">
-            <div class="well">
-                @Html.DisplayFor(m => m.ShirtSize)
-                @Html.DisplayFor(m => m.CustodyIssue)
-                @Html.DisplayFor(m => m.OkTransport)
-                @Html.DisplayFor(m => m.Emcontact)
-                @Html.DisplayFor(m => m.Emphone)
-            </div>
-            <div class="well">
-                @Html.DisplayFor(m => m.Tylenol)
-                @Html.DisplayFor(m => m.Advil)
-                @Html.DisplayFor(m => m.Robitussin)
-                @Html.DisplayFor(m => m.Maalox)
-            </div>
-        </div>
-        <div class="inline display align-top width140 left-gutter">
-            <div class="well">
-                @Html.DisplayFor(m => m.Insurance)
-                @Html.DisplayFor(m => m.Policy)
-                @Html.DisplayFor(m => m.Doctor)
-                @Html.DisplayFor(m => m.Docphone)
-            </div>
-            <div class="well">
-                @Html.DisplayFor(m => m.Mname)
-                @Html.DisplayFor(m => m.Fname)
-                @Html.DisplayFor(m => m.Coaching)
-            </div>
-            <div class="well">
-                @Html.DisplayFor(m => m.Member)
-                @Html.DisplayFor(m => m.ActiveInOtherChurch)
-            </div>
-        </div>
-        <div class="margin-top">
-            @Html.DisplayFor(m => m.MedicalDescription)
-        </div>
-        <div class="margin-top">
-            @Html.DisplayFor(m => m.Comments)
-        </div>
-        <div>@FormActions() </div>
-    </fieldset>
+      </table>
+    }
+    <div class="inline display align-top width220">
+      <div class="well">
+        @Html.DisplayFor(m => m.ShirtSize)
+        @Html.DisplayFor(m => m.CustodyIssue)
+        @Html.DisplayFor(m => m.OkTransport)
+        @Html.DisplayFor(m => m.Emcontact)
+        @Html.DisplayFor(m => m.Emphone)
+      </div>
+      <div class="well">
+        @Html.DisplayFor(m => m.Tylenol)
+        @Html.DisplayFor(m => m.Advil)
+        @Html.DisplayFor(m => m.Robitussin)
+        @Html.DisplayFor(m => m.Maalox)
+      </div>
+    </div>
+    <div class="inline display align-top width140 left-gutter">
+      <div class="well">
+        @Html.DisplayFor(m => m.Insurance)
+        @Html.DisplayFor(m => m.Policy)
+        @Html.DisplayFor(m => m.Doctor)
+        @Html.DisplayFor(m => m.Docphone)
+      </div>
+      <div class="well">
+        @Html.DisplayFor(m => m.Mname)
+        @Html.DisplayFor(m => m.Fname)
+        @Html.DisplayFor(m => m.Coaching)
+      </div>
+      <div class="well">
+        @Html.DisplayFor(m => m.Member)
+        @Html.DisplayFor(m => m.ActiveInOtherChurch)
+      </div>
+    </div>
+    <div class="margin-top">
+      @Html.DisplayFor(m => m.MedicalDescription)
+    </div>
+    <div class="margin-top">
+      @Html.DisplayFor(m => m.Comments)
+    </div>
+    <div>@FormActions() </div>
+  </fieldset>
 </form>
 @helper FormActions()
 {
     if (User.IsInRole("Edit"))
     {
-        <a href="/Person2/RegistrationsEdit/@Model.person.PeopleId" class="pull-right btn btn-primary ajax">Edit</a>
+        <a href="/Person2/RegistrationsEdit" class="pull-right btn btn-primary ajax">Edit</a>
     }
 }

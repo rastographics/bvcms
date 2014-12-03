@@ -210,7 +210,7 @@ namespace CmsWeb.Models
                     asc = "";
                 dir = Direction == "asc" ? "desc" : "asc";
             }
-            return new HtmlString("<a href='#' sortby='{0}' dir='{1}' class='ajax{2}{3}'>{0}</a>"
+            return new HtmlString("<a href='#' data-sortby='{0}' data-dir='{1}' class='ajax{2}{3}'>{0}</a>"
                 .Fmt(sortlabel, dir, active, asc));
         }
         public HtmlString SortLink2(string label, string html)
@@ -225,12 +225,12 @@ namespace CmsWeb.Models
                     asc = "";
                 dir = Direction == "asc" ? "desc" : "asc";
             }
-            return new HtmlString("<a href='#' sortby='{0}' dir='{1}' class='ajax{2}{3}'>{4}</a>"
+            return new HtmlString("<a href='#' data-sortby='{0}' data-dir='{1}' class='ajax{2}{3}'>{4}</a>"
                 .Fmt(label, dir, active, asc, html));
         }
         public HtmlString PageLink(string label, int? page)
         {
-            return new HtmlString("<a href='#' page='{1}' class='ajax'>{0}</a>"
+            return new HtmlString("<a href='#' data-page='{1}' class='ajax'>{0}</a>"
                 .Fmt(label, page ?? 1));
         }
         public HtmlString PageSizeItem(string label, int? size = null, bool? disable = null)
@@ -238,7 +238,7 @@ namespace CmsWeb.Models
             var disabled = "";
             if (disable == true)
                 disabled = " class='disabled'";
-            return new HtmlString("<li{2}><a href='#' size='{0}' class='pager ajax'>{1}</a></li>"
+            return new HtmlString("<li{2}><a href='#' data-size='{0}' class='ajax'>{1}</a></li>"
                 .Fmt(size ?? PageSize, label, disabled));
         }
         public string ShowCount()

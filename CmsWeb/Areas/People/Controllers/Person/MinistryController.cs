@@ -88,9 +88,8 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Ministry/Tasks", m);
         }
         [HttpPost]
-        public ActionResult VolunteerApprovals(int id)
+        public ActionResult VolunteerApprovals(Main.Models.Other.VolunteerModel m)
         {
-            var m = new Main.Models.Other.VolunteerModel(id);
             return View("Ministry/Volunteer", m);
         }
     }
