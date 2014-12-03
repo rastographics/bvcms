@@ -51,6 +51,11 @@ body {
     line-height: 24px;
 }
 
+.account .account-header .logo-img {
+    margin-top: -8px;
+    height: 50px;
+}
+
 .account .form-header {
     font-size: 22px;
     font-weight: 300;

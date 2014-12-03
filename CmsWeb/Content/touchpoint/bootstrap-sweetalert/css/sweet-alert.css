@@ -344,7 +344,7 @@
   background-color: #ffffff;
   width: 478px;
   padding: 17px;
-  border-radius: 5px;
+  border-radius: 0;
   text-align: center;
   position: fixed;
   left: 50%;
@@ -387,7 +387,7 @@
   background-color: #d9534f;
   display: block;
   top: 37px;
-  border-radius: 2px;
+  border-radius: 0;
 }
 .sweet-alert .icon.error .line.left {
   -webkit-transform: rotate(45deg);
@@ -408,7 +408,7 @@
   height: 47px;
   left: 50%;
   top: 10px;
-  border-radius: 2px;
+  border-radius: 0;
   margin-left: -2px;
   background-color: #f0ad4e;
 }
@@ -432,7 +432,7 @@
   height: 29px;
   left: 50%;
   bottom: 17px;
-  border-radius: 2px;
+  border-radius: 0;
   margin-left: -2px;
   background-color: #5bc0de;
 }
@@ -504,7 +504,7 @@
   height: 5px;
   background-color: #5cb85c;
   display: block;
-  border-radius: 2px;
+  border-radius: 0;
   position: absolute;
   z-index: 2;
 }
