@@ -294,6 +294,8 @@ namespace CmsData
 		
    		private EntitySet< PaymentInfo> _PaymentInfos;
 		
+   		private EntitySet< ApiSession> _ApiSessions;
+		
    		private EntitySet< PeopleExtra> _PeopleExtras;
 		
    		private EntitySet< RecReg> _RecRegs;
@@ -797,6 +799,8 @@ namespace CmsData
 			this._MemberDocForms = new EntitySet< MemberDocForm>(new Action< MemberDocForm>(this.attach_MemberDocForms), new Action< MemberDocForm>(this.detach_MemberDocForms)); 
 			
 			this._PaymentInfos = new EntitySet< PaymentInfo>(new Action< PaymentInfo>(this.attach_PaymentInfos), new Action< PaymentInfo>(this.detach_PaymentInfos)); 
+			
+			this._ApiSessions = new EntitySet< ApiSession>(new Action< ApiSession>(this.attach_ApiSessions), new Action< ApiSession>(this.detach_ApiSessions)); 
 			
 			this._PeopleExtras = new EntitySet< PeopleExtra>(new Action< PeopleExtra>(this.attach_PeopleExtras), new Action< PeopleExtra>(this.detach_PeopleExtras)); 
 			
@@ -3766,6 +3770,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_People_ApiSession", Storage="_ApiSessions", OtherKey="PeopleId")]
+   		public EntitySet< ApiSession> ApiSessions
+   		{
+   		    get { return this._ApiSessions; }
+
+			set	{ this._ApiSessions.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FK_PeopleExtra_People", Storage="_PeopleExtras", OtherKey="PeopleId")]
    		public EntitySet< PeopleExtra> PeopleExtras
    		{
@@ -5203,6 +5217,19 @@ namespace CmsData
 		}
 
 		private void detach_PaymentInfos(PaymentInfo entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = null;
+		}
+
+		
+		private void attach_ApiSessions(ApiSession entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = this;
+		}
+
+		private void detach_ApiSessions(ApiSession entity)
 		{
 			this.SendPropertyChanging();
 			entity.Person = null;
