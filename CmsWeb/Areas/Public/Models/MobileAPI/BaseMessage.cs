@@ -1,8 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace CmsWeb.MobileAPI
@@ -28,7 +24,7 @@ namespace CmsWeb.MobileAPI
 
 		public static BaseMessage createErrorReturn(string sErrorMessage)
 		{
-			BaseMessage br = new BaseMessage();
+			var br = new BaseMessage();
 			br.data = sErrorMessage;
 
 			return br;
@@ -36,7 +32,7 @@ namespace CmsWeb.MobileAPI
 
 		public static BaseMessage createTypeErrorReturn()
 		{
-			BaseMessage br = new BaseMessage();
+			var br = new BaseMessage();
 			br.data = "ERROR: Type mis-match in API call.";
 
 			return br;
@@ -44,7 +40,7 @@ namespace CmsWeb.MobileAPI
 
 		public static BaseMessage createFromString(string sJSON)
 		{
-			BaseMessage br = JsonConvert.DeserializeObject<BaseMessage>(sJSON);
+			var br = JsonConvert.DeserializeObject<BaseMessage>(sJSON);
 			return br;
 		}
 
@@ -53,13 +49,6 @@ namespace CmsWeb.MobileAPI
 			data = newData;
 			return this;
 		}
-
-		/*
-		public BaseReturn getData()
-		{
-			return data;
-		}
-		*/
 
 		// API Device Numbers
 		public const int API_DEVICE_UNKNOWN = 0;
