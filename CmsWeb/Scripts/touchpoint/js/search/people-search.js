@@ -40,7 +40,7 @@
         });
         return false;
     });
-    $.gotoPage = function (e, pg) {
+    $.gotoPage = function(e, pg) {
         $("#Page").val(pg);
         $.getTable();
         return false;
@@ -53,18 +53,18 @@
     $.getTable = function () {
         var f = $('#results').closest('form');
         var q = f.serialize();
-        $.blockUI();
+        $.block();
         $.post($('#search').attr('href'), q, function (ret) {
             $('#results').replaceWith(ret).ready(function () {
-                $('#results > tbody > tr:even').addClass('alt');
+                $('#resultsTable > tbody > tr:even').addClass('alt');
                 $("#totalcount").text($("#totcnt").val());
                 $.unblock();
             });
         });
         return false;
     };
-    $('#results > tbody > tr:even').addClass('alt');
-    $('body').on('click', '#results > thead a.sortable', function (ev) {
+    $('#resultsTable > tbody > tr:even').addClass('alt');
+    $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
         ev.preventDefault();
         var newsort = $(this).text();
         var sort = $("#Sort");
@@ -93,5 +93,3 @@
         return false;
     });
 });
-
-

@@ -1,5 +1,4 @@
-﻿@using CmsWeb
-@using CmsWeb.Code
+﻿@using CmsWeb.Code
 @using CmsWeb.Models
 @using UtilityExtensions
 @model PeopleSearchModel
@@ -104,5 +103,5 @@
 @section scripts
 {
     <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-multiselect/bootstrap-multiselect.js")"></script>
-    @Fingerprint.Script("/Scripts/Search/PeopleSearch.js")
+    <script src="@Url.Content("~/Scripts/touchpoint/js/search/people-search.js")"></script>
 }

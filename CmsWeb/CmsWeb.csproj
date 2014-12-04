@@ -899,6 +899,7 @@
     <Content Include="Scripts\select2-3.5.2\select2.min.js" />
     <Content Include="Scripts\touchpoint\jquery-blockUI\jquery.blockUI.js" />
     <Content Include="Scripts\touchpoint\js\main.js" />
+    <Content Include="Scripts\touchpoint\js\search\people-search.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
