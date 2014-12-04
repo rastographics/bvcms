@@ -1,0 +1,34 @@
+﻿@using DocumentFormat.OpenXml.Wordprocessing
+@model CmsWeb.Models.PagerModel2
+@if (Model.PageList().Count() > 1)
+{
+    <div class="col-lg-6">
+        <div class="pull-right">
+            <ul class="pagination">
+                @if (Model.Page > 1)
+                {
+                    <li><a href='#' title='goto page @(Model.Page - 1)' onclick='return $.gotoPage(this,(@Model.Page -1))'>Previous</a></li>
+                }
+                @foreach (var p in Model.PageList())
+                {
+                    if (p == 0)
+                    {
+                        <li><span class="separator">...</span></li>
+                    }
+                    if (p > 0 && Model.Page != p)
+                    {
+                        <li><a href='#' title='goto page @p' onclick='return $.gotoPage(this,@p)'>@p</a></li>
+                    }
+                    if (Model.Page == p)
+                    {
+                        <li><span title="goto page">@p</span></li>
+                    }
+                }
+                @if (Model.Page < Model.LastPage())
+                {
+                    <li><a href='#' title='goto page @(Model.Page + 1)' onclick='return $.gotoPage(this,@(Model.Page + 1))'>Next</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+}
