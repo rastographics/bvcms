@@ -13,19 +13,19 @@ namespace CmsWeb.Areas.Org.Controllers
     public partial class OrganizationController
     {
         [HttpPost]
-        public ActionResult SettingsMeetings(int id)
+        public ActionResult Attendance(int id)
         {
             var m = new OrganizationModel(id);
-            return PartialView("Settings/Meetings", m);
+            return PartialView("Settings/Attendance", m);
         }
         [HttpPost]
-        public ActionResult SettingsMeetingsEdit(int id)
+        public ActionResult AttendanceEdit(int id)
         {
             var m = new OrganizationModel(id);
-            return PartialView("Settings/MeetingsEdit", m);
+            return PartialView("Settings/AttendanceEdit", m);
         }
         [HttpPost]
-        public ActionResult SettingsMeetingsUpdate(int id)
+        public ActionResult AttendanceUpdate(int id)
         {
             var m = new OrganizationModel(id);
             m.Schedules.Clear();
@@ -33,8 +33,8 @@ namespace CmsWeb.Areas.Org.Controllers
             UpdateModel(m);
             m.UpdateSchedules();
             DbUtil.Db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
-            DbUtil.LogActivity("Update SettingsMeetings {0}".Fmt(m.Org.OrganizationName));
-            return PartialView("Settings/Meetings", m);
+            DbUtil.LogActivity("Update SettingsAttendance {0}".Fmt(m.Org.OrganizationName));
+            return PartialView("Settings/AttendanceEdit", m);
         }
         [HttpPost]
         public ActionResult NewSchedule()

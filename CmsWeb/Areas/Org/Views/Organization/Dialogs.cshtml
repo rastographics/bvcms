@@ -1,0 +1,161 @@
+﻿@using CmsData
+@using CmsWeb
+@model CmsWeb.Areas.Org.Models.OrganizationModel
+@{
+  var o = Model.Org;
+}
+<div id="dialogHolder"></div>
+<form id='member-dialog' class='modal fade hide validate ajax form-horizontal' method='POST' data-backdrop='static' data-width='600'></form>
+<div id="NewMeetingDialog" class="roundbox" style="display: none">
+  <table>
+    <tr>
+      <th colspan="2"> <h2>Choose a Schedule</h2> </th>
+    </tr>
+    <tr class="forMeeting">
+      <th>Schedule: </th>
+      <td>@Html.DropDownList("ScheduleListPrev", Model.SchedulesPrev()) </td>
+    </tr>
+    <tr class="forRollsheet">
+      <th>Schedule: </th>
+      <td>@Html.DropDownList("ScheduleListNext", Model.SchedulesNext()) </td>
+    </tr>
+    <tr>
+      <th colspan="2"> <h2>Or Please select a meeting date and time</h2> </th>
+    </tr>
+    <tr class="forMeeting">
+      <th>Meeting Date: </th>
+      <td>@Html.DatePicker("PrevMeetingDate") </td>
+    </tr>
+    <tr class="forRollsheet">
+      <th>Meeting Date: </th>
+      <td>@Html.DatePicker("NextMeetingDate") </td>
+    </tr>
+    <tr>
+      <th>Meeting Time: </th>
+      <td>@Html.TextBox("NewMeetingTime", Model.NewMeetingTime, new { title = "Time in Format hh:mm am or pm", @class = "timepicker" }) </td>
+    </tr>
+    <tr>
+      <th>Attend Credit: </th>
+      <td>@Html.DropDownList("AttendCreditList", Model.AttendCreditList()) </td>
+    </tr>
+    <tr>
+      <th id="grouplabel"></th>
+      <td>@Html.CheckBox("group") </td>
+    </tr>
+    <tr class="forRollsheet">
+      <th>Group Filter Prefix</th>
+      <td>@Html.TextBox("sgprefixrs")</td>
+    </tr>
+    <tr class="forRollsheet">
+      <th>Highlight Group</th>
+      <td>@Html.TextBox("highlightsg")</td>
+    </tr>
+    <tr class="forRollsheet">
+      <th>Use Alt Names </th>
+      <td>
+        @Html.CheckBox("altnames")
+      </td>
+    </tr>
+  </table>
+</div>
+<div id="TryRegDialog" class="roundbox" style="display: none">
+  <table>
+    <tr>
+      <td>
+        <h2>Try Registration</h2>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>
+          Copy the following URL for the public registration link.
+          If you want to see exactly what the user sees,
+          You should use the link below in a different browser.
+          Or log out first, then use the link.
+        </p>
+        <blockquote>
+          <a href="/OnlineReg/@o.OrganizationId" target="blank">@DbUtil.Db.ServerLink("/OnlineReg/" + o.OrganizationId)</a>
+        </blockquote>
+      </td>
+    </tr>
+  </table>
+</div>
+<div id="memberDialog">
+  <iframe id="memberDialogiframe" style="width: 100%; height: 99%; border-width: 0;"></iframe>
+</div>
+<div id="FilterGroups" class="modalDiv" style="display: none;">
+  <form action="">
+    <div>
+      <b>Name Filter</b>
+    </div>
+    <div>
+      First and last name or just last name. You can put just the first few letters of
+      each. PeopleId works too. <i class="blue">(the name filter does not work with blue toolbar functions)</i>
+    </div>
+    <input id="namefilter" name="namefilter" type="text" />
+    <hr />
+    <div>
+      <b>Small Group Prefix</b>
+    </div>
+    <div>
+      Match on the first few letters of a small group. Lead with - to eliminate. Comma separate for more.
+    </div>
+    <input id="sgprefix" name="sgprefix" type="text" />
+    <hr />
+    <div>
+      <b>Small Group Filter</b>
+    </div>
+    <div>
+      <label>@Html.RadioButton("selectmode", "0") Match Any</label>
+      <label>@Html.RadioButton("selectmode", "1") Match All</label>
+    </div>
+    <div>
+      Select multiple items by holding down the control key (individual) or shift key
+      (range) while you click. Select (not specified) to cancel the filter.
+    </div>
+    <select id="smallgrouplist" name="smallgrouplist" multiple="multiple" size="10">
+      @foreach (var s in Model.SmallGroups())
+      {
+        <option @(s.Selected ? "selected='selected'" : "") value="@s.Value">@s.Text</option>
+      }
+    </select>
+  </form>
+</div>
+<div id="AddFromTag">
+  <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>
+</div>
+<div id="LongRunOp">
+  <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>
+</div>
+<div id="divisionsDialog">
+  @*        <iframe id="searchdivisions" style="width: 100%; height: 99%; border-width: 0;"></iframe>*@
+</div>
+<div id="orgsDialog">
+  <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>
+</div>
+<div id="EditorDialog" style="display: none; position: absolute; z-index: 1005">
+  @Html.TextArea("editor", "", new { style = "height:450px;", @class = "editor", rows = "16", cols = "20" })
+  <div style="text-align: right">
+    <a id="canceledit" href="#" class="bt">Cancel</a>
+    <a id="saveedit" href="#" class="bt blue">Save</a>
+  </div>
+</div>
+<table id="newvalueform" class="grid roundbox" style="display: none">
+  <tr>
+    <td colspan="2">
+      <h2>New Extra Value</h2>
+    </td>
+  </tr>
+  <tr>
+    <td>MultiLine: </td>
+    <td>@Html.CheckBox("multiline") </td>
+  </tr>
+  <tr>
+    <td>Field: </td>
+    <td>@Html.TextBox("fieldname") </td>
+  </tr>
+  <tr>
+    <td>Value: </td>
+    <td>@Html.TextBox("fieldvalue") </td>
+  </tr>
+</table>

@@ -13,21 +13,21 @@ namespace CmsWeb.Areas.Org.Controllers
     public partial class OrganizationController
     {
         [HttpPost]
-        public ActionResult OnlineRegMessages(int id)
+        public ActionResult Messages(int id)
         {
-            return PartialView("Settings/OnlineReg/Messages", GetRegSettings(id));
+            return PartialView("Settings/Messages", getRegSettings(id));
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
-        public ActionResult OnlineRegMessagesEdit(int id)
+        public ActionResult MessagesEdit(int id)
         {
-            return PartialView("Settings/OnlineReg/MessagesEdit", GetRegSettings(id));
+            return PartialView("Settings/MessagesEdit", getRegSettings(id));
         }
         [HttpPost]
-        public ActionResult OnlineRegMessagesUpdate(int id)
+        public ActionResult MessagesUpdate(int id)
         {
-            var m = GetRegSettings(id);
-            DbUtil.LogActivity("Update OnlineRegMessages {0}".Fmt(m.org.OrganizationName));
+            var m = getRegSettings(id);
+            DbUtil.LogActivity("Update Messages {0}".Fmt(m.org.OrganizationName));
             //m.VoteTags.Clear();
             try
             {
@@ -37,12 +37,12 @@ namespace CmsWeb.Areas.Org.Controllers
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return PartialView("Settings/OnlineReg/Messages", m);
+                return PartialView("Settings/Messages", m);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Form", ex.Message);
-                return PartialView("Settings/OnlineReg/MessagesEdit", m);
+                return PartialView("Settings/MessagesEdit", m);
             }
         }
         public ActionResult NotifyIds(int id, string field)

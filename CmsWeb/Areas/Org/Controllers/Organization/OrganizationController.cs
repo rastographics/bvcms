@@ -108,31 +108,6 @@ namespace CmsWeb.Areas.Org.Controllers
         }
 
 
-        [HttpPost]
-        public ActionResult OrgInfo(int id)
-        {
-            var m = new OrganizationModel(id);
-            return PartialView("Settings/OrgInfo", m);
-        }
-        [HttpPost]
-        public ActionResult OrgInfoEdit(int id)
-        {
-            var m = new OrganizationModel(id);
-            return PartialView("Settings/OrgInfoEdit", m);
-        }
-        [HttpPost]
-        public ActionResult OrgInfoUpdate(int id)
-        {
-            var m = new OrganizationModel(id);
-            UpdateModel(m);
-            if (m.Org.CampusId == 0)
-                m.Org.CampusId = null;
-            if (m.Org.OrganizationTypeId == 0)
-                m.Org.OrganizationTypeId = null;
-            DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Update OrgInfo {0}".Fmt(m.Org.OrganizationName));
-            return PartialView("Settings/OrgInfo", m);
-        }
         //[AcceptVerbs(HttpVerbs.Post)]
         //public ActionResult SmallGroups()
         //{

@@ -1,0 +1,14 @@
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+<form class="form form-horizontal non-modal ajax span12 pad-left">
+  @FormAction()
+  <ul class="enablesort edit">
+    @Html.EditorFor(m => m, "TabAttendance")
+  </ul>
+  @FormAction()
+</form>
+@helper FormAction()
+{
+  <a href="/Organization/Attendance/@Model.Id" class="btn ajax">Cancel</a>
+  <a href="/Organization/AttendanceUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
+  <div class="formerror">@Html.ValidationMessage("Form")</div>
+}

@@ -5,7 +5,7 @@
         |Typically something short like a room number, 
         |not enough room for an address">
         Location:</span>
-        @Html.TextBox("org.Location")
+        @Html.TextBox("Org.Location")
     </li>
     <li>
         <span class="keyword big tip"
@@ -13,7 +13,7 @@
         |Used for promotion, setup classes that will be moved
         |see wiki re annual class promotion">
         Pending Location:</span>
-        @Html.TextBox("org.PendingLoc")
+        @Html.TextBox("Org.PendingLoc")
     </li>
     <li>
         <div class="keyword big block tip"
@@ -21,7 +21,7 @@
         |A longer text description of the organization,
         |typically displayed in a flyer or on a website.">
         Description</div>
-        @Html.TextArea("org.Description", new { rows = "6", cols = "40" })
+        @Html.TextArea("Org.Description", new { rows = "6", cols = "40" })
     </li>
     <li>
         <span class="keyword big tip"
@@ -29,14 +29,14 @@
         |When a new person visits a meeting for this organization,
         |they will be coded with this to indicate their first entrance to the church">
         Entry Point:</span>
-        @Html.DropDownList("org.EntryPointId", Model.EntryPointList())
+        @Html.DropDownList("Org.EntryPointId", Model.EntryPointList())
     </li>
     <li>
         <span class="keyword big tip"
         title="Publish Directory
         |This makes available an accessible directory for any member of this organization.">
         Publish Directory:</span>
-        @Html.DropDownList("org.PublishDirectory", 
+        @Html.DropDownList("Org.PublishDirectory", 
             new SelectListItem[]
                 {
                     new SelectListItem { Value = "0", Text = "No Directory" },
@@ -52,7 +52,7 @@
         |Only effective for graded classes.
         |This facility keeps you from having to maintain grades once a year">
         Grade:</span>
-        @Html.TextBox("org.GradeAgeStart")
+        @Html.TextBox("Org.GradeAgeStart")
     </li>
     <li>
         <span class="keyword big tip"
@@ -62,7 +62,7 @@
         |where each league is a Division (in BVCMS vernacular)
         |and each division within the league is an Organization.">
         Gender:</span>
-        @Html.DropDownList("org.GenderId", Model.GenderList())
+        @Html.DropDownList("Org.GenderId", Model.GenderList())
     </li>
     <li>
         <span class="keyword big tip"
@@ -72,24 +72,24 @@
             |allows you to specify a different # for each org
             |and have only one confirmation #">
             Phone Number:</span>
-        @Html.TextBox("org.PhoneNumber")
+        @Html.TextBox("Org.PhoneNumber")
     </li>
     <li>
         <span class="keyword big tip"
               title="Recreation Team
             |User to designate an orginazation as a recreation team">
             Recreation Team:</span>
-        @Html.CheckBox("org.IsRecreationTeam")
+        @Html.CheckBox("Org.IsRecreationTeam")
     </li>
     <li>
         <span class="keyword big tip" title="Mission Trip
         |Allows others to donate on a member's behalf'">
             Mission Trip:
-        </span> @Html.CheckBox("org.IsMissionTrip")
+        </span> @Html.CheckBox("Org.IsMissionTrip")
     </li>
     <li><span class="keyword big tip" title="NoCreditCards
         |Disallow Credit Cards on this org">
-            No Credit Cards:</span> @Html.CheckBox("org.NoCreditCards")
+            No Credit Cards:</span> @Html.CheckBox("Org.NoCreditCards")
     </li>
 @if(User.IsInRole("Admin"))
 {
@@ -99,6 +99,6 @@
         |This organization will be visible to only users in this role.
         |WARNING, if no one has this role, you will never be able to get back here.">
         Security Role:</span>
-        @Html.TextBox("org.LimitToRole")
+        @Html.TextBox("Org.LimitToRole")
     </li>
 }

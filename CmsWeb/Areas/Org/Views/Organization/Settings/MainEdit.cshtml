@@ -1,0 +1,50 @@
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+<form class="form form-horizontal non-modal ajax">
+  <h2>
+    @Model.Org.OrganizationName@(Model.Org.LeaderId.HasValue ? "," : "")
+    <span style="font-size:12px">@Model.Org.LeaderName</span>
+  </h2>
+  <table id="orginfoedit" style="margin-bottom: 10px" cellspacing="5" width="100%">
+    <tr>
+      <th class="right">Name:</th>
+      <td>@Html.TextBox("Org.OrganizationName", Model.Org.OrganizationName)</td>
+    </tr>
+    <tr>
+      <th class="right">Location:</th>
+      <td>@Html.TextBox("Org.Location")</td>
+    </tr>
+    <tr>
+      <th class="right">Campus:</th>
+      <td>@Html.DropDownList("Org.CampusId", Model.CampusList())</td>
+    </tr>
+    <tr>
+      <th class="right">Security Type:</th>
+      <td>@Html.DropDownList("Org.SecurityTypeId", Model.SecurityTypeList())</td>
+    </tr>
+    <tr>
+      <th class="right">Status:</th>
+      <td>@Html.DropDownList("Org.OrganizationStatusId", Model.OrgStatusList())</td>
+    </tr>
+    <tr>
+      <th class="right">Organization Type:</th>
+      <td>
+        <span class="helptip" title="What is this?|an upcoming new feature for classifying your organizations|in progress, stay tuned">
+          @Html.DropDownList("Org.OrganizationTypeId", Model.OrganizationTypes())
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <th class="right">Leader Type:</th>
+      <td>@Html.DropDownList("Org.LeaderMemberTypeId", Model.LeaderTypeList())</td>
+    </tr>
+    <tr>
+      <th class="right">Main Fellowship:</th>
+      <td>@Html.CheckBox("Org.IsBibleFellowshipOrg")</td>
+    </tr>
+    <tr><td colspan="2" class="right">
+          <a class="ajax btn" href="/Organization/Main/@Model.Id">Cancel</a>
+          <a href="/Organization/MainUpdate/@Model.Id" class="ajax btn btn-primary">Save Changes</a>
+        </td></tr>
+  </table>
+</form>
+

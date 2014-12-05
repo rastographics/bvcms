@@ -1,0 +1,14 @@
+﻿@model CmsData.Registration.Settings
+<form class="form form-horizontal non-modal ajax span12 pad-left">
+  @FormAction()
+  <ul class="enablesort edit">
+    @Html.EditorFor(m => m, "TabRegistration")
+  </ul>
+  @FormAction()
+</form>
+@helper FormAction()
+{
+  <a href="/Organization/Registration/@Model.OrgId" class="btn ajax">Cancel</a>
+  <a href="/Organization/RegistrationUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
+  <div class="formerror">@Html.ValidationMessage("Form")</div>
+}

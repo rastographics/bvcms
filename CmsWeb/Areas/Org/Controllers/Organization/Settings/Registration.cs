@@ -12,29 +12,23 @@ namespace CmsWeb.Areas.Org.Controllers
 {
     public partial class OrganizationController
     {
-        private static Settings GetRegSettings(int id)
-        {
-            var org = DbUtil.Db.LoadOrganizationById(id);
-            var m = new Settings(org.RegSetting, DbUtil.Db, id);
-            return m;
-        }
         [HttpPost]
-        public ActionResult OnlineRegAdmin(int id)
+        public ActionResult Registration(int id)
         {
-            return PartialView("Settings/OnlineReg/Admin", GetRegSettings(id));
+            return PartialView("Settings/Registration", getRegSettings(id));
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
-        public ActionResult OnlineRegAdminEdit(int id)
+        public ActionResult RegistrationEdit(int id)
         {
-            return PartialView("Settings/OnlineReg/AdminEdit", GetRegSettings(id));
+            return PartialView("Settings/RegistrationEdit", getRegSettings(id));
         }
         [HttpPost]
-        public ActionResult OnlineRegAdminUpdate(int id)
+        public ActionResult RegistrationUpdate(int id)
         {
-            var m = GetRegSettings(id);
+            var m = getRegSettings(id);
             m.AgeGroups.Clear();
-            DbUtil.LogActivity("Update OnlineRegAdmin {0}".Fmt(m.org.OrganizationName));
+            DbUtil.LogActivity("Update Registration {0}".Fmt(m.org.OrganizationName));
             try
             {
                 UpdateModel(m);
@@ -46,12 +40,12 @@ namespace CmsWeb.Areas.Org.Controllers
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return PartialView("Settings/OnlineReg/Admin", m);
+                return PartialView("Settings/Registration", m);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Form", ex.Message);
-                return PartialView("Settings/OnlineReg/AdminEdit", m);
+                return PartialView("Settings/RegistrationEdit", m);
             }
         }
         public ActionResult OrgPickList(int id)
@@ -74,6 +68,12 @@ namespace CmsWeb.Areas.Org.Controllers
             o.OrgPickList = list;
             DbUtil.Db.SubmitChanges();
             return PartialView("Other/OrgPickList2", m);
+        }
+        private static Settings getRegSettings(int id)
+        {
+            var org = DbUtil.Db.LoadOrganizationById(id);
+            var m = new Settings(org.RegSetting, DbUtil.Db, id);
+            return m;
         }
     }
 }

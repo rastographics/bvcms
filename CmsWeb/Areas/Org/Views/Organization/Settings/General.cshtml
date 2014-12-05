@@ -1,8 +1,9 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
 <form class="form form-horizontal non-modal ajax span12 pad-left">
+  @Html.Hidden("Id", Model.Id)
   @FormAction()
   <ul class="noedit">
-    @Html.EditorFor(m => m, "TabOrg")
+    @Html.EditorFor(m => m, "TabGeneral")
   </ul>
   @FormAction()
 </form>
@@ -10,6 +11,6 @@
 {
    if (User.IsInRole("Edit"))
    {
-     <a href="/Organization/SettingsOrgEdit/@Model.Id" class="btn ajax pull-right">Edit</a>
+     <a href="/Organization/GeneralEdit" class="btn ajax pull-right">Edit</a>
    }
 }

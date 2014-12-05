@@ -1,0 +1,15 @@
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+<form class="form form-horizontal ajax">
+  @Html.Hidden("Id", Model.Id)
+  @FormAction()
+  <ul>
+    @Html.EditorFor(m => m, "TabGeneral")
+  </ul>
+  @FormAction()
+</form>
+@helper FormAction()
+{
+  <a href="/Organization/General/@Model.Id" class="btn ajax">Cancel</a>
+  <a href="/Organization/GeneralUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
+  <div class="formerror">@Html.ValidationMessage("Form")</div>
+}

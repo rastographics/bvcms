@@ -13,21 +13,21 @@ namespace CmsWeb.Areas.Org.Controllers
     public partial class OrganizationController
     {
         [HttpPost]
-        public ActionResult OnlineRegQuestions(int id)
+        public ActionResult Questions(int id)
         {
-            return View("Settings/OnlineReg/Questions", GetRegSettings(id));
+            return View("Settings/Questions", getRegSettings(id));
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
-        public ActionResult OnlineRegQuestionsEdit(int id)
+        public ActionResult QuestionsEdit(int id)
         {
-            return PartialView("Settings/OnlineReg/QuestionsEdit", GetRegSettings(id));
+            return PartialView("Settings/QuestionsEdit", getRegSettings(id));
         }
         [HttpPost]
-        public ActionResult OnlineRegQuestionsUpdate(int id)
+        public ActionResult QuestionsUpdate(int id)
         {
-            var m = GetRegSettings(id);
-            DbUtil.LogActivity("Update OnlineRegQuestions {0}".Fmt(m.org.OrganizationName));
+            var m = getRegSettings(id);
+            DbUtil.LogActivity("Update SettingsQuestions {0}".Fmt(m.org.OrganizationName));
             m.AskItems.Clear();
             m.TimeSlots.list.Clear();
             try
@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return PartialView("Settings/OnlineReg/Questions", m);
+                return PartialView("Settings/Questions", m);
             }
             catch (Exception ex)
             {

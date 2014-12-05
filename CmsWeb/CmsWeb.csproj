@@ -278,10 +278,11 @@
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Org\Controllers\Organization\Settings\ExtraValues.cs" />
+    <Compile Include="Areas\Org\Controllers\Organization\Settings\Main.cs" />
     <Compile Include="Areas\Org\Controllers\Organization\Toolbar.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\Org.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\Meeting.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\RegAdmin.cs" />
+    <Compile Include="Areas\Org\Controllers\Organization\Settings\General.cs" />
+    <Compile Include="Areas\Org\Controllers\Organization\Settings\Attendance.cs" />
+    <Compile Include="Areas\Org\Controllers\Organization\Settings\Registration.cs" />
     <Compile Include="Areas\Org\Controllers\Organization\Settings\Questions.cs" />
     <Compile Include="Areas\Org\Controllers\Organization\Settings\Fees.cs" />
     <Compile Include="Areas\Org\Controllers\Organization\Settings\Messages.cs" />
@@ -783,6 +784,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Areas\Org\Views\Organization\Tabs\Settings.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Dialogs.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
@@ -1881,9 +1883,9 @@
     </Content>
     <Content Include="Areas\Org\Views\Organization\Tabs\Base.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OrgInfo.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\Main.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OrgInfoEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\MainEdit.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\Tabs\Pending.cshtml">
     </Content>
@@ -2217,13 +2219,13 @@
     </Content>
     <Content Include="Areas\Manage\Views\Display\EditText.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\Org.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\General.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\Meetings.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\Attendance.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\MeetingsEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\AttendanceEdit.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OrgEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\GeneralEdit.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\RegSetting\Edit.cshtml">
     </Content>
@@ -2247,27 +2249,27 @@
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Size.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabAdmin.cshtml">
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabRegistration.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OnlineReg\Fees.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\Fees.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OnlineReg\FeesEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\FeesEdit.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OnlineReg\Questions.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\Questions.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OnlineReg\QuestionsEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\QuestionsEdit.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OnlineReg\Messages.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\Messages.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OnlineReg\MessagesEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\MessagesEdit.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Html.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\Other\NotifyList2.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OnlineReg\Admin.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\Registration.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\OnlineReg\AdminEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\Settings\RegistrationEdit.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabQuestions.cshtml">
     </Content>
@@ -2275,9 +2277,9 @@
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMessages.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabOrg.cshtml">
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabGeneral.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMeetings.cshtml">
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabAttendance.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\APIMeta\Lookups.cshtml">
     </Content>

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
@@ -10,8 +11,22 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class MemberModel : PagedTableModel<OrganizationMember, PersonMemberInfo>, ICurrentOrg
     {
-        private int? id;
-        public Organization Org { get; set; }
+        private Organization org;
+
+        public Organization Org
+        {
+            get
+            {
+                if (org == null)
+                {
+                    if (Id == null)
+                        Id = DbUtil.Db.CurrentOrgId0;
+                    org = DbUtil.Db.LoadOrganizationById(Id);
+                }
+                return org;
+            }
+        }
+
         public int GroupSelect { get; set; }
 
         public MemberModel()
@@ -240,16 +255,7 @@ namespace CmsWeb.Areas.Org.Models
             return q1;
         }
 
-        public int? Id
-        {
-            get { return id; }
-            set
-            {
-                id = value;
-                Org = DbUtil.Db.LoadOrganizationById(id);
-            }
-        }
-
+        public int? Id { get; set; }
         public string NameFilter { get; set; }
         public string SgFilter { get; set; }
         public bool ShowHidden { get; set; }

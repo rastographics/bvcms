@@ -13,29 +13,29 @@ namespace CmsWeb.Areas.Org.Controllers
     public partial class OrganizationController
     {
         [HttpPost]
-        public ActionResult SettingsOrg(int id)
+        public ActionResult General(int id)
         {
             var m = new OrganizationModel(id);
-            return PartialView("Settings/Org", m);
+            return PartialView("Settings/General", m);
         }
         [HttpPost]
-        public ActionResult SettingsOrgEdit(OrganizationModel m)
+        public ActionResult GeneralEdit(OrganizationModel m)
         {
-            return PartialView("Settings/OrgEdit",  m);
+            return PartialView("Settings/GeneralEdit",  m);
         }
         [HttpPost]
-        public ActionResult SettingsOrgUpdate(OrganizationModel m)
+        public ActionResult GeneralUpdate(OrganizationModel m)
         {
             if (!m.Org.LimitToRole.HasValue())
                 m.Org.LimitToRole = null;
-            DbUtil.LogActivity("Update SettingsOrg {0}".Fmt(m.Org.OrganizationName));
+            DbUtil.LogActivity("Update SettingsGeneral {0}".Fmt(m.Org.OrganizationName));
             if (ModelState.IsValid)
             {
                 m.UpdateSchedules();
                 DbUtil.Db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
-                return View("Settings/Org", m);
+                return View("Settings/General", m);
             }
-            return PartialView("Settings/OrgEdit", m);
+            return PartialView("Settings/GeneralEdit", m);
         }
     }
 }
