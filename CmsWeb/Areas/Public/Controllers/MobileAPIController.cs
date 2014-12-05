@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.MobileAPI;
 using CmsWeb.Models;
@@ -17,11 +18,61 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class MobileAPIController : Controller
     {
+        private static UserValidationResult AuthenticateUser()
+        {
+            return AccountModel.AuthenticateMobile();
+        }
+
         [HttpPost]
         public ActionResult Authenticate()
         {
-            if (AccountModel.AuthenticateMobile().IsValid) return null;
+            var result = AuthenticateUser();
+
+            if (result.IsValid)
+            {
+                var br = new BaseMessage();
+                br.error = 0;
+                br.data = result.User.ApiSessions.Single().SessionToken.ToString();
+            }
+
             return BaseMessage.createErrorReturn("You are not authorized!");
+        }
+
+        [HttpPost]
+        public ActionResult CheckSessionToken()
+        {
+            var result = AuthenticateUser();
+            var br = new BaseMessage();
+
+            if (result.IsValid)
+                br.error = 0;
+
+            br.data = SerializeUserValidationResult(result);
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult ResetSessionToken()
+        {
+            var result = AccountModel.ResetSessionExpiration();
+            var br = new BaseMessage();
+
+            if (result.IsValid)
+                br.error = 0;
+
+            br.data = SerializeUserValidationResult(result);
+
+            return br;
+        }
+
+        private static string SerializeUserValidationResult(UserValidationResult result)
+        {
+            return JsonConvert.SerializeObject(new
+            {
+                errorMessage = result.ErrorMessage,
+                status = result.Status
+            });
         }
 
         [HttpPost]

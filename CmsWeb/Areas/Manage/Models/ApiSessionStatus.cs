@@ -5,6 +5,7 @@
         SessionTokenNotFound,
         SessionTokenExpired,
         PinExpired,
+        PinInvalid,
         Success
     }
 }

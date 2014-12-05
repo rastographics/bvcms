@@ -111,6 +111,28 @@ namespace CmsWeb.Models
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
+            new ApiSessionModel().ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+
+            return userStatus;
+        }
+
+        public static UserValidationResult ResetSessionExpiration()
+        {
+            var sessionToken = HttpContext.Current.Request.Headers["SessionToken"];
+            if (string.IsNullOrEmpty(sessionToken))
+                return UserValidationResult.Invalid(UserValidationStatus.SessionTokenNotFound);
+
+            var userStatus = AuthenticateMobile();
+
+            if (userStatus.Status == UserValidationStatus.Success
+                || userStatus.Status == UserValidationStatus.PinExpired
+                || userStatus.Status == UserValidationStatus.SessionTokenExpired)
+            {
+                new ApiSessionModel().ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+
+                userStatus.Status = UserValidationStatus.Success;
+            }
+
             return userStatus;
         }
 
@@ -121,7 +143,7 @@ namespace CmsWeb.Models
                 return null;
 
             var model = new ApiSessionModel();
-            var result = model.DetermineApiSessionStatus(Guid.Parse(sessionToken));
+            var result = model.DetermineApiSessionStatus(Guid.Parse(sessionToken), HttpContext.Current.Request.Headers["PIN"].ToInt2());
 
             switch (result.Status)
             {
@@ -131,6 +153,8 @@ namespace CmsWeb.Models
                     return UserValidationResult.Invalid(UserValidationStatus.SessionTokenExpired);
                 case ApiSessionStatus.PinExpired:
                     return UserValidationResult.Invalid(UserValidationStatus.PinExpired);
+                case ApiSessionStatus.PinInvalid:
+                    return UserValidationResult.Invalid(UserValidationStatus.PinInvalid);
             }
 
             return ValidateUserBeforeLogin(result.User.Username, HttpContext.Current.Request.Url.OriginalString, result.User, userExists: true);
