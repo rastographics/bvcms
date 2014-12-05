@@ -738,9 +738,13 @@ namespace CmsWeb
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
         }
+        public static HtmlString TouchpointBootstrap3Css()
+        {
+            return Fingerprint.Css("/Content/touchpoint/bootstrap/css/bootstrap.min.css");
+        }
         public static HtmlString FontAwesome()
         {
-            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\n");
+            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
         }
         public static HtmlString CKEditor()
         {
@@ -748,7 +752,7 @@ namespace CmsWeb
         }
         public static HtmlString jQuery()
         {
-            return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>\n");
+            return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>\n");
         }
         public static HtmlString jQueryUICss()
         {
@@ -768,7 +772,7 @@ namespace CmsWeb
 
         public static HtmlString Bootstrap3()
         {
-            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js""></script>");
+            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js""></script>");
         }
 
         public static HtmlString LoDash()
@@ -779,6 +783,11 @@ namespace CmsWeb
         public static string Layout()
         {
             return "~/Views/Shared/SiteLayout2c.cshtml";
+        }
+
+        public static string TouchPointLayout()
+        {
+            return "~/Views/Shared/_Layout.cshtml";
         }
 
         public static string DbSetting(string name, string def)

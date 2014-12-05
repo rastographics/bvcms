@@ -4,11 +4,11 @@
 @model PeopleSearchModel
 @{
 	ViewBag.Title = "People Search";
-    Layout = "../../../../Views/Shared/_Layout.cshtml";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
 @section head 
 {
-    <link href="@Url.Content("~/Content/touchpoint/bootstrap-multiselect/bootstrap-multiselect.css")" rel="stylesheet">
+    @Fingerprint.Css("/Content/touchpoint/bootstrap-multiselect/bootstrap-multiselect.css")
 }
 <h2>People Search</h2>
 <form method="post" action="/PeopleSearch">
@@ -102,6 +102,6 @@
 <p> <a id="targetpeople" href="#">toggle link target</a> </p>
 @section scripts
 {
-    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-multiselect/bootstrap-multiselect.js")"></script>
-    <script src="@Url.Content("~/Scripts/touchpoint/js/search/people-search.js")"></script>
+    @Fingerprint.Script("/Scripts/touchpoint/bootstrap-multiselect/bootstrap-multiselect.js")
+    @Fingerprint.Script("/Scripts/touchpoint/js/search/people-search.js")
 }

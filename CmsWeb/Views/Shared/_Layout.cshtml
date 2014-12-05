@@ -6,9 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@ViewBag.Title</title>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="@Url.Content("~/Content/touchpoint/bootstrap/css/bootstrap.min.css")" rel="stylesheet">
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.FontAwesome()
+    @ViewExtensions2.TouchpointBootstrap3Css()
+    @ViewExtensions2.jQueryUICss()
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -26,8 +27,9 @@
     <div id="footer" class="container-fluid">
         &copy; 2014 TouchPoint Software, LLC.&nbsp;&nbsp;<a href="#">Privacy Policy</a>&nbsp;&nbsp;<a href="#">Email Updates</a>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.Bootstrap3()
+    @ViewExtensions2.jQueryUI()
     <script src="@Url.Content("~/Scripts/touchpoint/jquery-blockUI/jquery.blockUI.js")"></script>
     <script src="@Url.Content("~/Scripts/touchpoint/js/main.js")"></script>
     @RenderSection("scripts", false)
