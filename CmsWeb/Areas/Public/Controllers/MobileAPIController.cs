@@ -17,12 +17,14 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class MobileAPIController : Controller
     {
+        [HttpPost]
         public ActionResult Authenticate()
         {
             if (AccountModel.AuthenticateMobile()) return null;
             return BaseMessage.createErrorReturn("You are not authorized!");
         }
 
+        [HttpPost]
         public ActionResult CheckLogin(string data)
         {
             var authError = Authenticate();
@@ -65,6 +67,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        [HttpPost]
         public ActionResult FetchPeople(string data)
         {
             // Authenticate first
@@ -122,6 +125,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        [HttpPost]
         public ActionResult FetchPerson(string data)
         {
             // Authenticate first
@@ -165,6 +169,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        [HttpPost]
         public ActionResult FetchImage(string data)
         {
             // Authenticate first
@@ -221,6 +226,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        [HttpPost]
         public ActionResult SaveImage(string data)
         {
             // Authenticate first
@@ -275,6 +281,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        [HttpPost]
         public ActionResult FetchOrgs(string data)
         {
             var authError = Authenticate();
@@ -346,6 +353,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        [HttpPost]
         public ActionResult FetchOrgRollList(string data)
         {
             // Authenticate first
@@ -384,6 +392,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        [HttpPost]
         public ActionResult RecordAttend(string data)
         {
             // Authenticate first
@@ -438,6 +447,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        [HttpPost]
         public ActionResult AddPerson(string data)
         {
             // Authenticate first
@@ -562,6 +572,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        [HttpPost]
         public ActionResult JoinOrg(string data)
         {
             // Authenticate first

@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Linq;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Text;
 using System.Web;
 using System.Web.Security;
+using System.Web.SessionState;
 using CmsData;
+using CmsData.API;
+using CmsWeb.Areas.Manage.Models;
 using UtilityExtensions;
-using System.IO;
-using System.Data.Linq;
-using System.Configuration;
-using System.Text;
-using System.Net.Mail;
 
 namespace CmsWeb.Models
 {
@@ -17,7 +21,7 @@ namespace CmsWeb.Models
     {
         public string GetNewFileName(string path)
         {
-            while (System.IO.File.Exists(path))
+            while (File.Exists(path))
             {
                 var ext = Path.GetExtension(path);
                 var fn = Path.GetFileNameWithoutExtension(path) + "a" + ext;
@@ -26,6 +30,7 @@ namespace CmsWeb.Models
             }
             return path;
         }
+
         public string CleanFileName(string fn)
         {
             fn = fn.Replace(' ', '_');
@@ -42,6 +47,7 @@ namespace CmsWeb.Models
             fn = fn.Replace("=", "-");
             return fn;
         }
+
         public static string GetValidToken(string otltoken)
         {
             if (!otltoken.HasValue())
@@ -241,6 +247,7 @@ namespace CmsWeb.Models
             if (deleteSpecialTags)
                 DbUtil.Db.DeleteSpecialTags(u.PeopleId);
         }
+
         public static User SetUserInfo(string username, HttpSessionStateBase Session)
         {
             var u = SetUserInfo(username);
@@ -249,11 +256,12 @@ namespace CmsWeb.Models
             Session["ActivePerson"] = u.Name;
             return u;
         }
+
         private static User SetUserInfo(string username)
         {
             var i = (from u in DbUtil.Db.Users
                      where u.Username == username
-                     select new { u, u.Person.PreferredName }).SingleOrDefault();
+                     select new {u, u.Person.PreferredName}).SingleOrDefault();
             if (i == null)
                 return null;
             //var u = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
@@ -268,6 +276,7 @@ namespace CmsWeb.Models
             }
             return i.u;
         }
+
         public static string CheckAccessRole(string name)
         {
             if (!Roles.IsUserInRole(name, "Access") && !Roles.IsUserInRole(name, "OrgMembersOnly"))
@@ -280,13 +289,16 @@ namespace CmsWeb.Models
                 FormsAuthentication.SignOut();
                 return "/Errors/AccessDenied.htm";
             }
+
             if (Roles.IsUserInRole(name, "NoRemoteAccess") && DbUtil.CheckRemoteAccessRole)
             {
                 NotifyAdmins("NoRemoteAccess", string.Format("{0} tried to login from {1}", name, DbUtil.Db.Host));
                 return "NoRemoteAccess.htm";
             }
+
             return null;
         }
+
         public static User AddUser(int id)
         {
             var p = DbUtil.Db.People.Single(pe => pe.PeopleId == id);
@@ -297,6 +309,7 @@ namespace CmsWeb.Models
             DbUtil.Db.SubmitChanges();
             return user;
         }
+
         public static void SendNewUserEmail(string username)
         {
             var user = DbUtil.Db.Users.First(u => u.Username == username);
@@ -307,11 +320,12 @@ namespace CmsWeb.Models
             body = body.Replace("{username}", user.Username);
             user.ResetPasswordCode = Guid.NewGuid();
             user.ResetPasswordExpires = DateTime.Now.AddHours(DbUtil.Db.Setting("ResetPasswordExpiresHours", "24").ToInt());
-            var link = DbUtil.Db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode.ToString());
+            var link = DbUtil.Db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode);
             body = body.Replace("{link}", link);
             DbUtil.Db.SubmitChanges();
             DbUtil.Db.EmailRedacted(DbUtil.AdminMail, user.Person, "New user welcome", body);
         }
+
         public static void ForgotPassword(string username)
         {
             // first find a user with the email address or username

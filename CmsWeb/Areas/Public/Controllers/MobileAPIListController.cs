@@ -9,6 +9,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
 	public class MobileAPIListController : Controller
 	{
+        [HttpPost]
 		public ActionResult Authenticate()
 		{
 			if (CmsWeb.Models.AccountModel.AuthenticateMobile()) return null;
@@ -18,6 +19,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			}
 		}
 
+        [HttpPost]
 		public ActionResult Countries()
 		{
 			// Authenticate first
@@ -42,6 +44,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			return br;
 		}
 
+        [HttpPost]
 		public ActionResult States()
 		{
 			// Authenticate first
@@ -65,6 +68,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			return br;
 		}
 
+        [HttpPost]
 		public ActionResult MaritalStatuses()
 		{
 			// Authenticate first
@@ -89,6 +93,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			return br;
 		}
 
+        [HttpPost]
 		public ActionResult GivingFunds()
 		{
 			// Authenticate first
@@ -113,27 +118,5 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			return br;
 		}
-
-//		public ActionResult Playlists()
-//		{
-//			// Authenticate first
-//			var authError = Authenticate();
-//			if (authError != null) return authError;
-//
-//			var playlists = from p in DbUtil.Db.MobileAppPlaylists
-//								 select new MobilePlaylist
-//								 {
-//									 id = p.Id,
-//									 name = p.Name
-//								 };
-//
-//			BaseMessage br = new BaseMessage();
-//			br.error = 0;
-//			br.type = BaseMessage.API_TYPE_MEDIA_PLAYLIST;
-//			br.count = playlists.Count();
-//			br.data = JsonConvert.SerializeObject(playlists.ToList());
-//
-//			return br;
-//		}
 	}
 }
