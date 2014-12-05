@@ -86,6 +86,8 @@ namespace CmsData
 		
    		private EntitySet< UserRole> _UserRoles;
 		
+   		private EntitySet< ApiSession> _ApiSessions;
+		
    		private EntitySet< VolunteerForm> _VolunteerFormsUploaded;
 		
     	
@@ -198,6 +200,8 @@ namespace CmsData
 			this._Preferences = new EntitySet< Preference>(new Action< Preference>(this.attach_Preferences), new Action< Preference>(this.detach_Preferences)); 
 			
 			this._UserRoles = new EntitySet< UserRole>(new Action< UserRole>(this.attach_UserRoles), new Action< UserRole>(this.detach_UserRoles)); 
+			
+			this._ApiSessions = new EntitySet< ApiSession>(new Action< ApiSession>(this.attach_ApiSessions), new Action< ApiSession>(this.detach_ApiSessions)); 
 			
 			this._VolunteerFormsUploaded = new EntitySet< VolunteerForm>(new Action< VolunteerForm>(this.attach_VolunteerFormsUploaded), new Action< VolunteerForm>(this.detach_VolunteerFormsUploaded)); 
 			
@@ -905,6 +909,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_Users_ApiSession", Storage="_ApiSessions", OtherKey="UserId")]
+   		public EntitySet< ApiSession> ApiSessions
+   		{
+   		    get { return this._ApiSessions; }
+
+			set	{ this._ApiSessions.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="VolunteerFormsUploaded__Uploader", Storage="_VolunteerFormsUploaded", OtherKey="UploaderId")]
    		public EntitySet< VolunteerForm> VolunteerFormsUploaded
    		{
@@ -1037,6 +1051,19 @@ namespace CmsData
 		}
 
 		private void detach_UserRoles(UserRole entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
+		}
+
+		
+		private void attach_ApiSessions(ApiSession entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+
+		private void detach_ApiSessions(ApiSession entity)
 		{
 			this.SendPropertyChanging();
 			entity.User = null;

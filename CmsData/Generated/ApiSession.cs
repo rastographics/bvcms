@@ -17,7 +17,7 @@ namespace CmsData
 		
 	#region Private Fields
 		
-		private int _PeopleId;
+		private int _UserId;
 		
 		private Guid _SessionToken;
 		
@@ -29,7 +29,7 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Person> _Person;
+		private EntityRef< User> _User;
 		
 	#endregion
 	
@@ -38,8 +38,8 @@ namespace CmsData
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
 		
-		partial void OnPeopleIdChanging(int value);
-		partial void OnPeopleIdChanged();
+		partial void OnUserIdChanging(int value);
+		partial void OnUserIdChanged();
 		
 		partial void OnSessionTokenChanging(Guid value);
 		partial void OnSessionTokenChanged();
@@ -58,7 +58,7 @@ namespace CmsData
 		{
 			
 			
-			this._Person = default(EntityRef< Person>); 
+			this._User = default(EntityRef< User>); 
 			
 			OnCreated();
 		}
@@ -66,24 +66,24 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int PeopleId
+		[Column(Name="UserId", UpdateCheck=UpdateCheck.Never, Storage="_UserId", DbType="int NOT NULL", IsPrimaryKey=true)]
+		public int UserId
 		{
-			get { return this._PeopleId; }
+			get { return this._UserId; }
 
 			set
 			{
-				if (this._PeopleId != value)
+				if (this._UserId != value)
 				{
 				
-					if (this._Person.HasLoadedOrAssignedValue)
+					if (this._User.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
-                    this.OnPeopleIdChanging(value);
+                    this.OnUserIdChanging(value);
 					this.SendPropertyChanging();
-					this._PeopleId = value;
-					this.SendPropertyChanged("PeopleId");
-					this.OnPeopleIdChanged();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
 				}
 
 			}
@@ -187,41 +187,41 @@ namespace CmsData
 	
 	#region Foreign Keys
     	
-		[Association(Name="FK_People_ApiSession", Storage="_Person", ThisKey="PeopleId", IsForeignKey=true)]
-		public Person Person
+		[Association(Name="FK_Users_ApiSession", Storage="_User", ThisKey="UserId", IsForeignKey=true)]
+		public User User
 		{
-			get { return this._Person.Entity; }
+			get { return this._User.Entity; }
 
 			set
 			{
-				Person previousValue = this._Person.Entity;
+				User previousValue = this._User.Entity;
 				if (((previousValue != value) 
-							|| (this._Person.HasLoadedOrAssignedValue == false)))
+							|| (this._User.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if (previousValue != null)
 					{
-						this._Person.Entity = null;
+						this._User.Entity = null;
 						previousValue.ApiSessions.Remove(this);
 					}
 
-					this._Person.Entity = value;
+					this._User.Entity = value;
 					if (value != null)
 					{
 						value.ApiSessions.Add(this);
 						
-						this._PeopleId = value.PeopleId;
+						this._UserId = value.UserId;
 						
 					}
 
 					else
 					{
 						
-						this._PeopleId = default(int);
+						this._UserId = default(int);
 						
 					}
 
-					this.SendPropertyChanged("Person");
+					this.SendPropertyChanged("User");
 				}
 
 			}
