@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult Authenticate()
         {
-            if (AccountModel.AuthenticateMobile()) return null;
+            if (AccountModel.AuthenticateMobile().IsValid) return null;
             return BaseMessage.createErrorReturn("You are not authorized!");
         }
 

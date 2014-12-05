@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.MobileAPI;
+using CmsWeb.Models;
 using Newtonsoft.Json;
 
 namespace CmsWeb.Areas.Public.Controllers
@@ -11,15 +11,12 @@ namespace CmsWeb.Areas.Public.Controllers
 	{
         [HttpPost]
 		public ActionResult Authenticate()
-		{
-			if (CmsWeb.Models.AccountModel.AuthenticateMobile()) return null;
-			else
-			{
-				return BaseMessage.createErrorReturn("You are not authorized!");
-			}
-		}
+        {
+            if (AccountModel.AuthenticateMobile().IsValid) return null;
+            return BaseMessage.createErrorReturn("You are not authorized!");
+        }
 
-        [HttpPost]
+	    [HttpPost]
 		public ActionResult Countries()
 		{
 			// Authenticate first

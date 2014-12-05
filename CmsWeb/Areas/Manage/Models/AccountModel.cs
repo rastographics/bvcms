@@ -73,12 +73,12 @@ namespace CmsWeb.Models
             set { HttpContext.Current.Items[STR_UserName2] = value; }
         }
 
-        public static bool AuthenticateMobile(string role = null, bool checkOrgMembersOnly = false)
+        public static UserValidationResult AuthenticateMobile(string role = null, bool checkOrgMembersOnly = false)
         {
             var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken();
 
             if (!userStatus.IsValid)
-                return false;
+                return userStatus;
 
             var user = userStatus.User;
 
@@ -89,7 +89,10 @@ namespace CmsWeb.Models
             if (roleProvider.RoleExists(role))
             {
                 if (!roleProvider.IsUserInRole(user.Username, role))
-                    return false;
+                {
+                    userStatus.Status = UserValidationStatus.UserNotInRole;
+                    return userStatus;
+                }
             }
 
             UserName2 = user.Username;
@@ -108,7 +111,7 @@ namespace CmsWeb.Models
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
-            return true;
+            return userStatus;
         }
 
         private static UserValidationResult GetUserViaSessionToken()

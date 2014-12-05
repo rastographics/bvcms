@@ -278,6 +278,8 @@
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Manage\Models\ApiSessionModel.cs" />
+    <Compile Include="Areas\Manage\Models\ApiSessionResult.cs" />
+    <Compile Include="Areas\Manage\Models\ApiSessionStatus.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">

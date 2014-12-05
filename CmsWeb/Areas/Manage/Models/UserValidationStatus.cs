@@ -10,6 +10,7 @@ namespace CmsWeb.Areas.Manage.Models
         LockedOut,
         UserNotApproved,
         CannotImpersonateFinanceUser,
+        UserNotInRole,
 
         // mobile related
         PinExpired,
