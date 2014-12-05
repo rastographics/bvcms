@@ -296,23 +296,23 @@ $(function () {
                 controlType: "slider"
             });
         };
-        $.showHideRegTypes = function (f) {
-            $("#Settings-tab").tabs('option', 'disabled', []);
-            $("#QuestionList li").show();
-            $(".yes6").hide();
-            switch ($("#org_RegistrationTypeId").val()) {
-                case "0":
-                    $("#Settings-tab").tabs('option', 'disabled', [3, 4, 5]);
-                    break;
-                case "6":
-                    $("#QuestionList > li").hide();
-                    $(".yes6").show();
-                    break;
-            }
-        };
-    */
-    //$("#org_RegistrationTypeId").live("change", $.showHideRegTypes);
-    //$.showHideRegTypes();
+        */
+    $.showHideRegTypes = function (f) {
+        $("#Settings-tab").tabs('option', 'disabled', []);
+        $("#QuestionList li").show();
+        $(".yes6").hide();
+        switch ($("#org_RegistrationTypeId").val()) {
+            case "0":
+                $("#Settings-tab").tabs('option', 'disabled', [3, 4, 5]);
+                break;
+            case "6":
+                $("#QuestionList > li").hide();
+                $(".yes6").show();
+                break;
+        }
+    };
+    $("#org_RegistrationTypeId").live("change", $.showHideRegTypes);
+    $.showHideRegTypes();
     $("a.displayedit,a.displayedit2").live('click', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
