@@ -1,0 +1,13 @@
+﻿@using IronPython.Modules
+@model CmsWeb.Areas.Org.Models.MemberModel
+@Html.Hidden("inactive-qid", (Guid?)ViewBag.queryid)
+<div style="margin-bottom:5px">
+  Count: <strong id="inactive-count">@Model.Count()</strong>
+  @if (User.IsInRole("Edit"))
+  {
+    <a href="/SearchAdd2/Dialog/inactive/@Model.Id" class="searchadd btn">@(Model.Org.IsMissionTrip == true ? "Add Sender" : "Add Inactive Members")</a>
+    <a href="/OrgMembersDialog/@Model.Id?inactives=true" title="Update Inactive Members" class="memberdialog btn">update</a>
+  }
+  @Helper.OrgFilter(Model.NameFilter, Model.SgFilter)
+</div>
+@Html.Partial("Tabs/Base", Model)

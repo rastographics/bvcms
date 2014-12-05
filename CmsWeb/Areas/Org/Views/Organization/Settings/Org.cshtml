@@ -1,0 +1,15 @@
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+<form class="form form-horizontal non-modal ajax span12 pad-left">
+  @FormAction()
+  <ul class="noedit">
+    @Html.EditorFor(m => m, "TabOrg")
+  </ul>
+  @FormAction()
+</form>
+@helper FormAction()
+{
+   if (User.IsInRole("Edit"))
+   {
+     <a href="/Organization/SettingsOrgEdit/@Model.Id" class="btn ajax pull-right">Edit</a>
+   }
+}

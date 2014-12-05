@@ -24,7 +24,7 @@
     |These are the users that will be notified when a registration occurs.
     |The top most user will be the 'sender' of the confirmation email.">
     Online Notify Persons:</span>
-        @Html.Partial("NotifyList2", Model.org.NotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "notifyids" }})
+        @Html.Partial("Other/NotifyList2", Model.org.NotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "notifyids" }})
   </li>
   <li>
     <span class="keyword big tip" title="Instructions
@@ -114,7 +114,7 @@
     |These are the users that will be notified when a gift occurs.
     |The top most user will be the 'sender' of the confirmation email.">
     Notify Persons for Gift:</span>
-        @Html.Partial("NotifyList2", Model.org.GiftNotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "giftnotifyids" }})
+        @Html.Partial("Other/NotifyList2", Model.org.GiftNotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "giftnotifyids" }})
   </li>
   <li>
     <div class="text big tip" title="SupportEmail

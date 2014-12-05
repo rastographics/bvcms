@@ -1,9 +1,9 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
-<h2>@Model.org.OrganizationName@(Model.org.LeaderId.HasValue ? "," : "") <span style="font-size:12px">@Model.org.LeaderName</span></h2>
+<h2>@Model.Org.OrganizationName@(Model.org.LeaderId.HasValue ? "," : "") <span style="font-size:12px">@Model.Org.LeaderName</span></h2>
 <table id="orginfoedit" style="margin-bottom: 10px" cellspacing="5" width="100%">
     <tr>
         <th class="right">Name:</th>
-        <td>@Html.TextBox("org.OrganizationName", Model.org.OrganizationName)</td>
+        <td>@Html.TextBox("org.OrganizationName", Model.Org.OrganizationName)</td>
     </tr>
     <tr>
         <th class="right">Location:</th>
@@ -37,8 +37,8 @@
         <td>@Html.CheckBox("org.IsBibleFellowshipOrg")</td>
     </tr>
     <tr><td colspan="2" class="right">
-        <a class="displayedit2 bt" href="/Organization/OrgInfo/@Model.OrganizationId">Cancel</a>
-        <a href="/Organization/OrgInfoUpdate/@Model.OrganizationId" class="submitbutton bt blue">Save Changes</a>
+        <a class="displayedit2 bt" href="/Organization/OrgInfo/@Model.Id">Cancel</a>
+        <a href="/Organization/OrgInfoUpdate/@Model.Id" class="submitbutton bt blue">Save Changes</a>
         </td></tr>
 </table>
 

@@ -1,0 +1,15 @@
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+<p><i>Drag the grey bars up/down arrow to reorder items.</i></p>
+<div>
+<a class="displayedit bt" href="/Organization/SettingsMeetings/@Model.Id">Cancel</a>
+<a href="/Organization/SettingsMeetingsUpdate/@Model.Id" class="submitbutton bt blue">Save Changes</a>
+</div>
+<div class="formerror">@Html.ValidationMessage("Form")</div>
+<ul class="enablesort edit">
+@Html.EditorFor(m => m, "TabMeetings")
+</ul>
+<div>
+<a class="displayedit bt" href="/Organization/SettingsMeetings/@Model.Id">Cancel</a>
+<a href="/Organization/SettingsMeetingsUpdate/@Model.Id" class="submitbutton bt blue">Save Changes</a>
+</div>
+<div class="formerror">@Html.ValidationMessage("Form")</div>

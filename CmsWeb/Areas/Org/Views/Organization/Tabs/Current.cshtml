@@ -1,0 +1,20 @@
+﻿@using RestSharp.Extensions
+@model CmsWeb.Areas.Org.Models.MemberModel
+
+@{ ViewData["OrgMemberContext"] = true;
+ ViewData["OrgMemberContext"] = false;
+}
+<form class="form form-horizontal non-modal ajax span12 pad-left">
+  @Html.Hidden("current-qid", (Guid?)ViewBag.queryid)
+  <div>
+    Count: <strong id="current-count">@Model.Count()</strong>&nbsp;&nbsp;
+    @if (User.IsInRole("Edit"))
+    {
+      <a href="/SearchAdd2/Dialog/org/@Model.Id" class="searchadd btn btn-default">Add People</a>
+      <a href="/AddToOrgFromTag/@Model.Id" class="addfromtag btn btn-success" title="Add Members From Tag">add from tag</a>
+      <a id="currMembersUpdate" href="/OrgMembersDialog/@Model.Id" title="Update Members" class="memberdialog btn btn-success">update members</a>
+    }
+    @Helper.OrgFilter(Model.NameFilter, Model.SgFilter)
+  </div>
+  @Html.Partial("Tabs/Base", Model)
+</form>

@@ -2472,12 +2472,16 @@ namespace CmsData
 
 		[Function(Name="dbo.GuestList2", IsComposable = true)]
 		public IQueryable< View.GuestList2 > GuestList2(
-            [Parameter(DbType="int")] int? oid
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="datetime")] DateTime? since,
+            [Parameter(DbType="bit")] bool? showHidden
             )
 		{
 			return this.CreateMethodCallQuery< View.GuestList2>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid
+                oid,
+                since,
+                showHidden
                 );
 		}
 

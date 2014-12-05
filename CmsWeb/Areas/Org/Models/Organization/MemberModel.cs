@@ -10,18 +10,13 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class MemberModel : PagedTableModel<OrganizationMember, PersonMemberInfo>, ICurrentOrg
     {
-        public int? OrganizationId { get; set; }
+        private int? id;
         public Organization Org { get; set; }
         public int GroupSelect { get; set; }
 
         public MemberModel()
             : base("Name", "asc")
         {
-            if(ClearFilter)
-                this.ClearCurrentOrg();
-            this.CopyPropertiesFrom(DbUtil.Db.CurrentOrg);
-            OrganizationId = Id;
-            Org = DbUtil.Db.LoadOrganizationById(Id);
         }
 
         public bool IsFiltered
@@ -31,7 +26,7 @@ namespace CmsWeb.Areas.Org.Models
         public IEnumerable<SelectListItem> SmallGroups()
         {
             var q = from mt in DbUtil.Db.MemberTags
-                    where mt.OrgId == OrganizationId
+                    where mt.OrgId == Id
                     orderby mt.Name
                     select new SelectListItem
                     {
@@ -47,8 +42,8 @@ namespace CmsWeb.Areas.Org.Models
         public override IQueryable<OrganizationMember> DefineModelList()
         {
             return from om in DbUtil.Db.OrganizationMembers
-                   where om.OrganizationId == OrganizationId
-                   where DbUtil.Db.OrgMember(OrganizationId, GroupSelect, this.First(), this.Last(), SgFilter, ShowHidden).Any(mm => mm.PeopleId == om.PeopleId)
+                   where om.OrganizationId == Id
+                   where DbUtil.Db.OrgMember(Id, GroupSelect, this.First(), this.Last(), SgFilter, ShowHidden).Any(mm => mm.PeopleId == om.PeopleId)
                    select om;
         }
 
@@ -207,10 +202,8 @@ namespace CmsWeb.Areas.Org.Models
 
         public override IEnumerable<PersonMemberInfo> DefineViewList(IQueryable<OrganizationMember> q)
         {
-            var q0 = q.Skip(StartRow).Take(PageSize);
-
             var tagownerid = Util2.CurrentTagOwnerId;
-            var q1 = from om in q0
+            var q1 = from om in q
                     let p = om.Person
                     select new PersonMemberInfo
                     {
@@ -247,7 +240,16 @@ namespace CmsWeb.Areas.Org.Models
             return q1;
         }
 
-        public int? Id { get; set; }
+        public int? Id
+        {
+            get { return id; }
+            set
+            {
+                id = value;
+                Org = DbUtil.Db.LoadOrganizationById(id);
+            }
+        }
+
         public string NameFilter { get; set; }
         public string SgFilter { get; set; }
         public bool ShowHidden { get; set; }

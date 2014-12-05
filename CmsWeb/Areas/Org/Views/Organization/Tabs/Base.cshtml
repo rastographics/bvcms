@@ -5,7 +5,7 @@
 @model CmsWeb.Areas.Org.Models.MemberModel
 
 @Html.Partial("PagerHidden", Model)
-@Html.HiddenFor2(m => m.OrganizationId)
+@Html.HiddenFor2(m => m.Id)
 <div class="pagination pagination-mini">
   @Html.Partial("Pager3", Model)
 </div>
@@ -37,7 +37,7 @@
       <tr>
         <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@om.PeopleId">@om.Name</a></td>
         <td>
-          <a class="membertype" href="/OrgMemberDialog2/Display/@Model.OrganizationId/@om.PeopleId"> @om.MemberType </a>
+          <a class="membertype" href="/OrgMemberDialog2/Display/@Model.Id/@om.PeopleId"> @om.MemberType </a>
         </td>
         <td>
           @om.MemberStatus<br />
@@ -77,18 +77,18 @@
           @om.Joined.FormatDate2()<br />
           @if (om.LastAttended.HasValue)
           {
-            <a href="/Organization/GotoMeetingForDate/@Model.OrganizationId/@om.LastAttended.Value.Ticks">@om.LastAttended.FormatDate2()</a><br />
+            <a href="/Organization/GotoMeetingForDate/@Model.Id/@om.LastAttended.Value.Ticks">@om.LastAttended.FormatDate2()</a><br />
           }
           @if (Model.GroupSelect == GroupSelectCode.Prospect)
           {
             if (om.Hidden)
             {
-              <a href="/Organization/ShowProspect/@Model.OrganizationId/@om.PeopleId/Show" class="joinlink"
+              <a href="/Organization/ShowProspect/@Model.Id/@om.PeopleId/Show" class="joinlink"
                  confirm="Show @om.Name in Prospect List for this Org?">Show</a>
             }
             else
             {
-              <a href="/Organization/ShowProspect/@Model.OrganizationId/@om.PeopleId/Hide" class="joinlink"
+              <a href="/Organization/ShowProspect/@Model.Id/@om.PeopleId/Hide" class="joinlink"
                  confirm="Hide @om.Name on Prospect List for this Org?">Hide</a>
             }
           }

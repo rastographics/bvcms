@@ -10,12 +10,9 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class PrevMemberModel : PagedTableModel<EnrollmentTransaction, PersonMemberInfo>, ICurrentOrg
     {
-        public int? OrganizationId { get; set; }
-
         public PrevMemberModel()
             :base("Name", "asc")
         {
-            OrganizationId = Id;
         }
         public bool IsFiltered
         {
@@ -27,7 +24,7 @@ namespace CmsWeb.Areas.Org.Models
             var q = from etd in DbUtil.Db.EnrollmentTransactions
                     let mdt = DbUtil.Db.EnrollmentTransactions.Where(m =>
                         m.PeopleId == etd.PeopleId
-                        && m.OrganizationId == OrganizationId
+                        && m.OrganizationId == Id
                         && m.TransactionTypeId > 3
                         && m.TransactionStatus == false).Select(m => m.TransactionDate).Max()
                     where etd.TransactionStatus == false
@@ -35,9 +32,9 @@ namespace CmsWeb.Areas.Org.Models
                     where ShowHidden
                          ? etd.MemberTypeId == MemberTypeCode.Prospect
                          : etd.MemberTypeId != MemberTypeCode.Prospect
-                    where etd.OrganizationId == OrganizationId
+                    where etd.OrganizationId == Id
                     where etd.TransactionTypeId >= 4
-                    where etd.Person.OrganizationMembers.All(om => om.OrganizationId != OrganizationId)
+                    where etd.Person.OrganizationMembers.All(om => om.OrganizationId != Id)
                     select etd;
 
             if (NameFilter.HasValue())
@@ -211,7 +208,6 @@ namespace CmsWeb.Areas.Org.Models
 
         public override IEnumerable<PersonMemberInfo> DefineViewList(IQueryable<EnrollmentTransaction> q)
         {
-            q = q.Skip(StartRow).Take(PageSize);
             var tagownerid = Util2.CurrentTagOwnerId;
             var q2 = from om in q
                      let p = om.Person

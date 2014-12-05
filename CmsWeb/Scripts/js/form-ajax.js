@@ -116,6 +116,10 @@
             $("input[name='Sort']", $form).val(a.data("sortby"));
         if (a.data("dir"))
             $("input[name='Direction']", $form).val(a.data("dir"));
+        if (a.data("clear") === 'orgfilter') {
+            $("input[name='sgFilter']", $form).val('');
+            $("input[name='nameFilter']", $form).val('');
+        }
 
         var data = $form.serialize();
         if (data.length === 0)

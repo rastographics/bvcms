@@ -1,0 +1,16 @@
+﻿@model CmsWeb.Areas.Org.Models.MemberModel
+@Html.Hidden("prospect-qid", (Guid?)ViewBag.queryid)
+<form class="form form-horizontal non-modal ajax span12 pad-left">
+  <div style="margin-bottom:5px">
+    Count: <strong id="prospect-count">@Model.Count()</strong>
+    <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.IsFiltered ? "(filtered)" : "")</a>
+    @if (User.IsInRole("Edit"))
+    {
+      <a href="/SearchAdd2/Dialog/prospect/@Model.Id" class="searchadd btn btn-default">Add Prospects</a>
+      <a href="/AddToOrgFromTag/@Model.Id?prospects=true" class="addfromtag btn btn-success" title="Add Prospects From Tag">add from tag</a>
+      <a href="/OrgMembersDialog/@Model.Id?prospects=true" title="Update Prospects" class="memberdialog btn btn-success">update</a>
+    }
+    @Helper.OrgFilter(Model.NameFilter, Model.SgFilter, Model.ShowHidden, "Propsects")
+  </div>
+  @Html.Partial("Tabs/Base", Model)
+</form>

@@ -8,7 +8,7 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class MeetingsModel : PagedTableModel<Meeting, MeetingInfo>
     {
-        public int OrgId { get; set; }
+        public int Id { get; set; }
         public bool Future { get; set; }
 
         public override IQueryable<Meeting> DefineModelList()
@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Org.Models
             var tzoffset = DbUtil.Db.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
             var midnight = Util.Now.Date.AddDays(1).AddHours(tzoffset);
             var meetings = from m in DbUtil.Db.Meetings
-                           where m.OrganizationId == OrgId
+                           where m.OrganizationId == Id
                            select m;
             if (Future)
                 meetings = from m in meetings
@@ -68,7 +68,6 @@ namespace CmsWeb.Areas.Org.Models
 
         public override IEnumerable<MeetingInfo> DefineViewList(IQueryable<Meeting> q)
         {
-            q = q.Skip(StartRow).Take(PageSize);
             var q2 = from m in q
                      let o = m.Organization
                      select new MeetingInfo

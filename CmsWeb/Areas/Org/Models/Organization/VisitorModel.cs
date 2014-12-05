@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.Bibliography;
 using UtilityExtensions;
 using CmsWeb.Models;
+using Person = CmsData.Person;
 
 namespace CmsWeb.Areas.Org.Models
 {
     public class VisitorModel : PagedTableModel<Person, PersonMemberInfo>, ICurrentOrg
     {
-        public int OrganizationId { get; set; }
-
-        public VisitorModel()//CurrentOrg currorg, PagerModel2 pager = null)
+        public VisitorModel()
         {
             this.CopyPropertiesFrom(DbUtil.Db.CurrentOrg);
             if(!Id.HasValue)
                 throw new ArgumentException("missing currorg.Id");
-            OrganizationId = Id.Value;
-//            Pager = pager ?? new PagerModel2() {Direction = "asc", Sort = "Name"};
-//            Pager.GetCount = Count;
         }
+
+        private DateTime mindt;
 
         public bool IsFiltered
         {
@@ -29,9 +28,10 @@ namespace CmsWeb.Areas.Org.Models
 
         public override IQueryable<Person> DefineModelList()
         {
-            var mindt = Util.Now.AddDays(-Util2.VisitLookbackDays).Date;
+            mindt = Util.Now.AddDays(-Util2.VisitLookbackDays).Date;
+
             return from p in DbUtil.Db.People
-                   join g in DbUtil.Db.GuestList(OrganizationId, mindt, ShowHidden, this.First(), this.Last())
+                   join g in DbUtil.Db.GuestList(Id, mindt, ShowHidden, this.First(), this.Last())
                        on p.PeopleId equals g.PeopleId
                    select p;
         }
@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.Org.Models
                         break;
                     case "Last Attended":
                         q = from p in q
-                            orderby DbUtil.Db.LastAttended(OrganizationId, p.PeopleId)
+                            orderby DbUtil.Db.LastAttended(Id, p.PeopleId)
                             select p;
                         break;
                 }
@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.Org.Models
                         break;
                     case "Last Attended":
                         q = from p in q
-                            orderby DbUtil.Db.LastAttended(OrganizationId, p.PeopleId) descending
+                            orderby DbUtil.Db.LastAttended(Id, p.PeopleId) descending
                             select p;
                         break;
                 }
@@ -125,10 +125,9 @@ namespace CmsWeb.Areas.Org.Models
 
         public override IEnumerable<PersonMemberInfo> DefineViewList(IQueryable<Person> q)
         {
-            q = q.Skip(StartRow).Take(PageSize);
             var tagownerid = Util2.CurrentTagOwnerId;
             var q2 = from p in q
-                     join g in DbUtil.Db.GuestList2(OrganizationId) on p.PeopleId equals g.PeopleId
+                     join g in DbUtil.Db.GuestList2(Id, mindt, ShowHidden) on p.PeopleId equals g.PeopleId
                      select new PersonMemberInfo
                      {
                          PeopleId = p.PeopleId,

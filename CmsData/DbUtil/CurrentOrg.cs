@@ -8,7 +8,6 @@ namespace CmsData
         string NameFilter { get; set; }
         string SgFilter { get; set; }
         bool ShowHidden { get; set; }
-        bool ClearFilter { get; set; }
     }
     public class CurrentOrg : ICurrentOrg
     {
@@ -18,7 +17,6 @@ namespace CmsData
         public string Last { get; set; }
         public string SgFilter { get; set; }
         public bool ShowHidden { get; set; }
-        public bool ClearFilter { get; set; }
 
         public bool IsFiltered
         {
@@ -48,7 +46,6 @@ namespace CmsData
         {
             c.SgFilter = null;
             c.NameFilter = null;
-            c.ClearFilter = false;
         }
     }
 }

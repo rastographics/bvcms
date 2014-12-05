@@ -6,7 +6,7 @@
   Layout = "~/Views/Shared/SiteLayout2.cshtml";
   ViewBag.Title = "Organization";
   ViewBag.OrgMemberContext = true;
-  var o = Model.org;
+  var o = Model.Org;
 }
 @section head
 {
@@ -31,8 +31,8 @@
 <div class="container">
   <div class="row-fluid" id="profile-header">
     <div class="span8">
-      <form id="orginfoform" action="/Organization/OrgInfoUpdate/@Model.OrganizationId" class="DisplayEdit roundbox" method="post">
-        @Html.Partial("OrgInfo", Model)
+      <form id="orginfoform" action="/Organization/OrgInfoUpdate/@Model.Id" class="DisplayEdit roundbox" method="post">
+        @Html.Partial("Settings/OrgInfo", Model)
       </form>
     </div>
     <div class="span4">
@@ -48,7 +48,7 @@
           <li class="active"><a href="#Members-tab" data-toggle="tab">Members</a></li>
           <li>
             <a href="#Inactive-tab" data-toggle="tab" class="ajax">
-              <span>@(Model.org.IsMissionTrip == true ? "Senders" : "Inactive")</span>
+              <span>@(Model.Org.IsMissionTrip == true ? "Senders" : "Inactive")</span>
             </a>
           </li>
           <li><a href="#Pending-tab" data-toggle="tab" class="ajax">Pending</a></li>
@@ -59,29 +59,29 @@
           <li><a href="#Meetings-tab" data-toggle="tab" class="ajax">Meetings</a></li>
         </ul>
         <div class="tab-content">
-          <div id="Members-tab" class="tab-pane active" data-link="/Organization/CurrMemberGrid/@Model.OrganizationId">
-            @Html.Partial("Grids/Current", Model)
+          <div id="Members-tab" class="tab-pane active" data-link="/Organization/CurrMemberGrid">
+            @Html.Partial("Tabs/Current", Model)
           </div>
           <div id="Inactive-tab" class="tab-pane" data-link="/Organization/InactiveMemberGrid">
-            @Helper.HiddenId("Id", Model.OrganizationId)
+            @Helper.HiddenId("Id", Model.Id)
           </div>
           <div id="Pending-tab" class="tab-pane" data-link="/Organization/PendingMemberGrid">
-            @Helper.HiddenId("Id", Model.OrganizationId)
+            @Helper.HiddenId("Id", Model.Id)
           </div>
           <div id="Priors-tab" class="tab-pane" data-link="/Organization/PrevMemberGrid">
-            @Helper.HiddenId("Id", Model.OrganizationId)
+            @Helper.HiddenId("Id", Model.Id)
           </div>
           <div id="Prospects-tab" class="tab-pane" data-link="/Organization/ProspectGrid">
-            @Helper.HiddenId("Id", Model.OrganizationId)
+            @Helper.HiddenId("Id", Model.Id)
           </div>
           <div id="Visitors-tab" class="tab-pane" data-link="/Organization/VisitorGrid">
-            @Helper.HiddenId("Id", Model.OrganizationId)
+            @Helper.HiddenId("Id", Model.Id)
           </div>
-          <div id="Settings-tab" class="tab-pane">
-            @Html.Partial("Settings", Model)
+          <div id="Settings-tab" class="tab-pane" data-link="/Organization/Settings">
+            @Helper.HiddenId("Id", Model.Id)
           </div>
           <div id="Meetings-tab" class="tab-pane" data-link="/Organization/MeetingGrid">
-            @Helper.HiddenId("Id", Model.OrganizationId)
+            @Helper.HiddenId("Id", Model.Id)
           </div>
         </div>
       </div>

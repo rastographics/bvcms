@@ -23,7 +23,7 @@
             <span>Attendance Credit</span>
         </div>
         <ul id="schedules" class="sort padded">
-        @foreach (var sc in Model.schedules.OrderBy(cc => cc.Id))
+        @foreach (var sc in Model.Schedules.OrderBy(cc => cc.Id))
         {
             @Html.EditorFor(m => sc)
         }
