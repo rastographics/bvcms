@@ -11,7 +11,6 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 using CmsData;
-using CmsData.API;
 using CmsWeb.Areas.Manage.Models;
 using UtilityExtensions;
 
@@ -66,15 +65,79 @@ namespace CmsWeb.Models
             DbUtil.Db.SubmitChanges();
             return ot.Querystring;
         }
+
         private const string STR_UserName2 = "UserName2";
         public static string UserName2
         {
             get { return HttpContext.Current.Items[STR_UserName2] as String; }
             set { HttpContext.Current.Items[STR_UserName2] = value; }
         }
-        public static bool AuthenticateMobile(string role = null, bool checkorgmembersonly = false)
+
+        public static bool AuthenticateMobile(string role = null, bool checkOrgMembersOnly = false)
         {
-            string username, password;
+            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken();
+
+            if (!userStatus.IsValid)
+                return false;
+
+            var user = userStatus.User;
+
+            var roleProvider = CMSRoleProvider.provider;
+            if (role == null)
+                role = "Access";
+
+            if (roleProvider.RoleExists(role))
+            {
+                if (!roleProvider.IsUserInRole(user.Username, role))
+                    return false;
+            }
+
+            UserName2 = user.Username;
+            SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
+            //DbUtil.LogActivity("iphone auth " + user.Username);
+
+            if (checkOrgMembersOnly && !Util2.OrgLeadersOnlyChecked)
+            {
+                DbUtil.LogActivity("iphone leadersonly check " + user.Username);
+                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
+                {
+                    Util2.OrgLeadersOnly = true;
+                    DbUtil.Db.SetOrgLeadersOnly();
+                    DbUtil.LogActivity("SetOrgLeadersOnly");
+                }
+                Util2.OrgLeadersOnlyChecked = true;
+            }
+
+            return true;
+        }
+
+        private static UserValidationResult GetUserViaSessionToken()
+        {
+            var sessionToken = HttpContext.Current.Request.Headers["SessionToken"];
+            if (string.IsNullOrEmpty(sessionToken))
+                return null;
+
+            var model = new ApiSessionModel();
+            var result = model.DetermineApiSessionStatus(Guid.Parse(sessionToken));
+
+            switch (result.Status)
+            {
+                case ApiSessionStatus.SessionTokenNotFound:
+                    return UserValidationResult.Invalid(UserValidationStatus.SessionTokenNotFound);
+                case ApiSessionStatus.SessionTokenExpired:
+                    return UserValidationResult.Invalid(UserValidationStatus.SessionTokenExpired);
+                case ApiSessionStatus.PinExpired:
+                    return UserValidationResult.Invalid(UserValidationStatus.PinExpired);
+            }
+
+            return ValidateUserBeforeLogin(result.User.Username, HttpContext.Current.Request.Url.OriginalString, result.User, userExists: true);
+        }
+
+        private static UserValidationResult GetUserViaCredentials()
+        {
+            string username;
+            string password;
+
             var auth = HttpContext.Current.Request.Headers["Authorization"];
             if (auth.HasValue())
             {
@@ -88,42 +151,20 @@ namespace CmsWeb.Models
                 username = HttpContext.Current.Request.Headers["username"];
                 password = HttpContext.Current.Request.Headers["password"];
             }
-            UserName2 = username;
-            var u = AuthenticateLogon(username, password,
-                HttpContext.Current.Request.Url.OriginalString);
-            if (u is string)
-                return false;
-            var user = u as User;
-            if (user == null)
-                return false;
-            var roleProvider = CMSRoleProvider.provider;
-            if (role == null)
-                role = "Access";
-            if (roleProvider.RoleExists(role))
+
+            if (!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password))
             {
-                if (!roleProvider.IsUserInRole(user.Username, role))
-                    return false;
+                var creds = new NetworkCredential(username, password);
+                UserName2 = creds.UserName;
+                return AuthenticateLogon(creds.UserName, creds.Password, HttpContext.Current.Request.Url.OriginalString);
             }
-            UserName2 = user.Username;
-            SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
-            //DbUtil.LogActivity("iphone auth " + user.Username);
-            if (checkorgmembersonly && !Util2.OrgLeadersOnlyChecked)
-            {
-                DbUtil.LogActivity("iphone leadersonly check " + user.Username);
-                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(username, "OrgLeadersOnly"))
-                {
-                    Util2.OrgLeadersOnly = true;
-                    DbUtil.Db.SetOrgLeadersOnly();
-                    DbUtil.LogActivity("SetOrgLeadersOnly");
-                }
-                Util2.OrgLeadersOnlyChecked = true;
-            }
-            return true;
+
+            return null;
         }
 
-        public static object AuthenticateLogon(string userName, string password, string url)
+        public static UserValidationResult AuthenticateLogon(string userName, string password, string url)
         {
-            var q = DbUtil.Db.Users.Where(uu =>
+            var userQuery = DbUtil.Db.Users.Where(uu =>
                 uu.Username == userName ||
                 uu.Person.EmailAddress == userName ||
                 uu.Person.EmailAddress2 == userName
@@ -131,17 +172,19 @@ namespace CmsWeb.Models
 
             var impersonating = false;
             User user = null;
-            int n = 0;
+            var userExists = false;
             try
             {
-                n = q.Count();
+                userExists = userQuery.Any();
             }
-            catch (Exception)
+            catch
             {
-                return "bad database";
+                return UserValidationResult.Invalid(UserValidationStatus.BadDatabase, "bad database");
             }
-            int failedpasswordcount = 0;
-            foreach (var u in q.ToList())
+
+            var failedPasswordCount = 0;
+            foreach (var u in userQuery.ToList())
+            {
                 if (u.TempPassword != null && password == u.TempPassword)
                 {
                     u.TempPassword = null;
@@ -155,80 +198,96 @@ namespace CmsWeb.Models
                     user = u;
                     break;
                 }
-                else if (password == DbUtil.Db.Setting("ImpersonatePassword", Guid.NewGuid().ToString()))
+
+                if (password == DbUtil.Db.Setting("ImpersonatePassword", Guid.NewGuid().ToString()))
                 {
                     user = u;
                     impersonating = true;
                     break;
                 }
-                else if (Membership.Provider.ValidateUser(u.Username, password))
+
+                if (Membership.Provider.ValidateUser(u.Username, password))
                 {
                     DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, u);
                     user = u;
                     break;
                 }
-                else
-                {
-                    failedpasswordcount = Math.Max(failedpasswordcount, u.FailedPasswordAttemptCount);
-                }
 
-
-            var max = CMSMembershipProvider.provider.MaxInvalidPasswordAttempts;
-            string problem = "There is a problem with your username and password combination. If you are using your email address, it must match the one we have on record. Try again or use one of the links below.";
-            if (user == null && n > 0)
-            {
-                if (n > 3)
-                    DbUtil.LogActivity("failed password #{1} by {0}".Fmt(userName, failedpasswordcount));
-                if (failedpasswordcount == max)
-                    return "Your account has been locked out for too many failed attempts, use the forgot password link, or notify an Admin";
-                return problem;
+                failedPasswordCount = Math.Max(failedPasswordCount, u.FailedPasswordAttemptCount);
             }
-            else if (user == null)
+
+            return ValidateUserBeforeLogin(userName, url, user, userExists, failedPasswordCount, impersonating);
+        }
+
+        private static UserValidationResult ValidateUserBeforeLogin(string userName, string url, User user, bool userExists, int failedPasswordCount = 0, bool impersonating = false)
+        {
+            var maxInvalidPasswordAttempts = CMSMembershipProvider.provider.MaxInvalidPasswordAttempts;
+            const string DEFAULT_PROBLEM = "There is a problem with your username and password combination. If you are using your email address, it must match the one we have on record. Try again or use one of the links below.";
+
+            if (user == null && userExists)
+            {
+                DbUtil.LogActivity("failed password #{1} by {0}".Fmt(userName, failedPasswordCount));
+
+                if (failedPasswordCount == maxInvalidPasswordAttempts)
+                    return UserValidationResult.Invalid(UserValidationStatus.TooManyFailedPasswordAttempts, "Your account has been locked out for too many failed attempts, use the forgot password link, or notify an Admin");
+
+                return UserValidationResult.Invalid(UserValidationStatus.IncorrectPassword, DEFAULT_PROBLEM);
+            }
+
+            if (user == null)
             {
                 DbUtil.LogActivity("attempt to login by non-user " + userName);
-                return problem;
+                return UserValidationResult.Invalid(UserValidationStatus.NoUserFound, DEFAULT_PROBLEM);
             }
-            else if (user.IsLockedOut)
+
+            if (user.IsLockedOut)
             {
                 NotifyAdmins("{0} locked out #{2} on {1}"
                     .Fmt(userName, url, user.FailedPasswordAttemptCount),
-                        "{0} tried to login at {1} but is locked out"
-                            .Fmt(userName, Util.Now));
-                return "Your account has been locked out for {0} failed attempts in a short window of time, please use the forgot password link or notify an Admin".Fmt(max);
+                    "{0} tried to login at {1} but is locked out"
+                        .Fmt(userName, Util.Now));
+
+                return UserValidationResult.Invalid(UserValidationStatus.LockedOut, "Your account has been locked out for {0} failed attempts in a short window of time, please use the forgot password link or notify an Admin".Fmt(maxInvalidPasswordAttempts));
             }
-            else if (!user.IsApproved)
+
+            if (!user.IsApproved)
             {
                 NotifyAdmins("unapproved user {0} logging in on {1}"
                     .Fmt(userName, url),
-                        "{0} tried to login at {1} but is not approved"
-                            .Fmt(userName, Util.Now));
-                return problem;
+                    "{0} tried to login at {1} but is not approved"
+                        .Fmt(userName, Util.Now));
+
+                return UserValidationResult.Invalid(UserValidationStatus.UserNotApproved, DEFAULT_PROBLEM);
             }
-            if (impersonating == true)
+
+            if (impersonating)
             {
                 if (user.Roles.Contains("Finance"))
                 {
                     NotifyAdmins("cannot impersonate Finance user {0} on {1}"
                         .Fmt(userName, url),
-                            "{0} tried to login at {1}".Fmt(userName, Util.Now));
-                    return problem;
+                        "{0} tried to login at {1}".Fmt(userName, Util.Now));
+
+                    return UserValidationResult.Invalid(UserValidationStatus.CannotImpersonateFinanceUser, DEFAULT_PROBLEM);
                 }
             }
-            return user;
+
+            return UserValidationResult.Valid(user);
         }
+
         public static object AuthenticateLogon(string userName, string password, HttpSessionStateBase Session, HttpRequestBase Request)
         {
-            var o = AuthenticateLogon(userName, password, Request.Url.OriginalString);
-            if (o is User)
+            var status = AuthenticateLogon(userName, password, Request.Url.OriginalString);
+            if (status.IsValid)
             {
-                var user = o as User;
-                FormsAuthentication.SetAuthCookie(user.Username, false);
-                SetUserInfo(user.Username, Session);
-                DbUtil.LogActivity("User {0} logged in".Fmt(user.Username));
-                return user;
+                FormsAuthentication.SetAuthCookie(status.User.Username, false);
+                SetUserInfo(status.User.Username, Session);
+                DbUtil.LogActivity("User {0} logged in".Fmt(status.User.Username));
+                return status.User;
             }
-            return o;
+            return status.ErrorMessage;
         }
+
         private static void NotifyAdmins(string subject, string message)
         {
             IEnumerable<Person> notify = null;
@@ -238,7 +297,8 @@ namespace CmsWeb.Models
                 notify = CMSRoleProvider.provider.GetRoleUsers("Admin").Select(u => u.Person).Distinct();
             DbUtil.Db.EmailRedacted(DbUtil.AdminMail, notify, subject, message);
         }
-        public static void SetUserInfo(string username, System.Web.SessionState.HttpSessionState Session, bool deleteSpecialTags = true)
+
+        public static void SetUserInfo(string username, HttpSessionState Session, bool deleteSpecialTags = true)
         {
             var u = SetUserInfo(username);
             if (u == null)

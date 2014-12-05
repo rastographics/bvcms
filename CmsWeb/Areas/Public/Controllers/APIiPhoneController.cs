@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Public.Controllers
         }
         public ActionResult Search(string name, string comm, string addr)
         {
-			if (!AccountModel.AuthenticateMobile(checkorgmembersonly: true))
+			if (!AccountModel.AuthenticateMobile(checkOrgMembersOnly: true))
                 return Content("not authorized");
 			Response.NoCache();
 
@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Public.Controllers
         }
         public ActionResult SearchResults(string name, string comm, string addr)
         {
-            if (!AccountModel.AuthenticateMobile(checkorgmembersonly: true))
+            if (!AccountModel.AuthenticateMobile(checkOrgMembersOnly: true))
                 return Content("not authorized");
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Access"))
                 return Content("not authorized");
@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Public.Controllers
         }
         public ActionResult Organizations()
         {
-			if (!AccountModel.AuthenticateMobile(checkorgmembersonly: true))
+			if (!AccountModel.AuthenticateMobile(checkOrgMembersOnly: true))
                 return Content("not authorized");
 			Response.NoCache();
             DbUtil.LogActivity("iPhone Organizations");
