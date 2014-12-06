@@ -131,5 +131,24 @@ namespace CmsData
             var right = Expression.Convert(Expression.Constant(tf), left.Type);
             return Compare(left, right);
         }
+        internal Expression FamHasStatusFlag()
+        {
+            var codes0 = CodeValues.Split(',').Select(ff => ff.Trim()).ToList();
+            var q = db.ViewStatusFlagLists.ToList();
+            if (!db.FromBatch)
+                q = (from f in q
+                     where f.RoleName == null || db.CurrentRoles().Contains(f.RoleName)
+                     select f).ToList();
+            var codes = (from f in q
+                         join c in codes0 on f.Flag equals c into j
+                         from c in j
+                         select c).ToList();
+            Expression<Func<Person, bool>> pred = p =>
+                p.Family.People.Any(m => m.Tags.Any(tt => codes.Contains(tt.Tag.Name) && tt.Tag.TypeId == 100));
+            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

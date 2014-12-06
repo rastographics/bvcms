@@ -52,6 +52,7 @@ namespace CmsData
                 { QueryType.DuplicateNames, DuplicateNames },
                 { QueryType.EmailRecipient, EmailRecipient },
                 { QueryType.FamHasPrimAdultChurchMemb, FamHasPrimAdultChurchMemb },
+                { QueryType.FamHasStatusFlag, FamHasStatusFlag },
                 { QueryType.FamilyHasChildren, FamilyHasChildren },
                 { QueryType.FamilyHasChildrenAged, FamilyHasChildrenAged },
                 { QueryType.FamilyHasChildrenAged2, FamilyHasChildrenAged2 },
