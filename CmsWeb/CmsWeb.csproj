@@ -902,6 +902,7 @@
     <Content Include="Scripts\touchpoint\js\main.js" />
     <Content Include="Scripts\touchpoint\js\search\people-search.js" />
     <Content Include="Scripts\touchpoint\js\search\search-add.js" />
+    <Content Include="Scripts\touchpoint\velocity\velocity.min.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
