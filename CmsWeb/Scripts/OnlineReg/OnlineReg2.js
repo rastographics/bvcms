@@ -237,32 +237,35 @@
     }
 
     function initializeSpecialFunds() {
-        $('input:text').first().focus();
+        if ($('#special-funds-list').length) {
 
-        $('#special-funds-list').select2({
-            placeholder: 'Select a Fund'
-        });
+            $('input:text').first().focus();
 
-        $('#special-funds-list').on('change', function (e) {
-            addFundRow(e.added.id, e.added.text);
-            $('#special-funds-list').select2('val', '');
-        });
-
-        $(document).on("click", "a.remove-fund", function (e) {
-            e.preventDefault();
-            $(this).closest('tr').remove();
-            var startingIndex = $('#funds tbody tr').length;
-            var prefix = getFundPrefix();
-            _($('#special-funds tbody tr')).each(function (item, index) {
-                var fundIndex = startingIndex + index;
-                var fundIndexer = prefix + 'FundItem[' + fundIndex + ']';
-                var inputKey = fundIndexer + '.Key';
-                var inputValue = fundIndexer + '.Value';
-                $('input', item)[0].name = inputKey;
-                $('input', item)[1].name = inputValue;
+            $('#special-funds-list').select2({
+                placeholder: 'Select a Fund'
             });
-            updateTotal();
-        });
+
+            $('#special-funds-list').on('change', function (e) {
+                addFundRow(e.added.id, e.added.text);
+                $('#special-funds-list').select2('val', '');
+            });
+
+            $(document).on("click", "a.remove-fund", function (e) {
+                e.preventDefault();
+                $(this).closest('tr').remove();
+                var startingIndex = $('#funds tbody tr').length;
+                var prefix = getFundPrefix();
+                _($('#special-funds tbody tr')).each(function (item, index) {
+                    var fundIndex = startingIndex + index;
+                    var fundIndexer = prefix + 'FundItem[' + fundIndex + ']';
+                    var inputKey = fundIndexer + '.Key';
+                    var inputValue = fundIndexer + '.Value';
+                    $('input', item)[0].name = inputKey;
+                    $('input', item)[1].name = inputValue;
+                });
+                updateTotal();
+            });
+        }
     }
 
     initializeSpecialFunds();
