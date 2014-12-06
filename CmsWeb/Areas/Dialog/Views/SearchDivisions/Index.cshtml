@@ -1,60 +1,23 @@
-﻿@model SearchDivisionsModel
-@using CmsWeb
-@using CmsWeb.Models
-@using UtilityExtensions
-<html>
-<head>
-  <title>Index</title>
-  <script type="text/javascript">
-    if (typeof (Object) === "undefined") {
-      window.location.reload();
-    }
-  </script>
+﻿@model CmsWeb.Models.SearchDivisionsModel
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h4>Select Divisions</h4>
+</div>
+<div class="modal-body">
+    @Html.HiddenFor(m => m.ordered)
+    @Html.HiddenFor(m => m.singlemode)
+    @Html.HiddenFor(m => m.id)
+    @Html.HiddenFor(m => m.topid)
+    @Html.TextBoxFor(m => m.name, new {title="Partial Program / Division Name"} )
+  <a href="/SearchDivisions/Results" id="search" class="btn btn-primary ajax">Search</a>
 
-  @ViewExtensions2.NewStyles()
-  @ViewExtensions2.jQueryUICss()
-  @Fingerprint.Css("/content/styles/siteblue.css")
-  @ViewExtensions2.OldStyles()
-  @ViewExtensions2.FontAwesome()
-  @Fingerprint.Css("/content/css/Fixups2.css")
-  @ViewExtensions2.jQuery()
-  @ViewExtensions2.Bootstrap()
-  @ViewExtensions2.jQueryUI()
-  @Fingerprint.Script("/Scripts/bundle.main2c.js")
-  @Html.Partial("DatePickerDefaults")
-  <script>
-    $.dtoptions = { format: '@Util.jQueryDateFormat2' };
-  </script>
-  @Fingerprint.Script("/Scripts/Dialog/SearchDivisions.js")
-  <style>
-    body {
-      padding-top: 0; 
-    }
-  </style>
-</head>
-<body>
-  <form name="form1">
-    @Html.Hidden("ordered", Model.ordered)
-    @Html.Hidden("singlemode", Model.singlemode)
-    @Html.Hidden("id", Model.singlemode)
-    @Html.Hidden("topid")
-    <div class="roundbox cell">
-      <table id="searchvalues" class="grid">
-        <tr>
-          <th class="right"> Name/ID#: </th>
-          <td><input id="name" name="name" title="Partial Program / Division Name" type="text" value="" /></td>
-        </tr>
-        <tr>
-          <td>
-            <a id="close" href="#" class="bt">Close</a>
-          </td>
-          <td class="right">
-            <a id="clear" href="#" class="bt">Clear</a>
-            <a href="/SearchDivisions/Results" id="search" class="bt default formlink blue">Search</a>
-          </td>
-        </tr>
-      </table></div>
-    @Html.Partial("Results", Model)
-  </form>
-</body>
-</html>
+    <div class="pagination pagination-mini">
+        @Html.Partial("Pager3", Model)
+    </div>
+     @Html.Partial("Results", Model)
+    <div class="pagination pagination-mini">
+        @Html.Partial("Pager3", Model)
+    </div>
+</div>
+<div class="modal-footer">
+</div>

@@ -73,7 +73,8 @@
           <div id="Visitors-tab" class="tab-pane" data-link="/Organization/VisitorGrid">
             @Helper.HiddenId("Id", Model.Id)
           </div>
-          <div id="Settings-tab" class="tab-pane" data-link="/Organization/Settings/@Model.Id">
+          <div id="Settings-tab" class="tab-pane" data-link="/Organization/Settings/@Model.Id" 
+            data-init="showHideRegTypes" data-init2="SettingFormsInit">
           </div>
           <div id="Meetings-tab" class="tab-pane" data-link="/Organization/MeetingGrid">
             @Helper.HiddenId("Id", Model.Id)

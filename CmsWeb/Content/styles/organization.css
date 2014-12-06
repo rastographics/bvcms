@@ -221,7 +221,7 @@ li.hidy {
   background: #CDCDCD;
   font-size: 90%;
 }
-.primary-tabs .nav-tabs.subnav > li > a {
+.primary-tabs .nav-tabs.subnav > li:not(.disabled) > a {
   color: #555;
 }
 .primary-tabs .nav-tabs.subnav > .active > a {

@@ -8,7 +8,6 @@
         $.getTable();
         return false;
     });
-    $(".bt").button();
     $.getTable = function () {
         var f = $('#results').closest('form');
         var q = f.serialize();
@@ -17,16 +16,6 @@
         });
         return false;
     };
-    $("#close").click(function () {
-        window.parent.$('#divisionsDialog').dialog('close');
-    });
-    $.formatTable = function () {
-        $("td.tip").tooltip({
-            showURL: false,
-            showBody: "|"
-        });
-    };
-    $.formatTable();
     $('input:checkbox').live("change", function (ev) {
         var sp = $(this).parents('tr:eq(0)').find("span.move");
         var ck = $(this).is(":checked");

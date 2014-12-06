@@ -16,7 +16,7 @@
         });
     });
 
-    $.regsettingeditclick = function (f) {
+    $.InitFunctions.SettingFormsInit = function (f) {
         $(".tip", f).tooltip({ opacity: 0, showBody: "|" });
         //$("ul.enablesort.sort, ul.enablesort ul.sort", f).sortable();
         $("ul.noedit input", f).attr("disabled", "disabled");
@@ -32,7 +32,6 @@
             }
         });
     };
-    $.regsettingeditclick();
     $("a.editor").live("click", function (ev) {
         if (!$(this).attr("href"))
             return false;

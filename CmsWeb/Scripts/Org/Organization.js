@@ -10,7 +10,7 @@
 $(function () {
     $('a[data-toggle="tab"]').on('shown', function (e) {
         e.preventDefault();
-        var tab = $(e.target).attr('href').replace("#", "#tab-");;
+        var tab = $(e.target).attr('href').replace("#", "#tab-");
         window.location.hash = tab;
         $.cookie('lasttab', tab);
         return false;
@@ -35,59 +35,53 @@ $(function () {
             $("a[href='#SettingsOrg']").click().tab("show");
         }
     });
+    $("#tab-area > ul.nav-tabs > li > a").on('shown', function (e) {
+        var qid = "";
+        switch ($(this).text()) {
+            case "Members":
+                qid = $("#currentQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.current-list").show();
+                break;
+            case "Previous":
+                qid = $("#previousQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.orgcontext").hide();
+                break;
+            case "Pending":
+                qid = $("#pendingQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.orgcontext").hide();;
+                $("li.pending-list").show();
+                break;
+            case "Inactive":
+            case "Senders":
+                qid = $("#inactiveQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.orgcontext").hide();
+                break;
+            case "Prospects":
+                qid = $("#prospectsQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.orgcontext").hide();
+                break;
+            case "Guests":
+                qid = $("#visitedQid").val();
+                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                $("li.orgcontext").hide();
+                break;
+            case "Settings":
+            case "Meetings":
+                $("#bluetoolbarstop li > a.qid").parent().addClass("hidy");
+                break;
+        }
+        if (qid) {
+            $("#bluetoolbarstop a.qid").each(function () {
+                $(this).attr("href", this.href.replace(/(.*\/)([^\/?]*)(\?[^?]*)?$/mg, "$1" + qid + "$3"));
+            });
+        }
+    });
 
-    /*
-        $("#main-tab").tabs({
-          activate: function(event, ui) {
-            var qid = "";
-    
-            switch ($(ui.newTab[0]).text()) {
-                case "Members":
-                    qid = $("#currentQid").val();
-                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                    $("li.current-list").show();
-                    break;
-                case "Previous":
-                    qid = $("#previousQid").val();
-                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                    $("li.orgcontext").hide();
-                    break;
-                case "Pending":
-                    qid = $("#pendingQid").val();
-                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                    $("li.orgcontext").hide();;
-                    $("li.pending-list").show();
-                    break;
-                case "Inactive":
-                case "Senders":
-                    qid = $("#inactiveQid").val();
-                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                    $("li.orgcontext").hide();
-                    break;
-                case "Prospects":
-                    qid = $("#prospectsQid").val();
-                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                    $("li.orgcontext").hide();
-                    break;
-                case "Guests":
-                    qid = $("#visitedQid").val();
-                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                    $("li.orgcontext").hide();
-                    break;
-                case "Settings":
-                case "Meetings":
-                    $("#bluetoolbarstop li > a.qid").parent().addClass("hidy");
-                    break;
-            }
-            if (qid) {
-                $("#bluetoolbarstop a.qid").each(function() {
-                    $(this).attr("href", this.href.replace(/(.*\/)([^\/?]*)(\?[^?]*)?$/mg, "$1" + qid + "$3"));
-                });
-            }
-          }
-        });
-    */
-    //    $("#main-tab").show();
     $('#deleteorg').click(function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
@@ -297,13 +291,18 @@ $(function () {
             });
         };
         */
-    $.showHideRegTypes = function (f) {
-        $("#Settings-tab").tabs('option', 'disabled', []);
+    $.InitFunctions.showHideRegTypes = function (f) {
+        $("#Fees-tab").show();
+        $("#Questions-tab").show();
+        $("#Messages-tab").show();
+
         $("#QuestionList li").show();
         $(".yes6").hide();
         switch ($("#org_RegistrationTypeId").val()) {
             case "0":
-                $("#Settings-tab").tabs('option', 'disabled', [3, 4, 5]);
+                $("#Fees-tab").hide();
+                $("#Questions-tab").hide();
+                $("#Messages-tab").hide();
                 break;
             case "6":
                 $("#QuestionList > li").hide();
@@ -311,8 +310,8 @@ $(function () {
                 break;
         }
     };
-    $("#org_RegistrationTypeId").live("change", $.showHideRegTypes);
-    $.showHideRegTypes();
+    $("#org_RegistrationTypeId").live("change", $.InitFunctions.showHideRegTypes);
+
     $("a.displayedit,a.displayedit2").live('click', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
@@ -344,6 +343,7 @@ $(function () {
         });
         return false;
     });
+
     $('#selectquestions a').live("click", function (ev) {
         ev.preventDefault();
         $.post('/Organization/NewAsk/', { id: 'AskItems', type: $(this).attr("type") }, function (ret) {
@@ -356,6 +356,7 @@ $(function () {
         });
         return false;
     });
+
     $("ul.enablesort a.del").live("click", function (ev) {
         ev.preventDefault();
         if (!$(this).attr("href"))
@@ -363,16 +364,18 @@ $(function () {
         $(this).parent().parent().parent().remove();
         return false;
     });
+
     $("ul.enablesort a.delt").live("click", function (ev) {
         ev.preventDefault();
         if (!$(this).attr("href"))
             return false;
         if (confirm("are you sure?")) {
             $(this).parent().parent().remove();
-            $.updateQuestionList();
+            $.InitFunctions.updateQuestionList();
         }
         return false;
     });
+
     $.exceptions = [
         "AskDropdown",
         "AskCheckboxes",
@@ -381,7 +384,7 @@ $(function () {
         "AskInstruction",
         "AskMenu"
     ];
-    $.updateQuestionList = function () {
+    $.InitFunctions.updateQuestionList = function () {
         $("#selectquestions li").each(function () {
             var type = this.className;
             var text = $(this).text();
@@ -393,7 +396,9 @@ $(function () {
                 $(this).html("<span>" + text + "</span>");
         });
     };
+
     $(".helptip").tooltip({ showBody: "|", blocked: true });
+
     $("form.DisplayEdit a.submitbutton").live('click', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
@@ -413,6 +418,7 @@ $(function () {
         });
         return false;
     });
+
     $("#future").live('click', function () {
         var f = $(this).closest('form');
         var q = f.serialize();
@@ -421,17 +427,21 @@ $(function () {
             $(".bt", f).button();
         });
     });
+
     $("input[name='showHidden']").live('click', function () {
         $.formAjaxClick($(this));
     });
     $("#Future").live('click', function () {
         $.formAjaxClick($(this));
     });
+
+    /*
     $("form.DisplayEdit").submit(function () {
         if (!$("#submitit").val())
             return false;
         return true;
     });
+*/
     $('a.taguntag').live("click", function (ev) {
         ev.preventDefault();
         $.post('/Organization/ToggleTag/' + $(this).attr('pid'), null, function (ret) {
@@ -481,15 +491,15 @@ $(function () {
         }
     });
 
-    $.getTable = function (f) {
-        var q = f.serialize();
-        $.post(f.attr('action'), q, function (ret) {
-            $(f).html(ret).ready(function () {
-                $("select.tip,input.tip").tooltip({ opacity: 0, showBody: "|" });
-            });
-        });
-        return false;
-    };
+//    $.getTable = function (f) {
+//        var q = f.serialize();
+//        $.post(f.attr('action'), q, function (ret) {
+//            $(f).html(ret).ready(function () {
+//                $("select.tip,input.tip").tooltip({ opacity: 0, showBody: "|" });
+//            });
+//        });
+//        return false;
+//    };
     $("#namefilter").keypress(function (e) {
         if ((e.keyCode || e.which) == 13) {
             e.preventDefault();
@@ -497,6 +507,7 @@ $(function () {
         }
         return true;
     });
+
     $("#addsch").live("click", function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
@@ -511,6 +522,7 @@ $(function () {
         }
         return false;
     });
+
     $("a.deleteschedule").live("click", function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
@@ -519,6 +531,7 @@ $(function () {
             $.renumberListItems();
         }
     });
+
     $.renumberListItems = function () {
         var i = 1;
         $(".renumberMe").each(function () {
@@ -652,6 +665,7 @@ $(function () {
         }
         return { date: d, time: t, valid: v };
     };
+
     $('a.joinlink').live('click', function (ev) {
         ev.preventDefault();
         var a = $(this);
@@ -666,6 +680,20 @@ $(function () {
             }
         });
         return false;
+    });
+
+    $("#divisionlist").live("click", function (ev) {
+        ev.preventDefault();
+        $("<div class='modal fade hide' />").load($(this).attr("href"), function() {
+            var modal = $(this);
+            modal.modal("show");
+//            modal.on('shown', function () {
+//                modal.find("textarea").focus();
+//            });
+            modal.on('hidden', function () {
+                $(this).remove();
+            });
+        });
     });
     /*
         $('#divisionsDialog').dialog({
@@ -786,6 +814,7 @@ $(function () {
             });
         return false;
     });
+
     // Add for ministrEspace
     /*
     var submitDialog = $("#dialogHolder").dialog({ modal: true, width: 'auto', title: 'Select ministrEspace Event', autoOpen: false });
@@ -809,7 +838,7 @@ $(function () {
         if (!a)
             return false;
         var $form = a.closest("form.ajax");
-        if($form.length)
+        if ($form.length)
             $.formAjaxClick(a);
         return false;
     };

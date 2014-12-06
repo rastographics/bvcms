@@ -44,12 +44,14 @@
                 success: function (data, status) {
                     d.addClass("loaded");
                     d.html(data).ready(function () {
-                        if ($form.data("init")) {
+                        if (d.data("init"))
+                            $.InitFunctions[d.data("init")]();
+                        if (d.data("init2"))
+                            $.InitFunctions[d.data("init2")]();
+                        if ($form.data("init"))
                             $.InitFunctions[$form.data("init")]();
-                        }
-                        if ($form.data("init2")) {
+                        if ($form.data("init2"))
                             $.InitFunctions[$form.data("init2")]();
-                        }
                     });
                 },
                 error: function (data, status) {
@@ -98,7 +100,7 @@
     });
     $.formAjaxClick = function (a, link) {
         var $form = a.closest("form.ajax");
-        var $tab = $form.closest("div.tab-pane");
+        var $tablink = $form.closest("div.tab-pane");
         var ahref = a.attr("href");
         if (ahref === '#')
             ahref = null;
@@ -106,7 +108,7 @@
             || a.data("link")
             || ahref
             || $form[0].action
-            || $tab.data("link");
+            || $tablink.data("link");
 
         if (a.data("size"))
             $("input[name='PageSize']", $form).val(a.data("size"));
@@ -120,6 +122,7 @@
             $("input[name='sgFilter']", $form).val('');
             $("input[name='nameFilter']", $form).val('');
         }
+        var $tabinit = $form.closest("div.tab-pane[data-init]");
 
         var data = $form.serialize();
         if (data.length === 0)
@@ -147,11 +150,14 @@
                         var results = $($form.data("results") || $form);
                         results.replaceWith(ret).ready(function () {
                             $.AttachFormElements();
+                            if ($tabinit.data("init"))
+                                $.InitFunctions[$tabinit.data("init")]();
+                            if ($tabinit.data("init2")) 
+                                $.InitFunctions[$tabinit.data("init2")]();
                             if ($form.data("init"))
                                 $.InitFunctions[$form.data("init")]();
-                            if ($form.data("init2")) {
+                            if ($form.data("init2"))
                                 $.InitFunctions[$form.data("init2")]();
-                            }
                             if (a.data("callback"))
                                 $.InitFunctions[a.data("callback")]();
                         });

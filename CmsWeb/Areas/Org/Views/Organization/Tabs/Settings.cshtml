@@ -1,12 +1,26 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
 <ul class="nav nav-tabs subnav" data-tabparent="Settings-tab">
-  <li class="active"><a href="#General" data-toggle="tab">General</a></li>
-  <li><a href="#Attendance" data-toggle="tab">Attendance</a></li>
-  <li><a href="#Registration" data-toggle="tab">Registration</a></li>
-  <li><a href="#Fees" data-toggle="tab">Fees</a></li>
-  <li><a href="#Questions" data-toggle="tab">Questions</a></li>
-  <li><a href="#Messages" data-toggle="tab">Messages</a></li>
-  <li><a href="#ExtraValues" data-toggle="tab">Extra Values</a></li>
+  <li class="active">
+    <a href="#General" data-toggle="tab">General</a>
+  </li>
+  <li>
+    <a href="#Attendance" data-toggle="tab">Attendance</a>
+  </li>
+  <li>
+    <a href="#Registration" data-toggle="tab">Registration</a>
+  </li>
+  <li id="Fees-tab">
+    <a href="#Fees" data-toggle="tab">Fees</a>
+  </li>
+  <li id="Questions-tab">
+    <a href="#Questions" data-toggle="tab">Questions</a>
+  </li>
+  <li id="Messages-tab">
+    <a href="#Messages" data-toggle="tab">Messages</a>
+  </li>
+  <li>
+    <a href="#ExtraValues" data-toggle="tab">Extra Values</a>
+  </li>
 </ul>
 <div class="tab-content">
   <div id="General" class="tab-pane settings active">

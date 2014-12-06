@@ -11,6 +11,7 @@ using System.Data.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Reports.Models;
 using UtilityExtensions;
 using System.Data.Linq.SqlClient;
 using System.Web.UI.WebControls;
@@ -18,9 +19,9 @@ using System.Text.RegularExpressions;
 
 namespace CmsWeb.Models
 {
-    public class SearchDivisionsModel
+    public class SearchDivisionsModel : PagedTableModel<Division, DivInfo>
     {
-        public string name {get; set;}
+        public string name { get; set; }
         public int maxitems { get; set; }
         public int count { get; set; }
         public int listcount { get; set; }
@@ -31,51 +32,8 @@ namespace CmsWeb.Models
 
         public SearchDivisionsModel()
         {
-            maxitems = 15;
-        }
-        private IQueryable<Division> divisions;
-        public IQueryable<Division> FetchDivisions()
-        {
-            if (divisions != null)
-                return divisions;
-
-            divisions = DbUtil.Db.Divisions.AsQueryable();
-            if (name.HasValue())
-            {
-                    if (name.AllDigits())
-                        divisions = from d in divisions
-                                where d.Id == name.ToInt()
-                                select d;
-                    else
-                        divisions = from d in divisions
-                                where d.Name.Contains(name)
-                                select d;
-            }
-            return divisions;
-        }
-        
-        public List<DivInfo> DivisionList()
-        {
-            var divs = FetchDivisions();
-
-            var list = new List<DivInfo>();
-            if (!singlemode)
-            {
-                list = CheckedDivisionList(
-                        from dd in DbUtil.Db.DivOrgs
-                        where dd.OrgId == id
-                        orderby dd.Id ?? 99 // puts null values at end
-                        select dd.Division).ToList();
-                var ids = list.Select(p => p.DivId).ToArray();
-                topid = ids.FirstOrDefault();
-                // filter out checked ones
-                divs = divs.Where(d => !ids.Contains(d.Id));
-            }
-            count = divs.Count() + list.Count;
-            divs = divs.OrderBy(d => d.Program.Name).ThenBy(d => d.Name);
-            list.AddRange(DivisionList(divs).Take(maxitems));
-            listcount = list.Count;
-            return list;
+            PageSize = 10;
+            ShowPageSize = false;
         }
         private IEnumerable<DivInfo> CheckedDivisionList(IQueryable<Division> query)
         {
@@ -98,13 +56,57 @@ namespace CmsWeb.Models
                     };
             return q;
         }
-        public class DivInfo
+
+        public override IQueryable<Division> DefineModelList()
         {
-            public int DivId { get; set; }
-            public string Name { get; set; }
-            public string Program { get; set; }
-            public string Programs { get; set; }
-            public bool IsChecked { get; set; }
+            var divisions = DbUtil.Db.Divisions.AsQueryable();
+            if (name.HasValue())
+            {
+                if (name.AllDigits())
+                    divisions = from d in divisions
+                                where d.Id == name.ToInt()
+                                select d;
+                else
+                    divisions = from d in divisions
+                                where d.Name.Contains(name)
+                                select d;
+            }
+            return divisions;
         }
+
+        public override IQueryable<Division> DefineModelSort(IQueryable<Division> q)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<DivInfo> DefineViewList(IQueryable<Division> q)
+        {
+            var list = new List<DivInfo>();
+            if (!singlemode)
+            {
+                list = CheckedDivisionList(
+                        from dd in DbUtil.Db.DivOrgs
+                        where dd.OrgId == id
+                        orderby dd.Id ?? 99 // puts null values at end
+                        select dd.Division).ToList();
+                var ids = list.Select(p => p.DivId).ToArray();
+                topid = ids.FirstOrDefault();
+                // filter out checked ones
+                q = q.Where(d => !ids.Contains(d.Id));
+            }
+            count = q.Count() + list.Count;
+            q = q.OrderBy(d => d.Program.Name).ThenBy(d => d.Name);
+            list.AddRange(DivisionList(q).Take(maxitems));
+            listcount = list.Count;
+            return list;
+        }
+    }
+    public class DivInfo
+    {
+        public int DivId { get; set; }
+        public string Name { get; set; }
+        public string Program { get; set; }
+        public string Programs { get; set; }
+        public bool IsChecked { get; set; }
     }
 }
