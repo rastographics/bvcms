@@ -898,10 +898,12 @@
     <Content Include="Scripts\touchpoint\bootstrap-sweetalert\sweet-alert.min.js" />
     <Content Include="Scripts\select2-3.5.2\select2.min.js" />
     <Content Include="Scripts\touchpoint\jquery-blockUI\jquery.blockUI.js" />
+    <Content Include="Scripts\touchpoint\js\dialog\search-users.js" />
     <Content Include="Scripts\touchpoint\js\form-ajax.js" />
     <Content Include="Scripts\touchpoint\js\main.js" />
     <Content Include="Scripts\touchpoint\js\search\people-search.js" />
     <Content Include="Scripts\touchpoint\js\search\search-add.js" />
+    <Content Include="Scripts\touchpoint\js\tags.js" />
     <Content Include="Scripts\touchpoint\velocity\velocity.min.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
@@ -1580,6 +1582,11 @@
     <Content Include="Views\Shared\PagerTop.cshtml" />
     <Content Include="Views\Shared\PagerBottom.cshtml" />
     <Content Include="Views\Shared\Pagination.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Toolbar.touch.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Email.touch.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Reports.touch.cshtml" />
+    <Content Include="Views\Shared\Toolbar\Gear.touch.cshtml" />
+    <Content Include="Views\Shared\Toolbar\GearStandard.touch.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

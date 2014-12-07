@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Models.TagsModel
-<select name="tag" id="tag">
+<select name="tag" id="tag" class="form-control">
 @foreach (var t in Model.Tags())
 {
     var selecteditem = t.Id == Model.CurrentTagId ? "selected='true'" : "";

@@ -25,10 +25,12 @@
                     @Html.Partial("Menu/Reports")
                     @Html.Partial("Menu/Admin")
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
+                <ul id="tagstop" class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tag"></i>&nbsp;&nbsp;<span class="visible-lg-inline visible-xs-inline">@Util2.CurrentTagName</span> <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="currentTag username"><i class="fa fa-tag"></i>&nbsp;&nbsp;<span id="current-tag1">@Util2.CurrentTagName</span></span> <span class="caret"></span>
+                        </a>
+                        <ul id="tagdropdown" class="dropdown-menu">
                             <li><a href="/Tags"><b><i id="current-tag2">@Util2.CurrentTagName</i></b></a></li>
                             <li><a id="cleartag" href="/Tags/ClearTag"><i>Empty Active Tag</i></a></li>
                             @{
