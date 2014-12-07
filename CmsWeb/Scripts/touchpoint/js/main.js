@@ -17,7 +17,10 @@ $.block = function () {
     initializeLoading();
 };
 $.unblock = function () {
-    $.unblockUI();
+    setTimeout(function () {
+        $.unblockUI();
+    }, 500);
+    
 };
 function initializeLoading() {
     $("#loading").velocity({ scale: "75%" }, { duration: 1150, easing: [300, 8] });
