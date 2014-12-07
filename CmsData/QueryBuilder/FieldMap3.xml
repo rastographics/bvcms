@@ -110,6 +110,9 @@
     <FamHasPrimAdultChurchMemb Title="Family Has Primary Adult Church Member" Type="Bit" DataValueField="IdCode">
       Select True or False for families with a Primary Adult who is a member of the church.
     </FamHasPrimAdultChurchMemb>
+    <FamHasStatusFlag Title="Family Member Has Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">
+      Select True or False for families with a member having a StatusFlag.
+    </FamHasStatusFlag>
     <FamilyId Title="Family" Type="Integer">
       Enter a Family ID number and select a comparison.
     </FamilyId>
