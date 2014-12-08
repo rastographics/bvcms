@@ -1,7 +1,7 @@
 ﻿@using CmsData
-@model IEnumerable<Division>
+@model IEnumerable<CmsData.View.SearchDivision>
 <div style="border: 1px dotted grey;padding:4px">
-@if (Model.Count() == 0)
+@if (!Model.Any())
 {
     <div>choose divisions</div>
 }
@@ -9,10 +9,10 @@
 {
     if (d.Program != null)
     {
-    <div>@d.Program.Name&mdash;@d.Name</div>
+    <div>@d.Program&mdash;@d.Division</div>
     }
     else
     {
-    <div>(no program)&mdash;@d.Name</div>
+    <div>(no program)&mdash;@d.Division</div>
     }
 }</div>

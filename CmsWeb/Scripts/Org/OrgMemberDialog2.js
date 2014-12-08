@@ -12,7 +12,7 @@
             if (confirmed) {
                 $.post(href, null, function(ret) {
                     f.modal("hide");
-                    self.parent.RebindMemberGrids();
+                    $.RebindMemberGrids();
                 });
             }
         });
@@ -32,7 +32,7 @@
             if (confirmed) {
                 $.post(href, null, function(ret) {
                     f.modal("hide");
-                    self.parent.RebindMemberGrids();
+                    $.RebindMemberGrids();
                 });
             }
         });

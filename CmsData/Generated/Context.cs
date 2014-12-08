@@ -2831,6 +2831,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.SearchDivisions", IsComposable = true)]
+		public IQueryable< View.SearchDivision > SearchDivisions(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="varchar")] string name
+            )
+		{
+			return this.CreateMethodCallQuery< View.SearchDivision>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                name
+                );
+		}
+
 		[Function(Name="dbo.Split", IsComposable = true)]
 		public IQueryable< View.Split > Split(
             [Parameter(DbType="nvarchar")] string InputText,

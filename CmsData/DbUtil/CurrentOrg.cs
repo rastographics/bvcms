@@ -13,15 +13,8 @@ namespace CmsData
     {
         public int? Id { get; set; }
         public string NameFilter { get; set; }
-        public string First { get; set; }
-        public string Last { get; set; }
         public string SgFilter { get; set; }
         public bool ShowHidden { get; set; }
-
-        public bool IsFiltered
-        {
-            get { return SgFilter.HasValue() || NameFilter.HasValue(); }
-        }
     }
 
     public static class CurrentOrgExtensions

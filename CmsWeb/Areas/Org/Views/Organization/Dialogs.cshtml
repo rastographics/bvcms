@@ -1,11 +1,9 @@
 ﻿@using CmsData
-@using CmsWeb
 @model CmsWeb.Areas.Org.Models.OrganizationModel
 @{
   var o = Model.Org;
 }
 <div id="dialogHolder"></div>
-<form id='member-dialog' class='modal fade hide validate ajax form-horizontal' method='POST' data-backdrop='static' data-width='600'></form>
 <div id="NewMeetingDialog" class="roundbox" style="display: none">
   <table>
     <tr>
@@ -80,55 +78,11 @@
     </tr>
   </table>
 </div>
-<div id="memberDialog">
-  <iframe id="memberDialogiframe" style="width: 100%; height: 99%; border-width: 0;"></iframe>
-</div>
-<div id="FilterGroups" class="modalDiv" style="display: none;">
-  <form action="">
-    <div>
-      <b>Name Filter</b>
-    </div>
-    <div>
-      First and last name or just last name. You can put just the first few letters of
-      each. PeopleId works too. <i class="blue">(the name filter does not work with blue toolbar functions)</i>
-    </div>
-    <input id="namefilter" name="namefilter" type="text" />
-    <hr />
-    <div>
-      <b>Small Group Prefix</b>
-    </div>
-    <div>
-      Match on the first few letters of a small group. Lead with - to eliminate. Comma separate for more.
-    </div>
-    <input id="sgprefix" name="sgprefix" type="text" />
-    <hr />
-    <div>
-      <b>Small Group Filter</b>
-    </div>
-    <div>
-      <label>@Html.RadioButton("selectmode", "0") Match Any</label>
-      <label>@Html.RadioButton("selectmode", "1") Match All</label>
-    </div>
-    <div>
-      Select multiple items by holding down the control key (individual) or shift key
-      (range) while you click. Select (not specified) to cancel the filter.
-    </div>
-    <select id="smallgrouplist" name="smallgrouplist" multiple="multiple" size="10">
-      @foreach (var s in Model.SmallGroups())
-      {
-        <option @(s.Selected ? "selected='selected'" : "") value="@s.Value">@s.Text</option>
-      }
-    </select>
-  </form>
-</div>
 <div id="AddFromTag">
   <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>
 </div>
 <div id="LongRunOp">
   <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>
-</div>
-<div id="division-dialog">
-  @*        <iframe id="searchdivisions" style="width: 100%; height: 99%; border-width: 0;"></iframe>*@
 </div>
 <div id="orgsDialog">
   <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>

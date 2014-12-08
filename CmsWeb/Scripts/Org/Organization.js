@@ -178,7 +178,7 @@ $(function () {
                 background: "black"
             }, close: function () {
                 $('iframe', this).attr("src", "");
-                RebindMemberGrids();
+                $.RebindMemberGrids();
             }
         });
     */
@@ -201,7 +201,7 @@ $(function () {
                 background: "black"
             }, close: function () {
                 $('iframe', this).attr("src", "");
-                RebindMemberGrids();
+                $.RebindMemberGrids();
                 $.updateTable($('#Meetings-tab form'));
             }
         });
@@ -224,7 +224,6 @@ $(function () {
         return false;
     });
 
-
     $('a.addmembers').live("click", function (e) {
         e.preventDefault();
         var d = $('#memberDialog');
@@ -243,14 +242,38 @@ $(function () {
 
     $("a.membertype").live("click", function (ev) {
         ev.preventDefault();
-        var href = this.href;
-        $("#member-dialog").css({ 'margin-top': '', 'top': '' })
-            .load(href, {}, function () {
-                $(this).modal("show");
-                $(this).on('hidden', function () {
-                    $(this).empty();
-                });
+        $("<div />").load(this.href, {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
             });
+        });
+    });
+    $("#divisionlist").live("click", function (ev) {
+        ev.preventDefault();
+        var a = $(this);
+        $("<div />").load(a.attr("href"), {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            f.on('hidden', function () {
+                a.load(a.data("refresh"), {});
+                d.remove();
+                f.remove();
+            });
+            f.on("change", "input:checkbox", function () {
+                $("input[name='TargetDivision']", f).val($(this).val());
+                $("input[name='Adding']", f).val($(this).is(":checked"));
+                $.formAjaxClick($(this), "/SearchDivisions/AddRemoveDiv");
+            });
+            f.on("click", "a.move", function () {
+                $("input[name='TargetDivision']", f).val($(this).data("moveid"));
+                $.formAjaxClick($(this), "/SearchDivisions/MoveToTop");
+            });
+        });
     });
 
     $.maxZIndex = $.fn.maxZIndex = function (opt) {
@@ -312,38 +335,38 @@ $(function () {
     };
     $("#org_RegistrationTypeId").live("change", $.InitFunctions.showHideRegTypes);
 
-    $("a.displayedit,a.displayedit2").live('click', function (ev) {
-        ev.preventDefault();
-        var f = $(this).closest('form');
-        $.post($(this).attr('href'), null, function (ret) {
-            $(f).html(ret).ready(function () {
-                //                $.initDatePicker(f);
-                //                $(".submitbutton,.bt", f).button();
-                $(".roundbox select", f).css("width", "100%");
-                //                $("#schedules", f).sortable({ stop: $.renumberListItems });
-                $("#editor", f);
-                $.regsettingeditclick(f);
-                //                $.showHideRegTypes();
-                $.updateQuestionList();
-                //                $("#selectquestions").dialog({
-                //                    title: "Add Question",
-                //                    autoOpen: false,
-                //                    width: 550,
-                //                    height: 250,
-                //                    modal: true
-                //                });
-                //                $('a.AddQuestion').click(function (ev) {
-                //                    var d = $('#selectquestions');
-                //                    d.dialog("open");
-                //                    ev.preventDefault();
-                //                    return false;
-                //                });
-                $(".helptip").tooltip({ showBody: "|" });
-            });
-        });
-        return false;
-    });
-
+    //    $("a.displayedit,a.displayedit2").live('click', function (ev) {
+    //        ev.preventDefault();
+    //        var f = $(this).closest('form');
+    //        $.post($(this).attr('href'), null, function (ret) {
+    //            $(f).html(ret).ready(function () {
+    //                //                $.initDatePicker(f);
+    //                //                $(".submitbutton,.bt", f).button();
+    //                $(".roundbox select", f).css("width", "100%");
+    //                //                $("#schedules", f).sortable({ stop: $.renumberListItems });
+    //                $("#editor", f);
+    //                $.regsettingeditclick(f);
+    //                //                $.showHideRegTypes();
+    //                $.updateQuestionList();
+    //                //                $("#selectquestions").dialog({
+    //                //                    title: "Add Question",
+    //                //                    autoOpen: false,
+    //                //                    width: 550,
+    //                //                    height: 250,
+    //                //                    modal: true
+    //                //                });
+    //                //                $('a.AddQuestion').click(function (ev) {
+    //                //                    var d = $('#selectquestions');
+    //                //                    d.dialog("open");
+    //                //                    ev.preventDefault();
+    //                //                    return false;
+    //                //                });
+    //                $(".helptip").tooltip({ showBody: "|" });
+    //            });
+    //        });
+    //        return false;
+    //    });
+    //
     $('#selectquestions a').live("click", function (ev) {
         ev.preventDefault();
         $.post('/Organization/NewAsk/', { id: 'AskItems', type: $(this).attr("type") }, function (ret) {
@@ -428,12 +451,12 @@ $(function () {
         });
     });
 
-    $("input[name='showHidden']").live('click', function () {
-        $.formAjaxClick($(this));
-    });
-    $("#Future").live('click', function () {
-        $.formAjaxClick($(this));
-    });
+    //    $("input[name='showHidden']").live('click', function () {
+    //        $.formAjaxClick($(this));
+    //    });
+    //    $("#Future").live('click', function () {
+    //        $.formAjaxClick($(this));
+    //    });
 
     /*
     $("form.DisplayEdit").submit(function () {
@@ -491,15 +514,15 @@ $(function () {
         }
     });
 
-//    $.getTable = function (f) {
-//        var q = f.serialize();
-//        $.post(f.attr('action'), q, function (ret) {
-//            $(f).html(ret).ready(function () {
-//                $("select.tip,input.tip").tooltip({ opacity: 0, showBody: "|" });
-//            });
-//        });
-//        return false;
-//    };
+    //    $.getTable = function (f) {
+    //        var q = f.serialize();
+    //        $.post(f.attr('action'), q, function (ret) {
+    //            $(f).html(ret).ready(function () {
+    //                $("select.tip,input.tip").tooltip({ opacity: 0, showBody: "|" });
+    //            });
+    //        });
+    //        return false;
+    //    };
     $("#namefilter").keypress(function (e) {
         if ((e.keyCode || e.which) == 13) {
             e.preventDefault();
@@ -682,19 +705,6 @@ $(function () {
         return false;
     });
 
-    $("#divisionlist").live("click", function (ev) {
-        ev.preventDefault();
-        $("<div class='modal fade hide' />").load($(this).attr("href"), function() {
-            var modal = $(this);
-            modal.modal("show");
-//            modal.on('shown', function () {
-//                modal.find("textarea").focus();
-//            });
-            modal.on('hidden', function () {
-                $(this).remove();
-            });
-        });
-    });
     /*
         $('#divisionsDialog').dialog({
             title: 'Select Divisions Dialog',

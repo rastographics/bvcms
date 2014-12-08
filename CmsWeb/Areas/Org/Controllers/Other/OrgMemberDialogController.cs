@@ -4,8 +4,6 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Code;
-using CmsWeb.Models;
-using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -74,10 +72,9 @@ namespace CmsWeb.Areas.Org.Controllers
             var mm = new OrgMemberMoveModel { OrgId = oid, PeopleId = pid };
             return View(mm);
         }
-        [HttpPost, Route("OrgMemberDialog2/MoveResults/{page}")]
-        public ActionResult MoveResults(int page, OrgMemberMoveModel m)
+        [HttpPost, Route("OrgMemberDialog2/MoveResults")]
+        public ActionResult MoveResults(OrgMemberMoveModel m)
         {
-            m.Page = page;
             return View("Move", m);
         }
         [HttpPost, Route("OrgMemberDialog2/MoveSelect/{oid:int}/{pid:int}/{toid:int}")]

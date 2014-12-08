@@ -85,7 +85,9 @@
         $form.attr("action", a[0].href);
         $form.submit();
     };
-
+    $("form.ajax input.ajax").live('click', function() {
+        $.formAjaxClick($(this));
+    });
     $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();
         var t = $(this);
@@ -101,6 +103,7 @@
     $.formAjaxClick = function (a, link) {
         var $form = a.closest("form.ajax");
         var $tablink = $form.closest("div.tab-pane");
+        var $modalbody = a.closest("div.modal-body");
         var ahref = a.attr("href");
         if (ahref === '#')
             ahref = null;
@@ -108,7 +111,9 @@
             || a.data("link")
             || ahref
             || $form[0].action
-            || $tablink.data("link");
+            || $tablink.data("link")
+            || $modalbody.data("target") 
+            || '#';
 
         if (a.data("size"))
             $("input[name='PageSize']", $form).val(a.data("size"));

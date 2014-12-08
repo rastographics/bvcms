@@ -35,5 +35,11 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.LogActivity("Update OrgMain {0}".Fmt(m.Org.OrganizationName));
             return PartialView("Settings/Main", m);
         }
+
+        [HttpPost]
+        public ActionResult DivisionList(int id)
+        {
+            return View("Other/DivisionList", OrganizationModel.Divisions(id));
+        }
     }
 }

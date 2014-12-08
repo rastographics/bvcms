@@ -23,33 +23,34 @@
     });
     $("a.editaddr").live("click", function (ev) {
         ev.preventDefault();
-        $("#edit-address").css({ "margin-top": "", "top": "" })
-            .load($(this).attr("href"), {}, function () {
-                var modal = $(this);
-                modal.modal("show");
-                modal.on('hidden', function () {
-                    $(this).empty();
-                });
-                modal.on("click", "a.clear-address", function () {
-                    $("#AddressLineOne").val("");
-                    $("#AddressLineTwo").val("");
-                    $("#CityName").val("");
-                    $("#ZipCode").val("");
-                    $("#BadAddress").prop('checked', false); ;
-                    $("#StateCode_Value").val("");
-                    $("#StateCode_Value").trigger("chosen:updated");
-                    $("#ResCode_Value").val("0");
-                    $("#ResCode_Value").trigger("chosen:updated");
-                    $("#Country_Value").val("United States");
-                    $("#FromDt").val("");
-                    $("#ToDt").val("");
-                });
-                modal.on("click", "a.close-saved-address", function () {
-                    $.post($(this).attr("href"), {}, function (ret) {
-                        $("#profile-header").html(ret).ready(SetProfileEditable);
-                    });
+        $("<div />").load($(this).attr("href"), {}, function() {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            f.on('hidden', function() {
+                d.remove();
+                f.remove();
+            });
+            f.on("click", "a.clear-address", function() {
+                $("#AddressLineOne").val("");
+                $("#AddressLineTwo").val("");
+                $("#CityName").val("");
+                $("#ZipCode").val("");
+                $("#BadAddress").prop('checked', false);;
+                $("#StateCode_Value").val("");
+                $("#StateCode_Value").trigger("chosen:updated");
+                $("#ResCode_Value").val("0");
+                $("#ResCode_Value").trigger("chosen:updated");
+                $("#Country_Value").val("United States");
+                $("#FromDt").val("");
+                $("#ToDt").val("");
+            });
+            f.on("click", "a.close-saved-address", function() {
+                $.post($(this).attr("href"), {}, function(ret) {
+                    $("#profile-header").html(ret).ready(SetProfileEditable);
                 });
             });
+        });
     });
     $("a.personal-picture, a.family-picture").live("click", function (ev) {
         ev.preventDefault();
@@ -114,14 +115,16 @@
             });
         });
     });
-    $("form.ajax a.membertype").live("click", function (ev) {
+    $("a.membertype").live("click", function (ev) {
         ev.preventDefault();
-        var href = this.href;
-        $("#member-dialog").css({ 'margin-top': '', 'top': '' })
-            .load(href, {}, function () {
-                $(this).modal("show");
-                $(this).on('hidden', function () {
-                    $(this).empty();
+        var $a = $(this);
+        $("<div />").load(this.href, {}, function () {
+                var d = $(this);
+                var f = d.find("form");
+                f.modal("show");
+                f.on('hidden', function () {
+                    d.remove();
+                    f.remove();
                 });
             });
     });
@@ -297,12 +300,13 @@ function AddSelected(ret) {
             window.location = "/Merge/{0}/{1}".format(ret.pid, ret.pid2);
             break;
     }
+    $.RebindMemberGrids = function () {
+        $("#refresh-current").click();
+        $("#refresh-pending").click();
+        $("#refresh-previous").click();
+    }
 }
 
-function RebindMemberGrids() {
-    $("#refresh-current").click();
-    $("#refresh-pending").click();
-}
 function RebindUserInfoGrid() {
     $.updateTable($('#user-tab form'));
     $("#memberDialog").dialog('close');

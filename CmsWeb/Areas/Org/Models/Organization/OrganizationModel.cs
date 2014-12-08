@@ -5,7 +5,9 @@ using System.Text;
 using System.Web;
 using CmsData;
 using System.Web.Mvc;
+using CmsData.ExtraValue;
 using CmsData.Registration;
+using CmsData.View;
 using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
@@ -130,11 +132,12 @@ namespace CmsWeb.Areas.Org.Models
             var q = new SelectList(Schedules.OrderBy(cc => cc.Id), "ValueNext", "Display");
             return q;
         }
-        public IEnumerable<Division> Divisions()
+        public static IEnumerable<SearchDivision> Divisions(int? id)
         {
-            var q = from d in Org.DivOrgs
-                    orderby d.Id ?? 99
-                    select d.Division;
+            var q = from d in DbUtil.Db.SearchDivisions(id, null)
+                where d.IsChecked == true                
+                orderby d.IsMain descending, d.IsChecked descending, d.Program, d.Division
+                select d;
             return q;
         }
 

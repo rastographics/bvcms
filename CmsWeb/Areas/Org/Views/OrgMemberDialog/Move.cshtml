@@ -5,11 +5,12 @@
     <h4>@Model.OrgName</h4>
     <h5>Moving @Model.Name</h5>
 </div>
-<div class="modal-body">
+<div class="modal-body" data-target="/OrgMemberDialog2/MoveResults">
+    @Html.HiddenFor2(m => m.Page)
     @Html.HiddenFor(m => m.OrgId)
     @Html.HiddenFor(m => m.PeopleId)
     @Html.TextBox("OrgSearch")
-    <a id="orgsearchbtn" href="/OrgMemberDialog2/MoveResults/1" class="btn ajax">Search for Organization</a>
+    <a id="orgsearchbtn" href="#" class="btn ajax">Search for Organization</a>
     <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("MoveOrgMember")'>help</a>
     <div class="alert alert-info margin-top">Click a Name below to Select an Organization to Move to</div>
     @if (Model.Count() > 10)

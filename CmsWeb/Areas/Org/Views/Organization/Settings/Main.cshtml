@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb.Areas.Org.Models
+@using UtilityExtensions
 @using CmsWeb
 @model CmsWeb.Areas.Org.Models.OrganizationModel
 @{ var o = Model.Org; }
@@ -19,8 +20,8 @@
     <tr class="helptip" title="Divisions|use this link to manage the divisions this organization belongs to|a dialog box will pop up">
       <th class="right">Divisions:</th>
       <td colspan="2">
-        <a id="divisionlist" href="/SearchDivisions/@Model.Id?ordered=true">
-          @Html.Partial("Other/DivisionList", Model.Divisions())
+        <a id="divisionlist" href="/SearchDivisions/@Model.Id" data-refresh="/Organization/DivisionList/@Model.Id">
+          @Html.Partial("Other/DivisionList", OrganizationModel.Divisions(Model.Id))
         </a>
       </td>
     </tr>

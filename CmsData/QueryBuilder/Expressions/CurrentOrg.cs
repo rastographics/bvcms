@@ -18,11 +18,9 @@ namespace CmsData
         internal Expression HasBalanceInCurrentOrg()
         {
             var tf = CodeIds == "1";
-            string first, last;
-            Util.NameSplit(db.CurrentOrg.NameFilter, out first, out last);
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, first, last, co.SgFilter, co.ShowHidden)
+                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, co.First(), co.Last(), co.SgFilter, co.ShowHidden)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId)
                 && (from t in db.ViewTransactionSummaries

@@ -2,156 +2,158 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.OrgMemberModel
 @{
-    var managetransactions = User.IsInRole("ManageTransactions");
-    var admin = User.IsInRole("Admin");
-    var missiongiving = User.IsInRole("MissionGiving");
+  var managetransactions = User.IsInRole("ManageTransactions");
+  var admin = User.IsInRole("Admin");
+  var missiongiving = User.IsInRole("MissionGiving");
 }
-<div class="modal-header">
+<form class="form form-horizontal modal fade hide validate ajax">
+  <div class="modal-header">
     <a class="close" data-dismiss="modal">x</a>
     <h4>@Model.OrgName</h4>
     <h5>@Model.Name</h5>
-</div>
-<div class="modal-body">
+  </div>
+  <div class="modal-body">
     <div class="tabbable group">
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#memberdata" data-toggle="tab">Member Data</a></li>
-            <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
-            <li><a href="#membernotes" data-toggle="tab">Notes</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="memberdata">
-                <a href="/TransactionHistory/@Model.PeopleId/@Model.OrgId" target="_blank"
-                   style="font-family: Courier New">Attendance</a>: @Model.AttendStr
-                <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("UpdateOrgMember")'>help</a>
-                <fieldset class="display">
-                    @* These need to be the first two *@
-                    @Html.HiddenFor(m => m.OrgId)
-                    @Html.HiddenFor(m => m.PeopleId)
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#memberdata" data-toggle="tab">Member Data</a></li>
+        <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
+        <li><a href="#membernotes" data-toggle="tab">Notes</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="memberdata">
+          <a href="/TransactionHistory/@Model.PeopleId/@Model.OrgId" target="_blank"
+             style="font-family: Courier New">Attendance</a>: @Model.AttendStr
+          <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("UpdateOrgMember")'>help</a>
+          <fieldset class="display">
+            @* These need to be the first two *@
+            @Html.HiddenFor(m => m.OrgId)
+            @Html.HiddenFor(m => m.PeopleId)
 
-                    @Html.DisplayFor(m => m.MemberType)
-                    @Html.DisplayFor(m => m.InactiveDate)
-                    @Html.DisplayFor(m => m.EnrollmentDate)
-                    @Html.DisplayFor(m => m.Pending)
-                    @if (Model.RegisterEmail.HasValue())
+            @Html.DisplayFor(m => m.MemberType)
+            @Html.DisplayFor(m => m.InactiveDate)
+            @Html.DisplayFor(m => m.EnrollmentDate)
+            @Html.DisplayFor(m => m.Pending)
+            @if (Model.RegisterEmail.HasValue())
+            {
+              @Html.DisplayFor(m => m.RegisterEmail)
+            }
+            @if (Model.Setting.AskVisible("AskRequest"))
+            {
+              @Html.DisplayFor(m => m.Request)
+            }
+            @if (Model.Grade.HasValue)
+            {
+              @Html.DisplayFor(m => m.Grade)
+            }
+            @if (Model.Setting.AskVisible("AskTickets"))
+            {
+              @Html.DisplayFor(m => m.Tickets)
+            }
+            @if (Model.TransactionsLink.HasValue())
+            {
+              <div class="control-group">
+                <label class="control-label">Fees</label>
+                <div class="controls">
+                  @if (Model.TransactionSummary != null)
+                  {
+                    <table class="table table-condensed">
+                      <thead>
+                        <tr>
+                          <th>Total Fee</th>
+                          <th>Amount Paid</th>
+                          <th>Amount Due</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td> @Model.TransactionSummary.IndAmt.ToString2("c") </td>
+                          <td> @Model.AmountPaidTransactions.ToString2("c") </td>
+                          <td> @Model.AmountDue.ToString2("c") </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  }
+                  <p>
+                    @if (admin || managetransactions)
                     {
-                        @Html.DisplayFor(m => m.RegisterEmail)
+                      <a href="@Model.TransactionsLink" target="transactions">View Transactions</a>
                     }
-                    @if (Model.Setting.AskVisible("AskRequest"))
+                    @if (Model.AmountDue > 0)
                     {
-                        @Html.DisplayFor(m => m.Request)
+                      <a href="@Model.PayLink" style="margin-left: 2em;" target="_blank">PayLink</a>
                     }
-                    @if (Model.Grade.HasValue)
-                    {
-                        @Html.DisplayFor(m => m.Grade)
-                    }
-                    @if (Model.Setting.AskVisible("AskTickets"))
-                    {
-                        @Html.DisplayFor(m => m.Tickets)
-                    }
-                    @if (Model.TransactionsLink.HasValue())
-                    {
-                        <div class="control-group">
-                            <label class="control-label">Fees</label>
-                            <div class="controls">
-                                @if (Model.TransactionSummary != null)
-                                {
-                                    <table class="table table-condensed">
-                                        <thead>
-                                            <tr>
-                                                <th>Total Fee</th>
-                                                <th>Amount Paid</th>
-                                                <th>Amount Due</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td> @Model.TransactionSummary.IndAmt.ToString2("c") </td>
-                                                <td> @Model.AmountPaidTransactions.ToString2("c") </td>
-                                                <td> @Model.AmountDue.ToString2("c") </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                }
-                                <p>
-                                    @if (admin || managetransactions)
-                                    {
-                                        <a href="@Model.TransactionsLink" target="transactions">View Transactions</a>
-                                    }
-                                    @if (Model.AmountDue > 0)
-                                    {
-                                        <a href="@Model.PayLink" style="margin-left: 2em;" target="_blank">PayLink</a>
-                                    }
-                                </p>
-                            </div>
-                        </div>
-                    }
-                    @if (Model.Setting.AskVisible("AskSize"))
-                    {
-                        @Html.DisplayFor(m => m.ShirtSize)
-                    }
-                </fieldset>
-
-            </div>
-            <div class="tab-pane" id="membergroups">
-                <div class="well">
-                    @{
-                        var list = Model.Organization.MemberTags.OrderBy(t => t.Name).ToList();
-                        var itemspercol = list.Count / 3;
-                        var remainder = list.Count % 3;
-                        itemspercol += (remainder > 0 ? 1 : 0);
-                    }
-                    @for (var col = 0; col < (int)Math.Ceiling((double)list.Count / itemspercol); col++)
-                    {
-                        <div class="inline align-top">
-                            @for (var i = col * itemspercol; i < Math.Min((col + 1) * itemspercol, list.Count); i++)
-                            {
-                                @SmallGroup(list[i])
-                            }
-                        </div>
-                    }
+                  </p>
                 </div>
-            </div>
-            <div id="membernotes" class="tab-pane">
-                @Html.DisplayFor(m => m.UserData, "TextArea", new { AddClass = "scroll150" })
-            </div>
+              </div>
+            }
+            @if (Model.Setting.AskVisible("AskSize"))
+            {
+              @Html.DisplayFor(m => m.ShirtSize)
+            }
+          </fieldset>
+
         </div>
+        <div class="tab-pane" id="membergroups">
+          <div class="well">
+            @{
+              var list = Model.Organization.MemberTags.OrderBy(t => t.Name).ToList();
+              var itemspercol = list.Count / 3;
+              var remainder = list.Count % 3;
+              itemspercol += (remainder > 0 ? 1 : 0);
+            }
+            @for (var col = 0; col < (int)Math.Ceiling((double)list.Count / itemspercol); col++)
+            {
+              <div class="inline align-top">
+                @for (var i = col * itemspercol; i < Math.Min((col + 1) * itemspercol, list.Count); i++)
+                {
+                  @SmallGroup(list[i])
+                }
+              </div>
+            }
+          </div>
+        </div>
+        <div id="membernotes" class="tab-pane">
+          @Html.DisplayFor(m => m.UserData, "TextArea", new { AddClass = "scroll150" })
+        </div>
+      </div>
     </div>
-</div>
-<div class="modal-footer">
+  </div>
+  <div class="modal-footer">
     <a href="#" class="btn" data-dismiss="modal">Close</a>
     @if (managetransactions || admin || missiongiving)
     {
-    <div class="btn-group">
+      <div class="btn-group">
         <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">Transaction <span class="caret"></span></button>
         <ul class="dropdown-menu">
+          <li>
+            <a href="/OrgMemberDialog2/AddTransaction/@Model.OrgId/@Model.PeopleId" class="ajax">Add Transaction</a>
+          </li>
+          @if (Model.TransactionSummary != null)
+          {
             <li>
-                <a href="/OrgMemberDialog2/AddTransaction/@Model.OrgId/@Model.PeopleId" class="ajax">Add Transaction</a>
+              <a href="/OrgMemberDialog2/AddFeeAdjustment/@Model.OrgId/@Model.PeopleId" class="ajax">Make Fee Adjustment</a>
             </li>
-            @if(Model.TransactionSummary != null)
-            {
+          }
+          @if (Model.IsMissionTrip)
+          {
             <li>
-                <a href="/OrgMemberDialog2/AddFeeAdjustment/@Model.OrgId/@Model.PeopleId" class="ajax">Make Fee Adjustment</a>
-            </li> 
-            }
-            @if (Model.IsMissionTrip)
-            {
-                <li>
-                    <a href="/OrgMemberDialog2/MissionSupport/@Model.OrgId/@Model.PeopleId" class="ajax">Add Mission Trip Support</a>
-                </li>
-            }
+              <a href="/OrgMemberDialog2/MissionSupport/@Model.OrgId/@Model.PeopleId" class="ajax">Add Mission Trip Support</a>
+            </li>
+          }
         </ul>
-    </div>
+      </div>
     }
     <a id="dropmember" href="/OrgMemberDialog2/Drop/@Model.OrgId/@Model.PeopleId" class="btn btn-danger">Drop</a>
     <a href="/OrgMemberDialog2/Move/@Model.OrgId/@Model.PeopleId" class="btn btn-warning ajax">Move</a>
     <a href="/OrgMemberDialog2/Edit/@Model.OrgId/@Model.PeopleId" class="btn btn-primary ajax">Edit</a>
-</div>
+  </div>
+</form>
 @helper SmallGroup(MemberTag mt)
 {
-    <div class="control-group">
-        <label class="control-label">@mt.Name</label>
-        <div class="controls">
-            <input href="/OrgMemberDialog2/SmallGroupChecked/@Model.OrgId/@Model.PeopleId/@mt.Id" class="ckbox" type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mt.Id) ? "checked='checked'" : "") />
-        </div>
+  <div class="control-group">
+    <label class="control-label">@mt.Name</label>
+    <div class="controls">
+      <input href="/OrgMemberDialog2/SmallGroupChecked/@Model.OrgId/@Model.PeopleId/@mt.Id" class="ckbox" type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mt.Id) ? "checked='checked'" : "") />
     </div>
+  </div>
 }

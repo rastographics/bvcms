@@ -1,0 +1,64 @@
+﻿@model CmsWeb.Models.SearchDivisionsModel
+<div class="modal-header">
+  <a class="close" data-dismiss="modal">x</a>
+  <h4>Select Divisions</h4>
+</div>
+<div class="modal-body">
+  @Html.HiddenFor(m => m.Page)
+  @Html.HiddenFor(m => m.ordered)
+  @Html.HiddenFor(m => m.singlemode)
+  @Html.HiddenFor(m => m.Id)
+  @Html.HiddenFor(m => m.TargetDivision)
+  @Html.HiddenFor(m => m.Adding)
+  @Html.TextBoxFor(m => m.name, new { title = "Partial Program / Division Name" })
+  <a id="search" class="btn btn-primary ajax">Search</a>
+  <div class="pagination pagination-mini">
+    @Html.Partial("Pager3", Model)
+  </div>
+  <table class="@ViewExtensions2.GridClass">
+    <thead>
+      <tr>
+        <td colspan="3">
+          <b>showing top @Math.Min(Model.PageSize,Model.Count()) of @Model.Count().ToString("N0")</b>
+        </td>
+      </tr>
+      <tr>
+        <th></th>
+        <th>Program</th>
+        <th>Division</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var d in Model.ViewList())
+      {
+        <tr>
+          <td>
+            <input type="checkbox" @(d.IsChecked == true ? "checked='checked'" : "")
+                   value="@d.DivId" @(d.IsMain == true ? "disabled=disabled" : "") />
+          </td>
+          <td title="Other Programs|@d.Programs" class="tip">@d.Program</td>
+          <td title="@d.DivId" class="tip">@d.Division</td>
+          <th>
+            @if (d.IsMain == true)
+            {
+              <a>main division</a>
+            }
+            @if (d.IsChecked == true && d.IsMain != true)
+            {
+            <span class="move">
+              <a href="#" class="move" data-moveid="@d.DivId">move to top</a>
+            </span>
+            }
+          </th>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <div class="pagination pagination-mini">
+    @Html.Partial("Pager3", Model)
+  </div>
+</div>
+<div class="modal-footer">
+  <a class="close pull-right btn btn-primary" data-dismiss="modal">OK</a>
+</div>

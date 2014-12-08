@@ -94,7 +94,8 @@
 
       <org Include="Scripts/Org/Organization.js"/>
       <org Include="Scripts/Dialog/SearchUsers.js"/>
-      <org Include="Scripts/js/RegSetting.js"/>
+      <org Include="Scripts/js/RegSetting.js"/>      
+      <org Include="Scripts/Org/OrgMemberDialog2.js"/>
 <!--      <org Include="Scripts/js/form-ajax.js"/>-->
 <!--      <org Include="Scripts/js/ExtraValue.js"/>-->
 
