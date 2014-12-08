@@ -77,6 +77,9 @@ namespace CmsWeb.Models
         {
             var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken();
 
+            if (userStatus == null)
+                throw new HttpException(400, "Either Authorization or SessionToken headers are required.");
+
             if (!userStatus.IsValid)
                 return userStatus;
 
@@ -120,7 +123,7 @@ namespace CmsWeb.Models
         {
             var sessionToken = HttpContext.Current.Request.Headers["SessionToken"];
             if (string.IsNullOrEmpty(sessionToken))
-                return UserValidationResult.Invalid(UserValidationStatus.SessionTokenNotFound);
+                throw new HttpException(400, "A SessionToken header is required.");
 
             var userStatus = AuthenticateMobile();
 
@@ -187,6 +190,8 @@ namespace CmsWeb.Models
                 {
                     DbUtil.Db.ApiSessions.DeleteAllOnSubmit(results.User.ApiSessions);
                 }
+
+                return results;
             }
 
             return null;

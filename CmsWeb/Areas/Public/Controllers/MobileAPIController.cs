@@ -28,14 +28,13 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var result = AuthenticateUser();
 
-            if (result.IsValid)
-            {
-                var br = new BaseMessage();
-                br.error = 0;
-                br.data = result.User.ApiSessions.Single().SessionToken.ToString();
-            }
+            if (!result.IsValid)
+                return BaseMessage.createErrorReturn("You are not authorized!");
 
-            return BaseMessage.createErrorReturn("You are not authorized!");
+            var br = new BaseMessage();
+            br.error = 0;
+            br.data = result.User.ApiSessions.Single().SessionToken.ToString();
+            return br;
         }
 
         [HttpPost]
