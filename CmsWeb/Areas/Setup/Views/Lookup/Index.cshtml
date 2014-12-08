@@ -27,11 +27,11 @@
                 }
                 else
                 {
-                    <a href="#" id="c@(item.Id).@ViewData["type"]" name="c@(item.Id).@ViewData["type"]" class="clickEdit" data-pk="c@(item.Id).@ViewData["type"]">@item.Code</a>
+                    <a href="#" id="c@(item.Id).@ViewData["type"]" class="clickEdit" data-pk="c@(item.Id).@ViewData["type"]">@item.Code</a>
                 }
             </td>
             <td style="width: 300px;">
-                <a href="#" id="t@(item.Id).@ViewData["type"]" name="t@(item.Id).@ViewData["type"]" class="clickEdit" data-pk="t@(item.Id).@ViewData["type"]">@item.Description</a>
+                <a href="#" id="t@(item.Id).@ViewData["type"]" class="clickEdit" data-pk="t@(item.Id).@ViewData["type"]">@item.Description</a>
             </td>
             <td style="width: 100px;">
                 @if (!item.Hardwired.GetValueOrDefault())
@@ -80,7 +80,6 @@
                             window.location = "/Lookup/" + $('#type').val();
                     });
             });
-            $(".bt").button();
         });
     </script>
 }

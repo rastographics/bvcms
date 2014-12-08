@@ -41,15 +41,15 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpPost]
-        public ContentResult Edit(string id, string value)
+        public ContentResult Edit(string pk, string value)
         {
-            var a = id.SplitStr(".");
+            var a = pk.SplitStr(".");
             var iid = a[0].Substring(1).ToInt();
-            if (id.StartsWith("t"))
+            if (pk.StartsWith("t"))
                 DbUtil.Db.ExecuteCommand(
                     "update lookup." + a[1] + " set Description = {0} where id = {1}", 
                     value, iid);
-            else if (id.StartsWith("c"))
+            else if (pk.StartsWith("c"))
                 DbUtil.Db.ExecuteCommand(
                     "update lookup." + a[1] + " set Code = {0} where id = {1}",
                     value, iid);
