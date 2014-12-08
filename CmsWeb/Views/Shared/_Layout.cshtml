@@ -28,11 +28,13 @@
         &copy; 2014 TouchPoint Software, LLC.&nbsp;&nbsp;<a href="#">Privacy Policy</a>&nbsp;&nbsp;<a href="#">Email Updates</a>
     </div>
     @ViewExtensions2.jQuery()
+    <script src="@Url.Content("~/Scripts/touchpoint/underscore/underscore-min.js")"></script>
     @ViewExtensions2.Bootstrap3()
     @ViewExtensions2.jQueryUI()
     <script src="@Url.Content("~/Scripts/touchpoint/jquery-blockUI/jquery.blockUI.js")"></script>
     <script src="@Url.Content("~/Scripts/touchpoint/velocity/velocity.min.js")"></script>
     <script src="@Url.Content("~/Scripts/touchpoint/js/main.js")"></script>
     @RenderSection("scripts", false)
+    @Html.Partial("SearchBox")
 </body>
 </html>

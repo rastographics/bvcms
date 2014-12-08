@@ -21,7 +21,22 @@ body {
   height: 25px; 
   display: inline; 
   margin-top: -3px; 
-  vertical-align: middle;"
+  vertical-align: middle;
+}
+#search-box #search {
+    height: 60px;
+    font-size: 36px;
+}
+#search-box span.input-group-addon {
+    font-size: 30px;
+    background-color: #E9A310;
+    color: #fff;
+}
+#search-results ul.nav {
+    margin-top: 15px;
+}
+#search-results ul.nav li.dropdown-header {
+    padding-left: 0;
 }
 #bluetoolbarstop{
   border-top: 2px solid #1F3E6C;

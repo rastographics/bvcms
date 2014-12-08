@@ -1,0 +1,63 @@
+﻿<div class="modal fade" id="search-box" tabindex="-1" role="dialog" aria-labelledby="search-box-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+                            <input id="search" type="text" class="form-control" placeholder="Search for people or organizations...">
+                        </div>
+                        <div id="search-results">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#search-box').on('shown.bs.modal', function () {
+            $('#search').focus();
+        });
+
+        $('#search').on('keyup', _.debounce(function (e) {
+            var data = $('#search').val();
+            
+            if (data.length > 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/FastSearch',
+                    data: { q: $('#search').val() },
+                    success: function (rawResults) {
+                        var results = $.parseJSON(rawResults);
+                        var list = '<ul class="nav nav-pills nav-stacked">';
+                        var appendedPersonHeader = false;
+                        var appendedOrganizationsHeader = false;
+                        _.each(results, function (result) {
+                            console.log(result);
+                            if (result.url.indexOf("/Person") > -1 && !appendedPersonHeader) {
+                                list += '<li class="dropdown-header">People</li>';
+                                appendedPersonHeader = true;
+                            }
+                            if (result.url.indexOf("/Organization") > -1 && !appendedOrganizationsHeader) {
+                                list += '<li class="dropdown-header">Organizations</li>';
+                                appendedOrganizationsHeader = true;
+                            }
+                            if (result.line1 === 'Find Person') {
+                                list += '<li class="dropdown-header">Other Options</li>';
+                            }
+                            list += '<li><a href="' + result.url + '">' + result.line1 + '</a></li>';
+                            
+                        });
+                        list += '</ul>';
+                        $('#search-results').html(list).slideDown();
+                    }
+                });
+            }
+            else
+                $('#search-results').html('');
+        }, 300));
+    });
+</script>
