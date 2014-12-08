@@ -49,13 +49,18 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult CheckSessionToken()
+        public ActionResult CheckSessionToken(string data)
         {
             var result = AuthenticateUser();
-            var br = new BaseMessage();
 
+            var br = new BaseMessage();
             if (result.IsValid)
+            {
+                // TODO: optionally validate the API type call with different timeouts (i.e. giving might only be 2 minutes versus 30 minutes for everything else)
+//                var dataIn = BaseMessage.createFromString(data);
+
                 br.error = 0;
+            }
 
             br.data = SerializeUserValidationResult(result);
 
