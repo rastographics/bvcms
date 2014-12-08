@@ -1,71 +1,84 @@
 ﻿@model IEnumerable<CmsWeb.Areas.Setup.Controllers.LookupController.Row>
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Lookups";
 }
-@section head
-{
+@section head{
     <style>
-    li.item {
-        margin-top: .7em;
-        margin-left: 1em;
-}
-        
+        ul.list-group li a {
+            text-decoration: underline;
+        }
     </style>
 }
 <h2>Lookup Tables</h2>
-@if (!User.IsInRole("Admin"))
-{
-    <ul style="float: left">
-        <li class="item"><a href="/Funds">Funds</a></li>
-    </ul>
-}
-else
-{
-    <ul style="float: left">
-        <li class="item"><a href="/Lookup/AddressType">AddressType</a></li>
-        <li class="item"><a href="/Lookup/AttendCredit">AttendCredit</a></li>
-        <li class="item"><a href="/Lookup/AttendType">AttendType</a></li>
-        <li class="item"><a href="/Lookup/BackgroundCheckLabels">BackgroundCheckLabels</a></li>
-        <li class="item"><a href="/Lookup/BaptismStatus">BaptismStatus</a></li>
-        <li class="item"><a href="/Lookup/BaptismType">BaptismType</a></li>
-        <li class="item"><a href="/Lookup/BundleHeaderTypes">BundleHeaderTypes</a></li>
-        <li class="item"><a href="/Lookup/BundleStatusTypes">BundleStatusTypes</a></li>
-        <li class="item"><a href="/Lookup/Campus">Campus</a></li>
-        <li class="item"><a href="/Lookup/ContactReason">ContactReason</a></li>
-        <li class="item"><a href="/Lookup/ContactType">ContactType</a></li>
-        <li class="item"><a href="/Lookup/ContributionStatus">ContributionStatus</a></li>
-        <li class="item"><a href="/Lookup/ContributionType">ContributionType</a></li>
-    </ul>
-    <ul style="float: left">
-        <li class="item"><a href="/Reports/CustomColumns/" target="_blank">Custom Columns</a></li>
-        <li class="item"><a href="/Lookup/DecisionType">DecisionType</a></li>
-        <li class="item"><a href="/Lookup/DropType">DropType</a></li>
-        <li class="item"><a href="/Lookup/EntryPoint">EntryPoint</a></li>
-        <li class="item"><a href="/Lookup/EnvelopeOption">EnvelopeOption</a></li>
-        <li class="item"><a href="/Lookup/FamilyPosition">FamilyPosition</a></li>
-        <li class="item"><a href=">Funds</a></li>
-        <li class="item"><a href="/Lookup/Gender">Gender</a></li>
-        <li class="item"><a href="/Lookup/InterestPoint">InterestPoint</a></li>
-        <li class="item"><a href="/Lookup/JoinType">JoinType</a></li>
-        <li class="item"><a href="/Lookup/MaritalStatus">MaritalStatus</a></li>
-        <li class="item"><a href="/Lookup/MemberLetterStatus">MemberLetterStatus</a></li>
-        <li class="item"><a href="/Lookup/MemberStatus">MemberStatus</a></li>
-        <li class="item"><a href="/MemberType">Member Types</a></li>
-    </ul>
-    <ul style="float: left">
-        <li class="item"><a href="/Ministry">Ministries</a></li>
-        <li class="item"><a href="/Lookup/NameTitle">NameTitle</a></li>
-        <li class="item"><a href="/Lookup/NewMemberClassStatus">NewMemberClassStatus</a></li>
-        <li class="item"><a href="/Lookup/OrganizationStatus">OrganizationStatus</a></li>
-        <li class="item"><a href="/Lookup/OrganizationType">OrganizationType</a></li>
-        <li class="item"><a href="/Lookup/Origin">Origin</a></li>
-        <li class="item"><a href="/Lookup/ResidentCode">ResidentCode</a></li>
-        <li class="item"><a href="/Roles">Roles</a></li>
-        <li class="item"><a href="/Lookup/ShirtSizes">ShirtSizes</a></li>
-        <li class="item"><a href="/Lookup/TaskStatus">TaskStatus</a></li>
-        <li class="item"><a href="/Lookup/VolApplicationStatus">VolApplicationStatus</a></li>
-        <li class="item"><a href="/Lookup/VolunteerCodes">VolunteerCodes</a></li>
-    </ul>
-}
-<div style="clear: both"></div>
+<div class="row">
+    @if (!User.IsInRole("Admin"))
+    {
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="/Funds">Funds</a></li>
+                </ul>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="/Lookup/AddressType">Address Type</a></li>
+                    <li class="list-group-item"><a href="/Lookup/AttendCredit">Attend Credit</a></li>
+                    <li class="list-group-item"><a href="/Lookup/AttendType">Attend Type</a></li>
+                    <li class="list-group-item"><a href="/Lookup/BackgroundCheckLabels">Background Check Labels</a></li>
+                    <li class="list-group-item"><a href="/Lookup/BaptismStatus">Baptism Status</a></li>
+                    <li class="list-group-item"><a href="/Lookup/BaptismType">Baptism Type</a></li>
+                    <li class="list-group-item"><a href="/Lookup/BundleHeaderTypes">Bundle Header Types</a></li>
+                    <li class="list-group-item"><a href="/Lookup/BundleStatusTypes">Bundle Status Types</a></li>
+                    <li class="list-group-item"><a href="/Lookup/Campus">Campus</a></li>
+                    <li class="list-group-item"><a href="/Lookup/ContactReason">Contact Reason</a></li>
+                    <li class="list-group-item"><a href="/Lookup/ContactType">Contact Type</a></li>
+                    <li class="list-group-item"><a href="/Lookup/ContributionStatus">Contribution Status</a></li>
+                    <li class="list-group-item"><a href="/Lookup/ContributionType">Contribution Type</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="/Reports/CustomColumns/" target="_blank">Custom Columns</a></li>
+                    <li class="list-group-item"><a href="/Lookup/DecisionType">Decision Type</a></li>
+                    <li class="list-group-item"><a href="/Lookup/DropType">Drop Type</a></li>
+                    <li class="list-group-item"><a href="/Lookup/EntryPoint">Entry Point</a></li>
+                    <li class="list-group-item"><a href="/Lookup/EnvelopeOption">Envelope Option</a></li>
+                    <li class="list-group-item"><a href="/Lookup/FamilyPosition">Family Position</a></li>
+                    <li class="list-group-item"><a href="/Lookup/Gender">Gender</a></li>
+                    <li class="list-group-item"><a href="/Lookup/InterestPoint">Interest Point</a></li>
+                    <li class="list-group-item"><a href="/Lookup/JoinType">Join Type</a></li>
+                    <li class="list-group-item"><a href="/Lookup/MaritalStatus">Marital Status</a></li>
+                    <li class="list-group-item"><a href="/Lookup/MemberLetterStatus">Member Letter Status</a></li>
+                    <li class="list-group-item"><a href="/Lookup/MemberStatus">Member Status</a></li>
+                    <li class="list-group-item"><a href="/MemberType">Member Types</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="/Ministry">Ministries</a></li>
+                    <li class="list-group-item"><a href="/Lookup/NameTitle">Name Title</a></li>
+                    <li class="list-group-item"><a href="/Lookup/NewMemberClassStatus">New Member Class Status</a></li>
+                    <li class="list-group-item"><a href="/Lookup/OrganizationStatus">Organization Status</a></li>
+                    <li class="list-group-item"><a href="/Lookup/OrganizationType">Organization Type</a></li>
+                    <li class="list-group-item"><a href="/Lookup/Origin">Origin</a></li>
+                    <li class="list-group-item"><a href="/Lookup/ResidentCode">Resident Code</a></li>
+                    <li class="list-group-item"><a href="/Roles">Roles</a></li>
+                    <li class="list-group-item"><a href="/Lookup/ShirtSizes">Shirt Sizes</a></li>
+                    <li class="list-group-item"><a href="/Lookup/TaskStatus">Task Status</a></li>
+                    <li class="list-group-item"><a href="/Lookup/VolApplicationStatus">Volunteer Application Status</a></li>
+                    <li class="list-group-item"><a href="/Lookup/VolunteerCodes">Volunteer Codes</a></li>
+                </ul>
+            </div>
+        </div>
+    }
+</div>
