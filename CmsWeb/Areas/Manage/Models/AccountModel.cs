@@ -78,7 +78,7 @@ namespace CmsWeb.Models
             var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken();
 
             if (userStatus == null)
-                throw new HttpException(400, "Either Authorization or SessionToken headers are required.");
+                throw new Exception("Could not authenticate user, Authorization or SessionToken headers likely missing.");
 
             if (!userStatus.IsValid)
                 return userStatus;
@@ -119,11 +119,10 @@ namespace CmsWeb.Models
             return userStatus;
         }
 
-        public static UserValidationResult ResetSessionExpiration()
+        public static UserValidationResult ResetSessionExpiration(string sessionToken)
         {
-            var sessionToken = HttpContext.Current.Request.Headers["SessionToken"];
             if (string.IsNullOrEmpty(sessionToken))
-                throw new HttpException(400, "A SessionToken header is required.");
+                throw new ArgumentNullException("sessionToken");
 
             var userStatus = AuthenticateMobile();
 
@@ -131,7 +130,7 @@ namespace CmsWeb.Models
                 || userStatus.Status == UserValidationStatus.PinExpired
                 || userStatus.Status == UserValidationStatus.SessionTokenExpired)
             {
-                ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+                ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2(), sessionToken);
 
                 userStatus.Status = UserValidationStatus.Success;
             }

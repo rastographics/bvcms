@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
@@ -18,16 +19,23 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class MobileAPIController : Controller
     {
-        private static UserValidationResult AuthenticateUser()
+        private UserValidationResult AuthenticateUser()
         {
+            var authHeader = Request.Headers["Authorization"];
+            var sessionToken = Request.Headers["SessionToken"];
+
+            if (string.IsNullOrEmpty(authHeader) && string.IsNullOrEmpty(sessionToken))
+                throw new HttpException(400, "Either the Authorization or SessionToken headers are required.");
+
             return AccountModel.AuthenticateMobile();
         }
 
         [HttpPost]
         public ActionResult Authenticate()
         {
-            // session token isn't allowed when calling Authenticate - username and password are required
-            Request.Headers.Remove("SessionToken");
+            var authHeader = Request.Headers["Authorization"];
+            if (string.IsNullOrEmpty(authHeader))
+                throw new HttpException(400, "The Authorization header is required.");
 
             var result = AuthenticateUser();
 
@@ -57,7 +65,24 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult ResetSessionToken()
         {
-            var result = AccountModel.ResetSessionExpiration();
+            var sessionToken = Request.Headers["SessionToken"];
+            if (string.IsNullOrEmpty(sessionToken))
+                throw new HttpException(400, "The SessionToken header is required.");
+
+            var pinHeader = Request.Headers["PIN"];
+            var authorizationHeader = Request.Headers["Authorization"];
+
+            // if the user is resetting a session without their PIN, then credentials will be required
+            if (string.IsNullOrEmpty(pinHeader))
+            {
+                // clear out the session token temporarily to ensure that authentication happens solely by credentials
+                Request.Headers.Remove("SessionToken");
+
+                if (string.IsNullOrEmpty(authorizationHeader))
+                    throw new HttpException(400, "Either the Authorization or PIN header is required because the session is getting reset.");
+            }
+
+            var result = AccountModel.ResetSessionExpiration(sessionToken);
             var br = new BaseMessage();
 
             if (result.IsValid)
