@@ -17,11 +17,11 @@
                     }
                     if (p > 0 && Model.Page != p)
                     {
-                        <li><a href='#' title='goto page @p' onclick='return $.gotoPage(this,@p)'>@p</a></li>
+                        <li><a href='#' title='goto page @p' onclick='return $.gotoPage(this,@p)'>@p.ToString("N0")</a></li>
                     }
                     if (Model.Page == p)
                     {
-                        <li><span title="goto page">@p</span></li>
+                        <li class="active"><span title="goto page">@p.ToString("N0")</span></li>
                     }
                 }
                 @if (Model.Page < Model.LastPage())
