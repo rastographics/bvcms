@@ -25,7 +25,7 @@ body {
 }
 #search-box #search {
     height: 60px;
-    font-size: 36px;
+    font-size: 30px;
 }
 #search-box span.input-group-addon {
     font-size: 30px;
@@ -34,10 +34,13 @@ body {
 }
 #search-results ul.nav {
     margin-top: 15px;
+    max-height: 315px;
+    overflow-y: scroll;
 }
 #search-results ul.nav li.dropdown-header {
     padding-left: 0;
 }
+
 #bluetoolbarstop{
   border-top: 2px solid #1F3E6C;
   margin-top: -24px;
