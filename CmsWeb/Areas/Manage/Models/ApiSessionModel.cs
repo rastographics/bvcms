@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace CmsWeb.Areas.Manage.Models
 {
-    public class ApiSessionModel
+    internal static class ApiSessionModel
     {
-        public ApiSessionResult DetermineApiSessionStatus(Guid sessionToken, int? pin = null)
+        public static ApiSessionResult DetermineApiSessionStatus(Guid sessionToken, int? pin = null)
         {
             const int minutesSessionIsValid = 30;
 
@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Manage.Models
             return new ApiSessionResult(session.User, ApiSessionStatus.Success);
         }
 
-        public void ResetSessionExpiration(User user, int? pin = null)
+        public static void ResetSessionExpiration(User user, int? pin = null)
         {
             var apiSession = user.ApiSessions.SingleOrDefault();
             if (apiSession != null)

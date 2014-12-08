@@ -111,7 +111,7 @@ namespace CmsWeb.Models
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
-            new ApiSessionModel().ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+            ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
         }
@@ -128,7 +128,7 @@ namespace CmsWeb.Models
                 || userStatus.Status == UserValidationStatus.PinExpired
                 || userStatus.Status == UserValidationStatus.SessionTokenExpired)
             {
-                new ApiSessionModel().ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+                ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
 
                 userStatus.Status = UserValidationStatus.Success;
             }
@@ -142,8 +142,7 @@ namespace CmsWeb.Models
             if (string.IsNullOrEmpty(sessionToken))
                 return null;
 
-            var model = new ApiSessionModel();
-            var result = model.DetermineApiSessionStatus(Guid.Parse(sessionToken), HttpContext.Current.Request.Headers["PIN"].ToInt2());
+            var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken), HttpContext.Current.Request.Headers["PIN"].ToInt2());
 
             switch (result.Status)
             {
@@ -183,7 +182,11 @@ namespace CmsWeb.Models
             {
                 var creds = new NetworkCredential(username, password);
                 UserName2 = creds.UserName;
-                return AuthenticateLogon(creds.UserName, creds.Password, HttpContext.Current.Request.Url.OriginalString);
+                var results = AuthenticateLogon(creds.UserName, creds.Password, HttpContext.Current.Request.Url.OriginalString);
+                if (results.IsValid)
+                {
+                    DbUtil.Db.ApiSessions.DeleteAllOnSubmit(results.User.ApiSessions);
+                }
             }
 
             return null;
