@@ -8,16 +8,15 @@
 }
 <h2>@ViewData["description"]</h2>
 <blockquote><i>Click to edit the Code or Name. The items that cannot be deleted are expected to be there by the system. The description for those can be edited as long as the meaning is the same.</i></blockquote>
-    <table class="table table-striped">
-        <tr>
-            <th style="width: 100px;">Id</th>
-            <th style ="width: 300px;">Code</th>
-            <th style="width: 300px;">Description</th>
-            <th style="width: 100px;">Action</th>
-        </tr>
-
-@foreach (var item in Model)
-{ 
+<table class="table table-striped">
+    <tr>
+        <th style="width: 100px;">Id</th>
+        <th style ="width: 300px;">Code</th>
+        <th style="width: 300px;">Description</th>
+        <th style="width: 100px;">Action</th>
+    </tr>
+    @foreach (var item in Model)
+    { 
         <tr>
             <td style="width: 100px;">@item.Id</td>
             <td style="width: 300px;">
@@ -40,8 +39,8 @@
                 }
             </td>
         </tr>
-}
-    </table>
+    }
+</table>
 <div class="row">
     @using (Html.BeginForm("Create", "Lookup", FormMethod.Post, new { @class = "form-inline" }))
     {
