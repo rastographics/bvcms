@@ -912,7 +912,6 @@
     <Content Include="Scripts\touchpoint\js\search\people-search.js" />
     <Content Include="Scripts\touchpoint\js\search\search-add.js" />
     <Content Include="Scripts\touchpoint\js\tags.js" />
-    <Content Include="Scripts\touchpoint\underscore\underscore-min.js" />
     <Content Include="Scripts\touchpoint\velocity\velocity.min.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
@@ -1597,7 +1596,6 @@
     <Content Include="Views\Shared\Toolbar\Gear.touch.cshtml" />
     <Content Include="Views\Shared\Toolbar\GearStandard.touch.cshtml" />
     <Content Include="Views\Shared\SearchBox.cshtml" />
-    <Content Include="Scripts\touchpoint\underscore\underscore-min.map" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
