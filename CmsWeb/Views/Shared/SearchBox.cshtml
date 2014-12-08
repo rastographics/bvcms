@@ -6,7 +6,7 @@
                     <div class="col-lg-12">
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-                            <input id="search" type="text" class="form-control" placeholder="Search for people or organizations...">
+                            <input id="search-box-input" type="text" class="form-control" placeholder="Search for people or organizations...">
                         </div>
                         <div id="search-results">
                         </div>
@@ -19,24 +19,23 @@
 <script>
     $(document).ready(function () {
         $('#search-box').on('shown.bs.modal', function () {
-            $('#search').focus();
+            $('#search-box-input').focus();
         });
 
-        $('#search').on('keyup', _.debounce(function (e) {
-            var data = $('#search').val();
+        $('#search-box-input').on('keyup', _.debounce(function (e) {
+            var data = $('#search-box-input').val();
             
             if (data.length > 0) {
                 $.ajax({
                     type: 'POST',
                     url: '/FastSearch',
-                    data: { q: $('#search').val() },
+                    data: { q: $('#search-box-input').val() },
                     success: function (rawResults) {
                         var results = $.parseJSON(rawResults);
                         var list = '<ul class="nav nav-pills nav-stacked">';
                         var appendedPersonHeader = false;
                         var appendedOrganizationsHeader = false;
                         _.each(results, function (result) {
-                            console.log(result);
                             if (result.url.indexOf("/Person") > -1 && !appendedPersonHeader) {
                                 list += '<li class="dropdown-header">People</li>';
                                 appendedPersonHeader = true;

@@ -23,7 +23,7 @@ body {
   margin-top: -3px; 
   vertical-align: middle;
 }
-#search-box #search {
+#search-box #search-box-input {
     height: 60px;
     font-size: 30px;
 }
