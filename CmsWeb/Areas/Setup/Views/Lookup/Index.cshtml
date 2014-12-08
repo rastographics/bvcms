@@ -1,23 +1,79 @@
 ﻿@model IEnumerable<CmsWeb.Areas.Setup.Controllers.LookupController.Row>
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Lookups";
 }
+@section head{
+    <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
+}
+<h2>@ViewData["description"]</h2>
+<blockquote><i>Click to edit the Code or Name. The items that cannot be deleted are expected to be there by the system. The description for those can be edited as long as the meaning is the same.</i></blockquote>
+    <table class="table table-striped">
+        <tr>
+            <th style="width: 100px;">Id</th>
+            <th style ="width: 300px;">Code</th>
+            <th style="width: 300px;">Description</th>
+            <th style="width: 100px;">Action</th>
+        </tr>
+
+@foreach (var item in Model)
+{ 
+        <tr>
+            <td style="width: 100px;">@item.Id</td>
+            <td style="width: 300px;">
+                @if (item.Hardwired.GetValueOrDefault())
+                {
+                    @item.Code
+                }
+                else
+                {
+                    <a href="#" id="c@(item.Id).@ViewData["type"]" name="c@(item.Id).@ViewData["type"]" class="clickEdit" data-pk="c@(item.Id).@ViewData["type"]">@item.Code</a>
+                }
+            </td>
+            <td style="width: 300px;">
+                <a href="#" id="t@(item.Id).@ViewData["type"]" name="t@(item.Id).@ViewData["type"]" class="clickEdit" data-pk="t@(item.Id).@ViewData["type"]">@item.Description</a>
+            </td>
+            <td style="width: 100px;">
+                @if (!item.Hardwired.GetValueOrDefault())
+                {
+                    <a id='d@(item.Id)' href="#" class="delete"><i class="fa fa-trash"></i></a>
+                }
+            </td>
+        </tr>
+}
+    </table>
+<div class="row">
+    @using (Html.BeginForm("Create", "Lookup", FormMethod.Post, new { @class = "form-inline" }))
+    {
+        @Html.Hidden("type", ViewData["type"])
+        <label for="pk" class="col-sm-2 col-md-1 control-label">New Id:</label>
+        <div class="col-sm-10 col-md-11">
+            <input type="text" name="pk" class="form-control" />
+            <input type="submit" class="btn btn-primary" value="Create" />
+        </div>
+    }    
+</div>
 @section scripts
 {
+    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-editable/bootstrap-editable.js")"></script>
     <script type="text/javascript">
-        $(function() {
-            $(".clickEdit").editable("/Lookup/Edit/", {
-                indicator: "<img src='/images/loading.gif'>",
-                tooltip: "Click to edit...",
-                style: 'display: inline',
-                width: '200px',
-                height: 25
+        $(function () {
+            $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                            '<i class="fa fa-fw fa-check"></i>' +
+                                        '</button>' +
+                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                            '<i class="fa fa-fw fa-times"></i>' +
+                                        '</button>';
+
+            $(".clickEdit").editable({
+                mode: 'inline',
+                type: 'text',
+                url: "/Lookup/Edit/"
             });
-            $("a.delete").click(function(ev) {
+            $("a.delete").click(function (ev) {
                 ev.preventDefault();
                 if (confirm("are you sure?"))
-                    $.post("/Lookup/Delete/" + $(this).attr("id"), { type: $('#type').val() }, function(ret) {
+                    $.post("/Lookup/Delete/" + $(this).attr("id"), { type: $('#type').val() }, function (ret) {
                         if (ret && ret.error)
                             alert(ret.error);
                         else
@@ -28,57 +84,3 @@
         });
     </script>
 }
-<h2>@ViewData["type"]</h2>
-<blockquote style="max-width:40em"><i>Click to edit the Code or Name. The items that cannot be deleted are expected to be there by the system. The description for those can be edited as long as the meaning is the same.</i></blockquote>
-    <table class="@ViewExtensions2.GridClass">
-        <tr>
-            <th> Id </th>
-            <th> Code </th>
-            <th> Description </th>
-            <th></th>
-            <th></th>
-        </tr>
-
-@foreach (var item in Model)
-{ 
-        <tr>
-            <td>@item.Id</td>
-            <td>
-            @if (item.Hardwired == true)
-            {
-                @item.Code   
-            }
-            else
-            {
-                <span id='c@(item.Id).@ViewData["type"]' class='clickEdit'>@item.Code</span>
-            }
-            </td>
-            <td>
-                <span id='t@(item.Id).@ViewData["type"]' class='clickEdit'>@item.Description</span>
-            </td>
-            <td>
-            <td>
-            @if (item.Hardwired == true)
-            {
-                <i>hardwired</i>
-            }
-            else
-            {
-                <a id='d@(item.Id)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
-            }
-            </td>
-            <td>
-                
-            </td>
-        </tr>
-}
-    </table>
-
-@using (Html.BeginForm("Create", "Lookup"))
-{ 
-    @Html.Hidden("type", ViewData["type"])
-    <p>
-        New Id: <input type="text" name="pk" />
-        <input type="submit" class="bt" value="Create" />
-    </p>
-} 

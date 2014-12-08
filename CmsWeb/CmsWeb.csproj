@@ -703,7 +703,7 @@
     <Content Include="Content\touchpoint\bootstrap-multiselect\bootstrap-multiselect.css" />
     <Content Include="Content\touchpoint\bootstrap-sweetalert\css\sweet-alert.css" />
     <Content Include="Content\touchpoint\bootstrap\css\bootstrap.min.css" />
-    <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\touchpoint\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\main.css" />
     <Content Include="Content\touchpoint\images\favicon.png" />
@@ -778,9 +778,9 @@
     <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="chart.py" />
     <Content Include="Areas\Manage\Views\Account\_Layout.cshtml" />
-    <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.ttf" />
-    <Content Include="Content\touchpoint\bootstrap\font\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\touchpoint\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\touchpoint\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\touchpoint\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />

@@ -1,4 +1,5 @@
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -25,6 +26,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             if (!User.IsInRole("Admin") && string.Compare(id, "funds", ignoreCase: true) != 0)
                 return Content("must be admin");
             ViewData["type"] = id;
+            ViewData["description"] = Regex.Replace(id, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
             var q = DbUtil.Db.ExecuteQuery<Row>("select * from lookup." + id);
             return View(q);
         }
