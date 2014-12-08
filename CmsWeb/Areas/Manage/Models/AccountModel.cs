@@ -189,6 +189,7 @@ namespace CmsWeb.Models
                 if (results.IsValid)
                 {
                     DbUtil.Db.ApiSessions.DeleteAllOnSubmit(results.User.ApiSessions);
+                    DbUtil.Db.SubmitChanges();
                 }
 
                 return results;
