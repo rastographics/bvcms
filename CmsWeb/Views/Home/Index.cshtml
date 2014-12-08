@@ -22,6 +22,9 @@
         ul.list-group li.indent {
             padding-left: 25px;
         }
+        .list-group-item>.label {
+            float: right;
+        }
     </style>
 }
 <div class="row">
@@ -111,11 +114,12 @@
                     {
                         var daysOld = (int)Math.Ceiling(DateTime.Now.Subtract(article.Published).TotalDays);
                         <li class="list-group-item">
-                            <a href="@article.Url" target="news">@article.Title</a>
                             @if (daysOld < 8)
                             {
-                                <span class="label label-danger pull-right">New</span>
+                                <span class="label label-danger">New</span>
                             }
+                            <a href="@article.Url" target="news">@article.Title</a>
+                            
                         </li>
                     }
                 </ul>
