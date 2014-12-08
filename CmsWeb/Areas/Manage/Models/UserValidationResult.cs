@@ -23,9 +23,9 @@ namespace CmsWeb.Areas.Manage.Models
             return new UserValidationResult { User = user, Status = UserValidationStatus.Success };
         }
 
-        public static UserValidationResult Invalid(UserValidationStatus status, string errorMessage = null)
+        public static UserValidationResult Invalid(UserValidationStatus status, string errorMessage = null, User user = null)
         {
-            return new UserValidationResult { ErrorMessage = errorMessage, Status = status };
+            return new UserValidationResult { User = user, ErrorMessage = errorMessage, Status = status };
         }
     }
 }

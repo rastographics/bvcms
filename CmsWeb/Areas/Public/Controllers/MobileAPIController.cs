@@ -26,6 +26,9 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult Authenticate()
         {
+            // session token isn't allowed when calling Authenticate - username and password are required
+            Request.Headers.Remove("SessionToken");
+
             var result = AuthenticateUser();
 
             if (!result.IsValid)

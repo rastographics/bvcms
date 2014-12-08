@@ -14,15 +14,6 @@ namespace CmsWeb.Areas.Manage.Models
             if (session == null)
                 return new ApiSessionResult(null, ApiSessionStatus.SessionTokenNotFound);
 
-            var isExpired = session.LastAccessedDate < DateTime.Now.Subtract(TimeSpan.FromMinutes(minutesSessionIsValid));
-
-            if (isExpired)
-            {
-                return session.Pin.HasValue 
-                    ? new ApiSessionResult(session.User, ApiSessionStatus.PinExpired) 
-                    : new ApiSessionResult(session.User, ApiSessionStatus.SessionTokenExpired);
-            }
-
             // if the user has stored a PIN before and it isn't populated or doesn't match, then we have an invalid PIN
             if (session.Pin.HasValue)
             {
@@ -31,6 +22,15 @@ namespace CmsWeb.Areas.Manage.Models
 
                 if (pin.Value != session.Pin)
                     return new ApiSessionResult(session.User, ApiSessionStatus.PinInvalid);
+            }
+
+            var isExpired = session.LastAccessedDate < DateTime.Now.Subtract(TimeSpan.FromMinutes(minutesSessionIsValid));
+
+            if (isExpired)
+            {
+                return session.Pin.HasValue 
+                    ? new ApiSessionResult(session.User, ApiSessionStatus.PinExpired) 
+                    : new ApiSessionResult(session.User, ApiSessionStatus.SessionTokenExpired);
             }
 
             return new ApiSessionResult(session.User, ApiSessionStatus.Success);

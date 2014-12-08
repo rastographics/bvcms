@@ -152,9 +152,9 @@ namespace CmsWeb.Models
                 case ApiSessionStatus.SessionTokenNotFound:
                     return UserValidationResult.Invalid(UserValidationStatus.SessionTokenNotFound);
                 case ApiSessionStatus.SessionTokenExpired:
-                    return UserValidationResult.Invalid(UserValidationStatus.SessionTokenExpired);
+                    return UserValidationResult.Invalid(UserValidationStatus.SessionTokenExpired, user: result.User);
                 case ApiSessionStatus.PinExpired:
-                    return UserValidationResult.Invalid(UserValidationStatus.PinExpired);
+                    return UserValidationResult.Invalid(UserValidationStatus.PinExpired, user: result.User);
                 case ApiSessionStatus.PinInvalid:
                     return UserValidationResult.Invalid(UserValidationStatus.PinInvalid);
             }
