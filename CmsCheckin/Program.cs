@@ -216,6 +216,8 @@ namespace CmsCheckin
         public static Home home;
         public static Home2 home2;
         public static int MaxLabels { get; set; }
+        public static bool JoiningNotAttending { get; set; }
+
         public static Timer timer1;
         public static Timer timer2;
 

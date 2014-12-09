@@ -546,7 +546,7 @@ namespace CmsCheckin
 			SaveClasses();
 			RemoveMenu();
 			this.Swap(Program.home.classes);
-			Program.home.classes.JoiningNotAttending = true;
+			Program.JoiningNotAttending = true;
 			Program.home.classes.ShowResults(c.cinfo.pid);
 		}
 		void DropThis_Click(object sender, EventArgs e)

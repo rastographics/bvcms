@@ -402,6 +402,17 @@ namespace CmsData
             }
         }
 
+        public void UpdateNamedField(object savedQuery, string field, object value)
+        {
+            var q = db.PeopleQuery2(savedQuery);
+            foreach (var p in q)
+            {
+                p.UpdateValue(field, value);
+                p.LogChanges(db);
+                db.SubmitChanges();
+            }
+        }
+
         public void UpdateCampus(object savedQuery, string campus)
         {
             var id = db.FetchOrCreateCampusId(campus);
