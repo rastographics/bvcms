@@ -5,7 +5,7 @@
     var targetperson = Util2.TargetLinkPeople;
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
 }
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default navbar-fixed-top hidden-print">
     <div class="container-fluid">
         @if (access)
         {
@@ -17,7 +17,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a href="/"><img class="img-responsive hidden-lg hidden-xs logo" src="@Url.Content("~/Content/touchpoint/images/logo_sm.png")" /><img class="img-responsive hidden-md hidden-sm hidden-xs logo" src="@Url.Content("~/Content/touchpoint/images/logo.png")" /><img class="img-responsive hidden-lg hidden-md hidden-sm logo" style="margin-left: 25px;" src="@Url.Content("~/Content/touchpoint/images/logo.png")" /></a>
-</div>
+            </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @Html.Partial("Menu/People")

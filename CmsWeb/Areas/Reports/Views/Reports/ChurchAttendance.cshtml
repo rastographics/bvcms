@@ -1,143 +1,88 @@
-﻿@using CmsWeb
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @model CmsWeb.Areas.Reports.Models.ChurchAttendanceModel
 @{
-    Layout = "~/Views/Shared/Reports.cshtml";
-    ViewBag.Title = "ChurchAttendanceReport";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Church Attendance Report";
 }
-@section head {
-    <style type="text/css">
-        body {
-            font-size: 110%;
-        }
-
-        td {
-            padding: 4px;
-        }
-        th {
-            padding: 0 4px;
-        }
-
-            th > h2 {
-                margin-bottom: 3px;
-            }
-
-        th {
-            font: default;
-            font-weight: bold;
-        }
-
-        table.centered {
-            margin-left: auto;
-            margin-right: auto;
-            border-collapse: collapse;
-        }
-
-        .totalrow td {
-            border-top: 2px solid black;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        .headerrow th {
-            border-bottom: 2px solid black;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .nobottom {
-            margin-bottom: 0;
-        }
-
-        input#SundayDate {
-            width: 100px;
-            font-size: 100%;
-        }
-
-        table.centered a {
-            color: #0088cc;
-        }
-
-            table.centered a:hover {
-                text-decoration: underline;
-                color: #0088cc;
-            }
-    </style>
+<h2>Week at a Glance Attendance Report</h2>
+<div class="well hidden-print">
+    <label for="Sunday">Sunday Date</label>
+    <div class="row">
+        <div class="col-sm-12 form-inline">
+            <div class="input-group date">
+                @Html.TextBox("Sunday", Model.Sunday.ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            </div>
+            <div class="input-group">
+                <a class="btn btn-primary run">Run</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="visible-print-block">
+    <strong>Sunday Date:</strong> @Model.Sunday.ToShortDateString()
+</div>
+@foreach (var p in Model.FetchInfo())
+{
+    <div>
+        <h3>@p.Name</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    @foreach (var c in p.Cols)
+                    {
+                        <th class="text-right">@c.Heading</th>
+                    }
+                    <th class="text-right">Total</th>
+                    <th class="text-right">Guests</th>
+                    <th class="text-right">Non Local</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in p.Divs)
+                {
+                    if (d.Meetings.Sum(m => m.Present) == 0 && d.NoDisplayZero)
+                    {
+                        continue;
+                    }
+                    <tr>
+                        <td class="text-left">@d.Name</td>
+                        @foreach (var c in p.Cols)
+                        {
+                            <td class="text-right">@d.Meetings.Where(m => c.Times.Contains(m.date.TimeOfDay)).Sum(m => m.Present).ToString("n0")</td>
+                        }
+                        <td class="text-right">
+                            <a href='/Reports/Meetings?Dt1=@p.Dt1.ToString2("s")&dt2=@p.Dt2.ToString2("s")&ProgramId=@p.progid&DivisionId=@d.DivId'>
+                                @d.Meetings.Sum(m => m.Present).ToString("n0")
+                            </a>
+                        </td>
+                        <td class="text-right">@d.Meetings.Sum(m => m.Visitors).ToString("n0")</td>
+                        <td class="text-right">@d.Meetings.Sum(m => m.OutTowners).ToString("n0")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td class="text-left">Total</td>
+                    @foreach (var c in p.Cols)
+                    {
+                        <td class="text-right">@p.Divs.Sum(d => d.Meetings.Where(m => c.Times.Contains(m.date.TimeOfDay)).Sum(m => m.Present)).ToString("n0")</td>
+                    }
+                    <td class="text-right">
+                        <a href='/Reports/Meetings?Dt1=@p.Dt1.ToString2("s")&dt2=@p.Dt2.ToString2("s")&ProgramId=@p.progid'>
+                            @p.Divs.Sum(d => d.Meetings.Sum(m => m.Present)).ToString("n0")
+                        </a>
+                    </td>
+                    <td class="text-right">@p.Divs.Sum(d => d.Meetings.Sum(m => m.Visitors)).ToString("n0")</td>
+                    <td class="text-right">@p.Divs.Sum(d => d.Meetings.Sum(m => m.OutTowners)).ToString("n0")</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <br/>
+    <br/>
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/js/ChurchAttendance.js")
+    @Fingerprint.Script("/Scripts/touchpoint/js/reports/church-attendance.js")
 }
-<div style="text-align: center">
-    <h1>Week at a Glance Attendance Report</h1>
-    Sunday Date:
-        @Html.DatePicker("Sunday") <a class="run bt">Run</a>
-    <hr />
-
-    @foreach (var p in Model.FetchInfo())
-    {
-        <div>
-            <table class="centered">
-                <thead>
-                    <tr>
-                        <th colspan="@(p.Cols.Count + 4)">
-                            <h2>@p.Name</h2>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th colspan="@(p.Cols.Count + 3)"></th>
-                        <th class="nobottom">Non</th>
-                    </tr>
-                    <tr class="headerrow">
-                        <td></td>
-                        @foreach (var c in p.Cols)
-                        { 
-                            <th>@c.Heading</th>
-                        }
-                        <th>Total</th>
-                        <th>Guests</th>
-                        <th>Local</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var d in p.Divs)
-                    {
-                        if (d.Meetings.Sum(m => m.Present) == 0 && d.NoDisplayZero)
-                        {
-                            continue;
-                        }
-                        <tr>
-                            <td class="left">@d.Name</td>
-                            @foreach (var c in p.Cols)
-                            { 
-                                <td class="right">@d.Meetings.Where(m => c.Times.Contains(m.date.TimeOfDay)).Sum(m => m.Present).ToString("n0")</td>
-                            }
-                            <td class="right"><a href='/Reports/Meetings?Dt1=@p.Dt1.ToString2("s")&dt2=@p.Dt2.ToString2("s")&ProgramId=@p.progid&DivisionId=@d.DivId'>
-                                @d.Meetings.Sum(m => m.Present).ToString("n0")
-                            </a></td>
-                            <td class="right">@d.Meetings.Sum(m => m.Visitors).ToString("n0")</td>
-                            <td class="right">@d.Meetings.Sum(m => m.OutTowners).ToString("n0")</td>
-                        </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr class="totalrow">
-                        <td class="left">Total</td>
-                        @foreach (var c in p.Cols)
-                        { 
-                            <td>@p.Divs.Sum(d => d.Meetings.Where(m => c.Times.Contains(m.date.TimeOfDay)).Sum(m => m.Present)).ToString("n0")</td>
-                        }
-                        <td class="right"><a href='/Reports/Meetings?Dt1=@p.Dt1.ToString2("s")&dt2=@p.Dt2.ToString2("s")&ProgramId=@p.progid'>
-                            @p.Divs.Sum(d => d.Meetings.Sum(m => m.Present)).ToString("n0")
-                        </a></td>
-                        <td class="right">@p.Divs.Sum(d => d.Meetings.Sum(m => m.Visitors)).ToString("n0")</td>
-                        <td class="right">@p.Divs.Sum(d => d.Meetings.Sum(m => m.OutTowners)).ToString("n0")</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-        <div>&nbsp;</div>
-    }
-</div>
-
-
