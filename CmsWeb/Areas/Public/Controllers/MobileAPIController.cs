@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AuthenticateUser();
 
             if (!result.IsValid)
-                return BaseMessage.createErrorReturn("You are not authorized!");
+                return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
 
             var br = new BaseMessage();
             br.error = 0;
@@ -54,15 +54,13 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AuthenticateUser();
 
             var br = new BaseMessage();
-            if (result.IsValid)
-            {
-                // TODO: optionally validate the API type call with different timeouts (i.e. giving might only be 2 minutes versus 30 minutes for everything else)
-//                var dataIn = BaseMessage.createFromString(data);
+            if (!result.IsValid)
+                return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
 
-                br.error = 0;
-            }
+            // TODO: optionally validate the API type call with different timeouts (i.e. giving might only be 2 minutes versus 30 minutes for everything else)
+            //var dataIn = BaseMessage.createFromString(data);
 
-            br.data = SerializeUserValidationResult(result);
+            br.error = 0;
 
             return br;
         }
@@ -90,11 +88,10 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AccountModel.ResetSessionExpiration(sessionToken);
             var br = new BaseMessage();
 
-            if (result.IsValid)
-                br.error = 0;
+            if (!result.IsValid)
+                return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
 
-            br.data = SerializeUserValidationResult(result);
-
+            br.error = 0;
             return br;
         }
 
@@ -693,6 +690,23 @@ namespace CmsWeb.Areas.Public.Controllers
             br.type = BaseMessage.API_TYPE_ORG_JOIN;
 
             return br;
+        }
+
+        private static int MapStatusToError(UserValidationStatus status)
+        {
+            switch (status)
+            {
+                case UserValidationStatus.Success:
+                    return BaseMessage.API_ERROR_SUCCESS;
+                case UserValidationStatus.PinExpired:
+                    return BaseMessage.API_ERROR_PIN_EXPIRED;
+                case UserValidationStatus.PinInvalid:
+                    return BaseMessage.API_ERROR_PIN_INVALID;
+                case UserValidationStatus.SessionTokenExpired:
+                    return BaseMessage.API_ERROR_SESSION_TOKEN_EXPIRED;
+                default:
+                    return BaseMessage.API_ERROR_SESSION_TOKEN_NOT_FOUND;
+            }
         }
     }
 }

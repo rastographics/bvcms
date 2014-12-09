@@ -22,10 +22,11 @@ namespace CmsWeb.MobileAPI
 			context.HttpContext.Response.Output.Write(JsonConvert.SerializeObject(this));
 		}
 
-		public static BaseMessage createErrorReturn(string sErrorMessage)
+		public static BaseMessage createErrorReturn(string sErrorMessage, int errorCode = 1)
 		{
 			var br = new BaseMessage();
 			br.data = sErrorMessage;
+		    br.error = errorCode;
 
 			return br;
 		}
@@ -49,6 +50,14 @@ namespace CmsWeb.MobileAPI
 			data = newData;
 			return this;
 		}
+
+
+	    public const int API_ERROR_SUCCESS = 0;
+	    public const int API_ERROR_PIN_INVALID = 1;
+	    public const int API_ERROR_PIN_EXPIRED = 2;
+	    public const int API_ERROR_SESSION_TOKEN_EXPIRED = 3;
+	    public const int API_ERROR_SESSION_TOKEN_NOT_FOUND = 4;
+
 
 		// API Device Numbers
 		public const int API_DEVICE_UNKNOWN = 0;
