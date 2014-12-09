@@ -190,6 +190,7 @@ namespace CmsWeb
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
 #if DEBUG
+            filterContext.Result = new RedirectResult("/Error/SessionTimeout");
 #else
 			var context = filterContext.HttpContext;
 			if (context.Session != null)
@@ -197,7 +198,7 @@ namespace CmsWeb
 				{
 					string sessionCookie = context.Request.Headers["Cookie"];
 					if ((sessionCookie != null) && (sessionCookie.IndexOf("ASP.NET_SessionId") >= 0))
-						filterContext.Result = new RedirectResult("/Errors/SessionTimeout.htm");
+						filterContext.Result = new RedirectResult("/Error/SessionTimeout");
 				}
 #endif
             base.OnActionExecuting(filterContext);

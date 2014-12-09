@@ -76,12 +76,12 @@ namespace CmsWeb
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
             var url = Request.Url.OriginalString;
-            if (url.Contains("/Errors/") || url.Contains("healthcheck.txt"))
+            if (url.Contains("/Errors/") || url.Contains("/Error/") || url.Contains("healthcheck.txt"))
                 return;
 
             if (Util.AppOffline)
             {
-                Response.Redirect("/Errors/AppOffline.htm");
+                Response.Redirect("/Error/Offline");
                 return;
             }
             var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
@@ -97,7 +97,7 @@ namespace CmsWeb
                 var ret = DbUtil.CreateDatabase();
                 if (ret.HasValue())
                 {
-                    Response.Redirect("/Errors/DatabaseCreationError.aspx?error=" + HttpUtility.UrlEncode(ret));
+                    Response.Redirect("/Error/DatabaseCreationError/?error={0}".Fmt(HttpUtility.UrlEncode(ret)));
                     return;
                 }
             }
@@ -114,7 +114,7 @@ namespace CmsWeb
             }
             catch (SqlException)
             {
-                Response.Redirect("/Errors/DatabaseNotInitialized.aspx?dbname=" + Util.Host);
+                Response.Redirect("/Error/DatabaseNotInitialized/?dbname=".Fmt(Util.Host));
             }
 
             var cul = DbUtil.Db.Setting("Culture", "en-US");

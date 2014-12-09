@@ -278,7 +278,7 @@ namespace CmsWeb.Models
                 if (name.HasValue())
                     DbUtil.LogActivity("user {0} loggedin without a role ".Fmt(name));
                 FormsAuthentication.SignOut();
-                return "/Errors/AccessDenied.htm";
+                return "/Error/401";
             }
             if (Roles.IsUserInRole(name, "NoRemoteAccess") && DbUtil.CheckRemoteAccessRole)
             {

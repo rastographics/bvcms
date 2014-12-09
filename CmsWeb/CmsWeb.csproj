@@ -423,6 +423,7 @@
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
     <Compile Include="Controllers\DialogController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
@@ -704,6 +705,7 @@
     <Content Include="Content\touchpoint\bootstrap-sweetalert\css\sweet-alert.css" />
     <Content Include="Content\touchpoint\bootstrap\css\bootstrap.min.css" />
     <Content Include="Content\touchpoint\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\touchpoint\css\error.css" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\main.css" />
     <Content Include="Content\touchpoint\images\favicon.png" />
@@ -1596,6 +1598,17 @@
     <Content Include="Views\Shared\Toolbar\Gear.touch.cshtml" />
     <Content Include="Views\Shared\Toolbar\GearStandard.touch.cshtml" />
     <Content Include="Views\Shared\SearchBox.cshtml" />
+    <Content Include="Views\Error\400.cshtml" />
+    <Content Include="Views\Error\401.cshtml" />
+    <Content Include="Views\Error\404.cshtml" />
+    <Content Include="Views\Error\500.cshtml" />
+    <Content Include="Views\Error\_Layout.cshtml" />
+    <Content Include="Views\Error\DatabaseCreationError.cshtml" />
+    <Content Include="Views\Error\DatabaseNotFound.cshtml" />
+    <Content Include="Views\Error\DatabaseNotInitialized.cshtml" />
+    <Content Include="Views\Error\DatabaseServerNotFound.cshtml" />
+    <Content Include="Views\Error\Offline.cshtml" />
+    <Content Include="Views\Error\SessionTimeout.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
