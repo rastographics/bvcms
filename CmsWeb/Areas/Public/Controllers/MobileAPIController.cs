@@ -95,15 +95,6 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
-        private static string SerializeUserValidationResult(UserValidationResult result)
-        {
-            return JsonConvert.SerializeObject(new
-            {
-                errorMessage = result.ErrorMessage,
-                status = result.Status
-            });
-        }
-
         [HttpPost]
         public ActionResult CheckLogin(string data)
         {
