@@ -278,11 +278,11 @@ namespace CmsWeb.Models
                 }
                 if (settings != null && org != null && settings.ContainsKey(org.OrganizationId))
                 {
-                    var name = Util.PickFirst(settings[org.OrganizationId].Title, org.OrganizationName);
                     var accountcode = settings[org.OrganizationId].AccountingCode;
                     if (accountcode.HasValue())
-                        return "{0} ({1})".Fmt(name, accountcode);
-                    return name;
+                        return "{0} ({1})".Fmt(org.OrganizationName, accountcode);
+
+                    return org.OrganizationName;
                 }
                 return org.OrganizationName;
             }
