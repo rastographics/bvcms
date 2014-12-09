@@ -1,23 +1,23 @@
 ﻿@{
-    Layout = "~/Views/Shared/Site3.cshtml";
-    ViewBag.Title = "ForgotUsername";
+    Layout = "_Layout.cshtml";
+    ViewBag.Title = "Forgot Username";
 }
-<h2>Forgot Username</h2>
-<p> Use the form below to request your username. </p>
-<form action="/Account/ForgotUsername" method="post">
-    <div>
-        <fieldset>
-            <legend>Account Information</legend>
-            <p>
-                <label for="currentPassword">Email Address on record:</label>
-                @Html.TextBox("email")
-                @Html.ValidationMessage("email")
-            </p>
-            <p>
-                <input type="submit" class="bt" value="Request Username" />
-            </p>
-        </fieldset>
+<h1 class="form-header">Forgot Username</h1>
+@Html.ValidationSummaryBootstrap(true)
+@using (Html.BeginForm("ForgotUsername", "Account", FormMethod.Post, new { @class = "panel" }))
+{
+    <div class="form-group">
+        <input type="email" id="email" name="email" class="form-control input-lg" placeholder="Email address" required="required">
     </div>
-</form>
-
-
+    <div class="form-actions">
+        <input type="submit" value="Request Username" class="btn btn-primary btn-block btn-lg">
+    </div>
+}
+@section scripts
+{
+    <script>
+        $(function () {
+            $('#email').focus();
+        });
+    </script>
+}
