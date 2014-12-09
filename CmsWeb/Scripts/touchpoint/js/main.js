@@ -28,15 +28,15 @@ function initializeLoading() {
     animateColors();
 }
 function animateColors() {
-    $(".top").velocity({ fill: "#e9a310" }, 300, function () {
-        $(".right").velocity({ fill: "#e9a310" }, 300, function () {
-            $(".bottom").velocity({ fill: "#e9a310" }, 300, function () {
-                $(".left").velocity({ fill: "#e9a310" }, 300, function () {
+    $(".top").velocity({ fill: "#e9a310" }, 250, function () {
+        $(".right").velocity({ fill: "#e9a310" }, 250, function () {
+            $(".bottom").velocity({ fill: "#e9a310" }, 250, function () {
+                $(".left").velocity({ fill: "#e9a310" }, 250, function () {
                     animateColors();
-                }).velocity({ fill: "#f8e3b8" }, 400);
-            }).velocity({ fill: "#f8e3b8" }, 400);
-        }).velocity({ fill: "#f8e3b8" }, 400);
-    }).velocity({ fill: "#f8e3b8" }, 400);
+                }).velocity({ fill: "#f8e3b8" }, 350);
+            }).velocity({ fill: "#f8e3b8" }, 350);
+        }).velocity({ fill: "#f8e3b8" }, 350);
+    }).velocity({ fill: "#f8e3b8" }, 350);
 }
 
 
