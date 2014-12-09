@@ -55,7 +55,6 @@ namespace CmsCheckin
         int page;
         List<Control> controls = new List<Control>();
         bool ShowAllClasses;
-        public bool JoiningNotAttending = false;
 
         public void ShowResults(int pid)
         {
@@ -180,12 +179,14 @@ namespace CmsCheckin
         {
             var ab = sender as Button;
             var c = ab.Tag as ClassInfo;
-            if (JoiningNotAttending)
+            if (Program.JoiningNotAttending)
+            {
                 Util.JoinUnJoin(c, true);
+                Program.JoiningNotAttending = false;
+            }
             else
                 Util.AttendUnAttend(new Util.ClassCheckedInfo { c = c, ischecked = true });
             ShowAllClasses = false;
-            JoiningNotAttending = false;
             if (Program.baseform.textbox.Parent is Home)
             {
                 this.Swap(Program.home.family);
@@ -202,7 +203,7 @@ namespace CmsCheckin
 
         private void GoBack_Click(object sender, EventArgs e)
         {
-            JoiningNotAttending = false;
+            Program.JoiningNotAttending = false;
             if (Program.baseform.textbox.Parent is Home)
             {
                 this.Swap(Program.home.family);
@@ -217,7 +218,6 @@ namespace CmsCheckin
         }
         private void ClearControls()
         {
-            JoiningNotAttending = false;
             foreach (var c in controls)
             {
                 this.Controls.Remove(c);
