@@ -135,7 +135,7 @@ namespace CmsWeb.Models
             testing = true;
 #endif
             NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
-            NoEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed ", "false").ToBool();
+            NoEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed", "false").ToBool();
         }
 
         public ManageGivingModel(int pid, int orgid = 0)
