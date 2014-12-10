@@ -161,6 +161,8 @@ namespace CmsData
 		
 		private bool? _UseBootstrap;
 		
+		private string _PublicSortOrder;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -423,6 +425,9 @@ namespace CmsData
 		
 		partial void OnUseBootstrapChanging(bool? value);
 		partial void OnUseBootstrapChanged();
+		
+		partial void OnPublicSortOrderChanging(string value);
+		partial void OnPublicSortOrderChanged();
 		
     #endregion
 		public Organization()
@@ -2071,6 +2076,28 @@ namespace CmsData
 					this._UseBootstrap = value;
 					this.SendPropertyChanged("UseBootstrap");
 					this.OnUseBootstrapChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="PublicSortOrder", UpdateCheck=UpdateCheck.Never, Storage="_PublicSortOrder", DbType="varchar(15)")]
+		public string PublicSortOrder
+		{
+			get { return this._PublicSortOrder; }
+
+			set
+			{
+				if (this._PublicSortOrder != value)
+				{
+				
+                    this.OnPublicSortOrderChanging(value);
+					this.SendPropertyChanging();
+					this._PublicSortOrder = value;
+					this.SendPropertyChanged("PublicSortOrder");
+					this.OnPublicSortOrderChanged();
 				}
 
 			}

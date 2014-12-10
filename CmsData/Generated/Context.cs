@@ -2770,6 +2770,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.SearchDivisions", IsComposable = true)]
+		public IQueryable< View.SearchDivision > SearchDivisions(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="varchar")] string name
+            )
+		{
+			return this.CreateMethodCallQuery< View.SearchDivision>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                name
+                );
+		}
+
 		[Function(Name="dbo.Split", IsComposable = true)]
 		public IQueryable< View.Split > Split(
             [Parameter(DbType="nvarchar")] string InputText,
@@ -3413,6 +3426,22 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.InSmallGroup", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string InSmallGroup(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "sg", DbType="varchar")] string sg
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid,
+                sg
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.BibleFellowshipClassId", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? BibleFellowshipClassId(
@@ -3720,6 +3749,20 @@ namespace CmsData
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 email
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SmallGroupLeader", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string SmallGroupLeader(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid
                 ).ReturnValue));
 		}
 

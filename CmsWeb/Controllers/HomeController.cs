@@ -197,8 +197,8 @@ namespace CmsWeb.Controllers
             return "{0}DECLARE @p1 VARCHAR(100) = '{1}' {2}".Fmt(declareqtagid, parameter, body);
         }
 
-        [HttpGet, Route("~/RunScript/{name}/{parameter?}")]
-        public ActionResult RunScript(string name, string parameter = null)
+        [HttpGet, Route("~/RunScript/{name}/{parameter?}/{title?}")]
+        public ActionResult RunScript(string name, string parameter = null, string title = null)
         {
             var content = DbUtil.Content(name);
             if (content == null)
@@ -209,8 +209,8 @@ namespace CmsWeb.Controllers
             var cn = new SqlConnection(cs);
             cn.Open();
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
+            ViewBag.name = title ?? "Run Script {0} {1}".Fmt(name, parameter);
             var rd = cn.ExecuteReader(script);
-            ViewData["name"] = name;
             return View(rd);
         }
 
