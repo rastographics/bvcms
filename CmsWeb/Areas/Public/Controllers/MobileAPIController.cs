@@ -99,7 +99,7 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult CheckLogin(string data)
         {
             var result = AuthenticateUser();
-            if (!result.IsValid) return AuthenticateMobile(result);
+            if (!result.IsValid) return AuthorizationError(result);
 
             // Check to see if type matches
             var dataIn = BaseMessage.createFromString(data);
@@ -144,15 +144,22 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
+            var dataIn = BaseMessage.createFromString(data);
+            if (dataIn.type != BaseMessage.API_TYPE_GIVING_ONE_TIME_LINK_GIVING)
+                return BaseMessage.createTypeErrorReturn();
+
             throw new NotImplementedException();
         }
 
         [HttpPost]
         public ActionResult OneTimeManagedGivingLink(string data)
         {
-
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
+
+            var dataIn = BaseMessage.createFromString(data);
+            if (dataIn.type != BaseMessage.API_TYPE_GIVING_ONE_TIME_LINK_MANAGED_GIVING)
+                return BaseMessage.createTypeErrorReturn();
 
             throw new NotImplementedException();
         }
@@ -163,9 +170,22 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
-            // requires org id
-            // new type for One Time Register Link
-            throw new NotImplementedException();
+            var dataIn = BaseMessage.createFromString(data);
+            if (dataIn.type != BaseMessage.API_TYPE_REGISTRATION_ONE_TIME_LINK)
+                return BaseMessage.createTypeErrorReturn();
+
+            var orgId = dataIn.data;
+
+            var ot = GetOneTimeLink(orgId, result.User.PeopleId.GetValueOrDefault());
+
+            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
+            DbUtil.Db.SubmitChanges();
+//			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
+
+            var br = new BaseMessage();
+            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
+            br.error = 0;
+            return br;
         }
 
         [HttpPost]
@@ -275,7 +295,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             // Authenticate first
             var result = AuthenticateUser();
-            if (!result.IsValid) return AuthenticateMobile(result);
+            if (!result.IsValid) return AuthorizationError(result);
 
             // Check to see if type matches
             var dataIn = BaseMessage.createFromString(data);
@@ -733,6 +753,16 @@ namespace CmsWeb.Areas.Public.Controllers
         private static BaseMessage AuthorizationError(UserValidationResult result)
         {
             return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
+        }
+
+        private static OneTimeLink GetOneTimeLink(string orgId, int peopleId)
+        {
+            return new OneTimeLink
+            {
+                Id = Guid.NewGuid(),
+                Querystring = "{0},{1},0".Fmt(orgId, peopleId),
+                Expires = DateTime.Now.AddMinutes(10),
+            };
         }
     }
 }
