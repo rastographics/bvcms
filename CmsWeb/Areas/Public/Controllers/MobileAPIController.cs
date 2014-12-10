@@ -138,6 +138,25 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+//        [HttpPost]
+//        public ActionResult OneTimeGivingLink(string data)
+//        {
+//            
+//        }
+//
+//        [HttpPost]
+//        public ActionResult OneTimeManagedGivingLink(string data)
+//        {
+//            
+//        }
+//
+//        [HttpPost]
+//        public ActionResult OneTimeRegisterLink(string data)
+//        {
+//            // requires org id
+//            // new type for One Time Register Link
+//        }
+//
         [HttpPost]
         public ActionResult FetchPeople(string data)
         {

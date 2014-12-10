@@ -36,31 +36,35 @@ namespace CmsWeb.Areas.Manage.Models
             return new ApiSessionResult(session.User, ApiSessionStatus.Success);
         }
 
-        public static void ResetSessionExpiration(User user, int? pin = null, string sessionToken = null)
+        public static void SaveApiSession(User user, int? pin)
         {
-            Guid? currentGuid = null;
-            if (!string.IsNullOrEmpty(sessionToken))
-                currentGuid = Guid.Parse(sessionToken);
-
             var apiSession = user.ApiSessions.SingleOrDefault();
             if (apiSession != null)
             {
                 apiSession.LastAccessedDate = DateTime.Now;
-
-                if (currentGuid.HasValue)
-                    apiSession.SessionToken = currentGuid.Value;
+                apiSession.Pin = pin;
             }
             else
             {
                 var now = DateTime.Now;
                 apiSession = new ApiSession();
-                apiSession.SessionToken = currentGuid ?? Guid.NewGuid();
+                apiSession.SessionToken = Guid.NewGuid();
                 apiSession.LastAccessedDate = now;
                 apiSession.CreatedDate = now;
                 apiSession.Pin = pin;
                 user.ApiSessions.Add(apiSession);
             }
 
+            DbUtil.Db.SubmitChanges();
+        }
+
+        public static void ResetSessionExpiration(User user, int? pin/*, string sessionToken = null*/)
+        {
+            var apiSession = user.ApiSessions.SingleOrDefault();
+            if (apiSession == null)
+                return;
+
+            apiSession.LastAccessedDate = DateTime.Now;
             DbUtil.Db.SubmitChanges();
         }
     }

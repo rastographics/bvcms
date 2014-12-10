@@ -89,9 +89,13 @@ namespace CmsWeb.MobileAPI
 
 		// 30000's - Giving = 31000's - Read / 32000's Write
 		// Giving Read
-		// public const int API_TYPE_GIVING = 31001;
+		public const int API_TYPE_GIVING = 31001;
+		public const int API_TYPE_GIVING_ONE_TIME_LINK_GIVING = 31001;
+		public const int API_TYPE_GIVING_ONE_TIME_LINK_MANAGED_GIVING = 31002;
 		// Giving Write
-		public const int API_TYPE_GIVING_GIVE = 32001;
+
+		// 40000's - Registration = 41000's - Read / 42000's Write
+		public const int API_TYPE_REGISTRATION_ONE_TIME_LINK = 41001;
 
 		// 80000's - Giving = 81000's - Read / 82000's Write
 		// Media Read

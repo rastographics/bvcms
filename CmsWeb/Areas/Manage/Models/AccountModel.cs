@@ -114,7 +114,7 @@ namespace CmsWeb.Models
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
-            ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+            ApiSessionModel.SaveApiSession(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
         }
@@ -130,7 +130,7 @@ namespace CmsWeb.Models
                 || userStatus.Status == UserValidationStatus.PinExpired
                 || userStatus.Status == UserValidationStatus.SessionTokenExpired)
             {
-                ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2(), sessionToken);
+                ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2()/*, sessionToken*/);
 
                 userStatus.Status = UserValidationStatus.Success;
             }
@@ -184,14 +184,7 @@ namespace CmsWeb.Models
             {
                 var creds = new NetworkCredential(username, password);
                 UserName2 = creds.UserName;
-                var results = AuthenticateLogon(creds.UserName, creds.Password, HttpContext.Current.Request.Url.OriginalString);
-                if (results.IsValid)
-                {
-                    DbUtil.Db.ApiSessions.DeleteAllOnSubmit(results.User.ApiSessions);
-                    DbUtil.Db.SubmitChanges();
-                }
-
-                return results;
+                return AuthenticateLogon(creds.UserName, creds.Password, HttpContext.Current.Request.Url.OriginalString);
             }
 
             return null;
