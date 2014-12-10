@@ -98,8 +98,8 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult CheckLogin(string data)
         {
-            var authError = Authenticate();
-            if (authError != null) return authError;
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthenticateMobile(result);
 
             // Check to see if type matches
             var dataIn = BaseMessage.createFromString(data);
@@ -138,31 +138,42 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
-//        [HttpPost]
-//        public ActionResult OneTimeGivingLink(string data)
-//        {
-//            
-//        }
-//
-//        [HttpPost]
-//        public ActionResult OneTimeManagedGivingLink(string data)
-//        {
-//            
-//        }
-//
-//        [HttpPost]
-//        public ActionResult OneTimeRegisterLink(string data)
-//        {
-//            // requires org id
-//            // new type for One Time Register Link
-//        }
-//
+        [HttpPost]
+        public ActionResult OneTimeGivingLink(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        public ActionResult OneTimeManagedGivingLink(string data)
+        {
+
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        public ActionResult OneTimeRegisterLink(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            // requires org id
+            // new type for One Time Register Link
+            throw new NotImplementedException();
+        }
+
         [HttpPost]
         public ActionResult FetchPeople(string data)
         {
             // Authenticate first
-            var authError = Authenticate();
-            if (authError != null) return authError;
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
 
             // Check to see if type matches
             var dataIn = BaseMessage.createFromString(data);
@@ -219,8 +230,8 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult FetchPerson(string data)
         {
             // Authenticate first
-            var authError = Authenticate();
-            if (authError != null) return authError;
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
 
             // Check to see if type matches
             var dataIn = BaseMessage.createFromString(data);
@@ -263,8 +274,8 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult FetchImage(string data)
         {
             // Authenticate first
-            var authError = Authenticate();
-            if (authError != null) return authError;
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthenticateMobile(result);
 
             // Check to see if type matches
             var dataIn = BaseMessage.createFromString(data);
@@ -320,8 +331,8 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult SaveImage(string data)
         {
             // Authenticate first
-            var authError = Authenticate();
-            if (authError != null) return authError;
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
 
             // Check to see if type matches
             var dataIn = BaseMessage.createFromString(data);
@@ -374,8 +385,8 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult FetchOrgs(string data)
         {
-            var authError = Authenticate();
-            if (authError != null) return authError;
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
 
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
                 return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
@@ -447,8 +458,8 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult FetchOrgRollList(string data)
         {
             // Authenticate first
-            var authError = Authenticate();
-            if (authError != null) return authError;
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
 
             // Check Role
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
@@ -486,8 +497,8 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult RecordAttend(string data)
         {
             // Authenticate first
-            var authError = Authenticate();
-            if (authError != null) return authError;
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
 
             // Check Role
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
@@ -541,8 +552,8 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult AddPerson(string data)
         {
             // Authenticate first
-            var authError = Authenticate();
-            if (authError != null) return authError;
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
 
             // Check Role
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
@@ -666,8 +677,8 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult JoinOrg(string data)
         {
             // Authenticate first
-            var authError = Authenticate();
-            if (authError != null) return authError;
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
 
             // Check Role
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
@@ -717,6 +728,11 @@ namespace CmsWeb.Areas.Public.Controllers
                 default:
                     return BaseMessage.API_ERROR_SESSION_TOKEN_NOT_FOUND;
             }
+        }
+
+        private static BaseMessage AuthorizationError(UserValidationResult result)
+        {
+            return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
         }
     }
 }
