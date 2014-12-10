@@ -16,15 +16,15 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
+<script type="text/javascript">
+    $(function () {
         $('#search-box').on('shown.bs.modal', function () {
             $('#search-box-input').focus();
         });
 
         $('#search-box-input').on('keyup', _.debounce(function (e) {
             var data = $('#search-box-input').val();
-            
+
             if (data.length > 0) {
                 $.ajax({
                     type: 'POST',
@@ -48,7 +48,7 @@
                                 list += '<li class="dropdown-header">Other Options</li>';
                             }
                             list += '<li><a href="' + result.url + '">' + result.line1 + '</a></li>';
-                            
+
                         });
                         list += '</ul>';
                         $('#search-results').html(list).slideDown();

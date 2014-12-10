@@ -1,53 +1,8 @@
 ﻿@using CmsWeb
 @model CmsWeb.Areas.Reports.Models.DecisionSummaryModel
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout()
     ViewBag.Title = "Decision Summary Report";
-}
-@section head {
-    <style type="text/css">
-        body {
-            font-size: 110%;
-        }
-
-        .TotalLine td {
-            border-top: 2px solid black;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        .headerrow th {
-            border-bottom: 2px solid black;
-            text-align: center;
-        }
-
-        input#SundayDate {
-            width: 100px;
-            font-size: 100%;
-        }
-    </style>
-}
-@section scripts
-{
-    <script type="text/javascript">
-        $(function () {
-            $(".datepicker").jqdatepicker();
-            $("a.run").button();
-            $("a.run").click(function (ev) {
-                ev.preventDefault();
-                ev.preventDefault();
-                var f = $("#form");
-                f.attr("action", $(this)[0].href);
-                f.submit();
-            });
-            $("a.query").click(function (ev) {
-                ev.preventDefault();
-                var f = $("#form");
-                f.attr("action", $(this)[0].href);
-                f.submit();
-            });
-        });
-    </script>
 }
 <div style="text-align: center">
     <h1>Decision Summary Report</h1>
@@ -255,3 +210,25 @@
         </tbody>
     </table>
 </div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $(".datepicker").jqdatepicker();
+            $("a.run").button();
+            $("a.run").click(function (ev) {
+                ev.preventDefault();
+                ev.preventDefault();
+                var f = $("#form");
+                f.attr("action", $(this)[0].href);
+                f.submit();
+            });
+            $("a.query").click(function (ev) {
+                ev.preventDefault();
+                var f = $("#form");
+                f.attr("action", $(this)[0].href);
+                f.submit();
+            });
+        });
+    </script>
+}
