@@ -3,82 +3,136 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Lookups";
 }
-@section head{
-    <style>
-        ul.list-group li a {
-            text-decoration: underline;
-        }
-    </style>
+<h2>Lookup Lists</h2>
+
+@if (!User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Financial</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="/Funds">Funds</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 }
-<h2>Lookup Tables</h2>
-<div class="row">
-    @if (!User.IsInRole("Admin"))
-    {
-        <div class="col-sm-4">
+else
+{
+    <div class="row">
+        <div class="col-sm-4 col-md-4 col-lg-3">
             <div class="panel panel-default">
-                <ul class="nav nav-pills nav-stacked">
-                    <li><a href="/Funds">Funds</a></li>
-                </ul>
+                <div class="panel-heading">
+                    <h3 class="panel-title">People</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="/Lookup/AddressType">Address Type</a></li>
+                        <li><a href="/Lookup/EnvelopeOption">Envelope Option</a></li>
+                        <li><a href="/Lookup/FamilyPosition">Family Position</a></li>
+                        <li><a href="/Lookup/Gender">Gender</a></li>
+                        <li><a href="/Lookup/MaritalStatus">Marital Status</a></li>
+                        <li><a href="/Lookup/MemberStatus">Member Status</a></li>
+                        <li><a href="/MemberType">Member Types</a></li>
+                        <li><a href="/Lookup/NameTitle">Name Title</a></li>
+                        <li><a href="/Lookup/Origin">Origin</a></li>
+                        <li><a href="/Lookup/ResidentCode">Resident Code</a></li>
+                        <li><a href="/Lookup/ShirtSizes">Shirt Sizes</a></li>
+                        <li><a href="/Lookup/VolApplicationStatus">Volunteer Application Status</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
-    }
-    else
-    {
-        <div class="col-sm-4">
+        <div class="col-sm-4 col-md-4 col-lg-3">
             <div class="panel panel-default">
-                <ul class="nav nav-pills nav-stacked">
-                    <li><a href="/Lookup/AddressType">Address Type</a></li>
-                    <li><a href="/Lookup/AttendCredit">Attend Credit</a></li>
-                    <li><a href="/Lookup/AttendType">Attend Type</a></li>
-                    <li><a href="/Lookup/BackgroundCheckLabels">Background Check Labels</a></li>
-                    <li><a href="/Lookup/BaptismStatus">Baptism Status</a></li>
-                    <li><a href="/Lookup/BaptismType">Baptism Type</a></li>
-                    <li><a href="/Lookup/BundleHeaderTypes">Bundle Header Types</a></li>
-                    <li><a href="/Lookup/BundleStatusTypes">Bundle Status Types</a></li>
-                    <li><a href="/Lookup/Campus">Campus</a></li>
-                    <li><a href="/Lookup/ContactReason">Contact Reason</a></li>
-                    <li><a href="/Lookup/ContactType">Contact Type</a></li>
-                    <li><a href="/Lookup/ContributionStatus">Contribution Status</a></li>
-                    <li><a href="/Lookup/ContributionType">Contribution Type</a></li>
-                </ul>
+                <div class="panel-heading">
+                    <h3 class="panel-title">Organizations</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="/Lookup/AttendCredit">Attend Credit</a></li>
+                        <li><a href="/Lookup/AttendType">Attend Type</a></li>
+                        <li><a href="/Lookup/BackgroundCheckLabels">Background Check Labels</a></li>
+                        <li><a href="/Lookup/Campus">Campus</a></li>
+                        <li><a href="/Lookup/InterestPoint">Interest Point</a></li>
+                        <li><a href="/Ministry">Ministries</a></li>
+                        <li><a href="/Lookup/OrganizationStatus">Organization Status</a></li>
+                        <li><a href="/Lookup/OrganizationType">Organization Type</a></li>
+                        <li><a href="/Roles">Roles</a></li>
+                        <li><a href="/Lookup/VolunteerCodes">Volunteer Codes</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-4 col-md-4 col-lg-3">
             <div class="panel panel-default">
-                <ul class="nav nav-pills nav-stacked">
-                    <li><a href="/Reports/CustomColumns/" target="_blank">Custom Columns</a></li>
-                    <li><a href="/Lookup/DecisionType">Decision Type</a></li>
-                    <li><a href="/Lookup/DropType">Drop Type</a></li>
-                    <li><a href="/Lookup/EntryPoint">Entry Point</a></li>
-                    <li><a href="/Lookup/EnvelopeOption">Envelope Option</a></li>
-                    <li><a href="/Lookup/FamilyPosition">Family Position</a></li>
-                    <li><a href="/Lookup/Gender">Gender</a></li>
-                    <li><a href="/Lookup/InterestPoint">Interest Point</a></li>
-                    <li><a href="/Lookup/JoinType">Join Type</a></li>
-                    <li><a href="/Lookup/MaritalStatus">Marital Status</a></li>
-                    <li><a href="/Lookup/MemberLetterStatus">Member Letter Status</a></li>
-                    <li><a href="/Lookup/MemberStatus">Member Status</a></li>
-                    <li><a href="/MemberType">Member Types</a></li>
-                </ul>
+                <div class="panel-heading">
+                    <h3 class="panel-title">Membership</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="/Lookup/BaptismStatus">Baptism Status</a></li>
+                        <li><a href="/Lookup/BaptismType">Baptism Type</a></li>
+                        <li><a href="/Lookup/DecisionType">Decision Type</a></li>
+                        <li><a href="/Lookup/DropType">Drop Type</a></li>
+                        <li><a href="/Lookup/EntryPoint">Entry Point</a></li>
+                        <li><a href="/Lookup/JoinType">Join Type</a></li>
+                        <li><a href="/Lookup/MemberLetterStatus">Member Letter Status</a></li>
+                        <li><a href="/Lookup/NewMemberClassStatus">New Member Class Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Reports</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="/Reports/CustomColumns/" target="_blank">Custom Columns</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="col-sm-4">
-            <div class="panel panel-default">
-                <ul class="nav nav-pills nav-stacked">
-                    <li><a href="/Ministry">Ministries</a></li>
-                    <li><a href="/Lookup/NameTitle">Name Title</a></li>
-                    <li><a href="/Lookup/NewMemberClassStatus">New Member Class Status</a></li>
-                    <li><a href="/Lookup/OrganizationStatus">Organization Status</a></li>
-                    <li><a href="/Lookup/OrganizationType">Organization Type</a></li>
-                    <li><a href="/Lookup/Origin">Origin</a></li>
-                    <li><a href="/Lookup/ResidentCode">Resident Code</a></li>
-                    <li><a href="/Roles">Roles</a></li>
-                    <li><a href="/Lookup/ShirtSizes">Shirt Sizes</a></li>
-                    <li><a href="/Lookup/TaskStatus">Task Status</a></li>
-                    <li><a href="/Lookup/VolApplicationStatus">Volunteer Application Status</a></li>
-                    <li><a href="/Lookup/VolunteerCodes">Volunteer Codes</a></li>
-                </ul>
+        <div class="clearfix visible-sm-block visible-md-block"></div>
+        <div class="col-sm-12 col-md-12 col-lg-3">
+            <div class="row">
+                <div class="col-sm-4 col-md-4 col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Contact</h3>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="/Lookup/ContactReason">Contact Reason</a></li>
+                                <li><a href="/Lookup/ContactType">Contact Type</a></li>
+                                <li><a href="/Lookup/TaskStatus">Task Status</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Contributions</h3>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="/Lookup/BundleHeaderTypes">Bundle Header Types</a></li>
+                                <li><a href="/Lookup/BundleStatusTypes">Bundle Status Types</a></li>
+                                <li><a href="/Lookup/ContributionStatus">Contribution Status</a></li>
+                                <li><a href="/Lookup/ContributionType">Contribution Type</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
+            
         </div>
-    }
-</div>
+    </div>
+}
