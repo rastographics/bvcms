@@ -161,20 +161,22 @@ Please contact the Finance office at the church." };
             if (!tempgateway.HasValue())
                 return db.Gateway();
 
-            var gateway = db.Setting("TranactionGateway", "");
+            var gateway = db.Setting("TransactionGateway", "");
             switch (gateway) // Check to see if standard gateway is set up
             {
                 case "Sage":
-                    if (pi.PreferredGivingType == "B" && pi.SageBankGuid.HasValue)
-                        if (pi.PreferredGivingType == "C" && pi.SageCardGuid.HasValue)
-                            return db.Gateway();
+                    if ((pi.PreferredGivingType == "B" && pi.SageBankGuid.HasValue) ||
+                        (pi.PreferredGivingType == "C" && pi.SageCardGuid.HasValue))
+                        return db.Gateway();
                     break;
                 case "Transnational":
-                    if (pi.PreferredGivingType == "B" && pi.TbnBankVaultId.HasValue)
-                        if (pi.PreferredGivingType == "C" && pi.TbnCardVaultId.HasValue)
-                            return db.Gateway();
+                    if ((pi.PreferredGivingType == "B" && pi.TbnBankVaultId.HasValue) ||
+                        (pi.PreferredGivingType == "C" && pi.TbnCardVaultId.HasValue))
+                        return db.Gateway();
                     break;
             }
+
+            // fall back to temporary gateway because the user hasn't migrated their payments off of the temporary gateway yet
             return db.Gateway(usegateway: tempgateway);
         }
         public static int DoAllGiving(CMSDataContext Db)
