@@ -148,7 +148,20 @@ namespace CmsWeb.Areas.Public.Controllers
             if (dataIn.type != BaseMessage.API_TYPE_GIVING_ONE_TIME_LINK_GIVING)
                 return BaseMessage.createTypeErrorReturn();
 
-            throw new NotImplementedException();
+            var givingOrgId = DbUtil.Db.Organizations
+                .Where(o => o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
+                .Select(x => x.OrganizationId).FirstOrDefault();
+
+            var ot = GetOneTimeLink(givingOrgId, result.User.PeopleId.GetValueOrDefault());
+
+            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
+            DbUtil.Db.SubmitChanges();
+//			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
+
+            var br = new BaseMessage();
+            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
+            br.error = 0;
+            return br;
         }
 
         [HttpPost]
@@ -161,7 +174,20 @@ namespace CmsWeb.Areas.Public.Controllers
             if (dataIn.type != BaseMessage.API_TYPE_GIVING_ONE_TIME_LINK_MANAGED_GIVING)
                 return BaseMessage.createTypeErrorReturn();
 
-            throw new NotImplementedException();
+            var managedGivingOrgId = DbUtil.Db.Organizations
+                .Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
+                .Select(x => x.OrganizationId).FirstOrDefault();
+
+            var ot = GetOneTimeLink(managedGivingOrgId, result.User.PeopleId.GetValueOrDefault());
+
+            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
+            DbUtil.Db.SubmitChanges();
+//			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
+
+            var br = new BaseMessage();
+            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
+            br.error = 0;
+            return br;
         }
 
         [HttpPost]
@@ -174,7 +200,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (dataIn.type != BaseMessage.API_TYPE_REGISTRATION_ONE_TIME_LINK)
                 return BaseMessage.createTypeErrorReturn();
 
-            var orgId = dataIn.data;
+            var orgId = dataIn.data.ToInt();
 
             var ot = GetOneTimeLink(orgId, result.User.PeopleId.GetValueOrDefault());
 
@@ -755,7 +781,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
         }
 
-        private static OneTimeLink GetOneTimeLink(string orgId, int peopleId)
+        private static OneTimeLink GetOneTimeLink(int orgId, int peopleId)
         {
             return new OneTimeLink
             {
