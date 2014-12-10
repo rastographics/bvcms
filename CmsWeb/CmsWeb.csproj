@@ -914,7 +914,6 @@
     <Content Include="Scripts\touchpoint\js\dialog\search-users.js" />
     <Content Include="Scripts\touchpoint\js\form-ajax.js" />
     <Content Include="Scripts\touchpoint\js\main.js" />
-    <Content Include="Scripts\touchpoint\js\reports\church-attendance.js" />
     <Content Include="Scripts\touchpoint\js\search\people-search.js" />
     <Content Include="Scripts\touchpoint\js\search\search-add.js" />
     <Content Include="Scripts\touchpoint\js\tags.js" />

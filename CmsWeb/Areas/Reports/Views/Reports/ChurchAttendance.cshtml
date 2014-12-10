@@ -6,16 +6,19 @@
 }
 <h2>Week at a Glance Attendance Report</h2>
 <div class="well hidden-print">
-    <label for="Sunday">Sunday Date</label>
+    <label for="Dt">Sunday Date</label>
     <div class="row">
-        <div class="col-sm-12 form-inline">
-            <div class="input-group date">
-                @Html.TextBox("Sunday", Model.Sunday.ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+        @using (Html.BeginForm("ChurchAttendance", "Reports", FormMethod.Get)) 
+        { 
+            <div class="col-sm-12 form-inline">
+                <div class="input-group date">
+                    @Html.TextBox("Dt", Model.Sunday.ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+                <div class="input-group">
+                    <button type="submit" class="btn btn-primary">Run</button>
+                </div>
             </div>
-            <div class="input-group">
-                <a class="btn btn-primary run">Run</a>
-            </div>
-        </div>
+        }
     </div>
 </div>
 <div class="visible-print-block">
@@ -84,5 +87,7 @@
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/touchpoint/js/reports/church-attendance.js")
+    <script>
+        $('.input-group.date').datepicker();
+    </script>
 }
