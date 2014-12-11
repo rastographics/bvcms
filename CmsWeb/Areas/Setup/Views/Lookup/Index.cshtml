@@ -71,9 +71,9 @@
             });
 
             $("a.delete").click(function (e) {
+                e.preventDefault();
                 var id = $(this).attr("id");
                 var type = $('#type').val();
-                e.preventDefault();
                 swal({
                     title: "Are you sure?",
                     type: "warning",

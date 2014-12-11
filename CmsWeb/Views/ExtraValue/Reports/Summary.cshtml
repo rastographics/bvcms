@@ -1,24 +1,22 @@
 ﻿@model IEnumerable<CmsWeb.Models.ExtraValues.ExtraInfo>
 @{
-    ViewBag.Title = "ExtraValues";
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
-}
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/js/ExtraValueSummary.js")
+    ViewBag.Title = "Extra Values";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
 
-<div class="container">
-    <h2>Extra Values</h2>
-    <table class="table table-condensed table-striped not-wide left-gutter">
+<h2>Extra Values</h2>
+<table class="table table-striped">
+    <thead>
         <tr>
             <th>Name</th>
             <th>Value</th>
-            <th>Type</th>
-            <th class="right">Count</th>
-            <th></th>
-            <th></th>
+            <th>Data Type</th>
+            <th class="text-right">Count</th>
+            <th class="text-center">Standard</th>
+            <th>Actions</th>
         </tr>
+    </thead>
+    <tbody>
         @foreach (var e in Model)
         {
             if (!e.CanView) { continue; }
@@ -27,24 +25,23 @@
                 <tr>
                     <td>
                         <a href="@e.QueryUrl">@e.Field</a>
-                        <a class="rename" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)">
-                            <i class="fa fa-pencil"></i>
-                        </a>
                     </td>
                     <td>@e.Value</td>
                     <td>@e.TypeDisplay</td>
-                    <td class="right">@e.Count.ToString("N0")</td>
-                    <td>
+                    <td class="text-right">@e.Count.ToString("N0")</td>
+                    <td class="text-center">
                         @if (e.Standard)
                         {
-                            @:Standard
+                            <i class="fa fa-check"></i>
                         }
                         else
                         {
-                            <a href="@e.ConvertToStandardUrl" class="btn btn-mini">Convert to Standard</a>
+                            <a href="@e.ConvertToStandardUrl" class="btn btn-default"><i class="fa fa-group"></i> Standardize</a>
                         }
                     </td>
-                    <td><a class="delete" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-times"></i></a></td>
+                    <td>
+                        <a class="rename btn btn-default" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)"><i class="fa fa-pencil"></i> Rename</a> <a class="delete btn btn-danger" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-trash"></i> Delete</a>
+                    </td>
                 </tr>
             }
             else
@@ -55,7 +52,7 @@
                     </td>
                     <td>@e.Value</td>
                     <td>@e.TypeDisplay</td>
-                    <td class="right">@e.Count.ToString("N0")</td>
+                    <td class="text-right">@e.Count.ToString("N0")</td>
                     <td>
                         @if (e.Standard)
                         {
@@ -67,10 +64,63 @@
 
             }
         }
-    </table>
-    @if (User.IsInRole("Admin"))
+    </tbody>
+</table>
+@if (User.IsInRole("Admin"))
 {
-    <a href="/Display/ContentEdit/@ViewBag.EvSpecId">Standard ExtraValues Specification</a>
-
+    <a href="/Display/ContentEdit/@ViewBag.EvSpecId" class="btn btn-default">Standard Extra Values Specification</a>
 }
-</div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $("a.delete").click(function (e) {
+                e.preventDefault();
+                var d = $(this);
+                var url = this.href;
+                swal({
+                    title: "Are you sure?",
+                    text: "Doing so will delete all data associated with this extra value field.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post(url, null, function () {
+                        d.closest("tr").remove();
+                        swal("Deleted!", "", "success");
+                    });
+                });
+            });
+
+            $("a.rename").click(function(ev) {
+                ev.preventDefault();
+                var url = this.href;
+                bootbox.dialog({
+                    title: 'Rename Extra Value',
+                    message: '<label for="name">Name</label><input id="name" name="name" type="text" class="form-control" value=' + $(this).data("default") + '>',
+                    buttons: {
+                        cancel: {
+                            label: "Cancel",
+                            className: "btn-default"
+                        },
+                        rename: {
+                            label: "Rename",
+                            className: "btn-primary",
+                            callback: function () {
+                                var result = $('#name').val();
+                                if (result !== null) {
+                                        $.post(url, { newname: result }, function () {
+                                            window.location.reload();
+                                        });
+                                    }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

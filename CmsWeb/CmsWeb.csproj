@@ -901,6 +901,7 @@
     <Content Include="Scripts\Search\SavedQuery2.js" />
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
+    <Content Include="Scripts\touchpoint\bootstrap-bootbox\bootbox.min.js" />
     <Content Include="Scripts\touchpoint\bootstrap-datepicker\bootstrap-datepicker.js" />
     <Content Include="Scripts\touchpoint\bootstrap-editable\bootstrap-editable.js" />
     <Content Include="Scripts\touchpoint\bootstrap-editable\bootstrap-editable.min.js" />
