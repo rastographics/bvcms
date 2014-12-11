@@ -383,7 +383,7 @@ namespace CmsWeb.Areas.Org.Models
                                 orderby o.RegistrationTypeId, o.OrganizationName
                                 select o;
                         break;
-                    case "Public Sort":
+                    case "App Order":
                         query = from o in query
                                 orderby o.PublicSortOrder ?? "zzz", o.OrganizationName
                                 select o;
@@ -465,9 +465,9 @@ namespace CmsWeb.Areas.Org.Models
                                 o.OrganizationName descending
                                 select o;
                         break;
-                    case "Public Sort":
+                    case "App Order":
                         query = from o in query
-                                orderby o.PublicSortOrder descending , o.OrganizationName descending 
+                                orderby o.PublicSortOrder ?? "zzz", o.OrganizationName 
                                 select o;
                         break;
                     case "Members":
@@ -639,17 +639,17 @@ namespace CmsWeb.Areas.Org.Models
             list.Insert(0, new SelectListItem
             {
                 Value = RegistrationClassification.AnyOnlineRegActive96.ToString(),
-                Text = "(any active online registration)",
+                Text = "(any active registration)",
             });
             list.Insert(0, new SelectListItem
             {
                 Value = RegistrationClassification.AnyOnlineRegNonPicklist97.ToString(),
-                Text = "(any online entrypoint)",
+                Text = "(any registration, no picklist)",
             });
             list.Insert(0, new SelectListItem
             {
                 Value = RegistrationClassification.AnyOnlineReg99.ToString(),
-                Text = "(any online registration)",
+                Text = "(any registration)",
             });
             list.Insert(0, new SelectListItem
             {

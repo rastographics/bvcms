@@ -133,7 +133,7 @@ namespace CmsWeb.Areas.Org.Controllers
                     org.CanSelfCheckin = value == "yes";
                     break;
                 case "so":
-                    org.PublicSortOrder = value;
+                    org.PublicSortOrder = value.HasValue() ? value : null;
                     break;
             }
             DbUtil.Db.SubmitChanges();

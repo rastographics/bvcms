@@ -8,13 +8,18 @@
     $("a.trigger-dropdown").dropdown2();
     $("#clear").click(function (ev) {
         ev.preventDefault();
+        $("#PublicView").removeAttr('checked');
         $("input:text").val("");
         $("#ProgramId,#CampusId,#ScheduleId,#TypeId").val(0);
         $("#OnlineReg").val(-1);
         $.post('/OrgSearch/DivisionIds/0', null, function (ret) {
             $('#DivisionId').html(ret);
         });
+        $.getTable();
         return false;
+    });
+    $("#PublicView").click(function () {
+        $.getTable();
     });
     $("#search").click(function (ev) {
         ev.preventDefault();
@@ -211,8 +216,8 @@
         $("#search").click();
     });
 
-    $("form").on("keypress", 'input', function (e) {
-        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+    $("#Name").keypress(function (e) {
+        if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
             $('a.default').click();
             return false;
         }

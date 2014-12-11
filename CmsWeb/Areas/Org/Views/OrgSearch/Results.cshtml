@@ -1,6 +1,10 @@
 ﻿@using CmsWeb
 @model CmsWeb.Areas.Org.Models.OrgSearchModel
-@if (User.IsInRole("edit"))
+@{
+  var canManageEvents = User.IsInRole("Admin") || User.IsInRole("ManageEvents");
+  var canEdit = User.IsInRole("Edit");
+}
+@if (canEdit)
 {
   <script type="text/javascript">
     $(function () {
@@ -8,7 +12,6 @@
     });
   </script>
 }
-
 <table id="results" class="@ViewExtensions2.GridClass">
   <thead>
     <tr>
@@ -53,7 +56,7 @@
         <th><br /><a href="#" class="sortable">Filled</a></th>
         <th><br /><a href="#" class="sortable">Closed</a></th>
         <th><br /><a href="#" class="sortable">Type</a></th>
-        <th><a href="#" class="sortable">Public Sort</a></th>
+        <th><a href="#" class="sortable">App Order</a></th>
         <th><br/><a href="#" class="sortable">FirstDate</a></th>
         <th>Description</th>
       </tr>
@@ -74,9 +77,27 @@
           <td>@o.ClassFilled</td>
           <td>@o.RegClosed</td>
           <td>@o.RegType</td>
-          <td><span id="so-@o.Id" class="publicsort pointer">@(o.PublicSortOrder ?? "edit")</span></td>
+          <td>
+            @if (canManageEvents)
+            {
+            <span id="so-@o.Id" class="publicsort pointer">@(o.PublicSortOrder ?? "edit")</span>
+            }
+            else
+            {
+            <span>@o.PublicSortOrder</span>
+            }
+          </td>
           <td>@o.FirstMeetingDate</td>
-          <td><div id="des-@o.Id" class="descr pointer">@Html.Raw(o.Description ?? "edit")</div></td>
+          <td>
+            @if (canEdit)
+            {
+            <div id="des-@o.Id" class="descr pointer">@Html.Raw(o.Description ?? "edit")</div>
+            }
+            else
+            {
+            <div>@Html.Raw(o.Description)</div>
+            }
+          </td>
         </tr>
       }
     }

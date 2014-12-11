@@ -84,6 +84,16 @@
     <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test2|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test3|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AuthorizeNet">
       <HintPath>..\packages\AuthorizeNet.1.8.2\lib\AuthorizeNet.dll</HintPath>
@@ -1553,7 +1563,16 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
     <Content Include="Views\Shared\Message.cshtml" />
     <Content Include="Views\Home\PyScript.cshtml" />
+    <None Include="Web.bvcms.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
     <None Include="Web.TeamCity.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.test2.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.test3.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
@@ -2331,10 +2350,6 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Shared\ExportToolBar.cshtml">
-    </Content>
-    <Content Include="Web.bvcms.config">
-      <DependentUpon>Web.config</DependentUpon>
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.test.config">
       <DependentUpon>Web.config</DependentUpon>
