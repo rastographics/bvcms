@@ -35,7 +35,7 @@
             <td style="width: 100px;">
                 @if (!item.Hardwired.GetValueOrDefault())
                 {
-                    <a id='d@(item.Id)' href="#" class="delete"><i class="fa fa-trash"></i></a>
+                    <a id='d@(item.Id)' href="#" class="delete btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
                 }
             </td>
         </tr>
@@ -47,7 +47,7 @@
         @Html.Hidden("type", ViewData["type"])
         <label for="pk" class="col-sm-2 col-md-1 control-label">New Id:</label>
         <div class="col-sm-10 col-md-11">
-            <input type="text" name="pk" class="form-control" />
+            <input type="text" id="pk" name="pk" class="form-control" />
             <input type="submit" class="btn btn-primary" value="Create" />
         </div>
     }    
@@ -69,15 +69,34 @@
                 type: 'text',
                 url: "/Lookup/Edit/"
             });
-            $("a.delete").click(function (ev) {
-                ev.preventDefault();
-                if (confirm("are you sure?"))
-                    $.post("/Lookup/Delete/" + $(this).attr("id"), { type: $('#type').val() }, function (ret) {
+
+            $("a.delete").click(function (e) {
+                var id = $(this).attr("id");
+                var type = $('#type').val();
+                e.preventDefault();
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/Lookup/Delete/" + id, { type: type }, function (ret) {
                         if (ret && ret.error)
-                            alert(ret.error);
-                        else
-                            window.location = "/Lookup/" + $('#type').val();
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/Lookup/" + $('#type').val();
+                            });
+                        }
                     });
+                });
             });
         });
     </script>
