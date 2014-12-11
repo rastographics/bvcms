@@ -176,6 +176,7 @@ namespace CmsWeb.Models
             }
             else
             {
+                // NOTE: this is necessary only for the old iOS application
                 username = HttpContext.Current.Request.Headers["username"];
                 password = HttpContext.Current.Request.Headers["password"];
             }
