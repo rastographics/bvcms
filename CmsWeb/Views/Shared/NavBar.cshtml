@@ -63,16 +63,33 @@
                         <ul class="dropdown-menu">
                             @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
                             @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
-                            
-                            
-
-                            @Helper.LiAnchorLink("Open Person In New Tab", (targetperson ? "dropdown-icon fa fa-toggle-on" : "dropdown-icon fa fa-toggle-off"), "/Home/TargetPerson/" + targetperson)
+                            <li class="divider"></li>
+                            <li>
+                                <a href="Home/TargetPerson/@Html.Raw(targetperson)">
+                                    @if (targetperson)
+                                    {
+                                        <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i><span>&nbsp;&nbsp;Open People In New Tab</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="dropdown-icon fa fa-toggle-off"></i><span>&nbsp;&nbsp;Open Person In New Tab</span>
+                                    }
+                                </a>
+                            </li>
                             @if (finance)
                             {
-                                @Helper.LiAnchorLink("Turn finance off", "/APITest/TurnFinanceOff", !testnofinance)
-                                @Helper.LiAnchorLink("Turn finance on", "/APITest/TurnFinanceOn", testnofinance)
+                                <li>
+                                    @if (!testnofinance)
+                                    {
+                                        <a href="/APITest/TurnFinanceOff"><i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i><span>&nbsp;&nbsp;Finance Role</span></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="/APITest/TurnFinanceOn"><i class="dropdown-icon fa fa-toggle-off"></i><span>&nbsp;&nbsp;Finance Role</span></a>
+                                    }
+                                </li>
                             }
-                            @Helper.LiAnchorLink("Reset Help tips", "/ResetTips")
+                            @Helper.LiAnchorLink("Reset Help Tips", "/ResetTips")
                             <li class="divider"></li>
                             @Helper.LiAnchorLink("Log Out", "dropdown-icon fa fa-power-off", "/Account/LogOff/")
                         </ul>
