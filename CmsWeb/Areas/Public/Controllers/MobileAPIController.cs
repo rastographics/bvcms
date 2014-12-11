@@ -21,11 +21,15 @@ namespace CmsWeb.Areas.Public.Controllers
     {
         private UserValidationResult AuthenticateUser()
         {
-            var authHeader = Request.Headers["Authorization"];
-            var sessionToken = Request.Headers["SessionToken"];
+            var hasInvalidAuthHeaders = (string.IsNullOrEmpty(Request.Headers["Authorization"]) &&
+                                         // the below checks are only necessary for the old iOS application
+                                         (string.IsNullOrEmpty(Request.Headers["username"]) ||
+                                          string.IsNullOrEmpty(Request.Headers["password"])));
 
-            if (string.IsNullOrEmpty(authHeader) && string.IsNullOrEmpty(sessionToken))
-                throw new HttpException(400, "Either the Authorization or SessionToken headers are required.");
+            var hasInvalidSessionTokenHeader = string.IsNullOrEmpty(Request.Headers["SessionToken"]);
+
+            if (hasInvalidAuthHeaders && hasInvalidSessionTokenHeader)
+                throw new HttpException(400, "Either Authorization headers or a SessionToken header are required.");
 
             return AccountModel.AuthenticateMobile();
         }
@@ -33,17 +37,6 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult Authenticate()
         {
-            if (CmsWeb.Models.AccountModel.AuthenticateMobile().IsValid) return null;
-			else
-			{
-				return BaseMessage.createErrorReturn("You are not authorized!");
-			}
-
-            /*
-            var authHeader = Request.Headers["Authorization"];
-            if (string.IsNullOrEmpty(authHeader))
-                throw new HttpException(400, "The Authorization header is required.");
-
             var result = AuthenticateUser();
 
             if (!result.IsValid)
@@ -53,7 +46,6 @@ namespace CmsWeb.Areas.Public.Controllers
             br.error = 0;
             br.data = result.User.ApiSessions.Single().SessionToken.ToString();
             return br;
-            */
         }
 
         [HttpPost]
