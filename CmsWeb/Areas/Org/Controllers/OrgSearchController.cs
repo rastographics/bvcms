@@ -5,6 +5,7 @@ using CmsWeb.Areas.Org.Models;
 using CmsData;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
+using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -12,18 +13,6 @@ namespace CmsWeb.Areas.Org.Controllers
     [RouteArea("Org", AreaPrefix="OrgSearch"), Route("{action=index}/{id?}")]
     public class OrgSearchController : CmsStaffController
     {
-        [Serializable]
-        class OrgSearchInfo
-        {
-            public string Name { get; set; }
-            public int? Program { get; set; }
-            public int? Division { get; set; }
-            public int? Type { get; set; }
-            public int? Campus { get; set; }
-            public int? Sched { get; set; }
-            public int? Status { get; set; }
-            public int? OnlineReg { get; set; }
-        }
         private const string STR_OrgSearch = "OrgSearch2";
 
         [Route("~/OrgSearch/{progid:int?}/{div:int?}")]
@@ -48,24 +37,15 @@ namespace CmsWeb.Areas.Org.Controllers
                 m.TagProgramId = m.ProgramId;
             }
             else if (Session[STR_OrgSearch].IsNotNull())
-            {
-                var os = Session[STR_OrgSearch] as OrgSearchInfo;
-                m.Name = os.Name;
-                m.ProgramId = os.Program;
-                m.DivisionId = os.Division;
-                m.ScheduleId = os.Sched;
-                m.StatusId = os.Status;
-                m.OnlineReg = os.OnlineReg;
-                m.TypeId = os.Type;
-                m.CampusId = os.Campus;
-            }
+                (Session[STR_OrgSearch] as OrgSearchInfo).CopyPropertiesTo(m);
+
             return View(m);
         }
         [HttpPost]
         public ActionResult Results(OrgSearchModel m)
         {
             UpdateModel(m.Pager);
-            SaveToSession(m);
+            Session[STR_OrgSearch] = new OrgSearchInfo(m);
             return View(m);
         }
         [HttpPost]
@@ -131,20 +111,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             return m.OrgsMemberList();
         }
-        private void SaveToSession(OrgSearchModel m)
-        {
-            Session[STR_OrgSearch] = new OrgSearchInfo
-            {
-                Name = m.Name,
-                Program = m.ProgramId,
-                Division = m.DivisionId,
-                Sched = m.ScheduleId,
-                Status = m.StatusId,
-                OnlineReg = m.OnlineReg,
-                Type = m.TypeId,
-                Campus = m.CampusId,
-            };
-        }
+
         [HttpPost]
         public ContentResult Edit(string id, string value)
         {
@@ -165,9 +132,21 @@ namespace CmsWeb.Areas.Org.Controllers
                 case "ck":
                     org.CanSelfCheckin = value == "yes";
                     break;
+                case "so":
+                    org.PublicSortOrder = value.HasValue() ? value : null;
+                    break;
             }
             DbUtil.Db.SubmitChanges();
             return c;
+        }
+        [HttpPost, ValidateInput(false)]
+        public ActionResult SetDescription(string id, string description)
+        {
+            var a = id.Split('-');
+            var org = DbUtil.Db.LoadOrganizationById(a[1].ToInt());
+            org.Description = description;
+            DbUtil.Db.SubmitChanges();
+            return Content("ok");
         }
         [HttpPost]
         public ActionResult ToggleTag(int id, int tagdiv)
@@ -311,6 +290,23 @@ namespace CmsWeb.Areas.Org.Controllers
             return s.StartsWith("Error") 
                 ? RedirectShowError(s) 
                 : Redirect(m.ConvertToSearch());
+        }
+        [Serializable]
+        class OrgSearchInfo
+        {
+            public OrgSearchInfo(OrgSearchModel m)
+            {
+                this.CopyPropertiesFrom(m);
+            }
+            public string Name { get; set; }
+            public int? ProgramId { get; set; }
+            public int? DivisionId { get; set; }
+            public int? TypeId { get; set; }
+            public int? CampusId { get; set; }
+            public int? ScheduleId { get; set; }
+            public int? StatusId { get; set; }
+            public int? OnlineReg { get; set; }
+            public bool PublicView { get; set; }
         }
     }
 }

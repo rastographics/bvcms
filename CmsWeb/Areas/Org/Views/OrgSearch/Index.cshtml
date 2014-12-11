@@ -8,6 +8,7 @@
 @section scripts
 {
   @Fingerprint.Script("/Scripts/Org/OrgSearch.js")
+  @ViewExtensions2.CKEditor()
 }
 @section head
 {
@@ -27,6 +28,9 @@
 
     .btn-group.btn-page-actions {
       margin-top: 0;
+    }
+    .pointer {
+      cursor:pointer;
     }
   </style>
 }
@@ -61,10 +65,11 @@
             <td>@Html.DropDownList("OnlineReg", OrgSearchModel.RegistrationTypeIds())</td>
           </tr>
           <tr>
-            <td class="right top nowrap" colspan="2">
+            <td class="top nowrap" colspan="2">
+              Public View @Html.CheckBox("PublicView")
               @if (User.IsInRole("Developer"))
               {
-              <a class="ViewReport btn mini btn-info" href="ConvertToSearch">Convert to Search</a>
+                <a class="ViewReport btn mini btn-info" href="ConvertToSearch">Convert to Search</a>
               }
             </td>
             <td class="right" colspan="2">
@@ -220,6 +225,13 @@
       </td>
     </tr>
   </table>
+</div>
+<div id="EditorDialog" style="display: none; position: absolute; z-index: 1005">
+  @Html.TextArea("editor", "", new { style = "height:450px;", @class = "editor", rows = "16", cols = "20" })
+  <div style="text-align: right">
+    <a id="canceledit" href="#" class="bt">Cancel</a>
+    <a id="saveedit" href="#" class="bt blue">Save</a>
+  </div>
 </div>
 
 

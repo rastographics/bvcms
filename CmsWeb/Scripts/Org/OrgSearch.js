@@ -1,21 +1,30 @@
 ﻿$(function () {
+    CKEDITOR.replace('editor', {
+        height: 200,
+        customConfig: '/scripts/js/ckeditorconfig.js'
+    });
     $('#Name').focus();
     $(".bt").button();
     $("a.trigger-dropdown").dropdown2();
     $("#clear").click(function (ev) {
         ev.preventDefault();
+        $("#PublicView").removeAttr('checked');
         $("input:text").val("");
         $("#ProgramId,#CampusId,#ScheduleId,#TypeId").val(0);
         $("#OnlineReg").val(-1);
         $.post('/OrgSearch/DivisionIds/0', null, function (ret) {
             $('#DivisionId').html(ret);
         });
+        $.getTable();
         return false;
+    });
+    $("#PublicView").click(function () {
+        $.getTable();
     });
     $("#search").click(function (ev) {
         ev.preventDefault();
         var name = $('#Name').val();
-        if (name.match("^" + "M\.") == "M.") {
+        if (name.match("^" + "M\.") === "M.") {
             $('#Name').val("");
             var f = $('#results').closest('form');
             f.attr("action", "/OrgSearch/CreateMeeting/" + name);
@@ -101,9 +110,44 @@
                     onblur: 'ignore',
                     submit: 'OK'
                 });
+            } else if ($(e.target).hasClass("publicsort")) {
+                $(e.target).editable('/OrgSearch/Edit', {
+                    width: 150,
+                    placeholder: 'edit',
+                    height: 22,
+                    submit: 'OK',
+                    tooltip: 'click to edit...'
+                });
             }
         });
     };
+    $(".descr").live("click", function (ev) {
+        ev.preventDefault();
+        var $a = $(this);
+        if ($a.text() === "edit")
+            $a.html('');
+        CKEDITOR.instances['editor'].setData($a.html());
+        dimOn();
+        $("#EditorDialog").center().show();
+        $("#saveedit").off("click").on("click", function (ev) {
+            ev.preventDefault();
+            var v = CKEDITOR.instances['editor'].getData();
+            $a.html(v);
+            var id = $a.attr("id");
+            $.post("/OrgSearch/SetDescription", { id: id, description: v });
+            CKEDITOR.instances['editor'].setData('');
+            $('#EditorDialog').hide("close");
+            dimOff();
+            return false;
+        });
+        return false;
+    });
+    $("#canceledit").live("click", function (ev) {
+        ev.preventDefault();
+        $('#EditorDialog').hide("close");
+        dimOff();
+        return false;
+    });
     $.fmtTable();
     $.maxZIndex = $.fn.maxZIndex = function (opt) {
         var def = { inc: 10, group: "*" };
@@ -172,8 +216,8 @@
         $("#search").click();
     });
 
-    $("form").on("keypress", 'input', function (e) {
-        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+    $("#Name").keypress(function (e) {
+        if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
             $('a.default').click();
             return false;
         }

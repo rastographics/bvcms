@@ -127,6 +127,9 @@ namespace CmsData
             LastMeetingDate = frorg.LastMeetingDate;
             Limit = frorg.Limit;
             RegistrationTypeId = frorg.RegistrationTypeId;
+            UseBootstrap = frorg.UseBootstrap;
+            RegStart = frorg.RegStart;
+            RegEnd = frorg.RegEnd;
 
             RegSetting = frorg.RegSetting;
 

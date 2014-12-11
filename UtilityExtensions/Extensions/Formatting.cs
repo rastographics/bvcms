@@ -51,6 +51,15 @@ namespace UtilityExtensions
                 return dt.Value.ToString("d");
             return "";
         }
+       public static string FormatDate2(this DateTime? dt)
+        {
+            if (dt.HasValue)
+            {
+                var s = dt.Value.ToString("d");
+                return s.Substring(0, s.Length - 4) + s.Substring(s.Length - 2, 2);
+            }
+            return "";
+        }
         public static string FormatDate(dynamic dyndt)
         {
             var dt = dyndt as DateTime?;

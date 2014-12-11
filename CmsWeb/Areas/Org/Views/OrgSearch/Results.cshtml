@@ -1,23 +1,28 @@
 ﻿@using CmsWeb
 @model CmsWeb.Areas.Org.Models.OrgSearchModel
-    @if (User.IsInRole("edit"))
-    {
-    <script type="text/javascript">
-        $(function () {
-            $("#results").addClass("edit2");
-        });
-    </script>
-    }
-
-<table id="results" class="@ViewExtensions2.GridClass">
-<thead>
-    <tr><td colspan="10">
-<div>Count: @Model.Count()</div>
- @Html.Partial("Pager2", Model.Pager) 
-    </td></tr>
-@if ((Model.OnlineReg ?? -1) <= 0)
+@{
+  var canManageEvents = User.IsInRole("Admin") || User.IsInRole("ManageEvents");
+  var canEdit = User.IsInRole("Edit");
+}
+@if (canEdit)
 {
+  <script type="text/javascript">
+    $(function () {
+      $("#results").addClass("edit2");
+    });
+  </script>
+}
+<table id="results" class="@ViewExtensions2.GridClass">
+  <thead>
     <tr>
+      <td colspan="10">
+        <div>Count: @Model.Count()</div>
+        @Html.Partial("Pager2", Model.Pager)
+      </td>
+    </tr>
+    @if (!Model.PublicView)
+    {
+      <tr>
         <th></th>
         <th></th>
         <th></th>
@@ -28,61 +33,78 @@
         <th></th>
         <th></th>
         <th></th>
-    </tr>
-    <tr>
+      </tr>
+      <tr>
         <th><a href="#" class="sortable">ID</a></th>
         <th class="left"><a href="#" class="sortable">Name</a></th>
         <th class="left"><a href="#" class="sortable">Leader</a></th>
         <th class="right"><a href="#" class="sortable">Curr</a></th>
-      <th class="right"><span class="smallfont" title="Previous / Prospect">Prev/Prsp</span></th>
+        <th class="right"><span class="smallfont" title="Previous / Prospect">Prev/Prsp</span></th>
         <th class="left"><a href="#" class="sortable">Schedule</a></th>
         <th><a href="#" class="sortable">Self CheckIn</a></th>
         <th><a href="#" class="sortable">BDay Start</a></th>
         <th><a href="#" class="sortable">BDay End</a></th>
         <th><a href="#" class="sortable">TargetDiv</a></th>
         <th><a href="#" class="sortable">MainDiv</a></th>
-    </tr>
-}
-else
-{
-    <tr>
-        <th><br/><a href="#" class="sortable">ID</a></th>
-        <th><br/><a href="#" class="sortable">Program/Division</a></th>
-        <th><br/><a href="#" class="sortable">Name</a></th>
-        <th class="right"><a href="#" class="sortable">Curr</a></th>
-        <th class="right">Prev</th>
-        <th><br/><a href="#" class="sortable">Filled</a></th>
-        <th><br/><a href="#" class="sortable">Closed</a></th>
-        <th><br/><a href="#" class="sortable">Type</a></th>
-        <th><br/><a href="#" class="sortable">FirstDate</a></th>
-    </tr>
-}
-</thead>
-<tbody>
-@foreach (var o in Model.OrganizationList())
-{ 
-    if ((Model.OnlineReg ?? -1) <= 0)
-    {
-        Html.RenderPartial("Row", o);
+      </tr>
     }
     else
     {
-    <tr>
-        <td class="tip" title="@o.ToolTip"><img src="/Content/images/group.png" /></td>
-        <td>@o.ProgramName:@o.DivisionName</td>
-        <td><a href="/Organization/@o.Id" target="reg">@o.OrganizationName</a></td>
-        <td class="right">@o.MemberCount</td>
-        <td><span class="smallfont right">@o.PrevMemberCount</span></td>
-        <td>@o.ClassFilled</td>
-        <td>@o.RegClosed</td>
-        <td>@o.RegType</td>
-        <td>@o.FirstMeetingDate</td>
-    </tr>
+      <tr>
+        <th><br /><a href="#" class="sortable">ID</a></th>
+        <th><br /><a href="#" class="sortable">Name</a></th>
+        <th><br /><a href="#" class="sortable">Filled</a></th>
+        <th><br /><a href="#" class="sortable">Closed</a></th>
+        <th><br /><a href="#" class="sortable">Type</a></th>
+        <th><a href="#" class="sortable">App Order</a></th>
+        <th><br/><a href="#" class="sortable">FirstDate</a></th>
+        <th>Description</th>
+      </tr>
     }
-}
-</tbody>
-    <tr><td colspan="10">
- @Html.Partial("Pager2", Model.Pager) 
-    </td></tr>
+  </thead>
+  <tbody>
+    @foreach (var o in Model.OrganizationList())
+    {
+      if (!Model.PublicView)
+      {
+        Html.RenderPartial("Row", o);
+      }
+      else
+      {
+        <tr>
+          <td class="tip" title="@o.ToolTip"><img src="/Content/images/group.png" /></td>
+          <td><a href="/Organization/@o.Id" target="reg">@o.OrganizationName</a></td>
+          <td>@o.ClassFilled</td>
+          <td>@o.RegClosed</td>
+          <td>@o.RegType</td>
+          <td>
+            @if (canManageEvents)
+            {
+            <span id="so-@o.Id" class="publicsort pointer">@(o.PublicSortOrder ?? "edit")</span>
+            }
+            else
+            {
+            <span>@o.PublicSortOrder</span>
+            }
+          </td>
+          <td>@o.FirstMeetingDate</td>
+          <td>
+            @if (canEdit)
+            {
+            <div id="des-@o.Id" class="descr pointer">@Html.Raw(o.Description ?? "edit")</div>
+            }
+            else
+            {
+            <div>@Html.Raw(o.Description)</div>
+            }
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+  <tr>
+    <td colspan="10">
+      @Html.Partial("Pager2", Model.Pager)
+    </td>
+  </tr>
 </table>
-
