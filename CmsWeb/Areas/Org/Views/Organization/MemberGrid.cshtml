@@ -52,13 +52,14 @@
     <td>
         <span>@om.AttendPct.ToString2("N1")%</span>
     </td>
-    <td>
-          @om.Joined.FormatDate2()<br />
-          @if (om.LastAttended.HasValue)
-          {
-            <a href="/Meeting/@om.LastMeetingId">@om.LastAttended.FormatDate2()</a>
-          }
-    </td>
+  <td>
+    @om.Joined.FormatDate2()<br />
+    @if (om.LastAttended.HasValue)
+    {
+      <a href="/Organization/GotoMeetingForDate/@Model.OrganizationId/@om.LastAttended.Value.Ticks">@om.LastAttended.FormatDate2()</a>
+    }
+  </td>
+
     <td>
           <a pid='@om.PeopleId' title="Add to/Remove from Active Tag" class="taguntag" href="#">@(om.HasTag ? "Remove" : "Add")</a>
     </td>
