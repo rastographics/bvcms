@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-        public int GroupSelect { get; set; }
+        public string GroupSelect { get; set; }
 
         public MemberModel()
             : base("Name", "asc")
@@ -58,7 +58,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             return from om in DbUtil.Db.OrganizationMembers
                    where om.OrganizationId == Id
-                   where DbUtil.Db.OrgMember(Id, GroupSelect, this.First(), this.Last(), SgFilter, ShowHidden).Any(mm => mm.PeopleId == om.PeopleId)
+                   where DbUtil.Db.OrgMember(Id, GroupSelect.ToString(), this.First(), this.Last(), SgFilter, ShowHidden).Any(mm => mm.PeopleId == om.PeopleId)
                    select om;
         }
 

@@ -252,10 +252,10 @@ namespace CmsData.Codes
     }
     public class GroupSelectCode
     {
-        public const int Member = 10;
-        public const int Inactive = 20;
-        public const int Pending = 30;
-        public const int Prospect = 40;
+        public const string Member = "10";
+        public const string Inactive = "20";
+        public const string Pending = "30";
+        public const string Prospect = "40";
     }
     public class ContributionTypeCode
     {
