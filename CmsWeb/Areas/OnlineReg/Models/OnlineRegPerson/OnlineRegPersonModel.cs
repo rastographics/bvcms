@@ -22,6 +22,7 @@ namespace CmsWeb.Models
     [Serializable]
     public partial class OnlineRegPersonModel : IXmlSerializable
     {
+        public bool InMobileAppMode { get { return OnlineRegModel.InMobileAppMode; } }
         public int? orgid { get; set; }
         public int? masterorgid { get; set; }
         public int? divid { get; set; }
@@ -168,7 +169,7 @@ namespace CmsWeb.Models
 
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         public decimal? Suggestedfee { get; set; }
-
+         
         public List<FamilyAttendInfo> FamilyAttend { get; set; }
         public Dictionary<int, decimal?> FundItem { get; set; }
         public Dictionary<string, string> SpecialTest { get; set; }

@@ -215,6 +215,7 @@
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgPrevFromTagController.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\FirstState.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\HollyCreek.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgia.cs">
       <SubType>Code</SubType>
@@ -278,6 +279,11 @@
     <Compile Include="Areas\Finance\Models\DonorTotalsOptions.cs" />
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
+    <Compile Include="Areas\Manage\Models\ApiSessionModel.cs" />
+    <Compile Include="Areas\Manage\Models\ApiSessionResult.cs" />
+    <Compile Include="Areas\Manage\Models\ApiSessionStatus.cs" />
+    <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
+    <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -766,6 +772,7 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\MobileAppMenu.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
@@ -2461,6 +2468,7 @@
     <Folder Include="Areas\OnlineReg\Views\Shared\" />
     <Folder Include="Areas\Org\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
+    <Folder Include="Areas\Public\Views\TestMobile\" />
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />
     <Folder Include="Scripts\Other\" />

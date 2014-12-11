@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.OnlineRegModel
+﻿@model OnlineRegModel
+@using CmsWeb.Models
 @using UtilityExtensions
 @{
     Layout = Model.UseBootstrap
@@ -20,4 +21,8 @@
 
 <div class="confirm">
     @Html.Raw(Model.GetThankYouMessage())
+    @if (Model.UseBootstrap && OnlineRegModel.InMobileAppMode)
+    {
+        <a href="@OnlineRegModel.MobileAppReturnUrl" class="btn btn-primary">Return to Application</a>
+    }
 </div>

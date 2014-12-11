@@ -1,0 +1,18 @@
+﻿@if (ViewBag.InMobileAppMode)
+{
+    <style>
+        div.container {
+            margin-top: 50px !important;
+        }
+    </style>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header hidden-xs" style="padding-top:5px;">
+                <a href="@ViewBag.MobileAppReturnUrl" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Return to App</a>
+            </div>
+            <div class="navbar-header hidden-sm hidden-md hidden-lg" style="padding-top:5px; padding-left: 15px;">
+                <a class="btn btn-default" href="@ViewBag.MobileAppReturnUrl"><i class="fa fa-arrow-circle-left"></i> Return to App</a>
+            </div>
+        </div>
+    </nav>
+}

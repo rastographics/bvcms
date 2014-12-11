@@ -193,7 +193,7 @@ CKEditorFuncNum, baseurl + fn, error));
                     CMSRoleProvider.provider.GetAdmins(),
                     "bvcms user: {0} forgot username".Fmt(user.Name), "no content");
             }
-            if (q.Count() == 0)
+            if (!q.Any())
                 DbUtil.Db.EmailRedacted(DbUtil.AdminMail,
                     CMSRoleProvider.provider.GetAdmins(),
                     "bvcms unknown email: {0} forgot username".Fmt(email), "no content");

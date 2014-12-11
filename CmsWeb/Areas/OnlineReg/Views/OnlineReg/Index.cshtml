@@ -35,7 +35,7 @@
     <style type="text/css">
         .pagecontainer {
             display: none;
-        }
+        }      
     </style>
     <div class="noscriptmsg">
         This registration site requires javascript to be enabled on your browser.
@@ -44,30 +44,30 @@
 
 @if (Model.UseBootstrap)
 {
-<div class="regform">
-    <h3>@Model.Header</h3>
-    @{var msg = Model.Filled();}
-    @if (Model.NotAvailable())
-    {
-        <h4 id="sorry">Sorry, Registration is not available at this time</h4>
-        @Html.Raw(Util.PickFirst(Model.Instructions, ""))
-    }
-    else if (msg.HasValue())
-    {
-        <h4 id="sorry">Sorry, @msg</h4>
-        @Html.Raw(Util.PickFirst(Model.Instructions, ""))
-    }
-    else
-    {
-        <form id="completeReg" class="DisplayEdit form-horizontal" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
-            @Html.Partial("Flow2/List", Model)
-        </form>
-        if (Model.RecordFamilyAttendance())
+    <div class="regform">
+        <h3>@Model.Header</h3>
+        @{var msg = Model.Filled();}
+        @if (Model.NotAvailable())
         {
-            @Html.Partial("Flow2/FamilyAttendTemplate")     
+            <h4 id="sorry">Sorry, Registration is not available at this time</h4>
+            @Html.Raw(Util.PickFirst(Model.Instructions, ""))
         }
-    }
-</div>
+        else if (msg.HasValue())
+        {
+            <h4 id="sorry">Sorry, @msg</h4>
+            @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+        }
+        else
+        {
+            <form id="completeReg" class="DisplayEdit form-horizontal" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
+                @Html.Partial("Flow2/List", Model)
+            </form>
+            if (Model.RecordFamilyAttendance())
+            {
+                @Html.Partial("Flow2/FamilyAttendTemplate")     
+            }
+        }
+    </div>
 }
 else
 {
