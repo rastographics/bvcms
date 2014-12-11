@@ -1,4 +1,4 @@
-CREATE FUNCTION [dbo].[OrgMember] 
+CREATE FUNCTION [dbo].[OrgPeople] 
 (
 	 @oid INT
 	,@grouptype VARCHAR(20)
