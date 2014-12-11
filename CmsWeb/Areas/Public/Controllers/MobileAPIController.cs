@@ -42,10 +42,13 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid)
                 return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
 
-            var br = new BaseMessage();
-            br.error = 0;
-            br.data = result.User.ApiSessions.Single().SessionToken.ToString();
-            return br;
+//            var br = new BaseMessage();
+//            br.error = 0;
+//            br.data = result.User.ApiSessions.Single().SessionToken.ToString();
+//            return br;
+
+            // TODO: figure out a way for the old application to handle the new Authenticate URL
+            return null;
         }
 
         [HttpPost]
