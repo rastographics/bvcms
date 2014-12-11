@@ -423,10 +423,14 @@
     <Compile Include="Finance\TransNational\Vault\UpdateCreditCardVaultRequest.cs" />
     <Compile Include="Finance\TransNational\Vault\VaultRequest.cs" />
     <Compile Include="Finance\TransNational\Vault\VaultResponse.cs" />
+    <Compile Include="Generated\ApiSession.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
     <Compile Include="Generated\Functions\GenRange.cs" />
     <Compile Include="Generated\Functions\GetTotalContributionsAgeRange.cs" />
+    <Compile Include="Generated\Functions\GuestList.cs" />
+    <Compile Include="Generated\Functions\OrgMember.cs" />
+    <Compile Include="Generated\Functions\OrgMemberInfo.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />

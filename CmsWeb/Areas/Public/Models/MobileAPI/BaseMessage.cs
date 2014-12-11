@@ -1,8 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace CmsWeb.MobileAPI
@@ -26,17 +22,18 @@ namespace CmsWeb.MobileAPI
 			context.HttpContext.Response.Output.Write(JsonConvert.SerializeObject(this));
 		}
 
-		public static BaseMessage createErrorReturn(string sErrorMessage)
+		public static BaseMessage createErrorReturn(string sErrorMessage, int errorCode = 1)
 		{
-			BaseMessage br = new BaseMessage();
+			var br = new BaseMessage();
 			br.data = sErrorMessage;
+		    br.error = errorCode;
 
 			return br;
 		}
 
 		public static BaseMessage createTypeErrorReturn()
 		{
-			BaseMessage br = new BaseMessage();
+			var br = new BaseMessage();
 			br.data = "ERROR: Type mis-match in API call.";
 
 			return br;
@@ -44,7 +41,7 @@ namespace CmsWeb.MobileAPI
 
 		public static BaseMessage createFromString(string sJSON)
 		{
-			BaseMessage br = JsonConvert.DeserializeObject<BaseMessage>(sJSON);
+			var br = JsonConvert.DeserializeObject<BaseMessage>(sJSON);
 			return br;
 		}
 
@@ -54,12 +51,13 @@ namespace CmsWeb.MobileAPI
 			return this;
 		}
 
-		/*
-		public BaseReturn getData()
-		{
-			return data;
-		}
-		*/
+
+	    public const int API_ERROR_SUCCESS = 0;
+	    public const int API_ERROR_PIN_INVALID = 1;
+	    public const int API_ERROR_PIN_EXPIRED = 2;
+	    public const int API_ERROR_SESSION_TOKEN_EXPIRED = 3;
+	    public const int API_ERROR_SESSION_TOKEN_NOT_FOUND = 4;
+
 
 		// API Device Numbers
 		public const int API_DEVICE_UNKNOWN = 0;
@@ -91,9 +89,13 @@ namespace CmsWeb.MobileAPI
 
 		// 30000's - Giving = 31000's - Read / 32000's Write
 		// Giving Read
-		// public const int API_TYPE_GIVING = 31001;
+		public const int API_TYPE_GIVING = 31001;
+		public const int API_TYPE_GIVING_ONE_TIME_LINK_GIVING = 31001;
+		public const int API_TYPE_GIVING_ONE_TIME_LINK_MANAGED_GIVING = 31002;
 		// Giving Write
-		public const int API_TYPE_GIVING_GIVE = 32001;
+
+		// 40000's - Registration = 41000's - Read / 42000's Write
+		public const int API_TYPE_REGISTRATION_ONE_TIME_LINK = 41001;
 
 		// 80000's - Giving = 81000's - Read / 82000's Write
 		// Media Read

@@ -10,22 +10,24 @@ using System.ComponentModel;
 
 namespace CmsData.View
 {
-	[Table(Name="VisitNumberSinceDate")]
-	public partial class VisitNumberSinceDate
+	[Table(Name="GuestList")]
+	public partial class GuestList
 	{
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
 		private int _PeopleId;
 		
-		private string _Name;
+		private int _MeetingId;
+		
+		private int _AttendId;
 		
 		private DateTime _MeetingDate;
 		
-		private long? _Rank;
+		private bool _Hidden;
 		
 		
-		public VisitNumberSinceDate()
+		public GuestList()
 		{
 		}
 
@@ -48,18 +50,35 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(138)")]
-		public string Name
+		[Column(Name="MeetingId", Storage="_MeetingId", DbType="int NOT NULL")]
+		public int MeetingId
 		{
 			get
 			{
-				return this._Name;
+				return this._MeetingId;
 			}
 
 			set
 			{
-				if (this._Name != value)
-					this._Name = value;
+				if (this._MeetingId != value)
+					this._MeetingId = value;
+			}
+
+		}
+
+		
+		[Column(Name="AttendId", Storage="_AttendId", DbType="int NOT NULL")]
+		public int AttendId
+		{
+			get
+			{
+				return this._AttendId;
+			}
+
+			set
+			{
+				if (this._AttendId != value)
+					this._AttendId = value;
 			}
 
 		}
@@ -82,18 +101,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Rank", Storage="_Rank", DbType="bigint")]
-		public long? Rank
+		[Column(Name="Hidden", Storage="_Hidden", DbType="bit NOT NULL")]
+		public bool Hidden
 		{
 			get
 			{
-				return this._Rank;
+				return this._Hidden;
 			}
 
 			set
 			{
-				if (this._Rank != value)
-					this._Rank = value;
+				if (this._Hidden != value)
+					this._Hidden = value;
 			}
 
 		}

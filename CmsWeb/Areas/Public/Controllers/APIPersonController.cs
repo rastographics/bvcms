@@ -19,13 +19,15 @@ namespace CmsWeb.Areas.Public.Controllers
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
                 return Content("<Login error=\"{0}\" />".Fmt(ret.Substring(1)));
-			var o = AccountModel.AuthenticateLogon(user, password, Request.Url.OriginalString);
-			if (o is string)
-                return Content("<Login error=\"{0} not valid\">{1}</Login>".Fmt(user ?? "(null)", o));
-			var u = o as User;
+
+			var validationStatus = AccountModel.AuthenticateLogon(user, password, Request.Url.OriginalString);
+			if (!validationStatus.IsValid)
+                return Content("<Login error=\"{0} not valid\">{1}</Login>".Fmt(user ?? "(null)", validationStatus.ErrorMessage));
+
             var api = new APIFunctions(DbUtil.Db);
-            return Content(api.Login(u.Person),"text/xml");
+            return Content(api.Login(validationStatus.User.Person), "text/xml");
         }
+
         [HttpGet]
         public ActionResult LoginInfo(int? id)
         {
