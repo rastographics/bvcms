@@ -4,8 +4,10 @@ using System.Linq;
 using System.Net.Mail;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Windows.Forms;
 using CmsData;
 using CmsData.Finance;
+using CmsData.View;
 using CmsWeb.Models;
 using UtilityExtensions;
 using System.Text;
@@ -126,6 +128,31 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 if (m != null && pf.IsLoggedIn.GetValueOrDefault() && pf.SavePayInfo)
                 {
+                    // we need to perform a $1 auth if this is a brand new credit card that we are going to store it in the vault.
+                    // otherwise we skip doing an auth just call store in vault just like normal.
+                    var gateway = DbUtil.Db.Gateway(m.testing ?? false);
+                    if (pf.Type == PaymentType.CreditCard)
+                    {
+                        if (!pf.CreditCard.StartsWith("X"))
+                        {
+                            // perform $1 auth.
+                            // need to randomize the $1 amount because some gateways will reject same auth amount
+                            // subsequent times per user.
+                            var random = new Random();
+                            var dollarAmt = (decimal)random.Next(100, 199) / 100;
+
+                            var transactionResponse = gateway.AuthCreditCard(m.UserPeopleId ?? 0, dollarAmt, pf.CreditCard, DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
+                                                                             "One Time Auth", 0, pf.CCV, string.Empty, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+
+                            if (!transactionResponse.Approved)
+                            {
+                                ModelState.AddModelError("form", transactionResponse.Message);
+                                return View("Payment/Process", pf);
+                            }
+                                
+                        }                        
+                    }
+
                     var person = DbUtil.Db.LoadPersonById(m.UserPeopleId ?? 0);
                     var pi = person.PaymentInfo();
                     if (pi == null)
@@ -135,8 +162,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     }
                     pi.SetBillingAddress(pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
 
-                    var gw = DbUtil.Db.Gateway(m.testing ?? false);
-                    gw.StoreInVault(m.UserPeopleId ?? 0,
+                    gateway.StoreInVault(m.UserPeopleId ?? 0,
                             pf.Type,
                             pf.CreditCard,
                             DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
