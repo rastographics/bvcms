@@ -33,6 +33,13 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult Authenticate()
         {
+            if (CmsWeb.Models.AccountModel.AuthenticateMobile().IsValid) return null;
+			else
+			{
+				return BaseMessage.createErrorReturn("You are not authorized!");
+			}
+
+            /*
             var authHeader = Request.Headers["Authorization"];
             if (string.IsNullOrEmpty(authHeader))
                 throw new HttpException(400, "The Authorization header is required.");
@@ -42,13 +49,11 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid)
                 return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
 
-//            var br = new BaseMessage();
-//            br.error = 0;
-//            br.data = result.User.ApiSessions.Single().SessionToken.ToString();
-//            return br;
-
-            // TODO: figure out a way for the old application to handle the new Authenticate URL
-            return null;
+            var br = new BaseMessage();
+            br.error = 0;
+            br.data = result.User.ApiSessions.Single().SessionToken.ToString();
+            return br;
+            */
         }
 
         [HttpPost]
