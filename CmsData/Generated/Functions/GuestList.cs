@@ -18,13 +18,11 @@ namespace CmsData.View
 		
 		private int _PeopleId;
 		
-		private int _MeetingId;
-		
-		private int _AttendId;
-		
-		private DateTime _MeetingDate;
+		private DateTime _LastAttendDt;
 		
 		private bool _Hidden;
+		
+		private int? _MemberTypeId;
 		
 		
 		public GuestList()
@@ -50,52 +48,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="MeetingId", Storage="_MeetingId", DbType="int NOT NULL")]
-		public int MeetingId
+		[Column(Name="LastAttendDt", Storage="_LastAttendDt", DbType="datetime NOT NULL")]
+		public DateTime LastAttendDt
 		{
 			get
 			{
-				return this._MeetingId;
+				return this._LastAttendDt;
 			}
 
 			set
 			{
-				if (this._MeetingId != value)
-					this._MeetingId = value;
-			}
-
-		}
-
-		
-		[Column(Name="AttendId", Storage="_AttendId", DbType="int NOT NULL")]
-		public int AttendId
-		{
-			get
-			{
-				return this._AttendId;
-			}
-
-			set
-			{
-				if (this._AttendId != value)
-					this._AttendId = value;
-			}
-
-		}
-
-		
-		[Column(Name="MeetingDate", Storage="_MeetingDate", DbType="datetime NOT NULL")]
-		public DateTime MeetingDate
-		{
-			get
-			{
-				return this._MeetingDate;
-			}
-
-			set
-			{
-				if (this._MeetingDate != value)
-					this._MeetingDate = value;
+				if (this._LastAttendDt != value)
+					this._LastAttendDt = value;
 			}
 
 		}
@@ -113,6 +77,23 @@ namespace CmsData.View
 			{
 				if (this._Hidden != value)
 					this._Hidden = value;
+			}
+
+		}
+
+		
+		[Column(Name="MemberTypeId", Storage="_MemberTypeId", DbType="int")]
+		public int? MemberTypeId
+		{
+			get
+			{
+				return this._MemberTypeId;
+			}
+
+			set
+			{
+				if (this._MemberTypeId != value)
+					this._MemberTypeId = value;
 			}
 
 		}

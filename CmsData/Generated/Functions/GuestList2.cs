@@ -10,22 +10,22 @@ using System.ComponentModel;
 
 namespace CmsData.View
 {
-	[Table(Name="VisitNumberSinceDate")]
-	public partial class VisitNumberSinceDate
+	[Table(Name="GuestList2")]
+	public partial class GuestList2
 	{
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
 		private int _PeopleId;
 		
-		private string _Name;
+		private DateTime _LastAttendDt;
 		
-		private DateTime _MeetingDate;
+		private bool _Hidden;
 		
-		private long? _Rank;
+		private int? _MemberTypeId;
 		
 		
-		public VisitNumberSinceDate()
+		public GuestList2()
 		{
 		}
 
@@ -48,52 +48,52 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Name", Storage="_Name", DbType="varchar(126)")]
-		public string Name
+		[Column(Name="LastAttendDt", Storage="_LastAttendDt", DbType="datetime NOT NULL")]
+		public DateTime LastAttendDt
 		{
 			get
 			{
-				return this._Name;
+				return this._LastAttendDt;
 			}
 
 			set
 			{
-				if (this._Name != value)
-					this._Name = value;
+				if (this._LastAttendDt != value)
+					this._LastAttendDt = value;
 			}
 
 		}
 
 		
-		[Column(Name="MeetingDate", Storage="_MeetingDate", DbType="datetime NOT NULL")]
-		public DateTime MeetingDate
+		[Column(Name="Hidden", Storage="_Hidden", DbType="bit NOT NULL")]
+		public bool Hidden
 		{
 			get
 			{
-				return this._MeetingDate;
+				return this._Hidden;
 			}
 
 			set
 			{
-				if (this._MeetingDate != value)
-					this._MeetingDate = value;
+				if (this._Hidden != value)
+					this._Hidden = value;
 			}
 
 		}
 
 		
-		[Column(Name="Rank", Storage="_Rank", DbType="bigint")]
-		public long? Rank
+		[Column(Name="MemberTypeId", Storage="_MemberTypeId", DbType="int")]
+		public int? MemberTypeId
 		{
 			get
 			{
-				return this._Rank;
+				return this._MemberTypeId;
 			}
 
 			set
 			{
-				if (this._Rank != value)
-					this._Rank = value;
+				if (this._MemberTypeId != value)
+					this._MemberTypeId = value;
 			}
 
 		}

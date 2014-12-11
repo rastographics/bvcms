@@ -20,7 +20,23 @@ namespace CmsData.View
 		
 		private int? _LastMeetingId;
 		
-		private DateTime? _LastAttendedDt;
+		private int? _ContacteeId;
+		
+		private int? _ContactorId;
+		
+		private int? _TaskAboutId;
+		
+		private int? _TaskDelegatedId;
+		
+		private DateTime? _LastAttendDt;
+		
+		private DateTime? _ContactReceived;
+		
+		private DateTime? _ContactMade;
+		
+		private DateTime? _TaskAboutDt;
+		
+		private DateTime? _TaskDelegatedDt;
 		
 		
 		public OrgMemberInfo()
@@ -63,18 +79,154 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="LastAttendedDt", Storage="_LastAttendedDt", DbType="datetime")]
-		public DateTime? LastAttendedDt
+		[Column(Name="ContacteeId", Storage="_ContacteeId", DbType="int")]
+		public int? ContacteeId
 		{
 			get
 			{
-				return this._LastAttendedDt;
+				return this._ContacteeId;
 			}
 
 			set
 			{
-				if (this._LastAttendedDt != value)
-					this._LastAttendedDt = value;
+				if (this._ContacteeId != value)
+					this._ContacteeId = value;
+			}
+
+		}
+
+		
+		[Column(Name="ContactorId", Storage="_ContactorId", DbType="int")]
+		public int? ContactorId
+		{
+			get
+			{
+				return this._ContactorId;
+			}
+
+			set
+			{
+				if (this._ContactorId != value)
+					this._ContactorId = value;
+			}
+
+		}
+
+		
+		[Column(Name="TaskAboutId", Storage="_TaskAboutId", DbType="int")]
+		public int? TaskAboutId
+		{
+			get
+			{
+				return this._TaskAboutId;
+			}
+
+			set
+			{
+				if (this._TaskAboutId != value)
+					this._TaskAboutId = value;
+			}
+
+		}
+
+		
+		[Column(Name="TaskDelegatedId", Storage="_TaskDelegatedId", DbType="int")]
+		public int? TaskDelegatedId
+		{
+			get
+			{
+				return this._TaskDelegatedId;
+			}
+
+			set
+			{
+				if (this._TaskDelegatedId != value)
+					this._TaskDelegatedId = value;
+			}
+
+		}
+
+		
+		[Column(Name="LastAttendDt", Storage="_LastAttendDt", DbType="datetime")]
+		public DateTime? LastAttendDt
+		{
+			get
+			{
+				return this._LastAttendDt;
+			}
+
+			set
+			{
+				if (this._LastAttendDt != value)
+					this._LastAttendDt = value;
+			}
+
+		}
+
+		
+		[Column(Name="ContactReceived", Storage="_ContactReceived", DbType="datetime")]
+		public DateTime? ContactReceived
+		{
+			get
+			{
+				return this._ContactReceived;
+			}
+
+			set
+			{
+				if (this._ContactReceived != value)
+					this._ContactReceived = value;
+			}
+
+		}
+
+		
+		[Column(Name="ContactMade", Storage="_ContactMade", DbType="datetime")]
+		public DateTime? ContactMade
+		{
+			get
+			{
+				return this._ContactMade;
+			}
+
+			set
+			{
+				if (this._ContactMade != value)
+					this._ContactMade = value;
+			}
+
+		}
+
+		
+		[Column(Name="TaskAboutDt", Storage="_TaskAboutDt", DbType="datetime")]
+		public DateTime? TaskAboutDt
+		{
+			get
+			{
+				return this._TaskAboutDt;
+			}
+
+			set
+			{
+				if (this._TaskAboutDt != value)
+					this._TaskAboutDt = value;
+			}
+
+		}
+
+		
+		[Column(Name="TaskDelegatedDt", Storage="_TaskDelegatedDt", DbType="datetime")]
+		public DateTime? TaskDelegatedDt
+		{
+			get
+			{
+				return this._TaskDelegatedDt;
+			}
+
+			set
+			{
+				if (this._TaskDelegatedDt != value)
+					this._TaskDelegatedDt = value;
 			}
 
 		}
