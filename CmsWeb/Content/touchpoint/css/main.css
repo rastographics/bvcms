@@ -146,6 +146,10 @@ ul.pagination>li>span.separator:hover{
   background-color: transparent !important;
 }
 
+tr.totals-row {
+    font-size: 1.5em;
+}
+
 #footer {
   background-color: #E9A310;
   position: absolute;

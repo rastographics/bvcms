@@ -28,7 +28,7 @@
 {
     <div>
         <h3>@p.Name</h3>
-        <table class="table">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th></th>
@@ -65,7 +65,7 @@
                 }
             </tbody>
             <tfoot>
-                <tr>
+                <tr class="totals-row">
                     <td class="text-left">Total</td>
                     @foreach (var c in p.Cols)
                     {
