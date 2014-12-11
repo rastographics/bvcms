@@ -88,7 +88,7 @@ namespace CmsData.Finance.TransNational.Query
                 case TransactionType.CreditCard:
                     return "cc";
                 case TransactionType.Ach:
-                    return "ch";
+                    return "ck";
                 default:
                     return "unknown";
             }
