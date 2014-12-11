@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[OrgMembers](@oid INT, @gid nvarchar(200))
+CREATE PROCEDURE [dbo].[OrgMembers](@oid INT, @sgFilter nvarchar(200))
 AS
 BEGIN
 
@@ -65,17 +65,14 @@ JOIN
 			p.PeopleId
 	from People p
 	JOIN dbo.OrganizationMembers om ON p.PeopleId = om.PeopleId
+	JOIN dbo.OrgMember(' + CAST(@oid AS nvarchar(10)) + ', 10, NULL, NULL, ''' + @sgFilter + ''', 0) mm ON mm.PeopleId = p.PeopleId
 	LEFT JOIN lookup.Gender g ON p.GenderId = g.Id
 	LEFT JOIN lookup.MemberStatus ms ON p.MemberStatusId = ms.Id
 	LEFT JOIN lookup.MaritalStatus mas ON p.MaritalStatusId = mas.Id
 	LEFT JOIN lookup.MemberType mt ON om.MemberTypeId = mt.Id
 	LEFT JOIN dbo.TransactionSummary ts ON ts.OrganizationId = om.OrganizationId AND ts.PeopleId = om.PeopleId
 	WHERE om.OrganizationId = ' + CAST(@oid AS nvarchar(10)) + '
-	AND (''' + @gid + ''' = ''0'' OR EXISTS(SELECT NULL FROM dbo.OrgMemMemTags 
-			WHERE OrgId = ' + CAST(@oid AS nvarchar(10)) + ' 
-			AND PeopleId = p.PeopleId 
-			AND MemberTagId in (' + @gid + ')))) t1
-	ON t1.PeopleId = t2.PeopleId
+	) t1 ON t1.PeopleId = t2.PeopleId
 '
 PRINT @PivotTableSQL
 

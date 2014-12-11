@@ -116,7 +116,7 @@ namespace CmsWeb.Models
         {
             if (OnlineGiving() && setting.ExtraValueFeeName.HasValue())
             {
-                var f = Funds().SingleOrDefault(ff => ff.Text == setting.ExtraValueFeeName);
+                var f = AllFunds().SingleOrDefault(ff => ff.Text == setting.ExtraValueFeeName);
                 var evamt = person.GetExtra(setting.ExtraValueFeeName).ToDecimal();
                 if (f != null && evamt > 0)
                     FundItem[f.Value.ToInt()] = evamt;

@@ -17,10 +17,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     [RouteArea("OnlineReg", AreaPrefix = "OnlineReg"), Route("{action}/{id?}")]
     public partial class OnlineRegController : CmsController
     {
+        
         [HttpGet]
         [Route("~/OnlineReg/{id:int}")]
         [Route("~/OnlineReg/Index/{id:int}")]
-        public ActionResult Index(int? id, bool? testing, string email, bool? nologin, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid)
+        public ActionResult Index(int? id, bool? testing, string email, bool? nologin, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
         {
             if (Util.IsDebug())
             {
@@ -42,7 +43,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
             if (!id.HasValue)
                 return Message("no organization");
-            var m = new OnlineRegModel { Orgid = id };
+
+            OnlineRegModel.Source = source;
+            var m = new OnlineRegModel()
+            {
+                Orgid = id
+            };
+            
             if (m.org == null && m.masterorg == null)
                 return Message("invalid registration");
 
@@ -445,7 +452,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     p.IsNew = true;
                     m.SendLinkForPledge();
                     DbUtil.Db.SubmitChanges();
-                    SetHeaders(m);
+                    if(!m.UseBootstrap)
+                        SetHeaders(m);
                     return View("ManagePledge/OneTimeLink", m);
                 }
                 if (m.ManageGiving())
@@ -453,7 +461,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     p.IsNew = true;
                     m.SendLinkToManageGiving();
                     DbUtil.Db.SubmitChanges();
-                    SetHeaders(m);
+                    if(!m.UseBootstrap)
+                        SetHeaders(m);
                     return View("ManageGiving/OneTimeLink", m);
                 }
                 if (p.ComputesOrganizationByAge())
@@ -757,6 +766,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("incorrect user");
             TempData["er"] = pid;
             return View(m);
+        }
+
+        public ActionResult MobileAppMenu()
+        {
+            ViewBag.InMobileAppMode = OnlineRegModel.InMobileAppMode;
+            ViewBag.MobileAppReturnUrl = OnlineRegModel.MobileAppReturnUrl;
+            return PartialView();
         }
     }
 }

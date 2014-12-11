@@ -215,6 +215,7 @@
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgPrevFromTagController.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\FirstState.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\HollyCreek.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgia.cs">
       <SubType>Code</SubType>
@@ -277,19 +278,11 @@
     <Compile Include="Areas\Finance\Models\DonorTotalsOptions.cs" />
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\ExtraValues.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\Main.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Toolbar.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\General.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\Attendance.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\Registration.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\Questions.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\Fees.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Settings\Messages.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Grids\Visitors.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Grids\Prospects.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Grids\Meetings.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Grids\Members.cs" />
+    <Compile Include="Areas\Manage\Models\ApiSessionModel.cs" />
+    <Compile Include="Areas\Manage\Models\ApiSessionResult.cs" />
+    <Compile Include="Areas\Manage\Models\ApiSessionStatus.cs" />
+    <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
+    <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -310,10 +303,10 @@
     <Compile Include="Areas\Reports\Models\Export\MembershipExportModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\StatusFlagsExportModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\WorshipAttendanceModel.cs" />
-    <Compile Include="Areas\Org\Controllers\Other\MissionTripEmailController.cs" />
+    <Compile Include="Areas\Org\Controllers\MissionTripEmailController.cs" />
     <Compile Include="Areas\Org\Models\OrgMember\OrgMemberTransactionModel.cs" />
-    <Compile Include="Areas\Org\Models\Other\MissionTripEmailer.cs" />
-    <Compile Include="Areas\Org\Models\Other\MissionSupportModel.cs" />
+    <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
+    <Compile Include="Areas\Org\Models\MissionSupportModel.cs" />
     <Compile Include="Areas\Public\AreaRegistration.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -342,6 +335,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSearch.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostTransactionItem.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AveryAddressWordResult.cs" />
+    <Compile Include="Areas\Reports\Models\Other\CustomColumnsModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\CustomReportsModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\QueryStatsResult.cs" />
     <Compile Include="Areas\Reports\Models\Export\CsvResult.cs" />
@@ -358,16 +352,16 @@
     <Compile Include="Areas\OnlineReg\Controllers\ManageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\SpecialRegModel.cs" />
-    <Compile Include="Areas\Org\Controllers\Other\OrgMemberDialogController.cs" />
-    <Compile Include="Areas\Org\Controllers\Other\OrgMembersDialogController.cs" />
+    <Compile Include="Areas\Org\Controllers\OrgMemberDialogController.cs" />
+    <Compile Include="Areas\Org\Controllers\OrgMembersDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
     <Compile Include="Areas\Dialog\Controllers\RepairTransactionsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchOrgsController.cs" />
-    <Compile Include="Areas\Org\Controllers\Other\SearchDivisionsController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\SearchDivisionsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\TransactionHistoryController.cs" />
     <Compile Include="Areas\Dialog\Models\OrganizationModel.cs" />
     <Compile Include="Areas\Dialog\Models\SearchOrgsModel.cs" />
-    <Compile Include="Areas\Org\Models\Other\SearchDivisionsModel.cs" />
+    <Compile Include="Areas\Dialog\Models\SearchDivisionsModel.cs" />
     <Compile Include="Areas\Dialog\Models\TransactionHistoryModel.cs" />
     <Compile Include="Areas\Finance\Controllers\BundlesController.cs" />
     <Compile Include="Areas\Finance\Controllers\BundleController.cs" />
@@ -377,7 +371,7 @@
     <Compile Include="Areas\Finance\Controllers\VaultController.cs" />
     <Compile Include="Areas\Finance\Models\ContributionSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\BundleModel.cs" />
-    <Compile Include="Areas\Org\Controllers\Other\MemberDirectoryController.cs" />
+    <Compile Include="Areas\Org\Controllers\MemberDirectoryController.cs" />
     <Compile Include="Areas\Search\Controllers\PeopleSearchController.cs" />
     <Compile Include="Areas\Main\Controllers\SMSController.cs" />
     <Compile Include="Areas\Main\Controllers\VolunteeringController.cs" />
@@ -389,7 +383,7 @@
     <Compile Include="Areas\Reports\Models\Directories\FamilyRow.cs" />
     <Compile Include="Areas\Main\Models\Email\EmailTemplatesModel.cs" />
     <Compile Include="Areas\Main\Models\Other\VolunteerModel.cs" />
-    <Compile Include="Areas\Org\Models\Other\MemberDirectoryModel.cs" />
+    <Compile Include="Areas\Org\Models\MemberDirectoryModel.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\MailingController.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\VisitsAbsentsResult2.cs" />
@@ -398,7 +392,7 @@
     <Compile Include="Areas\Manage\Controllers\SMSController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadPeopleController.cs" />
     <Compile Include="Areas\Finance\Controllers\StatementsController.cs" />
-    <Compile Include="Areas\Org\Controllers\Other\OrgChildrenController.cs" />
+    <Compile Include="Areas\Org\Controllers\OrgChildrenController.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExtraExcelResult.cs" />
     <Compile Include="Areas\Org\Models\Organization\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
@@ -414,15 +408,15 @@
     <Compile Include="Areas\Manage\Models\MergeModel.cs" />
     <Compile Include="Areas\OnlineReg\Models\ManageGivingModel.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchUsersController.cs" />
-    <Compile Include="Areas\Org\Controllers\Other\RegSettingController.cs" />
-    <Compile Include="Areas\Org\Controllers\Other\MeetingController.cs" />
+    <Compile Include="Areas\Org\Controllers\RegSettingController.cs" />
+    <Compile Include="Areas\Org\Controllers\MeetingController.cs" />
     <Compile Include="Areas\Main\Controllers\TagsController.cs" />
     <Compile Include="Areas\Main\Controllers\EmailController.cs" />
     <Compile Include="Areas\Manage\Models\VolunteerRequestModel.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\VolSubModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMember\OrgMemberMoveModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMember\OrgMemberModel.cs" />
-    <Compile Include="Areas\Org\Models\Other\OrgMembersDialogModel.cs" />
+    <Compile Include="Areas\Org\Models\OrgMembersDialogModel.cs" />
     <Compile Include="Areas\Org\Models\OrgMember\OrgMoveInfo.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
@@ -547,13 +541,13 @@
     <Compile Include="Areas\Public\Controllers\APIMetaController.cs" />
     <Compile Include="Areas\Public\Controllers\APITestController.cs" />
     <Compile Include="Areas\Public\Controllers\APIiPhoneController.cs" />
-    <Compile Include="Areas\Org\Controllers\Other\OrgGroupsController.cs" />
+    <Compile Include="Areas\Org\Controllers\OrgGroupsController.cs" />
     <Compile Include="Areas\Main\Controllers\CouponController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgMembersDialogController.cs" />
-    <Compile Include="Areas\Org\Controllers\Other\OrgSearchController.cs" />
+    <Compile Include="Areas\Org\Controllers\OrgSearchController.cs" />
     <Compile Include="Areas\Finance\Controllers\PostBundleController.cs" />
     <Compile Include="Areas\Search\Controllers\SearchAddController.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\OrganizationController.cs" />
+    <Compile Include="Areas\Org\Controllers\OrganizationController.cs" />
     <Compile Include="Areas\Main\Controllers\UserPrefController.cs" />
     <Compile Include="Areas\Public\Controllers\APIPersonController.cs" />
     <Compile Include="Areas\Public\Controllers\APIOrgController.cs" />
@@ -570,7 +564,7 @@
     <Compile Include="Areas\Reports\Models\Export\InvolvementInfo.cs" />
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Org\Models\Organization\ScheduleInfo.cs" />
-    <Compile Include="Areas\Org\Models\Other\MeetingModel.cs" />
+    <Compile Include="Areas\Org\Models\MeetingModel.cs" />
     <Compile Include="Areas\Main\Models\Other\TagsModel.cs" />
     <Compile Include="Areas\Search\Models\PeopleSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\ContributionsExcelResult.cs" />
@@ -597,7 +591,7 @@
     <Compile Include="Areas\Org\Models\Organization\PrevMemberModel.cs" />
     <Compile Include="Areas\Org\Models\Organization\PersonMemberInfo.cs" />
     <Compile Include="Areas\Main\Models\Other\MassEmailer.cs" />
-    <Compile Include="Areas\Org\Models\Other\OrgSearchModel.cs" />
+    <Compile Include="Areas\Org\Models\OrgSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\PostBundleModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponModel.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\SearchAddModel.cs" />
@@ -660,9 +654,6 @@
     <Content Include="Areas\Reports\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\css\bootstrap-editable.css" />
     <Content Include="Content\css\bootstrap-multiselect.css" />
     <Content Include="Content\css\bootstrap-multiselect.min.css">
@@ -711,7 +702,11 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\select2-3.5.2\select2-bootstrap.css" />
+    <Content Include="Content\select2-3.5.2\select2-spinner.gif" />
+    <Content Include="Content\select2-3.5.2\select2.css" />
+    <Content Include="Content\select2-3.5.2\select2.png" />
+    <Content Include="Content\select2-3.5.2\select2x2.png" />
     <Content Include="Content\xml.css" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
@@ -738,22 +733,21 @@
     <Content Include="Content\css\normalize.css" />
     <Content Include="Content\images\saf-bg.png" />
     <Content Include="Content\images\saf.png" />
+    <Content Include="CustomColumns.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Errors\DatabaseCreationError.aspx" />
     <Content Include="Errors\DatabaseNotInitialized.aspx" />
     <Content Include="Errors\DatabaseServerNotFound.aspx" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="HtmlPage1.html" />
     <Content Include="HtmlPage2.html" />
     <Content Include="minify.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Scripts\Admin\UpdateFields.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Bootstrap\bootbox.js" />
     <Content Include="Scripts\Bootstrap\bootbox.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-ajax.js" />
-    <Content Include="Scripts\Bootstrap\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\Bootstrap\notify.js" />
     <Content Include="Scripts\Bootstrap\renamedatepicker.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-datepicker.js" />
@@ -777,15 +771,7 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
-    <Content Include="Scripts\Bootstrap\bootbox.min.js.map">
-      <DependentUpon>bootbox.min.js</DependentUpon>
-    </Content>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Settings.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Dialogs.cshtml" />
-    <Content Include="Areas\Org\Views\SearchDivisions\ModalDialog.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\MobileAppMenu.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
@@ -828,7 +814,6 @@
     <Content Include="Scripts\js\Support2.js" />
     <Content Include="Scripts\js\ExtraValueSummary.js" />
     <Content Include="Scripts\js\TestScript.js" />
-    <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\OnlineReg\OnlineReg2.js" />
     <Content Include="Scripts\OnlineReg\OnlineRegPayment2.js" />
     <Content Include="Scripts\People\mydatatour.js" />
@@ -879,7 +864,7 @@
     <Content Include="Areas\Search\Views\SearchAdd\NewAddress.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenAddress.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\DeletedPerson.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Other\DialogAddMES.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DialogAddMES.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\WeeklyDecisions.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Pending.cshtml" />
@@ -900,6 +885,7 @@
     <Content Include="Scripts\Search\SavedQuery2.js" />
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
+    <Content Include="Scripts\select2-3.5.2\select2.min.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
@@ -958,7 +944,7 @@
     <Content Include="Areas\Finance\Views\Contributions\BundleTotals.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\PictureDialog.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Prospects.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\ProspectGrid.cshtml" />
     <Content Include="Areas\Public\Views\APITest\RunScript.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AnswersNotRequired.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSMS.cshtml" />
@@ -1090,7 +1076,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\OneTimeLink.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\EmptyRow.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Other\ReGenPaylinks.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\ReGenPaylinks.cshtml" />
     <Content Include="packages.config" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddTransaction.cshtml" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddTransactionDone.cshtml" />
@@ -1567,9 +1553,6 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
     <Content Include="Views\Shared\Message.cshtml" />
     <Content Include="Views\Home\PyScript.cshtml" />
-    <Content Include="Views\Dialog\NewMeeting.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\datetimepicker.cshtml" />
-    <Content Include="Views\Shared\PagerHidden.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1741,7 +1724,7 @@
     </Content>
     <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Progress.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\TicketMeeting.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Other\VolunteerCommitmentsSummary.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\VolunteerCommitmentsSummary.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\SQLSelect.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\SQLView.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TimeSlots.cshtml" />
@@ -1874,27 +1857,27 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\TagPeopleIds.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Tabs\Current.cshtml">
+    <Content Include="Areas\Org\Views\Organization\CurrMemberGrid.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Tabs\Inactive.cshtml">
+    <Content Include="Areas\Org\Views\Organization\InactiveMemberGrid.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\Index.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Tabs\Meetings.cshtml">
+    <Content Include="Areas\Org\Views\Organization\MeetingGrid.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Tabs\Base.cshtml">
+    <Content Include="Areas\Org\Views\Organization\MemberGrid.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\Main.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OrgInfo.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\MainEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OrgInfoEdit.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Tabs\Pending.cshtml">
+    <Content Include="Areas\Org\Views\Organization\PendingMemberGrid.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Tabs\Previous.cshtml">
+    <Content Include="Areas\Org\Views\Organization\PrevMemberGrid.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Other\SmallGroups.cshtml">
+    <Content Include="Areas\Org\Views\Organization\SmallGroups.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Tabs\Visitors.cshtml">
+    <Content Include="Areas\Org\Views\Organization\VisitorGrid.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\OrgGroups\Index.cshtml">
     </Content>
@@ -2204,9 +2187,11 @@
     </Content>
     <Content Include="Areas\Public\Views\OrgContent\Edit.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Other\DivisionList.cshtml">
+    <Content Include="Areas\Org\Views\Organization\DivisionList.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\SearchDivisions\Index.cshtml">
+    <Content Include="Areas\Dialog\Views\SearchDivisions\Index.cshtml">
+    </Content>
+    <Content Include="Areas\Dialog\Views\SearchDivisions\Results.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\OrgSearch\Row.cshtml">
     </Content>
@@ -2218,13 +2203,13 @@
     </Content>
     <Content Include="Areas\Manage\Views\Display\EditText.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\General.cshtml">
+    <Content Include="Areas\Org\Views\Organization\SettingsOrg.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\Attendance.cshtml">
+    <Content Include="Areas\Org\Views\Organization\SettingsMeetings.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\AttendanceEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\SettingsMeetingsEdit.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\GeneralEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\SettingsOrgEdit.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\RegSetting\Edit.cshtml">
     </Content>
@@ -2248,27 +2233,27 @@
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Size.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabRegistration.cshtml">
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabAdmin.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\Fees.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OnlineRegFees.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\FeesEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OnlineRegFeesEdit.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\Questions.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OnlineRegQuestions.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\QuestionsEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OnlineRegQuestionsEdit.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\Messages.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OnlineRegMessages.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\MessagesEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OnlineRegMessagesEdit.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Html.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Other\NotifyList2.cshtml">
+    <Content Include="Areas\Org\Views\Organization\NotifyList2.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\Registration.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OnlineRegAdmin.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\RegistrationEdit.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OnlineRegAdminEdit.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabQuestions.cshtml">
     </Content>
@@ -2276,9 +2261,9 @@
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMessages.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabGeneral.cshtml">
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabOrg.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabAttendance.cshtml">
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMeetings.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\APIMeta\Lookups.cshtml">
     </Content>
@@ -2292,7 +2277,7 @@
     </Content>
     <Content Include="Areas\Dialog\Views\SearchOrgs\Results.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Other\OrgPickList2.cshtml">
+    <Content Include="Areas\Org\Views\Organization\OrgPickList2.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Meeting\iPad.cshtml">
     </Content>
@@ -2300,7 +2285,7 @@
     </Content>
     <Content Include="Areas\Org\Views\Meeting\ExtrasGrid.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\Settings\ExtrasGrid.cshtml">
+    <Content Include="Areas\Org\Views\Organization\ExtrasGrid.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Duplicates\Index.cshtml">
     </Content>
@@ -2482,6 +2467,7 @@
     <Folder Include="Areas\OnlineReg\Views\Shared\" />
     <Folder Include="Areas\Org\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
+    <Folder Include="Areas\Public\Views\TestMobile\" />
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />
     <Folder Include="Scripts\Other\" />

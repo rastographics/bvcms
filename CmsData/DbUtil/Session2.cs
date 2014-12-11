@@ -81,7 +81,7 @@ namespace CmsData
 					HttpRuntime.Cache.Insert(Host + "Setting", list, null,
 						DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);
                 }
-                catch (SqlException ex)
+                catch (SqlException)
                 {
                     throw;
                 }

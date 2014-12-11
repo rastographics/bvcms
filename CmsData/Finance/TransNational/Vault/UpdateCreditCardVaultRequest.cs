@@ -13,10 +13,12 @@ namespace CmsData.Finance.TransNational.Vault
             Data["method"] = "creditcard";
         }
 
-        public UpdateCreditCardVaultRequest(string userName, string password, string vaultId, string expiration, BillingAddress billingAddress)
+        public UpdateCreditCardVaultRequest(string userName, string password, string vaultId, string expiration, string firstName, string lastName, BillingAddress billingAddress)
             : this(userName, password, vaultId)
         {
-            CreditCard.SetCreditCardExpirationData(Data, expiration);
+            Data["firstname"] = firstName;
+            Data["lastname"] = lastName;
+            Data["ccexp"] = expiration;
             if (billingAddress != null)
                 billingAddress.SetAddressData(Data);
         }

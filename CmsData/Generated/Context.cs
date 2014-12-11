@@ -34,6 +34,10 @@ namespace CmsData
         partial void UpdateAddToOrgFromTagRun(AddToOrgFromTagRun instance);
         partial void DeleteAddToOrgFromTagRun(AddToOrgFromTagRun instance);
         
+        partial void InsertApiSession(ApiSession instance);
+        partial void UpdateApiSession(ApiSession instance);
+        partial void DeleteApiSession(ApiSession instance);
+        
         partial void InsertAttend(Attend instance);
         partial void UpdateAttend(Attend instance);
         partial void DeleteAttend(Attend instance);
@@ -701,6 +705,12 @@ namespace CmsData
 		public Table< AddToOrgFromTagRun> AddToOrgFromTagRuns
 		{
 			get	{ return this.GetTable< AddToOrgFromTagRun>(); }
+
+		}
+
+		public Table< ApiSession> ApiSessions
+		{
+			get	{ return this.GetTable< ApiSession>(); }
 
 		}
 
@@ -2561,7 +2571,7 @@ namespace CmsData
 		[Function(Name="dbo.OrgMember", IsComposable = true)]
 		public IQueryable< View.OrgMember > OrgMember(
             [Parameter(DbType="int")] int? oid,
-            [Parameter(DbType="int")] int? grouptype,
+            [Parameter(DbType="varchar")] string grouptype,
             [Parameter(DbType="varchar")] string first,
             [Parameter(DbType="varchar")] string last,
             [Parameter(DbType="varchar")] string sgfilter,
@@ -2579,6 +2589,17 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.OrgMemberInfo", IsComposable = true)]
+		public IQueryable< View.OrgMemberInfo > OrgMemberInfo(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgMemberInfo>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
 		[Function(Name="dbo.OrgMembersAsOfDate", IsComposable = true)]
 		public IQueryable< View.OrgMembersAsOfDate > OrgMembersAsOfDate(
             [Parameter(DbType="int")] int? orgid,
@@ -2589,6 +2610,27 @@ namespace CmsData
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 meetingdt
+                );
+		}
+
+		[Function(Name="dbo.OrgPeople", IsComposable = true)]
+		public IQueryable< View.OrgPerson > OrgPeople(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="varchar")] string grouptype,
+            [Parameter(DbType="varchar")] string first,
+            [Parameter(DbType="varchar")] string last,
+            [Parameter(DbType="varchar")] string sgfilter,
+            [Parameter(DbType="bit")] bool? showhidden
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgPerson>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                grouptype,
+                first,
+                last,
+                sgfilter,
+                showhidden
                 );
 		}
 

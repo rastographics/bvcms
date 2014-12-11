@@ -542,14 +542,17 @@ namespace CmsWeb.Areas.Reports.Controllers
         [Route("Custom/{report}/{id?}")]
         public ActionResult CustomReport(Guid id, string report)
         {
-            try
-            {
-                return CustomReportsModel.Result(DbUtil.Db, id, report);
-            }
-            catch (Exception ex)
-            {
-                return Message(ex.Message);
-            }
+            var m = new CustomReportsModel();
+            return m.Result(DbUtil.Db, id, report);
+//            try
+//            {
+//                var m = new CustomReportsModel();
+//                return m.Result(DbUtil.Db, id, report);
+//            }
+//            catch (Exception ex)
+//            {
+//                return Message(ex.Message);
+//            }
         }
         [HttpGet]
         [Route("CustomSql/{report}/{id?}")]
@@ -557,8 +560,9 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             try
             {
+                var m = new CustomReportsModel();
                 return Content("<pre style='font-family:monospace'>{0}\n</pre>".Fmt(
-                    CustomReportsModel.Sql(DbUtil.Db, id, report)));
+                    m.Sql(DbUtil.Db, id, report)));
             }
             catch (Exception ex)
             {
@@ -566,8 +570,8 @@ namespace CmsWeb.Areas.Reports.Controllers
             }
         }
         [HttpGet]
-        [Route("CustomColumns")]
-        public ActionResult CustomColumns()
+        [Route("CustomColumns/{orgid?}")]
+        public ActionResult CustomColumns(int? orgid)
         {
             try
             {
@@ -581,7 +585,8 @@ namespace CmsWeb.Areas.Reports.Controllers
                 var sb = new StringBuilder();
                 using (var w = XmlWriter.Create(sb, settings))
                 {
-                    CustomReportsModel.StandardColumns(DbUtil.Db, w, includeRoot: false);
+                    var m = new CustomReportsModel(orgid);
+                    m.StandardColumns(DbUtil.Db, w, includeRoot: false);
                     w.Flush();
                 }
                 var s = sb.ToString();

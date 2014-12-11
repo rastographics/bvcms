@@ -15,9 +15,9 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class APICheckin2Controller : CmsController
     {
-        private bool Authenticate()
+        private static bool Authenticate(string role = "Checkin")
         {
-            return AccountModel.AuthenticateMobile("Checkin");
+            return AccountModel.AuthenticateMobile("Checkin").IsValid;
         }
 
         public ActionResult Match(string id, int campus, int thisday, int? page, string kiosk, bool? kioskmode)
@@ -413,7 +413,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ContentResult UploadImage(int id)
         {
-            if (!AccountModel.AuthenticateMobile())
+            if (!Authenticate(role: null))
                 return Content("not authorized");
             //		    if (!User.IsInRole("Edit") && !User.IsInRole("Checkin"))
             //				return Content("not authorized");

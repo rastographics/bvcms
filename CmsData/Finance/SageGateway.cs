@@ -1,6 +1,7 @@
 ﻿using CmsData.Finance.Sage.Core;
 using CmsData.Finance.Sage.Report;
 using CmsData.Finance.Sage.Transaction.Refund;
+using CmsData.Finance.Sage.Transaction.Auth;
 using CmsData.Finance.Sage.Transaction.Sale;
 using CmsData.Finance.Sage.Transaction.Void;
 using CmsData.Finance.Sage.Vault;
@@ -248,7 +249,45 @@ namespace CmsData.Finance
             };
 		}
 
-		public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
+	    public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
+	        int tranid, string cardcode, string email, string first, string last, string addr, string city, string state,
+	        string zip, string phone)
+	    {
+            var creditCardAuthRequest = new CreditCardAuthRequest(
+                _id,
+                _key,
+                new CreditCard
+                {
+                    NameOnCard = "{0} {1}".Fmt(first, last),
+                    CardNumber = cardnumber,
+                    Expiration = expires,
+                    CardCode = cardcode,
+                    BillingAddress = new BillingAddress
+                    {
+                        Address1 = addr,
+                        City = city,
+                        State = state,
+                        Zip = zip,
+                        Email = email,
+                        Phone = phone
+                    }
+                },
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                peopleId.ToString(CultureInfo.InvariantCulture));
+
+            var response = creditCardAuthRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
+	    }
+
+	    public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
 		{
 		    var creditCardSaleRequest = new CreditCardSaleRequest(
                 _id,
@@ -322,7 +361,46 @@ namespace CmsData.Finance
             };
 		}
 
-        public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
+	    public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
+	    {
+            var person = db.LoadPersonById(peopleId);
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo == null || !paymentInfo.SageCardGuid.HasValue)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+	       
+            var creditCardVaultAuthRequest = new CreditCardVaultAuthRequest(_id,
+                _key,
+                paymentInfo.SageCardGuid.GetValueOrDefault(),
+                "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
+                new BillingAddress
+                {
+                    Address1 = paymentInfo.Address ?? person.PrimaryAddress,
+                    City = paymentInfo.City ?? person.PrimaryCity,
+                    State = paymentInfo.State ?? person.PrimaryState,
+                    Zip = paymentInfo.Zip ?? person.PrimaryZip,
+                    Email = person.EmailAddress,
+                    Phone = paymentInfo.Phone ?? person.HomePhone
+                },
+                amt, 
+                tranid.ToString(CultureInfo.InvariantCulture),
+                person.PeopleId.ToString(CultureInfo.InvariantCulture));
+
+            var response = creditCardVaultAuthRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
+	    }
+
+	    public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
 		{
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo();

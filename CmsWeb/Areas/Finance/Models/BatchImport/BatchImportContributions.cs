@@ -59,6 +59,9 @@ namespace CmsWeb.Models
                             return BatchProcessStewardshipTechnology(csv, date, fundid);
                     using (var csv = new CsvReader(new StringReader(text), false, '\t'))
                         return BatchProcessStewardshipTechnology(csv, date, fundid);
+                case "firststate":
+                    using (var csv = new CsvReader(new StringReader(text), true, '\t'))
+                            return BatchProcessFirstState(csv, date, fundid);
                 case "silverdale":
                     using (var csv = new CsvReader(new StringReader(text), true))
                         return BatchProcessSilverdale(csv, date, fundid);

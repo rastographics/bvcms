@@ -35,34 +35,34 @@
     <h2>@Model.Header</h2>
     <form class="DisplayEdit" action="/OnlineReg/CompleteRegistration/@Model.qtesting" method="post">
         @Html.Partial("Flow/ModelHidden", Model)
-    @Html.Raw(Util.PickFirst(Model.DonationLabel(), @"<h2>Please consider making an extra donation</h2>"))
-@if (Model.List.Count > 1)
-{
-    <hr />
-    <div>Indicate which person is the donor and enter an amount.</div>
-}
-@for (var i = 0; i < Model.List.Count; i++)
-{
-		var viewdata = new ViewDataDictionary(ViewData)
+        @Html.Raw(Util.PickFirst(Model.DonationLabel(), @"<h2>Please consider making an extra donation</h2>"))
+        @if (Model.List.Count > 1)
+        {
+            <hr />
+            <div>Indicate which person is the donor and enter an amount.</div>
+        }
+        @for (var i = 0; i < Model.List.Count; i++)
+        {
+            var viewdata = new ViewDataDictionary(ViewData)
             { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "List[" + i + "]" } };
-        var p = Model.List[i];
-        @Html.Partial("Flow/PersonMetaHidden", p, viewdata)
-        @Html.Partial("Flow/PersonHidden", p, viewdata)
-        @Html.Partial("Flow/OtherHidden", p, viewdata)
-    if(Model.List.Count > 1)
-    {
-            <input type="radio" name="donor" value="@i" /> @(p.FirstName + " " + p.LastName + " " + p.Suffix) @:(@p.age)<br />
-    }
-    else if(Model.List.Count == 1)
-    {
-            <input type="hidden" name="donor" value="0" />
-    }
-}
-<hr />
-<blockquote>
-Donation Amount: <input type="text" name="donation" value="@Model.donation" />
-<input id="submitit" type="submit" class="submitbutton" value='Continue Transaction' />
-<div>@Html.ValidationMessage("donation")</div>
-</blockquote>
-</form>
+            var p = Model.List[i];
+            @Html.Partial("Flow/PersonMetaHidden", p, viewdata)
+            @Html.Partial("Flow/PersonHidden", p, viewdata)
+            @Html.Partial("Flow/OtherHidden", p, viewdata)
+            if(Model.List.Count > 1)
+            {
+                <input type="radio" name="donor" value="@i" /> @(p.FirstName + " " + p.LastName + " " + p.Suffix) @:(@p.age)<br />
+            }
+            else if(Model.List.Count == 1)
+            {
+                <input type="hidden" name="donor" value="0" />
+            }
+        }
+        <hr />
+        <blockquote>
+            Donation Amount: <input type="text" name="donation" value="@Model.donation" />
+            <input id="submitit" type="submit" class="submitbutton" value='Continue Transaction' />
+            <div>@Html.ValidationMessage("donation")</div>
+        </blockquote>
+    </form>
 </div>

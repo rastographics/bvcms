@@ -21,21 +21,21 @@
 
 @if (Model.UseBootstrap)
 {
-  <div class="regform">
-    <h3>@Model.Header</h3>
-    <h4>We found an existing registration for you.<br />
-        Please choose one of the following</h4>
-    <table class="table" style="width: auto">
-      <tr>
-        <th>Either</th>
-        <td><a href="/OnlineReg/Continue/@Model.DatumId">Continue with your Registration</a><br />
-            started @Model.Datum.Stamp.ToString2("g")</td>
-      </tr>
-      <tr>
-        <th>Or </th><td><a href="/OnlineReg/StartOver/@Model.DatumId">Start Over with a new registration</a></td>
-      </tr>
-    </table>
-  </div>
+    <div class="regform">
+        <h3>@Model.Header</h3>
+        <h4>We found an existing registration for you.<br />
+            Please choose one of the following</h4>
+        <table class="table" style="width: auto">
+            <tr>
+                <th>Either</th>
+                <td><a href="/OnlineReg/Continue/@Model.DatumId">Continue with your Registration</a><br />
+                    started @Model.Datum.Stamp.ToString2("g")</td>
+            </tr>
+            <tr>
+                <th>Or </th><td><a href="/OnlineReg/StartOver/@Model.DatumId">Start Over with a new registration</a></td>
+            </tr>
+        </table>
+    </div>
 }
 else
 {

@@ -341,7 +341,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
@@ -374,6 +373,8 @@
     <Compile Include="Finance\Sage\Report\VirtualCheckRejectsResponse.cs" />
     <Compile Include="Finance\Sage\Transaction\Refund\AchRefundRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Refund\CreditCardRefundRequest.cs" />
+    <Compile Include="Finance\Sage\Transaction\Auth\CreditCardAuthRequest.cs" />
+    <Compile Include="Finance\Sage\Transaction\Auth\CreditCardVaultAuthRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Sale\AchSaleRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Sale\AchVaultSaleRequest.cs" />
     <Compile Include="Finance\Sage\Transaction\Sale\CreditCardSaleRequest.cs" />
@@ -406,6 +407,8 @@
     <Compile Include="Finance\TransNational\Query\Transaction.cs" />
     <Compile Include="Finance\TransNational\Query\TransactionType.cs" />
     <Compile Include="Finance\TransNational\Transaction\Refund\RefundRequest.cs" />
+    <Compile Include="Finance\TransNational\Transaction\Auth\CreditCardAuthRequest.cs" />
+    <Compile Include="Finance\TransNational\Transaction\Auth\CreditCardVaultAuthRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Sale\AchSaleRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Sale\AchVaultSaleRequest.cs" />
     <Compile Include="Finance\TransNational\Transaction\Sale\CreditCardSaleRequest.cs" />
@@ -420,6 +423,7 @@
     <Compile Include="Finance\TransNational\Vault\UpdateCreditCardVaultRequest.cs" />
     <Compile Include="Finance\TransNational\Vault\VaultRequest.cs" />
     <Compile Include="Finance\TransNational\Vault\VaultResponse.cs" />
+    <Compile Include="Generated\ApiSession.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
     <Compile Include="Generated\Functions\GenRange.cs" />
@@ -427,6 +431,8 @@
     <Compile Include="Generated\Functions\GuestList.cs" />
     <Compile Include="Generated\Functions\GuestList2.cs" />
     <Compile Include="Generated\Functions\OrgMember.cs" />
+    <Compile Include="Generated\Functions\OrgMemberInfo.cs" />
+    <Compile Include="Generated\Functions\OrgPerson.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />

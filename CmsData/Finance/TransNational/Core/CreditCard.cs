@@ -24,16 +24,11 @@ namespace CmsData.Finance.TransNational.Core
 
             if (!string.IsNullOrEmpty(CardCode))
                 data["cvv"] = CardCode;
-            
-            SetCreditCardExpirationData(data, Expiration);
+
+            data["ccexp"] = Expiration;
 
             if (BillingAddress != null)
                 BillingAddress.SetBillingAddressData(data);
-        }
-
-        internal static void SetCreditCardExpirationData(NameValueCollection data, string expiration)
-        {
-            data["ccexp"] = expiration;
         }
     }
 }

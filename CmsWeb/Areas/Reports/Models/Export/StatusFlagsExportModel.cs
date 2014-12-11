@@ -21,7 +21,6 @@ namespace CmsWeb.Models
                           select ss;
 
             string cols = null;
-            IEnumerable<string> q = null;
 
             if (flags.HasValue())
                 cols = string.Join(",\n", from f in flags.Split(',')

@@ -79,14 +79,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		public ActionResult ManageGiving(ManageGivingModel m)
 		{
 			SetHeaders(m.orgid);
-			m.ValidateModel(ModelState);
-			if (!ModelState.IsValid)
-            {
-		        m.total = 0;
-		        foreach (var ff in m.FundItemsChosen())
-		            m.total += ff.amt;
-				return View("ManageGiving/Setup", m);
-			}
+
+            // only validate if the amounts are greater than zero.
+		    if (m.FundItemsChosen().Sum(f => f.amt) > 0)
+		    {
+                m.ValidateModel(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    m.total = 0;
+                    foreach (var ff in m.FundItemsChosen())
+                        m.total += ff.amt;
+                    return View("ManageGiving/Setup", m);
+                }
+		    }
+            
             try
 			{
 				m.Update();
@@ -107,11 +113,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			var m = TempData["managegiving"] as ManageGivingModel;
 			if (m == null)
 				return Content("No active registration");
-            if(Util.IsDebug())
+
+            if (Util.IsDebug())
     			m.testing = true;
-			m.Confirm(this);
+
+            if (!m.ManagedGivingStopped)
+                m.Confirm(this);
+
 	        SetHeaders(m.orgid);
 	        LogOutOfOnlineReg();
+
 		    return View("ManageGiving/Confirm", m);
 		}
 
@@ -123,5 +134,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			return View("ManagePledge/Confirm", m);
 		}
 
+	    [HttpPost]
+	    public ActionResult RemoveManagedGiving(int peopleId, int orgId)
+	    {
+	        var manageGiving = new ManageGivingModel(peopleId, orgId);
+            manageGiving.CancelManagedGiving(peopleId);
+	        manageGiving.ThankYouMessage = "Your recurring giving has been stopped.";
+
+	        TempData["managegiving"] = manageGiving;
+
+	        return Json(new { Url = Url.Action("ConfirmRecurringGiving") });
+	    }
 	}
 }

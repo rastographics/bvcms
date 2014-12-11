@@ -47,7 +47,12 @@ BEGIN
 	FROM dbo.Organizations o
 	JOIN INSERTED m ON o.OrganizationId = m.OrganizationId
 	WHERE m.MemberTypeId = o.LeaderMemberTypeId
-	
+
+	UPDATE dbo.OrganizationMembers
+	SET LastAttended = dbo.LastAttended(i.OrganizationId, i.PeopleId)
+	FROM dbo.OrganizationMembers m
+	JOIN Inserted i ON i.PeopleId = m.PeopleId AND i.OrganizationId = m.OrganizationId
+
 	--UPDATE dbo.People
 	--SET BibleFellowshipClassId = dbo.BibleFellowshipClassId(p.PeopleId)
 	--FROM dbo.People p

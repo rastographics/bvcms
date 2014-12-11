@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Web;
 using CmsData;
 using UtilityExtensions;
 
@@ -60,7 +58,7 @@ namespace CmsWeb.MobileAPI
 
 			addresses.Add("Family", familyAddr);
 
-			if (p.AddressLineOne != null && p.AddressLineOne.Length > 0)
+			if (!string.IsNullOrEmpty(p.AddressLineOne))
 			{
 				var personalAddr = new MobilePersonAddress();
 				personalAddr.address1 = p.AddressLineOne ?? "";
@@ -76,19 +74,19 @@ namespace CmsWeb.MobileAPI
 			age = p.Age ?? 0;
 			birthday = p.DOB.Length > 0 ? p.DOB : "No Birthday Set";
 
-			if (p.CellPhone != null && p.CellPhone.Length > 0)
+			if (!string.IsNullOrEmpty(p.CellPhone))
 				emailPhone.Add(new MobileContact(1, "Cell", p.CellPhone.FmtFone()));
 
-			if (p.HomePhone != null && p.HomePhone.Length > 0)
+			if (!string.IsNullOrEmpty(p.HomePhone))
 				emailPhone.Add(new MobileContact(1, "Home", p.HomePhone.FmtFone()));
 
-			if (p.WorkPhone != null && p.WorkPhone.Length > 0)
+			if (!string.IsNullOrEmpty(p.WorkPhone))
 				emailPhone.Add(new MobileContact(1, "Work", p.WorkPhone.FmtFone()));
 
-			if (p.EmailAddress != null && p.EmailAddress.Length > 0)
+			if (!string.IsNullOrEmpty(p.EmailAddress))
 				emailPhone.Add(new MobileContact(2, "EMail1", p.EmailAddress));
 
-			if (p.EmailAddress2 != null && p.EmailAddress2.Length > 0)
+			if (!string.IsNullOrEmpty(p.EmailAddress2))
 				emailPhone.Add(new MobileContact(2, "EMail2", p.EmailAddress2));
 
 			status = p.MemberStatusId;

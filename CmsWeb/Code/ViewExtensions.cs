@@ -781,11 +781,15 @@ namespace CmsWeb
         {
             return Fingerprint.Script("/Scripts/Bootstrap/bootstrap.js");
         }
+
         public static HtmlString Bootstrap3()
         {
-            return new HtmlString(@"
-<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js""></script>
-");
+            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js""></script>");
+        }
+
+        public static HtmlString LoDash()
+        {
+            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
         }
 
         public static string Layout()
