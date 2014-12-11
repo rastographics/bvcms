@@ -829,6 +829,9 @@
     <Content Include="Areas\Org\Views\Organization\Tabs\Prospects.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Tabs\Settings.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Tabs\Visitors.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabAttendance.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabGeneral.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabRegistration.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
@@ -1607,6 +1610,7 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
     <Content Include="Views\Shared\Message.cshtml" />
     <Content Include="Views\Home\PyScript.cshtml" />
+    <Content Include="Views\Shared\PagerHidden.cshtml" />
     <None Include="Web.test2.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2223,10 +2227,6 @@
     </Content>
     <Content Include="Areas\Public\Views\OrgContent\Edit.cshtml">
     </Content>
-    <Content Include="Areas\Dialog\Views\SearchDivisions\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Dialog\Views\SearchDivisions\Results.cshtml">
-    </Content>
     <Content Include="Areas\Org\Views\OrgSearch\Row.cshtml">
     </Content>
     <Content Include="Areas\Reports\Views\Reports\Meetings.cshtml">
@@ -2259,8 +2259,6 @@
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Size.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabAdmin.cshtml">
-    </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Html.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabQuestions.cshtml">
@@ -2268,10 +2266,6 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabFees.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMessages.cshtml">
-    </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabOrg.cshtml">
-    </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMeetings.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\APIMeta\Lookups.cshtml">
     </Content>

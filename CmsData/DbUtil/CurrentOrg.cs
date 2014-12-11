@@ -1,3 +1,4 @@
+using System;
 using UtilityExtensions;
 
 namespace CmsData
@@ -9,6 +10,7 @@ namespace CmsData
         string SgFilter { get; set; }
         bool ShowHidden { get; set; }
     }
+    [Serializable]
     public class CurrentOrg : ICurrentOrg
     {
         public int? Id { get; set; }
