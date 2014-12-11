@@ -261,6 +261,7 @@ namespace CmsWeb.Models
             {
                 Util.UserId = i.u.UserId;
                 Util.UserPeopleId = i.u.PeopleId;
+                Util.UserThumbPictureUrl = i.u.Person.Picture != null ? i.u.Person.Picture.ThumbUrl : string.Empty;
                 Util.UserEmail = i.u.EmailAddress;
                 Util2.CurrentPeopleId = i.u.PeopleId.Value;
                 Util.UserPreferredName = i.PreferredName;

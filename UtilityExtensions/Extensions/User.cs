@@ -103,6 +103,24 @@ namespace UtilityExtensions
             }
         }
 
+        private const string UserThumbPictureSessionKey = "UserThumbPictureUrl";
+        public static string UserThumbPictureUrl
+        {
+            get
+            {
+                if (HttpContext.Current != null)
+                    if (HttpContext.Current.Session != null)
+                        if (HttpContext.Current.Session[UserThumbPictureSessionKey] != null)
+                            return (string)HttpContext.Current.Session[UserThumbPictureSessionKey];
+                return string.Empty;
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                    HttpContext.Current.Session[UserThumbPictureSessionKey] = value;
+            }
+        }
+
         public static string GetUserName(string name)
         {
             if (name == null)

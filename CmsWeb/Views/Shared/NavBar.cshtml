@@ -29,7 +29,7 @@
                     <li><a href="#" data-toggle="modal" data-target="#search-box" id="search-button"><i class="fa fa-search"></i><span class="visible-lg-inline visible-xs-inline">&nbsp;&nbsp;Search</span></a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="currentTag username"><i class="fa fa-tag"></i>&nbsp;&nbsp;<span id="current-tag1">@Util2.CurrentTagName</span></span> <span class="caret"></span>
+                            <span class="currentTag username"><i class="fa fa-tag"></i>&nbsp;&nbsp;<span id="current-tag1" class="visible-lg-inline visible-xs-inline">@Util2.CurrentTagName</span></span> <span class="caret"></span>
                         </a>
                         <ul id="tagdropdown" class="dropdown-menu">
                             <li><a href="/Tags"><b><i id="current-tag2">@Util2.CurrentTagName</i></b></a></li>
@@ -49,12 +49,24 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me"><img src="" class="img-responsive img-circle">&nbsp;&nbsp;<span class="visible-lg-inline visible-xs-inline">@Util.UserFullName</span> <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me">
+                            @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))
+                            {
+                                <img src="@Util.UserThumbPictureUrl" class="img-responsive img-circle">
+                            }
+                            else
+                            {
+                                <i class="fa fa-user"></i>
+                            }
+                            &nbsp;&nbsp;<span class="visible-lg-inline visible-xs-inline">@Util.UserFullName</span> <span class="caret"></span>
+                        </a>
                         <ul class="dropdown-menu">
                             @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
                             @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
-                            <li class="divider"></li>
-                            @Helper.LiAnchorLink("Target Person Tab is " + (targetperson ? "ON" : "OFF"), "/Home/TargetPerson/" + targetperson, access)
+                            
+                            
+
+                            @Helper.LiAnchorLink("Open Person In New Tab", (targetperson ? "dropdown-icon fa fa-toggle-on" : "dropdown-icon fa fa-toggle-off"), "/Home/TargetPerson/" + targetperson)
                             @if (finance)
                             {
                                 @Helper.LiAnchorLink("Turn finance off", "/APITest/TurnFinanceOff", !testnofinance)
