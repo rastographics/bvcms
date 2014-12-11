@@ -37,6 +37,7 @@ namespace CmsWeb.Areas.Org.Models
         public int? OnlineReg { get; set; }
         public bool? MainFellowship { get; set; }
         public bool FromWeekAtAGlance { get; set; }
+        public bool PublicView { get; set; }
 
         [JsonIgnore]
         public PagerModel2 Pager { get; set; }
@@ -83,6 +84,8 @@ namespace CmsWeb.Areas.Org.Models
                         ClassFilled = o.ClassFilled ?? false,
                         RegClosed = o.RegistrationClosed ?? false,
                         RegTypeId = o.RegistrationTypeId,
+                        Description = o.Description,
+                        PublicSortOrder = o.PublicSortOrder,
                         ProgramName = o.Division.Program.Name,
                         ProgramId = o.Division.ProgId,
                         DivisionId = o.DivisionId,
@@ -171,6 +174,7 @@ namespace CmsWeb.Areas.Org.Models
                 _count = FetchOrgs().Count();
             return _count.Value;
         }
+
         public IQueryable<CmsData.Organization> FetchOrgs()
         {
             var me = Util.UserPeopleId;
@@ -283,13 +287,31 @@ namespace CmsWeb.Areas.Org.Models
                                 where o.CampusId == null
                                 select o;
 
-            if (OnlineReg == 99)
+            if (OnlineReg == RegistrationClassification.AnyOnlineReg99)
                 organizations = from o in organizations
                                 where o.RegistrationTypeId > 0
                                 select o;
-            else if (OnlineReg == 98)
+            else if (OnlineReg == RegistrationClassification.AnyOnlineRegMissionTrip98)
                 organizations = from o in organizations
                                 where o.RegistrationTypeId > 0 && o.IsMissionTrip == true
+                                select o;
+            else if (OnlineReg == RegistrationClassification.AnyOnlineRegNonPicklist97)
+                organizations = from o in organizations
+                                join p in DbUtil.Db.ViewMasterOrgs on o.OrganizationId equals p.PickListOrgId into j
+                                from p in j.DefaultIfEmpty()
+                                where p.PickListOrgId == null
+                                where o.RegistrationTypeId > 0
+                                select o;
+            else if (OnlineReg == RegistrationClassification.AnyOnlineRegActive96)
+                organizations = from o in organizations
+                                join p in DbUtil.Db.ViewMasterOrgs on o.OrganizationId equals p.PickListOrgId into j
+                                from p in j.DefaultIfEmpty()
+                                where p.PickListOrgId == null
+                                where o.RegistrationTypeId > 0
+                                where (o.RegistrationClosed ?? false) == false
+                                where (o.ClassFilled ?? false) == false
+                                where o.RegStart == null || o.RegStart < DateTime.Now
+                                where o.RegEnd == null || o.RegEnd > DateTime.Now
                                 select o;
             else if (OnlineReg > 0)
                 organizations = from o in organizations
@@ -359,6 +381,11 @@ namespace CmsWeb.Areas.Org.Models
                     case "Type":
                         query = from o in query
                                 orderby o.RegistrationTypeId, o.OrganizationName
+                                select o;
+                        break;
+                    case "Public Sort":
+                        query = from o in query
+                                orderby o.PublicSortOrder ?? "zzz", o.OrganizationName
                                 select o;
                         break;
                     case "Members":
@@ -436,6 +463,11 @@ namespace CmsWeb.Areas.Org.Models
                         query = from o in query
                                 orderby o.RegistrationTypeId descending,
                                 o.OrganizationName descending
+                                select o;
+                        break;
+                    case "Public Sort":
+                        query = from o in query
+                                orderby o.PublicSortOrder descending , o.OrganizationName descending 
                                 select o;
                         break;
                     case "Members":
@@ -587,6 +619,14 @@ namespace CmsWeb.Areas.Org.Models
             return list;
         }
 
+        public class RegistrationClassification
+        {
+            public const int NotSpecified = -1;
+            public const int AnyOnlineReg99 = 99;
+            public const int AnyOnlineRegMissionTrip98 = 98;
+            public const int AnyOnlineRegNonPicklist97 = 97;
+            public const int AnyOnlineRegActive96 = 96;
+        }
         public static IEnumerable<SelectListItem> RegistrationTypeIds()
         {
             var q = from o in CmsData.Codes.RegistrationTypeCode.GetCodePairs()
@@ -598,8 +638,18 @@ namespace CmsWeb.Areas.Org.Models
             var list = q.ToList();
             list.Insert(0, new SelectListItem
             {
-                Value = "99",
-                Text = "(any online reg)",
+                Value = RegistrationClassification.AnyOnlineRegActive96.ToString(),
+                Text = "(any active online registration)",
+            });
+            list.Insert(0, new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineRegNonPicklist97.ToString(),
+                Text = "(any online entrypoint)",
+            });
+            list.Insert(0, new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineReg99.ToString(),
+                Text = "(any online registration)",
             });
             list.Insert(0, new SelectListItem
             {
@@ -608,7 +658,7 @@ namespace CmsWeb.Areas.Org.Models
             });
             list.Add(new SelectListItem
             {
-                Value = "98",
+                Value = RegistrationClassification.AnyOnlineRegMissionTrip98.ToString(),
                 Text = "Mission Trip",
             });
             return list;
@@ -705,6 +755,8 @@ namespace CmsWeb.Areas.Org.Models
             {
                 get { return RegistrationTypeCode.Lookup(RegTypeId ?? 0); }
             }
+            public string Description { get; set; }
+            public string PublicSortOrder { get; set; }
             public string ProgramName { get; set; }
             public int? ProgramId { get; set; }
             public int? DivisionId { get; set; }

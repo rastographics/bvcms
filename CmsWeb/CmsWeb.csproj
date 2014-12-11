@@ -84,6 +84,16 @@
     <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test2|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test3|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AuthorizeNet">
       <HintPath>..\packages\AuthorizeNet.1.8.2\lib\AuthorizeNet.dll</HintPath>
@@ -215,7 +225,6 @@
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgPrevFromTagController.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\FirstState.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\HollyCreek.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgia.cs">
       <SubType>Code</SubType>
@@ -259,6 +268,7 @@
     <Compile Include="Areas\Finance\Models\BatchImport\ServiceU.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Areas\Finance\Models\BatchImport\FirstState.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SunTrust.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1597,7 +1607,10 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
     <Content Include="Views\Shared\Message.cshtml" />
     <Content Include="Views\Home\PyScript.cshtml" />
-    <None Include="Web.TeamCity.config">
+    <None Include="Web.test2.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.test3.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
@@ -2322,10 +2335,6 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Shared\ExportToolBar.cshtml">
-    </Content>
-    <Content Include="Web.bvcms.config">
-      <DependentUpon>Web.config</DependentUpon>
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.test.config">
       <DependentUpon>Web.config</DependentUpon>
