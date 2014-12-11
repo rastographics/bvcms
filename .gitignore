@@ -67,3 +67,5 @@ CmsDataSqlClr_.*.sqlproj
 
 /CmsWeb/Properties/PublishProfiles/production.pubxml
 /PythonApplication1/TextFile1.txt
+/CmsWeb/Properties/PublishProfiles/test2.pubxml
+/CmsWeb/Properties/PublishProfiles/test3.pubxml
