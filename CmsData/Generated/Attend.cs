@@ -51,6 +51,8 @@ namespace CmsData
 		
 		private int? _Commitment;
 		
+		private bool? _NoShow;
+		
    		
    		private EntitySet< SubRequest> _SubRequests;
 		
@@ -122,6 +124,9 @@ namespace CmsData
 		
 		partial void OnCommitmentChanging(int? value);
 		partial void OnCommitmentChanged();
+		
+		partial void OnNoShowChanging(bool? value);
+		partial void OnNoShowChanged();
 		
     #endregion
 		public Attend()
@@ -528,6 +533,28 @@ namespace CmsData
 					this._Commitment = value;
 					this.SendPropertyChanged("Commitment");
 					this.OnCommitmentChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="NoShow", UpdateCheck=UpdateCheck.Never, Storage="_NoShow", DbType="bit")]
+		public bool? NoShow
+		{
+			get { return this._NoShow; }
+
+			set
+			{
+				if (this._NoShow != value)
+				{
+				
+                    this.OnNoShowChanging(value);
+					this.SendPropertyChanging();
+					this._NoShow = value;
+					this.SendPropertyChanged("NoShow");
+					this.OnNoShowChanged();
 				}
 
 			}

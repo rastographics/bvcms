@@ -34,6 +34,10 @@ namespace CmsData
         partial void UpdateAddToOrgFromTagRun(AddToOrgFromTagRun instance);
         partial void DeleteAddToOrgFromTagRun(AddToOrgFromTagRun instance);
         
+        partial void InsertApiSession(ApiSession instance);
+        partial void UpdateApiSession(ApiSession instance);
+        partial void DeleteApiSession(ApiSession instance);
+        
         partial void InsertAttend(Attend instance);
         partial void UpdateAttend(Attend instance);
         partial void DeleteAttend(Attend instance);
@@ -701,6 +705,12 @@ namespace CmsData
 		public Table< AddToOrgFromTagRun> AddToOrgFromTagRuns
 		{
 			get	{ return this.GetTable< AddToOrgFromTagRun>(); }
+
+		}
+
+		public Table< ApiSession> ApiSessions
+		{
+			get	{ return this.GetTable< ApiSession>(); }
 
 		}
 
@@ -1715,6 +1725,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.MinistryInfo> ViewMinistryInfos
+	    {
+		    get { return this.GetTable< View.MinistryInfo>(); }
+
+	    }
+
 	    public Table< View.MissionTripTotal> ViewMissionTripTotals
 	    {
 		    get { return this.GetTable< View.MissionTripTotal>(); }
@@ -2445,6 +2461,40 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.GuestList", IsComposable = true)]
+		public IQueryable< View.GuestList > GuestList(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="datetime")] DateTime? since,
+            [Parameter(DbType="bit")] bool? showHidden,
+            [Parameter(DbType="varchar")] string first,
+            [Parameter(DbType="varchar")] string last
+            )
+		{
+			return this.CreateMethodCallQuery< View.GuestList>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                since,
+                showHidden,
+                first,
+                last
+                );
+		}
+
+		[Function(Name="dbo.GuestList2", IsComposable = true)]
+		public IQueryable< View.GuestList2 > GuestList2(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="datetime")] DateTime? since,
+            [Parameter(DbType="bit")] bool? showHidden
+            )
+		{
+			return this.CreateMethodCallQuery< View.GuestList2>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                since,
+                showHidden
+                );
+		}
+
 		[Function(Name="dbo.LastMeetings", IsComposable = true)]
 		public IQueryable< View.LastMeeting > LastMeetings(
             [Parameter(DbType="int")] int? orgid,
@@ -2518,6 +2568,38 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.OrgMember", IsComposable = true)]
+		public IQueryable< View.OrgMember > OrgMember(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="varchar")] string grouptype,
+            [Parameter(DbType="varchar")] string first,
+            [Parameter(DbType="varchar")] string last,
+            [Parameter(DbType="varchar")] string sgfilter,
+            [Parameter(DbType="bit")] bool? showhidden
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgMember>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                grouptype,
+                first,
+                last,
+                sgfilter,
+                showhidden
+                );
+		}
+
+		[Function(Name="dbo.OrgMemberInfo", IsComposable = true)]
+		public IQueryable< View.OrgMemberInfo > OrgMemberInfo(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgMemberInfo>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
 		[Function(Name="dbo.OrgMembersAsOfDate", IsComposable = true)]
 		public IQueryable< View.OrgMembersAsOfDate > OrgMembersAsOfDate(
             [Parameter(DbType="int")] int? orgid,
@@ -2528,6 +2610,27 @@ namespace CmsData
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 meetingdt
+                );
+		}
+
+		[Function(Name="dbo.OrgPeople", IsComposable = true)]
+		public IQueryable< View.OrgPerson > OrgPeople(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="varchar")] string grouptype,
+            [Parameter(DbType="varchar")] string first,
+            [Parameter(DbType="varchar")] string last,
+            [Parameter(DbType="varchar")] string sgfilter,
+            [Parameter(DbType="bit")] bool? showhidden
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgPerson>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                grouptype,
+                first,
+                last,
+                sgfilter,
+                showhidden
                 );
 		}
 
@@ -2767,6 +2870,19 @@ namespace CmsData
 			return this.CreateMethodCallQuery< View.Registration>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days
+                );
+		}
+
+		[Function(Name="dbo.SearchDivisions", IsComposable = true)]
+		public IQueryable< View.SearchDivision > SearchDivisions(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="varchar")] string name
+            )
+		{
+			return this.CreateMethodCallQuery< View.SearchDivision>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                name
                 );
 		}
 
@@ -3413,6 +3529,22 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.InSmallGroup", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string InSmallGroup(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "sg", DbType="varchar")] string sg
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid,
+                sg
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.BibleFellowshipClassId", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? BibleFellowshipClassId(
@@ -3720,6 +3852,20 @@ namespace CmsData
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 email
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SmallGroupLeader", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string SmallGroupLeader(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid
                 ).ReturnValue));
 		}
 

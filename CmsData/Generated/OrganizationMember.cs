@@ -69,6 +69,8 @@ namespace CmsData
 		
 		private int? _DatumId;
 		
+		private bool? _Hidden;
+		
    		
    		private EntitySet< OrgMemMemTag> _OrgMemMemTags;
 		
@@ -165,6 +167,9 @@ namespace CmsData
 		
 		partial void OnDatumIdChanging(int? value);
 		partial void OnDatumIdChanged();
+		
+		partial void OnHiddenChanging(bool? value);
+		partial void OnHiddenChanged();
 		
     #endregion
 		public OrganizationMember()
@@ -764,6 +769,28 @@ namespace CmsData
 					this._DatumId = value;
 					this.SendPropertyChanged("DatumId");
 					this.OnDatumIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Hidden", UpdateCheck=UpdateCheck.Never, Storage="_Hidden", DbType="bit")]
+		public bool? Hidden
+		{
+			get { return this._Hidden; }
+
+			set
+			{
+				if (this._Hidden != value)
+				{
+				
+                    this.OnHiddenChanging(value);
+					this.SendPropertyChanging();
+					this._Hidden = value;
+					this.SendPropertyChanged("Hidden");
+					this.OnHiddenChanged();
 				}
 
 			}
