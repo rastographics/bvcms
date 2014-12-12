@@ -1755,6 +1755,18 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.OrgsWithFee> ViewOrgsWithFees
+	    {
+		    get { return this.GetTable< View.OrgsWithFee>(); }
+
+	    }
+
+	    public Table< View.OrgsWithoutFee> ViewOrgsWithoutFees
+	    {
+		    get { return this.GetTable< View.OrgsWithoutFee>(); }
+
+	    }
+
 	    public Table< View.PickListOrg> ViewPickListOrgs
 	    {
 		    get { return this.GetTable< View.PickListOrg>(); }
