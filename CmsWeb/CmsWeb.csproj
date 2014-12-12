@@ -293,6 +293,7 @@
     <Compile Include="Areas\Manage\Models\ApiSessionStatus.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileRegistration.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
       <SubType>Code</SubType>
     </Compile>
