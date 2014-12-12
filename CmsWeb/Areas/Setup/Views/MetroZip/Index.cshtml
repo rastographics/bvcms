@@ -1,66 +1,110 @@
 ﻿@model IEnumerable<CmsData.Zip>
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "MetroZip";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Metro Zip Codes";
 }
+@section head{
+    <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
+}
+<h2>Zip Codes</h2>
+@if (TempData["SuccessMessage"] == null || string.IsNullOrWhiteSpace(TempData["SuccessMessage"].ToString()))
+{
+    using (Html.BeginForm("UpdateMetroZips", "MetroZip"))
+    {
+        <div class="alert alert-info">
+            <h4>What about existing addresses?</h4>
+            <p>
+                Any new addresses entered will be associated accordingly after you enter or update these zip codes. Already existing addresses can be updated with this button.
+            </p>
+            <p>
+                <button type="submit" class="btn btn-info">Update All Addresses</button>
+            </p>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-success">
+        <strong>Success!</strong> @TempData["SuccessMessage"]
+    </div>
+}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th style="width: 100px;">Zip Code</th>
+            <th style="width: 300px;">Metro Marginal Code</th>
+            <th style="width: 100px;">Action</th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    { 
+        <tr>
+            <td style="width: 100px;">@item.ZipCode</td>
+            <td style="width: 300px;">
+                <a id="r@(item.ZipCode)" class="clickSelect" data-value="@(item.ResidentCode == null ? "" : item.ResidentCode.Id.ToString())" data-pk="r@(item.ZipCode)">@(item.ResidentCode == null ? "" : item.ResidentCode.Description)</a>
+            </td>
+            <td style="width: 100px;">
+                <a id="d@(item.ZipCode)" href="#" class="delete btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
+            </td>
+        </tr>
+    }
+</table>
+<div class="row">
+    @using (Html.BeginForm("Create", "MetroZip", FormMethod.Post, new { @class = "form-inline" }))
+    {
+        <label for="zipcode" class="col-sm-3 col-md-2 control-label">New Zip Code:</label>
+        <div class="col-sm-9 col-md-10">
+            @Html.TextBox("zipcode", "", new { @class="form-control" })
+            <input type="submit" class="btn btn-primary" value="Create" />
+        </div>
+    }
+</div>
 @section scripts
 {
+    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-editable/bootstrap-editable.js")"></script>
     <script type="text/javascript">
-    //id=elements_id&value=user_edited_content
-        $(function() {
-            $(".clickSelect").editable("/MetroZips/Edit/", {
-                indicator: '<img src="/Content/images/loading.gif">',
-                loadurl: "/MetroZips/ResidentCodes/",
-                loadtype: "POST",
-                type: "select",
-                submit: "OK",
-                style: 'display: inline'
+        $(function () {
+            $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                            '<i class="fa fa-fw fa-check"></i>' +
+                                        '</button>' +
+                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                            '<i class="fa fa-fw fa-times"></i>' +
+                                        '</button>';
+
+            $(".clickSelect").editable({
+                mode: 'inline',
+                type: 'select',
+                url: "/MetroZips/Edit/",
+                source: "/MetroZips/ResidentCodes/"
             });
-            $("a.delete").click(function(ev) {
-                if (confirm("are you sure?"))
-                    $.post("/MetroZips/Delete/" + $(this).attr("id"), null, function(ret) {
-                        window.location = "/MetroZips/";
+
+            $("a.delete").click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr("id");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/MetroZips/Delete/" + id, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/MetroZips/";
+                            });
+                        }
                     });
-                return false;
+                });
             });
-            $(".bt").button();
         });
     </script>
-}
-<h2>Zips</h2>
-<h3><span style="color:#008000">@ViewData["msg"]</span></h3>
-<table>
-    <tr>
-        <th> ZipCode </th>
-        <th> MetroMarginalCode </th>
-        <th></th>
-    </tr>
-@foreach (var item in Model)
-{ 
-    <tr>
-        <td>@item.ZipCode</td>
-        <td>
-            <span id='r@(item.ZipCode)' 
-                class='clickSelect'>@(item.ResidentCode == null ? "" : item.ResidentCode.Description)</span>
-        </td>
-        <td>
-            <a id='d@(item.ZipCode)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
-        </td>
-    </tr>
-}
-</table>
-@using (Html.BeginForm("Create", "MetroZip"))
-{ 
-<p>
-    New ZipCode: @Html.TextBox("zipcode")
-    <input type="submit" class="bt" value="Create" />
-</p>
-} 
-@using (Html.BeginForm("UpdateMetroZips", "MetroZip"))
-{ 
-<p>
-    Any new addresses entered will be coded accordingly after you enter/update these zips.<br/>
-    Already existing addresses can be updated with this button<br/>
-    <input type="submit" class="bt blue" value="Update all Metro Zips" />
-</p>
 } 

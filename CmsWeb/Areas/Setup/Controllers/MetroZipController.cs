@@ -34,10 +34,10 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public ContentResult Edit(string id, string value)
+        public ContentResult Edit(string pk, string value)
         {
-            id = id.Substring(1);
-            var zip = DbUtil.Db.Zips.SingleOrDefault(m => m.ZipCode == id);
+            pk = pk.Substring(1);
+            var zip = DbUtil.Db.Zips.SingleOrDefault(m => m.ZipCode == pk);
             zip.MetroMarginalCode = value.ToInt();
             DbUtil.Db.SubmitChanges();
             var c = new ContentResult();
@@ -60,18 +60,24 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult UpdateMetroZips()
         {
             DbUtil.Db.UpdateResCodes();
-            return Redirect("/MetroZips?msg=Updated%20all%20Codes");
+            TempData["SuccessMessage"] = "All addresses were updated.";
+            return Redirect("/MetroZips");
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+
         public JsonResult ResidentCodes()
         {
             var q = from c in DbUtil.Db.ResidentCodes
                     select new
                     {
-                        Code = c.Id.ToString(),
-                        Value = c.Description,
+                        value = c.Id,
+                        text = c.Description,
                     };
-            return Json(q.ToDictionary(k => k.Code, v => v.Value));
+
+            var x = Json(q.ToList(), JsonRequestBehavior.AllowGet);
+            return x;
+           // var x = Json(q.ToDictionary(k => k.Value, v => v.Text));
+            
+            //return x;
         }
     }
 }
