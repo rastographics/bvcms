@@ -5,67 +5,69 @@
 }
 
 <h2>Extra Values</h2>
-<table class="table table-striped table-responsive">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Value</th>
-            <th>Data Type</th>
-            <th class="text-right">Count</th>
-            <th class="text-center">Standard</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var e in Model)
-        {
-            if (!e.CanView) { continue; }
-            if (User.IsInRole("Admin"))
+<div class="table-responsive">
+    <table class="table table-striped table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Data Type</th>
+                <th class="text-right">Count</th>
+                <th class="text-center">Standard</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in Model)
             {
-                <tr>
-                    <td>
-                        <a href="@e.QueryUrl">@e.Field</a>
-                    </td>
-                    <td>@e.Value</td>
-                    <td>@e.TypeDisplay</td>
-                    <td class="text-right">@e.Count.ToString("N0")</td>
-                    <td class="text-center">
-                        @if (e.Standard)
-                        {
-                            <i class="fa fa-check"></i>
+                if (!e.CanView) { continue; }
+                if (User.IsInRole("Admin"))
+                {
+                    <tr>
+                        <td>
+                            <a href="@e.QueryUrl">@e.Field</a>
+                        </td>
+                        <td>@e.Value</td>
+                        <td>@e.TypeDisplay</td>
+                        <td class="text-right">@e.Count.ToString("N0")</td>
+                        <td class="text-center">
+                            @if (e.Standard)
+                            {
+                                <i class="fa fa-check"></i>
+                            }
+                            else
+                            {
+                                <a href="@e.ConvertToStandardUrl" class="btn btn-default"><i class="fa fa-group"></i> Standardize</a>
+                            }
+                        </td>
+                        <td>
+                            <a class="rename btn btn-default" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)"><i class="fa fa-pencil"></i> Rename</a> <a class="delete btn btn-danger" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-trash"></i> Delete</a>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>
+                            <a href="@e.QueryUrl">@e.Field</a>
+                        </td>
+                        <td>@e.Value</td>
+                        <td>@e.TypeDisplay</td>
+                        <td class="text-right">@e.Count.ToString("N0")</td>
+                        <td>
+                            @if (e.Standard)
+                            {
+                                @:Standard
                         }
-                        else
-                        {
-                            <a href="@e.ConvertToStandardUrl" class="btn btn-default"><i class="fa fa-group"></i> Standardize</a>
-                        }
-                    </td>
-                    <td>
-                        <a class="rename btn btn-default" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)"><i class="fa fa-pencil"></i> Rename</a> <a class="delete btn btn-danger" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-trash"></i> Delete</a>
-                    </td>
-                </tr>
-            }
-            else
-            {
-                <tr>
-                    <td>
-                        <a href="@e.QueryUrl">@e.Field</a>
-                    </td>
-                    <td>@e.Value</td>
-                    <td>@e.TypeDisplay</td>
-                    <td class="text-right">@e.Count.ToString("N0")</td>
-                    <td>
-                        @if (e.Standard)
-                        {
-                            @:Standard
-                        }
-                    </td>
-                    <td></td>
-                </tr>
+                        </td>
+                        <td></td>
+                    </tr>
 
+                }
             }
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 @if (User.IsInRole("Admin"))
 {
     <a href="/Display/ContentEdit/@ViewBag.EvSpecId" class="btn btn-default">Standard Extra Values Specification</a>

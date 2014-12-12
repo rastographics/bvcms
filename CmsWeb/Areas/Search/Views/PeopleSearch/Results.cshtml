@@ -8,55 +8,57 @@
 }
 <div id="results">
     @Html.Partial("PagerTop", Model)
-    <table id="resultsTable" class="table table-striped table-responsive">
-        <thead>
-            <tr>
-                <th><a href="#" class="sortable">Name</a></th>
-                <th><a href="#" class="sortable">Status</a>/Age<br/> - <a href="#" class="sortable">DOB</a></th>
-                <th><a href="#" class="sortable">Address</a></th>
-                <th><a href="#" class="sortable">Communication</a></th>
-                <th><a href="#" class="sortable">Fellowship Leader</a></th>
-                <th>Tag</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Count() == 0)
-            {
-                <tr><td colspan="6">No matching records.</td></tr>
-            }
-        
-            @foreach (var p in Model.PeopleList())
-            {
+    <div class="table-responsive">
+        <table id="resultsTable" class="table table-striped table-responsive">
+            <thead>
                 <tr>
-                    <td>
-                        <a href='/Person2/@p.PeopleId' class="target" @target>@p.Name</a>
-                    </td>
-                    <td>
-                        @p.MemberStatus<br />
-                        @p.Age - @p.BirthDate
-                    </td>
-                    <td>
-                        <a href='http://www.google.com/maps?q=@p.Address,+@p.CityStateZip'>@p.Address</a>
-                        <br />
-                        @p.CityStateZip
-                    </td>
-                    <td>
-                        @foreach (var ph in p.Phones)
-                        {
-                            @ph<br />
-                        }
-                        <a href='mailto:@p.Email'>@p.Email</a>
-                    </td>
-                    <td>
-                        <a href='/Person2/@p.BFTeacherId'>@p.BFTeacher</a>
-                    </td>
-                    <td>
-                        <a href="#" class="taguntag" title="Add to/Remove from Active Tag" value='@p.PeopleId'>@(p.HasTag ? "Remove" : "Add")</a>
-                    </td>
+                    <th><a href="#" class="sortable">Name</a></th>
+                    <th><a href="#" class="sortable">Status</a>/Age<br /> - <a href="#" class="sortable">DOB</a></th>
+                    <th><a href="#" class="sortable">Address</a></th>
+                    <th><a href="#" class="sortable">Communication</a></th>
+                    <th><a href="#" class="sortable">Fellowship Leader</a></th>
+                    <th>Tag</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr><td colspan="6">No matching records.</td></tr>
+                }
+
+                @foreach (var p in Model.PeopleList())
+                {
+                    <tr>
+                        <td>
+                            <a href='/Person2/@p.PeopleId' class="target" @target>@p.Name</a>
+                        </td>
+                        <td>
+                            @p.MemberStatus<br />
+                            @p.Age - @p.BirthDate
+                        </td>
+                        <td>
+                            <a href='http://www.google.com/maps?q=@p.Address,+@p.CityStateZip'>@p.Address</a>
+                            <br />
+                            @p.CityStateZip
+                        </td>
+                        <td>
+                            @foreach (var ph in p.Phones)
+                            {
+                                @ph<br />
+                            }
+                            <a href='mailto:@p.Email'>@p.Email</a>
+                        </td>
+                        <td>
+                            <a href='/Person2/@p.BFTeacherId'>@p.BFTeacher</a>
+                        </td>
+                        <td>
+                            <a href="#" class="taguntag" title="Add to/Remove from Active Tag" value='@p.PeopleId'>@(p.HasTag ? "Remove" : "Add")</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
     @Html.Partial("PagerBottom", Model)
     @Html.Hidden("totcnt", Model.Count().ToString("N0"))
     @Html.HiddenFor(m => m.Page)

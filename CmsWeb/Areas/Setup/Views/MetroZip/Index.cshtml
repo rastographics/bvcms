@@ -28,27 +28,29 @@ else
         <strong>Success!</strong> @TempData["SuccessMessage"]
     </div>
 }
-<table class="table table-striped table-responsive">
-    <thead>
-        <tr>
-            <th style="width: 100px;">Zip Code</th>
-            <th style="width: 300px;">Metro Marginal Code</th>
-            <th style="width: 100px;">Action</th>
-        </tr>
-    </thead>
-    @foreach (var item in Model)
-    { 
-        <tr>
-            <td style="width: 100px;">@item.ZipCode</td>
-            <td style="width: 300px;">
-                <a id="r@(item.ZipCode)" class="clickSelect" data-value="@(item.ResidentCode == null ? "" : item.ResidentCode.Id.ToString())" data-pk="r@(item.ZipCode)">@(item.ResidentCode == null ? "" : item.ResidentCode.Description)</a>
-            </td>
-            <td style="width: 100px;">
-                <a id="d@(item.ZipCode)" href="#" class="delete btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
-            </td>
-        </tr>
-    }
-</table>
+<div class="table-responsive">
+    <table class="table table-striped table-responsive">
+        <thead>
+            <tr>
+                <th style="width: 100px;">Zip Code</th>
+                <th style="width: 300px;">Metro Marginal Code</th>
+                <th style="width: 100px;">Action</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="width: 100px;">@item.ZipCode</td>
+                <td style="width: 300px;">
+                    <a id="r@(item.ZipCode)" class="clickSelect" data-value="@(item.ResidentCode == null ? "" : item.ResidentCode.Id.ToString())" data-pk="r@(item.ZipCode)">@(item.ResidentCode == null ? "" : item.ResidentCode.Description)</a>
+                </td>
+                <td style="width: 100px;">
+                    <a id="d@(item.ZipCode)" href="#" class="delete btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
 <div class="row">
     @using (Html.BeginForm("Create", "MetroZip", FormMethod.Post, new { @class = "form-inline" }))
     {
