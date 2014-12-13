@@ -60,6 +60,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 				    var q = from r in Db.UploadPeopleRuns
 				            where r.Id == Db.UploadPeopleRuns.Max(rr => rr.Id)
 				            select r;
+                    Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
 				    var rt = q.Single();
 					rt.Error = ex.Message.Truncate(200);
         			Db.SubmitChanges();
