@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CmsData;
+using CmsData.View;
 using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
 
@@ -207,7 +208,9 @@ namespace CmsWeb.Models
                 var clist = dbc.ToList();
                 if (clist.Count > 0)
                 {
-                    var maxcampusid = Db.Campus.Max(c => c.Id);
+                    var maxcampusid = 0;
+                    if(Db.Campus.Any())
+                        maxcampusid = Db.Campus.Max(c => c.Id);
                     foreach (var i in clist)
                         if (i.cp == null)
                         {
@@ -244,85 +247,87 @@ namespace CmsWeb.Models
             {
                 Family f = null;
 
+                FindPerson3 pid;
+                Person p = null;
                 foreach (var a in fam)
                 {
-                    var first = a[names["first"]];
-                    var last = a[names["last"]];
-                    DateTime dt;
-                    DateTime? dob = null;
-                    if (names.ContainsKey("birthday"))
-                        if (DateTime.TryParse(a[names["birthday"]], out dt))
-                        {
-                            dob = dt;
-                            if (dob.Value < SqlDateTime.MinValue)
-                                dob = null;
-                        }
-                    string email = null;
-                    string cell = null;
-                    string homephone = null;
-                    if (names.ContainsKey("email"))
-                        email = a[names["email"]].Trim();
-                    if (names.ContainsKey("cellphone"))
-                        cell = a[names["cellphone"]].GetDigits();
-                    if (names.ContainsKey("homephone"))
-                        homephone = a[names["homephone"]].GetDigits();
-                    Person p = null;
-                    var pid = Db.FindPerson3(first, last, dob, email, cell, homephone, null).FirstOrDefault();
-
                     var potentialdup = false;
-                    if (noupdate && pid != null)
+                    try
                     {
-                        if (!testing)
+                        var first = a[names["first"]];
+                        var last = a[names["last"]];
+                        DateTime dt;
+                        DateTime? dob = null;
+                        if (names.ContainsKey("birthday"))
+                            if (DateTime.TryParse(a[names["birthday"]], out dt))
+                            {
+                                dob = dt;
+                                if (dob.Value < SqlDateTime.MinValue)
+                                    dob = null;
+                            }
+                        string email = null;
+                        string cell = null;
+                        string homephone = null;
+                        if (names.ContainsKey("email"))
+                            email = a[names["email"]].Trim();
+                        if (names.ContainsKey("cellphone"))
+                            cell = a[names["cellphone"]].GetDigits();
+                        if (names.ContainsKey("homephone"))
+                            homephone = a[names["homephone"]].GetDigits();
+                        pid = Db.FindPerson3(first, last, dob, email, cell, homephone, null).FirstOrDefault();
+
+                        if (noupdate && pid != null)
                         {
-                            var pd = Db.LoadPersonById(pid.PeopleId.Value);
-                            pd.AddEditExtraBool("FoundDup", true);
+                            if (!testing)
+                            {
+                                var pd = Db.LoadPersonById(pid.PeopleId.Value);
+                                pd.AddEditExtraBool("FoundDup", true);
+                            }
+                            potentialdup = true;
+                            pid = null;
                         }
-                        potentialdup = true;
-                        pid = null;
-                    }
-                    if (pid != null) // found
-                    {
-                        p = Db.LoadPersonById(pid.PeopleId.Value);
-                        psb = new List<ChangeDetail>();
-                        fsb = new List<ChangeDetail>();
 
-                        UpdateField(p, a, "TitleCode", "title");
-                        UpdateField(p, a, "FirstName", "first");
-                        UpdateField(p, a, "NickName", "goesby");
-                        UpdateField(p, a, "LastName", "last");
-                        UpdateField(p, a, "EmailAddress", "email");
-                        UpdateField(p, a, "EmailAddress2", "email2");
-                        UpdateField(p, a, "DOB", "birthday");
-                        UpdateField(p, a, "AltName", "altname");
-                        UpdateField(p, a, "SuffixCode", "suffix");
-                        UpdateField(p, a, "MiddleName", "middle");
-
-                        UpdateField(p, a, "CellPhone", "cellphone", GetDigits(a, "cellphone"));
-                        UpdateField(p, a, "WorkPhone", "workphone", GetDigits(a, "workphone"));
-                        UpdateField(p, a, "GenderId", "gender", Gender(a));
-                        UpdateField(p, a, "MaritalStatusId", "marital", Marital(a));
-                        UpdateField(p, a, "PositionInFamilyId", "position", Position(a));
-                        UpdateField(p, a, "CampusId", "campus", Campus(a));
-
-                        UpdateField(p.Family, a, "AddressLineOne", "address");
-                        UpdateField(p.Family, a, "AddressLineTwo", "address2");
-                        UpdateField(p.Family, a, "CityName", "city");
-                        UpdateField(p.Family, a, "StateCode", "state");
-                        UpdateField(p.Family, a, "ZipCode", "zip");
-
-                        if (!testing)
+                        if (pid != null) // found
                         {
-                            p.LogChanges(Db, psb, PeopleId);
-                            p.Family.LogChanges(Db, fsb, p.PeopleId, PeopleId);
-                            Db.SubmitChanges();
-                            p.AddEditExtraBool("InsertPeopleUpdated", true);
+                            p = Db.LoadPersonById(pid.PeopleId.Value);
+                            psb = new List<ChangeDetail>();
+                            fsb = new List<ChangeDetail>();
+
+                            UpdateField(p, a, "TitleCode", "title");
+                            UpdateField(p, a, "FirstName", "first");
+                            UpdateField(p, a, "NickName", "goesby");
+                            UpdateField(p, a, "LastName", "last");
+                            UpdateField(p, a, "EmailAddress", "email");
+                            UpdateField(p, a, "EmailAddress2", "email2");
+                            UpdateField(p, a, "DOB", "birthday");
+                            UpdateField(p, a, "AltName", "altname");
+                            UpdateField(p, a, "SuffixCode", "suffix");
+                            UpdateField(p, a, "MiddleName", "middle");
+
+                            UpdateField(p, a, "CellPhone", "cellphone", GetDigits(a, "cellphone"));
+                            UpdateField(p, a, "WorkPhone", "workphone", GetDigits(a, "workphone"));
+                            UpdateField(p, a, "GenderId", "gender", Gender(a));
+                            UpdateField(p, a, "MaritalStatusId", "marital", Marital(a));
+                            UpdateField(p, a, "PositionInFamilyId", "position", Position(a));
+                            if(!testing)
+                                UpdateField(p, a, "CampusId", "campus", Campus(a));
+
+                            UpdateField(p.Family, a, "AddressLineOne", "address");
+                            UpdateField(p.Family, a, "AddressLineTwo", "address2");
+                            UpdateField(p.Family, a, "CityName", "city");
+                            UpdateField(p.Family, a, "StateCode", "state");
+                            UpdateField(p.Family, a, "ZipCode", "zip");
+
+                            if (!testing)
+                            {
+                                p.LogChanges(Db, psb, PeopleId);
+                                p.Family.LogChanges(Db, fsb, p.PeopleId, PeopleId);
+                                Db.SubmitChanges();
+                                p.AddEditExtraBool("InsertPeopleUpdated", true);
+                            }
                         }
-                    }
-                    else // new person
-                    {
-                        try
+                        else // new person
                         {
-
                             if (f == null || !a[names["familyid"]].HasValue())
                             {
                                 f = new Family();
@@ -366,7 +371,8 @@ namespace CmsWeb.Models
                             SetField(p, a, "BaptismDate", "baptismdate", GetDate(p, a, "baptismdate"));
                             SetField(p, a, "PositionInFamilyId", "position", Position(a));
                             SetField(p, a, "TitleCode", "title", Title(a));
-                            SetField(p, a, "CampusId", "campus", Campus(a));
+                            if (!testing)
+                                SetField(p, a, "CampusId", "campus", Campus(a));
 
                             if (names.ContainsKey("memberstatus"))
                             {
@@ -384,10 +390,12 @@ namespace CmsWeb.Models
                                 p.MemberStatusId = m.Id;
                             }
                         }
-                        catch (Exception)
-                        {
-                            throw;
-                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw;
                     }
 
                     try
@@ -402,10 +410,10 @@ namespace CmsWeb.Models
                                 p.AddEditExtraData(b[0], a[names[name]].Trim());
                             else if (name.EndsWith(".org"))
                             {
-                                if (testing) 
+                                if (testing)
                                     continue;
                                 var d = a[names[name]].Trim().Trim();
-                                if (!d.HasValue()) 
+                                if (!d.HasValue())
                                     continue;
                                 var oid = 0;
                                 if (orgs.ContainsKey(b[0]))
@@ -456,7 +464,7 @@ namespace CmsWeb.Models
                             Db.SubmitChanges();
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         throw;
                     }

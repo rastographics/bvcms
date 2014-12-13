@@ -24,7 +24,7 @@
     $("#search").click(function (ev) {
         ev.preventDefault();
         var name = $('#Name').val();
-        if (name.match("^" + "M\.") === "M.") {
+        if (name.startsWith("M."))  {
             $('#Name').val("");
             var f = $('#results').closest('form');
             f.attr("action", "/OrgSearch/CreateMeeting/" + name);
