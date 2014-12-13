@@ -90,8 +90,12 @@
 @section scripts
 {
     <script type="text/javascript">
-        $(function () {
-            $(".input-group.date").datepicker({ orientation: 'top' });
+        $(function() {
+            var extraSmallDevice = $('.device-xs').is(':visible');
+            var smallDevice = $('.device-sm').is(':visible');
+            if (!extraSmallDevice && !smallDevice) {
+                $(".input-group.date").datepicker({ orientation: 'top' });
+            }
         });
     </script>
 }

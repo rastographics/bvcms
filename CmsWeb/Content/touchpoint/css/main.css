@@ -188,14 +188,18 @@ ul.pagination>li>span.separator:hover{
     }
 }
 
-#device-xss {
+.device-xss {
     display: none !important;
 }
 
 @media (max-width: 400px) {
-    #device-xss {
+    .device-xss {
         display: block !important;
     }
+}
+
+.table-responsive {
+    border: 0 !important;
 }
 
 tr.totals-row {
