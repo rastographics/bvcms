@@ -26,6 +26,8 @@ namespace CmsData.View
 		
 		private string _PublicSortOrder;
 		
+		private bool? _UseRegisterLink2;
+		
 		
 		public AppRegistration()
 		{
@@ -113,6 +115,23 @@ namespace CmsData.View
 			{
 				if (this._PublicSortOrder != value)
 					this._PublicSortOrder = value;
+			}
+
+		}
+
+		
+		[Column(Name="UseRegisterLink2", Storage="_UseRegisterLink2", DbType="bit")]
+		public bool? UseRegisterLink2
+		{
+			get
+			{
+				return this._UseRegisterLink2;
+			}
+
+			set
+			{
+				if (this._UseRegisterLink2 != value)
+					this._UseRegisterLink2 = value;
 			}
 
 		}

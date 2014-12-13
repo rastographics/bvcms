@@ -37,7 +37,8 @@ namespace CmsWeb.MobileAPI
                     Category = a[0];
                     publicSortOrder = a[1];
                 }
-                publicSortOrder = value;
+                else
+                    publicSortOrder = value;
             }
         }
 

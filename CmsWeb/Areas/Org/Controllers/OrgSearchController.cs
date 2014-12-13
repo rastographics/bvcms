@@ -129,8 +129,18 @@ namespace CmsWeb.Areas.Org.Controllers
                 case "be":
                     org.BirthDayEnd = value.ToDate();
                     break;
+                case "rs":
+                    org.RegStart = value.ToDate();
+                    break;
+                case "re":
+                    org.RegEnd = value.ToDate();
+                    break;
                 case "ck":
                     org.CanSelfCheckin = value == "yes";
+                    break;
+                case "reg2":
+                    org.UseRegisterLink2 = value == "yes";
+                    c.Content = org.UseRegisterLink2 == true ? "Family" : "Individual";
                     break;
                 case "so":
                     org.PublicSortOrder = value.HasValue() ? value : null;

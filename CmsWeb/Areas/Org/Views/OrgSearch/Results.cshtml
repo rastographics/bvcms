@@ -58,7 +58,10 @@
           <a href="#" class="sortable">Filled</a><br />
           <a href="#" class="sortable">Closed</a>
         </th>
-        <th><br /><a href="#" class="sortable">Type</a></th>
+        <th>
+          <a href="#" class="sortable">RegType</a><br/>
+          LinkType
+        </th>
         <th><a href="#" class="sortable">App Order</a></th>
         <th>
           <a href="#" class="sortable">FirstDate</a>
@@ -85,7 +88,10 @@
             @o.ClassFilled<br />
             @o.RegClosed
           </td>
-          <td>@o.RegType</td>
+          <td>
+            @o.RegType<br/>
+            <span id="reg2-@o.Id" class="yesno pointer">@(o.UseRegisterLink2 ?? false ? "Family" : "Individual")</span>
+          </td>
           <td>
             @if (canManageEvents)
             {
@@ -97,9 +103,9 @@
             }
           </td>
           <td>
-            @o.FirstMeetingDate<br/>
-            @o.RegStart<br/>
-            @o.RegEnd
+            @o.FirstMeetingDate<br />
+            <span id="rs-@o.Id" class="bday pointer">@o.RegStart</span><br />
+            <span id="re-@o.Id" class="bday pointer">@o.RegEnd</span>
           </td>
           <td>
             @if (canEdit)

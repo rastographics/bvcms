@@ -163,6 +163,8 @@ namespace CmsData
 		
 		private string _PublicSortOrder;
 		
+		private bool? _UseRegisterLink2;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -428,6 +430,9 @@ namespace CmsData
 		
 		partial void OnPublicSortOrderChanging(string value);
 		partial void OnPublicSortOrderChanged();
+		
+		partial void OnUseRegisterLink2Changing(bool? value);
+		partial void OnUseRegisterLink2Changed();
 		
     #endregion
 		public Organization()
@@ -2098,6 +2103,28 @@ namespace CmsData
 					this._PublicSortOrder = value;
 					this.SendPropertyChanged("PublicSortOrder");
 					this.OnPublicSortOrderChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="UseRegisterLink2", UpdateCheck=UpdateCheck.Never, Storage="_UseRegisterLink2", DbType="bit")]
+		public bool? UseRegisterLink2
+		{
+			get { return this._UseRegisterLink2; }
+
+			set
+			{
+				if (this._UseRegisterLink2 != value)
+				{
+				
+                    this.OnUseRegisterLink2Changing(value);
+					this.SendPropertyChanging();
+					this._UseRegisterLink2 = value;
+					this.SendPropertyChanged("UseRegisterLink2");
+					this.OnUseRegisterLink2Changed();
 				}
 
 			}

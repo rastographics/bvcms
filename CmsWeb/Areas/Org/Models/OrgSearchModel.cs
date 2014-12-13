@@ -86,6 +86,7 @@ namespace CmsWeb.Areas.Org.Models
                         RegTypeId = o.RegistrationTypeId,
                         Description = o.Description,
                         PublicSortOrder = o.PublicSortOrder,
+                        UseRegisterLink2 = o.UseRegisterLink2,
                         ProgramName = o.Division.Program.Name,
                         ProgramId = o.Division.ProgId,
                         DivisionId = o.DivisionId,
@@ -389,7 +390,7 @@ namespace CmsWeb.Areas.Org.Models
                                 orderby o.RegistrationClosed, o.OrganizationName
                                 select o;
                         break;
-                    case "Type":
+                    case "RegType":
                         query = from o in query
                                 orderby o.RegistrationTypeId, o.OrganizationName
                                 select o;
@@ -480,7 +481,7 @@ namespace CmsWeb.Areas.Org.Models
                                 o.OrganizationName descending
                                 select o;
                         break;
-                    case "Type":
+                    case "RegType":
                         query = from o in query
                                 orderby o.RegistrationTypeId descending,
                                 o.OrganizationName descending
@@ -795,6 +796,7 @@ namespace CmsWeb.Areas.Org.Models
             public string RegEnd { get; set; }
             public string Description { get; set; }
             public string PublicSortOrder { get; set; }
+            public bool? UseRegisterLink2 { get; set; }
             public string ProgramName { get; set; }
             public int? ProgramId { get; set; }
             public int? DivisionId { get; set; }

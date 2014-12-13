@@ -301,20 +301,25 @@ namespace CmsWeb.Areas.Public.Controllers
                     {
                         OrgId = o.OrganizationId, 
                         Name = o.Title ?? o.OrganizationName,
-                        UseRegisterLink2 = false, 
+                        UseRegisterLink2 = o.UseRegisterLink2 ?? false, 
                         Description = o.Description,
                         PublicSortOrder = o.PublicSortOrder
                     };
             foreach (var line in DbUtil.Db.Content("AppRegistrations", "\tRegistrations").SplitLines())
             {
                 var a = line.Split('\t');
-                var prefix = a[0];
+                var prefix = a[0].TrimEnd(':');
                 var title = a[1];
-                categories.Add(new MobileRegistrationCategory()
-                {
-                    Title = title, 
-                    Registrations = q.Where(mm => mm.Category == prefix).OrderBy(mm => mm.PublicSortOrder).ToList()
-                });
+                var r = (from mm in q
+                         where mm.Category == prefix
+                         orderby mm.PublicSortOrder
+                         select mm).ToList();
+                if(r.Any())
+                    categories.Add(new MobileRegistrationCategory()
+                    {
+                        Title = title, 
+                        Registrations = r
+                    });
             }
             return categories;
         }
