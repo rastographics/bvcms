@@ -291,6 +291,37 @@ namespace CmsWeb.Areas.Public.Controllers
                         break;
                     }
             }
+            return br;
+        }
+        private List<MobileRegistrationCategory> GetRegistrations()
+        {
+            var categories = new List<MobileRegistrationCategory>();
+            var q = from o in DbUtil.Db.ViewAppRegistrations.ToList()
+                    select new MobileRegistration
+                    {
+                        OrgId = o.OrganizationId, 
+                        Name = o.Title ?? o.OrganizationName,
+                        UseRegisterLink2 = false, 
+                        Description = o.Description,
+                        PublicSortOrder = o.PublicSortOrder
+                    };
+            foreach (var line in DbUtil.Db.Content("AppRegistrations", "\tRegistrations").SplitLines())
+            {
+                var a = line.Split('\t');
+                var prefix = a[0];
+                var title = a[1];
+                categories.Add(new MobileRegistrationCategory()
+                {
+                    Title = title, 
+                    Registrations = q.Where(mm => mm.Category == prefix).OrderBy(mm => mm.PublicSortOrder).ToList()
+                });
+            }
+            return categories;
+        }
+
+        public ActionResult Registrations()
+        {
+            return Content(JsonConvert.SerializeObject(GetRegistrations(), Formatting.Indented), "text/plain");
         }
         public ActionResult FetchRegistrations(string data)
         {
@@ -309,25 +340,7 @@ namespace CmsWeb.Areas.Public.Controllers
             br.type = BaseMessage.API_TYPE_REGISTRATIONS;
             //br.count = m.Count;
 
-            var q = from o in DbUtil.Db.Organizations
-                    join p in DbUtil.Db.ViewMasterOrgs on o.OrganizationId equals p.PickListOrgId into j
-                    from p in j.DefaultIfEmpty()
-                    where p.PickListOrgId == null
-                    where o.RegistrationTypeId > 0
-                    where (o.RegistrationClosed ?? false) == false
-                    where (o.ClassFilled ?? false) == false
-                    where o.RegStart == null || o.RegStart < DateTime.Now
-                    where o.RegEnd == null || o.RegEnd > DateTime.Now
-                    where o.PublicSortOrder.Length > 0
-                    orderby o.PublicSortOrder
-                    select new MobileRegistration
-                    {
-                        OrgId = o.OrganizationId, 
-                        UseRegisterLink2 = false, 
-                        Description = o.Description
-                    };
-
-
+            br.data = JsonConvert.SerializeObject(GetRegistrations());
             return br;
         }
 
