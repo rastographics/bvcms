@@ -45,19 +45,23 @@ else
                     <a id="r@(item.ZipCode)" class="clickSelect" data-value="@(item.ResidentCode == null ? "" : item.ResidentCode.Id.ToString())" data-pk="r@(item.ZipCode)">@(item.ResidentCode == null ? "" : item.ResidentCode.Description)</a>
                 </td>
                 <td style="width: 100px;">
-                    <a id="d@(item.ZipCode)" href="#" class="delete btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                    <a id="d@(item.ZipCode)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
                 </td>
             </tr>
         }
     </table>
 </div>
+<label for="zipcode">New Zip Code</label>
 <div class="row">
-    @using (Html.BeginForm("Create", "MetroZip", FormMethod.Post, new { @class = "form-inline" }))
+    @using (Html.BeginForm("Create", "MetroZip"))
     {
-        <label for="zipcode" class="col-sm-3 col-md-2 control-label">New Zip Code:</label>
-        <div class="col-sm-9 col-md-10">
-            @Html.TextBox("zipcode", "", new { @class="form-control" })
-            <input type="submit" class="btn btn-primary" value="Create" />
+        <div class="col-sm-12 form-inline">
+            <div class="input-group">
+                @Html.TextBox("zipcode", "", new { @class = "form-control" })
+            </div>
+            <div class="input-group">
+                <input type="submit" class="btn btn-primary" value="Create" />
+            </div>
         </div>
     }
 </div>
