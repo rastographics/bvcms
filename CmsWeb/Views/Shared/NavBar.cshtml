@@ -53,13 +53,13 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me">
                             @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))
                             {
-                                <img src="@Util.UserThumbPictureUrl" class="img-responsive img-circle">
+                                <img src="@Util.UserThumbPictureUrl" class="img-responsive img-circle hidden-xs">
                             }
                             else
                             {
-                                <i class="fa fa-user"></i>
+                                <i class="fa fa-user hidden-xs"></i>
                             }
-                            &nbsp;&nbsp;<span class="visible-lg-inline visible-xs-inline">@(Util.UserName == "Admin" ? "Admin" : Util.UserFirstName)</span> <span class="caret"></span>
+                            <i class="fa fa-user visible-xs-inline"></i>&nbsp;&nbsp;<span class="visible-lg-inline visible-xs-inline">@(Util.UserName == "Admin" ? "Admin" : Util.UserFirstName)</span> <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
                             @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
