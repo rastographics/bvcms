@@ -58,7 +58,7 @@
                             {
                                 <i class="fa fa-user"></i>
                             }
-                            &nbsp;&nbsp;<span class="visible-lg-inline visible-xs-inline">@Util.UserFullName</span> <span class="caret"></span>
+                            &nbsp;&nbsp;<span class="visible-lg-inline visible-xs-inline">@(Util.UserName == "Admin" ? "Admin" : Util.UserFirstName)</span> <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
                             @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)

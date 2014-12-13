@@ -363,6 +363,7 @@ namespace CmsWeb.Models
                 Util2.CurrentPeopleId = i.u.PeopleId.Value;
                 Util.UserPreferredName = i.PreferredName;
                 Util.UserFullName = i.u.Name;
+                Util.UserFirstName = i.u.Person.FirstName;
             }
             return i.u;
         }

@@ -80,6 +80,27 @@ namespace UtilityExtensions
                         HttpContext.Current.Session[STR_UserFullName] = value;
             }
         }
+
+        private const string UserFirstNameSessionKey = "UserFirstName";
+        public static string UserFirstName
+        {
+            get
+            {
+                string name = string.Empty;
+                if (HttpContext.Current != null)
+                    if (HttpContext.Current.Session != null)
+                        if (HttpContext.Current.Session[UserFirstNameSessionKey] != null)
+                            name = HttpContext.Current.Session[UserFirstNameSessionKey] as String;
+                return name;
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                    if (HttpContext.Current.Session != null)
+                        HttpContext.Current.Session[UserFirstNameSessionKey] = value;
+            }
+        }
+
         public static int UserId1
         {
             get { return UserId == 0 ? 1 : UserId; }
