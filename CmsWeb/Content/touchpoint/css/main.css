@@ -146,7 +146,17 @@ ul.pagination>li>span.separator:hover{
   background-color: transparent !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 991px) {
+    .btn-vert-block .btn {
+        display: block;
+        margin-bottom: 5px;  
+    }
+    .btn-vert-block .btn:last-child {
+        margin-bottom: 0;
+    }  
+}
+
+@media (max-width: 767px) {
 	.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, 
     .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, 
     .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, 
@@ -161,13 +171,18 @@ ul.pagination>li>span.separator:hover{
     .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
 		margin-bottom:10px;
 	}
-}
 
-@media (max-width: 768px) {
-	.form-inline .input-group .btn {
+    .form-inline .input-group .btn {
 		margin-top:10px;
 	}
+
+    .btn-vert-block .btn {
+        display: inline-block;
+        margin-bottom: 0; 
+    }
 }
+
+
 
 tr.totals-row {
     font-size: 1.5em;

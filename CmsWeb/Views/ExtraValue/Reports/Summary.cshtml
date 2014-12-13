@@ -41,7 +41,9 @@
                             }
                         </td>
                         <td>
-                            <a class="rename btn btn-sm btn-default" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)"><i class="fa fa-pencil"></i> Rename</a> <a class="delete btn btn-sm btn-danger" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-trash"></i> Delete</a>
+                            <div class="btn-vert-block">
+                                <a class="rename btn btn-sm btn-default" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)"><i class="fa fa-pencil"></i> Rename</a> <a class="delete btn btn-sm btn-danger" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-trash"></i> Delete</a>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -62,7 +64,6 @@
                         </td>
                         <td></td>
                     </tr>
-
                 }
             }
         </tbody>
