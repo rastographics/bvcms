@@ -28,59 +28,61 @@
 {
     <div>
         <h3>@p.Name</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th></th>
-                    @foreach (var c in p.Cols)
-                    {
-                        <th class="text-right">@c.Heading</th>
-                    }
-                    <th class="text-right">Total</th>
-                    <th class="text-right">Guests</th>
-                    <th class="text-right">Non Local</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var d in p.Divs)
-                {
-                    if (d.Meetings.Sum(m => m.Present) == 0 && d.NoDisplayZero)
-                    {
-                        continue;
-                    }
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td class="text-left">@d.Name</td>
+                        <th></th>
                         @foreach (var c in p.Cols)
                         {
-                            <td class="text-right">@d.Meetings.Where(m => c.Times.Contains(m.date.TimeOfDay)).Sum(m => m.Present).ToString("n0")</td>
+                            <th class="text-right">@c.Heading</th>
+                        }
+                        <th class="text-right">Total</th>
+                        <th class="text-right">Guests</th>
+                        <th class="text-right">Non Local</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in p.Divs)
+                    {
+                        if (d.Meetings.Sum(m => m.Present) == 0 && d.NoDisplayZero)
+                        {
+                            continue;
+                        }
+                        <tr>
+                            <td class="text-left">@d.Name</td>
+                            @foreach (var c in p.Cols)
+                            {
+                                <td class="text-right">@d.Meetings.Where(m => c.Times.Contains(m.date.TimeOfDay)).Sum(m => m.Present).ToString("n0")</td>
+                            }
+                            <td class="text-right">
+                                <a href='/Reports/Meetings?Dt1=@p.Dt1.ToString2("s")&dt2=@p.Dt2.ToString2("s")&ProgramId=@p.progid&DivisionId=@d.DivId'>
+                                    @d.Meetings.Sum(m => m.Present).ToString("n0")
+                                </a>
+                            </td>
+                            <td class="text-right">@d.Meetings.Sum(m => m.Visitors).ToString("n0")</td>
+                            <td class="text-right">@d.Meetings.Sum(m => m.OutTowners).ToString("n0")</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="totals-row">
+                        <td class="text-left">Total</td>
+                        @foreach (var c in p.Cols)
+                        {
+                            <td class="text-right">@p.Divs.Sum(d => d.Meetings.Where(m => c.Times.Contains(m.date.TimeOfDay)).Sum(m => m.Present)).ToString("n0")</td>
                         }
                         <td class="text-right">
-                            <a href='/Reports/Meetings?Dt1=@p.Dt1.ToString2("s")&dt2=@p.Dt2.ToString2("s")&ProgramId=@p.progid&DivisionId=@d.DivId'>
-                                @d.Meetings.Sum(m => m.Present).ToString("n0")
+                            <a href='/Reports/Meetings?Dt1=@p.Dt1.ToString2("s")&dt2=@p.Dt2.ToString2("s")&ProgramId=@p.progid'>
+                                @p.Divs.Sum(d => d.Meetings.Sum(m => m.Present)).ToString("n0")
                             </a>
                         </td>
-                        <td class="text-right">@d.Meetings.Sum(m => m.Visitors).ToString("n0")</td>
-                        <td class="text-right">@d.Meetings.Sum(m => m.OutTowners).ToString("n0")</td>
+                        <td class="text-right">@p.Divs.Sum(d => d.Meetings.Sum(m => m.Visitors)).ToString("n0")</td>
+                        <td class="text-right">@p.Divs.Sum(d => d.Meetings.Sum(m => m.OutTowners)).ToString("n0")</td>
                     </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr class="totals-row">
-                    <td class="text-left">Total</td>
-                    @foreach (var c in p.Cols)
-                    {
-                        <td class="text-right">@p.Divs.Sum(d => d.Meetings.Where(m => c.Times.Contains(m.date.TimeOfDay)).Sum(m => m.Present)).ToString("n0")</td>
-                    }
-                    <td class="text-right">
-                        <a href='/Reports/Meetings?Dt1=@p.Dt1.ToString2("s")&dt2=@p.Dt2.ToString2("s")&ProgramId=@p.progid'>
-                            @p.Divs.Sum(d => d.Meetings.Sum(m => m.Present)).ToString("n0")
-                        </a>
-                    </td>
-                    <td class="text-right">@p.Divs.Sum(d => d.Meetings.Sum(m => m.Visitors)).ToString("n0")</td>
-                    <td class="text-right">@p.Divs.Sum(d => d.Meetings.Sum(m => m.OutTowners)).ToString("n0")</td>
-                </tr>
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
+        </div>
     </div>
     <br/>
     <br/>
@@ -89,7 +91,7 @@
 {
     <script type="text/javascript">
         $(function () {
-            $('.input-group.date').datepicker();
+            $(".input-group.date").datepicker({ orientation: 'top' });
         });
     </script>
 }
