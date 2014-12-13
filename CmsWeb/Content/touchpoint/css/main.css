@@ -10,10 +10,21 @@ body {
 #main {
   padding-bottom: 25px;
 }
-.logo{
+.logo {
   padding-right: 10px;
   height: 50px;
 }
+@media (max-width: 360px) {
+	#logo {
+	    display: none !important;
+	}
+    #logo-sm {
+        display: inline !important;
+        padding-left: 25px;
+    }
+}
+
+
 #me {
   padding-bottom: 13px;
 }
