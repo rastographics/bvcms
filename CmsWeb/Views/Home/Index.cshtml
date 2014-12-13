@@ -11,6 +11,13 @@
             overflow-y: scroll;
         }
 
+        @@media (max-width: 767px) {
+	        ul.list-group {
+	            max-height: none !important;
+	            overflow-y: visible !important;
+	        }
+        }
+
         ul.list-group li.section {
             font-weight: bold;
         }
