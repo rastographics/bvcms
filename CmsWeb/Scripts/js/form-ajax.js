@@ -78,16 +78,13 @@
         $form.submit();
     };
 
-    $("form.ajax").on("click", "a.ajax", function (event) {
+    $("form.ajax a.ajax").live("click", function (event) {
         event.preventDefault();
         var t = $(this);
-        if (t.prop("used"))
-            return false;
         if (t.data("confirm"))
-            bootbox.confirm(t.data("confirm"), function(ret) {
-                if (ret === true) {
+            bootbox.confirm(t.data("confirm"), function (ret) {
+                if (ret === true)
                     $.formAjaxClick(t);
-                }
             });
         else
             $.formAjaxClick(t);
@@ -102,7 +99,6 @@
         if (data.length === 0)
             data = {};
         if (!a.hasClass("validate") || $form.valid()) {
-            a.prop("used", true);
             $.ajax({
                 type: 'POST',
                 url: url,
