@@ -6,16 +6,19 @@
 @section head
 {
     <style>
-        ul.list-group {
-            max-height: 215px;
-            overflow-y: scroll;
+        #home {
+            padding-top: 10px;
         }
+         ul.list-group {
+             max-height: 215px;
+             overflow-y: scroll;
+         }
 
         @@media (max-width: 767px) {
-	        ul.list-group {
-	            max-height: none !important;
-	            overflow-y: visible !important;
-	        }
+            ul.list-group {
+                max-height: none !important;
+                overflow-y: visible !important;
+            }
         }
 
         ul.list-group li.section {
@@ -30,7 +33,7 @@
         }
     </style>
 }
-<div class="row">
+<div id="home" class="row">
     <div class="col-sm-4">
         <div class="panel panel-default">
             <div class="panel-heading">
