@@ -29,22 +29,31 @@ body {
   margin-top: -3px; 
   vertical-align: middle;
 }
-#search-box #search-box-input {
+#search-box .modal-header {
+    border: 0;
+    padding-bottom: 0;
+}
+#search-box .input-group-lg input.search-box-input {
     height: 60px;
     font-size: 30px;
 }
-#search-box span.input-group-addon {
-    font-size: 30px;
+#search-box .input-group span.input-group-addon {
     background-color: #E9A310;
     color: #fff;
 }
-#search-results ul.nav {
-    margin-top: 15px;
+#search-box .input-group-lg span.input-group-addon {
+    font-size: 30px;
+}
+.search-results ul.nav {
     max-height: 315px;
     overflow-y: scroll;
 }
-#search-results ul.nav li.dropdown-header {
+.search-results ul.nav li.dropdown-header {
     padding-left: 0;
+}
+.search-results.search-results-xs ul.nav {
+    max-height: 215px;
+    overflow-y: scroll;
 }
 
 #bluetoolbarstop{
