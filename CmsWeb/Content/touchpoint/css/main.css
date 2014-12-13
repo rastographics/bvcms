@@ -15,15 +15,10 @@ body {
   height: 50px;
 }
 @media (max-width: 360px) {
-	#logo {
-	    display: none !important;
+	.logo {
+	    height: 45px !important;
 	}
-    #logo-sm {
-        display: inline !important;
-        padding-left: 25px;
-    }
 }
-
 
 #me {
   padding-bottom: 13px;
