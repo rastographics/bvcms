@@ -21,28 +21,29 @@
     <link href="@Url.Content("~/Content/touchpoint/css/print.css")" media="print" rel="stylesheet">
     @RenderSection("head", false)
 </head>
-<body>
-    @Html.Partial("NavBar")
-    <div class="container-fluid" id="main">
-        @RenderBody()
-    </div>
-    <div id="footer" class="container-fluid hidden-print">
-        &copy; 2014 TouchPoint Software, LLC.&nbsp;&nbsp;<a href="#">Privacy Policy</a>&nbsp;&nbsp;<a href="#">Email Updates</a>
-    </div>
-    @ViewExtensions2.jQuery()
-    @ViewExtensions2.LoDash()
-    @ViewExtensions2.Bootstrap3()
-    @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/touchpoint/bootstrap-datepicker/bootstrap-datepicker.js")
-    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-sweetalert/sweet-alert.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-bootbox/bootbox.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/touchpoint/jquery-blockUI/jquery.blockUI.js")"></script>
-    <script src="@Url.Content("~/Scripts/touchpoint/velocity/velocity.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/touchpoint/js/main.js")"></script>
-    <script type="text/javascript">
-        $.dateFormat = '@Util.jQueryDateFormat';
-    </script>
-    @RenderSection("scripts", false)
-    @Html.Partial("SearchBox")
-</body>
+    <body>
+        @Html.Partial("NavBar")
+        <div class="container-fluid" id="main">
+            @RenderBody()
+        </div>
+        <div id="footer" class="container-fluid hidden-print">
+            &copy; 2014 TouchPoint Software, LLC.&nbsp;&nbsp;<a href="#">Privacy Policy</a>&nbsp;&nbsp;<a href="#">Email Updates</a>
+        </div>
+        <div id="device-xss"></div>
+        @ViewExtensions2.jQuery()
+        @ViewExtensions2.LoDash()
+        @ViewExtensions2.Bootstrap3()
+        @ViewExtensions2.jQueryUI()
+        @Fingerprint.Script("/Scripts/touchpoint/bootstrap-datepicker/bootstrap-datepicker.js")
+        <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-sweetalert/sweet-alert.min.js")"></script>
+        <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-bootbox/bootbox.min.js")"></script>
+        <script src="@Url.Content("~/Scripts/touchpoint/jquery-blockUI/jquery.blockUI.js")"></script>
+        <script src="@Url.Content("~/Scripts/touchpoint/velocity/velocity.min.js")"></script>
+        <script src="@Url.Content("~/Scripts/touchpoint/js/main.js")"></script>
+        <script type="text/javascript">
+            $.dateFormat = '@Util.jQueryDateFormat';
+        </script>
+        @RenderSection("scripts", false)
+        @Html.Partial("SearchBox")
+    </body>
 </html>

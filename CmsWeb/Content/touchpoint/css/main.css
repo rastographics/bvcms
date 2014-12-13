@@ -182,7 +182,15 @@ ul.pagination>li>span.separator:hover{
     }
 }
 
+#device-xss {
+    display: none !important;
+}
 
+@media (max-width: 400px) {
+    #device-xss {
+        display: block !important;
+    }
+}
 
 tr.totals-row {
     font-size: 1.5em;
