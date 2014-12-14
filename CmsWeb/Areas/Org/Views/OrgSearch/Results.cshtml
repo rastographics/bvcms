@@ -104,8 +104,8 @@
           </td>
           <td>
             @o.FirstMeetingDate<br />
-            <span id="rs-@o.Id" class="bday pointer">@o.RegStart</span><br />
-            <span id="re-@o.Id" class="bday pointer">@o.RegEnd</span>
+            <span id="rs-@o.Id" class="bday pointer">@(o.RegStart.HasValue() ? o.RegStart : "edit")</span><br />
+            <span id="re-@o.Id" class="bday pointer">@(o.RegEnd.HasValue() ? o.RegEnd : "edit")</span>
           </td>
           <td>
             @if (canEdit)

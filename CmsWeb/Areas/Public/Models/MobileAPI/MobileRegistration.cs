@@ -49,6 +49,12 @@ namespace CmsWeb.MobileAPI
             get { return description; }
             set
             {
+                if (!value.HasValue())
+                {
+                    description = null;
+                    MoreInfo = null;
+                    return;
+                }
                 var doc = new HtmlDocument();
                 doc.LoadHtml(value);
                 var linkList = doc.DocumentNode.SelectNodes("//a[@href]");
