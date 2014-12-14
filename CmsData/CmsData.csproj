@@ -457,6 +457,7 @@
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />
+    <Compile Include="Generated\Views\AppRegistration.cs" />
     <Compile Include="Generated\Views\DonorProfileList.cs" />
     <Compile Include="Generated\Views\MinistryInfo.cs" />
     <Compile Include="Generated\Views\OrgsWithFee.cs" />

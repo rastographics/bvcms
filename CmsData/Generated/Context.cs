@@ -1641,6 +1641,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.AppRegistration> ViewAppRegistrations
+	    {
+		    get { return this.GetTable< View.AppRegistration>(); }
+
+	    }
+
 	    public Table< View.AttendCredit> ViewAttendCredits
 	    {
 		    get { return this.GetTable< View.AttendCredit>(); }
