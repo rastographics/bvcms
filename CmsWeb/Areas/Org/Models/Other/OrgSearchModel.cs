@@ -93,6 +93,8 @@ namespace CmsWeb.Areas.Org.Models
                         Divisions = string.Join(",", o.DivOrgs.Select(d => "{0} ({1})".Fmt(d.Division.Name, d.DivId)).ToArray()),
                         FirstMeetingDate = o.FirstMeetingDate.FormatDate(),
                         LastMeetingDate = o.LastMeetingDate.FormatDate(),
+                        RegStart = o.RegStart.FormatDate(),
+                        RegEnd = o.RegEnd.FormatDate(),
                         Schedule = DbUtil.Db.GetScheduleDesc(sc.MeetingTime),
                         Location = o.Location,
                         AllowSelfCheckIn = o.CanSelfCheckin ?? false,
@@ -276,6 +278,14 @@ namespace CmsWeb.Areas.Org.Models
                 organizations = from o in organizations
                                 where o.ParentOrgId != null
                                 select o;
+            else if (TypeId == OrgType.Fees)
+                organizations = from o in organizations
+                                join f in DbUtil.Db.ViewOrgsWithFees on o.OrganizationId equals f.OrganizationId
+                                select o;
+            else if (TypeId == OrgType.NoFees)
+                organizations = from o in organizations
+                                join f in DbUtil.Db.ViewOrgsWithoutFees on o.OrganizationId equals f.OrganizationId
+                                select o;
 
 
             if (CampusId > 0)
@@ -326,6 +336,7 @@ namespace CmsWeb.Areas.Org.Models
         }
         public IQueryable<CmsData.Organization> ApplySort(IQueryable<CmsData.Organization> query)
         {
+            var regdt = DateTime.Today.AddYears(5);
             if (Pager.Direction == "asc")
                 switch (Pager.Sort)
                 {
@@ -383,7 +394,7 @@ namespace CmsWeb.Areas.Org.Models
                                 orderby o.RegistrationTypeId, o.OrganizationName
                                 select o;
                         break;
-                    case "Public Sort":
+                    case "App Order":
                         query = from o in query
                                 orderby o.PublicSortOrder ?? "zzz", o.OrganizationName
                                 select o;
@@ -397,6 +408,16 @@ namespace CmsWeb.Areas.Org.Models
                     case "FirstDate":
                         query = from o in query
                                 orderby o.FirstMeetingDate, o.LastMeetingDate
+                                select o;
+                        break;
+                    case "RegStart":
+                        query = from o in query
+                                orderby o.RegStart ?? regdt
+                                select o;
+                        break;
+                    case "RegEnd":
+                        query = from o in query
+                                orderby o.RegEnd ?? regdt
                                 select o;
                         break;
                     case "LastMeetingDate":
@@ -465,9 +486,9 @@ namespace CmsWeb.Areas.Org.Models
                                 o.OrganizationName descending
                                 select o;
                         break;
-                    case "Public Sort":
+                    case "App Order":
                         query = from o in query
-                                orderby o.PublicSortOrder descending , o.OrganizationName descending 
+                                orderby o.PublicSortOrder ?? "zzz", o.OrganizationName 
                                 select o;
                         break;
                     case "Members":
@@ -481,6 +502,16 @@ namespace CmsWeb.Areas.Org.Models
                         query = from o in query
                                 orderby o.FirstMeetingDate descending,
                                 o.LastMeetingDate descending
+                                select o;
+                        break;
+                    case "RegStart":
+                        query = from o in query
+                                orderby o.RegStart descending 
+                                select o;
+                        break;
+                    case "RegEnd":
+                        query = from o in query
+                                orderby o.RegEnd descending 
                                 select o;
                         break;
                     case "LastMeetingDate":
@@ -592,6 +623,8 @@ namespace CmsWeb.Areas.Org.Models
 
         public class OrgType
         {
+            public const int NoFees = -8;
+            public const int Fees = -7;
             public const int ChildOrg = -6;
             public const int ParentOrg = -5;
             public const int SuspendedCheckin = -4;
@@ -615,6 +648,8 @@ namespace CmsWeb.Areas.Org.Models
             list.Insert(0, new SelectListItem { Text = "Parent Org", Value = OrgType.ParentOrg.ToString() });
             list.Insert(0, new SelectListItem { Text = "Child Org", Value = OrgType.ChildOrg.ToString() });
             list.Insert(0, new SelectListItem { Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs With Fees", Value = OrgType.Fees.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs Without Fees", Value = OrgType.NoFees.ToString() });
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
@@ -639,17 +674,17 @@ namespace CmsWeb.Areas.Org.Models
             list.Insert(0, new SelectListItem
             {
                 Value = RegistrationClassification.AnyOnlineRegActive96.ToString(),
-                Text = "(any active online registration)",
+                Text = "(any active registration)",
             });
             list.Insert(0, new SelectListItem
             {
                 Value = RegistrationClassification.AnyOnlineRegNonPicklist97.ToString(),
-                Text = "(any online entrypoint)",
+                Text = "(any registration, no picklist)",
             });
             list.Insert(0, new SelectListItem
             {
                 Value = RegistrationClassification.AnyOnlineReg99.ToString(),
-                Text = "(any online registration)",
+                Text = "(any registration)",
             });
             list.Insert(0, new SelectListItem
             {
@@ -755,6 +790,9 @@ namespace CmsWeb.Areas.Org.Models
             {
                 get { return RegistrationTypeCode.Lookup(RegTypeId ?? 0); }
             }
+
+            public string RegStart { get; set; }
+            public string RegEnd { get; set; }
             public string Description { get; set; }
             public string PublicSortOrder { get; set; }
             public string ProgramName { get; set; }

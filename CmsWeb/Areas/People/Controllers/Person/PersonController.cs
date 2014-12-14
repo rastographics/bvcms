@@ -23,8 +23,6 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet]
         public ActionResult Current()
         {
-            var gw = new AuthorizeNetGateway(DbUtil.Db, false);
-            gw.RemoveFromVault(2);
             return Redirect("/Person2/" + Util2.CurrentPeopleId);
         }
 

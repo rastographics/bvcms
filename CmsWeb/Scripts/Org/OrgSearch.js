@@ -8,18 +8,23 @@
     $("a.trigger-dropdown").dropdown2();
     $("#clear").click(function (ev) {
         ev.preventDefault();
+        $("#PublicView").removeAttr('checked');
         $("input:text").val("");
         $("#ProgramId,#CampusId,#ScheduleId,#TypeId").val(0);
         $("#OnlineReg").val(-1);
         $.post('/OrgSearch/DivisionIds/0', null, function (ret) {
             $('#DivisionId').html(ret);
         });
+        $.getTable();
         return false;
+    });
+    $("#PublicView").click(function () {
+        $.getTable();
     });
     $("#search").click(function (ev) {
         ev.preventDefault();
         var name = $('#Name').val();
-        if (name.match("^" + "M\.") === "M.") {
+        if (name.startsWith("M."))  {
             $('#Name').val("");
             var f = $('#results').closest('form');
             f.attr("action", "/OrgSearch/CreateMeeting/" + name);
@@ -116,9 +121,10 @@
             }
         });
     };
-    $(".descr").live("click", function (ev) {
-        ev.preventDefault();
-        var $a = $(this);
+    $(".descredit").live("click", function (ev) {
+        $.descredit($(this).prev());
+    });
+    $.descredit = function($a) {
         if ($a.text() === "edit")
             $a.html('');
         CKEDITOR.instances['editor'].setData($a.html());
@@ -136,7 +142,7 @@
             return false;
         });
         return false;
-    });
+    };
     $("#canceledit").live("click", function (ev) {
         ev.preventDefault();
         $('#EditorDialog').hide("close");
@@ -211,8 +217,8 @@
         $("#search").click();
     });
 
-    $("form").on("keypress", 'input', function (e) {
-        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+    $("#Name").keypress(function (e) {
+        if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
             $('a.default').click();
             return false;
         }

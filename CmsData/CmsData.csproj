@@ -459,6 +459,8 @@
     <Compile Include="Generated\RegistrationDatum.cs" />
     <Compile Include="Generated\Views\DonorProfileList.cs" />
     <Compile Include="Generated\Views\MinistryInfo.cs" />
+    <Compile Include="Generated\Views\OrgsWithFee.cs" />
+    <Compile Include="Generated\Views\OrgsWithoutFee.cs" />
     <Compile Include="Generated\Views\ProspectCount.cs" />
     <Compile Include="Generated\Views\RegistrationList.cs" />
     <Compile Include="Meetings\Attend.cs" />

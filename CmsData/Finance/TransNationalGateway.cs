@@ -573,6 +573,10 @@ namespace CmsData.Finance
 
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
+            // because TransNational doesn't bring back all actions that have happended on any giving transaction we 
+            // need to always start 14 days before so that any e-check original actions will come in for us to process.
+            start = start.AddDays(-14);
+
             var batchTransactions = new List<BatchTransaction>();
 
             // settled sale, capture, credit & refund transactions.
