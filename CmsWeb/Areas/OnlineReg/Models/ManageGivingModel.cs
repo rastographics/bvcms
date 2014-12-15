@@ -189,6 +189,8 @@ namespace CmsWeb.Models
                 else if (NoEChecksAllowed)
                     Type = PaymentType.CreditCard; // credit card only
                 Type = NoEChecksAllowed ? PaymentType.CreditCard : Type;
+
+                ClearMaskedNumbers(pi);
             }
 
             FirstName = pi.FirstName ?? person.FirstName;
@@ -202,6 +204,43 @@ namespace CmsWeb.Models
             Phone = pi.Phone ?? person.HomePhone ?? person.CellPhone;
 
             total = FundItem.Sum(ff => ff.Value) ?? 0;
+        }
+
+        private void ClearMaskedNumbers(PaymentInfo pi)
+        {
+            var gateway = DbUtil.Db.Setting("TransactionGateway", "");
+
+            var clearBankDetails = false;
+            var clearCreditCardDetails = false;
+
+            switch (gateway.ToLower())
+            {
+                case "sage":
+                    clearBankDetails = !pi.SageBankGuid.HasValue;
+                    clearCreditCardDetails = !pi.SageCardGuid.HasValue;
+                    break;
+                case "transnational":
+                    clearBankDetails = !pi.TbnBankVaultId.HasValue;
+                    clearCreditCardDetails = !pi.TbnCardVaultId.HasValue;
+                    break;
+                case "authorizenet":
+                    clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
+                    clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
+                    break;
+            }
+
+            if (clearBankDetails)
+            {
+                Account = string.Empty;
+                Routing = string.Empty;
+            }
+
+            if (clearCreditCardDetails)
+            {
+                Cardnumber = string.Empty;
+                Cardcode = string.Empty;
+                Expires = string.Empty;
+            }
         }
 
         public void Confirm(Controller controller)

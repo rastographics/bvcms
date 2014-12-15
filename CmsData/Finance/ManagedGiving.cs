@@ -162,14 +162,14 @@ Please contact the Finance office at the church." };
                 return db.Gateway();
 
             var gateway = db.Setting("TransactionGateway", "");
-            switch (gateway) // Check to see if standard gateway is set up
+            switch (gateway.ToLower()) // Check to see if standard gateway is set up
             {
-                case "Sage":
+                case "sage":
                     if ((pi.PreferredGivingType == "B" && pi.SageBankGuid.HasValue) ||
                         (pi.PreferredGivingType == "C" && pi.SageCardGuid.HasValue))
                         return db.Gateway();
                     break;
-                case "Transnational":
+                case "transnational":
                     if ((pi.PreferredGivingType == "B" && pi.TbnBankVaultId.HasValue) ||
                         (pi.PreferredGivingType == "C" && pi.TbnCardVaultId.HasValue))
                         return db.Gateway();
