@@ -220,7 +220,7 @@ namespace CmsWeb.Areas.Public.Models
 				}
 			}
 
-			return orgs.ToList<Organization>();
+			return orgs.OrderBy(gg => gg.OrganizationName).ToList<Organization>();
 		}
 
 		public string replaceAndWrite(GroupLookup gl)
