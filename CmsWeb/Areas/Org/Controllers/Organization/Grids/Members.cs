@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Org.Controllers
     public partial class OrganizationController
     {
         [HttpPost]
-        public ActionResult CurrMemberGrid(MemberModel m)
+        public ActionResult CurrMemberGrid(OrgPeopleModel m)
         {
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             m.GroupSelect = GroupSelectCode.Member;
@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.Org.Controllers
             return PartialView("Tabs/Current",m);
         }
         [HttpPost]
-        public ActionResult PendingMemberGrid(MemberModel m)
+        public ActionResult PendingMemberGrid(OrgPeopleModel m)
         {
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             m.GroupSelect = GroupSelectCode.Pending;
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Org.Controllers
             return PartialView("Tabs/Pending", m);
         }
         [HttpPost]
-        public ActionResult InactiveMemberGrid(MemberModel m)
+        public ActionResult InactiveMemberGrid(OrgPeopleModel m)
         {
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             m.GroupSelect = GroupSelectCode.Inactive;
@@ -40,9 +40,10 @@ namespace CmsWeb.Areas.Org.Controllers
             return PartialView("Tabs/Inactive", m);
         }
         [HttpPost]
-        public ActionResult PrevMemberGrid(PrevMemberModel m)
+        public ActionResult PrevMemberGrid(OrgPeopleModel m)
         {
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
+            m.GroupSelect = GroupSelectCode.Previous;
             ViewBag.orgname = Session["ActiveOrganization"] + " - Previous Members";
             DbUtil.LogActivity("Viewing Prev Members for {0}".Fmt(Session["ActiveOrganization"]));
             return PartialView("Tabs/Previous", m);

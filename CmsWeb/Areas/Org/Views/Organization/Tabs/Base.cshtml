@@ -2,7 +2,7 @@
 @using CmsData.Codes
 @using CmsWeb
 @using UtilityExtensions
-@model CmsWeb.Areas.Org.Models.MemberModel
+@model CmsWeb.Areas.Org.Models.OrgPeopleModel
 
 @Html.Partial("PagerHidden", Model)
 @Html.HiddenFor2(m => m.Id)
@@ -12,52 +12,39 @@
 <table id="MemberGrid" class="@ViewExtensions2.GridClass">
   <thead>
     <tr>
-      <th><br />@Model.SortLink("Name")</th>
-      <th><br />@Model.SortLink("MemberType")</th>
+      <th>@Model.SortLink("Name")</th>
+      <th>@Model.SortLink("MemberType")</th>
       <th class="left">
-        @Model.SortLink("Church")<br />
-        @Model.SortLink("Age") - @Model.SortLink("Bday")
+        @Model.SortLink("Church")
+        <br />@Model.SortLink("Age") - @Model.SortLink("Bday")
       </th>
-      <th><br />@Model.SortLink("Primary Address")</th>
-      <th><br />Communication</th>
+@*      <th><br />@Model.SortLink("Primary Address")</th>*@
+      @*      <th><br />Communication</th>*@
       <th>
         @Model.SortLink("% Att.")
-        <br />Last Contact
       </th>
       <th>
-        @Model.SortLink("Joined")<br />
         @Model.SortLink("Last Att.")
+        <br />@Model.SortLink("Joined")
+        <br />@Model.SortLink("Dropped")
       </th>
-      <th><br />Tag</th>
+      <th>Tag</th>
     </tr>
   </thead>
   <tbody>
-    @foreach (var om in Model.ViewList())
+    @foreach (var p in Model.ViewList())
     {
       <tr>
-        <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@om.PeopleId">@om.Name</a></td>
+        <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@p.PeopleId">@p.Name</a></td>
         <td>
-          <a class="membertype" href="/OrgMemberDialog2/Display/@Model.Id/@om.PeopleId"> @om.MemberType </a>
+          <a class="membertype" href="/OrgMemberDialog2/Display/@Model.Id/@p.PeopleId"> @p.MemberType </a>
         </td>
         <td>
-          @om.MemberStatus<br />
-          @om.Age - @om.BirthDate
+          @p.MemberStatus<br />
+          @p.Age - @p.BirthDate
         </td>
         <td>
-          <a href="http://www.google.com/maps?q=@om.Address,+@om.CityStateZip" target="_blank">
-            @om.Address
-          </a><br />
-          @om.CityStateZip
-        </td>
-        <td>
-          @foreach (var ph in om.Phones)
-          {
-            @ph<br />
-          }
-          <a href="mailto:@om.EmailAddress">@om.EmailAddress</a>
-        </td>
-        <td>
-          <a href="">@om.AttendPct.ToString2("N1")%</a>
+          <a href="">@p.AttPct.ToString2("N1")%</a>
           @*
             @if (om.LastContactDt.HasValue)
             {
@@ -74,27 +61,32 @@
           *@
         </td>
         <td>
-          @om.Joined.FormatDate2()<br />
-          @if (om.LastAttended.HasValue)
+          @if (p.LastAttended.HasValue)
           {
-            <a href="/Organization/GotoMeetingForDate/@Model.Id/@om.LastAttended.Value.Ticks">@om.LastAttended.FormatDate2()</a><br />
+            <a href="/Organization/GotoMeetingForDate/@Model.Id/@p.LastAttended.Value.Ticks">
+              @p.LastAttended.FormatDate2()
+            </a>
           }
+          <br />@p.Joined.FormatDate2()
+          <br />@p.Dropped.FormatDate2()
           @if (Model.GroupSelect == GroupSelectCode.Prospect)
           {
-            if (om.Hidden)
+            if (p.Hidden ?? false)
             {
-              <a href="/Organization/ShowProspect/@Model.Id/@om.PeopleId/Show" class="joinlink"
-                 confirm="Show @om.Name in Prospect List for this Org?">Show</a>
+              <a href="/Organization/ShowProspect/@Model.Id/@p.PeopleId/Show" class="joinlink"
+                 confirm="Show @p.Name in Prospect List for this Org?">Show</a>
             }
             else
             {
-              <a href="/Organization/ShowProspect/@Model.Id/@om.PeopleId/Hide" class="joinlink"
-                 confirm="Hide @om.Name on Prospect List for this Org?">Hide</a>
+              <a href="/Organization/ShowProspect/@Model.Id/@p.PeopleId/Hide" class="joinlink"
+                 confirm="Hide @p.Name on Prospect List for this Org?">Hide</a>
             }
           }
         </td>
         <td>
-          <a pid='@om.PeopleId' title="Add to/Remove from Active Tag" class="taguntag" href="#">@(om.HasTag ? "Remove" : "Add")</a>
+          <a pid='@p.PeopleId' title="Add to/Remove from Active Tag" class="taguntag" href="#">
+            @(p.HasTag == true ? "Remove" : "Add")
+          </a>
         </td>
       </tr>
     }

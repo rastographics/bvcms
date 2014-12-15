@@ -15,7 +15,7 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class OrganizationModel : MemberModel
+    public class OrganizationModel : OrgPeopleModel
     {
         public List<ScheduleInfo> Schedules
         {

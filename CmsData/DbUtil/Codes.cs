@@ -256,6 +256,8 @@ namespace CmsData.Codes
         public const string Inactive = "20";
         public const string Pending = "30";
         public const string Prospect = "40";
+        public const string Previous = "50";
+        public const string Guest = "60";
     }
     public class ContributionTypeCode
     {

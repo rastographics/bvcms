@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Org.Controllers
     public partial class OrganizationController
     {
         [HttpPost]
-        public ActionResult ProspectGrid(MemberModel m)
+        public ActionResult ProspectGrid(OrgPeopleModel m)
         {
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             m.GroupSelect = GroupSelectCode.Prospect;

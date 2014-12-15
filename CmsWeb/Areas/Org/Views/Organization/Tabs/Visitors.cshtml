@@ -1,4 +1,17 @@
-﻿@using CmsData.Codes
+﻿@model CmsWeb.Areas.Org.Models.OrgPeopleModel
+@Html.Hidden("visitor-qid", (Guid?)ViewBag.queryid)
+<div style="margin-bottom:5px">
+  Count: <strong id="inactive-count">@Model.Count()</strong>
+  @if (User.IsInRole("Edit"))
+  {
+    <a href="/SearchAdd2/Dialog/inactive/@Model.Id" class="searchadd btn">@(Model.Org.IsMissionTrip == true ? "Add Sender" : "Add Inactive Members")</a>
+    <a href="/OrgMembersDialog/@Model.Id?inactives=true" title="Update Inactive Members" class="memberdialog btn">update</a>
+  }
+  @Helper.OrgFilter(Model.NameFilter, Model.SgFilter, Model.ShowHidden, "Guests")
+</div>
+@Html.Partial("Tabs/Base", Model)
+@*
+@using CmsData.Codes
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.VisitorModel
 <form class="form form-horizontal non-modal ajax span12 pad-left">
@@ -85,3 +98,4 @@
     @Html.Partial("Pager3", Model)
   </div>
 </form>
+*@

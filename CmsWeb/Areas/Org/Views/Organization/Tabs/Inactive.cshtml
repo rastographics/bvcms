@@ -1,5 +1,4 @@
-﻿@using IronPython.Modules
-@model CmsWeb.Areas.Org.Models.MemberModel
+﻿@model CmsWeb.Areas.Org.Models.OrgPeopleModel
 @Html.Hidden("inactive-qid", (Guid?)ViewBag.queryid)
 <div style="margin-bottom:5px">
   Count: <strong id="inactive-count">@Model.Count()</strong>

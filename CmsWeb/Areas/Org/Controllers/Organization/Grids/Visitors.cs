@@ -14,9 +14,10 @@ namespace CmsWeb.Areas.Org.Controllers
     public partial class OrganizationController
     {
         [HttpPost]
-        public ActionResult VisitorGrid(VisitorModel m)
+        public ActionResult VisitorGrid(OrgPeopleModel m)
         {
             DbUtil.Db.CopyPropertiesFrom(m);
+            m.GroupSelect = GroupSelectCode.Guest;
             DbUtil.LogActivity("Viewing Visitors for {0}".Fmt(Session["ActiveOrganization"]));
             ViewBag.orgname = Session["ActiveOrganization"] + " - Guests";
             return PartialView("Tabs/Visitors", m);

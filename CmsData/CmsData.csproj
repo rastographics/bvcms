@@ -255,9 +255,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\IPPDotNetDevKit.2.1.7.0\lib\DevDefined.OAuth.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\HtmlAgilityPack.1.4.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Intuit.Ipp.AsyncServices">
       <HintPath>..\packages\IPPDotNetDevKit.2.1.7.0\lib\Intuit.Ipp.AsyncServices.dll</HintPath>
@@ -364,6 +364,7 @@
     <Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
+    <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Finance\ReturnedCheck.cs" />
     <Compile Include="Finance\ReturnedChecksResponse.cs" />
@@ -453,6 +454,12 @@
     <Compile Include="Generated\Functions\GuestList2.cs" />
     <Compile Include="Generated\Functions\OrgMember.cs" />
     <Compile Include="Generated\Functions\OrgMemberInfo.cs" />
+    <Compile Include="Generated\Functions\OrgPeopleCurrent.cs" />
+    <Compile Include="Generated\Functions\OrgPeopleGuest.cs" />
+    <Compile Include="Generated\Functions\OrgPeopleInactive.cs" />
+    <Compile Include="Generated\Functions\OrgPeoplePending.cs" />
+    <Compile Include="Generated\Functions\OrgPeoplePreviou.cs" />
+    <Compile Include="Generated\Functions\OrgPeopleProspect.cs" />
     <Compile Include="Generated\Functions\OrgPerson.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
