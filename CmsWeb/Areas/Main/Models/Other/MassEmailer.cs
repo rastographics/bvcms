@@ -44,12 +44,12 @@ namespace CmsWeb.Areas.Main.Models
             if (!cc.ParentsOf && wantParents)
                 q = DbUtil.Db.PersonQueryParents(q);
 
-            if(CcParents)
+            if (CcParents)
                 q = from p in q
-                    where (p.EmailAddress ?? "") != "" 
-                        || (p.Family.HeadOfHousehold.EmailAddress ?? "") != "" 
+                    where (p.EmailAddress ?? "") != ""
+                        || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
                         || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
-                    where (p.SendEmailAddress1 ?? true) 
+                    where (p.SendEmailAddress1 ?? true)
                         || (p.SendEmailAddress2 ?? false)
                         || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
                         || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
@@ -67,16 +67,34 @@ namespace CmsWeb.Areas.Main.Models
             TagId = tag.Id;
         }
 
-        public int CreateQueue(bool transactional = false)
+        public EmailQueue CreateQueue(bool transactional = false)
         {
             var From = new MailAddress(FromAddress, FromName);
             DbUtil.Db.CopySession();
+
+            var QueuedToBatch = false;
+            if (!Schedule.HasValue)
+            {
+                var tag = DbUtil.Db.TagById(TagId);
+                var q = tag.People(DbUtil.Db);
+                Count = q.Count();
+                if (Count >= 300)
+                {
+                    Schedule = Util.Now;
+                    QueuedToBatch = true;
+                }
+            }
+
             var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents);
             if (emailqueue == null)
                 return 0;
+
+            if(QueuedToBatch)
+                DbUtil.LogActivity("EmailQueuedToBatch({0},{1})".Fmt(emailqueue.Id, Count));
+
             emailqueue.Transactional = transactional;
             DbUtil.Db.SubmitChanges();
-            return emailqueue.Id;
+            return emailqueue;
         }
 
         public IEnumerable<SelectListItem> EmailFroms()
