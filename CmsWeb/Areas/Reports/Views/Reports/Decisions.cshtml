@@ -18,14 +18,16 @@
             <div class="col-sm-3">
                 <label for="dt1">From Date</label>
                 <div class="input-group date">
-                    @Html.TextBox("dt1", Model.dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    @Html.TextBox("dt1", Model.dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                    @Html.Hidden("dt1Iso", Model.dt1.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
                 </div>
             </div>
             <div class="col-sm-6">
                 <label for="dt2">To Date</label>
                 <div class="form-inline">
-                    <div class="input-group date">
-                        @Html.TextBox("dt2", Model.dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <div class="input-group date">                       
+                        @Html.TextBox("dt2", Model.dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("dt2Iso", Model.dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
                     </div>
                     <div class="input-group">
                         <button type="submit" class="btn btn-primary">Run</button>
@@ -207,7 +209,6 @@
 {
     <script type="text/javascript">
         $(function () {
-            $(".input-group.date").datepicker({ orientation: 'top' });
             $("a.query").click(function (ev) {
                 ev.preventDefault();
                 var f = $("#form");

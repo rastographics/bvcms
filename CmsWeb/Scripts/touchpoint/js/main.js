@@ -90,3 +90,28 @@ $.SortableDate = function (s) {
     var dt2 = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
     return dt2;
 };
+
+
+/* private functions */
+function initializeDateElements() {
+    var extraSmallDevice = $('.device-xs').is(':visible');
+    var smallDevice = $('.device-sm').is(':visible');
+    if (extraSmallDevice || smallDevice) {
+        $(".input-group.date input[type=text]").each(function (index) {
+            var isoSelector = '#' + $(this).attr('id') + 'Iso';
+            $(this).val($(isoSelector).val());
+            $(this).attr('type', 'date');
+        });
+    } else {
+        $(".input-group.date").datepicker({ orientation: 'top' });
+    }
+}
+
+/* dom load functions */
+$(function () {
+
+    // initialize any date fields.
+    initializeDateElements();
+
+
+});

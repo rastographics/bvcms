@@ -10,14 +10,16 @@
         {
             <div class="col-sm-3">
                 <label for="Dt1">Start Date</label>
-                <div class="input-group date">
-                    @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new {@class = "form-control"})<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                <div class="input-group date">                    
+                    @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                    @Html.Hidden("Dt1Iso", Model.Dt1.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
                 </div>
             </div>
             <div class="col-sm-3">
                 <label for="Dt2">End Date</label>
                 <div class="input-group date">
-                    @Html.TextBox("Dt2", Model.Dt1.GetValueOrDefault().ToShortDateString(), new {@class = "form-control"})<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                    @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                    @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
                 </div>
             </div>
             <div class="col-sm-6">
@@ -88,16 +90,4 @@
     </div>
     <br/>
     <br/>
-}
-@section scripts
-{
-    <script type="text/javascript">
-        $(function () {
-            var extraSmallDevice = $('.device-xs').is(':visible');
-            var smallDevice = $('.device-sm').is(':visible');
-            if (!extraSmallDevice && !smallDevice) {
-                $(".input-group.date").datepicker({ orientation: 'top' });
-            }
-        });
-    </script>
 }

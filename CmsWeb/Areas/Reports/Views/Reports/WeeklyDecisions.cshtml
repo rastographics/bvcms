@@ -18,8 +18,8 @@
                 <label for="Sunday">Sunday Date</label>
                 <div class="form-inline">
                     <div class="input-group date">
-                        @Html.Hidden("SundayIso", Model.Sunday.ToString("yyyy-MM-dd"), new { disabled="disabled" })
                         @Html.TextBox("Sunday", Model.Sunday.ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("SundayIso", Model.Sunday.ToString("yyyy-MM-dd"), new { disabled = "disabled" })
                     </div>
                     <div class="input-group">
                         <button type="submit" class="btn btn-primary">Run</button>
@@ -83,18 +83,3 @@
         </table>
     </div>
 </div>
-@section scripts
-{
-    <script type="text/javascript">
-        $(function () {
-            var extraSmallDevice = $('.device-xs').is(':visible');
-            var smallDevice = $('.device-sm').is(':visible');
-            if (extraSmallDevice || smallDevice) {
-                $(".input-group.date input").val($(".input-group.date input[type=hidden]").val());
-                $(".input-group.date input[type=text]").attr('type', 'date');
-            } else {
-                $(".input-group.date").datepicker({ orientation: 'top' });
-            }
-        });
-    </script>
-}
