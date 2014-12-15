@@ -182,7 +182,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 			m.FromName = person.Name;
 			m.FromAddress = person.FromEmail;
 
-			var eqid = m.CreateQueue(transactional: true);
+			var eqid = m.CreateQueue(transactional: true).Id;
 			string host = Util.Host;
 			// save these from HttpContext to set again inside thread local storage
 			var useremail = Util.UserEmail;

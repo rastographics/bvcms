@@ -87,7 +87,7 @@ namespace CmsWeb.Areas.Main.Models
 
             var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents);
             if (emailqueue == null)
-                return 0;
+                return null;
 
             if(QueuedToBatch)
                 DbUtil.LogActivity("EmailQueuedToBatch({0},{1})".Fmt(emailqueue.Id, Count));
