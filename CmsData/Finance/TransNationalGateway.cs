@@ -109,12 +109,12 @@ namespace CmsData.Finance
                 _password,
                 new CreditCard
                 {
-                    FirstName = paymentInfo.FirstName ?? person.FirstName,
-                    LastName = paymentInfo.LastName ?? person.LastName,
                     CardNumber = cardNumber,
                     Expiration = expiration,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = paymentInfo.FirstName ?? person.FirstName,
+                        LastName = paymentInfo.LastName ?? person.LastName,
                         Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                         City = paymentInfo.City ?? person.PrimaryCity,
                         State = paymentInfo.State ?? person.PrimaryState,
@@ -142,12 +142,12 @@ namespace CmsData.Finance
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 new CreditCard
                 {
-                    FirstName = paymentInfo.FirstName ?? person.FirstName,
-                    LastName = paymentInfo.LastName ?? person.LastName,
                     CardNumber = cardNumber,
                     Expiration = expiration,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = paymentInfo.FirstName ?? person.FirstName,
+                        LastName = paymentInfo.LastName ?? person.LastName,
                         Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                         City = paymentInfo.City ?? person.PrimaryCity,
                         State = paymentInfo.State ?? person.PrimaryState,
@@ -172,10 +172,10 @@ namespace CmsData.Finance
                 _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 expiration,
-                paymentInfo.FirstName ?? person.FirstName,
-                paymentInfo.LastName ?? person.LastName,
                 new BillingAddress
                 {
+                    FirstName = paymentInfo.FirstName ?? person.FirstName,
+                    LastName = paymentInfo.LastName ?? person.LastName,
                     Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                     City = paymentInfo.City ?? person.PrimaryCity,
                     State = paymentInfo.State ?? person.PrimaryState,
@@ -203,6 +203,8 @@ namespace CmsData.Finance
                     RoutingNumber = routingNumber,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = paymentInfo.FirstName ?? person.FirstName,
+                        LastName = paymentInfo.LastName ?? person.LastName,
                         Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                         City = paymentInfo.City ?? person.PrimaryCity,
                         State = paymentInfo.State ?? person.PrimaryState,
@@ -231,6 +233,8 @@ namespace CmsData.Finance
                 "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
                 new BillingAddress
                 {
+                    FirstName = paymentInfo.FirstName ?? person.FirstName,
+                    LastName = paymentInfo.LastName ?? person.LastName,
                     Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                     City = paymentInfo.City ?? person.PrimaryCity,
                     State = paymentInfo.State ?? person.PrimaryState,
@@ -260,6 +264,8 @@ namespace CmsData.Finance
                     RoutingNumber = routingNumber,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = paymentInfo.FirstName ?? person.FirstName,
+                        LastName = paymentInfo.LastName ?? person.LastName,
                         Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                         City = paymentInfo.City ?? person.PrimaryCity,
                         State = paymentInfo.State ?? person.PrimaryState,
@@ -366,13 +372,13 @@ namespace CmsData.Finance
                 _password,
                 new CreditCard
                 {
-                    FirstName = first,
-                    LastName = last,
                     CardNumber = cardnumber,
                     Expiration = expires,
                     CardCode = cardcode,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = first,
+                        LastName = last,
                         Address1 = addr,
                         City = city,
                         State = state,
@@ -406,13 +412,13 @@ namespace CmsData.Finance
                 _password,
                 new CreditCard
                 {
-                    FirstName = first,
-                    LastName = last,
                     CardNumber = cardnumber,
                     Expiration = expires,
                     CardCode = cardcode,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = first,
+                        LastName = last,
                         Address1 = addr,
                         City = city,
                         State = state,
@@ -451,6 +457,8 @@ namespace CmsData.Finance
                     RoutingNumber = routing,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = first,
+                        LastName = last,
                         Address1 = addr,
                         City = city,
                         State = state,
