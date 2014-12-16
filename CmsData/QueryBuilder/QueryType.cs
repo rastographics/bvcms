@@ -125,6 +125,7 @@ namespace CmsData
         LetterStatusId,
         LetterDateRequested,
         MaidenName,
+        ManagedGivingCreditCard,
         MatchAnything,
         MatchNothing,
         MedicalLength,

@@ -98,6 +98,7 @@ namespace CmsData
                 { QueryType.KidsRecentAttendCount, KidsRecentAttendCount },
                 { QueryType.LeadersUnderCurrentOrg, LeadersUnderCurrentOrg },
                 { QueryType.MadeContactTypeAsOf, MadeContactTypeAsOf },
+                { QueryType.ManagedGivingCreditCard, ManagedGivingCreditCard },
                 { QueryType.MatchAnything, MatchAnything },
                 { QueryType.MatchNothing, MatchNothing },
                 { QueryType.MedicalLength, MedicalLength },
