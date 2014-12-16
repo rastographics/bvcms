@@ -149,7 +149,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                                 ModelState.AddModelError("form", transactionResponse.Message);
                                 return View("Payment/Process", pf);
                             }
-                                
+
+                            // if we got this far that means the auth worked so now let's do a void for that auth.
+                            var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
                         }                        
                     }
 

@@ -412,6 +412,9 @@ namespace CmsWeb.Models
 
                     if (!transactionResponse.Approved)
                         throw new Exception(transactionResponse.Message);
+
+                    // if we got this far that means the auth worked so now let's do a void for that auth.
+                    var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
                 }
 
                 // store payment method in the gateway vault if not already saved.
