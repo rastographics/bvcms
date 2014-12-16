@@ -246,7 +246,7 @@ namespace CmsWeb.Controllers
 #if DEBUG2
                 var script = System.IO.File.ReadAllText(Server.MapPath("/chart.py"));
 #else
-                var script = DbUtil.Content(name, "");
+                var script = DbUtil.Db.ContentOfTypePythonScript(name);
 #endif
                 if (!script.HasValue())
                     return Message("no script named " + name);
