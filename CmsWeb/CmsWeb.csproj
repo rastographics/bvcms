@@ -1111,7 +1111,9 @@
     <Content Include="Areas\Org\Views\Meeting\Toolbar\Toolbar.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\AttendanceByGroups.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Toolbar\Email.cshtml" />
-    <None Include="Properties\PublishProfiles\production.pubxml" />
+    <None Include="Properties\PublishProfiles\production.pubxml">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Scripts\Search\ContactSearch2.js" />
     <Content Include="Scripts\Search\SavedQueryList.js" />
     <Content Include="Scripts\Search\SearchAdd.js" />
