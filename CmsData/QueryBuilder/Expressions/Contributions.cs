@@ -590,6 +590,22 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression ManagedGivingCreditCard()
+        {
+            if (!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
+            var tf = CodeIds == "1";
+            Expression<Func<Person, bool>> pred = p => (from e in p.RecurringAmounts
+                                                        let pi = p.PaymentInfos.SingleOrDefault()
+                                                        where e.Amt > 0
+                                                        where pi.PreferredGivingType == "C"
+                                                        select e).Any();
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression CcExpiration()
         {
             if (!db.FromBatch)
