@@ -546,9 +546,6 @@
     <HasManagedGiving Title="Has Managed Giving" Type="Bit" DisplayAs="HasManagedGiving({0})" DataValueField="IdCode" Params="Quarters" QuartersLabel="FundId or Blank">
       Specify True or False for those with Managed Giving.
     </HasManagedGiving>
-    <ManagedGivingCreditCard Title="Managed Giving With Credit Card" Type="Bit" DisplayAs="ManagedGivingCC({0})" DataValueField="IdCode">
-      Specify True or False for those with Managed Giving and uses CreditCard
-    </ManagedGivingCreditCard>
     <CcExpiration Title="Credit Card Expire Days" Type="Bit" DisplayAs="CCExpiration({0})" Params="Days" DataValueField="IdCode">
       Specify True or False for those with Managed Giving.
     </CcExpiration>
