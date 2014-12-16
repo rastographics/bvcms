@@ -58,7 +58,7 @@ body {
     font-size: 30px;
 }
 #search-box .input-group span.input-group-addon {
-    background-color: #E9A310;
+    background-color: #eca91f;
     color: #fff;
 }
 #search-box .input-group-lg span.input-group-addon {
@@ -138,7 +138,7 @@ body {
   cursor: not-allowed;
 }
 .dropdown-menu-large .dropdown-header {
-  color: #1F3E6C;
+  color: #0b3b6f;
   font-size: 18px;
 }
 @media (max-width: 768px) {
@@ -236,7 +236,7 @@ tr.totals-row {
 }
 
 #footer {
-  background-color: #E9A310;
+  background-color: #eca91f;
   position: absolute;
   bottom: 0;
   width: 100%;
