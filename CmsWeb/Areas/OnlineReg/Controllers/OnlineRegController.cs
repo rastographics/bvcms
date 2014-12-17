@@ -567,6 +567,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult CompleteRegistration()
         {
+            Response.NoCache();
             var s = (string)TempData["onlineregmodel"];
             if (s == null)
                 return Message("Registration cannot be completed after a page refresh.");
