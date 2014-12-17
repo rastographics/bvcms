@@ -1,3 +1,6 @@
-﻿a[href]:after {
+﻿a {
+    text-decoration: none !important;
+}
+a[href]:after {
     content: "";
 }
