@@ -454,7 +454,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.email = m.List[0].EmailAddress;
             ViewBag.email = m.email;
 
-            if (m.masterorgid.HasValue && m.Orgid.HasValue && !m.settings[m.Orgid.Value].Subject.HasValue())
+            if (m.masterorgid.HasValue && m.Orgid.HasValue && m.settings != null 
+                    && m.settings.ContainsKey(m.Orgid.Value) && !m.settings[m.Orgid.Value].Subject.HasValue())
                 ViewBag.orgname = m.masterorg.OrganizationName;
             else
                 ViewBag.orgname = m.org != null ? m.org.OrganizationName : m.masterorg.OrganizationName;

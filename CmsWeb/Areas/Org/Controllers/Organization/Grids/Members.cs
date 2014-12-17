@@ -17,10 +17,10 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult CurrMemberGrid(OrgPeopleModel m)
         {
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
-            m.GroupSelect = GroupSelectCode.Member;
+            //m.GroupSelect = GroupSelectCode.Member;
             ViewBag.OrgMemberContext = true;
             ViewBag.orgname = Session["ActiveOrganization"] + " - Members";
-            return PartialView("Tabs/Current",m);
+            return PartialView("Tabs/Base",m);
         }
         [HttpPost]
         public ActionResult PendingMemberGrid(OrgPeopleModel m)

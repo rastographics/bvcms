@@ -255,3 +255,6 @@ li.hidy {
   cursor: default;
   border-radius: 0px;
 }
+#groupSelector .btn.active, #groupSelector .btn:active {
+    background-color: #999;
+}

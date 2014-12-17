@@ -125,6 +125,11 @@ namespace CmsWeb.Areas.Org.Models
                             orderby p.Joined, p.Name2
                             select p;
                         break;
+                    case "Tab":
+                        q = from p in q
+                            orderby p.Tab, p.Name2 
+                            select p;
+                        break;
                 }
             else
                 switch (Sort)
@@ -188,6 +193,11 @@ namespace CmsWeb.Areas.Org.Models
                     case "Age":
                         q = from p in q
                             orderby p.BirthYear descending, p.BirthMonth descending, p.BirthDay descending
+                            select p;
+                        break;
+                    case "Tab":
+                        q = from p in q
+                            orderby p.Tab descending, p.Name2 descending 
                             select p;
                         break;
                 }

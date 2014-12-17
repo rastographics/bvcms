@@ -56,7 +56,7 @@
         </ul>
         <div class="tab-content">
           <div id="Members-tab" class="tab-pane active" data-link="/Organization/CurrMemberGrid">
-            @Html.Partial("Tabs/Current", Model)
+            @Html.Partial("Tabs/Base", Model)
           </div>
           <div id="Inactive-tab" class="tab-pane" data-link="/Organization/InactiveMemberGrid">
             @Helper.HiddenId("Id", Model.Id)

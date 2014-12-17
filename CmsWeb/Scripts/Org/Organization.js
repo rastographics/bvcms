@@ -82,6 +82,21 @@ $(function () {
         }
     });
 
+    $("#groupSelector button").live("click", function (event) {
+        if (!$("#b-99").hasClass("active")) {
+            $("#groupSelector button.active:not(#b-99)").not("#" + this.id).removeClass("active");
+        }
+        var $this = $(this);
+        var $a = "";
+        if (!$this.hasClass("active"))
+            $a = $this.val();
+        $("#groupSelector button.active:not(#b-99)").not("#" + this.id).each(function () {
+            $a += $(this).val();
+        });
+        $("#GroupSelect").val($a);
+        $.formAjaxClick($this);
+    });
+
     $('#deleteorg').click(function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
