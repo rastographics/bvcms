@@ -143,10 +143,11 @@ namespace CmsWeb.Areas.Main.Controllers
 			int id;
 			try
 			{
-				id = m.CreateQueue();
-				if (id == 0)
+				var eq = m.CreateQueue();
+				if (eq == null)
 					throw new Exception("No Emails to send (tag does not exist)");
-				if (m.Schedule.HasValue)
+			    id = eq.Id;
+				if (eq.SendWhen.HasValue)
 					return Json(new { id = 0, content = "<h2>Emails Queued</h2>" });
 			}
 			catch (Exception ex)

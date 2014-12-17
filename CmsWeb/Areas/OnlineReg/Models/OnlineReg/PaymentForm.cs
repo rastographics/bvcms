@@ -196,6 +196,9 @@ namespace CmsWeb.Models
                             || (pi.MaskedCard != null && pi.MaskedCard.StartsWith("X")),
 #endif
                      };
+
+            ClearMaskedNumbers(pf, pi);
+
             pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : "";
             var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
             var setting = new CmsData.Registration.Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
@@ -252,6 +255,9 @@ namespace CmsWeb.Models
                 Type = r.payinfo.PreferredPaymentType,
 #endif
             };
+
+            ClearMaskedNumbers(pf, r.payinfo);
+
             pf.AllowSaveProgress = m.AllowSaveProgress();
             pf.NoCreditCardsAllowed = m.NoCreditCardsAllowed();
             pf.UseBootstrap = m.UseBootstrap;
@@ -273,6 +279,43 @@ namespace CmsWeb.Models
             pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : pf.Type;
             pf.DatumId = m.DatumId ?? 0;
             return pf;
+        }
+
+        private static void ClearMaskedNumbers(PaymentForm pf, PaymentInfo pi)
+        {
+            var gateway = DbUtil.Db.Setting("TransactionGateway", "");
+
+            var clearBankDetails = false;
+            var clearCreditCardDetails = false;
+
+            switch (gateway.ToLower())
+            {
+                case "sage":
+                    clearBankDetails = !pi.SageBankGuid.HasValue;
+                    clearCreditCardDetails = !pi.SageCardGuid.HasValue;
+                    break;
+                case "transnational":
+                    clearBankDetails = !pi.TbnBankVaultId.HasValue;
+                    clearCreditCardDetails = !pi.TbnCardVaultId.HasValue;
+                    break;
+                case "authorizenet":
+                    clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
+                    clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
+                    break;
+            }
+
+            if (clearBankDetails)
+            {
+                pf.Account = string.Empty;
+                pf.Routing = string.Empty;
+            }
+
+            if (clearCreditCardDetails)
+            {
+                pf.CreditCard = string.Empty;
+                pf.CCV = string.Empty;
+                pf.Expires = string.Empty;
+            }
         }
 
         public static Transaction CreateTransaction(CMSDataContext Db, Transaction t, decimal? amount)

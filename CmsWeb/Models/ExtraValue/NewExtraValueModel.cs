@@ -289,38 +289,42 @@ Option 2
 
         public void DeleteFromQuery()
         {
-            var list = DbUtil.Db.PeopleQuery(QueryId).Select(pp => pp.PeopleId).ToList();
+            var tag = DbUtil.Db.PopulateSpecialTag(QueryId, DbUtil.TagTypeId_ExtraValues);
 
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
+            const string sql = @"
+delete from dbo.PeopleExtra 
+where Field = @name 
+and PeopleId in (select PeopleId from TagPerson where Id = @id)
+";
             if (RemoveAnyValue)
             {
-                cn.Execute("delete from dbo.PeopleExtra where Field = @name and PeopleId in @ids",
-                    new { name = ExtraValueName, ids = list });
+                cn.Execute(sql, new { name = ExtraValueName, id = tag.Id });
                 return;
             }
             switch (AdhocExtraValueType.Value)
             {
                 case "Bit":
-                    cn.Execute("delete from dbo.PeopleExtra where Field = @name and BitValue = @value and PeopleId in @ids",
-                        new { name = ExtraValueName, value = ExtraValueCheckbox, ids = list });
+                    cn.Execute(sql + "and BitValue = @value",
+                        new { name = ExtraValueName, value = ExtraValueCheckbox, id = tag.Id });
                     break;
                 case "Code":
-                    cn.Execute("delete from dbo.PeopleExtra where Field = @name and StrValue = @value and PeopleId in @ids",
-                        new { name = ExtraValueName, value = ExtraValueCheckbox, ids = list });
+                    cn.Execute(sql + "and StrValue = @value",
+                        new { name = ExtraValueName, value = ExtraValueCheckbox, id = tag.Id });
                     break;
                 case "Text2":
                 case "Text":
-                    cn.Execute("delete from dbo.PeopleExtra where Field = @name and Data = @value and PeopleId in @ids",
-                        new { name = ExtraValueName, value = ExtraValueTextArea, ids = list });
+                    cn.Execute(sql + "and Data = @value",
+                        new { name = ExtraValueName, value = ExtraValueTextArea, id = tag.Id });
                     break;
                 case "Date":
-                    cn.Execute("delete from dbo.PeopleExtra where Field = @name and Date = @value and PeopleId in @ids",
-                        new { name = ExtraValueName, value = ExtraValueDate, ids = list });
+                    cn.Execute(sql + "and Date = @value",
+                        new { name = ExtraValueName, value = ExtraValueDate, id = tag.Id });
                     break;
                 case "Int":
-                    cn.Execute("delete from dbo.PeopleExtra where Field = @name and IntValue = @value and PeopleId in @ids",
-                        new { name = ExtraValueName, value = ExtraValueInteger, ids = list });
+                    cn.Execute(sql + "and IntValue = @value",
+                        new { name = ExtraValueName, value = ExtraValueInteger, id = tag.Id });
                     break;
             }
         }

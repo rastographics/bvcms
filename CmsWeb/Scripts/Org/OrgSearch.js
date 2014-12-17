@@ -24,7 +24,7 @@
     $("#search").click(function (ev) {
         ev.preventDefault();
         var name = $('#Name').val();
-        if (name.match("^" + "M\.") === "M.") {
+        if (name.startsWith("M."))  {
             $('#Name').val("");
             var f = $('#results').closest('form');
             f.attr("action", "/OrgSearch/CreateMeeting/" + name);
@@ -121,9 +121,10 @@
             }
         });
     };
-    $(".descr").live("click", function (ev) {
-        ev.preventDefault();
-        var $a = $(this);
+    $(".descredit").live("click", function (ev) {
+        $.descredit($(this).prev());
+    });
+    $.descredit = function($a) {
         if ($a.text() === "edit")
             $a.html('');
         CKEDITOR.instances['editor'].setData($a.html());
@@ -141,7 +142,7 @@
             return false;
         });
         return false;
-    });
+    };
     $("#canceledit").live("click", function (ev) {
         ev.preventDefault();
         $('#EditorDialog').hide("close");

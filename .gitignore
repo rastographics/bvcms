@@ -60,12 +60,12 @@ cassette-cache/
 CmsDataSqlClr.dbmdl
 CmsWeb/Upload/
 Web*.config
-*.pubxml.user
 CmsDataSqlClr_.*.sqlproj
 
 /.gitignore~
 
-/CmsWeb/Properties/PublishProfiles/production.pubxml
+*.pubxml.user
+*.pubxml
 /PythonApplication1/TextFile1.txt
 /CmsWeb/Properties/PublishProfiles/test.pubxml
 /CmsWeb/Properties/PublishProfiles/test2.pubxml

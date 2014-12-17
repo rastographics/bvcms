@@ -278,7 +278,7 @@ namespace CmsData
 
         public void EmailContent2(Guid qid, int queuedBy, string fromAddr, string fromName, string contentName)
         {
-            var c = db.Content(contentName);
+            var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
                 return;
             Email2(qid, queuedBy, fromAddr, fromName, c.Title, c.Body);
@@ -287,7 +287,7 @@ namespace CmsData
         public void EmailContent2(Guid qid, int queuedBy, string fromAddr, string fromName, string subject,
             string contentName)
         {
-            var c = db.Content(contentName);
+            var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
                 return;
             Email2(qid, queuedBy, fromAddr, fromAddr, subject, c.Body);
@@ -303,7 +303,7 @@ namespace CmsData
 
         public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string contentName)
         {
-            var c = db.Content(contentName);
+            var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
                 return;
             EmailContent(savedQuery, queuedBy, fromAddr, fromName, c.Title, contentName);
@@ -312,7 +312,7 @@ namespace CmsData
         public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string subject,
             string contentName)
         {
-            var c = db.Content(contentName);
+            var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
                 return;
             var qB = db.Queries.FirstOrDefault(cc => cc.Name == savedQuery);

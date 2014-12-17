@@ -1008,6 +1008,24 @@ namespace CmsData
                 return content.Body;
             return def;
         }
+        public Content ContentOfTypeHtml(string name)
+        {
+            var content = (from c in Contents
+                where c.Name == name
+                where c.TypeID == ContentTypeCode.TypeHtml 
+                select c).FirstOrDefault();
+            return content;
+        }
+        public string ContentOfTypePythonScript(string name)
+        {
+            var content = (from c in Contents
+                where c.Name == name
+                where c.TypeID == ContentTypeCode.TypePythonScript 
+                select c).FirstOrDefault();
+            if (content == null)
+                return "";
+            return content.Body;
+        }
         public Content Content(string name, string def, int ContentTypeId)
         {
             var c = Contents.FirstOrDefault(cc => cc.Name == name);
