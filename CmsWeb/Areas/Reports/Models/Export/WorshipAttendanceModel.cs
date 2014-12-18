@@ -18,6 +18,8 @@ namespace CmsWeb.Models
             public int PeopleId { get; set; }
             public string Name { get; set; }
             public int? Age { get; set; }
+            public double? Wor04 { get; set; }
+            public double? MF04 { get; set; }
             public double? Wor12 { get; set; }
             public double? MF12 { get; set; }
             public double? Wor26 { get; set; }
@@ -48,7 +50,7 @@ namespace CmsWeb.Models
                 var name = cols[i].Name;
                 table.Columns[i].Name = name;
                 var colrange = ws.Cells[1, col, count + 2, col];
-                if(name.EndsWith("12") || name.EndsWith("26") || name.EndsWith("52"))
+                if(name.EndsWith("04") || name.EndsWith("12") || name.EndsWith("26") || name.EndsWith("52"))
                     colrange.Style.Numberformat.Format = "0.0";
                 if (name.StartsWith("Worship"))
                 {

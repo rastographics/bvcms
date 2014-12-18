@@ -21,6 +21,7 @@ namespace CmsWeb.Areas.Main.Models
 
         public int TagId { get; set; }
         public bool wantParents { get; set; }
+        public bool noDuplicates { get; set; }
         public bool CcParents { get; set; }
         public string FromAddress { get; set; }
         public string FromName { get; set; }
@@ -34,9 +35,10 @@ namespace CmsWeb.Areas.Main.Models
         public MassEmailer()
         {
         }
-        public MassEmailer(Guid id, bool? parents = null, bool? ccparents = null)
+        public MassEmailer(Guid id, bool? parents = null, bool? ccparents = null, bool? nodups = null)
         {
             wantParents = parents ?? false;
+            noDuplicates = nodups ?? false;
             CcParents = ccparents ?? false;
             var q = DbUtil.Db.PeopleQuery(id);
             var c = DbUtil.Db.LoadQueryById2(id);
@@ -62,9 +64,11 @@ namespace CmsWeb.Areas.Main.Models
                     where p.EmailAddress != ""
                     where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
                     select p;
-            Count = q.Count();
             var tag = DbUtil.Db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
             TagId = tag.Id;
+            if (noDuplicates)
+                DbUtil.Db.NoEmailDupsInTag(TagId);
+            Count = tag.People(DbUtil.Db).Count();
         }
 
         public EmailQueue CreateQueue(bool transactional = false)
@@ -89,7 +93,7 @@ namespace CmsWeb.Areas.Main.Models
             if (emailqueue == null)
                 return null;
 
-            if(QueuedToBatch)
+            if (QueuedToBatch)
                 DbUtil.LogActivity("EmailQueuedToBatch({0},{1})".Fmt(emailqueue.Id, Count));
 
             emailqueue.Transactional = transactional;

@@ -1641,6 +1641,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.AppRegistration> ViewAppRegistrations
+	    {
+		    get { return this.GetTable< View.AppRegistration>(); }
+
+	    }
+
 	    public Table< View.AttendCredit> ViewAttendCredits
 	    {
 		    get { return this.GetTable< View.AttendCredit>(); }
@@ -2632,7 +2638,9 @@ namespace CmsData
             [Parameter(DbType="varchar")] string first,
             [Parameter(DbType="varchar")] string last,
             [Parameter(DbType="varchar")] string sgfilter,
-            [Parameter(DbType="bit")] bool? showhidden
+            [Parameter(DbType="bit")] bool? showhidden,
+            [Parameter(DbType="nvarchar")] string currtag,
+            [Parameter(DbType="int")] int? currtagowner
             )
 		{
 			return this.CreateMethodCallQuery< View.OrgPerson>(this, 
@@ -2642,6 +2650,78 @@ namespace CmsData
                 first,
                 last,
                 sgfilter,
+                showhidden,
+                currtag,
+                currtagowner
+                );
+		}
+
+		[Function(Name="dbo.OrgPeopleCurrent", IsComposable = true)]
+		public IQueryable< View.OrgPeopleCurrent > OrgPeopleCurrent(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgPeopleCurrent>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
+		[Function(Name="dbo.OrgPeopleGuests", IsComposable = true)]
+		public IQueryable< View.OrgPeopleGuest > OrgPeopleGuests(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="bit")] bool? showhidden
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgPeopleGuest>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                showhidden
+                );
+		}
+
+		[Function(Name="dbo.OrgPeopleInactive", IsComposable = true)]
+		public IQueryable< View.OrgPeopleInactive > OrgPeopleInactive(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgPeopleInactive>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
+		[Function(Name="dbo.OrgPeoplePending", IsComposable = true)]
+		public IQueryable< View.OrgPeoplePending > OrgPeoplePending(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgPeoplePending>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
+		[Function(Name="dbo.OrgPeoplePrevious", IsComposable = true)]
+		public IQueryable< View.OrgPeoplePreviou > OrgPeoplePrevious(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgPeoplePreviou>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                );
+		}
+
+		[Function(Name="dbo.OrgPeopleProspects", IsComposable = true)]
+		public IQueryable< View.OrgPeopleProspect > OrgPeopleProspects(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="bit")] bool? showhidden
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgPeopleProspect>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
                 showhidden
                 );
 		}
