@@ -113,5 +113,14 @@ $(function () {
     // initialize any date fields.
     initializeDateElements();
 
+    $('#cleartag').click(function (e) {
+        e.preventDefault();
+        var href = this.href;
+        if (confirm("are you sure you want to empty the active tag?"))
+            $.post(href, {}, function () {
+                window.location.reload();
+            });
+    });
+
 
 });
