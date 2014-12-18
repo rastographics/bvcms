@@ -51,12 +51,16 @@
         else
         {
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="hidden-lg hidden-xs">Admin</span><span class="visible-lg-inline visible-xs-inline">Administration</span> <b class="caret"></b></a>
-            <ul class="dropdown-menu dropdown-menu-large row">
+            <ul id="admin-menu-col-2" class="dropdown-menu dropdown-menu-large row">
                 <li class="col-sm-6">
-                    @AdminList2(admin, design, managetrans, edit, manageemails, finance: false, developer: developer)
+                    <ul>
+                        @AdminList2(admin, design, managetrans, edit, manageemails, finance: false, developer: developer)
+                    </ul>
                 </li>
                 <li class="col-sm-6">
-                    @AdminList1(admin, design, managetrans, edit, manageemails, finance: false)
+                    <ul>
+                        @AdminList1(admin, design, managetrans, edit, manageemails, finance: false)
+                    </ul>
                 </li>
             </ul>
         }
