@@ -157,11 +157,21 @@ body {
     margin-left: 150px;
 }
 
+#tag-dropdown {
+    height: 35em;
+    overflow-y: scroll;
+}
+
 @media (max-width: 768px) {
     
   #admin-menu-col-2 {
     margin-left: 16px;
   }
+
+  #tag-dropdown {
+    height: inherit;
+    overflow-y: visible;
+   }
 
   .dropdown-menu-large {
     margin-left: 0 ;
@@ -186,6 +196,8 @@ body {
 .dropdown-menu-large.bluebar-menu-col-3  {
   max-width: 829px;
 }
+
+
 
 
 ul.pagination{
