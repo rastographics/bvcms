@@ -245,7 +245,7 @@ namespace CmsWeb.Models
                 // next let's get all the approved matching transactions from our transaction table by transaction id (reference).
                 var approvedMatchingTransactions = from transaction in DbUtil.Db.Transactions
                                                    where unMatchedKeyedByReference.Keys.Contains(transaction.TransactionId)
-                                                   where transaction.PaymentType == (batchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard)
+                                                   where (transaction.PaymentType == null || transaction.PaymentType == (batchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard))
                                                    where transaction.Approved == true
                                                    select transaction;
 
