@@ -76,12 +76,13 @@
         var q = $("#SendEmail").serialize();
 
         $.post('/Email/QueueEmails', q, function (ret) {
-            if (ret == "timeout") {
+            if (ret === "timeout") {
                 window.location = "/Email/Timeout";
                 return;
             }
+            $("#Send").remove();
             var taskid = ret.id;
-            if (taskid == 0) {
+            if (taskid === 0) {
                 d.html(ret.content);
             } else {
                 var intervalid = window.setInterval(function () {

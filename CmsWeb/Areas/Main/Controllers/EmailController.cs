@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Main.Controllers
 	{
 		[ValidateInput(false)]
         [Route("~/Email/{id:guid}")]
-		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents)
+		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups)
 		{
 			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
 			if (!body.HasValue())
@@ -32,7 +32,8 @@ namespace CmsWeb.Areas.Main.Controllers
 				{
 					DbUtil.LogActivity("Emailing people");
 
-					var m = new MassEmailer(id, parents, ccparents);
+					var m = new MassEmailer(id, parents, ccparents, nodups);
+
 					m.Host = Util.Host;
 
 					ViewBag.templateID = templateID;
@@ -44,7 +45,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 			DbUtil.LogActivity("Emailing people");
 
-			var me = new MassEmailer(id, parents, ccparents);
+			var me = new MassEmailer(id, parents, ccparents, nodups);
 			me.Host = Util.Host;
 
 			if (body.HasValue())
@@ -148,7 +149,7 @@ namespace CmsWeb.Areas.Main.Controllers
 					throw new Exception("No Emails to send (tag does not exist)");
 			    id = eq.Id;
 				if (eq.SendWhen.HasValue)
-					return Json(new { id = 0, content = "<h2>Emails Queued</h2>" });
+					return Json(new { id = 0, content = "<h2>Emails Queued to be Sent</h2>" });
 			}
 			catch (Exception ex)
 			{

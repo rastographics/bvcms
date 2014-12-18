@@ -952,6 +952,12 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), i1, i2);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.NoEmailDupsInTag")]
+        public int NoEmailDupsInTag([Parameter(DbType = "Int")] int tagid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), tagid);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.AttendUpdateN")]
         public int AttendUpdateN([Parameter(DbType = "Int")] int pid, [Parameter(DbType = "Int")] int max)
         {

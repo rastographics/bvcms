@@ -72,7 +72,8 @@ CREATE TABLE [dbo].[Organizations]
 [GiftNotifyIds] [varchar] (50) NULL,
 [VisitorDate] AS (CONVERT([datetime],dateadd(day, -((7)*isnull([RollSheetVisitorWks],(3))),CONVERT([date],getdate(),(0))),(0))),
 [UseBootstrap] [bit] NULL,
-[PublicSortOrder] [varchar] (15) NULL
+[PublicSortOrder] [varchar] (15) NULL,
+[UseRegisterLink2] [bit] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
