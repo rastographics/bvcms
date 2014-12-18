@@ -10,6 +10,17 @@ body {
 #main {
   padding-bottom: 25px;
 }
+
+
+/*@media (max-width: 767px) {
+.collapsing, .in { background-color: #46494d;}
+.collapsing ul li a, .in ul li a {color: #c6ccd0 !important;}
+.collapsing ul li.open a {color:  #eca91f !important;}
+.collapsing ul li a:hover, .in ul li a:hover {color: #eca91f !important;}
+}*/
+
+
+
 .logo {
   padding-right: 10px;
   height: 50px;
