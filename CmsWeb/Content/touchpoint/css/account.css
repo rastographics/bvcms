@@ -10,6 +10,10 @@ body {
     margin-bottom: 60px;
 }
 
+input[type="text"] {
+    text-transform: lowercase;
+}
+
 .account {
     background: #f6f6f6;
     padding-bottom: 40px;

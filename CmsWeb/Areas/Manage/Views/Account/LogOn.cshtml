@@ -16,10 +16,10 @@
 {
     @Html.Hidden("ReturnUrl", Model.ReturnUrl)
     <div class="form-group">
-        <input type="text" id="inputEmail" name="UsernameOrEmail" class="form-control input-lg" placeholder="Username or email" required="required" autocomplete="off" autocapitalize="off" autocorrect="off" value="@Model.UsernameOrEmail">
+        <input type="text" id="inputEmail" name="UsernameOrEmail" class="form-control input-lg" placeholder="username or email" required="required" autocomplete="off" autocapitalize="off" autocorrect="off" value="@Model.UsernameOrEmail">
     </div>
     <div class="form-group signin-password">
-        <input type="password" id="inputPassword" name="Password" class="form-control input-lg" placeholder="Password" required="required">
+        <input type="password" id="inputPassword" name="Password" class="form-control input-lg" placeholder="password" required="required">
         <a href="@Url.Action("ForgotPassword")" class="forgot">Forgot?</a>
     </div>
     <div class="form-actions">
