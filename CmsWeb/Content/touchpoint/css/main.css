@@ -153,11 +153,8 @@ body {
   font-size: 18px;
 }
 
-#admin-menu-col-2 {
-    margin-left: 150px;
-}
-
 @media (max-width: 768px) {
+    
   .dropdown-menu-large {
     margin-left: 0 ;
     margin-right: 0 ;
