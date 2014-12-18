@@ -26,6 +26,13 @@
         <div class="container-fluid" id="main">
             @RenderBody()
         </div>
+        <div id="contact-footer">
+            <ul class="list-inline">
+                <li>@ViewExtensions2.DbSetting("nameofchurch", "Name of Church")</li>
+                <li><i class="fa fa-phone"></i>&nbsp;&nbsp;@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()</li>
+                <li><i class="fa fa-envelope"></i>&nbsp;&nbsp;@DbUtil.AdminMail</li>
+            </ul>
+        </div>
         <div id="footer" class="container-fluid hidden-print">
             &copy; 2014 TouchPoint Software, LLC.
         </div>

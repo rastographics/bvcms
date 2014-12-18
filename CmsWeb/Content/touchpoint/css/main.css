@@ -269,25 +269,44 @@ tr.totals-row {
     font-size: 1.5em;
 }
 
+#contact-footer {
+    position: absolute;
+    bottom: 60px;
+    width: 100%;
+    text-align: center;
+    font-size: .9em;
+    color: #fff;
+    background-color: #548cc5;
+    border-top: 1px solid #3f72b3;
+}
+#contact-footer ul {
+    padding-top: 10px;
+}
+
+#contact-footer ul li:first-child {
+    font-weight: 600;
+}
+
 #footer {
-  background-color: #eca91f;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  color: #fff;
-  font-size: 11px;
-  padding-top: 20px;
-  padding-left: 0;
-  padding-right: 0;
-  border-top: thin solid #999;
-  padding-left: 15px;
+    text-align: left;
+    background-color: #46494d;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    color: #fff;
+    font-size: 11px;
+    padding-top: 20px;
+    padding-left: 0;
+    padding-right: 0;
+    border-top: 1px solid #2e343a;
+    padding-left: 15px;
 }
 
 #footer a {
-  color: #fff !important;
-  text-decoration: underline;
+    color: #fff !important;
+    text-decoration: underline;
 }
 
 .alert {
