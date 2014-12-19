@@ -282,7 +282,10 @@ div.report .table {
 
 @media (max-width: 768px) {
     div.report .table {
-        width: 100%;
+        width: 100% !important;
+    }
+    div.report .well {
+        max-width: 100% !important;
     }
 }
 
