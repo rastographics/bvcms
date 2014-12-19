@@ -51,15 +51,15 @@ body {
     box-shadow: none;
 }*/
 
-#me {
-  padding-bottom: 13px;
-}
-#me img{
-  height: 25px;
-  width: 25px;
-  display: inline; 
-  margin-top: -3px; 
-  vertical-align: middle;
+#thumbnail-picture {
+    float: left;
+    height: 25px;
+    width: 25px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin-top: -3px;
 }
 #search-box .modal-header {
     border: 0;

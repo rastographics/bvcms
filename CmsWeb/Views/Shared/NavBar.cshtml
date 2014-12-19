@@ -5,6 +5,11 @@
     var targetperson = Util2.TargetLinkPeople;
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
 }
+<style>
+    #thumbnail-picture {
+        background-image: url(@Util.UserThumbPictureUrl);
+    }
+</style>
 <nav class="navbar navbar-default navbar-fixed-top hidden-print">
     <div class="container-fluid">
         @if (access)
@@ -53,13 +58,13 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me">
                             @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))
                             {
-                                <img src="@Util.UserThumbPictureUrl" class="img-responsive img-circle hidden-xs">
+                                <div id="thumbnail-picture" class="img-circle hidden-xs"></div>
                             }
                             else
                             {
                                 <i class="fa fa-user hidden-xs"></i>
                             }
-                            <i class="fa fa-user visible-xs-inline"></i>&nbsp;&nbsp;<span class="visible-lg-inline visible-xs-inline">@(Util.UserName == "Admin" ? "Admin" : Util.UserFirstName)</span> <span class="caret"></span>
+                            <i class="fa fa-user visible-xs-inline"></i>&nbsp;&nbsp;<span class="visible-lg-inline-block visible-xs-inline">@(Util.UserName == "Admin" ? "Admin" : Util.UserFirstName)</span> <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
                             @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
