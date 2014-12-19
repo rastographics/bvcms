@@ -280,6 +280,12 @@ div.report .table {
     margin-right: auto;
 }
 
+@media (max-width: 768px) {
+    div.report .table {
+        width: 100%;
+    }
+}
+
 #contact-footer {
     position: absolute;
     bottom: 60px;
