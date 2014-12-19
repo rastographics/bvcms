@@ -83,9 +83,9 @@ $(function () {
     });
 
     $("#groupSelector button").live("click", function (event) {
-        if (!$("#b-99").hasClass("active")) {
-            $("#groupSelector button.active:not(#b-99)").not("#" + this.id).removeClass("active");
-        }
+//        if (!$("#b-99").hasClass("active")) {
+//            $("#groupSelector button.active:not(#b-99)").not("#" + this.id).removeClass("active");
+//        }
         var $this = $(this);
         var $a = "";
         if (!$this.hasClass("active"))
