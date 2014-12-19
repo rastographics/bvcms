@@ -269,6 +269,17 @@ tr.totals-row {
     font-size: 1.5em;
 }
 
+
+div.report h1, div.report h2, div.report h3 {
+    text-align: center;
+}
+
+div.report .table {
+    width: inherit;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #contact-footer {
     position: absolute;
     bottom: 60px;

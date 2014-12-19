@@ -3,7 +3,7 @@
     ViewBag.Title = "Vital Stats";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-
-<h2>Vital Stats</h2>
-
-@Html.Raw((string)ViewData["table"])
+<div class="report">
+    <h2>Vital Stats</h2>
+    @Html.Raw((string)ViewData["table"])
+</div>

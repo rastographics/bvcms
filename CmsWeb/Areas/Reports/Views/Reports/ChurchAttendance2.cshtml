@@ -3,91 +3,93 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Average Church Attendance Report";
 }
-<h2>Church Attendance</h2>
-<div class="well hidden-print">
-    <div class="row">
-        @using (Html.BeginForm("ChurchAttendance2", "Reports", FormMethod.Get))
-        {
-            <div class="col-sm-3">
-                <label for="Dt1">Start Date</label>
-                <div class="input-group date">                    
-                    @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                    @Html.Hidden("Dt1Iso", Model.Dt1.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <label for="Dt2">End Date</label>
-                <div class="input-group date">
-                    @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                    @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <label for="skipweeks">Skip Dates (optional)</label>
-                <div class="form-inline">
-                    <div class="input-group col-sm-6">
-                        @Html.TextBox("skipweeks", "", new {@class = "form-control", placeholder = "mm/dd/yy, mm/dd/yy..."})
-                    </div>
-                    <div class="input-group">
-                        <button type="submit" class="btn btn-primary">Run</button>
+<div class="report">
+    <h2>Church Attendance</h2>
+    <div class="well hidden-print" style="max-width: 770px; margin: auto;">
+        <div class="row">
+            @using (Html.BeginForm("ChurchAttendance2", "Reports", FormMethod.Get))
+            {
+                <div class="col-sm-3">
+                    <label for="Dt1">Start Date</label>
+                    <div class="input-group date">
+                        @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("Dt1Iso", Model.Dt1.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-</div>
-<div class="visible-print-block">
-    <strong>Start Date:</strong> @Model.Dt1.GetValueOrDefault().ToShortDateString()<br/>
-    <strong>End Date:</strong> @Model.Dt2.GetValueOrDefault().ToShortDateString()
-</div>
-@foreach (var p in Model.FetchInfo())
-{
-    <div>
-        <h3>@p.Name</h3>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th></th>
-                        @foreach (var c in p.Cols)
-                        {
-                            <th class="text-right">@c.Heading</th>
-                        }
-                        <th class="text-right">Average</th>
-                        <th class="text-right">Count</th>
-                        <th class="text-right">Weeks</th>
-                    </tr>
-                </thead>
-                @foreach (var d in p.Divs)
-                {
-                    <tr>
-                        <td class="text-left">@d.Name</td>
-                        @foreach (var c in p.Cols)
-                        {
-                            var a = d.Column(c);
-                            <td class="text-right" title='@a.totalpeople / @a.totalmeetings'>@a.avg.ToString("n0")</td>
-                        }
-                        @{var ta = d.Total();}
-                        <td class="text-right" title='@ta.totalpeople / @ta.totalmeetings'>@ta.avg.ToString("n0")</td>
-                        <td class="text-right">@ta.totalpeople.ToString("n0")</td>
-                        <td class="text-right">@ta.totalmeetings.ToString("n0")</td>
-                    </tr>
-                }
-                <tr class="totals-row">
-                    <td class="text-left">Total</td>
-                    @foreach (var c in p.Cols)
-                    {
-                        var a = p.Column(c);
-                        <td class="text-right" title='@a.totalpeople / @a.totalmeetings'>@a.avg.ToString("n0")</td>
-                    }
-                    @{ var tta = p.Total(); }
-                    <td class="text-right" title='@tta.totalpeople / @tta.totalmeetings'>@tta.avg.ToString("n0")</td>
-                    <td class="text-right">@tta.totalpeople.ToString("n0")</td>
-                    <td class="text-right">@tta.totalmeetings.ToString("n0")</td>
-                </tr>
-            </table>
+                <div class="col-sm-3">
+                    <label for="Dt2">End Date</label>
+                    <div class="input-group date">
+                        @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="skipweeks">Skip Dates (optional)</label>
+                    <div class="form-inline">
+                        <div class="input-group col-sm-6">
+                            @Html.TextBox("skipweeks", "", new { @class = "form-control", placeholder = "mm/dd/yy, mm/dd/yy..." })
+                        </div>
+                        <div class="input-group">
+                            <button type="submit" class="btn btn-primary">Run</button>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
-    <br/>
-    <br/>
-}
+    <div class="visible-print-block text-center">
+        <strong>Start Date:</strong> @Model.Dt1.GetValueOrDefault().ToShortDateString()<br />
+        <strong>End Date:</strong> @Model.Dt2.GetValueOrDefault().ToShortDateString()
+    </div>
+    @foreach (var p in Model.FetchInfo())
+    {
+        <div>
+            <h3>@p.Name</h3>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            @foreach (var c in p.Cols)
+                            {
+                                <th class="text-right">@c.Heading</th>
+                            }
+                            <th class="text-right">Average</th>
+                            <th class="text-right">Count</th>
+                            <th class="text-right">Weeks</th>
+                        </tr>
+                    </thead>
+                    @foreach (var d in p.Divs)
+                    {
+                        <tr>
+                            <td class="text-left">@d.Name</td>
+                            @foreach (var c in p.Cols)
+                            {
+                                var a = d.Column(c);
+                                <td class="text-right" title='@a.totalpeople / @a.totalmeetings'>@a.avg.ToString("n0")</td>
+                            }
+                            @{var ta = d.Total();}
+                            <td class="text-right" title='@ta.totalpeople / @ta.totalmeetings'>@ta.avg.ToString("n0")</td>
+                            <td class="text-right">@ta.totalpeople.ToString("n0")</td>
+                            <td class="text-right">@ta.totalmeetings.ToString("n0")</td>
+                        </tr>
+                    }
+                    <tr class="totals-row">
+                        <td class="text-left">Total</td>
+                        @foreach (var c in p.Cols)
+                        {
+                            var a = p.Column(c);
+                            <td class="text-right" title='@a.totalpeople / @a.totalmeetings'>@a.avg.ToString("n0")</td>
+                        }
+                        @{ var tta = p.Total(); }
+                        <td class="text-right" title='@tta.totalpeople / @tta.totalmeetings'>@tta.avg.ToString("n0")</td>
+                        <td class="text-right">@tta.totalpeople.ToString("n0")</td>
+                        <td class="text-right">@tta.totalmeetings.ToString("n0")</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <br />
+        <br />
+    }
+</div>
