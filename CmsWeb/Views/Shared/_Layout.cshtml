@@ -27,14 +27,22 @@
             @RenderBody()
         </div>
         <div id="contact-footer">
+            <div class="texture" style="background: url(/Content/touchpoint/images/hexagon.png) repeat;"></div>
             <ul class="list-inline">
                 <li>@ViewExtensions2.DbSetting("nameofchurch", "Name of Church")</li>
-                <li><i class="fa fa-phone"></i>&nbsp;&nbsp;@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()</li>
-                <li><i class="fa fa-envelope"></i>&nbsp;&nbsp;@DbUtil.AdminMail</li>
+                <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()">@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()</a></li>
+                <li><i class="fa fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:@DbUtil.AdminMail">@DbUtil.AdminMail</a></li>
             </ul>
         </div>
         <div id="footer" class="container-fluid hidden-print">
-            &copy; 2014 TouchPoint Software, LLC.
+            <div class="row">
+                <div class="col-xs-6">
+                    <img id="powered-by" src="@Url.Content("~/Content/touchpoint/images/powered_by.png")" />
+                </div>
+                <div class="col-xs-6 text-right">
+                    &copy; 2014 TouchPoint Software, LLC.
+                </div>
+            </div>
         </div>
         <div class="device-lg visible-lg-block"></div>
         <div class="device-md visible-md-block"></div>

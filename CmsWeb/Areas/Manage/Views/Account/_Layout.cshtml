@@ -25,8 +25,15 @@
         </a>
     </div>
     @RenderBody()
-    <div id="footer" class="container-fluid">
-        &copy; 2014 TouchPoint Software, LLC.
+    <div id="footer" class="container-fluid hidden-print">
+        <div class="row">
+            <div class="col-xs-6">
+                <img id="powered-by" src="@Url.Content("~/Content/touchpoint/images/powered_by.png")" />
+            </div>
+            <div class="col-xs-6 text-right">
+                &copy; 2014 TouchPoint Software, LLC.
+            </div>
+        </div>
     </div>
     @ViewExtensions2.jQuery()
     @ViewExtensions2.Bootstrap3()

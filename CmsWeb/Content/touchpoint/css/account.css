@@ -140,14 +140,18 @@ input[type="text"] {
     height: 60px;
     color: #fff;
     font-size: 11px;
+    border-top: 1px solid #2e343a;
     padding-top: 20px;
-    padding-left: 0;
-    padding-right: 0;
-    border-top: thin solid #999;
     padding-left: 15px;
+    padding-right: 15px;
 }
 
 #footer a {
     color: #fff !important;
     text-decoration: underline;
+}
+
+#powered-by {
+    height: 30px;
+    margin-top: -5px;
 }
