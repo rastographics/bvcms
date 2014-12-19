@@ -46,6 +46,16 @@
         $(".taguntag:visible").text("Remove");
     };
 
+    $("#singleemail").live("click", function (ev) {
+        ev.preventDefault();
+        var t = $(this);
+        bootbox.confirm(t.data("confirm"), function (ret) {
+            if(ret)
+                window.location = t[0].href;
+        });
+        return false;
+    });
+
     $('#UnTagAll').live("click", function (ev) {
         ev.preventDefault();
         var $a = $(this);

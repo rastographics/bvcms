@@ -1653,6 +1653,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.AttendCredits2> ViewAttendCredits2s
+	    {
+		    get { return this.GetTable< View.AttendCredits2>(); }
+
+	    }
+
 	    public Table< View.BundleList> ViewBundleLists
 	    {
 		    get { return this.GetTable< View.BundleList>(); }

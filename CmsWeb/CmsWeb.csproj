@@ -1564,9 +1564,6 @@
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
     <Content Include="Views\Shared\Message.cshtml" />
     <Content Include="Views\Home\PyScript.cshtml" />
-    <None Include="Web.bvcms.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
