@@ -73,11 +73,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                         text = c.Description,
                     };
 
-            var x = Json(q.ToList(), JsonRequestBehavior.AllowGet);
-            return x;
-           // var x = Json(q.ToDictionary(k => k.Value, v => v.Text));
-            
-            //return x;
+           return Json(q.ToList(), JsonRequestBehavior.AllowGet);
         }
     }
 }
