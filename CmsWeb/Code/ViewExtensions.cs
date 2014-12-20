@@ -976,7 +976,7 @@ namespace CmsWeb
                 div.InnerHtml += button.ToString();
             }
 
-            div.InnerHtml += "<strong>Validation error!</strong> Please fix the errors listed below and try again.";
+            div.InnerHtml += "<strong>Validation Error!</strong>&nbsp;&nbsp;Please fix the errors listed below and try again.";
 
             if (errorCount > 0)
             {

@@ -35,8 +35,10 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Create(int? pk, string type)
         {
             if (!pk.HasValue)
-                return Content("need an integer id");
-            DbUtil.Db.ExecuteCommand("insert lookup." + type + " (id, code, description) values ({0}, '', '')", pk);
+                TempData["ErrorMessage"] = "Id must be a number.";
+            else
+                DbUtil.Db.ExecuteCommand("insert lookup." + type + " (id, code, description) values ({0}, '', '')", pk);
+            
             return RedirectToAction("Index", new { id = type });
         }
 
