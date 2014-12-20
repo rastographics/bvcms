@@ -19,7 +19,12 @@ body {
 .collapsing ul li a:hover, .in ul li a:hover {color: #eca91f !important;}
 }*/
 
-
+#tag-menu-header {
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow : ellipsis;
+}
 
 .logo {
   padding-right: 10px;
