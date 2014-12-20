@@ -25,15 +25,15 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpPost]
-        public ContentResult Edit(string id, string value)
+        public ContentResult Edit(string pk, string value)
         {
-            var iid = id.Substring(1).ToInt();
+            var iid = pk.Substring(1).ToInt();
             var c = new ContentResult();
             c.Content = value;
             var pro = DbUtil.Db.Promotions.SingleOrDefault(p => p.Id == iid);
             if (pro == null)
                 return c;
-            switch (id.Substring(0, 1))
+            switch (pk.Substring(0, 1))
             {
                 case "d":
                     pro.Description = value;
@@ -45,12 +45,13 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return c;
         }
+
         [HttpPost]
-        public ContentResult EditDiv(string id, string value)
+        public ContentResult EditDiv(string pk, string value)
         {
-            var iid = id.Substring(1).ToInt();
+            var iid = pk.Substring(1).ToInt();
             var pro = DbUtil.Db.Promotions.SingleOrDefault(m => m.Id == iid);
-            var fts = id.Substring(0, 1);
+            var fts = pk.Substring(0, 1);
             switch (fts)
             {
                 case "f":
@@ -68,6 +69,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 c.Content = pro.ToDivision.Name;
             return c;
         }
+
         [HttpPost]
         public EmptyResult Delete(string id)
         {
@@ -79,7 +81,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
-        [HttpPost]
+
         public JsonResult DivisionCodes(int id)
         {
             var q = from c in DbUtil.Db.Divisions
@@ -87,11 +89,12 @@ namespace CmsWeb.Areas.Setup.Controllers
                     where c.DivOrgs.Any(od => od.Organization.DivOrgs.Any(od2 => od2.Division.ProgId == id))
                     select new
                     {
-                        Code = c.Id.ToString(),
-                        Value = c.Name,
+                        value = c.Id,
+                        text = c.Name,
                     };
-            return Json(q.ToDictionary(k => k.Code, v => v.Value));
+            return Json(q.ToList(), JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public ActionResult Promote(string id)
         {

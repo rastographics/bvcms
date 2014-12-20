@@ -1,97 +1,172 @@
 ﻿@model CmsWeb.Areas.Setup.Models.PromotionModel
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Promotion";
 }
-@section scripts
-{
-    <script type="text/javascript">
-        //id=elements_id&value=user_edited_content
-        $(function () {
-            $(".clickEdit").editable("/PromotionSetup/Edit/", {
-                indicator: "<img src='/images/loading.gif'>",
-                tooltip: "Click to edit...",
-                style: 'display: inline',
-                width: '200px',
-                height: 25
-            });
-            $(".clickSelect").editable("/PromotionSetup/EditDiv/", {
-                indicator: '<img src="/Content/images/loading.gif">',
-                loadtype: 'post',
-                loadurl: "/PromotionSetup/DivisionCodes/",
-                loaddata: function () {
-                    return { id: $('#Programs').val() };
-                },
-                type: "select",
-                submit: "OK",
-                style: 'display: inline'
-            });
-            $("a.delete").click(function (ev) {
-                if (confirm("are you sure?"))
-                    $.post("/PromotionSetup/Delete/" + $(this).attr("id"), null, function (ret) {
-                        window.location = "/PromotionSetup/";
-                    });
-                return false;
-            });
-            $("a.promote").click(function (ev) {
-                if (confirm("are you sure?"))
-                    $.post("/PromotionSetup/Promote/" + $(this).attr("id"), null, function (ret) {
-                        window.location = "/Promotion/";
-                    });
-                return false;
-            });
-            $(".bt").button();
-        });
-    </script>
+@section head{
+    <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
 }
 <h2>Promotion Setup</h2>
-@Html.DropDownList("Programs", Model.Programs())
-<table class="@ViewExtensions2.GridClass">
-    <thead>
-        <tr>
-            <th>Sort </th>
-            <th>Description </th>
-            <th>From Division </th>
-            <th>To Division </th>
-            <th>Easy Button</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Promotions())
-        {
+<div class="well">
+    <label for="Programs">Program</label>
+    <div class="row">
+        <div class="col-sm-3">
+            @Html.DropDownList("Programs", Model.Programs(), new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>
-                    <span id='s@(item.Id)' class='clickEdit'>@item.Sort</span>
-                </td>
-                <td>
-                    <span id='d@(item.Id)' class='clickEdit'>@item.Description</span>
-                </td>
-                <td>
-                    <span id='f@(item.Id)' class='clickSelect'>@(item.FromDivId == null ? "click to set" : item.FromDivision.Name)</span>
-                </td>
-                <td>
-                    <span id='t@(item.Id)' class='clickSelect'>@(item.ToDivId == null ? "click to set" : item.ToDivision.Name)</span>
-                </td>
-                <td>
-                    @if (Model.CanPromote(item.Id))
-                    {
-                        <a id='p@(item.Id)' href="#" class="promote">promote</a>
-                    }
-                </td>
-
-                <td>
-                    <a id='x@(item.Id)' href="#" class="delete">
-                        <img border="0" src="/Content/images/delete.gif" />
-                    </a>
-                </td>
+                <th>Sort</th>
+                <th>Description</th>
+                <th>From Division </th>
+                <th>To Division</th>
+                <th>Promote</th>
+                <th>Action</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Promotions())
+            {
+                <tr>
+                    <td>
+                        <a id="s@(item.Id)" data-pk="s@(item.Id)" class="clickEdit">@item.Sort</a>
+                    </td>
+                    <td>
+                        <a id="d@(item.Id)" data-pk="d@(item.Id)" class="clickEdit">@item.Description</a>
+                    </td>
+                    <td>
+                        <a id="f@(item.Id)" class="clickSelect" data-value="@(item.FromDivId == null ? "" : item.FromDivId.ToString())" data-pk="f@(item.Id)">@(item.FromDivId == null ? "" : item.FromDivision.Name)</a>
+                    </td>
+                    <td>
+                        <a id="t@(item.Id)" class="clickSelect" data-value="@(item.ToDivId == null ? "" : item.ToDivId.ToString())" data-pk="t@(item.Id)">@(item.ToDivId == null ? "" : item.ToDivision.Name)</a>
+                    </td>
+                    <td>
+                        @if (Model.CanPromote(item.Id))
+                        {
+                            <a id="p@(item.Id)" href="#" class="promote btn btn-sm btn-default"><i class="fa fa-check"></i> Promote</a>
+                        }
+                    </td>
+
+                    <td>
+                        <a id="x@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 @using (Html.BeginForm("Create", "Promotion"))
 {
     <p>
-        <input type="submit" class="bt" value="Create" />
+        <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Promotion</button>
     </p>
+}
+@section scripts
+{
+    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-editable/bootstrap-editable.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                            '<i class="fa fa-fw fa-check"></i>' +
+                                        '</button>' +
+                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                            '<i class="fa fa-fw fa-times"></i>' +
+                                        '</button>';
+
+            $(".clickEdit").editable({
+                mode: 'inline',
+                type: 'text',
+                url: "/PromotionSetup/Edit/"
+            });
+
+            var source = [];
+            function getDivisionCodes() {
+                $.ajax({
+                    type: 'GET',
+                    url: "/PromotionSetup/DivisionCodes/" + $("#Programs").val(),
+                    dataType: 'json',
+                    success: function (result) {
+                        source = result;
+                    },
+                    async: false
+                });
+            }
+
+            // get initial division codes.
+            getDivisionCodes();
+
+            $("#Programs").change(function() {
+                getDivisionCodes();
+            });
+
+            $(".clickSelect").editable({
+                mode: 'inline',
+                type: 'select',
+                url: "/PromotionSetup/EditDiv/",
+                source: function () {
+                    return source;
+                }
+            });
+
+            $("a.delete").click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr("id");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/PromotionSetup/Delete/" + id, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/PromotionSetup/";
+                            });
+                        }
+                    });
+                });
+            });
+
+            $("a.promote").click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr("id");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-warning",
+                    confirmButtonText: "Yes, promote!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/PromotionSetup/Promote/" + id, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Promoted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/PromotionSetup/";
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 } 
