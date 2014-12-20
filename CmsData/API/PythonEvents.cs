@@ -133,13 +133,13 @@ namespace CmsData
 
         public string CallScript(string scriptname)
         {
-            var script = db.Content(scriptname);
+            var script = db.ContentOfTypePythonScript(scriptname);
             var engine = Python.CreateEngine();
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
             engine.Runtime.IO.SetOutput(ms, sw);
             engine.Runtime.IO.SetErrorOutput(ms, sw);
-            var sc = engine.CreateScriptSourceFromString(script.Body);
+            var sc = engine.CreateScriptSourceFromString(script);
             var code = sc.Compile();
             var scope = engine.CreateScope();
             var pe = new PythonEvents(db.Host);
