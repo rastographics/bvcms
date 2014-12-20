@@ -19,38 +19,38 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Sort</th>
-                <th>Description</th>
-                <th>From Division </th>
-                <th>To Division</th>
-                <th>Promote</th>
-                <th>Action</th>
+                <th style="width: 300px;">Sort</th>
+                <th style="width: 300px;">Description</th>
+                <th style="width: 300px;">From Division </th>
+                <th style="width: 300px;">To Division</th>
+                <th style="width: 100px;">Promote</th>
+                <th style="width: 100px;">Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.Promotions())
             {
                 <tr>
-                    <td>
+                    <td style="width: 300px;">
                         <a id="s@(item.Id)" data-pk="s@(item.Id)" class="clickEdit">@item.Sort</a>
                     </td>
-                    <td>
+                    <td style="width: 300px;">
                         <a id="d@(item.Id)" data-pk="d@(item.Id)" class="clickEdit">@item.Description</a>
                     </td>
-                    <td>
+                    <td style="width: 300px;">
                         <a id="f@(item.Id)" class="clickSelect" data-value="@(item.FromDivId == null ? "" : item.FromDivId.ToString())" data-pk="f@(item.Id)">@(item.FromDivId == null ? "" : item.FromDivision.Name)</a>
                     </td>
-                    <td>
+                    <td style="width: 300px;">
                         <a id="t@(item.Id)" class="clickSelect" data-value="@(item.ToDivId == null ? "" : item.ToDivId.ToString())" data-pk="t@(item.Id)">@(item.ToDivId == null ? "" : item.ToDivision.Name)</a>
                     </td>
-                    <td>
+                    <td style="width: 100px;">
                         @if (Model.CanPromote(item.Id))
                         {
                             <a id="p@(item.Id)" href="#" class="promote btn btn-sm btn-default"><i class="fa fa-check"></i> Promote</a>
                         }
                     </td>
 
-                    <td>
+                    <td style="width: 100px;">
                         <a id="x@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
                     </td>
                 </tr>

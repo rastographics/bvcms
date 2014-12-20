@@ -11,20 +11,20 @@
     <table id="settings" class="table table-striped">
         <thead>
             <tr>
-                <th>Setting Code</th>
-                <th>Setting Value</th>
-                <th>Action</th>
+                <th style="width: 100px;">Setting Code</th>
+                <th style="width: 300px;">Setting Value</th>
+                <th style="width: 100px;">Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.Id</td>
-                    <td>
+                    <td style="width: 100px;">@item.Id</td>
+                    <td style="width: 300px;">
                         <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
                     </td>
-                    <td>
+                    <td style="width: 100px;">
                         <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
                     </td>
                 </tr>
