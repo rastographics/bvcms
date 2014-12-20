@@ -28,9 +28,9 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpPost]
-        public ContentResult Edit(string id, string value)
+        public ContentResult Edit(string pk, string value)
         {
-            DbUtil.Db.SetSetting(id, value);
+            DbUtil.Db.SetSetting(pk, value);
             DbUtil.Db.SubmitChanges();
             var c = new ContentResult();
             c.Content = value;

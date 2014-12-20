@@ -1,57 +1,96 @@
 ﻿@model IEnumerable<CmsData.Setting>
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Settings";
 }
+@section head{
+    <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
+}
+<h2>Settings</h2>
+<div class="table-responsive">
+    <table id="settings" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Setting Code</th>
+                <th>Setting Value</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>
+                        <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
+                    </td>
+                    <td>
+                        <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<label for="Id">New Setting</label>
+<div class="row">
+    @using (Html.BeginForm("Create", "Setting"))
+    {
+        <div class="col-sm-12 form-inline">
+            <div class="input-group">
+                @Html.TextBox("Id", "", new { @class = "form-control" })
+            </div>
+            <div class="input-group">
+                <input type="submit" class="btn btn-primary" value="Create" />
+            </div>
+        </div>
+    }
+</div>
 @section scripts
 {
+    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-editable/bootstrap-editable.js")"></script>
     <script type="text/javascript">
         $(function () {
-            $(".clickEdit").editable("/Setting/Edit", {
-                indicator: "<img src='/images/loading.gif'>",
-                width: 400,
-                height: 22,
-                submit: "OK",
-                tooltip: "Click to edit..."
+            $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                            '<i class="fa fa-fw fa-check"></i>' +
+                                        '</button>' +
+                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                            '<i class="fa fa-fw fa-times"></i>' +
+                                        '</button>';
+
+            $(".clickEdit").editable({
+                mode: 'inline',
+                type: 'text',
+                url: "/Setting/Edit/"
             });
-            $("a.delete").click(function (ev) {
-                if (confirm("are you sure?"))
-                    $.post("/Setting/Delete/" + $(this).attr("id"), null, function (ret) {
-                        window.location = "/Settings/";
+
+            $("a.delete").click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr("id");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/Setting/Delete/" + id, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/Settings/";
+                            });
+                        }
                     });
+                });
             });
-            $(".bt").button();
         });
     </script>
 }
-<h2>Settings</h2>
-<table id="settings" class="@ViewExtensions2.GridClass">
-    <thead>
-        <tr>
-            <th> SettingId </th>
-            <th> Setting </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item.Id</td>
-            <td>
-                <span id='@item.Id' class='clickEdit'>@item.SettingX</span>
-            </td>
-            <td>
-                <a id='d@(item.Id)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-@using (Html.BeginForm("Create", "Setting"))
-{
-    <p>
-        New Setting: @Html.TextBox("Id")
-        <input type="submit" class="bt" value="Create" />
-    </p>
-} 
