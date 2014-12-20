@@ -80,7 +80,13 @@
             $(".clickEdit").editable({
                 mode: 'inline',
                 type: 'text',
-                url: "/PromotionSetup/Edit/"
+                url: "/PromotionSetup/Edit/",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
             });
 
             var source = [];
@@ -109,6 +115,12 @@
                 url: "/PromotionSetup/EditDiv/",
                 source: function () {
                     return source;
+                },
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
                 }
             });
 

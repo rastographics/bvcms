@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -34,10 +30,10 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public ContentResult Edit(string pk, string value)
+        public ContentResult Edit(string id, string value)
         {
-            pk = pk.Substring(1);
-            var zip = DbUtil.Db.Zips.SingleOrDefault(m => m.ZipCode == pk);
+            id = id.Substring(1);
+            var zip = DbUtil.Db.Zips.SingleOrDefault(m => m.ZipCode == id);
             zip.MetroMarginalCode = value.ToInt();
             DbUtil.Db.SubmitChanges();
             var c = new ContentResult();
@@ -56,6 +52,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
+
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult UpdateMetroZips()
         {

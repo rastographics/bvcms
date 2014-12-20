@@ -81,7 +81,13 @@ else
                 mode: 'inline',
                 type: 'select',
                 url: "/MetroZips/Edit/",
-                source: "/MetroZips/ResidentCodes/"
+                source: "/MetroZips/ResidentCodes/",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
             });
 
             $("a.delete").click(function (e) {

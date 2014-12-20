@@ -25,15 +25,15 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpPost]
-        public ContentResult Edit(string pk, string value)
+        public ContentResult Edit(string id, string value)
         {
-            var iid = pk.Substring(1).ToInt();
+            var iid = id.Substring(1).ToInt();
             var c = new ContentResult();
             c.Content = value;
             var pro = DbUtil.Db.Promotions.SingleOrDefault(p => p.Id == iid);
             if (pro == null)
                 return c;
-            switch (pk.Substring(0, 1))
+            switch (id.Substring(0, 1))
             {
                 case "d":
                     pro.Description = value;
@@ -47,11 +47,11 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpPost]
-        public ContentResult EditDiv(string pk, string value)
+        public ContentResult EditDiv(string id, string value)
         {
-            var iid = pk.Substring(1).ToInt();
+            var iid = id.Substring(1).ToInt();
             var pro = DbUtil.Db.Promotions.SingleOrDefault(m => m.Id == iid);
-            var fts = pk.Substring(0, 1);
+            var fts = id.Substring(0, 1);
             switch (fts)
             {
                 case "f":

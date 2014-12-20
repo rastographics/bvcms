@@ -59,7 +59,7 @@
         @Html.Hidden("type", ViewData["type"])
         <div class="col-sm-12 form-inline">
             <div class="input-group">
-                <input type="number" id="pk" name="pk" class="form-control" />
+                <input type="number" id="id" name="id" class="form-control" />
             </div>
             <div class="input-group">
                 <input type="submit" class="btn btn-primary" value="Create" />
@@ -82,7 +82,13 @@
             $(".clickEdit").editable({
                 mode: 'inline',
                 type: 'text',
-                url: "/Lookup/Edit/"
+                url: "/Lookup/Edit/",
+                params: function (params) {  
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
             });
 
             $("a.delete").click(function (e) {

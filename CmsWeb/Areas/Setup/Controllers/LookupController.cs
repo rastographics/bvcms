@@ -32,26 +32,26 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(int? pk, string type)
+        public ActionResult Create(int? id, string type)
         {
-            if (!pk.HasValue)
+            if (!id.HasValue)
                 TempData["ErrorMessage"] = "Id must be a number.";
             else
-                DbUtil.Db.ExecuteCommand("insert lookup." + type + " (id, code, description) values ({0}, '', '')", pk);
+                DbUtil.Db.ExecuteCommand("insert lookup." + type + " (id, code, description) values ({0}, '', '')", id);
             
             return RedirectToAction("Index", new { id = type });
         }
 
         [HttpPost]
-        public ContentResult Edit(string pk, string value)
+        public ContentResult Edit(string id, string value)
         {
-            var a = pk.SplitStr(".");
+            var a = id.SplitStr(".");
             var iid = a[0].Substring(1).ToInt();
-            if (pk.StartsWith("t"))
+            if (id.StartsWith("t"))
                 DbUtil.Db.ExecuteCommand(
                     "update lookup." + a[1] + " set Description = {0} where id = {1}", 
                     value, iid);
-            else if (pk.StartsWith("c"))
+            else if (id.StartsWith("c"))
                 DbUtil.Db.ExecuteCommand(
                     "update lookup." + a[1] + " set Code = {0} where id = {1}",
                     value, iid);
