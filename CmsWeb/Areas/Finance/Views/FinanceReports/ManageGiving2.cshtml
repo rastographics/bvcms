@@ -8,12 +8,17 @@
     <div class="col-sm-9">
         <div class="well">
             <div class="row">
-                <div class="col-sm-2 hidden-xs">
-                    <i class="fa fa-gift" style="font-size: 3.5em;"></i> <span style="font-size: 1.5em;">FROM:</span>
+                <div class="col-sm-12 hidden-xs">
+                    <div style="border: solid 2px #fff; color:#fff; background-color: #46494d; border-radius: 100px; height: 85px; width: 85px; padding-top: 25px; margin-right: 20px; float: left;" class="text-center">
+                        <span style="font-size: 1.5em;">FROM</span>
+                    </div>
+                    <div style="padding-top: 20px;">
+                        <strong><a href="/Person2/@Model.person.PeopleId" style="font-size: 1.5em;">@Model.person.Name</a></strong><br>
+                        <a href="mailto:@Model.person.EmailAddress">@Model.person.EmailAddress</a>
+                    </div>
                 </div>
-                <div class="col-sm-10 text-left">
+                <div class="col-sm-12 visible-xs-block">
                     <strong><a href="/Person2/@Model.person.PeopleId" style="font-size: 1.5em;">@Model.person.Name</a></strong><br>
-                    <abbr title="Date of Birth">DOB:</abbr> @Model.person.DOB<br>
                     <a href="mailto:@Model.person.EmailAddress">@Model.person.EmailAddress</a>
                 </div>
             </div>
