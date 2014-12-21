@@ -1,68 +1,184 @@
-﻿@using CmsWeb
-@model IEnumerable<CmsData.ContributionFund>
+﻿@model IEnumerable<CmsData.ContributionFund>
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Funds";
 }
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/Finance/Funds.js")
+@section head{
+    <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
 }
 <h2>Funds</h2>
-<p>
-@if(ViewBag.status == 1)
-{
-<a href="/Funds?status=2">view closed funds</a>
-}
-else
-{
-<a href="/Funds">view open funds</a>
-}
-</p>
-@Html.Hidden("status")
-<table class="@ViewExtensions2.GridClass" cellpadding="5">
-<thead>
-	<tr>
-		<th></th>
-		<th> <a href="#" class="sortable">FundId</a> </th>
-		<th> <a href="#" class="sortable">Sort</a> </th>
-		<th> <a href="#" class="sortable">Name</a> </th>
-		<th> <a href="#" class="sortable">StatusId</a> </th>
-		<th> <a href="#" class="sortable">PledgeFlag</a> </th>
-		<th> <a href="#" class="sortable">NonTaxDed</a> </th>
-		<th> <a href="#" class="sortable">Created</a> </th>
-	</tr>
-</thead>
-<tbody>
-@foreach (var item in Model)
-{ 
-    <tr>
-        <td> <a href="/Fund/Edit/@item.FundId">Edit</a> </td>
-        <td> @item.FundId </td>
-        <td> <span id="o@(item.FundId)" class="clickEdit">@(item.OnlineSort.HasValue ? item.OnlineSort.ToString() : "edit")</span> </td>
-        @if (item.FundPledgeFlag)
+<div class="row">
+    <div class="col-md-9">
+        @if (TempData["SuccessMessage"] != null)
         {
-        <td> <a href="/FinanceReports/PledgeFulfillments/@item.FundId" target="_blank">@item.FundName</a> </td>
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <strong>Success!</strong>&nbsp;&nbsp;@TempData["SuccessMessage"]
+            </div>
         }
-        else
+        <div>
+            <ul class="nav nav-tabs">
+                <li class="@(ViewBag.status == 1 ? "active" : "")"><a href="/Funds">Open Funds</a></li>
+                <li class="@(ViewBag.status == 2 ? "active" : "")"><a href="/Funds?status=2">Closed Funds</a></li>
+            </ul>
+            <div class="tab-content">
+                <br/>
+                @Html.Hidden("status")
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;"><a href="#" class="sortable" data-sortby="FundId">Fund Id</a></th>
+                                <th style="width: 300px;"><a href="#" class="sortable" data-sortby="Sort">Sort</a></th>
+                                <th><a href="#" class="sortable" data-sortby="Name">Name</a></th>
+                                <th style="width: 200px;"><a href="#" class="sortable" data-sortby="StatusId">Status</a></th>
+                                <th class="text-center"><a href="#" class="sortable" data-sortby="PledgeFlag">Pledge</a></th>
+                                <th class="text-center"><a href="#" class="sortable" data-sortby="NonTaxDed">Non Tax Deductible</a></th>
+                                <th><a href="#" class="sortable" data-sortby="Created">Date Created</a></th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td style="width: 100px;">@item.FundId</td>
+                                    <td style="width: 300px;"><a id="o@(item.FundId)" class="clickEdit" data-pk="o@(item.FundId)">@(item.OnlineSort.HasValue ? item.OnlineSort.ToString() : "")</a></td>
+                                    @if (item.FundPledgeFlag)
+                                    {
+                                        <td><a href="/FinanceReports/PledgeFulfillments/@item.FundId">@item.FundName</a></td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.FundName</td>
+                                    }
+                                    <td style="width: 200px;"><a id="s@(item.FundId)" class="clickSelect" data-value="@(item.FundStatusId)" data-pk="s@(item.FundId)">@(item.FundStatusId == 1 ? "Open" : "Closed")</a></td>
+                                    <td class="text-center">
+                                        @if (item.FundPledgeFlag)
+                                        {
+                                            <i class="fa fa-check"></i>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.NonTaxDeductible.GetValueOrDefault())
+                                        {
+                                            <i class="fa fa-check"></i>
+                                        }
+                                    </td>
+                                    <td>@item.CreatedDate.ToString("d")</td>
+                                    <td><a href="/Fund/Edit/@item.FundId" class="btn btn-sm btn-default"><i class="fa fa-pencil"></i> Edit</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div id="errormessage" class="alert alert-danger" style="display: none;"></div>
+        @if (!Model.Any())
         {
-        <td> @item.FundName </td>
+            <div class="alert alert-info">
+                Your first fund should have a fund id of 1.
+            </div>
         }
-        <td> <span id="s@(item.FundId)" class="clickSelect">@(item.FundStatusId == 1 ? "Open" : "Closed")</span> </td>
-        <td> @item.FundPledgeFlag </td>
-        <td> @(item.NonTaxDeductible ?? false)</td>
-        <td> @item.CreatedDate.ToString("d")</td>
-    </tr>
-}
-</tbody>
-</table>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @using (Html.BeginForm("Create", "Fund"))
+                {
+                    <div class="form-group">
+                        <label for="fundid">New Fund Id</label>
+                        <input type="number" id="fundid" name="fundid" class="form-control" />
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-lg btn-block" value="Create" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-editable/bootstrap-editable.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                            '<i class="fa fa-fw fa-check"></i>' +
+                                        '</button>' +
+                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                            '<i class="fa fa-fw fa-times"></i>' +
+                                        '</button>';
 
-@using (Html.BeginForm("Create", "Fund"))
-{ 
-    <p>
-        Your first fund should have a fundid of 1<br />
-        <div id="errormessage" class="error"></div>
-        New Fund Id: @Html.TextBox("fundid")
-        <input type="submit" class="bt" value="Create" />
-    </p>
-} 
+            $(".clickEdit").editable({
+                mode: 'inline',
+                type: 'text',
+                url: "/Fund/EditOrder/",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
+            });
+
+            $(".clickSelect").editable({
+                mode: 'inline',
+                type: 'select',
+                url: "/Fund/EditStatus/",
+                source: [{value: 1, text: "Open"}, {value: 2, text: "Closed"}],
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
+            });
+
+
+            //$('table.grid2').bind('mousedown', function (e) {
+            //    if ($(e.target).hasClass("clickEdit")) {
+            //        $(e.target).editable("/Fund/EditOrder/", {
+            //            tooltip: "Click to edit ...",
+            //            style: 'display: inline',
+            //            width: '60px',
+            //            submit: "OK",
+            //            placeholder: "edit",
+            //            height: 25
+            //        });
+            //    }
+            //    else if ($(e.target).hasClass("clickSelect")) {
+            //        $(e.target).editable("/Fund/EditStatus/", {
+            //            tooltip: "Click to edit...",
+            //            data: " {'1':'Open','2':'Closed'}",
+            //            loadtype: "POST",
+            //            type: "select",
+            //            submit: "OK",
+            //            style: 'display: inline'
+            //        });
+            //    }
+            //});
+            $("a.sortable").click(function (ev) {
+                ev.preventDefault();
+                if ($("#status").val() == 2)
+                    window.location = "/Funds?status=2&sort=" + $(this).attr('data-sortby');
+                else
+                    window.location = "/Funds?sort=" + $(this).attr('data-sortby');
+            });
+            //$(".bt").button();
+            $("form").submit(function (ev) {
+                ev.preventDefault();
+                $.post("/Fund/Create", { fundid: $("#fundid").val() }, function (ret) {
+                    if (ret.error) {
+                        $("#errormessage").text(ret.error);
+                        $('#errormessage').show();
+                    }
+                    else {
+                        $('#errormessage').hide();
+                        window.location = ret.edit;
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+}

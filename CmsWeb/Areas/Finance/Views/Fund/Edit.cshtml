@@ -1,98 +1,141 @@
-﻿@using CmsWeb
-@using CmsWeb.Models
-@using CmsData
-@using CmsData.Classes.QuickBooks
+﻿@using CmsData.Classes.QuickBooks
 @model CmsData.ContributionFund
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "Fund";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Edit Fund";
     var qhb = new QuickBooksHelper(); 
 }
-@section head 
-{
-<style type="text/css">
-    label
-    {
-        width: 150px;
-        display: inline-block;
-    }
-</style>
-}
-<h2>Edit</h2>
+<h2>Edit Fund</h2>
 @using (Html.BeginForm("Update", "Fund"))
 {
-    <fieldset>
-        <legend>Fields</legend>
-        <p>
-            <label for="FundId">FundId:</label>
-            @Model.FundId
-        </p>
-        <p>
-            <label for="FundName">FundName:</label>
-            @Html.TextBox("FundName")
-        </p>
-        <p>
-            <label for="FundDescription">FundDescription:</label>
-            @Html.TextBox("FundDescription")
-        </p>
-        <p>
-            <label for="FundStatusId">FundStatusId:</label>
-            @Html.DropDownList("FundStatusId", CmsWeb.Areas.Finance.Controllers.FundController.GetFundStatusList())
-        </p>
-        <p>
-            <label for="FundPledgeFlag">FundPledgeFlag:</label>
-            @Html.CheckBox("FundPledgeFlag")
-        </p>
-        <p>
-            <label for="">NonTaxDeductible:</label>
-            @Html.CheckBox("NonTaxDeductible")
-        </p>
-        <p>
-            <label for="FundAccountCode">FundAccountCode:</label>
-            @Html.TextBox("FundAccountCode")
-        </p>
-        <p>
-            <label for="FundIncomeDept">FundIncomeDept:</label>
-            @Html.TextBox("FundIncomeDept")
-        </p>
-        <p>
-            <label for="FundIncomeAccount">FundIncomeAccount:</label>
-            @Html.TextBox("FundIncomeAccount")
-        </p>
-        <p>
-            <label for="FundIncomeFund">FundIncomeFund:</label>
-            @Html.TextBox("FundIncomeFund")
-        </p>
-        <p>
-            <label for="FundCashDept">FundCashDept:</label>
-            @Html.TextBox("FundCashDept")
-        </p>
-        <p>
-            <label for="FundCashAccount">FundCashAccount:</label>
-		    @Html.TextBox("FundCashAccount")
-        </p>
-        <p>
-            <label for="FundCashFund">FundCashFund:</label>
-            @Html.TextBox("FundCashFund")
-        </p>
-        @if (qhb.hasActiveConnection())
-		{
-            var list = qhb.getAllAccounts();
-            <p>
-                <label for="QBIncomeAccount">QB Income Account:</label>
-                @Html.DropDownList("QBIncomeAccount", new SelectList(list, "ID", "Name", Model.QBIncomeAccount)) 
-            </p>
-            <p>
-                <label for="QBAssetAccount">QB Asset Account:</label>
-                @Html.DropDownList("QBAssetAccount", new SelectList(list, "ID", "Name", Model.QBAssetAccount)) 
-            </p>
-        }
-        <p>
-            @Html.Hidden("FundId")
-            <input type="submit" class="bt" value="Save" />
-        </p>
-    </fieldset>
-} 
-    <div>
-        @Helper.AnchorLink("Back to List", "/Funds")
+    @Html.HiddenFor(m => m.FundId)
+    <div class="row">
+        <div class="col-md-8 col-lg-9">
+            <div class="row">
+                <div class="col-sm-9 col-lg-8">
+                    <div class="form-group">
+                        <label for="FundName">Name</label>
+                        @Html.TextBoxFor(m => m.FundName, new { @class = "form-control input-lg" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-9 col-lg-8">
+                    <div class="form-group">
+                        <label for="FundDescription">Description</label>
+                        @Html.TextBoxFor(m => m.FundDescription, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-3">
+                    <div class="form-group">
+                        <label for="FundAccountCode">Account Code</label>
+                        @Html.TextBoxFor(m => m.FundAccountCode, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-3">
+                    <div class="form-group">
+                        <label for="FundIncomeDept">Income Department</label>
+                        @Html.TextBoxFor(m => m.FundIncomeDept, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-3">
+                    <div class="form-group">
+                        <label for="FundIncomeAccount">Income Account</label>
+                        @Html.TextBoxFor(m => m.FundIncomeAccount, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-3">
+                    <div class="form-group">
+                        <label for="FundIncomeFund">Income Fund</label>
+                        @Html.TextBoxFor(m => m.FundIncomeFund, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-3">
+                    <div class="form-group">
+                        <label for="FundCashDept">Cash Department</label>
+                        @Html.TextBoxFor(m => m.FundCashDept, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-3">
+                    <div class="form-group">
+                        <label for="FundCashAccount">Cash Account</label>
+                        @Html.TextBoxFor(m => m.FundCashAccount, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-3">
+                    <div class="form-group">
+                        <label for="FundCashFund">Cash Fund</label>
+                        @Html.TextBoxFor(m => m.FundCashFund, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-3">
+                    <div class="form-group">
+                        <label for="FundStatusId">Status</label>
+                        @Html.DropDownList("FundStatusId", CmsWeb.Areas.Finance.Controllers.FundController.GetFundStatusList(), new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            @if (qhb.hasActiveConnection())
+            {
+                var list = qhb.getAllAccounts();
+                <div class="row">
+                    <div class="col-sm-4 col-lg-3">
+                        <div class="form-group">
+                            <label for="QBIncomeAccount">QB Income Account</label>
+                            @Html.DropDownList("QBIncomeAccount", new SelectList(list, "ID", "Name", Model.QBIncomeAccount), new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 col-lg-3">
+                        <div class="form-group">
+                            <label for="QBAssetAccount">QB Asset Account</label>
+                            @Html.DropDownList("QBAssetAccount", new SelectList(list, "ID", "Name", Model.QBAssetAccount), new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="checkbox">
+                        <label>
+                            @Html.CheckBox("FundPledgeFlag")
+                            Pledge fund?
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            @Html.CheckBox("NonTaxDeductible")
+                            Non tax deductible?
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">Save Fund</button>
+                    <hr/>
+                    <a href="/Funds" style="text-decoration: underline;">Cancel & Return</a>
+                </div>
+            </div>
+        </div>
     </div>
+}
